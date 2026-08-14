@@ -11,7 +11,7 @@
  * MCAT is the exception, and the reason this module exists. The AAMC
  * administers four sections, but nobody studies that way: you study
  * biochemistry, then physics, then sociology. `mcat-subjects.ts` carries
- * that second view - the same 38 topics regrouped into the seven subjects
+ * that second view - the same 45 topics regrouped into the seven subjects
  * every serious prep course uses - and this module hands it back for MCAT
  * while deriving the axis straight from the curriculum for everything else.
  *

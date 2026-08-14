@@ -39,6 +39,29 @@ Chapter map (docs/mcat/BIOCHEM_CHAPTERS.md):
     I.10 membranes and transport  -> bc1-membrane-transport
     I.11 nucleic acid structure   -> bc1-base-pairing
 
+Second pass (figures for the deepened lessons; same contract):
+    I.1  bc1-fraction-deprotonated, bc1-bicarbonate-system
+    I.2  bc1-glycine-titration
+    I.3  bc1-ramachandran, bc1-helix-geometry
+    I.4  bc1-hill-plot, bc1-bpg-family
+    I.5  bc1-rate-vs-barrier, bc1-chymotrypsin-ph
+    I.6  bc1-inhibition-rates
+    I.7  bc1-hill-family, bc1-hexokinase-glucokinase
+    I.8  bc1-mutarotation
+    I.9  bc1-fatty-acid-melting
+    I.10 bc1-transport-dg
+    I.11 bc1-dna-melting, bc1-dna-damage
+
+Third pass (Biochemistry II wave A, chapters II.1-II.8; same contract):
+    II.1 bc2-deltag-vs-q          (computed)
+    II.2 bc2-glycolysis-ledger    (schematic)
+    II.3 bc2-glycogen-branching   (schematic)
+    II.4 bc2-tca-ledger           (schematic)
+    II.5 bc2-proton-motive        (computed)
+    II.6 bc2-palmitate-ledger     (computed)
+    II.7 bc2-nitrogen-flow        (schematic)
+    II.8 bc2-fed-fasting          (schematic)
+
 Usage:
     python3 scripts/gen_mcat_biochem_figures.py          # all
     python3 scripts/gen_mcat_biochem_figures.py bc1-ox   # only matching names
@@ -53,6 +76,7 @@ import numpy as np
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import ed_figstyle as S  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.patches import Ellipse  # noqa: E402
 
 OUT = (
     pathlib.Path(__file__).resolve().parents[1]
@@ -753,6 +777,1463 @@ def _(mode):
     S.strip(ax)
     for sp in ax.spines.values():
         sp.set_visible(False)
+    return fig
+
+
+# ===========================================================================
+# Second figures pass - deep-dive figures for the deepened I.1-I.11 lessons.
+# Same contract as above: every quantitative figure is computed from the
+# equation stated on it, with parameters printed; schematics carry only
+# qualitative content and say so on the figure. Chapter map in the docstring.
+# ===========================================================================
+
+
+# --- I.1  Water, pH, buffers ------------------------------------------------
+
+
+@figure("bc1-fraction-deprotonated")
+def _(mode):
+    """Fraction deprotonated vs pH for the three benchmark weak acids.
+
+    Pure Henderson-Hasselbalch, f = 1/(1 + 10^(pKa - pH)), for the tabulated
+    pKa values 4.76 (acetic acid), 6.86 (dihydrogen phosphate) and 9.25
+    (ammonium). Nothing else is drawn in.
+    """
+    c = S.SERIES[mode]
+    pH = np.linspace(0.0, 14.0, 700)
+    acids = [
+        (4.76, "acetic acid\npKa 4.76", c[0]),
+        (6.86, "phosphate\npKa 6.86", c[1]),
+        (9.25, "ammonium\npKa 9.25", c[2]),
+    ]
+    fig, ax = plt.subplots()
+    ax.axhline(0.5, color=S.GUIDE[mode], lw=0.9, ls=":")
+    for pKa, lab, col in acids:
+        f = 1.0 / (1.0 + 10.0 ** (pKa - pH))
+        ax.plot(pH, f, color=col, lw=2.2)
+        ax.plot([pKa], [0.5], "o", color=col, ms=6)
+        S.label_end(ax, pKa, 0.5, lab, col, mode, dx=-8, ha="right")
+    S.note(ax, 0.25, 0.53, "half deprotonated", mode)
+    S.note(ax, 13.75, 0.05,
+           "computed from f = 1/(1 + 10^(pKa - pH))", mode, ha="right")
+    ax.set_xlabel("pH")
+    ax.set_ylabel("fraction deprotonated")
+    ax.set_title("Every weak acid is half deprotonated exactly at its pKa")
+    ax.set_xlim(0, 14)
+    ax.set_ylim(0, 1.12)
+    S.strip(ax)
+    return fig
+
+
+@figure("bc1-bicarbonate-system")
+def _(mode):
+    """The bicarbonate buffer as an open system: qualitative schematic.
+
+    The chain CO2(g) <-> CO2(aq) <-> H2CO3 <-> H+ + HCO3- with the lung arm
+    (acid side, minutes) and kidney arm (base side, hours to days). The only
+    numbers are stated physiological constants (effective pKa 6.1); nothing
+    is measured off the drawing.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 3.9))
+    yc = 2.7
+    species = [
+        (1.9, "CO$_2$ (gas)"),
+        (5.3, "CO$_2$ (aq)"),
+        (8.3, "H$_2$CO$_3$"),
+        (12.1, "H$^+$ + HCO$_3^-$"),
+    ]
+    for x, s in species:
+        ax.text(x, yc, s, ha="center", va="center", fontsize=12,
+                fontweight="semibold", color=S.INK[mode])
+    for x0, x1 in ((2.95, 4.25), (6.3, 7.4), (9.2, 10.35)):
+        ax.annotate("", xy=(x1, yc), xytext=(x0, yc),
+                    arrowprops=dict(arrowstyle="<->", color=S.GUIDE[mode],
+                                    lw=1.6))
+    S.note(ax, 3.6, 2.35, "dissolution", mode, ha="center", va="top",
+           size=8.5)
+    S.note(ax, 6.85, 2.35, "carbonic anhydrase\n(fast, in red cells)", mode,
+           ha="center", va="top", size=8.5)
+    S.note(ax, 9.78, 2.35, "effective pKa 6.1\n(CO$_2$ pool + H$_2$CO$_3$)",
+           mode, ha="center", va="top", size=8.5)
+    # lung arm: the acid side is vented in minutes
+    ax.annotate("", xy=(1.9, 4.35), xytext=(1.9, 3.15),
+                arrowprops=dict(arrowstyle="<->", color=c[0], lw=1.8))
+    ax.text(1.9, 4.5, "lungs: ventilation adds or\nremoves CO$_2$ (minutes)",
+            ha="center", va="bottom", fontsize=10, fontweight="semibold",
+            color=c[0])
+    # kidney arm: the base side is managed over hours to days
+    ax.annotate("", xy=(12.1, 1.05), xytext=(12.1, 2.25),
+                arrowprops=dict(arrowstyle="<->", color=c[1], lw=1.8))
+    ax.text(12.1, 0.9, "kidneys: excrete or reclaim\nHCO$_3^-$ (hours to days)",
+            ha="center", va="top", fontsize=10, fontweight="semibold",
+            color=c[1])
+    S.note(ax, 0.4, 1.15,
+           "open at both ends: neither the acid reservoir\n"
+           "nor the base reservoir can be exhausted\n"
+           "the way a closed buffer's can", mode, va="top", size=9)
+    ax.set_title("The bicarbonate buffer is an open system")
+    ax.set_xlim(0, 16)
+    ax.set_ylim(-0.9, 5.6)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- I.2  Amino acids -------------------------------------------------------
+
+
+@figure("bc1-glycine-titration")
+def _(mode):
+    """Glycine titration curve, computed by inverting Henderson-Hasselbalch.
+
+    At a given pH the equivalents of base consumed equal the summed
+    deprotonated fractions of the two backbone groups, x = sum of
+    1/(1 + 10^(pKa - pH)) for pKa 2.34 and 9.60 (tabulated). Plotting pH
+    against x IS the titration curve; the plateaus, the pI at one
+    equivalent, and the buffer bands all fall out of the same formula.
+    """
+    c = S.SERIES[mode]
+    pK1, pK2 = 2.34, 9.60
+    pH = np.linspace(0.4, 12.2, 900)
+    x = 1.0 / (1.0 + 10.0 ** (pK1 - pH)) + 1.0 / (1.0 + 10.0 ** (pK2 - pH))
+    fig, ax = plt.subplots()
+    for lo, hi in ((1 / 11, 10 / 11), (1 + 1 / 11, 1 + 10 / 11)):
+        ax.axvspan(lo, hi, color=S.GUIDE[mode], alpha=0.12, lw=0)
+    ax.plot(x, pH, color=c[0], lw=2.2)
+    for xe, ye in ((0.5, pK1), (1.5, pK2)):
+        ax.plot([xe], [ye], "o", color=c[0], ms=7)
+        ax.plot([xe, xe], [0, ye], color=S.GUIDE[mode], lw=0.9, ls=":")
+        ax.plot([0, xe], [ye, ye], color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.plot([1.0], [5.97], "o", color=c[1], ms=7)
+    S.note(ax, 0.46, 2.75, "pH = pKa$_1$ = 2.34\nat 0.5 equivalents", mode,
+           ha="right")
+    S.note(ax, 1.44, 10.15, "pH = pKa$_2$ = 9.60\nat 1.5 equivalents", mode,
+           ha="right")
+    S.label_end(ax, 1.0, 5.97, "pI = 5.97 = (2.34 + 9.60)/2\nthe zwitterion",
+                c[1], mode, dx=8)
+    S.note(ax, 0.05, 12.1, "shaded: buffering plateaus,\npH within 1 of each pKa",
+           mode, va="top")
+    S.note(ax, 2.04, 0.3,
+           "computed from equivalents = sum of 1/(1 + 10^(pKa - pH));\n"
+           "pKa 2.34, 9.60 (tabulated)", mode, ha="right")
+    ax.set_xlabel("equivalents of strong base added")
+    ax.set_ylabel("pH")
+    ax.set_title("Two plateaus, one zwitterion in between")
+    ax.set_xlim(0, 2.1)
+    ax.set_ylim(0, 12.4)
+    S.strip(ax)
+    return fig
+
+
+# --- I.3  Protein architecture ----------------------------------------------
+
+
+@figure("bc1-ramachandran")
+def _(mode):
+    """Ramachandran plot: qualitative islands, tabulated conformation points.
+
+    The shaded islands are drawn shapes standing for the sterically allowed
+    regions (stated as qualitative on the figure). The four marked points are
+    the standard tabulated (phi, psi) pairs: alpha-helix (-57, -47),
+    antiparallel beta (-139, +135), parallel beta (-119, +113), collagen
+    (-51, +153).
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(6.4, 5.7))
+    islands = [
+        ((-115, 130), 132, 92, c[1]),   # beta region
+        ((-63, -40), 92, 72, c[0]),     # right-handed alpha
+        ((60, 45), 52, 52, S.GUIDE[mode]),  # left-handed helix (rare)
+    ]
+    for (cx, cy), w, h, col in islands:
+        ax.add_patch(Ellipse((cx, cy), w, h, facecolor=col, alpha=0.10,
+                             edgecolor=col, lw=1.6, fill=True))
+        ax.add_patch(Ellipse((cx, cy), w, h, facecolor="none",
+                             edgecolor=col, lw=1.6))
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    ax.axvline(0, color=S.GRID[mode], lw=1.0)
+    pts = [
+        (-57, -47, "alpha-helix (-57$\\degree$, -47$\\degree$)", c[0], 10, 0,
+         "left", "center"),
+        (-139, 135, "antiparallel beta\n(-139$\\degree$, +135$\\degree$)",
+         c[1], 0, 12, "center", "bottom"),
+        (-119, 113, "parallel beta\n(-119$\\degree$, +113$\\degree$)",
+         c[1], 0, -14, "center", "top"),
+        (-51, 153, "collagen helix (-51$\\degree$, +153$\\degree$)", c[2],
+         10, 0, "left", "center"),
+    ]
+    for px, py, lab, col, dx, dy, ha, va in pts:
+        ax.plot([px], [py], "o", color=col, ms=7)
+        S.label_end(ax, px, py, lab, col, mode, dx=dx, dy=dy, ha=ha, va=va,
+                    size=9)
+    S.note(ax, -63, -86, "right-handed alpha island", mode, ha="center",
+           va="top", size=8.5)
+    S.note(ax, 60, 45, "left-handed\nhelix (rare)", mode, ha="center",
+           va="center", size=8.5)
+    S.note(ax, 172, -55, "glycine roams outside the islands;\n"
+           "proline is nearly pinned", mode, ha="right", va="top", size=8.5)
+    S.note(ax, 172, -172, "islands drawn qualitatively (sterically allowed\n"
+           "regions); points are tabulated conformations", mode, ha="right",
+           va="bottom", size=8.5)
+    ax.set_xlabel("$\\phi$, N-C$_\\alpha$ rotation (degrees)")
+    ax.set_ylabel("$\\psi$, C$_\\alpha$-C rotation (degrees)")
+    ax.set_title("Only a few phi/psi islands survive steric clash")
+    ax.set_xlim(-180, 180)
+    ax.set_ylim(-180, 180)
+    ax.set_xticks([-180, -90, 0, 90, 180])
+    ax.set_yticks([-180, -90, 0, 90, 180])
+    ax.set_aspect("equal")
+    S.strip(ax)
+    return fig
+
+
+@figure("bc1-helix-geometry")
+def _(mode):
+    """Alpha-helix geometry computed from its tabulated numbers.
+
+    The wave is the helix seen from the side, x = distance along the axis,
+    y = sin(2 pi x / 5.4): pitch 5.4 A per turn by construction. Residue
+    markers sit every 1.5 A of rise (3.6 per turn, since 3.6 x 1.5 = 5.4),
+    and the dashed link joins residues i and i+4 - the hydrogen-bond
+    partners. All three numbers are the standard tabulated values.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots()
+    amp, pitch, rise = 1.1, 5.4, 1.5
+    z = np.linspace(0.0, 11.4, 800)
+    y = amp * np.sin(2 * np.pi * z / pitch)
+    ax.plot(z, y, color=c[0], lw=2.2)
+    res = np.arange(0.0, 10.6, rise)
+    ax.plot(res, amp * np.sin(2 * np.pi * res / pitch), "o", color=c[0],
+            ms=6.5)
+    # i -> i+4 hydrogen bond: residues at z = 1.5 and z = 7.5
+    zi, zj = 1.5, 7.5
+    yi = amp * np.sin(2 * np.pi * zi / pitch)
+    yj = amp * np.sin(2 * np.pi * zj / pitch)
+    ax.plot([zi, zj], [yi, yj], color=c[2], lw=1.6, ls=(0, (4, 3)))
+    S.label_end(ax, (zi + zj) / 2, 1.12,
+                "i $\\rightarrow$ i+4 hydrogen bond", c[2], mode, dx=0,
+                dy=8, ha="center", va="bottom", size=9)
+    S.note(ax, zi, yi + 0.16, "i", mode, ha="center", size=9)
+    S.note(ax, zj, yj + 0.16, "i+4", mode, ha="center", size=9)
+    # rise bracket between residues 0 and 1
+    for zx, y0 in ((0.0, 0.0), (rise, amp * np.sin(2 * np.pi * rise / pitch))):
+        ax.plot([zx, zx], [y0 + 0.08 if zx else 0.08, 1.55],
+                color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.annotate("", xy=(rise, 1.62), xytext=(0.0, 1.62),
+                arrowprops=dict(arrowstyle="<->", color=S.GUIDE[mode],
+                                lw=1.4))
+    S.note(ax, rise / 2, 1.72, "1.5 $\\AA$ rise\nper residue", mode,
+           ha="center", size=9)
+    # pitch bracket: one full turn
+    for zx in (0.0, pitch):
+        ax.plot([zx, zx], [-1.5, amp * np.sin(2 * np.pi * zx / pitch) - 0.08],
+                color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.annotate("", xy=(pitch, -1.62), xytext=(0.0, -1.62),
+                arrowprops=dict(arrowstyle="<->", color=S.GUIDE[mode],
+                                lw=1.4))
+    S.note(ax, pitch / 2, -1.78,
+           "pitch 5.4 $\\AA$ = one turn = 3.6 residues $\\times$ 1.5 $\\AA$",
+           mode, ha="center", va="top", size=9)
+    S.note(ax, 11.5, -2.45, "computed from the tabulated geometry;\n"
+           "the wave is the helix seen from the side", mode, ha="right",
+           va="bottom", size=8.5)
+    ax.set_xlabel("distance along the helix axis ($\\AA$)")
+    ax.set_ylabel("")
+    ax.set_title("The alpha-helix by its three numbers")
+    ax.set_xlim(-0.4, 11.8)
+    ax.set_ylim(-2.55, 2.45)
+    ax.set_yticks([])
+    S.strip(ax)
+    ax.spines["left"].set_visible(False)
+    return fig
+
+
+# --- I.4  Binding and cooperativity -----------------------------------------
+
+
+@figure("bc1-hill-plot")
+def _(mode):
+    """Hill plot computed from the concerted (MWC) model.
+
+    Hemoglobin: Y from the MWC binding polynomial with the classic
+    parameters n = 4, L = 9054, c = 0.014 (the original MWC fit to Hb),
+    with K_R solved numerically so that P50 = 26 torr. The slope-1
+    asymptotes are the first-site (K_T) and last-site (K_R) lines the model
+    itself implies, and the midpoint slope is computed from the curve, not
+    asserted. Myoglobin is the exact slope-1 line through P50 = 2.8 torr.
+    """
+    c = S.SERIES[mode]
+    n_sites, L, cpar = 4, 9054.0, 0.014
+
+    def theta(P, KR):
+        a = P / KR
+        num = a * (1 + a) ** 3 + L * cpar * a * (1 + cpar * a) ** 3
+        den = (1 + a) ** 4 + L * (1 + cpar * a) ** 4
+        return num / den
+
+    lo, hi = 0.1, 26.0
+    for _ in range(80):
+        mid = 0.5 * (lo + hi)
+        if theta(26.0, mid) > 0.5:
+            lo = mid
+        else:
+            hi = mid
+    KR = 0.5 * (lo + hi)
+    KT = KR / cpar
+
+    x = np.linspace(-0.3, 3.05, 700)
+    P = 10.0 ** x
+    th = theta(P, KR)
+    yh = np.log10(th / (1.0 - th))
+    # computed midpoint slope
+    e = 1e-4
+    nH = (np.log10(theta(26 * (1 + e), KR) / (1 - theta(26 * (1 + e), KR)))
+          - np.log10(theta(26 * (1 - e), KR) / (1 - theta(26 * (1 - e), KR))
+                     )) / (np.log10(1 + e) - np.log10(1 - e))
+
+    fig, ax = plt.subplots()
+    # slope-1 asymptotes, where they hug the curve
+    xa = np.linspace(1.35, 3.05, 50)
+    ax.plot(xa, xa - np.log10(KR), color=S.GUIDE[mode], lw=1.1, ls="--")
+    xb = np.linspace(-0.3, 1.9, 50)
+    ax.plot(xb, xb - np.log10(KT), color=S.GUIDE[mode], lw=1.1, ls="--")
+    S.note(ax, 2.4, 2.4 - np.log10(KR) + 0.12,
+           "slope-1 asymptote: last site,\nK$_R$ = %.1f torr (computed)" % KR,
+           mode, ha="right", size=8.5)
+    S.note(ax, 1.55, 1.55 - np.log10(KT) - 0.14,
+           "slope-1 asymptote: first site,\nK$_T$ = %.0f torr (computed)" % KT,
+           mode, va="top", size=8.5)
+    ax.plot(x, yh, color=c[1], lw=2.2)
+    # myoglobin: slope 1 through P50 = 2.8 torr
+    xm = np.linspace(-0.3, 1.2, 50)
+    ax.plot(xm, xm - np.log10(2.8), color=c[0], lw=2.2)
+    ax.annotate("myoglobin: slope 1\n(P50 = 2.8 torr)",
+                xy=(0.5, 0.5 - np.log10(2.8)), xytext=(-0.22, 2.35),
+                color=c[0], fontsize=10, fontweight="semibold",
+                ha="left", va="bottom",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0,
+                                shrinkB=4))
+    S.label_end(ax, 2.35, np.interp(2.35, x, yh), "hemoglobin\n(MWC, computed)",
+                c[1], mode, dx=6, dy=-16, ha="left", va="top")
+    ax.plot([np.log10(26)], [0.0], "o", color=c[1], ms=7)
+    ax.plot([np.log10(26)] * 2, [-3.1, 0.0], color=S.GUIDE[mode], lw=0.9,
+            ls=":")
+    S.note(ax, np.log10(26) + 0.04, -0.5, "P50 = 26 torr", mode)
+    ax.annotate("slope at P50 = %.1f (computed)" % nH,
+                xy=(np.log10(26) - 0.05, 0.25), xytext=(0.1, 1.55),
+                color=S.INK_2[mode], fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0,
+                                shrinkB=3))
+    S.note(ax, 3.0, -2.95,
+           "hemoglobin computed from the concerted (MWC) model:\n"
+           "n = 4, L = 9054, c = 0.014 (classic Hb fit),\n"
+           "K$_R$ set so P50 = 26 torr", mode, ha="right", size=8.5)
+    ax.set_xlabel(r"pO$_2$ (torr, log scale)")
+    ax.set_ylabel(r"log[$\theta$/(1$-$$\theta$)]")
+    ax.set_title("The Hill plot reads cooperativity as a mid-curve slope of 3")
+    ax.set_xlim(-0.3, 3.4)
+    ax.set_ylim(-3.1, 3.4)
+    ax.set_xticks([0, 1, 2, 3])
+    ax.set_xticklabels(["1", "10", "100", "1000"])
+    S.strip(ax)
+    return fig
+
+
+@figure("bc1-bpg-family")
+def _(mode):
+    """BPG / fetal hemoglobin saturation family from the Hill equation.
+
+    Every curve is Y = P^n / (P50^n + P^n) with n = 2.8; only P50 differs,
+    using the standard values: ~12 torr for BPG-stripped hemoglobin,
+    ~20 torr for fetal HbF, 26 torr for adult HbA. The tissue-to-lung pO2
+    window is shaded at the standard 30 and 100 torr marks.
+    """
+    c = S.SERIES[mode]
+    n = 2.8
+    P = np.linspace(0.0, 110.0, 800)
+    cases = [
+        (12.0, "BPG-stripped: P50 = 12", c[2], 12),
+        (20.0, "fetal HbF: P50 = 20", c[1], 0),
+        (26.0, "adult HbA: P50 = 26", c[0], -12),
+    ]
+    fig, ax = plt.subplots()
+    ax.axvspan(30, 100, color=S.GUIDE[mode], alpha=0.10, lw=0)
+    ax.plot([0, 26], [0.5, 0.5], color=S.GUIDE[mode], lw=0.9, ls=":")
+    for P50, lab, col, dy in cases:
+        with np.errstate(divide="ignore", invalid="ignore"):
+            Y = P ** n / (P50 ** n + P ** n)
+        Y[0] = 0.0
+        ax.plot(P, Y, color=col, lw=2.2)
+        ax.plot([P50], [0.5], "o", color=col, ms=6)
+        S.label_end(ax, P[-1], Y[-1], lab, col, mode, dx=6, dy=dy, size=9)
+    S.note(ax, 31, 0.035, "tissue $\\approx$ 30 torr", mode)
+    S.note(ax, 99, 0.035, "lungs $\\approx$ 100 torr", mode, ha="right")
+    S.note(ax, 2, 1.16,
+           "each curve: Y = P$^n$/(P50$^n$ + P$^n$), n = 2.8;\n"
+           "P50 values are the standard ones", mode, va="top", size=9)
+    ax.set_xlabel(r"oxygen partial pressure  pO$_2$  (torr)")
+    ax.set_ylabel("fractional saturation  Y")
+    ax.set_title("BPG sets the set point; HbF reads it differently")
+    ax.set_xlim(0, 110)
+    ax.set_ylim(0, 1.24)
+    S.strip(ax)
+    return fig
+
+
+# --- I.5  Catalysis ---------------------------------------------------------
+
+
+@figure("bc1-rate-vs-barrier")
+def _(mode):
+    """Rate enhancement vs barrier reduction, one exponential relation.
+
+    rate factor = 10^(ddG/5.7) at 25 C - the same 5.7 kJ/mol-per-decade
+    constant the chapter derives. The five marked enzymes sit at their
+    tabulated enhancements (10^5 to 10^17); their x-positions follow from
+    the equation, nothing is placed by hand.
+    """
+    c = S.SERIES[mode]
+    x = np.linspace(0.0, 102.0, 500)
+    fig, ax = plt.subplots()
+    ax.plot(x, 10.0 ** (x / 5.7), color=c[0], lw=2.2)
+    ax.set_yscale("log")
+    enzymes = [
+        (5, "cyclophilin  10$^5$"),
+        (7, "carbonic anhydrase  10$^7$"),
+        (9, "triose phosphate isomerase  10$^9$"),
+        (14, "urease  10$^{14}$"),
+        (17, "OMP decarboxylase  10$^{17}$"),
+    ]
+    for p, lab in enzymes:
+        xx = 5.7 * p
+        ax.plot([xx], [10.0 ** p], "o", color=c[1], ms=6.5)
+        if p == 17:
+            S.label_end(ax, xx, 10.0 ** p, lab, c[1], mode, dx=-8, dy=4,
+                        ha="right", va="bottom", size=9)
+        else:
+            S.label_end(ax, xx, 10.0 ** p, lab, c[1], mode, dx=8, dy=-6,
+                        ha="left", va="top", size=9)
+    S.note(ax, 3, 10.0 ** 15.4,
+           "computed from rate factor = 10^($\\Delta\\Delta$G$^\\ddagger$/5.7)"
+           " at 25 $\\degree$C;\nmarked points: tabulated enhancements of real"
+           " enzymes", mode, size=9)
+    ax.set_xlabel("barrier reduction  $\\Delta\\Delta$G$^\\ddagger$  (kJ/mol)")
+    ax.set_ylabel("rate enhancement factor")
+    ax.set_title("Every 5.7 kJ/mol off the barrier is another factor of ten")
+    ax.set_xlim(0, 104)
+    ax.set_ylim(1, 10.0 ** 19)
+    S.strip(ax)
+    return fig
+
+
+@figure("bc1-chymotrypsin-ph")
+def _(mode):
+    """Chymotrypsin's pH bell computed from two ionizations.
+
+    Activity requires His57 deprotonated (pKa about 7) AND the Ile16
+    alpha-amino group protonated (pKa about 8.8), so the profile is the
+    product of two Henderson-Hasselbalch terms, normalized to its peak.
+    The optimum lands at the average of the two pKa values, 7.9.
+    """
+    c = S.SERIES[mode]
+    pH = np.linspace(4.5, 11.5, 700)
+    f1 = 1.0 / (1.0 + 10.0 ** (7.0 - pH))     # His57 deprotonated
+    f2 = 1.0 / (1.0 + 10.0 ** (pH - 8.8))     # Ile16 amino protonated
+    a = f1 * f2
+    a = a / a.max()
+    opt = (7.0 + 8.8) / 2.0
+    fig, ax = plt.subplots()
+    ax.plot(pH, f1, color=c[1], lw=1.4, ls="--")
+    ax.plot(pH, f2, color=c[2], lw=1.4, ls="--")
+    ax.plot(pH, a, color=c[0], lw=2.4)
+    ax.plot([opt], [1.0], "o", color=c[0], ms=7)
+    ax.plot([opt, opt], [0, 1.0], color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.label_end(ax, 6.55, 1.0 / (1.0 + 10.0 ** (7.0 - 6.55)),
+                "fraction of His57\ndeprotonated (pKa 7)", c[1], mode,
+                dx=-8, ha="right", size=9)
+    ax.annotate("fraction of Ile16\nprotonated (pKa 8.8)",
+                xy=(9.35, 1.0 / (1.0 + 10.0 ** (9.35 - 8.8))),
+                xytext=(9.8, 0.44), color=c[2], fontsize=9,
+                fontweight="semibold", ha="left", va="bottom",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0,
+                                shrinkB=3))
+    ax.annotate("activity: the product,\noptimum at pH 7.9",
+                xy=(7.55, 0.955), xytext=(4.65, 0.86),
+                color=c[0], fontsize=10, fontweight="semibold",
+                ha="left", va="bottom",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0,
+                                shrinkB=4))
+    S.note(ax, 11.4, 1.25,
+           "computed as the product of the two Henderson-Hasselbalch\n"
+           "fractions, normalized to its peak; optimum = (7 + 8.8)/2 = 7.9",
+           mode, ha="right", va="top", size=8.5)
+    ax.set_xlabel("pH")
+    ax.set_ylabel("relative activity")
+    ax.set_title("Two ionizations, one bell")
+    ax.set_xlim(4.5, 11.5)
+    ax.set_ylim(0, 1.26)
+    S.strip(ax)
+    return fig
+
+
+# --- I.6  Kinetics and inhibition -------------------------------------------
+
+
+@figure("bc1-inhibition-rates")
+def _(mode):
+    """v vs [S] for the inhibition classes, from the general rate law.
+
+    Every curve is v = Vmax [S] / (alpha Km + alpha' [S]) with Vmax = 100,
+    Km = 2 (illustrative, as in the double-reciprocal figure): control
+    (1, 1), competitive (2, 1), uncompetitive (1, 2), mixed (2, 2). The
+    fourth series wears the guide colour, per the three-hue palette cap.
+    """
+    c = S.SERIES[mode]
+    Vmax, Km = 100.0, 2.0
+    Sconc = np.linspace(0.0, 20.0, 600)
+    cases = [
+        ("no inhibitor", 1.0, 1.0, c[0], 7),
+        ("competitive ($\\alpha$ = 2)", 2.0, 1.0, c[1], -7),
+        ("uncompetitive ($\\alpha$' = 2)", 1.0, 2.0, c[2], 9),
+        ("mixed ($\\alpha$ = $\\alpha$' = 2)", 2.0, 2.0, S.GUIDE[mode], -9),
+    ]
+    fig, ax = plt.subplots()
+    ax.axhline(Vmax, color=S.GUIDE[mode], lw=1.0, ls="--")
+    ax.axhline(Vmax / 2, color=S.GUIDE[mode], lw=1.0, ls="--")
+    S.note(ax, 0.3, 101.5, "Vmax = 100", mode)
+    S.note(ax, 0.3, 51.5, "Vmax/$\\alpha$' = 50", mode)
+    for lab, al, ap, col, dy in cases:
+        v = Vmax * Sconc / (al * Km + ap * Sconc)
+        ax.plot(Sconc, v, color=col, lw=2.2)
+        S.label_end(ax, Sconc[-1], v[-1], lab, col, mode, dy=dy, size=9.5)
+    S.note(ax, 19.6, 8,
+           "v = Vmax[S] / ($\\alpha$Km + $\\alpha$'[S]);  Vmax = 100, Km = 2"
+           " (illustrative)\ncompetitive $\\alpha$ = 2: Km,app 4, Vmax kept\n"
+           "uncompetitive $\\alpha$' = 2: Vmax 50, Km,app 1\n"
+           "mixed $\\alpha$ = $\\alpha$' = 2: Vmax 50, Km,app 2",
+           mode, ha="right", size=8.5)
+    ax.set_xlabel("substrate concentration  [S]   (same units as Km)")
+    ax.set_ylabel(r"initial rate  v$_0$   (arbitrary units)")
+    ax.set_title("Only competitive inhibition is outrun by substrate")
+    ax.set_xlim(0, 20)
+    ax.set_ylim(0, 112)
+    S.strip(ax)
+    return fig
+
+
+# --- I.7  Enzyme control ----------------------------------------------------
+
+
+@figure("bc1-hill-family")
+def _(mode):
+    """Hill-equation family: the sigmoid steepens as n rises.
+
+    theta = x^n / (1 + x^n) with x = [S]/K0.5, computed for n = 1, 2, 2.8
+    and 4. All curves pass through (1, 0.5) by construction; n = 1 is the
+    plain hyperbola. The fourth series wears the guide colour (palette cap).
+    """
+    c = S.SERIES[mode]
+    xs = np.linspace(0.0, 4.0, 700)
+    cases = [
+        (1.0, "n = 1: plain hyperbola", S.GUIDE[mode], 0),
+        (2.0, "n = 2", c[2], -12),
+        (2.8, "n = 2.8 (hemoglobin)", c[0], 0),
+        (4.0, "n = 4", c[1], 13),
+    ]
+    fig, ax = plt.subplots()
+    for n, lab, col, dy in cases:
+        th = xs ** n / (1.0 + xs ** n)
+        ax.plot(xs, th, color=col, lw=2.2)
+        S.label_end(ax, xs[-1], th[-1], lab, col, mode, dy=dy, size=9.5)
+    ax.plot([1.0], [0.5], "o", color=S.INK_2[mode], ms=6)
+    ax.plot([1.0, 1.0], [0, 0.5], color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.plot([0.0, 1.0], [0.5, 0.5], color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 1.04, 0.44, "every curve half-saturates\nat [S] = K$_{0.5}$",
+           mode, va="top")
+    S.note(ax, 0.08, 1.06,
+           "computed from $\\theta$ = [S]$^n$ / (K$_{0.5}^n$ + [S]$^n$)",
+           mode, size=9)
+    ax.set_xlabel(r"[S] / K$_{0.5}$")
+    ax.set_ylabel(r"fractional saturation  $\theta$")
+    ax.set_title("Raising the Hill coefficient sharpens the switch")
+    ax.set_xlim(0, 4)
+    ax.set_ylim(0, 1.12)
+    S.strip(ax)
+    return fig
+
+
+@figure("bc1-hexokinase-glucokinase")
+def _(mode):
+    """Hexokinase vs glucokinase, computed from one hyperbola each.
+
+    v/Vmax = [glucose] / (Km + [glucose]) with the standard Km values:
+    0.05 mM (hexokinase) and 10 mM (glucokinase). The shaded band is the
+    normal blood-glucose range, 4.5-5.5 mM; the two marked points are the
+    computed fractional rates at 5 mM.
+    """
+    c = S.SERIES[mode]
+    G = np.linspace(0.0, 20.0, 800)
+    fig, ax = plt.subplots()
+    ax.axvspan(4.5, 5.5, color=S.GUIDE[mode], alpha=0.15, lw=0)
+    hexo = G / (0.05 + G)
+    gluco = G / (10.0 + G)
+    ax.plot(G, hexo, color=c[0], lw=2.2)
+    ax.plot(G, gluco, color=c[1], lw=2.2)
+    S.label_end(ax, 3.0, 3.0 / 3.05, "hexokinase, Km = 0.05 mM", c[0], mode,
+                dx=0, dy=10, ha="center", va="bottom")
+    S.label_end(ax, 20.0, 20.0 / 30.0, "glucokinase\n(liver, beta cells)\n"
+                "Km = 10 mM", c[1], mode, dx=8)
+    ax.plot([5.0], [5.0 / 5.05], "o", color=c[0], ms=7)
+    S.note(ax, 6.0, 0.86, "0.99 of Vmax at 5 mM:\nsaturated, blind to the band",
+           mode, va="top", size=8.5)
+    ax.plot([5.0], [5.0 / 15.0], "o", color=c[1], ms=7)
+    S.note(ax, 5.9, 0.56, "0.33 of Vmax at 5 mM:\nmid-slope, tracking glucose",
+           mode, size=8.5)
+    S.note(ax, 5.0, 1.12, "normal blood glucose\n4.5-5.5 mM", mode,
+           ha="center", va="bottom", size=8.5)
+    S.note(ax, 19.6, 0.06,
+           "computed from v/Vmax = [glucose]/(Km + [glucose]);\n"
+           "Km values are the standard ones", mode, ha="right", size=8.5)
+    ax.set_xlabel("blood glucose (mM)")
+    ax.set_ylabel("v / Vmax")
+    ax.set_title("A saturated workhorse and a glucose sensor")
+    ax.set_xlim(0, 20)
+    ax.set_ylim(0, 1.28)
+    S.strip(ax)
+    return fig
+
+
+# --- I.8  Carbohydrates -----------------------------------------------------
+
+
+@figure("bc1-mutarotation")
+def _(mode):
+    """Mutarotation time course: exponential relaxation to one equilibrium.
+
+    rotation(t) = 52.7 + (start - 52.7) e^(-kt), with the tabulated specific
+    rotations +112 (pure alpha), +18.7 (pure beta) and +52.7 (equilibrium);
+    the rate constant is illustrative and the time axis says so. The
+    equilibrium value is the ~1/3 alpha : 2/3 beta weighted average.
+    """
+    c = S.SERIES[mode]
+    k = 0.6
+    t = np.linspace(0.0, 8.0, 500)
+    eq = 52.7
+    fig, ax = plt.subplots()
+    ax.axhline(eq, color=S.GUIDE[mode], lw=1.2, ls="--")
+    for start, col, lab, dy in ((112.0, c[0],
+                                 "starting from pure $\\alpha$ (+112$\\degree$)",
+                                 6),
+                                (18.7, c[2],
+                                 "starting from pure $\\beta$ (+18.7$\\degree$)",
+                                 -8)):
+        rot = eq + (start - eq) * np.exp(-k * t)
+        ax.plot(t, rot, color=col, lw=2.2)
+        ax.plot([0], [start], "o", color=col, ms=7)
+        S.label_end(ax, 0.12, start, lab, col, mode, dx=8, dy=dy)
+    S.note(ax, 7.9, 44.0,
+           "equilibrium +52.7$\\degree$ $\\approx$ the 1/3 $\\alpha$ : "
+           "2/3 $\\beta$ weighted average", mode, ha="right", va="top")
+    S.note(ax, 7.9, 12,
+           "computed from rotation(t) = 52.7 + (start $-$ 52.7)e$^{-kt}$;\n"
+           "rotations tabulated, rate constant illustrative", mode,
+           ha="right", size=8.5)
+    ax.set_xlabel("time (arbitrary units; real mutarotation takes hours)")
+    ax.set_ylabel("specific rotation (degrees)")
+    ax.set_title("Mutarotation: both anomers drift to the same mixture")
+    ax.set_xlim(0, 8.3)
+    ax.set_ylim(5, 122)
+    S.strip(ax)
+    return fig
+
+
+# --- I.9  Lipids ------------------------------------------------------------
+
+
+@figure("bc1-fatty-acid-melting")
+def _(mode):
+    """Melting points of the 18-carbon fatty acid series: tabulated values.
+
+    A labeled point chart of the stated data - 18:0 69.6, 18:1 13.4,
+    18:2 -5, 18:3 -11 degrees C. Same chain length throughout; only the
+    cis-double-bond count changes.
+    """
+    c = S.SERIES[mode]
+    data = [
+        ("18:0\nstearate", 69.6),
+        ("18:1\noleate", 13.4),
+        ("18:2\nlinoleate", -5.0),
+        ("18:3\n$\\alpha$-linolenate", -11.0),
+    ]
+    xs = np.arange(len(data))
+    fig, ax = plt.subplots()
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    ax.axhline(37, color=S.GUIDE[mode], lw=1.2, ls="--")
+    S.note(ax, 3.45, 38.5, "body temperature 37 $\\degree$C", mode,
+           ha="right")
+    for xi, (lab, mp) in zip(xs, data):
+        ax.plot([xi, xi], [0, mp], color=c[0], lw=2.2,
+                solid_capstyle="round")
+        ax.plot([xi], [mp], "o", color=c[0], ms=8)
+        ax.annotate("%.1f $\\degree$C" % mp, xy=(xi, mp),
+                    xytext=(0, 10 if mp > 0 else -12),
+                    textcoords="offset points", ha="center",
+                    va="bottom" if mp > 0 else "top", color=c[0],
+                    fontsize=10, fontweight="semibold")
+    S.note(ax, 3.45, 58, "same length (18 carbons);\n"
+           "only the cis-double-bond count differs", mode, ha="right",
+           size=9)
+    S.note(ax, -0.42, -22.5, "tabulated melting points", mode, va="top",
+           size=8.5)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([d[0] for d in data], fontsize=9.5)
+    ax.set_ylabel("melting point ($\\degree$C)")
+    ax.set_title("Each cis kink drops the melting point")
+    ax.set_xlim(-0.6, 3.6)
+    ax.set_ylim(-27, 82)
+    S.strip(ax)
+    return fig
+
+
+# --- I.10  Membranes and transport ------------------------------------------
+
+
+@figure("bc1-transport-dg")
+def _(mode):
+    """The cost of a gradient, with the membrane-potential surcharge.
+
+    Central line: dG = RT ln(C2/C1), i.e. 5.7 kJ/mol per tenfold at 25 C.
+    Band: the same plus/minus Z F d-psi for a monovalent ion crossing a
+    membrane held at -60 mV, worth F x 60 mV = 5.8 kJ/mol per unit charge.
+    Both numbers are computed from the constants stated on the figure.
+    """
+    c = S.SERIES[mode]
+    r = np.logspace(0.0, 4.0, 500)
+    dg = 5.7 * np.log10(r)
+    elec = 96.5 * 0.060  # F x 60 mV, kJ/mol
+    fig, ax = plt.subplots()
+    ax.set_xscale("log")
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    ax.fill_between(r, dg - elec, dg + elec, color=c[1], alpha=0.12, lw=0)
+    ax.plot(r, dg + elec, color=c[1], lw=1.4, ls="--")
+    ax.plot(r, dg - elec, color=c[1], lw=1.4, ls="--")
+    ax.plot(r, dg, color=c[0], lw=2.2)
+    # the tenfold benchmark
+    ax.plot([10.0], [5.7], "o", color=c[0], ms=6)
+    ax.plot([10.0, 10.0], [-8, 5.7], color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 11.2, -7.6, "RT ln 10 = 5.7 kJ/mol per tenfold", mode)
+    # where the potential pays for the whole gradient
+    r0 = 10.0 ** (elec / 5.7)
+    ax.plot([r0], [0.0], "o", color=c[1], ms=6)
+    S.note(ax, r0 * 1.15, -1.1, "up to a %.0f-fold gradient, a cation\n"
+           "enters a $-$60 mV cell for free" % r0, mode, va="top", size=8.5)
+    S.note(ax, 1.15, 26.5,
+           "computed from $\\Delta$G = RT ln(C$_2$/C$_1$) $\\pm$ ZF"
+           "$\\Delta\\psi$;\nRT ln 10 = 5.7 kJ/mol (25 $\\degree$C), "
+           "F $\\times$ 60 mV = 5.8 kJ/mol", mode, size=9)
+    ax.set_xlabel(r"concentration ratio  C$_2$/C$_1$")
+    ax.set_ylabel(r"$\Delta$G  (kJ per mole moved)")
+    ax.set_title("What a gradient costs, and what the potential adds")
+    ax.set_xlim(1, 1.3e4)
+    ax.set_ylim(-8, 32)
+    # direct labels running parallel to the lines they name
+    p0 = ax.transData.transform((1.0, 0.0))
+    p1 = ax.transData.transform((1.0e4, 5.7 * 4.0))
+    ang = np.degrees(np.arctan2(p1[1] - p0[1], p1[0] - p0[0]))
+    for x0, y0, txt, col, va in (
+            (60.0, 5.7 * np.log10(60.0) + elec + 0.7,
+             "+1 ion pushed out of a $-$60 mV cell: +5.8 kJ/mol", c[1],
+             "bottom"),
+            (60.0, 5.7 * np.log10(60.0) + 0.7,
+             "uncharged solute: $\\Delta$G = RT ln(C$_2$/C$_1$)", c[0],
+             "bottom"),
+            (600.0, 5.7 * np.log10(600.0) - elec - 0.7,
+             "+1 ion carried in by the potential: $-$5.8 kJ/mol", c[1],
+             "top")):
+        ax.text(x0, y0, txt, rotation=ang, rotation_mode="anchor",
+                ha="center", va=va, color=col, fontsize=9,
+                fontweight="semibold")
+    S.strip(ax)
+    return fig
+
+
+# --- I.11  Nucleic acids ----------------------------------------------------
+
+
+@figure("bc1-dna-melting")
+def _(mode):
+    """DNA melting curves plus the Tm-vs-%GC trend, illustrative values.
+
+    The two melting curves are logistic transitions (the shape the chapter
+    describes) with ILLUSTRATIVE Tm values of 75 and 90 C, labeled as such
+    on the figure; the 40% hyperchromic rise is the standard magnitude. The
+    inset line is the linear Tm-vs-%GC trend through the same two
+    illustrative duplexes.
+    """
+    c = S.SERIES[mode]
+    T = np.linspace(55.0, 105.0, 700)
+
+    def melt(Tm, w=1.6):
+        return 1.0 + 0.40 / (1.0 + np.exp(-(T - Tm) / w))
+
+    fig, ax = plt.subplots()
+    low, high = melt(75.0), melt(90.0)
+    ax.plot(T, low, color=c[0], lw=2.2)
+    ax.plot(T, high, color=c[1], lw=2.2)
+    for Tm, col in ((75.0, c[0]), (90.0, c[1])):
+        ax.plot([Tm], [1.2], "o", color=col, ms=6)
+        ax.plot([Tm, Tm], [0.95, 1.2], color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.label_end(ax, 76.0, 1.445, "low GC: Tm $\\approx$ 75 $\\degree$C"
+                " (illustrative)", c[0], mode, dx=0, dy=0, ha="left",
+                va="bottom", size=9)
+    S.label_end(ax, 102.0, 0.99, "high GC: Tm $\\approx$ 90 $\\degree$C"
+                " (illustrative)", c[1], mode, dx=0, dy=0, ha="right",
+                va="top", size=9)
+    ax.annotate("", xy=(103.5, 1.40), xytext=(103.5, 1.00),
+                arrowprops=dict(arrowstyle="<->", color=S.GUIDE[mode],
+                                lw=1.4))
+    S.note(ax, 102.9, 1.2, "hyperchromic rise $\\approx$ 40%:\nunstacked"
+           " bases absorb more", mode, ha="right", va="center", size=8.5)
+    # inset: Tm vs %GC, the linear trend through the two duplexes
+    axin = ax.inset_axes([0.07, 0.56, 0.30, 0.36])
+    gc = np.linspace(15.0, 85.0, 50)
+    slope = (90.0 - 75.0) / (67.0 - 33.0)
+    axin.plot(gc, 75.0 + slope * (gc - 33.0), color=c[2], lw=1.8)
+    axin.plot([33.0], [75.0], "o", color=c[0], ms=5)
+    axin.plot([67.0], [90.0], "o", color=c[1], ms=5)
+    axin.set_xlabel("%GC", fontsize=8)
+    axin.set_ylabel("Tm ($\\degree$C)", fontsize=8)
+    axin.tick_params(labelsize=7)
+    axin.set_title("Tm rises with %GC (illustrative)", fontsize=8,
+                   color=S.INK_2[mode])
+    S.strip(axin)
+    ax.set_xlabel("temperature ($\\degree$C)")
+    ax.set_ylabel("relative absorbance at 260 nm")
+    ax.set_title("GC content sets the melting temperature")
+    ax.set_xlim(55, 106)
+    ax.set_ylim(0.93, 1.52)
+    S.strip(ax)
+    return fig
+
+
+@figure("bc1-dna-damage")
+def _(mode):
+    """The daily DNA damage budget on a log scale: standard estimates.
+
+    Order-of-magnitude bars for a mammalian genome per day - depurination
+    ~10^4, cytosine deamination ~10^2, purine deamination ~10^0 - the
+    standard textbook estimates, stated as such on the figure.
+    """
+    c = S.SERIES[mode]
+    data = [
+        ("depurination\n(purine lost,\nAP site left)", 1e4, "~10$^4$"),
+        ("cytosine\ndeamination\n(C $\\rightarrow$ U)", 1e2, "~10$^2$"),
+        ("adenine / guanine\ndeamination", 1e0, "~10$^0$"),
+    ]
+    xs = np.arange(len(data))
+    fig, ax = plt.subplots()
+    ax.set_yscale("log")
+    ax.bar(xs, [d[1] for d in data], width=0.55, facecolor=c[0], alpha=0.25,
+           edgecolor=c[0], linewidth=2.0)
+    for xi, (lab, v, txt) in zip(xs, data):
+        ax.annotate(txt + " / genome / day", xy=(xi, v), xytext=(0, 6),
+                    textcoords="offset points", ha="center", va="bottom",
+                    color=S.INK[mode], fontsize=10, fontweight="semibold")
+    S.note(ax, 2.45, 3.2e3,
+           "standard order-of-magnitude estimates,\n"
+           "mammalian genome, per day;\n"
+           "repair fixes nearly all of it", mode, ha="right", size=9)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([d[0] for d in data], fontsize=9)
+    ax.set_ylabel("events per genome per day (log scale)")
+    ax.set_title("Four orders of magnitude between the daily lesions")
+    ax.set_xlim(-0.6, 2.6)
+    ax.set_ylim(0.3, 3e5)
+    S.strip(ax)
+    return fig
+
+
+# ===========================================================================
+# Third pass - Biochemistry II wave A (chapters II.1-II.8).
+# Same contract as above: every quantitative figure is computed from the
+# equation stated on it, with parameters printed; schematics carry only
+# qualitative content (textbook-standard pathway facts, not anyone's drawing
+# of them) and say so on the figure. Chapter map in the module docstring.
+# ===========================================================================
+
+
+# --- II.1  Bioenergetics and metabolic logic --------------------------------
+
+
+@figure("bc2-deltag-vs-q")
+def _(mode):
+    """Actual free-energy change vs Q, computed from dG = dG'0 + RT ln Q.
+
+    T = 310 K, so RT = 2.577 kJ/mol; the three lines carry the stated
+    standard values dG'0 = +5, 0 and -15 kJ/mol across Q from 1e-4 to 1e4
+    on a log axis. Each line crosses dG = 0 exactly where Q equals that
+    reaction's K'eq = exp(-dG'0/RT); the crossing markers are computed from
+    that expression, not placed.
+    """
+    c = S.SERIES[mode]
+    R, T = 8.314e-3, 310.0  # kJ/mol/K, K
+    RT = R * T
+    Q = np.logspace(-4, 4, 700)
+    fig, ax = plt.subplots()
+    ax.set_xscale("log")
+    ax.axhline(0.0, color=S.GUIDE[mode], lw=1.2, ls="--")
+    for dg0, col, dy in ((+5.0, c[0], 8), (0.0, c[1], 0), (-15.0, c[2], -8)):
+        dG = dg0 + RT * np.log(Q)
+        ax.plot(Q, dG, color=col, lw=2.2)
+        sign = "+" if dg0 > 0 else ""
+        S.label_end(ax, Q[-1], dG[-1],
+                    f"$\\Delta$G$'\\degree$ = {sign}{dg0:g}", col, mode,
+                    dx=6, dy=dy, size=9.5)
+        Qz = np.exp(-dg0 / RT)  # the zero crossing IS K'eq
+        ax.plot([Qz], [0.0], "o", color=col, ms=7)
+        ax.plot([Qz, Qz], [-42.0, 0.0], color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 1.6e-3, 2.0,
+           "each line crosses $\\Delta$G = 0 where\n"
+           "Q = K$'_{eq}$ = exp(-$\\Delta$G$'\\degree$/RT)", mode)
+    S.note(ax, 1.35e4, 2.6, "(kJ/mol)", mode, va="bottom", size=8.5)
+    S.note(ax, 1.2e-4, 10.0,
+           "computed from $\\Delta$G = $\\Delta$G$'\\degree$ + RT ln Q,\n"
+           "T = 310 K (RT = 2.58 kJ/mol)", mode)
+    S.note(ax, 1.2e-4, 26.0, "$\\Delta$G > 0: runs in reverse", mode, size=9)
+    S.note(ax, 6.0e2, -30.0, "$\\Delta$G < 0: runs forward\nas written",
+           mode, size=9)
+    ax.set_xlabel("mass-action ratio  Q  (log scale)")
+    ax.set_ylabel("$\\Delta$G  (kJ/mol)")
+    ax.set_title("Concentrations can override the standard sign")
+    ax.set_xlim(1e-4, 1e4)
+    ax.set_ylim(-44, 34)
+    S.strip(ax)
+    return fig
+
+
+# --- II.2  Glycolysis and its mirror ----------------------------------------
+
+
+@figure("bc2-glycolysis-ledger")
+def _(mode):
+    """The glycolytic ATP/NADH ledger as a two-phase schematic.
+
+    Boxes and arrows only: the investment phase spends 2 ATP reaching
+    fructose 1,6-bisphosphate, aldol cleavage yields two triose phosphates,
+    and the payoff phase - run once per triose, twice per glucose - returns
+    4 ATP and 2 NADH. The per-glucose quantities are the textbook-exact
+    stoichiometry; everything positional is schematic.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 4.2))
+    y = 3.3
+    from matplotlib.patches import Rectangle
+    for x0, x1, col, lab in (
+            (0.4, 5.7, c[0], "investment phase - spend"),
+            (8.35, 15.5, c[1], "payoff phase - collect, runs twice")):
+        ax.add_patch(Rectangle((x0, 1.75), x1 - x0, 3.15, facecolor=col,
+                               alpha=0.07, edgecolor="none"))
+        ax.text((x0 + x1) / 2, 4.62, lab, ha="center", va="center",
+                fontsize=10, fontweight="semibold", color=col)
+    nodes = [
+        (1.45, "glucose"),
+        (4.15, "fructose 1,6-\nbisphosphate"),
+        (7.35, "2 $\\times$ triose\nphosphate"),
+        (14.3, "2 pyruvate"),
+    ]
+    for x, s in nodes:
+        ax.text(x, y, s, ha="center", va="center", fontsize=11,
+                fontweight="semibold", color=S.INK[mode])
+    for x0, x1 in ((2.25, 3.0), (5.35, 6.3), (8.5, 13.3)):
+        ax.annotate("", xy=(x1, y), xytext=(x0, y),
+                    arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                    lw=1.8))
+    ax.text(2.7, 2.62, "$-$2 ATP", ha="center", va="top", fontsize=10.5,
+            fontweight="semibold", color=c[0])
+    S.note(ax, 2.7, 2.2, "hexokinase, PFK-1", mode, ha="center", va="top",
+           size=8.5)
+    S.note(ax, 5.82, 3.78, "aldol\ncleavage", mode, ha="center", va="bottom",
+           size=8.5)
+    ax.text(10.6, 2.62, "$+$4 ATP (substrate-level)   $+$2 NADH",
+            ha="center", va="top", fontsize=10.5, fontweight="semibold",
+            color=c[1])
+    S.note(ax, 10.6, 2.14, "each triose runs the payoff once -\n"
+           "twice per glucose", mode, ha="center", va="top", size=8.5)
+    ax.text(8.0, 0.62,
+            "net per glucose:   $-$2 + 4 = $+$2 ATP    and    $+$2 NADH",
+            ha="center", va="center", fontsize=11.5, fontweight="semibold",
+            color=c[2])
+    S.note(ax, 0.5, 5.35, "schematic - the per-glucose quantities are exact",
+           mode, size=8.5)
+    ax.set_title("Glycolysis spends 2 ATP to collect 4, and banks 2 NADH")
+    ax.set_xlim(0, 16)
+    ax.set_ylim(0.1, 5.9)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.3  Glycogen and the pentose phosphate shunt -------------------------
+
+
+@figure("bc2-glycogen-branching")
+def _(mode):
+    """A glycogen particle segment: branched chains, ends highlighted.
+
+    Pure schematic: beads are glucose residues on (alpha-1,4)-linked runs,
+    the accented take-off bonds are (alpha-1,6) branch points, and the open
+    circles mark the nonreducing ends exposed at the surface, where
+    phosphorylase and synthase both work. Chain lengths and tier counts are
+    illustrative, stated as such on the figure.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 4.8))
+    step = 0.42
+    tips = []
+
+    def seg(p0, ang_deg, n):
+        a = np.deg2rad(ang_deg)
+        d = step * np.array([np.cos(a), np.sin(a)])
+        pts = np.array([np.asarray(p0) + k * d for k in range(n + 1)])
+        ax.plot(pts[:, 0], pts[:, 1], color=c[0], lw=1.7,
+                solid_capstyle="round")
+        ax.plot(pts[1:, 0], pts[1:, 1], "o", color=c[0], ms=4.6)
+        return pts
+
+    def branch_bond(p0, ang_deg):
+        a = np.deg2rad(ang_deg)
+        d = step * np.array([np.cos(a), np.sin(a)])
+        p1 = np.asarray(p0) + d
+        ax.plot([p0[0], p1[0]], [p0[1], p1[1]], color=c[2], lw=2.8,
+                solid_capstyle="round")
+        return p1
+
+    root = np.array([1.05, 2.45])
+    # glycogenin dimer at the core
+    ax.plot([0.88, 1.16], [2.38, 2.52], "o", color=S.GUIDE[mode], ms=11)
+    S.note(ax, 1.0, 1.95, "glycogenin dimer\n(core)", mode, ha="center",
+           va="top", size=8.5)
+    # upper arm
+    A = seg(root, 32, 5)
+    A2 = seg(A[-1], 12, 5)
+    tips.append(A2[-1])
+    b = branch_bond(A[3], 78)                      # alpha-1,6 take-off
+    A1 = seg(b, 66, 4)
+    tips.append(A1[-1])
+    b = branch_bond(A2[2], 52)
+    A2b = seg(b, 44, 4)
+    tips.append(A2b[-1])
+    # lower arm
+    B = seg(root, -22, 5)
+    B2 = seg(B[-1], -4, 5)
+    B3 = seg(B2[-1], 10, 4)
+    tips.append(B3[-1])
+    b = branch_bond(B[3], -68)
+    B1 = seg(b, -56, 4)
+    tips.append(B1[-1])
+    b = branch_bond(B2[2], -44)
+    B2b = seg(b, -36, 4)
+    tips.append(B2b[-1])
+    # nonreducing ends, highlighted
+    for tx, ty in tips:
+        ax.plot([tx], [ty], "o", ms=9, markerfacecolor="none",
+                markeredgecolor=c[1], markeredgewidth=2.2)
+    ax.annotate("nonreducing ends: phosphorylase\ntrims and synthase extends here",
+                xy=tuple(A2b[-1]), xytext=(3.3, 5.98),
+                color=c[1], fontsize=10, fontweight="semibold",
+                ha="left", va="center",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.1,
+                                shrinkB=10))
+    S.label_end(ax, 4.55, 3.93,
+                "($\\alpha$1$\\rightarrow$4)-linked chain", c[0], mode,
+                dx=2, dy=-20, ha="left", va="top", size=9.5)
+    ax.annotate("($\\alpha$1$\\rightarrow$6) branch point",
+                xy=((A[3][0] + A1[0][0]) / 2, (A[3][1] + A1[0][1]) / 2),
+                xytext=(0.35, 5.5), color=c[2], fontsize=9.5,
+                fontweight="semibold", ha="left", va="center",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.1,
+                                shrinkB=4))
+    S.note(ax, 0.35, -0.5,
+           "the one reducing end is buried at glycogenin;\n"
+           "every working end is nonreducing", mode, va="bottom", size=8.5)
+    S.note(ax, 8.4, 2.6, "schematic - chain lengths and\n"
+           "tier counts illustrative, not to scale", mode, ha="right",
+           va="center", size=8.5)
+    ax.set_title("Branching multiplies the ends the enzymes can work on")
+    ax.set_xlim(0.2, 8.5)
+    ax.set_ylim(-0.55, 6.45)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.4  Pyruvate to acetyl-CoA and the citric acid cycle -----------------
+
+
+@figure("bc2-tca-ledger")
+def _(mode):
+    """One turn of the citric acid cycle as a ring with its exits marked.
+
+    Schematic: the eight intermediates sit on a ring, acetyl-CoA enters at
+    citrate synthase, the two CO2 exits and the four energy captures (3
+    NADH, 1 FADH2, 1 GTP) are drawn at the steps that produce them, and
+    oxaloacetate returns to start the next turn. The layout is drawn; the
+    per-turn quantities are the textbook-exact stoichiometry.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.0, 6.6))
+    r = 2.0
+    names = [
+        ("citrate", 68), ("isocitrate", 23),
+        ("$\\alpha$-ketoglutarate", -22), ("succinyl-CoA", -67),
+        ("succinate", -112), ("fumarate", -157),
+        ("malate", 158), ("oxaloacetate", 113),
+    ]
+
+    def pos(ang_deg, radius):
+        a = np.deg2rad(ang_deg)
+        return radius * np.cos(a), radius * np.sin(a)
+
+    # succinyl-CoA sits centered under its node so it clears the CO2/NADH
+    # labels of the neighboring step; everything else is placed radially.
+    overrides = {"succinyl-CoA": dict(rad=0.42, ha="center", va="top")}
+    for name, ang in names:
+        x, y = pos(ang, r)
+        ax.plot([x], [y], "o", color=c[0], ms=6)
+        ov = overrides.get(name, {})
+        lx, ly = pos(ang, r + ov.get("rad", 0.30))
+        ha = ov.get("ha") or (
+            "left" if lx > 0.25 else ("right" if lx < -0.25 else "center"))
+        va = ov.get("va") or (
+            "bottom" if ly > 0.25 else ("top" if ly < -0.25 else "center"))
+        S.note(ax, lx, ly, name, mode, ha=ha, va=va, size=9)
+    # ring arrows, clockwise (the direction of the turn)
+    angs = [a for _, a in names] + [names[0][1] - 360]
+    for a0, a1 in zip(angs[:-1], angs[1:]):
+        p0, p1 = pos(a0, r), pos(a1, r)
+        ax.annotate("", xy=p1, xytext=p0,
+                    arrowprops=dict(arrowstyle="->", color=c[0], lw=1.6,
+                                    shrinkA=7, shrinkB=7,
+                                    connectionstyle="arc3,rad=-0.22"))
+    # entry: acetyl-CoA at citrate synthase (between OAA and citrate)
+    ax.annotate("", xy=(0.0, r + 0.12), xytext=(0.0, 3.45),
+                arrowprops=dict(arrowstyle="->", color=c[2], lw=2.0))
+    ax.text(0.0, 3.6, "acetyl-CoA (2C) enters", ha="center", va="bottom",
+            fontsize=10.5, fontweight="semibold", color=c[2])
+    S.note(ax, 0.14, 2.72, "citrate synthase", mode, size=8.5)
+    # exits and captures, at the mid-angle of the step that makes them
+    def exit_arrow(mid_ang, texts, va_over=None):
+        x0, y0 = pos(mid_ang, r + 0.12)
+        x1, y1 = pos(mid_ang, r + 0.80)
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                    lw=1.5))
+        lx, ly = pos(mid_ang, r + 0.95)
+        ha = "left" if lx > 0.25 else ("right" if lx < -0.25 else "center")
+        va = va_over or (
+            "bottom" if ly > 0.25 else ("top" if ly < -0.25 else "center"))
+        for i, (txt, col) in enumerate(texts):
+            ax.text(lx, ly - 0.34 * i, txt, ha=ha,
+                    va=va, fontsize=9.5, fontweight="semibold", color=col)
+
+    exit_arrow(0.5, [("CO$_2$", c[1]), ("NADH", c[2])])       # icdh
+    exit_arrow(-44.5, [("CO$_2$", c[1]), ("NADH", c[2])])     # akg-dh
+    exit_arrow(-89.5, [("GTP", c[2])])                        # succ-CoA synth
+    exit_arrow(-134.5, [("FADH$_2$", c[2])])                  # succinate dh
+    # va="top" drops this label below its arrow, clear of "oxaloacetate"
+    exit_arrow(135.5, [("NADH", c[2])], va_over="top")        # malate dh
+    S.note(ax, 0.35, -0.62, "isocitrate dehydrogenase and\n"
+           "$\\alpha$-ketoglutarate dehydrogenase\nrelease the two CO$_2$",
+           mode, ha="center", va="center", size=8)
+    S.note(ax, -4.55, 3.9,
+           "one turn, per acetyl-CoA:\n2 CO$_2$ out\n3 NADH, 1 FADH$_2$\n"
+           "1 GTP", mode, va="top", size=9.5)
+    S.note(ax, -4.55, -3.35, "oxaloacetate is regenerated -\n"
+           "the cycle is catalytic, not consumed", mode, va="bottom",
+           size=8.5)
+    S.note(ax, 4.55, -3.35, "schematic layout;\nper-turn quantities exact",
+           mode, ha="right", va="bottom", size=8.5)
+    ax.set_title("One turn: two carbons in, two CO$_2$ out, four captures")
+    ax.set_xlim(-4.7, 4.7)
+    ax.set_ylim(-3.5, 4.3)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.5  Oxidative phosphorylation ----------------------------------------
+
+
+@figure("bc2-proton-motive")
+def _(mode):
+    """The proton-motive force computed term by term.
+
+    dG per proton re-entering = 2.3 RT dpH + F dpsi, evaluated at T = 310 K
+    with the stated physiological values dpH = 0.75 and dpsi = 0.15 V:
+    the chemical term is 2.3 x 8.314 x 310 x 0.75 = 4.4 kJ/mol, the
+    electrical term 96485 x 0.15 = 14.5 kJ/mol, total 18.9 kJ/mol. The bars
+    ARE those numbers; nothing is drawn to look right.
+    """
+    c = S.SERIES[mode]
+    R, T, F = 8.314, 310.0, 96485.0
+    dpH, dpsi = 0.75, 0.15
+    chem = 2.3 * R * T * dpH / 1000.0    # kJ/mol
+    elec = F * dpsi / 1000.0             # kJ/mol
+    total = chem + elec
+
+    fig, ax = plt.subplots()
+    xs = [0, 1, 2]
+    ax.bar([0], [chem], width=0.55, facecolor=c[0], alpha=0.25,
+           edgecolor=c[0], linewidth=2.0)
+    ax.bar([1], [elec], width=0.55, facecolor=c[1], alpha=0.25,
+           edgecolor=c[1], linewidth=2.0)
+    # the total is the two terms stacked, so the sum is visibly the sum
+    ax.bar([2], [elec], width=0.55, facecolor=c[1], alpha=0.25,
+           edgecolor=c[1], linewidth=2.0)
+    ax.bar([2], [chem], width=0.55, bottom=elec, facecolor=c[0], alpha=0.25,
+           edgecolor=c[0], linewidth=2.0)
+    for x, v, txt in ((0, chem, f"{chem:.1f}"), (1, elec, f"{elec:.1f}"),
+                      (2, total, f"{total:.1f} kJ/mol per H$^+$")):
+        ax.annotate(txt, xy=(x, v), xytext=(0, 6),
+                    textcoords="offset points", ha="center", va="bottom",
+                    color=S.INK[mode], fontsize=10.5, fontweight="semibold")
+    S.note(ax, -0.42, 21.6,
+           "computed from $\\Delta$G = 2.3RT$\\cdot\\Delta$pH + F$\\Delta\\psi$"
+           " at T = 310 K", mode, size=9)
+    S.note(ax, -0.42, 19.8,
+           "the electrical term carries roughly 3/4 of the force",
+           mode, size=9)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([
+        "chemical term\n2.3RT$\\cdot\\Delta$pH\n($\\Delta$pH = 0.75)",
+        "electrical term\nF$\\Delta\\psi$\n($\\Delta\\psi$ = 0.15 V)",
+        "total\nper proton re-entering",
+    ], fontsize=9)
+    ax.set_ylabel("free energy per proton  (kJ/mol)")
+    ax.set_title("The proton-motive force is mostly electrical")
+    ax.set_xlim(-0.6, 2.6)
+    ax.set_ylim(0, 24)
+    S.strip(ax)
+    return fig
+
+
+# --- II.6  Lipid metabolism -------------------------------------------------
+
+
+@figure("bc2-palmitate-ledger")
+def _(mode):
+    """The palmitate ATP ledger, computed from its own arithmetic.
+
+    Seven beta-oxidation passes yield 7 FADH2 (x 1.5) and 7 NADH (x 2.5);
+    the eight acetyl-CoA each earn 10 through the citric acid cycle;
+    activation to palmitoyl-CoA spends two phosphoanhydride bonds. Every
+    bar height is computed from those factors, and the net bar is their
+    sum: 10.5 + 17.5 + 80 - 2 = 106 ATP.
+    """
+    c = S.SERIES[mode]
+    fadh2 = 7 * 1.5          # 10.5
+    nadh = 7 * 2.5           # 17.5
+    tca = 8 * 10.0           # 80
+    act = -2.0
+    net = fadh2 + nadh + tca + act   # 106
+    vals = [fadh2, nadh, tca, act, net]
+    cols = [c[0], c[0], c[1], S.GUIDE[mode], c[2]]
+    labels = [
+        "7 FADH$_2$\n$\\times$ 1.5", "7 NADH\n$\\times$ 2.5",
+        "8 acetyl-CoA\n$\\times$ 10 (cycle)",
+        "activation\n(2 ~P spent)", "net",
+    ]
+    fig, ax = plt.subplots()
+    xs = np.arange(5)
+    for x, v, col in zip(xs, vals, cols):
+        ax.bar([x], [v], width=0.55, facecolor=col, alpha=0.25,
+               edgecolor=col, linewidth=2.0)
+        sign = "+" if v > 0 and x < 4 else ""
+        txt = f"{sign}{v:g}"
+        ax.annotate(txt, xy=(x, max(v, 0)), xytext=(0, 5),
+                    textcoords="offset points", ha="center", va="bottom",
+                    color=S.INK[mode], fontsize=10.5, fontweight="semibold")
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    # the beta-oxidation bracket: the first two bars together are 28 ATP
+    ax.plot([-0.28, 1.28], [34.0, 34.0], color=S.GUIDE[mode], lw=1.1)
+    for xb in (-0.28, 1.28):
+        ax.plot([xb, xb], [31.5, 34.0], color=S.GUIDE[mode], lw=1.1)
+    S.note(ax, 0.5, 36.0, "7 $\\beta$-oxidation passes: 28 ATP", mode,
+           ha="center", size=9)
+    S.note(ax, 3.6, 96.0, "net = 10.5 + 17.5 + 80 $-$ 2\n= 106 ATP",
+           mode, ha="right", size=9.5)
+    ax.set_xticks(xs)
+    ax.set_xticklabels(labels, fontsize=9)
+    ax.set_ylabel("ATP equivalents")
+    ax.set_title("Palmitate to 106 ATP, term by term")
+    ax.set_xlim(-0.6, 4.6)
+    ax.set_ylim(-12, 122)
+    S.strip(ax)
+    return fig
+
+
+# --- II.7  Nitrogen: amino acid metabolism and the urea cycle ---------------
+
+
+@figure("bc2-nitrogen-flow")
+def _(mode):
+    """Nitrogen's route from amino acid to urea: boxes and arrows.
+
+    Schematic of the textbook pathway: transamination funnels amino groups
+    to glutamate; glutamate dehydrogenase releases NH4+ in the liver
+    mitochondrion; carbamoyl phosphate joins ornithine to make citrulline,
+    which exits to the cytosol; aspartate donates the second nitrogen;
+    fumarate leaves for the citric acid cycle; arginase splits arginine
+    into urea and regenerated ornithine. No quantity on the figure.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 5.4))
+    from matplotlib.patches import FancyBboxPatch
+    ax.add_patch(FancyBboxPatch((0.5, 0.55), 7.1, 2.95,
+                                boxstyle="round,pad=0.12",
+                                facecolor=c[0], alpha=0.06,
+                                edgecolor=S.GUIDE[mode], lw=1.2))
+    S.note(ax, 0.75, 3.22, "liver mitochondrion", mode, size=9)
+    S.note(ax, 15.5, 5.28, "cytosol", mode, ha="right", size=9)
+
+    def node(x, y, s, col=None, size=10.5):
+        ax.text(x, y, s, ha="center", va="center", fontsize=size,
+                fontweight="semibold",
+                color=col if col else S.INK[mode])
+
+    def arrow(p0, p1, col=None, lw=1.6, rad=0.0):
+        ax.annotate("", xy=p1, xytext=p0,
+                    arrowprops=dict(arrowstyle="->",
+                                    color=col if col else S.GUIDE[mode],
+                                    lw=lw,
+                                    connectionstyle=f"arc3,rad={rad}",
+                                    shrinkA=4, shrinkB=4))
+
+    # collection: amino acids -> glutamate -> NH4+ (into the mitochondrion)
+    node(1.7, 4.75, "amino acids")
+    node(5.0, 4.75, "glutamate")
+    arrow((2.75, 4.75), (4.05, 4.75))
+    S.note(ax, 3.4, 4.95, "transamination\n(PLP)", mode, ha="center",
+           va="bottom", size=8.5)
+    node(2.2, 2.55, "NH$_4^+$", c[0])
+    arrow((4.75, 4.45), (2.6, 2.85), rad=0.25)
+    S.note(ax, 1.05, 4.05, "glutamate\ndehydrogenase", mode, ha="left",
+           va="center", size=8.5)
+    node(2.2, 1.25, "carbamoyl\nphosphate", size=9.5)
+    arrow((2.2, 2.25), (2.2, 1.75))
+    S.note(ax, 2.42, 2.0, "+ CO$_2$", mode, size=8.5)
+    node(6.1, 1.25, "citrulline")
+    arrow((3.35, 1.25), (5.15, 1.25))
+    node(4.25, 2.15, "ornithine", size=9.5)
+    arrow((4.25, 1.9), (4.25, 1.45))
+    # citrulline crosses to the cytosol
+    node(9.3, 1.25, "argininosuccinate", size=9.5)
+    arrow((7.05, 1.25), (7.95, 1.25))
+    node(8.0, 2.6, "aspartate", c[1])
+    arrow((8.35, 2.35), (8.9, 1.6), c[1])
+    S.note(ax, 9.35, 2.6, "donates the\nsecond N", mode, size=8.5)
+    node(12.6, 1.25, "arginine")
+    arrow((10.65, 1.25), (11.85, 1.25))
+    # fumarate leaves upward, out of the way of the ornithine return
+    node(11.15, 2.14, "fumarate $\\rightarrow$ citric acid cycle", None,
+         size=9)
+    arrow((11.2, 1.45), (11.15, 1.92))
+    node(14.9, 2.6, "urea", c[2])
+    arrow((13.15, 1.55), (14.55, 2.3), c[2], rad=-0.2)
+    S.note(ax, 14.2, 1.55, "arginase", mode, size=8.5)
+    # arginase's other product: ornithine, sent back for the next turn
+    node(14.35, 0.75, "ornithine", size=9.5)
+    arrow((13.2, 1.05), (13.85, 0.88))
+    ax.annotate("", xy=(7.9, 0.62), xytext=(13.5, 0.5),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.4, ls=(0, (5, 4))))
+    S.note(ax, 10.7, 0.3, "regenerated - back into the mitochondrion "
+           "for the next turn", mode, ha="center", va="top", size=8.5)
+    S.note(ax, 15.5, 4.5,
+           "one N enters as NH$_4^+$ (via glutamate),\n"
+           "the second as aspartate;\nurea carries both out", mode,
+           ha="right", va="top", size=9)
+    S.note(ax, 0.5, -0.45, "schematic - not to scale", mode, size=8.5)
+    ax.set_title("Two nitrogens in, one urea out")
+    ax.set_xlim(0, 16)
+    ax.set_ylim(-0.5, 5.6)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.8  Metabolic integration --------------------------------------------
+
+
+@figure("bc2-fed-fasting")
+def _(mode):
+    """Fuel sources from fed state to starvation: qualitative timeline.
+
+    The three curves are drawn shapes (logistic and Gaussian forms, the
+    least-committal smooth curves with the stated features), not data:
+    glycogen covers the first day, gluconeogenesis dominates days 1-4,
+    ketones rise steeply and carry the economy from the first week. The
+    time axis is deliberately nonlinear and says so.
+    """
+    c = S.SERIES[mode]
+    x = np.linspace(0.0, 10.0, 700)
+    gly = 0.86 / (1.0 + np.exp((x - 1.9) / 0.55))
+    gng = 0.72 * np.exp(-((x - 4.4) ** 2) / (2 * 1.9 ** 2)) + 0.06
+    ket = 0.90 / (1.0 + np.exp(-(x - 4.6) / 0.85))
+
+    fig, ax = plt.subplots(figsize=(8.0, 4.4))
+    ax.plot(x, gly, color=c[0], lw=2.2)
+    ax.plot(x, gng, color=c[1], lw=2.2)
+    ax.plot(x, ket, color=c[2], lw=2.2)
+    S.label_end(ax, 0.1, 0.93, "liver glycogen:\ngone in about a day",
+                c[0], mode, dx=0, dy=0, ha="left", va="bottom", size=9.5)
+    S.label_end(ax, 4.4, 0.78,
+                "gluconeogenesis (amino acids,\nglycerol, lactate):"
+                " dominates days 1-4", c[1], mode, dx=0, dy=14, ha="center",
+                va="bottom", size=9.5)
+    S.label_end(ax, 8.6, 0.9, "ketone bodies + fat:\ncarry the economy"
+                " from week 1", c[2], mode, dx=0, dy=6, ha="center",
+                va="bottom", size=9.5)
+    S.note(ax, 9.75, 0.62,
+           "the brain runs largely on\n$\\beta$-hydroxybutyrate;\n"
+           "protein loss slows", mode, ha="right", va="top", size=8.5)
+    ax.set_xticks([0, 1.4, 2.8, 5.0, 6.6, 9.6])
+    ax.set_xticklabels(["fed", "12 h", "1 day", "4 days", "1 week",
+                        "6 weeks"])
+    ax.set_yticks([])
+    ax.grid(False)
+    ax.set_xlabel(
+        "time without food  (schematic - deliberately nonlinear axis, "
+        "not to scale)")
+    ax.set_ylabel("share of fuel supply  (qualitative)")
+    ax.set_title("Fuels hand off in order: glycogen, gluconeogenesis, ketones")
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 1.28)
+    S.strip(ax)
     return fig
 
 

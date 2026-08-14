@@ -98,6 +98,8 @@ A strong acid dissociates completely; a **weak acid** HA ⇌ H⁺ + A⁻ only pa
 
 Every weak acid drags a **conjugate base** with it (acetic acid/acetate; NH₄⁺/NH₃), and the pair — not either member alone — is what buffers. Three tabulated benchmarks are worth memorizing because they reappear all over physiology: acetic acid pKa 4.76, dihydrogen phosphate (H₂PO₄⁻ ⇌ HPO₄²⁻) pKa 6.86, and ammonium (NH₄⁺ ⇌ NH₃) pKa 9.25.
 
+![Fraction of each acid in its deprotonated form versus pH for the three benchmark weak acids, computed from the Henderson-Hasselbalch relation with the tabulated pKa values 4.76 (acetic acid), 6.86 (dihydrogen phosphate), and 9.25 (ammonium). Each curve crosses one-half exactly at its own pKa.](/courses/mcat/biochem/bc1-fraction-deprotonated.svg)
+
 ## Reading a Titration Curve
 
 Titrate a weak acid with strong base and the pH climbs in a characteristic S-shape. At the midpoint — half an equivalent of base added — half the acid has been converted to conjugate base, so **pH = pKa** there, and the curve is at its flattest: this plateau is the buffering region, extending usefully about one pH unit to either side of the pKa. A diprotic or triprotic acid simply shows one plateau per ionizable proton.
@@ -157,6 +159,8 @@ CO₂(g, lungs) ⇌ CO₂(aq) ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻
 In red blood cells, **carbonic anhydrase** makes the hydration step fast. Carbonic acid's true pKa is about 3.57 at 37 °C — but H₂CO₃ is in rapid equilibrium with a much larger pool of dissolved CO₂, and when the two acid-side species are combined into one effective reservoir, the system behaves as an acid with an **effective pKa of 6.1** (the standard physiological value).
 
 Even 6.1 is more than a unit below blood pH, which by the ±1 rule should make bicarbonate a poor buffer at 7.4. It works anyway because it is an **open system**. The acid side is dissolved CO₂, in equilibrium with an effectively unlimited gas reservoir in the lungs: exhalation removes acid within minutes. The base side, HCO₃⁻, is managed by the kidneys, which excrete or reclaim bicarbonate over hours to days. Neither side can be exhausted the way a closed beaker buffer can.
+
+![The bicarbonate buffer as an open system: gaseous CO₂ in the lungs equilibrates with dissolved CO₂, carbonic acid, and bicarbonate, while the lungs adjust the acid side within minutes and the kidneys manage the base side over hours to days. Schematic — species and organ arms only; the effective pKa of 6.1 is the stated physiological constant.](/courses/mcat/biochem/bc1-bicarbonate-system.svg)
 
 **Worked example, run twice.** Normal plasma has about 24 mM HCO₃⁻ and 1.2 mM dissolved CO₂. The ratio is 24/1.2 = 20, and log 20 = log 2 + log 10 = 0.30 + 1.00 = 1.30, so pH = 6.1 + 1.30 = 7.40. Check: 10¹·³⁰ ≈ 20, consistent. ✓ Blood pH is a 20:1 story.
 
@@ -286,6 +290,8 @@ Nonpolar aliphatic residues (Gly, Ala, Val, Leu, Ile, Pro, Met) pack protein cor
         content: `## Titrating an Amino Acid
 
 Each ionizable group lets go of its proton as the pH climbs past its own pKa. For glycine the tabulated backbone values are 2.34 (α-carboxyl) and 9.60 (α-amino). Notice how acidic that carboxyl is compared with acetic acid's 4.76: the neighboring −NH₃⁺ pulls electron density toward itself, stabilizing the carboxylate and making the proton easier to shed. A glycine titration shows two buffering plateaus, one around each pKa, with the zwitterion dominating in between. An ionizable side chain simply adds a third plateau — glutamate is the classic case, its side-chain carboxyl (pKa 4.25) titrating between the two backbone events.
+
+![Titration curve of glycine computed from its tabulated backbone pKa values, 2.34 and 9.60: pH versus equivalents of strong base added. Each pKa sits at the midpoint of its own buffering plateau, and the zwitterion dominates at the pI of 5.97, midway between the two pKa values.](/courses/mcat/biochem/bc1-glycine-titration.svg)
 
 ![Fraction protonated versus pH for each ionizable group of free glutamate, computed from its tabulated pKa values: 2.19 (α-carboxyl), 4.25 (side-chain carboxyl), and 9.67 (α-amino). Each curve crosses its halfway point exactly at that group's pKa, and the pI (3.22) sits midway between the two acidic pKa values.](/courses/mcat/biochem/bc1-amino-acid-ionization.svg)
 
@@ -417,7 +423,9 @@ The dominant contribution is the **hydrophobic effect**: nonpolar side chains bu
 
 ## The Backbone's Rulebook
 
-Chapter I.2 established that each peptide bond is planar and trans, leaving only φ and ψ rotations at each α-carbon. Most φ/ψ combinations put backbone or side-chain atoms into collision. The **Ramachandran plot** maps the survivors: plot ψ against φ and the sterically allowed combinations cluster into a few islands — one containing the right-handed α-helix, another the extended β conformation. Glycine, with no side chain to clash, roams outside the islands; proline, ring-locked, barely moves within them. The plot is also a quality check: residues of a well-determined structure should land in allowed territory.`,
+Chapter I.2 established that each peptide bond is planar and trans, leaving only φ and ψ rotations at each α-carbon. Most φ/ψ combinations put backbone or side-chain atoms into collision. The **Ramachandran plot** maps the survivors: plot ψ against φ and the sterically allowed combinations cluster into a few islands — one containing the right-handed α-helix, another the extended β conformation. Glycine, with no side chain to clash, roams outside the islands; proline, ring-locked, barely moves within them. The plot is also a quality check: residues of a well-determined structure should land in allowed territory.
+
+![Ramachandran plot of the backbone dihedral angles φ and ψ. The shaded islands stand for the sterically allowed regions and are drawn qualitatively; the marked points are the standard tabulated conformations — α-helix (−57°, −47°), antiparallel β (−139°, +135°), parallel β (−119°, +113°), and the collagen helix (−51°, +153°).](/courses/mcat/biochem/bc1-ramachandran.svg)`,
         importantNote:
           'Keep the hydrogen-bond bookkeeping straight: secondary structure uses backbone C=O···H−N bonds; tertiary structure recruits the side chains.',
       },
@@ -427,6 +435,8 @@ Chapter I.2 established that each peptide bond is planar and trans, leaving only
         content: `## The α-Helix
 
 The α-helix is a right-handed coil with the standard tabulated geometry: **3.6 residues per turn**, a pitch (rise per turn) of **5.4 Å**, and therefore a rise of **1.5 Å per residue**. Check the arithmetic both ways: 3.6 × 1.5 = 5.4 ✓, and a 36-residue helix spans 36 × 1.5 = 54 Å, or exactly ten turns ✓. Each backbone carbonyl hydrogen-bonds to the backbone N–H four residues along (i → i+4), so every amide in the body of the helix is satisfied — a big part of why the helix is so common. Side chains project outward, which means a helix can be assembled **amphipathic**: with the 3.6-residue period, hydrophobic residues spaced every three to four positions line up on one face, polar residues on the other — the standard design for helices lying on membranes or coiled against another helix.
+
+![Geometry of the α-helix computed from its standard tabulated numbers: 1.5 Å rise per residue, 5.4 Å pitch (one turn), 3.6 residues per turn (3.6 × 1.5 = 5.4), and the i → i+4 backbone hydrogen bond. The wave is the helix seen from the side, drawn from those parameters.](/courses/mcat/biochem/bc1-helix-geometry.svg)
 
 Helix breakers and benders: **proline** (its backbone nitrogen has no H to donate and its ring forbids the required φ angle) and **glycine** (so flexible it prefers other conformations). Runs of same-charge residues repel, and the helix also has an overall **dipole** — amino end positive, carboxyl end negative — because every peptide-bond dipole points the same way; negatively charged residues stabilize the N-terminal end.
 
@@ -616,6 +626,8 @@ Hemoglobin half-saturates near a P50 of 26 torr (the standard textbook value for
 
 Cooperativity is quantified by the **Hill coefficient** nH, the slope of log[θ/(1−θ)] plotted against log pO₂ at half saturation. Independent sites give nH = 1 (myoglobin); hemoglobin's measured nH ≈ 3 (tabulated) against a theoretical maximum of 4, its number of sites — strong positive cooperativity, though not perfect concert. Any nH above 1 means occupied sites raise the affinity of empty ones.
 
+![Hill plot for hemoglobin and myoglobin: log[θ/(1−θ)] against log pO₂. The hemoglobin curve is computed from the concerted (MWC) model with the classic parameters n = 4, L = 9054, c = 0.014, scaled so that P50 = 26 torr; its computed midpoint slope comes out near 3, and the curve bends onto slope-1 asymptotes set by the first-site (K_T) and last-site (K_R) affinities. Myoglobin's single site is an exact slope-1 line through its P50 of 2.8 torr.](/courses/mcat/biochem/bc1-hill-plot.svg)
+
 ## The Mechanical Story
 
 Deoxyhemoglobin rests in the **T (tense) state**, braced by a network of ion pairs within and between subunits — several involving the C-terminal histidine of each β chain — and with each iron pulled slightly out of its heme plane toward the proximal His. O₂ binding tugs the iron flat into the ring plane; the proximal His and its whole helix follow; the shift strains and breaks interface ion pairs, and the tetramer snaps into the **R (relaxed) state**, in which the remaining hemes are better aligned for binding. Affinity rises as sites fill; run backward, each O₂ departure re-forms T-state contacts and loosens the grip on what remains. The sigmoid is this switch, read as a population average over all four sites.
@@ -640,6 +652,8 @@ CO₂ acts twice. Indirectly, its hydration (fast in red cells via carbonic anhy
 **2,3-Bisphosphoglycerate** — a small, intensely anionic red-cell metabolite at about 5 mM (tabulated) — binds in the central cavity of the tetramer, a pocket lined with positive groups that exists only in the T state: one BPG per tetramer, clamping T shut. Stripped of BPG, hemoglobin would bind O₂ so avidly it could barely unload in tissue; with it, the P50 sits at the useful 26 torr. The concentration is adjustable physiology: at high altitude BPG rises toward 8 mM over hours to days, right-shifting the curve so that unloading is maintained despite thinner air.
 
 **Fetal hemoglobin (HbF, α₂γ₂)** exploits the same site in reverse: its γ subunits present a weaker BPG pocket, so HbF binds BPG poorly, sits left-shifted relative to maternal HbA — and O₂ flows across the placenta from mother to fetus, down the affinity gradient.
+
+![Oxygen saturation curves computed from the Hill equation with n = 2.8 and the standard P50 values: about 12 torr for BPG-stripped hemoglobin, about 20 torr for fetal HbF, and 26 torr for adult HbA, with the tissue-to-lung pO₂ window (roughly 30 to 100 torr) shaded. BPG shifts the curve right; the fetal curve sits left of the maternal one.](/courses/mcat/biochem/bc1-bpg-family.svg)
 
 ## Two Molecular Pathologies
 

@@ -64,6 +64,8 @@ In water, open-chain glucose is a trace species: the C5 hydroxyl attacks the C1 
 
 In the Haworth drawing, **α** puts the anomeric hydroxyl down (opposite the CH₂OH) and **β** puts it up (same side). Because the anomers interconvert only through the open chain, a solution starting from pure α or pure β drifts to the same equilibrium — **mutarotation**, watched in the lab as a slow change in optical rotation. For glucose the equilibrium sits at roughly **one-third α, two-thirds β**, with only traces of the open chain and furanose forms (standard values). The β anomer wins because its anomeric hydroxyl sits equatorial on the chair, where every bulky group can be equatorial at once.
 
+![Mutarotation time course computed as an exponential relaxation of specific rotation from pure α-D-glucose (+112°) and pure β-D-glucose (+18.7°) to the shared equilibrium value of +52.7° — the roughly one-third α, two-thirds β weighted average. Rotations are the tabulated values; the rate constant is illustrative.](/courses/mcat/biochem/bc1-mutarotation.svg)
+
 ## Reducing Sugars
 
 A free anomeric carbon can reopen to the aldehyde and reduce mild oxidants — Cu²⁺ in Benedict's and Fehling's reagents — which defines a **reducing sugar**. Ketoses pass the test too: under the assay's alkaline conditions fructose isomerizes to an aldose, so "ketose" is never the reason a sugar fails Benedict's. Lock the anomeric carbon into a glycosidic bond and both mutarotation and the reducing chemistry stop.
@@ -233,6 +235,8 @@ The named acids worth memorizing:
 ## Cis Kinks and Melting
 
 Chain physics sets solubility first: the hydrocarbon tail is the insoluble part, so the longer and more saturated the acid, the less of it water tolerates — short-chain acids dissolve slightly through their ionized carboxylate, long ones barely at all. Melting follows the same packing logic. Saturated tails are flexible but straighten to pack tightly in van der Waals contact — solid fats. Each **cis** double bond locks a rigid kink into the chain that frustrates packing and drops the melting point. The 18-carbon series makes the trend quantitative (standard tabulated values): stearate 18:0 melts near 70 °C, oleate 18:1 near 13 °C, linoleate 18:2 near −5 °C, α-linolenate 18:3 near −11 °C — same length, three kinks, an 80-degree slide. Industrial partial hydrogenation generates **trans** double bonds, which leave the chain nearly straight: trans fats pack and melt like saturated ones, and dietary trans fat is associated with cardiovascular risk.
+
+![Melting points of the 18-carbon fatty acid series plotted from the tabulated values: stearate 18:0 at 69.6 °C, oleate 18:1 at 13.4 °C, linoleate 18:2 at −5 °C, and α-linolenate 18:3 at −11 °C. Same chain length throughout — each additional cis double bond drops the melting point further, and only the fully saturated chain is solid at body temperature.](/courses/mcat/biochem/bc1-fatty-acid-melting.svg)
 
 ![Saturated, cis-unsaturated, and trans-unsaturated fatty acid tails. The cis double bond forces a rigid kink that disrupts chain packing and lowers melting point; the trans isomer stays nearly straight and packs like a saturated chain. Schematic — chain geometry is illustrative, not a computed conformation.](/courses/mcat/biochem/bc1-fatty-acid-kinks.svg)`,
         examTip:
@@ -441,6 +445,8 @@ Transport has real thermodynamics, and the MCAT increasingly asks for it. Moving
 
 which at 25 °C works out to about **5.7 kJ/mol per tenfold gradient** — 11.4 kJ/mol for a hundredfold, since ratios multiply while their logarithms add. (The traffic this pricing governs is heavy: on the order of two thousand human genes encode membrane transporters, a standard figure.) For an **ion**, add the electrical work: ΔG = RT ln(C₂/C₁) + ZFΔψ, where Z is the charge, F ≈ 96.5 kJ/(V·mol), and Δψ is the membrane potential. With a typical Δψ of −50 to −70 mV (interior negative), the electrical term is worth roughly 5–7 kJ/mol per unit charge — comparable to a tenfold concentration gradient. A cation entering a negative cell gets that much for free; pushing one out costs it. Downhill overall means passive transport suffices; uphill means the deficit must be paid, and the payment defines active transport.
 
+![Free-energy cost of moving one mole of solute against a concentration gradient, computed from ΔG = RT ln(C₂/C₁) at 25 °C — 5.7 kJ/mol per tenfold — with a shaded band showing the ±ZFΔψ electrical term for a monovalent ion crossing a membrane held at −60 mV, worth about 5.8 kJ/mol per unit charge. A cation entering a negative cell rides the potential; pushing one out pays the surcharge.](/courses/mcat/biochem/bc1-transport-dg.svg)
+
 ## Simple vs Facilitated
 
 Small nonpolar molecules — O₂, CO₂, steroid hormones — dissolve directly through the bilayer: **simple diffusion**, flux proportional to the concentration difference, J = P·ΔC, with no saturation. Polar solutes and ions cannot follow: shedding a hydration shell to enter the greasy core is a prohibitive activation barrier. Transport proteins work like enzymes on that barrier — they replace the lost water contacts with protein contacts, lowering ΔG‡ without moving the equilibrium an inch.
@@ -605,6 +611,8 @@ Heat or alkaline pH separates the two strands without touching a covalent bond �
 
 The process is watched by UV: stacked, paired bases absorb less 260 nm light than free ones, so denaturation produces a rise in absorbance — the **hyperchromic effect** — and the melting curve is literally absorbance versus temperature. (RNA duplexes, locked in the A form, actually melt higher than comparable DNA — a standard comparison worth one line.)
 
+![DNA melting curves for a low-GC and a high-GC duplex, drawn as logistic transitions with illustrative Tm values (75 and 90 °C, labeled as such) and the standard roughly 40% hyperchromic rise in 260 nm absorbance, with an inset showing the linear rise of Tm with percent GC. GC-rich DNA melts higher; the transition midpoint defines Tm.](/courses/mcat/biochem/bc1-dna-melting.svg)
+
 ## Annealing Is a Technology
 
 Cool slowly and complementary strands re-form the duplex: **annealing**, a two-step process — a slow nucleation as strands collide and find a short complementary register, then fast zippering. That base pairing is plain chemistry, working as well in a tube as in a nucleus, is the founding fact of molecular biology technique: **hybridization** of a primer or probe to its complement is the recognition step of PCR, Southern and northern blotting, microarrays, and in situ hybridization alike. Primer binding in PCR is nothing but controlled annealing at a chosen temperature — and the choice is Tm arithmetic: anneal a few degrees below the primer's Tm, and GC-rich primers tolerate hotter, more stringent conditions than AT-rich ones.`,
@@ -630,6 +638,8 @@ DNA is chemically stable — that is its qualification for the job — but not i
 - **Depurination** — hydrolysis of the N-glycosyl bond drops a purine off the backbone, leaving an **abasic (AP) site**: on the order of one purine in 10⁵ per day — thousands of events per genome.
 - **UV light** — fuses adjacent pyrimidines (thymines especially) into **cyclobutane pyrimidine dimers**, kinking the helix; the lesion behind sunlight mutagenesis.
 - **Ionizing radiation and oxidants** — fragment bases and break backbones.
+
+![Daily DNA damage budget for a mammalian genome on a logarithmic scale, plotted from the standard order-of-magnitude estimates: depurination near 10⁴ events per genome per day, cytosine deamination near 10², and purine (adenine/guanine) deamination near 10⁰.](/courses/mcat/biochem/bc1-dna-damage.svg)
 
 Repair systems (Biochemistry II's problem) fix nearly all of it; what escapes becomes **mutation**.
 

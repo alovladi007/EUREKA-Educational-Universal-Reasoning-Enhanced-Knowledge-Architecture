@@ -14,9 +14,10 @@ material, low-yield research-methods asides dropped, and every heading and
 description written fresh — nothing here reproduces the source's wording.
 AAMC Foundational Concept / content-category tags are noted per chapter.
 
-Today the live registry carries one placeholder topic per course
-(`cp_biochem_1`, `bb_biochem_2`); this model replaces each with a real
-chapter sequence.
+The registry's original placeholder topics have both been replaced with
+real chapter sequences: Biochemistry I is live as the `cpb1_*` topics
+(I.1–I.11), and Biochemistry II wave A is live as the `bb2_*` topics
+(II.1–II.8); chapters II.9–II.14 land next wave.
 
 ---
 
@@ -40,7 +41,7 @@ Home: Chemical & Physical Foundations (`cp_biochem_1` becomes chapters I.1–I.1
 
 ## Biochemistry II — metabolism and the flow of genetic information (14 chapters)
 
-Home: Biological & Biochemical Foundations (`bb_biochem_2` becomes chapters II.1–II.14).
+Home: Biological & Biochemical Foundations (II.1–II.8 live as the `bb2_*` topics; II.9–II.14 land next wave).
 
 | # | Chapter | Covers | AAMC |
 |---|---|---|---|

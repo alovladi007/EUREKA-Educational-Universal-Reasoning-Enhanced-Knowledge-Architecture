@@ -385,7 +385,16 @@ const MCAT: ExamCurriculum = [
       t('bb_cardio_physiology', 'Cardiovascular Physiology: Output, Preload, Afterload', 'Cardiac output (CO = HR·SV), Frank-Starling, preload/afterload/contractility, baroreceptor reflex, pressure-volume loops. AAMC high-yield gap fill.', 14),
       t('bb_genetics', 'Genetics & Evolution', 'Mendelian genetics, population genetics, Hardy-Weinberg, and natural selection.', 12),
       t('bb_hardy_weinberg', 'Population Genetics & Hardy-Weinberg', 'HWE assumptions, p²+2pq+q² = 1, calculating allele/genotype frequencies, chi-square testing for HWE, linkage. AAMC high-yield gap fill.', 12),
-      t('bb_biochem_2', 'Biochemistry II', 'Metabolism, glycolysis, Krebs cycle, oxidative phosphorylation, fatty acid metabolism.', 15),
+      // Biochemistry II chapters II.1–II.8 (docs/mcat/BIOCHEM_CHAPTERS.md);
+      // the information-flow chapters II.9–II.14 land next wave.
+      t('bb2_bioenergetics', 'Bioenergetics and Metabolic Logic', 'Free energy in the cell, why ATP is the currency, coupled reactions, redox carriers (NAD⁺, FAD), and anabolism vs catabolism as opposing one-way streets.', 12),
+      t('bb2_glycolysis', 'Glycolysis and Its Mirror', 'The ten steps in functional groups (investment vs payoff), regulation at the three control points, gluconeogenesis and why it is not simple reversal, the Cori cycle, and fermentation.', 12),
+      t('bb2_glycogen_ppp', 'Glycogen and the Pentose Phosphate Shunt', 'Glycogen synthesis vs breakdown and their reciprocal hormonal control, glycogen storage in liver vs muscle, and NADPH and ribose from the pentose phosphate pathway.', 12),
+      t('bb2_tca', 'Pyruvate to Acetyl-CoA and the Citric Acid Cycle', 'The PDH complex and its regulation, cycle chemistry in one turn, amphibolic roles and anaplerosis, and cycle regulation by energy charge.', 12),
+      t('bb2_oxphos', 'Oxidative Phosphorylation', 'The four complexes and mobile carriers, the proton-motive force, ATP synthase as a rotary machine, uncouplers and inhibitors, and shuttles for cytosolic NADH.', 12),
+      t('bb2_lipid_metabolism', 'Lipid Metabolism', 'β-oxidation arithmetic, ketone bodies in fasting, fatty acid synthesis and its separation from breakdown, cholesterol synthesis in outline, and lipoprotein traffic.', 12),
+      t('bb2_nitrogen', 'Nitrogen: Amino Acid Metabolism and the Urea Cycle', 'Transamination and PLP, oxidative deamination, the urea cycle and its cost, glucogenic vs ketogenic skeletons, and heme in outline.', 12),
+      t('bb2_integration', 'Metabolic Integration', 'Fed vs fasting vs starvation, insulin, glucagon, epinephrine, and cortisol as metabolic switches, organ specialization, and diabetes as integration failure.', 12),
     ],
   },
   {
