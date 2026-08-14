@@ -729,3 +729,112 @@ class TestProgressInputValidation:
             headers=_auth_headers(seeded_user),
         )
         assert r.status_code == 422
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Cross-exam overview (/me/progress/overview)
+# ═══════════════════════════════════════════════════════════════════
+
+from app.models.user_progress import StudyChapterRead  # noqa: E402
+
+
+class TestProgressOverview:
+    async def test_overview_merges_attempts_and_chapter_reads(
+        self,
+        async_client: AsyncClient,
+        seeded_user: User,
+        async_session: AsyncSession,
+    ):
+        # PATENT_BAR: two topics with attempts, no chapter reads.
+        for topic, attempts, correct in [("pa_a", 4, 1), ("pa_b", 6, 3)]:
+            row = UserProgress(
+                user_id=seeded_user.id,
+                exam_type="PATENT_BAR",
+                topic_id=topic,
+                attempts=attempts,
+                correct=correct,
+                avg_seconds=20.0,
+            )
+            row.mastery_level = row.mastery_from_accuracy()
+            async_session.add(row)
+        # NCLEX_RN: chapter reads only, zero attempts — must still appear.
+        for topic in ("nx_ngn_exam", "nx_dosage_calc"):
+            async_session.add(
+                StudyChapterRead(
+                    user_id=seeded_user.id,
+                    exam_type="NCLEX_RN",
+                    topic_id=topic,
+                )
+            )
+        await async_session.commit()
+
+        r = await async_client.get(
+            f"{API}/me/progress/overview",
+            headers=_auth_headers(seeded_user),
+        )
+        assert r.status_code == 200, r.text
+        body = r.json()
+        by_exam = {row["exam_type"]: row for row in body}
+        assert set(by_exam) == {"PATENT_BAR", "NCLEX_RN"}
+
+        pb = by_exam["PATENT_BAR"]
+        assert pb["topics_attempted"] == 2
+        assert pb["total_attempts"] == 10
+        assert pb["total_correct"] == 4
+        assert pb["accuracy"] == pytest.approx(0.4)
+        assert pb["chapters_read"] == 0
+
+        nx = by_exam["NCLEX_RN"]
+        assert nx["total_attempts"] == 0
+        assert nx["accuracy"] == 0.0
+        assert nx["chapters_read"] == 2
+
+        # Sorted by attempts desc: PATENT_BAR first.
+        assert body[0]["exam_type"] == "PATENT_BAR"
+
+    async def test_overview_empty_returns_empty_list_not_404(
+        self, async_client: AsyncClient, seeded_user: User
+    ):
+        r = await async_client.get(
+            f"{API}/me/progress/overview",
+            headers=_auth_headers(seeded_user),
+        )
+        assert r.status_code == 200, r.text
+        assert r.json() == []
+
+    async def test_overview_scopes_to_caller(
+        self,
+        async_client: AsyncClient,
+        seeded_user: User,
+        other_user: User,
+        async_session: AsyncSession,
+    ):
+        row = UserProgress(
+            user_id=other_user.id,
+            exam_type="LSAT",
+            topic_id="lr_strengthen",
+            attempts=5,
+            correct=5,
+            avg_seconds=30.0,
+        )
+        row.mastery_level = row.mastery_from_accuracy()
+        async_session.add(row)
+        async_session.add(
+            StudyChapterRead(
+                user_id=other_user.id,
+                exam_type="LSAT",
+                topic_id="lr_strengthen",
+            )
+        )
+        await async_session.commit()
+
+        r = await async_client.get(
+            f"{API}/me/progress/overview",
+            headers=_auth_headers(seeded_user),
+        )
+        assert r.status_code == 200, r.text
+        assert r.json() == []
+
+    async def test_overview_requires_auth(self, async_client: AsyncClient):
+        r = await async_client.get(f"{API}/me/progress/overview")
+        assert r.status_code in (401, 403)

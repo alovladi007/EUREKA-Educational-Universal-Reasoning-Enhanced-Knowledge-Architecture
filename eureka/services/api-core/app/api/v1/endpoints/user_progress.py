@@ -286,3 +286,95 @@ async def sync_chapter_reads(
         )
         await db.commit()
     return await list_chapter_reads(body.exam_type, current_user, db)
+
+
+# ---------------------------------------------------------------------------
+# Cross-exam overview — one call for the global Analytics / Learning Path
+# pages (2026-08).
+#
+# /me/progress and /me/progress/summary are per-exam by design; a global
+# page would need 11 calls to find out where the user has been. This
+# endpoint answers "where have I actually worked?" in one round trip:
+# one grouped query over user_progress, one over study_chapter_reads,
+# merged per exam. Every number is a count of recorded attempts or reads —
+# nothing modeled, nothing predicted.
+# ---------------------------------------------------------------------------
+
+from datetime import datetime as _dt  # noqa: E402
+from typing import Optional  # noqa: E402
+
+from sqlalchemy import func  # noqa: E402
+
+
+class ExamOverviewRow(BaseModel):
+    exam_type: str
+    topics_attempted: int
+    total_attempts: int
+    total_correct: int
+    accuracy: float
+    average_mastery: float
+    chapters_read: int
+    last_seen_at: Optional[_dt] = None
+
+
+@router.get("/me/progress/overview", response_model=List[ExamOverviewRow])
+async def progress_overview(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Per-exam aggregates across every exam the user has touched.
+
+    An exam appears if the user has attempt rows OR chapter reads for it,
+    so a learner who has only been reading the course still sees that
+    exam listed (with zero attempts). Sorted by attempts desc.
+    """
+    up = await db.execute(
+        select(
+            UserProgress.exam_type,
+            func.count().label("topics"),
+            func.sum(UserProgress.attempts).label("attempts"),
+            func.sum(UserProgress.correct).label("correct"),
+            func.avg(UserProgress.mastery_level).label("mastery"),
+            func.max(UserProgress.last_seen_at).label("last_seen"),
+        )
+        .where(UserProgress.user_id == current_user.id)
+        .group_by(UserProgress.exam_type)
+    )
+    rows: dict[str, ExamOverviewRow] = {}
+    for exam, topics, attempts, correct, mastery, last_seen in up.all():
+        attempts = int(attempts or 0)
+        correct = int(correct or 0)
+        rows[exam] = ExamOverviewRow(
+            exam_type=exam,
+            topics_attempted=int(topics or 0),
+            total_attempts=attempts,
+            total_correct=correct,
+            accuracy=(correct / attempts) if attempts else 0.0,
+            average_mastery=float(mastery or 0.0),
+            chapters_read=0,
+            last_seen_at=last_seen,
+        )
+
+    cr = await db.execute(
+        select(StudyChapterRead.exam_type, func.count())
+        .where(StudyChapterRead.user_id == current_user.id)
+        .group_by(StudyChapterRead.exam_type)
+    )
+    for exam, n in cr.all():
+        if exam in rows:
+            rows[exam].chapters_read = int(n)
+        else:
+            rows[exam] = ExamOverviewRow(
+                exam_type=exam,
+                topics_attempted=0,
+                total_attempts=0,
+                total_correct=0,
+                accuracy=0.0,
+                average_mastery=0.0,
+                chapters_read=int(n),
+            )
+
+    return sorted(
+        rows.values(),
+        key=lambda r: (-r.total_attempts, r.exam_type),
+    )

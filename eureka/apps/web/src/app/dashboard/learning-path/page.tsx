@@ -1,13 +1,21 @@
 "use client";
 /**
  * EUREKA - Learning Path
- * Wired to Phase 4.5 recommender (/recommendations/me) and
- * Phase 12.3 study plan generator (/me/study-plan).
+ *
+ * Two layers, in honesty order:
+ *  1. "Where you are" — measured test-prep activity (/me/progress/overview,
+ *     SRS due counts). Real recorded work; this is the actionable part.
+ *  2. The Phase 4.5 skill-graph recommender + Phase 12.3 study plan
+ *     generator. When the recommender has no mastery signal for this user
+ *     it returns the same base score for everything — that cold-start
+ *     state is labeled as such instead of dressed up as personalization.
  */
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/eureka-api";
+import { EXAM_CONFIGS } from "@/lib/exam-config";
+import { getStudyAxis, countChapters } from "@/lib/exam-study-axis";
 import {
   Card,
   CardContent,
@@ -59,6 +67,22 @@ interface StudyPlan {
   status?: string;
 }
 
+interface ExamOverviewRow {
+  exam_type: string;
+  topics_attempted: number;
+  total_attempts: number;
+  total_correct: number;
+  accuracy: number;
+  average_mastery: number;
+  chapters_read: number;
+  last_seen_at?: string | null;
+}
+
+interface SrsStats {
+  total_cards: number;
+  due_now: number;
+}
+
 const FRAMEWORK_OPTIONS = [
   "ABET",
   "USMLE_Step_1",
@@ -89,10 +113,24 @@ function todayPlus(days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+function examName(key: string): string {
+  return EXAM_CONFIGS[key]?.name ?? key.replace(/_/g, " ");
+}
+
+function chapterTotal(key: string): number {
+  try {
+    return countChapters(getStudyAxis(key));
+  } catch {
+    return 0;
+  }
+}
+
 export default function LearningPathPage() {
   const [recs, setRecs] = useState<Recommendation[]>([]);
   const [skills, setSkills] = useState<SkillMastery[]>([]);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
+  const [overview, setOverview] = useState<ExamOverviewRow[]>([]);
+  const [srs, setSrs] = useState<SrsStats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -129,9 +167,25 @@ export default function LearningPathPage() {
     } catch {
       planOk = null;
     }
+    let overviewOk: ExamOverviewRow[] = [];
+    let srsOk: SrsStats | null = null;
+    try {
+      const o = await api<unknown>("/me/progress/overview");
+      overviewOk = Array.isArray(o) ? (o as ExamOverviewRow[]) : [];
+    } catch {
+      overviewOk = [];
+    }
+    try {
+      const s = await api<unknown>("/me/srs/stats");
+      srsOk = s && typeof s === "object" ? (s as SrsStats) : null;
+    } catch {
+      srsOk = null;
+    }
     setRecs(recsOk);
     setSkills(skillsOk);
     setPlan(planOk);
+    setOverview(overviewOk);
+    setSrs(srsOk);
     setLoading(false);
   }, []);
 
@@ -164,13 +218,21 @@ export default function LearningPathPage() {
   const safeSkills = Array.isArray(skills) ? skills : [];
   const topRecs = safeRecs.slice(0, 10);
   const mastered = safeSkills.filter((s) => (s.mastery ?? 0) >= 0.8);
+  const safeOverview = Array.isArray(overview) ? overview : [];
+  // Cold start: every recommendation carries the recommender's identical
+  // base score — nothing has been differentiated by mastery signal yet.
+  const coldStart =
+    topRecs.length >= 2 &&
+    topRecs.every((r) => typeof r.score === "number") &&
+    new Set(topRecs.map((r) => (r.score as number).toFixed(3))).size === 1;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Learning Path</h1>
         <p className="text-muted-foreground">
-          Wired to Phase 4.5 recommender + Phase 12.3 study plan generator
+          Your measured progress first, then the skill-graph recommender and
+          study plan generator.
         </p>
       </div>
 
@@ -189,6 +251,91 @@ export default function LearningPathPage() {
 
       {!loading && (
         <>
+          {/* Where you are — measured */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5" /> Where you are — measured
+              </CardTitle>
+              <CardDescription>
+                Recorded attempts and chapter reads per exam. Continue where
+                the numbers say you actually are.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {srs && srs.due_now > 0 && (
+                <div className="flex items-center justify-between rounded-md border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 p-3 text-sm">
+                  <span>
+                    <span className="font-medium">{srs.due_now}</span> flashcard
+                    {srs.due_now === 1 ? "" : "s"} due for review — spaced
+                    repetition works only if you clear the queue.
+                  </span>
+                  <Link
+                    href="/dashboard/srs"
+                    className="text-primary inline-flex items-center gap-1 hover:underline text-xs font-medium shrink-0 ml-3"
+                  >
+                    Review <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              )}
+              {safeOverview.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No recorded test-prep activity yet. Open a course or QBank
+                  under Test Prep — this section fills in from your first
+                  answered question or chapter read.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {safeOverview.map((r) => {
+                    const total = chapterTotal(r.exam_type);
+                    const slug = r.exam_type.toLowerCase();
+                    return (
+                      <div
+                        key={r.exam_type}
+                        className="rounded-md border p-3 space-y-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="font-medium text-sm leading-tight">
+                            {examName(r.exam_type)}
+                          </p>
+                          {r.total_attempts > 0 && (
+                            <Badge variant="secondary" className="text-[10px]">
+                              {Math.round(r.accuracy * 100)}% correct
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {r.total_attempts} attempt
+                          {r.total_attempts === 1 ? "" : "s"} across{" "}
+                          {r.topics_attempted} topic
+                          {r.topics_attempted === 1 ? "" : "s"}
+                          {" · "}
+                          {total > 0
+                            ? `${r.chapters_read}/${total} chapters read`
+                            : `${r.chapters_read} chapters read`}
+                        </p>
+                        <div className="flex gap-3">
+                          <Link
+                            href={`/dashboard/test-prep/${slug}/study`}
+                            className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
+                          >
+                            Continue course <ArrowRight className="w-3 h-3" />
+                          </Link>
+                          <Link
+                            href={`/dashboard/test-prep/analytics?exam=${encodeURIComponent(r.exam_type)}`}
+                            className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
+                          >
+                            Analytics <ArrowRight className="w-3 h-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Top recommendations */}
           <Card>
             <CardHeader>
@@ -201,6 +348,19 @@ export default function LearningPathPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {coldStart && (
+                <Alert className="mb-4">
+                  <AlertTitle>Not personalized yet</AlertTitle>
+                  <AlertDescription>
+                    Every recommendation below carries the recommender&apos;s
+                    identical base score ({topRecs[0]?.score?.toFixed(2)}) —
+                    it has no mastery data for you, so this is the default
+                    skill-graph ordering, not a ranking of what you need.
+                    It differentiates once you practice skill-linked items
+                    (Assessments → Practice) or take a diagnostic.
+                  </AlertDescription>
+                </Alert>
+              )}
               {topRecs.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   No recommendations yet. Take a diagnostic to seed your
