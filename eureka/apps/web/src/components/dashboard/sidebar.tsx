@@ -21,7 +21,6 @@ import {
   School,
   Shield,
   Building2,
-  Lightbulb,
   Sparkles,
   Glasses,
   Lock,
@@ -63,7 +62,9 @@ const navigation = [
   { name: "Learning Path", href: "/dashboard/learning-path", icon: Target },
   { name: "Analytics", href: "/dashboard/analytics", icon: LineChart },
   { name: "Notebook", href: "/dashboard/notebook", icon: FolderKanban },
-  { name: "Pedagogy", href: "/dashboard/pedagogy", icon: Lightbulb },
+  // Pedagogy (the learning-model/methods page) moved to the Partner Portal's
+  // Evidence group (/institutions/pedagogy) — it's audit/sales material for
+  // institutional buyers, not a learner surface (2026-08).
   { name: "3D & XR Labs", href: "/dashboard/xr-labs", icon: Glasses },
   { name: "Resume Builder", href: "/dashboard/resume-builder", icon: FileEdit },
   { name: "Resources", href: "/dashboard/resources", icon: FileText },

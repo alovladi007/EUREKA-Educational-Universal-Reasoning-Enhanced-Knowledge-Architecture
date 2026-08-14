@@ -44,6 +44,7 @@ const NAV_GROUPS: { title: string; items: { href: string; label: string }[] }[] 
       { href: '/institutions/compliance', label: 'Workplace compliance' },
       { href: '/institutions/analytics', label: 'Analytics' },
       { href: '/institutions/audit', label: 'Audit log' },
+      { href: '/institutions/pedagogy', label: 'Learning model' },
     ],
   },
   {
