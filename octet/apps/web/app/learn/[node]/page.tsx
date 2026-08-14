@@ -293,8 +293,12 @@ export default function LessonPage() {
 
           {/* ── Book + companion ───────────────────────────────────── */}
           <div className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,1fr)_320px]">
-            {/* Book */}
+            {/* Book. The card fills its grid column; the inner wrapper caps
+                the text at a reading measure (~46rem, what the old 1024px
+                shell cap produced) now that the shell no longer constrains
+                page width. */}
             <Card className="min-w-0 p-5 sm:p-7">
+              <div className="max-w-[46rem]">
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <span className="rounded-md bg-brand-500/10 px-2 py-0.5 text-xs font-medium text-brand-600 dark:text-brand-400">
                   {here?.unit_title ?? here?.unit ?? ''}
@@ -456,6 +460,7 @@ export default function LessonPage() {
                 >
                   All {here?.unit_title ?? ''} chapters
                 </Link>
+              </div>
               </div>
             </Card>
 

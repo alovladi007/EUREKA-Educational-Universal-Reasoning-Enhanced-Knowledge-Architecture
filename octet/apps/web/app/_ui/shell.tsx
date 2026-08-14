@@ -288,7 +288,13 @@ export function Page({ children }: { children: React.ReactNode }) {
           <span className="text-sm font-semibold">OCTET</span>
         </div>
         <main className="min-w-0 flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">{children}</div>
+          {/* Full width beside the sidebar, matching EUREKA's dashboard shell.
+              A max-w-5xl cap here used to squeeze every page to 1024px — on a
+              wide display a third of the screen was empty margin, and the
+              chapter reader's rail + companion columns had to fit INSIDE the
+              cap, pinching the prose. Reading measure is now the reader's own
+              job (it caps its text column), not the shell's. */}
+          <div className="px-4 py-6 sm:px-6 sm:py-8">{children}</div>
         </main>
       </div>
 

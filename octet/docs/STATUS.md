@@ -3,7 +3,19 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-08-10 (Phase 7: graders 8 and 9, the study planner; register note below on the sessions between).
+Last updated: 2026-08-14 (shell width fix, below).
+
+2026-08-14 — the shell no longer caps every page at 1024px. `Page` in
+`app/_ui/shell.tsx` wrapped all content in `max-w-5xl`, so on a wide display a
+third of the screen was empty margin, and the chapter reader had to fit its
+250px rail and (at 2xl) 320px companion column inside the cap — measured
+370-380px of prose on a 1536px+ screen. The shell is now full width beside the
+sidebar, matching EUREKA's dashboard shell; reading measure is the reader's own
+job — the book card caps its text column at 46rem, which is the measure the old
+shell produced at its best. Verified live after image rebuild at a 1600px
+viewport: dashboard/analytics fill the screen, the chapter body holds its
+reading width, and the companion column gets real room at 2xl instead of
+squeezing the prose.
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
