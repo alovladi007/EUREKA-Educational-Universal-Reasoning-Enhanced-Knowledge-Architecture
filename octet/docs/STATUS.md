@@ -3,7 +3,22 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-08-14 (shell width fix, below).
+Last updated: 2026-08-14 (all 18 authored chapters meet the depth standard; shell width fix below).
+
+2026-08-14 — every authored chapter now clears the 1200-word depth gate.
+17 of the 18 chapters with lecture-note extras sat below the standard
+(GEN1 unit 4 as low as 334 words; ORG1 chapter 1 just under). All 17
+expanded: prose across the register went 12,345 → 23,481 words, sections
+50 → 74, `check_octet_depth.py` reports an empty below-standard list and
+all structural checks green (figure theme pairs, paired $, rectangular
+sourced tables). Every new numeric example was computed from IUPAC
+standard atomic weights and recomputed through an independent pass before
+landing — the process caught one real rounding error in draft (11.00 g of
+CO2 is 0.2499 mol, not 0.2500; the example was rebuilt on
+exactly-dividing masses) — and the mass audits in the new stoichiometry
+examples close their books explicitly, with rounding gaps stated as such.
+No figures or tables were added. Verified live after the api image
+rebuild: expanded chapters serve through /curriculum/lessons/{node}.
 
 2026-08-14 — the shell no longer caps every page at 1024px. `Page` in
 `app/_ui/shell.tsx` wrapped all content in `max-w-5xl`, so on a wide display a
