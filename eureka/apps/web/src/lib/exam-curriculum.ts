@@ -351,15 +351,19 @@ const MCAT: ExamCurriculum = [
       t('cp_physics', 'Physics', 'Kinematics, forces, energy, fluids, electrostatics, circuits, waves, and optics.', 20),
       t('cp_kinematics_full', 'Kinematics: Projectile, Circular & Relative Motion', '2-D projectile motion, circular motion (centripetal force, banked curves), reference-frame transformations, terminal velocity. AAMC high-yield gap fill.', 14),
       t('cp_electrostatics_circuits', "Electrostatics, Ohm's Law & RC Circuits", "Coulomb's law, electric fields, capacitors in series/parallel, Ohm's law, Kirchhoff's rules, RC time constants. AAMC high-yield gap fill.", 14),
-      // Biochemistry I chapters I.1–I.7 (docs/mcat/BIOCHEM_CHAPTERS.md);
-      // I.8–I.11 land in later authoring waves.
+      // Biochemistry I chapters I.1–I.11 (docs/mcat/BIOCHEM_CHAPTERS.md);
+      // the sequence is complete — Biochemistry II lands as bb_ chapters.
       t('cpb1_water', 'Water, pH, and the Chemistry of Life', 'Water as solvent, noncovalent forces, pH and pKa, physiological buffers, and Henderson-Hasselbalch in one variable.', 8),
       t('cpb1_amino_acids', 'Amino Acids and the Peptide Bond', 'The twenty side chains grouped by chemistry, ionization states and pI, the planar peptide bond, and primary structure.', 8),
       t('cpb1_protein_structure', 'Protein Architecture', 'Secondary motifs, tertiary folds, quaternary assemblies, the folding funnel, chaperones, and misfolding disease.', 8),
       t('cpb1_protein_binding', 'Proteins at Work: Binding', 'Myoglobin vs hemoglobin, cooperativity and the sigmoidal curve, Bohr effect, 2,3-BPG, fetal hemoglobin, and allostery.', 8),
       t('cpb1_enzymes', 'Enzymes: How Catalysis Happens', 'Activation energy and transition states, active-site catalytic strategies, and cofactors and vitamins as coenzyme precursors.', 8),
-      t('cpb1_kinetics', 'Enzyme Kinetics and Inhibition', 'What Km and Vmax mean, double-reciprocal reading, the four reversible inhibition patterns, and irreversible inactivation.', 8),
-      t('cpb1_enzyme_control', 'Enzyme Control', 'Allosteric regulation, covalent modification led by phosphorylation, zymogens, feedback in pathways, and isozymes.', 8),
+      t('cpb1_kinetics', 'Enzyme Kinetics and Inhibition', 'What Km, Vmax, and kcat mean, double-reciprocal reading, the four reversible inhibition patterns, and irreversible inactivation.', 8),
+      t('cpb1_enzyme_control', 'Enzyme Control', 'Allosteric regulation and the Hill equation, covalent modification led by phosphorylation, zymogens, feedback in pathways, isozymes, and pH and temperature effects.', 8),
+      t('cpb1_carbohydrates', 'Carbohydrates', 'Monosaccharide stereochemistry, ring forms and anomers, glycosidic bonds, storage and structural polysaccharides, and blood-group sugars.', 8),
+      t('cpb1_lipids', 'Lipids', 'Fatty acid structure and nomenclature, triacylglycerols, the membrane lipid families, and steroids and fat-soluble vitamins as signals.', 8),
+      t('cpb1_membranes', 'Membranes and Transport', 'Bilayer fluidity, integral vs peripheral proteins, passive and facilitated diffusion, primary and secondary active transport, and the Na⁺/K⁺ pump.', 8),
+      t('cpb1_nucleotides', 'Nucleotides and Nucleic Acid Structure', 'Purines and pyrimidines, nucleoside and nucleotide naming, the double helix and base pairing, denaturation and hybridization, and ATP, cAMP, and NAD⁺ beyond heredity.', 8),
     ],
   },
   {
@@ -375,7 +379,6 @@ const MCAT: ExamCurriculum = [
     sectionId: 'bio_biochem', sectionName: 'Biological & Biochemical Foundations',
     topics: [
       t('bb_cell_bio', 'Cell Biology', 'Cell structure, membrane transport, signaling, and the cell cycle.', 15),
-      t('bb_enzyme_kinetics', 'Enzyme Kinetics: Michaelis-Menten & Inhibition', 'Vmax, Km, Lineweaver-Burk plots, competitive vs noncompetitive vs uncompetitive vs mixed inhibition, allosteric regulation. AAMC high-yield gap fill.', 14),
       t('bb_molecular', 'Molecular Biology', 'DNA replication, transcription, translation, gene regulation, and biotechnology.', 15),
       t('bb_organ_systems', 'Organ Systems', 'Cardiovascular, respiratory, renal, digestive, nervous, endocrine, immune, and musculoskeletal systems.', 25),
       t('bb_neuron_action_potential', 'Neurons, Action Potentials & Synaptic Transmission', 'Resting potential, depolarization phases, Na+/K+ channel gating, refractory periods, neurotransmitter release, EPSPs/IPSPs. AAMC high-yield gap fill.', 14),

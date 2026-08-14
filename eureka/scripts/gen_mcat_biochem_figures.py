@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""Generate the figures for MCAT Biochemistry I, chapters I.1-I.7.
+"""Generate the figures for MCAT Biochemistry I, chapters I.1-I.11.
 
 Same contract as gen_fe_ee_figures.py, and it deliberately imports the SAME
 style module rather than growing a second look: every quantitative figure here
 is COMPUTED from the equation the chapter states, with its parameters printed
-on the figure, so a reader can check the curve against the formula. The two
-schematics (structure hierarchy, energy diagram) carry only qualitative labels
-and no numbers. Nothing is traced, scanned or adapted from any textbook - this
-pipeline consumes formulas, which are not protected expression, and never
-anyone's drawing of them.
+on the figure, so a reader can check the curve against the formula. The
+schematics (structure hierarchy, energy diagram, glucose anomers, fatty-acid
+kinks, base pairing) carry only qualitative labels and no numbers; the
+structural ones depict textbook-standard chemistry (which substituent sits on
+which carbon) without reproducing anyone's rendering of it. Nothing is traced,
+scanned or adapted from any textbook - this pipeline consumes formulas and
+structural facts, which are not protected expression, and never anyone's
+drawing of them.
 
 Each registered figure renders twice, once per theme, to
 
@@ -31,6 +34,10 @@ Chapter map (docs/mcat/BIOCHEM_CHAPTERS.md):
     I.5 catalysis                 -> bc1-energy-diagram
     I.6 kinetics                  -> bc1-michaelis-menten
     I.7 control (with I.6)        -> bc1-lineweaver-inhibition
+    I.8 carbohydrates             -> bc1-glucose-anomers
+    I.9 lipids                    -> bc1-fatty-acid-kinks
+    I.10 membranes and transport  -> bc1-membrane-transport
+    I.11 nucleic acid structure   -> bc1-base-pairing
 
 Usage:
     python3 scripts/gen_mcat_biochem_figures.py          # all
@@ -422,6 +429,330 @@ def _(mode):
     ax.set_xlim(-0.66, 1.30)
     ax.set_ylim(-0.012, 0.085)
     S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# I.8  Carbohydrates
+# ---------------------------------------------------------------------------
+
+
+@figure("bc1-glucose-anomers")
+def _(mode):
+    """Haworth-style alpha- vs beta-D-glucopyranose: pure schematic.
+
+    Two simplified pyranose hexagons whose substituent pattern is the
+    textbook-standard one for D-glucose in a Haworth drawing (C2 OH down,
+    C3 OH up, C4 OH down, CH2OH up at C5, ring O at the back right) and is
+    IDENTICAL between the rings; the only drawn difference is the anomeric
+    C1 hydroxyl, below the ring plane in alpha and above it in beta. No
+    coordinate carries a measurement - the alpha/beta distinction and the
+    mutarotation note are the entire content.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 3.9))
+    cy = 2.6
+
+    def ring(cx, anomeric_up, greek):
+        V = {
+            "C1": (cx + 1.15, cy),
+            "O": (cx + 0.55, cy + 0.62),
+            "C5": (cx - 0.55, cy + 0.62),
+            "C4": (cx - 1.15, cy),
+            "C3": (cx - 0.55, cy - 0.62),
+            "C2": (cx + 0.55, cy - 0.62),
+        }
+        # front edges thicker, Haworth-style depth cue; gap left for the O
+        edges = [("C1", "C2", 3.0), ("C2", "C3", 3.0), ("C3", "C4", 3.0),
+                 ("C4", "C5", 1.5), ("C5", "O", 1.5), ("O", "C1", 1.5)]
+        for a, b, lw in edges:
+            (x0, y0), (x1, y1) = V[a], V[b]
+            if b == "O":
+                x1, y1 = x0 + 0.78 * (x1 - x0), y0 + 0.78 * (y1 - y0)
+            if a == "O":
+                x0, y0 = x0 + 0.22 * (x1 - x0), y0 + 0.22 * (y1 - y0)
+            ax.plot([x0, x1], [y0, y1], color=c[0], lw=lw,
+                    solid_capstyle="round")
+        ax.text(*V["O"], "O", color=S.INK[mode], fontsize=10,
+                ha="center", va="center")
+
+        def sub(key, up, text, col, accent=False):
+            x, y = V[key]
+            d = 0.42 if up else -0.42
+            ax.plot([x, x], [y, y + d], color=col,
+                    lw=2.0 if accent else 1.4)
+            ax.text(x, y + d + (0.10 if up else -0.10), text, color=col,
+                    fontsize=9, ha="center",
+                    va="bottom" if up else "top",
+                    fontweight="semibold" if accent else "normal")
+
+        ink = S.INK[mode]
+        sub("C2", False, "OH", ink)
+        sub("C3", True, "OH", ink)
+        sub("C4", False, "OH", ink)
+        sub("C5", True, r"CH$_2$OH", ink)
+        # the one difference: the anomeric hydroxyl
+        sub("C1", anomeric_up, "OH", c[1], accent=True)
+        ex, ey = V["C1"][0], cy + (0.52 if anomeric_up else -0.52)
+        t = np.linspace(0, 2 * np.pi, 120)
+        ax.plot(ex + 0.44 * np.cos(t), ey + 0.42 * np.sin(t),
+                color=S.GUIDE[mode], lw=1.1, ls=":")
+        S.note(ax, V["C1"][0] + 0.12, cy + (-0.12 if anomeric_up else 0.12),
+               "C1 (anomeric)", mode, va="top" if anomeric_up else "bottom",
+               size=8.5)
+        ax.text(cx, 0.98, greek + "-D-glucopyranose", color=S.INK[mode],
+                fontsize=11, fontweight="semibold", ha="center", va="top")
+        S.note(ax, cx, 0.62,
+               "anomeric OH " + ("above" if anomeric_up else "below")
+               + " the ring plane", mode, ha="center", va="top")
+
+    ring(2.1, False, r"$\alpha$")
+    ring(7.9, True, r"$\beta$")
+    ax.annotate("", xy=(5.9, cy), xytext=(4.0, cy),
+                arrowprops=dict(arrowstyle="<->", color=S.GUIDE[mode],
+                                lw=1.6))
+    S.note(ax, 5.05, cy - 0.42, "the two interconvert through the\n"
+           "open-chain form (mutarotation)", mode, ha="center", va="top")
+    ax.set_title("The two anomers of D-glucose differ only at the anomeric carbon")
+    ax.set_xlim(0.4, 10.9)
+    ax.set_ylim(0.25, 4.1)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# I.9  Lipids
+# ---------------------------------------------------------------------------
+
+
+@figure("bc1-fatty-acid-kinks")
+def _(mode):
+    """Saturated vs cis-unsaturated chain geometry: qualitative schematic.
+
+    Two 18-carbon zigzags drawn from the same bond generator; the only
+    difference is that the second chain's axis turns by 30 degrees at the
+    C9-C10 cis double bond (the textbook-standard kink angle, describing
+    the drawing rather than any dataset). Packing and melting are stated
+    qualitatively, with no numeric melting points anywhere.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 4.0))
+    b = 0.5
+
+    def chain(y0, kink_at=None):
+        pts = [np.array([0.9, y0])]
+        for k in range(17):
+            axis = -30.0 if (kink_at is not None and k >= kink_at) else 0.0
+            ang = np.deg2rad(axis + (28.0 if k % 2 == 0 else -28.0))
+            pts.append(pts[-1] + b * np.array([np.cos(ang), np.sin(ang)]))
+        return np.array(pts)
+
+    sat = chain(3.1)
+    uns = chain(1.7, kink_at=8)
+    ax.plot(sat[:, 0], sat[:, 1], color=c[0], lw=2.0,
+            solid_capstyle="round")
+    ax.plot(uns[:, 0], uns[:, 1], color=c[2], lw=2.0,
+            solid_capstyle="round")
+
+    # the cis double bond, drawn double and highlighted
+    p8, p9 = uns[8], uns[9]
+    d, n = p9 - p8, np.array([-(p9 - p8)[1], (p9 - p8)[0]])
+    n = 0.10 * n / np.hypot(*n)
+    ax.plot([p8[0], p9[0]], [p8[1], p9[1]], color=c[1], lw=2.6,
+            solid_capstyle="round")
+    q0, q1 = p8 + 0.18 * d + n, p9 - 0.18 * d + n
+    ax.plot([q0[0], q1[0]], [q0[1], q1[1]], color=c[1], lw=2.2,
+            solid_capstyle="round")
+    S.label_end(ax, (p8[0] + p9[0]) / 2, (p8[1] + p9[1]) / 2,
+                r"cis C=C at $\Delta$9", c[1], mode, dx=0, dy=16,
+                ha="center", va="bottom", size=9)
+
+    # dotted continuation of the pre-kink axis makes the bend visible
+    ax.plot([p8[0], p8[0] + 2.5], [p8[1], p8[1]], color=S.GUIDE[mode],
+            lw=1.0, ls=":")
+    S.note(ax, p8[0] + 2.65, p8[1], "the cis double bond bends\n"
+           "the chain by about 30 degrees", mode, va="center", size=9)
+
+    for pts, col, lab, dy in ((sat, c[0], "saturated chain (stearic-type)", 0),
+                              (uns, c[2],
+                               "cis-unsaturated chain (oleic-type)", -18)):
+        S.note(ax, pts[0][0] - 0.12, pts[0][1], "HOOC", mode, ha="right",
+               va="center", size=9)
+        S.note(ax, pts[-1][0] + 0.12, pts[-1][1], r"CH$_3$", mode,
+               va="center", size=9)
+        S.label_end(ax, pts[-1][0], pts[-1][1], lab, col, mode, dx=42, dy=dy)
+
+    S.note(ax, 0.9, 3.62, "straight chains lie flat against their "
+           "neighbors: tight packing, higher melting", mode)
+    S.note(ax, 0.9, 0.42, "the kink props neighboring chains apart:\n"
+           "looser packing, lower melting", mode, va="top")
+    ax.set_title("One cis double bond bends the chain and loosens its packing")
+    ax.set_xlim(0.2, 12.4)
+    ax.set_ylim(-0.9, 4.05)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# I.10  Membranes and transport
+# ---------------------------------------------------------------------------
+
+
+@figure("bc1-membrane-transport")
+def _(mode):
+    """Simple diffusion vs carrier-mediated transport, both computed.
+
+    Simple diffusion is the straight line J = P * dC with P = 1 in
+    arbitrary units (stated on the figure). Carrier-mediated transport is
+    J = Jmax * dC / (Km + dC) with Jmax = 100 and Km = 20, stated as
+    illustrative. The saturation contrast - the line climbs forever, the
+    carrier flattens at Jmax once every transporter is busy - is the whole
+    lesson, and both curves are evaluated pointwise from those equations.
+    """
+    c = S.SERIES[mode]
+    P = 1.0
+    Jmax, Km = 100.0, 20.0
+    dC = np.linspace(0.0, 120.0, 600)
+    J_simple = P * dC
+    J_carrier = Jmax * dC / (Km + dC)
+
+    fig, ax = plt.subplots()
+    ax.plot(dC, J_simple, color=c[0], lw=2.2)
+    ax.plot(dC, J_carrier, color=c[1], lw=2.2)
+    ax.axhline(Jmax, color=S.GUIDE[mode], lw=1.2, ls="--")
+    S.note(ax, 4.0, 101.8,
+           r"J$_{max}$ = 100: every carrier occupied - transport saturates",
+           mode)
+    S.label_end(ax, 97.0, 106.0, "simple diffusion\n"
+                r"J = P · $\Delta$C   (P = 1)", c[0], mode, dx=0, dy=4,
+                ha="right", va="bottom")
+    S.label_end(ax, 118.0, 78.0, "carrier-mediated\n"
+                r"J = J$_{max}$ · $\Delta$C / (K$_m$ + $\Delta$C)"
+                "\n" r"J$_{max}$ = 100, K$_m$ = 20 (illustrative)",
+                c[1], mode, dx=0, dy=-8, ha="right", va="top")
+    ax.plot([Km], [Jmax / 2], "o", color=c[1], ms=6)
+    ax.plot([Km, Km], [0, Jmax / 2], color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.plot([0, Km], [Jmax / 2, Jmax / 2], color=S.GUIDE[mode], lw=0.9,
+            ls=":")
+    S.note(ax, 2.5, 53.0,
+           r"at $\Delta$C = K$_m$ = 20,  J = J$_{max}$/2 = 50", mode)
+    ax.set_xlabel(r"concentration gradient  $\Delta$C  (arbitrary units)")
+    ax.set_ylabel("flux across the membrane  J  (arbitrary units)")
+    ax.set_title("Carrier transport saturates; simple diffusion does not")
+    ax.set_xlim(0, 120)
+    ax.set_ylim(0, 132)
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# I.11  Nucleotides and nucleic acid structure
+# ---------------------------------------------------------------------------
+
+
+@figure("bc1-base-pairing")
+def _(mode):
+    """Watson-Crick pairing as labeled shapes: qualitative schematic.
+
+    Purines (A, G) are drawn as a larger two-ring shape (hexagon fused to
+    a pentagon, the pentagon toward the backbone as in the real bases),
+    pyrimidines (T, C) as a smaller single hexagon. A:T carries two dashed
+    hydrogen bonds, G:C three - the textbook bond counts, which are facts,
+    not measurements. The constant-width point is made by hanging both
+    rungs between the same two backbones. Nothing here is to scale.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 5.4))
+    xL, xR = 2.4, 9.6
+    y_at, y_gc = 4.1, 1.9
+
+    for x in (xL, xR):
+        ax.plot([x, x], [0.9, 5.05], color=S.GUIDE[mode], lw=3.0,
+                solid_capstyle="round")
+        S.note(ax, x, 5.2, "sugar-phosphate\nbackbone", mode, ha="center",
+               size=8.5)
+
+    def hexagon(cx, cy, r, col):
+        t = np.deg2rad(np.array([30, 90, 150, 210, 270, 330]))
+        xs, ys = cx + r * np.cos(t), cy + r * np.sin(t)
+        ax.fill(xs, ys, color=col, alpha=0.10, lw=0)
+        ax.plot(np.append(xs, xs[0]), np.append(ys, ys[0]), color=col,
+                lw=2.0)
+
+    def purine(cy, letter, name):
+        cx, r = 5.04, 0.8
+        hexagon(cx, cy, r, c[0])
+        w = r * np.cos(np.deg2rad(30))
+        px = [cx - w, cx - w - 0.75, cx - w - 1.1, cx - w - 0.75, cx - w]
+        py = [cy + 0.4, cy + 0.52, cy, cy - 0.52, cy - 0.4]
+        ax.fill(px, py, color=c[0], alpha=0.10, lw=0)
+        ax.plot(px + [px[0]], py + [py[0]], color=c[0], lw=2.0)
+        ax.plot([xL, cx - w - 1.1], [cy, cy], color=S.GUIDE[mode], lw=1.4)
+        ax.text(cx, cy + 0.30, letter, color=c[0], fontsize=13,
+                fontweight="semibold", ha="center", va="center")
+        S.note(ax, cx, cy - 0.14, name, mode, ha="center", va="center",
+               size=8)
+        S.note(ax, cx, cy - 0.42, "purine", mode, ha="center", va="center",
+               size=8)
+
+    def pyrimidine(cy, letter, name):
+        cx, r = 8.18, 0.66
+        hexagon(cx, cy, r, c[1])
+        w = r * np.cos(np.deg2rad(30))
+        ax.plot([cx + w, xR], [cy, cy], color=S.GUIDE[mode], lw=1.4)
+        ax.text(cx, cy + 0.24, letter, color=c[1], fontsize=13,
+                fontweight="semibold", ha="center", va="center")
+        S.note(ax, cx, cy - 0.12, name, mode, ha="center", va="center",
+               size=7.5)
+        S.note(ax, cx, cy - 0.38, "pyrimidine", mode, ha="center",
+               va="center", size=7.5)
+
+    purine(y_at, "A", "adenine")
+    pyrimidine(y_at, "T", "thymine")
+    purine(y_gc, "G", "guanine")
+    pyrimidine(y_gc, "C", "cytosine")
+
+    for dy in (-0.22, 0.22):
+        ax.plot([5.85, 7.5], [y_at + dy, y_at + dy], color=c[2], lw=1.6,
+                ls=(0, (4, 3)))
+    for dy in (-0.32, 0.0, 0.32):
+        ax.plot([5.85, 7.5], [y_gc + dy, y_gc + dy], color=c[2], lw=1.6,
+                ls=(0, (4, 3)))
+    S.label_end(ax, 6.67, y_at + 0.34, "2 hydrogen bonds", c[2], mode,
+                dx=0, dy=6, ha="center", va="bottom", size=8.5)
+    S.label_end(ax, 6.67, y_gc + 0.44, "3 hydrogen bonds", c[2], mode,
+                dx=0, dy=6, ha="center", va="bottom", size=8.5)
+
+    ax.annotate("", xy=(xR, 0.52), xytext=(xL, 0.52),
+                arrowprops=dict(arrowstyle="<->", color=S.GUIDE[mode],
+                                lw=1.4))
+    S.note(ax, 6.0, 0.30,
+           "every rung is one purine plus one pyrimidine, so the double "
+           "helix keeps a constant width;\nthe third hydrogen bond makes "
+           "G:C pairs harder to separate (GC-rich DNA resists denaturation)",
+           mode, ha="center", va="top")
+    ax.set_title("A pairs T with two hydrogen bonds; G pairs C with three")
+    ax.set_xlim(1.0, 11.0)
+    ax.set_ylim(-0.6, 5.95)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
     return fig
 
 
