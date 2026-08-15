@@ -26,6 +26,8 @@ import {
   getTriangle,
 } from '@/lib/api';
 import LessonVideoPlayer from '@/components/LessonVideoPlayer';
+import ChemVideoPlayer from '@/components/ChemVideoPlayer';
+import { hasScene } from '@/components/chem-scenes';
 import LessonProse from '@/components/LessonProse';
 import TriangleView from '@/components/TriangleView';
 import {
@@ -476,6 +478,16 @@ export default function LessonPage() {
                     <LessonVideoPlayer
                       src={`/videos/octet/${extras.video.slug}.mp4`}
                       title={extras.video.title}
+                      fallback={
+                        hasScene(extras.video.slug) ? (
+                          <ChemVideoPlayer
+                            scene={extras.video.slug}
+                            title={extras.video.title}
+                            seconds={extras.video.seconds || 30}
+                            summary={extras.video.summary || ''}
+                          />
+                        ) : undefined
+                      }
                     />
                     <p className="mt-2 text-[13px] font-medium">
                       {extras.video.title}

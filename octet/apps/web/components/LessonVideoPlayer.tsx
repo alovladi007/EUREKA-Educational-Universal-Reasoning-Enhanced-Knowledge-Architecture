@@ -21,7 +21,10 @@
  * `src` is null and the same chrome renders over a poster that says the video
  * is not up yet, which is the honest state and the one most nodes are in. The
  * controls disable rather than disappear, so the panel does not change shape
- * the day a file lands next to it.
+ * the day a file lands next to it. If the caller supplies a `fallback`
+ * (the computed-scene player, for slugs that have one in chem-scenes.tsx),
+ * that renders instead of the poster — the uploaded file still wins the
+ * moment it exists, because the fallback only shows when src is null or 404s.
  *
  * WHERE THE FILES GO
  *
@@ -35,6 +38,7 @@
 
 import {
   Maximize,
+  Minimize,
   Pause,
   PictureInPicture2,
   Play,
@@ -45,7 +49,8 @@ import {
   Volume2,
   VolumeX,
 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useFullscreen } from '@/lib/use-fullscreen';
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
@@ -90,6 +95,7 @@ export default function LessonVideoPlayer({
   title,
   poster,
   captionsSrc,
+  fallback,
 }: {
   /** /videos/octet/{slug}.mp4, or null when the file is not uploaded yet. */
   src: string | null;
@@ -97,6 +103,13 @@ export default function LessonVideoPlayer({
   poster?: string | null;
   /** A WebVTT track, when one has been produced alongside the video. */
   captionsSrc?: string | null;
+  /**
+   * Rendered INSTEAD of the "not uploaded yet" poster when the file is
+   * missing (src null or 404). The learn page passes the computed-scene
+   * player here for slugs that have a scene; the uploaded file still wins
+   * whenever it exists.
+   */
+  fallback?: ReactNode;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -197,27 +210,68 @@ export default function LessonVideoPlayer({
     }
   };
 
-  const toggleFullscreen = () => {
-    const el = wrapRef.current;
-    if (!el) return;
-    if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
-    else void el.requestFullscreen?.().catch(() => {});
-  };
+  // Wrapper-based fullscreen (custom chrome survives), with webkit fallbacks
+  // and an iOS native-video escape hatch — see lib/use-fullscreen.ts.
+  const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(wrapRef, videoRef);
+
+  // Keyboard, matching the scene player: space/k play-pause, f fullscreen,
+  // m mute, arrows ±10 s (the same step as the skip buttons).
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) return;
+      switch (e.key) {
+        case ' ':
+        case 'k':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'f':
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+        case 'm':
+          e.preventDefault();
+          setMuted((m) => !m);
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          skip(-10);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          skip(10);
+          break;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [togglePlay, toggleFullscreen],
+  );
 
   const pct = duration ? (current / duration) * 100 : 0;
   const bufPct = duration ? (buffered / duration) * 100 : 0;
 
+  // The file is missing and the caller brought a stand-in (the computed
+  // scene player): hand over the whole panel. All hooks above have run, so
+  // the early return is order-stable across renders.
+  if (!hasVideo && fallback) return <>{fallback}</>;
+
   return (
     <div
       ref={wrapRef}
-      className="group relative aspect-video w-full select-none overflow-hidden rounded-xl bg-black"
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      role="region"
+      aria-label={`Video player: ${title}`}
+      className={`group relative w-full select-none overflow-hidden bg-black outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+        isFullscreen ? 'h-full rounded-none' : 'aspect-video rounded-xl'
+      }`}
     >
       {hasVideo ? (
         <video
           ref={videoRef}
           src={src ?? undefined}
           poster={poster ?? undefined}
-          className="h-full w-full"
+          className="h-full w-full object-contain"
           onClick={togglePlay}
           playsInline
           crossOrigin="anonymous"
@@ -403,8 +457,16 @@ export default function LessonVideoPlayer({
             >
               <PictureInPicture2 className="h-4 w-4" />
             </IconBtn>
-            <IconBtn label="Fullscreen" onClick={toggleFullscreen} disabled={!hasVideo}>
-              <Maximize className="h-4 w-4" />
+            <IconBtn
+              label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+              onClick={toggleFullscreen}
+              disabled={!hasVideo && !isFullscreen}
+            >
+              {isFullscreen ? (
+                <Minimize className="h-4 w-4" />
+              ) : (
+                <Maximize className="h-4 w-4" />
+              )}
             </IconBtn>
           </div>
         </div>
