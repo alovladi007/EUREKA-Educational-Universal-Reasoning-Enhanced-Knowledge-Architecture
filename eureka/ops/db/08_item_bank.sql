@@ -242,3 +242,43 @@ CREATE TABLE IF NOT EXISTS item_embeddings (
 -- HNSW index for cosine distance — the typical embedding distance metric.
 CREATE INDEX IF NOT EXISTS idx_item_embeddings_hnsw
     ON item_embeddings USING hnsw (embedding vector_cosine_ops);
+
+-- ----------------------------------------------------------------------------
+-- passages — reading passages a set of items attaches to (2026-08, MCAT).
+--
+-- The real MCAT is predominantly passage-based. A passage carries the same
+-- review + provenance standing as an item (it is content making claims,
+-- exactly like a stem). Mirrors alembic mcat_passages_001 — index names
+-- deliberately match the migration's (ix_*) so both bootstrap paths
+-- converge on identical schemas.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS passages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    bank_id UUID NOT NULL REFERENCES item_banks(id) ON DELETE CASCADE,
+    title VARCHAR(200) NOT NULL,
+    body TEXT NOT NULL,
+
+    -- Same topic scheme as the bank's items (0 Chem/Phys, 1 CARS, 2 Bio,
+    -- 3 Psych).
+    topic_id INTEGER NOT NULL,
+    section VARCHAR(120) NOT NULL,
+
+    review_status item_review_status NOT NULL DEFAULT 'draft',
+    reviewed_at TIMESTAMP,
+    reviewed_by UUID REFERENCES users(id),
+    source_kind item_source_kind NOT NULL DEFAULT 'ai_generated',
+    attribution TEXT,
+
+    deleted_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+CREATE INDEX IF NOT EXISTS ix_passages_bank ON passages(bank_id);
+CREATE INDEX IF NOT EXISTS ix_passages_topic ON passages(topic_id);
+
+-- Items may attach to one passage; discrete items keep NULL.
+ALTER TABLE items
+    ADD COLUMN IF NOT EXISTS passage_id UUID REFERENCES passages(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS ix_items_passage ON items(passage_id);
