@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
-import { Clock, BookOpen, Play, Pause, Volume2, VolumeX, Maximize, StickyNote, Save, Trash2 } from 'lucide-react';
+import { Clock, BookOpen, Play, Pause, Volume2, VolumeX, Maximize, Minimize, StickyNote, Save, Trash2 } from 'lucide-react';
+import { useFullscreen } from '@/lib/use-fullscreen';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -38,6 +39,7 @@ export default function VideoPlayerPage() {
   const contentId = params.contentId as string;
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
 
   const [content, setContent] = useState<ContentItem | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
@@ -110,12 +112,12 @@ export default function VideoPlayerPage() {
     setIsMuted(!isMuted);
   };
 
-  const handleFullscreen = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.requestFullscreen) {
-      videoRef.current.requestFullscreen();
-    }
-  };
+  // Fullscreen the CONTAINER, not the <video>: element fullscreen hands the
+  // stage to the browser's native UI and every custom control (progress bar,
+  // note-taking timestamps, speed) disappears. The shared hook also covers
+  // webkit-prefixed browsers and falls back to native video fullscreen on
+  // iPhone Safari, where element fullscreen does not exist.
+  const { isFullscreen, toggle: handleFullscreen } = useFullscreen(playerRef, videoRef);
 
   const handleTimeUpdate = () => {
     if (!videoRef.current) return;
@@ -221,7 +223,7 @@ export default function VideoPlayerPage() {
       {/* Video Player Section */}
       <div className="flex-1 flex flex-col">
         {/* Video Container */}
-        <div className="flex-1 bg-black flex items-center justify-center relative">
+        <div ref={playerRef} className="flex-1 bg-black flex items-center justify-center relative">
           <video
             ref={videoRef}
             className="w-full h-full"
@@ -275,8 +277,9 @@ export default function VideoPlayerPage() {
                 variant="ghost"
                 onClick={handleFullscreen}
                 className="text-white hover:text-white"
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
               >
-                <Maximize className="w-5 h-5" />
+                {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
               </Button>
             </div>
           </div>

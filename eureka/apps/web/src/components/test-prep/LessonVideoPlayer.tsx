@@ -17,8 +17,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Play, Pause, Volume2, VolumeX, Settings, Subtitles,
-  PictureInPicture2, Maximize, RotateCcw, RotateCw,
+  PictureInPicture2, Maximize, Minimize, RotateCcw, RotateCw,
 } from "lucide-react";
+import { useFullscreen } from "@/lib/use-fullscreen";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
@@ -105,25 +106,62 @@ export function LessonVideoPlayer({
     const v = videoRef.current as (HTMLVideoElement & { requestPictureInPicture?: () => Promise<unknown> }) | null;
     try { await v?.requestPictureInPicture?.(); } catch { /* unsupported */ }
   };
-  const toggleFullscreen = () => {
-    const el = wrapRef.current;
-    if (!el) return;
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    else el.requestFullscreen?.().catch(() => {});
-  };
+  // Wrapper-based fullscreen with webkit + iOS fallbacks and event-driven
+  // state, shared with the watch page — see src/lib/use-fullscreen.ts.
+  const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(wrapRef, videoRef);
+
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) return;
+      switch (e.key) {
+        case " ":
+        case "k":
+          e.preventDefault();
+          togglePlay();
+          break;
+        case "f":
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+        case "m":
+          e.preventDefault();
+          setMuted((m) => !m);
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          skip(-10);
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          skip(10);
+          break;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [togglePlay, toggleFullscreen],
+  );
 
   const pct = duration ? (current / duration) * 100 : 0;
   const bufPct = duration ? (buffered / duration) * 100 : 0;
 
   return (
-    <div ref={wrapRef} className="group relative aspect-video w-full select-none overflow-hidden bg-black">
+    <div
+      ref={wrapRef}
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      role="region"
+      aria-label={`Video player: ${title}`}
+      className={`group relative w-full select-none overflow-hidden bg-black outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+        isFullscreen ? "h-full" : "aspect-video"
+      }`}
+    >
       {/* Stage */}
       {hasVideo ? (
         <video
           ref={videoRef}
           src={videoUrl ?? undefined}
           poster={poster ?? undefined}
-          className="h-full w-full"
+          className="h-full w-full object-contain"
           onClick={togglePlay}
           playsInline
         />
@@ -215,7 +253,13 @@ export function LessonVideoPlayer({
             </IconBtn>
             <IconBtn label="Settings" onClick={() => setSpeedOpen((o) => !o)} disabled={!hasVideo}><Settings className="h-4 w-4" /></IconBtn>
             <IconBtn label="Picture in picture" onClick={enterPip} disabled={!hasVideo}><PictureInPicture2 className="h-4 w-4" /></IconBtn>
-            <IconBtn label="Fullscreen" onClick={toggleFullscreen} disabled={!hasVideo}><Maximize className="h-4 w-4" /></IconBtn>
+            <IconBtn
+              label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+              onClick={toggleFullscreen}
+              disabled={!hasVideo && !isFullscreen}
+            >
+              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            </IconBtn>
           </div>
         </div>
       </div>
