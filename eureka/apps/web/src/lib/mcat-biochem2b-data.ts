@@ -194,7 +194,13 @@ Brown adipose tissue installs a **regulated** uncoupler: **UCP1 (thermogenin)** 
 
 ## Reactive Oxygen and the Genome Next Door
 
-Single electrons occasionally escape — chiefly at Complexes I and III via semiquinone — and reduce O₂ to **superoxide (·O₂⁻)**. The cleanup crew: superoxide dismutase → H₂O₂, then glutathione peroxidase → H₂O. Mitochondria also carry their own small genome (13 respiratory-chain and synthase subunits in humans, maternally inherited); mutations there produce diseases that hit the greediest tissues — muscle, heart, brain, pancreatic β cells — and β-cell energy failure links mitochondrial defects to some diabetes.`,
+Single electrons occasionally escape — chiefly at Complexes I and III via semiquinone — and reduce O₂ to **superoxide (·O₂⁻)**. The cleanup crew: superoxide dismutase → H₂O₂, then glutathione peroxidase → H₂O. Mitochondria also carry their own small genome (13 respiratory-chain and synthase subunits in humans, maternally inherited); mutations there produce diseases that hit the greediest tissues — muscle, heart, brain, pancreatic β cells — and β-cell energy failure links mitochondrial defects to some diabetes.
+
+## Cytochrome c's Second Job: Apoptosis
+
+The small heme protein shuttling electrons between Complexes III and IV moonlights as the cell's death messenger. When internal damage — DNA lesions, ROS overload, growth-factor withdrawal — tips the Bcl-2 protein family's balance toward its pro-apoptotic members (Bax and Bak), those proteins oligomerize in the outer mitochondrial membrane and punch it open: **mitochondrial outer membrane permeabilization (MOMP)**. Cytochrome c, resident in the intermembrane space, spills into the cytosol — and there its meaning changes completely. It binds the scaffold protein **Apaf-1**, which assembles into a seven-spoked wheel called the **apoptosome**, and the apoptosome recruits and activates **procaspase-9**.
+
+The caspases are cysteine proteases synthesized as inactive **procaspases** — zymogen logic, exactly the strategy Chapter I.7 built for the digestive proteases: never store an active demolition enzyme. Caspase-9, an initiator, cleaves and activates the **executioner caspases (3 and 7)**, and each active executioner activates more — a proteolytic amplification cascade that dismantles the cell in an orderly hour: cytoskeleton cut, nuclear lamins cut, a nuclease unleashed on the chromatin. Among the results is the scramblase activation that surfaces **phosphatidylserine**, chapter I.10's "eat me" flag, so macrophages clear the corpse without inflammation — apoptosis's whole point, versus the spillage of necrosis. This mitochondria-triggered route is the **intrinsic pathway**; the **extrinsic pathway** reaches the same executioners from outside, through cell-surface death receptors activating caspase-8, no mitochondrion required. For the exam, hold the doubling: the same protein is an electron courier while compartmentalized and a death sentence once released — location, not chemistry, sets the message.`,
         importantNote:
           'Distinguish "electron transport stopped" from "uncoupled" by the O₂ trace: inhibitors and oligomycin suppress O₂ consumption; uncouplers increase it while ATP output collapses. One measurement separates all three bins.',
         quiz: [
@@ -211,6 +217,19 @@ Single electrons occasionally escape — chiefly at Complexes I and III via semi
             explanation:
               'Oligomycin blocks the Fo proton channel; with no proton re-entry, the gradient builds until pumping (and thus electron flow and O₂ reduction) stalls — respiratory control in action. DNP reopens a path for protons through the lipid bilayer, so electron transport and O₂ consumption restart at full speed, but the flow bypasses the still-blocked synthase: energy is lost as heat and no ATP is made.',
           },
+          {
+            question:
+              'Cytochrome c initiates apoptosis only after mitochondrial outer membrane permeabilization (MOMP) because:',
+            options: [
+              'MOMP oxidizes cytochrome c into its active pro-apoptotic form',
+              'Its death-signal role requires reaching cytosolic Apaf-1, which it cannot contact from the intermembrane space',
+              'Electron transport must stop before caspase genes can be transcribed',
+              'Caspase-9 resides inside the mitochondrial matrix',
+            ],
+            correctIndex: 1,
+            explanation:
+              'Compartmentalization is the entire control system: cytochrome c is harmless while confined to the intermembrane space, and Bax/Bak-driven MOMP simply gives it access to the cytosol, where it nucleates the Apaf-1 apoptosome and activates procaspase-9. That initiator then cleaves executioner procaspases 3 and 7 — zymogens, stored inactive like Chapter I.7’s digestive proteases — and the cascade dismantles the cell. No redox change in cytochrome c and no new transcription is required.',
+          },
         ],
       },
     ],
@@ -223,6 +242,7 @@ Single electrons occasionally escape — chiefly at Complexes I and III via semi
       'Shuttles for cytosolic NADH: malate-aspartate (liver, kidney, heart) → matrix NADH → 2.5 ATP; glycerol 3-phosphate (muscle, brain) → Q → 1.5 ATP. Glucose totals: 32 vs 30 ATP.',
       'Inhibitor logic: rotenone/amytal (I), antimycin A (III), CN⁻/CO/azide (IV), oligomycin (Fo — stops respiration too via backed-up gradient), atractyloside (ANT). Uncouplers (DNP, FCCP) accelerate O₂ consumption while ATP output collapses; UCP1 in brown fat is regulated, purposeful uncoupling for heat.',
       'Respiratory control: [ADP] sets respiration rate. ROS leak at I and III → superoxide → SOD → H₂O₂ → glutathione peroxidase. The 13 mtDNA-encoded subunits make maternally inherited mitochondrial disease hit muscle, heart, brain, and β cells hardest.',
+      'Cytochrome c doubles as the intrinsic-pathway death signal: Bax/Bak MOMP releases it to nucleate the Apaf-1 apoptosome → caspase-9 → executioners 3/7 (all activated from zymogen procaspases); surfaced phosphatidylserine flags the corpse for macrophages. The extrinsic pathway reaches the same executioners via death receptors and caspase-8.',
     ],
   },
 
@@ -393,7 +413,7 @@ Fatty acid synthesis is emphatically not β-oxidation run backward: different co
 
 **The committed step:** **acetyl-CoA carboxylase (ACC)** — biotin-dependent, like nearly every carboxylase — makes **malonyl-CoA**. It is the pathway's control point: citrate activates allosterically; palmitoyl-CoA (product excess) inhibits; **AMPK phosphorylates it off** when energy is low; insulin activates, glucagon/epinephrine deactivate. And malonyl-CoA, remember, is simultaneously the CPT1 brake on oxidation — one metabolite wiring the two pathways in strict opposition.
 
-**The assembly line:** mammalian **fatty acid synthase (FAS I)** is one huge multi-domain polypeptide with a phosphopantetheine arm on ACP swinging intermediates between active sites. Each cycle: condensation (malonyl's decarboxylation drives C–C bond formation — the reason ATP was invested upstream), NADPH reduction, dehydration, NADPH reduction again; each turn adds C2 until **palmitate (C16)** is released. Overall: **8 acetyl-CoA + 7 ATP + 14 NADPH → palmitate.** Elongation beyond C16 and desaturation happen at the ER; mammals cannot desaturate beyond Δ9, which is why **linoleate and α-linolenate are essential** in the diet (and why arachidonate — the eicosanoid precursor — is conditionally so).`,
+**The assembly line:** mammalian **fatty acid synthase (FAS I)** is one huge multi-domain polypeptide with a phosphopantetheine arm on ACP swinging intermediates between active sites. Each cycle: condensation (malonyl's decarboxylation drives C–C bond formation — the reason ATP was invested upstream), NADPH reduction, dehydration, NADPH reduction again; each turn adds C2 until **palmitate (C16)** is released. Like glycogen's (Chapter II.3), this is non-template synthesis: the product's identity, down to its C16 length, comes from the enzymes' own specificity, with no sequence being copied. Overall: **8 acetyl-CoA + 7 ATP + 14 NADPH → palmitate.** Elongation beyond C16 and desaturation happen at the ER; mammals cannot desaturate beyond Δ9, which is why **linoleate and α-linolenate are essential** in the diet (and why arachidonate — the eicosanoid precursor — is conditionally so).`,
         quiz: [
           {
             question:

@@ -21,7 +21,11 @@ export const MCAT_BIOCHEM2D_LESSONS: Record<string, TopicLesson> = {
       {
         id: 'bb2_tr_polymerase',
         title: 'Copying Without a Primer',
-        content: `## The Enzyme and Its Rules
+        content: `## The Central Dogma, Stated First
+
+Before the enzymology, the map. Crick's **central dogma** names the traffic pattern of genetic information: **DNA → RNA → protein** — replication copies the archive, **transcription** rewrites a chosen stretch of it into RNA, and **translation** reads that RNA into polypeptide. It is why chapters II.9–II.13 sit in the order they do: first the DNA archive (its packaging, copying, and repair), now the working copy, next chapter the protein. Two cautions keep the dogma honest. What it truly forbids is only the last arrow's reversal — sequence information never flows from protein back into nucleic acid. And the first arrow does run backward: retroviruses and telomerase both write RNA → DNA, a revision this chapter closes with (Section 6). Hold the map; every enzyme below is one arrow of it.
+
+## The Enzyme and Its Rules
 
 One enzyme runs transcription — **DNA-dependent RNA polymerase** — and its chemistry deliberately echoes replication: the enzyme reads a DNA template strand 3′→5′, builds the new strand **5′→3′**, uses nucleoside triphosphates (here ATP, GTP, CTP, UTP), releases PPᵢ with each addition, and requires Mg²⁺. Two differences carry almost all of the exam weight. First, **RNA polymerase needs no primer** — it can start a chain from scratch on a bare template, which is exactly why replication borrows an RNA-making enzyme (primase) to begin its own DNA strands. Second, RNA polymerase has **no dedicated proofreading exonuclease**, so transcription is sloppier than replication: roughly one error per 10⁴–10⁵ nucleotides, versus one per 10⁹–10¹⁰ for finished DNA. The cell tolerates this because a flawed transcript is disposable — it produces a few bad protein copies and is degraded — whereas a flawed chromosome is forever.
 
@@ -546,7 +550,7 @@ Protein levels are set by degradation as much as by synthesis. Cytosolic protein
     title: 'Gene Regulation',
     domainWeight: '25%',
     overview:
-      'Every cell in your body carries the same genome; a neuron and a hepatocyte differ only in which parts of it they read. This chapter builds regulation from the ground up: the lac operon, where four glucose/lactose states and two regulatory proteins make a clean logic circuit; the protein motifs that grip DNA; and then the eukaryotic tower — chromatin that must be opened, enhancers that act from a distance through coactivators, transcription factors built from swappable modules, hormone receptors that carry signals straight to DNA, and the post-transcriptional layer of translational repressors and microRNAs. It ends where regulation becomes anatomy: the transcription-factor cascades that pattern an embryo, and the potency ladder of stem cells.',
+      'Every cell in your body carries the same genome; a neuron and a hepatocyte differ only in which parts of it they read. This chapter builds regulation from the ground up: the lac operon, where four glucose/lactose states and two regulatory proteins make a clean logic circuit; the protein motifs that grip DNA; and then the eukaryotic tower — chromatin that must be opened, enhancers that act from a distance through coactivators, transcription factors built from swappable modules, hormone receptors that carry signals straight to DNA, the wreckage when the system breaks — oncogenes, tumor suppressors, and the two-hit arithmetic of cancer — and the post-transcriptional layer of translational repressors and microRNAs. It ends where regulation becomes anatomy: the transcription-factor cascades that pattern an embryo, and the potency ladder of stem cells.',
     sections: [
       {
         id: 'bb2_gr_logic',
@@ -768,6 +772,55 @@ The steroid and thyroid hormones make this concrete and clinical. Being lipophil
         ],
       },
       {
+        id: 'bb2_gr_cancer',
+        title: 'When Regulation Fails: Cancer',
+        content: `## Two Ways to Break a Brake-and-Throttle System
+
+Cell division is gene regulation's highest-stakes output, and its control genes sort into two classes with opposite failure modes. **Proto-oncogenes** are the accelerator — growth-factor receptors, signaling relays, cell-cycle drivers; **tumor suppressors** are the brakes. A proto-oncogene turns oncogenic by **gain of function**: a mutation, rearrangement, or overexpression jams the throttle open, and because one hyperactive allele shouts over its normal partner, oncogenic alleles act **dominantly — one hit suffices**. A tumor suppressor contributes by **loss of function**, and one intact allele usually still brakes adequately, so **both copies must fail**. That is Knudson's **two-hit hypothesis**, read directly off **retinoblastoma** arithmetic: a child who inherits one defective *RB* allele carries the first hit in every retinal cell, so a single somatic second hit — likely somewhere, early — produces early-onset, often bilateral tumors, while sporadic cases need two independent hits in the same cell and are late and unilateral.
+
+## The Three Names Worth Knowing
+
+**Ras**, the small GTPase relaying growth-factor signals, is the throttle archetype: oncogenic point mutations cripple its GTPase activity, locking Ras in the **GTP-bound "on" state** so the proliferative signal persists with nothing bound upstream. **Rb** is the cell-cycle brake: unphosphorylated Rb sequesters the transcription factor **E2F**, whose target genes drive entry into S phase; growth signals work by phosphorylating Rb to release E2F, and deleting Rb hands E2F a permanent license. **p53** — "guardian of the genome," the most frequently mutated gene in human cancer — is a transcription factor switched on by DNA damage that renders one of two verdicts: **arrest** (via the CDK inhibitor p21, buying time for repair) or **apoptosis** when the damage is beyond saving. Lose p53 and damaged cells neither pause nor die; mutations compound.
+
+## Oncogene by Copy Number
+
+Gain of function needs no altered protein if the cell simply carries more gene. **Gene amplification** — replication and recombination accidents that leave a chromosome segment present in tens or hundreds of copies — raises output roughly in proportion to copy number: throttle by arithmetic. **HER2**, a growth-factor receptor gene amplified in roughly a fifth of breast cancers, makes the logic clinical — amplified tumors behave aggressively but answer to **trastuzumab**, an antibody against the very receptor the tumor overproduces; **MYCN** amplification marks high-risk **neuroblastoma** the same way. Copy-number lesions are inherently dominant: no single normal allele can outvote a hundred extra copies.
+
+## The Chapter's Own Tools, Turned
+
+Either hit of the two-hit count can be **epigenetic**. Promoter **CpG hypermethylation** — Section 4's heritable silencing mark — shuts a tumor-suppressor gene off without touching its sequence: *MLH1* silencing yields sporadic colon tumors that are mismatch-repair-dead with microsatellite instability, the same phenotype Lynch syndrome reaches by mutation (chapter II.11), and *BRCA1* methylation appears in sporadic breast tumors. The repair syndromes of chapter II.11 — Lynch, xeroderma pigmentosum — slot into this frame as **mutator phenotypes**: broken repair raises the mutation rate, so every other hit arrives sooner. Cancer, in this chapter's vocabulary, is regulation's failure modes compounding — throttles stuck on, brakes cut on both alleles, and the cell's own silencing machinery turned against its guardian genes.`,
+        examTip:
+          'Sort any cancer-gene question by direction first. Gain of function → oncogene → dominant, one hit: Ras locked on GTP, HER2/MYCN amplification. Loss of function → tumor suppressor → two hits required: Rb (E2F freed), p53 (no arrest, no apoptosis). And remember a "hit" can be promoter methylation rather than mutation.',
+        quiz: [
+          {
+            question:
+              'Children with hereditary retinoblastoma develop tumors early and often in both eyes, while sporadic retinoblastoma appears later and in one eye. The accepted explanation is that:',
+            options: [
+              'The hereditary form is caused by a dominant activating mutation in RAS',
+              'Inherited cases carry one defective RB allele in every retinal cell, so a single somatic hit anywhere completes the loss of both copies',
+              'The inherited allele encodes a hyperactive E2F that drives S-phase entry',
+              'Sporadic tumors arise from amplification of the RB gene',
+            ],
+            correctIndex: 1,
+            explanation:
+              'RB is a tumor suppressor, so a cell becomes cancerous only when both alleles fail — Knudson’s two-hit logic. An inherited defective allele leaves every retinal cell one hit from tumor; among millions of cells, second hits occur early and usually more than once, giving bilateral disease. Sporadic tumors require two independent hits in the same cell, a rare coincidence that arrives later and once. Amplifying RB would add brakes, not remove them.',
+          },
+          {
+            question:
+              'A breast tumor carries about 40 copies of an unmutated HER2 gene per cell, with correspondingly high receptor protein levels. This lesion is best classified as:',
+            options: [
+              'A tumor-suppressor lesion requiring a second hit before it affects growth',
+              'An epigenetic silencing event at a CpG island',
+              'A gain-of-function oncogenic event: amplification raises output with copy number and drives proliferative signaling',
+              'A neutral change, since the protein sequence is unaltered',
+            ],
+            correctIndex: 2,
+            explanation:
+              'Amplification is the copy-number route to gain of function: a normal receptor made in grossly abnormal amounts keeps growth signaling on much as a locked-on mutant would, and the lesion is dominant because extra copies cannot be outvoted by a normal allele. Clinically the overproduced receptor is itself the target — trastuzumab in HER2-amplified breast cancer; MYCN amplification plays the same prognostic role in neuroblastoma. Tumor-suppressor two-hit logic runs in the opposite, loss-of-function direction.',
+          },
+        ],
+      },
+      {
         id: 'bb2_gr_posttranscriptional',
         title: 'After the Message Is Made',
         content: `## Regulating the Translator
@@ -864,6 +917,7 @@ Differentiation is a one-way descent of regulatory commitments — usually. The 
       'DNA-binding motifs: helix-turn-helix (Lac/Trp repressors, CRP), zinc finger (Cys/His-held Zn²⁺; nuclear receptors), homeodomain (Hox), leucine zipper and bHLH (dimerization + basic region; heterodimers multiply specificities). Dimers on palindromic sites.',
       'Eukaryotic layer 1 — chromatin, default off: HATs acetylate histone lysines (charge neutralized, open) vs HDACs; methylation means by address (H3K4 active; H3K9/K27 silent); CpG 5-methylcytosine silences heritably (imprinting, X-inactivation); SWI/SNF remodelers move nucleosomes with ATP. Drugs: HDAC inhibitors, azacitidine.',
       'Eukaryotic layer 2: enhancers/UAS act at a distance via DNA looping; coactivators (Mediator, p300/CBP) bridge activators to Pol II; factors are modular (separable DNA-binding + activation domains) → combinatorial control. Steroid/thyroid hormones enter cells and arm zinc-finger nuclear receptors at HREs — hours-scale signaling; tamoxifen exploits it in ER⁺ breast cancer.',
+      'Cancer is regulation broken: proto-oncogene gain-of-function acts dominantly, one hit (Ras locked GTP-on; HER2/MYCN amplification — output scales with copy number, trastuzumab targets the excess); tumor-suppressor loss-of-function needs two hits (Knudson; retinoblastoma arithmetic; Rb frees E2F, p53 loses the arrest-or-apoptosis verdict) — and a hit can be CpG hypermethylation (MLH1, BRCA1) instead of mutation; chapter II.11 repair syndromes accelerate the count as mutator phenotypes.',
       'Post-transcriptional: 4E-BPs sequester eIF4E (mTOR/insulin releases); eIF2 phosphorylation is the global brake (heme-regulated in reticulocytes). miRNA line: pri-miRNA → Drosha → pre-miRNA → export → Dicer → RISC/Argonaute; perfect match cleaves, imperfect represses. siRNA drugs (patisiran) run the same machinery.',
       'Development: maternal bicoid gradient (morphogen; homeodomain) → gap → pair-rule → segment polarity → Hox identity genes (clustered, colinear, conserved). Potency ladder: totipotent zygote → pluripotent inner cell mass/ES cells → multipotent adult stem cells; Oct4/Sox2/Klf4/c-Myc reprogram fibroblasts to iPS cells — identity is a rewritable expression state.',
     ],

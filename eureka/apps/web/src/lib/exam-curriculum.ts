@@ -401,6 +401,7 @@ const MCAT: ExamCurriculum = [
       t('bb2_transcription', 'Transcription and RNA Maturation', 'RNA polymerase mechanics, promoters and terminators, the three eukaryotic polymerases, capping, splicing, and poly(A) tails, alternative splicing as proteome multiplier, and reverse transcriptase and retroviruses as the RNA-to-DNA counterflow.', 12),
       t('bb2_translation', "Translation and the Protein's Afterlife", 'The genetic code and its third-position flexibility, tRNA charging as the true decoding step, the ribosome through initiation, elongation, and termination, antibiotics as translation inhibitors, ER entry and signal sequences, and ubiquitin–proteasome disposal.', 12),
       t('bb2_gene_regulation', 'Gene Regulation', 'Operon logic — lac negative and positive control — repressors, activators, and their DNA-binding domains, eukaryotic layers from chromatin state to enhancers and hormonal induction, translational repression and RNA interference, and stem-cell potency.', 12),
+      t('bb2_dna_technology', 'DNA Technology', 'Restriction enzymes and the cloning workflow — vectors, blue-white selection, genomic vs cDNA libraries — expressing recombinant proteins (insulin), PCR and its 2ⁿ arithmetic, gels, blots, and Sanger sequencing, knockouts and RNAi to CRISPR, and the applications from STR forensics to Bt crops, with the ethics. AAMC 1B recombinant-DNA gap fill.', 12),
     ],
   },
   {

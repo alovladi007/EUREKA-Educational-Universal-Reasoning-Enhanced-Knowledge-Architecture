@@ -1,5 +1,5 @@
 /**
- * MCAT course content — 51 topics with deep lesson content.
+ * MCAT course content — 52 topics with deep lesson content.
  * AI-generated. Requires SME review.
  */
 
@@ -12,6 +12,7 @@ import { MCAT_BIOCHEM2A_LESSONS } from './mcat-biochem2a-data';
 import { MCAT_BIOCHEM2B_LESSONS } from './mcat-biochem2b-data';
 import { MCAT_BIOCHEM2C_LESSONS } from './mcat-biochem2c-data';
 import { MCAT_BIOCHEM2D_LESSONS } from './mcat-biochem2d-data';
+import { MCAT_BIOCHEM2E_LESSONS } from './mcat-biochem2e-data';
 
 export interface LessonSection {
   id: string;
@@ -2513,12 +2514,14 @@ If ANY condition is violated, the population is **evolving**.
     ],
   },
 
-  // Biochemistry II chapters II.1–II.14 live in their own data files:
-  // metabolism (2A/2B) and the information-flow chapters (2C/2D).
+  // Biochemistry II chapters II.1–II.15 live in their own data files:
+  // metabolism (2A/2B), the information-flow chapters (2C/2D), and
+  // DNA technology (2E).
   ...MCAT_BIOCHEM2A_LESSONS,
   ...MCAT_BIOCHEM2B_LESSONS,
   ...MCAT_BIOCHEM2C_LESSONS,
   ...MCAT_BIOCHEM2D_LESSONS,
+  ...MCAT_BIOCHEM2E_LESSONS,
 
   /* =========================================================================
    * PSYCHOLOGICAL, SOCIAL & BIOLOGICAL FOUNDATIONS (25%)

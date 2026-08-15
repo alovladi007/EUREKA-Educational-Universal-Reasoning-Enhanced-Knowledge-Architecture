@@ -425,9 +425,32 @@ Sphingolipids' long saturated tails pack well with cholesterol, and together the
 
 ## Fusion Needs Machinery
 
-Bilayers do not fuse spontaneously on any useful timescale — charged, hydrated surfaces repel. **SNARE proteins** supply the force: a **v-SNARE** on a vesicle zippers into a coiled bundle with **t-SNAREs** on the target membrane, and the zippering reels the two bilayers into contact until they merge. Neurotransmitter release is this machine working on demand — chapter I.10's lipids and chapter I.3's coiled-coil logic in one device.`,
+Bilayers do not fuse spontaneously on any useful timescale — charged, hydrated surfaces repel. **SNARE proteins** supply the force: a **v-SNARE** on a vesicle zippers into a coiled bundle with **t-SNAREs** on the target membrane, and the zippering reels the two bilayers into contact until they merge. Neurotransmitter release is this machine working on demand — chapter I.10's lipids and chapter I.3's coiled-coil logic in one device.
+
+## Traffic Outward: Two Kinds of Exocytosis
+
+SNARE fusion is the terminal step of a whole traffic system. Outbound, secretory vesicles budding from the Golgi reach the surface by two schedules. **Constitutive exocytosis** runs continuously in every cell, no signal required — it is how fresh lipid and new membrane proteins reach the plasma membrane and how proteins like serum albumin and matrix collagen are exported as fast as they are made. **Regulated exocytosis** instead loads product into secretory vesicles that dock at the membrane and wait — insulin in pancreatic β cells, neurotransmitter at synapses, digestive zymogens in acinar cells — until a trigger, almost always a **rise in cytosolic Ca²⁺**, lets the pre-assembled SNAREs finish fusing within milliseconds. Note the geometry fusion preserves: a vesicle's lumen corresponds to the cell's outside, which is why sugar coats attached inside the ER and Golgi end up facing the exterior.
+
+## Traffic Inward: Three Modes of Endocytosis
+
+**Phagocytosis** — cell eating — engulfs particles (bacteria, cell debris) into large vacuoles, the specialty of macrophages and neutrophils. **Pinocytosis** — cell drinking — is the continuous, unselective sipping of extracellular fluid in small vesicles. Selectivity is the third mode's business: in **receptor-mediated endocytosis**, cargo binds surface receptors that cluster into **clathrin-coated pits**, which invaginate and pinch off as coated vesicles, concentrating the cargo far above its fluid-phase level. The coat is shed, the vesicle fuses with an **endosome**, and the endosome's acidic interior unloads cargo from receptor. The routes then split: cargo is typically forwarded to the **lysosome** for digestion, while the emptied **receptors recycle** to the surface to run another round. The flagship user is the **LDL receptor**, importing cholesterol-laden LDL particles by exactly this loop — its failure is familial hypercholesterolemia, a story Biochemistry II's lipoprotein traffic completes. The same loop downregulates hormone receptors, and more than one virus rides it in.`,
         importantNote:
           'Phosphatidylserine belongs on the inner leaflet; on the surface it is a signal. The flippase/floppase/scramblase division — in with ATP, out with ATP, both ways without — is a three-line table the MCAT can test directly.',
+        quiz: [
+          {
+            question:
+              'A mutant cell line internalizes LDL particles poorly despite normal LDL-receptor numbers and normal bulk fluid uptake. The defect most likely lies in:',
+            options: [
+              'Phagocytic engulfment of large particles',
+              'Assembly of clathrin-coated pits for receptor-mediated endocytosis',
+              'The Na⁺/K⁺-ATPase that powers vesicle budding',
+              'Constitutive exocytosis of membrane proteins',
+            ],
+            correctIndex: 1,
+            explanation:
+              'Intact pinocytosis (bulk fluid uptake) alongside failed uptake of a receptor-bound cargo isolates the lesion to receptor-mediated endocytosis: receptors must cluster into clathrin-coated pits that invaginate and pinch off, concentrating LDL far above its concentration in the sipped fluid. Receptor numbers are normal, so pit assembly or budding is the broken step. Endocytosis is not driven by the Na⁺/K⁺ pump, and exocytosis runs the opposite direction — this is the pathway whose receptor-level failure causes familial hypercholesterolemia.',
+          },
+        ],
       },
       {
         id: 'cpb1_mem_proteins',
@@ -523,6 +546,7 @@ No ATP touches the secondary transporter itself — the ATP was spent upstream a
       'Bilayers self-assemble by the hydrophobic effect and stay fluid but managed — FRAP proves lateral diffusion, cytoskeletal fences and rafts organize it; cholesterol buffers fluidity in both directions.',
       'Leaflets are asymmetric on purpose: flippases (in, ATP), floppases (out, ATP), scramblases (both ways, no ATP) manage lipid traffic, and surfaced phosphatidylserine is an apoptosis signal.',
       'Integral proteins cross as ~20-residue hydrophobic α-helices (or β-barrels) read from hydropathy plots and need detergent to extract; peripheral proteins wash off with salt; SNARE zippering drives membrane fusion.',
+      'Vesicular traffic: constitutive exocytosis runs always, regulated exocytosis waits for Ca²⁺ (synapses, insulin); endocytosis comes as phagocytosis, pinocytosis, and receptor-mediated via clathrin-coated pits — cargo to the lysosome through the acidified endosome, receptors recycled to the surface (the LDL-receptor loop of familial hypercholesterolemia).',
       'A gradient has a price: ΔG = RT ln(C₂/C₁) ≈ 5.7 kJ/mol per tenfold at 25 °C, plus ZFΔψ for ions — the membrane potential is worth about as much as one tenfold gradient per charge.',
       'Carriers saturate (GLUT1: hyperbolic, half-saturated near blood glucose, stereospecific); channels approach diffusion-limited rates — the K⁺ selectivity filter\'s carbonyl cage replaces K⁺\'s hydration shell but not Na⁺\'s; aquaporins pass water and exclude even protons.',
       'Na⁺/K⁺-ATPase: 3 Na⁺ out, 2 K⁺ in per ATP — electrogenic, ouabain-inhibited, ~25% of resting ATP, and the source of the gradients everything else spends.',

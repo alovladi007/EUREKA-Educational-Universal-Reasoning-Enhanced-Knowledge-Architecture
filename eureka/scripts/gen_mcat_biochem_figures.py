@@ -71,6 +71,10 @@ qualitative labels only, each declaring itself schematic on the figure):
     II.13 bc2-translation-cycle      (schematic)
     II.14 bc2-lac-operon             (schematic)
 
+Fifth pass (chapter II.15, DNA technology; same contract):
+    II.15 bc2-pcr-cycle          (schematic steps + COMPUTED 2^n inset)
+    II.15 bc2-cloning-workflow   (schematic)
+
 Usage:
     python3 scripts/gen_mcat_biochem_figures.py          # all
     python3 scripts/gen_mcat_biochem_figures.py bc1-ox   # only matching names
@@ -2962,6 +2966,200 @@ def _(mode):
                  " absent")
     ax.set_xlim(-0.2, 16.5)
     ax.set_ylim(-0.3, 11.2)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.15  DNA technology --------------------------------------------------
+
+
+@figure("bc2-pcr-cycle")
+def _(mode):
+    """One PCR cycle as its three temperature steps, plus the 2^n arithmetic.
+
+    The left panel is a qualitative schematic of denature -> anneal -> extend
+    with the standard temperatures labelled. The right panel is COMPUTED:
+    copies per starting molecule = 2^n, plotted on a log axis with the
+    2^10 ~ 1e3 / 2^20 ~ 1e6 / 2^30 ~ 1e9 landmarks the lesson quotes.
+    """
+    c = S.SERIES[mode]
+    fig, (ax, ax2) = plt.subplots(
+        1, 2, figsize=(9.6, 5.2), gridspec_kw={"width_ratios": [1.5, 1.0]})
+
+    strand, primer, new = S.INK_2[mode], c[1], c[0]
+
+    # --- step 1: denature
+    y = 9.6
+    S.note(ax, 0.4, y + 1.25, "1 - denature, ~95 $^\\circ$C: heat melts the "
+           "duplex apart", mode, size=9)
+    ax.plot([0.7, 4.4], [y + 0.22, y + 0.22], color=strand, lw=1.8)
+    ax.plot([0.7, 4.4], [y - 0.22, y - 0.22], color=strand, lw=1.8)
+    for x0 in (1.0, 1.8, 2.6, 3.4, 4.2):
+        ax.plot([x0, x0], [y - 0.22, y + 0.22], color=S.GRID[mode], lw=1.0)
+    ax.annotate("", xy=(6.3, y + 0.75), xytext=(4.7, y + 0.28),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.4))
+    ax.annotate("", xy=(6.3, y - 0.75), xytext=(4.7, y - 0.28),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.4))
+    ax.plot([6.5, 9.6], [y + 0.85, y + 0.85], color=strand, lw=1.8)
+    ax.plot([6.5, 9.6], [y - 0.85, y - 0.85], color=strand, lw=1.8)
+    S.note(ax, 9.75, y + 0.85, "single\nstrands", mode, va="center", size=8)
+
+    # --- step 2: anneal
+    y = 6.2
+    S.note(ax, 0.4, y + 1.0, "2 - anneal, ~50-65 $^\\circ$C: primers (in "
+           "excess) pair a few\ndegrees below their Tm", mode, size=9,
+           va="bottom")
+    ax.plot([0.7, 5.6], [y + 0.5, y + 0.5], color=strand, lw=1.8)
+    ax.plot([4.4, 9.3], [y - 0.5, y - 0.5], color=strand, lw=1.8)
+    ax.plot([4.3, 5.5], [y + 0.24, y + 0.24], color=primer, lw=3.2,
+            solid_capstyle="butt")
+    ax.plot([4.5, 5.7], [y - 0.24, y - 0.24], color=primer, lw=3.2,
+            solid_capstyle="butt")
+    S.note(ax, 5.85, y + 0.24, "primer", mode, va="center", size=8)
+    S.note(ax, 3.05, y - 0.24, "primer", mode, ha="right", va="center",
+           size=8)
+
+    # --- step 3: extend
+    y = 2.7
+    S.note(ax, 0.4, y + 1.0, "3 - extend, 72 $^\\circ$C: thermostable Taq "
+           "copies from each\nprimer's 3$'$ end", mode, size=9, va="bottom")
+    ax.plot([0.7, 5.6], [y + 0.5, y + 0.5], color=strand, lw=1.8)
+    ax.plot([4.3, 5.5], [y + 0.24, y + 0.24], color=primer, lw=3.2,
+            solid_capstyle="butt")
+    ax.annotate("", xy=(0.8, y + 0.24), xytext=(4.3, y + 0.24),
+                arrowprops=dict(arrowstyle="->", color=new, lw=2.0,
+                                linestyle=(0, (4, 2))))
+    ax.plot([4.4, 9.3], [y - 0.5, y - 0.5], color=strand, lw=1.8)
+    ax.plot([4.5, 5.7], [y - 0.24, y - 0.24], color=primer, lw=3.2,
+            solid_capstyle="butt")
+    ax.annotate("", xy=(9.2, y - 0.24), xytext=(5.7, y - 0.24),
+                arrowprops=dict(arrowstyle="->", color=new, lw=2.0,
+                                linestyle=(0, (4, 2))))
+    S.note(ax, 0.4, y - 1.2, "two duplexes where one stood: the cycle "
+           "doubles the target;\na thermocycler repeats it 25-35 times",
+           mode, va="top", size=9)
+    S.note(ax, 10.9, 0.15, "schematic - not to scale", mode, ha="right",
+           size=8.5)
+
+    ax.set_title("One PCR cycle: three steps, three temperatures")
+    ax.set_xlim(0.2, 11.2)
+    ax.set_ylim(0.0, 11.3)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    # --- computed inset: copies = 2^n
+    n = np.arange(0, 36)
+    ax2.semilogy(n, 2.0 ** n, color=new, lw=1.9)
+    for nn, lab in ((10, "2$^{10}$ $\\approx$ 10$^3$"),
+                    (20, "2$^{20}$ $\\approx$ 10$^6$"),
+                    (30, "2$^{30}$ $\\approx$ 10$^9$")):
+        ax2.plot([nn], [2.0 ** nn], "o", color=new, ms=6)
+        ax2.annotate(lab, xy=(nn, 2.0 ** nn), xytext=(nn - 8.5, 2.0 ** (nn + 2.2)),
+                     fontsize=8.5, color=S.INK_2[mode])
+    ax2.set_xlabel("cycle number n")
+    ax2.set_ylabel("copies per starting molecule")
+    ax2.set_title("Exponential: copies $= 2^n$")
+    S.strip(ax2)
+    fig.tight_layout()
+    return fig
+
+
+@figure("bc2-cloning-workflow")
+def _(mode):
+    """The cloning workflow: cut -> ligate -> transform -> select/screen.
+
+    Four stations left to right. Qualitative only: a vector circle and an
+    insert opened by the same enzyme, the ligated recombinant circle, the
+    transformed cell, and the ampicillin + X-gal plate where blue = empty
+    vector (intact lacZ) and white = insert. Declares itself schematic.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.6, 5.4))
+    from matplotlib.patches import Arc, Circle, FancyBboxPatch
+
+    vec, ins = c[0], c[1]
+    ink2 = S.INK_2[mode]
+
+    def station(x, label, sub):
+        ax.text(x, 8.6, label, ha="center", va="bottom", fontsize=10.5,
+                fontweight="semibold", color=S.INK[mode])
+        S.note(ax, x, 2.2, sub, mode, ha="center", va="top", size=8)
+
+    # --- 1: cut
+    station(2.0, "cut",
+            "one restriction enzyme opens the\nvector and frees the insert;"
+            "\nends are complementary\nsticky ends")
+    ax.add_patch(Arc((2.0, 6.2), 2.2, 2.2, theta1=25, theta2=335,
+                     edgecolor=vec, lw=2.0))
+    ax.plot([1.1, 2.9], [3.6, 3.6], color=ins, lw=2.4)
+    ax.plot([0.85, 1.1], [3.78, 3.78], color=ins, lw=1.4)
+    ax.plot([2.9, 3.15], [3.42, 3.42], color=ins, lw=1.4)
+    S.note(ax, 2.0, 3.15, "insert", mode, ha="center", va="top", size=8)
+    S.note(ax, 2.0, 4.85, "vector", mode, ha="center", size=8)
+
+    ax.annotate("", xy=(4.9, 6.0), xytext=(3.6, 6.0),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.7))
+    S.note(ax, 4.25, 6.25, "ligate", mode, ha="center", size=8.5)
+
+    # --- 2: ligate
+    station(6.2, "ligate",
+            "sticky ends anneal; DNA ligase\nseals the backbone (ATP)"
+            "\n= recombinant plasmid")
+    ax.add_patch(Circle((6.2, 6.2), 1.1, facecolor="none", edgecolor=vec,
+                        lw=2.0))
+    ax.add_patch(Arc((6.2, 6.2), 2.2, 2.2, theta1=245, theta2=295,
+                     edgecolor=ins, lw=3.2))
+    S.note(ax, 6.2, 4.55, "insert in place", mode, ha="center", va="top",
+           size=8)
+
+    ax.annotate("", xy=(9.1, 6.0), xytext=(7.8, 6.0),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.7))
+    S.note(ax, 8.45, 6.25, "transform", mode, ha="center", size=8.5)
+
+    # --- 3: transform
+    station(10.4, "transform",
+            "CaCl$_2$ + heat shock, or an\nelectroporation pulse, carries"
+            "\nthe plasmid into E. coli")
+    ax.add_patch(FancyBboxPatch((9.3, 5.3), 2.2, 1.8,
+                                boxstyle="round,pad=0.12,rounding_size=0.55",
+                                facecolor="none", edgecolor=ink2, lw=1.7))
+    ax.add_patch(Circle((10.4, 6.2), 0.52, facecolor="none", edgecolor=vec,
+                        lw=1.8))
+    ax.add_patch(Arc((10.4, 6.2), 1.04, 1.04, theta1=245, theta2=295,
+                     edgecolor=ins, lw=2.4))
+
+    ax.annotate("", xy=(13.3, 6.0), xytext=(12.1, 6.0),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.7))
+    S.note(ax, 12.7, 6.25, "plate", mode, ha="center", size=8.5)
+
+    # --- 4: select + screen
+    station(14.9, "select + screen",
+            "ampicillin kills untransformed cells;\nX-gal stains intact-"
+            "lacZ colonies blue\n(empty vector) - insert colonies\nstay "
+            "white: pick white")
+    ax.add_patch(Circle((14.9, 6.2), 1.35, facecolor="none", edgecolor=ink2,
+                        lw=1.7))
+    for x0, y0 in ((14.3, 6.8), (15.4, 6.9), (15.5, 5.8)):
+        ax.add_patch(Circle((x0, y0), 0.13, facecolor=vec, edgecolor=vec))
+    for x0, y0 in ((14.5, 5.7), (15.0, 6.3), (14.2, 6.15)):
+        ax.add_patch(Circle((x0, y0), 0.13, facecolor="none",
+                            edgecolor=ink2, lw=1.2))
+    S.note(ax, 16.5, 6.85, "blue =\nempty", mode, size=8, va="center")
+    S.note(ax, 16.5, 5.6, "white =\ninsert", mode, size=8, va="center")
+
+    S.note(ax, 0.4, 0.15, "schematic - not to scale", mode, size=8.5)
+    ax.set_title("Cut, ligate, transform, select: the cloning workflow")
+    ax.set_xlim(0.2, 17.4)
+    ax.set_ylim(0.0, 9.6)
     ax.set_xticks([])
     ax.set_yticks([])
     ax.grid(False)

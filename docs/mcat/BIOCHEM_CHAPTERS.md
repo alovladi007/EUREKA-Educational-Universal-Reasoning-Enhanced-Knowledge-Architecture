@@ -1,6 +1,6 @@
 # MCAT Biochemistry I & II — chapter model
 
-Status: **complete — all 25 chapters live.** Every chapter below has been
+Status: **complete — all 26 chapters live (25 modeled + II.15 DNA Technology, added to close the AAMC 1B recombinant-DNA block).** Every chapter below has been
 authored and wired into `EXAM_CURRICULA.MCAT` with its lesson content (the
 catalogue invariant test requires written material behind every live
 chapter, and all 25 now satisfy it). This document remains the
