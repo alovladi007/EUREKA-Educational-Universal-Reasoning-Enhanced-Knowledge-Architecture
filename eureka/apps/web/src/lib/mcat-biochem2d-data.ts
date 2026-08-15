@@ -146,7 +146,9 @@ The 3′ end of an mRNA is made, not found: a protein complex recognizes the sig
 
 ![Schematic map of pre-mRNA maturation: a Pol II transcript acquires a 7-methylguanosine cap in a 5′,5′-triphosphate linkage while 20–30 nucleotides long; the spliceosome (U1 at the GU 5′ splice site, U2 at the branch-point A) removes each intron through two transesterifications that release a lariat; the 3′ end is cleaved 10–30 nucleotides after the AAUAAA signal and poly(A) polymerase adds 80–250 A residues; the finished mRNA is exported. Schematic — not to scale.](/courses/mcat/biochem/bc2-transcript-processing.svg)
 
-Splice-site mutations are a clinical genre of their own: several **β-thalassemias** arise from β-globin mutations that create or destroy splice sites, and **spinal muscular atrophy** is now treated with an antisense oligonucleotide (nusinersen) that redirects splicing of the SMN2 pre-mRNA so a needed exon is retained — splicing chemistry turned into pharmacology.`,
+Splice-site mutations are a clinical genre of their own: several **β-thalassemias** arise from β-globin mutations that create or destroy splice sites, and **spinal muscular atrophy** is now treated with an antisense oligonucleotide (nusinersen) that redirects splicing of the SMN2 pre-mRNA so a needed exon is retained — splicing chemistry turned into pharmacology.
+
+And the old classroom mnemonic still sorts the fates correctly: **ex**ons **ex**it the nucleus and are **ex**pressed; **in**trons stay **in** the nucleus, discarded as lariats.`,
         importantNote:
           'Keep the three marks straight by position and chemistry: cap = 7-methylguanosine in a 5′,5′ linkage, added early and co-transcriptionally; splicing = GU…branch A…AG, two transesterifications, lariat out; tail = cleavage after AAUAAA, then 80–250 template-free adenylates. All three ride on the phosphorylated Pol II CTD.',
         quiz: [
@@ -284,7 +286,9 @@ The genetic code assigns each mRNA **codon** — a nucleotide triplet, read 5′
 
 ## Degeneracy Has a Geometry
 
-Synonymous codons usually differ at the **third position**. The structural reason is **wobble**: the first two codon bases pair strictly with the anticodon, but the pairing at the codon's third base (the anticodon's 5′, or wobble, position) is loose. Crick's wobble rules allow, for example, a G in the wobble position to read U as well as C, and the modified base **inosine** to read three different codons (U, C, or A). Two consequences: a cell can decode all 61 sense codons with a minimum of **32 tRNAs** rather than 61, and third-position (silent) mutations frequently change nothing about the protein. Degeneracy is therefore a buffer — a substantial fraction of random point mutations land harmlessly on wobble positions.`,
+Synonymous codons usually differ at the **third position**. The structural reason is **wobble**: the first two codon bases pair strictly with the anticodon, but the pairing at the codon's third base (the anticodon's 5′, or wobble, position) is loose. Crick's wobble rules allow, for example, a G in the wobble position to read U as well as C, and the modified base **inosine** to read three different codons (U, C, or A). Two consequences: a cell can decode all 61 sense codons with a minimum of **32 tRNAs** rather than 61, and third-position (silent) mutations frequently change nothing about the protein. Degeneracy is therefore a buffer — a substantial fraction of random point mutations land harmlessly on wobble positions.
+
+For the three stop codons, generations of students have leaned on: **U A**re **A**wful (UAA), **U A**re **G**one (UAG), **U G**o **A**way (UGA).`,
         examTip:
           'Antiparallel pairing trips more students than wobble does. A codon written 5′→3′ pairs with an anticodon written 3′→5′; if the answer choices give anticodons 5′→3′, reverse before comparing. The wobble base is the anticodon’s 5′ nucleotide, which faces the codon’s 3′ nucleotide.',
         quiz: [
@@ -308,6 +312,19 @@ Synonymous codons usually differ at the **third position**. The structural reaso
             correctIndex: 1,
             explanation:
               'Most degeneracy is concentrated at the third codon position, where wobble pairing lets one tRNA read several codons; a third-base change therefore often specifies the same amino acid (a silent mutation). Neither ribosomes nor synthetases repair DNA mutations — they act on RNA and amino acids, respectively.',
+          },
+          {
+            question:
+              'A point mutation converts the tyrosine codon UAC into UAG. The most likely consequence for the encoded protein is:',
+            options: [
+              'A conservative amino acid substitution at that position',
+              'A frameshift that scrambles every downstream residue',
+              'Premature termination, releasing a truncated polypeptide',
+              'No change, because UAG is a synonymous codon for tyrosine',
+            ],
+            correctIndex: 2,
+            explanation:
+              'UAG is one of the three stop codons, so this is a nonsense mutation: when the ribosome reaches it, a release factor — not a tRNA — enters the A site and the polypeptide is released short of full length. The reading frame is untouched (frameshifts require insertions or deletions of other than three bases), and UAG codes for no amino acid, so neither substitution answer can be right.',
           },
         ],
       },

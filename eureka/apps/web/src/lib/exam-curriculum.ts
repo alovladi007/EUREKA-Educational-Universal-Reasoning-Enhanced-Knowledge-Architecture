@@ -379,7 +379,6 @@ const MCAT: ExamCurriculum = [
     sectionId: 'bio_biochem', sectionName: 'Biological & Biochemical Foundations',
     topics: [
       t('bb_cell_bio', 'Cell Biology', 'Cell structure, membrane transport, signaling, and the cell cycle.', 15),
-      t('bb_molecular', 'Molecular Biology', 'DNA replication, transcription, translation, gene regulation, and biotechnology.', 15),
       t('bb_organ_systems', 'Organ Systems', 'Cardiovascular, respiratory, renal, digestive, nervous, endocrine, immune, and musculoskeletal systems.', 25),
       t('bb_neuron_action_potential', 'Neurons, Action Potentials & Synaptic Transmission', 'Resting potential, depolarization phases, Na+/K+ channel gating, refractory periods, neurotransmitter release, EPSPs/IPSPs. AAMC high-yield gap fill.', 14),
       t('bb_cardio_physiology', 'Cardiovascular Physiology: Output, Preload, Afterload', 'Cardiac output (CO = HR·SV), Frank-Starling, preload/afterload/contractility, baroreceptor reflex, pressure-volume loops. AAMC high-yield gap fill.', 14),

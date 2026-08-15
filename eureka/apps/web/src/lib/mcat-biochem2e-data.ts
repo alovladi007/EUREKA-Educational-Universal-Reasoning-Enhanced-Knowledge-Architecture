@@ -181,6 +181,8 @@ A gel of digested genomic DNA is a smear — millions of fragments. **Southern b
 | Northern | RNA | Labeled DNA/RNA | Is this gene transcribed here? How large is the transcript? |
 | Western | Proteins (SDS-PAGE) | Antibody | Is this protein present? How much? |
 
+The pairing is easily memorized as **SNOW DROP**, read as two columns — **S**outhern/**N**orthern/**W**estern over **D**NA/**R**NA/**P**rotein.
+
 ## Sanger Sequencing: Termination as Information
 
 **Dideoxy (Sanger) sequencing** reads sequence by sabotaging synthesis. A primer is extended by DNA polymerase on the template of interest in a reaction spiked with a small fraction of **dideoxynucleoside triphosphates (ddNTPs)** — analogs lacking the **3′-OH**. A ddNTP is incorporated normally, but with no 3′-OH there is nothing for the next nucleotide to attack (the same chain-termination chemistry as AZT, chapter II.12), so that strand stops. Incorporation is a random competition between plentiful dNTPs and scarce ddNTPs, so the products are nested fragments terminating at *every* position of a given base. Label the four ddNTPs with four fluorescent colors, separate by capillary electrophoresis, and read the colors shortest to longest: the new strand's sequence, 5′→3′ — the **complement** of the template.

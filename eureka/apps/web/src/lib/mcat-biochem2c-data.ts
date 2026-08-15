@@ -552,7 +552,9 @@ The workhorse is **DNA polymerase III holoenzyme**, a 17-subunit machine. Its lo
 | IV | dinB | No | Translesion (SOS), error-prone |
 | V | umuC/umuD | No | Translesion (SOS), error-prone |
 
-Polymerases IV and V, induced by heavy DNA damage, trade fidelity for the ability to copy past lesions — the honest desperation move examined in Chapter II.11.`,
+Polymerases IV and V, induced by heavy DNA damage, trade fidelity for the ability to copy past lesions — the honest desperation move examined in Chapter II.11.
+
+A memory aid for the order of operations at the fork that has earned its keep with test-takers: **H**elicase **u**nzips, **p**rimase **p**rimes, **Pol III p**olymerizes, **Pol I** replaces **p**rimers, **l**igase **l**inks.`,
         quiz: [
           {
             question:
