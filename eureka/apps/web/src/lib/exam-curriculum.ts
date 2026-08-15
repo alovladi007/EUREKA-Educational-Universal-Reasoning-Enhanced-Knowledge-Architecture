@@ -385,8 +385,8 @@ const MCAT: ExamCurriculum = [
       t('bb_cardio_physiology', 'Cardiovascular Physiology: Output, Preload, Afterload', 'Cardiac output (CO = HR·SV), Frank-Starling, preload/afterload/contractility, baroreceptor reflex, pressure-volume loops. AAMC high-yield gap fill.', 14),
       t('bb_genetics', 'Genetics & Evolution', 'Mendelian genetics, population genetics, Hardy-Weinberg, and natural selection.', 12),
       t('bb_hardy_weinberg', 'Population Genetics & Hardy-Weinberg', 'HWE assumptions, p²+2pq+q² = 1, calculating allele/genotype frequencies, chi-square testing for HWE, linkage. AAMC high-yield gap fill.', 12),
-      // Biochemistry II chapters II.1–II.8 (docs/mcat/BIOCHEM_CHAPTERS.md);
-      // the information-flow chapters II.9–II.14 land next wave.
+      // Biochemistry II chapters II.1–II.14 (docs/mcat/BIOCHEM_CHAPTERS.md):
+      // metabolism (II.1–II.8), then the information-flow chapters (II.9–II.14).
       t('bb2_bioenergetics', 'Bioenergetics and Metabolic Logic', 'Free energy in the cell, why ATP is the currency, coupled reactions, redox carriers (NAD⁺, FAD), and anabolism vs catabolism as opposing one-way streets.', 12),
       t('bb2_glycolysis', 'Glycolysis and Its Mirror', 'The ten steps in functional groups (investment vs payoff), regulation at the three control points, gluconeogenesis and why it is not simple reversal, the Cori cycle, and fermentation.', 12),
       t('bb2_glycogen_ppp', 'Glycogen and the Pentose Phosphate Shunt', 'Glycogen synthesis vs breakdown and their reciprocal hormonal control, glycogen storage in liver vs muscle, and NADPH and ribose from the pentose phosphate pathway.', 12),
@@ -395,6 +395,12 @@ const MCAT: ExamCurriculum = [
       t('bb2_lipid_metabolism', 'Lipid Metabolism', 'β-oxidation arithmetic, ketone bodies in fasting, fatty acid synthesis and its separation from breakdown, cholesterol synthesis in outline, and lipoprotein traffic.', 12),
       t('bb2_nitrogen', 'Nitrogen: Amino Acid Metabolism and the Urea Cycle', 'Transamination and PLP, oxidative deamination, the urea cycle and its cost, glucogenic vs ketogenic skeletons, and heme in outline.', 12),
       t('bb2_integration', 'Metabolic Integration', 'Fed vs fasting vs starvation, insulin, glucagon, epinephrine, and cortisol as metabolic switches, organ specialization, and diabetes as integration failure.', 12),
+      t('bb2_genome_packaging', 'Genomes and Chromosome Packaging', 'Genes as functional units, how a meter of DNA fits a nucleus — supercoiling and topoisomerases, nucleosomes, chromatin orders — dosage compensation by a noncoding RNA, and the prokaryotic nucleoid contrast.', 12),
+      t('bb2_replication', 'Copying DNA', 'The replication rules (semiconservative, bidirectional, semidiscontinuous), polymerase chemistry and proofreading, the replisome cast (helicase, primase, ligase, clamp), leading vs lagging strands, and eukaryotic complications and telomerase.', 12),
+      t('bb2_repair_recombination', 'Protecting DNA: Mutation, Repair, Recombination', 'Mutation classes and their cancer link, mismatch, base-excision, nucleotide-excision, and direct repair, double-strand breaks — homologous recombination vs end joining — recombination in meiosis, and antibody-gene assembly as programmed rearrangement.', 12),
+      t('bb2_transcription', 'Transcription and RNA Maturation', 'RNA polymerase mechanics, promoters and terminators, the three eukaryotic polymerases, capping, splicing, and poly(A) tails, alternative splicing as proteome multiplier, and reverse transcriptase and retroviruses as the RNA-to-DNA counterflow.', 12),
+      t('bb2_translation', "Translation and the Protein's Afterlife", 'The genetic code and its third-position flexibility, tRNA charging as the true decoding step, the ribosome through initiation, elongation, and termination, antibiotics as translation inhibitors, ER entry and signal sequences, and ubiquitin–proteasome disposal.', 12),
+      t('bb2_gene_regulation', 'Gene Regulation', 'Operon logic — lac negative and positive control — repressors, activators, and their DNA-binding domains, eukaryotic layers from chromatin state to enhancers and hormonal induction, translational repression and RNA interference, and stem-cell potency.', 12),
     ],
   },
   {

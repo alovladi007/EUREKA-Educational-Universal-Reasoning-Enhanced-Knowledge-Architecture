@@ -1,11 +1,10 @@
 # MCAT Biochemistry I & II — chapter model
 
-Status: **planning document, chapters only.** No lesson content exists for
-these chapters yet. This is the authoritative outline the authoring waves
-will implement; as each chapter's written material lands, the chapter moves
-into `EXAM_CURRICULA.MCAT` (the catalogue invariant test requires written
-material behind every live chapter, which is why this outline is not wired
-into the registry today).
+Status: **complete — all 25 chapters live.** Every chapter below has been
+authored and wired into `EXAM_CURRICULA.MCAT` with its lesson content (the
+catalogue invariant test requires written material behind every live
+chapter, and all 25 now satisfy it). This document remains the
+authoritative chapter model the implementation followed.
 
 Coverage was benchmarked against a standard full-length biochemistry
 textbook's table of contents supplied by the project owner, then reshaped
@@ -16,8 +15,9 @@ AAMC Foundational Concept / content-category tags are noted per chapter.
 
 The registry's original placeholder topics have both been replaced with
 real chapter sequences: Biochemistry I is live as the `cpb1_*` topics
-(I.1–I.11), and Biochemistry II wave A is live as the `bb2_*` topics
-(II.1–II.8); chapters II.9–II.14 land next wave.
+(I.1–I.11), and Biochemistry II is live in full as the `bb2_*` topics
+(II.1–II.14 — metabolism in wave A, the information-flow chapters in
+wave B).
 
 ---
 
@@ -41,7 +41,7 @@ Home: Chemical & Physical Foundations (`cp_biochem_1` becomes chapters I.1–I.1
 
 ## Biochemistry II — metabolism and the flow of genetic information (14 chapters)
 
-Home: Biological & Biochemical Foundations (II.1–II.8 live as the `bb2_*` topics; II.9–II.14 land next wave).
+Home: Biological & Biochemical Foundations (II.1–II.14 live as the `bb2_*` topics).
 
 | # | Chapter | Covers | AAMC |
 |---|---|---|---|

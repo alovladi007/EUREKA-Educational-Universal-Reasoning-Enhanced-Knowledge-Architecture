@@ -62,6 +62,15 @@ Third pass (Biochemistry II wave A, chapters II.1-II.8; same contract):
     II.7 bc2-nitrogen-flow        (schematic)
     II.8 bc2-fed-fasting          (schematic)
 
+Fourth pass (Biochemistry II wave B, chapters II.9-II.14; all schematic -
+qualitative labels only, each declaring itself schematic on the figure):
+    II.9  bc2-dna-packing            (schematic)
+    II.10 bc2-replication-fork       (schematic)
+    II.11 bc2-repair-pathways        (schematic)
+    II.12 bc2-transcript-processing  (schematic)
+    II.13 bc2-translation-cycle      (schematic)
+    II.14 bc2-lac-operon             (schematic)
+
 Usage:
     python3 scripts/gen_mcat_biochem_figures.py          # all
     python3 scripts/gen_mcat_biochem_figures.py bc1-ox   # only matching names
@@ -2234,6 +2243,731 @@ def _(mode):
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 1.28)
     S.strip(ax)
+    return fig
+
+
+# ===========================================================================
+# Fourth pass - Biochemistry II wave B (chapters II.9-II.14, the information
+# pathways). Every figure here is a pure schematic: drawn shapes standing for
+# textbook-standard molecular biology, qualitative labels only, and each
+# figure declares itself schematic. The few numbers that appear (fold-
+# compaction factors, hydrogen-bond-free facts like "20-30 nt") are stated
+# textbook constants, never measurements off the drawing.
+# ===========================================================================
+
+
+# --- II.9  Genomes and chromosome packaging ---------------------------------
+
+
+@figure("bc2-dna-packing")
+def _(mode):
+    """The packing ladder from naked helix to metaphase chromosome.
+
+    Five stages left to right - naked B-DNA, nucleosome beads on a string,
+    the H1-condensed fiber, looped domains on a scaffold, and the metaphase
+    chromosome - with the textbook-standard approximate fold-compaction
+    label under each rung (about 7-fold at the nucleosome, about 10,000-fold
+    overall). All shapes are drawn, nothing is to scale, and the figure says
+    so.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.6))
+    y = 2.55
+
+    # stage 1: naked double helix - two crossing sine strands
+    cx = 1.5
+    xh = np.linspace(cx - 1.05, cx + 1.05, 300)
+    ph = 2 * np.pi * (xh - xh[0]) / 0.9
+    ax.plot(xh, y + 0.26 * np.sin(ph), color=c[0], lw=1.9)
+    ax.plot(xh, y - 0.26 * np.sin(ph), color=c[0], lw=1.9)
+
+    # stage 2: nucleosome beads on a string
+    cx = 4.35
+    xb = np.linspace(cx - 1.1, cx + 1.1, 200)
+    ax.plot(xb, y + 0.10 * np.sin(2 * np.pi * (xb - xb[0]) / 1.5),
+            color=c[0], lw=1.5)
+    for k, bx in enumerate(np.linspace(cx - 0.9, cx + 0.9, 5)):
+        by = y + 0.10 * np.sin(2 * np.pi * (bx - xb[0]) / 1.5)
+        ax.plot([bx], [by], "o", color=c[1], ms=11, alpha=0.85)
+    S.note(ax, cx, y - 0.62, "histone octamer cores", mode, ha="center",
+           va="top", size=8)
+
+    # stage 3: the H1-condensed fiber - beads packed into a thick zigzag
+    cx = 7.15
+    n = 11
+    fx = np.linspace(cx - 0.95, cx + 0.95, n)
+    fy = y + 0.20 * np.where(np.arange(n) % 2 == 0, 1.0, -1.0)
+    ax.plot(fx, fy, color=c[0], lw=1.3)
+    ax.plot(fx, fy, "o", color=c[1], ms=9, alpha=0.85)
+    S.note(ax, cx, y - 0.98, "H1 clamps the beads together", mode,
+           ha="center", va="top", size=8)
+
+    # stage 4: looped domains anchored on a scaffold - each loop is a
+    # circle drawn through its anchor point on the scaffold
+    cx = 9.95
+    ax.plot([cx, cx], [y - 0.9, y + 0.9], color=S.GUIDE[mode], lw=2.6,
+            solid_capstyle="round")
+    t = np.linspace(0, 2 * np.pi, 120)
+    for ay, ang, r in ((y + 0.62, 35, 0.42), (y + 0.12, 150, 0.46),
+                       (y - 0.32, 15, 0.44), (y - 0.72, 200, 0.40)):
+        a = np.deg2rad(ang)
+        ccx, ccy = cx + r * np.cos(a), ay + r * np.sin(a)
+        ax.plot(ccx + r * np.cos(t), ccy + r * np.sin(t), color=c[0],
+                lw=1.5)
+        ax.plot([cx], [ay], "o", color=c[2], ms=5.5)
+    S.note(ax, cx, y - 1.28, "CTCF + cohesin/condensin\nanchor the loops",
+           mode, ha="center", va="top", size=8)
+
+    # stage 5: metaphase chromosome - four thick arms from a centromere
+    cx = 12.95
+    for dx, dy in ((-0.42, 0.95), (0.42, 0.95), (-0.42, -0.95),
+                   (0.42, -0.95)):
+        ax.plot([cx, cx + dx], [y, y + dy], color=c[0], lw=13,
+                solid_capstyle="round", alpha=0.45)
+    ax.plot([cx], [y], "o", color=S.GUIDE[mode], ms=8)
+
+    stages = [
+        (1.5, "naked B-DNA helix", "1$\\times$"),
+        (4.35, "nucleosome\nbeads on a string", "$\\sim$7$\\times$"),
+        (7.15, "condensed fiber", "$\\sim$40$\\times$"),
+        (9.95, "looped domains\n(TADs)", "$\\sim$1,000$\\times$"),
+        (12.95, "metaphase\nchromosome", "$\\sim$10,000$\\times$ overall"),
+    ]
+    for sx, name, fold in stages:
+        ax.text(sx, 4.35, name, ha="center", va="center", fontsize=10,
+                fontweight="semibold", color=S.INK[mode])
+        ax.text(sx, 0.42, fold, ha="center", va="center", fontsize=10,
+                fontweight="semibold", color=c[2])
+    for x0 in (2.75, 5.65, 8.35, 11.25):
+        ax.annotate("", xy=(x0 + 0.55, y), xytext=(x0, y),
+                    arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                    lw=1.8))
+    S.note(ax, 0.35, -0.42,
+           "schematic - shapes drawn, not to scale; fold-compaction labels "
+           "are approximate textbook values", mode, size=8.5)
+    ax.set_title("Each rung of packing multiplies the compaction")
+    ax.set_xlim(0.2, 14.3)
+    ax.set_ylim(-0.5, 4.85)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.10  Copying DNA -----------------------------------------------------
+
+
+@figure("bc2-replication-fork")
+def _(mode):
+    """The bacterial replication fork with its full cast labeled.
+
+    Pure schematic: parental duplex on the right, DnaB helicase ring at the
+    apex, gyrase working ahead, SSB on the single strands, primase docked on
+    the helicase, the two tau-linked Pol III cores on beta clamps (leading
+    continuous, lagging looped trombone-style around an Okazaki fragment),
+    Pol I nick-translating a finished fragment, and ligase sealing the last
+    nick. Strand polarity is marked 5'/3' everywhere a strand ends, and the
+    new-strand arrows all run 5' to 3'. Nothing is to scale.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.6, 5.8))
+    from matplotlib.patches import Ellipse as E
+
+    tem, new, rna = c[0], c[2], c[1]
+
+    def blob(x, y_, w, h, label=None, dx=0.0, dy_=0.0, ha="center",
+             va="center", size=8.5):
+        ax.add_patch(E((x, y_), w, h, facecolor=S.GUIDE[mode], alpha=0.22,
+                       edgecolor=S.GUIDE[mode], lw=1.4))
+        if label:
+            ax.text(x + dx, y_ + dy_, label, ha=ha, va=va, fontsize=size,
+                    fontweight="semibold", color=S.INK[mode])
+
+    # parental duplex, entering from the right; fork apex at the helicase
+    ax.plot([15.3, 10.55], [6.05, 5.75], color=tem, lw=2.0)
+    ax.plot([15.3, 10.55], [5.35, 5.65], color=tem, lw=2.0)
+    S.note(ax, 15.45, 6.05, "3$'$", mode, va="center", size=8.5)
+    S.note(ax, 15.45, 5.35, "5$'$", mode, va="center", size=8.5)
+    # gyrase ahead of the fork
+    ax.plot([13.6], [5.7], "o", ms=13, markerfacecolor="none",
+            markeredgecolor=S.GUIDE[mode], markeredgewidth=2.2)
+    ax.annotate("DNA gyrase relieves the (+)\nsupercoils pushed ahead",
+                xy=(13.6, 6.0), xytext=(12.9, 7.35), fontsize=8.5,
+                color=S.INK_2[mode], ha="center", va="bottom",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=2))
+    # fork-movement cue
+    ax.annotate("", xy=(14.2, 4.55), xytext=(13.0, 4.55),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.6))
+    S.note(ax, 13.6, 4.3, "fork moves", mode, ha="center", va="top",
+           size=8.5)
+
+    # DnaB helicase ring at the apex, primase docked underneath
+    blob(10.1, 5.7, 1.05, 1.05)
+    ax.text(10.1, 6.55, "DnaB helicase", ha="center", va="bottom",
+            fontsize=9, fontweight="semibold", color=S.INK[mode])
+    blob(9.75, 4.85, 0.75, 0.6)
+    ax.text(10.45, 4.85, "DnaG primase\n(docks on the helicase)",
+            ha="left", va="center", fontsize=8.5, fontweight="semibold",
+            color=S.INK[mode])
+
+    # ---- leading side (top): template up-left, new strand chases the fork
+    ax.plot([9.7, 8.6, 1.0], [6.05, 6.95, 6.95], color=tem, lw=2.0)
+    S.note(ax, 0.85, 6.95, "3$'$", mode, ha="right", va="center", size=8.5)
+    ax.plot([2.0, 8.35], [6.62, 6.62], color=new, lw=2.4)
+    ax.annotate("", xy=(8.75, 6.55), xytext=(8.15, 6.6),
+                arrowprops=dict(arrowstyle="->", color=new, lw=2.2))
+    S.note(ax, 1.85, 6.62, "5$'$", mode, ha="right", va="center", size=8.5)
+    S.note(ax, 8.95, 6.32, "3$'$", mode, va="center", size=8.5)
+    blob(7.6, 6.62, 1.15, 0.75)
+    ax.plot([7.0], [6.62], "o", ms=13, markerfacecolor="none",
+            markeredgecolor=S.GUIDE[mode], markeredgewidth=2.0)
+    S.label_end(ax, 4.9, 7.0, "leading strand: one primer,\nthen continuous"
+                " 5$'\\rightarrow$3$'$", new, mode, dx=0, dy=14,
+                ha="center", va="bottom", size=9)
+    ax.annotate("Pol III core riding a $\\beta$ sliding clamp",
+                xy=(7.05, 6.28), xytext=(3.6, 6.05), fontsize=8.5,
+                color=S.INK_2[mode], ha="center", va="top",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=2))
+
+    # ---- the tau connection and clamp loader between the two cores
+    ax.plot([8.15, 8.5, 8.5], [6.4, 5.6, 4.4], color=S.GUIDE[mode], lw=1.3,
+            ls=(0, (4, 3)))
+    S.note(ax, 8.62, 4.55, "$\\tau$ links the cores; the clamp\n"
+           "loader hands out $\\beta$ clamps", mode, ha="right",
+           va="bottom", size=8)
+
+    # ---- lagging side (bottom): SSB, trombone loop, Okazaki fragments
+    # template: from the fork down-left, around the loop, back out leftward
+    th = np.linspace(0.35 * np.pi, 1.98 * np.pi, 240)
+    lcx, lcy, lr = 7.15, 2.55, 1.15
+    loop_x = lcx + lr * np.cos(th)
+    loop_y = lcy + lr * np.sin(th)
+    ax.plot([9.9, 8.9], [5.35, 4.35], color=tem, lw=2.0)
+    ax.plot([8.9, loop_x[0]], [4.35, loop_y[0]], color=tem, lw=2.0)
+    ax.plot(loop_x, loop_y, color=tem, lw=2.0)
+    ax.plot([loop_x[-1], 4.6, 1.0], [loop_y[-1], 3.45, 3.45], color=tem,
+            lw=2.0)
+    S.note(ax, 0.85, 3.45, "5$'$", mode, ha="right", va="center", size=8.5)
+    # SSB beads on the exposed single strand
+    for bx, by in ((9.55, 5.0), (9.15, 4.6), (8.55, 4.22)):
+        ax.plot([bx], [by], "o", color=S.GUIDE[mode], ms=7.5, alpha=0.8)
+    S.note(ax, 10.3, 3.6, "SSB coats the exposed\nsingle strand", mode,
+           va="top", size=8.5)
+    # the lagging core sits where the loop folds back to the replisome
+    blob(7.7, 3.62, 1.15, 0.75)
+    ax.plot([7.15], [3.35], "o", ms=13, markerfacecolor="none",
+            markeredgecolor=S.GUIDE[mode], markeredgewidth=2.0)
+    S.note(ax, 5.15, 1.05, "the lagging template loops back\n"
+           "\"trombone-style\" through its core", mode, ha="center",
+           va="top", size=8.5)
+    # Okazaki fragment underway inside the loop: RNA primer + new DNA
+    thf = np.linspace(1.28 * np.pi, 1.62 * np.pi, 60)
+    ax.plot(lcx + 0.87 * np.cos(thf), lcy + 0.87 * np.sin(thf), color=rna,
+            lw=2.6)
+    thf2 = np.linspace(1.62 * np.pi, 1.95 * np.pi, 60)
+    ax.plot(lcx + 0.87 * np.cos(thf2), lcy + 0.87 * np.sin(thf2), color=new,
+            lw=2.4)
+    ax.annotate("", xy=(lcx + 0.9 * np.cos(1.97 * np.pi),
+                        lcy + 0.9 * np.sin(1.97 * np.pi)),
+                xytext=(lcx + 0.87 * np.cos(1.9 * np.pi),
+                        lcy + 0.87 * np.sin(1.9 * np.pi)),
+                arrowprops=dict(arrowstyle="->", color=new, lw=2.0))
+    ax.annotate("Okazaki fragment underway,\n5$'\\rightarrow$3$'$ away from"
+                " the fork", xy=(lcx + 0.9, lcy - 0.75), xytext=(9.7, 1.35),
+                fontsize=8.5, color=S.INK_2[mode], ha="left", va="center",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=2))
+    # finished fragments left of the loop: primer, Pol I, ligase
+    ax.plot([4.35, 3.6], [3.14, 3.14], color=rna, lw=2.6)   # primer
+    ax.plot([3.6, 2.6], [3.14, 3.14], color=new, lw=2.4)
+    ax.plot([2.35, 1.35], [3.14, 3.14], color=new, lw=2.4)
+    S.label_end(ax, 4.05, 3.14, "RNA primer", rna, mode, dx=4, dy=-11,
+                ha="left", va="top", size=8.5)
+    blob(4.6, 3.3, 0.85, 0.6)
+    ax.annotate("Pol I nick-translates:\nprimer out, DNA in",
+                xy=(4.6, 3.0), xytext=(4.0, 1.95), fontsize=8.5,
+                color=S.INK_2[mode], ha="center", va="top",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=2))
+    ax.plot([2.475], [3.14], marker="v", color=c[2], ms=7)
+    ax.annotate("ligase seals\nthe last nick", xy=(2.475, 3.3),
+                xytext=(1.7, 2.0), fontsize=8.5, color=S.INK_2[mode],
+                ha="center", va="top",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=2))
+    S.note(ax, 0.55, 8.35,
+           "antiparallel throughout: both new strands grow 5$'\\rightarrow$3$'$,"
+           " so one is continuous, the other comes in fragments", mode,
+           size=9)
+    S.note(ax, 15.45, 0.45, "schematic - not to scale", mode, ha="right",
+           size=8.5)
+    ax.set_title("The replication fork copies both strands at once")
+    ax.set_xlim(0.3, 15.7)
+    ax.set_ylim(0.35, 8.85)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.11  Protecting DNA: mutation, repair, recombination -----------------
+
+
+@figure("bc2-repair-pathways")
+def _(mode):
+    """Damage class to repair pathway: the exam's routing table.
+
+    Six lesion classes on the left, each arrowed to the pathway that handles
+    it, with a one-line mechanism under each pathway name. The double-strand
+    break forks to its two answers (homologous recombination vs end
+    joining). Purely schematic - the arrows are the pairings, nothing more.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 6.4))
+
+    rows = [
+        (10.35, "replication mismatch", "wrong pair that escaped proofreading",
+         [("mismatch repair (MMR)", c[0],
+           "MutS finds it, MutL directs excision of the NEW strand")]),
+        (8.75, "small damaged base",
+         "uracil (deaminated C), 8-oxoguanine",
+         [("base-excision repair (BER)", c[0],
+           "glycosylase $\\rightarrow$ AP site $\\rightarrow$ AP endonuclease"
+           " $\\rightarrow$ polymerase fills, ligase seals")]),
+        (7.15, "bulky, helix-distorting adduct",
+         "UV pyrimidine dimer, benzo[a]pyrene",
+         [("nucleotide-excision repair (NER)", c[0],
+           "excinuclease cuts both sides: 12-13-mer (bacteria), 27-29-mer"
+           " (human);\ndefects $\\rightarrow$ xeroderma pigmentosum")]),
+        (5.45, "methyl / photoproduct mark", "one altered group, helix intact",
+         [("direct reversal", c[0],
+           "photolyase (nonplacental), O$^6$-methylguanine"
+           " methyltransferase, AlkB")]),
+        (3.95, "lesion at a stalled fork", "replication cannot wait",
+         [("translesion synthesis", c[0],
+           "low-fidelity polymerases copy past the lesion")]),
+        (1.95, "double-strand break", "both strands cut - no intact partner",
+         [("homologous recombination (HR)", c[2],
+           "RecA/Rad51, BRCA2 - copies a sister template, accurate"),
+          ("nonhomologous end joining (NHEJ)", c[1],
+           "Ku, DNA-PKcs, ligase IV - no template, error-prone")]),
+    ]
+    for y, lesion, sub, paths in rows:
+        ax.text(0.4, y, lesion, ha="left", va="center", fontsize=10.5,
+                fontweight="semibold", color=S.INK[mode])
+        S.note(ax, 0.4, y - 0.36, sub, mode, va="center", size=8.5)
+        if len(paths) == 1:
+            targets = [(y, paths[0])]
+        else:
+            targets = [(y + 0.75, paths[0]), (y - 0.75, paths[1])]
+        for ty, (pname, pcol, detail) in targets:
+            ax.annotate("", xy=(6.55, ty), xytext=(5.5, y),
+                        arrowprops=dict(arrowstyle="->",
+                                        color=S.GUIDE[mode], lw=1.6,
+                                        shrinkA=2, shrinkB=2))
+            ax.text(6.75, ty + 0.02, pname, ha="left", va="bottom",
+                    fontsize=10.5, fontweight="semibold", color=pcol)
+            S.note(ax, 6.75, ty - 0.12, detail, mode, va="top", size=8.5)
+    S.note(ax, 0.4, 0.35,
+           "schematic - each arrow is the damage-to-pathway pairing the "
+           "exam expects", mode, size=8.5)
+    ax.set_title("Match the lesion to its repair pathway")
+    ax.set_xlim(0.2, 15.4)
+    ax.set_ylim(0.2, 11.1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.12  Transcription and RNA maturation --------------------------------
+
+
+@figure("bc2-transcript-processing")
+def _(mode):
+    """Pre-mRNA maturation: gene, processing, mature message.
+
+    Three tiers: the gene with exons and introns; the primary transcript
+    acquiring its cap while the spliceosome (U1 at the GU site, U2 at the
+    branch-point A) excises each intron as a lariat and the 3' end is
+    cleaved after AAUAAA and polyadenylated; and the finished capped, tailed
+    mRNA leaving for the cytoplasm. The stated lengths (20-30 nt at capping,
+    80-250 A) are textbook constants; the drawing is schematic and says so.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.2, 6.2))
+    from matplotlib.patches import Rectangle, Ellipse as E
+
+    exon, intron = c[0], S.GUIDE[mode]
+
+    def tier(y, xs, h=0.42, with_introns=True):
+        """xs = [(x0, x1, is_exon), ...]; returns nothing, draws the row."""
+        for x0, x1, is_exon in xs:
+            if is_exon:
+                ax.add_patch(Rectangle((x0, y - h / 2), x1 - x0, h,
+                                       facecolor=exon, alpha=0.30,
+                                       edgecolor=exon, lw=1.6))
+            else:
+                ax.plot([x0, x1], [y, y], color=intron, lw=1.6)
+
+    # --- tier 1: the gene
+    y1 = 9.7
+    tier(y1, [(2.0, 3.5, True), (3.5, 5.1, False), (5.1, 6.6, True),
+              (6.6, 8.2, False), (8.2, 9.7, True)])
+    # promoter: bent arrow at the start
+    ax.plot([1.55, 1.55], [y1, y1 + 0.75], color=S.INK_2[mode], lw=1.4)
+    ax.annotate("", xy=(2.35, y1 + 0.75), xytext=(1.55, y1 + 0.75),
+                arrowprops=dict(arrowstyle="->", color=S.INK_2[mode],
+                                lw=1.4))
+    S.note(ax, 1.4, y1 + 0.85, "Pol II starts here", mode, size=8.5)
+    for ex, lab in ((2.75, "exon"), (5.85, "exon"), (8.95, "exon")):
+        S.note(ax, ex, y1 - 0.34, lab, mode, ha="center", va="top", size=8)
+    for ix in (4.3, 7.4):
+        S.note(ax, ix, y1 - 0.34, "intron", mode, ha="center", va="top",
+               size=8)
+    ax.text(10.1, y1, "the gene", ha="left", va="center", fontsize=10,
+            fontweight="semibold", color=S.INK[mode])
+
+    ax.annotate("", xy=(5.85, 8.35), xytext=(5.85, 9.05),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.8))
+    S.note(ax, 6.05, 8.7, "transcription (Pol II copies exons AND introns)",
+           mode, size=8.5)
+
+    # --- tier 2: the primary transcript being processed
+    y2 = 7.0
+    tier(y2, [(2.0, 3.5, True), (3.5, 5.1, False), (5.1, 6.6, True),
+              (6.6, 8.2, False), (8.2, 9.7, True)])
+    # 5' cap
+    ax.plot([1.78], [y2], "o", color=c[1], ms=10)
+    ax.annotate("m$^7$G cap, 5$'$-5$'$ triphosphate link\n(on by 20-30 nt"
+                " of transcript)", xy=(1.78, y2 + 0.2), xytext=(0.6, 8.45),
+                fontsize=8.5, color=S.INK_2[mode], ha="left", va="bottom",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=3))
+    # spliceosome parts on the first intron
+    ax.add_patch(E((3.62, y2 - 0.42), 0.62, 0.5, facecolor=c[2], alpha=0.25,
+                   edgecolor=c[2], lw=1.4))
+    ax.text(3.62, y2 - 0.42, "U1", ha="center", va="center", fontsize=7.5,
+            fontweight="semibold", color=S.INK[mode])
+    ax.add_patch(E((4.72, y2 - 0.42), 0.62, 0.5, facecolor=c[2], alpha=0.25,
+                   edgecolor=c[2], lw=1.4))
+    ax.text(4.72, y2 - 0.42, "U2", ha="center", va="center", fontsize=7.5,
+            fontweight="semibold", color=S.INK[mode])
+    S.note(ax, 4.17, y2 - 0.78, "U1 at the GU 5$'$ splice site;\n"
+           "U2 at the branch-point A", mode, ha="center", va="top",
+           size=7.5)
+    # the lariat: intron looped out above the second intron
+    t = np.linspace(0, 2 * np.pi, 160)
+    ax.plot(7.4 + 0.34 * np.sin(t), 7.9 + 0.30 - 0.30 * np.cos(t),
+            color=intron, lw=1.6)
+    ax.plot([7.4, 7.4], [y2 + 0.21, 7.9], color=intron, lw=1.6)
+    ax.annotate("each intron leaves as a lariat\n(two transesterifications)",
+                xy=(7.76, 8.25), xytext=(8.75, 8.15), fontsize=8.5,
+                color=S.INK_2[mode], ha="left", va="center",
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.0, shrinkB=2))
+    # 3' end: cleavage after AAUAAA, then the tail
+    ax.text(9.15, y2 + 0.36, "AAUAAA", ha="center", va="bottom",
+            fontsize=7.5, color=S.INK_2[mode])
+    ax.plot([9.95, 9.95], [y2 - 0.5, y2 + 0.5], color=c[1], lw=1.6,
+            ls=(0, (3, 2)))
+    ax.plot([9.95, 10.55], [y2, y2], color=intron, lw=1.6)
+    S.note(ax, 9.6, y2 - 0.65, "cleaved 10-30 nt past AAUAAA;\npoly(A)"
+           " polymerase adds 80-250 A", mode, va="top", size=8.5)
+    ax.text(10.65, y2, "primary transcript,\nbeing processed", ha="left",
+            va="center", fontsize=10, fontweight="semibold",
+            color=S.INK[mode])
+
+    ax.annotate("", xy=(5.85, 4.85), xytext=(5.85, 5.55),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.8))
+    S.note(ax, 6.05, 5.2, "splicing + cleavage + tailing complete", mode,
+           size=8.5)
+
+    # --- tier 3: the mature message
+    y3 = 3.5
+    ax.plot([2.48], [y3], "o", color=c[1], ms=10)
+    tier(y3, [(2.7, 4.2, True), (4.2, 5.7, True), (5.7, 7.2, True)])
+    ax.text(7.45, y3, "AAAA$\\cdots$A", ha="left", va="center", fontsize=10,
+            fontweight="semibold", color=c[1])
+    S.note(ax, 2.48, y3 - 0.42, "cap", mode, ha="center", va="top", size=8)
+    S.note(ax, 4.95, y3 - 0.42, "exons joined", mode, ha="center", va="top",
+           size=8)
+    S.note(ax, 8.15, y3 - 0.42, "poly(A) tail", mode, ha="center", va="top",
+           size=8)
+    ax.annotate("", xy=(12.1, y3), xytext=(9.6, y3),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.8))
+    ax.text(12.3, y3, "exported to\nthe cytoplasm", ha="left", va="center",
+            fontsize=10, fontweight="semibold", color=S.INK[mode])
+    S.note(ax, 2.0, 2.3, "mature mRNA: capped, spliced, tailed - the only "
+           "version the ribosome ever sees", mode, size=9)
+    S.note(ax, 13.9, 1.35, "schematic - not to scale", mode, ha="right",
+           size=8.5)
+    ax.set_title("Cap, splice, cleave, tail: a transcript becomes a message")
+    ax.set_xlim(0.4, 14.1)
+    ax.set_ylim(1.2, 10.9)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.13  Translation and the protein's afterlife -------------------------
+
+
+@figure("bc2-translation-cycle")
+def _(mode):
+    """One round of ribosomal elongation across the A, P and E sites.
+
+    Schematic ribosome (large subunit above, small below, mRNA threaded
+    through) with the three tRNA sites labeled and the four numbered moves
+    of the cycle: EF-Tu delivery into A, peptide-bond formation by the 23S
+    rRNA peptidyl transferase center, EF-G translocation one codon toward
+    3', and departure of the deacylated tRNA from E. Nothing is to scale.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.0, 5.9))
+    from matplotlib.patches import Ellipse as E, Rectangle
+
+    # subunits
+    ax.add_patch(E((7.0, 6.1), 6.8, 3.6, facecolor=c[0], alpha=0.07,
+                   edgecolor=S.GUIDE[mode], lw=1.5))
+    ax.add_patch(E((7.0, 3.55), 7.6, 1.5, facecolor=c[0], alpha=0.07,
+                   edgecolor=S.GUIDE[mode], lw=1.5))
+    S.note(ax, 3.15, 7.35, "large subunit", mode, size=8.5)
+    S.note(ax, 2.6, 3.05, "small subunit", mode, size=8.5)
+    # mRNA through the middle
+    ax.plot([1.1, 12.4], [4.35, 4.35], color=S.INK_2[mode], lw=1.7)
+    ax.annotate("", xy=(12.9, 4.35), xytext=(12.3, 4.35),
+                arrowprops=dict(arrowstyle="->", color=S.INK_2[mode],
+                                lw=1.7))
+    S.note(ax, 0.95, 4.35, "5$'$", mode, ha="right", va="center", size=9)
+    S.note(ax, 13.05, 4.35, "3$'$", mode, va="center", size=9)
+    S.note(ax, 12.35, 3.95, "mRNA", mode, size=8.5)
+    # the three sites
+    for sx, letter in ((5.3, "E"), (7.0, "P"), (8.7, "A")):
+        ax.add_patch(Rectangle((sx - 0.62, 4.5), 1.24, 2.2, facecolor="none",
+                               edgecolor=S.GUIDE[mode], lw=1.2,
+                               ls=(0, (4, 3))))
+        ax.text(sx, 7.0, letter, ha="center", va="center", fontsize=13,
+                fontweight="semibold", color=S.INK[mode])
+
+    def trna(x, y_, col, alpha=1.0):
+        ax.plot([x, x], [y_, y_ + 1.6], color=col, lw=2.6, alpha=alpha,
+                solid_capstyle="round")
+        ax.plot([x - 0.34, x + 0.34], [y_ + 1.6, y_ + 1.6], color=col,
+                lw=2.6, alpha=alpha, solid_capstyle="round")
+
+    # P-site tRNA with the growing chain
+    trna(7.0, 4.55, c[0])
+    for k in range(4):
+        ax.plot([7.0], [6.55 + 0.38 * k], "o", color=c[0], ms=7.5)
+    S.note(ax, 6.6, 8.0, "growing\npeptide", mode, ha="right", va="center",
+           size=8.5)
+    # A-site tRNA with its single amino acid
+    trna(8.7, 4.55, c[2])
+    ax.plot([8.7], [6.55], "o", color=c[2], ms=7.5)
+    # 1: delivery
+    trna(11.7, 7.0, c[2])
+    ax.plot([11.7], [9.0], "o", color=c[2], ms=7.5)
+    ax.add_patch(E((11.7, 6.7), 1.0, 0.62, facecolor=S.GUIDE[mode],
+                   alpha=0.25, edgecolor=S.GUIDE[mode], lw=1.3))
+    ax.annotate("", xy=(9.15, 6.65), xytext=(10.95, 7.0),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.7, connectionstyle="arc3,rad=0.2"))
+    ax.text(10.35, 7.55, "1", ha="center", va="center", fontsize=10,
+            fontweight="semibold", color=S.INK[mode])
+    ax.text(9.55, 9.55,
+            "1  EF-Tu$\\cdot$GTP delivers the aminoacyl-tRNA\n"
+            "    to A; EF-Tu leaves after GTP hydrolysis",
+            ha="left", va="center", fontsize=9, fontweight="semibold",
+            color=S.INK[mode])
+    # 2: peptide bond
+    ax.annotate("", xy=(8.5, 6.85), xytext=(7.25, 7.9),
+                arrowprops=dict(arrowstyle="->", color=c[1], lw=1.8,
+                                connectionstyle="arc3,rad=-0.3"))
+    ax.text(8.15, 8.15, "2", ha="center", va="center", fontsize=10,
+            fontweight="semibold", color=S.INK[mode])
+    ax.text(1.0, 9.35,
+            "2  peptidyl transferase center (23S rRNA)\n"
+            "    bonds the chain onto the A-site tRNA",
+            ha="left", va="center", fontsize=9, fontweight="semibold",
+            color=S.INK[mode])
+    # 3: translocation
+    ax.annotate("", xy=(9.4, 2.35), xytext=(6.0, 2.35),
+                arrowprops=dict(arrowstyle="->", color=c[1], lw=2.2))
+    ax.text(9.65, 2.35, "3", ha="left", va="center", fontsize=10,
+            fontweight="semibold", color=S.INK[mode])
+    ax.text(0.6, 1.35,
+            "3  EF-G$\\cdot$GTP moves the ribosome one codon toward 3$'$:"
+            " tRNAs shift A $\\rightarrow$ P $\\rightarrow$ E",
+            ha="left", va="bottom", fontsize=9, fontweight="semibold",
+            color=S.INK[mode])
+    # 4: exit
+    trna(2.9, 6.6, S.GUIDE[mode], alpha=0.9)
+    ax.annotate("", xy=(3.35, 7.3), xytext=(4.75, 6.4),
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode],
+                                lw=1.7, connectionstyle="arc3,rad=0.25"))
+    ax.text(3.95, 6.05, "4", ha="center", va="center", fontsize=10,
+            fontweight="semibold", color=S.INK[mode])
+    ax.text(0.6, 2.15,
+            "4  the deacylated tRNA departs from E",
+            ha="left", va="bottom", fontsize=9, fontweight="semibold",
+            color=S.INK[mode])
+    S.note(ax, 13.35, 0.75, "schematic - not to scale; cycle repeats\n"
+           "once per codon", mode, ha="right", size=8.5)
+    ax.set_title("One elongation round: deliver, bond, shift, eject")
+    ax.set_xlim(0.4, 13.5)
+    ax.set_ylim(0.6, 10.1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    return fig
+
+
+# --- II.14  Gene regulation -------------------------------------------------
+
+
+@figure("bc2-lac-operon")
+def _(mode):
+    """The lac operon's four states in one glucose-by-lactose grid.
+
+    Each cell draws the control region (CAP site, promoter, operator, then
+    lacZYA) with the Lac repressor and CRP-cAMP shown bound or free as that
+    state dictates. Strong transcription appears only in the -glucose /
+    +lactose cell; +glucose/+lactose is basal only. Pure schematic.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 6.4))
+    from matplotlib.patches import Rectangle, Ellipse as E
+
+    rep, crp, txn = c[1], c[2], c[0]
+
+    def cell(x0, y0, repressor_on, crp_on, arrow, status, looped=False,
+             highlight=False):
+        """One operon state. arrow in {'none','basal','strong'}."""
+        if highlight:
+            ax.add_patch(Rectangle((x0 - 0.15, y0 - 0.25), 7.5, 4.35,
+                                   facecolor=txn, alpha=0.06,
+                                   edgecolor="none"))
+        y = y0 + 1.7
+        # DNA and its boxes
+        ax.plot([x0 + 0.1, x0 + 7.0], [y, y], color=S.INK_2[mode], lw=1.3)
+        boxes = [(0.55, 1.45, "CAP\nsite"), (1.45, 2.45, "P"),
+                 (2.45, 3.15, "O$_1$"), (3.15, 6.55, "lacZYA")]
+        for b0, b1, lab in boxes:
+            ax.add_patch(Rectangle((x0 + b0, y - 0.26), b1 - b0, 0.52,
+                                   facecolor="none",
+                                   edgecolor=S.GUIDE[mode], lw=1.2))
+            ax.text(x0 + (b0 + b1) / 2, y - 0.62, lab, ha="center", va="top",
+                    fontsize=7, color=S.INK_2[mode])
+        # the repressor
+        if repressor_on:
+            ax.add_patch(E((x0 + 2.8, y + 0.42), 0.85, 0.6, facecolor=rep,
+                           alpha=0.85, edgecolor=rep, lw=1.2))
+            if looped:
+                # the DNA loop: from a small upstream O3 back to the
+                # repressor sitting on O1
+                t = np.linspace(0.0, 1.0, 80)
+                ax.plot(x0 + 0.3 + 2.5 * t,
+                        y + 0.05 + 1.1 * np.sin(np.pi * t), color=rep,
+                        lw=1.2, ls=(0, (3, 2)))
+                ax.text(x0 + 0.3, y - 0.62, "O$_3$", ha="center", va="top",
+                        fontsize=7, color=S.INK_2[mode])
+                S.note(ax, x0 + 1.55, y + 1.3, "loops to O$_3$", mode,
+                       ha="center", size=7)
+        else:
+            ax.add_patch(E((x0 + 3.4, y + 1.35), 0.85, 0.6, facecolor=rep,
+                           alpha=0.35, edgecolor=rep, lw=1.2))
+            ax.plot([x0 + 3.75], [y + 1.62], "o", color=S.INK_2[mode],
+                    ms=4.5)
+            S.note(ax, x0 + 4.0, y + 1.42, "allolactose holds\nthe repressor"
+                   " off", mode, size=7)
+        # CRP-cAMP (idle CRP moves right when the loop needs the left side)
+        if crp_on:
+            ax.add_patch(E((x0 + 1.0, y + 0.42), 0.85, 0.6, facecolor=crp,
+                           alpha=0.85, edgecolor=crp, lw=1.2))
+            S.note(ax, x0 + 0.15, y + 0.85, "CRP-cAMP", mode, size=7)
+        elif looped:
+            ax.add_patch(E((x0 + 5.35, y + 1.35), 0.85, 0.6,
+                           facecolor="none", edgecolor=crp, lw=1.2,
+                           ls=(0, (3, 2))))
+            S.note(ax, x0 + 4.8, y + 1.22, "CRP idle\n(cAMP low)", mode,
+                   ha="right", size=7)
+        else:
+            ax.add_patch(E((x0 + 0.7, y + 1.35), 0.85, 0.6,
+                           facecolor="none", edgecolor=crp, lw=1.2,
+                           ls=(0, (3, 2))))
+            S.note(ax, x0 + 1.2, y + 1.25, "CRP idle\n(cAMP low)", mode,
+                   size=7)
+        # transcription
+        if arrow == "strong":
+            ax.annotate("", xy=(x0 + 6.4, y + 0.75), xytext=(x0 + 1.95,
+                                                             y + 0.75),
+                        arrowprops=dict(arrowstyle="->", color=txn, lw=2.6))
+        elif arrow == "basal":
+            ax.annotate("", xy=(x0 + 4.1, y + 0.75), xytext=(x0 + 1.95,
+                                                             y + 0.75),
+                        arrowprops=dict(arrowstyle="->", color=txn, lw=1.2,
+                                        ls=(0, (3, 3))))
+        ax.text(x0 + 3.6, y0 + 0.16, status, ha="center", va="center",
+                fontsize=8.8, fontweight="semibold",
+                color=txn if arrow == "strong" else S.INK[mode])
+
+    # grid: columns = lactose, rows = glucose
+    cell(0.9, 6.0, repressor_on=True, crp_on=False, arrow="none",
+         looped=True, status="OFF - repressor clamps the operator")
+    cell(8.9, 6.0, repressor_on=False, crp_on=False, arrow="basal",
+         status="basal only - no CRP push")
+    cell(0.9, 0.7, repressor_on=True, crp_on=True, arrow="none",
+         status="OFF - repressor still blocks")
+    cell(8.9, 0.7, repressor_on=False, crp_on=True, arrow="strong",
+         highlight=True, status="ON - strong transcription of lacZYA")
+
+    ax.text(4.5, 10.75, "lactose absent", ha="center", va="center",
+            fontsize=11, fontweight="semibold", color=S.INK[mode])
+    ax.text(12.5, 10.75, "lactose present", ha="center", va="center",
+            fontsize=11, fontweight="semibold", color=S.INK[mode])
+    ax.text(0.25, 8.0, "glucose present", ha="center", va="center",
+            fontsize=11, fontweight="semibold", color=S.INK[mode],
+            rotation=90)
+    ax.text(0.25, 2.7, "glucose absent", ha="center", va="center",
+            fontsize=11, fontweight="semibold", color=S.INK[mode],
+            rotation=90)
+    ax.plot([0.7, 16.3], [5.55, 5.55], color=S.GRID[mode], lw=1.0)
+    ax.plot([8.6, 8.6], [0.3, 10.4], color=S.GRID[mode], lw=1.0)
+    S.note(ax, 16.3, -0.15, "schematic - not to scale", mode, ha="right",
+           size=8.5)
+    ax.set_title("lac logic: ON only when lactose is present AND glucose is"
+                 " absent")
+    ax.set_xlim(-0.2, 16.5)
+    ax.set_ylim(-0.3, 11.2)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    S.strip(ax)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
     return fig
 
 
