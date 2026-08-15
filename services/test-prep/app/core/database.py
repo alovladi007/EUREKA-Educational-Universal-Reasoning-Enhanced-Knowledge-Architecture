@@ -6,18 +6,26 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
+# This service's engine is SYNCHRONOUS. Environments that hand every service
+# the same async-style URL (CI's matrix exports postgresql+asyncpg://) would
+# make create_engine import the asyncpg driver this service neither ships nor
+# needs — coerce to the sync psycopg2 dialect, exactly as api-core's alembic
+# env.py does for its sync migration run. A plain postgresql:// URL is
+# untouched.
+_db_url = settings.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://")
+
 # Configure engine based on database type
-if settings.DATABASE_URL.startswith("sqlite"):
+if _db_url.startswith("sqlite"):
     # SQLite specific configuration
     engine = create_engine(
-        settings.DATABASE_URL,
+        _db_url,
         connect_args={"check_same_thread": False},
         echo=settings.DEBUG
     )
 else:
     # PostgreSQL/other databases configuration
     engine = create_engine(
-        settings.DATABASE_URL,
+        _db_url,
         pool_pre_ping=True,
         pool_size=10,
         max_overflow=20,
