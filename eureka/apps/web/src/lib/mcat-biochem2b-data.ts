@@ -344,6 +344,8 @@ Complete combustion of palmitate releases about 9,800 kJ/mol; 106 ATP at ~30.5 k
 
 During fasting, the liver runs gluconeogenesis hard, which drains oxaloacetate — the very molecule acetyl-CoA needs to enter the citric acid cycle. β-Oxidation keeps delivering acetyl-CoA anyway. The liver's answer is to condense the surplus into small, water-soluble, exportable fuels: the **ketone bodies**. Three molecules qualify: **acetoacetate**, its reduction product **D-β-hydroxybutyrate**, and the decarboxylation byproduct **acetone** (volatile, exhaled — the fruity breath of ketosis). Making them also liberates CoA, without which β-oxidation itself would stall.
 
+![The three ketone bodies: acetoacetate, D-β-hydroxybutyrate, and acetone, drawn as free acids (the first two circulate as anions). Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-ketone-bodies.svg)
+
 ## The Chemistry, Both Directions
 
 **Synthesis (liver mitochondria):** two acetyl-CoA condense (thiolase) to acetoacetyl-CoA; a third joins to form **HMG-CoA** (HMG-CoA synthase — mitochondrial, distinct from the cytosolic cholesterol enzyme); **HMG-CoA lyase** then releases acetoacetate plus acetyl-CoA. β-Hydroxybutyrate dehydrogenase reduces acetoacetate using NADH, so the circulating β-hydroxybutyrate/acetoacetate ratio actually reports the liver's mitochondrial redox state.
@@ -549,6 +551,8 @@ Urea, CO(NH₂)₂, carries two nitrogens and one carbon. Trace each: the carbon
 **In the cytosol:** **argininosuccinate synthetase** couples citrulline to aspartate, spending ATP **cleaved to AMP + PPi** (two more equivalents); **argininosuccinase** eliminates **fumarate**, leaving arginine; and **arginase** hydrolyzes arginine to **urea + ornithine**, the ornithine returning to the matrix to begin again — a true cycle, catalytic in its intermediates, like the citric acid cycle it secretly shakes hands with.
 
 ![Schematic of nitrogen flow: amino acids → transamination to glutamate → glutamate dehydrogenase releases NH₄⁺ in liver mitochondria → carbamoyl phosphate joins ornithine → citrulline exits to cytosol → aspartate donates the second nitrogen → argininosuccinate → fumarate leaves for the citric acid cycle → arginine → urea + regenerated ornithine. Schematic — not to scale.](/courses/mcat/biochem/bc2-nitrogen-flow.svg)
+
+![Urea cycle intermediates in cycle order: ornithine, citrulline, argininosuccinate, arginine, and urea, drawn as neutral (free acid, free amine) forms — at physiological pH the amino and carboxyl groups are ionized. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-urea-cycle.svg)
 
 ## The Bill, Then the Rebate
 

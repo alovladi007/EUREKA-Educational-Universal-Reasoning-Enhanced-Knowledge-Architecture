@@ -227,6 +227,8 @@ Run the flagship number twice. NADH donating two electrons to oxygen: ΔE′° =
 
 **NAD⁺** (from niacin, vitamin B3; deficiency causes pellagra) accepts a **hydride** — two electrons and one proton delivered as a unit — leaving the second proton in solution: substrate + NAD⁺ → oxidized product + NADH + H⁺. It works as a diffusible **cosubstrate**, shuttling between hundreds of dehydrogenases. **FAD and FMN** (from riboflavin, B2) are usually **prosthetic groups**, tightly and sometimes covalently bound, and can accept electrons **one or two at a time** — the adaptor property that lets flavoproteins mediate between two-electron dehydrogenations and one-electron carriers, with an effective potential tuned by the host protein.
 
+![The nicotinamide business end of the coenzyme: NAD⁺ (aromatic pyridinium, oxidized) and NADH (1,4-dihydronicotinamide, reduced) side by side, with the C4 hydride position marked; R stands for the ADP-ribose of the full dinucleotide — this shows the reactive fragment, not the whole molecule. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-nad-redox.svg)
+
 **NADP⁺** differs from NAD⁺ by one extra phosphate — chemically trivial, organizationally decisive. Dehydrogenases read the tag: catabolic enzymes hand electrons to NAD⁺, and the cell keeps NAD⁺ mostly oxidized, ready to collect. Biosynthetic reductases draw from NADPH, which the cell keeps mostly reduced, ready to spend. One electron economy, two ledgers — collections and disbursements — so that oxidation of fuels and reduction of building blocks can both run at full speed in the same cytosol.`,
         examTip:
           'Potential problems are two-step, every time: ΔE′° = E′°(acceptor) − E′°(donor), then ΔG′° = −nF·ΔE′°. A positive ΔE′° means a negative ΔG′° — spontaneous. Do not flip half-reaction signs; the subtraction handles direction.',
@@ -374,7 +376,11 @@ Glycolysis is also the universal fallback: it is the only ATP source in cells wi
 
 **Steps 1–3** are trap-and-arm: phosphorylate, isomerize, phosphorylate again. The isomerization is not busywork — moving the carbonyl from C-1 to C-2 creates a hydroxyl at C-1 for the second phosphorylation and positions the carbonyl so **step 4** can break the C-3–C-4 bond by a retro-aldol, yielding two 3-carbon pieces that **step 5** makes interchangeable, so the whole molecule proceeds down one payoff line.
 
+![Investment-phase structures in pathway order: glucose, glucose 6-phosphate, fructose 6-phosphate, fructose 1,6-bisphosphate, and the two triose phosphates DHAP and glyceraldehyde 3-phosphate. Sugars drawn open-chain and all species as free acids (in the cell every phosphate is ionized). Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-glycolysis-invest.svg)
+
 **Step 6** is the energetic heart: an aldehyde is oxidized to a carboxylic acid level, but instead of releasing that energy as heat, the enzyme (via a covalent thioester intermediate on an active-site cysteine) attaches inorganic phosphate to form an **acyl phosphate** — a top-rung donor from Chapter II.1 — while NAD⁺ collects the electrons. **Step 7** immediately cashes it: substrate-level phosphorylation of ADP. **Steps 8–9** are a repositioning and a dehydration that concentrate the remaining potential into PEP’s enol phosphate, and **step 10** cashes that too.
+
+![Payoff-phase structures in pathway order: glyceraldehyde 3-phosphate, 1,3-bisphosphoglycerate with its C-1 acyl phosphate, 3-phosphoglycerate, 2-phosphoglycerate, phosphoenolpyruvate, and pyruvate. All species drawn as free acids (physiological forms are the anions). Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-glycolysis-payoff.svg)
 
 ## Reading the Thermodynamics
 
@@ -952,6 +958,8 @@ The chemistry makes the pathologies predictable. **Thiamine deficiency** starves
 | 8 | Malate dehydrogenase | L-Malate + NAD⁺ ⇌ oxaloacetate + NADH | +30.0 |
 
 (Standard tabulated values.) Three steps are strongly exergonic and irreversible in vivo — 1, 3, 4 — and they are, predictably, the three regulated gates.
+
+![The eight citric acid cycle intermediates in reading order: citrate, isocitrate, α-ketoglutarate, succinyl-CoA (drawn as the succinyl thioester with CoA abbreviated at the sulfur), succinate, fumarate, malate, and oxaloacetate. All drawn as free acids (physiological forms are the anions). Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-tca-intermediates.svg)
 
 ## The Chemistry Worth Narrating
 

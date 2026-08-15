@@ -42,6 +42,8 @@ With n chiral centers a sugar has 2ⁿ stereoisomers. An aldohexose has four cen
 - **Diastereomers** — differ at some but not all centers.
 - **Epimers** — diastereomers differing at exactly **one** center: glucose vs galactose (C4), glucose vs mannose (C2).
 
+![Open-chain D-glucose beside the α- and β-D-glucopyranose rings, drawn with explicit wedge-and-dash stereochemistry; the highlighted anomeric carbon C1 is the only center where the two rings differ. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-glucose-forms.svg)
+
 ## The Derivative Toolkit
 
 Cells modify the parent sugars in a few standard ways, and each modified sugar reappears later in the chapter:
@@ -87,6 +89,8 @@ The disaccharides to know:
 - **Lactose** — Gal(**β**1→4)Glc; milk sugar, cleaved by lactase in the small intestine. Reducing.
 - **Sucrose** — Glc(α1↔2β)Fru: the bond runs **anomeric carbon to anomeric carbon**, so neither ring can ever reopen. Nonreducing, incapable of mutarotation — chemical stability that suits its job as the transport sugar of plants.
 - **Trehalose** — Glc(α1↔1α)Glc, the same double-anomeric trick; the circulating sugar of insect hemolymph.
+
+![Maltose Glc(α1→4)Glc, lactose Gal(β1→4)Glc, and sucrose Glc(α1↔2β)Fru, each glycosidic bridge highlighted with the linked carbons numbered. Maltose and lactose keep one free anomeric carbon (drawn as the β anomer) and stay reducing; sucrose ties both anomeric carbons into the bond. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-disaccharides.svg)
 
 ## Lactose Intolerance, Mechanistically
 
@@ -230,6 +234,8 @@ The named acids worth memorizing:
 | α-Linolenate | 18:3(Δ9,12,15), ω-3 | **Essential**; parent of EPA and DHA |
 | Arachidonate | 20:4(Δ5,8,11,14), ω-6 | Made from linoleate; the eicosanoid precursor |
 
+![The named fatty acids drawn from their molecular graphs: palmitate (16:0) and stearate (18:0) extend straight, one cis double bond kinks oleate (18:1 cis-Δ9), and four fold arachidonate (20:4 cis-Δ5,8,11,14) into a hook — Δ positions numbered from the carboxyl carbon. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-fatty-acids.svg)
+
 **Essential** means exactly this: human desaturases cannot install double bonds beyond Δ9, so the ω-6 and ω-3 families must start from dietary linoleate and α-linolenate. Elongation and further desaturation then build arachidonate (from ω-6) and EPA/DHA (from ω-3). In natural fatty acids the double bonds are almost always **cis** and, when multiple, are methylene-interrupted rather than conjugated. Nutrition adds two testable wrinkles. The ω-6 and ω-3 families compete for the same downstream enzymes, so dietary guidance is framed as a ratio — a few-to-one, against the far more ω-6-heavy typical Western diet (standard comparison, and the rationale behind fish-oil enthusiasm). And trans fats reach the diet two ways: industrial partial hydrogenation, and, in traces, microbial fermentation in ruminants — which is why dairy fat carries a little even without processing.
 
 ## Cis Kinks and Melting
@@ -315,7 +321,9 @@ The sugar-headed sphingolipids sit exclusively on the **outer leaflet**, contrib
 
 ## Cholesterol
 
-**Cholesterol** is the structural outlier: four fused rings — the nearly planar, rigid **steroid nucleus** — with a hydrocarbon tail at one end and a single hydroxyl at C3 as its entire polar head. It is still amphipathic, just barely, and it wedges between phospholipid tails with its rigid face ordering them — the fluidity-buffering role quantified in chapter I.10. Beyond structure, cholesterol is a synthetic hub: the precursor of the **steroid hormones**, of the **bile acids** that emulsify dietary fat, and of **vitamin D**. For transport, its one hydroxyl is esterified to a fatty acid, producing wholly hydrophobic **cholesteryl esters** — the storage-and-cargo form packed into the core of lipoproteins, a preview of the metabolism chapters.`,
+**Cholesterol** is the structural outlier: four fused rings — the nearly planar, rigid **steroid nucleus** — with a hydrocarbon tail at one end and a single hydroxyl at C3 as its entire polar head. It is still amphipathic, just barely, and it wedges between phospholipid tails with its rigid face ordering them — the fluidity-buffering role quantified in chapter I.10. Beyond structure, cholesterol is a synthetic hub: the precursor of the **steroid hormones**, of the **bile acids** that emulsify dietary fat, and of **vitamin D**. For transport, its one hydroxyl is esterified to a fatty acid, producing wholly hydrophobic **cholesteryl esters** — the storage-and-cargo form packed into the core of lipoproteins, a preview of the metabolism chapters.
+
+![The two membrane amphipaths compared: phosphatidylcholine — drawn as the defined species 1,2-dipalmitoyl-sn-glycero-3-phosphocholine (DPPC) — with its phosphocholine head and twin palmitoyl tails bracketed, beside cholesterol, whose lone C3 hydroxyl is its entire polar head on the rigid four-ring nucleus and hydrocarbon tail. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-membrane-lipids.svg)`,
         quiz: [
           {
             question:
@@ -538,6 +546,8 @@ No ATP touches the secondary transporter itself — the ATP was spent upstream a
 
 The bases split by ring count. **Purines** — adenine and guanine — are fused double rings; **pyrimidines** — cytosine, thymine, and uracil — are single rings. (Mnemonic: **PUR**ines **A**re **G**old; pyrimidines are the ones you **C**an **T**r**U**ncate to one ring.) DNA uses A, G, C, T; RNA swaps thymine for uracil — and thymine is simply uracil with a methyl group, a swap whose deep logic waits two sections ahead. The bases are flat, aromatic, and hydrophobic at cellular pH; they absorb ultraviolet light near **260 nm**, the wavelength every nucleic acid assay watches.
 
+![The five bases: fused-double-ring purines (adenine, guanine) above the single-ring pyrimidines (cytosine, thymine, uracil) — thymine is uracil plus a methyl group, the swap whose logic this chapter closes on. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-bases.svg)
+
 ## The Naming Ladder
 
 The vocabulary is strictly compositional, and the MCAT tests each rung:
@@ -551,6 +561,8 @@ The vocabulary is strictly compositional, and the MCAT tests each rung:
 | Thymine (DNA) | Thymidine | dTMP … |
 
 The sugar is ribose in RNA, 2′-deoxyribose in DNA (deoxy- prefixes the whole DNA series). Sugar carbons take **primes** to distinguish them from base atoms, and the primes carry meaning everywhere downstream: phosphates attach at the **5′** carbon (labeled α, β, γ outward from the sugar in ATP), chains grow at the **3′** hydroxyl, and sequences are written 5′ → 3′.
+
+![Anatomy of one nucleotide: deoxyadenosine 5′-monophosphate (dAMP) with phosphate, 2′-deoxyribose, and N9-linked adenine bracket-labeled and the sugar carbons primed — the highlighted 2′ carbon carries H where RNA's ribose carries OH. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-nucleotide-anatomy.svg)
 
 ## The Backbone
 

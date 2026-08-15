@@ -259,6 +259,14 @@ Learn the twenty as five chemical families; the table's side-chain pKa values ar
 
 Nonpolar aliphatic residues (Gly, Ala, Val, Leu, Ile, Pro, Met) pack protein cores; the aromatics (Phe, Trp, Tyr) are mostly hydrophobic, with Tyr's phenol the polar exception; polar uncharged residues (Ser, Thr, Cys, Asn, Gln) hydrogen-bond and host modifications; Lys and Arg are reliably positive at pH 7.4, Asp and Glu reliably negative — apply the pH-versus-pKa rule from chapter I.1 and every entry follows.
 
+![The seven nonpolar aliphatic amino acids — glycine, alanine, valine, leucine, isoleucine, methionine, and proline — drawn as their physiologically standard neutral (un-ionized) forms, with three- and one-letter codes. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-aa-nonpolar.svg)
+
+![The three aromatic amino acids — phenylalanine, tyrosine, and tryptophan — as neutral forms; tyrosine's phenol carries the tabulated side-chain pKa of 10.07. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-aa-aromatic.svg)
+
+![The five polar uncharged amino acids — serine, threonine, cysteine, asparagine, and glutamine — as neutral forms; cysteine's thiol carries the tabulated side-chain pKa of 8.18. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-aa-polar.svg)
+
+![The five amino acids with ionizable charged side chains, drawn as their neutral forms with the tabulated side-chain pKa values: lysine 10.53, arginine 12.48, histidine 6.00, aspartic acid 3.65, glutamic acid 4.25. Apply the pH-versus-pKa rule at pH 7.4 and Lys and Arg come out positive, Asp and Glu negative, His mostly neutral. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-aa-charged.svg)
+
 ## Five Residues Worth Singling Out
 
 - **Glycine** — no side chain to clash; the most conformationally free residue, common in tight turns.
@@ -333,6 +341,8 @@ Each arithmetic line above is its own check: sum, then halve. The pattern to int
         content: `## Forming and Breaking the Bond
 
 Two amino acids join when the α-carboxyl of one condenses with the α-amino of the next, expelling water and forming an amide — the **peptide bond**. The joined units are called **residues**. Thermodynamics actually favors the reverse reaction: hydrolysis of a peptide bond is exergonic, and cells must activate the carboxyl group (ultimately at ATP's expense, on the ribosome) to drive synthesis. But hydrolysis has a high activation barrier, so peptide bonds are kinetically rock-solid — half-lives measured in years without a protease. Favorable yet frozen: a classic thermodynamics-versus-kinetics contrast the MCAT loves.
+
+![Condensation of alanine and glycine into the Ala–Gly dipeptide plus water, with the new planar amide (peptide) bond highlighted. Neutral forms shown. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-peptide-bond.svg)
 
 ## Why the Bond Is Planar
 
@@ -420,6 +430,8 @@ A protein's specific folded shape is its **conformation** — interconvertible w
 ## The Stabilizer Inventory
 
 The dominant contribution is the **hydrophobic effect**: nonpolar side chains bury themselves in a water-free core, releasing ordered surface water (chapter I.1's entropy argument, now applied). Hydrogen bonds and salt bridges refine the fold — with the accounting caveat that a polar group buried without a hydrogen-bond partner costs stability, so folds maximize satisfied partners. Van der Waals packing adds up across a tightly fitted core. **Disulfide bonds** are the lone covalent stabilizer, and because the cytosol is chemically reducing, they mark mostly secreted and extracellular proteins.
+
+![Oxidation of two cysteines to cystine: the thiols give up two protons and two electrons, and the resulting disulfide (S–S) bridge — highlighted — covalently cross-links the chains. Neutral forms shown. Structures rendered from the molecular graph (RDKit); formulas machine-verified.](/courses/mcat/biochem/bcs-disulfide.svg)
 
 ## The Backbone's Rulebook
 
