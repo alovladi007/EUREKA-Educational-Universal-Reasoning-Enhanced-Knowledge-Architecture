@@ -57,6 +57,7 @@ const apr00Pm = loadTs(lib('patent-bar-uspto-apr2000-pm-data.ts'), { './patent-b
 const nov99Am = loadTs(lib('patent-bar-uspto-nov1999-data.ts'), { './patent-bar-qbank-data': qbank });
 const nov99Pm = loadTs(lib('patent-bar-uspto-nov1999-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const oct02Am = loadTs(lib('patent-bar-uspto-oct2002-data.ts'), { './patent-bar-qbank-data': qbank });
+const oct02Pm = loadTs(lib('patent-bar-uspto-oct2002-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const coverage = loadTs(lib('patent-bar-coverage.ts'), { './patent-bar-qbank-data': qbank });
 
 const all = [
@@ -83,6 +84,7 @@ const all = [
   ...nov99Am.USPTO_NOV1999_AM_QUESTIONS,
   ...nov99Pm.USPTO_NOV1999_PM_QUESTIONS,
   ...oct02Am.USPTO_OCT2002_AM_QUESTIONS,
+  ...oct02Pm.USPTO_OCT2002_PM_QUESTIONS,
 ];
 
 const { rows, bankTotal } = coverage.computePatentBarCoverage(all);

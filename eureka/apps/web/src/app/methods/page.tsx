@@ -60,7 +60,7 @@ const MACHINERY = [
 
 const RIGOR = [
   ['Depth gate, flagship courses', '18k words · 60 equations · 20 figures per module'],
-  ['Patent Bar question bank', '1,634 items · 828 official USPTO'],
+  ['Patent Bar question bank', '1,684 items · 878 official USPTO'],
   ['Mathematics lesson standard', '≥20 pages per topic, worked examples + problem sets'],
   ['Exam formats reproduced', 'MCQ, multi-select, PBQ, timed sections'],
   ['Institution controls', 'SSO/SAML · LTI 1.3 · FERPA · COPPA · HIPAA'],
