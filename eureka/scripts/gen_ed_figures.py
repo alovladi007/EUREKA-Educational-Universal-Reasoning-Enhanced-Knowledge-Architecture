@@ -2923,6 +2923,526 @@ def _(mode):
 
 
 # ---------------------------------------------------------------------------
+# Module 22 - diffusion in semiconductors
+# ---------------------------------------------------------------------------
+
+
+@figure("m22-erfc-profiles")
+def _(mode):
+    """Predeposition profiles C = Cs erfc(x / 2 sqrt(Dt)) at three anneal
+    times: the surface stays pinned, the front advances as sqrt(t)."""
+    import math
+
+    c = S.SERIES[mode]
+    x = np.linspace(0, 0.6, 500)  # um
+    fig, ax = plt.subplots()
+    for i, (Dt, lab) in enumerate([(1.6e-4, "t"), (6.4e-4, "4t"), (2.56e-3, "16t")]):
+        L = 2 * np.sqrt(Dt)  # um
+        prof = np.array([math.erfc(xi / L) for xi in x])
+        ax.semilogy(x, prof, color=c[i], lw=2.0)
+        hit = prof < 3e-6
+        xl = x[np.argmax(hit)] if hit.any() else x[-1]
+        S.label_end(ax, xl, 3e-6, lab, c[i], mode, dx=2, dy=6)
+    ax.set_ylim(1e-6, 2)
+    ax.set_xlabel(r"depth  $x$  ($\mu$m)")
+    ax.set_ylabel(r"$C/C_s$")
+    ax.set_title("Constant-source diffusion: quadruple the time, double the depth")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-gaussian-drivein")
+def _(mode):
+    """Drive-in profiles C = Q/sqrt(pi D t) exp(-x^2/4Dt) at three times:
+    the dose (area) is conserved, so the surface falls as the front advances."""
+    c = S.SERIES[mode]
+    x = np.linspace(0, 1.2, 500)  # um
+    fig, ax = plt.subplots()
+    for i, (Dt, lab) in enumerate([(2.5e-3, "t"), (1.0e-2, "4t"), (4.0e-2, "16t")]):
+        prof = (1.0 / np.sqrt(np.pi * Dt)) * np.exp(-(x**2) / (4 * Dt))
+        ax.semilogy(x, prof, color=c[i], lw=2.0)
+        k = np.argmin(np.abs(prof - 3e-2 * prof[0])) if i < 2 else len(x) - 1
+        S.label_end(ax, x[k], prof[k], lab, c[i], mode, dx=4, dy=4)
+    ax.set_ylim(1e-2, 30)
+    ax.set_xlabel(r"depth  $x$  ($\mu$m)")
+    ax.set_ylabel(r"$C \cdot \sqrt{\pi D t_1}/Q$  (norm.)")
+    ax.set_title("Fixed-dose diffusion: the profile spreads and the surface pays for it")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-arrhenius-dopants")
+def _(mode):
+    """Arrhenius lines for the module's three representative dopant parameter
+    sets in silicon (B: 0.8 cm^2/s, 3.5 eV; P: 4 cm^2/s, 3.7 eV;
+    As: 10 cm^2/s, 4.0 eV), D = D0 exp(-Ea/kT)."""
+    c = S.SERIES[mode]
+    k = 8.617e-5
+    T = np.linspace(1123, 1473, 300)
+    fig, ax = plt.subplots()
+    sets = [(0.8, 3.5, "boron"), (4.0, 3.7, "phosphorus"), (10.0, 4.0, "arsenic")]
+    for i, (D0, Ea, lab) in enumerate(sets):
+        D = D0 * np.exp(-Ea / (k * T))
+        ax.semilogy(1e4 / T, D, color=c[i], lw=2.0)
+        S.label_end(ax, 1e4 / T[0], D[0], lab, c[i], mode, dx=-6, dy=(8, 0, -10)[i],
+                    ha="right")
+    ax.axvline(1e4 / 1273, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 1e4 / 1273 + 0.02, 2e-13, "1000 °C", mode, size=8.5)
+    ax.set_xlabel(r"$10^4/T$  (K$^{-1}$)")
+    ax.set_ylabel(r"$D$  (cm$^2$/s)")
+    ax.set_title("Three to four eV of activation: diffusion has an on-off switch")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-field-enhancement")
+def _(mode):
+    """Built-in field enhancement h = 1 + (C/2n_i)/sqrt(1+(C/2n_i)^2):
+    unity in the intrinsic limit, exactly 2 fully extrinsic."""
+    c = S.SERIES[mode]
+    u = np.logspace(-2, 2, 400)  # C / n_i
+    h = 1 + (u / 2) / np.sqrt(1 + (u / 2) ** 2)
+    fig, ax = plt.subplots()
+    ax.semilogx(u, h, color=c[0], lw=2.2)
+    S.label_end(ax, u[-1], h[-1], "h(C)", c[0], mode, dy=-2)
+    for y, lab in [(1.0, "intrinsic limit h = 1"), (2.0, "extrinsic limit h = 2")]:
+        ax.axhline(y, color=S.GUIDE[mode], lw=0.9, ls=":")
+        S.note(ax, 1.3e-2, y + 0.02, lab, mode, size=8.5)
+    ax.set_ylim(0.85, 2.2)
+    ax.set_xlabel(r"surface concentration over intrinsic,  $C/n_i$")
+    ax.set_ylabel("field enhancement factor  h")
+    ax.set_title("The dopant drags its own field: at most a factor of two, always inward")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-active-vs-chemical")
+def _(mode):
+    """Constructed illustration (not measured data): a Gaussian chemical
+    profile against the electrically active profile clipped at solid
+    solubility, C_act = min(C, C_sol). The shaded gap is the inactive dose."""
+    c = S.SERIES[mode]
+    x = np.linspace(0, 0.25, 400)  # um
+    chem = 8.0 * np.exp(-(x**2) / (4 * 2.0e-3))
+    csol = 2.5
+    act = np.minimum(chem, csol)
+    fig, ax = plt.subplots()
+    ax.semilogy(x, chem, color=c[0], lw=2.2)
+    ax.semilogy(x, act, color=c[1], lw=2.0, ls="--")
+    ax.fill_between(x, act, chem, where=chem > act, color=c[2], alpha=0.18)
+    S.label_end(ax, 0.005, 9.5, "chemical (SIMS)", c[0], mode, dx=0)
+    S.label_end(ax, 0.12, 1.6, "active (SRP / Hall)", c[1], mode, dx=0, dy=-8)
+    S.note(ax, 0.012, 3.2, "clustered, inactive", mode, size=8.5)
+    ax.set_ylim(0.05, 20)
+    ax.set_xlabel(r"depth  $x$  ($\mu$m)")
+    ax.set_ylabel(r"concentration  ($10^{19}$ cm$^{-3}$)")
+    ax.set_title("Two profiles, one sample: the difference is the inactive fraction")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-junction-depth")
+def _(mode):
+    """Junction depth of a fixed-dose Gaussian against sqrt(Dt) for three
+    background dopings, x_j = 2 sqrt(Dt ln(Cs(t)/CB)): deeper backgrounds
+    clip the junction earlier."""
+    c = S.SERIES[mode]
+    Dt = np.linspace(1e-4, 6e-2, 400)  # um^2
+    Q = 1.0  # normalized dose
+    fig, ax = plt.subplots()
+    for i, (CB, lab) in enumerate([(1e-4, r"$C_B=10^{-4}$"), (1e-3, r"$10^{-3}$"),
+                                   (1e-2, r"$10^{-2}$")]):
+        Cs = Q / np.sqrt(np.pi * Dt)
+        arg = np.log(np.maximum(Cs / CB, 1.0001))
+        xj = 2 * np.sqrt(Dt * arg)
+        ax.plot(np.sqrt(Dt), xj, color=c[i], lw=2.0)
+        S.label_end(ax, np.sqrt(Dt[-1]), xj[-1], lab, c[i], mode, dy=(6, 0, -6)[i])
+    ax.set_xlabel(r"$\sqrt{Dt}$  ($\mu$m)")
+    ax.set_ylabel(r"junction depth  $x_j$  ($\mu$m)")
+    ax.set_title("The junction rides the profile crossing, not the diffusion length alone")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-hb-dissociation")
+def _(mode):
+    """Surviving hydrogen-boron pair fraction after a 30 min anneal,
+    f = exp(-nu t exp(-Ea/kT)) with representative nu = 1e13 /s and
+    Ea = 1.4 eV, retrapping neglected: a sharp recovery step."""
+    c = S.SERIES[mode]
+    k = 8.617e-5
+    T = np.linspace(300, 550, 400)
+    t, nu, Ea = 1800.0, 1e13, 1.4
+    f = np.exp(-nu * t * np.exp(-Ea / (k * T)))
+    fig, ax = plt.subplots()
+    ax.plot(T - 273.15, f, color=c[0], lw=2.2)
+    S.label_end(ax, 60, 0.97, "pairs intact:\nacceptors hidden", c[0], mode, dx=0, dy=-24)
+    S.note(ax, 220, 0.08, "pairs dissociated:\ndoping recovered", mode, size=9)
+    ax.set_xlabel("30 min anneal temperature  (°C)")
+    ax.set_ylabel("surviving H-B pair fraction")
+    ax.set_title("Dopant passivation anneals out in a narrow window near 150 °C")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-si-ge-arrhenius")
+def _(mode):
+    """Representative donor diffusivities, D = D0 exp(-Ea/kT): phosphorus in
+    silicon (4 cm^2/s, 3.7 eV) against a vacancy-mediated donor in germanium
+    (2 cm^2/s, 2.9 eV): the smaller barrier makes germanium's donors fast at
+    every process temperature."""
+    c = S.SERIES[mode]
+    k = 8.617e-5
+    T = np.linspace(823, 1273, 300)
+    fig, ax = plt.subplots()
+    for i, (D0, Ea, lab) in enumerate([(4.0, 3.7, "P in Si"), (2.0, 2.9, "donor in Ge")]):
+        D = D0 * np.exp(-Ea / (k * T))
+        ax.semilogy(1e4 / T, D, color=c[i], lw=2.0)
+        S.label_end(ax, 1e4 / T[0], D[0], lab, c[i], mode, dx=-6, dy=(8, -8)[i], ha="right")
+    ax.set_xlabel(r"$10^4/T$  (K$^{-1}$)")
+    ax.set_ylabel(r"$D$  (cm$^2$/s)")
+    ax.set_title("Germanium's shallow-donor problem in one plot: its donors will not sit still")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-zinc-front")
+def _(mode):
+    """Concentration-dependent diffusion computed by explicit finite
+    differences from dC/dt = d/dx(D(C) dC/dx) with D proportional to (C/Cs)^2,
+    against the constant-D erfc of the same half-depth: the nonlinearity
+    squares the shoulder and sharpens the front."""
+    import math
+
+    c = S.SERIES[mode]
+    nx, L = 400, 1.0
+    dx = L / nx
+    x = np.linspace(0, L, nx + 1)
+    C = np.zeros(nx + 1)
+    C[0] = 1.0
+    dt = 0.2 * dx * dx  # stable for D <= 1
+    for _ in range(9000):
+        D_face = ((C[:-1] + C[1:]) / 2.0) ** 2
+        flux = -D_face * np.diff(C) / dx
+        C[1:-1] -= dt * np.diff(flux) / dx
+        C[0], C[-1] = 1.0, 0.0
+    xh = x[np.argmin(np.abs(C - 0.5))]
+    erf_prof = np.array([math.erfc(0.4769 * xi / xh) for xi in x])  # same half-depth
+    fig, ax = plt.subplots()
+    ax.plot(x, C, color=c[0], lw=2.2)
+    ax.plot(x, erf_prof, color=c[1], lw=2.0, ls="--")
+    S.label_end(ax, xh * 1.02, 0.62, r"$D \propto C^2$", c[0], mode, dx=0)
+    S.label_end(ax, 0.72, np.interp(0.72, x, erf_prof) + 0.03, "constant D (erfc)", c[1], mode, dx=0, dy=6)
+    ax.set_xlabel("depth  (norm.)")
+    ax.set_ylabel(r"$C/C_s$")
+    ax.set_title("Zinc-like diffusion: the profile carries its own diffusivity and walks like a wall")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-gaas-ambient")
+def _(mode):
+    """Sublattice vacancy populations against arsenic overpressure from the
+    mass-action relations [V_Ga] ~ p^(1/4) and [V_As] ~ p^(-1/4): the anneal
+    ambient chooses which diffusion vehicle exists."""
+    c = S.SERIES[mode]
+    p = np.logspace(-2, 2, 300)
+    fig, ax = plt.subplots()
+    ax.loglog(p, p**0.25, color=c[0], lw=2.2)
+    ax.loglog(p, p**-0.25, color=c[1], lw=2.2)
+    S.label_end(ax, p[-1], p[-1] ** 0.25, r"$[V_{Ga}] \propto p^{1/4}$", c[0], mode, dy=4)
+    S.label_end(ax, p[-1], p[-1] ** -0.25, r"$[V_{As}] \propto p^{-1/4}$", c[1], mode, dy=-6)
+    ax.axvline(1.0, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 1.1, 2.2, "congruent point", mode, size=8.5)
+    ax.set_xlabel(r"arsenic overpressure  $p/p_0$")
+    ax.set_ylabel("relative vacancy concentration")
+    ax.set_title("In a compound, the furnace ambient is a doping knob")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-grain-boundary-tail")
+def _(mode):
+    """Polycrystal penetration: lattice erfc plus a grain-boundary tail of the
+    Le Claire form ln C ~ -x^(6/5), C = erfc(x/2 sqrt(Dt)) + A exp(-(x/L)^1.2),
+    on the semilog axes where the two regimes separate into two slopes."""
+    import math
+
+    c = S.SERIES[mode]
+    x = np.linspace(0, 1.5, 500)
+    bulk = np.array([math.erfc(xi / 0.12) for xi in x])
+    tail = 3e-3 * np.exp(-((x / 0.9) ** 1.2))
+    total = bulk + tail
+    fig, ax = plt.subplots()
+    ax.semilogy(x, total, color=c[0], lw=2.2)
+    ax.semilogy(x, bulk, color=c[1], lw=1.6, ls="--")
+    ax.semilogy(x, tail, color=c[2], lw=1.6, ls="--")
+    S.label_end(ax, x[-1], total[-1], "measured profile", c[0], mode, dy=8)
+    S.label_end(ax, 0.32, 2e-5, "lattice term", c[1], mode, dx=0, dy=-6)
+    S.label_end(ax, 1.05, 6e-4, "boundary term", c[2], mode, dx=0, dy=6)
+    ax.set_ylim(1e-6, 3)
+    ax.set_xlabel("depth  (norm.)")
+    ax.set_ylabel(r"$C/C_s$")
+    ax.set_title("Grain boundaries are highways: one profile, two slopes")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-dopant-count")
+def _(mode):
+    """Mean dopant count N = C L^3 in a cube at C = 1e18 cm^-3 with the
+    Poisson band N +/- sqrt(N): below ~30 nm the doping is a rumour."""
+    c = S.SERIES[mode]
+    Lnm = np.linspace(5, 100, 400)
+    N = 1e18 * (Lnm * 1e-7) ** 3
+    fig, ax = plt.subplots()
+    ax.semilogy(Lnm, N, color=c[0], lw=2.2)
+    ax.fill_between(Lnm, np.maximum(N - np.sqrt(N), 1e-2), N + np.sqrt(N),
+                    color=c[0], alpha=0.18)
+    S.label_end(ax, Lnm[-1], N[-1], r"$N = C\,L^3$", c[0], mode, dy=4)
+    ax.axhline(1.0, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 8, 1.25, "one dopant", mode, size=8.5)
+    ax.set_xlabel("cube edge  L  (nm)")
+    ax.set_ylabel(r"dopants in the volume (band: $\pm\sqrt{N}$)")
+    ax.set_title("Random dopant fluctuation: small volumes cannot hold an average")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-scheil")
+def _(mode):
+    """Normal-freezing (Scheil) axial profile Cs = k C0 (1-g)^(k-1) for the
+    three tabulated segregation coefficients used in the lesson
+    (Sb 0.023, P 0.35, B 0.8)."""
+    c = S.SERIES[mode]
+    g = np.linspace(0, 0.95, 400)
+    fig, ax = plt.subplots()
+    for i, (kk, lab) in enumerate([(0.8, "B  (k = 0.8)"), (0.35, "P  (k = 0.35)"),
+                                   (0.023, "Sb  (k = 0.023)")]):
+        cs = kk * (1 - g) ** (kk - 1)
+        ax.semilogy(g, cs, color=c[i], lw=2.0)
+        S.label_end(ax, g[-1], cs[-1], lab, c[i], mode, dy=(6, 0, -6)[i])
+    ax.set_xlabel("fraction solidified  g")
+    ax.set_ylabel(r"$C_s/C_0$")
+    ax.set_title("Small k buys purity at the seed and chaos at the tail")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-bps")
+def _(mode):
+    """Effective segregation coefficient against growth rate from the BPS
+    relation k_eff = k / (k + (1-k) exp(-v delta / D)), k = 0.35, for three
+    boundary-layer thicknesses: stir well or the interface does its own dosing."""
+    c = S.SERIES[mode]
+    v = np.linspace(0, 12, 400)  # um/s scale, v*delta/D dimensionless below
+    kk = 0.35
+    fig, ax = plt.subplots()
+    for i, (dD, lab) in enumerate([(0.12, "thin layer (strong stirring)"),
+                                   (0.35, "moderate"),
+                                   (1.0, "thick layer (weak stirring)")]):
+        keff = kk / (kk + (1 - kk) * np.exp(-v * dD))
+        ax.plot(v, keff, color=c[i], lw=2.0)
+        S.label_end(ax, v[-1], keff[-1], lab, c[i], mode, dy=(6, 0, -6)[i])
+    ax.axhline(1.0, color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.axhline(kk, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 0.1, 1.01, "no rejection escapes", mode, size=8.5)
+    S.note(ax, 0.1, kk + 0.01, "equilibrium k", mode, size=8.5)
+    ax.set_ylim(0.25, 1.12)
+    ax.set_xlabel(r"growth rate  $v\,\delta/D$  (dimensionless)")
+    ax.set_ylabel(r"$k_{eff}$")
+    ax.set_title("Grow fast enough and every crystal thinks its k is 1")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-zone-pass")
+def _(mode):
+    """Single-pass zone refining C(x) = C0 [1 - (1-k) exp(-k x / l)] for three
+    k values, zone length l: the smaller k, the cleaner the front of the ingot."""
+    c = S.SERIES[mode]
+    x = np.linspace(0, 8, 400)  # in zone lengths
+    fig, ax = plt.subplots()
+    for i, (kk, lab) in enumerate([(0.5, "k = 0.5"), (0.1, "k = 0.1"), (0.02, "k = 0.02")]):
+        prof = 1 - (1 - kk) * np.exp(-kk * x)
+        ax.semilogy(x, prof, color=c[i], lw=2.0)
+        S.label_end(ax, x[-1], prof[-1], lab, c[i], mode, dy=(4, 0, -4)[i])
+    ax.set_xlabel("position along ingot  (zone lengths)")
+    ax.set_ylabel(r"$C/C_0$ after one pass")
+    ax.set_title("Zone refining: the molten zone is a broom and k is its bristle length")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-meyer-neldel")
+def _(mode):
+    """A Meyer-Neldel family: ln D = ln D00 + Ea/E_MN - Ea/kT for three
+    activation energies with E_MN = 0.11 eV. All lines cross at the isokinetic
+    temperature T_iso = E_MN / k."""
+    c = S.SERIES[mode]
+    k = 8.617e-5
+    E_MN = 0.11
+    invT = np.linspace(4, 14, 300)  # 1e4/T
+    fig, ax = plt.subplots()
+    for i, Ea in enumerate([0.6, 0.9, 1.2]):
+        lnD = Ea / E_MN - Ea * invT / (k * 1e4)
+        ax.plot(invT, lnD, color=c[i], lw=2.0)
+        S.label_end(ax, invT[-1], lnD[-1], f"$E_a$ = {Ea} eV", c[i], mode,
+                    dy=(6, 0, -6)[i])
+    Tiso = E_MN / k
+    ax.axvline(1e4 / Tiso, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 1e4 / Tiso + 0.15, -60, r"$T_{iso} = E_{MN}/k_B$", mode, size=9)
+    ax.set_xlabel(r"$10^4/T$  (K$^{-1}$)")
+    ax.set_ylabel(r"$\ln D$  (arb. offset)")
+    ax.set_title("Compensation makes a family: every member agrees at one temperature")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-random-walk")
+def _(mode):
+    """Unbiased random walk: binomial site-occupation envelopes after N = 16,
+    64 and 256 steps, each normalized to its peak. The width grows as sqrt(N):
+    the microscopic origin of sqrt(Dt)."""
+    import math
+
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots()
+    for i, (N, ylab) in enumerate([(16, 0.62), (64, 0.42), (256, 0.22)]):
+        m = np.arange(-N, N + 1, 2)
+        P = np.array([math.comb(N, (N + mm) // 2) for mm in m], dtype=float)
+        P /= P.max()
+        ax.plot(m, P, color=c[i], lw=1.9)
+        # anchor each label on its own curve's right flank at a staggered height
+        mlab = np.sqrt(2.0 * N * np.log(1.0 / ylab))
+        S.label_end(ax, mlab, ylab, f"N = {N}", c[i], mode, dx=6)
+    ax.set_xlim(-60, 60)
+    ax.set_xlabel("net displacement  (steps)")
+    ax.set_ylabel("occupation probability  (norm.)")
+    ax.set_title("Coin flips make a Gaussian: width sqrt(N), the seed of sqrt(Dt)")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-dose-and-depth")
+def _(mode):
+    """Predeposition dose Q = 2 Cs sqrt(Dt/pi) and the erfc half-depth, both
+    against time: every payoff of constant-source diffusion grows as sqrt(t)."""
+    c = S.SERIES[mode]
+    t = np.linspace(0.01, 4, 300)
+    Q = 2 * np.sqrt(t / np.pi)
+    x50 = 2 * 0.4769 * np.sqrt(t)
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(7.2, 5.2))
+    ax1.plot(t, Q, color=c[0], lw=2.2)
+    S.label_end(ax1, t[-1], Q[-1], r"$Q \propto \sqrt{t}$", c[0], mode, dy=2)
+    ax1.set_ylabel(r"dose  $Q/(C_s\sqrt{D})$")
+    ax2.plot(t, x50, color=c[1], lw=2.2)
+    S.label_end(ax2, t[-1], x50[-1], r"$x_{1/2} \propto \sqrt{t}$", c[1], mode, dy=2)
+    ax2.set_ylabel(r"half-depth  $x_{1/2}/\sqrt{D}$")
+    ax2.set_xlabel("anneal time  (arb.)")
+    ax1.set_title("Square-root economics: the second hour buys less than the first")
+    S.strip(ax1)
+    S.strip(ax2)
+    return fig
+
+
+@figure("m22-charged-defects")
+def _(mode):
+    """Fermi-level coupling of defect-mediated diffusion: relative diffusivity
+    against n/n_i for a singly negative vehicle (D ~ n/n_i), a doubly negative
+    vehicle (D ~ (n/n_i)^2) and a positive vehicle (D ~ n_i/n)."""
+    c = S.SERIES[mode]
+    u = np.logspace(-1.3, 1.3, 300)
+    fig, ax = plt.subplots()
+    for i, (p, lab) in enumerate([(1, r"$V^-$ vehicle  $\propto n/n_i$"),
+                                  (2, r"$V^{2-}$ vehicle  $\propto (n/n_i)^2$"),
+                                  (-1, r"positive vehicle  $\propto n_i/n$")]):
+        ax.loglog(u, u ** float(p), color=c[i], lw=2.0)
+        S.label_end(ax, u[-1], u[-1] ** float(p), lab, c[i], mode,
+                    dy=(6, 0, -6)[i])
+    ax.set_xlabel(r"electron concentration  $n/n_i$")
+    ax.set_ylabel(r"$D/D(n_i)$")
+    ax.set_title("Doping moves the Fermi level, the Fermi level moves the diffusivity")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-thermal-budget-map")
+def _(mode):
+    """Diffusion length 2 sqrt(Dt) against anneal time at three temperatures,
+    boron representative parameters (0.8 cm^2/s, 3.5 eV): why activation moved
+    from furnace soaks to spikes."""
+    c = S.SERIES[mode]
+    k = 8.617e-5
+    t = np.logspace(-1, 4, 300)  # s
+    fig, ax = plt.subplots()
+    for i, (TC, lab) in enumerate([(950, "950 °C"), (1050, "1050 °C"), (1150, "1150 °C")]):
+        D = 0.8 * np.exp(-3.5 / (k * (TC + 273.15))) * 1e8  # nm^2/s
+        ax.loglog(t, 2 * np.sqrt(D * t), color=c[i], lw=2.0)
+        S.label_end(ax, t[-1], 2 * np.sqrt(D * t[-1]), lab, c[i], mode, dy=(6, 0, -6)[i])
+    ax.axhline(10, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 0.15, 11.5, "a 10 nm junction budget", mode, size=8.5)
+    ax.set_xlabel("anneal time  (s)")
+    ax.set_ylabel(r"$2\sqrt{Dt}$  (nm)")
+    ax.set_title("The thermal budget on log paper: seconds at high T or nothing at all")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-ted-decay")
+def _(mode):
+    """Transient enhanced diffusion: junction motion from
+    x(t) = sqrt(2 int_0^t D [1 + f0 exp(-t'/tau)] dt') with enhancement
+    f0 = 1000 for three decay times: the damage does its moving in the first
+    seconds, then the anneal buys almost nothing."""
+    c = S.SERIES[mode]
+    t = np.linspace(0.01, 60, 600)
+    f0 = 1000.0
+    fig, ax = plt.subplots()
+    for i, (tau, lab) in enumerate([(1.0, "tau = 1 s"), (5.0, "tau = 5 s"),
+                                    (20.0, "tau = 20 s")]):
+        integral = t + f0 * tau * (1 - np.exp(-t / tau))
+        x = np.sqrt(2 * integral)
+        ax.plot(t, x, color=c[i], lw=2.0)
+        S.label_end(ax, t[-1], x[-1], lab, c[i], mode, dy=(6, 0, -6)[i])
+    ax.plot(t, np.sqrt(2 * t), color=S.GUIDE[mode], lw=1.2, ls=":")
+    S.note(ax, 40, np.sqrt(2 * 40) - 9, "no damage", mode, size=8.5)
+    ax.set_xlabel("anneal time  (s)")
+    ax.set_ylabel(r"junction motion  $\propto\sqrt{2\int D_{eff}\,dt}$  (arb.)")
+    ax.set_title("TED spends itself early: the first second moves the junction most")
+    S.strip(ax)
+    return fig
+
+
+@figure("m22-predep-drivein")
+def _(mode):
+    """The two-step recipe end to end: a shallow high-concentration erfc after
+    predeposition, then the drive-in Gaussian carrying the same dose
+    Q = 2 Cs sqrt(D t1 / pi) deeper at a lower surface concentration."""
+    import math
+
+    c = S.SERIES[mode]
+    x = np.linspace(0, 0.8, 500)  # um
+    Dt1 = 2.0e-4  # predep, um^2
+    L1 = 2 * np.sqrt(Dt1)
+    predep = np.array([math.erfc(xi / L1) for xi in x])
+    Q = 2 * np.sqrt(Dt1 / np.pi)  # in units of Cs*um
+    Dt2 = 1.6e-2  # drive-in
+    drive = (Q / np.sqrt(np.pi * Dt2)) * np.exp(-(x**2) / (4 * Dt2))
+    fig, ax = plt.subplots()
+    ax.semilogy(x, predep, color=c[0], lw=2.2)
+    ax.semilogy(x, drive, color=c[1], lw=2.2)
+    S.label_end(ax, 0.1, 2e-2, "after predep\n(erfc, dose Q)", c[0], mode, dx=0, dy=-6)
+    S.label_end(ax, 0.5, 2.2e-2, "after drive-in\n(Gaussian, same Q)", c[1], mode, dx=0, dy=6)
+    ax.set_ylim(1e-4, 2)
+    ax.set_xlabel(r"depth  $x$  ($\mu$m)")
+    ax.set_ylabel(r"$C/C_s$")
+    ax.set_title("Predep sets the dose, drive-in spends it on depth")
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
 
