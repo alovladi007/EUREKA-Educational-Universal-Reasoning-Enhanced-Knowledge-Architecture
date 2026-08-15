@@ -13,6 +13,14 @@ BEGIN
         RETURNING id INTO org_uuid;
     END IF;
 
+    -- Idempotency guard (P2-18): these demo rows have no natural unique key
+    -- (ids are generated), so ON CONFLICT cannot dedupe them. Seed only into
+    -- an empty table; a re-run is a no-op instead of a duplicate set.
+    IF EXISTS (SELECT 1 FROM usmle_questions LIMIT 1) THEN
+        RAISE NOTICE 'usmle_questions already seeded; skipping';
+        RETURN;
+    END IF;
+
     -- Insert USMLE Questions with STEP levels
     INSERT INTO usmle_questions (org_id, question_text, vignette, option_a, option_b, option_c, option_d, option_e, correct_answer, explanation, difficulty_level, subject, topic, "references", times_used, times_correct, is_active) VALUES
     -- STEP_1 Questions (Basic Sciences)

@@ -260,12 +260,17 @@ class AdaptiveEngine:
         Generate comprehensive ability report for a user
         """
         if not user_attempts:
+            # Same shape as the populated report — consumers must not have to
+            # special-case the empty state to avoid KeyErrors.
             return {
                 'overall_ability': self.default_ability,
                 'confidence_interval': 1.0,
+                'topic_abilities': {},
                 'strengths': [],
                 'weaknesses': [],
-                'recommendations': []
+                'recommendations': [],
+                'total_attempts': 0,
+                'overall_accuracy': 0.0,
             }
         
         # Group by topic

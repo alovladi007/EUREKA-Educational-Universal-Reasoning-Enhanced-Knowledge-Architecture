@@ -132,8 +132,21 @@ services:
       - full
     image: jaegertracing/all-in-one:latest
     container_name: eureka-jaeger
+    # The image runs as a non-root user that cannot mkdir inside the
+    # root-owned named volume (verified: badger init dies with EACCES).
+    # Local dev observability only, so root is acceptable here.
+    user: root
     environment:
       COLLECTOR_OTLP_ENABLED: "true"
+      # P3-7: the all-in-one default is IN-MEMORY span storage — a volume
+      # alone persists nothing. Badger + the mounted dir makes traces
+      # survive a container restart.
+      SPAN_STORAGE_TYPE: badger
+      BADGER_EPHEMERAL: "false"
+      BADGER_DIRECTORY_VALUE: /badger/data
+      BADGER_DIRECTORY_KEY: /badger/key
+    volumes:
+      - jaeger_data:/badger
     ports:
       - "16686:16686"   # Jaeger UI
       - "4317:4317"     # OTLP gRPC
@@ -1153,6 +1166,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  jaeger_data:
   minio_data:
   opensearch_data:
   kafka_data:

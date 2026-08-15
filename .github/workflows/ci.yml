@@ -84,6 +84,10 @@ jobs:
           - { name: marketplace,     path: services/marketplace }
           - { name: pedagogy,        path: services/pedagogy }
           - { name: xr-labs,         path: services/xr-labs }
+          # P1-5/P1-15: the most active service finally gates the build. Its
+          # own orphaned ci-cd.yml (which targeted a nonexistent backend/
+          # layout) is deleted; this matrix entry is the real CI.
+          - { name: test-prep,       path: services/test-prep }
 
     services:
       postgres:

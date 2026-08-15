@@ -19,16 +19,18 @@ cd EUREKA-Educational-Universal-Reasoning-Enhanced-Knowledge-Architecture
 ## Step 2: Database Setup (3 minutes)
 
 ```bash
-# Create database
-createdb eureka
+# The database is bootstrapped by docker compose: the Postgres container
+# applies every file in eureka/ops/db/*.sql on first start (initdb), and
+# api-core's alembic chain carries later increments.
+cd eureka
+docker compose up -d db
 
-# Run migrations
-psql -d eureka -f "COMPLETE DATABASE SCHEMA - FULLY WORKING & VERIFIED/init_complete.sql"
-psql -d eureka -f "database/migrations/add-test-prep-subscriptions.sql"
+# Apply the alembic increments once api-core's dependencies are available
+# (or simply start api-core, which runs against the bootstrapped schema):
+docker compose up -d api-core
 
 # Verify installation
-psql -d eureka -c "SELECT COUNT(*) FROM test_prep_plans;"
-# Expected: 9 (3 plans for MCAT, USMLE, LSAT)
+docker exec eureka-db psql -U postgres -d eureka -c "\dt" | head -20
 ```
 
 ---
