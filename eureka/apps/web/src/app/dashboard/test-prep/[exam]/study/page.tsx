@@ -520,11 +520,14 @@ export default function ExamStudyPage() {
                     {unit.examShare}
                   </Badge>
                 )}
-                {chapter?.readTimeMin && (
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Clock className="h-3 w-3" /> {chapter.readTimeMin} min
-                  </span>
-                )}
+                {(() => {
+                  const mins = displayReadMinutes(lesson, chapter?.readTimeMin);
+                  return mins ? (
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3" /> {mins} min
+                    </span>
+                  ) : null;
+                })()}
               </div>
               <h2 className="text-2xl font-bold tracking-tight">
                 {lesson?.title ?? chapter?.title}

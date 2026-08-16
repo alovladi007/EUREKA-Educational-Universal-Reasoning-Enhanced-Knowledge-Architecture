@@ -286,6 +286,724 @@ the maximum-power-transfer question always turns on.`,
       examTip: 'Count the nodes and the loops before you start writing equations. Nodal needs N-1, mesh needs B-N+1, and on an exam where every question is worth the same, spending two minutes on the wrong method is the most expensive mistake available.',
       importantNote: 'Terminal voltage equals EMF only at zero current. Every question that mentions internal resistance, battery droop, or a source that "sags under load" is testing V_terminal = EMF - I r, and the answer is never simply the EMF.',
     },
+    {
+      id: 'dcf-conductance',
+      title: '5. Conductance, and the Shape of a Parallel Network',
+      content: `## 5.1 The reciprocal that makes parallel networks easy
+
+Section 2 gave the parallel rule as a reciprocal sum, which is correct and
+awkward. Defining **conductance** removes the awkwardness:
+
+$$G = \\frac{1}{R} \\qquad \\text{measured in siemens, S}$$
+
+Ohm's law then reads $I = G\\,V$, and the two combination rules become
+symmetric statements rather than a formula and its inverse:
+
+$$R_{series} = \\sum_{k} R_{k}, \\qquad G_{parallel} = \\sum_{k} G_{k}$$
+
+Resistances add when the same current passes through every element;
+conductances add when the same voltage appears across every element. That is
+one idea seen from two sides, and it is worth carrying because the second form
+generalises. The current divider for any number of parallel branches is
+simply each branch's share of the total conductance:
+
+$$I_{k} = I_{total}\\,\\frac{G_{k}}{\\sum_{j} G_{j}}$$
+
+For exactly two branches, substituting $G = 1/R$ and clearing fractions
+recovers the familiar rule with the *other* resistance on top:
+
+$$I_{1} = I_{total}\\,\\frac{1/R_{1}}{1/R_{1} + 1/R_{2}} = I_{total}\\,\\frac{R_{2}}{R_{1} + R_{2}}$$
+
+The conductance form is the one to write down when three or more branches
+share a node, because the two-resistor form does not extend and attempts to
+extend it produce answers that do not sum to the total current.
+
+Three special cases are worth having in memory rather than deriving:
+
+$$R_{eq} = \\frac{R_{1}R_{2}}{R_{1} + R_{2}} \\;\\;(\\text{two}), \\qquad R_{eq} = \\frac{R}{N} \\;\\;(N \\text{ equal}), \\qquad R_{eq} < \\min_{k} R_{k} \\;\\;(\\text{always})$$
+
+## 5.2 Why a parallel combination can only shrink
+
+The last of those three is not a rule of thumb; it follows from the
+conductance form. Adding a branch adds a positive conductance, and a larger
+conductance is a smaller resistance. Adding a path for current cannot make
+current harder to push.
+
+![Parallel equivalent resistance of a fixed 100 ohm resistor against a swept partner resistance from 1 to 1000 ohms. The curve rises steeply at first, passes through 50 ohms where the partner equals 100 ohms, reaches 90.9 ohms at a partner of 1000 ohms, and approaches but never touches a dashed asymptote at 100 ohms.](/courses/fe-ee/figures/ckt2-parallel-shrink.svg)
+
+Read the curve at four places and the whole behaviour is fixed. A
+$1\\ \\Omega$ partner drags the pair down to $0.99\\ \\Omega$ — the small
+resistor dominates almost completely. An equal $100\\ \\Omega$ partner halves
+it to $50\\ \\Omega$. A $1000\\ \\Omega$ partner, ten times larger, only lifts
+the pair to $90.9\\ \\Omega$, so it has removed 9 per cent. And the dashed
+asymptote at $100\\ \\Omega$ is a ceiling the curve approaches from below and
+never reaches, whatever partner you choose.
+
+The practical consequence is the one exam questions exploit: **a resistor ten
+times larger than its parallel partner may usually be ignored**, at a cost of
+about 9 per cent, and a resistor a hundred times larger costs about 1 per cent.
+That is how a bias network with a stray leakage path is analysed in ten
+seconds instead of two minutes.
+
+## 5.3 Worked example: three resistors, two routes
+
+**Given**: $12\\ \\Omega$, $6\\ \\Omega$ and $4\\ \\Omega$ in parallel. Find
+the equivalent resistance twice, by different routes, and split a 6 A source
+between them.
+
+**Route one, conductances**:
+
+$$G = \\frac{1}{12} + \\frac{1}{6} + \\frac{1}{4} = 0.0833 + 0.1667 + 0.2500 = 0.5000\\ \\mathrm{S}$$
+
+$$R_{eq} = \\frac{1}{0.5} = 2\\ \\Omega$$
+
+**Route two, pairwise**: combine the first two,
+$12\\Vert 6 = 72/18 = 4\\ \\Omega$, then combine that with the third,
+$4\\Vert 4 = 2\\ \\Omega$. Same answer, and the agreement of two independent
+routes is the check.
+
+**Current split**, from the node voltage:
+
+$$V = I\\,R_{eq} = 6 \\times 2 = 12\\ \\mathrm{V}$$
+
+$$I_{12} = \\frac{12}{12} = 1\\ \\mathrm{A}, \\qquad I_{6} = \\frac{12}{6} = 2\\ \\mathrm{A}, \\qquad I_{4} = \\frac{12}{4} = 3\\ \\mathrm{A}$$
+
+**Answer**: $2\\ \\Omega$, splitting as 1 A, 2 A and 3 A. The three currents
+sum to 6 A, and they are in the ratio 1 : 2 : 3, which is the ratio of the
+conductances and the *inverse* ratio of the resistances. Note that
+$2\\ \\Omega$ is below $4\\ \\Omega$, the smallest resistor present, exactly as
+Section 5.1 promised. Any answer above $4\\ \\Omega$ can be rejected without
+checking the arithmetic.
+
+## 5.4 What happens when one branch changes
+
+Section 1.5 solved a 12 V source feeding $R_{1} = 4\\ \\Omega$ in series with
+the parallel pair $R_{2} = 6\\ \\Omega$ and $R_{3} = 12\\ \\Omega$. That is one
+point on a family. Sweeping $R_{3}$ while everything else holds shows how the
+three currents in a ladder move together.
+
+![Source current and both branch currents for a 12 volt source feeding a 4 ohm series resistor and a parallel pair, as the third resistor is swept from 2 to 40 ohms. The source current falls from above 2 amps toward 1.2 amps, the current in the 6 ohm branch rises, and the current in the swept branch falls; at 12 ohms the three curves are marked at 1.5, 1.0 and 0.5 amps.](/courses/fe-ee/figures/ckt2-ladder-sweep.svg)
+
+Three features of this figure are worth naming, because each is a separate exam
+question in disguise.
+
+- **The two branch currents always sum to the source current.** That is KCL,
+  and it holds at every point on the sweep, not only at the worked value.
+- **Raising $R_{3}$ raises the current in $R_{2}$.** Removing current from one
+  parallel branch raises the voltage across the pair, which pushes more current
+  through the other. The branches are not independent.
+- **The curves flatten toward limits.** As $R_{3} \\to \\infty$ the third branch
+  is an open circuit and the source current settles at
+  $12/(4 + 6) = 1.2\\ \\mathrm{A}$. As $R_{3} \\to 0$ it short-circuits the pair
+  and the source current rises toward $12/4 = 3\\ \\mathrm{A}$.
+
+| $R_{3}$ | $R_{2}\\Vert R_{3}$ | Source current | Through $R_{2}$ | Through $R_{3}$ |
+|---|---|---|---|---|
+| $2\\ \\Omega$ | $1.500\\ \\Omega$ | 2.182 A | 0.545 A | 1.636 A |
+| $6\\ \\Omega$ | $3.000\\ \\Omega$ | 1.714 A | 0.857 A | 0.857 A |
+| $12\\ \\Omega$ | $4.000\\ \\Omega$ | 1.500 A | 1.000 A | 0.500 A |
+| $24\\ \\Omega$ | $4.800\\ \\Omega$ | 1.364 A | 1.091 A | 0.273 A |
+| $40\\ \\Omega$ | $5.217\\ \\Omega$ | 1.302 A | 1.132 A | 0.170 A |
+
+## 5.5 Worked example: one row of that table, from scratch
+
+**Given**: the same ladder with $R_{3} = 24\\ \\Omega$. Find every current and
+verify with a power balance.
+
+**Reduce**:
+
+$$R_{2}\\Vert R_{3} = \\frac{6 \\times 24}{6 + 24} = \\frac{144}{30} = 4.8\\ \\Omega, \\qquad R_{eq} = 4 + 4.8 = 8.8\\ \\Omega$$
+
+**Source current and node voltage**:
+
+$$I = \\frac{12}{8.8} = 1.364\\ \\mathrm{A}, \\qquad V_{p} = 1.364 \\times 4.8 = 6.545\\ \\mathrm{V}$$
+
+**Branch currents**, two ways. By Ohm's law on each branch,
+$I_{2} = 6.545/6 = 1.091\\ \\mathrm{A}$ and
+$I_{3} = 6.545/24 = 0.273\\ \\mathrm{A}$. By the divider,
+
+$$I_{3} = I\\,\\frac{R_{2}}{R_{2} + R_{3}} = 1.364 \\times \\frac{6}{30} = 0.273\\ \\mathrm{A}$$
+
+**Power balance**:
+
+$$P_{source} = 12 \\times 1.364 = 16.36\\ \\mathrm{W}$$
+
+$$P_{1} + P_{2} + P_{3} = (1.364)^{2}(4) + \\frac{(6.545)^{2}}{6} + \\frac{(6.545)^{2}}{24} = 7.44 + 7.14 + 1.79 = 16.36\\ \\mathrm{W}$$
+
+**Answer**: 1.364 A from the source, splitting 1.091 A and 0.273 A. Compare
+this with the $R_{3} = 12\\ \\Omega$ row: doubling $R_{3}$ halved its current
+(0.500 A to 0.273 A, not exactly, because the node voltage moved) and *raised*
+the current in the untouched $R_{2}$ from 1.000 A to 1.091 A. Expecting an
+untouched branch to hold its current is the misconception this sweep exists to
+break.
+
+## 5.6 Worked example: the resistance of the wiring
+
+**Given**: a 12 V supply feeds a load drawing 5 A through a pair of leads whose
+total round-trip resistance is $0.08\\ \\Omega$. Find the load voltage, the
+power lost in the wiring, and the fraction of the delivered power it
+represents.
+
+**Lead drop**, by Ohm's law on the leads themselves:
+
+$$V_{drop} = I\\,R_{lead} = 5 \\times 0.08 = 0.40\\ \\mathrm{V}$$
+
+**Load voltage**, by KVL around the single loop:
+
+$$V_{load} = 12 - 0.40 = 11.60\\ \\mathrm{V}$$
+
+**Powers**:
+
+$$P_{lead} = I^{2}R_{lead} = 25 \\times 0.08 = 2.0\\ \\mathrm{W}, \\qquad P_{load} = 11.60 \\times 5 = 58.0\\ \\mathrm{W}$$
+
+$$\\frac{P_{lead}}{P_{lead} + P_{load}} = \\frac{2.0}{60.0} = 3.33\\%$$
+
+**Answer**: 11.60 V at the load, 2.0 W wasted, 3.3 per cent of the total. The
+structure here is identical to the internal-resistance calculation of Section
+4.3 — a resistance in series with the source, taking a share of the voltage
+proportional to the current — and recognising that identity is worth more than
+either formula. Wiring resistance, battery internal resistance and a Thevenin
+resistance all do the same arithmetic to the same load.`,
+      examTip: 'Write conductances, not resistances, whenever three or more elements share a pair of nodes. The two-resistor product-over-sum rule does not generalise, and applying it repeatedly is slower and more error-prone than one reciprocal sum. Check every parallel answer against the rule that it must be smaller than the smallest resistor present.',
+      importantNote: 'Changing one branch of a parallel pair changes the current in the other branch too, because the shared node voltage moves. The only quantity that stays fixed when you alter a branch is the source voltage. Any reasoning that assumes an untouched branch keeps its old current is wrong unless the source feeding the pair is an ideal voltage source directly across them.',
+    },
+    {
+      id: 'dcf-sources-power',
+      title: '6. Real Sources, Loading, and Power Transfer',
+      content: `## 6.1 The straight line every real source follows
+
+Section 4.3 introduced internal resistance with one operating point. The full
+picture is a straight line, and it contains everything a two-terminal source
+can do:
+
+$$v_{t} = E - I\\,r$$
+
+Two intercepts anchor it. At $I = 0$ the terminals read the full EMF, which is
+the **open-circuit voltage**. At $v_{t} = 0$ the current is limited only by the
+internal resistance, giving the **short-circuit current**:
+
+$$I_{sc} = \\frac{E}{r}$$
+
+Between them, the power delivered to the load is the product of the two, which
+makes it a downward parabola through both intercepts:
+
+$$P_{load} = v_{t}I = E\\,I - I^{2}r$$
+
+![Terminal voltage and delivered power for a 12 volt source with 0.5 ohms of internal resistance, both drawn as fractions of their open-circuit and peak values against load current from zero to 24 amps. Terminal voltage falls linearly to zero at 24 amps; delivered power is a parabola peaking at 12 amps, and the 2 amp operating point is marked at 11 volts.](/courses/fe-ee/figures/ckt2-terminal-droop.svg)
+
+For the chapter's 12 V source behind $0.5\\ \\Omega$, the numbers on that figure
+are worth memorising as a shape. Short-circuit current
+$12/0.5 = 24\\ \\mathrm{A}$. Peak delivered power at exactly half of that,
+$I = E/2r = 12\\ \\mathrm{A}$, where the terminals sit at half the EMF, 6 V, and
+the load receives
+
+$$P_{max} = \\frac{E^{2}}{4r} = \\frac{144}{2} = 72\\ \\mathrm{W}$$
+
+At that peak the internal resistance is also dissipating 72 W, so the source is
+50 per cent efficient — a fact Section 6.4 turns into a design principle.
+
+## 6.2 Worked example: internal resistance from two measurements
+
+**Given**: a battery reads 12.6 V with no load and 11.4 V while delivering 6 A.
+Find the internal resistance, the short-circuit current, and the terminal
+voltage at 20 A.
+
+**Internal resistance**, from the slope of the line through the two points:
+
+$$r = \\frac{\\Delta v_{t}}{\\Delta I} = \\frac{12.6 - 11.4}{6 - 0} = \\frac{1.2}{6} = 0.20\\ \\Omega$$
+
+**Short-circuit current**:
+
+$$I_{sc} = \\frac{12.6}{0.20} = 63\\ \\mathrm{A}$$
+
+**At 20 A**:
+
+$$v_{t} = 12.6 - 20 \\times 0.20 = 8.6\\ \\mathrm{V}$$
+
+**Answer**: $0.20\\ \\Omega$, 63 A, and 8.6 V. Two measurements at different
+currents are all that is ever needed to characterise a linear source, and the
+result is its Thevenin equivalent: $V_{th} = 12.6\\ \\mathrm{V}$,
+$R_{th} = 0.20\\ \\Omega$. The distractor in this family divides the loaded
+terminal voltage by the current, $11.4/6 = 1.9\\ \\Omega$, which is the *load*
+resistance rather than the internal one.
+
+## 6.3 Regulation, in the vocabulary the exam uses
+
+The droop is quoted as **load regulation**, the fractional sag between no load
+and full load:
+
+$$\\text{regulation} = \\frac{V_{no\\text{-}load} - V_{full\\text{-}load}}{V_{full\\text{-}load}} \\times 100\\%$$
+
+For the Section 4.3 battery, $(12 - 11)/11 = 9.1\\%$. For a bench supply
+holding 5.10 V unloaded and 4.85 V at full load, the figure is
+$(5.10 - 4.85)/4.85 = 5.15\\%$. Lower is stiffer. Note the denominator: the
+full-load value, not the no-load one. Using the no-load value gives 8.3 per
+cent and 4.9 per cent for these two cases, and both will appear among the
+options.
+
+## 6.4 Maximum power and maximum efficiency point different ways
+
+Write the load ratio $x = R_{L}/R_{th}$. The delivered power and the efficiency
+then take two compact forms:
+
+$$\\frac{P}{P_{max}} = \\frac{4x}{(1 + x)^{2}}, \\qquad \\eta = \\frac{x}{1 + x}$$
+
+![Fraction of peak load power and efficiency against the ratio of load resistance to source resistance. The power curve rises to a maximum of one at a ratio of one and falls slowly afterwards, while the efficiency curve rises monotonically through 50 per cent at a ratio of one and 75 per cent at a ratio of three.](/courses/fe-ee/figures/ckt2-maxpower.svg)
+
+The two curves cross purposes. Power peaks at $x = 1$, where efficiency is
+exactly one half. Efficiency climbs without limit toward 100 per cent as the
+load grows, but by then the power is falling away. At $x = 3$ the load still
+receives 75 per cent of the maximum possible power while running at 75 per cent
+efficiency — which is why real power systems are designed with
+$R_{L} \\gg R_{th}$ and only signal circuits are matched.
+
+The other lesson is the flatness of the power curve near its peak. At
+$x = 0.5$ and at $x = 2$ the delivered power is the same
+$4(0.5)/(1.5)^{2} = 0.889$, so being a factor of two away from the match in
+either direction costs only 11 per cent. Matching precisely is rarely worth
+much.
+
+## 6.5 Worked example: matched load against practical load
+
+**Given**: a source with $V_{th} = 20\\ \\mathrm{V}$ and
+$R_{th} = 8\\ \\Omega$. Find the maximum deliverable power and the load that
+takes it, then compare with a $24\\ \\Omega$ load.
+
+**Matched case**, $R_{L} = R_{th} = 8\\ \\Omega$:
+
+$$I = \\frac{20}{8 + 8} = 1.25\\ \\mathrm{A}, \\qquad P_{max} = \\frac{V_{th}^{2}}{4R_{th}} = \\frac{400}{32} = 12.5\\ \\mathrm{W}$$
+
+The internal resistance dissipates the same 12.5 W, so efficiency is 50 per
+cent.
+
+**Practical case**, $R_{L} = 24\\ \\Omega$, that is $x = 3$:
+
+$$I = \\frac{20}{32} = 0.625\\ \\mathrm{A}, \\qquad P = I^{2}R_{L} = (0.625)^{2}(24) = 9.375\\ \\mathrm{W}$$
+
+$$\\eta = \\frac{R_{L}}{R_{th} + R_{L}} = \\frac{24}{32} = 75\\%$$
+
+**Answer**: 12.5 W at 50 per cent efficiency when matched, 9.375 W at 75 per
+cent efficiency at three times the match. The second design gives up a quarter
+of the available power to halve the waste. The FE trap is the phrase "maximum
+power transfer" attached to a question that actually asks for maximum
+efficiency; they are different conditions and only one of them is $R_{L} = R_{th}$.
+
+## 6.6 Worked example: the meter that changes the measurement
+
+**Given**: 10 V across two $1\\ \\mathrm{M}\\Omega$ resistors in series. A
+voltmeter of $1\\ \\mathrm{M}\\Omega$ input resistance is placed across the lower
+resistor. Find the reading, and repeat for a $10\\ \\mathrm{M}\\Omega$ meter.
+
+**Undisturbed value**: the midpoint of an equal divider is 5.00 V.
+
+**With the 1 MΩ meter**, the lower arm becomes
+
+$$1\\Vert 1 = 0.5\\ \\mathrm{M}\\Omega, \\qquad V = 10 \\times \\frac{0.5}{1 + 0.5} = 3.33\\ \\mathrm{V}$$
+
+an error of $-33.3\\%$.
+
+**With the 10 MΩ meter**:
+
+$$1\\Vert 10 = 0.909\\ \\mathrm{M}\\Omega, \\qquad V = 10 \\times \\frac{0.909}{1.909} = 4.76\\ \\mathrm{V}$$
+
+an error of $-4.8\\%$.
+
+**Answer**: 3.33 V and 4.76 V, against a true 5.00 V. The rule the arithmetic
+encodes is that **loading error depends on the ratio of the meter's resistance
+to the resistance it is placed across**, not on the meter's resistance alone.
+A ten-to-one ratio costs about 5 per cent, a hundred-to-one about 0.5 per cent.
+The same relation with the inequality reversed governs ammeters: an ammeter of
+$0.5\\ \\Omega$ inserted in a loop of $10\\ \\Omega$ on a 5 V source reads
+
+$$I_{meas} = \\frac{5}{10.5} = 0.476\\ \\mathrm{A}$$
+
+against a true 0.500 A, again $-4.8\\%$. Voltmeters must be large compared with
+what they measure across; ammeters must be small compared with what they
+measure through.`,
+      examTip: 'Maximum power transfer means RL = Rth and 50 per cent efficiency, and it applies to signal and matching problems, not to power delivery. If a question asks for the most efficient design, the answer is the largest practical load resistance, not the matched one. Reading which of the two is being asked for is the entire difficulty of these items.',
+      importantNote: 'Load regulation divides by the FULL-LOAD voltage, not the no-load voltage. A supply going from 5.10 V to 4.85 V has 5.15 per cent regulation, not 4.90 per cent. Both numbers will be offered, and the definition is the only thing being tested.',
+    },
+    {
+      id: 'dcf-bridges',
+      title: '7. Bridges, Symmetry, and Networks That Resist Reduction',
+      content: `## 7.1 The circuit series-parallel reduction cannot touch
+
+Four resistors in a diamond with a fifth across the middle is the smallest
+common network in which no two elements are in series and no two are in
+parallel. It is the **Wheatstone bridge**, and every DC analysis technique
+meets its limit here.
+
+Label the supply $V_{s}$ across the vertical diagonal, the left-hand arms
+$R_{1}$ (top) and $R_{2}$ (bottom), the right-hand arms $R_{3}$ (top) and
+$R_{x}$ (bottom). With nothing drawing current from the middle, each side is
+just a voltage divider, so the output across the middle is a difference of two
+divider fractions:
+
+$$v_{o} = V_{s}\\left(\\frac{R_{2}}{R_{1} + R_{2}} - \\frac{R_{x}}{R_{3} + R_{x}}\\right)$$
+
+Setting that to zero gives the **balance condition**, which can be written
+three equivalent ways:
+
+$$\\frac{R_{1}}{R_{2}} = \\frac{R_{3}}{R_{x}}, \\qquad R_{1}R_{x} = R_{2}R_{3}, \\qquad R_{x} = \\frac{R_{2}R_{3}}{R_{1}}$$
+
+![Open-circuit output of a Wheatstone bridge with three 1000 ohm arms on a 10 volt supply, plotted against the unknown fourth arm from 800 to 1250 ohms. The curve crosses zero at 1000 ohms, is nearly straight across a few per cent either side, and reads minus 24.9 millivolts when the unknown arm is 1 per cent high.](/courses/fe-ee/figures/ckt2-bridge-balance.svg)
+
+Notice what is absent from the balance condition: the supply voltage. A null is
+a null whatever the excitation, so a bridge measurement inherits neither the
+accuracy of the supply nor the calibration of the detector. It needs only that
+the detector can tell zero from not-zero. That is why bridges were the
+precision resistance standard for a century.
+
+## 7.2 Worked example: balancing a bridge
+
+**Given**: $R_{1} = 1000\\ \\Omega$ and $R_{2} = 1000\\ \\Omega$ on the left,
+$R_{3} = 680\\ \\Omega$ on the right. Find the unknown arm at balance, then
+repeat with $R_{1}$ changed to $2000\\ \\Omega$.
+
+**First case**:
+
+$$R_{x} = \\frac{R_{2}R_{3}}{R_{1}} = \\frac{1000 \\times 680}{1000} = 680\\ \\Omega$$
+
+**Second case**:
+
+$$R_{x} = \\frac{1000 \\times 680}{2000} = 340\\ \\Omega$$
+
+**Answer**: $680\\ \\Omega$, then $340\\ \\Omega$. The ratio arm $R_{2}/R_{1}$
+is a multiplier on the standard resistor, which is exactly how a laboratory
+bridge covers decades of range with one adjustable standard: setting the ratio
+to 1000, 100, 10, 1, 0.1 and so on scales the readable range without changing
+the standard. The trap is pairing the wrong arms — the balance condition
+multiplies *opposite* arms, so the two resistors that appear together in
+$R_{1}R_{x}$ are diagonally across from each other, never adjacent.
+
+## 7.3 Off-null: the bridge as a sensor
+
+A strain gauge, a thermistor or an RTD is a resistor that changes slightly, and
+the bridge converts that change into a voltage. Take all four arms equal to R
+and let one change by $\\Delta R$. Substituting into the output expression and
+expanding to first order gives the quarter-bridge relation:
+
+$$v_{o} \\approx -\\,\\frac{V_{s}}{4}\\cdot\\frac{\\Delta R}{R}$$
+
+The sensitivity is a quarter of the excitation per unit fractional change, and
+it is *linear only to first order*. The exact expression curves, which is what
+the figure's slight bend away from a straight line shows over a wide sweep.
+
+## 7.4 Worked example: exact and approximate off-null output
+
+**Given**: the bridge of the figure, $V_{s} = 10\\ \\mathrm{V}$ and three
+$1000\\ \\Omega$ arms, with the fourth arm 1 per cent high at
+$1010\\ \\Omega$. Find the output exactly and by the approximation, then repeat
+at 0.2 per cent.
+
+**Exact, at 1 per cent**:
+
+$$v_{o} = 10\\left(\\frac{1000}{2000} - \\frac{1010}{2010}\\right) = 10\\,(0.500000 - 0.502488) = -24.876\\ \\mathrm{mV}$$
+
+**Approximate**:
+
+$$v_{o} \\approx -\\frac{10}{4}(0.01) = -25.00\\ \\mathrm{mV}$$
+
+**Error**: $0.124/24.876 = 0.5\\%$ of reading.
+
+**At 0.2 per cent** the exact value is $-4.995\\ \\mathrm{mV}$ against an
+approximate $-5.000\\ \\mathrm{mV}$, an error of 0.1 per cent.
+
+**Answer**: −24.88 mV exact, −25.00 mV approximate at 1 per cent; −4.995 mV
+against −5.000 mV at 0.2 per cent. The approximation error is about half the
+fractional resistance change, so it is negligible for real strain measurements,
+where $\\Delta R/R$ is measured in parts per thousand. Two things follow. The
+signal is small — tens of millivolts at best — which is why an instrumentation
+amplifier always follows a bridge. And the sign depends on which arm moves,
+which is how a half-bridge with one arm rising and one falling doubles the
+output while cancelling the temperature drift both arms share.
+
+## 7.5 Worked example: a bridge you can solve by inspection
+
+**Given**: 12 V across a bridge whose left side is $20\\ \\Omega$ over
+$40\\ \\Omega$ and whose right side is $10\\ \\Omega$ over $20\\ \\Omega$, with a
+$15\\ \\Omega$ resistor across the middle. Find the source current.
+
+**Test balance first**, before any reduction:
+
+$$\\frac{20}{40} = 0.5 = \\frac{10}{20}$$
+
+The ratios match, so the bridge is balanced.
+
+**Consequence**: both middle nodes sit at the same potential.
+
+$$V_{B} = 12 \\times \\frac{40}{60} = 8\\ \\mathrm{V}, \\qquad V_{C} = 12 \\times \\frac{20}{30} = 8\\ \\mathrm{V}$$
+
+With no voltage across it, the $15\\ \\Omega$ resistor carries no current and
+can be deleted. What remains is two series pairs in parallel:
+
+$$R_{eq} = (20 + 40)\\Vert(10 + 20) = \\frac{60 \\times 30}{90} = 20\\ \\Omega$$
+
+$$I = \\frac{12}{20} = 0.60\\ \\mathrm{A}$$
+
+**Answer**: 0.60 A, splitting 0.20 A down the left side and 0.40 A down the
+right. The whole problem collapses to a ratio check. A common distractor
+treats the $15\\ \\Omega$ resistor as being in parallel with the rest, giving
+$20\\Vert 15 = 8.57\\ \\Omega$ and 1.4 A — a resistor with zero volts across it
+carries zero current no matter what it is connected to.
+
+## 7.6 When the bridge is not balanced
+
+Delete nothing. The network genuinely does not reduce, and two routes remain.
+
+**Nodal analysis** is the shorter of the two here. With the supply node at 12 V
+and the bottom node as reference, two unknowns remain. For the same bridge with
+the lower-left arm changed to $30\\ \\Omega$:
+
+$$\\frac{V_{B} - 12}{20} + \\frac{V_{B}}{30} + \\frac{V_{B} - V_{C}}{15} = 0$$
+
+$$\\frac{V_{C} - 12}{10} + \\frac{V_{C}}{20} + \\frac{V_{C} - V_{B}}{15} = 0$$
+
+Solving gives $V_{B} = 7.485\\ \\mathrm{V}$ and
+$V_{C} = 7.842\\ \\mathrm{V}$, so the bridge resistor carries
+$(7.485 - 7.842)/15 = -23.8\\ \\mathrm{mA}$ — that is, 23.8 mA flowing from C to
+B. The source delivers 0.642 A, so the network presents
+$12/0.642 = 18.7\\ \\Omega$.
+
+**Delta-to-wye conversion** is the alternative, and it turns the unreduceable
+network into a ladder. For a delta of $R_{ab}$, $R_{bc}$ and $R_{ca}$, the
+equivalent wye resistor at each node is the product of the two delta resistors
+touching that node divided by the sum of all three:
+
+$$R_{a} = \\frac{R_{ab}R_{ca}}{R_{ab} + R_{bc} + R_{ca}}$$
+
+For $R_{ab} = 6\\ \\Omega$, $R_{bc} = 3\\ \\Omega$, $R_{ca} = 9\\ \\Omega$ the sum
+is $18\\ \\Omega$ and the wye arms are
+
+$$R_{a} = \\frac{54}{18} = 3\\ \\Omega, \\qquad R_{b} = \\frac{18}{18} = 1\\ \\Omega, \\qquad R_{c} = \\frac{27}{18} = 1.5\\ \\Omega$$
+
+A symmetric delta of three equal R converts to a wye of $R/3$, so a
+$30\\ \\Omega$ delta becomes a $10\\ \\Omega$ wye. That factor of three, and its
+inverse for the reverse conversion, is the sanity check to apply before
+trusting an unbalanced-bridge answer.`,
+      examTip: 'Check the balance ratio before doing anything else to a bridge. If opposite-arm products are equal, the middle element carries no current, you may delete it, and the problem becomes two series pairs in parallel — a ten-second answer. Only if the ratios differ do you need nodal analysis or a delta-wye conversion.',
+      importantNote: 'The bridge balance condition contains no supply voltage and no detector calibration. Doubling the excitation doubles the off-null output but does not move the null. Any answer suggesting that the balance point depends on the source voltage has missed the reason bridges are used at all.',
+    },
+    {
+      id: 'dcf-problems-a',
+      title: '8. Problem Set A: Ohm, Kirchhoff, and Dividers',
+      content: `## 8.1 How to use this set
+
+Seven problems at FE pace, about three minutes each. Reduce before you solve,
+and finish each one with a check you did not use to get the answer.
+
+## 8.2 Problem Set A: reduction, dividers, and power
+
+**A1.** A 36 V source drives $6\\ \\Omega$ in series with the parallel
+combination of $12\\ \\Omega$ and $4\\ \\Omega$. Find the source current, the
+voltage across the parallel pair, and both branch currents.
+
+**A2.** A 12 V source feeds two $10\\ \\mathrm{k}\\Omega$ resistors in series.
+Find the midpoint voltage, then find it again with a
+$10\\ \\mathrm{k}\\Omega$ load connected across the lower resistor.
+
+**A3.** A 6 A current source feeds three parallel resistors of
+$12\\ \\Omega$, $6\\ \\Omega$ and $4\\ \\Omega$. Find the voltage across the
+group and the current in each branch.
+
+**A4.** A $100\\ \\Omega$ resistor is rated at 0.25 W. Find the largest current
+and the largest voltage it may carry.
+
+**A5.** A single loop contains a 20 V source and an 8 V source connected in
+opposition, together with $4\\ \\Omega$ and $6\\ \\Omega$. Find the loop current
+and account for all the power.
+
+**A6.** A 24 V source drives $8\\ \\Omega$ in series with the parallel pair
+$6\\ \\Omega$ and $3\\ \\Omega$. Find the power dissipated in the
+$3\\ \\Omega$ resistor.
+
+**A7.** A 12 V supply feeds a 5 A load through leads of total resistance
+$0.08\\ \\Omega$. Find the load voltage and the percentage of total power lost
+in the leads.
+
+### Full solutions
+
+**A1.** The pair is $12 \\times 4/16 = 3\\ \\Omega$, so
+$R_{eq} = 6 + 3 = 9\\ \\Omega$ and
+
+$$I = \\frac{36}{9} = 4\\ \\mathrm{A}, \\qquad V_{pair} = 4 \\times 3 = 12\\ \\mathrm{V}$$
+
+$$I_{12} = \\frac{12}{12} = 1\\ \\mathrm{A}, \\qquad I_{4} = \\frac{12}{4} = 3\\ \\mathrm{A}$$
+
+*Check*: $1 + 3 = 4\\ \\mathrm{A}$, which is KCL. *Trap*: adding the parallel
+resistors as though they were in series, giving
+$36/(6 + 16) = 1.64\\ \\mathrm{A}$ — an answer larger than the smallest resistor
+alone would allow.
+
+**A2.** Unloaded, the divider gives
+$12 \\times 10/20 = 6.00\\ \\mathrm{V}$. Loaded, the lower arm becomes
+$10\\Vert 10 = 5\\ \\mathrm{k}\\Omega$ and
+
+$$V = 12 \\times \\frac{5}{10 + 5} = 4.00\\ \\mathrm{V}$$
+
+a 33 per cent error. *Trap*: answering 6 V because the divider ratio "has not
+changed". Connecting anything across a divider arm changes the arm.
+
+**A3.** Conductances sum to
+$1/12 + 1/6 + 1/4 = 0.5\\ \\mathrm{S}$, so $R_{eq} = 2\\ \\Omega$ and
+
+$$V = 6 \\times 2 = 12\\ \\mathrm{V}, \\qquad I_{12} = 1\\ \\mathrm{A}, \\quad I_{6} = 2\\ \\mathrm{A}, \\quad I_{4} = 3\\ \\mathrm{A}$$
+
+*Trap*: applying the two-resistor divider rule to three branches. It does not
+extend, and the three answers it produces will not sum to 6 A.
+
+**A4.** From $P = I^{2}R$ and $P = V^{2}/R$:
+
+$$I_{max} = \\sqrt{\\frac{0.25}{100}} = 0.050\\ \\mathrm{A}, \\qquad V_{max} = \\sqrt{0.25 \\times 100} = 5.0\\ \\mathrm{V}$$
+
+*Check*: $5.0 \\times 0.050 = 0.25\\ \\mathrm{W}$. *Trap*: computing
+$P/R = 2.5\\ \\mathrm{mA}$, which mixes the two power forms and is dimensionally
+wrong.
+
+**A5.** The sources oppose, so KVL around the loop gives
+
+$$I = \\frac{20 - 8}{4 + 6} = 1.20\\ \\mathrm{A}$$
+
+The 20 V source delivers $20 \\times 1.2 = 24.0\\ \\mathrm{W}$; the 8 V source
+*absorbs* $8 \\times 1.2 = 9.6\\ \\mathrm{W}$, because current enters its
+positive terminal — it is being charged. The resistors take
+$(1.2)^{2}(4) = 5.76\\ \\mathrm{W}$ and
+$(1.2)^{2}(6) = 8.64\\ \\mathrm{W}$.
+
+$$9.6 + 5.76 + 8.64 = 24.0\\ \\mathrm{W}$$
+
+*Trap*: adding the sources to get 2.80 A. Whether sources add or subtract is
+decided by their polarities in the loop, and "in opposition" is the phrase that
+decides it here.
+
+**A6.** The pair is $6 \\times 3/9 = 2\\ \\Omega$, so
+$R_{eq} = 10\\ \\Omega$ and $I = 2.4\\ \\mathrm{A}$. The pair drops
+$2.4 \\times 2 = 4.8\\ \\mathrm{V}$, so
+
+$$I_{3} = \\frac{4.8}{3} = 1.60\\ \\mathrm{A}, \\qquad P_{3} = (1.60)^{2}(3) = 7.68\\ \\mathrm{W}$$
+
+*Check*: total dissipation is
+$46.08 + 3.84 + 7.68 = 57.6\\ \\mathrm{W} = 24 \\times 2.4$. *Trap*: using the
+source current of 2.4 A in $I^{2}R$ for the $3\\ \\Omega$ branch, giving
+17.3 W; only the series element carries the full source current.
+
+**A7.**
+
+$$V_{drop} = 5 \\times 0.08 = 0.40\\ \\mathrm{V}, \\qquad V_{load} = 11.60\\ \\mathrm{V}$$
+
+$$\\frac{P_{lead}}{P_{total}} = \\frac{25 \\times 0.08}{12 \\times 5} = \\frac{2.0}{60} = 3.3\\%$$
+
+*Trap*: computing the lead loss as $V_{drop} \\times I_{load}$ with the supply
+voltage rather than the drop, or quoting the loss against the load power (58 W)
+instead of the total (60 W). The two give 3.4 per cent and 3.3 per cent, close
+enough that the definition has to be right.`,
+      examTip: 'Reduce, solve, then check. The check that catches the most errors is KCL at the node where a branch splits: the branch currents must sum to what entered. The second-best is a power balance, which catches a factor-of-two or a wrong resistance that KCL alone can miss.',
+    },
+    {
+      id: 'dcf-problems-b',
+      title: '9. Problem Set B: Sources, Power Transfer, and Bridges',
+      content: `## 9.1 How to use this set
+
+Seven more, drawing on Sections 6 and 7. Every one of them can be done with a
+handbook and three minutes.
+
+## 9.2 Problem Set B: real sources, meters, and bridges
+
+**B1.** A battery reads 12.6 V open-circuit and 11.4 V while delivering 6 A.
+Find its internal resistance and its short-circuit current.
+
+**B2.** A source has $V_{th} = 20\\ \\mathrm{V}$ and $R_{th} = 8\\ \\Omega$.
+Find the maximum power it can deliver and the load that takes it, then find the
+power and efficiency with a $24\\ \\Omega$ load.
+
+**B3.** A 10 V supply feeds two $1\\ \\mathrm{M}\\Omega$ resistors in series. A
+voltmeter of $1\\ \\mathrm{M}\\Omega$ input resistance measures the lower
+resistor. Find the reading and the error, then repeat with a
+$10\\ \\mathrm{M}\\Omega$ meter.
+
+**B4.** A Wheatstone bridge has $R_{1} = 1000\\ \\Omega$,
+$R_{2} = 1000\\ \\Omega$ and $R_{3} = 680\\ \\Omega$. Find the fourth arm at
+balance, and find it again if $R_{1}$ is changed to $2000\\ \\Omega$.
+
+**B5.** A quarter bridge with four nominally equal arms runs on 10 V
+excitation. One arm rises by 0.2 per cent. Find the output.
+
+**B6.** A bench supply reads 5.10 V unloaded and 4.85 V at a 2 A load. Find its
+load regulation and its output resistance.
+
+**B7.** An ammeter of $0.5\\ \\Omega$ is inserted into a loop consisting of a
+5 V source and $10\\ \\Omega$. Find the measured current and the error it
+introduces.
+
+### Full solutions
+
+**B1.**
+
+$$r = \\frac{12.6 - 11.4}{6} = 0.20\\ \\Omega, \\qquad I_{sc} = \\frac{12.6}{0.20} = 63\\ \\mathrm{A}$$
+
+*Trap*: dividing the loaded terminal voltage by the current,
+$11.4/6 = 1.9\\ \\Omega$. That is the load resistance. The internal resistance
+comes from the *change* in terminal voltage per unit change in current.
+
+**B2.** Matched:
+
+$$R_{L} = 8\\ \\Omega, \\qquad P_{max} = \\frac{20^{2}}{4 \\times 8} = 12.5\\ \\mathrm{W}, \\qquad \\eta = 50\\%$$
+
+At $24\\ \\Omega$: $I = 20/32 = 0.625\\ \\mathrm{A}$, so
+$P = (0.625)^{2}(24) = 9.38\\ \\mathrm{W}$ and
+$\\eta = 24/32 = 75\\%$. *Trap*: computing the maximum as
+
+$$\\frac{V_{th}^{2}}{R_{th}} = \\frac{400}{8} = 50\\ \\mathrm{W}$$
+
+which forgets that half the source voltage is lost inside
+$R_{th}$ at the match. The factor of four in the denominator is not optional.
+
+**B3.** With the 1 MΩ meter the lower arm is $0.5\\ \\mathrm{M}\\Omega$:
+
+$$V = 10 \\times \\frac{0.5}{1.5} = 3.33\\ \\mathrm{V} \\quad (-33\\%)$$
+
+With the 10 MΩ meter the lower arm is $0.909\\ \\mathrm{M}\\Omega$:
+
+$$V = 10 \\times \\frac{0.909}{1.909} = 4.76\\ \\mathrm{V} \\quad (-4.8\\%)$$
+
+*Trap*: assuming a high-impedance meter cannot load a circuit. What matters is
+the ratio to the circuit resistance, and a 1 MΩ divider is high enough to
+embarrass a 10 MΩ meter.
+
+**B4.**
+
+$$R_{x} = \\frac{R_{2}R_{3}}{R_{1}} = \\frac{1000 \\times 680}{1000} = 680\\ \\Omega, \\qquad \\text{then} \\quad \\frac{1000 \\times 680}{2000} = 340\\ \\Omega$$
+
+*Trap*: pairing adjacent arms instead of opposite ones, which gives
+$R_{1}R_{2} = R_{3}R_{x}$ and an answer of $1470\\ \\Omega$ in the first case.
+
+**B5.**
+
+$$v_{o} \\approx \\frac{V_{s}}{4}\\cdot\\frac{\\Delta R}{R} = \\frac{10}{4}(0.002) = 5.00\\ \\mathrm{mV}$$
+
+The exact value is 4.995 mV, so the first-order relation is good to 0.1 per
+cent here. *Trap*: dropping the factor of four and quoting 20 mV. Only a
+quarter of the fractional change appears at the output of a single-active-arm
+bridge, which is precisely why half and full bridges exist.
+
+**B6.**
+
+$$\\text{regulation} = \\frac{5.10 - 4.85}{4.85} \\times 100 = 5.15\\%, \\qquad R_{out} = \\frac{5.10 - 4.85}{2} = 0.125\\ \\Omega$$
+
+*Trap*: dividing by the no-load voltage, which gives 4.90 per cent. The
+denominator is the full-load value.
+
+**B7.**
+
+$$I_{true} = \\frac{5}{10} = 0.500\\ \\mathrm{A}, \\qquad I_{meas} = \\frac{5}{10.5} = 0.476\\ \\mathrm{A}$$
+
+an error of $-4.8\\%$. *Trap*: expecting the ammeter's resistance to raise the
+reading. Inserting resistance in series can only reduce the current, so the
+measured value is always below the true one, and a positive error is not
+available.`,
+      examTip: 'Meter-loading problems are divider problems in disguise. A voltmeter appears in PARALLEL with what it measures and must therefore be large; an ammeter appears in SERIES and must therefore be small. In both cases the error is set by the ratio of the meter resistance to the circuit resistance, and both errors are always negative.',
+      importantNote: 'Maximum power from a Thevenin source is V²/(4R), not V²/R. At the matched condition the load sees only half the open-circuit voltage, so the power is one quarter of the naive figure. This factor of four is the most frequently dropped constant in the whole Circuit Analysis section.',
+    },
   ],
   keyTakeaways: [
     'V = IR (Ohm\'s law); P = VI = I²R = V²/R (power).',
@@ -600,6 +1318,857 @@ reusing it is three times faster than three full analyses.`,
           options: ['20 ohm', '180 ohm', '60 ohm', '30 ohm'],
           correctIndex: 0,
           explanation: 'For the balanced case R_wye = R_delta/3 = 60/3 = 20 ohm. The wye is always the smaller of the pair; getting the direction backwards gives 180 ohm and a nine-fold error in any subsequent power calculation.',
+        },
+      ],
+    },
+    {
+      id: 'nt-loadline',
+      title: '5. The Equivalent as a Terminal Characteristic',
+      content: `## 5.1 Two numbers, one straight line
+
+Everything a linear one-port can do at its terminals is carried by a single
+straight line relating port voltage to port current. Superposition is the
+reason. Treat the current drawn out of the port as one more independent
+source; then the port voltage is a weighted sum of the internal sources and
+that current, and with the internal sources fixed only one variable is left.
+Write the line as
+
+$$v(i) = V_{Th} - R_{Th}\\, i$$
+
+and the two constants are exactly the Thevenin pair. The intercept is the
+open-circuit voltage, since i = 0 there. The slope is the Thevenin resistance
+carrying a minus sign, because drawing more current out of any real source
+drags the terminal voltage down:
+
+$$V_{Th} = v(0), \\qquad R_{Th} = -\\,\\frac{dv}{di}$$
+
+That same line crosses the current axis where v = 0, and the crossing is the
+Norton current:
+
+$$I_N = \\frac{V_{Th}}{R_{Th}}$$
+
+So the three quantities of section 1 are not three separate measurements.
+They are the intercept, the slope, and the other intercept of one line, which
+is why any two of them force the third.
+
+## 5.2 The circuit this section reduces
+
+Take a 24 V source feeding $R_{1}$ = 6 Ω into node a; from a, $R_{2}$ = 3 Ω
+returns to the reference, and $R_{3}$ = 2 Ω runs from a out to the load
+terminal. Reduce it once and every load question afterwards is a division.
+
+Open the terminals. No current flows in $R_{3}$, so no voltage is dropped
+across it and the terminal sits at the divider voltage:
+
+$$V_{Th} = 24 \\cdot \\frac{3}{6+3} = 8\\ \\mathrm{V}$$
+
+Deactivate the 24 V source — replace it with a wire — and look back in.
+$R_{1}$ and $R_{2}$ are in parallel, and $R_{3}$ is in series with that pair
+on the way to the terminal:
+
+$$R_{Th} = \\frac{6\\cdot 3}{6+3} + 2 = 2 + 2 = 4\\ \\Omega$$
+
+$$I_N = \\frac{V_{Th}}{R_{Th}} = \\frac{8}{4} = 2\\ \\mathrm{A}$$
+
+$$v = 8 - 4i$$
+
+![Terminal voltage against terminal current for an 8 V, 4 ohm equivalent, with load lines for 4 ohm and 12 ohm crossing it. The source line runs from the open-circuit 8 V to the short-circuit 2 A; each load line is v equals R times i through the origin, and the crossing is the operating point.](/courses/fe-ee/figures/ckt2-thevenin-loadline.svg)
+
+A resistive load imposes its own straight line through the origin, v = R_L i.
+Two lines cross once, and the crossing is where the circuit actually operates.
+Nothing about that picture is decorative: it is the graphical form of the one
+equation
+
+$$i = \\frac{V_{Th}}{R_{Th}+R_L}$$
+
+and it is how a non-linear load — a diode, an LED, a solar panel — is handled
+when there is no algebra to solve. The source line stays straight; you draw
+the device curve on the same axes and read the intersection.
+
+## 5.3 Worked: two loads off one load line
+
+Attach $R_L$ = 4 Ω to the equivalent above.
+
+$$i = \\frac{8}{4+4} = 1.00\\ \\mathrm{A}, \\qquad v = 1.00 \\times 4 = 4.00\\ \\mathrm{V}$$
+
+$$P_L = i^{2}R_L = 1.00^{2}\\times 4 = 4.00\\ \\mathrm{W}$$
+
+Now swap in 12 Ω without touching the original network:
+
+$$i = \\frac{8}{4+12} = 0.50\\ \\mathrm{A}, \\qquad v = 0.50 \\times 12 = 6.00\\ \\mathrm{V}$$
+
+$$P_L = 0.50^{2}\\times 12 = 3.00\\ \\mathrm{W}$$
+
+Tripling the load resistance raised the load voltage from 4 V to 6 V but cut
+the delivered power from 4 W to 3 W. Both points sit on the figure, and both
+took one division each because the reduction was already done. Running the
+original three-resistor network twice would have taken four times as long and
+offered twice as many places to slip.
+
+## 5.4 Worked: finding an equivalent you cannot open up
+
+A sealed module is loaded with 15 Ω and measures 15.0 V at its terminals;
+loaded with 45 Ω it measures 18.0 V. Nothing inside is visible. Find the
+equivalent.
+
+Each reading gives a current:
+
+$$I_1 = \\frac{15.0}{15} = 1.00\\ \\mathrm{A}, \\qquad I_2 = \\frac{18.0}{45} = 0.40\\ \\mathrm{A}$$
+
+Two points determine the line, and the slope is the Thevenin resistance:
+
+$$R_{Th} = -\\frac{V_2-V_1}{I_2-I_1} = \\frac{18.0-15.0}{1.00-0.40} = \\frac{3.0}{0.6} = 5\\ \\Omega$$
+
+$$V_{Th} = V_1 + I_1 R_{Th} = 15.0 + 1.00\\times 5 = 20\\ \\mathrm{V}$$
+
+Check on the second point: 20 − 0.40 × 5 = 18.0 V, as measured. The module
+behaves as 20 V behind 5 Ω, and its short-circuit current would be 4 A —
+which is a prediction, not a measurement, and is exactly the kind of number
+you would rather predict than test.
+
+There is a faster field version of the same idea. The load that pulls the
+terminal voltage down to **half** its open-circuit value is numerically equal
+to $R_{Th}$, since $V_{Th}R_L/(R_{Th}+R_L) = V_{Th}/2$ forces $R_L = R_{Th}$.
+One open-circuit reading and one adjustable resistor give the pair without any
+algebra at all.
+
+## 5.5 Every real source is already a Thevenin equivalent
+
+A battery, a bench supply, an alternator and a solar cell all present an
+internal resistance whether or not anyone drew it. Model a 12 V cell with
+r = 0.5 Ω:
+
+$$v_t = E - I r = 12 - 0.5\\,I$$
+
+$$p_{delivered} = v_t I = EI - I^{2}r$$
+
+![Terminal voltage and delivered power for a 12 V source with 0.5 ohm internal resistance, both plotted as a fraction of their own reference value against load current. The voltage falls linearly to zero at the 24 A short-circuit current while the power rises to a peak at 12 A and returns to zero.](/courses/fe-ee/figures/ckt2-terminal-droop.svg)
+
+The voltage line reaches zero at the short-circuit current:
+
+$$I_{sc} = \\frac{E}{r} = \\frac{12}{0.5} = 24\\ \\mathrm{A}$$
+
+The power curve is a downward parabola through both intercepts, so it peaks
+midway between them:
+
+$$I_{P,max} = \\frac{E}{2r} = 12\\ \\mathrm{A}, \\qquad P_{max} = \\frac{E^{2}}{4r} = \\frac{144}{2} = 72\\ \\mathrm{W}$$
+
+At a modest 2 A draw the terminals hold 12 − 2(0.5) = 11.0 V and deliver
+22.0 W, which is 91.7 % of the open-circuit voltage. That is the regime real
+equipment is designed for. The 72 W peak sits at 12 A, where the terminals
+have collapsed to 6 V and the cell is heating itself as fast as it is feeding
+the load — a rating, not an operating point.
+
+## 5.6 Worked: internal resistance from two meter readings
+
+A battery reads 12.6 V with nothing connected and 12.0 V across a 20 Ω load.
+Find the internal resistance and the short-circuit current.
+
+$$I = \\frac{12.0}{20} = 0.60\\ \\mathrm{A}$$
+
+$$r = \\frac{E - v_t}{I} = \\frac{12.6-12.0}{0.60} = 1.0\\ \\Omega$$
+
+$$I_{sc} = \\frac{E}{r} = \\frac{12.6}{1.0} = 12.6\\ \\mathrm{A}$$
+
+The 0.6 V that went missing is the whole measurement. A common slip is to
+divide the terminal voltage by the current, 12.0/0.60 = 20 Ω, which recovers
+the load resistance and says nothing about the battery.
+
+| Quantity | Where it lives on the line | How it is obtained | This section's value |
+|---|---|---|---|
+| $V_{Th}$ | voltage intercept | terminals open | 8 V |
+| $I_N$ | current intercept | terminals shorted | 2 A |
+| $R_{Th}$ | negative slope | source deactivation, or two loaded readings | 4 Ω |
+| Operating point | crossing with the load line | one division | 1 A at 4 Ω |`,
+      examTip: 'When a question gives two loaded terminal readings instead of a schematic, do not look for a circuit to reduce. Convert each reading to a current, take the slope between the two points for R_Th, and extrapolate back to zero current for V_Th. Two points, one line, done in under a minute.',
+      importantNote: 'The load line only works when the source line is straight, which requires the network inside to be linear. A network containing a diode or a saturating element has no single Thevenin pair, and reducing it as though it did is a silent error that produces plausible numbers.',
+    },
+    {
+      id: 'nt-transform',
+      title: '6. Source Transformation and Chained Reduction',
+      content: `## 6.1 The transformation, stated as an equivalence of lines
+
+A voltage source $V_s$ in series with R and a current source $I_s$ in parallel
+with the same R produce the identical terminal line whenever
+
+$$V_s = I_s R, \\qquad I_s = \\frac{V_s}{R}$$
+
+Take 12 V behind 6 Ω. Its terminal line is v = 12 − 6i. Now take 2 A across
+6 Ω: the load current i steals from the source current, so the resistor
+carries (2 − i) and
+
+$$v = 6(2-i) = 12 - 6i$$
+
+the same line, coefficient for coefficient.
+
+![Terminal voltage against current for a 12 V source behind 6 ohm and a 2 A source across 6 ohm, drawn on the same axes and falling exactly on top of each other, with a mismatched 2.5 A version plotted as a separate parallel line.](/courses/fe-ee/figures/ckt2-source-transform.svg)
+
+The figure also draws what a botched transformation looks like: 2.5 A across
+6 Ω gives v = 15 − 6i, a line parallel to the correct one but 3 V above it
+everywhere. Parallel is the signature — a wrong current with a right
+resistance shifts the intercept and leaves the slope alone, so every answer
+comes out biased by a constant rather than obviously broken.
+
+## 6.2 What the transformation does not preserve
+
+The two models are indistinguishable **from outside**, and distinguishable in
+one important way from inside. Leave the terminals open. The Thevenin model
+carries no current anywhere and dissipates nothing. The Norton model still
+circulates its full 2 A through its own 6 Ω:
+
+$$P_{internal} = I_N^{2}R = 2^{2}\\times 6 = 24\\ \\mathrm{W}$$
+
+Internal dissipation is not an invariant of the transformation, so an
+equivalent may never be used to compute the losses, temperature rise or
+efficiency of the real circuit it replaced. Use it for terminal behaviour, go
+back to the original network for anything internal. This is the same trap in
+different clothing as "power does not superpose".
+
+## 6.3 Worked: collapsing a ladder by alternating transformations
+
+A 12 V source behind 6 Ω feeds a 3 Ω shunt to the reference, and a 4 Ω series
+resistor carries on to the load terminals. Reduce it without writing a single
+mesh equation.
+
+**Step 1 — go Norton.** 12 V behind 6 Ω becomes
+
+$$I_N = \\frac{12}{6} = 2\\ \\mathrm{A} \\ \\text{across}\\ 6\\ \\Omega$$
+
+**Step 2 — absorb the shunt.** The 6 Ω is now in parallel with the 3 Ω:
+
+$$R = \\frac{6\\times 3}{6+3} = 2\\ \\Omega$$
+
+**Step 3 — go back to Thevenin.** 2 A across 2 Ω becomes
+
+$$V = 2 \\times 2 = 4\\ \\mathrm{V}\\ \\text{behind}\\ 2\\ \\Omega$$
+
+**Step 4 — absorb the series resistor.** Series resistances add on the
+Thevenin side:
+
+$$R_{Th} = 2 + 4 = 6\\ \\Omega, \\qquad V_{Th} = 4\\ \\mathrm{V}$$
+
+Into a 6 Ω load the answer is one division:
+
+$$i = \\frac{4}{6+6} = 0.333\\ \\mathrm{A}, \\qquad v_L = 2.00\\ \\mathrm{V}, \\qquad P_L = 0.667\\ \\mathrm{W}$$
+
+The rhythm is worth memorising: **Norton to swallow a parallel element,
+Thevenin to swallow a series one**, alternating until the ladder is gone.
+
+## 6.4 Worked: the transformation that is not allowed
+
+A 5 A source feeds node a directly, and a 10 Ω resistor runs from node a to
+the load terminal. Can that be turned into a voltage source of 50 V?
+
+No. The transformation requires the resistor to be **in parallel** with the
+current source, and this one is in series with it. A series element on a
+current source cannot change what the source does — the current is 5 A
+whatever the resistor is — so there is nothing for the transformation to act
+on. The mirror-image rule holds for voltage sources: a resistor in parallel
+with an ideal voltage source is invisible to the rest of the circuit and
+cannot be transformed either, though it does load the source and must be kept
+if internal currents matter.
+
+$$\\text{transformable: } V_s \\text{ in series with } R, \\quad I_s \\text{ in parallel with } R$$
+
+| Configuration | Transformable? | What to do instead |
+|---|---|---|
+| $V_s$ in series with R | yes | becomes $V_s/R$ across R |
+| $I_s$ in parallel with R | yes | becomes $I_s R$ in series with R |
+| $I_s$ in series with R | no | the R is irrelevant to the port current |
+| $V_s$ in parallel with R | no | the R is irrelevant to the port voltage |
+| Dependent source with its own R | yes, carefully | the controlling variable must survive the move |
+
+The last row is the one that costs marks. A dependent source transforms by the
+same algebra, but if the controlling current or voltage is defined across the
+element being absorbed, the control variable disappears and the new circuit is
+unsolvable. Redefine the control in terms of a surviving branch before moving
+anything.`,
+      examTip: 'Source transformation is usually the fastest route through a single-loop-plus-shunts ladder because each step removes one element and needs one multiplication or division. Alternate Norton and Thevenin: Norton to swallow a parallel resistor, Thevenin to swallow a series one.',
+      importantNote: 'An equivalent circuit reproduces terminal behaviour only. Internal power, internal currents and efficiency belong to the original network. Computing the losses of a supply from its Norton model gives 24 W of dissipation at open circuit for a source that is actually doing nothing.',
+    },
+    {
+      id: 'nt-superposition-deep',
+      title: '7. Superposition, Quantitatively',
+      content: `## 7.1 Linearity is the whole permission slip
+
+A circuit is linear when every element obeys a proportional law — v = Ri,
+v = L di/dt, i = C dv/dt — and every dependent source is a constant multiple
+of its control. In such a circuit any response y is a weighted sum of the
+independent source values:
+
+$$y = a_1 x_1 + a_2 x_2 + \\dots + a_n x_n$$
+
+The coefficients depend only on the topology and the element values, never on
+the sources. Setting all sources but one to zero isolates a single term, and
+the terms add back. That is superposition, and it is not a technique so much
+as a restatement of what linear means.
+
+## 7.2 The node this section works
+
+A node V is fed by a 10 V source through $R_{1}$ = 2 Ω, by a second source
+$V_b$ through $R_{2}$ = 4 Ω, and drains to the reference through
+$R_{3}$ = 4 Ω. Working in conductances keeps the algebra clean:
+
+$$G_1 = 0.5\\ \\mathrm{S}, \\quad G_2 = 0.25\\ \\mathrm{S}, \\quad G_3 = 0.25\\ \\mathrm{S}, \\quad \\sum G = 1.0\\ \\mathrm{S}$$
+
+$$V = \\frac{10\\,G_1 + V_b\\,G_2}{G_1+G_2+G_3} = 5 + 0.25\\,V_b$$
+
+![Two straight lines showing each source's separate contribution to a node voltage as the second source is swept, plus their sum. The contribution of the fixed 10 V source is a horizontal line at 5 V, the second source contributes a line of slope one quarter, and the total is their sum.](/courses/fe-ee/figures/ckt2-superposition-stack.svg)
+
+Read the structure off the figure. One source's contribution is a horizontal
+line, because that source is not being swept; the other is a straight line
+through the origin with slope $G_2/\\sum G$ = 0.25; and the total is their
+sum, which is also straight. If any element in the circuit were non-linear,
+the total would bend and the two separate curves would no longer add up to it.
+
+## 7.3 Worked: the node two ways
+
+Set $V_b$ = 4 V.
+
+**Source 1 alone.** Deactivate $V_b$, replacing it with a wire. Then
+$R_{2}$ and $R_{3}$ both run from the node to the reference:
+
+$$V_a = 10\\cdot\\frac{G_1}{\\sum G} = 10 \\times 0.5 = 5.0\\ \\mathrm{V}$$
+
+**Source 2 alone.** Deactivate the 10 V source the same way:
+
+$$V_b\\text{-part} = 4\\cdot\\frac{G_2}{\\sum G} = 4 \\times 0.25 = 1.0\\ \\mathrm{V}$$
+
+**Sum.** V = 5.0 + 1.0 = **6.0 V**.
+
+**Direct check by one nodal equation.** Without splitting anything:
+
+$$\\frac{V-10}{2} + \\frac{V-4}{4} + \\frac{V}{4} = 0 \\Rightarrow V = 6.0\\ \\mathrm{V}$$
+
+Identical, as it must be. Note the cost: superposition took two analyses, the
+nodal equation took one. With two sources at the same frequency, nodal wins on
+speed. Superposition earns its keep when the sources cannot be handled in one
+analysis at all — different frequencies, or a mix of DC and AC.
+
+## 7.4 Worked: why power refuses to superpose
+
+The 4 Ω path to the reference carries the node voltage, so with V = 6.0 V:
+
+$$P = \\frac{V^{2}}{R_3} = \\frac{6.0^{2}}{4} = 9.00\\ \\mathrm{W}$$
+
+Adding the two separate powers instead gives
+
+$$\\frac{5.0^{2}}{4} + \\frac{1.0^{2}}{4} = 6.25 + 0.25 = 6.50\\ \\mathrm{W}$$
+
+which is 28 % low. The missing piece is visible the moment the square is
+expanded:
+
+$$\\frac{(V_a+V_b)^{2}}{R} = \\frac{V_a^{2}}{R} + \\frac{V_b^{2}}{R} + \\frac{2V_aV_b}{R}$$
+
+The cross term here is 2(5.0)(1.0)/4 = 2.50 W, and 6.50 + 2.50 = 9.00 W
+exactly. Superposing power silently discards that cross term. When the two
+contributions have opposite signs the cross term is negative and the naive sum
+comes out too **high** instead, so the error does not even have a reliable
+direction to correct for.
+
+## 7.5 Worked: DC and AC in the same circuit
+
+A 12 V DC source in series with a 5 V rms 60 Hz source drives R = 10 Ω in
+series with L = 26.5 mH. Find the rms current and the power in the resistor.
+
+These sources cannot be combined into one phasor — one of them has no phase
+and no frequency. Superposition is not a shortcut here, it is the only route.
+
+**DC alone.** At zero frequency the inductor is a short:
+
+$$I_{dc} = \\frac{12}{10} = 1.200\\ \\mathrm{A}$$
+
+**AC alone.** At 60 Hz, with omega = 377 rad/s:
+
+$$X_L = \\omega L = 377 \\times 0.0265 = 9.99\\ \\Omega$$
+
+$$\\lvert Z \\rvert = \\sqrt{10^{2}+9.99^{2}} = 14.14\\ \\Omega, \\qquad I_{ac} = \\frac{5}{14.14} = 0.354\\ \\mathrm{A\\ rms}$$
+
+**Combine.** The DC term and the AC term are at different frequencies, so
+their product averages to zero over a cycle and the rms values combine in
+quadrature — never by addition:
+
+$$I_{rms} = \\sqrt{I_{dc}^{2}+I_{ac}^{2}} = \\sqrt{1.200^{2}+0.354^{2}} = 1.251\\ \\mathrm{A}$$
+
+$$P_R = I_{rms}^{2}R = 1.251^{2}\\times 10 = 15.65\\ \\mathrm{W}$$
+
+Adding the currents arithmetically gives 1.554 A and claims 24.1 W, more than
+half again too much. The inductor, meanwhile, dissipates nothing at either
+frequency; it only shapes how much AC current gets through.
+
+## 7.6 What superposes and what does not
+
+| Quantity | Superposes? | Why |
+|---|---|---|
+| Branch voltage | yes | linear in the sources |
+| Branch current | yes | linear in the sources |
+| Node voltage | yes | linear in the sources |
+| Power, energy | no | quadratic; the cross term is lost |
+| rms of same-frequency terms | no | phase must be carried; add as phasors first |
+| rms of different-frequency terms | in quadrature | cross term averages to zero |
+| Response of a diode or saturating core | no | the element is not linear |
+
+The middle rows deserve a second look, because they are not the same rule. Two
+sinusoids **at the same frequency** must be added as phasors, keeping phase,
+before any rms is taken. Two components at **different** frequencies have no
+fixed phase relationship over a cycle, their product integrates to zero, and
+their rms values combine as the legs of a right triangle. Confusing the two
+cases produces answers that are wrong by whatever the cross term happened to
+be.
+
+## 7.7 The rules that survive contact with the exam
+
+Deactivating a source means forcing its own variable to zero, and nothing
+else. A voltage source held at zero volts is a wire, so it becomes a short.
+A current source held at zero amps passes nothing, so it becomes an open.
+Reversing that pair is the single most common superposition error, and it does
+not produce an obviously silly answer — it produces a plausible one.
+
+Dependent sources are never deactivated. They are not excitation; they are
+part of how the circuit responds, and they stay live in every sub-analysis
+with their controlling variable recomputed each time.`,
+      examTip: 'Count the sources before choosing superposition. With n independent sources at one frequency it needs n full analyses, and a single nodal equation usually beats it. Choose superposition when the sources are at different frequencies, or when the question itself asks for a single source contribution.',
+      importantNote: 'Superposing rms values only works when the components are at different frequencies, where they combine in quadrature. Same-frequency components must be added as phasors first, because their relative phase matters and a quadrature sum throws it away.',
+    },
+    {
+      id: 'nt-maxpower-deep',
+      title: '8. Maximum Power Transfer, Derived and Bounded',
+      content: `## 8.1 Where the maximum comes from
+
+Attach $R_L$ to a Thevenin pair. The delivered power is
+
+$$P_L = i^{2}R_L = \\left(\\frac{V_{Th}}{R_{Th}+R_L}\\right)^{2}R_L$$
+
+Both limits are zero — a short has no voltage across it, an open has no
+current through it — so a maximum must sit somewhere between. Differentiate
+with respect to the load and set it to zero:
+
+$$\\frac{dP_L}{dR_L} = V_{Th}^{2}\\,\\frac{R_{Th}-R_L}{(R_{Th}+R_L)^{3}} = 0 \\Rightarrow R_L = R_{Th}$$
+
+The numerator vanishes only when the load equals the source resistance, and
+substituting back gives the value everyone memorises:
+
+$$P_{max} = \\frac{V_{Th}^{2}}{4R_{Th}}$$
+
+Note carefully what is being held fixed. The **source** is fixed and the
+**load** is chosen. If instead the load were fixed and the source resistance
+free, the answer would be different and far less interesting: make $R_{Th}$ as
+small as possible. Power systems live in that second world, which is why
+nothing in a substation is impedance matched.
+
+## 8.2 One curve, both design goals
+
+Normalise by the ratio x = $R_L/R_{Th}$ and the whole subject fits on two
+curves:
+
+$$\\frac{P_L}{P_{max}} = \\frac{4x}{(1+x)^{2}}, \\qquad \\eta = \\frac{P_L}{P_{total}} = \\frac{x}{1+x}$$
+
+![Delivered power as a fraction of its own peak, and efficiency, both plotted against the ratio of load to source resistance. Power rises to a maximum at a ratio of one and falls away on both sides, while efficiency climbs monotonically past it toward unity.](/courses/fe-ee/figures/ckt2-maxpower.svg)
+
+| $x = R_L/R_{Th}$ | $P_L/P_{max}$ | Efficiency | Reading |
+|---|---|---|---|
+| 0.25 | 0.640 | 20 % | badly under-matched |
+| 0.50 | 0.889 | 33 % | 11 % below peak already |
+| 1.00 | 1.000 | 50 % | matched: peak power, half wasted inside |
+| 2.00 | 0.889 | 67 % | same power as x = 0.5, twice the efficiency |
+| 3.00 | 0.750 | 75 % | the practical compromise |
+| 9.00 | 0.360 | 90 % | power-system territory |
+
+Two facts fall straight out of the table. First, the power peak is **flat**:
+halving or doubling the load costs 11 %, which is why a match specified to
+three decimal places is engineering theatre. Second, x = 0.5 and x = 2.0
+deliver identical power at wildly different efficiency — 33 % against 67 % —
+so when a mismatch is unavoidable, err on the **high** side of the match. The
+delivered power is the same and the source runs cooler.
+
+## 8.3 Worked: matched against deliberately mismatched
+
+A source has $V_{Th}$ = 20 V and $R_{Th}$ = 5 Ω.
+
+**Matched.** $R_L$ = 5 Ω:
+
+$$i = \\frac{20}{5+5} = 2.0\\ \\mathrm{A}, \\qquad P_L = 2.0^{2}\\times 5 = 20\\ \\mathrm{W}$$
+
+$$P_{max} = \\frac{20^{2}}{4\\times 5} = \\frac{400}{20} = 20\\ \\mathrm{W}\\quad\\checkmark$$
+
+The source resistance also burns $2.0^{2}\\times 5$ = 20 W, so 40 W leaves the
+ideal source and half of it never reaches the load.
+
+**Mismatched at x = 3.** $R_L$ = 15 Ω:
+
+$$i = \\frac{20}{5+15} = 1.0\\ \\mathrm{A}, \\qquad P_L = 1.0^{2}\\times 15 = 15\\ \\mathrm{W}$$
+
+Internal loss is now $1.0^{2}\\times 5$ = 5 W, total 20 W drawn, efficiency
+75 %. The load gets 75 % of the peak power while the source dissipates a
+quarter of what it did when matched. For anything that has to run continuously
+and not overheat, that is the better circuit, and the numbers agree with the
+x = 3 point marked on the figure.
+
+## 8.4 Worked: the conjugate match in AC
+
+An AC one-port has $Z_{Th}$ = 8 − j4 Ω and $V_{Th}$ = 89.44 V rms. Choose the
+load for maximum power.
+
+The reactive part of the source must be cancelled, not copied:
+
+$$Z_L = Z_{Th}^{*} = 8 + j4\\ \\Omega$$
+
+Then $Z_{Th}+Z_L$ = 16 Ω, purely real, and
+
+$$P_{max} = \\frac{\\lvert V_{Th}\\rvert^{2}}{4R_{Th}} = \\frac{89.44^{2}}{4\\times 8} = \\frac{8000}{32} = 250\\ \\mathrm{W}$$
+
+Two near-misses show what the conjugate is buying. Copying the source
+impedance instead, $Z_L$ = 8 − j4, gives a total of 16 − j8 Ω, a current of
+89.44/17.89 = 5.00 A and only
+
+$$P = 5.00^{2}\\times 8 = 200\\ \\mathrm{W}$$
+
+Matching magnitudes alone, $Z_L$ = 8.944 Ω resistive, gives 236 W. Both are
+plausible-looking answers and both leave power on the table, because the
+reactances are still there circulating energy that never becomes work.
+
+## 8.5 When the load is not yours to choose
+
+Most real problems fix the load and ask what the source must do. Then the
+matched condition is irrelevant and the design rule inverts: make $R_{Th}$ as
+small as the budget allows, because
+
+$$\\eta = \\frac{R_L}{R_{Th}+R_L} \\to 1 \\quad\\text{as}\\quad R_{Th}\\to 0$$
+
+A distribution transformer with 0.02 pu impedance is not trying to transfer
+maximum power; it is trying to lose as little as possible on the way. Matching
+belongs where the source is weak and irreplaceable and the signal is what
+matters — an antenna, a transducer, a photodiode, the output stage of an RF
+amplifier. Naming which of those two worlds a question lives in is usually
+half the answer.`,
+      examTip: 'Read the question for which side is fixed. "What load draws maximum power" means R_L = R_Th and 50 % efficiency. "What source resistance maximises load power" means make it as small as possible, and there is no interior optimum to differentiate for.',
+      importantNote: 'In AC the match is the CONJUGATE, Z_L = Z_Th*, not Z_L = Z_Th and not a magnitude match. For Z_Th = 8 - j4 the three candidates deliver 250 W, 200 W and 236 W respectively, and only the conjugate cancels the reactance.',
+    },
+    {
+      id: 'nt-bridge',
+      title: '9. Networks That Refuse to Reduce',
+      content: `## 9.1 The bridge, and what balance means
+
+A bridge has four arms and a fifth element across the middle, and no two
+resistors in it are in series or in parallel. With arms $R_{1}$ and $R_{2}$ on
+one side and $R_{3}$ and $R_x$ on the other, across a supply V, the
+open-circuit output between the two midpoints is the difference of two
+dividers:
+
+$$v_o = V\\left(\\frac{R_2}{R_1+R_2} - \\frac{R_x}{R_3+R_x}\\right)$$
+
+![Open-circuit bridge output in millivolts against the unknown arm, crossing zero at the balance point and running nearly straight for several percent either side of it.](/courses/fe-ee/figures/ckt2-bridge-balance.svg)
+
+Setting that to zero gives the balance condition, and the supply voltage
+cancels out of it entirely:
+
+$$\\frac{R_1}{R_2} = \\frac{R_3}{R_x} \\quad\\Longleftrightarrow\\quad R_x = \\frac{R_3R_2}{R_1}$$
+
+That cancellation is the reason bridges are used for precision measurement. A
+null depends only on ratios of resistances, so supply drift, meter calibration
+and amplifier gain do not enter. You are not reading a scale; you are
+detecting a zero.
+
+## 9.2 Worked: a balanced bridge, and the arm that carries nothing
+
+Three arms of 1000 Ω and a fourth adjustable arm sit across 10 V. At
+$R_x$ = 1000 Ω both midpoints are at 5.00 V, the difference is zero, and the
+element bridging them carries no current whatever its value. It can be removed
+or replaced by a short without changing anything else, and the remaining
+network is a plain series-parallel reduction.
+
+Now increase $R_x$ by 1 %, to 1010 Ω:
+
+$$v_o = 10\\left(0.5000 - \\frac{1010}{2010}\\right) = 10(0.5000-0.502488) = -24.88\\ \\mathrm{mV}$$
+
+A 1 % change in one arm moves the output by about 25 mV out of a 10 V supply,
+roughly V/400 per percent. That small, nearly linear slope is what a strain
+gauge sells: tiny fractional changes converted into a voltage that a
+differential amplifier can take seriously.
+
+## 9.3 Worked: an unbalanced bridge by delta-wye
+
+Balance is a special case. When the bridge is unbalanced the middle arm
+carries current, no two elements are series or parallel, and one delta must be
+converted before anything reduces.
+
+Take a 12 V source across nodes 1 and 0. From node 1: 30 Ω to node 2 and 60 Ω
+to node 3. Between the midpoints: 90 Ω. From node 2: 25 Ω to the reference;
+from node 3: 10 Ω to the reference. Check balance first — 30/25 = 1.2 against
+60/10 = 6, so it is unbalanced and no shortcut exists.
+
+Convert the delta on nodes 1, 2, 3. Each wye arm is the product of the two
+delta resistors touching that node, over the sum of all three:
+
+$$\\sum R_\\Delta = 30+60+90 = 180\\ \\Omega$$
+
+$$R_1 = \\frac{30\\times 60}{180} = 10\\ \\Omega, \\quad R_2 = \\frac{30\\times 90}{180} = 15\\ \\Omega, \\quad R_3 = \\frac{60\\times 90}{180} = 30\\ \\Omega$$
+
+Now the network is a ladder. The two lower branches are 15 + 25 = 40 Ω and
+30 + 10 = 40 Ω, in parallel:
+
+$$R_{eq} = 10 + \\frac{40\\times 40}{40+40} = 10 + 20 = 30\\ \\Omega$$
+
+$$I_{source} = \\frac{12}{30} = 0.400\\ \\mathrm{A}$$
+
+A nodal solve of the original five-resistor bridge gives midpoint voltages of
+5.00 V and 2.00 V and the same 0.400 A, so the conversion did not change the
+circuit — it only made it reducible. The 90 Ω arm carries
+(5.00 − 2.00)/90 = 33.3 mA, which is exactly the current that balance would
+have removed.
+
+The reverse conversion, wye to delta, is the sum of the pairwise products
+divided by the opposite arm:
+
+$$R_{12} = \\frac{R_1R_2+R_2R_3+R_3R_1}{R_3}$$
+
+and for the balanced case the pair collapses to $R_\\Delta = 3R_Y$, which is
+worth carrying in memory purely so the direction never gets reversed. A wye is
+always the smaller of the two.
+
+## 9.4 Worked: Thevenin resistance with a dependent source, two ways
+
+A 12 V source feeds $R_{1}$ = 4 Ω into node a; $R_{2}$ = 2 Ω runs from a to
+the reference; and a current source of value $2I_1$ — where $I_1$ is the
+current in $R_{1}$ flowing toward a — is injected into node a. Terminals are
+a and the reference.
+
+**Open circuit.** With $I_1 = (12-V)/4$, KCL at a says the injected total
+$3I_1$ leaves through $R_{2}$:
+
+$$3\\cdot\\frac{12-V}{4} = \\frac{V}{2} \\Rightarrow 36-3V = 2V \\Rightarrow V_{oc} = 7.2\\ \\mathrm{V}$$
+
+**Short circuit.** Shorting a to the reference forces V = 0, so
+$I_1 = 12/4 = 3$ A and $R_{2}$ carries nothing:
+
+$$I_{sc} = I_1 + 2I_1 = 3I_1 = 9.0\\ \\mathrm{A}$$
+
+$$R_{Th} = \\frac{V_{oc}}{I_{sc}} = \\frac{7.2}{9.0} = 0.80\\ \\Omega$$
+
+**Test-source check.** Kill the 12 V source only, apply $V_t$ at the
+terminals. Now $I_1 = -V_t/4$, and the current the test source must supply is
+what leaves through $R_{2}$ minus what the dependent source contributes:
+
+$$I_t = \\frac{V_t}{2} - 3I_1 = \\frac{V_t}{2} + \\frac{3V_t}{4} = 1.25\\,V_t$$
+
+$$R_{Th} = \\frac{V_t}{I_t} = \\frac{1}{1.25} = 0.80\\ \\Omega\\quad\\checkmark$$
+
+Two independent routes, one answer. Had the dependent source been wrongly
+deactivated, the result would have been 4 Ω in parallel with 2 Ω = 1.33 Ω —
+not absurd on its face, and wrong by a factor of 1.67 in every load
+calculation that followed. Maximum power into this port is
+
+$$P_{max} = \\frac{V_{oc}^{2}}{4R_{Th}} = \\frac{7.2^{2}}{4\\times 0.8} = \\frac{51.84}{3.2} = 16.2\\ \\mathrm{W}$$
+
+## 9.5 Choosing a route when nothing reduces
+
+| Symptom | Route |
+|---|---|
+| No series or parallel pair anywhere | delta-wye on one triangle, then reduce |
+| Bridge with the ratio condition satisfied | balanced: delete the middle arm, then reduce |
+| Dependent source present, terminals accessible | $R_{Th} = V_{oc}/I_{sc}$ |
+| Dependent source with no independent source | test source, $R_{Th} = V_t/I_t$ |
+| Only one branch current wanted | mesh or nodal directly |
+| Load about to be swept | Thevenin once, then divide repeatedly |`,
+      examTip: 'Test a bridge for balance before doing anything else: cross-multiply the two arm ratios. If they match, the middle element carries zero current and can be deleted, and a problem that looked like delta-wye becomes two series pairs in parallel.',
+      importantNote: 'Delta-wye conversions preserve terminal behaviour at the three nodes only. Voltages and currents inside the converted section have no counterpart in the original circuit, so if a question asks for the current in one of the delta resistors, convert back before answering.',
+    },
+    {
+      id: 'nt-problems',
+      title: '10. Problem Sets',
+      content: `Everything above was demonstrated. These two sets are yours to
+solve. Work each one with a calculator and the handbook only, write the
+equivalent or the deactivation state down before computing anything, and
+target three minutes per problem. Full solutions follow each set, and each
+solution names the wrong answer the question is built to attract.
+
+## Problem Set C: Equivalents, Sources and Transformations
+
+**C1.** A 24 V source feeds 6 Ω into node a. From a, 3 Ω returns to the
+reference and 2 Ω runs out to terminal b. Find $V_{Th}$, $R_{Th}$ and $I_N$
+at terminal b.
+
+**C2.** Using the equivalent from C1, find the power delivered to a 6 Ω load.
+
+**C3.** A sealed module delivers 15.0 V into a 15 Ω load and 18.0 V into a
+45 Ω load. Find its Thevenin equivalent.
+
+**C4.** A one-port containing a dependent source measures 7.2 V open-circuit
+and 9.0 A short-circuit. Find $R_{Th}$ and the maximum power available.
+
+**C5.** A 6 A current source sits in parallel with 5 Ω, and a 3 Ω resistor
+runs from that combination to the output terminals. Find the Thevenin
+equivalent.
+
+**C6.** A 9 V battery reads 8.4 V across a 28 Ω load. Find the internal
+resistance and the short-circuit current.
+
+### Worked answers, Set C
+
+**C1.** Open the terminals: no current flows in the 2 Ω, so it drops nothing
+and the terminal sits at the divider voltage.
+
+$$V_{Th} = 24\\cdot\\frac{3}{6+3} = 8.00\\ \\mathrm{V}$$
+
+Deactivate the source and look in: the 6 Ω and 3 Ω are in parallel, with the
+2 Ω in series on the way out.
+
+$$R_{Th} = \\frac{6\\times 3}{9} + 2 = 4.00\\ \\Omega, \\qquad I_N = \\frac{8}{4} = 2.00\\ \\mathrm{A}$$
+
+**Trap.** Putting the 2 Ω into the divider gives 24 × 3/11 = 6.55 V, and
+leaving it out of $R_{Th}$ gives 2 Ω and a short-circuit current of 4 A,
+double the truth. The rule that settles it: an element carrying no current
+cannot affect $V_{Th}$, but it always affects $R_{Th}$.
+
+**C2.** One division, no re-analysis:
+
+$$i = \\frac{8}{4+6} = 0.800\\ \\mathrm{A}, \\qquad P_L = 0.800^{2}\\times 6 = 3.84\\ \\mathrm{W}$$
+
+**Trap.** Using $V_{Th}^{2}/R_L$ = 64/6 = 10.7 W puts the whole 8 V across the
+load and forgets that $R_{Th}$ takes its share. The load only sees 4.8 V.
+
+**C3.** Convert each reading to a current: 15.0/15 = 1.00 A and 18.0/45 =
+0.400 A. Two points on the terminal line:
+
+$$R_{Th} = \\frac{18.0-15.0}{1.00-0.400} = 5.00\\ \\Omega, \\qquad V_{Th} = 15.0 + 1.00\\times 5 = 20.0\\ \\mathrm{V}$$
+
+**Trap.** Dividing a single reading, 15.0/1.00 = 15 Ω, recovers the load you
+already knew and tells you nothing about the module. One loaded reading can
+never separate $V_{Th}$ from $R_{Th}$; you need two.
+
+**C4.** The ratio works whatever is inside, which is the entire reason it is
+the method of choice when sources may not be deactivated:
+
+$$R_{Th} = \\frac{7.2}{9.0} = 0.800\\ \\Omega, \\qquad P_{max} = \\frac{7.2^{2}}{4\\times 0.8} = 16.2\\ \\mathrm{W}$$
+
+**Trap.** Answering that it cannot be determined because a dependent source is
+present. It can, and this is how.
+
+**C5.** Transform first, then absorb the series element:
+
+$$V = 6 \\times 5 = 30\\ \\mathrm{V}\\ \\text{behind}\\ 5\\ \\Omega, \\qquad R_{Th} = 5+3 = 8\\ \\Omega$$
+
+so 30 V behind 8 Ω.
+
+**Trap.** Multiplying the source current by the series resistor, 6 × 3 = 18 V,
+transforms across the wrong element. Only the resistor **in parallel** with a
+current source takes part in the transformation.
+
+**C6.** The load current is 8.4/28 = 0.300 A, and 0.6 V went missing inside:
+
+$$r = \\frac{9.0-8.4}{0.300} = 2.00\\ \\Omega, \\qquad I_{sc} = \\frac{9.0}{2.0} = 4.50\\ \\mathrm{A}$$
+
+**Trap.** Dividing terminal voltage by current, 8.4/0.3 = 28 Ω, returns the
+load resistance. The internal resistance is always found from the **drop**,
+never from the terminal voltage itself.
+
+## Problem Set D: Superposition, Matching and Bridges
+
+**D1.** A node is fed by 10 V through 2 Ω and by 4 V through 4 Ω, and drains
+to the reference through 4 Ω. Find the node voltage by superposition.
+
+**D2.** For the circuit of D1, find the power in the 4 Ω resistor that goes to
+the reference.
+
+**D3.** A 12 V DC source in series with a 5 V rms 60 Hz source drives 10 Ω in
+series with 26.5 mH. Find the rms current and the resistor power.
+
+**D4.** A source has $V_{Th}$ = 20 V and $R_{Th}$ = 5 Ω. What load draws
+maximum power, how much is it, and at what efficiency?
+
+**D5.** The same source must drive a fixed 15 Ω load. What fraction of the
+maximum power reaches it, and what is the efficiency?
+
+**D6.** An AC one-port has $Z_{Th}$ = 8 − j4 Ω and $V_{Th}$ = 89.44 V rms.
+Find the load for maximum power and that power.
+
+**D7.** A bridge of three 1000 Ω arms and a fourth arm across a 10 V supply is
+balanced. The fourth arm rises by 1 %. Find the new open-circuit output.
+
+### Worked answers, Set D
+
+**D1.** In conductances, $G_1$ = 0.5 S, $G_2$ = 0.25 S, $G_3$ = 0.25 S,
+summing to 1.0 S.
+
+$$V_a = 10\\times\\frac{0.5}{1.0} = 5.00\\ \\mathrm{V}, \\qquad V_b = 4\\times\\frac{0.25}{1.0} = 1.00\\ \\mathrm{V}$$
+
+$$V = 5.00+1.00 = 6.00\\ \\mathrm{V}$$
+
+**Trap.** Opening a voltage source instead of shorting it. Deactivation forces
+the source variable to zero, and a zero-volt source is a wire.
+
+**D2.** Superpose the voltage, then square it:
+
+$$P = \\frac{6.00^{2}}{4} = 9.00\\ \\mathrm{W}$$
+
+**Trap.** Adding the separate powers gives 25/4 + 1/4 = 6.50 W, 28 % low,
+because the cross term 2(5)(1)/4 = 2.50 W has been discarded. Power never
+superposes.
+
+**D3.** DC first, with the inductor a short: $I_{dc}$ = 12/10 = 1.200 A. Then
+AC, with $X_L = 377 \\times 0.0265$ = 9.99 Ω:
+
+$$\\lvert Z \\rvert = \\sqrt{10^{2}+9.99^{2}} = 14.14\\ \\Omega, \\qquad I_{ac} = \\frac{5}{14.14} = 0.354\\ \\mathrm{A}$$
+
+$$I_{rms} = \\sqrt{1.200^{2}+0.354^{2}} = 1.251\\ \\mathrm{A}, \\qquad P = 1.251^{2}\\times 10 = 15.65\\ \\mathrm{W}$$
+
+**Trap.** Adding the currents to 1.554 A and reporting 24.1 W. Components at
+different frequencies combine in quadrature, never arithmetically.
+
+**D4.** $R_L$ = $R_{Th}$ = 5 Ω.
+
+$$P_{max} = \\frac{20^{2}}{4\\times 5} = 20.0\\ \\mathrm{W}, \\qquad \\eta = 50\\ \\%$$
+
+**Trap.** Reporting 100 % efficiency at the match. At $R_L = R_{Th}$ the
+source resistance dissipates exactly as much as the load does.
+
+**D5.** With x = 15/5 = 3:
+
+$$\\frac{P_L}{P_{max}} = \\frac{4(3)}{(1+3)^{2}} = 0.750, \\qquad \\eta = \\frac{3}{4} = 75\\ \\%$$
+
+so 15.0 W of the 20.0 W peak, at 75 % efficiency — the trade the table in 8.2
+makes explicit.
+
+**Trap.** Concluding that an unmatched load is badly wrong. Three times the
+matched resistance still delivers three-quarters of the peak power while
+cutting internal dissipation from 20 W to 5 W.
+
+**D6.** Conjugate match: $Z_L = 8 + j4$ Ω, total impedance 16 Ω real.
+
+$$P_{max} = \\frac{89.44^{2}}{4\\times 8} = 250\\ \\mathrm{W}$$
+
+**Trap.** Copying the source impedance, $Z_L = 8 - j4$, leaves 16 − j8 Ω,
+a 5.00 A current and 200 W. Matching magnitudes only, 8.944 Ω resistive,
+gives 236 W. Both are on the low side because the reactance is still
+circulating energy.
+
+**D7.** Balance puts both midpoints at 5.00 V. Raising one arm to 1010 Ω:
+
+$$v_o = 10\\left(0.5000-\\frac{1010}{2010}\\right) = -24.88\\ \\mathrm{mV}$$
+
+**Trap.** Scaling the supply by 1 % to get 100 mV. The output is the
+difference of two dividers, and a 1 % arm change moves a divider by only about
+a quarter of a percent, so the bridge output runs near V/400 per percent — not
+V/100.`,
+      examTip: 'In every one of these, write the equivalent or the deactivation state before touching the calculator. Nearly all the wrong answers above come from arithmetic performed on a circuit that was never correctly set up, and they are wrong by clean-looking factors that make them attractive multiple-choice options.',
+      quiz: [
+        {
+          question: 'A one-port measures 15.0 V into a 15 ohm load and 18.0 V into a 45 ohm load. What is R_Th?',
+          options: ['5 ohm', '15 ohm', '30 ohm', '3 ohm'],
+          correctIndex: 0,
+          explanation: 'Currents are 1.00 A and 0.400 A, so R_Th = (18.0 - 15.0)/(1.00 - 0.400) = 5 ohm and V_Th = 20 V. Dividing one reading by its own current returns the load resistance, which is the 15 ohm distractor.',
+        },
+        {
+          question: 'A source with R_Th = 5 ohm drives a fixed 15 ohm load. Compared with the matched case, the delivered power is:',
+          options: ['75% of the peak, at 75% efficiency', 'equal to the peak, at 75% efficiency', '33% of the peak, at 50% efficiency', '25% of the peak, at 25% efficiency'],
+          correctIndex: 0,
+          explanation: 'With x = 3, P/P_max = 4x/(1+x)^2 = 0.75 and efficiency is x/(1+x) = 0.75. The power peak is flat, so a threefold mismatch still delivers three-quarters of the maximum while cutting internal dissipation to a quarter of its matched value.',
+        },
+        {
+          question: 'An AC source has Z_Th = 8 - j4 ohm. Which load draws maximum power?',
+          options: ['8 + j4 ohm', '8 - j4 ohm', '8.94 ohm resistive', '8 ohm resistive'],
+          correctIndex: 0,
+          explanation: 'Maximum power needs the conjugate, Z_L = Z_Th*, so the reactances cancel and only 16 ohm of resistance remains. Copying Z_Th gives 200 W and a magnitude match gives 236 W, against 250 W for the conjugate.',
         },
       ],
     },
@@ -977,6 +2546,658 @@ allowed inside a power formula.`,
           options: ['About 11% above the true rms', 'Exactly correct', 'About 11% below the true rms', 'Half the true rms'],
           correctIndex: 0,
           explanation: 'The meter measures the rectified average and multiplies by the sinusoidal form factor 1.11. For a square wave the rectified average already equals the rms, so the built-in 1.11 pushes the display 11% high. Only a true-rms instrument squares and averages internally.',
+        },
+      ],
+    },
+    {
+      id: 'acp-derivation',
+      title: '6. The Phasor Method, Derived',
+      content: `## 6.1 What the method actually buys
+
+A series RLC branch driven by a source obeys one integro-differential
+equation:
+
+$$L\\frac{di}{dt} + Ri + \\frac{1}{C}\\int i\\,dt = v(t)$$
+
+Solving that directly for every question the exam asks would be unthinkable.
+Phasors reduce it to a division, and the reduction rests on one observation:
+a sinusoid is the real part of a rotating complex exponential.
+
+$$v(t) = V_m\\cos(\\omega t+\\phi) = \\Re\\left\\{V_m e^{j\\phi}\\,e^{j\\omega t}\\right\\}$$
+
+Everything time-varying is packed into the common factor $e^{j\\omega t}$, and
+everything specific to this particular signal — its size and its timing — is
+packed into the constant in front. That constant is the phasor:
+
+$$\\mathbf{V} = V_m e^{j\\phi} = V_m\\angle\\phi$$
+
+Differentiation now costs a multiplication, and integration a division:
+
+$$\\frac{d}{dt}\\left(\\mathbf{V}e^{j\\omega t}\\right) = j\\omega\\,\\mathbf{V}e^{j\\omega t}, \\qquad \\int \\mathbf{V}e^{j\\omega t}\\,dt = \\frac{\\mathbf{V}}{j\\omega}e^{j\\omega t}$$
+
+Substitute those into the branch equation, cancel the $e^{j\\omega t}$ that
+appears in every term, and the calculus is gone:
+
+$$\\left(R + j\\omega L + \\frac{1}{j\\omega C}\\right)\\mathbf{I} = \\mathbf{V}$$
+
+$$Z(j\\omega) = R + j\\omega L + \\frac{1}{j\\omega C}, \\qquad \\mathbf{I} = \\frac{\\mathbf{V}}{Z}$$
+
+Three conditions are hiding in that cancellation, and every one of them is
+examined. The circuit must be **linear**, or superposing exponentials is not
+allowed. Every source must be at **one frequency**, or there is no common
+factor to cancel. And the answer is the **steady state** only — the natural
+response has already died away, which is why phasors say nothing about what
+happens in the first few milliseconds after a switch closes.
+
+## 6.2 The three element laws, and where the j comes from
+
+| Element | Time domain | Phasor domain | Angle contributed |
+|---|---|---|---|
+| Resistor | $v = Ri$ | $\\mathbf{V} = R\\,\\mathbf{I}$ | 0 degrees |
+| Inductor | $v = L\\,di/dt$ | $\\mathbf{V} = j\\omega L\\,\\mathbf{I}$ | +90 degrees |
+| Capacitor | $i = C\\,dv/dt$ | $\\mathbf{I} = j\\omega C\\,\\mathbf{V}$ | −90 degrees |
+
+The inductor law comes straight from the derivative rule:
+
+$$v = L\\frac{di}{dt} \\Rightarrow \\mathbf{V} = j\\omega L\\,\\mathbf{I} = \\omega L\\,\\mathbf{I}\\angle 90^{\\circ}$$
+
+and the capacitor from the same rule read backwards:
+
+$$\\mathbf{V} = \\frac{\\mathbf{I}}{j\\omega C} = -\\frac{j}{\\omega C}\\,\\mathbf{I} = \\frac{\\mathbf{I}}{\\omega C}\\angle(-90^{\\circ})$$
+
+Multiplying by j rotates a phasor a quarter turn counter-clockwise; dividing
+by j rotates it the other way. That single fact is the whole content of the
+mnemonic: in an inductor the voltage leads, in a capacitor the current leads.
+The reactances themselves are the magnitudes,
+
+$$X_L = \\omega L, \\qquad X_C = \\frac{1}{\\omega C}$$
+
+and the sign convention that keeps everything consistent is to write the
+impedance as $Z = R + jX$ with $X = X_L - X_C$. A positive X means inductive
+and lagging current; a negative X means capacitive and leading current.
+
+## 6.3 Worked: a phasor from a waveform written as a sine
+
+Convert i(t) = 12 sin(377t + 30°) A to a phasor.
+
+Phasor notation is referenced to the **cosine**, so a sine must be shifted
+before anything else happens:
+
+$$\\sin\\theta = \\cos(\\theta - 90^{\\circ})$$
+
+$$i(t) = 12\\cos(377t + 30^{\\circ} - 90^{\\circ}) = 12\\cos(377t - 60^{\\circ})$$
+
+$$\\mathbf{I} = 12\\angle(-60^{\\circ})\\ \\mathrm{A\\ peak} = 8.49\\angle(-60^{\\circ})\\ \\mathrm{A\\ rms}$$
+
+and the frequency travels alongside, not inside, the phasor:
+
+$$f = \\frac{\\omega}{2\\pi} = \\frac{377}{2\\pi} = 60.0\\ \\mathrm{Hz}$$
+
+Writing 12 angle 30 degrees straight off the page is the single most common
+conversion error in this chapter, and it is 90 degrees wrong in a direction
+that will flip an answer from lagging to leading.
+
+## 6.4 Phasors add as vectors, and magnitudes do not add
+
+![Two current phasors drawn as arrows from the origin, one of 10 A along the real axis and one of 8 A along the imaginary axis, with their vector sum of 12.81 A at 38.66 degrees and the head-to-tail construction shown as a dashed line.](/courses/fe-ee/figures/ckt2-phasor-add.svg)
+
+Two currents arrive at a node: $\\mathbf{I}_1 = 10\\angle 0^{\\circ}$ A and
+$\\mathbf{I}_2 = 8\\angle 90^{\\circ}$ A. In rectangular form the sum is
+immediate:
+
+$$\\mathbf{I}_1+\\mathbf{I}_2 = (10+j0)+(0+j8) = 10+j8$$
+
+$$\\lvert \\mathbf{I}\\rvert = \\sqrt{10^{2}+8^{2}} = 12.81\\ \\mathrm{A}, \\qquad \\theta = \\arctan\\frac{8}{10} = 38.66^{\\circ}$$
+
+Ten amps and eight amps meeting at a node produce 12.81 A, not 18 A. Over five
+amps have gone nowhere at all, and no energy was lost: the two currents simply
+peak at different instants, so their crests never coincide. An ammeter in the
+common branch reads 12.81 A and is not faulty.
+
+The working rules follow the form of the arithmetic:
+
+$$\\mathbf{Z}_1\\mathbf{Z}_2 = \\lvert Z_1\\rvert\\lvert Z_2\\rvert\\angle(\\theta_1+\\theta_2), \\qquad \\frac{\\mathbf{Z}_1}{\\mathbf{Z}_2} = \\frac{\\lvert Z_1\\rvert}{\\lvert Z_2\\rvert}\\angle(\\theta_1-\\theta_2)$$
+
+| Operation | Do it in | Because |
+|---|---|---|
+| Addition, subtraction | rectangular | real parts and imaginary parts are independent |
+| Multiplication, division | polar | magnitudes multiply, angles add |
+| Series impedances | rectangular | they add |
+| Parallel impedances | mixed: product in polar, sum in rectangular | both forms are needed in one expression |
+| Reading a final answer | polar | the exam asks for magnitude and phase |
+
+## 6.5 Worked: two currents that partly cancel
+
+$\\mathbf{I}_1 = 6\\angle 0^{\\circ}$ A and $\\mathbf{I}_2 = 8\\angle(-90^{\\circ})$ A
+enter a node. Find the total.
+
+$$\\mathbf{I} = 6 - j8, \\qquad \\lvert \\mathbf{I}\\rvert = \\sqrt{36+64} = 10.0\\ \\mathrm{A}$$
+
+$$\\theta = \\arctan\\frac{-8}{6} = -53.13^{\\circ}$$
+
+so 10.0 A lagging by 53.13 degrees. Adding magnitudes gives 14 A, and
+subtracting them gives 2 A; both appear as answer choices, and both ignore the
+right angle between the two contributions.
+
+## 6.6 Worked: rectangular and polar, both directions
+
+Convert Z = 5∠53.13° Ω to rectangular, then back.
+
+$$R = \\lvert Z\\rvert\\cos\\theta = 5\\cos 53.13^{\\circ} = 3.00\\ \\Omega$$
+
+$$X = \\lvert Z\\rvert\\sin\\theta = 5\\sin 53.13^{\\circ} = 4.00\\ \\Omega$$
+
+so Z = 3 + j4 Ω, and back again:
+
+$$\\lvert Z\\rvert = \\sqrt{3^{2}+4^{2}} = 5.00\\ \\Omega, \\qquad \\theta = \\arctan\\frac{4}{3} = 53.13^{\\circ}$$
+
+The 3-4-5 triangle and its 36.87/53.13 degree pair turn up constantly in this
+exam, and recognising them saves real time. One caution on the arctangent: it
+cannot tell 3 + j4 from −3 − j4, because the ratio is the same. Always check
+which quadrant the rectangular form puts you in before writing the angle down.`,
+      examTip: 'Write omega and the phasor reference down before anything else. Convert every source to the same reference — cosine, and either all peak or all rms — because a phasor sum of one peak-referenced and one rms-referenced quantity is meaningless, and the resulting number always looks plausible.',
+      importantNote: 'Phasors describe the steady state of a linear circuit at one frequency. They cannot represent a transient, a DC level, a different frequency in the same sum, or the behaviour of any non-linear element. When a problem has sources at two frequencies, solve each one separately and combine the results in the time domain.',
+    },
+    {
+      id: 'acp-sweep',
+      title: '7. One Circuit at Every Frequency',
+      content: `## 7.1 The branch this section follows
+
+Take a single series branch and keep it for the rest of the chapter:
+R = 30 Ω, L = 100 mH, C = 20 µF. Everything about it follows from two
+reactances that move in opposite directions:
+
+$$X_L = 2\\pi f L, \\qquad X_C = \\frac{1}{2\\pi f C}$$
+
+$$Z = R + j\\,(X_L-X_C), \\qquad \\lvert Z\\rvert = \\sqrt{R^{2}+(X_L-X_C)^{2}}, \\qquad \\theta = \\arctan\\frac{X_L-X_C}{R}$$
+
+They are equal at exactly one frequency, found by setting
+$2\\pi f L = 1/(2\\pi f C)$:
+
+$$f_0 = \\frac{1}{2\\pi\\sqrt{LC}} = \\frac{1}{2\\pi\\sqrt{0.100\\times 20\\times 10^{-6}}} = 112.5\\ \\mathrm{Hz}$$
+
+![Inductive reactance rising as a straight line of slope one on log-log axes, capacitive reactance falling with slope minus one, and the series impedance magnitude dipping to the resistance value where the two cross at 112.5 hertz.](/courses/fe-ee/figures/ckt2-reactance-vs-f.svg)
+
+On logarithmic axes $X_L$ is a straight line of slope +1 and $X_C$ a straight
+line of slope −1. Two straight lines of different slope meet exactly once,
+which is the geometric reason a series LC has one resonant frequency and not a
+band of them.
+
+| f (Hz) | $X_L$ (Ω) | $X_C$ (Ω) | $X = X_L-X_C$ (Ω) | $\\lvert Z\\rvert$ (Ω) | θ (deg) | Character |
+|---|---|---|---|---|---|---|
+| 30 | 18.85 | 265.26 | −246.41 | 248.23 | −83.06 | strongly capacitive |
+| 60 | 37.70 | 132.63 | −94.93 | 99.56 | −72.46 | capacitive |
+| 91.17 | 57.28 | 87.28 | −30.00 | 42.43 | −45.00 | lower half-power edge |
+| 112.54 | 70.71 | 70.71 | 0.00 | 30.00 | 0.00 | resonant, purely resistive |
+| 138.92 | 87.28 | 57.28 | +30.00 | 42.43 | +45.00 | upper half-power edge |
+| 200 | 125.66 | 39.79 | +85.88 | 90.96 | +70.74 | inductive |
+| 400 | 251.33 | 19.89 | +231.43 | 233.37 | +82.61 | strongly inductive |
+
+Read the third and fourth columns together. The impedance magnitude is never
+smaller than R and reaches R only at 112.54 Hz, because a hypotenuse cannot be
+shorter than one of its legs. And the angle changes **sign** at that
+frequency, so a branch that was returning energy early in the cycle starts
+storing it instead. Nothing about the components changed; only the frequency
+did.
+
+## 7.2 Worked: the branch at 60 Hz, element by element
+
+Apply 120 V rms at 60 Hz. First the reactances, from omega and not from f:
+
+$$\\omega = 2\\pi(60) = 377\\ \\mathrm{rad/s}$$
+
+$$X_L = 377\\times 0.100 = 37.70\\ \\Omega, \\qquad X_C = \\frac{1}{377\\times 20\\times 10^{-6}} = 132.63\\ \\Omega$$
+
+$$X = 37.70-132.63 = -94.93\\ \\Omega$$
+
+$$\\lvert Z\\rvert = \\sqrt{30^{2}+94.93^{2}} = 99.56\\ \\Omega, \\qquad \\theta = -72.46^{\\circ}$$
+
+$$I = \\frac{120}{99.56} = 1.205\\ \\mathrm{A\\ rms}$$
+
+The current **leads** by 72.46 degrees, because at 60 Hz — well below
+resonance — the capacitor dominates. Now the element voltages, each the
+current times its own magnitude:
+
+$$V_R = 1.205\\times 30 = 36.16\\ \\mathrm{V}$$
+
+$$V_L = 1.205\\times 37.70 = 45.44\\ \\mathrm{V}, \\qquad V_C = 1.205\\times 132.63 = 159.86\\ \\mathrm{V}$$
+
+The capacitor holds 159.86 V while the source supplies 120 V, and the
+magnitudes sum to 241 V. Neither observation breaks KVL, because KVL applies
+to the phasors:
+
+$$\\mathbf{V} = V_R + j(V_L-V_C) = 36.16 - j114.42, \\qquad \\lvert \\mathbf{V}\\rvert = \\sqrt{36.16^{2}+114.42^{2}} = 120.0\\ \\mathrm{V}$$
+
+The inductor and capacitor voltages are 180 degrees apart and cancel most of
+each other before the resistor voltage is added in quadrature. Any AC circuit
+question that asks whether a component voltage can exceed the supply is asking
+whether you know this.
+
+## 7.3 Worked: the same branch at resonance
+
+At $f_0$ = 112.54 Hz the two reactances are equal:
+
+$$X_L = X_C = 2\\pi(112.54)(0.100) = 70.71\\ \\Omega$$
+
+$$Z = 30 + j0, \\qquad I = \\frac{120}{30} = 4.00\\ \\mathrm{A}$$
+
+The current is more than three times its 60 Hz value, and the branch looks
+purely resistive to the source. The element voltages, however, do not
+disappear:
+
+$$V_L = V_C = 4.00\\times 70.71 = 282.8\\ \\mathrm{V}$$
+
+which is 2.36 times the supply voltage. That multiplier is the quality factor:
+
+$$Q = \\frac{X_L(f_0)}{R} = \\frac{70.71}{30} = 2.357$$
+
+$$\\mathrm{BW} = \\frac{R}{2\\pi L} = \\frac{30}{2\\pi(0.100)} = 47.75\\ \\mathrm{Hz}$$
+
+A resonant branch with a modest Q of 2.36 already puts 283 V across parts fed
+from a 120 V source. Component voltage ratings, not the supply rating, are
+what decide whether such a circuit survives.
+
+## 7.4 The angle, and the two frequencies where it is 45 degrees
+
+![Impedance angle of the series branch against frequency on a logarithmic axis, running from nearly minus ninety degrees at low frequency through zero at resonance to nearly plus ninety at high frequency, with the plus and minus forty-five degree crossings marked.](/courses/fe-ee/figures/ckt2-impedance-angle.svg)
+
+$$\\theta(f) = \\arctan\\frac{2\\pi f L - 1/(2\\pi f C)}{R}$$
+
+The curve is bounded by ±90 degrees and can never reach either, because R is
+always in the branch. It crosses ±45 degrees where the net reactance equals
+the resistance in magnitude, and those two frequencies — 91.17 Hz and
+138.92 Hz for this branch — are the half-power edges. Their separation is the
+bandwidth:
+
+$$f_{hi}-f_{lo} = 138.92-91.17 = 47.75\\ \\mathrm{Hz} = \\frac{R}{2\\pi L}\\quad\\checkmark$$
+
+Note that the edges are **not** symmetric about $f_0$ on a linear axis: 112.54
+is not the average of 91.17 and 138.92, which is 115.04. They are symmetric
+geometrically, since $\\sqrt{91.17\\times 138.92}$ = 112.54. That is why a log
+frequency axis is the honest way to draw this.
+
+## 7.5 Worked: phase as a time shift on an oscilloscope
+
+An oscilloscope shows the shift between two traces in milliseconds, so the
+conversion is always the same:
+
+$$\\Delta t = \\frac{\\theta}{360^{\\circ}}\\,T, \\qquad \\theta = 360^{\\circ}\\frac{\\Delta t}{T}$$
+
+![One cycle each of voltage and current for a load whose impedance angle is 36.87 degrees, each normalised to its own peak, with the horizontal shift between the positive-going zero crossings marked as 1.71 milliseconds.](/courses/fe-ee/figures/ckt2-vi-lag.svg)
+
+Take a load of Z = 4 + j3 Ω driven by v(t) = 170 cos(377t) V.
+
+$$\\lvert Z\\rvert = \\sqrt{4^{2}+3^{2}} = 5.00\\ \\Omega, \\qquad \\theta = \\arctan\\frac{3}{4} = 36.87^{\\circ}$$
+
+$$I_m = \\frac{170}{5.00} = 34.0\\ \\mathrm{A}, \\qquad i(t) = 34.0\\cos(377t - 36.87^{\\circ})\\ \\mathrm{A}$$
+
+At 60 Hz the period is 16.67 ms, so the lag appears on screen as
+
+$$\\Delta t = \\frac{36.87}{360}\\times 16.67 = 1.71\\ \\mathrm{ms}$$
+
+and in rms terms the current is 34.0/1.414 = 24.04 A. The inductance behind
+the 3 Ω of reactance is
+
+$$L = \\frac{X_L}{\\omega} = \\frac{3}{377} = 7.96\\ \\mathrm{mH}$$
+
+Two checks belong with every scope reading. The measured offset must be less
+than half a period, or the wrong pair of crossings was used and the true angle
+is the supplement. And the direction has to be identified before the value is
+trusted: current crossing **after** voltage is lagging and inductive, current
+crossing **before** it is leading and capacitive. The instrument reports a
+number either way.`,
+      examTip: 'Compute omega once, write it down, and reuse it. An error of f for omega scales every reactance by 6.283, and because both reactances move the same way the impedance angle often still looks reasonable, which is what makes the mistake survive a sanity check.',
+      quiz: [
+        {
+          question: 'A series branch of R = 30 ohm, L = 100 mH and C = 20 microfarad is driven at 60 Hz. Is it inductive or capacitive, and by what angle?',
+          options: ['Capacitive, 72.5 degrees, current leading', 'Inductive, 72.5 degrees, current lagging', 'Capacitive, 17.5 degrees, current leading', 'Resistive, since both reactances are present'],
+          correctIndex: 0,
+          explanation: 'X_L = 37.70 ohm and X_C = 132.63 ohm, so the net reactance is -94.93 ohm and the branch is capacitive with the current leading by arctan(94.93/30) = 72.46 degrees. Its resonance is at 112.5 Hz, well above 60 Hz, and below resonance the capacitor always dominates.',
+        },
+        {
+          question: 'In the same branch at resonance, driven by 120 V rms, what voltage appears across the capacitor?',
+          options: ['283 V', '120 V', '30 V', '0 V'],
+          correctIndex: 0,
+          explanation: 'At resonance Z = R = 30 ohm, so I = 4.00 A, and X_C = X_L = 70.71 ohm gives V_C = 4.00 x 70.71 = 283 V. The reactive voltages cancel each other in the KVL sum, which is why the source only has to supply 120 V while the components see 283 V.',
+        },
+      ],
+    },
+    {
+      id: 'acp-networks',
+      title: '8. Network Analysis in the Phasor Domain',
+      content: `## 8.1 Every DC tool, with Z where R used to be
+
+Once the elements have impedances, nothing else about circuit analysis
+changes. Kirchhoff's laws hold for phasors because they hold instant by
+instant; series and parallel combination, the two dividers, nodal and mesh
+analysis, Thevenin, Norton and superposition all carry over with complex
+arithmetic replacing real arithmetic.
+
+$$Z_{series} = Z_1+Z_2+\\dots, \\qquad Z_{par} = \\frac{Z_1Z_2}{Z_1+Z_2}, \\qquad Y = \\frac{1}{Z} = G+jB$$
+
+$$\\mathbf{V}_2 = \\mathbf{V}\\,\\frac{Z_2}{Z_1+Z_2}, \\qquad \\mathbf{I}_1 = \\mathbf{I}\\,\\frac{Z_2}{Z_1+Z_2}$$
+
+The current divider looks wrong at first glance and is not: the branch with
+the **smaller** impedance takes the larger current, so the numerator carries
+the other branch. It is the same asymmetry as the resistive case.
+
+The one genuinely new hazard is that complex numbers do not order themselves.
+There is no such thing as the larger of 3 + j4 and 5 − j1, so any step that
+depends on comparing sizes has to compare magnitudes explicitly.
+
+## 8.2 Worked: a divider whose output exceeds its input
+
+$Z_1 = 40+j30$ Ω in series with $Z_2 = -j50$ Ω across a 100∠0° V rms source.
+Find the voltage across each.
+
+$$Z_1+Z_2 = 40+j30-j50 = 40-j20 = 44.72\\angle(-26.57^{\\circ})\\ \\Omega$$
+
+$$\\mathbf{V}_2 = 100\\,\\frac{50\\angle(-90^{\\circ})}{44.72\\angle(-26.57^{\\circ})} = 111.8\\angle(-63.43^{\\circ})\\ \\mathrm{V}$$
+
+$$\\mathbf{V}_1 = 100\\,\\frac{50\\angle 36.87^{\\circ}}{44.72\\angle(-26.57^{\\circ})} = 111.8\\angle 63.43^{\\circ}\\ \\mathrm{V}$$
+
+Both branch voltages are 111.8 V from a 100 V source, and their magnitudes sum
+to 223.6 V. The phasor sum is what KVL actually requires:
+
+$$\\mathbf{V}_1+\\mathbf{V}_2 = 2(111.8)\\cos(63.43^{\\circ}) = 100.0\\angle 0^{\\circ}\\ \\mathrm{V}\\quad\\checkmark$$
+
+A resistive divider can never do this. A reactive one can, whenever the branch
+impedances partly cancel, and the effect is exactly why capacitors in series
+LC networks fail on over-voltage rather than over-current.
+
+## 8.3 Worked: parallel branches through admittance
+
+A 20 Ω resistor is in parallel with an inductive reactance of j15 Ω. Find the
+equivalent impedance.
+
+The admittance route avoids dividing complex numbers:
+
+$$Y = \\frac{1}{20}+\\frac{1}{j15} = 0.0500 - j0.0667\\ \\mathrm{S}$$
+
+$$\\lvert Y\\rvert = \\sqrt{0.0500^{2}+0.0667^{2}} = 0.0833\\ \\mathrm{S}, \\qquad \\angle Y = -53.13^{\\circ}$$
+
+$$Z = \\frac{1}{Y} = 12.0\\angle 53.13^{\\circ} = 7.20+j9.60\\ \\Omega$$
+
+Two features of that answer are worth noticing. The magnitude, 12.0 Ω, is
+smaller than either branch, as any parallel combination must be. And the
+resistive part of Z is 7.20 Ω even though the only resistor in the circuit is
+20 Ω — because the reactance changes how much current the resistor is asked to
+carry, the real part of an impedance is not simply the resistance present.
+Answering 20 Ω for the real part is a standing trap.
+
+## 8.4 Worked: Thevenin equivalent of an AC one-port
+
+A 100∠0° V rms source sits behind a 10 Ω series resistor, with a capacitive
+reactance of −j20 Ω across the output terminals. Reduce it.
+
+**Open-circuit voltage** — a divider:
+
+$$\\mathbf{V}_{Th} = 100\\,\\frac{-j20}{10-j20} = 100\\,\\frac{20\\angle(-90^{\\circ})}{22.36\\angle(-63.43^{\\circ})} = 89.44\\angle(-26.57^{\\circ})\\ \\mathrm{V}$$
+
+**Thevenin impedance** — deactivate the source and look in, exactly as in DC:
+
+$$Z_{Th} = \\frac{10(-j20)}{10-j20} = \\frac{-j200(10+j20)}{500} = 8-j4\\ \\Omega$$
+
+**Norton check.** The short-circuit current is the source current with the
+terminals shorted, 100/10 = 10∠0° A, and
+
+$$\\mathbf{I}_N Z_{Th} = 10\\times 8.944\\angle(-26.57^{\\circ}) = 89.44\\angle(-26.57^{\\circ})\\ \\mathrm{V}\\quad\\checkmark$$
+
+which is the open-circuit voltage by an independent route. Every DC habit
+transfers, including the habit of computing two of the three quantities and
+predicting the third.
+
+## 8.5 Frequency response, and where the corner is
+
+A first-order RC low-pass takes its output across the capacitor:
+
+$$H(j\\omega) = \\frac{1/(j\\omega C)}{R+1/(j\\omega C)} = \\frac{1}{1+j\\omega RC}$$
+
+$$\\lvert H\\rvert = \\frac{1}{\\sqrt{1+(f/f_c)^{2}}}, \\qquad \\angle H = -\\arctan\\frac{f}{f_c}, \\qquad f_c = \\frac{1}{2\\pi RC}$$
+
+![Magnitude response of a first-order RC low-pass filter in decibels against log frequency, with the flat zero-decibel asymptote and the minus twenty decibel per decade asymptote crossing at the corner frequency, three decibels above the true curve.](/courses/fe-ee/figures/ckt2-bode-rc.svg)
+
+With R = 1.6 kΩ and C = 100 nF,
+
+$$f_c = \\frac{1}{2\\pi(1600)(100\\times 10^{-9})} = 994.7\\ \\mathrm{Hz}$$
+
+The corner has a physical meaning that survives every variation of this
+problem: it is the frequency at which the capacitor's reactance equals the
+resistance.
+
+$$X_C(f_c) = \\frac{1}{2\\pi(994.7)(100\\times 10^{-9})} = 1600\\ \\Omega = R$$
+
+There the two contributions are equal and at right angles, so the output is
+$1/\\sqrt{2}$ of the input and lags by 45 degrees:
+
+$$20\\log_{10}\\frac{1}{\\sqrt{2}} = -3.01\\ \\mathrm{dB}$$
+
+One decade above the corner the true response is −20.04 dB against the
+asymptote's −20.00 dB, which is why the straight-line construction is safe to
+use everywhere except within about an octave of the corner itself.
+
+## 8.6 Worked: output of the filter at 5 kHz
+
+Feed 1.00 V rms at 5.00 kHz into the filter above.
+
+$$\\frac{f}{f_c} = \\frac{5000}{994.7} = 5.027$$
+
+$$\\lvert H\\rvert = \\frac{1}{\\sqrt{1+5.027^{2}}} = 0.195, \\qquad V_{out} = 0.195\\ \\mathrm{V\\ rms}$$
+
+$$20\\log_{10}(0.195) = -14.19\\ \\mathrm{dB}, \\qquad \\angle H = -\\arctan(5.027) = -78.75^{\\circ}$$
+
+The asymptote would have predicted $-20\\log_{10}(5.027)$ = −14.02 dB, within
+0.2 dB of the exact answer — close enough to check an answer against, not
+close enough to be the answer when the question asks for a voltage.
+
+| Frequency | $\\lvert H\\rvert$ | dB | Phase |
+|---|---|---|---|
+| 100 Hz | 0.995 | −0.04 | −5.7 deg |
+| 200 Hz | 0.980 | −0.17 | −11.4 deg |
+| 994.7 Hz (corner) | 0.707 | −3.01 | −45.0 deg |
+| 5.00 kHz | 0.195 | −14.19 | −78.7 deg |
+| 9.95 kHz (decade) | 0.0995 | −20.04 | −84.3 deg |`,
+      examTip: 'When the handbook formula for a divider or a reduction is written in R, use it unchanged with Z. The only adjustments are that every quantity is complex and that comparisons of size must be made on magnitudes. Do the additions in rectangular form and the divisions in polar form and the arithmetic stays short.',
+      importantNote: 'The real part of an impedance is not the resistance in the circuit unless nothing else is in parallel with it. A 20 ohm resistor paralleled with j15 ohm presents 7.2 + j9.6 ohm, and using 20 ohm as the resistive part will misstate the real power by a factor of nearly three.',
+    },
+    {
+      id: 'acp-problems',
+      title: '9. Problem Sets',
+      content: `Everything above was demonstrated. These two sets are yours to
+solve. Convert to omega first, name the reference (peak or rms) before adding
+anything, and target three minutes per problem. Full solutions follow each
+set, and each one names the wrong answer the question was built to attract.
+
+## Problem Set A: Phasors, Impedance and RMS
+
+**A1.** A 50 Ω resistor is in series with a 150 mH inductor at 60 Hz. Find the
+impedance magnitude and angle.
+
+**A2.** Convert i(t) = 12 sin(377t + 30°) A to a cosine-referenced phasor, and
+give both the peak and rms forms.
+
+**A3.** Two currents enter a node: 6∠0° A and 8∠−90° A. Find the total.
+
+**A4.** Find the reactance magnitude of a 40 µF capacitor at 400 Hz.
+
+**A5.** A load draws 5.0 A rms from a 240 V rms supply with the current
+lagging by 25°. Find its impedance in rectangular form.
+
+**A6.** A branch has Z = 8 − j6 Ω. Find its admittance, conductance and
+susceptance.
+
+**A7.** Find the rms value of v(t) = 8 + 6 cos(ωt) V.
+
+### Worked answers, Set A
+
+**A1.** $\\omega = 377$ rad/s, so $X_L = 377\\times 0.150 = 56.55$ Ω.
+
+$$\\lvert Z\\rvert = \\sqrt{50^{2}+56.55^{2}} = 75.48\\ \\Omega, \\qquad \\theta = \\arctan\\frac{56.55}{50} = 48.52^{\\circ}$$
+
+**Trap.** Adding the two arithmetically gives 106.5 Ω, which overstates the
+impedance by 41 % and understates the current by the same proportion.
+Resistance and reactance are at right angles, always.
+
+**A2.** Shift the sine to a cosine before doing anything else:
+
+$$12\\sin(377t+30^{\\circ}) = 12\\cos(377t-60^{\\circ})$$
+
+$$\\mathbf{I} = 12\\angle(-60^{\\circ})\\ \\mathrm{A\\ peak} = 8.49\\angle(-60^{\\circ})\\ \\mathrm{A\\ rms}$$
+
+**Trap.** Reading 12∠30° straight off the page. That is 90 degrees wrong, and
+in a power-factor question it converts a lagging load into a leading one.
+
+**A3.** In rectangular form the sum is 6 − j8, so
+
+$$\\lvert \\mathbf{I}\\rvert = \\sqrt{36+64} = 10.0\\ \\mathrm{A}, \\qquad \\theta = -53.13^{\\circ}$$
+
+**Trap.** 14 A, from adding magnitudes. The two currents peak a quarter cycle
+apart and their crests never coincide.
+
+**A4.** $\\omega = 2\\pi(400) = 2513$ rad/s.
+
+$$X_C = \\frac{1}{2513\\times 40\\times 10^{-6}} = 9.95\\ \\Omega$$
+
+**Trap.** Using f instead of omega gives 62.5 Ω, a factor of 6.28 too large;
+forgetting to invert gives 0.1005 Ω. Both appear as choices in this style of
+question.
+
+**A5.** The magnitude is the voltage over the current, and lagging current
+means a positive angle:
+
+$$\\lvert Z\\rvert = \\frac{240}{5.0} = 48\\ \\Omega, \\qquad Z = 48\\angle 25^{\\circ}$$
+
+$$R = 48\\cos 25^{\\circ} = 43.5\\ \\Omega, \\qquad X = 48\\sin 25^{\\circ} = 20.3\\ \\Omega$$
+
+so Z = 43.5 + j20.3 Ω.
+
+**Trap.** Giving the angle as −25°. The current lags the voltage, so the
+impedance angle is positive and the load is inductive.
+
+**A6.** Rationalise rather than inverting the parts separately:
+
+$$Y = \\frac{1}{8-j6} = \\frac{8+j6}{8^{2}+6^{2}} = \\frac{8+j6}{100} = 0.0800+j0.0600\\ \\mathrm{S}$$
+
+so G = 0.0800 S and B = 0.0600 S, and the check $\\lvert Y\\rvert = 1/\\lvert Z\\rvert$
+gives 0.100 S against 1/10 Ω.
+
+**Trap.** Writing G = 1/8 = 0.125 S and B = −1/6 S. Conductance equals 1/R
+only when there is no reactance in the branch.
+
+**A7.** The DC term and the AC term are at different frequencies, so they
+combine in quadrature:
+
+$$V_{rms} = \\sqrt{8^{2}+\\left(\\frac{6}{\\sqrt{2}}\\right)^{2}} = \\sqrt{64+18} = 9.06\\ \\mathrm{V}$$
+
+**Trap.** 14 V from adding the offset to the peak, or 12.24 V from adding the
+offset to the AC rms. Neither is a quadrature sum, and both would overstate
+the heating badly.
+
+## Problem Set B: Frequency, Networks and Response
+
+**B1.** A series branch of R = 30 Ω, L = 100 mH and C = 20 µF is driven by
+120 V rms at 60 Hz. Find the current magnitude and its phase relative to the
+supply.
+
+**B2.** For the same branch, find the resonant frequency, the current there,
+and the capacitor voltage there.
+
+**B3.** $Z_1 = 40+j30$ Ω is in series with $Z_2 = -j50$ Ω across 100∠0° V rms.
+Find the voltage across $Z_2$.
+
+**B4.** A 20 Ω resistor is in parallel with an inductive reactance of j15 Ω.
+Find the equivalent impedance in polar and rectangular form.
+
+**B5.** An RC low-pass has R = 1.6 kΩ and C = 100 nF. Find the corner
+frequency, and the output amplitude and phase at 5.00 kHz for a 1.00 V input.
+
+**B6.** At 400 Hz, an oscilloscope shows the current zero-crossing 0.35 ms
+after the voltage zero-crossing. Find the phase angle and the power factor.
+
+**B7.** A 100∠0° V rms source behind 10 Ω has −j20 Ω across its output
+terminals. Find the Thevenin equivalent at those terminals.
+
+### Worked answers, Set B
+
+**B1.** $X_L = 377(0.100) = 37.70$ Ω and $X_C = 1/(377\\times 20\\times 10^{-6})$
+= 132.63 Ω, so X = −94.93 Ω.
+
+$$\\lvert Z\\rvert = \\sqrt{30^{2}+94.93^{2}} = 99.56\\ \\Omega, \\qquad I = \\frac{120}{99.56} = 1.205\\ \\mathrm{A}$$
+
+leading by 72.46 degrees.
+
+**Trap.** Answering "lagging" because an inductor is present. Below resonance
+the capacitor wins, and 60 Hz is well below this branch's 112.5 Hz.
+
+**B2.** $f_0 = 1/(2\\pi\\sqrt{LC})$ = 112.5 Hz, where the reactances cancel:
+
+$$I = \\frac{120}{30} = 4.00\\ \\mathrm{A}, \\qquad X_C = 70.71\\ \\Omega, \\qquad V_C = 4.00\\times 70.71 = 283\\ \\mathrm{V}$$
+
+**Trap.** Reporting 120 V across the capacitor because it cannot exceed the
+supply. It can, by the factor Q = 2.36, and this is where reactive components
+actually fail.
+
+**B3.** The series total is 40 − j20 = 44.72∠−26.57° Ω.
+
+$$\\mathbf{V}_2 = 100\\,\\frac{50\\angle(-90^{\\circ})}{44.72\\angle(-26.57^{\\circ})} = 111.8\\angle(-63.43^{\\circ})\\ \\mathrm{V}$$
+
+**Trap.** Assuming a divider output cannot exceed its input and discarding the
+answer. With reactive branches that partly cancel, 111.8 V from a 100 V source
+is correct, and the other branch holds 111.8 V as well.
+
+**B4.** Working in admittance:
+
+$$Y = 0.0500-j0.0667\\ \\mathrm{S}, \\qquad Z = \\frac{1}{Y} = 12.0\\angle 53.13^{\\circ} = 7.20+j9.60\\ \\Omega$$
+
+**Trap.** Treating the reactance as a resistance and computing
+1/(1/20 + 1/15) = 8.57 Ω. That ignores the right angle and is 29 % low on the
+magnitude while giving no phase at all.
+
+**B5.** $f_c = 1/(2\\pi RC)$ = 994.7 Hz, and f/f_c = 5.027 at 5.00 kHz:
+
+$$\\lvert H\\rvert = \\frac{1}{\\sqrt{1+5.027^{2}}} = 0.195, \\qquad V_{out} = 0.195\\ \\mathrm{V}, \\qquad \\angle H = -78.75^{\\circ}$$
+
+**Trap.** Using 1/(RC) = 6250 as though it were in hertz. That puts the corner
+above the test frequency and returns 0.78 V — four times too much — because
+the 2π was left out.
+
+**B6.** The period is 1/400 = 2.50 ms.
+
+$$\\theta = 360^{\\circ}\\frac{0.35}{2.50} = 50.4^{\\circ}, \\qquad \\mathrm{pf} = \\cos 50.4^{\\circ} = 0.637\\ \\text{lagging}$$
+
+**Trap.** Using the 60 Hz period of 16.67 ms out of habit, which gives 7.6
+degrees and a power factor of 0.99. Always take the period from the stated
+frequency.
+
+**B7.** Divider for the open-circuit voltage, source deactivation for the
+impedance:
+
+$$\\mathbf{V}_{Th} = 100\\,\\frac{-j20}{10-j20} = 89.44\\angle(-26.57^{\\circ})\\ \\mathrm{V}$$
+
+$$Z_{Th} = \\frac{10(-j20)}{10-j20} = 8-j4\\ \\Omega$$
+
+**Trap.** Reporting $Z_{Th}$ = 10 − j20 Ω, the series sum. Deactivating the
+source puts the 10 Ω in **parallel** with the reactance, not in series with
+it.`,
+      examTip: 'Every trap in these two sets is one of four things: f used where omega belongs, magnitudes added where phasors were required, a sine read as though it were a cosine, or a sign of phase taken from the presence of a component rather than from the net reactance. Checking those four before submitting an answer catches most of what this section can throw.',
+      quiz: [
+        {
+          question: 'A 20 ohm resistor is in parallel with an inductive reactance of j15 ohm. What is the equivalent impedance?',
+          options: ['7.2 + j9.6 ohm', '20 + j15 ohm', '8.57 ohm', '35 ohm'],
+          correctIndex: 0,
+          explanation: 'Y = 1/20 + 1/(j15) = 0.05 - j0.0667 S, so Z = 1/Y = 12 at 53.13 degrees = 7.2 + j9.6 ohm. The 8.57 ohm distractor comes from treating the reactance as a resistance in the reciprocal formula, which discards the right angle between the two branch currents.',
+        },
+        {
+          question: 'An RC low-pass has R = 1.6 kohm and C = 100 nF. What is its corner frequency?',
+          options: ['995 Hz', '6250 Hz', '160 Hz', '1600 Hz'],
+          correctIndex: 0,
+          explanation: 'f_c = 1/(2 pi R C) = 1/(2 pi x 1600 x 100e-9) = 994.7 Hz. The 6250 Hz distractor is 1/(RC), which is the corner in radians per second and is 2 pi times too large when quoted in hertz.',
+        },
+        {
+          question: 'A 100 V rms source behind 10 ohm has -j20 ohm across its output terminals. What is Z_Th?',
+          options: ['8 - j4 ohm', '10 - j20 ohm', '10 + j20 ohm', '22.4 ohm'],
+          correctIndex: 0,
+          explanation: 'Deactivating the source shorts it, placing the 10 ohm in parallel with the -j20 ohm: Z_Th = 10(-j20)/(10 - j20) = 8 - j4 ohm. Answering 10 - j20 treats the two as being in series, which is what they look like on the schematic but not what the port sees.',
         },
       ],
     },

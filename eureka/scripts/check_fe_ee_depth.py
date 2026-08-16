@@ -46,7 +46,17 @@ FIGDIR = (
     / "apps" / "web" / "public" / "courses" / "fe-ee" / "figures"
 )
 
-WORD_TARGET = 2000
+# RAISED 2026-08-16 after the user rated the "complete" course 4/10 for lack of
+# content. The old bar — 2000 words, one figure, one table — was hit by all 93
+# chapters and still produced a summary, not a course: 1,885 words on average,
+# 1.33 figures, and NO PRACTICE PROBLEMS in 92 of 93 chapters. You cannot
+# prepare for the FE by reading. These targets are the exam-prep analogue of the
+# standard already set for the Electronic & Photonic Devices programme.
+WORD_TARGET = 6000
+FIGURE_TARGET = 6
+EQUATION_TARGET = 40
+WORKED_TARGET = 8
+PROBLEM_SET_TARGET = 2
 
 CONTENT = re.compile(r"content: `(.*?)`,", re.S)
 TOPIC = re.compile(r"topicId: '(fee_[a-z0-9_]+)'")
@@ -57,6 +67,16 @@ TOPIC = re.compile(r"topicId: '(fee_[a-z0-9_]+)'")
 TITLE = re.compile(r"""title: (?:'((?:[^'\\]|\\.)*)'|"([^"]*)"|`([^`]*)`)""")
 WEIGHT = re.compile(r"domainWeight: '((?:[^'\\]|\\.)*)'")
 IMAGE = re.compile(r"!\[[^\]]*\]\((/courses/fe-ee/figures/[^)]+)\)")
+# A worked example states givens and drives them to a number; a problem set asks
+# the reader to do that themselves and supplies the answer. Both are counted by
+# the explicit headings the authoring standard requires, so the count cannot be
+# inflated by prose that merely uses the word "example".
+# The heading may sit at the start of a line OR immediately after the opening
+# backtick of a `content:` literal, where a plain ^-anchor cannot see it — that
+# false negative scored two real problem sets as zero on first run.
+WORKED = re.compile(r"(?:^|`)#{2,4}\s.*\b[Ww]orked\b", re.M)
+PROBLEMS = re.compile(r"(?:^|`)#{2,4}\s.*\b(?:Problem [Ss]et|Practice [Pp]roblems)\b", re.M)
+DISPLAY_EQ = re.compile(r"\$\$")
 TABLEROW = re.compile(r"^\|.*\|$", re.M)
 
 
@@ -72,6 +92,9 @@ class Topic:
         self.words = sum(len(b.split()) for b in bodies)
         self.figures = IMAGE.findall(block)
         self.tables = len(TABLEROW.findall(block))
+        self.worked = len(WORKED.findall(block))
+        self.problem_sets = len(PROBLEMS.findall(block))
+        self.equations = len(DISPLAY_EQ.findall(block)) // 2
 
     @property
     def expanded(self) -> bool:
@@ -79,6 +102,10 @@ class Topic:
             self.words >= WORD_TARGET
             and len(self.figures) >= 1
             and self.tables >= 1
+            and len(self.figures) >= FIGURE_TARGET
+            and self.equations >= EQUATION_TARGET
+            and self.worked >= WORKED_TARGET
+            and self.problem_sets >= PROBLEM_SET_TARGET
         )
 
     @property
@@ -155,7 +182,8 @@ def main() -> int:
             order.append(t.section)
 
     print(f"EXPANDED {len(done)}/{len(topics)} topics "
-          f"(>= {WORD_TARGET} words of prose, >= 1 figure, >= 1 table)")
+          f"(>= {WORD_TARGET}w, >= {FIGURE_TARGET} figures, >= {EQUATION_TARGET} equations, "
+          f">= {WORKED_TARGET} worked examples, >= {PROBLEM_SET_TARGET} problem sets, >= 1 table)")
     print(f"prose on hand {sum(t.words for t in topics):,} words; "
           f"still to write ~{sum(t.gap for t in todo):,}\n")
 
@@ -170,7 +198,8 @@ def main() -> int:
         print(f"\n{'REMAINING' if not args.all else 'ALL TOPICS'}:")
         for t in sorted(shown, key=lambda x: (x.section, -x.gap)):
             flag = "OK " if t.expanded else "   "
-            print(f"  {flag}{t.words:5d}w  fig={len(t.figures)} tbl={t.tables:2d}  "
+            print(f"  {flag}{t.words:5d}w  fig={len(t.figures):2d} eq={t.equations:3d} "
+                  f"wex={t.worked:2d} prob={t.problem_sets} tbl={t.tables:2d}  "
                   f"{t.id:24s} {t.title[:40]}")
 
     rc = 0

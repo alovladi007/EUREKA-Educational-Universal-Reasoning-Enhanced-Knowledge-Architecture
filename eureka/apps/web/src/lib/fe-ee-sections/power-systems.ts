@@ -234,18 +234,18 @@ The difference carries the reactive information. Expanding both cosines gives
 
 $$\\tan \\phi = \\sqrt{3}\\,\\frac{W_{1} - W_{2}}{W_{1} + W_{2}}$$
 
-Here that is 1.732 × 5,320/18,432 = 0.500, and arctan(0.500) = 26.57° — the
-load angle recovered from two meter readings with no phase-angle instrument
-anywhere. Three-phase reactive power follows as
-**$Q = \\sqrt{3}(W_{1} - W_{2})$** = 1.732 × 5,320 = 9,214 VAR, matching the
-9.22 kVAR of Section 3 to rounding.
+Here that is 1.7321 × 5,320.9/18,432 = 0.5000, and arctan(0.5000) = 26.57° —
+the load angle recovered from two meter readings with no phase-angle
+instrument anywhere. Three-phase reactive power follows as
+**$Q = \\sqrt{3}(W_{1} - W_{2})$** = 1.7321 × 5,320.9 = 9,216 VAR, matching the
+9.22 kVAR of Section 3 exactly.
 
 | Load power factor | φ | Reading behaviour |
 |---|---|---|
 | Unity | 0° | Both meters read equally |
-| 0.866 lagging | 30° | W₂ reads zero |
+| 0.866 lagging | 30° | W₂ = ½W₁ — the ratio is 0.5, **not** zero |
+| 0.5 lagging exactly | 60° | **W₂ reads exactly zero**; all the power is on W₁ |
 | Below 0.5 lagging | > 60° | **W₂ reads negative** — reverse its coil and subtract |
-| 0.5 lagging exactly | 60° | W₂ = 0 again on the other side of the transition |
 
 That negative reading is the classic trap. A technician who reverses the leads
 to get an upscale deflection and then **adds** the two numbers reports far too
@@ -362,6 +362,622 @@ components. If it only needs I_n, phasor addition is faster and less
 error-prone.`,
       examTip: 'For an unbalanced four-wire wye, the neutral current is just the phasor sum of the three line currents — and it equals 3I₀. Do not use P = √3·V_LL·I_L·cos(φ) on an unbalanced load; sum the per-phase powers instead. Both substitutions are common exam traps.',
       importantNote: 'A balanced three-phase set has ONLY positive-sequence content: I₁ equals the phase current and I₂ = I₀ = 0. Any nonzero I₂ or I₀ in an answer for a stated balanced load is an arithmetic error, which makes this the fastest sanity check available on symmetrical-component problems.',
+    },
+    {
+      id: '3ph-sqrt3-copper',
+      title: '6. Where the √3 Comes From, and the Copper It Saves',
+      content: `## 6.1 A line voltage is a DIFFERENCE of two phase voltages
+
+Sections 1 to 3 used **$V_{LL} = \\sqrt{3}\\,V_{ph}$** as a rule to be obeyed.
+It is worth two minutes to see where the number comes from, because the same
+two minutes explain the 30° angle that goes with it — and the angle is what
+separates candidates who can handle a delta-connected load from candidates who
+can only handle a wye.
+
+A voltmeter connected between lines a and b does not measure either phase
+voltage. It measures the potential of a minus the potential of b, and in
+phasor form that is a subtraction:
+
+$$V_{ab} = V_{an} - V_{bn}$$
+
+Put the balanced set in. With **$V_{an} = V\\angle 0^\\circ$** and
+**$V_{bn} = V\\angle -120^\\circ$**, write the second phasor in rectangular
+form and subtract:
+
+$$V_{ab} = V\\angle 0^\\circ - V\\left(-\\tfrac{1}{2} - j\\tfrac{\\sqrt{3}}{2}\\right)$$
+
+$$V_{ab} = V\\left(1 + \\tfrac{1}{2} + j\\tfrac{\\sqrt{3}}{2}\\right) = V\\left(\\tfrac{3}{2} + j\\tfrac{\\sqrt{3}}{2}\\right)$$
+
+The magnitude of that bracket is **$\\sqrt{(3/2)^2 + (\\sqrt{3}/2)^2} = \\sqrt{3}$**
+and its angle is **$\\arctan\\!\\left[(\\sqrt{3}/2)\\div(3/2)\\right] = 30^\\circ$**, so
+
+$$V_{ab} = \\sqrt{3}\\,V\\angle 30^\\circ$$
+
+The √3 is not a convention. It is the length of the chord between two unit
+vectors 120° apart, which is **$2\\sin 60^\\circ = \\sqrt{3}$**. The 30° comes
+from the chord bisecting that 120° gap. Everything about the wye connection
+follows from that one piece of geometry.
+
+![Phasor construction of the line voltages of a balanced 480 V system. The three line-to-neutral phasors of 277.13 V are drawn in one hue and the three line-to-line phasors of 480.0 V in another; a light guide arrow shows minus-Vbn added to the tip of Van, landing exactly on Vab, which is 1.7321 times longer and leads Van by exactly 30 degrees.](/courses/fe-ee/figures/pow2-3ph-phasor-sqrt3.svg)
+
+For a 480 V system, **$V_{ph} = 480/\\sqrt{3} = 277.128$ V**, and the six
+phasors are:
+
+| Phasor | Magnitude | Angle | Relationship |
+|---|---|---|---|
+| $V_{an}$ | 277.13 V | 0° | reference |
+| $V_{bn}$ | 277.13 V | −120° | $a^{2}V_{an}$ |
+| $V_{cn}$ | 277.13 V | +120° | $aV_{an}$ |
+| $V_{ab}$ | 480.00 V | +30° | $\\sqrt{3}\\,V_{an}\\angle 30^\\circ$ |
+| $V_{bc}$ | 480.00 V | −90° | $\\sqrt{3}\\,V_{bn}\\angle 30^\\circ$ |
+| $V_{ca}$ | 480.00 V | +150° | $\\sqrt{3}\\,V_{cn}\\angle 30^\\circ$ |
+
+Both sets sum to zero, and both are balanced. The line set is simply rotated
+30° and stretched by √3.
+
+## 6.2 The delta mirror: current does what voltage did
+
+In a delta load the three impedances sit **across** the lines, so each one
+sees the full line voltage and there is no √3 on voltage at all. The √3 moves
+to current, and by exactly the same subtraction. Kirchhoff's current law at
+corner a of the delta gives
+
+$$I_{a} = I_{ab} - I_{ca}$$
+
+with **$I_{ab}$** and **$I_{ca}$** a balanced pair 120° apart, so the identical
+algebra returns
+
+$$I_{a} = \\sqrt{3}\\,I_{ab}\\angle -30^\\circ$$
+
+Note the sign of the angle. Line current **lags** the delta phase current by
+30°, whereas line voltage **leads** phase voltage by 30°. A candidate who
+memorises "√3 and 30°" without the sign will get magnitudes right and phase
+relationships backwards, which matters the moment two sources must be
+paralleled or a delta–wye transformer bank must be phased.
+
+$$\\frac{|I_{L}|}{|I_{ph}|} = \\left|1 - 1\\angle 120^\\circ\\right| = \\sqrt{3} = 1.7321$$
+
+### Worked example 6.1 — a delta load, phase and line quantities
+
+A balanced delta load of **$Z_{\\Delta} = 30 + j40\\ \\Omega$** per phase is
+supplied at 208 V line-to-line. Find the phase current, the line current, and
+the total complex power.
+
+**Step 1 — impedance in polar form.** **$|Z| = \\sqrt{30^2 + 40^2} = 50\\ \\Omega$**
+at **$\\arctan(40/30) = 53.13^\\circ$**.
+
+**Step 2 — phase current.** Each impedance sees the whole 208 V:
+
+$$I_{ab} = \\frac{208\\angle 0^\\circ}{50\\angle 53.13^\\circ} = 4.160\\angle -53.13^\\circ\\ \\mathrm{A}$$
+
+**Step 3 — line current.** Multiply by √3 and rotate 30° back:
+
+$$I_{a} = \\sqrt{3}\\times 4.160\\angle (-53.13^\\circ - 30^\\circ) = 7.205\\angle -83.13^\\circ\\ \\mathrm{A}$$
+
+**Step 4 — power.** Using phase quantities,
+**$S = 3V_{ph}I_{ph}^{*} = 3\\times 208\\times 4.160\\angle 53.13^\\circ$** =
+1,557.5 W + j2,076.7 VAR, magnitude 2,595.8 VA. The line-quantity formula
+agrees: **$\\sqrt{3}\\times 208\\times 7.205\\times 0.6 = 1{,}557.5$ W**.
+
+**Trap named.** The 7.205 A is what an ammeter on the supply conductor reads;
+the 4.160 A never leaves the delta. A clamp meter placed on a delta winding
+lead and a clamp meter placed on the feeder disagree by 73 percent, and both
+are correct.
+
+## 6.3 The copper argument: why the grid is three-phase
+
+Three-phase is not merely convenient. It is cheaper in metal, and the saving
+can be computed exactly. Fix four things across the comparison: the power
+delivered, the distance, the total conductor loss, and the line-to-line
+voltage (which sets the insulation class and so the cost of everything that is
+not conductor).
+
+For a single-phase two-wire circuit at unity power factor,
+**$I_{1\\phi} = P/V$**, and both conductors carry it:
+
+$$P_{loss,1\\phi} = 2I_{1\\phi}^{2}R_{1}$$
+
+For a three-phase three-wire circuit at the same V and P,
+**$I_{3\\phi} = P/(\\sqrt{3}V)$**, and three conductors carry it:
+
+$$P_{loss,3\\phi} = 3I_{3\\phi}^{2}R_{3} = 3\\left(\\frac{P}{\\sqrt{3}V}\\right)^{2}R_{3} = \\frac{P^{2}}{V^{2}}R_{3}$$
+
+Setting the two losses equal gives **$R_{3} = 2R_{1}$** — each three-phase
+conductor may be twice as resistive, so half the cross-section. Conductor
+volume is **$n\\,A\\,\\ell$** and **$A = \\rho\\ell/R$**, so volume scales as
+**$n/R$**:
+
+$$\\frac{\\text{metal}_{3\\phi}}{\\text{metal}_{1\\phi}} = \\frac{3/R_{3}}{2/R_{1}} = \\frac{3/(2R_{1})}{2/R_{1}} = \\frac{3}{4} = 0.75$$
+
+A 25 percent saving in conductor metal, before any argument about rotating
+fields or constant torque. Add a full-size neutral and the saving evaporates
+entirely; use a half-size neutral, which is what a balanced load permits, and
+you keep half of it.
+
+![Conductor metal required by four wiring systems to deliver the same power over the same distance at the same line-to-line voltage and the same total resistive loss, plotted as a percentage of the single-phase two-wire case. Three-phase three-wire needs 75.0 percent, three-phase four-wire with a half-size neutral 87.5 percent, and three-phase four-wire with a full-size neutral exactly 100 percent.](/courses/fe-ee/figures/pow2-3ph-copper-economy.svg)
+
+### Worked example 6.2 — the saving in millimetres of copper
+
+Deliver 500 kW at unity power factor over 1.2 km at 4,160 V line-to-line, and
+allow 2 percent of the delivered power (10 kW) as conductor loss. Size the
+copper both ways. Take **$\\rho = 1.724\\times 10^{-8}\\ \\Omega\\!\\cdot\\!\\mathrm{m}$**.
+
+**Three-phase.** **$I = 500{,}000/(\\sqrt{3}\\times 4{,}160) = 69.393$ A**. Three
+conductors share the 10 kW:
+
+$$R_{3} = \\frac{10{,}000}{3\\times 69.393^{2}} = 0.69222\\ \\Omega \\quad\\Rightarrow\\quad A_{3} = \\frac{\\rho\\ell}{R_{3}} = 29.89\\ \\mathrm{mm^{2}}$$
+
+**Single-phase.** **$I = 500{,}000/4{,}160 = 120.192$ A**, and two conductors
+share the same 10 kW:
+
+$$R_{1} = \\frac{10{,}000}{2\\times 120.192^{2}} = 0.34611\\ \\Omega \\quad\\Rightarrow\\quad A_{1} = 59.77\\ \\mathrm{mm^{2}}$$
+
+Total metal is **$3\\times 29.89 = 89.66\\ \\mathrm{mm^{2}}$** against
+**$2\\times 59.77 = 119.55\\ \\mathrm{mm^{2}}$** — a ratio of exactly 0.750, as
+the algebra promised. Over 1.2 km that is 36 m³ of copper cross-section-metre
+saved per circuit, which at utility scale is the whole argument.
+
+### Worked example 6.3 — sizing a feeder from a kW rating
+
+A 480 V, three-phase feeder must supply 75 kW at 0.85 power factor lagging.
+Find the line current, the apparent and reactive power, and the per-phase wye
+impedance the feeder sees.
+
+$$I_{L} = \\frac{P}{\\sqrt{3}\\,V_{LL}\\cos\\phi} = \\frac{75{,}000}{\\sqrt{3}\\times 480\\times 0.85} = 106.13\\ \\mathrm{A}$$
+
+**$\\phi = \\arccos 0.85 = 31.79^\\circ$**, so **$S = 75{,}000/0.85 = 88{,}235$ VA**
+and **$Q = 88{,}235\\sin 31.79^\\circ = 46{,}481$ VAR**. The equivalent wye
+impedance follows from the phase voltage:
+
+$$|Z_{Y}| = \\frac{V_{LL}/\\sqrt{3}}{I_{L}} = \\frac{277.13}{106.13} = 2.6112\\ \\Omega$$
+
+$$Z_{Y} = 2.6112\\angle 31.79^\\circ = 2.2195 + j1.3755\\ \\Omega, \\qquad Z_{\\Delta} = 3Z_{Y} = 6.659 + j4.127\\ \\Omega$$
+
+Check by working forward from the impedance:
+**$S = 3V_{ph}^{2}/Z_{Y}^{*} = 75{,}000 + j46{,}481$** VA. The two routes agree
+to the last displayed digit, which is the habit worth carrying into the exam:
+every three-phase answer can be re-derived from the other side of the power
+triangle in about fifteen seconds.`,
+      examTip: 'Both √3 relationships come from ONE subtraction of two phasors 120° apart, and both carry a 30° rotation. In wye, line voltage leads phase voltage by 30°; in delta, line current LAGS phase current by 30°. Memorising the magnitudes without the signs is enough for a scalar power question and not enough for anything involving phasing.',
+      importantNote: 'The 25 percent copper saving assumes a three-WIRE three-phase circuit. A four-wire circuit with a full-size neutral uses exactly the same metal as single-phase, so the economic case for three-phase distribution rests on the neutral carrying little or no current — which is precisely what unbalance and triplen harmonics destroy.',
+    },
+    {
+      id: '3ph-unbalance-practice',
+      title: '7. Unbalance in Practice: Neutrals, Motor Heating, Meter Readings',
+      content: `## 7.1 The neutral carries the phasor sum, never the arithmetic sum
+
+A 208Y/120 V lighting panel is loaded to 60 A on phase a, 45 A on phase b and
+30 A on phase c, all resistive. A common wrong instinct is to say the neutral
+carries the 30 A "left over" from the biggest and smallest legs. The neutral
+carries the phasor sum:
+
+$$I_{n} = I_{a} + I_{b} + I_{c} = 60\\angle 0^\\circ + 45\\angle -120^\\circ + 30\\angle 120^\\circ$$
+
+Resolve each into components. The real parts are 60, −22.5 and −15; the
+imaginary parts are 0, −38.971 and +25.981. Adding,
+
+$$I_{n} = 22.5 - j12.990 = 25.98\\angle -30^\\circ\\ \\mathrm{A}$$
+
+For unity-power-factor loads there is a closed form worth carrying:
+
+$$|I_{n}| = \\sqrt{I_{a}^{2} + I_{b}^{2} + I_{c}^{2} - I_{a}I_{b} - I_{b}I_{c} - I_{c}I_{a}}$$
+
+which evaluates to **$\\sqrt{6{,}525 - 5{,}850} = \\sqrt{675} = 25.98$ A**, the
+same number. That expression can be rewritten as
+
+$$|I_{n}| = \\sqrt{\\tfrac{1}{2}\\left[(I_{a}-I_{b})^{2} + (I_{b}-I_{c})^{2} + (I_{c}-I_{a})^{2}\\right]}$$
+
+and in that form it says something useful: the neutral current depends only on
+the **differences** between the phase currents, never on their common part. A
+panel loaded 200/185/170 A carries the same neutral current as one loaded
+60/45/30 A.
+
+![Neutral current of a four-wire wye as the phase-a current is swept from 0 to 90 A while phases b and c are held at 45 A and 30 A, all at unity power factor. The curve is a shallow V with its minimum of 12.99 A at 37.5 A, and the lesson case of 60, 45 and 30 A is marked at 25.98 A; the neutral current never falls to zero because the two fixed legs are themselves unequal.](/courses/fe-ee/figures/pow2-3ph-neutral-current.svg)
+
+The figure makes the design point. Sweeping phase a from 0 to 90 A never
+drives the neutral to zero, because b and c already differ from each other.
+The best achievable is 12.99 A, at **$I_{a} = (I_{b}+I_{c})/2 = 37.5$ A**.
+Perfect neutral cancellation requires all three legs equal, which no real
+lighting panel achieves.
+
+### Worked example 7.1 — the neutral that is bigger than the phases
+
+Three balanced 100 A fundamental loads are electronic ballasts, each also
+drawing 35 A of third-harmonic current. Find the phase conductor rms current
+and the neutral rms current.
+
+**Phase conductor.** Harmonics of different order are orthogonal, so rms
+currents add in quadrature:
+
+$$I_{ph} = \\sqrt{100^{2} + 35^{2}} = 105.95\\ \\mathrm{A}$$
+
+**Neutral.** Third harmonics are a **zero-sequence** set: shifting the
+fundamental by 120° shifts its third harmonic by 360°, so the three
+third-harmonic currents are **in phase**. They add arithmetically in the
+neutral while the fundamentals cancel:
+
+$$I_{n} = 3\\times 35 = 105\\ \\mathrm{A}$$
+
+The neutral carries 105 A while each phase carries 105.95 A — 99.1 percent of
+the phase current, on a "balanced" load. This is why modern four-wire feeders
+serving electronic loads are specified with a full-size or oversized neutral,
+and why the 25 percent copper saving of Section 6.3 quietly disappears in an
+office building.
+
+## 7.2 Voltage unbalance is a rotor-heating problem
+
+Unbalance in the **supply** matters more than unbalance in the load, because
+motors are extremely sensitive to it. The practical index is the voltage
+unbalance factor. The engineering definition is the ratio of negative- to
+positive-sequence voltage,
+
+$$\\mathrm{VUF} = \\frac{|V_{2}|}{|V_{1}|}\\times 100\\%$$
+
+That is the IEC definition. NEMA defines a separate index, the line voltage
+unbalance rate, which needs only three voltmeter readings — the maximum
+deviation from the average divided by the average:
+
+$$\\mathrm{LVUR} = \\frac{\\max\\left|V_{k} - V_{\\mathrm{avg}}\\right|}{V_{\\mathrm{avg}}}\\times 100\\%$$
+
+For readings of 480, 475 and 465 V the average is 473.33 V, the largest
+deviation is 8.33 V, and the LVUR is **1.76 percent**. The two indices are not
+the same quantity and are not interchangeable in a specification: they agree
+closely for small unbalance, and diverge once the phase angles as well as the
+magnitudes are disturbed, because only the sequence-based VUF sees angle error
+at all.
+
+Why a motor cares: the negative-sequence voltage drives current through the
+**negative-sequence impedance**, and to a negative-sequence field the rotor is
+turning backwards at nearly twice synchronous speed. Its impedance is
+therefore close to the locked-rotor impedance, which is small:
+
+$$\\frac{I_{2}}{I_{1}} = \\frac{V_{2}}{V_{1}}\\cdot\\frac{Z_{1}}{Z_{2}} \\approx \\mathrm{VUF}\\times \\frac{I_{LR}}{I_{FL}}$$
+
+For a machine with a locked-rotor current six times full load, **1 percent of
+voltage unbalance produces 6 percent of extra current**, and that current
+lands in the rotor at roughly twice line frequency, where the skin effect
+makes the rotor bars more resistive still.
+
+![Effect of supply voltage unbalance on an induction motor, computed from the ratio of negative to positive sequence impedance. The upper panel plots negative-sequence stator current as a percentage of rated against unbalance factor for locked-rotor ratios of 5, 6 and 7, giving 5 to 7 percent of extra current per percent of unbalance. The lower panel plots the resulting stator copper-loss multiplier, which reaches 1.032 at 3 percent unbalance for a ratio of 6.](/courses/fe-ee/figures/pow2-3ph-unbalance-heating.svg)
+
+### Worked example 7.2 — from three voltmeter readings to a derating decision
+
+A 460 V motor is fed by a panel reading 481, 474 and 468 V line-to-line. The
+machine has a locked-rotor current of 6.5 times full load. Estimate the
+negative-sequence current and the increase in stator copper loss.
+
+**Step 1 — unbalance factor.** Average = (481 + 474 + 468)/3 = 474.33 V.
+Deviations are +6.67, −0.33 and −6.33 V, so
+
+$$\\mathrm{VUF} = \\frac{6.667}{474.33}\\times 100 = 1.41\\%$$
+
+**Step 2 — negative-sequence current.**
+**$I_{2}/I_{1} = 1.41\\times 6.5 = 9.14$ percent of rated**.
+
+**Step 3 — loss.** Stator copper loss scales with the sum of the squares:
+
+$$\\frac{P_{cu}}{P_{cu,bal}} = \\frac{I_{1}^{2} + I_{2}^{2}}{I_{1}^{2}} = 1 + 0.0914^{2} = 1.0084$$
+
+Under one percent extra stator loss — which sounds harmless — but the same
+9.1 percent of current in the rotor appears at 2 − s times line frequency,
+where the rotor resistance is substantially higher than its dc value, and the
+rotor is the part with no cooling fan of its own. That asymmetry between a
+small stator number and a large rotor consequence is exactly why unbalance
+limits are written in tenths of a percent.
+
+## 7.3 Two wattmeters across the whole power-factor range
+
+Section 4 introduced the two-wattmeter method at one operating point. The
+behaviour across the range is worth seeing whole, because two of the three
+exam traps live at specific angles.
+
+$$W_{1} = V_{LL}I_{L}\\cos(\\phi - 30^\\circ), \\qquad W_{2} = V_{LL}I_{L}\\cos(\\phi + 30^\\circ)$$
+
+$$W_{1} + W_{2} = V_{LL}I_{L}\\left[\\cos(\\phi-30^\\circ)+\\cos(\\phi+30^\\circ)\\right] = \\sqrt{3}\\,V_{LL}I_{L}\\cos\\phi$$
+
+The sum identity uses **$\\cos(A-B)+\\cos(A+B) = 2\\cos A\\cos B$** with
+**$2\\cos 30^\\circ = \\sqrt{3}$**. The difference uses the companion identity:
+
+$$W_{1} - W_{2} = 2V_{LL}I_{L}\\sin\\phi\\sin 30^\\circ = V_{LL}I_{L}\\sin\\phi$$
+
+![The two wattmeter readings normalised to the product of line voltage and line current, plotted against load angle from unity power factor to zero. W1 rises to a maximum at 30 degrees and falls back; W2 falls monotonically, passes exactly through zero at 60 degrees and goes negative beyond it; their sum traces root-three times cosine phi. The 0.866 power-factor point is marked to show W2 equal to half of W1 there, not zero.](/courses/fe-ee/figures/pow2-3ph-wattmeter-pf.svg)
+
+| Power factor | φ | W₁ / V_LL I_L | W₂ / V_LL I_L | W₂ / W₁ |
+|---|---|---|---|---|
+| 1.000 | 0° | 0.866 | 0.866 | 1.000 |
+| 0.866 lag | 30° | 1.000 | 0.500 | 0.500 |
+| 0.800 lag | 36.87° | 0.993 | 0.393 | 0.396 |
+| 0.500 lag | 60° | 0.866 | 0.000 | 0.000 |
+| 0.300 lag | 72.54° | 0.737 | −0.217 | −0.295 |
+
+Two things to read off. **W₁ peaks at φ = 30°, not at unity power factor** —
+the individual readings are not monotone, only their sum is. And **W₂ crosses
+zero at φ = 60°, that is at pf = 0.5**, not at 0.866. The 0.866 point gives a
+ratio of one half, which is a different fact that is easy to confuse with it.
+
+### Worked example 7.3 — recovering power factor from two readings
+
+Two wattmeters on a three-wire load read 6,500 W and 2,100 W. Find the total
+real power, the power factor, and the reactive power.
+
+$$P = W_{1} + W_{2} = 8{,}600\\ \\mathrm{W}$$
+
+$$\\tan\\phi = \\sqrt{3}\\,\\frac{W_{1}-W_{2}}{W_{1}+W_{2}} = 1.7321\\times\\frac{4{,}400}{8{,}600} = 0.8862$$
+
+**$\\phi = \\arctan 0.8862 = 41.55^\\circ$**, so **$\\cos\\phi = 0.748$ lagging**
+and **$Q = \\sqrt{3}(W_{1}-W_{2}) = 7{,}621$ VAR**. Sanity check:
+**$S = \\sqrt{8{,}600^{2}+7{,}621^{2}} = 11{,}491$ VA** and
+**$P/S = 0.748$**, which closes the triangle.
+
+### Worked example 7.4 — one meter reads backwards
+
+The same instruments on a different load read 15,000 W and, after the
+technician reverses the potential coil to get an upscale deflection, 3,000 W.
+Find the true power and power factor.
+
+The reversal means the true reading is **−3,000 W**. Therefore
+
+$$P = 15{,}000 + (-3{,}000) = 12{,}000\\ \\mathrm{W}$$
+
+$$\\tan\\phi = 1.7321\\times\\frac{15{,}000-(-3{,}000)}{12{,}000} = 2.598 \\;\\Rightarrow\\; \\phi = 68.95^\\circ, \\ \\cos\\phi = 0.359$$
+
+**Trap named.** A technician who adds 15,000 and 3,000 reports 18,000 W — half
+again too much — and a power factor of 0.87 instead of 0.36. The tell is that a
+negative reading only ever occurs below 0.5 power factor, so any load whose
+meters straddle zero is severely inductive and needs correction, not a
+recalculation.
+
+### Worked example 7.5 — an unbalanced four-wire wye, done correctly
+
+A 208Y/120 V four-wire supply feeds **$Z_{a}=10\\ \\Omega$**,
+**$Z_{b}=20\\ \\Omega$** and **$Z_{c}=10-j10\\ \\Omega$**. Find the line
+currents, the neutral current, and the total real power.
+
+With a solid neutral each phase is independent, so each current is its own
+phase voltage over its own impedance:
+
+$$I_{a} = \\frac{120\\angle 0^\\circ}{10} = 12.00\\angle 0^\\circ, \\quad I_{b} = \\frac{120\\angle -120^\\circ}{20} = 6.00\\angle -120^\\circ$$
+
+$$I_{c} = \\frac{120\\angle 120^\\circ}{14.142\\angle -45^\\circ} = 8.485\\angle 165^\\circ\\ \\mathrm{A}$$
+
+Adding the three in rectangular form gives 0.804 − j3.000, so
+
+$$I_{n} = 3.106\\angle -75^\\circ\\ \\mathrm{A}$$
+
+Total real power is the sum of the per-phase powers, **not** a √3 formula:
+
+$$P = I_{a}^{2}R_{a} + I_{b}^{2}R_{b} + I_{c}^{2}R_{c} = 1{,}440 + 720 + 720 = 2{,}880\\ \\mathrm{W}$$
+
+**Trap named.** Feeding the average line current 8.83 A and a nominal 0.9
+power factor into **$P=\\sqrt{3}V_{LL}I_{L}\\cos\\phi$** returns 2,863 W. It is
+close enough to look right and it is wrong in principle: the formula assumes
+one common angle, and this load has three different ones. On any unbalanced
+load, sum the phases.`,
+      examTip: 'Three numbers to have ready: the neutral of an unbalanced unity-pf wye is √(ΣI² − ΣI·I), triplen harmonics add ARITHMETICALLY in the neutral (three times the per-phase harmonic), and one percent of voltage unbalance costs roughly six percent of extra motor current. Each is a one-line calculation that examiners like because it looks like it needs more.',
+      importantNote: 'W₂ reads zero at a power factor of 0.5, not 0.866. At 0.866 the ratio W₂/W₁ is exactly one half. Those two facts sit thirty degrees apart and are the most commonly transposed pair in the two-wattmeter question.',
+    },
+    {
+      id: '3ph-problem-set-a',
+      title: '8. Problem Set A: Balanced Circuits, Conversions, and Feeders',
+      content: `Everything in Sections 1 to 6 is now available to you. What
+follows is the part that decides the exam.
+
+## 8. Problem Set A — balanced three-phase circuits
+
+Work these under exam conditions: handbook formulas only, about three minutes
+each, and write down which quantity is line and which is phase before you
+start. Full solutions follow.
+
+### The problems
+
+**A1.** A balanced wye load of **$12 + j9\\ \\Omega$** per phase is supplied at
+208 V line-to-line. Find the line current, the total real power, and the power
+factor.
+
+**A2.** A 460 V three-phase motor draws 52 A at 0.88 power factor lagging.
+Find the apparent, real and reactive power, and the equivalent per-phase wye
+impedance.
+
+**A3.** A delta-connected load draws 18 A of **line** current from a 240 V
+three-phase supply at 0.90 power factor lagging. Find the phase current, the
+per-phase impedance, and the total real power.
+
+**A4.** Two balanced loads share a 480 V bus. Load 1 draws 40 kW at 0.80 power
+factor lagging; load 2 draws 25 kVA at 0.95 power factor **leading**. Find the
+combined apparent power, the combined power factor, and the line current.
+
+**A5.** A 4,160 V, three-phase feeder of **$0.35 + j0.85\\ \\Omega$** per phase
+delivers 1.5 MW at 0.85 power factor lagging **measured at the load**. Find
+the sending-end line-to-line voltage.
+
+**A6.** A balanced delta load of **$9\\angle 25^\\circ\\ \\Omega$** per phase is
+connected to a 208 V supply. Find the equivalent wye impedance, the line
+current, and the total real power.
+
+### Solutions
+
+**A1.** **$|Z| = \\sqrt{12^{2}+9^{2}} = 15\\ \\Omega$** at
+**$\\arctan(9/12) = 36.87^\\circ$**, so pf = 0.800 lagging. In a wye the
+impedance sees the phase voltage:
+
+$$I_{L} = I_{ph} = \\frac{208/\\sqrt{3}}{15} = \\frac{120.09}{15} = 8.006\\ \\mathrm{A}$$
+
+$$P = 3I^{2}R = 3\\times 8.006^{2}\\times 12 = 2{,}307\\ \\mathrm{W}$$
+
+Check with line quantities: **$\\sqrt{3}\\times 208\\times 8.006\\times 0.800 = 2{,}307$ W**.
+*Distractor:* dividing 208 by 15 gives 13.87 A, the answer for a delta load —
+a factor of √3 too large.
+
+**A2.** **$S = \\sqrt{3}\\times 460\\times 52 = 41{,}431$ VA**, so
+**$P = 41{,}431\\times 0.88 = 36{,}459$ W**. With
+**$\\phi = \\arccos 0.88 = 28.36^\\circ$**, **$Q = 41{,}431\\sin 28.36^\\circ = 19{,}678$ VAR**.
+The equivalent wye impedance is
+
+$$|Z_{Y}| = \\frac{460/\\sqrt{3}}{52} = 5.1073\\ \\Omega \\;\\Rightarrow\\; Z_{Y} = 4.494 + j2.426\\ \\Omega$$
+
+*Distractor:* 460/52 = 8.85 Ω is the delta-equivalent magnitude divided by √3,
+not the wye value.
+
+**A3.** In a delta the line current is √3 times the phase current, so
+
+$$I_{ph} = \\frac{18}{\\sqrt{3}} = 10.392\\ \\mathrm{A}, \\qquad |Z_{\\Delta}| = \\frac{240}{10.392} = 23.094\\ \\Omega$$
+
+At **$\\arccos 0.90 = 25.84^\\circ$** this is **$20.78 + j10.07\\ \\Omega$**, and
+
+$$P = \\sqrt{3}\\times 240\\times 18\\times 0.90 = 6{,}734\\ \\mathrm{W}$$
+
+*Distractor:* using 18 A as the phase current returns 13.33 Ω, which is the
+answer for a wye of the same line current.
+
+**A4.** Convert both to rectangular power. Load 1:
+**$Q_{1} = 40\\tan(36.87^\\circ) = 30.0$ kVAR** lagging. Load 2:
+**$P_{2} = 25\\times 0.95 = 23.75$ kW** and
+**$Q_{2} = -25\\sin(18.19^\\circ) = -7.806$ kVAR** (leading, hence negative).
+
+$$P_{T} = 63.75\\ \\mathrm{kW}, \\qquad Q_{T} = 30.0 - 7.806 = 22.19\\ \\mathrm{kVAR}$$
+
+$$S_{T} = \\sqrt{63.75^{2}+22.19^{2}} = 67.50\\ \\mathrm{kVA}, \\quad \\mathrm{pf} = \\frac{63.75}{67.50} = 0.944\\ \\text{lagging}$$
+
+$$I_{L} = \\frac{67{,}503}{\\sqrt{3}\\times 480} = 81.19\\ \\mathrm{A}$$
+
+*Distractor:* adding the apparent powers (50 + 25 = 75 kVA) ignores the angle
+and overstates the current by 11 percent. Only P and Q add.
+
+**A5.** Load current **$I = 1.5\\times 10^{6}/(\\sqrt{3}\\times 4{,}160\\times 0.85) = 244.92$ A**
+at **$-31.79^\\circ$**. Working per phase with
+**$V_{R} = 4{,}160/\\sqrt{3} = 2{,}401.8\\angle 0^\\circ$** V:
+
+$$V_{S} = V_{R} + IZ = 2{,}401.8 + (244.92\\angle -31.79^\\circ)(0.35+j0.85)$$
+
+$$V_{S} = 2{,}584.3 + j131.8 = 2{,}587.7\\angle 2.92^\\circ\\ \\mathrm{V}$$
+
+so **$V_{S,LL} = \\sqrt{3}\\times 2{,}587.7 = 4{,}482$ V**, a rise of 322 V and a
+regulation of 7.74 percent. The handbook approximation
+**$\\Delta V \\approx I(R\\cos\\phi + X\\sin\\phi) = 244.92(0.2975+0.4476) = 182.5$ V**
+per phase, or 316 V line-to-line, is 1.9 percent low because it drops the
+quadrature term — accurate enough for a multiple choice, not for a study.
+
+**A6.** **$Z_{Y} = Z_{\\Delta}/3 = 3\\angle 25^\\circ\\ \\Omega = 2.719 + j1.268\\ \\Omega$**.
+Either route gives the same line current:
+
+$$I_{ph,\\Delta} = \\frac{208}{9} = 23.11\\ \\mathrm{A} \\;\\Rightarrow\\; I_{L} = \\sqrt{3}\\times 23.11 = 40.03\\ \\mathrm{A}$$
+
+$$I_{L} = \\frac{208/\\sqrt{3}}{3} = 40.03\\ \\mathrm{A} \\quad\\text{(wye route, identical)}$$
+
+$$P = \\sqrt{3}\\times 208\\times 40.03\\times \\cos 25^\\circ = 13{,}070\\ \\mathrm{W}$$
+
+*Distractor:* multiplying the delta impedance by 3 instead of dividing gives
+27 Ω and a line current nine times too small.`,
+      examTip: 'On any balanced problem, write V_LL, I_L, and φ in a column before touching a formula. Roughly a third of lost marks in this section come from putting a phase quantity into a line-quantity formula, and that habit catches it before the arithmetic starts.',
+      importantNote: 'Apparent powers never add arithmetically unless the two loads share a power-factor angle. Convert each load to P and Q, add those, and rebuild S at the end. Problem A4 is built entirely around that one rule.',
+    },
+    {
+      id: '3ph-problem-set-b',
+      title: '9. Problem Set B: Unbalance, Metering, and Neutral Sizing',
+      content: `The balanced formulas are the easy half of this section. The
+questions below are the other half.
+
+## 9. Problem Set B — unbalance, metering, and neutral sizing
+
+These are the questions that separate candidates who learned the balanced
+formulas from candidates who understand what they assume. Full solutions
+follow the six problems.
+
+### The problems
+
+**B1.** A 208Y/120 V four-wire panel carries 80 A on phase a, 50 A on phase b
+and 35 A on phase c, all at unity power factor. Find the neutral current.
+
+**B2.** Two wattmeters connected to a three-wire balanced load read 6.5 kW and
+2.1 kW. Find the total power, the power factor, and the reactive power.
+
+**B3.** The same pair of meters on another load read 15 kW and 3 kW, the second
+only after its potential coil was reversed. Find the true total power and the
+power factor.
+
+**B4.** A panel reads 481, 474 and 468 V line-to-line. Compute the voltage
+unbalance factor by the deviation-from-average definition. For a motor with a
+locked-rotor current of 6.0 per unit, estimate the negative-sequence current.
+
+**B5.** Each phase of a balanced four-wire feeder carries 120 A of fundamental
+plus 40 A of third harmonic. Find the phase conductor rms current and the
+neutral rms current, and state which conductor is more heavily loaded relative
+to a 125 A rating.
+
+**B6.** A 208Y/120 V four-wire supply feeds **$Z_{a}=10\\ \\Omega$**,
+**$Z_{b}=20\\ \\Omega$**, **$Z_{c}=10-j10\\ \\Omega$**. Find the three line
+currents, the neutral current, and the total real power delivered.
+
+### Solutions
+
+**B1.** Use the unity-power-factor closed form:
+
+$$|I_{n}| = \\sqrt{80^{2}+50^{2}+35^{2}-(80)(50)-(50)(35)-(35)(80)}$$
+
+$$|I_{n}| = \\sqrt{6{,}400+2{,}500+1{,}225-4{,}000-1{,}750-2{,}800} = \\sqrt{1{,}575} = 39.69\\ \\mathrm{A}$$
+
+*Distractor:* 80 − 35 = 45 A is the arithmetic "leftover" and is not what the
+neutral sees. Notice also that the answer depends only on the differences
+between the legs, so a panel at 200/170/155 A gives the identical 39.69 A.
+
+**B2.** **$P = 6{,}500 + 2{,}100 = 8{,}600$ W**.
+
+$$\\tan\\phi = \\sqrt{3}\\times\\frac{6{,}500-2{,}100}{8{,}600} = 0.8862 \\;\\Rightarrow\\; \\phi = 41.55^\\circ$$
+
+**$\\cos\\phi = 0.748$ lagging**, **$Q = \\sqrt{3}\\times 4{,}400 = 7{,}621$ VAR**.
+*Distractor:* omitting the √3 from the tangent gives 0.512 and a power factor
+of 0.890 — the single most common slip in this question type.
+
+**B3.** The reversal means the second reading is negative:
+
+$$P = 15{,}000 - 3{,}000 = 12{,}000\\ \\mathrm{W}$$
+
+$$\\tan\\phi = \\sqrt{3}\\times\\frac{18{,}000}{12{,}000} = 2.598 \\;\\Rightarrow\\; \\phi = 68.95^\\circ, \\quad \\cos\\phi = 0.359$$
+
+*Distractor:* 18,000 W and pf 0.87 is the answer for a technician who trusts
+the deflection. The clue that something is a sign error is structural: a
+reading can only go negative below 0.5 power factor, so an answer above 0.5
+from a reversed meter contradicts itself.
+
+**B4.** Average = 474.33 V; deviations +6.67, −0.33, −6.33 V.
+
+$$\\mathrm{VUF} = \\frac{6.667}{474.33}\\times 100 = 1.41\\%$$
+
+$$\\frac{I_{2}}{I_{1}} \\approx 1.41\\times 6.0 = 8.4\\%\\ \\text{of rated current}$$
+
+*Distractor:* using the full spread 481 − 468 = 13 V instead of the maximum
+deviation from average doubles the answer to 2.74 percent.
+
+**B5.** Phase conductor:
+
+$$I_{ph} = \\sqrt{120^{2}+40^{2}} = 126.49\\ \\mathrm{A}$$
+
+Neutral, since third harmonics are zero sequence and add directly:
+
+$$I_{n} = 3\\times 40 = 120\\ \\mathrm{A}$$
+
+The phase conductor at 126.5 A is over its 125 A rating; the neutral at 120 A
+is just under it, at 94.9 percent of the phase current on a load that a
+balanced-system calculation would have said carries no neutral current at all.
+*Distractor:* 40 A in the neutral treats the harmonic as if it cancelled like
+the fundamental.
+
+**B6.** With a solid neutral each leg is independent:
+
+$$I_{a} = \\frac{120\\angle 0^\\circ}{10} = 12.00\\angle 0^\\circ\\ \\mathrm{A}, \\qquad I_{b} = \\frac{120\\angle -120^\\circ}{20} = 6.00\\angle -120^\\circ\\ \\mathrm{A}$$
+
+$$I_{c} = \\frac{120\\angle 120^\\circ}{14.142\\angle -45^\\circ} = 8.485\\angle 165^\\circ\\ \\mathrm{A}$$
+
+$$I_{n} = (12.00) + (-3.00 - j5.196) + (-8.196 + j2.196) = 0.804 - j3.000 = 3.106\\angle -75^\\circ\\ \\mathrm{A}$$
+
+$$P = 12.00^{2}(10) + 6.00^{2}(20) + 8.485^{2}(10) = 1{,}440 + 720 + 720 = 2{,}880\\ \\mathrm{W}$$
+
+*Distractor:* **$\\sqrt{3}V_{LL}I_{avg}\\cos\\phi$** with the average current
+8.83 A and pf 0.9 returns 2,863 W. It is within one percent here and would be
+wildly wrong on a more severely unbalanced load, because the formula presumes
+a single power-factor angle that this circuit does not have.`,
+      examTip: 'Every problem in this set is solved by refusing one shortcut: the √3 power formula, the arithmetic neutral, the upscale meter deflection, or the assumption that harmonics cancel. Identify the assumption before you compute, and each becomes a thirty-second question.',
+      importantNote: 'Zero-sequence quantities are the connecting thread here. The neutral current is 3I₀, triplen harmonics are a zero-sequence set and therefore add in the neutral, and a delta winding or an ungrounded wye offers zero-sequence current no path at all. One idea, three exam questions.',
     },
   ],
   keyTakeaways: [
@@ -710,6 +1326,496 @@ are not.`,
       examTip: 'For a Δ–Y or Y–Δ bank, the LINE voltage ratio is the turns ratio multiplied or divided by √3 — the winding ratio alone is not the answer. And for parallel operation, load divides inversely with per-unit impedance, so the lower-impedance unit always takes the larger share.',
       importantNote: 'An autotransformer transfers only part of its throughput magnetically; the rest is conducted through the shared winding. That is why its kVA rating exceeds the two-winding rating by the factor V_high/(V_high − V_low), and also why it provides no isolation between the two circuits.',
     },
+    {
+      id: 'xfmr-test-data-to-circuit',
+      title: '6. From Test Data to a Working Equivalent Circuit',
+      content: `## 6.1 The four numbers a test report contains
+
+Section 4.3 said what the open- and short-circuit tests measure. This section
+does the arithmetic, because "the OC test gives core loss" is a fact you can
+recite without being able to use it. A test report contains six numbers —
+voltage, current and power for each test — and they reduce to four circuit
+parameters. Everything else about the transformer follows.
+
+Take a **50 kVA, 2400/240 V, 60 Hz** distribution unit. Rated currents are
+
+$$I_{H} = \\frac{50{,}000}{2{,}400} = 20.833\\ \\mathrm{A}, \\qquad I_{L} = \\frac{50{,}000}{240} = 208.33\\ \\mathrm{A}$$
+
+and the tests read:
+
+| Test | Applied to | Voltage | Current | Power |
+|---|---|---|---|---|
+| Open circuit | 240 V (LV) side | 240 V | 1.80 A | 245 W |
+| Short circuit | 2400 V (HV) side | 98 V | 20.83 A | 650 W |
+
+## 6.2 Reducing the open-circuit test
+
+The far winding is open, so no load current flows and the entire measurement
+belongs to the **shunt** branch. Model that branch as a conductance in
+parallel with a susceptance. Real power fixes the conductance:
+
+$$G_{c} = \\frac{P_{OC}}{V_{OC}^{2}} = \\frac{245}{240^{2}} = 4.2535\\times 10^{-3}\\ \\mathrm{S} \\;\\Rightarrow\\; R_{c} = 235.10\\ \\Omega$$
+
+Total admittance magnitude comes from current over voltage, and the
+magnetising susceptance is what is left after removing the conductance in
+quadrature:
+
+$$|Y_{\\phi}| = \\frac{I_{OC}}{V_{OC}} = \\frac{1.80}{240} = 7.500\\times 10^{-3}\\ \\mathrm{S}$$
+
+$$B_{m} = \\sqrt{|Y_{\\phi}|^{2} - G_{c}^{2}} = \\sqrt{(7.500)^{2}-(4.2535)^{2}}\\times 10^{-3} = 6.177\\times 10^{-3}\\ \\mathrm{S}$$
+
+$$X_{m} = \\frac{1}{B_{m}} = 161.89\\ \\Omega \\ \\text{(referred to the 240 V side)}$$
+
+Two sanity checks worth thirty seconds each. The **exciting current is
+1.80/208.33 = 0.86 percent of rated**, which is where a healthy modern unit
+sits. And the **no-load power factor is 245/(240 × 1.80) = 0.567** — poor, as
+it must be, because a magnetising branch is mostly reactive.
+
+## 6.3 Reducing the short-circuit test
+
+With the far winding shorted, the shunt branch is bypassed by a near-zero
+impedance and the measurement belongs entirely to the **series** branch:
+
+$$Z_{eq} = \\frac{V_{SC}}{I_{SC}} = \\frac{98}{20.833} = 4.7040\\ \\Omega, \\qquad R_{eq} = \\frac{P_{SC}}{I_{SC}^{2}} = \\frac{650}{20.833^{2}} = 1.4976\\ \\Omega$$
+
+$$X_{eq} = \\sqrt{Z_{eq}^{2}-R_{eq}^{2}} = \\sqrt{22.128 - 2.243} = 4.4592\\ \\Omega$$
+
+so **$Z_{eq} = 1.4976 + j4.4592 = 4.704\\angle 71.44^\\circ\\ \\Omega$** referred to
+the 2400 V side. The impedance angle above 70° is typical: leakage reactance
+dominates resistance in any transformer above a few kVA, and that single fact
+drives everything about regulation.
+
+### Worked example 6.1 — moving the parameters to the other side
+
+Refer the whole equivalent circuit to the 240 V side. The turns ratio is
+**$a = 2400/240 = 10$**, and impedances scale by **$a^{2} = 100$** when moving
+toward the low-voltage side by division:
+
+$$R_{eq,LV} = \\frac{1.4976}{100} = 0.014976\\ \\Omega, \\qquad X_{eq,LV} = \\frac{4.4592}{100} = 0.044592\\ \\Omega$$
+
+The shunt parameters, already on the LV side, move the other way if you want
+them on the HV side:
+
+$$R_{c,HV} = 235.10\\times 100 = 23{,}510\\ \\Omega, \\qquad X_{m,HV} = 161.89\\times 100 = 16{,}189\\ \\Omega$$
+
+**Trap named.** Multiplying by 10 instead of 100 is the single most common
+error in this calculation, and it survives a plausibility check because the
+answer is still "a smallish resistance". Always ask whether the reflected
+value is bigger or smaller than the shunt value it must sit beside: an
+equivalent series impedance of 0.15 Ω next to a 235 Ω magnetising branch is
+sensible; 0.15 Ω next to 2.35 Ω is not.
+
+### Worked example 6.2 — the same four numbers in per unit
+
+Per-unit form makes the transformer comparable with every other one in the
+system. On its own rating, **$Z_{base,HV} = 2{,}400^{2}/50{,}000 = 115.20\\ \\Omega$**, so
+
+$$Z_{pu} = \\frac{4.7040}{115.20} = 0.04083, \\quad R_{pu} = \\frac{1.4976}{115.20} = 0.01300, \\quad X_{pu} = \\frac{4.4592}{115.20} = 0.03871$$
+
+A "4.08 percent impedance" transformer, in nameplate language. The shortcut
+worth knowing is that the same number falls straight out of the test voltage:
+
+$$Z_{pu} = \\frac{V_{SC}}{V_{rated}} = \\frac{98}{2{,}400} = 0.04083$$
+
+because the short-circuit test drives rated current, so the applied voltage
+**is** the per-unit impedance. Likewise **$R_{pu} = P_{SC}/S_{rated} = 650/50{,}000 = 0.01300$**.
+Two divisions, no ohms at all — and both work from either side of the
+transformer, which is the whole point of per unit.
+
+## 6.4 The two losses, drawn
+
+Core loss is fixed by the applied voltage and therefore constant in service;
+copper loss follows the square of load current. Writing the load fraction as
+**$x = I/I_{rated}$**:
+
+$$P_{loss}(x) = P_{core} + x^{2}P_{cu,FL} = 245 + 650x^{2}\\ \\mathrm{W}$$
+
+![Core loss, copper loss and total loss of the 50 kVA unit against load fraction. Core loss is a flat 245 W line; copper loss is the parabola 650x squared; the two cross at load fraction 0.614, where total loss is 490 W and efficiency is at its maximum, well to the left of rated load.](/courses/fe-ee/figures/pow2-xfmr-loss-split.svg)
+
+### Worked example 6.3 — efficiency at three operating points
+
+Compute the efficiency of the 50 kVA unit at rated load, at the
+maximum-efficiency point, and at quarter load, all at 0.8 power factor lagging.
+
+**Rated load.** Output = 50,000 × 0.8 = 40,000 W; loss = 245 + 650 = 895 W:
+
+$$\\eta = \\frac{40{,}000}{40{,}000+895} = 97.81\\%$$
+
+**Maximum-efficiency point.** **$x^{*} = \\sqrt{245/650} = 0.6139$**, so output =
+0.6139 × 50,000 × 0.8 = 24,558 W and loss = 2 × 245 = 490 W:
+
+$$\\eta_{max} = \\frac{24{,}558}{24{,}558+490} = 98.04\\%$$
+
+**Quarter load.** Output = 10,000 W; loss = 245 + 0.0625 × 650 = 285.6 W:
+
+$$\\eta = \\frac{10{,}000}{10{,}285.6} = 97.22\\%$$
+
+The peak is only 0.23 points above the rated-load value and 0.82 above quarter
+load. Transformer efficiency curves are flat, which is why the exam can afford
+to ask *where* the peak is rather than *how high* it is.
+
+### Worked example 6.4 — what the tests do NOT tell you
+
+A candidate is given the test data above and asked for the transformer's
+**short-circuit current** if the secondary is bolted while rated voltage is
+applied. Use the per-unit impedance:
+
+$$I_{SC} = \\frac{I_{rated}}{Z_{pu}} = \\frac{20.833}{0.04083} = 510.2\\ \\mathrm{A} = 24.5\\times \\text{rated}$$
+
+That is a valid first estimate and it is also incomplete: it ignores the source
+impedance behind the transformer, which on a real feeder limits the current
+further. The transformer impedance is a **lower bound** on the impedance of the
+fault loop, so 24.5 per unit is the worst case the transformer itself allows.
+That distinction — transformer impedance alone versus the whole Thévenin path —
+is the bridge into the fault-analysis topic.`,
+      examTip: 'Per unit turns the short-circuit test into two divisions: Z_pu = V_SC/V_rated and R_pu = P_SC/S_rated, both dimensionless and both independent of which winding was tested. If a question gives SC data and asks for percent impedance, you should not be computing any ohms at all.',
+      importantNote: 'The OC test is run on the LOW-voltage side and the SC test on the HIGH-voltage side, for practical reasons: full rated voltage is easier to apply at 240 V, and rated current is easier to circulate at 98 V. The parameters therefore land on different sides, and one set must be reflected by a² before the two can be combined.',
+    },
+    {
+      id: 'xfmr-regulation-banks',
+      title: '7. Regulation, Parallel Banks, and Duty-Cycle Design',
+      content: `## 7.1 Regulation across the power-factor range
+
+Voltage regulation is the rise in secondary voltage when load is removed,
+expressed as a fraction of the loaded value. Working per phase with the load
+as reference, the sending voltage is
+
+$$V_{S} = V_{R} + I\\,Z_{eq}, \\qquad \\mathrm{VR} = \\frac{|V_{S}|-|V_{R}|}{|V_{R}|}\\times 100\\%$$
+
+The handbook approximation drops the quadrature term and leaves a form you can
+evaluate mentally:
+
+$$\\mathrm{VR} \\approx \\frac{I\\left(R_{eq}\\cos\\phi + X_{eq}\\sin\\phi\\right)}{V_{R}}\\times 100\\% = \\left(R_{pu}\\cos\\phi + X_{pu}\\sin\\phi\\right)\\times 100\\%$$
+
+with **$\\sin\\phi$ taken negative for a leading load**. That sign is the whole
+story. Because **$X_{pu} \\gg R_{pu}$** in any transformer, the reactive term
+dominates, and a leading load subtracts it.
+
+![Voltage regulation of the 50 kVA unit at rated current, swept from 0.5 leading through unity to 0.5 lagging power factor. The exact curve and the handbook approximation lie within a tenth of a point of one another across the range; regulation rises to about 4 percent at heavily lagging power factors and passes through zero at 0.941 leading, going negative beyond it.](/courses/fe-ee/figures/pow2-xfmr-regulation-pf.svg)
+
+Reading the figure at three points, for **$R_{pu}=0.0130$** and
+**$X_{pu}=0.0387$**:
+
+| Load power factor | Approximate VR | Exact VR | Comment |
+|---|---|---|---|
+| 0.60 lagging | +3.88% | +3.88% | worst practical case |
+| 0.80 lagging | +3.36% | +3.39% | the usual exam value |
+| 1.00 | +1.30% | +1.37% | resistive term only |
+| 0.941 leading | −0.00% | 0.00% | regulation vanishes |
+| 0.80 leading | −1.28% | −1.21% | secondary rises under load |
+
+### Worked example 7.1 — regulation the exact way, and the error you accept
+
+Find the exact regulation of the 50 kVA unit at rated current and 0.8 power
+factor lagging, and compare with the approximation.
+
+Take **$V_{R} = 2{,}400\\angle 0^\\circ$** V referred to the HV side and
+**$I = 20.833\\angle -36.87^\\circ$** A. Then
+
+$$I Z_{eq} = (20.833\\angle -36.87^\\circ)(4.704\\angle 71.44^\\circ) = 98.0\\angle 34.57^\\circ = 80.7 + j55.6$$
+
+$$V_{S} = 2{,}400 + 80.7 + j55.6 = 2{,}480.7 + j55.6 = 2{,}481.3\\ \\mathrm{V}$$
+
+$$\\mathrm{VR} = \\frac{2{,}481.3-2{,}400}{2{,}400}\\times 100 = 3.39\\%$$
+
+The approximation gives **$(0.0130)(0.8)+(0.0387)(0.6) = 0.03363$**, or 3.36
+percent — low by 0.03 points, an error of under one percent of the answer. The
+approximation drops the **$j55.6$** term, and a quadrature addition of 55.6 to
+2,480.7 changes the magnitude by only 0.62 V. That is why the approximation
+survives: the quadrature component enters as a square root of a sum of squares
+and is therefore second order.
+
+### Worked example 7.2 — the power factor at which regulation disappears
+
+At what leading power factor does this transformer have zero regulation?
+
+Set the approximation to zero: **$R_{pu}\\cos\\phi = X_{pu}\\sin\\phi$**, so
+
+$$\\tan\\phi = \\frac{R_{pu}}{X_{pu}} = \\frac{0.0130}{0.0387} = 0.3359 \\;\\Rightarrow\\; \\phi = 18.57^\\circ\\ \\text{leading}$$
+
+giving pf = 0.948 leading. Solving the exact expression numerically returns
+**0.941 leading**, the point marked on the figure. Beyond it the secondary
+voltage under load exceeds its no-load value — a capacitive load pushing the
+voltage up, which is the same physics as the Ferranti effect on a lightly
+loaded line and the reason a large capacitor bank switched onto a lightly
+loaded transformer can cause an overvoltage trip.
+
+## 7.2 Two transformers in parallel: the capacity you actually get
+
+Section 5.3 gave the sharing rule. What it did not give is the consequence,
+which is where the marks are. Two units in parallel share load in proportion
+to **rating divided by per-unit impedance**:
+
+$$\\frac{S_{1}}{S_{2}} = \\frac{S_{1,rated}/Z_{pu,1}}{S_{2,rated}/Z_{pu,2}}$$
+
+![Loading of two paralleled transformers as the bus load grows: a 500 kVA unit at 5 percent impedance and a 300 kVA unit at 6 percent, each plotted as a percentage of its own nameplate. The 500 kVA unit rises twice as fast and reaches 100 percent when the bus carries 750 kVA, at which point the 300 kVA unit is only 83 percent loaded, so 50 of the 800 kVA of installed capacity is unreachable.](/courses/fe-ee/figures/pow2-xfmr-parallel-share.svg)
+
+### Worked example 7.3 — how much of the bank you can use
+
+A 500 kVA transformer of 5 percent impedance is paralleled with a 300 kVA unit
+of 6 percent. Find the share fractions and the maximum bus load.
+
+$$k_{1} = \\frac{500}{0.05} = 10{,}000, \\qquad k_{2} = \\frac{300}{0.06} = 5{,}000$$
+
+$$f_{1} = \\frac{10{,}000}{15{,}000} = 0.6667, \\qquad f_{2} = 0.3333$$
+
+The 500 kVA unit reaches rating when **$0.6667 S_{bus} = 500$**, that is at
+**$S_{bus} = 750$ kVA**; the 300 kVA unit would not reach rating until 900 kVA.
+The binding constraint is the first:
+
+$$S_{usable} = 750\\ \\mathrm{kVA} \\ \\text{of}\\ 800\\ \\mathrm{kVA}\\ \\text{installed} = 93.75\\%$$
+
+At 750 kVA the small unit is at 250/300 = 83.3 percent. **Trap named.** The
+tempting answer is 800 kVA, the sum of the nameplates. That is only correct
+when the per-unit impedances are equal, and it is why matching impedance
+matters more than matching rating.
+
+## 7.3 Where the autotransformer stops paying
+
+The advantage factor derived in Section 5.2 is worth plotting rather than
+memorising, because it collapses fast. With **$k = V_{H}/V_{L}$**:
+
+$$\\frac{S_{auto}}{S_{two\\text{-}winding}} = \\frac{V_{H}}{V_{H}-V_{L}} = \\frac{k}{k-1}$$
+
+![Autotransformer throughput advantage against voltage ratio. The curve k over k minus one falls steeply: at a ratio of 1.25 the advantage is five times, at 2 to 1 it is only double, and by 4 to 1 it is down to 1.33, so the connection earns its lack of isolation only when the two voltages are close together.](/courses/fe-ee/figures/pow2-xfmr-auto-advantage.svg)
+
+### Worked example 7.4 — a 10 kVA winding pair carrying 50 kVA
+
+A 10 kVA, 480/120 V two-winding transformer is reconnected as a 600/480 V
+step-up autotransformer. Find the throughput rating and the current in each
+winding.
+
+The 120 V winding is the series element, rated
+**$10{,}000/120 = 83.33$ A**, and that current is the high-side line current:
+
+$$S_{auto} = 600\\times 83.33 = 50{,}000\\ \\mathrm{VA} = 5\\times S_{two\\text{-}winding}$$
+
+$$I_{L} = \\frac{50{,}000}{480} = 104.17\\ \\mathrm{A}, \\qquad I_{common} = 104.17-83.33 = 20.83\\ \\mathrm{A}$$
+
+and 20.83 A at 480 V is exactly 10 kVA — the common winding is respected too.
+Of the 50 kVA throughput, **10 kVA is transformed magnetically and 40 kVA is
+conducted**, which is why the core does not need to grow. Compare with the
+Section 5.2 example, a 2640/240 connection of ratio 11, whose advantage was 11
+times; the advantage is always the connection ratio
+**$V_{H}/(V_{H}-V_{L})$** and nothing else.
+
+## 7.4 Designing for the duty cycle, not the nameplate
+
+Section 4.2 computed all-day efficiency for one duty cycle. The design question
+behind it is which loss to buy down. Core loss is billed for all 8,760 hours of
+the year; copper loss is billed only when current flows. Put the 50 kVA unit on
+
+| Hours | Load fraction | Power factor | Output energy | Total loss energy |
+|---|---|---|---|---|
+| 6 | 0.20 | 0.90 | 54.0 kWh | 1.626 kWh |
+| 10 | 0.50 | 0.90 | 225.0 kWh | 4.075 kWh |
+| 6 | 0.90 | 0.85 | 229.5 kWh | 4.629 kWh |
+| 2 | 0 (energised) | — | 0 | 0.490 kWh |
+| **Totals** | | | **508.5 kWh** | **10.820 kWh** |
+
+$$\\eta_{all\\text{-}day} = \\frac{508.5}{508.5+10.820} = 97.92\\%$$
+
+Of the 10.82 kWh of loss, **5.88 kWh is core loss** (245 W for 24 hours) — 54
+percent of the total, on a machine whose copper loss is 2.7 times its core loss
+at full load. Halving the core loss would save 2.94 kWh a day; halving the
+full-load copper loss would save only 2.47 kWh.
+
+![Peak power efficiency and 24-hour energy efficiency of the 50 kVA unit plotted against core loss, with full-load copper loss held at 650 watts and the duty cycle fixed. Both fall as core loss rises, but the energy efficiency falls roughly twice as fast, so the gap between the two widens from about a quarter of a point at 100 watts to more than a point and a half at 800 watts.](/courses/fe-ee/figures/pow2-xfmr-allday-duty.svg)
+
+The two curves diverge because the peak-efficiency figure is evaluated at a
+load fraction that itself moves with core loss, while the energy figure charges
+core loss for the full day regardless. A designer reading only the peak number
+would accept a cheaper, lossier core; the utility paying the bill reads the
+lower curve.`,
+      examTip: 'Regulation questions almost always want (R_pu·cos φ + X_pu·sin φ) with sin φ NEGATIVE for a leading load. That one sign converts a positive regulation into a negative one and is the difference between the right answer and the distractor placed directly beside it.',
+      importantNote: 'Two transformers in parallel do not deliver the sum of their nameplates unless their per-unit impedances match. Compute the share taken by each unit, find which one saturates first, and report the bus load at that point — the unusable remainder is the answer the question is really testing.',
+    },
+    {
+      id: 'xfmr-problem-set-a',
+      title: '8. Problem Set A: Test Data, Losses, and Efficiency',
+      content: `A single 25 kVA, 2400/240 V, 60 Hz transformer runs through the whole
+set. Its test report reads: open circuit on the LV side, 240 V, 1.20 A, 130 W;
+short circuit on the HV side, 65 V at rated current, 320 W.
+
+## 8. Problem Set A — equivalent circuit, losses, and efficiency
+
+Six problems, roughly three minutes each. Full solutions follow.
+
+### The problems
+
+**A1.** From the open-circuit data, find the core-loss resistance and the
+magnetising reactance referred to the 240 V side, and the exciting current as
+a percentage of rated.
+
+**A2.** From the short-circuit data, find **$R_{eq}$**, **$X_{eq}$** and
+**$Z_{eq}$** referred to the 2400 V side, and express the impedance in per
+unit on the transformer rating.
+
+**A3.** Find the efficiency at half load and 0.9 power factor lagging.
+
+**A4.** Find the load fraction at which efficiency is maximum, and the
+efficiency there at 0.9 power factor.
+
+**A5.** The transformer supplies a load of **$8 + j6\\ \\Omega$** on its 240 V
+side. Find the impedance seen looking into the 2400 V terminals, ignoring the
+transformer's own impedance.
+
+**A6.** The unit carries full load at 0.9 power factor for 8 hours, half load
+at 0.9 for 8 hours, and no load for 8 hours. Find the all-day efficiency.
+
+### Solutions
+
+**A1.** Conductance from real power, admittance from current:
+
+$$G_{c} = \\frac{130}{240^{2}} = 2.2569\\times10^{-3}\\ \\mathrm{S} \\;\\Rightarrow\\; R_{c} = 443.1\\ \\Omega$$
+
+$$|Y| = \\frac{1.20}{240} = 5.000\\times10^{-3}\\ \\mathrm{S}, \\quad B_{m} = \\sqrt{5.000^{2}-2.2569^{2}}\\times10^{-3} = 4.4616\\times10^{-3}\\ \\mathrm{S}$$
+
+so **$X_{m} = 224.1\\ \\Omega$**. Rated LV current is 25,000/240 = 104.17 A, so
+the exciting current is **1.20/104.17 = 1.15 percent** of rated.
+*Distractor:* taking **$X_{m} = V/I = 200\\ \\Omega$** ignores that the 1.20 A has
+a real component; the error is 12 percent.
+
+**A2.** Rated HV current is 25,000/2,400 = 10.417 A.
+
+$$Z_{eq} = \\frac{65}{10.417} = 6.240\\ \\Omega, \\qquad R_{eq} = \\frac{320}{10.417^{2}} = 2.9491\\ \\Omega$$
+
+$$X_{eq} = \\sqrt{6.240^{2}-2.9491^{2}} = 5.4991\\ \\Omega$$
+
+In per unit, either divide by **$Z_{base}=2{,}400^{2}/25{,}000 = 230.4\\ \\Omega$**
+or use the shortcut:
+
+$$Z_{pu} = \\frac{65}{2{,}400} = 0.02708, \\qquad R_{pu} = \\frac{320}{25{,}000} = 0.01280$$
+
+*Distractor:* 65/2,400 is sometimes misread as a percentage of the low side;
+it is a percentage of the tested winding's rated voltage, which here is 2,400 V.
+
+**A3.** Output = 0.5 × 25,000 × 0.9 = 11,250 W. Loss = 130 + (0.5)²(320) = 210 W.
+
+$$\\eta = \\frac{11{,}250}{11{,}250+210} = 98.17\\%$$
+
+*Distractor:* halving the copper loss instead of quartering it gives 290 W of
+loss and 97.49 percent.
+
+**A4.** **$x^{*} = \\sqrt{130/320} = 0.6374$**. Output = 0.6374 × 25,000 × 0.9 =
+14,341 W, loss = 2 × 130 = 260 W:
+
+$$\\eta_{max} = \\frac{14{,}341}{14{,}341+260} = 98.22\\%$$
+
+*Distractor:* the peak is NOT at full load; full load gives 97.99 percent here.
+
+**A5.** The turns ratio is 10, so impedance reflects by 100:
+
+$$Z_{HV} = 10^{2}(8+j6) = 800 + j600\\ \\Omega = 1{,}000\\angle 36.87^\\circ\\ \\Omega$$
+
+*Distractor:* multiplying by 10 gives 80 + j60 Ω and a load current ten times
+too large — the classic **$n$ instead of $n^{2}$** slip.
+
+**A6.** Output energy = 8(25 × 0.9) + 8(12.5 × 0.9) = 180 + 90 = **270 kWh**.
+Loss energy: core runs 24 hours at 130 W = 3.12 kWh; copper runs 8 h at 320 W
+and 8 h at 80 W = 2.56 + 0.64 = 3.20 kWh.
+
+$$\\eta_{all\\text{-}day} = \\frac{270}{270+6.32} = 97.71\\%$$
+
+*Distractor:* charging core loss only for the 16 loaded hours gives 98.00
+percent. The transformer is energised for all 24.`,
+      examTip: 'The exciting current in a healthy transformer is one to five percent of rated, and the short-circuit voltage is two to ten percent of rated. If your reduction of test data produces numbers outside those bands, you have almost certainly used the wrong rated current or the wrong side.',
+      importantNote: 'Every quantity in this set exists on a specific side of the transformer. Write "referred to HV" or "referred to LV" beside each answer as you get it. Combining an HV series impedance with an LV shunt impedance without reflecting one of them is the error that survives every plausibility check.',
+    },
+    {
+      id: 'xfmr-problem-set-b',
+      title: '9. Problem Set B: Regulation, Banks, and Parallel Operation',
+      content: `These six use the same 25 kVA unit where a transformer is needed, and
+extend to the three-phase and multi-unit questions that follow it.
+
+## 9. Problem Set B — regulation, three-phase banks, parallel operation
+
+### The problems
+
+**B1.** The 25 kVA unit of Problem Set A has **$R_{pu}=0.0128$** and
+**$X_{pu}=0.0239$**. Find the voltage regulation at rated current and 0.85
+power factor lagging.
+
+**B2.** Find the regulation of the same unit at rated current and 0.85 power
+factor **leading**, and state what the sign means physically.
+
+**B3.** Three 50 kVA, 7200/240 V single-phase transformers form a Δ–Y bank.
+Find the line-to-line voltage on each side, the bank rating, and the
+low-voltage line current at rated load.
+
+**B4.** One unit of that bank fails and is removed. Find the rating of the
+remaining open-delta bank and express it as a percentage of the original.
+
+**B5.** A 250 kVA transformer of 4 percent impedance is paralleled with a
+400 kVA unit of 6 percent. Find the maximum bus load before either is
+overloaded.
+
+**B6.** A 15 kVA, 7200/600 V transformer is reconnected as a 7800/7200 V
+step-up autotransformer. Find its throughput rating and the current in the
+series winding.
+
+### Solutions
+
+**B1.** **$\\phi = \\arccos 0.85 = 31.79^\\circ$**, **$\\sin\\phi = 0.5268$**:
+
+$$\\mathrm{VR} \\approx (0.0128)(0.85)+(0.0239)(0.5268) = 0.01088+0.01257 = 0.02345$$
+
+or **2.35 percent**. Solving **$|V_{R}+IZ_{eq}|$** exactly returns 2.354
+percent, so the approximation is good to four thousandths of a point here.
+
+**B2.** With a leading load the reactive term reverses sign:
+
+$$\\mathrm{VR} \\approx (0.0128)(0.85)-(0.0239)(0.5268) = -0.00169 = -0.169\\%$$
+
+The exact value is −0.133 percent. A **negative regulation means the secondary
+voltage is higher on load than off it**: the capacitive load current, flowing
+through the leakage reactance, produces a voltage rise rather than a drop.
+*Distractor:* +2.35 percent, obtained by ignoring the lead.
+
+**B3.** Delta on the high side, so **$V_{LL,HV} = 7{,}200$ V**. Wye on the low
+side, so **$V_{LL,LV} = 240\\sqrt{3} = 415.7$ V**. The bank rating is the sum
+of the three units, **150 kVA**, and
+
+$$I_{L,LV} = \\frac{150{,}000}{\\sqrt{3}\\times 415.7} = 208.3\\ \\mathrm{A}$$
+
+which is exactly each unit's rated 240 V winding current, as it must be for a
+wye secondary. *Distractor:* calling the LV line voltage 240 V forgets that a
+wye secondary multiplies the winding voltage by √3.
+
+**B4.** Two single-phase units in open delta deliver
+
+$$S_{open\\Delta} = \\sqrt{3}\\times 50 = 86.60\\ \\mathrm{kVA}$$
+
+which is **57.7 percent** of the 150 kVA three-unit bank, and 86.6 percent of
+the 100 kVA of iron still connected. *Distractor:* 100 kVA — the two remaining
+units cannot be loaded to their nameplate, because in open delta the winding
+currents are no longer in phase with their winding voltages.
+
+**B5.** Share factors:
+
+$$k_{1} = \\frac{250}{0.04} = 6{,}250, \\qquad k_{2} = \\frac{400}{0.06} = 6{,}667$$
+
+$$f_{1} = \\frac{6{,}250}{12{,}917} = 0.4839, \\qquad f_{2} = 0.5161$$
+
+The 250 kVA unit saturates at **$250/0.4839 = 516.7$ kVA** of bus load; the
+400 kVA unit would not saturate until 775 kVA. So the answer is **516.7 kVA**,
+just 79.5 percent of the 650 kVA installed. *Distractor:* 650 kVA assumes
+matched impedances.
+
+**B6.** The 600 V winding becomes the series element:
+
+$$S_{auto} = 15\\times\\frac{7{,}800}{600} = 195\\ \\mathrm{kVA}$$
+
+$$I_{series} = \\frac{195{,}000}{7{,}800} = 25.0\\ \\mathrm{A} = \\frac{15{,}000}{600}$$
+
+The series winding carries exactly its two-winding rated current, and the
+common 7,200 V winding carries the difference,
+**$195{,}000/7{,}200 - 25.0 = 2.08$ A**, which at 7,200 V is again 15 kVA.
+*Distractor:* 15 kVA — the nameplate of the two-winding unit, which is only
+the magnetically transferred part; the other 180 kVA is conducted.`,
+      examTip: 'Bank questions turn on one decision made before any arithmetic: is the quantity you are given a WINDING quantity or a LINE quantity? Write the connection (Δ or Y) beside each side of the bank, apply √3 exactly once per wye, and the rest is division.',
+      importantNote: 'Open-delta capacity is √3 times ONE unit, not two — 57.7 percent of the full bank. The factor is 1/√3 relative to the two remaining units because their currents are 30 degrees out of phase with their voltages once the third leg is gone.',
+    },
   ],
   keyTakeaways: [
     'Ideal transformer: Vs/Vp = n, Is/Ip = 1/n, impedance reflects by n².',
@@ -1052,6 +2158,494 @@ an arithmetic accident announcing itself. No other analysis method in the FE
 power syllabus gives you an error detector for free.`,
       examTip: 'Z_base = V_base²/S_base is identical in the single-phase and three-phase conventions — only I_base carries the √3. So if a problem gives line-to-line voltage and total three-phase MVA, you can compute Z_base directly with no √3 anywhere, and that is the form the exam expects.',
       importantNote: 'A motor starting problem, a fault problem, and a voltage-regulation problem are the same per-unit calculation with different impedances. Recognising that a locked-rotor motor is just an impedance of S_base/S_locked-rotor per unit converts an unfamiliar question into a voltage divider you can solve in two lines.',
+    },
+    {
+      id: 'pu-impedance-diagram',
+      title: '6. Building an Impedance Diagram From Nameplates',
+      content: `## 6.1 A four-zone system, and one base decision
+
+Section 4 walked a three-zone system. This one is larger, deliberately: five
+series elements, four voltage levels, and one piece of equipment whose
+nameplate voltage does **not** match its zone base — which is where most
+per-unit marks are actually lost.
+
+| Element | Nameplate | Impedance (own base) |
+|---|---|---|
+| Generator G | 90 MVA, 13.8 kV | X″ = 0.18 pu |
+| Transformer T1 | 100 MVA, 13.8/138 kV | X = 0.10 pu |
+| Transmission line | 138 kV | X = 32 Ω |
+| Transformer T2 | 50 MVA, 138/13.2 kV | X = 0.08 pu |
+| Transformer T3 | 15 MVA, 13.2/4.16 kV | X = 0.06 pu |
+| Motor M | 8 MVA, **4.00 kV** | X″ = 0.20 pu |
+
+Choose **$S_{base} = 100$ MVA** everywhere and **$V_{base} = 138$ kV** in the
+transmission zone. Every other base voltage now follows from the transformer
+ratios and nothing else — not from what the equipment is rated at, and not
+from what the operator calls the bus.
+
+## 6.2 Base quantities in every zone
+
+$$V_{base,zone} = V_{base,ref}\\times \\prod \\left(\\text{turns ratios crossed}\\right), \\qquad Z_{base} = \\frac{V_{base}^{2}}{S_{base}}, \\qquad I_{base} = \\frac{S_{base}}{\\sqrt{3}\\,V_{base}}$$
+
+| Zone | V_base | Z_base | I_base |
+|---|---|---|---|
+| Generator | 13.80 kV | 1.9044 Ω | 4,184 A |
+| Transmission | 138.0 kV | 190.44 Ω | 418.4 A |
+| Distribution | 13.20 kV | 1.7424 Ω | 4,374 A |
+| Motor bus | 4.160 kV | 0.17306 Ω | 13,879 A |
+
+![Base current and base impedance in each of the four zones of the study system on a 100 MVA base, both on logarithmic axes. Base current spans 418 amperes at 138 kilovolts to 13,879 amperes at 4.16 kilovolts, a factor of 33, while base impedance spans 0.173 ohms to 190 ohms, a factor of 1,100 — and the per-unit description of the same equipment does not move at all.](/courses/fe-ee/figures/pow2-pu-base-ladder.svg)
+
+That figure is the argument for per unit in one image. The **same 100 MVA**
+appears as 418 A in one zone and 13,879 A in another, and the same fraction of
+it is 1.0 pu in both.
+
+### Worked example 6.1 — propagating base voltage through a chain
+
+A 13.8 kV generator feeds a 13.8/138 kV step-up, a 138/69 kV autotransformer,
+and a 69/12.47 kV distribution transformer. On a 100 MVA base referenced to
+the generator, find the base voltage, impedance and current in each of the
+four zones.
+
+Multiply by each turns ratio in turn:
+
+$$13.8 \\to 13.8\\times\\frac{138}{13.8} = 138\\ \\mathrm{kV} \\to 138\\times\\frac{69}{138} = 69\\ \\mathrm{kV} \\to 69\\times\\frac{12.47}{69} = 12.47\\ \\mathrm{kV}$$
+
+$$Z_{base} = \\frac{(138)^{2}}{100} = 190.44\\ \\Omega, \\quad \\frac{(69)^{2}}{100} = 47.61\\ \\Omega, \\quad \\frac{(12.47)^{2}}{100} = 1.555\\ \\Omega$$
+
+with base currents 418.4 A, 836.7 A and 4,630 A. **Trap named.** The 69 kV
+zone base is 69 kV because the transformer says so, even if the line is
+operated at 66 kV. Base voltage is a bookkeeping choice propagated by turns
+ratios; operating voltage is a measurement, and confusing the two puts a
+correction factor where none belongs.
+
+## 6.3 Re-basing every nameplate onto the study base
+
+$$Z_{pu,new} = Z_{pu,old}\\times\\frac{S_{base,new}}{S_{base,old}}\\times\\left(\\frac{V_{base,old}}{V_{base,new}}\\right)^{2}$$
+
+| Element | Calculation | Result |
+|---|---|---|
+| Generator | $0.18\\times(100/90)\\times(13.8/13.8)^{2}$ | 0.2000 pu |
+| T1 | $0.10\\times(100/100)$ | 0.1000 pu |
+| Line | $32/190.44$ | 0.1680 pu |
+| T2 | $0.08\\times(100/50)$ | 0.1600 pu |
+| T3 | $0.06\\times(100/15)$ | 0.4000 pu |
+| Motor | $0.20\\times(100/8)\\times(4.00/4.16)^{2}$ | 2.3114 pu |
+
+The motor is the interesting row. Its nameplate says 4.00 kV, its zone base is
+4.16 kV, and the squared ratio is **$(4.00/4.16)^{2} = 0.9246$**. Omit it and
+you get 2.5000 pu — **8.2 percent high**, which propagates straight into the
+fault current and the starting dip.
+
+### Worked example 6.2 — an impedance given in ohms, on the wrong side
+
+The 32 Ω line reactance was measured at 138 kV, so it divides by the 138 kV
+zone base. Suppose instead a report gives the same line as **1,270 Ω referred
+to the 13.8 kV generator side**. Confirm the two are the same per-unit value.
+
+Referring 138 kV ohms down to 13.8 kV divides by the square of the turns
+ratio, **$(138/13.8)^{2} = 100$**, so 32 Ω becomes 0.32 Ω — not 1,270 Ω.
+Referring **up** multiplies by 100: 1,270 Ω on the 13.8 kV side is 127,000 Ω at
+138 kV, which is absurd for a line. The report is wrong by a factor of 100 in
+the direction of the referral, and per unit catches it instantly:
+
+$$\\frac{1{,}270}{1.9044} = 666.9\\ \\mathrm{pu}$$
+
+A line reactance of 667 pu is impossible; transmission lines land between 0.05
+and 0.6 pu on a 100 MVA base. **That plausibility band is the reason to work in
+per unit at all** — an ohmic error of a factor of 100 looks like just another
+big number, and a per-unit error of a factor of 100 looks like nonsense.
+
+## 6.4 The fault answer, at four buses at once
+
+With the impedance diagram built, a three-phase fault at any bus is one
+division. The Thévenin reactance is the running sum from the source, and
+
+$$S_{fault} = \\frac{S_{base}}{X_{th,pu}}, \\qquad I_{fault} = \\frac{I_{base,zone}}{X_{th,pu}}$$
+
+![Cumulative source reactance to each of the four buses and the fault duty it produces. The reactance climbs from 0.200 per unit at the generator terminals through 0.300 and 0.628 to 1.028 per unit at the motor bus, and the fault duty falls correspondingly from 500 MVA to 333 MVA, 159 MVA and 97.3 MVA.](/courses/fe-ee/figures/pow2-pu-impedance-stack.svg)
+
+| Fault at | X_th (pu) | Fault MVA | Fault current |
+|---|---|---|---|
+| Bus 1, 13.8 kV | 0.2000 | 500.0 | 20,918 A |
+| Bus 2, 138 kV | 0.3000 | 333.3 | 1,394.6 A |
+| Bus 3, 13.2 kV | 0.6280 | 159.2 | 6,964 A |
+| Bus 4, 4.16 kV | 1.0280 | 97.27 | 13,500 A |
+
+Note that the fault **current** is not monotone even though the fault **MVA**
+is: bus 3 sees fewer MVA than bus 2 but five times the amperes, because its
+base current is ten times larger. Any answer given in amperes has to name its
+voltage level.
+
+### Worked example 6.3 — the same fault, computed in ohms as a check
+
+Verify the 138 kV bus result without per unit. Referred to 138 kV, the
+generator reactance is
+**$0.18\\times(13.8^{2}/90)\\times(138/13.8)^{2} = 0.18\\times 2.116\\times 100 = 38.09\\ \\Omega$**
+and T1 is **$0.10\\times(138^{2}/100) = 19.044\\ \\Omega$**. The total is 57.13 Ω, so
+
+$$I_{f} = \\frac{138{,}000/\\sqrt{3}}{57.13} = \\frac{79{,}674}{57.13} = 1{,}394.6\\ \\mathrm{A}$$
+
+identical to the per-unit answer, and roughly four times the work — with two
+extra opportunities to drop a factor of 100.
+
+### Worked example 6.4 — expressing a measurement in per unit
+
+A relay reports 1,200 A flowing at the 4.16 kV motor bus. Express it in per
+unit on the study base, and state the loading of the 8 MVA motor.
+
+$$I_{pu} = \\frac{1{,}200}{13{,}879} = 0.0865\\ \\mathrm{pu} \\;\\Rightarrow\\; S = 0.0865\\times 100 = 8.65\\ \\mathrm{MVA}$$
+
+which is **108 percent** of the motor's 8 MVA rating. Per unit converted a
+relay reading into a loading percentage in two divisions and without any
+mention of √3, because the √3 is already inside the base current.`,
+      examTip: 'Fix S_base once, then let V_base ride the turns ratios and nothing else. Every downstream quantity — Z_base, I_base, and every re-based impedance — is then mechanical. The only judgement call in the whole procedure is which zone you write the reference voltage in, and that choice never changes any per-unit answer.',
+      importantNote: 'The squared voltage ratio in the re-basing formula equals 1 only when the equipment nameplate voltage matches the zone base. The 4.00 kV motor on a 4.16 kV base in this system carries a factor of 0.9246, and dropping it inflates every result that depends on that machine by 8.2 percent.',
+    },
+    {
+      id: 'pu-stress-cases',
+      title: '7. Per-Unit Under Stress: Off-Nominal Ratios and Machine Contributions',
+      content: `## 7.1 How much the squared term is worth
+
+The re-basing formula has three factors and only one of them is routinely
+dropped. Hold a 0.20 pu machine impedance fixed, put it on a 13.8 kV zone base,
+and vary its nameplate voltage:
+
+$$Z_{new} = 0.20\\times\\left(\\frac{V_{nameplate}}{13.8}\\right)^{2}$$
+
+![The re-based impedance of a 0.20 per-unit machine as its nameplate voltage is swept around a 13.8 kilovolt zone base, with the error caused by omitting the squared voltage term plotted beneath it. A 13.2 kilovolt machine re-bases to 0.1830 per unit, so ignoring the term overstates it by 9.3 percent; a 12.5 kilovolt machine would be overstated by 22 percent.](/courses/fe-ee/figures/pow2-pu-rebase-sensitivity.svg)
+
+| Nameplate | Factor | Re-based Z | Error if omitted |
+|---|---|---|---|
+| 12.5 kV | 0.8205 | 0.1641 pu | +21.9% |
+| 13.2 kV | 0.9149 | 0.1830 pu | +9.3% |
+| 13.8 kV | 1.0000 | 0.2000 pu | 0% |
+| 14.4 kV | 1.0889 | 0.2178 pu | −8.2% |
+
+The errors are not small and they are not symmetric. A 13.2 kV generator on a
+13.8 kV base — an entirely ordinary situation, since 13.8 kV is a standard
+system voltage and 13.2 kV is a standard machine voltage — carries a 9.3
+percent error, which lands directly on a breaker duty calculation.
+
+### Worked example 7.1 — a round trip through ohms
+
+A transformer has 6 percent impedance on its own 20 MVA, 13.8 kV rating.
+Convert it to ohms, then onto a 100 MVA, 13.2 kV base, and confirm the two
+routes agree.
+
+**Via ohms.** **$Z_{base,own} = 13.8^{2}/20 = 9.522\\ \\Omega$**, so
+**$Z = 0.06\\times 9.522 = 0.5713\\ \\Omega$**. The new base impedance is
+**$13.2^{2}/100 = 1.7424\\ \\Omega$**, giving
+
+$$Z_{pu,new} = \\frac{0.5713}{1.7424} = 0.3279\\ \\mathrm{pu}$$
+
+**Via the formula.**
+
+$$Z_{pu,new} = 0.06\\times\\frac{100}{20}\\times\\left(\\frac{13.8}{13.2}\\right)^{2} = 0.06\\times 5\\times 1.0930 = 0.3279\\ \\mathrm{pu}$$
+
+Identical, as they must be — the formula is only the ohmic route with the ohms
+cancelled out. Doing it both ways once is the fastest way to stop distrusting
+the formula under exam pressure.
+
+## 7.2 Motors are generators, for about five cycles
+
+A per-unit diagram built only from the utility path understates fault duty,
+sometimes badly. Every rotating machine on the bus has stored magnetic energy
+and inertia, and for the first cycles of a fault it behaves as a voltage behind
+its subtransient reactance — a **source**, feeding the fault from the load
+side. Its impedance therefore appears in **parallel** with the source path:
+
+$$X_{eq} = \\frac{X_{th}X_{motor}}{X_{th}+X_{motor}}, \\qquad S_{fault} = \\frac{S_{base}}{X_{eq}}$$
+
+![Three-phase fault duty at the 4.16 kilovolt motor bus as the connected motor rating grows from zero to 20 megavolt-amperes. The utility path alone gives 97.3 megavolt-amperes; an 8 megavolt-ampere motor at 0.20 per-unit subtransient reactance adds 43.3 more, a 44 percent increase in the duty the breaker must interrupt.](/courses/fe-ee/figures/pow2-pu-motor-contribution.svg)
+
+### Worked example 7.2 — the motor contribution at bus 4
+
+Add the 8 MVA motor to the bus-4 fault of Section 6.4. Its re-based reactance
+is 2.3114 pu, in parallel with the 1.0280 pu source path:
+
+$$X_{eq} = \\frac{(1.0280)(2.3114)}{1.0280+2.3114} = \\frac{2.3761}{3.3394} = 0.7116\\ \\mathrm{pu}$$
+
+$$S_{fault} = \\frac{100}{0.7116} = 140.5\\ \\mathrm{MVA}, \\qquad I_{f} = \\frac{13{,}879}{0.7116} = 19{,}505\\ \\mathrm{A}$$
+
+The motor added **43.3 MVA, or 44 percent**. A switchgear lineup selected for
+the 97.3 MVA utility contribution would be under-rated by the motors it was
+installed to serve. **Trap named.** The tempting simplification is that load
+absorbs fault current. Passive load does; rotating load supplies it, and the
+distinction is worth 44 percent here.
+
+## 7.3 Starting a motor: the same divider, different impedance
+
+A locked rotor is an impedance, and its per-unit value comes from the
+locked-rotor apparent power exactly as a fault impedance comes from fault MVA:
+
+$$Z_{LR,pu} = \\frac{S_{base}}{S_{LR}}\\times\\left(\\frac{V_{rated}}{V_{base}}\\right)^{2}, \\qquad V_{bus} = \\frac{Z_{LR}}{Z_{LR}+Z_{th}} = \\frac{1}{1+S_{LR}/S_{SC}}$$
+
+![Bus voltage during a direct-on-line motor start plotted against the ratio of locked-rotor kilovolt-amperes to the bus short-circuit kilovolt-amperes. The curve is the reciprocal of one plus that ratio, so a ten percent ratio holds 0.909 per unit and a twenty-five percent ratio drops to 0.80; the worked case of a 2 megavolt-ampere motor at six times rated current on a 97.3 megavolt-ampere bus sits at 0.882 per unit.](/courses/fe-ee/figures/pow2-pu-motor-start-dip.svg)
+
+### Worked example 7.3 — will the contactors hold?
+
+Start a 2 MVA, 4.00 kV motor with a locked-rotor current six times rated,
+direct on line, at bus 4 of the study system.
+
+$$Z_{LR} = \\frac{100}{6\\times 2}\\times\\left(\\frac{4.00}{4.16}\\right)^{2} = 8.3333\\times 0.9246 = 7.7046\\ \\mathrm{pu}$$
+
+$$V_{bus} = \\frac{7.7046}{7.7046+1.0280} = 0.8823\\ \\mathrm{pu} = 3{,}670\\ \\mathrm{V}$$
+
+An 11.8 percent dip. Most contactors drop out somewhere between 0.70 and 0.80
+pu, so this start is acceptable; a dip past 0.80 pu would demand a reduced-
+voltage starter or a stiffer supply. Note that the answer needed no
+transformer ratios and no amperes — only two per-unit impedances.
+
+## 7.4 Single-phase bases, sequence bases, and per-unit load
+
+Three loose ends that the exam reaches for once the mechanics are secure.
+
+**Single-phase versus three-phase.** The per-phase and three-phase conventions
+give the **same** base impedance:
+
+$$Z_{base} = \\frac{(V_{LL})^{2}}{S_{3\\phi}} = \\frac{(V_{LN})^{2}}{S_{1\\phi}}$$
+
+because both numerator and denominator carry a factor of 3. Only base current
+differs, by √3. So a problem stated entirely in line-to-line kV and total MVA
+needs no √3 anywhere until amperes are requested.
+
+**Sequence networks.** Positive-, negative- and zero-sequence networks all use
+the **same** bases. A generator with **$X_{1}=0.20$**, **$X_{2}=0.18$** and
+**$X_{0}=0.07$** pu has all three on its own rating, and all three re-base with
+the identical formula. That is why symmetrical-component fault formulas can add
+sequence impedances directly.
+
+**Load in per unit.** A constant-impedance load of **$S_{L}$** at rated voltage
+has
+
+$$Z_{load,pu} = \\frac{S_{base}}{S_{L}}\\angle \\arccos(\\mathrm{pf})$$
+
+so a 20 MVA, 0.9 pf load on a 100 MVA base is **$5.0\\angle 25.84^\\circ$ pu**.
+Large per-unit impedance means light load — the reciprocal relationship that
+makes a per-unit diagram readable at a glance.
+
+### Worked example 7.4 — voltage drop on a per-unit feeder
+
+A feeder of **$0.02 + j0.06$ pu** delivers 0.8 pu at 0.9 power factor lagging,
+with the load bus held at 1.00 pu. Find the sending-end voltage.
+
+$$I = 0.8\\angle -25.84^\\circ\\ \\mathrm{pu}, \\qquad V_{S} = 1.00 + (0.8\\angle -25.84^\\circ)(0.0632\\angle 71.57^\\circ)$$
+
+$$V_{S} = 1.00 + 0.0506\\angle 45.73^\\circ = 1.0353 + j0.0362 = 1.0360\\ \\mathrm{pu}$$
+
+a 3.60 percent drop along the feeder. The approximation
+**$I(R\\cos\\phi + X\\sin\\phi) = 0.8(0.018+0.02615) = 0.0353$** gives 3.53
+percent. Both are per-unit numbers that transfer unchanged to any voltage
+level this feeder might be built at, which is the property no ohmic
+calculation has.
+
+## 7.5 Reading a per-unit diagram for errors
+
+The most underrated benefit of per unit is not the arithmetic it saves but the
+mistakes it exposes. Because every impedance in a healthy power system lands
+inside a narrow band once it is expressed on a common base, a diagram can be
+audited by eye before a single calculation is attempted. On a 100 MVA base:
+
+| Element | Typical per-unit range | What a value outside it means |
+|---|---|---|
+| Generator subtransient $X''$ | 0.15 – 0.30 on its own rating | wrong base MVA, usually by a factor of 10 |
+| Transformer impedance | 0.05 – 0.12 on its own rating | percent read as a fraction, or the reverse |
+| Transmission line, 100 km | 0.05 – 0.60 | ohms divided by the wrong zone base |
+| Distribution feeder, 1 km | 0.01 – 0.10 | line-to-neutral voltage used for $Z_{base}$ |
+| Rated load impedance | 0.8 – 1.5 | apparent power confused with real power |
+| Locked-rotor motor | $S_{base}/S_{LR}$, often 5 – 60 | rated rather than locked-rotor kVA used |
+
+Three habits follow from that table. First, **re-base everything before you
+combine anything**, because two impedances on different bases look perfectly
+compatible and add to nonsense. Second, **write the base beside every number**
+until the diagram is complete; "0.08" is not an impedance, "0.08 pu on 50 MVA"
+is. Third, **check the total**. A Thévenin reactance from a strong grid to a
+distribution bus should land somewhere between 0.3 and 1.5 pu; 0.03 pu implies
+a fault duty of 3,300 MVA at a 4 kV bus, which no such bus has, and 15 pu
+implies a supply too weak to start anything on it.
+
+The same reasoning runs backwards and is worth practising, because examiners
+like it. A switchgear nameplate reading 250 MVA is telling you the Thévenin
+impedance behind it is 100/250 = 0.40 pu; a transformer stamped 5.75 percent on
+30 MVA is 0.192 pu on a 100 MVA base; a motor whose starting current is quoted
+as 6.5 per unit has a locked-rotor impedance of 1/6.5 = 0.154 pu on its own
+rating. Each of those conversions is one division, and each turns a piece of
+equipment documentation directly into a component of the impedance diagram.
+None of them requires knowing a single voltage level, a single winding
+connection, or a single ampere, which is exactly why a per-unit diagram can be
+assembled from a stack of nameplates and audited by a reviewer who has never
+seen the site.`,
+      examTip: 'Locked-rotor impedance, fault impedance and load impedance are all S_base divided by an apparent power, times the off-nominal voltage correction. Recognising that one pattern turns three apparently different question types into the same two-line calculation.',
+      importantNote: 'Rotating machines contribute to fault current. Their subtransient reactance appears in PARALLEL with the utility path, which raises the duty rather than lowering it — 44 percent higher at the motor bus of this system. Any breaker-selection question that mentions connected motors is testing exactly this.',
+    },
+    {
+      id: 'pu-problem-set-a',
+      title: '8. Problem Set A: Bases, Re-basing, and Diagram Construction',
+      content: `Per-unit questions are graded on bookkeeping, not insight. These six
+are chosen so that a single misplaced base voltage changes the answer visibly.
+
+## 8. Problem Set A — bases and re-basing
+
+### The problems
+
+**A1.** On a 50 MVA, 115 kV base, find the base impedance and the base current.
+
+**A2.** A generator is rated 40 MVA, 13.8 kV with **$X'' = 0.15$** pu on its own
+base. Express it on a 100 MVA, 13.8 kV base.
+
+**A3.** A transformer is rated 25 MVA, 12.47/69 kV with 7 percent impedance.
+The low-voltage zone base is 13.2 kV and the system base is 100 MVA. Find its
+per-unit impedance on the system base.
+
+**A4.** A 138 kV line has 45 Ω of series reactance. Find its per-unit value on
+a 100 MVA base.
+
+**A5.** A 13.8 kV generator feeds a 13.8/138 kV transformer, then a 138/69 kV
+transformer, then a 69/12.47 kV transformer. On a 100 MVA base, list the base
+voltage, base impedance and base current in all four zones.
+
+**A6.** A relay at a 4.16 kV bus reads 1,200 A. Express this current in per
+unit on a 100 MVA base.
+
+### Solutions
+
+**A1.**
+
+$$Z_{base} = \\frac{(115{,}000)^{2}}{50\\times 10^{6}} = 264.5\\ \\Omega, \\qquad I_{base} = \\frac{50\\times 10^{6}}{\\sqrt{3}\\times 115{,}000} = 251.0\\ \\mathrm{A}$$
+
+*Distractor:* putting √3 into the impedance gives 152.7 Ω. Base impedance
+never carries a √3.
+
+**A2.** The voltages match, so only the MVA ratio applies:
+
+$$X = 0.15\\times\\frac{100}{40} = 0.375\\ \\mathrm{pu}$$
+
+*Distractor:* dividing instead of multiplying gives 0.060 pu. The rule to
+carry: moving to a **larger** base MVA makes a per-unit impedance **larger**,
+because the same ohms are now a bigger fraction of a smaller base impedance.
+
+**A3.** Both factors are in play:
+
+$$Z = 0.07\\times\\frac{100}{25}\\times\\left(\\frac{12.47}{13.2}\\right)^{2} = 0.07\\times 4\\times 0.8925 = 0.2499\\ \\mathrm{pu}$$
+
+*Distractor:* 0.2800 pu, from dropping the voltage term — 12.1 percent high.
+
+**A4.** **$Z_{base} = 138{,}000^{2}/10^{8} = 190.44\\ \\Omega$**, so
+
+$$X_{pu} = \\frac{45}{190.44} = 0.2363\\ \\mathrm{pu}$$
+
+*Distractor:* using 69 kV (line-to-neutral) gives 0.945 pu, four times too
+large. Base voltage in a three-phase per-unit system is line-to-line.
+
+**A5.** Base voltage rides the turns ratios: 13.8 → 138 → 69 → 12.47 kV.
+
+| Zone | V_base | Z_base | I_base |
+|---|---|---|---|
+| 1 | 13.80 kV | 1.9044 Ω | 4,184 A |
+| 2 | 138.0 kV | 190.44 Ω | 418.4 A |
+| 3 | 69.00 kV | 47.61 Ω | 836.7 A |
+| 4 | 12.47 kV | 1.5550 Ω | 4,630 A |
+
+*Distractor:* the 138/69 kV unit is an autotransformer in many versions of
+this question, which tempts candidates to skip it. Base voltage crosses every
+transformer, auto or not.
+
+**A6.** **$I_{base} = 10^{8}/(\\sqrt{3}\\times 4{,}160) = 13{,}879$ A**, so
+
+$$I_{pu} = \\frac{1{,}200}{13{,}879} = 0.0865\\ \\mathrm{pu} \\;\\Rightarrow\\; S = 8.65\\ \\mathrm{MVA}$$
+
+*Distractor:* omitting the √3 gives 24,038 A of base current and 0.0499 pu.`,
+      examTip: 'Every one of these is a division. The marks are lost in choosing what to divide by, so write the three bases — S_base, V_base, and the Z_base or I_base you derived from them — at the top of the page before reading the question a second time.',
+      importantNote: 'Moving to a LARGER base MVA increases a per-unit impedance, and moving to a LARGER base voltage decreases it. If a re-based answer moves the wrong way, the formula has been inverted; check that before checking the arithmetic.',
+    },
+    {
+      id: 'pu-problem-set-b',
+      title: '9. Problem Set B: Fault Duty, Machine Contributions, Starting',
+      content: `Once the diagram exists, the questions it answers are all short.
+These six are the four things per unit is actually used for.
+
+## 9. Problem Set B — fault duty, starting, and regulation
+
+### The problems
+
+**B1.** The Thévenin reactance to a 13.8 kV bus is 0.25 pu on a 100 MVA base.
+Find the three-phase fault MVA and the fault current.
+
+**B2.** Two paths feed a bus: one of 0.20 + 0.10 pu in series, the other of
+0.40 pu. Find the equivalent reactance and the fault duty on a 100 MVA base.
+
+**B3.** A 1.5 MVA motor with a locked-rotor current 5.5 times rated is started
+direct on line at a bus whose short-circuit capacity is 60 MVA. Find the bus
+voltage during the start.
+
+**B4.** A feeder of 0.02 + j0.06 pu delivers 0.8 pu at 0.9 power factor lagging
+into a bus held at 1.00 pu. Find the sending-end voltage magnitude.
+
+**B5.** A transformer has 6 percent impedance on 20 MVA, 13.8 kV. Find its
+value in ohms and its per-unit value on a 100 MVA, 13.2 kV base.
+
+**B6.** A 4.16 kV bus has a source Thévenin reactance of 0.90 pu on 100 MVA and
+3 MVA of connected motors with **$X''=0.17$** pu on their own base. Find the
+symmetrical fault current with and without the motor contribution.
+
+### Solutions
+
+**B1.**
+
+$$S_{f} = \\frac{100}{0.25} = 400\\ \\mathrm{MVA}, \\qquad I_{f} = \\frac{I_{base}}{0.25} = \\frac{4{,}184}{0.25} = 16{,}735\\ \\mathrm{A}$$
+
+*Distractor:* computing 400 MVA and then dividing by 4.16 kV or 138 kV instead
+of 13.8 kV. The fault MVA is level-independent; the amperes are not.
+
+**B2.**
+
+$$X_{eq} = \\frac{(0.30)(0.40)}{0.30+0.40} = 0.1714\\ \\mathrm{pu} \\;\\Rightarrow\\; S_{f} = \\frac{100}{0.1714} = 583.3\\ \\mathrm{MVA}$$
+
+*Distractor:* adding the two paths gives 0.70 pu and 143 MVA — a factor of
+four low. Parallel sources increase fault duty; only series elements reduce it.
+
+**B3.** **$S_{LR} = 5.5\\times 1.5 = 8.25$ MVA**, so the ratio is 8.25/60 = 0.1375:
+
+$$V_{bus} = \\frac{1}{1+0.1375} = 0.879\\ \\mathrm{pu}$$
+
+a 12.1 percent dip. *Distractor:* 1 − 0.1375 = 0.8625 pu, from subtracting the
+ratio instead of using the divider — close enough to look plausible and wrong
+by a point and a half.
+
+**B4.** **$I = 0.8\\angle -25.84^\\circ$** pu and **$Z = 0.0632\\angle 71.57^\\circ$** pu:
+
+$$V_{S} = 1.00 + 0.0506\\angle 45.73^\\circ = 1.0353+j0.0362$$
+
+$$|V_{S}| = 1.0360\\ \\mathrm{pu} \\;\\Rightarrow\\; 3.60\\%\\ \\text{drop}$$
+
+The approximation **$0.8(0.02\\times 0.9 + 0.06\\times 0.436) = 0.0353$** gives
+3.53 percent. *Distractor:* adding magnitudes, 1.00 + 0.0506 = 1.0506, ignores
+that the drop is largely in quadrature with the load voltage.
+
+**B5.** **$Z_{base,own} = 13.8^{2}/20 = 9.522\\ \\Omega$**, so
+**$Z = 0.5713\\ \\Omega$**. On the new base,
+**$Z_{base} = 13.2^{2}/100 = 1.7424\\ \\Omega$**:
+
+$$Z_{pu} = \\frac{0.5713}{1.7424} = 0.3279\\ \\mathrm{pu} = 0.06\\times 5\\times\\left(\\frac{13.8}{13.2}\\right)^{2}$$
+
+*Distractor:* 0.30 pu, from using the MVA ratio alone. The 9.3 percent
+difference is the voltage term.
+
+**B6.** Motor reactance on the system base:
+**$X_{m} = 0.17\\times(100/3) = 5.667$ pu**. Without the motors,
+
+$$I_{f} = \\frac{13{,}879}{0.90} = 15{,}421\\ \\mathrm{A}$$
+
+With them, **$X_{eq} = (0.90)(5.667)/(6.567) = 0.7767$ pu**:
+
+$$I_{f} = \\frac{13{,}879}{0.7767} = 17{,}870\\ \\mathrm{A} \\quad (+15.9\\%)$$
+
+*Distractor:* ignoring 3 MVA of motors on a bus fed through 0.90 pu looks
+harmless and costs 16 percent of the interrupting duty — enough to change the
+breaker selection.`,
+      examTip: 'Series impedances reduce fault current; parallel sources increase it. When a question adds a second feed, a generator, or a bank of motors, the equivalent reactance must go DOWN and the duty must go UP. That directional check catches most sign and topology errors before the arithmetic starts.',
+      importantNote: 'Fault MVA is the same number no matter which voltage level you quote it at, because S_base is constant across the whole per-unit diagram. Fault current in amperes is not — it must be divided by the base current of the zone where the fault sits.',
     },
   ],
   keyTakeaways: [
@@ -1418,6 +3012,500 @@ actually asks for is usually a single line of the ABCD set, not the whole
 four-parameter solve.`,
       examTip: 'P = (V_S·V_R/X)·sin δ is the one power-flow formula to memorise, and its two design consequences follow immediately: capacity scales with V² and inversely with X. If a question asks for maximum transfer, set sin δ = 1 and read off V_S·V_R/X — but note that practical limits sit near 30–40°, not 90°.',
       importantNote: 'Real power flow is controlled by the ANGLE between bus voltages; reactive power flow is controlled by their MAGNITUDES. That split holds because X ≫ R on transmission lines, and it is why phase-shifting transformers move MW while capacitor banks and tap changers move MVAR.',
+    },
+    {
+      id: 'txl-three-models',
+      title: '6. Three Models, One Line: Where Each Stops Being True',
+      content: `## 6.1 The line this section works with
+
+Everything below refers to one machine-checkable line: **230 kV, 60 Hz**, with
+per-kilometre constants
+
+$$z = 0.08 + j0.50\\ \\Omega/\\mathrm{km}, \\qquad y = j3.30\\times 10^{-6}\\ \\mathrm{S/km}$$
+
+From these two numbers everything else follows. The characteristic impedance
+and propagation constant are
+
+$$Z_{c} = \\sqrt{\\frac{z}{y}} = 391.72\\angle -4.545^\\circ\\ \\Omega, \\qquad \\gamma = \\sqrt{zy} = 1.0244\\times 10^{-4} + j1.28860\\times 10^{-3}\\ \\mathrm{km^{-1}}$$
+
+so **$\\alpha = 1.024\\times10^{-4}$ Np/km** and
+**$\\beta = 1.2886\\times 10^{-3}$ rad/km = 0.07383°/km**. The wavelength is
+**$2\\pi/\\beta = 4{,}876$ km**, a quarter of it 1,219 km — which is why no
+practical line reaches the quarter-wave point and why every real line sits on
+the gently curving first part of the hyperbolic functions.
+
+Dropping resistance gives the **surge impedance**, the number SIL is defined
+from:
+
+$$Z_{surge} = \\sqrt{x/b} = \\sqrt{0.50/3.30\\times10^{-6}} = 389.25\\ \\Omega, \\qquad \\mathrm{SIL} = \\frac{V_{LL}^{2}}{Z_{surge}} = \\frac{230^{2}}{389.25} = 135.9\\ \\mathrm{MW}$$
+
+| Quantity | Symbol | Value |
+|---|---|---|
+| Characteristic impedance | $Z_{c}$ | 391.72 ∠−4.545° Ω |
+| Surge impedance (lossless) | $Z_{surge}$ | 389.25 Ω |
+| Attenuation constant | $\\alpha$ | 1.024 × 10⁻⁴ Np/km |
+| Phase constant | $\\beta$ | 0.07383 °/km |
+| Wavelength | $\\lambda$ | 4,876 km |
+| Surge impedance loading | SIL | 135.9 MW |
+
+## 6.2 The three models, side by side
+
+Each model is an ABCD pair. The short line keeps only the series impedance;
+the nominal π splits the shunt admittance into two halves at the ends; the
+exact solution uses the hyperbolic functions of **$\\gamma\\ell$**:
+
+$$\\text{short:}\\quad A = 1,\\ B = Z, \\qquad \\text{nominal }\\pi:\\quad A = 1+\\frac{ZY}{2},\\ B = Z$$
+
+$$\\text{exact:}\\quad A = \\cosh(\\gamma\\ell),\\quad B = Z_{c}\\sinh(\\gamma\\ell),\\quad C = \\frac{\\sinh(\\gamma\\ell)}{Z_{c}}$$
+
+Load the line with **150 MW at 0.95 power factor lagging** and compare the
+sending-end voltage each model predicts.
+
+| Length | Exact V_S | Short-line error | Nominal-π error |
+|---|---|---|---|
+| 50 km | 238.0 kV | +0.20% | +0.003% |
+| 100 km | 246.0 kV | +0.78% | +0.03% |
+| 200 km | 261.4 kV | +2.93% | +0.21% |
+| 300 km | 275.7 kV | +6.24% | +0.72% |
+| 500 km | 298.4 kV | +15.97% | +3.31% |
+
+![Error in sending-end voltage from the short-line and nominal-pi models against line length, for a 150 megawatt load at 0.95 power factor on the study line. The short-line model passes one percent error at 114 kilometres and reaches 16 percent at 500 kilometres; the nominal-pi model does not reach one percent until 335 kilometres.](/courses/fe-ee/figures/pow2-txl-model-error.svg)
+
+The figure turns the usual rules of thumb into measured numbers. On this line
+the short-line model holds to 1 percent out to **114 km** and the nominal π to
+**335 km** — close to the textbook boundaries of 80 km and 250 km, and
+conservative in both cases because the textbook figures are stated for heavier
+loading and higher reactance per kilometre.
+
+### Worked example 6.1 — the same line at 300 km, exactly
+
+Compute the sending end of the 300 km line delivering 150 MW at 0.95 power
+factor lagging at 230 kV.
+
+**Step 1 — ABCD.** With **$\\gamma\\ell = 0.03073 + j0.38658$**,
+
+$$A = \\cosh(\\gamma\\ell) = 0.92671\\angle 0.717^\\circ, \\qquad B = Z_{c}\\sinh(\\gamma\\ell) = 148.18\\angle 81.14^\\circ\\ \\Omega$$
+
+$$C = \\frac{\\sinh(\\gamma\\ell)}{Z_{c}} = 9.657\\times10^{-4}\\angle 90.23^\\circ\\ \\mathrm{S}$$
+
+**Step 2 — currents and voltages.**
+**$I_{R} = 150\\times10^{6}/(\\sqrt{3}\\times 230{,}000\\times 0.95) = 396.35\\angle -18.19^\\circ$ A**, and
+**$V_{R} = 132{,}791\\angle 0^\\circ$ V** per phase, so
+
+$$V_{S} = AV_{R} + BI_{R} = 159{,}147\\angle 19.77^\\circ\\ \\mathrm{V} \\;\\Rightarrow\\; 275.65\\ \\mathrm{kV\\ line\\!-\\!to\\!-\\!line}$$
+
+$$I_{S} = CV_{R} + DI_{R} = 350.29\\angle 2.93^\\circ\\ \\mathrm{A}$$
+
+**Step 3 — power and loss.**
+**$P_{S} = 3\\,\\mathrm{Re}(V_{S}I_{S}^{*}) = 160.07$ MW**, so the loss is
+**10.07 MW** and the efficiency **93.71 percent**. The power angle is
+**19.77°**, comfortably inside the 30° practical limit.
+
+**Trap named.** The short-line model gives 292.9 kV here, 6.2 percent high.
+That error is larger than the entire voltage-regulation budget of a
+transmission system, which is why 300 km is emphatically not a short line.
+
+### Worked example 6.2 — regulation of the same line
+
+$$\\mathrm{VR} = \\frac{|V_{S}|/|A| - |V_{R}|}{|V_{R}|}\\times 100\\%$$
+
+The **$|A|$** in the denominator is the point: removing the load does not
+leave the receiving voltage at **$|V_{S}|$**, because the line's own shunt
+capacitance still divides it. Here
+
+$$\\mathrm{VR} = \\frac{275.65/0.92671 - 230}{230}\\times 100 = 29.33\\%$$
+
+A 29 percent regulation is unacceptable, and it is honest: an uncompensated
+300 km line loaded above SIL genuinely behaves that way. Real lines of this
+length carry series capacitors, shunt reactors, or both, and the exam question
+that follows this calculation is usually "what compensation is needed".
+
+## 6.3 Ferranti rise and the charging the line generates
+
+Open the far end and the load current vanishes, leaving
+**$V_{R} = V_{S}/A$**. Since **$|A| < 1$** for any line of appreciable length,
+the open end sits **above** the source:
+
+$$\\frac{V_{R,no\\ load}}{V_{S}} = \\frac{1}{|A|} \\approx \\frac{1}{\\cos(\\beta\\ell)}$$
+
+![Open-end voltage rise against line length in the upper panel and the reactive power the line generates in the lower panel. A 300 kilometre line rises to 1.0791 per unit, or 248.2 kilovolts on a 230 kilovolt base, and generates 52.4 megavars of charging that a shunt reactor must absorb; by 600 kilometres the rise is 39 percent and the charging is 105 megavars.](/courses/fe-ee/figures/pow2-txl-ferranti-length.svg)
+
+The lower panel gives the cause. A line is a distributed capacitor, and at no
+load it generates
+
+$$Q_{C} = V_{LL}^{2}\\,b\\,\\ell = (230\\times10^{3})^{2}(3.30\\times10^{-6})(300) = 52.4\\ \\mathrm{MVAR}$$
+
+with nowhere for that reactive power to go. It flows back through the source
+impedance, and reactive current flowing **into** a capacitance raises the
+voltage across it.
+
+### Worked example 6.3 — sizing a shunt reactor
+
+The 300 km line is to be energised from one end with the far end open, and the
+open-end voltage must not exceed 1.05 pu. How much shunt reactive absorption is
+needed at the open end?
+
+Uncompensated the rise is 1.0791 pu. A shunt reactor of susceptance
+**$B_{L}$** at the open end changes the terminal condition; to first order the
+compensation degree needed is the fraction of the line's own charging that must
+be cancelled. Requiring the effective **$\\beta\\ell$** to fall from 22.15° to
+the value that gives 1.05:
+
+$$\\cos(\\beta\\ell)_{new} = \\frac{1}{1.05} = 0.95238 \\;\\Rightarrow\\; (\\beta\\ell)_{new} = 17.75^\\circ$$
+
+$$\\text{compensation} = 1 - \\left(\\frac{17.75}{22.15}\\right)^{2} = 1 - 0.642 = 35.8\\%$$
+
+so roughly **$0.358\\times 52.4 = 18.8$ MVAR** of shunt reactor. The squared
+ratio appears because **$\\beta = \\omega\\sqrt{LC}$**, and cancelling a fraction
+of C reduces β by the square root of that fraction. Practical reactors on lines
+of this length are commonly rated 30 to 70 percent of line charging, which
+brackets this answer.
+
+### Worked example 6.4 — a genuinely short line, done the short way
+
+A 40 km, 138 kV feeder of **$z = 0.09 + j0.45\\ \\Omega/\\mathrm{km}$** delivers
+60 MW at 0.9 power factor lagging. Find the sending voltage, the regulation,
+and the efficiency.
+
+**$Z = 3.60 + j18.00 = 18.36\\angle 78.69^\\circ\\ \\Omega$** and
+**$I = 278.91\\angle -25.84^\\circ$ A**:
+
+$$V_{S} = 79{,}674 + (278.91\\angle -25.84^\\circ)(18.36\\angle 78.69^\\circ) = 82{,}867\\angle 2.82^\\circ\\ \\mathrm{V}$$
+
+giving **143.53 kV line-to-line** and a regulation of **4.01 percent**. The
+handbook approximation
+**$I(R\\cos\\phi + X\\sin\\phi) = 278.91(3.24 + 7.845) = 3{,}092$ V** per phase
+is 5.36 kV line-to-line against an exact 5.53 kV — 3 percent low, which at this
+length is entirely acceptable. Loss is
+**$3I^{2}R = 3(278.91)^{2}(3.60) = 0.840$ MW**, so efficiency is **98.62
+percent**. At 40 km the shunt admittance contributes nothing worth writing
+down, which is exactly what "short line" means.`,
+      examTip: 'Compute γℓ = √(zy)·ℓ first and look at it. If its magnitude is under about 0.1, every model agrees and you may use the short line. Between 0.1 and 0.5 the nominal π is right. Above 0.5 only the hyperbolic solution is defensible. That single number decides the model before any voltage is calculated.',
+      importantNote: 'Voltage regulation of a long line uses |V_S|/|A| as the no-load receiving voltage, not |V_S| itself. Omitting the division by |A| understates regulation by exactly the Ferranti rise — 7.9 percent on this 300 km line — and it is the single most common error in long-line questions.',
+    },
+    {
+      id: 'txl-limits-dispatch',
+      title: '7. Loading Limits, Losses, and Economic Dispatch',
+      content: `## 7.1 Three limits, and which one binds
+
+A transmission line has three independent ceilings, and which one binds depends
+almost entirely on length.
+
+- **Thermal.** Conductor temperature, hence sag and annealing. Independent of length. Binds on short lines.
+- **Voltage drop.** Typically 5 percent end to end. Binds on medium lines.
+- **Steady-state stability.** The angle **$\\delta$** must stay well below 90°, in practice 30–40°. Binds on long lines.
+
+The angle limit is computable directly from the ABCD parameters:
+
+$$P_{R} = \\frac{|V_{S}||V_{R}|}{|B|}\\sin\\delta - \\frac{|A||V_{R}|^{2}}{|B|}\\cos(\\theta_{B}-\\theta_{A})$$
+
+For a first estimate the second term is dropped and **$|B| \\approx X$**:
+
+$$P_{max} = \\frac{|V_{S}||V_{R}|}{|B|}, \\qquad P_{30^\\circ} = 0.5\\,P_{max}$$
+
+![Deliverable power in multiples of surge impedance loading against line length, for angle limits of 30, 40 and 90 degrees. The curves fall steeply with length: a 300 kilometre line can carry 1.31 times SIL at a 30 degree angle, a 400 kilometre line exactly 1.00 times SIL, and beyond 500 kilometres the line cannot even reach its own surge impedance loading within a 30 degree angle.](/courses/fe-ee/figures/pow2-txl-loadability.svg)
+
+| Length | \\|B\\| | P at δ = 30° | In SIL |
+|---|---|---|---|
+| 100 km | 50.50 Ω | 523.8 MW | 3.85 × |
+| 200 km | 100.16 Ω | 264.1 MW | 1.94 × |
+| 300 km | 148.18 Ω | 178.5 MW | 1.31 × |
+| 400 km | 193.75 Ω | 136.5 MW | 1.00 × |
+| 600 km | 274.63 Ω | 96.3 MW | 0.71 × |
+
+Read the last row. A 600 km line at a 30° angle limit cannot even deliver its
+own surge impedance loading — which is why very long ac lines are series
+compensated, and why beyond roughly 700 km high-voltage dc becomes the
+economic answer.
+
+### Worked example 7.1 — how much can this corridor carry?
+
+A 230 kV line has **$X = 60\\ \\Omega$**. Find the power transferred at
+**$\\delta = 25^\\circ$**, the theoretical maximum, and the angle at which the
+line carries 80 percent of maximum.
+
+$$P_{max} = \\frac{V_{S}V_{R}}{X} = \\frac{(230\\times10^{3})^{2}}{60} = 881.7\\ \\mathrm{MW}$$
+
+$$P(25^\\circ) = 881.7\\sin 25^\\circ = 372.6\\ \\mathrm{MW}$$
+
+$$\\sin\\delta = 0.80 \\;\\Rightarrow\\; \\delta = 53.13^\\circ$$
+
+**Trap named.** 53° is far past any operating limit. At 30° the line carries
+exactly half its theoretical maximum, and that halving is the price of
+stability margin — one of the few places in power engineering where the safety
+factor is visible as a clean factor of two.
+
+## 7.2 Loss, and the loading that minimises it
+
+Line loss is not simply proportional to load squared, because a lightly loaded
+line still carries charging current. Sweep the 300 km line at unity power
+factor:
+
+![Loss as a percentage of sending power in the upper panel and the ratio of sending to receiving voltage in the lower panel, both against loading in multiples of surge impedance loading for the 300 kilometre line at unity power factor. Loss has a minimum of about 2.6 percent near a quarter of SIL, rises to 5.8 percent at SIL and 10.6 percent at twice SIL; the voltage ratio passes through unity near two thirds of SIL.](/courses/fe-ee/figures/pow2-txl-loss-loading.svg)
+
+| Loading | Power | Loss | V_S / V_R |
+|---|---|---|---|
+| 0.25 × SIL | 34.0 MW | 2.59% | 0.947 |
+| 0.50 × SIL | 68.0 MW | 3.42% | 0.977 |
+| 1.00 × SIL | 135.9 MW | 5.82% | 1.059 |
+| 1.50 × SIL | 203.9 MW | 8.27% | 1.167 |
+| 2.00 × SIL | 271.8 MW | 10.63% | 1.294 |
+
+Two features repay attention. The loss **percentage has a minimum** near a
+quarter of SIL, because below that the fixed charging current dominates the
+much smaller load current. And the voltage ratio passes through unity at about
+0.66 × SIL, **not** at SIL — a useful correction to the usual statement.
+Terminating the line in its characteristic impedance **$Z_{c}$** (which draws
+134.6 MW and −10.7 MVAR here, not 135.9 MW at unity power factor) gives a rise
+of exactly **$e^{\\alpha\\ell} = 1.0312$**, the pure loss term. "Flat profile at
+SIL" is a lossless-line statement, and this is how far the real line departs
+from it.
+
+### Worked example 7.2 — loss on a 345 kV corridor
+
+A 345 kV line with 12 Ω of series resistance delivers 300 MW at 0.95 power
+factor lagging. Find the loss.
+
+$$I = \\frac{300\\times10^{6}}{\\sqrt{3}\\times 345\\times10^{3}\\times 0.95} = 528.47\\ \\mathrm{A}$$
+
+$$P_{loss} = 3I^{2}R = 3(528.47)^{2}(12) = 10.05\\ \\mathrm{MW} = 3.35\\%\\ \\text{of the delivered power}$$
+
+**Trap named.** Correcting the power factor to unity at the receiving end drops
+the current to 502.0 A and the loss to 9.07 MW — a 9.7 percent reduction in
+loss for no change in delivered real power. Loss scales with the square of
+**total** current, so it responds to reactive power exactly as it does to real.
+
+## 7.3 Economic dispatch: the equal-incremental-cost rule
+
+Once several generators can serve the same demand, the question becomes how to
+split it. Model each unit's fuel cost as a quadratic in output:
+
+$$C_{i}(P_{i}) = a_{i} + b_{i}P_{i} + c_{i}P_{i}^{2}\\ \\ \\text{per hour}, \\qquad \\lambda_{i} = \\frac{dC_{i}}{dP_{i}} = b_{i} + 2c_{i}P_{i}$$
+
+Minimising total cost subject to **$\\sum P_{i} = D$** with a Lagrange
+multiplier gives the classical result: **every unit not at a limit runs at the
+same incremental cost**.
+
+$$\\frac{dC_{1}}{dP_{1}} = \\frac{dC_{2}}{dP_{2}} = \\dots = \\lambda, \\qquad \\sum P_{i} = D$$
+
+A unit whose incremental cost at its minimum output already exceeds λ stays off;
+a unit that hits its maximum is held there and drops out of the equality.
+
+![Incremental cost lines of two generating units and the equal-lambda dispatch that serves 250 megawatts of demand. Unit one is the flatter and cheaper line and takes 160 megawatts; unit two takes 90; both meet at an incremental cost of 6.58 per megawatt hour, and the split costs 12.25 per hour less than sharing the demand equally.](/courses/fe-ee/figures/pow2-txl-dispatch-lambda.svg)
+
+### Worked example 7.3 — a two-unit dispatch
+
+Two units have
+
+$$C_{1} = 500 + 5.3P_{1} + 0.004P_{1}^{2}, \\qquad C_{2} = 400 + 5.5P_{2} + 0.006P_{2}^{2}$$
+
+in cost units per hour with P in MW. Dispatch 250 MW.
+
+Set the incremental costs equal:
+
+$$5.3 + 0.008P_{1} = 5.5 + 0.012P_{2}, \\qquad P_{1}+P_{2} = 250$$
+
+Substituting **$P_{1} = 250 - P_{2}$** gives
+**$5.3 + 2.0 - 0.008P_{2} = 5.5 + 0.012P_{2}$**, so **$0.020P_{2} = 1.80$** and
+
+$$P_{2} = 90\\ \\mathrm{MW}, \\qquad P_{1} = 160\\ \\mathrm{MW}, \\qquad \\lambda = 5.3 + 0.008(160) = 6.58$$
+
+Total cost is **$C_{1}(160) + C_{2}(90) = 1{,}450.4 + 943.6 = 2{,}394.0$** per
+hour. Splitting the demand equally at 125 MW each costs **2,406.25** — the
+optimal dispatch saves **12.25 per hour**, or about 107,000 per year of
+continuous operation.
+
+### Worked example 7.4 — when a limit binds
+
+Take **$C_{1} = 200 + 7.0P_{1} + 0.008P_{1}^{2}$** and
+**$C_{2} = 300 + 6.4P_{2} + 0.005P_{2}^{2}$**, dispatch 180 MW, and impose a
+100 MW maximum on unit 2.
+
+**Unconstrained:** **$7.0 + 0.016P_{1} = 6.4 + 0.010P_{2}$** with
+**$P_{1}+P_{2}=180$** gives
+
+$$0.026P_{2} = 0.016(180)+0.6 = 3.48 \\;\\Rightarrow\\; P_{2} = 133.85\\ \\mathrm{MW}, \\quad P_{1} = 46.15\\ \\mathrm{MW}$$
+
+at **$\\lambda = 7.738$**, costing 1,786.31 per hour. But unit 2 cannot exceed
+100 MW. **Constrained:** hold **$P_{2} = 100$** and let unit 1 take the rest:
+
+$$P_{1} = 80\\ \\mathrm{MW}, \\quad \\lambda_{1} = 7.0+0.016(80) = 8.28, \\quad \\lambda_{2} = 6.4+0.010(100) = 7.40$$
+
+costing 1,801.20 per hour. The incremental costs are now **unequal**, and that
+is correct: λ₂ < λ₁ means unit 2 would be cheaper on the margin but is not
+allowed to grow. The 14.89 per hour difference is the shadow price of that
+limit. **Trap named.** Reporting unequal incremental costs as an error is the
+mistake; the equal-λ rule applies only to units strictly between their limits.`,
+      examTip: 'Economic dispatch questions are two linear equations: set the incremental costs equal, and set the outputs to sum to demand. Solve, then CHECK each output against its limits. If one violates a limit, pin it there and re-solve with the remaining units — that second step is where most of the marks sit.',
+      importantNote: 'Line loss responds to total current, so it depends on reactive power as much as on real power. Correcting a 300 MW load from 0.95 power factor to unity cuts the loss by 9.7 percent while delivering exactly the same megawatts, which is why loss reduction is one of the standard justifications for capacitor banks.',
+    },
+    {
+      id: 'txl-problem-set-a',
+      title: '8. Problem Set A: Parameters, Models, and Voltage Drop',
+      content: `The first three problems are short-line arithmetic; the last three
+test whether the long-line constants mean anything to you.
+
+## 8. Problem Set A — line parameters and model choice
+
+### The problems
+
+**A1.** A 40 km, 138 kV feeder has **$z = 0.09 + j0.45\\ \\Omega/\\mathrm{km}$**
+and delivers 60 MW at 0.9 power factor lagging. Find the sending-end
+line-to-line voltage and the voltage regulation.
+
+**A2.** For the same feeder, compare the exact voltage drop with the
+approximation **$I(R\\cos\\phi + X\\sin\\phi)$**, and find the line loss and
+efficiency.
+
+**A3.** A 345 kV line has **$x = 0.48\\ \\Omega/\\mathrm{km}$** and
+**$b = 3.4\\times10^{-6}\\ \\mathrm{S/km}$**. Find its surge impedance and SIL.
+
+**A4.** For the same line, find β in degrees per kilometre, the electrical
+length of a 400 km section, and the wavelength.
+
+**A5.** A line has β = 0.0739 °/km. Find the open-end voltage rise of a 250 km
+section.
+
+**A6.** Find the reactive power generated by a 180 km section of the 345 kV
+line of A3 at no load.
+
+### Solutions
+
+**A1.** **$Z = 40(0.09+j0.45) = 3.60+j18.00 = 18.36\\angle 78.69^\\circ\\ \\Omega$**
+and **$I = 60\\times10^{6}/(\\sqrt{3}\\times138{,}000\\times0.9) = 278.91\\angle -25.84^\\circ$ A**.
+
+$$V_{S} = 79{,}674 + (278.91\\angle -25.84^\\circ)(18.36\\angle 78.69^\\circ) = 82{,}867\\ \\mathrm{V/phase}$$
+
+so **143.53 kV** line-to-line and **VR = 4.01 percent**. *Distractor:* using
+138 kV as the phase voltage inflates every result by √3.
+
+**A2.** Approximate drop per phase:
+
+$$I(R\\cos\\phi + X\\sin\\phi) = 278.91\\left(3.60(0.9)+18.00(0.436)\\right) = 3{,}092\\ \\mathrm{V}$$
+
+or 5.36 kV line-to-line, against an exact 5.53 kV — 3.1 percent low. Loss is
+**$3(278.91)^{2}(3.60) = 0.840$ MW**, so
+
+$$\\eta = \\frac{60.00}{60.84} = 98.62\\%$$
+
+*Distractor:* computing loss as **$I^{2}R$** rather than **$3I^{2}R$** gives
+0.280 MW and an efficiency of 99.5 percent.
+
+**A3.**
+
+$$Z_{surge} = \\sqrt{\\frac{0.48}{3.4\\times10^{-6}}} = 375.73\\ \\Omega, \\qquad \\mathrm{SIL} = \\frac{345^{2}}{375.73} = 316.8\\ \\mathrm{MW}$$
+
+*Distractor:* using the line-to-neutral voltage gives 105.6 MW, a third of the
+right answer. SIL always uses line-to-line kV.
+
+**A4.**
+
+$$\\beta = \\sqrt{xb} = \\sqrt{0.48\\times3.4\\times10^{-6}} = 1.2775\\times10^{-3}\\ \\mathrm{rad/km} = 0.07320\\ ^\\circ/\\mathrm{km}$$
+
+A 400 km section is **29.28° electrical**, and the wavelength is
+**$2\\pi/\\beta = 4{,}918$ km**. *Distractor:* leaving β in radians and calling
+0.511 the electrical "degrees" of the 400 km section.
+
+**A5.** **$\\beta\\ell = 0.0739\\times250 = 18.475^\\circ$**, so
+
+$$\\frac{V_{R}}{V_{S}} = \\frac{1}{\\cos 18.475^\\circ} = 1.0543 \\;\\Rightarrow\\; 5.43\\%\\ \\text{rise}$$
+
+*Distractor:* using **$\\cos(\\beta\\ell)$** rather than its reciprocal reports a
+5.2 percent **drop**, the wrong sign entirely.
+
+**A6.**
+
+$$Q_{C} = V_{LL}^{2}b\\ell = (345\\times10^{3})^{2}(3.4\\times10^{-6})(180) = 72.84\\ \\mathrm{MVAR}$$
+
+*Distractor:* using **$\\omega C$** with C in farads per kilometre without
+converting; b is already the susceptance per kilometre.`,
+      examTip: 'Every quantity in this set comes from just four line constants — r, x, b and length. Write those four down, form z and y, and compute γ and Z_c once. Nine out of ten transmission questions are then a substitution.',
+      importantNote: 'SIL, surge impedance and the Ferranti ratio are all LOSSLESS quantities: they use x and b only. Resistance enters the loss and the efficiency, and it shifts the exact answers by a fraction of a percent, but it never appears in the definition of SIL.',
+    },
+    {
+      id: 'txl-problem-set-b',
+      title: '9. Problem Set B: Power Flow, Limits, and Dispatch',
+      content: `These six move from the line itself to the system decisions the line
+forces: how much can flow, what it costs, and which machine should make it.
+
+## 9. Problem Set B — power transfer and economic dispatch
+
+### The problems
+
+**B1.** A 230 kV line has 60 Ω of series reactance. Find the power transferred
+at a 25° angle and the theoretical maximum.
+
+**B2.** At what angle does that line carry 80 percent of its maximum, and what
+fraction does it carry at the practical 30° limit?
+
+**B3.** A long line has **$A = 0.93\\angle 0.7^\\circ$** and
+**$B = 150\\angle 81^\\circ\\ \\Omega$**, and is operated with a sending voltage
+of 1.05 pu on a 230 kV base with 230 kV at the receiving end on load. Find the
+no-load receiving voltage and the voltage regulation.
+
+**B4.** A 345 kV line with 12 Ω of series resistance delivers 300 MW at 0.95
+power factor lagging. Find the loss, and the loss if the power factor were
+corrected to unity at the receiving end.
+
+**B5.** Two units have **$C_{1} = 200 + 7.0P_{1} + 0.008P_{1}^{2}$** and
+**$C_{2} = 300 + 6.4P_{2} + 0.005P_{2}^{2}$** per hour. Dispatch 150 MW
+economically and find the saving over an equal split.
+
+**B6.** Repeat B5 for 180 MW of demand with unit 2 limited to 100 MW.
+
+### Solutions
+
+**B1.**
+
+$$P_{max} = \\frac{(230\\times10^{3})^{2}}{60} = 881.7\\ \\mathrm{MW}, \\qquad P(25^\\circ) = 881.7\\sin 25^\\circ = 372.6\\ \\mathrm{MW}$$
+
+*Distractor:* using line-to-neutral voltage gives 293.9 MW. The formula
+**$V_{S}V_{R}/X$** takes line-to-line voltages and returns three-phase power.
+
+**B2.** **$\\delta = \\arcsin 0.80 = 53.13^\\circ$**, and at 30° the line carries
+**$\\sin 30^\\circ = 0.500$**, exactly half of maximum. *Distractor:* reading
+"80 percent of maximum" as "an 80 percent angle", 72°.
+
+**B3.** No-load receiving voltage:
+
+$$V_{R,nl} = \\frac{|V_{S}|}{|A|} = \\frac{1.05\\times 230}{0.93} = 259.68\\ \\mathrm{kV}$$
+
+$$\\mathrm{VR} = \\frac{259.68-230}{230}\\times 100 = 12.90\\%$$
+
+*Distractor:* using 1.05 × 230 = 241.5 kV as the no-load value gives 5.0
+percent and forgets that the line's own capacitance raises it further.
+
+**B4.** At 0.95 power factor,
+**$I = 300\\times10^{6}/(\\sqrt{3}\\times345{,}000\\times0.95) = 528.47$ A**:
+
+$$P_{loss} = 3(528.47)^{2}(12) = 10.05\\ \\mathrm{MW}$$
+
+At unity power factor **$I = 502.04$ A** and the loss is **9.07 MW**, a
+**9.75 percent** reduction. *Distractor:* assuming loss is unchanged because
+the megawatts are unchanged — the current is not.
+
+**B5.** Equal incremental cost:
+
+$$7.0 + 0.016P_{1} = 6.4 + 0.010P_{2}, \\qquad P_{1}+P_{2} = 150$$
+
+$$0.026P_{2} = 0.016(150)+0.6 = 3.00 \\;\\Rightarrow\\; P_{2} = 115.38,\\ P_{1} = 34.62\\ \\mathrm{MW}$$
+
+with **$\\lambda = 7.554$** and a total cost of **1,556.92** per hour against
+**1,578.13** for an equal split — a saving of **21.20 per hour**.
+*Distractor:* dispatching by average cost rather than incremental cost, which
+loads the wrong machine because the constant terms are irrelevant to the split.
+
+**B6.** Unconstrained the answer is **$P_{2} = 133.85$ MW**, above the 100 MW
+limit. Pin unit 2 at 100 MW and give unit 1 the remainder:
+
+$$P_{1} = 80\\ \\mathrm{MW}, \\qquad \\lambda_{1} = 8.28, \\qquad \\lambda_{2} = 7.40$$
+
+Total cost **1,801.20** per hour, against 1,786.31 if the limit did not exist.
+*Distractor:* forcing the incremental costs to stay equal by reducing unit 1
+as well, which fails to meet the 180 MW demand. Once a unit is at a limit it
+leaves the equality, and the remaining units absorb the balance.`,
+      examTip: 'Recognise the shape of the question. "Angle given, find power" is one sine. "Power given, find angle" is one arcsine. "Two units, one demand" is two linear equations. None of the three needs more than four lines of algebra, and all three are heavily represented.',
+      importantNote: 'The equal-incremental-cost rule holds only for units operating strictly between their limits. A unit at its maximum has a LOWER incremental cost than the others and a unit at its minimum has a HIGHER one; both situations are correct optima, not errors to be corrected.',
     },
   ],
   keyTakeaways: [
