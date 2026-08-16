@@ -3699,8 +3699,13 @@ Q also represents energy stored vs. energy dissipated per cycle:
 
 The bandwidth is the frequency range between the **-3 dB points** (half-power points):
 
-- Lower cutoff: $f_{1}$ = $f_{0}$ - BW/2
-- Upper cutoff: $f_{2}$ = $f_{0}$ + BW/2
+- Lower cutoff: $f_{1} \\approx f_{0} - BW/2$
+- Upper cutoff: $f_{2} \\approx f_{0} + BW/2$
+
+Those two are the **high-Q approximation**, not identities. What is exact is that
+$f_{2} - f_{1} = BW$ and that $f_{0} = \\sqrt{f_{1}f_{2}}$, the geometric mean.
+Section 6 derives the exact cutoffs and shows how far the approximation drifts
+once Q falls below about 5.
 
 At the -3 dB points:
 - Power is **half** of peak power
@@ -3894,6 +3899,715 @@ calculation and a design.`,
         },
       ],
     },
+    {
+      id: 'res-impedance',
+      title: '5. Resonance Derived from the Impedance Function',
+      content: `Resonance is usually introduced as a rule — set the two reactances
+equal — and the rule is correct, but it hides where the interesting behaviour
+comes from. Every quantity in this chapter, the resonant frequency, the quality
+factor, the bandwidth and the phase reversal, falls out of one complex function
+of frequency. Deriving them together is faster than memorising them separately,
+and it makes the parallel case free rather than a second thing to learn.
+
+## 5.1 One function, everything in it
+
+A series RLC branch has impedance
+
+$$Z(j\\omega) = R + j\\omega L + \\frac{1}{j\\omega C} = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right)$$
+
+The real part is fixed; the imaginary part is a difference of two terms that move
+in opposite directions with frequency. Write the net reactance as $X(\\omega)$:
+
+$$X(\\omega) = \\omega L - \\frac{1}{\\omega C}, \\qquad \\lvert Z \\rvert = \\sqrt{R^2 + X^2}, \\qquad \\theta = \\arctan \\frac{X}{R}$$
+
+Three consequences follow immediately and need no further physics. The magnitude
+is smallest where $X = 0$, because a sum of squares is minimised by killing the
+term that can be killed. The angle is zero at the same place, so the branch looks
+purely resistive there. And setting $X = 0$ gives the resonant frequency:
+
+$$\\omega L = \\frac{1}{\\omega C} \\;\\Longrightarrow\\; \\omega_0 = \\frac{1}{\\sqrt{LC}}, \\qquad f_0 = \\frac{1}{2\\pi \\sqrt{LC}}$$
+
+Both $R$ and the source are absent from that result. Damping changes the shape of
+the response around resonance and can never move it.
+
+## 5.2 The two reactances, drawn
+
+Take $R = 30$ ohm, $L = 100$ mH and $C = 20$ microfarad — the same components the
+second-order transient work uses, so the two chapters describe one circuit.
+
+$$f_0 = \\frac{1}{2\\pi \\sqrt{(0.100)(20 \\times 10^{-6})}} = \\frac{1}{2\\pi (1.414 \\times 10^{-3})} = 112.54\\ \\text{Hz}$$
+
+![Inductive reactance rising linearly and capacitive reactance falling as one over frequency on logarithmic axes, crossing at 112.5 hertz, with the magnitude of the series impedance dipping to the 30 ohm resistance at that crossing.](/courses/fe-ee/figures/ckt2-reactance-vs-f.svg)
+
+On logarithmic axes $X_L = 2\\pi f L$ is a straight line of slope $+1$ and
+$X_C = 1/(2\\pi f C)$ a straight line of slope $-1$. They cross once, and only
+once, which is why a series RLC has exactly one resonant frequency. Below the
+crossing $X_C$ dominates and the branch is **capacitive**; above it the branch is
+**inductive**. The $\\lvert Z \\rvert$ curve tracks whichever reactance is larger
+and dips to touch $R$ at the crossing.
+
+## 5.3 Worked example 1 — resonance from the impedance function
+
+For that circuit driven by 12 V rms, find the resonant frequency, the reactances
+there, the current, and the voltage across each element.
+
+$$\\omega_0 = \\frac{1}{\\sqrt{2 \\times 10^{-6}}} = 707.1\\ \\text{rad/s} \\;\\Rightarrow\\; f_0 = 112.54\\ \\text{Hz}$$
+
+$$X_L = \\omega_0 L = 707.1 \\times 0.100 = 70.71\\ \\Omega, \\qquad X_C = \\frac{1}{\\omega_0 C} = \\frac{1}{707.1 \\times 20 \\times 10^{-6}} = 70.71\\ \\Omega$$
+
+Equal, as they must be — computing both is the fastest check that $LC$ was
+inverted correctly. Note that their common value is
+$\\sqrt{L/C} = \\sqrt{5000} = 70.71$ ohm, the characteristic impedance, which is
+the same quantity that set the critical damping resistance in the transient
+chapter.
+
+$$\\lvert Z \\rvert = R = 30\\ \\Omega, \\qquad I = \\frac{12}{30} = 0.400\\ \\text{A}$$
+
+$$V_R = 12\\ \\text{V}, \\qquad V_L = V_C = 0.400 \\times 70.71 = 28.28\\ \\text{V}$$
+
+The reactive voltages exceed the source by the factor $70.71/30 = 2.357$, which
+is the quality factor, and they cancel in the loop because they are 180 degrees
+apart.
+
+## 5.4 The angle, and what the half-power edges really are
+
+The magnitude tells you how much current flows; the angle tells you what kind of
+load the source sees. Sweeping it produces a curve that is the same shape for
+every series RLC:
+
+![Impedance angle of a series RLC swept on a logarithmic frequency axis, running from minus ninety degrees at low frequency through zero at 112.5 hertz to plus ninety degrees at high frequency, with the plus and minus forty-five degree crossings marked at 138.9 and 91.2 hertz.](/courses/fe-ee/figures/ckt2-impedance-angle.svg)
+
+The $\\pm 45$ degree crossings are not an arbitrary choice of marker. The angle is
+45 degrees exactly when $\\lvert X \\rvert = R$, and at that condition
+
+$$\\lvert Z \\rvert = \\sqrt{R^2 + R^2} = R\\sqrt{2}$$
+
+so the current is $1/\\sqrt{2}$ of its peak and the power is half. **The
+half-power frequencies and the 45 degree phase frequencies are the same two
+frequencies.** That equivalence is worth carrying, because a question that gives
+you a phase angle has silently given you a bandwidth edge.
+
+## 5.5 Worked example 2 — the impedance angle away from resonance
+
+For the same circuit, find the impedance and angle at 60 Hz, and the two
+frequencies at which the angle reaches $\\pm 45$ degrees.
+
+$$X_L = 2\\pi (60)(0.100) = 37.70\\ \\Omega, \\qquad X_C = \\frac{1}{2\\pi (60)(20 \\times 10^{-6})} = 132.63\\ \\Omega$$
+
+$$X = 37.70 - 132.63 = -94.93\\ \\Omega, \\qquad \\lvert Z \\rvert = \\sqrt{30^2 + 94.93^2} = 99.56\\ \\Omega$$
+
+$$\\theta = \\arctan \\frac{-94.93}{30} = -72.46^{\\circ}$$
+
+Negative, so the circuit is capacitive at 60 Hz and the current **leads**. The
+current has fallen from 0.400 A at resonance to $12/99.56 = 0.121$ A, a factor of
+3.32, from a frequency change of less than a factor of two.
+
+For the 45 degree points set $\\lvert X \\rvert = R = 30$ ohm. Writing
+$\\alpha = R/2L = 150$ s$^{-1}$, the two roots of
+$\\omega^2 \\mp (R/L)\\omega - \\omega_0^2 = 0$ are
+
+$$\\omega_{1,2} = \\mp \\alpha + \\sqrt{\\alpha^2 + \\omega_0^2} = \\mp 150 + \\sqrt{22500 + 500000} = \\mp 150 + 722.8$$
+
+giving 572.8 and 872.8 rad/s, i.e. **91.17 Hz and 138.92 Hz**. Their difference
+is exactly $2\\alpha = 300$ rad/s, which is $R/L$, and that is the bandwidth.
+
+## 5.6 The quality factor, three definitions that agree
+
+Q is defined three different ways in three different places, and the definitions
+are equivalent rather than merely similar. For a series circuit:
+
+$$Q = \\frac{\\omega_0 L}{R} = \\frac{1}{\\omega_0 R C} = \\frac{1}{R}\\sqrt{\\frac{L}{C}}$$
+
+The **reactance form** is the first: Q is the ratio of the reactance at
+resonance to the resistance. The **bandwidth form** follows from the half-power
+derivation above:
+
+$$Q = \\frac{\\omega_0}{BW} = \\frac{f_0}{f_2 - f_1}$$
+
+The **energy form** is the most general, and the only one that survives outside
+electrical circuits:
+
+$$Q = 2\\pi \\times \\frac{\\text{energy stored}}{\\text{energy dissipated per cycle}}$$
+
+They agree because at resonance the total stored energy is constant — it merely
+shuttles between the inductor and the capacitor — while the resistor removes a
+fixed amount each cycle. There is also a fourth form, useful when the circuit is
+not a textbook RLC at all, in terms of the slope of the reactance curve:
+
+$$Q = \\frac{\\omega_0}{2R}\\left. \\frac{dX}{d\\omega} \\right|_{\\omega_0}$$
+
+A steeply crossing reactance curve is a high-Q circuit, which is exactly what the
+figure in section 5.2 shows geometrically.
+
+## 5.7 Worked example 3 — Q by three independent routes
+
+Confirm that the three definitions give one number for the 30 ohm, 100 mH,
+20 microfarad circuit driven at 12 V rms.
+
+**Reactance route.**
+
+$$Q = \\frac{\\omega_0 L}{R} = \\frac{707.1 \\times 0.100}{30} = 2.357$$
+
+**Bandwidth route.** From the half-power frequencies just computed,
+
+$$Q = \\frac{f_0}{f_2 - f_1} = \\frac{112.54}{138.92 - 91.17} = \\frac{112.54}{47.75} = 2.357$$
+
+**Energy route.** At resonance the current is 0.400 A rms, so its peak is
+$0.400\\sqrt{2} = 0.5657$ A and the peak energy in the inductor is
+
+$$W = \\tfrac{1}{2}L\\,i_{\\text{pk}}^2 = 0.5 (0.100)(0.5657)^2 = 16.0\\ \\text{mJ}$$
+
+Half a cycle later that same 16.0 mJ sits in the capacitor, whose peak voltage is
+$0.400 \\times 70.71 \\times \\sqrt{2} = 40.0$ V and whose stored energy is
+$\\tfrac{1}{2}CV^2 = 16.0$ mJ — the same number, which is the whole point of
+resonance. Meanwhile the resistor dissipates
+
+$$P = I^2 R = (0.400)^2 (30) = 4.80\\ \\text{W} \\;\\Rightarrow\\; W_{\\text{cycle}} = \\frac{P}{f_0} = \\frac{4.80}{112.54} = 42.65\\ \\text{mJ}$$
+
+$$Q = 2\\pi \\frac{16.0}{42.65} = 2.357$$
+
+Three routes, three different physical arguments, one number to four figures. If
+an exam question gives you any one of reactance, bandwidth or energy, it has
+given you Q.`,
+      examTip: 'Setting the net reactance to zero gives the resonant frequency; setting its magnitude equal to R gives BOTH half-power frequencies. Almost every series-resonance question is one of those two conditions in disguise.',
+      importantNote: 'The half-power frequencies and the 45-degree phase frequencies are identical, because |X| = R makes |Z| = R·sqrt(2) and the phase 45 degrees at the same instant. A question phrased in phase angle is a bandwidth question.',
+    },
+    {
+      id: 'res-bandwidth',
+      title: '6. Bandwidth, Exact Half-Power Frequencies and Loaded Q',
+      content: `Bandwidth is where resonance questions get their distractors, because
+there are two formulas in circulation and only one of them is exact. This section
+derives the exact pair, shows what the common approximation costs, and then takes
+the step that separates a calculation from a design: the Q you get is not the Q
+you specify, because the load is part of the circuit.
+
+## 6.1 The exact half-power frequencies
+
+Half power means $\\lvert Z \\rvert = R\\sqrt{2}$, hence $\\lvert X \\rvert = R$:
+
+$$\\left\\lvert \\omega L - \\frac{1}{\\omega C} \\right\\rvert = R$$
+
+Clearing the fraction gives two quadratics in $\\omega$, whose positive roots are
+
+$$\\omega_1 = -\\frac{R}{2L} + \\sqrt{\\left(\\frac{R}{2L}\\right)^2 + \\frac{1}{LC}}, \\qquad \\omega_2 = +\\frac{R}{2L} + \\sqrt{\\left(\\frac{R}{2L}\\right)^2 + \\frac{1}{LC}}$$
+
+Two exact consequences drop straight out. Subtracting:
+
+$$\\omega_2 - \\omega_1 = \\frac{R}{L} = \\frac{\\omega_0}{Q} \\quad \\text{(bandwidth, exactly)}$$
+
+Multiplying, since the radical terms cancel against the squares:
+
+$$\\omega_1 \\omega_2 = \\frac{1}{LC} = \\omega_0^2 \\;\\Longrightarrow\\; \\omega_0 = \\sqrt{\\omega_1 \\omega_2} \\quad \\text{(geometric mean, exactly)}$$
+
+In terms of Q alone the pair is often written
+
+$$\\omega_{1,2} = \\omega_0 \\left[\\sqrt{1 + \\frac{1}{4Q^2}} \\mp \\frac{1}{2Q}\\right]$$
+
+The bracketed radical is the entire difference between the exact answer and the
+familiar $\\omega_0 \\pm BW/2$. At $Q = 10$ it equals 1.00125, a 0.125 % shift; at
+$Q = 2$ it equals 1.0308.
+
+## 6.2 What the approximation costs
+
+Compare exact against approximate for the 30 ohm circuit of section 5, where
+$Q = 2.357$:
+
+| Quantity | Exact | $f_0 \\pm BW/2$ | Error |
+|---|---|---|---|
+| $f_1$ | 91.17 Hz | 88.67 Hz | 2.7 % low |
+| $f_2$ | 138.92 Hz | 136.41 Hz | 1.8 % low |
+| $f_2 - f_1$ | 47.75 Hz | 47.75 Hz | none |
+| centre of the band | 115.04 Hz | 112.54 Hz | 2.2 % high |
+
+The bandwidth is right either way. What the approximation gets wrong is the
+*placement* of the band: the true half-power frequencies are not symmetric about
+$f_0$ on a linear axis, they are symmetric about it on a logarithmic one. The
+arithmetic mean of the true edges is 115.04 Hz, which sits 2.2 % above $f_0$, and
+that gap is exactly the radical above.
+
+## 6.3 Worked example 4 — exact half-power frequencies at Q = 5
+
+Keep $L = 100$ mH and $C = 20$ microfarad but reduce the resistance to
+$R = 14.14$ ohm. Find Q, the bandwidth, and both half-power frequencies exactly.
+
+$$Q = \\frac{\\omega_0 L}{R} = \\frac{70.71}{14.14} = 5.000, \\qquad BW = \\frac{f_0}{Q} = \\frac{112.54}{5} = 22.51\\ \\text{Hz}$$
+
+$$\\sqrt{1 + \\frac{1}{4(25)}} = \\sqrt{1.01} = 1.004988$$
+
+$$f_1 = 112.54(1.004988 - 0.1) = 101.85\\ \\text{Hz}, \\qquad f_2 = 112.54(1.004988 + 0.1) = 124.35\\ \\text{Hz}$$
+
+![One resonance curve for a quality factor of five, with the half-power band shaded between 101.8 and 124.4 hertz, the 0.707 line drawn across it, and the note that 112.5 hertz is the geometric mean of the two edges.](/courses/fe-ee/figures/ckt2-halfpower-band.svg)
+
+Check both exact identities: the difference is
+$124.35 - 101.85 = 22.51$ Hz, matching $f_0/Q$; and the geometric mean is
+$\\sqrt{101.85 \\times 124.35} = 112.54$ Hz, matching $f_0$. The approximation
+would have given 101.29 and 123.79 Hz, each 0.55 % low — small enough to be
+invisible at this Q, which is precisely why the exam sets problems at Q near 2
+instead.
+
+## 6.4 What Q buys, drawn three times
+
+Holding $L$ and $C$ fixed and changing only $R$ moves nothing except the width:
+
+![Three series-RLC current responses normalised to their own peaks for quality factors of two, five and fifteen, all peaking at 112.5 hertz, with bandwidths of 56.3, 22.5 and 7.5 hertz respectively.](/courses/fe-ee/figures/ckt2-resonance-q.svg)
+
+| Q | $R$ required | BW | Half-power edges |
+|---|---|---|---|
+| 2 | 35.36 $\\Omega$ | 56.27 Hz | 87.1 and 143.4 Hz |
+| 5 | 14.14 $\\Omega$ | 22.51 Hz | 101.8 and 124.4 Hz |
+| 15 | 4.71 $\\Omega$ | 7.50 Hz | 108.9 and 116.4 Hz |
+
+The trade is not negotiable. Selectivity and speed are the same quantity seen in
+two domains: a bandwidth of $BW$ rad/s corresponds to an envelope time constant
+of $2/BW$ seconds, so the Q = 15 circuit that rejects a neighbouring station
+cleanly also takes fifteen times as long to settle after a change. The transient
+chapter's $\\zeta$ and this chapter's Q are the same parameter written twice:
+
+$$Q = \\frac{1}{2\\zeta}$$
+
+so $Q = 0.5$ is critical damping, $Q$ below 0.5 is overdamped, and every resonant
+circuit worth the name is underdamped.
+
+## 6.5 Worked example 5 — geometric mean, tested where it matters
+
+A circuit's half-power frequencies are measured at 91.17 Hz and 138.92 Hz. Find
+the resonant frequency and the quality factor.
+
+$$f_0 = \\sqrt{f_1 f_2} = \\sqrt{91.17 \\times 138.92} = \\sqrt{12665} = 112.54\\ \\text{Hz}$$
+
+$$BW = 138.92 - 91.17 = 47.75\\ \\text{Hz}, \\qquad Q = \\frac{112.54}{47.75} = 2.357$$
+
+*The trap.* The arithmetic mean gives 115.04 Hz and a Q of 2.409 — both wrong by
+about 2 %, which sounds negligible until you notice the exam offers both numbers
+as choices. At Q = 10 the two means differ by 0.12 % and either would round to
+the same answer; the questions that test this are always written at low Q, and
+recognising a low-Q setup is the cue to use the geometric mean deliberately.
+
+## 6.6 Loaded Q: the Q you get is not the Q you asked for
+
+Everything so far assumed the resonant circuit is alone. It never is. A tuned
+circuit feeds something, and whatever it feeds appears as an additional
+resistance that dissipates energy — which is to say, it lowers Q and widens the
+bandwidth. The distinction has names:
+
+- **Unloaded Q**, written $Q_u$, is set by the circuit's own losses, in practice
+  almost entirely the inductor's winding resistance.
+- **Loaded Q**, written $Q_L$, includes the source and load resistances the tank
+  actually sees.
+
+For a parallel tank the resistances combine in parallel, so the effect is easy to
+compute and easy to underestimate:
+
+$$Q_L = R_{\\text{total}}\\sqrt{\\frac{C}{L}}, \\qquad \\frac{1}{R_{\\text{total}}} = \\frac{1}{R_{\\text{dyn}}} + \\frac{1}{R_{\\text{load}}}$$
+
+A real inductor with winding resistance $R_w$ in series presents, at resonance, a
+finite equivalent parallel resistance:
+
+$$R_{\\text{dyn}} = \\frac{L}{R_w C} = Q_u^2 R_w$$
+
+which is the number a tuned amplifier stage actually works into.
+
+## 6.7 Worked example 6 — a practical tank, unloaded and loaded
+
+A coil of 50 microhenry with 4 ohm of winding resistance is tuned by 200
+picofarad. Find the resonant frequency, the unloaded Q, the dynamic resistance
+and the unloaded bandwidth. Then load the tank with 25 kilohm and repeat.
+
+$$\\omega_0 = \\frac{1}{\\sqrt{(50 \\times 10^{-6})(200 \\times 10^{-12})}} = \\frac{1}{\\sqrt{10^{-14}}} = 10^{7}\\ \\text{rad/s} \\;\\Rightarrow\\; f_0 = 1.592\\ \\text{MHz}$$
+
+$$Q_u = \\frac{\\omega_0 L}{R_w} = \\frac{10^{7} \\times 50 \\times 10^{-6}}{4} = \\frac{500}{4} = 125$$
+
+$$R_{\\text{dyn}} = \\frac{L}{R_w C} = \\frac{50 \\times 10^{-6}}{(4)(200 \\times 10^{-12})} = 62.5\\ \\text{k}\\Omega$$
+
+which agrees with $Q_u^2 R_w = 125^2 \\times 4 = 62.5$ kilohm, as it must. The
+unloaded bandwidth is $f_0/Q_u = 1.592 \\times 10^{6}/125 = $ **12.73 kHz**.
+
+Now connect a 25 kilohm load across the tank:
+
+$$R_{\\text{total}} = \\frac{62.5 \\times 25}{62.5 + 25} = 17.86\\ \\text{k}\\Omega, \\qquad Q_L = 17857\\sqrt{\\frac{200 \\times 10^{-12}}{50 \\times 10^{-6}}} = 17857 \\times 0.002 = 35.7$$
+
+$$BW_L = \\frac{1.592 \\times 10^{6}}{35.7} = 44.56\\ \\text{kHz}$$
+
+The load, which is larger than the tank's own dynamic resistance, has still cut Q
+by a factor of 3.5 and widened the band by the same factor. That is the practical
+message: a specification quoted as an unloaded Q is close to meaningless, and a
+filter that measures beautifully on the bench will not do so once it drives
+anything. The design fix is impedance transformation — a tapped coil or a
+capacitive divider — which presents the load to the tank as a larger resistance
+than it really is.`,
+      examTip: 'Bandwidth is exactly f0/Q and exactly R/L in rad/s for a series circuit; the half-power FREQUENCIES are only approximately f0 ± BW/2. When a question gives you both edges, always recover f0 as their geometric mean.',
+      importantNote: 'Adding a load resistance always lowers Q and widens the bandwidth, never the reverse. If a computed loaded Q comes out higher than the unloaded Q, a parallel combination has been done as a series one.',
+    },
+    {
+      id: 'res-parallel-filters',
+      title: '7. The Parallel Dual and What Resonance Is For',
+      content: `Parallel resonance is not a second topic to learn. It is the same
+analysis with admittance in place of impedance, and every statement about the
+series circuit maps onto it by exchanging voltage for current, L for C, and
+series for parallel. Doing the derivation once in the dual form makes the whole
+set of parallel results free.
+
+## 7.1 The dual, derived
+
+The admittance of a parallel RLC is
+
+$$Y(j\\omega) = \\frac{1}{R} + j\\omega C + \\frac{1}{j\\omega L} = \\frac{1}{R} + j\\left(\\omega C - \\frac{1}{\\omega L}\\right)$$
+
+which is the series expression with $R \\to 1/R$, $L \\to C$ and $C \\to L$.
+Setting the net susceptance to zero gives the same resonant frequency:
+
+$$\\omega C = \\frac{1}{\\omega L} \\;\\Longrightarrow\\; \\omega_0 = \\frac{1}{\\sqrt{LC}}$$
+
+Because the admittance is minimised there, the **impedance is maximised**:
+
+$$\\lvert Z \\rvert_{\\max} = R \\quad \\text{at } \\omega_0$$
+
+and the quality factor takes the reciprocal form:
+
+$$Q = \\frac{R}{\\omega_0 L} = \\omega_0 R C = R\\sqrt{\\frac{C}{L}}, \\qquad BW = \\frac{\\omega_0}{Q} = \\frac{1}{RC}$$
+
+Every one of those is the series formula turned upside down. Note the
+consequence that catches people out: in a **series** circuit larger R means lower
+Q, while in a **parallel** circuit larger R means **higher** Q. The same physical
+statement covers both — Q rises when the loss element takes less energy out — but
+the algebra looks opposite.
+
+## 7.2 Worked example 7 — parallel resonance and current magnification
+
+Put the familiar $L = 100$ mH and $C = 20$ microfarad in parallel with
+$R = 2$ kilohm, and drive the combination from a 10 mA rms current source. Find
+the resonant frequency, Q, bandwidth, terminal voltage and the branch currents.
+
+$$f_0 = 112.54\\ \\text{Hz} \\quad \\text{(unchanged: it depends only on } L \\text{ and } C)$$
+
+$$Q = R\\sqrt{\\frac{C}{L}} = 2000\\sqrt{\\frac{20 \\times 10^{-6}}{0.100}} = 2000 \\times 0.01414 = 28.28$$
+
+$$BW = \\frac{f_0}{Q} = \\frac{112.54}{28.28} = 3.98\\ \\text{Hz}, \\qquad \\text{equivalently } \\frac{1}{RC} = \\frac{1}{(2000)(20 \\times 10^{-6})} = 25\\ \\text{rad/s}$$
+
+![Impedance magnitude of a parallel RLC against frequency, rising to a 2 kilohm peak at 112.5 hertz and falling away on both sides, with the note that the quality factor of 28.3 gives a bandwidth of 3.98 hertz.](/courses/fe-ee/figures/ckt2-parallel-resonance.svg)
+
+At resonance the tank looks like a plain 2 kilohm, so
+
+$$V = IR = 0.010 \\times 2000 = 20\\ \\text{V}, \\qquad I_C = \\frac{V}{X_C} = \\frac{20}{70.71} = 0.283\\ \\text{A}$$
+
+and $I_L$ is the same 0.283 A, 180 degrees out of phase. **The tank branches carry
+28.3 times the current the source supplies** — the current-magnification dual of
+the series circuit's voltage magnification — and that circulating current is
+real, heats the coil, and sets the wire gauge. A 10 mA source feeding conductors
+rated for 10 mA will fail here.
+
+Compare the two circuits built from these same three components: in series
+$Q = 2.357$ and $BW = 47.75$ Hz; in parallel with 2 kilohm, $Q = 28.28$ and
+$BW = 3.98$ Hz. Same L, same C, same resonant frequency, twelve times the
+selectivity, because the resistance moved from carrying the loop current to
+shunting the tank.
+
+## 7.3 One RLC, four filters
+
+The reason resonance is on the syllabus at all is filtering, and a single series
+RLC gives all four standard responses depending only on where the output is
+taken:
+
+| Output across | Response | Reason |
+|---|---|---|
+| R | band-pass | current peaks at $f_0$, so $V_R$ does |
+| L | high-pass, second order | $X_L$ grows with frequency |
+| C | low-pass, second order | $X_C$ shrinks with frequency |
+| L and C together | band-stop (notch) | their series pair is zero at $f_0$ |
+
+The band-pass case is the one Q describes directly: its gain is
+
+$$\\lvert H(j\\omega) \\rvert = \\frac{1}{\\sqrt{1 + Q^2 \\left(\\dfrac{\\omega}{\\omega_0} - \\dfrac{\\omega_0}{\\omega}\\right)^2}}$$
+
+which equals 1 at resonance and $1/\\sqrt{2}$ at the half-power edges by
+construction. A decade either side of resonance, at $Q = 2.357$, this evaluates
+to 0.0428 — about 27 dB of rejection, and symmetric in the logarithmic sense
+rather than the linear one.
+
+For the second-order low-pass taken across the capacitor, the damping that gives
+the flattest passband is $\\zeta = 0.707$, i.e. $Q = 0.707$. Below that the
+response peaks before it rolls off; above it the corner is soft. That single
+value is why 0.707 appears both as the half-power amplitude ratio and as the
+Butterworth damping ratio, and confusing the two is a common exam misstep — they
+are numerically equal for unrelated reasons.
+
+## 7.4 The first-order corner, and where 3 dB comes from
+
+Not every filter is resonant. A single R and C give a first-order low-pass whose
+transfer function and corner frequency are
+
+$$H(j\\omega) = \\frac{1}{1 + j\\omega RC}, \\qquad \\lvert H \\rvert = \\frac{1}{\\sqrt{1 + (f/f_c)^2}}, \\qquad f_c = \\frac{1}{2\\pi RC}$$
+
+At $f = f_c$ the magnitude is $1/\\sqrt{2}$, which in decibels is
+
+$$20 \\log_{10}\\frac{1}{\\sqrt{2}} = -3.01\\ \\text{dB}$$
+
+That is the origin of the "3 dB point" in every filter specification: it is not a
+convention chosen for convenience, it is the frequency at which the output power
+is exactly half.
+
+![Magnitude response of a first-order RC low-pass in decibels, with the flat and minus twenty decibel per decade asymptotes crossing at the 995 hertz corner where the true response is 3.01 decibels down, and a marked point one decade higher at minus 20.04 decibels.](/courses/fe-ee/figures/ckt2-bode-rc.svg)
+
+The two straight asymptotes — 0 dB below the corner and $-20$ dB per decade above
+it — intersect exactly at $f_c$, where the true curve is 3.01 dB below them. One
+decade past the corner the true value is $-20.04$ dB against the asymptote's
+$-20$ dB, an error of 0.04 dB, which is why sketching Bode plots from asymptotes
+is safe everywhere except within about an octave of the corner.
+
+## 7.5 Worked example 8 — an RC corner, its roll-off and its phase
+
+A 4.7 kilohm resistor feeds a 33 nanofarad capacitor to ground. Find the corner
+frequency, the attenuation at 10 kHz in decibels, and the phase shift there.
+
+$$f_c = \\frac{1}{2\\pi (4700)(33 \\times 10^{-9})} = \\frac{1}{2\\pi (1.551 \\times 10^{-4})} = 1026\\ \\text{Hz}$$
+
+At 10 kHz the frequency ratio is $10000/1026 = 9.745$:
+
+$$\\lvert H \\rvert = \\frac{1}{\\sqrt{1 + 9.745^2}} = \\frac{1}{9.796} = 0.1021 \\;\\Rightarrow\\; 20 \\log_{10}(0.1021) = -19.82\\ \\text{dB}$$
+
+$$\\theta = -\\arctan (9.745) = -84.14^{\\circ}$$
+
+The asymptotic estimate is worth comparing: 10 kHz is
+$\\log_{10}(9.745) = 0.989$ decades past the corner, so the asymptote predicts
+$-19.78$ dB. The 0.04 dB discrepancy is the same one the figure marks. Note also
+the time-domain reading of the same component pair:
+$\\tau = RC = 155$ microseconds, so this filter would take about
+$5\\tau = 0.78$ ms to settle after a step — the identical circuit described in the
+identical way, in the other domain.`,
+      examTip: 'For a parallel resonant circuit Q = R·sqrt(C/L) and BW = 1/(RC); for a series one Q = (1/R)·sqrt(L/C) and BW = R/L. If you cannot recall which, check the limiting case: an ideal parallel tank with R infinite must have infinite Q.',
+      importantNote: 'The 0.707 that appears as the half-power amplitude ratio and the 0.707 that appears as the maximally flat damping ratio are numerically equal for unrelated reasons. Do not use one to justify the other.',
+    },
+    {
+      id: 'res-pset-a',
+      title: '8. Problem Set A — Series Resonance, Q and Bandwidth',
+      content: `Six problems at FE pace. Each should take about three minutes with a
+calculator, and each is built around one specific error. Work them all before
+looking at the solutions.
+
+## 8.1 Problem Set A — the problems
+
+**A1.** A series circuit has L = 2 mH and C = 5 nanofarad. What is its resonant
+frequency in hertz?
+
+**A2.** A series RLC circuit with R = 8 ohm, L = 40 mH and C = 10 microfarad is
+driven by 20 V rms. At resonance, find the current, the capacitor voltage, the
+quality factor and the bandwidth in hertz.
+
+**A3.** A resonant circuit's half-power frequencies are measured at 1.80 kHz and
+2.20 kHz. Find the resonant frequency and the quality factor.
+
+**A4.** A series resonant circuit is centred at 1.000 MHz with Q = 80. Find the
+bandwidth and both half-power frequencies, exactly.
+
+**A5.** Design a series resonant circuit centred at 100 kHz with a 4 kHz
+bandwidth using a 250 microhenry inductor. Find C, Q and the total series
+resistance.
+
+**A6.** For the circuit of A2, at what two frequencies does the impedance
+magnitude reach twice its minimum value?
+
+## 8.2 Problem Set A — answers, worked in full
+
+**A1 — 50.3 kHz.**
+
+$$\\omega_0 = \\frac{1}{\\sqrt{(2 \\times 10^{-3})(5 \\times 10^{-9})}} = \\frac{1}{\\sqrt{10^{-11}}} = 3.162 \\times 10^{5}\\ \\text{rad/s}$$
+
+$$f_0 = \\frac{3.162 \\times 10^{5}}{2\\pi} = 50.3\\ \\text{kHz}$$
+
+*The trap.* Quoting 316 227 as the answer answers a question about
+$\\omega_0$ that was not asked. Read the units demanded before dividing by
+$2\\pi$, and note that the two answers differ by a factor of 6.28 — large enough
+that both appear among the choices.
+
+**A2 — 2.5 A, 158 V, Q = 7.91, BW = 31.8 Hz.**
+
+$$\\omega_0 = \\frac{1}{\\sqrt{(0.040)(10^{-5})}} = \\frac{1}{\\sqrt{4 \\times 10^{-7}}} = 1581\\ \\text{rad/s} \\;\\Rightarrow\\; f_0 = 251.6\\ \\text{Hz}$$
+
+At resonance $\\lvert Z \\rvert = R$, so $I = 20/8 = 2.5$ A. The capacitive
+reactance is $X_C = 1/(1581 \\times 10^{-5}) = 63.25$ ohm, so
+
+$$V_C = 2.5 \\times 63.25 = 158.1\\ \\text{V}, \\qquad Q = \\frac{\\omega_0 L}{R} = \\frac{1581 \\times 0.040}{8} = 7.91$$
+
+$$BW = \\frac{R}{L} = \\frac{8}{0.040} = 200\\ \\text{rad/s} = 31.8\\ \\text{Hz}$$
+
+*The trap.* Answering 20 V for the capacitor voltage. The reactive voltages are
+Q times the source, here 7.91 times, and the check is that
+$V_C = Q V_s = 7.91 \\times 20 = 158$ V agrees with the Ohm's law route. The
+second trap is quoting the bandwidth as 200 without units when the question asks
+for hertz.
+
+**A3 — 1990 Hz and Q = 4.97.** The resonant frequency is the geometric mean:
+
+$$f_0 = \\sqrt{1800 \\times 2200} = \\sqrt{3.96 \\times 10^{6}} = 1990\\ \\text{Hz}$$
+
+$$BW = 2200 - 1800 = 400\\ \\text{Hz}, \\qquad Q = \\frac{1990}{400} = 4.97$$
+
+*The trap.* The arithmetic mean gives exactly 2000 Hz and a Q of 5.00, and both
+are offered. They are wrong by 0.5 %, which is small but deliberate: the
+question is testing whether you know which mean applies, and it chose numbers
+where the wrong answer looks suspiciously round.
+
+**A4 — 12.5 kHz, 993.77 kHz and 1006.27 kHz.**
+
+$$BW = \\frac{f_0}{Q} = \\frac{10^{6}}{80} = 12.5\\ \\text{kHz}$$
+
+$$f_{1,2} = f_0\\left[\\sqrt{1 + \\frac{1}{4(6400)}} \\mp \\frac{1}{160}\\right] = 10^{6}\\left[1.0000195 \\mp 0.00625\\right]$$
+
+$$f_1 = 993.770\\ \\text{kHz}, \\qquad f_2 = 1006.270\\ \\text{kHz}$$
+
+*The observation, not a trap.* At Q = 80 the exact and approximate edges differ
+by only 19.5 Hz in a million, so $f_0 \\pm BW/2$ is entirely adequate here. The
+point of working it exactly is to see that the radical correction scales as
+$1/Q^2$: it is 0.002 % at Q = 80 and 2.2 % at Q = 2.36.
+
+**A5 — 10.13 nF, Q = 25, R = 6.28 ohm.**
+
+$$\\omega_0 = 2\\pi (10^{5}) = 6.283 \\times 10^{5}\\ \\text{rad/s}, \\qquad C = \\frac{1}{\\omega_0^2 L} = \\frac{1}{(6.283 \\times 10^{5})^2 (250 \\times 10^{-6})}$$
+
+$$C = \\frac{1}{(3.948 \\times 10^{11})(2.5 \\times 10^{-4})} = \\frac{1}{9.870 \\times 10^{7}} = 10.13\\ \\text{nF}$$
+
+$$Q = \\frac{f_0}{BW} = \\frac{100}{4} = 25, \\qquad R = \\frac{\\omega_0 L}{Q} = \\frac{(6.283 \\times 10^{5})(2.5 \\times 10^{-4})}{25} = \\frac{157.1}{25} = 6.28\\ \\Omega$$
+
+*The trap, and the engineering point.* That 6.28 ohm is the **total** loop
+resistance, winding included. If the coil alone measures 10 ohm the specification
+is unreachable: Q would cap at $157.1/10 = 15.7$ and the bandwidth would not go
+below 6.4 kHz. Answering "add a 6.28 ohm resistor" without checking the coil is
+the difference between a calculation and a design.
+
+**A6 — 226 Hz and 281 Hz.** Twice the minimum impedance means
+$\\lvert Z \\rvert = 2R = 16$ ohm, so the net reactance must satisfy
+
+$$\\lvert X \\rvert = \\sqrt{(2R)^2 - R^2} = R\\sqrt{3} = 8\\sqrt{3} = 13.86\\ \\Omega$$
+
+Solving $\\omega L - 1/(\\omega C) = \\pm 13.86$ as before, with
+$X/L = 346.4$ and $4/(LC) = 10^{7}$:
+
+$$\\omega = \\frac{\\pm 346.4 + \\sqrt{346.4^2 + 10^{7}}}{2} = \\frac{\\pm 346.4 + 3181}{2}$$
+
+giving 1417 and 1764 rad/s, i.e. **225.6 Hz and 280.7 Hz**.
+
+*The trap.* Doubling the impedance is **not** the half-power condition — that one
+needs $\\lvert Z \\rvert = R\\sqrt{2}$, giving edges at 236 and 268 Hz. Reaching
+for the bandwidth formula produces those instead, and both appear as choices.
+Note also that the two answers span 346.4 rad/s, which is $\\sqrt{3}$ times the
+bandwidth $R/L = 200$ — the width of any constant-magnitude band scales with the
+reactance it demands.`,
+      examTip: 'Compute f0 first, then check that X_L and X_C really are equal there. If they are not, the usual cause is microfarads left as whole numbers instead of converted to farads - which changes the answer by a factor of a thousand, not a few percent.',
+    },
+    {
+      id: 'res-pset-b',
+      title: '9. Problem Set B — Parallel Resonance, Loading and Filters',
+      content: `The second set covers the parallel dual, practical tanks with coil
+resistance, loaded Q, and the first-order filter arithmetic that shares the
+same vocabulary. The dominant trap throughout is using a series formula on a
+parallel circuit.
+
+## 9.1 Problem Set B — the problems
+
+**B1.** A parallel RLC circuit has R = 10 kilohm, L = 25 mH and C = 100
+nanofarad. Find the resonant frequency, the quality factor and the bandwidth.
+
+**B2.** A coil of 50 microhenry with 4 ohm winding resistance is tuned by 200
+picofarad. Find the resonant frequency, the coil Q and the dynamic resistance of
+the tank.
+
+**B3.** The tank of B2 is loaded by 25 kilohm. Find the loaded Q and the loaded
+bandwidth, and state the factor by which the bandwidth changed.
+
+**B4.** A 4.7 kilohm resistor feeds a 33 nanofarad capacitor to ground. Find the
+corner frequency and the attenuation, in decibels, at 10 kHz.
+
+**B5.** Using the components of B1 in **series** instead of in parallel, find the
+bandwidth. Compare it with the parallel answer.
+
+**B6.** A 3.00 MHz resonator stores 12.0 microjoule and dissipates 40.0 mW. Find
+its quality factor and its bandwidth.
+
+## 9.2 Problem Set B — answers, worked in full
+
+**B1 — 3183 Hz, Q = 20, BW = 159 Hz.**
+
+$$\\omega_0 = \\frac{1}{\\sqrt{(0.025)(10^{-7})}} = \\frac{1}{\\sqrt{2.5 \\times 10^{-9}}} = 20000\\ \\text{rad/s} \\;\\Rightarrow\\; f_0 = 3183\\ \\text{Hz}$$
+
+$$Q = R\\sqrt{\\frac{C}{L}} = 10^{4}\\sqrt{\\frac{10^{-7}}{0.025}} = 10^{4}\\sqrt{4 \\times 10^{-6}} = 10^{4}(0.002) = 20$$
+
+$$BW = \\frac{f_0}{Q} = \\frac{3183}{20} = 159\\ \\text{Hz}, \\qquad \\text{check: } \\frac{1}{RC} = \\frac{1}{(10^{4})(10^{-7})} = 1000\\ \\text{rad/s} = 159\\ \\text{Hz}$$
+
+*The trap.* Using the series form $Q = \\omega_0 L/R$ gives
+$20000 \\times 0.025/10^{4} = 0.05$, four hundred times too small, and a
+"bandwidth" of 63.7 kHz. The two Q formulas are reciprocals of each other in R,
+so the error is never small.
+
+**B2 — 1.592 MHz, Q = 125, 62.5 kilohm.**
+
+$$\\omega_0 = \\frac{1}{\\sqrt{(50 \\times 10^{-6})(200 \\times 10^{-12})}} = 10^{7}\\ \\text{rad/s} \\;\\Rightarrow\\; f_0 = 1.592\\ \\text{MHz}$$
+
+$$Q_u = \\frac{\\omega_0 L}{R_w} = \\frac{500}{4} = 125, \\qquad R_{\\text{dyn}} = \\frac{L}{R_w C} = \\frac{50 \\times 10^{-6}}{8 \\times 10^{-10}} = 62.5\\ \\text{k}\\Omega$$
+
+*The trap.* Answering "infinite" for the impedance of a parallel LC at
+resonance. It is infinite only for lossless components; the winding resistance
+transforms into a finite $Q_u^2 R_w = 125^2 \\times 4 = 62.5$ kilohm, and that
+number, not infinity, sets the gain of anything the tank drives. Note the coil Q
+here is computed with the **series** formula, because the winding resistance is
+genuinely in series with the coil.
+
+**B3 — Q = 35.7, BW = 44.6 kHz, 3.5 times wider.**
+
+$$R_{\\text{total}} = 62.5\\ \\text{k}\\Omega \\parallel 25\\ \\text{k}\\Omega = \\frac{62.5 \\times 25}{87.5} = 17.86\\ \\text{k}\\Omega$$
+
+$$Q_L = R_{\\text{total}}\\sqrt{\\frac{C}{L}} = 17857 \\times 0.002 = 35.7, \\qquad BW_L = \\frac{1.592 \\times 10^{6}}{35.7} = 44.6\\ \\text{kHz}$$
+
+Against the unloaded 12.73 kHz, the band is **3.5 times wider**, the same factor
+by which Q fell.
+
+*The trap.* Averaging the two Q values, or adding the two resistances in series,
+both give answers near 44 kilohm and a Q around 88 — an "improvement" that is
+physically impossible. Loading a resonator can only remove energy, so
+$Q_L < Q_u$ always. If your loaded Q exceeds the unloaded one, the parallel
+combination was done wrong.
+
+**B4 — 1026 Hz and $-19.8$ dB.**
+
+$$f_c = \\frac{1}{2\\pi RC} = \\frac{1}{2\\pi (4700)(33 \\times 10^{-9})} = 1026\\ \\text{Hz}$$
+
+$$\\lvert H \\rvert = \\frac{1}{\\sqrt{1 + (10000/1026)^2}} = \\frac{1}{\\sqrt{1 + 94.97}} = 0.1021 \\;\\Rightarrow\\; -19.8\\ \\text{dB}$$
+
+*The trap.* Using $-20$ dB per decade from the corner without checking the
+distance gives $-20.0$ dB, which happens to be within 0.2 dB here because 10 kHz
+is 0.989 decades up. The asymptote is a good tool and a bad habit: within an
+octave of the corner it is off by up to 3 dB.
+
+**B5 — 400 000 rad/s, against 1000 rad/s.** In series,
+
+$$BW = \\frac{R}{L} = \\frac{10^{4}}{0.025} = 4 \\times 10^{5}\\ \\text{rad/s} = 63.7\\ \\text{kHz}$$
+
+against the parallel circuit's 1000 rad/s, or 159 Hz — **four hundred times
+wider** from the same three components. The corresponding series Q is 0.05, which
+is below 0.5 and therefore not resonant at all in any useful sense; it is an
+overdamped circuit with no peak.
+
+*The lesson.* A 10 kilohm resistance is enormous in series with a 500 ohm
+reactance and negligible in parallel with it. Q is always a comparison between
+the resistance and the reactance at resonance, and which way the comparison runs
+depends entirely on the topology.
+
+**B6 — Q = 5655, BW = 531 Hz.** Use the energy definition in its per-radian
+form, which is the version that avoids a factor of $2\\pi$:
+
+$$Q = \\frac{\\omega_0 W_{\\text{stored}}}{P_{\\text{dissipated}}} = \\frac{2\\pi (3.00 \\times 10^{6})(12.0 \\times 10^{-6})}{0.0400} = \\frac{226.2}{0.0400} = 5655$$
+
+$$BW = \\frac{f_0}{Q} = \\frac{3.00 \\times 10^{6}}{5655} = 531\\ \\text{Hz}$$
+
+*The trap.* Dropping the $2\\pi$ gives 900, and the "energy per cycle" form
+misapplied gives $2\\pi \\times 12/40 \\times 10^{-3}$ with the wrong units
+entirely. The two correct statements are
+$Q = 2\\pi W/W_{\\text{cycle}}$ and $Q = \\omega_0 W/P$; they are the same because
+$W_{\\text{cycle}} = P/f_0$. A resonator of this Q rings for about
+$Q/\\pi \\approx 1800$ cycles before its amplitude falls to a tenth, which is what
+makes crystal references useful.`,
+      examTip: 'Before choosing a Q formula, look at where the resistance is. Resistance in the loop is a series problem, Q = (1/R)sqrt(L/C); resistance across the tank is a parallel problem, Q = R·sqrt(C/L). The two answers differ by a factor of Q squared.',
+      importantNote: 'Loading a resonant circuit can only lower Q and widen bandwidth. A loaded Q higher than the unloaded Q is arithmetically impossible and always means the parallel resistance combination was computed as a series one.',
+    },
   ],
   keyTakeaways: [
     'Resonant frequency: ω₀ = 1/sqrt(LC); f₀ = 1/(2π·sqrt(LC)).',
@@ -4033,8 +4747,10 @@ The sum is *algebraic*, and one reading goes negative when the power factor
 falls below 0.5. That is not a fault and not a wiring error, and a question that
 reports one negative wattmeter is testing whether you subtract rather than
 ignore it. The two readings also give the power factor directly, since
-tan φ = √3 ($P_{2}$ − $P_{1}$)/($P_{2}$ + $P_{1}$) — which is why the two-wattmeter method survives
-in practice long after digital meters could have replaced it.`,
+tan φ = √3 ($W_{1}$ − $W_{2}$)/($W_{1}$ + $W_{2}$), where $W_{1}$ is the **larger** of the two
+readings for a lagging load — which is why the two-wattmeter method survives
+in practice long after digital meters could have replaced it. Section 7.4
+derives that expression and shows why the labelling matters.`,
       examTip: 'The sqrt(3) factor appears in EVERY three-phase problem. For wye: multiply phase voltage by sqrt(3) to get line voltage. For delta: multiply phase current by sqrt(3) to get line current. Draw the phasor diagram if you forget which one.',
     },
     {
@@ -4236,6 +4952,791 @@ diagnostic that needs no calculation at all.`,
           explanation: 'Three equal phasors spaced 120 degrees apart sum to zero, so nothing returns through the neutral. This fails as soon as the load is unbalanced, and fails badly with third-harmonic loads whose components are in phase across all three lines and therefore ADD in the neutral.',
         },
       ],
+    },
+    {
+      id: '3ph-sqrt3',
+      title: '5. Where the Root Three Comes From, and the 30 Degrees With It',
+      content: `## 5.1 The three voltages, written down properly
+
+Every result in this chapter is a consequence of three sinusoids of equal
+amplitude spaced one third of a cycle apart. With $V_{m}$ the peak of each phase
+voltage and the neutral node as the reference, an **abc** (positive) sequence
+source produces
+
+$$v_{an}(t) = V_{m}\\cos \\omega t, \\qquad v_{bn}(t) = V_{m}\\cos (\\omega t - 120^\\circ), \\qquad v_{cn}(t) = V_{m}\\cos (\\omega t + 120^\\circ)$$
+
+The claim that these sum to zero is not an approximation and not a consequence
+of balance in the load — it is trigonometry, true at every instant:
+
+$$\\cos \\theta + \\cos (\\theta - 120^\\circ) + \\cos (\\theta + 120^\\circ) = \\cos \\theta + 2\\cos \\theta \\cos 120^\\circ = \\cos \\theta - \\cos \\theta = 0$$
+
+That single line is worth more than the four rows of the table in Section 1.2,
+because everything else — the missing neutral current, the constant power, the
+√3 — descends from it.
+
+## 5.2 The line voltage, derived rather than asserted
+
+A line voltage is a **difference** of two phase voltages, because the two line
+conductors are the two terminals you connect a voltmeter to:
+
+$$v_{ab}(t) = v_{an}(t) - v_{bn}(t) = V_{m}\\left[\\cos \\omega t - \\cos (\\omega t - 120^\\circ)\\right]$$
+
+Apply the identity $\\cos A - \\cos B = -2\\sin \\frac{A+B}{2}\\sin \\frac{A-B}{2}$ with
+$A = \\omega t$ and $B = \\omega t - 120^\\circ$:
+
+$$v_{ab}(t) = -2V_{m}\\sin (\\omega t - 60^\\circ)\\sin (60^\\circ) = -\\sqrt{3}\\,V_{m}\\sin (\\omega t - 60^\\circ) = \\sqrt{3}\\,V_{m}\\cos (\\omega t + 30^\\circ)$$
+
+Two facts fall out of one line of algebra. The line voltage is **√3 times
+larger**, and it **leads by 30°**. The √3 is not a fudge factor from a table; it
+is $2\\sin 60^\\circ$, and the 30° is exactly half of the 120° spacing.
+
+![Three phase voltages of 169.7 volt peak spaced 120 degrees apart, with the line voltage v_ab formed as v_an minus v_bn drawn over them. The line voltage peaks at 293.9 volts, root three times higher, and reaches that peak 30 degrees earlier than v_an does.](/courses/fe-ee/figures/ckt2-3ph-waveforms.svg)
+
+The figure plots exactly that for a 120 V (rms) phase voltage. The peak of each
+phase voltage is $120\\sqrt{2} = 169.71$ V; the peak of the line voltage is
+$\\sqrt{3}\\times 169.71 = 293.94$ V, whose rms value is
+$120\\sqrt{3} = 207.85$ V — the "208 V" stamped on every commercial panel in
+North America. Read the horizontal axis as well as the vertical one: the heavy
+line-voltage curve crests at −30°, thirty degrees **before** $v_{an}$ does, which
+is what a phasor angle of +30° means once you put it back on a time axis.
+
+## 5.3 The same result as one isosceles triangle
+
+Phasors get there faster. Place $V_{an} = 120\\angle 0^\\circ$ and
+$V_{bn} = 120\\angle -120^\\circ$. Then $-V_{bn}$ points at +60°, and adding it
+head-to-tail to $V_{an}$ builds an isosceles triangle whose two equal sides are
+$V_{ph}$ and whose apex angle is 60°:
+
+$$\\lvert V_{ab}\\rvert = 2 V_{ph}\\cos 30^\\circ = \\sqrt{3}\\,V_{ph} = 207.85\\ \\mathrm{V}, \\qquad \\angle V_{ab} = +30^\\circ$$
+
+![Phasor diagram of a wye source. Three 120 volt phase voltages radiate at 0, minus 120 and plus 120 degrees, and the line voltage V_ab is drawn as the resultant of V_an and minus V_bn placed head to tail, reaching 207.85 volts at plus 30 degrees.](/courses/fe-ee/figures/ckt2-3ph-phasors.svg)
+
+The full set for a 208 V system, which is worth being able to write from memory
+because half of the traps in this topic are angle traps rather than magnitude
+traps:
+
+| Phase voltages (line-to-neutral) | Line voltages (line-to-line) |
+|---|---|
+| $V_{an} = 120.1\\angle 0^\\circ$ | $V_{ab} = 208\\angle 30^\\circ$ |
+| $V_{bn} = 120.1\\angle -120^\\circ$ | $V_{bc} = 208\\angle -90^\\circ$ |
+| $V_{cn} = 120.1\\angle 120^\\circ$ | $V_{ca} = 208\\angle 150^\\circ$ |
+
+The three line voltages are themselves a balanced set: equal magnitudes, 120°
+apart, and they sum to zero for the same reason the phase voltages do.
+
+### Worked example 5.1 — the six voltages of a 480 V system
+
+*A 480 V, three-phase, four-wire wye source is labelled abc. Write all six
+voltages in polar form, taking $V_{an}$ as the reference.*
+
+The nameplate voltage of a three-phase system is always **line-to-line**, so
+480 V is $V_{L}$ and
+
+$$V_{ph} = \\frac{480}{\\sqrt{3}} = 277.13\\ \\mathrm{V}$$
+
+$$V_{an} = 277.1\\angle 0^\\circ, \\quad V_{bn} = 277.1\\angle -120^\\circ, \\quad V_{cn} = 277.1\\angle 120^\\circ$$
+
+$$V_{ab} = 480\\angle 30^\\circ, \\quad V_{bc} = 480\\angle -90^\\circ, \\quad V_{ca} = 480\\angle 150^\\circ$$
+
+This is the ubiquitous **480/277 V** commercial service: motors and large
+equipment take 480 V between lines, and fluorescent and LED lighting ballasts
+take 277 V between one line and neutral. If a problem hands you "277 V", it has
+already given you a phase voltage and multiplying by √3 again is the error the
+distractor is waiting for.
+
+## 5.4 The delta relation, from KCL at one corner
+
+Delta has no neutral, so its √3 has to come from somewhere else — and it comes
+from Kirchhoff's current law at a terminal where two windings meet. Current
+arriving on line *a* splits between the *ab* and *ca* branches:
+
+$$I_{a} = I_{ab} - I_{ca}$$
+
+With balanced phase currents $I_{ab} = I_{ph}\\angle 0^\\circ$ and
+$I_{ca} = I_{ph}\\angle 120^\\circ$, that difference is structurally the same
+subtraction as Section 5.2:
+
+$$I_{a} = I_{ph}\\left(1\\angle 0^\\circ - 1\\angle 120^\\circ\\right) = \\sqrt{3}\\,I_{ph}\\angle -30^\\circ$$
+
+![Phasor construction showing that a line quantity is root three times a phase quantity and displaced by 30 degrees, drawn for a balanced set.](/courses/fe-ee/figures/pow2-3ph-phasor-sqrt3.svg)
+
+Note the sign of the 30° carefully, because this is the detail that separates a
+memorised rule from an understood one:
+
+| Connection | √3 appears on | Angle relation (abc sequence) |
+|---|---|---|
+| Wye | voltage: $V_{L} = \\sqrt{3}V_{ph}$ | line voltage **leads** phase voltage by 30° |
+| Delta | current: $I_{L} = \\sqrt{3}I_{ph}$ | line current **lags** phase current by 30° |
+
+Both come from subtracting two members of a balanced set. Which member you
+subtract decides the sign, and the two connections happen to subtract in
+opposite senses.
+
+### Worked example 5.2 — recovering delta phase currents from a clamp meter
+
+*A clamp meter on line a of a balanced delta-connected heater bank reads 52 A,
+and a phase-angle meter puts it at $-25^\\circ$ relative to $V_{an}$. What current
+flows in each heater element?*
+
+A clamp meter can only ever read a **line** current, because the delta windings
+are inside the machine. Invert the relation just derived:
+
+$$I_{ab} = \\frac{I_{a}}{\\sqrt{3}\\angle -30^\\circ} = \\frac{52\\angle -25^\\circ}{1.732\\angle -30^\\circ} = 30.02\\angle 5^\\circ\\ \\mathrm{A}$$
+
+Each element carries **30.0 A**, not 52 A. Sizing the element for the clamp
+reading over-specifies it by 73 percent; sizing the supply conductor for 30 A
+under-specifies it by the same factor and is the dangerous direction of the
+same mistake.
+
+## 5.5 Phase sequence, and the one thing it changes
+
+Reverse any two of the three connections and the source becomes **acb**
+(negative) sequence: $V_{an} = V_{ph}\\angle 0^\\circ$,
+$V_{bn} = V_{ph}\\angle 120^\\circ$, $V_{cn} = V_{ph}\\angle -120^\\circ$. All the
+magnitude relations survive untouched — the √3 is still √3 — but every 30°
+reverses direction, and every induction motor on the system runs backwards.
+
+$$V_{ab} = V_{an} - V_{bn} = V_{ph}\\left(1\\angle 0^\\circ - 1\\angle 120^\\circ\\right) = \\sqrt{3}\\,V_{ph}\\angle -30^\\circ$$
+
+### Worked example 5.3 — reading the sequence off a meter
+
+*A recorder logs $V_{an} = 277\\angle 0^\\circ$, $V_{bn} = 277\\angle 120^\\circ$ and
+$V_{cn} = 277\\angle -120^\\circ$. Find $V_{ab}$ and state the sequence.*
+
+$$V_{ab} = 277\\left[1 - \\left(-0.5 + j0.866\\right)\\right] = 277\\left(1.5 - j0.866\\right) = 480\\angle -30^\\circ\\ \\mathrm{V}$$
+
+The magnitude is the familiar 480 V, but the angle is **−30°**, so this is an
+**acb** sequence and the line voltage lags. On the exam this shows up as a
+question in which every magnitude choice is 480 V and the four options differ
+only in angle; the magnitude relations cannot discriminate, and the sequence
+is the whole question.`,
+      examTip: 'Derive the √3 rather than recalling it: it is 2 sin 60°, which is what you get when you subtract two equal phasors that are 120° apart. That derivation also hands you the 30°, which is the half of the relation that memorised tables usually omit and that angle-based distractors exploit.',
+      importantNote: 'A three-phase nameplate voltage is line-to-line unless the problem explicitly says otherwise. 208 V, 480 V, 4.16 kV and 13.8 kV are all line-to-line figures; their line-to-neutral partners are 120 V, 277 V, 2.40 kV and 7.97 kV. Applying √3 to a number that is already a line voltage is the single most common three-phase arithmetic error.',
+    },
+    {
+      id: '3ph-perphase-technique',
+      title: '6. The Per-Phase Equivalent as a Working Technique',
+      content: `## 6.1 The recipe, with the feeder included
+
+Section 1.6 named the per-phase equivalent; this section uses it on problems
+that cannot be done in the head, which is where its value actually lies. The
+procedure never varies:
+
+1. Convert every delta element to its wye equivalent, $Z_{Y} = Z_{\\Delta}/3$.
+2. Draw **one** phase: a source of $V_{L}/\\sqrt{3}$ at $0^\\circ$, the feeder
+   impedance of one conductor, the load impedance of one phase, and a return
+   through an ideal neutral.
+3. Solve it as an ordinary single-phase AC circuit.
+4. Multiply powers by three; rotate the other two phases by $\\mp 120^\\circ$.
+
+Step 2 contains the step people skip. The per-phase circuit uses the impedance
+of **one conductor**, not of a loop of two, because the neutral of a balanced
+system carries no current and therefore drops no voltage. There is no
+"return-conductor" impedance to add, which is precisely the simplification a
+single-phase two-wire calculation does not get to make.
+
+### Worked example 6.1 — a wye load at the end of a real feeder
+
+*A 480 V, 60 Hz, balanced source feeds a wye-connected load of
+$8 + j6\\ \\Omega$ per phase through a feeder of $0.3 + j0.6\\ \\Omega$ per
+conductor. Find the line current, the voltage at the load, the power delivered,
+the feeder loss and the efficiency.*
+
+Per phase, the source is $277.13\\angle 0^\\circ$ V and the two impedances are in
+series:
+
+$$Z_{total} = (0.3 + j0.6) + (8 + j6) = 8.3 + j6.6\\ \\Omega = 10.604\\angle 38.49^\\circ\\ \\Omega$$
+
+$$I_{a} = \\frac{277.13\\angle 0^\\circ}{10.604\\angle 38.49^\\circ} = 26.13\\angle -38.49^\\circ\\ \\mathrm{A}$$
+
+In wye that current is both the phase current and the line current, so all three
+lines carry 26.13 A. The load voltage follows from the load impedance alone:
+
+$$V_{load,ph} = I_{a}Z_{load} = (26.13)(10.0) = 261.34\\ \\mathrm{V} \\;\\Rightarrow\\; V_{load,LL} = \\sqrt{3}(261.34) = 452.6\\ \\mathrm{V}$$
+
+$$P_{load} = 3I^{2}R_{load} = 3(26.13)^{2}(8) = 16{,}391\\ \\mathrm{W} = 16.39\\ \\mathrm{kW}$$
+
+$$P_{loss} = 3I^{2}R_{line} = 3(26.13)^{2}(0.3) = 614.7\\ \\mathrm{W}, \\qquad \\eta = \\frac{16{,}391}{17{,}006} = 96.4\\%$$
+
+Two checks are worth the ten seconds each. First, the line-quantity formula must
+agree: $\\sqrt{3}(452.6)(26.13)(0.8) = 16{,}391$ W, using the **load** power
+factor of $8/10 = 0.8$, not the 0.783 seen at the source. Second, the voltage
+regulation is $(480 - 452.6)/452.6 = 6.0$ percent, which is a believable feeder
+drop; a computed drop of 20 percent or of 0.2 percent would mean the feeder
+impedance had been applied three times or not at all.
+
+### Worked example 6.2 — the same feeder, a delta load
+
+*Replace that load with a delta of $24 + j18\\ \\Omega$ per phase, everything else
+unchanged. Find the line current and the power.*
+
+The delta cannot go into a per-phase circuit until it is a wye:
+
+$$Z_{Y} = \\frac{Z_{\\Delta}}{3} = \\frac{24 + j18}{3} = 8 + j6\\ \\Omega$$
+
+which is the load of Worked example 6.1 exactly. The line current is therefore
+the same **26.13 A at −38.49°**, the load line voltage is the same **452.6 V**,
+and the power is the same **16.39 kW**. What differs is what happens *inside*
+the load:
+
+$$I_{ph,\\Delta} = \\frac{I_{L}}{\\sqrt{3}} = \\frac{26.13}{1.732} = 15.09\\ \\mathrm{A}, \\qquad V_{ph,\\Delta} = V_{LL} = 452.6\\ \\mathrm{V}$$
+
+Confirm the power from those numbers alone:
+$3(15.09)^{2}(24) = 16{,}390$ W. The lesson is that $Z_{\\Delta} = 3Z_{Y}$ makes
+two physically different loads indistinguishable **from the terminals**, which
+is exactly the property that makes the conversion legal.
+
+## 6.2 Why the power is constant, and single-phase power is not
+
+Take one phase of a balanced load with the current lagging the voltage by θ.
+Instantaneous power is a product of two cosines, which a product identity turns
+into a constant plus a double-frequency term:
+
+$$p_{a}(t) = 2V I\\cos (\\omega t)\\cos (\\omega t - \\theta) = V I\\left[\\cos \\theta + \\cos (2\\omega t - \\theta)\\right]$$
+
+The other two phases are the same expression shifted by $\\mp 120^\\circ$, and
+because the ripple term runs at **twice** frequency, those shifts become
+$\\mp 240^\\circ$ in the ripple — still a balanced set of three, and still summing
+to zero:
+
+$$p(t) = p_{a} + p_{b} + p_{c} = 3VI\\cos \\theta + VI\\left[\\cos (2\\omega t - \\theta) + \\cos (2\\omega t - \\theta - 240^\\circ) + \\cos (2\\omega t - \\theta + 240^\\circ)\\right] = 3VI\\cos \\theta$$
+
+![Instantaneous power of each phase of a balanced three-phase load and of the three together, normalised to the product of rms voltage and current. Each phase pulses at twice line frequency and dips below zero, while their sum is a dead flat line at three times the power factor, here 2.40.](/courses/fe-ee/figures/ckt2-3ph-power-constant.svg)
+
+The figure is that algebra plotted for a power factor of 0.8
+($\\theta = 36.87^\\circ$). Each phase swings between roughly $-0.2$ and $+1.8$
+times $VI$ and even goes momentarily negative — energy flowing back to the
+source out of the load's inductance. The sum sits at exactly
+$3\\cos \\theta = 2.40$ with zero ripple, and that flat line is a mechanical fact
+as much as an electrical one: a three-phase motor develops constant torque,
+which is why it needs no starting winding, produces no 120 Hz vibration, and can
+be built smaller than a single-phase machine of the same rating.
+
+## 6.3 Copper economy, derived
+
+The third standard argument for three phases is metal. Compare a single-phase
+two-wire system with a three-phase three-wire system carrying the **same power**,
+over the **same distance**, at the **same line-to-line voltage**, with the
+**same total resistive loss**.
+
+$$I_{1\\phi} = \\frac{P}{V}, \\qquad I_{3\\phi} = \\frac{P}{\\sqrt{3}V} = \\frac{I_{1\\phi}}{\\sqrt{3}}$$
+
+Equal loss fixes the conductor resistances against each other:
+
+$$2I_{1\\phi}^{2}R_{1} = 3\\left(\\frac{I_{1\\phi}}{\\sqrt{3}}\\right)^{2}R_{3} = I_{1\\phi}^{2}R_{3} \\;\\Rightarrow\\; R_{3} = 2R_{1}$$
+
+Conductor volume for a fixed length goes as the cross-section, which goes as the
+reciprocal of resistance, so the metal ratio is the number of conductors divided
+by their resistance:
+
+$$\\frac{\\text{metal}_{3\\phi}}{\\text{metal}_{1\\phi}} = \\frac{3/R_{3}}{2/R_{1}} = \\frac{3/(2R_{1})}{2/R_{1}} = \\frac{3}{4} = 75\\%$$
+
+![Conductor metal needed by four wiring systems to deliver the same power over the same distance at the same line-to-line voltage and the same total resistive loss, as a percentage of the single-phase two-wire case. Three-phase three-wire needs 75.0 percent, three-phase four-wire with a half-size neutral 87.5 percent, and three-phase four-wire with a full-size neutral exactly 100 percent.](/courses/fe-ee/figures/pow2-3ph-copper-economy.svg)
+
+The 75 percent figure quoted in Section 4.2 is therefore exact, not a rule of
+thumb — but it is exact **only for three wires**. The figure shows what the
+neutral costs: a half-size neutral takes the system to 87.5 percent and a
+full-size neutral to exactly 100 percent, at which point three-phase has no
+copper advantage left at all. That is the real reason distribution engineers
+resist full-size neutrals, and the reason Section 7.3's harmonic loads, which
+force full-size neutrals, are expensive as well as inconvenient.
+
+### Worked example 6.3 — wye-delta starting, with numbers
+
+*A motor presents $4 + j3\\ \\Omega$ per phase and is normally run delta-connected
+on a 480 V supply. Find the line current and power when it is started in delta,
+and again when it is started in wye.*
+
+Delta, with each winding across the full 480 V:
+
+$$I_{ph} = \\frac{480}{5.0} = 96.0\\ \\mathrm{A}, \\qquad I_{L} = \\sqrt{3}(96.0) = 166.3\\ \\mathrm{A}, \\qquad P = 3(96.0)^{2}(4) = 110.6\\ \\mathrm{kW}$$
+
+Wye, with each winding across only $480/\\sqrt{3} = 277.1$ V:
+
+$$I_{L} = I_{ph} = \\frac{277.13}{5.0} = 55.43\\ \\mathrm{A}, \\qquad P = 3(55.43)^{2}(4) = 36.86\\ \\mathrm{kW}$$
+
+The ratios are exactly 3 in both current and power:
+$166.3/55.43 = 3.00$ and $110.6/36.86 = 3.00$. A starter that closes the windings
+in wye therefore draws one third of the inrush **and** develops one third of the
+torque, since induction motor torque tracks the square of applied voltage and
+$(1/\\sqrt{3})^{2} = 1/3$. Wye-delta starting is a trade at a fixed exchange rate,
+not a free reduction, and a question that offers "one third the current at full
+torque" is offering the impossible.`,
+      examTip: 'In the per-phase circuit use the impedance of ONE conductor, and take the source as V_L/√3 at 0°. Do not add a return-path impedance — the balanced neutral carries no current — and do not divide the load impedance by three unless it was given as a delta.',
+      importantNote: 'Power factor belongs to a specific pair of terminals. In Worked example 6.1 the load power factor is 0.800 and the power factor seen by the source is 0.783, because the feeder adds reactance. When a problem says "power factor" without qualification it means at the load, but any efficiency or regulation question needs both.',
+    },
+    {
+      id: '3ph-unbalance-measurement',
+      title: '7. Unbalance, the Neutral, and What Two Wattmeters Read',
+      content: `## 7.1 The four-wire wye: three independent single-phase circuits
+
+An unbalanced load kills per-phase analysis, but when a **neutral conductor is
+present and its impedance is negligible** the problem does not become hard — it
+becomes three separate single-phase problems. The neutral pins each load
+terminal to the source neutral, so every phase sees its own phase voltage
+whatever the other two are doing:
+
+$$I_{a} = \\frac{V_{an}}{Z_{a}}, \\qquad I_{b} = \\frac{V_{bn}}{Z_{b}}, \\qquad I_{c} = \\frac{V_{cn}}{Z_{c}}, \\qquad I_{n} = I_{a} + I_{b} + I_{c}$$
+
+The neutral current is a **phasor** sum, never an arithmetic one, and it is the
+only quantity in the four-wire problem that requires the three phases to be
+considered together.
+
+![Neutral current of a four-wire wye as the phase-a current is varied while phases b and c are held at 10 amperes. The neutral is exactly zero at perfect balance, rises to 2 amperes when phase a is 20 percent high, and reaches a full 10 amperes when phase a is open.](/courses/fe-ee/figures/ckt2-3ph-neutral.svg)
+
+The figure sweeps one phase of an otherwise balanced 10 A system and plots what
+the neutral carries. Two readings matter. The V touches **exactly zero** only at
+perfect balance — the neutral is a direct measure of imbalance and of nothing
+else. And with phase a open the neutral carries a **full 10 A**, the same current
+a healthy phase carries, which is why an undersized neutral is a fire risk under
+fault conditions rather than merely a code violation.
+
+### Worked example 7.1 — the neutral current of a lighting panel
+
+*A 208/120 V four-wire panel supplies resistive lighting of 10 Ω, 20 Ω and 30 Ω
+on phases a, b and c. Find the three line currents, the neutral current and the
+total power.*
+
+$$I_{a} = \\frac{120\\angle 0^\\circ}{10} = 12\\angle 0^\\circ, \\quad I_{b} = \\frac{120\\angle -120^\\circ}{20} = 6\\angle -120^\\circ, \\quad I_{c} = \\frac{120\\angle 120^\\circ}{30} = 4\\angle 120^\\circ$$
+
+Add in rectangular form:
+
+$$I_{n} = (12 + j0) + (-3 - j5.196) + (-2 + j3.464) = 7.000 - j1.732 = 7.211\\angle -13.90^\\circ\\ \\mathrm{A}$$
+
+$$P = \\frac{120^{2}}{10} + \\frac{120^{2}}{20} + \\frac{120^{2}}{30} = 1440 + 720 + 480 = 2640\\ \\mathrm{W}$$
+
+**7.21 A in the neutral**, on a panel whose largest phase carries 12 A. The
+arithmetic shortcut $12 - 6 - 4 = 2$ A is wrong, and so is $12 - 4 = 8$ A; only
+the phasor sum survives. Note also that $P = \\sqrt{3}V_{L}I_{L}\\cos \\phi$ is
+**unusable** here, because there is no single $I_{L}$ and no single φ. Unbalanced
+power is always summed phase by phase.
+
+## 7.2 Take the neutral away and the load voltages move
+
+Remove the neutral from that same panel and the load's star point is no longer
+tied to the source's. It floats to whatever potential makes the three currents
+sum to zero, and Millman's theorem gives it in one expression:
+
+$$V_{N'N} = \\frac{V_{an}Y_{a} + V_{bn}Y_{b} + V_{cn}Y_{c}}{Y_{a} + Y_{b} + Y_{c}}, \\qquad I_{k} = \\left(V_{kn} - V_{N'N}\\right)Y_{k}$$
+
+### Worked example 7.2 — the same panel with an open neutral
+
+*Repeat Worked example 7.1 with the neutral conductor broken.*
+
+With $Y_{a} = 0.1$, $Y_{b} = 0.05$ and $Y_{c} = 0.0333$ S, the numerator is
+$120\\angle 0^\\circ (0.1) + 120\\angle -120^\\circ (0.05) + 120\\angle 120^\\circ (0.0333)$
+and the denominator is $0.18333$ S:
+
+$$V_{N'N} = 39.33\\angle -13.90^\\circ\\ \\mathrm{V}$$
+
+Subtracting that displacement from each source phase voltage gives the voltage
+each group of lamps actually receives:
+
+| Phase | Impedance | Load voltage | Current | Power |
+|---|---|---|---|---|
+| a | 10 Ω | 82.36 V | 8.236 A | 678.3 W |
+| b | 20 Ω | 136.25 V | 6.813 A | 928.3 W |
+| c | 30 Ω | 149.98 V | 4.999 A | 749.8 W |
+
+The total is 2356 W against 2640 W with the neutral intact, but the total is not
+the point. **The most heavily loaded phase collapsed to 82 V and the least
+loaded rose to 150 V** — a 25 percent overvoltage that will visibly shorten lamp
+life on phase c while phase a sits dim. This is the classic open-neutral fault,
+and it explains why the failure presents to a building occupant as "some lights
+are too bright and some are too dim" rather than as an outage. Note the internal
+check: the displacement angle, $-13.90^\\circ$, matches the neutral current angle
+of Worked example 7.1, because the current the neutral used to carry is exactly
+what now drives the star point off centre.
+
+## 7.3 Triplen harmonics: the neutral current that survives balance
+
+Section 4.3 flagged the harmonic case; here is the arithmetic. Third-harmonic
+currents produced by single-phase electronic loads are displaced by
+$3 \\times 120^\\circ = 360^\\circ$ between phases — that is, they are **in phase**
+with one another — so they do not cancel in the neutral, they add:
+
+$$I_{n,3rd} = 3I_{3}, \\qquad I_{phase} = \\sqrt{I_{1}^{2} + I_{3}^{2}}$$
+
+For a balanced bank of switch-mode supplies drawing 40 A of fundamental with
+30 percent third harmonic, $I_{3} = 12$ A:
+
+$$I_{n} = 3(12) = 36\\ \\mathrm{A}, \\qquad I_{phase} = \\sqrt{40^{2} + 12^{2}} = 41.76\\ \\mathrm{A}$$
+
+The neutral carries 86 percent of the phase current in a load that is perfectly
+balanced. At 60 percent third harmonic, which office equipment can reach,
+
+$$I_{n} = 3(24) = 72\\ \\mathrm{A} > I_{phase} = \\sqrt{40^{2} + 24^{2}} = 46.65\\ \\mathrm{A}$$
+
+and the neutral carries **1.54 times** the phase current. Any exam question that
+says "balanced load, therefore zero neutral current" is assuming linear loads;
+say so explicitly if the question mentions harmonics, rectifiers or electronic
+ballasts.
+
+## 7.4 Two wattmeters, derived and then inverted
+
+Blondel's theorem was stated in Section 1.7. Deriving what each meter reads
+turns it from a fact into a tool. Put the current coils in lines a and c with
+both voltage coils referred to line b. Meter 1 sees $V_{ab}$ and $I_{a}$; meter 2
+sees $V_{cb}$ and $I_{c}$. For a balanced load with current lagging by θ, the
+angle between $V_{ab}$ and $I_{a}$ is $\\theta - 30^\\circ$ and the angle between
+$V_{cb}$ and $I_{c}$ is $\\theta + 30^\\circ$:
+
+$$W_{1} = V_{L}I_{L}\\cos (\\theta - 30^\\circ), \\qquad W_{2} = V_{L}I_{L}\\cos (\\theta + 30^\\circ)$$
+
+Adding them and expanding both cosines, the sine terms cancel and the cosine
+terms double:
+
+$$W_{1} + W_{2} = 2V_{L}I_{L}\\cos \\theta \\cos 30^\\circ = \\sqrt{3}\\,V_{L}I_{L}\\cos \\theta = P$$
+
+Subtracting them, the cosine terms cancel instead:
+
+$$W_{1} - W_{2} = 2V_{L}I_{L}\\sin \\theta \\sin 30^\\circ = V_{L}I_{L}\\sin \\theta = \\frac{Q}{\\sqrt{3}}$$
+
+which is the whole method in two lines: the **sum** is real power and the
+**difference** is reactive power scaled by √3. Dividing one by the other kills
+$V_{L}I_{L}$ and leaves the load angle:
+
+$$\\tan \\theta = \\sqrt{3}\\,\\frac{W_{1} - W_{2}}{W_{1} + W_{2}}, \\qquad Q = \\sqrt{3}\\left(W_{1} - W_{2}\\right)$$
+
+![The two wattmeter readings normalised to the product of line voltage and line current, plotted against load angle. W1 rises to a maximum at 30 degrees and falls back, W2 falls monotonically and passes through zero at exactly 60 degrees before going negative, and their sum traces root three times the cosine of the angle.](/courses/fe-ee/figures/pow2-3ph-wattmeter-pf.svg)
+
+The figure makes the three readable landmarks obvious. At unity power factor
+the meters read equally. At $\\theta = 60^\\circ$, which is a power factor of
+exactly 0.5, $W_{2} = V_{L}I_{L}\\cos 90^\\circ = 0$; beyond it the reading is
+**negative**. And at a power factor of 0.866 ($\\theta = 30^\\circ$) the readings
+are in the ratio 2:1, not 1:0 — a distractor the exam likes, because "one meter
+reads zero" feels as though it should happen at the nicer-looking power factor.
+
+### Worked example 7.3 — predicting the readings, then recovering the load
+
+*A balanced load draws 30 A at 480 V with a power factor of 0.80 lagging.
+Predict both wattmeter readings, then show that the readings alone recover the
+power factor.*
+
+$$\\theta = \\arccos 0.80 = 36.87^\\circ$$
+
+$$W_{1} = (480)(30)\\cos (6.87^\\circ) = 14{,}297\\ \\mathrm{W}, \\qquad W_{2} = (480)(30)\\cos (66.87^\\circ) = 5{,}657\\ \\mathrm{W}$$
+
+$$W_{1} + W_{2} = 19{,}953\\ \\mathrm{W} = \\sqrt{3}(480)(30)(0.80) \\;\\checkmark$$
+
+Now run it backwards, as a technician with only two meter readings must:
+
+$$\\tan \\theta = \\sqrt{3}\\,\\frac{14{,}297 - 5{,}657}{19{,}953} = 0.7500 \\;\\Rightarrow\\; \\theta = 36.87^\\circ \\;\\Rightarrow\\; \\mathrm{pf} = 0.800$$
+
+$$Q = \\sqrt{3}(14{,}297 - 5{,}657) = 14{,}965\\ \\mathrm{VAR}$$
+
+Two readings, no voltmeter, no ammeter, no phase-angle meter, and the complete
+description of the load. That is why the method outlived the instruments it was
+invented for.
+
+## 7.5 Measuring unbalance: two indices that are not the same thing
+
+Utilities and motor standards quantify unbalance with two different definitions,
+and the exam expects you to know that they are different definitions rather than
+two names for one quantity.
+
+**NEMA MG-1 voltage unbalance** — often written LVUR, the line voltage unbalance
+rate — is a purely arithmetic index built from the three line-voltage
+**magnitudes** and nothing else:
+
+$$\\mathrm{LVUR} = \\frac{\\max \\lvert V_{k} - V_{avg}\\rvert}{V_{avg}}\\times 100\\%$$
+
+**IEC voltage unbalance factor** — VUF, also written $u_{2}$ — is defined from
+**symmetrical components**, as the ratio of the negative-sequence to the
+positive-sequence voltage:
+
+$$\\mathrm{VUF} = \\frac{\\lvert V_{2}\\rvert}{\\lvert V_{1}\\rvert}\\times 100\\%, \\qquad V_{1} = \\frac{V_{ab} + aV_{bc} + a^{2}V_{ca}}{3}, \\qquad V_{2} = \\frac{V_{ab} + a^{2}V_{bc} + aV_{ca}}{3}$$
+
+where $a = 1\\angle 120^\\circ$. The LVUR ignores angles entirely; the VUF depends
+on them. The two indices generally give **different numbers for the same
+system**, and neither is an approximation of the other — they are separate
+standards with separate definitions, adopted by separate bodies. What they share
+is a use: both are compared against limits, typically 2 percent, and both feed
+motor derating.
+
+### Worked example 7.4 — both indices for one set of readings
+
+*A recorder logs line voltages of 480 V, 470 V and 464 V. Compute the NEMA LVUR
+and the IEC VUF.*
+
+$$V_{avg} = \\frac{480 + 470 + 464}{3} = 471.33\\ \\mathrm{V}, \\qquad \\max \\lvert V_{k} - V_{avg}\\rvert = 8.67\\ \\mathrm{V}$$
+
+$$\\mathrm{LVUR} = \\frac{8.67}{471.33}\\times 100 = 1.84\\%$$
+
+For the VUF the three magnitudes must first be closed into a triangle, since
+$V_{ab} + V_{bc} + V_{ca} = 0$ always. Doing so gives
+$480\\angle 0^\\circ$, $470\\angle -121.54^\\circ$ and $464\\angle 120.31^\\circ$, and
+the sequence components follow:
+
+$$\\lvert V_{1}\\rvert = 471.29\\ \\mathrm{V}, \\qquad \\lvert V_{2}\\rvert = 9.354\\ \\mathrm{V}, \\qquad \\mathrm{VUF} = 1.98\\%$$
+
+**1.84 percent by one standard and 1.98 percent by the other**, from identical
+measurements. One is inside a 2 percent limit and one is on the edge of it,
+which is precisely why the standard has to be named whenever the number is
+quoted.
+
+![The effect of supply voltage unbalance on an induction motor. The upper panel plots negative-sequence stator current as a percentage of rated against unbalance factor for several locked-rotor ratios; the lower panel plots the resulting stator copper-loss multiplier, which reaches 1.032 at 3 percent unbalance for a locked-rotor ratio of six.](/courses/fe-ee/figures/pow2-3ph-unbalance-heating.svg)
+
+Why either index is worth measuring is in the figure. The negative-sequence
+voltage drives current through the motor's negative-sequence impedance, which
+at running speed is close to its locked-rotor impedance — five to seven times
+smaller than the positive-sequence impedance. A 1 percent voltage unbalance
+therefore produces something like a 6 percent unbalance in current, all of it
+extra heating in the stator, and NEMA MG-1 requires derating above 1 percent for
+exactly that reason. **Small voltage unbalance, large current unbalance** is the
+sentence to carry out of this section.`,
+      examTip: 'When a load is unbalanced, stop reaching for √3·V_L·I_L·cos φ — there is no single line current and no single angle to put in it. Compute each phase separately and add the three real powers. The √3 formula is a balanced-system formula and using it on an unbalanced load is a category error, not a rounding error.',
+      importantNote: 'The NEMA LVUR (maximum deviation from the average of the three line-voltage magnitudes) and the IEC VUF (ratio of negative-sequence to positive-sequence voltage) are two independent standard definitions, not an approximation and an exact form of one quantity. For the 480/470/464 V set in Worked example 7.4 they give 1.84 percent and 1.98 percent respectively. Always state which index a quoted unbalance figure refers to.',
+    },
+    {
+      id: '3ph-problem-set-a',
+      title: '8. Problem Set A: Connections, the Root Three, and Balanced Power',
+      content: `Work each of these on paper before reading the solution. All seven are
+handbook-solvable in about three minutes, and each one is built around a
+specific √3 trap.
+
+## 8. Problem Set A — connections and balanced power
+
+### The problems
+
+**A1.** A balanced wye load is supplied at 4,160 V line-to-line. Find the phase
+voltage.
+
+**A2.** Three 12 Ω resistors are connected in delta on a 240 V, three-phase
+supply. Find the phase current, the line current and the total power.
+
+**A3.** A balanced wye load of $6 + j8\\ \\Omega$ per phase is connected to a 208 V
+supply. Find the line current, the power factor, and the real, reactive and
+apparent power.
+
+**A4.** A motor draws 25 A of line current at 480 V with a power factor of 0.85
+lagging. Find its apparent, real and reactive power.
+
+**A5.** A balanced delta load of $30 + j40\\ \\Omega$ per phase is connected to a
+480 V supply. Find the phase current, the line current and the real power.
+
+**A6.** Three identical resistors dissipate 6 kW connected in wye across a given
+supply. What do they dissipate reconnected in delta on the same supply?
+
+**A7.** Two wattmeters on a balanced load read 4.2 kW and 1.6 kW. Find the total
+power and the power factor.
+
+### Solutions
+
+**A1.** A three-phase nameplate voltage is line-to-line, and in wye the phase
+voltage is smaller:
+
+$$V_{ph} = \\frac{4{,}160}{\\sqrt{3}} = 2{,}402\\ \\mathrm{V}$$
+
+*Distractor:* multiplying instead of dividing gives 7,205 V — the answer to a
+question nobody asked, because no wye source has a phase voltage larger than its
+line voltage. If your phase voltage exceeds your line voltage in a wye, the
+operation was inverted.
+
+**A2.** In delta each element sees the full line voltage:
+
+$$I_{ph} = \\frac{240}{12} = 20.0\\ \\mathrm{A}, \\qquad I_{L} = \\sqrt{3}(20.0) = 34.64\\ \\mathrm{A}$$
+
+$$P = 3I_{ph}^{2}R = 3(400)(12) = 14{,}400\\ \\mathrm{W} = \\sqrt{3}(240)(34.64)$$
+
+*Distractor:* dividing the 240 V by √3 first, as though the load were wye, gives
+11.55 A per element and 4,800 W — exactly one third of the right answer, and the
+single most common three-phase error there is.
+
+**A3.** $\\lvert Z\\rvert = \\sqrt{36 + 64} = 10\\ \\Omega$, and in wye the phase
+current is the line current:
+
+$$I_{L} = \\frac{208/\\sqrt{3}}{10} = \\frac{120.09}{10} = 12.01\\ \\mathrm{A}, \\qquad \\mathrm{pf} = \\frac{R}{\\lvert Z\\rvert} = \\frac{6}{10} = 0.600\\ \\text{lagging}$$
+
+$$P = 3I^{2}R = 2{,}596\\ \\mathrm{W}, \\qquad Q = 3I^{2}X = 3{,}461\\ \\mathrm{VAR}, \\qquad S = \\sqrt{3}(208)(12.01) = 4{,}326\\ \\mathrm{VA}$$
+
+*Distractor:* taking the power factor as $\\cos (\\arctan (6/8)) = 0.8$ by reading
+the impedance triangle upside down. Power factor is resistance over magnitude,
+never reactance over magnitude.
+
+**A4.** The line-quantity formulas need no knowledge of the connection at all:
+
+$$S = \\sqrt{3}(480)(25) = 20{,}785\\ \\mathrm{VA}, \\qquad P = S(0.85) = 17{,}667\\ \\mathrm{W}$$
+
+$$Q = S\\sin (\\arccos 0.85) = 20{,}785(0.5268) = 10{,}949\\ \\mathrm{VAR}$$
+
+*Distractor:* using $3V_{L}I_{L}$ rather than $\\sqrt{3}V_{L}I_{L}$ gives 36.0 kVA,
+which is $\\sqrt{3}$ too large. The formula $P = 3V_{ph}I_{ph}\\cos \\phi$ is correct
+but takes **phase** quantities; mixing the 3 from one form with the line
+quantities of the other is the trap.
+
+**A5.** $\\lvert Z\\rvert = \\sqrt{900 + 1600} = 50\\ \\Omega$, and in delta each
+element sees 480 V:
+
+$$I_{ph} = \\frac{480}{50} = 9.60\\ \\mathrm{A}, \\qquad I_{L} = \\sqrt{3}(9.60) = 16.63\\ \\mathrm{A}, \\qquad P = 3(9.60)^{2}(30) = 8{,}294\\ \\mathrm{W}$$
+
+Check it through the wye equivalent: $Z_{Y} = (30 + j40)/3 = 10 + j13.33\\ \\Omega$
+of magnitude 16.67 Ω, giving $I_{L} = 277.13/16.67 = 16.63$ A — identical, as it
+must be.
+
+*Distractor:* 4.80 A per element, from dividing the 480 V by √3 before dividing
+by the impedance. Delta elements never see anything but the line voltage.
+
+**A6.** Delta draws exactly three times the wye power on the same supply:
+
+$$P_{Y} = \\frac{3(V_{L}/\\sqrt{3})^{2}}{R} = \\frac{V_{L}^{2}}{R}, \\qquad P_{\\Delta} = \\frac{3V_{L}^{2}}{R} = 3P_{Y} = 18\\ \\mathrm{kW}$$
+
+*Distractor:* √3 times 6 kW = 10.4 kW, from applying the √3 once instead of
+squaring it. The voltage ratio is √3 and power goes as voltage squared, so the
+power ratio is 3.
+
+**A7.**
+
+$$P = W_{1} + W_{2} = 5.80\\ \\mathrm{kW}, \\qquad \\tan \\theta = \\sqrt{3}\\,\\frac{4.2 - 1.6}{5.8} = 0.7764$$
+
+$$\\theta = 37.83^\\circ \\;\\Rightarrow\\; \\mathrm{pf} = \\cos 37.83^\\circ = 0.790\\ \\text{lagging}$$
+
+*Distractor:* 2.6 kW, from subtracting the readings because one "looks like" a
+correction. The difference has a meaning — it is $Q/\\sqrt{3}$ — but the total
+power is always the sum.`,
+      examTip: 'Before any arithmetic, write two words at the top of the page: WYE or DELTA, and LINE or PHASE for each given number. Six of these seven problems have a distractor that is reachable only by getting one of those two labels wrong, and that is representative of the real exam.',
+      importantNote: 'S = √3·V_L·I_L and P = 3·V_ph·I_ph·cos φ are both correct and they are not interchangeable term by term. The first takes line quantities and carries √3; the second takes phase quantities and carries 3. Writing 3·V_L·I_L or √3·V_ph·I_ph produces an answer wrong by a factor of √3 in opposite directions.',
+    },
+    {
+      id: '3ph-problem-set-b',
+      title: '9. Problem Set B: Feeders, Unbalance, Measurement, Correction',
+      content: `The second set is the harder half of the topic: loads at the end of a
+feeder, unbalanced neutrals, wattmeter inversion and three-phase power factor
+correction. Each is still a three-minute problem with a handbook.
+
+## 9. Problem Set B — feeders, unbalance and measurement
+
+### The problems
+
+**B1.** A 480 V source feeds a wye load of $10 + j7.5\\ \\Omega$ per phase through
+a feeder of $0.2 + j0.4\\ \\Omega$ per conductor. Find the line current, the load
+line voltage, the power delivered and the feeder efficiency.
+
+**B2.** A 208/120 V four-wire panel carries resistive loads of 8 Ω, 12 Ω and
+24 Ω on phases a, b and c. Find the three line currents, the neutral current and
+the total power.
+
+**B3.** A balanced delta load draws 45 A of line current at 480 V with a power
+factor of 0.75 lagging. Find the phase current, the per-phase impedance in
+rectangular form, and P, Q and S.
+
+**B4.** A 480 V plant draws 150 kW at 0.78 power factor lagging. Find the
+capacitive reactive power needed to correct to 0.95, the per-phase capacitance
+if the bank is delta-connected at 60 Hz, and the reduction in feeder loss.
+
+**B5.** Show that a three-phase three-wire system needs 75 percent of the
+conductor metal of a single-phase two-wire system delivering the same power the
+same distance at the same line voltage with the same total loss.
+
+**B6.** Two wattmeters on a balanced three-phase load read +90 kW and −15 kW.
+Find the total power, the power factor, the reactive power, and the line current
+at 480 V.
+
+**B7.** A motor with $1.6 + j3.2\\ \\Omega$ per phase runs delta-connected on
+460 V. Find the starting line current in delta and in wye, and the ratio.
+
+### Solutions
+
+**B1.** Per phase, source $277.13\\angle 0^\\circ$ V and
+$Z_{total} = 10.2 + j7.9 = 12.90\\angle 37.76^\\circ\\ \\Omega$:
+
+$$I_{L} = \\frac{277.13}{12.90} = 21.48\\angle -37.76^\\circ\\ \\mathrm{A}$$
+
+$$V_{load,ph} = (21.48)(12.5) = 268.5\\ \\mathrm{V} \\;\\Rightarrow\\; V_{load,LL} = 465.1\\ \\mathrm{V}$$
+
+$$P_{load} = 3(21.48)^{2}(10) = 13{,}842\\ \\mathrm{W}, \\qquad P_{loss} = 3(21.48)^{2}(0.2) = 276.8\\ \\mathrm{W}$$
+
+$$\\eta = \\frac{10}{10.2} = 98.0\\%$$
+
+*Distractor:* using the full 480 V across the load, which gives 15.5 kW and a
+100 percent efficient feeder. The feeder impedance is small but it is not zero,
+and the question is asking for exactly the difference it makes.
+
+**B2.**
+
+$$I_{a} = \\frac{120}{8} = 15\\angle 0^\\circ, \\qquad I_{b} = \\frac{120}{12} = 10\\angle -120^\\circ, \\qquad I_{c} = \\frac{120}{24} = 5\\angle 120^\\circ$$
+
+$$I_{n} = (15 + j0) + (-5 - j8.660) + (-2.5 + j4.330) = 7.500 - j4.330 = 8.660\\angle -30^\\circ\\ \\mathrm{A}$$
+
+$$P = \\frac{120^{2}}{8} + \\frac{120^{2}}{12} + \\frac{120^{2}}{24} = 1800 + 1200 + 600 = 3{,}600\\ \\mathrm{W}$$
+
+*Distractor:* 15 − 10 − 5 = 0 A of neutral current, from treating the phasors as
+signed scalars. The answer is 8.66 A, more than half the largest phase current,
+and a panel wired on the arithmetic assumption would have an undersized neutral.
+
+**B3.** In delta the line current is the larger one:
+
+$$I_{ph} = \\frac{45}{\\sqrt{3}} = 25.98\\ \\mathrm{A}, \\qquad \\lvert Z_{ph}\\rvert = \\frac{480}{25.98} = 18.48\\ \\Omega$$
+
+$$\\theta = \\arccos 0.75 = 41.41^\\circ \\;\\Rightarrow\\; Z_{ph} = 13.86 + j12.22\\ \\Omega$$
+
+$$S = \\sqrt{3}(480)(45) = 37.41\\ \\mathrm{kVA}, \\quad P = 28.06\\ \\mathrm{kW}, \\quad Q = 24.75\\ \\mathrm{kVAR}$$
+
+*Distractor:* $480/45 = 10.67\\ \\Omega$, from using the line current with the phase
+voltage. In a delta those two belong to different elements, and mixing them
+understates the impedance by √3.
+
+**B4.** Correction changes Q and leaves P alone:
+
+$$Q_{1} = 150\\tan (\\arccos 0.78) = 120.3\\ \\mathrm{kVAR}, \\qquad Q_{2} = 150\\tan (\\arccos 0.95) = 49.3\\ \\mathrm{kVAR}$$
+
+$$Q_{C} = 120.3 - 49.3 = 71.0\\ \\mathrm{kVAR} \\;\\Rightarrow\\; 23.68\\ \\mathrm{kVAR\\ per\\ phase}$$
+
+In delta each capacitor sees the full 480 V:
+
+$$C = \\frac{Q_{C,ph}}{2\\pi f V^{2}} = \\frac{23{,}680}{2\\pi (60)(480)^{2}} = 272.6\\ \\mu \\mathrm{F}$$
+
+Line current falls from $150{,}000/(\\sqrt{3}\\cdot 480\\cdot 0.78) = 231.3$ A to
+189.9 A, so the loss falls by
+
+$$1 - \\left(\\frac{0.78}{0.95}\\right)^{2} = 32.6\\%$$
+
+*Distractor:* a wye-connected bank of the same kVAR needs 817.9 µF per phase —
+three times as much capacitance — because each unit sees $480/\\sqrt{3}$ and
+capacitive kVAR goes as $V^{2}$. Quoting a delta bank's capacitance for a wye
+bank, or the reverse, is wrong by exactly three.
+
+**B5.** Same power at the same line voltage fixes the currents, and equal loss
+then fixes the resistances:
+
+$$I_{3\\phi} = \\frac{I_{1\\phi}}{\\sqrt{3}}, \\qquad 2I_{1\\phi}^{2}R_{1} = 3\\left(\\frac{I_{1\\phi}}{\\sqrt{3}}\\right)^{2}R_{3} \\;\\Rightarrow\\; R_{3} = 2R_{1}$$
+
+Metal goes as conductors over resistance:
+
+$$\\frac{3/R_{3}}{2/R_{1}} = \\frac{3}{4} = 75\\%$$
+
+*Distractor:* comparing at equal **phase** voltage rather than equal line
+voltage, which produces a different and much less flattering ratio. The standard
+result assumes the two systems are compared at the same line-to-line voltage,
+and it applies to three wires only — add a full-size neutral and the advantage
+disappears entirely.
+
+**B6.** A negative reading is added, not discarded:
+
+$$P = 90 + (-15) = 75\\ \\mathrm{kW}, \\qquad \\tan \\theta = \\sqrt{3}\\,\\frac{90 - (-15)}{75} = 2.425$$
+
+$$\\theta = 67.59^\\circ \\;\\Rightarrow\\; \\mathrm{pf} = 0.381\\ \\text{lagging}, \\qquad Q = \\sqrt{3}(105) = 181.9\\ \\mathrm{kVAR}$$
+
+$$I_{L} = \\frac{75{,}000}{\\sqrt{3}(480)(0.381)} = 236.6\\ \\mathrm{A}$$
+
+*Distractor:* 105 kW, from taking the magnitude of the negative reading. The
+negative sign is information — it says immediately, before any arithmetic, that
+the power factor is below 0.5, which the computed 0.381 confirms.
+
+**B7.** $\\lvert Z\\rvert = \\sqrt{1.6^{2} + 3.2^{2}} = 3.578\\ \\Omega$.
+
+$$\\text{Delta: } I_{ph} = \\frac{460}{3.578} = 128.6\\ \\mathrm{A}, \\qquad I_{L} = \\sqrt{3}(128.6) = 222.7\\ \\mathrm{A}$$
+
+$$\\text{Wye: } I_{L} = I_{ph} = \\frac{460/\\sqrt{3}}{3.578} = \\frac{265.6}{3.578} = 74.23\\ \\mathrm{A}$$
+
+$$\\frac{222.7}{74.23} = 3.00$$
+
+*Distractor:* a ratio of √3 = 1.73, from applying the √3 once. Both the voltage
+across each winding and the line-to-phase current relation contribute a √3, and
+their product is 3 — which is why a wye-delta starter is quoted as a
+"one-third-current" starter and never as a "58 percent" one.`,
+      examTip: 'For any problem with a feeder, solve the per-phase circuit for CURRENT first and then build everything else from it. Current is common to the feeder and the load, so one division gives you the load voltage, the drop, both powers and the efficiency without a second complex division.',
+      importantNote: 'Capacitor bank sizing depends on the connection. A delta bank sees the line voltage and needs one third the capacitance of a wye bank of the same kVAR — 272.6 µF against 817.9 µF in Problem B4. The kVAR is what the utility meters and what the problem usually specifies; the microfarads are what you order, and the connection is what converts between them.',
     },
   ],
   keyTakeaways: [
@@ -4563,6 +6064,818 @@ omega_d, with no differential equation solved.`,
           explanation: 'W = (1/2)L I^2 = 0.5 x 2 x 9 = 9 J. That energy cannot vanish instantaneously, so without a flyback path it goes into an arc across the opening contacts - which is the mechanism that destroys switches in inductive circuits.',
         },
       ],
+    },
+    {
+      id: 'tr-ode',
+      title: '5. Solving the First-Order Equation Rather Than Quoting It',
+      content: `The universal formula of section 1 is a shortcut, and a shortcut is
+worth trusting only once you have watched it come out of the circuit. What
+follows is the same physics, derived rather than asserted, because the
+derivation is also the statement of when the shortcut fails: it holds for one
+independent energy-storage element driven by a constant source, and for nothing
+else. Recognising that boundary is worth as many exam marks as the formula
+itself.
+
+## 5.1 The RC step, from Kirchhoff to the exponential
+
+Put a resistor and a capacitor in series across a source that steps from zero to
+$V$ at $t = 0$. KVL around the single loop gives
+
+$$V = i(t)\\,R + v_C(t)$$
+
+and the capacitor's own definition supplies the current:
+
+$$i(t) = C\\,\\frac{dv_C}{dt}$$
+
+Substituting one into the other produces a first-order linear differential
+equation with constant coefficients:
+
+$$RC\\,\\frac{dv_C}{dt} + v_C = V$$
+
+Separate the variables. Every term containing the unknown goes left, every term
+containing time goes right:
+
+$$\\frac{dv_C}{V - v_C} = \\frac{dt}{RC}$$
+
+Integrate both sides:
+
+$$-\\ln (V - v_C) = \\frac{t}{RC} + K$$
+
+Exponentiate, absorb the constant, and the exponential appears without ever
+having been assumed:
+
+$$V - v_C(t) = A\\,e^{-t/RC}$$
+
+Finally apply the initial condition. If the capacitor already held $V_0$ at the
+instant of switching, then $A = V - V_0$, and
+
+$$v_C(t) = V + (V_0 - V)\\,e^{-t/RC}$$
+
+That is precisely the universal formula with $x(\\infty) = V$, $x(0) = V_0$ and
+$\\tau = RC$. Nothing was memorised; the product $RC$ arrived as the only
+combination of the two components that carries units of time.
+
+## 5.2 The same answer as natural plus forced response
+
+The second route is the one that generalises to higher order, so it is worth
+having as well. Write the solution as two pieces that are added:
+
+$$v_C(t) = v_{\\text{natural}}(t) + v_{\\text{forced}}(t)$$
+
+The **natural response** solves the source-free equation $RC\\,dv/dt + v = 0$.
+Trying $v = A e^{st}$ gives the characteristic equation
+
+$$RCs + 1 = 0 \\;\\Longrightarrow\\; s = -\\frac{1}{RC}$$
+
+so $v_{\\text{natural}} = A e^{-t/\\tau}$ with $\\tau = -1/s$. The time constant
+is the negative reciprocal of the characteristic root, which is the definition
+that survives into second-order and into Laplace methods.
+
+The **forced response** is whatever the circuit settles to under the drive. For
+a constant source that is the DC steady state, $v_{\\text{forced}} = V$.
+
+Only after adding the two is the initial condition applied. This is the single
+most common error in the whole topic: fitting $A$ to the natural response alone
+gives $A = V_0$ instead of $A = V_0 - V$, and every subsequent number is wrong.
+The initial condition belongs to the **total** response.
+
+## 5.3 The RL dual, derived the same way
+
+Swap the capacitor for an inductor and repeat. KVL gives
+
+$$V = i(t)\\,R + L\\,\\frac{di}{dt}$$
+
+which rearranges into the same standard form,
+
+$$\\frac{L}{R}\\,\\frac{di}{dt} + i = \\frac{V}{R}$$
+
+so the time constant is $\\tau = L/R$ and the final current is $V/R$. With an
+initial current $I_0$ the solution is
+
+$$i(t) = \\frac{V}{R} + \\left(I_0 - \\frac{V}{R}\\right) e^{-tR/L}$$
+
+and the inductor voltage follows by differentiating:
+
+$$v_L(t) = L\\,\\frac{di}{dt} = (V - I_0 R)\\,e^{-tR/L}$$
+
+Notice that $\\tau = L/R$ moves the opposite way from intuition: **more**
+resistance makes an RL circuit **faster**, while more resistance makes an RC
+circuit slower. Exam questions exploit that asymmetry directly, offering "the
+time constant increases" as a distractor for both circuits when it is true of
+only one.
+
+## 5.4 Worked example 1 — an RC step solved from the differential equation
+
+A 47 microfarad capacitor, initially uncharged, is connected through 3.3 kilohm
+to a 24 V source at $t = 0$. Find the time constant, the initial current, the
+voltage at one, two, three and five time constants, and the time to reach 20 V.
+
+**Time constant.** $\\tau = RC = 3300 \\times 47 \\times 10^{-6} = 0.1551$ s, i.e.
+**155.1 ms**. The kilohm-times-microfarad shortcut gives it in milliseconds by
+inspection: $3.3 \\times 47 = 155.1$.
+
+**Initial current.** At $t = 0^{+}$ the capacitor still holds 0 V, so the whole
+24 V sits across the resistor and $i(0^{+}) = 24/3300 = $ **7.273 mA**.
+
+**The response.** $v_C(t) = 24\\left(1 - e^{-t/0.1551}\\right)$ volts.
+
+| Elapsed | $t$ | $v_C$ | $i = (24 - v_C)/R$ |
+|---|---|---|---|
+| $1\\tau$ | 155.1 ms | 15.17 V | 2.675 mA |
+| $2\\tau$ | 310.2 ms | 20.75 V | 0.984 mA |
+| $3\\tau$ | 465.3 ms | 22.81 V | 0.362 mA |
+| $5\\tau$ | 775.5 ms | 23.84 V | 0.049 mA |
+
+**Time to 20 V.** Invert the exponential:
+
+$$t = -\\tau \\ln \\left(\\frac{V - v}{V - V_0}\\right) = -0.1551 \\ln \\left(\\frac{24 - 20}{24}\\right) = 0.1551 \\times 1.7918 = 0.2779\\ \\text{s}$$
+
+so **277.9 ms**, which sits sensibly between the 310.2 ms that reaches 20.75 V
+and the 155.1 ms that reaches 15.17 V. The half-way time is a useful sanity
+anchor of its own: $t_{1/2} = \\tau \\ln 2 = 0.1075$ s for any first-order
+circuit charging from zero.
+
+## 5.5 The three questions, in the order that avoids errors
+
+Every first-order problem reduces to answering three questions, and answering
+them in this order stops the usual mistakes:
+
+1. **What is the state variable, and what is it immediately after switching?**
+   Only $v_C$ and $i_L$ are continuous. Solve the pre-switch circuit in steady
+   state, read $v_C(0^{-})$ or $i_L(0^{-})$, and carry it across unchanged.
+2. **What is the final value?** Redraw the post-switch circuit at DC steady
+   state, capacitors open and inductors shorted, and solve it as a resistive
+   network.
+3. **What resistance does the element see?** Kill every independent source
+   (voltage sources shorted, current sources opened) and find the Thevenin
+   resistance at the element's own terminals. That resistance, not the one drawn
+   nearest, sets $\\tau$.
+
+Any quantity that is not $v_C$ or $i_L$ — a resistor current, a branch voltage —
+is then recovered algebraically from the state variable at whatever instant is
+asked. Those quantities may jump discontinuously, and often do.
+
+## 5.6 Worked example 2 — the time constant from a Thevenin equivalent
+
+A 40 V source feeds an 8 kilohm resistor into a node; from that node a 12 kilohm
+resistor returns to ground, and a 2.2 microfarad capacitor also sits from the
+node to ground. The capacitor is uncharged when the source is applied at
+$t = 0$. Find the final voltage, the time constant, and the voltage at 20 ms.
+
+**Final value.** With the capacitor open, the two resistors form a divider:
+
+$$v_C(\\infty) = 40 \\times \\frac{12}{8 + 12} = 24\\ \\text{V}$$
+
+**Time constant.** Kill the 40 V source by shorting it. The capacitor then sees
+8 kilohm in parallel with 12 kilohm:
+
+$$R_{\\text{th}} = \\frac{8 \\times 12}{8 + 12} = 4.8\\ \\text{k}\\Omega, \\qquad \\tau = 4800 \\times 2.2 \\times 10^{-6} = 10.56\\ \\text{ms}$$
+
+**At 20 ms.** That is $20/10.56 = 1.894$ time constants, so
+
+$$v_C = 24\\left(1 - e^{-1.894}\\right) = 24(1 - 0.1504) = 20.39\\ \\text{V}$$
+
+The distractors write themselves, and every one of them is a real student
+answer: 26.4 ms from using the 12 kilohm alone, 17.6 ms from using the 8 kilohm
+alone, and 44 ms from adding the two in series. Only the killed-source parallel
+combination is right, and it is the smallest of the four — the parallel
+combination is always smaller than either resistor, so a time constant larger
+than $R_{\\min}C$ is a red flag before you check anything else.
+
+## 5.7 One pair of curves, and the tangent that fixes the scale
+
+Because the solution depends on time only through $t/\\tau$, a single pair of
+curves in normalised units serves every RC and RL circuit that will ever be set:
+
+![Charging and discharging exponentials plotted against elapsed time in units of the time constant, with the 63.2, 86.5, 95.0, 98.2 and 99.3 percent marks shown, and the initial tangent drawn to the point where it meets the final value at exactly one time constant.](/courses/fe-ee/figures/ckt2-rc-charge.svg)
+
+The dashed straight line is worth more than the marked percentages. Differentiate
+the response at the instant of switching:
+
+$$\\left. \\frac{dv_C}{dt} \\right|_{t=0} = \\frac{V - V_0}{\\tau}$$
+
+At that initial rate the capacitor would reach its final value in exactly one
+time constant. It does not, because the rate falls as the gap closes, but the
+construction gives a graphical definition of $\\tau$ that needs no logarithms:
+draw the tangent at the start of a measured transient, see where it crosses the
+final value, and read the time constant off the axis. Oscilloscope work uses
+this constantly, and it is also the fastest way to check a computed $\\tau$
+against a sketch.
+
+## 5.8 Worked example 3 — the RL turn-on, both variables at once
+
+A 250 mH coil of 50 ohm resistance is switched onto 24 V. Find the time
+constant, the final current, the current and coil voltage at one time constant,
+the stored energy, and the time to reach 0.40 A.
+
+$$\\tau = \\frac{L}{R} = \\frac{0.25}{50} = 5\\ \\text{ms}, \\qquad i(\\infty) = \\frac{24}{50} = 0.48\\ \\text{A}$$
+
+$$i(t) = 0.48\\left(1 - e^{-t/5\\,\\text{ms}}\\right)\\ \\text{A}, \\qquad v_L(t) = 24\\,e^{-t/5\\,\\text{ms}}\\ \\text{V}$$
+
+At $t = \\tau$: $i = 0.48 \\times 0.6321 = $ **0.3034 A** and
+$v_L = 24 \\times 0.3679 = $ **8.829 V**. The two are exact mirror images, which
+the figure makes plain:
+
+![Inductor current rising and inductor voltage falling during an RL turn-on, both normalised to their initial or final values, with the one time constant point at 5 ms marked at 0.303 A and 8.83 V.](/courses/fe-ee/figures/ckt2-rl-current.svg)
+
+**Stored energy at steady state.**
+
+$$W = \\tfrac{1}{2}L\\,i^2 = 0.5 \\times 0.25 \\times 0.48^2 = 28.8\\ \\text{mJ}$$
+
+**Time to 0.40 A.**
+
+$$t = -\\tau \\ln \\left(1 - \\frac{0.40}{0.48}\\right) = -5 \\ln (0.1667) = 5 \\times 1.7918 = 8.959\\ \\text{ms}$$
+
+That is not quite two time constants, which agrees with the current at 12 ms
+being already 0.4365 A. If your answer for a rising current exceeds the final
+value, or a computed time comes out negative, the logarithm argument went
+negative and the initial and final values were swapped.
+
+## 5.9 Turn-off: the transient that destroys switches
+
+Energising an inductor is gentle; de-energising one is not. The stored energy
+$\\tfrac{1}{2}Li^2$ has to leave through whatever path exists, and if the switch
+opens the only remaining path is the air between its contacts. The coil enforces
+its current by raising its terminal voltage without limit:
+
+$$v_L = L\\,\\frac{di}{dt}$$
+
+The engineering answer is to give the current a deliberate path — a flyback
+diode, a resistor, or an RC snubber — so that the decay happens through a
+component chosen for the job. The resistor version is the one that yields clean
+numbers, because the peak voltage it produces is simply Ohm's law on the
+instantaneous current.
+
+## 5.10 Worked example 4 — a coil interrupted into a bleeder resistor
+
+The 250 mH, 50 ohm coil above is carrying its full 0.48 A when the supply switch
+opens. A 1 kilohm bleeder resistor is permanently connected across the coil.
+Find the voltage that appears across the bleeder at the instant of opening, the
+new time constant, the current 500 microseconds later, and how the stored energy
+divides.
+
+**Voltage at the instant of opening.** Inductor current is continuous, so 0.48 A
+must immediately flow in the bleeder:
+
+$$v = i(0^{+})\\,R_b = 0.48 \\times 1000 = 480\\ \\text{V}$$
+
+Twenty times the 24 V supply, from a resistor whose only job is protection. That
+is why a snubber's voltage rating matters more than its power rating.
+
+**New time constant.** The loop is now the coil in series with its own 50 ohm
+winding and the 1 kilohm bleeder:
+
+$$\\tau = \\frac{L}{R + R_b} = \\frac{0.25}{1050} = 238.1\\ \\mu\\text{s}$$
+
+**Current at 500 microseconds.** $500/238.1 = 2.100$ time constants, so
+$i = 0.48\\,e^{-2.100} = $ **58.8 mA**.
+
+**Energy split.** The full 28.8 mJ leaves the field; the two resistances share it
+in proportion to their values because they carry the same current at every
+instant:
+
+$$W_b = 28.8 \\times \\frac{1000}{1050} = 27.43\\ \\text{mJ}$$
+
+The remaining 1.37 mJ heats the winding. Choosing a larger bleeder decays the
+current faster and captures a larger share of the energy, at the price of a
+proportionally larger voltage spike — 10 kilohm would clear the current in
+24.9 microseconds but generate 4.8 kV. That trade between speed and stress is
+the entire design problem, and it is why the diode, which clamps at roughly one
+volt and accepts a slow decay, is the default choice wherever slow is acceptable.`,
+      examTip: 'Derive the time constant as the negative reciprocal of the characteristic root, tau = -1/s. It is the same number as RC or L/R for first-order circuits, and it is the only definition that still works when the circuit becomes second order.',
+      importantNote: 'Apply the initial condition to the TOTAL response, natural plus forced - never to the natural part alone. Fitting the constant before adding the forced term is the error that produces an answer starting at the right value and heading to the wrong one.',
+    },
+    {
+      id: 'tr-second-ode',
+      title: '6. Second-Order Circuits: Roots, Regimes and Ringing',
+      content: `A circuit with both an inductor and a capacitor stores energy in two
+places and can trade it back and forth, which no first-order circuit can do. The
+mathematics changes accordingly: one characteristic root becomes two, and the
+character of the response depends on whether those two roots are real or
+complex. Everything in this section is the arithmetic of that one question.
+
+## 6.1 The equation and its roots
+
+For a series RLC loop driven by a step of amplitude $V$, KVL and the two element
+laws give
+
+$$LC\\,\\frac{d^2 v_C}{dt^2} + RC\\,\\frac{dv_C}{dt} + v_C = V$$
+
+Divide through by $LC$ and the standard form appears:
+
+$$\\frac{d^2 v_C}{dt^2} + \\frac{R}{L}\\,\\frac{dv_C}{dt} + \\frac{1}{LC}\\,v_C = \\frac{V}{LC}$$
+
+The characteristic equation of the homogeneous part is
+
+$$s^2 + \\frac{R}{L}\\,s + \\frac{1}{LC} = 0$$
+
+which is universally written with two named parameters,
+
+$$s^2 + 2\\alpha s + \\omega_0^2 = 0, \\qquad \\alpha = \\frac{R}{2L}, \\qquad \\omega_0 = \\frac{1}{\\sqrt{LC}}$$
+
+and solved by the quadratic formula:
+
+$$s_{1,2} = -\\alpha \\pm \\sqrt{\\alpha^2 - \\omega_0^2}$$
+
+Everything hangs on the sign of what is under that radical. The damping ratio
+names it in dimensionless form:
+
+$$\\zeta = \\frac{\\alpha}{\\omega_0} = \\frac{R}{2}\\sqrt{\\frac{C}{L}} = \\frac{R}{2\\sqrt{L/C}}$$
+
+The **parallel** RLC has the same $\\omega_0$ and a different $\\alpha$, and the
+difference is not cosmetic:
+
+$$\\alpha_{\\text{series}} = \\frac{R}{2L}, \\qquad \\alpha_{\\text{parallel}} = \\frac{1}{2RC}$$
+
+In the series circuit more resistance damps harder; in the parallel circuit more
+resistance damps **less**, because the loss path is a shunt and a bigger shunt
+resistance draws less current out of the tank. Using the series formula on a
+parallel circuit is the single most productive distractor in this part of the
+syllabus, and it usually changes the answer by orders of magnitude rather than
+percentages.
+
+## 6.2 One L and C, three resistors, three different worlds
+
+Fix $L = 100$ mH and $C = 20$ microfarad. Then
+
+$$\\omega_0 = \\frac{1}{\\sqrt{0.100 \\times 20 \\times 10^{-6}}} = \\frac{1}{\\sqrt{2 \\times 10^{-6}}} = 707.1\\ \\text{rad/s}$$
+
+which is $f_0 = 112.54$ Hz, and the characteristic impedance is
+$\\sqrt{L/C} = \\sqrt{5000} = 70.71$ ohm. Critical damping needs
+$R = 2\\sqrt{L/C} = 141.4$ ohm. Three choices of $R$ then produce the three
+regimes:
+
+| $\\zeta$ | $R$ | Roots $s_{1,2}$ | Regime |
+|---|---|---|---|
+| 0.25 | 35.36 $\\Omega$ | $-176.8 \\pm j684.7$ | underdamped |
+| 1.00 | 141.4 $\\Omega$ | $-707.1$ (twice) | critically damped |
+| 2.50 | 353.6 $\\Omega$ | $-147.6$ and $-3388$ | overdamped |
+
+![Series RLC step response for damping ratios of 0.25, 1.0 and 2.5 on identical L and C, showing a 44.4 percent overshoot for the underdamped case, no overshoot for the critical case, and a slow monotonic approach for the overdamped case.](/courses/fe-ee/figures/ckt2-rlc-damping.svg)
+
+Three readings the figure supports and a formula does not. First, the
+underdamped curve crosses its target early and then oscillates about it; the
+overshoot is not a defect of the model but the actual voltage the capacitor
+reaches. Second, the critically damped curve is the fastest one that never
+crosses — the boundary case is not a compromise, it is an optimum. Third, the
+overdamped curve is *slower* than the critical one despite having more
+resistance to dissipate energy, which is the result students find least
+intuitive and which the root arithmetic in section 6.5 explains exactly.
+
+## 6.3 Worked example 5 — the underdamped step, root by root
+
+Take $R = 35.36$ ohm with the $L$ and $C$ above. Classify the response, find the
+roots, write the solution, and give the ringing frequency and the first peak.
+
+$$\\alpha = \\frac{R}{2L} = \\frac{35.36}{0.200} = 176.8\\ \\text{s}^{-1}, \\qquad \\omega_0 = 707.1\\ \\text{rad/s}$$
+
+Since $\\alpha < \\omega_0$ the radical is negative and the roots are a complex
+conjugate pair. The **damped natural frequency** is
+
+$$\\omega_d = \\sqrt{\\omega_0^2 - \\alpha^2} = \\sqrt{500000 - 31250} = 684.7\\ \\text{rad/s}$$
+
+so $s_{1,2} = -176.8 \\pm j684.7$, and $\\zeta = 176.8/707.1 = 0.250$. The step
+response of the capacitor voltage, with the initial conditions
+$v_C(0) = 0$ and $i_L(0) = 0$, is
+
+$$v_C(t) = V\\left[1 - e^{-\\alpha t}\\left(\\cos \\omega_d t + \\frac{\\alpha}{\\omega_d}\\,\\sin \\omega_d t\\right)\\right]$$
+
+with $\\alpha/\\omega_d = 0.2582$ here.
+
+**Ringing frequency.** $f_d = \\omega_d/2\\pi = 684.7/6.2832 = $ **108.97 Hz**,
+and the ring period is $T_d = 2\\pi/\\omega_d = $ **9.177 ms**.
+
+**First peak.** The response peaks half a ring period in, at
+
+$$t_p = \\frac{\\pi}{\\omega_d} = \\frac{\\pi}{684.7} = 4.589\\ \\text{ms}$$
+
+and the overshoot there is
+
+$$M_p = e^{-\\pi \\zeta / \\sqrt{1 - \\zeta^2}} = e^{-\\pi (0.25)/0.9682} = e^{-0.8112} = 0.4443$$
+
+so the capacitor reaches **144.4 %** of the final voltage. Feed a 100 V step into
+this circuit and the capacitor briefly sees 144 V. That is the number that sizes
+the component, and quoting the 100 V supply instead is the classic mistake.
+
+**The frequency trap.** The undamped frequency here is
+$\\omega_0/2\\pi = 112.54$ Hz. The circuit does not ring at 112.54 Hz; it rings at
+108.97 Hz. At this damping the two differ by only 3 %, which is exactly why the
+substitution slips past unnoticed — and why exam problems are written at
+damping ratios where it does not.
+
+## 6.4 The two non-oscillatory forms
+
+When the roots are real the cosine and sine disappear. For **critical damping**
+the two roots coincide at $s = -\\alpha = -\\omega_0$, and the repeated root forces
+a $t\\,e^{st}$ term into the solution:
+
+$$v_C(t) = V\\left[1 - e^{-\\alpha t}(1 + \\alpha t)\\right]$$
+
+For **overdamping** the roots are distinct and real, and the step response is a
+weighted difference of two plain exponentials:
+
+$$v_C(t) = V\\left[1 - \\frac{s_1 e^{s_2 t} - s_2 e^{s_1 t}}{s_1 - s_2}\\right]$$
+
+Neither expression can overshoot, because neither contains an oscillatory
+factor. That is a structural fact, not an approximation: an overdamped circuit
+cannot be made to ring by any choice of step size.
+
+## 6.5 Worked example 6 — critical and overdamped, same L and C
+
+Keep $L = 100$ mH and $C = 20$ microfarad, and compare $R = 141.4$ ohm with
+$R = 353.6$ ohm.
+
+**Critical, $R = 141.4$ ohm.** $\\alpha = 141.4/0.200 = 707.1 = \\omega_0$, so
+$\\zeta = 1$ and both roots sit at $-707.1$. The response
+$1 - e^{-707.1t}(1 + 707.1t)$ reaches 95 % of final when $\\alpha t = 4.744$,
+i.e. at **6.71 ms**, and 99 % when $\\alpha t = 6.638$, i.e. at **9.39 ms**.
+
+**Overdamped, $R = 353.6$ ohm.** Now $\\alpha = 353.6/0.200 = 1768$ and
+
+$$\\sqrt{\\alpha^2 - \\omega_0^2} = \\sqrt{3.126 \\times 10^{6} - 5.000 \\times 10^{5}} = 1620\\ \\text{s}^{-1}$$
+
+$$s_1 = -1768 + 1620 = -147.6\\ \\text{s}^{-1}, \\qquad s_2 = -1768 - 1620 = -3388\\ \\text{s}^{-1}$$
+
+The two roots correspond to time constants of $1/147.6 = 6.78$ ms and
+$1/3388 = 0.295$ ms. The fast one dies almost immediately; the **slow** one
+dominates everything you see, and the response reaches 95 % only at
+**20.6 ms** — three times longer than the critically damped circuit with a
+quarter of the resistance.
+
+That is the resolution of the paradox. Adding resistance beyond critical does
+not remove energy faster; it splits the response into a fast root and a slow
+root, and pushes the slow root closer to the origin. The slowest root always
+governs, so past $\\zeta = 1$ every further ohm makes the circuit lazier. A
+relay driver, a comparator input, a moving-coil meter: all of them are damped
+deliberately near $\\zeta = 1$ and never far beyond it.
+
+## 6.6 The three specification numbers
+
+Design work rarely asks for $s_1$ and $s_2$. It asks for overshoot, speed and
+settling, and all three come from $\\zeta$ and $\\omega_0$ alone:
+
+$$M_p = e^{-\\pi \\zeta / \\sqrt{1 - \\zeta^2}} \\quad \\text{(fractional overshoot)}$$
+
+$$t_p = \\frac{\\pi}{\\omega_d} = \\frac{\\pi}{\\omega_0 \\sqrt{1 - \\zeta^2}} \\quad \\text{(time of first peak)}$$
+
+$$t_s \\approx \\frac{4}{\\zeta \\omega_0} = \\frac{4}{\\alpha} \\quad \\text{(2 \\% settling)}$$
+
+Overshoot depends on $\\zeta$ only — not on $\\omega_0$, not on the step size, not
+on which element you measure. Scaling $L$ and $C$ to move $\\omega_0$ while
+holding $\\zeta$ changes every time in the response and leaves the shape
+identical.
+
+| $\\zeta$ | Overshoot | Regime | Typical use |
+|---|---|---|---|
+| 0.1 | 72.9 % | very lightly damped | resonators, oscillator tanks |
+| 0.25 | 44.4 % | underdamped | fast response, overshoot tolerated |
+| 0.5 | 16.3 % | underdamped | common control compromise |
+| 0.707 | 4.3 % | maximally flat | filters, instrumentation |
+| 1.0 | 0 % | critically damped | meters, positioners |
+| 2.5 | 0 % | overdamped | deliberately slow, no ring |
+
+## 6.7 Worked example 7 — a specification given only in zeta
+
+A second-order circuit is specified as $\\zeta = 0.40$ with an undamped natural
+frequency of 2000 rad/s. Find the percentage overshoot, the time of the first
+peak, and the 2 % settling time.
+
+$$\\sqrt{1 - \\zeta^2} = \\sqrt{1 - 0.16} = 0.9165, \\qquad \\omega_d = 2000 \\times 0.9165 = 1833\\ \\text{rad/s}$$
+
+$$M_p = e^{-\\pi (0.40)/0.9165} = e^{-1.371} = 0.2538 \\;\\Rightarrow\\; 25.4\\ \\%$$
+
+$$t_p = \\frac{\\pi}{1833} = 1.714\\ \\text{ms}, \\qquad t_s \\approx \\frac{4}{0.40 \\times 2000} = 5.00\\ \\text{ms}$$
+
+The trap is in $t_p$: using the undamped $\\omega_0 = 2000$ instead of
+$\\omega_d = 1833$ gives $\\pi/2000 = 1.571$ ms, which is a plausible-looking
+distractor about 8 % low. The rule is that **every time in the oscillatory
+response is governed by** $\\omega_d$, and only the envelope is governed by
+$\\alpha$.
+
+## 6.8 Ringing, the envelope, and the logarithmic decrement
+
+Reduce the damping to $\\zeta = 0.1$ on the same $L$ and $C$ — that is
+$R = 2\\zeta\\sqrt{L/C} = 14.14$ ohm — and the circuit rings visibly:
+
+![A lightly damped step response with damping ratio 0.1, its exponential envelope drawn as dashed curves, the 8.93 millisecond ring period marked between the first two peaks, and the note that each peak is 53.2 percent of the one before.](/courses/fe-ee/figures/ckt2-ringing-envelope.svg)
+
+$$\\omega_d = 707.1\\sqrt{1 - 0.01} = 703.6\\ \\text{rad/s} \\;\\Rightarrow\\; f_d = 111.98\\ \\text{Hz}, \\quad T_d = 8.930\\ \\text{ms}$$
+
+The envelope decays as $e^{-\\alpha t}$ with $\\alpha = \\zeta \\omega_0 = 70.71$,
+so the envelope time constant is $1/70.71 = 14.14$ ms — about 1.59 ring periods,
+which is why the trace shows roughly five visible cycles before it is lost in
+the baseline.
+
+The ratio of successive peaks above the final value is fixed by $\\zeta$ alone:
+
+$$\\frac{A_{n+1}}{A_n} = e^{-\\alpha T_d} = e^{-2\\pi \\zeta / \\sqrt{1 - \\zeta^2}}$$
+
+which here is $e^{-0.6315} = 0.5318$: each peak is 53.2 % of the one before.
+Taking logarithms defines the **logarithmic decrement** $\\delta$ and inverts the
+relation:
+
+$$\\delta = \\ln \\frac{A_n}{A_{n+1}} = \\frac{2\\pi \\zeta}{\\sqrt{1 - \\zeta^2}} \\;\\Longrightarrow\\; \\zeta = \\frac{\\delta}{\\sqrt{4\\pi^2 + \\delta^2}}$$
+
+This is how damping is measured rather than calculated, and it needs no
+knowledge of $R$, $L$ or $C$ — only two peak heights and the time between them.
+It is also the link back to resonance: for a lightly damped circuit
+$Q = 1/(2\\zeta)$, so $\\zeta = 0.1$ is a $Q$ of 5, and the same circuit analysed
+in the frequency domain would show a bandwidth of $f_0/Q$.
+
+## 6.9 Worked example 8 — extracting zeta, omega and R from a scope trace
+
+An oscilloscope shows a ringing step response settling to 5.00 V. The first peak
+overshoots to 7.40 V and the second to 6.35 V, and the two peaks are
+400 microseconds apart. The inductance is known to be 10 mH. Find $\\zeta$,
+$\\omega_d$, $\\omega_0$, $Q$, and then $R$ and $C$.
+
+**Peak amplitudes above final.** $A_1 = 7.40 - 5.00 = 2.40$ V and
+$A_2 = 6.35 - 5.00 = 1.35$ V, so $A_2/A_1 = 0.5625$.
+
+$$\\delta = \\ln \\frac{1}{0.5625} = 0.5754, \\qquad \\zeta = \\frac{0.5754}{\\sqrt{4\\pi^2 + 0.331}} = \\frac{0.5754}{6.310} = 0.0912$$
+
+**Frequencies.** The measured period is the *damped* one:
+
+$$\\omega_d = \\frac{2\\pi}{400 \\times 10^{-6}} = 15708\\ \\text{rad/s}, \\qquad \\omega_0 = \\frac{\\omega_d}{\\sqrt{1 - \\zeta^2}} = 15774\\ \\text{rad/s}$$
+
+**Quality factor.** $Q = 1/(2\\zeta) = $ **5.48**.
+
+**Components.** With $L = 10$ mH,
+
+$$R = 2\\zeta \\omega_0 L = 2(0.0912)(15774)(0.010) = 28.8\\ \\Omega$$
+
+$$C = \\frac{1}{\\omega_0^2 L} = \\frac{1}{(15774)^2 (0.010)} = 402\\ \\text{nF}$$
+
+Every number came from the picture. This is the practical value of the
+second-order theory: a trace and two measurements identify a circuit whose
+component values were never given.
+
+## 6.10 The time constant and the corner frequency are the same fact
+
+A first-order circuit has one number, and it can be quoted in either domain. The
+RC that sets $\\tau$ also sets the corner frequency of the same network as a
+filter:
+
+$$f_c = \\frac{1}{2\\pi RC} = \\frac{1}{2\\pi \\tau}$$
+
+Take $R = 1.6$ kilohm and $C = 100$ nF: $\\tau = 160$ microseconds and
+$f_c = 994.7$ Hz.
+
+![Magnitude response of a first-order RC low-pass filter in decibels on a logarithmic frequency axis, with the flat and minus twenty decibel per decade asymptotes crossing at the 995 hertz corner where the true curve is 3.01 decibels down.](/courses/fe-ee/figures/ckt2-bode-rc.svg)
+
+The two domains agree numerically, not just in spirit. The 10 % to 90 % rise
+time of the step response is $\\tau \\ln 9 = 2.20\\tau = 352$ microseconds, and the
+standard bandwidth-rise-time rule gives
+
+$$t_r \\approx \\frac{0.35}{f_c} = \\frac{0.35}{994.7} = 351.9\\ \\mu\\text{s}$$
+
+the same answer to three figures, because $0.35 \\approx \\ln 9 / 2\\pi$. A slow
+circuit and a low-bandwidth circuit are one circuit described twice, and being
+fluent in the translation lets you answer a transient question with a filter
+formula when the transient route is longer.`,
+      examTip: 'Compute alpha and omega_0 first and compare them before doing anything else. alpha < omega_0 is underdamped and the answer will involve omega_d; alpha > omega_0 is overdamped and the answer is two real exponentials whose SLOWER root sets the speed.',
+      importantNote: 'alpha = R/2L for a SERIES RLC and alpha = 1/(2RC) for a PARALLEL RLC. omega_0 = 1/sqrt(LC) in both. Using the series alpha on a parallel circuit typically changes the damping ratio by more than an order of magnitude, which turns an underdamped answer into an overdamped one.',
+    },
+    {
+      id: 'tr-pset-a',
+      title: '7. Problem Set A — First-Order Transients',
+      content: `Six problems in the FE style. Each is meant to be finished in about
+three minutes with a calculator and the handbook, and each one is built around a
+specific way of going wrong. Work all six before reading the solutions; the
+solutions name the trap and the number it produces, because recognising a wrong
+answer that looks reasonable is most of what the exam tests.
+
+## 7.1 Problem Set A — the problems
+
+**A1.** A 220 microfarad capacitor, initially uncharged, is connected through a
+470 ohm resistor to a 12 V source. What is the capacitor voltage 150 ms after
+the connection is made?
+
+**A2.** A 100 microfarad capacitor charged to 50 V is discharged through a
+33 kilohm resistor. How long does it take to fall to 5 V?
+
+**A3.** A 20 V source feeds a 10 kilohm resistor into a node; a 15 kilohm
+resistor runs from that node to ground and a 1 microfarad capacitor, initially
+uncharged, sits from the node to ground. Find the final capacitor voltage, the
+time constant, and the capacitor voltage 10 ms after the source is applied.
+
+**A4.** A 1.2 H coil of 80 ohm resistance is switched onto a 48 V supply. What is
+the final current, and how long does the current take to reach 90 % of it?
+
+**A5.** A 0.8 H relay coil of 60 ohm winding resistance is carrying 1.5 A when
+its supply switch opens. A 470 ohm resistor is permanently connected across the
+coil. Find the voltage across that resistor at the instant of opening, the decay
+time constant, and the energy the resistor absorbs.
+
+**A6.** A 5 V pulse 200 microseconds long drives a 10 kilohm resistor feeding a
+10 nanofarad capacitor to ground. Find the capacitor voltage at the end of the
+pulse, and 200 microseconds after the input returns to zero.
+
+## 7.2 Problem Set A — answers, worked in full
+
+**A1 — 9.19 V.** The time constant is
+$\\tau = 470 \\times 220 \\times 10^{-6} = 103.4$ ms, so 150 ms is 1.451 time
+constants:
+
+$$v_C = 12\\left(1 - e^{-1.451}\\right) = 12(1 - 0.2344) = 9.19\\ \\text{V}$$
+
+*The trap.* Reading 150 ms as "about one time constant" and quoting the 63.2 %
+value gives 7.59 V. The ratio $t/\\tau$ must be computed, not eyeballed; 1.45
+time constants is 76.6 % of the way, not 63.2 %.
+
+**A2 — 7.60 s.** Here $\\tau = 33000 \\times 100 \\times 10^{-6} = 3.30$ s, and
+the decay from 50 V to 5 V is a factor of ten:
+
+$$t = -\\tau \\ln \\left(\\frac{5}{50}\\right) = 3.30 \\ln 10 = 3.30 \\times 2.303 = 7.60\\ \\text{s}$$
+
+*The trap.* "Falls to 10 % of its value" is not the same as "fully discharged",
+so the five-time-constant rule gives 16.5 s, more than twice the right answer.
+Ten percent is $\\ln 10 = 2.30$ time constants; 1 % is 4.61; only 0.67 % is 5.
+
+**A3 — 12 V, 6 ms, and 9.73 V.** With the capacitor open at steady state the
+resistors divide the supply:
+$v_C(\\infty) = 20 \\times 15/(10 + 15) = 12$ V. Killing the source puts the two
+resistors in parallel at the capacitor terminals:
+
+$$R_{\\text{th}} = \\frac{10 \\times 15}{25} = 6\\ \\text{k}\\Omega, \\qquad \\tau = 6000 \\times 10^{-6} = 6\\ \\text{ms}$$
+
+$$v_C(10\\ \\text{ms}) = 12\\left(1 - e^{-10/6}\\right) = 12(1 - 0.1889) = 9.73\\ \\text{V}$$
+
+*The trap.* Using the 10 kilohm alone gives 10 ms and an answer of 7.59 V; using
+the series total of 25 kilohm gives 25 ms and 3.96 V. Both are offered as
+choices. The capacitor sees the Thevenin resistance, and a parallel combination
+is always smaller than either resistor.
+
+**A4 — 0.6 A and 34.5 ms.** $i(\\infty) = 48/80 = 0.6$ A and
+$\\tau = L/R = 1.2/80 = 15$ ms. Ninety percent of the rise is
+
+$$t = -\\tau \\ln (1 - 0.90) = 15 \\ln 10 = 34.5\\ \\text{ms}$$
+
+*The trap.* Three time constants, 45 ms, corresponds to 95 %, not 90 %; two,
+30 ms, corresponds to 86.5 %. The tempting shortcut of rounding 90 % to "about
+three tau" is 30 % long. Note also that increasing $R$ here would make the
+circuit **faster**, the opposite of the RC case.
+
+**A5 — 705 V, 1.51 ms, 0.798 J.** Inductor current is continuous, so 1.5 A
+immediately flows through the 470 ohm resistor:
+
+$$v = 1.5 \\times 470 = 705\\ \\text{V}$$
+
+The decay loop contains the winding and the bleeder in series:
+
+$$\\tau = \\frac{L}{R + R_b} = \\frac{0.8}{530} = 1.51\\ \\text{ms}$$
+
+The total stored energy is
+$\\tfrac{1}{2}(0.8)(1.5)^2 = 0.9$ J, shared in proportion to resistance because
+both carry the same current:
+$0.9 \\times 470/530 = 0.798$ J in the bleeder.
+
+*The trap.* Dividing the coil's supply voltage by anything, or assuming the
+resistor sees the 90 V that drove 1.5 A through 60 ohm, misses the point
+entirely: the voltage across a flyback element is set by the **current** the
+inductor insists on maintaining, not by the supply it was connected to.
+
+**A6 — 4.32 V, then 0.585 V.** $\\tau = 10^{4} \\times 10^{-8} = 100$
+microseconds, so the 200 microsecond pulse is exactly $2\\tau$:
+
+$$v_C(200\\ \\mu\\text{s}) = 5\\left(1 - e^{-2}\\right) = 5(0.8647) = 4.32\\ \\text{V}$$
+
+When the input returns to zero the capacitor discharges from **that** value, not
+from 5 V, through the same 10 kilohm:
+
+$$v_C(400\\ \\mu\\text{s}) = 4.32\\,e^{-2} = 0.585\\ \\text{V}$$
+
+*The trap.* Starting the discharge from the source voltage gives
+$5e^{-2} = 0.677$ V, about 16 % high. The lesson generalises: in any sequence of
+switching events, the final value of one interval is the initial value of the
+next, and the capacitor never reaches the supply in finite time.`,
+      examTip: 'Convert the elapsed time into time constants before doing anything else. Almost every wrong answer in a first-order problem comes from treating t as if it were a whole number of tau when the ratio is 1.45 or 2.3.',
+    },
+    {
+      id: 'tr-pset-b',
+      title: '8. Problem Set B — Second-Order Response and Switching',
+      content: `The second set moves to circuits with two energy-storage elements
+and to the switching hazards that follow from stored energy. The recurring traps
+here are three: using the series damping formula on a parallel circuit, using the
+undamped frequency where the damped one belongs, and forgetting that the slowest
+root controls an overdamped response.
+
+## 8.1 Problem Set B — the problems
+
+**B1.** A series RLC circuit has R = 200 ohm, L = 50 mH and C = 0.5 microfarad.
+Classify the response and give the frequency, in hertz, at which it rings.
+
+**B2.** A series RLC circuit uses L = 20 mH and C = 80 nanofarad. What resistance
+gives critical damping, and what is the undamped natural frequency?
+
+**B3.** A second-order step response overshoots by 10 %. Find the damping ratio,
+and if the undamped natural frequency is 5000 rad/s, find the time of the first
+peak and the 2 % settling time.
+
+**B4.** A parallel RLC circuit has R = 500 ohm, L = 10 mH and C = 1 microfarad.
+Find the damping ratio and classify the natural response.
+
+**B5.** A 470 microfarad capacitor charged to 400 V is discharged through a
+2 ohm resistance. Find the initial current, the peak power, the stored energy and
+the time constant.
+
+**B6.** A ringing waveform shows successive peaks of 3.0 V and 1.8 V above its
+final value, 250 microseconds apart. Find the damping ratio and the quality
+factor.
+
+## 8.2 Problem Set B — answers, worked in full
+
+**B1 — underdamped, 955 Hz.** Compute the two parameters and compare them:
+
+$$\\alpha = \\frac{R}{2L} = \\frac{200}{0.100} = 2000\\ \\text{s}^{-1}, \\qquad \\omega_0 = \\frac{1}{\\sqrt{(0.050)(0.5 \\times 10^{-6})}} = 6325\\ \\text{rad/s}$$
+
+Since $\\alpha < \\omega_0$ the response is underdamped, with
+$\\zeta = 2000/6325 = 0.316$ and
+
+$$\\omega_d = \\sqrt{\\omega_0^2 - \\alpha^2} = \\sqrt{4.0 \\times 10^{7} - 4.0 \\times 10^{6}} = 6000\\ \\text{rad/s}$$
+
+$$f_d = \\frac{6000}{2\\pi} = 954.9\\ \\text{Hz}$$
+
+*The trap.* Using the undamped $\\omega_0$ instead of $\\omega_d$ gives
+$6325/2\\pi = 1006.6$ Hz — about 5 % high, and always offered as a choice. A
+circuit rings at its **damped** frequency; the undamped one is a construction
+that exists only when R is zero.
+
+**B2 — 1000 ohm and 25 000 rad/s.** Critical damping is $\\zeta = 1$, i.e.
+$\\alpha = \\omega_0$:
+
+$$R_{\\text{crit}} = 2\\sqrt{\\frac{L}{C}} = 2\\sqrt{\\frac{0.020}{80 \\times 10^{-9}}} = 2\\sqrt{250000} = 1000\\ \\Omega$$
+
+$$\\omega_0 = \\frac{1}{\\sqrt{(0.020)(80 \\times 10^{-9})}} = \\frac{1}{\\sqrt{1.6 \\times 10^{-9}}} = 25000\\ \\text{rad/s}$$
+
+which is 3979 Hz.
+
+*The trap.* Dropping the factor of two gives 500 ohm, the characteristic
+impedance $\\sqrt{L/C}$ rather than the critical resistance. That value is a real
+quantity — it is the surge impedance of the LC pair — which is what makes it a
+convincing wrong answer.
+
+**B3 — zeta = 0.591, 0.779 ms, 1.35 ms.** Invert the overshoot formula:
+
+$$\\ln M_p = \\frac{-\\pi \\zeta}{\\sqrt{1 - \\zeta^2}} \\;\\Longrightarrow\\; \\frac{\\zeta}{\\sqrt{1 - \\zeta^2}} = \\frac{-\\ln 0.10}{\\pi} = \\frac{2.303}{\\pi} = 0.7329$$
+
+Squaring and rearranging gives $\\zeta^2 = 0.7329^2/(1 + 0.7329^2) = 0.3495$, so
+$\\zeta = 0.591$. Then
+
+$$\\omega_d = 5000\\sqrt{1 - 0.3495} = 4033\\ \\text{rad/s}, \\qquad t_p = \\frac{\\pi}{4033} = 0.779\\ \\text{ms}$$
+
+$$t_s \\approx \\frac{4}{\\zeta \\omega_0} = \\frac{4}{(0.591)(5000)} = 1.35\\ \\text{ms}$$
+
+*The trap.* Using $\\omega_0$ for the peak time gives
+$\\pi/5000 = 0.628$ ms, 19 % low. At this damping the gap between $\\omega_0$ and
+$\\omega_d$ is large enough that the error is unmistakable once you look for it.
+
+**B4 — zeta = 0.1, underdamped.** For a **parallel** RLC the damping coefficient
+is not $R/2L$:
+
+$$\\alpha = \\frac{1}{2RC} = \\frac{1}{2(500)(10^{-6})} = 1000\\ \\text{s}^{-1}, \\qquad \\omega_0 = \\frac{1}{\\sqrt{(0.010)(10^{-6})}} = 10000\\ \\text{rad/s}$$
+
+so $\\zeta = 0.1$, strongly underdamped, and
+$\\omega_d = 10000\\sqrt{0.99} = 9950$ rad/s.
+
+*The trap.* Reaching for the series formula gives
+$\\alpha = R/2L = 500/0.020 = 25000$, hence $\\zeta = 2.5$ and the answer
+"overdamped" — the opposite conclusion from a factor-of-25 error. Note also that
+critical damping in this parallel circuit needs $R = \\tfrac{1}{2}\\sqrt{L/C} = 50$
+ohm, so **reducing** the resistance is what damps it.
+
+**B5 — 200 A, 80 kW, 37.6 J, 0.94 ms.** The capacitor holds its voltage through
+the switching instant, so the full 400 V appears across 2 ohm:
+
+$$i(0^{+}) = \\frac{400}{2} = 200\\ \\text{A}, \\qquad p(0^{+}) = 400 \\times 200 = 80\\ \\text{kW}$$
+
+$$W = \\tfrac{1}{2}CV^2 = 0.5 (470 \\times 10^{-6})(400)^2 = 37.6\\ \\text{J}, \\qquad \\tau = RC = 0.94\\ \\text{ms}$$
+
+*The trap.* The 80 kW is instantaneous, not average; the whole event is over in
+about $5\\tau = 4.7$ ms and delivers only 37.6 J. Quoting 80 kW as a power rating
+for the resistor confuses peak power with energy, and it is the reason inrush
+resistors are specified in joules rather than watts.
+
+**B6 — zeta = 0.081, Q = 6.17.** The peak ratio is $1.8/3.0 = 0.600$, so the
+logarithmic decrement is
+
+$$\\delta = \\ln \\frac{1}{0.600} = 0.5108, \\qquad \\zeta = \\frac{\\delta}{\\sqrt{4\\pi^2 + \\delta^2}} = \\frac{0.5108}{6.304} = 0.0810$$
+
+$$Q = \\frac{1}{2\\zeta} = 6.17$$
+
+As a cross-check, the 250 microsecond spacing gives
+$\\omega_d = 2\\pi/250\\,\\mu\\text{s} = 25133$ rad/s and
+$\\alpha = \\zeta \\omega_0 = 2043$ s$^{-1}$, an envelope time constant of
+489 microseconds — about two ring periods, which matches a waveform whose second
+peak is still 60 % of the first.
+
+*The trap.* Using the ratio directly as a damping ratio, or setting
+$\\zeta = \\delta/2\\pi = 0.0813$, gives an answer close enough to pass unnoticed
+here but badly wrong at heavy damping, where the $\\sqrt{4\\pi^2 + \\delta^2}$
+denominator matters. The simplified form is the small-$\\zeta$ limit of the
+correct one, and the exam picks the case where the two separate.`,
+      examTip: 'Write down alpha and omega_0 as two numbers before choosing any formula, and check which topology you have. alpha = R/2L is series only; alpha = 1/(2RC) is parallel only. The rest of the second-order machinery is identical for both.',
+      importantNote: 'In an overdamped circuit the SLOWER root - the one closer to the origin - sets the settling time. Adding resistance past critical damping pushes that root toward the origin, so the circuit gets slower, not faster.',
     },
   ],
   keyTakeaways: [

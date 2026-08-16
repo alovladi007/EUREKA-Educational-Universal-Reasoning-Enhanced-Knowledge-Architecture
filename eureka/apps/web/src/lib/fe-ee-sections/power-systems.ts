@@ -1222,7 +1222,7 @@ placed well below rated load.
 | Applied to | Low-voltage side (safer, lower current) | High-voltage side (safer, lower voltage) |
 | Other winding | Open | Shorted |
 | Applied voltage | Rated | A few percent of rated |
-| Current drawn | Exciting current only, 2–6% of rated | Rated |
+| Current drawn | Exciting current only, well under 5% of rated | Rated |
 | Wattmeter reads | **Core loss** | **Copper loss at rated current** |
 | Yields | R_c and X_m (shunt branch) | R_eq and X_eq (series branch) |
 
@@ -1501,7 +1501,7 @@ Reading the figure at three points, for **$R_{pu}=0.0130$** and
 | 0.60 lagging | +3.88% | +3.88% | worst practical case |
 | 0.80 lagging | +3.36% | +3.39% | the usual exam value |
 | 1.00 | +1.30% | +1.37% | resistive term only |
-| 0.941 leading | −0.00% | 0.00% | regulation vanishes |
+| 0.941 leading | −0.09% | 0.00% | regulation vanishes |
 | 0.80 leading | −1.28% | −1.21% | secondary rises under load |
 
 ### Worked example 7.1 — regulation the exact way, and the error you accept
@@ -1702,7 +1702,7 @@ loss and 97.49 percent.
 
 $$\\eta_{max} = \\frac{14{,}341}{14{,}341+260} = 98.22\\%$$
 
-*Distractor:* the peak is NOT at full load; full load gives 97.99 percent here.
+*Distractor:* the peak is NOT at full load; full load gives 98.04 percent here.
 
 **A5.** The turns ratio is 10, so impedance reflects by 100:
 
@@ -1717,9 +1717,9 @@ and 8 h at 80 W = 2.56 + 0.64 = 3.20 kWh.
 
 $$\\eta_{all\\text{-}day} = \\frac{270}{270+6.32} = 97.71\\%$$
 
-*Distractor:* charging core loss only for the 16 loaded hours gives 98.00
+*Distractor:* charging core loss only for the 16 loaded hours gives 98.08
 percent. The transformer is energised for all 24.`,
-      examTip: 'The exciting current in a healthy transformer is one to five percent of rated, and the short-circuit voltage is two to ten percent of rated. If your reduction of test data produces numbers outside those bands, you have almost certainly used the wrong rated current or the wrong side.',
+      examTip: 'The exciting current in a healthy transformer is well under five percent of rated, and the short-circuit voltage is two to ten percent of rated. If your reduction of test data produces numbers outside those bands, you have almost certainly used the wrong rated current or the wrong side.',
       importantNote: 'Every quantity in this set exists on a specific side of the transformer. Write "referred to HV" or "referred to LV" beside each answer as you get it. Combining an HV series impedance with an LV shunt impedance without reflecting one of them is the error that survives every plausibility check.',
     },
     {
@@ -1758,16 +1758,16 @@ series winding.
 
 **B1.** **$\\phi = \\arccos 0.85 = 31.79^\\circ$**, **$\\sin\\phi = 0.5268$**:
 
-$$\\mathrm{VR} \\approx (0.0128)(0.85)+(0.0239)(0.5268) = 0.01088+0.01257 = 0.02345$$
+$$\\mathrm{VR} \\approx (0.0128)(0.85)+(0.0239)(0.5268) = 0.01088+0.01259 = 0.02347$$
 
-or **2.35 percent**. Solving **$|V_{R}+IZ_{eq}|$** exactly returns 2.354
-percent, so the approximation is good to four thousandths of a point here.
+or **2.35 percent**. Solving **$|V_{R}+IZ_{eq}|$** exactly returns 2.356
+percent, so the approximation is good to nine thousandths of a point here.
 
 **B2.** With a leading load the reactive term reverses sign:
 
-$$\\mathrm{VR} \\approx (0.0128)(0.85)-(0.0239)(0.5268) = -0.00169 = -0.169\\%$$
+$$\\mathrm{VR} \\approx (0.0128)(0.85)-(0.0239)(0.5268) = -0.00171 = -0.171\\%$$
 
-The exact value is −0.133 percent. A **negative regulation means the secondary
+The exact value is −0.134 percent. A **negative regulation means the secondary
 voltage is higher on load than off it**: the capacitive load current, flowing
 through the leakage reactance, produces a voltage rise rather than a drop.
 *Distractor:* +2.35 percent, obtained by ignoring the lead.
@@ -2647,6 +2647,263 @@ breaker selection.`,
       examTip: 'Series impedances reduce fault current; parallel sources increase it. When a question adds a second feed, a generator, or a bank of motors, the equivalent reactance must go DOWN and the duty must go UP. That directional check catches most sign and topology errors before the arithmetic starts.',
       importantNote: 'Fault MVA is the same number no matter which voltage level you quote it at, because S_base is constant across the whole per-unit diagram. Fault current in amperes is not — it must be divided by the base current of the zone where the fault sits.',
     },
+    {
+      id: 'pu-when-transformers-return',
+      title: '10. When Transformers Do Not Disappear, and Other Second-Order Cases',
+      content: `## 10.1 The condition under which the turns ratio actually vanishes
+
+Sections 1 through 9 leaned on a claim that was stated but never qualified:
+transformers become plain series impedances in per unit. That claim carries a
+condition, and every tap-changing transformer in service violates it.
+
+The turns ratio cancels only when the **base voltages on the two sides are
+chosen in the same ratio as the actual turns ratio**. Write the actual ratio as
+$N$ and the base ratio as $N_{base}$; what survives in the per-unit circuit is
+an ideal transformer of residual ratio
+
+$$c = \\frac{N}{N_{base}}$$
+
+When the transformer sits on its nominal tap, $c = 1$, the ideal element is 1:1,
+and it can be erased. When it does not, $c \\ne 1$ and an ideal transformer
+remains in the diagram — a device that changes per-unit voltage without changing
+per-unit power. That residual element is what a load-flow program calls an
+off-nominal tap, and it is the reason tap changers can control voltage at all:
+a transformer that truly vanished in per unit could not regulate anything.
+
+### Worked example 10.1 — a transformer on the +5 percent tap
+
+*A 40 MVA, 138/13.8 kV transformer has $Z = 0.09$ pu on its own base and its
+low-voltage tap is set +5 percent. The system base is 100 MVA with 138 kV and
+13.8 kV zone bases. Find its per-unit impedance and the no-load secondary
+voltage for 1.00 pu on the primary.*
+
+The +5 percent tap makes the real winding ratio 138 / 14.49 kV, so the
+equipment's own low-voltage base is 14.49 kV, not 13.8 kV. Re-base with both
+factors live:
+
+$$Z = 0.09\\times\\frac{100}{40}\\times\\left(\\frac{14.49}{13.8}\\right)^{2} = 0.09\\times 2.5\\times 1.1025 = 0.2481\\ \\mathrm{pu}$$
+
+$$c = \\frac{14.49}{13.8} = 1.05 \\;\\Rightarrow\\; V_{2} = 1.05\\times 1.00 = 1.05\\ \\mathrm{pu} = 14.49\\ \\mathrm{kV}$$
+
+Ignoring the tap gives 0.2250 pu instead of 0.2481 pu — **9.3 percent below the
+correct figure** — and it also loses the entire regulating effect, the 5 percent
+voltage boost the tap was installed to provide. **Trap named.** A tap setting is not a detail of the
+hardware; it is a change to the equipment's own base voltage, and it therefore
+enters the re-basing formula through the squared term.
+
+## 10.2 Winding connection: the one thing per unit really does absorb
+
+A three-phase bank can be wye-wye, delta-delta, wye-delta or delta-wye, and the
+ohmic impedance referred to a given side differs between them. The per-unit
+impedance does not. The reason is a cancellation worth seeing once, because it
+is the strongest single argument for the method.
+
+Take three identical single-phase units, each rated $S_{1\\phi}$ at winding
+voltage $V_{1\\phi}$. Connect them in wye. The bank rating is $3S_{1\\phi}$ and the
+bank's line-to-line voltage is $\\sqrt{3}V_{1\\phi}$, so the two base impedances are
+
+$$Z_{base,unit} = \\frac{V_{1\\phi}^{2}}{S_{1\\phi}}, \\qquad Z_{base,bank} = \\frac{\\left(\\sqrt{3}V_{1\\phi}\\right)^{2}}{3S_{1\\phi}} = \\frac{3V_{1\\phi}^{2}}{3S_{1\\phi}} = \\frac{V_{1\\phi}^{2}}{S_{1\\phi}}$$
+
+They are **identical**, so a per-unit impedance quoted on one unit's rating is
+already correct on the bank's rating. The factor of 3 from the power and the
+factor of 3 from the squared voltage cancel exactly.
+
+### Worked example 10.2 — three single-phase units into a bank
+
+*Three single-phase transformers, each 10 MVA, 79.67/13.8 kV with $Z = 0.08$ pu
+on its own base, are connected wye on the high side and delta on the low side.
+Find the bank rating, its voltage ratio, and its per-unit impedance on a 100 MVA
+base.*
+
+$$S_{bank} = 3\\times 10 = 30\\ \\mathrm{MVA}, \\qquad V_{HV,LL} = \\sqrt{3}\\times 79.67 = 138.0\\ \\mathrm{kV}, \\qquad V_{LV,LL} = 13.8\\ \\mathrm{kV}$$
+
+Confirm the impedance the long way. One unit:
+$Z_{base} = 79.674^{2}/10 = 634.8\\ \\Omega$, so $Z = 0.08\\times 634.8 = 50.78\\ \\Omega$
+in each high-side winding, which in wye is also the per-phase impedance of the
+bank. The bank's base is $138^{2}/30 = 634.8\\ \\Omega$, so
+
+$$Z_{pu,bank} = \\frac{50.78}{634.8} = 0.0800\\ \\mathrm{pu} \\;\\Rightarrow\\; Z = 0.08\\times\\frac{100}{30} = 0.2667\\ \\mathrm{pu}$$
+
+The delta low side changes nothing: its line-to-line voltage is the winding
+voltage of 13.8 kV, its base impedance is $13.8^{2}/30 = 6.348\\ \\Omega$, and the
+delta-to-wye conversion supplies the factor of 3 that makes the per-unit value
+come out at 0.08 again.
+
+**One thing per unit does *not* absorb.** A wye-delta or delta-wye bank shifts
+the phase by 30°, and that shift is real: it survives into the per-unit diagram
+and matters for relay coordination and for unbalanced fault studies. Per unit
+removes the magnitude ratio, never the angle.
+
+## 10.3 Nameplate percent impedance as a fault-current instrument
+
+A transformer nameplate carries its impedance as a percentage, and that number
+is the short-circuit test result: the fraction of rated voltage needed to drive
+rated current through a shorted secondary. Inverting it gives the current a
+short on the secondary draws from an infinitely stiff primary:
+
+$$I_{SC} = \\frac{I_{rated}}{Z_{pu}}, \\qquad S_{SC} = \\frac{S_{rated}}{Z_{pu}}$$
+
+### Worked example 10.3 — through-fault current at a 480 V switchboard
+
+*A 1,500 kVA, 13.8 kV / 480 V transformer has 5.75 percent impedance. Find the
+bolted three-phase fault current on its secondary, first from an infinite bus
+and then with a utility source of 250 MVA short-circuit capacity.*
+
+$$I_{rated} = \\frac{1{,}500{,}000}{\\sqrt{3}\\times 480} = 1{,}804\\ \\mathrm{A} \\;\\Rightarrow\\; I_{SC} = \\frac{1{,}804}{0.0575} = 31{,}378\\ \\mathrm{A}$$
+
+Now bring the utility in. On the transformer's own 1.5 MVA base the source
+impedance is
+
+$$Z_{source} = \\frac{S_{base}}{S_{SC,utility}} = \\frac{1.5}{250} = 0.0060\\ \\mathrm{pu} \\;\\Rightarrow\\; Z_{total} = 0.0635\\ \\mathrm{pu}$$
+
+$$I_{SC} = \\frac{1{,}804}{0.0635} = 28{,}413\\ \\mathrm{A}, \\qquad S_{SC} = \\frac{1.5}{0.0635} = 23.6\\ \\mathrm{MVA}$$
+
+The infinite-bus figure is **10.4 percent high**. That is the conservative
+direction for choosing a breaker and the wrong direction for coordinating a
+downstream fuse, which is why the shortcut is standard for the first calculation
+and never for the last one.
+
+## 10.4 Per-unit power flow, losses and regulation in one pass
+
+Once every quantity is per-unit, the complex power relation carries no scale
+factors at all — no √3, no factor of three, no kilo or mega:
+
+$$S_{pu} = V_{pu}I_{pu}^{*}, \\qquad P_{loss,pu} = \\lvert I_{pu}\\rvert^{2}R_{pu}, \\qquad Q_{line,pu} = \\lvert I_{pu}\\rvert^{2}X_{pu}$$
+
+### Worked example 10.4 — a loaded line, end to end
+
+*A line of $0.02 + j0.08$ pu on a 100 MVA base delivers 1.00 pu of apparent
+power at 0.90 power factor lagging into a bus held at 1.00 pu. Find the sending
+voltage, the real loss in megawatts and the reactive power the line consumes.*
+
+$$S = 0.900 + j0.436\\ \\mathrm{pu} \\;\\Rightarrow\\; I = \\left(\\frac{S}{V}\\right)^{*} = 1.000\\angle -25.84^\\circ\\ \\mathrm{pu}$$
+
+$$V_{S} = 1.00 + \\left(1.000\\angle -25.84^\\circ\\right)\\left(0.08246\\angle 75.96^\\circ\\right) = 1.0529 + j0.0633 = 1.0548\\angle 3.44^\\circ\\ \\mathrm{pu}$$
+
+$$P_{loss} = (1.000)^{2}(0.02) = 0.0200\\ \\mathrm{pu} = 2.00\\ \\mathrm{MW}, \\qquad Q_{line} = (1.000)^{2}(0.08) = 8.00\\ \\mathrm{MVAR}$$
+
+Check against the approximation of Section 5.2:
+$R P + X Q = 0.02(0.900) + 0.08(0.436) = 0.0529$ pu, against the exact
+0.0548 pu — within 4 percent, and instantly. Note also that the line consumes
+four times more reactive power than real, which is generic for transmission and
+is the reason reactive support is a separate planning problem from real-power
+dispatch.
+
+## 10.5 What per unit costs
+
+Two honest limitations, both of which the exam occasionally probes. First,
+**per unit hides absolute magnitude**: 0.05 pu on a 100 MVA base is 9.52 Ω in
+the 138 kV zone and 0.0952 Ω in the 13.8 kV zone, a hundredfold difference that
+the per-unit number itself gives no hint of, and a reader who has stopped
+tracking zones can carry a value into the wrong one with no warning from the
+arithmetic.
+Second, **per unit does not linearise anything**. Saturation, temperature
+coefficients and voltage-dependent load stay exactly as non-linear as they were.
+The method is a change of units, not a change of physics, and its whole benefit
+is that the units are chosen so that the transformers cancel and the healthy
+values cluster near one.`,
+      examTip: 'Ask one question before erasing a transformer from a per-unit diagram: is its actual ratio the same as the ratio of the two zone base voltages? If yes it becomes a series impedance. If no — a tap setting, a nameplate that does not match the chosen bases — an ideal transformer of ratio c = N/N_base stays behind, and its own base voltage changes the squared term in the re-basing formula as well.',
+      importantNote: 'Percent impedance on a transformer nameplate is a per-unit impedance on that transformer\'s own rating, and its reciprocal is the through-fault current in multiples of rated current. A 5.75 percent transformer passes 1/0.0575 = 17.4 times rated current into a bolted secondary fault from an infinite bus. Adding a finite source impedance always lowers that figure — by 10.4 percent for the 250 MVA utility in Worked example 10.3.',
+    },
+    {
+      id: 'pu-problem-set-c',
+      title: '11. Problem Set C: Taps, Banks, Nameplates and Power Flow',
+      content: `The third set covers the material of Section 10, where the answers stop
+being pure bookkeeping and start depending on whether a condition holds. Six
+problems, each about three minutes with a handbook.
+
+## 11. Problem Set C — taps, banks and nameplate data
+
+### The problems
+
+**C1.** Find the base impedance and base current for a 50 MVA, 34.5 kV base.
+
+**C2.** A 2,000 kVA, 13.8 kV / 480 V transformer has 5.75 percent impedance.
+Express it on a 100 MVA base, and find its ohmic value referred to the 480 V
+side.
+
+**C3.** A 25 MVA, 115/13.8 kV transformer with 7.5 percent impedance is set on
+its +2.5 percent tap. On a 100 MVA base with a 13.8 kV low-side zone base, find
+its per-unit impedance and the residual per-unit turns ratio.
+
+**C4.** A 750 kVA, 208 V secondary transformer has 4.5 percent impedance. Find
+the secondary rated current, the bolted three-phase fault current from an
+infinite bus, and the fault MVA.
+
+**C5.** Three single-phase 5 MVA, 7.967/2.40 kV transformers with 6 percent
+impedance are banked wye-delta. Find the bank rating, both line-to-line
+voltages, and the bank impedance on a 100 MVA base.
+
+**C6.** A line of $0.015 + j0.060$ pu on a 100 MVA base delivers 0.85 pu at 0.95
+power factor lagging into a bus held at 1.00 pu. Find the sending-end voltage
+magnitude and the real loss in megawatts.
+
+### Solutions
+
+**C1.**
+
+$$Z_{base} = \\frac{(34{,}500)^{2}}{50\\times 10^{6}} = 23.81\\ \\Omega, \\qquad I_{base} = \\frac{50\\times 10^{6}}{\\sqrt{3}\\times 34{,}500} = 836.7\\ \\mathrm{A}$$
+
+*Distractor:* 34.5 kV is a line-to-line voltage, and dividing it by √3 first
+gives $Z_{base} = 7.94\\ \\Omega$ — a third of the right answer. Base impedance
+takes line-to-line volts with three-phase MVA and carries no √3.
+
+**C2.** The voltages match the equipment rating, so only the MVA ratio applies:
+
+$$Z = 0.0575\\times\\frac{100}{2.0} = 2.875\\ \\mathrm{pu}$$
+
+$$Z_{base,own,480} = \\frac{480^{2}}{2\\times 10^{6}} = 0.1152\\ \\Omega \\;\\Rightarrow\\; Z = 0.0575\\times 0.1152 = 0.006624\\ \\Omega$$
+
+*Distractor:* 2.875 pu looks like an error to a reader trained on "values cluster
+near 1.0", and it is not — a small transformer expressed on a large system base
+legitimately lands in the units. The clustering rule applies to equipment on its
+**own** rating, not after a fiftyfold re-base.
+
+**C3.** The +2.5 percent tap makes the real low-side rating 14.145 kV:
+
+$$Z = 0.075\\times\\frac{100}{25}\\times\\left(\\frac{14.145}{13.8}\\right)^{2} = 0.075\\times 4\\times 1.050625 = 0.3152\\ \\mathrm{pu}$$
+
+$$c = \\frac{14.145}{13.8} = 1.025$$
+
+*Distractor:* 0.3000 pu, from taking the tap as a detail that does not enter the
+electrical model. It is 4.8 percent below the correct 0.3152 pu, and it also
+discards the 2.5 percent voltage boost that is the tap's entire purpose.
+
+**C4.**
+
+$$I_{rated} = \\frac{750{,}000}{\\sqrt{3}\\times 208} = 2{,}082\\ \\mathrm{A} \\;\\Rightarrow\\; I_{SC} = \\frac{2{,}082}{0.045} = 46{,}262\\ \\mathrm{A}$$
+
+$$S_{SC} = \\frac{0.750}{0.045} = 16.67\\ \\mathrm{MVA}$$
+
+*Distractor:* multiplying by 4.5 percent instead of dividing gives 93.7 A, which
+is smaller than rated current and therefore self-evidently absurd — a short
+circuit cannot draw less than the load it replaced. Percent impedance divides.
+
+**C5.** Wye on the high side multiplies the winding voltage by √3; delta on the
+low side does not:
+
+$$S_{bank} = 15\\ \\mathrm{MVA}, \\qquad V_{HV,LL} = \\sqrt{3}(7.967) = 13.80\\ \\mathrm{kV}, \\qquad V_{LV,LL} = 2.40\\ \\mathrm{kV}$$
+
+$$Z_{pu,bank} = 0.06\\ \\text{(unchanged)} \\;\\Rightarrow\\; Z = 0.06\\times\\frac{100}{15} = 0.400\\ \\mathrm{pu}$$
+
+*Distractor:* dividing or multiplying the 6 percent by 3 or by √3 to "account
+for" the connection. Per-unit impedance is invariant under the banking
+connection, because the factor of 3 in the bank rating and the factor of 3 in
+the squared line voltage cancel — Section 10.2 shows the cancellation.
+
+**C6.** $S = 0.8075 + j0.2654$ pu, so $I = 0.850\\angle -18.19^\\circ$ pu:
+
+$$V_{S} = 1.00 + \\left(0.850\\angle -18.19^\\circ\\right)\\left(0.06185\\angle 75.96^\\circ\\right) = 1.0280 + j0.0445 = 1.0290\\ \\mathrm{pu}$$
+
+$$P_{loss} = (0.850)^{2}(0.015) = 0.01084\\ \\mathrm{pu} = 1.08\\ \\mathrm{MW}$$
+
+*Distractor:* adding magnitudes, $1.00 + 0.0526 = 1.0526$ pu, which ignores that
+most of the drop is in quadrature with the receiving voltage. The approximation
+$RP + XQ = 0.015(0.8075) + 0.060(0.2654) = 0.0280$ pu is the one to use under
+time pressure, and it lands within 0.1 percent here.`,
+      examTip: 'Two of these six turn on a condition rather than on arithmetic: C3 on whether the tap changes the equipment base voltage, and C5 on whether the banking connection changes the per-unit impedance. It does in the first case and it does not in the second, and knowing which is which is the entire content of the question.',
+      importantNote: 'A per-unit impedance far from 1.0 is not automatically an error. C2 gives 2.875 pu for a perfectly healthy 2 MVA transformer expressed on a 100 MVA base. The plausibility bands quoted throughout this chapter apply to equipment on ITS OWN rating; after re-basing to a much larger system base, small equipment legitimately lands in the units or the tens.',
+    },
   ],
   keyTakeaways: [
     'Choose S_base and V_base at one zone; derive Z_base = V_base²/S_base.',
@@ -3205,7 +3462,7 @@ $$P_{max} = \\frac{|V_{S}||V_{R}|}{|B|}, \\qquad P_{30^\\circ} = 0.5\\,P_{max}$$
 
 ![Deliverable power in multiples of surge impedance loading against line length, for angle limits of 30, 40 and 90 degrees. The curves fall steeply with length: a 300 kilometre line can carry 1.31 times SIL at a 30 degree angle, a 400 kilometre line exactly 1.00 times SIL, and beyond 500 kilometres the line cannot even reach its own surge impedance loading within a 30 degree angle.](/courses/fe-ee/figures/pow2-txl-loadability.svg)
 
-| Length | \\|B\\| | P at δ = 30° | In SIL |
+| Length | $\\lvert B \\rvert$ | P at δ = 30° | In SIL |
 |---|---|---|---|
 | 100 km | 50.50 Ω | 523.8 MW | 3.85 × |
 | 200 km | 100.16 Ω | 264.1 MW | 1.94 × |
@@ -3837,6 +4094,512 @@ decorations.`,
       examTip: 'The resonance check h_r = √(S_sc/Q_c) is the fastest way to reject a proposed capacitor size. If h_r lands on 5, 7, 11, or 13, the bank will amplify a harmonic the plant almost certainly produces. Move the rating or detune the bank with a series reactor.',
       importantNote: 'For the same kVAR at the same line voltage, a wye-connected bank needs THREE times the capacitance of a delta-connected bank, because each wye unit sees only V_LL/√3 and Q per phase goes as V². Reading "capacitance per phase" from a problem without checking the connection is a reliable way to be wrong by a factor of three.',
     },
+    {
+      id: 'pfc-hardware-economics',
+      title: '6. From kVAR to Hardware: Capacitance, Steps, and Released Capacity',
+      content: `## 6.1 One plant, carried through
+
+A 480 V, three-phase plant draws **600 kW at 0.72 power factor lagging**. Its
+service is a 1,500 kVA transformer of 5.75 percent impedance, so the bus has a
+short-circuit capacity of
+
+$$S_{sc} = \\frac{1{,}500}{0.0575} = 26.09\\ \\mathrm{MVA}$$
+
+That single figure will decide the resonance and the voltage rise in Section 7,
+so it is worth capturing before any capacitor is chosen.
+
+Start from the power triangle. With **$\\theta_{1} = \\arccos 0.72 = 43.95^\\circ$**:
+
+$$Q_{1} = P\\tan\\theta_{1} = 600\\times 0.96385 = 578.3\\ \\mathrm{kVAR}, \\qquad S_{1} = \\frac{600}{0.72} = 833.3\\ \\mathrm{kVA}$$
+
+$$I_{1} = \\frac{833{,}333}{\\sqrt{3}\\times 480} = 1{,}002.3\\ \\mathrm{A}$$
+
+An 833 kVA demand on a 1,500 kVA service, and a thousand amps of switchgear
+duty, for 600 kW of useful work.
+
+### Worked example 6.1 — sizing the bank to a target
+
+Correct the plant to 0.95 lagging. With
+**$\\theta_{2} = \\arccos 0.95 = 18.19^\\circ$**:
+
+$$Q_{2} = 600\\times 0.32868 = 197.2\\ \\mathrm{kVAR}$$
+
+$$Q_{C} = Q_{1} - Q_{2} = 578.3 - 197.2 = 381.1\\ \\mathrm{kVAR}$$
+
+The new apparent power is **$600/0.95 = 631.6$ kVA** and the new current
+**759.7 A** — a 24.2 percent reduction in both. **Trap named.** Nothing about
+the 600 kW changed. Candidates who recompute P after correction, or who
+subtract kVA rather than kVAR, produce answers that are wrong in a way the
+power triangle makes obvious the moment it is drawn.
+
+## 6.2 Why the last few points cost the most
+
+The sizing formula is linear in tangent, and tangent is not linear in power
+factor. It runs away as the target approaches unity:
+
+$$\\frac{Q_{C}}{P} = \\tan(\\arccos \\mathrm{pf}_{1}) - \\tan(\\arccos \\mathrm{pf}_{2})$$
+
+![Capacitor rating in kVAR per kW of load needed to reach a target power factor, plotted for starting points of 0.70, 0.75 and 0.80. All three curves climb gently to about 0.90 and then turn sharply upward: moving from 0.75 to 0.95 costs 0.553 kVAR per kW, and the remaining stretch from 0.95 to unity costs another 0.315.](/courses/fe-ee/figures/pow2-pfc-kvar-target.svg)
+
+| From 0.75 to… | kVAR per kW | Cumulative |
+|---|---|---|
+| 0.85 | 0.262 | 0.262 |
+| 0.90 | 0.136 more | 0.398 |
+| 0.95 | 0.156 more | 0.553 |
+| 0.98 | 0.126 more | 0.679 |
+| 1.00 | 0.203 more | 0.882 |
+
+Read the increments, not the totals. Getting from 0.95 to unity costs 0.203
+kVAR per kW — more than the whole step from 0.85 to 0.90 — and buys only five
+points of power factor, which is why tariffs and practice both stop at about
+0.95. Beyond that the capacitors cost more than the demand charge they avoid,
+and the overcorrection risks of Section 7 begin.
+
+## 6.3 kVAR into farads
+
+A capacitor's rating and its capacitance are related through the voltage
+**across the individual unit**, which is where the delta-versus-wye question
+becomes concrete:
+
+$$Q_{phase} = \\frac{V_{C}^{2}}{X_{C}} = \\omega C V_{C}^{2} \\;\\Longrightarrow\\; C = \\frac{Q_{phase}}{\\omega V_{C}^{2}}$$
+
+For the 381.1 kVAR bank at 480 V, each phase must supply 127.03 kVAR. In
+delta each unit sees the full 480 V; in wye each sees 277.1 V:
+
+$$C_{\\Delta} = \\frac{127{,}034}{377\\times 480^{2}} = 1{,}462.5\\ \\mu\\mathrm{F}, \\qquad C_{Y} = \\frac{127{,}034}{377\\times 277.13^{2}} = 4{,}387.6\\ \\mu\\mathrm{F}$$
+
+exactly three times as much, because **$V_{C}^{2}$** differs by three.
+
+![Capacitance per phase required to supply 381 kVAR, plotted against system voltage on logarithmic axes for wye and delta connections. Both fall as the square of voltage: a delta bank needs 1,462.5 microfarads at 480 volts, 19.5 at 4,160 volts, and only 1.8 at 13.8 kilovolts, while the wye equivalent needs three times as much at every voltage.](/courses/fe-ee/figures/pow2-pfc-capacitance.svg)
+
+### Worked example 6.2 — the same kVAR at three voltages
+
+Deliver 381 kVAR at 480 V, 4,160 V and 13.8 kV, delta connected.
+
+$$C = \\frac{127{,}034}{377\\,V^{2}}: \\quad 1{,}462.5\\ \\mu\\mathrm{F},\\quad 19.47\\ \\mu\\mathrm{F},\\quad 1.77\\ \\mu\\mathrm{F}$$
+
+A factor of 826 between the first and last, for identical reactive support.
+This is the physical reason capacitor banks migrate to the highest convenient
+voltage: dielectric volume scales with capacitance, and the medium-voltage
+unit is a fraction of the size and cost of the low-voltage one.
+
+### Worked example 6.3 — a bank moved to the wrong voltage
+
+A 100 kVAR bank rated 240 V is installed on a 208 V system. What does it
+actually deliver?
+
+Capacitance is fixed by the hardware; output follows the square of applied
+voltage:
+
+$$Q_{actual} = Q_{rated}\\left(\\frac{V_{applied}}{V_{rated}}\\right)^{2} = 100\\left(\\frac{208}{240}\\right)^{2} = 75.1\\ \\mathrm{kVAR}$$
+
+A quarter of the correction is missing. **Trap named.** The reverse error is
+dangerous rather than merely disappointing: a 208 V bank on a 240 V system
+delivers 133 kVAR and sees 15 percent overvoltage continuously, which shortens
+capacitor life dramatically because dielectric loss scales with the square of
+the field.
+
+## 6.4 What correction actually buys
+
+![Apparent power drawn by the 600 kilowatt plant in the upper panel and the transformer capacity released in the lower panel, both against corrected power factor. The demand falls from 833.3 kVA uncorrected to 631.6 kVA at 0.95, releasing 201.8 kVA — 24.2 percent of the service — and the load first fits inside a 750 kVA transformer once the power factor reaches 0.80.](/courses/fe-ee/figures/pow2-pfc-released-capacity.svg)
+
+Three benefits, in the order a plant engineer meets them.
+
+**Released capacity.** Correcting to 0.95 drops the demand from 833.3 to 631.6
+kVA, freeing **201.8 kVA** — enough to add a third of the plant's existing load
+without touching the transformer.
+
+**Reduced loss.** Loss scales with the square of current:
+
+$$\\frac{P_{loss,2}}{P_{loss,1}} = \\left(\\frac{I_{2}}{I_{1}}\\right)^{2} = \\left(\\frac{\\mathrm{pf}_{1}}{\\mathrm{pf}_{2}}\\right)^{2} = \\left(\\frac{0.72}{0.95}\\right)^{2} = 0.574$$
+
+a **42.6 percent** reduction in every ohm between the capacitor and the source.
+
+**Improved voltage.** The same reactive current no longer flows through the
+service impedance, so the bus recovers roughly **$Q_{C}/S_{sc}$** in per unit.
+
+### Worked example 6.4 — stepping a bank in practical sizes
+
+Capacitor banks come in fixed steps. Correct a 450 kW load from 0.78 to 0.95
+using 25 kVAR steps, and report the achieved power factor.
+
+$$Q_{C} = 450\\left(\\tan 38.74^\\circ - \\tan 18.19^\\circ\\right) = 450(0.80228-0.32868) = 213.1\\ \\mathrm{kVAR}$$
+
+Eight steps give 200 kVAR, nine give 225 kVAR. With
+**$Q_{1} = 450\\times 0.80228 = 361.0$ kVAR**:
+
+$$\\text{8 steps: } Q_{net} = 161.0\\ \\mathrm{kVAR} \\Rightarrow \\mathrm{pf} = \\frac{450}{\\sqrt{450^{2}+161.0^{2}}} = 0.942$$
+
+$$\\text{9 steps: } Q_{net} = 136.0\\ \\mathrm{kVAR} \\Rightarrow \\mathrm{pf} = 0.957$$
+
+Nine steps it is, and the answer sits just above target rather than just below
+— which matters when a tariff pays by threshold. Note that the load is still
+lagging in both cases: with 361 kVAR of demand, 225 kVAR of capacitors cannot
+overcorrect anything.
+
+## 6.5 How tariffs turn kVAR into money
+
+Utilities recover the cost of carrying reactive power in one of three ways, and
+knowing which one a question implies decides the target power factor.
+
+| Tariff form | What is billed | Consequence for the target |
+|---|---|---|
+| kVA demand | The peak apparent power in the month | Correct hard; every kVAR removed is billable demand removed |
+| kW demand plus a power-factor penalty | Peak real power, surcharged below a threshold | Correct only to the threshold, typically 0.90 or 0.95 |
+| kVARh energy | Reactive energy over the month | Correct to the average load angle, not the peak |
+
+The middle form is the most common and the most exploitable. A penalty written
+as "demand is billed at **$\\mathrm{kW}\\times 0.95/\\mathrm{pf}$** whenever the
+power factor is below 0.95" makes the billed demand of the 600 kW plant
+
+$$600\\times\\frac{0.95}{0.72} = 791.7\\ \\mathrm{kW}$$
+
+so the plant pays for 191.7 kW it never used. Correcting to exactly 0.95 removes
+the whole surcharge; correcting beyond it removes nothing further, because the
+multiplier is clipped at unity. That is the arithmetic behind the industry
+habit of targeting 0.95 and stopping.
+
+The **payback** calculation that follows is the standard engineering-economics
+overlay. A bank costs roughly in proportion to its kVAR, and it saves the
+surcharge plus the loss reduction of Section 6.4 every hour the plant runs.
+With the plant's 4.71 kW of feeder loss saved for 6,000 operating hours a year,
+the energy saving alone is
+
+$$4.71\\ \\mathrm{kW}\\times 6{,}000\\ \\mathrm{h} = 28{,}260\\ \\mathrm{kWh\\ per\\ year}$$
+
+before any demand credit. On a low-voltage bank the demand credit usually
+dominates and the payback lands between one and three years, which is why
+power-factor correction is the most reliably approved capital project in an
+industrial plant.
+
+One caution the tariff table hides: penalties are assessed on the **billing
+interval of worst power factor**, not on the average. A plant whose load
+collapses overnight while a fixed bank stays energised can be penalised for a
+**leading** power factor at three in the morning while running at 0.95 lagging
+all day. That is the case automatic switched banks exist to solve, and it is
+why Section 7 treats overcorrection as a real failure mode rather than a
+theoretical one. On the exam the same idea appears as a single sentence buried
+in the stem — "the plant operates two shifts" or "the load varies from 20 to
+100 percent" — and it is always an instruction to choose a switched bank over
+a fixed one.`,
+      examTip: 'Q_c = P(tan θ₁ − tan θ₂) and C = Q_phase/(ωV_C²) are the only two formulas this section needs, but the second one demands the voltage ACROSS ONE CAPACITOR — line-to-line for delta, line-to-neutral for wye. Getting that wrong is a factor-of-three error, and both wrong answers are always on the option list.',
+      importantNote: 'A capacitor bank delivers kVAR proportional to the SQUARE of the applied voltage, not to the voltage. A bank operated at 90 percent of its rated voltage supplies only 81 percent of its rated kVAR — which is exactly when the system needs it most, and is the fundamental weakness of shunt capacitors as voltage support.',
+    },
+    {
+      id: 'pfc-limits-alternatives',
+      title: '7. Overcorrection, Detuning, and the Alternatives',
+      content: `## 7.1 Past unity, everything gets worse again
+
+Power factor is not a quantity to maximise; it is a quantity to place. Add
+capacitors beyond the load's own reactive demand and the net reactive power
+reverses sign, the power factor becomes **leading**, and it falls away from
+unity just as fast as it climbed toward it.
+
+$$\\mathrm{pf} = \\frac{P}{\\sqrt{P^{2}+\\left(Q_{L}-Q_{C}\\right)^{2}}}$$
+
+The expression is symmetric in **$(Q_{L}-Q_{C})$**, so 100 kVAR of
+overcorrection costs exactly what 100 kVAR of undercorrection costs. Utilities
+usually penalise both, and leading power factor carries a second problem the
+lagging case does not: **voltage rise**.
+
+$$\\frac{\\Delta V}{V} \\approx \\frac{Q_{C}}{S_{sc}}$$
+
+![Power factor and bus voltage rise of the 600 kilowatt plant as its capacitor bank grows from zero to 800 kVAR. Power factor climbs to exactly unity when the bank reaches the load's own 578 kVAR and then falls again into the leading region, while the voltage rise climbs linearly past 2 percent at about 520 kVAR; the correctly sized 381 kVAR bank sits at 0.95 lagging and 1.46 percent rise.](/courses/fe-ee/figures/pow2-pfc-overcorrection.svg)
+
+| Bank | Net Q | Power factor | Voltage rise |
+|---|---|---|---|
+| 0 | 578.3 kVAR lag | 0.720 lagging | 0% |
+| 200 kVAR | 378.3 lag | 0.846 lagging | 0.77% |
+| 381 kVAR | 197.3 lag | 0.950 lagging | 1.46% |
+| 578 kVAR | 0 | 1.000 | 2.22% |
+| 700 kVAR | 121.7 lead | 0.980 leading | 2.68% |
+
+### Worked example 7.1 — an overcorrected bus
+
+A 500 kW load at 0.85 power factor lagging is fitted with a 400 kVAR bank.
+Find the resulting power factor.
+
+$$Q_{L} = 500\\tan(31.79^\\circ) = 309.9\\ \\mathrm{kVAR}, \\qquad Q_{net} = 309.9-400 = -90.1\\ \\mathrm{kVAR}$$
+
+$$\\mathrm{pf} = \\frac{500}{\\sqrt{500^{2}+90.1^{2}}} = 0.984\\ \\text{leading}$$
+
+The correct bank for unity would have been 309.9 kVAR, and for 0.95 lagging
+only 145.6 kVAR. **Trap named.** An answer of "0.984" with no lead/lag label is
+half an answer, and on this bus it is the half that matters: the 90 kVAR of
+export raises the voltage and can trip an overvoltage relay at light load,
+when **$Q_{L}$** collapses but the fixed bank does not.
+
+### Worked example 7.2 — self-excitation of a motor
+
+A 100 hp motor draws 28 A at no load on a 480 V supply. Size the largest
+capacitor that may be switched **with** the motor.
+
+The no-load current is almost entirely magnetising, so
+
+$$Q_{M} = \\sqrt{3}\\times 480\\times 28 = 23.3\\ \\mathrm{kVAR}$$
+
+Standard practice caps the switched bank at about 90 percent of that:
+
+$$Q_{C,max} \\approx 0.9\\times 23.3 = 21.0\\ \\mathrm{kVAR} \\;\\Rightarrow\\; \\text{specify 20 kVAR}$$
+
+Exceed it and the capacitors can supply more magnetising current than the
+machine needs. After the contactor opens, the still-spinning rotor and the
+capacitors form a self-excited generator: voltage builds up uncontrolled, out
+of phase with the returning supply, and reclosing onto it produces a transient
+torque that has broken shafts. This is one of the few power-system limits set
+by a **maximum**, not a minimum.
+
+## 7.2 Detuning: what the reactor costs
+
+Section 5.2 established that a bank resonates with the source at
+**$h_{r} = \\sqrt{S_{sc}/Q_{C}}$**, and that a small series reactor moves the
+bank's own resonance below the lowest troublesome harmonic. Now the arithmetic.
+A reactor with **$X_{L} = X_{C}/h_{t}^{2}$** tunes the branch to order
+**$h_{t}$**, and the fundamental-frequency net reactance becomes
+
+$$X_{net} = X_{C} - X_{L} = X_{C}\\left(1-\\frac{1}{h_{t}^{2}}\\right)$$
+
+Two consequences follow immediately. The bank delivers **more** kVAR than its
+capacitors are rated for, and the capacitors see **more** voltage than the
+system voltage, both by the same factor:
+
+$$\\frac{Q_{delivered}}{Q_{rated}} = \\frac{V_{C}}{V_{system}} = \\frac{1}{1-1/h_{t}^{2}}$$
+
+![Cost of detuning plotted against the tuning order chosen. The upper panel shows the capacitor overvoltage and kVAR gain, which is 4.74 percent at the industry-standard 4.7th-order tuning and 8.9 percent if the bank is tuned as low as the 3.5th; the lower panel shows the series reactor needed, 4.53 percent of the capacitive reactance at the 4.7th order.](/courses/fe-ee/figures/pow2-pfc-detune.svg)
+
+| Tuning order | Reactor (% of X_C) | Capacitor overvoltage | kVAR gain |
+|---|---|---|---|
+| 3.8 | 6.93% | +7.44% | +7.44% |
+| 4.2 | 5.67% | +6.01% | +6.01% |
+| **4.7** | **4.53%** | **+4.74%** | **+4.74%** |
+| 5.7 | 3.08% | +3.18% | +3.18% |
+| 6.7 | 2.23% | +2.28% | +2.28% |
+
+### Worked example 7.3 — specifying a detuned bank
+
+Detune the plant's 381 kVAR, 480 V bank to the 4.7th order. Find the reactor
+size, the capacitor voltage rating required, and the kVAR the bank will
+actually deliver.
+
+$$\\frac{X_{L}}{X_{C}} = \\frac{1}{4.7^{2}} = 0.04527 \\;\\Rightarrow\\; \\text{a 4.53 percent reactor}$$
+
+$$\\frac{1}{1-0.04527} = 1.0474 \\;\\Rightarrow\\; V_{C} = 1.0474\\times 480 = 503\\ \\mathrm{V}$$
+
+so the capacitors must be **525 V units**, the next standard rating above 503,
+and the bank will deliver **$381.1\\times 1.0474 = 399.2$ kVAR** rather than 381.
+Sizing the capacitors as though the reactor were not there produces continuous
+5 percent overvoltage on the dielectric and premature failure — the most common
+defect in retrofitted detuned banks.
+
+### Worked example 7.4 — a resonance check that fails, and its fix
+
+A 22 MVA bus is to receive an 800 kVAR bank. Check it.
+
+$$h_{r} = \\sqrt{\\frac{22{,}000}{800}} = \\sqrt{27.5} = 5.24$$
+
+Dangerously close to the 5th harmonic, the dominant output of six-pulse
+drives. Two fixes, both computable:
+
+**Move the rating.** Landing exactly on the 5th needs
+**$Q_{C} = 22{,}000/25 = 880$ kVAR**, and on the 7th needs
+**$22{,}000/49 = 449$ kVAR**. A 600 kVAR bank gives **$h_{r} = 6.06$**, sitting
+in the gap between the 5th and 7th, and is the smallest change that works.
+
+**Detune it.** Keep 800 kVAR and add a 4.53 percent reactor. The branch is then
+inductive above the 4.7th order, so it cannot form a parallel resonance with
+the source at the 5th, 7th or anything above.
+
+## 7.3 When capacitors are the wrong answer
+
+Shunt capacitors are cheap, lossless to a first approximation, and dumb: their
+output falls as the square of voltage exactly when voltage support is most
+needed, and they cannot absorb reactive power at all. Three alternatives cover
+the cases they cannot.
+
+| Device | Reactive range | Response | Typical use |
+|---|---|---|---|
+| Shunt capacitor bank | Supply only, in steps | Contactor, seconds | Industrial correction, feeder support |
+| Shunt reactor | Absorb only, fixed | Switched, seconds | Long-line Ferranti control |
+| Synchronous condenser | Supply **and** absorb, continuous | Excitation, ~1 s | Grid voltage support, inertia |
+| Static VAR compensator | Supply and absorb, continuous | Thyristor, ~20 ms | Arc furnaces, flicker control |
+
+A **synchronous condenser** is a synchronous machine on no load whose field is
+adjusted to make it look capacitive (overexcited) or inductive (underexcited).
+Its reactive output is continuously variable and, unlike a capacitor, its
+current does **not** collapse as voltage falls — it rises, because the internal
+emf is held by the field. That single property makes it far better at riding
+through a disturbance, at the cost of rotating machinery and its losses.
+
+A **static VAR compensator** achieves the same two-quadrant range electronically
+by thyristor-switching capacitors and phase-controlling a reactor, and responds
+within a cycle. It is the standard answer where the load itself fluctuates
+faster than a contactor can follow, which is why arc-furnace installations use
+them and why the same technology stabilises long transmission corridors.`,
+      examTip: 'A leading power factor is a wrong answer, not a better one. Whenever a capacitor size is given rather than derived, compute Q_L − Q_C and check its SIGN before taking the arccosine. Half the distractors in this topic are the correct magnitude with the wrong lead-or-lag label.',
+      importantNote: 'A detuning reactor makes the bank deliver more kVAR than its capacitor rating and puts the same percentage of extra voltage on the dielectric. Specify capacitors for V_system/(1 − 1/h²), not for V_system — at the standard 4.7th-order tuning that is a 4.74 percent margin, which forces a 480 V bank onto 525 V units.',
+    },
+    {
+      id: 'pfc-problem-set-a',
+      title: '8. Problem Set A: Sizing, Hardware, and Savings',
+      content: `Six sizing problems on a 450 kW, 480 V plant at 0.78 power factor
+lagging. Each should take about three minutes.
+
+## 8. Problem Set A — sizing a bank and counting the savings
+
+### The problems
+
+**A1.** Find the capacitor rating needed to correct the plant from 0.78 to
+0.95 lagging.
+
+**A2.** Find the apparent power and line current before and after, and the
+transformer capacity released.
+
+**A3.** Find the capacitance per phase of a 200 kVAR delta-connected bank at
+480 V, and the same bank at 4,160 V.
+
+**A4.** A 100 kVAR bank rated 240 V is installed on a 208 V system. Find the
+kVAR it actually delivers.
+
+**A5.** The feeder to the plant has 0.010 Ω per phase. Find the loss before and
+after the correction of A1.
+
+**A6.** The bank is built from 25 kVAR steps. Find the number of steps and the
+power factor achieved.
+
+### Solutions
+
+**A1.** **$\\theta_{1} = \\arccos 0.78 = 38.74^\\circ$** and
+**$\\theta_{2} = 18.19^\\circ$**:
+
+$$Q_{C} = 450\\left(0.80228 - 0.32868\\right) = 213.1\\ \\mathrm{kVAR}$$
+
+*Distractor:* using the power factors instead of their tangents gives
+450(0.95 − 0.78) = 76.5 kVAR, a third of the right answer.
+
+**A2.**
+
+$$S_{1} = \\frac{450}{0.78} = 576.9\\ \\mathrm{kVA}, \\qquad S_{2} = \\frac{450}{0.95} = 473.7\\ \\mathrm{kVA}$$
+
+$$I_{1} = \\frac{576{,}923}{\\sqrt{3}\\times480} = 693.9\\ \\mathrm{A}, \\qquad I_{2} = 569.8\\ \\mathrm{A}$$
+
+Released capacity is **103.2 kVA**, and the current falls **17.9 percent**.
+*Distractor:* reporting the released capacity as the 213.1 kVAR of the bank —
+kVAR and kVA are not interchangeable, and the released kVA is smaller because
+the triangle closes.
+
+**A3.** Per phase, 200/3 = 66.67 kVAR:
+
+$$C = \\frac{66{,}667}{377\\times 480^{2}} = 767.5\\ \\mu\\mathrm{F}, \\qquad C = \\frac{66{,}667}{377\\times 4{,}160^{2}} = 10.22\\ \\mu\\mathrm{F}$$
+
+*Distractor:* using the full 200 kVAR in the numerator triples both answers.
+
+**A4.**
+
+$$Q = 100\\left(\\frac{208}{240}\\right)^{2} = 75.1\\ \\mathrm{kVAR}$$
+
+*Distractor:* scaling linearly gives 86.7 kVAR. Capacitor output follows
+voltage squared.
+
+**A5.**
+
+$$P_{loss,1} = 3(693.9)^{2}(0.010) = 14.45\\ \\mathrm{kW}, \\qquad P_{loss,2} = 3(569.8)^{2}(0.010) = 9.74\\ \\mathrm{kW}$$
+
+a saving of **4.71 kW, or 32.6 percent**, which equals
+**$1-(0.78/0.95)^{2}$** exactly. *Distractor:* forgetting the factor of three
+for the three phases.
+
+**A6.** 213.1/25 = 8.52, so eight steps give 200 kVAR and nine give 225 kVAR.
+With **$Q_{1} = 450\\times0.80228 = 361.0$ kVAR**:
+
+$$\\text{9 steps: } Q_{net} = 136.0\\ \\mathrm{kVAR}, \\quad \\mathrm{pf} = \\frac{450}{\\sqrt{450^{2}+136.0^{2}}} = 0.957\\ \\text{lagging}$$
+
+Eight steps would reach only 0.942, short of target. *Distractor:* rounding
+8.52 down by habit; a tariff threshold at 0.95 rewards rounding up here, and
+361 kVAR of demand means nine steps still cannot overcorrect.`,
+      examTip: 'Write the four numbers P, Q₁, Q₂ and Q_C in a column before touching a calculator, and keep P in the first row where it belongs — unchanged. Every quantity the question can ask for is one operation away from that column.',
+      importantNote: 'Released capacity in kVA is always LESS than the capacitor rating in kVAR, because the sides of a right triangle do not add. On this plant a 213 kVAR bank releases only 103 kVA of transformer capacity, and answering with the kVAR figure is the single most common error in the released-capacity question.',
+    },
+    {
+      id: 'pfc-problem-set-b',
+      title: '9. Problem Set B: Resonance, Overcorrection, and Limits',
+      content: `The sizing arithmetic is the easy half. These six ask whether the
+bank you sized is safe to install.
+
+## 9. Problem Set B — resonance, overcorrection, and machine limits
+
+### The problems
+
+**B1.** A bus has 22 MVA of short-circuit capacity and is to receive an
+800 kVAR bank. Find the resonant harmonic order and state whether the bank is
+acceptable.
+
+**B2.** For the same bus, find the bank ratings that would land exactly on the
+5th and 7th harmonics, and propose a safe rating between them.
+
+**B3.** A 480 V bank is detuned to the 4.7th order. Find the reactor as a
+percentage of the capacitive reactance, the capacitor terminal voltage, and
+the standard capacitor voltage rating to specify.
+
+**B4.** A 500 kW load at 0.85 power factor lagging receives a 400 kVAR bank.
+Find the resulting power factor and its sense.
+
+**B5.** A 600 kVAR bank is switched onto a bus with 30 MVA of short-circuit
+capacity. Estimate the voltage rise.
+
+**B6.** A 100 hp motor draws 28 A at no load on 480 V. Find the largest
+capacitor that may be switched with the motor.
+
+### Solutions
+
+**B1.**
+
+$$h_{r} = \\sqrt{\\frac{22{,}000}{800}} = 5.24$$
+
+Within 5 percent of the 5th harmonic, which six-pulse drives produce strongly.
+**Not acceptable** without detuning. *Distractor:* 27.5, from forgetting the
+square root.
+
+**B2.**
+
+$$Q_{5} = \\frac{22{,}000}{25} = 880\\ \\mathrm{kVAR}, \\qquad Q_{7} = \\frac{22{,}000}{49} = 449\\ \\mathrm{kVAR}$$
+
+Anything between roughly 500 and 800 kVAR lands in the gap; **600 kVAR** gives
+**$h_{r} = 6.06$**, comfortably clear of both. Note the ordering: a **larger**
+bank gives a **lower** resonant order, because Q_C is in the denominator.
+
+**B3.**
+
+$$\\frac{X_{L}}{X_{C}} = \\frac{1}{4.7^{2}} = 4.53\\%, \\qquad V_{C} = \\frac{480}{1-0.04527} = 503\\ \\mathrm{V}$$
+
+Specify **525 V** capacitors, the next standard rating. *Distractor:* 480 V
+units, which then run 4.7 percent overvoltage for their whole service life.
+
+**B4.** **$Q_{L} = 500\\tan(31.79^\\circ) = 309.9$ kVAR**, so
+**$Q_{net} = -90.1$ kVAR**:
+
+$$\\mathrm{pf} = \\frac{500}{\\sqrt{500^{2}+90.1^{2}}} = 0.984\\ \\text{LEADING}$$
+
+*Distractor:* 0.984 lagging. The magnitude is right and the sense is wrong,
+and on this bus the sense is the whole answer — the bank exports 90 kVAR and
+raises the voltage.
+
+**B5.**
+
+$$\\frac{\\Delta V}{V} \\approx \\frac{600}{30{,}000} = 2.0\\%$$
+
+Enough to matter against a transformer tap step, which is typically 2.5
+percent. *Distractor:* treating the rise as negligible because the bank is
+"only" 2 percent of the short-circuit capacity — that ratio **is** the rise.
+
+**B6.**
+
+$$Q_{M} = \\sqrt{3}\\times 480\\times 28 = 23.3\\ \\mathrm{kVAR} \\;\\Rightarrow\\; Q_{C,max} = 0.9\\times 23.3 = 21.0\\ \\mathrm{kVAR}$$
+
+Specify **20 kVAR**. *Distractor:* sizing from the motor's full-load kVAR,
+which is several times larger and guarantees self-excitation on every stop.`,
+      examTip: 'Three checks turn a sized bank into an installed one: resonance order √(S_sc/Q_c) away from 5, 7, 11 and 13; net reactive power still lagging; and, for motor-switched banks, capacitor kVAR below the machine no-load magnetising kVAR. A question that supplies short-circuit MVA or no-load current is asking for one of these.',
+      importantNote: 'A larger capacitor bank produces a LOWER resonant harmonic order, because Q_c sits in the denominator of √(S_sc/Q_c). Adding capacitance to move away from the 7th harmonic can walk the resonance straight onto the 5th, which is stronger — always compute the new order rather than assuming the direction of the change.',
+    },
   ],
   keyTakeaways: [
     'PF = cos(φ) = P/S; lagging PF (inductive) is the most common industrial issue.',
@@ -4259,6 +5022,459 @@ a slightly larger field winding and some extra armature current.`,
       examTip: 'For a synchronous machine, over-excited (E > V) means leading current and reactive power EXPORTED; under-excited (E < V) means lagging current and reactive power imported. For a DC machine, always find the back-EMF first from E = V_a − I_a·R_a — every other quantity follows from it through Kφ = E/ω.',
       importantNote: 'Kφ has units of both V·s/rad and N·m/A, and the two numerical values are identical for any given machine. Checking that T/I_a equals E/ω is a free verification on every DC machine problem, and it catches the most common error — using rpm where rad/s is required, which is off by a factor of 9.55.',
     },
+    {
+      id: 'motors-thevenin-rotor',
+      title: '6. Thévenin Reduction and What Rotor Resistance Buys',
+      content: `## 6.1 The circuit the simplified model left out
+
+Section 3 drew torque from a circuit with the magnetising branch removed. That
+is the right first model, and it is worth knowing exactly what it costs.
+
+Put the magnetising reactance back. The 460 V machine now reads
+**$R_{1} = 0.30\\ \\Omega$**, **$X_{1} = 0.50\\ \\Omega$**,
+**$X_{m} = 20\\ \\Omega$**, **$R_{2} = 0.25\\ \\Omega$**,
+**$X_{2} = 0.70\\ \\Omega$**, all per phase referred to the stator. Looking from
+the rotor branch back toward the supply, everything to the left is a Thévenin
+source:
+
+$$V_{th} = V_{ph}\\left|\\frac{jX_{m}}{R_{1}+j(X_{1}+X_{m})}\\right|, \\qquad Z_{th} = \\frac{jX_{m}(R_{1}+jX_{1})}{R_{1}+j(X_{1}+X_{m})}$$
+
+Evaluating with **$V_{ph} = 265.58$ V**:
+
+$$V_{th} = 265.58\\times\\frac{20}{\\left|0.30+j20.5\\right|} = 259.08\\ \\mathrm{V}$$
+
+$$Z_{th} = 0.2855 + j0.4920\\ \\Omega$$
+
+The source voltage has fallen 2.4 percent and the source resistance from 0.30
+to 0.2855 Ω. Torque is then the same expression with the Thévenin quantities in
+place of the terminal ones:
+
+$$T = \\frac{3V_{th}^{2}(R_{2}/s)}{\\omega_{s}\\left[(R_{th}+R_{2}/s)^{2}+(X_{th}+X_{2})^{2}\\right]}$$
+
+$$s_{maxT} = \\frac{R_{2}}{\\sqrt{R_{th}^{2}+(X_{th}+X_{2})^{2}}}, \\qquad T_{max} = \\frac{3V_{th}^{2}}{2\\omega_{s}\\left[R_{th}+\\sqrt{R_{th}^{2}+(X_{th}+X_{2})^{2}}\\right]}$$
+
+### Worked example 6.1 — how much the simplification costs
+
+Compare the three landmark torques computed both ways.
+
+| Quantity | Simplified | Thévenin | Difference |
+|---|---|---|---|
+| Slip at max torque | 0.2021 | 0.2040 | +0.9% |
+| Breakdown torque | 365.2 N·m | 353.5 N·m | −3.2% |
+| Starting torque | 161.1 N·m | 156.4 N·m | −2.9% |
+| Torque at s = 0.03 | 123.1 N·m | 117.6 N·m | −4.5% |
+
+The simplified model is **optimistic by 3 to 5 percent** and gets the *shape*
+exactly right. For an exam question asked to two significant figures the
+difference rarely changes the chosen option; for a machine specification it
+matters, because a 3 percent optimism in breakdown torque is a 3 percent
+optimism in the margin against stalling. **Trap named.** The error is not the
+same at every slip, so it cannot be corrected by a single factor — which is
+why the reduction is done properly whenever the numbers must be trusted.
+
+## 6.2 The rotor-resistance family
+
+The breakdown-torque expression contains **$R_{1}$**, **$X$** and
+**$V_{ph}$** — and no **$R_{2}$** at all. Rotor resistance therefore relocates
+the peak without changing its height, which is the single most useful structural
+fact about induction machines.
+
+![Torque-speed curves of the same 460 volt machine with rotor resistances of 0.15, 0.25 and 0.40 ohms per phase. All three peak at exactly 365.2 newton-metres, but the peak slides from 1,582 rpm down to 1,218 rpm as the resistance grows, lifting starting torque from 103 to 233 newton-metres while the curve near synchronous speed becomes progressively softer.](/courses/fe-ee/figures/pow2-mot-nema-designs.svg)
+
+| R₂ (Ω) | Slip at peak | Speed at peak | Starting torque | T_start / T_max |
+|---|---|---|---|---|
+| 0.15 | 0.121 | 1,582 rpm | 102.5 N·m | 0.281 |
+| 0.25 | 0.202 | 1,436 rpm | 161.1 N·m | 0.441 |
+| 0.40 | 0.323 | 1,218 rpm | 232.7 N·m | 0.637 |
+| 0.80 | 0.647 | 636 rpm | 338.9 N·m | 0.928 |
+
+That table is the NEMA design classification in numbers. A low-resistance rotor
+(**design A**) gives high efficiency at rated slip and poor starting torque; a
+high-resistance rotor (**design D**) gives magnificent starting torque and runs
+at 8 to 13 percent slip, wasting that fraction of air-gap power as rotor heat
+every second it operates. **Design B**, the general-purpose workhorse, sits
+where the 0.25 Ω row does.
+
+### Worked example 6.2 — the critical rotor resistance
+
+At what rotor resistance does the peak torque land exactly at standstill, and
+what is the starting torque there?
+
+Set **$s_{maxT} = 1$** in the simplified form:
+
+$$R_{2}^{*} = \\sqrt{R_{1}^{2}+X^{2}} = \\sqrt{0.30^{2}+1.20^{2}} = 1.2369\\ \\Omega$$
+
+At that resistance the machine starts **at** its breakdown torque, 365.2 N·m —
+2.27 times its 161 N·m as built, and 2.97 times its rated torque.
+
+![Slip at maximum torque and starting torque plotted against rotor resistance. The slip is linear in resistance and reaches 1 at 1.237 ohms; starting torque rises to a maximum of exactly the breakdown value, 365.2 newton-metres, at that same resistance and falls again beyond it, so adding rotor resistance past the critical value makes starting worse rather than better.](/courses/fe-ee/figures/pow2-mot-rotor-resistance.svg)
+
+The lower panel carries the warning. Beyond 1.2369 Ω the starting torque
+**falls**: the rotor branch is now so resistive that current collapses faster
+than the torque-per-amp improves. Rotor resistance is not a knob to be turned
+as far as it goes.
+
+### Worked example 6.3 — sizing a wound-rotor starting resistor
+
+A 460 V, 4-pole wound-rotor machine has **$R_{1} = 0.20\\ \\Omega$**,
+**$R_{2} = 0.18\\ \\Omega$** and **$X = 0.90\\ \\Omega$** per phase referred to the
+stator. Find its starting and breakdown torque as built, and the external
+rotor resistance needed to start at breakdown torque.
+
+$$T_{start} = \\frac{3(265.58)^{2}(0.18)}{188.5\\left[(0.38)^{2}+(0.90)^{2}\\right]} = 211.7\\ \\mathrm{N{\\cdot}m}$$
+
+$$s_{maxT} = \\frac{0.18}{\\sqrt{0.04+0.81}} = 0.1952, \\qquad T_{max} = \\frac{3(265.58)^{2}}{2(188.5)\\left[0.20+0.9220\\right]} = 500.3\\ \\mathrm{N{\\cdot}m}$$
+
+To move the peak to standstill needs **$R_{2} = 0.9220\\ \\Omega$** referred to
+the stator, so the external resistance is
+
+$$R_{ext} = 0.9220 - 0.18 = 0.7420\\ \\Omega\\ \\text{(referred to the stator)}$$
+
+Starting torque then rises from 211.7 to 500.3 N·m — a factor of 2.36 — while
+the starting **current** falls, because the rotor branch impedance has grown.
+That combination, more torque at less current, is unique to the wound-rotor
+machine and is why it survived in crane and hoist service long after squirrel
+cages took over everything else.
+
+### Worked example 6.4 — reading a nameplate backwards
+
+A 6-pole, 60 Hz motor runs at 1,164 rpm. Find the synchronous speed, the slip,
+and the rotor frequency.
+
+$$N_{s} = \\frac{120f}{p} = \\frac{120\\times 60}{6} = 1{,}200\\ \\mathrm{rpm}$$
+
+$$s = \\frac{1{,}200-1{,}164}{1{,}200} = 0.0300, \\qquad f_{r} = sf = 0.03\\times 60 = 1.80\\ \\mathrm{Hz}$$
+
+The 36 rpm of slip speed corresponds to 1.8 Hz in the rotor bars. **Trap
+named.** Rotor frequency is what makes the rotor's own reactance
+**$sX_{2}$** rather than **$X_{2}$**, and it is why the running machine is
+nearly resistive while the starting machine is nearly reactive — the same
+physical circuit at 1.8 Hz and at 60 Hz.`,
+      examTip: 'Breakdown torque depends on V², R₁ and X but NOT on R₂; slip at breakdown depends on R₂ and nothing else in the numerator. Any question that changes rotor resistance is asking you to move the peak, and any question that changes voltage is asking you to scale it by the square.',
+      importantNote: 'The simplified circuit that omits the magnetising branch overstates torque by 3 to 5 percent on this machine, and the error varies with slip. Use it for exam arithmetic and structural reasoning; use the Thévenin reduction whenever a margin against stalling is being claimed.',
+    },
+    {
+      id: 'motors-across-load',
+      title: '7. Machines Across the Load Range: Efficiency, Excitation, DC',
+      content: `## 7.1 Where an induction motor is actually good
+
+Solving the full circuit at every slip gives the two curves a specifier cares
+about. Fixed losses of 350 W core and 250 W friction and windage are added to
+the 460 V machine.
+
+![Efficiency and power factor of the 460 volt induction machine plotted against shaft output. Efficiency rises steeply to a peak of 91.1 percent near 14.7 kilowatts and then declines slowly, while power factor climbs continuously from 0.33 at 3 kilowatts to about 0.90 near 35 kilowatts; the rated point at slip 0.03 delivers 21.25 kilowatts at 90.4 percent efficiency and 0.875 power factor.](/courses/fe-ee/figures/pow2-mot-eff-pf-load.svg)
+
+| Load | Output | Slip | Efficiency | Power factor |
+|---|---|---|---|---|
+| 25% | 5.25 kW | 0.0070 | 86.3% | 0.485 |
+| 50% | 10.69 kW | 0.0143 | 90.6% | 0.729 |
+| 75% | 15.94 kW | 0.0218 | 91.1% | 0.830 |
+| **100%** | **21.25 kW** | **0.0300** | **90.4%** | **0.875** |
+| 125% | 26.53 kW | 0.0389 | 89.2% | 0.895 |
+
+Read the two columns against each other. Efficiency is remarkably flat — it
+varies by under five points across a five-to-one load range — while **power
+factor collapses** at light load, from 0.875 to 0.485. That asymmetry is the
+whole argument for not oversizing motors: an oversized machine barely loses
+efficiency but drags the plant power factor down, which is a cost paid at the
+meter under every tariff in Section 6 of the power-factor topic.
+
+### Worked example 7.1 — a full power-flow chain
+
+A three-phase induction motor draws 25 kW. Stator copper loss is 900 W, core
+loss 400 W, friction and windage 300 W, and the slip is 3.5 percent on a
+6-pole, 60 Hz supply. Find every intermediate power, the developed torque, the
+shaft torque and the efficiency.
+
+$$P_{ag} = P_{in} - P_{scl} - P_{core} = 25{,}000 - 900 - 400 = 23{,}700\\ \\mathrm{W}$$
+
+$$P_{rcl} = sP_{ag} = 0.035\\times 23{,}700 = 829.5\\ \\mathrm{W}$$
+
+$$P_{mech} = (1-s)P_{ag} = 22{,}870.5\\ \\mathrm{W}, \\qquad P_{out} = 22{,}870.5-300 = 22{,}570.5\\ \\mathrm{W}$$
+
+With **$\\omega_{s} = 2\\pi(60)/3 = 125.66$ rad/s** and
+**$\\omega_{r} = 0.965\\omega_{s} = 121.27$ rad/s**:
+
+$$T_{dev} = \\frac{P_{ag}}{\\omega_{s}} = \\frac{23{,}700}{125.66} = 188.6\\ \\mathrm{N{\\cdot}m}, \\qquad T_{shaft} = \\frac{P_{out}}{\\omega_{r}} = 186.1\\ \\mathrm{N{\\cdot}m}$$
+
+$$\\eta = \\frac{22{,}570.5}{25{,}000} = 90.28\\%$$
+
+**Trap named.** Developed torque divides air-gap power by **synchronous** speed;
+shaft torque divides output power by **rotor** speed. Using rotor speed in the
+first expression inflates the answer by 1/(1−s), and using synchronous speed in
+the second deflates it by the same factor. The two errors look identical on the
+page and land on different distractors.
+
+## 7.2 The V-curves, drawn
+
+Section 5 tabulated a synchronous motor's response to excitation at one load.
+Sweeping the internal emf continuously, at three shaft loads, produces the
+family the name refers to.
+
+![Synchronous motor V-curves: armature current against internal emf at full load, half load and no load. Each curve has a minimum where the power factor is unity — 40.0 amperes at 288 volts on full load, 20.0 amperes at 280 volts on half load, and zero at 277 volts on no load — and rises on both sides, steeply on the under-excited left and more gently on the over-excited right.](/courses/fe-ee/figures/pow2-mot-vcurve.svg)
+
+Three properties are visible and worth stating as rules:
+
+- **Each minimum is unity power factor.** The armature current at that point is purely real: **$I_{a} = P/(3V_{ph})$**, independent of reactance.
+- **The minima drift right as load increases.** More shaft load means a larger δ, so a larger E is needed to keep the current in phase.
+- **The no-load curve reaches zero.** With no shaft power and E = V there is no armature current at all; the machine floats on the bus. Move the field either way and it becomes a pure reactive source or sink — a **synchronous condenser**.
+
+### Worked example 7.2 — excitation for a specified power factor
+
+A 2,300 V, 6-pole, 60 Hz synchronous motor with **$X_{s} = 8\\ \\Omega$** per
+phase drives 500 kW. Find the armature current and internal emf when the field
+is set for 0.8 power factor leading, and the pull-out power at that excitation.
+
+$$I_{a} = \\frac{500{,}000}{\\sqrt{3}\\times 2{,}300\\times 0.8} = 156.9\\angle +36.87^\\circ\\ \\mathrm{A}$$
+
+$$E = V - jX_{s}I_{a} = 1{,}327.9 - j8(156.9\\angle 36.87^\\circ) = 2{,}310.5\\angle -25.76^\\circ\\ \\mathrm{V}$$
+
+so **4,002 V line-to-line internally against a 2,300 V bus** — heavily
+over-excited, as leading operation requires. The pull-out power is the maximum
+of the power-angle expression:
+
+$$P_{max} = \\frac{3VE}{X_{s}} = \\frac{3(1{,}327.9)(2{,}310.5)}{8} = 1{,}150.6\\ \\mathrm{kW}$$
+
+a margin of **2.30 times** the actual load. The machine also supplies
+**$3VI_{a}\\sin\\phi = 375$ kVAR** to the bus while doing it — a synchronous
+motor sized for its mechanical job and over-excited is a capacitor bank the
+plant did not have to buy. Speed is exactly **$120(60)/6 = 1{,}200$ rpm**, load
+or no load.
+
+## 7.3 DC machines: two characteristics, two applications
+
+The two DC equations, **$E = K\\phi\\,\\omega$** and **$T = K\\phi\\,I_{a}$**, produce
+completely different behaviour depending on how the field is connected.
+
+**Shunt**: the field sees the full terminal voltage, so **$K\\phi$** is constant.
+
+$$\\omega = \\frac{V - I_{a}R_{a}}{K\\phi} = \\frac{V}{K\\phi} - \\frac{R_{a}}{(K\\phi)^{2}}T$$
+
+a straight line with a small negative slope — nearly constant speed.
+
+**Series**: the field carries the armature current, so **$\\phi \\propto I_{a}$**
+and **$T = kI_{a}^{2}$**.
+
+$$\\omega = \\frac{V}{\\sqrt{kT}} - \\frac{R}{k}$$
+
+speed falling as the inverse square root of torque — very high torque at low
+speed, and dangerous overspeed at no load.
+
+![Speed against torque for a 240 volt shunt motor and a 240 volt series motor. The shunt characteristic is a nearly flat line falling from 1,846 rpm at 24 newton-metres to 1,655 rpm at 96; the series characteristic starts above 3,500 rpm at light load, crosses the shunt curve near 60 newton-metres, and falls to about 900 rpm at 200 newton-metres.](/courses/fe-ee/figures/pow2-mot-dc-speed-torque.svg)
+
+### Worked example 7.3 — a shunt motor at three loads
+
+A 240 V shunt motor has **$R_{a} = 0.40\\ \\Omega$** and
+**$K\\phi = 1.20\\ \\mathrm{V{\\cdot}s/rad}$**. Find the speed at armature currents
+of 20, 50 and 80 A.
+
+$$\\omega = \\frac{240 - 0.40I_{a}}{1.20}$$
+
+| I_a | Torque | ω | Speed |
+|---|---|---|---|
+| 20 A | 24.0 N·m | 193.3 rad/s | 1,846 rpm |
+| 50 A | 60.0 N·m | 183.3 rad/s | 1,751 rpm |
+| 80 A | 96.0 N·m | 173.3 rad/s | 1,655 rpm |
+
+A four-fold increase in torque costs 10.3 percent of speed. **Check:** at
+50 A, **$T/I_{a} = 60.0/50 = 1.20$** and
+**$E/\\omega = (240-20)/183.3 = 1.20$** — the two meanings of Kφ agree, which
+they must.
+
+### Worked example 7.4 — the same torque from a series motor
+
+A 240 V series motor has **$T = 0.020I_{a}^{2}$** and a total resistance of
+0.50 Ω. Find the speed at 60.5 N·m and at 200 N·m, and the starting resistance
+needed to hold the inrush to twice the 50 A rated current.
+
+At **$T = 60.5$ N·m**, **$I_{a} = \\sqrt{60.5/0.020} = 55.0$ A**:
+
+$$\\omega = \\frac{240 - 55.0(0.50)}{0.020\\times 55.0} = \\frac{212.5}{1.10} = 193.2\\ \\mathrm{rad/s} = 1{,}845\\ \\mathrm{rpm}$$
+
+At **$T = 200$ N·m**, **$I_{a} = 100$ A** and **$\\omega = 95.0$ rad/s = 907
+rpm**. Torque tripled and speed halved, so output power is roughly constant —
+the defining property of series traction drives.
+
+**Starting.** At standstill there is no back emf, so
+
+$$R_{total} = \\frac{240}{2\\times 50} = 2.40\\ \\Omega \\;\\Rightarrow\\; R_{ext} = 2.40-0.50 = 1.90\\ \\Omega$$
+
+**Trap named.** Never run a series motor unloaded. As T approaches zero the
+**$V/\\sqrt{kT}$** term diverges, and a real machine reaches destructive speed
+in seconds — which is why series motors are permanently coupled through gearing
+and never belted.`,
+      examTip: 'Two divisions decide most machine questions: air-gap power over SYNCHRONOUS speed gives developed torque, and output power over ROTOR speed gives shaft torque. Write ω_s = 2πf/(p/2) at the top of the page in rad/s, never in rpm, and both follow.',
+      importantNote: 'Efficiency and power factor do not degrade together at part load. Efficiency stays within a few points from half load upward, while power factor falls off a cliff — 0.875 at rated load and 0.485 at quarter load on this machine. That is why oversizing a motor is a power-factor problem long before it is an efficiency problem.',
+    },
+    {
+      id: 'motors-problem-set-a',
+      title: '8. Problem Set A: Induction Machine Analysis',
+      content: `Six induction-machine problems, all solvable from the slip
+definition and the power-flow chain. Full solutions follow.
+
+## 8. Problem Set A — slip, power flow, and torque
+
+### The problems
+
+**A1.** A 6-pole, 60 Hz induction motor runs at 1,164 rpm. Find the
+synchronous speed, the slip, the slip speed and the rotor frequency.
+
+**A2.** That motor draws 25 kW with 900 W of stator copper loss and 400 W of
+core loss. Find the air-gap power, the rotor copper loss and the mechanical
+power developed, using the slip from A1 rounded to 3.5 percent.
+
+**A3.** With 300 W of friction and windage, find the shaft output, the
+developed torque, the shaft torque and the efficiency.
+
+**A4.** A 460 V, 4-pole machine has **$R_{1}=0.20\\ \\Omega$**,
+**$R_{2}=0.18\\ \\Omega$** and **$X=0.90\\ \\Omega$** per phase. Find the starting
+torque, the slip at maximum torque and the breakdown torque.
+
+**A5.** For that machine, find the external rotor resistance that puts maximum
+torque at standstill, and the resulting starting torque.
+
+**A6.** The machine of A4 is supplied at 414 V instead of 460 V. Find the new
+breakdown torque and the new slip at which it occurs.
+
+### Solutions
+
+**A1.**
+
+$$N_{s} = \\frac{120(60)}{6} = 1{,}200\\ \\mathrm{rpm}, \\qquad s = \\frac{1{,}200-1{,}164}{1{,}200} = 0.0300$$
+
+Slip speed is **36 rpm** and rotor frequency **$sf = 1.80$ Hz**.
+*Distractor:* 1,164/1,200 = 0.970 is the speed ratio, not the slip.
+
+**A2.**
+
+$$P_{ag} = 25{,}000-900-400 = 23{,}700\\ \\mathrm{W}$$
+
+$$P_{rcl} = 0.035(23{,}700) = 829.5\\ \\mathrm{W}, \\qquad P_{mech} = 0.965(23{,}700) = 22{,}870.5\\ \\mathrm{W}$$
+
+*Distractor:* taking rotor copper loss as a fraction of the **input** power
+rather than the air-gap power gives 875 W. Slip multiplies P_ag, always.
+
+**A3.** **$P_{out} = 22{,}870.5-300 = 22{,}570.5$ W**, and with
+**$\\omega_{s} = 125.66$ rad/s**, **$\\omega_{r} = 121.27$ rad/s**:
+
+$$T_{dev} = \\frac{23{,}700}{125.66} = 188.6\\ \\mathrm{N{\\cdot}m}, \\qquad T_{shaft} = \\frac{22{,}570.5}{121.27} = 186.1\\ \\mathrm{N{\\cdot}m}$$
+
+$$\\eta = \\frac{22{,}570.5}{25{,}000} = 90.28\\%$$
+
+*Distractor:* dividing air-gap power by rotor speed gives 195.4 N·m for the
+developed torque, high by 3.6 percent.
+
+**A4.** With **$V_{ph} = 265.58$ V** and **$\\omega_{s} = 188.5$ rad/s**:
+
+$$T_{start} = \\frac{3(265.58)^{2}(0.18)}{188.5\\left[(0.38)^{2}+0.81\\right]} = 211.7\\ \\mathrm{N{\\cdot}m}$$
+
+$$s_{maxT} = \\frac{0.18}{\\sqrt{0.04+0.81}} = 0.1952, \\qquad T_{max} = \\frac{3(265.58)^{2}}{2(188.5)(0.20+0.9220)} = 500.3\\ \\mathrm{N{\\cdot}m}$$
+
+*Distractor:* using 460 V rather than 265.58 V in the numerator triples every
+torque.
+
+**A5.** Maximum torque at standstill needs
+**$R_{2} = \\sqrt{R_{1}^{2}+X^{2}} = 0.9220\\ \\Omega$**, so
+
+$$R_{ext} = 0.9220-0.18 = 0.7420\\ \\Omega, \\qquad T_{start} = T_{max} = 500.3\\ \\mathrm{N{\\cdot}m}$$
+
+a 2.36-fold improvement. *Distractor:* 0.9220 Ω itself — the question asks for
+the **added** resistance, and the rotor already has 0.18 Ω of its own.
+
+**A6.** Torque scales with the square of voltage and the breakdown slip does
+not move at all:
+
+$$T_{max}' = 500.3\\left(\\frac{414}{460}\\right)^{2} = 500.3(0.81) = 405.2\\ \\mathrm{N{\\cdot}m}, \\qquad s_{maxT} = 0.1952$$
+
+A 10 percent voltage sag costs 19 percent of the stalling margin.
+*Distractor:* scaling linearly gives 450.3 N·m and understates the risk.`,
+      examTip: 'Every quantity in the power-flow chain is one multiplication from its neighbour: P_ag × s is rotor copper loss, P_ag × (1−s) is mechanical power, and P_ag ÷ ω_s is developed torque. Draw the chain once at the top of the page and the question becomes a matter of entering it at the right point.',
+      importantNote: 'Torque scales with the SQUARE of applied voltage while the slip at maximum torque does not change at all. A 10 percent voltage sag therefore removes 19 percent of the breakdown torque, and it is the reason under-voltage is the most common cause of induction-motor stalling on a weak feeder.',
+    },
+    {
+      id: 'motors-problem-set-b',
+      title: '9. Problem Set B: Synchronous and DC Machines',
+      content: `The synchronous machine is a phasor problem and the DC machine is
+two equations. These six cover both, plus the selection question that follows.
+
+## 9. Problem Set B — synchronous and DC machines
+
+### The problems
+
+**B1.** A 2,300 V, 6-pole, 60 Hz synchronous motor with **$X_{s}=8\\ \\Omega$**
+per phase drives 500 kW at 0.8 power factor leading. Find the speed, the
+armature current and the internal emf.
+
+**B2.** For that operating point, find the pull-out power and the reactive
+power the machine supplies to the bus.
+
+**B3.** The field of the same motor is reduced until the power factor becomes
+0.8 lagging at the same shaft load. State what happens to the internal emf and
+to the reactive power, without recomputing the magnitudes.
+
+**B4.** A 240 V DC shunt motor has **$R_{a}=0.40\\ \\Omega$** and
+**$K\\phi = 1.20$ V·s/rad**. Find the speed and torque at 50 A, and verify Kφ
+from both of its definitions.
+
+**B5.** A 240 V DC series motor has **$T = 0.020I_{a}^{2}$** and 0.50 Ω of
+total resistance. Find its speed at 60.5 N·m and at 200 N·m.
+
+**B6.** For the series motor of B5, rated at 50 A, find the external
+resistance needed to limit starting current to twice rated.
+
+### Solutions
+
+**B1.** Speed is fixed: **$N_{s} = 120(60)/6 = 1{,}200$ rpm**.
+
+$$I_{a} = \\frac{500{,}000}{\\sqrt{3}(2{,}300)(0.8)} = 156.9\\ \\mathrm{A}\\ \\text{at}\\ +36.87^\\circ$$
+
+$$E = 1{,}327.9 - j8(156.9\\angle 36.87^\\circ) = 2{,}310.5\\angle -25.76^\\circ\\ \\mathrm{V/phase}$$
+
+or **4,002 V line-to-line**. *Distractor:* using **$E = V + jX_{s}I_{a}$**, the
+generator convention, gives 1,157 V per phase and a nonsensical under-excited
+answer for a leading power factor.
+
+**B2.**
+
+$$P_{max} = \\frac{3(1{,}327.9)(2{,}310.5)}{8} = 1{,}150.6\\ \\mathrm{kW}\\ (2.30\\times\\text{the load})$$
+
+$$Q = \\sqrt{3}(2{,}300)(156.9)\\sin(36.87^\\circ) = 375\\ \\mathrm{kVAR\\ supplied}$$
+
+*Distractor:* computing pull-out from V² rather than VE — the field is what
+sets the margin.
+
+**B3.** Reducing the field reduces **E**, so the machine moves left along its
+V-curve, through unity power factor, into the under-excited region. It then
+**absorbs** reactive power instead of supplying it, and the pull-out margin
+**falls** in proportion to E. Shaft power is unchanged, so δ increases to
+compensate. *Distractor:* claiming the shaft power changes — excitation is a
+reactive control only.
+
+**B4.**
+
+$$\\omega = \\frac{240-50(0.40)}{1.20} = 183.3\\ \\mathrm{rad/s} = 1{,}751\\ \\mathrm{rpm}, \\qquad T = 1.20(50) = 60.0\\ \\mathrm{N{\\cdot}m}$$
+
+Verification: **$E/\\omega = 220/183.3 = 1.20$** V·s/rad and
+**$T/I_{a} = 60/50 = 1.20$** N·m/A — the same number, as it must be.
+*Distractor:* reporting 183.3 as rpm, which is off by the factor 9.549.
+
+**B5.** At 60.5 N·m, **$I_{a} = \\sqrt{60.5/0.020} = 55.0$ A**:
+
+$$\\omega = \\frac{240-55.0(0.50)}{0.020(55.0)} = 193.2\\ \\mathrm{rad/s} = 1{,}845\\ \\mathrm{rpm}$$
+
+At 200 N·m, **$I_{a} = 100$ A** and **$\\omega = 190/2.00 = 95.0$ rad/s = 907
+rpm**. *Distractor:* assuming torque is proportional to current, as in a shunt
+machine; in a series machine it goes as current squared.
+
+**B6.** At standstill the back emf is zero:
+
+$$R_{total} = \\frac{240}{2(50)} = 2.40\\ \\Omega \\;\\Rightarrow\\; R_{ext} = 2.40-0.50 = 1.90\\ \\Omega$$
+
+*Distractor:* forgetting to subtract the machine's own 0.50 Ω, which
+over-resists the start and produces only 69 percent of the intended torque.`,
+      examTip: 'For a synchronous MOTOR use E = V − jX_s·I_a; for a generator use E = V + jX_s·I_a. Choosing the wrong one is not a sign error you can fix at the end — it changes the magnitude of E and therefore the pull-out power, and both wrong answers appear on the option list.',
+      importantNote: 'A DC series motor must never be run unloaded. Its speed goes as V/√(kT), which diverges as torque approaches zero; that is the same property that gives it enormous starting torque, and it is why series machines are geared rather than belted to their loads.',
+    },
   ],
   keyTakeaways: [
     'Synchronous speed: N_s = 120f/P; slip: s = (N_s − N)/N_s.',
@@ -4652,6 +5868,460 @@ Halving clearing time is worth more than halving fault current, and it is the
 reason arc-flash mitigation focuses on faster tripping rather than on impedance.`,
       examTip: `Three-phase is NOT always the worst fault: single-line-to-ground exceeds it whenever Z₀ < Z₁, which happens near a solidly grounded delta-wye transformer. And the line-to-line current is always √3/2 = 0.866 of the three-phase value when Z₂ = Z₁, so one multiplication converts between them.`,
       importantNote: `A breaker carries two distinct current ratings and they answer different questions. Momentary (close-and-latch) duty is the ASYMMETRIC first-cycle peak and is a mechanical limit; interrupting duty is the SYMMETRIC RMS at contact parting and is an arc-extinction limit. Quoting one where the other is required understates the requirement by a factor approaching 2.6.`,
+    },
+    {
+      id: 'fault-four-types-worked',
+      title: '5. All Four Fault Types From One Set of Sequence Networks',
+      content: `## 5.1 Three networks, four connections
+
+Symmetrical components do not solve a fault. They **convert** it: an
+unbalanced three-phase problem becomes three balanced single-phase problems
+that are coupled only at the fault point, and the way they are coupled is
+what distinguishes one fault type from another.
+
+| Fault | Network connection | Fault-point relation |
+|---|---|---|
+| Three-phase | positive only | $I_{a1} = E/Z_{1}$ |
+| Line to ground | all three in **series** | $I_{a1}=I_{a2}=I_{a0}=E/(Z_{1}+Z_{2}+Z_{0}+3Z_{f})$ |
+| Line to line | positive and negative in **parallel** | $I_{a1}=-I_{a2}=E/(Z_{1}+Z_{2})$ |
+| Two lines to ground | negative and zero in parallel, then in series with positive | $I_{a1}=E/[Z_{1}+Z_{2}Z_{0}/(Z_{2}+Z_{0})]$ |
+
+Learn the four connections and every fault calculation is the same two steps:
+build the sequence currents, then transform back with
+
+$$\\begin{bmatrix}I_{a}\\\\ I_{b}\\\\ I_{c}\\end{bmatrix} = \\begin{bmatrix}1&1&1\\\\ 1&a^{2}&a\\\\ 1&a&a^{2}\\end{bmatrix}\\begin{bmatrix}I_{a0}\\\\ I_{a1}\\\\ I_{a2}\\end{bmatrix}$$
+
+## 5.2 One bus, all four answers
+
+Take a 13.8 kV bus with **$X_{1} = X_{2} = 0.20$ pu** and
+**$X_{0} = 0.10$ pu** on a 100 MVA base, prefault voltage 1.0 pu, and a bolted
+fault. Base current is **$100\\times10^{6}/(\\sqrt{3}\\times 13{,}800) = 4{,}183.7$ A**.
+
+**Three-phase.** Only the positive network exists:
+
+$$I_{f} = \\frac{1.0}{0.20} = 5.000\\ \\mathrm{pu} = 20{,}918\\ \\mathrm{A}$$
+
+**Single line to ground.** Three networks in series:
+
+$$I_{a} = \\frac{3(1.0)}{0.20+0.20+0.10} = \\frac{3}{0.50} = 6.000\\ \\mathrm{pu} = 25{,}102\\ \\mathrm{A}$$
+
+**Line to line.** Positive and negative in parallel; the faulted phase current
+is √3 times the sequence current:
+
+$$I_{b} = \\frac{\\sqrt{3}(1.0)}{0.20+0.20} = 4.330\\ \\mathrm{pu} = 18{,}116\\ \\mathrm{A}$$
+
+**Two lines to ground.** Zero and negative in parallel:
+
+$$I_{a1} = \\frac{1.0}{0.20 + \\frac{(0.20)(0.10)}{0.30}} = \\frac{1.0}{0.2667} = 3.750\\ \\mathrm{pu}$$
+
+$$V_{a1} = 1.0 - j0.20(3.750\\angle -90^\\circ) = 0.250, \\quad I_{a2} = -\\frac{0.250}{j0.20} = 1.250, \\quad I_{a0} = -\\frac{0.250}{j0.10} = 2.500\\ \\mathrm{pu}$$
+
+Transforming back gives phase currents of **5.728 pu (23,965 A)** in each
+faulted phase and a **ground return of $3I_{a0} = 7.500$ pu, or 31,378 A** —
+the largest number on this bus, and the one the ground grid must carry.
+
+| Fault | Phase current | Ground current | Relative to 3-phase |
+|---|---|---|---|
+| Three-phase | 20,918 A | 0 | 1.000 |
+| Line to ground | 25,102 A | 25,102 A | 1.200 |
+| Line to line | 18,116 A | 0 | 0.866 |
+| Two lines to ground | 23,965 A | 31,378 A | 1.146 |
+
+![Sequence-component signature of four fault types on the 13.8 kilovolt bus, drawn as grouped bars of zero, positive and negative sequence current. A three-phase fault is pure positive sequence at 5.00 per unit; a single-line-to-ground fault splits exactly into thirds at 2.00 each; a line-to-line fault has no zero sequence and equal positive and negative components of 2.50; and a double-line-to-ground fault gives 2.50, 3.75 and 1.25.](/courses/fe-ee/figures/pow2-flt-sequence-signature.svg)
+
+That figure is how a modern relay identifies a fault before a human sees it.
+Zero-sequence current present means the ground is involved. Negative sequence
+without zero sequence means a phase-to-phase fault. Neither present means the
+disturbance is balanced.
+
+### Worked example 5.1 — decomposing a measured set
+
+A relay records **$I_{a} = 10\\angle 0^\\circ$**, **$I_{b} = 8\\angle -140^\\circ$**
+and **$I_{c} = 6\\angle 100^\\circ$** amperes. Find the sequence components and
+the neutral current.
+
+$$I_{a0} = \\tfrac{1}{3}\\left(I_{a}+I_{b}+I_{c}\\right) = 0.977\\angle 15.16^\\circ\\ \\mathrm{A}$$
+
+$$I_{a1} = \\tfrac{1}{3}\\left(I_{a}+aI_{b}+a^{2}I_{c}\\right) = 7.882\\angle -11.68^\\circ\\ \\mathrm{A}$$
+
+$$I_{a2} = \\tfrac{1}{3}\\left(I_{a}+a^{2}I_{b}+aI_{c}\\right) = 1.894\\angle 45.05^\\circ\\ \\mathrm{A}$$
+
+Neutral current is **$3I_{a0} = 2.932$ A**. Check by transforming back: the
+three reconstructed magnitudes are exactly 10, 8 and 6 A. **Trap named.** The
+**$a$** and **$a^{2}$** swap between the positive- and negative-sequence rows;
+interchanging them exchanges the two answers, and since both are plausible
+magnitudes nothing about the result looks wrong.
+
+### Worked example 5.2 — a ground fault through arc resistance
+
+Repeat the single-line-to-ground calculation on the lesson bus with 2 Ω of arc
+resistance at the fault. Base impedance is
+**$13{,}800^{2}/10^{8} = 1.9044\\ \\Omega$**, so **$Z_{f} = 1.0502$ pu**, and
+**$3Z_{f}$** enters the series loop:
+
+$$I_{a} = \\frac{3(1.0)}{\\left|j0.50 + 3(1.0502)\\right|} = \\frac{3}{3.1927} = 0.9396\\ \\mathrm{pu} = 3{,}930\\ \\mathrm{A}$$
+
+Two ohms of arc has cut the ground fault current by **84 percent**. That is why
+ground faults are hard to detect and why sensitive ground relays are set far
+below phase relays: a bolted ground fault looks like a short circuit, and a
+high-impedance one looks like load.
+
+## 5.3 Which fault is worst, and when
+
+![Fault current for the four shunt fault types as the zero-sequence reactance is swept from 0.15 to 5 times the positive-sequence value. The single-line-to-ground current falls steeply from above 7 per unit and crosses the flat 5.00 per-unit three-phase line exactly at X0 equal to X1; the line-to-line current is a flat 4.330 per unit because it does not involve the zero-sequence network at all.](/courses/fe-ee/figures/pow2-flt-type-comparison.svg)
+
+The crossover is worth deriving rather than remembering. Setting the two
+currents equal with **$Z_{2}=Z_{1}$**:
+
+$$\\frac{3E}{2Z_{1}+Z_{0}} = \\frac{E}{Z_{1}} \\;\\Longleftrightarrow\\; 3Z_{1} = 2Z_{1}+Z_{0} \\;\\Longleftrightarrow\\; Z_{0} = Z_{1}$$
+
+So the ground fault exceeds the three-phase fault **exactly when the
+zero-sequence impedance is smaller than the positive-sequence impedance**, which
+happens routinely at the solidly grounded wye of a delta–wye transformer,
+where the zero-sequence network sees only the transformer and not the source
+behind it.
+
+### Worked example 5.3 — sizing a breaker on the right fault
+
+The bus above is to receive a breaker. Which current sets the interrupting
+rating?
+
+The largest **phase** current is the single-line-to-ground value, 25,102 A —
+20 percent above the three-phase value. Choosing on the three-phase number
+alone under-rates the breaker by that margin. (The 31,378 A of ground return in
+the double-line-to-ground case flows in the earth and the neutral, not through
+a single breaker pole, so it sizes the **ground grid** rather than the
+interrupter.)
+
+**Trap named.** "Three-phase is the worst fault" is a rule of thumb that holds
+on transmission systems, where the zero-sequence path includes long lines with
+**$X_{0}\\approx 3X_{1}$**. It fails at distribution substations, and that is
+precisely where the breaker is smallest and the margin thinnest.
+
+### Worked example 5.4 — the asymmetric first cycle
+
+The bus has an X/R ratio of 15. Find the total asymmetric rms current half a
+cycle after a three-phase fault.
+
+The dc offset decays with **$\\tau = (X/R)/\\omega = 15/377 = 0.03979$ s**, and the
+total rms is
+
+$$I_{asym} = I_{sym}\\sqrt{1 + 2e^{-2t/\\tau}}$$
+
+At **$t = 1/120$ s**, **$2t/\\tau = 0.4189$** and
+**$\\sqrt{1+2(0.6577)} = 1.5217$**, so
+
+$$I_{asym} = 1.5217\\times 20{,}918 = 31{,}831\\ \\mathrm{A}$$
+
+The breaker must close and latch against 31.8 kA even though it only has to
+interrupt 20.9 kA a few cycles later.`,
+      examTip: 'The four sequence-network connections are the whole topic: positive only, three in series, positive parallel negative, and negative parallel zero then in series with positive. Write those four down before reading the numbers, and every fault question becomes one impedance combination and one division.',
+      importantNote: 'Fault impedance enters the single-line-to-ground loop as 3Z_f, not Z_f, because the fault current passes through the same physical impedance three times as far as the sequence networks are concerned. Two ohms of arc on this 13.8 kV bus removes 84 percent of the ground-fault current, which is why high-impedance ground faults are a detection problem rather than an interruption problem.',
+    },
+    {
+      id: 'fault-coordination-grounding',
+      title: '6. Protection Coordination and System Grounding',
+      content: `## 6.1 Fault current is a function of position
+
+A protective scheme has to distinguish a fault at the far end of a feeder from
+load at the near end, and the only information available is current. Take a
+13.8 kV feeder of **$z = 0.30+j0.60\\ \\Omega/\\mathrm{km}$** fed from a source of
+**$j0.50\\ \\Omega$**:
+
+$$I_{f}(d) = \\frac{V_{LN}}{\\left|Z_{s} + zd\\right|} = \\frac{7{,}967}{\\left|j0.50 + (0.30+j0.60)d\\right|}$$
+
+![Three-phase fault current along a 13.8 kilovolt feeder against distance from the substation. It falls from 15,935 amperes at the substation bus to 4,420 at 2 kilometres and 2,092 at 5 kilometres, a factor of 7.6 across a short feeder, and approaches a plausible 1,000 ampere relay pickup only beyond 11 kilometres.](/courses/fe-ee/figures/pow2-flt-current-vs-distance.svg)
+
+| Fault position | Impedance to fault | Fault current |
+|---|---|---|
+| Substation bus | 0.500 Ω | 15,935 A |
+| 1 km | 1.140 Ω | 6,988 A |
+| 2 km | 1.803 Ω | 4,420 A |
+| 5 km | 3.808 Ω | 2,092 A |
+| 8 km | 5.818 Ω | 1,369 A |
+
+The 7.6-to-1 spread across five kilometres is what makes distance-graded
+protection possible, and the flattening beyond that is what makes it stop
+working: past about 8 km a fault current is no longer clearly distinguishable
+from a heavy load, which is where impedance relays replace overcurrent relays.
+
+### Worked example 6.1 — how far does a pickup setting reach?
+
+A relay picks up at 1,000 A. How far along the feeder can it detect a bolted
+three-phase fault? Solve **$|j0.5 + (0.30+j0.60)d| = 7{,}967/1{,}000 = 7.967$**:
+
+$$\\sqrt{(0.30d)^{2} + (0.5+0.60d)^{2}} = 7.967 \\;\\Longrightarrow\\; d = 11.21\\ \\mathrm{km}$$
+
+At a 2,000 A pickup the reach falls to **5.26 km**. Halving the reach requires
+doubling the setting, because impedance grows almost linearly with distance and
+current is its reciprocal. **Trap named.** Reach must be checked against the
+**minimum** fault current — a line-to-line fault at the far end, at 0.866 of
+the three-phase value — not against the bolted three-phase current, which is
+the easiest fault to see.
+
+## 6.2 Inverse-time coordination
+
+An overcurrent relay trips after a delay that shrinks as current grows. The
+standard very-inverse characteristic is
+
+$$t = \\frac{TD \\times 13.5}{M - 1}, \\qquad M = \\frac{I}{I_{pickup}}$$
+
+with **$TD$** the time dial. Two relays in series must satisfy one rule at
+every current they both see: the **downstream** relay must operate first, by a
+margin large enough to cover breaker operating time, relay overtravel and
+setting error — conventionally **0.3 to 0.4 s**.
+
+![Time-current curves of two very-inverse overcurrent relays in series on log-log axes. The downstream relay picks up at 100 amperes with a time dial of 0.10 and the upstream at 300 amperes with a time dial of 0.30; the vertical gap between them narrows as current rises, from 3.78 seconds at 600 amperes to 0.294 seconds at 4,000 amperes.](/courses/fe-ee/figures/pow2-flt-tcc-coordination.svg)
+
+| Fault current | Downstream trips | Upstream trips | Margin |
+|---|---|---|---|
+| 800 A | 0.193 s | 2.430 s | 2.237 s |
+| 2,000 A | 0.071 s | 0.715 s | 0.644 s |
+| 2,500 A | 0.056 s | 0.552 s | 0.496 s |
+| 4,000 A | 0.035 s | 0.328 s | 0.294 s |
+
+The margin **shrinks as current rises**, so coordination must always be checked
+at the **maximum** fault current the pair can both see — here 4,000 A, where
+0.294 s is marginally short of the 0.30 s target.
+
+### Worked example 6.2 — fixing a marginal interval
+
+Raise the upstream time dial so the margin at 4,000 A is 0.35 s.
+
+The downstream relay operates in 0.0346 s, so the upstream must operate at
+0.3846 s. With **$M = 4{,}000/300 = 13.33$**:
+
+$$TD = \\frac{t(M-1)}{13.5} = \\frac{0.3846\\times 12.33}{13.5} = 0.351$$
+
+Raise the dial from 0.30 to 0.35. **Trap named.** Every other point on the
+upstream curve is delayed by the same 17 percent, so a 600 A fault now clears
+in 4.73 s instead of 4.05 s. Coordination is always a trade of selectivity
+against clearing time, and the arc-flash energy released is proportional to
+that time.
+
+## 6.3 Grounding: the one design choice that sets ground fault current
+
+Phase fault current is set by the source and the conductors, which are not
+negotiable. Ground fault current is set by the **neutral connection**, which
+is. Inserting **$R_{n}$** in the neutral adds **$3R_{n}$** to the
+zero-sequence loop:
+
+$$I_{SLG} = \\frac{3E}{\\left|Z_{1}+Z_{2}+Z_{0}+3R_{n}\\right|}$$
+
+![Single-line-to-ground fault current on the 13.8 kilovolt bus against neutral grounding resistance, on logarithmic axes. Solid grounding gives 25,102 amperes; a 10 ohm resistor gives 796 amperes and a 50 ohm resistor 159 amperes, and the shaded band marks the 400 to 2,000 ampere window that low-resistance grounding designs usually target.](/courses/fe-ee/figures/pow2-flt-grounding.svg)
+
+| Method | Neutral | Ground fault current | Consequence |
+|---|---|---|---|
+| Solidly grounded | Direct | 25,102 A | Severe arc damage; simple relaying |
+| Low resistance | ~10 Ω | 796 A | Limits damage; still detectable |
+| High resistance | ~50 Ω | 159 A | Alarm rather than trip; keeps process running |
+| Ungrounded | None | Capacitive only, a few amps | Transient overvoltage risk on the healthy phases |
+
+### Worked example 6.3 — sizing a neutral grounding resistor
+
+Choose **$R_{n}$** to limit the ground fault on the lesson bus to 400 A.
+
+In per unit, 400 A is **$400/4{,}183.7 = 0.09561$ pu**, so the loop impedance
+must be **$3/0.09561 = 31.38$ pu**. Since **$3R_{n}$** dominates the small
+reactances:
+
+$$3R_{n} \\approx 31.38 \\;\\Rightarrow\\; R_{n} \\approx 10.46\\ \\mathrm{pu} = 10.46\\times 1.9044 = 19.92\\ \\Omega$$
+
+Specify a **20 Ω** resistor. Its rating is set by the fault it must survive:
+**$I^{2}R = 400^{2}\\times 20 = 3.2$ MW** for the ten seconds a typical resistor
+is rated. **Trap named.** The 3 in **$3R_{n}$** is the whole calculation. Sizing
+from **$E/R_{n}$** without it gives 6.6 Ω and triple the intended fault current.
+
+### Worked example 6.4 — why the delta winding matters
+
+A delta–wye transformer feeds the bus, with the wye solidly grounded on the
+low side. Explain, in sequence terms, why the ground fault current does not
+depend on the source behind the transformer.
+
+The delta winding provides no path for zero-sequence current to leave the
+transformer, so the **zero-sequence network terminates at the transformer**: it
+sees only the transformer's own zero-sequence reactance, typically 0.85 of its
+positive-sequence value, and nothing of the system beyond. The positive- and
+negative-sequence networks, by contrast, see the whole source. That asymmetry is
+exactly the **$Z_{0} < Z_{1}$** condition of Section 5.3, and it is why a
+distribution bus fed through a delta–wye transformer routinely has a ground
+fault current larger than its three-phase fault current.`,
+      examTip: 'Coordination margin is always tightest at the HIGHEST common fault current, because inverse curves converge. Check the pair at maximum fault duty first; if it passes there, the lower currents look after themselves.',
+      importantNote: 'A neutral grounding resistor appears in the zero-sequence loop as 3R_n. That factor of three is the difference between a correctly sized resistor and one that permits three times the intended fault current, and it is the most reliably tested detail in the grounding question.',
+    },
+    {
+      id: 'fault-problem-set-a',
+      title: '7. Problem Set A: Symmetrical Components and Fault Types',
+      content: `All six use the 13.8 kV bus of Section 5: **$X_{1}=X_{2}=0.20$ pu**,
+**$X_{0}=0.10$ pu** on 100 MVA, base current 4,183.7 A, prefault 1.0 pu.
+
+## 7. Problem Set A — sequence components and the four faults
+
+### The problems
+
+**A1.** A relay records **$I_{a}=10\\angle 0^\\circ$**,
+**$I_{b}=8\\angle -140^\\circ$**, **$I_{c}=6\\angle 100^\\circ$** A. Find the three
+sequence components and the neutral current.
+
+**A2.** Find the bolted single-line-to-ground fault current on the bus, in per
+unit and in amperes.
+
+**A3.** Repeat A2 with 2 Ω of arc resistance at the fault.
+
+**A4.** Find the line-to-line fault current, and its ratio to the three-phase
+fault current.
+
+**A5.** Find the double-line-to-ground fault: the three sequence currents, the
+faulted phase current, and the ground return current.
+
+**A6.** The bus has an X/R ratio of 15. Find the asymmetric rms current half a
+cycle after a bolted three-phase fault.
+
+### Solutions
+
+**A1.**
+
+$$I_{a0} = \\tfrac{1}{3}(I_{a}+I_{b}+I_{c}) = 0.977\\angle 15.16^\\circ\\ \\mathrm{A}$$
+
+$$I_{a1} = 7.882\\angle -11.68^\\circ\\ \\mathrm{A}, \\qquad I_{a2} = 1.894\\angle 45.05^\\circ\\ \\mathrm{A}$$
+
+and **$I_{n} = 3I_{a0} = 2.932$ A**. *Distractor:* omitting the 1/3 from all
+three definitions triples every component; the check is that the reconstructed
+phase currents must return 10, 8 and 6 A exactly.
+
+**A2.**
+
+$$I_{a} = \\frac{3(1.0)}{0.20+0.20+0.10} = 6.000\\ \\mathrm{pu} = 25{,}102\\ \\mathrm{A}$$
+
+*Distractor:* omitting the factor of 3 gives 2.0 pu. The 3 comes from
+**$I_{a} = 3I_{a1}$** at a single-phase fault.
+
+**A3.** **$Z_{f} = 2/1.9044 = 1.0502$ pu**, and it enters as **$3Z_{f}$**:
+
+$$I_{a} = \\frac{3}{\\left|j0.50+3.1506\\right|} = \\frac{3}{3.1901} = 0.9404\\ \\mathrm{pu} = 3{,}934\\ \\mathrm{A}$$
+
+An 84 percent reduction from two ohms. *Distractor:* using **$Z_{f}$** rather
+than **$3Z_{f}$** returns 1.90 pu, twice too large.
+
+**A4.**
+
+$$I_{b} = \\frac{\\sqrt{3}(1.0)}{0.40} = 4.330\\ \\mathrm{pu} = 18{,}116\\ \\mathrm{A}, \\qquad \\frac{I_{LL}}{I_{3\\phi}} = \\frac{\\sqrt{3}}{2} = 0.866$$
+
+The 0.866 ratio holds whenever **$Z_{2}=Z_{1}$**, which is nearly always true
+away from rotating machines. *Distractor:* 1.0/0.40 = 2.5 pu is the sequence
+current, not the phase current.
+
+**A5.**
+
+$$I_{a1} = \\frac{1.0}{0.20+\\frac{(0.20)(0.10)}{0.30}} = 3.750\\ \\mathrm{pu}, \\qquad V_{a1} = 0.250\\ \\mathrm{pu}$$
+
+$$I_{a2} = -\\frac{0.250}{j0.20} = 1.250\\ \\mathrm{pu}, \\qquad I_{a0} = -\\frac{0.250}{j0.10} = 2.500\\ \\mathrm{pu}$$
+
+Phase current **5.728 pu = 23,965 A**; ground return
+**$3I_{a0} = 7.500$ pu = 31,378 A**. *Distractor:* reporting 7.5 pu as the
+phase current — it is the sum returning through earth, and no single conductor
+carries it.
+
+**A6.** **$\\tau = 15/377 = 0.03979$ s** and **$t = 1/120$ s**:
+
+$$I_{asym} = 20{,}918\\sqrt{1+2e^{-0.4189}} = 20{,}918(1.5217) = 31{,}831\\ \\mathrm{A}$$
+
+*Distractor:* using the peak asymmetry factor of √2 × 1.52 = 2.15 and
+reporting 45 kA — that is the instantaneous **peak**, which sizes mechanical
+bracing, not the rms the close-and-latch rating is written against.`,
+      examTip: 'Sequence currents are per-phase quantities; the fault current in a conductor is a transformation away. I_a = 3I_a1 for a single-line-to-ground fault, I_b = √3·I_a1 for a line-to-line fault, and 3I_a0 for the ground return of a double-line-to-ground fault. Reporting a sequence current as a fault current is the most frequent error in this topic.',
+      importantNote: 'Every current in this set is a per-unit number multiplied by 4,183.7 A. Compute all four faults in per unit first, compare them there, and convert once at the end — the comparison is the part the question is testing and it needs no amperes at all.',
+    },
+    {
+      id: 'fault-problem-set-b',
+      title: '8. Problem Set B: Duty, Coordination, and Grounding',
+      content: `The fault current is only the first half of the question. These six
+are about what is done with it.
+
+## 8. Problem Set B — breaker duty, relay coordination, grounding
+
+### The problems
+
+**B1.** A 13.8 kV feeder of **$z = 0.30+j0.60\\ \\Omega/\\mathrm{km}$** is fed from a
+source of **$j0.50\\ \\Omega$**. Find the bolted three-phase fault current at the
+bus and at 2 km.
+
+**B2.** A relay on that feeder picks up at 1,000 A. Find its reach for a bolted
+three-phase fault, and comment on its reach for a line-to-line fault.
+
+**B3.** Two very-inverse relays follow **$t = TD\\times 13.5/(M-1)$**. The
+downstream unit has a 100 A pickup and TD 0.10; the upstream has a 300 A pickup
+and TD 0.30. Find the coordination margin at 2,000 A and at 4,000 A.
+
+**B4.** Raise the upstream time dial so the margin at 4,000 A is 0.35 s.
+
+**B5.** On the Section 5 bus, choose a neutral grounding resistor to limit the
+ground fault current to 400 A, and find the energy the resistor must dissipate
+in a 10 second fault.
+
+**B6.** Explain why a distribution bus fed through a delta–wye transformer can
+have a ground fault current larger than its three-phase fault current.
+
+### Solutions
+
+**B1.** With **$V_{LN} = 7{,}967$ V**:
+
+$$I_{f}(0) = \\frac{7{,}967}{0.500} = 15{,}935\\ \\mathrm{A}, \\qquad I_{f}(2) = \\frac{7{,}967}{\\left|j0.5+0.60+j1.20\\right|} = \\frac{7{,}967}{1.803} = 4{,}420\\ \\mathrm{A}$$
+
+*Distractor:* adding the impedance magnitudes arithmetically, 0.50 + 1.342 =
+1.842 Ω, instead of adding the complex quantities.
+
+**B2.** Solve **$\\left|j0.5+(0.30+j0.60)d\\right| = 7.967$**:
+
+$$\\sqrt{(0.30d)^{2}+(0.5+0.60d)^{2}} = 7.967 \\;\\Rightarrow\\; d = 11.21\\ \\mathrm{km}$$
+
+For a line-to-line fault the current is 0.866 of that value at every point, so
+the same 1,000 A pickup reaches only about **9.5 km**. Reach must be verified
+against the minimum fault, not the maximum. *Distractor:* dividing 7.967 by
+0.671 Ω/km as though the impedances were scalars gives 11.9 km.
+
+**B3.**
+
+$$t_{down}(2000) = \\frac{0.10\\times13.5}{19} = 0.0711\\ \\mathrm{s}, \\qquad t_{up}(2000) = \\frac{0.30\\times13.5}{5.667} = 0.7147\\ \\mathrm{s}$$
+
+a margin of **0.644 s**. At 4,000 A the two times are 0.0346 s and 0.3284 s,
+so the margin is **0.294 s** — marginally short of the usual 0.30 s.
+*Distractor:* checking the margin at the lowest fault current, where it is
+2.2 s and looks entirely comfortable.
+
+**B4.** The upstream relay must operate at **$0.0346+0.35 = 0.3846$ s** with
+**$M = 13.33$**:
+
+$$TD = \\frac{0.3846(13.33-1)}{13.5} = 0.351$$
+
+Set the dial to **0.35**, and note that every other point on the curve slows by
+the same 17 percent.
+
+**B5.** 400 A is **0.09561 pu**, so the loop impedance must be
+**$3/0.09561 = 31.38$ pu**, essentially all of it in **$3R_{n}$**:
+
+$$R_{n} = \\frac{31.38}{3} = 10.46\\ \\mathrm{pu} = 19.9\\ \\Omega \\;\\Rightarrow\\; \\text{specify } 20\\ \\Omega$$
+
+$$E_{10s} = I^{2}R_{n}t = (400)^{2}(20)(10) = 32\\ \\mathrm{MJ}$$
+
+*Distractor:* omitting the factor of 3 gives 6.6 Ω and 1,200 A of fault
+current, three times the design target.
+
+**B6.** The delta winding gives zero-sequence current no path out of the
+transformer, so the zero-sequence network **terminates at the transformer** and
+sees only its own reactance — typically about 0.85 of the positive-sequence
+value — while the positive- and negative-sequence networks see the transformer
+**plus** the whole source impedance behind it. The result is
+**$Z_{0}<Z_{1}$**, and by the Section 5.3 crossover that makes
+
+$$I_{SLG} = \\frac{3E}{2Z_{1}+Z_{0}} > \\frac{E}{Z_{1}} = I_{3\\phi}$$
+
+*Distractor:* asserting that the three-phase fault is always the worst case.
+It is the worst case on transmission systems, where the zero-sequence path
+includes long lines and **$Z_{0}\\approx 3Z_{1}$** — and it is routinely false
+at the low-voltage bus of a delta–wye transformer.`,
+      examTip: 'Relay questions come in exactly two shapes: given a current find a time, or given a time find a dial. Both are one rearrangement of t = TD·K/(Mⁿ − 1), so write M = I/I_pickup first and the rest is arithmetic.',
+      importantNote: 'Reach and coordination must be verified at the two EXTREMES: minimum fault current, which is a far-end line-to-line fault at 0.866 of three-phase, for sensitivity; and maximum fault current, at the bus, for the coordination margin. A scheme checked only at one operating point will fail at the other.',
     },
   ],
   keyTakeaways: [

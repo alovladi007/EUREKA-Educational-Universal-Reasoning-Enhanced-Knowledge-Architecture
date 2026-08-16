@@ -1131,14 +1131,14 @@ def _(mode):
     S.note(ax1, 0.723, 762, "a 750 kVA transformer", mode, size=9)
     kfit = int(np.argmin(np.abs(S_kva - 750.0)))
     ax1.plot([pf[kfit]], [750.0], "o", color=c[0], ms=7, zorder=5)
-    S.note(ax1, pf[kfit] + 0.008, 690,
+    S.note(ax1, pf[kfit] + 0.012, 600,
            f"the load fits a 750 kVA unit\nonce pf reaches {pf[kfit]:.2f}", mode)
     ax1.set_ylabel("apparent power drawn\n(kVA)")
     ax1.set_ylim(560, 880)
     ax1.set_title("Correcting power factor is buying transformer capacity back")
     ax2.plot(pf, released, color=c[1], lw=2.5)
     ax2.plot([0.95], [released[k95]], "o", color=c[1], ms=8, zorder=5)
-    S.note(ax2, 0.80, 150, f"correcting to 0.95 releases\n{released[k95]:.1f} kVA "
+    S.note(ax2, 0.735, 175, f"correcting to 0.95 releases\n{released[k95]:.1f} kVA "
                            f"({released[k95] / S_kva[0] * 100:.1f} % of the service)", mode)
     ax2.set_xlabel("corrected power factor")
     ax2.set_ylabel("capacity released\n(kVA)")
@@ -1178,8 +1178,10 @@ def _(mode):
     fig, ax = plt.subplots()
     ax.loglog(V, C_wye, color=c[0], lw=2.4)
     ax.loglog(V, C_delta, color=c[1], lw=2.4)
-    S.label_end(ax, 13800, C_wye[-1], "wye-connected", c[0], mode, dy=8, ha="right")
-    S.label_end(ax, 13800, C_delta[-1], "delta-connected", c[1], mode, dy=-10, ha="right")
+    S.label_end(ax, 950.0, cap_uF(950.0 / np.sqrt(3)), "wye-connected", c[0], mode,
+                dy=15, ha="center")
+    S.label_end(ax, 1450.0, cap_uF(1450.0), "delta-connected  (one third the farads)",
+                c[1], mode, dy=-16, ha="center")
     for v, lab in ((480.0, "480 V"), (4160.0, "4160 V"), (13800.0, "13.8 kV")):
         kk = int(np.argmin(np.abs(V - v)))
         ax.plot([v], [C_delta[kk]], "o", color=c[1], ms=6, zorder=5)
@@ -1190,7 +1192,7 @@ def _(mode):
     ax.set_ylabel("capacitance per phase for 381 kVAR  (uF, log)")
     ax.set_title("Same kVAR, wildly different hardware: capacitance falls as V squared")
     ax.set_xlim(230, 15500)
-    ax.set_ylim(3, 20000)
+    ax.set_ylim(1.0, 40000)
     S.strip(ax)
     return fig
 
@@ -1280,6 +1282,518 @@ def _(mode):
     S.strip(ax1)
     S.strip(ax2)
     fig.align_ylabels((ax1, ax2))
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Rotating Machines: Motors and Generators
+# ---------------------------------------------------------------------------
+
+#: The 460 V, 4-pole induction machine the motors lesson uses throughout,
+#: now split into stator and rotor leakage with a magnetising branch.
+IM_V = 460.0
+IM_R1, IM_R2 = 0.30, 0.25
+IM_X1, IM_X2, IM_XM = 0.50, 0.70, 20.0
+IM_WS = 2 * np.pi * 60 / 2          # 4 poles -> 1800 rpm
+IM_PCORE, IM_PFW = 350.0, 250.0     # W, fixed losses
+
+
+def _im_vph():
+    return IM_V / np.sqrt(3)
+
+
+def _im_torque(s, r2=IM_R2):
+    """Torque from the SIMPLIFIED circuit the lesson states in Section 3."""
+    X = IM_X1 + IM_X2
+    return (3 * _im_vph() ** 2 * (r2 / s)
+            / (IM_WS * ((IM_R1 + r2 / s) ** 2 + X ** 2)))
+
+
+def _im_thevenin():
+    z = (1j * IM_XM * (IM_R1 + 1j * IM_X1)) / (IM_R1 + 1j * (IM_X1 + IM_XM))
+    v = _im_vph() * (1j * IM_XM) / (IM_R1 + 1j * (IM_X1 + IM_XM))
+    return v, z
+
+
+def _im_operating(s):
+    """Output, input, current and power factor at one slip, full circuit."""
+    zin = (IM_R1 + 1j * IM_X1) + (1j * IM_XM * (IM_R2 / s + 1j * IM_X2)) \
+        / (IM_R2 / s + 1j * (IM_X2 + IM_XM))
+    i1 = _im_vph() / zin
+    vth, zth = _im_thevenin()
+    i2 = vth / (zth + complex(IM_R2 / s, IM_X2))
+    pag = 3 * abs(i2) ** 2 * IM_R2 / s
+    pout = (1 - s) * pag - IM_PFW
+    pin = 3 * _im_vph() * abs(i1) * np.cos(np.angle(zin)) + IM_PCORE
+    return pout, pin, abs(i1), np.cos(np.angle(zin)), pag
+
+
+@figure("pow2-mot-nema-designs")
+def _(mode):
+    """Torque-speed curves of the same machine with three rotor resistances.
+
+    Every curve is the Section 3 torque expression evaluated point by point;
+    only R2 changes. The assertion checks the property the lesson states -
+    that the PEAK TORQUE IS IDENTICAL for all three, while the speed at which
+    it occurs slides toward standstill as R2 grows.
+    """
+    c = S.SERIES[mode]
+    s = np.linspace(1.0, 1e-3, 900)
+    n = 1800.0 * (1 - s)
+    peaks = []
+    for r2, col in zip((0.15, 0.25, 0.40), c):
+        T = _im_torque(s, r2)
+        peaks.append(T.max())
+        ax = None
+    Tmax_formula = (3 * _im_vph() ** 2
+                    / (2 * IM_WS * (IM_R1 + np.hypot(IM_R1, IM_X1 + IM_X2))))
+    assert max(peaks) - min(peaks) < 0.35, "peak torque must not depend on R2"
+    assert abs(peaks[1] - Tmax_formula) < 0.35, "peak disagrees with the formula"
+
+    fig, ax = plt.subplots()
+    for r2, col in zip((0.15, 0.25, 0.40), c):
+        T = _im_torque(s, r2)
+        ax.plot(n, T, color=col, lw=2.3)
+        k = int(np.argmax(T))
+        ax.plot([n[k]], [T[k]], "o", color=col, ms=7, zorder=5)
+        S.label_end(ax, 60, np.interp(60, n, T), f"R2 = {r2:.2f} ohm", col, mode,
+                    dx=8, dy=-2)
+    ax.axhline(Tmax_formula, color=S.GUIDE[mode], lw=1.1, ls="--")
+    S.note(ax, 700, Tmax_formula + 11,
+           f"breakdown torque {Tmax_formula:.1f} N.m - the SAME for all three", mode)
+    ax.set_xlabel("rotor speed  (rpm)")
+    ax.set_ylabel("torque  (N.m)")
+    ax.set_title("Rotor resistance moves the peak; it does not change its height")
+    ax.set_xlim(-40, 1830)
+    ax.set_ylim(0, 420)
+    S.strip(ax)
+    return fig
+
+
+@figure("pow2-mot-rotor-resistance")
+def _(mode):
+    """Slip at maximum torque and starting torque, both against rotor
+    resistance.
+
+    s_maxT = R2/sqrt(R1^2 + X^2) is linear in R2 and reaches 1 at
+    R2 = 1.2369 ohm; starting torque is the Section 3 expression at s = 1, and
+    it peaks at exactly that resistance with a value equal to the breakdown
+    torque. Both properties are asserted before drawing.
+    """
+    c = S.SERIES[mode]
+    r2 = np.linspace(0.02, 2.5, 900)
+    X = IM_X1 + IM_X2
+    root = np.hypot(IM_R1, X)
+    smax = r2 / root
+    Tst = _im_torque(1.0, r2)
+    Tmax = 3 * _im_vph() ** 2 / (2 * IM_WS * (IM_R1 + root))
+    k = int(np.argmax(Tst))
+    assert abs(root - 1.236932) < 1e-5, "critical rotor resistance moved"
+    assert abs(r2[k] - root) < 4e-3, "starting torque does not peak at R2 = |Z|"
+    assert abs(Tst[k] - Tmax) < 0.2, "peak starting torque is not the breakdown torque"
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(7.2, 5.8))
+    ax1.plot(r2, smax, color=c[0], lw=2.5)
+    ax1.axhline(1.0, color=S.GUIDE[mode], lw=1.0, ls="--")
+    ax1.plot([root], [1.0], "o", color=c[0], ms=8, zorder=5)
+    S.note(ax1, root + 0.07, 0.62,
+           f"s = 1 at R2 = {root:.3f} ohm:\nthe peak has reached standstill", mode)
+    ax1.set_ylabel("slip at maximum\ntorque")
+    ax1.set_ylim(0, 2.1)
+    ax1.set_title("Wound-rotor starting, in two curves")
+    ax2.plot(r2, Tst, color=c[1], lw=2.5)
+    ax2.axhline(Tmax, color=S.GUIDE[mode], lw=1.0, ls="--")
+    ax2.plot([root], [Tmax], "o", color=c[1], ms=8, zorder=5)
+    S.note(ax2, root + 0.07, Tmax - 62,
+           f"starting torque peaks at the\nbreakdown value, {Tmax:.1f} N.m", mode)
+    ax2.plot([IM_R2], [_im_torque(1.0, IM_R2)], "o", color=S.INK[mode], ms=6, zorder=5)
+    S.note(ax2, IM_R2 + 0.05, 120, "as built:\n161 N.m", mode, size=9)
+    ax2.set_xlabel("rotor resistance referred to the stator  (ohm per phase)")
+    ax2.set_ylabel("starting torque\n(N.m)")
+    ax2.set_xlim(0, 2.5)
+    ax2.set_ylim(0, 420)
+    S.strip(ax1)
+    S.strip(ax2)
+    fig.align_ylabels((ax1, ax2))
+    return fig
+
+
+@figure("pow2-mot-eff-pf-load")
+def _(mode):
+    """Efficiency and power factor of the induction machine across its load
+    range, from the full equivalent circuit with fixed losses.
+
+    Every point solves the circuit at one slip; nothing is interpolated from a
+    catalogue. The assertion pins the rated point at slip 0.03 and checks that
+    efficiency peaks BELOW rated load while power factor is still climbing.
+    """
+    c = S.SERIES[mode]
+    s = np.linspace(0.003, 0.075, 500)
+    res = [_im_operating(v) for v in s]
+    pout = np.array([r[0] for r in res]) / 1e3
+    eta = np.array([r[0] / r[1] for r in res]) * 100
+    pf = np.array([r[3] for r in res])
+    k30 = int(np.argmin(np.abs(s - 0.03)))
+    assert abs(pout[k30] - 21.250) < 0.05, "rated output moved"
+    assert abs(eta[k30] - 90.394) < 0.05, "rated efficiency moved"
+    assert pout[int(np.argmax(eta))] < pout[k30], "efficiency should peak below rated"
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(7.2, 5.6))
+    ax1.plot(pout, eta, color=c[0], lw=2.5)
+    ke = int(np.argmax(eta))
+    ax1.plot([pout[ke]], [eta[ke]], "o", color=c[0], ms=7, zorder=5)
+    S.note(ax1, pout[ke] + 0.7, eta[ke] - 4.5,
+           f"efficiency peaks at {pout[ke]:.1f} kW\n({eta[ke]:.1f} %), not at rated load", mode)
+    ax1.set_ylabel("efficiency  (%)")
+    ax1.set_ylim(78, 96)
+    ax1.set_title("A motor at part load loses power factor faster than efficiency")
+    ax2.plot(pout, pf, color=c[1], lw=2.5)
+    ax2.set_ylabel("power factor")
+    ax2.set_ylim(0.3, 0.98)
+    ax2.set_xlabel("shaft output power  (kW)")
+    ax2.set_xlim(3, 45)
+    for a in (ax1, ax2):
+        a.axvline(pout[k30], color=S.GRID[mode], lw=1.0, ls=":")
+        S.strip(a)
+    S.note(ax2, pout[k30] + 0.7, 0.40, "rated load, slip 0.03", mode, size=9)
+    fig.align_ylabels((ax1, ax2))
+    return fig
+
+
+@figure("pow2-mot-vcurve")
+def _(mode):
+    """Synchronous motor V-curves: armature current against excitation, at
+    three shaft loads.
+
+    For each internal emf E the load angle comes from P = 3VE sin(delta)/X_s
+    and the armature current from (V - E)/jX_s; both are solved here. The
+    assertion pins the lesson's 33.26 kW row at 40.0 A minimum current and
+    checks each curve's minimum sits at unity power factor.
+    """
+    c = S.SERIES[mode]
+    Vp, Xs = 480.0 / np.sqrt(3), 2.0
+    E = np.linspace(210.0, 380.0, 900)
+
+    def curve(P):
+        sd = np.clip(P * Xs / (3 * Vp * E), -1, 1)
+        delta = np.arcsin(sd)
+        Ia = (Vp - E * np.exp(-1j * delta)) / (1j * Xs)
+        return np.abs(Ia), np.cos(np.angle(Ia))
+
+    I_full, pf_full = curve(33256.0)
+    kmin = int(np.argmin(I_full))
+    assert abs(I_full[kmin] - 40.0) < 0.15, "full-load V-curve minimum moved"
+    assert abs(pf_full[kmin] - 1.0) < 2e-3, "minimum is not at unity power factor"
+
+    fig, ax = plt.subplots()
+    for P, col, lab, xlab, dy in (
+            (33256.0, c[0], "full load, 33.3 kW", 243.0, 13),
+            (16628.0, c[1], "half load, 16.6 kW", 330.0, -16),
+            (0.0, c[2], "no load (synchronous condenser)", 236.0, -16)):
+        I, _ = curve(P)
+        ax.plot(E, I, color=col, lw=2.3)
+        k = int(np.argmin(I))
+        ax.plot([E[k]], [I[k]], "o", color=col, ms=7, zorder=5)
+        S.label_end(ax, xlab, np.interp(xlab, E, I), lab, col, mode, dy=dy, ha="center")
+    ax.axvline(277.13, color=S.GUIDE[mode], lw=1.0, ls="--")
+    S.note(ax, 279, 61, "E equals the\nterminal voltage", mode, size=9)
+    S.note(ax, 212, 4, "under-excited:\nabsorbs kVAR", mode)
+    S.note(ax, 378, 4, "over-excited:\nsupplies kVAR", mode, ha="right")
+    ax.set_xlabel("internal emf E per phase  (V), set by field current")
+    ax.set_ylabel("armature current  (A)")
+    ax.set_title("V-curves: the field controls reactive power, not shaft power")
+    ax.set_xlim(210, 380)
+    ax.set_ylim(0, 65)
+    S.strip(ax)
+    return fig
+
+
+@figure("pow2-mot-dc-speed-torque")
+def _(mode):
+    """Speed-torque characteristics of a 240 V shunt motor and a 240 V series
+    motor of the same rating.
+
+    The shunt curve is omega = (V - T Ra/k)/k with constant flux; the series
+    curve is omega = V/sqrt(kT) - R/k with flux proportional to armature
+    current. Both are evaluated from those expressions. The assertion checks
+    the series machine runs away at light load and is stronger at heavy load.
+    """
+    c = S.SERIES[mode]
+    V, Ra, kphi = 240.0, 0.40, 1.20          # shunt: V, armature R, k*flux
+    ks, Rs = 0.02, 0.50                       # series: T = ks Ia^2, total R
+    T = np.linspace(8.0, 220.0, 700)
+    w_sh = (V - (T / kphi) * Ra) / kphi
+    w_se = V / np.sqrt(ks * T) - Rs / ks
+    assert abs(w_sh[0] - (V - (8.0 / kphi) * Ra) / kphi) < 1e-9, "shunt model broken"
+    assert w_se[0] > 2 * w_sh[0], "series motor must overspeed at light load"
+    assert w_se[-1] < w_sh[-1], "series motor must be slower at heavy load"
+
+    fig, ax = plt.subplots()
+    ax.plot(T, w_sh * 60 / (2 * np.pi), color=c[0], lw=2.5)
+    ax.plot(T, w_se * 60 / (2 * np.pi), color=c[1], lw=2.5)
+    S.label_end(ax, 175, np.interp(175, T, w_sh) * 60 / (2 * np.pi),
+                "shunt: nearly constant speed", c[0], mode, dy=15, ha="center")
+    S.label_end(ax, 120, np.interp(120, T, w_se) * 60 / (2 * np.pi),
+                "series: speed falls as torque rises", c[1], mode, dy=-17, ha="center")
+    kx = int(np.argmin(np.abs(T - 60.0)))
+    for arr, col in ((w_sh, c[0]), (w_se, c[1])):
+        ax.plot([60.0], [arr[kx] * 60 / (2 * np.pi)], "o", color=col, ms=7, zorder=5)
+    S.note(ax, 70, 2450, f"at 60 N.m:  shunt {w_sh[kx] * 60 / (2 * np.pi):.0f} rpm,  "
+                         f"series {w_se[kx] * 60 / (2 * np.pi):.0f} rpm", mode)
+    ax.set_xlabel("shaft torque  (N.m)")
+    ax.set_ylabel("speed  (rpm)")
+    ax.set_title("Two DC machines, two jobs: constant speed against constant power")
+    ax.set_xlim(0, 225)
+    ax.set_ylim(0, 3600)
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Fault Analysis and Symmetrical Components
+# ---------------------------------------------------------------------------
+
+#: The 13.8 kV bus the fault lesson works: X1 = X2 = 0.20, X0 = 0.10 pu on a
+#: 100 MVA base, prefault voltage 1.0 pu.
+FL_X1, FL_X2, FL_X0 = 0.20j, 0.20j, 0.10j
+FL_IBASE = 100e6 / (np.sqrt(3) * 13800.0)
+_A_OP = np.exp(1j * np.radians(120))
+
+
+def _fl_currents(x0=FL_X0, x1=FL_X1, x2=FL_X2, e=1.0):
+    """Fault current magnitudes in per unit for all four shunt fault types."""
+    a = _A_OP
+    i3 = abs(e / x1)
+    islg = abs(3 * e / (x1 + x2 + x0))
+    ill = abs(np.sqrt(3) * e / (x1 + x2))
+    i1 = e / (x1 + x2 * x0 / (x2 + x0))
+    v1 = e - i1 * x1
+    i2, i0 = -v1 / x2, -v1 / x0
+    ib = i0 + a ** 2 * i1 + a * i2
+    return i3, islg, ill, abs(ib), abs(3 * i0)
+
+
+@figure("pow2-flt-type-comparison")
+def _(mode):
+    """Fault current for the four shunt faults as the zero-sequence reactance
+    is varied, with X1 = X2 held at 0.20 pu.
+
+    Every point is solved from the sequence-network connection for that fault
+    type. The assertion pins the crossover the lesson emphasises: the
+    single-line-to-ground current equals the three-phase current exactly when
+    X0 = X1, and exceeds it below that.
+    """
+    c = S.SERIES[mode]
+    ratio = np.linspace(0.15, 5.0, 700)
+    vals = np.array([_fl_currents(x0=r * FL_X1) for r in ratio])
+    i3, islg, ill, idlg = vals[:, 0], vals[:, 1], vals[:, 2], vals[:, 3]
+    # checked at exactly X0 = X1 rather than at the nearest grid point
+    at_unity = _fl_currents(x0=FL_X1)
+    assert abs(at_unity[1] - at_unity[0]) < 1e-12, "SLG must equal 3-phase at X0 = X1"
+    assert abs(_fl_currents()[1] - 6.0) < 1e-9, "lesson SLG case moved"
+    assert np.allclose(ill, np.sqrt(3) / 0.4, atol=1e-9), "LL must not depend on X0"
+
+    fig, ax = plt.subplots()
+    ax.plot(ratio, islg, color=c[0], lw=2.5)
+    ax.plot(ratio, idlg, color=c[1], lw=2.3)
+    ax.plot(ratio, i3, color=S.GUIDE[mode], lw=2.0, ls="--")
+    ax.plot(ratio, ill, color=c[2], lw=2.2)
+    S.label_end(ax, 5.0, islg[-1], "single line to ground", c[0], mode, dy=-10, ha="right")
+    S.label_end(ax, 5.0, idlg[-1], "double line to ground\n(phase current)", c[1], mode,
+                dy=12, ha="right")
+    S.label_end(ax, 3.6, ill[int(np.argmin(np.abs(ratio - 3.6)))],
+                "line to line  (4.330 pu, flat)", c[2], mode, dy=-14, ha="center")
+    S.note(ax, 4.95, 5.10, "three-phase, 5.00 pu", mode, size=9, ha="right")
+    ax.plot([1.0], [5.0], "o", color=S.INK[mode], ms=8, zorder=5)
+    S.note(ax, 1.08, 5.55, "X0 = X1: the ground fault\nexactly matches the three-phase", mode)
+    ax.axvspan(0.15, 1.0, color=c[0], alpha=0.10, lw=0)
+    S.note(ax, 0.2, 2.1, "ground fault is the\nWORST case here", mode)
+    ax.set_xlabel("zero-sequence reactance ratio  X0 / X1")
+    ax.set_ylabel("fault current  (pu on 100 MVA)")
+    ax.set_title("Which fault is worst depends entirely on the zero-sequence path")
+    ax.set_xlim(0.15, 5.0)
+    ax.set_ylim(1.5, 7.2)
+    S.strip(ax)
+    return fig
+
+
+@figure("pow2-flt-sequence-signature")
+def _(mode):
+    """The sequence-component signature of each fault type on the lesson's bus.
+
+    Each group is the decomposition of that fault's own phase currents into
+    zero, positive and negative sequence. The assertions check the three
+    signatures the lesson states: a balanced three-phase fault is pure
+    positive sequence, a single-line-to-ground fault splits equally three
+    ways, and a line-to-line fault has no zero sequence at all.
+    """
+    c = S.SERIES[mode]
+    a = _A_OP
+    e = 1.0
+    # three-phase
+    s3 = (0.0, abs(e / FL_X1), 0.0)
+    # single line to ground: I0 = I1 = I2 = Ia/3
+    islg = 3 * e / (FL_X1 + FL_X2 + FL_X0)
+    sg = (abs(islg / 3),) * 3
+    # line to line
+    ill = np.sqrt(3) * e / (FL_X1 + FL_X2)
+    sl = (0.0, abs(ill) / np.sqrt(3), abs(ill) / np.sqrt(3))
+    # double line to ground
+    i1 = e / (FL_X1 + FL_X2 * FL_X0 / (FL_X2 + FL_X0))
+    v1 = e - i1 * FL_X1
+    sd = (abs(-v1 / FL_X0), abs(i1), abs(-v1 / FL_X2))
+    assert s3[0] == 0 and s3[2] == 0, "three-phase must be pure positive sequence"
+    assert abs(sg[0] - sg[1]) < 1e-12 and abs(sg[1] - sg[2]) < 1e-12, "SLG thirds broken"
+    assert sl[0] == 0 and abs(sl[1] - sl[2]) < 1e-12, "LL signature broken"
+    assert abs(sd[1] - 3.75) < 1e-9 and abs(sd[0] - 2.50) < 1e-9, "DLG values moved"
+
+    rows = [("three-phase", s3), ("line to ground", sg),
+            ("line to line", sl), ("two lines\nto ground", sd)]
+    fig, ax = plt.subplots()
+    x = np.arange(len(rows))
+    w = 0.26
+    for j, (name, col) in enumerate((("zero  I0", c[0]), ("positive  I1", c[1]),
+                                     ("negative  I2", c[2]))):
+        vals = [r[1][j] for r in rows]
+        ax.bar(x + (j - 1) * w, vals, width=w, color=col, edgecolor="none")
+        for xi, v in zip(x, vals):
+            if v > 0.02:
+                ax.annotate(f"{v:.2f}", xy=(xi + (j - 1) * w, v + 0.07), ha="center",
+                            color=S.INK_2[mode], fontsize=8.5)
+        S.label_end(ax, 1.0 + (j - 1) * 0.98, 5.45, name, col, mode,
+                    ha="center", size=9.5)
+    ax.set_xticks(x)
+    ax.set_xticklabels([r[0] for r in rows], fontsize=9.5)
+    ax.set_ylabel("sequence current  (pu on 100 MVA)")
+    ax.set_title("Each fault type has a sequence signature you can read off a relay")
+    ax.set_ylim(0, 6.3)
+    ax.grid(axis="x", visible=False)
+    S.strip(ax)
+    return fig
+
+
+@figure("pow2-flt-tcc-coordination")
+def _(mode):
+    """Time-current curves of two very-inverse overcurrent relays in series,
+    and the coordination interval between them.
+
+    Both curves are t = TD x 13.5/(M - 1) with M the multiple of pickup, the
+    standard very-inverse characteristic. The assertion recomputes the
+    interval at the maximum fault current and checks it clears the usual
+    0.3 second requirement.
+    """
+    c = S.SERIES[mode]
+
+    def tcc(I, pickup, td):
+        M = I / pickup
+        return np.where(M > 1.02, td * 13.5 / np.maximum(M - 1, 1e-9), np.nan)
+
+    I = np.logspace(np.log10(320), np.log10(6000), 700)
+    down = tcc(I, 100.0, 0.10)
+    up = tcc(I, 300.0, 0.30)
+    d4 = float(tcc(np.array([4000.0]), 100.0, 0.10)[0])
+    u4 = float(tcc(np.array([4000.0]), 300.0, 0.30)[0])
+    assert abs(d4 - 0.034615) < 1e-5, "downstream time at 4 kA moved"
+    assert u4 - d4 > 0.29, "coordination interval must clear 0.3 s"
+
+    fig, ax = plt.subplots()
+    ax.loglog(I, down, color=c[0], lw=2.4)
+    ax.loglog(I, up, color=c[1], lw=2.4)
+    S.label_end(ax, 900.0, float(tcc(np.array([900.0]), 100.0, 0.10)[0]),
+                "downstream relay\n100 A pickup, TD 0.10", c[0], mode, dy=-20, ha="center")
+    S.label_end(ax, 1500.0, float(tcc(np.array([1500.0]), 300.0, 0.30)[0]),
+                "upstream relay\n300 A pickup, TD 0.30", c[1], mode, dy=20, ha="center")
+    ax.plot([4000, 4000], [d4, u4], color=S.GUIDE[mode], lw=1.6)
+    ax.plot([4000], [d4], "o", color=c[0], ms=7, zorder=5)
+    ax.plot([4000], [u4], "o", color=c[1], ms=7, zorder=5)
+    S.note(ax, 3700, 0.075,
+           f"coordination interval\nat 4 kA: {u4 - d4:.3f} s", mode, ha="right")
+    ax.set_xlabel("fault current  (A, log)")
+    ax.set_ylabel("operating time  (s, log)")
+    ax.set_title("Coordination is vertical distance: the far relay must always be faster")
+    ax.set_xlim(320, 6500)
+    ax.set_ylim(0.02, 40)
+    S.strip(ax)
+    return fig
+
+
+@figure("pow2-flt-grounding")
+def _(mode):
+    """Single-line-to-ground fault current against neutral grounding
+    resistance on the 13.8 kV bus.
+
+    The curve is 3E/|X1 + X2 + X0 + 3R_n| with R_n converted to per unit on
+    the bus base impedance of 1.9044 ohms. The assertion pins the solidly
+    grounded value at 25,102 A and the 10 ohm case at 796 A.
+    """
+    c = S.SERIES[mode]
+    zbase = 13800.0 ** 2 / 100e6
+    Rn = np.logspace(np.log10(0.02), np.log10(60.0), 700)
+    I = np.array([abs(3.0 / (FL_X1 + FL_X2 + FL_X0 + 3 * (r / zbase)))
+                  for r in Rn]) * FL_IBASE
+    solid = abs(3.0 / (FL_X1 + FL_X2 + FL_X0)) * FL_IBASE
+    i10 = abs(3.0 / (FL_X1 + FL_X2 + FL_X0 + 3 * (10.0 / zbase))) * FL_IBASE
+    assert abs(solid - 25102.19) < 0.5, "solidly grounded current moved"
+    assert abs(i10 - 796.34) < 0.5, "10 ohm case moved"
+
+    fig, ax = plt.subplots()
+    ax.loglog(Rn, I, color=c[0], lw=2.5)
+    ax.axhline(solid, color=S.GUIDE[mode], lw=1.1, ls="--")
+    S.note(ax, 0.022, solid * 1.10, f"solidly grounded: {solid:,.0f} A", mode, size=9)
+    for r, lab, dx, dy in ((10.0, "low-resistance grounding", -10, 14),
+                           (50.0, "high-resistance grounding", -10, 14)):
+        v = abs(3.0 / (FL_X1 + FL_X2 + FL_X0 + 3 * (r / zbase))) * FL_IBASE
+        ax.plot([r], [v], "o", color=c[1], ms=8, zorder=5)
+        ax.annotate(f"{r:.0f} ohm, {v:,.0f} A\n{lab}", xy=(r, v), xytext=(dx, dy),
+                    textcoords="offset points", ha="right",
+                    color=S.INK_2[mode], fontsize=8.5)
+    ax.axhspan(400, 2000, color=c[2], alpha=0.13, lw=0)
+    S.note(ax, 0.022, 2200, "400 to 2000 A: the usual design window", mode, size=9)
+    ax.set_xlabel("neutral grounding resistance  (ohm, log)")
+    ax.set_ylabel("ground fault current  (A, log)")
+    ax.set_title("Grounding resistance is the one design choice that sets ground fault current")
+    ax.set_xlim(0.02, 60)
+    ax.set_ylim(80, 45000)
+    S.strip(ax)
+    return fig
+
+
+@figure("pow2-flt-current-vs-distance")
+def _(mode):
+    """Three-phase fault current along a 13.8 kV feeder as the fault moves
+    away from the substation.
+
+    Current is V_LN divided by the magnitude of the source impedance plus the
+    line impedance to the fault, evaluated at each distance. The assertion
+    pins the bus fault at 15,935 A and the 5 km fault at 2,092 A, a factor of
+    7.6 across a short feeder.
+    """
+    c = S.SERIES[mode]
+    Zs, z = 0.5j, 0.30 + 0.60j
+    Vln = 13800.0 / np.sqrt(3)
+    dkm = np.linspace(0, 8, 700)
+    I = np.array([Vln / abs(Zs + z * v) for v in dkm])
+    assert abs(I[0] - 15934.87) < 0.5, "bus fault current moved"
+    k5 = int(np.argmin(np.abs(dkm - 5.0)))
+    assert abs(I[k5] - 2092.35) < 3.0, "5 km fault current moved"
+
+    fig, ax = plt.subplots()
+    ax.plot(dkm, I, color=c[0], lw=2.6)
+    S.label_end(ax, 6.15, Vln / abs(Zs + z * 6.15),
+                "three-phase fault current", c[0], mode, dy=20)
+    ax.axhline(1000.0, color=S.GUIDE[mode], lw=1.1, ls="--")
+    S.note(ax, 0.08, 1250, "1,000 A: a plausible relay pickup", mode, size=9)
+    for v in (0.0, 2.0, 5.0):
+        val = Vln / abs(Zs + z * v)          # exact, not the nearest grid point
+        ax.plot([v], [val], "o", color=c[1], ms=7, zorder=5)
+        ax.annotate(f"{v:.0f} km\n{val:,.0f} A", xy=(v, val), xytext=(9, 10),
+                    textcoords="offset points", color=S.INK_2[mode], fontsize=9)
+    ax.set_xlabel("distance from the substation  (km)")
+    ax.set_ylabel("fault current  (A)")
+    ax.set_title("A relay set for the far end must not trip on load at the near end")
+    ax.set_xlim(0, 8)
+    ax.set_ylim(0, 17500)
+    S.strip(ax)
     return fig
 
 

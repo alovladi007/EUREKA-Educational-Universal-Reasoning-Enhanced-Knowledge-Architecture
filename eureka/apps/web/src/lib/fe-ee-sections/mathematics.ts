@@ -118,7 +118,7 @@ Substituting back into the first equation: 3(3.14) + 2(1.286) = 9.43 + 2.57 = 12
 The three worth having instantly:
 
 - **$\\sin ^2 + \\cos ^2 = 1$** — converts between the two whenever only one is given
-- **$\\sin (2x) = 2 \\sin  x \\cos  x$** — appears in instantaneous power, p(t) = VI cos(theta) - VI cos(2 omega t - theta)
+- **$\\sin (2x) = 2 \\sin  x \\cos  x$** — appears in instantaneous power, p(t) = VI cos(theta) + VI cos(2 omega t - theta)
 - **$\\cos (A - B) = \\cos  A \\cos  B + \\sin  A \\sin  B$** — the phase-difference expansion behind every power-factor derivation
 
 Example: a load has cos(theta) = 0.6. Then sin(theta) = sqrt(1 - 0.36) = **0.8**, so a 5 kVA load carries P = 3 kW and Q = 4 kVAR. The 3-4-5 triangle turns up constantly in power problems and is worth recognising on sight.
@@ -309,6 +309,803 @@ Simplify 1 − 2sin²θ. Using sin²θ = (1 − cos 2θ)/2, this is
 1 − (1 − cos 2θ) = **$\\cos  2\\theta$**, which is the double-angle identity read
 backwards. Both appear inside power calculations, which is why they are worth
 recognising rather than deriving each time.`,
+},
+{
+  id: 'at-quadratic-machinery',
+  title: '6. Quadratics Derived Rather Than Recited',
+  content: `## 6.1 Completing the square, once, in general
+
+The quadratic formula is not something to take on trust. It is one algebraic
+manoeuvre — completing the square — carried out on the general equation instead
+of on a particular one. Doing it once explains where every part of the formula
+comes from, including the discriminant.
+
+Start from the general quadratic with a nonzero leading coefficient and divide
+through by that coefficient, because completing the square only works on a
+squared term with coefficient one:
+
+$$ax^{2} + bx + c = 0 \\quad \\Longrightarrow \\quad x^{2} + \\frac{b}{a}x + \\frac{c}{a} = 0$$
+
+Move the constant to the right and add the square of half the linear
+coefficient to both sides. Half of $b/a$ is $b/(2a)$:
+
+$$x^{2} + \\frac{b}{a}x + \\left(\\frac{b}{2a}\\right)^{2} = \\left(\\frac{b}{2a}\\right)^{2} - \\frac{c}{a}$$
+
+The left side is now a perfect square by construction, and the right side goes
+over a common denominator of $4a^{2}$:
+
+$$\\left(x + \\frac{b}{2a}\\right)^{2} = \\frac{b^{2} - 4ac}{4a^{2}}$$
+
+Take the square root of both sides, keeping both signs, and isolate the
+variable:
+
+$$x + \\frac{b}{2a} = \\pm \\frac{\\sqrt{b^{2} - 4ac}}{2a} \\quad \\Longrightarrow \\quad x = \\frac{-b \\pm \\sqrt{b^{2} - 4ac}}{2a}$$
+
+Two structural facts fall out of that last line and are worth more than the
+formula itself. The term $-b/(2a)$ is the axis of symmetry, so the two roots sit
+symmetrically either side of it. And the quantity under the radical,
+$b^{2} - 4ac$, decides whether the excursion either side of that axis is real or
+imaginary. That quantity is the discriminant, written $D$ here.
+
+![A parabola drawn from y = 2x squared minus 12x plus 10, with its vertex marked at (3, -8) and its two roots marked at x = 1 and x = 5. The completed-square form 2(x-3) squared minus 8 describes the identical curve.](/courses/fe-ee/figures/math2-at-completing-square.svg)
+
+### Worked example 6.1 — Completing the square on a specific quadratic
+
+Take $y = 2x^{2} - 12x + 10$, the curve in the figure. Factor the leading
+coefficient out of the two terms that contain the variable:
+
+$$y = 2\\left(x^{2} - 6x\\right) + 10$$
+
+Half of $-6$ is $-3$, and $(-3)^{2} = 9$, so add and subtract 9 inside the
+bracket:
+
+$$y = 2\\left(x^{2} - 6x + 9 - 9\\right) + 10 = 2(x - 3)^{2} - 18 + 10 = 2(x - 3)^{2} - 8$$
+
+The vertex is now readable without calculus: the squared term is never negative,
+so the smallest value of $y$ is $-8$, reached at $x = 3$. The roots are equally
+free. Setting the completed form to zero gives $(x-3)^{2} = 4$, so
+$x = 3 \\pm 2$, which is $x = 1$ and $x = 5$.
+
+Two checks cost nothing. Expanding $2(x-3)^{2} - 8$ returns
+$2x^{2} - 12x + 18 - 8$, the original. And the roots must satisfy the two
+relations between coefficients and roots: their sum is $-b/a = 6$ and their
+product is $c/a = 5$. Both hold for the pair 1 and 5.
+
+## 6.2 The discriminant as a forecast of circuit behaviour
+
+Second-order circuits produce characteristic equations, and the discriminant
+tells you the shape of the response before you have solved for anything.
+
+![Three parabolas with the three possible discriminant signs: one crossing the horizontal axis twice, one touching it once, and one never reaching it. The number of crossings is the number of real roots.](/courses/fe-ee/figures/math2-at-discriminant.svg)
+
+| Quadratic | $D = b^{2} - 4ac$ | Roots | Response |
+|---|---|---|---|
+| $s^{2} + 5s + 6$ | $25 - 24 = +1$ | $-2$ and $-3$ | overdamped, two decaying modes |
+| $s^{2} + 4s + 4$ | $16 - 16 = 0$ | $-2$ twice | critically damped, fastest without overshoot |
+| $s^{2} + 2s + 5$ | $4 - 20 = -16$ | $-1 \\pm j2$ | underdamped, decaying oscillation |
+
+The third row is where the two halves of this section meet. A negative
+discriminant does not mean the problem has no answer; it means the answer is a
+conjugate pair, the real part sets the decay rate and the imaginary part sets
+the ringing frequency. Answer choices offering "no solution" for a negative
+discriminant exist for candidates who stop at the radical.
+
+### Worked example 6.2 — Characteristic roots of a series RLC branch
+
+A series branch has $R = 10\\ \\Omega$, $L = 50\\ \\mathrm{mH}$ and
+$C = 100\\ \\mu\\mathrm{F}$. Kirchhoff's voltage law on the loop current gives a
+characteristic equation whose standard form is
+
+$$s^{2} + \\frac{R}{L}s + \\frac{1}{LC} = 0 \\quad \\Longrightarrow \\quad s^{2} + 200s + 200000 = 0$$
+
+because $R/L = 10/0.05 = 200$ and $1/(LC) = 1/(0.05 \\times 10^{-4}) = 200000$.
+Comparing with the damped-oscillator form $s^{2} + 2\\alpha s + \\omega_{0}^{2}$
+reads off the two parameters directly:
+
+$$\\alpha = \\frac{R}{2L} = 100\\ \\mathrm{s^{-1}}, \\qquad \\omega_{0} = \\frac{1}{\\sqrt{LC}} = 447.21\\ \\mathrm{rad/s}$$
+
+The discriminant is $200^{2} - 4(200000) = 40000 - 800000 = -760000$, so the
+roots are complex:
+
+$$s = -100 \\pm j\\,435.89\\ \\mathrm{s^{-1}}$$
+
+since $\\sqrt{760000}/2 = 435.89$. The circuit rings at
+$435.89\\ \\mathrm{rad/s}$ inside an envelope decaying as
+$e^{-100t}$. The damping ratio is $\\zeta = \\alpha/\\omega_{0} = 100/447.21 = 0.224$,
+comfortably underdamped, and the undamped natural frequency corresponds to
+$f_{0} = 447.21/(2\\pi) = 71.18\\ \\mathrm{Hz}$. Every one of those numbers comes
+from the same three component values and reappears in the Complex Numbers
+chapter, where the same branch is driven rather than left to ring.
+
+### Worked example 6.3 — A quadratic whose two roots are both real answers
+
+A 100 V source with 5 Ω of internal resistance drives a variable load
+resistance. Which values of that load absorb exactly 400 W?
+
+$$P = \\frac{V^{2}R_{L}}{(R_{s} + R_{L})^{2}} \\quad \\Longrightarrow \\quad 400 = \\frac{10000\\,R_{L}}{(R_{L} + 5)^{2}}$$
+
+Cross-multiplying and dividing by 400 gives
+$25R_{L} = R_{L}^{2} + 10R_{L} + 25$, so
+
+$$R_{L}^{2} - 15R_{L} + 25 = 0 \\quad \\Longrightarrow \\quad R_{L} = \\frac{15 \\pm \\sqrt{225 - 100}}{2} = \\frac{15 \\pm 11.18}{2}$$
+
+giving $R_{L} = 13.09\\ \\Omega$ or $R_{L} = 1.91\\ \\Omega$. Both are physical and
+both deliver 400 W: one sits above the matched value of 5 Ω and one below, on
+either side of the 500 W peak. The sum of the roots is 15 and the product is 25,
+which agrees with $-b/a$ and $c/a$ and takes three seconds to check. Discarding
+the smaller root because it "looks too small" is the error the question is
+built around.
+
+## 6.3 Two equations, and the fastest route through them
+
+Mesh and nodal analysis on a two-loop circuit produce a pair of linear
+equations, and there are three standard routes: substitution, elimination, and
+determinants. For a two-by-two system the determinant route is fastest because
+it is two subtractions and a division, with no intermediate expression to
+mis-copy.
+
+For $a_{1}x + b_{1}y = c_{1}$ and $a_{2}x + b_{2}y = c_{2}$:
+
+$$x = \\frac{c_{1}b_{2} - c_{2}b_{1}}{a_{1}b_{2} - a_{2}b_{1}}, \\qquad y = \\frac{a_{1}c_{2} - a_{2}c_{1}}{a_{1}b_{2} - a_{2}b_{1}}$$
+
+The shared denominator is the determinant of the coefficient matrix. If it is
+zero the equations describe the same line or two parallel lines, which in a
+circuit means the two mesh equations were not independent — usually because a
+current source was written as if it were a mesh unknown.
+
+### Worked example 6.4 — Two mesh currents by determinants
+
+Mesh analysis returns $9i_{1} - 4i_{2} = 6$ and $-4i_{1} + 7i_{2} = 13$, with
+currents in amperes. The determinant of the coefficients is
+
+$$\\Delta = (9)(7) - (-4)(-4) = 63 - 16 = 47$$
+
+Replacing the first column with the right-hand side gives the numerator for the
+first current, and replacing the second column gives the second:
+
+$$i_{1} = \\frac{(6)(7) - (13)(-4)}{47} = \\frac{42 + 52}{47} = \\frac{94}{47} = 2.00\\ \\mathrm{A}$$
+
+$$i_{2} = \\frac{(9)(13) - (-4)(6)}{47} = \\frac{117 + 24}{47} = \\frac{141}{47} = 3.00\\ \\mathrm{A}$$
+
+Substituting back is the check: $9(2) - 4(3) = 6$ and $-4(2) + 7(3) = 13$. Both
+hold. The symmetric off-diagonal terms, both $-4$, are the shared branch between
+the meshes, and their sign is negative whenever the two mesh currents traverse
+that branch in opposite directions. A positive off-diagonal entry in a
+resistive mesh matrix almost always means a sign was dropped when writing the
+equations, and the determinant will still produce numbers, just wrong ones.`,
+  examTip: 'Read the discriminant before solving. On a second-order circuit question the sign of b squared minus 4ac already answers "overdamped, critically damped or underdamped", and that is often the whole question — solving for the roots is wasted time.',
+  importantNote: 'Two positive roots of a power equation are usually both valid load values, one above and one below the matched resistance. Discarding one because it seems small is a manufactured error: check both against the original equation rather than against intuition.',
+},
+{
+  id: 'at-identities-derived',
+  title: '7. Trigonometry Rebuilt From Two Pictures',
+  content: `## 7.1 The unit circle gives the Pythagorean family
+
+A point on the unit circle at angle theta has coordinates
+$(\\cos \\theta, \\sin \\theta)$. That is the definition of the two functions, not
+a property of them, and every identity in this section is a consequence.
+
+Because the point is on a circle of radius one, its coordinates satisfy
+$x^{2} + y^{2} = 1$, which is
+
+$$\\sin^{2}\\theta + \\cos^{2}\\theta = 1$$
+
+Divide that equation through by $\\cos^{2}\\theta$ and the second member of the
+family appears; divide by $\\sin^{2}\\theta$ and the third does:
+
+$$\\tan^{2}\\theta + 1 = \\sec^{2}\\theta, \\qquad 1 + \\cot^{2}\\theta = \\csc^{2}\\theta$$
+
+Neither needs separate memorisation. Both are the first identity divided by
+something, and on an exam it is faster to divide than to recall.
+
+### Worked example 7.1 — Power factor to power triangle in one step
+
+A load draws 10 kVA at a power factor of 0.8 lagging. Power factor is
+$\\cos \\theta$, so
+
+$$\\sin \\theta = \\sqrt{1 - 0.8^{2}} = \\sqrt{0.36} = 0.6, \\qquad \\theta = \\arccos(0.8) = 36.87^\\circ$$
+
+Real power is $P = S\\cos\\theta = 10(0.8) = 8\\ \\mathrm{kW}$ and reactive power is
+$Q = S\\sin\\theta = 10(0.6) = 6\\ \\mathrm{kVAR}$. The check is the Pythagorean
+relation the triangle was built from: $8^{2} + 6^{2} = 100 = 10^{2}$. Answer
+choices that give $Q = 10 - 8 = 2\\ \\mathrm{kVAR}$ subtract the sides of a right
+triangle as if they were collinear, and that distractor appears in some form on
+almost every power-factor question.
+
+## 7.2 Euler supplies the addition formulas for free
+
+The angle addition formulas are usually presented as four lines to memorise.
+They are one line of algebra. Exponentials add their exponents when multiplied:
+
+$$e^{j(A+B)} = e^{jA}\\,e^{jB}$$
+
+Now expand both sides with Euler's relation. The left side is
+
+$$e^{j(A+B)} = \\cos(A+B) + j\\sin(A+B)$$
+
+and the right side is a product of two binomials, remembering $j^{2} = -1$:
+
+$$(\\cos A + j\\sin A)(\\cos B + j\\sin B) = (\\cos A\\cos B - \\sin A\\sin B) + j(\\sin A\\cos B + \\cos A\\sin B)$$
+
+Two complex numbers are equal only when their real parts match and their
+imaginary parts match, so reading off the two components gives both formulas at
+once:
+
+$$\\cos(A+B) = \\cos A\\cos B - \\sin A\\sin B$$
+
+$$\\sin(A+B) = \\sin A\\cos B + \\cos A\\sin B$$
+
+Replacing $B$ with $-B$ flips the sign of every sine and leaves every cosine
+alone, which produces the difference formulas without any further work. Setting
+$B = A$ produces the double-angle pair:
+
+$$\\sin 2A = 2\\sin A\\cos A, \\qquad \\cos 2A = \\cos^{2}A - \\sin^{2}A$$
+
+Substituting $\\cos^{2}A = 1 - \\sin^{2}A$ into the second gives the two variants
+that matter in power calculations, and rearranging them gives the
+power-reduction pair:
+
+$$\\cos 2A = 1 - 2\\sin^{2}A = 2\\cos^{2}A - 1$$
+
+$$\\sin^{2}\\theta = \\frac{1 - \\cos 2\\theta}{2}, \\qquad \\cos^{2}\\theta = \\frac{1 + \\cos 2\\theta}{2}$$
+
+One more identity earns its place, the product of two cosines, because it is the
+one that turns a product of sinusoids into a sum and therefore produces average
+power:
+
+$$\\cos A\\cos B = \\tfrac{1}{2}\\left[\\cos(A - B) + \\cos(A + B)\\right]$$
+
+| Identity | Rearranged as | Where it is used |
+|---|---|---|
+| $\\sin^{2} + \\cos^{2} = 1$ | $\\sin\\theta = \\sqrt{1 - \\mathrm{pf}^{2}}$ | power triangle from power factor |
+| $\\sin 2A = 2\\sin A\\cos A$ | the $2\\omega$ term in $p(t)$ | ripple in single-phase power |
+| $\\sin^{2}\\theta = (1 - \\cos 2\\theta)/2$ | mean of $\\sin^{2}$ is $1/2$ | root-mean-square values |
+| $\\cos A\\cos B$ product rule | $P + S\\cos(2\\omega t - \\theta)$ | average power from $v$ times $i$ |
+| $c^{2} = a^{2} + b^{2} - 2ab\\cos C$ | phasor triangle | magnitude of a sum of two phasors |
+
+### Worked example 7.2 — Instantaneous power, derived rather than quoted
+
+Let $v(t) = V_{m}\\cos\\omega t$ and $i(t) = I_{m}\\cos(\\omega t - \\theta)$, so the
+current lags by theta. Instantaneous power is the product:
+
+$$p(t) = V_{m}I_{m}\\cos\\omega t\\,\\cos(\\omega t - \\theta)$$
+
+Apply the product rule above with $A = \\omega t$ and $B = \\omega t - \\theta$. The
+difference $A - B$ is theta and the sum is $2\\omega t - \\theta$:
+
+$$p(t) = \\frac{V_{m}I_{m}}{2}\\left[\\cos\\theta + \\cos(2\\omega t - \\theta)\\right]$$
+
+In terms of rms values, where $V = V_{m}/\\sqrt{2}$ and $I = I_{m}/\\sqrt{2}$, the
+leading factor becomes $VI$:
+
+$$p(t) = VI\\cos\\theta + VI\\cos(2\\omega t - \\theta)$$
+
+The first term is constant and is the average power. The second oscillates at
+twice the supply frequency and averages to zero over a cycle. Put numbers to it:
+120 V rms, 10 A rms, theta of 30 degrees. Then
+$S = 1200\\ \\mathrm{VA}$, $P = 1200\\cos 30^\\circ = 1039\\ \\mathrm{W}$ and
+$Q = 1200\\sin 30^\\circ = 600\\ \\mathrm{VAR}$. The instantaneous power swings
+between $1039 - 1200 = -161\\ \\mathrm{W}$ and
+$1039 + 1200 = 2239\\ \\mathrm{W}$, at 120 Hz on a 60 Hz supply. The negative
+excursion is real: for part of every cycle the load returns stored energy to the
+source. That is what reactive power describes, and it is why a 120 Hz hum, not a
+60 Hz one, comes off a single-phase transformer.
+
+### Worked example 7.3 — Where the three-phase root of three comes from
+
+Two line-to-neutral voltages of a balanced three-phase set have equal magnitude
+120 V and are 120 degrees apart. The line-to-line voltage is their difference,
+and the law of cosines gives its magnitude directly. The angle between the two
+phasors being subtracted is 120 degrees, so
+
+$$V_{LL} = \\sqrt{120^{2} + 120^{2} - 2(120)(120)\\cos 120^\\circ}$$
+
+With $\\cos 120^\\circ = -0.5$ the third term adds rather than subtracts:
+
+$$V_{LL} = \\sqrt{14400 + 14400 + 14400} = \\sqrt{43200} = 207.85\\ \\mathrm{V}$$
+
+which is exactly $120\\sqrt{3}$. Carrying the phasor subtraction through instead
+of the law of cosines gives the same magnitude and also the angle: the
+line-to-line phasor leads its reference line-to-neutral phasor by 30 degrees.
+The root of three is geometry, not a convention, and it comes from
+$\\cos 120^\\circ = -1/2$.`,
+  examTip: 'Deriving the addition formulas from Euler takes about twenty seconds and never produces a sign error, whereas recalling four separate formulas under pressure often does. If you can write e to the jA times e to the jB and expand it, you own all four.',
+  importantNote: 'Instantaneous single-phase power is the average plus a term at TWICE the supply frequency: p(t) = VI cos(theta) + VI cos(2 omega t - theta). The two terms add. Three-phase power has no such ripple because the three 2 omega terms are 240 degrees apart and sum to zero.',
+},
+{
+  id: 'at-harmonic-addition',
+  title: '8. Harmonic Addition: the Bridge to Phasors',
+  content: `## 8.1 Two sinusoids at one frequency are always one sinusoid
+
+This is the single most useful identity in electrical engineering, because it is
+the reason phasors exist. A sine and a cosine at the same frequency, in any
+proportion, combine into one cosine of that same frequency with a shifted phase:
+
+$$a\\cos x + b\\sin x = R\\cos(x - \\varphi)$$
+
+The proof is one expansion. Apply the difference formula to the right side:
+
+$$R\\cos(x - \\varphi) = R\\cos\\varphi\\,\\cos x + R\\sin\\varphi\\,\\sin x$$
+
+For this to hold at every value of $x$, the coefficients of $\\cos x$ and of
+$\\sin x$ must match separately, so $a = R\\cos\\varphi$ and $b = R\\sin\\varphi$.
+Squaring and adding those two eliminates the angle, and dividing them
+eliminates the magnitude:
+
+$$R = \\sqrt{a^{2} + b^{2}}, \\qquad \\tan\\varphi = \\frac{b}{a}$$
+
+The angle needs the same quadrant discipline as any rectangular-to-polar
+conversion, because the ratio $b/a$ cannot distinguish the pair
+$(a, b) = (-3, -4)$ from $(3, 4)$.
+
+![Three curves on a common angle axis: 3 cos x, 4 sin x, and their sum, which is a single sinusoid of amplitude 5 peaking at 53.13 degrees. The sum is drawn twice, once as a point-by-point addition and once from the single-sinusoid formula, and the two coincide.](/courses/fe-ee/figures/math2-at-harmonic-addition.svg)
+
+### Worked example 8.1 — Three cosine plus four sine
+
+With $a = 3$ and $b = 4$:
+
+$$R = \\sqrt{9 + 16} = 5, \\qquad \\varphi = \\arctan\\frac{4}{3} = 53.13^\\circ$$
+
+so $3\\cos x + 4\\sin x = 5\\cos(x - 53.13^\\circ)$. Both $a$ and $b$ are positive,
+which places the angle in the first quadrant, so the calculator's arctangent can
+be taken as it stands.
+
+Check it at one convenient value rather than trusting the algebra. At
+$x = 20^\\circ$ the left side is $3(0.9397) + 4(0.3420) = 4.187$, and the right
+side is $5\\cos(20^\\circ - 53.13^\\circ) = 5\\cos(-33.13^\\circ) = 5(0.8374) = 4.187$.
+They agree to the digits shown, and a single spot check like that catches a sign
+error in the phase immediately.
+
+### Worked example 8.2 — When the sine coefficient is negative
+
+Combine $8\\cos\\omega t - 6\\sin\\omega t$. Here $a = 8$ and $b = -6$, so
+
+$$R = \\sqrt{64 + 36} = 10, \\qquad \\varphi = \\arctan\\frac{-6}{8} = -36.87^\\circ$$
+
+The result is $10\\cos(\\omega t + 36.87^\\circ)$, because subtracting a negative phi
+inside the cosine adds it. The amplitude 10 is not 14: adding the two
+coefficients arithmetically is the standard wrong answer and it is always
+offered. It is only correct when one of the two coefficients is zero.
+
+## 8.2 The same statement, written as phasors
+
+Harmonic addition is what makes the phasor transform consistent. Take
+$\\cos\\omega t$ as the reference phasor $1\\angle 0^\\circ$. Since
+$\\sin\\omega t = \\cos(\\omega t - 90^\\circ)$, the sine maps to
+$1\\angle -90^\\circ$, which is $-j$. So the whole combination maps to
+
+$$a\\cos\\omega t + b\\sin\\omega t \\;\\longleftrightarrow\\; a - jb$$
+
+For $a = 3$ and $b = 4$ that phasor is $3 - j4 = 5\\angle -53.13^\\circ$, and
+converting back gives $5\\cos(\\omega t - 53.13^\\circ)$ — the same answer as the
+trigonometric route, obtained by one rectangular-to-polar conversion. This is
+the entire economy of the phasor method: the identity that took an expansion and
+a coefficient match becomes a conversion you already know how to do.
+
+## 8.3 Adding two phasors of arbitrary phase
+
+When the two components are not conveniently a sine and a cosine, the law of
+cosines gives the magnitude of the sum. For phasors of magnitude $A$ and $B$
+separated by phi:
+
+$$\\lvert R \\rvert = \\sqrt{A^{2} + B^{2} + 2AB\\cos\\varphi}$$
+
+The plus sign in front of the cross term is correct for a sum: the triangle
+being solved has the interior angle $180^\\circ - \\varphi$, and the sign change
+comes with it.
+
+![Magnitude of the sum of a 100 V phasor and a 60 V phasor plotted against the phase angle between them, running from 160 V when they are in phase down to 40 V when they oppose, with the arithmetic sum of 160 V drawn as a horizontal line that the curve leaves immediately.](/courses/fe-ee/figures/math2-at-phasor-resultant.svg)
+
+| Phase difference | Magnitude of the sum of 100 V and 60 V |
+|---|---|
+| $0^\\circ$ | 160.0 V |
+| $30^\\circ$ | 154.9 V |
+| $60^\\circ$ | 140.0 V |
+| $90^\\circ$ | 116.6 V |
+| $120^\\circ$ | 87.2 V |
+| $180^\\circ$ | 40.0 V |
+
+The 90 degree row is worth holding: two perpendicular phasors combine as the
+square root of the sum of squares, which is why a resistive drop and a reactive
+drop of 100 V and 60 V give 116.6 V across the pair and not 160 V. Adding
+voltage magnitudes around an AC loop is the most expensive habit carried over
+from DC circuits.
+
+### Worked example 8.3 — One hundred volts plus sixty volts at sixty degrees
+
+Convert the second phasor to rectangular and add components:
+
+$$100\\angle 0^\\circ + 60\\angle 60^\\circ = 100 + (30 + j51.96) = 130 + j51.96$$
+
+$$\\lvert R \\rvert = \\sqrt{130^{2} + 51.96^{2}} = \\sqrt{19600} = 140.0\\ \\mathrm{V}, \\qquad \\angle R = \\arctan\\frac{51.96}{130} = 21.79^\\circ$$
+
+The law of cosines confirms it without the rectangular step:
+$\\sqrt{10000 + 3600 + 2(100)(60)(0.5)} = \\sqrt{19600} = 140$. The 20 V shortfall
+against the arithmetic sum of 160 V is the cost of the 60 degree offset, and it
+is the answer the question is testing.
+
+### Worked example 8.4 — Two equal phasors 120 degrees apart
+
+Two 100 V phasors separated by 120 degrees sum to
+
+$$\\sqrt{100^{2} + 100^{2} + 2(100)(100)\\cos 120^\\circ} = \\sqrt{10000 + 10000 - 10000} = 100\\ \\mathrm{V}$$
+
+The sum of two of them has the same magnitude as either one. That is the
+arithmetic behind a balanced three-phase set summing to zero: adding the third
+phasor, another 100 V at the remaining 120 degree position, cancels the 100 V
+resultant exactly. Nothing about this requires three-phase theory — it is the
+law of cosines applied twice.`,
+  examTip: 'Never add sinusoid amplitudes or phasor magnitudes directly unless the phase difference is zero. The correct combination is the law of cosines, and for the common perpendicular case it collapses to the square root of the sum of squares.',
+  importantNote: 'A cos plus b sin equals R cos(x - phi) with R the square root of a squared plus b squared. In phasor form the same statement is simply a - jb, because sine lags cosine by 90 degrees. Recognising these as one fact removes a whole category of trigonometric algebra.',
+},
+{
+  id: 'at-small-angle',
+  title: '9. Small Angles, and the Price of the Shortcut',
+  content: `## 9.1 Where the approximations come from
+
+The small-angle rules are the first terms of series expansions about zero, and
+knowing which term was dropped tells you how much error was accepted. With the
+angle in radians:
+
+$$\\sin x = x - \\frac{x^{3}}{3!} + \\frac{x^{5}}{5!} - \\cdots$$
+
+$$\\cos x = 1 - \\frac{x^{2}}{2!} + \\frac{x^{4}}{4!} - \\cdots$$
+
+$$\\tan x = x + \\frac{x^{3}}{3} + \\frac{2x^{5}}{15} + \\cdots$$
+
+Keeping only the leading term gives $\\sin x \\approx x$, $\\tan x \\approx x$ and
+$\\cos x \\approx 1$. The relative error of each is the ratio of the first
+discarded term to the value itself:
+
+$$\\frac{x - \\sin x}{\\sin x} \\approx \\frac{x^{2}}{6}, \\qquad \\frac{\\tan x - x}{\\tan x} \\approx \\frac{x^{2}}{3}$$
+
+Setting each of those to 0.01 predicts the one-percent angle without any
+plotting. For the sine, $x = \\sqrt{0.06} = 0.245\\ \\mathrm{rad} = 14.0^\\circ$; for
+the tangent, $x = \\sqrt{0.03} = 0.173\\ \\mathrm{rad} = 9.9^\\circ$. The tangent
+fails at a smaller angle than the sine, by a factor of the square root of two,
+because its error coefficient is twice as large.
+
+![Percentage error of the two small-angle approximations plotted against angle in degrees, with a horizontal one-percent line crossed by the tangent curve near 9.9 degrees and by the sine curve near 14 degrees.](/courses/fe-ee/figures/math2-at-small-angle.svg)
+
+The figure computes those curves directly and finds the crossings numerically at
+9.9 degrees and 14.0 degrees, matching the closed-form estimates above. Below
+about ten degrees both approximations are free; above about twenty degrees
+neither is.
+
+| Angle | $\\sin x$ | error of $\\sin x \\approx x$ | $\\tan x$ | error of $\\tan x \\approx x$ |
+|---|---|---|---|---|
+| $5^\\circ$ | 0.08716 | 0.13% | 0.08749 | 0.25% |
+| $10^\\circ$ | 0.17365 | 0.51% | 0.17633 | 1.02% |
+| $15^\\circ$ | 0.25882 | 1.15% | 0.26795 | 2.30% |
+| $20^\\circ$ | 0.34202 | 2.06% | 0.36397 | 4.09% |
+| $30^\\circ$ | 0.50000 | 4.72% | 0.57735 | 9.31% |
+
+### Worked example 9.1 — Sine at ten degrees
+
+Convert first, because the approximation is a statement about radians:
+$10^\\circ = 10\\pi/180 = 0.17453\\ \\mathrm{rad}$. The true sine is 0.17365, so the
+approximation is high by
+
+$$\\frac{0.17453 - 0.17365}{0.17365} = 0.0051 = 0.51\\%$$
+
+which agrees with the predicted $x^{2}/6 = 0.0305/6 = 0.0051$. Half a percent is
+below the resolution of most exam answer choices, so at ten degrees the
+substitution is safe.
+
+### Worked example 9.2 — Tangent at twenty degrees
+
+At $20^\\circ = 0.34907\\ \\mathrm{rad}$ the true tangent is 0.36397. The error is
+
+$$\\frac{0.36397 - 0.34907}{0.36397} = 0.0409 = 4.09\\%$$
+
+Four percent will usually move an answer into a neighbouring choice. Note the
+relationship to the previous example: at the same angle the tangent error is
+twice the sine error, exactly as the $x^{2}/3$ against $x^{2}/6$ coefficients
+predict.
+
+### Worked example 9.3 — The cosine needs its quadratic term
+
+At $15^\\circ = 0.26180\\ \\mathrm{rad}$, the crude approximation $\\cos x \\approx 1$
+gives an error of $(1 - 0.96593)/0.96593 = 3.53\\%$, which is far worse than
+either of the other two at the same angle. Keeping the quadratic term repairs
+it completely:
+
+$$\\cos x \\approx 1 - \\frac{x^{2}}{2} = 1 - \\frac{0.06854}{2} = 0.96573$$
+
+against a true value of 0.96593, an error of 0.02%. The asymmetry is structural:
+sine and tangent lose their first correction at the cubic term, while cosine
+loses it at the quadratic term, so cosine must be carried to one more order to
+reach comparable accuracy.
+
+## 9.2 Where this is used, and where it is a trap
+
+Small-angle substitution appears in three recognisable places on this exam. In
+phase-error problems, a few degrees of phase in radians is the fractional
+timing error directly. In linearised mechanics and control, restoring torque
+proportional to $\\sin\\theta$ becomes proportional to theta, which is what makes
+a pendulum's period independent of amplitude for small swings. And in
+transmission-line and antenna approximations, path-length differences use
+$\\tan\\theta \\approx \\theta$.
+
+The trap is always the same: the approximations hold for radians only. Writing
+$\\sin 12^\\circ \\approx 12$ is not an approximation, it is a unit error of two
+orders of magnitude, and it is a supplied answer choice precisely because a
+candidate working quickly can produce it.`,
+  examTip: 'Convert to radians before applying any small-angle rule, and remember the two thresholds: the tangent approximation passes one percent error at about 9.9 degrees, the sine at about 14 degrees. Beyond twenty degrees, use the calculator.',
+  importantNote: 'The cosine is the exception. Approximating cos x as 1 is much cruder than approximating sin x as x at the same angle, because the first neglected term is quadratic rather than cubic. Keep the term in x squared over 2 whenever a cosine appears in a small-angle argument.',
+},
+{
+  id: 'at-logs-db',
+  title: '10. Logarithms, Decibels, and Solving for an Exponent',
+  content: `## 10.1 The three rules, and the one that gets misused
+
+Logarithms turn multiplication into addition, which is the only reason gain
+budgets are written in decibels:
+
+$$\\log(MN) = \\log M + \\log N, \\qquad \\log\\frac{M}{N} = \\log M - \\log N, \\qquad \\log M^{p} = p\\log M$$
+
+The third rule is the one that produces the factor of twenty in the voltage
+decibel formula, and it is also the one candidates misapply: there is no rule
+for the logarithm of a sum. Writing $\\log(M + N)$ as anything simpler is wrong,
+and a question that puts two gains in parallel rather than in cascade is
+checking exactly that.
+
+Change of base is occasionally needed when a natural logarithm appears in a
+time-constant problem and the answer is wanted in base ten, or the reverse:
+
+$$\\log_{b}x = \\frac{\\ln x}{\\ln b}, \\qquad \\ln x = 2.3026\\log_{10}x$$
+
+## 10.2 Decibels: one definition, two factors
+
+A decibel is defined on a power ratio. Everything else follows from that one
+definition:
+
+$$G_{\\mathrm{dB}} = 10\\log_{10}\\frac{P_{2}}{P_{1}}$$
+
+When the quantity given is a voltage or a current rather than a power, and the
+two are measured across the same resistance, power goes as the square of the
+amplitude. Substituting $P \\propto V^{2}$ and using the third logarithm rule
+converts the ten into a twenty:
+
+$$G_{\\mathrm{dB}} = 10\\log_{10}\\frac{V_{2}^{2}}{V_{1}^{2}} = 20\\log_{10}\\frac{V_{2}}{V_{1}}$$
+
+There is no second rule here. The twenty is the ten with the square brought out
+in front, and that is the whole answer to "why twenty for voltage".
+
+![Decibels plotted against ratio on a logarithmic axis, showing the amplitude line at twenty times the base-ten logarithm and the power line at ten times, with the doubling, tenfold and hundredfold anchor points marked on both.](/courses/fe-ee/figures/math2-at-db-anchors.svg)
+
+| Ratio | As a power ratio | As an amplitude ratio |
+|---|---|---|
+| $\\times 2$ | +3.01 dB | +6.02 dB |
+| $\\times 10$ | +10 dB | +20 dB |
+| $\\times 100$ | +20 dB | +40 dB |
+| $\\times 0.5$ | −3.01 dB | −6.02 dB |
+| $\\times 0.707$ | −1.51 dB | −3.01 dB |
+
+The last row is the half-power point stated two ways, and it explains a piece of
+notation that confuses people the first time they meet it: the −3 dB bandwidth
+of a filter is where the power has fallen to half, which is where the voltage has
+fallen to 0.707 of its passband value. Both statements describe the same
+frequency, and 0.707 is $1/\\sqrt{2}$, the same number that appeared as
+$\\cos 45^\\circ$ in the unit circle table.
+
+### Worked example 10.1 — A cascade of stages
+
+An amplifier chain has stages of +20 dB, +15 dB and a −6 dB pad. Decibels add
+along a cascade because gains multiply:
+
+$$G_{\\mathrm{total}} = 20 + 15 - 6 = 29\\ \\mathrm{dB}$$
+
+If these are voltage gains, the overall ratio is
+
+$$\\frac{V_{\\mathrm{out}}}{V_{\\mathrm{in}}} = 10^{29/20} = 28.18$$
+
+Verify by multiplying the stage gains individually:
+$10 \\times 5.623 \\times 0.5012 = 28.18$. The check is worth doing once to
+convince yourself that addition in decibels really is multiplication in ratios,
+after which the addition can be trusted.
+
+### Worked example 10.2 — Decibels referred to a milliwatt
+
+The dBm scale is an absolute power measured against a 1 mW reference, so it
+follows the power rule with ten in front:
+
+$$P_{\\mathrm{dBm}} = 10\\log_{10}\\frac{P}{1\\ \\mathrm{mW}}$$
+
+A signal at 20 dBm is therefore $10^{2} = 100$ times a milliwatt, or 100 mW. Into
+a 50 Ω system the corresponding rms voltage follows from $P = V^{2}/R$:
+
+$$V = \\sqrt{PR} = \\sqrt{(0.1)(50)} = 2.236\\ \\mathrm{V\\,rms}$$
+
+At 30 dBm the power is 1 W and the voltage is $\\sqrt{50} = 7.07\\ \\mathrm{V}$ rms.
+Note that dBm is a power level even when the answer wanted is a voltage, so the
+factor is ten going in and the square root comes at the end.
+
+### Worked example 10.3 — Solving for time with a natural logarithm
+
+A capacitor discharging through a resistor obeys
+$v(t) = V_{0}e^{-t/\\tau}$, and questions usually ask when the voltage reaches
+some value. Solving for the exponent means taking a logarithm of both sides:
+
+$$\\frac{v}{V_{0}} = e^{-t/\\tau} \\quad \\Longrightarrow \\quad t = \\tau\\ln\\frac{V_{0}}{v}$$
+
+With $\\tau = 20\\ \\mathrm{ms}$, a fall from 10 V to 2 V takes
+
+$$t = 0.020\\ln(5) = 0.020(1.609) = 32.2\\ \\mathrm{ms}$$
+
+which is a little over one and a half time constants, as expected since one time
+constant leaves 36.8% and this ratio is 20%. Using $\\log_{10}$ instead of
+$\\ln$ gives 14.0 ms, a factor of 2.303 too small, and that wrong answer is
+always among the choices.`,
+  examTip: 'Decide first whether the ratio you were handed is power or amplitude, because that single decision picks the factor of 10 or 20. If the question mentions volts, amps or field strength, it is amplitude; if it mentions watts, it is power.',
+  importantNote: 'Decibels add along a cascade only because logarithms turn products into sums. There is no corresponding rule for a sum of two signals: log(M + N) does not simplify, so combining two parallel signal paths must be done in ratios and converted back at the end.',
+},
+{
+  id: 'at-set-b',
+  title: '11. Problem Set: Quadratics, Systems and Ratios',
+  content: `Work each of these on paper first, with the handbook and a calculator,
+before reading the answer underneath. Three minutes apiece is the exam's pace.
+
+## Problem Set A
+
+1. A second-order circuit has the characteristic equation
+   $2s^{2} + 14s + 20 = 0$. Give both roots and classify the response.
+2. Another has $s^{2} + 6s + 25 = 0$. Give the roots, the damping constant, the
+   damped radian frequency and the undamped natural frequency.
+3. Solve $5x - 2y = 16$ and $3x + 4y = 20$ by determinants.
+4. A 10 kVA load runs at a power factor of 0.8 lagging. Find theta, the real
+   power and the reactive power.
+5. A single-phase 240 V load absorbs 8 kW at a power factor of 0.85. Find the
+   line current.
+6. Express $-5 - j12$ in polar form.
+
+### Worked answers to Problem Set A
+
+**1.** Divide through by the leading coefficient first, or carry it: either way
+the discriminant is $b^{2} - 4ac = 196 - 160 = 36$, so
+
+$$s = \\frac{-14 \\pm 6}{4} = -2\\ \\mathrm{and}\\ -5$$
+
+Two distinct real negative roots, so the response is overdamped and stable. The
+trap is computing $b^{2} - 4c = 196 - 80 = 116$ with the leading coefficient
+dropped from the product, which yields −0.81 and −6.19: still real, still
+negative, still plausible, and wrong. The discriminant needs all three
+coefficients.
+
+**2.** Here $D = 36 - 100 = -64$, so
+
+$$s = \\frac{-6 \\pm j8}{2} = -3 \\pm j4$$
+
+The damping constant is $\\alpha = 3\\ \\mathrm{Np/s}$, the damped frequency is
+$\\omega_{d} = 4\\ \\mathrm{rad/s}$, and the undamped natural frequency is
+$\\omega_{0} = \\sqrt{25} = 5\\ \\mathrm{rad/s}$, which is also the magnitude of
+either root. The damping ratio is $3/5 = 0.6$. A choice reading "no real
+solution" is offered for candidates who treat a negative discriminant as a dead
+end; a choice giving $\\omega_{0} = 4$ confuses the damped frequency with the
+natural one, and those differ whenever damping is present.
+
+**3.** The determinant of the coefficient matrix is
+$(5)(4) - (3)(-2) = 20 + 6 = 26$. Then
+
+$$x = \\frac{(16)(4) - (20)(-2)}{26} = \\frac{104}{26} = 4, \\qquad y = \\frac{(5)(20) - (3)(16)}{26} = \\frac{52}{26} = 2$$
+
+Substituting back: $5(4) - 2(2) = 16$ and $3(4) + 4(2) = 20$. Both hold. The
+common error is a sign slip in the determinant, since one coefficient is
+negative; that produces 14 instead of 26 and answers of 7.43 and 3.71, neither
+of which survives substitution — which is why substituting back is not optional.
+
+**4.** $\\theta = \\arccos(0.8) = 36.87^\\circ$, and $\\sin\\theta = 0.6$ from the
+Pythagorean identity. So
+
+$$P = 10(0.8) = 8\\ \\mathrm{kW}, \\qquad Q = 10(0.6) = 6\\ \\mathrm{kVAR}$$
+
+The 6-8-10 triangle should be recognised on sight. The distractor is
+$Q = 10 - 8 = 2\\ \\mathrm{kVAR}$, obtained by subtracting the sides of a right
+triangle instead of using the Pythagorean relation.
+
+**5.** Real power equals voltage times current times power factor, so
+
+$$I = \\frac{P}{V\\,\\mathrm{pf}} = \\frac{8000}{(240)(0.85)} = 39.2\\ \\mathrm{A}$$
+
+The angle is $\\arccos(0.85) = 31.79^\\circ$, and the apparent power is
+$8000/0.85 = 9412\\ \\mathrm{VA}$, which times-checks against
+$(240)(39.2) = 9412$. Dividing by the voltage alone gives 33.3 A, the current
+that would flow if the load were purely resistive, and that value is always an
+offered choice.
+
+**6.** The magnitude is $\\sqrt{25 + 144} = 13$. The calculator returns
+$\\arctan(-12/-5) = \\arctan(2.4) = 67.38^\\circ$, but both components are
+negative, which puts the point in the third quadrant:
+
+$$-5 - j12 = 13\\angle(67.38^\\circ - 180^\\circ) = 13\\angle -112.62^\\circ$$
+
+Accepting the calculator's 67.38 degrees places a third-quadrant point in the
+first quadrant, an error of exactly 180 degrees, which in an AC problem inverts
+the sign of both the real and the reactive power.`,
+},
+{
+  id: 'at-set-c',
+  title: '12. Problem Set: Waves, Approximations and Decibels',
+  content: `The second set draws on sections 8 through 10. Again, solve before
+reading.
+
+## Problem Set B
+
+1. Write $7\\cos\\omega t + 24\\sin\\omega t$ as a single cosine.
+2. Two phasors of 120 V and 50 V are 90 degrees apart. Find the magnitude of
+   their sum and its angle relative to the larger one.
+3. Two 100 V phasors are 120 degrees apart. Find the magnitude of their sum.
+4. Estimate $\\sin 12^\\circ$ with the small-angle rule and state the percentage
+   error.
+5. An amplifier raises 2 W to 80 W. Give the gain in decibels. Then state what
+   the answer would be if 2 and 80 were volts instead.
+6. An attenuator is specified at −20 dB. Give the voltage ratio and the power
+   ratio.
+7. A chain has a 12 dB stage, an 18 dB stage, and then a resistive divider that
+   halves the voltage twice. Give the overall voltage gain as a ratio.
+
+### Worked answers to Problem Set B
+
+**1.** $R = \\sqrt{49 + 576} = \\sqrt{625} = 25$ and
+$\\varphi = \\arctan(24/7) = 73.74^\\circ$, both coefficients being positive, so
+
+$$7\\cos\\omega t + 24\\sin\\omega t = 25\\cos(\\omega t - 73.74^\\circ)$$
+
+The 7-24-25 triple is worth recognising alongside 3-4-5 and 5-12-13. Adding the
+coefficients to get 31 is the offered trap, and so is writing the phase with the
+wrong sign, which puts the peak on the wrong side of the origin.
+
+**2.** Perpendicular phasors combine as the square root of the sum of squares:
+
+$$\\lvert R \\rvert = \\sqrt{120^{2} + 50^{2}} = \\sqrt{16900} = 130\\ \\mathrm{V}, \\qquad \\angle = \\arctan\\frac{50}{120} = 22.62^\\circ$$
+
+The 5-12-13 triangle again, scaled by ten. The arithmetic sum of 170 V is the
+distractor and it is 31% high.
+
+**3.** From the law of cosines with $\\cos 120^\\circ = -0.5$:
+
+$$\\lvert R \\rvert = \\sqrt{10000 + 10000 - 10000} = 100\\ \\mathrm{V}$$
+
+Two equal phasors at 120 degrees sum to one of the same magnitude. Both 200 V
+(arithmetic addition) and 0 V (assuming they cancel, which needs 180 degrees,
+not 120) are offered, and both are wrong.
+
+**4.** Convert first: $12^\\circ = 0.20944\\ \\mathrm{rad}$, against a true sine of
+0.20791. The error is
+
+$$\\frac{0.20944 - 0.20791}{0.20791} = 0.0073 = 0.73\\%$$
+
+so the approximation is high by three quarters of a percent, comfortably inside
+the safe region below 14 degrees. Applying the rule to the number 12 without
+converting gives 12, which is off by a factor of 58.
+
+**5.** These are watts, so the power form applies:
+
+$$G = 10\\log_{10}\\frac{80}{2} = 10\\log_{10}40 = 16.02\\ \\mathrm{dB}$$
+
+Had they been volts, the amplitude form would double it to
+$20\\log_{10}40 = 32.04\\ \\mathrm{dB}$. The pair of answers differing by exactly a
+factor of two is the signature of this trap, and the deciding word in the
+question is the unit.
+
+**6.** A negative decibel figure is an attenuation, and the two ratios follow
+from the two formulas:
+
+$$\\frac{V_{2}}{V_{1}} = 10^{-20/20} = 0.1, \\qquad \\frac{P_{2}}{P_{1}} = 10^{-20/10} = 0.01$$
+
+So a −20 dB pad divides voltage by ten and power by a hundred. Quoting 0.01 for
+the voltage ratio is the standard error, and it makes a 40 dB difference to a
+link budget.
+
+**7.** Halving the voltage twice is a factor of one quarter, which in decibels is
+
+$$20\\log_{10}(0.25) = -12.04\\ \\mathrm{dB}$$
+
+so the total is $12 + 18 - 12.04 = 17.96\\ \\mathrm{dB}$, and the overall voltage
+ratio is $10^{17.96/20} = 7.91$. Check it directly in ratios:
+$3.981 \\times 7.943 \\times 0.25 = 7.91$. The two routes agree, which is the
+reassurance that decibel addition and ratio multiplication really are the same
+operation written two ways.`,
 },
 ],
   keyTakeaways: [
@@ -629,6 +1426,726 @@ The last one is worth a habit rather than care. After any rectangular
 multiplication, compute the magnitude of your answer and compare it against the
 product of the two input magnitudes — they must agree exactly, and if they do
 not the error is in the expansion.`,
+},
+{
+  id: 'cx-j-operator',
+  title: '7. Why j, and What Multiplication Actually Does',
+  content: `## 7.1 The imaginary unit as an operator, not a mystery
+
+The imaginary unit is defined by one property, $j^{2} = -1$, and electrical
+engineering writes it $j$ rather than $i$ because $i$ is already the symbol for
+current. Nothing else about the notation differs.
+
+The useful way to read $j$ is not as a strange number but as an instruction:
+multiplying by $j$ rotates a point 90 degrees counter-clockwise in the plane and
+leaves its distance from the origin alone. Everything follows from that. Two
+rotations of 90 degrees is a rotation of 180 degrees, which is a reversal of
+sign, so $j^{2} = -1$ is a statement about geometry. Four rotations return you to
+where you started, so the powers cycle with period four:
+
+$$j^{1} = j, \\qquad j^{2} = -1, \\qquad j^{3} = -j, \\qquad j^{4} = 1$$
+
+To evaluate any integer power, divide the exponent by four and keep the
+remainder. And because $j\\cdot(-j) = -j^{2} = 1$, the reciprocal of $j$ is its
+own negative:
+
+$$\\frac{1}{j} = -j$$
+
+That single identity converts the capacitive impedance $1/(j\\omega C)$ into
+$-j/(\\omega C)$ without any algebra, and it is the fastest way to get the sign
+of a capacitive reactance right under time pressure.
+
+## 7.2 Multiplication scales and rotates, and does nothing else
+
+For any two complex numbers written in polar form, the product has the product
+of the magnitudes and the sum of the angles:
+
+$$(r_{1}\\angle\\theta_{1})(r_{2}\\angle\\theta_{2}) = r_{1}r_{2}\\angle(\\theta_{1} + \\theta_{2})$$
+
+The clearest demonstration is to multiply a number by itself repeatedly and
+watch where it goes. Take $1 + j$, whose magnitude is $\\sqrt{2}$ and whose angle
+is 45 degrees. Each multiplication should stretch by $\\sqrt{2}$ and turn by 45
+degrees, and it does.
+
+![Successive powers of 1 plus j plotted in the complex plane, each one further from the origin by a factor of the square root of two and rotated a further 45 degrees, tracing a spiral through the four quadrants.](/courses/fe-ee/figures/math2-cx-rotation-ladder.svg)
+
+| Power | Rectangular | Magnitude | Angle |
+|---|---|---|---|
+| $(1+j)^{0}$ | $1$ | 1.000 | $0^\\circ$ |
+| $(1+j)^{1}$ | $1 + j$ | 1.414 | $45^\\circ$ |
+| $(1+j)^{2}$ | $j2$ | 2.000 | $90^\\circ$ |
+| $(1+j)^{3}$ | $-2 + j2$ | 2.828 | $135^\\circ$ |
+| $(1+j)^{4}$ | $-4$ | 4.000 | $180^\\circ$ |
+| $(1+j)^{5}$ | $-4 - j4$ | 5.657 | $225^\\circ$ |
+| $(1+j)^{6}$ | $-j8$ | 8.000 | $270^\\circ$ |
+
+Read the second row against the third: squaring $1 + j$ gives a purely imaginary
+result, because two 45 degree turns make 90. Read the fifth row: the fourth power
+is a negative real number, because four 45 degree turns make 180. No arithmetic
+is needed to know the quadrant of any power once you can count the rotations.
+
+### Worked example 7.1 — The fourth power of one plus j, three ways
+
+**By repeated squaring.** $(1+j)^{2} = 1 + 2j + j^{2} = 1 + 2j - 1 = j2$. Then
+$(j2)^{2} = 4j^{2} = -4$.
+
+**By De Moivre.** The magnitude raises to the fourth power and the angle
+multiplies by four:
+
+$$(\\sqrt{2}\\angle 45^\\circ)^{4} = (\\sqrt{2})^{4}\\angle 180^\\circ = 4\\angle 180^\\circ = -4$$
+
+**By binomial expansion.** $(1+j)^{4} = 1 + 4j + 6j^{2} + 4j^{3} + j^{4} = 1 + 4j - 6 - 4j + 1 = -4$.
+
+All three give $-4$, and the middle one is the only one that can be done in your
+head. That is the argument for polar form in a single line.
+
+### Worked example 7.2 — The j in an inductor's impedance
+
+A current phasor $\\mathbf{I} = 5\\angle 20^\\circ\\ \\mathrm{A}$ flows through an
+inductor whose reactance at the working frequency is $\\omega L = 12\\ \\Omega$, so
+its impedance is $j12\\ \\Omega$, which in polar form is $12\\angle 90^\\circ$. The
+voltage phasor is the product:
+
+$$\\mathbf{V} = (12\\angle 90^\\circ)(5\\angle 20^\\circ) = 60\\angle 110^\\circ\\ \\mathrm{V}$$
+
+The magnitude is scaled by 12 and the angle advanced by exactly 90 degrees. That
+90 degree advance is the statement "voltage leads current in an inductor",
+expressed as multiplication rather than as a memorised rule. Dividing by $j$
+instead, as happens across a capacitor, retards the angle by 90 degrees, and the
+current leads.`,
+  examTip: 'Reduce any power of j by taking the exponent modulo 4. And commit 1/j = -j to memory: it turns the capacitive impedance 1/(j omega C) into -j/(omega C) instantly, which is where the negative sign of capacitive reactance comes from.',
+  importantNote: 'Multiplying two complex numbers multiplies magnitudes and adds angles. Nothing else happens. If a rectangular multiplication produces an answer whose magnitude is not the product of the two input magnitudes, the expansion is wrong, and that check takes ten seconds.',
+},
+{
+  id: 'cx-demoivre',
+  title: '8. De Moivre, and Every Root Rather Than One',
+  content: `## 8.1 Powers by De Moivre
+
+Applying the multiplication rule to a number times itself $n$ times gives De
+Moivre's theorem, which is the only practical way to take a high power of a
+complex number:
+
+$$z^{n} = r^{n}\\angle(n\\theta) = r^{n}\\left[\\cos(n\\theta) + j\\sin(n\\theta)\\right]$$
+
+The magnitude is raised to the power and the angle is multiplied by it. A
+binomial expansion of $(a + jb)^{6}$ has seven terms and four sign changes; the
+polar route has two operations.
+
+## 8.2 Roots: there are exactly n of them
+
+Reversing the theorem gives the roots, and this is where candidates lose marks.
+An $n$-th root asks for the numbers that raise to $z$, and there are $n$ of them,
+not one. The reason is that the angle of $z$ is only defined up to whole turns:
+theta and $\\theta + 360^\\circ$ are the same direction, but divided by $n$ they
+are different directions. So
+
+$$z^{1/n} = r^{1/n}\\angle\\frac{\\theta + 360^\\circ k}{n}, \\qquad k = 0, 1, 2, \\ldots, n-1$$
+
+At $k = n$ the angle has advanced by a full turn and the roots repeat, which is
+why the list stops at $n - 1$. All $n$ roots share the magnitude $r^{1/n}$, so
+they lie on one circle, equally spaced by $360^\\circ/n$.
+
+![Two sets of roots on concentric circles: the six sixth roots of one spaced 60 degrees apart on the unit circle, and the three cube roots of negative eight spaced 120 degrees apart on a circle of radius two.](/courses/fe-ee/figures/math2-cx-roots-unity.svg)
+
+### Worked example 8.1 — The six sixth roots of one
+
+Write the number whose roots are wanted in polar form: $1 = 1\\angle 0^\\circ$. Then
+$r^{1/6} = 1$ and the angles are $360^\\circ k/6 = 60^\\circ k$:
+
+$$1\\angle 0^\\circ,\\; 1\\angle 60^\\circ,\\; 1\\angle 120^\\circ,\\; 1\\angle 180^\\circ,\\; 1\\angle 240^\\circ,\\; 1\\angle 300^\\circ$$
+
+In rectangular form the six are $1$, $0.5 + j0.866$, $-0.5 + j0.866$, $-1$,
+$-0.5 - j0.866$ and $0.5 - j0.866$. Two are real, at 0 and 180 degrees, and the
+other four form two conjugate pairs — which is the general rule for roots of a
+real number: the non-real ones always arrive in conjugate pairs. Notice 0.866,
+the same $\\sqrt{3}/2$ that appears at 30 and 60 degrees on the unit circle.
+
+### Worked example 8.2 — The three cube roots of negative eight
+
+The obvious root is $-2$, and a question asking for "the" cube root of $-8$ is
+usually asking whether you know there are three. Write it in polar form:
+$-8 = 8\\angle 180^\\circ$. The magnitude of each root is $8^{1/3} = 2$ and the
+angles are $(180^\\circ + 360^\\circ k)/3$ for $k = 0, 1, 2$:
+
+$$2\\angle 60^\\circ = 1 + j1.732, \\qquad 2\\angle 180^\\circ = -2, \\qquad 2\\angle 300^\\circ = 1 - j1.732$$
+
+Verify the first by cubing it: magnitude $2^{3} = 8$, angle $3(60^\\circ) = 180^\\circ$,
+which is $8\\angle 180^\\circ = -8$. The three roots sit 120 degrees apart on a
+circle of radius 2, exactly as the figure shows. Taking the principal root alone
+and stopping there is the designed error, and on a question asking "how many
+distinct cube roots" the answer is always three.
+
+### Worked example 8.3 — Fourth roots of a number not on an axis
+
+Find all fourth roots of $16\\angle 80^\\circ$. The magnitude of each root is
+$16^{1/4} = 2$, and the angles are $(80^\\circ + 360^\\circ k)/4$:
+
+$$2\\angle 20^\\circ,\\qquad 2\\angle 110^\\circ,\\qquad 2\\angle 200^\\circ,\\qquad 2\\angle 290^\\circ$$
+
+The spacing is $360^\\circ/4 = 90^\\circ$, so once the first root is found the rest
+are free — add 90 degrees repeatedly. Check the last one by raising it to the
+fourth power: $2^{4} = 16$ and $4(290^\\circ) = 1160^\\circ$, which reduces modulo
+360 to $80^\\circ$. Correct.
+
+### Worked example 8.4 — The square root of j
+
+Since $j = 1\\angle 90^\\circ$, its square roots have magnitude 1 and angles
+$(90^\\circ + 360^\\circ k)/2$, that is 45 degrees and 225 degrees:
+
+$$\\sqrt{j} = \\pm(0.7071 + j0.7071)$$
+
+Squaring the first: magnitude 1, angle 90 degrees, which is $j$. The appearance
+of 0.7071 is not a coincidence — it is $\\cos 45^\\circ$, and it says that the
+square root of a 90 degree rotation is a 45 degree rotation, which is exactly
+what a rotation operator should do.`,
+  examTip: 'When a question says "find the roots" of a complex number, count them before computing: an n-th root has n answers, equally spaced by 360/n degrees on a circle of radius r to the one over n. Reporting only the principal root is the most common single error in this topic.',
+  importantNote: 'De Moivre works for powers and roots alike. For a power, multiply the angle by n. For a root, divide (theta + 360k) by n and let k run from 0 to n-1. The magnitudes follow the same exponent, so all n roots lie on one circle.',
+},
+{
+  id: 'cx-impedance',
+  title: '9. Impedance Is a Complex Number and Behaves Like One',
+  content: `## 9.1 The three element impedances
+
+Impedance is the complex ratio of voltage phasor to current phasor, and each
+passive element contributes a different part of the plane:
+
+$$Z_{R} = R, \\qquad Z_{L} = j\\omega L, \\qquad Z_{C} = \\frac{1}{j\\omega C} = -\\frac{j}{\\omega C}$$
+
+Resistance is real and positive; inductive reactance is positive imaginary;
+capacitive reactance is negative imaginary. A series combination adds, because
+the same current passes through each element and the voltages sum:
+
+$$Z = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right) = R + jX$$
+
+The real part dissipates energy and the imaginary part stores and returns it.
+The sign of $X$ says which store dominates: positive is net inductive with
+current lagging, negative is net capacitive with current leading.
+
+## 9.2 The whole frequency response of one branch
+
+Take the branch used throughout this course: $R = 10\\ \\Omega$,
+$L = 50\\ \\mathrm{mH}$, $C = 100\\ \\mu\\mathrm{F}$. Its impedance is a complex
+function of frequency, and both parts of that complex number are worth seeing at
+once.
+
+![Two stacked panels sharing a frequency axis: the magnitude of a series RLC impedance falling to a minimum of ten ohms at resonance and rising either side, and the angle of the same impedance crossing zero at that same frequency, from negative below to positive above.](/courses/fe-ee/figures/math2-cx-rlc-impedance.svg)
+
+| Frequency | $\\omega L$ | $1/(\\omega C)$ | $Z$ | Magnitude | Angle |
+|---|---|---|---|---|---|
+| 30 Hz | 9.42 Ω | 53.05 Ω | $10 - j43.63$ | 44.76 Ω | $-77.09^\\circ$ |
+| 60 Hz | 18.85 Ω | 26.53 Ω | $10 - j7.68$ | 12.61 Ω | $-37.51^\\circ$ |
+| 71.18 Hz | 22.36 Ω | 22.36 Ω | $10 + j0$ | 10.00 Ω | $0^\\circ$ |
+| 120 Hz | 37.70 Ω | 13.26 Ω | $10 + j24.44$ | 26.40 Ω | $+67.74^\\circ$ |
+| 300 Hz | 94.25 Ω | 5.31 Ω | $10 + j88.94$ | 89.50 Ω | $+83.59^\\circ$ |
+
+The third row is resonance. The two reactances are equal in size and opposite in
+sign, so they cancel and the branch looks purely resistive. The resonant
+frequency comes from setting them equal:
+
+$$\\omega L = \\frac{1}{\\omega C} \\quad \\Longrightarrow \\quad \\omega_{0} = \\frac{1}{\\sqrt{LC}} = 447.21\\ \\mathrm{rad/s}, \\qquad f_{0} = \\frac{\\omega_{0}}{2\\pi} = 71.18\\ \\mathrm{Hz}$$
+
+Two more numbers describe how sharp that minimum is. The quality factor and the
+bandwidth of a series branch are
+
+$$Q = \\frac{\\omega_{0}L}{R} = \\frac{(447.21)(0.05)}{10} = 2.24, \\qquad \\mathrm{BW} = \\frac{R}{L} = 200\\ \\mathrm{rad/s} = 31.83\\ \\mathrm{Hz}$$
+
+A $Q$ of 2.24 is a broad resonance, which is what the gentle bowl in the figure
+shows. The same components appeared in the Algebra and Trigonometry chapter as a
+characteristic equation with roots $-100 \\pm j435.89$; the damped ringing
+frequency there and the resonant frequency here describe the same circuit, one
+left to ring and one driven.
+
+### Worked example 9.1 — The 60 Hz operating point
+
+At 60 Hz, $\\omega = 2\\pi(60) = 377\\ \\mathrm{rad/s}$, so
+
+$$\\omega L = 377(0.05) = 18.85\\ \\Omega, \\qquad \\frac{1}{\\omega C} = \\frac{1}{377 \\times 10^{-4}} = 26.53\\ \\Omega$$
+
+$$Z = 10 + j(18.85 - 26.53) = 10 - j7.68\\ \\Omega$$
+
+In polar form the magnitude is $\\sqrt{100 + 58.9} = 12.61\\ \\Omega$ and the angle
+is $\\arctan(-7.68/10) = -37.51^\\circ$. The negative angle means capacitive, which
+makes sense because 60 Hz is below the 71.18 Hz resonance and the capacitive
+reactance still dominates. Stating that conclusion before computing is a useful
+discipline: it turns the arithmetic into a confirmation rather than a leap.
+
+### Worked example 9.2 — Current and power at that point
+
+Apply 120 V rms at zero phase. Division in polar form divides magnitudes and
+subtracts angles:
+
+$$\\mathbf{I} = \\frac{120\\angle 0^\\circ}{12.61\\angle -37.51^\\circ} = 9.52\\angle +37.51^\\circ\\ \\mathrm{A}$$
+
+The current leads the voltage, as a capacitive circuit requires. Real power is
+consumed only by the resistance:
+
+$$P = I^{2}R = (9.52)^{2}(10) = 906\\ \\mathrm{W}$$
+
+and the same number comes from $P = VI\\cos\\theta = 120(9.52)(0.793) = 906\\ \\mathrm{W}$.
+Two independent routes to one number is the check that matters here, because the
+common error — using the impedance magnitude in place of the resistance in
+$I^{2}R$ — gives 1143 W and looks entirely reasonable.
+
+### Worked example 9.3 — What resonance is not
+
+At $f_{0}$ the impedance is 10 Ω, not zero. The reactances cancel each other but
+the resistance remains, so the current at resonance with 120 V applied would be
+12 A, the largest value it takes at any frequency. Individual element voltages
+at resonance can exceed the source voltage: the inductor drops
+$I\\omega_{0}L = 12(22.36) = 268\\ \\mathrm{V}$ and the capacitor drops the same
+268 V in antiphase, so they cancel in the loop while each individually exceeds
+120 V. The ratio 268/120 is 2.24, which is $Q$ — that is what the quality factor
+measures.`,
+  examTip: 'Series resonance makes the impedance minimum and purely resistive, equal to R, not zero. Parallel resonance does the opposite: maximum impedance. Confusing the two is worth several marks across the circuits section, and the discriminating word in the question is series or parallel.',
+  importantNote: 'Real power uses the RESISTANCE, not the impedance magnitude. P equals I squared R with the current magnitude, or V I cos(theta) with the phase angle. Substituting the magnitude of Z for R inflates the answer by a factor of the magnitude over R, which here is 1.26.',
+},
+{
+  id: 'cx-conjugate-depth',
+  title: '10. The Conjugate: Reflection, Division and Matching',
+  content: `## 10.1 What conjugation does geometrically
+
+The conjugate of $z = a + jb$ is $z^{*} = a - jb$: the same point reflected
+across the real axis. In polar form that is the same magnitude with the angle
+negated, $r\\angle\\theta$ becoming $r\\angle -\\theta$. Four properties do all the
+work:
+
+$$zz^{*} = a^{2} + b^{2} = \\lvert z \\rvert^{2}, \\qquad z + z^{*} = 2\\,\\mathrm{Re}(z)$$
+
+$$z - z^{*} = j2\\,\\mathrm{Im}(z), \\qquad (z_{1}z_{2})^{*} = z_{1}^{*}z_{2}^{*}$$
+
+The first is the one used constantly: a complex number times its conjugate is
+real, positive, and equal to the square of the magnitude. That is what makes it
+useful for clearing a complex denominator.
+
+### Worked example 10.1 — Division by rationalising
+
+Compute $(7 + j1)/(3 - j2)$. Multiply above and below by the conjugate of the
+denominator, which is $3 + j2$:
+
+$$\\frac{(7 + j1)(3 + j2)}{(3 - j2)(3 + j2)} = \\frac{21 + j14 + j3 + j^{2}2}{9 + 4} = \\frac{19 + j17}{13}$$
+
+$$= 1.462 + j1.308$$
+
+Check in polar form: $(7.071\\angle 8.13^\\circ)/(3.606\\angle -33.69^\\circ) = 1.961\\angle 41.82^\\circ$,
+and the rectangular answer has magnitude $\\sqrt{2.137 + 1.710} = 1.961$ and angle
+$\\arctan(1.308/1.462) = 41.82^\\circ$. They agree. The denominator became
+$3^{2} + 2^{2} = 13$, purely real, because that is what $zz^{*}$ always gives.
+
+## 10.2 The conjugate in complex power
+
+Complex power is defined with a conjugate, and the reason is worth understanding
+rather than memorising. Using rms phasors,
+
+$$\\mathbf{S} = \\mathbf{V}\\mathbf{I}^{*} = P + jQ$$
+
+Conjugating the current negates its angle, so the angle of $\\mathbf{S}$ is the
+voltage angle minus the current angle — which is theta, the angle by which the
+current lags. Without the conjugate the product would carry the sum of the
+angles, a quantity that depends on the arbitrary choice of time origin and means
+nothing.
+
+### Worked example 10.2 — Complex power for the branch above
+
+From the previous section, $\\mathbf{V} = 120\\angle 0^\\circ$ V and
+$\\mathbf{I} = 9.52\\angle 37.51^\\circ$ A, both rms. Then
+
+$$\\mathbf{S} = (120\\angle 0^\\circ)(9.52\\angle -37.51^\\circ) = 1142\\angle -37.51^\\circ\\ \\mathrm{VA}$$
+
+$$\\mathbf{S} = 906 - j696\\ \\mathrm{VA}$$
+
+So $P = 906\\ \\mathrm{W}$, matching the $I^{2}R$ result exactly, and
+$Q = -696\\ \\mathrm{VAR}$. The negative reactive power is the signature of a
+capacitive load, and it is the sign that a leading current produces. Omitting
+the conjugate would give $1142\\angle +37.51^\\circ$ and report the load as
+inductive — the right magnitude with the wrong physics.
+
+## 10.3 Maximum power transfer wants the conjugate, not a copy
+
+For a source of internal impedance $Z_{s} = R_{s} + jX_{s}$ driving a load
+$Z_{L}$, the power delivered is maximised when
+
+$$Z_{L} = Z_{s}^{*} = R_{s} - jX_{s}$$
+
+The reactance is cancelled, not copied. With the reactances cancelling, the loop
+is purely resistive with $2R_{s}$ in it, and the delivered power reaches
+
+$$P_{\\max} = \\frac{V^{2}}{4R_{s}}$$
+
+![Power delivered to a load plotted against load resistance for three cases: a conjugate reactance, no reactance, and a reactance of the same sign as the source, with the conjugate case peaking highest and earliest.](/courses/fe-ee/figures/math2-cx-conjugate-match.svg)
+
+### Worked example 10.3 — What each wrong choice costs
+
+A 10 V rms source has $Z_{s} = 5 + j5\\ \\Omega$. Three candidate loads:
+
+**The conjugate, $Z_{L} = 5 - j5$.** The reactances cancel and
+
+$$P = \\frac{V^{2}}{4R_{s}} = \\frac{100}{20} = 5.00\\ \\mathrm{W}$$
+
+**A purely resistive load.** With $X_{L} = 0$ the best resistance is no longer
+$R_{s}$ but the magnitude of the source impedance,
+$\\sqrt{25 + 25} = 7.07\\ \\Omega$, and the power there is 4.14 W — seventeen
+percent below the achievable maximum.
+
+**A reactance of the same sign, $X_{L} = +5$.** Now the loop reactance is
+$+10\\ \\Omega$ rather than zero. The best resistance becomes
+$\\sqrt{R_{s}^{2} + (2X_{s})^{2}} = \\sqrt{25 + 100} = 11.18\\ \\Omega$, and the
+power peaks at only 3.09 W, thirty-eight percent down.
+
+| Load reactance | Best load resistance | Power delivered |
+|---|---|---|
+| $X_{L} = -5\\ \\Omega$ (conjugate) | 5.00 Ω | 5.00 W |
+| $X_{L} = 0$ (resistive) | 7.07 Ω | 4.14 W |
+| $X_{L} = +5\\ \\Omega$ (same sign) | 11.18 Ω | 3.09 W |
+
+The ordering is the lesson. Getting the reactance sign right is worth more than
+choosing the resistance well, and an answer choice offering $Z_{L} = Z_{s}$ is
+there for the candidate who remembers the DC rule that the load should equal the
+source resistance and does not notice that a reactance has appeared.`,
+  examTip: 'For AC maximum power transfer, conjugate the source impedance: same resistance, opposite reactance. Then the maximum power is V squared over 4R with V the source rms voltage and R the source resistance, because the reactances have cancelled and only 2R remains in the loop.',
+  importantNote: 'Complex power is V times the CONJUGATE of I. That conjugate is what makes the angle of S equal the angle between voltage and current, and it is what gives Q its sign: positive Q for a lagging (inductive) load, negative for a leading (capacitive) one.',
+},
+{
+  id: 'cx-admittance',
+  title: '11. Reciprocals, Admittance, and a Line That Becomes a Circle',
+  content: `## 11.1 Admittance is not one over the resistance
+
+Admittance is the reciprocal of impedance, and the trap is in the word
+reciprocal. Rationalising it shows that both parts of the impedance appear in
+both parts of the admittance:
+
+$$Y = \\frac{1}{Z} = \\frac{1}{R + jX} = \\frac{R - jX}{R^{2} + X^{2}} = G + jB$$
+
+$$G = \\frac{R}{R^{2} + X^{2}}, \\qquad B = \\frac{-X}{R^{2} + X^{2}}$$
+
+So conductance is $1/R$ only when the reactance is zero. In every other case the
+reactance reduces the conductance as well. And the susceptance carries the
+opposite sign to the reactance, which is why an inductive branch — positive
+reactance — has negative susceptance. Adding $1/R$ to $1/(jX)$ separately, as if
+the two parts were independent, is the standard error and it does not even
+produce the right units of answer for a mixed branch.
+
+Admittance earns its keep in parallel circuits, where admittances add for the
+same reason that impedances add in series:
+
+$$Y_{\\mathrm{total}} = Y_{1} + Y_{2} + \\cdots$$
+
+### Worked example 11.1 — Two branches in parallel, the short way
+
+$Z_{1} = 6 + j8\\ \\Omega$ and $Z_{2} = 10\\angle -30^\\circ\\ \\Omega$ are in parallel.
+Convert each to an admittance:
+
+$$Y_{1} = \\frac{1}{6 + j8} = \\frac{6 - j8}{100} = 0.06 - j0.08\\ \\mathrm{S}$$
+
+$$Y_{2} = \\frac{1}{10\\angle -30^\\circ} = 0.1\\angle +30^\\circ = 0.0866 + j0.05\\ \\mathrm{S}$$
+
+Adding them is one line: $Y = 0.1466 - j0.03\\ \\mathrm{S}$, whose magnitude is
+0.1496 S at $-11.57^\\circ$. Inverting once at the end gives
+
+$$Z = \\frac{1}{0.1496\\angle -11.57^\\circ} = 6.68\\angle +11.57^\\circ\\ \\Omega$$
+
+which agrees with the product-over-sum result computed earlier in this chapter.
+For two branches the two methods are about equally quick; for three or more,
+admittances win outright, because product-over-sum does not generalise and has
+to be applied twice.
+
+### Worked example 11.2 — A resistor and a capacitor in parallel
+
+A 100 Ω resistor sits in parallel with a 20 µF capacitor at 60 Hz. The
+capacitive susceptance is positive, being the negative of a negative reactance:
+
+$$B = \\omega C = 377(20 \\times 10^{-6}) = 0.00754\\ \\mathrm{S}$$
+
+$$Y = 0.01 + j0.00754 = 0.01252\\angle 37.02^\\circ\\ \\mathrm{S}$$
+
+$$Z = \\frac{1}{Y} = 79.85\\angle -37.02^\\circ = 63.76 - j48.07\\ \\Omega$$
+
+Note that the real part of the impedance is 63.76 Ω, not 100 Ω, even though the
+only resistor in the circuit is 100 Ω. Resistance and conductance are reciprocal
+only in the absence of reactance, and this example is the cheapest possible
+demonstration of that.
+
+## 11.2 Why the reciprocal turns a line into a circle
+
+Something geometrically striking happens when a whole family of impedances is
+inverted. Fix the resistance at 2 Ω and let the reactance run over every value.
+In the impedance plane that is a vertical straight line. In the admittance plane
+it is a circle: centre at $1/(2R)$ on the real axis, radius $1/(2R)$, passing
+through the origin.
+
+![The vertical line of constant two-ohm resistance mapped into the admittance plane, where it becomes a circle of radius one quarter siemens centred at one quarter siemens on the conductance axis, with several individual reactance values marked around it.](/courses/fe-ee/figures/math2-cx-inversion-circle.svg)
+
+| Impedance | Admittance | Conductance | Susceptance |
+|---|---|---|---|
+| $2 + j0$ | $0.5 + j0$ | 0.500 S | 0.000 S |
+| $2 - j2$ | $0.25 + j0.25$ | 0.250 S | +0.250 S |
+| $2 + j2$ | $0.25 - j0.25$ | 0.250 S | −0.250 S |
+| $2 - j6$ | $0.05 + j0.15$ | 0.050 S | +0.150 S |
+| $2 + j6$ | $0.05 - j0.15$ | 0.050 S | −0.150 S |
+
+Every one of those admittances is exactly 0.25 S away from the point 0.25 S on
+the real axis, which is the definition of that circle. The largest conductance,
+0.5 S, occurs when the reactance is zero; adding reactance of either sign drives
+the point around the circle towards the origin, meaning the branch admits less
+current. This mapping is why the Smith chart is drawn as a family of circles: it
+is the constant-resistance and constant-reactance lines of the impedance plane,
+inverted.`,
+  examTip: 'Conductance equals one over resistance only when the reactance is zero. For anything else use G = R over (R squared plus X squared). Writing Y as 1/R + 1/(jX) is a genuinely wrong formula, not merely a slow one.',
+  importantNote: 'Susceptance carries the opposite sign to reactance. An inductive branch, with positive X, has negative B; a capacitive branch, with negative X, has positive B. Losing that sign flips a lagging load into a leading one.',
+},
+{
+  id: 'cx-phasor-bridge',
+  title: '12. Phasors: What Is Discarded and What Comes Back',
+  content: `## 12.1 The transform, and the three conditions on it
+
+A phasor is a complex number that carries the amplitude and the phase of a
+sinusoid, and discards the time dependence:
+
+$$v(t) = V_{m}\\cos(\\omega t + \\phi) \\;\\longleftrightarrow\\; \\mathbf{V} = V_{m}\\angle\\phi$$
+
+The justification is Euler. Write the sinusoid as the real part of a rotating
+exponential, $v(t) = \\mathrm{Re}[V_{m}e^{j\\phi}e^{j\\omega t}]$. Every voltage and
+current in a linear circuit driven at one frequency carries the identical factor
+$e^{j\\omega t}$, so it can be divided out of every equation and restored at the
+end. What remains, $V_{m}e^{j\\phi}$, is the phasor.
+
+Three conditions come with that argument, and each is a question on this exam.
+The circuit must be **linear**, because superposition is what allows the common
+factor to be cancelled. The excitation must be at a **single frequency**, since
+two different values of omega give two different rotating factors and neither
+cancels. And the response must be in **steady state**, because the transient
+part is not sinusoidal at all.
+
+Within those conditions, calculus becomes arithmetic. Differentiating the
+rotating exponential brings down a factor of $j\\omega$, and integrating divides
+by it:
+
+$$\\frac{d}{dt} \\;\\longleftrightarrow\\; j\\omega, \\qquad \\int dt \\;\\longleftrightarrow\\; \\frac{1}{j\\omega}$$
+
+That single substitution is the entire reason the impedances of the previous
+sections have the form they do: $v = L\\,di/dt$ becomes
+$\\mathbf{V} = j\\omega L\\mathbf{I}$, and $i = C\\,dv/dt$ becomes
+$\\mathbf{I} = j\\omega C\\mathbf{V}$.
+
+### Worked example 12.1 — Adding two sinusoids without any trigonometry
+
+Add $v_{1}(t) = 100\\cos\\omega t$ and $v_{2}(t) = 60\\cos(\\omega t + 60^\\circ)$.
+In the phasor domain the second converts to rectangular form and the two add
+component by component:
+
+$$\\mathbf{V} = 100\\angle 0^\\circ + 60\\angle 60^\\circ = 100 + (30 + j51.96) = 130 + j51.96$$
+
+$$\\lvert \\mathbf{V} \\rvert = \\sqrt{16900 + 2700} = \\sqrt{19600} = 140.0\\ \\mathrm{V}, \\qquad \\angle \\mathbf{V} = 21.79^\\circ$$
+
+so $v_{1} + v_{2} = 140\\cos(\\omega t + 21.79^\\circ)$.
+
+![Two sinusoids of the same frequency drawn against wt in degrees together with their point-by-point sum, which is a third sinusoid of amplitude 140 volts peaking 21.79 degrees earlier than the reference.](/courses/fe-ee/figures/math2-cx-phasor-sum-time.svg)
+
+The figure adds the same two waveforms sample by sample and gets a curve
+identical to the one the phasor arithmetic predicts. Check it by hand at one
+instant: at $\\omega t = 0$ the two waveforms give
+$100 + 60\\cos 60^\\circ = 130\\ \\mathrm{V}$, and the phasor result gives
+$140\\cos(21.79^\\circ) = 130\\ \\mathrm{V}$. The peak is 140 V, not 160 V, because
+the two components never peak at the same instant.
+
+### Worked example 12.2 — The derivative rule in use
+
+A current $i(t) = 2\\cos(377t - 30^\\circ)\\ \\mathrm{A}$ flows through a 20 mH
+inductor. In the phasor domain the voltage is the current times $j\\omega L$:
+
+$$\\omega L = 377(0.020) = 7.54\\ \\Omega$$
+
+$$\\mathbf{V} = (7.54\\angle 90^\\circ)(2\\angle -30^\\circ) = 15.08\\angle 60^\\circ\\ \\mathrm{V}$$
+
+so $v(t) = 15.08\\cos(377t + 60^\\circ)\\ \\mathrm{V}$. Doing it in the time domain
+means differentiating $2\\cos(377t - 30^\\circ)$, getting
+$-754\\sin(377t - 30^\\circ)$, multiplying by 0.020, and then converting a negative
+sine into a cosine with a phase shift — three chances to lose a sign where the
+phasor route has none.
+
+### Worked example 12.3 — Kirchhoff's voltage law with phasors
+
+Two series elements drop $50\\angle 0^\\circ$ V and $30\\angle 90^\\circ$ V. The
+source voltage is their phasor sum, not their arithmetic sum:
+
+$$\\mathbf{V}_{s} = 50 + j30 = 58.31\\angle 30.96^\\circ\\ \\mathrm{V}$$
+
+A voltmeter across the pair reads 58.3 V while voltmeters across the individual
+elements read 50 V and 30 V. There is nothing paradoxical in that: the two drops
+peak at different instants. Reporting 80 V is the classic carry-over from DC,
+and it is why every AC loop equation must be done in complex arithmetic rather
+than with magnitudes.
+
+## 12.2 What the phasor threw away, and when you need it back
+
+The phasor discarded the factor $e^{j\\omega t}$, which means it has no
+information about the frequency itself and none about any transient. Two
+consequences follow on this exam. A circuit driven by a fundamental and a
+harmonic must be solved once per frequency and the time-domain results added,
+because the two phasor domains are separate. And a switching transient — the
+response the previous chapter's characteristic roots describe — is invisible to
+phasor analysis entirely; that problem belongs to differential equations or to
+the Laplace transform, where the exponential factor is kept rather than
+cancelled.`,
+  examTip: 'Phasors need three things: linearity, one frequency, and steady state. If a problem has two source frequencies, solve it once at each frequency and add the time-domain answers; the phasors themselves cannot be added because they rotate at different rates.',
+  importantNote: 'Voltmeter readings around an AC loop do not add arithmetically. Fifty volts and thirty volts in series can read anything from 20 V to 80 V depending on phase, and equal 58.3 V when the two are 90 degrees apart. Only the phasor sum obeys Kirchhoff.',
+},
+{
+  id: 'cx-set-b',
+  title: '13. Problem Set: Forms, Powers and Roots',
+  content: `Work each one before reading the answer. Every question here is
+answerable in about three minutes with the handbook and a calculator.
+
+## Problem Set C
+
+1. Add $(4 + j7)$ and $(9 - j3)$, and give the result in both forms.
+2. Evaluate $(5\\angle 25^\\circ)(4\\angle -70^\\circ)$ in polar and rectangular form.
+3. Evaluate $(2 + j2)^{6}$.
+4. Find all cube roots of $27\\angle 90^\\circ$.
+5. Evaluate $(10 - j5)/(2 + j6)$.
+6. Evaluate $j^{27}$ and $j^{100}$.
+
+### Worked answers to Problem Set C
+
+**1.** Addition is component by component:
+$(4 + 9) + j(7 - 3) = 13 + j4$. Converting,
+
+$$\\lvert z \\rvert = \\sqrt{169 + 16} = 13.60, \\qquad \\theta = \\arctan\\frac{4}{13} = 17.10^\\circ$$
+
+The trap is adding the magnitudes of the two inputs, 8.06 and 9.49, to get
+17.55 — close enough to the correct 13.60 to be uncomfortable, and wrong.
+Magnitudes only add when the two numbers have the same angle.
+
+**2.** Magnitudes multiply and angles add:
+
+$$(5)(4)\\angle(25^\\circ - 70^\\circ) = 20\\angle -45^\\circ = 14.14 - j14.14$$
+
+Subtracting the magnitudes or multiplying the angles both produce offered
+answers. Note that $20\\angle -45^\\circ$ has equal and opposite real and imaginary
+parts, which is a useful sanity check on the rectangular conversion.
+
+**3.** Convert before raising: $2 + j2$ has magnitude $\\sqrt{8} = 2.828$ and
+angle 45 degrees. By De Moivre,
+
+$$(2.828\\angle 45^\\circ)^{6} = 2.828^{6}\\angle 270^\\circ = 512\\angle 270^\\circ = -j512$$
+
+The angle $6(45^\\circ) = 270^\\circ$ places the answer on the negative imaginary
+axis. Expanding the binomial gives the same thing after seven terms. The trap is
+$2^{6} + (j2)^{6} = 64 - 64 = 0$, which treats a power of a sum as a sum of
+powers.
+
+**4.** Three roots, magnitude $27^{1/3} = 3$, angles $(90^\\circ + 360^\\circ k)/3$:
+
+$$3\\angle 30^\\circ = 2.598 + j1.5, \\qquad 3\\angle 150^\\circ = -2.598 + j1.5, \\qquad 3\\angle 270^\\circ = -j3$$
+
+They are 120 degrees apart on a circle of radius 3. Reporting only
+$3\\angle 30^\\circ$ takes the principal root and misses two of the three cube
+roots, which is the single most common error on root questions and is always
+one of the choices.
+
+**5.** In polar form, the numerator is $11.18\\angle -26.57^\\circ$ and the
+denominator is $6.325\\angle 71.57^\\circ$, so
+
+$$\\frac{11.18\\angle -26.57^\\circ}{6.325\\angle 71.57^\\circ} = 1.768\\angle -98.13^\\circ = -0.25 - j1.75$$
+
+Confirm rectangularly by multiplying top and bottom by $2 - j6$:
+$(10 - j5)(2 - j6) = 20 - j60 - j10 - 30 = -10 - j70$, over $4 + 36 = 40$, giving
+$-0.25 - j1.75$. Multiplying by the denominator itself rather than its conjugate
+leaves the denominator complex and is the standard failure here.
+
+**6.** Reduce the exponent modulo four. Since $27 = 4(6) + 3$ and
+$j^{3} = -j$:
+
+$$j^{27} = -j, \\qquad j^{100} = j^{0} = 1$$
+
+because 100 is divisible by four. Answering $j^{27} = j$ takes the remainder of
+27 divided by 4 as 1 rather than 3, and that off-by-two error rotates the answer
+by 180 degrees.`,
+},
+{
+  id: 'cx-set-c',
+  title: '14. Problem Set: Impedance, Admittance and Power',
+  content: `The second set is the circuits half of this chapter. Again, solve
+before reading.
+
+## Problem Set D
+
+1. A 25 Ω resistor is in series with a 0.1 H inductor at 60 Hz. Find the
+   impedance in both forms.
+2. That branch is driven by 208 V rms at zero phase. Find the current and the
+   real power.
+3. Find the admittance of $4 + j3\\ \\Omega$.
+4. A 20 V rms source has an internal impedance of $8 - j6\\ \\Omega$. Give the
+   load for maximum power and the power delivered, and say what a load equal to
+   the source impedance would deliver instead.
+5. For $v(t) = 170\\cos(\\omega t - 40^\\circ)$ V and
+   $i(t) = 8.5\\cos(\\omega t + 15^\\circ)$ A, find the complex power and classify
+   the load.
+6. For the series branch with $R = 10\\ \\Omega$, $L = 50\\ \\mathrm{mH}$ and
+   $C = 100\\ \\mu\\mathrm{F}$, state the frequency at which the impedance is
+   purely real and its magnitude there.
+
+### Worked answers to Problem Set D
+
+**1.** The reactance is $\\omega L = 2\\pi(60)(0.1) = 37.70\\ \\Omega$, so
+
+$$Z = 25 + j37.70 = 45.24\\angle 56.45^\\circ\\ \\Omega$$
+
+The positive angle says inductive, current lagging. A frequent slip is using
+$2\\pi f L$ with $f$ in radians per second, which multiplies the reactance by
+another $2\\pi$ and gives 236.9 Ω.
+
+**2.** Division in polar form:
+
+$$\\mathbf{I} = \\frac{208\\angle 0^\\circ}{45.24\\angle 56.45^\\circ} = 4.598\\angle -56.45^\\circ\\ \\mathrm{A}$$
+
+$$P = I^{2}R = (4.598)^{2}(25) = 528.6\\ \\mathrm{W}$$
+
+Cross-check with $P = VI\\cos\\theta = (208)(4.598)(0.5527) = 528.6\\ \\mathrm{W}$.
+Using the impedance magnitude in place of the resistance gives 956 W, which is
+the apparent power in disguise and is always offered.
+
+**3.** Rationalise:
+
+$$Y = \\frac{1}{4 + j3} = \\frac{4 - j3}{16 + 9} = 0.16 - j0.12\\ \\mathrm{S}$$
+
+The magnitude is 0.2 S, which is $1/5$, and 5 Ω is the magnitude of the
+impedance — a fast check. The trap answer is $1/4 - j/3$, obtained by inverting
+the two parts separately, which is not a valid operation on a complex number.
+
+**4.** Maximum power needs the conjugate, $Z_{L} = 8 + j6\\ \\Omega$. Then
+
+$$P_{\\max} = \\frac{V^{2}}{4R_{s}} = \\frac{400}{32} = 12.5\\ \\mathrm{W}$$
+
+A load equal to the source impedance, $8 - j6$, makes the loop impedance
+$16 - j12$ with magnitude squared $256 + 144 = 400$, so
+
+$$P = \\frac{V^{2}R_{L}}{\\lvert Z_{\\mathrm{loop}} \\rvert^{2}} = \\frac{(400)(8)}{400} = 8.0\\ \\mathrm{W}$$
+
+Copying the source impedance instead of conjugating it costs 36% of the
+available power, and it is the offered answer for anyone applying the DC
+matching rule.
+
+**5.** These are peak values, so the one-half factor is required. The complex
+power is half the voltage phasor times the conjugate of the current phasor:
+
+$$\\mathbf{S} = \\tfrac{1}{2}(170\\angle -40^\\circ)(8.5\\angle -15^\\circ) = 722.5\\angle -55^\\circ\\ \\mathrm{VA}$$
+
+$$\\mathbf{S} = 414.4 - j591.8\\ \\mathrm{VA}$$
+
+So $P = 414\\ \\mathrm{W}$ and $Q = -592\\ \\mathrm{VAR}$. The current leads the
+voltage by 55 degrees, and the negative reactive power confirms a capacitive
+load. Omitting the one-half factor doubles everything to 1445 VA, and forgetting
+the conjugate gives an angle of $-25^\\circ$, which reports the load as inductive.
+
+**6.** The impedance is purely real at series resonance, where the two
+reactances cancel:
+
+$$f_{0} = \\frac{1}{2\\pi\\sqrt{LC}} = \\frac{1}{2\\pi\\sqrt{(0.05)(10^{-4})}} = 71.18\\ \\mathrm{Hz}$$
+
+At that frequency the reactances are each 22.36 Ω and cancel exactly, leaving
+$Z = 10\\ \\Omega$, the resistance alone. Answering zero ohms is the trap: series
+resonance minimises the impedance, but the floor is $R$, not zero, and a circuit
+with any resistance in it never reaches zero impedance at any frequency.`,
 },
 ],
   keyTakeaways: [
