@@ -1227,13 +1227,13 @@ must keep its step function shifted with it.`,
 
 For a signal with period **$T_{0}$** and fundamental frequency **$f_{0} = 1/T_{0}$**, the **trigonometric form** is:
 
-**$x(t) = a_{0} + \\Sigma a_{n}\\cdot \\cos (n\\omega _{0}t) + \\Sigma b_{n}\\cdot \\sin (n\\omega _{0}t)$**
+**$x(t) = a_{0} + \\sum _{n=1}^{\\infty }a_{n}\\cos (n\\omega _{0}t) + \\sum _{n=1}^{\\infty }b_{n}\\sin (n\\omega _{0}t)$**
 
 The **complex exponential form** is more compact:
 
-**$x(t) = \\Sigma c_{n} \\cdot e^{j2\\pi nf_{0}t}$**
+**$x(t) = \\sum _{n=-\\infty }^{\\infty }c_{n}e^{j2\\pi nf_{0}t}$**
 
-where **$c_{n} = (1/T_{0}) \\int x(t) \\cdot e^{-j2\\pi nf_{0}t} dt$**
+where **$c_{n} = \\dfrac{1}{T_{0}}\\displaystyle\\int _{0}^{T_{0}}x(t)e^{-j2\\pi nf_{0}t}\\,dt$**
 
 | Signal Type | Representation | Spectrum |
 |---|---|---|
@@ -1244,9 +1244,9 @@ where **$c_{n} = (1/T_{0}) \\int x(t) \\cdot e^{-j2\\pi nf_{0}t} dt$**
 
 The **Fourier Transform** extends analysis to non-periodic signals:
 
-**$X(f) = \\int x(t) \\cdot e^{-j2\\pi ft} dt$**
+**$X(f) = \\displaystyle\\int _{-\\infty }^{\\infty }x(t)e^{-j2\\pi ft}\\,dt$**
 
-**Inverse: x(t) = ∫ X(f) · e^(j2πft) df**
+Inverse: **$x(t) = \\displaystyle\\int _{-\\infty }^{\\infty }X(f)e^{j2\\pi ft}\\,df$**
 
 ### Key Properties
 
@@ -1254,7 +1254,7 @@ The **Fourier Transform** extends analysis to non-periodic signals:
 - **Time shift**: x(t − $t_{0}$) → X(f) · e^(−j2πft₀)
 - **Frequency shift**: x(t) · e^(j2πf₀t) → X(f − $f_{0}$)
 - **Convolution theorem**: x(t) * h(t) ↔ X(f) · H(f)
-- **Parseval's theorem**: ∫|x(t)|² dt = ∫|X(f)|² df (energy conservation)
+- **Parseval's theorem**: $\\displaystyle\\int _{-\\infty }^{\\infty }\\lvert x(t)\\rvert ^{2}dt = \\int _{-\\infty }^{\\infty }\\lvert X(f)\\rvert ^{2}df$ (energy conservation)
 
 Differentiation in time multiplies by **$j2\\pi f$** in frequency, so signals with sharp edges (discontinuities) have broader spectra.
 
@@ -1277,7 +1277,7 @@ fast-edged signal.`,
 
 The Laplace Transform adds an exponential convergence factor to the Fourier Transform, handling unstable and growing signals:
 
-**$X(s) = \\int _{0}^\\infty x(t) \\cdot e^{-st} dt$** where **$s = \\sigma + j\\omega$**
+**$X(s) = \\displaystyle\\int _{0^{-}}^{\\infty }x(t)e^{-st}\\,dt$** where **$s = \\sigma + j\\omega$**
 
 This converts differential equations into **algebraic equations** in s, dramatically simplifying circuit and system analysis.
 
@@ -1494,10 +1494,970 @@ actually asked.`,
         examTip: 'For any switched RC or RL problem you can now pick the faster of two roads: the universal time-constant formula, or impedances in s with a table inversion. Use the s-domain when the source is anything other than a step - a ramp or a sinusoid applied at t = 0 defeats the shortcut formula but costs the transform method nothing extra.',
         importantNote: 'Series and parallel resonance share the same omega_0 = 1/sqrt(LC) but OPPOSITE Q formulas: Q = w0*L/R in series, Q = R/(w0*L) in parallel. Check which topology the problem draws before computing Q — swapping them inverts the bandwidth by the square of Q, the largest single error available in a resonance problem.',
       },
+      {
+        id: 'fd-jw-substitution',
+        title: '5. Frequency Response: H(s) Evaluated on the Imaginary Axis',
+        content: `## 5.1 Why the substitution is legitimate, and when it is not
+
+"Put $s = j\\omega$ into H(s)" is repeated so often that its justification
+has quietly evaporated. Recover it from the convolution integral, because
+the recovery also tells you the one circumstance in which the recipe lies.
+
+Drive a linear time-invariant system whose impulse response is h(t) with a
+complex exponential that was switched on in the infinite past:
+
+$$y(t) = \\int _{-\\infty }^{\\infty }h(\\tau )\\,e^{j\\omega (t-\\tau )}\\,d\\tau = e^{j\\omega t}\\int _{-\\infty }^{\\infty }h(\\tau )\\,e^{-j\\omega \\tau }\\,d\\tau$$
+
+The remaining integral carries no t at all. Give it a name:
+
+$$H(j\\omega ) = \\int _{-\\infty }^{\\infty }h(\\tau )\\,e^{-j\\omega \\tau }\\,d\\tau \\qquad \\text{so that} \\qquad y(t) = H(j\\omega )\\,e^{j\\omega t}$$
+
+An exponential goes in and the SAME exponential comes out, multiplied by one
+complex number. Nothing about the shape survives the trip except a scale and
+a rotation. That is the eigenfunction property of linear time-invariant
+systems, and it is the whole reason frequency-domain thinking works: pick a
+basis of complex exponentials and every box in the block diagram degenerates
+into a multiplication.
+
+The catch hides in the word "integral". It has to converge, which requires
+
+$$\\int _{-\\infty }^{\\infty }\\lvert h(\\tau )\\rvert \\,d\\tau < \\infty$$
+
+and that condition is exactly bounded-input bounded-output stability. Put a
+pole in the right half-plane and h(t) grows; the integral diverges; the
+strip in which the Laplace transform converges no longer contains the
+imaginary axis; and $H(j\\omega )$ is not a number at all. You can still
+perform the algebra — substitute, simplify, produce a magnitude — and the
+result will describe nothing. The output of an unstable system driven by a
+sinusoid does not approach a sinusoid; it runs away. So the phrase "for a
+stable system" in front of every frequency-response statement is not a
+politeness. It is the licence.
+
+Two real sinusoids superpose to give the working form. Because h(t) is real,
+$H(-j\\omega )$ is the conjugate of $H(j\\omega )$, and adding the two
+exponentials gives
+
+$$A\\cos (\\omega t) \\;\\longrightarrow \\; A\\,\\lvert H(j\\omega )\\rvert \\,\\cos \\bigl(\\omega t + \\angle H(j\\omega )\\bigr)$$
+
+Two numbers do all the work at each frequency: a gain that scales the
+amplitude and an angle that slides the waveform along the time axis.
+
+## 5.2 The angle is a time shift wearing degrees
+
+Phase confuses people because it is quoted in degrees while its physical
+meaning is seconds. The identity that dissolves the confusion is one line:
+
+$$\\cos (\\omega t + \\phi ) = \\cos \\!\\left(\\omega \\left[t + \\frac{\\phi }{\\omega }\\right]\\right)$$
+
+A phase of $\\phi$ radians is a time shift of $\\phi /\\omega$ seconds. When
+$\\phi$ is negative — a lag, which is what a stable low-pass always
+produces — the output is the input delayed by $\\lvert \\phi \\rvert /\\omega$
+seconds. Two consequences follow that the exam likes to probe. First, the
+same phase angle means a longer delay at a lower frequency, so quoting a
+lag in degrees without naming the frequency says nothing about timing.
+Second, a network whose phase falls in exact proportion to frequency delays
+every component by the same number of seconds and therefore does not distort
+the shape of a composite waveform at all; departures from that straight line
+are what smear a pulse.
+
+### Worked example 5.1 — the response evaluated, not estimated
+
+**Given:** $H(s) = 200/[(s+2)(s+10)]$, driven in steady state by
+$4\\cos (5t)$. Find the output.
+
+Substitute $s = j5$ and multiply the denominator out rather than reaching
+for an asymptotic sketch:
+
+$$H(j5) = \\frac{200}{(2+j5)(10+j5)} = \\frac{200}{20 + j10 + j50 + j^{2}25} = \\frac{200}{-5 + j60}$$
+
+$$\\lvert -5 + j60\\rvert = \\sqrt{25 + 3600} = \\sqrt{3625} = 60.2080$$
+
+$$\\lvert H(j5)\\rvert = 200/60.2080 = 3.32182$$
+
+The denominator's angle is $\\operatorname{atan2}(60,\\,-5) = 94.76364^\\circ$,
+and because the denominator is downstairs the transfer function's angle is
+the negative of it, $-94.76364^\\circ$. So
+
+$$y(t) = 4 \\times 3.32182 = 13.2873 \\quad \\text{amplitude, at} \\quad -94.76^\\circ$$
+
+giving $y(t) = 13.2873\\cos (5t - 94.76^\\circ )$.
+
+Convert the lag to time. In radians the angle is 1.653938, so the delay is
+
+$$1.653938/5 = 0.330788 \\ \\mathrm{s}$$
+
+against a period of $6.283185/5 = 1.256637$ s. The output therefore trails
+the input by $0.3307875/1.2566371 = 0.2632323$ of a cycle — a quarter period
+and a whisker more, which is the physical content of "just past ninety
+degrees".
+
+**The trap.** Reading the answer off asymptotes gives a different number. At
+5 rad/s the driving frequency is above the 2 rad/s pole and below the 10
+rad/s pole, so the asymptotic magnitude is $200/(5 \\times 10) = 4$ and the
+asymptotic phase is $-90^\\circ$. Both are wrong: 4 against 3.32182 is a
+20 percent error, and the phase is off by nearly five degrees. Asymptotes
+are for sketching the shape; a number that will be compared against four
+multiple-choice options has to come from the evaluation.
+
+### Worked example 5.2 — the same number from the pole vectors
+
+Nothing in the previous example required complex division. The magnitude is
+200 divided by the product of the two distances from the poles to the test
+point, and the angle is minus the sum of the two angles those distances
+make with the real axis:
+
+$$\\lvert j5 - (-2)\\rvert = \\lvert 2 + j5\\rvert = \\sqrt{29} = 5.38516, \\qquad \\lvert j5 - (-10)\\rvert = \\sqrt{125} = 11.18034$$
+
+$$5.38516 \\times 11.18034 = 60.2079 \\quad \\Longrightarrow \\quad \\lvert H\\rvert = 200/60.2079 = 3.32182$$
+
+$$\\arctan (5/2) = 68.19859^\\circ , \\qquad \\arctan (5/10) = 26.56505^\\circ , \\qquad 68.19859 + 26.56505 = 94.76364$$
+
+Same magnitude, same angle, no complex arithmetic anywhere. The vector
+picture is slower to write and far faster to reason with, because it turns
+"what happens if I move this pole" into "what happens to this arrow".
+
+![Two arrows drawn from the poles at s equal to minus two and minus ten up to the test point s equal to j5, each labelled with its own length and angle. The magnitude of H is 200 divided by the product of the lengths and the phase is minus the sum of the angles.](/courses/fe-ee/figures/lin3-fd-jw-vectors.svg)
+
+## 5.3 The whole sweep at once
+
+Repeating that evaluation at every frequency traces the two curves below.
+Magnitude is plotted in decibels and frequency on a logarithmic axis,
+because in those coordinates a pole is a straight-line break rather than a
+curve, which is what makes Bode's construction possible at all.
+
+![Magnitude in decibels and phase in degrees for H equal to 200 over the product of s plus two and s plus ten, plotted against log frequency. The DC gain is twenty decibels, each pole bends the magnitude down by a further twenty decibels per decade, and the operating point at five radians per second is marked on both panels.](/courses/fe-ee/figures/lin3-fd-magphase-sweep.svg)
+
+Three features are worth naming because every first-order factor repeats
+them. The flat region on the left is the DC gain, $H(0) = 200/20 = 10$, or
+20 dB. Each pole bends the magnitude down by an additional 20 dB per decade
+once the frequency passes it, so beyond 10 rad/s the slope is 40 dB per
+decade. And each pole contributes $-45^\\circ$ AT its own corner, spread over
+roughly a decade either side, which is why the total phase passes through
+$-90^\\circ$ somewhere between the two corners and settles at $-180^\\circ$
+far above both.
+
+| Position relative to a single pole at $\\omega _{c}$ | Magnitude | Phase from that pole |
+|---|---|---|
+| a decade below | 0.99504, i.e. $-0.04$ dB | $-5.71^\\circ$ |
+| at the corner | 0.70711, i.e. $-3.01$ dB | $-45^\\circ$ |
+| a decade above | 0.09950, i.e. $-20.04$ dB | $-84.29^\\circ$ |
+
+Those three rows are worth memorising as a set. They say that a pole does
+essentially nothing a decade before it arrives, does exactly half its
+eventual phase work at the corner, and has done essentially all of it a
+decade later.`,
+        examTip: 'Any question that gives you a transfer function and a specific driving frequency wants an evaluation, not a sketch. Substitute, expand the denominator into a single complex number, take its magnitude and its angle, and divide. The asymptotic answer is usually one of the offered distractors precisely because it is close but wrong.',
+        importantNote: 'The s = jw substitution is only meaningful when the system is stable, because it needs the Laplace transform to converge ON the imaginary axis. For a system with a right-half-plane pole the algebra still produces a number and the number means nothing; a sinusoidal input produces a growing output, not a steady sinusoid.',
+      },
+      {
+        id: 'fd-decibels',
+        title: '6. Decibels, and the Factor of Two That Is Not Optional',
+        content: `## 6.1 One definition, two formulas
+
+The decibel is defined on POWER. Everything else is a consequence.
+
+$$\\text{dB} = 10\\log _{10}\\frac{P_{2}}{P_{1}}$$
+
+Amplitudes get a 20 because power goes as amplitude squared. Put the two
+voltages across equal resistances and the substitution is forced:
+
+$$10\\log _{10}\\frac{V_{2}^{2}/R}{V_{1}^{2}/R} = 10\\log _{10}\\left(\\frac{V_{2}}{V_{1}}\\right)^{2} = 20\\log _{10}\\frac{V_{2}}{V_{1}}$$
+
+The 20 is not a rival convention that someone chose. It is the 10 with a
+square pulled out of the logarithm. Once that is clear the classic error
+becomes hard to make: you never have to remember which multiplier goes with
+which quantity, only whether the ratio in your hand is a power or an
+amplitude.
+
+| Ratio | As power | As amplitude |
+|---|---|---|
+| 2 | 3.01 dB | 6.02 dB |
+| $\\sqrt{2} = 1.41421$ | 1.51 dB | 3.01 dB |
+| 0.70711 | $-1.51$ dB | $-3.01$ dB |
+| 10 | 10 dB | 20 dB |
+| 100 | 20 dB | 40 dB |
+| 0.5 | $-3.01$ dB | $-6.02$ dB |
+
+![Two straight lines on a logarithmic ratio axis: ten times log of the ratio for powers and twenty times log of the ratio for amplitudes. A ratio of two is marked on both, giving three decibels on the power line and six on the amplitude line.](/courses/fe-ee/figures/lin3-fd-decibel-map.svg)
+
+### Worked example 6.1 — an amplifier, and the number that is not its gain
+
+**Given:** an amplifier delivers 25 mW into its load when supplied with
+0.4 mW. Express the gain in decibels.
+
+The two quantities are powers, so the multiplier is 10:
+
+$$25/0.4 = 62.5 \\qquad \\Longrightarrow \\qquad 10\\log _{10}(62.5) = 17.9588 \\ \\mathrm{dB}$$
+
+**The trap.** Applying the amplitude rule to a power ratio gives
+
+$$20\\log _{10}(62.5) = 35.9176 \\ \\mathrm{dB}$$
+
+which is exactly twice the right answer and is offered as a distractor in
+every question of this shape. The tell is the unit on the data: milliwatts
+are power, so the multiplier is 10. Had the problem quoted volts, the
+multiplier would be 20 and the answer would be a different physical claim.
+
+### Worked example 6.2 — the two rules agree when they are both applicable
+
+**Given:** a stage takes 0.1 V rms and delivers 5 V rms, with the same
+50 ohm resistance at input and output. Find the gain in decibels twice.
+
+By amplitude: the ratio is $5/0.1 = 50$, so
+
+$$20\\log _{10}(50) = 33.9794 \\ \\mathrm{dB}$$
+
+By power: the input power is $(0.1)^{2}/50$ and the output power is
+$(5)^{2}/50$, so the power ratio is $50 \\times 50 = 2500$, and
+
+$$10\\log _{10}(2500) = 33.9794 \\ \\mathrm{dB}$$
+
+Identical, to every printed digit. The agreement is not luck; it is the
+squaring identity of section 6.1 running in reverse. What deserves emphasis
+is the CONDITION that made it work: both quantities were measured across the
+same resistance. When the impedances differ, a voltage ratio and a power
+ratio are genuinely different statements and their decibel values genuinely
+differ. Engineering practice still writes 20 log for voltage ratios in that
+situation, and the number is then a voltage gain in decibels and nothing
+more — it is no longer a claim about power.
+
+### Worked example 6.3 — a signal chain added up in decibels
+
+**Given:** a preamplifier of +26 dB feeds a cable of $-8$ dB. Find the
+overall amplitude gain.
+
+Decibels of cascaded stages add, because logarithms turn the product into a
+sum:
+
+$$26 - 8 = 18 \\ \\mathrm{dB} \\qquad \\Longrightarrow \\qquad 10^{18/20} = 7.9433$$
+
+Check it in linear terms, which is the independent route: the preamplifier
+multiplies by $10^{26/20} = 19.95262$ and the cable multiplies by
+$10^{-8/20} = 0.3981072$, and
+
+$$19.95262 \\times 0.3981072 = 7.943282$$
+
+The same 7.9433, reached without ever adding a decibel. The convenience of
+the logarithmic scale is precisely this: a chain of multiplications becomes
+a column of additions, and a 40 dB dynamic range fits on a page.
+
+## 6.2 Where the half-power point comes from
+
+The most common decibel value in this subject is $-3$, and it is not an
+arbitrary threshold. Define the band edge as the frequency where the system
+delivers HALF the power it delivers at its best:
+
+$$\\lvert H(j\\omega )\\rvert ^{2} = \\tfrac{1}{2}\\lvert H\\rvert _{\\max }^{2} \\qquad \\Longrightarrow \\qquad \\lvert H(j\\omega )\\rvert = \\frac{\\lvert H\\rvert _{\\max }}{\\sqrt{2}} = 0.70711\\,\\lvert H\\rvert _{\\max }$$
+
+and convert that amplitude ratio to decibels:
+
+$$20\\log _{10}(0.70711) = -3.0103 \\ \\mathrm{dB}$$
+
+So "the $-3$ dB frequency", "the half-power frequency" and "the frequency
+where the magnitude has fallen to 0.707 of its peak" are three names for one
+place. The rounding to exactly 3 dB is a convenience of speech; the exact
+figure is 3.0103, and the difference matters only when a specification is
+written to two decimals.
+
+There is a companion definition that is not equivalent and is sometimes
+confused with it. The NOISE bandwidth of a filter is the width of the
+rectangular response that would pass the same noise power, and for a
+first-order low-pass it is $\\pi /2$ times the half-power bandwidth, about
+57 percent larger. Any question that says "half-power", "3 dB" or "corner"
+wants the definition derived above.`,
+        examTip: 'Decide what kind of ratio you are holding before you pick a multiplier: watts, milliwatts and any product of voltage and current take 10 log, while volts, amps and any transfer-function magnitude take 20 log. Doubling that multiplier is the single most common decibel error, and its result is always exactly double the correct answer, which makes it easy to spot in an answer list.',
+        importantNote: 'A gain of 3 dB doubles POWER and multiplies amplitude by only 1.41421. A gain of 6.02 dB doubles amplitude and quadruples power. Confusing these turns a factor of two into a factor of four in either direction.',
+      },
+      {
+        id: 'fd-vector-geometry',
+        title: '7. Filter Behaviour Read Straight off the Pole–Zero Map',
+        content: `## 7.1 The geometric statement
+
+Factor any rational transfer function into its roots:
+
+$$H(s) = K\\,\\frac{\\prod _{m=1}^{M}(s - z_{m})}{\\prod _{k=1}^{N}(s - p_{k})}$$
+
+and evaluate on the imaginary axis. Because the magnitude of a product is
+the product of the magnitudes and the angle of a product is the sum of the
+angles, the answer splits cleanly into a distance statement and an angle
+statement:
+
+$$\\lvert H(j\\omega )\\rvert = \\lvert K\\rvert \\,\\frac{\\prod _{m=1}^{M}\\lvert j\\omega - z_{m}\\rvert }{\\prod _{k=1}^{N}\\lvert j\\omega - p_{k}\\rvert }$$
+
+$$\\angle H(j\\omega ) = \\angle K + \\sum _{m=1}^{M}\\angle (j\\omega - z_{m}) - \\sum _{k=1}^{N}\\angle (j\\omega - p_{k})$$
+
+Every quantity on the right is the length or the direction of an arrow drawn
+from a critical point to the test point on the imaginary axis. Sliding the
+test point up the axis lengthens some arrows and shortens others, and the
+response is just the bookkeeping of that motion. A pole close to the axis
+means a short arrow in the denominator, which means a tall response: that is
+resonance, geometrically. A zero close to the axis means a short arrow in
+the numerator, which means a deep null: that is a notch.
+
+## 7.2 Shape, read from the map alone
+
+Two limits classify a filter before any arithmetic. At zero frequency the
+test point sits at the origin, and at infinite frequency the ratio of the
+highest powers takes over:
+
+$$\\lvert H(j0)\\rvert = \\lvert H(0)\\rvert , \\qquad \\lvert H(j\\omega )\\rvert \\;\\to\\; \\lvert K\\rvert \\,\\omega ^{\\,M-N} \\quad \\text{as} \\quad \\omega \\to \\infty$$
+
+so the ultimate roll-off is $20(N-M)$ dB per decade, one 20 for each pole
+that has no zero to answer it.
+
+| Zero pattern | Behaviour | Typical form |
+|---|---|---|
+| no finite zeros | low-pass | $\\omega _{c}/(s+\\omega _{c})$ |
+| all zeros at the origin, as many as there are poles | high-pass | $s/(s+\\omega _{c})$ |
+| one zero at the origin, a pole pair off-axis | band-pass | $(\\omega _{0}/Q)s/(s^{2}+(\\omega _{0}/Q)s+\\omega _{0}^{2})$ |
+| a zero pair ON the imaginary axis | band-stop, with an exact null | $(s^{2}+\\omega _{n}^{2})/(s^{2}+(\\omega _{n}/Q)s+\\omega _{n}^{2})$ |
+| each zero the mirror image of a pole | all-pass, magnitude flat | $(\\omega _{c}-s)/(\\omega _{c}+s)$ |
+
+### Worked example 7.1 — classify, then check one point
+
+**Given:** $H(s) = 5s^{2}/(s^{2}+40s+10000)$. Name the filter type, its
+natural frequency and its Q, then verify the magnitude at the natural
+frequency.
+
+Both zeros sit at the origin and there are two poles, so the numerator wins
+at high frequency and loses at low: this is a second-order high-pass with
+zero DC gain and a high-frequency gain of 5. Matching the denominator to
+$s^{2}+2\\zeta \\omega _{0}s+\\omega _{0}^{2}$ gives $\\omega _{0} = 100$ rad/s
+and $2\\zeta \\omega _{0} = 40$, hence $\\zeta = 0.2$ and $Q = 1/(2\\zeta ) = 2.5$.
+
+Check at $\\omega = 100$ by evaluating rather than by asserting:
+
+$$H(j100) = \\frac{5(j100)^{2}}{(j100)^{2}+40(j100)+10000} = \\frac{-50000}{-10000 + j4000 + 10000} = \\frac{-50000}{j4000}$$
+
+$$\\lvert H(j100)\\rvert = 50000/4000 = 12.5 = 5 \\times 2.5$$
+
+The magnitude at $\\omega _{0}$ is the high-frequency gain multiplied by Q,
+which is the second-order counterpart of the first-order rule that the
+corner sits at 0.707. Dividing by $j$ rotates by $-90^\\circ$ and the leading
+minus adds $180^\\circ$, so the phase there is $+90^\\circ$: the high-pass
+LEADS at its own resonance.
+
+**The trap.** Reading $\\zeta$ off the coefficient 40 directly gives
+$\\zeta = 40$ and $Q = 0.0125$, and the magnitude at 100 rad/s comes out as
+0.0625 instead of 12.5. The middle coefficient is $2\\zeta \\omega _{0}$, not
+$\\zeta$, and forgetting the $\\omega _{0}$ scales the answer by 200 here.
+
+### Worked example 7.2 — why the first-order corner is exactly 45 degrees
+
+**Given:** $H(s) = \\omega _{c}/(s+\\omega _{c})$. Show from the vector picture
+that at $\\omega = \\omega _{c}$ the magnitude is 0.70711 and the phase is
+exactly $-45^\\circ$, for any $\\omega _{c}$ whatsoever.
+
+There is one arrow, from the pole at $-\\omega _{c}$ to the test point
+$j\\omega _{c}$. Its horizontal extent is $\\omega _{c}$ and its vertical
+extent is $\\omega _{c}$, so it is the diagonal of a square:
+
+$$\\lvert j\\omega _{c}+\\omega _{c}\\rvert = \\omega _{c}\\sqrt{2}, \\qquad \\angle (j\\omega _{c}+\\omega _{c}) = 45^\\circ$$
+
+$$\\lvert H\\rvert = \\frac{\\omega _{c}}{\\omega _{c}\\sqrt{2}} = \\frac{1}{\\sqrt{2}} = 0.70711, \\qquad \\angle H = -45^\\circ$$
+
+The $\\omega _{c}$ cancels, which is why the landmark is universal and why
+every first-order low-pass looks the same once the frequency axis is
+normalised. The corner is where the pole's real and imaginary contributions
+are equal, and equality of the legs of a right triangle is what
+$45^\\circ$ means.
+
+### Worked example 7.3 — an all-pass, where only the angle moves
+
+**Given:** $H(s) = (100-s)/(100+s)$. Find the magnitude and phase at
+10 rad/s and at 100 rad/s.
+
+The zero at $s = +100$ is the mirror image of the pole at $s = -100$, so the
+two arrows to any point on the imaginary axis have identical lengths:
+
+$$\\lvert 100 - j\\omega \\rvert = \\lvert 100 + j\\omega \\rvert = \\sqrt{10000+\\omega ^{2}} \\qquad \\Longrightarrow \\qquad \\lvert H(j\\omega )\\rvert = 1$$
+
+for every $\\omega$, exactly. The angles do not cancel, though; they add:
+
+$$\\angle H(j\\omega ) = -\\arctan (\\omega /100) - \\arctan (\\omega /100) = -2\\arctan (\\omega /100)$$
+
+At 10 rad/s, $\\arctan (0.1) = 5.710593^\\circ$, so
+$2 \\times 5.710593 = 11.421186$ and the phase is $-11.421186^\\circ$. At
+100 rad/s it is $-90^\\circ$ exactly, and $H(j100) = -j$.
+
+A network that changes no amplitude at any frequency and yet is not the
+identity is a useful thing to have met before an exam asks what it is for:
+delay equalisation. It buys phase without touching the magnitude
+specification that was so expensive to meet.
+
+**The trap.** A right-half-plane zero looks like an instability to a
+half-remembered rule, so all-pass sections are frequently marked unstable.
+Stability is about POLES. This one has its single pole at $-100$, firmly in
+the left half-plane, and the response to any bounded input stays bounded.`,
+        examTip: 'Before computing anything, count the zeros at the origin and the excess of poles over zeros. Zeros at the origin force the response to zero at DC and tell you the filter is high-pass or band-pass; the pole excess sets the ultimate slope at 20 dB per decade each. That classification alone eliminates most of an answer list.',
+        importantNote: 'A pole near the imaginary axis produces a PEAK because its arrow is short in the denominator; a zero near the axis produces a NULL because its arrow is short in the numerator. The distance from the axis, not the distance from the origin, controls how sharp either feature is.',
+      },
+      {
+        id: 'fd-bandwidth-q',
+        title: '8. Bandwidth, Half-Power Edges and Quality Factor',
+        content: `## 8.1 The first-order corner, derived
+
+For $H(s) = 1/(1+s\\tau )$ the magnitude squared is a single fraction, and
+the half-power condition solves in one line:
+
+$$\\lvert H(j\\omega )\\rvert ^{2} = \\frac{1}{1+(\\omega \\tau )^{2}} = \\frac{1}{2} \\qquad \\Longrightarrow \\qquad (\\omega \\tau )^{2} = 1 \\qquad \\Longrightarrow \\qquad \\omega _{c} = \\frac{1}{\\tau }$$
+
+The reciprocal relationship between corner frequency and time constant is
+therefore not a coincidence or a definition; it falls out of asking where
+the power halves. The same algebra explains why the phase there is
+$-45^\\circ$: the real and imaginary parts of the denominator are equal
+precisely when $\\omega \\tau = 1$.
+
+## 8.2 The second-order band, derived
+
+Write a band-pass in standard form, where K is the gain at the centre:
+
+$$H(s) = \\frac{K(\\omega _{0}/Q)s}{s^{2} + (\\omega _{0}/Q)s + \\omega _{0}^{2}}$$
+
+On the imaginary axis the $s^{2}$ term turns real and negative, so
+
+$$\\lvert H(j\\omega )\\rvert = \\frac{K(\\omega _{0}/Q)\\omega }{\\sqrt{(\\omega _{0}^{2}-\\omega ^{2})^{2} + (\\omega _{0}\\omega /Q)^{2}}}$$
+
+At $\\omega = \\omega _{0}$ the first bracket vanishes and the magnitude is
+exactly K, which is the peak. Setting the magnitude to $K/\\sqrt{2}$ requires
+the two terms under the root to be equal:
+
+$$(\\omega _{0}^{2}-\\omega ^{2})^{2} = \\left(\\frac{\\omega _{0}\\omega }{Q}\\right)^{2} \\qquad \\Longrightarrow \\qquad \\omega ^{2} \\pm \\frac{\\omega _{0}}{Q}\\omega - \\omega _{0}^{2} = 0$$
+
+Keeping the positive root of each sign gives the two band edges:
+
+$$\\omega _{1,2} = \\omega _{0}\\left(\\sqrt{1 + \\frac{1}{4Q^{2}}} \\mp \\frac{1}{2Q}\\right)$$
+
+and two identities drop straight out of that pair, one by subtraction and
+one by multiplication:
+
+$$\\omega _{2} - \\omega _{1} = \\frac{\\omega _{0}}{Q} = BW, \\qquad \\omega _{1}\\omega _{2} = \\omega _{0}^{2}$$
+
+The second identity is the important one and the one most often misused. The
+centre frequency is the GEOMETRIC mean of the two edges, so on a logarithmic
+axis the band is symmetric and on a linear axis it is not. For a high-Q
+circuit the two means are close enough that nobody notices; for a low-Q
+circuit they are wildly different, and the arithmetic midpoint is a wrong
+answer waiting to be selected.
+
+### Worked example 8.1 — a band two decades wide
+
+**Given:** $H(s) = 1000s/[(s+10)(s+1000)]$. Find the centre frequency, the
+gain there, Q, both half-power edges, and check them.
+
+Expand the denominator to $s^{2}+1010s+10000$. Matching the standard form,
+$\\omega _{0}^{2} = 10000$ so $\\omega _{0} = 100$ rad/s, and
+$\\omega _{0}/Q = 1010$, so
+
+$$Q = 100/1010 = 0.09901, \\qquad K = 1000/1010 = 0.9901$$
+
+Now the edges. With $1/(2Q) = 5.05$,
+
+$$\\sqrt{1 + 5.05^{2}} = \\sqrt{26.5025} = 5.148058$$
+
+$$\\omega _{1} = 100 \\times (5.148058 - 5.05) = 9.8058 \\ \\mathrm{rad/s}, \\qquad \\omega _{2} = 100 \\times (5.148058 + 5.05) = 1019.8058 \\ \\mathrm{rad/s}$$
+
+Three checks, each by a route that does not reuse the formula. Subtracting,
+$1019.8058 - 9.8058 = 1010$, which is $\\omega _{0}/Q$ as promised.
+Multiplying, $9.8058 \\times 1019.8058 = 10000.0$, whose square root is the
+centre frequency 100. And evaluating the transfer function itself at the
+lower edge gives $\\lvert H(j9.8058)\\rvert = 0.70011$, against
+$0.9901/1.41421 = 0.70011$ — the peak divided by root two, to five decimals.
+
+$$\\lvert H(j100)\\rvert = 100000/101000 = 0.9901, \\qquad \\angle H(j100) = 0^\\circ$$
+
+That the phase is exactly zero at the geometric mean is worth pausing on. The
+zero at the origin contributes $+90^\\circ$; the two pole arrows contribute
+$84.28941^\\circ$ and $5.71059^\\circ$, and
+$84.28941 + 5.71059 = 90.00000$ because the arctangent of a number and the
+arctangent of its reciprocal always sum to a right angle. The cancellation is
+exact, not approximate, and it holds for any band-pass built from two real
+poles evaluated at their geometric mean.
+
+**The trap.** Taking the centre as the arithmetic midpoint,
+$(9.8058 + 1019.8058)/2 = 514.8058$ rad/s, is off by more than a factor of
+five, and the magnitude there is 0.88893 rather than the peak 0.9901. On the
+plot the error is obvious; in a list of four numbers it is not.
+
+![Magnitude of the band-pass on a logarithmic frequency axis, with the peak at one hundred radians per second, the two half-power edges at 9.806 and 1019.8, and the arithmetic midpoint marked well to the right of the true centre.](/courses/fe-ee/figures/lin3-fd-bandpass-edges.svg)
+
+## 8.3 Quality factor, and why it has so many faces
+
+Q is defined once and then wears whatever clothing the circuit hands it. The
+defining statement is about selectivity:
+
+$$Q = \\frac{\\omega _{0}}{BW}$$
+
+The energy statement is equivalent and more physical:
+
+$$Q = 2\\pi \\,\\frac{\\text{peak energy stored}}{\\text{energy dissipated per cycle}}$$
+
+Derive the circuit formula from that definition for the series RLC, to see
+that nothing new is being asserted. At resonance the current is
+$i(t) = I_{m}\\cos (\\omega _{0}t)$; the peak magnetic energy is
+$\\tfrac{1}{2}LI_{m}^{2}$; the average dissipation is
+$\\tfrac{1}{2}I_{m}^{2}R$, so one period costs
+$\\tfrac{1}{2}I_{m}^{2}R(2\\pi /\\omega _{0})$. Hence
+
+$$Q = 2\\pi \\,\\frac{\\tfrac{1}{2}LI_{m}^{2}}{\\tfrac{1}{2}I_{m}^{2}R\\,(2\\pi /\\omega _{0})} = \\frac{\\omega _{0}L}{R}$$
+
+| Expression | Series RLC | Parallel RLC |
+|---|---|---|
+| in terms of reactance | $\\omega _{0}L/R$ | $R/(\\omega _{0}L)$ |
+| in terms of the capacitor | $1/(\\omega _{0}RC)$ | $\\omega _{0}RC$ |
+| component form | $(1/R)\\sqrt{L/C}$ | $R\\sqrt{C/L}$ |
+| bandwidth form | $\\omega _{0}/BW$ | $\\omega _{0}/BW$ |
+| damping form | $1/(2\\zeta )$ | $1/(2\\zeta )$ |
+
+The series and parallel columns are reciprocals of each other, and the reason
+is physical rather than algebraic. In series the resistor lies in the single
+current path, so making it small removes the loss. In parallel the resistor
+lies across the tank and drains it, so making it LARGE removes the loss.
+Duality, not a change of definition.
+
+Two further identities are worth keeping. The quantity $\\sqrt{L/C}$ is the
+characteristic impedance of the resonant pair and equals the common value of
+$\\omega _{0}L$ and $1/(\\omega _{0}C)$ at resonance, which is why it appears in
+both component forms. And $Q = 1/(2\\zeta )$ ties every result here to the
+step-response language of overshoot and settling: a circuit with $Q = 5$ has
+$\\zeta = 0.1$ and rings for many cycles, while $Q = 0.5$ is critical damping
+and does not ring at all.
+
+### Worked example 8.2 — one circuit, three routes to Q
+
+**Given:** a series circuit with $L = 50$ mH, $C = 0.2$ microfarad and
+$R = 100$ ohm. Find $\\omega _{0}$, Q by three different formulas, and BW by
+two.
+
+$$LC = (0.05)(2\\times 10^{-7}) = 10^{-8} \\qquad \\Longrightarrow \\qquad \\omega _{0} = 1/\\sqrt{LC} = 10000 \\ \\mathrm{rad/s}$$
+
+so $f_{0} = 10000/6.283185 = 1591.55$ Hz. Now Q, three ways:
+
+$$Q = \\frac{\\omega _{0}L}{R} = \\frac{10000 \\times 0.05}{100} = \\frac{500}{100} = 5$$
+
+$$Q = \\frac{1}{R}\\sqrt{\\frac{L}{C}} = \\frac{1}{100}\\sqrt{\\frac{0.05}{2\\times 10^{-7}}} = \\frac{\\sqrt{250000}}{100} = 500/100 = 5$$
+
+$$Q = \\frac{1}{\\omega _{0}RC} = \\frac{1}{10000 \\times 100 \\times 2\\times 10^{-7}} = 1/0.2 = 5$$
+
+and BW two ways, $\\omega _{0}/Q = 10000/5 = 2000$ rad/s and
+$R/L = 100/0.05 = 2000$ rad/s. Five separate calculations, one circuit, no
+disagreement — which is exactly the audit you want before trusting a
+resonance answer.
+
+### Worked example 8.3 — where a resonance actually peaks
+
+**Given:** the same circuit's capacitor voltage, a second-order low-pass with
+$\\zeta = 1/(2Q) = 0.1$. Find the frequency of maximum response and the value
+there, and compare with the value at $\\omega _{0}$.
+
+The maximum of $1/\\lvert 1-x^{2}+2j\\zeta x\\rvert$ with $x = \\omega /\\omega _{0}$
+sits where the radicand is smallest:
+
+$$\\omega _{r} = \\omega _{0}\\sqrt{1-2\\zeta ^{2}}, \\qquad \\lvert H(j\\omega _{r})\\rvert = \\frac{1}{2\\zeta \\sqrt{1-\\zeta ^{2}}}$$
+
+$$\\omega _{r} = 10000 \\times 0.989949 = 9899.49 \\ \\mathrm{rad/s}, \\qquad \\lvert H\\rvert _{\\max } = 5.0252$$
+
+whereas AT $\\omega _{0}$ the magnitude is exactly Q, that is 5.0000. So the
+true peak is neither at $\\omega _{0}$ nor equal to Q, though for
+$\\zeta = 0.1$ both errors are half a percent and nobody would see them on a
+plot. They grow quickly: at $\\zeta = 0.5$ the peak has vanished altogether,
+because $1-2\\zeta ^{2}$ shrinks to zero at $\\zeta = 0.70711$. That value is
+the maximally flat, or Butterworth, condition: at and beyond it the low-pass
+magnitude falls monotonically from DC with no peak anywhere, which is why it
+is the default choice when overshoot is unwelcome.
+
+![Second-order low-pass magnitude relative to its DC value for three damping ratios, showing the peak of a lightly damped response sitting slightly below the natural frequency while the value at the natural frequency is exactly Q.](/courses/fe-ee/figures/lin3-fd-q-peaks.svg)`,
+        examTip: 'Half-power edges bracket the centre frequency GEOMETRICALLY: their product is w0 squared and their difference is the bandwidth. Given two edges, the centre is the square root of their product, never their average. Given the centre and Q, the bandwidth is w0/Q and the edges are the centre times the bracket in section 8.2.',
+        importantNote: 'For a lightly damped second-order LOW-PASS the response peaks slightly BELOW w0, at w0 times the square root of 1 minus 2 zeta squared, and the peak value exceeds Q. The magnitude AT w0 is exactly Q. A BAND-PASS, by contrast, peaks exactly at w0. Which one the problem draws decides which statement applies.',
+      },
+      {
+        id: 'fd-resonance-cascade',
+        title: '9. Resonance in Both Topologies, and What Cascading Does',
+        content: `## 9.1 The same parts, wired two ways
+
+Nothing sharpens the topology lesson like refusing to change the components.
+Take $L = 50$ mH and $C = 0.2$ microfarad throughout, so that
+
+$$\\omega _{0} = 1/\\sqrt{LC} = 10000 \\ \\mathrm{rad/s}$$
+
+in both circuits, and move only the resistor.
+
+### Worked example 9.1 — the series case, edges included
+
+**Given:** the L and C above in series with $R = 100$ ohm, driven by a
+voltage source. Find Q, the bandwidth, and the two half-power frequencies,
+and verify them from the impedance.
+
+From section 8, $Q = 5$ and $BW = 2000$ rad/s. With $1/(2Q) = 0.1$,
+
+$$\\sqrt{1 + 0.1^{2}} = \\sqrt{1.01} = 1.0049876$$
+
+$$\\omega _{1} = 10000 \\times (1.0049876 - 0.1) = 9049.876 \\ \\mathrm{rad/s}$$
+
+$$\\omega _{2} = 10000 \\times (1.0049876 + 0.1) = 11049.876 \\ \\mathrm{rad/s}$$
+
+The independent check does not touch the edge formula at all. In a series
+circuit the current is $V/Z$, and half power means the current has fallen by
+root two, which means the impedance magnitude has RISEN by root two:
+
+$$\\lvert Z(j\\omega )\\rvert = \\sqrt{R^{2} + \\left(\\omega L - \\frac{1}{\\omega C}\\right)^{2}} = R\\sqrt{2} = 100 \\times 1.4142136 = 141.42136 \\ \\mathrm{ohm}$$
+
+Evaluating the impedance at 9049.876 rad/s gives exactly that, and so does
+evaluating it at 11049.876 rad/s. At resonance itself the reactances cancel,
+
+$$\\omega _{0}L = 10000 \\times 0.05 = 500 \\ \\mathrm{ohm}, \\qquad \\frac{1}{\\omega _{0}C} = 1/0.002 = 500 \\ \\mathrm{ohm}$$
+
+leaving $\\lvert Z\\rvert = R = 100$ ohm, a MINIMUM, so the series circuit
+draws its largest current at resonance. Note in passing that the common
+reactance 500 ohm is $\\sqrt{L/C}$, which is why $Q = \\sqrt{L/C}/R$ works.
+
+Check the geometry as well: $11049.876 - 9049.876 = 2000$ and the product of
+the edges is $10^{8}$, whose square root is 10000. The arithmetic mean,
+10049.876 rad/s, misses the true centre by 49.876 rad/s — small here because
+Q is high, and the reason a high-Q problem forgives the mistake that a low-Q
+problem punishes.
+
+### Worked example 9.2 — the parallel case, same L and C
+
+**Given:** the same L and C, now in parallel with $R = 100$ kilohm and driven
+by a current source. Find Q and the bandwidth.
+
+$$Q = \\frac{R}{\\omega _{0}L} = \\frac{100000}{500} = 200$$
+
+$$Q = \\omega _{0}RC = 10000 \\times 100000 \\times 2\\times 10^{-7} = 200, \\qquad Q = R\\sqrt{C/L} = 100000 \\times 0.002 = 200$$
+
+$$BW = \\omega _{0}/Q = 10000/200 = 50 \\ \\mathrm{rad/s}$$
+
+Three routes to 200, and a bandwidth forty times narrower than the series
+circuit built from the identical inductor and capacitor. At resonance the
+tank's admittance is purely $1/R$, so $\\lvert Z\\rvert = R = 100$ kilohm, a
+MAXIMUM, and the parallel circuit develops its largest voltage there. The
+series circuit minimised its impedance at the same frequency. Same
+$\\omega _{0}$, opposite extremum, opposite Q formula.
+
+| Quantity | Series RLC | Parallel RLC |
+|---|---|---|
+| $\\omega _{0}$ | 10000 rad/s | 10000 rad/s |
+| Q | 5 | 200 |
+| BW | 2000 rad/s | 50 rad/s |
+| $\\lvert Z\\rvert$ at $\\omega _{0}$ | 100 ohm, a minimum | 100 kilohm, a maximum |
+| effect of raising R | lowers Q, widens the band | raises Q, narrows the band |
+| resonant quantity | current through the loop | voltage across the tank |
+
+![Series branch current and parallel tank voltage, each as a fraction of its own peak, built from identical inductance and capacitance. Both peak at ten thousand radians per second; the series curve is forty times wider.](/courses/fe-ee/figures/lin3-fd-resonance-widths.svg)
+
+**The trap.** Applying $Q = \\omega _{0}L/R$ to the parallel circuit here gives
+$500/100000 = 0.005$ and a bandwidth of two million radians per second
+instead of fifty. The error is a factor of $Q^{2}$, forty thousand in this
+case, which is the largest single mistake available anywhere in resonance
+problems. Identify the topology before writing a Q formula down.
+
+## 9.2 Cascading: magnitudes multiply, angles add
+
+Two stages in series, with the second not loading the first, form a product:
+
+$$H(j\\omega ) = H_{1}(j\\omega )H_{2}(j\\omega ) \\qquad \\Longrightarrow \\qquad \\lvert H\\rvert = \\lvert H_{1}\\rvert \\,\\lvert H_{2}\\rvert , \\qquad \\angle H = \\angle H_{1} + \\angle H_{2}$$
+
+and in decibels the product becomes a sum, which is the whole reason Bode
+plots of complicated systems can be built by stacking simple pieces:
+
+$$20\\log _{10}\\lvert H\\rvert = 20\\log _{10}\\lvert H_{1}\\rvert + 20\\log _{10}\\lvert H_{2}\\rvert$$
+
+The condition attached to that innocuous "in series" matters in the
+laboratory: the product rule assumes the second stage draws no current from
+the first. Two passive RC sections wired directly together do NOT multiply,
+because the second capacitor loads the first resistor and shifts both
+corners. A voltage follower between them restores the assumption, which is
+why buffered cascades are the standard textbook object and unbuffered ones
+are a separate, messier calculation.
+
+### Worked example 9.3 — bandwidth shrinks when stages are stacked
+
+**Given:** n identical buffered low-pass stages, each with corner
+$\\omega _{c}$. Find the corner of the cascade for $n = 2$, using
+$\\omega _{c} = 1000$ rad/s.
+
+Each stage contributes $1/\\sqrt{1+x^{2}}$ with $x = \\omega /\\omega _{c}$, so
+the cascade's magnitude is that to the n-th power. Setting it to
+$1/\\sqrt{2}$:
+
+$$\\left(\\frac{1}{1+x^{2}}\\right)^{n/2} = \\frac{1}{\\sqrt{2}} \\qquad \\Longrightarrow \\qquad (1+x^{2})^{n} = 2 \\qquad \\Longrightarrow \\qquad x = \\sqrt{2^{1/n}-1}$$
+
+For two stages, $\\sqrt{2} = 1.4142136$ and
+$1.4142136 - 1 = 0.4142136$, whose square root is 0.6435943, so
+
+$$\\omega _{c,\\text{cascade}} = 1000 \\times 0.6435943 = 643.5943 \\ \\mathrm{rad/s}$$
+
+Verify at the original corner instead of at the new one: each stage is at
+0.70711 there, so the pair is at $0.70711 \\times 0.70711 = 0.5$, which is
+$-6.0206$ dB, and each stage lags $45^\\circ$ so the pair lags $90^\\circ$.
+Both numbers confirm that 1000 rad/s is well outside the cascade's passband.
+
+**The trap.** Assuming the cascade keeps the 1000 rad/s corner overstates the
+bandwidth by 55 percent. The shrink factor for three stages is 0.5098245 and
+for four it is 0.4349794, so a four-stage chain of nominally identical
+filters passes less than half the band any one of them passes.
+
+![One RC stage and two identical buffered stages plotted in decibels against log frequency, with the single-stage corner at one thousand radians per second and the two-stage corner at 643.6.](/courses/fe-ee/figures/lin3-fd-cascade.svg)
+
+### Worked example 9.4 — a chain specified entirely in decibels
+
+**Given:** a preamplifier of $+26$ dB, a cable of $-8$ dB and a filter whose
+passband insertion loss is $-0.5$ dB. Find the overall amplitude gain.
+
+$$26 - 8 - 0.5 = 17.5 \\ \\mathrm{dB} \\qquad \\Longrightarrow \\qquad 10^{17.5/20} = 7.4989$$
+
+Every stage that is specified as a gain in decibels simply joins the column.
+The arithmetic is trivial; the discipline is remembering that decibels add
+only because magnitudes multiply, so a stage quoted as a linear gain must be
+converted before it can be added, never added directly.`,
+        examTip: 'When a problem hands you a resonant circuit, write down the topology before any formula: is the resistor in the loop or across the tank? Then w0 = 1/sqrt(LC) regardless, Q from the matching column, and BW = w0/Q. Checking Q by a second formula from the same column costs ten seconds and catches the topology error, which is the expensive one.',
+        importantNote: 'The cascade product rule assumes no loading. Two RC sections connected directly do not have the product of their individual responses, because the second stage draws current from the first; the exam will occasionally show exactly that circuit and expect the unbuffered answer, so check for a buffer before multiplying.',
+      },
+      {
+        id: 'fd-problem-set-a',
+        title: '10. Problem Set A — Evaluation, Decibels and Geometry',
+        content: `Work each problem before reading its solution. Every answer names the
+distractor it is designed to attract and the wrong number that distractor
+produces.
+
+**A1.** For $H(s) = 50/[(s+5)(s+50)]$, find the steady-state output amplitude
+and phase when the input is $2\\cos (10t)$.
+
+**A2.** An attenuator drops a signal from 8 V rms to 0.5 V rms across a
+constant impedance. Express the loss in decibels, as a voltage ratio and as a
+power ratio.
+
+**A3.** A first-order low-pass has $R = 2$ kilohm and $C = 0.05$ microfarad.
+Find its corner frequency in hertz and its magnitude and phase at 3 kHz.
+
+**A4.** $H(s) = 4s/(s+20)$. Classify the filter, state the DC and
+high-frequency gains, and find the frequency at which the magnitude is
+0.70711 of its high-frequency value.
+
+**A5.** Two half-power edges of a band-pass are measured at 400 rad/s and
+6400 rad/s. Find the centre frequency, the bandwidth and Q.
+
+**A6.** A stage has magnitude 1 at every frequency and phase $-120^\\circ$ at
+600 rad/s. How long does it delay a 600 rad/s sinusoid?
+
+---
+
+### Worked solutions, Problem Set A
+
+**A1.** Substitute $s = j10$:
+
+$$H(j10) = \\frac{50}{(5+j10)(50+j10)} = \\frac{50}{250 + j50 + j500 + j^{2}100} = \\frac{50}{150 + j550}$$
+
+$$\\lvert 150 + j550\\rvert = \\sqrt{22500 + 302500} = \\sqrt{325000} = 570.088$$
+
+$$\\lvert H\\rvert = 50/570.088 = 0.087706$$
+
+The denominator's angle is $\\arctan (550/150) = 74.7449^\\circ$, so the phase
+is $-74.7449^\\circ$ and the output amplitude is
+$2 \\times 0.087706 = 0.175412$. Answer:
+$0.1754\\cos (10t - 74.74^\\circ )$.
+
+*Trap:* using the DC gain $50/250 = 0.2$ and reporting an amplitude of 0.4.
+At 10 rad/s the first pole has already acted, and 0.4 is 2.3 times too big.
+
+**A2.** Voltage ratio $0.5/8 = 0.0625$, so
+
+$$20\\log _{10}(0.0625) = -24.0824 \\ \\mathrm{dB}$$
+
+As a power ratio, $0.0625 \\times 0.0625 = 0.00390625$, and
+
+$$10\\log _{10}(0.00390625) = -24.0824 \\ \\mathrm{dB}$$
+
+Identical, because the impedance is the same at both points.
+
+*Trap:* applying 10 log to the voltage ratio gives $-12.0412$ dB, exactly
+half the loss. The quantities are volts, so the multiplier is 20.
+
+**A3.** $RC = 2000 \\times 5\\times 10^{-8} = 10^{-4}$ s, so
+
+$$\\omega _{c} = 1/RC = 10000 \\ \\mathrm{rad/s}, \\qquad f_{c} = 10000/6.283185 = 1591.55 \\ \\mathrm{Hz}$$
+
+At 3 kHz the driving frequency is $2\\pi (3000) = 18849.5559$ rad/s, so the
+ratio that matters is $18849.5559/10000 = 1.8849556$. Then
+
+$$\\lvert H\\rvert = \\frac{1}{\\sqrt{1 + 1.8849556^{2}}} = \\frac{1}{\\sqrt{4.5530576}} = 1/2.1337895 = 0.4686498$$
+
+and the phase is $-\\arctan (1.8849556) = -62.0533^\\circ$.
+
+*Trap:* mixing units by putting $\\omega = 3000$ against $\\omega _{c} = 10000$
+gives a ratio of 0.3 and a magnitude of 0.9578, which is the answer to a
+different question. Either convert both to radians per second, as above, or
+work in hertz on both sides: $3000/1591.55 = 1.885$ to the precision that
+rounded corner frequency supports.
+
+**A4.** One zero at the origin and one pole, so it is a first-order
+high-pass. The DC gain is 0 and the high-frequency gain is 4. The magnitude
+reaches $0.70711 \\times 4$ where the pole and zero arrows are equal in
+length, which is $\\omega = 20$ rad/s:
+
+$$H(j20) = \\frac{4(j20)}{20+j20} = \\frac{j80}{20+j20}, \\qquad \\lvert H(j20)\\rvert = \\frac{80}{20\\sqrt{2}} = 80/28.28427 = 2.82843$$
+
+and $2.82843/4 = 0.70711$ as required.
+
+*Trap:* calling this a low-pass because the pole is at 20 rad/s and quoting a
+DC gain of $4 \\times 0/20 = 0$ but then asserting a high-frequency gain of
+zero as well. The zero at the origin kills DC, not infinity.
+
+**A5.** The centre is the geometric mean:
+
+$$\\omega _{0} = \\sqrt{400 \\times 6400} = \\sqrt{2560000} = 1600 \\ \\mathrm{rad/s}$$
+
+$$BW = 6400 - 400 = 6000 \\ \\mathrm{rad/s}, \\qquad Q = 1600/6000 = 0.26667$$
+
+*Trap:* the arithmetic mean, $(400+6400)/2 = 3400$ rad/s, gives
+$Q = 3400/6000 = 0.56667$ — more than twice the true Q. With edges a factor
+of sixteen apart this is a very low-Q circuit and the two means are nowhere
+near each other, which is exactly when the mistake is fatal.
+
+**A6.** Magnitude 1 everywhere means an all-pass; only the phase matters.
+Convert to radians and divide by the frequency:
+
+$$120^\\circ = 2.094395 \\ \\mathrm{rad}, \\qquad \\Delta t = 2.094395/600 = 0.003491 \\ \\mathrm{s}$$
+
+so about 3.49 ms. As a fraction of the period
+$6.283185/600 = 0.010472$ s, the delay is one third of a cycle, which is
+what $-120^\\circ$ says directly.
+
+*Trap:* dividing degrees by frequency without converting, giving
+$120/600 = 0.2$ s, which is off by a factor of 57.3.`,
+        examTip: 'Every one of these six is solved by writing one complex number and taking its magnitude and angle. Build the habit of expanding the denominator into a single "real plus j imaginary" before doing anything else; from there the magnitude is one square root and the phase is one arctangent, and there is nowhere for a sign error to hide.',
+      },
+      {
+        id: 'fd-problem-set-b',
+        title: '11. Problem Set B — Resonance, Bandwidth and Cascades',
+        content: `**B1.** A series RLC has $L = 20$ mH, $C = 0.5$ microfarad, $R = 40$ ohm.
+Find $\\omega _{0}$, Q, BW and both half-power edges.
+
+**B2.** The same L and C are placed in parallel with a 40 kilohm resistor.
+Find Q and BW, and say what happens to the impedance at resonance.
+
+**B3.** Three identical buffered low-pass stages each have a corner at
+2000 rad/s. Find the corner of the cascade and the cascade's attenuation in
+decibels at 2000 rad/s.
+
+**B4.** A notch is built as $H(s) = (s^{2}+\\omega _{n}^{2})/(s^{2}+(\\omega _{n}/Q)s+\\omega _{n}^{2})$
+with $\\omega _{n} = 377$ rad/s and $Q = 10$. Give the DC gain, the
+high-frequency gain, the depth at $\\omega _{n}$ and the notch width.
+
+**B5.** A second-order low-pass has $\\omega _{0} = 2000$ rad/s and
+$\\zeta = 0.05$. Find the peak frequency, the peak magnitude relative to DC,
+and the magnitude exactly at $\\omega _{0}$.
+
+**B6.** A receiver chain has a preamplifier of $+32$ dB, a mixer of $-6$ dB
+and an IF amplifier of $+40$ dB. Find the total gain in decibels and as a
+linear amplitude ratio, and state what would go wrong if the preamplifier
+gain had been quoted as a power gain.
+
+---
+
+### Worked solutions, Problem Set B
+
+**B1.** $LC = (0.02)(5\\times 10^{-7}) = 10^{-8}$, so
+
+$$\\omega _{0} = 1/\\sqrt{10^{-8}} = 10000 \\ \\mathrm{rad/s}$$
+
+$$Q = \\frac{\\omega _{0}L}{R} = \\frac{10000 \\times 0.02}{40} = 200/40 = 5, \\qquad BW = \\frac{R}{L} = 40/0.02 = 2000 \\ \\mathrm{rad/s}$$
+
+Cross-check: $\\omega _{0}/Q = 10000/5 = 2000$ rad/s, agreeing. The edges use
+$1/(2Q) = 0.1$:
+
+$$\\omega _{1} = 10000 \\times (1.0049876 - 0.1) = 9049.876, \\qquad \\omega _{2} = 10000 \\times (1.0049876 + 0.1) = 11049.876$$
+
+both in rad/s, differing by exactly 2000 and multiplying to $10^{8}$.
+
+*Trap:* computing BW as $R/C$ or $1/(RC)$ instead of $R/L$. With these values
+$1/(RC) = 50000$ rad/s, which is twenty-five times too wide and would put
+both "edges" outside any sensible band.
+
+**B2.** $\\omega _{0}$ is unchanged at 10000 rad/s, because it depends only on
+L and C.
+
+$$Q = \\frac{R}{\\omega _{0}L} = \\frac{40000}{10000 \\times 0.02} = 40000/200 = 200, \\qquad BW = 10000/200 = 50 \\ \\mathrm{rad/s}$$
+
+At resonance the inductive and capacitive susceptances cancel, leaving the
+admittance equal to $1/R$, so the impedance is a MAXIMUM of 40 kilohm and
+purely resistive.
+
+*Trap:* carrying the series formula over gives $Q = 200/40000 = 0.005$ and a
+bandwidth of two million radians per second. The two results differ by
+$Q^{2} = 40000$, so this is not a near miss; it is a different universe.
+
+**B3.** With $n = 3$ the shrink factor is
+
+$$x = \\sqrt{2^{1/3}-1} = \\sqrt{1.259921 - 1} = \\sqrt{0.259921} = 0.509825$$
+
+$$\\omega _{c,\\text{cascade}} = 2000 \\times 0.509825 = 1019.65 \\ \\mathrm{rad/s}$$
+
+At 2000 rad/s each stage is at 0.70711, so the chain is at
+$(1/\\sqrt{2})^{3} = 0.3535534$, which is
+
+$$20\\log _{10}(0.3535534) = -9.0309 \\ \\mathrm{dB}$$
+
+exactly three times the single-stage $-3.0103$ dB, as decibel addition
+demands.
+
+*Trap:* answering "still 2000 rad/s". The cascade's corner is barely half
+the single-stage corner, and at the single-stage corner the chain is already
+9 dB down rather than 3.
+
+**B4.** At $s = 0$ the numerator and denominator are both
+$\\omega _{n}^{2}$, so the DC gain is 1. As $s \\to \\infty$ both are
+$s^{2}$, so the high-frequency gain is 1 as well: the notch passes
+everything except its own frequency. At $\\omega = \\omega _{n}$ the numerator
+is $-\\omega _{n}^{2}+\\omega _{n}^{2} = 0$ exactly, so the rejection is
+infinite in this idealisation. The width follows the same rule as the
+band-pass:
+
+$$BW = \\omega _{n}/Q = 377/10 = 37.7 \\ \\mathrm{rad/s}$$
+
+which in hertz is $37.7/6.283185 = 6.0$ Hz around a 60 Hz null.
+
+*Trap:* expecting a notch to attenuate at high frequency because it "removes"
+something. It is unity-gain on both sides; only a band of width $BW$ is
+affected.
+
+**B5.** With $\\zeta = 0.05$, so $Q = 1/(2\\zeta ) = 10$:
+
+$$\\omega _{r} = \\omega _{0}\\sqrt{1-2\\zeta ^{2}} = 2000\\sqrt{1-0.005} = 2000 \\times 0.997497 = 1994.99 \\ \\mathrm{rad/s}$$
+
+$$\\lvert H\\rvert _{\\max } = \\frac{1}{2\\zeta \\sqrt{1-\\zeta ^{2}}} = 10.0125, \\qquad \\lvert H(j\\omega _{0})\\rvert = \\frac{1}{2\\zeta } = 10.0000$$
+
+*Trap:* reporting the peak as exactly Q at exactly $\\omega _{0}$. Both
+statements are wrong in detail, though only by 0.125 percent here; the point
+is knowing WHICH is exact — the value at $\\omega _{0}$ is exactly Q, the
+maximum is slightly larger and slightly lower in frequency.
+
+**B6.** Decibels add:
+
+$$32 - 6 + 40 = 66 \\ \\mathrm{dB} \\qquad \\Longrightarrow \\qquad 10^{66/20} = 1995.26$$
+
+as an amplitude ratio. Now suppose the $+32$ dB had actually been quoted as
+a POWER gain. Then the power ratio is $10^{32/10} = 1584.89$, so the
+amplitude ratio is its square root, 39.8107, and that is
+$10^{16/20}$ — sixteen decibels on the amplitude scale, not thirty-two.
+Substituting 16 for 32 in the column gives
+
+$$16 - 6 + 40 = 50 \\ \\mathrm{dB} \\qquad \\Longrightarrow \\qquad 10^{50/20} = 316.23$$
+
+so the chain's amplitude gain drops from 1995.26 to 316.23, a factor of
+$1995.26/316.23 = 6.31$. Mixing the two conventions inside one column is the
+error the whole of section 6 exists to prevent.
+
+*Trap:* multiplying the decibel figures rather than adding them, giving
+$32 \\times 6 \\times 40$ or similar nonsense. Decibels are logarithms; they
+add.`,
+        examTip: 'Resonance answers should always be audited by a second formula: Q from a different column, or bandwidth from R/L instead of w0/Q. Cascade answers should be audited at the single-stage corner, where every stage contributes exactly -3.0103 dB and -45 degrees, so the chain total is n times each. Both audits take under a minute and catch the topology and stage-count errors that dominate this material.',
+      },
     ],
     keyTakeaways: [
       'Fourier Series (discrete spectrum) for periodic signals; Fourier Transform (continuous spectrum) for aperiodic.',
-      'Laplace Transform X(s) = ∫x(t)e^(−st)dt converts ODEs to algebraic equations in s.',
+      'Laplace Transform X(s) = integral from 0 to infinity of x(t)e^(−st)dt converts ODEs to algebraic equations in s.',
       'ROC determines uniqueness; causal signals have right half-plane ROC.',
       'Time-domain convolution ↔ frequency-domain multiplication — cornerstone of filtering.',
       'Final Value Theorem: lim(t→∞) f(t) = lim(s→0) s·F(s) — find steady-state directly.',
@@ -2651,7 +3611,7 @@ transition happens, not how much passes at DC.`,
 
 For a discrete signal x[n], the **bilateral Z-Transform** is:
 
-**$X(z) = \\Sigma x[n] \\cdot z^{-n}$** (sum over all n)
+**$X(z) = \\sum _{n=-\\infty }^{\\infty }x[n]z^{-n}$**
 
 The **unilateral Z-Transform** (causal sequences, n ≥ 0) is standard for digital control and FE exam problems.
 
@@ -2678,9 +3638,9 @@ The **unilateral Z-Transform** (causal sequences, n ≥ 0) is standard for digit
 
 The ROC specifies where the Z-Transform sum converges:
 
-- **Causal signals**: ROC is the exterior of a circle \|z\| > r₊
-- **Anti-causal signals**: ROC is the interior \|z\| < r₋
-- **Two-sided signals**: ROC is an annular ring r₋ < \|z\| < r₊
+- **Causal signals**: ROC is the exterior of a circle, $\\lvert z\\rvert > r_{+}$
+- **Anti-causal signals**: ROC is the interior, $\\lvert z\\rvert < r_{-}$
+- **Two-sided signals**: ROC is an annular ring, $r_{-} < \\lvert z\\rvert < r_{+}$
 - The ROC cannot contain poles`,
         examTip: 'On the FE exam, you will almost always work with causal (unilateral) Z-Transforms. Memorize the key pairs: u[n] → z/(z−1) and aⁿ·u[n] → z/(z−a). These two cover most exam problems when combined with partial fraction expansion.',
       },
@@ -2705,7 +3665,7 @@ This exponential mapping transforms continuous-domain regions to discrete-domain
 
 For discrete systems, **BIBO stability requires all poles inside the unit circle**:
 
-**$\\|p_{i}\\| < 1$** for all poles pᵢ
+**$\\lvert p_{i}\\rvert < 1$** for all poles pᵢ
 
 This is the discrete equivalent of "all poles in the LHP" for continuous systems.
 
@@ -2727,7 +3687,7 @@ $$A = 3/(0.5-0.8) = -10, B = 3/(0.8-0.5) = 10$$
 
 **$x[n] = [-10\\cdot (0.5)^{n} + 10\\cdot (0.8)^{n}]\\cdot u[n]$**
 
-Both poles (\|0.5\| < 1 and \|0.8\| < 1) are inside the unit circle → **stable**.
+Both poles ($\\lvert 0.5\\rvert < 1$ and $\\lvert 0.8\\rvert < 1$) are inside the unit circle → **stable**.
 
 ## 2.3 Difference Equations
 
@@ -2918,9 +3878,11 @@ and holding the two columns side by side is the fastest revision available:
 Two rows deserve a second look. The delay row is why discrete systems are
 so natural for hardware: z^(-1) is one register, so any rational H(z) is a
 wiring diagram of registers, multipliers and adders. And the decaying-mode
-row is the bridge itself: sampling $e^{-at}$ every T seconds produces the
-geometric sequence with ratio $a = e^{-aT}$, which is the mapping
-z = e^(sT) acting on one concrete signal rather than on an abstract plane.
+row is the bridge itself: sampling $e^{-\\alpha t}$ every T seconds produces
+the geometric sequence whose ratio is $a = e^{-\\alpha T}$, which is the
+mapping z = e^(sT) acting on one concrete signal rather than on an abstract
+plane. The decay rate and the pole radius are DIFFERENT symbols joined by an
+exponential, and writing both as "a" is the fastest way to lose the thread.
 
 ## 4.5 Long division, when only the first few samples matter
 
@@ -2941,9 +3903,1076 @@ check on any closed form you derive by the longer route.`,
         examTip: 'The three-check habit from the step-response example - first sample against h[0], second against a direct convolution sum, final value against H(1) - costs under a minute and catches nearly every partial-fraction slip. On multiple-choice questions, often the final-value check ALONE eliminates three options.',
         importantNote: 'For a monic quadratic z^2 + bz + c with complex roots, the pole magnitude is sqrt(c) - the constant term is the squared magnitude. Confirm the roots are actually complex (b^2 < 4c) before using this; for real roots each must be checked against the unit circle individually.',
       },
+      {
+        id: 'zt-defining-sum',
+        title: '5. The Defining Sum, and Why the ROC Is Half the Answer',
+        content: `## 5.1 A transform is a sum, and a sum has to converge
+
+The bilateral z-transform is one line, and everything difficult about it is
+hidden in the question of when that line means anything:
+
+$$X(z) = \\sum _{n=-\\infty }^{\\infty }x[n]\\,z^{-n}$$
+
+This is a power series in $z^{-1}$, and a power series converges on some set
+of z and diverges everywhere else. That set is the **region of
+convergence**. It is not a footnote attached to the answer; it is PART of
+the answer, in the same way that the domain is part of a function. Two
+completely different sequences routinely produce the same algebraic
+expression and are told apart only by their regions.
+
+The one test that settles every case is absolute summability, applied to
+the transformed series:
+
+$$\\sum _{n=-\\infty }^{\\infty }\\lvert x[n]\\rvert \\,\\lvert z\\rvert ^{-n} < \\infty$$
+
+Notice that only the MAGNITUDE of z appears. The convergence question does
+not care about the angle of z at all, which is why every region of
+convergence is bounded by circles centred on the origin: a disc, the
+outside of a disc, or a ring between two of them.
+
+## 5.2 The two sequences behind one expression
+
+Take the right-sided geometric sequence $x[n] = a^{n}u[n]$ and sum it
+directly, using nothing but the ordinary geometric series:
+
+$$X(z) = \\sum _{n=0}^{\\infty }a^{n}z^{-n} = \\sum _{n=0}^{\\infty }\\left(\\frac{a}{z}\\right)^{n} = \\frac{1}{1-az^{-1}} = \\frac{z}{z-a}$$
+
+The geometric series converges exactly when its ratio has magnitude below
+one, so the region is $\\lvert z\\rvert > \\lvert a\\rvert$: the OUTSIDE of the
+circle through the pole.
+
+Now take the left-sided sequence $x[n] = -a^{n}u[-n-1]$, which lives on
+$n = -1, -2, -3, \\dots$ and grows as n runs backwards. Substitute
+$m = -n$ so the index counts upward:
+
+$$X(z) = -\\sum _{n=-\\infty }^{-1}a^{n}z^{-n} = -\\sum _{m=1}^{\\infty }\\left(\\frac{z}{a}\\right)^{m} = -\\frac{z/a}{1-z/a} = \\frac{z}{z-a}$$
+
+The SAME expression. This time the ratio is $z/a$, so convergence requires
+$\\lvert z\\rvert < \\lvert a\\rvert$: the INSIDE of the circle. Handed
+$z/(z-0.8)$ with no region attached, you cannot say whether the sequence is
+$(0.8)^{n}u[n]$, which decays forward in time, or
+$-(0.8)^{n}u[-n-1]$, which is zero for all $n \\ge 0$ and enormous in the
+distant past. Both are correct inverses; only one of them is what the
+problem meant.
+
+![Two stem plots of the same algebraic transform: with the region of convergence outside the pole radius the sequence is right-sided and decays forward in time, and with the region inside it the sequence is left-sided and grows backwards.](/courses/fe-ee/figures/lin3-zt-roc-choices.svg)
+
+## 5.3 The shapes a region can take
+
+| Sequence support | Region of convergence | Example, tested by summing |
+|---|---|---|
+| finite length | every z, except possibly 0 or infinity | $\\delta [n-3]$, converges for all $\\lvert z\\rvert > 0$ |
+| right-sided | outside the outermost pole | $(0.8)^{n}u[n]$, diverges at 0.799 and converges at 0.801 |
+| left-sided | inside the innermost pole | $-(0.8)^{n}u[-n-1]$, converges at 0.799 and diverges at 0.801 |
+| two-sided | a ring between two poles | $(0.5)^{n}u[n]-3^{n}u[-n-1]$, the ring $0.5 < \\lvert z\\rvert < 3$ |
+| none of the above | empty; no transform exists | $x[n]=1$ for all n |
+
+Three structural facts follow from the summability test and are worth
+holding as rules rather than rediscovering each time. First, the region
+never contains a pole, because at a pole the expression is infinite and a
+convergent sum cannot be. Second, the region is always bounded by circles
+through poles, because the geometric ratios that decide convergence are
+built from the pole magnitudes. Third, if the region includes the unit
+circle then the sequence has a discrete-time Fourier transform, obtained by
+setting $z = e^{j\\Omega }$, and if it does not, it has none.
+
+### Worked example 5.1 — a genuinely two-sided sequence
+
+**Given:** $x[n] = (0.5)^{n}u[n] - 3^{n}u[-n-1]$. Find X(z) and its region.
+
+The two halves transform independently by the two derivations above:
+
+$$\\sum _{n=0}^{\\infty }(0.5)^{n}z^{-n} = \\frac{z}{z-0.5} \\quad \\text{for} \\quad \\lvert z\\rvert > 0.5$$
+
+$$-\\sum _{n=-\\infty }^{-1}3^{n}z^{-n} = \\frac{z}{z-3} \\quad \\text{for} \\quad \\lvert z\\rvert < 3$$
+
+Linearity adds the expressions, and the region is where BOTH sums converge,
+which is the intersection:
+
+$$X(z) = \\frac{z}{z-0.5} + \\frac{z}{z-3}, \\qquad 0.5 < \\lvert z\\rvert < 3$$
+
+Testing this numerically rather than quoting it is a five-line exercise and
+worth doing once: summing $\\lvert x[n]\\rvert \\,\\lvert z\\rvert ^{-n}$ over
+several hundred thousand terms overflows at $\\lvert z\\rvert = 0.49$ and at
+$\\lvert z\\rvert = 3.1$, and settles to a finite number at
+$\\lvert z\\rvert = 1$ and at $\\lvert z\\rvert = 2.9$. The ring is real, not a
+convention.
+
+Because the unit circle lies inside the ring, this sequence has a Fourier
+transform even though it is unbounded in the past. Change the outer pole
+from 3 to 0.9 and the ring becomes $0.5 < \\lvert z\\rvert < 0.9$, which
+excludes the unit circle: the transform still exists, but no Fourier
+transform does.
+
+![The z-plane with poles at 0.5 and 3, the shaded ring between them marking the region where the defining sum converges, and the unit circle drawn inside that ring.](/courses/fe-ee/figures/lin3-zt-roc-map.svg)
+
+### Worked example 5.2 — which region makes a system causal and stable
+
+**Given:** $H(z) = z^{2}/[(z-0.5)(z-2)]$. Enumerate the possible impulse
+responses and say which one is both causal and stable.
+
+Two poles give three candidate regions, and each names a different system:
+
+| Region | Impulse response | Causal? | Stable? |
+|---|---|---|---|
+| $\\lvert z\\rvert > 2$ | right-sided, contains $2^{n}u[n]$ | yes | no |
+| $0.5 < \\lvert z\\rvert < 2$ | two-sided | no | yes, the ring holds the unit circle |
+| $\\lvert z\\rvert < 0.5$ | left-sided | no | no |
+
+A causal system must have a region that is the outside of a circle, and a
+stable one must have a region containing the unit circle. Here no region
+does both, so no causal stable realisation of this H(z) exists — which is
+the discrete restatement of "you cannot stabilise a right-half-plane pole by
+choosing a different inverse transform". The pole at 2 has to move.
+
+**The trap.** Declaring the system stable because "the ring contains the
+unit circle" without checking causality, or unstable because "there is a
+pole outside" without noticing that the middle region is a legitimate answer
+for an off-line, non-real-time filter. Both halves of the question have to
+be answered from the region, not from the pole list alone.`,
+        examTip: 'On the FE exam the region is almost always the causal one, the outside of the largest pole circle, and the exam will say so with the words "causal" or "for n greater than or equal to zero". But when a question deliberately offers two candidate sequences for one expression, the region is the only thing that distinguishes them, and the answer is whichever sequence lives on the side of the pole circle that the stated region names.',
+        importantNote: 'The region of convergence never contains a pole, and it is always bounded by circles through poles. A causal sequence therefore always has the exterior of a circle, and a stable one always has a region containing the unit circle. Causal AND stable together force every pole strictly inside the unit circle.',
+      },
+      {
+        id: 'zt-pairs-derived',
+        title: '6. The Standard Pairs, Derived Rather Than Memorised',
+        content: `## 6.1 Everything from one geometric series
+
+A table of transform pairs is faster to use than to derive, but a table you
+have derived once is a table you can repair when memory fails mid-exam.
+Every entry below comes from the geometric series of section 5 and two
+manipulations of it.
+
+**The impulse.** The sum has one surviving term:
+
+$$Z\\{\\delta [n]\\} = \\sum _{n=-\\infty }^{\\infty }\\delta [n]z^{-n} = z^{0} = 1$$
+
+converging for every z. The delayed impulse is just as quick:
+$Z\\{\\delta [n-k]\\} = z^{-k}$, which converges everywhere except $z=0$ when
+k is positive. That exception is the first hint that $z^{-1}$ deserves to be
+read as "one sample of delay".
+
+**The unit step.** Set $a = 1$ in the geometric result:
+
+$$Z\\{u[n]\\} = \\sum _{n=0}^{\\infty }z^{-n} = \\frac{1}{1-z^{-1}} = \\frac{z}{z-1}, \\qquad \\lvert z\\rvert > 1$$
+
+The pole sits ON the unit circle, which is the transform-domain way of
+saying that a step neither decays nor grows.
+
+**The ramp, from a derivative.** Differentiate the geometric result with
+respect to a, treating z as a constant:
+
+$$\\frac{d}{da}\\sum _{n=0}^{\\infty }a^{n}z^{-n} = \\sum _{n=0}^{\\infty }na^{n-1}z^{-n} = \\frac{d}{da}\\left(\\frac{1}{1-az^{-1}}\\right) = \\frac{z^{-1}}{(1-az^{-1})^{2}}$$
+
+Multiply both sides by a to restore the exponent:
+
+$$Z\\{na^{n}u[n]\\} = \\frac{az^{-1}}{(1-az^{-1})^{2}} = \\frac{az}{(z-a)^{2}}, \\qquad \\lvert z\\rvert > \\lvert a\\rvert$$
+
+and setting $a=1$ gives the discrete ramp, $Z\\{nu[n]\\} = z/(z-1)^{2}$. The
+repeated pole is the signature of a sequence that grows polynomially rather
+than merely persisting.
+
+**Sinusoids, from Euler.** A cosine is two complex exponentials, and each
+one is a geometric sequence with a complex ratio:
+
+$$\\cos (\\Omega _{0}n)u[n] = \\tfrac{1}{2}\\left(e^{j\\Omega _{0}n} + e^{-j\\Omega _{0}n}\\right)u[n]$$
+
+$$Z\\{\\cos (\\Omega _{0}n)u[n]\\} = \\frac{1}{2}\\left[\\frac{z}{z-e^{j\\Omega _{0}}} + \\frac{z}{z-e^{-j\\Omega _{0}}}\\right] = \\frac{z(z-\\cos \\Omega _{0})}{z^{2}-2z\\cos \\Omega _{0}+1}$$
+
+because the denominators multiply to
+$z^{2}-z(e^{j\\Omega _{0}}+e^{-j\\Omega _{0}})+1$ and the numerators add to
+$z(2z-2\\cos \\Omega _{0})$. The sine follows from the same two terms with a
+minus sign and a division by $2j$:
+
+$$Z\\{\\sin (\\Omega _{0}n)u[n]\\} = \\frac{z\\sin \\Omega _{0}}{z^{2}-2z\\cos \\Omega _{0}+1}, \\qquad \\lvert z\\rvert > 1$$
+
+Both have their pole pair exactly on the unit circle at angle
+$\\pm \\Omega _{0}$, which is the picture of an oscillation that neither dies
+nor grows. Multiply the sequence by $r^{n}$ and the pair moves to radius r,
+which is the discrete counterpart of the s-domain frequency shift.
+
+**A finite pulse.** The sum simply stops:
+
+$$Z\\{u[n]-u[n-N]\\} = \\sum _{n=0}^{N-1}z^{-n} = \\frac{1-z^{-N}}{1-z^{-1}} = \\frac{z^{N}-1}{z^{N-1}(z-1)}$$
+
+with convergence for every $z \\ne 0$, because a finite sum cannot diverge.
+The apparent pole at $z=1$ is cancelled by a zero: setting $z=1$ in the
+original sum gives N, which is finite.
+
+| $x[n]$ | $X(z)$ | ROC |
+|---|---|---|
+| $\\delta [n]$ | 1 | all z |
+| $\\delta [n-k]$, $k>0$ | $z^{-k}$ | $\\lvert z\\rvert > 0$ |
+| $u[n]$ | $z/(z-1)$ | $\\lvert z\\rvert > 1$ |
+| $a^{n}u[n]$ | $z/(z-a)$ | $\\lvert z\\rvert > \\lvert a\\rvert$ |
+| $-a^{n}u[-n-1]$ | $z/(z-a)$ | $\\lvert z\\rvert < \\lvert a\\rvert$ |
+| $na^{n}u[n]$ | $az/(z-a)^{2}$ | $\\lvert z\\rvert > \\lvert a\\rvert$ |
+| $nu[n]$ | $z/(z-1)^{2}$ | $\\lvert z\\rvert > 1$ |
+| $\\cos (\\Omega _{0}n)u[n]$ | $z(z-\\cos \\Omega _{0})/(z^{2}-2z\\cos \\Omega _{0}+1)$ | $\\lvert z\\rvert > 1$ |
+| $\\sin (\\Omega _{0}n)u[n]$ | $z\\sin \\Omega _{0}/(z^{2}-2z\\cos \\Omega _{0}+1)$ | $\\lvert z\\rvert > 1$ |
+| $u[n]-u[n-N]$ | $(1-z^{-N})/(1-z^{-1})$ | $\\lvert z\\rvert > 0$ |
+
+### Worked example 6.1 — a pair built from two table rows
+
+**Given:** $x[n] = [4 - 3(0.5)^{n}]u[n]$. Find X(z) and its region.
+
+Linearity splits it into a step and a geometric sequence:
+
+$$X(z) = \\frac{4z}{z-1} - \\frac{3z}{z-0.5} = \\frac{4z(z-0.5) - 3z(z-1)}{(z-1)(z-0.5)} = \\frac{z^{2}+z}{(z-1)(z-0.5)}$$
+
+after expanding the numerator to $4z^{2}-2z-3z^{2}+3z$. The region is the
+intersection of $\\lvert z\\rvert > 1$ and $\\lvert z\\rvert > 0.5$, namely
+$\\lvert z\\rvert > 1$: the outer pole always wins for a right-sided sum.
+
+Check the first sample against the sum itself. Directly,
+$x[0] = 4 - 3 = 1$. From the expression, dividing numerator and denominator
+by $z^{2}$ and letting z grow without bound gives 1 as well. Two routes, one
+answer.
+
+### Worked example 6.2 — a finite sequence needs no table at all
+
+**Given:** $x[n] = \\{2, 3, 1\\}$ for $n = 0, 1, 2$ and zero elsewhere. Find
+X(z), and convolve it with $h[n] = \\{1, -1\\}$.
+
+Reading the sum off the samples is the entire calculation:
+
+$$X(z) = 2 + 3z^{-1} + z^{-2}, \\qquad H(z) = 1 - z^{-1}$$
+
+$$Y(z) = X(z)H(z) = 2 + 3z^{-1} + z^{-2} - 2z^{-1} - 3z^{-2} - z^{-3} = 2 + z^{-1} - 2z^{-2} - z^{-3}$$
+
+so $y[n] = \\{2, 1, -2, -1\\}$. Verify by direct convolution, which is the
+independent route: $y[0] = 2$, then
+$y[1] = 3 - 2 = 1$, then $y[2] = 1 - 3 = -2$, then $y[3] = -1$. Identical.
+
+A last check costs nothing: $X(1) = 6$ and $H(1) = 0$, so $Y(1)$ must be 0,
+and indeed the output samples sum to $2 + 1 - 2 - 1 = 0$. Evaluating a
+transform at $z=1$ sums the sequence, which makes that a free consistency
+test on any finite-length answer.
+
+**The trap.** Writing the polynomial in powers of z rather than $z^{-1}$ and
+losing the time origin. $2z^{2}+3z+1$ is the transform of the same three
+numbers placed at $n = -2, -1, 0$, a sequence that is finished before yours
+begins. The exponent on $z^{-1}$ IS the sample index; that is the whole
+bookkeeping.`,
+        examTip: 'Two rows carry most of the exam: the step and the geometric sequence. Everything else is one of them differentiated, shifted, or split by Euler. If a pair you need is missing from the handbook table, rebuild it from the geometric series rather than guessing, because a guessed pair usually differs by a factor of z, which shifts the whole answer by one sample.',
+        importantNote: 'Watch the difference between z/(z-a) and 1/(z-a). The first is a^n u[n]; the second is z^(-1) times the first, so it is a^(n-1) u[n-1], one sample later and zero at n = 0. Nearly every "off by one sample" error in this topic is a missing or extra factor of z.',
+      },
+      {
+        id: 'zt-properties',
+        title: '7. Properties, and the Condition Each One Carries',
+        content: `## 7.1 The properties that survive without conditions
+
+Linearity and convolution are the load-bearing pair, and both are immediate
+from the definition:
+
+$$Z\\{\\alpha x_{1}[n] + \\beta x_{2}[n]\\} = \\alpha X_{1}(z) + \\beta X_{2}(z)$$
+
+$$Z\\{x[n]*h[n]\\} = X(z)H(z)$$
+
+Neither is quite condition-free, though. For both, the region of the result
+contains AT LEAST the intersection of the two input regions, and can be
+larger when a pole cancels against a zero. That footnote is not academic:
+it is exactly what happens when a filter is designed to cancel an unwanted
+pole, and the resulting system has a wider region — and better stability
+properties — than the intersection rule alone would suggest.
+
+Scaling in z is worth naming because it is the mechanism behind every
+damped-sinusoid pair:
+
+$$Z\\{a^{n}x[n]\\} = X(z/a)$$
+
+with the region scaled by $\\lvert a\\rvert$. Multiplying a sequence by a
+geometric envelope moves every pole radially by the factor a, which is why
+$\\cos (\\Omega _{0}n)u[n]$ with poles on the unit circle becomes
+$r^{n}\\cos (\\Omega _{0}n)u[n]$ with poles at radius r.
+
+Differentiation in z produces the multiply-by-n property used in section 6:
+
+$$Z\\{n\\,x[n]\\} = -z\\,\\frac{dX(z)}{dz}$$
+
+## 7.2 Shifting, where the unilateral transform differs
+
+For the bilateral transform a delay is a clean multiplication:
+
+$$Z\\{x[n-k]\\} = z^{-k}X(z)$$
+
+For the UNILATERAL transform, which is what difference equations with
+initial conditions require, the samples that slide in from before $n=0$
+cannot be ignored. Working from the definition,
+
+$$Z_{u}\\{y[n-1]\\} = \\sum _{n=0}^{\\infty }y[n-1]z^{-n} = z^{-1}Y(z) + y[-1]$$
+
+$$Z_{u}\\{y[n-2]\\} = z^{-2}Y(z) + z^{-1}y[-1] + y[-2]$$
+
+Those extra terms are the discrete counterpart of the $f(0^{-})$ that
+appears in the Laplace derivative rule, and they are the whole reason a
+transform can solve a difference equation with a non-zero starting state
+rather than merely a zero-state one. Set every initial condition to zero and
+the extra terms vanish, which is why the transfer function $H(z) = Y(z)/X(z)$
+is defined only under that assumption.
+
+## 7.3 The value theorems, and when they lie
+
+$$x[0] = \\lim _{z \\to \\infty }X(z) \\qquad \\text{valid when the sequence is causal}$$
+
+$$\\lim _{n \\to \\infty }x[n] = \\lim _{z \\to 1}(z-1)X(z) \\qquad \\text{valid when every pole of } (z-1)X(z) \\text{ lies inside the unit circle}$$
+
+The initial-value theorem is almost unconditional: for a causal sequence
+every term but $x[0]$ carries a negative power of z and dies as z grows.
+The final-value theorem is the dangerous one, for exactly the reason its
+s-domain cousin is dangerous. It computes a limit whether or not one exists.
+
+### Worked example 7.1 — the final-value theorem used correctly
+
+**Given:** $X(z) = 0.4z/[(z-1)(z-0.6)]$. Find the limit of x[n].
+
+Form $(z-1)X(z) = 0.4z/(z-0.6)$. Its only pole is at 0.6, safely inside the
+unit circle, so the theorem applies:
+
+$$\\lim _{n \\to \\infty }x[n] = \\frac{0.4(1)}{1-0.6} = 0.4/0.4 = 1$$
+
+Confirm it by inverting. Expanding $X(z)/z$ gives residues
+$0.4/(1-0.6) = 1$ at the pole $z=1$ and $0.4/(0.6-1) = -1$ at $z=0.6$, so
+$x[n] = 1 - (0.6)^{n}$, which does indeed approach 1. Both routes agree, and
+the second one also tells you how fast.
+
+### Worked example 7.2 — the same theorem producing nonsense
+
+**Given:** $X(z) = z/(z+1)$ and $X(z) = z/(z-1.25)$. Apply the theorem to
+each and say what it means.
+
+For the first, $(z-1)X(z) = z(z-1)/(z+1)$, which is 0 at $z=1$. The theorem
+would report a limit of zero. But the sequence is $(-1)^{n}u[n]$, which
+alternates between $+1$ and $-1$ forever and has no limit at all. The
+failure is announced by the pole at $z=-1$, ON the unit circle.
+
+For the second, $(z-1)X(z) = z(z-1)/(z-1.25)$, also 0 at $z=1$, and again
+the theorem reports zero. The sequence is $(1.25)^{n}u[n]$, which grows
+without bound. The failure is announced by the pole at 1.25, OUTSIDE the
+unit circle.
+
+Two confident, meaningless zeros. The pole check is not an optional
+refinement; it is what separates a theorem from a coincidence.
+
+| Property | Statement | Condition it carries |
+|---|---|---|
+| Linearity | $\\alpha X_{1}+\\beta X_{2}$ | region at least the intersection |
+| Delay, bilateral | $z^{-k}X(z)$ | none beyond the original region |
+| Delay, unilateral | $z^{-1}Y(z)+y[-1]$ | initial samples must be supplied |
+| Scaling | $X(z/a)$ | region scales by $\\lvert a\\rvert$ |
+| Convolution | $X(z)H(z)$ | region at least the intersection |
+| Multiply by n | $-z\\,dX/dz$ | same region |
+| Initial value | $\\lim _{z\\to \\infty }X(z)$ | sequence causal |
+| Final value | $\\lim _{z\\to 1}(z-1)X(z)$ | poles of $(z-1)X(z)$ inside the circle |
+
+### Worked example 7.3 — a delay read as hardware
+
+**Given:** $H(z) = (1 + 0.5z^{-1} + 0.25z^{-2})/3$. Describe the filter and
+find its DC gain and its gain at Nyquist.
+
+Each $z^{-1}$ is one sample of delay, so this is a three-tap averager with
+weights 1, 0.5 and 0.25 divided by three. It has no feedback and therefore
+no poles away from the origin: a finite impulse response, guaranteed stable
+whatever the coefficients are.
+
+$$H(1) = (1+0.5+0.25)/3 = 1.75/3 = 0.583333$$
+
+$$H(-1) = (1-0.5+0.25)/3 = 0.75/3 = 0.25$$
+
+so it passes low frequencies about 2.3 times better than it passes the
+fastest representable alternation, and its DC gain is not one — a detail
+worth fixing by dividing by 1.75 instead of by 3 if unity DC gain was the
+intent.
+
+**The trap.** Calling this a three-pole filter because it has $z^{-2}$ in
+it. Writing it over a common denominator gives
+$(z^{2}+0.5z+0.25)/(3z^{2})$: the poles are both at the origin, which
+contributes delay but no dynamics at all. Feed-forward terms make ZEROS.`,
+        examTip: 'Before using the final-value theorem, multiply by (z − 1), cancel, and look at what poles remain. If any survivor sits on or outside the unit circle the theorem is void and the limit it prints is meaningless. This check takes five seconds and is itself a favourite exam question, usually phrased as "is the final value theorem applicable".',
+        importantNote: 'The unilateral shift rule Z{y[n−1]} = z^(−1)Y(z) + y[−1] is what makes initial conditions solvable. Dropping the y[−1] term silently converts the problem into its zero-state version, which produces a plausible but wrong answer whenever the problem bothered to specify a starting value.',
+      },
+      {
+        id: 'zt-inversion',
+        title: '8. Inverting, With Every Answer Run Forward Through the Recursion',
+        content: `## 8.1 The divide-by-z discipline, and why it exists
+
+Every standard pair in section 6 has a factor of z in its numerator. Expand
+X(z) itself in partial fractions and you get terms like $A/(z-a)$, whose
+inverse is $a^{n-1}u[n-1]$ — correct but shifted, and a reliable source of
+off-by-one errors. Expand $X(z)/z$ instead, then multiply each term by z,
+and every term lands on a table row exactly:
+
+$$\\frac{X(z)}{z} = \\frac{A}{z-a} + \\frac{B}{z-b} \\qquad \\Longrightarrow \\qquad X(z) = \\frac{Az}{z-a} + \\frac{Bz}{z-b} \\qquad \\Longrightarrow \\qquad x[n] = \\bigl(Aa^{n}+Bb^{n}\\bigr)u[n]$$
+
+The residues come from the cover-up rule, $A = [(z-a)X(z)/z]$ evaluated at
+$z=a$.
+
+But the discipline that actually protects an answer is different and is the
+one this section insists on: **turn the transfer function back into a
+difference equation and run it forward**. A rational H(z) written in powers
+of $z^{-1}$ IS a recursion, and generating the first few samples from it
+costs three lines of arithmetic. If those samples do not match the closed
+form you just derived, the closed form is wrong. Every inverse below is
+checked that way.
+
+### Worked example 8.1 — distinct real poles, audited sample by sample
+
+**Given:** $H(z) = z^{2}/[(z-0.4)(z-0.9)]$. Find h[n] and verify it.
+
+Divide by z and cover up:
+
+$$\\frac{H(z)}{z} = \\frac{z}{(z-0.4)(z-0.9)}, \\qquad A = \\frac{0.4}{0.4-0.9} = 0.4/0.5 = -0.8, \\qquad B = \\frac{0.9}{0.9-0.4} = 0.9/0.5 = 1.8$$
+
+$$h[n] = \\bigl[1.8(0.9)^{n} - 0.8(0.4)^{n}\\bigr]u[n]$$
+
+Now the audit. Expand the denominator to $z^{2}-1.3z+0.36$ and divide top
+and bottom by $z^{2}$:
+
+$$H(z) = \\frac{1}{1-1.3z^{-1}+0.36z^{-2}} \\qquad \\Longleftrightarrow \\qquad h[n] = 1.3h[n-1] - 0.36h[n-2] + \\delta [n]$$
+
+Starting from rest and stepping forward gives the left column below; the
+closed form gives the right one.
+
+| n | from the recursion | from $1.8(0.9)^{n}-0.8(0.4)^{n}$ |
+|---|---|---|
+| 0 | 1 | 1 |
+| 1 | 1.3 | 1.3 |
+| 2 | 1.33 | 1.33 |
+| 3 | 1.261 | 1.261 |
+| 4 | 1.1605 | 1.1605 |
+| 5 | 1.05409 | 1.05409 |
+
+Identical to every digit, over fourteen samples in the machine check behind
+this chapter. Note also that $h[0] = 1.8 - 0.8 = 1$, which it had to be:
+the numerator and denominator have equal degree, so the very first sample is
+the ratio of their leading coefficients.
+
+**The trap.** Expanding H(z) rather than $H(z)/z$ gives residues
+$-2$ and $1.8/0.9$, and an answer that is right in shape but one sample
+late, so that $h[0]$ comes out as 0 instead of 1. The recursion catches it
+on the first line.
+
+### Worked example 8.2 — a repeated pole
+
+**Given:** $X(z) = z/(z-0.5)^{2}$. Find x[n] and verify it.
+
+This is the $na^{n}$ row with $a = 0.5$, whose transform is
+$0.5z/(z-0.5)^{2}$. The given expression is twice that:
+
+$$X(z) = \\frac{1}{0.5}\\cdot \\frac{0.5z}{(z-0.5)^{2}} \\qquad \\Longrightarrow \\qquad x[n] = 2n(0.5)^{n}u[n]$$
+
+For the audit, write the expression in negative powers:
+
+$$X(z) = \\frac{z^{-1}}{1-z^{-1}+0.25z^{-2}} \\qquad \\Longleftrightarrow \\qquad y[n] = y[n-1] - 0.25y[n-2] + \\delta [n-1]$$
+
+| n | from the recursion | from $2n(0.5)^{n}$ |
+|---|---|---|
+| 0 | 0 | 0 |
+| 1 | 1 | 1 |
+| 2 | 1 | 1 |
+| 3 | 0.75 | 0.75 |
+| 4 | 0.5 | 0.5 |
+| 5 | 0.3125 | 0.3125 |
+
+The sequence rises, holds, then decays, which is the discrete signature of a
+double pole: polynomial growth fighting geometric decay, with the decay
+winning eventually because $\\lvert 0.5\\rvert < 1$. Had the double pole been
+on the unit circle, the n would win and the sequence would grow without
+bound — which is why a repeated pole at $z=1$ is unstable even though
+$\\lvert z\\rvert = 1$ looks marginal.
+
+### Worked example 8.3 — a complex conjugate pair
+
+**Given:** $H(z) = z^{2}/(z^{2}-1.2z+0.72)$. Find h[n] and verify it.
+
+The roots are $0.6 \\pm j0.6$, so the pole radius and angle are
+
+$$r = \\sqrt{0.72} = 0.8485281, \\qquad \\theta = \\arctan (0.6/0.6) = 45^\\circ = \\pi /4$$
+
+Rather than carrying complex residues to the end, use the standard result
+that a conjugate pair produces $r^{n}$ times a sinusoid at angle $\\theta$
+with some amplitude and phase. Computing the residue at $0.6+j0.6$ gives
+$0.5 - j0.5$, whose magnitude is $1/\\sqrt{2}$ and whose angle is
+$-\\pi /4$, so
+
+$$h[n] = 2\\lvert A\\rvert \\,r^{n}\\cos (n\\theta + \\angle A) = \\sqrt{2}\\,(0.8485281)^{n}\\cos \\!\\left(\\frac{(n-1)\\pi }{4}\\right)$$
+
+| n | from the recursion | from the closed form |
+|---|---|---|
+| 0 | 1 | 1 |
+| 1 | 1.2 | 1.2 |
+| 2 | 0.72 | 0.72 |
+| 3 | 0 | 0 |
+| 4 | −0.5184 | −0.5184 |
+| 5 | −0.62208 | −0.62208 |
+| 6 | −0.373248 | −0.373248 |
+| 7 | 0 | 0 |
+
+The recursion here is $h[n] = 1.2h[n-1] - 0.72h[n-2] + \\delta [n]$, and the
+two columns match to machine precision over twenty-six samples. The exact
+zeros at $n=3$ and $n=7$ are the cosine passing through its nodes: with
+$\\theta = \\pi /4$ the pattern repeats every eight samples, and the envelope
+shrinks by the factor 0.8485281 each step.
+
+The shortcut worth keeping: for a monic quadratic $z^{2}+bz+c$ with complex
+roots, the product of the roots is c and the product of a conjugate pair is
+the squared magnitude, so $r = \\sqrt{c}$ with no root-finding at all. Here
+$\\sqrt{0.72} = 0.8485281 < 1$, so the filter is stable. Confirm the roots
+really are complex first, by checking $b^{2} < 4c$: here
+$1.44 < 2.88$, so they are.
+
+![The impulse response of the second-order recursion, with the closed form drawn as a curve, the sample-by-sample recursion values plotted as markers on top of it, and the geometric envelope shown as a dashed pair.](/courses/fe-ee/figures/lin3-zt-recursion-audit.svg)
+
+### Worked example 8.4 — long division, and a numerator that matters
+
+**Given:** $H(z) = (1+0.5z^{-1})/(1-0.8z^{-1}+0.15z^{-2})$. Find the first
+five impulse-response samples by long division, then find the closed form
+and check the two against each other.
+
+Long division of the numerator by the denominator, keeping powers of
+$z^{-1}$, produces the impulse response directly, because the quotient
+coefficients ARE the samples. Equivalently, read the recursion off the
+expression:
+
+$$h[n] = 0.8h[n-1] - 0.15h[n-2] + \\delta [n] + 0.5\\delta [n-1]$$
+
+giving $h[0] = 1$, then $0.8 + 0.5 = 1.3$, then
+$1.04 - 0.15 = 0.89$, then $0.712 - 0.195 = 0.517$, then
+$0.4136 - 0.1335 = 0.2801$.
+
+For the closed form, put the expression over z. The poles solve
+$z^{2}-0.8z+0.15 = 0$, giving $z = 0.5$ and $z = 0.3$, so
+
+$$\\frac{H(z)}{z} = \\frac{z+0.5}{(z-0.5)(z-0.3)}, \\qquad A = \\frac{1.0}{0.2} = 1/0.2 = 5, \\qquad B = \\frac{0.8}{-0.2} = -4$$
+
+$$h[n] = \\bigl[5(0.5)^{n} - 4(0.3)^{n}\\bigr]u[n]$$
+
+Evaluate it: $5 - 4 = 1$, then $2.5 - 1.2 = 1.3$, then
+$1.25 - 0.36 = 0.89$, then $0.625 - 0.108 = 0.517$, then
+$0.3125 - 0.0324 = 0.2801$. Five for five against the division.
+
+Long division cannot give the general term, so it is the wrong tool for
+"find h[n]". It is the right tool for "what is the third output sample",
+where it beats a full expansion by a wide margin, and it is always available
+as an independent audit of a closed form obtained the longer way.
+
+**The trap.** Ignoring the numerator's $0.5z^{-1}$ and treating the filter
+as though it had only feedback. That gives $h[1] = 0.8$ instead of 1.3 and
+every later sample wrong. Feed-forward terms contribute to the output from
+the moment their delay elapses.`,
+        examTip: 'Whatever route you take to an inverse transform, spend thirty seconds turning H(z) back into a difference equation and generating h[0], h[1] and h[2]. Those three numbers catch a missing factor of z, a dropped numerator term and a sign error in a residue, which between them account for most lost marks in this topic.',
+        importantNote: 'Always expand X(z)/z, not X(z). Every table row has a z in its numerator, so dividing first and multiplying back afterwards is what makes each partial-fraction term match a row exactly. Expanding X(z) directly produces answers that are correct in shape but shifted one sample late.',
+      },
+      {
+        id: 'zt-s-to-z-bridge',
+        title: '9. The Bridge z = exp(sT), and What It Distorts',
+        content: `## 9.1 Where the mapping comes from
+
+Sample a continuous signal every T seconds. A continuous mode $e^{st}$
+becomes, at the sampling instants,
+
+$$e^{s(nT)} = \\left(e^{sT}\\right)^{n} = z^{n} \\qquad \\text{with} \\qquad z = e^{sT}$$
+
+so a continuous exponential mode turns into a discrete geometric mode whose
+ratio is $e^{sT}$. That single substitution carries every structural fact
+between the two domains, and splitting s into its real and imaginary parts
+shows exactly what it does:
+
+$$z = e^{(\\sigma + j\\omega )T} = e^{\\sigma T}\\,e^{j\\omega T} \\qquad \\Longrightarrow \\qquad \\lvert z\\rvert = e^{\\sigma T}, \\qquad \\angle z = \\omega T$$
+
+The real part of s sets the RADIUS and the imaginary part sets the ANGLE.
+Everything else follows.
+
+| s-plane feature | maps to | because |
+|---|---|---|
+| $\\sigma < 0$, the left half-plane | $\\lvert z\\rvert < 1$, inside the circle | $e^{\\sigma T} < 1$ when $\\sigma$ is negative |
+| $\\sigma = 0$, the imaginary axis | $\\lvert z\\rvert = 1$, the circle itself | $e^{0} = 1$ |
+| $\\sigma > 0$, the right half-plane | $\\lvert z\\rvert > 1$, outside | $e^{\\sigma T} > 1$ |
+| the origin, $s = 0$ | $z = 1$ | DC in both domains |
+| a line of constant $\\sigma$ | a circle of radius $e^{\\sigma T}$ | radius depends on $\\sigma$ alone |
+| a line of constant $\\omega$ | a ray at angle $\\omega T$ | angle depends on $\\omega$ alone |
+
+The first row is the whole stability story: "all poles in the left
+half-plane" and "all poles inside the unit circle" are the same sentence
+spoken in two coordinate systems.
+
+![The s-plane with its shaded left half and several marked points, beside the z-plane with the corresponding shaded unit disc and the image of each point under the exponential map for a one-millisecond sampling period.](/courses/fe-ee/figures/lin3-zt-splane-zplane.svg)
+
+## 9.2 The map is many-to-one, and that is aliasing
+
+The exponential is periodic in the imaginary direction with period
+$2\\pi j/T$. Two s-values separated by that amount have the SAME image:
+
+$$e^{(s + j2\\pi /T)T} = e^{sT}e^{j2\\pi } = e^{sT}$$
+
+and $2\\pi /T$ is exactly $2\\pi f_{s}$, the sampling frequency in radians per
+second. So the entire s-plane wraps repeatedly onto the z-plane, and only
+the horizontal strip $-\\pi /T < \\omega \\le \\pi /T$ — the band from minus
+Nyquist to plus Nyquist — maps one-to-one. This is aliasing, stated as
+geometry rather than as a picture of overlapping spectra: distinct
+continuous frequencies land on one discrete frequency because the map that
+takes them there is periodic.
+
+### Worked example 9.1 — poles carried across, and a collision
+
+**Given:** $T = 1$ ms. Map the continuous poles $s = -200$ and
+$s = -100 \\pm j600$ into the z-plane, and find another continuous pole with
+the same image as the second.
+
+For the real pole, $\\sigma T = -0.2$ and $\\omega T = 0$:
+
+$$z = e^{-0.2} = 0.8187308$$
+
+a real pole inside the unit circle, as a decaying real mode must be. For the
+complex pair, $\\sigma T = -0.1$ and $\\omega T = 0.6$ radians:
+
+$$\\lvert z\\rvert = e^{-0.1} = 0.9048374, \\qquad \\angle z = 0.6 \\ \\mathrm{rad} = 34.377468^\\circ$$
+
+$$z = 0.9048374 \\times 0.8253356 = 0.7467945 \\quad \\text{real part}, \\qquad 0.9048374 \\times 0.5646425 = 0.5109097 \\quad \\text{imaginary part}$$
+
+Now the collision. Adding one sampling frequency to the imaginary part,
+$2\\pi /T = 6283.1853$ rad/s, gives
+$600 + 6283.1853 = 6883.1853$ rad/s, and the pole
+$s = -100 + j6883.1853$ maps to precisely the same z. A 6883 rad/s
+oscillation and a 600 rad/s oscillation are indistinguishable once sampled
+at 1 kHz, and the z-plane cannot tell you which one you meant because it has
+lost the information.
+
+**The trap.** Assuming the map preserves distances or angles. It does not:
+it is exponential, so a pole twice as far into the left half-plane has a
+radius that is the SQUARE, not the half. Here $\\sigma = -200$ gives 0.8187
+while $\\sigma = -100$ gives 0.9048, and $0.9048^{2} = 0.8187$ exactly. Any
+intuition transported linearly from the s-plane will misjudge how much
+damping a given pole radius represents.
+
+### Worked example 9.2 — a sampled exponential IS a geometric sequence
+
+**Given:** $x(t) = e^{-\\alpha t}u(t)$ with $\\alpha = 200$ per second,
+sampled at $T = 1$ ms. Write the sequence and its transform.
+
+$$x[n] = e^{-\\alpha nT} = \\left(e^{-\\alpha T}\\right)^{n} = (0.8187308)^{n}$$
+
+so the samples of a decaying exponential form the geometric sequence with
+ratio $a = e^{-\\alpha T}$, and from the table
+
+$$X(z) = \\frac{z}{z-0.8187308}, \\qquad \\lvert z\\rvert > 0.8187308$$
+
+The continuous time constant is $1/\\alpha = 5$ ms, which is five samples,
+and the discrete rule of thumb $1/(1-a)$ gives
+$1/0.1812692 = 5.5167$ samples — close, and closer still as T shrinks
+relative to the time constant. The two are different quantities that
+converge, not the same quantity written twice.
+
+**A symbol warning that costs marks.** The continuous decay rate and the
+discrete pole radius are DIFFERENT numbers linked by an exponential. Writing
+both as "a" invites the nonsense equation $a = e^{-aT}$. Keep
+$\\alpha$ for the continuous rate and a for the pole, as above.
+
+## 9.3 What the bridge does not carry
+
+The mapping is exact for poles and for stability, and it is NOT exact for
+frequency response. Sampling a continuous filter's poles reproduces its
+modes but not its gain at every frequency, because the response of the
+discrete system folds all the aliases together. That is the subject of the
+next section, where the same specification is met two ways and the
+difference is measured rather than asserted.`,
+        examTip: 'When a question maps poles between domains, split s into sigma and omega first and handle radius and angle separately: radius is exp(sigma T) and angle is omega T in radians per sample. Doing the complex exponential in one step invites calculator-mode errors, and the split also makes the stability answer immediate.',
+        importantNote: 'z = exp(sT) is many-to-one. Every s that differs by an integer multiple of j2pi/T lands on the same z, which is aliasing expressed as geometry. Only the strip from minus Nyquist to plus Nyquist maps one-to-one, and information outside it is not recoverable from the samples.',
+      },
+      {
+        id: 'zt-difference-and-design',
+        title: '10. Difference Equations with Initial Conditions, and a Filter Built to Spec',
+        content: `## 10.1 Solving with a starting state
+
+A difference equation with a non-zero initial condition needs the unilateral
+shift rule from section 7, because the sample sitting in the delay register
+at switch-on is part of the problem.
+
+### Worked example 10.1 — a smoother that is not starting from rest
+
+**Given:** $y[n] = 0.6y[n-1] + x[n]$ with $x[n] = u[n]$ and $y[-1] = 5$.
+Find y[n] in closed form, split it into its two natural parts, and verify.
+
+Transform both sides, using
+$Z_{u}\\{y[n-1]\\} = z^{-1}Y(z) + y[-1]$:
+
+$$Y(z) - 0.6\\bigl[z^{-1}Y(z) + 5\\bigr] = \\frac{z}{z-1}$$
+
+$$Y(z)\\left(1 - 0.6z^{-1}\\right) = \\frac{z}{z-1} + 3 \\qquad \\Longrightarrow \\qquad Y(z) = \\frac{4z^{2}-3z}{(z-1)(z-0.6)}$$
+
+after multiplying through by $z/(z-0.6)$ and combining over a common
+denominator. Divide by z and cover up:
+
+$$\\frac{Y(z)}{z} = \\frac{4z-3}{(z-1)(z-0.6)}, \\qquad A = \\frac{4-3}{1-0.6} = 1/0.4 = 2.5, \\qquad B = \\frac{2.4-3}{0.6-1} = 0.6/0.4 = 1.5$$
+
+$$y[n] = \\bigl[2.5 + 1.5(0.6)^{n}\\bigr]u[n]$$
+
+Audit it by running the recursion forward from the stated initial condition:
+$y[0] = 0.6(5) + 1 = 4$, and the closed form gives
+$2.5 + 1.5 = 4$. Then $y[1] = 0.6(4) + 1 = 3.4$ against
+$2.5 + 0.9 = 3.4$. The full comparison:
+
+| n | recursion from $y[-1]=5$ | $2.5+1.5(0.6)^{n}$ |
+|---|---|---|
+| 0 | 4 | 4 |
+| 1 | 3.4 | 3.4 |
+| 2 | 3.04 | 3.04 |
+| 3 | 2.824 | 2.824 |
+| 4 | 2.6944 | 2.6944 |
+
+The decomposition is worth naming because exam questions ask for it by name.
+The **zero-input response** is what the initial condition alone produces,
+$3(0.6)^{n}$, obtained by setting the input to zero. The **zero-state
+response** is what the step alone produces starting from rest,
+$2.5 - 1.5(0.6)^{n}$. Their sum is
+$2.5 + 1.5(0.6)^{n}$, which is the total — the superposition property of a
+linear system applied to its two causes.
+
+Both settle at 2.5, and that number is available without any of this work:
+it is the DC gain $H(1) = 1/(1-0.6) = 1/0.4 = 2.5$. The initial condition
+changes the journey and not the destination, because the pole at 0.6 is
+inside the unit circle and its contribution dies.
+
+![The total response run forward from the stated initial condition, together with the zero-input and zero-state components that add to it, all three approaching the same steady value.](/courses/fe-ee/figures/lin3-zt-initial-condition.svg)
+
+**The trap.** Dropping the $y[-1]$ term from the shift rule. That gives the
+zero-state answer $2.5 - 1.5(0.6)^{n}$, which starts at 1 instead of 4 —
+plausible, monotone, and wrong by a factor of four on the first sample.
+
+## 10.2 The same specification, met two ways and measured
+
+Design is the point where every idea in this chapter has to produce a
+number. Take a concrete brief: a first-order digital low-pass, half-power at
+100 Hz, running at $f_{s} = 1000$ Hz. The digital frequency corresponding to
+the specification is
+
+$$\\Omega _{c} = \\frac{2\\pi f_{c}}{f_{s}} = 0.6283185 \\ \\mathrm{rad/sample}$$
+
+### Worked example 10.2 — designing by matching the pole
+
+**Given:** the brief above. Place the discrete pole at the image of the
+analogue pole under $z = e^{sT}$ and measure what you get.
+
+The analogue filter $\\omega _{c}/(s+\\omega _{c})$ has its pole at
+$s = -2\\pi (100)$, so
+
+$$a = e^{-2\\pi (100)(0.001)} = e^{-0.6283185} = 0.5334881, \\qquad H(z) = \\frac{K}{1-az^{-1}}$$
+
+Choose K for unity gain at DC, where $z=1$:
+$K = 1 - 0.5334881 = 0.4665119$.
+
+Now MEASURE the result at the specification frequency by evaluating on the
+unit circle, which is the only honest test of whether the brief was met.
+With $\\cos \\Omega _{c} = 0.8090170$ and
+$\\sin \\Omega _{c} = 0.5877853$:
+
+$$0.5334881 \\times 0.8090170 = 0.4316009, \\qquad 1 - 0.4316009 = 0.5683991$$
+
+$$0.3230775 + 0.0983302 = 0.4214077 \\qquad \\Longrightarrow \\qquad \\lvert 1-ae^{-j\\Omega _{c}}\\rvert = \\sqrt{0.4214077} = 0.6491592$$
+
+$$\\lvert H(e^{j\\Omega _{c}})\\rvert = 0.4665119/0.6491592 = 0.7186402 \\qquad \\Longrightarrow \\qquad 20\\log _{10}(0.7186402) = -2.8698 \\ \\mathrm{dB}$$
+
+Not $-3.0103$ dB. The design is 0.14 dB shy of its own specification, and
+solving for where the magnitude really reaches 0.7071068 puts the true
+corner at 103.4654 Hz, some 3.47 percent high. Pole matching reproduces the
+analogue MODE exactly and the analogue frequency response only
+approximately, and the discrepancy grows as the corner approaches Nyquist.
+
+### Worked example 10.3 — designing by the bilinear transform
+
+**Given:** the same brief. Use $s = (2/T)(1-z^{-1})/(1+z^{-1})$ with the
+corner prewarped, and measure again.
+
+The bilinear substitution compresses the whole infinite $j\\omega$ axis onto
+the unit circle, which is why it can never produce aliasing and why it bends
+the frequency scale. Undo the bend at the one frequency that matters by
+prewarping:
+
+$$\\omega _{a} = \\frac{2}{T}\\tan \\frac{\\Omega _{c}}{2} = 2000 \\times 0.3249197 = 649.8394 \\ \\mathrm{rad/s}$$
+
+against the unwarped 628.3185 rad/s. Substituting into
+$\\omega _{a}/(s+\\omega _{a})$ and collecting powers of $z^{-1}$:
+
+$$b_{0} = \\frac{\\omega _{a}}{2/T + \\omega _{a}} = 649.8394/2649.8394 = 0.2452373, \\qquad a_{1} = \\frac{2/T - \\omega _{a}}{2/T + \\omega _{a}} = 1350.1606/2649.8394 = 0.5095254$$
+
+$$H(z) = \\frac{0.2452373\\left(1+z^{-1}\\right)}{1 - 0.5095254z^{-1}}$$
+
+Measure it. At DC the numerator is $2b_{0} = 0.4904746$ and the denominator
+is $1-a_{1} = 0.4904746$, so the gain is exactly 1. At the specification
+frequency the magnitude comes out as 0.7071068 to ten decimal places, that
+is $-3.0103$ dB exactly: the brief is met, not approached. The price is a
+zero forced onto $z = -1$, so the response is exactly zero at Nyquist rather
+than merely small — usually a bonus for an anti-alias role and a nuisance if
+the response near Nyquist mattered.
+
+![Magnitude responses of the two designs against frequency, with a second panel zoomed to half a decibel around the specification point showing the pole-matched design falling short and the prewarped bilinear design landing exactly on it.](/courses/fe-ee/figures/lin3-zt-design-measure.svg)
+
+### Worked example 10.4 — a notch placed on the circle
+
+**Given:** reject 60 Hz at $f_{s} = 600$ Hz. Place zeros ON the unit circle
+at the offending angle and poles just inside at the same angle, with radius
+0.95, then measure the null and the width.
+
+The digital frequency is
+$\\Omega _{0} = 2\\pi (60)/600 = 0.6283185$ rad/sample, which is
+$36^\\circ$ of one lap, and $\\cos \\Omega _{0} = 0.8090170$. Zeros at
+$e^{\\pm j\\Omega _{0}}$ and poles at $0.95e^{\\pm j\\Omega _{0}}$ give
+
+$$H(z) = G\\,\\frac{z^{2} - 1.6180340z + 1}{z^{2} - 1.5371323z + 0.9025}$$
+
+using $2\\cos \\Omega _{0} = 1.6180340$ and
+$2(0.95)(0.8090170) = 1.5371323$ and $0.95^{2} = 0.9025$. Setting the DC
+gain to one fixes G. At $z=1$ the numerator is
+$1 - 1.6180340 + 1 = 0.3819660$ and the denominator is
+$1 - 1.5371323 + 0.9025 = 0.3653677$, whose ratio is
+$0.381966/0.3653677 = 1.045429$, so
+$G = 1/1.045429 = 0.956545$.
+
+Measured on the unit circle, the magnitude at 60 Hz is zero to machine
+precision, because the zero sits exactly there. The half-power edges come
+out at 55.157 Hz and 64.841 Hz, a width of
+$64.841 - 55.157 = 9.684$ Hz, and the gain at Nyquist is 1.0062 — so the
+filter is essentially transparent everywhere except in a ten-hertz
+neighbourhood of the interference it was built to remove.
+
+![Magnitude of the notch filter against frequency, showing unity gain across most of the band, an exact null at sixty hertz, and the two measured half-power edges either side of it.](/courses/fe-ee/figures/lin3-zt-notch.svg)
+
+![Pole-zero map of the notch: a conjugate zero pair on the unit circle at thirty-six degrees with a conjugate pole pair at the same angle just inside, at radius 0.95.](/courses/fe-ee/figures/lin3-zt-notch-polezero.svg)
+
+**The trap.** Pushing the pole radius to 0.999 to make the notch narrower
+without noticing what it does to the transient. The pole radius sets the
+decay per sample, so $r = 0.999$ rings for thousands of samples after any
+disturbance. Notch width and settling time are the same knob viewed from two
+ends, and a specification that demands both a very narrow notch and a fast
+recovery is asking for a contradiction.`,
+        examTip: 'A digital-filter question that gives a sampling rate and a corner frequency is asking you to work in radians per SAMPLE: convert with Omega = 2 pi f / fs before anything else. Then DC is z = 1, Nyquist is z = -1, and every magnitude is found by evaluating H at exp(jOmega), which is a two-line complex calculation rather than a plotting exercise.',
+        importantNote: 'Matching poles through z = exp(sT) reproduces the continuous MODE exactly but misses the frequency specification, here by 3.47 percent. The bilinear transform with a prewarped corner hits the frequency exactly but distorts the rest of the scale and forces a zero onto Nyquist. Neither is simply better; the exam expects you to know which property each one preserves.',
+      },
+      {
+        id: 'zt-problem-set-a',
+        title: '11. Problem Set A — Transforms, Regions and Inversion',
+        content: `Attempt each before reading on. Every solution ends by naming the wrong
+route a careless reader takes and the specific number it lands on.
+
+**A1.** Find X(z) and its region for $x[n] = 3(0.4)^{n}u[n] + 2u[n]$.
+
+**A2.** Invert $X(z) = z/[(z-0.2)(z-0.6)]$ for a causal sequence, and check
+the first two samples.
+
+**A3.** A system obeys $y[n] = 0.5y[n-1] + 2x[n] - x[n-1]$. Find H(z), its
+pole and zero, its DC gain and its gain at Nyquist.
+
+**A4.** Is $y[n] = 1.6y[n-1] - 0.68y[n-2] + x[n]$ stable? Give the pole
+magnitude without solving a quadratic if you can.
+
+**A5.** For $X(z) = 2z/(z-0.9)$, state whether the final-value theorem
+applies and, if so, the limit.
+
+**A6.** A sequence has $X(z) = 1 + 2z^{-1} + 3z^{-2} + 2z^{-3}$. Find x[n],
+the sum of all its samples, and its region.
+
+---
+
+### Worked solutions, Problem Set A
+
+**A1.** Two table rows added:
+
+$$X(z) = \\frac{3z}{z-0.4} + \\frac{2z}{z-1} = \\frac{3z(z-1) + 2z(z-0.4)}{(z-0.4)(z-1)} = \\frac{5z^{2}-3.8z}{(z-0.4)(z-1)}$$
+
+since the numerator expands to $3z^{2}-3z+2z^{2}-0.8z$. The region is the
+intersection of $\\lvert z\\rvert > 0.4$ and $\\lvert z\\rvert > 1$, which is
+$\\lvert z\\rvert > 1$.
+
+*Trap:* quoting the region as $\\lvert z\\rvert > 0.4$ because 0.4 appears
+first. For a right-sided sum the region is outside the LARGEST pole radius;
+the smaller pole imposes no constraint that the larger one has not already
+imposed.
+
+**A2.** Divide by z first:
+
+$$\\frac{X(z)}{z} = \\frac{1}{(z-0.2)(z-0.6)}, \\qquad A = \\frac{1}{0.2-0.6} = -2.5, \\qquad B = \\frac{1}{0.6-0.2} = 2.5$$
+
+$$x[n] = \\bigl[2.5(0.6)^{n} - 2.5(0.2)^{n}\\bigr]u[n]$$
+
+Check: $x[0] = 2.5 - 2.5 = 0$, which is right because the numerator degree
+is one below the denominator degree, so the sequence starts at zero. Then
+$x[1] = 1.5 - 0.5 = 1$. From the recursion
+$x[n] = 0.8x[n-1] - 0.12x[n-2] + \\delta [n-1]$ the same two values appear.
+
+*Trap:* expanding X(z) instead of $X(z)/z$, which produces
+$x[n] = 2.5(0.6)^{n-1} - 2.5(0.2)^{n-1}$ starting at $n=1$ — the same
+numbers one sample late, so $x[1]$ becomes 0 and $x[2]$ becomes 1.
+
+**A3.** Transform with zero initial conditions:
+
+$$H(z) = \\frac{2 - z^{-1}}{1 - 0.5z^{-1}} = \\frac{2z-1}{z-0.5}$$
+
+The pole is at 0.5. The zero solves $2z-1=0$, so it sits at 0.5 as well.
+Writing the numerator as $2(z-0.5)$ makes the cancellation explicit and
+leaves $H(z) = 2$: a pure gain of two, with impulse response
+$2\\delta [n]$. The DC gain is 2 and the Nyquist gain is 2, because a
+constant has no frequency dependence at all.
+
+*Trap:* reporting a first-order low-pass with a corner set by the pole at
+0.5. The cancellation is exact here, and missing it produces a frequency
+response that varies with frequency when the true one does not. Always
+factor the numerator before describing a filter.
+
+**A4.** The characteristic polynomial is $z^{2}-1.6z+0.68$. The
+discriminant is $1.6^{2}-4(0.68) = 2.56 - 2.72 = -0.16$, which is negative,
+so the roots are a conjugate pair. For a monic quadratic with complex roots
+the constant term is the squared magnitude:
+
+$$\\lvert p\\rvert = \\sqrt{0.68} = 0.824621 < 1$$
+
+so the system is stable, ringing with an envelope that shrinks by 0.824621
+per sample.
+
+*Trap:* comparing the coefficients 1.6 and 0.68 to one and declaring
+instability because 1.6 exceeds it. The coefficients are not the poles. Here
+$1.6 = 2r\\cos \\theta$ with $r = 0.824621$, which requires
+$\\cos \\theta = 0.970143$, an angle of about $14^\\circ$ — a slow, lightly
+damped ring, but a stable one.
+
+**A5.** Form $(z-1)X(z) = 2z(z-1)/(z-0.9)$. The surviving pole is at 0.9,
+inside the unit circle, so the theorem applies and gives
+
+$$\\lim _{z \\to 1}\\frac{2z(z-1)}{z-0.9} = \\frac{2(1)(0)}{0.1} = 0$$
+
+Confirm by inspection: $x[n] = 2(0.9)^{n}u[n]$, which does decay to zero.
+
+*Trap:* evaluating $X(1) = 2/0.1 = 20$ and calling that the final value.
+$X(1)$ is the SUM of the sequence, not its limit; here the sum really is 20
+while the limit really is 0, and the two are different questions.
+
+**A6.** The exponents are the sample indices, so
+$x[n] = \\{1, 2, 3, 2\\}$ at $n = 0,1,2,3$ and zero elsewhere. The sum of the
+samples is $X(1) = 1 + 2 + 3 + 2 = 8$. A finite-length causal sequence
+converges for every z except the origin, so the region is
+$\\lvert z\\rvert > 0$.
+
+*Trap:* claiming three poles at the origin makes the system unstable. Poles
+at the origin are pure delay; a finite impulse response is stable for any
+coefficients whatsoever, which is the main reason it is chosen when
+stability must be guaranteed by construction.`,
+        examTip: 'Two habits solve most of this set: divide by z before expanding, and factor the numerator before describing a filter. The first prevents the one-sample shift, the second catches pole-zero cancellations that turn an apparently dynamic system into a constant.',
+      },
+      {
+        id: 'zt-problem-set-b',
+        title: '12. Practice Problems B — Mapping, Design and Stability',
+        content: `**B1.** A continuous pole sits at $s = -50$ per second and the sampler runs
+at 200 Hz. Find the discrete pole and the number of samples per continuous
+time constant.
+
+**B2.** A discrete system has poles at $0.8e^{\\pm j\\pi /3}$. Find the
+difference equation, state the stability verdict, and find the oscillation
+period in samples.
+
+**B3.** Design a first-order low-pass by pole matching for a corner of
+50 Hz at $f_{s} = 500$ Hz, with unity DC gain. Give a and K.
+
+**B4.** For the two-point moving average $y[n] = (x[n]+x[n-1])/2$, find the
+magnitude at $\\Omega = \\pi /3$ and explain the null at Nyquist.
+
+**B5.** A filter is specified as $H(z) = (z-1)/(z-0.5)$. Classify it and
+give its gains at DC and at Nyquist.
+
+**B6.** Solve $y[n] = 0.5y[n-1] + \\delta [n]$ with $y[-1] = 8$, and say
+which part of the answer the transfer function does not describe.
+
+---
+
+### Worked solutions, Problem Set B
+
+**B1.** $T = 1/200 = 0.005$ s, so $\\sigma T = -50 \\times 0.005 = -0.25$ and
+
+$$z = e^{-0.25} = 0.778801$$
+
+The continuous time constant is $1/50 = 0.02$ s, which is
+$0.02/0.005 = 4$ samples. Sanity check on the pole: after four samples the
+discrete mode has fallen to $0.778801^{4} = 0.367879$, which is
+$1/e$ — exactly what one time constant means.
+
+*Trap:* computing the pole as $1 - \\sigma T = 1.25$, the first term of the
+exponential series with a sign slip, and concluding the system is unstable.
+The map is exponential, not linear.
+
+**B2.** Poles at radius 0.8 and angle $\\pi /3$ give the monic quadratic
+
+$$z^{2} - 2(0.8)\\cos (\\pi /3)z + 0.8^{2} = z^{2} - 0.8z + 0.64$$
+
+since $2(0.8)(0.5) = 0.8$. The difference equation is therefore
+$y[n] = 0.8y[n-1] - 0.64y[n-2] + x[n]$. The pole magnitude 0.8 is below one,
+so the system is stable. The angle $\\pi /3$ radians per sample means one
+full cycle takes $2\\pi /(\\pi /3) = 6$ samples.
+
+*Trap:* reading the period as $\\pi /3$ samples, or as three. The angle is
+radians PER SAMPLE, so the period is $2\\pi$ divided by it.
+
+**B3.** $T = 1/500 = 0.002$ s and $\\omega _{c} = 2\\pi (50)$, so
+
+$$a = e^{-2\\pi (50)(0.002)} = e^{-0.6283185} = 0.5334881, \\qquad K = 1 - 0.5334881 = 0.4665119$$
+
+Identical to the worked design in section 10, and for a reason worth
+noticing: the ratio $f_{c}/f_{s}$ is 0.1 in both cases, and the discrete
+design depends on nothing else. Halving both the corner and the sampling
+rate leaves the filter unchanged.
+
+*Trap:* using $f_{c}$ in hertz directly in the exponent, giving
+$e^{-50 \\times 0.002} = e^{-0.1} = 0.904837$, a pole so close to the circle
+that its effective time constant, $1/(1-a)$, is 10.5 samples instead of the
+intended 2.14 — nearly five times too slow. The exponent needs radians per second.
+
+**B4.** With $H(z) = (1+z^{-1})/2$, evaluate on the circle:
+
+$$\\lvert H(e^{j\\Omega })\\rvert = \\left\\lvert \\frac{1+e^{-j\\Omega }}{2}\\right\\rvert = \\cos \\frac{\\Omega }{2}$$
+
+At $\\Omega = \\pi /3$ that is $\\cos (\\pi /6) = 0.866025$. At
+$\\Omega = \\pi$, the Nyquist frequency, it is $\\cos (\\pi /2) = 0$ exactly.
+The mechanical reason is the more memorable one: the fastest sequence a
+sampler can represent alternates $+1, -1, +1, \\dots$, and the average of any
+two neighbouring samples of it is zero. A frequency-domain zero is a
+time-domain cancellation.
+
+*Trap:* reporting 0.5 at $\\Omega = \\pi /3$ by averaging the magnitudes of
+the two taps rather than adding them as phasors. The taps are separated by
+one sample of delay, so they add with a phase difference, and only at DC do
+they add in step.
+
+**B5.** One zero at $z=1$ and one pole at 0.5, so this is a high-pass: it
+kills DC exactly and passes fast changes.
+
+$$H(1) = 0/0.5 = 0, \\qquad H(-1) = \\frac{-2}{-1.5} = 2/1.5 = 1.333333$$
+
+*Trap:* calling it a low-pass because the pole is inside the circle near the
+origin-side of the axis. Pole position sets the decay; the ZERO at $z=1$ is
+what sets the DC behaviour, and a zero at $z=1$ always means zero DC gain.
+
+**B6.** Transform with the unilateral shift rule:
+
+$$Y(z) - 0.5\\bigl[z^{-1}Y(z) + 8\\bigr] = 1 \\qquad \\Longrightarrow \\qquad Y(z)\\left(1-0.5z^{-1}\\right) = 5$$
+
+since $1 + 0.5(8) = 5$. Hence
+
+$$Y(z) = \\frac{5}{1-0.5z^{-1}} = \\frac{5z}{z-0.5} \\qquad \\Longrightarrow \\qquad y[n] = 5(0.5)^{n}u[n]$$
+
+Verify from the recursion: $y[0] = 0.5(8) + 1 = 5$, then
+$y[1] = 0.5(5) = 2.5$, then 1.25, then 0.625 — exactly
+$5(0.5)^{n}$.
+
+The transfer function $H(z) = 1/(1-0.5z^{-1})$ describes only the zero-state
+part of this, whose impulse response is $(0.5)^{n}u[n]$ and whose first
+sample is 1, not 5. The other four units of that first sample come from the
+initial condition, which no transfer function can express, because H(z) is
+defined by assuming the initial state is zero.
+
+*Trap:* answering $(0.5)^{n}u[n]$ from the transfer function alone and
+ignoring $y[-1]$. That is off by a factor of five at every sample.`,
+        examTip: 'Stability questions are answered from pole MAGNITUDES, never from coefficients. For a monic quadratic with complex roots the constant term is the squared pole magnitude, so a single square root settles it; confirm the roots are complex first by checking that b squared is less than 4c, and otherwise solve for the two real roots and check each against the unit circle separately.',
+      },
     ],
     keyTakeaways: [
-      'Z-Transform: X(z) = Σ x[n]·z^(−n); converts difference equations to algebra.',
+      'Z-Transform: X(z) = sum over all n from −infinity to +infinity of x[n]·z^(−n); converts difference equations to algebra.',
       'z = e^(sT) maps continuous s-plane to discrete z-plane; jω axis → unit circle.',
       'Discrete BIBO stability: all poles must satisfy |pᵢ| < 1 (inside unit circle).',
       'Key pairs: u[n] → z/(z−1), aⁿ·u[n] → z/(z−a), n·aⁿ·u[n] → az/(z−a)².',
