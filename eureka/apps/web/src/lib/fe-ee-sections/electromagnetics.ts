@@ -149,7 +149,8 @@ surface, $E = (8.99 \\times 10^{9})(10^{-9})/(0.05)^{2} = 3595$ V/m. At
 r = 2 cm the insulating case gives $3595 \\times (2/5) = 1438$ V/m, while the
 conductor gives exactly zero. At r = 10 cm both give
 $3595 \\times (5/10)^{2} = 899$ V/m. The potential at the centre of the
-insulator is $1.5 \\times 179.8 = 269.6$ V against 179.8 V for the conductor.
+insulator is $1.5 \\times 179.75 = 269.6$ V against 179.75 V for the
+conductor.
 
 The line worth memorising is the last row of the table: **from outside, any
 spherically symmetric charge looks exactly like a point charge at its
@@ -305,6 +306,724 @@ clock rate — one of the few places where an electrostatics result sets a
 limit on digital design.`,
       examTip: 'When a capacitor problem gives you a dielectric, check immediately whether the applied voltage or the stored charge is being held constant, because they lead to opposite answers. Insert a slab at constant voltage and the charge, energy and stored field all rise; insert it at constant charge (source disconnected) and the voltage and internal field fall by ε_r while the energy drops. Series layers share D, parallel regions share E.',
       importantNote: 'Air breaks down near 3 MV/m, so a series air gap — a void, a poorly seated washer, an unfilled corner — usually decides the breakdown voltage of an assembly regardless of how strong the solid insulation is. The low-permittivity layer always carries the highest field.',
+    },
+    {
+      id: 'es-gauss-symmetries',
+      title: "5. Gauss's Law Derived in All Three Symmetries",
+      content: `## 5.1 What the flux integral is actually claiming
+
+Coulomb's law tells you the field of one charge. Gauss's law tells you
+something different and, for exam purposes, more useful: it relates the
+outward electric flux through *any* closed surface to the charge sitting
+inside it, and it says nothing whatever about the charge outside.
+
+$$\\oint_{S} \\varepsilon _{0}\\boldsymbol{E}\\cdot d\\boldsymbol{A} = Q_{\\mathrm{enc}}$$
+
+Written with the flux density $\\boldsymbol{D} = \\varepsilon _{0}\\varepsilon _r\\boldsymbol{E}$ it is even blunter, and this is the form to carry into a dielectric problem:
+
+$$\\oint_{S} \\boldsymbol{D}\\cdot d\\boldsymbol{A} = Q_{\\mathrm{free,\\,enc}}$$
+
+The law is always true and hardly ever useful, because the dot product and
+the integral only collapse when the geometry hands you a surface on which
+$\\lvert \\boldsymbol{E} \\rvert$ is constant and $\\boldsymbol{E}$ is
+everywhere perpendicular to the surface. Exactly three arrangements do that,
+and the FE exam draws from all three.
+
+| Symmetry | Surface that works | Area used | Field falls off as |
+|---|---|---|---|
+| Spherical (point, ball, shell) | concentric sphere | $4\\pi r^{2}$ | $1/r^{2}$ |
+| Cylindrical (line, wire, coax) | coaxial cylinder | $2\\pi r L$ | $1/r$ |
+| Planar (sheet, plate, slab) | pillbox across the sheet | $2A$ or $A$ | not at all |
+
+![Field against distance for the three Gaussian symmetries, each normalised to its own value at 1 cm: over one decade the spherical case falls by a factor of 100, the cylindrical by 10, and the planar case not at all.](/courses/fe-ee/figures/em2-three-symmetries.svg)
+
+The last column is the fastest sanity check in the whole topic. If a problem
+describes a long charged rod and your answer contains $r^{2}$, the wrong
+surface was used. Three geometries, three exponents, and the exponent is
+fixed by the shape of the source rather than by anything about the charge.
+
+## 5.2 Spherical symmetry, region by region
+
+Put the total charge $Q$ inside a ball of radius $R$, spread uniformly
+through the volume, and draw a sphere of radius $r$ around the centre. For
+$r > R$ the sphere encloses everything:
+
+$$\\varepsilon _{0}E(r)\\,4\\pi r^{2} = Q \\quad \\Rightarrow \\quad E(r) = \\frac{Q}{4\\pi \\varepsilon _{0}r^{2}}$$
+
+For $r < R$ it encloses only the fraction of the volume it contains,
+$Q r^{3}/R^{3}$, and the $r^{3}$ beats the $r^{2}$ in the area:
+
+$$E(r) = \\frac{Q r^{3}/R^{3}}{4\\pi \\varepsilon _{0}r^{2}} = \\frac{Q r}{4\\pi \\varepsilon _{0}R^{3}}$$
+
+so the interior field grows linearly from zero at the centre, peaks at the
+surface, and only then begins to fall. A conductor holding the same charge
+has it all on the outer skin instead, so the enclosed charge is zero
+everywhere inside and $E = 0$ throughout the metal, while the exterior field
+is identical. Outside a spherically symmetric distribution, nothing about
+the interior arrangement survives.
+
+### Worked Example 1 — a uniformly charged ball, checked against Coulomb
+
+**Given**: $Q = 8.0\\ \\mathrm{nC}$ spread uniformly through a sphere of radius $R = 4.0\\ \\mathrm{cm}$, in air.
+
+**Find**: the field at 2.0 cm, at the surface, and at 10 cm.
+
+At the surface the enclosed charge is the whole 8.0 nC, so
+
+$$E(R) = \\frac{Q}{4\\pi \\varepsilon _{0}R^{2}} = \\frac{(8.98755 \\times 10^{9})(8.0 \\times 10^{-9})}{(0.040)^{2}} = 4.494 \\times 10^{4}\\ \\mathrm{V/m}$$
+
+Inside, scale that surface value linearly: at $r = 2.0$ cm the ratio is
+$r/R = 0.50$, so $E = 0.50 \\times 44\\,938 = 22\\,469$ V/m. Outside, scale it
+by the inverse square: at $r = 10$ cm the ratio is $R/r = 0.40$, and
+$0.40 \\times 0.40 \\times 44\\,938 = 7190$ V/m.
+
+**The independent check.** Every number above came out of Gauss's law, so
+verifying it with Gauss's law again would prove nothing. The figure below
+carries a second route: the raw Coulomb kernel integrated by adaptive
+quadrature over the whole ball, with no appeal to symmetry, the shell
+theorem or flux at any point. The two agree to better than one part in
+$10^{9}$ at every probe radius, inside and out — which is the evidence that
+the $4\\pi$ and the $\\varepsilon _{0}$ landed in the right places.
+
+![Field magnitude against radius for 8 nC spread through a 4 cm ball: the Gauss's-law profile rises linearly to 44.94 kV/m at the surface then falls as one over r squared, with markers from direct numerical integration of Coulomb's law lying on the same curve.](/courses/fe-ee/figures/em2-ball-gauss-vs-coulomb.svg)
+
+The self-energy of that ball is also a two-route quantity. Assembling it
+shell by shell gives $U = 3Q^{2}/(20\\pi \\varepsilon _{0}R)$, which evaluates
+to **8.628 µJ**; integrating $\\tfrac{1}{2}\\varepsilon _{0}E^{2}$ over all
+space, inside and outside, returns the same 8.628 µJ. Note that most of that
+energy — 7.19 of the 8.63 µJ — sits *outside* the ball, in the region where
+there is no charge at all.
+
+## 5.3 Cylindrical symmetry: the line, the wire and the cable
+
+For a long line carrying $\\lambda$ coulombs per metre, the coaxial cylinder
+of radius $r$ and length $L$ has area $2\\pi r L$ on its curved face and no
+flux at all through its ends:
+
+$$\\varepsilon _{0}E(r)\\,2\\pi r L = \\lambda L \\quad \\Rightarrow \\quad E(r) = \\frac{\\lambda}{2\\pi \\varepsilon _{0}r}$$
+
+The $L$ cancels, which is why "per unit length" is the natural currency of
+every cylindrical problem. Inside a solid charged rod the enclosed fraction
+goes as $r^{2}/a^{2}$, one power of $r$ cancels against the area, and
+
+$$E(r) = \\frac{\\lambda r}{2\\pi \\varepsilon _{0}a^{2}} \\quad (r < a)$$
+
+again rising linearly to a peak at the surface.
+
+### Worked Example 2 — how long is long enough
+
+**Given**: a 2.0 m rod carrying a uniform 50 nC/m. **Find**: the field 5.0 cm out from its midpoint, and how badly the infinite-line formula misleads.
+
+The infinite-line answer is
+
+$$E_{\\infty} = \\frac{\\lambda}{2\\pi \\varepsilon _{0}r} = \\frac{50 \\times 10^{-9}}{(6.2831853)(8.8541878 \\times 10^{-12})(0.050)} = 17\\,975\\ \\mathrm{V/m}$$
+
+The honest answer integrates Coulomb's law along the finite rod. For a
+segment of half-length $a$ at perpendicular distance $d$ from the midpoint,
+the perpendicular components add and the axial ones cancel in pairs:
+
+$$E = \\frac{\\lambda}{4\\pi \\varepsilon _{0}}\\int_{-a}^{a}\\frac{d\\,dz}{(d^{2}+z^{2})^{3/2}} = \\frac{\\lambda a}{2\\pi \\varepsilon _{0}d\\sqrt{d^{2}+a^{2}}}$$
+
+With $a = 1.0$ m and $d = 0.050$ m that gives **17 953 V/m**, a ratio of
+0.99875 to the infinite result. Being 40 rod-half-lengths away makes the
+approximation good to 0.125%, and the generalisation worth carrying is that
+the infinite-line formula is safe whenever the observation distance is under
+about a tenth of the length. The same integral was evaluated numerically and
+in closed form in the figure pipeline; the two agree to $10^{-12}$ relative.
+
+## 5.4 Planar symmetry, and the factor of two that decides exam questions
+
+A single infinite sheet of surface charge $\\sigma$ throws flux out of both
+faces. A pillbox of face area $A$ straddling it encloses $\\sigma A$ and
+presents $2A$ of area to the field:
+
+$$\\varepsilon _{0}E\\,(2A) = \\sigma A \\quad \\Rightarrow \\quad E = \\frac{\\sigma}{2\\varepsilon _{0}}$$
+
+A charged conductor surface is a different situation with the same picture.
+The field inside the metal is zero, so the pillbox has only *one* live face,
+and the whole flux exits on the outside:
+
+$$\\varepsilon _{0}E\\,A = \\sigma A \\quad \\Rightarrow \\quad E = \\frac{\\sigma}{\\varepsilon _{0}}$$
+
+Both results are correct; they answer different questions. The distractor
+that trades one for the other appears on almost every FE electrostatics
+paper, and the tell is whether the charge sits on an isolated film with
+vacuum on both sides, or on the face of a conductor with metal behind it.
+
+### Worked Example 3 — sheets, plates and the field between them
+
+**Given**: two large parallel plates 4.0 mm apart, one carrying $+\\sigma$ and the other $-\\sigma$ with $\\sigma = 20\\ \\mathrm{nC/m^{2}}$, in air.
+
+Treat each plate as an isolated sheet and superpose. Between the plates the
+two contributions point the same way and add:
+
+$$E_{\\mathrm{between}} = \\frac{\\sigma}{2\\varepsilon _{0}} + \\frac{\\sigma}{2\\varepsilon _{0}} = \\frac{\\sigma}{\\varepsilon _{0}} = \\frac{20 \\times 10^{-9}}{8.8541878 \\times 10^{-12}} = 2259\\ \\mathrm{V/m}$$
+
+Outside, they point oppositely and cancel exactly, so the field beyond a
+charged parallel-plate pair is zero. The potential difference follows from a
+uniform field over a fixed gap: $V = E d = 2259 \\times 0.0040 = 9.04$ V. The
+factor-of-two story now reads coherently — each sheet alone gives
+$\\sigma /2\\varepsilon _{0}$, the pair gives $\\sigma /\\varepsilon _{0}$, and
+so does one conductor face, because in both of those cases all the flux is
+forced into a single half-space.
+
+## 5.5 The five-step Gauss recipe, and its failure mode
+
+1. Name the symmetry. If moving around a surface of constant distance would
+   change the answer, there is no symmetry and Gauss's law will not give a
+   number.
+2. Draw the surface that makes $\\boldsymbol{E}$ constant and normal.
+3. Replace the integral with $E$ times the area of the live faces.
+4. Count only the **enclosed** charge. Everything outside contributes exactly
+   as much inward flux as outward.
+5. Solve, then check the far-field exponent against the table in 5.1.
+
+Step 4 is the examinable one. A charge suspended inside a hollow conducting
+shell, a wire inside a grounded conduit, a signal conductor inside a braid:
+in each case the exterior field depends only on the algebraic sum of
+everything inside the surface. Equal and opposite enclosed charge means no
+exterior field, which is the entire argument for shielded cable.`,
+      examTip: "Before writing anything, decide which of the three symmetries you are in and whether the field point is inside or outside the source. Those two decisions pick the formula; the arithmetic afterwards is trivial. The single most common wrong answer on planar problems comes from using sigma over two epsilon-nought at a conductor face, where the correct value is twice that because the metal side carries no flux.",
+      importantNote: "Gauss's law in the form with D on the left, equal to the enclosed FREE charge, is the version to use whenever a dielectric is present: it lets you find D from the free charge alone and only then divide by the local permittivity to get E. Using the epsilon-nought form inside a dielectric silently drops the factor of epsilon-r.",
+    },
+    {
+      id: 'es-potential-conductors',
+      title: '6. Potential, Gradient, Conductors and Images',
+      content: `## 6.1 Potential is the line integral of the field
+
+Potential difference is defined as work per unit charge against the field,
+which makes it a line integral:
+
+$$V_{A} - V_{B} = -\\int_{B}^{A}\\boldsymbol{E}\\cdot d\\boldsymbol{l}$$
+
+In electrostatics that integral is path-independent, because
+$\\nabla \\times \\boldsymbol{E} = 0$ when nothing is changing with time. That
+single fact is what makes potential a usable idea: a number can be attached
+to each point in space, and a closed loop must return
+
+$$\\oint \\boldsymbol{E}\\cdot d\\boldsymbol{l} = 0$$
+
+which is Kirchhoff's voltage law before there is a circuit to apply it to.
+
+For the three standard symmetries the integral is elementary, and the shapes
+are worth recognising on sight:
+
+| Source | Field | Potential (reference) |
+|---|---|---|
+| Point charge | $Q/(4\\pi \\varepsilon _{0}r^{2})$ | $Q/(4\\pi \\varepsilon _{0}r)$, zero at infinity |
+| Long line | $\\lambda /(2\\pi \\varepsilon _{0}r)$ | $-[\\lambda /(2\\pi \\varepsilon _{0})]\\ln r$, zero at a chosen $r_{0}$ |
+| Uniform field | $E$ constant | $-E x$, zero at a chosen plane |
+
+The middle row carries a warning: a genuinely infinite line has infinite
+charge, so its potential cannot be referenced to infinity. Only differences
+are meaningful, and every coaxial answer is a ratio of radii inside a
+logarithm for that reason.
+
+Field and potential also disagree about where the interesting places are,
+and the exam exploits that. Take the pair worked in section 3 — a
+$+2\\ \\mu \\mathrm{C}$ charge at the origin and a $-3\\ \\mu \\mathrm{C}$ charge
+0.40 m along the axis — and plot both quantities along the line joining them.
+
+![Field component and potential along the axis of a plus 2 and minus 3 microcoulomb pair: the field reaches 1.123 megavolts per metre at the midpoint and has its only null outside the pair at minus 1.78 metres, while the potential passes through zero at plus 0.16 and minus 0.80 metres, where the field is nowhere near zero.](/courses/fe-ee/figures/em2-superposition-axis.svg)
+
+The field has a single null, and it lies **outside** the pair, 1.78 m beyond
+the weaker charge — between two opposite charges the contributions reinforce
+and can never cancel. The potential, by contrast, passes through zero twice,
+at $x = 0.16$ m and at $x = -0.80$ m, and at neither of those points is the
+field remotely zero. A point of zero potential is not a point of zero field,
+and a point of zero field is not a point of zero potential; they are
+different questions about the same distribution, and a stem that asks for one
+while offering the other's answer is a standard construction.
+
+### Worked Example 4 — potential from the field in a coaxial line
+
+**Given**: a coaxial cable with $a = 0.50\\ \\mathrm{mm}$, $b = 3.50\\ \\mathrm{mm}$, polyethylene of $\\varepsilon _r = 2.25$, with the shield grounded and the centre at 1000 V.
+
+The charge per metre follows from Gauss's law in a cylinder, and the field
+between the conductors is $E(r) = \\lambda /(2\\pi \\varepsilon _{0}\\varepsilon _r r)$. Integrating that inward from the shield gives the potential directly:
+
+$$V(r) = \\int_{r}^{b}\\frac{\\lambda \\,dr'}{2\\pi \\varepsilon _{0}\\varepsilon _r r'} = \\frac{\\lambda}{2\\pi \\varepsilon _{0}\\varepsilon _r}\\ln \\frac{b}{r}$$
+
+Setting $r = a$ recovers the applied 1000 V and pins $\\lambda$, after which
+the field is most conveniently written without $\\lambda$ at all:
+
+$$E(r) = \\frac{V_{0}}{r\\,\\ln (b/a)}, \\qquad \\ln \\frac{b}{a} = \\ln 7 = 1.9459$$
+
+At the inner conductor, $1.9459 \\times 0.50 = 0.9730$ mm of effective
+denominator gives $1000 / 0.97296 = 1027.8$ volts per millimetre, i.e.
+**1.028 MV/m**. At the shield the same expression gives 0.147 MV/m. The
+field ratio is exactly $b/a = 7$: everything the cable has to survive
+electrically happens at the inner conductor.
+
+![Radial field and potential in a coaxial line with a 0.5 mm centre and a 3.5 mm shield at 1000 V: the field runs from 1.028 MV/m at the inner conductor down to 0.147 MV/m at the shield, and the potential recovered by numerically integrating that field lands on the closed-form logarithm at every radius.](/courses/fe-ee/figures/em2-coax-field.svg)
+
+The lower panel of that figure is the check: the potential curve was
+produced by numerically integrating the field inward from the shield, and
+the circles are the closed-form logarithm. They agree to under a microvolt
+across the whole gap.
+
+## 6.2 The field is the negative gradient
+
+Run the relation the other way and the field is recovered by
+differentiating:
+
+$$\\boldsymbol{E} = -\\nabla V = -\\left(\\frac{\\partial V}{\\partial x}\\hat{x} + \\frac{\\partial V}{\\partial y}\\hat{y} + \\frac{\\partial V}{\\partial z}\\hat{z}\\right)$$
+
+Three consequences are examinable. The field points **downhill** in
+potential, which is why the minus sign is not optional. Its magnitude is the
+steepest slope, so tightly packed equipotentials mean a strong field. And
+because the gradient of a constant is zero, an equipotential region has no
+field in it — the statement that a conductor's interior is field-free is the
+same statement as its being an equipotential.
+
+### Worked Example 5 — gradient in one variable and in two
+
+**Part (a).** In the coaxial line above, $V(r) = V_{0}\\ln (b/r)/\\ln (b/a)$. Differentiating,
+
+$$E_{r} = -\\frac{dV}{dr} = \\frac{V_{0}}{r \\ln (b/a)}$$
+
+which is the field already found from Gauss's law, and the agreement of the
+two routes is the point of doing it twice.
+
+**Part (b).** Suppose a region has $V(x,y) = 400xy$ volts with $x, y$ in
+metres. Then $E_{x} = -400y$ and $E_{y} = -400x$, so at the point
+$(0.30, 0.20)$ m the components are $-400 \\times 0.20 = -80$ V/m and
+$-400 \\times 0.30 = -120$ V/m, giving
+
+$$\\lvert \\boldsymbol{E} \\rvert = \\sqrt{80^{2} + 120^{2}} = 144.2\\ \\mathrm{V/m}$$
+
+directed into the third quadrant. Confirm that this $V$ can exist in a
+charge-free region by taking the Laplacian:
+$\\partial ^{2}V/\\partial x^{2} + \\partial ^{2}V/\\partial y^{2} = 0 + 0 = 0$, so it satisfies Laplace's equation and no charge density is implied.
+
+## 6.3 Laplace, uniqueness, and solving by grid
+
+Where there is no charge, Gauss's law in differential form collapses to
+
+$$\\nabla ^{2}V = 0$$
+
+and where there is a charge density it becomes Poisson's equation
+$\\nabla ^{2}V = -\\rho /\\varepsilon$. The uniqueness theorem is the working
+tool: a solution that satisfies Laplace's equation inside a region **and**
+matches the potential on its whole boundary is *the* solution. There is no
+second one to worry about, so any method that produces such a function —
+guessing, separating variables, or relaxing a grid — is legitimate.
+
+Discretising the Laplacian on a square grid turns the equation into a
+statement anyone can verify by hand: the potential at a node is the average
+of its four neighbours.
+
+$$V_{i,j} = \\tfrac{1}{4}\\left(V_{i+1,j} + V_{i-1,j} + V_{i,j+1} + V_{i,j-1}\\right)$$
+
+### Worked Example 6 — a square box, three sides grounded
+
+**Given**: a square cross-section duct with three walls grounded and the fourth held at 100 V. **Find**: the potential at the centre.
+
+Symmetry answers this with no arithmetic at all. Four copies of the problem,
+each with a different wall energised, superpose to a box at 100 V all round;
+inside such a box the potential is 100 V everywhere, and by symmetry each of
+the four contributes equally. Therefore the centre sits at
+$100 / 4 = 25$ V exactly.
+
+That exact value is the yardstick for the numerical routes. A
+$201 \\times 201$ grid relaxed by red-black successive over-relaxation
+converges in 939 sweeps and lands on **25.000000 V**; the
+separation-of-variables series
+
+$$V(x,y) = \\frac{4V_{0}}{\\pi}\\sum_{n\\ \\mathrm{odd}}\\frac{1}{n}\\sin \\frac{n\\pi x}{a}\\,\\frac{\\sinh (n\\pi y/a)}{\\sinh (n\\pi b/a)}$$
+
+gives 25.000000 V as well, and the two agree to within 6 mV everywhere along
+the centre line. At a quarter of the way up the box the potential is only
+9.54 V, and at three quarters it is 54.05 V — the field crowds toward the
+energised wall, exactly as the equipotential spacing in the figure shows.
+
+![Potential up the centre line of a square box with three walls grounded and the fourth at 100 V: the finite-difference grid and the separation-of-variables series lie on the same curve, passing through 9.54 V at quarter height, 25.000 V at the centre and 54.05 V at three-quarter height.](/courses/fe-ee/figures/em2-laplace-square.svg)
+
+## 6.4 Conductors in equilibrium: five statements, one cause
+
+In equilibrium no charge is moving, so no field can survive inside
+conducting material — any residual field would drive current until it was
+cancelled. Everything else follows.
+
+| Statement | Why | What it is used for |
+|---|---|---|
+| $\\boldsymbol{E} = 0$ inside the metal | otherwise charge would keep moving | the starting point |
+| Net charge lives on the surface | a Gaussian surface just inside encloses nothing | shells, cages |
+| The body is one equipotential | $-\\int \\boldsymbol{E}\\cdot d\\boldsymbol{l} = 0$ along any interior path | grounding, screening |
+| Field meets the surface at 90 degrees | any tangential component would push surface charge | sketching flux plots |
+| $E_{\\mathrm{surface}} = \\sigma /\\varepsilon _{0}$ | all the flux exits on one side | breakdown limits |
+
+The last row sets a hard physical ceiling. Dry air breaks down near
+3 MV/m, so no conductor in air can hold more than
+$\\sigma _{\\max} = \\varepsilon _{0} \\times 3 \\times 10^{6} = 26.6\\ \\mathrm{µC/m^{2}}$
+before the air lets go. Charge crowds onto small radii, so sharp corners
+reach that density first — which is why high-voltage hardware is built from
+generous smooth curves and corona rings.
+
+## 6.5 The method of images
+
+A grounded conducting plane forces $V = 0$ on itself. A point charge $q$ at
+height $h$ above it plus a fictitious $-q$ at depth $h$ below it also forces
+$V = 0$ on that plane, by symmetry, and satisfies Laplace's equation
+everywhere above it. By uniqueness, the two-charge field **is** the answer
+in the upper half-space — while saying nothing at all about the region below
+the plane, where the real field is zero and the image does not exist.
+
+$$F = \\frac{q^{2}}{4\\pi \\varepsilon _{0}(2h)^{2}}, \\qquad W = -\\frac{q^{2}}{4\\pi \\varepsilon _{0}(4h)}, \\qquad \\sigma (\\rho ) = \\frac{-q h}{2\\pi (\\rho ^{2}+h^{2})^{3/2}}$$
+
+The energy is *half* the value a real charge pair would have, because the
+image is not an independent charge that had to be brought in from infinity —
+it is a bookkeeping device for charge the plane rearranged for free.
+
+### Worked Example 7 — 5 nC above a ground plane
+
+**Given**: $q = 5.0\\ \\mathrm{nC}$ held 3.0 cm above a large grounded plane in air.
+
+**Force.** The image sits 6.0 cm away, so
+
+$$F = \\frac{(8.98755 \\times 10^{9})(5.0 \\times 10^{-9})^{2}}{(0.060)^{2}} = 62.41\\ \\mathrm{µN}\\ \\text{, attractive}$$
+
+**Energy.** $W = -62.41\\ \\mathrm{µN} \\times 0.030\\ \\mathrm{m} = -1.872\\ \\mathrm{µJ}$, using the fact that the force varies as the inverse square of the separation so the work integral contributes one factor of $h$.
+
+**Induced charge.** Directly beneath the charge the surface density peaks at
+$\\sigma (0) = -q/(2\\pi h^{2}) = -0.884\\ \\mathrm{µC/m^{2}}$, and the field
+just above the plane there is
+$\\lvert \\sigma \\rvert /\\varepsilon _{0} = 99.86$ kV/m. That same 99.86 kV/m
+comes out of adding the two point-charge fields, $2kq/h^{2}$, which is the
+independent confirmation that the conductor boundary condition and the image
+construction describe one situation and not two.
+
+![Induced surface charge density under a 5 nC point charge 3 cm above a grounded plane: it peaks at -0.884 microcoulombs per square metre directly beneath the charge and falls to half that at a radius of 23.0 mm, integrating over the whole plane to exactly -5.000 nC.](/courses/fe-ee/figures/em2-image-charge.svg)
+
+Integrating $\\sigma$ over the entire plane returns **-5.000 nC**: the plane
+supplies precisely the image charge, no more and no less. The density has
+fallen to half its peak by $\\rho = 23.0$ mm, about three quarters of the
+height — so a ground plane only has to extend a few times the standoff
+distance to behave like an infinite one, which is the practical rule behind
+PCB ground-plane sizing.`,
+      examTip: "Potential problems reward laziness in the right place. If a question asks only for a potential DIFFERENCE, never build the field first: integrate along the easiest path, because path independence guarantees the answer is the same. If it asks for a field and gives you a potential function, differentiate rather than reconstructing the charge distribution. And on any grounded-plane problem, write the image charge down immediately - the separation that matters is 2h, not h, and forgetting that inflates the force by a factor of four.",
+      importantNote: "The method of images gives the field only on the side of the plane where the real charge sits. Below a grounded plane the field is exactly zero, and a candidate who evaluates the two-charge expression there has answered a question about a different physical system. The same caution applies to the energy: it is half the naive point-pair value, because the induced charge was free.",
+    },
+    {
+      id: 'es-capacitance-dielectrics',
+      title: '7. Capacitance from Geometry, and What Dielectrics Really Do',
+      content: `## 7.1 One recipe, three geometries
+
+Every capacitance in the syllabus comes from the same four steps, and doing
+them once in the abstract makes all three standard results fall out.
+
+1. Put $+Q$ on one conductor and $-Q$ on the other.
+2. Find $\\boldsymbol{E}$ between them with Gauss's law.
+3. Integrate to get $V = -\\int \\boldsymbol{E}\\cdot d\\boldsymbol{l}$ between the plates.
+4. Divide: $C = Q/V$, and watch $Q$ cancel.
+
+That the charge always cancels is the content of the statement that
+capacitance is a property of geometry and material, not of how hard you
+drive it.
+
+### Worked Example 8 — parallel plates, from scratch
+
+**Given**: area $A$, separation $d$, filled with $\\varepsilon _r$, with $d$ small enough that fringing is negligible.
+
+With $\\sigma = Q/A$ on the inner faces of the plates, step 2 gives
+$E = \\sigma /(\\varepsilon _{0}\\varepsilon _r)$, uniform. Step 3 gives
+$V = Ed$, and step 4:
+
+$$C = \\frac{Q}{V} = \\frac{\\sigma A}{\\sigma d/(\\varepsilon _{0}\\varepsilon _r)} = \\frac{\\varepsilon _{0}\\varepsilon _r A}{d}$$
+
+Numerically, for $A = 100\\ \\mathrm{cm^{2}}$, $d = 0.50$ mm and
+$\\varepsilon _r = 4.5$: the permittivity product is
+$8.8541878 \\times 4.5 = 39.844$ (in pF/m), and multiplying by
+$A/d = 0.0100/0.00050 = 20.0$ m gives **796.9 pF**. With the dielectric
+removed the same plates hold $8.8541878 \\times 20.0 = 177.1$ pF — the ratio
+is $\\varepsilon _r$ exactly, as it must be.
+
+### Worked Example 9 — a coaxial capacitor, from scratch
+
+**Given**: inner radius $a$, outer radius $b$, dielectric $\\varepsilon _r$, length $L$ with $L \\gg b$.
+
+Step 2 is the cylindrical Gauss result
+$E = \\lambda /(2\\pi \\varepsilon _{0}\\varepsilon _r r)$ with
+$\\lambda = Q/L$. Step 3 integrates it across the gap and produces the
+logarithm. Step 4:
+
+$$C = \\frac{2\\pi \\varepsilon _{0}\\varepsilon _r L}{\\ln (b/a)}$$
+
+For the cable of Worked Example 4, per metre:
+$6.2831853 \\times 8.8541878 \\times 2.25 / 1.9459101 = 64.33$ pF/m. Because
+the answer depends on $b/a$ only through a logarithm, cable capacitance is
+remarkably insensitive to dimensions: doubling the radius ratio from 7 to 14
+lowers it by only a quarter.
+
+The same logarithm hides a design optimum that catches people out. Holding
+the shield radius and the working voltage fixed and shrinking the centre
+conductor does **not** reduce the stress on it — past a point it raises it,
+because $E(a) = V_{0}/[a\\ln (b/a)]$ has a minimum at $b/a = e = 2.718$.
+
+![Field at the inner conductor of a coaxial line against radius ratio, at fixed shield radius and voltage: it falls to a minimum of 776.7 kV/m at a ratio of e and rises on either side, so the worked cable at a ratio of 7 runs 32% above the best achievable.](/courses/fe-ee/figures/em2-coax-optimum.svg)
+
+At $b = 3.5$ mm and 1000 V the best achievable inner-conductor field is
+776.7 kV/m; the worked cable's ratio of 7 puts it at 1.028 MV/m, a penalty
+of 32%. Real cable is a compromise between that electrical optimum and the
+impedance the circuit wants.
+
+### Worked Example 10 — concentric spheres, and the Earth
+
+**Given**: an inner sphere of radius $a = 20\\ \\mathrm{mm}$ inside a shell of radius $b = 25\\ \\mathrm{mm}$, air between.
+
+Steps 2 and 3 give $V = (Q/4\\pi \\varepsilon _{0})(1/a - 1/b)$, so
+
+$$C = \\frac{4\\pi \\varepsilon _{0}ab}{b-a} = \\frac{(1.11265 \\times 10^{-10})(0.020)(0.025)}{0.005} = 11.13\\ \\mathrm{pF}$$
+
+Let $b \\to \\infty$ and this collapses to the capacitance of an isolated
+sphere, $C = 4\\pi \\varepsilon _{0}a$, which for the same 20 mm ball is only
+**2.225 pF**. That formula is worth keeping because it makes "capacitance to
+what?" concrete: an isolated conductor has capacitance to infinity, and the
+Earth itself, as a 6371 km sphere, comes out at 709 µF. Let the gap $b-a$
+become small compared with $a$ and the spherical formula tends to
+$\\varepsilon _{0}(4\\pi a^{2})/(b-a)$, which is the parallel-plate result
+with $4\\pi a^{2}$ as the area — a useful reassurance that the three
+geometries are one calculation wearing different coordinates.
+
+## 7.2 What the dielectric is doing
+
+A dielectric contains no free charge, but its molecules polarise: bound
+positive and negative centres separate slightly, and the material acquires a
+polarisation $\\boldsymbol{P}$. Everywhere the polarisation is uniform the
+bound charges cancel internally, but at the surfaces they do not, and the
+leftover bound sheets oppose the applied field. The bookkeeping that keeps
+this manageable is to define
+
+$$\\boldsymbol{D} = \\varepsilon _{0}\\boldsymbol{E} + \\boldsymbol{P} = \\varepsilon _{0}\\varepsilon _r\\boldsymbol{E}, \\qquad \\boldsymbol{P} = \\varepsilon _{0}(\\varepsilon _r - 1)\\boldsymbol{E}$$
+
+so that $\\boldsymbol{D}$ answers only to free charge and can be found before
+the material is even considered. The susceptibility
+$\\chi _e = \\varepsilon _r - 1$ measures how hard the material polarises: it
+is 0 in vacuum, about 1.25 in polyethylene, and around 79 in water at low
+frequency.
+
+Inserting a slab therefore does two different things depending on what is
+held fixed, and the FE exam relies on candidates conflating them:
+
+| Held fixed | $C$ | $V$ | $Q$ | Field in the gap | Stored energy |
+|---|---|---|---|---|---|
+| Voltage (source connected) | $\\times \\varepsilon _r$ | unchanged | $\\times \\varepsilon _r$ | unchanged | $\\times \\varepsilon _r$ |
+| Charge (source removed) | $\\times \\varepsilon _r$ | $\\div \\varepsilon _r$ | unchanged | $\\div \\varepsilon _r$ | $\\div \\varepsilon _r$ |
+
+For the 100 cm² plates at 0.50 mm: with 100 V applied throughout, filling
+with $\\varepsilon _r = 4.5$ raises the stored energy from 0.8854 µJ to
+3.9844 µJ, and the source supplies the difference plus the same again. Charge
+the air gap to 100 V, **disconnect**, then insert the same slab and the
+voltage falls to $100/4.5 = 22.22$ V while the energy drops to 0.1968 µJ —
+the slab is pulled in, and the mechanical work it does accounts for the loss.
+
+## 7.3 Boundary conditions, and refraction of the field
+
+At an interface between two dielectrics with no free surface charge, two
+conditions apply and both are needed:
+
+$$E_{t1} = E_{t2} \\quad \\text{(tangential E is continuous)}, \\qquad D_{n1} = D_{n2} \\quad \\text{(normal D is continuous)}$$
+
+The first comes from $\\oint \\boldsymbol{E}\\cdot d\\boldsymbol{l} = 0$ around
+a flat loop straddling the surface; the second from a pillbox with no free
+charge inside. Their consequence is that a field line bends:
+
+$$\\frac{\\tan \\theta _{2}}{\\tan \\theta _{1}} = \\frac{\\varepsilon _{r2}}{\\varepsilon _{r1}}$$
+
+with the angles measured from the normal. Lines lean *toward the interface*
+in the higher-permittivity material.
+
+### Worked Example 11 — a field crossing into a dielectric
+
+**Given**: $\\lvert \\boldsymbol{E}_{1} \\rvert = 5000\\ \\mathrm{V/m}$ in air at 60° to the normal, meeting a flat slab of $\\varepsilon _{r2} = 4$.
+
+Split it: the tangential part is $5000 \\sin 60° = 4330.1$ V/m and the normal
+part is $5000 \\cos 60° = 2500$ V/m. Tangential $E$ carries straight through
+unchanged. Normal $D$ carries through unchanged, so the normal $E$ divides
+by 4: $2500 / 4 = 625$ V/m. Reassembling,
+
+$$\\lvert \\boldsymbol{E}_{2} \\rvert = \\sqrt{4330.1^{2} + 625^{2}} = 4375\\ \\mathrm{V/m}, \\qquad \\theta _{2} = \\arctan \\frac{4330.1}{625} = 81.79°$$
+
+and the identity check holds: $\\tan 81.79° / \\tan 60° = 4.00$, the
+permittivity ratio.
+
+![Transmitted angle against incident angle at a boundary where the relative permittivity rises by a factor of four: a field at 60 degrees from the normal in air emerges at 81.79 degrees in the dielectric.](/courses/fe-ee/figures/em2-dielectric-refraction.svg)
+
+Note which quantity jumps. The magnitude of $E$ **fell** here, from 5000 to
+4375 V/m, even though the tangential component was untouched — the normal
+component collapsed by the full factor of four. Getting this backwards, and
+increasing $E$ on entering the dielectric, is the standard wrong answer.
+
+## 7.4 Energy: two expressions, one quantity
+
+$$U = \\tfrac{1}{2}CV^{2} = \\tfrac{1}{2}QV = \\frac{Q^{2}}{2C}, \\qquad u = \\tfrac{1}{2}\\varepsilon _{0}\\varepsilon _r E^{2} = \\tfrac{1}{2}\\boldsymbol{D}\\cdot \\boldsymbol{E}$$
+
+The first is circuit bookkeeping, the second is field bookkeeping, and they
+must agree because they are the same joules counted differently. Where the
+field is uniform, agreement is an easy multiplication. Where it is not, the
+energy density does something the lumped formula cannot show: it tells you
+*where* the energy is.
+
+### Worked Example 12 — where a coaxial cable keeps its energy
+
+**Given**: the same 0.5 / 3.5 mm polyethylene cable at 1000 V.
+
+Circuit route: $U' = \\tfrac{1}{2}C'V^{2}$ with $C' = 64.33$ pF/m gives
+**32.16 µJ/m**. Field route: integrate
+$\\tfrac{1}{2}\\varepsilon _{0}\\varepsilon _r E(r)^{2}$ over the annulus,
+$dV = 2\\pi r\\,dr$ per metre, and the same 32.16 µJ/m comes back.
+
+The field route then answers a question the circuit route cannot. Because
+$u \\propto 1/r^{2}$ while the shell volume grows as $r$, the energy per
+decade of radius is constant, and **half the stored energy lies inside
+$r = \\sqrt{ab} = 1.323\\ \\mathrm{mm}$** — the geometric mean, not the
+arithmetic mean of 2.0 mm. Energy and stress both concentrate near the
+centre conductor, which is why cable insulation is graded from the inside
+out and why a void near the inner conductor is far more dangerous than the
+same void near the shield.`,
+      examTip: "Derive rather than memorise when the geometry is unfamiliar: put Q on, use Gauss, integrate to V, divide. It takes ninety seconds and it never gives you the coaxial answer to a spherical question. When a dielectric appears, the first question is always whether the source stayed connected - constant V and constant Q lead to opposite changes in voltage, field and energy, and the problem statement always says which, usually in one word like disconnected or removed.",
+      importantNote: "Capacitance depends on geometry and permittivity only. If your expression for C still contains Q or V after the algebra, a cancellation was missed. And in series layers the shared quantity is D, not E, so the layer with the LOWEST permittivity carries the HIGHEST field - which is why a trapped air void, not the solid insulation around it, sets the breakdown voltage of the assembly.",
+    },
+    {
+      id: 'es-problem-sets',
+      title: '8. Practice Problems with Full Solutions',
+      content: `## 8.1 How to use these
+
+Each problem below states its givens, drives them to a number, and then
+names the distractor that the FE exam actually offers alongside the right
+answer — together with the wrong number that trap produces. Work the problem
+first; the value of the trap line is only realised if you have already
+committed to an answer.
+
+## Problem Set A — Coulomb, Gauss and potential
+
+**A1.** Two point charges of 1.0 µC each sit 0.50 m apart in air. Find the force between them.
+
+$$F = \\frac{(8.98755 \\times 10^{9})(1.0 \\times 10^{-6})(1.0 \\times 10^{-6})}{(0.50)^{2}} = 0.03595\\ \\mathrm{N}$$
+
+**Answer: 35.95 mN, repulsive.** *Trap*: using $r$ rather than $r^{2}$ in the
+denominator gives 17.98 mN, exactly half. The exam offers both. Force goes as
+the inverse square; only potential goes as the inverse first power.
+
+**A2.** An infinitely long line carries 2.0 nC/m. Find $\\lvert \\boldsymbol{E} \\rvert$ at 15 cm.
+
+$$E = \\frac{\\lambda}{2\\pi \\varepsilon _{0}r} = \\frac{2.0 \\times 10^{-9}}{(6.2831853)(8.8541878 \\times 10^{-12})(0.15)} = 239.7\\ \\mathrm{V/m}$$
+
+**Answer: 239.7 V/m.** *Trap*: reaching for the point-charge form
+$kQ/r^{2}$ with $Q$ read as 2.0 nC gives 798.9 V/m, more than three times
+too large. A line source falls off as $1/r$, and its Gaussian surface is a
+cylinder of area $2\\pi rL$, not a sphere.
+
+**A3.** A large flat sheet carries a uniform surface charge of 30 nC/m². Find the field just off its face, in air.
+
+$$E = \\frac{\\sigma}{2\\varepsilon _{0}} = \\frac{30 \\times 10^{-9}}{(2)(8.8541878 \\times 10^{-12})} = 1694\\ \\mathrm{V/m}$$
+
+**Answer: 1694 V/m, pointing away from the sheet on both faces.** *Trap*:
+using $\\sigma /\\varepsilon _{0}$ gives 3388 V/m. That is the correct answer
+for a CONDUCTOR face, where the metal behind carries no flux, but an
+isolated sheet radiates from both sides and each side gets half.
+
+**A4.** A solid conducting sphere of radius 10 cm carries 20 nC. Find $E$ and $V$ at $r = 5$ cm and at $r = 20$ cm.
+
+Inside a conductor the field is zero and the potential is the surface value:
+
+$$E(0.05) = 0, \\qquad V(0.05) = \\frac{(8.98755 \\times 10^{9})(20 \\times 10^{-9})}{0.10} = 1798\\ \\mathrm{V}$$
+
+Outside it behaves as a point charge at the centre:
+
+$$E(0.20) = \\frac{(8.98755 \\times 10^{9})(20 \\times 10^{-9})}{(0.20)^{2}} = 4494\\ \\mathrm{V/m}, \\qquad V(0.20) = 898.8\\ \\mathrm{V}$$
+
+**Answers: 0 and 1798 V inside; 4494 V/m and 898.8 V outside.** *Trap*:
+applying the uniformly-charged-insulator formula $kQr/R^{3}$ at $r = 5$ cm
+gives 8988 V/m. That formula belongs to charge spread through a volume; a
+conductor keeps all of it on the skin, so the interior encloses nothing.
+
+## Problem Set B — Capacitance, dielectrics and energy
+
+**B1.** Parallel plates of area 20 cm² are 0.10 mm apart with $\\varepsilon _r = 3.0$ between them. Find $C$.
+
+$$C = \\frac{\\varepsilon _{0}\\varepsilon _r A}{d}, \\qquad 8.8541878 \\times 3.0 \\times 20.0 = 531.3\\ \\mathrm{pF}$$
+
+using $A/d = 0.0020/0.00010 = 20.0$ m. **Answer: 531.3 pF.** *Trap*: dropping
+$\\varepsilon _r$ gives 177.1 pF. Any capacitance answer that ignores a
+stated relative permittivity is wrong by exactly that factor.
+
+**B2.** A 50 m coaxial cable has $a = 1.0$ mm, $b = 4.0$ mm and $\\varepsilon _r = 2.3$. Find its total capacitance.
+
+$$C = \\frac{2\\pi \\varepsilon _{0}\\varepsilon _r L}{\\ln (b/a)}, \\qquad \\ln 4 = 1.3863$$
+
+Working per metre first, $6.2831853 \\times 8.8541878 \\times 2.3 = 127.95$ pF/m
+before the logarithm, and $127.95 / 1.3863 = 92.30$ pF/m; over 50 m that is
+**4.615 nF**. *Trap*: using $\\log _{10}4 = 0.6021$ instead of the natural
+logarithm gives 10.63 nF, too large by the factor $\\ln 10 = 2.303$.
+
+**B3.** A 10 µF and a 20 µF capacitor in series form a branch that is placed in parallel with a 5 µF capacitor, across 24 V. Find the total energy stored and the voltage across the 10 µF unit.
+
+Series pair: $10 \\times 20 / 30 = 6.667$ µF. In parallel with 5 µF:
+$6.667 + 5 = 11.667$ µF.
+
+$$U = \\tfrac{1}{2}CV^{2} = \\tfrac{1}{2}(11.667 \\times 10^{-6})(24)^{2} = 3.360\\ \\mathrm{mJ}$$
+
+The series branch carries $Q = 6.667 \\times 24 = 160$ µC, so the 10 µF unit
+holds $160/10 = 16$ V and the 20 µF unit holds 8 V. **Answers: 3.360 mJ and
+16 V.** *Trap*: combining the series pair by addition, as one would for
+resistors, gives 30 µF, a total of 35 µF and 10.08 mJ — three times the
+right answer. Capacitors follow the reciprocal rule in series.
+
+**B4.** A dielectric with $\\varepsilon _r = 4$ sustains a field of 2.0 MV/m. Find the energy density.
+
+$$u = \\tfrac{1}{2}\\varepsilon _{0}\\varepsilon _r E^{2} = \\tfrac{1}{2}(8.8541878 \\times 10^{-12})(4)(2.0 \\times 10^{6})^{2} = 70.83\\ \\mathrm{J/m^{3}}$$
+
+**Answer: 70.83 J/m³.** *Trap*: omitting $\\varepsilon _r$ gives 17.71 J/m³.
+The energy density inside a dielectric uses the local permittivity, not the
+vacuum value.
+
+## Problem Set C — Conductors, boundaries and images
+
+**C1.** A conductor in air carries a surface charge density of 5.0 µC/m². Find the field at its surface, and say whether the air survives.
+
+$$E = \\frac{\\sigma}{\\varepsilon _{0}} = \\frac{5.0 \\times 10^{-6}}{8.8541878 \\times 10^{-12}} = 5.647 \\times 10^{5}\\ \\mathrm{V/m}$$
+
+**Answer: 565 kV/m, comfortably below the 3 MV/m strength of dry air.**
+*Trap*: the isolated-sheet formula $\\sigma /(2\\varepsilon _{0})$ gives
+282 kV/m, half the correct value — the mirror image of the mistake in A3,
+and just as popular.
+
+**C2.** A field of 800 V/m in a medium of $\\varepsilon _{r1} = 2.5$ meets a boundary with $\\varepsilon _{r2} = 6.0$ at 30° from the normal. Find the transmitted angle and magnitude.
+
+$$\\tan \\theta _{2} = \\frac{\\varepsilon _{r2}}{\\varepsilon _{r1}}\\tan \\theta _{1} = 2.4 \\tan 30° = 1.3856 \\quad \\Rightarrow \\quad \\theta _{2} = 54.19°$$
+
+The tangential component $800\\sin 30° = 400$ V/m survives; the normal
+component $800\\cos 30° = 692.8$ V/m is scaled by
+$\\varepsilon _{r1}/\\varepsilon _{r2}$ to 288.7 V/m, so
+
+$$\\lvert \\boldsymbol{E}_{2} \\rvert = \\sqrt{400^{2} + 288.7^{2}} = 493.3\\ \\mathrm{V/m}$$
+
+**Answers: 54.19° and 493.3 V/m.** *Trap*: inverting the permittivity ratio
+gives $\\tan \\theta _{2} = 0.2406$ and $\\theta _{2} = 13.5°$, bending the
+line the wrong way. The line always leans toward the interface in the
+higher-permittivity medium.
+
+**C3.** A 2.0 nC charge sits 5.0 mm above a large grounded plane in air. Find the attractive force.
+
+$$F = \\frac{q^{2}}{4\\pi \\varepsilon _{0}(2h)^{2}} = \\frac{(8.98755 \\times 10^{9})(2.0 \\times 10^{-9})^{2}}{(0.010)^{2}} = 3.595 \\times 10^{-4}\\ \\mathrm{N}$$
+
+**Answer: 359.5 µN.** *Trap*: using the height $h$ rather than the
+charge-to-image separation $2h$ gives 1.438 mN, four times too large. The
+image sits as far below the plane as the charge sits above it.
+
+**C4.** A square duct has three walls grounded and the fourth at 60 V. Find the potential at the centre. Then find it if two ADJACENT walls are at 60 V and the other two are grounded.
+
+By the four-fold superposition argument, one energised wall contributes a
+quarter of its own potential at the centre: $60 / 4 = 15$ V. Two adjacent
+walls contribute independently, so the centre sits at
+$15 + 15 = 30$ V. **Answers: 15 V and 30 V.** *Trap*: averaging the four wall
+potentials without noticing that the centre is equidistant from all four —
+which happens to give the same answer here, but fails immediately on a
+rectangular duct, where the symmetry argument no longer applies and the
+series must be summed.`,
+      examTip: "In a timed exam the fastest error check is dimensional. Capacitance answers should come out in the picofarad-to-microfarad range for anything the size of laboratory hardware; a field in air above about 3 MV/m means either an arc or an arithmetic slip; and any answer containing epsilon-nought in a numerator rather than a denominator is almost certainly upside down.",
+      importantNote: "Every trap named in these solutions is a factor error, not a conceptual gulf: a factor of two between sheet and conductor, a factor of four between h and 2h, a factor of 2.303 between log and ln, a factor of epsilon-r from a forgotten dielectric. Getting the physics right and the factor wrong scores zero, so the last thing to check before moving on is always the constant in front.",
     },
   ],
   keyTakeaways: [
@@ -534,7 +1253,7 @@ wound with 400 turns carrying 1.5 A.
 **One millimetre of air has 6.7 times the reluctance of 300 millimetres of
 iron.** Everything else follows from that ratio:
 
-$$\\Phi = NI/(\\mathfrak{R}_{core} + \\mathfrak{R}_{gap}) = 600/(2.28 \\times 10^{6}) = 262\\ \\mu \\mathrm{Wb}$$
+$$\\Phi = NI/(\\mathfrak{R}_{core} + \\mathfrak{R}_{gap}) = 600/(2.288 \\times 10^{6}) = 262\\ \\mu \\mathrm{Wb}$$
 
 giving a core flux density of $B = \\Phi /A = 0.656$ T and an inductance of
 $L = N^{2}/\\mathfrak{R}_{total} = 69.9$ mH. Close the gap and the same
@@ -583,8 +1302,11 @@ link this flux" has no clean answer — the internal inductance of a round
 wire, or the inductance per unit length of a coaxial line, where integrating
 $B^{2}/2\\mu _{0}$ over the space between the conductors reproduces
 $(\\mu _{0}/2\\pi)\\ln (b/a)$ directly. For a cable with b/a = 3.49 that is
-0.250 µH/m, a number that returns in the transmission-line topic as one half
-of the characteristic impedance.
+0.250 µH/m, and the same geometry in polyethylene gives 100.1 pF/m, so the
+pair returns in the transmission-line topic as
+$Z_{0} = \\sqrt{L'/C'} = 50.0\\ \\Omega$ — the standard coaxial impedance. (An
+inductance per metre and an impedance are different quantities in different
+units; only the ratio of L' to C' has ohms in it.)
 
 ## 4.4 Coupling between two coils
 
@@ -608,6 +1330,712 @@ changes — the reason di/dt, not current, is the quantity that keeps power
 electronics layouts honest.`,
       examTip: 'For a gapped core, compute the two reluctances separately before doing anything else. The gap almost always dominates, so a good first estimate of flux is simply NI divided by the gap reluctance μ₀A/g — and if that estimate is within 10% of your full answer, the core material is irrelevant to the problem and you can stop worrying about μ_r.',
       importantNote: 'Reluctance is not resistance: no energy is dissipated in driving flux around a magnetic circuit, and the analogy breaks down entirely once the core saturates, because ℜ = ℓ/(μA) assumes a constant μ. Above the knee of the B–H curve the effective μ collapses and the flux stops rising with current.',
+    },
+    {
+      id: 'ms-biot-savart-detail',
+      title: '5. Biot-Savart, Element by Element',
+      content: `## 5.1 The law, and why it is the last resort
+
+Biot-Savart is the magnetostatic counterpart of Coulomb's law: it gives the
+contribution of one short piece of current-carrying wire and asks you to add
+up the rest.
+
+$$d\\boldsymbol{B} = \\frac{\\mu _{0}}{4\\pi}\\,\\frac{I\\,d\\boldsymbol{l} \\times \\hat{\\boldsymbol{r}}}{r^{2}}$$
+
+Three features of that expression decide every problem built on it. The
+cross product means an element contributes **nothing** along its own
+direction, so the wire in front of you and the wire behind you both push
+their field sideways. The $1/r^{2}$ is the same inverse square Coulomb has,
+even though the finished long-wire answer goes as $1/r$ — the extra power is
+spent adding up an infinite line of elements. And $\\mu _{0}/4\\pi = 10^{-7}$
+exactly in the definition used here, which makes the arithmetic of every
+magnetostatics problem a matter of shifting a decimal point.
+
+Use Ampère's law whenever the symmetry allows it. Reach for Biot-Savart only
+when it does not: finite wires, loops, arcs, and anything on an axis.
+
+## 5.2 The straight segment
+
+For a straight filament, take $d$ as the perpendicular distance from the
+field point to the line of the wire, and let the ends subtend angles
+$\\alpha _{1}$ and $\\alpha _{2}$ measured from that perpendicular. The
+integral is elementary:
+
+$$B = \\frac{\\mu _{0}I}{4\\pi d}\\left(\\sin \\alpha _{2} - \\sin \\alpha _{1}\\right)$$
+
+For a segment of half-length $a$ with the field point opposite its midpoint,
+the angles are symmetric and this reduces to
+
+$$B = \\frac{\\mu _{0}I a}{2\\pi d\\sqrt{a^{2}+d^{2}}}$$
+
+Let $a \\to \\infty$ and the square root tends to $a$, recovering the familiar
+$\\mu _{0}I/2\\pi d$. The finite result is always **smaller** than the infinite
+one, because a finite wire has less of itself to contribute.
+
+### Worked Example 13 — when may a bench wire be called infinite
+
+**Given**: a straight conductor 0.50 m long carrying 10 A. **Find**: the flux density 20 mm out from its midpoint, and the error made by the infinite-wire formula.
+
+$$B = \\frac{(2 \\times 10^{-7})(10)(0.25)}{(0.020)\\sqrt{(0.25)^{2}+(0.020)^{2}}} = 99.68\\ \\mathrm{µT}$$
+
+The infinite-wire value at the same distance is $2 \\times 10^{-7} \\times 10/0.020 = 100.0$ µT, so the ratio is $99.68 / 100.0 = 0.9968$ — an error of
+0.32%. The rule that generalises: the infinite formula is good to better
+than 1% while the observation distance is under about a tenth of the wire
+length, and it has degraded to 29% by the time you stand off one half-length.
+
+![Flux density against perpendicular distance for a 0.5 m segment carrying 10 A, compared with the infinite-wire result, with the ratio of the two plotted beneath: 99.68 against 100.0 microtesla at 20 mm, falling to 71% of the infinite value at a distance equal to the half-length.](/courses/fe-ee/figures/em2-biot-segment.svg)
+
+The circles on that figure are not the closed form redrawn. They are the
+Biot-Savart integral evaluated numerically, element by element, along the
+same filament — the independent route that confirms the closed form carries
+its $4\\pi$ in the right place. The two agree to one part in $10^{12}$.
+
+## 5.3 The circular loop on its axis
+
+Every element of a circular loop is the same distance
+$\\sqrt{R^{2}+z^{2}}$ from a point on the axis, and the components
+perpendicular to the axis cancel by symmetry. What survives is
+
+$$B_{z} = \\frac{\\mu _{0}I R^{2}}{2(R^{2}+z^{2})^{3/2}}$$
+
+At the centre, $z = 0$ and this collapses to the result worth memorising:
+
+$$B_{\\mathrm{centre}} = \\frac{\\mu _{0}I}{2R}$$
+
+Notice there is no $\\pi$ in the denominator. The commonest wrong answer on
+loop questions is $\\mu _{0}I/2\\pi R$, borrowed from the straight wire, and it
+is low by a factor of $\\pi$.
+
+### Worked Example 14 — one loop, then two
+
+**Given**: a single circular turn of radius 10.0 cm carrying 5.0 A in air.
+
+At the centre, with $\\mu _{0} = 1.2566371\\ \\mathrm{µH/m}$,
+
+$$1.2566371 \\times 5 / 0.20 = 31.42\\ \\mathrm{µT}$$
+
+One radius up the axis, $z = R$ makes the bracket $(2R^{2})^{3/2}$, so the
+field falls by $2^{3/2} = 2.8284$: $31.4159 / 2.8284 = 11.11$ µT. The
+half-field point is closer than most people guess — the axial field of a
+loop is a sharply peaked thing.
+
+**Now add a second identical loop one radius away.** At the midpoint each
+contributes $\\mu _{0}IR^{2}/[2(R^{2}+R^{2}/4)^{3/2}]$, and the pair total is
+
+$$B = \\left(\\tfrac{4}{5}\\right)^{3/2}\\frac{\\mu _{0}I}{R} = 31.4159 \\times 1.4311 = 44.96\\ \\mathrm{µT}$$
+
+That spacing is chosen because it makes the second derivative of the field
+vanish at the midpoint, leaving a genuinely flat region: the pair holds
+44.96 µT to within 0.1% across a span of 0.346 R. That is the Helmholtz
+arrangement, and it is how a uniform reference field is made in a laboratory.
+
+![On-axis flux density for a single 10 cm loop at 5 A and for a Helmholtz pair of the same loops: the single loop peaks at 31.42 microtesla and falls to 11.11 at one radius, while the pair reaches 44.96 microtesla with a flat top.](/courses/fe-ee/figures/em2-loop-axis.svg)
+
+## 5.4 Stacking loops into a solenoid
+
+A solenoid is a stack of loops, so its on-axis field is the loop expression
+integrated along the winding. With $n$ turns per metre over a length
+$\\ell$ and radius $R$, measuring $z$ from the centre,
+
+$$B(z) = \\frac{\\mu _{0}nI}{2}\\left[\\frac{z+\\ell /2}{\\sqrt{(z+\\ell /2)^{2}+R^{2}}} - \\frac{z-\\ell /2}{\\sqrt{(z-\\ell /2)^{2}+R^{2}}}\\right]$$
+
+Two limits fall straight out and both are examinable. Deep inside a long
+coil both fractions saturate at $\\pm 1$ and $B \\to \\mu _{0}nI$, the ideal
+value. Exactly at the mouth one fraction goes to zero, so the field there is
+**half** the interior value — a fact that explains why coil ends leak and
+why an air-cored inductor's calculated value is always optimistic.
+
+### Worked Example 15 — how ideal is a real solenoid
+
+**Given**: 500 turns wound over 0.25 m on a former of cross-section 4.0 cm², carrying 2.0 A in air.
+
+The turn density is $n = 500/0.25 = 2000$ per metre and the ideal field is
+$\\mu _{0}nI = 5.0265$ mT. The former's radius follows from its area:
+$R = \\sqrt{A/\\pi} = 11.28$ mm, which is small compared with the half-length
+of 125 mm, so the coil should be close to ideal. Evaluating the expression
+above at $z = 0$ gives **5.0062 mT**, low by 0.40%; at the mouth it gives
+**2.5107 mT**, which is $0.4995$ of the ideal value.
+
+![On-axis field along a 500-turn solenoid 25 cm long at 2 A: it holds 5.006 millitesla across the interior against an ideal 5.027, and falls to 2.511 millitesla at the mouth, exactly half.](/courses/fe-ee/figures/em2-solenoid-profile.svg)
+
+The centre value was also produced by numerically stacking discrete loops
+rather than by evaluating the closed form, and the two agree to eleven
+digits — the independent confirmation that the bracketed expression is the
+loop formula summed, and not something adjacent to it.`,
+      examTip: "Two constants save time on every magnetostatics problem: mu-nought over four pi is exactly ten to the minus seven, and mu-nought over two pi is exactly two times ten to the minus seven. Almost every answer is one of those times a current over a length. And keep the loop and wire results apart - the loop centre is mu-nought I over 2R with no pi, the wire is mu-nought I over 2 pi r with one.",
+      importantNote: "The half-field-at-the-mouth result for a solenoid is not an approximation, it is exact for the ideal winding, and it is the reason a short coil never reaches mu-nought n I anywhere. If a problem gives a coil whose length is comparable with its diameter, the ideal formula can be 20 percent or more optimistic and the full expression is required.",
+    },
+    {
+      id: 'ms-ampere-flux-detail',
+      title: "6. Ampere's Law, Flux, and the Divergence-Free Field",
+      content: `## 6.1 The law and the choice of loop
+
+$$\\oint_{C}\\boldsymbol{B}\\cdot d\\boldsymbol{l} = \\mu _{0}I_{\\mathrm{enc}}$$
+
+Ampère's law is the magnetic twin of Gauss's law and it fails and succeeds
+for the same reasons. It is always true; it yields a number only when a loop
+can be drawn on which $\\lvert \\boldsymbol{B} \\rvert$ is constant and
+$\\boldsymbol{B}$ runs along the path. In a magnetic material the useful form
+uses the field intensity $\\boldsymbol{H} = \\boldsymbol{B}/\\mu$, because $H$
+answers only to the conduction current:
+
+$$\\oint_{C}\\boldsymbol{H}\\cdot d\\boldsymbol{l} = I_{\\mathrm{enc}} = NI \\quad \\text{for an N-turn winding}$$
+
+The right-hand side is signed. Current threading the loop one way counts
+positive, the other way negative, and the sense is set by the right-hand
+rule applied to the direction the loop is traversed.
+
+## 6.2 The wire, and then the whole cable
+
+Inside a solid conductor of radius $a$ carrying $I$ uniformly, a circle of
+radius $r$ encloses $I r^{2}/a^{2}$, so the field rises linearly; outside it
+encloses everything and the field falls as $1/r$. Add a coaxial return
+conductor and two more regions appear. With inner radius $a$, shield inner
+radius $b$ and shield outer radius $c$:
+
+| Region | Enclosed current | Flux density |
+|---|---|---|
+| $r < a$ | $I r^{2}/a^{2}$ | $\\mu _{0}Ir/(2\\pi a^{2})$, rising |
+| $a < r < b$ | $I$ | $\\mu _{0}I/(2\\pi r)$, falling |
+| $b < r < c$ | $I\\left[1 - (r^{2}-b^{2})/(c^{2}-b^{2})\\right]$ | falling faster |
+| $r > c$ | $0$ | exactly zero |
+
+### Worked Example 16 — the whole radial profile of a shielded cable
+
+**Given**: 20 A out along a 1.0 mm centre conductor and back through a shield running from 3.0 mm to 3.5 mm.
+
+At the surface of the centre conductor,
+$B = 2 \\times 10^{-7} \\times 20/0.0010 = 4.00$ mT, and that is the peak
+anywhere in the cable. Halfway across the dielectric at $r = 2.0$ mm the
+same expression gives 2.00 mT. Inside the shield at $r = 3.2$ mm the
+enclosed current has already dropped to
+
+$$I_{\\mathrm{enc}} = 20\\left[1 - \\frac{(3.2)^{2}-(3.0)^{2}}{(3.5)^{2}-(3.0)^{2}}\\right] = 12.37\\ \\mathrm{A}$$
+
+giving 0.773 mT. Beyond $r = 3.5$ mm the enclosed current is zero and so is
+the field — **exactly** zero, not approximately. That single row is the
+entire engineering case for coaxial construction: a cable whose go and
+return currents are concentric radiates nothing and couples into nothing,
+however large the current.
+
+## 6.3 Solenoid and toroid
+
+For a long solenoid, run the Amperian rectangle with one long side inside
+the coil parallel to the axis, one long side outside where the field is
+negligible, and two short sides perpendicular to $\\boldsymbol{B}$ that
+contribute nothing:
+
+$$B\\ell = \\mu _{0}(n\\ell)I \\quad \\Rightarrow \\quad B = \\mu _{0}nI$$
+
+For a toroid, run a circle at radius $r$ through the window. It encloses all
+$N$ turns once each:
+
+$$B(2\\pi r) = \\mu _{0}NI \\quad \\Rightarrow \\quad B(r) = \\frac{\\mu _{0}NI}{2\\pi r}$$
+
+which is not uniform across the window. The mean-radius value is a
+convenience, not the answer, and how good a convenience it is depends on how
+fat the toroid is.
+
+### Worked Example 17 — how non-uniform is a toroid
+
+**Given**: 800 turns on an air core with inner radius 40 mm, outer radius 60 mm and a square window 15 mm high, carrying 1.2 A.
+
+$$B(r) = \\frac{(2 \\times 10^{-7})(800)(1.2)}{r} = \\frac{1.92 \\times 10^{-4}}{r}$$
+
+so $B = 4.80$ mT at the inner wall, 3.84 mT at the mean radius of 50 mm and
+3.20 mT at the outer wall. The inner wall runs $4.80 / 3.84 = 1.25$ times
+the mean and the outer wall $3.20 / 3.84 = 0.833$ of it — a spread of 50%
+across the window. Saturation always begins at the inner wall for this
+reason.
+
+![Flux density across the window of an 800-turn air toroid at 1.2 A: it falls from 4.80 millitesla at the 40 mm inner wall through 3.84 at the mean radius to 3.20 at the 60 mm outer wall.](/courses/fe-ee/figures/em2-toroid-radial.svg)
+
+Integrating that $1/r$ profile over the window gives the flux and hence the
+exact inductance,
+
+$$L = \\frac{\\mu _{0}N^{2}h}{2\\pi}\\ln \\frac{b}{a} = 778.5\\ \\mathrm{µH}$$
+
+while the mean-radius shortcut $L = \\mu _{0}N^{2}A/(2\\pi r_{\\mathrm{mean}})$
+with $A = h(b-a)$ gives 768.0 µH. The ratio is
+$768.0 / 778.5 = 0.9865$, so the shortcut is 1.35% low here and gets worse
+as the toroid gets fatter. The flux integral and the closed-form logarithm
+were also computed independently of one another and agree to eleven digits.
+
+## 6.4 Flux, and the field with no sources
+
+Magnetic flux is the surface integral of $\\boldsymbol{B}$, measured in
+webers:
+
+$$\\Phi = \\int_{S}\\boldsymbol{B}\\cdot d\\boldsymbol{A}$$
+
+and over a **closed** surface it is always zero:
+
+$$\\oint_{S}\\boldsymbol{B}\\cdot d\\boldsymbol{A} = 0 \\quad \\Leftrightarrow \\quad \\nabla \\cdot \\boldsymbol{B} = 0$$
+
+There is no magnetic charge, so every line that enters a closed surface
+leaves it. Three practical consequences follow. Field lines have no ends;
+they close on themselves. Flux is conserved along a magnetic circuit exactly
+as current is conserved along an electric one, which is what makes the
+reluctance analogy work at all. And the normal component of
+$\\boldsymbol{B}$ is continuous across any interface — including the face of
+an air gap, which is why the gap in a core carries the same $B$ as the iron
+and a very much larger $H$.
+
+### Worked Example 18 — flux through a loop beside a wire
+
+**Given**: a long straight wire carrying 100 A, with a rectangular loop 0.50 m long lying in the same plane, its near side 20 mm from the wire and its far side 60 mm away.
+
+The field varies across the loop, so the flux needs an integral:
+
+$$\\Phi = \\int_{d_{1}}^{d_{2}}\\frac{\\mu _{0}I}{2\\pi x}\\,\\ell \\,dx = \\frac{\\mu _{0}I\\ell}{2\\pi}\\ln \\frac{d_{2}}{d_{1}} = (2 \\times 10^{-7})(100)(0.50)\\ln 3$$
+
+which is $10^{-5} \\times 1.0986 = 10.99$ µWb. Dividing by the source current
+gives the mutual inductance of the pair, $M = 109.9$ nH, and that number was
+also obtained by numerically integrating $B$ over the loop area; the two
+agree to eleven digits. Using the mid-loop field times the area instead —
+$B$ at 40 mm is 0.50 mT, times $0.50 \\times 0.040 = 0.020$ m² — would give
+10.0 µWb, 9% low, because $1/x$ is convex and its average exceeds its
+mid-point value.`,
+      examTip: "Ampere's law questions are decided before any arithmetic by the answer to one question: what current does my loop actually enclose? Inside a conductor it is a fraction; between a conductor and its return it is all of it; outside a coaxial return it is zero. Draw the loop, shade what it encircles, and only then write the formula.",
+      importantNote: "The divergence of B being zero is why flux, not field, is the conserved quantity in a magnetic circuit. When a core narrows, the flux stays the same and B rises in proportion to the area reduction - so the smallest cross-section in a core is where saturation starts, exactly as the smallest conductor in a series circuit is where the heating starts.",
+    },
+    {
+      id: 'ms-inductance-circuits',
+      title: '7. Inductance, Coupling, and Magnetic Circuits',
+      content: `## 7.1 Three definitions of one quantity
+
+$$L = \\frac{N\\Phi}{I} = \\frac{N^{2}}{\\mathfrak{R}} = \\frac{2U}{I^{2}}, \\qquad v = L\\frac{di}{dt}$$
+
+They are the same number reached from flux linkage, from reluctance and from
+stored energy. Which one to use is a question about what the geometry makes
+easy, and having all three is what rescues the awkward cases.
+
+| Route | Use it when | Typical case |
+|---|---|---|
+| $N\\Phi /I$ | the flux is easy and the turns obvious | solenoid, toroid |
+| $N^{2}/\\mathfrak{R}$ | the path is a core, possibly gapped | transformer, choke |
+| $2U/I^{2}$ | the field is known but "how many turns link it" is not | coaxial line, wire interior |
+
+### Worked Example 19 — the internal inductance of a round conductor
+
+**Given**: a solid round wire of radius $a$ carrying a uniformly distributed current $I$.
+
+The flux inside the metal links only part of the current, so flux linkage is
+awkward. The energy route is not. Inside, $B = \\mu _{0}Ir/(2\\pi a^{2})$, and
+integrating the energy density over the conductor volume, per metre of
+length:
+
+$$U' = \\int_{0}^{a}\\frac{B^{2}}{2\\mu _{0}}\\,2\\pi r\\,dr = \\frac{\\mu _{0}I^{2}}{16\\pi}$$
+
+$$L'_{\\mathrm{int}} = \\frac{2U'}{I^{2}} = \\frac{\\mu _{0}}{8\\pi} = 50\\ \\mathrm{nH/m}$$
+
+That result is startling the first time: **the internal inductance of a
+round wire does not depend on its radius at all**. Fatten the wire and the
+field weakens but the volume grows, and the two effects cancel exactly.
+
+Outside, the energy between the conductors of a coaxial pair gives the
+familiar logarithm. For $a = 1.0$ mm and $b = 3.0$ mm,
+
+$$L'_{\\mathrm{ext}} = \\frac{\\mu _{0}}{2\\pi}\\ln \\frac{b}{a} = (2 \\times 10^{-7})\\ln 3 = 219.7\\ \\mathrm{nH/m}$$
+
+and the total is $0.2197 + 0.0500 = 0.2697$ µH/m, of which the internal part
+is $0.0500 / 0.2697 = 0.1854$, about 18.5%. That share is not permanent: at
+high frequency the skin effect confines the current to the surface, the
+internal flux disappears, and the inductance falls to the external value
+alone. An inductance measured at 100 Hz and one measured at 100 MHz are
+genuinely different numbers for the same piece of cable.
+
+![Field and accumulated inductance across a coaxial line with a 1 mm inner conductor inside a 3 mm shield: 50 nH per metre builds up inside the wire itself and a further 219.7 nH per metre between the conductors, for 269.7 nH per metre in total.](/courses/fe-ee/figures/em2-coax-inductance.svg)
+
+## 7.2 Mutual inductance and the coupling coefficient
+
+When part of one winding's flux threads a second winding, the pair has a
+mutual inductance, and reciprocity makes it a single number:
+
+$$M = \\frac{N_{2}\\Phi _{21}}{I_{1}} = \\frac{N_{1}\\Phi _{12}}{I_{2}}, \\qquad M = k\\sqrt{L_{1}L_{2}}, \\qquad v_{2} = M\\frac{di_{1}}{dt}$$
+
+The coupling coefficient $k$ runs from 0 to 1 and is a statement about
+geometry: 1 would mean every line of flux from one winding threads the
+other, which no real pair achieves.
+
+### Worked Example 20 — a short secondary on a long primary
+
+**Given**: a primary of 800 turns over 0.30 m on a 6.0 cm² former; a secondary of 150 turns wound tightly over the middle 0.05 m of it.
+
+Every line the primary makes inside the former passes through the secondary,
+so $M$ is set by the primary's field and the secondary's turns:
+
+$$M = \\frac{\\mu _{0}N_{1}N_{2}A}{\\ell _{1}} = 301.6\\ \\mathrm{µH}$$
+
+The self-inductances use each winding's own length:
+$L_{1} = \\mu _{0}N_{1}^{2}A/\\ell _{1} = 1608.5$ µH and
+$L_{2} = \\mu _{0}N_{2}^{2}A/\\ell _{2} = 339.3$ µH. Therefore
+
+$$k = \\frac{M}{\\sqrt{L_{1}L_{2}}} = 0.408$$
+
+and the algebra shows why: the ratio collapses to
+$\\sqrt{\\ell _{2}/\\ell _{1}} = \\sqrt{0.05/0.30} = 0.408$. Coupling is poor
+here not because flux escapes but because the primary is six times longer
+than the secondary, so five sixths of the primary's own flux never sees it.
+Ramping the primary at 500 A/s induces $301.6\\ \\mathrm{µH} \\times 500\\ \\mathrm{A/s} = 150.8$ mV in the secondary.
+
+## 7.3 The magnetic circuit, used as a design tool
+
+The analogy is exact whenever nearly all the flux stays inside
+high-permeability material:
+
+| Electric | Magnetic | Units |
+|---|---|---|
+| EMF $\\mathcal{E}$ | magnetomotive force $NI$ | ampere-turns |
+| current $I$ | flux $\\Phi$ | webers |
+| resistance $R = \\rho \\ell /A$ | reluctance $\\mathfrak{R} = \\ell /(\\mu A)$ | A-t/Wb |
+| $I = \\mathcal{E}/R$ | $\\Phi = NI/\\mathfrak{R}$ | — |
+| resistances in series add | reluctances in series add | — |
+
+The analogy has two hard limits and both are examinable. No power is
+dissipated in driving flux around a magnetic circuit, so reluctance is not
+resistance in any energetic sense. And $\\mathfrak{R} = \\ell /(\\mu A)$
+assumes a constant $\\mu$, which stops being true above the knee of the B-H
+curve.
+
+### Worked Example 21 — designing the winding for a target flux density
+
+**Given**: a core of cross-section 6.0 cm² and mean magnetic path 0.40 m, relative permeability 3000, cut by a 2.0 mm air gap. **Find**: the ampere-turns needed for 1.0 T in the core, and the inductance at 500 turns.
+
+Work in field intensities rather than reluctances; it is faster and it shows
+where the effort goes. Since $B$ is continuous across the gap, both regions
+sit at 1.0 T, but their $H$ values differ by the permeability ratio:
+
+$$H_{\\mathrm{core}} = \\frac{B}{\\mu _{0}\\mu _r} = 265.3\\ \\mathrm{A/m}, \\qquad H_{\\mathrm{gap}} = \\frac{B}{\\mu _{0}} = 795\\,775\\ \\mathrm{A/m}$$
+
+Multiplying each by its own path length gives the magnetomotive force it
+consumes: the core takes $265.3 \\times 0.40 = 106.1$ ampere-turns and the
+2 mm gap takes $795775 \\times 0.0020 = 1591.55$ ampere-turns. Adding,
+
+$$NI = 106.10 + 1591.55 = 1697.65\\ \\mathrm{A\\text{-}t}$$
+
+so 500 turns need $1697.65 / 500 = 3.3953$ A. **Two millimetres of air
+consumes fifteen times the drive that 400 millimetres of iron does**, and
+that ratio is the whole content of gap design. The inductance follows from
+$L = N^{2}/\\mathfrak{R}_{\\mathrm{total}} = 88.36$ mH, and the stored energy
+at the design current is $\\tfrac{1}{2}LI^{2} = 509.3$ mJ — which the
+independent route of integrating $\\tfrac{1}{2}BH$ over the two volumes
+reproduces exactly, with 477.5 mJ of it in the gap.
+
+Gapping therefore buys three things at once: an inductance set by geometry
+rather than by an uncertain $\\mu _r$, a much larger current before
+saturation, and somewhere to actually store energy. It costs drive current,
+which is why a transformer — whose job is to couple, not to store — has no
+gap at all.`,
+      examTip: "For a gapped core, compute the gap magnetomotive force first and treat the iron as a correction. If B over mu-nought times the gap length already accounts for most of the answer, the core material is nearly irrelevant to the problem and any reasonable mu-r will do. That shortcut turns a two-minute calculation into a twenty-second one and it is right far more often than it is wrong.",
+      importantNote: "Inductance goes as the SQUARE of the turns, and a core multiplies it by mu-r until saturation. Both facts are routinely tested by changing one number in a stem: doubling the turns quadruples L, and a ferrite of mu-r 2000 turns 500 microhenries into about one henry - right up to the point where the core saturates and the effective mu-r collapses.",
+    },
+    {
+      id: 'ms-forces-hysteresis',
+      title: '8. Forces, Hysteresis, and Core Loss',
+      content: `## 8.1 The force laws, and getting the angle right
+
+$$\\boldsymbol{F} = I\\boldsymbol{L} \\times \\boldsymbol{B}, \\qquad \\boldsymbol{F} = q\\boldsymbol{v} \\times \\boldsymbol{B}, \\qquad \\boldsymbol{\\tau} = \\boldsymbol{m} \\times \\boldsymbol{B} \\ \\ (\\boldsymbol{m} = NI\\boldsymbol{A})$$
+
+| Situation | Magnitude | Angle is measured between |
+|---|---|---|
+| Wire in a uniform field | $BIL\\sin \\theta$ | the wire and $\\boldsymbol{B}$ |
+| Moving charge | $qvB\\sin \\theta$ | the velocity and $\\boldsymbol{B}$ |
+| Current loop | $NIAB\\sin \\alpha$ | the loop **normal** and $\\boldsymbol{B}$ |
+| Two parallel wires | $\\mu _{0}I_{1}I_{2}/(2\\pi d)$ per metre | not applicable |
+
+The third row is where marks are lost: the angle is taken from the normal to
+the loop, not from its plane, so a coil whose plane contains
+$\\boldsymbol{B}$ feels **maximum** torque, and a coil whose plane is
+perpendicular to $\\boldsymbol{B}$ feels none.
+
+### Worked Example 22 — force, torque and a charge in flight
+
+**Given**: a 0.20 m length of wire carrying 6.0 A in a uniform 0.35 T field.
+
+Perpendicular to the field, $0.35 \\times 6.0 \\times 0.20 = 0.42$ N. At 30° to
+the field, that becomes $0.42 \\times 0.5 = 0.21$ N, and along the field it is
+zero.
+
+**Torque.** Wind the same wire into a 50-turn coil of 20 mm by 30 mm, so
+$A = 6.0 \\times 10^{-4}$ m², and hold its plane parallel to the field:
+
+$$\\tau = NIAB\\sin \\alpha = 50 \\times 6.0 \\times 0.00060 \\times 0.35 = 0.063\\ \\mathrm{N\\,m}$$
+
+That expression, with $\\sin \\alpha$ collapsing as the coil swings into
+alignment, is a DC motor written in one line — and it is why a practical
+machine needs commutation to reverse the current before the torque reverses.
+
+**A charge in flight.** An electron moving at $2.0 \\times 10^{6}$ m/s across
+a 50 mT field, with $e = 1.602176634 \\times 10^{-19}$ C and
+$m_e = 9.1093837 \\times 10^{-31}$ kg, feels
+
+$$F = qvB = 1.602 \\times 10^{-14}\\ \\mathrm{N}, \\qquad r = \\frac{m_e v}{qB} = 0.227\\ \\mathrm{mm}$$
+
+The force is always perpendicular to the velocity, so the speed never
+changes and the path is a circle. A static magnetic field can bend a
+trajectory but can never do work on a free charge; any problem claiming
+otherwise has an electric field hiding in it.
+
+## 8.2 Conductors pushing on each other
+
+Each of two parallel conductors sits in the other's field, and the result is
+the cleanest inverse-distance law in the syllabus:
+
+$$\\frac{F}{\\ell} = \\frac{\\mu _{0}I_{1}I_{2}}{2\\pi d} = (2 \\times 10^{-7})\\frac{I_{1}I_{2}}{d}$$
+
+Same-direction currents attract; opposed currents repel. The square
+dependence on current is what makes this a structural problem rather than a
+curiosity.
+
+![Force per metre between parallel conductors against current, for separations of 50, 100 and 300 mm on log axes: 10 A at 100 mm gives 0.20 millinewtons per metre while a 20 kA fault at the same spacing gives 800 newtons per metre.](/courses/fe-ee/figures/em2-wire-force.svg)
+
+### Worked Example 23 — the same busbars at load and at fault
+
+**Given**: a pair of busbars 50 mm apart.
+
+At a working current of 600 A,
+$F/\\ell = (2 \\times 10^{-7})(600)(600)/0.050 = 1.44$ N/m — the weight of a
+small apple per metre, entirely ignorable. During a fault whose first peak
+reaches 12 kA the same expression gives **576 N/m**, four hundred times as
+much, because the force scales as the square of the current while the
+geometry is unchanged. Switchgear bracing is therefore a mechanical design
+problem driven by the prospective fault current, not by the rating.
+
+### Worked Example 24 — the net force on a loop beside a wire
+
+**Given**: the loop of Worked Example 18 — 0.50 m long, near side 20 mm and far side 60 mm from a wire carrying 100 A — now itself carrying 10 A, with its near side parallel to the wire current.
+
+The two sides parallel to the wire feel opposite forces because they carry
+current in opposite directions, and the two perpendicular sides cancel by
+symmetry. The near side is attracted:
+
+$$F_{\\mathrm{near}} = \\frac{(2 \\times 10^{-7})(100)(10)(0.50)}{0.020} = 5.00\\ \\mathrm{mN}$$
+
+and the far side, three times further away, is repelled with one third of
+that, 1.667 mN. The net is $5.0 - 1.667 = 3.333$ mN, toward the wire. That
+net attraction is the mechanism behind every magnetically operated relay and
+contactor: a current loop in a non-uniform field is always pulled toward the
+stronger region when the flux it makes aids the applied flux.
+
+## 8.3 B-H, hysteresis and where the watts go
+
+Ferromagnetic materials do not have a permeability so much as a history.
+Sweeping $H$ up and back down traces a loop rather than a line, and the loop
+carries three quantities the exam asks about: the saturation flux density,
+the remanence $B_r$ left when $H$ returns to zero, and the coercivity $H_c$
+needed to force $B$ back to zero.
+
+To keep every number here computed rather than quoted, the loop below is a
+**stated model**, not a datasheet curve: two shifted hyperbolic tangents,
+
+$$B_{\\uparrow}(H) = B_{s}\\tanh \\frac{H - H_{c}}{H_{a}}, \\qquad B_{\\downarrow}(H) = B_{s}\\tanh \\frac{H + H_{c}}{H_{a}}$$
+
+with $B_{s} = 1.8$ T, $H_{c} = 40$ A/m and $H_{a} = 90$ A/m, swept to
+$\\pm 500$ A/m. Everything below is an integral of that model.
+
+![A model hysteresis loop swept to plus and minus 500 amperes per metre, with a saturation of 1.8 tesla, a remanence of 0.7512 tesla and a coercivity of 40 amperes per metre, enclosing an area of 288.0 joules per cubic metre per cycle.](/courses/fe-ee/figures/em2-hysteresis-loop.svg)
+
+The remanence follows by setting $H = 0$:
+$B_r = 1.8\\tanh (40/90) = 0.7512$ T. The initial slope gives an effective
+$\\mu _r = B_{s}/(H_{a}\\mu _{0}) = 15\\,916$ near the origin, falling steadily
+as the material saturates.
+
+### Worked Example 25 — hysteresis loss from the loop area
+
+The energy delivered to the material per unit volume in one cycle is the
+area the loop encloses:
+
+$$w = \\oint H\\,dB \\quad \\mathrm{[J/m^{3}\\ per\\ cycle]}, \\qquad P_{h} = w\\,f\\,\\mathrm{Vol}$$
+
+For the model above that area is **288.0 J/m³**, computed two ways — by
+integrating the separation of the two branches over $H$, and by the shoelace
+formula on the closed polygon — which agree to eleven digits.
+
+**Given**: a core of volume 120 cm³ made of this material, driven to the same excursion.
+
+$$288.0 \\times 60 = 17\\,280\\ \\mathrm{W/m^{3}}, \\qquad 17280 \\times 0.00012 = 2.074\\ \\mathrm{W}$$
+
+At 400 Hz the same core dissipates
+$288.0 \\times 400 = 115\\,200$ W/m³, i.e.
+$115200 \\times 0.00012 = 13.82$ W. Hysteresis loss is proportional to
+frequency for a fixed excursion, which is why aircraft power systems at
+400 Hz demand a lower-loss core than 60 Hz systems do.
+
+### Worked Example 26 — why cores are laminated
+
+The second loss mechanism is eddy currents circulating in the core itself.
+For thin laminations of thickness $t$ and conductivity $\\sigma$, driven
+sinusoidally to a peak $B_m$,
+
+$$\\frac{P_{e}}{\\mathrm{Vol}} = \\frac{\\pi ^{2}t^{2}f^{2}B_{m}^{2}\\sigma}{6}$$
+
+**Given**: 0.50 mm laminations of conductivity 2.0 MS/m at 60 Hz and 1.0 T peak. The expression gives 2961 W/m³. Switch to 0.35 mm laminations of the same steel and it gives 1451 W/m³.
+
+The ratio is what matters: $0.50 / 0.35 = 1.4286$, and squaring,
+$1.4286 \\times 1.4286 = 2.041$, which matches
+$2960.9 / 1450.8 = 2.041$ exactly. **Halving the lamination thickness
+quarters the eddy loss.** The two mechanisms also scale differently with
+frequency — hysteresis as $f$, eddy currents as $f^{2}$ — so a core that is
+hysteresis-dominated at 50 Hz can be eddy-dominated at 5 kHz, which is why
+high-frequency magnetics use ferrite, with a conductivity millions of times
+lower than steel, instead of thinner and thinner laminations.`,
+      examTip: "Sort force questions by what the angle is measured from before touching a calculator. Wire and moving charge take the angle to the field; a loop takes the angle to its normal. A coil lying in the plane of the field is at maximum torque and a coil facing the field is at zero, which is the reverse of most people's first instinct.",
+      importantNote: "Loop area is energy per unit volume per CYCLE, so it must be multiplied by both frequency and volume before it becomes watts. Reporting the loop area itself, or the product with frequency, as a power is the classic slip: for the 120 cubic centimetre core here the three numbers are 288 joules per cubic metre, 17.3 kilowatts per cubic metre, and 2.07 watts, and only the last is a power.",
+    },
+    {
+      id: 'ms-problem-sets',
+      title: '9. Practice Problems with Full Solutions',
+      content: `## 9.1 How to use these
+
+As in the electrostatics chapter, every problem is followed by its full
+solution and by the distractor the exam actually offers, named together with
+the wrong number it produces. Commit to an answer before reading on.
+
+## Problem Set D — Fields from currents
+
+**D1.** A long straight wire carries 15 A. Find the flux density 8.0 cm away.
+
+$$B = \\frac{\\mu _{0}I}{2\\pi r} = (2 \\times 10^{-7})\\frac{15}{0.080} = 37.5\\ \\mathrm{µT}$$
+
+**Answer: 37.5 µT.** *Trap*: using $\\mu _{0}I/(4\\pi r)$, which is the
+Biot-Savart prefactor rather than the finished Ampère result, gives 18.75 µT
+— exactly half. The $4\\pi$ belongs to the differential element, not the
+integrated wire.
+
+**D2.** A single circular turn of radius 5.0 cm carries 3.0 A. Find the flux density at its centre.
+
+$$B = \\frac{\\mu _{0}I}{2R} = \\frac{1.2566371 \\times 3.0}{0.10} = 37.70\\ \\mathrm{µT}$$
+
+**Answer: 37.70 µT.** *Trap*: importing the straight-wire denominator and
+computing $\\mu _{0}I/(2\\pi R)$ gives 12.0 µT, low by a factor of $\\pi$. The
+loop result has no $\\pi$ in it.
+
+**D3.** A solenoid of 1200 turns is wound over 40 cm and carries 2.5 A. Find the interior field.
+
+The turn density is $n = 1200/0.40 = 3000$ per metre, so
+$B = \\mu _{0}nI = 1.2566371 \\times 3000 \\times 2.5 = 9425$ µT.
+**Answer: 9.42 mT.** *Trap*: using the total turns $N$ instead of the turns
+per metre $n$ gives 3.77 mT, low by the factor 0.40 m. The solenoid formula
+is the only standard result that takes a turn *density*.
+
+**D4.** A toroid of 600 turns on an iron core of relative permeability 800 carries 0.80 A at a mean radius of 8.0 cm. Find the flux density.
+
+$$B = \\frac{\\mu _{0}\\mu _{r}NI}{2\\pi r} = (2 \\times 10^{-7})(800)\\frac{600 \\times 0.80}{0.080} = 0.96\\ \\mathrm{T}$$
+
+**Answer: 0.96 T, close to the knee for many steels.** *Trap*: omitting
+$\\mu _r$ gives 1.20 mT, a factor of 800 too small — and an answer in
+millitesla for an iron-cored toroid should look wrong immediately.
+
+**D5.** A wire of radius 3.0 mm carries 30 A uniformly. Find the flux density at 1.0 mm, at the surface, and at 1.0 cm from the axis.
+
+Inside, $B = \\mu _{0}Ir/(2\\pi a^{2})$; at the surface and beyond,
+$B = \\mu _{0}I/(2\\pi r)$.
+
+$$B(1\\ \\mathrm{mm}) = 0.667\\ \\mathrm{mT}, \\qquad B(3\\ \\mathrm{mm}) = 2.00\\ \\mathrm{mT}, \\qquad B(10\\ \\mathrm{mm}) = 0.600\\ \\mathrm{mT}$$
+
+**Answers as above; the peak is at the surface.** *Trap*: using the outside
+formula at 1.0 mm gives 6.00 mT, nine times too large. Inside the metal the
+enclosed current is only a fraction of the total, and the field rises with
+radius rather than falling.
+
+## Problem Set E — Inductance and magnetic circuits
+
+**E1.** A 250-turn solenoid is 0.20 m long with a cross-section of 3.0 cm² and an air core. Find its inductance.
+
+$$L = \\frac{\\mu _{0}N^{2}A}{\\ell} = \\frac{(1.2566371 \\times 10^{-6})(62500)(3.0 \\times 10^{-4})}{0.20} = 117.8\\ \\mathrm{µH}$$
+
+**Answer: 117.8 µH.** *Trap*: writing $N$ instead of $N^{2}$ gives 0.471 µH,
+a factor of 250 too small. Inductance is quadratic in turns because the
+turns both create the flux and link it.
+
+**E2.** The same coil carries 4.0 A. Find the stored energy two ways.
+
+Circuit route: $\\tfrac{1}{2}LI^{2} = 0.9425$ mJ. Field route:
+$B = \\mu _{0}nI = 6.283$ mT, so $u = B^{2}/(2\\mu _{0}) = 15.71$ J/m³ over a
+volume of $3.0 \\times 10^{-4} \\times 0.20 = 6.0 \\times 10^{-5}$ m³, giving
+0.9425 mJ again. **Answer: 0.942 mJ by both routes.** *Trap*: using
+$u = B^{2}/(2\\mu _{0}\\mu _r)$ with $\\mu _r$ set to something other than 1 for
+an air core — the two routes then disagree, which is the signal that
+something is wrong.
+
+**E3.** A core of relative permeability 2500 has a mean path of 0.25 m, a cross-section of 5.0 cm² and a 1.5 mm air gap. Find the current in a 300-turn winding needed for 0.80 T in the core.
+
+$$H_{\\mathrm{core}} = \\frac{0.80}{\\mu _{0}(2500)} = 254.65\\ \\mathrm{A/m}, \\qquad H_{\\mathrm{gap}} = \\frac{0.80}{\\mu _{0}} = 636\\,620\\ \\mathrm{A/m}$$
+
+The core consumes $254.65 \\times 0.25 = 63.66$ ampere-turns and the gap
+$636620 \\times 0.0015 = 954.93$, so the winding must supply
+$63.66 + 954.93 = 1018.6$ ampere-turns and
+$I = 1018.6/300 = 3.395$ A. **Answer: 3.40 A.** *Trap*: ignoring the gap
+gives 0.212 A, sixteen times too small. A 1.5 mm gap in a 250 mm path is
+0.6% of the length and 94% of the drive.
+
+**E4.** Two coils have $L_{1} = 25$ mH, $L_{2} = 100$ mH and $M = 40$ mH. Find $k$, and the series-connected inductance both ways round.
+
+$$k = \\frac{M}{\\sqrt{L_{1}L_{2}}} = \\frac{40}{50} = 0.80$$
+
+Series aiding: $25 + 100 + 80 = 205$ mH. Series opposing:
+$25 + 100 - 80 = 45$ mH. **Answers: 0.80, 205 mH and 45 mH.** *Trap*:
+computing $k = M/(L_{1}+L_{2}) = 0.32$. The coupling coefficient normalises
+by the geometric mean, not the sum, which is why it can never exceed 1.
+
+**E5.** A coaxial line has $a = 0.80$ mm and $b = 2.6$ mm. Find its inductance per metre at DC.
+
+$$L' = \\frac{\\mu _{0}}{2\\pi}\\ln \\frac{b}{a} + \\frac{\\mu _{0}}{8\\pi} = 0.2357 + 0.0500 = 0.2857\\ \\mathrm{µH/m}$$
+
+**Answer: 0.286 µH/m at DC, falling to 0.236 µH/m once skin effect is
+established.** *Trap*: quoting only the external term, 0.2357 µH/m, which is
+17.5% low at DC. The internal term is a fixed 50 nH/m for any solid round
+conductor.
+
+## Problem Set F — Forces and losses
+
+**F1.** A 0.80 m wire carrying 12 A lies at 25° to a uniform 0.60 T field. Find the force.
+
+$$F = BIL\\sin \\theta = 0.60 \\times 12 \\times 0.80 = 5.76\\ \\mathrm{N}\\ \\text{at 90 degrees}$$
+
+and at 25°, $5.76 \\times 0.42262 = 2.434$ N. **Answer: 2.43 N.** *Trap*:
+using the cosine gives 5.22 N. For a straight wire the angle is measured
+between the wire and the field, and the force vanishes when they are
+parallel — so the sine is the only function that can be right.
+
+**F2.** Two busbars 40 mm apart carry an 8.0 kA fault peak. Find the force per metre.
+
+$$\\frac{F}{\\ell} = (2 \\times 10^{-7})\\frac{(8000)(8000)}{0.040} = 320\\ \\mathrm{N/m}$$
+
+**Answer: 320 N/m, about 33 kg per metre.** *Trap*: leaving the separation in
+millimetres gives 0.32 N/m, a thousand times too small — and a number that
+looks reassuring enough to be accepted without a second glance.
+
+**F3.** A 200-turn coil of area 25 cm² carries 0.50 A in a 0.15 T field, with the plane of the coil parallel to the field. Find the torque.
+
+The plane being parallel to $\\boldsymbol{B}$ puts the normal at 90° to it,
+so $\\sin \\alpha = 1$:
+
+$$\\tau = NIAB = 200 \\times 0.50 \\times 0.0025 \\times 0.15 = 0.0375\\ \\mathrm{N\\,m}$$
+
+**Answer: 37.5 mN·m, the maximum for this coil.** *Trap*: taking the angle
+from the plane rather than the normal gives $\\sin 0° = 0$ and a torque of
+zero — the exact opposite of the truth.
+
+**F4.** A core of volume 8.0 × 10⁻⁴ m³ has a measured loop area of 400 J/m³ per cycle. Find the hysteresis loss at 50 Hz.
+
+$$P_{h} = w f\\,\\mathrm{Vol} = 400 \\times 50 \\times 0.0008 = 16\\ \\mathrm{W}$$
+
+**Answer: 16 W.** *Trap*: stopping at $400 \\times 50 = 20\\,000$ and calling it
+20 kW. That figure is watts per cubic metre; the core is not a cubic metre,
+it is 0.8 litres.
+
+**F5.** An electron enters a 50 mT field at 2.0 × 10⁶ m/s perpendicular to it. Find the force and the radius of its path, given $e = 1.602176634 \\times 10^{-19}$ C and $m_e = 9.1093837 \\times 10^{-31}$ kg.
+
+$$F = qvB = 1.602 \\times 10^{-14}\\ \\mathrm{N}, \\qquad r = \\frac{m_e v}{qB} = 0.227\\ \\mathrm{mm}$$
+
+**Answers: 16.0 fN and 0.227 mm.** *Trap*: substituting $H = B/\\mu _{0}$ for
+$B$ in the force law, which inflates the answer by a factor of about
+800 000 and produces a force larger than the electron's weight by twenty
+orders of magnitude. The Lorentz force takes $B$ in tesla, never $H$.`,
+      examTip: "Every trap in these six problem sets is a factor error rather than a misunderstanding: a factor of two between the Biot-Savart prefactor and the Ampere result, a factor of pi between wire and loop, a factor of the coil length between N and n, a factor of mu-r from a forgotten core, and a factor of a thousand from a length left in millimetres. Before committing an answer, check the units of every length and the presence of every material constant the stem supplied.",
+      importantNote: "A sanity range is worth carrying for each quantity. Air-cored coil fields are microtesla to millitesla; iron-cored fields run 0.3 to 1.8 tesla and never higher, because the core saturates. Laboratory inductances are microhenries to henries. Fault forces on busbars are hundreds of newtons per metre. An answer far outside its band is almost always a factor error, and finding it costs seconds where redoing the problem costs minutes.",
     },
   ],
   keyTakeaways: [
