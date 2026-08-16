@@ -414,8 +414,8 @@ The 15 kHz signal appears as a phantom 5 kHz signal after sampling. This aliased
 | Component | Frequency | $f_{s}/2 = 8\\ \\mathrm{kHz}$ | Aliased? | Apparent Frequency |
 |---|---|---|---|---|
 | 1st | 3 kHz | $3 < 8$ | No | **3 kHz** (unchanged) |
-| 2nd | 14 kHz | $14 > 8$ | Yes | \| $14 - 16$ | $= 2\\ \\mathrm{kHz}$ |
-| 3rd | 22 kHz | $22 > 8$ | Yes | \| $22 - 16$ | = 6, in range → **6 kHz** |
+| 2nd | 14 kHz | $14 > 8$ | Yes | $\\lvert 14 - 16 \\rvert = 2\\ \\mathrm{kHz}$ |
+| 3rd | 22 kHz | $22 > 8$ | Yes | $\\lvert 22 - 16 \\rvert = 6$, in range → **6 kHz** |
 
 After sampling, the output appears to contain 3 kHz, 2 kHz, and 6 kHz — the original 14 kHz and 22 kHz components are permanently destroyed and replaced by aliases.
 

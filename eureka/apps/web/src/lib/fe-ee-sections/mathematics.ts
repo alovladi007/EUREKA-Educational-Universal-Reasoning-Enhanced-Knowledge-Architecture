@@ -1143,7 +1143,7 @@ That normal-vector idea is the same one used for surface integrals in the electr
   | Slope-intercept form | $y = mx + b$ |
   | Distance between points | $d = \\sqrt{(x_{2}-x_{1})^{2} + (y_{2}-y_{1})^{2}}$ |
   | Midpoint | $((x_{1}+x_{2})/2, (y_{1}+y_{2})/2)$ |
-  | Distance from point to line Ax+By+C=0 | \\| $Ax_{0}+By_{0}+C$ | $/\\sqrt{A^{2}+B^{2}}$ |
+  | Distance from point to line Ax+By+C=0 | $\\lvert Ax_{0}+By_{0}+C\\rvert /\\sqrt{A^{2}+B^{2}}$ |
   
   Two relationships between lines are asked directly:
   
@@ -1622,7 +1622,7 @@ fee_int_calc: {
 | Function | Integral |
 |---|---|
 | $x^n$ | $x^{n+1}/(n+1) + C (n \\ne -1)$ |
-| 1/x | ln|x| + C |
+| 1/x | $\\ln \\lvert x\\rvert + C$ |
 | $e^x$ | $e^x + C$ |
 | $e^{ax}$ | $(1/a)e^{ax} + C$ |
 | $\\sin (x)$ | $-\\cos (x) + C$ |
@@ -1768,7 +1768,7 @@ Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value i
   | Integral | Result |
   |---|---|
   | $\\int x^{n} dx (n \\ne -1)$ | $x^{n+1}/(n+1) + C$ |
-  | $\\int (1/x) dx$ | ln\\|x\\| + C |
+  | $\\int (1/x)\\, dx$ | $\\ln \\lvert x\\rvert + C$ |
   | $\\int e^{kx} dx$ | $(1/k)e^{kx} + C$ |
   | $\\int \\sin (kx) dx$ | $-(1/k)\\cos (kx) + C$ |
   | $\\int \\cos (kx) dx$ | $(1/k)\\sin (kx) + C$ |
@@ -2787,8 +2787,8 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
   
   | Product | Result | Formula | Zero when |
   |---|---|---|---|
-  | Dot **A**·**B** | scalar | \\|A\\|\\|B\\| $\\cos  \\theta$ | perpendicular |
-  | Cross **A**×**B** | vector | \\|A\\|\\|B\\|sin θ, ⊥ to both | parallel |
+  | Dot **A**·**B** | scalar | $\\lvert A\\rvert \\lvert B\\rvert \\cos \\theta$ | perpendicular |
+  | Cross **A**×**B** | vector | $\\lvert A\\rvert \\lvert B\\rvert \\sin \\theta$, ⊥ to both | parallel |
   
   The distinction is physical. Work and real power are **dot** products — only the
   component along the direction of motion (or in phase with the current) counts,

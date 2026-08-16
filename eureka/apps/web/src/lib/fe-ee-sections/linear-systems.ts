@@ -63,7 +63,7 @@ An LTI system must satisfy two properties:
 | **Linearity** | Scale and add inputs → outputs scale and add | Enables superposition analysis |
 | **Time-invariance** | Shifted input → same shifted output | System parameters constant |
 | **Causality** | h(t) = 0 for t < 0 | Output depends only on past/present inputs |
-| **BIBO Stability** | ∫\|h(t)\| $dt < \\infty$ | Bounded inputs produce bounded outputs |
+| **BIBO Stability** | $\\int \\lvert h(t)\\rvert\\, dt < \\infty$ | Bounded inputs produce bounded outputs |
 
 ## 2.2 BIBO Stability
 
@@ -128,7 +128,7 @@ which is itself a quick sanity check on any convolution answer.
 |---|---|---|---|
 | $h(t) = e^{-3t}\\cdot u(t)$ | Decaying exponential | Yes | Yes (integral = 1/3) |
 | $h(t) = e^{2t}\\cdot u(t)$ | Growing exponential | Yes | **No** (integral diverges) |
-| $h(t) = e^(-$ |t\|) | Two-sided | No | Yes (integral = 2) |
+| $h(t) = e^{-\\lvert t\\rvert}$ | Two-sided | No | Yes (integral = 2) |
 | $h(t) = u(t)$ | Step function | Yes | **No** (integral diverges) |`,
         examTip: 'When convolving a rectangular pulse with an exponential on the FE exam, the result always has two regions — a rising portion and a decaying tail. Sketch the shape rather than memorizing the formula. If the problem involves δ(t), remember: x(t)*δ(t−t₀) = x(t−t₀) — no integration needed.',
         importantNote: 'Always verify your convolution result at key points: at t = 0 the output should be zero (for causal signals), and as t → ∞ the output should decay to zero (for stable systems). These sanity checks catch algebraic errors quickly.',
@@ -877,11 +877,11 @@ The **unilateral Z-Transform** (causal sequences, n ≥ 0) is standard for digit
 | Time Domain x[n] | Z-Domain X(z) | ROC |
 |---|---|---|
 | $\\delta [n]$ | 1 | All z |
-| u[n] | $z/(z-1)$ | \|z\| $> 1$ |
-| $a^{n}\\cdot u[n]$ | $z/(z-a)$ | \|z\| > \|a\| |
-| $n\\cdot a^{n}\\cdot u[n]$ | $az/(z-a)^{2}$ | \|z\| > \|a\| |
-| $n\\cdot u[n]$ | $z/(z-1)^{2}$ | \|z\| $> 1$ |
-| $\\cos (\\omega _{0}n)\\cdot u[n]$ | $z(z-\\cos  \\omega _{0})/(z^{2}-2z \\cos  \\omega _{0}+1)$ | \|z\| $> 1$ |
+| u[n] | $z/(z-1)$ | $\\lvert z\\rvert > 1$ |
+| $a^{n}\\cdot u[n]$ | $z/(z-a)$ | $\\lvert z\\rvert > \\lvert a\\rvert$ |
+| $n\\cdot a^{n}\\cdot u[n]$ | $az/(z-a)^{2}$ | $\\lvert z\\rvert > \\lvert a\\rvert$ |
+| $n\\cdot u[n]$ | $z/(z-1)^{2}$ | $\\lvert z\\rvert > 1$ |
+| $\\cos (\\omega _{0}n)\\cdot u[n]$ | $z(z-\\cos  \\omega _{0})/(z^{2}-2z \\cos  \\omega _{0}+1)$ | $\\lvert z\\rvert > 1$ |
 
 ### Key Properties
 
@@ -914,9 +914,9 @@ This exponential mapping transforms continuous-domain regions to discrete-domain
 
 | s-Plane Region | z-Plane Region | System Behavior |
 |---|---|---|
-| Left half-plane (LHP) | **Inside** unit circle \|z\| $< 1$ | Decaying (stable) |
-| Imaginary axis (jω) | **On** unit circle \|z\| $= 1$ | Sustained oscillation |
-| Right half-plane (RHP) | **Outside** unit circle \|z\| $> 1$ | Growing (unstable) |
+| Left half-plane (LHP) | **Inside** unit circle, $\\lvert z\\rvert < 1$ | Decaying (stable) |
+| Imaginary axis (jω) | **On** unit circle, $\\lvert z\\rvert = 1$ | Sustained oscillation |
+| Right half-plane (RHP) | **Outside** unit circle, $\\lvert z\\rvert > 1$ | Growing (unstable) |
 
 ### Discrete-Time Stability
 
@@ -1195,7 +1195,7 @@ The log-log nature of the magnitude plot makes asymptotic approximation possible
 
 For a transfer function H(s):
 
-  |H(jω)|_dB = 20 · $\\log _{10}$ |H(jω)|
+  $\\lvert H(j\\omega)\\rvert _{\\mathrm{dB}} = 20\\log _{10}\\lvert H(j\\omega)\\rvert$
 
 Examples:
 - |H| = 1 → 0 dB

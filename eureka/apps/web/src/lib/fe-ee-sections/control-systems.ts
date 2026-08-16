@@ -1080,7 +1080,7 @@ To plot G(s) = K·(s + $z_{1}$)/[(s)(s + $p_{1}$)(s + $p_{2}$)]:
 | Margin | Definition | Measured At |
 |---|---|---|
 | **Gain Margin (GM)** | How much gain can increase before instability | **Phase-crossover frequency** ω_pc (where ∠G = −180°) |
-| **Phase Margin (PM)** | How much additional phase lag before instability | **Gain-crossover frequency** ω_gc (where |G| $= 0\\ \\mathrm{dB})$ |
+| **Phase Margin (PM)** | How much additional phase lag before instability | **Gain-crossover frequency** ω_gc, where $\\lvert G\\rvert = 0\\ \\mathrm{dB}$ |
 
 **$GM = -20\\cdot \\log _{10}|G(j\\omega _{pc})|$** (in dB)
 

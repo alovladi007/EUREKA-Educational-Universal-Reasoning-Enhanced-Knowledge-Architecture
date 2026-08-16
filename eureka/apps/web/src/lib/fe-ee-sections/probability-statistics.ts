@@ -378,9 +378,9 @@ Properties:
 | $r = +1$ | Perfect positive linear relationship |
 | $r = -1$ | Perfect negative linear relationship |
 | $r = 0$ | No linear relationship |
-| $0 <$ |r| $< 0.5$ | Weak linear relationship |
-| $0.5 <$ |r| $< 0.8$ | Moderate linear relationship |
-| $0.8 <$ |r| $< 1$ | Strong linear relationship |
+| $0 < \\lvert r\\rvert < 0.5$ | Weak linear relationship |
+| $0.5 < \\lvert r\\rvert < 0.8$ | Moderate linear relationship |
+| $0.8 < \\lvert r\\rvert < 1$ | Strong linear relationship |
 
 ### Variance of Sums
 

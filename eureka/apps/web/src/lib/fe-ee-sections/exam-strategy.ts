@@ -76,13 +76,18 @@ Then during the exam, you have the look-up table memorized — you go straight t
 
 ## 1.5 The NCEES-approved calculator constraint
 
-NCEES allows ONLY these calculator models (as of 2025):
+NCEES publishes an approved-calculator list each year and permits only the
+models on it. For the 2026 administration the list is three families:
 
-- HP 35s
-- Casio FX-115 ES Plus (and later approved variations)
-- TI-30X (Pro / IIS)
+- **Casio** — all fx-115 and fx-991 models (the model name must contain
+  "fx-115" or "fx-991")
+- **Hewlett Packard** — the HP 33s and HP 35s, and no other HP model
+- **Texas Instruments** — all TI-30X and TI-36X models (the model name must
+  contain "TI-30X" or "TI-36X")
 
-These calculators do NOT have programmable memory or graphing — you cannot pre-store formulas. They DO have:
+Check the current list on the NCEES site before you buy, because it is
+republished for each exam year. These calculators do NOT have programmable
+memory or graphing — you cannot pre-store formulas. They DO have:
 
 - Complex number arithmetic (essential for AC analysis)
 - Equation solver (for some models)
@@ -101,13 +106,25 @@ The on-screen handbook viewer at the Pearson VUE testing center includes a SEARC
 
 ## 1.7 Time budgeting per question
 
-110 questions in 6 hours = 196 seconds per question on average, including breaks. Allocate:
+Get this arithmetic right, because a great many candidates plan against the
+wrong number. NCEES describes the FE as a 6-hour **appointment**, and the
+appointment is not all exam. It comprises a 2-minute nondisclosure agreement, an
+8-minute tutorial, **5 hours and 20 minutes of actual testing time**, and a
+25-minute scheduled break.
 
-- ~30 seconds: read and understand the question
-- ~30 seconds: navigate the handbook to the relevant formula
-- ~60 seconds: identify variables, plug in numbers, calculate
-- ~30 seconds: verify (units, sanity check, mark for review if uncertain)
-- ~46 seconds: buffer for harder questions
+So the budget is 320 minutes for 110 questions:
+
+**19,200 s / 110 = 174.5 seconds per question**, or 2 minutes 55 seconds.
+
+Planning against 196 seconds — 6 hours divided by 110 — quietly overspends by
+about 22 seconds a question, which is 40 minutes across the exam. Allocate the
+real budget:
+
+- ~25 seconds: read and understand the question
+- ~25 seconds: navigate the handbook to the relevant formula
+- ~55 seconds: identify variables, plug in numbers, calculate
+- ~25 seconds: verify (units, sanity check, mark for review if uncertain)
+- ~44 seconds: buffer for harder questions
 
 If you're spending 60+ seconds JUST locating a formula, your handbook navigation needs work. Drill it.`,
       examTip: `The exam is open-handbook. Your COMPETITORS know the layout cold. Don't be the candidate flipping through 500 pages while everyone else jumps to the right section in 5 seconds.`,
@@ -330,17 +347,246 @@ You'll see questions multiple times. That's FINE — repetition builds recogniti
 - Watch the clock; aim to finish all questions by 5h45min, leaving 15 min for flagged reviews
 - Don't change answers in the final review unless you have a CLEAR reason — first instincts are usually right
 
-## 3.6 The 60-70% threshold
+## 3.6 What "ready" means, given how the exam is actually scored
 
-The FE EE pass rate is ~56% nationally. The cut score is ~50-65 raw points out of 110 (NCEES doesn't publish exact cut). Practically:
+Be careful with claims about cut scores, because NCEES publishes how the exam
+is scored and the answer is not a fixed percentage. Your raw score is converted
+to a scaled score that adjusts for small differences in difficulty between exam
+forms, and that scaled score is compared with a standard set by subject-matter
+experts. NCEES states plainly that **no predetermined percentage of examinees
+passes or fails**, and it does not publish a raw cut score. Anyone quoting an
+exact number of questions you must answer correctly is guessing.
 
-- Score 65+ on practice exams consistently → likely pass
-- Score 50-64 → uncertain; depends on test difficulty calibration
-- Score <50 → more study needed before exam day
+Two facts about scoring that NCEES does publish, and that change how you should
+behave in the room:
 
-If you can score 65+ on full practice exams under timed conditions, you are READY.`,
+- **There are no deductions for wrong answers.** An unanswered question is
+  strictly worse than a guessed one.
+- **Results are reported as pass or fail**, typically within 7–10 days through
+  your MyNCEES account, and a failing report includes a diagnostic breakdown of
+  relative strengths and weaknesses by subject area.
+
+Since the threshold is not published, use your practice results as a *relative*
+signal rather than a prediction:
+
+- Consistently scoring in the high 60s to 70s on full, timed practice exams
+  means your preparation is at the level candidates typically pass from
+- Scoring in the 50s means the outcome depends on which topics the form
+  emphasises — keep studying
+- Scoring below 50 means substantive gaps remain, and the diagnostic categories
+  will tell you where
+
+The honest summary: aim comfortably above where you think the line is, because
+you cannot see the line.`,
       examTip: `The single biggest determinant of pass/fail is HANDBOOK FAMILIARITY combined with EXAM PACING. Both are skills you build through practice, not natural talent. 30 days of disciplined study, 800-1200 practice questions, and 5+ full timed practice exams should get most candidates with a solid EE undergrad to passing.`,
       importantNote: `Don't pay for premium "FE crash course" videos until you've exhausted free resources (NCEES sample questions, university OCW, YouTube channels like Engineer4Free, EE Power, electricalpe). The platform's lessons + QBank + handbook should suffice for most candidates.`,
+    },
+    {
+      id: 'handbook-index-drill',
+      title: '4. Building the Index: a Navigation Drill You Can Actually Do',
+      content: `## 4.1 The difference between searching and looking up
+
+Sections 1 and 2 said to build a personal index. This section is about how, and
+about the distinction that makes it worth the effort.
+
+**Searching** is what you do when you know what you need but not where it is:
+you scan headings, try a search term, backtrack, try another. It costs 30 to 90
+seconds and its cost is unpredictable, which is worse than its average.
+
+**Looking up** is what you do when the question's phrasing has already told you
+which division of the handbook to open. It costs five to ten seconds and its
+cost is constant.
+
+The whole discipline consists of converting searches into lookups, in advance,
+for the two hundred or so question types this exam actually asks.
+
+![Declared schematic: a two-column mapping showing phrases a question might use on the left — "find the steady-state error", "the line current in a delta load", "effective annual interest" — and the handbook division each one should send you to on the right. The diagram is a teaching device illustrating the KIND of personal index to build; it reproduces no part of the handbook's own layout or wording.](/courses/fe-ee/figures/strat-handbook-map.svg)
+
+The figure shows the form the index should take: **question language on the
+left, destination on the right.** Not topics on the left — topics are how you
+studied, and they are not how questions are worded. A question rarely says "this
+is a steady-state error problem"; it says a system is subjected to a ramp input
+and asks what the tracking error settles to. Your index has to be keyed to the
+words the exam actually uses.
+
+## 4.2 The drill, in four passes
+
+Build the index by working with the current handbook PDF open, not from memory.
+
+**Pass 1 — skeleton (about an hour).** Open the handbook and write down its
+top-level divisions in order, with nothing else. You are learning the shape of
+the document: which divisions are general and shared, where the discipline
+material starts, and roughly how big each part is.
+
+**Pass 2 — anchors (two to three hours).** For each division, find and note the
+five or six formulas you are most likely to need. Note *where* they sit within
+the division — near the start, after a particular heading, in a table or in
+running text. Position within a section is what your eye actually uses when
+scrolling.
+
+**Pass 3 — question language (three to four hours).** Work practice questions
+with the handbook open. Every time you have to look something up, write the
+phrase the question used and the destination you eventually reached. This is the
+pass that produces the real index, and it cannot be done without practice
+questions.
+
+**Pass 4 — timed retrieval (ongoing).** Have someone read you question phrases,
+or use your own list shuffled. Say the destination out loud, then verify. The
+target is under five seconds, and reaching it is a memory task, not an
+understanding task, so it responds well to spaced repetition.
+
+## 4.3 Search terms, when you must search
+
+The on-screen handbook is searchable, and searching is the fallback when the
+index misses. Two rules make it effective:
+
+- **Search for the noun in the formula, not the concept.** A search for a
+  quantity name or symbol usually lands on the equation itself; a search for a
+  concept name lands on prose, which then needs another hop.
+- **Prefer a term that is rare in the document.** Common words return dozens of
+  hits and cost more time than scrolling. Distinctive names — a person's name
+  attached to a criterion, an uncommon symbol, a specific unit — return few.
+
+Practise this in advance, because the sequence "search returns 40 hits, panic,
+retype" is where the minutes go.
+
+## 4.4 Notation reconciliation
+
+The handbook's notation will differ in places from the textbook you learned
+from, and reconciling it under time pressure is a needless cost. Build a short
+table of the differences you personally hit while practising. Common ones worth
+checking early:
+
+| Concept | Notations you may meet | Watch for |
+|---|---|---|
+| Natural and damped frequency | ω_n, ω₀, ω_d | Which one a given formula expects |
+| Damping | ζ (ratio) and α (Neper frequency) | α = ζω_n; the two are not interchangeable |
+| Logarithms | log vs ln | log is base 10 in most electrical contexts |
+| Angles | degrees vs radians | Phasor problems are almost always degrees |
+| Current direction | assumed vs actual | The sign of the answer depends on the assumption stated |
+| Efficiency and power factor | η, pf, cos θ | pf is cos θ only for sinusoidal steady state |
+
+## 4.5 What NOT to spend time on
+
+Two failure modes waste the preparation this section is meant to save.
+
+**Do not memorise page numbers.** Handbook versions change and page numbers move
+with them. Memorise *structure* — division order and position within a division —
+which is far more stable.
+
+**Do not transcribe the handbook.** Copying formulas onto your own sheet feels
+productive and is not: you cannot bring it, and the exercise trains recall of
+content you will be given anyway. Train **retrieval**, not recall. The one thing
+the handbook cannot supply on exam day is knowing which page to open, and that
+is precisely the skill this drill builds.`,
+      examTip: `Key your index to the words questions use, not to the topics you studied. "Find the settling time" and "how long until the response is within 2% of final value" are the same lookup, and only practice with real question language teaches you that.`,
+      importantNote: `Handbook versions change between exam cycles and page numbers move with them. Learn the ORDER of the divisions and the position of material within a division; both survive a version change, and memorised page numbers do not.`,
+    },
+    {
+      id: 'pacing-and-scoring',
+      title: '5. Pacing Arithmetic and the Mechanics of Scoring',
+      content: `## 5.1 The pace line, and the checkpoints that keep you on it
+
+Section 1.7 established the real budget: 320 minutes of testing time for 110
+questions, which is **174.5 seconds each**. A budget is only useful if you can
+tell mid-exam whether you are keeping to it, and that requires checkpoints you
+have memorised — because doing the division under pressure is exactly when you
+will get it wrong.
+
+At the on-pace rate, one question takes 320/110 = 2.909 minutes, so:
+
+| Elapsed testing time | You should be finishing about |
+|---|---|
+| 30 minutes | question 10 |
+| 60 minutes | question 21 |
+| 90 minutes | question 31 |
+| 120 minutes | question 41 |
+| 160 minutes (halfway) | question 55 |
+| 200 minutes | question 69 |
+| 240 minutes | question 82 |
+| 280 minutes | question 96 |
+| 320 minutes | question 110 |
+
+Memorise three of them — 60 minutes / Q21, 160 minutes / Q55, 240 minutes /
+Q82 — and you can audit your pace in two seconds without arithmetic.
+
+![Questions completed against elapsed testing time, with the on-pace line computed from 110 questions in the 320 minutes NCEES publishes as FE testing time. Checkpoint dots mark the questions you should be finishing at 60, 120, 160 and 240 minutes; the dashed line shows the steeper 147-seconds-per-question rate needed to recover from being ten questions behind at the halfway mark.](/courses/fe-ee/figures/strat-pace-checkpoints.svg)
+
+The dashed recovery line is the reason checkpoints matter more than good
+intentions. Ten questions behind at halftime is not a disaster, but it changes
+the remaining budget from 174.5 seconds a question to **147 seconds** — a 16%
+speed-up you must sustain for two and a half hours. Twenty behind at the same
+point demands 120 seconds a question, which is not achievable on a mixed set.
+The cost of drift compounds, and the only cheap moment to correct it is early.
+
+Concretely: **five minutes over budget on one question costs 1.7 questions of
+time.** Two such indulgences and you have spent a question's worth of the exam
+on nothing.
+
+## 5.2 Mark-and-skip, quantified
+
+Because there is no penalty for a wrong answer, every question has a positive
+expected value and the only truly bad outcome is leaving one blank. That makes
+the triage rule arithmetic rather than temperament:
+
+- **Under 30 seconds in**, you should know whether this is a question you can do.
+  If not, mark it and move on. You have spent 17% of a question's budget to buy
+  a full budget elsewhere.
+- **At 2× the budget** — about 6 minutes — a question you are still fighting is
+  consuming another question's entire allowance. Answer with your best guess,
+  mark it, and move.
+- **On the final pass**, answer everything still blank, guessing where
+  necessary.
+
+The value of that last rule is computable. With four options and no penalty, a
+blind guess is worth 0.25 questions. Ten blanks left unanswered are worth zero;
+ten blanks guessed are worth **2.5 questions** on average. If you can eliminate
+one option first, each guess is worth 0.33, and ten of those are worth 3.3.
+There is no scenario in which leaving an answer blank helps.
+
+## 5.3 How the scoring actually works
+
+Four published facts, and their practical consequences:
+
+| Fact | Consequence for you |
+|---|---|
+| Raw score is the number of correct answers; there are no deductions for wrong ones | Never leave a blank |
+| Raw scores are converted to a scaled score to adjust for small differences between forms | A slightly harder form is not a disadvantage |
+| The passing standard is set by subject-matter experts, with no predetermined pass percentage | You are not competing against other candidates |
+| Results are reported as pass or fail, usually within 7–10 days, with a diagnostic report if you fail | Plan your retake from the diagnostic, not from memory |
+
+The third row is worth dwelling on, because it changes the psychology. The exam
+is criterion-referenced: you are measured against a standard of minimum
+competence, not ranked against the room. Nothing anyone else does in the test
+centre affects your result, and a form that feels brutal probably felt brutal to
+everyone, which is what the scaling exists to handle.
+
+## 5.4 The final-pass protocol
+
+Reserve the last 15 minutes and spend them in this order:
+
+1. **Answer every blank.** Non-negotiable, and it takes two minutes.
+2. **Revisit flagged questions where you had a concrete unresolved doubt** — a
+   unit you were not sure of, a factor you meant to check. These are the ones
+   where a second look has real value.
+3. **Leave alone the flagged questions where you simply feel uneasy.** Changing
+   an answer without a specific reason is as likely to hurt as help; changing it
+   because you have found an actual error is not. The distinction is whether you
+   can name what was wrong.
+
+## 5.5 The two-minute reset
+
+If you find yourself stalled — reading the same sentence for the third time,
+or calculating something whose purpose you have lost — stop for twenty seconds.
+Look away from the screen, breathe, and re-read the question's final sentence,
+which is where the actual ask lives. Most stalls are caused by having solved for
+the wrong quantity, and twenty seconds spent confirming what is being asked is
+the highest-return time on the whole exam. If it is still not moving after that,
+mark it and go. Its 174.5 seconds are better spent on the next question, and
+you can come back with a clear head and whatever time the checkpoints have
+earned you.`,
+      examTip: `Memorise three checkpoints — 60 min / Q21, 160 min / Q55, 240 min / Q82 — and check yourself against them. Mid-exam pace auditing has to be recall, not arithmetic; the moment you are doing division under pressure you are already losing time.`,
+      importantNote: `There is no penalty for a wrong answer, so a blank is strictly worse than a guess. Ten blind guesses among four options are worth 2.5 questions on average, and 3.3 if you can eliminate one option first. Budget the final two minutes to make sure nothing is left unanswered.`,
     },
   ],
   keyTakeaways: [

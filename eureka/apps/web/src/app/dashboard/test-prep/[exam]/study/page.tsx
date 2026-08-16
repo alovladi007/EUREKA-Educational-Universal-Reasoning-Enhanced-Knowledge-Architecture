@@ -56,6 +56,7 @@ import {
 import { getCurriculum } from '@/lib/exam-curriculum';
 import { getExamConfig } from '@/lib/exam-config';
 import { getExamSurfaces } from '@/lib/exam-surfaces';
+import { displayReadMinutes } from '@/lib/read-time';
 import { loadExamCourse, type CoursePack } from '@/lib/exam-course-loader';
 import { loadReadChapters, toggleChapterRead } from '@/lib/chapter-reads';
 import type { TopicLesson } from '@/lib/cissp-course-data';
@@ -424,11 +425,14 @@ export default function ExamStudyPage() {
                           <span className="block truncate font-medium">
                             {i + 1}. {c?.title ?? id}
                           </span>
-                          {c?.readTimeMin && (
-                            <span className="text-[11px] text-muted-foreground">
-                              {c.readTimeMin} min read
-                            </span>
-                          )}
+                          {(() => {
+                            const mins = displayReadMinutes(pack?.get(id), c?.readTimeMin);
+                            return mins ? (
+                              <span className="text-[11px] text-muted-foreground">
+                                {mins} min read
+                              </span>
+                            ) : null;
+                          })()}
                         </span>
                       </button>
                     </li>
@@ -478,11 +482,14 @@ export default function ExamStudyPage() {
                       {c?.summary}
                     </p>
                     <div className="flex items-center gap-3 mt-2 text-[11px] text-muted-foreground">
-                      {c?.readTimeMin && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> {c.readTimeMin} min
-                        </span>
-                      )}
+                      {(() => {
+                        const mins = displayReadMinutes(pack?.get(id), c?.readTimeMin);
+                        return mins ? (
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" /> {mins} min
+                          </span>
+                        ) : null;
+                      })()}
                       <span className="flex items-center gap-1">
                         <BookOpen className="h-3 w-3" />
                         {has ? 'Full chapter' : 'Summary only'}
