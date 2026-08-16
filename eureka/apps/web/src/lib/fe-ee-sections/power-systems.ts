@@ -512,8 +512,8 @@ share the same 10 kW:
 
 $$R_{1} = \\frac{10{,}000}{2\\times 120.192^{2}} = 0.34611\\ \\Omega \\quad\\Rightarrow\\quad A_{1} = 59.77\\ \\mathrm{mm^{2}}$$
 
-Total metal is **$3\\times 29.89 = 89.66\\ \\mathrm{mm^{2}}$** against
-**$2\\times 59.77 = 119.55\\ \\mathrm{mm^{2}}$** — a ratio of exactly 0.750, as
+Total metal is **$3\\times 29.887 = 89.66\\ \\mathrm{mm^{2}}$** against
+**$2\\times 59.775 = 119.55\\ \\mathrm{mm^{2}}$** — a ratio of exactly 0.750, as
 the algebra promised. Over 1.2 km that is 36 m³ of copper cross-section-metre
 saved per circuit, which at utility scale is the whole argument.
 
@@ -652,7 +652,7 @@ Deviations are +6.67, −0.33 and −6.33 V, so
 $$\\mathrm{VUF} = \\frac{6.667}{474.33}\\times 100 = 1.41\\%$$
 
 **Step 2 — negative-sequence current.**
-**$I_{2}/I_{1} = 1.41\\times 6.5 = 9.14$ percent of rated**.
+**$I_{2}/I_{1} = 1.4056\\times 6.5 = 9.14$ percent of rated**.
 
 **Step 3 — loss.** Stator copper loss scales with the sum of the squares:
 
@@ -943,7 +943,7 @@ from a reversed meter contradicts itself.
 
 $$\\mathrm{VUF} = \\frac{6.667}{474.33}\\times 100 = 1.41\\%$$
 
-$$\\frac{I_{2}}{I_{1}} \\approx 1.41\\times 6.0 = 8.4\\%\\ \\text{of rated current}$$
+$$\\frac{I_{2}}{I_{1}} \\approx 1.4056\\times 6.0 = 8.4\\%\\ \\text{of rated current}$$
 
 *Distractor:* using the full spread 481 − 468 = 13 V instead of the maximum
 deviation from average doubles the answer to 2.74 percent.
@@ -1588,9 +1588,9 @@ winding.
 The 120 V winding is the series element, rated
 **$10{,}000/120 = 83.33$ A**, and that current is the high-side line current:
 
-$$S_{auto} = 600\\times 83.33 = 50{,}000\\ \\mathrm{VA} = 5\\times S_{two\\text{-}winding}$$
+$$S_{auto} = 600\\times 83.333 = 50{,}000\\ \\mathrm{VA} = 5\\times S_{two\\text{-}winding}$$
 
-$$I_{L} = \\frac{50{,}000}{480} = 104.17\\ \\mathrm{A}, \\qquad I_{common} = 104.17-83.33 = 20.83\\ \\mathrm{A}$$
+$$I_{L} = \\frac{50{,}000}{480} = 104.17\\ \\mathrm{A}, \\qquad I_{common} = 104.167-83.333 = 20.83\\ \\mathrm{A}$$
 
 and 20.83 A at 480 V is exactly 10 kVA — the common winding is respected too.
 Of the 50 kVA throughput, **10 kVA is transformed magnetically and 40 kVA is
@@ -1797,7 +1797,7 @@ $$k_{1} = \\frac{250}{0.04} = 6{,}250, \\qquad k_{2} = \\frac{400}{0.06} = 6{,}6
 
 $$f_{1} = \\frac{6{,}250}{12{,}917} = 0.4839, \\qquad f_{2} = 0.5161$$
 
-The 250 kVA unit saturates at **$250/0.4839 = 516.7$ kVA** of bus load; the
+The 250 kVA unit saturates at **$250/0.48384 = 516.7$ kVA** of bus load; the
 400 kVA unit would not saturate until 775 kVA. So the answer is **516.7 kVA**,
 just 79.5 percent of the 650 kVA installed. *Distractor:* 650 kVA assumes
 matched impedances.
@@ -2388,7 +2388,7 @@ $$Z_{LR,pu} = \\frac{S_{base}}{S_{LR}}\\times\\left(\\frac{V_{rated}}{V_{base}}\
 Start a 2 MVA, 4.00 kV motor with a locked-rotor current six times rated,
 direct on line, at bus 4 of the study system.
 
-$$Z_{LR} = \\frac{100}{6\\times 2}\\times\\left(\\frac{4.00}{4.16}\\right)^{2} = 8.3333\\times 0.9246 = 7.7046\\ \\mathrm{pu}$$
+$$Z_{LR} = \\frac{100}{6\\times 2}\\times\\left(\\frac{4.00}{4.16}\\right)^{2} = 8.3333\\times 0.92456 = 7.7046\\ \\mathrm{pu}$$
 
 $$V_{bus} = \\frac{7.7046}{7.7046+1.0280} = 0.8823\\ \\mathrm{pu} = 3{,}670\\ \\mathrm{V}$$
 
@@ -4979,7 +4979,7 @@ R_a = 0.5 Ω, drawing I_a = 40 A at 1200 rpm.
 
 - Back-EMF: **$E = 240 - 40(0.5) = 220\\ \\mathrm{V}$**
 - Angular speed: ω = 2π(1200)/60 = 125.7 rad/s
-- Machine constant: **$K\\phi = 220/125.7 = 1.751\\ \\mathrm{V{\\cdot}s/rad}$**
+- Machine constant: **$K\\phi = 220/125.66 = 1.751\\ \\mathrm{V{\\cdot}s/rad}$**
 - Torque: **$T = 1.751 \\times 40 = 70.0\\ \\mathrm{N{\\cdot}m}$**
 - Developed power: **$EI_{a} = 220 \\times 40 = 8{,}800\\ \\mathrm{W} = 11.8\\ \\mathrm{hp}$**
 - Armature loss: 40²(0.5) = 800 W; efficiency 8,800/9,600 = **91.7%**

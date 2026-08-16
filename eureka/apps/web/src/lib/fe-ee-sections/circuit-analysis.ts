@@ -416,7 +416,7 @@ $$R_{2}\\Vert R_{3} = \\frac{6 \\times 24}{6 + 24} = \\frac{144}{30} = 4.8\\ \\O
 
 **Source current and node voltage**:
 
-$$I = \\frac{12}{8.8} = 1.364\\ \\mathrm{A}, \\qquad V_{p} = 1.364 \\times 4.8 = 6.545\\ \\mathrm{V}$$
+$$I = \\frac{12}{8.8} = 1.3636\\ \\mathrm{A}, \\qquad V_{p} = 1.3636 \\times 4.8 = 6.545\\ \\mathrm{V}$$
 
 **Branch currents**, two ways. By Ohm's law on each branch,
 $I_{2} = 6.545/6 = 1.091\\ \\mathrm{A}$ and
@@ -426,9 +426,9 @@ $$I_{3} = I\\,\\frac{R_{2}}{R_{2} + R_{3}} = 1.364 \\times \\frac{6}{30} = 0.273
 
 **Power balance**:
 
-$$P_{source} = 12 \\times 1.364 = 16.36\\ \\mathrm{W}$$
+$$P_{source} = 12 \\times 1.3636 = 16.36\\ \\mathrm{W}$$
 
-$$P_{1} + P_{2} + P_{3} = (1.364)^{2}(4) + \\frac{(6.545)^{2}}{6} + \\frac{(6.545)^{2}}{24} = 7.44 + 7.14 + 1.79 = 16.36\\ \\mathrm{W}$$
+$$P_{1} + P_{2} + P_{3} = (1.3636)^{2}(4) + \\frac{(6.545)^{2}}{6} + \\frac{(6.545)^{2}}{24} = 7.438 + 7.140 + 1.785 = 16.36\\ \\mathrm{W}$$
 
 **Answer**: 1.364 A from the source, splitting 1.091 A and 0.273 A. Compare
 this with the $R_{3} = 12\\ \\Omega$ row: doubling $R_{3}$ halved its current
@@ -2758,9 +2758,9 @@ The current **leads** by 72.46 degrees, because at 60 Hz — well below
 resonance — the capacitor dominates. Now the element voltages, each the
 current times its own magnitude:
 
-$$V_R = 1.205\\times 30 = 36.16\\ \\mathrm{V}$$
+$$V_R = 1.2053\\times 30 = 36.16\\ \\mathrm{V}$$
 
-$$V_L = 1.205\\times 37.70 = 45.44\\ \\mathrm{V}, \\qquad V_C = 1.205\\times 132.63 = 159.86\\ \\mathrm{V}$$
+$$V_L = 1.2053\\times 37.70 = 45.44\\ \\mathrm{V}, \\qquad V_C = 1.2053\\times 132.63 = 159.86\\ \\mathrm{V}$$
 
 The capacitor holds 159.86 V while the source supplies 120 V, and the
 magnitudes sum to 241 V. Neither observation breaks KVL, because KVL applies
@@ -4139,7 +4139,7 @@ $$f_1 = 112.54(1.004988 - 0.1) = 101.85\\ \\text{Hz}, \\qquad f_2 = 112.54(1.004
 ![One resonance curve for a quality factor of five, with the half-power band shaded between 101.8 and 124.4 hertz, the 0.707 line drawn across it, and the note that 112.5 hertz is the geometric mean of the two edges.](/courses/fe-ee/figures/ckt2-halfpower-band.svg)
 
 Check both exact identities: the difference is
-$124.35 - 101.85 = 22.51$ Hz, matching $f_0/Q$; and the geometric mean is
+$f_2 - f_1 = 112.54 \\times 0.2 = 22.51$ Hz, matching $f_0/Q$; and the geometric mean is
 $\\sqrt{101.85 \\times 124.35} = 112.54$ Hz, matching $f_0$. The approximation
 would have given 101.29 and 123.79 Hz, each 0.55 % low — small enough to be
 invisible at this Q, which is precisely why the exam sets problems at Q near 2
@@ -4359,9 +4359,9 @@ is safe everywhere except within about an octave of the corner.
 A 4.7 kilohm resistor feeds a 33 nanofarad capacitor to ground. Find the corner
 frequency, the attenuation at 10 kHz in decibels, and the phase shift there.
 
-$$f_c = \\frac{1}{2\\pi (4700)(33 \\times 10^{-9})} = \\frac{1}{2\\pi (1.551 \\times 10^{-4})} = 1026\\ \\text{Hz}$$
+$$f_c = \\frac{1}{2\\pi (4700)(33 \\times 10^{-9})} = \\frac{1}{2\\pi (1.551 \\times 10^{-4})} = 1026.14\\ \\text{Hz}$$
 
-At 10 kHz the frequency ratio is $10000/1026 = 9.745$:
+At 10 kHz the frequency ratio is $10000/1026.14 = 9.745$:
 
 $$\\lvert H \\rvert = \\frac{1}{\\sqrt{1 + 9.745^2}} = \\frac{1}{9.796} = 0.1021 \\;\\Rightarrow\\; 20 \\log_{10}(0.1021) = -19.82\\ \\text{dB}$$
 
@@ -4568,9 +4568,9 @@ combination was done wrong.
 
 **B4 — 1026 Hz and $-19.8$ dB.**
 
-$$f_c = \\frac{1}{2\\pi RC} = \\frac{1}{2\\pi (4700)(33 \\times 10^{-9})} = 1026\\ \\text{Hz}$$
+$$f_c = \\frac{1}{2\\pi RC} = \\frac{1}{2\\pi (4700)(33 \\times 10^{-9})} = 1026.14\\ \\text{Hz}$$
 
-$$\\lvert H \\rvert = \\frac{1}{\\sqrt{1 + (10000/1026)^2}} = \\frac{1}{\\sqrt{1 + 94.97}} = 0.1021 \\;\\Rightarrow\\; -19.8\\ \\text{dB}$$
+$$\\lvert H \\rvert = \\frac{1}{\\sqrt{1 + (10000/1026.14)^2}} = \\frac{1}{\\sqrt{1 + 94.97}} = 0.1021 \\;\\Rightarrow\\; -19.8\\ \\text{dB}$$
 
 *The trap.* Using $-20$ dB per decade from the corner without checking the
 distance gives $-20.0$ dB, which happens to be within 0.2 dB here because 10 kHz
@@ -5571,7 +5571,7 @@ element sees 480 V:
 $$I_{ph} = \\frac{480}{50} = 9.60\\ \\mathrm{A}, \\qquad I_{L} = \\sqrt{3}(9.60) = 16.63\\ \\mathrm{A}, \\qquad P = 3(9.60)^{2}(30) = 8{,}294\\ \\mathrm{W}$$
 
 Check it through the wye equivalent: $Z_{Y} = (30 + j40)/3 = 10 + j13.33\\ \\Omega$
-of magnitude 16.67 Ω, giving $I_{L} = 277.13/16.67 = 16.63$ A — identical, as it
+of magnitude 16.67 Ω, giving $I_{L} = 277.13/16.667 = 16.63$ A — identical, as it
 must be.
 
 *Distractor:* 4.80 A per element, from dividing the 480 V by √3 before dividing
@@ -6485,7 +6485,7 @@ cannot be made to ring by any choice of step size.
 Keep $L = 100$ mH and $C = 20$ microfarad, and compare $R = 141.4$ ohm with
 $R = 353.6$ ohm.
 
-**Critical, $R = 141.4$ ohm.** $\\alpha = 141.4/0.200 = 707.1 = \\omega_0$, so
+**Critical, $R = 141.4$ ohm.** $\\alpha = 141.42/0.200 = 707.1 = \\omega_0$, so
 $\\zeta = 1$ and both roots sit at $-707.1$. The response
 $1 - e^{-707.1t}(1 + 707.1t)$ reaches 95 % of final when $\\alpha t = 4.744$,
 i.e. at **6.71 ms**, and 99 % when $\\alpha t = 6.638$, i.e. at **9.39 ms**.

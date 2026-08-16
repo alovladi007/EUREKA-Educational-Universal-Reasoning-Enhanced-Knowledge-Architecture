@@ -614,7 +614,7 @@ and the ripple frequency on a 60 Hz supply.
 
 $$V_{dc} = 1.654\\times 17 = 28.12\\ \\mathrm{V}$$
 
-$$\\Delta V_{pp} = (\\sqrt{3} - 1.5)\\times 17 = 0.2321\\times 17 = 3.94\\ \\mathrm{V}$$
+$$\\Delta V_{pp} = (\\sqrt{3} - 1.5)\\times 17 = 0.23205\\times 17 = 3.94\\ \\mathrm{V}$$
 
 $$f_{ripple} = 6\\times 60 = 360\\ \\mathrm{Hz}$$
 
@@ -896,7 +896,7 @@ centre-tapped topology does not, and that difference is the main reason bridges
 dominate despite needing four diodes.
 
 **A5 — 1.78%.** The load resistance implied by A2 and A3 is
-$R_{L} = 15.31/0.250 = 61.3\\ \\Omega$. Either route works:
+$R_{L} = 15.31/0.250 = 61.2\\ \\Omega$. Either route works:
 
 $$r = \\frac{\\Delta V}{2\\sqrt{3}V_{dc}} = \\frac{0.947}{2\\sqrt{3}(15.31)} = 0.0179$$
 
@@ -2354,7 +2354,7 @@ $K(V_{GS} - V_{t})^{2} = 0.5 \\times (1.646)^{2} = 0.5 \\times 2.708 = 1.35\\ \\
 The square law was an assumption; verify it. The overdrive is
 $V_{GS} - V_{t} = 1.65\\ \\mathrm{V}$, and
 
-$$V_{DS} = V_{DD} - I_{D}(R_{D} + R_{S}) = 10 - 1.35 \\times 3 = 5.94\\ \\mathrm{V}$$
+$$V_{DS} = V_{DD} - I_{D}(R_{D} + R_{S}) = 10 - 1.3547 \\times 3 = 5.94\\ \\mathrm{V}$$
 
 Since $5.94 \\ge 1.65$, the device is well inside saturation ✓. Had this
 failed, the correct move is to re-solve using the triode equation — not to
@@ -2372,7 +2372,7 @@ quietly keep the square-law answer.
 
 With the Q-point settled, small-signal quantities follow in one line each:
 
-$$g_{m} = 2I_{D}/(V_{GS} - V_{t}) = 2 \\times 1.35/1.65 = 1.65\\ \\mathrm{mS}$$
+$$g_{m} = 2I_{D}/(V_{GS} - V_{t}) = 2 \\times 1.3547/1.646 = 1.65\\ \\mathrm{mS}$$
 
 Common-source voltage gain with the source resistor bypassed:
 
@@ -5297,7 +5297,7 @@ the average equals half the ripple.
 
 $$P_{in} = \\frac{60}{0.90} = 66.7\\ \\mathrm{W}, \\qquad I_{in} = \\frac{66.7}{24} = 2.78\\ \\mathrm{A}$$
 
-and the loss is $66.7 - 60 = 6.67\\ \\mathrm{W}$. *Trap*: the ideal answer
+and the loss is $66.67 - 60 = 6.67\\ \\mathrm{W}$. *Trap*: the ideal answer
 $I_{in} = DI_{o} = 2.50\\ \\mathrm{A}$, which ignores the stated efficiency. A
 real converter draws *more* than the ideal input current, never less.
 
