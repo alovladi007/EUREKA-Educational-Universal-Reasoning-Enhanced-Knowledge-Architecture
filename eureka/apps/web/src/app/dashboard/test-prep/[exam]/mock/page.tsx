@@ -10,7 +10,7 @@
  *
  * HONESTY MODEL:
  *  - The form draws ONLY verified questions — official USPTO released-exam
- *    items (sixteen released sessions, Nov 1999 through Oct 2003, graded
+ *    items (eighteen released sessions, Apr 1999 through Oct 2003, graded
  *    against the USPTO's own model answers)
  *    plus any SME-verified items (currently zero). Enforcement lives in
  *    patent-bar-mock.ts at pool construction, not in UI logic.
@@ -94,7 +94,7 @@ export default function PatentBarMockPage() {
   // Load the official banks once; build the verified-only pool.
   useEffect(() => {
     (async () => {
-      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm, apr00Am, apr00Pm, nov99Am, nov99Pm, oct02Am, oct02Pm] = await Promise.all([
+      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm, apr00Am, apr00Pm, nov99Am, nov99Pm, oct02Am, oct02Pm, apr99Am, apr99Pm] = await Promise.all([
         import('@/lib/patent-bar-uspto-oct2003-data'),
         import('@/lib/patent-bar-uspto-oct2003-pm-data'),
         import('@/lib/patent-bar-uspto-apr2003-data'),
@@ -113,6 +113,8 @@ export default function PatentBarMockPage() {
         import('@/lib/patent-bar-uspto-nov1999-pm-data'),
         import('@/lib/patent-bar-uspto-oct2002-data'),
         import('@/lib/patent-bar-uspto-oct2002-pm-data'),
+        import('@/lib/patent-bar-uspto-apr1999-am-data'),
+        import('@/lib/patent-bar-uspto-apr1999-pm-data'),
       ]);
       const officials = [
         ...octAm.USPTO_OCT2003_AM_QUESTIONS,
@@ -133,6 +135,8 @@ export default function PatentBarMockPage() {
         ...nov99Pm.USPTO_NOV1999_PM_QUESTIONS,
         ...oct02Am.USPTO_OCT2002_AM_QUESTIONS,
         ...oct02Pm.USPTO_OCT2002_PM_QUESTIONS,
+        ...apr99Am.USPTO_APR1999_AM_QUESTIONS,
+        ...apr99Pm.USPTO_APR1999_PM_QUESTIONS,
       ];
       setBank(new Map(officials.map((q: any) => [q.id, q])));
       setPool(buildOfficialMockPool(officials as any));

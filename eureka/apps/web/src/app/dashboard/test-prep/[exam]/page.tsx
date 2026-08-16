@@ -1680,7 +1680,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     if (examType !== 'PATENT_BAR') return;
     (async () => {
       try {
-        const [bank, gapfill, gapfillDesign, gapfillPct, gapfillPost, gapfillTopup, octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm, apr00Am, apr00Pm, nov99Am, nov99Pm, oct02Am, oct02Pm, cov] = await Promise.all([
+        const [bank, gapfill, gapfillDesign, gapfillPct, gapfillPost, gapfillTopup, octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm, apr00Am, apr00Pm, nov99Am, nov99Pm, oct02Am, oct02Pm, apr99Am, apr99Pm, cov] = await Promise.all([
           import('@/lib/patent-bar-qbank-data'),
           import('@/lib/patent-bar-gapfill-ethics-data'),
           import('@/lib/patent-bar-gapfill-design-data'),
@@ -1705,6 +1705,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           import('@/lib/patent-bar-uspto-nov1999-pm-data'),
           import('@/lib/patent-bar-uspto-oct2002-data'),
           import('@/lib/patent-bar-uspto-oct2002-pm-data'),
+          import('@/lib/patent-bar-uspto-apr1999-am-data'),
+          import('@/lib/patent-bar-uspto-apr1999-pm-data'),
           import('@/lib/patent-bar-coverage'),
         ]);
         const all = [
@@ -1732,6 +1734,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           ...nov99Pm.USPTO_NOV1999_PM_QUESTIONS,
           ...oct02Am.USPTO_OCT2002_AM_QUESTIONS,
           ...oct02Pm.USPTO_OCT2002_PM_QUESTIONS,
+          ...apr99Am.USPTO_APR1999_AM_QUESTIONS,
+          ...apr99Pm.USPTO_APR1999_PM_QUESTIONS,
         ];
         setPbCoverage(cov.computePatentBarCoverage(all));
       } catch { /* coverage card simply doesn't render */ }
@@ -1742,18 +1746,18 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
     // PATENT_BAR = 536 authored + 270 WS3 gap-fill (65 ethics + 66 design/
-    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 878 official USPTO
+    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 978 official USPTO
     // (Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Oct 2002: 49 AM + 50 PM; Apr 2002: 49 AM +
     // 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000:
-    // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM) = 1684. The gap-fill blueprint floors still hold.
-    PATENT_BAR: 1684, SECURITY_PLUS: 472, SAT: 139, LSAT: 200, GRE: 53,
+    // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM; Apr 1999: 50 AM + 50 PM) = 1784. The gap-fill blueprint floors still hold.
+    PATENT_BAR: 1784, SECURITY_PLUS: 472, SAT: 139, LSAT: 200, GRE: 53,
     // NCLEX_RN = 41 dosage-calculation items (keys computed + dual-path
     // verified by lib/__tests__/nclex-dosage-verify.test.ts) + 90 authored
     // clinical items (unverified pending SME review) across the 8 Client
     // Needs categories, split over two data modules like the Patent Bar.
     NCLEX_RN: 131,
   };
-  const OFFICIAL_USPTO_COUNT = 878; // Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Oct 2002: 49 AM + 50 PM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM
+  const OFFICIAL_USPTO_COUNT = 978; // Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Oct 2002: 49 AM + 50 PM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM; Apr 1999: 50 AM + 50 PM
   const qbankMax =
     examType === 'PATENT_BAR' && !pbEntitled
       ? PB_FREE_PREVIEW
@@ -1989,16 +1993,18 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         const { USPTO_NOV1999_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-nov1999-pm-data');
         const { USPTO_OCT2002_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2002-data');
         const { USPTO_OCT2002_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2002-pm-data');
+        const { USPTO_APR1999_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-apr1999-am-data');
+        const { USPTO_APR1999_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-apr1999-pm-data');
         const { PATENT_BAR_GAPFILL_ETHICS } = await import('@/lib/patent-bar-gapfill-ethics-data');
         const { PATENT_BAR_GAPFILL_DESIGN } = await import('@/lib/patent-bar-gapfill-design-data');
         const { PATENT_BAR_GAPFILL_PCT } = await import('@/lib/patent-bar-gapfill-pct-data');
         const { PATENT_BAR_GAPFILL_POST_ISSUANCE } = await import('@/lib/patent-bar-gapfill-postissuance-data');
         const { PATENT_BAR_GAPFILL_TOPUP } = await import('@/lib/patent-bar-gapfill-topup-data');
-        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS, ...USPTO_APR2002_AM_QUESTIONS, ...USPTO_APR2002_PM_QUESTIONS, ...USPTO_OCT2001_AM_QUESTIONS, ...USPTO_OCT2001_PM_QUESTIONS, ...USPTO_APR2001_AM_QUESTIONS, ...USPTO_APR2001_PM_QUESTIONS, ...USPTO_OCT2000_AM_QUESTIONS, ...USPTO_OCT2000_PM_QUESTIONS, ...USPTO_APR2000_AM_QUESTIONS, ...USPTO_APR2000_PM_QUESTIONS, ...USPTO_NOV1999_AM_QUESTIONS, ...USPTO_NOV1999_PM_QUESTIONS, ...USPTO_OCT2002_AM_QUESTIONS, ...USPTO_OCT2002_PM_QUESTIONS];
+        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS, ...USPTO_APR2002_AM_QUESTIONS, ...USPTO_APR2002_PM_QUESTIONS, ...USPTO_OCT2001_AM_QUESTIONS, ...USPTO_OCT2001_PM_QUESTIONS, ...USPTO_APR2001_AM_QUESTIONS, ...USPTO_APR2001_PM_QUESTIONS, ...USPTO_OCT2000_AM_QUESTIONS, ...USPTO_OCT2000_PM_QUESTIONS, ...USPTO_APR2000_AM_QUESTIONS, ...USPTO_APR2000_PM_QUESTIONS, ...USPTO_NOV1999_AM_QUESTIONS, ...USPTO_NOV1999_PM_QUESTIONS, ...USPTO_OCT2002_AM_QUESTIONS, ...USPTO_OCT2002_PM_QUESTIONS, ...USPTO_APR1999_AM_QUESTIONS, ...USPTO_APR1999_PM_QUESTIONS];
         if (!pbEntitled) {
           // WS5 free preview: a FIXED 20-question slice (10 official USPTO +
           // 10 authored). Section/official filters don't apply to the
-          // preview; the full 1684-question bank requires Full Access.
+          // preview; the full 1784-question bank requires Full Access.
           pbQuestions = [...USPTO_OCT2003_AM_QUESTIONS.slice(0, 10), ...PATENT_BAR_QUESTIONS.slice(0, 10)];
         }
         if (pbEntitled && patentOfficialOnly) {
@@ -2339,7 +2345,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
               {/* The server's count covers the exams whose banks live in the
                   database. For the exams whose bank ships with the client
                   it returns 0, which read as "this bank is empty" directly
-                  above a coverage table saying "Bank of 1684". qbankMax is
+                  above a coverage table saying "Bank of 1784". qbankMax is
                   the number the session slider is actually bounded by, so
                   it is the honest one to show. */}
               <p className="text-2xl font-bold">
@@ -2431,7 +2437,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
                 <span>
                   <span className="font-medium">Official USPTO questions only</span>
                   <span className="block text-xs text-muted-foreground">
-                    {OFFICIAL_USPTO_COUNT} real released-exam questions — every released exam from Nov 1999 through Oct 2003, both sessions of each — with
+                    {OFFICIAL_USPTO_COUNT} real released-exam questions — every released exam from Apr 1999 through Oct 2003, both sessions of each — with
                     the USPTO&apos;s own model-answer explanations
                   </span>
                 </span>
@@ -2543,10 +2549,10 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           {examType === 'PATENT_BAR' && !entLoading && !pbEntitled && (
             <div className="mb-3 space-y-2">
               <p className="text-xs text-muted-foreground">
-                Free preview: {PB_FREE_PREVIEW} of 1684 questions (10 official USPTO + 10 authored).
+                Free preview: {PB_FREE_PREVIEW} of 1784 questions (10 official USPTO + 10 authored).
                 Section and official-only filters apply with Full Access.
               </p>
-              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 1684-question QBank" examSlug="patent_bar" />
+              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 1784-question QBank" examSlug="patent_bar" />
             </div>
           )}
 

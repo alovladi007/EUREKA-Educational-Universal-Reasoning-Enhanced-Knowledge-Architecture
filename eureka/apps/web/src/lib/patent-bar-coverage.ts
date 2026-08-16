@@ -40,7 +40,7 @@ export interface CoverageSection {
  * points of exam weight and under-served prosecution — the single largest
  * section of the real exam.
  *
- * `weightPct` is now derived from the 878 official released-exam questions
+ * `weightPct` is now derived from the 978 official released-exam questions
  * in this bank — Oct 2003, Apr 2003, Oct 2002 (AM+PM), Apr 2002, Oct 2001,
  * Apr 2001, Oct 2000, Apr 2000 and Nov 1999 — which distribute as
  * prosecution 58.20%, patentability 25.28%, post-issuance 9.45%, ethics
@@ -76,6 +76,17 @@ export interface CoverageSection {
  * but NOT as a no-op: raw rounding gave 58/25/10/3/2/2 and step 3 fired for
  * BOTH floors (post-issuance 10→11, PCT 2→3), prosecution ceding two points
  * exactly as at 828. Same answer, freshly derived.
+ *
+ * AT 978 (Apr 1999 AM+PM added — all nine released dates now ingested) the
+ * published weights are AGAIN 56/25/11/3/2/3, but the derivation underneath
+ * them CHANGED, which is exactly why the rule says recompute rather than
+ * assume. Supply is now 567/245/93/29/19/25. Raw rounding gives
+ * 58/25/9/3/2/3: the PCT section's share rose to 2.56% and it now earns its
+ * third point on the largest-remainder step, so the step-3 restoration it
+ * carried at 828 and 878 is UNWOUND. Post-issuance meanwhile fell to a raw 9
+ * and now needs TWO points, not one. Prosecution still cedes two — but to a
+ * single floor instead of two. Derived by `scripts/derive-pb-blueprint.mjs`,
+ * which self-tests against the published 878 numbers before recomputing.
  * `basis` records the per-section derivation.
  *
  * KNOWN LIMITS of this estimate — do not treat it as ground truth:
@@ -99,17 +110,17 @@ export interface CoverageSection {
  */
 export const PATENT_BAR_BLUEPRINT: CoverageSection[] = [
   { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 56, topicIds: [1, 2, 3],
-    basis: 'empirical: 511/878 official items = 58.20%, less 2 points ceded per derivation step 3 — one each to the post_issuance and pct_international floors' },
+    basis: 'empirical: 567/978 official items = 57.98%, less 2 points ceded per derivation step 3 — both to the post_issuance floor (at 978 the PCT section earns its 3 outright, so its former step-3 restoration is UNWOUND)' },
   { id: 'patentability', name: 'Patentability & Prior Art', weightPct: 25, topicIds: [0],
-    basis: 'empirical: 222/878 = 25.28% (integer part 25; its remainder .28 does not earn a largest-remainder unit)' },
+    basis: 'empirical: 245/978 = 25.05% (integer part 25; its remainder .05 does not earn a largest-remainder unit)' },
   { id: 'post_issuance', name: 'Post-Issuance Proceedings', weightPct: 11, topicIds: [5],
-    basis: 'empirical: 83/878 = 9.45% (largest-remainder rounds to 10; restored to 11 by derivation step 3); FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
+    basis: 'empirical: 93/978 = 9.51% (largest-remainder rounds to 9; restored to 11 by derivation step 3); FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
   { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', weightPct: 3, topicIds: [7],
-    basis: 'empirical: 26/878 = 2.96% (largest-remainder rounds to 3); also a FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
+    basis: 'empirical: 29/978 = 2.97% (largest-remainder rounds to 3); also a FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
   { id: 'design_plant', name: 'Design & Plant Patents', weightPct: 2, topicIds: [6],
-    basis: 'empirical: 15/878 official items = 1.71% (rounds up to 2 on a largest remainder); not a floor section — the 2023 design patent practitioner bar is a separate examination' },
+    basis: 'empirical: 19/978 official items = 1.94% (rounds up to 2 on a largest remainder); not a floor section — the 2023 design patent practitioner bar is a separate examination' },
   { id: 'pct_international', name: 'PCT & International Filing', weightPct: 3, topicIds: [4],
-    basis: 'empirical: 21/878 = 2.39% (rounds to 2); held at 3 as a FLOOR — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
+    basis: 'empirical: 25/978 = 2.56% (now rounds to 3 on its own largest remainder — the step-3 floor restoration this section carried at 828 and 878 is UNWOUND per the derivation rule); still a FLOOR at 3 — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
 ];
 
 export interface CoverageRow {

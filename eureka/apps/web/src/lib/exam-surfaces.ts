@@ -43,7 +43,7 @@ export interface ExamSurfaces {
 }
 
 /**
- * PATENT_BAR = 536 authored + 270 gap-fill + 878 official released USPTO
+ * PATENT_BAR = 536 authored + 270 gap-fill + 978 official released USPTO
  * questions. The official set spans nine sitting dates, AM and PM; see
  * docs and the uspto-*-data.ts files. Every other count is the length of
  * that exam's single qbank data file.
@@ -65,7 +65,7 @@ export const EXAM_SURFACES: Record<string, ExamSurfaces> = {
     ],
   },
   PATENT_BAR: {
-    qbankSize: 1684,
+    qbankSize: 1784,
     fullExam: false,
     analytics: false,
     extras: [
@@ -138,7 +138,7 @@ export const EXAM_SURFACES: Record<string, ExamSurfaces> = {
   // the key in URLs, in user_progress rows and in the billing products, and
   // renaming a key to match a label would orphan every one of them.
   //
-  // 53 questions is a small bank against the 1,684 of Patent Bar. It is
+  // 53 questions is a small bank against the 1,784 of Patent Bar. It is
   // stated rather than rounded up because a learner deciding where to spend
   // an evening deserves the real number.
   GRE: { qbankSize: 53, fullExam: false, analytics: false, flashcards: 100, extras: [] },

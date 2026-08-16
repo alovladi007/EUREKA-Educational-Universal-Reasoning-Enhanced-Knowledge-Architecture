@@ -14,7 +14,7 @@
  * official-only form is impossible in the thin sections." That diagnosis
  * was backwards. Those weights were never the exam's — the USPTO publishes
  * no topic breakdown at all, and the figures were unsourced. Measured
- * against the 878 official released-exam items, the "skew" IS the exam's
+ * against the 978 official released-exam items, the "skew" IS the exam's
  * shape. See the provenance block in patent-bar-coverage.ts.
  *
  * With the blueprint corrected to the empirical distribution, every section
