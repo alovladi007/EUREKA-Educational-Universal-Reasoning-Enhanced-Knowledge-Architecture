@@ -110,31 +110,31 @@ Unbalanced currents or voltages decompose into three **sequence** sets:
 
 **Step 1 — Phase voltage:**
 
-$$V_{ph} = V_{LL} / \\sqrt{3} = 480 / 1.732 = 277.1\\ \\mathrm{V}$$
+$$V_{ph} = V_{LL} / \\sqrt{3} = 480 / 1.73205 = 277.13\\ \\mathrm{V}$$
 
 **Step 2 — Phase current (= line current for Y):**
 
-|Z_Y| = √(10² + 5²) = √125 = **$11.18\\ \\Omega$**
+$\\lvert Z_Y \\rvert = \\sqrt{10^{2}+5^{2}} = \\sqrt{125} = 11.1803\\ \\Omega$
 
-$$I_{ph} = V_{ph} / |Z_Y| = 277.1 / 11.18 = 24.79\\ \\mathrm{A}$$
+$$I_{ph} = V_{ph} / \\lvert Z_Y \\rvert = 277.13 / 11.1803 = 24.787\\ \\mathrm{A}$$
 
-**$I_L = I_{ph} = 24.79\\ \\mathrm{A}$** (Y connection)
+**$I_L = I_{ph} = 24.787\\ \\mathrm{A}$** (Y connection)
 
 **Step 3 — Power factor angle:**
 
-$$\\phi = \\arctan (X/R) = \\arctan (5/10) = 26.57^\\circ$$
+$$\\phi = \\arctan (X/R) = \\arctan (5/10) = 26.565^\\circ$$
 
-cos(φ) = cos(26.57°) = **0.894 lagging** (inductive load)
+cos(φ) = cos(26.565°) = **0.89443 lagging** (inductive load), and sin(φ) = 0.44721
 
 **Step 4 — Three-phase power:**
 
 | Power | Formula | Result |
 |---|---|---|
-| **Real power P** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\cos (\\phi)$ | $\\sqrt{3} \\times 480 \\times 24.79 \\times 0.894 = 18,432\\ \\mathrm{W} \\approx 18.4\\ \\mathrm{kW}$ |
-| **Reactive power Q** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\sin (\\phi)$ | $\\sqrt{3} \\times 480 \\times 24.79 \\times 0.447 = 9,216\\ \\mathrm{VAR} \\approx 9.22\\ \\mathrm{kVAR}$ |
-| **Apparent power S** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L$ | $\\sqrt{3} \\times 480 \\times 24.79 = 20,608 VA \\approx 20.6\\ \\mathrm{kVA}$ |
+| **Real power P** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\cos (\\phi)$ | $\\sqrt{3} \\times 480 \\times 24.787 \\times 0.89443 = 18,432\\ \\mathrm{W} \\approx 18.4\\ \\mathrm{kW}$ |
+| **Reactive power Q** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\sin (\\phi)$ | $\\sqrt{3} \\times 480 \\times 24.787 \\times 0.44721 = 9,216\\ \\mathrm{VAR} \\approx 9.22\\ \\mathrm{kVAR}$ |
+| **Apparent power S** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L$ | $\\sqrt{3} \\times 480 \\times 24.787 = 20,608\\ \\mathrm{VA} \\approx 20.6\\ \\mathrm{kVA}$ |
 
-**Verification**: S² = P² + Q² → 20,608² ≈ 18,432² + 9,216² → 424.5M ≈ 339.7M + 84.9M ≈ 424.6M. Confirmed.
+**Verification**: S² = P² + Q² → 20,608² ≈ 18,432² + 9,216² → 424.7M ≈ 339.7M + 84.9M ≈ 424.7M. Confirmed.
 
 ## 3.3 Equivalent Delta Load
 
@@ -177,8 +177,8 @@ with amplitude VI — larger than the average whenever the power factor is below
 unity, which means the instantaneous power goes **negative** for part of every
 cycle. Energy sloshes back toward the source and then returns.
 
-Put the Section 3 load into that expression. There V_ph = 277.1 V,
-I = 24.79 A and φ = 26.57°, so VI = 6.87 kVA and cos φ = 0.894:
+Put the Section 3 load into that expression. There V_ph = 277.13 V,
+I = 24.787 A and φ = 26.565°, so VI = 6.87 kVA and cos φ = 0.89443:
 
 | Quantity | Expression | Value |
 |---|---|---|
@@ -223,10 +223,10 @@ readings are
 
 $$W_{1} = V_{LL}I_{L}\\cos (\\phi - 30^\\circ ), \\qquad W_{2} = V_{LL}I_{L}\\cos (\\phi + 30^\\circ )$$
 
-For the worked load, with V_LL = 480 V, I_L = 24.79 A and φ = 26.57°:
+For the worked load, with V_LL = 480 V, I_L = 24.787 A and φ = 26.565°:
 
-- **$W_{1} = 480 \\times 24.79 \\times \\cos (-3.43^\\circ ) = 11{,}876\\ \\mathrm{W}$**
-- **$W_{2} = 480 \\times 24.79 \\times \\cos (56.57^\\circ ) = 6{,}556\\ \\mathrm{W}$**
+- **$W_{1} = 480 \\times 24.787 \\times \\cos (-3.435^\\circ ) = 11{,}876\\ \\mathrm{W}$**
+- **$W_{2} = 480 \\times 24.787 \\times \\cos (56.565^\\circ ) = 6{,}556\\ \\mathrm{W}$**
 - Sum = **18,432 W**, exactly the P computed in Section 3.
 
 The difference carries the reactive information. Expanding both cosines gives
