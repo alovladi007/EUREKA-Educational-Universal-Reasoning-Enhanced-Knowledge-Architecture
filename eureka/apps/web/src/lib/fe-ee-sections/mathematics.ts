@@ -2811,7 +2811,7 @@ The derivative measures instantaneous rate of change: **$f'(x) = \\lim (h\\to 0)
 | Function | Derivative |
 |---|---|
 | $e^x$ | $e^x$ |
-| $\\ln (x)$ | 1/x |
+| $\\ln (x)$ | $1/x$ |
 | $\\sin (x)$ | $\\cos (x)$ |
 | $\\cos (x)$ | $-\\sin (x)$ |
 | $\\tan (x)$ | $\\sec ^{2}(x)$ |
@@ -2897,7 +2897,7 @@ $$P = V^2 R_L/(R_s + R_L)^2$$
 
 Differentiate with the quotient rule and set to zero. The numerator of dP/dR_L is
 
-$$V^2[(R_s + R_L)^2 - R_L x 2(R_s + R_L)] = V^2 (R_s + R_L)[(R_s + R_L) - 2R_L]$$
+$$V^2[(R_s + R_L)^2 - R_L \\times 2(R_s + R_L)] = V^2 (R_s + R_L)[(R_s + R_L) - 2R_L]$$
 
 Setting the bracket to zero: R_s + R_L - 2R_L = 0, so **$R_L = R_s$**.
 
@@ -2905,7 +2905,7 @@ That is the maximum power transfer theorem derived rather than memorised, and th
 
 ## 3.4 Critical points and the second derivative
 
-$$f(x) = x^3 - 6x^2 + 9x + 2$$.
+$$f(x) = x^3 - 6x^2 + 9x + 2$$
 
 f'(x) = 3x^2 - 12x + 9 = 3(x^2 - 4x + 3) = 3(x-1)(x-3), so critical points at **x = 1 and x = 3**.
 
@@ -2951,8 +2951,7 @@ The second-derivative test in one line: negative means a peak, positive means a 
   
   The procedure the picture encodes:
   
-  1. **f′ = 0 locates** candidate extrema. For f = x³ − 3x, f′ = 3x² − 3 = 0 gives
-     $$x = \\pm 1$$.
+  1. **f′ = 0 locates** candidate extrema. For f = x³ − 3x, f′ = 3x² − 3 = 0 gives $x = \\pm 1$.
   2. **f″ classifies** them. f″ = 6x, so f″(−1) = −6 < 0 (**maximum**) and
      f″(+1) = +6 > 0 (**minimum**).
   3. **f″ = 0 with a sign change** is an inflection: here x = 0.
@@ -2990,8 +2989,7 @@ The second-derivative test in one line: negative means a peak, positive means a 
   
   $$P = I^{2}R_L = V^{2}R_L / (R_s + R_L)^{2}$$
   
-  Differentiate with respect to R_L using the quotient rule, with u = V²R_L and
-  $$v = (R_s + R_L)^{2}$$:
+  Differentiate with respect to R_L using the quotient rule, with u = V²R_L and $v = (R_s + R_L)^{2}$:
   
   $$dP/dR_L = [V^{2}(R_s + R_L)^{2} - V^{2}R_L\\cdot 2(R_s + R_L)] / (R_s + R_L)^{4}$$
   
@@ -3000,7 +2998,8 @@ The second-derivative test in one line: negative means a peak, positive means a 
   $$dP/dR_L = V^{2}[(R_s + R_L) - 2R_L] / (R_s + R_L)^{3} = V^{2}(R_s - R_L)/(R_s + R_L)^{3}$$
   
   Setting the numerator to zero gives **$R_L = R_s$**, and substituting back gives
-  $$P_{\\max} = V^{2}R_s/(2R_s)^{2} = V^{2}/(4R_s)$$.
+
+  $$P_{\\max} = V^{2}R_s/(2R_s)^{2} = V^{2}/(4R_s)$$
   
   This is the same result the Network Theorems topic states as a rule. Deriving it
   takes about ninety seconds and, more usefully, shows *why* the peak is broad:
@@ -3077,7 +3076,7 @@ for all positive x, so concave up. ✓
 For P(θ) = 1000 sin θ cos θ, find the maximum.
 
 Rewrite with the double-angle identity: P = 500 sin 2θ, whose maximum is
-**$500\\ \\mathrm{W} at 2\\theta = 90^\\circ$**, i.e. **$\\theta = 45^\\circ$**. Differentiating directly gives
+**500 W**, reached where $2\\theta = 90^\\circ$, i.e. **$\\theta = 45^\\circ$**. Differentiating directly gives
 P′ = 1000 cos 2θ = 0 at the same place, but the identity makes the peak value
 immediate.
 
@@ -3114,6 +3113,1112 @@ And check the endpoints. Many optimisation questions on a closed interval have
 their extreme value at an endpoint rather than at a critical point, so a
 derivative that never vanishes inside the interval is not a contradiction - it
 means the answer sits at one end, and you should evaluate both.`,
+},
+{
+  id: 'dc-limit-definition',
+  title: '7. The Derivative Built From the Limit',
+  content: `## 7.1 What the difference quotient measures
+
+Every rule later in this chapter follows from a single construction, and it
+repays building that construction by hand once rather than reciting it. Choose a
+point on a curve, then a second point a horizontal distance h further along. The
+straight line joining the two is a **secant**, and its slope is rise over run:
+
+$$m_{sec} = \\frac{f(x+h) - f(x)}{h}$$
+
+Now let h shrink. The second point slides back toward the first, the secant
+pivots about the fixed point, and if the pivoting settles on one definite
+limiting line, that line is the **tangent** and its slope is the derivative:
+
+$$f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}$$
+
+![A cubic curve with its tangent at x equals one drawn dashed, and two secants through the same point drawn in colour. The secant for a step of one has slope seven, the secant for a step of a quarter has slope 3.8125, and both lean toward the tangent slope of three as the step shrinks.](/courses/fe-ee/figures/math3-dc-secant-tangent.svg)
+
+Three things in that definition are load bearing and all three are examinable.
+The limit is taken **as h approaches zero, not at h equal to zero**, because at
+h exactly zero the quotient is the meaningless 0/0. The limit must give the same
+answer whether h approaches from above or below, which is what fails for a
+corner. And the result is a **function of x**, not a number: it hands back a
+different slope at every point of the domain.
+
+## 7.2 Worked example: a cubic from first principles
+
+Take $f(x) = x^{3}$ and evaluate the quotient without any rule at all. Expand
+the numerator:
+
+$$(x+h)^{3} - x^{3} = 3x^{2}h + 3xh^{2} + h^{3}$$
+
+Every surviving term carries at least one factor of h, which is exactly why the
+division is legal:
+
+$$\\frac{(x+h)^{3} - x^{3}}{h} = 3x^{2} + 3xh + h^{2}$$
+
+The h-free part is the answer and the rest is the error. Sending h to zero:
+
+$$f'(x) = 3x^{2}$$
+
+At x = 1 that says the slope is 3, and the exact expansion says the secant slope
+for any step is $3 + 3h + h^{2}$. That prediction can be checked arithmetically
+rather than believed:
+
+| step h | second point 1 + h | secant slope from the definition | prediction 3 + 3h + h squared |
+|---|---|---|---|
+| 1 | 2 | $(8 - 1)/1 = 7$ | $3 + 3 + 1 = 7$ |
+| 0.5 | 1.5 | $(3.375 - 1)/0.5 = 4.75$ | $3 + 1.5 + 0.25 = 4.75$ |
+| 0.25 | 1.25 | $(1.953125 - 1)/0.25 = 3.8125$ | $3 + 0.75 + 0.0625 = 3.8125$ |
+| 0.1 | 1.1 | $(1.331 - 1)/0.1 = 3.31$ | $3 + 0.3 + 0.01 = 3.31$ |
+| 0.01 | 1.01 | 3.0301 | $3 + 0.03 + 0.0001 = 3.0301$ |
+| 0.001 | 1.001 | 3.003001 | $3 + 0.003 + 0.000001 = 3.003001$ |
+
+The error falls in proportion to h, and that proportionality is not a curiosity:
+it is why a first-order finite difference on a microcontroller loses one digit of
+accuracy for every factor of ten you fail to shrink the sample interval.
+
+## 7.3 Worked example: the reciprocal and the square root
+
+Two more from the definition, because both appear in circuit work and both look
+harder than they are.
+
+**The reciprocal, $f(x) = 1/x$.** Put the numerator over a common denominator:
+
+$$\\frac{1}{h}\\left(\\frac{1}{x+h} - \\frac{1}{x}\\right) = \\frac{1}{h}\\cdot\\frac{x - (x+h)}{x(x+h)} = \\frac{-1}{x(x+h)}$$
+
+Let h go to zero and the denominator closes up:
+
+$$\\frac{d}{dx}\\left(\\frac{1}{x}\\right) = -\\frac{1}{x^{2}}$$
+
+At x = 2 that is -0.25. The negative sign is the whole content of the result:
+current through a fixed voltage falls as resistance rises, and it falls fastest
+where the resistance is smallest.
+
+**The square root, $f(x) = \\sqrt{x}$.** Here the trick is to multiply above and
+below by the conjugate so the difference of roots becomes a difference of
+squares:
+
+$$\\frac{\\sqrt{x+h} - \\sqrt{x}}{h}\\cdot\\frac{\\sqrt{x+h} + \\sqrt{x}}{\\sqrt{x+h} + \\sqrt{x}} = \\frac{1}{\\sqrt{x+h} + \\sqrt{x}}$$
+
+$$\\frac{d}{dx}\\sqrt{x} = \\frac{1}{2\\sqrt{x}}$$
+
+At x = 9 the slope is $1/6 = 0.166667$. Both results agree with the power rule
+applied to $x^{-1}$ and $x^{1/2}$, which is the point: the power rule is not a
+separate fact, it is these limits done once for a general exponent.
+
+## 7.4 Where the derivative fails to exist
+
+A function can be perfectly continuous and still have no derivative at a point,
+and the exam tests the distinction directly. The standard case is
+$f(x) = \\lvert x \\rvert$ at the origin. Approach from the right and the quotient
+is $h/h = 1$; approach from the left and it is $-h/h = -1$. The two one-sided
+limits disagree, so no single tangent exists.
+
+| situation | continuous | differentiable | electrical analogue |
+|---|---|---|---|
+| smooth curve | yes | yes | capacitor voltage on a sine drive |
+| corner, as in the absolute value at zero | yes | no | full-wave rectified output at the cusp |
+| vertical tangent, as in the cube root at zero | yes | no | idealised saturating characteristic |
+| jump discontinuity | no | no | ideal switch closing |
+
+The implication runs one way only. **Differentiable implies continuous; continuous
+does not imply differentiable.** A question that offers "the function is
+continuous at the point, therefore the derivative exists" as a choice is
+offering the converse of a true statement, which is the oldest distractor in
+this section.`,
+  examTip: 'When a question asks you to differentiate from first principles, expand the numerator until every term carries a factor of h, cancel that h, then set h to zero. If a term without h survives the cancellation, the algebra is wrong - the limit would be infinite.',
+  importantNote: 'The absolute-value function is continuous everywhere and differentiable everywhere except at zero, where the left-hand slope is minus one and the right-hand slope is plus one. Continuity is necessary for differentiability but never sufficient.',
+},
+{
+  id: 'dc-rules-derived',
+  title: '8. Every Rule, Derived',
+  content: `## 8.1 The product rule, from the definition
+
+Tabulated rules are easy to misremember under pressure; derived rules are not.
+The product rule comes out of one algebraic trick, adding and subtracting the
+same quantity. Write $p(x) = u(x)v(x)$ and form the difference quotient:
+
+$$\\frac{u(x+h)v(x+h) - u(x)v(x)}{h}$$
+
+Insert the term $u(x+h)v(x)$ once with each sign, which changes nothing:
+
+$$= \\frac{u(x+h)[v(x+h) - v(x)]}{h} + \\frac{v(x)[u(x+h) - u(x)]}{h}$$
+
+Each bracket is now a difference quotient of a single function. Sending h to
+zero, the first factor $u(x+h)$ becomes $u(x)$ and the result is
+
+$$(uv)' = uv' + u'v$$
+
+Notice what the derivation shows that the formula alone does not: the rule needs
+u to be continuous at the point, which it is because it is differentiable there.
+The frequent wrong answer $u'v'$ fails the simplest test available - try
+$u = v = x$, where the truth is $2x$ and the wrong rule gives 1.
+
+## 8.2 The quotient rule, for free
+
+There is no need for a second derivation. Write the quotient as a product with a
+negative power, $u/v = u \\cdot v^{-1}$, and apply the product and chain rules:
+
+$$\\left(\\frac{u}{v}\\right)' = u'v^{-1} + u\\cdot(-1)v^{-2}v' = \\frac{u'}{v} - \\frac{uv'}{v^{2}}$$
+
+Placing both terms over $v^{2}$ gives the familiar form:
+
+$$\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^{2}}$$
+
+The order in the numerator is the only thing worth memorising, and this
+derivation fixes it: the term carrying $u'$ is positive because it came from
+differentiating the numerator, and the term carrying $v'$ is negative because it
+came from the exponent of minus one.
+
+## 8.3 The chain rule
+
+If $y$ depends on $u$ and $u$ depends on $x$, then over a small interval the
+changes multiply:
+
+$$\\frac{\\Delta y}{\\Delta x} = \\frac{\\Delta y}{\\Delta u}\\cdot\\frac{\\Delta u}{\\Delta x}$$
+
+Taking limits, and provided $\\Delta u$ is not zero on the way,
+
+$$\\frac{dy}{dx} = \\frac{dy}{du}\\cdot\\frac{du}{dx}$$
+
+or in function notation, $\\frac{d}{dx}f(g(x)) = f'(g(x))\\,g'(x)$. The factor
+$g'(x)$ is the one that gets dropped, and the omission is the single most common
+differentiation error on this exam. Every time an argument is anything other than
+a bare x, that inner derivative is owed.
+
+## 8.4 Worked example: a damped mains-frequency waveform
+
+Differentiate $v(t) = 12 e^{-50t}\\sin(377t)$, the shape of a switching transient
+on a 60 Hz supply, and evaluate the slope at t = 0 and at t = 2 ms.
+
+This is a product whose first factor needs the chain rule and whose second factor
+needs it too. With $u = 12e^{-50t}$ and $w = \\sin(377t)$:
+
+$$u' = -600e^{-50t}, \\qquad w' = 377\\cos(377t)$$
+
+$$v'(t) = 12e^{-50t}\\left[377\\cos(377t) - 50\\sin(377t)\\right]$$
+
+**At t = 0** the exponential is 1, the sine is 0 and the cosine is 1, so
+$12 \\times 377 = 4524$ volts per second. The envelope contributes nothing at the
+instant the sine passes through zero; the entire initial slope is the
+oscillation.
+
+**At t = 2 ms** the phase is $377 \\times 0.002 = 0.754$ radians, where
+$\\sin = 0.68456$ and $\\cos = 0.72896$, and the envelope has fallen to
+$e^{-0.1} = 0.904837$. The bracket is
+
+$$377 \\times 0.72896 - 50 \\times 0.68456 = 240.59$$
+
+$$v'(0.002) = 12 \\times 0.904837 \\times 240.59 = 2612.3\\ \\mathrm{V/s}$$
+
+The slope has fallen to about 58 per cent of its initial value, partly because
+the envelope decayed and partly because the sine term now subtracts. Setting this
+derivative to zero is how the overshoot peak of an underdamped response is
+located, which is the connection to the Differential Equations chapter.
+
+## 8.5 Implicit differentiation
+
+Not every relationship can be rearranged into y as a function of x, and there is
+no need to try. Differentiate both sides with respect to x, treating y as an
+unknown function of x, and let the chain rule supply a factor of $dy/dx$ every
+time a y is differentiated. Then solve algebraically for that factor.
+
+For the circle $x^{2} + y^{2} = 25$:
+
+$$2x + 2y\\frac{dy}{dx} = 0 \\quad\\Longrightarrow\\quad \\frac{dy}{dx} = -\\frac{x}{y}$$
+
+At the point (3, 4) the slope is -0.75, and the geometry confirms it: the radius
+to that point has slope 4/3, and the tangent must be perpendicular, so its slope
+is the negative reciprocal.
+
+A harder shape shows the method earning its keep. For $x^{3} + y^{3} = 6xy$:
+
+$$3x^{2} + 3y^{2}\\frac{dy}{dx} = 6y + 6x\\frac{dy}{dx}$$
+
+$$\\frac{dy}{dx} = \\frac{6y - 3x^{2}}{3y^{2} - 6x}$$
+
+At the point (3, 3) that is $(18 - 27)/(27 - 18) = -1$. Solving this curve for y
+first would mean handling a cubic; differentiating it implicitly takes one line.
+
+## 8.6 Worked example: implicit differentiation on a diode load line
+
+Implicit differentiation is how small-signal resistance is defined, and the
+derivation is short enough to reconstruct in an exam.
+
+A source E drives a series resistor R and a diode obeying
+$I = I_S\\left(e^{V_D/V_T} - 1\\right)$. Kirchhoff's voltage law with the diode
+equation inverted gives a relationship that cannot be solved for I in elementary
+functions:
+
+$$E = IR + V_T\\ln\\!\\left(\\frac{I}{I_S} + 1\\right)$$
+
+Differentiate both sides with respect to E, treating I as a function of E:
+
+$$1 = R\\frac{dI}{dE} + \\frac{V_T}{I + I_S}\\cdot\\frac{dI}{dE}$$
+
+$$\\frac{dI}{dE} = \\frac{1}{R + r_d}, \\qquad r_d = \\frac{V_T}{I + I_S} \\approx \\frac{V_T}{I}$$
+
+The diode has behaved, for small changes, exactly like a resistor of value
+$r_d = V_T/I$. Put numbers to it with R = 100 ohm, E = 5 V, a saturation
+current of $I_S = 10^{-12}$ A, that is one picoampere, and the thermal voltage at
+300 K, which from
+the defining SI constants for the Boltzmann constant and the elementary charge is
+$V_T = kT/q = 0.025852$ V. Solving the implicit equation numerically gives
+I = 43.666 mA, so the diode drops
+
+$$5 - 4.3666 = 0.6334\\ \\mathrm{V}$$
+
+and its small-signal resistance is
+
+$$0.025852 / 0.043666 = 0.5920\\ \\mathrm{ohm}$$
+
+The sensitivity of current to supply voltage is therefore
+$1000 / 100.592 = 9.941$ mA per volt. The diode contributes barely half an ohm
+against the resistor's hundred, which is the quantitative version of the claim
+that a forward-biased diode is a stiff voltage clamp.
+
+## 8.7 Logarithmic differentiation
+
+When a function is a tower of products, quotients and powers, take the natural
+logarithm of both sides first. Logarithms turn multiplication into addition and
+exponents into coefficients, and the derivative of $\\ln y$ is $y'/y$:
+
+$$\\frac{d}{dx}\\ln y = \\frac{1}{y}\\frac{dy}{dx} \\quad\\Longrightarrow\\quad y' = y\\cdot\\frac{d}{dx}\\ln y$$
+
+This is also the only sane route to a variable base raised to a variable power.
+For $y = x^{x}$, taking logs gives $\\ln y = x\\ln x$, so
+
+$$\\frac{y'}{y} = \\ln x + 1 \\quad\\Longrightarrow\\quad y' = x^{x}(1 + \\ln x)$$
+
+At x = 2 that is $4 \\times 1.693147 = 6.7726$. Neither the power rule nor the
+exponential rule applies here on its own, because both the base and the exponent
+are moving.
+
+## 8.8 Worked example: a product-quotient tower
+
+Differentiate $y = \\dfrac{x^{2}(x+1)^{3}}{\\sqrt{x-1}}$ at x = 2.
+
+The product-and-quotient route needs three nested applications. The logarithmic
+route needs one line:
+
+$$\\ln y = 2\\ln x + 3\\ln(x+1) - \\tfrac{1}{2}\\ln(x-1)$$
+
+$$\\frac{y'}{y} = \\frac{2}{x} + \\frac{3}{x+1} - \\frac{1}{2(x-1)}$$
+
+At x = 2 the bracket is $1 + 1 - 0.5 = 1.5$, and the function value is
+$y(2) = 4 \\times 27 / 1 = 108$. Therefore
+
+$$y'(2) = 108 \\times 1.5 = 162$$
+
+A central-difference check on the original expression reproduces 162, which is
+the habit worth forming: the logarithmic route is fast but its sign errors are
+silent, and one numerical spot check catches them.`,
+  examTip: 'Reach for logarithmic differentiation whenever the expression is a chain of products, quotients and powers, and always when a variable appears in an exponent. Taking logs converts the whole structure into a sum whose derivative is a sum of simple reciprocals.',
+  importantNote: 'Implicit differentiation is where small-signal models come from. Differentiating a device law about an operating point and solving for the incremental ratio produces r_d = V_T/I for a diode in three lines, with no memorised formula.',
+},
+{
+  id: 'dc-shape',
+  title: '9. Higher Derivatives and the Shape of a Curve',
+  content: `## 9.1 Concavity, inflection, and what the second derivative adds
+
+The first derivative reports whether a curve is climbing. The second reports
+whether the climb is getting steeper. Positive second derivative means the
+tangent lines lie below the curve and the graph holds water; negative means the
+opposite. A point where the second derivative changes sign is an **inflection**,
+and the change of sign is the requirement - a second derivative that merely
+touches zero without crossing is not an inflection.
+
+$$f'' > 0 \\Rightarrow \\text{concave up}, \\qquad f'' < 0 \\Rightarrow \\text{concave down}$$
+
+In circuit language, the first derivative of a capacitor's voltage is
+proportional to its current and the second is proportional to the rate of change
+of that current. A charging capacitor has climbing voltage and falling current,
+so its voltage curve is rising and concave down at the same time - which is
+exactly what an exponential approach to a final value looks like.
+
+## 9.2 Worked example: the complete anatomy of a quartic
+
+Analyse $f(x) = 3x^{4} - 16x^{3} + 18x^{2}$ completely.
+
+**Critical points.** Differentiate and factor:
+
+$$f'(x) = 12x^{3} - 48x^{2} + 36x = 12x(x-1)(x-3)$$
+
+so the critical points are x = 0, x = 1 and x = 3.
+
+**Classification.** The second derivative is
+
+$$f''(x) = 36x^{2} - 96x + 36$$
+
+Evaluating: $f''(0) = 36 > 0$, a local minimum; $f''(1) = -24 < 0$, a local
+maximum; $f''(3) = 72 > 0$, a local minimum. The values there are f(0) = 0,
+f(1) = 5 and f(3) = -27, so the deeper of the two minima is the one on the right,
+and the exam's favourite trap - reporting the first minimum you find as the
+global one - is defused by comparing values rather than stopping at the first
+sign test.
+
+**Inflections.** Set the second derivative to zero:
+
+$$36x^{2} - 96x + 36 = 0 \\quad\\Longrightarrow\\quad x = \\frac{8 \\pm \\sqrt{28}}{6}$$
+
+giving x = 0.45142 and x = 2.21525, where f takes the values 2.3207 and -13.3578.
+Both are genuine inflections because a quadratic with distinct roots changes sign
+at each of them.
+
+![Three stacked panels sharing an x axis. The top panel is a quartic with turning points at zero, one and three; the middle panel is its first derivative crossing zero at exactly those three places; the bottom panel is the second derivative, a parabola crossing zero at 0.4514 and 2.2153, which are the inflection abscissas.](/courses/fe-ee/figures/math3-dc-concavity.svg)
+
+Reading the three panels downward is the whole procedure: a turning point in the
+top panel always sits above a zero crossing in the middle panel, and an
+inflection in the top panel always sits above a zero crossing in the bottom one.
+
+## 9.3 When the second-derivative test is silent
+
+If $f''$ is zero at a critical point the test returns nothing, and you must fall
+back on the sign of $f'$ on either side.
+
+| behaviour of f' near the critical point | conclusion |
+|---|---|
+| positive then negative | local maximum |
+| negative then positive | local minimum |
+| positive then positive | no extremum, a shelf |
+| negative then negative | no extremum, a shelf |
+
+For $f = x^{4}$ at the origin, $f'' = 12x^{2}$ vanishes, yet $f' = 4x^{3}$ goes
+from negative to positive and the point is a minimum. For $f = x^{3}$ at the
+origin, $f''$ also vanishes but $f'= 3x^{2}$ stays positive on both sides and the
+point is a shelf, not an extremum. Two functions, the same silent test, opposite
+answers - which is why the fallback is not optional.
+
+## 9.4 Worked example: Newton's method, a derivative put to work
+
+Root finding is where the tangent line stops being a picture and starts being an
+algorithm. Approximate the curve near a guess by its tangent, then take the
+tangent's own root as the next guess:
+
+$$x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$$
+
+Solve $x^{3} - 2x - 5 = 0$ starting from x = 2. Here $f'(x) = 3x^{2} - 2$.
+
+**First step.** $f(2) = 8 - 4 - 5 = -1$ and $f'(2) = 12 - 2 = 10$, so
+$x_1 = 2 + 0.1 = 2.1$.
+
+**Second step.** $f(2.1) = 9.261 - 4.2 - 5 = 0.061$ and
+$f'(2.1) = 3 \\times 4.41 - 2 = 11.23$, so the correction is
+$0.061 / 11.23 = 0.005432$ and $x_2 = 2.1 - 0.005432 = 2.094568$.
+
+**Third step** gives 2.0945515, and a bracketing solver agrees to that same digit.
+
+| iteration | estimate | value of f there |
+|---|---|---|
+| 0 | 2.000000 | -1.0 |
+| 1 | 2.100000 | 6.1e-2 |
+| 2 | 2.0945681 | 1.9e-4 |
+| 3 | 2.09455148 | 1.7e-9 |
+
+The number of correct digits roughly doubles each pass, which is what quadratic
+convergence means and why two hand iterations usually suffice. The method fails
+where the derivative is near zero, because the tangent is then nearly horizontal
+and throws the next guess far away - a failure mode worth naming, because the
+exam's version of it is a question whose starting point sits at a turning
+point.`,
+  examTip: 'Classify a critical point with f-double-prime, then compare the actual function values before naming a global maximum or minimum. On a closed interval the endpoints are candidates too, and they are not found by any derivative test.',
+  importantNote: 'A zero second derivative is not an inflection on its own; the second derivative must change SIGN there. For f = x to the fourth at the origin the second derivative is zero and the point is a minimum, not an inflection.',
+},
+{
+  id: 'dc-optimisation',
+  title: '10. Optimisation on Engineering Objectives',
+  content: `## 10.1 The procedure, including the step everyone skips
+
+Optimisation on this exam is mechanical once written down:
+
+1. Name the quantity to be optimised and write it as a formula.
+2. Use the constraint to eliminate every variable but one.
+3. Differentiate, set to zero, solve.
+4. Classify with the second derivative, **and** evaluate at any endpoints of the
+   allowed interval.
+5. Sanity check the answer against physical expectation.
+
+Step 4 is the one that gets dropped. On a closed interval the extreme value may
+sit at an endpoint where the derivative never vanishes at all, and a derivative
+with no interior root is not a contradiction - it is a signal to evaluate the
+ends. For $f(x) = x^{3} - 3x$ on the interval from 0 to 3, the only interior
+critical point is x = 1 with f = -2, but the maximum over the interval is f(3) =
+18, found by evaluation and not by differentiation.
+
+## 10.2 Worked example: maximum power transfer, and what it costs
+
+A source of open-circuit voltage V and internal resistance $R_s$ drives a load
+$R_L$. The current is $V/(R_s + R_L)$, so the load power is
+
+$$P(R_L) = \\frac{V^{2}R_L}{(R_s + R_L)^{2}}$$
+
+Differentiate by the quotient rule and cancel one factor of $(R_s + R_L)$ from
+every term:
+
+$$\\frac{dP}{dR_L} = \\frac{V^{2}(R_s - R_L)}{(R_s + R_L)^{3}}$$
+
+The numerator vanishes only at $R_L = R_s$, and the sign of that numerator flips
+from positive to negative there, so it is a maximum. Substituting back:
+
+$$P_{max} = \\frac{V^{2}R_s}{(2R_s)^{2}} = \\frac{V^{2}}{4R_s}$$
+
+**With numbers.** Take V = 24 V and $R_s$ = 8 ohm. Then $P_{max}$ is
+$576 / 32 = 18$ W at a matched load. Now test how sharp that peak is by halving
+and doubling the load:
+
+$$576 \\times 4 / 144 = 16\\ \\mathrm{W} \\qquad 576 \\times 16 / 576 = 16\\ \\mathrm{W}$$
+
+Both give 16 W, which is 88.9 per cent of the peak. The peak is symmetric in the
+**ratio** of load to source resistance, not in the difference, and it is broad -
+a 2:1 mismatch costs only about 11 per cent of the available power.
+
+![Load power and efficiency plotted against the ratio of load to source resistance for a 24 volt source behind 8 ohms. Power peaks at a ratio of one, where efficiency is exactly one half, and the points at ratios of one half and two both sit at 88.9 per cent of the peak power.](/courses/fe-ee/figures/math3-dc-power-transfer.svg)
+
+**The cost.** Efficiency is the fraction of source power that reaches the load:
+
+$$\\eta = \\frac{R_L}{R_s + R_L}$$
+
+At the matched point that is exactly 50 per cent: the source dissipates as much
+as the load. Total source power is $576 / 16 = 36$ W of which 18 W is delivered.
+This is why matched loading is the right criterion for a signal source, where the
+power available is tiny and the point is to capture it, and completely the wrong
+criterion for a distribution system, where throwing away half the generated
+energy would be indefensible. Push the ratio to 4 and efficiency rises to 80 per
+cent while delivered power falls to 11.52 W, which is 64 per cent of the peak.
+
+## 10.3 Worked example: economic conductor size, by calculus
+
+An optimisation with two competing costs is the most examinable form of the
+question, and conductor sizing is the classic. A larger cross-section costs more
+to buy but wastes less energy; the cheapest size balances the two.
+
+Let A be the cross-sectional area in square millimetres over a run of length L.
+Resistance is $\\rho L/A$, so the annual cost of losses is
+
+$$C_{loss} = \\frac{I^{2}\\rho L\\, h\\, c_e}{A} = \\frac{\\beta}{A}$$
+
+with h the equivalent full-load hours per year and $c_e$ the energy price. The
+annualised cost of the conductor itself is proportional to its area, $\\alpha A$.
+The total is
+
+$$C(A) = \\alpha A + \\frac{\\beta}{A}$$
+
+$$\\frac{dC}{dA} = \\alpha - \\frac{\\beta}{A^{2}} = 0 \\quad\\Longrightarrow\\quad A^{*} = \\sqrt{\\frac{\\beta}{\\alpha}}$$
+
+Substituting that back shows something more useful than the formula: at the
+optimum $\\alpha A^{*} = \\beta/A^{*}$, so **the annual capital charge equals the
+annual cost of losses**. That equality is Kelvin's law, and it is a check you can
+apply to any proposed answer without redoing the algebra.
+
+**With numbers.** Take I = 200 A over L = 250 m of annealed copper, for which the
+tabulated resistivity at 20 degrees Celsius is 1.72e-8 ohm-metre, at 3000
+equivalent full-load hours per year and an energy price of 0.12 per kilowatt
+hour. One square millimetre of that run has resistance 4.3 ohm, so with the current
+squared in amperes squared, the hours expressed in thousands so the product is
+already in kilowatt hours, and the price per kilowatt hour,
+
+$$\\beta = 40000 \\times 4.3 \\times 3.0 \\times 0.12 = 61920$$
+
+in cost units times square millimetres per year. With an annualised conductor
+charge of 0.015 per metre of run per square millimetre, $\\alpha = 0.015 \\times 250 = 3.75$
+per square millimetre per year. Then
+
+$$61920 / 3.75 = 16512 \\quad\\Longrightarrow\\quad A^{*} = \\sqrt{16512} = 128.5\\ \\mathrm{mm}^{2}$$
+
+Check Kelvin's law: capital is $3.75 \\times 128.5 = 481.9$ and losses are
+$61920 / 128.5 = 481.9$, equal as promised, for a total of
+$2 \\times 481.87 = 963.74$ per year.
+
+![Annualised capital cost rising linearly with conductor area, loss cost falling as its reciprocal, and their sum. The total has a flat minimum at 128.5 square millimetres, exactly where the rising and falling curves cross at 481.87 cost units per year each.](/courses/fe-ee/figures/math3-dc-kelvin-law.svg)
+
+The minimum is remarkably flat, and that flatness is the practical result. At
+100 square millimetres the total is $3.75 \\times 100 + 619.2 = 994.2$, and at
+160 it is $3.75 \\times 160 + 387 = 987.0$ - both within three per cent of the
+optimum. Any standard size in that band is defensible, which is why real cable
+schedules are not built from square roots.
+
+## 10.4 Worked example: the cheapest cylindrical enclosure
+
+A cylindrical can, open at the top, must hold 1000 cubic centimetres. Minimise
+the material used.
+
+Surface area is the base plus the wall, and the volume constraint gives
+$h = 1000/(\\pi r^{2})$:
+
+$$A(r) = \\pi r^{2} + 2\\pi r h = \\pi r^{2} + \\frac{2000}{r}$$
+
+$$\\frac{dA}{dr} = 2\\pi r - \\frac{2000}{r^{2}} = 0 \\quad\\Longrightarrow\\quad r^{3} = \\frac{1000}{\\pi}$$
+
+so r = 6.828 cm, and the height is $1000/(\\pi r^{2}) = 6.828$ cm as well. The
+optimal open can is exactly as tall as it is wide in radius - not a coincidence
+but a consequence of the exponents in the two terms. The area there is
+$3\\pi r^{2} = 439.38$ square centimetres. Confirm it is a minimum:
+$A'' = 2\\pi + 4000/r^{3} > 0$ for every positive r, so the curve is concave up
+everywhere and the single critical point is the global minimum.
+
+| container | constraint | optimal proportion |
+|---|---|---|
+| closed box, square base | fixed volume | a cube |
+| open-top cylinder | fixed volume | height equals radius |
+| closed cylinder | fixed volume | height equals diameter |
+| resistive load on a source | fixed source resistance | load equals source resistance |
+
+The pattern in that table is worth carrying: optimisation answers are almost
+always symmetric or equal-split, and an answer that comes out lopsided by an
+order of magnitude usually means the constraint was substituted into the wrong
+variable.`,
+  examTip: 'On a closed interval, evaluate the endpoints as well as the interior critical points. A derivative that never vanishes inside the interval means the extreme value sits at an end, not that the problem is broken.',
+  importantNote: 'Maximum power transfer and maximum efficiency are different targets. Matching the load to the source maximises delivered power and pins efficiency at exactly 50 per cent, which is acceptable for a signal source and unacceptable for a power system.',
+},
+{
+  id: 'dc-rates-limits',
+  title: '11. Related Rates and Indeterminate Limits',
+  content: `## 11.1 Related rates: write the relationship before you differentiate
+
+A related-rate question gives one rate and asks for another. The step that
+decides the outcome comes before any calculus: write the **geometric or physical
+relationship between the quantities**, in full, and only then differentiate it
+with respect to time. Differentiating first and patching the relationship in
+afterwards is where the errors live.
+
+The chain rule does all the work, because every variable is a function of time:
+
+$$\\frac{dQ}{dt} = \\frac{dQ}{dx}\\cdot\\frac{dx}{dt}$$
+
+## 11.2 Worked example: three related-rate setups
+
+**A resistive heater.** A fixed 50 ohm element carries a current rising at
+0.2 A/s. How fast is its dissipation rising when the current is 3 A?
+
+Relationship first: $P = I^{2}R$ with R constant. Differentiate:
+
+$$\\frac{dP}{dt} = 2IR\\frac{dI}{dt} = 2 \\times 3 \\times 50 \\times 0.2 = 60\\ \\mathrm{W/s}$$
+
+The answer depends on the present current, so the same current ramp heats a
+running element far faster than a cold one - the physical content of the factor
+2I.
+
+**A draining tank.** A cone stands apex down, 2 m in radius at a height of 4 m,
+and drains at 0.5 cubic metres per minute. How fast is the surface falling when
+the depth is 3 m?
+
+Relationship first. Similar triangles give $r = h/2$, so
+
+$$V = \\frac{\\pi}{3}r^{2}h = \\frac{\\pi h^{3}}{12}$$
+
+$$\\frac{dV}{dt} = \\frac{\\pi h^{2}}{4}\\cdot\\frac{dh}{dt}$$
+
+At h = 3 the coefficient is $9\\pi/4 = 7.0686$ square metres, so the surface
+descends at $0.5 / 7.0686 = 0.0707$ metres per minute. Substituting r = 2 instead
+of r = h/2 is the intended trap; it treats the cone as a cylinder and gives a
+level falling at a constant rate, which is qualitatively wrong.
+
+**A sliding ladder.** A 5 m ladder has its base pulled away from a wall at
+0.6 m/s. How fast is the top descending when the base is 3 m out?
+
+Relationship first: $x^{2} + y^{2} = 25$, so $y = 4$ at that instant.
+Differentiating,
+
+$$2x\\frac{dx}{dt} + 2y\\frac{dy}{dt} = 0 \\quad\\Longrightarrow\\quad \\frac{dy}{dt} = -\\frac{x}{y}\\frac{dx}{dt} = -0.45\\ \\mathrm{m/s}$$
+
+The top falls more slowly than the base moves at this instant, and faster than it
+later - as y approaches zero the ratio x/y blows up, which is why the last part
+of the fall is the dangerous part.
+
+## 11.3 The seven indeterminate forms
+
+L'Hopital's rule is licensed for exactly two forms and no others. The remaining
+five must be **converted** into one of those two first.
+
+| form | how to convert | example |
+|---|---|---|
+| 0/0 | apply the rule directly | $\\lim_{x \\to 0}\\sin x / x = 1$ |
+| infinity over infinity | apply the rule directly | $\\lim_{x \\to \\infty} x^{2}/e^{x} = 0$ |
+| zero times infinity | write one factor as a reciprocal | $x\\ln x = \\ln x / (1/x)$ |
+| infinity minus infinity | combine over a common denominator | subtract two reciprocals first |
+| one raised to infinity | take logarithms, then use zero times infinity | the compound-interest limit |
+| zero to the zero | take logarithms | rewrite as an exponential of a product |
+| infinity to the zero | take logarithms | rewrite as an exponential of a product |
+
+The rule itself, once the form qualifies:
+
+$$\\lim_{x \\to a}\\frac{f(x)}{g(x)} = \\lim_{x \\to a}\\frac{f'(x)}{g'(x)}$$
+
+Note that this differentiates numerator and denominator **separately**. It is not
+the quotient rule, and applying the quotient rule here is a distinct and common
+error that produces a plausible wrong number.
+
+## 11.4 Worked example: four limits, one of which is a trap
+
+**Substituting gives 0/0, so the rule applies.**
+
+$$\\lim_{x \\to 0}\\frac{1 - \\cos x}{x^{2}} = \\lim_{x \\to 0}\\frac{\\sin x}{2x} = \\lim_{x \\to 0}\\frac{\\cos x}{2} = \\frac{1}{2}$$
+
+Two applications were needed, because the first pass left another 0/0. Evaluating
+the original expression numerically at x = 0.0001 gives 0.5 to eight decimals.
+This limit is why the small-angle expansion of the cosine starts at
+$1 - x^{2}/2$.
+
+**A zero-times-infinity form.** For $\\lim_{x \\to 0^{+}} x\\ln x$, neither factor
+qualifies alone. Write it as $\\ln x/(1/x)$, which is infinity over infinity:
+
+$$\\lim_{x \\to 0^{+}}\\frac{\\ln x}{1/x} = \\lim_{x \\to 0^{+}}\\frac{1/x}{-1/x^{2}} = \\lim_{x \\to 0^{+}}(-x) = 0$$
+
+The logarithm's divergence is beaten by the linear factor, which is the general
+result that any positive power of x beats a logarithm.
+
+**A one-to-the-infinity form.** For $\\lim_{n \\to \\infty}(1 + 3/n)^{n}$, take
+logarithms: $n\\ln(1 + 3/n)$ is zero times infinity, rewrite as
+$\\ln(1+3/n)/(1/n)$, apply the rule once and get 3. Exponentiating,
+the limit is $e^{3} = 20.0855$. Continuous compounding, and the transformation of
+a discrete-time filter into its continuous equivalent, are both this limit.
+
+**And the trap.** Consider $\\lim_{x \\to 0}(x + 1)/x$. Substituting gives 1/0,
+which is **not** indeterminate - it diverges. Differentiating top and bottom
+anyway gives 1/1 = 1, a confident and completely wrong answer, and it is
+invariably among the offered choices. Substitute first, every time, and confirm
+the form qualifies before touching the rule.`,
+  examTip: 'Substitute before you differentiate. Only 0/0 and infinity over infinity permit L Hopital directly; the other five indeterminate forms must be rewritten into one of those two, usually by taking a reciprocal or a logarithm.',
+  importantNote: 'In a related-rates problem, write the relationship between the variables BEFORE differentiating, and only substitute the instantaneous values AFTER. Substituting a value that is itself changing - the radius of a cone at one particular depth, for instance - freezes a variable that should have been differentiated.',
+},
+{
+  id: 'dc-series',
+  title: '12. Taylor Series With a Remainder You Can Trust',
+  content: `## 12.1 Where the coefficients come from
+
+Suppose a function can be written as a power series about a point a:
+
+$$f(x) = c_0 + c_1(x-a) + c_2(x-a)^{2} + c_3(x-a)^{3} + \\cdots$$
+
+Setting x = a kills every term but the first, so $c_0 = f(a)$. Differentiate once
+and set x = a again: only the linear term survives, so $c_1 = f'(a)$.
+Differentiate twice and the quadratic term contributes $2c_2$, so
+$c_2 = f''(a)/2$. Continuing, the k-th differentiation brings down a factor of
+k factorial:
+
+$$c_k = \\frac{f^{(k)}(a)}{k!} \\quad\\Longrightarrow\\quad f(x) = \\sum_{k=0}^{\\infty}\\frac{f^{(k)}(a)}{k!}(x-a)^{k}$$
+
+A series about a = 0 is called a **Maclaurin** series; the three that must be
+known cold are
+
+$$e^{x} = 1 + x + \\frac{x^{2}}{2!} + \\frac{x^{3}}{3!} + \\cdots$$
+
+$$\\sin x = x - \\frac{x^{3}}{3!} + \\frac{x^{5}}{5!} - \\cdots$$
+
+$$\\cos x = 1 - \\frac{x^{2}}{2!} + \\frac{x^{4}}{4!} - \\cdots$$
+
+Sine is odd and its series contains only odd powers; cosine is even and contains
+only even powers. That symmetry is a free check on any series you write down
+under pressure.
+
+## 12.2 The remainder, and why it matters
+
+Truncating a series leaves an error, and Taylor's theorem bounds it. If the
+polynomial is taken through the term in $(x-a)^{n}$, the remainder is
+
+$$R_n(x) = \\frac{f^{(n+1)}(\\xi)}{(n+1)!}(x-a)^{n+1}$$
+
+for some unknown point $\\xi$ between a and x. The point is unknown, but a bound
+on the derivative over the interval turns this into a usable number - and for the
+sine and cosine every derivative is bounded by 1, which makes the bound trivial
+to apply.
+
+## 12.3 Worked example: three terms of sine, with the error bounded and then measured
+
+Estimate $\\sin(0.5)$ and bound the error.
+
+$$\\sin(0.5) \\approx 0.5 - \\frac{0.5^{3}}{6} + \\frac{0.5^{5}}{120}$$
+
+The terms are $0.125 / 6 = 0.0208333$ and $0.03125 / 120 = 0.00026042$, giving
+partial sums
+
+| terms kept | value | error against sin 0.5 |
+|---|---|---|
+| 1 | 0.5000000 | 2.06e-2 |
+| 2 | $0.5 - 0.0208333 = 0.4791667$ | -2.59e-4 |
+| 3 | $0.4791667 + 0.0002604 = 0.4794271$ | 1.54e-6 |
+
+The true value is 0.4794255, so the three-term error is 1.5447e-6.
+
+**Now bound it in advance.** The polynomial ends in $x^{5}$, and because the
+$x^{6}$ coefficient of sine is zero this is the sixth-order Taylor polynomial, so
+the remainder carries $x^{7}/7!$. Every derivative of sine is bounded by 1, so
+
+$$\\lvert R \\rvert \\le \\frac{0.5^{7}}{5040} = 0.0078125 / 5040 = 0.00000155$$
+
+The bound is 1.5501e-6 against a true error of 1.5447e-6 - larger, as a bound
+must be, and larger by only 0.35 per cent. A bound that tight is worth quoting
+rather than guessing at.
+
+![The sine curve with its one-term, two-term and three-term Maclaurin polynomials overlaid. Each extra term tracks the sine over a wider interval before diverging, and at half a radian the three-term sum is 0.4794271 against a true 0.4794255.](/courses/fe-ee/figures/math3-dc-taylor-sine.svg)
+
+![Absolute truncation error of the one, two and three term sine polynomials on a logarithmic vertical axis, together with the Lagrange bound x to the seventh over seven factorial. The bound lies just above the three-term error across the whole range.](/courses/fe-ee/figures/math3-dc-taylor-error.svg)
+
+## 12.4 Worked example: how far the small-angle approximation can be pushed
+
+The approximations $\\sin\\theta \\approx \\theta$ and $\\cos\\theta \\approx 1$
+underpin the linearised pendulum, the paraxial ray, and the small-signal analysis
+of a phase detector. The series says exactly what they cost:
+
+$$\\frac{\\theta}{\\sin\\theta} - 1 \\approx \\frac{\\theta^{2}}{6}$$
+
+| angle | radians | sine | relative error of using the angle |
+|---|---|---|---|
+| 5 degrees | 0.087266 | 0.087156 | 0.127 per cent |
+| 10 degrees | 0.174533 | 0.173648 | 0.510 per cent |
+| 15 degrees | 0.261799 | 0.258819 | 1.152 per cent |
+| 20 degrees | 0.349066 | 0.342020 | 2.060 per cent |
+| 30 degrees | 0.523599 | 0.500000 | 4.720 per cent |
+
+The error quadruples when the angle doubles, exactly as a leading $\\theta^{2}$
+term predicts, and the substitution is worth about one per cent up to roughly 14
+degrees. A question that asks for the largest angle meeting a stated error
+budget is asking you to invert this table, not to look it up.
+
+## 12.5 The binomial series, and linearisation in general
+
+For any real exponent,
+
+$$(1 + x)^{p} = 1 + px + \\frac{p(p-1)}{2}x^{2} + \\cdots$$
+
+so $\\sqrt{1+x} \\approx 1 + x/2 - x^{2}/8$. At x = 0.1 the two-term form gives
+1.05 and the three-term form 1.04875 against a true 1.048809 - the quadratic term
+recovers most of the error the linear term leaves.
+
+The general first-order statement is the one the exam uses:
+
+$$f(x) \\approx f(a) + f'(a)(x - a)$$
+
+That is the small-signal model. Replace f by a diode characteristic and the slope
+$f'(a)$ is the conductance at the operating point; replace it by an amplifier
+transfer curve and the slope is the small-signal gain. Every linear model in this
+exam is the first two terms of a Taylor series, and every statement about
+distortion is a claim about the terms that were discarded.`,
+  examTip: 'For the sine and cosine every derivative is bounded by one, so the Lagrange remainder reduces to the size of the first omitted power divided by its factorial. That makes the error bound a two-second calculation rather than an estimate.',
+  importantNote: 'Linearisation f(x) is approximately f(a) plus f-prime(a) times (x minus a) IS the small-signal model used throughout electronics. The terms discarded are exactly the distortion, which is why a larger signal swing degrades linearity.',
+},
+{
+  id: 'dc-partials',
+  title: '13. Partial Derivatives, the Gradient and Error Propagation',
+  content: `## 13.1 Partial derivatives and the total differential
+
+When a quantity depends on several variables, differentiate with respect to one
+and hold the rest fixed. That is all a partial derivative is, and the curly
+symbol only signals that other variables exist.
+
+For $P = V^{2}/R$:
+
+$$\\frac{\\partial P}{\\partial V} = \\frac{2V}{R}, \\qquad \\frac{\\partial P}{\\partial R} = -\\frac{V^{2}}{R^{2}}$$
+
+The **total differential** assembles the separate sensitivities into the change
+produced by moving every variable at once:
+
+$$dP = \\frac{\\partial P}{\\partial V}dV + \\frac{\\partial P}{\\partial R}dR$$
+
+Divide through by P to get the relative form, which is usually the one wanted:
+
+$$\\frac{dP}{P} = 2\\frac{dV}{V} - \\frac{dR}{R}$$
+
+The coefficients are the exponents in the original formula, and that is a general
+rule for any product of powers: **a variable raised to the power n contributes n
+times its own relative error.** Voltage enters squared, so a one per cent error
+in voltage becomes a two per cent error in power.
+
+## 13.2 The gradient and the directional derivative
+
+Collect the partial derivatives into a vector:
+
+$$\\nabla f = \\frac{\\partial f}{\\partial x}\\mathbf{i} + \\frac{\\partial f}{\\partial y}\\mathbf{j} + \\frac{\\partial f}{\\partial z}\\mathbf{k}$$
+
+The rate of change along a unit vector $\\mathbf{u}$ is the projection of the
+gradient onto it:
+
+$$D_{\\mathbf{u}}f = \\nabla f \\cdot \\mathbf{u} = \\lvert \\nabla f \\rvert \\cos\\theta$$
+
+Three consequences follow immediately, and all three are examinable. The
+steepest ascent is along the gradient itself, where the cosine is 1. The
+steepest descent is opposite to it. And along any direction perpendicular to the
+gradient the rate of change is zero, which means **the gradient is normal to the
+level curves**.
+
+For $f = x^{2} + 3y^{2}$ the gradient is $(2x, 6y)$, which at the point (2, 1) is
+(4, 6) with magnitude $\\sqrt{52} = 7.2111$. Along the unit vector (0.6, 0.8) the
+directional derivative is $4 \\times 0.6 + 6 \\times 0.8 = 7.2$, just short of the
+gradient's own magnitude because that direction is close to, but not exactly,
+the steepest one. Along (1, 0) it is only 4.
+
+![Elliptical level curves of x squared plus three y squared, with the gradient vector at the point two comma one drawn crossing the contours at right angles, and a shorter horizontal arrow showing that the eastward direction achieves a slope of only four against the gradient magnitude of 7.2111.](/courses/fe-ee/figures/math3-dc-gradient.svg)
+
+In electrostatics this is the whole relationship between potential and field:
+$\\mathbf{E} = -\\nabla V$. The field points down the steepest potential gradient,
+and equipotential surfaces are exactly the level surfaces the field crosses at
+right angles.
+
+## 13.3 Worked example: tolerance stack-up in a power calculation
+
+A resistor dissipates $P = V^{2}/R$ with V = 120 V known to 1 per cent and
+R = 60 ohm known to 5 per cent. Report the power and its uncertainty.
+
+The nominal value is $120 \\times 120 / 60 = 240$ W.
+
+**Worst case** adds the magnitudes of the contributions, on the assumption that
+every error conspires:
+
+$$\\left\\lvert\\frac{dP}{P}\\right\\rvert \\le 2 \\times 0.01 + 0.05 = 0.07$$
+
+so plus or minus 7 per cent, which is $0.07 \\times 240 = 16.8$ W.
+
+**Root-sum-square** is appropriate when the errors are independent and random:
+
+$$\\frac{\\sigma_P}{P} = \\sqrt{(2 \\times 0.01)^{2} + (0.05)^{2}}, \\qquad 0.0004 + 0.0025 = 0.0029, \\qquad \\sqrt{0.0029} = 0.05385$$
+
+which is 5.385 per cent, or 12.9 W - noticeably tighter, and the reason
+instrument specifications distinguish the two.
+
+**Check the linear estimate against exact evaluation.** At the extreme corner
+V = 121.2 and R = 57, the true power is $14689.44 / 57 = 257.7$ W, which is
+7.379 per cent high. At the opposite corner, $14113.44 / 63 = 224.0$ W, which is
+6.657 per cent low. The differential predicted 7 per cent both ways; the truth is
+slightly more on the high side and slightly less on the low side, because the
+differential is a first-order estimate of a curved function. For tolerances of a
+few per cent that asymmetry is negligible, and knowing it exists is what stops
+you trusting the linear figure at 50 per cent tolerance.
+
+| quantity | relative sensitivity | 1 per cent change gives |
+|---|---|---|
+| $P = V^{2}/R$ with respect to V | 2 | 2 per cent |
+| $P = V^{2}/R$ with respect to R | -1 | -1 per cent |
+| $P = I^{2}R$ with respect to I | 2 | 2 per cent |
+| $f = 1/(2\\pi\\sqrt{LC})$ with respect to L | -0.5 | -0.5 per cent |
+| $W = \\tfrac{1}{2}CV^{2}$ with respect to V | 2 | 2 per cent |
+
+## 13.4 Worked example: which resistor to buy tight
+
+Two resistors in parallel give $R_p = R_1R_2/(R_1 + R_2)$. With $R_1$ = 100 ohm
+and $R_2$ = 400 ohm the combination is 80 ohm. Which one deserves the tighter
+tolerance?
+
+Differentiate with respect to each in turn. The quotient rule gives a result
+worth remembering in its own right:
+
+$$\\frac{\\partial R_p}{\\partial R_1} = \\left(\\frac{R_2}{R_1 + R_2}\\right)^{2}, \\qquad \\frac{\\partial R_p}{\\partial R_2} = \\left(\\frac{R_1}{R_1 + R_2}\\right)^{2}$$
+
+Numerically that is $(400/500)^{2} = 0.64$ and $(100/500)^{2} = 0.04$. The
+combination is $0.64 / 0.04 = 16$ times as sensitive to the smaller resistor.
+Spend the tolerance budget there. A central-difference check confirms the
+sensitivity: raising $R_1$ by one ohm actually raises $R_p$ by 0.63872 ohm
+against the linear prediction of 0.64.
+
+The general statement is that **the smaller element in a parallel pair dominates
+both the value and its uncertainty**, which is the same fact as the parallel
+combination always being smaller than the smallest member, seen through a
+derivative.`,
+  examTip: 'For any product of powers, the relative error of the result is the sum of the relative errors of the inputs weighted by their exponents. Read the exponents straight off the formula rather than differentiating term by term.',
+  importantNote: 'The gradient is perpendicular to level curves and points toward steepest increase. E equals minus grad V is that statement applied to potential, which is why field lines meet equipotentials at right angles.',
+},
+{
+  id: 'dc-set-b',
+  title: '14. Problem Set: Differentiation Under Exam Conditions',
+  content: `## 14.1 Problem Set A: rules, chains and rates
+
+Work each one before reading the solution. Every solution names the distractor
+and the wrong number it produces, because recognising your own error is worth
+more than the right answer.
+
+**Problem 1.** Differentiate $f(x) = (2x + 1)^{5}$ and evaluate at x = 1.
+
+Chain rule with outer power 5 and inner derivative 2:
+
+$$f'(x) = 5(2x+1)^{4}\\cdot 2 = 10(2x+1)^{4}$$
+
+At x = 1 the bracket is 3, so $f'(1) = 10 \\times 81 = 810$.
+
+*The trap.* Dropping the inner derivative gives $5 \\times 81 = 405$, exactly half the
+truth, and 405 always appears among the choices. Any time the argument is not a
+bare x, the inner derivative is owed.
+
+**Problem 2.** Differentiate $f(x) = \\ln(3x^{2} + 1)$ at x = 2.
+
+$$f'(x) = \\frac{6x}{3x^{2} + 1}$$
+
+At x = 2 that is $12 / 13 = 0.9231$.
+
+*The trap.* Writing the answer as $1/(3x^{2}+1) = 1/13 = 0.0769$ forgets that the
+derivative of a logarithm is the inner derivative over the argument, not one over
+the argument.
+
+**Problem 3.** A 50 microfarad capacitor has $v(t) = 100\\sin(377t)$ volts across
+it. Find the peak current.
+
+$$i = C\\frac{dv}{dt} = 50 \\times 10^{-6} \\times 100 \\times 377\\cos(377t)$$
+
+The amplitude is $0.00005 \\times 37700 = 1.885$ A.
+
+*The trap.* Omitting the 377 gives 5 mA, three orders of magnitude low. The
+angular frequency is part of the derivative, which is the whole reason capacitive
+reactance falls with frequency.
+
+**Problem 4.** Differentiate $f(x) = \\tan^{2}x$ at x = 0.4 rad.
+
+Chain rule with outer square and inner tangent:
+
+$$f'(x) = 2\\tan x\\sec^{2}x$$
+
+At x = 0.4, $\\tan = 0.422793$ and $\\sec^{2} = 1.178755$, so
+$f'(0.4) = 2 \\times 0.422793 \\times 1.178755 = 0.99674$.
+
+*The trap.* Answering $\\sec^{2}x$ differentiates the tangent but forgets the
+outer square, giving 1.1788. Answering $2\\tan x$ does the reverse, giving
+0.8456.
+
+## 14.2 Two rates from a single circuit
+
+**Problem 5.** A 0.4 H inductor carries $i(t) = 5(1 - e^{-t/0.02})$ amperes.
+Find the voltage across it at t = 0 and at t = 20 ms.
+
+$$v = L\\frac{di}{dt} = 0.4 \\times 5 \\times \\frac{1}{0.02}e^{-t/0.02} = 100e^{-t/0.02}$$
+
+At t = 0 that is 100 V; at t = 20 ms, one time constant, it is
+$100 \\times 0.367879 = 36.79$ V.
+
+*The trap.* Differentiating $-e^{-t/0.02}$ to $-e^{-t/0.02}/0.02$ loses a sign
+and produces -100 V, a voltage that opposes the physics. The two sign reversals -
+one from the minus in front of the exponential, one from the negative exponent -
+must both be applied.
+
+**Problem 6.** For a voltage divider $V_o = 100R_2/(R_1 + R_2)$ with
+$R_1 = R_2 = 1000$ ohm, how much does the output move per ohm of change in
+$R_2$?
+
+$$\\frac{\\partial V_o}{\\partial R_2} = \\frac{100R_1}{(R_1+R_2)^{2}}, \\qquad 100000 / 4000000 = 0.025\\ \\mathrm{V/ohm}$$
+
+So one ohm of drift moves the output by 25 mV, and one per cent of drift on a
+1000 ohm resistor moves it by 250 mV out of 50 V - half a per cent, exactly half
+the resistor's own error, because at equal resistances the divider is at its most
+forgiving.
+
+*The trap.* Differentiating as though the denominator were constant gives
+$100/2000 = 0.05$ V per ohm, double the truth, because $R_2$ appears in both
+numerator and denominator and the quotient rule is not optional.
+
+## 14.3 Implicit and logarithmic work
+
+**Problem 7.** Find $dy/dx$ for $x^{2}y + y^{3} = 10$ at the point where x = 3
+and y = 1.
+
+Differentiate term by term, remembering the product rule on the first:
+
+$$2xy + x^{2}\\frac{dy}{dx} + 3y^{2}\\frac{dy}{dx} = 0$$
+
+$$\\frac{dy}{dx} = -\\frac{2xy}{x^{2} + 3y^{2}} = -\\frac{6}{12} = -0.5$$
+
+*The trap.* Treating $x^{2}y$ as a single power and differentiating it to $2xy$
+alone forgets that y also varies, and the resulting -0.25 is offered.
+
+**Problem 8.** Differentiate $y = 2^{x}$.
+
+Take logarithms: $\\ln y = x\\ln 2$, so $y'/y = \\ln 2$ and
+
+$$\\frac{d}{dx}2^{x} = 2^{x}\\ln 2 = 0.693147 \\times 2^{x}$$
+
+*The trap.* Applying the power rule to give $x2^{x-1}$ treats a constant base as
+if it were the variable. The test is that the power rule needs the variable in
+the base; the exponential rule needs it in the exponent.`,
+},
+{
+  id: 'dc-set-c',
+  title: '15. Problem Set: Optima, Limits and Series',
+  content: `## 15.1 Problem Set B: optimisation
+
+**Problem 1.** A rectangular field is bounded on one side by a straight river and
+needs fencing on the other three. With 400 m of fence available, maximise the
+enclosed area.
+
+Let x be the side parallel to the river and y each perpendicular side. The fence
+constraint is $x + 2y = 400$, so $x = 400 - 2y$ and
+
+$$A(y) = y(400 - 2y) = 400y - 2y^{2}$$
+
+$$\\frac{dA}{dy} = 400 - 4y = 0 \\quad\\Longrightarrow\\quad y = 100$$
+
+Then x = 200 and the area is 20000 square metres. Confirm with $A'' = -4 < 0$, a
+maximum.
+
+*The trap.* Assuming a square, as the closed-perimeter version of this problem
+would suggest, gives sides of 400/3 and an area of 17778 square metres - 11 per
+cent worse. The missing fourth side changes the optimum, and the answer is always
+twice as wide as it is deep.
+
+**Problem 2.** A load resistor is fed from a 30 V source with 5 ohm of internal
+resistance. What load absorbs the most power, and how much is it?
+
+By the derivation in section 10.2 the answer is $R_L = 5$ ohm, and
+
+$$P_{max} = \\frac{V^{2}}{4R_s} = \\frac{900}{20} = 45\\ \\mathrm{W}$$
+
+*The trap.* Computing $V^{2}/R_L = 900/5 = 180$ W ignores the voltage lost across
+the internal resistance. At the matched point the load sees only half the source
+voltage, and the factor of four in the denominator is where that halving, squared,
+has gone.
+
+**Problem 3.** A closed rectangular box with a square base must hold 2000 cubic
+centimetres. Find the dimensions of least surface area.
+
+With base side x and height h, $h = 2000/x^{2}$ and
+
+$$S(x) = 2x^{2} + 4xh = 2x^{2} + \\frac{8000}{x}$$
+
+$$\\frac{dS}{dx} = 4x - \\frac{8000}{x^{2}} = 0 \\quad\\Longrightarrow\\quad x^{3} = 2000$$
+
+so x = 12.599 cm and h = 2000/158.74 = 12.599 cm: a cube, as it must be for a
+closed box.
+
+*The trap.* Using the open-top surface area $x^{2} + 4xh$ by mistake gives
+$x^{3} = 4000$ and x = 15.874 cm. Read whether the box has a lid; the two answers
+differ by 26 per cent in edge length.
+
+## 15.2 Problem Set C: limits, series and error
+
+**Problem 4.** Evaluate $\\lim_{x \\to 0}\\dfrac{\\tan x - x}{x^{3}}$.
+
+Substitution gives 0/0. Three applications, or one substitution of the series
+$\\tan x = x + x^{3}/3 + \\cdots$, both give
+
+$$\\lim_{x \\to 0}\\frac{\\tan x - x}{x^{3}} = \\frac{1}{3}$$
+
+Numerically at x = 0.001 the quotient is 0.333333, confirming it.
+
+*The trap.* Stopping after one application leaves $(\\sec^{2}x - 1)/(3x^{2})$,
+still 0/0. Declaring that indeterminate form to be zero because the numerator
+vanishes gives an answer of 0.
+
+**Problem 5.** Estimate $\\sqrt{101}$ using a first-order Taylor expansion about
+100, and bound the error.
+
+$$f(x) = \\sqrt{x}, \\quad f'(100) = \\frac{1}{2\\sqrt{100}} = 0.05$$
+
+$$\\sqrt{101} \\approx 10 + 0.05 \\times 1 = 10.05$$
+
+The true value is 10.049876, so the error is 1.24e-4. The remainder bound uses
+$f'' = -1/(4x^{3/2})$, whose magnitude on the interval is at most
+$1/4000 = 0.00025$, giving a bound of $0.00025 \\times 1 / 2 = 0.000125$ - just
+above the true error, as required.
+
+*The trap.* Expanding about 0 instead of 100. The square root has an infinite
+derivative at the origin and no Maclaurin series at all; the expansion point must
+be a nearby value at which the function and its derivatives are easy, which is
+the whole art of the technique.
+
+**Problem 6.** A resonant frequency is $f = 1/(2\\pi\\sqrt{LC})$. If L and C are
+each known to 2 per cent, what is the uncertainty in f?
+
+Both appear to the power minus one half, so
+
+$$\\frac{df}{f} = -\\tfrac{1}{2}\\frac{dL}{L} - \\tfrac{1}{2}\\frac{dC}{C}$$
+
+Worst case is $0.5 \\times 0.02 + 0.5 \\times 0.02 = 0.02$, that is 2 per cent. Root-sum-square
+gives $\\sqrt{0.01^{2} + 0.01^{2}} = 0.01414$, that is 1.414 per cent.
+
+*The trap.* Adding the tolerances to 4 per cent ignores the square root, which
+halves each contribution. The exponent is the multiplier, and here it is one half
+and negative.`,
 },
 ],
   keyTakeaways: [
@@ -3322,7 +4427,8 @@ Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value i
   the mean square is V_m² and V_rms = **V_m**. No factor at all.
   
   **For a symmetric triangle wave** of peak V_m, the same integral gives
-  $$V_{rms} = V_m/\\sqrt{3} \\approx 0.577 V_m$$.
+
+  $$V_{rms} = V_m/\\sqrt{3} \\approx 0.577 V_m$$
   
   | Waveform | V_rms | V_avg (full-wave rectified) | Form factor |
   |---|---|---|---|
@@ -3399,7 +4505,7 @@ $$W = \\int v \\cdot C(dv/dt) dt = C\\int v dv = \\tfrac{1}{2} CV^{2}$$
 
 Substituting C = 100 µF charged to 50 V: W = ½(100×$10^{-6}$)(2500) = **0.125 J**.
 Deriving it takes three lines and removes any doubt about whether the factor is
-$$\\tfrac{1}{2} or 2$$.
+one half or two.
 
 ## 5.4 Average of a half-wave rectified sine
 
@@ -3446,6 +4552,1121 @@ waveform by description rather than by equation, sketch one period before
 integrating. Half the errors above are not calculus at all - they are
 integrating the wrong interval, or over half a period when the definition
 asks for a whole one.`,
+},
+{
+  id: 'ic-riemann',
+  title: '7. The Definite Integral as a Limit of Sums',
+  content: `## 7.1 Slicing, summing, shrinking
+
+An integral is not primarily an antiderivative. It is a limit of sums, and every
+application in this chapter - charge, energy, area, volume, centroid, RMS -
+follows from that and not from the table of antiderivatives.
+
+Divide the interval from a to b into n strips of width $h = (b-a)/n$. Approximate
+the area of each strip by a rectangle whose height is the function sampled
+somewhere inside it, and add them:
+
+$$S_n = \\sum_{k=1}^{n} f(x_k^{*})\\,h$$
+
+If that sum approaches the same limit however the sample points are chosen inside
+each strip, the function is integrable and the limit is written
+
+$$\\int_a^b f(x)\\,dx = \\lim_{n \\to \\infty}\\sum_{k=1}^{n} f(x_k^{*})\\,h$$
+
+Read the notation as what it is: the elongated S is a sum, and $f(x)\\,dx$ is one
+strip's contribution, a height times a width. That reading is what tells you what
+to integrate in an applied problem. Charge is current times time, so
+$Q = \\int i\\,dt$. Energy is power times time, so $W = \\int p\\,dt$. Get the strip
+right and the integral writes itself.
+
+## 7.2 Worked example: a parabola by summation alone
+
+Evaluate the area under $f(x) = x^{2}$ from 0 to 2 without an antiderivative.
+
+Take n strips of width $h = 2/n$ and sample at the right-hand edge, so
+$x_k = 2k/n$:
+
+$$S_n^{R} = \\sum_{k=1}^{n}\\left(\\frac{2k}{n}\\right)^{2}\\frac{2}{n} = \\frac{8}{n^{3}}\\sum_{k=1}^{n}k^{2}$$
+
+The sum of the first n squares is $n(n+1)(2n+1)/6$, so
+
+$$S_n^{R} = \\frac{8}{6}\\cdot\\frac{(n+1)(2n+1)}{n^{2}} = \\frac{8}{3} + \\frac{4}{n} + \\frac{4}{3n^{2}}$$
+
+As n grows the correction terms vanish and the limit is $8/3 = 2.6667$. Sampling
+at the left edge instead flips the sign of the leading correction, and sampling at
+the midpoint kills it entirely:
+
+| n | left sum | right sum | midpoint sum |
+|---|---|---|---|
+| 4 | $2.6667 - 1 + 0.0833 = 1.75$ | $2.6667 + 1 + 0.0833 = 3.75$ | $2.6667 - 0.0417 = 2.625$ |
+| 10 | 2.28 | 3.08 | 2.66 |
+| 100 | 2.62680 | 2.70680 | 2.66660 |
+| 1000 | 2.66267 | 2.67067 | 2.666666 |
+
+The n = 4 rows can be checked by hand in seconds. The left sum is
+$0.5 \\times 3.5 = 1.75$ from heights 0, 0.25, 1 and 2.25; the right sum is
+$0.5 \\times 7.5 = 3.75$ from heights 0.25, 1, 2.25 and 4; the midpoint sum is
+$0.5 \\times 5.25 = 2.625$ from heights 0.0625, 0.5625, 1.5625 and 3.0625.
+
+![Two panels showing the same parabola over the interval zero to two, with four rectangles drawn from the left-hand sample points in one panel and from the right-hand sample points in the other. The left rectangles all fall short of the curve and total 1.75; the right rectangles all overshoot and total 3.75; the true area of 2.6667 lies between them.](/courses/fe-ee/figures/math3-ic-riemann.svg)
+
+## 7.3 Worked example: how fast each rule closes in
+
+The three sums above converge at genuinely different rates, and the difference is
+worth quantifying because the same argument decides between the trapezoidal and
+Simpson rules in section 14.
+
+From the closed forms, the endpoint sums are wrong by $4/n$ to leading order and
+the midpoint sum by $2/(3n^{2})$. Doubling n therefore halves an endpoint error
+but quarters a midpoint error. Between n = 512 and n = 1024 the measured slopes
+on logarithmic axes are -1.00 for the endpoint rules and exactly -2 for the
+midpoint rule.
+
+![Absolute error of the left, right and midpoint Riemann sums against the number of subintervals, on logarithmic axes. The two endpoint rules lie on a line of slope minus one; the midpoint rule lies on a line of slope minus two and is already three orders of magnitude better by a thousand subintervals.](/courses/fe-ee/figures/math3-ic-riemann-convergence.svg)
+
+The reason is symmetry, not luck. A midpoint rectangle over-counts on one side of
+its sample point by very nearly what it under-counts on the other, so the
+first-order errors cancel within each strip and only the curvature survives. That
+single observation is the seed of every higher-order quadrature rule.
+
+## 7.4 The Fundamental Theorem, both halves
+
+The theorem that links this limit of sums to antiderivatives comes in two
+statements, and the exam uses both.
+
+**First half.** Define an accumulation function $F(x) = \\int_a^{x} f(t)\\,dt$.
+Then
+
+$$\\frac{d}{dx}\\int_a^{x} f(t)\\,dt = f(x)$$
+
+Differentiation undoes accumulation. The physical reading is direct: if F is the
+charge accumulated on a capacitor then its rate of change is the current.
+
+**Second half.** If F is any antiderivative of f, then
+
+$$\\int_a^b f(x)\\,dx = F(b) - F(a)$$
+
+This is the computational half, and the word **any** is doing real work: the
+constant of integration cancels in the subtraction, which is exactly why a
+definite integral never needs one and an indefinite integral always does.
+
+## 7.5 The mean value theorem for integrals
+
+There is at least one point c in the interval where the function takes its own
+average value:
+
+$$\\int_a^b f(x)\\,dx = f(c)\\,(b - a)$$
+
+so that
+
+$$f_{avg} = \\frac{1}{b-a}\\int_a^b f(x)\\,dx$$
+
+Every average in this chapter is that formula, and every RMS value is that formula
+applied to the square of the signal. It is also the geometric statement that the
+area under a curve equals the area of some rectangle on the same base - which is
+why "find the equivalent DC value" and "find the average" are the same question
+whenever the quantity of interest is linear in the signal.`,
+  examTip: 'Build the integrand as a product of a height and a width and the applied integral writes itself: current times time is charge, power times time is energy, force times distance is work. Getting the strip right matters more than remembering the antiderivative.',
+  importantNote: 'A definite integral needs no constant of integration because the constant cancels in F(b) minus F(a). An indefinite integral always needs one, and an answer written without it is incomplete rather than merely untidy.',
+},
+{
+  id: 'ic-techniques',
+  title: '8. The Techniques, Each Derived',
+  content: `## 8.1 Substitution is the chain rule read backwards
+
+Differentiating a composite gives $\\frac{d}{dx}F(g(x)) = f(g(x))\\,g'(x)$.
+Integrating both sides recovers the rule:
+
+$$\\int f(g(x))\\,g'(x)\\,dx = F(g(x)) + C$$
+
+so with $u = g(x)$ and $du = g'(x)\\,dx$ the integral becomes $\\int f(u)\\,du$. The
+signal that substitution will work is therefore very specific: **a function and
+its own derivative are both present**, up to a constant factor. If they are not,
+substitution is the wrong tool and no amount of trying will make it work.
+
+For a definite integral, change the limits along with the variable. Converting
+back to x at the end is legal but is where sign and bound errors breed.
+
+## 8.2 Worked example: three substitutions
+
+**A power of sine against its derivative.** For
+$\\int_0^{\\pi/2}\\sin^{3}\\theta\\cos\\theta\\,d\\theta$, take $u = \\sin\\theta$ so
+$du = \\cos\\theta\\,d\\theta$, and the limits run from 0 to 1:
+
+$$\\int_0^{1}u^{3}\\,du = \\left[\\frac{u^{4}}{4}\\right]_0^{1} = 0.25$$
+
+**A logarithm hiding in a quotient.** For $\\int_0^{2}\\dfrac{x}{x^{2}+1}\\,dx$, the
+numerator is half the derivative of the denominator. With $u = x^{2}+1$ running
+from 1 to 5:
+
+$$\\frac{1}{2}\\int_1^{5}\\frac{du}{u} = \\frac{1}{2}\\ln 5 = 0.80472$$
+
+Any integrand of the form derivative-over-function is a logarithm, and spotting
+that saves more exam time than any other single pattern.
+
+**A shift in the exponent.** For $\\int_0^{1}x e^{x^{2}}\\,dx$, take $u = x^{2}$ so
+$x\\,dx = du/2$ and the limits run 0 to 1:
+
+$$\\frac{1}{2}\\int_0^{1}e^{u}\\,du = \\frac{e - 1}{2} = 0.85914$$
+
+## 8.3 Integration by parts is the product rule read backwards
+
+Integrate the product rule $(uv)' = u'v + uv'$ across the interval and rearrange:
+
+$$\\int u\\,dv = uv - \\int v\\,du$$
+
+The rule trades one integral for another, so it only helps when the new one is
+easier. The choice of u is what decides that, and the ordering **LIATE** -
+Logarithmic, Inverse trigonometric, Algebraic, Trigonometric, Exponential - names
+the priority: pick as u whichever appears earliest in that list, because those are
+the functions that get simpler when differentiated.
+
+## 8.4 Worked example: parts, once and twice
+
+**Once.** Evaluate $\\int_0^{1}x e^{2x}\\,dx$. Algebraic beats exponential, so
+$u = x$ and $dv = e^{2x}dx$, giving $du = dx$ and $v = e^{2x}/2$:
+
+$$\\int_0^{1}x e^{2x}dx = \\left[\\frac{xe^{2x}}{2}\\right]_0^{1} - \\frac{1}{2}\\int_0^{1}e^{2x}dx = \\frac{e^{2}}{2} - \\frac{e^{2}-1}{4} = \\frac{e^{2}+1}{4}$$
+
+Numerically $7.389056 / 4 + 0.25 = 2.0973$.
+
+**With a logarithm.** Evaluate $\\int_1^{e}4x\\ln x\\,dx$. Logarithmic beats
+algebraic, so $u = \\ln x$ and $dv = 4x\\,dx$:
+
+$$\\int 4x\\ln x\\,dx = 2x^{2}\\ln x - \\int 2x\\,dx = 2x^{2}\\ln x - x^{2} + C$$
+
+Between 1 and e that is $(2e^{2} - e^{2}) - (0 - 1) = e^{2} + 1 = 8.3891$.
+Differentiating the antiderivative returns $4x\\ln x + 2x - 2x$, which is the
+integrand - the ten-second check that should follow every integration by parts.
+
+**Twice, and to infinity.** Evaluate $\\int_0^{\\infty}t^{2}e^{-t}\\,dt$. One pass
+lowers the power to $t$, a second lowers it to a constant:
+
+$$\\int_0^{\\infty}t^{2}e^{-t}dt = 2\\int_0^{\\infty}t e^{-t}dt = 2\\int_0^{\\infty}e^{-t}dt = 2$$
+
+Each pass costs one differentiation of the polynomial, which is why a polynomial
+of degree n against an exponential needs exactly n passes and produces n
+factorial. Adaptive quadrature over the same range returns 2.000000 to six
+decimals.
+
+## 8.5 Partial fractions
+
+A proper rational function - numerator degree strictly below denominator degree -
+splits into a sum of simpler pieces, one for each factor of the denominator.
+Distinct linear factors give constants over each factor:
+
+$$\\frac{1}{(x+1)(x+3)} = \\frac{A}{x+1} + \\frac{B}{x+3}$$
+
+Multiply through and substitute the roots. At x = -1, $1 = 2A$ so A = 0.5; at
+x = -3, $1 = -2B$ so B = -0.5. Hence
+
+$$\\int_0^{1}\\frac{dx}{(x+1)(x+3)} = \\frac{1}{2}\\left[\\ln\\frac{x+1}{x+3}\\right]_0^{1} = \\frac{1}{2}\\ln 1.5$$
+
+which is $0.5 \\times 0.405465 = 0.202733$.
+
+If the numerator degree is not lower, divide first. A repeated factor
+$(x+a)^{2}$ needs two terms, one over $(x+a)$ and one over $(x+a)^{2}$. An
+irreducible quadratic needs a linear numerator over it.
+
+## 8.6 Worked example: a partial-fraction inverse Laplace transform
+
+This is where the technique earns its place on this exam. A first-order system
+driven by a step has the transform
+
+$$V(s) = \\frac{10}{s(s+5)}$$
+
+Split it: $10 = A(s+5) + Bs$. At s = 0, $10 = 5A$ so A = 2; at s = -5,
+$10 = -5B$ so B = -2. Therefore
+
+$$V(s) = \\frac{2}{s} - \\frac{2}{s+5}$$
+
+and each piece is a transform already in the table, giving
+
+$$v(t) = 2 - 2e^{-5t}$$
+
+Check the endpoints without inverting anything. At t = 0 the expression is zero,
+matching the initial-value theorem; as t grows it approaches 2, matching the
+final-value theorem. At one time constant, t = 0.2 s, the value is
+$2 - 2 \\times 0.367879 = 1.26424$ V, which is 63.2 per cent of the final value -
+the number every transient question is built around.
+
+## 8.7 Trigonometric integrals and trigonometric substitution
+
+Squared sinusoids are handled by power reduction rather than by memorising a
+result:
+
+$$\\sin^{2}\\theta = \\frac{1 - \\cos 2\\theta}{2}, \\qquad \\cos^{2}\\theta = \\frac{1 + \\cos 2\\theta}{2}$$
+
+so $\\int\\sin^{2}(kx)\\,dx = x/2 - \\sin(2kx)/(4k) + C$ follows from two integrals
+you already know. This is the route to every RMS calculation on a sinusoid.
+
+An odd power of sine or cosine is handled by peeling off one factor to serve as
+the differential and converting the rest with the Pythagorean identity. Roots of
+the form $\\sqrt{a^{2} - x^{2}}$ are handled by $x = a\\sin\\theta$, and
+$a^{2} + x^{2}$ by $x = a\\tan\\theta$, which turns the second into
+$a^{2}\\sec^{2}\\theta$ and produces the arctangent:
+
+$$\\int\\frac{dx}{x^{2}+a^{2}} = \\frac{1}{a}\\arctan\\frac{x}{a} + C$$
+
+| what the integrand looks like | technique to reach for |
+|---|---|
+| a function and its own derivative | substitution |
+| a polynomial times an exponential or a sinusoid | parts, polynomial as u |
+| a logarithm or an inverse trigonometric function alone | parts, that factor as u |
+| a proper rational function | partial fractions |
+| an even power of sine or cosine | power reduction identity |
+| a sum or difference of two squares under a root | trigonometric substitution |
+
+## 8.8 Worked example: orthogonality, and why harmonics do not interact
+
+Two sinusoids of different integer frequencies have zero average product over a
+common period:
+
+$$\\int_0^{2\\pi}\\sin(m\\theta)\\sin(n\\theta)\\,d\\theta = 0 \\quad (m \\ne n)$$
+
+Verify it for m = 1 and n = 3 by the product-to-sum identity: the integrand
+becomes $\\tfrac{1}{2}[\\cos 2\\theta - \\cos 4\\theta]$, and both cosines integrate
+to zero over a whole number of their own periods. Quadrature over the same
+interval returns zero to twelve decimal places. When the frequencies match,
+
+$$\\int_0^{2\\pi}\\sin^{2}(n\\theta)\\,d\\theta = \\pi$$
+
+by power reduction. This is the single most consequential integral in electrical
+engineering. It says the mean square of a sum of harmonics is the sum of their
+individual mean squares, with no cross terms - which is why RMS values of
+harmonics add in quadrature, why Fourier coefficients can be extracted one at a
+time, and why a filter can remove one harmonic without disturbing the rest.`,
+  examTip: 'Before integrating, look for a function and its own derivative in the integrand. If both are present, substitution finishes the problem in one line; if they are not, substitution will not help and parts or partial fractions is the route.',
+  importantNote: 'Orthogonality of harmonics is why mean squares add without cross terms. A distorted waveform of 100 V peak fundamental plus 30 V peak third harmonic has an RMS of the square root of the sum of the two individual mean squares, never the sum of the two RMS values.',
+},
+{
+  id: 'ic-improper',
+  title: '9. Improper Integrals and Convergence',
+  content: `## 9.1 Two ways an integral can be improper
+
+An integral is improper if a limit is infinite, or if the integrand blows up
+somewhere on the interval. Either way the definition is the same: replace the
+offending endpoint with a variable, integrate normally, then take a limit.
+
+$$\\int_a^{\\infty}f(x)\\,dx = \\lim_{X \\to \\infty}\\int_a^{X}f(x)\\,dx$$
+
+$$\\int_0^{1}\\frac{dx}{\\sqrt{x}} = \\lim_{\\epsilon \\to 0^{+}}\\int_{\\epsilon}^{1}\\frac{dx}{\\sqrt{x}} = \\lim_{\\epsilon \\to 0^{+}}\\left(2 - 2\\sqrt{\\epsilon}\\right) = 2$$
+
+If the limit exists and is finite the integral **converges**; otherwise it
+diverges. An integrand that is infinite somewhere does not automatically make the
+integral infinite, which is the point of the example above, and an integrand that
+tends to zero does not automatically make the integral finite, which is the point
+of the next section.
+
+## 9.2 The p-test, and where the line falls
+
+For the tail of a power law the answer depends on one exponent:
+
+$$\\int_1^{\\infty}\\frac{dx}{x^{p}} = \\frac{1}{p-1} \\ \\text{for}\\ p > 1, \\qquad \\text{divergent for}\\ p \\le 1$$
+
+At the other end, near a singularity at the origin, the inequality reverses:
+
+$$\\int_0^{1}\\frac{dx}{x^{p}} = \\frac{1}{1-p} \\ \\text{for}\\ p < 1, \\qquad \\text{divergent for}\\ p \\ge 1$$
+
+The function $1/x$ sits exactly on the boundary in both cases and loses both
+times, because its integral is a logarithm and a logarithm has no finite limit.
+That single fact decides most convergence questions on this exam by comparison:
+an integrand that eventually stays below a convergent one converges, and an
+integrand that eventually stays above a divergent one diverges.
+
+![Accumulated area from one out to a variable upper limit, for three power laws, on a logarithmic horizontal axis. The exponent two curve flattens onto the value one, the exponent one curve grows as the logarithm without bound, and the exponent one half curve climbs steeply off the top of the frame.](/courses/fe-ee/figures/math3-ic-ptest.svg)
+
+## 9.3 Worked example: testing three tails
+
+Accumulate each tail out to X = 1000 and read what happens.
+
+| integrand | closed form out to X | value at X = 1000 | verdict |
+|---|---|---|---|
+| $1/x^{2}$ | $1 - 1/X$ | 0.999 | converges to 1 |
+| $1/x^{1.5}$ | $2 - 2/\\sqrt{X}$ | 1.937 | converges to 2 |
+| $1/x$ | $\\ln X$ | 6.9078 | diverges |
+| $1/\\sqrt{x}$ | $2\\sqrt{X} - 2$ | 61.246 | diverges |
+
+The logarithmic row is the instructive one. At X = 1000 it has reached only 6.9,
+and at a million only 13.8 - it looks convergent to anyone watching a partial
+sum. Divergence here is a statement about a limit, not about the size of any
+particular partial value, and a question that shows a slowly growing table and
+asks whether the integral converges is testing precisely that.
+
+## 9.4 Worked example: the Laplace transform and its region of convergence
+
+The Laplace transform is an improper integral with a parameter:
+
+$$F(s) = \\int_0^{\\infty}f(t)e^{-st}\\,dt$$
+
+For $f(t) = e^{-at}$ the integrand is a single exponential:
+
+$$F(s) = \\int_0^{\\infty}e^{-(s+a)t}dt = \\left[\\frac{-e^{-(s+a)t}}{s+a}\\right]_0^{\\infty} = \\frac{1}{s+a}$$
+
+but only if $s + a > 0$, because otherwise the exponential grows and the upper
+limit contributes an infinity instead of a zero. That inequality is the **region
+of convergence**, and the algebraic result $1/(s+a)$ is meaningless outside it.
+Testing at a = 3 and s = 2, quadrature gives 0.2, matching $1/5$.
+
+For $f(t) = t$, one integration by parts gives $F(s) = 1/s^{2}$, valid for
+$s > 0$; at s = 4 that is 0.0625 and quadrature agrees.
+
+| f(t) | F(s) | converges when |
+|---|---|---|
+| 1 | $1/s$ | s greater than 0 |
+| t | $1/s^{2}$ | s greater than 0 |
+| $e^{-at}$ | $1/(s+a)$ | s greater than minus a |
+| $t^{n}$ | $n!/s^{n+1}$ | s greater than 0 |
+| $\\sin\\omega t$ | $\\omega/(s^{2}+\\omega^{2})$ | s greater than 0 |
+
+The pattern in the third row is the whole reason the transform is useful for
+circuits: a decaying exponential is transformed into a pole, the pole's position
+is the decay rate, and stability becomes a question about where poles sit rather
+than about whether an integral converges.`,
+  examTip: 'For a tail integral, the exponent one is the dividing line and it diverges. Anything falling strictly faster than one over x converges; one over x itself and anything slower does not.',
+  importantNote: 'Every Laplace transform carries a region of convergence, and the algebraic expression is only valid inside it. This is the same convergence test as the p-test, applied to an exponential rather than a power.',
+},
+{
+  id: 'ic-geometry',
+  title: '10. Area, Volume, Arc Length and Surface',
+  content: `## 10.1 Area between two curves
+
+Subtract the lower function from the upper and integrate across the interval
+where they overlap:
+
+$$A = \\int_a^b\\left[f_{top}(x) - f_{bot}(x)\\right]dx$$
+
+The limits come from the intersections, which must be found first. For
+$y = 2x$ and $y = x^{2}$ the curves meet where $x^{2} = 2x$, that is at x = 0 and
+x = 2, and the line is above the parabola between them:
+
+$$A = \\int_0^{2}(2x - x^{2})\\,dx = \\left[x^{2} - \\frac{x^{3}}{3}\\right]_0^{2} = 4 - \\frac{8}{3} = \\frac{4}{3}$$
+
+If the curves cross inside the interval, split the integral at the crossing and
+take the correct difference on each piece; otherwise the two contributions
+partially cancel and the answer is too small. That is the single most common
+error in area questions and it is invisible in the arithmetic.
+
+## 10.2 Volumes of revolution
+
+Rotate a plane region about an axis and slice the solid perpendicular to that
+axis. Each slice is a disc or an annulus, and its volume is its area times its
+thickness.
+
+$$V_{disc} = \\pi\\int_a^b [R(x)]^{2}dx, \\qquad V_{washer} = \\pi\\int_a^b\\left([R_{out}]^{2} - [R_{in}]^{2}\\right)dx$$
+
+Slice parallel to the axis instead and each shell is a rolled-up rectangle of
+circumference $2\\pi x$, height h and thickness dx:
+
+$$V_{shell} = 2\\pi\\int_a^b x\\,h(x)\\,dx$$
+
+The two methods always agree; choose whichever avoids solving the boundary curve
+for the other variable.
+
+![Two stacked panels. The upper panel shades the region under the square root curve from zero to four. The lower panel mirrors the curve about the horizontal axis to show the solid of revolution, with one representative disc drawn at x equals 2.25 where the radius is 1.5.](/courses/fe-ee/figures/math3-ic-revolution.svg)
+
+## 10.3 Worked example: one region, three solids
+
+Take the region between $y = 2x$ and $y = x^{2}$ from x = 0 to x = 2, whose area
+is 4/3 from section 10.1.
+
+**Rotated about the x-axis** the slices are washers with outer radius 2x and
+inner radius $x^{2}$:
+
+$$V = \\pi\\int_0^{2}\\left(4x^{2} - x^{4}\\right)dx = \\pi\\left[\\frac{4x^{3}}{3} - \\frac{x^{5}}{5}\\right]_0^{2} = \\frac{64\\pi}{15}$$
+
+which is $64 \\times 3.141593 / 15 = 13.404$ cubic units.
+
+**Rotated about the y-axis** the shells have radius x and height $2x - x^{2}$:
+
+$$V = 2\\pi\\int_0^{2}x(2x - x^{2})dx = 2\\pi\\left[\\frac{2x^{3}}{3} - \\frac{x^{4}}{4}\\right]_0^{2} = \\frac{8\\pi}{3}$$
+
+which is $8 \\times 3.141593 / 3 = 8.3776$ cubic units.
+
+**A simpler solid for comparison.** Rotating the region under $y = \\sqrt{x}$ from
+0 to 4 about the x-axis gives discs of area $\\pi x$:
+
+$$V = \\pi\\int_0^{4}x\\,dx = 8\\pi$$
+
+which is $8 \\times 3.141593 = 25.133$ cubic units. Each of the three was confirmed
+by adaptive quadrature of the corresponding slice-area function.
+
+## 10.4 Arc length, from Pythagoras
+
+Take an infinitesimal piece of curve. Its horizontal run is dx, its rise is dy,
+and the piece itself is the hypotenuse:
+
+$$ds = \\sqrt{(dx)^{2} + (dy)^{2}} = \\sqrt{1 + \\left(\\frac{dy}{dx}\\right)^{2}}\\,dx$$
+
+$$L = \\int_a^b\\sqrt{1 + [f'(x)]^{2}}\\,dx$$
+
+The formula is not memorised so much as reconstructed, and reconstructing it
+takes one triangle. Most arc-length integrands are unpleasant; the examinable
+cases are the few contrived so that the square root simplifies. For
+$y = \\tfrac{2}{3}x^{3/2}$ the derivative is $\\sqrt{x}$, so the radical becomes
+$\\sqrt{1+x}$ and
+
+$$L = \\int_0^{3}\\sqrt{1+x}\\,dx = \\frac{2}{3}\\left[(1+x)^{3/2}\\right]_0^{3} = \\frac{2}{3}(8 - 1) = \\frac{14}{3}$$
+
+that is 4.6667 units, which quadrature confirms.
+
+## 10.5 Worked example: conductor length on a transmission span
+
+A cable hanging under its own weight takes the shape of a catenary,
+$y = a\\cosh(x/a)$, where a is the ratio of horizontal tension to weight per unit
+length. Its derivative is $\\sinh(x/a)$, and the identity
+$1 + \\sinh^{2} = \\cosh^{2}$ collapses the radical exactly:
+
+$$L = \\int_{-d/2}^{d/2}\\cosh\\frac{x}{a}\\,dx = 2a\\sinh\\frac{d}{2a}$$
+
+For a 300 m span with a = 500 m, the argument is 0.3, so the conductor length is
+$2 \\times 500 \\times 0.304520 = 304.52$ m and the sag is
+$a(\\cosh 0.3 - 1) = 500 \\times 0.045339 = 22.67$ m.
+
+The conductor is $304.52 - 300 = 4.52$ m longer than the span, about 1.5 per cent,
+and that difference is exactly what a stringing chart exists to specify. It is
+also why thermal expansion shows up as sag rather than as tension: a tiny change
+in length buys a large change in sag when the curve is this shallow.
+
+## 10.6 Surface of revolution
+
+Rotate the arc rather than the region and each element sweeps a band of
+circumference $2\\pi y$ and slant width ds:
+
+$$S = 2\\pi\\int y\\,ds = 2\\pi\\int_a^b y\\sqrt{1 + [f'(x)]^{2}}\\,dx$$
+
+The sphere falls out beautifully. With $y = \\sqrt{r^{2}-x^{2}}$ the derivative is
+$-x/y$, so the radical is $r/y$, and the two y factors cancel:
+
+$$S = 2\\pi\\int_{-r}^{r} y \\cdot \\frac{r}{y}\\,dx = 2\\pi r\\int_{-r}^{r}dx = 4\\pi r^{2}$$
+
+| quantity | integrand | note |
+|---|---|---|
+| area between curves | top minus bottom | split at every crossing |
+| volume by discs | $\\pi R^{2}$ | slice perpendicular to the axis |
+| volume by shells | $2\\pi x h$ | slice parallel to the axis |
+| arc length | $\\sqrt{1 + (y')^{2}}$ | a hypotenuse, not a memorised form |
+| surface of revolution | $2\\pi y\\sqrt{1 + (y')^{2}}$ | arc length weighted by circumference |
+
+The cancellation in the sphere is the reason the surface area of a spherical
+band depends only on its height and not on where it sits - the result that makes
+a Mercator-style equal-area projection possible.`,
+  examTip: 'For a volume of revolution, decide first whether your slices are perpendicular to the axis, giving discs or washers, or parallel to it, giving shells. Picking the one that keeps the boundary curve in its given form saves the algebra of solving for the other variable.',
+  importantNote: 'When two curves cross inside the interval of integration, split the integral at the crossing and take the correct difference on each piece. A single integral across the crossing lets the two regions partially cancel and understates the area with no visible sign of error.',
+},
+{
+  id: 'ic-rms',
+  title: '11. Average Value and RMS, Derived Not Quoted',
+  content: `## 11.1 Two averages, and why one of them squares first
+
+The average of a signal over one period is the mean value theorem applied
+directly:
+
+$$F_{avg} = \\frac{1}{T}\\int_0^{T}f(t)\\,dt$$
+
+The RMS value is the same operation applied to the square, with a root at the
+end:
+
+$$F_{rms} = \\sqrt{\\frac{1}{T}\\int_0^{T}f^{2}(t)\\,dt}$$
+
+The reason for the squaring is physical, not conventional. Power into a resistor
+goes as the square of the signal, so the DC value that would deposit the same
+heat is the root of the mean of the square. Average is the right quantity for
+charge transferred and for what a moving-coil meter reads; RMS is the right
+quantity for heating, for torque in a motor, and for anything a fuse cares about.
+
+## 11.2 Worked example: the sinusoid's root two, derived
+
+For $v(t) = V_m\\sin(\\omega t)$, square and apply power reduction:
+
+$$v^{2} = V_m^{2}\\sin^{2}(\\omega t) = \\frac{V_m^{2}}{2}\\left(1 - \\cos 2\\omega t\\right)$$
+
+Over a whole period the cosine term contributes exactly zero, because it
+completes two full cycles. What survives is the constant:
+
+$$\\frac{1}{T}\\int_0^{T}v^{2}dt = \\frac{V_m^{2}}{2} \\quad\\Longrightarrow\\quad V_{rms} = \\frac{V_m}{\\sqrt{2}} = 0.70711\\,V_m$$
+
+The factor is not a property of alternating current. It is a property of the
+**shape**, and specifically of the fact that the mean of a squared sinusoid is
+exactly one half. Change the shape and the factor changes with it.
+
+The average over a full period is zero by symmetry. Rectify first and the average
+becomes
+
+$$V_{avg} = \\frac{1}{\\pi}\\int_0^{\\pi}V_m\\sin\\theta\\,d\\theta = \\frac{2V_m}{\\pi} = 0.63662\\,V_m$$
+
+## 11.3 Worked example: three waveforms that are not sinusoids
+
+**A square wave of amplitude plus or minus $V_m$.** The square of the signal is
+$V_m^{2}$ at every instant, so the mean square is $V_m^{2}$ with no integration
+required and $V_{rms} = V_m$. A square wave is the only common waveform whose RMS
+equals its peak.
+
+**A symmetric triangle of peak $V_m$.** By symmetry, integrate over a quarter
+period where $v = 4V_m t/T$:
+
+$$\\frac{4}{T}\\int_0^{T/4}\\frac{16V_m^{2}t^{2}}{T^{2}}dt = \\frac{64V_m^{2}}{T^{3}}\\left[\\frac{t^{3}}{3}\\right]_0^{T/4} = \\frac{V_m^{2}}{3}$$
+
+so $V_{rms} = V_m/\\sqrt{3} = 0.57735\\,V_m$. A sawtooth ramping from
+$-V_m$ to $+V_m$ gives the same mean square by the same integral, which is why
+the two share a factor despite looking different.
+
+**A rectangular pulse train** of amplitude $I_p$ present for a fraction D of each
+period. The square is $I_p^{2}$ for a fraction D and zero otherwise:
+
+$$I_{rms} = I_p\\sqrt{D}, \\qquad I_{avg} = I_p D$$
+
+For a 10 A pulse at 30 per cent duty, $10 \\times 0.547723 = 5.4772$ A RMS against
+3 A average. The gap between them is the whole reason a fuse rated on RMS current
+and a plating bath rated on average current disagree about the same waveform.
+
+![Four small panels, each showing one period of a unit-peak waveform with its own RMS level drawn as a dashed line. The sine sits at 0.7071, the square at 1.0000, the triangle at 0.5774 and the sawtooth at 0.5774.](/courses/fe-ee/figures/math3-ic-rms-waveforms.svg)
+
+| waveform of peak $V_m$ | RMS | mean of the magnitude | form factor | crest factor |
+|---|---|---|---|---|
+| sine | 0.7071 | 0.6366 | 1.1107 | 1.4142 |
+| full-wave rectified sine | 0.7071 | 0.6366 | 1.1107 | 1.4142 |
+| half-wave rectified sine | 0.5000 | 0.3183 | 1.5708 | 2.0000 |
+| square | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| triangle | 0.5774 | 0.5000 | 1.1547 | 1.7321 |
+| sawtooth | 0.5774 | 0.5000 | 1.1547 | 1.7321 |
+| pulse train, 30 per cent duty | 0.5477 | 0.3000 | 1.8257 | 1.8257 |
+
+Form factor is RMS divided by the mean of the magnitude, and it is why an
+averaging meter calibrated on sine waves misreads everything else: it measures
+0.6366 and multiplies by 1.1107 regardless of what it is looking at. Point such a
+meter at a triangle wave and it reads 11 per cent high, because the true form
+factor there is 1.1547.
+
+## 11.4 Worked example: a DC level with ripple, and a harmonic pair
+
+Because the mean square of a sum of orthogonal components is the sum of their
+mean squares, RMS values combine in quadrature:
+
+$$V_{rms} = \\sqrt{V_{dc}^{2} + V_{ac,rms}^{2}}$$
+
+**A supply rail.** A 12 V DC output carries 5 V RMS of ripple. The total RMS is
+$\\sqrt{144 + 25}$, and $144 + 25 = 169$, so 13.0 V exactly. Into a 10 ohm load
+that dissipates $169 / 10 = 16.9$ W, against the 14.4 W the DC term alone would
+deliver. The ripple contributes 2.5 W of heating that a DC meter never sees.
+
+**A distorted mains waveform.** Take
+$v(t) = 100\\sin\\omega t + 30\\sin 3\\omega t$ volts. The two components are
+orthogonal, so their mean squares add:
+
+$$V_{rms}^{2} = \\left(\\frac{100}{\\sqrt{2}}\\right)^{2} + \\left(\\frac{30}{\\sqrt{2}}\\right)^{2}$$
+
+and $5000 + 450 = 5450$, giving $V_{rms} = 73.824$ V. The fundamental alone would
+give 70.711 V, so the third harmonic raises the true RMS by a factor of 1.0440 -
+which is $\\sqrt{1 + 0.09}$, the standard relationship between total harmonic
+distortion and RMS. A 30 per cent third harmonic adds 4.4 per cent to the heating,
+and quadrature of the squared waveform over a full period returns a mean square of
+5450 exactly, confirming that no cross term survives.`,
+  examTip: 'The 0.707 factor belongs to the sine and to nothing else. Read the waveform description first: square is 1.000, triangle and sawtooth are 0.577, half-wave rectified sine is 0.500, and a pulse train is the peak times the square root of the duty cycle.',
+  importantNote: 'RMS values of orthogonal components add in quadrature, never directly. A 12 V DC rail with 5 V RMS of ripple has a total RMS of 13 V, not 17 V, and it is the 13 that determines the heating.',
+},
+{
+  id: 'ic-centroid',
+  title: '12. Centroids and Moments',
+  content: `## 12.1 First moments and the centroid
+
+The centroid of an area is its balance point, and it is defined by a ratio of two
+integrals: the first moment of area divided by the area itself.
+
+$$\\bar{x} = \\frac{\\int x\\,dA}{\\int dA}, \\qquad \\bar{y} = \\frac{\\int y\\,dA}{\\int dA}$$
+
+The whole method is choosing a strip dA over which one coordinate is constant, so
+that the moment integral becomes one-dimensional. For a vertical strip of height
+y and width dx, the strip's own centre sits at height y/2, so
+
+$$\\int y\\,dA = \\int_a^b \\frac{y}{2}\\cdot y\\,dx = \\frac{1}{2}\\int_a^b y^{2}\\,dx$$
+
+That factor of one half, arising because the strip has extent in the direction
+being averaged, is the step most often dropped.
+
+## 12.2 Worked example: the semicircle, derived
+
+Find the centroid of a semicircular area of radius r, flat side on the x-axis.
+
+Take horizontal strips, over which y is constant. A strip at height y has width
+$2\\sqrt{r^{2}-y^{2}}$, so
+
+$$\\int y\\,dA = \\int_0^{r} y\\cdot 2\\sqrt{r^{2}-y^{2}}\\,dy$$
+
+Substituting $u = r^{2} - y^{2}$, so $y\\,dy = -du/2$, turns this into
+$\\int_0^{r^{2}}\\sqrt{u}\\,du = \\tfrac{2}{3}r^{3}$. Dividing by the area
+$\\pi r^{2}/2$:
+
+$$\\bar{y} = \\frac{2r^{3}/3}{\\pi r^{2}/2} = \\frac{4r}{3\\pi}$$
+
+Numerically $4 / 9.42478 = 0.42441$, so the centroid sits at 0.4244 r, noticeably
+below the r/2 that intuition suggests - because there is more area near the flat
+base than near the top.
+
+![A unit semicircle with its area shaded, a horizontal strip drawn at height 0.72, and the centroid marked on the axis of symmetry at 0.4244 of the radius, below the dashed line at half the radius that an untrained guess would place it on.](/courses/fe-ee/figures/math3-ic-centroid.svg)
+
+**A second case for contrast.** For the area under $y = x^{2}$ from 0 to 2, the
+area is 8/3 and
+
+$$\\int x\\,dA = \\int_0^{2}x\\cdot x^{2}dx = 4, \\qquad \\int y\\,dA = \\int_0^{2}\\frac{x^{4}}{2}dx = 3.2$$
+
+so $\\bar{x} = 1.5$ and $\\bar{y} = 1.2$. Both lie inside the region, as a centroid
+of a convex-ish region must, and both are well past the midpoint of their ranges
+because the region is far heavier on the right.
+
+## 12.3 Second moments and the parallel-axis theorem
+
+The second moment of area weights each element by the square of its distance from
+an axis:
+
+$$I_x = \\int y^{2}\\,dA$$
+
+It measures how far the area is spread from the axis, which is why it governs
+bending stiffness. Moving the reference axis is handled without re-integrating,
+by the parallel-axis theorem:
+
+$$I = I_c + A d^{2}$$
+
+where $I_c$ is about the centroidal axis and d is the distance moved. The
+theorem only works starting **from** the centroidal axis, and applying it between
+two arbitrary axes is a standard trap.
+
+## 12.4 Worked example: a rectangular section about two axes
+
+A rectangle is 50 mm wide and 100 mm deep.
+
+**About its own centroidal axis**, integrate strips from -h/2 to +h/2:
+
+$$I_c = \\int_{-h/2}^{h/2}y^{2}b\\,dy = b\\left[\\frac{y^{3}}{3}\\right]_{-h/2}^{h/2} = \\frac{bh^{3}}{12}$$
+
+which is $50 \\times 1000000 / 12 = 4166667$ mm to the fourth.
+
+**About its base**, integrate from 0 to h instead:
+
+$$I_{base} = \\int_0^{h}y^{2}b\\,dy = \\frac{bh^{3}}{3} = 16666667\\ \\mathrm{mm}^{4}$$
+
+**Check with the parallel-axis theorem.** The area is 5000 square millimetres and
+the shift is 50 mm, so $5000 \\times 2500 = 12500000$, and
+$4166667 + 12500000 = 16666667$. The two routes agree exactly, which is the
+verification worth doing whenever a composite section is built from parts.
+
+| shape | axis | second moment |
+|---|---|---|
+| rectangle b by h | centroidal, parallel to b | $bh^{3}/12$ |
+| rectangle b by h | along the base | $bh^{3}/3$ |
+| triangle b by h | centroidal, parallel to b | $bh^{3}/36$ |
+| triangle b by h | along the base | $bh^{3}/12$ |
+| circle radius r | any centroidal diameter | $\\pi r^{4}/4$ |
+| circle radius r | polar, through the centre | $\\pi r^{4}/2$ |
+
+The cube on h in every rectangular entry is the practically important part:
+doubling the depth of a beam multiplies its stiffness by eight while only doubling
+its weight, which is why structural sections are tall and thin rather than square.`,
+  examTip: 'Choose the strip so that one coordinate is constant over it. Horizontal strips for a semicircle, vertical strips for an area under a curve - and remember the factor of one half when the strip has extent in the direction you are averaging.',
+  importantNote: 'The parallel-axis theorem transfers a second moment FROM the centroidal axis only. To move between two non-centroidal axes, come back through the centroid first, subtracting A d squared and then adding the new one.',
+},
+{
+  id: 'ic-line-surface',
+  title: '13. Line and Surface Integrals',
+  content: `## 13.1 Integrating along a path
+
+A line integral accumulates a quantity along a curve rather than along an axis.
+For a scalar density it is
+
+$$\\int_C f\\,ds, \\qquad ds = \\sqrt{\\left(\\frac{dx}{dt}\\right)^{2} + \\left(\\frac{dy}{dt}\\right)^{2}}\\,dt$$
+
+Parameterise the curve, substitute, and it becomes an ordinary single-variable
+integral. For a quarter circle of radius 2 in the first quadrant with linear
+density $\\lambda = x$, take $x = 2\\cos\\theta$ and $ds = 2\\,d\\theta$:
+
+$$\\int_C x\\,ds = \\int_0^{\\pi/2}(2\\cos\\theta)(2)\\,d\\theta = 4\\left[\\sin\\theta\\right]_0^{\\pi/2} = 4$$
+
+## 13.2 Work integrals and conservative fields
+
+For a vector field the natural line integral is the work done moving along the
+path:
+
+$$W = \\int_C \\mathbf{F}\\cdot d\\mathbf{r} = \\int_C \\left(F_x\\,dx + F_y\\,dy\\right)$$
+
+Some fields give the same answer for every path between two points. Those are
+**conservative**, they can be written as the gradient of a potential, and their
+line integral collapses to a difference of potentials at the endpoints:
+
+$$\\int_C \\nabla\\phi\\cdot d\\mathbf{r} = \\phi(\\text{end}) - \\phi(\\text{start})$$
+
+In two dimensions the test is whether the mixed partial derivatives agree,
+$\\partial F_x/\\partial y = \\partial F_y/\\partial x$, which is the statement that
+the curl vanishes. Electrostatic fields pass this test, which is exactly why
+voltage between two nodes is well defined and independent of the route taken -
+and induced fields around a changing flux do not, which is why a voltmeter's lead
+placement matters in a transformer's stray field.
+
+## 13.3 Worked example: the same endpoints, two different answers
+
+Take $\\mathbf{F} = (y, x)$ from the origin to the point (2, 4).
+
+**Along the straight chord** $y = 2x$, parameterise as $(t, 2t)$ for t from 0 to
+2. Then $\\mathbf{F} = (2t, t)$ and $d\\mathbf{r} = (1, 2)dt$, so the integrand is
+$2t + 2t = 4t$ and the work is 8.
+
+**Along the parabola** $y = x^{2}$, parameterise as $(t, t^{2})$. Then
+$\\mathbf{F} = (t^{2}, t)$ and $d\\mathbf{r} = (1, 2t)dt$, so the integrand is
+$t^{2} + 2t^{2} = 3t^{2}$ and the work is again 8.
+
+Both give 8, as they must: the mixed partials are both 1, the field is
+conservative, and its potential is $\\phi = xy$, whose endpoint difference is
+$2 \\times 4 = 8$.
+
+**Now change one sign.** Take $\\mathbf{F} = (-y, x)$ from the origin to (1, 1).
+Along the straight line $(t, t)$ the integrand is $-t + t = 0$, so the work is
+zero. Along the parabola $(t, t^{2})$ it is $-t^{2} + 2t^{2} = t^{2}$, so the work
+is 1/3. Different paths, different answers - and the test explains it, because
+here $\\partial F_x/\\partial y = -1$ while $\\partial F_y/\\partial x = +1$, so the
+curl is 2 and no potential exists.
+
+## 13.4 Surface integrals and flux
+
+A surface integral of a vector field is its flux, the net amount crossing the
+surface:
+
+$$\\Phi = \\iint_S \\mathbf{F}\\cdot d\\mathbf{A} = \\iint_S \\mathbf{F}\\cdot\\hat{n}\\,dA$$
+
+When the field is uniform in magnitude over the surface and everywhere
+perpendicular to it, this collapses to a product - which is the entire reason
+symmetry arguments work in electromagnetics.
+
+## 13.5 Worked example: Gauss's law as a surface integral
+
+A point charge Q sits at the centre of a sphere of radius r. Its field is radial
+with magnitude
+
+$$E = \\frac{Q}{4\\pi\\epsilon_0 r^{2}}$$
+
+Over the sphere, E is constant in magnitude and everywhere parallel to the
+outward normal, so the flux integral reduces to a multiplication:
+
+$$\\Phi = E \\cdot 4\\pi r^{2} = \\frac{Q}{4\\pi\\epsilon_0 r^{2}}\\cdot 4\\pi r^{2} = \\frac{Q}{\\epsilon_0}$$
+
+The radius cancels completely, which is Gauss's law: the flux depends on the
+enclosed charge and on nothing else.
+
+**With numbers.** For Q = 1 nC at r = 0.1 m, using the tabulated permittivity of
+free space 8.8541878128e-12 farad per metre, the field is 898.76 V/m. The sphere's
+area is 0.1256637 square metres, so the flux is
+$898.755 \\times 0.1256637 = 112.94$ volt-metres, and dividing the charge by the
+permittivity gives the same 112.94. Integrating the flux element over polar angle
+by quadrature reproduces it to seven digits.
+
+The magnetic analogue is Ampere's law as a line integral. Around a circle of
+radius r about a long straight wire, B is constant in magnitude and everywhere
+along the path, so $\\oint\\mathbf{B}\\cdot d\\mathbf{l} = B\\,2\\pi r = \\mu_0 I$.
+For 10 A at 50 mm the field is 40 microtesla, and again the geometry cancels
+against the integral rather than being computed through it.`,
+  examTip: 'Before evaluating any flux or circulation integral, ask whether symmetry makes the field constant in magnitude and constant in angle to the element. If it does, the integral collapses to a product and there is nothing left to integrate.',
+  importantNote: 'A conservative field has zero curl and a path-independent line integral. Electrostatic fields are conservative, which is why node voltage is well defined; induced fields around a changing flux are not, which is why loop area matters when probing them.',
+},
+{
+  id: 'ic-numerical',
+  title: '14. Numerical Integration',
+  content: `## 14.1 The trapezoidal rule and its error order
+
+When the integrand is a table of measurements rather than a formula, join the
+samples with straight lines and add the trapezoids. With n equal panels of width
+h, the interior points are each counted twice and the endpoints once:
+
+$$T_n = h\\left[\\frac{f_0}{2} + f_1 + f_2 + \\cdots + f_{n-1} + \\frac{f_n}{2}\\right]$$
+
+The error over the whole interval is
+
+$$E_T = -\\frac{(b-a)h^{2}}{12}f''(\\xi)$$
+
+for some point in the interval. The $h^{2}$ is the operative part: **halving the
+step should divide the error by four.** The rule is exact for any straight line,
+because a straight line has no second derivative to be wrong about.
+
+## 14.2 Simpson's rule and its error order
+
+Fit a parabola through each consecutive triple of points instead of a line
+through each pair. Integrating that parabola gives the weighting 1, 4, 1 over each
+pair of panels, which assembles into the alternating pattern
+
+$$S_n = \\frac{h}{3}\\left[f_0 + 4f_1 + 2f_2 + 4f_3 + \\cdots + 4f_{n-1} + f_n\\right]$$
+
+and requires n to be **even**. The error is
+
+$$E_S = -\\frac{(b-a)h^{4}}{180}f^{(4)}(\\xi)$$
+
+so halving the step divides the error by sixteen. Simpson's rule is exact for
+cubics as well as parabolas, one order better than its construction suggests,
+because the cubic error terms cancel between the two halves of each panel pair.
+
+## 14.3 Worked example: both rules against an exact answer
+
+Test both on $\\int_0^{1}e^{x}dx$, whose exact value is $e - 1 = 1.7182818$.
+
+| panels n | trapezoid | trapezoid error | Simpson | Simpson error |
+|---|---|---|---|---|
+| 2 | 1.7539311 | 3.565e-2 | 1.7188612 | 5.793e-4 |
+| 4 | 1.7272219 | 8.940e-3 | 1.7183188 | 3.701e-5 |
+| 8 | 1.7205186 | 2.237e-3 | 1.7182842 | 2.326e-6 |
+| 16 | 1.7188411 | 5.593e-4 | 1.7182820 | 1.456e-7 |
+
+Take the ratios of consecutive errors. For the trapezoidal rule,
+$0.0356493 / 0.0089401 = 3.9876$, approaching 4. For Simpson,
+$0.00057932 / 0.00003701 = 15.65$, approaching 16. The predicted error orders are
+not an asymptotic hope; they are visible at n = 2.
+
+![Absolute error against panel count on logarithmic axes for the trapezoidal and Simpson rules applied to the integral of the exponential over the unit interval. The trapezoid points lie on a line of slope minus two and the Simpson points on a line of slope minus four, four orders of magnitude lower by 128 panels.](/courses/fe-ee/figures/math3-ic-quadrature-error.svg)
+
+The error formulas also predict the magnitudes, not just the ratios. At n = 4 the
+trapezoid bound is $(1/12)(0.25)^{2}e = 0.014158$ against an actual 0.008940, and
+the Simpson bound is $(1/180)(0.25)^{4}e = 0.000059$ against an actual 0.0000370.
+Both bounds hold and both are within a factor of two, because the fourth
+derivative of the exponential barely varies across the interval.
+
+## 14.4 Worked example: charge from sampled current
+
+A current is logged every 0.5 s as 0, 3, 4, 3 and 0 amperes. Find the charge
+delivered over the two seconds.
+
+**Trapezoidal.** The interior samples count once each and the ends count half:
+
+$$Q_T = 0.5\\left[0 + 3 + 4 + 3 + 0\\right]$$
+
+giving $0.5 \\times 10 = 5$ coulombs.
+
+**Simpson.** Five samples means four panels, which is even, so the rule applies.
+The weights are 1, 4, 2, 4, 1:
+
+$$4 \\times 3 + 2 \\times 4 + 4 \\times 3 = 32$$
+
+and $0.5 \\times 32 / 3 = 5.333$ coulombs.
+
+The two disagree by 6.7 per cent, and Simpson is the one to quote: the underlying
+waveform is curved, and straight-line segments systematically cut the corners of
+a convex peak. The check that catches a Simpson error is the weight sum - with
+n panels the weights must total 3n, here $1 + 4 + 2 + 4 + 1 = 12$ against
+$3 \\times 4 = 12$, so a misplaced 4 or 2 shows up immediately.
+
+| rule | samples needed | exact for | error order |
+|---|---|---|---|
+| left or right rectangle | any n | constants | h to the first |
+| midpoint | any n | straight lines | h squared |
+| trapezoid | any n | straight lines | h squared |
+| Simpson | n even | cubics | h to the fourth |
+
+The midpoint and trapezoid rules share an error order but not an error: the
+midpoint error is half the size and has the opposite sign, which is exactly why
+their weighted combination, two parts midpoint to one part trapezoid, is
+Simpson's rule.`,
+  examTip: 'Simpson requires an even number of panels, which means an odd number of samples. If a data table gives an even count of readings, either drop one, or apply Simpson to the even part and a trapezoid to the last panel.',
+  importantNote: 'Trapezoid error falls as h squared and Simpson error as h to the fourth. Doubling the number of panels therefore improves a trapezoid answer by four and a Simpson answer by sixteen, which is what makes Simpson the default for hand calculation.',
+},
+{
+  id: 'ic-set-b',
+  title: '15. Problem Set: Integration Techniques',
+  content: `## 15.1 Problem Set A: definite integrals and technique choice
+
+**Problem 1.** Evaluate $\\int_0^{3}(x^{2} + 2x)\\,dx$.
+
+$$\\left[\\frac{x^{3}}{3} + x^{2}\\right]_0^{3} = 9 + 9 = 18$$
+
+*The trap.* Differentiating instead of integrating gives $2x + 2$ evaluated
+somewhere, and 8 appears among the choices. Read whether the question wants an
+accumulation or a rate; the presence of dx and of limits settles it.
+
+**Problem 2.** Evaluate $\\int_1^{4}\\dfrac{dx}{\\sqrt{x}}$.
+
+Write the integrand as $x^{-1/2}$ and apply the power rule with n = -1/2:
+
+$$\\left[2\\sqrt{x}\\right]_1^{4} = 4 - 2 = 2$$
+
+*The trap.* Treating $1/\\sqrt{x}$ as the reciprocal case and answering with a
+logarithm. The logarithm belongs only to $x^{-1}$ exactly; every other exponent,
+including minus one half, uses the power rule.
+
+**Problem 3.** A current $i(t) = 100\\sin(377t)$ amperes flows for the first 10 ms.
+How much charge is delivered?
+
+$$Q = \\int_0^{0.01}100\\sin(377t)\\,dt = \\frac{100}{377}\\left[1 - \\cos(3.77)\\right]$$
+
+With $100 / 377 = 0.265252$ and $\\cos(3.77) = -0.80896$, the bracket is 1.808965
+and $0.265252 \\times 1.808965 = 0.47983$ coulombs.
+
+*The trap.* Assuming the interval is a whole number of periods and answering
+zero. At 60 Hz the period is 16.7 ms, so 10 ms is not a full cycle and the phase
+at the upper limit is 3.77 radians, past the negative-going zero crossing but not
+back to the start.
+
+**Problem 4.** Evaluate $\\int_0^{1}x^{2}e^{-x}\\,dx$.
+
+Two passes of integration by parts, taking the polynomial as u each time, give
+the antiderivative $-(x^{2} + 2x + 2)e^{-x}$. Evaluating,
+
+$$\\left[-(x^{2}+2x+2)e^{-x}\\right]_0^{1} = -5e^{-1} + 2$$
+
+and $2 - 1.8394 = 0.1606$.
+
+*The trap.* Doing only one pass and stopping while an integral remains. The
+first pass alone leaves -0.368, a negative number for an integrand that is
+positive across the whole interval, and that sign is the tell. The degree of the
+polynomial is the number of passes required.
+
+## 15.2 Problem Set B: substitution, partial fractions and improper integrals
+
+**Problem 5.** Evaluate $\\int\\dfrac{2x}{x^{2}+4}\\,dx$.
+
+The numerator is exactly the derivative of the denominator, so this is a
+logarithm:
+
+$$\\int\\frac{2x}{x^{2}+4}dx = \\ln(x^{2}+4) + C$$
+
+*The trap.* Reaching for the arctangent form, which belongs to
+$\\int dx/(x^{2}+a^{2})$ with a constant numerator. The presence or absence of an
+x in the numerator decides between a logarithm and an arctangent, and both forms
+are always offered.
+
+**Problem 6.** Find the inverse transform of $\\dfrac{6}{s(s+2)}$.
+
+Partial fractions: $6 = A(s+2) + Bs$ gives A = 3 at s = 0 and B = -3 at s = -2,
+so the transform is $3/s - 3/(s+2)$ and
+
+$$f(t) = 3 - 3e^{-2t}$$
+
+*The trap.* Writing $3/s - 3/(s-2)$ and producing a growing exponential. The
+sign in the denominator carries straight through to the sign in the exponent; a
+pole in the left half plane must give a decay.
+
+**Problem 7.** Does $\\int_1^{\\infty}\\dfrac{dx}{x^{1.5}}$ converge, and to what?
+
+The exponent exceeds 1, so it converges, and the p-test value is $1/(1.5-1) = 2$.
+Accumulating out to X = 1000 gives 1.937, already within about 3 per cent of the
+limit.
+
+*The trap.* Answering that it diverges because the integrand never reaches zero.
+Convergence is about how fast the integrand decays, not about whether it ever
+becomes exactly zero, and the boundary sits at an exponent of exactly 1.
+
+**Problem 8.** Evaluate $\\int_0^{\\infty}100e^{-4t}\\,dt$, the energy in joules
+delivered by a power that decays with a 250 ms time constant.
+
+$$\\left[\\frac{-100e^{-4t}}{4}\\right]_0^{\\infty} = \\frac{100}{4} = 25\\ \\mathrm{J}$$
+
+*The trap.* Forgetting the factor of 1/4 from the chain rule on the exponent and
+answering 100 J. The integral of $e^{-at}$ from zero to infinity is $1/a$, so the
+time constant multiplies the answer as surely as the amplitude does.`,
+},
+{
+  id: 'ic-set-c',
+  title: '16. Problem Set: RMS, Energy and Quadrature',
+  content: `## 16.1 Problem Set C: averages, RMS and stored energy
+
+**Problem 1.** A current rises as $i(t) = 5(1 - e^{-t/2})$ amperes. Find the
+charge delivered in the first 4 seconds and the average current.
+
+$$Q = \\int_0^{4}5\\left(1 - e^{-t/2}\\right)dt = 20 - 10\\left(1 - e^{-2}\\right)$$
+
+With $e^{-2} = 0.13534$, the bracket is 0.864665 and
+$20 - 10 \\times 0.864665 = 11.35335$ coulombs. The average current is that
+divided by 4 seconds, 2.838 A.
+
+*The trap.* Using the final current of 5 A as though it applied throughout,
+giving 20 C. The exponential approach means the average over these two time
+constants is well below the asymptote.
+
+**Problem 2.** A 100 microfarad capacitor is charged from 0 to 50 V by a linear
+ramp lasting 2 s. Find the charging current and the energy stored.
+
+The ramp slope is 25 V/s, so the current is constant:
+
+$$i = C\\frac{dv}{dt}, \\qquad 0.0001 \\times 25 = 0.0025\\ \\mathrm{A}$$
+
+The energy is the integral of power, and because $i = C\\,dv/dt$ the time integral
+collapses to an integral over voltage:
+
+$$W = \\int vi\\,dt = C\\int_0^{V}v\\,dv = \\tfrac{1}{2}CV^{2}$$
+
+so $0.5 \\times 0.0001 \\times 2500 = 0.125$ J, which quadrature of the power
+against time confirms.
+
+*The trap.* Answering $CV^{2}$ and getting 0.25 J. The source delivered 0.25 J in
+total; half of it went into the capacitor and half was dissipated in whatever
+controlled the ramp. Both numbers are real, but only one of them is stored.
+
+**Problem 3.** A waveform is 10 A for 3 ms of every 10 ms period and zero
+otherwise. Find its RMS and average values, and the power it delivers to 2 ohm.
+
+Duty cycle is 0.3. The mean square is $100 \\times 0.003 / 0.010 = 30$, so the RMS
+is $\\sqrt{30} = 5.4772$ A and the average is 3 A. The power is
+$30 \\times 2 = 60$ W.
+
+*The trap.* Using the average current in the power calculation, giving
+$9 \\times 2 = 18$ W. Power follows the mean of the square, and for this waveform
+the mean square is more than three times the square of the mean.
+
+**Problem 4.** A 60 Hz sinusoid of 170 V peak feeds a 100 ohm resistor. Find the
+average power.
+
+$$V_{rms} = 170 / 1.414214 = 120.2\\ \\mathrm{V}, \\qquad P = \\frac{120.2^{2}}{100} = 144.5\\ \\mathrm{W}$$
+
+Equivalently, $P = V_m^{2}/(2R) = 28900 / 200 = 144.5$ W, which avoids the square
+root entirely.
+
+*The trap.* Using the peak voltage directly and answering
+$28900 / 100 = 289$ W, exactly twice the truth. The factor of two is the mean of
+the squared sinusoid, and it is the same factor whether you reach it through the
+RMS value or through the identity.
+
+## 16.2 Problem Set D: quadrature and applications
+
+**Problem 5.** A voltage is sampled every 1 ms as 0, 4, 6, 4 and 0 volts across a
+2 ohm resistor. Estimate the energy delivered over the 4 ms by Simpson's rule.
+
+Power at the samples is $v^{2}/2$, that is 0, 8, 18, 8 and 0 watts. With h = 0.001
+and Simpson weights 1, 4, 2, 4, 1:
+
+$$0 + 4 \\times 8 + 2 \\times 18 + 4 \\times 8 + 0 = 100$$
+
+$$W = 0.001 \\times 100 / 3 = 0.0333\\ \\mathrm{J}$$
+
+*The trap.* Applying Simpson to the voltage samples first and squaring the result
+at the end. The mean of the squares is not the square of the mean, so that route
+answers a question nobody asked. Square each sample before integrating, always.
+
+**Problem 6.** Estimate $\\int_0^{1}e^{x}dx$ with two panels by both rules and say
+which to trust.
+
+Trapezoid gives 1.7539311 and Simpson gives 1.7188612 against an exact
+1.7182818. Simpson's error is 5.8e-4 while the trapezoid's is 3.6e-2 - about
+sixty times smaller for exactly the same three samples.
+
+*The trap.* Assuming more samples always beats a better rule. The trapezoidal
+rule needs 16 panels, and therefore 17 samples, to reach the accuracy Simpson
+gets from three, which is the practical content of the difference between
+$h^{2}$ and $h^{4}$.
+
+**Problem 7.** Find the volume generated by rotating the region under
+$y = \\sqrt{x}$ from 0 to 4 about the x-axis.
+
+Discs of radius $\\sqrt{x}$ have area $\\pi x$, so
+
+$$V = \\pi\\int_0^{4}x\\,dx = \\pi\\left[\\frac{x^{2}}{2}\\right]_0^{4} = 8\\pi = 25.133$$
+
+*The trap.* Forgetting to square the radius and integrating $\\pi\\sqrt{x}$
+instead, which gives $16\\pi/3 = 16.755$. The disc area carries the square; the
+arc length carries the root.
+
+**Problem 8.** A 300 m span carries a conductor with a catenary parameter of
+500 m. How much longer is the conductor than the span?
+
+$$L = 2a\\sinh\\frac{d}{2a} = 2 \\times 500 \\times 0.304520 = 304.52\\ \\mathrm{m}$$
+
+so the excess is $304.52 - 300 = 4.52$ m, about 1.5 per cent.
+
+*The trap.* Approximating the catenary by a straight line between supports and
+answering zero, or by two straight segments through the low point, which gives
+303.41 m and so underestimates the excess by about a quarter. The hyperbolic
+sine's cubic term is where the whole answer lives.`,
 },
 ],
   keyTakeaways: [
