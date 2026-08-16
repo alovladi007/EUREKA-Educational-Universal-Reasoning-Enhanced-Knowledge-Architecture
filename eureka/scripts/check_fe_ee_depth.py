@@ -31,6 +31,16 @@ DATA = (
     pathlib.Path(__file__).resolve().parents[1]
     / "apps" / "web" / "src" / "lib" / "fe-ee-course-data.ts"
 )
+# The course record was split byte-identically into per-section files so
+# section waves can be authored in parallel; the checker reads the main file
+# (types + spreads) plus every section file, in name order for stable output.
+SECTION_DIR = DATA.parent / "fe-ee-sections"
+
+def read_course_source() -> str:
+    parts = [DATA.read_text(encoding="utf-8")]
+    if SECTION_DIR.is_dir():
+        parts += [f.read_text(encoding="utf-8") for f in sorted(SECTION_DIR.glob("*.ts"))]
+    return "\n".join(parts)
 FIGDIR = (
     pathlib.Path(__file__).resolve().parents[1]
     / "apps" / "web" / "public" / "courses" / "fe-ee" / "figures"
@@ -77,7 +87,7 @@ class Topic:
 
 
 def load() -> list[Topic]:
-    src = DATA.read_text(encoding="utf-8")
+    src = read_course_source()
     marks = [(m.start(), m.group(1)) for m in TOPIC.finditer(src)]
     out = []
     for k, (pos, tid) in enumerate(marks):
@@ -171,7 +181,7 @@ def main() -> int:
             print("  ", b)
         rc = 1
 
-    dollars = bad_dollars(DATA.read_text(encoding="utf-8"))
+    dollars = bad_dollars(read_course_source())
     if dollars:
         print(f"\nMATH DELIMITER PROBLEMS ({len(dollars)}):")
         for d in dollars[:20]:
