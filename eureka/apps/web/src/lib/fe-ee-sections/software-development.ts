@@ -51,7 +51,7 @@ fee_algorithms: { topicId: 'fee_algorithms', title: 'Algorithms and Complexity',
 | **Dynamic programming** | Memoize overlapping sub-problems | Fibonacci, shortest path |
 | **Greedy** | Locally optimal | Dijkstra, Huffman |
 
-Fibonacci: naive O(2^n); DP O(n).`,
+Fibonacci: the naive recursion is $\\Theta(\\varphi^n)$ with $\\varphi = 1.618$, **not** $\\Theta(2^n)$ — $O(2^n)$ is a true bound but a slack one, and section 7.6 counts the calls to show how slack. Memoised DP is O(n).`,
       examTip: 'Binary search O(log n) requires sorted data. Merge sort O(n log n) guaranteed. Quick sort O(n log n) avg but O(n^2) worst. DP reduces exponential to polynomial via memoization.',
       importantNote: 'Quick sort O(n^2) worst case when pivot is always min/max. Still fastest in practice due to cache locality. Merge sort guarantees O(n log n) but needs O(n) extra space.',
     },
@@ -238,8 +238,11 @@ predictions:
 | 4,096 | 4,161,097 | 4,194,304 | 43,937 | 45,057 | **94.7** |
 
 Three things are worth reading off the table. The predictions are accurate:
-insertion sort lands within 1 % of n²/4 (the average case moves each element
-about a quarter of the array) and merge sort within 3 % of n log₂n − n + 1.
+insertion sort lands within 2 % of n²/4 at every size (the worst row is
+n = 256, where 16,706 measured against 16,384 predicted is 1.97 % high) and
+merge sort within 5 % of n log₂n − n + 1 (worst row n = 64, 306 against 321,
+4.67 % low — the closed form is merge sort's **worst** case, so a random input
+sits below it).
 The ratio column is not a constant — it grows from 1.4 to 94.7 — because the
 gap between the two algorithms is a **difference of slopes**, not a difference
 of constants. And at n = 16 the gap is only 1.4×, which is why the crossover
@@ -315,6 +318,1129 @@ exponential-time recursion into a linear one. Hash tables make the same trade
 average lookup.`,
       examTip: 'Worst-case binary search comparisons = floor(log2 n) + 1: 7 for n = 100, 20 for a million, 30 for a billion. Sorting first only pays if the array will be searched more than about log n times.',
       importantNote: 'The Omega(n log n) bound applies only to COMPARISON sorts. Counting sort and radix sort run in O(n + k) because they never compare two keys — if a question offers a linear-time sort as an option, check whether the keys are bounded integers before rejecting it.',
+    },
+    { id: 'algo-asymptotic-sets', title: '6. Asymptotic Notation as Three Sets',
+      content: `## 6.1 O, Omega and Theta Are Sets, Not Adjectives
+
+The earlier sections used big-O as a label attached to an algorithm. It is
+really a **set of functions**, and the definitions below are what a question
+means when it asks you to justify a bound instead of recognise one. Let f and
+g map positive integers to non-negative reals.
+
+$$O(g) = \\{\\, f \\;:\\; \\exists\\ c > 0,\\ n_0 > 0 \\ \\text{with}\\ f(n) \\le c\\,g(n)\\ \\text{for every}\\ n \\ge n_0 \\,\\}$$
+
+$$\\Omega(g) = \\{\\, f \\;:\\; \\exists\\ c > 0,\\ n_0 > 0 \\ \\text{with}\\ f(n) \\ge c\\,g(n)\\ \\text{for every}\\ n \\ge n_0 \\,\\}$$
+
+$$\\Theta(g) = O(g) \\,\\cap\\, \\Omega(g)$$
+
+Membership in the intersection means a **two-sided** squeeze with two
+constants and one threshold:
+
+$$c_1\\,g(n) \\;\\le\\; f(n) \\;\\le\\; c_2\\,g(n) \\qquad \\text{for every } n \\ge n_0$$
+
+Three consequences follow immediately from reading the definitions as written.
+The constants c and $n_0$ are **existential**: you only have to exhibit one
+pair that works, and any other working pair is equally valid. The bound is
+**eventual**: behaviour below $n_0$ is unconstrained, which is why an
+algorithm can be asymptotically worse and practically faster on small inputs.
+And an O-bound is **one-sided**, so it need not be tight — which is the single
+most common source of wrong answers in this topic.
+
+Everyone writes $f = O(g)$ rather than $f \\in O(g)$. Treat the equals sign as
+the word "is in": the statement is not symmetric, so $n = O(n^2)$ is true while
+$n^2 = O(n)$ is false, and the two cannot be exchanged the way an equation's
+sides can.
+
+## 6.2 Worked Example: Producing the Witness Constants
+
+**Given**: $f(n) = 3n^2 + 7n + 12$. **Find**: constants proving
+$f \\in \\Theta(n^2)$.
+
+**Upper witness.** Try $c_2 = 4$ and solve for the threshold:
+
+$$3n^2 + 7n + 12 \\;\\le\\; 4n^2 \\iff 0 \\;\\le\\; n^2 - 7n - 12$$
+
+$$n \\;\\ge\\; \\frac{7 + \\sqrt{49 + 48}}{2} = \\frac{7 + \\sqrt{97}}{2} = 8.4244$$
+
+The smallest integer above 8.4244 is 9, so $n_0 = 9$. Both sides of that
+threshold check out:
+
+$$f(8) = 3 \\cdot 64 + 7 \\cdot 8 + 12 = 260 \\;>\\; 256 = c_2 \\cdot 8^2$$
+
+$$f(9) = 3 \\cdot 81 + 7 \\cdot 9 + 12 = 318 \\;\\le\\; 324 = c_2 \\cdot 9^2$$
+
+**Lower witness.** Every added term is positive, so no threshold is needed:
+
+$$3n^2 + 7n + 12 \\;\\ge\\; 3n^2 \\qquad \\text{for every } n \\ge 1$$
+
+**Answer**: $c_1 = 3$, $c_2 = 4$, $n_0 = 9$ certify $f \\in \\Theta(n^2)$.
+
+![Three curves against problem size to n equals twenty: the function three n squared plus seven n plus twelve drawn solid between two dashed witness parabolas, the upper one four n squared and the lower one three n squared. A dotted vertical line at n equals nine marks the threshold from which the upper witness holds; at n equals eight the function value 260 still exceeds 256.](/courses/fe-ee/figures/sw2-bigo-witness.svg)
+
+The witnesses are not unique, and that is the point of the existential
+quantifier. Taking $c_2 = 22$ instead lets $n_0 = 1$, because
+$f(1) = 3 + 7 + 12 = 22$ and the ratio $f(n)/n^2$ decreases from there. A
+grader wants *a* valid pair, not *the* pair.
+
+## 6.3 The Limit Test for Comparing Growth Rates
+
+Solving inequalities is reliable and slow. For ranking two functions the fast
+route is the ratio limit:
+
+$$L = \\lim_{n \\to \\infty} \\frac{f(n)}{g(n)}$$
+
+| Value of L | Conclusion | Notation |
+|---|---|---|
+| 0 | f grows strictly slower | $f \\in o(g)$, so $f \\in O(g)$ but not $\\Theta(g)$ |
+| finite and non-zero | same growth rate | $f \\in \\Theta(g)$ |
+| $\\infty$ | f grows strictly faster | $f \\in \\omega(g)$, so $f \\in \\Omega(g)$ but not $\\Theta(g)$ |
+| oscillates | test is inconclusive | fall back on the definitions |
+
+Applied to the standard hierarchy, the test gives every comparison at once:
+
+$$\\lim_{n \\to \\infty} \\frac{\\log _2 n}{n} = 0, \\qquad \\lim_{n \\to \\infty} \\frac{n\\log _2 n}{n^2} = \\lim_{n \\to \\infty} \\frac{\\log _2 n}{n} = 0$$
+
+$$\\lim_{n \\to \\infty} \\frac{n^{100}}{2^n} = 0 \\qquad \\text{(every polynomial loses to every exponential)}$$
+
+$$\\lim_{n \\to \\infty} \\frac{\\log _2(n^5)}{\\log _2 n} = \\lim_{n \\to \\infty} \\frac{5\\log _2 n}{\\log _2 n} = 5 \\;\\Rightarrow\\; \\log (n^5) \\in \\Theta(\\log n)$$
+
+That last line is worth keeping: **a constant power inside a logarithm is a
+constant multiple outside it**, so all polynomial-argument logarithms collapse
+into one class, and the base of the logarithm never matters either:
+
+$$\\log _b n = \\frac{\\log _2 n}{\\log _2 b} \\;\\Rightarrow\\; \\log _b n \\in \\Theta(\\log _2 n)$$
+
+## 6.4 Worked Example: A Limit That Settles Slowly
+
+**Given**: $f(n) = \\sqrt{n}$ and $g(n) = \\log _2 n$. **Find**: which grows
+faster, and where the crossover sits.
+
+$$\\lim_{n \\to \\infty} \\frac{\\sqrt{n}}{\\log _2 n} = \\infty \\;\\Rightarrow\\; \\log _2 n \\in o(\\sqrt{n})$$
+
+So the square root wins eventually. The instructive part is *when*. Setting
+the two equal and scanning every integer from 2 to 4,999 finds exactly two
+solutions, $n = 4$ and $n = 16$:
+
+$$\\sqrt{4} = 2 = \\log _2 4, \\qquad \\sqrt{16} = 4 = \\log _2 16$$
+
+Between those two the logarithm is the **larger** of the pair — at n = 10 it
+is 3.322 against 3.162 — and only from n = 17 upward does the square root pull
+ahead for good. An asymptotic statement that reverses on the whole interval
+from 4 to 16 is a fair warning about reading limits as advice for small
+inputs.
+
+## 6.5 Worked Example: Better Big-O, Worse Runtime
+
+**Given**: algorithm X runs in $x(n) = 0.2\\,n^2 \\log _{10} n$ milliseconds,
+algorithm Y in $y(n) = 10\\,n^2$ milliseconds. **Find**: which has the better
+asymptotic class, and the largest n at which the other is still faster.
+
+$$\\lim_{n \\to \\infty} \\frac{x(n)}{y(n)} = \\lim_{n \\to \\infty} \\frac{0.2\\,n^2 \\log _{10} n}{10\\,n^2} = \\lim_{n \\to \\infty} 0.02 \\log _{10} n = \\infty$$
+
+The limit diverges, so $y \\in o(x)$: **Y has the better big-O**, $\\Theta(n^2)$
+against $\\Theta(n^2 \\log n)$. Now find where X is still ahead:
+
+$$0.2\\,n^2 \\log _{10} n \\;<\\; 10\\,n^2 \\iff \\log _{10} n \\;<\\; 50 \\iff n \\;<\\; 10^{50}$$
+
+**Answer**: Y is asymptotically better; X is faster for every problem size
+below $10^{50}$, which is larger than the number of atoms in the observable
+universe. The asymptotics are correct and the engineering decision is the
+opposite one.
+
+## 6.6 The Algebra of the Notation
+
+| Rule | Statement | Why |
+|---|---|---|
+| Constant factors vanish | $O(k\\,f) = O(f)$ for constant k > 0 | fold k into the witness c |
+| Sums take the maximum | $O(f) + O(g) = O(\\max(f, g))$ | $f + g \\le 2\\max(f,g)$ |
+| Products multiply | $O(f) \\cdot O(g) = O(f g)$ | multiply the two witnesses |
+| Transitive | $f \\in O(g)$ and $g \\in O(h)$ give $f \\in O(h)$ | compose the constants |
+| Reflexive | $f \\in \\Theta(f)$ | take $c_1 = c_2 = 1$ |
+| Not symmetric | $f = O(g)$ does not give $g = O(f)$ | the definition is one-sided |
+
+The sum rule is what licenses "keep the dominant term", and the product rule
+is what licenses "nested loops multiply". Written out for a program that runs
+a linear pass and then a quadratic one:
+
+$$T(n) = 3n + 5n^2 + 40 \\in O(n) + O(n^2) + O(1) = O(n^2)$$
+
+Two statements that look like this algebra and are **false**:
+
+$$O(n^3) < O(n^2) \\quad \\text{false} \\qquad\\qquad O(n \\log n) < O(n) \\quad \\text{false}$$
+
+Ordering runs the other way, and the containment is strict at every step:
+
+$$O(1) \\subset O(\\log n) \\subset O(n) \\subset O(n\\log n) \\subset O(n^2) \\subset O(2^n)$$
+
+The table below is the same statement in numbers, evaluated exactly.
+
+| n | $\\log _2 n$ | n | $n\\log _2 n$ | $n^2$ |
+|---|---|---|---|---|
+| 10 | 3.32 | 10 | 33.2 | 100 |
+| 100 | 6.64 | 100 | 664 | 10,000 |
+| 1,000 | 9.97 | 1,000 | 9,966 | 1,000,000 |
+| 1,000,000 | 19.93 | 1,000,000 | 19,931,569 | $10^{12}$ |
+
+Between the first and last rows the input grows by $10^5$, the logarithmic
+column by a factor of 6, and the quadratic column by a factor of $10^{10}$.
+That spread across five columns is the entire practical content of the
+notation.`,
+      examTip: 'To prove a Theta bound, produce c1, c2 and n0 and check the inequality at n0 - 1 as well as n0. To rank two functions fast, take the ratio limit: 0 means the numerator is strictly smaller, a finite non-zero value means Theta, infinity means strictly larger.',
+      importantNote: 'A big-O bound is an upper bound only, so "insertion sort is O(n^3)" is TRUE and useless. When a question says "the complexity", it wants the tight Theta bound. When it says "which of the following are valid upper bounds", every class above the tight one qualifies.',
+    },
+    { id: 'algo-recurrences', title: '7. Solving Recurrences: Substitution, Trees, Master Theorem',
+      content: `## 7.1 Substitution: Guess, Then Prove by Induction
+
+A divide-and-conquer algorithm states its own cost as a recurrence, and the
+recurrence has to be solved before a complexity can be named. The substitution
+method guesses a closed form and proves it by induction. Merge sort's
+**worst-case comparison count** is the standard example. Merging two runs of
+combined length m costs at most $m - 1$ comparisons, because the last element
+transfers for free, so
+
+$$W(n) = W\\!\\left(\\lceil n/2 \\rceil\\right) + W\\!\\left(\\lfloor n/2 \\rfloor\\right) + n - 1, \\qquad W(1) = 0$$
+
+For $n = 2^k$ the floors and ceilings disappear and the guess is
+$W(n) = n\\log _2 n - n + 1$. The induction step, writing $n = 2m$:
+
+$$W(2m) = 2\\left(m\\log _2 m - m + 1\\right) + 2m - 1 = 2m\\log _2 m + 1$$
+
+$$2m\\log _2 m + 1 = 2m\\left(\\log _2 (2m) - 1\\right) + 1 = 2m\\log _2(2m) - 2m + 1$$
+
+which is the guess at 2m. The base case $W(1) = 1 \\cdot 0 - 1 + 1 = 0$ holds,
+so the closed form is exact for every power of two.
+
+**Independent check.** Guessing right and inducting cleanly still proves
+nothing about the algorithm — only about the recurrence. Running merge sort on
+**every permutation** of n items for $n \\le 9$ and taking the largest
+comparison count reproduces $W(n)$ exactly at every one of those sizes, and
+the powers of two match the closed form up to n = 4096:
+
+| n | Worst measured (exhaustive) | Recurrence $W(n)$ | $n\\log _2 n - n + 1$ |
+|---|---|---|---|
+| 4 | 5 | 5 | 5 |
+| 8 | 17 | 17 | 17 |
+| 9 | 21 | 21 | not a power of 2 |
+| 16 | — | 49 | 49 |
+| 256 | — | 1,793 | 1,793 |
+| 4,096 | — | 45,057 | 45,057 |
+
+## 7.2 The Recursion Tree: Add Up the Levels
+
+A recursion tree makes the cost visible instead of algebraic. Draw one node
+per subproblem, write the **non-recursive** work in each node, and sum by
+level. For
+
+$$T(n) = 3\\,T(n/4) + n^2$$
+
+level i holds $3^i$ subproblems of size $n/4^i$, each doing $(n/4^i)^2$ work:
+
+$$\\text{cost of level } i = 3^i \\cdot \\left(\\frac{n}{4^i}\\right)^{2} = \\left(\\frac{3}{16}\\right)^{i} n^2$$
+
+The level costs form a geometric series with ratio 3/16 < 1, so the root
+dominates and the whole sum is bounded by the infinite series:
+
+$$T(n) \\;\\le\\; n^2 \\sum_{i=0}^{\\infty} \\left(\\frac{3}{16}\\right)^{i} = \\frac{n^2}{1 - 3/16} = \\frac{16}{13}\\,n^2 = 1.2308\\,n^2$$
+
+so $T(n) \\in \\Theta(n^2)$. The shape of the series is the answer: ratio below
+1 means root-dominated, ratio exactly 1 means every level costs the same and
+the depth multiplies in, ratio above 1 means leaf-dominated.
+
+![Three panels sharing a vertical log scale, each plotting the work performed at every recursion level for a divide-and-conquer recurrence at n equals 4096. The left panel, eight subproblems of half size with n squared work, climbs steeply toward the leaves. The middle panel, two subproblems of half size with linear work, is flat at 4096 across all thirteen levels. The right panel, two subproblems of half size with n squared work, falls steeply away from the root.](/courses/fe-ee/figures/sw2-master-cases.svg)
+
+## 7.3 The Master Theorem, All Three Cases
+
+For $T(n) = a\\,T(n/b) + f(n)$ with $a \\ge 1$ and $b > 1$, everything turns on
+comparing $f(n)$ with the **critical function**
+
+$$n^{\\log _b a}$$
+
+which is the total work done by the leaves. The three cases:
+
+| Case | Condition on f | Result | Reading |
+|---|---|---|---|
+| 1 | $f(n) \\in O(n^{\\log _b a - \\varepsilon})$ for some $\\varepsilon > 0$ | $T(n) \\in \\Theta(n^{\\log _b a})$ | leaves dominate |
+| 2 | $f(n) \\in \\Theta(n^{\\log _b a})$ | $T(n) \\in \\Theta(n^{\\log _b a}\\log n)$ | every level ties |
+| 3 | $f(n) \\in \\Omega(n^{\\log _b a + \\varepsilon})$ and $a\\,f(n/b) \\le c\\,f(n)$ for some $c < 1$ | $T(n) \\in \\Theta(f(n))$ | root dominates |
+
+The extra clause in case 3 is the **regularity condition**, and it is the part
+most summaries drop. It says the work at one level really does shrink by a
+constant factor as you descend; without it the case can fail.
+
+**Case 1 worked.** $T(n) = 8T(n/2) + n^2$:
+
+$$\\log _2 8 = 3 \\;>\\; 2 \\;\\Rightarrow\\; \\varepsilon = 1 \\;\\Rightarrow\\; T(n) \\in \\Theta(n^3)$$
+
+The left panel of the figure is this recurrence: level costs multiply by
+$8/4 = 2$ each step down, so the bottom level alone carries about half the
+total, and the sum is $2 - 2^{-12}$ times the bottom level at n = 4096.
+
+**Case 2 worked.** $T(n) = 2T(n/2) + n$, which is merge sort:
+
+$$\\log _2 2 = 1 = d \\;\\Rightarrow\\; T(n) \\in \\Theta(n\\log n)$$
+
+The middle panel is flat at exactly n = 4096 across all 13 levels, so the
+total is $n(\\log _2 n + 1)$ — the classic result read straight off the picture.
+
+**Case 3 worked.** $T(n) = 2T(n/2) + n^2$:
+
+$$\\log _2 2 = 1 \\;<\\; 2 \\;\\Rightarrow\\; \\varepsilon = 1$$
+
+$$a\\,f(n/b) = 2\\left(\\frac{n}{2}\\right)^{2} = \\frac{n^2}{2} = \\tfrac{1}{2}\\,f(n) \\;\\Rightarrow\\; c = \\tfrac{1}{2} < 1 \\ \\checkmark$$
+
+so $T(n) \\in \\Theta(n^2)$. Both the exponent test and the regularity condition
+pass, and the right panel shows the level costs halving away from the root.
+
+**One more, because the exponent is not an integer.** Strassen's matrix
+multiplication does 7 multiplications of half-sized blocks plus quadratic
+additions:
+
+$$T(n) = 7\\,T(n/2) + n^2, \\qquad \\log _2 7 = 2.8074 \\;>\\; 2 \\;\\Rightarrow\\; T(n) \\in \\Theta(n^{2.8074})$$
+
+against $\\Theta(n^3)$ for the schoolbook method — a real asymptotic gain from
+one saved multiplication.
+
+## 7.4 Worked Example: A Recurrence the Theorem Cannot Touch
+
+**Given**: $T(n) = 2\\,T(n/2) + n\\log _2 n$, $T(1) = 0$. **Find**: the tight
+bound.
+
+The critical function is $n^{\\log _2 2} = n$. Compare:
+
+$$\\frac{f(n)}{n^{\\log _b a}} = \\frac{n\\log _2 n}{n} = \\log _2 n$$
+
+This ratio grows, so case 2 is out; but it grows **slower than any** $n^{\\varepsilon}$,
+so case 3 is out too. There is a gap between cases 2 and 3, and this
+recurrence falls in it. Build the tree instead. Level i has $2^i$ subproblems
+of size $n/2^i$:
+
+$$\\text{cost of level } i = 2^i \\cdot \\frac{n}{2^i}\\log _2\\!\\left(\\frac{n}{2^i}\\right) = n\\left(\\log _2 n - i\\right)$$
+
+Summing over $i = 0$ to $k = \\log _2 n$ gives an arithmetic series:
+
+$$T(n) = n\\sum_{i=0}^{k}(k - i) = n\\,\\frac{k(k+1)}{2} = \\frac{n\\log _2 n\\,(\\log _2 n + 1)}{2}$$
+
+so $T(n) \\in \\Theta(n\\log ^2 n)$.
+
+**Answer, checked.** Evaluating the recurrence directly in code at every power
+of two from 2 to 4096 reproduces the closed form exactly; at n = 1024 both
+routes give
+
+$$T(1024) = \\frac{1024 \\cdot 10 \\cdot 11}{2} = 56320$$
+
+Two other shapes fall outside the theorem's form entirely, because they
+subtract from n rather than divide it:
+
+$$T(n) = T(n-1) + n \\;\\Rightarrow\\; T(n) = \\frac{n(n+1)}{2} \\in \\Theta(n^2)$$
+
+$$T(n) = T(n-1) + 1 \\;\\Rightarrow\\; T(n) = n \\in \\Theta(n)$$
+
+## 7.5 Worked Example: Binary Search, Solved Exactly
+
+**Given**: binary search on a sorted array of n keys, one three-way key
+comparison per iteration. **Find**: the exact worst-case comparison count.
+
+Each iteration discards at least half the remaining range:
+
+$$T(n) = T\\!\\left(\\lfloor n/2 \\rfloor\\right) + 1, \\qquad T(1) = 1$$
+
+Unrolling, after i iterations at most $\\lfloor n/2^i \\rfloor$ keys remain, and
+the search stops when that reaches 1:
+
+$$\\frac{n}{2^{i}} = 1 \\iff i = \\log _2 n \\;\\Rightarrow\\; T(n) = \\lfloor \\log _2 n \\rfloor + 1$$
+
+**Independent check.** Running the loop for **every target in every array**
+from n = 1 to n = 3000 and taking the maximum iteration count reproduces
+$\\lfloor \\log _2 n \\rfloor + 1$ at all 3,000 sizes, with no exceptions. The
+average successful search is one comparison cheaper, because half the keys sit
+in the bottom level of the search tree; summing $i\\,2^{i-1}$ over the levels
+of a perfectly filled range of $n = 2^k - 1$ keys gives
+
+$$\\bar{T}(n) = \\frac{(k-1)\\,2^{k} + 1}{n}$$
+
+| n | Worst case, measured | $\\lfloor \\log _2 n \\rfloor + 1$ | Mean successful, measured | Closed form |
+|---|---|---|---|---|
+| 15 | 4 | 4 | 3.27 | 3.27 |
+| 127 | 7 | 7 | 6.06 | 6.06 |
+| 1,023 | 10 | 10 | 9.01 | 9.01 |
+| 1,000,000 | 20 | 20 | — | — |
+
+## 7.6 Worked Example: The Fibonacci Call Count, Counted
+
+**Given**: the naive recursion \`fib(n) = fib(n-1) + fib(n-2)\`. **Find**: the
+number of calls, exactly.
+
+Let $C(n)$ be the total calls made by \`fib(n)\`, counting the outermost one:
+
+$$C(0) = C(1) = 1, \\qquad C(n) = 1 + C(n-1) + C(n-2)$$
+
+Adding 1 to both sides turns it into the Fibonacci recurrence itself, giving
+the closed form
+
+$$C(n) = 2\\,F(n+1) - 1$$
+
+where $F$ is the Fibonacci sequence with $F(0) = 0$, $F(1) = 1$. Because
+consecutive Fibonacci numbers approach the golden ratio,
+
+$$\\varphi = \\frac{1 + \\sqrt{5}}{2} = 1.618034, \\qquad C(n) \\in \\Theta(\\varphi^{n})$$
+
+**Independent check, and why it matters.** The identity was verified against a
+plain uninstrumented recursion that actually makes every call, for every n
+from 0 to 25; the two agree exactly. The table then shows how badly the
+familiar $2^n$ overstates the truth:
+
+| n | Calls, counted | $2^n$ | $2^n$ overstates by |
+|---|---|---|---|
+| 10 | 177 | 1,024 | 5.8x |
+| 20 | 21,891 | 1,048,576 | 47.9x |
+| 30 | 2,692,537 | 1,073,741,824 | 398.8x |
+| 40 | 331,160,281 | $1.0995 \\times 10^{12}$ | 3,320x |
+| 50 | 40,730,022,147 | $1.1259 \\times 10^{15}$ | **27,643x** |
+
+$O(2^n)$ is a **true** statement about this recursion and a badly slack one;
+$\\Theta(\\varphi^n)$ is the tight class. Measuring the ratio of successive
+counts confirms it: $C(50)/C(49) = 1.6180339888$, matching $\\varphi$ to ten
+digits. Memoisation replaces the whole tree with $n + 1$ distinct subproblems,
+so \`fib(40)\` drops from 331,160,281 calls to 41 — a factor of 8,077,080.`,
+      examTip: 'Master theorem in three steps: compute log_b(a), compare it with the exponent in f(n), and if you land in case 3 also check the regularity condition a f(n/b) <= c f(n). Recurrences that SUBTRACT from n, like T(n) = T(n-1) + n, are outside the theorem entirely - unroll them.',
+      importantNote: 'There is a real gap between Master cases 2 and 3: T(n) = 2T(n/2) + n log n has f(n) larger than n but not POLYNOMIALLY larger, so no case applies. The recursion tree gives Theta(n log^2 n), and the exact solution n log2 n (log2 n + 1) / 2 was checked against the recurrence at every power of two up to 4096.',
+    },
+    { id: 'algo-sorting-derived', title: '8. Sorting: Counts Derived, Counts Measured',
+      content: `## 8.1 Two Sorts Whose Counts Are Fixed by Structure
+
+Selection sort scans the unsorted tail for the minimum on every pass. The pass
+lengths are $n-1, n-2, \\ldots, 1$ whatever the data contains:
+
+$$C_{\\text{sel}}(n) = \\sum_{i=1}^{n-1} i = \\frac{n(n-1)}{2}$$
+
+There is no best case and no worst case — the count is the same for sorted,
+reversed and random input. Running it on 50 random permutations at each of
+n = 5, 7, 10, 50 and 200 returns a **single** distinct value at every size,
+equal to $n(n-1)/2$: 10, 21, 45, 1,225 and 19,900.
+
+Bubble sort has the same worst case and, with the standard "no swaps this
+pass" early exit, a linear best case:
+
+$$C_{\\text{bub}}^{\\text{worst}}(n) = \\frac{n(n-1)}{2}, \\qquad C_{\\text{bub}}^{\\text{best}}(n) = n - 1$$
+
+Measured on reversed and on already-sorted input at n = 5, 7, 8, 10 the counts
+are exactly 10 and 4, 21 and 6, 28 and 7, 45 and 9. For seven items the worst
+case is
+
+$$\\frac{7 \\cdot 6}{2} = 21 \\ \\text{comparisons}$$
+
+which is the number an exam question about "the maximum comparisons to bubble
+sort 7 items" is asking for. Note that the early exit is what creates the
+$\\Theta(n)$ best case; a bubble sort written without the flag is
+$\\Theta(n^2)$ on every input, and questions do distinguish the two.
+
+## 8.2 Worked Example: Insertion Sort's Average, Derived and Enumerated
+
+**Given**: insertion sort on a uniformly random permutation of n distinct
+keys. **Find**: the expected number of key comparisons.
+
+Consider the element arriving at index i, with $i$ elements already sorted to
+its left. Let j be how many of those exceed it. On a random permutation j is
+uniform on $\\{0, 1, \\ldots, i\\}$. The inner loop stops one comparison after
+the first smaller neighbour, except when the element runs off the left end,
+where it stops for lack of array rather than for a comparison:
+
+$$\\text{comparisons} = \\begin{cases} j + 1 & j < i \\\\ i & j = i \\end{cases}$$
+
+Averaging over the $i+1$ equally likely values of j:
+
+$$E_i = \\frac{1}{i+1}\\left[\\sum_{j=0}^{i-1}(j+1) + i\\right] = \\frac{1}{i+1}\\left[\\frac{i(i+1)}{2} + i\\right] = \\frac{i}{2} + \\frac{i}{i+1}$$
+
+Summing over $i = 1$ to $n-1$, and writing $H_n$ for the n-th harmonic number:
+
+$$E[C] = \\sum_{i=1}^{n-1}\\left(\\frac{i}{2} + 1 - \\frac{1}{i+1}\\right) = \\frac{n(n-1)}{4} + n - H_n$$
+
+**Independent check.** The derivation is confirmed not by re-deriving it but
+by running insertion sort on **all** $n!$ orderings for n = 2 through 9 and
+averaging as exact rationals. Every size agrees to the last digit:
+
+| n | Orderings enumerated | Mean measured | $n(n-1)/4 + n - H_n$ |
+|---|---|---|---|
+| 4 | 24 | 59/12 = 4.9167 | 59/12 |
+| 6 | 720 | 221/20 = 11.05 | 221/20 |
+| 8 | 40,320 | 5399/280 = 19.282 | 5399/280 |
+| 9 | 362,880 | 60911/2520 = 24.171 | 60911/2520 |
+
+![Four series against array length from two to nine, all measured: insertion sort's worst case n times n minus one over two, its mean taken over every one of the n factorial orderings, the closed-form prediction drawn as a dashed line underneath that mean, and its best case n minus one. The measured mean and the closed form coincide at every size.](/courses/fe-ee/figures/sw2-insertion-exact.svg)
+
+The leading term is $n^2/4$, which is where the "quadratic with a factor of
+about four in hand over the worst case" reputation comes from. The extremes
+are reached exactly:
+
+$$C^{\\text{best}} = n - 1 \\ \\text{(already sorted)}, \\qquad C^{\\text{worst}} = \\frac{n(n-1)}{2} \\ \\text{(reversed)}$$
+
+and measuring at n = 100 gives 99 and 4,950 respectively — a factor of 50
+between the two ends at a single size.
+
+## 8.3 Worked Example: Quick Sort's Expected Comparisons
+
+**Given**: quick sort with Lomuto partitioning and the last element as pivot,
+on a random permutation. **Find**: the expected comparison count.
+
+Partitioning a subarray of length m costs $m - 1$ comparisons and leaves the
+pivot in a uniformly random rank. Conditioning on that rank:
+
+$$C(n) = n - 1 + \\frac{1}{n}\\sum_{i=0}^{n-1}\\bigl[C(i) + C(n-1-i)\\bigr], \\qquad C(0) = C(1) = 0$$
+
+The standard solution of that recurrence is
+
+$$C(n) = 2(n+1)H_n - 4n \\;\\approx\\; 2n\\ln n \\;=\\; 1.386\\,n\\log _2 n$$
+
+**Independent check.** Enumerating **every** permutation for n = 2 through 8
+and averaging as exact rationals matches the closed form at every size — 1,
+8/3, 29/6, 37/5, 103/10, 472/35 and 2369/140, that last being 16.921. So the
+constant 1.386 is real. Evaluated against merge sort's exact worst case, quick
+sort's average is 22.6 % higher at n = 1024 (11,298 against 9,217) and 25.4 %
+higher at n = 4096 (56,503 against 45,057). Quick sort wins in practice on
+cache behaviour and the absence of a copy buffer, not on comparison count.
+
+The worst case is the other half of the story. Feeding an **already sorted**
+array to a last-element pivot makes every partition maximally lopsided:
+
+$$C^{\\text{worst}}(n) = \\sum_{m=2}^{n}(m-1) = \\frac{n(n-1)}{2}$$
+
+and running it on the sorted arrays of length 5, 10, 100 and 1000 returns
+exactly 10, 45, 4,950 and 499,500. Sorted input is common; that is why
+production quick sorts randomise the pivot or take a median of three.
+
+## 8.4 Why No Comparison Sort Beats n log n
+
+Model any comparison sort as a **decision tree**: each internal node is one
+comparison with two outcomes, each leaf is one of the possible output
+orderings. A correct sort must be able to reach every one of the $n!$
+orderings, and a binary tree of height h has at most $2^h$ leaves:
+
+$$2^{h} \\;\\ge\\; n! \\;\\Rightarrow\\; h \\;\\ge\\; \\log _2(n!)$$
+
+Since h is the length of the longest root-to-leaf path, it is the worst-case
+comparison count. Stirling's approximation turns the bound into a familiar
+shape:
+
+$$\\log _2(n!) = n\\log _2 n - n\\log _2 e + O(\\log n) = n\\log _2 n - 1.4427\\,n + O(\\log n)$$
+
+so every comparison sort is $\\Omega(n\\log n)$ in the worst case. The bound is
+not loose:
+
+| n | $\\lceil \\log _2(n!) \\rceil$ | Merge sort worst case | Excess |
+|---|---|---|---|
+| 16 | 45 | 49 | 8.9 % |
+| 64 | 296 | 321 | 8.4 % |
+| 256 | 1,684 | 1,793 | 6.5 % |
+| 1,024 | 8,770 | 9,217 | 5.1 % |
+
+![Three series on logarithmic axes against array length from four to 4096: selection sort's fixed count n times n minus one over two drawn dashed and far above, merge sort's exact worst case measured and plotted as points, and the information-theoretic floor log base two of n factorial running just beneath it. The merge-sort points sit a few percent above the floor at every size.](/courses/fe-ee/figures/sw2-sort-worstcase.svg)
+
+Two cautions the figure makes concrete. The floor bounds the **worst case**,
+not every input: a single lucky permutation can be sorted in fewer than
+$\\lceil \\log _2 n! \\rceil$ comparisons, and merge sort routinely is. And the
+bound only constrains sorts that compare keys — counting sort and radix sort
+run in $O(n + k)$ by using the key as an index, which is not a comparison at
+all.
+
+## 8.5 Worked Example: Merging Two Sorted Runs
+
+**Given**: sorted arrays a = {14, 46, 60, 64} and b = {31, 33, 76, 82}.
+**Find**: comparisons to place the first output element, and to complete the
+merge.
+
+The first output element takes exactly **one** comparison — 14 against 31 —
+whatever the data, because a merge compares only the two current heads. The
+full merge, traced:
+
+| Step | Compare | Winner | Output so far |
+|---|---|---|---|
+| 1 | 14 vs 31 | 14 | 14 |
+| 2 | 46 vs 31 | 31 | 14, 31 |
+| 3 | 46 vs 33 | 33 | 14, 31, 33 |
+| 4 | 46 vs 76 | 46 | 14, 31, 33, 46 |
+| 5 | 60 vs 76 | 60 | 14, 31, 33, 46, 60 |
+| 6 | 64 vs 76 | 64 | 14, 31, 33, 46, 60, 64 |
+| — | run a is empty | — | 76, 82 copied free |
+
+**Answer**: 1 comparison for the first element, **6** for the whole merge.
+The maximum any pair of four-element runs can force is 7, checked by
+enumerating all 70 ways to split eight distinct keys into two sorted runs of
+four; the general bound is $m - 1$ for a combined length of m, and this pair
+falls one short because a exhausted first.
+
+## 8.6 Choosing by Count Rather Than by Class
+
+| Algorithm | Best | Average | Worst | Extra space | Stable |
+|---|---|---|---|---|---|
+| Selection | $n(n-1)/2$ | $n(n-1)/2$ | $n(n-1)/2$ | O(1) | No |
+| Bubble (with flag) | $n-1$ | $\\Theta(n^2)$ | $n(n-1)/2$ | O(1) | Yes |
+| Insertion | $n-1$ | $n(n-1)/4 + n - H_n$ | $n(n-1)/2$ | O(1) | Yes |
+| Merge | $\\Theta(n\\log n)$ | $\\Theta(n\\log n)$ | $n\\log _2 n - n + 1$ | O(n) | Yes |
+| Quick (Lomuto) | $\\Theta(n\\log n)$ | $2(n+1)H_n - 4n$ | $n(n-1)/2$ | $O(\\log n)$ stack | No |
+| Heap | $\\Theta(n\\log n)$ | $\\Theta(n\\log n)$ | $\\Theta(n\\log n)$ | O(1) | No |
+| Counting | $\\Theta(n+k)$ | $\\Theta(n+k)$ | $\\Theta(n+k)$ | O(k) | Yes |
+
+The exact columns are what separate near-neighbours. Selection and bubble are
+both $\\Theta(n^2)$, but selection performs at most $n-1$ **swaps** against
+bubble's $n(n-1)/2$, which matters when a record is large and a comparison is
+cheap. Insertion and selection are both $\\Theta(n^2)$, but insertion is
+$\\Theta(n)$ on nearly sorted data and selection never is. Reading only the
+class hides both distinctions.`,
+      examTip: 'Selection sort always performs exactly n(n-1)/2 comparisons - best, average and worst - so a question asking for "the number of comparisons" has one answer. Bubble sort matches that worst case but drops to n-1 on sorted input ONLY if the implementation has the swapped flag.',
+      importantNote: 'Quick sort degenerates to n(n-1)/2 comparisons on ALREADY SORTED input when the pivot is the first or last element - 499,500 comparisons at n = 1000, measured. That is the opposite of insertion sort, which is at its best on the same input. If a question says the data arrives nearly sorted, those two algorithms swap places.',
+    },
+    { id: 'algo-search-graph', title: '9. Searching, Graph Traversal, and When Sorting Pays',
+      content: `## 9.1 What the Sorted Requirement Buys, in Comparisons
+
+Linear search on unsorted data averages half the array on a successful lookup
+and reads all of it on a failure:
+
+$$C_{\\text{lin}}^{\\text{success}} = \\frac{n+1}{2}, \\qquad C_{\\text{lin}}^{\\text{fail}} = n$$
+
+Binary search, from the recurrence solved in section 7.5, costs
+$\\lfloor \\log _2 n \\rfloor + 1$ in the worst case. At n = 1024 that is
+512.5 against 11 — a factor of 46 — but the sorted array has to be paid for
+first, at merge sort's worst case of 9,217 comparisons.
+
+## 9.2 Worked Example: How Many Queries Justify the Sort
+
+**Given**: an unsorted array of n = 1024 records that will be queried q times.
+**Find**: the smallest q at which sorting first is cheaper.
+
+Set the two cumulative costs equal:
+
+$$\\underbrace{9217}_{\\text{sort once}} + 11\\,q \\;=\\; 512.5\\,q$$
+
+$$q = \\frac{9217}{512.5 - 11} = \\frac{9217}{501.5} = 18.379$$
+
+**Answer**: the 19th query is the first one the sort has paid for. Below that,
+scan; above it, sort. The same calculation at other sizes:
+
+| n | Merge sort worst case | Linear average per query | Binary worst per query | Break-even q |
+|---|---|---|---|---|
+| 100 | 573 | 50.5 | 7 | 14 |
+| 1,024 | 9,217 | 512.5 | 11 | 19 |
+| 1,000,000 | 18,951,425 | 500,000.5 | 20 | 38 |
+
+![Two straight lines of cumulative key comparisons against the number of queries for an array of 1024 records: a linear scan accumulating 512.5 comparisons per query from the origin, and a sort-once-then-binary-search line starting at 9,217 and rising by 11 per query. The lines cross at 18.38 queries, marked with a dot and a dotted vertical line.](/courses/fe-ee/figures/sw2-search-breakeven.svg)
+
+The break-even count grows only logarithmically in n — 14 queries at a hundred
+records, 38 at a million — because the sort cost and the scan cost both grow
+nearly linearly while the binary search cost barely moves. In practice this is
+why a database builds an index once and amortises it over every later query,
+and why a one-off script should not bother.
+
+## 9.3 Traversal Cost Depends on the Representation
+
+Both breadth-first and depth-first search visit each vertex once and inspect
+each edge a bounded number of times, so on an **adjacency list** both cost
+
+$$T_{\\text{list}} = \\Theta(V + E)$$
+
+On an **adjacency matrix** finding the neighbours of one vertex means reading a
+whole row of V cells, whether or not those cells hold edges:
+
+$$T_{\\text{matrix}} = \\Theta(V^2)$$
+
+For a sparse graph — a road network, a call graph, most real graphs — E is
+close to V and the difference is a factor of V. The number of edges is bounded
+by
+
+$$0 \\;\\le\\; E \\;\\le\\; \\binom{V}{2} = \\frac{V(V-1)}{2}$$
+
+so the two representations only converge at the complete graph. Section 10 of
+the Data Structures chapter quantifies the same trade in storage.
+
+## 9.4 Worked Example: BFS and DFS on One Graph
+
+**Given**: an undirected graph on 7 vertices, neighbours listed in
+alphabetical order.
+
+| Vertex | Neighbours |
+|---|---|
+| A | B, C, D |
+| B | A, E |
+| C | A, E, F |
+| D | A, F |
+| E | B, C, G |
+| F | C, D, G |
+| G | E, F |
+
+**Find**: the BFS and DFS visit orders from A, the hop distances, and the
+traversal cost.
+
+Counting the adjacency lists gives 18 entries, so $E = 9$ and $V = 7$:
+
+$$T_{\\text{list}} = V + E = 7 + 9 = 16 \\ \\text{steps}, \\qquad T_{\\text{matrix}} = 7^2 = 49 \\ \\text{cells}$$
+
+**BFS** with a queue. Dequeue A, enqueue B, C, D. Dequeue B, enqueue E.
+Dequeue C — E is already seen — enqueue F. Dequeue D, both neighbours seen.
+Dequeue E, enqueue G. Dequeue F, then G.
+
+$$\\text{BFS order: } A, B, C, D, E, F, G$$
+
+**DFS** by recursion. From A go to B, from B to E, from E to C (B is seen),
+from C to F, from F to D; D's neighbours are both seen, so unwind to F, whose
+remaining neighbour G is still unvisited.
+
+$$\\text{DFS order: } A, B, E, C, F, D, G$$
+
+**Hop distances**, a by-product of BFS because it finishes every vertex at
+distance k before starting any at distance k+1:
+
+| Vertex | A | B | C | D | E | F | G |
+|---|---|---|---|---|---|---|---|
+| Hops from A | 0 | 1 | 1 | 1 | 2 | 2 | 3 |
+
+**Answer**: the orders above, with G three hops from A. Note that DFS reaches G
+last as well but by a completely different route, and DFS gives no distance
+information at all — its path from A to G is A, B, E, G of length 3 here only
+by coincidence.
+
+## 9.5 Weighted Graphs: Where BFS Stops Working
+
+BFS finds the fewest **hops**, which is the shortest path only when every edge
+costs the same. With unequal weights the frontier is no longer ordered by
+distance and Dijkstra's algorithm is needed, keeping the frontier in a
+priority queue instead of a plain queue:
+
+$$T_{\\text{Dijkstra}} = \\Theta\\bigl((V + E)\\log V\\bigr) \\ \\text{with a binary heap}, \\qquad \\Theta(V^2) \\ \\text{with a scan}$$
+
+Which is better is a density question again. At V = 1000 and E = 5000 the heap
+form does about $5000 \\cdot 10 = 50000$ heap operations against
+$1000 \\cdot 1000 = 1000000$ scan steps; at E = 499,500, the complete graph,
+the heap form does about 4,980,000 and the scan wins. The rule of thumb that
+follows: **heap for sparse, array scan for dense**.
+
+$$\\text{BFS} = \\text{Dijkstra with every weight equal to } 1$$
+
+is worth remembering because it explains why BFS needs no priority queue: with
+identical weights, first-in-first-out already visits in non-decreasing
+distance order.
+
+| Algorithm | Finds | Needs | Cost on a list |
+|---|---|---|---|
+| BFS | fewest hops from one source | queue | $\\Theta(V+E)$ |
+| DFS | any path, cycle detection, topological order | stack or recursion | $\\Theta(V+E)$ |
+| Dijkstra | cheapest path, non-negative weights | priority queue | $\\Theta((V+E)\\log V)$ |
+| Bellman-Ford | cheapest path, negative weights allowed | none | $\\Theta(VE)$ |
+
+## 9.6 The Visited Set, and Why Trees Get Away Without One
+
+A graph search that does not record visited vertices revisits them, and on any
+graph containing a cycle it never terminates. The graph above contains the
+cycle A, B, E, C, A, so an unguarded DFS from A loops forever. A tree has no
+cycles, which is exactly why tree traversal code looks simpler than graph
+traversal code — the missing bookkeeping is not an optimisation, it is a
+property of the input.
+
+$$\\text{a tree on } V \\text{ vertices has exactly } E = V - 1 \\text{ edges and no cycle}$$
+
+Substituting that into the traversal bound recovers the familiar tree result:
+
+$$\\Theta(V + E) = \\Theta(V + V - 1) = \\Theta(V)$$
+
+The visited set costs $\\Theta(V)$ space, which is already implied by the
+$\\Theta(V+E)$ time bound, so it is never the reason to avoid a graph search.`,
+      examTip: 'Sorting to enable binary search pays only after roughly 2 log2(n) queries - 14 at n = 100, 19 at n = 1024, 38 at a million. For a single lookup a linear scan wins. BFS gives fewest hops, DFS does not; if edge weights differ, neither works and Dijkstra is required.',
+      importantNote: 'Adjacency list traversal is Theta(V + E); adjacency matrix traversal is Theta(V^2) regardless of how few edges exist. On a sparse graph that is a factor of V, and it is the representation - not the algorithm - that causes it.',
+    },
+    { id: 'algo-greedy-dp', title: '10. Greedy, Dynamic Programming, and P versus NP',
+      content: `## 10.1 Two Ways to Exploit Structure
+
+Both paradigms attack problems whose optimal solution is built from optimal
+solutions to smaller instances — the **optimal substructure** property. They
+differ in what they do next.
+
+| | Greedy | Dynamic programming |
+|---|---|---|
+| Decision rule | take the best-looking option now, never revisit | evaluate every option, keep the best |
+| Extra requirement | greedy-choice property (a local optimum extends to a global one) | overlapping subproblems worth storing |
+| Typical cost | $\\Theta(n\\log n)$, usually the sort | $\\Theta(n \\cdot W)$ or $\\Theta(n^2)$, the table size |
+| Failure mode | silently returns a suboptimal answer | runs out of memory |
+| Examples | activity selection, Huffman coding, Dijkstra, Kruskal | knapsack, edit distance, coin change, matrix chain |
+
+The dangerous asymmetry is in the failure row. A dynamic program that is too
+big fails visibly; a greedy algorithm that lacks the greedy-choice property
+returns a plausible wrong answer with no signal at all.
+
+## 10.2 Worked Example: A Greedy Choice That Is Provably Correct
+
+**Given**: 11 activities with (start, finish) times (1,4), (3,5), (0,6),
+(5,7), (3,9), (5,9), (6,10), (8,11), (8,12), (2,14), (12,16). **Find**: the
+largest set of mutually non-overlapping activities.
+
+Sort by **finish** time and take each activity whose start is at or after the
+last finish taken:
+
+| Considered (by finish) | Last finish | Start | Taken? |
+|---|---|---|---|
+| (1,4) | none | 1 | yes |
+| (3,5), (0,6) | 4 | 3, 0 | no, no |
+| (5,7) | 4 | 5 | yes |
+| (3,9), (5,9), (6,10) | 7 | 3, 5, 6 | no, no, no |
+| (8,11) | 7 | 8 | yes |
+| (8,12), (2,14) | 11 | 8, 2 | no, no |
+| (12,16) | 11 | 12 | yes |
+
+**Answer**: (1,4), (5,7), (8,11), (12,16) — **4 activities**. Enumerating
+every subset of the 11 activities and testing compatibility confirms that 4 is
+the maximum; no set of 5 is compatible.
+
+The greedy choice is justified by an **exchange argument**: if some optimal
+solution does not begin with the earliest-finishing activity, swapping its
+first activity for that one cannot create a conflict, because the replacement
+finishes no later. Repeating the swap converts any optimal solution into the
+greedy one without shrinking it. Sorting by **start** time instead breaks the
+argument, and picking (0,6) first here would cost an activity.
+
+## 10.3 Worked Example: A Greedy Choice That Provably Fails
+
+**Given**: coin denominations {1, 3, 4} and an amount of 6. **Find**: the
+fewest coins, greedily and optimally.
+
+Greedy takes the largest coin that fits, repeatedly:
+
+$$6 - 4 = 2, \\qquad 2 - 1 = 1, \\qquad 1 - 1 = 0 \\;\\Rightarrow\\; 3 \\ \\text{coins}$$
+
+Dynamic programming fills a table of best[t] for every amount up to the target,
+each entry taking the cheapest predecessor:
+
+$$\\text{best}[t] = 1 + \\min_{c \\,\\in\\, \\{1,3,4\\},\\ c \\le t} \\text{best}[t - c], \\qquad \\text{best}[0] = 0$$
+
+| t | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|---|
+| best[t] | 0 | 1 | 2 | 1 | 1 | 2 | **2** |
+
+**Answer**: greedy uses 3 coins (4+1+1), the optimum is **2** (3+3). The
+greedy answer is 50 % worse, and nothing in the greedy run signals it.
+
+![Two step functions against the amount to be made from coins of one, three and four, over amounts one to forty: the coins used by the take-the-largest-first heuristic and the true minimum found by dynamic programming. The two agree except at nine marked amounts starting at six, where greedy is exactly one coin worse, and a dotted vertical line marks the first failure.](/courses/fe-ee/figures/sw2-greedy-gap.svg)
+
+Running both routines over every amount from 1 to 40 finds the heuristic wrong
+at exactly nine of them — 6, 10, 14, 18, 22, 26, 30, 34 and 38 — always by one
+coin. Running the same comparison with the US set {1, 5, 10, 25} over every
+amount from 1 to 99 finds **no** disagreement at all, which is precisely why
+the heuristic feels safe: it is correct for the coin system most people have
+in their pocket, and that is a property of the system, not of the method.
+
+## 10.4 Worked Example: Greedy Density on the 0/1 Knapsack
+
+**Given**: capacity 10 and three indivisible items.
+
+| Item | Weight | Value | Value per unit weight |
+|---|---|---|---|
+| A | 6 | 30 | 5.00 |
+| B | 5 | 20 | 4.00 |
+| C | 5 | 21 | 4.20 |
+
+**Find**: the greedy-by-density answer and the true optimum.
+
+Greedy sorts A, C, B by density and takes A (weight 6). Only 4 of capacity
+remains, and neither remaining item fits:
+
+$$V_{\\text{greedy}} = 30, \\qquad \\text{weight used} = 6 \\ \\text{of} \\ 10$$
+
+The dynamic program tabulates the best value for each item prefix and each
+capacity:
+
+$$V[i][w] = \\max\\bigl(V[i-1][w],\\; V[i-1][w - w_i] + v_i\\bigr) \\ \\text{when } w_i \\le w$$
+
+| Items considered | w=0..4 | w=5 | w=6..9 | w=10 |
+|---|---|---|---|---|
+| none | 0 | 0 | 0 | 0 |
+| A | 0 | 0 | 30 | 30 |
+| A, B | 0 | 20 | 30 | 30 |
+| A, B, C | 0 | 21 | 30 | **41** |
+
+**Answer**: the optimum is **41** (B + C, weight exactly 10); greedy returns
+30, which is 73.2 % of the optimum. The table has
+$3 \\times 11 = 33$ cells, so the dynamic program costs $\\Theta(nW)$ — fast
+here, and note that W is the **numeric value** of the capacity, not its bit
+length, which is why this is called pseudo-polynomial rather than polynomial.
+
+Greedy density is not worthless: it is exactly optimal for the **fractional**
+knapsack, where items can be cut. Cutting item C to fill the leftover 4 units
+would give $30 + 4/5 \\cdot 21 = 46.8$, an upper bound the integer problem
+cannot reach. Indivisibility is the whole difficulty.
+
+## 10.5 Memoisation Is the Cheap Half of Dynamic Programming
+
+Two ingredients license a dynamic program:
+
+$$\\text{(1) optimal substructure} \\qquad \\text{(2) overlapping subproblems}$$
+
+The Fibonacci recursion has both, and section 7.6 counted what ignoring the
+second costs: 331,160,281 calls at n = 40 against **41** distinct
+subproblems, a factor of 8,077,080. Top-down memoisation adds a lookup table
+and changes nothing else; bottom-up tabulation fills the same table in
+dependency order and drops the call stack too.
+
+| Approach | Time | Space | Notes |
+|---|---|---|---|
+| Naive recursion | $\\Theta(\\varphi^n)$ | $\\Theta(n)$ stack | recomputes everything |
+| Memoised (top-down) | $\\Theta(n)$ | $\\Theta(n)$ table + stack | code stays recursive |
+| Tabulated (bottom-up) | $\\Theta(n)$ | $\\Theta(n)$ table | no recursion at all |
+| Rolling two values | $\\Theta(n)$ | $\\Theta(1)$ | only the last two are ever read |
+
+The last row is the reminder that a dynamic program's table is only as large
+as its **dependency window**. Fibonacci reads two previous entries, so two
+variables suffice; the 0/1 knapsack reads one previous row, so two rows
+suffice instead of the full $n \\times W$ grid.
+
+## 10.6 P, NP, and What the Names Actually Mean
+
+**P** is the class of decision problems a deterministic machine can *solve* in
+time polynomial in the input size:
+
+$$P = \\bigcup_{k \\ge 1} \\text{TIME}\\bigl(n^{k}\\bigr)$$
+
+**NP** is the class whose *yes* answers can be **verified** in polynomial time
+given a certificate. Handed a proposed Hamiltonian cycle you can check it in
+$\\Theta(V)$ steps; finding one is another matter.
+
+$$P \\subseteq NP$$
+
+holds trivially — a solver is a verifier that ignores the certificate. Whether
+the containment is strict is the open question:
+
+$$P \\stackrel{?}{=} NP$$
+
+A problem is **NP-complete** when it is in NP and every problem in NP reduces
+to it by a polynomial-time transformation, so it is at least as hard as
+everything in the class. **NP-hard** drops the "in NP" requirement, so it
+includes optimisation and non-decision problems too.
+
+| Term | Meaning | Example |
+|---|---|---|
+| P | solvable in polynomial time | sorting, shortest path, primality |
+| NP | a yes-answer is checkable in polynomial time | Hamiltonian cycle, SAT, subset sum |
+| NP-complete | in NP, and everything in NP reduces to it | SAT, 3-colouring, travelling salesman (decision form) |
+| NP-hard | everything in NP reduces to it; need not be in NP | travelling salesman (optimisation form), halting problem |
+
+Three statements that exam wording likes to test:
+
+- **NP does not mean "not polynomial".** It stands for nondeterministic
+  polynomial time. Every problem in P is also in NP.
+- **NP-complete does not mean "unsolvable".** The 0/1 knapsack is NP-complete
+  and section 10.4 solved an instance of it exactly; the pseudo-polynomial
+  $\\Theta(nW)$ table is polynomial in W but exponential in the number of bits
+  used to write W down.
+- **A polynomial-time algorithm for one NP-complete problem would give one for
+  all of them**, by composing the reductions. That is what makes the class
+  interesting and why nobody expects a solution to arrive quietly.`,
+      examTip: 'Greedy is optimal only when the problem has the greedy-choice property; the exam tests this with coin systems. Coins {1,3,4} making 6: greedy gives 3 coins, the optimum is 2. Coins {1,5,10,25} never fail below a dollar, which is why the trap works.',
+      importantNote: 'NP stands for NONDETERMINISTIC POLYNOMIAL, not "non-polynomial". P is a subset of NP, every problem in P is in NP, and whether the containment is strict is unresolved. NP-complete means in NP and universal for NP; NP-hard drops the membership requirement.',
+    },
+    { id: 'algo-problem-sets', title: '11. Problem Sets: Complexity, Recurrences, Sorting, Search',
+      content: `## Problem Set A — Notation, Recurrences, Counting
+
+**A1.** An algorithm's running time is $T(n) = 60 + 0.005\\,n^3 + 0.01\\,n$.
+Give the tight bound.
+
+**A2.** Give the witness constants $c_1$, $c_2$, $n_0$ that certify
+$5n^2 + 3n + 1 \\in \\Theta(n^2)$, taking $c_2 = 6$.
+
+**A3.** Solve $T(n) = 4\\,T(n/2) + n^2$ and state the case used.
+
+**A4.** Solve $T(n) = 3\\,T(n/2) + n$ and state the case used.
+
+**A5.** How many times does the body of the following loop nest execute, and
+what is the complexity?
+
+    for i = 1 to n:
+        for j = i to n:
+            body
+
+**A6.** A recursive routine calls itself twice on inputs of size $n-1$ and
+$n-2$ and does constant work besides. Is $O(2^n)$ a correct bound? Is it the
+tight one?
+
+### Worked Answers, Set A
+
+**A1.** Drop the constant 60 and the linear term; the cubic dominates.
+
+$$T(n) \\in \\Theta(n^3)$$
+
+**Trap**: answering $O(1)$ because the constant 60 is the largest coefficient
+at n = 1. Coefficients never decide a growth class — at n = 100 the cubic term
+alone is $0.005 \\cdot 1000000 = 5000$ against a constant of 60.
+
+**A2.** Upper: $5n^2 + 3n + 1 \\le 6n^2$ requires $0 \\le n^2 - 3n - 1$, whose
+positive root is
+
+$$n \\ge \\frac{3 + \\sqrt{9 + 4}}{2} = \\frac{3 + \\sqrt{13}}{2} = 3.3028$$
+
+so $n_0 = 4$. Check the boundary in both directions:
+
+$$f(3) = 5 \\cdot 9 + 3 \\cdot 3 + 1 = 55 \\;>\\; 54 = 6 \\cdot 9$$
+
+$$f(4) = 5 \\cdot 16 + 3 \\cdot 4 + 1 = 93 \\;\\le\\; 96 = 6 \\cdot 16$$
+
+Lower: $5n^2 + 3n + 1 \\ge 5n^2$ for all $n \\ge 1$, so $c_1 = 5$.
+
+**Answer**: $c_1 = 5$, $c_2 = 6$, $n_0 = 4$.
+
+**Trap**: quoting $n_0 = 3$ from the root 3.3028 by rounding down. The
+inequality fails at n = 3, where 55 exceeds 54, so the threshold must be the
+next integer **up**.
+
+**A3.** Here $a = 4$, $b = 2$, $f(n) = n^2$.
+
+$$\\log _2 4 = 2, \\qquad n^{\\log _b a} = n^2 = f(n) \\;\\Rightarrow\\; \\text{case 2}$$
+
+$$T(n) \\in \\Theta(n^2 \\log n)$$
+
+**Trap**: reading $a = 4$ as "four levels" and answering $\\Theta(n^2)$. The
+critical exponent ties with f, so the depth multiplies in and the logarithm
+survives.
+
+**A4.** Here $a = 3$, $b = 2$, $f(n) = n$.
+
+$$\\log _2 3 = 1.585 \\;>\\; 1 \\;\\Rightarrow\\; \\text{case 1} \\;\\Rightarrow\\; T(n) \\in \\Theta(n^{1.585})$$
+
+**Trap**: answering $\\Theta(n\\log n)$ by pattern-matching merge sort. Merge
+sort has $a = 2$; the third recursive call pushes the critical exponent above
+1 and the answer is a genuine fractional power.
+
+**A5.** The inner loop runs $n - i + 1$ times, so
+
+$$\\sum_{i=1}^{n}(n - i + 1) = \\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}$$
+
+At n = 10 that is 55 executions, confirmed by running the nest and counting;
+at n = 100 it is 5,050 and at n = 1000 it is 500,500. The complexity is
+$\\Theta(n^2)$, since
+
+$$\\lim_{n \\to \\infty}\\frac{n(n+1)/2}{n^2} = \\frac{1}{2}$$
+
+**Answer**: exactly $n(n+1)/2$ executions, complexity $\\Theta(n^2)$.
+
+**Trap**: answering $n^2$ for the **count**. The count is half that plus a
+linear term — 5,050 rather than 10,000 at n = 100 — and questions that ask
+"how many times" want the exact figure, not the class.
+
+**A6.** $O(2^n)$ is a correct upper bound, because $C(n) \\le 2\\,C(n-1) + 1$.
+It is **not** tight. Counting the calls exactly gives
+
+$$C(n) = 2F(n+1) - 1 \\in \\Theta(\\varphi^{n}), \\qquad \\varphi = 1.618$$
+
+**Answer**: correct but slack; the tight class is $\\Theta(\\varphi^n)$.
+
+**Trap**: treating $O(2^n)$ as the answer to "what is the complexity". At
+n = 50 the counted call total is 40,730,022,147 while $2^{50}$ exceeds
+$1.12 \\times 10^{15}$ — the bound overstates the work by a factor of 27,643.
+
+## Problem Set B — Sorting, Searching, Graphs, Greedy
+
+**B1.** Show the array {4, 0, 3, 1, 7} after two complete passes of bubble
+sort.
+
+**B2.** Trace insertion sort on {10, 15, 5, 13}, giving the array after each
+insertion and the total comparisons.
+
+**B3.** Apply one Lomuto partition to {3, 9, 8, 10, 2, 11, 4} using the last
+element as pivot. Give the array afterwards and the pivot's final index.
+
+**B4.** How many iterations does binary search need to find 105 in
+{5, 10, 15, 25, 105}?
+
+**B5.** For the graph of section 9.4, state the BFS order from A and the
+number of hops from A to G.
+
+**B6.** A cashier has coins {1, 7, 10} and must make 15. Compare the greedy
+answer with the optimum.
+
+### Worked Answers, Set B
+
+**B1.** Pass 1 compares adjacent pairs across the whole array; pass 2 stops one
+short because the largest element has already reached the end.
+
+| Pass | Comparisons made | Array after the pass |
+|---|---|---|
+| 1 | 4 | 0, 3, 1, 4, 7 |
+| 2 | 3 | **0, 1, 3, 4, 7** |
+
+**Answer**: {0, 1, 3, 4, 7}, which happens to be fully sorted after two
+passes.
+
+**Trap**: choosing {0, 3, 1, 4, 7}, the state after **one** pass. Bubble sort
+questions almost always offer the off-by-one-pass distractor, and it is the
+most attractive wrong answer on the list.
+
+**B2.** Comparisons are counted as key comparisons in the inner loop.
+
+| Insert | Comparisons | Array after |
+|---|---|---|
+| 15 | 1 | 10, 15, 5, 13 |
+| 5 | 2 | 5, 10, 15, 13 |
+| 13 | 2 | **5, 10, 13, 15** |
+
+**Answer**: the intermediate states are 10,15,5,13 then 5,10,15,13 then
+5,10,13,15, with **5** comparisons in total.
+
+**Trap**: writing 5,13,10,15 as the middle state, which mixes the two later
+insertions into one step. Insertion sort moves exactly one element per outer
+iteration and never reorders the rest.
+
+**B3.** With pivot 4, the index i marks the boundary of the "at most 4"
+region. Scanning j from the left: 3 is at most 4, so it swaps with itself and
+i becomes 1; 9, 8 and 10 are larger and are skipped; 2 is at most 4, so it
+swaps with the element at index 1 (which is 9) and i becomes 2; 11 is skipped.
+Finally the pivot swaps into index 2.
+
+$$\\{3, 9, 8, 10, 2, 11, 4\\} \\;\\rightarrow\\; \\{3, 2, 4, 10, 9, 11, 8\\}$$
+
+**Answer**: {3, 2, 4, 10, 9, 11, 8}, pivot at index 2, with 2 elements to its
+left and 4 to its right. The partition cost is $7 - 1 = 6$ comparisons.
+
+**Trap**: assuming the two partitions come out sorted, or equal in size.
+Partitioning only guarantees that everything left of the pivot is no greater
+and everything right is greater; {10, 9, 11, 8} is neither sorted nor
+balanced against the left side.
+
+**B4.** With $lo = 0$, $hi = 4$ and the overflow-safe midpoint
+$mid = lo + \\lfloor (hi - lo)/2 \\rfloor$:
+
+$$mid = 0 + \\lfloor 4/2 \\rfloor = 2 \\;\\Rightarrow\\; a[2] = 15 < 105 \\;\\Rightarrow\\; lo = 3$$
+
+$$mid = 3 + \\lfloor 1/2 \\rfloor = 3 \\;\\Rightarrow\\; a[3] = 25 < 105 \\;\\Rightarrow\\; lo = 4$$
+
+$$mid = 4 + \\lfloor 0/2 \\rfloor = 4 \\;\\Rightarrow\\; a[4] = 105 \\;\\Rightarrow\\; \\text{found}$$
+
+**Answer**: **3** iterations, consistent with the worst-case bound
+$\\lfloor \\log _2 5 \\rfloor + 1 = 3$, and confirmed by running the loop.
+
+**Trap**: answering 2 by counting only the iterations that *narrow* the range
+and not the one that finds the key. The comparison that returns the answer is
+still a comparison.
+
+**B5.** Dequeueing A first enqueues B, C and D in list order; each of those
+then contributes its unseen neighbours.
+
+$$\\text{BFS: } A, B, C, D, E, F, G$$
+
+G is reached from E or F, both at distance 2, so it sits at **3 hops**.
+
+**Trap**: reading the DFS order A, B, E, C, F, D, G as the BFS answer. They
+share the same first two vertices, which is enough to make the wrong option
+look right if only the head of the list is checked.
+
+**B6.** Greedy takes 10 first, leaving 5 to be made from 1s:
+
+$$15 - 10 = 5 \\;\\Rightarrow\\; 5 \\ \\text{coins of } 1 \\;\\Rightarrow\\; 1 + 5 = 6 \\ \\text{coins}$$
+
+Dynamic programming over every amount up to 15 finds
+
+$$7 + 7 + 1 = 15 \\;\\Rightarrow\\; 3 \\ \\text{coins}$$
+
+**Answer**: greedy uses 6 coins, the optimum is 3 — twice as many. Scanning
+every target from 1 to 59 shows the first disagreement at 14, not at 15.
+
+**Trap**: assuming greedy is safe because it is safe with real currency.
+Greedy coin change is optimal only for **canonical** coin systems; {1, 7, 10}
+is not one, and neither is {1, 3, 4}.`,
+      examTip: 'On a "which array is this after k passes" question, count the passes twice. Bubble sort after one pass and after two passes are both offered, and the after-one-pass option is the most commonly chosen wrong answer in this whole topic.',
+      importantNote: 'Two thresholds worth memorising because they are the answers to whole families of questions: the smallest n0 in a Theta proof is the first integer at which the inequality holds, never the rounded-down root; and binary search on n keys takes floor(log2 n) + 1 iterations in the worst case, counting the iteration that finds the key.',
     },
   ],
   keyTakeaways: [
@@ -569,18 +1695,27 @@ the size of the penalty concrete:
 
 ![Mean comparisons to find a key in a binary search tree, plotted against the number of keys on logarithmic axes, for trees built by sorted insertion and by shuffled insertion, with the perfectly balanced log base two of n plus one drawn for reference. The sorted-insertion series lands exactly on n plus one over two.](/courses/fe-ee/figures/swe-bst-degenerate.svg)
 
-| Keys n | Sorted insertion | Shuffled insertion | Perfectly balanced |
-|---|---|---|---|
-| 15 | 8.0 | 3.8 | 4.0 |
-| 63 | 32.0 | 6.1 | 6.0 |
-| 255 | 128.0 | 9.2 | 8.0 |
-| 1,023 | **512.0** | **12.4** | 10.0 |
+| Keys n | Sorted insertion (mean) | Shuffled insertion (mean) | Perfect tree, deepest key | Perfect tree, mean |
+|---|---|---|---|---|
+| 15 | 8.0 | 3.8 | 4.0 | 3.27 |
+| 63 | 32.0 | 6.1 | 6.0 | 5.10 |
+| 255 | 128.0 | 9.2 | 8.0 | 7.03 |
+| 1,023 | **512.0** | **12.4** | 10.0 | **9.01** |
+
+Read the last two columns carefully, because they answer different questions
+and the difference is easy to lose. The dashed reference line on the figure is
+$\\log _2(n+1)$, which for a perfect tree is the cost of reaching its
+**deepest** key — 10 comparisons at n = 1023. The **mean** over every key in
+that same perfect tree is smaller, because half the keys sit in the bottom
+level and the rest are cheaper to reach; summing $i \\cdot 2^{i-1}$ over the
+levels gives a mean of $((k-1)2^k + 1)/n$, which is 9.01 comparisons at
+n = 1023. So the honest comparison for the shuffled column is 12.4 against
+9.01: random arrival order costs **38 % more** than perfect balance, not 24 %.
 
 The sorted-insertion series is exactly **(n+1)/2** at every size, which is the
 signature of a linked list: to reach the key at depth k costs k comparisons,
 and averaging 1 through n gives (n+1)/2. At n = 1023 the same keys cost 512
-comparisons in one arrival order and 12.4 in another — a factor of **41** — and
-random insertion lands within about 25 % of the perfectly balanced ideal.
+comparisons in one arrival order and 12.4 in another — a factor of **41**.
 
 This is precisely why AVL and red–black trees exist. They pay a rotation on
 insertion to guarantee O(log n) regardless of arrival order, and the guarantee
@@ -689,6 +1824,980 @@ which matters for real-time systems where one 100 ms resize is unacceptable
 even if the average is a microsecond.`,
       examTip: 'Chaining costs 1 + alpha/2 probes and degrades linearly; linear probing costs (1 + 1/(1-alpha)^2)/2 on an unsuccessful search and blows up near alpha = 1. That is why open addressing must rehash around 0.7 and chaining need not.',
       importantNote: 'If a question mentions range queries, sorted output, or "next largest key", the answer is a balanced tree even though a hash table has faster single-key lookup. Hashing destroys ordering by design.',
+    },
+    { id: 'ds-arrays-amortised', title: '6. Arrays, Address Arithmetic, and Amortised Growth',
+      content: `## 6.1 Why Indexing Is O(1)
+
+An array is a contiguous block, so the address of any element is arithmetic
+rather than search. For a one-dimensional array of elements of size s bytes
+starting at address B:
+
+$$\\text{addr}(A[i]) = B + i \\cdot s$$
+
+A two-dimensional array stored in **row-major** order — C, C++, Python, Java —
+lays row 0 down first, then row 1, so with C columns:
+
+$$\\text{addr}(A[i][j]) = B + (i \\cdot C + j)\\cdot s$$
+
+**Column-major** order — Fortran, MATLAB, Julia — transposes the roles, with R
+rows:
+
+$$\\text{addr}(A[i][j]) = B + (j \\cdot R + i)\\cdot s$$
+
+Both are three arithmetic operations regardless of the indices, which is the
+entire content of "O(1) random access". For a 6-column array of 4-byte
+integers based at 2000:
+
+$$\\text{addr}(A[2][3]) = 2000 + 12 \\cdot 4 + 3 \\cdot 4 = 2060$$
+
+The same arithmetic explains why iterating a matrix along rows is faster than
+along columns in a row-major language: consecutive row elements share a cache
+line and consecutive column elements are $C \\cdot s$ bytes apart.
+
+## 6.2 The Cost of Insertion and Deletion
+
+Contiguity is also what makes the middle expensive. Inserting at index i in an
+array holding n elements requires shifting the tail right:
+
+$$\\text{shifts on insert at } i = n - i, \\qquad \\text{shifts on delete at } i = n - i - 1$$
+
+Averaged over a uniformly chosen position:
+
+$$E[\\text{shifts}] = \\frac{1}{n+1}\\sum_{i=0}^{n} (n - i) = \\frac{n}{2}$$
+
+so insertion and deletion are $\\Theta(n)$ on average and in the worst case, and
+$\\Theta(1)$ only at the very end.
+
+| Operation | Array | Reason |
+|---|---|---|
+| Read or write $A[i]$ | $\\Theta(1)$ | one address computation |
+| Search, unsorted | $\\Theta(n)$ | linear scan |
+| Search, sorted | $\\Theta(\\log n)$ | binary search |
+| Insert or delete at the end | $\\Theta(1)$ amortised | see 6.3 |
+| Insert or delete elsewhere | $\\Theta(n)$ | shift the tail |
+
+## 6.3 Worked Example: The Doubling Array, by the Accounting Method
+
+**Given**: a dynamic array that starts with capacity 1 and doubles whenever it
+is full, copying every element into the new block. **Find**: the amortised
+cost of one append.
+
+A single append costs 1 write when there is room and $n + 1$ writes when it
+triggers a copy, so the **worst case** for one operation is $\\Theta(n)$. The
+accounting method charges each append a flat 3 tokens and shows the bank never
+goes negative:
+
+$$\\text{charge } 3 \\text{ per append} = \\underbrace{1}_{\\text{write this element}} + \\underbrace{1}_{\\text{save to copy this element later}} + \\underbrace{1}_{\\text{save to copy one older element}}$$
+
+Immediately after a doubling from capacity m to 2m, the array holds m elements
+and m of them carry no saved token — but the next m appends each contribute
+one spare token for an old element and one for themselves, which is exactly
+the 2m copies the next resize will perform. The invariant holds, so 3 tokens
+per append cover everything.
+
+$$\\text{amortised cost} \\le 3 = \\Theta(1)$$
+
+**Independent check by aggregate counting.** Rather than trusting the argument,
+append one element at a time and tally every copy. Resizes occur at sizes
+$1, 2, 4, \\ldots$, so the total copies performed by n appends are
+
+$$\\text{copies}(n) = \\sum_{i=0}^{\\lceil \\log _2 n \\rceil - 1} 2^{i} = 2^{\\lceil \\log _2 n \\rceil} - 1 \\;<\\; 2n$$
+
+Counted in code, the two agree exactly at every size tested:
+
+| Appends n | Copies, counted | $2^{\\lceil \\log _2 n \\rceil} - 1$ | Copies per append |
+|---|---|---|---|
+| 10 | 15 | 15 | 1.500 |
+| 100 | 127 | 127 | 1.270 |
+| 1,000 | 1,023 | 1,023 | 1.023 |
+| 10,000 | 16,383 | 16,383 | 1.638 |
+| 1,000,000 | 1,048,575 | 1,048,575 | 1.049 |
+
+**Answer**: fewer than 2 copies per append at every n, so appending is
+amortised $\\Theta(1)$ even though one append in the sequence costs
+$\\Theta(n)$.
+
+![The running average of element copies per append, measured append by append up to four thousand appends, on a logarithmic horizontal axis. The curve is a sawtooth that jumps to 2.0 the instant each resize lands and decays back toward 1.0 as later appends dilute it, never crossing the dashed ceiling at 2.](/courses/fe-ee/figures/sw2-array-amortised.svg)
+
+The per-append column does not decrease monotonically, and the sawtooth in the
+figure is why: it touches 2 the instant a resize lands and falls back toward 1
+as the following appends dilute it. **Amortised $\\Theta(1)$ is a statement
+about the sum, not about any single operation**, and that distinction is what
+rules the structure out of a hard real-time path where one 100 ms copy is
+unacceptable even though the average is a microsecond.
+
+## 6.4 Worked Example: Why the Growth Factor Is 2 and Not 1.1
+
+**Given**: growth by a constant **increment** k against growth by a constant
+**factor** g. **Find**: the total copying in each case.
+
+Increment: resizes happen at sizes $k, 2k, 3k, \\ldots$, so
+
+$$\\text{copies}(n) = \\sum_{j=1}^{n/k} jk \\approx \\frac{n^2}{2k} \\in \\Theta(n^2)$$
+
+Measured at n = 10,000 with k = 10 the count is 4,995,000 against the
+prediction $10000^2/20 = 5000000$ — 0.1 % apart, and unmistakably quadratic.
+Factor: resizes happen at $1, g, g^2, \\ldots$, and the geometric sum gives
+
+$$\\text{copies}(n) \\approx \\frac{n}{g - 1} \\in \\Theta(n)$$
+
+so **any** factor above 1 gives amortised constant time; the choice of factor
+trades copying against wasted memory. Both halves of that trade, measured over
+one million appends:
+
+| Growth factor g | Copies per append, counted | Worst capacity per element held |
+|---|---|---|
+| 1.25 | 4.49 | 1.25 |
+| 1.5 | 2.10 | 1.50 |
+| 2 | 1.05 | 2.00 |
+| 3 | 0.80 | 3.00 |
+
+**Answer**: increments are quadratic and unusable; factors are linear, with
+g = 2 sitting where copying has already dropped near 1 per append and the
+slack has not yet reached 3x.
+
+![Two bar panels over the growth factors 1.25, 1.5, 2 and 3, both measured on the same one-million-append runs. The left panel shows copies per append falling from 4.49 to 0.80 as the factor rises; the right panel shows the worst ratio of allocated capacity to elements actually held rising from 1.25 to 3.00 over the same factors.](/courses/fe-ee/figures/sw2-growth-factor.svg)
+
+## 6.5 The Same Argument Governs the Hash Table
+
+Rehashing a hash table is the identical accounting problem with a different
+trigger. Section 5.1 set the resize threshold at a load factor near 0.7; when
+it is crossed the table doubles and every entry is re-inserted at
+$\\Theta(n)$ cost, but the doubling buys $\\Theta(n)$ further insertions before
+the next one:
+
+$$\\text{amortised insert} = \\frac{\\Theta(n) \\text{ rehash} + n \\cdot \\Theta(1)}{n} = \\Theta(1)$$
+
+What differs is **when** the trigger fires, and that depends on the collision
+scheme rather than on the accounting. Open addressing must resize before the
+table fills, because the probe cost blows up as $\\alpha$ approaches 1.
+Chaining has no such wall: a chained table at $\\alpha = 1$ holds one key per
+bucket **on average**, and under a uniform hash the bucket occupancies follow
+a Poisson distribution with mean 1:
+
+$$\\Pr[\\text{a bucket holds } j \\text{ keys}] \\to \\frac{e^{-1}}{j!} \\qquad \\text{as } m \\to \\infty \\text{ with } n = m$$
+
+$$\\Pr[\\text{empty}] = e^{-1} = 0.3679$$
+
+Placing 100,000 keys into 100,000 buckets and counting confirms it: 36.7 % of
+buckets end up empty, against the predicted 36.8 %, and the longest chain
+anywhere in the table is **8**.
+
+![Two sets of bars over bucket occupancies zero to six: the measured fraction of buckets holding that many keys after 100,000 keys are placed into 100,000 buckets, beside the Poisson distribution with mean one. The two agree closely, with about 37 percent of buckets empty and 37 percent holding exactly one key.](/courses/fe-ee/figures/sw2-chain-distribution.svg)
+
+So "load factor 1" describes a chained table that is working normally, not one
+that is full — the mean successful search there still costs about 1.5 probes.
+The 0.7 threshold of section 5.1 is an **open addressing** rule that gets
+applied to chaining out of habit.
+
+| Structure | One operation, worst case | Amortised over n operations |
+|---|---|---|
+| Dynamic array append | $\\Theta(n)$ copy on resize | $\\Theta(1)$ |
+| Hash table insert | $\\Theta(n)$ rehash | $\\Theta(1)$ |
+| Balanced tree insert | $\\Theta(\\log n)$ | $\\Theta(\\log n)$ |
+
+The third row is there for contrast: a balanced tree has no cheap-then-
+expensive rhythm to amortise, so its worst case and its average are the same
+class. That predictability is the reason real-time systems reach for trees
+where throughput-oriented systems reach for hash tables.`,
+      examTip: 'Row-major address: base + (i * columns + j) * element_size. Amortised O(1) append means the SUM over n appends is O(n); a single append still costs O(n) when it resizes. Questions that ask for "the worst case of a single append" want O(n), and questions that ask for "the cost of n appends" want O(n) total.',
+      importantNote: 'Growing an array by a fixed INCREMENT is Theta(n^2) total copying - 4,995,000 copies for 10,000 appends at k = 10, measured. Growing by any constant FACTOR above 1 is Theta(n). This is the difference between a usable dynamic array and an unusable one, and it is not a constant-factor difference.',
+    },
+    { id: 'ds-linked-lists', title: '7. Linked Lists: Pointer Costs and Memory Costs',
+      content: `## 7.1 What a Node Costs
+
+A singly linked node stores a payload and one reference; a doubly linked node
+stores two. On a 64-bit machine with 8-byte references and a 4-byte integer
+payload, alignment padding rounds the payload slot up to 8:
+
+$$\\text{node}_{\\text{singly}} = 4 + 4_{\\text{pad}} + 8 = 16 \\ \\text{bytes}$$
+
+$$\\text{node}_{\\text{doubly}} = 4 + 4_{\\text{pad}} + 8 + 8 = 24 \\ \\text{bytes}$$
+
+against 4 bytes per element in an array of the same integers. The overhead
+ratios are therefore
+
+$$\\frac{16}{4} = 4, \\qquad \\frac{24}{4} = 6$$
+
+so a linked list of small values costs four to six times the memory of the
+array holding the same data, before counting allocator bookkeeping. It also
+costs locality: array elements are adjacent and arrive in the same cache line,
+while nodes can be anywhere.
+
+| Property | Array | Singly linked | Doubly linked |
+|---|---|---|---|
+| Bytes per 4-byte element | 4 | 16 | 24 |
+| Access $A[i]$ | $\\Theta(1)$ | $\\Theta(n)$ | $\\Theta(n)$ |
+| Insert at head | $\\Theta(n)$ | $\\Theta(1)$ | $\\Theta(1)$ |
+| Insert after a known node | $\\Theta(n)$ | $\\Theta(1)$ | $\\Theta(1)$ |
+| Delete a node given only a pointer to it | $\\Theta(n)$ | $\\Theta(n)$ | $\\Theta(1)$ |
+| Count the elements | $\\Theta(1)$ if stored | $\\Theta(n)$ | $\\Theta(n)$ |
+| Traverse backwards | $\\Theta(n)$ | impossible without reversal | $\\Theta(n)$ |
+
+## 7.2 Justifying the Pointer Costs, Write by Write
+
+The complexity column above is not an estimate; each entry is a fixed number
+of reference assignments. Inserting a new node t at the head:
+
+$$t.\\text{next} \\leftarrow \\text{head}, \\qquad \\text{head} \\leftarrow t$$
+
+Two writes, independent of n, hence $\\Theta(1)$. Inserting t after a known
+node p:
+
+$$t.\\text{next} \\leftarrow p.\\text{next}, \\qquad p.\\text{next} \\leftarrow t$$
+
+Two writes again. Deleting the node **after** p:
+
+$$p.\\text{next} \\leftarrow p.\\text{next}.\\text{next}$$
+
+One write. But deleting a node when you hold a pointer to **that node** and
+the list is singly linked needs its predecessor, and finding the predecessor
+means walking from the head:
+
+$$\\text{predecessor search} = \\Theta(n)$$
+
+which is the single most-tested asymmetry in this topic. In a doubly linked
+list the predecessor is already in hand, so the same deletion is two writes:
+
+$$q.\\text{prev}.\\text{next} \\leftarrow q.\\text{next}, \\qquad q.\\text{next}.\\text{prev} \\leftarrow q.\\text{prev}$$
+
+**Counting the elements is $\\Theta(n)$** unless a running count is maintained,
+because nothing in the structure records the length. That is the answer to
+"what is the time complexity of counting the items in a linked list", and the
+tempting wrong answer, $\\Theta(1)$, is only right for an array or for a list
+that carries a size field.
+
+## 7.3 Worked Example: Reversing a Singly Linked List
+
+**Given**: a singly linked list of n nodes. **Find**: an in-place reversal and
+its exact cost.
+
+Walk the list once, carrying three references:
+
+    prev = null
+    curr = head
+    while curr is not null:
+        nxt  = curr.next
+        curr.next = prev
+        prev = curr
+        curr = nxt
+    head = prev
+
+Each iteration performs exactly one \`next\` write on a node, and there are n
+nodes, so
+
+$$\\text{pointer writes} = n + 1 \\ \\text{(one per node, plus the new head)}, \\qquad \\Theta(n) \\ \\text{time}, \\ \\Theta(1) \\ \\text{space}$$
+
+**Answer**: $\\Theta(n)$ time with three extra references, so $\\Theta(1)$ extra
+space. Building a reversed copy instead would be $\\Theta(n)$ space and, for a
+list of 4-byte payloads, 16 extra bytes per node.
+
+## 7.4 Worked Example: The Middle Node in One Pass
+
+**Given**: a singly linked list of unknown length. **Find**: the middle node
+without first counting.
+
+Advance two references from the head, one by one node and one by two:
+
+$$\\text{slow} \\leftarrow \\text{slow.next}, \\qquad \\text{fast} \\leftarrow \\text{fast.next.next}$$
+
+When \`fast\` reaches the end, \`slow\` has travelled half as far:
+
+$$\\text{fast position} = 2k, \\quad \\text{slow position} = k, \\quad \\text{stop when } 2k \\ge n - 1 \\;\\Rightarrow\\; k = \\left\\lceil \\frac{n-1}{2} \\right\\rceil$$
+
+**Answer**: one pass, $\\Theta(n)$ time and $\\Theta(1)$ space. Counting the
+nodes first and then walking half the list costs the same 1.5n node visits, so
+the two-reference method is not fewer steps — it is **one** traversal, which is
+what a question specifying a singly linked list read once is testing. The same
+two-reference idea detects a cycle:
+if the list loops, the fast reference eventually laps the slow one, and if it
+does not, it reaches null.
+
+## 7.5 Choosing Between the Two
+
+| Requirement | Choose | Because |
+|---|---|---|
+| Index-addressed access | Array | address arithmetic against a walk |
+| Many inserts and deletes at a known position | Linked list | pointer writes against tail shifting |
+| Tight memory, small elements | Array | 4 bytes against 16 |
+| Cache-sensitive scanning | Array | contiguity against pointer chasing |
+| Size unknown and highly variable | Dynamic array or list | both grow; the array copies, the list does not |
+| Splice two sequences together | Linked list | $\\Theta(1)$ if both tails are known |
+
+The row that decides most real cases is the fourth. A linked list's
+$\\Theta(1)$ insertion is only reachable **after** you have a pointer to the
+position, and getting there is $\\Theta(n)$; an array's $\\Theta(n)$ shift is
+$\\Theta(n)$ contiguous byte moves, which modern hardware performs far faster
+per element than it follows scattered pointers. The complexity table and the
+measured runtime therefore disagree more often here than anywhere else in this
+chapter, and an exam question asks about the table.`,
+      examTip: 'Counting the elements of a linked list is Theta(n) - there is no length field unless the implementation adds one. Deleting a node you hold a pointer to is Theta(1) in a doubly linked list and Theta(n) in a singly linked one, because the predecessor has to be found.',
+      importantNote: 'A linked list node holding a 4-byte integer occupies 16 bytes singly linked and 24 doubly linked on a 64-bit machine, against 4 bytes in an array: an overhead factor of 4 to 6. The Theta(1) insertion is real, but it is only reachable once you already hold a pointer to the position.',
+    },
+    { id: 'ds-stack-queue-applied', title: '8. Stacks and Queues: Two Applications Worked Through',
+      content: `## 8.1 The Two Disciplines
+
+A stack and a queue restrict the same underlying storage to one end or two
+ends, and the restriction is the point: it makes every operation
+$\\Theta(1)$ and it matches a structure in the problem.
+
+| | Stack | Queue |
+|---|---|---|
+| Discipline | last in, first out | first in, first out |
+| Operations | push, pop, peek | enqueue, dequeue, front |
+| Cost of each | $\\Theta(1)$ | $\\Theta(1)$ |
+| Matches | nesting, backtracking, undo | arrival order, fairness, level order |
+| Search in it | $\\Theta(n)$, and doing so defeats the point | $\\Theta(n)$ |
+
+A stack of pushes and pops leaves the elements in reverse arrival order; a
+queue preserves it. For the sequence push 4, push 8, pop, push 6, push 10,
+pop, the popped values are 8 then 10 and the stack afterwards is 6 above 4,
+top to bottom. The same six items enqueued and dequeued as a queue would come
+out 4 then 8.
+
+## 8.2 Worked Example: Evaluating Postfix With a Stack
+
+**Given**: the postfix expression \`5 3 + 8 2 - *\`. **Find**: its value, and
+the peak stack depth.
+
+Push operands; on an operator, pop two, apply, push the result:
+
+| Token | Action | Stack after (bottom to top) |
+|---|---|---|
+| 5 | push | 5 |
+| 3 | push | 5, 3 |
+| + | pop 3 and 5, push $5 + 3 = 8$ | 8 |
+| 8 | push | 8, 8 |
+| 2 | push | 8, 8, 2 |
+| - | pop 2 and 8, push $8 - 2 = 6$ | 8, 6 |
+| * | pop 6 and 8, push $8 \\cdot 6 = 48$ | 48 |
+
+**Answer**: **48**, with a peak depth of 3. In infix the same expression is
+$(5 + 3) \\times (8 - 2) = 48$, and notice that postfix needed no parentheses
+and no precedence rules — the order in the token stream already encodes them,
+which is exactly why compilers convert to it.
+
+The operand order matters for non-commutative operators: the **second** pop is
+the left operand. Popping 2 then 8 and computing $2 - 8 = -6$ would give
+$8 \\cdot (-6) = -48$, and that sign error is the standard distractor.
+
+The stack depth needed is the expression's maximum nesting, and for a
+well-formed postfix expression with k operands it never exceeds k:
+
+$$\\text{depth} \\le k, \\qquad \\text{final depth} = 1 \\ \\text{if the expression is well formed}$$
+
+Ending with anything other than exactly one value on the stack is the test for
+a malformed expression.
+
+## 8.3 Worked Example: The Circular Queue's Index Arithmetic
+
+**Given**: a queue implemented in a fixed array of capacity 8, with \`front\`
+indexing the next element to leave and \`rear\` the next free slot.
+**Find**: the enqueue and dequeue arithmetic and the occupancy formula.
+
+Advancing either index wraps with a modulus rather than shifting the contents,
+which is what keeps both operations $\\Theta(1)$:
+
+$$\\text{enqueue: } A[\\text{rear}] \\leftarrow x, \\quad \\text{rear} \\leftarrow (\\text{rear} + 1) \\bmod 8$$
+
+$$\\text{dequeue: } x \\leftarrow A[\\text{front}], \\quad \\text{front} \\leftarrow (\\text{front} + 1) \\bmod 8$$
+
+$$\\text{count} = (\\text{rear} - \\text{front} + 8) \\bmod 8$$
+
+The added capacity in the count formula is what keeps the result non-negative
+when rear has wrapped past front. With front = 6 and rear = 2:
+
+$$(2 - 6 + 8) \\bmod 8 = 4 \\ \\text{elements}$$
+
+**The ambiguity.** Both a full and an empty queue satisfy
+$\\text{rear} = \\text{front}$, so the count formula alone cannot tell them
+apart. Two standard fixes:
+
+$$\\text{(1) keep one slot empty} \\;\\Rightarrow\\; \\text{capacity} = 8 - 1 = 7 \\ \\text{usable}$$
+
+$$\\text{(2) store an explicit count} \\;\\Rightarrow\\; \\text{all 8 usable, one extra field}$$
+
+**Answer**: the arithmetic above, with 4 elements held, and the deliberate
+choice of which of the two disambiguations to use. A shifting implementation
+that moves every element down on dequeue would be $\\Theta(n)$ per dequeue
+instead of $\\Theta(1)$ — the reason circular buffers exist.
+
+## 8.4 Worked Example: A Queue Built From Two Stacks
+
+**Given**: only stack operations. **Find**: a queue, and its amortised cost.
+
+Keep an **inbox** stack and an **outbox** stack. Enqueue pushes onto the
+inbox. Dequeue pops the outbox; if the outbox is empty, pour the entire inbox
+into it first, which reverses the order and restores first-in-first-out.
+
+Any single dequeue can cost $\\Theta(n)$ when it triggers a pour, but each
+element is pushed onto the inbox once, popped once, pushed onto the outbox
+once and popped once — never more:
+
+$$\\text{stack operations per element} \\le 4 \\;\\Rightarrow\\; \\text{amortised } \\Theta(1)$$
+
+**Independent check.** Instrumenting the structure and counting every push and
+pop gives exactly $4n$ operations for n enqueues followed by n dequeues, at
+n = 10, 100, 1,000 and 100,000 — 4.00 operations per element at every size,
+with the output order verified against the input order.
+
+**Answer**: amortised $\\Theta(1)$ per operation, worst case $\\Theta(n)$ for
+one dequeue. This is the same shape of result as the doubling array in section
+6.3, and it comes from the same kind of argument: bound the total work, not
+the individual step.
+
+## 8.5 Where Each One Shows Up
+
+| Application | Structure | Why that discipline |
+|---|---|---|
+| Function call and return | Stack | the most recent call returns first |
+| Undo and redo | Stack | the last change is undone first |
+| Depth-first search | Stack (often the call stack) | explore deepest first, then backtrack |
+| Expression evaluation, bracket matching | Stack | nesting is last-in-first-out by definition |
+| Breadth-first search | Queue | finish distance k before starting k+1 |
+| Print spooling, task scheduling | Queue | arrival order is the fairness rule |
+| Producer and consumer buffering | Queue | decouple two rates |
+| Shortest job first, event simulation | Priority queue | order by key, not arrival |
+
+The call-stack row has a numeric consequence worth knowing. Each recursive
+call consumes a stack frame, so recursion depth is bounded by the stack size
+divided by the frame size. On an 8 MiB thread stack with 64-byte frames:
+
+$$\\frac{8 \\cdot 1024 \\cdot 1024}{64} = 131072 \\ \\text{frames}$$
+
+which is why a recursion of depth n over a million-element list overflows
+while the equivalent loop does not, and why converting deep recursion to
+iteration is a memory fix rather than a speed fix.
+
+A **priority queue** is the odd one out: it is not first-in-first-out at all,
+it dequeues by key, and it is normally a heap, so its operations are
+$\\Theta(\\log n)$ rather than $\\Theta(1)$. Section 9 derives that cost.`,
+      examTip: 'For push/pop sequence questions, write the stack top-to-bottom after every operation rather than tracking it mentally. In postfix evaluation the SECOND value popped is the left operand - getting that backwards flips the sign of every subtraction and inverts every division.',
+      importantNote: 'A circular queue cannot distinguish full from empty by rear == front alone. Either sacrifice one slot, giving capacity - 1 usable entries, or keep an explicit count. Exam questions on circular buffer capacity are almost always testing this one point.',
+    },
+    { id: 'ds-trees-heaps', title: '9. Trees: Height Bounds, Rotations, and the Linear Build-Heap',
+      content: `## 9.1 Height Bounds, Both Ends
+
+Every cost in a binary search tree is proportional to its height, so bounding
+the height bounds everything else. Count nodes by level: level 0 holds at most
+1 node, level 1 at most 2, level h at most $2^h$. Summing:
+
+$$n \\;\\le\\; \\sum_{i=0}^{h} 2^{i} = 2^{h+1} - 1$$
+
+Rearranging gives the **minimum possible height** for n nodes:
+
+$$h \\;\\ge\\; \\log _2(n+1) - 1, \\qquad \\text{so } h_{\\min} = \\lceil \\log _2(n+1) \\rceil - 1$$
+
+At the other extreme each level can hold a single node, giving a chain:
+
+$$h_{\\max} = n - 1$$
+
+Both bounds are attained. Inserting 1 to n in ascending order produces exactly
+the chain — measured height $n - 1$ at n = 15, 31, 63, ..., 2047 without
+exception — while a perfectly filled tree of $n = 2^{k} - 1$ nodes has height
+$k - 1$.
+
+| n | $h_{\\min}$ | $h_{\\max}$ | Ratio |
+|---|---|---|---|
+| 15 | 3 | 14 | 4.7 |
+| 255 | 7 | 254 | 36 |
+| 1,023 | 9 | 1,022 | 114 |
+| 1,048,575 | 19 | 1,048,574 | 55,188 |
+
+## 9.2 What Height Costs, and the Mean Versus the Deepest Key
+
+Search, insert and delete all walk one root-to-leaf path, so each is
+$\\Theta(h)$, which is $\\Theta(\\log n)$ when balanced and $\\Theta(n)$ when not.
+Two different numbers describe a balanced tree and they are easy to confuse.
+The **deepest** key in a perfect tree costs
+
+$$C_{\\max} = h + 1 = \\log _2(n+1)$$
+
+while the **mean** over all keys weights each level by its population:
+
+$$\\bar{C} = \\frac{1}{n}\\sum_{i=1}^{k} i\\,2^{i-1} = \\frac{(k-1)2^{k} + 1}{n}, \\qquad n = 2^{k}-1$$
+
+At n = 1023 those are 10 and 9.01 respectively — the mean is lower because
+half the keys live in the bottom level and the rest are cheaper. Section 4.4
+uses both columns, and mistaking one for the other is what makes a shuffled
+tree look 24 % worse than perfect when it is really 38 % worse.
+
+## 9.3 Worked Example: The AVL Height Bound From Fibonacci
+
+**Given**: an AVL tree, where the two subtrees of every node differ in height
+by at most 1. **Find**: the tallest such tree on n nodes.
+
+Build the **sparsest** AVL tree of height h: a root, one subtree of height
+$h-1$ and one of height $h-2$, each itself as sparse as possible.
+
+$$N(h) = N(h-1) + N(h-2) + 1, \\qquad N(0) = 1, \\; N(1) = 2$$
+
+Adding 1 to both sides turns this into the Fibonacci recurrence, giving
+
+$$N(h) = F(h+3) - 1$$
+
+verified against the recurrence for every h from 0 to 25. The first few values
+are 1, 2, 4, 7, 12, 20, 33, 54. Inverting through
+$F(m) \\approx \\varphi^{m}/\\sqrt{5}$:
+
+$$h \\;\\le\\; \\log _{\\varphi}\\!\\bigl(\\sqrt{5}\\,(n+2)\\bigr) - 3 \\;\\approx\\; 1.4404\\log _2(n+2) - 0.328$$
+
+which was checked to hold for the minimal tree at every height from 2 to 25.
+
+**Answer**: an AVL tree is never more than about 44 % taller than a perfect
+tree, so all operations stay $\\Theta(\\log n)$.
+
+| n | Perfect height | AVL worst-case bound |
+|---|---|---|
+| 1,000 | 9 | 14.03 |
+| 1,000,000 | 19 | 28.38 |
+| 1,000,000,000 | 29 | 42.74 |
+
+A red-black tree relaxes the invariant further — no root-to-leaf path is more
+than twice any other — giving the looser but still logarithmic
+
+$$h \\;\\le\\; 2\\log _2(n+1)$$
+
+which is why red-black trees rotate less on insertion and search a little
+deeper. The two structures sit at different points on the same trade.
+
+## 9.4 Worked Example: The Four Rotations, Concretely
+
+**Given**: keys arriving in an order that unbalances the tree. **Find**: the
+rotation each case needs and the resulting tree.
+
+**Right-right (single left rotation).** Insert 10, 20, 30. The tree leans
+right with balance factor $-2$ at the root:
+
+$$10 \\rightarrow 20 \\rightarrow 30 \\quad \\Longrightarrow \\quad \\text{rotate left at } 10$$
+
+The result is 20 at the root with 10 and 30 as children — **one** rotation,
+height 1.
+
+**Left-left (single right rotation).** Insert 30, 20, 10; mirror image, one
+rotation, same final tree.
+
+**Left-right (double rotation).** Insert 30, 10, 20. The offending node is in
+the left subtree's **right** child, so a single rotation does not fix it:
+first rotate left at 10, producing the left-left shape, then rotate right at
+30. **Two** rotations, same final tree.
+
+**Right-left (double rotation).** Insert 10, 30, 20; mirror image, two
+rotations.
+
+| Insert order | Case | Rotations performed | Resulting root |
+|---|---|---|---|
+| 10, 20, 30 | right-right | 1 | 20 |
+| 30, 20, 10 | left-left | 1 | 20 |
+| 30, 10, 20 | left-right | 2 | 20 |
+| 10, 30, 20 | right-left | 2 | 20 |
+| 50, 30, 70, 20, 40, 60, 80 | already balanced | 0 | 50 |
+
+All four orders converge on the same tree, which is the point: **the AVL tree
+does not depend on arrival order the way a plain BST does**.
+
+**Answer, at scale.** Feeding the fully sorted keys 0 to $n-1$ into an AVL
+tree and counting rotations gives exactly
+
+$$\\text{rotations} = n - \\lfloor \\log _2 n \\rfloor - 1$$
+
+verified for every n from 1 to 2,999, and the resulting height is exactly
+$\\lfloor \\log _2 n \\rfloor$ — the perfect-tree minimum — at every one of those
+sizes. So the worst possible input for a plain BST is handled by an AVL tree
+at a cost of slightly fewer than one rotation per insertion.
+
+![Three measured series of tree height against the number of keys inserted, on logarithmic axes from fifteen to 2047 keys: sorted keys into a plain binary search tree giving height n minus one, the same keys shuffled giving roughly three times log base two of n, and sorted keys into an AVL tree giving exactly floor of log base two of n, with the AVL worst-case bound drawn dashed above it.](/courses/fe-ee/figures/sw2-tree-heights.svg)
+
+## 9.5 Heaps: The Array Layout
+
+A binary heap is a **complete** tree, so it needs no pointers at all — the
+shape is implied and the tree lives in an array:
+
+$$\\text{left}(i) = 2i + 1, \\qquad \\text{right}(i) = 2i + 2, \\qquad \\text{parent}(i) = \\left\\lfloor \\frac{i-1}{2} \\right\\rfloor$$
+
+Completeness forces the height to be minimal:
+
+$$h = \\lfloor \\log _2 n \\rfloor$$
+
+so sift-up and sift-down each walk at most h levels:
+
+| Operation | Cost | Why |
+|---|---|---|
+| Find min (min-heap) | $\\Theta(1)$ | it is at index 0 |
+| Insert | $\\Theta(\\log n)$ | append, then sift up at most h levels |
+| Extract min | $\\Theta(\\log n)$ | move the last element to the root, sift down |
+| Build from an unordered array | $\\Theta(n)$ | see 9.6 |
+| Search for an arbitrary key | $\\Theta(n)$ | the heap orders parents against children only |
+
+The last row is the standard trap. A heap is **not** a search structure: it
+guarantees nothing about siblings, so finding a key that is not the minimum
+means scanning.
+
+## 9.6 Worked Example: Why Build-Heap Is Linear, Not n log n
+
+**Given**: an unordered array of n elements. **Find**: the cost of turning it
+into a heap by Floyd's bottom-up method.
+
+Sift down from the last internal node upward. A node at height j above the
+leaves sifts at most j levels, and a complete tree contains at most
+$\\lceil n/2^{j+1} \\rceil$ nodes at height j:
+
+$$T(n) \\;\\le\\; \\sum_{j=0}^{\\lfloor \\log _2 n \\rfloor} \\left\\lceil \\frac{n}{2^{\\,j+1}} \\right\\rceil j \\;\\le\\; \\frac{n}{2}\\sum_{j=0}^{\\infty} \\frac{j}{2^{\\,j}}$$
+
+The remaining sum is a standard generating-function value:
+
+$$\\sum_{j=0}^{\\infty} j\\,x^{\\,j} = \\frac{x}{(1-x)^2} \\;\\Rightarrow\\; \\sum_{j=0}^{\\infty} \\frac{j}{2^{\\,j}} = \\frac{1/2}{(1/2)^2} = 2$$
+
+$$T(n) \\;\\le\\; \\frac{n}{2}\\cdot 2 = n \\;\\Rightarrow\\; T(n) \\in \\Theta(n)$$
+
+The counter-intuitive step is the weighting: most nodes are near the leaves,
+where sifting is cheap, and the expensive nodes near the root are few. The
+naive $n\\log n$ bound charges every node the root's cost.
+
+**Independent check.** Counting the actual swaps on the same shuffled input at
+each size:
+
+| n | Floyd swaps, counted | Swaps per element | $n\\log _2 n$ |
+|---|---|---|---|
+| 1,000 | 731 | 0.731 | 9,966 |
+| 10,000 | 7,389 | 0.739 | 132,877 |
+| 100,000 | 74,270 | 0.743 | 1,660,964 |
+| 1,000,000 | 742,904 | 0.743 | 19,931,569 |
+
+The per-element column is flat at about 0.74 across three orders of magnitude,
+which is what linear looks like. Two further routes confirm it: the **worst
+case** of Floyd's build is exactly $n - s_2(n)$, where $s_2(n)$ counts the 1
+bits in n, verified by exhaustive search over every permutation for
+$n \\le 9$; and building the same heap by n successive insertions instead has a
+worst case of
+
+$$\\sum_{i=1}^{n} \\lfloor \\log _2 i \\rfloor$$
+
+which is 8,194 swaps at n = 1023 against Floyd's worst case of 1,013 — a
+factor of 8.1 at that size, and growing.
+
+![Two measured swap-count series against the number of elements on logarithmic axes from 64 to about a million: Floyd's bottom-up build-heap, a straight line of slope one at roughly 0.74 swaps per element, and the worst case of building the same heap by repeated insertion, which tracks the dashed n log base two of n reference above it.](/courses/fe-ee/figures/sw2-buildheap-linear.svg)
+
+**Answer**: $\\Theta(n)$, not $\\Theta(n\\log n)$. Heapsort still costs
+$\\Theta(n\\log n)$ overall, because the n extract-min operations that follow the
+build are $\\Theta(\\log n)$ each and cannot be improved:
+
+$$T_{\\text{heapsort}} = \\underbrace{\\Theta(n)}_{\\text{build}} + \\underbrace{\\Theta(n\\log n)}_{n \\text{ extractions}} = \\Theta(n\\log n)$$`,
+      examTip: 'Build-heap from an unordered array is O(n), not O(n log n) - measured at 0.74 swaps per element from a thousand to a million elements. Heapsort is still O(n log n) because of the n extractions that follow. If an option offers O(n) for building a heap, it is right; if it offers O(n) for heapsort, it is not.',
+      importantNote: 'A heap is not a search tree. It orders parents against children only, so finding an arbitrary key is Theta(n). It answers "what is the smallest" in Theta(1) and nothing else quickly. If a question asks for ordered traversal, successor, or range queries, the answer is a BST.',
+    },
+    { id: 'ds-graph-choice', title: '10. Graph Representations and Choosing a Structure',
+      content: `## 10.1 Two Representations, Quantified
+
+An **adjacency matrix** is a $V \\times V$ grid whose entry $(u,v)$ records
+whether the edge exists. An **adjacency list** stores, for each vertex, only
+the neighbours it actually has.
+
+$$\\text{matrix storage} = \\Theta(V^2), \\qquad \\text{list storage} = \\Theta(V + E)$$
+
+Edge counts are bounded by the complete graph, and **density** normalises
+against that ceiling:
+
+$$E_{\\max} = \\frac{V(V-1)}{2} \\ \\text{(undirected)}, \\qquad d = \\frac{2E}{V(V-1)}$$
+
+| Operation | Adjacency matrix | Adjacency list |
+|---|---|---|
+| Is there an edge u to v? | $\\Theta(1)$ | $\\Theta(\\deg u)$ |
+| Enumerate the neighbours of u | $\\Theta(V)$ | $\\Theta(\\deg u)$ |
+| Add an edge | $\\Theta(1)$ | $\\Theta(1)$ |
+| Delete an edge | $\\Theta(1)$ | $\\Theta(\\deg u)$ |
+| Full traversal, BFS or DFS | $\\Theta(V^2)$ | $\\Theta(V + E)$ |
+| Storage | $\\Theta(V^2)$ | $\\Theta(V + E)$ |
+
+The matrix wins one row — the edge test — and loses every row that involves
+walking the graph. Since almost every graph algorithm walks the graph, that is
+the trade.
+
+## 10.2 Worked Example: Where the Storage Break-Even Sits
+
+**Given**: a byte model — one byte per matrix cell, and for the list 8 bytes
+per directed arc (a 4-byte vertex id and a 4-byte next index) plus a 4-byte
+head pointer per vertex. **Find**: the density at which the two cost the same.
+
+An undirected edge appears in two adjacency lists, so E edges become 2E arcs:
+
+$$V^2 = 16E + 4V \\;\\Longrightarrow\\; E = \\frac{V^2 - 4V}{16}$$
+
+At V = 1000:
+
+$$E = \\frac{1000000 - 4000}{16} = 62250, \\qquad d = \\frac{2 \\cdot 62250}{1000 \\cdot 999} = 0.1246$$
+
+**Answer**: about **12.5 % density**. Below it the list is smaller, above it
+the matrix is. The number is remarkably stable in V:
+
+| V | Break-even E | Break-even density | $E_{\\max}$ |
+|---|---|---|---|
+| 100 | 600 | 12.12 % | 4,950 |
+| 1,000 | 62,250 | 12.46 % | 499,500 |
+| 10,000 | 6,247,500 | 12.50 % | 49,995,000 |
+
+Real graphs sit far below that line — a road network has a bounded degree, so
+$E \\approx cV$ and $d \\approx 2c/V$, which falls toward zero as the network
+grows. That is why adjacency lists are the default and matrices appear mainly
+in dense algorithms such as Floyd-Warshall.
+
+## 10.3 Worked Example: The Traversal Gap, Counted
+
+**Given**: V = 500 vertices. **Find**: the adjacency probes one full traversal
+makes under each representation, across a range of densities.
+
+The matrix reads every cell of every row regardless of content; the list reads
+each arc once plus one head per vertex:
+
+$$P_{\\text{matrix}} = V^2 = 250000, \\qquad P_{\\text{list}} = 2E + V$$
+
+Building the graphs and counting:
+
+| E | Density | List probes | Matrix probes | Ratio |
+|---|---|---|---|---|
+| 1,000 | 0.008 | 2,500 | 250,000 | 100.0 |
+| 5,000 | 0.040 | 10,500 | 250,000 | 23.8 |
+| 50,000 | 0.401 | 100,500 | 250,000 | 2.5 |
+| 124,750 | 1.000 | 250,000 | 250,000 | 1.0 |
+
+**Answer**: a factor of 100 on a sparse graph, converging to 1 only at the
+complete graph, where $2E + V = V(V-1) + V = V^2$ exactly.
+
+![Two series of adjacency probes per traversal against edge density on logarithmic axes for a 500-vertex graph: a horizontal line at 250,000 for the adjacency matrix, which reads every cell whatever the edge count, and a rising line for the adjacency list at two E plus V, which meets the matrix line only at density one.](/courses/fe-ee/figures/sw2-graph-density.svg)
+
+## 10.4 A Structure for Each Requirement
+
+| Requirement | Structure | Operation and cost |
+|---|---|---|
+| Fastest lookup by exact key | Hash table | $\\Theta(1)$ average, $\\Theta(n)$ worst |
+| Keys kept in sorted order | Balanced BST | in-order traversal, $\\Theta(n)$ |
+| All keys between x and y | Balanced BST | $\\Theta(\\log n + m)$ for m results |
+| Successor or predecessor of a key | Balanced BST | $\\Theta(\\log n)$ |
+| Repeatedly take the smallest | Binary heap | $\\Theta(1)$ peek, $\\Theta(\\log n)$ extract |
+| Access by position, tight memory | Array | $\\Theta(1)$ index, 4 bytes per integer |
+| Grow to an unknown size, append only | Dynamic array | $\\Theta(1)$ amortised append |
+| Splice, or insert at a held position | Linked list | $\\Theta(1)$ pointer writes |
+| Nesting, backtracking, undo | Stack | $\\Theta(1)$ push and pop |
+| Arrival order, level-order traversal | Queue | $\\Theta(1)$ enqueue and dequeue |
+| Sparse graph | Adjacency list | $\\Theta(V+E)$ traversal |
+| Dense graph, frequent edge tests | Adjacency matrix | $\\Theta(1)$ edge test |
+
+Three rows decide most questions. **Range and order** send you to a tree even
+though the hash table's single-key lookup is faster, because hashing destroys
+the relationship between key value and location by design. **Repeatedly take
+the smallest** sends you to a heap rather than a sorted array, because a
+sorted array costs $\\Theta(n)$ to reinsert. And **density** decides the graph
+representation, not the algorithm you intend to run on it.
+
+## Problem Set C — Linear Structures and Amortised Cost
+
+**C1.** A 4-column array of 4-byte integers starts at address 2000. Give the
+address of $A[2][3]$ in row-major and in column-major order, assuming 5 rows.
+
+**C2.** What is the time complexity of counting the elements in a singly
+linked list, and why?
+
+**C3.** Push 4, push 8, pop, push 6, push 10, pop. Give the popped values in
+order and the final stack from top to bottom.
+
+**C4.** A circular queue has capacity 8, front = 6, rear = 2. How many
+elements does it hold, and how many can it still accept if one slot is kept
+empty to distinguish full from empty?
+
+**C5.** A dynamic array starting at capacity 1 and doubling has just accepted
+its 1000th append. How many element copies have been performed in total, and
+what is the amortised cost per append?
+
+**C6.** Evaluate the postfix expression \`5 3 + 8 2 - *\` and give the peak
+stack depth.
+
+### Worked Answers, Set C
+
+**C1.** Row-major with C = 4 columns:
+
+$$2000 + 2 \\cdot 4 \\cdot 4 + 3 \\cdot 4 = 2044$$
+
+Column-major with R = 5 rows:
+
+$$2000 + 3 \\cdot 5 \\cdot 4 + 2 \\cdot 4 = 2068$$
+
+**Answer**: 2044 and 2068.
+
+**Trap**: using the number of rows in the row-major formula. Row-major strides
+by **columns**, because it is the column index that varies fastest; the row
+count never appears.
+
+**C2.** $\\Theta(n)$. The structure stores no length, so the only way to know
+how many nodes exist is to follow every \`next\` reference to the end.
+
+**Trap**: choosing $\\Theta(1)$ by analogy with an array's length, or
+$\\Theta(\\log n)$ by analogy with a tree. A list offers no shortcut of either
+kind — unless the implementation maintains a size field, which changes the
+answer and is exactly what such a question is probing.
+
+**C3.** Tracking the stack top-to-bottom after each operation:
+
+| Operation | Popped | Stack, top to bottom |
+|---|---|---|
+| push 4 | — | 4 |
+| push 8 | — | 8, 4 |
+| pop | 8 | 4 |
+| push 6 | — | 6, 4 |
+| push 10 | — | 10, 6, 4 |
+| pop | 10 | 6, 4 |
+
+**Answer**: popped 8 then 10; final stack 6 on top of 4.
+
+**Trap**: answering "4, 8" for the pops by reading the sequence as a queue.
+Both orders appear as options, and last-in-first-out returns the most recent
+push, not the earliest.
+
+**C4.** The occupancy formula wraps the difference:
+
+$$(2 - 6 + 8) \\bmod 8 = 4$$
+
+With one slot reserved the usable capacity is $8 - 1 = 7$, so it can accept
+
+$$7 - 4 = 3 \\ \\text{more elements}$$
+
+**Answer**: 4 held, 3 more accepted.
+
+**Trap**: computing $2 - 6 = -4$ and reporting a negative count, or forgetting
+the reserved slot and answering 4 more. Both are the standard distractors, and
+the reserved slot is the reason a "capacity 8" circular queue is often
+documented as holding 7.
+
+**C5.** Doubling from capacity 1 resizes at sizes 1, 2, 4, ..., 512, so
+
+$$1 + 2 + 4 + 8 + 16 + 32 + 64 = 127, \\qquad 127 + 128 + 256 + 512 = 1023$$
+
+which matches the closed form $2^{\\lceil \\log _2 1000 \\rceil} - 1 = 1023$ and
+the counted total. Per append:
+
+$$\\frac{1023}{1000} = 1.023 \\ \\text{copies}$$
+
+**Answer**: 1,023 copies, 1.023 per append, so amortised $\\Theta(1)$.
+
+**Trap**: answering $\\Theta(n)$ because the 512th-to-513th append copied 512
+elements. That is the worst case of **one** operation; the question asks for
+the amortised cost, and the two differ by a factor of n.
+
+**C6.** From the trace in section 8.2 the value is **48** with a peak depth of
+**3**.
+
+**Trap**: popping the operands in the wrong order and computing
+$2 - 8 = -6$, then $8 \\cdot -6 = -48$. The second value popped is the left
+operand of a non-commutative operator.
+
+## Problem Set D — Trees, Heaps, Hashing, Graphs
+
+**D1.** Insert 50, 30, 70, 20, 40, 60, 80 into an empty BST, then insert the
+same keys in ascending order into a second empty BST. Give both heights.
+
+**D2.** Give all three depth-first traversals — pre-order, then in-order, then
+post-order — of the balanced tree from D1.
+
+**D3.** A min-heap holds [10, 20, 15, 30, 40, 25, 18]. Perform extract-min and
+give the resulting array.
+
+**D4.** A hash table of size 8 uses $h(x) = x \\bmod 8$ with linear probing.
+Insert 20, 10, 16, 14, 15, 17 into an empty table and give the final slots.
+
+**D5.** A graph has 7 vertices and 9 undirected edges. How many cells does its
+adjacency matrix have, how many are non-zero, and how many probes does a list
+traversal make?
+
+**D6.** A tree of 1,023 keys is built by shuffled insertion and costs 12.4
+comparisons on average to find a key. How does that compare with a perfectly
+balanced tree of the same size?
+
+### Worked Answers, Set D
+
+**D1.** The first order splits evenly at every step, giving root 50 with
+children 30 and 70 and four grandchildren:
+
+$$h_{\\text{balanced}} = 2 \\ \\text{edges}, \\qquad h_{\\text{sorted}} = 7 - 1 = 6 \\ \\text{edges}$$
+
+**Answer**: 2 and 6. Both trees hold the same seven keys and the same in-order
+sequence; only the arrival order differs.
+
+**Trap**: quoting the height in **nodes** rather than edges, giving 3 and 7.
+Both conventions exist; the FE convention counts edges, so a single node has
+height 0.
+
+**D2.** Reading the balanced tree:
+
+| Traversal | Rule | Output |
+|---|---|---|
+| Pre-order | node, left, right | 50, 30, 20, 40, 70, 60, 80 |
+| In-order | left, node, right | 20, 30, 40, 50, 60, 70, 80 |
+| Post-order | left, right, node | 20, 40, 30, 60, 80, 70, 50 |
+
+**Trap**: offering the in-order output for the pre-order question. In-order is
+the only one that comes out ascending, which makes it the easiest to spot and
+the easiest to select by mistake.
+
+**D3.** Remove the root 10, move the last element 18 into its place, and sift
+down. The children of the root are 20 and 15; the smaller is 15, and
+$15 < 18$, so they swap. At its new position 18 has one child, 25, and
+$18 < 25$, so it stops.
+
+$$[10, 20, 15, 30, 40, 25, 18] \\;\\rightarrow\\; [15, 20, 18, 30, 40, 25]$$
+
+**Answer**: [15, 20, 18, 30, 40, 25]. The sift-down travelled one level here
+and is bounded by the heap's height, $\\lfloor \\log _2 6 \\rfloor = 2$.
+
+**Trap**: promoting the smaller child into the root and shifting the rest, or
+swapping with the **larger** child. Sifting down a min-heap always exchanges
+with the smaller child; using the larger one breaks the heap property one
+level down.
+
+**D4.** With $h(x) = x \\bmod 8$: 20 goes to slot 4, 10 to slot 2, 16 to slot
+0, 14 to slot 6, 15 to slot 7, 17 to slot 1. No two collide, so probing never
+triggers.
+
+| Slot | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| Key | 16 | 17 | 10 | — | 20 | — | 14 | 15 |
+
+**Answer**: as tabulated, with slots 3 and 5 empty and a load factor of
+$6/8 = 0.75$.
+
+**Trap**: placing the keys in the order given rather than at their hashed
+slots, producing 20, 10, 16, 14, 15, 17 across slots 0 to 5. Every value must
+land at $x \\bmod 8$ unless that slot is taken.
+
+**D5.** The matrix is $V \\times V$ whatever the edge count:
+
+$$7 \\cdot 7 = 49 \\ \\text{cells}, \\qquad 2 \\cdot 9 = 18 \\ \\text{non-zero (each edge appears twice)}$$
+
+$$P_{\\text{list}} = 2E + V = 18 + 7 = 25 \\ \\text{probes}$$
+
+**Answer**: 49 cells, 18 non-zero, 25 list probes — so the matrix does about
+twice the work of the list even on a graph this dense
+($d = 18/42 = 0.43$).
+
+**Trap**: reporting 9 non-zero entries. An undirected edge occupies two
+symmetric cells, and the same doubling is why the list stores 2E arcs.
+
+**D6.** The perfect tree of 1,023 keys has its deepest key at
+$\\log _2 1024 = 10$ comparisons, but its **mean** over all keys is
+
+$$\\frac{(10-1)\\cdot 1024 + 1}{1023} = \\frac{9217}{1023} = 9.01$$
+
+$$\\frac{12.4}{9.01} = 1.38$$
+
+**Answer**: shuffled insertion costs about **38 % more** than perfect balance —
+not 24 %, which is what comparing against the depth of the deepest key would
+give. Against sorted insertion, which averages
+$(1023+1)/2 = 512$ comparisons, both are enormously better.
+
+**Trap**: comparing a mean against a maximum. The figure in section 4.4 draws
+$\\log _2(n+1)$ as its reference line, which is the perfect tree's **depth**;
+the perfect tree's mean is about one comparison lower, and using the wrong one
+understates the penalty for random arrival order by 14 percentage points.`,
+      examTip: 'Adjacency matrix cells = V^2 always, and an undirected edge fills TWO of them. A list traversal costs 2E + V probes. On a 500-vertex graph at 0.8 % density that is 2,500 against 250,000 - a factor of 100 that comes from the representation, not the algorithm.',
+      importantNote: 'Storage break-even between an adjacency list and an adjacency matrix sits near 12.5 % density under a plausible byte model, and it barely moves with V. Real graphs with bounded degree have density falling toward zero as they grow, which is why lists are the default.',
     },
   ],
   keyTakeaways: [
