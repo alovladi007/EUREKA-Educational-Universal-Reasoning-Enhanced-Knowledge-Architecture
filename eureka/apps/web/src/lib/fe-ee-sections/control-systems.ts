@@ -317,6 +317,940 @@ precisely the situation the Routh-Hurwitz topic takes up next.`,
       examTip: 'When a question asks how much a plant variation, offset, or disturbance is reduced by closing the loop, the answer is almost always the sensitivity factor 1/(1 + L) evaluated at DC — that is, 1/(1 + K_p) for a Type 0 loop. Compute the loop gain at s = 0 first; everything else is one division.',
       importantNote: 'S(s) + T(s) = 1 at every frequency. Good disturbance rejection (small S) and good tracking (T near 1) are the same requirement, and both need large loop gain — which is why every design argument in control eventually becomes an argument about how much loop gain stability will allow.',
     },
+    {
+      id: 'bd-rules-derived',
+      title: '5. The Three Rules, Derived Rather Than Remembered',
+      content: `## 5.1 Everything Follows From Two Sentences
+
+Section 1 listed series, parallel and feedback as a table to memorise. A table
+memorised is a table forgotten under exam pressure, and worse, a table gives no
+guidance the moment a diagram does not match one of its rows. All three rules —
+and every legal manipulation in Section 6 — are consequences of two statements
+about what the symbols mean:
+
+- a **block** multiplies the transform of its input by its transfer function;
+- a **summing junction** adds the transforms arriving at it, with the sign
+  written beside each arrowhead.
+
+Nothing else is assumed. Both statements hold only because the blocks are
+linear and time-invariant, which is exactly why block-diagram algebra fails
+the moment a saturating amplifier or a rate limiter appears in the loop.
+
+## 5.2 Cascade
+
+Let a signal U drive a block $G_{1}$ whose output V drives a block $G_{2}$
+whose output is Y. Applying the multiplication statement twice,
+
+$$V(s) = G_{1}(s)U(s)$$
+
+$$Y(s) = G_{2}(s)V(s) = G_{2}(s)G_{1}(s)U(s)$$
+
+so the pair behaves as a single block of transfer function
+
+$$G_{\\rm series}(s) = G_{1}(s)G_{2}(s)$$
+
+Two things are worth noticing before moving on. First, the product commutes,
+so the order of two cascaded blocks on paper is irrelevant — a fact that is
+true of the transfer functions and emphatically not true of the hardware, since
+a small signal amplified then filtered has a different noise floor from one
+filtered then amplified. Second, the cascade is only valid when the second
+block does not load the first. A diagram silently promises infinite input
+impedance at every arrowhead.
+
+## 5.3 Parallel
+
+If the same U drives $G_{1}$ and $G_{2}$ and their outputs meet at a summing
+junction with both signs positive,
+
+$$Y(s) = G_{1}(s)U(s) + G_{2}(s)U(s) = [G_{1}(s) + G_{2}(s)]U(s)$$
+
+$$G_{\\rm parallel}(s) = G_{1}(s) + G_{2}(s)$$
+
+A parallel branch that is a pure gain is the commonest way a transfer function
+acquires a zero without acquiring a pole, and it is how proportional-plus-
+derivative action is drawn.
+
+## 5.4 The Feedback Formula
+
+Now close a loop. The reference R enters a summing junction with a plus sign;
+the measured output arrives at the same junction through H with a minus sign;
+the difference E drives G, whose output is Y. Two equations, exactly as
+before:
+
+$$E(s) = R(s) - H(s)Y(s)$$
+
+$$Y(s) = G(s)E(s)$$
+
+Substitute the first into the second and collect the Y terms on one side:
+
+$$Y = G(R - HY) \\Rightarrow Y + GHY = GR \\Rightarrow Y(1 + GH) = GR$$
+
+$$T(s) = Y(s)/R(s) = G(s)/[1 + G(s)H(s)]$$
+
+That is the whole derivation, and it takes fifteen seconds on scrap paper.
+Anyone who can reproduce it never has to remember whether the sign in the
+denominator is plus or minus: the plus comes from moving $-GHY$ across the
+equals sign, and it appears precisely because the feedback arrowhead carried a
+minus. Reverse that arrowhead and the same three lines give
+
+$$T_{+}(s) = G(s)/[1 - G(s)H(s)]$$
+
+The same two equations also hand over the error transfer function without any
+extra work, which is the quantity Section 9 needs:
+
+$$E(s)/R(s) = 1/[1 + G(s)H(s)]$$
+
+## 5.5 The Characteristic Equation Falls Out for Free
+
+The closed-loop poles are the zeros of the denominator of T, so they satisfy
+
+$$1 + G(s)H(s) = 0$$
+
+Write the loop transfer function as a ratio of polynomials, $GH = N(s)/D(s)$,
+clear the fraction, and the poles are the roots of
+
+$$D(s) + N(s) = 0$$
+
+This is the single most-used sentence in the next three chapters. **The
+characteristic polynomial is the denominator of the loop transfer function plus
+its numerator** — not the denominator on its own, which is the most frequent
+wrong turn on the whole topic.
+
+### Worked Example 5.1 — A First-Order Loop, Closed
+
+Take $G(s) = 8/(s+3)$ and a constant sensor gain $H = 0.25$ in negative
+feedback. Find the closed-loop transfer function, its pole, its DC gain and its
+time constant.
+
+Apply the formula and clear the compound fraction in one step by multiplying
+numerator and denominator by $(s+3)$:
+
+$$T(s) = [8/(s+3)]/[1 + 2/(s+3)] = 8/[(s+3) + 2] = 8/(s+5)$$
+
+- **Pole**: the characteristic equation is $s + 3 + 2 = 0$, so $s = -5$. The
+  open-loop pole at −3 has been dragged to −5 by the loop.
+- **DC gain**: $T(0) = 8/5 = 1.6$. Checking that against the open-loop value,
+  $G(0) = 8/3 = 2.6667$ and $G(0)H = 0.66667$, so
+  $2.6667/1.6667 = 1.6$, which agrees.
+- **Time constant**: $\\tau = 1/5 = 0.2$ s, against 0.3333 s open loop. The
+  loop made the plant 1.667 times faster and 1.667 times less sensitive, both
+  by the same factor $1 + G(0)H$.
+
+### Worked Example 5.2 — Positive Feedback and Where It Breaks
+
+Take $G(s) = 4/(s+2)$ with the feedback arrowhead carrying a **plus** sign and
+$H = 0.5$. What is T, and how large may H become?
+
+$$T(s) = [4/(s+2)]/[1 - 2/(s+2)] = 4/[(s+2) - 2] = 4/s$$
+
+The pole has been pushed onto the origin: the loop is now a pure integrator,
+marginally stable, and it will drift on any offset. Raise the feedback to
+$H = 0.75$ and the same algebra gives $4/[(s+2) - 3] = 4/(s-1)$, a pole at
+**+1** and a response that doubles roughly every 0.693 s.
+
+The threshold is where the DC loop gain reaches unity:
+
+$$G(0)H = (4/2)H = 2H = 1 \\Rightarrow H = 0.5$$
+
+Positive feedback is not automatically fatal — it is what a Schmitt trigger and
+an oscillator are built from — but in a regulator it converts the pole-dragging
+of Section 5.4 into pole-pushing, in the wrong direction.
+
+### Worked Example 5.3 — Parallel Path Inside a Loop
+
+A forward path is made of $G_{a}(s) = 6/(s+4)$ in parallel with a plain gain
+$G_{b} = 2$; the sum is then wrapped in unity negative feedback. Find T, its
+DC gain, and its high-frequency gain.
+
+First the parallel combination:
+
+$$G(s) = 6/(s+4) + 2 = [6 + 2(s+4)]/(s+4) = (2s+14)/(s+4)$$
+
+Then the loop:
+
+$$T(s) = G/(1+G) = (2s+14)/[(s+4) + (2s+14)] = (2s+14)/(3s+18)$$
+
+- **DC gain**: $T(0) = 14/18 = 0.7778$. Cross-check from the open-loop value
+  $G(0) = 14/4 = 3.5$: $3.5/4.5 = 0.7778$, which agrees.
+- **Pole and zero**: pole at −6, zero at −7.
+- **High-frequency gain**: $T(\\infty) = 2/3 = 0.66667$, not zero. The parallel
+  gain gives the closed loop a direct feedthrough path, so this transfer
+  function is proper but not strictly proper. Any question that assumes the
+  output of a closed loop must roll off to zero is wrong about this system.
+
+| Configuration | Two-line derivation | Result |
+|---|---|---|
+| Cascade | $V = G_{1}U$, then $Y = G_{2}V$ | $G_{1}G_{2}$ |
+| Parallel | $Y = G_{1}U + G_{2}U$ | $G_{1} + G_{2}$ |
+| Negative feedback | $E = R - HY$, $Y = GE$ | $G/(1+GH)$ |
+| Positive feedback | $E = R + HY$, $Y = GE$ | $G/(1-GH)$ |
+| Error to reference | same two equations | $1/(1+GH)$ |
+| Closed-loop poles | denominator set to zero | roots of $D + N = 0$ |`,
+      examTip: 'Do not memorise the feedback formula — derive it. Write E = R − HY and Y = GE, substitute, and collect. Fifteen seconds of algebra removes every sign ambiguity, works unchanged for positive feedback, and hands you the error transfer function 1/(1 + GH) at the same time.',
+      importantNote: 'The characteristic polynomial of a loop is the NUMERATOR PLUS THE DENOMINATOR of GH, not the denominator alone. If GH = N/D, the closed-loop poles are the roots of D(s) + N(s) = 0. Every stability question in the next chapter starts here, and using D(s) by itself is the most common single error on the topic.',
+    },
+    {
+      id: 'bd-legal-moves',
+      title: '6. Moving Junctions and Takeoff Points Without Changing the Answer',
+      content: `## 6.1 One Test Governs Every Move
+
+Sooner or later a diagram appears whose loops overlap in a way that blocks the
+inside-out method: a feedback branch starts inside one loop and lands inside
+another. The cure is to relocate a summing junction or a takeoff point until
+the loops nest. A relocation is legal when, and only when, **every wire in the
+redrawn diagram carries exactly the signal it carried before**. That single
+test generates all four moves, and it makes each one a one-line proof rather
+than a row in a table.
+
+![Four panels, each showing a diagram before and after a relocation with an equals sign between them. Moving a summing junction downstream of a block G puts a factor G on the relocated input, because G times the sum equals the sum of the G-scaled terms. Moving it upstream puts a factor of one over G on that input. A takeoff point moved upstream of G needs a factor G in the relocated branch, and moved downstream it needs one over G.](/courses/fe-ee/figures/ctl2-block-moves.svg)
+
+## 6.2 Summing Junctions
+
+Suppose two signals meet at a junction and the sum then passes through G. The
+output is
+
+$$Y = G(X_{1} + X_{2}) = GX_{1} + GX_{2}$$
+
+The right-hand form is a picture in its own right: each input passes through
+its own copy of G and the results are added afterwards. So **a summing junction
+moved downstream of a block leaves a factor G on the relocated input**.
+
+Run the identity the other way. If the junction already sits after the block,
+
+$$Y = GX_{1} + X_{2} = G[X_{1} + (X_{2}/G)]$$
+
+so **a summing junction moved upstream of a block leaves a factor 1/G on the
+relocated input**. Two junctions standing side by side may always be swapped,
+because addition is commutative and associative; no compensation is needed and
+nothing is gained either.
+
+## 6.3 Takeoff Points
+
+A takeoff point is a place where a wire is read without being consumed. If the
+takeoff sits after G, the branch carries $GX$; if it is dragged to the input
+side of G, the wire there carries only X, so the branch must be given its own
+copy of G to arrive at the same value. **A takeoff moved upstream of a block
+gains a factor G**; moved downstream, the branch was carrying X and now sits
+where the wire carries $GX$, so it **gains a factor 1/G**.
+
+$$\\text{branch value before} = \\text{branch value after} \\quad \\text{is the whole rule}$$
+
+The one move that is *not* free is dragging a takeoff point across a summing
+junction. The wire before a junction and the wire after it carry genuinely
+different signals, and no single multiplying block can convert one into the
+other, because the difference is an additive term, not a scale factor. Attempts
+to do it anyway are the source of the classic wrong answer in Section 3.4.
+
+### Worked Example 6.1 — A Takeoff Relocated, and the Answer Checked Twice
+
+A loop has a forward path $G_{1}(s) = 6/(s+2)$ followed by
+$G_{2}(s) = 1/(s+3)$. Two feedback branches return to the input summing
+junction: unity feedback from the output y, and a branch of gain 4 taken from
+v, the point **between** the two blocks. Find T.
+
+**Route one — write the node equations.** With $e$ the junction output,
+
+$$e = r - 4v - y, \\qquad v = G_{1}e, \\qquad y = G_{2}v$$
+
+$$v = G_{1}(r - 4v - G_{2}v) \\Rightarrow v(1 + 4G_{1} + G_{1}G_{2}) = G_{1}r$$
+
+$$T(s) = y/r = G_{1}G_{2}/(1 + 4G_{1} + G_{1}G_{2})$$
+
+Substituting and clearing over $(s+2)(s+3)$:
+
+$$T(s) = 6/[(s+2)(s+3) + 24(s+3) + 6] = 6/(s^{2} + 29s + 84)$$
+
+**Route two — move the takeoff, then reduce normally.** Drag the takeoff from
+v to y. It has moved downstream of $G_{2}$, so the branch gains a factor
+$1/G_{2}$ and its gain becomes $4/G_{2} = 4(s+3)$. Both branches now leave the
+same node, so they add:
+
+$$H_{\\rm total}(s) = 1 + 4(s+3) = 4s + 13$$
+
+$$T(s) = G_{1}G_{2}/(1 + G_{1}G_{2}H_{\\rm total}) = 6/[(s+2)(s+3) + 6(4s+13)]$$
+
+$$T(s) = 6/(s^{2} + 5s + 6 + 24s + 78) = 6/(s^{2} + 29s + 84)$$
+
+Identical, which is the point: a correct relocation is an identity, so the two
+routes must agree to the last coefficient. The poles are at −3.2639 and
+−25.7361, both real and both well into the left half plane, and the DC gain is
+$T(0) = 6/84 = 0.07143$.
+
+### Worked Example 6.2 — The Same Move With the Factor Omitted
+
+Repeat the relocation of Example 6.1 but forget the $1/G_{2}$. The branch keeps
+its gain of 4, both branches leave y, and the total feedback becomes
+$H = 1 + 4 = 5$:
+
+$$T_{\\rm wrong}(s) = G_{1}G_{2}/(1 + 5G_{1}G_{2}) = 6/[(s+2)(s+3) + 30] = 6/(s^{2} + 5s + 36)$$
+
+Compare the two answers as a reader would experience them:
+
+| Quantity | Correct | With the factor forgotten |
+|---|---|---|
+| Denominator | $s^{2} + 29s + 84$ | $s^{2} + 5s + 36$ |
+| DC gain | $6/84 = 0.07143$ | $6/36 = 0.16667$ |
+| Poles | −3.2639, −25.7361 (real) | $-2.5 \\pm j5.4544$ |
+| Damping ratio | over-damped | $\\zeta = 5/12 = 0.41667$ |
+| Character of the response | no overshoot at all | 24 per cent overshoot |
+
+The uncompensated answer is not merely 2.333 times too large at DC; it is
+qualitatively the wrong system, oscillatory where the real one is sluggish.
+Nothing about it looks suspicious on its own — that is exactly why the check in
+Example 6.1 matters.
+
+![Two step responses. The original loop and its correctly compensated redrawing lie exactly on top of one another and settle at 0.07143 without overshoot. The version drawn with the takeoff moved but the one-over-G factor omitted settles at 0.16667, more than twice as high, and rings at a damping ratio of 0.4167.](/courses/fe-ee/figures/ctl2-takeoff-move-check.svg)
+
+### Worked Example 6.3 — Where a Disturbance Really Enters
+
+A load disturbance d adds to the reference r **before** a block
+$G(s) = 5/(s+1)$. An engineer redraws the diagram with the disturbance
+entering after G instead, without compensating. How wrong is the steady-state
+answer for a 0.4-unit step of d?
+
+Correctly, d passes through G, so the steady-state contribution is
+
+$$y_{d}(\\infty) = G(0)\\cdot 0.4 = 5 \\times 0.4 = 2$$
+
+With the junction moved downstream and no factor added, the drawing claims the
+contribution is 0.4 — smaller by exactly $G(0) = 5$. Restoring the rule, the
+relocated input must carry a factor G, so the branch becomes $5/(s+1)$ and the
+steady-state contribution returns to 2. The lesson generalises: **where a
+disturbance is injected relative to the plant dynamics changes its effect by
+the whole gain of everything between the two points.** Section 9 turns that
+observation into a design tool.
+
+## 6.4 A Working Order of Operations
+
+1. Look for loops that already nest. Collapse the innermost one first; nothing
+   outside a loop may be cascaded across it while the loop is still open.
+2. If no loop is innermost — that is, two branches cross — relocate the takeoff
+   point that creates the crossing, applying the compensating factor.
+3. Combine cascades and parallel branches only between loop closures.
+4. When the diagram has more than about three loops, stop reducing and use
+   Mason's rule instead. Section 7 shows where the crossover point is.
+5. Check the result at $s = 0$ against a direct arithmetic solve of the node
+   equations with all the blocks replaced by their DC values. This takes under
+   a minute and catches sign errors, missed branches and forgotten
+   compensating factors alike.`,
+      examTip: 'Apply the compensating factor in the direction that keeps the branch value constant. Ask "what does this wire carry now, and what did the branch need before?" — a takeoff dragged upstream past G must be multiplied by G, and one dragged downstream must be multiplied by 1/G. Getting the direction backwards produces an answer that is wrong by a factor of G squared.',
+      importantNote: 'A takeoff point can never be moved across a summing junction with any compensating block. Blocks multiply; the difference between the two sides of a summing junction is additive. If the diagram seems to require that move, reduce a loop first instead.',
+    },
+    {
+      id: 'bd-mason-applied',
+      title: "7. Signal-Flow Graphs and Mason's Rule on a Four-Loop System",
+      content: `## 7.1 The Graph Is the Same Information, Drawn Smaller
+
+A signal-flow graph replaces every block with a labelled arrow and every signal
+with a node. There are no summing-junction symbols, because a node is
+*defined* as the sum of everything arriving at it, and there are no takeoff
+symbols, because a node may have any number of departing arrows. Negative
+feedback shows up as a branch whose gain carries a minus sign. The picture is
+smaller, and — more usefully — it makes the two things Mason's rule counts,
+paths and loops, visible at a glance.
+
+Three definitions do all the work:
+
+- a **forward path** is a route from input node to output node that visits no
+  node twice; its gain $P_{k}$ is the product of the branch gains along it;
+- a **loop** is a closed route that visits no node twice; its gain $L_{i}$ is
+  again the product of its branch gains, minus signs included;
+- two loops (or a loop and a path) **touch** if they share at least one node.
+
+Mason's gain formula then reads
+
+$$T(s) = (1/\\Delta)\\Sigma _k P_{k}\\Delta _k$$
+
+$$\\Delta = 1 - \\Sigma _i L_{i} + \\Sigma _{i,j} L_{i}L_{j} - \\Sigma _{i,j,k} L_{i}L_{j}L_{k} + \\cdots$$
+
+where the second sum runs over pairs of **non-touching** loops, the third over
+mutually non-touching triples, and so on with alternating signs. The cofactor
+$\\Delta _k$ is $\\Delta$ recomputed with every loop that touches path k struck
+out.
+
+The alternating signs are not arbitrary. Expanding $1/(1 + x)$ as a geometric
+series produces exactly this pattern, which is the honest reason the formula
+looks the way it does: it is the determinant of the node-equation matrix,
+written in graph language.
+
+## 7.2 The System
+
+![A signal flow graph with six nodes labelled R, a, b, c, d and Y. Two forward paths run from R to Y, one through a and b carrying G1 then G2, and one through a, c and d carrying G3 then G4. Three feedback branches carry minus H2 from b to a, minus H1 from d to c, and minus H3 from Y to a. Loops one and two share no node, and neither do loops two and three, giving two non-touching pairs. With G1 = 4/(s+2), G2 = 1/(s+1), G3 = 3/(s+5), G4 = 2, H1 = 1, H2 = 0.5 and H3 = 1 the closed-loop transfer function is (2s squared + 10s + 24) over (s cubed + 12s squared + 39s + 44), with T(0) = 6/11 = 0.54545.](/courses/fe-ee/figures/ctl2-sfg-mason.svg)
+
+The graph above has two forward paths and four loops, and sequential reduction
+on it is genuinely painful: the outer loop from Y touches both branches, so no
+loop is innermost. Mason's rule dispatches it in about four minutes, and every
+one of those minutes is bookkeeping rather than algebra.
+
+| Item | Route | Gain | Nodes visited |
+|---|---|---|---|
+| Path $P_{1}$ | R–a–b–Y | $G_{1}G_{2}$ | a, b |
+| Path $P_{2}$ | R–a–c–d–Y | $G_{3}G_{4}$ | a, c, d |
+| Loop $L_{1}$ | a–b–a | $-G_{1}H_{2}$ | a, b |
+| Loop $L_{2}$ | c–d–c | $-G_{4}H_{1}$ | c, d |
+| Loop $L_{3}$ | a–b–Y–a | $-G_{1}G_{2}H_{3}$ | a, b, Y |
+| Loop $L_{4}$ | a–c–d–Y–a | $-G_{3}G_{4}H_{3}$ | a, c, d, Y |
+
+### Worked Example 7.1 — Enumerating the Determinant
+
+Read the node columns of the table and compare them pairwise. $L_{1}$ occupies
+a and b; $L_{2}$ occupies c and d; they share nothing, so they are
+**non-touching**. $L_{2}$ and $L_{3}$ occupy c, d against a, b, Y — also
+non-touching. Every other pair shares node a or node Y. No three loops are
+mutually non-touching, so the expansion stops after the pair terms:
+
+$$\\Delta = 1 - (L_{1} + L_{2} + L_{3} + L_{4}) + (L_{1}L_{2} + L_{2}L_{3})$$
+
+Substituting the gains and factoring what is common,
+
+$$\\Delta = (1 + G_{4}H_{1})(1 + G_{1}H_{2} + G_{1}G_{2}H_{3}) + G_{3}G_{4}H_{3}$$
+
+Now the cofactors. Path $P_{1}$ visits a, b and Y, which touches $L_{1}$,
+$L_{3}$ and $L_{4}$; only $L_{2}$ survives, so
+
+$$\\Delta _1 = 1 - L_{2} = 1 + G_{4}H_{1}$$
+
+Path $P_{2}$ visits a, c, d and Y, which touches every loop in the table, so
+$\\Delta _2 = 1$. The answer assembles itself:
+
+$$T(s) = [G_{1}G_{2}(1 + G_{4}H_{1}) + G_{3}G_{4}]/\\Delta$$
+
+### Worked Example 7.2 — Putting the Numbers In, Twice
+
+Take $G_{1} = 4/(s+2)$, $G_{2} = 1/(s+1)$, $G_{3} = 3/(s+5)$, $G_{4} = 2$,
+$H_{1} = 1$, $H_{2} = 0.5$ and $H_{3} = 1$. Then $1 + G_{4}H_{1} = 3$, and
+
+$$\\Delta = 3 + 6/(s+2) + 12/[(s+1)(s+2)] + 6/(s+5)$$
+
+Clearing over $(s+1)(s+2)(s+5)$ gives $\\Delta = (3s^{3} + 36s^{2} + 117s + 132)$
+over that same product, while the numerator becomes
+$(6s^{2} + 30s + 72)$ over it. The common denominator cancels:
+
+$$T(s) = (6s^{2} + 30s + 72)/(3s^{3} + 36s^{2} + 117s + 132)$$
+
+$$T(s) = (2s^{2} + 10s + 24)/(s^{3} + 12s^{2} + 39s + 44)$$
+
+**The independent check.** Evaluate the graph at $s = 0$ arithmetically,
+without any of the algebra above. The blocks become $G_{1} = 2$, $G_{2} = 1$,
+$G_{3} = 0.6$, $G_{4} = 2$, so the loop gains are $L_{1} = -1$, $L_{2} = -2$,
+$L_{3} = -2$ and $L_{4} = -1.2$. Then
+
+$$\\Delta (0) = 1 + 6.2 + (2 + 4) = 13.2$$
+
+$$P_{1}\\Delta _1 = 2 \\times 3 = 6, \\qquad P_{2}\\Delta _2 = 1.2$$
+
+$$T(0) = 7.2/13.2 = 0.54545$$
+
+and from the polynomial, $T(0) = 24/44 = 0.54545$. The two agree. Because the
+second route never touched the symbolic expansion, an error in the factoring
+could not have propagated into it.
+
+Solving the five node equations as a linear system at a spread of complex
+frequencies gives the same transfer function to fourteen significant figures,
+which is the check the figure generator actually performs.
+
+## 7.3 Reading the Answer
+
+Applying the cubic Routh test to $s^{3} + 12s^{2} + 39s + 44$ gives
+$12 \\times 39 = 468$ against $1 \\times 44 = 44$, comfortably stable; the poles
+are at −7.6572 and $-2.1714 \\pm j1.0155$. The zeros sit at
+$-2.5 \\pm j2.3979$, a complex pair that no single branch of the graph put
+there — it emerged from the *sum* of the two forward paths. That is worth
+holding on to: **parallel forward paths create zeros**, and those zeros are
+usually invisible in the diagram.
+
+## 7.4 When to Use Which Method
+
+| Situation | Faster method | Why |
+|---|---|---|
+| One loop, or nested loops | Sequential reduction | Two applications of $G/(1+GH)$ |
+| Two loops sharing one block | Sequential reduction after one takeoff move | The move costs less than the bookkeeping |
+| Three or more loops, or any crossing | Mason's rule | No relocation, no compensating factors |
+| Several forward paths | Mason's rule | Reduction cannot express a sum of paths cleanly |
+| Only the DC gain is wanted | Arithmetic on the graph | Replace every block by its value at $s = 0$ |
+
+On the exam itself the honest advice is that Mason's rule is rarely the fastest
+route, because exam diagrams are drawn to be reducible. Learn it anyway for the
+last row of that table: the ability to evaluate a graph numerically at
+$s = 0$ turns a five-minute algebra problem into a thirty-second arithmetic
+one whenever the question asks only for a steady-state value.`,
+      examTip: "Two loops touch if they share even one node, and the input and output nodes count. Most Mason errors are not algebra — they are declaring a pair non-touching when both routes pass through the summing node at the plant input. List each loop's node set explicitly before comparing anything.",
+      importantNote: 'The cofactor for a forward path is NOT always 1. It equals 1 only when every loop in the graph touches that path. A path that bypasses part of the system typically misses at least one local loop, and dropping the resulting factor is the standard way a Mason answer comes out wrong while still looking plausible.',
+    },
+    {
+      id: 'bd-unity-and-type',
+      title: '8. Unity Feedback, System Type, and Where the Error Constants Live',
+      content: `## 8.1 Turning Any Loop Into a Unity-Feedback Loop
+
+Every result about steady-state error — position, velocity and acceleration
+constants, system type, the whole error table — is stated for unity feedback.
+Real loops rarely have it: a sensor has gain, and often dynamics. The bridge is
+one line of algebra. Start from the closed-loop transfer function and multiply
+above and below by H:
+
+$$T(s) = G/(1 + GH) = (1/H)\\cdot [GH/(1 + GH)]$$
+
+The bracket is exactly the closed-loop transfer function of a **unity-feedback
+loop whose open-loop transfer function is GH**. The factor $1/H$ outside it is
+a static rescaling of the output. So:
+
+- **system type** is the number of poles at the origin in $GH$, not in G;
+- **error constants** are limits of $GH$, not of G;
+- the closed-loop DC gain is $1/H(0)$ whenever $GH$ has an integrator, because
+  the bracket goes to 1.
+
+$$K_{p} = \\lim_{s \\to 0} G(s)H(s), \\qquad K_{v} = \\lim_{s \\to 0} sG(s)H(s), \\qquad K_{a} = \\lim_{s \\to 0} s^{2}G(s)H(s)$$
+
+## 8.2 Which Error Does the Loop Actually Regulate?
+
+This is where marks are lost. The signal the loop drives towards zero is the
+one at the comparator,
+
+$$E(s) = R(s) - H(s)Y(s)$$
+
+which is **not** $R - Y$ unless $H = 1$. A loop with $H = 2$ will happily
+settle with the output at half the reference, because at that point the
+comparator sees zero and has nothing left to correct. Asking "what is the
+steady-state error?" without saying which difference is meant is ambiguous, and
+exam questions resolve the ambiguity by asking for the output value instead.
+
+$$e(\\infty) = 1/(1 + K_{p}) \\ \\text{(step, Type 0)}, \\qquad e(\\infty) = 1/K_{v} \\ \\text{(ramp, Type 1)}$$
+
+### Worked Example 8.1 — A Dynamic Sensor
+
+$G(s) = 10/[s(s+2)]$ with feedback $H(s) = (s+1)/(s+5)$. Find the closed-loop
+transfer function, the system type, the velocity constant, and the output
+produced by a unit step.
+
+The unity-feedback equivalent open loop is
+
+$$G(s)H(s) = 10(s+1)/[s(s+2)(s+5)]$$
+
+which has exactly one pole at the origin, so the loop is **Type 1** — and it
+was Type 1 before the sensor was attached too, but only because this particular
+H contributed no pole or zero at the origin. The velocity constant is
+
+$$K_{v} = \\lim_{s \\to 0} s\\cdot 10(s+1)/[s(s+2)(s+5)] = 10/(2 \\times 5) = 1$$
+
+so the unity-feedback equivalent tracks a unit ramp with a steady error of
+$1/K_{v} = 1$. Now the transfer function itself:
+
+$$T(s) = G/(1+GH) = 10(s+5)/[s(s+2)(s+5) + 10(s+1)]$$
+
+$$T(s) = 10(s+5)/(s^{3} + 7s^{2} + 20s + 10)$$
+
+Stability first, because a steady-state number from an unstable loop is
+meaningless: the cubic test gives $7 \\times 20 = 140$ against
+$1 \\times 10 = 10$, so all three poles are in the left half plane (they are at
+−0.6242 and $-3.1879 \\pm j2.4202$). Then
+
+$$T(0) = 50/10 = 5$$
+
+A unit step produces an output of 5, not 1. That is not an error in the loop —
+it is $1/H(0) = 5/1 = 5$, the rescaling predicted by Section 8.1. The
+comparator error really does go to zero; the output simply settles wherever it
+must for $H(s)Y(s)$ to equal the reference.
+
+### Worked Example 8.2 — The Trap, With Its Wrong Number
+
+$G(s) = 20/(s+4)$ with a constant sensor gain $H = 2$. A candidate computes the
+position constant from G, gets $K_{p} = G(0) = 5$, and reports a steady-state
+error of $1/(1+5) = 0.16667$. What is actually true?
+
+The unity-feedback equivalent open loop is $GH = 40/(s+4)$, so
+
+$$K_{p} = GH(0) = 40/4 = 10, \\qquad e(\\infty) = 1/(1 + 10) = 0.09091$$
+
+and the closed-loop transfer function is
+
+$$T(s) = [20/(s+4)]/[1 + 40/(s+4)] = 20/(s + 44)$$
+
+$$y(\\infty) = T(0) = 20/44 = 0.45455$$
+
+Check the comparator: $H y(\\infty) = 2 \\times 0.45455 = 0.9091$, so
+$e(\\infty) = 1 - 0.9091 = 0.0909$, matching the error constant exactly. The
+candidate's 0.16667 is wrong by a factor of 1.833, and note the second trap
+hiding behind it: the difference $r - y = 1 - 0.45455 = 0.54545$ is neither of
+those numbers and is not an error the loop is trying to remove.
+
+| Quantity | Read from G alone (wrong) | Read from GH (correct) |
+|---|---|---|
+| Position constant | 5 | 10 |
+| Comparator error to a unit step | 0.16667 | 0.09091 |
+| Output at steady state | 0.83333 | 0.45455 |
+| Reference minus output | 0.16667 | 0.54545 |
+
+## 8.3 Feedback and Bandwidth, Restated Exactly
+
+Section 4.4 quoted a closed-loop bandwidth of 6.879 rad/s for
+$L = 20/(s+1)^{2}$. That number has a closed form worth carrying, because it
+follows from the standard second-order form alone:
+
+$$\\omega _B = \\omega _n\\sqrt{1 - 2\\zeta ^{2} + \\sqrt{4\\zeta ^{4} - 4\\zeta ^{2} + 2}}$$
+
+With $\\omega _n = \\sqrt{21} = 4.5826$ and $\\zeta = 1/\\sqrt{21} = 0.21822$
+this evaluates to 6.8789 rad/s, which agrees to eight figures with solving
+$\\lvert T(j\\omega )\\rvert = T(0)/\\sqrt{2}$ numerically. The companion
+results are the resonant peak and the frequency at which it occurs:
+
+$$\\omega _r = \\omega _n\\sqrt{1 - 2\\zeta ^{2}} = \\sqrt{19} = 4.3589\\ \\mathrm{rad/s}$$
+
+$$M_{r} = 1/[2\\zeta \\sqrt{1 - \\zeta ^{2}}] = 2.3479$$
+
+The second of those is a genuinely independent confirmation of the transfer
+function: brute-force scanning $\\lvert T(j\\omega )\\rvert$ over four million
+frequency points finds its maximum at $\\sqrt{19}$ with the value
+$\\sqrt{5} = 2.2361$, and dividing by the DC gain $20/21 = 0.95238$ gives
+2.3479 again.`,
+      examTip: 'Convert to unity feedback before touching a system-type or error-constant question: the open-loop transfer function you need is the PRODUCT GH, and the closed-loop DC gain of a Type 1 or higher loop is 1/H(0). Reading the type off G alone is the single most reliable way to get a steady-state question wrong.',
+      importantNote: 'The steady-state error a loop drives to zero is r − Hy, measured at the comparator, not r − y measured at the output. With H = 2 those two differ by more than a factor of five in Example 8.2. Read the question carefully to see which one it wants; if it asks for the output, compute T(0) and stop.',
+    },
+    {
+      id: 'bd-four-transfer-functions',
+      title: '9. Disturbances, Noise, and the Four Transfer Functions of a Loop',
+      content: `## 9.1 A Loop Has Four Inputs, Not One
+
+Reference tracking is the input a block diagram is usually drawn to explain and
+the least important of the four in practice. Draw a controller C and a plant P
+in a unity-feedback loop, and admit three more signals: a disturbance
+$d_{i}$ added at the plant input, a disturbance $d_{o}$ added at the plant
+output, and sensor noise n added to the measurement. Writing the node equations
+exactly as in Section 5,
+
+$$e = r - (y + n), \\qquad u = Ce, \\qquad y = P(u + d_{i}) + d_{o}$$
+
+$$y = PC(r - y - n) + Pd_{i} + d_{o}$$
+
+$$y(1 + L) = Lr - Ln + Pd_{i} + d_{o}, \\qquad L = PC$$
+
+$$y = Tr - Tn + [P/(1+L)]d_{i} + Sd_{o}$$
+
+with $S = 1/(1+L)$ and $T = L/(1+L)$ as in Section 4. Four inputs, four
+transfer functions, and only two independent shapes among them, because
+$S + T = 1$.
+
+| Input | Transfer function to the output | Made small by |
+|---|---|---|
+| Reference r | $T = L/(1+L)$ | nothing — you want this near 1 |
+| Output disturbance $d_{o}$ | $S = 1/(1+L)$ | large loop gain |
+| Input disturbance $d_{i}$ | $PS = P/(1+L)$ | large **controller** gain |
+| Sensor noise n | $-T$ | small loop gain |
+
+The last row is the whole difficulty of control design in one line. Noise
+enters through T, disturbances leave through S, and $S + T = 1$, so no loop
+gain suppresses both at the same frequency. All a designer can choose is where
+each one is small.
+
+## 9.2 The Numbers for the Loop of Section 3
+
+Use $C = G_{1} = 10/(s+1)$ and $P = G_{\\rm eq} = 2/(s+1)$, so
+$L = 20/(s+1)^{2}$ as before.
+
+$$S(s) = (s+1)^{2}/(s^{2} + 2s + 21), \\qquad T(s) = 20/(s^{2} + 2s + 21)$$
+
+$$P(s)S(s) = 2(s+1)/(s^{2} + 2s + 21)$$
+
+At DC these give $S(0) = 1/21 = 0.04762$, $T(0) = 20/21 = 0.95238$ and
+$P(0)S(0) = 2/21 = 0.09524$.
+
+![Two magnitude curves in decibels against frequency for the loop L = 20 over (s+1) squared. The sensitivity starts at minus 26.44 decibels at DC, climbs back through 0 decibels at the square root of 11, which is 3.317 radians per second, and peaks at the square root of 6, or 7.78 decibels, at the square root of 23, which is 4.796 radians per second. The complementary sensitivity is flat near 0 decibels at low frequency, peaks at the square root of 5, or 6.99 decibels, at the square root of 19, which is 4.359 radians per second, and then rolls off.](/courses/fe-ee/figures/ctl2-sensitivity-magnitude.svg)
+
+The figure is the frequency-domain statement of the same trade. Sensitivity is
+26.44 dB down at DC, which is the disturbance rejection; it is back to unity at
+$\\sqrt{11} = 3.3166$ rad/s, above which the loop rejects nothing; and it
+overshoots to $\\sqrt{6} = 2.4495$, so between roughly 3.3 and 8 rad/s the loop
+makes disturbances **worse** than no loop at all. That peak has a name,
+$M_{s}$, and a rule of thumb: keeping it below about 2 is a design target,
+because $1/M_{s}$ is a lower bound on how close the loop comes to instability.
+
+### Worked Example 9.1 — Three Disturbances, Three Answers
+
+For the loop above, compute the steady-state output produced by (a) a unit step
+of load torque entering at the actuator input, (b) a unit step offset added at
+the plant output, and (c) a 0.02 sensor bias.
+
+(a) The path is $PS$, so $y(\\infty) = 2/21 = 0.09524$. Without the loop it
+would be $P(0) = 2$, so the loop divided it by 21.
+
+(b) The path is S, so $y(\\infty) = 1/21 = 0.04762$.
+
+(c) The path is $-T$, so the output shifts by
+$-0.02 \\times 0.95238 = -0.01905$. The loop does not attenuate this at all —
+it cannot, because a sensor error is indistinguishable from a real error. A
+sensor with a 2 per cent bias produces a 1.9 per cent output bias no matter how
+much gain is applied.
+
+The ordering is the lesson. An input disturbance is worse than an output
+disturbance by exactly the DC gain of the plant, here a factor of 2, and sensor
+error is worse than both by a factor of 20.
+
+![Two step responses to a unit disturbance injected at the actuator input. With the loop open the output climbs to 2.000 and stays there. With the loop closed it peaks at 0.3950 after 0.351 seconds and then settles to 0.09524, twenty-one times smaller than the open-loop value.](/courses/fe-ee/figures/ctl2-disturbance-step.svg)
+
+Notice what the closed-loop curve does before it settles: it rises to 0.3950,
+four times its final value, and only then comes back. Rejection is a
+steady-state property. During the first few hundred milliseconds the loop has
+not yet had time to respond, and the plant behaves exactly as it would with no
+controller at all.
+
+### Worked Example 9.2 — Sensitivity as a Derivative
+
+Section 4.2 measured what a 10 per cent plant error does to the closed-loop DC
+gain and got 0.53 per cent. Derive that number instead of measuring it, and
+find where the difference between the two comes from.
+
+Differentiate $T = G/(1+GH)$ with respect to G using the quotient rule:
+
+$$dT/dG = [(1 + GH) - G\\cdot H]/(1 + GH)^{2} = 1/(1 + GH)^{2}$$
+
+The relative sensitivity, which is the quantity a percentage question asks
+about, multiplies by $G/T$:
+
+$$S^{T}_{G} = (dT/T)/(dG/G) = [1/(1+GH)^{2}]\\cdot G\\cdot (1+GH)/G = 1/(1 + GH)$$
+
+so the sensitivity function of Section 4 is not merely analogous to a
+derivative — it **is** one. At DC, $S(0) = 1/21 = 0.04762$, predicting that a
+10 per cent plant error produces a 0.4762 per cent change in closed-loop DC
+gain.
+
+The exact calculation gives a slightly different figure. Dropping the amplifier
+gain by 10 per cent takes the loop gain from 20 to 18, so the DC gain moves
+from $20/21 = 0.95238$ to $18/19 = 0.94737$, a relative change of
+
+$$(0.94737 - 0.95238)/0.95238 = -0.005263$$
+
+or −0.5263 per cent. The derivative estimate is 0.4762 per cent and the exact
+answer is 0.5263 per cent, because the derivative is evaluated at the nominal
+gain while the true change is an average over the interval. For a 10 per cent
+perturbation the two differ by a tenth of their own size, which is exactly the
+accuracy a first-order sensitivity is entitled to.
+
+## 9.3 What Rising Loop Gain Buys and Costs
+
+![Two stacked panels against DC loop gain on a logarithmic axis for the loop L0 over (s+1) squared, where the damping ratio is one over the square root of one plus L0. The upper panel shows percent overshoot rising from about 4 per cent at a loop gain of 1 through 49.54 per cent at a loop gain of 20 to 60.85 per cent at 40. The lower panel shows the steady-state step error falling from 50 per cent through 4.762 per cent to 2.439 per cent over the same range.](/courses/fe-ee/figures/ctl2-loopgain-tradeoff.svg)
+
+For this particular loop the trade is unusually clean, because closing unity
+feedback around $L_{0}/(s+1)^{2}$ gives a denominator $s^{2} + 2s + (1+L_{0})$
+and therefore
+
+$$\\omega _n = \\sqrt{1 + L_{0}}, \\qquad \\zeta = 1/\\sqrt{1 + L_{0}}, \\qquad e(\\infty) = 1/(1 + L_{0})$$
+
+Damping and error fall together, one as a square root and one directly, which
+is why the two panels of the figure look like mirror images on a logarithmic
+axis. Doubling the loop gain from 20 to 40 halves the error from 4.762 per cent
+to 2.439 per cent and pays for it with eleven extra points of overshoot.
+
+A two-pole loop can never actually be destabilised this way — $\\zeta$
+approaches zero but never reaches it. Add a third pole anywhere and the story
+changes completely, which is the subject of the next chapter.
+
+## 9.4 The Minor Loop, Re-examined
+
+Section 3 wrapped a tachometer of gain 0.5 around an integrating actuator and
+noted that it improved damping while destroying the zero steady-state error.
+Sweeping that gain shows the whole trade at once. With $G_{2} = 2/s$ and
+tachometer gain k, the inner loop collapses to $2/(s + 2k)$, so
+
+$$L(s) = 20/[(s+1)(s+2k)], \\qquad \\omega _n = \\sqrt{2k + 20}, \\qquad \\zeta = (1 + 2k)/(2\\sqrt{2k+20})$$
+
+$$e(\\infty) = 1/(1 + K_{p}) = k/(k + 10) \\quad (k > 0)$$
+
+![Two stacked panels against tachometer feedback gain k. The upper panel shows the damping ratio rising from 0.1118 at k equal to zero, through 0.2182 at the worked case k equal to 0.5, to critical damping at k equal to 4.972. The lower panel shows the steady-state step error rising from exactly zero at k equal to zero, through 4.762 per cent at k equal to 0.5, to 33.21 per cent at k equal to 4.972.](/courses/fe-ee/figures/ctl2-minor-loop-tradeoff.svg)
+
+At $k = 0$ the integrator survives, the loop is Type 1, and the step error is
+exactly zero — but the damping ratio is only 0.1118 and the response rings for
+a dozen cycles. At $k = 0.5$, the case worked in Section 3, damping has
+improved to 0.2182 at a cost of 4.762 per cent error. Critical damping arrives
+at $k = 4.972$, by which point a third of the reference is being given away.
+There is no value of k that is simply "best"; there is only a curve, and a
+specification that picks a point on it.`,
+      examTip: 'Identify where the disturbance enters before choosing a formula. Injected at the plant output it is divided by 1 + L; injected at the plant input it is divided by 1 + L but first multiplied by the plant gain; arriving as sensor error it is not attenuated at all. The three answers for the same loop differ by a factor of 20 here.',
+      importantNote: 'S + T = 1 means disturbance rejection and noise rejection are in direct competition at every frequency. A sensitivity peak M_s above about 2 is a warning sign: over that band the closed loop amplifies disturbances relative to having no loop at all, even though the system is perfectly stable.',
+    },
+    {
+      id: 'bd-problem-sets',
+      title: '10. Problem Sets',
+      content: `## 10.1 How to Use These
+
+Work each problem to a number on paper before reading the solution. Every
+solution names the distractor a hurried candidate lands on and states the wrong
+number it produces, because recognising your own wrong answer in a list of
+options is a skill worth practising deliberately.
+
+### Problem Set 10A — Reduction, Relocation and Mason
+
+**A1.** A forward block $G(s) = 12/(s+3)$ carries a minor negative-feedback
+loop of gain $H_{2} = 0.25$, and the result is wrapped in unity negative
+feedback. Find the closed-loop transfer function, its pole and its DC gain.
+
+*Solution.* Collapse the minor loop first:
+
+$$G_{\\rm eq}(s) = [12/(s+3)]/[1 + 3/(s+3)] = 12/(s+6)$$
+
+Then close the outer loop:
+
+$$T(s) = [12/(s+6)]/[1 + 12/(s+6)] = 12/(s + 18)$$
+
+The pole is at −18 and $T(0) = 12/18 = 0.6667$.
+
+*The trap.* Applying unity feedback to the bare G and never closing the minor
+loop gives $12/(s+15)$, a pole at −15 and a DC gain of $12/15 = 0.8$. The
+answer looks the right shape, which is what makes it dangerous. Always ask
+whether every loop in the drawing has been consumed.
+
+**A2.** The same block $G(s) = 6/(s+3)$ now sits in **positive** feedback with
+$H = 0.4$. Find the pole, and find the value of H at which the loop becomes
+unstable.
+
+*Solution.* $G(0)H = 2 \\times 0.4 = 0.8$, and
+
+$$T(s) = [6/(s+3)]/[1 - 2.4/(s+3)] = 6/(s + 0.6)$$
+
+The pole is at −0.6: still stable, but the loop has been slowed from a time
+constant of 0.3333 s to 1.667 s. Instability arrives when the DC loop gain
+reaches 1, that is when $2H = 1$, so $H = 0.5$.
+
+*The trap.* Using the negative-feedback formula out of habit gives
+$6/(s + 5.4)$, a pole at −5.4 — a loop that appears to have been made five
+times *faster* rather than five times slower. The sign in the denominator is
+the entire content of this problem.
+
+**A3.** A signal-flow graph has nodes R, a, b, Y with branches R to a of gain
+1, a to b of gain 5, b to Y of gain 2, a to Y of gain 3, and a feedback branch
+b to a of gain −0.4. Find $T = Y/R$ by Mason's rule.
+
+*Solution.* Two forward paths: $P_{1} = 5 \\times 2 = 10$ through a and b, and
+$P_{2} = 3$ through a only. One loop, $L_{1} = 5 \\times (-0.4) = -2$,
+occupying a and b. There are no non-touching pairs, so
+
+$$\\Delta = 1 - (-2) = 3$$
+
+Both paths pass through node a, so both touch $L_{1}$ and both cofactors are 1:
+
+$$T = (10 + 3)/3 = 4.3333$$
+
+*The trap.* Seeing only the obvious forward path and reporting
+$10/3 = 3.3333$. Feedforward branches that skip a block are easy to miss on a
+crowded graph; count paths before counting loops.
+
+**A4.** In the system of Worked Example 6.1, the takeoff for the gain-4 branch
+is relocated from v to y. State the compensating factor, the corrected feedback
+transfer function, and the DC gain that results if the compensation is
+forgotten.
+
+*Solution.* The takeoff has moved **downstream** of $G_{2}$, so the branch
+gains a factor $1/G_{2} = s + 3$ and becomes $4(s+3)$. Combined with the unity
+branch, $H_{\\rm total} = 4s + 13$, and the correct closed loop is
+$6/(s^{2} + 29s + 84)$ with $T(0) = 6/84 = 0.07143$.
+
+*The trap.* Omitting the factor gives $H = 5$ and $6/(s^{2} + 5s + 36)$, whose
+DC gain is $6/36 = 0.16667$ — high by a factor of 2.333, and oscillatory where
+the true system is over-damped.
+
+### Problem Set 10B — Sensitivity, Disturbance and System Type
+
+**B1.** A loop has $L(0) = 20$. A 1.0 V offset appears at the plant output.
+How much of it reaches the controlled output in steady state?
+
+*Solution.* The path is the sensitivity function, so the answer is
+$1/(1 + 20) = 0.04762$ V, or 47.62 mV.
+
+*The trap.* Dividing by the loop gain rather than by one plus the loop gain
+gives $1/20 = 0.05$ V, or 50 mV. The 5 per cent discrepancy is invisible at
+$L = 20$ and enormous at $L = 1$, where the two answers are 0.5 and 1.0.
+
+**B2.** $G(s) = 20/(s+4)$ with constant feedback $H = 2$. Find the output
+produced by a unit step and the steady-state error at the comparator.
+
+*Solution.* The unity-feedback equivalent open loop is $GH = 40/(s+4)$, so
+$K_{p} = 40/4 = 10$ and the comparator error is
+$1/(1+10) = 0.09091$. The closed loop is $T(s) = 20/(s+44)$, so
+
+$$y(\\infty) = 20/44 = 0.45455$$
+
+*The trap.* Computing $K_{p}$ from G alone gives 5 and an error of
+$1/6 = 0.16667$. A second trap is reporting $r - y = 0.54545$ as "the error";
+it is a difference the loop is not trying to remove.
+
+**B3.** For the loop $L = 20/(s+1)^{2}$, the amplifier gain falls 10 per cent.
+By what percentage does the closed-loop DC gain change, exactly and to first
+order?
+
+*Solution.* Exactly: the loop gain becomes 18, so the DC gain moves from
+$20/21 = 0.95238$ to $18/19 = 0.94737$, a change of −0.5263 per cent. To first
+order the sensitivity is $S(0) = 1/21 = 0.04762$, predicting −0.4762 per cent.
+
+*The trap.* Answering −10 per cent, which is the open-loop result and the
+number a diagram invites if the loop is overlooked. The whole point of the
+sensitivity function is that the closed-loop figure is nineteen times smaller.
+
+**B4.** In the same loop, with plant $P(0) = 2$, compare the steady-state
+effect of a unit disturbance at the plant input with one at the plant output.
+
+*Solution.* At the input the path is $PS$, giving $2/21 = 0.09524$; at the
+output it is S, giving $1/21 = 0.04762$. The input disturbance is worse by
+exactly $P(0) = 2$.
+
+*The trap.* Treating the two as equivalent and quoting 0.04762 for both. The
+ratio between them is the plant gain, so on a high-gain plant an input
+disturbance can be orders of magnitude more damaging.
+
+### Practice Problems 10C — Exam-Speed Drills
+
+Each of these should take under sixty seconds.
+
+**C1.** Three blocks in cascade: $4/(s+1)$, then 3, then $1/(s+2)$. What is the
+DC gain of the cascade?
+
+*Solution.* Multiply: $12/[(s+1)(s+2)]$, so $T(0) = 12/2 = 6$.
+*The trap.* Adding instead of multiplying gives $4 + 3 + 0.5 = 7.5$.
+
+**C2.** Two blocks in parallel: a gain of 5 and $3/(s+2)$. DC gain of the
+combination?
+
+*Solution.* Add: $5 + 1.5 = 6.5$.
+*The trap.* Multiplying gives $5 \\times 1.5 = 7.5$ — the same wrong number as
+C1, which is exactly why the two rules get confused.
+
+**C3.** Unity negative feedback around a pure gain of 50. What is the
+closed-loop gain?
+
+*Solution.* $50/51 = 0.98039$.
+*The trap.* Answering 50, forgetting that the loop divides by $1 + L$. At high
+gain the closed loop approaches 1, never the open-loop value.
+
+**C4.** Unity feedback around $K/[s(s+4)]$ with $K = 8$. Find $\\omega _n$ and
+$\\zeta$.
+
+*Solution.* The characteristic polynomial is $s^{2} + 4s + K = s^{2} + 4s + 8$,
+so $\\omega _n = \\sqrt{8} = 2.8284$ rad/s and
+$\\zeta = 4/(2 \\times 2.8284) = 0.70711$.
+*The trap.* Reading $\\omega _n = 8$ from the constant term without taking the
+square root, then computing $\\zeta = 4/16 = 0.25$.
+
+**C5.** A closed loop has $T(s) = 20/(s^{2} + 2s + 21)$. What is the
+steady-state error to a unit step?
+
+*Solution.* $T(0) = 20/21 = 0.95238$, so the error is
+$1 - 0.95238 = 0.04762$, or 4.762 per cent.
+*The trap.* Reporting 0.95238 as the error, or reading the numerator 20 as a
+gain and concluding the output overshoots the reference twentyfold.
+
+## 10.2 A Two-Minute Self-Check
+
+Before leaving this chapter, confirm you can do each of these without looking
+back:
+
+| Task | Target time |
+|---|---|
+| Derive $T = G/(1+GH)$ from $E = R - HY$ and $Y = GE$ | 20 s |
+| Collapse a nested pair of loops to a single transfer function | 60 s |
+| State the compensating factor for any of the four relocations | 10 s |
+| List the loops and paths of a six-node graph with their node sets | 90 s |
+| Convert a non-unity loop to its unity equivalent and read the type | 30 s |
+| Give the DC value of S, T and $PS$ from a loop gain | 20 s |`,
+      examTip: 'When an answer list contains a value and that value multiplied or divided by 1 + L(0), the question is testing whether you closed the loop. When it contains a value and its reciprocal, the question is testing which transfer function you picked. Naming the trap before choosing is faster than re-deriving.',
+      importantNote: 'Every problem here has a steady-state answer that can be checked by replacing each block with its value at s = 0 and solving the resulting arithmetic. That check costs under a minute, uses none of the algebra it verifies, and catches the great majority of reduction errors.',
+    },
   ],
   keyTakeaways: [
     'Series blocks: multiply. Parallel blocks: add. Feedback: T = G/(1 + GH).',
@@ -324,6 +1258,11 @@ precisely the situation the Routh-Hurwitz topic takes up next.`,
     "Mason's gain formula handles complex multi-loop diagrams.",
     'Negative feedback reduces error, sensitivity, and distortion but lowers gain.',
     'Poles of the closed-loop transfer function must have negative real parts for stability.',
+    'Derive the feedback formula from E = R − HY and Y = GE rather than memorising the sign.',
+    'The characteristic polynomial is the numerator PLUS the denominator of GH, never the denominator alone.',
+    'Relocating a takeoff or summing junction is legal only with its compensating factor of G or 1/G.',
+    'System type and error constants come from GH, not from G; the closed-loop DC gain of a Type 1 loop is 1/H(0).',
+    'A loop has four transfer functions: T for reference and for noise, S for output disturbance, PS for input disturbance.',
   ],
 },
 
@@ -340,7 +1279,7 @@ precisely the situation the Routh-Hurwitz topic takes up next.`,
 
 The closed-loop transfer function denominator:
 
-**$D(s) = a_n\\cdot s^n + a_(n-1)\\cdot s^{n-1} + ... + a_{1}\\cdot s + a_{0}$**
+**$D(s) = a_{n}s^{n} + a_{n-1}s^{n-1} + \\cdots + a_{1}s + a_{0}$**
 
 **Necessary condition** for stability: all coefficients a_i must be **positive** (same sign). If any coefficient is zero or negative, the system is **definitely unstable** (no need to build the array).
 
@@ -348,8 +1287,8 @@ The closed-loop transfer function denominator:
 
 | Row | Entries |
 |---|---|
-| **$s^n$** | a_n, a_(n-2), a_(n-4), ... |
-| **$s^{n-1}$** | a_(n-1), a_(n-3), a_(n-5), ... |
+| **$s^{n}$** | $a_{n}, a_{n-2}, a_{n-4}, \\ldots$ |
+| **$s^{n-1}$** | $a_{n-1}, a_{n-3}, a_{n-5}, \\ldots$ |
 | **$s^{n-2}$** | $b_{1}, b_{2}, b_{3}, ...$ |
 | **$s^{n-3}$** | $c_{1}, c_{2}, c_{3}, ...$ |
 | ... | ... |
@@ -357,9 +1296,9 @@ The closed-loop transfer function denominator:
 
 ### Computing Entries
 
-**$b_{1} = (a_(n-1)\\cdot a_(n-2) - a_n\\cdot a_(n-3)) / a_(n-1)$**
+**$b_{1} = (a_{n-1}a_{n-2} - a_{n}a_{n-3})/a_{n-1}$**
 
-**$b_{2} = (a_(n-1)\\cdot a_(n-4) - a_n\\cdot a_(n-5)) / a_(n-1)$**
+**$b_{2} = (a_{n-1}a_{n-4} - a_{n}a_{n-5})/a_{n-1}$**
 
 General pattern: **negative determinant** of 2×2 matrix from previous two rows, divided by first element of previous row.
 
@@ -470,7 +1409,7 @@ Sign changes: +2 to −1 (one change), −1 to +8 (second change) = **2 sign cha
 
 **Conclusion: System is unstable** with exactly **2 poles in the RHP**.
 
-## 3.3 Special Case: Zero in First Column
+## 3.3 Special Case: An Entire Row of Zeros
 
 **Characteristic polynomial**: D(s) = s³ + s² + 2s + 2
 
@@ -480,20 +1419,31 @@ Sign changes: +2 to −1 (one change), −1 to +8 (second change) = **2 sign cha
 | $s^{2}$ | 1 | 2 |
 | $s^{1}$ | $(1\\times 2 - 1\\times 2)/1 = 0$ | 0 |
 
-The s¹ row has a zero in the first column. **Replace 0 with ε (small positive number)**:
+Both entries of the $s^{1}$ row vanish, so this is the **row-of-zeros** case of
+Section 2.2, not the first-column-zero case of Section 2.1. The distinction
+matters: ε is only for a lone zero sitting in a row that still has non-zero
+entries beside it. Here the correct move is the auxiliary polynomial, taken
+from the row **above** the vanished one:
+
+**$P(s) = s^{2} + 2$**, so **$dP/ds = 2s$**
+
+Replace the dead row with the coefficients of that derivative and carry on:
 
 | Row | Col 1 | Col 2 |
 |---|---|---|
-| $s^{1}$ | ε | 0 |
-| $s^{0}$ | 2 | 0 |
+| $s^{1}$ | 2 | 0 |
+| $s^{0}$ | $(2\\times 2 - 1\\times 0)/2 = 2$ | 0 |
 
-First column: 1, 1, ε, 2. As ε → $0^{+}$, all entries remain positive → **no sign changes**.
-
-But wait — the entire s¹ row was zeros before we used ε, indicating **symmetric roots**. Form the auxiliary polynomial from the s² row:
+First column: 1, 1, 2, 2 → **no sign changes**, so there are no right-half-plane
+roots. But "no RHP roots" is not the same as "stable". The auxiliary polynomial
+itself gives the symmetric roots it detected:
 
 **$P(s) = s^{2} + 2 = 0$** → s = ±j√2
 
-These are **poles on the imaginary axis** → system is **marginally stable** (sustained oscillations at ω = √2 rad/s).
+These are **poles on the imaginary axis** → the system is **marginally stable**
+(sustained oscillations at ω = √2 rad/s). Factoring confirms it exactly:
+$D(s) = (s+1)(s^{2}+2)$, so the third root is at −1 and nothing decays the
+oscillation away.
 
 ## 3.4 Summary: Decision Flowchart
 
@@ -650,14 +1600,961 @@ usually the open-loop denominator used on its own.`,
       examTip: 'Two shortcuts carry most of the exam load. For a cubic as³ + bs² + cs + d, the whole array collapses to "all four coefficients positive AND bc > ad". And whenever a first-column entry hits zero at some gain, that gain is the marginal one — form the auxiliary polynomial from the row directly above and solve it for the oscillation frequency.',
       importantNote: 'A stable gain window is not always of the form 0 < K < K_max. If the plant has a right-half-plane pole, the loop may need a MINIMUM gain to be stable, so reducing gain destabilises it. Always solve the inequalities as written rather than assuming the lower bound is zero.',
     },
+    {
+      id: 'stab-roots-and-modes',
+      title: '5. Where Stability Comes From: the Roots of the Characteristic Equation',
+      content: `## 5.1 A Transfer Function Is a Sum of Modes
+
+The Routh array is a shortcut, and a shortcut only makes sense once you know
+what it is short for. Start from a closed-loop transfer function written as a
+ratio of polynomials with distinct denominator roots:
+
+$$Y(s)/R(s) = N(s)/D(s), \\qquad D(s) = a_{n}(s - p_{1})(s - p_{2})\\cdots (s - p_{n})$$
+
+Expanding in partial fractions and inverting term by term turns the response
+into a sum of exponentials, one per root:
+
+$$y(t) = \\Sigma _i r_{i}e^{p_{i}t} + (\\text{terms forced by the input})$$
+
+Each $p_{i}$ is a **mode**. A real root at $p = -\\sigma$ contributes a decaying
+exponential with time constant $1/\\sigma$. A complex pair
+$p = -\\sigma \\pm j\\omega$ contributes a single real term,
+
+$$Ce^{-\\sigma t}\\cos(\\omega t + \\phi )$$
+
+whose envelope is set entirely by the real part and whose ringing frequency is
+set entirely by the imaginary part. Everything about stability follows from one
+observation: $e^{p t}$ decays if and only if the real part of p is negative.
+
+$$\\text{asymptotically stable} \\iff \\mathrm{Re}(p_{i}) < 0 \\ \\text{for every } i$$
+
+A repeated root of multiplicity m contributes terms in
+$t^{m-1}e^{pt}$, and the polynomial factor loses to the exponential whenever
+the real part is negative — so repetition changes nothing about stability, only
+about shape. It matters in exactly one place: on the imaginary axis, where the
+exponential is not decaying and the polynomial factor wins outright.
+
+## 5.2 Why All the Coefficients Must Be Positive
+
+The necessary condition of Section 1.1 is not a rule handed down; it is a
+consequence of multiplying factors out. A stable real polynomial factors
+completely into real first-order and second-order pieces of the form
+
+$$(s + a), \\qquad a > 0$$
+
+$$(s + \\sigma )^{2} + \\omega ^{2} = s^{2} + 2\\sigma s + (\\sigma ^{2} + \\omega ^{2}), \\qquad \\sigma > 0$$
+
+Every one of those has strictly positive coefficients, and multiplying
+polynomials with positive coefficients can only produce sums of positive
+products. Hence a missing term or a negative sign proves at least one root is
+not in the open left half plane.
+
+The converse fails, and it is essential to know that it fails. The polynomial
+
+$$D(s) = s^{4} + 2s^{3} + s^{2} + 4s + 2$$
+
+worked in Section 3.2 has five strictly positive coefficients and two roots at
+$0.35163 \\pm j1.28433$, squarely in the right half plane. Its unstable mode
+grows at 0.35163 per second, so the amplitude doubles roughly every 1.9713
+seconds and multiplies by e every 2.8439 seconds. Positive coefficients buy you
+the right to build the array — nothing more.
+
+### Worked Example 5.1 — Reading Time Constants Off the Roots
+
+$D(s) = s^{3} + 9s^{2} + 26s + 24$. Is it stable, and how fast does the
+slowest mode decay?
+
+The coefficient test passes. The cubic condition compares
+$9 \\times 26 = 234$ with $1 \\times 24 = 24$, and 234 exceeds 24, so all three
+roots are in the left half plane. Factoring gives
+$D(s) = (s+2)(s+3)(s+4)$, so the modes are $e^{-2t}$, $e^{-3t}$ and $e^{-4t}$.
+
+The slowest is the one at −2, with time constant $1/2 = 0.5$ s, and it
+dominates everything after the first few tenths of a second. A two per cent
+settling estimate is four time constants, $4 \\times 0.5 = 2$ s. Note that the
+Routh test alone would never have produced any of these numbers. It answers
+"which side", not "how far" — a distinction Section 9 turns into a method.
+
+### Worked Example 5.2 — A Quintic That the Coefficient Test Cannot Judge
+
+$D(s) = s^{5} + 2s^{4} + 3s^{3} + 6s^{2} + 2s + 1$. How many roots lie in the
+right half plane?
+
+All six coefficients are positive, so the array is unavoidable. Rows one and
+two are the alternating coefficient lists:
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| $s^{5}$ | 1 | 3 | 2 |
+| $s^{4}$ | 2 | 6 | 1 |
+| $s^{3}$ | $(2\\times 3 - 1\\times 6)/2 = 0$ | $(2\\times 2 - 1\\times 1)/2 = 1.5$ | 0 |
+
+The $s^{3}$ row has a zero in its first position but a live entry beside it, so
+this is the ε case of Section 7.1, and the result worked out there is **two
+right-half-plane roots**. Direct root finding confirms it: the roots are
+$0.09589 \\pm j1.61985$ in the right half plane, together with
+$-0.15561 \\pm j0.42159$ and $-1.88056$.
+
+Notice how little margin there is: the unstable pair sits only 0.096 to the
+right of the axis. A polynomial can be unstable in a way that no amount of
+squinting at coefficients will reveal, and this is the reason the array exists.
+
+## 5.3 What the Array Actually Computes
+
+Routh's array is a compact evaluation of the **Hurwitz determinants** built
+from the coefficients. For a cubic $a_{3}s^{3} + a_{2}s^{2} + a_{1}s + a_{0}$
+those determinants are
+
+$$\\Delta _1 = a_{2}, \\qquad \\Delta _2 = a_{2}a_{1} - a_{3}a_{0}, \\qquad \\Delta _3 = a_{0}\\Delta _2$$
+
+and requiring all three positive reproduces exactly the familiar shortcut: all
+coefficients positive together with $a_{2}a_{1} > a_{3}a_{0}$. The array
+computes the same quantities by repeated two-by-two elimination, which is why
+each entry is a small determinant divided by the pivot above it, and why the
+count of sign changes — rather than the entries themselves — carries the
+answer.
+
+| Order | Full condition | What it reduces to |
+|---|---|---|
+| 1 | $a_{1}, a_{0} > 0$ | both coefficients positive |
+| 2 | $a_{2}, a_{1}, a_{0} > 0$ | all three coefficients positive |
+| 3 | above plus $a_{2}a_{1} > a_{3}a_{0}$ | the one extra product test |
+| 4 | above plus one more determinant | build the array; no useful shortcut |
+| 5 and up | build the array | the shortcuts are gone |`,
+      examTip: 'For orders one to three the array is a waste of time: check the coefficients, and for a cubic also check bc > ad. From order four upward there is no shortcut worth memorising, so build the array — it takes about ninety seconds for a quartic and is far less error-prone than any remembered formula.',
+      importantNote: 'All-positive coefficients are NECESSARY but not SUFFICIENT from order three upward. The quartic s⁴ + 2s³ + s² + 4s + 2 has five positive coefficients and two right-half-plane roots. Never report "stable" on the coefficient test alone above second order.',
+    },
+    {
+      id: 'stab-bibo-vs-asymptotic',
+      title: '6. BIBO Stability, Asymptotic Stability, and the Modes You Cannot See',
+      content: `## 6.1 Three Different Questions
+
+"Stable" is three claims wearing one word, and exam questions exploit the gap
+between them.
+
+**Asymptotic stability** asks whether every mode of the system decays to zero
+from any initial condition, with no input applied. It is a statement about the
+roots of the characteristic polynomial: all of them strictly in the open left
+half plane.
+
+**BIBO stability** — bounded input, bounded output — asks whether every bounded
+input produces a bounded output. For a linear time-invariant system this holds
+exactly when the impulse response is absolutely integrable,
+
+$$\\int_{0}^{\\infty}\\lvert g(t)\\rvert \\, dt < \\infty$$
+
+which in turn holds exactly when every pole of the **transfer function** lies
+in the open left half plane.
+
+**Internal stability** asks whether every signal inside the loop stays bounded
+for bounded signals injected anywhere. It is the strongest of the three, and
+the only one that survives a pole-zero cancellation.
+
+| Pole pattern | Asymptotically stable | BIBO stable | Response to a bounded input |
+|---|---|---|---|
+| All in the open left half plane | yes | yes | bounded, decays to a steady value |
+| Simple pair on the imaginary axis | no | no | bounded unless driven at that frequency |
+| Repeated pair on the imaginary axis | no | no | grows without any input at all |
+| Any root strictly right of the axis | no | no | grows exponentially |
+
+The second row is the one that catches people. A simple pair on the axis gives
+a bounded impulse response — a pure sinusoid that never grows — yet the system
+is not BIBO stable, because the sinusoid is not absolutely integrable. The
+counterexample that proves it is easy to construct.
+
+### Worked Example 6.1 — A Bounded Input With an Unbounded Output
+
+$G(s) = 1/(s^{2} + 4)$ has poles at $\\pm j2$: simple, on the axis, nothing to
+the right. Drive it with $u(t) = \\sin 2t$, an input whose amplitude is one for
+all time.
+
+$$U(s) = 2/(s^{2} + 4) \\Rightarrow Y(s) = 2/(s^{2} + 4)^{2}$$
+
+Using the standard transform pair
+$\\mathcal{L}^{-1}[1/(s^{2}+\\omega ^{2})^{2}] = (\\sin \\omega t - \\omega t\\cos \\omega t)/(2\\omega ^{3})$
+with $\\omega = 2$,
+
+$$y(t) = (\\sin 2t - 2t\\cos 2t)/8$$
+
+The first term is bounded. The second is not: its amplitude is $2t/8 = t/4$ and
+it grows without limit. At $t = 10\\pi$ the cosine equals one and the sine
+vanishes, so
+
+$$y(10\\pi ) = -2\\cdot 10\\pi /8 = -2.5\\pi = -7.854$$
+
+![One bounded sinusoidal input producing two very different outputs. Through a plant with poles exactly on the imaginary axis at plus and minus j2, the output oscillation grows inside an envelope of t over 4 and reaches minus 7.854 at t equal to ten pi. Through a plant whose poles are moved only slightly left, to minus 0.2 plus and minus j2, the same input produces a bounded oscillation.](/courses/fe-ee/figures/ctl2-bibo-resonance.svg)
+
+Move the poles a fraction to the left — to $-0.2 \\pm j2$ — and the same input
+produces a perfectly bounded steady oscillation. Nothing about the shape of the
+pole pattern changed; only its side of the axis did. **That is the entire
+content of the stability criterion**, and it is why the Routh test refuses to
+call an axis root stable even though nothing in the impulse response grows.
+
+Two further consequences are worth stating explicitly:
+
+- a **repeated** pair on the axis, such as the poles of
+  $1/(s^{2}+4)^{2}$, produces $t\\sin 2t$ terms with **no input at all**, so it
+  is unstable in every sense;
+- a root exactly **at** the origin is an integrator: bounded input, ramping
+  output. The step response of $1/s$ is unbounded, so a free integrator is not
+  BIBO stable either, however useful it is inside a loop.
+
+## 6.2 The Mode the Transfer Function Hides
+
+Cancelling an unstable plant pole against a controller zero is the single most
+dangerous manoeuvre in elementary control, and it looks like good engineering
+on paper. Take an unstable plant and a controller placed to cancel its pole:
+
+$$P(s) = 4/(s - 1), \\qquad C(s) = (s - 1)/(s + 3)$$
+
+$$L(s) = C(s)P(s) = 4/(s + 3), \\qquad T(s) = L/(1 + L) = 4/(s + 7)$$
+
+The closed-loop transfer function has a single pole at −7. Every test applied
+to T says the system is fine: the Routh array on $s + 7$ has one positive
+entry, the step response settles cleanly at $4/7 = 0.5714$, and the time
+constant is a brisk 0.1429 s.
+
+### Worked Example 6.2 — Finding the Hidden Mode
+
+Compute the transfer function from a disturbance injected at the **plant
+input** to the output, for the loop above.
+
+$$Y/D_{i} = P/(1 + L) = [4/(s-1)]\\cdot [(s+3)/(s+7)] = 4(s+3)/[(s-1)(s+7)]$$
+
+The pole at $s = +1$ did not go anywhere. It cancelled out of the
+reference-to-output path and stayed in every other path. Expanding the step
+response of that transfer function in partial fractions for a disturbance of
+size $d_{0}$,
+
+$$y_{d}(t) = d_{0}[2e^{t} - 12/7 - (2/7)e^{-7t}]$$
+
+so with $d_{0} = 0.001$ — one millivolt, the sort of offset a comparator has
+for free — the output at eight seconds is
+
+$$0.001 \\times (5961.92 - 1.71) = 5.9602$$
+
+which is ten times the reference the loop is supposedly tracking. The mode
+multiplies by e every second and no amount of gain will touch it, because the
+controller has no authority over a direction the cancellation removed from its
+view.
+
+![Two stacked panels for a loop whose controller zero cancels an unstable plant pole at plus one. The upper panel shows the step response from the reference settling cleanly at 4 over 7, which is 0.5714, with no sign of trouble. The lower panel shows the same loop disturbed by one millivolt at the plant input: the output grows exponentially, multiplying by e every second, and reaches 5.960 after eight seconds.](/courses/fe-ee/figures/ctl2-hidden-mode.svg)
+
+### Worked Example 6.3 — Detecting the Problem With Routh
+
+Nothing above required simulation. Apply the coefficient test to the
+denominator of the input-disturbance path, $(s-1)(s+7) = s^{2} + 6s - 7$: the
+constant term is negative, so the necessary condition fails immediately and the
+system has a right-half-plane root. Building the array confirms one sign change
+and therefore exactly one such root.
+
+The practical rule that follows is short. **Never test only the
+reference-to-output transfer function.** Form the characteristic polynomial
+from $1 + L(s) = 0$ *before* cancelling anything, or equivalently apply the
+test to the product of the plant and controller denominators plus their
+numerators:
+
+$$D_{P}(s)D_{C}(s) + N_{P}(s)N_{C}(s) = (s-1)(s+3) + 4(s-1) = (s-1)(s+7)$$
+
+The factor $(s-1)$ is visible on the left-hand side and vanished on the right
+of the earlier calculation only because it was cancelled first. Cancel after
+forming the characteristic polynomial, never before.
+
+## 6.3 What the Necessary Condition Really Says
+
+Section 1.1 states that a missing or negative coefficient means the system is
+"definitely unstable". With the vocabulary of this section the claim can be
+made precise: it means the system is **not asymptotically stable**. It may be
+diverging, or it may be marginally stable with roots on the axis — the
+polynomial $s^{2} + 9$ has a missing coefficient and two axis roots, giving a
+bounded oscillation at 3 rad/s rather than a runaway. For FE purposes both
+answers are "not stable", but a question that asks for the oscillation
+frequency is asking about the second case, and there the missing coefficient is
+the clue rather than the verdict.`,
+      examTip: 'When a question describes a system that "oscillates forever" or "sustains oscillation", it is describing simple poles on the imaginary axis: not asymptotically stable, not BIBO stable, zero Routh sign changes. Compute the frequency from the auxiliary polynomial, and do not report the system as stable just because the first column stayed positive.',
+      importantNote: 'A pole-zero cancellation across an unstable pole hides the mode from the reference-to-output transfer function but not from the system. Always form 1 + L(s) = 0 from the uncancelled numerators and denominators. In the worked example a 1 mV disturbance reaches 5.96 units in eight seconds while the step response looks perfect.',
+    },
+    {
+      id: 'stab-special-cases-worked',
+      title: '7. The Two Special Cases, Worked to Numbers',
+      content: `## 7.1 A Zero in the First Column, and Nowhere Else
+
+The array divides by the first entry of the row above. When that entry is zero
+but the rest of its row is not, the division is undefined and the construction
+stalls — yet the polynomial is perfectly ordinary and has a definite root
+count. The standard repair replaces the zero with a small positive symbol ε and
+carries it through, examining the signs in the limit as ε approaches zero from
+above.
+
+### Worked Example 7.1 — The ε Method End to End
+
+$D(s) = s^{4} + s^{3} + 2s^{2} + 2s + 3$. Count the right-half-plane roots.
+
+All five coefficients are positive, so the array is required.
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| $s^{4}$ | 1 | 2 | 3 |
+| $s^{3}$ | 1 | 2 | 0 |
+| $s^{2}$ | $(1\\times 2 - 1\\times 2)/1 = 0$ | $(1\\times 3 - 1\\times 0)/1 = 3$ | 0 |
+
+The $s^{2}$ row is $[0, 3]$: its first entry is zero, its second is not. That is
+the ε case. Substitute and continue:
+
+| Row | Col 1 | Col 2 |
+|---|---|---|
+| $s^{2}$ | ε | 3 |
+| $s^{1}$ | $2 - 3/\\varepsilon$ | 0 |
+| $s^{0}$ | 3 | 0 |
+
+The $s^{1}$ entry is what decides everything. For ε = 0.1 it is
+$2 - 30 = -28$, since $3/0.1 = 30$; for ε = 0.001 it is
+$2 - 3000 = -2998$; and as ε shrinks it runs to minus infinity. The first
+column is therefore
+
+$$1, \\quad 1, \\quad \\varepsilon > 0, \\quad -\\infty, \\quad 3$$
+
+Two sign changes — plus to minus, then minus to plus — so **two roots lie in
+the right half plane**. Direct root finding gives
+$0.40574 \\pm j1.29283$ and $-0.90574 \\pm j0.90199$, confirming the count.
+
+The most common misreading here is to treat ε as a physically small number and
+conclude the entry is "nearly zero, so nearly stable". It is not a number at
+all; it is a bookkeeping device whose only job is to reveal the sign of the
+entry beneath it.
+
+### Worked Example 7.2 — The Same Count Without Any ε
+
+There is a second route to the same answer that needs no limits, and it makes a
+genuine cross-check because it shares no algebra with the first. Reverse the
+coefficient list of D to form the **reciprocal polynomial**:
+
+$$D^{*}(s) = 3s^{4} + 2s^{3} + 2s^{2} + s + 1$$
+
+Its roots are the reciprocals of the roots of D. Reciprocation maps the right
+half plane onto itself — if $\\mathrm{Re}(p) > 0$ then
+$\\mathrm{Re}(1/p) > 0$ as well, since $1/p = \\bar{p}/\\lvert p\\rvert ^{2}$ —
+so the right-half-plane count is preserved. Build the ordinary array:
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| $s^{4}$ | 3 | 2 | 1 |
+| $s^{3}$ | 2 | 1 | 0 |
+| $s^{2}$ | $(2\\times 2 - 3\\times 1)/2 = 0.5$ | $(2\\times 1 - 3\\times 0)/2 = 1$ | 0 |
+| $s^{1}$ | $(0.5\\times 1 - 2\\times 1)/0.5 = -3$ | 0 | 0 |
+| $s^{0}$ | 1 | 0 | 0 |
+
+First column: 3, 2, 0.5, −3, 1 → **two sign changes**, the same answer, with no
+special case encountered at all. Root finding on $D^{*}$ gives
+$0.22099 \\pm j0.70414$ and $-0.55432 \\pm j0.55203$; the two right-half-plane
+roots are the reciprocals of the pair found in Example 7.1, as promised.
+
+## 7.2 An Entire Row of Zeros
+
+A whole row of zeros is a different animal. It appears when the polynomial
+contains a factor that is **even in s**, whose roots are therefore arranged
+symmetrically about the origin: pairs on the imaginary axis, pairs on the real
+axis, or quadruplets $\\pm \\sigma \\pm j\\omega$. The repair is to differentiate
+the auxiliary polynomial formed from the row above and use its coefficients in
+place of the dead row.
+
+### Worked Example 7.3 — Symmetric Roots on the Axis
+
+$D(s) = s^{5} + 2s^{4} + 6s^{3} + 12s^{2} + 8s + 16$. Classify it.
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| $s^{5}$ | 1 | 6 | 8 |
+| $s^{4}$ | 2 | 12 | 16 |
+| $s^{3}$ | $(2\\times 6 - 1\\times 12)/2 = 0$ | $(2\\times 8 - 1\\times 16)/2 = 0$ | 0 |
+
+Both entries vanish. Form the auxiliary polynomial from the $s^{4}$ row, using
+its entries as coefficients of descending **even** powers:
+
+$$P(s) = 2s^{4} + 12s^{2} + 16 = 2(s^{2} + 2)(s^{2} + 4)$$
+
+$$dP/ds = 8s^{3} + 24s$$
+
+Put 8 and 24 into the $s^{3}$ row and continue as normal. The next entry is
+$8 \\times 12 - 2 \\times 24 = 48$, and $48/8 = 6$; beside it,
+$8 \\times 16 - 2 \\times 0 = 128$ and $128/8 = 16$.
+
+| Row | Col 1 | Col 2 |
+|---|---|---|
+| $s^{3}$ | 8 | 24 |
+| $s^{2}$ | 6 | 16 |
+| $s^{1}$ | $6 \\times 24 - 8 \\times 16 = 16$, then $16/6 = 2.6667$ | 0 |
+| $s^{0}$ | 16 | 0 |
+
+First column: 1, 2, 8, 6, 2.6667, 16 — all positive, **zero sign changes, zero
+right-half-plane roots**. But the auxiliary polynomial has already told us
+where four of the five roots are:
+
+$$P(s) = 0 \\Rightarrow s = \\pm j\\sqrt{2}, \\quad s = \\pm j2$$
+
+Dividing out $s^{4} + 6s^{2} + 8$ leaves $s + 2$, so the fifth root is at −2.
+The system is **marginally stable**: it will oscillate forever at two
+frequencies at once, 1.4142 and 2 rad/s.
+
+![A pole map of the fifth-order polynomial whose Routh array produces a full row of zeros. Four roots sit exactly on the imaginary axis at plus and minus j1.414 and plus and minus j2, supplied by the auxiliary polynomial, and the fifth root sits at minus 2 on the real axis. The array reports zero sign changes even though the system is not asymptotically stable.](/courses/fe-ee/figures/ctl2-aux-roots.svg)
+
+### Worked Example 7.4 — A Row of Zeros That Is Not Marginal
+
+It is tempting to read "row of zeros" as "oscillates". That is wrong, and this
+example is the counterexample worth carrying.
+
+$D(s) = s^{5} + 3s^{4} + 6s^{3} + 18s^{2} + 25s + 75$, whose six coefficients
+are all present and positive.
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| $s^{5}$ | 1 | 6 | 25 |
+| $s^{4}$ | 3 | 18 | 75 |
+| $s^{3}$ | $(3\\times 6 - 1\\times 18)/3 = 0$ | $(3\\times 25 - 1\\times 75)/3 = 0$ | 0 |
+
+Another full row of zeros. The auxiliary polynomial is
+
+$$P(s) = 3s^{4} + 18s^{2} + 75 = 3(s^{2} - 2s + 5)(s^{2} + 2s + 5)$$
+
+$$dP/ds = 12s^{3} + 36s$$
+
+Continuing: the $s^{2}$ row is $(12 \\times 18 - 3 \\times 36)/12 = 9$ beside
+$(12 \\times 75)/12 = 75$; the $s^{1}$ entry is
+$(9 \\times 36 - 12 \\times 75)/9 = -64$; the $s^{0}$ entry is 75.
+
+First column: 1, 3, 12, 9, −64, 75 → **two sign changes, two right-half-plane
+roots**. And indeed the symmetric quadruplet supplied by the auxiliary
+polynomial is $\\pm 1 \\pm j2$: two of those four roots sit in the right half
+plane, and the fifth root is at −3.
+
+| Case | What the auxiliary polynomial contains | Verdict |
+|---|---|---|
+| Example 7.3 | two imaginary pairs, $\\pm j1.414$ and $\\pm j2$ | marginally stable |
+| Example 7.4 | a quadruplet $\\pm 1 \\pm j2$ | unstable, two RHP roots |
+| Section 4.1 at K = 10 | one imaginary pair, $\\pm j1$ | marginally stable, the design boundary |
+
+A row of zeros announces symmetry about the origin, and nothing more. Whether
+that symmetry lands on the axis or straddles it has to be settled by solving
+the auxiliary polynomial — which is a quadratic in $s^{2}$ and takes about
+thirty seconds.
+
+## 7.3 The Decision Procedure, Corrected
+
+1. Any coefficient missing or of the wrong sign → not asymptotically stable.
+   Stop, unless the question wants a frequency.
+2. Build the array. If a first-column entry is zero **but its row has other
+   non-zero entries**, use ε.
+3. If an **entire row** is zero, form the auxiliary polynomial from the row
+   above, differentiate it, and substitute its coefficients.
+4. Count first-column sign changes; that is the right-half-plane root count.
+5. If step 3 was needed, solve the auxiliary polynomial as well. Zero sign
+   changes plus an auxiliary polynomial with axis roots means **marginal**, not
+   stable.`,
+      examTip: 'Distinguish the two special cases before repairing either. A lone zero in the first column with live entries beside it takes ε; an entire row of zeros takes the auxiliary polynomial and its derivative. Using ε on a full row of zeros produces division by zero on the next line and hides the symmetric roots that are the actual answer.',
+      importantNote: 'Zero sign changes means zero roots in the OPEN right half plane. It does not mean stable. If the array needed an auxiliary polynomial, solve it: roots on the imaginary axis make the system marginally stable, and a symmetric quadruplet can put two roots in the right half plane while the first column stays positive throughout the rows above it.',
+    },
+    {
+      id: 'stab-gain-windows',
+      title: '8. Gain Windows Solved as Inequalities',
+      content: `## 8.1 The Method in Five Lines
+
+1. Form the characteristic polynomial as the denominator of the loop transfer
+   function plus its numerator, keeping K symbolic.
+2. Build the array; entries become rational functions of K.
+3. Write down every first-column entry, not only the ones that look
+   interesting.
+4. Require each to be positive and solve the resulting inequalities.
+5. Intersect the solution sets. The intersection is the answer; the tightest
+   inequality is the one that binds.
+
+Step three is where marks are lost, and Section 8.3 shows exactly how.
+
+### Worked Example 8.1 — A Quartic With a Compensator Zero
+
+A unity-feedback loop has
+
+$$G(s)H(s) = K(s + 1.25)/[s(s+1)(s+2)(s+3)]$$
+
+Find the range of K for stability, and the frequency at which the loop
+oscillates at the boundary.
+
+The plant denominator multiplies out to
+$s^{4} + 6s^{3} + 11s^{2} + 6s$, so adding the numerator gives
+
+$$D(s) = s^{4} + 6s^{3} + 11s^{2} + (6 + K)s + 1.25K$$
+
+| Row | Column 1 | Column 2 | Column 3 |
+|---|---|---|---|
+| $s^{4}$ | 1 | 11 | $1.25K$ |
+| $s^{3}$ | 6 | $6 + K$ | 0 |
+| $s^{2}$ | $10 - K/6$ | $1.25K$ | 0 |
+| $s^{1}$ | $(K - 24)(K + 15)/(K - 60)$ | 0 | 0 |
+| $s^{0}$ | $1.25K$ | 0 | 0 |
+
+Take the entries in turn. The $s^{4}$ and $s^{3}$ entries are unconditional.
+The $s^{2}$ entry requires $K < 60$. The $s^{0}$ entry requires $K > 0$. The
+$s^{1}$ entry is the interesting one; multiplying out the algebra that produced
+it, positivity requires
+
+$$360 + 9K - K^{2} > 0 \\Rightarrow K^{2} - 9K - 360 < 0$$
+
+$$K < [9 + \\sqrt{81 + 1440}]/2$$
+
+with $81 + 1440 = 1521$ and $\\sqrt{1521} = 39$, so $9 + 39 = 48$ and
+$48/2 = 24$. Intersecting, the stable window is **0 < K < 24** — the
+$s^{1}$ row binds and the $s^{2}$ row never gets a chance to.
+
+![The two gain-dependent Routh first-column entries plotted against loop gain K. The s-to-the-one entry starts positive, peaks near 7, and crosses zero at K equal to 24. The s-squared entry, 10 minus K over 6, falls linearly and crosses zero only at K equal to 60. The shaded stable window is the interval from 0 to 24, where both are still positive.](/courses/fe-ee/figures/ctl2-routh-first-column.svg)
+
+**At the boundary.** Set K = 24 and the $s^{1}$ row vanishes, which is the
+row-of-zeros case again. The auxiliary polynomial comes from the $s^{2}$ row,
+whose entries at K = 24 are $10 - 4 = 6$ and $1.25 \\times 24 = 30$:
+
+$$P(s) = 6s^{2} + 30 = 0 \\Rightarrow s = \\pm j\\sqrt{5} = \\pm j2.2361$$
+
+so the loop rings at 2.2361 rad/s, a period of 2.8099 s. Factoring the quartic
+at K = 24 confirms it exactly:
+
+$$s^{4} + 6s^{3} + 11s^{2} + 30s + 30 = (s^{2} + 5)(s^{2} + 6s + 6)$$
+
+and the remaining roots are $-3 \\pm \\sqrt{3}$, that is −1.2679 and −4.7321,
+both comfortably in the left half plane.
+
+![Three closed-loop step responses either side of the Routh boundary. At K equal to 20 the ringing decays; at K equal to 24 it neither grows nor decays and has a period of 2.810 seconds; at K equal to 28 it grows without limit. All three settle around a DC value of 1.](/courses/fe-ee/figures/ctl2-critical-gain-response.svg)
+
+### Worked Example 8.2 — Why Every Entry Must Be Checked
+
+Continue the same loop past K = 60 and something instructive happens. At
+K = 70 the entries are
+
+$$10 - K/6 = 10 - 11.667 = -1.667$$
+
+$$(K - 24)(K + 15)/(K - 60) = 46 \\times 85 = 3910, \\ \\text{then}\\ 3910/10 = 391$$
+
+$$1.25K = 87.5$$
+
+so the first column reads 1, 6, −1.667, 391, 87.5. The $s^{1}$ entry has come
+back positive — a candidate who checked only that row would declare the loop
+stable again. It is not: the first column changes sign twice, and root finding
+puts two poles at $0.57501 \\pm j3.38960$.
+
+The general lesson is that **positivity of one first-column entry is not
+positivity of the column**, and the entries do not vary monotonically. Write
+them all down and test them all.
+
+![Right-half-plane pole count against gain for the same quartic, computed twice. One curve counts Routh first-column sign changes; the other counts roots found numerically. The two coincide everywhere, both stepping from zero to two at K equal to 24 and staying at two thereafter.](/courses/fe-ee/figures/ctl2-rhp-count.svg)
+
+### Worked Example 8.3 — Two Parameters, a Region Instead of an Interval
+
+Keep the plant but let the compensator zero move: $GH = K(s+z)/[s(s+1)(s+2)(s+3)]$.
+For which pairs (K, z) is the loop stable?
+
+The array is unchanged in structure; only the numbers shift. The binding
+inequality becomes
+
+$$(6 + K)(60 - K) - 36Kz > 0 \\Rightarrow K^{2} + (36z - 54)K - 360 < 0$$
+
+which is a quadratic in K opening upwards with a negative constant term, so it
+has one positive root and one negative root and the window is one-sided:
+
+$$0 < K < K_{\\max}(z), \\qquad K_{\\max} = [(54 - 36z) + \\sqrt{(36z - 54)^{2} + 1440}]/2$$
+
+Three points on that curve, each a clean arithmetic exercise:
+
+| z | $36z - 54$ | Discriminant | $K_{\\max}$ |
+|---|---|---|---|
+| 0.5 | −36 | $1296 + 1440 = 2736$ | $36 + 52.3068 = 88.3068$, then $88.3068/2 = 44.153$ |
+| 1.25 | −9 | $81 + 1440 = 1521$ | $9 + 39 = 48$, then $48/2 = 24$ |
+| 2.5 | 36 | $1296 + 1440 = 2736$ | $52.3068 - 36 = 16.3068$, then $16.3068/2 = 8.153$ |
+
+![Critical gain plotted against compensator zero location for a fourth-order loop. The curve falls steeply from about 53 at a zero of 0.2 to roughly 3 at a zero of 5, passing through 44.15 at z equal to 0.5, exactly 24 at z equal to 1.25, and 8.153 at z equal to 2.5. Every point beneath the curve is a stable design.](/courses/fe-ee/figures/ctl2-stability-region.svg)
+
+Pulling the zero in towards the origin buys gain: moving it from 2.5 to 0.5
+raises the usable gain by a factor of 5.4. That is the whole idea behind lead
+compensation, arrived at here without drawing a single root locus.
+
+### Worked Example 8.4 — A Cubic Window, Confirmed From the Frequency Domain
+
+$G(s)H(s) = K/[s(s+2)(s+5)]$. Find the critical gain and the oscillation
+frequency, then confirm both by a completely different method.
+
+$$D(s) = s^{3} + 7s^{2} + 10s + K$$
+
+The cubic condition is $7 \\times 10 > K$, so the window is **0 < K < 70**. At
+K = 70 the auxiliary polynomial from the $s^{2}$ row is
+$7s^{2} + 70 = 0$, giving $s = \\pm j\\sqrt{10} = \\pm j3.1623$. Factoring
+confirms $s^{3} + 7s^{2} + 10s + 70 = (s^{2} + 10)(s + 7)$.
+
+**The independent confirmation.** A loop oscillates when its open-loop phase
+reaches −180 degrees with unit magnitude. The phase of this loop is
+
+$$\\angle L(j\\omega ) = -90^{\\circ} - \\arctan(\\omega /2) - \\arctan(\\omega /5)$$
+
+which reaches −180 degrees when the two arctangents sum to 90 degrees, and that
+happens exactly when the product of their arguments is one:
+
+$$(\\omega /2)(\\omega /5) = 1 \\Rightarrow \\omega ^{2} = 10 \\Rightarrow \\omega = 3.1623\\ \\mathrm{rad/s}$$
+
+the same frequency the auxiliary polynomial gave. The magnitude there is
+
+$$\\lvert L(j\\omega )\\rvert = K/[\\sqrt{10}\\sqrt{14}\\sqrt{35}] = K/70$$
+
+so the loop reaches unit magnitude at exactly $K = 70$, the same critical gain
+the array gave. Two methods that share no algebra agree to the digit, which is
+about as strong a check as an exam answer can carry.`,
+      examTip: 'Write the characteristic polynomial first and keep K symbolic throughout; substituting numbers early forces you to redo the array for every trial value. Then list EVERY first-column entry before solving anything — the binding constraint is often not the last row, and an entry that is positive at one gain can be positive again at a much larger one while the column has already changed sign twice.',
+      importantNote: 'At the critical gain a first-column entry hits zero and the row vanishes. That is not a failure of the method; it is where the answer to "at what frequency does it oscillate?" lives. Form the auxiliary polynomial from the row immediately above and solve it — the result is exactly the frequency at which the open-loop phase passes −180 degrees.',
+    },
+    {
+      id: 'stab-relative-margins',
+      title: '9. Relative Stability: Gain Margin, Phase Margin and the Sigma Shift',
+      content: `## 9.1 Two Ways to Ask "How Stable?"
+
+The Routh test answers a yes-or-no question. Design needs a quantity, and there
+are two standard ones, measured in different domains.
+
+**In the s-plane**, relative stability means distance from the imaginary axis.
+The test is the shift of Section 4.3: substitute $s = z - \\sigma$ and run the
+ordinary array on the polynomial in z. Everything to the left of $-\\sigma$ in
+s maps to the left half of the z-plane.
+
+**In the frequency domain**, relative stability means how much the loop gain or
+the loop phase may change before the critical point is reached.
+
+$$\\text{gain margin} = 1/\\lvert L(j\\omega _{pc})\\rvert \\quad \\text{where}\\ \\angle L(j\\omega _{pc}) = -180^{\\circ}$$
+
+$$\\text{phase margin} = 180^{\\circ} + \\angle L(j\\omega _{gc}) \\quad \\text{where}\\ \\lvert L(j\\omega _{gc})\\rvert = 1$$
+
+These are not a separate subject from Routh; they are the same information read
+at a different angle. The gain margin of a loop is precisely the factor by
+which K may be multiplied before it reaches the critical value the array
+computes. The next example makes that identity exact.
+
+### Worked Example 9.1 — The Gain Margin Is the Routh Window
+
+Take $L(s) = 4/[s(s+1)(s+2)(s+3)]$, the loop of Section 4.1 operating at
+K = 4, where the Routh window was 0 < K < 10.
+
+The phase crossover comes first:
+
+$$\\angle L(j\\omega ) = -90^{\\circ} - \\arctan \\omega - \\arctan(\\omega /2) - \\arctan(\\omega /3)$$
+
+At $\\omega = 1$ the three arctangents are 45, 26.565 and 18.435 degrees, and
+they sum to exactly 90 degrees, so the phase is exactly −180 degrees. The
+identity behind that is worth seeing, because it makes the crossover frequency
+exact rather than numerical. Writing $A = \\arctan(1/2)$ and
+$B = \\arctan(1/3)$, the tangent addition formula gives
+
+$$\\tan(A + B) = (1/2 + 1/3)/(1 - 1/6) = (5/6)/(5/6) = 1$$
+
+so $A + B = 45^{\\circ}$, and adding the 45 degrees from $\\arctan 1$ brings the
+total to 90. Hence $\\omega _{pc} = 1$ rad/s exactly.
+
+The magnitude there is
+
+$$\\lvert L(j1)\\rvert = 4/[1 \\cdot \\sqrt{2}\\cdot \\sqrt{5}\\cdot \\sqrt{10}] = 4/10 = 0.4$$
+
+so the gain margin is $1/0.4 = 2.5$, which is 7.9588 dB. Multiply the operating
+gain by the margin: $4 \\times 2.5 = 10$, exactly the critical gain the Routh
+array produced. The two methods are computing the same number.
+
+### Worked Example 9.2 — Phase Margin and Delay Margin
+
+For the same loop, gain crossover requires
+
+$$4 = \\omega \\sqrt{\\omega ^{2}+1}\\sqrt{\\omega ^{2}+4}\\sqrt{\\omega ^{2}+9}$$
+
+which has no closed-form solution and is solved numerically at
+$\\omega _{gc} = 0.55299$ rad/s. The phase there is −144.842 degrees, so
+
+$$\\mathrm{PM} = 180^{\\circ} - 144.842^{\\circ} = 35.158^{\\circ}$$
+
+A phase margin converts directly into a tolerable transport delay, because a
+delay of $t_{d}$ seconds subtracts $\\omega t_{d}$ radians of phase at every
+frequency. Setting that equal to the margin at crossover,
+
+$$t_{d,\\max} = \\mathrm{PM}\\ [\\mathrm{rad}]/\\omega _{gc} = 0.61362/0.55299 = 1.10964\\ \\mathrm{s}$$
+
+More than 1.11 seconds of dead time anywhere in this loop — a network hop, a
+sampling period, a slow sensor — and it goes unstable at unchanged gain. Delay
+margin is the single most useful number in the whole topic for anyone building
+a digital control loop, and it never appears in the Routh array at all.
+
+![Two stacked panels for the loop 4 over s times (s+1)(s+2)(s+3). The magnitude crosses 0 decibels at 0.5530 radians per second and is at minus 7.96 decibels where the phase reaches minus 180 degrees, which happens at exactly 1 radian per second. The gain margin is therefore 7.96 decibels, a factor of 2.5, and the phase margin measured at gain crossover is 35.16 degrees.](/courses/fe-ee/figures/ctl2-margins-bode.svg)
+
+### Worked Example 9.3 — Where the Damping Rule of Thumb Fails
+
+A widely quoted shortcut estimates closed-loop damping from phase margin as
+$\\zeta \\approx \\mathrm{PM}/100$ with PM in degrees. Applied here it predicts
+$\\zeta \\approx 0.35158$. What is the true value?
+
+The closed-loop poles at K = 4 are $-2.80115 \\pm j0.66558$ and
+$-0.19885 \\pm j0.66558$. The dominant pair is the second, and
+
+$$\\zeta = 0.198846/0.694650 = 0.28625$$
+
+The rule overestimates by 23 per cent. The reason is worth knowing: the
+approximation is derived for a second-order loop with one dominant pair, and
+this loop has two pairs whose imaginary parts are identical, so the faster pair
+is not negligible. Use the rule for a sanity check, never for a specification.
+
+## 9.2 Testing a Decay Rate With the Shift
+
+### Worked Example 9.4 — Do All Poles Decay Faster Than a Given Rate?
+
+$D(s) = s^{3} + 9s^{2} + 26s + 24$. Do all its roots lie to the left of −1?
+Of −2?
+
+Substitute $s = z - 1$ and expand:
+
+$$D(z-1) = z^{3} + 6z^{2} + 11z + 6$$
+
+All four coefficients are positive, and the cubic test gives
+$6 \\times 11 = 66$ against $1 \\times 6 = 6$, so every root of the shifted
+polynomial is in the left half of the z-plane: **yes**, every pole decays at
+least as fast as $e^{-t}$.
+
+Push the boundary to −2:
+
+$$D(z-2) = z^{3} + 3z^{2} + 2z$$
+
+The constant term has collapsed to zero, which flags a root exactly on the
+shifted axis. That is correct rather than a failure of the method: the
+polynomial factors as $(s+2)(s+3)(s+4)$ and the root at −2 sits precisely on
+the boundary being tested. The test detects the marginal case cleanly, and the
+answer to "strictly left of −2" is no.
+
+| Boundary $\\sigma$ | Shifted polynomial | Verdict |
+|---|---|---|
+| 1 | $z^{3} + 6z^{2} + 11z + 6$ | all roots left of −1 |
+| 1.5 | $z^{3} + 4.5z^{2} + 5.75z + 1.875$ | all roots left of −1.5 |
+| 2 | $z^{3} + 3z^{2} + 2z$ | one root exactly at −2 |
+| 2.5 | $z^{3} + 1.5z^{2} - 0.25z - 0.375$ | fails at once: negative coefficients |
+
+The last row shows the shift's most useful property. Once σ passes a real root,
+the shifted polynomial acquires a negative coefficient and the necessary
+condition rejects it in a single glance — no array needed.
+
+## 9.3 What Each Method Can and Cannot Tell You
+
+| Question | Routh array | Shifted array | Gain and phase margins |
+|---|---|---|---|
+| Is it stable? | yes | yes | yes |
+| How many unstable poles? | yes | yes | not directly |
+| For what gains is it stable? | yes, as an inequality | yes | yes, as a margin |
+| At what frequency does it oscillate? | yes, via the auxiliary polynomial | no | yes, at phase crossover |
+| Do all modes decay faster than a rate? | no | yes | no |
+| How much delay can it tolerate? | no | no | yes |
+| Where exactly are the poles? | no | no | no |
+
+The final row deserves emphasis. None of these methods locates a pole. The
+Routh test counts sides of a line; the shifted test counts sides of a
+different line; the margins measure distance from a point in the frequency
+plane. If a question asks where the poles are, the answer requires factoring
+the polynomial or drawing a root locus, and no amount of array arithmetic will
+substitute.`,
+      examTip: 'Gain margin and the Routh critical gain are the same fact twice. If a loop operating at K has a gain margin of M, its critical gain is K times M — so a question that gives you one is silently giving you the other, and the arithmetic is a single multiplication.',
+      importantNote: 'Phase margin converts to delay margin by dividing the margin in RADIANS by the gain-crossover frequency. Converting degrees to radians is the step people skip: 35.158 degrees is 0.61362 radians, and dividing by 0.55299 rad/s gives 1.1096 s. Using degrees directly would give 63.6 s, off by a factor of 57.',
+    },
+    {
+      id: 'stab-problem-sets',
+      title: '10. Problem Sets',
+      content: `## 10.1 How to Use These
+
+Build every array by hand before reading the solution, and count the sign
+changes before checking the answer. Each solution names the distractor and
+states the wrong number it produces, because half the value of practice is
+learning to recognise your own likely mistake in a list of four options.
+
+### Problem Set 10A — Arrays and Root Counts
+
+**A1.** How many right-half-plane roots does
+$D(s) = s^{4} + 2s^{3} + 3s^{2} + 6s + 5$ have?
+
+*Solution.* All five coefficients are positive, so build the array. Row three
+is $(2\\times 3 - 1\\times 6)/2 = 0$ beside $(2\\times 5 - 1\\times 0)/2 = 5$: a
+lone zero with a live neighbour, so the ε case applies. The next entry is
+$6 - 10/\\varepsilon$, which runs to minus infinity, and the last is 5. The
+first column reads 1, 2, ε, −∞, 5 — **two sign changes, two right-half-plane
+roots**, at $0.30024 \\pm j1.62481$.
+
+*The trap.* Reading five positive coefficients as a verdict and answering zero.
+The coefficient test can only ever reject, never confirm, above second order.
+
+**A2.** Is $D(s) = s^{3} + 2s^{2} + 4s + 20$ stable?
+
+*Solution.* Positive coefficients, so apply the cubic condition:
+$2 \\times 4 = 8$ against $1 \\times 20 = 20$. Since 8 is less than 20 the test
+fails. The array gives an $s^{1}$ entry of
+$(2\\times 4 - 1\\times 20)/2 = -6$, so the first column is 1, 2, −6, 20 —
+**two sign changes, two right-half-plane roots** at
+$0.47316 \\pm j2.56208$.
+
+*The trap.* Checking only that all four coefficients are positive and answering
+"stable". For a cubic the product test is not optional.
+
+**A3.** Classify $D(s) = s^{4} + 2s^{3} + 6s^{2} + 8s + 8$.
+
+*Solution.* The $s^{2}$ row is $(2\\times 6 - 1\\times 8)/2 = 2$ beside
+$(2\\times 8 - 1\\times 0)/2 = 8$. The $s^{1}$ row is then
+$(2\\times 8 - 2\\times 8)/2 = 0$ beside 0 — a **full row of zeros**. The
+auxiliary polynomial from the $s^{2}$ row is $P(s) = 2s^{2} + 8$, with
+derivative $4s$. Continuing, the $s^{1}$ entry is 4 and the $s^{0}$ entry is
+$(4\\times 8 - 2\\times 0)/4 = 8$. First column: 1, 2, 2, 4, 8 — no sign
+changes. But $P(s) = 0$ gives $s = \\pm j2$, so the system is **marginally
+stable**, oscillating at 2 rad/s with a period of 3.1416 s. Factoring confirms
+$D(s) = (s^{2}+4)(s^{2}+2s+2)$, the other roots being $-1 \\pm j1$.
+
+*The trap.* Reporting "stable" from the sign-change count. Zero right-half-plane
+roots and asymptotic stability are different claims, and the row of zeros is the
+signal that they have parted company.
+
+**A4.** How many right-half-plane roots does
+$D(s) = s^{5} + 2s^{4} + 3s^{3} + 6s^{2} + 2s + 1$ have?
+
+*Solution.* The $s^{3}$ row is $(2\\times 3 - 1\\times 6)/2 = 0$ beside
+$(2\\times 2 - 1\\times 1)/2 = 1.5$: the ε case. The $s^{2}$ entry becomes
+$6 - 3/\\varepsilon$, negative in the limit; the rows below return to positive.
+First column: 1, 2, ε, −∞, 1.5, 1 → **two sign changes, two right-half-plane
+roots**, at $0.09589 \\pm j1.61985$.
+
+*The trap.* Setting ε to zero rather than taking the limit, which produces
+division by zero and tempts a candidate into declaring the array unbuildable
+and the answer indeterminate.
+
+### Problem Set 10B — Gain Windows and Critical Frequencies
+
+**B1.** A unity-feedback loop has $G(s)H(s) = K/[s(s+1)(s+4)]$. Find the stable
+range of K and the frequency of oscillation at the upper limit.
+
+*Solution.* The characteristic polynomial is
+$D(s) = s^{3} + 5s^{2} + 4s + K$. The cubic condition gives
+$5 \\times 4 = 20 > K$, so the window is **0 < K < 20**. At K = 20 the
+auxiliary polynomial from the $s^{2}$ row is $5s^{2} + 20 = 0$, giving
+$s = \\pm j2$: oscillation at **2 rad/s**. Factoring confirms
+$s^{3} + 5s^{2} + 4s + 20 = (s + 5)(s^{2} + 4)$.
+
+*The trap.* Using $s(s+1)(s+4)$ as the characteristic polynomial and never
+adding K, which produces the open-loop poles 0, −1, −4 and the conclusion that
+the loop is unstable for every K.
+
+**B2.** $G(s)H(s) = K(s+2)/[s(s-1)(s+8)]$. Find the stable range of K.
+
+*Solution.* The plant denominator is $s^{3} + 7s^{2} - 8s$, so
+
+$$D(s) = s^{3} + 7s^{2} + (K - 8)s + 2K$$
+
+The coefficient test already requires $K > 8$. The array's $s^{1}$ entry is
+$[7(K-8) - 2K]/7 = (5K - 56)/7$, which is positive only for
+**K > 11.2** — stricter than the coefficient test, so it binds. At K = 11.2 the
+auxiliary polynomial is $7s^{2} + 22.4 = 0$, giving
+$s = \\pm j1.78885$, and the factorisation is
+$(s+7)(s^{2} + 3.2)$.
+
+*The trap.* Assuming every window has the form 0 < K < K_max and answering
+0 < K < 11.2. The open-loop pole at +1 reverses the inequality: this loop needs
+**more** gain, not less, and turning the knob down destabilises it.
+
+**B3.** Do all roots of $D(s) = s^{3} + 9s^{2} + 26s + 24$ lie to the left of
+−1.5? Of −2.5?
+
+*Solution.* Substituting $s = z - 1.5$ gives
+$z^{3} + 4.5z^{2} + 5.75z + 1.875$, all coefficients positive, with
+$4.5 \\times 5.75 = 25.875$ against $1 \\times 1.875 = 1.875$ — the test
+passes, so **yes** for −1.5. Substituting $s = z - 2.5$ gives
+$z^{3} + 1.5z^{2} - 0.25z - 0.375$, which has two negative coefficients, so
+**no** for −2.5. The roots are −2, −3 and −4, so the boundary that fails is the
+one that has passed the slowest root.
+
+*The trap.* Running the full array on the second shifted polynomial and
+misreading the sign changes. A negative coefficient ends the question
+immediately.
+
+**B4.** A loop $L(s) = 6/[s(s+1)(s+2)(s+3)]$ has its phase crossover at 1 rad/s.
+Find the gain margin in absolute terms and in decibels, and the critical gain.
+
+*Solution.* The magnitude at 1 rad/s is
+$6/[1 \\cdot \\sqrt{2}\\cdot \\sqrt{5}\\cdot \\sqrt{10}] = 6/10 = 0.6$, so the
+gain margin is $1/0.6 = 1.6667$, which is 4.437 dB. The critical gain is
+$6 \\times 1.6667 = 10$, matching the Routh window 0 < K < 10 for this plant.
+
+*The trap.* Subtracting rather than dividing and reporting a margin of
+$10 - 6 = 4$. Gain margin is a ratio; only in decibels is it a difference.
+
+### Practice Problems 10C — Stability Speed Drills
+
+Sixty seconds each.
+
+**C1.** Is $s^{3} + 4s^{2} + 5s + 20$ stable?
+
+*Solution.* $4 \\times 5 = 20$ and $1 \\times 20 = 20$, so the products are
+**equal**, not greater. That is the boundary: the roots are −4 and
+$\\pm j\\sqrt{5} = \\pm j2.2361$, and the system is marginally stable.
+*The trap.* Reading "bc is at least ad" as sufficient and answering stable.
+
+**C2.** How many right-half-plane roots does
+$s^{4} + 3s^{3} + 2s^{2} + s + 7$ have?
+
+*Solution.* $s^{2}$ row: $(3\\times 2 - 1\\times 1)/3 = 1.6667$ beside
+$(3\\times 7 - 1\\times 0)/3 = 7$. $s^{1}$ row:
+$(1.6667\\times 1 - 3\\times 7)/1.6667 = -11.6$. First column
+1, 3, 1.6667, −11.6, 7 → **two**.
+*The trap.* Positive coefficients read as stability again.
+
+**C3.** Describe the behaviour of a system whose characteristic polynomial is
+$s^{2} + 9$.
+
+*Solution.* The $s^{1}$ coefficient is missing, so the system is not
+asymptotically stable. The roots are $\\pm j3$: a sustained oscillation at
+**3 rad/s**, bounded but never decaying.
+*The trap.* Reporting exponential growth. A missing coefficient rules out
+asymptotic stability but does not imply divergence.
+
+**C4.** How many right-half-plane roots does $s^{3} - 2s^{2} + 3s + 6$ have?
+
+*Solution.* A negative coefficient guarantees at least one, but the question
+asks how many, so build the array: the $s^{1}$ entry is
+$(-2\\times 3 - 1\\times 6)/(-2) = 6$ and the $s^{0}$ entry is 6. First column
+1, −2, 6, 6 → **two sign changes, two roots**, at
+$1.5 \\pm j1.93649$.
+*The trap.* Stopping at "unstable" and guessing one, which is the most common
+wrong choice because a single negative coefficient suggests a single bad root.
+
+**C5.** A loop is critical at K = 10 and is running at K = 2.5. What is its
+gain margin?
+
+*Solution.* $10/2.5 = 4$, which is 12.041 dB.
+*The trap.* Subtracting to get 7.5, or inverting to get 0.25. A gain margin
+greater than one is the amount of headroom; a margin below one means the loop
+is already unstable.
+
+## 10.2 A Two-Minute Self-Check
+
+| Task | Target time |
+|---|---|
+| Reject a polynomial on its coefficients | 10 s |
+| Apply the cubic product test $a_{2}a_{1} > a_{3}a_{0}$ | 15 s |
+| Build a quartic array to five rows | 90 s |
+| Recognise which special case a stalled row is | 10 s |
+| Get the oscillation frequency from an auxiliary polynomial | 45 s |
+| Solve a one-parameter gain window and intersect the inequalities | 150 s |
+| Convert a gain margin into a critical gain, or back | 10 s |`,
+      examTip: 'When the answer choices for a "how many unstable poles" question are 0, 1, 2 and 3, remember that complex roots arrive in conjugate pairs. An odd count therefore requires a real right-half-plane root, which a polynomial with all-positive coefficients cannot have. That single observation eliminates two options before any arithmetic.',
+      importantNote: 'Three different pieces of information come out of the same array: the sign-change count gives the number of unstable poles, a vanished row gives the oscillation frequency through its auxiliary polynomial, and the symbolic first column gives the gain window. Decide which one the question wants before starting, because building the array for the wrong one wastes two or three minutes.',
+    },
   ],
   keyTakeaways: [
     'First column sign changes = number of RHP (unstable) poles; all positive = stable.',
     'Necessary condition: all polynomial coefficients must be positive (same sign).',
     '2nd order: all coefficients positive. 3rd order: all positive AND bc > ad.',
-    'Zero in first column: replace with small ε and take limit.',
+    'Zero in first column with live neighbours: replace with small ε and take the limit.',
     'Entire zero row: use auxiliary polynomial derivative to continue.',
     'Design: express Routh entries in terms of K, set all > 0, solve inequalities.',
+    'Zero sign changes means no OPEN right-half-plane roots, which is not the same as stable — check the auxiliary polynomial for axis roots.',
+    'A row of zeros means roots symmetric about the origin; they may be on the axis (marginal) or straddle it (unstable).',
+    'BIBO stability, asymptotic stability and internal stability differ; a pole-zero cancellation across an unstable pole hides a mode that no test on T(s) can see.',
+    'A gain margin M at operating gain K means the Routh critical gain is K·M; the two methods compute the same number.',
+    'Substituting s = z − σ turns the ordinary array into a test of whether every mode decays faster than exp(−σt).',
   ],
 },
 
@@ -1467,7 +3364,8 @@ Design a PID controller using the **Ziegler-Nichols ultimate gain method**. Find
 
 ## 3.2 Step 1 — Find the Ultimate Gain K_u
 
-With P-only control, the closed-loop characteristic equation is:
+With P-only control, setting the denominator of the closed-loop transfer
+function to zero gives:
 
 **$1 + K_p \\cdot G(s) = 0$** → s(s + 2) + K_p = 0 → **$s^{2} + 2s + K_p = 0$**
 
@@ -1843,9 +3741,9 @@ overshoot formula. Writing $OS$ as a fraction and taking logarithms,
 
 $$\\zeta = -\\ln(OS)/\\sqrt{\\pi ^{2} + \\ln^{2}(OS)}$$
 
-For OS = 0.10: $\\ln(0.10) = -2.303$, so
+For OS = 0.10: $\\ln(0.10) = -2.30259$, so
 
-$$\\zeta = 2.303/\\sqrt{9.870 + 5.302} = 2.303/3.895 = 0.5912$$
+$$\\zeta = 2.30259/\\sqrt{9.86960 + 5.30190} = 2.30259/3.89506 = 0.59116$$
 
 Because overshoot falls as ζ rises, the requirement is $\\zeta \\geq 0.5912$.
 In the s-plane that is a **wedge**: the pole must lie at an angle no greater
