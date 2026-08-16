@@ -321,6 +321,852 @@ for a single small exchange, the handshake costs more than the data.`,
       examTip: 'Longest-prefix match decides forwarding, and specificity beats metric: a /24 entry always wins over a /16 entry that also matches. The default route 0.0.0.0/0 matches everything and therefore wins only when nothing else does.',
       importantNote: 'MAC addresses are rewritten at every router; IP addresses survive end to end. A host ARPs for its default gateway, never for a remote server on another network — that mapping would be useless because the server is not on the local link.',
     },
+    { id: 'osi-delay-budget', title: '6. The End-to-End Delay Budget',
+      content: `## 6.1 Four terms, and only two of them are yours to set
+
+Every packet that crosses one hop waits for four separate things. A question
+that asks how long a transfer takes is asking you to name all four and add
+them:
+
+$$d_{\\mathrm{hop}} = d_{\\mathrm{proc}} + d_{\\mathrm{queue}} + d_{\\mathrm{trans}} + d_{\\mathrm{prop}}$$
+
+**Processing delay** is the time a router spends reading the header, verifying
+the checksum and looking up the outgoing interface. On current hardware it is
+a few microseconds, and problems quote it rather than expect you to derive it.
+
+**Queueing delay** is the wait in the outbound buffer behind packets that
+arrived earlier. It is the only term that depends on somebody else's traffic,
+and the only one that is a random variable rather than a number.
+
+**Transmission delay**, also called serialisation delay, is the time needed to
+push every bit of the packet through the interface at its clock rate:
+
+$$d_{\\mathrm{trans}} = \\frac{L}{R}$$
+
+**Propagation delay** is the flight time of the leading bit along the medium:
+
+$$d_{\\mathrm{prop}} = \\frac{d}{v}$$
+
+The signal velocity is not the speed of light in vacuum. Silica fibre has a
+group index close to 1.5, and twisted pair and coaxial cable fall in the same
+neighbourhood, so exam problems use
+
+$$v = c/n = 2.998 \\times 10^{8}/1.5 \\approx 2.0 \\times 10^{8}\\ \\mathrm{m/s}$$
+
+which is a convenient two thirds of $c$. A useful number to carry: at that
+velocity a signal covers 200 km in exactly 1 ms.
+
+Notice what each term does **not** depend on. Transmission delay depends on
+the packet length and the link rate but not at all on the distance.
+Propagation delay depends on the distance and the medium but not at all on
+the packet length or the link rate. Confusing the two is the single most
+common error in this material, and it is the error every distractor in a
+delay question is built to catch.
+
+## 6.2 Worked example 1 — one hop, all four terms
+
+A 1500-byte frame crosses a 100 Mbps link 200 km long. The router adds
+20 microseconds of processing and the outbound queue holds the packet for
+50 microseconds. Find the one-way delay.
+
+Convert the length to bits first, because $R$ is in bits per second:
+
+$$L = 1500 \\times 8 = 12000\\ \\mathrm{bits}$$
+
+$$d_{\\mathrm{trans}} = \\frac{12000}{100 \\times 10^{6}} = 1.2 \\times 10^{-4}\\ \\mathrm{s} = 120\\ \\mu\\mathrm{s}$$
+
+$$d_{\\mathrm{prop}} = \\frac{200 \\times 10^{3}}{2.0 \\times 10^{8}} = 1.0 \\times 10^{-3}\\ \\mathrm{s} = 1000\\ \\mu\\mathrm{s}$$
+
+$$d_{\\mathrm{hop}} = 20 + 50 + 120 + 1000 = 1190\\ \\mu\\mathrm{s} = 1.19\\ \\mathrm{ms}$$
+
+Propagation alone is $1000/1190 = 0.840$, or **84.0 %** of the budget. Doubling
+the link rate to 200 Mbps would remove 60 microseconds and shorten the hop by
+about five percent; moving the endpoints 100 km closer would remove 500
+microseconds and shorten it by forty-two.
+
+## 6.3 Which term dominates, and where the crossover sits
+
+The two deterministic terms are equal when
+
+$$\\frac{L}{R} = \\frac{d}{v} \\quad \\Longrightarrow \\quad L^{*} = \\frac{R\\,d}{v}$$
+
+![One-way delay against packet size for a 100 Mbps link 200 km long. Transmission delay rises linearly from the origin, propagation delay is a flat 1.0 ms that does not depend on packet size, and their sum is the dashed line. The two terms are equal only at a packet of 12,500 bytes, more than eight times the Ethernet MTU, so every realistic packet on this link is propagation-bound.](/courses/fe-ee/figures/net2-delay-terms.svg)
+
+For the link of the previous example that crossover packet is
+
+$$L^{*} = \\frac{100 \\times 10^{6} \\times 200 \\times 10^{3}}{2.0 \\times 10^{8}} = 1.0 \\times 10^{5}\\ \\mathrm{bits} = 12500\\ \\mathrm{bytes}$$
+
+which is more than eight Ethernet MTUs. No packet you can legally send on
+that link is transmission-bound. The general lesson is that $L^{*}$ scales
+with the product of rate and distance, so faster links and longer links both
+push the crossover upward: the faster the network, the more thoroughly
+propagation dominates.
+
+## 6.4 Worked example 2 — two links at opposite extremes
+
+Take the same 1500-byte frame across two very different links.
+
+A 1 Gbps link 10 m long, inside a rack:
+
+$$d_{\\mathrm{trans}} = \\frac{12000}{10^{9}} = 12\\ \\mu\\mathrm{s}, \\qquad d_{\\mathrm{prop}} = \\frac{10}{2.0 \\times 10^{8}} = 0.05\\ \\mu\\mathrm{s}$$
+
+Transmission beats propagation by a factor of $12/0.05 = 240$.
+
+A 10 Mbps link 5000 km long, a continental leased line:
+
+$$d_{\\mathrm{trans}} = \\frac{12000}{10^{7}} = 1200\\ \\mu\\mathrm{s}, \\qquad d_{\\mathrm{prop}} = \\frac{5 \\times 10^{6}}{2.0 \\times 10^{8}} = 25000\\ \\mu\\mathrm{s}$$
+
+Propagation now beats transmission by $25000/1200 = 20.8$. The same packet,
+the same formulas, and the answer to "which term dominates" flips by a factor
+of five thousand. There is no rule of thumb here — you compute both.
+
+## 6.5 Queueing: the term that is not a constant
+
+Model the outbound port as a single server fed by a Poisson arrival stream at
+$\\lambda$ packets per second, each taking a service time $T_s = L/R$. The
+**traffic intensity** is the fraction of the server's capacity demanded:
+
+$$\\rho = \\lambda\\, T_s = \\frac{\\lambda L}{R}$$
+
+For that M/M/1 model the standard results are
+
+$$W_q = \\frac{\\rho}{1 - \\rho}\\, T_s, \\qquad T = \\frac{T_s}{1 - \\rho} = W_q + T_s$$
+
+and the mean number of packets waiting is $N_q = \\rho^{2}/(1-\\rho)$. What
+matters for the exam is the shape, not the derivation: the delay does not
+grow in proportion to the load, it grows as one over the headroom.
+
+![Mean queueing wait and mean time in system for an M/M/1 port, both expressed in service times, plotted against utilisation. At sixty percent utilisation a packet waits 1.5 service times; at ninety percent it waits nine. The curve is nearly flat to about seventy percent and then turns almost vertical, which is why links are engineered well below saturation.](/courses/fe-ee/figures/net2-queue-knee.svg)
+
+Two consequences are worth stating outright. A link run at 50 % utilisation
+queues each packet for one service time on average, which is negligible. A
+link run at 95 % queues each packet for nineteen, which is not. And because
+$\\rho$ contains $L$, the same offered bit rate carried in smaller packets
+raises the packet rate but leaves $\\rho$ unchanged — utilisation is a bit-rate
+ratio, not a packet-rate ratio.
+
+## 6.6 Worked example 3 — a port at 60 % and at 90 %
+
+A 20 Mbps port carries 1500-byte packets. Find the queueing delay at 1000
+packets per second and at 1500 packets per second.
+
+$$T_s = \\frac{12000}{20 \\times 10^{6}} = 6.0 \\times 10^{-4}\\ \\mathrm{s} = 600\\ \\mu\\mathrm{s}$$
+
+At 1000 packets per second, $\\rho = 1000 \\times 600 \\times 10^{-6} = 0.60$:
+
+$$W_q = \\frac{0.60}{0.40} \\times 600 = 900\\ \\mu\\mathrm{s}, \\qquad T = \\frac{600}{0.40} = 1500\\ \\mu\\mathrm{s}$$
+
+At 1500 packets per second, $\\rho = 0.90$:
+
+$$W_q = \\frac{0.90}{0.10} \\times 600 = 5400\\ \\mu\\mathrm{s}, \\qquad T = \\frac{600}{0.10} = 6000\\ \\mu\\mathrm{s}$$
+
+Traffic rose by half; the queueing delay rose by a factor of
+$5400/900 = 6.0$. That non-linearity is the entire reason capacity planning
+exists, and it is why an operator treats 70 % as "busy" rather than "fine".
+
+## 6.7 An end-to-end path is a sum over hops
+
+Nothing about the four terms changes when the path is longer; the terms are
+simply summed over every link and every device in between:
+
+$$d_{\\mathrm{e2e}} = \\sum_{i=1}^{N}\\left(\\frac{L}{R_i} + \\frac{d_i}{v}\\right) + \\sum_{k=1}^{N-1}\\left(d_{\\mathrm{proc},k} + d_{\\mathrm{queue},k}\\right)$$
+
+Note the index ranges. A path of $N$ links contains $N-1$ intermediate
+devices, so a three-link path serialises the packet three times but only
+processes and queues it twice. Off-by-one errors here are worth real marks.
+
+Round-trip time is the sum in both directions. If the path is symmetric,
+
+$$\\mathrm{RTT} = 2\\, d_{\\mathrm{e2e}}$$
+
+but that assumption is worth stating rather than assuming, because
+asymmetric routing and asymmetric access rates are both common.
+
+## 6.8 Worked example 4 — a three-hop budget, term by term
+
+A 1500-byte frame goes from a host to a server over three links: 1 Gbps and
+2 km to the first router, 100 Mbps and 800 km to the second, then 1 Gbps and
+5 km to the server. Each router adds 20 microseconds of processing and 150
+microseconds of queueing. Find the one-way delay and the share of each term.
+
+Transmission, hop by hop:
+
+$$\\frac{12000}{10^{9}} = 12\\ \\mu\\mathrm{s}, \\qquad \\frac{12000}{10^{8}} = 120\\ \\mu\\mathrm{s}, \\qquad \\frac{12000}{10^{9}} = 12\\ \\mu\\mathrm{s}$$
+
+Propagation, hop by hop:
+
+$$\\frac{2 \\times 10^{3}}{2 \\times 10^{8}} = 10\\ \\mu\\mathrm{s}, \\quad \\frac{8 \\times 10^{5}}{2 \\times 10^{8}} = 4000\\ \\mu\\mathrm{s}, \\quad \\frac{5 \\times 10^{3}}{2 \\times 10^{8}} = 25\\ \\mu\\mathrm{s}$$
+
+Two routers contribute $2 \\times 20 = 40$ microseconds of processing and
+$2 \\times 150 = 300$ microseconds of queueing. Adding everything:
+
+$$d_{\\mathrm{e2e}} = 144 + 4035 + 40 + 300 = 4519\\ \\mu\\mathrm{s} = 4.519\\ \\mathrm{ms}$$
+
+| Term | Total (microseconds) | Share of the budget |
+|---|---|---|
+| Transmission on three links | 144 | 3.2 % |
+| Propagation on three links | 4035 | 89.3 % |
+| Processing at two routers | 40 | 0.9 % |
+| Queueing at two routers | 300 | 6.6 % |
+
+If the path is symmetric the round trip is $2 \\times 4.519 = 9.038$ ms. The
+table is the answer to almost every "how do I make this faster" question:
+upgrading the 100 Mbps middle hop to 1 Gbps removes 108 microseconds, about
+2.4 % of the total, while moving the server 400 km closer removes 2000
+microseconds, about 44 %.
+
+## 6.9 Store-and-forward, segmentation, and the pipeline
+
+A store-and-forward device receives an entire packet before it forwards any
+of it, so sending one large message across $N$ hops costs $N$ full
+serialisations. Cutting the message into $P$ packets lets the hops overlap:
+while hop 2 forwards packet $k$, hop 1 is already receiving packet $k+1$.
+Ignoring headers, the last bit arrives after
+
+$$t(P) = (N + P - 1)\\,\\frac{L}{P R}$$
+
+The $(N-1)$ term is the cost of filling the pipeline, and it is the only
+penalty that remains as $P$ grows. Restore a per-packet header of $h$ bits and
+the picture changes, because every extra packet buys another header:
+
+$$t(P) = (N + P - 1)\\,\\frac{L/P + h}{R} = \\frac{1}{R}\\left[L + (N-1)h + \\frac{(N-1)L}{P} + Ph\\right]$$
+
+The bracket is a constant plus a term falling as $1/P$ plus a term rising as
+$P$, so it has a minimum. Differentiating and setting the derivative to zero,
+
+$$-\\frac{(N-1)L}{P^{2}} + h = 0 \\quad \\Longrightarrow \\quad P^{*} = \\sqrt{\\frac{(N-1)L}{h}}$$
+
+$$t_{\\min} = \\frac{1}{R}\\left[L + (N-1)h + 2\\sqrt{(N-1)L h}\\right]$$
+
+![Delivery time of a six-megabit message across three store-and-forward hops at 100 Mbps, plotted against the number of packets the message is cut into. Sending it whole costs 180 ms because each hop serialises the entire message; cutting it into 194 packets reaches a minimum of 61.25 ms, and cutting it finer than that loses ground again to the forty-byte header charged on every packet. The dashed curve, which ignores headers, falls monotonically toward the sixty-millisecond floor.](/courses/fe-ee/figures/net2-segment-pipeline.svg)
+
+## 6.10 Worked example 5 — the packet count that minimises delivery time
+
+A 6 Mbit message crosses three 100 Mbps store-and-forward hops. Headers cost
+40 bytes per packet. Find the delivery time for the whole message, for 1000
+packets ignoring headers, and the optimum packet count with headers charged.
+
+Whole message, three serialisations:
+
+$$t = 3 \\times \\frac{6 \\times 10^{6}}{10^{8}} = 3 \\times 0.06 = 0.18\\ \\mathrm{s} = 180\\ \\mathrm{ms}$$
+
+One thousand packets of 6000 bits each, headers ignored:
+
+$$t = (3 + 1000 - 1)\\,\\frac{6000}{10^{8}} = 1002 \\times 60\\ \\mu\\mathrm{s} = 60.12\\ \\mathrm{ms}$$
+
+a speed-up of $180/60.12 = 2.994$, essentially the factor of $N = 3$ that the
+pipeline can deliver. Now charge $h = 40 \\times 8 = 320$ bits per packet:
+
+$$P^{*} = \\sqrt{\\frac{2 \\times 6 \\times 10^{6}}{320}} = \\sqrt{37500} = 193.6$$
+
+$$t_{\\min} = \\frac{6 \\times 10^{6} + 640 + 2\\sqrt{1.2 \\times 10^{7} \\times 320}}{10^{8}} = 61.25\\ \\mathrm{ms}$$
+
+The integer optimum is 194 packets, at 61.246 ms. Two things are worth
+carrying away. The minimum is very flat — 100 packets gives 61.53 ms and 400
+gives 61.59 ms, both within half a percent — so any sensible packet size is
+fine. And the floor is $L/R = 60$ ms no matter how many hops there are,
+because once the pipeline is full the bottleneck link is busy continuously.`,
+      examTip: 'Transmission delay is L/R and ignores distance; propagation delay is d/v and ignores packet size and link rate. Compute both before deciding which dominates — the crossover distance is d = Lv/R, which for a 1500-byte frame at 100 Mbps is 24 km and at 1 Gbps only 2.4 km, so almost any wide-area link is propagation-bound and almost any rack-scale link is not.',
+      importantNote: 'A path of N links has only N-1 intermediate routers, so it serialises the packet N times but processes and queues it N-1 times. Queueing delay is rho/(1-rho) service times: it is roughly flat to 70 % utilisation and then rises without bound, so a 50 % traffic increase from rho = 0.6 to rho = 0.9 multiplies the wait by six.',
+    },
+    { id: 'osi-window-arq', title: '7. Bandwidth-Delay Product, Windows, and ARQ Efficiency',
+      content: `## 7.1 The pipe, and what it takes to fill it
+
+A link with a round-trip time has a volume, not just a rate. The
+**bandwidth-delay product** is the number of bits that fit in flight between
+sender and receiver and back:
+
+$$\\mathrm{BDP} = R \\times \\mathrm{RTT}$$
+
+It is the amount of unacknowledged data a sender must be willing to have
+outstanding if the link is never to go idle. Divide by eight for bytes, and by
+the segment size for segments:
+
+$$W_{\\mathrm{bytes}} = \\frac{R \\times \\mathrm{RTT}}{8}, \\qquad W_{\\mathrm{segments}} = \\frac{R \\times \\mathrm{RTT}}{8\\,\\mathrm{MSS}}$$
+
+TCP's header carries the receive window in a 16-bit field, so the largest
+window it can advertise without help is 65,535 bytes. The **window scale**
+option of RFC 7323 multiplies that field by $2^{s}$ with $s$ up to 14, giving
+a ceiling near 1 GB, and the scale factor is negotiated once in the SYN.
+
+## 7.2 Worked example 6 — the pipe and the 16-bit ceiling
+
+A 100 Mbps path has an 80 ms round-trip time. Find the window needed to keep
+it busy, and the throughput obtainable without window scaling.
+
+$$\\mathrm{BDP} = 100 \\times 10^{6} \\times 0.080 = 8.0 \\times 10^{6}\\ \\mathrm{bits} = 10^{6}\\ \\mathrm{bytes}$$
+
+A full megabyte must be in flight. An unscaled TCP window of 65,535 bytes
+delivers one window per round trip:
+
+$$B = \\frac{65535 \\times 8}{0.080} = 6.5535 \\times 10^{6}\\ \\mathrm{bits/s} = 6.55\\ \\mathrm{Mbps}$$
+
+which is $6.5535/100 = 6.55$ % of the link. The window, not the link, is the
+bottleneck — and no amount of extra bandwidth changes the answer, because
+throughput is window over RTT. The required scale factor is
+$10^{6}/65535 = 15.3$, so $s = 4$ (a multiplier of 16) is the smallest that
+works.
+
+## 7.3 Stop-and-wait, derived from the timeline
+
+Stop-and-wait sends one frame and waits for its acknowledgement. Draw the
+timeline and read off the cycle: the frame takes $T_t = L/R$ to serialise, one
+propagation time $T_p$ to arrive, the acknowledgement is short enough to
+ignore, and one more $T_p$ to come back. The cycle is therefore
+$T_t + 2T_p$ and the useful fraction of it is
+
+$$\\eta_{\\mathrm{sw}} = \\frac{T_t}{T_t + 2T_p} = \\frac{1}{1 + 2a}, \\qquad a \\equiv \\frac{T_p}{T_t}$$
+
+The dimensionless ratio $a$ is the whole story: it is the number of frame
+times that fit in one propagation time, and $1 + 2a$ is the number of frames
+that would fit in one full cycle. With a window of $W$ frames the sender can
+keep going until the first acknowledgement returns, so
+
+$$\\eta_{W} = \\min\\!\\left(1,\\; \\frac{W}{1 + 2a}\\right), \\qquad B_{\\mathrm{eff}} = \\eta_W R$$
+
+and the window that just fills the pipe is $W = \\lceil 1 + 2a \\rceil$. That is
+the bandwidth-delay product measured in frames rather than bits, and the two
+statements are the same statement.
+
+![Sliding-window efficiency against window size for three link shapes. Each curve rises linearly from the stop-and-wait point at a window of one and saturates at a window of 1 plus 2a: two frames on a short LAN hop, twenty-six frames on a ten-megabit path with a thirty-millisecond round trip, and 251 frames on a satellite hop. Stop-and-wait on the thirty-millisecond path achieves only 3.85 percent of the link.](/courses/fe-ee/figures/net2-arq-efficiency.svg)
+
+## 7.4 Worked example 7 — stop-and-wait against a sliding window
+
+A 10 Mbps link carries 1500-byte frames with a 30 ms round-trip time. Find
+the stop-and-wait efficiency and throughput, and the window that reaches full
+rate.
+
+$$T_t = \\frac{12000}{10 \\times 10^{6}} = 1.2\\ \\mathrm{ms}, \\qquad T_p = \\frac{30}{2} = 15\\ \\mathrm{ms}, \\qquad a = \\frac{15}{1.2} = 12.5$$
+
+$$\\eta_{\\mathrm{sw}} = \\frac{1.2}{1.2 + 30} = \\frac{1}{26} = 0.03846 = 3.85\\ \\%$$
+
+$$B_{\\mathrm{eff}} = 0.03846 \\times 10 = 0.385\\ \\mathrm{Mbps}$$
+
+A ten-megabit link is delivering 385 kbps. The window that fixes it is
+$1 + 2a = 26$ frames, or $26 \\times 1500 = 39000$ bytes. Check that against
+the pipe directly: the bandwidth-delay product is
+$10 \\times 10^{6} \\times 0.030/8 = 37500$ bytes, and one more frame is needed
+to cover the sender's own serialisation, giving $37500 + 1500 = 39000$ bytes.
+The two routes agree exactly, which is the point — "one plus two a frames" and
+"the bandwidth-delay product plus one frame" are the same quantity written in
+different units.
+
+## 7.5 From bit errors to frame losses
+
+A frame is destroyed by a **single** bit error, so a frame error probability
+is not a bit error rate. If bit errors are independent with probability
+$p_b$, a frame of $n$ bits survives with probability $(1-p_b)^n$, so
+
+$$p_f = 1 - (1 - p_b)^{n} \\approx n\\,p_b \\quad (n\\,p_b \\ll 1)$$
+
+With retransmission until success, the number of transmissions per delivered
+frame is geometric, so its expectation is
+
+$$E[k] = \\frac{1}{1 - p_f}$$
+
+and a pipelined protocol whose window already covers the pipe delivers
+
+$$B_{\\mathrm{eff}} = R\\,(1 - p_f)$$
+
+For a window too small to cover the pipe, and assuming selective repeat so
+that only the damaged frame is resent, the two penalties multiply:
+
+$$\\eta = \\frac{W(1 - p_f)}{1 + 2a} \\quad (W < 1 + 2a)$$
+
+## 7.6 Worked example 8 — effective throughput under a bit error rate
+
+A 1 Gbps link has a bit error rate of $10^{-6}$ and carries full 1518-byte
+Ethernet frames. Find the frame error probability, the mean number of
+transmissions per delivered frame, and the effective throughput assuming the
+window is large enough that only errors cost anything.
+
+$$n = 1518 \\times 8 = 12144\\ \\mathrm{bits}$$
+
+$$p_f = 1 - (1 - 10^{-6})^{12144} = 0.012071$$
+
+The linear approximation $n p_b = 0.012144$ is high by six tenths of a
+percent, which is close enough for a multiple-choice answer and a useful sanity
+check on the exponent.
+
+$$E[k] = \\frac{1}{1 - 0.012071} = 1.0122$$
+
+$$B_{\\mathrm{eff}} = 1000 \\times (1 - 0.012071) = 987.9\\ \\mathrm{Mbps}$$
+
+Raise the bit error rate one decade to $10^{-5}$ and the frame error
+probability becomes 0.1144: eleven percent of frames are lost, throughput
+falls to 886 Mbps, and a go-back-N protocol would do far worse still because
+each loss discards a whole window. This is why long links use forward error
+correction rather than retransmission — at a fixed frame length, frame loss
+rises almost linearly with the bit error rate, and retransmission cost rises
+faster than that.`,
+      examTip: 'BDP = R x RTT gives bits in flight; divide by 8 for the window in bytes. Sliding-window efficiency is min(1, W/(1+2a)) with a = Tp/Tt, so the window that fills a pipe is 1 + 2a frames — the same number as the bandwidth-delay product expressed in frames.',
+      importantNote: 'One bit error destroys the whole frame, so the frame error probability is 1 - (1 - BER)^n, not the BER. Without window scaling TCP cannot advertise more than 65,535 bytes, which caps throughput at 65535 x 8/RTT regardless of link speed — 6.55 Mbps on an 80 ms path.',
+    },
+    { id: 'osi-tcp-control', title: '8. TCP Control Loops and the Switching Decision',
+      content: `## 8.1 Flow control and congestion control are different problems
+
+TCP runs two limits at once and a question that confuses them is easy to get
+wrong. **Flow control** protects the *receiver*: the receive window
+$\\mathrm{rwnd}$ is advertised in every segment and says how much buffer the
+receiving application has left. **Congestion control** protects the
+*network*: the congestion window $\\mathrm{cwnd}$ is the sender's own estimate
+of what the path will carry, and no one advertises it. The sender may have
+
+$$\\mathrm{outstanding} \\le \\min(\\mathrm{cwnd},\\ \\mathrm{rwnd})$$
+
+bytes unacknowledged, and throughput follows from whichever is smaller:
+
+$$B = \\frac{\\min(\\mathrm{cwnd},\\ \\mathrm{rwnd})}{\\mathrm{RTT}}$$
+
+A receiver that advertises a zero window has stopped the sender for its own
+reasons and the network is uninvolved; a sender whose cwnd has collapsed has
+seen loss and the receiver is uninvolved.
+
+## 8.2 Slow start is exponential, and shorter than it sounds
+
+A new connection has no idea what the path will carry, so it probes. Starting
+from an initial window $W_0$ (ten segments under RFC 6928), every
+acknowledged window doubles the next one:
+
+$$W_n = W_0\\, 2^{n}$$
+
+so the number of round trips needed to reach a target window $W_T$ is
+
+$$n = \\left\\lceil \\log_2 \\frac{W_T}{W_0} \\right\\rceil$$
+
+and the data delivered in the first $n$ rounds is the geometric sum
+
+$$S_n = W_0\\left(2^{n} - 1\\right) \\ \\text{segments}$$
+
+Slow start is a badly chosen name: nothing about doubling is slow. What is
+slow is that the growth is measured in **round trips**, so on a long path the
+clock, not the link, sets the pace.
+
+## 8.3 Worked example 9 — round trips to fill a 100 Mbps pipe
+
+A connection with MSS 1460 bytes and an initial window of 10 segments runs
+over a 100 Mbps path with a 40 ms round-trip time. How many round trips does
+slow start need before the window covers the pipe, and how long is that?
+
+$$W_T = \\frac{100 \\times 10^{6} \\times 0.040}{8} = 500000\\ \\mathrm{bytes} = \\frac{500000}{1460} = 342.5\\ \\mathrm{segments}$$
+
+$$n = \\left\\lceil \\log_2 \\frac{342.5}{10} \\right\\rceil = \\left\\lceil 5.10 \\right\\rceil = 6\\ \\text{round trips}$$
+
+$$t = 6 \\times 40 = 240\\ \\mathrm{ms}$$
+
+In those six rounds the sender has delivered
+$S_6 = 10(2^{6} - 1) = 630$ segments, which is
+$630 \\times 1460 = 919800$ bytes. A transfer smaller than about 900 kB
+therefore never reaches full rate at all — it finishes inside slow start, and
+its average throughput is governed by RTT and the initial window, not by the
+link. That is the arithmetic behind every recommendation to reduce round
+trips rather than buy bandwidth for small-object workloads.
+
+## 8.4 AIMD and the sawtooth
+
+Once slow start ends, TCP switches to congestion avoidance: additive increase,
+multiplicative decrease. Per round trip,
+
+$$\\text{no loss:}\\quad \\mathrm{cwnd} \\leftarrow \\mathrm{cwnd} + 1\\ \\mathrm{MSS}$$
+
+$$\\text{loss:}\\quad \\mathrm{cwnd} \\leftarrow \\beta\\,\\mathrm{cwnd}, \\qquad \\beta = \\tfrac{1}{2}$$
+
+The window therefore sawtooths between $W/2$ and $W$, where $W$ is whatever
+the path plus buffer will hold. Its time average over one cycle is the mean of
+a linear ramp:
+
+$$\\overline{W} = \\frac{W/2 + W}{2} = \\frac{3W}{4}$$
+
+$$B = \\frac{3W\\,\\mathrm{MSS}}{4\\,\\mathrm{RTT}}$$
+
+so a single AIMD flow with a small buffer uses **75 %** of a bottleneck, not
+100 %. Sizing the router buffer at one bandwidth-delay product is exactly what
+lifts that back to full utilisation: the buffer holds the data the window
+would otherwise have to give up.
+
+![Congestion window against round trip number for a connection on a ten-megabit path with a forty-millisecond round trip, whose pipe holds 34 segments. Slow start doubles the window from ten to twenty to forty, the forty overruns the pipe and provokes a loss, and from then on the window sawtooths between seventeen and thirty-four segments. The mean of the sawtooth is 25.5 segments, three quarters of the pipe.](/courses/fe-ee/figures/net2-slowstart-aimd.svg)
+
+## 8.5 Worked example 10 — the average throughput of a sawtooth
+
+A 10 Mbps path with a 40 ms round-trip time carries a single TCP flow with
+MSS 1460 bytes and a bottleneck buffer too small to matter. Find the pipe in
+segments, the sawtooth limits, and the average throughput.
+
+$$W = \\frac{10 \\times 10^{6} \\times 0.040}{8 \\times 1460} = \\frac{50000}{1460} = 34.2 \\rightarrow 34\\ \\mathrm{segments}$$
+
+The window climbs to 34, overshoots, halves to 17, and climbs again, so it
+oscillates over $17 \\le \\mathrm{cwnd} \\le 34$ with mean
+
+$$\\overline{W} = \\frac{17 + 34}{2} = 25.5 = 0.75 \\times 34$$
+
+$$B = \\frac{25.5 \\times 1460 \\times 8}{0.040} = 7.446 \\times 10^{6}\\ \\mathrm{bits/s} = 7.45\\ \\mathrm{Mbps}$$
+
+which is 74.5 % of the link. Quoting the peak window instead gives
+$34 \\times 11680/0.040 = 9.93$ Mbps and overstates the answer by a third — that
+is the standard distractor in this family of questions.
+
+## 8.6 The square-root law
+
+Each sawtooth cycle ends in exactly one loss. The window rises from $W/2$ to
+$W$ in $W/2$ round trips, and the packets delivered in the cycle are the sum
+of that ramp:
+
+$$\\text{packets per cycle} = \\sum_{k=W/2}^{W} k \\approx \\frac{W}{2}\\cdot\\frac{3W}{4} = \\frac{3W^{2}}{8}$$
+
+One loss per cycle means the loss probability is the reciprocal of that count,
+so
+
+$$p = \\frac{8}{3W^{2}} \\quad \\Longrightarrow \\quad W = \\sqrt{\\frac{8}{3p}}$$
+
+Substituting into $B = 3W\\,\\mathrm{MSS}/(4\\,\\mathrm{RTT})$ gives the
+result usually called the TCP throughput or Mathis equation:
+
+$$B = \\frac{\\mathrm{MSS}}{\\mathrm{RTT}}\\sqrt{\\frac{3}{2p}} = \\frac{1.2247\\,\\mathrm{MSS}}{\\mathrm{RTT}\\sqrt{p}}$$
+
+![Achievable TCP throughput against packet loss probability on logarithmic axes, for round-trip times of twenty and forty milliseconds with a 1460-byte segment. Every decade of extra loss costs a factor of 3.16 in rate, and a loss probability of one in ten thousand caps a forty-millisecond flow at 35.8 Mbps no matter how fast the underlying link is.](/courses/fe-ee/figures/net2-loss-throughput.svg)
+
+## 8.7 Worked example 11 — throughput from a loss rate
+
+A path has a 40 ms round-trip time and loses one packet in ten thousand. With
+MSS 1460 bytes, what rate can one TCP flow sustain, and what window does that
+imply?
+
+$$\\mathrm{MSS} = 1460 \\times 8 = 11680\\ \\mathrm{bits}, \\qquad \\sqrt{p} = \\sqrt{10^{-4}} = 0.01$$
+
+$$B = \\frac{1.2247 \\times 11680}{0.040 \\times 0.01} = 3.576 \\times 10^{7}\\ \\mathrm{bits/s} = 35.8\\ \\mathrm{Mbps}$$
+
+Check by the other route. The peak window implied by that loss rate is
+
+$$W = \\sqrt{\\frac{8}{3 \\times 10^{-4}}} = \\sqrt{26667} = 163.3\\ \\mathrm{segments}$$
+
+with a mean of $0.75 \\times 163.3 = 122.5$ segments, giving
+$122.5 \\times 11680/0.040 = 3.58 \\times 10^{7}$ bits per second, the same
+35.8 Mbps. The two routes agree.
+The practical reading is blunt: on that path a 1 Gbps link and a 100 Mbps link
+deliver the same 35.8 Mbps to a single flow, because loss and round-trip time,
+not capacity, are the binding constraints.
+
+## 8.8 Switching and routing: two lookups, two costs
+
+A switch and a router both consult a table, but the tables are different
+objects and so are their costs.
+
+| Property | Layer 2 switch | Layer 3 router |
+|---|---|---|
+| Key | 48-bit MAC address | Variable-length IP prefix |
+| Match | Exact | Longest prefix |
+| Table built by | Learning source addresses from frames | Routing protocols and static entries |
+| Unknown destination | Flooded to every other port | Dropped, ICMP unreachable returned |
+| Header edited | No — addresses pass through unchanged (a VLAN tag may be added or removed) | Yes — TTL decremented and header checksum recomputed |
+| Domain boundary | Ends a collision domain | Ends a broadcast domain |
+
+The exact-match lookup is why switch tables are content-addressable memory
+sized in entries, while the longest-prefix lookup is why routers need
+tries or specialised search hardware. Both devices then face the same
+forwarding-time choice. A **store-and-forward** device receives the entire
+frame before sending any of it, so it can verify the frame check sequence but
+pays a full serialisation per hop. A **cut-through** device forwards as soon
+as it has read the 14-byte Ethernet header, so it pays only a header time per
+hop but propagates corrupt frames. For $N$ links and $N-1$ devices:
+
+$$t_{\\mathrm{sf}} = N\\,\\frac{L}{R} + (N-1)\\,d_{\\mathrm{proc}}$$
+
+$$t_{\\mathrm{ct}} = \\frac{L}{R} + (N-1)\\left(\\frac{h}{R} + d_{\\mathrm{proc}}\\right)$$
+
+## 8.9 Worked example 12 — cut-through against store-and-forward
+
+A 1518-byte frame crosses four switches, so five links, all at 1 Gbps. Each
+switch adds 2 microseconds of internal latency. Compare the two forwarding
+modes.
+
+$$\\frac{L}{R} = \\frac{12144}{10^{9}} = 12.144\\ \\mu\\mathrm{s}, \\qquad \\frac{h}{R} = \\frac{112}{10^{9}} = 0.112\\ \\mu\\mathrm{s}$$
+
+$$t_{\\mathrm{sf}} = 5 \\times 12.144 + 4 \\times 2 = 60.72 + 8 = 68.72\\ \\mu\\mathrm{s}$$
+
+$$t_{\\mathrm{ct}} = 12.144 + 4 \\times 2.112 = 12.144 + 8.448 = 20.592\\ \\mu\\mathrm{s}$$
+
+Cut-through is $68.72/20.592 = 3.34$ times faster here. Two observations
+finish the argument. The saving grows with hop count and with frame size but
+vanishes as link rates rise, because $L/R$ shrinks while the fixed
+per-switch latency does not. And cut-through cannot drop a corrupted frame,
+so on a link with any appreciable error rate it wastes downstream capacity
+carrying frames that will be discarded at the far end — which is why
+store-and-forward is the default everywhere except low-latency trading and
+cluster fabrics.`,
+      examTip: 'Throughput is window over RTT, so a flow limited by cwnd or rwnd does not care how fast the link is. AIMD averages 0.75 of the peak window, and the loss-limited rate is 1.2247 x MSS/(RTT x sqrt(p)) — every decade of extra loss costs a factor of 3.16.',
+      importantNote: 'rwnd is advertised by the receiver and protects the receiver; cwnd is computed by the sender and protects the network. Slow start doubles cwnd every RTT, so the time to fill a pipe is ceil(log2(WT/W0)) round trips — six on a 100 Mbps, 40 ms path, by which point only 920 kB has been sent.',
+    },
+    { id: 'osi-pset-a', title: '9. Problem Set A — Layers, Encapsulation, and Delay',
+      content: `Six problems in the FE style, each finishable in about three minutes with a
+calculator. Every one is built around a specific way of going wrong, and each
+solution names the trap and the number it produces, because recognising a
+plausible wrong answer is most of what the exam tests. Work all six before
+reading the solutions.
+
+## 9.1 Problem Set A — the problems
+
+**A1.** A 1200-byte application payload is sent over TCP and IPv4 on an
+Ethernet link. How many bytes occupy the medium once the preamble, the
+start-frame delimiter and the interframe gap are counted, and what fraction of
+that is payload?
+
+**A2.** A 3000-byte IPv4 datagram must cross a link whose MTU is 576 bytes.
+How many fragments result, what is the offset field of each, and how large is
+each fragment?
+
+**A3.** A 64-byte frame crosses a 1 Gbps link 300 m long. Find the
+transmission and propagation delays, say which dominates, and give the total
+one-way delay.
+
+**A4.** A 100 Mbps router port carries 1250-byte packets arriving at 6000 per
+second. Find the utilisation, the mean queueing delay and the mean time in
+system. Then find the arrival rate that would double the queueing delay.
+
+**A5.** A 2 Mbit file crosses four store-and-forward hops at 50 Mbps. Compare
+sending it as one message with cutting it into 500 equal packets, ignoring
+headers.
+
+**A6.** A voice codec emits a 160-byte frame every 20 ms, carried in RTP, UDP
+and IPv4 over Ethernet. Find the packet rate, the payload bit rate, the bit
+rate on the medium including preamble and interframe gap, and the efficiency.
+
+## 9.2 Problem Set A — answers, worked in full
+
+**A1 — 1278 bytes, 93.9 % payload.** Stack the headers: 20 bytes of TCP, 20 of
+IPv4, 14 of Ethernet header and 4 of frame check sequence, then 8 of preamble
+and start-frame delimiter and 12 of interframe gap.
+
+$$1200 + 20 + 20 + 14 + 4 + 8 + 12 = 1278\\ \\mathrm{bytes}$$
+
+$$\\eta = 1200/1278 = 0.9390 = 93.9\\ \\%$$
+
+*The trap.* Counting only the TCP and IP headers gives 1240 bytes and 96.8 %;
+stopping at the frame check sequence gives 1258 bytes and 95.4 %. The question
+said "occupy the medium", and the preamble and interframe gap occupy the
+medium even though they carry nothing.
+
+**A2 — six fragments.** The datagram payload is $3000 - 20 = 2980$ bytes. The
+MTU leaves $576 - 20 = 556$ bytes for payload, but the offset field counts
+8-byte units, so each fragment except the last must carry a multiple of 8:
+the largest usable is 552.
+
+$$2980 = 5 \\times 552 + 220$$
+
+| Fragment | Payload (bytes) | Offset field | Byte position | Total size (bytes) | More fragments |
+|---|---|---|---|---|---|
+| 1 | 552 | 0 | 0 | 572 | 1 |
+| 2 | 552 | 69 | 552 | 572 | 1 |
+| 3 | 552 | 138 | 1104 | 572 | 1 |
+| 4 | 552 | 207 | 1656 | 572 | 1 |
+| 5 | 552 | 276 | 2208 | 572 | 1 |
+| 6 | 220 | 345 | 2760 | 240 | 0 |
+
+*The trap.* Using 556 bytes per fragment gives $2980/556 = 5.36$ and a
+five-or-six answer with non-integer offsets, which is the tell that the
+multiple-of-8 rule was skipped. Forgetting to re-add the 20-byte header to
+every fragment understates each fragment's size by 20 bytes and the total
+bytes on the wire by 120.
+
+**A3 — propagation dominates; 2.012 microseconds.** A 64-byte frame is 512
+bits.
+
+$$d_{\\mathrm{trans}} = \\frac{512}{10^{9}} = 0.512\\ \\mu\\mathrm{s}, \\qquad d_{\\mathrm{prop}} = \\frac{300}{2 \\times 10^{8}} = 1.5\\ \\mu\\mathrm{s}$$
+
+$$d = 0.512 + 1.5 = 2.012\\ \\mu\\mathrm{s}$$
+
+Propagation is larger by $1.5/0.512 = 2.93$.
+
+*The trap.* "It is a gigabit link, so transmission is negligible" gives
+0.512 microseconds and is wrong by a factor of four. The crossover length at
+this rate and frame size is $L v/R = 512 \\times 2 \\times 10^{8}/10^{9} = 102$ m,
+so any span longer than about a hundred metres is already
+propagation-dominated even at 1 Gbps.
+
+**A4 — 60 %, 150 microseconds, 250 microseconds; 7500 packets per second.**
+
+$$T_s = \\frac{1250 \\times 8}{100 \\times 10^{6}} = 10^{-4}\\ \\mathrm{s} = 100\\ \\mu\\mathrm{s}$$
+
+$$\\rho = 6000 \\times 10^{-4} = 0.60$$
+
+$$W_q = \\frac{0.60}{0.40} \\times 100 = 150\\ \\mu\\mathrm{s}, \\qquad T = \\frac{100}{0.40} = 250\\ \\mu\\mathrm{s}$$
+
+Doubling the wait needs $\\rho/(1-\\rho) = 3$, so $\\rho = 0.75$ and
+$\\lambda = 0.75/10^{-4} = 7500$ packets per second.
+
+*The trap.* Assuming delay is proportional to load and answering 12,000
+packets per second. It takes only a 25 % traffic increase to double the queue,
+because the denominator $1 - \\rho$ falls from 0.40 to 0.25 while the numerator
+rises.
+
+**A5 — 160 ms whole, 40.24 ms segmented, a speed-up of 3.98.**
+
+$$t_{\\text{whole}} = 4 \\times \\frac{2 \\times 10^{6}}{50 \\times 10^{6}} = 4 \\times 40 = 160\\ \\mathrm{ms}$$
+
+Five hundred packets of 4000 bits each take $4000/(50 \\times 10^{6}) = 80$
+microseconds per hop, and the pipeline costs $N - 1 = 3$ extra packet times:
+
+$$t_{\\text{seg}} = (4 + 500 - 1) \\times 80 = 503 \\times 80 = 40240\\ \\mu\\mathrm{s} = 40.24\\ \\mathrm{ms}$$
+
+$$\\text{speed-up} = 160/40.24 = 3.976$$
+
+*The trap.* Dividing 160 by 4 and answering 40 ms exactly. The pipeline-fill
+term $(N-1)$ never disappears; it is small here because 3 is small against
+500, but a question with 20 packets instead of 500 would make it a 15 %
+error.
+
+**A6 — 50 packets per second, 64 kbps of voice, 95.2 kbps on the medium,
+67.2 % efficient.** Twenty milliseconds per frame is 50 frames per second.
+The payload rate is $160 \\times 8 \\times 50 = 64000$ bits per second, which is
+the familiar G.711 rate and a good check that the codec numbers are being read
+correctly. Wrapping costs 12 bytes of RTP, 8 of UDP, 20 of IPv4, 18 of
+Ethernet header and frame check sequence, and 20 of preamble and interframe
+gap:
+
+$$160 + 12 + 8 + 20 + 18 + 20 = 238\\ \\mathrm{bytes}$$
+
+$$B_{\\text{wire}} = 238 \\times 8 \\times 50 = 95200\\ \\mathrm{bits/s} = 95.2\\ \\mathrm{kbps}$$
+
+$$\\eta = 160/238 = 0.6723 = 67.2\\ \\%$$
+
+*The trap.* Provisioning a link at 64 kbps per call. The real load is
+$95200/64000 = 1.4875$ times that, so a link sized for 100 calls at the codec
+rate carries only 67. Doubling the packetisation interval to 40 ms would raise
+efficiency to $320/398 = 80.4$ % but add 20 ms of one-way delay to every
+packet, which is the trade every voice deployment argues about.`,
+      examTip: 'When a question says "on the wire" or "on the medium", decide whether the preamble and interframe gap are included before you compute anything: 58 bytes of overhead becomes 78, and a 1200-byte payload moves from 95.4 % efficient to 93.9 %.',
+    },
+    { id: 'osi-pset-b', title: '10. Problem Set B — Windows, Throughput, and Congestion',
+      content: `Six more, aimed at the transport layer. These are the questions that separate
+students who have memorised formulas from students who know which quantity is
+in which units, so every answer below carries its units through the whole
+chain.
+
+## 10.1 Problem Set B — the problems
+
+**B1.** A 500 Mbps path has a 60 ms round-trip time. Find the bandwidth-delay
+product in bytes, the number of 1460-byte segments that represents, and the
+smallest window scale factor that lets TCP advertise it.
+
+**B2.** A satellite link runs at 1 Mbps with a one-way propagation delay of
+270 ms and carries 1000-byte frames. Find the stop-and-wait efficiency and
+throughput, and the window needed for full utilisation.
+
+**B3.** A link has a bit error rate of $2 \\times 10^{-7}$ and carries
+12,000-bit frames. Find the frame error probability, the mean transmissions
+per delivered frame, and the effective throughput on a 100 Mbps link with a
+window large enough to cover the pipe.
+
+**B4.** A TCP connection with MSS 1460 bytes, an initial window of 10 segments
+and a 25 ms round-trip time transfers a 1,000,000-byte object with no loss and
+no link limit. How many round trips of data does it take?
+
+**B5.** A flow on a 30 ms path shows its congestion window oscillating between
+30 and 60 segments of 1460 bytes. Find the average throughput and the packet
+loss probability that sawtooth implies.
+
+**B6.** A 9000-byte jumbo frame crosses three switches, so four links, at
+10 Gbps with 1.5 microseconds of latency per switch. Compare store-and-forward
+with cut-through.
+
+## 10.2 Problem Set B — answers, worked in full
+
+**B1 — 3,750,000 bytes, 2569 segments, scale factor 6.**
+
+$$\\mathrm{BDP} = 500 \\times 10^{6} \\times 0.060 = 3.0 \\times 10^{7}\\ \\mathrm{bits}$$
+
+$$W = \\frac{3.0 \\times 10^{7}}{8} = 3750000\\ \\mathrm{bytes}, \\qquad \\frac{3750000}{1460} = 2568.5 \\rightarrow 2569\\ \\text{segments}$$
+
+The unscaled window field holds 65,535 bytes, so the multiplier needed is
+$3750000/65535 = 57.2$, and the scale is a power of two:
+$2^{6} = 64 \\ge 57.2$, so $s = 6$.
+
+*The trap.* Reporting 30 Mbit as though it were bytes, which overstates the
+window by eight and the scale factor by three shifts. Always divide by eight
+before comparing with a window field, which is specified in bytes.
+
+**B2 — 1.46 %, 14.6 kbps, and a 69-frame window.**
+
+$$T_t = \\frac{8000}{10^{6}} = 8\\ \\mathrm{ms}, \\qquad \\mathrm{RTT} = 2 \\times 270 = 540\\ \\mathrm{ms}$$
+
+$$\\eta = \\frac{8}{8 + 540} = \\frac{8}{548} = 0.01460 = 1.46\\ \\%$$
+
+$$B_{\\mathrm{eff}} = 0.01460 \\times 10^{6} = 14.6\\ \\mathrm{kbps}$$
+
+$$a = \\frac{270}{8} = 33.75, \\qquad 1 + 2a = 68.5 \\rightarrow W = 69\\ \\text{frames}$$
+
+Check the rounding: 68 frames gives $68 \\times 8/548 = 0.9927$ and 69 gives
+1.007, so 69 is the smallest integer that saturates the link.
+
+*The trap.* Using the one-way 270 ms instead of the round trip, which gives
+$8/278 = 2.88$ %, nearly double the true figure. The acknowledgement has to
+come back before the sender may proceed, so the cycle is a round trip.
+
+**B3 — 0.0024, 1.0024 transmissions, 99.76 Mbps.**
+
+$$p_f = 1 - (1 - 2 \\times 10^{-7})^{12000} = 0.0023971$$
+
+$$E[k] = \\frac{1}{1 - 0.0023971} = 1.0024$$
+
+$$B_{\\mathrm{eff}} = 100 \\times (1 - 0.0023971) = 99.76\\ \\mathrm{Mbps}$$
+
+The linear approximation $n p_b = 12000 \\times 2 \\times 10^{-7} = 0.0024$
+matches to four figures, because $n p_b$ is well under one.
+
+*The trap.* Treating the bit error rate as a frame error rate and answering
+99.99998 Mbps. A frame is 12,000 chances to be destroyed, not one, and the
+factor between the two answers is the frame length in bits.
+
+**B4 — seven round trips.** The window doubles each round, so cumulative
+segments after $n$ rounds are $10(2^{n} - 1)$:
+
+$$10\\left(2^{6} - 1\\right) \\times 1460 = 630 \\times 1460 = 919800\\ \\mathrm{bytes}$$
+
+which is short of a million, while
+
+$$10\\left(2^{7} - 1\\right) \\times 1460 = 1270 \\times 1460 = 1854200\\ \\mathrm{bytes}$$
+
+covers it. Seven rounds of data, or $7 \\times 25 = 175$ ms, and the handshake
+adds one more round trip before any of it.
+
+*The trap.* Dividing the object by the final window and calling that the
+number of rounds. The window is different in every round, so only the
+geometric sum answers the question; using the seventh-round window of 640
+segments alone suggests two rounds.
+
+**B5 — 17.52 Mbps and a loss probability near $7.5 \\times 10^{-4}$.** The mean
+of the sawtooth is $(30 + 60)/2 = 45$ segments.
+
+$$B = \\frac{45 \\times 1460 \\times 8}{0.030} = 1.752 \\times 10^{7}\\ \\mathrm{bits/s} = 17.52\\ \\mathrm{Mbps}$$
+
+One cycle climbs from 30 to 59 segments, one per round trip, and delivers
+
+$$\\sum_{k=30}^{59} k = \\frac{30\\,(30 + 59)}{2} = 1335\\ \\text{packets}$$
+
+for exactly one loss, so $p = 1/1335 = 7.49 \\times 10^{-4}$. The continuous
+approximation $3W^{2}/8 = 3 \\times 3600/8 = 1350$ agrees to about one percent,
+and feeding $p$ back through the square-root law returns 17.4 Mbps, which
+closes the loop.
+
+*The trap.* Using the peak window of 60 segments and answering 23.36 Mbps,
+33 % high. AIMD spends most of its time below the peak, and the average of a
+linear ramp is its midpoint, not its top.
+
+**B6 — 33.3 microseconds against 11.73, a factor of 2.84.**
+
+$$\\frac{L}{R} = \\frac{72000}{10^{10}} = 7.2\\ \\mu\\mathrm{s}, \\qquad \\frac{h}{R} = \\frac{112}{10^{10}} = 0.0112\\ \\mu\\mathrm{s}$$
+
+$$t_{\\mathrm{sf}} = 4 \\times 7.2 + 3 \\times 1.5 = 28.8 + 4.5 = 33.3\\ \\mu\\mathrm{s}$$
+
+$$t_{\\mathrm{ct}} = 7.2 + 3 \\times 1.5112 = 7.2 + 4.5336 = 11.73\\ \\mu\\mathrm{s}$$
+
+*The trap.* Forgetting that the source still has to serialise the whole frame
+onto the first link, which gives 4.53 microseconds and an impossible answer —
+the frame cannot arrive faster than it can be sent. Note also that at 10 Gbps
+the header time of 11.2 nanoseconds is negligible against the 1.5 microsecond
+switch latency, so the cut-through advantage here is almost entirely the
+saving of three full serialisations.`,
+      examTip: 'Carry units through every step. Bandwidth-delay products come out in bits and window fields are in bytes; MSS is quoted in bytes and throughput in bits per second. Most wrong answers in this set are the right number off by a factor of eight.',
+    },
   ],
   keyTakeaways: [
     'OSI: 7 layers (Physical through Application); TCP/IP: 4 practical layers.',
@@ -459,8 +1305,9 @@ For 192.168.10.147 with mask 255.255.255.192 (a /26):
 The AND clears the last six bits, giving **192.168.10.128**. Setting those six
 bits instead gives the broadcast address 192.168.10.191, and the 62 addresses
 between them are the usable hosts. Notice that the two highlighted bits are
-the *subnet* bits borrowed from the host portion — value binary 10, so this is
-subnet number 2 of the four the /26 creates.
+the *subnet* bits borrowed from the host portion — value binary 10, which is
+subnet **index 2** counting from zero, and therefore the **third** of the four
+blocks the /26 creates, the one listed as subnet 3 in section 3.1.
 
 The **wildcard mask** is the bitwise complement, used by access lists and by
 OSPF network statements:
@@ -507,13 +1354,16 @@ same four departments are allocated smallest first from 192.168.10.0/24:
 |---|---|---|---|---|
 | 1 | D (10 hosts) | /28 | .0 | yes |
 | 2 | C (25 hosts) | /27 | .32 | .16 is skipped — 16 is not a multiple of 32 |
-| 3 | B (50 hosts) | /26 | .64 | .64 works, but .48 to .63 is now stranded |
+| 3 | B (50 hosts) | /26 | .64 | .64 works; C already ends at .63 |
 | 4 | A (100 hosts) | /25 | .128 | fits, with nothing left over |
 
-Sixteen addresses at .16 and sixteen at .48 are stranded — too small for any
-remaining department and not contiguous with anything else. Largest-first
-allocation avoids this because a large block placed at the bottom always
-leaves an aligned boundary for the next-smaller block to start on.
+Sixteen addresses, .16 through .31, are stranded — too small for any remaining
+department and not contiguous with anything else, and the whole /24 is now
+consumed with no free block at all. Compare the largest-first order of section
+3.3, which ends at .239 and leaves a clean, aligned /28 free at .240.
+Largest-first allocation avoids stranding because a large block placed at the
+bottom always leaves an aligned boundary for the next-smaller block to start
+on.
 
 ## 4.4 The Three Special Cases at the Bottom of the Table
 
@@ -631,9 +1481,14 @@ convention. A site given a /48 subnets it to /64s:
 Sixty-five thousand subnets for one site sounds absurd until you notice that
 the point is to make subnetting arithmetic disappear — nobody sizes an IPv6
 subnet to its host count. Note also what IPv6 removes: there is **no broadcast
-address**, its role taken by multicast (ff00::/8) and anycast, and the
-all-zeros and all-ones host patterns are not reserved, so a /64 really does
-hold 2^64 usable addresses.
+address**, its role taken by multicast (ff00::/8) and anycast, so the all-ones
+interface identifier is an ordinary assignable address. The all-zeros pattern
+is *not* free, however — RFC 4291 reserves it as the **subnet-router anycast
+address**, and RFC 2526 reserves the top 128 identifiers as well, so a /64
+supplies 2^64 − 129 assignable addresses rather than the full 2^64. The
+difference is invisible in practice and the reason is worth knowing: with
+2^64 ≈ 1.845 × 10^19 addresses in every subnet, IPv6 can afford reservations
+that IPv4 could not.
 
 | Special address | IPv4 equivalent | Purpose |
 |---|---|---|
@@ -643,6 +1498,822 @@ hold 2^64 usable addresses.
 | :: | 0.0.0.0 | Unspecified source before configuration |`,
       examTip: 'To summarise a set of networks, write the varying octet in binary and count the leading bits they all share; the prefix length is that count plus the bits before the octet. The aggregate must also start on a multiple of its own block size.',
       importantNote: 'The :: compression may appear only ONCE in an IPv6 address, because two runs of zeros collapsed the same way could not be expanded unambiguously. DHCP uses UDP 67 (server) and 68 (client); a 169.254.x.x address means DHCP failed.',
+    },
+    { id: 'subnet-binary-arith', title: '6. Address Arithmetic from First Principles',
+      content: `## 6.1 An address is one integer, written four ways
+
+Dotted decimal is a display convention, nothing more. An IPv4 address is a
+single unsigned 32-bit integer, and the four octets are its base-256 digits:
+
+$$A = a_3\\,2^{24} + a_2\\,2^{16} + a_1\\,2^{8} + a_0$$
+
+Every operation in this chapter is integer arithmetic on that number, and
+doing it that way removes the octet boundary as a source of confusion. Write
+$n$ for the prefix length and $m$ for the number of host bits:
+
+$$m = 32 - n$$
+
+The **block size**, the number of addresses the prefix covers, is $2^{m}$, and
+the **mask** is the integer whose top $n$ bits are ones:
+
+$$M = 2^{32} - 2^{m}$$
+
+The **wildcard**, used by access lists and by OSPF network statements, is the
+complement, which is also one less than the block size:
+
+$$W = 2^{m} - 1 = 2^{32} - 1 - M$$
+
+so mask and wildcard always sum to $2^{32} - 1$, which is why 255.255.255.255
+minus one gives the other in a second.
+
+## 6.2 Worked example 1 — converting a prefix to a mask and back
+
+Convert /21 to a dotted-decimal mask, then convert 255.255.240.0 back to a
+prefix.
+
+$$m = 32 - 21 = 11, \\qquad M = 2^{32} - 2^{11} = 4294967296 - 2048 = 4294965248$$
+
+Break that integer into octets. The top sixteen bits are all ones, giving
+255.255. The third octet holds the remaining $21 - 16 = 5$ network bits:
+
+$$128 + 64 + 32 + 16 + 8 = 248$$
+
+so /21 is **255.255.248.0**, and the wildcard is 0.0.7.255 because
+$2^{11} - 1 = 2047 = 7 \\times 256 + 255$.
+
+Going the other way, 240 in binary is 11110000, four ones, so the mask
+carries $8 + 8 + 4 = 20$ network bits and 255.255.240.0 is **/20**. The habit
+worth building is to memorise only the eight possible non-trivial octet
+values, because a mask octet is always one of them:
+
+| Ones in the octet | Octet value | Wildcard octet | Block size in that octet |
+|---|---|---|---|
+| 1 | 128 | 127 | 128 |
+| 2 | 192 | 63 | 64 |
+| 3 | 224 | 31 | 32 |
+| 4 | 240 | 15 | 16 |
+| 5 | 248 | 7 | 8 |
+| 6 | 252 | 3 | 4 |
+| 7 | 254 | 1 | 2 |
+| 8 | 255 | 0 | 1 |
+
+## 6.3 Network and broadcast without writing any binary
+
+The network address is the address with its host bits cleared, which is a
+bitwise AND — but it is also, and more usefully for mental arithmetic, the
+address rounded **down** to the nearest multiple of the block size:
+
+$$N = A \\wedge M = \\left\\lfloor \\frac{A}{2^{m}} \\right\\rfloor 2^{m}$$
+
+The broadcast address sets those same bits, which is an OR with the wildcard,
+or equivalently the last address of the block:
+
+$$B = N \\vee W = N + 2^{m} - 1$$
+
+The usable range is everything strictly between them, so the first host is
+$N+1$, the last is $B-1$, and the count is
+
+$$H = 2^{m} - 2 \\qquad (m \\ge 2)$$
+
+## 6.4 Worked example 2 — a /21 that ignores the octet boundary
+
+Find the network, broadcast, usable range and host count for
+10.117.203.19/21.
+
+The prefix is 21, so $m = 11$ and the block is $2^{11} = 2048$ addresses. As
+an integer,
+
+$$A = 10 \\times 2^{24} + 117 \\times 2^{16} + 203 \\times 2^{8} + 19 = 175491859$$
+
+$$\\left\\lfloor \\frac{175491859}{2048} \\right\\rfloor = 85689, \\qquad N = 85689 \\times 2048 = 175491072$$
+
+and 175,491,072 converts back to **10.117.200.0**. The broadcast is
+$N + 2047$, which is **10.117.207.255**, so the usable range runs from
+10.117.200.1 to 10.117.207.254 and
+
+$$H = 2^{11} - 2 = 2046$$
+
+The octet shortcut gives the same thing faster once you trust it. With eleven
+host bits, three of them live in the third octet, so the third-octet block
+size is $2^{3} = 8$: the /21 boundaries are 0, 8, 16, ... and 203 rounds down
+to 200. The fourth octet contributes its full 256 addresses, hence
+$8 \\times 256 = 2048$.
+
+![Total and usable addresses in a block against prefix length, on a logarithmic scale from a slash eight down to a slash thirty. Each extra prefix bit halves the block, and the two curves are indistinguishable for large blocks but diverge sharply at the small end where subtracting the network and broadcast addresses removes a significant fraction: a slash twenty-four supplies 254 usable, a slash twenty-six supplies 62 and a slash thirty supplies only two.](/courses/fe-ee/figures/net2-prefix-capacity.svg)
+
+## 6.5 Why exactly two addresses are lost, and when they are not
+
+The subtraction of two is not a convention; each of the two addresses has a
+job that would make it ambiguous as a host identifier.
+
+The **all-zeros host pattern** is the name of the subnet itself. It is what
+appears in a routing table entry, in a summary advertisement and in an access
+list, and it is what "10.117.200.0/21" means. If a host answered to it, every
+routing statement about the subnet would also be a statement about that host.
+
+The **all-ones host pattern** is the directed broadcast, delivered to every
+interface on the link. A frame sent to it is expanded to the layer-2 broadcast
+address, so assigning it to one host would give that host's traffic to
+everybody.
+
+Two prefixes escape the rule:
+
+| Prefix | Addresses | Usable | Reason |
+|---|---|---|---|
+| /31 | 2 | 2 | RFC 3021: a link with exactly two ends has nobody to broadcast to |
+| /32 | 1 | 1 | A host route, not a subnet; no link and therefore no broadcast |
+
+The /31 case is pure arithmetic in its motivation. A router network with 1000
+point-to-point links spends $1000 \\times 4 = 4000$ addresses on /30s but only
+$1000 \\times 2 = 2000$ on /31s, a saving of exactly half.
+
+## 6.6 Classful addressing, and the arithmetic that killed it
+
+Before 1993 the prefix was not carried at all: it was inferred from the
+leading bits of the address itself.
+
+| Class | Leading bits | First octet | Implied prefix | Networks | Hosts per network |
+|---|---|---|---|---|---|
+| A | 0 | 1 to 126 | /8 | 126 | 16,777,214 |
+| B | 10 | 128 to 191 | /16 | 16,384 | 65,534 |
+| C | 110 | 192 to 223 | /24 | 2,097,152 | 254 |
+| D | 1110 | 224 to 239 | multicast | — | — |
+| E | 1111 | 240 to 255 | reserved | — | — |
+
+The host counts come straight from the formula: $2^{24} - 2 = 16777214$,
+$2^{16} - 2 = 65534$, $2^{8} - 2 = 254$. The problem is the gap between the
+last two. An organisation needing 500 addresses could not use a class C, and
+a class B handed it 65,534 — a hundred and thirty times more than it asked
+for. **CIDR** (RFC 4632) removed the inference and made the prefix explicit,
+so any length from /0 to /32 became available and the granularity between
+tiers disappeared.
+
+![Address efficiency against host requirement under power-of-two allocation. Because the prefix chosen is the smallest whose usable count covers the requirement, efficiency sawtooths: it climbs toward one hundred percent just below each power of two and then collapses to just above fifty percent the moment the requirement crosses it. Five hundred hosts into a slash twenty-three uses 97.7 percent of the block; two hundred and fifty-five hosts need the same slash twenty-three and use only 49.8 percent.](/courses/fe-ee/figures/net2-alloc-efficiency.svg)
+
+The prefix a requirement of $H$ hosts forces is
+
+$$m = \\left\\lceil \\log_2 (H + 2) \\right\\rceil, \\qquad n = 32 - m$$
+
+and the efficiency of that choice is
+
+$$\\eta = \\frac{H}{2^{m}}, \\qquad \\tfrac{1}{2} < \\eta \\le 1$$
+
+The lower bound is worth stating explicitly: rounding to a power of two can
+never waste more than half a block, and the worst case is a requirement one
+host above a power of two.
+
+## 6.7 Worked example 3 — what a classful allocation cost
+
+An organisation needs 500 host addresses. Compare the classful answer with
+the CIDR answer.
+
+Classful: a class C supplies $2^{8} - 2 = 254$, which is too few, so the
+organisation is given a class B.
+
+$$\\eta_{\\mathrm{B}} = 500/65536 = 0.00763 = 0.763\\ \\%$$
+
+$$\\text{addresses wasted} = 65536 - 500 = 65036$$
+
+CIDR: $m = \\lceil \\log_2 502 \\rceil = 9$, so the allocation is a **/23**
+supplying $2^{9} - 2 = 510$ usable addresses.
+
+$$\\eta_{\\mathrm{CIDR}} = 500/512 = 0.9766 = 97.7\\ \\%$$
+
+The same requirement, satisfied 128 times more efficiently. Multiply 65,036
+wasted addresses by the tens of thousands of class B assignments made in the
+1980s and the whole IPv4 exhaustion story is in that one subtraction.`,
+      examTip: 'Network address = the address rounded DOWN to a multiple of the block size 2^(32-n); broadcast = network + block - 1. The mask and wildcard sum to 255.255.255.255, and only eight octet values can ever appear in a mask: 128, 192, 224, 240, 248, 252, 254, 255.',
+      importantNote: 'The two lost addresses are the subnet name (all-zero host bits) and the directed broadcast (all-one host bits), which is why 2^(32-n) - 2 is the count. RFC 3021 exempts /31 because a two-ended link has nobody to broadcast to, halving the address cost of a large router network.',
+    },
+    { id: 'subnet-vlsm-depth', title: '7. Subnetting to a Requirement, and VLSM in Full',
+      content: `## 7.1 Two constraints meeting at one prefix
+
+A subnetting question hands you a parent prefix $n$ and asks for $S$ subnets
+of at least $H$ hosts each. Those are two separate constraints on the same
+number of borrowed bits $b$:
+
+$$2^{b} \\ge S \\quad \\Longrightarrow \\quad b \\ge \\left\\lceil \\log_2 S \\right\\rceil$$
+
+$$2^{32 - n - b} - 2 \\ge H \\quad \\Longrightarrow \\quad b \\le 32 - n - \\left\\lceil \\log_2 (H+2) \\right\\rceil$$
+
+If the two bounds cross, no single-mask answer exists and the block is simply
+too small — a legitimate exam answer, and one that students rarely offer.
+Where both hold, take the **smaller** $b$ that satisfies the subnet count,
+because every extra borrowed bit halves the hosts per subnet for no reason.
+
+The resulting subnets are laid out at multiples of the new block size:
+
+$$N_k = N_0 + k\\,2^{32-n-b}, \\qquad k = 0, 1, \\ldots, 2^{b}-1$$
+
+which is the formal statement of the rule that a network address is always a
+multiple of its own block size.
+
+## 7.2 Worked example 4 — six subnets of at least 25 hosts
+
+Subnet 192.168.40.0/24 into at least six subnets, each supporting at least 25
+hosts. Give the layout and the address utilisation.
+
+Subnet-count constraint: $2^{2} = 4 < 6$ and $2^{3} = 8 \\ge 6$, so $b = 3$
+and the new prefix is **/27**.
+
+Host constraint check: $2^{32-27} - 2 = 30 \\ge 25$, satisfied with five to
+spare. Block size is 32.
+
+| Subnet | Network | First host | Last host | Broadcast | Usable |
+|---|---|---|---|---|---|
+| 0 | 192.168.40.0/27 | .1 | .30 | .31 | 30 |
+| 1 | 192.168.40.32/27 | .33 | .62 | .63 | 30 |
+| 2 | 192.168.40.64/27 | .65 | .94 | .95 | 30 |
+| 3 | 192.168.40.96/27 | .97 | .126 | .127 | 30 |
+| 4 | 192.168.40.128/27 | .129 | .158 | .159 | 30 |
+| 5 | 192.168.40.160/27 | .161 | .190 | .191 | 30 |
+| 6 | 192.168.40.192/27 | .193 | .222 | .223 | 30 |
+| 7 | 192.168.40.224/27 | .225 | .254 | .255 | 30 |
+
+Now count the waste three ways, because questions ask for all three. Usable
+addresses supplied across the whole /24:
+
+$$8 \\times 30 = 240 \\ \\text{of}\\ 256$$
+
+so 16 addresses, one pair per subnet, went to network and broadcast.
+Addresses actually requested:
+
+$$6 \\times 25 = 150, \\qquad 150/256 = 0.5859 = 58.6\\ \\%$$
+
+And two entire subnets, $2 \\times 32 = 64$ addresses, are unallocated — which
+is not waste at all if the organisation expects to grow, and is the reason
+the subnet-count constraint is a floor rather than an equality.
+
+## 7.3 Worked example 5 — placing a host and finding its neighbours
+
+Where does 203.0.113.201/28 sit, and what are the blocks either side of it?
+
+Block size is $2^{4} = 16$, so boundaries fall at every multiple of 16.
+
+$$\\left\\lfloor 201/16 \\right\\rfloor = 12, \\qquad N = 12 \\times 16 = 192$$
+
+The host lives in **203.0.113.192/28**, whose broadcast is
+$192 + 16 - 1 = 207$ and whose usable range is .193 to .206, fourteen
+addresses. The preceding block is 203.0.113.176/28 (.176 to .191) and the
+following one is 203.0.113.208/28 (.208 to .223).
+
+The check that catches most errors takes two seconds: 201 is inside the range
+193 to 206, and 192 is a multiple of 16. If a candidate network address is not
+a multiple of the block size it is not a network address, whatever else is
+true about it.
+
+## 7.4 VLSM: one block, many prefix lengths
+
+Fixed-length subnetting forces every segment to the same size, so a
+point-to-point link between two routers consumes as many addresses as a floor
+full of workstations. **Variable-length subnet masking** allocates each
+segment the smallest prefix that covers its own requirement. The procedure is
+mechanical:
+
+1. Sort the segments by requirement, **largest first**.
+2. For each, take $m = \\lceil \\log_2 (H+2) \\rceil$ and prefix $32 - m$.
+3. Place it at the next free address, which is automatically a multiple of
+   its own block size because every block already placed is larger.
+4. Advance the cursor by the block size and repeat.
+
+Step 3 is the whole reason for step 1. A block of size $2^{m}$ placed after
+blocks that are all at least $2^{m}$ in size starts at a multiple of $2^{m}$
+without any adjustment, so largest-first allocation can never strand
+addresses. Smallest-first can, as section 4.3 showed.
+
+![The 1024 addresses of a slash twenty-two campus block, partitioned by a largest-first VLSM allocation across nine segments. Engineering takes a slash twenty-three, wireless and sales a slash twenty-five each, operations a slash twenty-six, the laboratory a slash twenty-seven, voice a slash twenty-eight and three router links a slash thirty each, leaving 132 addresses free at the top. Within each block an inner bar marks the hosts actually required, so the rounding-up waste is visible block by block.](/courses/fe-ee/figures/net2-vlsm-campus.svg)
+
+## 7.5 Worked example 6 — a nine-segment campus from a /22
+
+Allocate 172.20.8.0/22 across six user segments needing 300, 120, 100, 60, 25
+and 12 hosts, plus three router-to-router links.
+
+Sorted largest first, each requirement forces a prefix, and the cursor starts
+at 172.20.8.0:
+
+| Segment | Hosts needed | Prefix | Network | Usable range | Broadcast | Usable |
+|---|---|---|---|---|---|---|
+| Engineering | 300 | /23 | 172.20.8.0 | 172.20.8.1 to 172.20.9.254 | 172.20.9.255 | 510 |
+| Wireless | 120 | /25 | 172.20.10.0 | 172.20.10.1 to 172.20.10.126 | 172.20.10.127 | 126 |
+| Sales | 100 | /25 | 172.20.10.128 | 172.20.10.129 to 172.20.10.254 | 172.20.10.255 | 126 |
+| Operations | 60 | /26 | 172.20.11.0 | 172.20.11.1 to 172.20.11.62 | 172.20.11.63 | 62 |
+| Laboratory | 25 | /27 | 172.20.11.64 | 172.20.11.65 to 172.20.11.94 | 172.20.11.95 | 30 |
+| Voice | 12 | /28 | 172.20.11.96 | 172.20.11.97 to 172.20.11.110 | 172.20.11.111 | 14 |
+| Router link 1 | 2 | /30 | 172.20.11.112 | 172.20.11.113 to 172.20.11.114 | 172.20.11.115 | 2 |
+| Router link 2 | 2 | /30 | 172.20.11.116 | 172.20.11.117 to 172.20.11.118 | 172.20.11.119 | 2 |
+| Router link 3 | 2 | /30 | 172.20.11.120 | 172.20.11.121 to 172.20.11.122 | 172.20.11.123 | 2 |
+
+Three checks turn this from a table into an answer. Every prefix is the
+smallest that works: engineering needs 300 and a /24 supplies only 254, so
+/23 it is; wireless needs 120 and a /26 supplies only 62, so /25. Every
+network address is a multiple of its block size — 172.20.10.128 is a legal
+/25 start because 128 is a multiple of 128, and 172.20.11.112 is a legal /30
+start because 112 is a multiple of 4. And the totals close:
+
+$$512 + 128 + 128 + 64 + 32 + 16 + 4 + 4 + 4 = 892\\ \\text{addresses committed}$$
+
+$$510 + 126 + 126 + 62 + 30 + 14 + 2 + 2 + 2 = 874\\ \\text{usable supplied}$$
+
+$$892 - 874 = 18 = 9 \\times 2\\ \\text{lost to network and broadcast}$$
+
+$$300 + 120 + 100 + 60 + 25 + 12 + 2 + 2 + 2 = 623\\ \\text{requested}$$
+
+$$1024 - 892 = 132\\ \\text{addresses left free}$$
+
+The free remainder is not a scattered residue: it is 172.20.11.124/30 and
+172.20.11.128/25, both properly aligned and both immediately usable for a
+tenth and eleventh segment.
+
+## 7.6 Worked example 7 — sizing the parent block, and auditing the result
+
+Two follow-up questions that the same table answers.
+
+**How small a parent block could have served this campus?** The blocks pack
+contiguously from offset 0 to offset 892, so any parent of at least 892
+addresses works, and parents come in powers of two:
+
+$$2^{9} = 512 < 892 \\le 1024 = 2^{10} \\quad \\Longrightarrow \\quad \\text{a /22 is the minimum}$$
+
+A /23 could not hold the engineering segment plus anything else at all, since
+engineering alone takes 512 of the 512 addresses a /23 contains.
+
+**How efficient is the allocation?** Two ratios, and questions ask for either:
+
+$$\\frac{623}{1024} = 0.6084 = 60.8\\ \\%\\ \\text{of the parent block}$$
+
+$$\\frac{623}{892} = 0.6984 = 69.8\\ \\%\\ \\text{of what was committed}$$
+
+The gap between them is the 132 free addresses, and the gap between 69.8 %
+and 100 % has two causes worth separating. Eighteen addresses went to network
+and broadcast, which is unavoidable. The remaining 251 went to rounding: the
+laboratory asked for 25 and received a block of 32, wireless asked for 120 and
+received 128. That is the price of power-of-two allocation, and section 6.6
+bounds it — no segment can ever waste more than half its block.`,
+      examTip: 'Take the SMALLER number of borrowed bits that satisfies the subnet count: every extra bit halves the hosts per subnet for nothing. Then verify both constraints separately — 2^b >= subnets AND 2^(32-n-b) - 2 >= hosts — because a question whose two constraints cross has "impossible from this block" as its answer.',
+      importantNote: 'Largest-first VLSM can never strand addresses, because a block placed after larger blocks automatically lands on a multiple of its own size. Always audit with three sums: addresses committed, usable supplied, and addresses requested. Committed minus usable must equal twice the number of subnets.',
+    },
+    { id: 'subnet-agg-nat-v6', title: '8. Summarisation, Longest-Prefix Match, NAT and IPv6 Arithmetic',
+      content: `## 8.1 Summarisation is subnetting run backwards
+
+Section 5.1 introduced aggregation on four networks. The general statement:
+$k$ consecutive blocks of prefix $n$ combine into one block of prefix
+
+$$n_{\\mathrm{agg}} = n - \\log_2 k$$
+
+and the combination is legal only if two conditions hold. The blocks must be
+**contiguous**, with no gaps, and $k$ must be a power of two. And the first
+network address must be **aligned** on the aggregate's own boundary:
+
+$$N_0 \\bmod 2^{32 - n_{\\mathrm{agg}}} = 0$$
+
+Questions in this family are almost always built by breaking the alignment
+condition while leaving contiguity intact, because that is the one people
+forget to check.
+
+## 8.2 Worked example 8 — the set that summarises and the set that does not
+
+**Set one:** 10.44.16.0/24 through 10.44.23.0/24, eight consecutive /24s.
+
+$$k = 8, \\qquad n_{\\mathrm{agg}} = 24 - \\log_2 8 = 24 - 3 = 21$$
+
+Alignment: the aggregate block spans $2^{11} = 2048$ addresses, and the third
+octet must be a multiple of 8. Since $16 = 2 \\times 8$, the summary is
+**10.44.16.0/21**, covering 10.44.16.0 through 10.44.23.255,
+$2^{11} - 2 = 2046$ usable addresses, advertised as one route instead of
+eight.
+
+**Set two:** 10.44.20.0/24 through 10.44.27.0/24, also eight consecutive /24s.
+The count is the same, so $n_{\\mathrm{agg}} = 21$ again, but $20 = 2 \\times 8 + 4$
+is **not** a multiple of 8. A /21 starting at 10.44.20.0 does not exist. The
+minimum covering set splits at the boundary the alignment rule marks:
+
+| Aggregate | Covers | Addresses |
+|---|---|---|
+| 10.44.20.0/22 | 10.44.20.0 to 10.44.23.255 | 1024 |
+| 10.44.24.0/22 | 10.44.24.0 to 10.44.27.255 | 1024 |
+
+Two routes, not one. The distractor is 10.44.20.0/21, which is not a valid
+network address at all — the same error as offering 192.168.10.100/26.
+
+## 8.3 Longest-prefix match, evaluated address by address
+
+Aggregation creates overlapping entries on purpose, and forwarding resolves
+the overlap with one rule: among every entry that contains the destination,
+the one with the **most prefix bits** wins. Administrative distance and
+metric are compared only between entries of the *same* prefix length, so
+specificity is checked first and always.
+
+![The winning routing-table entry as the destination address is swept through a range, for a table containing a slash twenty-one, a more specific slash twenty-two nested inside it, a slash twenty-five nested inside that, and a default route. The result is a step function whose steps are exactly the nested blocks: inside the slash twenty-five the slash twenty-five wins, elsewhere inside the slash twenty-two the slash twenty-two wins, elsewhere inside the slash twenty-one the slash twenty-one wins, and outside all of them the default route takes over.](/courses/fe-ee/figures/net2-lpm-steps.svg)
+
+## 8.4 Worked example 9 — reading an overlapping table
+
+| Destination prefix | Range it covers | Next hop |
+|---|---|---|
+| 10.44.16.0/21 | 10.44.16.0 to 10.44.23.255 | A |
+| 10.44.20.0/22 | 10.44.20.0 to 10.44.23.255 | B |
+| 10.44.20.128/25 | 10.44.20.128 to 10.44.20.255 | C |
+| 0.0.0.0/0 | everything | D |
+
+| Destination | Entries that contain it | Longest | Sent to |
+|---|---|---|---|
+| 10.44.17.5 | /21, /0 | /21 | A |
+| 10.44.21.9 | /21, /22, /0 | /22 | B |
+| 10.44.20.200 | /21, /22, /25, /0 | /25 | C |
+| 10.44.20.100 | /21, /22, /0 | /22 | B |
+| 10.50.0.1 | /0 only | /0 | D |
+
+The pair 10.44.20.100 and 10.44.20.200 is the whole lesson. Both are in the
+same /24 and differ only in the last octet, yet they leave by different
+interfaces, because 128 is the /25 boundary and 100 falls below it while 200
+falls above. Reading the table top to bottom and taking the first match — the
+way an access list works — sends both to A and is wrong for all but one of
+the five destinations.
+
+## 8.5 Private space and the port arithmetic of NAT
+
+RFC 1918 reserves three blocks that are never routed on the public Internet:
+
+$$2^{24} + 2^{20} + 2^{16} = 16777216 + 1048576 + 65536 = 17891328\\ \\text{addresses}$$
+
+split as one /8, one /12 and one /16. Behind them, PAT multiplexes many inside
+hosts onto one public address by rewriting the source port as well as the
+source address, so the translation table is keyed on a five-tuple and its
+capacity is bounded by the port field. If the NAT draws from a pool of $P$
+ports and each inside host holds $s$ concurrent sessions, the number of hosts
+it can serve is
+
+$$h_{\\max} = \\left\\lfloor \\frac{P}{s} \\right\\rfloor$$
+
+with the two pools that matter being the IANA dynamic range and everything
+above the well-known ports:
+
+$$P_{\\mathrm{dyn}} = 65535 - 49152 + 1 = 16384, \\qquad P_{\\mathrm{wide}} = 65535 - 1024 + 1 = 64512$$
+
+![Inside hosts one public address can serve, against the number of simultaneous sessions each host holds, on a logarithmic vertical scale. Two hyperbolas are drawn: one for the sixteen thousand three hundred and eighty-four ports of the IANA dynamic range and one for the sixty-four thousand five hundred and twelve ports above the well-known range. At twelve sessions per host the wide pool serves 5,376 hosts and the dynamic range alone serves 1,365.](/courses/fe-ee/figures/net2-nat-capacity.svg)
+
+## 8.6 Worked example 10 — sizing a PAT pool
+
+A campus of 20,000 devices averages 9 concurrent sessions each. The NAT
+allocates from ports 1024 to 65535. How many public addresses are needed?
+
+$$\\text{sessions} = 20000 \\times 9 = 180000$$
+
+$$\\frac{180000}{64512} = 2.79 \\quad \\Longrightarrow \\quad 3\\ \\text{public addresses}$$
+
+Restrict the NAT to the IANA dynamic range instead and the same load needs
+$180000/16384 = 10.99$, so eleven addresses — nearly four times as many,
+purely from the choice of port pool.
+
+*The distractor.* Dividing hosts by ports rather than sessions by ports gives
+$20000/64512 = 0.31$ and the answer "one address", which is short by a factor
+of nine. The port is consumed per **session**, not per host, and a browser
+opening six connections to each of several origins is holding far more than
+one.
+
+## 8.7 IPv6: notation, prefix structure, and why the arithmetic disappears
+
+Section 5.4 gave the two compression rules. The structural point is that a
+global unicast address is cut at fixed, conventional boundaries rather than at
+whatever the host count demands.
+
+![The 128 bits of a global unicast IPv6 address, drawn as a bar cut at bit 32, bit 48 and bit 64. The first 32 bits are a registry allocation to an internet service provider, the next 16 identify one of 65,536 customer sites within it, the next 16 identify one of 65,536 subnets within the site, and the last 64 bits are the interface identifier, giving 1.845 times ten to the nineteenth addresses in every subnet.](/courses/fe-ee/figures/net2-ipv6-fields.svg)
+
+| Boundary | Field above it | Count it yields |
+|---|---|---|
+| /32 | typical ISP allocation | one registry block |
+| /48 | typical site allocation | 2^16 = 65,536 sites per /32 |
+| /56 | small-site allocation | 2^8 = 256 subnets per site |
+| /64 | subnet | 2^16 = 65,536 subnets per /48 |
+| 128 | interface identifier | 2^64 addresses per subnet |
+
+The counts are all differences of exponents. Subnets available when a site
+prefix $p$ is cut into /64s:
+
+$$S = 2^{64 - p}$$
+
+and the totals worth carrying:
+
+$$2^{64} \\approx 1.845 \\times 10^{19}, \\qquad 2^{128} \\approx 3.403 \\times 10^{38}, \\qquad \\frac{2^{128}}{2^{32}} = 2^{96} \\approx 7.923 \\times 10^{28}$$
+
+The last of those is the honest measure of the change: IPv6 is not four times
+IPv4, it is $2^{96}$ times IPv4.
+
+## 8.8 Worked example 11 — compress, expand, and subnet
+
+**Compress** 2001:0db8:0000:0f00:0000:0000:0000:0042. Drop the leading zeros
+in each group to get 2001:db8:0:f00:0:0:0:42, then replace the **longest** run
+of zero groups — the three groups in positions five to seven — with a double
+colon:
+
+**2001:db8:0:f00::42**
+
+The single zero group in position three stays written as 0, because :: may
+appear once and is spent on the longer run.
+
+**Expand** 2001:db8:acad::1234. Eight groups are required, four are written,
+so :: stands for four zero groups:
+
+**2001:0db8:acad:0000:0000:0000:0000:1234**
+
+**Subnet** the site prefix 2001:db8:acad::/48 into /64s. The subnet field is
+$64 - 48 = 16$ bits wide, so
+
+$$S = 2^{16} = 65536\\ \\text{subnets}$$
+
+and they are numbered by the fourth group: 2001:db8:acad:0::/64,
+2001:db8:acad:1::/64, and so on to 2001:db8:acad:ffff::/64. The fifth of them,
+index 4 counting from zero, is **2001:db8:acad:4::/64**, whose addresses run
+from 2001:db8:acad:4:: to 2001:db8:acad:4:ffff:ffff:ffff:ffff.
+
+Every one of those 65,536 subnets holds $2^{64}$ addresses whether it serves
+two hosts or two thousand, which is the point: in IPv6 the host count never
+drives the prefix.
+
+## 8.9 Worked example 12 — EUI-64 and the link-local address
+
+A NIC has MAC address 00:1b:44:11:3a:b7. Derive its modified EUI-64 interface
+identifier and its link-local address.
+
+The rule inserts fffe between the two halves of the 48-bit MAC and inverts the
+universal/local bit, which is the second-least-significant bit of the first
+octet and therefore carries the value 2:
+
+$$0\\mathrm{x}00 \\oplus 0\\mathrm{x}02 = 0\\mathrm{x}02$$
+
+So 00 becomes 02, and the identifier is
+
+**021b:44ff:fe11:3ab7**
+
+Link-local addresses use the reserved prefix fe80::/10 with the remaining
+54 bits of the prefix set to zero, so the address is
+
+**fe80::21b:44ff:fe11:3ab7**
+
+which expands to fe80:0000:0000:0000:021b:44ff:fe11:3ab7. Note the compressed
+form writes 21b, not 021b, because leading zeros within a group are dropped
+after the double colon just as everywhere else.
+
+*The distractor.* Forgetting the bit inversion leaves 001b:44ff:fe11:3ab7,
+which differs from the correct answer in exactly one bit and is offered in
+every question of this type. The inversion exists so that a locally
+administered identifier and a globally unique one can be told apart, and its
+effect on a MAC beginning 00 is always to produce 02.`,
+      examTip: 'A summary is legal only if the blocks are contiguous, the count is a power of two, AND the first network address is a multiple of the aggregate block size. Check the alignment last and check it always: eight consecutive /24s starting at .20 do not make a /21.',
+      importantNote: 'Longest-prefix match compares specificity before metric, and it is not first-match: two addresses in the same /24 can leave by different interfaces if a /25 covers one of them. PAT capacity is ports divided by SESSIONS, not by hosts.',
+    },
+    { id: 'subnet-pset-a', title: '9. Problem Set A — Masks, Blocks, and Host Counts',
+      content: `Six problems in the FE style. Each one is short enough for three minutes and
+each is built around a specific way of going wrong; the solutions name the
+trap and the wrong number it produces. Every address, mask, broadcast and host
+count below was checked twice, once by bitmask arithmetic and once against a
+standard address library.
+
+## 9.1 Problem Set A — the problems
+
+**A1.** Given 172.30.91.200/20, find the mask, network address, broadcast
+address, usable range and usable host count.
+
+**A2.** How many /27 subnets fit in a /22, and how many usable host addresses
+do they supply in total?
+
+**A3.** A segment must support 255 hosts. What is the smallest prefix that
+works, and what fraction of the block does the requirement use?
+
+**A4.** Which of 192.168.5.64, 192.168.5.100 and 192.168.5.192 can be a valid
+/26 network address? For any that cannot, name the network it actually belongs
+to.
+
+**A5.** Can 10.8.14.130 and 10.8.15.20 exchange traffic without a router if
+both carry a /23 mask? What if both carry a /24 mask?
+
+**A6.** A 203.0.113.0/24 is carved entirely into /30 point-to-point links. How
+many links, how many usable addresses, and what fraction of the block is lost?
+Repeat for /31 links.
+
+## 9.2 Problem Set A — answers, worked in full
+
+**A1 — 255.255.240.0, network 172.30.80.0, broadcast 172.30.95.255, 4094
+hosts.** A /20 leaves $m = 12$ host bits, so the block is $2^{12} = 4096$
+addresses and the third-octet block size is $4096/256 = 16$.
+
+$$\\left\\lfloor 91/16 \\right\\rfloor = 5, \\qquad 5 \\times 16 = 80$$
+
+The network is 172.30.80.0/20, the broadcast is
+$80 + 16 - 1 = 95$ in the third octet with 255 in the fourth, so
+172.30.95.255. Usable range 172.30.80.1 to 172.30.95.254, and
+
+$$H = 2^{12} - 2 = 4094$$
+
+*The trap.* Writing the /20 mask as 255.255.255.240, which puts the four
+borrowed bits in the wrong octet. That mask is a /28, gives a network of
+172.30.91.192 and a host count of 14 — three of the four answers wrong from
+one misplaced boundary. The mask boundary is at bit 20, and bit 20 is inside
+the third octet.
+
+**A2 — 32 subnets, 960 usable addresses.**
+
+$$2^{27-22} = 2^{5} = 32\\ \\text{subnets}$$
+
+Each /27 holds $2^{5} = 32$ addresses of which 30 are usable, so
+
+$$32 \\times 30 = 960 \\ \\text{of}\\ 1024$$
+
+*The trap.* Answering 1024 by multiplying 32 subnets by 32 addresses and
+forgetting the reservation. Subdividing a block always costs addresses: the
+parent /22 alone would have supplied 1022 usable, so cutting it into /27s
+spends 62 addresses on the extra network and broadcast pairs.
+
+**A3 — /23, and 49.8 % of the block.**
+
+$$m = \\left\\lceil \\log_2 (255 + 2) \\right\\rceil = \\left\\lceil \\log_2 257 \\right\\rceil = 9$$
+
+so the prefix is $32 - 9 = 23$, the block is 512 addresses and 510 are usable.
+
+$$\\eta = 255/512 = 0.498 = 49.8\\ \\%$$
+
+*The trap.* Taking $2^{8} = 256 \\ge 255$ and answering /24. A /24 supplies only
+254 usable addresses, one short of the requirement, and the whole point of the
+minus two is that it moves the threshold from 256 to 254. This requirement
+sits in the worst possible place — one host above a power of two — which is
+why the efficiency is barely over one half.
+
+**A4 — .64 and .192 are valid; .100 is not.** A /26 block is 64 addresses, so
+a valid network address is a multiple of 64: 0, 64, 128, 192.
+
+$$64 = 1 \\times 64, \\qquad 192 = 3 \\times 64, \\qquad 100 = 1 \\times 64 + 36$$
+
+192.168.5.100 belongs to **192.168.5.64/26**, whose range is .65 to .126 and
+whose broadcast is .127.
+
+*The trap.* Treating any address ending in a round decimal number as a network
+address. Decimal roundness is irrelevant; only divisibility by the block size
+matters, and 100 is divisible by 4, 10, 20, 25 and 50 without being divisible
+by 64.
+
+**A5 — yes with /23, no with /24.** With a /23 the block is 512 addresses and
+the third octet advances in steps of 2, so the boundaries are at even third
+octets. Both addresses reduce to
+
+$$\\left\\lfloor 14/2 \\right\\rfloor \\times 2 = 14 \\quad \\text{and} \\quad \\left\\lfloor 15/2 \\right\\rfloor \\times 2 = 14$$
+
+so both lie in 10.8.14.0/23, whose broadcast is 10.8.15.255 and whose 510
+usable addresses include both. They are on the same subnet and reach each
+other directly.
+
+With a /24 they reduce to 10.8.14.0/24 and 10.8.15.0/24, two different
+subnets, and every packet between them goes through a router.
+
+*The trap.* Reading a difference in the third octet as proof of different
+subnets. Whether an octet difference matters depends entirely on where the
+mask boundary falls, and a /23 puts the boundary one bit inside the third
+octet.
+
+**A6 — 64 links and 128 usable with /30; 128 links and 256 usable with /31.**
+
+$$\\frac{256}{4} = 64\\ \\text{links}, \\qquad 64 \\times 2 = 128\\ \\text{usable}$$
+
+$$\\frac{128}{256} = 0.5 \\quad \\Longrightarrow \\quad 50\\ \\%\\ \\text{of the block is network and broadcast}$$
+
+With /31 links under RFC 3021 there is no network or broadcast address, so
+
+$$\\frac{256}{2} = 128\\ \\text{links}, \\qquad 128 \\times 2 = 256\\ \\text{usable}, \\qquad 0\\ \\%\\ \\text{lost}$$
+
+*The trap.* Answering 256 usable for the /30 case by multiplying 64 links by
+4 addresses. Half of every /30 is unusable, which is exactly the arithmetic
+RFC 3021 was written to eliminate — and the doubling from 64 links to 128 is
+the whole benefit.`,
+      examTip: 'Find the block size 2^(32-n) first, then find which multiple of it the address falls in. Every other quantity follows: broadcast is network plus block minus one, first host is network plus one, last host is broadcast minus one, and the count is block minus two.',
+    },
+    { id: 'subnet-pset-b', title: '10. Problem Set B — Summarisation, NAT, and IPv6',
+      content: `Six more, on the material that separates a student who can subnet from one
+who can operate a network. As before, every prefix, range and count in the
+answers was produced twice by independent routes and the two agreed.
+
+## 10.1 Problem Set B — the problems
+
+**B1.** Summarise 192.168.96.0/24 through 192.168.111.0/24 into a single
+prefix. Give the aggregate, its broadcast address and its usable count.
+
+**B2.** Can 10.1.6.0/24 through 10.1.13.0/24 be advertised as one route? If
+not, give the smallest set of routes that covers them exactly.
+
+**B3.** A router holds 172.16.0.0/16 via A, 172.16.32.0/19 via B,
+172.16.40.0/21 via C and a default via D. Where do 172.16.35.9, 172.16.44.7,
+172.16.80.1 and 8.8.8.8 go?
+
+**B4.** A NAT serves 20,000 inside hosts averaging 9 concurrent sessions each,
+drawing from ports 1024 to 65535. How many public addresses are needed?
+
+**B5.** Expand 2001:db8:0:0:8:800:200c:417a to its full form, give the /64 it
+belongs to, and state how many /64 subnets a /56 contains.
+
+**B6.** A site receives 2001:db8:acad::/48. How many /64 subnets does that
+give, and what is the address range of the fifth of them?
+
+## 10.2 Problem Set B — answers, worked in full
+
+**B1 — 192.168.96.0/20.** Sixteen consecutive /24s, and 16 is a power of two:
+
+$$n_{\\mathrm{agg}} = 24 - \\log_2 16 = 24 - 4 = 20$$
+
+Alignment: a /20 spans 4096 addresses, so the third octet must be a multiple
+of 16, and $96 = 6 \\times 16$. The aggregate is **192.168.96.0/20**, its
+broadcast is 192.168.111.255, and
+
+$$H = 2^{12} - 2 = 4094\\ \\text{usable addresses}$$
+
+*The trap.* Counting the networks as 111 minus 96 and getting 15, which is one
+short and leads to a /21 covering only eight of them. Inclusive counts need
+the plus one: $111 - 96 + 1 = 16$.
+
+**B2 — no; three routes.** There are eight consecutive /24s, so the count is
+right, but a /21 must start on a multiple of 8 and
+
+$$6 = 0 \\times 8 + 6$$
+
+is not one. Split at the boundaries the alignment rule allows:
+
+| Route | Covers | Addresses |
+|---|---|---|
+| 10.1.6.0/23 | 10.1.6.0 to 10.1.7.255 | 512 |
+| 10.1.8.0/22 | 10.1.8.0 to 10.1.11.255 | 1024 |
+| 10.1.12.0/23 | 10.1.12.0 to 10.1.13.255 | 512 |
+
+Three routes, covering exactly 2048 addresses and not one more.
+
+*The trap.* Advertising 10.1.6.0/21. That prefix does not exist, and a router
+that accepted the configuration would be advertising 10.1.0.0/21 — a block
+that includes 10.1.0.0 through 10.1.5.255, addresses this site does not own,
+and excludes 10.1.8.0 through 10.1.13.255, most of the addresses it does.
+
+**B3 — B, C, A and D respectively.** Write out what each entry covers before
+matching anything:
+
+| Entry | Range |
+|---|---|
+| 172.16.0.0/16 | 172.16.0.0 to 172.16.255.255 |
+| 172.16.32.0/19 | 172.16.32.0 to 172.16.63.255 |
+| 172.16.40.0/21 | 172.16.40.0 to 172.16.47.255 |
+
+172.16.35.9 falls in the /16 and the /19 but not the /21, since 35 is below
+40, so the /19 wins and it goes to **B**. 172.16.44.7 falls in all three and
+the /21 is longest, so **C**. 172.16.80.1 falls only in the /16, since 80 is
+above 63, so **A**. 8.8.8.8 matches nothing but the default, so **D**.
+
+*The trap.* Evaluating the table top to bottom and stopping at the first
+match, the way an access list is evaluated. That sends the first three
+destinations to A and gets two of the four wrong. Route lookup examines every
+entry and then picks the most specific.
+
+**B4 — three public addresses.** Ports are consumed per session:
+
+$$20000 \\times 9 = 180000\\ \\text{sessions}$$
+
+$$P = 65535 - 1024 + 1 = 64512\\ \\text{ports per public address}$$
+
+$$\\frac{180000}{64512} = 2.79 \\quad \\Longrightarrow \\quad 3$$
+
+*The trap.* Dividing hosts by ports, $20000/64512 = 0.31$, and answering one
+address. That ignores the session multiplier entirely and understates the
+requirement ninefold. A second trap is using the IANA dynamic range of 16,384
+ports without being told to, which gives $180000/16384 = 10.99$ and eleven
+addresses.
+
+**B5 — 2001:0db8:0000:0000:0008:0800:200c:417a, in 2001:db8::/64, and a /56
+holds 256 subnets.** Restore every group to four hex digits, and note that the
+two written zero groups expand to 0000 each:
+
+**2001:0db8:0000:0000:0008:0800:200c:417a**
+
+The first 64 bits are 2001:0db8:0000:0000, so the subnet is
+**2001:db8::/64**. Cutting a /56 into /64s leaves
+
+$$64 - 56 = 8\\ \\text{bits}, \\qquad 2^{8} = 256\\ \\text{subnets}$$
+
+*The trap.* Reading the 8 in the fifth group as part of the prefix and putting
+the address in 2001:db8:0:8::/64. The /64 boundary falls after the **fourth**
+group, and the fifth group is the first sixteen bits of the interface
+identifier. A second trap is answering 8 subnets for the /56 rather than
+$2^{8}$; the exponent counts bits, and the count is two to that power.
+
+**B6 — 65,536 subnets; the fifth is 2001:db8:acad:4::/64.** The subnet field
+runs from bit 48 to bit 63:
+
+$$S = 2^{64-48} = 2^{16} = 65536$$
+
+Subnets are numbered by the fourth group starting at 0, so the fifth is index
+4 and the prefix is **2001:db8:acad:4::/64**. Its range is
+
+$$\\text{2001:db8:acad:4::} \\ \\text{to} \\ \\text{2001:db8:acad:4:ffff:ffff:ffff:ffff}$$
+
+containing $2^{64}$ addresses.
+
+*The trap.* Counting from one and answering 2001:db8:acad:5::/64. Subnet
+numbering starts at zero in IPv6 exactly as it does in IPv4 — the first /64 of
+the site is 2001:db8:acad:0::/64, usually written 2001:db8:acad::/64, and
+"the fifth" is therefore index 4. The same off-by-one turns a 65,536-subnet
+answer into 65,535 if the zero subnet is excluded for no reason.`,
+      examTip: 'For any summarisation question: count the blocks inclusively (last minus first PLUS ONE), check that the count is a power of two, then check that the first network address is a multiple of the aggregate block size. Failing the third test means two or more routes, not one.',
     },
   ],
   keyTakeaways: [
