@@ -277,6 +277,12 @@ triangle must transform to sinc² — which it does. When time-domain convolutio
 turns ugly, transforming both signals, multiplying, and inverting is not a
 different theory; it is the same computation routed through the other domain.
 
+**Duality closes the loop.** Because rect in time gives sinc in frequency,
+duality says a sinc-shaped *pulse* has a perfectly rectangular, band-limited
+spectrum — which is why the ideal low-pass filter's impulse response is a
+sinc, and why that ideal filter is unrealizable: the sinc extends infinitely
+in both directions of time.
+
 Discrete-time convolution — the sum version of this operation, with its own
 tabular shortcut — is covered with the DFT material, where it pairs naturally
 with the FFT's fast-convolution use.`,
@@ -551,7 +557,13 @@ These two operations, cascaded, convert between any pair of rational rates —
 how 48 kHz studio audio becomes 44.1 kHz on a release, and how a delta-sigma
 converter's multi-megahertz bitstream becomes a clean 48 kHz output. Every
 step of the chain obeys the same folding rules as this chapter's first
-section; nothing new is required beyond applying them at each rate change.`,
+section; nothing new is required beyond applying them at each rate change.
+
+**Worked**: reducing a 48 kHz recording to an 8 kHz telephony stream is
+decimation by M = 6. The new Nyquist limit is 8/2 = **4 kHz**, so the digital
+low-pass must remove everything above 4 kHz *before* any samples are
+discarded. Skip that filter and a 5 kHz component survives the deletion step
+and folds to 8 − 5 = 3 kHz, squarely inside the speech band.`,
         examTip: 'Sampling-rate design problems on the FE exam usually hide a transition-band question: the anti-aliasing filter must fall from its passband edge (f_max) to full attenuation by fₛ/2. If the gap between those two frequencies is small, the required filter order explodes — check the ratio fₛ/2 divided by f_max before defending any "sample at exactly 2·f_max" answer.',
         importantNote: 'Decimation without a preceding digital low-pass filter aliases exactly as an ADC without an anti-aliasing filter does. Any time samples are discarded — in software, in a logging system, in a scope\'s display path — the Nyquist criterion applies at the NEW, lower rate.',
       },
@@ -722,6 +734,19 @@ two-C, one-op-amp form) exist precisely to place complex pole pairs with
 chosen Q without inductors. A passive RC chain cannot produce Q above 0.5;
 the op-amp's gain is what pushes the poles off the real axis.
 
+### The cascade trap
+
+Cascading two identical first-order sections does **not** give a second-order
+filter with the same cutoff. Each section contributes −3 dB at $f_{c}$, so
+the pair is already down **6 dB** there; the cascade's true −3 dB point slides
+down to $f_{c}\\cdot \\sqrt{2^{1/2}-1} = 0.644\\cdot f_{c}$. In general, n
+identical buffered first-order sections have an overall −3 dB frequency of
+$f_{c}\\cdot \\sqrt{2^{1/n}-1}$, shrinking as sections are added. Proper
+higher-order designs avoid this bandwidth erosion by staggering the pole
+positions — which is precisely what the Butterworth pole circle does. A
+cascade question that assumes the corner stays put is testing exactly this
+point.
+
 ## 3.3 Transformations: one prototype, four filter types
 
 Designers tabulate only the normalized low-pass prototype (ωc = 1) because
@@ -847,7 +872,15 @@ Given an unfamiliar H(s), extract everything from three quick evaluations:
 
 This three-step read answers identification questions in under thirty
 seconds and, combined with the order formulas above, covers the large
-majority of filter items on the exam.`,
+majority of filter items on the exam.
+
+**Worked identification**: $H(s) = 5s/(s^{2} + 12s + 400)$. At DC the
+numerator is zero, so H(0) = 0 — DC is blocked. As s grows large, H behaves
+as 5/s, which also goes to zero — high frequencies are blocked too. Zero at
+both extremes with response in between: a **band-pass**, centered at
+$\\omega_{0} = \\sqrt{400} = 20$ rad/s, with bandwidth equal to the middle
+coefficient, B = 12 rad/s, hence Q = 20/12 = 1.67. Every number came from
+inspection; no factoring was required.`,
         examTip: 'Order results from the design formulas always round UP, never to the nearest integer. If the formula returns 5.96, sixth order is required; if it returns 5.02, sixth order is still required. A computed order that you round down produces a filter that misses its stopband specification.',
         importantNote: 'Sharper magnitude response always costs phase linearity. Butterworth, Chebyshev, elliptic form a sequence of sharper knees and progressively worse group-delay flatness; Bessel sits at the opposite extreme. No single family wins both criteria — the exam expects you to know the trade, not to escape it.',
       },

@@ -255,7 +255,14 @@ recover the system.
 
 The inversion is robust because overshoot depends only on $\\zeta$ and the
 period only on $\\omega _d$ — the two measurements do not contaminate each
-other, which is exactly why those are the two numbers to read first.`,
+other, which is exactly why those are the two numbers to read first.
+
+**Worked:** a recorded unit-step response peaks at 1.25 and rings with a
+20 ms period. The 25% overshoot gives $\\zeta \\approx 0.4$; the period gives
+omega_d = 2 pi/0.020 = **314 rad/s**; and therefore
+omega_n = 314/sqrt(1 - 0.16) = **343 rad/s**. Three readings, and the whole
+transfer function up to a gain is recovered from a single oscilloscope
+trace.`,
         examTip: 'Overshoot depends on the damping ratio alone; speed depends on the natural frequency alone. If an exam question changes wn but not zeta, the response curve stretches in time without changing shape — same overshoot, scaled peak and settling times. Spotting this saves recomputing everything from scratch.',
         importantNote: 'The settling-time formula ts = 4/(zeta*wn) uses the 2% criterion; some references use 3/(zeta*wn) for the 5% band. FE answer choices are spaced widely enough that either convention identifies the correct option, but state which band you are using in your scratch work to avoid second-guessing.',
       },
@@ -435,6 +442,10 @@ and a switched network becomes ordinary series-parallel algebra with s
 riding along as a symbol. With initial energy present, the derivative rule
 L{f'} = sF(s) - f($0^{-}$) delivers the extra term, and it lands in the
 circuit as a source — the physics of stored energy expressed as bookkeeping.
+A 2 H inductor carrying 3 A at the switching instant, for example,
+contributes the constant L x i($0^{-}$) = 6 to the transformed loop
+equation, and that term alone is what makes the eventual inverse transform
+honour the current that was already flowing.
 
 Note the pattern in the impedances themselves: sL grows with s and 1/(sC)
 shrinks, which is the transform-domain restatement of "inductors fight fast
@@ -454,8 +465,9 @@ term:
 **$v_C(t) = 100(1 - e^{-2t})\\ \\mathrm{V}$**
 
 which is exactly the answer the transient chapter builds from
-x(t) = x(∞) + [x(0) - x(∞)]e^(-t/tau) with tau = 0.5 s. Both theorems check
-it without inverting anything: the Final Value Theorem gives
+x(t) = x(∞) + [x(0) - x(∞)]e^(-t/tau) with tau = 0.5 s. The two roads must
+always meet like this, and when they do not, the transform algebra is the
+place to look first. Both theorems check it without inverting anything: the Final Value Theorem gives
 s·V_C(s) → 200/2 = 100 V as s → 0 (the capacitor charges fully), and the
 Initial Value Theorem gives 0 V as s → ∞ (it starts uncharged). Running both
 limits takes ten seconds and catches most partial-fraction slips.
@@ -478,6 +490,14 @@ Three landmarks to memorise: at the corner the magnitude is 1/sqrt(2) — the
 below the corner the filter is essentially transparent; a decade above it
 attenuates tenfold and the phase saturates toward -90 degrees.
 
+**Worked:** an RC low-pass with R = 1.6 kilohm and C = 0.1 microfarad has
+omega_c = 1/RC = 1/(1.6e-4) = **6250 rad/s**, i.e. f_c = 6250/(2 pi) =
+**995 Hz** — a one-kilohertz filter to component tolerance. Drive it with
+100 mV at 10 kHz: the frequency ratio is almost exactly 10, so the output is
+about 100 x 0.0995 = **10 mV**, lagging by 84 degrees. No transform was
+inverted anywhere; the whole answer came from reading one row of the table
+above.
+
 ## 4.4 Resonance is a pole pair close to the jω axis
 
 Resonance, met in the circuits chapters as X_L cancelling X_C, reappears
@@ -491,6 +511,14 @@ Its magnitude peaks at exactly $\\omega _{0}$ and falls to the half-power
 level at two frequencies whose separation is the bandwidth:
 
 **$BW = \\omega _{0}/Q$**
+
+"Half-power" means what it says: at the two band edges the magnitude is
+1/sqrt(2) of the peak, so the power delivered — proportional to magnitude
+squared — is exactly half its resonant value. The two edges straddle
+$\\omega _{0}$ as its GEOMETRIC mean, $\\omega _{0} = \\sqrt{\\omega _{1}\\omega _{2}}$,
+so the band sits symmetrically on a logarithmic axis rather than a linear
+one — visibly off-centre for low-Q circuits, where the arithmetic midpoint
+is a wrong answer the exam likes to offer.
 
 **Worked, series RLC:** L = 1 mH, C = 1 microfarad, R = 10 ohm. The
 resonant frequency is omega_0 = 1/sqrt(1e-3 x 1e-6) = **31,600 rad/s**
@@ -727,6 +755,14 @@ without bound, and feedback turned it into a stable, quick, mildly ringing
 system with unity DC gain. That transformation is the point of feedback,
 compressed into one algebra step.
 
+Sweep the loop gain and the trade-off appears. With forward path
+K/(s(s + 10)), the closed loop is K/(s^2 + 10s + K), so
+$\\omega _n = \\sqrt{K}$ and $\\zeta = 5/\\sqrt{K}$. At K = 25 the loop is
+critically damped ($\\zeta$ = 1, no overshoot); at K = 100 it is the case
+above; at K = 400, $\\zeta$ falls to 0.25 and the overshoot climbs to 44%.
+Raising gain buys speed and pays in damping — the single most-quoted
+sentence in control design, here derived in two lines rather than asserted.
+
 ## 4.3 Steady-state sinusoids: evaluate H at jω
 
 For a stable system driven by a sinusoid, after the transients die the
@@ -779,7 +815,32 @@ substitution s = 0 are the same fact wearing two notations. For the section
 3 system, H(0) = 10(2)/((1)(5)) = **4**: a unit step settles at 4, provided
 the poles are in the LHP so that settling happens at all. That proviso is
 the theorem's validity condition making its usual appearance, and checking
-it costs one glance at the pole list.`,
+it costs one glance at the pole list.
+
+## 4.6 Magnitude from the pole-zero plot, geometrically
+
+One more way to evaluate |H(jω)|, and the one that builds intuition: at any
+point $j\\omega$ on the imaginary axis,
+
+**$|H(j\\omega )| = K \\cdot \\Pi (\\mathrm{distances\\ to\\ zeros}) / \\Pi (\\mathrm{distances\\ to\\ poles})$**
+
+— each factor $(j\\omega - z_i)$ or $(j\\omega - p_j)$ is a vector from that
+root to the evaluation point, and its magnitude is a plain distance on the
+plot.
+
+**Worked, at $\\omega$ = 1 for the section 3 system:** the zero at -2 lies
+at distance sqrt(4 + 1) = 2.236 from j1; the poles at -1 and -5 lie at
+sqrt(2) = 1.414 and sqrt(26) = 5.099. So
+
+$$|H(j1)| = 10 \\times 2.236/(1.414 \\times 5.099) = 3.10$$
+
+which is 9.8 dB — precisely the exact-curve value the figure in 4.1 shows at
+the first corner. The geometry also explains resonance without algebra: as
+$j\\omega$ sweeps past a pole sitting close to the axis, one denominator
+distance momentarily collapses, and the magnitude spikes. Peaks in frequency
+response ARE nearby poles; notches are nearby zeros. Carry that one sentence
+into the exam and half the qualitative frequency-response questions answer
+themselves from the plot alone.`,
         examTip: 'For any sinusoidal steady-state question, resist solving anything in the time domain: substitute s = jw, convert one complex number to polar form, and write the answer. The entire method is |H| times the amplitude and angle-of-H added to the phase — two operations, no integrals, no transients.',
         importantNote: 'The feedback formula T = G/(1+GH) assumes the loop sign is NEGATIVE at the summing junction. If the diagram shows positive feedback, the denominator becomes 1 - GH, and a loop that was stable can stop being so. Check the sign at the junction before reducing — it is the single most consequential symbol in the diagram.',
       },
@@ -922,6 +983,14 @@ Nyquist limit, the samples are identical to those of a tone at
 irreversibility is why anti-alias filtering happens in analogue hardware
 BEFORE the sampler — the one place in a digital system where the filter
 cannot be software.
+
+**A subtler case:** an audio system sampling at 8 kHz picks up both genuine
+60 Hz mains hum and a 7.94 kHz whine from a switching supply. The hum sits
+safely below Nyquist and is recorded faithfully — but the whine folds to
+8000 - 7940 = **60 Hz** as well, and the two land on the same digital
+frequency. A notch filter in software removes both together or neither
+separately, which is exactly the diagnostic signature that says the
+anti-alias filter is missing or inadequate.
 
 ## 3.2 A difference equation is a recipe of delays
 
@@ -1068,7 +1137,24 @@ so natural for hardware: z^(-1) is one register, so any rational H(z) is a
 wiring diagram of registers, multipliers and adders. And the decaying-mode
 row is the bridge itself: sampling $e^{-at}$ every T seconds produces the
 geometric sequence with ratio $a = e^{-aT}$, which is the mapping
-z = e^(sT) acting on one concrete signal rather than on an abstract plane.`,
+z = e^(sT) acting on one concrete signal rather than on an abstract plane.
+
+## 4.5 Long division, when only the first few samples matter
+
+Partial fractions deliver a closed form; sometimes the question only wants
+h[0] through h[2], and LONG DIVISION gets there faster. Write H(z) in powers
+of $z^{-1}$ and divide numerator by denominator:
+
+**Worked:** the smoother H(z) = 0.1/(1 - 0.9z^{-1}). Dividing out,
+
+$$H(z) = 0.1 + 0.09z^{-1} + 0.081z^{-2} + ...$$
+
+and the coefficients ARE the impulse response, delay by delay: h[0] = 0.1,
+h[1] = 0.09, h[2] = 0.081 — visibly the geometric sequence
+0.1 x (0.9)^n that the closed form predicts. Division cannot give the
+general term, but for "what is the third output sample" it is three lines
+of arithmetic against a full expansion, and it doubles as an independent
+check on any closed form you derive by the longer route.`,
         examTip: 'The three-check habit from the step-response example - first sample against h[0], second against a direct convolution sum, final value against H(1) - costs under a minute and catches nearly every partial-fraction slip. On multiple-choice questions, often the final-value check ALONE eliminates three options.',
         importantNote: 'For a monic quadratic z^2 + bz + c with complex roots, the pole magnitude is sqrt(c) - the constant term is the squared magnitude. Confirm the roots are actually complex (b^2 < 4c) before using this; for real roots each must be checked against the unit circle individually.',
       },
@@ -1136,6 +1222,17 @@ A transfer function is decomposed into FACTORS, each contributing to the total B
 | Complex zero pair | 0 below ωₙ, +40 dB/decade above | 0° to +180° transition centered at ωₙ |
 
 Each factor contributes ADDITIVELY (because log of a product = sum of logs).
+
+![Exact magnitude and phase of a single real pole overlaid on the straight-line rules. The magnitude sketch is essentially exact a decade from the corner and 3.01 dB high exactly at it; the phase ramp runs from a tenth of the corner frequency to ten times it, passing through minus 45 degrees at the corner itself.](/courses/fe-ee/figures/lsys-bode-first-order.svg)
+
+The asymptotic rules carry a KNOWN, bounded error, which is what makes them
+trustworthy. For a real pole, the magnitude sketch is 3 dB high at the
+corner, about 1 dB off one octave to either side, and essentially exact
+beyond a decade. The phase sketch is worst near p/10 and 10p, where the true
+curve sits about 5.7 degrees away from the corner of the ramp. Knowing the
+size of the error is what lets you draw the straight lines with confidence
+everywhere else — and add the 3 dB correction only at the one frequency a
+question actually interrogates.
 
 ## 1.4 The standard form for factoring
 

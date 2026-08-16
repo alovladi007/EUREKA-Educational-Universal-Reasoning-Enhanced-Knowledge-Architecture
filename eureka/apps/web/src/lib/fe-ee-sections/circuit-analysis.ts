@@ -925,7 +925,7 @@ arithmetic.
 The AC part alone has rms 5/sqrt(2), so rms squared = 100 + 25/2 = 112.5 and
 V_rms = sqrt(112.5) = **10.61 V**. Power: P = 112.5/4 = **28.1 W**.
 
-Adding 10 + 3.54 = 13.5 V and squaring would claim 45.6 W — over 60% high.
+Adding 10 + 3.54 = 13.54 V and squaring would claim 45.8 W — over 60% high.
 The offset and the ripple do not add as magnitudes any more than resistance
 and reactance do.
 
@@ -1271,8 +1271,8 @@ $S_{total} = S_{1} + S_{2} + ...$, with the real parts and the reactive parts
 each adding SEPARATELY. What must never be added is the apparent power
 magnitudes, unless every load happens to sit at one common phase angle.
 
-**Worked:** two loads share a 240 V rms feeder. Load 1 draws 6 kW at 0.80
-power factor lagging; load 2 draws 4 kW at unity.
+**Worked:** two loads share a 240 V rms feeder. Load 1 draws 6 kW with a
+lagging factor of 0.80; load 2 draws 4 kW at unity.
 
 Load 1's triangle: S_1 = 6/0.80 = 7.5 kVA, so Q_1 = sqrt(7.5^2 - 6^2) =
 **4.5 kVAR**. The 6, 7.5, 4.5 sides are a scaled 3-4-5 right triangle, a
