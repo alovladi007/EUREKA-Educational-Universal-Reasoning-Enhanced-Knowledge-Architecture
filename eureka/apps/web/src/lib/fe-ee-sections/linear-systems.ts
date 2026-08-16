@@ -69,9 +69,9 @@ An LTI system must satisfy two properties:
 
 A system is **Bounded-Input Bounded-Output (BIBO) stable** if every bounded input produces a bounded output. For LTI systems, this is equivalent to:
 
-**$\\int _{-}\\infty ^\\infty |h(t)| dt < \\infty$** (continuous-time)
+**$\\int _{-\\infty }^{\\infty } \\lvert h(t) \\rvert \\, dt < \\infty$** (continuous-time)
 
-**$\\Sigma |h[n]| < \\infty$** (discrete-time)
+**$\\sum _{n=-\\infty }^{\\infty } \\lvert h[n] \\rvert < \\infty$** (discrete-time)
 
 For systems described by rational transfer functions, BIBO stability requires **all poles in the open left half-plane** (Re(pᵢ) < 0).
 
@@ -265,6 +265,943 @@ transfer function up to a gain is recovered from a single oscilloscope
 trace.`,
         examTip: 'Overshoot depends on the damping ratio alone; speed depends on the natural frequency alone. If an exam question changes wn but not zeta, the response curve stretches in time without changing shape — same overshoot, scaled peak and settling times. Spotting this saves recomputing everything from scratch.',
         importantNote: 'The settling-time formula ts = 4/(zeta*wn) uses the 2% criterion; some references use 3/(zeta*wn) for the 5% band. FE answer choices are spaced widely enough that either convention identifies the correct option, but state which band you are using in your scratch work to avoid second-guessing.',
+      },
+      {
+        id: 'td-first-order',
+        title: '5. The First-Order Response, Derived and Measured',
+        content: `## 5.1 One pole, one differential equation, two responses
+
+Every single-time-constant system — an RC network, an RL network, a thermal
+mass with one heat path, a tank with one drain — obeys the same first-order
+equation:
+
+$$\\tau \\frac{dy}{dt} + y(t) = Kx(t)$$
+
+Transform it with zero stored energy and the transfer function appears:
+
+$$(\\tau s + 1)Y(s) = KX(s) \\;\\Longrightarrow\\; H(s) = \\frac{K}{\\tau s + 1} = \\frac{K/\\tau }{s + 1/\\tau }$$
+
+The single pole sits at $s = -1/\\tau$. Two inputs matter, and both responses
+are worth deriving rather than remembering.
+
+**Impulse.** With $X(s) = 1$,
+
+$$Y(s) = \\frac{K/\\tau }{s + 1/\\tau } \\;\\Longrightarrow\\; h(t) = \\frac{K}{\\tau }e^{-t/\\tau }u(t)$$
+
+**Step.** With $X(s) = 1/s$, split by partial fractions,
+
+$$Y(s) = \\frac{K}{s(\\tau s + 1)} = \\frac{K}{s} - \\frac{K\\tau }{\\tau s + 1}$$
+
+$$g(t) = K\\left(1 - e^{-t/\\tau }\\right)u(t)$$
+
+Two properties of that pair deserve to be carried into the exam. The impulse
+response starts at $K/\\tau$ and has total area
+
+$$\\int_{0}^{\\infty } \\frac{K}{\\tau }e^{-t/\\tau }dt = K = H(0)$$
+
+so the area under the impulse response IS the DC gain. And differentiating the
+step response returns the impulse response, which means the two carry exactly
+the same information in different clothing.
+
+![The impulse response h(t) = 4 exp(-2t) and the step response g(t) = 2(1 - exp(-2t)) of H(s) = 4/(s+2). The shaded area under h up to t = 0.5 s equals 1.2642, which is precisely the height of g at that instant, and the total area under h is the DC gain of 2.](/courses/fe-ee/figures/lin2-td-impulse-step.svg)
+
+For $H(s) = 4/(s+2)$ the DC gain is $4/2 = 2$ and the time constant is
+$\\tau = 0.5$ s. The shaded area in the figure is
+
+$$\\int_{0}^{0.5} 4e^{-2t}dt = 2\\left(1 - e^{-1}\\right) = 1.2642$$
+
+and the step response passes through 1.2642 at the same instant. That equality
+is the integral relation made visible.
+
+## 5.2 Worked Example: reading tau off a recorded response
+
+**Given** a temperature probe initially at 20 degrees C, plunged at t = 0 into
+a 70 degree C bath. The recorder shows 51.61 degrees C at t = 12 s. Find the
+time constant, the 90% time, and the time to settle within 2%.
+
+**Step 1 — normalise.** The total change is $70 - 20 = 50$ degrees. The
+fraction completed at 12 s is
+
+$$\\frac{51.61 - 20}{50} = 0.632$$
+
+which is $1 - e^{-1} = 0.632$. So 12 s is exactly one time constant:
+$\\tau = 12$ s.
+
+**Step 2 — the 90% time.** Solve $1 - e^{-t/\\tau } = 0.9$:
+
+$$t_{90} = \\tau \\ln 10 = 12 \\times 2.3026 = 27.63\\ \\mathrm{s}$$
+
+**Step 3 — the 2% settling time.** Solve $e^{-t/\\tau } = 0.02$:
+
+$$t_{s} = \\tau \\ln 50 = 12 \\times 3.912 = 46.94\\ \\mathrm{s}$$
+
+**Step 4 — the 10 to 90 percent rise time.** The two crossings are at
+$\\tau \\ln (10/9)$ and $\\tau \\ln 10$, so their difference is
+
+$$t_{r} = \\tau \\ln 9 = 12 \\times 2.1972 = 26.37\\ \\mathrm{s}$$
+
+![A first-order thermal record: a probe stepped from 20 to 70 degrees C with a 12 second time constant. The 63.2 percent point at 51.61 degrees is marked at t = 12 s, the tangent drawn at t = 0 meets the final value at exactly one time constant, and the 90 percent crossing falls at 27.63 s.](/courses/fe-ee/figures/lin2-td-tau-construction.svg)
+
+The dashed tangent in the figure is the second classical construction. Its
+slope is the initial derivative,
+
+$$\\left. \\frac{dy}{dt} \\right|_{t=0} = \\frac{\\Delta y}{\\tau } = \\frac{50}{12} = 4.167\\ \\mathrm{deg/s}$$
+
+and a straight line of that slope from the starting value reaches the final
+value after exactly $\\tau$ seconds. That is why the tangent construction
+works on any first-order record regardless of the vertical scale.
+
+## 5.3 Worked Example: where the three-tau and four-tau rules come from
+
+**Given** a first-order step response, find exactly when it enters a 5% band
+and a 2% band, and compare with the rules of thumb.
+
+Set the remaining fraction equal to the band edge:
+
+$$e^{-t/\\tau } = 0.05 \\;\\Longrightarrow\\; t = \\tau \\ln 20 = 2.996\\tau$$
+
+$$e^{-t/\\tau } = 0.02 \\;\\Longrightarrow\\; t = \\tau \\ln 50 = 3.912\\tau$$
+
+![A normalised first-order step response with the 5 percent and 2 percent bands shaded. The curve enters the 5 percent band at ln 20 = 2.996 time constants and the 2 percent band at ln 50 = 3.912 time constants, which are the exact values that the 3-tau and 4-tau rules of thumb round up to.](/courses/fe-ee/figures/lin2-td-settling-bands.svg)
+
+So the familiar rules are not conventions at all: they are $\\ln 20$ and
+$\\ln 50$, rounded UP to the next whole time constant. Rounding up is why they
+are safe — at exactly $3\\tau$ the response has completed 95.02% and at
+$4\\tau$ it has completed 98.17%, so both rules deliver slightly better than
+they promise.
+
+| Elapsed | Completed | Remaining | Nearest exam rule |
+|---|---|---|---|
+| $1\\tau$ | 63.21% | 36.79% | the definition of $\\tau$ |
+| $2\\tau$ | 86.47% | 13.53% | — |
+| $2.996\\tau$ | 95.00% | 5.00% | the "3 tau" 5% rule |
+| $3.912\\tau$ | 98.00% | 2.00% | the "4 tau" 2% rule |
+| $5\\tau$ | 99.33% | 0.67% | "essentially finished" |
+
+## 5.4 Worked Example: the DC gain hidden in an impulse record
+
+**Given** an impulse response measured as $h(t) = 6e^{-t/0.25}u(t)$. Find the
+DC gain, the transfer function and the step response.
+
+The time constant is read straight off the exponent, $\\tau = 0.25$ s, so the
+pole is at $-4$. The area is
+
+$$K = \\int_{0}^{\\infty } 6e^{-4t}dt = \\frac{6}{4} = 1.5$$
+
+$$H(s) = \\frac{6}{s + 4} = \\frac{1.5}{0.25s + 1}, \\qquad g(t) = 1.5\\left(1 - e^{-4t}\\right)$$
+
+The numerator 6 is the INITIAL value of the impulse response, and 1.5 is the
+final value of the step response. Confusing the two is the standard trap on
+this question: the coefficient in front of the exponential is $K/\\tau$, not
+K.
+
+## 5.5 Why first-order systems never overshoot
+
+The step response $K(1 - e^{-t/\\tau })$ is monotone because its derivative,
+
+$$\\frac{dg}{dt} = \\frac{K}{\\tau }e^{-t/\\tau }$$
+
+never changes sign. One pole cannot produce oscillation, because oscillation
+requires an imaginary part and a single real pole has none. Any measured
+first-order-looking record that DOES overshoot therefore has a second energy
+store hiding in it, or a zero — and the exam uses that observation as a
+qualitative question: "the response overshoots, so the system is at least
+second order" is always a valid deduction.`,
+        examTip: 'Every first-order question reduces to two numbers: where it ends (the DC gain) and how fast it gets there (the time constant). Extract both before reading the rest of the question. If the record starts from a nonzero value, the 63.2 percent rule applies to the CHANGE, not to the reading — a probe going from 20 to 70 hits one time constant at 51.6 degrees, not at 44.2.',
+        importantNote: 'The coefficient of a measured impulse response is K/tau, not the DC gain. For h(t) = 6 exp(-4t) the DC gain is the AREA, 6/4 = 1.5. Reporting 6 as the DC gain is the most common error on impulse-record questions and it is off by exactly the factor tau.',
+      },
+      {
+        id: 'td-second-order-specs',
+        title: '6. Second-Order Specifications Derived from Zeta and Omega-n',
+        content: `## 6.1 Solving the standard form once, properly
+
+Take the standard second-order system driven by a unit step:
+
+$$Y(s) = \\frac{\\omega _n^{2}}{s\\left(s^{2} + 2\\zeta \\omega _n s + \\omega _n^{2}\\right)}$$
+
+Complete the square in the quadratic, using $\\omega _d = \\omega _n\\sqrt{1-\\zeta ^{2}}$:
+
+$$s^{2} + 2\\zeta \\omega _n s + \\omega _n^{2} = \\left(s + \\zeta \\omega _n\\right)^{2} + \\omega _d^{2}$$
+
+Split into the three standard pairs and invert term by term:
+
+$$Y(s) = \\frac{1}{s} - \\frac{s + \\zeta \\omega _n}{(s+\\zeta \\omega _n)^{2} + \\omega _d^{2}} - \\frac{\\zeta \\omega _n}{(s+\\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
+
+$$y(t) = 1 - e^{-\\zeta \\omega _n t}\\left(\\cos \\omega _d t + \\frac{\\zeta }{\\sqrt{1-\\zeta ^{2}}}\\sin \\omega _d t\\right)$$
+
+Collapsing the bracket into a single sinusoid with a phase gives the compact
+form that every specification is derived from:
+
+$$y(t) = 1 - \\frac{e^{-\\zeta \\omega _n t}}{\\sqrt{1-\\zeta ^{2}}}\\sin \\left(\\omega _d t + \\phi \\right), \\qquad \\phi = \\arccos \\zeta$$
+
+Two structures are visible and they never mix. The exponential
+$e^{-\\zeta \\omega _n t}$ is the ENVELOPE, and it is governed by the product
+$\\zeta \\omega _n$, which is the distance of the poles from the imaginary
+axis. The sinusoid is the RINGING, and it is governed by $\\omega _d$, which is
+the distance of the poles from the real axis. Every number below comes from one
+or the other.
+
+## 6.2 Worked Example: peak time and overshoot, derived
+
+**Given** the response above, derive $t_p$ and $M_p$.
+
+Differentiate. Every term but one cancels, leaving
+
+$$\\frac{dy}{dt} = \\frac{\\omega _n}{\\sqrt{1-\\zeta ^{2}}}e^{-\\zeta \\omega _n t}\\sin \\omega _d t$$
+
+The exponential never vanishes, so the derivative is zero exactly where
+$\\sin \\omega _d t = 0$, that is at $\\omega _d t = n\\pi$. The first maximum
+is n = 1:
+
+$$t_{p} = \\frac{\\pi }{\\omega _d} = \\frac{\\pi }{\\omega _n\\sqrt{1-\\zeta ^{2}}}$$
+
+Substitute that instant back into y(t). At $\\omega _d t_p = \\pi$ the sine
+term becomes $\\sin (\\pi + \\phi ) = -\\sin \\phi = -\\sqrt{1-\\zeta ^{2}}$,
+so the square root cancels and
+
+$$y(t_{p}) = 1 + e^{-\\zeta \\omega _n \\pi /\\omega _d} = 1 + e^{-\\pi \\zeta /\\sqrt{1-\\zeta ^{2}}}$$
+
+$$M_{p} = e^{-\\pi \\zeta /\\sqrt{1-\\zeta ^{2}}}$$
+
+The natural frequency cancelled out completely. That is why overshoot depends
+on $\\zeta$ alone, and it is not a coincidence to be memorised but a
+consequence of $t_p$ and the envelope scaling the same way.
+
+## 6.3 Worked Example: rise time and settling time, derived
+
+**Rise time, zero to one hundred percent.** Set y(t) = 1. That needs
+$\\sin (\\omega _d t + \\phi ) = 0$, so $\\omega _d t + \\phi = \\pi$:
+
+$$t_{r} = \\frac{\\pi - \\arccos \\zeta }{\\omega _d}$$
+
+This is exact, and it is defined only for underdamped systems — an overdamped
+response never reaches its final value, which is why the 10-to-90 definition is
+used instead when $\\zeta \\ge 1$.
+
+**Settling time.** The response is trapped between the two envelopes
+$1 \\pm e^{-\\zeta \\omega _n t}/\\sqrt{1-\\zeta ^{2}}$. Requiring the envelope
+itself to fit inside a 2% band gives
+
+$$\\frac{e^{-\\zeta \\omega _n t_{s}}}{\\sqrt{1-\\zeta ^{2}}} = 0.02 \\;\\Longrightarrow\\; t_{s} = \\frac{1}{\\zeta \\omega _n}\\ln \\frac{1}{0.02\\sqrt{1-\\zeta ^{2}}}$$
+
+Now evaluate that logarithm across the damping ratios the exam actually uses:
+
+| $\\zeta$ | $\\ln [1/(0.02\\sqrt{1-\\zeta ^{2}})]$ | Rounded rule |
+|---|---|---|
+| 0.3 | 3.959 | 4 |
+| 0.4 | 3.999 | 4 |
+| 0.5 | 4.056 | 4 |
+| 0.7 | 4.249 | 4 |
+
+The logarithm sits within 6% of 4 over that whole range, which is where the
+famous $t_s \\approx 4/(\\zeta \\omega _n)$ comes from. It is not an axiom; it
+is a logarithm that happens to be close to a round number. The same calculation
+with 0.05 in place of 0.02 gives values near 3, which is the 5% rule.
+
+## 6.4 Worked Example: every specification for one system
+
+**Given** $\\zeta = 0.3$ and $\\omega _n = 20$ rad/s, find the damped
+frequency, ring period, overshoot, peak time, rise time and settling time.
+
+$$\\omega _d = 20\\sqrt{1 - 0.09} = 20 \\times 0.9539 = 19.078\\ \\mathrm{rad/s}$$
+
+$$T = \\frac{2\\pi }{\\omega _d} = 0.3293\\ \\mathrm{s}, \\qquad t_{p} = \\frac{\\pi }{\\omega _d} = 0.1647\\ \\mathrm{s}$$
+
+$$M_{p} = e^{-\\pi (0.3)/0.9539} = 0.3723 = 37.23\\%$$
+
+$$t_{r} = \\frac{\\pi - \\arccos (0.3)}{19.078} = \\frac{3.1416 - 1.2661}{19.078} = 0.0983\\ \\mathrm{s}$$
+
+$$t_{s} = \\frac{\\ln (52.414)}{6} = \\frac{3.959}{6} = 0.6599\\ \\mathrm{s}$$
+
+![An underdamped step response for a damping ratio of 0.3 and a natural frequency of 20 rad/s, with the rise time of 0.0983 s, the 37.23 percent peak at 0.1647 s, the decaying envelope and the 2 percent settling instant at 0.6599 s all marked on the same trace.](/courses/fe-ee/figures/lin2-td-spec-marks.svg)
+
+Two honest footnotes on those numbers. The rounded rule
+$4/6 = 0.6667$ s is about 1% longer than the envelope calculation. And the
+envelope calculation is itself conservative: the response actually leaves the
+2% band for the last time at 0.5615 s, because when the envelope finally
+shrinks to 2% the sinusoid inside it is nowhere near its own peak. The exam
+accepts the 4-over-zeta-omega-n answer; knowing it is an upper bound stops you
+second-guessing a plotted trace that settles sooner.
+
+The 10-to-90 rise time of the same trace, measured rather than derived, is
+0.0661 s — shorter than the 0-to-100 figure of 0.0983 s, as it must be, and a
+reminder to check which definition a question intends.
+
+## 6.5 Worked Example: the whole damping family at one natural frequency
+
+**Given** $\\omega _n = 20$ rad/s, describe the step response for
+$\\zeta = 0.3$, $\\zeta = 1$ and $\\zeta = 2$.
+
+For $\\zeta = 1$ the poles are repeated at $-20$ and the standard-form
+inversion gives
+
+$$y(t) = 1 - e^{-\\omega _n t}\\left(1 + \\omega _n t\\right)$$
+
+For $\\zeta = 2$ the poles are real and distinct:
+
+$$p_{1,2} = -\\omega _n\\left(\\zeta \\mp \\sqrt{\\zeta ^{2}-1}\\right) = -20\\left(2 \\mp \\sqrt{3}\\right)$$
+
+$$p_{1} = -5.359, \\qquad p_{2} = -74.641$$
+
+$$y(t) = 1 + \\frac{p_{2}e^{p_{1}t} - p_{1}e^{p_{2}t}}{p_{1} - p_{2}}$$
+
+![Step responses of the second-order standard form at a natural frequency of 20 rad/s for damping ratios 0.3, 1 and 2. The lightly damped curve overshoots to 37.23 percent, the critically damped curve is the fastest monotone arrival, and the overdamped curve is dominated by its slow pole at -5.359 and arrives last.](/courses/fe-ee/figures/lin2-td-damping-family.svg)
+
+The overdamped case carries the lesson worth keeping. Its two poles differ by a
+factor of nearly fourteen, so the slow one dominates and the response is
+effectively first order with
+
+$$\\tau _{\\text{dom}} = \\frac{1}{5.359} = 0.1866\\ \\mathrm{s}$$
+
+More damping did not mean a more sluggish oscillation; it meant the
+oscillation vanished and one slow exponential took over. Raising $\\zeta$ above
+1 always pulls one pole toward the origin and pushes the other away, which
+makes the system SLOWER, not merely calmer. Critical damping is the fastest
+non-overshooting response there is.
+
+## 6.6 Worked Example: running the map backwards from measurements
+
+**Given** a step record that overshoots by 20% and peaks at 0.15 s, recover
+$\\zeta$, $\\omega _n$ and the settling time.
+
+Invert the overshoot formula. Taking logarithms of
+$M_p = e^{-\\pi \\zeta /\\sqrt{1-\\zeta ^{2}}}$ and solving for $\\zeta$,
+
+$$\\zeta = \\frac{\\ln (1/M_{p})}{\\sqrt{\\pi ^{2} + \\ln ^{2}(1/M_{p})}} = \\frac{1.6094}{\\sqrt{9.8696 + 2.5903}} = 0.4559$$
+
+Then the peak time gives the damped frequency, and the two together give the
+natural frequency:
+
+$$\\omega _d = \\frac{\\pi }{t_{p}} = \\frac{3.1416}{0.15} = 20.944\\ \\mathrm{rad/s}$$
+
+$$\\omega _n = \\frac{\\omega _d}{\\sqrt{1-\\zeta ^{2}}} = \\frac{20.944}{0.89001} = 23.532\\ \\mathrm{rad/s}$$
+
+$$t_{s} = \\frac{4}{\\zeta \\omega _n} = 4/10.7296 = 0.3728\\ \\mathrm{s}$$
+
+The inversion is well conditioned because the two measurements are independent:
+overshoot knows only about $\\zeta$ and peak time knows only about
+$\\omega _d$. That independence is exactly why those are the two quantities to
+read off a scope first.
+
+## 6.7 Two more numbers the exam asks for by name
+
+**Logarithmic decrement.** The ratio of successive peaks of the ringing is
+fixed by the envelope over one damped period:
+
+$$\\delta = \\ln \\frac{y_{k} - 1}{y_{k+1} - 1} = \\zeta \\omega _n T = \\frac{2\\pi \\zeta }{\\sqrt{1-\\zeta ^{2}}}$$
+
+For $\\zeta = 0.3$ this is $\\delta = 1.976$, so each overshoot is
+$e^{-1.976} = 0.1386$ times the one before. Note the tidy relation
+$M_p = e^{-\\delta /2}$: the overshoot is half a decrement, because the peak
+occurs half a period after the crossing.
+
+**Damped resonant frequency.** This is a FREQUENCY-domain quantity and it is
+not $\\omega _d$. The magnitude $\\lvert H(j\\omega ) \\rvert$ peaks at
+
+$$\\omega _r = \\omega _n\\sqrt{1 - 2\\zeta ^{2}}, \\qquad M_{r} = \\frac{1}{2\\zeta \\sqrt{1-\\zeta ^{2}}}$$
+
+and the peak exists only for $\\zeta < 1/\\sqrt{2} = 0.707$. For
+$\\zeta = 0.3$ and $\\omega _n = 20$, $\\omega _r = 18.111$ rad/s while
+$\\omega _d = 19.078$ rad/s and $\\omega _n = 20$ rad/s — three different
+frequencies, all legitimate answers to three different questions, and the
+exam offers all three as choices.
+
+| Symbol | Name | Value at $\\zeta = 0.3$, $\\omega _n = 20$ |
+|---|---|---|
+| $\\omega _n$ | natural frequency | 20 rad/s |
+| $\\omega _d$ | damped (ringing) frequency | 19.078 rad/s |
+| $\\omega _r$ | damped resonant frequency | 18.111 rad/s |
+| $M_r$ | resonant peak of $\\lvert H \\rvert$ | 1.747 |`,
+        examTip: 'Compute zeta*wn and wd first and write them down. The envelope decay uses zeta*wn, the ringing uses wd, and every specification is one of those two divided into a constant: tp = pi/wd, T = 2pi/wd, ts = 4/(zeta*wn). Building the two products once removes almost all the arithmetic from the rest of the question.',
+        importantNote: 'The damped frequency wd, the damped RESONANT frequency wr, and the natural frequency wn are three different numbers, and they appear together as answer choices. Ringing in the time domain happens at wd; the magnitude peak in the frequency domain sits at wr = wn*sqrt(1 - 2*zeta^2) and only exists when zeta is below 0.707.',
+      },
+      {
+        id: 'td-value-theorems',
+        title: '7. The Initial- and Final-Value Theorems',
+        content: `## 7.1 Two limits that skip the inverse transform
+
+Both theorems answer a question about y(t) by evaluating a limit of Y(s), with
+no inversion required.
+
+$$y(0^{+}) = \\lim_{s \\to \\infty } sY(s) \\qquad \\text{(initial value)}$$
+
+$$y(\\infty ) = \\lim_{s \\to 0} sY(s) \\qquad \\text{(final value)}$$
+
+The symmetry is appealing and slightly dangerous, because their validity
+conditions are NOT symmetric.
+
+The **initial-value theorem** holds for any Y(s) that is a proper rational
+function — the degree of the numerator strictly less than that of the
+denominator. Under that condition it always works, and it cannot mislead you.
+
+The **final-value theorem** holds only if $sY(s)$ has all of its poles in the
+open left half-plane. A pole on the imaginary axis or in the right half-plane
+makes the limit meaningless, and the theorem will still return a finite number
+if you apply it blindly. That number will be wrong. Checking the poles BEFORE
+taking the limit is the whole discipline of using this theorem.
+
+| Theorem | Formula | Condition | Failure mode |
+|---|---|---|---|
+| Initial value | $\\lim_{s\\to \\infty } sY(s)$ | Y proper rational | none in practice |
+| Final value | $\\lim_{s\\to 0} sY(s)$ | poles of $sY(s)$ in open LHP | returns a plausible wrong number |
+| Initial slope | $\\lim_{s\\to \\infty } s[sY(s) - y(0^{+})]$ | as above | none in practice |
+
+## 7.2 Worked Example: a final value that is legitimate
+
+**Given** $Y(s) = 10/[s(s+2)(s+5)]$, find $y(\\infty )$.
+
+First the check: $sY(s) = 10/[(s+2)(s+5)]$ has poles at $-2$ and $-5$, both
+in the open left half-plane, so the theorem applies. Then
+
+$$y(\\infty ) = \\lim_{s \\to 0} \\frac{10}{(s+2)(s+5)} = \\frac{10}{10} = 1$$
+
+Confirm it the long way. Partial fractions give
+$y(t) = 1 - \\frac{5}{3}e^{-2t} + \\frac{2}{3}e^{-5t}$, whose limit is 1, and
+a numerical march of the state equations lands on 1 as well. Three routes, one
+answer.
+
+Notice what the theorem gave for free: the same number as $H(0)$ for the
+system $H(s) = 10/[(s+2)(s+5)]$ driven by a unit step, because
+$Y = H/s$ makes $sY = H$ and the limit is literally H(0). The final-value
+theorem applied to a step response IS the DC gain.
+
+## 7.3 Worked Example: an initial value, an initial slope, and a final value
+
+**Given** $Y(s) = (2s+3)/(s^{2}+5s+6)$, find $y(0^{+})$, $y'(0^{+})$ and
+$y(\\infty )$.
+
+**Initial value.**
+
+$$y(0^{+}) = \\lim_{s\\to \\infty } \\frac{s(2s+3)}{s^{2}+5s+6} = \\lim_{s\\to \\infty } \\frac{2s^{2}+3s}{s^{2}+5s+6} = 2$$
+
+**Initial slope.** Subtract the value already found and take the limit again:
+
+$$y'(0^{+}) = \\lim_{s\\to \\infty } s\\left[sY(s) - 2\\right] = \\lim_{s\\to \\infty } \\frac{-7s^{2}-12s}{s^{2}+5s+6} = -7$$
+
+**Final value.** The poles of $sY(s)$ are at $-2$ and $-3$, so the theorem
+applies:
+
+$$y(\\infty ) = \\lim_{s\\to 0} \\frac{s(2s+3)}{s^{2}+5s+6} = 0$$
+
+**Cross-check by inversion.** The residues are $-1$ at $s = -2$ and $3$ at
+$s = -3$, giving
+
+$$y(t) = -e^{-2t} + 3e^{-3t}$$
+
+$$y(0) = -1 + 3 = 2, \\qquad y'(0) = 2 - 9 = -7, \\qquad y(\\infty ) = 0$$
+
+All three agree. The signature here is worth noticing: the response STARTS at
+2 and immediately falls, because its initial slope is negative. A transform
+whose numerator degree is one less than its denominator degree always has a
+nonzero initial value; if the gap is two or more, $y(0^+) = 0$.
+
+## 7.4 Worked Example: two final values that are not
+
+**Case one, a pole on the axis.** $Y(s) = 5/(s^{2}+9)$. Apply the theorem
+blindly:
+
+$$\\lim_{s\\to 0} \\frac{5s}{s^{2}+9} = 0$$
+
+But $sY(s)$ has poles at $\\pm j3$, which are ON the imaginary axis, so the
+condition fails. The true inverse transform is
+
+$$y(t) = \\frac{5}{3}\\sin 3t$$
+
+which oscillates forever between $\\pm 1.667$ and has no final value at all.
+The theorem returned 0, which is the AVERAGE, not the limit.
+
+**Case two, a pole in the right half-plane.** $Y(s) = 1/(s-1)$. The theorem
+would give
+
+$$\\lim_{s\\to 0} \\frac{s}{s-1} = 0$$
+
+while the actual signal is $y(t) = e^{t}$, which diverges. Again a
+comfortable-looking zero, and again completely wrong.
+
+The pattern in both failures is the same: the limit as $s \\to 0$ is
+mathematically well defined but it is not the limit of y(t), because the
+theorem's derivation quietly assumed that y(t) HAS a limit. Look at the poles
+of $sY(s)$ first, every time. If any of them is on or right of the imaginary
+axis, the correct answer is "the final value does not exist".`,
+        examTip: 'Before applying the final-value theorem, factor the denominator of sY(s) and glance at the roots. If they are all strictly left of the imaginary axis, take the limit. If any sits on the axis or to the right, the answer choice you want is "no final value" or "the response is unbounded" — and the numerical choice offered alongside it is the trap.',
+        importantNote: 'The initial-value theorem never fails for a proper rational Y(s), but the final-value theorem fails silently. A sinusoid returns 0, a growing exponential returns 0, and both look like perfectly reasonable answers. The check costs one factorisation.',
+      },
+      {
+        id: 'td-convolution-deep',
+        title: '8. Convolution as the Impulse-Response Integral',
+        content: `## 8.1 Where the integral comes from
+
+Any input can be written as a continuum of scaled, shifted impulses, which is
+what the sifting property says:
+
+$$x(t) = \\int_{-\\infty }^{\\infty } x(\\lambda )\\delta (t - \\lambda )\\,d\\lambda$$
+
+The system answers each of those impulses with a scaled, shifted copy of h(t),
+and linearity lets the answers be added:
+
+$$y(t) = \\int_{-\\infty }^{\\infty } x(\\lambda )h(t-\\lambda )\\,d\\lambda = (x * h)(t)$$
+
+For causal signals and a causal system both limits tighten, because
+$x(\\lambda ) = 0$ before 0 and $h(t-\\lambda ) = 0$ for $\\lambda > t$:
+
+$$y(t) = \\int_{0}^{t} x(\\lambda )h(t-\\lambda )\\,d\\lambda$$
+
+Three consequences are worth stating outright. The operation is commutative, so
+you may flip whichever signal is simpler. The output duration is the sum of the
+two input durations — a 1-second pulse into a 3-second impulse response gives 4
+seconds of output. And the total AREA of the output is the product of the two
+input areas, which follows from setting s = 0 in $Y(s) = X(s)H(s)$ and is the
+fastest sanity check there is.
+
+## 8.2 Worked Example: two rectangles make a trapezoid
+
+**Given** $x(t)$ a rectangle of height 1 and width 1 s, and
+$h(t)$ a rectangle of height 2 and width 3 s. Find y(t).
+
+Slide the short pulse across the long one and count the overlap. While the
+short pulse is entering, $0 \\le t < 1$, the overlap grows linearly:
+
+$$y(t) = \\int_{0}^{t} (1)(2)\\,d\\lambda = 2t$$
+
+Once fully inside, $1 \\le t < 3$, the overlap is the whole short pulse and the
+output is flat:
+
+$$y(t) = \\int_{t-1}^{t} (1)(2)\\,d\\lambda = 2$$
+
+While leaving, $3 \\le t < 4$, it shrinks linearly back to zero:
+
+$$y(t) = \\int_{t-1}^{3} (1)(2)\\,d\\lambda = 2(4 - t)$$
+
+![The convolution of a 1 second wide unit rectangle with a 3 second wide rectangle of height 2, computed as a discrete convolution sum. The result ramps at slope 2 to a plateau of 2 held from 1 to 3 seconds, then ramps back to zero at 4 seconds, enclosing a total area of 6.](/courses/fe-ee/figures/lin2-td-conv-trapezoid.svg)
+
+Check the area: each of the two triangles contributes $0.5 \\times 1 \\times 2 = 1$, and the
+plateau contributes $2 \\times 2 = 4$, so the total is 6. The product of
+the input areas is $1 \\times 6 = 6$. They agree.
+
+**The special case worth recognising.** When the two rectangles have EQUAL
+width the plateau has zero length and the trapezoid degenerates into a
+triangle. Convolving a 2-second unit rectangle with itself gives a triangle of
+base 4 s peaking at 2 at t = 2 s, and the exam uses this shape constantly.
+
+## 8.3 Worked Example: two exponentials
+
+**Given** $x(t) = e^{-5t}u(t)$ and $h(t) = e^{-2t}u(t)$, find y(t), its peak
+value, and the instant of the peak.
+
+Flip and slide, factoring the term that does not depend on the integration
+variable out of the integral:
+
+$$y(t) = \\int_{0}^{t} e^{-5\\lambda }e^{-2(t-\\lambda )}\\,d\\lambda = e^{-2t}\\int_{0}^{t} e^{-3\\lambda }\\,d\\lambda$$
+
+$$y(t) = e^{-2t}\\cdot \\frac{1 - e^{-3t}}{3} = \\frac{e^{-2t} - e^{-5t}}{3}$$
+
+The peak is where the derivative vanishes, $2e^{-2t} = 5e^{-5t}$, so
+$e^{3t} = 2.5$ and
+
+$$t_{\\text{peak}} = \\frac{\\ln 2.5}{3} = 0.3054\\ \\mathrm{s}$$
+
+Substituting back and simplifying gives a compact closed form:
+
+$$y_{\\text{peak}} = 0.2 \\times 2.5^{-2/3} = 0.10858$$
+
+![Convolution of two decaying exponentials, exp(-5t) with exp(-2t), computed as a discrete convolution sum on a fine grid. The output starts at zero, peaks at 0.10858 at t = 0.3054 s, and then decays on the slower of the two time constants.](/courses/fe-ee/figures/lin2-td-conv-exponentials.svg)
+
+Two structural facts are visible in the figure and both generalise. The output
+starts at ZERO even though both inputs start at 1, because at t = 0 there is no
+overlap to integrate. And the tail decays on the SLOWER of the two exponents,
+$e^{-2t}$, because the faster one has already vanished. The total area is
+$(1/5)(1/2) = 0.1$, the product of the input areas, as promised.
+
+## 8.4 Worked Example: convolution with an impulse
+
+**Given** $x(t) = 4e^{-t}u(t)$ and $h(t) = 3\\delta (t-2)$, find y(t).
+
+No integral is needed. The sifting property does the work:
+
+$$y(t) = \\int_{-\\infty }^{\\infty } x(\\lambda )\\,3\\delta (t - 2 - \\lambda )\\,d\\lambda = 3x(t-2)$$
+
+$$y(t) = 12e^{-(t-2)}u(t-2)$$
+
+The impulse scaled the signal by 3 and delayed it by 2 s, and did nothing else.
+On the exam, any convolution whose second argument is an impulse or a sum of
+impulses should be answered in one line — writing out the integral is a sign
+you have missed the shortcut.
+
+## 8.5 The graphical procedure, in the order that works
+
+1. Choose which signal to flip. Flip the SIMPLER one, since commutativity makes
+   the choice free.
+2. Write the flipped signal as $h(t - \\lambda )$ and note that increasing t
+   slides it to the RIGHT along the $\\lambda$ axis.
+3. Identify every t at which an edge of one signal crosses an edge of the
+   other. Those instants are the boundaries of the regions.
+4. Within each region, write the integral with the overlap limits and evaluate.
+5. Check continuity at every boundary and check the total area at the end.
+
+Step 5 catches nearly every algebra slip. Convolution of two bounded signals is
+always continuous, so a jump in your answer means a limit is wrong.
+
+| Input pair | Output shape | Duration |
+|---|---|---|
+| Rectangle, rectangle (equal width $T$) | triangle | $2T$ |
+| Rectangle (width $a$), rectangle (width $b$) | trapezoid | $a + b$ |
+| Rectangle, decaying exponential | rise then decay | infinite |
+| Exponential, exponential | rise then decay on the slower rate | infinite |
+| Anything, $\\delta (t - t_{0})$ | the signal, shifted | unchanged |`,
+        examTip: 'Sketch both signals on the same lambda axis before writing a single integral. The regions are where the edges cross, and there are never more than four of them on this exam. Most convolution questions can be answered from the shape and the area alone, without evaluating anything.',
+        importantNote: 'The area of a convolution equals the product of the two input areas. Use it as a final check every time: if your answer encloses the wrong area, a limit of integration is wrong, and you will find the error faster by re-examining the overlap regions than by re-doing the algebra.',
+      },
+      {
+        id: 'td-steady-state-error',
+        title: '9. Steady-State Error and System Type',
+        content: `## 9.1 The error signal, and the theorem that evaluates it
+
+For a unity negative feedback loop with forward path G(s), the error is the
+difference between the reference and the output:
+
+$$E(s) = R(s) - Y(s) = \\frac{R(s)}{1 + G(s)}$$
+
+Its steady-state value follows from the final-value theorem, provided the loop
+is stable:
+
+$$e_{ss} = \\lim_{s \\to 0} sE(s) = \\lim_{s \\to 0} \\frac{sR(s)}{1 + G(s)}$$
+
+That single expression generates every steady-state-error result on the exam.
+Everything else is bookkeeping about how many factors of s sit in the
+denominator of G.
+
+## 9.2 System type, and the three error constants
+
+The **type** of a loop is the number of pure integrators in G(s), that is the
+multiplicity of the pole at the origin:
+
+$$G(s) = \\frac{K\\prod (s + z_{i})}{s^{N}\\prod (s + p_{j})} \\;\\Longrightarrow\\; \\text{type } N$$
+
+Three limits summarise the loop's DC behaviour:
+
+$$K_{p} = \\lim_{s\\to 0} G(s), \\qquad K_{v} = \\lim_{s\\to 0} sG(s), \\qquad K_{a} = \\lim_{s\\to 0} s^{2}G(s)$$
+
+and the errors to the three standard inputs follow directly:
+
+$$e_{ss}(\\text{step of size } A) = \\frac{A}{1 + K_{p}}$$
+
+$$e_{ss}(\\text{ramp } At) = \\frac{A}{K_{v}}$$
+
+$$e_{ss}(\\text{parabola } At^{2}) = \\frac{2A}{K_{a}}$$
+
+The factor of 2 in the last line trips up more candidates than any other detail
+in this topic. The standard parabolic reference is $t^{2}/2$, whose transform
+is $1/s^{3}$. An input written as $At^{2}$ is therefore $2A$ times the
+standard one, and its error is $2A/K_a$, not $A/K_a$.
+
+| Type | $K_p$ | $K_v$ | $K_a$ | Step error | Ramp error | Parabola error |
+|---|---|---|---|---|---|---|
+| 0 | finite | 0 | 0 | $1/(1+K_p)$ | infinite | infinite |
+| 1 | infinite | finite | 0 | 0 | $1/K_v$ | infinite |
+| 2 | infinite | infinite | finite | 0 | 0 | $1/K_a$ |
+
+Read the table as a staircase. Each added integrator kills one more error
+outright and demotes the next one from infinite to finite. The price is paid in
+stability margin, which is why type-2 loops are rare and type-3 loops
+essentially do not exist in practice.
+
+## 9.3 Worked Example: a type-0 loop under a step
+
+**Given** $G(s) = 10/[(s+1)(s+5)]$ in unity feedback, driven by
+$r(t) = 6u(t)$. Find the steady-state error and the steady-state output.
+
+$$K_{p} = G(0) = \\frac{10}{(1)(5)} = 2$$
+
+$$e_{ss} = \\frac{6}{1 + 2} = \\frac{6}{3} = 2$$
+
+The output therefore settles at $6 - 2 = 4$. Confirm it from the closed loop:
+
+$$T(s) = \\frac{10}{s^{2} + 6s + 15}, \\qquad T(0) = \\frac{10}{15} = 0.6667$$
+
+$$y_{ss} = 6 \\times 0.6667 = 4$$
+
+![A type-0 unity feedback loop with Kp = 2 settling one third short of a unit step in the upper panel, and a type-1 loop with Kv = 5 tracking a unit ramp with a permanent lag of 0.2 in the lower panel. Both errors are read off numerical marches of the closed loops.](/courses/fe-ee/figures/lin2-td-system-type.svg)
+
+A type-0 loop can never eliminate step error, no matter how well damped it is.
+The only lever is $K_p$, and driving the error to zero would need infinite
+gain. That is precisely what an integrator provides, which is the whole
+argument for the I term in a PID controller.
+
+## 9.4 Worked Example: a type-1 loop under a ramp
+
+**Given** $G(s) = 20/[s(s+4)]$ in unity feedback, driven by $r(t) = 4t$.
+
+The single pole at the origin makes this type 1, so the step error is zero and
+the ramp error is finite:
+
+$$K_{v} = \\lim_{s\\to 0} s \\cdot \\frac{20}{s(s+4)} = \\frac{20}{4} = 5$$
+
+$$e_{ss} = \\frac{4}{5} = 0.8$$
+
+The output tracks the ramp with the same slope but permanently 0.8 behind it,
+which is what the lower panel of the figure shows for a unit ramp with its
+0.2 lag. The lag is a POSITION error, not a velocity error — the output is
+never slower than the reference, it is simply displaced.
+
+## 9.5 Worked Example: a type-2 loop under a parabola
+
+**Given** $G(s) = 50/[s^{2}(s+10)]$ in unity feedback, driven by
+$r(t) = 3t^{2}$.
+
+$$K_{a} = \\lim_{s\\to 0} s^{2}\\cdot \\frac{50}{s^{2}(s+10)} = \\frac{50}{10} = 5$$
+
+The input is $3t^{2}$, which is $6$ times the standard $t^{2}/2$, so
+
+$$e_{ss} = \\frac{2(3)}{5} = \\frac{6}{5} = 1.2$$
+
+Step error and ramp error are both zero for this loop. Two integrators buy
+perfect tracking of anything that grows no faster than linearly, and leave a
+finite error against acceleration.
+
+## 9.6 The three cautions
+
+- **Stability first.** Every result above rests on the final-value theorem, so
+  it is valid only if the CLOSED loop is stable. A type-2 loop with too much
+  gain is often unstable, and then its "steady-state error" is not merely
+  wrong, it does not exist.
+- **Unity feedback only.** The formulas assume H = 1. For non-unity feedback,
+  either redraw the loop into an equivalent unity-feedback form or go back to
+  $E(s) = R(s)/(1 + G(s)H(s))$ and take the limit directly.
+- **Count integrators in the LOOP.** Poles at the origin in the reference, or
+  in a prefilter outside the loop, do not count. It is the multiplicity of the
+  origin pole in the open-loop product GH that sets the type.`,
+        examTip: 'Identify the type by counting factors of s in the denominator of the OPEN-loop transfer function, then read the answer straight off the staircase table. Only the finite entry on that row needs arithmetic; the zeros and infinities are structural and require none.',
+        importantNote: 'A reference written as A*t^2 is 2A times the standard parabola t^2/2, so its steady-state error is 2A/Ka. Writing A/Ka halves the answer, and half the correct value is almost always one of the offered choices.',
+      },
+      {
+        id: 'td-problem-set-a',
+        title: '10. Problem Set A: First- and Second-Order Transients',
+        content: `## 10.1 Problem Set A
+
+**A1.** A first-order step response completes 63.2% of its change in 0.4 s.
+Find the time constant, the 2% settling time, and the 10-to-90 percent rise
+time.
+
+**A2.** A unit-step record overshoots by 20% and peaks at 0.15 s. Find
+$\\zeta$, $\\omega _d$, $\\omega _n$ and the 2% settling time.
+
+**A3.** An impulse response is measured as $h(t) = 12e^{-4t}u(t)$. Find the DC
+gain, the transfer function, and the final value of the step response.
+
+**A4.** For $\\zeta = 0.3$ and $\\omega _n = 20$ rad/s, find the frequency at
+which $\\lvert H(j\\omega ) \\rvert$ peaks, and the height of that peak.
+
+**A5.** A ringing record shows successive overshoot peaks in the ratio
+0.1386. Find the damping ratio.
+
+**A6.** A second-order system has $\\zeta = 2$ and $\\omega _n = 20$ rad/s.
+Find both pole locations and the dominant time constant.
+
+**A7.** For $H(s) = 32/(s^{2} + 4s + 16)$ driven by a unit step, find the
+steady-state value, the percent overshoot and the peak time.
+
+## 10.2 Worked Answers, Problem Set A
+
+**A1 — Worked.** The 63.2% point defines the time constant outright, so
+$\\tau = 0.4$ s. Then
+
+$$t_{s} = \\tau \\ln 50 = 0.4 \\times 3.912 = 1.565\\ \\mathrm{s}$$
+
+$$t_{r} = \\tau \\ln 9 = 0.4 \\times 2.1972 = 0.879\\ \\mathrm{s}$$
+
+*Trap:* using the 4-tau rule to get 1.6 s and then treating it as exact. It is
+fine as an estimate, but a question that specifies "2% band" and offers both
+1.565 and 1.6 wants the logarithm. A second trap reads the 10-to-90 rise time
+as $2\\tau$, giving 0.8 s instead of 0.879 s.
+
+**A2 — Worked.** Invert the overshoot relation, then use the peak time:
+
+$$\\zeta = \\frac{\\ln 5}{\\sqrt{\\pi ^{2} + \\ln ^{2}5}} = \\frac{1.6094}{3.5299} = 0.4559$$
+
+$$\\omega _d = \\frac{\\pi }{0.15} = 20.944\\ \\mathrm{rad/s}, \\qquad \\omega _n = \\frac{20.944}{0.89001} = 23.532\\ \\mathrm{rad/s}$$
+
+$$t_{s} = 4/10.7296 = 0.3728\\ \\mathrm{s}$$
+
+*Trap:* treating the peak time as $\\pi /\\omega _n$ rather than
+$\\pi /\\omega _d$. That gives $\\omega _n = 20.944$ directly and a settling
+time of $4/9.5494 = 0.4189$ s — about 12% too long, and it is always among the
+choices.
+
+**A3 — Worked.** The exponent gives the pole: $s = -4$, $\\tau = 0.25$ s. The
+DC gain is the AREA under h(t):
+
+$$K = \\int_{0}^{\\infty } 12e^{-4t}dt = \\frac{12}{4} = 3$$
+
+$$H(s) = \\frac{12}{s+4}, \\qquad g(\\infty ) = H(0) = 3$$
+
+*Trap:* answering 12, the coefficient of the exponential. That is $K/\\tau$,
+the initial VALUE of the impulse response, and it is four times too large here.
+
+**A4 — Worked.** The magnitude peak sits at the damped RESONANT frequency:
+
+$$\\omega _r = \\omega _n\\sqrt{1 - 2\\zeta ^{2}} = 20\\sqrt{1 - 0.18} = 18.111\\ \\mathrm{rad/s}$$
+
+$$M_{r} = \\frac{1}{2\\zeta \\sqrt{1-\\zeta ^{2}}} = 1.747$$
+
+*Trap:* answering $\\omega _d = 19.078$ rad/s, the frequency the TIME response
+rings at. The two differ by about 5% here and by more as damping rises; above
+$\\zeta = 0.707$ the resonant peak disappears entirely while $\\omega _d$
+still exists.
+
+**A5 — Worked.** The peak ratio is $e^{-\\delta }$ where $\\delta$ is the
+logarithmic decrement:
+
+$$\\delta = \\ln \\frac{1}{0.1386} = 1.976 = \\frac{2\\pi \\zeta }{\\sqrt{1-\\zeta ^{2}}}$$
+
+$$\\zeta = \\frac{\\delta }{\\sqrt{4\\pi ^{2} + \\delta ^{2}}} = \\frac{1.976}{6.5866} = 0.300$$
+
+*Trap:* treating the peak ratio as the overshoot and reading $\\zeta$ from the
+overshoot formula, which gives $\\zeta = 0.5325$. The overshoot compares the
+first peak with the FINAL VALUE; the decrement compares one peak with the NEXT
+peak, and the two differ by a factor of two in the exponent.
+
+**A6 — Worked.** For $\\zeta > 1$ the poles are real:
+
+$$p_{1,2} = -\\omega _n\\left(\\zeta \\mp \\sqrt{\\zeta ^{2}-1}\\right) = -20\\left(2 \\mp \\sqrt{3}\\right)$$
+
+$$p_{1} = -5.359, \\qquad p_{2} = -74.641, \\qquad \\tau _{\\text{dom}} = 1/5.359 = 0.1866\\ \\mathrm{s}$$
+
+*Trap:* reporting $\\tau = 1/\\omega _n = 0.05$ s. The natural frequency is a
+parameter of the standard form, not a pole location, and for an overdamped
+system neither pole is at $-\\omega _n$. A response built on 0.05 s would be
+nearly four times too fast.
+
+**A7 — Worked.** Read the standard form off the coefficients:
+
+$$\\omega _n = \\sqrt{16} = 4\\ \\mathrm{rad/s}, \\qquad \\zeta = \\frac{4}{2\\times 4} = 0.5, \\qquad H(0) = \\frac{32}{16} = 2$$
+
+$$M_{p} = e^{-\\pi (0.5)/\\sqrt{0.75}} = 16.30\\%, \\qquad t_{p} = \\frac{\\pi }{4\\sqrt{0.75}} = 0.9069\\ \\mathrm{s}$$
+
+so the response peaks at $2 \\times 1.1630 = 2.326$ and settles back to 2.
+
+*Trap:* reporting the peak VALUE 2.326 when the question asks for percent
+overshoot, or vice versa. Percent overshoot is measured against the final value
+and is 16.30% regardless of the DC gain; the peak value depends on both.`,
+        examTip: 'When a record is given instead of a transfer function, read the overshoot and the ring period first. Those two measurements invert cleanly to zeta and omega-n because neither one contaminates the other, and every remaining specification follows from that pair.',
+      },
+      {
+        id: 'td-problem-set-b',
+        title: '11. Practice Problems B: Theorems, Convolution and Tracking',
+        content: `## 11.1 Practice Problems B
+
+**B1.** Find $y(\\infty )$ for $Y(s) = 20/[s(s+4)(s+5)]$, after checking that
+the theorem applies.
+
+**B2.** Find $y(0^{+})$ and $y(\\infty )$ for
+$Y(s) = (3s+6)/(s^{2}+7s+12)$.
+
+**B3.** Apply the final-value theorem to $Y(s) = 8/(s^{2}+16)$ and state
+whether the result is meaningful.
+
+**B4.** Convolve a 3-second-wide unit rectangle with $h(t) = 2e^{-t}u(t)$.
+Find y(1), the peak value, and y(5).
+
+**B5.** A unity feedback loop has $G(s) = 10/[(s+1)(s+5)]$ and is driven by
+$r(t) = 6u(t)$. Find the steady-state error and the steady-state output.
+
+**B6.** A unity feedback loop has $G(s) = 50/[s^{2}(s+10)]$ and is driven by
+$r(t) = 3t^{2}$. Find the steady-state error.
+
+**B7.** Find $x(t) * 3\\delta (t-2)$ for $x(t) = 4e^{-t}u(t)$, and state the
+total area of the result.
+
+## 11.2 Worked Answers, Problem Set B
+
+**B1 — Worked.** $sY(s) = 20/[(s+4)(s+5)]$ has poles at $-4$ and $-5$, both in
+the open left half-plane, so the theorem applies:
+
+$$y(\\infty ) = \\frac{20}{(4)(5)} = \\frac{20}{20} = 1$$
+
+*Trap:* forgetting to multiply by s and evaluating Y(0) itself, which is
+infinite because of the pole at the origin. The factor of s is what cancels the
+step's own pole.
+
+**B2 — Worked.** The numerator degree is one below the denominator degree, so
+the initial value is the ratio of leading coefficients:
+
+$$y(0^{+}) = \\lim_{s\\to \\infty } \\frac{3s^{2}+6s}{s^{2}+7s+12} = 3$$
+
+$$y(\\infty ) = \\lim_{s\\to 0} \\frac{3s^{2}+6s}{s^{2}+7s+12} = 0$$
+
+Inverting confirms it: the residues at $-3$ and $-4$ are $-3$ and $6$, giving
+$y(t) = -3e^{-3t} + 6e^{-4t}$, whose value at zero is 3.
+
+*Trap:* evaluating Y(0) = 6/12 = 0.5 and calling it the initial value. That is
+neither the initial nor the final value; it is just Y at s = 0, a number with
+no time-domain meaning on its own.
+
+**B3 — Worked.** The theorem would give
+
+$$\\lim_{s\\to 0} \\frac{8s}{s^{2}+16} = 0$$
+
+but $sY(s)$ has poles at $\\pm j4$, ON the imaginary axis, so the condition
+fails and the result is meaningless. The true signal is
+$y(t) = 2\\sin 4t$, which never settles.
+
+*Trap:* reporting 0. It is arithmetically correct as a limit of $sY(s)$ and
+completely wrong as a statement about y(t). The correct answer is that no final
+value exists.
+
+**B4 — Worked.** While the pulse is still arriving, $0 \\le t < 3$:
+
+$$y(t) = \\int_{0}^{t} 2e^{-(t-\\lambda )}d\\lambda = 2\\left(1 - e^{-t}\\right)$$
+
+$$y(1) = 2\\left(1 - e^{-1}\\right) = 1.2642$$
+
+The maximum is at the instant the pulse ends, t = 3:
+
+$$y_{\\max} = 2\\left(1 - e^{-3}\\right) = 1.9004$$
+
+After that the input is gone and the stored response decays:
+
+$$y(t) = 2\\left(e^{3}-1\\right)e^{-t}, \\qquad y(5) = 0.2572$$
+
+*Trap:* answering 2 for the peak, on the reasoning that the DC gain is 2 and
+the pulse height is 1. The pulse ends before the response has finished
+climbing; 3 s is only three time constants, so 95% of the way there, and
+1.9004 is what actually appears.
+
+**B5 — Worked.** This is a type-0 loop:
+
+$$K_{p} = \\frac{10}{(1)(5)} = 2, \\qquad e_{ss} = \\frac{6}{1+2} = 2$$
+
+$$y_{ss} = 6 - 2 = 4$$
+
+*Trap:* answering $1/(1+K_p) = 0.3333$ and ignoring the input amplitude. The
+error formula is written for a UNIT step; a step of size 6 produces six times
+the error.
+
+**B6 — Worked.** Two poles at the origin make this type 2:
+
+$$K_{a} = \\lim_{s\\to 0} \\frac{50}{s+10} = \\frac{50}{10} = 5$$
+
+The reference $3t^{2}$ equals $6$ standard parabolas $t^{2}/2$, so
+
+$$e_{ss} = \\frac{6}{5} = 1.2$$
+
+*Trap:* using $3/5 = 0.6$ by taking the coefficient 3 straight to the numerator
+and forgetting that the standard parabola carries the factor of one half.
+Exactly half the right answer, and always offered.
+
+**B7 — Worked.** The impulse scales and shifts, and nothing else happens:
+
+$$x(t) * 3\\delta (t-2) = 3x(t-2) = 12e^{-(t-2)}u(t-2)$$
+
+The area of the result is the product of the two input areas:
+
+$$\\left(\\int_{0}^{\\infty } 4e^{-t}dt\\right)(3) = 4 \\times 3 = 12$$
+
+*Trap:* shifting in the wrong direction and writing $u(t+2)$, which would make
+the system respond two seconds before the impulse arrived. The argument of the
+delta is $t - 2$, so the response is delayed BY 2, and every shifted signal
+must keep its step function shifted with it.`,
+        examTip: 'For steady-state error questions, write down the type, the relevant error constant, and the input amplitude as three separate numbers before combining them. The formulas are short enough that every mistake comes from mixing up which amplitude belongs where, and separating them on paper eliminates that class of error.',
+        importantNote: 'A convolution with a shifted impulse produces a shifted signal, and the shifted unit step must travel with it. Writing 12 exp(-(t-2)) u(t) rather than u(t-2) makes the response begin at t = 0 with a value of 12 exp(2) = 88.7, which is both non-causal and enormous.',
       },
     ],
     keyTakeaways: [
@@ -843,6 +1780,852 @@ into the exam and half the qualitative frequency-response questions answer
 themselves from the plot alone.`,
         examTip: 'For any sinusoidal steady-state question, resist solving anything in the time domain: substitute s = jw, convert one complex number to polar form, and write the answer. The entire method is |H| times the amplitude and angle-of-H added to the phase — two operations, no integrals, no transients.',
         importantNote: 'The feedback formula T = G/(1+GH) assumes the loop sign is NEGATIVE at the summing junction. If the diagram shows positive feedback, the denominator becomes 1 - GH, and a loop that was stable can stop being so. Check the sign at the junction before reducing — it is the single most consequential symbol in the diagram.',
+      },
+      {
+        id: 'tf-from-ode',
+        title: '5. Building H(s) from the Differential Equation',
+        content: `## 5.1 One transform rule carries the whole derivation
+
+A transfer function is not a definition handed down from above. It is what a
+differential equation becomes once the Laplace transform has been applied to
+every term and the initial energy has been declared zero. The rule that does
+the work converts differentiation into multiplication by $s$:
+
+$$\\mathcal{L}\\{y'(t)\\} = sY(s) - y(0^-)$$
+
+$$\\mathcal{L}\\{y''(t)\\} = s^{2}Y(s) - sy(0^-) - y'(0^-)$$
+
+$$\\mathcal{L}\\{y'''(t)\\} = s^{3}Y(s) - s^{2}y(0^-) - sy'(0^-) - y''(0^-)$$
+
+and integration into division by it:
+
+$$\\int_{0}^{t} y(\\lambda )\\,d\\lambda \\;\\longleftrightarrow\\; \\frac{Y(s)}{s}$$
+
+The transform is evaluated at $0^-$, an instant BEFORE the input is applied, so
+that a jump or an impulse landing exactly at the origin is counted inside the
+transform rather than inside the initial condition. That choice is what makes
+the impulse response come out right.
+
+Apply the rules to a general n-th order model with input x and output y,
+
+$$a_{n}y^{(n)} + \\dots + a_{1}y' + a_{0}y = b_{m}x^{(m)} + \\dots + b_{1}x' + b_{0}x$$
+
+and set every initial condition to zero. Each derivative becomes its own power
+of $s$, both sides collect into polynomials, and the ratio falls out:
+
+$$H(s) = \\frac{Y(s)}{X(s)} = \\frac{b_{m}s^{m} + \\dots + b_{1}s + b_{0}}{a_{n}s^{n} + \\dots + a_{1}s + a_{0}}$$
+
+Read that identity carefully, because two exam traps live in it. First, the
+coefficients of the transfer function ARE the coefficients of the differential
+equation, in the same order — no rearrangement, no sign changes. Second, the
+zero-initial-condition assumption is not an approximation. It is the price of
+admission: a transfer function describes the system's response to an INPUT, and
+stored energy is not an input. Initial conditions come back later as extra
+terms added to the transform of the output, never as changes to H(s).
+
+| Time-domain operation | s-domain equivalent | What it costs |
+|---|---|---|
+| $y'(t)$ | $sY(s) - y(0^-)$ | one initial condition |
+| $y''(t)$ | $s^{2}Y(s) - sy(0^-) - y'(0^-)$ | two initial conditions |
+| $\\int_{0}^{t}y\\,d\\lambda$ | $Y(s)/s$ | nothing |
+| $y(t - T)u(t - T)$ | $e^{-sT}Y(s)$ | H(s) stops being rational |
+| $e^{-at}y(t)$ | $Y(s + a)$ | shifts every pole left by a |
+
+## 5.2 Worked Example: a series RLC loop, from KVL to H(s)
+
+**Given** a series loop driven by $v_{in}$, with R = 40 ohm, L = 50 mH and
+C = 20 microfarad, output taken across the capacitor. Find H(s), the natural
+frequency, the damping ratio, and the shape of the step response.
+
+**Step 1 — write KVL in the time domain.** The same current flows through all
+three elements, and the capacitor voltage is the output:
+
+$$L\\frac{di}{dt} + Ri + v_{C} = v_{in}, \\qquad i = C\\frac{dv_{C}}{dt}$$
+
+Substituting the second into the first gives a single second-order equation in
+the output alone:
+
+$$LC\\,v_{C}'' + RC\\,v_{C}' + v_{C} = v_{in}$$
+
+**Step 2 — transform with zero stored energy.** No initial capacitor voltage,
+no initial inductor current, so every $y(0^-)$ term vanishes:
+
+$$(LCs^{2} + RCs + 1)V_{C}(s) = V_{in}(s)$$
+
+$$H(s) = \\frac{1}{LCs^{2} + RCs + 1} = \\frac{1/(LC)}{s^{2} + (R/L)s + 1/(LC)}$$
+
+**Step 3 — put in the numbers.** With $LC = 0.05 \\times 20\\times 10^{-6} = 10^{-6}$ and $R/L = 800$:
+
+$$H(s) = \\frac{10^{6}}{s^{2} + 800s + 10^{6}}$$
+
+**Step 4 — read the standard form off the coefficients.** Matching against
+$s^{2} + 2\\zeta \\omega _n s + \\omega _n^{2}$:
+
+$$\\omega _n = \\frac{1}{\\sqrt{LC}} = 1000\\ \\mathrm{rad/s}, \\qquad \\zeta = \\frac{R}{2}\\sqrt{\\frac{C}{L}} = 20\\times 0.02 = 0.4$$
+
+The second expression is worth keeping: it says damping is a property of the
+resistance measured against the loop's characteristic impedance $\\sqrt{L/C}$,
+which here is 50 ohm. A 40 ohm resistor against a 50 ohm characteristic
+impedance is a lightly damped loop, and it will ring.
+
+**Step 5 — the transient numbers follow.** The damped frequency is
+$\\omega _d = 1000\\sqrt{0.84} = 916.5$ rad/s, so
+
+$$M_p = e^{-\\pi \\zeta /\\sqrt{1-\\zeta ^{2}}} = 25.38\\%, \\qquad t_p = \\frac{\\pi }{\\omega _d} = 3.428\\ \\mathrm{ms}$$
+
+![Step response of the series RLC loop H(s) = 1e6/(s^2 + 800s + 1e6), computed by marching the state equations rather than by evaluating the closed form. The capacitor overshoots to 1.2538 times the input at 3.428 ms and is inside a 2 percent band for good by 10.00 ms.](/courses/fe-ee/figures/lin2-tf-rlc-step.svg)
+
+The plotted curve was produced by integrating the state equations numerically,
+NOT by evaluating the closed form — and the two agree to nine decimal places,
+which is the check worth running whenever a transform result matters.
+
+## 5.3 Worked Example: a mechanical model with the same structure
+
+**Given** the equation of motion $3y'' + 12y' + 75y = 150x$, where x is an
+applied force and y a displacement. Find H(s), the DC gain, and the damping.
+
+Transform with zero initial displacement and zero initial velocity:
+
+$$(3s^{2} + 12s + 75)Y(s) = 150X(s) \\;\\Longrightarrow\\; H(s) = \\frac{150}{3s^{2} + 12s + 75}$$
+
+Divide through by the leading coefficient so the standard form is visible:
+
+$$H(s) = \\frac{50}{s^{2} + 4s + 25}$$
+
+$$\\omega _n = \\sqrt{25} = 5\\ \\mathrm{rad/s}, \\qquad 2\\zeta \\omega _n = 4 \\;\\Longrightarrow\\; \\zeta = \\frac{4}{10} = 0.4$$
+
+$$H(0) = \\frac{50}{25} = 2$$
+
+so a unit step of force settles at a displacement of 2, arriving there with the
+same 25.38% overshoot as the RLC loop because the damping ratio is the same
+number. That is the entire payoff of the standard form: two systems built from
+different physics, sharing one $\\zeta$, produce the same SHAPE, and only the
+time axis and the vertical scale differ.
+
+## 5.4 Worked Example: an op-amp stage, in one line
+
+**Given** an inverting amplifier with $R_1 = 10$ kilohm at the input and a
+100 kilohm resistor in parallel with a 1 nanofarad capacitor in the feedback
+path. Find H(s).
+
+At the virtual ground the input current is $V_{in}/R_1$, and it must all flow
+into the feedback impedance, so
+
+$$H(s) = -\\frac{Z_f(s)}{R_1}, \\qquad Z_f(s) = \\frac{R_2}{1 + R_2Cs}$$
+
+$$H(s) = -\\frac{R_2/R_1}{1 + R_2Cs} = \\frac{-10}{1 + 10^{-4}s}$$
+
+The DC gain is $-100/10 = -10$, and the single pole sits at
+$s = -1/(R_2C)$, which is $-10^{4}$ rad/s, or 1591.5 Hz. Note what the
+capacitor did NOT do: it did not change the DC gain, which is still set by the
+resistor ratio alone. It only decided where the gain starts falling.
+
+## 5.5 Worked Example: where nonzero initial conditions actually go
+
+**Given** $y' + 5y = 2x$ with $y(0^-) = 3$, driven by a unit step. Find y(t).
+
+Transform WITHOUT discarding the initial condition:
+
+$$sY(s) - 3 + 5Y(s) = \\frac{2}{s}$$
+
+$$Y(s) = \\frac{3}{s + 5} + \\frac{2}{s(s + 5)} = \\frac{0.4}{s} + \\frac{2.6}{s + 5}$$
+
+$$y(t) = 0.4 + 2.6e^{-5t}$$
+
+Three facts fall out and all three are worth carrying. The value at t = 0 is
+$0.4 + 2.6 = 3$, the initial condition, recovered. The value as
+$t \\to \\infty$ is 0.4, which is exactly $H(0) = 2/5$ — the stored energy
+changed where the response STARTED and not where it ended. And the exponent is
+$-5$ whichever way the problem is posed, because the pole belongs to the
+system, not to the excitation. Marching the original differential equation
+numerically from y = 3 reproduces this expression to nine decimal places.
+
+## 5.6 The check that catches transcription errors
+
+Before using any H(s) you derived, run three cheap tests.
+
+- **Order**: the denominator degree must equal the number of independent
+  energy-storage elements. Two capacitors that are in parallel count once.
+- **DC gain**: set s = 0 and compare against what the circuit does at DC, where
+  capacitors are open and inductors are short. For the RLC loop, DC current is
+  zero, so the capacitor sees the whole source, and indeed $H(0) = 1$.
+- **High-frequency behaviour**: as $s \\to \\infty$ the transfer function must
+  fall off as $s^{m-n}$. For the RLC loop that is $s^{-2}$, or 40 dB per
+  decade, which agrees with a capacitor whose impedance is collapsing while the
+  inductor's grows.
+
+A derivation that passes all three is almost never wrong; one that fails any of
+them is always wrong.`,
+        examTip: 'Write the differential equation with the OUTPUT terms on the left and the INPUT terms on the right before you transform anything. Every sign error I have seen on this topic comes from transforming a rearranged equation. Once the layout is fixed, the transfer function is a ratio of the two coefficient lists, and the exam question is already half answered.',
+        importantNote: 'A transfer function assumes zero initial conditions by construction. If a problem gives you a nonzero y(0), you cannot fold it into H(s) — transform the differential equation with the initial-condition terms kept, then solve for Y(s). The pole locations are unchanged; only the residues move.',
+      },
+      {
+        id: 'tf-pole-zero-roles',
+        title: '6. What Poles Do, What Zeros Do',
+        content: `## 6.1 The pole sets the exponent, the zero sets the coefficient
+
+Expand any strictly proper transfer function with distinct poles over its
+poles, and the time response is a sum of exponentials:
+
+$$H(s) = \\sum_{k} \\frac{A_{k}}{s - p_{k}} \\;\\Longrightarrow\\; h(t) = \\sum_{k} A_{k}e^{p_{k}t}u(t)$$
+
+The pole $p_k$ decides the SHAPE of its own term — how fast it decays, whether
+it oscillates, whether it grows. The residue $A_k$ decides only how much of
+that term appears. Zeros never appear in the exponents at all. They appear in
+the residues, where they decide how heavily each pole is weighted, and they can
+weight a pole all the way down to nothing.
+
+$$A_{k} = \\lim_{s \\to p_{k}} (s - p_{k})H(s) = \\frac{K\\prod_{i}(p_{k} - z_{i})}{\\prod_{j \\ne k}(p_{k} - p_{j})}$$
+
+That formula is the cover-up method written out, and it also explains pole-zero
+cancellation in one glance: if a zero sits ON a pole, the numerator product
+contains a factor of zero and the residue vanishes.
+
+## 6.2 Worked Example: residues, and which pole you can afford to drop
+
+**Given** $H(s) = 20/[(s+2)(s+10)]$, driven by a unit step. Find the response,
+identify the dominant pole, and measure the error of dropping the other one.
+
+The transform of the output has three poles, one contributed by the step:
+
+$$Y(s) = \\frac{20}{s(s+2)(s+10)} = \\frac{A_{0}}{s} + \\frac{A_{1}}{s+2} + \\frac{A_{2}}{s+10}$$
+
+Covering up each factor in turn,
+
+$$A_{0} = \\frac{20}{(2)(10)} = 1, \\qquad A_{1} = \\frac{20}{(-2)(8)} = -1.25, \\qquad A_{2} = \\frac{20}{(-10)(-8)} = 0.25$$
+
+$$y(t) = 1 - 1.25e^{-2t} + 0.25e^{-10t}$$
+
+Check it at the origin: $1 - 1.25 + 0.25 = 0$, as a second-order system with
+no zero must start. The pole at $-2$ owns a residue five times larger than the
+one at $-10$ AND decays five times more slowly, so it is dominant twice over.
+
+**The reduced model.** Drop the fast pole but keep the DC gain, and the
+first-order stand-in is $2/(s+2)$, whose step response is $1 - e^{-2t}$. The
+difference between the two is
+
+$$\\Delta (t) = 0.25\\left(e^{-10t} - e^{-2t}\\right)$$
+
+Set its derivative to zero: $10e^{-10t} = 2e^{-2t}$, so $e^{8t} = 5$ and the
+worst moment is $t = (\\ln 5)/8 = 0.2012$ s. Substituting back,
+
+$$\\lvert \\Delta \\rvert _{\\max} = 5^{-1.25} = 0.1337$$
+
+![Exact step response of 20/((s+2)(s+10)) against the reduced first-order model 2/(s+2). The two agree at the start and the finish, and the gap peaks at 0.1337 of final value at t = 0.201 s, showing that a 5 to 1 pole separation is the marginal case rather than a comfortable one.](/courses/fe-ee/figures/lin2-tf-dominant-pole.svg)
+
+Thirteen percent of full scale is a large error to hide behind the word
+"dominant". The usual rule of thumb asks for a separation of five to ten before
+truncating; this example shows why the bottom of that range is a warning and
+not a licence. At a separation of ten the same calculation gives an error under
+seven percent, and the approximation starts to earn its keep.
+
+## 6.3 Worked Example: a right-half-plane zero and the wrong-way step
+
+**Given** three systems that share the poles $-1$ and $-2$ and the DC gain 1:
+
+$$H_{a}(s) = \\frac{2}{(s+1)(s+2)}, \\quad H_{b}(s) = \\frac{s+2}{(s+1)(s+2)}, \\quad H_{c}(s) = \\frac{2-s}{(s+1)(s+2)}$$
+
+Find each step response and explain the difference.
+
+For $H_c$, the residues of $Y(s) = (2-s)/[s(s+1)(s+2)]$ are
+
+$$A_{0} = \\frac{2}{(1)(2)} = 1, \\qquad A_{1} = \\frac{3}{(-1)(1)} = -3, \\qquad A_{2} = \\frac{4}{(-2)(-1)} = 2$$
+
+$$y_{c}(t) = 1 - 3e^{-t} + 2e^{-2t}$$
+
+The same procedure gives $y_a(t) = 1 - 2e^{-t} + e^{-2t}$ and, because the
+zero at $-2$ cancels the pole at $-2$ outright, $y_b(t) = 1 - e^{-t}$.
+
+Now differentiate $y_c$ at the origin:
+
+$$y_{c}'(0) = 3 - 4 = -1 < 0$$
+
+The output moves DOWN first. Its minimum is where $3e^{-t} = 4e^{-2t}$, that
+is $e^{t} = 4/3$, giving
+
+$$t_{\\min} = \\ln \\frac{4}{3} = 0.2877\\ \\mathrm{s}, \\qquad y_{c}(t_{\\min}) = 1 - 3\\left(\\frac{3}{4}\\right) + 2\\left(\\frac{9}{16}\\right) = -0.125$$
+
+![Step responses of three systems that share poles at -1 and -2 and a DC gain of 1, differing only in their zero. With no zero the response leaves the origin with zero slope; with a zero at -2 the pole cancels and the rise is a clean exponential; with a zero at +2 the output first dips to -0.125 at 0.288 s before recovering.](/courses/fe-ee/figures/lin2-tf-zero-side.svg)
+
+An undershoot of 12.5% of final value, from a system whose poles are perfectly
+respectable. This is the **non-minimum-phase** signature, and on the exam the
+phrase "initial undershoot" or "the output moves the wrong way first" always
+points at a zero in the right half-plane. It never points at a pole: poles in
+the right half-plane make responses GROW, not reverse.
+
+The physical reading is that two paths race to the output and the fast one has
+the wrong sign. A hydro turbine that must first lower its head to raise its
+flow, and a boost converter whose inductor must be charged before it can
+deliver, both behave exactly like $H_c$.
+
+## 6.4 Worked Example: the zero at the origin
+
+**Given** an RC high-pass section with R = 10 kilohm and C = 1 microfarad,
+output across the resistor. Find H(s) and its DC gain.
+
+Voltage division between the capacitor and the resistor gives
+
+$$H(s) = \\frac{R}{R + 1/(Cs)} = \\frac{RCs}{RCs + 1} = \\frac{0.01s}{0.01s + 1}$$
+
+$$H(0) = 0, \\qquad \\omega _c = \\frac{1}{RC} = 100\\ \\mathrm{rad/s} = 15.92\\ \\mathrm{Hz}$$
+
+A zero at s = 0 is a hard block on DC, and it is the fingerprint of every
+AC-coupled path, every differentiator and every high-pass filter in the exam's
+vocabulary. Notice that the DC gain is genuinely zero, not merely small — no
+amount of gain elsewhere in the chain recovers it.
+
+## 6.5 The rules worth memorising about zeros
+
+| Zero location | Effect on the step response | Effect on stability |
+|---|---|---|
+| Far into the LHP | almost none; the poles run the show | none |
+| Near a dominant pole, LHP | faster rise, more overshoot | none |
+| Exactly on a pole | that pole's residue goes to zero | none, but see below |
+| At the origin | DC gain is zero; response returns to zero | none |
+| In the RHP | initial undershoot, then recovery | none |
+
+Every row of the right-hand column says the same thing, and it is the single
+most useful fact about zeros: **a zero cannot destabilise a system.** Stability
+is a statement about the denominator, and zeros live in the numerator.
+
+The one dangerous row is the third. Cancelling a pole with a zero is legal
+algebra and unreliable engineering. If the cancelled pole is in the right half
+plane, the cancellation is exact only if the two match to infinite precision;
+component tolerance leaves a sliver of the unstable pole behind, its residue is
+tiny, and it grows anyway. The transfer function of the cancelled system looks
+stable and the hardware is not. Cancel LHP poles freely; never cancel an RHP
+one.`,
+        examTip: 'To find a residue fast, cover up the factor belonging to that pole and evaluate everything that is left at the pole. The arithmetic is short enough to do in your head if you keep the signs straight: at s = -2, the factor (s + 10) becomes 8, and the factor s becomes -2. Writing those two numbers down before dividing prevents most sign errors.',
+        importantNote: 'A zero shapes the response but cannot destabilise it, and a pole controls stability but is unaffected by any zero. Answer choices that claim a right-half-plane ZERO makes a system unstable are always wrong; the correct symptom is initial undershoot with a bounded, settling response.',
+      },
+      {
+        id: 'tf-char-eq',
+        title: '7. The Characteristic Equation and Second-Order Standard Form',
+        content: `## 7.1 The characteristic equation is where the dynamics live
+
+Set the denominator of a closed transfer function to zero and you have the
+**characteristic equation**:
+
+$$D(s) = a_{n}s^{n} + \\dots + a_{1}s + a_{0} = 0$$
+
+Its roots are the poles, its roots alone decide stability, and it is the object
+the exam manipulates when it asks about gain ranges, Routh arrays, or root
+locations. For a feedback loop with forward path G and feedback path H, the
+characteristic equation is
+
+$$1 + G(s)H(s) = 0$$
+
+which is the same statement — the denominator of $G/(1+GH)$ set to zero — but
+in the form the diagram hands you.
+
+## 7.2 Extracting zeta and omega-n from two coefficients
+
+For any second-order denominator, matching against the standard form
+
+$$s^{2} + 2\\zeta \\omega _n s + \\omega _n^{2} = 0$$
+
+gives both parameters immediately:
+
+$$\\omega _n = \\sqrt{a_{0}}, \\qquad \\zeta = \\frac{a_{1}}{2\\sqrt{a_{0}}}$$
+
+provided the leading coefficient has been divided out first. The roots are
+
+$$s = -\\zeta \\omega _n \\pm \\omega _n\\sqrt{\\zeta ^{2} - 1}$$
+
+which is real and distinct for $\\zeta > 1$, real and repeated at
+$\\zeta = 1$, and a complex conjugate pair for $\\zeta < 1$.
+
+## 7.3 Worked Example: reading a second-order system off its coefficients
+
+**Given** $H(s) = 18/(s^{2} + 3s + 9)$. Find $\\omega _n$, $\\zeta$, the DC
+gain, the pole locations, and the overshoot.
+
+$$\\omega _n = \\sqrt{9} = 3\\ \\mathrm{rad/s}, \\qquad \\zeta = \\frac{3}{2\\times 3} = 0.5$$
+
+$$H(0) = \\frac{18}{9} = 2$$
+
+$$\\omega _d = 3\\sqrt{1 - 0.25} = 2.598\\ \\mathrm{rad/s}, \\qquad s = -1.5 \\pm j2.598$$
+
+$$M_p = e^{-\\pi (0.5)/\\sqrt{0.75}} = 16.30\\%$$
+
+so a unit step climbs to $2 \\times 1.1630 = 2.326$ before settling back to 2.
+Two coefficients produced five answers, and no differential equation was
+solved.
+
+Note carefully what the numerator did and did not do. It set the DC gain to 2.
+It did not touch $\\omega _n$, $\\zeta$, the poles, the overshoot PERCENTAGE,
+or the settling time. Answer choices built on "$\\omega _n = \\sqrt{18}$" exist
+on every version of this question.
+
+## 7.4 The pole geometry that makes the standard form memorable
+
+Write the complex pole pair in polar terms:
+
+$$p = -\\zeta \\omega _n \\pm j\\omega _n\\sqrt{1 - \\zeta ^{2}}, \\qquad \\lvert p \\rvert = \\omega _n, \\qquad \\cos \\theta = \\zeta$$
+
+where $\\theta$ is measured from the negative real axis. So $\\omega _n$ is a
+RADIUS and $\\zeta$ is an ANGLE. Changing the damping ratio at fixed natural
+frequency slides the poles around a circle; changing the natural frequency at
+fixed damping slides them along a ray.
+
+![The s-plane geometry of a second-order pole pair at a natural frequency of 1000 rad/s. Poles for a damping ratio of 0.4 sit at -400 plus or minus j916.5, which is 66.42 degrees off the negative real axis; poles for 0.8 sit at -800 plus or minus j600, at 36.87 degrees. Both pairs lie on the same circle of radius 1000.](/courses/fe-ee/figures/lin2-tf-pole-geometry.svg)
+
+At $\\zeta = 0.4$ the real part is $0.4 \\times 1000 = 400$ and the imaginary
+part is $1000\\sqrt{0.84} = 916.5$, so the angle is
+$\\arccos 0.4 = 66.42$ degrees. At $\\zeta = 0.8$ the pole moves to
+$-800 \\pm j600$, a 3-4-5 triangle, and the angle closes to 36.87 degrees.
+The vertical distance from the real axis is always $\\omega _d$ and the
+horizontal distance from the imaginary axis is always $1/\\tau$ of the decay
+envelope, so a pole plot is a transient-response plot in disguise.
+
+## 7.5 Worked Example: Routh-Hurwitz without computing the roots
+
+**Given** the characteristic equation $s^{3} + 6s^{2} + 11s + K = 0$. For what
+gains K is the loop stable, and what happens at the boundary?
+
+Build the array from the coefficients, alternating rows:
+
+| Row | First column | Second column |
+|---|---|---|
+| $s^{3}$ | 1 | 11 |
+| $s^{2}$ | 6 | K |
+| $s^{1}$ | $(66 - K)/6$ | 0 |
+| $s^{0}$ | K | — |
+
+The $s^1$ entry is the usual cross-multiplication of the two rows above it,
+
+$$b_{1} = \\frac{(6)(11) - (1)(K)}{6} = \\frac{66 - K}{6}$$
+
+and the first column must not change sign. That requires $K > 0$ from the last row
+and $66 - K > 0$ from the third, so
+
+$$0 < K < 66$$
+
+At exactly $K = 66$ the $s^1$ entry vanishes, which is the signature of a pole
+pair sitting on the imaginary axis. Factor to see it:
+
+$$s^{3} + 6s^{2} + 11s + 66 = (s + 6)(s^{2} + 11)$$
+
+$$s = -6, \\qquad s = \\pm j\\sqrt{11} = \\pm j3.3166$$
+
+so at the boundary the loop oscillates forever at 3.3166 rad/s, or 0.5279 Hz.
+That frequency is not a by-product; it is the answer to the companion question
+"at what frequency does the system oscillate at the stability limit", and it is
+always read off the auxiliary polynomial formed from the row ABOVE the row of
+zeros.
+
+![The largest real part among the roots of s^3 + 6s^2 + 11s + K, swept over K from 0 to 120. It stays negative up to K = 66, touches zero exactly there, and is positive beyond, confirming the Routh boundary by a route that never builds an array.](/courses/fe-ee/figures/lin2-tf-routh-boundary.svg)
+
+The figure was produced by rooting the polynomial numerically at 2400 values of
+K, which is a completely different route to the same boundary. The two agree,
+which is the point: Routh is a shortcut to a fact that exists independently of
+it.
+
+## 7.6 Necessary conditions you can check in three seconds
+
+Before building any array, apply the cheap test. For a polynomial with a
+positive leading coefficient to have all its roots in the open left half-plane,
+
+- every coefficient must be present, and
+- every coefficient must be positive.
+
+A missing or negative coefficient is an immediate verdict of NOT STABLE, with
+no array required. The condition is necessary and not sufficient — a polynomial
+can pass it and still be unstable, which is exactly the case
+$s^{3} + 6s^{2} + 11s + 100$ where all four coefficients are positive but
+$66 - 100 < 0$. Use the quick test to eliminate answer choices, then build the
+array only if you must.
+
+| Order | Denominator | Stability condition |
+|---|---|---|
+| 1 | $s + a_{0}$ | $a_{0} > 0$ |
+| 2 | $s^{2} + a_{1}s + a_{0}$ | $a_{1} > 0$ and $a_{0} > 0$ |
+| 3 | $s^{3} + a_{2}s^{2} + a_{1}s + a_{0}$ | all positive AND $a_{2}a_{1} > a_{0}$ |
+| any | any | all coefficients present and positive, then Routh |
+
+The third row is the one worth memorising outright, because third-order
+characteristic equations are the standard vehicle for gain-range questions and
+the product condition $a_{2}a_{1} > a_{0}$ answers them in one line.`,
+        examTip: 'For a third-order characteristic equation the whole Routh array collapses to one inequality: the product of the two middle coefficients must exceed the product of the outer two. For s^3 + 6s^2 + 11s + K that is 6 times 11 > K times 1, giving K < 66 immediately. Build the full array only when the polynomial is fourth order or higher.',
+        importantNote: 'The natural frequency is the square root of the CONSTANT term of the monic denominator, never of the numerator. And the damping ratio needs the factor of two: for s^2 + 3s + 9, zeta = 3/(2 times 3) = 0.5, not 3/3 = 1. Dropping that factor turns an underdamped system into a critically damped one and every downstream answer changes.',
+      },
+      {
+        id: 'tf-combining',
+        title: '8. Combining Blocks, and What Feedback Buys',
+        content: `## 8.1 The three rules, applied in order
+
+Section 4 listed the cascade, parallel and feedback identities. Applying them
+in the right ORDER is what makes a messy diagram collapse:
+
+$$H_{\\text{cascade}} = H_{1}H_{2}, \\qquad H_{\\text{parallel}} = H_{1} + H_{2}, \\qquad T = \\frac{G}{1 + GH}$$
+
+Work from the innermost loop outward. Reduce every series and parallel group
+inside a loop before applying the feedback rule to that loop, then treat the
+result as a single block in whatever encloses it. Moving a summing junction or
+a pick-off point is legal but costs a compensating block, and on a timed exam
+it is nearly always faster to find the innermost loop than to rearrange.
+
+A caution about the cascade rule: $H_1H_2$ is correct only when the second
+stage does not LOAD the first. Two passive RC sections wired directly together
+do load each other, and their combined transfer function is not the product of
+the two individual ones. Insert a buffer, or an op-amp stage, and the product
+becomes exact. Exam diagrams drawn as blocks are buffered by convention;
+exam diagrams drawn as circuits are not.
+
+## 8.2 Worked Example: what unity feedback does to gain and bandwidth
+
+**Given** $G(s) = 20/(s+2)$ inside a negative feedback loop whose feedback path
+is the constant $H = 0.5$. Compare the open-loop and closed-loop DC gain and
+bandwidth.
+
+$$T(s) = \\frac{G}{1 + GH} = \\frac{20/(s+2)}{1 + 10/(s+2)} = \\frac{20}{s + 12}$$
+
+The denominator picked up the numerator of the loop gain: $s + 2 + 10$. That
+is the whole mechanism — negative feedback ADDS the loop-gain numerator to the
+open-loop denominator, which for a first-order plant means it pushes the pole
+further left.
+
+$$T(0) = \\frac{20}{12} = 1.667, \\qquad \\omega _{c,\\text{closed}} = 12\\ \\mathrm{rad/s}$$
+
+against an open-loop $G(0) = 20/2 = 10$ with a corner at 2 rad/s. Gain fell by
+a factor of six and bandwidth rose by the same factor:
+
+$$10 \\times 2 = 20, \\qquad 1.6667 \\times 12 = 20$$
+
+![Magnitude of the open-loop transfer function 20/(s+2) and of the closed loop 20/(s+12), read off a frequency sweep. DC gain drops from 10 to 1.667 while the corner frequency rises from 2 to 12 rad/s, so the product of gain and bandwidth is 20 rad/s on both curves.](/courses/fe-ee/figures/lin2-tf-gain-bandwidth.svg)
+
+The **gain-bandwidth product** is conserved because both quantities are fixed
+by the same numerator constant. Feedback does not create gain; it trades gain
+you already had for speed, linearity and insensitivity to the forward path. The
+half-power point on each curve, marked on the figure, is where the magnitude
+has fallen by a factor of $\\sqrt{2}$ from its DC value, and it lands exactly
+on the pole frequency in both cases.
+
+## 8.3 Worked Example: closed-loop gain approaches one over the feedback
+
+**Given** $G(s) = 100/(s+5)$ with a feedback path $H = 0.2$. Find the
+closed-loop DC gain and compare it with $1/H$.
+
+$$T(s) = \\frac{100/(s+5)}{1 + 20/(s+5)} = \\frac{100}{s + 25}, \\qquad T(0) = \\frac{100}{25} = 4$$
+
+The ideal-feedback answer is $1/H = 5$. The actual answer is smaller, and the
+shortfall is entirely explained by the finite loop gain at DC:
+
+$$L(0) = G(0)H = 20 \\times 0.2 = 4, \\qquad T(0) = \\frac{1}{H}\\cdot \\frac{L}{1+L} = 5 \\times \\frac{4}{5} = 4$$
+
+With a loop gain of 4 the closed-loop gain lands 20% below the ideal. Raise the
+forward gain tenfold, to $1000/(s+5)$, and the loop gain becomes 40, so
+$T(0) = 5 \\times 40/41 = 4.878$ — now within 2.5% of $1/H$. That is the whole
+argument for high open-loop gain: it is
+not that the gain is useful in itself, it is that a large L makes $L/(1+L)$
+indistinguishable from 1 and hands control of the closed-loop gain to the
+feedback network, which is usually two resistors and therefore far more stable
+than the amplifier.
+
+## 8.4 Worked Example: a buffered cascade, and its repeated pole
+
+**Given** two identical buffered stages, each $1/(s+1)$. Find the combined
+transfer function and its step response.
+
+$$H(s) = \\frac{1}{(s+1)^{2}}, \\qquad Y(s) = \\frac{1}{s(s+1)^{2}}$$
+
+The repeated pole needs the two-term expansion:
+
+$$Y(s) = \\frac{1}{s} - \\frac{1}{s+1} - \\frac{1}{(s+1)^{2}}$$
+
+$$y(t) = 1 - e^{-t} - te^{-t} = 1 - (1 + t)e^{-t}$$
+
+At t = 1 s the output is $1 - 2e^{-1} = 0.2642$, whereas a SINGLE stage would
+already be at $1 - e^{-1} = 0.6321$. Cascading did not merely halve the speed;
+it changed the shape, giving the response a zero initial slope that the single
+stage does not have. Every extra buffered stage adds another factor of
+$te^{-t}$ and another decade of eventual roll-off, and the s-shaped start
+becomes more pronounced.
+
+## 8.5 Worked Example: the sign at the summing junction decides everything
+
+**Given** $G(s) = 4/(s+3)$ in a unity loop. Compare the negative-feedback and
+positive-feedback closures.
+
+$$T_{-}(s) = \\frac{4/(s+3)}{1 + 4/(s+3)} = \\frac{4}{s + 7}$$
+
+$$T_{+}(s) = \\frac{4/(s+3)}{1 - 4/(s+3)} = \\frac{4}{s - 1}$$
+
+The negative closure moves the pole from $-3$ to $-7$: faster, still stable,
+DC gain $4/7 = 0.571$. The positive closure moves it to $+1$: the output grows
+as $e^{t}$ and the system is useless as an amplifier, though this is precisely
+how an oscillator or a latch is built on purpose. One symbol at the summing
+junction separated a well-behaved first-order lag from an exponential runaway,
+and no other part of the algebra changed.
+
+| Configuration | Denominator | Pole | Verdict |
+|---|---|---|---|
+| Open loop | $s + 3$ | $-3$ | stable, DC gain 1.333 |
+| Negative feedback | $s + 7$ | $-7$ | stable and faster, DC gain 0.571 |
+| Positive feedback | $s - 1$ | $+1$ | unstable, grows as $e^{t}$ |
+
+## 8.6 Loop gain, and why raising it is never free
+
+Return to the loop of section 4.2 with forward path $K/[s(s+10)]$. Its closed
+loop is $K/(s^{2} + 10s + K)$, so
+
+$$\\omega _n = \\sqrt{K}, \\qquad \\zeta = \\frac{5}{\\sqrt{K}}, \\qquad \\zeta \\omega _n = 5$$
+
+The third identity is the interesting one: the product $\\zeta \\omega _n$,
+which is the decay rate of the envelope, does not depend on K at all. Raising
+the gain speeds up the RINGING without speeding up the DECAY, so the response
+gains oscillations it does not lose.
+
+![Closed-loop step responses for a forward path K/(s(s+10)) at K = 25, 100 and 400. Damping falls as five over the square root of K, so the responses run from critically damped with no overshoot, through 16.30 percent overshoot, to 44.43 percent, while the decay envelope is identical in all three.](/courses/fe-ee/figures/lin2-tf-loop-gain.svg)
+
+$$K = 25:\\ \\zeta = 1,\\ M_p = 0 \\qquad K = 100:\\ \\zeta = 0.5,\\ M_p = 16.30\\% \\qquad K = 400:\\ \\zeta = 0.25,\\ M_p = 44.43\\%$$
+
+The settling time is essentially unchanged across all three because it is set
+by $4/(\\zeta \\omega _n) = 4/5 = 0.8$ s regardless of K. What the extra gain
+bought was a faster rise and a smaller steady-state error; what it cost was
+overshoot. Any exam question that raises a loop gain and asks what happens has
+this table as its answer key.`,
+        examTip: 'Reduce the innermost loop first, and write the reduced block down as a single fraction before touching anything else. Students lose this problem by trying to reduce an outer loop while an inner one is still drawn, which forces the feedback formula to be applied to an expression that is not yet a single transfer function.',
+        importantNote: 'Cascade blocks multiply only when the stages do not load one another. Two RC sections connected directly are NOT 1/(RCs+1) squared — the second section draws current from the first and the true denominator picks up a cross term. If the problem shows a buffer or an op-amp between the stages, multiply freely; if it shows bare passive networks in series, analyse the whole thing at once.',
+      },
+      {
+        id: 'tf-problem-set-a',
+        title: '9. Problem Set A: Building and Reading Transfer Functions',
+        content: `## 9.1 Problem Set A
+
+Work each one on paper before reading the solution. Every solution names the
+distractor that the exam will offer and the wrong number it produces.
+
+**A1.** $H(s) = 40/(s^{2} + 6s + 25)$. Find $\\omega _n$, $\\zeta$, the DC
+gain, $\\omega _d$, the percent overshoot and the 2% settling time.
+
+**A2.** Find the DC gain of $H(s) = 6(s+5)/[(s+2)(s+15)]$, in absolute terms
+and in decibels.
+
+**A3.** A unity negative feedback loop has forward path
+$G(s) = 50/[(s+1)(s+10)]$. Find the closed-loop transfer function,
+$\\omega _n$, $\\zeta$ and the closed-loop DC gain.
+
+**A4.** For the characteristic equation $s^{3} + 4s^{2} + 8s + K = 0$, find the
+range of K for stability and the oscillation frequency at the upper boundary.
+
+**A5.** A second-order system has poles at $-3 \\pm j4$ and a DC gain of 2.
+Write its transfer function.
+
+**A6.** Derive H(s) for the model $2y'' + 8y' + 32y = 64x$ and state whether it
+is under-, critically or overdamped.
+
+**A7.** An op-amp inverting stage has $R_1 = 20$ kilohm and a feedback
+impedance of 200 kilohm in parallel with 500 picofarad. Find the DC gain and
+the pole frequency in rad/s and in hertz.
+
+## 9.2 Worked Answers, Problem Set A
+
+**A1 — Worked.** The denominator is already monic:
+
+$$\\omega _n = \\sqrt{25} = 5\\ \\mathrm{rad/s}, \\qquad \\zeta = \\frac{6}{2\\times 5} = 0.6$$
+
+$$H(0) = \\frac{40}{25} = 1.6, \\qquad \\omega _d = 5\\sqrt{1-0.36} = 4\\ \\mathrm{rad/s}$$
+
+$$M_p = e^{-\\pi (0.6)/0.8} = 9.48\\%, \\qquad t_s = \\frac{4}{0.6\\times 5} = 1.333\\ \\mathrm{s}$$
+
+*Trap:* taking $\\omega _n = \\sqrt{40} = 6.325$ from the numerator, which then
+gives $\\zeta = 6/12.649 = 0.474$ and an overshoot of 18.4% — every number
+downstream is wrong. A second trap drops the factor of two and reports
+$\\zeta = 6/5 = 1.2$, which would classify the system as overdamped with no
+overshoot at all.
+
+**A2 — Worked.** Substitute s = 0 directly:
+
+$$H(0) = \\frac{6(5)}{(2)(15)} = \\frac{30}{30} = 1 = 0\\ \\mathrm{dB}$$
+
+*Trap:* reporting the leading constant 6, or 15.56 dB. The gain factor K in
+front of a factored form is the HIGH-frequency scaling, not the DC gain; the
+pole and zero values have to be carried through.
+
+**A3 — Worked.** The closed-loop denominator is the open-loop denominator plus
+the open-loop numerator:
+
+$$T(s) = \\frac{50}{(s+1)(s+10) + 50} = \\frac{50}{s^{2} + 11s + 60}$$
+
+$$\\omega _n = \\sqrt{60} = 7.746\\ \\mathrm{rad/s}, \\qquad \\zeta = \\frac{11}{2\\sqrt{60}} = 0.710, \\qquad T(0) = \\frac{50}{60} = 0.8333$$
+
+The loop is underdamped but only just: the overshoot is 4.21% and the damped
+frequency is 5.454 rad/s.
+
+*Trap:* forgetting to add 50 to the constant term and expanding only
+$(s+1)(s+10) = s^{2} + 11s + 10$. That gives $\\omega _n = 3.162$ and
+$\\zeta = 1.739$, a confidently overdamped answer to an underdamped system.
+
+**A4 — Worked.** For a third-order monic polynomial the condition is that the
+product of the middle coefficients exceeds the product of the outer ones:
+
+$$4 \\times 8 = 32 > K \\times 1 \\;\\Longrightarrow\\; 0 < K < 32$$
+
+At $K = 32$ the polynomial factors as $(s+4)(s^{2}+8)$, so the sustained
+oscillation is at
+
+$$\\omega = \\sqrt{8} = 2.828\\ \\mathrm{rad/s}$$
+
+*Trap:* answering $K < 8$ by comparing the constant term against the
+$s^{1}$ coefficient alone, or reporting the oscillation frequency as
+$\\sqrt{32} = 5.657$ rad/s by taking the square root of the boundary gain
+rather than of the auxiliary polynomial's constant term.
+
+**A5 — Worked.** The poles fix the denominator:
+
+$$\\omega _n = \\sqrt{3^{2} + 4^{2}} = 5, \\qquad \\zeta = \\frac{3}{5} = 0.6$$
+
+$$D(s) = s^{2} + 2(0.6)(5)s + 25 = s^{2} + 6s + 25$$
+
+The numerator must then make $H(0) = 2$, so it is $2 \\times 25 = 50$:
+
+$$H(s) = \\frac{50}{s^{2} + 6s + 25}$$
+
+*Trap:* writing $2/(s^{2}+6s+25)$, putting the DC gain in the numerator
+directly. That system has a DC gain of $2/25 = 0.08$, off by the factor
+$\\omega _n^{2}$.
+
+**A6 — Worked.** Transform with zero initial conditions and divide by the
+leading coefficient:
+
+$$H(s) = \\frac{64}{2s^{2} + 8s + 32} = \\frac{32}{s^{2} + 4s + 16}$$
+
+$$\\omega _n = \\sqrt{16} = 4\\ \\mathrm{rad/s}, \\qquad \\zeta = \\frac{4}{2\\times 4} = 0.5$$
+
+Since $\\zeta < 1$ the system is **underdamped**, with $H(0) = 32/16 = 2$ and
+$\\omega _d = 4\\sqrt{0.75} = 3.464$ rad/s.
+
+*Trap:* failing to divide by the leading 2 and matching
+$2s^{2} + 8s + 32$ against the standard form, which reports
+$\\omega _n = \\sqrt{32} = 5.657$ and $\\zeta = 8/11.314 = 0.707$ — a
+different system entirely, and one whose overshoot is 4.3% rather than 16.3%.
+
+**A7 — Worked.** The inverting stage gives $H = -Z_f/R_1$ with
+$Z_f = R_2/(1 + R_2Cs)$:
+
+$$H(s) = \\frac{-R_{2}/R_{1}}{1 + R_{2}Cs} = \\frac{-10}{1 + 10^{-4}s}$$
+
+$$\\text{DC gain} = -\\frac{200}{20} = -10, \\qquad \\omega _p = \\frac{1}{R_{2}C} = 10^{4}\\ \\mathrm{rad/s} = 1591.5\\ \\mathrm{Hz}$$
+
+since $R_2C = 200\\times 10^{3} \\times 500 \\times 10^{-12} = 10^{-4}$ s.
+
+*Trap:* computing the corner from $R_1C$ instead of $R_2C$, giving
+$10^{5}$ rad/s and a tenfold error in bandwidth. The pole belongs to the
+FEEDBACK network, because that is where the capacitor is.`,
+        examTip: 'When a question hands you a second-order denominator and asks for several quantities, compute wn and zeta first and write them at the top of your scratch work. Every remaining answer — overshoot, peak time, settling time, pole locations, damped frequency — is a one-line function of those two numbers, and having them written down stops you re-deriving them under time pressure.',
+      },
+      {
+        id: 'tf-problem-set-b',
+        title: '10. Problem Set B: Poles, Zeros, Stability and Frequency',
+        content: `## 10.1 Practice Problems B
+
+**B1.** For $H(s) = 20/[(s+2)(s+10)]$, identify the dominant pole, state its
+time constant, and estimate the 2% settling time from it.
+
+**B2.** A measured unit-step response dips to $-0.125$ before rising to a
+final value of 1. What feature of H(s) does this prove exists, and does it
+threaten stability?
+
+**B3.** Find $\\lvert H(j3) \\rvert$ for $H(s) = 10(s+2)/[(s+1)(s+5)]$, in
+absolute terms and in decibels.
+
+**B4.** A system with $H(s) = 8/(s+4)$ is driven by
+$x(t) = 5\\cos (3t)$. Find the steady-state output.
+
+**B5.** Classify each of these as stable, marginally stable or unstable:
+(i) poles at $-1, -4$; (ii) poles at $\\pm j4$; (iii) a double pole at the
+origin; (iv) poles at $-2, +0.5$.
+
+**B6.** $H(s) = (s-2)/[(s-2)(s+5)]$ is offered as "equivalent to
+$1/(s+5)$, therefore stable". Evaluate that claim.
+
+**B7.** A high-pass section has $H(s) = 0.02s/(0.02s + 1)$. Find the DC gain,
+the corner frequency, and the gain far above the corner.
+
+## 10.2 Worked Answers, Problem Set B
+
+**B1 — Worked.** The dominant pole is the one nearest the imaginary axis,
+$s = -2$, whose time constant is
+
+$$\\tau = \\frac{1}{2} = 0.5\\ \\mathrm{s}, \\qquad t_{s} \\approx 4\\tau = 2\\ \\mathrm{s}$$
+
+The pole at $-10$ has $\\tau = 0.1$ s and is finished before the slow one has
+travelled a fifth of its journey.
+
+*Trap:* choosing $-10$ as dominant because it is the larger number, giving
+$\\tau = 0.1$ s and a settling estimate of 0.4 s — five times too fast. The
+dominant pole is the SLOWEST one, which means the smallest magnitude, which
+means the one closest to the $j\\omega$ axis.
+
+**B2 — Worked.** Initial undershoot proves a **zero in the right half-plane**.
+It does not threaten stability: the response is bounded and settles at 1, so
+every pole is in the left half-plane. A right-half-plane zero costs phase and
+limits achievable closed-loop bandwidth, but it cannot make the response grow.
+
+*Trap:* answering "a pole in the RHP". An RHP pole produces a response that
+GROWS without bound; it never recovers to a finite final value. Any answer
+choice pairing "undershoot" with "unstable" is wrong on both counts.
+
+**B3 — Worked.** Evaluate the vector magnitudes at $s = j3$:
+
+$$\\lvert H(j3) \\rvert = \\frac{10\\sqrt{2^{2}+3^{2}}}{\\sqrt{1^{2}+3^{2}}\\,\\sqrt{5^{2}+3^{2}}} = \\frac{10\\sqrt{13}}{\\sqrt{10}\\sqrt{34}} = 1.955$$
+
+$$20\\log_{10}(1.955) = 5.82\\ \\mathrm{dB}$$
+
+*Trap:* using the DC gain of 4 and answering 12.04 dB. At 3 rad/s both poles
+are already past their corners and the magnitude has fallen well below its DC
+value; the DC gain answers a different question.
+
+**B4 — Worked.** Substitute $s = j3$:
+
+$$H(j3) = \\frac{8}{4 + j3}, \\qquad \\lvert H(j3) \\rvert = \\frac{8}{5} = 1.6, \\qquad \\angle H(j3) = -36.87^\\circ$$
+
+$$y_{ss}(t) = 5 \\times 1.6\\cos (3t - 36.87^\\circ ) = 8\\cos (3t - 36.87^\\circ )$$
+
+*Trap:* evaluating the magnitude as $8/4 = 2$ by ignoring the imaginary part,
+which gives an amplitude of $2 \\times 5 = 10$ and a phase of zero. The
+denominator is a COMPLEX number; its magnitude is the hypotenuse, not the real
+part.
+
+**B5 — Worked.**
+
+| Poles | Classification | Reason |
+|---|---|---|
+| $-1, -4$ | stable | both real parts negative |
+| $\\pm j4$ | marginally stable | simple poles on the axis, sustained sinusoid |
+| double at 0 | unstable | repeated axis poles give a ramp $t\\,u(t)$ |
+| $-2, +0.5$ | unstable | one pole in the right half-plane |
+
+*Trap:* calling the double pole at the origin "marginally stable" because it
+sits on the axis. Marginal stability requires the axis poles to be SIMPLE. A
+repeated pole at the origin integrates twice and the response ramps away, so it
+is unstable in every sense including BIBO.
+
+**B6 — Worked.** The claim is false. Algebraically the factors cancel, but the
+cancellation describes an ideal that hardware cannot hold: any mismatch leaves
+a residual pole at $s \\approx +2$ with a very small residue, and a very small
+coefficient on $e^{+2t}$ still reaches any bound you name. The mode is
+unobservable in the transfer function and fully present in the state. Never
+cancel a right-half-plane pole; stabilise it with feedback that MOVES it into
+the left half-plane instead.
+
+*Trap:* accepting the cancellation and reporting a settling time of
+$4/5 = 0.8$ s for a system that in fact diverges.
+
+**B7 — Worked.** The zero sits at the origin:
+
+$$H(0) = 0, \\qquad \\omega _c = \\frac{1}{0.02} = 50\\ \\mathrm{rad/s} = 7.96\\ \\mathrm{Hz}$$
+
+Far above the corner the $0.02s$ terms dominate both numerator and denominator
+and the ratio approaches 1, or 0 dB — a high-pass section passes everything
+above its corner at unity gain.
+
+*Trap:* reading the DC gain as 0.02 from the numerator coefficient. Setting
+s = 0 kills the numerator outright; the coefficient 0.02 sets WHERE the
+transition happens, not how much passes at DC.`,
+        examTip: 'Sinusoidal steady-state questions are pure complex arithmetic and nothing else. Substitute s = jw, compute one magnitude as a hypotenuse and one angle as an arctangent, multiply the input amplitude by the magnitude, add the angle to the input phase, and stop. If you find yourself writing a differential equation, you have taken a wrong turn.',
+        importantNote: 'The dominant pole is the one with the SMALLEST magnitude of real part, because it decays most slowly. Answer choices routinely offer the largest pole as "dominant" and the resulting settling time is short by exactly the pole ratio.',
       },
     ],
     keyTakeaways: [
