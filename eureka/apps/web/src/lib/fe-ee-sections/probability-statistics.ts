@@ -1635,7 +1635,7 @@ fee_expected_values: {
 
 ### Expected Value
 
-For a discrete random variable: **$E[X] = \\Sigma x_{i}\\cdot P(x_{i})$**
+For a discrete random variable: **$E[X] = \\sum x_{i}\\cdot P(x_{i})$**
 
 Properties:
 - E[aX + b] = a·E[X] + b
@@ -1650,8 +1650,8 @@ Properties:
 
 | Measure | Population | Sample |
 |---|---|---|
-| Mean | $\\mu = \\Sigma X/N$ | $\\bar{x} = \\Sigma X/n$ |
-| Variance | $\\sigma ^{2} = \\Sigma (X-\\mu)^{2}/N$ | $s^{2} = \\Sigma (X-\\bar{x})^{2}/(n-1)$ |
+| Mean | $\\mu = \\sum X/N$ | $\\bar{x} = \\sum X/n$ |
+| Variance | $\\sigma ^{2} = \\sum (X-\\mu)^{2}/N$ | $s^{2} = \\sum (X-\\bar{x})^{2}/(n-1)$ |
 | Std Dev | $\\sigma = \\sqrt{\\sigma ^{2}}$ | $s = \\sqrt{s^{2}}$ |`,
       examTip: 'Sample variance divides by (n-1), not n. This is called Bessel\'s correction and gives an unbiased estimate. The FE exam may test whether you use n or n-1 in the denominator — sample statistics always use n-1.',
     },
@@ -2974,7 +2974,7 @@ exceeds 110 kg.
 
 *Answer.* For a SUM, means multiply by n and variances multiply by n:
 
-$$E\\left[\\sum\\right] = 25 \\times 4.2 = 105 \\ \\text{kg}, \\qquad \\sigma = 0.8 \\times 5 = 4 \\ \\text{kg}$$
+$$E\\left[\\sum _{i=1}^{25} X_{i}\\right] = 25 \\times 4.2 = 105 \\ \\text{kg}, \\qquad \\sigma = 0.8 \\times 5 = 4 \\ \\text{kg}$$
 
 $$z = (110 - 105) / 4 = 1.25$$
 
@@ -3094,7 +3094,7 @@ Good regression has:
 
 ## 2.2 Standard Error of Estimate
 
-**$Se = \\sqrt{\\Sigma (y_{i} - \\hat{y} _{i})^{2} / (n-2)}$**
+**$Se = \\sqrt{\\sum (y_{i} - \\hat{y} _{i})^{2} / (n-2)}$**
 
 This measures the typical distance of data points from the regression line. Smaller Se means better fit. Dividing by n-2 accounts for the two estimated parameters (slope and intercept).`,
       examTip: 'If the FE exam shows a residual plot with a clear curve pattern, the linear model is inappropriate — the data has a nonlinear relationship. Transform the data (log, square root, etc.) or use a higher-order polynomial model.',
@@ -3360,7 +3360,7 @@ fee_hypothesis: {
 
 ### Chi-Square Test (categorical data)
 
-**$\\chi ^{2} = \\Sigma (O - E)^{2}/E$**
+**$\\chi ^{2} = \\sum (O - E)^{2}/E$**
 
 - O = observed frequency, E = expected frequency
 - Compare χ² to critical value from chi-square table`,

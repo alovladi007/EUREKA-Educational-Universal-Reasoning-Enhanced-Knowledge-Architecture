@@ -95,6 +95,21 @@ function silentDefects(tex) {
   if (/(?<!\\)~/.test(tex)) hits.push('~ is a non-breaking space in math mode, not "approx" or "not"');
   // bare Latin x between two numbers is a variable, not a multiplication sign
   if (/(?<=[\d})])\s*x\s*(?=\d)/.test(tex)) hits.push('bare Latin x between numbers — set as an italic variable');
+  // \| is \Vert, a DOUBLE bar. As a binary operator between two impedances it is
+  // the correct parallel-combination symbol (R_E \| R_L) and must not be touched.
+  // Wrapping a single short expression, it is a norm standing in for absolute value.
+  if (/\\\|[^|$]{1,24}\\\|/.test(tex))
+    hits.push('\\|x\\| sets a double-bar norm — use \\lvert x \\rvert for absolute value');
+  // \Sigma / \Pi are Greek letters, not operators: no limit positioning, wrong spacing
+  if (/\\(Sigma|Pi)\s*[_^]?\s*[({\\A-Za-z0-9]/.test(tex))
+    hits.push('\\Sigma/\\Pi is a glyph, not an operator — use \\sum / \\prod so limits attach');
+  // An operator with nothing to operate on. Limitless \sum G is ordinary engineering
+  // shorthand and stays; \sum with an empty body is meaningless.
+  if (/\\(sum|prod)\s*(\\right|\}|\)|\]|$)/.test(tex))
+    hits.push('summation/product operator with no operand');
+  // raw operator glyphs pasted into math carry no limits and inconsistent metrics
+  const glyph = tex.match(/[Σ∏∮∫∑]/);
+  if (glyph) hits.push(`raw operator glyph ${glyph[0]} in math — use the command form`);
   // strip commands and text-mode groups, then look for English left behind
   const bare = tex
     .replace(/\\(text|mathrm|mathbf|operatorname|mathit|textbf|textit)\s*\{[^{}]*\}/g, ' ')

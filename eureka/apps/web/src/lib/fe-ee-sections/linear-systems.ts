@@ -23,7 +23,7 @@ The **impulse response** h(t) is the output of a system when the input is a unit
 
 **Discrete-time convolution:**
 
-**$y[n] = \\Sigma x[k] \\cdot h[n - k]$**
+**$y[n] = \\sum x[k] \\cdot h[n - k]$**
 
 | Signal | Response | What It Reveals |
 |---|---|---|
@@ -2482,7 +2482,7 @@ The **transfer function** relates output to input in the s-domain:
 
 It can be written in **factored form**:
 
-**$H(s) = K \\cdot \\Pi (s - z_{i}) / \\Pi (s - p_{j})$**
+**$H(s) = K \\cdot \\prod (s - z_{i}) / \\prod (s - p_{j})$**
 
 where **$z_{i}$** are the **zeros** (numerator roots) and **$p_{j}$** are the **poles** (denominator roots).
 
@@ -2491,7 +2491,7 @@ where **$z_{i}$** are the **zeros** (numerator roots) and **$p_{j}$** are the **
 | **Zeros** | Values where N(s) = 0 | Affect response magnitude and shape |
 | **Poles** | Values where D(s) = 0 | Determine stability and time constants |
 | **System order** | Degree of D(s) | Number of energy-storage elements |
-| **DC gain** | $H(0) = K \\cdot \\Pi z_{i} / \\Pi p_{j}$ | Steady-state value for step input |
+| **DC gain** | $H(0) = K \\cdot \\prod z_{i} / \\prod p_{j}$ | Steady-state value for step input |
 
 ## 1.2 Pole Locations and Time-Domain Behavior
 
@@ -2719,7 +2719,7 @@ it costs one glance at the pole list.
 One more way to evaluate |H(jω)|, and the one that builds intuition: at any
 point $j\\omega$ on the imaginary axis,
 
-**$|H(j\\omega )| = K \\cdot \\Pi (\\mathrm{distances\\ to\\ zeros}) / \\Pi (\\mathrm{distances\\ to\\ poles})$**
+**$|H(j\\omega )| = K \\cdot \\prod (\\mathrm{distances\\ to\\ zeros}) / \\prod (\\mathrm{distances\\ to\\ poles})$**
 
 — each factor $(j\\omega - z_i)$ or $(j\\omega - p_j)$ is a vector from that
 root to the evaluation point, and its magnitude is a plain distance on the

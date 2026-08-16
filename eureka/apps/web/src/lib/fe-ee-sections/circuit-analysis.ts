@@ -53,7 +53,7 @@ introduced.
 
 **The sum of currents entering a node equals the sum leaving:**
 
-**$\\Sigma I_{in} = \\Sigma I_{out}$** or equivalently **$\\Sigma I = 0$** (with sign convention)
+**$\\sum I_{in} = \\sum I_{out}$** or equivalently **$\\sum I = 0$** (with sign convention)
 
 KCL is conservation of charge — charge cannot accumulate at a node.
 
@@ -61,7 +61,7 @@ KCL is conservation of charge — charge cannot accumulate at a node.
 
 **The sum of voltage rises around any closed loop equals zero:**
 
-**$\\Sigma V = 0$** (around any closed loop)
+**$\\sum V = 0$** (around any closed loop)
 
 KVL is conservation of energy — energy gained equals energy lost around any path.
 
@@ -152,8 +152,8 @@ Note: current goes preferentially through the SMALLER resistance (path of least 
 
 | Configuration | Same Quantity | Add Up | Equivalent |
 |---|---|---|---|
-| Series | Current | Voltages | $R_{eq} = \\Sigma R$ |
-| Parallel | Voltage | Currents | $1/R_{eq} = \\Sigma (1/R)$ |`,
+| Series | Current | Voltages | $R_{eq} = \\sum R$ |
+| Parallel | Voltage | Currents | $1/R_{eq} = \\sum (1/R)$ |`,
       examTip: 'The current divider formula is backwards from what you might expect: I through R₁ uses R₂ in the numerator. Think of it as: more resistance in YOUR branch means LESS current goes through it, so the OTHER resistance goes on top.',
     },
     {

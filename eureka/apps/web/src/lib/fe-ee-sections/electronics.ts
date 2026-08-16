@@ -3467,7 +3467,7 @@ The ideal op-amp model assumes infinite output voltage range, but **real op-amps
 | Inverting | **−Rf/Rin** | Input impedance = Rin |
 | Non-inverting | **1 + Rf/Rin** | Input impedance ≈ ∞ |
 | Buffer | **1** | Rf = 0, Rin = ∞ |
-| Summing | **$-Rf\\cdot \\Sigma (Vi/Ri)$** | One term per input |
+| Summing | **$-Rf\\cdot \\sum (Vi/Ri)$** | One term per input |
 | Difference | **(Rf/Rin)·(V2−V1)** | When ratios matched |
 | Integrator | **−1/(sRC)** | C replaces Rf |
 | Differentiator | **−sRC** | C replaces Rin |`,
