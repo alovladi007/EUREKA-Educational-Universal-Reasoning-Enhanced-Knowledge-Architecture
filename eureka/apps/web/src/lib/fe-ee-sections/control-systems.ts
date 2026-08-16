@@ -2947,7 +2947,7 @@ Two semi-log plots:
 
 | Factor | Magnitude Contribution | Phase Contribution |
 |---|---|---|
-| **Constant K** | 20·log₁₀(K) dB (flat line) | $0^\\circ (if K > 0) or -180^\\circ (if K < 0)$ |
+| **Constant K** | 20·log₁₀(K) dB (flat line) | $0^\\circ$ (if $K > 0$) or $-180^\\circ$ (if $K < 0$) |
 | **s (zero at origin)** | +20 dB/decade through 0 dB at ω = 1 | +90° at all frequencies |
 | **1/s (pole at origin)** | −20 dB/decade through 0 dB at ω = 1 | −90° at all frequencies |
 | **1 + s/a (real zero)** | 0 for ω < a; +20 dB/decade for ω > a | $0^\\circ \\to +45^\\circ at \\omega = a \\to +90^\\circ$ |
@@ -4195,8 +4195,9 @@ s^(n-2) | b_1    b_2      b_3      ...
 s^0     | (final coefficient)
 \`\`\`
 
-Where: b_1 = (a_(n-1)·a_(n-2) - a_n·a_(n-3)) / a_(n-1)
-       $$b_2 = (a_(n-1)\\cdot a_(n-4) - a_n\\cdot a_(n-5)) / a_(n-1)$$
+Where
+
+$$b_1 = \\frac{a_{n-1}a_{n-2} - a_{n}a_{n-3}}{a_{n-1}}, \\qquad b_2 = \\frac{a_{n-1}a_{n-4} - a_{n}a_{n-5}}{a_{n-1}}$$
 ... and similarly for subsequent rows.
 
 The system is stable if and only if all entries in the FIRST COLUMN have the SAME SIGN.

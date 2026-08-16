@@ -5930,7 +5930,7 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
   |---|---|
   | constant K | constant A |
   | $e^{kt}$ | $A\\cdot e^{kt}$ |
-  | $\\sin  \\omega t or \\cos  \\omega t$ | A cos ωt + B sin ωt (**both terms**) |
+  | $\\sin \\omega t$ or $\\cos \\omega t$ | A cos ωt + B sin ωt (**both terms**) |
   | polynomial of degree n | general polynomial of degree n |
   
   For a sinusoidal forcing function you must include **both** sine and cosine even

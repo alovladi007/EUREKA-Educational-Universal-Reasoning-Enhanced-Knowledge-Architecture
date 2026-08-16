@@ -3449,7 +3449,7 @@ V1 = 2 V through R1 = 10 kΩ; V2 = −1 V through R2 = 20 kΩ; Rf = 40 kΩ
 
 The ideal op-amp model assumes infinite output voltage range, but **real op-amps clip** at the supply rails:
 
-- If V+ supply = +15 V and V− supply = −15 V, output saturates at approximately **$\\pm 13 to \\pm 14\\ \\mathrm{V}$** (1–2 V below rails for standard op-amps)
+- If V+ supply = +15 V and V− supply = −15 V, output saturates at approximately **$\\pm 13$ to $\\pm 14\\ \\mathrm{V}$** (1–2 V below rails for standard op-amps)
 - Rail-to-rail op-amps can reach within 50–200 mV of the supply
 
 **Example trap**: An inverting amplifier with Av = −100, Vin = 0.5 V → calculated Vo = −50 V. But if supply is ±15 V, the actual output is **$-14\\ \\mathrm{V}$** (saturated, not −50 V).

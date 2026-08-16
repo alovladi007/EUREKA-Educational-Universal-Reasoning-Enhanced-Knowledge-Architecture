@@ -1910,7 +1910,7 @@ Convert to actual: **$I_{fault} = I_{fault}(pu) \\times I_{base}$** where **$I_{
 Choose S_base = 100 MVA and V_base = 138 kV on a transmission section.
 
 $$Z_{base} = V_{base}^2/S_{base} = (138e3)^2/100e6 = 19.044e9/100e6 = 190.4 ohm$$
-$$I_{base} = S_{base}/(\\sqrt{3} V_{base}) = 100e6/(1.732 x 138e3) = 418.4\\ \\mathrm{A}$$
+$$I_{base} = S_{base}/(\\sqrt{3} V_{base}) = 100e6/(1.732 \\times 138e3) = 418.4\\ \\mathrm{A}$$
 
 A line of actual impedance 38 ohm is then Z_pu = 38/190.4 = **0.200 pu**.
 
@@ -1928,7 +1928,7 @@ Equipment is rated on its own base; the system uses another. Convert with
 
 A 50 MVA transformer with 8% impedance on its own 13.8 kV base, moved to a 100 MVA, 13.8 kV system base:
 
-$$Z_{new} = 0.08 x (100/50) x (13.8/13.8)^2 = 0.08 x 2 = 0.16 pu$$
+$$Z_{new} = 0.08 x (100/50) x (13.8/13.8)^2 = 0.08 \\times 2 = 0.16 pu$$
 
 The voltage ratio is 1 here, but note it is SQUARED when it is not - that exponent is the most common slip in base conversion.
 
@@ -1937,8 +1937,8 @@ The voltage ratio is 1 here, but note it is SQUARED when it is not - that expone
 Per-unit makes symmetrical fault current almost trivial. A three-phase bolted fault at a bus with total 0.16 pu reactance behind it, on a 100 MVA / 13.8 kV base:
 
 $$I_{fault}(pu) = 1.0/0.16 = 6.25 pu$$
-$$I_{base} = 100e6/(1.732 x 13.8e3) = 4184\\ \\mathrm{A}$$
-$$I_{fault} = 6.25 x 4184 = 26.2\\ \\mathrm{kA}$$
+$$I_{base} = 100e6/(1.732 \\times 13.8e3) = 4184\\ \\mathrm{A}$$
+$$I_{fault} = 6.25 \\times 4184 = 26.2\\ \\mathrm{kA}$$
 
 Equivalently the fault MVA is S_base/Z_pu = 100/0.16 = **625 MVA**, which is the number a switchgear rating is chosen against.`,
       examTip: 'Per-unit impedance is unchanged across a transformer, but per-unit CURRENT and VOLTAGE bases are not - they scale with the turns ratio. Fix S_base once for the whole system and let V_base follow the transformer ratios.',
@@ -3011,7 +3011,7 @@ Note what the reactive term did: at 0.9 pf the X sin(theta) term contributes MOR
 
 Real loss is I^2 R per phase, times three:
 
-$$P_{loss} = 3 x (200)^2 x 0.5 = 3 x 40000 x 0.5 = 60\\ \\mathrm{kW}$$
+$$P_{loss} = 3 x (200)^2 \\times 0.5 = 3 \\times 40000 \\times 0.5 = 60\\ \\mathrm{kW}$$
 
 Delivered power = 3 x V_phase x I x cos(theta) = 3 x 7200 x 200 x 0.9 = **3.89 MW**.
 
@@ -5505,7 +5505,7 @@ Power system faults are classified by which phases and ground are involved:
 
 | Fault type | Symbol | Phases involved | Approximate frequency |
 |---|---|---|---|
-| Three-phase fault (balanced) | $3\\phi or LLL$ | All three phases short-circuited | ~5% |
+| Three-phase fault (balanced) | $3\\phi$ or LLL | All three phases short-circuited | ~5% |
 | Three-phase to ground | $3\\phi G$ | All three phases to ground | ~5% |
 | Single-line-to-ground | SLG or LG | One phase to ground | ~70% |
 | Line-to-line | LL | Two phases short-circuited | ~15% |

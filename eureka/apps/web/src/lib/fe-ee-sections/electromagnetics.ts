@@ -655,7 +655,7 @@ cancelled. Everything else follows.
 
 The last row sets a hard physical ceiling. Dry air breaks down near
 3 MV/m, so no conductor in air can hold more than
-$\\sigma _{\\max} = \\varepsilon _{0} \\times 3 \\times 10^{6} = 26.6\\ \\mathrm{µC/m^{2}}$
+$\\sigma _{\\max} = \\varepsilon _{0} \\times 3 \\times 10^{6} = 26.6\\ \\mathrm{\\mu C/m^{2}}$
 before the air lets go. Charge crowds onto small radii, so sharp corners
 reach that density first — which is why high-voltage hardware is built from
 generous smooth curves and corona rings.
@@ -681,12 +681,12 @@ it is a bookkeeping device for charge the plane rearranged for free.
 
 **Force.** The image sits 6.0 cm away, so
 
-$$F = \\frac{(8.98755 \\times 10^{9})(5.0 \\times 10^{-9})^{2}}{(0.060)^{2}} = 62.41\\ \\mathrm{µN}\\ \\text{, attractive}$$
+$$F = \\frac{(8.98755 \\times 10^{9})(5.0 \\times 10^{-9})^{2}}{(0.060)^{2}} = 62.41\\ \\mathrm{\\mu N}\\ \\text{, attractive}$$
 
-**Energy.** $W = -62.41\\ \\mathrm{µN} \\times 0.030\\ \\mathrm{m} = -1.872\\ \\mathrm{µJ}$, using the fact that the force varies as the inverse square of the separation so the work integral contributes one factor of $h$.
+**Energy.** $W = -62.41\\ \\mathrm{\\mu N} \\times 0.030\\ \\mathrm{m} = -1.872\\ \\mathrm{\\mu J}$, using the fact that the force varies as the inverse square of the separation so the work integral contributes one factor of $h$.
 
 **Induced charge.** Directly beneath the charge the surface density peaks at
-$\\sigma (0) = -q/(2\\pi h^{2}) = -0.884\\ \\mathrm{µC/m^{2}}$, and the field
+$\\sigma (0) = -q/(2\\pi h^{2}) = -0.884\\ \\mathrm{\\mu C/m^{2}}$, and the field
 just above the plane there is
 $\\lvert \\sigma \\rvert /\\varepsilon _{0} = 99.86$ kV/m. That same 99.86 kV/m
 comes out of adding the two point-charge fields, $2kq/h^{2}$, which is the
@@ -1108,7 +1108,7 @@ Analogous to electric circuits:
 | EMF (V) | MMF = N·I (ampere-turns) |
 | Current I | Flux Φ |
 | Resistance R | Reluctance ℜ = ℓ/(μA) |
-| Ohm's law: V = IR | **$\\Phi = MMF/ℜ = NI\\cdot \\mu A/\\ell$** |
+| Ohm's law: V = IR | **$\\Phi = MMF/\\mathcal{R} = NI\\cdot \\mu A/\\ell$** |
 
 ## 2.3 Force on Current-Carrying Conductors
 
@@ -1376,7 +1376,7 @@ one, because a finite wire has less of itself to contribute.
 
 **Given**: a straight conductor 0.50 m long carrying 10 A. **Find**: the flux density 20 mm out from its midpoint, and the error made by the infinite-wire formula.
 
-$$B = \\frac{(2 \\times 10^{-7})(10)(0.25)}{(0.020)\\sqrt{(0.25)^{2}+(0.020)^{2}}} = 99.68\\ \\mathrm{µT}$$
+$$B = \\frac{(2 \\times 10^{-7})(10)(0.25)}{(0.020)\\sqrt{(0.25)^{2}+(0.020)^{2}}} = 99.68\\ \\mathrm{\\mu T}$$
 
 The infinite-wire value at the same distance is $2 \\times 10^{-7} \\times 10/0.020 = 100.0$ µT, so the ratio is $99.68 / 100.0 = 0.9968$ — an error of
 0.32%. The rule that generalises: the infinite formula is good to better
@@ -1410,9 +1410,9 @@ is low by a factor of $\\pi$.
 
 **Given**: a single circular turn of radius 10.0 cm carrying 5.0 A in air.
 
-At the centre, with $\\mu _{0} = 1.2566371\\ \\mathrm{µH/m}$,
+At the centre, with $\\mu _{0} = 1.2566371\\ \\mathrm{\\mu H/m}$,
 
-$$1.2566371 \\times 5 / 0.20 = 31.42\\ \\mathrm{µT}$$
+$$1.2566371 \\times 5 / 0.20 = 31.42\\ \\mathrm{\\mu T}$$
 
 One radius up the axis, $z = R$ makes the bracket $(2R^{2})^{3/2}$, so the
 field falls by $2^{3/2} = 2.8284$: $31.4159 / 2.8284 = 11.11$ µT. The
@@ -1422,7 +1422,7 @@ loop is a sharply peaked thing.
 **Now add a second identical loop one radius away.** At the midpoint each
 contributes $\\mu _{0}IR^{2}/[2(R^{2}+R^{2}/4)^{3/2}]$, and the pair total is
 
-$$B = \\left(\\tfrac{4}{5}\\right)^{3/2}\\frac{\\mu _{0}I}{R} = 31.4159 \\times 1.4311 = 44.96\\ \\mathrm{µT}$$
+$$B = \\left(\\tfrac{4}{5}\\right)^{3/2}\\frac{\\mu _{0}I}{R} = 31.4159 \\times 1.4311 = 44.96\\ \\mathrm{\\mu T}$$
 
 That spacing is chosen because it makes the second derivative of the field
 vanish at the midpoint, leaving a genuinely flat region: the pair holds
@@ -1553,7 +1553,7 @@ reason.
 Integrating that $1/r$ profile over the window gives the flux and hence the
 exact inductance,
 
-$$L = \\frac{\\mu _{0}N^{2}h}{2\\pi}\\ln \\frac{b}{a} = 778.5\\ \\mathrm{µH}$$
+$$L = \\frac{\\mu _{0}N^{2}h}{2\\pi}\\ln \\frac{b}{a} = 778.5\\ \\mathrm{\\mu H}$$
 
 while the mean-radius shortcut $L = \\mu _{0}N^{2}A/(2\\pi r_{\\mathrm{mean}})$
 with $A = h(b-a)$ gives 768.0 µH. The ratio is
@@ -1665,7 +1665,7 @@ other, which no real pair achieves.
 Every line the primary makes inside the former passes through the secondary,
 so $M$ is set by the primary's field and the secondary's turns:
 
-$$M = \\frac{\\mu _{0}N_{1}N_{2}A}{\\ell _{1}} = 301.6\\ \\mathrm{µH}$$
+$$M = \\frac{\\mu _{0}N_{1}N_{2}A}{\\ell _{1}} = 301.6\\ \\mathrm{\\mu H}$$
 
 The self-inductances use each winding's own length:
 $L_{1} = \\mu _{0}N_{1}^{2}A/\\ell _{1} = 1608.5$ µH and
@@ -1677,7 +1677,7 @@ and the algebra shows why: the ratio collapses to
 $\\sqrt{\\ell _{2}/\\ell _{1}} = \\sqrt{0.05/0.30} = 0.408$. Coupling is poor
 here not because flux escapes but because the primary is six times longer
 than the secondary, so five sixths of the primary's own flux never sees it.
-Ramping the primary at 500 A/s induces $301.6\\ \\mathrm{µH} \\times 500\\ \\mathrm{A/s} = 150.8$ mV in the secondary.
+Ramping the primary at 500 A/s induces $301.6\\ \\mathrm{\\mu H} \\times 500\\ \\mathrm{A/s} = 150.8$ mV in the secondary.
 
 ## 7.3 The magnetic circuit, used as a design tool
 
@@ -1896,7 +1896,7 @@ the wrong number it produces. Commit to an answer before reading on.
 
 **D1.** A long straight wire carries 15 A. Find the flux density 8.0 cm away.
 
-$$B = \\frac{\\mu _{0}I}{2\\pi r} = (2 \\times 10^{-7})\\frac{15}{0.080} = 37.5\\ \\mathrm{µT}$$
+$$B = \\frac{\\mu _{0}I}{2\\pi r} = (2 \\times 10^{-7})\\frac{15}{0.080} = 37.5\\ \\mathrm{\\mu T}$$
 
 **Answer: 37.5 µT.** *Trap*: using $\\mu _{0}I/(4\\pi r)$, which is the
 Biot-Savart prefactor rather than the finished Ampère result, gives 18.75 µT
@@ -1905,7 +1905,7 @@ integrated wire.
 
 **D2.** A single circular turn of radius 5.0 cm carries 3.0 A. Find the flux density at its centre.
 
-$$B = \\frac{\\mu _{0}I}{2R} = \\frac{1.2566371 \\times 3.0}{0.10} = 37.70\\ \\mathrm{µT}$$
+$$B = \\frac{\\mu _{0}I}{2R} = \\frac{1.2566371 \\times 3.0}{0.10} = 37.70\\ \\mathrm{\\mu T}$$
 
 **Answer: 37.70 µT.** *Trap*: importing the straight-wire denominator and
 computing $\\mu _{0}I/(2\\pi R)$ gives 12.0 µT, low by a factor of $\\pi$. The
@@ -1943,7 +1943,7 @@ radius rather than falling.
 
 **E1.** A 250-turn solenoid is 0.20 m long with a cross-section of 3.0 cm² and an air core. Find its inductance.
 
-$$L = \\frac{\\mu _{0}N^{2}A}{\\ell} = \\frac{(1.2566371 \\times 10^{-6})(62500)(3.0 \\times 10^{-4})}{0.20} = 117.8\\ \\mathrm{µH}$$
+$$L = \\frac{\\mu _{0}N^{2}A}{\\ell} = \\frac{(1.2566371 \\times 10^{-6})(62500)(3.0 \\times 10^{-4})}{0.20} = 117.8\\ \\mathrm{\\mu H}$$
 
 **Answer: 117.8 µH.** *Trap*: writing $N$ instead of $N^{2}$ gives 0.471 µH,
 a factor of 250 too small. Inductance is quadratic in turns because the
@@ -1981,7 +1981,7 @@ by the geometric mean, not the sum, which is why it can never exceed 1.
 
 **E5.** A coaxial line has $a = 0.80$ mm and $b = 2.6$ mm. Find its inductance per metre at DC.
 
-$$L' = \\frac{\\mu _{0}}{2\\pi}\\ln \\frac{b}{a} + \\frac{\\mu _{0}}{8\\pi} = 0.2357 + 0.0500 = 0.2857\\ \\mathrm{µH/m}$$
+$$L' = \\frac{\\mu _{0}}{2\\pi}\\ln \\frac{b}{a} + \\frac{\\mu _{0}}{8\\pi} = 0.2357 + 0.0500 = 0.2857\\ \\mathrm{\\mu H/m}$$
 
 **Answer: 0.286 µH/m at DC, falling to 0.236 µH/m once skin effect is
 established.** *Trap*: quoting only the external term, 0.2357 µH/m, which is
@@ -2679,7 +2679,7 @@ For a lossy line: **$Z_{0} = \\sqrt{(R + j\\omega L)/(G + j\\omega C)}$**
 
 **$v_p = 1/\\sqrt{LC} = c/\\sqrt{\\varepsilon _r \\cdot \\mu _r}$**
 
-In most practical cables with dielectric filling: **$v_p \\approx 0.66c to 0.85c$**
+In most practical cables with dielectric filling: **$v_p \\approx 0.66c$ to $0.85c$**
 
 ## 1.2 Reflection Coefficient
 

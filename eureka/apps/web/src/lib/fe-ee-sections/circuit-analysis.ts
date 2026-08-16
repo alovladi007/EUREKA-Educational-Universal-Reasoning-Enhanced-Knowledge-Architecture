@@ -173,7 +173,7 @@ Branch currents: I2 = 6/6 = 1 A, I3 = 6/12 = 0.5 A, and 1 + 0.5 = 1.5 A, which i
 
 The same 1.5 A splits between 6 ohm and 12 ohm. The divider gives
 
-$$I2 = I x R3/(R2+R3) = 1.5 x 12/18 = 1.0\\ \\mathrm{A}$$
+$$I2 = I x R3/(R2+R3) = 1.5 \\times 12/18 = 1.0\\ \\mathrm{A}$$
 
 The 6 ohm branch — the smaller resistance — takes the larger share, and the formula gets there by putting the OTHER resistance on top. If your answer gives more current to the larger resistor, you have the fraction upside down.
 
@@ -3301,7 +3301,7 @@ The capacitor bank must supply 42.1 kVAR of reactive power.`,
 
 A single-phase load draws 20 A rms at 240 V rms with a lagging power factor of 0.80.
 
-$$S = V I = 240 x 20 = 4800 VA$$
+$$S = V I = 240 \\times 20 = 4800 VA$$
 P = S cos(theta) = 4800 x 0.80 = **3840 W**
 Q = S sin(theta), and sin(theta) = sqrt(1 - 0.64) = 0.60, so Q = 4800 x 0.60 = **2880 VAR** (lagging, so inductive and positive by convention)
 
@@ -4821,9 +4821,9 @@ P = sqrt(3) x 208 x 36 = **12,970 W** — three times the wye figure.
 
 A balanced delta load draws 30 A of line current at 480 V line-to-line with pf = 0.85 lagging.
 
-$$S = \\sqrt{3} V_L I_L = 1.732 x 480 x 30 = 24,940 VA$$
-$$P = S x 0.85 = 21,200\\ \\mathrm{W}$$
-$$Q = S x \\sin (\\arccos  0.85) = 24,940 x 0.527 = 13,140\\ \\mathrm{VAR}$$
+$$S = \\sqrt{3} V_L I_L = 1.73205 \\times 480 \\times 30 = 24{,}941.5\\ \\mathrm{VA}$$
+$$P = S\\cos \\phi = 24{,}941.5 \\times 0.85 = 21{,}200\\ \\mathrm{W}$$
+$$Q = S\\sin \\phi = 24{,}941.5 \\times 0.52678 = 13{,}139\\ \\mathrm{VAR}$$
 
 Note that the sqrt(3) V_L I_L formula uses LINE quantities for both, whichever way the load is connected — that is why it is the one worth memorising.
 

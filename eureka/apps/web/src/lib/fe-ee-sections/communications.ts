@@ -1013,7 +1013,7 @@ in each sideband, and the efficiency.
 
 $$P_c = \\frac{P_{total}}{1 + m^2/2} = \\frac{4400}{1.245} = 3534.14\\ \\mathrm{W}$$
 
-$$P_{sb,total} = 4400 - 3534.14 = 865.86\\ \\mathrm{W}, \\qquad P_{each} = \\frac{865.86}{2} = 432.93\\ \\mathrm{W}$$
+$$P_{sb,total} = 4400 - 3534.14 = 865.86\\ \\mathrm{W}, \\qquad P_{\\text{each}} = \\frac{865.86}{2} = 432.93\\ \\mathrm{W}$$
 
 $$\\eta = \\frac{0.490}{2.490} = 0.19679 = 19.68\\%$$
 
@@ -1321,7 +1321,7 @@ QAM varies **both amplitude and phase**:
 
 **Step 2**: BER = Q(sqrt(2 * 10)) = Q(sqrt(20)) = Q(4.47)
 
-**Step 3**: From Q-function table: Q(4.47) ≈ **$3.9 x 10^-6$**
+**Step 3**: From Q-function table: Q(4.47) ≈ **$3.9 \\times 10^-6$**
 
 At E_b/N_0 = 10 dB, BPSK and QPSK both achieve BER near 10^-6 — excellent for most applications.
 
@@ -2360,7 +2360,7 @@ The first stage dominates: 1.585 of 1.624 total. Stages 2 and 3 contribute only 
 
 ## 3.2 Thermal Noise Power for B = 1 MHz at T = 290 K
 
-**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **$4.0 x 10^-15\\ \\mathrm{W}$**
+**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **$4.0 \\times 10^-15\\ \\mathrm{W}$**
 
 **Method 2 — dBm shortcut** (faster on exam):
 

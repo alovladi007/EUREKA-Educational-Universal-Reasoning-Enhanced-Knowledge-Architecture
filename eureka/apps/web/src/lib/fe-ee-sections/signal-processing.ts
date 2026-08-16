@@ -147,7 +147,7 @@ The amplitude spectrum shows spikes at odd multiples of 250 Hz, decreasing as 1/
 |---|---|---|
 | **Applies to** | **Periodic** signals | **Aperiodic** signals |
 | **Spectrum type** | **Discrete** (spikes at nf₀) | **Continuous** (smooth curve) |
-| **Coefficients** | cₙ (dimensionless or V) | $X(f) (V/Hz or V\\cdot s)$ |
+| **Coefficients** | cₙ (dimensionless or V) | $X(f)$ (V/Hz or V\u00b7s) |
 | **Energy** | Infinite (signal extends forever) | Finite (Parseval applies) |
 
 **Common mistake**: Using the Fourier Transform on a periodic signal or Fourier Series on a one-time pulse. The Series is for periodic signals that repeat forever; the Transform is for finite-energy aperiodic signals.
@@ -2763,10 +2763,10 @@ inspection; no factoring was required.`,
 
 The **DFT** converts N time-domain samples into N frequency-domain components:
 
-**$X[k] = \\Sigma (n=0 to N-1) x[n] \\cdot e^{-j2\\pi kn/N}$** for k = 0, 1, ..., N−1
+**$X[k] = \\sum _{n=0}^{N-1} x[n]\\, e^{-j2\\pi kn/N}$** for k = 0, 1, ..., N−1
 
 **Inverse DFT:**
-**$x[n] = (1/N) \\Sigma (k=0 to N-1) X[k] \\cdot e^{j2\\pi kn/N}$**
+**$x[n] = \\frac{1}{N}\\sum _{k=0}^{N-1} X[k]\\, e^{j2\\pi kn/N}$**
 
 ### Frequency Bin Interpretation
 

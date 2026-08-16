@@ -858,7 +858,7 @@ Depreciation reduces taxable income, creating a **tax shield**:
 
 **Tax savings = D × Tax rate**
 
-Example: \\$10,000 depreciation at 30% tax rate → \\$3,000 tax savings
+Example: \\$10,000 depreciation at 30% tax rate \\rightarrow  \\$3,000 tax savings
 
 ### After-Tax Cash Flow
 
