@@ -103,12 +103,12 @@ Better branch prediction approaches the ideal 5x speedup.
 - Pipeline stall when IF and MEM overlap: **structural hazard**
 
 **Harvard** (separate buses): instruction fetch and data access proceed in parallel.
-- No IF/MEM conflict -> eliminates ~20-30% of structural hazards
+- No IF/MEM conflict -> removes that whole hazard class, which can otherwise arise on the 20-30% of instructions that reference data
 - Modern CPUs: separate L1 I-cache and D-cache (Modified Harvard)
 
 | Architecture | Structural Hazards | Throughput Impact |
 |---|---|---|
-| Von Neumann | IF/MEM conflicts | CPI penalty ~0.2-0.3 |
+| Von Neumann | IF/MEM conflicts | CPI penalty up to 0.2-0.3; 0.125 stepped in Section 6.2 |
 | **Harvard** | No IF/MEM conflicts | Near-ideal CPI |
 | Modified Harvard | L1 split, L2+ unified | Best of both |
 
@@ -330,6 +330,1367 @@ cycles per instruction, or an ideal pipeline at CPI 1.`,
       examTip: 'Cycles = stages + instructions - 1 + stalls + flushes. Almost every pipeline question is that one line plus arithmetic; the marks are lost by forgetting the fill term or by counting a two-cycle flush as one.',
       importantNote: 'Forwarding eliminates arithmetic data hazards at zero cycle cost, but a load-use hazard always costs at least one stall because the loaded value simply does not exist yet when the next instruction needs it.',
     },
+    { id: 'arch-stored-program', title: '6. The Stored-Program Machine and the Price of One Bus',
+      content: `## 6.1 One store, two kinds of content
+
+Section 1.1 named the shared memory of a von Neumann machine and called its bus
+a bottleneck. That word is doing a great deal of unpaid work, so this section
+pays it: the bottleneck is a number, the number follows from the instruction
+mix, and once it is on the page it explains why the rest of this chapter and
+the whole of the next one exist.
+
+The stored-program commitment is that instructions and data occupy the same
+addressable store, and that nothing in the store marks which is which — the
+processor decides by how it chooses to use a word. Every convenience of a
+general-purpose computer descends from that decision. A program becomes a file
+that can be copied, relocated, generated at run time by another program, or
+patched while it sits in memory. So does every cost. One store implies one
+port, and the fetch of the next instruction must then queue behind the operand
+of the last one.
+
+Because the two chapters that follow all quote the same machine, its parameters
+are fixed once here and never quietly changed:
+
+| Parameter of the model machine | Symbol | Value |
+|---|---|---|
+| core clock | f | 2 GHz |
+| memory bus transfer width | — | 4 bytes, one word |
+| memory bus transfer rate | B | 500 million words per second |
+| instructions that also touch data | f_d | 0.35 of the mix |
+| stage delays, IF through WB | — | 200, 100, 150, 200, 100 ps |
+| pipeline latch overhead | delta | 20 ps |
+
+Everything numeric below is derived from that table and stated equations. When
+a later section needs a quantity the table does not contain, it states the new
+assumption in the sentence that introduces it.
+
+## 6.2 The bottleneck, expressed as instructions per second
+
+Let f_d be the fraction of executed instructions that also make a data
+reference. Each instruction then costs one memory word for its own fetch plus,
+on average, f_d words of operand traffic:
+
+$$W = 1 + f_d$$
+
+A bus delivering B words per second can therefore sustain no more than
+
+$$R_{shared} = B \\,/\\, (1 + f_d)$$
+
+instructions per second, whatever the core is capable of. For the model
+machine,
+
+$$W = 1 + 0.35 = 1.35$$
+
+$$R_{shared} = 500 / 1.35 = 370.37$$
+
+million instructions per second. Set that against what the core wants. A 2 GHz
+processor with an ideal CPI of one would like to retire 2000 million
+instructions per second, so the ratio of appetite to supply is
+
+$$2000 / 370.37 = 5.40$$
+
+The core is starved by a factor of 5.4. No amount of extra execution hardware
+changes that figure, because the limit is not in the core at all. This is the
+whole argument for caches in one line, and it is why the next chapter is not an
+optional extra.
+
+![Sustainable instruction rate against the fraction of instructions that also touch data. The upper curve is a split instruction and data bus, whose ceiling is the instruction stream alone at 500 million per second; the lower curve is one shared bus at B divided by one plus f, which falls to 370 million per second at the model mix of f equal to 0.35, against the 2000 million a 2 GHz core could retire.](/courses/fe-ee/figures/sys2-arch-bottleneck.svg)
+
+## Worked example 6.1 — how much bus does a target rate need?
+
+**Given.** The same mix, f_d = 0.35, and a required sustained rate of 800
+million instructions per second. What bus rate B is needed, and what data
+bandwidth does that represent in bytes?
+
+**Work.** Invert the ceiling expression:
+
+$$B = R \\times (1 + f_d)$$
+
+$$B = 800 \\times 1.35 = 1080$$
+
+million words per second. At four bytes per word that is
+
+$$1080 \\times 4 = 4320$$
+
+megabytes per second. **Answer: 1080 million transfers per second, about 4.32
+GB/s.** Notice that the answer is more than the instruction rate by exactly the
+factor 1.35, which is the only thing the mix contributes.
+
+## 6.3 What a second bus buys
+
+Give the machine separate instruction and data paths, as Section 1.1's Harvard
+column describes. The two streams no longer compete, so the ceiling becomes
+whichever stream is busier, and the instruction stream always is while f_d is
+below one:
+
+$$R_{split} = B$$
+
+$$R_{split} \\,/\\, R_{shared} = 1 + f_d = 1.35$$
+
+A 35 percent gain for a duplicated bus. That is the honest size of the Harvard
+advantage at the bus level, and it is worth noticing that it is a bandwidth
+argument rather than a latency argument: nothing got faster, two things simply
+stopped waiting for each other.
+
+## Worked example 6.2 — the same loop on one port and on two
+
+**Given.** The eight-instruction dot-product loop body of Section 10.2, run for
+100 passes, on a five-stage pipeline. In the Harvard version instruction fetch
+and data access use separate ports. In the von Neumann version they share one,
+so no instruction can be fetched in a cycle that a load or a store is using
+memory.
+
+**Work.** Both machines were stepped cycle by cycle rather than estimated. The
+split-port machine finishes the 800 instructions in 1102 cycles:
+
+$$CPI_{split} = 1102 / 800 = 1.3775$$
+
+The single-port machine finishes them in 1202 cycles:
+
+$$CPI_{shared} = 1202 / 800 = 1.5025$$
+
+so the structural hazard costs
+
+$$1.5025 - 1.3775 = 0.125$$
+
+cycles per instruction, and the whole loop takes
+
+$$1202 / 1102 = 1.091$$
+
+times as long, 9.1 percent more. **Answer: 0.125 CPI, or 9.1 percent of the
+run time.**
+
+The interesting part is why the answer is not 0.25. There are two loads per
+pass, so a naive count expects two lost fetch cycles per pass; the stepper
+reports one. The second conflict lands inside the bubble the machine was
+already paying for the load-use hazard, and a cycle you have already lost
+cannot be lost twice. Estimating structural hazards by counting the offending
+instructions therefore overstates the damage whenever the pipeline is already
+stalled, which is exactly when structural hazards are most likely.
+
+## 6.4 Why modern machines are neither, quite
+
+A pure Harvard machine cannot execute a program it has just written, because
+the instruction port cannot see what the data port stored. That is intolerable
+for anything with a compiler, a loader, or a just-in-time translator. So real
+processors split only the level closest to the core — separate first-level
+instruction and data caches, giving two ports where the traffic is heaviest —
+and unify everything below, preserving the single address space the software
+depends on. The label for that arrangement is **modified Harvard**, and it is
+an engineering compromise rather than a third idea: Harvard bandwidth at the
+top, von Neumann semantics everywhere else.
+
+**How the exam asks this.** Either qualitatively, naming which architecture
+shares a bus and which does not, or quantitatively, giving a bus rate and an
+instruction mix and asking for the sustainable instruction rate. For the second
+kind, count the memory words one instruction costs — always one for the fetch,
+plus the data references — and divide the bus rate by that.`,
+      examTip: 'The sustainable instruction rate on a shared bus is B/(1 + f_d), not B. The single most common error is to forget that the instruction fetch is itself a memory reference, which makes every data-reference fraction look one whole word too generous.',
+      importantNote: 'A split bus is worth exactly the factor 1 + f_d at the bus level, which is 1.35 for a mix with 35 percent data references — not the two times that "twice the buses" suggests. The instruction stream is present on every instruction and the data stream is not.',
+    },
+    { id: 'arch-encoding', title: '7. Instruction Formats: What Fits in Thirty-Two Bits',
+      content: `## 7.1 An instruction is a fixed budget of bits
+
+Section 4.3 asked where the operand lives. This section asks the harder
+question that decides the answer: how many bits are there to say it in? On a
+machine with fixed 32-bit instructions the budget is exactly 32, every field
+competes with every other field, and every architectural nicety — more
+registers, longer immediates, further branches — is paid for out of the same
+purse.
+
+Start with the register file. Naming one register out of R takes
+
+$$b_{reg} = \\log_2 R$$
+
+bits, so a machine with 32 registers spends
+
+$$b_{reg} = \\log_2 32 = 5$$
+
+bits per register name. Reserve six bits for the opcode, which distinguishes
+64 basic operations, and the three-register arithmetic format lays out like
+this:
+
+| Field | Purpose | Width |
+|---|---|---|
+| opcode | which operation | 6 |
+| rs | first source register | 5 |
+| rt | second source register | 5 |
+| rd | destination register | 5 |
+| extra | shift amount, function select | 11 |
+
+The three register fields cost
+
+$$3 \\times 5 = 15$$
+
+bits, and what remains for everything else is
+
+$$32 - 6 - 15 = 11$$
+
+bits. Those eleven bits are not spare: they are what lets one opcode value
+cover a family of related operations, which is how a six-bit opcode field ends
+up naming far more than 64 instructions.
+
+## 7.2 Trading a register field for a constant
+
+Immediate and load-store instructions need a number rather than a third
+register, so they give up one register field and merge the leftovers:
+
+$$32 - 6 - 10 = 16$$
+
+bits of immediate. Sixteen bits signed spans
+
+$$-32768 \\;\\text{to}\\; +32767$$
+
+which covers ordinary constants and ordinary structure offsets, and misses
+large addresses entirely. That miss is the reason such machines have an
+instruction whose only job is to load a constant into the upper half of a
+register: two instructions build a 32-bit constant out of two 16-bit fields,
+and the compiler emits the pair only when it must.
+
+## Worked example 7.1 — what a branch can reach
+
+**Given.** A conditional branch carries the 16-bit signed immediate above,
+counted in instruction words of four bytes, applied to the incremented program
+counter as Section 4.2 established.
+
+**Work.** The displacement spans plus or minus 2 to the fifteenth words:
+
+$$2^{15} = 32768$$
+
+words in each direction, which in bytes is
+
+$$32768 \\times 4 = 131072$$
+
+**Answer: plus or minus 128 KB.** A loop or an if-else inside one function is
+always well within that, which is why the format spends only sixteen bits on
+it. A call to a distant function is not, which is why calls use a different
+format.
+
+## Worked example 7.2 — what a jump can reach
+
+**Given.** The jump format spends six bits on the opcode and gives everything
+else to the target field, again counted in four-byte words.
+
+**Work.** The target field is
+
+$$32 - 6 = 26$$
+
+bits wide, so it names 2 to the twenty-sixth words:
+
+$$2^{26} = 67108864$$
+
+words, and in bytes
+
+$$67108864 \\times 4 = 268435456$$
+
+**Answer: 256 MB of reach.** The usual exam trap is to report 64 MB by
+forgetting that the field counts words rather than bytes, and word addressing
+is exactly what buys the missing factor of four. The remaining bits of the
+program counter are not supplied by the instruction at all: they are inherited
+from wherever the jump itself sits, which is why a jump cannot leave its own
+256 MB region and a long call needs a register-indirect form.
+
+## Worked example 7.3 — can the format afford a fused three-input operation?
+
+**Given.** A proposed multiply-add reads three registers and writes a fourth,
+so it needs four register fields inside the same 32-bit word with a six-bit
+opcode.
+
+**Work.** The bits available for register names are
+
+$$32 - 6 = 26$$
+
+and four equal fields must each fit in
+
+$$26 / 4 = 6.5$$
+
+bits, so each field can be at most 6 bits, naming 64 registers. Four six-bit
+fields consume 24 bits, leaving
+
+$$32 - 6 - 24 = 2$$
+
+bits for everything else. **Answer: yes, but only with a register file of 64 or
+fewer and almost no room for sub-opcodes.** This is a real design pressure and
+not a curiosity: it is why fixed-length machines that want fused operations
+either raise the instruction width, shrink the opcode, or make the destination
+implicitly one of the sources.
+
+## 7.3 Why variable length is the other answer
+
+A CISC design refuses the budget instead of balancing it. Instructions run from
+one byte to fifteen, a short common operation costs a short encoding, and a
+rare operation with an enormous immediate is allowed to be enormous. The
+program gets smaller, which mattered enormously when memory was the scarcest
+thing in the machine.
+
+What it costs is the ability to know where the next instruction starts without
+decoding this one. Fetching four instructions at once requires finding four
+boundaries in a byte stream, and finding a boundary means partly decoding.
+A fixed-length machine finds the next instruction by adding a constant to the
+program counter — Section 4.2's step 2, which is why that step could be written
+so simply. That single property is what makes a wide pipeline cheap, and it is
+the technical core of the RISC and CISC argument that Section 12 settles
+numerically.
+
+| Property | Fixed 32-bit encoding | Variable-length encoding |
+|---|---|---|
+| Next instruction address | PC plus a constant | known only after decoding |
+| Decoding several at once | trivial | requires boundary search |
+| Code size | larger | smaller |
+| Immediate range | capped by the field | unlimited, at a size cost |
+| Addressing modes reachable | few | many |
+
+**How the exam asks this.** Give a word width, an opcode width and a register
+count, then ask for a field width or a reach. Compute the register field from
+the register count first, subtract everything known from the word width, and
+check whether the remaining field counts bytes or words before converting.`,
+      examTip: 'Branch and jump displacements are counted in instruction words, not bytes, so multiply the field reach by the instruction length at the end. A 26-bit word-counted jump field reaches 256 MB, not 64 MB.',
+      importantNote: 'Register file size and instruction format are not independent choices. Doubling the register count adds one bit to every register field, so a three-address format loses three bits of function space for each doubling — which is why 32 registers is such a common landing point on 32-bit encodings.',
+    },
+    { id: 'arch-datapath', title: '8. The Datapath, the Control Unit, and Three Ways to Clock Them',
+      content: `## 8.1 The datapath is the plumbing, the control unit is the valve
+
+The registers of Section 4.1 and the stages of Section 1.3 describe two halves
+of one machine. The **datapath** is everything that holds or moves a value: the
+register file, the arithmetic and logic unit, the memory ports, the adders that
+compute the next program counter, and the multiplexers that choose among their
+inputs. The **control unit** holds no data at all. It reads the opcode sitting
+in the instruction register, together with the condition flags in the status
+word, and emits the select and enable lines that tell every multiplexer which
+input to pass and every register whether to load this cycle.
+
+The division matters because it explains where an instruction set actually
+lives in the hardware. Adding an instruction that needs no new datapath — some
+new combination of existing paths — costs only control. Adding one that needs a
+second adder or a third register-file read port costs datapath, which is
+silicon and time. The first is nearly free and the second is not, and that
+asymmetry shapes real instruction sets more than any philosophy about
+simplicity.
+
+## 8.2 Three ways to clock the same datapath
+
+The stage delays in the model machine of Section 6.1 sum to
+
+$$T_{total} = 200 + 100 + 150 + 200 + 100 = 750$$
+
+picoseconds. That one number can be clocked three ways.
+
+**Single-cycle.** Every instruction completes in one clock, so the clock period
+must cover the longest possible path, all 750 ps. CPI is exactly 1 and the
+clock rate is
+
+$$1000 / 750 = 1.333$$
+
+GHz, taking picoseconds to gigahertz. Simple, and wasteful: an instruction that
+never touches memory still waits out the memory stage.
+
+**Multicycle.** Break the instruction into steps of one stage each, clock at the
+slowest single stage, 200 ps, and let each instruction take only the steps it
+needs. Now CPI is a weighted average over the instruction mix,
+
+$$CPI = \\sum_i f_i \\; CPI_i$$
+
+which for the mix below evaluates to exactly 4.
+
+| Class | Fraction f_i | Cycles CPI_i | Contribution |
+|---|---|---|---|
+| ALU | 0.45 | 4 | 1.80 |
+| Load | 0.22 | 5 | 1.10 |
+| Store | 0.11 | 4 | 0.44 |
+| Branch | 0.18 | 3 | 0.54 |
+| Jump | 0.04 | 3 | 0.12 |
+| **Total** | **1.00** | | **4.00** |
+
+$$CPI_{multi} = 1.80 + 1.10 + 0.44 + 0.54 + 0.12 = 4.00$$
+
+$$T_{multi} = 4.00 \\times 200 = 800$$
+
+picoseconds per instruction — which is **worse** than the single-cycle machine.
+That result is not a mistake and it is worth sitting with. Multicycle wins only
+when the stage delays are badly unbalanced or when the hardware saved by
+reusing one adder across steps matters more than the time. Here the stages are
+reasonably even, so slicing gains nothing and the extra cycles cost.
+
+**Pipelined.** Keep the 200 ps period, add the latch overhead of 20 ps that the
+stage registers cost, and overlap the instructions so one finishes per cycle:
+
+$$T_{pipe} = 200 + 20 = 220$$
+
+picoseconds per instruction at an ideal CPI of 1, for a speedup over the
+single-cycle machine of
+
+$$750 / 220 = 3.409$$
+
+![Cycles per instruction as a weighted average over the instruction mix, swept against the fraction of the mix that is a load. The multicycle curve, the sum of f i times CPI i, passes through 4.00 at the model mix of 22 percent loads; the pipelined curve, one plus the load-use stalls, passes through 1.11 at the same mix and rises far more slowly.](/courses/fe-ee/figures/sys2-arch-cpi-mix.svg)
+
+The figure sweeps the load fraction because that is the parameter a program
+controls. The multicycle CPI moves steeply with it, since loads are the
+expensive class; the pipelined CPI barely moves, because a pipelined machine
+charges for a load only when the very next instruction wants the loaded value.
+Two machines, one weighted-average formula, opposite sensitivities.
+
+## Worked example 8.1 — the same mix on a machine with a slow memory
+
+**Given.** The multicycle machine above, except that memory has become slower
+and a load now takes 7 cycles instead of 5 while a store takes 6 instead of 4.
+Recompute CPI and the time per instruction.
+
+**Work.** Only two terms change:
+
+$$CPI = 1.80 + 1.54 + 0.66 + 0.54 + 0.12 = 4.66$$
+
+taking the load term as 0.22 times 7 and the store term as 0.11 times 6. At the
+same 200 ps clock,
+
+$$T = 4.66 \\times 200 = 932$$
+
+picoseconds. **Answer: CPI 4.66, 932 ps per instruction, 16.5 percent slower.**
+The check worth running is that the untouched classes contributed 1.80, 0.54
+and 0.12 before and after; if a recomputed weighted average moves a term you
+did not change, the mix has been renormalised by mistake.
+
+## 8.3 Hardwired control against microprogrammed control
+
+The control unit can be built two ways, and the choice is the oldest
+performance-versus-flexibility trade in the field.
+
+A **hardwired** control unit is a finite state machine in gates. It is fast,
+because a signal is one or two gate delays from the opcode bits, and it is
+rigid, because changing the instruction set means changing the logic.
+
+A **microprogrammed** control unit stores the control signals in a small fast
+memory. Each entry — a microword — holds one cycle's worth of control lines
+plus the address of the next microword. Executing a machine instruction means
+running a short program out of that store. It is slower by the access time of
+the control store and endlessly flexible, since a new instruction is a new
+sequence of microwords rather than new gates.
+
+## Worked example 8.2 — sizing a control store
+
+**Given.** A microprogrammed unit that drives 32 control signals, uses a 6-bit
+next-address field, and holds 512 microwords. How large is the control store?
+
+**Work.** Each microword is
+
+$$32 + 6 = 38$$
+
+bits wide, so the store holds
+
+$$512 \\times 38 = 19456$$
+
+bits, which is
+
+$$19456 / 8 = 2432$$
+
+bytes. **Answer: 2432 bytes, under 2.4 KB.** The trap is to give the
+next-address field its own separate memory and add the two sizes; it is part of
+the same word, read in the same access, because it must be available in the
+same cycle as the signals it accompanies.
+
+| | Hardwired control | Microprogrammed control |
+|---|---|---|
+| Implementation | combinational logic and a state register | a control store plus a sequencer |
+| Speed | fastest available | limited by the control store access |
+| Changing the instruction set | redesign the logic | rewrite the microcode |
+| Natural fit | simple, regular instruction sets | complex, variable instruction sets |
+| Where it dominates | RISC pipelines | CISC decoders, and patchable microcode today |
+
+**How the exam asks this.** Most often as a matching question — which control
+style suits which instruction set — and occasionally as the control-store
+arithmetic of Worked example 8.2. For the arithmetic, count the bits of one
+microword first, then multiply by the number of microwords, then divide by
+eight only at the very end.`,
+      examTip: 'Multicycle is not automatically faster than single-cycle. Compute CPI times the clock period for both: if the stage delays are nearly equal, slicing the instruction into steps costs more in cycles than it recovers in clock rate.',
+      importantNote: 'A weighted-average CPI is only valid when the class fractions sum to one. If a problem changes the mix, renormalise before weighting; if it changes only the cycle counts, the untouched contributions must come out identical, which is the fastest available check on the arithmetic.',
+    },
+    { id: 'arch-perf-equation', title: '9. The Performance Equation, One Factor at a Time',
+      content: `## 9.1 Where the three factors come from
+
+Section 3 used execution time as a formula. It is worth deriving, because the
+derivation is the reason the formula cannot be argued with. Execution time is
+cycles times the length of a cycle:
+
+$$T = C \\times \\tau$$
+
+and the cycle count is the instruction count times the average cycles each
+instruction takes:
+
+$$C = IC \\times CPI$$
+
+Substituting, and writing the clock period as the reciprocal of the frequency,
+
+$$T = IC \\times CPI \\times \\tau$$
+
+$$T = \\frac{IC \\times CPI}{f}$$
+
+Three factors, and each is owned by a different part of the system. The
+**instruction count** belongs to the algorithm, the compiler and the
+instruction set. The **CPI** belongs to the microarchitecture and to the
+program's own behaviour. The **clock frequency** belongs to the circuit design
+and the process technology. Nothing else can change the run time, which is what
+makes the equation useful: any claimed improvement has to enter through one of
+these three doors, and asking which one is often enough to deflate it.
+
+## 9.2 Moving one factor at a time
+
+Take a base machine running a program with 2 billion instructions at a CPI of
+2.5 on a 2 GHz clock. Its run time is
+
+$$T = 2 \\times 2.5 / 2 = 2.5$$
+
+seconds, working in units of 10 to the ninth for the count and gigahertz for
+the clock. Now improve exactly one factor by 20 percent, three times over.
+
+**Better compiler, 20 percent fewer instructions:**
+
+$$T = 1.6 \\times 2.5 / 2 = 2.0$$
+
+**Better microarchitecture, CPI down 20 percent to 2.0:**
+
+$$T = 2 \\times 2.0 / 2 = 2.0$$
+
+**Better process, clock period down 20 percent so the frequency is 2.5 GHz:**
+
+$$T = 2 \\times 2.5 / 2.5 = 2.0$$
+
+All three give the same answer, and the same speedup:
+
+$$2.5 / 2.0 = 1.25$$
+
+| Change | IC (billions) | CPI | Clock (GHz) | Time (s) | Speedup |
+|---|---|---|---|---|---|
+| Base machine | 2.0 | 2.5 | 2.0 | 2.50 | 1.00 |
+| 20% fewer instructions | 1.6 | 2.5 | 2.0 | 2.00 | 1.25 |
+| CPI 20% lower | 2.0 | 2.0 | 2.0 | 2.00 | 1.25 |
+| Clock period 20% shorter | 2.0 | 2.5 | 2.5 | 2.00 | 1.25 |
+
+The symmetry is not a coincidence. Time is a product of three factors, so a
+proportional change in any one of them scales the product identically. This is
+worth remembering under exam pressure, because it means a question asking which
+of three improvements helps most is either asking for arithmetic on unequal
+percentages, or is a trick.
+
+## Worked example 9.1 — the improvement that argues with itself
+
+**Given.** A compiler option removes 400 million instructions from the 2 billion
+above, and every instruction it removes is a simple one that took a single
+cycle. What is the real speedup?
+
+**Work.** Count cycles, not instructions. The base machine spends
+
+$$C = 2 \\times 2.5 = 5.0$$
+
+billion cycles. Removing 400 million single-cycle instructions removes 400
+million cycles:
+
+$$C = 5.0 - 0.4 = 4.6$$
+
+billion. The new instruction count is 1.6 billion, so the new CPI is
+
+$$CPI = 4.6 / 1.6 = 2.875$$
+
+which has gone **up**, and the new run time at 2 GHz is
+
+$$T = 4.6 / 2 = 2.3$$
+
+seconds, for a speedup of
+
+$$2.5 / 2.3 = 1.087$$
+
+**Answer: 1.087, not the 1.25 that the 20 percent instruction reduction
+suggests.** The trap is treating the three factors as independent. They are
+independent in the algebra and coupled in reality: removing the cheapest
+instructions raises the average cost of the ones that remain. Anyone who
+applies the 1.25 from Section 9.2 here has assumed CPI stayed at 2.5, which
+would require the removed instructions to have been exactly average.
+
+## Worked example 9.2 — why MIPS ranks machines wrongly
+
+**Given.** Machine A runs at 2 GHz with a CPI of 2.5 on this program. Machine B
+runs at 1.5 GHz with a CPI of 1.5, but its instruction set is simpler, so the
+same program takes 1.3 times as many instructions. Which machine wins, and what
+does the MIPS rating say?
+
+**Work.** Millions of instructions per second is the clock in megahertz divided
+by the CPI:
+
+$$MIPS_A = 2000 / 2.5 = 800$$
+
+$$MIPS_B = 1500 / 1.5 = 1000$$
+
+so B looks 25 percent faster. Now compute run time, taking A's instruction
+count as one unit:
+
+$$T_A = 1.0 \\times 2.5 / 2.0 = 1.25$$
+
+$$T_B = 1.3 \\times 1.5 / 1.5 = 1.30$$
+
+in the same arbitrary units, so
+
+$$T_B / T_A = 1.3 / 1.25 = 1.04$$
+
+**Answer: A is faster by 4 percent, despite a MIPS rating 25 percent lower.**
+The distractor is the MIPS number itself. It divides out the instruction count,
+which is precisely the factor that differs between the two instruction sets, so
+it can only compare machines that execute the same instructions. A rate whose
+unit is "instructions" is meaningless across machines whose instructions do
+different amounts of work.
+
+## Worked example 9.3 — recovering an unknown factor
+
+**Given.** A program of 800 million instructions runs in 0.40 s on a 1.6 GHz
+machine. What is its CPI, and what clock rate would be needed to reach 0.25 s
+with the same binary and the same microarchitecture?
+
+**Work.** Rearranging the performance equation for CPI,
+
+$$CPI = \\frac{T \\times f}{IC}$$
+
+$$CPI = 0.40 \\times 1600 / 800 = 0.80$$
+
+taking the clock in megahertz and the count in millions. A CPI below one means
+the machine retires more than one instruction per cycle, so it is superscalar.
+For the target time, rearrange for frequency:
+
+$$f = \\frac{IC \\times CPI}{T}$$
+
+$$f = 800 \\times 0.80 / 0.25 = 2560$$
+
+megahertz. **Answer: CPI 0.80, and 2.56 GHz.** The trap is to scale the clock
+by the time ratio in the wrong direction; the sanity check is that a shorter
+target time must demand a higher frequency, and 2560 is above 1600.
+
+**How the exam asks this.** Almost always as a comparison between two machines
+on one program, or as a single-factor improvement. Write the equation, fill in
+what is given, and never compare clock rates or MIPS ratings directly.`,
+      examTip: 'Execution time is the only honest comparison. Clock rate ignores CPI, MIPS ignores instruction count, and both can rank two machines in the opposite order to the one a stopwatch would give.',
+      importantNote: 'The three factors are algebraically independent and physically coupled. A change that moves instruction count almost always moves CPI as well, so a problem that supplies the new cycle count instead of the new CPI is telling you it expects the coupling to be honoured.',
+    },
+    { id: 'arch-pipe-derive', title: '10. Pipelining: the Speedup Derived, the Depth Optimised',
+      content: `## 10.1 The speedup expression, and what limits it
+
+A non-pipelined machine whose work divides into k stages of tau each takes k
+tau per instruction, so n instructions cost
+
+$$T_{seq} = n \\, k \\, \\tau$$
+
+A pipelined machine issues one instruction per cycle after the first has filled
+the pipe, so it needs the fill plus one cycle each thereafter, as Section 5.1
+established:
+
+$$C_{pipe} = k + (n - 1)$$
+
+$$T_{pipe} = [k + (n - 1)] \\, (\\tau + \\delta)$$
+
+where delta is the latch overhead the stage registers impose. The speedup is
+the ratio:
+
+$$S = \\frac{n \\, k \\, \\tau}{[k + (n - 1)](\\tau + \\delta)}$$
+
+Two limits are worth reading off. With no latch overhead and a very large n,
+the bracket approaches n and the speedup approaches k — the familiar claim that
+a k-stage pipeline is k times faster. With a realistic delta it approaches
+
+$$S_{\\infty} = \\frac{k \\, \\tau}{\\tau + \\delta}$$
+
+which is strictly less than k and falls further behind as the stages get
+shorter, because delta does not shrink with them. Latch overhead is the reason
+pipelines cannot be made arbitrarily deep, and Section 10.4 turns that into a
+number.
+
+## 10.2 A real loop body, stepped rather than estimated
+
+Estimating stalls by inspection is where marks are lost, so this section
+counts them by stepping the machine. The body is an ordinary dot-product
+kernel: load an element from each of two arrays, multiply, accumulate, bump
+both pointers, decrement the counter, branch back.
+
+![Space-time chart of one dot-product loop body through a five-stage pipeline, produced by stepping the pipeline cycle by cycle rather than drawn by hand. The multiply waits one bubble for the second load to leave the memory stage, and the taken branch resolves in the execute stage, so the two instructions fetched behind it are squashed and the next pass is fetched two cycles late.](/courses/fe-ee/figures/sys2-arch-pipe-schedule.svg)
+
+Two disturbances appear, and only two. The multiply needs the value the second
+load is fetching, and a load's value does not exist until its memory stage
+ends, so one bubble is unavoidable — the load-use hazard of Section 5.3. The
+branch is resolved in the execute stage and is taken, so the two instructions
+fetched behind it are on the wrong path and are squashed.
+
+Run the loop 100 times. The stepped machine reports 1102 cycles for 800
+instructions, which the closed form reproduces exactly:
+
+$$C = 5 + 799 + 100 + 198 = 1102$$
+
+reading the terms as fill, the remaining instructions, one bubble per pass, and
+two squashed fetches on each of the 99 taken branches. The last pass falls
+through, so it costs no flush. Hence
+
+$$CPI = 1102 / 800 = 1.3775$$
+
+## Worked example 10.1 — what the compiler can remove for free
+
+**Given.** The same loop, but the compiler lifts one pointer increment into the
+slot between the second load and the multiply, so the multiply no longer sits
+immediately behind the load it depends on. Nothing is added or removed; one
+instruction moves.
+
+**Work.** Stepping the reordered trace gives 1002 cycles for the same 800
+instructions:
+
+$$CPI = 1002 / 800 = 1.2525$$
+
+$$1102 / 1002 = 1.0998$$
+
+**Answer: 10.0 percent faster, from moving a single instruction.** The bubble
+count went from 100 to zero; the 198 flush cycles did not move, because
+scheduling cannot help a branch that is genuinely taken. The distractor here is
+to expect the whole 1.3775 to collapse toward 1.0: it cannot, because the
+control cost is untouched and it is twice the size of the data cost.
+
+## Worked example 10.2 — putting a perfect predictor on top
+
+**Given.** The scheduled loop again, now with a branch predictor that is right
+every time, so a taken branch costs nothing.
+
+**Work.** Stepping this configuration gives 804 cycles:
+
+$$CPI = 804 / 800 = 1.005$$
+
+**Answer: CPI 1.005, within half a percent of the ideal.** The four cycles above
+800 are the pipeline fill, which never goes away and is invisible in any real
+program. Compare the three configurations:
+
+| Configuration | Cycles for 800 instructions | CPI | Bubbles | Flushes |
+|---|---|---|---|---|
+| Unscheduled, no prediction | 1102 | 1.3775 | 100 | 198 |
+| Scheduled, no prediction | 1002 | 1.2525 | 0 | 198 |
+| Scheduled, perfect prediction | 804 | 1.005 | 0 | 0 |
+
+Reading down the flush column tells the design story of the last thirty years:
+once the compiler has removed the data stalls, essentially all the remaining
+loss is control, and that is why branch prediction rather than scheduling is
+where the silicon went.
+
+## Worked example 10.3 — what forwarding is worth
+
+**Given.** One pass of the unscheduled loop, eight instructions, with and
+without forwarding. Without it, a dependent instruction must wait until its
+producer has written the register file.
+
+**Work.** Stepped both ways, the pass takes 13 cycles with forwarding and 18
+without:
+
+$$18 / 13 = 1.385$$
+
+**Answer: forwarding is worth 38.5 percent on this body, and it costs no
+cycles at all — only wires, multiplexers and comparators.** The trap is to
+assume forwarding removes every data stall; it removes the ones whose value
+already exists somewhere in the pipeline, and the surviving 13 cycles still
+contain the load-use bubble that no wire can remove, because that value has not
+been read from memory yet.
+
+## 10.3 The three hazard classes, priced
+
+| Hazard | What causes it | Cure | Cost after the cure |
+|---|---|---|---|
+| Structural | two stages want one resource | duplicate the resource | 0, and 0.125 CPI if not duplicated, from Worked example 6.2 |
+| Data, arithmetic | operand still inside the pipeline | forwarding | 0 |
+| Data, load-use | operand not yet out of memory | schedule an instruction into the gap | 1 cycle if the gap cannot be filled |
+| Control | fetches behind a branch are wrong | prediction, or resolve earlier | penalty times misprediction rate |
+
+## 10.4 How deep should the pipeline be?
+
+Splitting a fixed 750 ps of logic into k stages gives a period of
+
+$$\\tau_k = 750 / k + 20$$
+
+picoseconds, which falls as k rises. But a branch is resolved roughly halfway
+down the pipe, so the misprediction penalty grows with depth as
+
+$$P(k) = k / 2 - 1$$
+
+stages. With 20 percent branches at 90 percent prediction accuracy, the cycles
+per instruction become
+
+$$CPI(k) = 1 + 0.02 \\, P(k)$$
+
+and the time per instruction is the product of the two, which has a genuine
+minimum.
+
+![Time per instruction against pipeline depth. The dashed curve is the clock period alone, 750 over k plus 20 picoseconds, which falls monotonically; the solid curve multiplies it by the cycles per instruction that the growing misprediction penalty causes, and it reaches a minimum of 51.35 picoseconds at 61 stages before rising again. The classic five-stage machine sits at 175.1 picoseconds.](/courses/fe-ee/figures/sys2-arch-pipe-depth.svg)
+
+At five stages the period is 170 ps and the CPI is 1.03, so
+
+$$t(5) = 1.03 \\times 170 = 175.1$$
+
+picoseconds per instruction. At 61 stages the period has fallen to 32.295 ps
+while the CPI has risen to 1.59, and the product is
+
+$$t(61) = 1.59 \\times 32.295 = 51.35$$
+
+picoseconds — the minimum. Past that point each extra stage buys less period
+than it costs in mispredictions, and the curve turns upward. Real processors
+stop well short of 61 for reasons this model omits, chiefly power and the cost
+of the recovery logic, but the shape is right and it is the shape that matters:
+depth is an optimum, not a direction.
+
+## 10.5 The branch penalty as a design knob
+
+Section 3.2 computed the effective CPI for a 70 percent accurate predictor with
+a two-cycle penalty. Generalising,
+
+$$CPI = 1 + f_{br} \\, (1 - a) \\, P$$
+
+with f_br the branch fraction, a the accuracy and P the penalty in cycles.
+
+![Cycles per instruction against branch prediction accuracy for penalties of two, five and ten cycles, with twenty percent of instructions being branches. The lines share the point of one at perfect accuracy and fan out as accuracy falls, the slope being the penalty; a ten-cycle machine at 95 percent accuracy lands on exactly the same CPI as a two-cycle machine at 75 percent.](/courses/fe-ee/figures/sys2-arch-branch-penalty.svg)
+
+The figure carries one lesson that the algebra hides. Accuracy and penalty
+trade against each other exactly, because they appear only as a product:
+
+$$CPI = 1 + 0.20 \\times 0.05 \\times 10 = 1.10$$
+
+$$CPI = 1 + 0.20 \\times 0.25 \\times 2 = 1.10$$
+
+A deep machine with an excellent predictor and a shallow machine with a poor
+one land on the same throughput. Whether the deep machine is nonetheless
+better depends entirely on how much clock rate its depth bought, which is the
+question Section 10.4 answered.
+
+**How the exam asks this.** Give stages, instruction count and a list of
+disturbances, then ask for cycles, CPI or speedup. Use fill plus instructions
+minus one, add the stalls and the flushes explicitly, and read the question
+twice to see which baseline the speedup is against.`,
+      examTip: 'Count flushes per taken branch, not per branch. A loop that iterates 100 times executes the branch 100 times but takes it only 99, and the fall-through pass costs nothing — an off-by-one that changes the flush total by the whole penalty.',
+      importantNote: 'Deeper pipelines raise the clock and raise the misprediction penalty together, so time per instruction has a minimum rather than falling forever. On the model machine of Section 6.1 that minimum sits at 61 stages and 51.35 ps, and beyond it every extra stage is a net loss.',
+    },
+    { id: 'arch-amdahl-limits', title: '11. Amdahl\'s Law, Derived and Applied',
+      content: `## 11.1 The derivation is three lines
+
+Split a program's run time into the part that can be sped up and the part that
+cannot. Let p be the fraction of the original time spent in the improvable
+part, so 1 minus p is spent in the rest. Speed the improvable part by a factor
+N and leave the rest alone:
+
+$$T(N) = (1 - p) \\, T_1 + \\frac{p \\, T_1}{N}$$
+
+Divide the original time by the new one to get the speedup:
+
+$$S(N) = \\frac{1}{(1 - p) + p/N}$$
+
+and let N grow without bound. The second term vanishes and what is left is the
+ceiling:
+
+$$S_{\\infty} = \\frac{1}{1 - p}$$
+
+The whole of Amdahl's law is that last line. Whatever you do to part of a
+program, the part you did not touch survives, and eventually it is all that is
+left. Note that p is a fraction of **time**, not of code: a loop that is three
+lines of a thousand-line program can easily be 95 percent of its run time, and
+a thousand lines of setup can easily be 1 percent.
+
+![Speedup against the number of workers for parallel fractions of 0.50, 0.90 and 0.95, with each curve flattening against its own dashed ceiling at two, ten and twenty times. Eight workers on a program that is 90 percent parallel return 4.71 times, not eight.](/courses/fe-ee/figures/sys2-arch-amdahl.svg)
+
+## Worked example 11.1 — eight workers on a mostly parallel program
+
+**Given.** A program is 90 percent parallel by time. What speedup do eight
+processors give, and what is the ceiling?
+
+**Work.** The serial remainder is 0.10 and the parallel part is divided by 8:
+
+$$0.10 + 0.90 / 8 = 0.2125$$
+
+$$S(8) = 1 / 0.2125 = 4.71$$
+
+and the ceiling is
+
+$$S_{\\infty} = 1 / 0.10 = 10$$
+
+**Answer: 4.71 times on eight processors, against a ceiling of 10.** Two
+distractors sit close by. The first is answering 8, which assumes the whole
+program parallelises. The second is answering 7.2, which is 0.90 times 8 —
+scaling the speedup by the parallel fraction instead of scaling the time. That
+second error is the common one and it always overstates, because it forgets
+that the serial part still has to run.
+
+This result was confirmed a second way, by list-scheduling ten thousand equal
+parallel tasks onto eight workers and measuring the makespan rather than
+evaluating the formula; the simulated speedup agrees with 4.7058823 to nine
+decimal places.
+
+| Parallel fraction p | S on 8 workers | S on 64 workers | Ceiling |
+|---|---|---|---|
+| 0.50 | 1.78 | 1.97 | 2 |
+| 0.90 | 4.71 | 8.77 | 10 |
+| 0.95 | 5.93 | 15.42 | 20 |
+| 0.99 | 7.48 | 39.26 | 100 |
+
+Read across the p = 0.90 row: going from 8 workers to 64, an eightfold increase
+in hardware, buys 1.86 times more speed. Read down the last column to see why
+the industry cares so much about the last few percent of parallelism.
+
+## Worked example 11.2 — the inverse question
+
+**Given.** A budget allows 16 processors and the target is a speedup of 8. How
+parallel must the program be?
+
+**Work.** Set the speedup expression equal to 8 and solve for p:
+
+$$\\frac{1}{8} = (1 - p) + \\frac{p}{16}$$
+
+$$0.125 = 1 - p + 0.0625 \\, p$$
+
+$$p = 0.875 / 0.9375 = 0.9333$$
+
+**Answer: 93.33 percent parallel.** Half the machine's processors are being
+bought to overcome the last 6.7 percent of serial code, which is the practical
+reading. The trap is to answer 0.50, reasoning that a speedup of 8 out of 16 is
+"half" — the relationship is not linear anywhere.
+
+## 11.2 Amdahl applied to a component, not to a parallel machine
+
+The law is usually taught about processors, but nothing in the derivation
+mentions them. p is any fraction of run time and N is any speedup of that
+fraction, so the same three lines price a cache, a floating-point unit or a
+faster disk.
+
+Take the model machine's CPI of 2.5, of which 1.2 cycles per instruction are
+memory stalls. The fraction of time spent stalled is
+
+$$1.2 / 2.5 = 0.48$$
+
+so a perfect memory system, one that never stalls at all, would give
+
+$$S = 1 / 0.52 = 1.923$$
+
+**Under twice as fast, for a memory system that cannot be built.** That is the
+most useful thing Amdahl's law does: it prices the best possible version of an
+improvement before anyone spends a year building a mediocre one. If 1.92 is not
+worth having, the project is finished before it starts.
+
+## 11.3 Where the law is quietly wrong
+
+Amdahl's law holds the problem size fixed. That is the right assumption when
+you have one job and want it done sooner, and the wrong one when more machine
+means a bigger job — a finer mesh, a longer simulation, a larger training set.
+When the serial part stays roughly constant while the parallel part grows with
+the machine, the achievable speedup grows nearly linearly with N instead of
+flattening. That observation is Gustafson's rescaling of the same algebra, and
+it is not a refutation: it answers a different question. Amdahl asks how much
+sooner a fixed job finishes; Gustafson asks how much bigger a job can be
+attempted in a fixed time. An exam question that mentions a fixed workload
+wants Amdahl.
+
+**How the exam asks this.** A fraction and a speedup factor, then the resulting
+overall speedup, or the ceiling. Put the improved fraction over N and leave the
+rest alone; if the question gives a fraction of instructions rather than a
+fraction of time, convert it first, because the law only knows about time.`,
+      examTip: 'p is a fraction of time, never of code or of instructions. If a question gives "40 percent of the instructions", convert to a time fraction using the cycle counts before applying the law, or the answer will be wrong in the optimistic direction.',
+      importantNote: 'Amdahl bounds an enhancement before it is built. If the ideal, infinitely fast version of a subsystem gives an overall speedup that is not worth having, no achievable version of it is worth having either, and the analysis costs one line.',
+    },
+    { id: 'arch-risc-cisc-memory', title: '12. RISC against CISC as Arithmetic, and Where the Cycles Go Next',
+      content: `## 12.1 The argument is a trade between two factors of one product
+
+Section 1.2 tabulated RISC against CISC as a list of adjectives. The
+performance equation turns the same comparison into arithmetic, because the two
+designs move different factors of the same product in opposite directions.
+
+A CISC instruction does more, so a program needs fewer of them: the instruction
+count is low. Each one does more, and the decoding is harder, so the cycles per
+instruction are high. A RISC design takes the opposite side on both. The clock
+usually favours RISC as well, since a simple fixed-length decode is a shorter
+critical path.
+
+Put numbers on it. Normalise the CISC instruction count to one unit and take a
+CPI of 3.6 at 2.0 GHz. Give the RISC machine a CPI of 1.15 at 2.4 GHz, and
+charge it 1.45 times the instructions for the same work:
+
+$$T_{CISC} = 1.0 \\times 3.6 / 2.0 = 1.80$$
+
+$$T_{RISC} = 1.45 \\times 1.15 / 2.4 = 0.6948$$
+
+nanoseconds per unit of work, so
+
+$$1.80 / 0.6948 = 2.591$$
+
+**The RISC machine is 2.59 times faster while executing 45 percent more
+instructions.** Anyone comparing the two by instruction count alone gets the
+answer exactly backwards.
+
+## Worked example 12.1 — how much code expansion could RISC survive?
+
+**Given.** The same two machines. At what code expansion factor e would the
+RISC machine lose its advantage entirely?
+
+**Work.** Set the two run times equal, with e as the unknown instruction ratio:
+
+$$e \\times \\frac{1.15}{2.4} = \\frac{3.6}{2.0}$$
+
+$$e = 1.80 \\times 2.4 / 1.15 = 3.7565$$
+
+**Answer: about 3.76 times.** The RISC compiler could emit nearly four times as
+many instructions as the CISC compiler and the two machines would still finish
+together.
+
+![Execution time of the RISC machine relative to the CISC machine, against the code expansion factor. The line rises from 0.386 at an expansion of 1.45 and crosses equal execution time at an expansion of 3.76, so the RISC design would have to emit nearly four times the instructions before losing.](/courses/fe-ee/figures/sys2-arch-risc-cisc.svg)
+
+The figure is the whole argument in one line, and its slope is the point: the
+break-even is far to the right of any real code expansion, which is why the
+industry stopped arguing about instruction counts. What actually settled the
+question was that a fixed-length encoding is what makes a deep pipeline and a
+wide issue affordable — Section 7.3's boundary problem — while modern CISC
+processors translate their variable-length instructions into fixed-length
+internal operations and pipeline those. The visible instruction set became a
+compatibility interface, and the machine underneath it is a RISC.
+
+## Worked example 12.2 — the CISC instruction that is not worth having
+
+**Given.** A CISC machine offers a single string-copy instruction taking 40
+cycles. The equivalent RISC sequence is a 4-instruction loop body at a CPI of
+1.2, iterated once per byte, copying 8 bytes.
+
+**Work.** The RISC sequence executes
+
+$$4 \\times 8 = 32$$
+
+instructions, costing
+
+$$32 \\times 1.2 = 38.4$$
+
+cycles. **Answer: 38.4 cycles against 40, so the complex instruction is
+slightly slower.** This is the empirical finding that started the RISC
+argument: measured against real compiler output, a good fraction of the complex
+instructions were slower than the simple sequences they replaced, and compilers
+were not emitting them anyway. The distractor is to compare 1 instruction with
+32 and declare the CISC version 32 times better.
+
+## 12.2 Where the remaining cycles actually are
+
+Everything so far has assumed memory answers instantly. Restoring the cost is
+what motivates the next chapter, and it takes one term. Add to the ideal CPI
+the stalls caused by memory:
+
+$$CPI = CPI_{exec} + m_{refs} \\times r_{miss} \\times P_{miss}$$
+
+where m_refs is memory references per instruction, r_miss the miss rate and
+P_miss the miss penalty in cycles. For the model machine — one instruction
+fetch plus 0.35 data references, a 2 percent miss rate, and a 100-cycle penalty
+to main memory:
+
+$$CPI = 1 + 1.35 \\times 0.02 \\times 100 = 3.70$$
+
+against an ideal of 1. The fraction of cycles that are memory stalls is
+
+$$2.7 / 3.7 = 0.730$$
+
+**Seventy-three percent of the machine's cycles are spent waiting**, and the
+speedup a perfect cache would give is 3.7. Every technique in this chapter —
+forwarding, scheduling, prediction, depth — has been fighting over the other
+twenty-seven percent.
+
+## Worked example 12.3 — why doubling the clock barely helps
+
+**Given.** The same machine, with the clock doubled. Memory does not get
+faster, so the 100-cycle penalty becomes 200 cycles.
+
+**Work.** The new CPI is
+
+$$CPI = 1 + 1.35 \\times 0.02 \\times 200 = 6.40$$
+
+Each cycle is now half as long, so in the old machine's cycle units the time
+per instruction is
+
+$$6.40 / 2 = 3.20$$
+
+against 3.70 before, a speedup of
+
+$$3.70 / 3.20 = 1.156$$
+
+**Answer: 15.6 percent, for twice the clock.** This is the memory wall stated
+in the cleanest available way: an improvement that does not touch memory is
+throttled by the fraction of time memory owns, exactly as Amdahl's law in
+Section 11.2 predicted. The trap is to answer 2.0, which assumes the miss
+penalty is measured in nanoseconds rather than in cycles.
+
+**How the exam asks this.** Either a direct comparison of two machines on one
+program, which is the performance equation again, or a CPI-with-stalls
+calculation. For the second, be careful that memory references per instruction
+includes the instruction fetch itself, and that the penalty is in cycles.`,
+      examTip: 'RISC and CISC differ in which factor of IC times CPI over f they optimise, so neither instruction count nor CPI alone decides anything. Multiply the three factors out before answering.',
+      importantNote: 'Memory references per instruction is 1 plus the data-reference fraction, because every instruction is itself fetched from memory. Dropping the fetch term understates the stall CPI by roughly three quarters on a typical mix.',
+    },
+    { id: 'arch-problems', title: '13. Problem Sets',
+      content: `## Problem Set A — the performance equation and instruction formats
+
+**A1.** A program executes 1.5 billion instructions with a CPI of 1.8 on a
+3 GHz processor. Find the execution time.
+
+*Answer.* Apply the equation directly:
+
+$$T = 1.5 \\times 1.8 / 3 = 0.90$$
+
+seconds, working in billions and gigahertz. **0.90 s.** The distractor is
+1.5 divided by 3, giving 0.50 s, which is the answer for a machine with a CPI
+of one and simply forgets to charge for the 1.8.
+
+**A2.** The same program is recompiled and now executes 1.2 billion
+instructions, but the removed instructions were all single-cycle. Find the new
+CPI and the new time.
+
+*Answer.* The original cycle count is
+
+$$C = 1.5 \\times 1.8 = 2.70$$
+
+billion. Removing 300 million single-cycle instructions removes 0.30 billion
+cycles:
+
+$$C = 2.70 - 0.30 = 2.40$$
+
+$$CPI = 2.40 / 1.2 = 2.00$$
+
+$$T = 2.40 / 3 = 0.80$$
+
+seconds. **CPI 2.00, time 0.80 s.** The trap is holding CPI at 1.8 and
+reporting 1.2 times 1.8 over 3, which gives 0.72 s — a 25 percent gain claimed
+where the real gain is 12.5 percent.
+
+**A3.** Machine P runs at 2.5 GHz with a CPI of 1.6. Machine Q runs at 3.2 GHz
+with a CPI of 2.4. Which has the higher MIPS rating, and which runs a given
+program faster if both execute the same instructions?
+
+*Answer.* The MIPS ratings are
+
+$$MIPS_P = 2500 / 1.6 = 1562.5$$
+
+$$MIPS_Q = 3200 / 2.4 = 1333.3$$
+
+Since the instruction counts are identical, MIPS and speed agree here and P
+wins on both. **P, on both counts.** The point of the problem is that this
+agreement is a special case: it holds only because the instruction counts are
+equal, and Worked example 9.2 shows what happens when they are not.
+
+**A4.** A 32-bit fixed-length instruction set has 64 registers and needs to
+encode 100 distinct operations. How many bits remain in a three-register format
+after the opcode and the register fields?
+
+*Answer.* Naming 64 registers takes
+
+$$\\log_2 64 = 6$$
+
+bits, so three fields cost
+
+$$3 \\times 6 = 18$$
+
+bits. Encoding 100 operations needs 7 bits, since 6 bits reach only 64.
+What remains is
+
+$$32 - 7 - 18 = 7$$
+
+bits. **7 bits.** The distractor is using 6 opcode bits because "64 registers,
+so 6 bits", carrying the register arithmetic into the opcode field and
+answering 8; 100 operations do not fit in 64 encodings.
+
+**A5.** A branch instruction at address 0x4000 carries a signed 8-bit
+displacement of 0x2C, and instructions are 4 bytes long. Where does it branch
+to?
+
+*Answer.* The displacement 0x2C has a clear high bit, so it is positive and
+equals 44 in decimal. Counting in instruction words, that is
+
+$$44 \\times 4 = 176$$
+
+bytes, applied to the incremented program counter at 0x4004:
+
+$$16388 + 176 = 16564$$
+
+which is 0x40B4. **0x40B4.** Two traps live here. Measuring from 0x4000
+instead of 0x4004 gives 0x40B0, wrong by one instruction; treating the
+displacement as bytes rather than words gives 0x4030, wrong by a factor of
+four.
+
+**A6.** On the model machine of Section 6.1, a workload has 25 percent of its
+instructions touching data instead of 35 percent. What sustainable instruction
+rate does the shared bus allow, and by what factor does that beat the 35
+percent case?
+
+*Answer.* The words per instruction fall to 1.25, so
+
+$$R = 500 / 1.25 = 400$$
+
+million instructions per second, against 370.37 before, a ratio of
+
+$$400 / 370.37 = 1.080$$
+
+**400 million per second, 8.0 percent better.** The distractor is to expect a
+10 point drop in the data fraction to give a 10 percent gain; the gain is the
+ratio of 1.35 to 1.25, not the difference of the fractions.
+
+## Problem Set B — pipelines, hazards and Amdahl
+
+**B1.** A 6-stage pipeline executes 500 instructions with no hazards. How many
+cycles, and what is the speedup over a non-pipelined machine taking 6 cycles
+per instruction?
+
+*Answer.* Fill plus one per remaining instruction:
+
+$$C = 6 + 499 = 505$$
+
+cycles, against
+
+$$C_{seq} = 500 \\times 6 = 3000$$
+
+so the speedup is
+
+$$3000 / 505 = 5.94$$
+
+**505 cycles, 5.94 times.** The trap is answering 6.00 by using the asymptotic
+speedup; with only 500 instructions the fill is still visible, and quoting the
+limit overstates by one percent.
+
+**B2.** The same pipeline now runs 500 instructions with 40 stall cycles and 30
+flush cycles. Find the cycle count and the CPI.
+
+*Answer.* Add the disturbances to the same base:
+
+$$C = 6 + 499 + 40 + 30 = 575$$
+
+$$CPI = 575 / 500 = 1.15$$
+
+**575 cycles, CPI 1.15.** The distractor is to compute 1 plus 40 plus 30 over
+500, giving 1.14, which quietly drops the fill term. On short instruction
+counts that term is not negligible.
+
+**B3.** A machine has 22 percent branch instructions, a predictor that is 88
+percent accurate, and a 4-cycle misprediction penalty. Find the effective CPI
+assuming an ideal CPI of 1.
+
+*Answer.* Only the mispredicted fraction pays:
+
+$$CPI = 1 + 0.22 \\times 0.12 \\times 4 = 1.1056$$
+
+**CPI 1.1056.** The common error is to charge every branch rather than every
+misprediction, computing 1 plus 0.22 times 4 and answering 1.88 — more than eight
+times the true penalty.
+
+**B4.** A loop body of 5 instructions contains one load-use hazard and ends in
+a branch that is taken on every pass but the last, with a 2-cycle penalty. The
+loop runs 50 times on a 5-stage pipeline. How many cycles?
+
+*Answer.* The dynamic instruction count is 250, so
+
+$$C = 5 + 249 + 50 + 98 = 402$$
+
+taking one bubble on each of the 50 passes and two flush cycles on each of the
+49 taken branches. **402 cycles, CPI 1.608.** The trap is charging the flush 50
+times for 100 cycles and answering 404; the final pass falls through, and that
+off-by-one is worth the entire penalty.
+
+**B5.** A program spends 60 percent of its time in a routine that a coprocessor
+can run 10 times faster. Find the overall speedup, and the speedup if the
+coprocessor were infinitely fast.
+
+*Answer.* The unimproved fraction is 0.40 and the improved one is divided by 10:
+
+$$0.40 + 0.60 / 10 = 0.46$$
+
+$$S = 1 / 0.46 = 2.174$$
+
+and with an infinite coprocessor,
+
+$$S_{\\infty} = 1 / 0.40 = 2.5$$
+
+**2.174 times, against a ceiling of 2.5.** The distractor is answering 6.0,
+which is 0.6 times 10 — scaling the speedup by the fraction rather than
+scaling the time by it. Notice also how little the step from a tenfold
+coprocessor to an infinitely fast one is worth: it adds 0.33 to the speedup.
+
+**B6.** On the model machine, an ideal CPI of 1.0 is degraded by memory stalls
+at 1.35 references per instruction, a 3 percent miss rate and a 90-cycle
+penalty. Find the CPI, the share of cycles lost to memory, and the speedup a
+perfect cache would give.
+
+*Answer.* The stall term is
+
+$$1.35 \\times 0.03 \\times 90 = 3.645$$
+
+so
+
+$$CPI = 1 + 3.645 = 4.645$$
+
+The share of cycles that are stalls is
+
+$$3.645 / 4.645 = 0.785$$
+
+and a perfect cache removes exactly those, for a speedup of 4.645. **CPI 4.645,
+78.5 percent of cycles lost, speedup 4.645.** The trap is using 1.0 references
+per instruction instead of 1.35, which gives a CPI of 3.70 and understates the
+stall share by five and a half points; the instruction fetch is a memory
+reference too.
+
+## Practice Problems C — mixed short answers
+
+**C1.** A 4-way set-associative cache is described in the next chapter, but the
+architectural question comes first: why does adding associativity lengthen the
+hit time?
+
+*Answer.* Because the tags of every way in the selected set must be compared in
+parallel, and the multiplexer that selects the winning way sits in the path
+between the tag comparison and the data output. A direct-mapped cache needs one
+comparator and no way-select multiplexer, so its data can be read speculatively
+while the single tag is compared. **More ways means more comparators and one
+more level of selection logic on the critical path.**
+
+**C2.** A multicycle machine has a CPI of 4.2 and a 250 ps clock. A pipelined
+version of the same datapath has a CPI of 1.25 and a 280 ps clock. Which is
+faster, and by how much?
+
+*Answer.* Time per instruction is CPI times the period:
+
+$$T_{multi} = 4.2 \\times 250 = 1050$$
+
+$$T_{pipe} = 1.25 \\times 280 = 350$$
+
+picoseconds, so
+
+$$1050 / 350 = 3.00$$
+
+**The pipelined machine, by exactly 3.0 times.** The distractor is to prefer the
+multicycle machine for its faster clock; the clock is faster and it needs more
+than three times as many cycles.
+
+**C3.** A processor is quoted at 1200 MIPS. The vendor's next model is quoted at
+1500 MIPS but its compiler emits 30 percent more instructions for the same
+programs. Which is faster on real work?
+
+*Answer.* Time per unit of work is instruction count over rate. Take the first
+machine's count as one unit and scale both times by 1200 so the first comes out
+at exactly 1:
+
+$$T_1 = 1200 / 1200 = 1.00$$
+
+$$T_2 = 1.3 \\times 1200 / 1500 = 1.04$$
+
+so the older machine is faster by 4 percent.
+
+**The 1200 MIPS machine, by 4 percent.** The trap is the MIPS rating itself,
+which cannot see the instruction count and therefore cannot compare two
+machines whose instructions differ in what they accomplish.
+
+**C4.** On the model machine of Section 6.1, is the single-cycle or the
+multicycle implementation faster, and what would have to change for the answer
+to flip?
+
+*Answer.* From Section 8.2 the single-cycle machine takes 750 ps per
+instruction and the multicycle machine takes 800 ps, so single-cycle wins by
+
+$$800 / 750 = 1.067$$
+
+**Single-cycle, by 6.7 percent.** It flips when the stage delays become
+unbalanced. If one stage dominated — say a 500 ps memory stage against four
+stages of 60 ps each — the single-cycle period would be pinned at 740 ps while
+the multicycle period would be 500 ps and the average instruction would use
+fewer than 1.48 stages of it, which is where the multicycle design earns its
+keep.`,
+      examTip: 'Every pipeline problem is the same line: cycles = stages + instructions - 1 + stalls + flushes. Write it down before reading the numbers, then fill the four terms from the question and take particular care that the last pass of a loop does not pay a flush.',
+      importantNote: 'When an answer disagrees with intuition, check which quantity the question actually scaled. Amdahl problems are almost always missed by scaling the speedup instead of the time, and MIPS problems by comparing rates whose unit does not mean the same thing on both machines.',
+    },
   ],
   keyTakeaways: [
     'Von Neumann: single memory. Harvard: separate. Modern: Modified Harvard (split L1 cache).',
@@ -424,7 +1785,11 @@ Only 1% of accesses reach main memory, yet that 1% contributes 43% of the averag
 $$t_{translate} = h_{TLB} * t_{TLB} + (1 - h_{TLB}) * t_{walk}$$
 $$t_{translate} = 0.95 * 1 + 0.05 * 200 = 0.95 + 10 = 10.95\\ \\mathrm{ns}$$
 
-Without TLB: every access costs 200 ns extra. The TLB reduces average translation overhead by **95%**.
+Without a TLB every access pays the full 200 ns walk. The TLB brings the average down to 10.95 ns, a reduction of
+
+$$1 - 10.95 / 200 = 0.945$$
+
+or **94.5%** — close to the 95% hit rate, but not equal to it, and the two are different quantities.
 
 ## 3.3 TLB Hit Rate Impact
 
@@ -642,6 +2007,1450 @@ page size, page-number bits from what is left, entries from two to that power,
 and bytes from entries times the entry size.`,
       examTip: 'When a problem gives an L2 hit rate, it is nearly always a LOCAL rate, measured over accesses that already missed L1. Multiply the miss rates together to get the global rate before comparing anything against main-memory traffic.',
       importantNote: 'The two AMAT conventions differ by (miss rate) x (hit time), which is small but not zero. Pick the miss-penalty form when the problem states a hit time and a penalty, and the weighted form when it states two absolute access times; never combine a hit time from one with a penalty from the other.',
+    },
+    { id: 'memh-ladder', title: '6. What the Hierarchy Costs: Capacity, Latency, and One Transistor Count',
+      content: `## 6.1 Why there is a hierarchy at all
+
+A memory that was both large and fast would make this chapter unnecessary. The
+reason none exists is not economics in the first instance but circuit
+structure. A static RAM cell — the kind used for registers and caches — is a
+cross-coupled pair of inverters plus two access transistors, six transistors in
+all, and it holds its value as long as power is applied. A dynamic RAM cell is
+one transistor and one capacitor, and it forgets in a few milliseconds unless
+something rewrites it. The ratio of those two cell sizes is the whole reason
+for the ladder:
+
+| Storage technology | Cell structure | Consequence |
+|---|---|---|
+| Static RAM | 6 transistors, no refresh | fast, large per bit, power-hungry at rest |
+| Dynamic RAM | 1 transistor, 1 capacitor, refreshed | dense, slower, needs refresh cycles |
+| Flash | 1 floating-gate transistor, no power to hold | denser still, slow to write, wears out |
+| Magnetic disk | no per-bit circuit at all | densest, mechanical, milliseconds |
+
+Six transistors against one is roughly a sixfold density penalty at the cell
+before wiring, and the wiring makes it worse. So the designer cannot have one
+memory; the designer must have several and arrange them so that the fast small
+one answers most of the questions.
+
+## 6.2 The model ladder used from here on
+
+Every latency quoted in the rest of this chapter comes from this table, and the
+cycle column assumes the 2 GHz clock of the architecture chapter's model
+machine.
+
+| Level | Capacity | Latency | Latency in 2 GHz cycles |
+|---|---|---|---|
+| Registers | 1 KB | 0.3 ns | 0.6 |
+| L1 cache | 32 KB | 1.0 ns | 2 |
+| L2 cache | 512 KB | 8.0 ns | 16 |
+| L3 cache | 16 MB | 25 ns | 50 |
+| DRAM | 16 GB | 80 ns | 160 |
+| Flash SSD | 1 TB | 80 us | 160,000 |
+| Magnetic disk | 8 TB | 8 ms | 16,000,000 |
+
+Two ratios in that table matter more than the individual entries. The first is
+the gap the caches exist to bridge:
+
+$$80 / 1.0 = 80$$
+
+DRAM is eighty times slower than L1. The second is the gap that makes a page
+fault a catastrophe rather than a delay:
+
+$$8000000 / 80 = 100000$$
+
+disk is a hundred thousand times slower than DRAM. Section 13 shows what that
+second ratio does to a page fault budget.
+
+![Access latency against capacity for the seven levels of the model ladder, both axes logarithmic. The points climb from one kilobyte at 0.3 nanoseconds to eight terabytes at eight milliseconds, and a double-headed arrow marks the eighty-fold step from L1 cache to DRAM.](/courses/fe-ee/figures/sys2-mem-ladder.svg)
+
+Plotted logarithmically the ladder is nearly a straight line, which is the
+useful observation: each level is roughly an order of magnitude larger and an
+order of magnitude slower than the one above it. That regularity is what makes
+the average-access-time algebra of Section 9 work out to sensible numbers
+rather than being dominated by one level.
+
+## Worked example 6.1 — what a DRAM access costs in cycles
+
+**Given.** The model machine's 2 GHz clock and the ladder's 80 ns DRAM latency.
+Express the DRAM access as cycles, and say what a processor could otherwise
+have done with them.
+
+**Work.** Cycles are the latency times the frequency:
+
+$$n_{cycles} = 80 \\times 2 = 160$$
+
+**Answer: 160 cycles.** On a machine that can retire two instructions per
+cycle, that is 320 instructions of lost work for one miss that reaches main
+memory. This single figure justifies everything in the rest of the chapter: it
+is why a 3 percent miss rate can dominate a machine that hits 97 percent of the
+time, and it is why the exam asks about miss rates rather than hit rates.
+
+## Worked example 6.2 — how many misses must be in flight at once
+
+**Given.** A memory system with an 80 ns latency, 64-byte cache lines, and a
+requirement to sustain 12.8 GB/s. How many misses must be outstanding
+simultaneously?
+
+**Work.** This is Little's law, which says the number in a system is the
+arrival rate times the time each one spends there. Convert the bandwidth into a
+request rate first:
+
+$$\\lambda = 12800 / 64 = 200$$
+
+requests per microsecond: 12.8 GB/s is 12800 bytes per microsecond, and at 64
+bytes each that is 200 requests in every microsecond. The number in flight is
+the rate times the time each request spends in the system,
+
+$$L = 200 \\times 0.080 = 16$$
+
+**Answer: 16 outstanding misses.** That is why a cache has miss-status holding
+registers and why their count is a published parameter: a cache that can track
+only one miss at a time cannot use the bandwidth it was sold. Run the argument
+backwards for a cache with ten of them:
+
+$$10 / 0.080 = 125$$
+
+requests per microsecond, or
+
+$$125 \\times 64 = 8000$$
+
+megabytes per second — **8 GB/s, well short of the 12.8 the memory could
+deliver.** The occupancy figure of 16 was also confirmed by simulation rather
+than by re-applying the formula: a clock was advanced in 10 ps steps, a request
+issued every 5 ns and retired 80 ns later, and the time-averaged count of
+requests in flight came out at 16.00.
+
+**How the exam asks this.** Usually as an ordering question — put these storage
+types in order of speed, or of cost per bit — and occasionally as a cycle
+conversion like Worked example 6.1. For the conversion, multiply nanoseconds by
+gigahertz and the units cancel to cycles.`,
+      examTip: 'Convert every memory latency into cycles before reasoning about it. Eighty nanoseconds sounds small until it is written as 160 cycles on a 2 GHz machine, at which point the cost of a miss becomes obvious without any further arithmetic.',
+      importantNote: 'The hierarchy exists because of cell structure, not because of pricing policy. A six-transistor static cell cannot be made as dense as a one-transistor dynamic cell, so no process improvement will ever collapse the levels into one.',
+    },
+    { id: 'memh-locality', title: '7. Locality Made Concrete: One Loop, Counted Reference by Reference',
+      content: `## 7.1 The two localities, defined by what they predict
+
+A cache is a bet that the near future resembles the recent past. The bet comes
+in two forms, and they are worth stating as predictions rather than as
+definitions, because a prediction can be checked.
+
+**Temporal locality** predicts that an address just referenced will be
+referenced again soon. It is why a cache keeps a block after using it rather
+than discarding it.
+
+**Spatial locality** predicts that addresses near one just referenced will be
+referenced soon. It is why a cache fetches a whole block of 32 or 64 bytes
+rather than the four bytes actually asked for.
+
+Every design parameter in a cache serves one or the other. Capacity and
+replacement policy serve temporal locality; block size and prefetching serve
+spatial locality.
+
+## 7.2 A loop, and the references it actually makes
+
+Take the simplest possible loop, summing an array of 64 four-byte integers
+starting at address 0x1000, on a 1 KB direct-mapped cache with 32-byte blocks.
+The accumulator lives in a register, so the loop makes exactly 64 data
+references. Each block holds
+
+$$32 / 4 = 8$$
+
+integers, so the 64 elements occupy
+
+$$64 / 8 = 8$$
+
+blocks. Every block misses on its first element and hits on the remaining
+seven, which gives
+
+$$64 - 8 = 56$$
+
+hits and a hit rate of
+
+$$56 / 64 = 0.875$$
+
+That is the prediction. Pushing the 64 real byte addresses through a tag array
+and counting produces 56 hits and 8 misses — the same numbers, arrived at by a
+route that knows nothing about the formula.
+
+![Two panels of the same 64-reference loop pushed through a 1 KB direct-mapped cache with 32-byte blocks. The upper panel walks the array at unit stride and records 56 hits against 8 misses, one miss per block; the lower panel walks it at a 32-byte stride, touching a new block on every reference, and records no hits at all.](/courses/fe-ee/figures/sys2-mem-locality.svg)
+
+The lower panel changes exactly one thing: the loop now steps 32 bytes at a
+time instead of 4. Every reference lands in a different block, so spatial
+locality has nothing to work with, and the simulator counts 64 misses in 64
+references. The cache is identical; the program is not.
+
+## Worked example 7.1 — hit rate as a function of block size
+
+**Given.** A unit-stride walk over elements of s bytes, in a cache with blocks
+of B bytes, in a cache large enough that nothing is evicted. Derive the hit
+rate, then evaluate it for 4-byte elements in 32-byte and 64-byte blocks.
+
+**Work.** One miss occurs per block, and a block holds B over s elements, so
+the miss rate is s over B and the hit rate is
+
+$$h = 1 - \\frac{s}{B}$$
+
+For 32-byte blocks,
+
+$$1 - 4 / 32 = 0.875$$
+
+and for 64-byte blocks,
+
+$$1 - 4 / 64 = 0.9375$$
+
+**Answer: 87.5 percent and 93.75 percent.** Doubling the block halves the miss
+rate on a sequential walk, which looks like an argument for enormous blocks.
+It is not, for two reasons that Section 10 develops: a bigger block takes longer
+to fetch, raising the miss penalty, and a bigger block means fewer blocks at
+fixed capacity, which raises conflict misses.
+
+## Worked example 7.2 — the second pass is free
+
+**Given.** An array of 128 four-byte integers, so 512 bytes, walked twice in
+the same 1 KB direct-mapped cache with 32-byte blocks.
+
+**Work.** The array occupies
+
+$$512 / 32 = 16$$
+
+blocks, which fit comfortably in the 32 the cache holds, so the second pass
+finds everything resident. Misses are the 16 compulsory ones and nothing else,
+in
+
+$$128 \\times 2 = 256$$
+
+references, giving
+
+$$256 - 16 = 240$$
+
+hits and a hit rate of
+
+$$240 / 256 = 0.9375$$
+
+**Answer: 240 hits, 16 misses, 93.75 percent.** Simulating the 256 addresses
+gives exactly 240 and 16. The second pass contributes 128 hits and zero misses,
+which is temporal locality doing all of the work — and it is what disappears
+the moment the array grows past the cache, as Section 10 shows.
+
+## Worked example 7.3 — the same arithmetic, one loop order apart
+
+**Given.** A 64 by 64 array of four-byte integers, 16 KB in total, traversed
+completely in row-major order and then in column-major order, on the same 1 KB
+direct-mapped cache with 32-byte blocks. The array is stored row-major, so
+consecutive elements of a row are adjacent in memory.
+
+**Work.** Both orders make the same 4096 references and perform the same
+arithmetic. Row-major traversal is a unit-stride walk over
+
+$$16384 / 32 = 512$$
+
+blocks, so by Worked example 7.1 it misses 512 times and hits 3584, a hit rate
+of 0.875 — and the simulator counts exactly that.
+
+Column-major traversal steps by a whole row between references:
+
+$$64 \\times 4 = 256$$
+
+bytes, which is
+
+$$256 / 32 = 8$$
+
+blocks. One column therefore touches 64 distinct blocks, one per row. The
+cache holds
+
+$$1024 / 32 = 32$$
+
+blocks. Sixty-four does not fit in thirty-two, so by the time the next column
+comes round every block it needs has been evicted. The simulator counts **4096
+misses and zero hits.**
+
+| Traversal | Cache | Hits | Misses | Hit rate |
+|---|---|---|---|---|
+| Row-major | 1 KB direct-mapped | 3584 | 512 | 0.875 |
+| Column-major | 1 KB direct-mapped | 0 | 4096 | 0.000 |
+| Column-major | 1 KB two-way | 0 | 4096 | 0.000 |
+| Column-major | 1 KB fully associative | 0 | 4096 | 0.000 |
+| Column-major | 64 KB direct-mapped | 3584 | 512 | 0.875 |
+
+**Answer: 87.5 percent one way round and 0 percent the other.** The three
+middle rows are the part worth remembering. Raising associativity does nothing
+here, not even full associativity, because the problem is not that blocks
+collide — it is that a single column needs 64 blocks and the cache holds 32.
+The diagnostic is exactly that: if full associativity does not fix it, it was
+never a conflict. Enlarging the cache to 64 KB does fix it, because then the
+entire 16 KB array is resident and the second column finds the first column's
+blocks still there.
+
+**How the exam asks this.** Give a loop and a cache and ask for the hit rate.
+Work out how many elements share a block, decide whether the working set fits,
+and only then count. If the stride is larger than the block, the answer is
+almost always zero hits and the question is testing whether you noticed.`,
+      examTip: 'Compare the stride against the block size first. A stride at least as large as the block destroys spatial locality completely, and no amount of capacity or associativity will restore it — only changing the traversal order or the data layout will.',
+      importantNote: 'Full associativity is the diagnostic for conflict misses. If a pathological miss rate survives a fully associative cache of the same capacity, the working set is simply too big, and the cure is a larger cache or a restructured loop rather than more ways.',
+    },
+    { id: 'memh-placement', title: '8. Placement: Where a Block Is Allowed to Live',
+      content: `## 8.1 Three placement rules, and the one number that separates them
+
+Section 4 derived the tag, index and offset widths. This section asks the prior
+question those widths answer: how many places in the cache is a given block
+allowed to occupy? The three standard answers are one place, a few places, and
+anywhere, and every other property follows from the choice.
+
+| Organisation | Places a block may go | Index width | Comparators | Replacement choice |
+|---|---|---|---|---|
+| Direct-mapped | exactly 1 | log2(lines) | 1 | none needed |
+| n-way set associative | n, within one set | log2(sets) | n | within the set |
+| Fully associative | any line | 0 | one per line | across the whole cache |
+
+Note the last column, because it is the one that connects this section to
+Section 11. A direct-mapped cache needs no replacement policy at all: a new
+block has exactly one home and whatever is there is evicted. The policy
+question only exists once there is a choice.
+
+## 8.2 The conflict catastrophe, and how little it takes
+
+Take a 1 KB direct-mapped cache with 32-byte blocks, so
+
+$$1024 / 32 = 32$$
+
+lines. Two arrays of 512 bytes each sit at addresses 0x0000 and 0x0400, and a
+loop reads one element from each on every pass, 128 passes in all. Address
+0x0400 is 1024 bytes above 0x0000 — exactly the cache size — so the two arrays
+map onto exactly the same 16 lines, element for element.
+
+The simulator counts **256 misses in 256 references, and zero hits.** Every
+access evicts the block the next access wants. The two arrays together are 1 KB
+and the cache is 1 KB, so nothing about the capacity is wrong; the failure is
+entirely one of placement.
+
+Now change one thing at a time.
+
+![Misses in the same 256-reference interleaved trace as associativity rises from one way to thirty-two, with capacity held at 1 KB. One way takes 256 misses; every higher associativity takes 32, which is the compulsory floor of one miss per block touched.](/courses/fe-ee/figures/sys2-mem-assoc.svg)
+
+**Add one way.** A two-way cache of the same capacity has
+
+$$1024 / 64 = 16$$
+
+sets, and both arrays still map to the same sets — but now each set holds two
+blocks, so both can be resident. The simulator counts 32 misses and 224 hits:
+
+$$224 / 256 = 0.875$$
+
+and those 32 misses are exactly the number of distinct blocks touched,
+
+$$512 / 32 = 16$$
+
+blocks per array times two arrays, which is the compulsory floor. Not one
+avoidable miss remains.
+
+**Or move one array.** Leave the cache direct-mapped and place the second array
+at 0x0420 instead of 0x0400, a shift of one block. Now the two arrays are
+offset by one line and never collide. The simulator counts 32 misses and 224
+hits — **identical to the two-way result, at no hardware cost at all.** This is
+why array padding is a real optimisation and why library allocators avoid
+handing out buffers at exact powers of two.
+
+## Worked example 8.1 — field widths for the conflicting cache
+
+**Given.** The 1 KB direct-mapped cache above, 32-byte blocks, 32-bit
+addresses. State the three field widths and check them.
+
+**Work.** Offset comes from the block size, index from the line count, tag from
+what is left:
+
+$$b_{offset} = \\log_2 32 = 5$$
+
+$$b_{index} = \\log_2 32 = 5$$
+
+$$b_{tag} = 32 - 5 - 5 = 22$$
+
+and the check that the three sum correctly:
+
+$$5 + 5 + 22 = 32$$
+
+**Answer: 5, 5 and 22.** Now the collision is visible in the arithmetic.
+Address 0x0000 has index 0; address 0x0400 is 1024 bytes higher, and 1024 is
+2 to the tenth, which is exactly the offset and index fields combined — so
+0x0400 has index 0 as well, and differs only in the tag. Two blocks with the
+same index and different tags cannot coexist in a direct-mapped cache. Any
+address distance that is a multiple of the cache size produces this, which is
+the rule worth carrying into the exam.
+
+## Worked example 8.2 — the same cache built three ways
+
+**Given.** A 32 KB cache with 512-byte blocks on a machine whose main memory is
+256 KB, so the address is however many bits main memory requires. Give the
+field widths for direct-mapped, four-way set associative and fully associative.
+
+**Work.** Main memory of 256 KB needs 18 address bits, since 256 KB is 2 to the
+eighteenth bytes. The block offset is set by the block size alone and is the
+same in all three cases:
+
+$$b_{offset} = \\log_2 512 = 9$$
+
+**Direct-mapped.** The number of lines is
+
+$$32768 / 512 = 64$$
+
+so the index is 6 bits and the tag is
+
+$$18 - 6 - 9 = 3$$
+
+**Four-way.** The number of sets is
+
+$$32768 / 2048 = 16$$
+
+so the index is 4 bits and the tag is
+
+$$18 - 4 - 9 = 5$$
+
+**Fully associative.** There is one set, so the index is 0 bits and the tag is
+
+$$18 - 0 - 9 = 9$$
+
+| Organisation | Offset | Index | Tag | Sets |
+|---|---|---|---|---|
+| Direct-mapped | 9 | 6 | 3 | 64 |
+| Four-way | 9 | 4 | 5 | 16 |
+| Fully associative | 9 | 0 | 9 | 1 |
+
+**Answer: as tabulated.** Two traps sit in this problem. The first is taking
+the address width from the processor's word size rather than from the memory
+size the question specifies — reading 32 bits here would inflate every tag by
+14. The second is computing the index from the line count in the associative
+cases; four-way has 64 lines but only 16 sets, and it is the sets that the
+index names.
+
+## 8.3 What associativity costs
+
+Every extra way is another tag comparator running in parallel and one more
+input on the multiplexer that selects the winning way's data. Both sit directly
+in the path between presenting an address and returning a word, so associativity
+lengthens the hit time. A direct-mapped cache can start reading the data at the
+same moment it starts comparing the single tag, and simply discard the result
+if the tag misses; an associative cache cannot know which way's data to forward
+until the comparison finishes.
+
+That is the trade, and it explains a persistent design pattern: first-level
+caches stay at low associativity because their hit time is on the critical
+path, while second and third levels go to eight or sixteen ways because their
+hit time is already hidden behind the level above them.
+
+**How the exam asks this.** Field widths, almost always. Take the address width
+from whatever the question says determines it, compute the offset from the
+block size, compute the index from the set count — dividing capacity by block
+size and then by ways — and take the tag as the remainder.`,
+      examTip: 'Index bits come from the number of SETS, and sets equal capacity divided by block size divided by ways. Using the line count for an n-way cache makes the index log2(n) bits too wide and the tag log2(n) bits too narrow, and the two errors do not cancel.',
+      importantNote: 'Two addresses collide in a direct-mapped cache whenever they differ by a multiple of the cache size. That is why array dimensions and buffer alignments at exact powers of two are dangerous, and why shifting one array by a single block can convert a 0 percent hit rate into 87.5 percent.',
+    },
+    { id: 'memh-amat-chain', title: '9. Average Access Time, Derived and Then Used',
+      content: `## 9.1 The derivation, and why two forms exist
+
+An access either hits or misses. Weighting each outcome by its probability
+gives the form Section 1.2 used:
+
+$$t_{avg} = h \\, t_{hit} + (1 - h) \\, t_{miss}$$
+
+Real hardware does something slightly different. It probes the cache on every
+access, and only when that probe fails does it start the memory access, so the
+hit time is paid always and the miss time is paid on top:
+
+$$AMAT = t_{hit} + m \\, P$$
+
+with m the miss rate and P the miss penalty. Section 5.1 showed the two differ
+by m times t_hit, which is small but not zero. The second form is the one to
+use whenever a problem states a hit time and a penalty, and it is the one that
+generalises cleanly to more levels, which is why it dominates from here on.
+
+Applying it to the model ladder with a 3 percent miss rate and DRAM as the only
+thing below L1:
+
+$$AMAT = 1 + 0.03 \\times 80 = 3.40$$
+
+nanoseconds. A cache that hits 97 times out of 100 still runs at less than a
+third of its hit speed, because the three misses each cost eighty times a hit.
+
+## 9.2 More levels, from the inside out
+
+Adding levels does not change the equation; it changes what P means. The
+penalty of a level is the average time experienced at the level below it, which
+is itself an AMAT. So the chain is written from the bottom up.
+
+Give the machine an L2 at 8 ns that misses 25 percent of what reaches it, and
+an L3 at 25 ns that misses 40 percent of what reaches it, with DRAM at 80 ns.
+Start at L3:
+
+$$P_{L2} = 25 + 0.40 \\times 80 = 57$$
+
+nanoseconds is what an L2 miss costs. Then L2 is the penalty for L1:
+
+$$P_{L1} = 8 + 0.25 \\times 57 = 22.25$$
+
+and finally
+
+$$AMAT = 1 + 0.03 \\times 22.25 = 1.6675$$
+
+nanoseconds, against 3.40 with no intermediate levels:
+
+$$3.40 / 1.6675 = 2.0390$$
+
+**Two extra levels roughly halved the average access time without changing L1
+or the miss rate at all.** That is the point of the figure below: levels are
+bought to shrink the penalty, since the miss rate belongs to the program.
+
+![Average memory access time against L1 miss rate for two machines. The steeper line is L1 backed directly by DRAM, with a penalty of 80 nanoseconds; the shallower line is L1 backed by L2, L3 and then DRAM, whose combined penalty is 22.25 nanoseconds. At a 3 percent miss rate the two read 3.40 and 1.67 nanoseconds.](/courses/fe-ee/figures/sys2-mem-amat.svg)
+
+## 9.3 Local against global miss rates, kept apart
+
+Section 5.2 introduced the distinction. With three levels it becomes essential,
+because two of the three numbers a datasheet quotes are local and only one of
+them tells you how often main memory is disturbed.
+
+| Level | Local miss rate | Meaning | Global miss rate |
+|---|---|---|---|
+| L1 | 3% | of all accesses | 3% |
+| L2 | 25% | of accesses that reached L2 | 0.75% |
+| L3 | 40% | of accesses that reached L3 | 0.30% |
+
+The global rates are running products:
+
+$$m_{L2}^{global} = 0.03 \\times 0.25 = 0.0075$$
+
+$$m_{L3}^{global} = 0.03 \\times 0.25 \\times 0.40 = 0.003$$
+
+A 40 percent local miss rate at L3 sounds like a failed design. Globally it is
+three accesses per thousand reaching DRAM, which is an excellent design. The
+two statements describe the same cache. Whenever a problem quotes a miss rate
+for a level below the first, assume it is local unless the words say otherwise,
+and multiply before comparing it with anything.
+
+## Worked example 9.1 — turning AMAT into CPI
+
+**Given.** The model machine at 2 GHz makes 1.35 memory references per
+instruction, as the architecture chapter established. Convert both AMAT figures
+above into a CPI, taking the ideal CPI as 1 and charging only the time above
+the L1 hit as stall.
+
+**Work.** For the single-level machine the stall per reference is 3.40 minus
+1.00 nanoseconds, which in cycles is
+
+$$2.40 \\times 2 = 4.80$$
+
+so
+
+$$CPI = 1 + 1.35 \\times 4.80 = 7.48$$
+
+For the three-level machine the stall per reference is 0.6675 ns, or
+
+$$0.6675 \\times 2 = 1.335$$
+
+cycles, so
+
+$$CPI = 1 + 1.35 \\times 1.335 = 2.802$$
+
+**Answer: CPI 7.48 against 2.802, a factor of**
+
+$$7.48 / 2.802 = 2.6695$$
+
+The speedup in CPI is larger than the 2.039 speedup in AMAT, and the reason is
+worth seeing. Both expressions carry a fixed term that neither machine can
+avoid — the L1 hit time in AMAT, the ideal cycle in CPI — and any ratio is
+dragged toward 1 by whatever the two sides share. That fixed term is 29 percent
+of the single-level AMAT and only 13 percent of the single-level CPI, so the
+CPI ratio sits closer to the ratio of the stalls alone,
+
+$$2.40 / 0.6675 = 3.5955$$
+
+which is the number both ratios are really approaching. Whenever a question
+asks for a speedup, check which quantity it wants the ratio of.
+
+## Worked example 9.2 — is the L2 worth its silicon?
+
+**Given.** The three-level machine above. A designer proposes deleting L3 and
+letting L2 miss straight to DRAM. What happens to AMAT?
+
+**Work.** Without L3 the L1 penalty becomes L2's own experience against DRAM:
+
+$$P_{L1} = 8 + 0.25 \\times 80 = 28$$
+
+$$AMAT = 1 + 0.03 \\times 28 = 1.84$$
+
+nanoseconds, against 1.6675 with L3 present, a degradation of
+
+$$1.84 / 1.6675 = 1.103$$
+
+**Answer: 10.3 percent slower.** Ten percent for a 16 MB cache is a real but
+unspectacular return, which is exactly the kind of judgement the AMAT chain
+exists to support. Note that the L3 looked much more impressive in Section 9.2,
+where it was credited with part of a factor of two — because there the
+comparison was against no intermediate levels at all. Attributing a gain to a
+component requires removing only that component.
+
+**How the exam asks this.** A chain of levels with hit times and miss rates,
+then AMAT. Work from the bottom level upward, treating each level's penalty as
+the level below's AMAT, and read every miss rate below the first as local.`,
+      examTip: 'Build the AMAT chain from the bottom up. The penalty of level k is the hit time of level k+1 plus that level miss rate times its own penalty, and writing it downward instead is the fastest way to double-count a level.',
+      importantNote: 'A local miss rate and a global miss rate can differ by more than an order of magnitude for the same cache. Only the global rate predicts main-memory traffic, and it is the product of every local rate above and including that level.',
+    },
+    { id: 'memh-three-cs', title: '10. The Three Causes of a Miss, Separated by Experiment',
+      content: `## 10.1 A classification is only useful if you can measure it
+
+Section 5.3 named the three causes. Naming them is easy; deciding which one a
+given miss belongs to is the part that has practical value, because each has a
+different cure and two of the cures actively harm the third.
+
+The standard separation is an experiment rather than an argument, and it takes
+three simulations of the same address trace:
+
+1. Run the trace through an **infinite** cache. Every miss it takes is a first
+   reference to a block, so every miss is **compulsory**.
+2. Run the trace through a **fully associative** cache of the target capacity.
+   Its misses minus the compulsory ones are **capacity** misses: blocks that
+   were evicted only because the cache was too small.
+3. Run the trace through the **actual** cache. Its misses minus the fully
+   associative count are **conflict** misses: blocks that were evicted despite
+   there being room elsewhere in the cache.
+
+## Worked example 10.1 — a working set that does not fit
+
+**Given.** A 2 KB array of four-byte integers, 512 elements, walked twice, in a
+1 KB cache with 32-byte blocks. Separate the misses.
+
+**Work.** The array occupies
+
+$$2048 / 32 = 64$$
+
+blocks, so 64 compulsory misses are unavoidable. Simulating the fully
+associative 1 KB cache gives 128 misses, so the capacity component is
+
+$$128 - 64 = 64$$
+
+Simulating the direct-mapped 1 KB cache also gives 128 misses, so the conflict
+component is
+
+$$128 - 128 = 0$$
+
+**Answer: 64 compulsory, 64 capacity, 0 conflict.** The second pass finds
+nothing, because a cyclic walk over 64 blocks in a 32-block cache evicts each
+block just before it is needed again — the worst case for least-recently-used
+replacement, and the reason associativity is powerless here. Enlarging the
+cache to 4 KB drops the total to 64, exactly the compulsory floor, which
+confirms that every avoidable miss was a capacity miss.
+
+## Worked example 10.2 — the same experiment on the conflicting trace
+
+**Given.** The two interleaved arrays of Section 8.2 in the 1 KB
+direct-mapped cache: 256 misses in 256 references.
+
+**Work.** The trace touches 32 distinct blocks, so 32 misses are compulsory.
+The fully associative 1 KB cache holds all 32 blocks with room to spare, so it
+takes 32 misses and the capacity component is zero. The conflict component is
+therefore
+
+$$256 - 32 = 224$$
+
+**Answer: 32 compulsory, 0 capacity, 224 conflict.** Set this beside Worked
+example 10.1: identical cache, identical miss count in the associative case,
+and completely opposite diagnoses. Only the experiment distinguishes them, and
+the cure differs accordingly — associativity or padding fixes this one and does
+nothing for the other.
+
+| Cause | Test that identifies it | Cure | What the cure costs |
+|---|---|---|---|
+| Compulsory | misses an infinite cache still takes | larger blocks, prefetching | bandwidth; wasted fetch if the guess is wrong |
+| Capacity | fully associative misses minus compulsory | a larger cache | hit time, area, power |
+| Conflict | actual misses minus fully associative | more ways, or padding the data | comparators in the critical path |
+
+## 10.2 The cures pull against one another
+
+Larger blocks reduce compulsory misses, because one fetch brings in more of
+what will be needed. They also raise the miss penalty, since more bytes must be
+moved, and they reduce the number of blocks at fixed capacity, which raises
+conflict misses. Past some block size the curve turns around, and where it
+turns depends on the program.
+
+More associativity reduces conflict misses and lengthens the hit time, as
+Section 8.3 described. A larger cache reduces capacity misses and lengthens the
+hit time as well, since a bigger array takes longer to index and drive.
+
+There is no setting that minimises all three, which is why cache design is
+reported as a set of measured curves rather than derived from a formula. The
+useful exam skill is not choosing the optimum but recognising which of the
+three causes a described symptom belongs to.
+
+## Worked example 10.3 — diagnosing from symptoms alone
+
+**Given.** Three reported symptoms. Name the cause of each.
+
+*Symptom A: the miss rate does not improve when the cache is doubled, but
+falls to almost nothing when associativity is doubled at the same capacity.*
+The capacity was never the constraint and the placement was. **Conflict.**
+
+*Symptom B: the miss rate falls steadily as the cache grows, and full
+associativity at the original size gives the same improvement as doubling the
+capacity did.* The blocks were being evicted for want of room. **Capacity.**
+
+*Symptom C: the miss rate is unchanged by capacity, associativity and
+replacement policy alike, and falls only when the block size is raised.* Every
+miss is a first touch. **Compulsory.**
+
+**Answer: conflict, capacity, compulsory.** The trap in this style of question
+is symptom A: doubling capacity in a direct-mapped cache also doubles the
+number of lines, which changes the index width and can accidentally relieve a
+conflict. That is why the associativity test rather than the capacity test is
+the reliable one.
+
+**How the exam asks this.** Usually as a matching question between a cause and
+its remedy. Remember which direction each remedy pushes, and that only one of
+the three — compulsory — survives an infinitely large, infinitely associative
+cache.`,
+      examTip: 'Full associativity at the same capacity is the single diagnostic that separates conflict from capacity. If the misses vanish it was conflict; if they do not it was capacity, and no rearrangement of the cache will help.',
+      importantNote: 'A larger block cuts compulsory misses and simultaneously raises both the miss penalty and the conflict rate, because fewer blocks fit. Any answer that treats block size as monotonically good has ignored two of its three effects.',
+    },
+    { id: 'memh-replacement', title: '11. Replacement Policies, Compared on One Reference String',
+      content: `## 11.1 The question only exists when there is a choice
+
+A direct-mapped cache never asks which block to evict, because the incoming
+block has exactly one legal home. Every associative organisation must choose,
+and the rule it uses is the replacement policy. Four are worth knowing.
+
+| Policy | Rule | Cost to implement | Typical quality |
+|---|---|---|---|
+| FIFO | evict the block resident longest | one counter per set | mediocre, occasionally anomalous |
+| LRU | evict the block unused longest | order bits per set, n log n for n ways | good, the usual reference point |
+| Random | evict any block | a pseudo-random generator | close to LRU at high associativity |
+| OPT | evict the block needed farthest ahead | impossible; needs the future | the unbeatable lower bound |
+
+OPT is not implementable and is not meant to be. It exists as a yardstick: if
+LRU is within a few percent of OPT on a workload, no better policy is worth
+building for that workload.
+
+## 11.2 One string, three policies, two sizes
+
+Everything below uses the reference string
+
+**1 2 3 4 1 2 5 1 2 3 4 5**
+
+twelve references to five distinct blocks, run against a fully associative
+cache of three and then four frames. Every count that follows was produced by
+simulating the string, not by a formula.
+
+| Policy | 3 frames | 4 frames | 5 frames |
+|---|---|---|---|
+| FIFO | 9 misses | 10 misses | 5 misses |
+| LRU | 10 misses | 8 misses | 5 misses |
+| OPT | 7 misses | 6 misses | 5 misses |
+
+Two entries in that table are meant to be surprising, and both are correct.
+
+## Worked example 11.1 — the case where LRU loses to FIFO
+
+**Given.** The string above on three frames.
+
+**Work.** FIFO takes 9 misses and 3 hits:
+
+$$12 - 9 = 3$$
+
+$$9 / 12 = 0.750$$
+
+LRU takes 10 misses and 2 hits:
+
+$$12 - 10 = 2$$
+
+$$10 / 12 = 0.833$$
+
+**Answer: FIFO wins, 9 misses against 10.** Following both policies past
+reference 7 shows why. After the seventh reference both hold blocks 1, 2 and 5,
+and both hit on references 8 and 9. The divergence is at reference 10, which
+asks for block 3:
+
+| Reference | FIFO resident set | FIFO result | LRU resident set | LRU result |
+|---|---|---|---|---|
+| 7: block 5 | 1 2 5 | miss, evicts 4 | 1 2 5 | miss, evicts 4 |
+| 8: block 1 | 1 2 5 | hit | 2 5 1 | hit |
+| 9: block 2 | 1 2 5 | hit | 5 1 2 | hit |
+| 10: block 3 | 2 5 3 | miss, evicts 1 | 1 2 3 | miss, evicts 5 |
+| 11: block 4 | 5 3 4 | miss, evicts 2 | 2 3 4 | miss, evicts 1 |
+| 12: block 5 | 5 3 4 | **hit** | 3 4 5 | miss, evicts 2 |
+
+The hits at references 8 and 9 reordered LRU's queue and left block 5 as the
+least recently used, so LRU threw away the one block the string ends with.
+FIFO ignored those hits, kept 5, and collected the final reference. **The
+distractor here is the belief that LRU is optimal.** It is not; it is a good
+heuristic that fails whenever recency is a poor predictor of the future, and a
+reference string with a long reuse distance is exactly that case.
+
+## Worked example 11.2 — Belady's anomaly
+
+**Given.** The same string on FIFO with three frames and then four.
+
+**Work.** FIFO takes 9 misses with three frames and 10 with four. **More memory
+produced more misses.**
+
+![Misses on the twelve-reference string against the number of frames available, for FIFO, LRU and OPT. FIFO rises from nine misses at three frames to ten at four, which is Belady's anomaly; LRU falls from ten to eight over the same step, and OPT lies below both at seven and six.](/courses/fe-ee/figures/sys2-mem-belady.svg)
+
+**Answer: 9 against 10, an anomaly.** The reason is structural rather than
+accidental. With three frames FIFO's resident set at a given moment is not
+necessarily a subset of what it would hold with four, because the eviction
+order depends on arrival order and the arrival order changes when the capacity
+changes. Policies for which the smaller cache's contents are always a subset of
+the larger one's are called stack policies, and they cannot show this
+behaviour. LRU is a stack policy, which is the one thing it is guaranteed
+better at than FIFO. Its 10 to 8 improvement over the same step is what a
+well-behaved policy looks like.
+
+## Worked example 11.3 — how good is good?
+
+**Given.** OPT on three frames takes 7 misses. Compare LRU and FIFO against it.
+
+**Work.** OPT achieves
+
+$$12 - 7 = 5$$
+
+hits, a hit rate of
+
+$$5 / 12 = 0.417$$
+
+against FIFO's 3 hits and LRU's 2. Expressed as excess misses over the optimum,
+FIFO is 2 above and LRU is 3 above.
+
+**Answer: both are well short of OPT on this string.** That is expected on a
+string this short and this adversarial. On real traces of millions of
+references LRU typically lands within a few percent of OPT, which is why the
+industry builds approximations of LRU rather than approximations of anything
+else. The practical policies in real caches are those approximations —
+tree-based pseudo-LRU, or a single not-recently-used bit — because exact LRU
+needs an ordering of every way in every set and the bookkeeping grows faster
+than the associativity does.
+
+**How the exam asks this.** A short reference string, a frame count and a
+policy, then the miss count. Draw the resident set after every reference; do
+not try to do it in your head, and remember that a hit reorders the set under
+LRU and leaves it untouched under FIFO.`,
+      examTip: 'Under LRU a hit changes the eviction order; under FIFO it does not. Half the marks lost on replacement questions come from reordering the queue on a FIFO hit, which turns FIFO into LRU and gives whichever answer the other policy deserves.',
+      importantNote: 'FIFO can take more misses with more frames — Belady\'s anomaly — because it is not a stack policy. LRU and OPT are stack policies and are immune, so an answer showing LRU getting worse with more frames contains an arithmetic error.',
+    },
+    { id: 'memh-write', title: '12. Write Policies and the Traffic They Generate',
+      content: `## 12.1 Four decisions, not one
+
+Section 1.3 tabulated write-through against write-back. There are actually two
+independent choices, and problems routinely combine them.
+
+The first is **what happens on a write hit**. Write-through sends the word to
+the next level as well as into the cache, so memory is always current.
+Write-back marks the block dirty and defers, so memory is stale until the block
+is evicted.
+
+The second is **what happens on a write miss**. Write-allocate fetches the
+block first and then writes into it; no-write-allocate sends the word onward
+and leaves the cache untouched. The natural pairings are write-back with
+write-allocate, and write-through with no-write-allocate, because each
+combination avoids doing work the other half would undo.
+
+| Policy pair | On a write hit | On a write miss | Memory contents |
+|---|---|---|---|
+| Write-through, no allocate | write both | write memory only | always current |
+| Write-back, write allocate | mark dirty | fetch, then mark dirty | stale until eviction |
+
+## 12.2 Traffic, computed rather than asserted
+
+Assertions about which policy is cheaper are worth nothing without a workload,
+so take one: one million references, 25 percent of them writes, 32-byte blocks,
+a 4 percent miss rate, and 30 percent of evicted blocks dirty.
+
+**Write-through with no allocate.** Every write goes to memory as a word, and
+every read miss fetches a block. Writes number
+
+$$1000000 \\times 0.25 = 250000$$
+
+so reads number
+
+$$1000000 - 250000 = 750000$$
+
+of which the misses are
+
+$$750000 \\times 0.04 = 30000$$
+
+Each fetches a block:
+
+$$30000 \\times 32 = 960000$$
+
+bytes. The writes themselves move four bytes each:
+
+$$250000 \\times 4 = 1000000$$
+
+bytes. The total is
+
+$$960000 + 1000000 = 1960000$$
+
+bytes.
+
+**Write-back with write allocate.** Every miss, read or write, fetches a block:
+
+$$1000000 \\times 0.04 = 40000$$
+
+misses, moving
+
+$$40000 \\times 32 = 1280000$$
+
+bytes in. Dirty evictions write a block back:
+
+$$0.30 \\times 40000 = 12000$$
+
+evictions, moving
+
+$$12000 \\times 32 = 384000$$
+
+bytes out. The total is
+
+$$1280000 + 384000 = 1664000$$
+
+bytes, so write-back moves less by a factor of
+
+$$1960000 / 1664000 = 1.178$$
+
+**Answer: write-back moves 15.1 percent less traffic on this workload.**
+
+![Megabytes moved to memory per million references against the fraction of evicted blocks that are dirty. Write-through is a flat line at 1.960 megabytes because it does not care how often a block is rewritten; write-back rises from 1.280 to 2.560 and crosses write-through at a dirty fraction of 0.531.](/courses/fe-ee/figures/sys2-mem-write-traffic.svg)
+
+## Worked example 12.1 — where the two policies change places
+
+**Given.** The same workload, with the dirty fraction d left free. At what d do
+the two policies move equal traffic?
+
+**Work.** Write-back traffic is the fetch traffic times one plus d, so setting
+it equal to the write-through total,
+
+$$1280000 \\, (1 + d) = 1960000$$
+
+$$1 + d = 1960000 / 1280000 = 1.53125$$
+
+$$d = 1.53125 - 1 = 0.53125$$
+
+**Answer: d = 0.531.** Above that, more than half of all evicted blocks being
+dirty, write-back actually moves more bytes than write-through, because it
+pays a full 32-byte block for what write-through would have sent as scattered
+four-byte words. The distractor is the flat claim that write-back always moves
+less; it moves less when blocks are written repeatedly before eviction, which
+is usually but not always true.
+
+## Worked example 12.2 — the write buffer changes the question
+
+**Given.** A write-through cache whose writes are absorbed by a four-entry
+write buffer that drains to memory. The processor stalls only when the buffer
+is full. Writes arrive at 250,000 per million references over a run of 0.5 ms,
+and memory accepts one write every 80 ns. Does the buffer keep up on average?
+
+**Work.** The run lasts 0.5 ms, which is 500 microseconds, so the writes arrive
+at
+
+$$250000 / 500 = 500$$
+
+per microsecond. Memory accepts one every 80 ns, which is
+
+$$1000 / 80 = 12.5$$
+
+per microsecond, so demand exceeds drain by
+
+$$500 / 12.5 = 40$$
+
+**Answer: no — the buffer is overwhelmed by a factor of 40, saturates within a
+few writes, and thereafter the machine runs at memory speed.** Four entries buy
+nothing against a mismatch of that size; a write buffer smooths bursts, it does
+not raise average bandwidth. This is exactly why a write-through cache is never
+placed next to a fast core without a write-back cache beneath it to absorb the
+traffic, and why the pairings in Section 12.1 are the ones that exist.
+
+## 12.3 What write-back costs besides bytes
+
+Deferring a write buys traffic and sells three things. Memory is no longer
+authoritative, so anything else that reads memory — another processor, a DMA
+engine, a debugger — can see stale data unless a coherence mechanism intervenes.
+An eviction can now take twice as long, because a dirty block must be written
+out before the incoming block can be read in, unless the cache holds it in a
+write-back buffer and defers again. And a power failure loses whatever was
+dirty, which is why systems that care about durability force write-backs at
+defined points rather than trusting the cache.
+
+**How the exam asks this.** Give a reference count, a write fraction, a miss
+rate, a block size and often a dirty fraction, then ask for bytes moved. Count
+the two directions separately — fills coming in, write-backs or write-throughs
+going out — and be careful that write-through moves a word while write-back
+moves a whole block.`,
+      examTip: 'Write-through moves a WORD per write; write-back moves a BLOCK per dirty eviction. Mixing the two units is the standard error and it changes the answer by the ratio of block size to word size, which is eight on a 32-byte block.',
+      importantNote: 'Whether write-back moves less traffic depends on the dirty fraction. On the standard workload here the crossover is at 0.531, and above it the block-sized write-backs cost more than the word-sized write-throughs they replaced.',
+    },
+    { id: 'memh-vm-endtoend', title: '13. Virtual Memory Worked End to End',
+      content: `## 13.1 What a translation actually is
+
+Section 2.1 gave the shape: a virtual address splits into a page number and an
+offset, the page number is translated and the offset is carried through
+untouched. This section does the arithmetic on a machine of the size actually
+in use, which is where the difficulties appear.
+
+Take a 48-bit virtual address with 4 KB pages. The offset takes
+
+$$\\log_2 4096 = 12$$
+
+bits, leaving
+
+$$48 - 12 = 36$$
+
+bits of virtual page number. A flat table with one 8-byte entry per page would
+need
+
+$$68719476736 \\times 8 = 549755813888$$
+
+bytes, which is
+
+$$549755813888 / 1073741824 = 512$$
+
+gigabytes — **per process.** The flat table is not merely wasteful here, it is
+larger than the memory it describes, so it is not a design that can be repaired
+by buying more RAM. Layering is not an optimisation on this machine; it is the
+only option.
+
+## 13.2 The four-level table, and one address through it
+
+Split the 36-bit page number into four 9-bit indices, one per level:
+
+$$4 \\times 9 + 12 = 48$$
+
+Each level's table then has 512 entries of 8 bytes,
+
+$$512 \\times 8 = 4096$$
+
+bytes — exactly one page, which is not a coincidence: making a page table fit
+in a page is what lets the operating system allocate table pages from the same
+pool as everything else.
+
+## Worked example 13.1 — decompose a virtual address completely
+
+**Given.** The virtual address 0x7F3A2B4C1D08 on the machine above. Give the
+four table indices and the offset, then form the physical address assuming the
+final entry contains frame number 0x1A2B3.
+
+**Work.** Take the fields from the bottom. The offset is the low 12 bits:
+
+**offset = 0xD08 = 3336**
+
+Then four 9-bit fields, read from the top of the address downward because that
+is the order the walk uses:
+
+| Field | Bits | Value | Hex |
+|---|---|---|---|
+| Level-4 index | 47 to 39 | 254 | 0x0FE |
+| Level-3 index | 38 to 30 | 232 | 0x0E8 |
+| Level-2 index | 29 to 21 | 346 | 0x15A |
+| Level-1 index | 20 to 12 | 193 | 0x0C1 |
+| Page offset | 11 to 0 | 3336 | 0xD08 |
+
+Reassembling those five fields reproduces 0x7F3A2B4C1D08 exactly, which is the
+check to run before going further. The walk reads the level-4 table at entry
+254, follows it to a level-3 table and reads entry 232, and so on down to entry
+193 of the level-1 table, which holds the frame number. The physical address is
+the frame number shifted up by the offset width, with the offset dropped in:
+
+**physical address = 0x1A2B3D08**
+
+and the frame itself begins at
+
+$$107187 \\times 4096 = 439037952$$
+
+**Answer: indices 254, 232, 346 and 193, offset 3336, physical address
+0x1A2B3D08.** The trap is reversing the index order — reading the low nine bits
+above the offset as the top-level index. The reassembly check catches it
+immediately, which is why it is worth doing.
+
+## Worked example 13.2 — what the walk costs
+
+**Given.** Four levels, each read costing one DRAM access at 80 ns, and a TLB
+that hits in 0.5 ns. Compute the average translation time for TLB hit rates of
+98, 99.5 and 99.9 percent.
+
+**Work.** A complete walk is four dependent memory accesses:
+
+$$t_{walk} = 4 \\times 80 = 320$$
+
+nanoseconds. Then the average is the usual weighted sum:
+
+$$0.98 \\times 0.5 + 0.02 \\times 320 = 6.89$$
+
+$$0.995 \\times 0.5 + 0.005 \\times 320 = 2.0975$$
+
+$$0.999 \\times 0.5 + 0.001 \\times 320 = 0.8195$$
+
+**Answer: 6.89, 2.0975 and 0.8195 nanoseconds.** Two percent of accesses
+missing the TLB costs more than thirteen times the hit time itself, and the
+whole of that cost is translation — the data has not been fetched yet. This is
+why the last fraction of a percent of TLB hit rate is worth chasing, and why
+the walk itself is cached in the ordinary data caches on real machines, which
+this model deliberately does not assume.
+
+## 13.3 Reach, not size, is the figure of merit
+
+Section 5.5 introduced reach. Restated as a design rule: a TLB is large enough
+when its reach covers the program's active footprint, and its entry count alone
+says nothing.
+
+$$reach = N_{entries} \\times S_{page}$$
+
+For a 1024-entry TLB with 4 KB pages,
+
+$$1024 \\times 4096 = 4194304$$
+
+bytes — 4 MB. The same TLB with 2 MB pages reaches
+
+$$1024 \\times 2097152 = 2147483648$$
+
+bytes, 2 GB, a factor of
+
+$$2147483648 / 4194304 = 512$$
+
+![Average translation time against resident footprint for a 1024-entry TLB, on logarithmic footprint axes. With 4 KB pages the curve rises out of the sub-nanosecond region once the footprint passes the 4 MB reach and saturates near the 320 nanosecond walk cost; with 2 MB pages the same rise is deferred until 2 GB.](/courses/fe-ee/figures/sys2-mem-tlb-reach.svg)
+
+The figure shows why large pages are requested by databases and scientific
+codes and ignored by everything else. Below the reach the translation cost is
+invisible; above it the cost climbs to the full walk time within about two
+decades of footprint. A workload that sits below 4 MB gains nothing from large
+pages; one that sits at 1 GB gains almost everything.
+
+## Worked example 13.3 — a page fault budget
+
+**Given.** Main memory answers in 100 ns and a page fault costs 5 ms of disk
+service. What page fault rate keeps the average access within 10 percent of the
+memory time?
+
+**Work.** The average access time is
+
+$$t_{avg} = (1 - p) \\times 100 + p \\times 5000000$$
+
+nanoseconds. Setting it to 110 and solving,
+
+$$10 = p \\, (5000000 - 100)$$
+
+$$5000000 - 100 = 4999900$$
+
+$$p = 10 / 4999900 = 0.000002$$
+
+which is one fault in
+
+$$1 / 0.000002 = 500000$$
+
+accesses. **Answer: about two faults per million accesses, one in five hundred
+thousand.** The distractor is a rate that sounds reassuringly small, such as one
+in a thousand: at that rate the average access is 100 nanoseconds plus five
+microseconds of fault, which is fifty times slower rather than ten percent
+slower. When one outcome is five million times more expensive than the other,
+intuition about "rare" is worthless and the arithmetic is compulsory.
+
+## 13.4 Where the cache and the page table meet
+
+One question remains: does the cache index with virtual or physical addresses?
+Indexing with virtual addresses lets the cache lookup start before the
+translation finishes, which is fast, but two processes using the same virtual
+address for different data will collide. Indexing with physical addresses is
+correct and serialises the TLB lookup in front of the cache lookup.
+
+The standard resolution is to arrange that the index bits lie entirely inside
+the page offset, which translation does not change. Then the set can be
+selected from the untranslated bits while the TLB produces the tag to compare —
+virtually indexed, physically tagged, with both lookups in parallel. The
+constraint this imposes is exact:
+
+$$C \\le S_{page} \\times n_{ways}$$
+
+With 4 KB pages a direct-mapped cache of this kind cannot exceed 4 KB, an
+eight-way one cannot exceed 32 KB, and that inequality is a large part of why
+first-level caches are so often exactly 32 KB and eight-way.
+
+**How the exam asks this.** Offset bits from the page size, page-number bits
+from what remains, entries from two to that power, table size from entries
+times entry width. Then either a reach calculation or a weighted average over
+TLB hit and miss.`,
+      examTip: 'Page offset bits come from the PAGE size and cache offset bits from the BLOCK size. They are different quantities in the same address and a question that supplies both is usually checking that you kept them apart.',
+      importantNote: 'A four-level walk is four dependent memory accesses, so its cost is four times the memory latency and cannot be overlapped: each level supplies the address of the next. That serial dependence is why TLB hit rate matters far more than any other translation parameter.',
+    },
+    { id: 'memh-problems', title: '14. Problem Sets',
+      content: `## Problem Set A — caches, fields and hit rates
+
+**A1.** A 16 KB direct-mapped cache has 64-byte blocks and 32-bit addresses.
+Give the three field widths.
+
+*Answer.* Lines number
+
+$$16384 / 64 = 256$$
+
+so the offset is 6 bits, the index is 8 bits, and the tag is
+
+$$32 - 8 - 6 = 18$$
+
+**6, 8 and 18.** Check the sum: 6 plus 8 plus 18 is 32. The distractor is
+taking the index from the capacity in bytes rather than from the line count,
+which gives 14 index bits and a tag of 12.
+
+**A2.** The same 16 KB capacity is rebuilt as eight-way set associative with
+the same 64-byte blocks. Give the new field widths.
+
+*Answer.* Sets number
+
+$$16384 / 512 = 32$$
+
+so the index is 5 bits, the offset is unchanged at 6, and the tag is
+
+$$32 - 5 - 6 = 21$$
+
+**6, 5 and 21.** Three index bits moved into the tag, which is exactly log2 of
+the eight ways. The trap is leaving the index at 8 because there are still 256
+lines; the index names sets, not lines.
+
+**A3.** A program walks an array of 8-byte doubles at unit stride through a
+cache with 64-byte blocks, large enough that nothing is evicted. What is the
+hit rate?
+
+*Answer.* Elements per block are
+
+$$64 / 8 = 8$$
+
+so one miss occurs per eight references and the hit rate is
+
+$$1 - 8 / 64 = 0.875$$
+
+**87.5 percent.** The distractor is 64 over 8 giving a hit rate of 8, which is
+not a probability; if a hit rate comes out above one, the ratio has been
+inverted.
+
+**A4.** The same array is walked at a stride of 64 bytes. What is the hit rate,
+and what changes if the block size is raised to 128 bytes?
+
+*Answer.* At a 64-byte stride every reference lands in a new block, so the hit
+rate is **zero**. Raising the block to 128 bytes puts two consecutive strided
+elements in one block, giving one hit for every two references:
+
+$$1 - 64 / 128 = 0.500$$
+
+**0 percent, then 50 percent.** The lesson is that the hit rate on a strided
+walk depends on the ratio of block size to stride and on nothing else, until
+the working set stops fitting.
+
+**A5.** Two 4 KB arrays are accessed alternately in a 4 KB direct-mapped cache
+with 64-byte blocks. Predict the hit rate, then say what a two-way cache of the
+same capacity would give.
+
+*Answer.* Take the arrays to hold 4-byte integers, so each holds
+
+$$4096 / 4 = 1024$$
+
+elements and walking both once makes
+
+$$1024 \\times 2 = 2048$$
+
+references. Direct-mapped, each element of the second array maps to the same
+line as the corresponding element of the first, so every access evicts what the
+next one needs and the hit rate is **zero**. A two-way cache of the same
+capacity holds both blocks in one set, so only the compulsory misses survive.
+The two arrays span
+
+$$8192 / 64 = 128$$
+
+blocks, so the two-way hit rate is
+
+$$1 - 128 / 2048 = 0.9375$$
+
+**0 percent direct-mapped, 93.75 percent two-way.** This is Section 8.2's
+experiment at a different size, and the simulated version of that experiment
+gave exactly the analogous result: 0 hits in 256 direct-mapped, 224 in 256
+two-way.
+
+**A6.** A cache reports a 2 percent miss rate with a 1 ns hit time and an 80 ns
+penalty. What is the AMAT, and what miss rate would be needed to bring AMAT
+below 2 ns?
+
+*Answer.* The AMAT is
+
+$$AMAT = 1 + 0.02 \\times 80 = 2.60$$
+
+nanoseconds. For AMAT below 2, the stall term must be below 1 ns:
+
+$$m = 1 / 80 = 0.0125$$
+
+**2.60 ns, and a miss rate below 1.25 percent.** The distractor is halving the
+miss rate to 1 percent and expecting AMAT to halve; it falls to 1.80, because
+the hit time is a floor that no miss rate can go under.
+
+## Problem Set B — hierarchy, replacement and writes
+
+**B1.** A two-level cache has a 1 ns L1 with a 4 percent miss rate and a 10 ns
+L2 with a 30 percent local miss rate, over an 80 ns memory. Find the AMAT and
+the global L2 miss rate.
+
+*Answer.* Build from the bottom:
+
+$$P_{L1} = 10 + 0.30 \\times 80 = 34$$
+
+$$AMAT = 1 + 0.04 \\times 34 = 2.36$$
+
+nanoseconds, and the global rate is
+
+$$0.04 \\times 0.30 = 0.012$$
+
+**2.36 ns and 1.2 percent global.** The trap is reporting 30 percent as the rate
+at which DRAM is disturbed. Only 4 percent of accesses reach L2 at all, so the
+DRAM rate is the product, 1.2 percent, and quoting the local figure overstates
+main-memory traffic twenty-five fold.
+
+**B2.** The reference string 1 2 3 4 1 2 5 1 2 3 4 5 is run on four frames with
+FIFO and with LRU. Give both miss counts and say which is anomalous.
+
+*Answer.* Simulating the string gives FIFO 10 misses and LRU 8. FIFO took 9 on
+three frames, so **FIFO is anomalous: adding a frame added a miss.** LRU went
+from 10 to 8, as a stack policy must. The distractor is assuming the larger
+cache is always at least as good, which is true for LRU and OPT and false for
+FIFO.
+
+**B3.** A write-back cache with 64-byte blocks sees 2 million references, a
+5 percent miss rate and 40 percent of evictions dirty. How many bytes move?
+
+*Answer.* Misses number
+
+$$2000000 \\times 0.05 = 100000$$
+
+fetching
+
+$$100000 \\times 64 = 6400000$$
+
+bytes, and dirty write-backs number
+
+$$0.40 \\times 100000 = 40000$$
+
+moving
+
+$$40000 \\times 64 = 2560000$$
+
+bytes, for a total of
+
+$$6400000 + 2560000 = 8960000$$
+
+**8.96 MB.** The trap is charging the write-back for every eviction rather than
+for the dirty fraction, giving 12.8 MB — a 43 percent overstatement.
+
+**B4.** A 32-entry TLB with 8 KB pages serves a program whose active data is
+1 MB. Is the TLB adequate?
+
+*Answer.* Its reach is
+
+$$32 \\times 8192 = 262144$$
+
+bytes, 256 KB, against a 1 MB footprint, so it covers
+
+$$262144 / 1048576 = 0.25$$
+
+of the working set. **No — three quarters of the footprint is outside the
+reach, and the program will miss the TLB constantly.** The distractor is
+comparing the entry count with anything; 32 entries is neither large nor small
+until it is multiplied by the page size.
+
+**B5.** A four-level page table walk costs 4 memory accesses of 60 ns. With a
+TLB hit rate of 99 percent and a 1 ns TLB, what is the average translation time,
+and what does raising the hit rate to 99.9 percent give?
+
+*Answer.* The walk costs
+
+$$4 \\times 60 = 240$$
+
+nanoseconds. Then
+
+$$0.99 \\times 1 + 0.01 \\times 240 = 3.39$$
+
+and
+
+$$0.999 \\times 1 + 0.001 \\times 240 = 1.239$$
+
+**3.39 ns, falling to 1.239 ns.** A tenfold reduction in miss rate bought a
+2.7-fold reduction in translation time, not tenfold, because the hit time
+becomes the floor — the same structure as problem A6.
+
+**B6.** Separate the misses for a trace that takes 400 misses in the real
+cache, 250 in a fully associative cache of the same capacity, and 90 in an
+infinite cache.
+
+*Answer.* Compulsory misses are the infinite-cache count, 90. Capacity misses
+are
+
+$$250 - 90 = 160$$
+
+and conflict misses are
+
+$$400 - 250 = 150$$
+
+**90 compulsory, 160 capacity, 150 conflict.** Check that the three sum to 400.
+The distractor is subtracting in the wrong order and reporting a negative
+count; the infinite cache always misses least and the real cache always misses
+most, so the two differences are both non-negative.
+
+## Practice Problems C — mixed, and the traps that go with them
+
+**C1.** A machine has a 4 GB physical memory and 4 KB pages. How many frames
+are there, and how wide is a frame number?
+
+*Answer.* Frames number
+
+$$4294967296 / 4096 = 1048576$$
+
+which is 2 to the twentieth, so the frame number is **20 bits, and there are
+1,048,576 frames.** The trap is answering 32 bits because the machine is
+32-bit; the frame number is the physical address minus the offset bits.
+
+**C2.** Why does raising associativity from one way to two typically help far
+more than raising it from eight ways to sixteen?
+
+*Answer.* Because conflict misses are what associativity removes, and the first
+extra way removes most of them: a direct-mapped cache fails whenever two hot
+blocks share a set, and two ways is enough for the overwhelmingly common case
+of exactly two. By eight ways there is almost nothing left to remove, so the
+extra comparators buy a diminishing fraction of an already small quantity while
+still lengthening the hit time. **The gain is concentrated in the first
+doubling.** Section 8.2's simulation is the extreme case: one way to two took
+the misses from 256 to 32, and every further doubling to thirty-two ways left
+them at 32.
+
+**C3.** A cache has a 95 percent hit rate. A colleague proposes to describe it
+as "twenty times more hits than misses" and concludes the misses are
+negligible. Assess this using the model ladder.
+
+*Answer.* The ratio is right and the conclusion is wrong. With a 1 ns hit and
+an 80 ns penalty the time split is
+
+$$0.95 \\times 1 = 0.95$$
+
+nanoseconds of hit time against
+
+$$0.05 \\times 80 = 4.00$$
+
+nanoseconds of miss time, so
+
+$$4.00 / 4.95 = 0.808$$
+
+**Over 80 percent of the total access time is spent on 5 percent of the
+accesses.** The trap is reasoning about frequencies when the two outcomes have
+wildly different costs, which is the same error as the page-fault problem in
+Worked example 13.3.
+
+**C4.** A processor is virtually indexed and physically tagged with 4 KB pages.
+What is the largest four-way cache it can have without an aliasing problem, and
+what would allow a larger one?
+
+*Answer.* The index and offset together must fit inside the page offset, so
+
+$$4096 \\times 4 = 16384$$
+
+bytes — **16 KB.** Growing beyond it requires either more ways, since the limit
+scales with associativity, or larger pages, or hardware that detects and
+resolves aliases. The distractor is to treat the limit as depending on the
+block size; the block size cancels, because it appears in the offset on one
+side and in the set count on the other.`,
+      examTip: 'Every cache problem starts with three divisions: capacity over block size gives lines, lines over ways gives sets, block size gives the offset. Do all three before touching the address, and the field widths follow without further thought.',
+      importantNote: 'Frequencies and costs must be multiplied before they are compared. A 5 percent miss rate against an 80-fold penalty owns more than 80 percent of the access time, and a one-in-a-thousand page fault against a fifty-thousand-fold penalty owns almost all of it.',
     },
   ],
   keyTakeaways: [
