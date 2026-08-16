@@ -422,6 +422,810 @@ audio and the noise sitting with it.
       examTip: 'Image separation is 2 f_IF regardless of injection side; only the direction flips. If a question fixes the LO frequency, subtract to find the IF first, then place the image on the far side of the LO from the wanted signal.',
       importantNote: 'The FM improvement factor 3 beta^2 (beta + 1) is measured against the carrier-to-noise ratio in the Carson bandwidth, and it only applies above the FM threshold of roughly 10 dB CNR. Below threshold the advantage disappears abruptly — which is why a fading FM link fails suddenly rather than gradually.',
     },
+    { id: 'am-from-the-carrier', title: '7. AM Built From the Carrier: Sidebands, Power, Efficiency',
+      content: `## 7.1 One identity produces the entire spectrum
+
+Sections 1 and 4 state the AM waveform and quote its power split. This section
+derives both from a single line of algebra, because on the exam the derivation
+is faster than the memorised result the moment a question changes one detail.
+Start from the tone-modulated carrier:
+
+$$s(t) = A_c\\left[1 + m\\cos(2\\pi f_m t)\\right]\\cos(2\\pi f_c t)$$
+
+Expanding the bracket leaves a plain carrier plus a product of two cosines:
+
+$$s(t) = A_c\\cos(2\\pi f_c t) + mA_c\\cos(2\\pi f_m t)\\cos(2\\pi f_c t)$$
+
+That product is where every AM fact comes from, and the product-to-sum identity
+splits it into two ordinary tones:
+
+$$\\cos A\\cos B = \\tfrac{1}{2}\\cos(A-B) + \\tfrac{1}{2}\\cos(A+B)$$
+
+$$s(t) = A_c\\cos(2\\pi f_c t) + \\frac{mA_c}{2}\\cos\\left[2\\pi(f_c-f_m)t\\right] + \\frac{mA_c}{2}\\cos\\left[2\\pi(f_c+f_m)t\\right]$$
+
+The modulated carrier is therefore not one signal whose amplitude wobbles. It is
+three steady sinusoids, none of which changes amplitude at all, sitting at
+f_c - f_m, f_c and f_c + f_m. The wobble a scope shows is those three beating
+against one another. Three consequences drop out at once.
+
+**Bandwidth.** The occupied span runs from the lower line to the upper one:
+
+$$BW = (f_c + f_m) - (f_c - f_m) = 2f_m$$
+
+**Sideband height.** Each sideband stands at m A_c / 2, so it can never exceed
+half the carrier, even at m = 1.
+
+**Carrier immobility.** The carrier term contains no m at all. Changing the
+message changes the sidebands and leaves the carrier line exactly where it was,
+at exactly the height it had. That is the whole reason AM efficiency has a
+ceiling.
+
+![Line spectrum of an AM signal with carrier amplitude 10 volts and modulation index 0.6, drawn at a carrier of 100 kilohertz and a message tone of 5 kilohertz. The carrier line stands at 10.00 volts and each sideband at 3.00 volts; into 50 ohms that is 1.000 watt in the carrier and 0.090 watt in each sideband, 1.180 watts in total, so the efficiency is 15.25 percent and the occupied bandwidth is 10 kilohertz.](/courses/fe-ee/figures/com2-am-spectrum.svg)
+
+The line heights in that figure are not taken from the expansion above. They are
+the magnitudes of a discrete Fourier transform of the synthesized waveform, so
+the picture and the algebra are two independent routes to the same three
+numbers. Both give 3.00, 10.00 and 3.00 volts.
+
+### Worked example 7A — powers from the three lines
+
+**Given** A_c = 10.0 V, m = 0.600, f_c = 100 kHz, f_m = 5 kHz, into R = 50 ohm.
+
+Sideband amplitude first, since everything else follows from it:
+
+$$\\frac{mA_c}{2} = \\frac{0.600 \\times 10.0}{2} = 3.00\\ \\mathrm{V}$$
+
+Each line is an ordinary sinusoid, so each carries the ordinary sinusoidal power:
+
+$$P_c = \\frac{A_c^2}{2R} = \\frac{100}{100} = 1.000\\ \\mathrm{W}$$
+
+$$P_{LSB} = P_{USB} = \\frac{(mA_c/2)^2}{2R} = \\frac{9.00}{100} = 0.0900\\ \\mathrm{W}$$
+
+$$P_{total} = 1.000 + 0.0900 + 0.0900 = 1.180\\ \\mathrm{W}$$
+
+and the same total from the compact form, as a check that costs one line:
+
+$$P_{total} = P_c\\left(1 + \\frac{m^2}{2}\\right) = 1.000 \\times 1.180 = 1.180\\ \\mathrm{W}$$
+
+$$\\eta = \\frac{2P_{sb}}{P_{total}} = \\frac{0.180}{1.180} = 0.15254 = 15.25\\%$$
+
+**Answer**: 10 kHz of spectrum, 1.180 W transmitted, 0.180 W of it carrying the
+message. The other 84.75% heats the antenna to no purpose.
+
+## 7.2 The efficiency ceiling, and why it is a ceiling
+
+Because the carrier term is fixed and the sideband terms grow as m, the two
+shares of transmitted power are
+
+$$\\frac{P_c}{P_{total}} = \\frac{1}{1 + m^2/2}, \\qquad \\frac{2P_{sb}}{P_{total}} = \\frac{m^2/2}{1 + m^2/2} = \\frac{m^2}{2 + m^2}$$
+
+The second expression IS the efficiency, and it is monotonic in m, so the best
+legal value is at m = 1:
+
+$$\\eta_{max} = \\frac{1}{2 + 1} = \\frac{1}{3} = 33.33\\%$$
+
+![Carrier share and sideband share of transmitted AM power plotted against modulation index from zero to one. The carrier share falls from 100 percent to 66.67 percent while the sideband share, which is also the efficiency, rises to a ceiling of 33.33 percent, passing 11.11 percent at index 0.5 and 24.24 percent at index 0.8.](/courses/fe-ee/figures/com2-am-power-split.svg)
+
+The curve is worth a second look because it is so flat at the left. Half
+modulation does not buy half the efficiency; it buys 11.11%, a third of the
+ceiling. Efficiency goes as m squared, so under-modulating is punished twice
+over. The generator that drew the figure re-derives every plotted point by
+averaging the square of the actual waveform over one message period, without
+using the power formula at all, and the two routes agree to a part in a billion.
+
+There is no way past 33.33% while the carrier is still transmitted, because the
+carrier is exactly what the envelope detector needs in order to be a simple
+diode. That is the trade the next subsection unwinds.
+
+### Worked example 7B — antenna current, forwards and backwards
+
+**Given** an unmodulated carrier drawing 8.00 A into a 50 ohm antenna. Find the
+current at m = 0.600, and then recover m from a measured 9.14 A.
+
+Power is proportional to the square of the current into a fixed resistance, so
+the current ratio is the square root of the power ratio:
+
+$$\\frac{I_{total}}{I_c} = \\sqrt{1 + \\frac{m^2}{2}} = \\sqrt{1.180} = 1.08628$$
+
+$$I_{total} = 8.00 \\times 1.08628 = 8.690\\ \\mathrm{A}$$
+
+Confirming through power rather than current, which is the independent route:
+P_c = I_c^2 R = 64.0 x 50 = 3200 W, and P_total = 3200 x 1.180 = 3776 W, which
+is (8.690)^2 x 50 = 3776 W. The two agree.
+
+Backwards, from a meter reading of 9.14 A on the same carrier:
+
+$$m = \\sqrt{2\\left[\\left(\\frac{I_{total}}{I_c}\\right)^2 - 1\\right]} = \\sqrt{2(1.30531 - 1)} = 0.781$$
+
+**Answer**: 8.690 A at m = 0.600; a reading of 9.14 A corresponds to m = 0.781.
+The trap here is treating the current ratio as the index: 9.14/8.00 = 1.14 is
+not a modulation index, and quoting it as one overstates the modulation by
+almost half.
+
+## 7.3 What DSB-SC and SSB actually save
+
+Once you see the spectrum as three lines, the two variants stop being
+definitions to memorise and become deletions.
+
+**DSB-SC** removes the carrier line and keeps both sidebands. All the
+information survives, because the information was never in the carrier. The
+bandwidth is unchanged at 2 f_m, because both sidebands are still there. What
+changes is transmitted power.
+
+**SSB** removes the carrier AND one sideband. The surviving sideband contains a
+complete copy of the message, since the two sidebands are mirror images
+carrying identical information. The bandwidth halves to f_m and the power falls
+again.
+
+![Stacked bars comparing transmitted power at modulation index one for full AM, double sideband suppressed carrier, and single sideband, normalized so the carrier is one unit. Full AM totals 1.50 units, DSB-SC totals 0.50, and SSB totals 0.25, which are savings of 4.77 dB and 7.78 dB respectively.](/courses/fe-ee/figures/com2-ssb-ledger.svg)
+
+At m = 1 the ledger reads: carrier 1.00 unit, each sideband 0.25 unit, total
+1.50 units. So
+
+$$\\text{DSB-SC saving} = 10\\log_{10}\\frac{1.50}{0.50} = 10\\log_{10}3 = 4.77\\ \\mathrm{dB}$$
+
+$$\\text{SSB saving} = 10\\log_{10}\\frac{1.50}{0.25} = 10\\log_{10}6 = 7.78\\ \\mathrm{dB}$$
+
+Both figures were re-derived by integrating the squared waveforms directly, and
+both matched to a thousandth of a decibel. The saving is real power, not a
+bookkeeping convention: a 7.78 dB reduction means an SSB transmitter needs about
+one sixth of the DC input for the same received signal.
+
+| Scheme | Lines transmitted | Bandwidth | Power at m = 1 | Detector |
+|---|---|---|---|---|
+| Full AM | carrier + both sidebands | 2 f_m | 1.50 units | Diode envelope |
+| DSB-SC | both sidebands | 2 f_m | 0.50 units | Coherent, phase-locked |
+| SSB | one sideband | f_m | 0.25 units | Coherent, and frequency-accurate |
+| VSB | one sideband + vestige | between f_m and 2 f_m | between 0.25 and 0.50 | Envelope, with a shaped filter |
+
+The cost column is receiver complexity, and it is not small. A coherent detector
+needs a local carrier matched in both frequency and phase. An SSB receiver that
+is 50 Hz off reproduces speech with every component shifted by 50 Hz, which is
+unintelligible for music and merely comical for voice — the reason amateur SSB
+sounds the way it does when mistuned.
+
+### Worked example 7C — the power a switch to SSB would save
+
+**Given** an AM transmitter delivering 5.00 kW total at m = 0.800. How much
+power would an SSB transmitter need for the same recovered message?
+
+$$P_c = \\frac{P_{total}}{1 + m^2/2} = \\frac{5000}{1.320} = 3787.88\\ \\mathrm{W}$$
+
+$$P_{sb,total} = 5000 - 3787.88 = 1212.12\\ \\mathrm{W}, \\qquad P_{one\\ sideband} = \\frac{1212.12}{2} = 606.06\\ \\mathrm{W}$$
+
+$$\\text{saving} = 10\\log_{10}\\frac{5000}{606.06} = 10\\log_{10}8.250 = 9.16\\ \\mathrm{dB}$$
+
+**Answer**: 606 W instead of 5000 W, a saving of 9.16 dB, and the occupied
+bandwidth halves as well. The saving exceeds the 7.78 dB quoted for m = 1
+precisely because m = 0.800 is a worse-modulated signal to begin with — the
+weaker the modulation, the more of the AM budget is pure carrier, and the more
+there is to throw away.
+
+### Worked example 7D — the two-tone index and the boundary it hides
+
+**Given** two audio tones modulating one carrier at m_1 = 0.500 and
+m_2 = 0.600. Is the transmitter overmodulated? What is its efficiency?
+
+Powers add, so the indices combine in quadrature rather than arithmetically:
+
+$$m_{eff} = \\sqrt{m_1^2 + m_2^2} = \\sqrt{0.250 + 0.360} = \\sqrt{0.610} = 0.781$$
+
+$$\\eta = \\frac{m_{eff}^2}{2 + m_{eff}^2} = \\frac{0.610}{2.610} = 0.23372 = 23.37\\%$$
+
+**Answer**: m_eff = 0.781, comfortably legal, and the efficiency is 23.37%. The
+distractor is arithmetic addition, 0.500 + 0.600 = 1.100, which declares the
+transmitter overmodulated when it is not, and would have an operator cutting
+audio gain for no reason. Quadrature is not an approximation here; it is what
+"powers add" means.
+
+| Given | Route | Common wrong turn |
+|---|---|---|
+| Envelope maximum and minimum | m from their difference over their sum | Using the ratio of the two readings |
+| Total power and m | P_c = P_total/(1 + m^2/2) | Multiplying by (1 - m^2/2) |
+| Antenna current ratio | Square, subtract 1, double, take the root | Quoting the ratio itself as m |
+| Two modulating tones | Quadrature sum of the indices | Adding the indices |
+| An SSB comparison | Compare against ONE sideband's power | Halving the total AM power |`,
+      examTip: 'Derive rather than recall: expand A_c[1 + m cos(2 pi f_m t)] cos(2 pi f_c t), read the three line amplitudes A_c, mA_c/2, mA_c/2, and every AM answer on the paper follows. Bandwidth is the span of the outer two lines, efficiency is the sideband share m^2/(2+m^2), and the carrier term has no m in it at all.',
+      importantNote: 'SSB is quoted as a 50% bandwidth saving and that is exact, but the POWER saving depends on the modulation index. At m = 1 it is 7.78 dB against full AM; at m = 0.8 it is 9.16 dB, because a lightly modulated AM signal is mostly carrier and the carrier is what SSB discards.',
+    },
+    { id: 'fm-pm-instantaneous', title: '8. FM and PM: Instantaneous Frequency and Bessel Sidebands',
+      content: `## 8.1 Instantaneous frequency is the derivative of phase
+
+Every angle-modulation result follows from one definition. Write the signal as
+
+$$s(t) = A_c\\cos\\left[\\theta(t)\\right]$$
+
+and define the instantaneous frequency as the rate at which that angle advances:
+
+$$f_i(t) = \\frac{1}{2\\pi}\\frac{d\\theta}{dt}$$
+
+This is not a convention chosen for convenience; it is forced. For an
+unmodulated carrier theta = 2 pi f_c t, whose derivative over 2 pi is f_c, so
+the definition reduces to the ordinary frequency in the one case where the
+ordinary frequency is unambiguous.
+
+For **PM** the message drives the phase directly:
+
+$$\\theta(t) = 2\\pi f_c t + k_p\\,m(t) \\quad\\Longrightarrow\\quad f_i(t) = f_c + \\frac{k_p}{2\\pi}\\frac{dm}{dt}$$
+
+For **FM** the message drives the frequency, so the phase is its integral:
+
+$$f_i(t) = f_c + k_f\\,m(t) \\quad\\Longrightarrow\\quad \\theta(t) = 2\\pi f_c t + 2\\pi k_f\\!\\int_0^t m(\\tau)\\,d\\tau$$
+
+That single difference — message versus derivative of message — produces every
+distinction between the two. For a tone m(t) = A_m cos(2 pi f_m t) the FM
+deviation and index are
+
+$$\\Delta f = k_f A_m, \\qquad \\beta = \\frac{\\Delta f}{f_m} = \\frac{k_f A_m}{f_m}$$
+
+while the PM peak phase deviation and the deviation it implies are
+
+$$\\beta_p = k_p A_m, \\qquad \\Delta f = \\beta_p f_m$$
+
+Read those four expressions side by side and the exam trap is obvious. FM's
+deviation does not contain f_m; PM's does. Change the pitch of the message and
+an FM transmitter's swing is untouched while a PM transmitter's swing scales
+with it.
+
+![Two stacked panels for a 4 kilohertz tone. The upper panel shows the phase deviation of an FM signal, 3.75 radians times a sine, and of a PM signal with the same peak deviation, 3.75 radians times a cosine. The lower panel shows the instantaneous frequency obtained by numerically differentiating each phase: both peak at 15.00 kilohertz, giving a modulation index of 3.75, but the FM deviation follows the message while the PM deviation follows its derivative, a quarter cycle earlier.](/courses/fe-ee/figures/com2-fm-instfreq.svg)
+
+The lower panel is computed by numerically differencing the phase curve above
+it, not by plotting the deviation formula. That it lands on 15.00 kHz either way
+is the evidence that the derivative definition and the deviation formula are the
+same statement.
+
+The figure also makes a point that catches people in identification questions:
+for a single tone, an FM signal and a PM signal are indistinguishable apart from
+a quarter-cycle shift. You cannot tell them apart from one tone. The difference
+only shows up when the message contains more than one frequency, because then
+the two respond to the mix differently.
+
+### Worked example 8A — deviation, index and bandwidth from modulator data
+
+**Given** a frequency modulator with sensitivity k_f = 25.0 kHz/V, driven by a
+2.40 V tone at f_m = 3.00 kHz.
+
+$$\\Delta f = k_f A_m = 25.0 \\times 2.40 = 60.0\\ \\mathrm{kHz}$$
+
+$$\\beta = \\frac{\\Delta f}{f_m} = \\frac{60.0}{3.00} = 20.0$$
+
+$$BW_{Carson} = 2(\\Delta f + f_m) = 2 \\times 63.0 = 126\\ \\mathrm{kHz}$$
+
+**Answer**: 60.0 kHz of deviation, an index of 20.0, and 126 kHz of occupied
+bandwidth. Note that the 3.00 kHz figure did no work in the first line. The
+distractor is to multiply the sensitivity by the message frequency instead of
+its amplitude, giving 25.0 x 3.00 = 75.0 kHz and a bandwidth of 156 kHz, which
+is wrong by 30 kHz and wrong in principle.
+
+## 8.2 Why FM has infinitely many sidebands
+
+Substituting the FM phase for a tone gives
+
+$$s(t) = A_c\\cos\\left[2\\pi f_c t + \\beta\\sin(2\\pi f_m t)\\right]$$
+
+and this cannot be expanded into a finite number of tones, because the message
+sits inside a cosine rather than multiplying one. The expansion that does work
+is the Jacobi-Anger identity, whose coefficients are the Bessel functions of the
+first kind:
+
+$$s(t) = A_c\\sum_{n=-\\infty}^{\\infty} J_n(\\beta)\\cos\\left[2\\pi(f_c + n f_m)t\\right]$$
+
+$$J_n(\\beta) = \\frac{1}{\\pi}\\int_0^{\\pi}\\cos(n\\phi - \\beta\\sin\\phi)\\,d\\phi$$
+
+So the spectrum is a line at the carrier and a pair of lines at every multiple
+of f_m either side, forever. Two structural facts govern everything after this.
+
+**Power is conserved.** Angle modulation does not change the envelope, so the
+transmitted power cannot depend on beta:
+
+$$\\sum_{n=-\\infty}^{\\infty} J_n^2(\\beta) = 1 \\quad\\text{for every }\\beta$$
+
+Raising beta therefore does not create sideband power; it moves power out of the
+carrier line and into the sidebands. That is the deepest difference from AM,
+where raising m adds sideband power on top of an unchanged carrier.
+
+**The lines decay abruptly past n = beta.** Below that index they are
+comparable to one another; above it they collapse.
+
+![The first three Bessel functions of the first kind plotted against modulation index from zero to ten. J-nought falls through zero at index 2.4048 and again at 5.5201; at an index of five the three coefficients are minus 0.1776, minus 0.3276 and plus 0.0466, so the carrier line is smaller than several of its own sidebands.](/courses/fe-ee/figures/com2-fm-bessel.svg)
+
+Every marked value on that figure is computed twice — once from a library Bessel
+routine and once by numerically integrating the integral above — and the two
+agree to better than five parts in a million.
+
+### Worked example 8B — the line powers of a broadcast FM signal
+
+**Given** a 100 W FM transmitter at beta = 5.00. How is the power distributed?
+
+Each line carries the fraction J_n^2(beta) of the total, doubled for the pairs:
+
+| Line | Coefficient | Power fraction | Power of 100 W |
+|---|---|---|---|
+| Carrier, n = 0 | -0.1776 | 0.03154 | 3.15 W |
+| n = 1 pair | -0.3276 | 0.21462 | 21.46 W |
+| n = 2 pair | +0.0466 | 0.00434 | 0.43 W |
+| n = 3 pair | +0.3648 | 0.26620 | 26.62 W |
+| n = 4 pair | +0.3912 | 0.30613 | 30.61 W |
+| n = 5 pair | +0.2611 | 0.13639 | 13.64 W |
+| n = 6 pair | +0.1310 | 0.03435 | 3.43 W |
+
+$$P_{carrier} = J_0^2(5)\\times 100 = 0.03154 \\times 100 = 3.15\\ \\mathrm{W}$$
+
+$$P_{n=4\\ pair} = 2J_4^2(5)\\times 100 = 0.30613 \\times 100 = 30.61\\ \\mathrm{W}$$
+
+**Answer**: the fourth sideband pair carries almost ten times the power of the
+carrier. The distractor is the AM intuition that the carrier dominates. It does
+not, and at beta = 2.4048 the carrier line disappears entirely while the signal
+is still fully modulated — which is exactly how a laboratory sets deviation
+without a deviation meter: advance the modulating level until the carrier line
+on the analyser nulls.
+
+## 8.3 Carson's rule, and how wrong it is
+
+Counting the pairs that survive up to n = beta + 1 and doubling gives
+
+$$BW_{Carson} = 2(\\beta + 1)f_m = 2(\\Delta f + f_m)$$
+
+which is the standard rule arriving by a route that explains it rather than
+asserting it. The question worth asking is how much power that band actually
+encloses, since the true spectrum is infinite. Summing the enclosed fractions:
+
+$$P_{enclosed}(N) = J_0^2(\\beta) + 2\\sum_{n=1}^{N} J_n^2(\\beta)$$
+
+![Carson's rule compared with the bandwidth that genuinely holds 99 percent of the transmitted power, both expressed as the half-count N in a bandwidth of 2 N times the message frequency. Carson is the straight line N equals beta plus one; the true 99 percent requirement is a staircase. At beta equal to one and five the two agree exactly, at beta equal to ten the Carson count of eleven encloses only 98.996 percent so the honest count is twelve.](/courses/fe-ee/figures/com2-carson-error.svg)
+
+| beta | Carson N | Power inside Carson band | True N for 99% |
+|---|---|---|---|
+| 1 | 2 | 99.92% | 2 |
+| 5 | 6 | 99.36% | 6 |
+| 10 | 11 | 98.996% | 12 |
+
+The familiar claim that Carson's rule captures "about 98%" is a conservative
+floor, and the trend runs the other way from what most people expect. At small
+beta the rule is generous; at beta = 10 it falls a few hundredths of a percent
+short of 99% and the honest 99% band needs one more pair. The FE exam accepts
+Carson's rule everywhere, and it should — a 9% bandwidth error at beta = 10 is
+irrelevant next to the guard bands a real channel plan carries — but you should
+know that it is an engineering estimate with a known sign of error, not an
+identity.
+
+### Worked example 8C — a broadcast channel, and where Carson runs short
+
+**Given** broadcast FM with Delta_f = 75.0 kHz in a 200 kHz channel. Check the
+fit for a 15.0 kHz audio band and then for a 7.50 kHz one.
+
+At f_m = 15.0 kHz:
+
+$$\\beta = \\frac{75.0}{15.0} = 5.00, \\qquad BW_{Carson} = 2 \\times 90.0 = 180\\ \\mathrm{kHz}$$
+
+The true 99% count at beta = 5 is also N = 6, so the honest bandwidth is
+2 x 6 x 15.0 = 180 kHz. Carson and the power integral agree exactly, and 20 kHz
+of the channel is left as guard.
+
+At f_m = 7.50 kHz with the same deviation:
+
+$$\\beta = \\frac{75.0}{7.50} = 10.0, \\qquad BW_{Carson} = 2 \\times 82.5 = 165\\ \\mathrm{kHz}$$
+
+but the Carson count of N = 11 encloses only 98.996%, so the true 99% band needs
+N = 12, that is 2 x 12 x 7.50 = 180 kHz.
+
+**Answer**: 180 kHz either way by the honest measure. Carson reports 165 kHz for
+the narrower audio band, understating the real occupancy by 15 kHz. Both still
+fit the 200 kHz channel, which is why the approximation survives in practice.
+The distractor is BW = 2 Delta_f = 150 kHz, the wideband shortcut applied where
+beta is not large enough to justify it; it understates the 15 kHz case by 30 kHz.
+
+## 8.4 The FM and PM comparison, settled
+
+| Quantity | FM | PM |
+|---|---|---|
+| What the message sets | Instantaneous frequency | Instantaneous phase |
+| Peak deviation | Delta_f = k_f A_m, independent of f_m | Delta_f = k_p A_m f_m, proportional to f_m |
+| Modulation index | beta = k_f A_m / f_m | beta_p = k_p A_m, independent of f_m |
+| Double the message amplitude | Deviation and index both double | Deviation and index both double |
+| Double the message frequency | Index halves, bandwidth barely moves | Deviation doubles, bandwidth roughly doubles |
+| Equivalent implementation | PM driven by the integral of m(t) | FM driven by the derivative of m(t) |
+| Where it appears digitally | Frequency shift keying | Phase shift keying and QAM |
+
+The last row is the bridge to the next chapter. PSK is phase modulation by a
+discrete symbol stream, so its bandwidth is governed by the symbol rate rather
+than by any deviation constant — which is why the digital chapter never mentions
+Carson's rule.`,
+      examTip: 'Write down whether the message sets frequency or phase before anything else. FM: Delta_f = k_f A_m and beta = Delta_f/f_m. PM: beta_p = k_p A_m and Delta_f = beta_p f_m. Carson BW = 2(Delta_f + f_m) applies to both once you have the deviation. The single commonest error is letting f_m into an FM deviation.',
+      importantNote: 'FM power is conserved as beta changes: the squared Bessel coefficients always sum to one, so a larger index moves power outward rather than adding it. At beta = 5 the carrier holds only 3.15% of the transmitted power and the fourth sideband pair holds 30.6%, and at beta = 2.4048 the carrier vanishes altogether.',
+    },
+    { id: 'fm-noise-capture', title: '9. Pre-emphasis, Threshold and Capture: What FM Buys and What It Costs',
+      content: `## 9.1 The noise triangle and the network that flattens it
+
+An FM discriminator differentiates phase, and differentiation multiplies a
+spectrum by frequency. So even when the noise entering the receiver is flat, the
+noise LEAVING the detector has a power spectral density that rises as the square
+of the offset from the carrier:
+
+$$S_{n,out}(f) \\propto f^2, \\qquad 0 \\le f \\le W$$
+
+This is the noise triangle, and it means the top of the audio band is far
+noisier than the bottom. The remedy is to boost the treble before transmission
+and cut it by exactly the same amount afterwards. The pre-emphasis network is a
+single zero:
+
+$$H_{pre}(f) = 1 + j\\frac{f}{f_1}, \\qquad f_1 = \\frac{1}{2\\pi\\tau}$$
+
+$$H_{de}(f) = \\frac{1}{1 + jf/f_1}$$
+
+The product is unity, so programme material passes through the pair untouched.
+The noise, however, only meets the de-emphasis network, and it is the noise that
+loses.
+
+$$\\text{gain} = \\frac{\\displaystyle\\int_0^W f^2\\,df}{\\displaystyle\\int_0^W \\frac{f^2}{1 + (f/f_1)^2}\\,df} = \\frac{W^3/3}{f_1^2\\left[W - f_1\\arctan(W/f_1)\\right]}$$
+
+![Pre-emphasis and de-emphasis responses for a 75 microsecond time constant, plotted against audio frequency on a logarithmic axis, together with the discriminator noise that rises as the square of frequency. The corner sits at 2122 hertz, the pre-emphasis boost reaches 17.07 dB at the 15 kilohertz band edge, and the net signal-to-noise gain from the pair is 13.20 dB.](/courses/fe-ee/figures/com2-preemphasis.svg)
+
+### Worked example 9A — the de-emphasis gain, computed rather than quoted
+
+**Given** the North American standard tau = 75.0 microseconds and an audio band
+edge W = 15.0 kHz.
+
+$$f_1 = \\frac{1}{2\\pi\\tau} = \\frac{1}{2\\pi \\times 75.0\\times 10^{-6}} = 2122\\ \\mathrm{Hz}$$
+
+$$\\text{boost at }W = 10\\log_{10}\\left[1 + \\left(\\frac{15000}{2122}\\right)^2\\right] = 10\\log_{10}(50.96) = 17.07\\ \\mathrm{dB}$$
+
+$$\\text{gain} = \\frac{(15000)^3/3}{(2122)^2\\left[15000 - 2122\\arctan(7.0686)\\right]} = 20.88 = 13.20\\ \\mathrm{dB}$$
+
+**Answer**: the pair recovers 13.20 dB of output signal-to-noise ratio. The
+generator that drew the figure computes that integral twice, once in the closed
+form above and once by numerical quadrature with no closed form at all, and the
+two agree to better than a part in a million. The European tau = 50.0 us puts
+the corner at 3183 Hz and buys correspondingly less, which is the whole content
+of the difference between the two standards.
+
+The cost is headroom. A recording with a bright top end arrives at the modulator
+already boosted by up to 17 dB, and if the broadcaster does not reduce level to
+compensate, the transmitter overdeviates. That is why FM broadcast processing
+chains contain a pre-emphasis limiter rather than a plain peak limiter.
+
+## 9.2 The FM advantage, and the cliff it stands on
+
+Section 6.3 states the improvement factor. Written out with the definitions
+attached:
+
+$$\\frac{SNR_{out}}{CNR_{in}} = 3\\beta^2(\\beta + 1)$$
+
+where CNR_in is the carrier-to-noise ratio measured in the full Carson
+bandwidth, SNR_out is the post-detector ratio in the message band, and the
+message is a single tone. The exchange is favourable because the gain rises as
+the cube of beta while the bandwidth rises only linearly:
+
+$$\\frac{BW}{2f_m} = \\beta + 1$$
+
+### Worked example 9B — is the link above threshold, and by how much?
+
+**Given** an FM link at beta = 3.00 delivering CNR = 14.0 dB in its Carson
+bandwidth. The receiver's threshold is 10.0 dB.
+
+$$3\\beta^2(\\beta+1) = 3 \\times 9.00 \\times 4.00 = 108$$
+
+$$10\\log_{10}(108) = 20.33\\ \\mathrm{dB}$$
+
+$$SNR_{out} = 14.0 + 20.33 = 34.3\\ \\mathrm{dB}$$
+
+**Answer**: 34.3 dB of output signal-to-noise ratio, with 4.0 dB of margin above
+threshold. The distractor is to use 3 beta^2 = 27, worth 14.31 dB, which
+understates the improvement by 6.0 dB and would make an adequate link look
+marginal. The (beta + 1) factor is not optional; it is the ratio of the
+transmission bandwidth to the message bandwidth, and dropping it silently
+changes which SNR the ratio is measured against.
+
+**Threshold matters more than the number suggests.** Below roughly 10 dB CNR
+the phasor sum of carrier and noise starts to encircle the origin, each
+encirclement producing a 2 pi phase jump that the discriminator reports as a
+click. The click rate climbs steeply, and the 20 dB of improvement disappears
+within a decibel or two of further fading. AM has no such threshold: it degrades
+smoothly. This is the real engineering trade behind "FM is better in noise" —
+FM is dramatically better right up until it is dramatically worse.
+
+## 9.3 Capture: the loudest signal takes everything
+
+The other consequence of listening to phase rather than amplitude is that two
+co-channel signals do not mix. Write the received sum of two carriers as a
+single phasor:
+
+$$z(t) = A_1 e^{j2\\pi f_1 t} + A_2 e^{j2\\pi f_2 t}, \\qquad a = \\frac{A_2}{A_1}$$
+
+$$\\frac{1}{2\\pi}\\frac{d\\,\\arg z}{dt} = f_1 + (f_2 - f_1)\\frac{a\\cos\\phi + a^2}{1 + 2a\\cos\\phi + a^2}, \\qquad \\phi = 2\\pi(f_2 - f_1)t$$
+
+Average that over one beat period and something abrupt happens. The mean is
+exactly f_1 whenever a < 1 and exactly f_2 whenever a > 1, with no intermediate
+behaviour whatever.
+
+![Two panels showing the capture effect. The left panel plots the mean discriminator output against the ratio of interferer to wanted signal in decibels: it is zero for every negative ratio and one for every positive ratio, switching abruptly at equal amplitude. The right panel shows the instantaneous frequency for an amplitude ratio of 0.5, which rides at plus 0.333 and dives to minus 1.000 once per beat period yet averages exactly zero.](/courses/fe-ee/figures/com2-fm-capture.svg)
+
+### Worked example 9C — what a weaker co-channel signal does to the output
+
+**Given** a wanted FM signal and a co-channel interferer 6.0 dB weaker, so
+a = 0.501.
+
+The mean output frequency is that of the wanted signal, computed here by
+unwrapping the phase of the summed phasor and differentiating it numerically:
+the measured mean is 0.000 in units of the beat rate, against 1.000 when the
+interferer is the stronger of the two. For a = 0.500 exactly, the instantaneous
+frequency rides at
+
+$$\\left.\\frac{d\\theta/dt}{2\\pi\\Delta f}\\right|_{\\phi=0} = \\frac{a + a^2}{(1+a)^2} = \\frac{0.750}{2.250} = 0.333$$
+
+and dives once per beat period to
+
+$$\\left.\\frac{d\\theta/dt}{2\\pi\\Delta f}\\right|_{\\phi=\\pi} = \\frac{-a + a^2}{(1-a)^2} = \\frac{-0.250}{0.250} = -1.000$$
+
+**Answer**: the interferer contributes a periodic disturbance with zero mean, so
+the wanted signal is reproduced and the weaker one is suppressed entirely. Real
+receivers need a capture ratio of one to two decibels rather than the zero this
+idealisation predicts, because a finite limiter and receiver noise blur the
+switch — but the mechanism is exactly the one above, and it is why an FM radio
+moving between two transmitters flips from one to the other rather than
+producing a blend.
+
+| Effect | Governing quantity | What it means in practice |
+|---|---|---|
+| Noise triangle | Output noise rising as f squared | Treble is the noisiest part of the band |
+| Pre-emphasis and de-emphasis | tau = 75 us gives 13.20 dB | Recovered at the cost of modulation headroom |
+| Wideband improvement | 3 beta^2 (beta + 1) | 20.33 dB at beta = 3, 26.53 dB at beta = 5 |
+| Threshold | About 10 dB CNR | Below it the advantage collapses within a decibel |
+| Capture | Amplitude ratio through unity | The stronger signal wins outright |`,
+      examTip: 'Two numbers carry most FM noise questions: the improvement factor 3 beta^2 (beta + 1), which is 20.33 dB at beta = 3 and 26.53 dB at beta = 5, and the pre-emphasis corner f = 1/(2 pi tau), which is 2122 Hz for tau = 75 us. Add the improvement in decibels to the carrier-to-noise ratio, then check the result is above the 10 dB threshold before quoting it.',
+      importantNote: 'The FM improvement is measured against the CNR in the Carson bandwidth, so widening the bandwidth to raise beta also lowers the CNR that the factor multiplies. This is why the net benefit grows as beta squared rather than beta cubed once the noise bandwidth is accounted for, and why a link cannot be improved indefinitely by raising deviation.',
+    },
+    { id: 'am-fm-problem-set-a', title: '10. Problem Set A: Amplitude Modulation',
+      content: `## Problem Set A — Amplitude Modulation
+
+Work each problem before reading the solution. Every answer names the
+distractor and the wrong number it produces, because on this exam the wrong
+numbers are printed next to the right ones.
+
+### A1. Envelope readings
+
+An oscilloscope shows an AM envelope swinging between 15.0 V and 5.0 V. The
+transmitter feeds a 50 ohm load. Find the modulation index, the unmodulated
+carrier amplitude, the total transmitted power and the efficiency.
+
+**Solution.**
+
+$$m = \\frac{V_{max} - V_{min}}{V_{max} + V_{min}} = \\frac{15.0 - 5.0}{15.0 + 5.0} = 0.500$$
+
+$$A_c = \\frac{V_{max} + V_{min}}{2} = \\frac{15.0 + 5.0}{2} = 10.0\\ \\mathrm{V}$$
+
+$$P_c = \\frac{A_c^2}{2R} = \\frac{100}{100} = 1.000\\ \\mathrm{W}$$
+
+$$P_{total} = P_c\\left(1 + \\frac{m^2}{2}\\right) = 1.000 \\times 1.125 = 1.125\\ \\mathrm{W}$$
+
+$$\\eta = \\frac{m^2}{2 + m^2} = \\frac{0.250}{2.250} = 0.1111 = 11.11\\%$$
+
+**Trap**: reading the index as the ratio of the two voltages, 15.0/5.0 = 3.00.
+That is not an index at all — an index above one is overmodulation, and above
+three is meaningless. The index is a difference over a sum, never a ratio.
+
+### A2. Power split from a total
+
+A transmitter delivers 4.40 kW at m = 0.700. Find the carrier power, the power
+in each sideband, and the efficiency.
+
+**Solution.** With m^2/2 = 0.245,
+
+$$P_c = \\frac{P_{total}}{1 + m^2/2} = \\frac{4400}{1.245} = 3534.14\\ \\mathrm{W}$$
+
+$$P_{sb,total} = 4400 - 3534.14 = 865.86\\ \\mathrm{W}, \\qquad P_{each} = \\frac{865.86}{2} = 432.93\\ \\mathrm{W}$$
+
+$$\\eta = \\frac{0.490}{2.490} = 0.19679 = 19.68\\%$$
+
+**Trap**: computing P_c = P_total(1 - m^2/2) = 4400 x 0.755 = 3322 W. The
+relation is a division, not a subtraction, and the shortcut is 212 W low. Check
+by multiplying back: 3534.14 x 1.245 = 4400 W.
+
+### A3. Two tones and the antenna ammeter
+
+Two tones modulate a carrier at m_1 = 0.500 and m_2 = 0.600. The unmodulated
+antenna current is 8.00 A. Find the effective index, the efficiency and the
+modulated antenna current.
+
+**Solution.**
+
+$$m_{eff} = \\sqrt{0.500^2 + 0.600^2} = \\sqrt{0.610} = 0.781$$
+
+$$\\eta = \\frac{0.610}{2.610} = 0.23372 = 23.37\\%$$
+
+$$I = I_c\\sqrt{1 + \\frac{m_{eff}^2}{2}} = 8.00\\sqrt{1.305} = 8.00 \\times 1.14237 = 9.139\\ \\mathrm{A}$$
+
+**Trap**: adding the indices to get 1.100 and declaring the transmitter
+overmodulated. Powers add, so indices add in quadrature; the true index is 0.781
+and the transmitter is well inside its limit.
+
+### A4. The SSB comparison
+
+An AM transmitter delivers 5.00 kW total at m = 0.800. What power would an SSB
+transmitter need to deliver the same recovered message, and what is the saving
+in decibels?
+
+**Solution.**
+
+$$P_c = \\frac{5000}{1.320} = 3787.88\\ \\mathrm{W}, \\qquad P_{one\\ sideband} = \\frac{5000 - 3787.88}{2} = 606.06\\ \\mathrm{W}$$
+
+$$\\text{saving} = 10\\log_{10}\\frac{5000}{606.06} = 10\\log_{10}8.250 = 9.16\\ \\mathrm{dB}$$
+
+**Trap**: answering 3.01 dB on the reasoning that SSB sends "half" the signal.
+Halving applies to the BANDWIDTH, exactly; the power saving is 9.16 dB here
+because the carrier goes too. The two savings are unrelated numbers and the exam
+prints both.
+
+### A5. The overmodulation boundary
+
+An envelope is observed to fall to exactly zero at its minimum, with a maximum
+of 24.0 V, into 50 ohms. Find the index, the carrier amplitude and the total
+power.
+
+**Solution.** With V_min = 0,
+
+$$m = \\frac{24.0 - 0}{24.0 + 0} = 1.000, \\qquad A_c = \\frac{24.0 + 0}{2} = 12.0\\ \\mathrm{V}$$
+
+$$P_c = \\frac{144}{100} = 1.440\\ \\mathrm{W}, \\qquad P_{total} = 1.440 \\times 1.500 = 2.160\\ \\mathrm{W}$$
+
+and the efficiency is at its ceiling, 33.33%.
+
+**Trap**: taking A_c = 24.0 V because that is the largest voltage on the screen.
+The envelope peak is A_c(1 + m), which at m = 1 is twice the carrier. Using
+24.0 V gives P_c = 5.76 W, four times too large.
+
+### A6. Bandwidth for a real message
+
+A message occupies 200 Hz to 4.50 kHz. Find the transmitted bandwidth for
+standard AM, for DSB-SC and for SSB.
+
+**Solution.** AM and DSB-SC both carry two sidebands, each a mirror of the
+message band, so the occupied span reaches from f_c - 4500 to f_c + 4500:
+
+$$BW_{AM} = BW_{DSB-SC} = 2 \\times 4500 = 9000\\ \\mathrm{Hz}$$
+
+SSB carries one sideband, which runs from f_c + 200 to f_c + 4500:
+
+$$BW_{SSB} = 4500 - 200 = 4300\\ \\mathrm{Hz}$$
+
+**Trap**: quoting 4.50 kHz for SSB by halving the AM figure. The single sideband
+starts where the message starts, not at the carrier, so the 200 Hz low-frequency
+limit is a genuine 200 Hz saving. This is also why SSB voice channels are
+specified as 300 Hz to 3.0 kHz and allocated 2.7 kHz rather than 3.0 kHz.`,
+      examTip: 'Every AM problem reduces to finding m first. From envelope voltages it is a difference over a sum; from powers it is P_total/P_c = 1 + m^2/2; from currents it is the square of the current ratio. Once m is in hand, efficiency, sideband power and bandwidth are one line each.',
+      importantNote: 'SSB halves the bandwidth exactly but saves a power that depends on the modulation index — 7.78 dB at m = 1, 9.16 dB at m = 0.8. Answering 3 dB for either quantity is the single most common error in this topic.',
+    },
+    { id: 'am-fm-problem-set-b', title: '11. Problem Set B: Angle Modulation',
+      content: `## Problem Set B — Angle Modulation
+
+### B1. Deviation, index and bandwidth
+
+A frequency modulator has k_f = 20.0 kHz/V and is driven by a 3.00 V tone at
+5.00 kHz. Find the deviation, the index and the Carson bandwidth.
+
+**Solution.**
+
+$$\\Delta f = k_f A_m = 20.0 \\times 3.00 = 60.0\\ \\mathrm{kHz}$$
+
+$$\\beta = \\frac{60.0}{5.00} = 12.0$$
+
+$$BW = 2(\\Delta f + f_m) = 2 \\times 65.0 = 130\\ \\mathrm{kHz}$$
+
+**Trap**: using the wideband shortcut BW = 2 Delta_f = 120 kHz. At beta = 12 the
+shortcut is only 7.7% low, which is why it survives as a rule of thumb, but the
+exam prints 120 kHz as a distractor whenever it also prints 130 kHz.
+
+### B2. What changes when the message amplitude doubles
+
+The same modulator is now driven by a 6.00 V tone at the same 5.00 kHz. Find the
+new deviation, index and bandwidth.
+
+**Solution.**
+
+$$\\Delta f = 20.0 \\times 6.00 = 120\\ \\mathrm{kHz}, \\qquad \\beta = \\frac{120}{5.00} = 24.0$$
+
+$$BW = 2 \\times 125 = 250\\ \\mathrm{kHz}$$
+
+**Trap**: assuming beta is a property of the modulator and leaving it at 12.0,
+which gives 130 kHz again. Both the deviation and the index scale with message
+amplitude; only the message FREQUENCY leaves the deviation alone.
+
+### B3. The same message through a phase modulator
+
+A phase modulator has k_p = 4.00 rad/V and is driven by the same 3.00 V tone.
+Find the deviation and bandwidth at f_m = 5.00 kHz, then at f_m = 10.0 kHz.
+
+**Solution.** The peak phase deviation is set by amplitude alone:
+
+$$\\beta_p = k_p A_m = 4.00 \\times 3.00 = 12.0\\ \\mathrm{rad}$$
+
+$$\\Delta f = \\beta_p f_m = 12.0 \\times 5.00 = 60.0\\ \\mathrm{kHz}, \\qquad BW = 2 \\times 65.0 = 130\\ \\mathrm{kHz}$$
+
+At 10.0 kHz the index is unchanged but the deviation is not:
+
+$$\\Delta f = 12.0 \\times 10.0 = 120\\ \\mathrm{kHz}, \\qquad BW = 2 \\times 130 = 260\\ \\mathrm{kHz}$$
+
+**Trap**: carrying the FM habit across and holding the deviation at 60.0 kHz,
+which gives 140 kHz for the second case instead of 260 kHz. In PM the index is
+constant and the deviation scales with f_m; in FM it is the other way round.
+Note also that at 5.00 kHz this PM signal and the FM signal of problem B1 are
+numerically identical — one tone cannot distinguish them.
+
+### B4. Setting deviation by the carrier null
+
+A laboratory modulates a transmitter with a 2.00 kHz tone and raises the
+modulating level until the carrier line on a spectrum analyser first disappears.
+What is the deviation?
+
+**Solution.** The carrier line is J_0(beta) A_c, and the first zero of J_0 is at
+beta = 2.4048:
+
+$$\\Delta f = \\beta f_m = 2.4048 \\times 2.00 = 4.81\\ \\mathrm{kHz}$$
+
+**Trap**: using the second zero, beta = 5.5201, which gives 11.04 kHz. The
+question says FIRST disappearance, and the two nulls are 2.3 times apart, so the
+distractor is not close. A second trap is dividing rather than multiplying:
+2.00/2.4048 = 0.832 kHz.
+
+### B5. Where the power sits at beta = 5
+
+A 100 W FM transmitter operates at beta = 5.00. How much power is in the carrier
+line, how much in the fourth sideband pair, and how much falls outside the
+Carson bandwidth?
+
+**Solution.** Each line holds the fraction J_n^2(5.00):
+
+$$P_{carrier} = 0.03154 \\times 100 = 3.15\\ \\mathrm{W}$$
+
+$$P_{n=4\\ pair} = 2 \\times 0.15306 \\times 100 = 30.61\\ \\mathrm{W}$$
+
+The Carson band reaches n = 6 and encloses 99.356% of the power, so
+
+$$P_{outside} = 100 - 99.36 = 0.64\\ \\mathrm{W}$$
+
+**Trap**: assuming the carrier holds most of the power, as it does in AM. In
+wideband FM the carrier is a minor line — here the fourth sideband pair carries
+nearly ten times as much. A second trap is quoting "2% outside Carson" from the
+familiar 98% slogan, which overstates the spill by a factor of three.
+
+### B6. Improvement, threshold and the decision
+
+An FM link operates at beta = 3.00 with a measured carrier-to-noise ratio of
+14.0 dB in its Carson bandwidth. The discriminator threshold is 10.0 dB. Find
+the output signal-to-noise ratio and the fade margin, and state whether raising
+beta to 5.00 at constant transmitter power would help.
+
+**Solution.**
+
+$$3\\beta^2(\\beta+1) = 3 \\times 9.00 \\times 4.00 = 108, \\qquad 10\\log_{10}(108) = 20.33\\ \\mathrm{dB}$$
+
+$$SNR_{out} = 14.0 + 20.33 = 34.3\\ \\mathrm{dB}, \\qquad \\text{margin} = 14.0 - 10.0 = 4.0\\ \\mathrm{dB}$$
+
+Raising beta to 5.00 widens the Carson bandwidth from 2(4.00)f_m to 2(6.00)f_m,
+a factor of 1.500, so the CNR falls by 10 log10(1.500) = 1.76 dB to 12.24 dB.
+The improvement factor rises to 3(25.0)(6.00) = 450, or 26.53 dB, so
+
+$$SNR_{out} = 12.24 + 26.53 = 38.8\\ \\mathrm{dB}, \\qquad \\text{margin} = 12.24 - 10.0 = 2.2\\ \\mathrm{dB}$$
+
+**Answer**: 4.4 dB more output signal-to-noise ratio, bought with 1.8 dB less
+fade margin. Whether that is a good trade depends on the channel, and on a
+fading path it usually is not — an FM link that drops below threshold loses far
+more than 4.4 dB.
+
+**Trap**: raising beta and leaving the CNR alone, which predicts 40.5 dB and no
+cost at all. Widening the transmission bandwidth admits more noise, and that
+loss has to be carried into the answer.
+
+| Problem | The one line that decides it | Distractor it defeats |
+|---|---|---|
+| B1, B2 | Delta_f = k_f A_m, with no f_m in it | BW = 2 Delta_f |
+| B3 | beta_p = k_p A_m, with no f_m in it | Holding the PM deviation fixed |
+| B4 | First zero of J_0 is 2.4048 | The second zero, 5.5201 |
+| B5 | Line power is J_n squared, doubled for a pair | Carrier-dominance intuition from AM |
+| B6 | Widening the band lowers the CNR first | Adding the improvement to an unchanged CNR |`,
+      examTip: 'Angle-modulation problems are won in the first line. Identify FM or PM, write the deviation from the modulator constant and the message AMPLITUDE, form beta, then apply Carson. If the question changes the message frequency, ask which of deviation and index is the one that moves before touching a calculator.',
+      importantNote: 'Raising the modulation index is not free noise improvement. The 3 beta^2 (beta + 1) factor multiplies the CNR measured in the Carson bandwidth, and that bandwidth grows as (beta + 1), so widening deviation at constant transmitter power lowers the CNR before the factor is applied and eats into the fade margin above threshold.',
+    },
   ],
   keyTakeaways: [
     'AM: s(t) = A_c[1+m_a*m(t)]cos(wt); BW = 2f_m; efficiency eta = m_a^2/(2+m_a^2), max ~33%.',
@@ -603,7 +1407,7 @@ adjacent points differ in exactly one bit position.
 |---|---|---|
 | Neighbours differing by 1 bit | 2 of 3 boundaries | 3 of 3 boundaries |
 | Bits wrong per symbol error | up to 2 | 1 |
-| BER at high SNR | roughly 1.5 x Gray | baseline |
+| BER at high SNR | 4/3 = 1.33 x Gray, measured | baseline |
 
 At high SNR nearly every symbol error is to a nearest neighbour, so Gray
 coding turns each symbol error into exactly one bit error, and
@@ -800,6 +1604,653 @@ a 12-bit codeword. The FE exam usually asks this as "how many redundant bits",
 and the inequality answers it in one line.`,
       examTip: 'CRC arithmetic is XOR without carries. Append r zeros, divide by the generator, and send the remainder as the check field; the receiver divides the whole codeword and expects a zero remainder. Distance rules: detect d - 1 errors, correct floor((d-1)/2).',
       importantNote: 'A parity bit misses every even number of errors, and a CRC misses exactly those error patterns that are multiples of its generator polynomial. Both failures are structural, not improbable accidents — which is why burst-prone channels use a CRC with a carefully chosen generator rather than a longer checksum.',
+    },
+    { id: 'digmod-signal-space', title: '7. Constellations, Decision Regions and Minimum Distance',
+      content: `## 7.1 Every scheme in this chapter is a set of points in a plane
+
+A carrier has exactly two degrees of freedom at a given frequency: how much of
+$\\cos(2\\pi f_c t)$ it contains and how much of $\\sin(2\\pi f_c t)$. Any modulated
+symbol can therefore be written
+
+$$s_k(t) = I_k\\sqrt{\\tfrac{2}{T_s}}\\cos(2\\pi f_c t) - Q_k\\sqrt{\\tfrac{2}{T_s}}\\sin(2\\pi f_c t)$$
+
+and the pair (I_k, Q_k) is a point in a plane. That plane is the constellation,
+and it is not a diagram drawn afterwards to illustrate a scheme; it IS the
+scheme. ASK varies the radius along one axis, PSK varies the angle at fixed
+radius, QAM varies both. The symbol energy is the squared distance from the
+origin:
+
+$$E_k = I_k^2 + Q_k^2, \\qquad E_s = \\frac{1}{M}\\sum_{k=1}^{M} E_k$$
+
+A matched filter projects the received waveform back onto the same two axes, so
+after detection the receiver holds a noisy point and must decide which of the M
+transmitted points it came from. Because the noise is circularly symmetric
+Gaussian, the maximum-likelihood decision is simply the NEAREST point, and the
+decision regions are the perpendicular bisectors between neighbouring points.
+For a square QAM grid those bisectors are horizontal and vertical lines, so the
+decision reduces to two independent one-dimensional comparisons — which is why
+square QAM demodulators are cheap.
+
+![A 16-QAM constellation with Gray-coded four-bit labels on each point, drawn in units of the minimum spacing d, with the vertical and horizontal decision boundaries between neighbouring points. The average symbol energy is 2.500 d squared, so the minimum distance is 0.6325 times the square root of the symbol energy, and the corner points sit at radius 2.121 d, a peak-to-average power ratio of 1.80.](/courses/fe-ee/figures/com2-qam16-regions.svg)
+
+## 7.2 Average energy fixes the spacing
+
+Put the square M-QAM points at odd multiples of d/2 on each axis. Averaging the
+squared coordinate over the L = sqrt(M) levels of one axis and doubling for the
+two axes gives the standard result
+
+$$E_s = \\frac{M-1}{6}d^2 \\qquad\\Longleftrightarrow\\qquad d = \\sqrt{\\frac{6E_s}{M-1}}$$
+
+Read the second form as the whole argument for why bigger constellations need
+more power. Hold the transmitted power fixed and the spacing shrinks as
+1/sqrt(M - 1). Since error probability depends on the spacing measured against
+the noise, the required signal-to-noise ratio rises by exactly the reciprocal:
+
+$$\\text{SNR penalty vs QPSK} = 10\\log_{10}\\frac{M-1}{3}\\ \\mathrm{dB}$$
+
+$$10\\log_{10}\\frac{15}{3} = 6.99\\ \\mathrm{dB},\\qquad 10\\log_{10}\\frac{63}{15} = 6.23\\ \\mathrm{dB},\\qquad 10\\log_{10}\\frac{255}{63} = 6.07\\ \\mathrm{dB}$$
+
+Each quadrupling costs a little under 7 dB and the increments settle toward
+6.02 dB as M grows, because (M - 1)/(M/4 - 1) tends to 4. This is the geometric
+statement of the claim in Section 1.2, and it is worth being able to reconstruct
+in ten seconds rather than recall.
+
+### Worked example 7A — energies, spacing and peak-to-average for 16-QAM
+
+**Given** a 16-QAM constellation with points at $(\\pm 1, \\pm 3)$ and
+$(\\pm 3, \\pm 1)$ and so on, that is d = 2.
+
+$$E_s = \\frac{1}{16}\\sum_k (I_k^2 + Q_k^2) = 2\\times\\frac{1^2 + 3^2}{2} = 10.0$$
+
+$$E_b = \\frac{E_s}{\\log_2 M} = \\frac{10.0}{4} = 2.50$$
+
+$$\\frac{d}{\\sqrt{E_s}} = \\frac{2}{\\sqrt{10}} = 0.6325$$
+
+$$\\mathrm{PAPR} = \\frac{E_{peak}}{E_s} = \\frac{3^2 + 3^2}{10.0} = \\frac{18.0}{10.0} = 1.80$$
+
+**Answer**: E_s = 10.0, E_b = 2.50, minimum distance 0.6325 sqrt(E_s), and a
+peak-to-average power ratio of 1.80. That last number is not decoration: a power
+amplifier must be backed off by 10 log10(1.80) = 2.55 dB from its saturated
+output to pass the corner points without clipping, which is a real cost of
+higher-order QAM that the BER curves never show.
+
+**Trap**: computing E_s as the energy of the outermost point, 18.0. That is the
+PEAK, not the average, and using it makes 16-QAM look 2.55 dB better than it is.
+
+## 7.3 PSK puts every point on a circle
+
+For M-PSK the points sit at equal angles on a circle of radius sqrt(E_s), so
+every symbol has the same energy and the chord between neighbours is
+
+$$d_{min} = 2\\sqrt{E_s}\\,\\sin\\!\\frac{\\pi}{M}$$
+
+![Three panels showing BPSK, QPSK and 8-PSK as equally spaced points on a circle of unit radius, with the chord between adjacent points drawn. The minimum distances are 2.000, 1.414 and 0.765 times the square root of the symbol energy respectively.](/courses/fe-ee/figures/com2-psk-mindist.svg)
+
+The sine collapses fast. Going from BPSK to QPSK costs
+$10\\log_{10}(2.000/1.414)^2 = 3.01\\ \\mathrm{dB}$ of symbol energy, but QPSK
+carries two bits instead of one, so the ENERGY PER BIT is unchanged — the
+reason BPSK and QPSK share a BER curve. Beyond QPSK the sine keeps shrinking
+while the bit count only grows logarithmically, and PSK stops being competitive.
+
+### Worked example 7B — the price of the third bit in PSK
+
+**Given** QPSK and 8-PSK at the same average symbol energy. What is the penalty?
+
+$$d_{QPSK} = 2\\sin\\frac{\\pi}{4} = 1.4142\\sqrt{E_s}, \\qquad d_{8PSK} = 2\\sin\\frac{\\pi}{8} = 0.7654\\sqrt{E_s}$$
+
+$$\\text{penalty} = 20\\log_{10}\\frac{1.4142}{0.7654} = 5.33\\ \\mathrm{dB}$$
+
+**Answer**: 5.33 dB of symbol energy for one extra bit per symbol. Since 8-PSK
+carries three bits against QPSK's two, converting to energy per bit returns
+$5.33 - 1.76 = 3.57\\ \\mathrm{dB}$, and solving the two error expressions exactly
+at a BER of 1e-5 gives 3.38 dB — the geometric estimate is within 0.2 dB of the
+truth, which is all an exam needs. Compare this
+with 16-QAM, which carries FOUR bits at a minimum distance of
+$0.6325\\sqrt{E_s}$ against 16-PSK's $0.3902\\sqrt{E_s}$ — the QAM arrangement
+wins by $20\\log_{10}(0.6325/0.3902) = 4.20\\ \\mathrm{dB}$ at the same point
+count. That gap is why every modern high-rate system uses QAM rather than
+high-order PSK.
+
+**Trap**: assuming "3 dB per extra bit" applies to PSK. It applies roughly to
+QAM, where the points spread into two dimensions; PSK crowds them onto a circle
+and the penalty grows without bound.
+
+### Worked example 7C — which constellation fits a given minimum distance
+
+**Given** a channel where the receiver can reliably resolve points no closer
+than 0.60 sqrt(E_s). Which square QAM constellations qualify?
+
+$$\\frac{d}{\\sqrt{E_s}} = \\sqrt{\\frac{6}{M-1}}$$
+
+$$M = 4: \\sqrt{\\frac{6}{3}} = 1.414, \\qquad M = 16: \\sqrt{\\frac{6}{15}} = 0.632, \\qquad M = 64: \\sqrt{\\frac{6}{63}} = 0.309$$
+
+**Answer**: QPSK and 16-QAM clear the 0.60 threshold; 64-QAM does not, at
+0.309. Note how sharply the requirement bites — 64-QAM's points are less than
+half as far apart as 16-QAM's at the same transmitted power, which is the same
+6.23 dB found in Section 7.2, expressed as a distance instead of a power.
+
+| Scheme | Bits per symbol | d / sqrt(Es) | Constellation shape |
+|---|---|---|---|
+| BPSK | 1 | 2.000 | Two points on a line |
+| QPSK (= 4-QAM) | 2 | 1.414 | Square corners |
+| 8-PSK | 3 | 0.765 | Circle of eight |
+| 16-QAM | 4 | 0.632 | 4 by 4 grid |
+| 16-PSK | 4 | 0.390 | Circle of sixteen |
+| 64-QAM | 6 | 0.309 | 8 by 8 grid |
+| 256-QAM | 8 | 0.153 | 16 by 16 grid |`,
+      examTip: 'Draw the constellation before reaching for a formula. Square QAM: Es = (M-1)d^2/6, so d = sqrt(6 Es/(M-1)) and the SNR penalty against QPSK is 10 log10[(M-1)/3]. M-PSK: d = 2 sqrt(Es) sin(pi/M). Comparing two schemes is comparing two minimum distances at the same average energy.',
+      importantNote: 'Peak-to-average power ratio is a real design constraint that BER curves hide. 16-QAM has a PAPR of 1.80, worth 2.55 dB of amplifier back-off; QPSK and every other constant-envelope scheme has a PAPR of 1.00 and needs none. That is part of why constant-envelope schemes survive in power-limited links.',
+    },
+    { id: 'digmod-rates-ebn0', title: '8. Symbol Rate, Bit Rate, Bandwidth and the Eb/N0 Conversion',
+      content: `## 8.1 Three rates, related by two constants
+
+Confusing the three rates is the most productive source of wrong answers in
+this topic, so fix them in order.
+
+**Symbol rate** R_s, in symbols per second, is set by the channel bandwidth. A
+Nyquist-shaped channel of bandwidth B carries
+
+$$R_s = \\frac{B}{1 + \\alpha}$$
+
+where alpha is the raised-cosine roll-off. With alpha = 0 the channel carries
+exactly B symbols per second — the Nyquist limit, unrealisable but the reference
+everything else is quoted against.
+
+**Bit rate** R_b, in bits per second, is the symbol rate times the bits each
+symbol carries:
+
+$$R_b = R_s\\log_2 M$$
+
+**Bandwidth efficiency** eta is the bit rate per hertz of channel:
+
+$$\\eta = \\frac{R_b}{B} = \\frac{\\log_2 M}{1 + \\alpha}$$
+
+Note what the roll-off does: it never appears in the constellation geometry and
+never changes the required Eb/N0, but it scales every rate. A system quoted at
+"6 bit/s/Hz for 64-QAM" is quoting the alpha = 0 ideal; the same equipment with
+alpha = 0.15 delivers 5.22 bit/s/Hz.
+
+### Worked example 8A — a channel plan from bandwidth outward
+
+**Given** a 6.00 MHz channel with roll-off alpha = 0.15, carrying 64-QAM.
+
+$$R_s = \\frac{6.00}{1.15} = 5.2174\\ \\mathrm{Msym/s}$$
+
+$$R_b = R_s\\log_2 64 = 6 \\times 5.2174 = 31.30\\ \\mathrm{Mbps}$$
+
+$$\\eta = \\frac{31.30}{6.00} = 5.217\\ \\mathrm{bit/s/Hz}$$
+
+**Answer**: 5.22 Msym/s, 31.3 Mbps, 5.22 bit/s/Hz. **Trap**: multiplying the
+bandwidth by log2(M) directly, giving 36.0 Mbps and 6.00 bit/s/Hz. That answer
+ignores the roll-off entirely and is 15% high — and 36.0 Mbps is a number the
+exam is happy to print, because it is also what a Nyquist-ideal channel would
+give.
+
+## 8.2 Eb/N0 is not SNR, and the difference is a rate ratio
+
+Signal-to-noise ratio is a ratio of POWERS measured in the channel bandwidth.
+Energy per bit over noise density is a ratio of ENERGIES per information bit.
+They are connected by the rates:
+
+$$S = E_b R_b, \\qquad N = N_0 B \\qquad\\Longrightarrow\\qquad \\frac{S}{N} = \\frac{E_b}{N_0}\\cdot\\frac{R_b}{B}$$
+
+$$\\frac{E_b}{N_0} = \\frac{S}{N}\\cdot\\frac{B}{R_b} = \\frac{S/N}{\\eta}$$
+
+In decibels this is a subtraction, which is the form to use under exam
+pressure:
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{dB} = \\left(\\frac{S}{N}\\right)_{dB} - 10\\log_{10}\\eta$$
+
+The sign trips people constantly. A spectrally efficient link has eta greater
+than one, so its Eb/N0 is LOWER than its SNR — the energy of a given SNR has to
+be shared among more bits. Only for eta below one does Eb/N0 exceed SNR.
+
+The symbol-energy ratio is the third member of the family:
+
+$$\\frac{E_s}{N_0} = \\frac{E_b}{N_0}\\log_2 M$$
+
+so the 3.01 dB per extra bit per symbol that separates Eb/N0 penalties from SNR
+penalties in Section 4.2 is just this factor.
+
+### Worked example 8B — does the link close?
+
+**Given** the 6.00 MHz 64-QAM link of example 8A with a measured SNR of
+18.0 dB. Does it reach a bit error rate of 1e-5?
+
+$$\\eta = 5.217, \\qquad 10\\log_{10}(5.217) = 7.17\\ \\mathrm{dB}$$
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{dB} = 18.00 - 7.17 = 10.83\\ \\mathrm{dB}$$
+
+64-QAM needs 17.79 dB for a BER of 1e-5, so
+
+$$\\text{shortfall} = 17.79 - 10.83 = 6.96\\ \\mathrm{dB}$$
+
+**Answer**: no. The link is 6.96 dB short and will not run 64-QAM at that error
+rate. Dropping to 16-QAM raises eta only to 3.478 (a 5.41 dB conversion), giving
+Eb/N0 = 12.59 dB against a 13.43 dB requirement — still 0.84 dB short. QPSK
+gives eta = 1.739, a 2.40 dB conversion, so Eb/N0 = 15.60 dB against 9.59 dB
+required, with 6.01 dB to spare. QPSK is the answer.
+
+**Trap**: comparing the 18.0 dB SNR directly against the 17.79 dB requirement
+and concluding the link closes with 0.2 dB to spare. Those are different
+quantities. The conversion is the whole problem, and skipping it flips the
+answer.
+
+## 8.3 How close is any of this to the Shannon bound?
+
+Setting the capacity equal to the bit rate and solving for the energy per bit
+gives the minimum Eb/N0 at which a given efficiency is possible at all:
+
+$$\\eta = \\log_2\\!\\left(1 + \\frac{S}{N}\\right) \\qquad\\Longrightarrow\\qquad \\left(\\frac{E_b}{N_0}\\right)_{min} = \\frac{2^{\\eta} - 1}{\\eta}$$
+
+$$\\lim_{\\eta\\to 0}\\frac{2^{\\eta}-1}{\\eta} = \\ln 2 = 0.693 = -1.59\\ \\mathrm{dB}$$
+
+![Bandwidth efficiency plotted against the energy per bit each scheme requires at a bit error rate of one in a hundred thousand, with the Shannon bound drawn alongside. Square QAM from 4 to 256 points needs 9.59, 13.43, 17.79 and 22.50 dB; the Shannon bound at the same efficiencies is far to the left, leaving 7.69 dB of coding gain unclaimed at 4 bit per second per hertz, and no scheme of any kind can operate to the left of the minus 1.59 dB limit.](/courses/fe-ee/figures/com2-eff-vs-ebn0.svg)
+
+### Worked example 8C — the gap uncoded modulation leaves on the table
+
+**Given** 16-QAM at 4 bit/s/Hz, needing 13.43 dB for a BER of 1e-5.
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{min} = \\frac{2^4 - 1}{4} = \\frac{15}{4} = 3.75 = 5.74\\ \\mathrm{dB}$$
+
+$$\\text{gap} = 13.43 - 5.74 = 7.69\\ \\mathrm{dB}$$
+
+**Answer**: 7.69 dB. That gap is exactly what forward error correction is for,
+and modern codes recover most of it — which is why a real 16-QAM link with a
+strong code runs at an SNR an uncoded analysis would call hopeless. **Trap**:
+treating the Shannon figure as an achievable target for uncoded modulation. It
+is a bound on what any scheme could do with unlimited coding and delay, not a
+requirement any constellation meets on its own.
+
+| Quantity | Formula | 6 MHz, alpha = 0.15, 64-QAM |
+|---|---|---|
+| Symbol rate | B/(1 + alpha) | 5.217 Msym/s |
+| Bit rate | R_s log2 M | 31.30 Mbps |
+| Efficiency | log2 M/(1 + alpha) | 5.217 bit/s/Hz |
+| Eb/N0 from SNR | SNR minus 10 log10 eta | 18.00 - 7.17 = 10.83 dB |
+| Es/N0 from Eb/N0 | plus 10 log10(log2 M) | 10.83 + 7.78 = 18.61 dB |
+| Shannon minimum Eb/N0 | (2^eta - 1)/eta | 8.41 dB |`,
+      examTip: 'Write the rate chain down before anything else: R_s = B/(1 + alpha), R_b = R_s log2 M, eta = R_b/B. Then Eb/N0 in dB is SNR in dB minus 10 log10(eta). The subtraction is the step questions are built around, and its sign is the trap: an efficient link has Eb/N0 BELOW its SNR.',
+      importantNote: 'Roll-off never changes the Eb/N0 a constellation requires, only the rate it achieves. Alpha = 0.15 on a 64-QAM channel costs 0.61 bit/s/Hz of efficiency and nothing at all in required signal quality, so it appears in every rate calculation and in none of the BER work.',
+    },
+    { id: 'digmod-error-probability', title: '9. Error Probability: the Q-Function, Gray Coding and Measurement',
+      content: `## 9.1 One integral answers every binary decision
+
+Detection reduces to asking whether Gaussian noise pushed a sample across a
+boundary. The probability of that is the Gaussian tail:
+
+$$Q(x) = \\frac{1}{\\sqrt{2\\pi}}\\int_x^{\\infty} e^{-u^2/2}\\,du$$
+
+For antipodal signalling the two points are 2 sqrt(E_b) apart, the boundary sits
+halfway, and the noise standard deviation along that axis is sqrt(N_0/2), so
+
+$$P_b^{BPSK} = Q\\!\\left(\\frac{d/2}{\\sigma}\\right) = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)$$
+
+QPSK is two independent BPSK streams on the in-phase and quadrature axes, each
+carrying half the symbol energy and half the bits, so the energy per bit is the
+same on each axis and the bit error rate is identical:
+
+$$P_b^{QPSK} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)$$
+
+Coherent binary FSK uses orthogonal rather than antipodal signals, and
+orthogonal points are only sqrt(2 E_b) apart instead of 2 sqrt(E_b):
+
+$$P_b^{BFSK} = Q\\!\\left(\\sqrt{\\frac{E_b}{N_0}}\\right)$$
+
+which is exactly $10\\log_{10}2 = 3.01\\ \\mathrm{dB}$ worse than BPSK, forever,
+at every error rate. That 3 dB is the entire content of "PSK beats FSK".
+
+![Bit error rate against energy per bit for QPSK, 16-QAM and 64-QAM. The closed-form expressions are drawn as continuous lines and Monte-Carlo bit counts over 600 000 symbols per point are overlaid as open circles; the two agree everywhere within the counting statistics of the run. The curves cross a bit error rate of one in a hundred thousand at 9.59, 13.43 and 17.79 dB.](/courses/fe-ee/figures/com2-ber-mc.svg)
+
+The open circles are there because a curve computed from the same expression the
+lesson quotes proves nothing about the expression. They are independent: symbols
+are generated, Gaussian noise is added, hard decisions are made, and the bits
+that came out wrong are counted. Every marker agrees with the closed form to
+within the counting statistics of its own run, which is the only kind of
+agreement worth having between a formula and a measurement.
+
+### Worked example 9A — a BER from an Eb/N0, and back again
+
+**Given** BPSK at Eb/N0 = 8.00 dB.
+
+$$\\frac{E_b}{N_0} = 10^{8.00/10} = 6.310$$
+
+$$\\sqrt{\\frac{2E_b}{N_0}} = \\sqrt{12.62} = 3.552$$
+
+$$P_b = Q(3.552) = 1.91\\times 10^{-4}$$
+
+Now backwards: what Eb/N0 gives a BER of 1e-6?
+
+$$Q^{-1}(10^{-6}) = 4.753 \\qquad\\Longrightarrow\\qquad \\frac{E_b}{N_0} = \\frac{4.753^2}{2} = 11.30 = 10.53\\ \\mathrm{dB}$$
+
+**Answer**: 1.91e-4 at 8.00 dB, and 10.53 dB is needed for 1e-6. **Trap**:
+forgetting the factor of two inside the square root and computing Q(2.512) =
+6.0e-3, which is more than thirty times too pessimistic. The 2 comes from the
+antipodal geometry and is not a normalisation convention.
+
+## 9.2 M-QAM: two PAM decisions, then Gray coding
+
+A square M-QAM decision is two independent L-level decisions with
+L = sqrt(M). Each has interior points with two neighbours and edge points with
+one, so the per-axis symbol error probability is
+
+$$P_{axis} = 2\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3\\log_2 M}{M-1}\\cdot\\frac{E_b}{N_0}}\\right)$$
+
+$$P_{symbol} = 1 - (1 - P_{axis})^2$$
+
+and with Gray labelling nearly every symbol error costs exactly one bit, so
+
+$$P_b \\approx \\frac{P_{symbol}}{\\log_2 M}$$
+
+![Received 16-QAM clouds at two signal qualities on the same decision grid. At an Es/N0 of 14 dB the clouds visibly overlap their boundaries and the measured symbol error rate is 0.03715; at 18 dB they are well separated and the measured rate falls to 0.00057.](/courses/fe-ee/figures/com2-scatter-snr.svg)
+
+### Worked example 9B — from a scatter plot to a bit error rate
+
+**Given** 16-QAM at Es/N0 = 14.0 dB, as in the left panel above.
+
+$$\\frac{E_s}{N_0} = 10^{14.0/10} = 25.12, \\qquad \\frac{E_b}{N_0} = \\frac{25.12}{4} = 6.280 = 7.98\\ \\mathrm{dB}$$
+
+With E_s = 10 and d = 2 the per-axis noise standard deviation is
+sqrt(E_s/(2 x 25.12)) = 0.4462, so the half-spacing measured in noise is
+1/0.4462 = 2.241, giving
+
+$$P_{axis} = 1.5\\,Q(2.241) = 1.5 \\times 0.01250 = 0.01875$$
+
+$$P_{symbol} = 1 - (1 - 0.01875)^2 = 0.03715$$
+
+$$P_b \\approx \\frac{0.03715}{4} = 9.29\\times 10^{-3}$$
+
+**Answer**: a symbol error rate of 0.03715, matching the measured value printed
+on the figure, and a bit error rate near 9.3e-3. The exact expression gives
+9.376e-3, so the Gray approximation is 0.9% low here — good enough everywhere
+the exam uses it, and it improves as the error rate falls.
+
+**Trap**: reporting the symbol error rate when the question asks for the bit
+error rate. They differ by log2(M), which for 16-QAM is a factor of four — one
+of the largest single-step errors available in this topic.
+
+## 9.3 Gray coding, measured rather than asserted
+
+Neighbouring points are the ones confused first, so the LABELLING decides how
+many bits a symbol error costs. Count the six adjacent pairs on a four-level
+axis. Gray labelling (00, 01, 11, 10) differs by one bit at all three
+boundaries, so the six directed transitions cost six bit flips. Natural binary
+(00, 01, 10, 11) differs by two bits at the middle boundary, so the same six
+transitions cost eight. The high-SNR ratio is therefore
+
+$$\\frac{P_b^{natural}}{P_b^{Gray}} \\to \\frac{8}{6} = \\frac{4}{3} = 1.333$$
+
+![Two panels measuring the cost of labelling. The left panel plots measured bit error rate against energy per bit for 16-QAM with Gray labelling and with natural binary labelling, two million symbols per point. The right panel plots their ratio, which settles onto 4 over 3 equal to 1.333 as the signal quality rises.](/courses/fe-ee/figures/com2-gray-penalty.svg)
+
+### Worked example 9C — what Gray coding is worth, in decibels
+
+**Given** the measured 4/3 penalty, express it as a shift of the BER curve.
+
+Near a BER of 1e-5 the 16-QAM curve falls a full decade for every 1.23 dB of
+extra energy per bit, so an error-rate factor of 4/3 is worth
+
+$$\\Delta \\approx 1.23\\log_{10}(1.333) = 1.23 \\times 0.1249 = 0.154\\ \\mathrm{dB}$$
+
+**Answer**: Gray coding is worth about 0.15 dB of link margin at these error
+rates, and it costs nothing whatever — it is a relabelling of points that are
+transmitted identically either way. That is the entire argument for it: a free
+0.17 dB, growing at lower error rates because the curve steepens. **Trap**:
+believing Gray coding changes the SYMBOL error rate. It does not. The
+constellation, the decision regions and the symbol error rate are all
+unchanged; only the mapping from symbols to bits differs.
+
+| Scheme | Bit error rate | Requirement at BER 1e-5 |
+|---|---|---|
+| BPSK | Q(sqrt(2 Eb/N0)) | 9.59 dB |
+| QPSK | Q(sqrt(2 Eb/N0)), identical to BPSK | 9.59 dB |
+| Coherent BFSK | Q(sqrt(Eb/N0)), 3.01 dB worse | 12.60 dB |
+| 16-QAM | Gray-coded square form | 13.43 dB |
+| 64-QAM | Gray-coded square form | 17.79 dB |
+| 256-QAM | Gray-coded square form | 22.50 dB |`,
+      examTip: 'Q(sqrt(2 Eb/N0)) covers BPSK and QPSK together; coherent BFSK drops the 2 and is 3.01 dB worse at every error rate. For M-QAM, work the per-axis PAM decision first, square up to the symbol error rate, then divide by log2(M) for the Gray-coded bit error rate.',
+      importantNote: 'Symbol error rate and bit error rate differ by log2(M) under Gray coding — a factor of four for 16-QAM and six for 64-QAM. Read which one the question asks for before computing anything, because both appear among the printed options.',
+    },
+    { id: 'digmod-problem-set-c', title: '10. Problem Set C: Constellations, Rates and Bandwidth',
+      content: `## Problem Set C — Constellations, Rates and Bandwidth
+
+Each solution names the distractor and the wrong number it produces.
+
+### C1. Rate plan for a wideband channel
+
+A 20.0 MHz channel uses raised-cosine filtering with alpha = 0.35. Find the
+symbol rate, and the bit rate and efficiency for QPSK and for 256-QAM.
+
+**Solution.**
+
+$$R_s = \\frac{20.0}{1.35} = 14.815\\ \\mathrm{Msym/s}$$
+
+$$R_b^{QPSK} = 2 \\times 14.815 = 29.63\\ \\mathrm{Mbps}, \\qquad \\eta = \\frac{29.63}{20.0} = 1.481\\ \\mathrm{bit/s/Hz}$$
+
+$$R_b^{256} = 8 \\times 14.815 = 118.5\\ \\mathrm{Mbps}, \\qquad \\eta = \\frac{118.5}{20.0} = 5.926\\ \\mathrm{bit/s/Hz}$$
+
+**Trap**: quoting 2.00 and 8.00 bit/s/Hz by ignoring the roll-off. A 35%
+roll-off costs a quarter of the throughput, which on a 118 Mbps link is 32 Mbps
+of real capacity.
+
+### C2. Does 256-QAM close at 25 dB SNR?
+
+The same 20.0 MHz channel measures 25.0 dB SNR. Can it carry 256-QAM at a bit
+error rate of 1e-5? What can it carry?
+
+**Solution.** For 256-QAM, eta = 5.926, so
+
+$$10\\log_{10}(5.926) = 7.73\\ \\mathrm{dB}, \\qquad \\frac{E_b}{N_0} = 25.00 - 7.73 = 17.27\\ \\mathrm{dB}$$
+
+against a requirement of 22.50 dB, a shortfall of 5.23 dB. For QPSK,
+eta = 1.481:
+
+$$10\\log_{10}(1.481) = 1.71\\ \\mathrm{dB}, \\qquad \\frac{E_b}{N_0} = 25.00 - 1.71 = 23.29\\ \\mathrm{dB}$$
+
+against 9.59 dB required, with 13.70 dB to spare. Working up the ladder, 64-QAM
+has eta = 4.444 (6.48 dB), giving 18.52 dB against 17.79 dB required — 0.73 dB
+of margin, which is thin but real.
+
+**Answer**: 64-QAM, at 88.9 Mbps. **Trap**: comparing 25.0 dB SNR against the
+22.50 dB requirement and selecting 256-QAM. The requirement is an Eb/N0, not an
+SNR, and the conversion costs 7.73 dB here.
+
+### C3. Minimum distance at fixed power
+
+Three constellations are transmitted at the same average symbol energy: QPSK,
+16-QAM and 16-PSK. Rank them by minimum distance and state the penalties in
+decibels.
+
+**Solution.**
+
+$$d_{QPSK} = \\sqrt{\\frac{6}{3}} = 1.414\\sqrt{E_s}, \\qquad d_{16QAM} = \\sqrt{\\frac{6}{15}} = 0.632\\sqrt{E_s}$$
+
+$$d_{16PSK} = 2\\sin\\frac{\\pi}{16} = 0.390\\sqrt{E_s}$$
+
+$$20\\log_{10}\\frac{1.414}{0.632} = 6.99\\ \\mathrm{dB}, \\qquad 20\\log_{10}\\frac{0.632}{0.390} = 4.20\\ \\mathrm{dB}$$
+
+**Answer**: QPSK is 6.99 dB better than 16-QAM, which is 4.20 dB better than
+16-PSK at the same point count. **Trap**: assuming that constellations with the
+same number of points perform alike. 16-PSK and 16-QAM both carry four bits per
+symbol and differ by 4.20 dB, which is the difference between a link that works
+and one that does not.
+
+### C4. Peak-to-average and amplifier back-off
+
+Find the peak-to-average power ratio of 16-QAM and of 64-QAM, and the back-off
+each implies.
+
+**Solution.** For a square constellation on odd multiples of d/2, the corner
+point sits at $(L-1)d/2$ on each axis:
+
+$$\\mathrm{PAPR}_{16} = \\frac{2(1.5)^2}{2.5} = \\frac{4.50}{2.50} = 1.80 = 2.55\\ \\mathrm{dB}$$
+
+$$\\mathrm{PAPR}_{64} = \\frac{2(3.5)^2}{10.5} = \\frac{24.50}{10.50} = 2.333 = 3.68\\ \\mathrm{dB}$$
+
+**Answer**: 2.55 dB and 3.68 dB of back-off. **Trap**: treating PAPR as a BER
+issue. It is an amplifier issue, and it stacks on top of the SNR penalty — a
+64-QAM link pays 6.23 dB more required SNR AND 1.13 dB more back-off than
+16-QAM, so the true cost of the step is larger than the BER curves alone
+suggest.
+
+### C5. Bits, symbols and a common unit slip
+
+A link runs 16-QAM at 5.00 Msym/s. State the bit rate, the bit duration and the
+symbol duration.
+
+**Solution.**
+
+$$R_b = 4 \\times 5.00 = 20.0\\ \\mathrm{Mbps}$$
+
+$$T_s = \\frac{1}{5.00\\times 10^6} = 200\\ \\mathrm{ns}, \\qquad T_b = \\frac{1}{20.0\\times 10^6} = 50\\ \\mathrm{ns}$$
+
+**Trap**: giving 200 ns as the bit duration. The symbol is 200 ns long and
+carries four bits, so each bit occupies 50 ns of transmission time. Every
+energy-per-bit calculation depends on getting this the right way round, since
+E_b = S T_b.
+
+### C6. What the Nyquist limit actually forbids
+
+A designer proposes 12.0 Mbps of QPSK in a 5.00 MHz channel. Is it possible,
+and with what roll-off?
+
+**Solution.**
+
+$$R_s = \\frac{R_b}{\\log_2 M} = \\frac{12.0}{2} = 6.00\\ \\mathrm{Msym/s}$$
+
+$$1 + \\alpha = \\frac{B}{R_s} = \\frac{5.00}{6.00} = 0.833 \\qquad\\Longrightarrow\\qquad \\alpha = -0.167$$
+
+**Answer**: impossible. A negative roll-off is not a filter, it is a
+contradiction: 6.00 Msym/s needs at least 6.00 MHz even with ideal brick-wall
+filtering. The design needs 16-QAM (3.00 Msym/s, alpha = 0.67) or a wider
+channel. **Trap**: accepting the arithmetic and reporting alpha = 0.167 by
+dropping a sign, which turns an impossible design into a comfortable one.`,
+      examTip: 'Convert before comparing. Requirements are quoted as Eb/N0; measurements are quoted as SNR; the bridge is 10 log10(eta) and it is a subtraction going from SNR to Eb/N0. If a question hands you both numbers in decibels and they look directly comparable, that is the trap.',
+      importantNote: 'A negative roll-off, an efficiency above log2(M), or a symbol rate above the channel bandwidth are all the same impossibility wearing different clothes. Check R_s against B before trusting any rate answer.',
+    },
+    { id: 'digmod-problem-set-d', title: '11. Problem Set D: Error Probability and Modulation Choice',
+      content: `## Problem Set D — Error Probability and Modulation Choice
+
+### D1. BER from Eb/N0
+
+Find the BPSK bit error rate at Eb/N0 = 7.00 dB and at 11.0 dB.
+
+**Solution.**
+
+$$10^{7.00/10} = 5.012, \\qquad \\sqrt{2 \\times 5.012} = 3.166, \\qquad Q(3.166) = 7.73\\times 10^{-4}$$
+
+$$10^{11.0/10} = 12.59, \\qquad \\sqrt{2 \\times 12.59} = 5.018, \\qquad Q(5.018) = 2.61\\times 10^{-7}$$
+
+**Answer**: 7.73e-4 and 2.61e-7. Four decibels buy more than three decades,
+which is the steepness that makes fade margin worth paying for. **Trap**:
+interpolating linearly between tabulated Q values on a linear scale. The tail
+falls off as a Gaussian; interpolate the logarithm or use the argument, never
+the probability.
+
+### D2. QPSK against BPSK, settled
+
+A link runs BPSK at 10.0 Mbps in 12.0 MHz. It switches to QPSK at the same bit
+rate. What happens to the bandwidth, the symbol rate and the BER?
+
+**Solution.** The bit rate is unchanged, so the symbol rate halves:
+
+$$R_s^{BPSK} = 10.0\\ \\mathrm{Msym/s} \\longrightarrow R_s^{QPSK} = \\frac{10.0}{2} = 5.00\\ \\mathrm{Msym/s}$$
+
+The occupied bandwidth halves with it. The energy per bit is unchanged, because
+QPSK's symbols carry twice the energy and twice the bits, so
+
+$$P_b = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)\\ \\text{for both}$$
+
+**Answer**: half the bandwidth, the same bit rate, the same BER, and no penalty
+of any kind. **Trap**: assuming QPSK must cost something because it has more
+points. It does not, because its two axes are orthogonal and the noise on one
+does not affect the other. The penalty starts at 8-PSK and at 16-QAM, where
+points genuinely crowd.
+
+### D3. Symbol error rate to bit error rate
+
+A 64-QAM receiver reports a symbol error rate of 3.00e-4. What is the bit error
+rate, assuming Gray coding?
+
+**Solution.**
+
+$$P_b \\approx \\frac{P_{symbol}}{\\log_2 64} = \\frac{3.00\\times 10^{-4}}{6} = 5.00\\times 10^{-5}$$
+
+**Answer**: 5.00e-5. **Trap**: quoting 3.00e-4 as the bit error rate, a factor
+of six too high, or multiplying by six instead of dividing, giving 1.80e-3 —
+thirty-six times off. Gray coding makes each symbol error cost about ONE bit
+out of the six the symbol carried, so the bit rate of errors is lower than the
+symbol rate of errors, never higher.
+
+### D4. Choosing a constellation for a measured channel
+
+A 10.0 MHz channel with alpha = 0.25 measures 22.0 dB SNR. Which square QAM
+constellation maximises throughput at a BER of 1e-5?
+
+**Solution.**
+
+$$R_s = \\frac{10.0}{1.25} = 8.00\\ \\mathrm{Msym/s}, \\qquad \\eta = \\frac{\\log_2 M}{1.25}$$
+
+| M | eta (bit/s/Hz) | 10 log10 eta | Eb/N0 available | Eb/N0 required | Margin |
+|---|---|---|---|---|---|
+| 4 | 1.60 | 2.04 dB | 19.96 dB | 9.59 dB | +10.37 dB |
+| 16 | 3.20 | 5.05 dB | 16.95 dB | 13.43 dB | +3.52 dB |
+| 64 | 4.80 | 6.81 dB | 15.19 dB | 17.79 dB | -2.60 dB |
+| 256 | 6.40 | 8.06 dB | 13.94 dB | 22.50 dB | -8.56 dB |
+
+**Answer**: 16-QAM, at 32.0 Mbps, with 3.52 dB of margin. 64-QAM is 2.60 dB
+short. **Trap**: choosing 64-QAM because 22.0 dB SNR exceeds its 17.79 dB
+figure. The available Eb/N0 falls as the constellation grows, because the same
+power is divided among more bits — so the two columns move TOWARDS each other
+as M rises, and they cross between 16 and 64.
+
+### D5. The FSK penalty
+
+A system uses coherent binary FSK at Eb/N0 = 12.6 dB. What BER does it achieve,
+and what would BPSK achieve at the same Eb/N0?
+
+**Solution.**
+
+$$P_b^{BFSK} = Q\\!\\left(\\sqrt{\\frac{E_b}{N_0}}\\right) = Q(\\sqrt{18.20}) = Q(4.266) = 9.96\\times 10^{-6}$$
+
+$$P_b^{BPSK} = Q(\\sqrt{36.39}) = Q(6.033) = 8.06\\times 10^{-10}$$
+
+**Answer**: FSK reaches 1e-5 where BPSK reaches 8.06e-10 — more than four decades
+better at the same energy per bit, from the single factor of two inside the
+square root. Equivalently, FSK needs 3.01 dB more energy per bit for any given
+error rate. **Trap**: remembering the 3 dB as a BER ratio rather than an energy
+ratio. It is 3 dB of ENERGY; on the error rate itself the gap is enormous
+because the curve is steep.
+
+### D6. Where the power actually goes
+
+Two links carry 4 bits per symbol at the same average power: one uses 16-QAM,
+one uses 16-PSK. Both need a BER of 1e-5. If the 16-QAM link needs 13.43 dB of
+Eb/N0, estimate the 16-PSK requirement from the constellation geometry.
+
+**Solution.** At equal symbol energy the minimum distances are
+$0.6325\\sqrt{E_s}$ and $0.3902\\sqrt{E_s}$, so
+
+$$\\text{penalty} = 20\\log_{10}\\frac{0.6325}{0.3902} = 4.20\\ \\mathrm{dB}$$
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{16PSK} \\approx 13.43 + 4.20 = 17.6\\ \\mathrm{dB}$$
+
+**Answer**: about 17.6 dB, close to what 64-QAM needs while carrying two fewer
+bits per symbol. That is the case against high-order PSK in one line.
+
+**Trap**: assuming the two are equivalent because both carry four bits. The bit
+count fixes the rate; the minimum distance fixes the power, and the two are
+independent choices.
+
+| Problem | Deciding step | Distractor it defeats |
+|---|---|---|
+| D1 | Q of a square root, never a linear interpolation | Reading between tabulated probabilities |
+| D2 | Eb/N0 unchanged from BPSK to QPSK | Assuming more points must cost SNR |
+| D3 | Divide the SER by log2(M) | Multiplying, or quoting the SER |
+| D4 | Available Eb/N0 falls as M rises | Comparing SNR against an Eb/N0 requirement |
+| D5 | The 2 inside the root is 3.01 dB of energy | Treating 3 dB as an error-rate ratio |
+| D6 | Compare minimum distances at equal energy | Equating schemes by point count |`,
+      examTip: 'The modulation-choice question has one shape every time: symbol rate from bandwidth, bit rate from log2(M), efficiency, then Eb/N0 = SNR - 10 log10(eta), then compare with the requirement. Build the four-column table and the answer is the last row with a positive margin.',
+      importantNote: 'As M rises, the required Eb/N0 rises AND the available Eb/N0 falls, because the same received power is shared among more bits per second. The two effects move toward each other, which is why the highest workable constellation is usually one step below what a naive SNR comparison suggests.',
     },
   ],
   keyTakeaways: [
