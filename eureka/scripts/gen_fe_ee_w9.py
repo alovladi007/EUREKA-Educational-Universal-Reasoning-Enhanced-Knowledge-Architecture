@@ -456,8 +456,12 @@ def _(mode):
     S.note(ax, 1.05e3, 2700,
            "each knee sits at the BDP: 2.5 MB at 20 ms, 12.5 MB at 100 ms",
            mode)
+    # 65,536 bytes is 64 KiB, not 64 kB. The window field counts bytes in
+    # powers of two while the link rate on the other axis is decimal, so the
+    # two units have to be named apart; the annotation said "64 KB" for a
+    # quantity the assertion above computes from 2^16.
     S.note(ax, 1.05e3, 1700,
-           "marked points: a 64 KB window caps this path at 26.2 and 5.2 Mbps",
+           "marked points: a 64 KiB window caps this path at 26.2 and 5.2 Mbps",
            mode)
     ax.set_xlabel("send window  (bytes, log scale)")
     ax.set_ylabel("throughput  (Mbps, log scale)")

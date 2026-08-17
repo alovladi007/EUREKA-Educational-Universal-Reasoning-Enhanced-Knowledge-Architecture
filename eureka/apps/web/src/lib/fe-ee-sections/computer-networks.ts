@@ -4798,7 +4798,7 @@ Techniques: priority queuing, weighted fair queuing, traffic shaping.
 
 Slowest link = max throughput. For 1G -> 100M -> 1G: throughput = 100 Mbps.
 
-**Utilization** = throughput/bandwidth. At > 80%, queuing delays spike exponentially.`,
+**Utilization** = throughput/bandwidth. At > 80%, queuing delay climbs steeply — as 1/(1 - rho), which has a pole at full load rather than an exponential shape.`,
       examTip: 'Bottleneck = slowest link. For voice/video, jitter matters more than absolute latency. Consistent 200 ms > varying 50-300 ms.',
     },
     { id: 'netperf-exam', title: '3. Network Performance Calculations',
@@ -4832,15 +4832,21 @@ This means **2.5 MB of data is "in flight"** at any instant. The TCP window must
 | 1 Gbps, 20 ms | 20 ms | 20 Mbit = **2.5 MB** | 2.5 MB |
 | 10 Gbps, 100 ms | 100 ms | 1 Gbit = 125 MB | 125 MB |
 
+Every entry in that table is **decimal**: the rates are powers of ten, so
+125 MB means 125,000,000 bytes and not 131,072,000. Window fields, by contrast,
+are binary, which is why the next section is careful to write KiB.
+
 ## 3.3 TCP Window Sizing
 
 **Throughput = Window_size / RTT** (simplified, no loss)
 
-**Problem**: TCP window = 64 KB (default), RTT = 50 ms. What is max throughput?
+**Problem**: TCP window = 64 KiB (65,536 bytes — the window field counts bytes
+in powers of two, while the link rate is decimal), RTT = 50 ms. What is max
+throughput?
 
 Throughput = 65536 * 8 / 0.050 = 524288 / 0.050 = **10.49 Mbps**
 
-Even on a 1 Gbps link, a 64 KB window limits throughput to ~10 Mbps with 50 ms RTT. **Window scaling** (RFC 1323) extends the window to 1 GB to solve this.
+Even on a 1 Gbps link, a 64 KiB window limits throughput to ~10 Mbps with 50 ms RTT. **Window scaling** (RFC 1323) extends the window to 1 GB to solve this.
 
 **Exam strategy**: Separate transmission delay (packet_size/BW) from propagation delay (distance/speed). They are fundamentally different. BDP = BW * RTT gives the pipe capacity. If TCP window < BDP, the link is underutilized.`,
       examTip: 'Transmission delay depends on packet size and link speed. Propagation delay depends on distance and medium speed. Do NOT mix them up — this is the #1 tested distinction in network performance.',
@@ -4911,9 +4917,12 @@ For the 100 Mbps interface above, μ = 10^8/12000 = 8333.3 packets per second:
 | 0.95 | 95 Mbps | 2.280 ms | 2.400 ms | 18.050 |
 | 0.99 | 99 Mbps | 11.880 ms | 12.000 ms | 98.010 |
 
-Between 10 % and 80 % utilisation the queueing delay grows by a factor of 37;
+Between 10 % and 80 % utilisation the queueing delay grows by a factor of 36;
 between 90 % and 99 % it grows by a factor of 11 again, over a load increase
-of only 10 %. The 1/(1 − ρ) term is a vertical asymptote at ρ = 1, and that is
+of only 10 %. (The first ratio is exactly 36: the table entries 0.480 and 0.013
+are rounded, and dividing those gives 36.9, which is how a rounding artefact
+becomes a published figure. Section 9.3 derives the ratio in closed form and
+measures 35.956 from a simulation of the same interface.) The 1/(1 − ρ) term is a vertical asymptote at ρ = 1, and that is
 what "queueing delay spikes exponentially above 80 %" means quantitatively.
 Note also the last column: at 99 % utilisation the interface holds about 98
 packets, so a router with a 64-packet buffer is dropping traffic long before
@@ -4966,7 +4975,7 @@ With a window of W bytes, the sender may transmit W bytes per round trip, so
 
 **$\\mathrm{throughput} = \\min\\left(R,\\ \\dfrac{8W}{\\mathrm{RTT}}\\right)$**
 
-![Achievable throughput against send-window size on a 1 Gbps path, for round-trip times of 20 and 100 milliseconds, on logarithmic axes. Each curve rises linearly with the window and then flattens at the link rate; the knee falls exactly at the bandwidth-delay product, 2.5 MB at 20 ms and 12.5 MB at 100 ms. A 64 KB window caps the path at 26.2 and 5.2 Mbps respectively.](/courses/fe-ee/figures/net-window-throughput.svg)
+![Achievable throughput against send-window size on a 1 Gbps path, for round-trip times of 20 and 100 milliseconds, on logarithmic axes. Each curve rises linearly with the window and then flattens at the link rate; the knee falls exactly at the bandwidth-delay product, 2.5 MB at 20 ms and 12.5 MB at 100 ms. A 64 KiB window caps the path at 26.2 and 5.2 Mbps respectively.](/courses/fe-ee/figures/net-window-throughput.svg)
 
 The knee of each curve is the **bandwidth-delay product**, and its position is
 not a coincidence: the window that first saturates the link is exactly the
@@ -4974,7 +4983,8 @@ number of bits the pipe holds. Below the knee the window is the constraint and
 throughput is proportional to it; above the knee the link is the constraint
 and a larger window buys nothing but buffer occupancy.
 
-This is why the historical 16-bit TCP window field became a problem. 64 KB was
+This is why the historical 16-bit TCP window field became a problem. 64 KiB —
+65,536 bytes, binary, against a link rate quoted in decimal gigabits — was
 generous when links were slow and paths were short, but on the 1 Gbps,
 100 ms path in the figure it caps throughput at **5.24 Mbps** — half a percent
 of the link. Window scaling (introduced in RFC 1323 and updated by RFC 7323)
@@ -5034,6 +5044,1393 @@ version of Amdahl's law and a favourite exam framing.`,
       examTip: 'Throughput = min(link rate, 8 x window / RTT). The knee is at the bandwidth-delay product: if the window is smaller than BDP the link idles, and if it is larger the extra only fills buffers.',
       importantNote: 'Under loss, throughput scales as 1/sqrt(p), so cutting the loss rate a hundredfold only improves throughput tenfold. On a 50 ms path, 1 % loss caps a TCP connection near 2.3 Mbps regardless of the link speeds involved.',
     },
+    { id: 'netperf-terms', title: '6. The Four Delay Terms, Separated and Each Computed',
+      content: `## 6.1 One Packet, Four Clocks
+
+A packet crossing one hop is delayed by four mechanisms that have nothing in
+common except that they are all measured in seconds. Adding them is the easy
+part; the exam-relevant skill is knowing which of them a given change moves,
+because three of the four are indifferent to the thing a student instinctively
+reaches for.
+
+$$d_{\\mathrm{hop}} = d_{\\mathrm{proc}} + d_{\\mathrm{queue}} + d_{\\mathrm{trans}} + d_{\\mathrm{prop}}$$
+
+**Processing** is the time a node spends deciding what to do with the packet:
+verifying the frame check sequence, looking up the destination, decrementing the
+hop count. On hardware forwarding it is a fixed few microseconds and does not
+depend on packet size at all.
+
+**Queueing** is the wait for the outgoing interface to become free. It is the
+only term that depends on what *other* traffic is doing, and it is the subject
+of section 9.
+
+**Transmission**, also called serialisation, is the time to clock the packet's
+bits onto the medium. It is set by two things and only two things:
+
+$$d_{\\mathrm{trans}} = \\frac{L}{R} \\qquad L\\ \\text{in bits},\\quad R\\ \\text{in bit/s}$$
+
+**Propagation** is the flight time of a bit down the medium. It is set by two
+completely different things:
+
+$$d_{\\mathrm{prop}} = \\frac{\\ell}{v} \\qquad \\ell\\ \\text{in metres},\\quad v \\approx 2.0 \\times 10^{8}\\ \\text{m/s in glass}$$
+
+| Term | Grows with | Shrinks with | Indifferent to |
+|---|---|---|---|
+| Processing | node complexity | faster silicon | packet size, distance, rate |
+| Queueing | offered load, burstiness | more capacity, smaller packets | distance |
+| Transmission | packet size | a faster link | distance |
+| Propagation | distance | nothing you can buy | packet size, link rate |
+
+The last cell of the last row is the one that catches people. **Buying a faster
+link does not reduce propagation delay by one nanosecond.** A 400 Gb/s upgrade
+moves exactly one of the four rows.
+
+## 6.2 Where the Two Computable Terms Differ by Five Orders of Magnitude
+
+Take a 64-byte acknowledgement on a 10 Gb/s link spanning 3000 km of fibre.
+Link rates here are decimal, so 10 Gb/s means exactly $10 \\times 10^{9}$ bit/s.
+
+$$d_{\\mathrm{trans}} = \\frac{512\\ \\text{bit}}{10 \\times 10^{9}\\ \\text{bit/s}} = 5.12 \\times 10^{-8}\\ \\mathrm{s} = 51.2\\ \\mathrm{ns}$$
+
+$$d_{\\mathrm{prop}} = \\frac{3.0 \\times 10^{6}\\ \\mathrm{m}}{2.0 \\times 10^{8}\\ \\mathrm{m/s}} = 1.50 \\times 10^{-2}\\ \\mathrm{s} = 15.0\\ \\mathrm{ms}$$
+
+$$\\frac{d_{\\mathrm{prop}}}{d_{\\mathrm{trans}}} = \\frac{1.50 \\times 10^{-2}}{5.12 \\times 10^{-8}} = 2.9297 \\times 10^{5}$$
+
+Now take the same two terms on a 1500-byte frame sent by a 250 kb/s sensor
+radio across a 100 m room, where the medium is air and $v = 3.0 \\times 10^{8}$ m/s:
+
+$$d_{\\mathrm{trans}} = \\frac{12000\\ \\text{bit}}{250 \\times 10^{3}\\ \\text{bit/s}} = 4.80 \\times 10^{-2}\\ \\mathrm{s} = 48.0\\ \\mathrm{ms}$$
+
+$$d_{\\mathrm{prop}} = \\frac{100\\ \\mathrm{m}}{3.0 \\times 10^{8}\\ \\mathrm{m/s}} = 3.333 \\times 10^{-7}\\ \\mathrm{s} = 0.333\\ \\mathrm{\\mu s}$$
+
+$$\\frac{d_{\\mathrm{trans}}}{d_{\\mathrm{prop}}} = \\frac{4.80 \\times 10^{-2}}{3.333 \\times 10^{-7}} = 1.440 \\times 10^{5}$$
+
+The same two quantities have swapped ranks, and between the two situations the
+ratio itself moves by a factor of $4.2 \\times 10^{10}$. There is no rule of
+thumb that survives that. Each term has to be computed.
+
+![Ratio of serialisation delay to propagation delay against link rate over three thousand kilometres of fibre, on logarithmic axes, for sixty-four, fifteen hundred and nine thousand byte packets. All three fall as one over the rate; the dashed guide marks equal terms, crossed near thirty kilobits per second for the small packet and near seven hundred kilobits per second for the largest. A marker at ten gigabits per second shows serialisation at three point four millionths of propagation.](/courses/fe-ee/figures/net4-term-ratio.svg)
+
+The figure is a family of straight lines because the ratio is $Lv/(R\\ell)$,
+which on logarithmic axes is a slope of exactly $-1$ shifted up or down by
+packet size. Every line crosses the guide once, and that crossing is the rate at
+which control changes hands.
+
+### Worked Example 6.1 — All Four Terms on One Real Hop
+
+**Given.** A 1500-byte packet on a 100 Mb/s interface, 200 km of fibre to the
+next router, a forwarding engine that takes 20 μs, and an interface running at
+80 % utilisation. What is the hop delay?
+
+**Transmission.**
+
+$$d_{\\mathrm{trans}} = \\frac{12000\\ \\text{bit}}{100 \\times 10^{6}\\ \\text{bit/s}} = 1.20 \\times 10^{-4}\\ \\mathrm{s} = 0.120\\ \\mathrm{ms}$$
+
+**Propagation.**
+
+$$d_{\\mathrm{prop}} = \\frac{2.00 \\times 10^{5}\\ \\mathrm{m}}{2.0 \\times 10^{8}\\ \\mathrm{m/s}} = 1.000\\ \\mathrm{ms}$$
+
+**Queueing.** This one is not a formula question. Running the interface as a
+discrete-event queue at 80 % load for twelve independent runs of half a million
+packets each gives a mean wait of **0.4794 ± 0.0024 ms**, against the 0.480 ms
+the M/M/1 expression predicts. The measurement is the answer; the expression is
+the check.
+
+**Processing.** 0.020 ms, given.
+
+**Total.**
+
+$$d_{\\mathrm{hop}} = 0.020 + 0.4794 + 0.120 + 1.000 = 1.6194\\ \\mathrm{ms}$$
+
+**Answer.** About 1.62 ms, of which propagation is 61.8 %, queueing 29.6 %,
+serialisation 7.4 % and processing 1.2 %. **Answer the follow-up before it is
+asked**: upgrading this interface to 1 Gb/s removes 0.108 ms of serialisation,
+and because the queue simulation depends on load rather than on speed, the same
+run at the same 80 % load simply runs ten times faster, giving 0.04794 ms of
+waiting. The hop becomes
+
+$$d_{\\mathrm{hop}} = 0.020 + 0.04794 + 0.012 + 1.000 = 1.07994\\ \\mathrm{ms}$$
+
+a 33 % improvement bought with a tenfold increase in link speed, because the
+dominant term did not move at all.
+
+### Worked Example 6.2 — The Conflation Error, Costed Both Ways
+
+**Given.** Two candidates each compute one delay and call it the answer.
+Candidate A computes $L/R$ for the 64-byte acknowledgement on the 3000 km,
+10 Gb/s path. Candidate B computes $\\ell/v$ for the 1500-byte frame on the
+100 m, 250 kb/s radio. Quantify each error.
+
+**Candidate A** reports 51.2 ns. The true one-way delay of that packet, walked
+across the link by simulation, is
+
+$$d = 5.12 \\times 10^{-8} + 1.50 \\times 10^{-2} = 1.5000051 \\times 10^{-2}\\ \\mathrm{s}$$
+
+so the reported figure is smaller than the truth by a factor of 292,969. A
+protocol timer set from it would fire 293,000 times too early.
+
+**Candidate B** reports 0.333 μs against a true
+
+$$d = 4.80 \\times 10^{-2} + 3.333 \\times 10^{-7} = 4.800033 \\times 10^{-2}\\ \\mathrm{s}$$
+
+a factor of 144,000 the other way. **The two mistakes are the same mistake**,
+and they are not small: the terms they drop are five orders of magnitude larger
+than the terms they keep. Compute both, then decide which one to neglect.
+
+## 6.3 Store-and-Forward Pays Serialisation Once Per Hop
+
+A store-and-forward node must receive the last bit of a packet before it may
+send the first. Walking a packet across a path of $N$ links therefore charges
+$N$ serialisation delays, but only one propagation delay per link length:
+
+$$d_{\\mathrm{path}} = \\sum_{i=1}^{N} \\frac{L}{R_{i}} + \\sum_{i=1}^{N}\\frac{\\ell_{i}}{v} + (N-1)\\left(d_{\\mathrm{proc}} + d_{\\mathrm{queue}}\\right)$$
+
+Stepping a 1500-byte packet across a four-link path — a 100 Mb/s access link of
+2 km, two 10 Gb/s core spans of 800 km and 400 km, and a 1 Gb/s delivery link of
+5 km, with 20 μs of processing and 200 μs of queueing in total — gives:
+
+| Term | Value | Share |
+|---|---|---|
+| Serialisation, all four links | 134.4 μs | 2.09 % |
+| Propagation, 1207 km of fibre | 6.035 ms | 93.86 % |
+| Processing, three nodes | 60.0 μs | 0.93 % |
+| Queueing, three nodes | 200.0 μs | 3.11 % |
+| **Total one way** | **6.4294 ms** | 100 % |
+
+Cut-through switching, which starts forwarding after the header, saves only
+2.3 μs here, because the links that would benefit are already fast. On a LAN it
+is a different story. Four 100 Mb/s hops with 10 m of cable between them and
+5 μs of processing measure **0.4952 ms** store-and-forward against **0.2654 ms**
+cut-through: a saving of 229.8 μs, or 46 %, because on slow links serialisation
+is the whole budget.`,
+      examTip: 'Four terms, four different independent variables. Transmission is L/R and cares only about packet size and link rate; propagation is distance over medium speed and cares about neither. Compute both before deciding which dominates — on a 10 Gb/s transcontinental path they differ by a factor of 293,000, and on a slow short radio link they differ by 144,000 the other way.',
+      importantNote: 'Store-and-forward charges a full serialisation delay at every hop but propagation only once per link length. Cut-through removes most of the per-hop serialisation and is worth 46 % on a four-hop 100 Mb/s LAN, but only 2.3 microseconds on a path whose core links run at 10 Gb/s.',
+    },
+    { id: 'netperf-bdp', title: '7. The Pipe, the Window, and the Two Regimes',
+      content: `## 7.1 How Much Data a Path Holds
+
+A link with a delay is a container. While a bit is in flight it is neither at
+the sender nor at the receiver, and the number of such bits is fixed by the rate
+and the round trip:
+
+$$\\mathrm{BDP} = R \\times \\mathrm{RTT}$$
+
+For a 100 Mb/s path with a 40 ms round trip, using the decimal convention in
+which 100 Mb/s is exactly $100 \\times 10^{6}$ bit/s:
+
+$$\\mathrm{BDP} = 100 \\times 10^{6} \\times 0.040 = 4.0 \\times 10^{6}\\ \\text{bit}$$
+
+$$\\mathrm{BDP} = \\frac{4.0 \\times 10^{6}}{8} = 500000\\ \\text{bytes} = 488.28\\ \\mathrm{KiB}$$
+
+Notice both conversions. Dividing by eight moves from bits to bytes; dividing by
+1024 moves from bytes to **kibibytes**, which is the unit a window field is
+actually specified in. Writing "500 kB" is right under the decimal convention
+and writing "488.28 KiB" is right under the binary one; writing "500 KiB" is
+wrong by 2.4 %, and the same slip at the mega scale costs 4.86 % and at the giga
+scale 7.37 %.
+
+In 1500-byte packets the pipe holds
+
+$$\\frac{4.0 \\times 10^{6}}{12000} = 333.33\\ \\text{packets}$$
+
+## 7.2 Stop-and-Wait, Measured
+
+Run a sender that transmits one packet and waits. Stepping that sender packet by
+packet on the path above — 1500-byte packets, 100 Mb/s, and a 40 ms return time
+measured from the last bit sent to the acknowledgement's arrival — measures a
+throughput of **299,103 bit/s**, which is 0.299 Mb/s, or 0.2991 % of a link that
+cost the same as one running two thousand times faster.
+
+The cycle the simulation reveals is one serialisation plus one return time, so
+the efficiency is
+
+$$\\eta = \\frac{L/R}{L/R + \\mathrm{RTT}} = \\frac{0.12}{0.12 + 40} = \\frac{0.12}{40.12} = 0.002991$$
+
+Writing $a$ for the ratio of one-way propagation to serialisation gives the form
+the exam uses, and the two agree exactly:
+
+$$a = \\frac{20}{0.12} = 166.667, \\qquad \\eta = \\frac{1}{1 + 2a} = \\frac{1}{334.333} = 0.002991$$
+
+The sender spends 99.7 % of its life idle. Nothing is broken; a single
+outstanding packet simply cannot fill a container that holds 333 of them.
+
+## 7.3 Two Regimes and the Crossover Between Them
+
+With a window of $W$ packets the sender may put $W$ packets into the pipe before
+it must wait. Stepping the same simulation across window sizes measures this:
+
+| Window (packets) | Measured throughput | Share of the link | Regime |
+|---|---|---|---|
+| 1 | 0.2991 Mb/s | 0.30 % | window-limited |
+| 8 | 2.3928 Mb/s | 2.39 % | window-limited |
+| 43 | 12.8614 Mb/s | 12.86 % | window-limited |
+| 64 | 19.1426 Mb/s | 19.14 % | window-limited |
+| 167 | 49.9501 Mb/s | 49.95 % | window-limited |
+| 334 | 99.9003 Mb/s | 99.90 % | window-limited |
+| 335 | 100.0000 Mb/s | 100.00 % | rate-limited |
+| 500 | 100.0000 Mb/s | 100.00 % | rate-limited |
+
+Every row below 335 is exactly proportional to the window: doubling the window
+doubles the measurement, to the last digit. Every row above it is identical.
+That is the whole behaviour, and it is captured by
+
+$$T = \\min\\!\\left(R,\\ \\frac{8WL}{\\mathrm{RTT} + L/R}\\right)$$
+
+![Measured throughput against send-window size on a 100 Mb/s path for round-trip times of twenty and forty milliseconds, on logarithmic axes. Each curve climbs with slope one while the window is the constraint and then goes flat at the link rate; the marked knees fall at one hundred and sixty-eight packets and three hundred and thirty-five packets.](/courses/fe-ee/figures/net4-window-regimes.svg)
+
+Setting the two branches equal gives the crossover window exactly:
+
+$$W^{*} = \\frac{\\mathrm{RTT} + L/R}{L/R} = \\frac{40.12}{0.12} = 334.333 \\rightarrow 335\\ \\text{packets}$$
+
+and searching the simulation for the smallest window that measures the full
+100 Mb/s returns 335, the same answer. **The bandwidth-delay product gives 333.33
+packets and the honest crossover is 335**, two packets more, because the sender
+must also cover its own serialisation and because a fraction of a packet is not
+a thing a sender can transmit. Under exam conditions the BDP answer is the one
+being asked for; in a laboratory the difference is measurable.
+
+### Worked Example 7.1 — Sizing a Window for a Transcontinental Path
+
+**Given.** A 1 Gb/s path with a 90 ms round trip carries 1500-byte frames. Find
+the pipe capacity in bytes and in packets, the window a sender needs, and the
+throughput it gets with a 64 KiB window.
+
+**Pipe capacity.**
+
+$$\\mathrm{BDP} = 1.0 \\times 10^{9} \\times 0.090 = 9.0 \\times 10^{7}\\ \\text{bit}$$
+
+$$\\frac{9.0 \\times 10^{7}}{8} = 11250000\\ \\text{bytes} = 10.73\\ \\mathrm{MiB}$$
+
+**In packets**, and then the exact crossover including serialisation, which on a
+1 Gb/s link is $12000/10^{9} = 12\\ \\mathrm{\\mu s}$:
+
+$$\\frac{9.0 \\times 10^{7}}{12000} = 7500\\ \\text{packets}, \\qquad W^{*} = \\frac{90.012}{0.012} = 7501\\ \\text{packets}$$
+
+**With a 64 KiB window.** A 64 KiB window is 65,536 bytes — binary, because the
+window field counts bytes in powers of two — which is 43.69 packets, so 43 whole
+packets are outstanding:
+
+$$T = \\frac{8 \\times 43 \\times 1500}{0.090012} = 5.733\\ \\mathrm{Mb/s}$$
+
+**Answer.** 11.25 MB of pipe (10.73 MiB), a 7501-packet window to fill it, and
+5.73 Mb/s from the unscaled window — **0.57 % of the link**. This is exactly the
+problem window scaling exists to solve, and it is why a fast transfer between
+continents is a configuration question, not a bandwidth question.
+
+### Worked Example 7.2 — Reading the Regime Off a Measurement
+
+**Given.** A transfer over a 100 Mb/s path measures 19.14 Mb/s. The operator
+doubles the window and measures 38.28 Mb/s; doubling it again gives 76.57 Mb/s;
+doubling a third time gives 100 Mb/s. What is the round-trip time, and what
+window is in use at the first measurement?
+
+**Identify the regime.** Throughput doubled with the window twice, so the first
+three points are window-limited and
+
+$$T = \\frac{8WL}{\\mathrm{RTT} + L/R} \\quad\\Longrightarrow\\quad \\mathrm{RTT} + \\frac{L}{R} = \\frac{8WL}{T}$$
+
+**Solve using the first point**, with $W = 64$ packets:
+
+$$\\mathrm{RTT} + 0.00012 = \\frac{8 \\times 64 \\times 1500}{19142572} = 0.04012\\ \\mathrm{s}$$
+
+$$\\mathrm{RTT} = 0.04012 - 0.00012 = 0.04000\\ \\mathrm{s} = 40.0\\ \\mathrm{ms}$$
+
+**Check the fourth point.** Three doublings from 64 is 512 packets, which is above
+the 335-packet crossover, so the fourth measurement must be rate-limited — and
+it is, at exactly 100 Mb/s. **The ratio between consecutive measurements is the
+diagnostic**: a ratio of two means window-limited, a ratio of one means
+rate-limited, and any ratio in between means the crossover sits inside that
+step.`,
+      examTip: 'Throughput is the smaller of the link rate and the window divided by the round trip. Below the bandwidth-delay product the window is the constraint and throughput is proportional to it; above it, the link is the constraint and a bigger window only fills buffers. Convert carefully: bits to bytes is a factor of 8, and bytes to KiB is a factor of 1024, not 1000.',
+      importantNote: 'A stepped simulation of a stop-and-wait sender on a 100 Mb/s, 40 ms path measures 299,103 bit/s — 0.2991 % of the link. The same sender with a 335-packet window measures the full 100 Mb/s. The bandwidth-delay product predicts 333.33 packets; the exact crossover is 335, because the sender must also cover its own serialisation time.',
+    },
+    { id: 'netperf-goodput', title: '8. Throughput Against Goodput, Counted Layer by Layer',
+      content: `## 8.1 Three Quantities Called "Speed"
+
+**Bandwidth** is the signalling rate of the medium. **Throughput** is the rate at
+which bits actually cross it, headers included. **Goodput** is the rate at which
+the bytes an application asked for arrive. The gaps between them are not vague:
+they are a sum of header sizes, and every one of those sizes is a number.
+
+| Layer | Bytes added | Why it is on the wire |
+|---|---|---|
+| Ethernet preamble and start delimiter | 8 | Receiver clock recovery |
+| Ethernet header | 14 | Two addresses and a type field |
+| IPv4 header | 20 | Addresses, fragmentation, hop count |
+| IPv6 header | 40 | Larger addresses, no checksum |
+| TCP header | 20 | Ports, sequence, window, flags |
+| UDP header | 8 | Ports and length only |
+| RTP header | 12 | Sequence and timestamp for media |
+| Ethernet frame check sequence | 4 | Error detection over the frame |
+| Interframe gap | 12 | Mandatory silence between frames |
+
+The rule follows from the table: the wire footprint of one packet is its payload
+plus the sum of the layers wrapped around it.
+
+$$W = P + \\sum_{i} h_{i}, \\qquad \\text{goodput} = R \\times \\frac{P}{W}$$
+
+For a 1500-byte MTU carrying TCP over IPv4, the payload is
+$1500 - 20 - 20 = 1460$ bytes, and the Ethernet layers add
+$14 + 4 + 8 + 12 = 38$ bytes:
+
+$$W = 1460 + 40 + 38 = 1538\\ \\text{bytes}, \\qquad \\frac{1460}{1538} = 0.949285$$
+
+$$\\text{goodput} = 1.0 \\times 10^{9} \\times 0.949285 = 949.28\\ \\mathrm{Mb/s}$$
+
+| Encapsulation | Payload | Wire | Goodput fraction | On a 1 Gb/s link |
+|---|---|---|---|---|
+| IPv4 + UDP, 1500 B MTU | 1472 B | 1538 B | 0.957087 | 957.09 Mb/s |
+| IPv4 + TCP, 1500 B MTU | 1460 B | 1538 B | 0.949285 | 949.28 Mb/s |
+| IPv6 + TCP, 1500 B MTU | 1440 B | 1538 B | 0.936281 | 936.28 Mb/s |
+| IPv4 + TCP, 9000 B jumbo | 8960 B | 9038 B | 0.991370 | 991.37 Mb/s |
+| RTP + UDP + IPv4 voice | 160 B | 238 B | 0.672269 | 672.27 Mb/s |
+
+![Goodput as a percentage of the wire rate against application payload size for three encapsulations over Ethernet: IPv4 with UDP, IPv4 with TCP, and IPv6 with TCP. All three rise steeply from below twenty-five per cent at tiny payloads and flatten above ninety per cent past a thousand bytes; a dashed guide marks the hundred and sixty byte voice sample, where the best of the three reaches only about seventy-one per cent.](/courses/fe-ee/figures/net4-goodput-layers.svg)
+
+The curve is $P/(P + c)$ with $c$ the total header count, which is why it
+punishes small packets so brutally and why jumbo frames are worth having on a
+storage network. Moving from IPv4 to IPv6 costs a flat 20 bytes per packet: at
+1460 bytes of payload that is 1.3 % of the wire, and at 160 bytes it is 8.4 %.
+
+## 8.2 The Voice Case, Where the Headers Win
+
+A G.711 codec produces 64,000 bit/s of audio. Packetised every 20 ms, that is
+$64000 \\times 0.020 = 1280$ bits, or 160 bytes, fifty times a second. Each of
+those samples then collects 78 bytes of headers:
+
+$$R_{\\mathrm{wire}} = 238 \\times 8 \\times 50 = 95200\\ \\text{bit/s}$$
+
+$$\\frac{95200}{64000} = 1.4875$$
+
+**A 64 kb/s call needs 95.2 kb/s of link.** The overhead factor of 1.4875 is why
+capacity planning for voice is done in wire rate, never in codec rate, and why
+header compression on slow access links is worth the trouble. Doubling the
+sample interval to 40 ms halves the header count and brings the factor to 1.244,
+at the cost of 20 ms more mouth-to-ear delay — the same trade every real-time
+protocol makes.
+
+### Worked Example 8.1 — Goodput of a Loaded Gigabit Link
+
+**Given.** A 1 Gb/s Ethernet link carries full 1460-byte TCP segments, and 0.5 %
+of frames are lost and retransmitted. What goodput does the application see?
+
+**Encapsulation first.**
+
+$$\\text{throughput after headers} = 1.0 \\times 10^{9} \\times \\frac{1460}{1538} = 949.28\\ \\mathrm{Mb/s}$$
+
+**Then retransmissions.** Every delivered frame costs $1/(1-p)$ transmissions on
+average, so the delivered fraction of the wire is $(1-p)$:
+
+$$\\text{goodput} = 949.28 \\times (1 - 0.005) = 944.54\\ \\mathrm{Mb/s}$$
+
+**Answer.** 944.54 Mb/s, which is 94.45 % of the nominal gigabit. Of the
+55.462 Mb/s that went missing, **50.715 Mb/s was spent on headers and only
+4.746 Mb/s on retransmission** — the loss is the part people notice and the
+smaller of the two by more than a factor of ten. Note also what does not appear: the acknowledgements travelling the other
+way cost nothing here, because the link is full duplex and the reverse direction
+has its own capacity.
+
+### Worked Example 8.2 — Transfer Time, and the Two Kinds of "Mega"
+
+**Given.** A 100 MiB file moves over the same 1 Gb/s link with 1460-byte
+segments and no loss. How long does it take, and what does a reader lose by
+writing "100 MB" instead?
+
+**Convert the file size honestly.** A mebibyte is $2^{20}$ bytes:
+
+$$100\\ \\mathrm{MiB} = 100 \\times 1048576 = 104857600\\ \\text{bytes}$$
+
+**Count the frames rather than dividing by a rate.** The file fills
+
+$$\\left\\lfloor \\frac{104857600}{1460} \\right\\rfloor = 71820\\ \\text{full segments}$$
+
+with a remainder of $104857600 - 71820 \\times 1460 = 400$ bytes in one short
+final segment, which still pays a full 78 bytes of headers:
+
+$$\\text{wire} = 71820 \\times 1538 + 478 = 110459638\\ \\text{bytes}$$
+
+$$t = \\frac{110459638 \\times 8}{1.0 \\times 10^{9}} = 0.883677\\ \\mathrm{s}$$
+
+**Now the two errors.** Dividing the payload by the goodput figure gives
+0.883677 s as well, understating the true time by 0.45 μs — the short frame's
+headers, and entirely negligible. Treating the file as $100 \\times 10^{6}$
+bytes gives
+
+$$t = \\frac{800000000}{949284785} = 0.842740\\ \\mathrm{s}$$
+
+**Answer.** 0.8837 s correctly, against 0.8427 s from the decimal slip: an error
+of **4.63 %**, a hundred times larger than the frame-counting subtlety that a
+careful student worries about instead. **Link rates are decimal and file sizes
+are binary**, and the two must never be mixed inside one division. At the giga
+scale the same slip is worth 7.37 %.`,
+      examTip: 'Goodput is the link rate times payload over wire footprint. For 1500-byte Ethernet with IPv4 and TCP that is 1460/1538 = 0.9493, so a gigabit link delivers 949.28 Mb/s at best. Small packets are punished hard: a 160-byte voice sample keeps only 67 %, so a 64 kb/s call occupies 95.2 kb/s of wire.',
+      importantNote: 'Link rates are decimal (1 Gb/s is 10^9 bit/s) and file and memory sizes are binary (1 MiB is 2^20 bytes). Calling 104,857,600 bytes "100 MB" and dividing by a decimal rate understates the transfer time by 4.63 %; the same slip at the giga scale is worth 7.37 %.',
+    },
+    { id: 'netperf-queue', title: '9. Utilisation, Queueing Delay, and Where the Knee Really Is',
+      content: `## 9.1 Little's Law Is Accounting, Not Modelling
+
+Before any distribution is assumed, one relation holds for any stable system
+whatever: the average number of items inside it equals the rate they arrive
+multiplied by the average time each spends there.
+
+$$L = \\lambda W, \\qquad L_{q} = \\lambda W_{q}$$
+
+This is a statement about areas. Each packet contributes its own sojourn time to
+the integral of the occupancy, so the time-average occupancy is the sum of the
+sojourns divided by the horizon, which is exactly arrival rate times mean
+sojourn. Running the discrete-event queue and computing both sides separately —
+the occupancy integral on one side, the measured arrival rate times the measured
+mean delay on the other — reproduces the identity to ten significant figures at
+every load tested. **Little's law cannot be violated by a queueing discipline, a
+distribution, or a scheduler**, which is what makes it the most useful single
+equation in this chapter: two of the three quantities are always easier to
+measure than the third.
+
+## 9.2 One Interface, Simulated
+
+Model a 100 Mb/s port carrying 1500-byte packets. The service rate is a packet
+count, not a bit rate:
+
+$$\\mu = \\frac{R}{8L} = \\frac{100 \\times 10^{6}}{12000} = 8333.33\\ \\text{packets/s}$$
+
+$$\\rho = \\frac{\\lambda}{\\mu}$$
+
+Now drive it with exponential interarrival and service times and *measure* what
+comes out. Each row below is twelve independent runs of 500,000 packets; the
+uncertainty is the standard error across those runs, not a guess.
+
+| Utilisation | Offered load | Measured queueing delay | M/M/1 says | Measured packets in system | M/M/1 says |
+|---|---|---|---|---|---|
+| 0.10 | 10 Mb/s | 0.0133 ± 0.0000 ms | 0.0133 ms | 0.1111 ± 0.0001 | 0.1111 |
+| 0.50 | 50 Mb/s | 0.1199 ± 0.0002 ms | 0.1200 ms | 1.0001 ± 0.0013 | 1.0000 |
+| 0.80 | 80 Mb/s | 0.4794 ± 0.0024 ms | 0.4800 ms | 3.9980 ± 0.0172 | 4.0000 |
+| 0.90 | 90 Mb/s | 1.0881 ± 0.0094 ms | 1.0800 ms | 9.0645 ± 0.0727 | 9.0000 |
+| 0.95 | 95 Mb/s | 2.3208 ± 0.0362 ms | 2.2800 ms | 19.3318 ± 0.2930 | 19.0000 |
+
+The closed forms the last column checks are
+
+$$W = \\frac{1}{\\mu - \\lambda}, \\qquad W_{q} = \\frac{\\rho}{\\mu - \\lambda}, \\qquad L = \\frac{\\rho}{1 - \\rho}$$
+
+Two things in that table deserve attention. First, the measurements land on the
+formulas, which is the point of doing both. Second, **the uncertainty grows
+faster than the mean**: at 10 % load the standard error is a thousandth of the
+value and at 95 % it is 1.6 %, because a heavily loaded queue spends long
+stretches in one state and a run of half a million packets contains far less
+independent information than its length suggests. A single short measurement of
+a busy link is not a reliable number, and that is a property of the queue, not
+of the instrument.
+
+![Mean queueing delay against utilisation for a 100 Mb/s port, with measured points from a discrete-event simulation on the analytic curves for exponential and for fixed-size service. Both are near zero until sixty per cent, bend upward through eighty per cent, and climb steeply toward one; the fixed-size discipline sits at half the delay of the exponential one throughout.](/courses/fe-ee/figures/net4-queue-knee.svg)
+
+## 9.3 Why the Knee Sits Near 80 %
+
+The shape is governed by $1/(1-\\rho)$, whose slope is
+
+$$\\frac{dW_{q}}{d\\rho} = \\frac{1}{\\mu\\,(1 - \\rho)^{2}}$$
+
+At $\\rho = 0.5$ that slope is $4/\\mu$; at $\\rho = 0.8$ it is $25/\\mu$; at
+$\\rho = 0.95$ it is $400/\\mu$. **Every extra percent of load costs a hundred
+times more delay at 95 % than at 50 %.** That is what an engineer means by "the
+knee", and 80 % is the conventional place to draw the line because it is where
+the slope has grown by a factor of six from its half-load value but the delay is
+still a fraction of a millisecond.
+
+The ratio between two loads follows from the formula alone and is worth
+memorising as a check on arithmetic:
+
+$$\\frac{W_{q}(\\rho_{2})}{W_{q}(\\rho_{1})} = \\frac{\\rho_{2}(1-\\rho_{1})}{\\rho_{1}(1-\\rho_{2})} = \\frac{0.8 \\times 0.9}{0.1 \\times 0.2} = 36$$
+
+and the simulation measures $0.4794/0.013333 = 35.956$, agreeing with 36 inside
+its error bar. Note that this exact ratio is 36 and not 37; dividing the rounded
+table entries 0.48 by 0.013 gives 36.9, which is how a rounding error becomes a
+published number.
+
+Service-time variability matters as much as load. Repeating the run with
+fixed-size packets instead of exponentially distributed ones — the M/D/1 case,
+which is what a link carrying only full-MTU frames looks like — measures
+**0.2412 ± 0.0010 ms** at 80 % load against 0.4794 ms for the variable case,
+almost exactly half, as
+
+$$W_{q}^{\\,\\mathrm{M/D/1}} = \\frac{\\rho}{2\\mu(1-\\rho)}$$
+
+predicts. **Halving the variability halves the wait at no cost in capacity**,
+which is the entire argument for traffic shaping and for fixed-size cells.
+
+### Worked Example 9.1 — Little's Law on a Router You Cannot Open
+
+**Given.** A router's counters report 2500 packets per second arriving at an
+interface and an average of 12 packets queued for it. No distribution is known.
+Find the mean queueing delay, and then the mean delay if the arrival rate rises
+to 4000 packets per second with the queue holding 30.
+
+**Apply the identity.**
+
+$$W_{q} = \\frac{L_{q}}{\\lambda} = \\frac{12}{2500} = 0.0048\\ \\mathrm{s} = 4.8\\ \\mathrm{ms}$$
+
+$$W_{q} = \\frac{30}{4000} = 0.0075\\ \\mathrm{s} = 7.5\\ \\mathrm{ms}$$
+
+**Answer.** 4.8 ms and 7.5 ms. **No model was needed and none was used.** The
+arrival rate rose by 60 % and the delay by 56 %, which tells you the queue is
+still on the gentle part of its curve; had the delay tripled for a 60 % load
+increase, the interface would be past its knee.
+
+### Worked Example 9.2 — How Much Load Fits Under a Delay Budget
+
+**Given.** The same 100 Mb/s interface, and a service-level target of no more
+than 1.0 ms of mean queueing delay. What is the largest offered load that meets
+it, and what happens to the answer if the target is tightened to 0.5 ms?
+
+**Set the expression equal to the budget and solve for $\\rho$.**
+
+$$\\frac{\\rho}{\\mu(1-\\rho)} \\le 0.001 \\quad\\Longrightarrow\\quad \\rho \\le \\frac{0.001\\,\\mu}{1 + 0.001\\,\\mu}$$
+
+$$0.001 \\times 8333.33 = 8.3333, \\qquad \\rho \\le \\frac{8.33333}{9.33333} = 0.892857$$
+
+**In bits per second**, and then again for the tighter budget:
+
+$$0.892857 \\times 100 = 89.2857\\ \\mathrm{Mb/s}, \\qquad \\rho \\le \\frac{4.16667}{5.16667} = 0.806452 \\rightarrow 80.6452\\ \\mathrm{Mb/s}$$
+
+**Answer.** 89.29 Mb/s under a 1.0 ms budget and 80.65 Mb/s under a 0.5 ms one.
+**Halving the delay budget cost 8.64 Mb/s of usable capacity, 8.6 % of the
+link.** Upgrading the port to 1 Gb/s does better than multiply that by ten: the
+service rate becomes 83,333.33 packets per second, so the same 1.0 ms rule
+allows
+
+$$\\rho \\le \\frac{83.3333}{84.3333} = 0.988142 \\rightarrow 988.14\\ \\mathrm{Mb/s}$$
+
+**A faster port may be run closer to full**, because every packet clears in a
+tenth of the time and the queue that builds behind it drains ten times faster.
+That, and not the raw capacity, is why fast links are allowed to run hot.`,
+      examTip: 'Little\'s law, L = lambda W, holds for any queue with any discipline and any distribution — use it whenever two of the three quantities are known. The M/M/1 forms follow only after assuming exponential arrivals and service. Queueing delay grows as 1/(1 - rho), so its slope grows as 1/(1 - rho)^2: a hundred times steeper at 95 % load than at 50 %.',
+      importantNote: 'A discrete-event simulation of a 100 Mb/s port measures 0.4794 +/- 0.0024 ms of queueing delay at 80 % load and 2.3208 +/- 0.0362 ms at 95 %. Fixed-size packets halve those figures at the same load, which is why shaping traffic to uniform sizes buys delay without buying capacity.',
+    },
+    { id: 'netperf-jitter', title: '10. Jitter, and Sizing a Playout Buffer From a Delay Trace',
+      content: `## 10.1 Jitter Is a Property of the Distribution, Not of the Mean
+
+A stream of packets sent at even intervals does not arrive at even intervals,
+because each packet meets a different queue state. **Jitter is the variation in
+one-way delay**, and it is the quantity that decides whether speech is
+intelligible, while the mean delay decides only whether conversation is
+comfortable.
+
+Building a real trace makes the distinction concrete. Send a tagged stream of
+voice packets across five hops, each an independently simulated queue on a
+100 Mb/s port, and record the delay every packet actually experienced:
+
+| Load per hop | Mean delay | Standard deviation | 99th percentile | 99.9th percentile | Worst seen |
+|---|---|---|---|---|---|
+| 50 % | 1.2006 ± 0.0017 ms | 0.535 ms | 2.767 ms | 3.547 ms | 5.449 ms |
+| 80 % | 3.0127 ± 0.0128 ms | 1.330 ms | 6.911 ms | 8.602 ms | 11.647 ms |
+
+Raising the load from 50 % to 80 % multiplied the mean by 2.5 and the tail by
+the same factor, but **the worst case moved from 4.5 times the mean to 3.9 times
+the mean** — the shape barely changed while the scale grew. That is what a sum
+of five exponential sojourns does: it is an Erlang distribution of order five,
+whose tail is
+
+$$P(X > x) = e^{-\\theta x}\\sum_{k=0}^{4}\\frac{(\\theta x)^{k}}{k!}, \\qquad \\theta = \\mu(1-\\rho)$$
+
+with mean $5/\\theta$ and standard deviation $\\sqrt{5}/\\theta$. At 80 % load,
+$\\theta = 1666.67$ per second, so the predicted mean is 3.000 ms against a
+measured 3.0127 ms, and the predicted 99th percentile is 6.963 ms against a
+measured 6.911 ms.
+
+## 10.2 The Estimator a Receiver Actually Runs
+
+A receiver cannot compute percentiles in real time. RFC 3550 has it track a
+first-order filter over successive differences in transit time:
+
+$$J \\leftarrow J + \\frac{\\lvert D_{i-1,i}\\rvert - J}{16}$$
+
+Running that filter over the tagged voice trace — packets 20 ms apart, so
+successive samples meet independent queue states — settles at **0.596 ms** at
+50 % load and **1.434 ms** at 80 % load, matching the direct mean absolute step
+of 0.593 ms and 1.444 ms measured from the same trace.
+
+**This is where a serious mistake lives.** The estimator reads 1.43 ms, and a
+buffer of 1.43 ms would discard about one packet in three. The estimator
+measures the average step between *neighbouring* packets; a playout buffer must
+cover the *tail* of the whole distribution. On this path the ratio between the
+two is very nearly six:
+
+$$\\frac{8.602}{1.434} = 5.9986$$
+
+## 10.3 Sizing the Buffer by Counting Late Packets
+
+A playout buffer holds arriving packets and releases them on a fixed schedule
+set one depth $D$ beyond the fixed part of the path delay. A packet is lost to
+the listener when its variable delay exceeds $D$, whatever the network did with
+it. Counting those directly from the trace gives the design curve:
+
+| Buffer depth | Late at 50 % load | Late at 80 % load |
+|---|---|---|
+| 2 ms | 8.27 % | 75.84 % |
+| 4 ms | 0.030 % | 20.52 % |
+| 6 ms | below 0.001 % | 3.00 % |
+| 8 ms | below 0.001 % | 0.33 % |
+
+![Percentage of packets arriving too late to play against playout buffer depth, on a logarithmic vertical scale, for five-hop paths loaded to fifty and eighty per cent. Both curves fall steeply; the fifty per cent curve passes one per cent near two point eight milliseconds and the eighty per cent curve near seven milliseconds, with a dashed guide at the one per cent line.](/courses/fe-ee/figures/net4-playout-late.svg)
+
+Every millisecond of buffer is a millisecond added to the conversation, so the
+choice is a straight trade of delay against dropouts, and the curve is steep
+enough that the trade is usually worth taking.
+
+### Worked Example 10.1 — A Buffer for a Stated Dropout Budget
+
+**Given.** The 80 %-loaded five-hop path above. Choose buffer depths for late
+fractions of 1 %, 0.1 % and 0.01 %, and state the delay each costs.
+
+**Read the quantiles off the trace, then confirm with the Erlang tail.** The
+depth for a 1 % late target is by definition the 99th percentile of the delay
+distribution, which the trace puts at 6.911 ms and the closed form at
+
+$$e^{-\\theta D}\\sum_{k=0}^{4}\\frac{(\\theta D)^{k}}{k!} = 0.01 \\;\\Longrightarrow\\; D = 6.963\\ \\mathrm{ms}$$
+
+Repeating for the tighter targets gives 8.877 ms and 10.669 ms, against 8.602 ms
+and (beyond the trace) an unmeasurable count.
+
+| Late target | Depth from the trace | Depth from the Erlang tail | Closed-form cost over the 1 % choice |
+|---|---|---|---|
+| 1 % | 6.911 ms | 6.963 ms | — |
+| 0.1 % | 8.602 ms | 8.877 ms | 1.91 ms |
+| 0.01 % | not resolvable | 10.669 ms | 3.71 ms |
+
+**Answer.** Roughly 7 ms, 9 ms and 11 ms. **A tenfold reduction in dropouts
+costs under 2 ms each time**, which is the geometry of an exponential tail:
+equal multiplicative improvements cost equal additive delay. Note the last row
+honestly — a 400,000-packet trace contains only 40 packets beyond the 0.01 %
+point, so that depth is quoted from the distribution the trace validated rather
+than from the trace itself.
+
+### Worked Example 10.2 — The Mouth-to-Ear Budget, Without Double Counting
+
+**Given.** G.711 with 20 ms sample packets, a 10 Mb/s access link, 4000 km of
+fibre, the five-hop 80 %-loaded core above, and the 0.1 % playout buffer chosen
+in 10.1. Does the call meet the 150 ms one-way target?
+
+**Fixed terms first.**
+
+$$d_{\\mathrm{pkt}} = 20.0\\ \\mathrm{ms}, \\qquad d_{\\mathrm{ser}} = \\frac{238 \\times 8}{10 \\times 10^{6}} = 0.1904\\ \\mathrm{ms}$$
+
+$$d_{\\mathrm{prop}} = \\frac{4.0 \\times 10^{6}}{2.0 \\times 10^{8}} = 0.020\\ \\mathrm{s} = 20.0\\ \\mathrm{ms}$$
+
+**Now the term students double count.** The measured mean queueing delay is
+3.0127 ms, and it does **not** appear as a separate line. The playout buffer
+holds every packet until its scheduled instant, so the listener experiences the
+buffer depth and nothing else from the variable part; adding 3.01 ms of mean
+queueing *and* 8.60 ms of buffer counts the same delay twice.
+
+$$d_{\\mathrm{ear}} = 20.0 + 0.1904 + 20.0 + 8.6017 = 48.7921\\ \\mathrm{ms}$$
+
+**Answer.** 48.79 ms one way, comfortably inside the 150 ms target with 101 ms
+of margin for the codec, the far-end hardware and a worse day on the network.
+**The buffer converts variable delay into fixed delay**, and the budget must be
+written in terms of what the listener hears, which is the fixed schedule, not
+the average packet.`,
+      examTip: 'Jitter is delay variation, not delay. The RFC 3550 estimator tracks the mean step between successive packets and reads far smaller than the buffer a stream needs: 1.43 ms against 8.60 ms on the same measured path, a factor of six. Size a playout buffer from a percentile of the delay distribution, never from the jitter statistic.',
+      importantNote: 'A playout buffer replaces variable delay with fixed delay. Once a buffer of depth D is in the budget, the mean queueing delay must NOT be added again — it is already inside D. Counting both is the most common error in a mouth-to-ear budget and inflates it by the mean queueing delay of every hop.',
+    },
+    { id: 'netperf-loss', title: '11. Loss, Retransmission, and Why Distance Multiplies the Damage',
+      content: `## 11.1 Loss Without Congestion Control
+
+The simplest cost of loss is arithmetic. A link that drops a fraction $p$ of
+frames must send each one $1/(1-p)$ times on average before it is delivered, so
+the delivered fraction of the wire is $(1-p)$:
+
+$$E[k] = \\sum_{k=1}^{\\infty} k\\,p^{\\,k-1}(1-p) = \\frac{1}{1-p}, \\qquad T_{\\mathrm{eff}} = R\\,(1-p)$$
+
+Loss usually arrives as a bit error rate rather than a frame loss rate, and the
+conversion is the place errors are made. A frame of $n$ bits survives only if
+every bit does:
+
+$$p_{f} = 1 - (1 - p_{b})^{n} \\approx n\\,p_{b} \\quad \\text{for } n p_{b} \\ll 1$$
+
+**A 1500-byte frame is 12,000 chances to be destroyed, not one.** That factor of
+12,000 between the two rates is the single most common slip in this material.
+
+## 11.2 Loss With Congestion Control Is a Different Shape
+
+A sender that reacts to loss by halving its window behaves completely
+differently. Between losses the window grows by one segment per round trip; on a
+loss it halves. Stepping that loop round by round produces the sawtooth every
+congested transfer shows.
+
+Over one cycle the window climbs from $W/2$ to $W$, taking $W/2$ round trips and
+delivering the area under the ramp:
+
+$$N_{\\mathrm{cycle}} = \\frac{W}{2}\\times\\frac{W/2 + W}{2} = \\frac{3W^{2}}{8}$$
+
+One loss per cycle means $p = 1/N_{\\mathrm{cycle}}$, so
+
+$$W = \\sqrt{\\frac{8}{3p}}, \\qquad \\bar{W} = \\frac{3W}{4}, \\qquad T = \\frac{8\\,\\bar{W}\\,\\mathrm{MSS}}{\\mathrm{RTT}} = \\sqrt{\\frac{3}{2}}\\;\\frac{8\\,\\mathrm{MSS}}{\\mathrm{RTT}\\sqrt{p}}$$
+
+Running the loop with a drop placed exactly every $1/p$ segments, on a 50 ms
+path with 1460-byte segments, measures how good that closed form is:
+
+| Loss rate | Measured sawtooth throughput | Square-root law | Ratio |
+|---|---|---|---|
+| 1 in 100 | 2.5697 Mb/s | 2.8610 Mb/s | 0.898 |
+| 1 in 1000 | 8.8076 Mb/s | 9.0473 Mb/s | 0.974 |
+| 1 in 10,000 | 28.3790 Mb/s | 28.6100 Mb/s | 0.992 |
+| 1 in 100,000 | 89.8730 Mb/s | 90.4729 Mb/s | 0.993 |
+
+**The law is asymptotic, and the simulation shows where it stops being true.**
+At 1 % loss the window averages only about sixteen segments, integer truncation
+and the lost segment itself both matter, and the formula is 10 % optimistic. By
+one loss in ten thousand the two agree to within a percent. A formula quoted
+without its domain of validity is a trap; running the process shows the domain.
+
+## 11.3 The Same Loss on Two Continents
+
+Replace the periodic drop with independent random loss and run the window loop
+eight times at each setting:
+
+| Loss rate | Measured at RTT 10 ms | Measured at RTT 100 ms | Ratio |
+|---|---|---|---|
+| 1 in 100 | 14.3885 ± 0.0283 Mb/s | 1.4389 ± 0.0028 Mb/s | 10.000 |
+| 1 in 1000 | 47.4419 ± 0.2522 Mb/s | 4.7442 ± 0.0252 Mb/s | 10.000 |
+| 1 in 10,000 | 152.9213 ± 1.0441 Mb/s | 15.2921 ± 0.1044 Mb/s | 10.000 |
+
+The last column is not approximately ten; it is ten to every digit the
+simulation prints, and for a reason worth understanding. Given the same sequence
+of losses, the window follows an identical trajectory on both paths — only the
+clock that advances between rounds differs. **Round-trip time divides throughput
+exactly, and loss is what sets the window that gets divided.**
+
+![Measured throughput against packet loss probability for round-trip times of ten and one hundred milliseconds, on logarithmic axes, with the square-root law drawn as a dashed reference through each set of points. The two measured series are parallel straight lines a factor of ten apart, falling by about a factor of ten for every hundredfold rise in loss.](/courses/fe-ee/figures/net4-loss-distance.svg)
+
+Reading the slope off the measurements alone, without importing any constant:
+cutting the loss rate a hundredfold multiplies the measured throughput by
+$10.628 \\pm 0.076$, which is an exponent of
+
+$$\\frac{\\ln 10.628}{\\ln 100} = 0.5132$$
+
+against the square root's 0.5000 — the shape confirmed by measurement rather
+than assumed.
+
+**This is why a long path is fragile.** One percent loss on a 10 ms path still
+delivers 14 Mb/s, which most users would call working. The same one percent on a
+100 ms path delivers 1.44 Mb/s on a link that may be capable of ten gigabits.
+Nothing is wrong with the links; the control loop simply cannot learn fast
+enough to keep a long pipe full when it is being knocked back every few hundred
+milliseconds.
+
+### Worked Example 11.1 — From Bit Error Rate to Delivered Throughput
+
+**Given.** A 100 Mb/s link with a bit error rate of $1 \\times 10^{-6}$ carries
+1500-byte frames with 1460-byte TCP payloads and retransmits corrupted frames.
+Find the frame error probability, the mean transmissions per delivered frame,
+and the application goodput.
+
+**Frame error probability.** A frame is 12,000 bits:
+
+$$p_{f} = 1 - (1 - 10^{-6})^{12000} = 0.0119283$$
+
+The linear approximation gives $12000 \\times 10^{-6} = 0.012$, high by 0.6 %,
+which is the price of the approximation at this frame length.
+
+**Transmissions per delivered frame.**
+
+$$E[k] = \\frac{1}{1 - 0.0119283} = 1.01207$$
+
+**Throughput and then goodput.**
+
+$$T_{\\mathrm{eff}} = 100 \\times (1 - 0.0119283) = 98.807\\ \\mathrm{Mb/s}$$
+
+$$\\text{goodput} = 98.807 \\times \\frac{1460}{1538} = 93.796\\ \\mathrm{Mb/s}$$
+
+**Answer.** 1.19 % of frames fail, each delivered frame costs 1.012
+transmissions, and the application sees 93.80 Mb/s. **Two independent taxes are
+stacked here**: 5.07 Mb/s to headers and 1.13 Mb/s to retransmission. Note also
+that improving the bit error rate to $10^{-7}$ takes the frame error rate to
+0.12 % and the throughput to 99.88 Mb/s — a tenfold improvement in the physical
+layer buys back only 1.07 Mb/s, because the header tax does not move.
+
+### Worked Example 11.2 — What Loss Rate Makes a Long Path Behave
+
+**Given.** A transfer over a 10 ms path at one loss in a thousand measures
+47.44 Mb/s. The same application must reach the same throughput over a 100 ms
+path. What loss rate does that require, and is it achievable?
+
+**Use the measured scaling rather than a constant.** Throughput varies as
+$1/\\mathrm{RTT}$ exactly and as $p^{-0.5}$ to a good approximation, so
+
+$$\\frac{T_{2}}{T_{1}} = \\frac{\\mathrm{RTT}_{1}}{\\mathrm{RTT}_{2}}\\sqrt{\\frac{p_{1}}{p_{2}}} = 1 \\;\\Longrightarrow\\; \\sqrt{\\frac{p_{1}}{p_{2}}} = \\frac{\\mathrm{RTT}_{2}}{\\mathrm{RTT}_{1}} = 10$$
+
+$$p_{2} = \\frac{p_{1}}{100} = \\frac{0.001}{100} = 0.00001$$
+
+**Check it against the measurements.** The table gives 15.29 Mb/s at one loss in
+ten thousand on the 100 ms path; another factor of ten in loss buys another
+factor of 3.16, giving about 48 Mb/s — the target.
+
+**Answer.** One loss in a hundred thousand, a hundred times better than the
+short path needs. **A tenfold longer path demands a hundredfold better loss
+rate for equal throughput**, which is why long-distance transfers are moved onto
+protocols that do not halve their window on a single drop, rather than onto
+faster links.`,
+      examTip: 'Distinguish the two loss regimes. Without congestion control, effective throughput is R(1 - p) and loss costs almost nothing until p is large. With a window that halves on loss, throughput goes as 1/(RTT sqrt(p)): the RTT dependence is exact and the loss dependence is a square root, so a hundredfold better loss rate buys only a tenfold better throughput.',
+      importantNote: 'Convert bit error rate to frame error rate before doing anything else: a 1500-byte frame is 12,000 chances to fail, so a BER of 1e-6 gives a frame error rate of 1.19 %, not 0.0001 %. The simulated sawtooth also shows the square-root law is 10 % optimistic at 1 % loss and accurate to a percent below one loss in ten thousand.',
+    },
+    { id: 'netperf-shaping', title: '12. Shaping and Policing: a Token Bucket Driven by a Real Trace',
+      content: `## 12.1 The Mechanism, Stated as Two Numbers
+
+A token bucket enforces an average rate while still permitting bursts. Tokens
+accumulate at a fill rate $r$ into a bucket of depth $b$; a packet of $L$ bytes
+may pass only if $L$ tokens are present, and passing spends them.
+
+$$\\text{tokens}(t) = \\min\\bigl(b,\\ \\text{tokens}(t^{-}) + r\\,\\Delta t\\bigr)$$
+
+Because the bucket can never hold more than $b$, the cumulative bytes that pass
+in any interval of length $t$ obey one inequality, and that inequality is the
+whole contract:
+
+$$A_{\\mathrm{pass}}(t) \\le b + r\\,t$$
+
+**The depth buys burst tolerance and the fill rate buys sustained throughput.**
+They are independent dials, and confusing them is the usual design error: a
+larger bucket does not raise the long-run rate by one bit per second, and a
+higher fill rate does not help a source whose problem is one big burst.
+
+A source sending at peak rate $P$ drains the bucket at $P - r$, so the longest
+burst it can send at full speed and the size of that burst are
+
+$$T_{\\max} = \\frac{b}{P - r}, \\qquad B_{\\max} = P\\,T_{\\max} = \\frac{P\\,b}{P - r}$$
+
+## 12.2 Driving It With an Actual Burst
+
+Take a 2 Mb/s contract with a 50 kB bucket, and feed it a source that fires 200
+back-to-back 1500-byte packets at 10 Mb/s. In byte terms the fill rate is
+250,000 B/s, the peak is 1,250,000 B/s, and packets arrive every
+
+$$\\tau = \\frac{1500 \\times 8}{10 \\times 10^{6}} = 0.0012\\ \\mathrm{s}$$
+
+so each interval brings 300 bytes of fresh tokens against a demand of 1500.
+Packet $k$ passes only while
+
+$$1500k \\le b + 300(k-1) \\;\\Longrightarrow\\; k \\le \\frac{49700}{1200} = 41.4167$$
+
+Running the trace through a policer confirms it exactly: **the first 41 packets
+conform and the 42nd is the first to be marked**. The closed form for the burst
+agrees from the other direction:
+
+$$T_{\\max} = \\frac{50000}{1250000 - 250000} = 0.050\\ \\mathrm{s}, \\qquad B_{\\max} = 1250000 \\times 0.050 = 62500\\ \\text{bytes}$$
+
+and 62,500 bytes is 41.67 packets, of which 41 are whole.
+
+Over the whole 238.8 ms burst the policer passes **73 packets and drops 127**,
+and that too is the envelope rather than an accident:
+
+$$\\left\\lfloor\\frac{b + r\\,T}{L}\\right\\rfloor = \\frac{50000 + 250000 \\times 0.2388}{1500} = \\frac{109700}{1500} = 73.133$$
+
+![Two stacked panels sharing a time axis for a ten megabit per second burst meeting a two megabit per second bucket. The upper panel shows the token level falling from fifty kilobytes to zero over the first fifty milliseconds and then sawtoothing near empty. The lower panel shows cumulative offered bytes climbing as a straight steep line while the bytes passed follow the shallower dashed bucket envelope after the bucket empties.](/courses/fe-ee/figures/net4-token-bucket.svg)
+
+The upper panel is the mechanism and the lower panel is the consequence. The
+moment the token curve reaches zero, the passed curve leaves the offered curve
+and follows the envelope $b + rt$ for the rest of the burst.
+
+## 12.3 Policing Drops, Shaping Delays
+
+The same bucket can be wired two ways. A **policer** marks or drops
+non-conforming packets immediately; a **shaper** holds them until their tokens
+exist. Running the identical trace through a shaper instead measures a very
+different outcome: nothing is dropped, the last packet leaves at exactly
+
+$$t_{\\mathrm{last}} = \\frac{A_{\\mathrm{total}} - b}{r} = \\frac{300000 - 50000}{250000} = 1.000\\ \\mathrm{s}$$
+
+and, because it arrived at 238.8 ms, it waited
+
+$$d = 1000.0 - 238.8 = 761.2\\ \\mathrm{ms}$$
+
+The shaper needed somewhere to put those bytes. The peak backlog is the largest
+gap between what arrived and what the envelope allowed:
+
+$$Q_{\\max} = \\max_{t}\\bigl(A(t) - b - r\\,t\\bigr) = 300000 - 109700 = 190300\\ \\text{bytes}$$
+
+| Property | Policer | Shaper |
+|---|---|---|
+| Non-conforming traffic | dropped or marked | delayed |
+| Memory needed | none | 190,300 bytes, measured |
+| Worst delay added | none | 761.2 ms, measured |
+| Effect on a TCP source | triggers window halving | triggers retransmission timers if deep |
+| Right place to use it | ingress of another operator's traffic | egress of your own |
+
+**Neither is free**: the policer pays in loss and the shaper pays in delay and
+memory, and 761 ms of added delay is worse than a drop for anything interactive.
+
+### Worked Example 12.1 — Sizing a Bucket So a Known Burst Survives
+
+**Given.** An application sends a 100 kB object as one burst at 10 Mb/s onto a
+2 Mb/s contract. What bucket depth passes the whole object without a single
+drop?
+
+**Find the burst duration and the tokens that arrive during it.**
+
+$$T = \\frac{100000}{1250000} = 0.080\\ \\mathrm{s}, \\qquad r\\,T = 250000 \\times 0.080 = 20000\\ \\text{bytes}$$
+
+**Require the envelope to cover the arrivals at every instant.** The tightest
+moment is the end of the burst:
+
+$$b + r\\,T \\ge 100000 \\;\\Longrightarrow\\; b \\ge 100000 - 20000 = 80000\\ \\text{bytes}$$
+
+**Answer.** 80 kB, and the 50 kB bucket of section 12.2 would drop the tail of
+this object. Sanity-check it with the burst formula in reverse:
+$B_{\\max} = 1250000 \\times 80000/1000000 = 100000$ bytes, exactly the object.
+**Bucket depth is sized from the largest burst the application can produce, not
+from its average rate**, and the two have no relationship whatsoever.
+
+### Worked Example 12.2 — Choosing Between Dropping and Delaying
+
+**Given.** The 300 kB burst of section 12.2 against the 50 kB bucket at 2 Mb/s.
+Compare the outcome for a file transfer and for a voice stream.
+
+**Policer outcome, measured.** 73 packets of 200 pass, 127 are dropped, and the
+loss rate seen by the source is
+
+$$\\frac{127}{200} = 0.635$$
+
+**Shaper outcome, measured.** Nothing is dropped, the last packet is delayed
+761.2 ms, and 190,300 bytes must be held.
+
+**For the file transfer**, the policer is survivable but wasteful: a 63.5 % loss
+burst will collapse the congestion window to its minimum, and the transfer will
+spend seconds recovering. The shaper is better, because the transfer does not
+care about 761 ms and does care about restarting its window.
+
+**For the voice stream**, the answer inverts. A 761 ms delay is unusable — it is
+five times the 150 ms one-way target of section 10 — while dropped voice packets
+merely degrade quality for the duration of the burst. **Shape elastic traffic,
+police real-time traffic**, and never put a deep shaper in front of a stream
+that a playout buffer is waiting on.`,
+      examTip: 'Bucket depth b sets the burst allowed and fill rate r sets the sustained rate; they are independent. A source at peak rate P empties the bucket in b/(P - r) seconds, passing Pb/(P - r) bytes. Over a longer window the passed bytes never exceed b + rt, which is the one inequality every token-bucket question reduces to.',
+      importantNote: 'A policer and a shaper enforce the same contract with different currency. Driving the identical 300 kB burst through both measured 127 dropped packets for the policer against 761.2 ms of added delay and 190,300 bytes of buffer for the shaper. Elastic traffic prefers the shaper; real-time traffic prefers the policer.',
+    },
+    { id: 'netperf-measure', title: '13. Measuring It: ping, One-Way Delay, and the Halved Round Trip',
+      content: `## 13.1 What a Round-Trip Measurement Contains
+
+An echo probe measures one thing: the interval between sending a request and
+receiving its reply, on a single clock. That interval contains the forward path,
+the far end's turnaround, and the reverse path, and it cannot be decomposed by
+the instrument that measured it.
+
+$$\\mathrm{RTT} = d_{\\mathrm{fwd}} + d_{\\mathrm{turn}} + d_{\\mathrm{rev}}$$
+
+A report of one hundred probes carries four numbers, and they mean different
+things:
+
+| Statistic | What it estimates | What it is useless for |
+|---|---|---|
+| Minimum | the path with no queueing anywhere | current congestion |
+| Mean | the path plus average queueing on both directions | either direction alone |
+| Maximum | one unlucky sample, often a slow-path event | planning |
+| Mean deviation | spread of the round trip | sizing a playout buffer |
+
+**The minimum is the most informative of the four.** Over a simulated run on a
+path whose unqueued round trip is exactly 30.0000 ms, the smallest of 600,000
+probes measures **30.0004 ms** — the queueing has been squeezed out of it, and
+what is left is propagation, serialisation and processing. Subtracting the
+minimum from the mean isolates the average queueing on the two directions
+together, which is a genuinely useful number.
+
+## 13.2 Half of a Round Trip Is Not a One-Way Delay
+
+Take a path with a forward direction crossing 12.0 ms of fibre through an
+interface at 80 % load, and a reverse direction returning by a different route
+of 18.0 ms through a lightly loaded interface. Simulating both directions and
+measuring each separately:
+
+| Quantity | Measured |
+|---|---|
+| Forward one-way delay | 12.5961 ms |
+| Reverse one-way delay | 18.1499 ms |
+| Round trip | 30.7460 ms |
+| Half the round trip | 15.3730 ms |
+
+$$\\frac{15.3730 - 12.5961}{12.5961} = 0.22046, \\qquad \\frac{18.1499 - 15.3730}{18.1499} = 0.15300$$
+
+**Halving the round trip overstates the forward direction by 22.0 % and
+understates the reverse by 15.3 %, simultaneously.** Three independent causes
+produce that, and any one of them is enough:
+
+1. **Route asymmetry.** Return traffic frequently takes a different path through
+   a different set of providers. The two directions are not the same length.
+2. **Rate asymmetry.** An access link with 100 Mb/s down and 10 Mb/s up
+   serialises the two directions at different speeds.
+3. **Load asymmetry.** Congestion is directional. An interface at 80 % in one
+   direction may be at 20 % in the other, and the queueing terms differ by the
+   ratio the previous sections computed.
+
+![Simulated forward and reverse one-way delays for four hundred consecutive probes, with a dashed line at half the mean round trip. The forward trace fluctuates around twelve and a half milliseconds with occasional excursions, the reverse trace sits near eighteen milliseconds, and the dashed line runs between them, coinciding with neither.](/courses/fe-ee/figures/net4-owd-asymmetry.svg)
+
+The dashed line in the figure never touches either trace. That is the entire
+lesson: **RTT/2 is an average of two things you wanted separately**, and it is
+only correct when they happen to be equal.
+
+## 13.3 Why Everybody Measures the Round Trip Anyway
+
+If one-way delay is what matters, why is the round trip what gets measured?
+Because a one-way measurement needs two clocks, and two clocks disagree. Write
+$\\theta$ for the offset of the receiver's clock relative to the sender's. The
+timestamps a one-way measurement produces are
+
+$$\\hat{d}_{\\mathrm{fwd}} = d_{\\mathrm{fwd}} + \\theta, \\qquad \\hat{d}_{\\mathrm{rev}} = d_{\\mathrm{rev}} - \\theta$$
+
+Add them, and the offset cancels exactly:
+
+$$\\hat{d}_{\\mathrm{fwd}} + \\hat{d}_{\\mathrm{rev}} = d_{\\mathrm{fwd}} + d_{\\mathrm{rev}} = \\mathrm{RTT}$$
+
+**The round trip is immune to clock offset and the one-way delays are not.**
+That is why every protocol that has to time something — retransmission timers,
+congestion control, path selection — is built on the round trip. It is also why
+a one-way measurement without a disciplined clock is worth very little: the
+error a reader is left with,
+
+$$\\hat{d}_{\\mathrm{fwd}} - \\frac{\\mathrm{RTT}}{2} = \\frac{d_{\\mathrm{fwd}} - d_{\\mathrm{rev}}}{2} + \\theta$$
+
+mixes the path asymmetry you were trying to find with the clock offset you
+cannot see, and no amount of averaging separates them.
+
+## 13.4 Two Traps in the Tools
+
+**Echo replies are not data-plane traffic.** A router generating an ICMP reply
+about itself usually does so on a control processor that is orders of magnitude
+slower than the forwarding path, and it may rate-limit those replies. A hop that
+shows 40 ms in a trace while the hops beyond it show 15 ms is almost always
+reporting its own control plane, not a real 40 ms of path.
+
+**Per-hop times in a trace are cumulative, not incremental.** The figure for hop
+$n$ is a round trip from the source to hop $n$ and back, by whatever return path
+that router chooses. Subtracting consecutive rows to get a per-link delay
+assumes both return paths are identical, which is exactly the assumption section
+13.2 destroyed.
+
+### Worked Example 13.1 — Reading a Ping Report Properly
+
+**Given.** One hundred probes to a server return a minimum of 30.00 ms, a mean
+of 30.75 ms and a maximum of 42.00 ms. The physical path is 3000 km of fibre in
+each direction. What can be concluded?
+
+**Check the floor against physics.** Propagation alone, both ways:
+
+$$2 \\times \\frac{3.0 \\times 10^{6}}{2.0 \\times 10^{8}} = 0.030\\ \\mathrm{s} = 30.0\\ \\mathrm{ms}$$
+
+**Extract the queueing.** The minimum matches the propagation floor, so
+serialisation and processing are negligible at this scale and there is at least
+one uncongested moment in the sample:
+
+$$\\bar{d}_{\\mathrm{queue}} = 30.75 - 30.00 = 0.75\\ \\mathrm{ms}$$
+
+**Answer.** The path is propagation-dominated, the average total queueing on
+both directions together is 0.75 ms, and the 42 ms maximum is 12 ms of excursion
+in a single sample — a burst, a control-plane hiccup, or a route change.
+**What cannot be concluded is that the one-way delay is 15.375 ms.** The
+measurement supports no statement at all about the split between directions, and
+the honest report is "30.75 ms round trip, of which 0.75 ms is queueing".
+
+### Worked Example 13.2 — A Clock Offset That Hides an Asymmetry
+
+**Given.** The path of section 13.2, whose true one-way delays are 12.5961 ms
+forward and 18.1499 ms reverse. The receiver's clock is 3.0000 ms ahead of the
+sender's. What does a one-way measurement report, and what does the round trip
+report?
+
+**Apply the offset to each direction.**
+
+$$\\hat{d}_{\\mathrm{fwd}} = 12.5961 + 3.0000 = 15.5961\\ \\mathrm{ms}$$
+
+$$\\hat{d}_{\\mathrm{rev}} = 18.1499 - 3.0000 = 15.1499\\ \\mathrm{ms}$$
+
+**Sum them.**
+
+$$15.5961 + 15.1499 = 30.7460\\ \\mathrm{ms}$$
+
+**Answer.** The round trip is reported perfectly, and the one-way measurement
+says the path is very nearly symmetric — which is the opposite of the truth, a
+path whose directions differ by 5.55 ms. **A modest clock error turned a 44 %
+asymmetry into an apparent 3 % one.** The offset that would make it look exactly
+symmetric is
+
+$$\\theta = \\frac{18.1499 - 12.5961}{2} = 2.7769\\ \\mathrm{ms}$$
+
+which is a smaller error than an undisciplined clock makes in a day. One-way
+delay is a measurement that requires GPS or a synchronisation protocol behind
+it; without one, report the round trip and say so.`,
+      examTip: 'A ping measures the sum of both directions plus the far end\'s turnaround, and no processing of that number recovers either direction. Use the minimum to estimate the unqueued path and the mean minus the minimum to estimate average queueing. RTT/2 equals the one-way delay only when routes, rates and loads are all symmetric.',
+      importantNote: 'On a simulated path with 12.5961 ms forward and 18.1499 ms reverse, half the round trip is 15.3730 ms — 22.0 % above the forward delay and 15.3 % below the reverse one. A clock offset adds to one direction and subtracts from the other, so the round trip is immune to it while a one-way measurement is not. That immunity is why protocols time round trips.',
+    },
+    { id: 'netperf-pset-a', title: '14. Problem Set A — Delay, Pipes, Windows, and Overhead',
+      content: `Six problems on the deterministic half of the chapter. Every answer carries its
+units through the whole chain, and every one states which convention — decimal
+for rates, binary for stored bytes — is in force at each conversion.
+
+## 14.1 Problem Set A — the problems
+
+**A1.** A 9000-byte jumbo frame crosses 600 km of fibre on a 40 Gb/s link. Find
+the serialisation delay, the propagation delay, their ratio, and the link rate
+at which the two would be equal.
+
+**A2.** A 200 Mb/s path has a 25 ms round-trip time and carries 1500-byte
+packets. Give the bandwidth-delay product in bits, bytes, kibibytes and packets,
+and the exact window that first saturates the link.
+
+**A3.** A 1200-byte packet crosses four 50 Mb/s store-and-forward links spanning
+900 km of fibre, through three routers taking 30 μs each. Find the one-way delay
+and the round trip if the acknowledgement is 64 bytes.
+
+**A4.** A 100 Mb/s Ethernet link carries 576-byte IP packets with TCP over IPv4.
+Find the goodput, and the gain from moving to a 1500-byte MTU.
+
+**A5.** A 2 GiB file moves over a 500 Mb/s link using 1460-byte segments in
+1538-byte frames. Find the transfer time, and the error a reader makes by
+calling the file "2 GB".
+
+**A6.** A satellite link runs at 2 Mb/s with 250 ms of one-way propagation and
+carries 1500-byte frames. Find the stop-and-wait efficiency and throughput, and
+the window needed to fill the link.
+
+## 14.2 Problem Set A — answers, worked in full
+
+**A1 — 1.8 μs, 3.0 ms, a ratio of 1666.67, and 24 Mb/s.**
+
+$$d_{\\mathrm{trans}} = \\frac{72000\\ \\text{bit}}{40 \\times 10^{9}\\ \\text{bit/s}} = 1.8 \\times 10^{-6}\\ \\mathrm{s}$$
+
+$$d_{\\mathrm{prop}} = \\frac{6.0 \\times 10^{5}\\ \\mathrm{m}}{2.0 \\times 10^{8}\\ \\mathrm{m/s}} = 3.0 \\times 10^{-3}\\ \\mathrm{s}$$
+
+$$\\frac{3.0 \\times 10^{-3}}{1.8 \\times 10^{-6}} = 1666.67, \\qquad R_{\\mathrm{equal}} = \\frac{Lv}{\\ell} = \\frac{72000 \\times 2.0 \\times 10^{8}}{6.0 \\times 10^{5}} = 24\\ \\mathrm{Mb/s}$$
+
+*The trap.* Reporting the jumbo frame as "slow to send". At 40 Gb/s even a
+9000-byte frame serialises in under two microseconds; the distance costs
+1667 times more, and no frame size available on Ethernet changes that.
+
+**A2 — 5.0 Mbit, 625,000 bytes, 610.35 KiB, 416.67 packets, and a 418-packet window.**
+
+$$\\mathrm{BDP} = 200 \\times 10^{6} \\times 0.025 = 5.0 \\times 10^{6}\\ \\text{bit}$$
+
+$$\\frac{5.0 \\times 10^{6}}{8} = 625000\\ \\text{bytes}, \\qquad \\frac{625000}{1024} = 610.35\\ \\mathrm{KiB}$$
+
+$$\\frac{5.0 \\times 10^{6}}{12000} = 416.67\\ \\text{packets}$$
+
+The exact crossover adds the sender's own serialisation,
+$12000/(200 \\times 10^{6}) = 0.06$ ms:
+
+$$W^{*} = \\frac{25.06}{0.06} = 417.667 \\rightarrow 418\\ \\text{packets}$$
+
+*The trap.* Dividing 625,000 by 1000 and reporting 625 KiB. The kibibyte is
+1024 bytes; 625,000 bytes is 625 kB decimal or 610.35 KiB binary, and the two
+differ by 2.4 %.
+
+**A3 — 5.358 ms one way and 9.989 ms round trip.**
+
+$$\\frac{9600}{50 \\times 10^{6}} = 1.92 \\times 10^{-4}\\ \\mathrm{s}, \\qquad 4 \\times 0.192 = 0.768\\ \\mathrm{ms}$$
+
+$$d_{\\mathrm{prop}} = \\frac{9.0 \\times 10^{5}}{2.0 \\times 10^{8}} = 4.5\\ \\mathrm{ms}, \\qquad d_{\\mathrm{proc}} = 3 \\times 0.030 = 0.090\\ \\mathrm{ms}$$
+
+$$d_{\\mathrm{fwd}} = 0.768 + 4.5 + 0.090 = 5.358\\ \\mathrm{ms}$$
+
+The acknowledgement pays the same propagation and processing but a much smaller
+serialisation, $512/(50 \\times 10^{6}) = 0.01024$ ms per link:
+
+$$d_{\\mathrm{rev}} = 4 \\times 0.01024 + 4.5 + 0.090 = 4.63096\\ \\mathrm{ms}$$
+
+$$\\mathrm{RTT} = 5.358 + 4.63096 = 9.98896\\ \\mathrm{ms}$$
+
+*The trap.* Multiplying the propagation by four as well, which gives 18 ms of
+propagation and a nonsense answer of 18.9 ms one way. The 900 km is the whole
+path; only serialisation and per-node terms repeat.
+
+**A4 — 87.30 Mb/s, rising to 94.93 Mb/s.**
+
+With a 576-byte IP packet the payload is $576 - 40 = 536$ bytes and the wire
+footprint is $576 + 38 = 614$ bytes:
+
+$$\\text{goodput} = 100 \\times \\frac{536}{614} = 87.296\\ \\mathrm{Mb/s}$$
+
+$$\\text{goodput}_{1500} = 100 \\times \\frac{1460}{1538} = 94.928\\ \\mathrm{Mb/s}$$
+
+*The trap.* Forgetting the 20 bytes of interframe gap and preamble that never
+appear in a packet capture. They occupy the wire and they belong in the
+denominator; leaving them out overstates the goodput by about 1.3 %.
+
+**A5 — 36.195 s, and a 6.87 % error.**
+
+$$2\\ \\mathrm{GiB} = 2 \\times 1073741824 = 2147483648\\ \\text{bytes}$$
+
+$$\\text{goodput} = 500 \\times 10^{6} \\times \\frac{1460}{1538} = 474642393\\ \\text{bit/s}$$
+
+$$t = \\frac{2147483648 \\times 8}{474642393} = 36.195\\ \\mathrm{s}$$
+
+Calling the file 2 GB means $2 \\times 10^{9}$ bytes and gives
+
+$$t = \\frac{16000000000}{474642393} = 33.710\\ \\mathrm{s}$$
+
+$$\\frac{36.195 - 33.710}{36.195} = 0.06866$$
+
+*The trap.* The binary-decimal gap at the giga scale is 7.37 % of the decimal
+figure and 6.87 % of the binary one — the same discrepancy expressed against two
+different baselines. State which one the percentage is against.
+
+**A6 — 1.186 %, 23.72 kb/s, and an 85-frame window.**
+
+$$d_{\\mathrm{trans}} = \\frac{12000}{2 \\times 10^{6}} = 6.0\\ \\mathrm{ms}, \\qquad \\mathrm{RTT} = 2 \\times 250 = 500\\ \\mathrm{ms}$$
+
+$$\\eta = \\frac{6}{6 + 500} = \\frac{6}{506} = 0.0118577$$
+
+$$T = 0.0118577 \\times 2 \\times 10^{6} = 23715\\ \\text{bit/s}$$
+
+$$W^{*} = \\frac{506}{6} = 84.333 \\rightarrow 85\\ \\text{frames}$$
+
+*The trap.* Using the 250 ms one-way figure instead of the 500 ms round trip,
+which gives 2.34 % and doubles the answer. The sender may not proceed until the
+acknowledgement has come back, so the cycle is a full round trip plus the frame
+itself.`,
+      examTip: 'Work these in the order given: convert to bits, compute serialisation and propagation separately, multiply only serialisation by the hop count, then convert back. Keep decimal and binary units apart — a rate is decimal, a stored file is binary, and the gap is 2.4 % at kilo, 4.86 % at mega and 7.37 % at giga.',
+      importantNote: 'A2 and A6 are the same question in different regimes. On the 200 Mb/s terrestrial path the window needed is 418 packets and easily configured; on the satellite path it is 85 frames but each is worth 6 ms, so the same protocol behaves completely differently. Always compute the bandwidth-delay product before judging whether a window is adequate.',
+    },
+    { id: 'netperf-pset-b', title: '15. Problem Set B — Queues, Jitter, Loss, Shaping, and Measurement',
+      content: `Six problems on the statistical half of the chapter. Where a simulated figure
+appears above, these use the same models, so an answer can be checked against
+the measured tables rather than against a memory of a formula.
+
+## 15.1 Problem Set B — the problems
+
+**B1.** A 1 Gb/s port carries 1500-byte packets at 70 % utilisation. Find the
+service rate, the mean queueing delay, the mean time in the system and the mean
+number of packets present, then state what happens if every packet is exactly
+1500 bytes.
+
+**B2.** An interface counter reports 20,000 packets per second arriving and a
+mean of 5 packets in the system. The interface serves 25,000 packets per second.
+Find the measured mean delay, compare it with the M/M/1 prediction, and say what
+the comparison implies.
+
+**B3.** A stream crosses three hops, each contributing an exponentially
+distributed delay of mean 0.5 ms. Find the mean end-to-end variable delay and
+the playout buffer depths for late-packet fractions of 1 % and 0.1 %.
+
+**B4.** A transfer on a 100 ms path with a 1460-byte segment size measures
+4.744 Mb/s. Estimate the packet loss probability, then the throughput the same
+loss would allow on a 20 ms path.
+
+**B5.** A 5 Mb/s contract is enforced by a token bucket 100 kB deep. A source
+bursts at 100 Mb/s. Find the longest burst at full speed and its size, then the
+delay a shaper adds to a 500 kB object.
+
+**B6.** A ping reports a minimum of 8.00 ms and a mean of 8.70 ms. The forward
+interface runs at 85 % and the reverse at 10 %, both 100 Mb/s ports carrying
+1500-byte packets; the forward route is 600 km and the reverse 900 km. Apportion
+the queueing, estimate the forward one-way delay, and state the error in using
+half the round trip.
+
+## 15.2 Problem Set B — answers, worked in full
+
+**B1 — 83,333.33 packets/s, 0.028 ms, 0.040 ms, 2.333 packets, and 0.014 ms.**
+
+$$\\mu = \\frac{1.0 \\times 10^{9}}{12000} = 83333.33\\ \\text{packets/s}, \\qquad \\lambda = 0.7\\mu = 58333.33$$
+
+$$W_{q} = \\frac{\\rho}{\\mu - \\lambda} = \\frac{0.7}{25000} = 2.8 \\times 10^{-5}\\ \\mathrm{s} = 0.028\\ \\mathrm{ms}$$
+
+$$W = \\frac{1}{25000} = 4.0 \\times 10^{-5}\\ \\mathrm{s} = 0.040\\ \\mathrm{ms}, \\qquad L = \\frac{0.7}{0.3} = 2.333$$
+
+With fixed-size packets the Pollaczek-Khinchine result halves the wait:
+
+$$W_{q}^{\\,\\mathrm{M/D/1}} = \\frac{\\rho}{2\\mu(1-\\rho)} = 1.4 \\times 10^{-5}\\ \\mathrm{s} = 0.014\\ \\mathrm{ms}$$
+
+*The trap.* Computing the service rate in bits per second and then using it as a
+packet rate. The queue serves packets, so $\\mu$ must be a packet rate: divide
+the link rate by the packet length in bits, not by the packet length in bytes.
+
+**B2 — 0.25 ms measured against 0.20 ms predicted; the traffic is burstier than Poisson.**
+
+$$W = \\frac{L}{\\lambda} = \\frac{5}{20000} = 2.5 \\times 10^{-4}\\ \\mathrm{s} = 0.25\\ \\mathrm{ms}$$
+
+$$\\rho = \\frac{20000}{25000} = 0.8, \\qquad W_{\\mathrm{M/M/1}} = \\frac{1}{25000 - 20000} = 2.0 \\times 10^{-4}\\ \\mathrm{s}$$
+
+The measurement is 25 % above the M/M/1 figure. Little's law is an identity and
+cannot be wrong, so the discrepancy is in the *assumption*: arrivals more bursty
+than Poisson, or service times more variable than exponential, both raise the
+wait at the same utilisation.
+
+*The trap.* Concluding that the counters are faulty. Little's law holds for any
+discipline and any distribution; when a measurement disagrees with M/M/1, it is
+M/M/1 that has been falsified, not the measurement.
+
+**B3 — 1.5 ms mean, and buffers of 4.20 ms and 5.61 ms.**
+
+Three exponential delays of mean 0.5 ms give $\\theta = 2000$ per second and an
+Erlang distribution of order three:
+
+$$E[X] = \\frac{3}{2000} = 1.5 \\times 10^{-3}\\ \\mathrm{s}$$
+
+$$P(X > D) = e^{-\\theta D}\\left(1 + \\theta D + \\frac{(\\theta D)^{2}}{2}\\right)$$
+
+Setting that to 0.01 and to 0.001 and solving numerically:
+
+$$D_{1\\%} = 4.203\\ \\mathrm{ms}, \\qquad D_{0.1\\%} = 5.614\\ \\mathrm{ms}$$
+
+*The trap.* Using the mean, or the mean plus a couple of standard deviations, as
+the buffer. The mean is 1.5 ms and a buffer of that size loses roughly a third
+of the stream; the tail, not the centre, sets the depth.
+
+**B4 — about one loss in 1100, and 23.7 Mb/s on the short path.**
+
+Invert the square-root law:
+
+$$T = \\sqrt{\\frac{3}{2}}\\;\\frac{8\\,\\mathrm{MSS}}{\\mathrm{RTT}\\sqrt{p}} \\;\\Longrightarrow\\; \\sqrt{p} = \\sqrt{\\frac{3}{2}}\\;\\frac{8\\,\\mathrm{MSS}}{\\mathrm{RTT}\\,T}$$
+
+$$\\sqrt{p} = 1.224745 \\times \\frac{11680}{0.1 \\times 4744000} = 0.030153, \\qquad p = 9.09 \\times 10^{-4}$$
+
+Throughput varies exactly as $1/\\mathrm{RTT}$ at fixed loss, so a five-times
+shorter path gives five times the throughput:
+
+$$T_{20} = 5 \\times 4.744 = 23.72\\ \\mathrm{Mb/s}$$
+
+*The trap.* Scaling the loss instead of the round trip. Loss enters under a
+square root and the round trip does not, so a factor of five in RTT is worth a
+factor of twenty-five in loss.
+
+**B5 — 8.42 ms, 105,263 bytes, and 0.600 s of shaper delay.**
+
+In byte terms the fill rate is 625,000 B/s and the peak is 12,500,000 B/s:
+
+$$T_{\\max} = \\frac{b}{P - r} = \\frac{100000}{11875000} = 8.421\\ \\mathrm{ms}$$
+
+$$B_{\\max} = P\\,T_{\\max} = 12500000 \\times 0.00842105 = 105263\\ \\text{bytes}$$
+
+For the 500 kB object the shaper releases the last byte when the envelope
+catches up with the arrivals, and the object finished arriving at
+$500000/12500000 = 0.040$ s:
+
+$$t_{\\mathrm{last}} = \\frac{500000 - 100000}{625000} = 0.640\\ \\mathrm{s}, \\qquad d = 0.640 - 0.040 = 0.600\\ \\mathrm{s}$$
+
+*The trap.* Computing the burst allowance as $b/P$ rather than $b/(P-r)$. Tokens
+keep arriving during the burst, so the bucket drains at the difference of the
+rates, and ignoring the refill understates the allowed burst by 5.3 % here and
+far more when $P$ and $r$ are close.
+
+**B6 — 0.68 ms forward, 0.013 ms reverse, a forward delay near 3.93 ms, and RTT/2 wrong by 10.7 %.**
+
+$$\\mu = \\frac{1.0 \\times 10^{8}}{12000} = 8333.33\\ \\text{packets/s}$$
+
+$$W_{q}(0.85) = \\frac{0.85}{8333.33 \\times 0.15} = 6.80 \\times 10^{-4}\\ \\mathrm{s} = 0.680\\ \\mathrm{ms}$$
+
+$$W_{q}(0.10) = \\frac{0.10}{8333.33 \\times 0.90} = 1.333 \\times 10^{-5}\\ \\mathrm{s} = 0.0133\\ \\mathrm{ms}$$
+
+$$0.680 + 0.0133 = 0.693\\ \\mathrm{ms} \\approx 8.70 - 8.00 = 0.70\\ \\mathrm{ms}$$
+
+The model accounts for the observed gap between mean and minimum, which is a
+strong check. Now split the minimum. Propagation is 3.0 ms forward and 4.5 ms
+reverse, totalling 7.5 ms of the 8.00 ms floor, so 0.50 ms of fixed
+serialisation and processing remains; splitting it evenly gives
+
+$$d_{\\mathrm{fwd}} \\approx 3.00 + 0.25 + 0.680 = 3.93\\ \\mathrm{ms}$$
+
+$$\\frac{\\mathrm{RTT}}{2} = \\frac{8.70}{2} = 4.35\\ \\mathrm{ms}, \\qquad \\frac{4.35 - 3.93}{3.93} = 0.1069$$
+
+*The trap.* Treating 4.35 ms as the forward one-way delay. It is 10.7 % too
+large here, and the error is dominated by the 300 km of extra fibre on the
+return path — a fact no round-trip measurement can reveal.`,
+      examTip: 'The statistical half rewards checking one number against another. Little\'s law against a queueing formula, a measured mean against a predicted one, and a delay tail against a mean will each catch a wrong assumption. When the identity and the model disagree, it is always the model that is wrong.',
+      importantNote: 'B6 shows the standard workflow for a real measurement: use the minimum round trip for the fixed path, the mean minus the minimum for total queueing, and a load estimate for each direction to split it. Half the round trip is a last resort, and on this path it overstates the forward one-way delay by 10.7 %.',
+    },
   ],
   keyTakeaways: [
     'Total delay = propagation + transmission + queuing + processing.',
@@ -5041,7 +6438,14 @@ version of Amdahl's law and a favourite exam framing.`,
     'Throughput limited by bottleneck (slowest) link.',
     'BDP = bandwidth * RTT; determines TCP window size.',
     'Jitter (delay variation) critical for real-time; worse than consistent high latency.',
-    'QoS prioritizes voice/video; utilization > 80% causes exponential queuing.',
+    'QoS prioritizes voice/video; queueing delay grows as 1/(1 - utilisation), so its slope is a hundred times steeper at 95 % load than at 50 %.',
+    'Bandwidth-delay product sets the window: a stepped simulation needs 335 packets to fill a 100 Mb/s, 40 ms path, against 333.33 from BDP alone.',
+    'Goodput = rate x payload/wire footprint: 1460/1538 = 94.93 % on 1500-byte Ethernet, and only 67 % for a 160-byte voice sample.',
+    'Link rates are decimal and file sizes are binary; mixing them costs 4.86 % at the mega scale and 7.37 % at the giga scale.',
+    'A playout buffer is sized from a tail percentile, not from the RFC 3550 jitter estimate, which reads six times smaller on the same measured path.',
+    'Throughput under congestion control goes as 1/(RTT sqrt(p)): the RTT dependence is exact, so the same loss costs a long path ten times more.',
+    'A token bucket policer drops and a shaper delays; on the same 300 kB burst that was 127 dropped packets against 761 ms of added delay.',
+    'RTT/2 is not the one-way delay: on a measured asymmetric path it was 22 % above the forward delay and 15 % below the reverse one.',
   ],
 },
 
