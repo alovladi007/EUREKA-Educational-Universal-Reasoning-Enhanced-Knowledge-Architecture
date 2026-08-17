@@ -2700,24 +2700,29 @@ fee_seq_logic: { topicId: 'fee_seq_logic', title: 'Sequential Logic: Flip-Flops 
     { id: 'seqlog-ff', title: '1. Flip-Flop Types and Timing',
       content: `## 1.1 Flip-Flop Types
 
-| Type | Equation | Key Property |
+| Type | Characteristic equation | Key Property |
 |---|---|---|
-| **SR** | $Q+ = S+R'Q (S*R=0)$ | S=R=1 **forbidden** |
-| **D** | **$Q+ = D$** | Captures input on edge |
-| **JK** | $Q+ = JQ'+K'Q$ | J=K=1 toggles; universal |
-| **T** | $Q+ = T XOR Q$ | T=1 toggles, T=0 holds |
+| **SR** | $Q^{+} = S + \\overline{R}\\,Q$, legal only while $SR = 0$ | S=R=1 **forbidden** |
+| **D** | **$Q^{+} = D$** | Captures input on edge |
+| **JK** | $Q^{+} = J\\,\\overline{Q} + \\overline{K}\\,Q$ | J=K=1 toggles; universal |
+| **T** | $Q^{+} = T \\oplus Q$ | T=1 toggles, T=0 holds |
+
+Section 7 derives all four of these from the behaviour each device is specified
+to have, and builds the excitation tables by inverting them.
 
 ## 1.2 Timing Constraints
 
 | Parameter | Definition |
 |---|---|
-| **Setup time (t_su)** | Data stable BEFORE clock edge |
-| **Hold time (t_h)** | Data stable AFTER clock edge |
-| **Clock-to-Q (t_cq)** | Delay from edge to output |
+| **Setup time** $t_{\\text{su}}$ | Data stable BEFORE clock edge |
+| **Hold time** $t_{\\text{h}}$ | Data stable AFTER clock edge |
+| **Clock-to-Q** $t_{\\text{cq}}$ | Delay from edge to output |
 
 Violations cause **metastability** (unpredictable state).
 
-**Max frequency**: **$f_{\\max} = 1 / (t_{cq} + t_{comb} + t_{su})$**`,
+**Max frequency**:
+
+$$f_{\\max} = \\frac{1}{t_{\\text{cq}} + t_{\\text{comb}} + t_{\\text{su}}}$$`,
       examTip: 'D FF: Q+ = D (most common and most tested). f_max = 1/(t_cq + t_comb + t_su). Setup/hold violations cause metastability.',
       importantNote: 'SR with S=R=1 is forbidden (indeterminate). JK solves this: J=K=1 = toggle. This is why JK is called "universal."',
     },
@@ -2782,13 +2787,13 @@ States 6 and 7 are **don't-cares** (never reached in normal operation). Use D fl
 
 **4-bit LFSR** with feedback: new_bit = Q3 XOR Q2. Seed = 1000.
 
-| Clock | Q3 | Q2 | Q1 | Q0 | Feedback (Q3 XOR Q2) |
+| Clock | Q3 | Q2 | Q1 | Q0 | Feedback $Q_3 \\oplus Q_2$ |
 |---|---|---|---|---|---|
-| 0 | 1 | 0 | 0 | 0 | $1 XOR 0 = 1$ |
-| 1 | 1 | 1 | 0 | 0 | $1 XOR 1 = 0$ |
-| 2 | 0 | 1 | 1 | 0 | $0 XOR 1 = 1$ |
-| 3 | 1 | 0 | 1 | 1 | $1 XOR 0 = 1$ |
-| 4 | 1 | 1 | 0 | 1 | $1 XOR 1 = 0$ |
+| 0 | 1 | 0 | 0 | 0 | $1 \\oplus 0 = 1$ |
+| 1 | 1 | 1 | 0 | 0 | $1 \\oplus 1 = 0$ |
+| 2 | 0 | 1 | 1 | 0 | $0 \\oplus 1 = 1$ |
+| 3 | 1 | 0 | 1 | 1 | $1 \\oplus 0 = 1$ |
+| 4 | 1 | 1 | 0 | 1 | $1 \\oplus 1 = 0$ |
 
 The LFSR cycles through a **pseudo-random sequence**. With proper tap selection, a maximal-length LFSR of n bits produces 2^n - 1 states before repeating (all states except all-zeros).
 
@@ -2806,12 +2811,12 @@ digital timing.
 The **setup constraint** says the data launched by one edge must be settled
 before the next edge arrives:
 
-**t_cq + t_comb,max + t_su <= T**
+$$t_{\\text{cq}} + t_{\\text{comb,max}} + t_{\\text{su}} \\le T$$
 
 The **hold constraint** says the newly launched data must not race ahead and
 overwrite the value the capture flip-flop is still sampling:
 
-**t_cq + t_comb,min >= t_h + t_skew**
+$$t_{\\text{cq}} + t_{\\text{comb,min}} \\ge t_{\\text{h}} + t_{\\text{skew}}$$
 
 The clock period T appears in the first inequality and not in the second. That
 single structural fact carries a consequence worth committing to memory: a
@@ -2825,12 +2830,12 @@ does not work at any speed.
 Take t_cq = 2 ns, worst-case combinational delay 5 ns, and t_su = 1 ns. The
 path needs
 
-**T_min = 2 + 5 + 1 = 8 ns**, so **f_max = 1/8 ns = 125 MHz**
+$$T_{\\min} = 2 + 5 + 1 = 8\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1}{8\\ \\text{ns}} = 125\\ \\text{MHz}$$
 
 Run that same logic at 100 MHz, where T = 10 ns, and the surplus is the
 **slack**:
 
-**slack = T - (t_cq + t_comb + t_su) = 10 - 8 = 2 ns**
+$$\\text{slack} = T - (t_{\\text{cq}} + t_{\\text{comb}} + t_{\\text{su}}) = 10 - 8 = 2\\ \\text{ns}$$
 
 Slack is the number a timing tool actually reports, and its sign is the whole
 verdict: positive means the path closes, zero means it closes with nothing to
@@ -2859,7 +2864,7 @@ Check the hold constraint on the same path, taking the fastest possible
 combinational route as 1 ns, a hold requirement of 0.5 ns, and 0.8 ns of clock
 skew in the direction that hurts:
 
-**margin = (t_cq + t_comb,min) - (t_h + t_skew) = (2 + 1) - (0.5 + 0.8) = 1.7 ns**
+$$\\text{margin} = (t_{\\text{cq}} + t_{\\text{comb,min}}) - (t_{\\text{h}} + t_{\\text{skew}}) = 3 - 1.3 = 1.7\\ \\text{ns}$$
 
 Comfortable. Notice what made it comfortable: t_cq is large and the shortest
 path is not zero. A design full of directly cascaded flip-flops with no logic
@@ -2950,11 +2955,12 @@ A JK **latch** — level-triggered rather than edge-triggered — has a defect t
 the flip-flop version does not. With J = K = 1, the latch toggles. But if the
 clock stays high longer than the feedback loop takes to travel, it toggles
 again, and again, for as long as the level persists. With a clock pulse 100 ns
-wide and a loop delay of 15 ns, the output toggles
+wide and a loop delay of 15 ns, the loop is traversed
 
-**100 ns / 15 ns = 6 times**
+$$t_{\\text{high}} / t_{\\text{loop}} = 100 / 15 = 6.67$$
 
-within one pulse, and the final state depends on whether the count is even or
+times, so six complete toggles fit inside one pulse and the seventh does not.
+The final state therefore depends on whether that count is even or
 odd — which is to say it depends on manufacturing tolerances. This is
 **race-around**. The classical remedy is the **master-slave** arrangement, in
 which one latch samples while the clock is high and a second passes the value
@@ -2969,22 +2975,23 @@ Ripple counters make the delay visible. Each flip-flop clocks the next, so in a
 4-bit ripple counter with 10 ns of propagation delay per stage, the transition
 from 0111 to 1000 has to walk through all four stages:
 
-**t_settle = 4 x 10 ns = 40 ns**, so the usable rate is **25 MHz**
+$$t_{\\text{settle}} = 4 \\times 10 = 40\\ \\text{ns}, \\qquad f_{\\max} = 25\\ \\text{MHz}$$
 
 and during those 40 ns the output bus shows a succession of wrong intermediate
 values, which is why decoding a ripple counter's state combinationally produces
 decoding spikes. A synchronous counter clocks every stage together, so its
 period is one flip-flop delay plus the setup time of the next-state logic:
 
-**T = 10 + 5 = 15 ns**, giving **66.7 MHz** — about 2.7 times faster
+$$T = 10 + 5 = 15\\ \\text{ns}, \\qquad f_{\\max} = 66.7\\ \\text{MHz}$$
 
-and the width does not matter, because adding stages adds gate levels to the
-next-state logic rather than links to a delay chain.
+which is about 2.7 times the ripple counter's rate. The width does not matter
+here, because adding stages adds gate levels to the next-state logic rather
+than links to a delay chain.
 
 | Counter | Settling model | 4-bit rate | Intermediate states? |
 |---|---|---|---|
-| Ripple (asynchronous) | n x t_pd | 25 MHz | yes, all wrong values |
-| **Synchronous** | t_pd + t_su | **66.7 MHz** | no |
+| Ripple (asynchronous) | $n \\cdot t_{\\text{pd}}$ | 25 MHz | yes, all wrong values |
+| **Synchronous** | $t_{\\text{pd}} + t_{\\text{su}}$ | **66.7 MHz** | no |
 
 **How the exam asks this.** Timing-diagram questions give per-gate or per-stage
 delays and ask when an output changes; count the levels a signal must traverse
@@ -2993,6 +3000,1323 @@ which redundant term removes the glitch — find the two adjacent, non-overlappi
 groups on the map and name the group that bridges them.`,
       examTip: 'A hazard is a delay artefact, not a logic error: the truth table is already correct. The fix is a redundant consensus term, which means the hazard-free circuit deliberately uses more gates than the minimal one.',
       importantNote: 'Race-around belongs to level-triggered JK latches, not to edge-triggered JK flip-flops. If a question mentions master-slave construction or a narrow clock pulse requirement, it is testing this distinction.',
+    },
+    { id: 'seqlog-latch', title: '6. The Cross-Coupled Pair: How Two Gates Come to Remember',
+      content: `## 6.1 A circuit with no yesterday, and what has to change
+
+Every network in the combinational chapter answers one question: given these
+input levels, right now, what should the outputs be? Such a circuit has no
+yesterday. Draw its truth table and you have described it completely, because
+nothing inside it survives a change of input.
+
+Storage requires the opposite property. A stored bit must persist while the
+thing that wrote it has gone away, which means the circuit must have at least
+one state that inputs do not determine. There is exactly one structural trick
+that produces this, and every latch, flip-flop and static memory cell in
+existence is a variation on it: route an output back to an input so the circuit
+helps to hold itself.
+
+Take two inverters and connect each one's output to the other's input. Call the
+node driving the first inverter Qbar and the node it drives Q. Nothing else is
+attached. If Qbar sits low, the first inverter drives Q high; a high Q drives
+the second inverter's output low, which is Qbar, which is where we started. The
+arrangement is consistent with itself. It is equally consistent with Qbar high
+and Q low. Two self-consistent conditions, no external input distinguishing
+them: the pair remembers which one it was put into.
+
+## 6.2 Why exactly two, and why the third is not usable
+
+The consistency argument above finds two states, but a circuit's behaviour is
+continuous, and continuity guarantees a third solution sitting between them.
+Model each inverter with a smooth, monotonically falling transfer curve on a
+supply $V_{DD}$:
+
+$$V_{\\text{out}} = \\frac{V_{DD}}{2}\\left[1 - \\tanh\\!\\left(a\\left(V_{\\text{in}} - \\frac{V_{DD}}{2}\\right)\\right)\\right]$$
+
+The gain of one stage at the midpoint follows by differentiating:
+
+$$\\left.\\frac{dV_{\\text{out}}}{dV_{\\text{in}}}\\right|_{V_{\\text{in}} = V_{DD}/2} = -\\frac{a\\,V_{DD}}{2}$$
+
+With $V_{DD} = 1.8$ V and $a = 3.0$ this gives $-2.7$ per stage, so going once
+round the loop multiplies a disturbance by
+
+$$A_{\\text{loop}} = A_1 A_2 = (-2.7)(-2.7) = 7.29$$
+
+A fixed point of the loop is any voltage $v$ satisfying $f(f(v)) = v$, where
+$f$ is the inverter curve. Solving that numerically on this model returns three
+values: 0.009 V, 0.900 V and 1.791 V. The outer two have loop gain 0.003, so a
+nudge away from either one shrinks on every pass and the circuit returns. The
+middle one has loop gain 7.29, so a nudge grows by a factor of seven per pass
+and the circuit leaves. That is the entire content of the word **bistable**:
+three solutions exist, and only the two with loop gain below unity can be
+occupied by a real circuit for any length of time.
+
+![The loop transfer function of two cross-coupled inverters, plotted against the input voltage together with the forty-five degree line on which nothing changes. The curve crosses the line three times, at nine millivolts, at nine hundred millivolts and at one point seven nine volts. A staircase construction started fifty millivolts above the middle crossing walks away from it and lands on the upper crossing in five passes round the loop.](/courses/fe-ee/figures/dig3-latch-bistable.svg)
+
+The staircase in the figure is the mechanism drawn out. Start the loop 50 mV
+above the middle crossing, apply the loop function repeatedly, and the sequence
+runs away from the unstable point and converges on the stored 1 in five passes.
+Start 50 mV below it and the same construction lands on the stored 0. The
+middle point is not a state the circuit refuses to enter; it is a state the
+circuit cannot stay in. Section 9 gives that departure a time constant and turns
+it into a failure rate.
+
+## 6.3 Adding inputs: the NOR latch, settled rather than asserted
+
+A pair of inverters remembers but cannot be written. Replace each inverter with
+a two-input NOR gate and the spare input becomes a write port:
+
+$$Q = \\overline{R + \\overline{Q}}, \\qquad \\overline{Q} = \\overline{S + Q}$$
+
+A NOR gate with one input at 0 behaves as an inverter of the other, so with
+$S = R = 0$ this is exactly the pair from Section 6.1 and the latch holds. A 1
+on either input forces that gate's output to 0 regardless of the feedback, which
+breaks the loop and writes the cell.
+
+The table below was not written down from the symbol; it was produced by
+starting the loop in a condition and iterating the two equations until they
+stopped changing, for every input combination and every starting condition.
+
+| S | R | Started at Q = 0 | Started at Q = 1 | Settles to |
+|---|---|---|---|---|
+| 0 | 0 | stays Q = 0 | stays Q = 1 | whatever it held: **hold** |
+| 0 | 1 | Q = 0 | Q = 0 | **reset** |
+| 1 | 0 | Q = 1 | Q = 1 | **set** |
+| 1 | 1 | Q = 0 and Qbar = 0 | Q = 0 and Qbar = 0 | both outputs low |
+
+Two facts in that table are worth more than the mnemonic usually offered for
+them. First, the hold row is the only row whose settled value depends on where
+the iteration started, and that dependence is the memory. Second, the last row
+does settle: it is perfectly stable while both inputs are held high. What it
+does not do is keep Q and Qbar complementary, and every downstream circuit that
+uses the two outputs as a signal and its complement is now being lied to.
+
+The genuine hazard arrives on release. Iterating the loop from $Q = \\overline{Q} = 0$
+with both inputs returned to 0 does not converge at all — the pair oscillates,
+because each gate keeps trying to invert the other from a symmetric starting
+point. In silicon the symmetry is broken by whichever gate happens to be a few
+picoseconds faster, so the final state is decided by manufacturing tolerance.
+That is why $S = R = 1$ is called forbidden rather than merely useless.
+
+Restricted to the six rows where $SR = 0$, the settled behaviour is captured
+exactly by
+
+$$Q^{+} = S + \\overline{R}\\,Q \\qquad (SR = 0)$$
+
+and this was confirmed by comparing the expression against the settled loop on
+all six of those rows, not by reading it off the table by eye.
+
+## 6.4 The NAND version, and why its inputs are bars
+
+Build the same structure from NAND gates instead and the algebra dualises:
+
+$$Q = \\overline{\\overline{S} \\cdot \\overline{Q}}, \\qquad \\overline{Q} = \\overline{\\overline{R} \\cdot Q}$$
+
+A NAND with one input at 1 inverts the other, so now the **idle** condition is
+both inputs high and the **active** condition is a low. The inputs are therefore
+drawn with bars over their names and the disallowed combination moves to both
+inputs low. Nothing conceptual changes; only the polarity does. The reason it
+matters on an exam is that a NAND latch drawn without input bubbles, driven from
+two pushbuttons to ground, is the standard switch-debounce circuit, and reading
+its idle state as "both inputs asserted" inverts every answer that follows.
+
+### Worked example 6.1 — settling a NOR latch by hand
+
+**Given.** A NOR latch currently holding Q = 1. The input sequence applied is
+(S, R) = (0, 0), then (0, 1), then (0, 0), then (1, 0), then (0, 0).
+
+**Work.** Apply $Q^{+} = S + \\overline{R}\\,Q$ at each step, carrying the
+previous Q forward:
+
+| Step | S | R | Previous Q | $S + \\overline{R}\\,Q$ | New Q |
+|---|---|---|---|---|---|
+| 1 | 0 | 0 | 1 | $0 + 1 \\cdot 1$ | 1 |
+| 2 | 0 | 1 | 1 | $0 + 0 \\cdot 1$ | 0 |
+| 3 | 0 | 0 | 0 | $0 + 1 \\cdot 0$ | 0 |
+| 4 | 1 | 0 | 0 | $1 + 1 \\cdot 0$ | 1 |
+| 5 | 0 | 0 | 1 | $0 + 1 \\cdot 1$ | 1 |
+
+**Answer.** The output sequence is 1, 0, 0, 1, 1.
+
+**The trap.** Candidates read the hold rows as "output is 0 because both inputs
+are 0". A hold row has no value of its own; it copies the previous row. Answer
+choices for this question almost always include the sequence 1, 0, 0, 1, 0,
+which is what you get by treating the last hold as a reset.
+
+### Worked example 6.2 — the gated latch and the width of its window
+
+**Given.** A D latch built by gating a NOR latch with an enable, so that
+$S = E \\cdot D$ and $R = E \\cdot \\overline{D}$. The enable is high for 3.0 ns.
+The data line changes at 0.8 ns and again at 2.1 ns after the enable rises.
+
+**Work.** Substituting the gating into the latch equation gives the
+characteristic equation of a gated D latch:
+
+$$Q^{+} = E\\,D + \\overline{E}\\,Q$$
+
+With $E = 0$ this reduces to $Q^{+} = Q$, which is the hold. With $E = 1$ it
+reduces to $Q^{+} = D$, and crucially this holds continuously, not at an
+instant. Both data changes therefore occur while $E = 1$, so both reach the
+output. The value captured when the enable falls is the value of D at 3.0 ns,
+which is the one established by the second change.
+
+**Answer.** The latch output follows D twice during the window and finally holds
+the value D carried at the closing edge, not the value it carried at the
+opening edge.
+
+![One clock, one data line, and two outputs. The data line changes twice while the clock is high, and the transparent latch reproduces both changes at its output, while the edge-triggered flip-flop below it ignores both and changes only at the two rising edges of the clock.](/courses/fe-ee/figures/dig3-latch-transparency.svg)
+
+**The trap.** The phrase "the latch stores D" invites the reading that it stores
+the value present when the enable **rose**. It does not. A level-sensitive
+device is a window, and everything that passes through the window arrives at the
+far side. The flip-flop trace in the figure is the contrast: it changes only at
+the two rising edges, and neither data change is ever visible on it.
+
+## 6.5 Why this defect is fatal in a feedback loop
+
+Transparency would be a curiosity if latches sat in isolation. They do not. The
+standard use of a storage element is in a loop: state feeds combinational logic,
+which feeds the state element again. With a transparent latch in that loop, the
+new value computed by the logic arrives back at the latch input while the window
+is still open, is passed through, is recomputed, and comes round again. One
+enable pulse can advance the machine an unpredictable number of steps, decided
+by how many circuits of the loop fit inside the pulse. Section 5 quantified this
+for a JK latch and found six toggles in a 100 ns pulse; the same arithmetic
+applies to any level-sensitive element in a loop.
+
+The cure is to make the storage window infinitesimally short. Two latches in
+series with opposite enable polarities achieve it — the master samples while the
+clock is high and is isolated while it is low, and the slave does the reverse,
+so a value crosses both exactly once per clock cycle. That is the master-slave
+flip-flop, and the modern edge-triggered flip-flop delivers the same guarantee
+with a different internal arrangement. Everything from Section 7 onwards assumes
+edge triggering, which is why the timing model reduces to two numbers per
+device: a delay after the edge and a window around it.`,
+      examTip: 'A latch is level-sensitive and a flip-flop is edge-sensitive. If a question shows data changing while a clock is high and asks what the output does, the answer for a latch is "it follows" and for a flip-flop is "nothing until the next edge". Reading the device type off the symbol is the whole question.',
+      importantNote: 'S = R = 1 on a NOR latch is stable while it is applied; it drives both outputs to 0, so Q and Qbar stop being complements. The unpredictability appears when both inputs are released together, because the symmetric starting point leaves the winner to gate mismatch rather than to logic.',
+    },
+    { id: 'seqlog-charac', title: '7. Characteristic Equations Derived, and Excitation Tables Built From Them',
+      content: `## 7.1 Two tables that look alike and answer opposite questions
+
+A flip-flop can be described from either end. The **characteristic equation**
+answers a forward question — given the present state and the inputs, what will
+the next state be — and it is what you use to analyse a circuit somebody else
+built. The **excitation table** answers the reverse question — given the present
+state and the state you want next, what must the inputs be — and it is what you
+use to build one. Confusing them is the single most common source of wrong
+counter designs, so it is worth deriving both rather than memorising either.
+
+Every characteristic equation in this section was checked by enumerating all
+combinations of inputs and present state and comparing the expression against
+the behaviour the device is specified to have. Every excitation table was then
+produced by inverting the corresponding characteristic equation
+programmatically, which is why the don't-care entries below are derived rather
+than asserted.
+
+## 7.2 The four characteristic equations, each derived
+
+**The D flip-flop.** Its specification is one line: the output after the edge is
+the input before it. There is nothing to minimise.
+
+$$Q^{+} = D$$
+
+**The T flip-flop.** Its specification is that $T = 1$ inverts the state and
+$T = 0$ preserves it. Writing the two rows that produce a 1 gives
+$T\\overline{Q}$ and $\\overline{T}Q$, whose sum is the exclusive-OR:
+
+$$Q^{+} = T\\,\\overline{Q} + \\overline{T}\\,Q = T \\oplus Q$$
+
+**The JK flip-flop.** Its specification has four rows: hold, set, reset, toggle.
+Expanding each row into the minterms of $(J, K, Q)$ that produce a 1 and
+minimising gives
+
+$$Q^{+} = J\\,\\overline{Q} + \\overline{K}\\,Q$$
+
+Read the two terms as instructions rather than as algebra. The first says J can
+only ever push the state up, and only from 0. The second says K can only ever
+pull it down, and only from 1. That reading makes the toggle row obvious: with
+both asserted, whichever direction the state is currently in, the other input is
+the one that applies.
+
+**The SR flip-flop.** With $SR = 0$ enforced, the same construction gives
+
+$$Q^{+} = S + \\overline{R}\\,Q$$
+
+which is the equation Section 6.3 obtained by settling the gate loop, now
+recovered from the device specification instead of from the gates. Two
+independent routes to the same expression is the strongest evidence available
+that it is right.
+
+| Device | Characteristic equation | Inputs | Restriction |
+|---|---|---|---|
+| D | $Q^{+} = D$ | 1 | none |
+| T | $Q^{+} = T \\oplus Q$ | 1 | none |
+| SR | $Q^{+} = S + \\overline{R}\\,Q$ | 2 | $SR = 0$ |
+| JK | $Q^{+} = J\\,\\overline{Q} + \\overline{K}\\,Q$ | 2 | none |
+
+![Four flip-flop outputs on a common clock, each driven by its own eight-cycle stimulus. The D output copies its input one cycle late, the T output inverts only where its input is one, and the JK and SR rows were given stimuli chosen so that both produce the same sequence, showing that the devices differ in their inputs rather than in what they can store.](/courses/fe-ee/figures/dig3-ff-waveforms.svg)
+
+The figure applies each equation at every rising edge of one clock, with each
+device given its own stimulus. The JK and SR stimuli were deliberately chosen to
+produce identical output sequences, which makes the point that the four devices
+differ in how you address them, not in what they can hold.
+
+## 7.3 Excitation tables, obtained by inversion
+
+Now run each equation backwards. For every pair of present state and desired
+next state, ask which input vectors satisfy the characteristic equation. Where
+more than one vector works, the unconstrained input is a don't-care.
+
+| Q to Q+ | D | T | J, K | S, R |
+|---|---|---|---|---|
+| 0 to 0 | 0 | 0 | 0, X | 0, X |
+| 0 to 1 | 1 | 1 | 1, X | 1, 0 |
+| 1 to 0 | 0 | 1 | X, 1 | 0, 1 |
+| 1 to 1 | 1 | 0 | X, 0 | X, 0 |
+
+Three structural facts fall straight out of this table and are worth carrying
+into every design problem.
+
+The **D column is the next-state column**. There is no conversion step at all,
+which is why synthesis tools target D flip-flops and why almost every modern
+design has one D flip-flop per state bit and nothing else.
+
+The **JK table carries a don't-care in every row**. Half of each map is free,
+and free cells are the raw material of minimisation, so JK excitation equations
+are typically simpler than the D equations for the same machine. That advantage
+is paid for with two input wires per flip-flop instead of one.
+
+The **SR table has don't-cares in only two of its four rows**. The set and reset
+rows are fully determined, because SR is the only one of the four whose input
+space is restricted. This is the concrete cost of the forbidden combination.
+
+## 7.4 Converting one device into another
+
+Any of these devices can be made to behave as any other by putting combinational
+logic in front of it. The recipe is always the same: write the target device's
+characteristic equation, then solve for the host device's inputs. Each of the
+six conversions below was verified by enumeration over every combination of
+inputs and present state.
+
+$$\\text{JK behaviour on a D flip-flop:} \\quad D = J\\,\\overline{Q} + \\overline{K}\\,Q$$
+
+$$\\text{T behaviour on a D flip-flop:} \\quad D = T \\oplus Q$$
+
+$$\\text{D behaviour on a JK flip-flop:} \\quad J = D, \\quad K = \\overline{D}$$
+
+$$\\text{T behaviour on a JK flip-flop:} \\quad J = K = T$$
+
+$$\\text{SR inputs from JK inputs:} \\quad S = J\\,\\overline{Q}, \\quad R = K\\,Q$$
+
+$$\\text{D behaviour on a T flip-flop:} \\quad T = D \\oplus Q$$
+
+The first of these is worth staring at: converting a JK into a D costs nothing
+but writing the JK characteristic equation into the D input, because the D input
+**is** the next state. Every conversion into a D flip-flop is that easy, and no
+conversion out of one is.
+
+The last one contains the standard practical warning. Making a T flip-flop
+behave as a D requires the present state as an input to the logic, so the
+conversion is not a wire; it is an XOR gate in the feedback path, and that gate
+sits inside the setup path of Section 8.
+
+### Worked example 7.1 — build a T flip-flop from a JK, then check it
+
+**Given.** A JK flip-flop and a requirement for toggle-on-1 behaviour.
+
+**Work.** The target equation is $Q^{+} = T \\oplus Q = T\\overline{Q} + \\overline{T}Q$.
+The host equation is $Q^{+} = J\\overline{Q} + \\overline{K}Q$. Matching the two
+term by term gives $J = T$ from the first term and $\\overline{K} = \\overline{T}$,
+hence $K = T$, from the second.
+
+**Answer.** Tie J and K together and call the common wire T.
+
+**Check.** Substituting $J = K = T$ into the host equation returns
+$T\\overline{Q} + \\overline{T}Q$, which is the target on all four combinations of
+$T$ and $Q$. This is the standard construction that makes a JK flip-flop into a
+counter stage.
+
+**The trap.** Distractors offer $J = T$ with $K = \\overline{T}$, which is the
+D-flip-flop conversion. Feed that circuit $T = 0$ and it loads a 0 instead of
+holding, so a counter built from it will not count.
+
+### Worked example 7.2 — analyse a circuit somebody else drew
+
+**Given.** A JK flip-flop wired with $J = \\overline{Q}$ and $K = Q$, clocked
+continuously. Initial state Q = 0.
+
+**Work.** Substitute the wiring into the characteristic equation:
+
+$$Q^{+} = J\\,\\overline{Q} + \\overline{K}\\,Q = \\overline{Q}\\cdot\\overline{Q} + \\overline{Q}\\cdot Q = \\overline{Q}$$
+
+using $\\overline{Q}\\cdot\\overline{Q} = \\overline{Q}$ and $\\overline{Q}\\cdot Q = 0$.
+
+**Answer.** $Q^{+} = \\overline{Q}$, so the flip-flop toggles on every edge and
+the output is a square wave at half the clock frequency. Starting from 0 the
+sequence is 0, 1, 0, 1 and so on.
+
+**The trap.** Reading $J = \\overline{Q}$, $K = Q$ as "set when the state is 0 and
+reset when it is 1" suggests the state is being driven back to where it already
+is. It is the opposite: J acts only from state 0, and $J = \\overline{Q}$ equals 1
+exactly there.
+
+### Worked example 7.3 — trace an SR flip-flop and spot the illegal input
+
+**Given.** An edge-triggered SR flip-flop starting at Q = 0, with
+(S, R) applied on successive edges as (1, 0), (0, 0), (0, 1), (1, 1), (1, 0).
+
+**Work.** Apply $Q^{+} = S + \\overline{R}Q$ where it is legal:
+
+| Edge | S | R | Q before | Result |
+|---|---|---|---|---|
+| 1 | 1 | 0 | 0 | set, Q = 1 |
+| 2 | 0 | 0 | 1 | hold, Q = 1 |
+| 3 | 0 | 1 | 1 | reset, Q = 0 |
+| 4 | 1 | 1 | 0 | **illegal**, no defined answer |
+| 5 | 1 | 0 | undefined | set, Q = 1 |
+
+**Answer.** The correct response is that edge 4 has no defined next state, so
+the sequence cannot be completed as stated. Edge 5 recovers, because a set
+overrides whatever the previous condition left behind.
+
+**The trap.** Every wrong answer to this question comes from applying
+$Q^{+} = S + \\overline{R}Q$ at edge 4 anyway, which returns
+$1 + 0 \\cdot 0 = 1$ and looks perfectly reasonable. The equation carries the
+side condition $SR = 0$, and an equation applied outside its stated domain
+produces a confident wrong number rather than an error message.`,
+      examTip: 'Analysis uses the characteristic equation; design uses the excitation table. If the question hands you a wired-up circuit and asks for the output sequence, substitute the wiring into the characteristic equation first — the algebra usually collapses to something trivial such as Q+ = Qbar.',
+      importantNote: 'The JK excitation table has a don\'t-care in all four rows and the SR table in only two. That asymmetry, not the forbidden input by itself, is the reason JK is preferred for hand design: half of every Karnaugh map is free.',
+    },
+    { id: 'seqlog-closure', title: '8. Setup, Hold and Skew Quantified Across Frequency',
+      content: `## 8.1 The two inequalities, written with skew in both
+
+Section 4 introduced the setup and hold constraints and the fact that only one
+of them contains the clock period. Adding clock skew to both makes the
+asymmetry sharper and gives the numbers a design can actually be signed off
+against. Let $t_{\\text{skew}}$ be the arrival-time difference between the
+capture clock and the launch clock, positive when the capture edge arrives late.
+
+$$T \\ge t_{\\text{cq}} + t_{\\text{comb,max}} + t_{\\text{su}} - t_{\\text{skew}}$$
+
+$$t_{\\text{cq}} + t_{\\text{comb,min}} \\ge t_{\\text{h}} + t_{\\text{skew}}$$
+
+Skew enters the two with opposite signs. A late capture edge relaxes setup — the
+data has longer to settle — and tightens hold, because the capture flip-flop is
+still sampling when the next launched value arrives. Deliberately delaying a
+capture clock to rescue a slow path is a real technique called useful skew, and
+the inequalities above say exactly what it costs: every picosecond of setup
+relief is a picosecond of hold margin spent.
+
+For a signed-off number the worst case of the skew must be used in each
+constraint, which means assuming an early capture edge for setup and a late one
+for hold. That is the convention used throughout this section.
+
+## 8.2 One path, carried through both constraints
+
+Take a register-to-register path with these parameters, which are typical of a
+mature CMOS process:
+
+| Parameter | Symbol | Value |
+|---|---|---|
+| Clock-to-output | $t_{\\text{cq}}$ | 0.35 ns |
+| Slowest combinational route | $t_{\\text{comb,max}}$ | 4.20 ns |
+| Fastest combinational route | $t_{\\text{comb,min}}$ | 0.40 ns |
+| Setup requirement | $t_{\\text{su}}$ | 0.15 ns |
+| Hold requirement | $t_{\\text{h}}$ | 0.10 ns |
+| Worst-case skew | $t_{\\text{skew}}$ | 0.12 ns |
+
+The setup constraint fixes the shortest usable period:
+
+$$T_{\\min} = 0.35 + 4.20 + 0.15 + 0.12 = 4.82\\ \\text{ns}$$
+
+$$f_{\\max} = \\frac{1000}{4.82} = 207.47\\ \\text{MHz}$$
+
+The hold constraint produces a margin with no period in it at all:
+
+$$\\text{hold margin} = 0.35 + 0.40 - 0.10 - 0.12 = 0.53\\ \\text{ns}$$
+
+That margin is positive, so this path is safe at every frequency, including
+zero. Read those two results together and the entire discipline of timing
+closure is visible: one number is a speed limit and the other is a yes or no.
+
+## 8.3 Slack against frequency, plotted and tabulated
+
+Slack is available time minus required time. For setup it is $T - T_{\\min}$, so
+it falls as the frequency rises and crosses zero at $f_{\\max}$. For hold it is
+the fixed 0.53 ns computed above.
+
+| Clock | Period | Setup slack | Hold margin | Verdict |
+|---|---|---|---|---|
+| 100 MHz | 10.000 ns | $10 - 4.82 = 5.18$ ns | 0.53 ns | comfortable |
+| 150 MHz | 6.667 ns | +1.85 ns | 0.53 ns | comfortable |
+| 200 MHz | 5.000 ns | $5 - 4.82 = 0.18$ ns | 0.53 ns | marginal |
+| 207.47 MHz | 4.820 ns | 0 ns | 0.53 ns | exactly at the limit |
+| 250 MHz | 4.000 ns | negative, 0.82 ns short | 0.53 ns | setup fails |
+| 300 MHz | 3.333 ns | negative, 1.49 ns short | 0.53 ns | setup fails |
+
+![Setup slack and hold margin plotted against clock frequency for one register to register path. The setup slack falls as a reciprocal of frequency and crosses zero at two hundred and seven point four seven megahertz, while the hold margin is a horizontal line at zero point five three nanoseconds that the frequency axis does not touch.](/courses/fe-ee/figures/dig3-slack-vs-freq.svg)
+
+The picture makes the argument unarguable. One curve slopes and one does not.
+Every remedy that involves the clock generator moves the sloping one and leaves
+the flat one exactly where it is.
+
+## 8.4 Hold failures, and why no clock setting repairs them
+
+Hold problems concentrate in paths with almost no logic, because
+$t_{\\text{comb,min}}$ is what defends against them. A directly cascaded pair of
+flip-flops — the building block of every shift register and every scan chain —
+has $t_{\\text{comb,min}} = 0$ and survives on clock-to-output time alone.
+
+Take a fast library cell in a badly balanced clock tree:
+
+| Parameter | Value |
+|---|---|
+| $t_{\\text{cq}}$ | 0.20 ns |
+| $t_{\\text{comb,min}}$ | 0.00 ns |
+| $t_{\\text{h}}$ | 0.35 ns |
+| $t_{\\text{skew}}$ | 0.10 ns |
+
+The margin is $0.20 + 0.00 - 0.35 - 0.10$, which is negative by 0.25 ns. The
+path fails at 500 MHz, at 50 MHz and at 5 MHz identically, because the period
+never entered the calculation. There are exactly three repairs, and none of them
+is a clock-frequency change:
+
+- **lengthen the data path** by inserting buffers, which must add at least
+  0.25 ns of delay to bring the margin to zero and rather more to leave a margin
+- **repair the clock distribution** so the skew stops working against the path
+- **use a slower launch cell**, raising $t_{\\text{cq}}$
+
+The first is what an automated tool does by the thousand, and it is the reason a
+placed-and-routed design contains buffers that compute nothing.
+
+## 8.5 Pipelining: the one remedy that buys frequency
+
+If a setup path is too slow, the clock can be slowed or the path can be
+shortened. Cutting a long combinational path in half with an extra register
+stage does the latter, and the arithmetic is worth doing once.
+
+Take a path with $t_{\\text{cq}} = 0.9$ ns, 6.4 ns of logic and
+$t_{\\text{su}} = 0.3$ ns:
+
+$$T_{\\min} = 0.9 + 6.4 + 0.3 = 7.6\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{7.6} = 131.58\\ \\text{MHz}$$
+
+Split the logic into two balanced halves of 3.2 ns each, separated by a
+register:
+
+$$T_{\\min} = 0.9 + 3.2 + 0.3 = 4.4\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{4.4} = 227.27\\ \\text{MHz}$$
+
+The speed-up is 1.73, not 2, and the shortfall is the whole lesson. The fixed
+overhead $t_{\\text{cq}} + t_{\\text{su}} = 1.2$ ns is paid once per stage, so it
+occupies a larger fraction of the period as the stages get shorter. Pipelining
+has diminishing returns that are entirely predictable from those two numbers,
+and it also adds a cycle of latency for every stage inserted, which is a cost
+that never appears in the frequency figure.
+
+### Worked example 8.1 — maximum frequency and slack together
+
+**Given.** $t_{\\text{cq}} = 1.2$ ns, worst-case logic 7.3 ns,
+$t_{\\text{su}} = 0.5$ ns, skew negligible. The design is to run at 125 MHz.
+
+**Work.**
+
+$$T_{\\min} = 1.2 + 7.3 + 0.5 = 9.0\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{9.0} = 111.11\\ \\text{MHz}$$
+
+At 125 MHz the period is 8.0 ns, so the slack is $8.0 - 9.0$, which is negative
+by 1.0 ns.
+
+**Answer.** The path closes only up to 111.11 MHz. At the required 125 MHz it is
+1.0 ns short, so the design does not work as drawn.
+
+**The trap.** A common distractor computes 125 MHz as achievable by omitting
+$t_{\\text{su}}$ from the sum, which gives 8.5 ns and 117.6 MHz — still short,
+but for the wrong reason — or by omitting $t_{\\text{cq}}$, which gives 7.8 ns
+and 128.2 MHz and produces a confident, wrong "yes".
+
+### Worked example 8.2 — a hold check, and the buffer it demands
+
+**Given.** $t_{\\text{cq}} = 1.2$ ns, fastest logic 0.6 ns, $t_{\\text{h}} = 0.9$ ns,
+skew 0.4 ns against the path.
+
+**Work.**
+
+$$\\text{hold margin} = 1.2 + 0.6 - 0.9 - 0.4 = 0.5\\ \\text{ns}$$
+
+**Answer.** Positive, so hold is satisfied with 0.5 ns to spare, and it is
+satisfied at every clock frequency.
+
+**Follow-on.** If the same path were re-implemented with a faster cell whose
+$t_{\\text{cq}}$ fell to 0.5 ns and no logic at all, the margin would become
+$0.5 - 1.3$, negative by 0.8 ns, and at least 0.8 ns of buffering would have to
+go back into the data path.
+
+**The trap.** Skew is added on the requirement side of a hold check and
+subtracted on the requirement side of a setup check. Getting the sign wrong here
+turns a 0.5 ns pass into a 1.3 ns pass and hides a real failure.
+
+### Worked example 8.3 — where to spend an engineering week
+
+**Given.** A block that fails setup by 0.9 ns at its target frequency. Two
+proposals: retime the logic to shorten the critical path by 1.1 ns, or add a
+pipeline stage that splits the path into halves of 2.6 ns and 2.5 ns. Assume
+$t_{\\text{cq}} = 0.4$ ns and $t_{\\text{su}} = 0.2$ ns, and that the current
+worst path is 5.1 ns of logic.
+
+**Work.** Present requirement: $0.4 + 5.1 + 0.2 = 5.7$ ns. Retiming to 4.0 ns of
+logic gives $0.4 + 4.0 + 0.2 = 4.6$ ns. Pipelining to a 2.6 ns worst half gives
+$0.4 + 2.6 + 0.2 = 3.2$ ns.
+
+**Answer.** Retiming recovers 1.1 ns and pipelining recovers 2.5 ns, so
+pipelining wins on frequency by a wide margin. Retiming wins on everything else:
+it adds no latency, no registers and no verification of a new pipeline
+boundary. Since the shortfall is only 0.9 ns, retiming is sufficient and is the
+correct answer.
+
+**The trap.** The largest frequency number is not automatically the right
+engineering choice. A remedy that overshoots the requirement while adding a
+cycle of latency is worse than one that just meets it.`,
+      examTip: 'Write the setup sum as clock-to-output plus worst logic plus setup, then invert it. If the question also gives a hold time, it is almost always testing whether you add it to the setup sum — you must not. Hold appears only in the second inequality, and that inequality has no T in it.',
+      importantNote: 'Skew has opposite signs in the two constraints, so a clock-tree change that rescues setup always erodes hold. When a question offers "increase the clock skew" as a fix, check which constraint is failing before accepting it.',
+    },
+    { id: 'seqlog-meta', title: '9. Metastability, Synchronisers and the MTBF Expression',
+      content: `## 9.1 What actually happens when a window is violated
+
+Section 6.2 found three fixed points in a cross-coupled pair and showed that the
+middle one has loop gain above unity. Metastability is what happens when a
+flip-flop is placed near that middle point and left to find its own way out.
+
+Violating setup or hold means the internal loop is released while its two nodes
+are at nearly the same voltage. The circuit is then in a valid physical state
+that is not a valid logical one. It does not stay there — the loop gain drives
+it away — but the time it takes to leave depends on how close to the balance
+point it started, and that distance can be arbitrarily small.
+
+The departure is exponential. Writing $\\Delta(0)$ for the initial voltage
+imbalance and $\\tau$ for the loop's resolution time constant,
+
+$$\\Delta(t) = \\Delta(0)\\,e^{t/\\tau}$$
+
+so the time needed to grow the imbalance to a full logic level $\\Delta_{\\text{L}}$ is
+
+$$t_{\\text{r}} = \\tau \\ln\\!\\left(\\frac{\\Delta_{\\text{L}}}{\\Delta(0)}\\right)$$
+
+Two consequences follow immediately and are worth stating baldly. First,
+$t_{\\text{r}}$ is unbounded: there is no resolution time you can wait that
+guarantees an answer, because $\\Delta(0)$ has no lower bound. Second, the
+dependence is logarithmic, so buying an extra factor of $e$ in confidence costs
+only one more $\\tau$ of waiting. Metastability cannot be eliminated, and it can
+be made as improbable as you like at very modest cost. Both halves of that
+sentence matter.
+
+## 9.2 The MTBF expression, term by term
+
+The standard figure of merit is a mean time between failures:
+
+$$\\text{MTBF} = \\frac{e^{t_{\\text{r}}/\\tau}}{T_0\\, f_{\\text{c}}\\, f_{\\text{d}}}$$
+
+Each symbol earns its place:
+
+- $t_{\\text{r}}$ is the **resolution time allowed** by the design. For a single
+  capture flip-flop whose output is used in the next cycle, that is one clock
+  period minus the setup requirement of whatever reads it.
+- $\\tau$ is the **resolution time constant**, a property of the flip-flop and
+  the process, and the same $\\tau$ as in the exponential above. Smaller is
+  better and modern processes are in the tens of picoseconds.
+- $T_0$ is the **metastability window**, the effective width of the aperture in
+  which an arriving edge can leave the device balanced. It has units of time and
+  is also a device property.
+- $f_{\\text{c}}$ is the **clock frequency** of the receiving domain, because
+  every clock edge is another opportunity.
+- $f_{\\text{d}}$ is the **rate of asynchronous data changes**, because an edge
+  that does not move cannot be caught mid-flight.
+
+The product $T_0 f_{\\text{c}} f_{\\text{d}}$ is therefore a rate of
+metastable events per second, and the exponential is the fraction of them that
+have not resolved by the time somebody looks. The whole expression is
+"opportunities per second, discounted by the odds of surviving the wait".
+
+The single most important structural feature is that $t_{\\text{r}}$ sits in an
+exponent while everything else is linear. Doubling the data rate halves the
+MTBF. Adding one clock period of waiting multiplies it by $e^{T/\\tau}$, which
+for realistic numbers is a factor of millions.
+
+## 9.3 Synchroniser chains, costed
+
+A synchroniser is a chain of flip-flops in the receiving clock domain with no
+logic between them. The first may go metastable; each additional stage grants
+one more full clock period of resolution time before the value is used.
+
+Take a 200 MHz receiving clock, a device with $\\tau = 0.30$ ns and
+$T_0 = 20$ ps, an asynchronous event rate of 10 MHz, and a setup requirement of
+0.15 ns. The denominator is a rate of
+
+$$T_0\\, f_{\\text{c}}\\, f_{\\text{d}} = 20\\ \\text{ps} \\times 200\\ \\text{MHz} \\times 10\\ \\text{MHz} = 4.0 \\times 10^{4}\\ \\text{s}^{-1}$$
+
+and the resolution time granted by an $n$-stage chain is $nT - t_{\\text{su}}$.
+
+| Stages | $t_{\\text{r}}$ | $t_{\\text{r}}/\\tau$ | MTBF | In human units |
+|---|---|---|---|---|
+| 1 | $5 - 0.15 = 4.85$ ns | $4.85 / 0.30 = 16.17$ | 262 s | four minutes |
+| 2 | $2 \\times 5 - 0.15 = 9.85$ ns | $9.85 / 0.30 = 32.83$ | $4.54 \\times 10^{9}$ s | 144 years |
+| 3 | $3 \\times 5 - 0.15 = 14.85$ ns | $14.85 / 0.30 = 49.50$ | $7.86 \\times 10^{16}$ s | 2.5 billion years |
+
+![Mean time between failures on a logarithmic axis against clock frequency, for synchroniser chains of one, two and three flip-flops. The three curves fall steeply with frequency and are separated by a constant factor on the log axis, with horizontal guides marking one year and one century.](/courses/fe-ee/figures/dig3-mtbf-stages.svg)
+
+A single flip-flop fails every four minutes and is useless. Two flip-flops fail
+once in 144 years and are the industry default. The ratio between consecutive
+rows is
+
+$$e^{T/\\tau} = e^{5/0.30} = 1.73 \\times 10^{7}$$
+
+which is where the rule of thumb "each stage buys about seven orders of
+magnitude" comes from. It is not a constant of nature; it is $e^{T/\\tau}$, and
+it collapses as the clock speeds up, which is exactly why very fast designs need
+three stages where slow ones need two.
+
+## 9.4 What a synchroniser does not fix
+
+Two stages of flip-flop protect one bit. They do nothing for a multi-bit value
+crossing a clock boundary, because each bit resolves independently and the
+receiving domain can latch a mixture of old and new bits that was never a valid
+word. The standard remedies are to cross a single bit and use it as a handshake,
+or to cross a Gray-coded value in which only one bit changes per step, or to use
+an asynchronous FIFO built for the purpose. Section 8 of the state-machine
+chapter returns to Gray coding for a related reason.
+
+The other thing a synchroniser does not fix is latency. Each stage delays the
+signal by one full clock period of the receiving domain, so a two-stage
+synchroniser on a 100 MHz clock adds 20 ns before anything downstream may act.
+
+### Worked example 9.1 — sizing a synchroniser
+
+**Given.** A 100 MHz receiver, $\\tau = 0.4$ ns, $T_0 = 10$ ps, asynchronous
+event rate 2 MHz, setup 0.2 ns. Two flip-flops are proposed. Is that enough for
+a service life of 20 years?
+
+**Work.** The event rate in the denominator is
+$10\\ \\text{ps} \\times 100\\ \\text{MHz} \\times 2\\ \\text{MHz} = 2.0 \\times 10^{3}\\ \\text{s}^{-1}$.
+The period is 10 ns, so a two-stage chain grants
+
+$$t_{\\text{r}} = 2 \\times 10 - 0.2 = 19.8\\ \\text{ns}, \\qquad \\frac{t_{\\text{r}}}{\\tau} = \\frac{19.8}{0.4} = 49.50$$
+
+$$\\text{MTBF} = \\frac{e^{49.5}}{2.0 \\times 10^{3}} = 1.57 \\times 10^{18}\\ \\text{s}$$
+
+which is about $5.0 \\times 10^{10}$ years.
+
+**Answer.** Two stages are ample — the expected interval between failures
+exceeds the age of the universe by a factor of a few, let alone a 20-year
+service life.
+
+**The trap.** The denominator is a product of three quantities, and dropping the
+asynchronous event rate is the usual slip. It changes the answer by a factor of
+two million here, which happens not to change the engineering conclusion but
+would in a marginal case.
+
+### Worked example 9.2 — the same part at four times the clock
+
+**Given.** The device of Worked example 9.1 moved to a 400 MHz receiver, with
+everything else unchanged.
+
+**Work.** The period falls to 2.5 ns, so a two-stage chain now grants
+$t_{\\text{r}} = 2 \\times 2.5 - 0.2 = 4.8$ ns and the exponent falls to
+$4.8 / 0.4 = 12.0$. The denominator rises to
+$10\\ \\text{ps} \\times 400\\ \\text{MHz} \\times 2\\ \\text{MHz} = 8.0 \\times 10^{3}\\ \\text{s}^{-1}$.
+
+$$\\text{MTBF} = \\frac{e^{12.0}}{8.0 \\times 10^{3}} = 20.3\\ \\text{s}$$
+
+**Answer.** Twenty seconds. The same two-flip-flop synchroniser that was safe
+for geological time at 100 MHz is unusable at 400 MHz.
+
+**The trap.** The intuition that a faster clock resolves metastability sooner is
+backwards. A faster clock gives the flip-flop **less** time to resolve, and it
+does so inside an exponent, so the penalty is savage. This is why synchroniser
+depth is a per-design decision rather than a fixed number.`,
+      examTip: 'MTBF questions want the exponent. Compute the resolution time first — number of stages times the period, minus the setup requirement — then divide by tau. The denominator is the product of three rates and is usually the easy part; the exponent is where the marks are.',
+      importantNote: 'A synchroniser reduces the probability of a metastable value being used; it never reduces it to zero, and no number of stages does. Any claim that a circuit "eliminates metastability" is wrong on the physics, because the resolution time is unbounded.',
+    },
+    { id: 'seqlog-shift', title: '10. Registers, Shift Registers and the Sequences They Generate',
+      content: `## 10.1 From one bit to a word
+
+A register is $n$ flip-flops sharing a clock. It has no internal structure worth
+discussing until something is put between the stages, at which point it becomes
+the most versatile block in digital design.
+
+The plain parallel-in, parallel-out register loads a whole word on one edge and
+holds it. Adding an enable turns the load into a choice, and the enable is
+implemented as a multiplexer in front of each D input rather than as a gate in
+the clock line:
+
+$$D_i = E\\,X_i + \\overline{E}\\,Q_i$$
+
+That distinction is not stylistic. Gating the clock creates a signal that is
+sometimes a clock and sometimes not, which is precisely the case in which a
+combinational hazard becomes a real fault, as Section 5.3 established. Enabling
+the data keeps every flip-flop on the same uninterrupted clock, and it is the
+reason the two-input multiplexer is the most common cell in a synthesised
+design.
+
+## 10.2 Shift registers and the four ways in and out
+
+Wire each flip-flop's output into the next one's input and the register shifts.
+The four combinations of serial and parallel access have names worth knowing
+because questions use them as shorthand:
+
+| Type | In | Out | Clocks for an $n$-bit word | Typical use |
+|---|---|---|---|---|
+| SISO | serial | serial | $n$ in, $n$ out | a delay line of exactly $n$ cycles |
+| SIPO | serial | parallel | $n$ in, 1 out | deserialising a link |
+| PISO | parallel | serial | 1 in, $n$ out | serialising for a link |
+| PIPO | parallel | parallel | 1 in, 1 out | an ordinary register |
+
+The arithmetic that matters is the conversion time. An 8-bit PISO clocked at
+50 MHz has a 20 ns period, so emitting a whole word takes
+
+$$t_{\\text{word}} = 8 \\times 20 = 160\\ \\text{ns}$$
+
+which is 0.16 microseconds, and the sustained word rate is 6.25 million words
+per second. Turn that around and it is the standard link-budget question: a
+serialiser can carry at most one bit per clock, so a link that must move
+50 million bytes per second needs a serial clock of at least 400 MHz, whatever
+the parallel side is doing.
+
+A shift register is also the canonical hold-violation risk, for the reason
+Section 8.4 gave: there is no logic between the stages, so
+$t_{\\text{comb,min}} = 0$ and the hold constraint rests entirely on
+clock-to-output time against clock skew.
+
+## 10.3 Ring and Johnson counters: sequences from wiring alone
+
+Feed the last stage's output back to the first and a shift register becomes a
+counter with no combinational logic at all.
+
+A **ring counter** feeds Q back unchanged. Seeded with a single 1, a four-bit
+ring cycles through four states, verified by enumeration:
+
+1000, 0100, 0010, 0001, and back to 1000.
+
+It uses $n$ flip-flops for $n$ states, which is wasteful of registers and
+extravagantly cheap in logic — the state is already one-hot, so decoding any
+state costs one wire. That is the same trade the state-machine chapter discusses
+under one-hot encoding.
+
+A **Johnson counter**, also called a twisted ring, feeds back the complement.
+Enumerating a four-bit version from all zeros gives eight states:
+
+0000, 1000, 1100, 1110, 1111, 0111, 0011, 0001, and back to 0000.
+
+So $n$ flip-flops give $2n$ states, twice the ring's yield, and decoding any one
+of them needs only a two-input gate because each state is distinguished by an
+adjacent pair of bits. The price is that the other $2^n - 2n$ codes are not part
+of the sequence, and a four-bit Johnson counter that powers up in one of them
+never joins the intended cycle at all. That failure is important enough to get
+its own treatment in Section 10 of the state-machine chapter, where the
+parasitic cycle is enumerated and repaired.
+
+## 10.4 Linear feedback shift registers
+
+Replace the plain feedback with the exclusive-OR of selected stages and the
+sequence becomes long and statistically flat. For an $n$-bit register the
+maximum achievable cycle length is
+
+$$L_{\\max} = 2^{n} - 1$$
+
+one short of the full code space, because the all-zero state maps to itself and
+is therefore a fixed point outside the cycle.
+
+Whether a given choice of taps achieves that maximum is not a matter of taste;
+it depends on whether the corresponding polynomial is primitive. Two four-bit
+examples, both enumerated exhaustively rather than quoted:
+
+**Taps on stages 4 and 3.** Seeded with 1000, the register visits
+
+1000, 0100, 0010, 1001, 1100, 0110, 1011, 0101, 1010, 1101, 1110, 1111, 0111,
+0011, 0001
+
+before repeating — 15 distinct states, which is $2^{4} - 1$, and the all-zero
+code never appears. This is a maximal-length sequence.
+
+**Taps on stages 4 and 2.** The same register with one tap moved does not visit
+15 states from any seed. Enumerating all 15 non-zero seeds finds the code space
+broken into cycles of length 3 and length 6: the three codes 0110, 1011 and 1101
+form a short cycle among themselves, and the remaining twelve form two cycles of
+six. A design that assumed 15 states would repeat after 3 in the worst case.
+
+| Property | Ring | Johnson | Maximal LFSR |
+|---|---|---|---|
+| Flip-flops for $N$ states | $N$ | $N/2$ | $\\lceil \\log_2(N+1) \\rceil$ |
+| States from 4 flip-flops | 4 | 8 | 15 |
+| Feedback logic | a wire | an inverter | XOR gates on the taps |
+| Decode cost per state | 1 wire | 2-input gate | full $n$-input decode |
+| Self-starting from all zeros | no | yes | no, zero is a trap |
+
+Because the sequence is deterministic and repeatable, an LFSR is not a random
+number generator in any cryptographic sense; it is a **pseudo-random** sequence
+generator, and the same structure computes cyclic redundancy checks, spreads
+spectrum in direct-sequence radios, and provides test patterns in built-in
+self-test.
+
+### Worked example 10.1 — sizing an LFSR and picking its seed
+
+**Given.** A built-in self-test block needs at least 60 000 distinct test
+patterns before the sequence repeats, from a maximal-length LFSR.
+
+**Work.** Require $2^{n} - 1 \\ge 60000$. Since $2^{15} = 32768$ and
+$2^{16} = 65536$:
+
+$$2^{16} - 1 = 65535 \\ge 60000$$
+
+so $n = 16$ suffices and $n = 15$, giving 32 767, does not.
+
+**Answer.** A 16-bit LFSR with primitive taps, seeded with any non-zero value.
+
+**The trap.** Two distractors are standard. The first is answering 15 by
+comparing $2^{15} = 32768$ against 60 000 carelessly, or by forgetting the minus
+one. The second is seeding with zero: a maximal-length LFSR seeded with all
+zeros produces all zeros forever, because the XOR of zeros is zero. The seed
+must be non-zero, and any non-zero seed gives the same cycle entered at a
+different point.
+
+### Worked example 10.2 — counting flip-flops three ways
+
+**Given.** A design needs a repeating sequence of exactly 8 distinct states, and
+each state must be decoded to drive one output line.
+
+**Work.** Three structures deliver 8 states:
+
+- **Binary counter**: $\\lceil \\log_2 8 \\rceil = 3$ flip-flops, but each of the
+  eight outputs needs a three-input AND gate, so eight gates of three inputs.
+- **Johnson counter**: 4 flip-flops, and each state is decoded by a two-input
+  gate, so eight gates of two inputs.
+- **Ring counter**: 8 flip-flops, and each state is already a wire, so no decode
+  logic at all.
+
+**Answer.** The Johnson counter is usually the best compromise for an eight-phase
+timing generator: one extra flip-flop over the binary counter buys a halving of
+every decode gate and eliminates the decoding spikes that a binary counter's
+simultaneous bit changes produce.
+
+**The trap.** The question asks for total cost, not flip-flop count. Answering
+"binary, because it uses the fewest flip-flops" ignores that the decode logic is
+larger and, in a ripple implementation, glitches on every transition.`,
+      examTip: 'A maximal LFSR of n bits has 2^n - 1 states, not 2^n. A ring counter of n bits has n states and a Johnson counter has 2n. These three numbers are the whole of most shift-register questions, and the minus one on the LFSR is the most commonly dropped term.',
+      importantNote: 'Enable a register by multiplexing its data input, never by gating its clock. A gated clock carries every combinational hazard on the enable straight into the flip-flop as a spurious edge, which is the one situation where a glitch in a synchronous design is fatal.',
+    },
+    { id: 'seqlog-count2', title: '11. Counters: Ripple Against Synchronous, With the Delay Counted',
+      content: `## 11.1 What a ripple counter actually does between edges
+
+A ripple counter is a chain: the external clock drives stage 0, and each stage's
+output clocks the next. It costs nothing but the flip-flops, which is why it
+still appears in low-frequency dividers. What it costs instead is a settled
+output.
+
+Take a four-bit negative-edge ripple counter with 8 ns of propagation delay per
+stage and follow the transition from 0111 to 1000, which is the worst one
+because every bit changes. Simulating it stage by stage rather than assuming it:
+
+| Time after the edge | Bus reads | Decimal | Why |
+|---|---|---|---|
+| 0 ns | 0111 | 7 | the starting state |
+| 8 ns | 0110 | 6 | stage 0 has fallen |
+| 16 ns | 0100 | 4 | stage 0's fall has clocked stage 1 down |
+| 24 ns | 0000 | 0 | stage 1's fall has clocked stage 2 down |
+| 32 ns | 1000 | 8 | stage 2's fall has finally clocked stage 3 up |
+
+![A timing diagram of a four-bit ripple counter going from binary zero one one one to binary one zero zero zero, with each stage falling eight nanoseconds after the one below it. Below the four output traces a row of decimal values shows the bus reading seven, then six, then four, then zero, and only after thirty two nanoseconds the intended eight.](/courses/fe-ee/figures/dig3-ripple-codes.svg)
+
+The counter passes through 6, 4 and 0 on its way from 7 to 8. Those are not
+transient glitches on one wire; they are complete, well-formed, wrong states
+that any decoder watching the bus will faithfully decode. A decoder output for
+state 4 will produce a genuine pulse on this transition, and that is the origin
+of **decoding spikes**.
+
+The settling time is the full chain:
+
+$$t_{\\text{settle}} = n \\cdot t_{\\text{pd}} = 4 \\times 8 = 32\\ \\text{ns}$$
+
+$$f_{\\max} = \\frac{1000}{32} = 31.25\\ \\text{MHz}$$
+
+## 11.2 The synchronous alternative, and how the two scale
+
+A synchronous counter clocks every stage from the same edge and puts logic in
+front of each one to decide whether it toggles. With T flip-flops the rule is
+that stage $i$ toggles when all lower stages are 1:
+
+$$T_i = Q_0 Q_1 \\cdots Q_{i-1}, \\qquad T_0 = 1$$
+
+The period is one clock-to-output plus that enable logic plus a setup time.
+Taking an 8 ns flip-flop, a 3 ns gate and a 2 ns setup:
+
+$$T = 8 + 3 + 2 = 13\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{13} = 76.92\\ \\text{MHz}$$
+
+which beats the four-bit ripple counter by a factor of
+
+$$\\frac{76.92}{31.25} = 2.46$$
+
+and, unlike the ripple counter, produces no intermediate codes at all, because
+every bit changes on the same edge.
+
+How the two scale with width is the more useful comparison. Ripple delay is
+strictly proportional to the number of stages. A synchronous counter's delay
+depends on how the enable term is built: with wide gates fanning out from all
+lower bits it is constant with width; with a chain of two-input gates it grows
+linearly but with the small gate delay rather than the large flip-flop delay.
+
+| Width | Ripple | Synchronous, wide enable gates | Synchronous, chained enable |
+|---|---|---|---|
+| 2 bits | 62.50 MHz | 76.92 MHz | 76.92 MHz |
+| 4 bits | 31.25 MHz | 76.92 MHz | 62.50 MHz |
+| 8 bits | 15.62 MHz | 76.92 MHz | 35.71 MHz |
+| 12 bits | 10.42 MHz | 76.92 MHz | 25.00 MHz |
+| 16 bits | 7.81 MHz | 76.92 MHz | 19.23 MHz |
+
+![Maximum count rate against counter width for three architectures. The ripple counter falls as the reciprocal of the width, the synchronous counter with chained enable gates falls more gently, and the synchronous counter with wide parallel enable gates is a horizontal line at seventy six point nine megahertz.](/courses/fe-ee/figures/dig3-counter-rate.svg)
+
+At two bits the architectures are nearly equal and a ripple counter is a
+reasonable choice. At sixteen bits the ripple counter is ten times slower than
+the constant-rate synchronous one. That divergence, rather than any argument
+about elegance, is why synchronous design won.
+
+## 11.3 Designing a mod-10 counter, and checking where the spare codes go
+
+A decade counter visits 0 through 9 and returns to 0. Four flip-flops give
+sixteen codes, so six are unused and may be treated as don't-cares during
+minimisation. Using T flip-flops and minimising each toggle function over the
+ten used codes with the six spares free, the result is
+
+$$T_0 = 1$$
+
+$$T_1 = \\overline{Q_3}\\,Q_0$$
+
+$$T_2 = Q_1 Q_0$$
+
+$$T_3 = Q_2 Q_1 Q_0 + Q_3 Q_0$$
+
+Read them as sentences. Bit 0 toggles every clock. Bit 1 toggles when bit 0 is
+set, except when bit 3 is already set, which is what makes 9 return to 0 instead
+of going to 10. Bit 2 toggles on the carry out of bits 1 and 0. Bit 3 toggles
+either on the carry out of bits 2, 1 and 0, which takes 7 to 8, or when it is
+already set and bit 0 is set, which takes 9 to 0.
+
+These four expressions were checked by running them as a machine from each of
+the ten valid codes and confirming the successor in every case. That is a
+different operation from re-reading the maps that produced them, and it is the
+one that catches transcription errors.
+
+The don't-cares then have to be audited, because a don't-care is a promise that
+the state never occurs, and power-up breaks that promise. Running the same
+equations from each unused code gives:
+
+| Unused code | Next | Then | Rejoined? |
+|---|---|---|---|
+| 1010 (10) | 1011 | 0110 | yes, in 2 clocks |
+| 1011 (11) | 0110 | — | yes, in 1 clock |
+| 1100 (12) | 1101 | 0100 | yes, in 2 clocks |
+| 1101 (13) | 0100 | — | yes, in 1 clock |
+| 1110 (14) | 1111 | 0010 | yes, in 2 clocks |
+| 1111 (15) | 0010 | — | yes, in 1 clock |
+
+Every unused code reaches the counting cycle within two clocks, so this
+particular design is **self-correcting** by good fortune rather than by
+construction. The important word is audit: the minimiser was free to send those
+codes anywhere, and on a different machine it sends them into a loop of their
+own. Section 10 of the state-machine chapter shows exactly that happening to a
+Johnson counter and prices the repair.
+
+### Worked example 11.1 — ripple delay and the usable clock
+
+**Given.** A six-bit ripple counter built from flip-flops with 12 ns of
+propagation delay.
+
+**Work.** The worst transition propagates through all six stages:
+
+$$t_{\\text{settle}} = 6 \\times 12 = 72\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{72} = 13.89\\ \\text{MHz}$$
+
+**Answer.** About 13.9 MHz, and any decoder attached to this bus must be
+strobed after the 72 ns has elapsed rather than driven combinationally.
+
+**The trap.** Answering $1/12\\ \\text{ns} = 83.3$ MHz treats the counter as if the
+stages worked in parallel. They do not; that is the definition of ripple. The
+number of stages multiplies the delay, and the worst-case transition is the one
+where every bit changes, which happens once per full count.
+
+### Worked example 11.2 — how many flip-flops, and what closes the cycle
+
+**Given.** A counter that repeats every 12 counts, 0 through 11.
+
+**Work.** Twelve states need
+
+$$\\lceil \\log_2 12 \\rceil = 4 \\text{ flip-flops}$$
+
+because three give only eight codes and four give sixteen. Four unused codes
+remain. The counter must be forced from 1011, which is 11, back to 0000 rather
+than on to 1100, so a decode of state 11 is required. Checking the candidate
+decodes against the twelve codes actually visited: $Q_3 Q_1$ matches both 1010
+and 1011, and $Q_3 Q_0$ matches both 1001 and 1011, so neither is sufficient.
+The three-literal term $Q_3 Q_1 Q_0$ matches 1011 alone.
+
+**Answer.** Four flip-flops, with $Q_3 Q_1 Q_0$ decoded to reset the counter
+synchronously on the next edge.
+
+**The trap.** Two errors are common. The first is answering three flip-flops
+because 12 is closer to 8 than to 16 — the ceiling is not a rounding. The second
+is using an asynchronous reset driven by the decode of state 12, which does
+count to 11 correctly but places a runt pulse of state 12 on the bus for one
+gate delay before the reset takes effect. A synchronous reset decoded from state
+11 never shows the illegal code at all.`,
+      examTip: 'Ripple counter settling time is the number of stages times the per-stage delay, and the worst case is the all-bits-change transition. Synchronous counter period is one flip-flop delay plus the enable logic plus setup, and it does not grow with width when the enable gates are wide.',
+      importantNote: 'Unused codes are don\'t-cares only while the machine is running as intended. Power-up, a glitch on an asynchronous input or a single-event upset can place the counter in one of them, so any design that treats spare codes as free must be run from each of them to confirm it returns.',
+    },
+    { id: 'seqlog-probs-a', title: '12. Problem Set A: Latches, Flip-Flops and Timing',
+      content: `## Problem Set A
+
+Work each problem before reading the solution. Every solution names the
+distractor that the question is built around and states the wrong number it
+produces.
+
+**A1.** A NOR-based SR latch is holding Q = 0. The inputs (S, R) are applied in
+the order (1, 0), (0, 0), (0, 1), (0, 0), (1, 0). What is the output sequence?
+
+**A2.** A JK flip-flop is wired with $J = 1$ and $K = 1$ permanently, and clocked
+at 24 MHz. What appears at Q?
+
+**A3.** A register-to-register path has $t_{\\text{cq}} = 0.8$ ns, worst-case
+logic 5.4 ns and $t_{\\text{su}} = 0.3$ ns. What is the maximum clock frequency,
+and what is the slack at 140 MHz?
+
+**A4.** The same path has a fastest logic route of 0.5 ns, a hold requirement of
+0.6 ns and 0.4 ns of skew working against it. Does it pass hold, and would
+halving the clock frequency change the answer?
+
+**A5.** A D latch and a D flip-flop are both driven by the same clock, high for
+4 ns. The data input rises 1 ns after the clock rises and falls 3 ns after the
+clock rises. What does each output do?
+
+**A6.** A two-flip-flop synchroniser runs at 250 MHz with $\\tau = 0.25$ ns,
+$T_0 = 15$ ps, an asynchronous event rate of 5 MHz and a setup requirement of
+0.1 ns. Estimate the MTBF.
+
+---
+
+### Worked solution A1
+
+Apply $Q^{+} = S + \\overline{R}\\,Q$ in order, carrying Q forward:
+
+| Step | S | R | Q before | Q after |
+|---|---|---|---|---|
+| 1 | 1 | 0 | 0 | 1 |
+| 2 | 0 | 0 | 1 | 1 |
+| 3 | 0 | 1 | 1 | 0 |
+| 4 | 0 | 0 | 0 | 0 |
+| 5 | 1 | 0 | 0 | 1 |
+
+**Answer: 1, 1, 0, 0, 1.**
+
+**Trap.** Treating a hold as a reset gives 1, 0, 0, 0, 1. The hold rows have no
+value of their own; steps 2 and 4 simply repeat what came before them, and a
+latch that produced 0 on step 2 would not be a memory at all.
+
+### Worked solution A2
+
+With $J = K = 1$ the characteristic equation becomes
+$Q^{+} = 1 \\cdot \\overline{Q} + 0 \\cdot Q = \\overline{Q}$, so the flip-flop
+toggles on every active edge. Two edges are needed for one complete output
+cycle, so
+
+$$f_{\\text{out}} = \\frac{24}{2} = 12\\ \\text{MHz}$$
+
+**Answer: a square wave at 12 MHz, half the clock frequency.**
+
+**Trap.** Answering 24 MHz treats each toggle as one output cycle. A toggle is
+half a cycle — the output must go up and come back down — which is why a single
+toggling flip-flop is the standard divide-by-two.
+
+### Worked solution A3
+
+$$T_{\\min} = 0.8 + 5.4 + 0.3 = 6.5\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{6.5} = 153.85\\ \\text{MHz}$$
+
+At 140 MHz the period is $1000 / 140 = 7.14$ ns, so
+
+$$\\text{slack} = 7.14 - 6.5 = 0.64\\ \\text{ns}$$
+
+**Answer: 153.85 MHz maximum, with 0.64 ns of slack at 140 MHz.**
+
+**Trap.** Omitting $t_{\\text{cq}}$ gives 5.7 ns and 175.4 MHz, which would
+approve a design that cannot run. The clock-to-output delay is part of the path,
+not part of the flip-flop's overhead to be ignored.
+
+### Worked solution A4
+
+$$\\text{hold margin} = 0.8 + 0.5 - 0.6 - 0.4 = 0.3\\ \\text{ns}$$
+
+**Answer: it passes, with 0.3 ns to spare, and halving the clock frequency would
+change nothing.**
+
+**Trap.** The second half of the question is the whole question. The hold
+inequality contains no period, so every answer of the form "it fails now but
+passes at half speed" is wrong by construction. Distractors also invite adding
+the skew to the launch side, which gives $0.8 + 0.5 + 0.4 - 0.6 = 1.1$ ns of
+margin and hides how close the path really is.
+
+### Worked solution A5
+
+The latch is transparent for the whole 4 ns window, so its output rises at 1 ns
+and falls at 3 ns, following the data exactly, and then holds the level D
+carries when the clock falls — which is low.
+
+The flip-flop samples only at the rising edge at time 0, when D is still low, so
+its output does not change at all during this clock cycle.
+
+**Answer: the latch produces a 2 ns pulse and settles low; the flip-flop
+produces nothing.**
+
+**Trap.** The usual wrong answer has the flip-flop capturing the 1 ns rise
+because the rise happens "during" the clock pulse. Edge triggering means the
+device looks at one instant, and 1 ns after the edge is not that instant.
+
+### Worked solution A6
+
+The period is 4 ns, so a two-stage chain grants
+
+$$t_{\\text{r}} = 2 \\times 4 - 0.1 = 7.9\\ \\text{ns}, \\qquad \\frac{t_{\\text{r}}}{\\tau} = \\frac{7.9}{0.25} = 31.60$$
+
+The denominator is
+$15\\ \\text{ps} \\times 250\\ \\text{MHz} \\times 5\\ \\text{MHz} = 1.875 \\times 10^{4}\\ \\text{s}^{-1}$, so
+
+$$\\text{MTBF} = \\frac{e^{31.6}}{1.875 \\times 10^{4}} = 2.82 \\times 10^{9}\\ \\text{s}$$
+
+which is about 89 years.
+
+**Answer: roughly $2.8 \\times 10^{9}$ seconds, or 89 years.**
+
+**Trap.** Using one clock period of resolution time instead of two drops the
+exponent to $4 - 0.1 = 3.9$ ns over 0.25 ns, which is 15.6, and the MTBF to
+about 318 seconds — a factor of $e^{16}$, nearly nine million, out. The whole
+point of the second flip-flop is that it grants a further **full** period, so an
+$n$-stage chain grants $nT$ minus one setup time, not $T$.`,
+      examTip: 'On any timing question, write the constraint symbolically before substituting. Most wrong answers in this set come from a term put on the wrong side of an inequality rather than from arithmetic.',
+    },
+    { id: 'seqlog-probs-b', title: '13. Problem Set B: Counters, Registers and Sequence Generators',
+      content: `## Problem Set B
+
+**B1.** A five-bit ripple counter uses flip-flops with 6 ns of propagation delay.
+What is its maximum count rate, and how long after the clock edge may a decoder
+output be trusted?
+
+**B2.** How many flip-flops does a mod-20 counter need, and how many codes are
+unused?
+
+**B3.** A four-bit Johnson counter and a four-bit ring counter are both seeded
+correctly. How many states does each produce, and how many gate inputs does it
+take to decode one chosen state in each case?
+
+**B4.** A maximal-length LFSR must produce at least a quarter of a million
+distinct patterns. What is the smallest register that will do, and what seed is
+forbidden?
+
+**B5.** A 12-bit PISO shift register serialises data at 80 MHz. What is the word
+rate, and what serial clock would be needed to sustain 10 million words per
+second?
+
+**B6.** In a synchronous mod-10 counter built with T flip-flops, the toggle
+equation for the most significant bit is $T_3 = Q_2 Q_1 Q_0 + Q_3 Q_0$. Explain
+what each term does, and state what goes wrong if the second term is omitted.
+
+---
+
+### Worked solution B1
+
+$$t_{\\text{settle}} = 5 \\times 6 = 30\\ \\text{ns}, \\qquad f_{\\max} = \\frac{1000}{30} = 33.33\\ \\text{MHz}$$
+
+**Answer: about 33.3 MHz, and a decoder output is trustworthy only after 30 ns
+have elapsed from the clock edge.**
+
+**Trap.** Answering 166.7 MHz from $1/6$ ns ignores the cascade. The second half
+of the question is the practically important one: the count rate limit and the
+decode-valid time are the same number, and a combinational decoder driven from a
+ripple counter produces real pulses on wrong states during that interval.
+
+### Worked solution B2
+
+$$\\lceil \\log_2 20 \\rceil = 5 \\text{ flip-flops}, \\qquad 2^{5} - 20 = 12 \\text{ unused codes}$$
+
+**Answer: five flip-flops, with twelve unused codes.**
+
+**Trap.** Four flip-flops give sixteen codes, which is fewer than twenty, so the
+answer is never four. The other slip is reporting the unused count as
+$20 - 16 = 4$, which subtracts in the wrong direction.
+
+### Worked solution B3
+
+A four-bit ring counter has **4 states**, each already one-hot, so decoding a
+chosen state costs **1 wire and no gate**.
+
+A four-bit Johnson counter has **8 states**. Each is uniquely identified within
+the sequence by an adjacent pair of bits — searching all two-literal products
+against the eight states shows that $Q_2\\overline{Q_1}$ selects 1100 and nothing
+else — so decoding a chosen state costs **one two-input gate**.
+
+**Answer: 4 states and no decode gate for the ring, 8 states and a two-input
+gate for the Johnson.**
+
+**Trap.** Answering 16 states for the Johnson counter confuses $2n$ with $2^n$.
+Four flip-flops have sixteen codes, but the twisted-ring feedback visits only
+eight of them, and the other eight form a separate cycle the counter can be
+stranded in.
+
+### Worked solution B4
+
+Require $2^{n} - 1 \\ge 250000$. Since $2^{17} = 131072$ and $2^{18} = 262144$:
+
+$$2^{18} - 1 = 262143 \\ge 250000$$
+
+**Answer: an 18-bit LFSR, and the all-zero seed is forbidden.**
+
+**Trap.** The all-zero state is not merely a bad choice; it is a fixed point. The
+XOR of any set of zeros is zero, so the register loads zero forever and the
+circuit appears dead. The other trap is answering 17 by comparing 131 072
+against 250 000 too quickly.
+
+### Worked solution B5
+
+At 80 MHz the serial period is 12.5 ns, so one 12-bit word takes
+
+$$t_{\\text{word}} = 12 \\times 12.5 = 150\\ \\text{ns}$$
+
+giving a word rate of $1 / 150$ ns, which is 6.67 million words per second. To
+reach 10 million words per second the serial clock must supply 12 bits in 100 ns:
+
+$$f_{\\text{serial}} = 12 \\times 10 = 120\\ \\text{MHz}$$
+
+**Answer: 6.67 million words per second at 80 MHz; 120 MHz is needed for 10
+million words per second.**
+
+**Trap.** Answering 80 million words per second reads the clock frequency as a
+word rate. A serialiser moves one bit per clock, so the word rate is always the
+bit clock divided by the word width.
+
+### Worked solution B6
+
+The first term, $Q_2 Q_1 Q_0$, is the ordinary binary carry: bit 3 toggles when
+all three lower bits are set, which is the transition from 0111 to 1000, that is
+from 7 to 8.
+
+The second term, $Q_3 Q_0$, is the decade wrap: with bit 3 already set the only
+reachable state in the sequence is 1001, which is 9, and toggling bit 3 from
+there returns the counter to 0000 as required.
+
+Omitting $Q_3 Q_0$ leaves bit 3 set after state 9. The other equations take bits
+2, 1 and 0 from 001 onwards, so the counter runs 8, 9, 10, 11 and beyond instead
+of wrapping, and it becomes a mod-16 counter with an unusual start.
+
+**Answer: the first term is the carry into bit 3, the second is the wrap out of
+9; without the wrap term the counter runs to 15.**
+
+**Trap.** The tempting simplification is that a decade counter merely needs to
+"reset at 10", implemented by decoding 1010 and clearing asynchronously. That
+does produce ten counts, but state 1010 appears on the bus for one gate delay
+first, so any decoder sees a runt pulse on an illegal state. Building the wrap
+into the toggle equations, as above, means the illegal state is never entered.`,
+      examTip: 'Counter questions almost always reduce to one of three numbers: the flip-flop count from a ceiling of a logarithm, the settling time from stages times delay, or the sequence length from the structure. Identify which one is being asked before computing anything.',
+      importantNote: 'A mod-N counter that resets asynchronously on the decode of state N does display state N briefly. A counter whose next-state equations wrap out of state N-1 never displays it. When a question offers both, the synchronous wrap is the correct engineering answer.',
     },
   ],
   keyTakeaways: [
@@ -3323,6 +4647,1316 @@ means the final 1 is also a valid first bit, so the machine leaves S3 into the
 same states S1 and S2 that it would from anywhere else.`,
       examTip: 'On a trace question, write the state after every input bit in a single row and read the outputs off underneath. For a Moore machine the output belongs to the state you have just entered, so it is reported one column to the right of the Mealy answer for the same stream.',
       importantNote: 'A Mealy output registered through one flip-flop behaves exactly like the Moore output of the same machine. If a design needs the early answer, use Mealy unregistered and accept the glitch risk; if it needs a clean signal, the extra state or the extra register is the price.',
+    },
+    { id: 'fsm-both', title: '6. One Specification, Two Machines, Carried Through to Gates',
+      content: `## 6.1 Naming states so the table writes itself
+
+Section 3 built a detector for the pattern 101. This section takes a longer
+pattern, **1101**, and carries it all the way from a sentence to a gate netlist
+twice — once as a Moore machine and once as a Mealy machine — so that the
+comparison is between two finished designs rather than between two descriptions.
+
+The creative step in any detector is choosing what the states mean, and there is
+a rule that removes the creativity entirely. Let each state stand for **the
+length of the longest prefix of the pattern that is currently a suffix of
+everything seen so far**. With that definition the transition out of any state
+is mechanical: append the incoming bit to the prefix that state represents, then
+find the longest prefix of the pattern that is a suffix of the result.
+
+Applied to 1101, with S0 through S4 meaning zero through four characters
+matched:
+
+| Present | Meaning | Input 0 | Input 1 | Moore output |
+|---|---|---|---|---|
+| S0 | nothing matched | S0 | S1 | 0 |
+| S1 | matched 1 | S0 | S2 | 0 |
+| S2 | matched 11 | S3 | S2 | 0 |
+| S3 | matched 110 | S0 | S4 | 0 |
+| S4 | matched 1101 | S0 | S2 | **1** |
+
+Three of those rows repay a second look, because they are where hand-built
+detectors go wrong.
+
+**S2 on a 1 stays in S2.** Having seen 11, another 1 leaves the last two
+characters as 11, which is still exactly two characters of the pattern. Sending
+this transition back to S1 is the single most common error in the whole topic,
+and it makes the detector miss any occurrence preceded by extra ones.
+
+**S3 on a 0 falls all the way to S0.** After 110, a 0 gives 1100, and none of
+1, 11, 110 or 1101 is a suffix of that. There is nothing to salvage.
+
+**S4 behaves exactly like S1.** After a successful match the last character seen
+is a 1, which is one character of the pattern, so the machine leaves S4 for the
+same destinations it would leave S1 for. That is the overlap rule, and Section 11
+quantifies what it is worth.
+
+## 6.2 The Mealy machine is the same table with the output moved
+
+A Mealy machine puts the output on the transition rather than on the state,
+which means the accepting state is no longer needed as a separate place to
+stand. Delete S4, redirect the arrow that pointed at it to the state that
+describes the situation after the match — which is S1 — and label that arrow
+with an output of 1:
+
+| Present | Input 0 | Output | Input 1 | Output |
+|---|---|---|---|---|
+| S0 | S0 | 0 | S1 | 0 |
+| S1 | S0 | 0 | S2 | 0 |
+| S2 | S3 | 0 | S2 | 0 |
+| S3 | S0 | 0 | S1 | **1** |
+
+Four states instead of five, which matters here because four states fit in two
+flip-flops and five do not.
+
+![Two state graphs of the same specification. Above, a five-state Moore machine for the pattern one one zero one laid out as a chain with the accepting state at the right and backward arcs beneath. Below, the four-state Mealy version of the same machine, in which the detection rides on the arrow leaving state three labelled one over one.](/courses/fe-ee/figures/dig3-fsm-graphs.svg)
+
+Both machines were then checked against a plain substring scan on **every one of
+the 4096 possible twelve-bit input streams**. The Mealy output matched the scan
+in the same cycle and the Moore output matched it one cycle later, on all 4096
+streams with no exceptions. That is a stronger statement than any argument from
+the diagram, and it is the reason the transition table above can be trusted.
+
+## 6.3 Synthesis of the Mealy machine, to gates
+
+Assign $S_0 = 00$, $S_1 = 01$, $S_2 = 10$, $S_3 = 11$ with $Q_1$ as the high bit,
+and let $X$ be the input. Copying the state table into next-state bits gives a
+complete truth table on three variables:
+
+| $Q_1$ | $Q_0$ | $X$ | State to state | $Q_1^{+}$ | $Q_0^{+}$ | $Y$ |
+|---|---|---|---|---|---|---|
+| 0 | 0 | 0 | S0 to S0 | 0 | 0 | 0 |
+| 0 | 0 | 1 | S0 to S1 | 0 | 1 | 0 |
+| 0 | 1 | 0 | S1 to S0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | S1 to S2 | **1** | 0 | 0 |
+| 1 | 0 | 0 | S2 to S3 | **1** | **1** | 0 |
+| 1 | 0 | 1 | S2 to S2 | **1** | 0 | 0 |
+| 1 | 1 | 0 | S3 to S0 | 0 | 0 | 0 |
+| 1 | 1 | 1 | S3 to S1 | 0 | **1** | **1** |
+
+Minimising each output column exactly gives
+
+$$Q_1^{+} = Q_1\\overline{Q_0} + \\overline{Q_1}\\,Q_0 X$$
+
+$$Q_0^{+} = \\overline{Q_1}\\,\\overline{Q_0}\\,X + Q_1\\overline{Q_0}\\,\\overline{X} + Q_1 Q_0 X$$
+
+$$Y = Q_1 Q_0 X$$
+
+and because the flip-flops are D types, these next-state expressions **are** the
+flip-flop input equations; no excitation step is required.
+
+Each of the three was compared against the eight rows of the table by
+enumeration. The output equation deserves a sentence of its own: $Y = Q_1 Q_0 X$
+depends on the input as well as the state, and that dependence is what makes
+this a Mealy machine. Delete the $X$ and the circuit is wrong, not merely
+slower.
+
+## 6.4 Synthesis of the Moore machine, on three flip-flops
+
+Five states need three flip-flops. Assign $S_0 = 000$ up to $S_3 = 011$ and
+$S_4 = 100$, leaving 101, 110 and 111 unused and available as don't-cares.
+Minimising over the ten reachable rows with those three codes free gives
+
+$$Q_2^{+} = Q_1 Q_0 X$$
+
+$$Q_1^{+} = \\overline{Q_1}\\,Q_0 X + Q_1 \\overline{Q_0} + Q_2 X$$
+
+$$Q_0^{+} = Q_1 \\overline{Q_0}\\,\\overline{X} + \\overline{Q_2}\\,\\overline{Q_1}\\,\\overline{Q_0}\\,X$$
+
+$$Y = Q_2$$
+
+The output equation is now a single wire, which is the Moore machine's
+characteristic advantage: the output is a decode of state alone, so it cannot
+respond to anything happening between clock edges.
+
+The cost shows up in the next-state logic, which is 17 literals across three
+equations against 14 across two for the Mealy version, plus an extra flip-flop.
+That is the trade in its most concrete form: a Moore machine spends registers
+and next-state logic to buy a clean output.
+
+The three unused codes were audited rather than assumed. Running the equations
+from each of them, with each input value, gives:
+
+| Unused code | On input 0 | On input 1 | Rejoins? |
+|---|---|---|---|
+| 101 | 000 | 010 | immediately |
+| 110 | 011 | 010 | immediately |
+| 111 | 000 | 110 then 010 | within two clocks |
+
+Every stray code returns to the intended state set within two clocks, so this
+particular don't-care resolution happens to be self-correcting. Section 10 shows
+a design where the same procedure produces a machine that never recovers.
+
+### Worked example 6.1 — deriving one row of the state table from the rule
+
+**Given.** The pattern 1101, and a machine currently in S2, meaning the last two
+characters seen were 11. The next input is 0.
+
+**Work.** Append the input to the prefix the state represents: 11 followed by 0
+gives 110. Now find the longest prefix of 1101 that is a suffix of 110. The
+candidates, longest first, are 110, 11 and 1. Is 110 a suffix of 110? Yes.
+
+**Answer.** The machine goes to S3, the state meaning three characters matched.
+
+**The trap.** Answering S0 comes from the reflex that a 0 breaks a run of ones.
+It does not break anything here, because the pattern itself contains a 0 in that
+position. The rule is mechanical precisely so that this reflex never gets a
+chance to operate.
+
+### Worked example 6.2 — the transition out of the accepting state
+
+**Given.** The Moore machine has just entered S4, having matched 1101. The next
+input is 1.
+
+**Work.** The relevant history is the whole pattern, 1101, plus the new bit,
+giving 11011. The longest prefix of 1101 that is a suffix of 11011 is 11, since
+1101 is not a suffix, 110 is not, and 11 is.
+
+**Answer.** S2.
+
+**Check.** The same answer follows from noticing that S4's meaningful history is
+just its final 1, which is what S1 means, and S1 on a 1 goes to S2.
+
+**The trap.** Returning to S0 after a detection is the non-overlapping design. It
+is a legitimate machine for a different specification, but on the stream
+1101101 it reports one detection where the overlapping machine reports two.
+
+### Worked example 6.3 — running the gate netlist against the specification
+
+**Given.** The Mealy equations of Section 6.3 and the input stream
+110110101101, fed one bit per clock from $Q_1 Q_0 = 00$.
+
+**Work.** Evaluate $Y = Q_1 Q_0 X$ before each edge, then update the state with
+the two next-state equations. Doing this for all twelve cycles gives the output
+sequence 000100100001.
+
+Comparing against a plain scan of the string for the substring 1101 gives the
+same twelve bits, with matches ending at positions 3, 6 and 11 counting from
+zero.
+
+**Answer.** Detections in cycles 3, 6 and 11, and the netlist agrees with the
+state table and with the substring scan bit for bit.
+
+**The trap.** Positions 3 and 6 are only three cycles apart, which is shorter
+than the pattern. That is the overlap at work — the stream contains 1101101, in
+which the second match reuses the first match's final 1. A detector that resets
+to S0 after a match reports only the first of them.`,
+      examTip: 'Name the states after how much of the pattern has been matched and the transitions become mechanical: append the bit, then find the longest prefix of the pattern that is a suffix of the result. Almost every wrong sequence detector comes from sending a repeated character back to the start instead of holding.',
+      importantNote: 'A Mealy output equation contains the input; a Moore output equation does not. If you derive an output equation for a machine you were told is Moore and the input appears in it, the state assignment or the table is wrong, not the algebra.',
+    },
+    { id: 'fsm-timing2', title: '7. The Output-Timing Difference, Shown on a Waveform',
+      content: `## 7.1 Both machines on one stream
+
+Arguments about Moore against Mealy stop being abstract the moment both machines
+run on the same data. Feed the twelve-bit stream 110110101101 into the two
+detectors of Section 6 and record the state and both outputs every cycle.
+
+| Cycle | Input | Moore state after the edge | Mealy output | Moore output |
+|---|---|---|---|---|
+| 0 | 1 | S1 | 0 | 0 |
+| 1 | 1 | S2 | 0 | 0 |
+| 2 | 0 | S3 | 0 | 0 |
+| 3 | 1 | **S4** | **1** | 0 |
+| 4 | 1 | S2 | 0 | **1** |
+| 5 | 0 | S3 | 0 | 0 |
+| 6 | 1 | **S4** | **1** | 0 |
+| 7 | 0 | S0 | 0 | **1** |
+| 8 | 1 | S1 | 0 | 0 |
+| 9 | 1 | S2 | 0 | 0 |
+| 10 | 0 | S3 | 0 | 0 |
+| 11 | 1 | **S4** | **1** | 0 |
+
+The Mealy output pulses in cycles 3, 6 and 11. The Moore output pulses in cycles
+4, 7 and 12. Same three detections, same order, one cycle of latency between
+them.
+
+![A twelve-cycle trace of the input stream, the Mealy output, the Moore output and the Moore state. The three cycles in which the pattern completes are shaded, and a curved arrow runs from each Mealy pulse to the corresponding Moore pulse one cycle later.](/courses/fe-ee/figures/dig3-mm-waveform.svg)
+
+## 7.2 Why the offset is structural rather than accidental
+
+The Mealy output is combinational logic on the present state and the present
+input:
+
+$$Y_{\\text{Mealy}} = g(\\text{state}, X)$$
+
+so it can respond inside the cycle in which the deciding bit arrives. The Moore
+output is combinational logic on the state alone:
+
+$$Y_{\\text{Moore}} = h(\\text{state})$$
+
+and the state does not become S4 until the clock edge that ends that cycle. The
+one-cycle offset is therefore not a property of these two particular machines;
+it is a property of the two architectures, and it appears wherever they are
+compared.
+
+Read the state row in the table above and the mechanism is visible directly:
+every shaded cycle is a cycle in which the machine is still in S3 while the
+deciding 1 is present at the input, and S4 is entered by the edge that closes
+it.
+
+## 7.3 The price of the earlier answer
+
+Because a Mealy output follows the input within a cycle, it inherits whatever
+the input does within that cycle. If the input is itself a registered signal
+that settles early, nothing happens. If the input is a combinational signal with
+a hazard on it, or an asynchronous signal from another clock domain, the output
+carries that disturbance straight through.
+
+| Property | Moore | Mealy |
+|---|---|---|
+| Output latency after the deciding bit | one cycle | none |
+| Output during a cycle | constant | follows the input |
+| States for this detector | 5 | 4 |
+| Flip-flops for this detector | 3 | 2 |
+| Output equation | state decode only | state and input |
+| Safe to use directly as a clock or enable | yes | only if registered |
+
+The last row is the practical rule. A Moore output changes only just after a
+clock edge and is stable for the rest of the cycle, so it can drive a
+flip-flop's enable or, with care, a clock. A Mealy output can change at any
+moment within the cycle, so anything that samples it between edges may sample a
+transient.
+
+## 7.4 Registering a Mealy output turns it into a Moore output
+
+Pass a Mealy output through one flip-flop and two things happen at once: the
+glitch exposure disappears, because the flip-flop samples once per cycle, and
+the output appears one cycle later, because the flip-flop delays it. That is
+precisely the Moore behaviour.
+
+$$Y_{\\text{registered Mealy}}(n+1) = Y_{\\text{Mealy}}(n) = Y_{\\text{Moore}}(n+1)$$
+
+The equivalence is the practical resolution of the whole debate. Use an
+unregistered Mealy output when the cycle of latency genuinely matters and you
+control what reads it. Register it, or design a Moore machine in the first
+place, whenever anything downstream is sensitive to a mid-cycle transition. The
+choice is about where you want to pay, not about which architecture is better.
+
+### Worked example 7.1 — reading a required latency off a specification
+
+**Given.** A controller must assert a one-cycle strobe in the **same** cycle
+that a start command arrives, and that strobe drives the clock enable of a
+downstream register. The start command is itself the registered output of
+another block in the same clock domain.
+
+**Work.** The same-cycle requirement rules out a Moore output, which cannot
+respond until the following cycle. So the strobe must be a Mealy output. The
+concern with a Mealy output is that it follows the input within the cycle — but
+here the input is a registered signal in the same clock domain, so it settles
+shortly after the edge and is stable for the rest of the cycle. The strobe
+therefore settles early too and is stable when the downstream register samples
+it.
+
+**Answer.** A Mealy output is correct and safe here, because the input is
+registered in the same domain.
+
+**The trap.** The advice "never use a Mealy output as an enable" is a
+simplification of the real rule, which is that the danger comes from the input,
+not from the architecture. Had the start command arrived from another clock
+domain or straight out of a block of combinational logic, the same Mealy output
+would have been unsafe and would have needed a register — at which point it
+would have become a Moore output with a Moore output's latency, and the
+specification could not have been met at all.`,
+      examTip: 'On a trace question write the state after every input bit in one row and read the outputs underneath. A Moore output belongs to the state you have just entered, so it is reported one column to the right of the Mealy answer for the same stream.',
+      importantNote: 'A Mealy output registered through one flip-flop behaves exactly like the Moore output of the same machine, latency included. There is therefore no design in which registering a Mealy output gives you both the early answer and the clean signal.',
+    },
+    { id: 'fsm-assign', title: '8. State Assignment: Binary, Gray and One-Hot, With the Logic Counted',
+      content: `## 8.1 The choice nobody thinks is a choice
+
+Once the state table is fixed, the number of flip-flops follows from the number
+of states:
+
+$$n_{\\text{binary}} = \\lceil \\log_2 N \\rceil, \\qquad n_{\\text{one-hot}} = N$$
+
+What does not follow is which code goes with which state. For $N$ states in
+$n$ bits there are $2^n$ codes to choose from and the number of distinct
+assignments is large — for four states in two bits it is $4! = 24$ — and each
+one produces different next-state equations. The equations are all correct; they
+are not all the same size.
+
+This is usually presented as a matter of taste. It is not. Taking the
+four-state Mealy detector of Section 6, minimising exactly for **all 24**
+assignments and counting the literals in the minimum sum of products for the
+two next-state functions and the output gives a spread from 7 literals to 18.
+
+![A bar chart of the literal cost of all twenty four ways of assigning two-bit codes to the four states of the detector, sorted cheapest first. Four assignments tie at seven literals, the Gray-coded assignment costs eight, and the obvious binary assignment costs seventeen, close to the worst.](/courses/fe-ee/figures/dig3-assign-cost.svg)
+
+The obvious assignment — S0 through S3 as 00, 01, 10, 11 — costs 17 literals,
+which is in the worst quarter of all 24. That is not bad luck; it is what
+happens when the codes are chosen by counting rather than by looking at the
+transitions.
+
+## 8.2 Three assignments, compared as finished equations
+
+**Straight binary**, S0 = 00, S1 = 01, S2 = 10, S3 = 11:
+
+$$Q_1^{+} = Q_1\\overline{Q_0} + \\overline{Q_1}\\,Q_0 X$$
+
+$$Q_0^{+} = \\overline{Q_1}\\,\\overline{Q_0}\\,X + Q_1\\overline{Q_0}\\,\\overline{X} + Q_1 Q_0 X$$
+
+$$Y = Q_1 Q_0 X$$
+
+Total: 17 literals, six product terms.
+
+**Gray**, S0 = 00, S1 = 01, S2 = 11, S3 = 10:
+
+$$Q_1^{+} = Q_0 X + Q_1 Q_0$$
+
+$$Q_0^{+} = X$$
+
+$$Y = Q_1 \\overline{Q_0}\\,X$$
+
+Total: 8 literals, four product terms. The second equation has collapsed to a
+wire, because the Gray assignment happens to make the low state bit equal the
+input on every row.
+
+**The cheapest of the 24**, S0 = 01, S1 = 11, S2 = 10, S3 = 00:
+
+$$Q_1^{+} = X$$
+
+$$Q_0^{+} = Q_0\\overline{X} + \\overline{Q_1}$$
+
+$$Y = \\overline{Q_1}\\,\\overline{Q_0}\\,X$$
+
+Total: 7 literals, four product terms — less than half the straight-binary cost
+for exactly the same machine, verified against the same state table row by row.
+
+The reason Gray does well here is the reason it does well generally: adjacent
+states differ in one bit, so a transition changes one flip-flop instead of two,
+which both simplifies the next-state functions and halves the switching noise on
+a state bus. The reason the winner beats Gray is specific to this machine, and
+finding it required searching, which is what a synthesis tool does and what a
+person doing this by hand does not.
+
+## 8.3 One-hot
+
+One-hot spends one flip-flop per state and holds exactly one of them at 1. The
+next-state equation for each state is then a transcription of the arrows
+entering it — no map, no minimisation:
+
+$$S_0^{+} = S_0\\overline{X} + S_1\\overline{X} + S_3\\overline{X}$$
+
+$$S_1^{+} = S_0 X + S_3 X$$
+
+$$S_2^{+} = S_1 X + S_2 X$$
+
+$$S_3^{+} = S_2 \\overline{X}$$
+
+$$Y = S_3 X$$
+
+Sixteen literals of next-state logic across four equations, on four flip-flops
+instead of two. The equations were checked against the state table on every
+combination of one-hot state and input.
+
+Read as a cost that looks bad, and as a structure it looks excellent. Every
+product term has exactly two literals, so the logic depth is one gate level
+regardless of how many states the machine has. In a binary encoding the depth
+grows with $\\log_2 N$, and in a large machine that difference is the clock
+period.
+
+| Encoding | Flip-flops for $N$ states | Next-state depth | Output decode | Unused codes | Natural home |
+|---|---|---|---|---|---|
+| Binary | $\\lceil \\log_2 N \\rceil$ | deepest | needs a decoder | $2^{n} - N$ | ASIC, area-limited |
+| Gray | $\\lceil \\log_2 N \\rceil$ | similar to binary | needs a decoder | $2^{n} - N$ | buses, fewer switching glitches |
+| One-hot | $N$ | shallowest, one level | one wire per state | $2^{N} - N$ | FPGA, speed-limited |
+
+The FPGA preference has a concrete cause rather than a stylistic one: a lookup
+table in an FPGA fabric comes with a flip-flop attached whether you use it or
+not, so spending flip-flops to shorten logic depth raises the clock rate at no
+real cost in area.
+
+The one-hot column also carries the warning. With $N$ flip-flops there are
+$2^{N}$ codes and only $N$ of them are legal, so the overwhelming majority of the
+state space is illegal — for a 10-state machine, 1014 codes out of 1024. Any
+one-hot design in a system that can be disturbed needs either a reset that is
+guaranteed to reach every flip-flop or explicit illegal-state detection.
+
+### Worked example 8.1 — flip-flop counts three ways
+
+**Given.** Machines with 5, 9, 17 and 33 states.
+
+**Work.** Apply the ceiling of the base-2 logarithm for binary and the state
+count itself for one-hot:
+
+| States | Binary flip-flops | Unused binary codes | One-hot flip-flops |
+|---|---|---|---|
+| 5 | 3 | 3 | 5 |
+| 9 | 4 | 7 | 9 |
+| 17 | 5 | 15 | 17 |
+| 33 | 6 | 31 | 33 |
+
+**Answer.** As tabulated. Note how each of these sits just past a power of two,
+so each wastes nearly half of its code space.
+
+**The trap.** Every one of these four is a "just over" case, chosen because the
+common error is to take the floor instead of the ceiling. Nine states in three
+flip-flops is eight codes for nine states, which is impossible; the answer is
+never obtained by rounding.
+
+### Worked example 8.2 — choosing an encoding from a requirement
+
+**Given.** A 12-state controller for an FPGA, required to run as fast as
+possible. Area is not constrained.
+
+**Work.** Binary needs $\\lceil \\log_2 12 \\rceil = 4$ flip-flops and leaves
+$2^{4} - 12 = 4$ unused codes, with next-state logic several gate levels deep and
+an output decoder on top. One-hot needs 12 flip-flops, gives one gate level of
+next-state logic and makes every output decode a single wire.
+
+**Answer.** One-hot, because the target is an FPGA where flip-flops are free
+alongside the lookup tables and the requirement is speed.
+
+**Follow-on.** Had the same machine been targeted at a small ASIC with a tight
+area budget and a relaxed clock, binary would be the correct answer, and the
+four unused codes would then have to be audited for the reasons Section 10
+gives.
+
+**The trap.** "One-hot uses more flip-flops, so it costs more" treats flip-flops
+as the currency. On an FPGA they are not; the currency is lookup tables and
+logic depth, and one-hot wins on both.`,
+      examTip: 'n states need ceil(log2 n) flip-flops in binary and n in one-hot. Where a question asks which encoding to use, look for the word FPGA, which points to one-hot, or for an area or pin constraint, which points to binary.',
+      importantNote: 'The obvious binary assignment is not a neutral default. On the four-state detector in this chapter it costs 17 literals against 7 for the best of the 24 possible assignments — the same machine, the same table, more than twice the logic.',
+    },
+    { id: 'fsm-minimise', title: '9. State Minimisation, Worked Two Ways on One Machine',
+      content: `## 9.1 What equivalence means, precisely
+
+Two states are **equivalent** when no experiment can tell them apart. Formally,
+$S_i$ and $S_j$ are equivalent when, for every input, they produce the same
+output and move to states that are themselves equivalent. The definition is
+recursive, which is why it is applied by successive refinement rather than by
+inspection.
+
+Take this seven-state Moore machine:
+
+| State | Next on 0 | Next on 1 | Output |
+|---|---|---|---|
+| A | B | C | 0 |
+| B | D | E | 0 |
+| C | D | F | 0 |
+| D | G | A | **1** |
+| E | G | A | **1** |
+| F | D | E | 0 |
+| G | B | C | 0 |
+
+Nothing about it looks redundant. Seven states need three flip-flops.
+
+## 9.2 Method one: partition refinement
+
+Start by splitting the states on output alone, then repeatedly split any block
+whose members send different inputs into different blocks. Stop when a pass
+changes nothing.
+
+**Round 0.** Split on output:
+
+$$P_0 = \\{A, B, C, F, G\\},\\ \\{D, E\\}$$
+
+**Round 1.** For each state, record which block it goes to on 0 and on 1. Within
+the first block, A and G both go to (block 1, block 1); B and F both go to
+(block 2, block 2); C goes to (block 2, block 1) and is alone. Within the second
+block, D and E both go to (block 1, block 1), so it does not split.
+
+$$P_1 = \\{A, G\\},\\ \\{B, F\\},\\ \\{C\\},\\ \\{D, E\\}$$
+
+**Round 2.** Repeat with the finer partition. A and G both go to the (B, F)
+block on 0 and to the (C) block on 1; B and F both go to the (D, E) block on
+both inputs; D and E both go to the (A, G) block on both inputs. Nothing splits,
+so the process has converged.
+
+Seven states collapse to four, and the flip-flop count falls:
+
+$$\\lceil \\log_2 7 \\rceil = 3 \\quad \\text{becomes} \\quad \\lceil \\log_2 4 \\rceil = 2$$
+
+which is a real saving of a register, unlike the five-to-three example of
+Section 4.5 where both counts rounded to two.
+
+## 9.3 Method two: the implication chart
+
+The chart lists every unordered pair of states in a triangular grid and crosses
+out the pairs that can be shown to differ.
+
+- Cross out at round 0 any pair whose outputs differ.
+- Then repeatedly cross out any pair whose successors under some input form a
+  pair that is already crossed out.
+- Whatever survives is equivalent.
+
+![An implication chart for the seven-state machine, drawn as a lower triangular grid of pairs. Most cells carry a cross marked zero or one, showing the round at which the pair was eliminated, and three cells are shaded to mark the surviving equivalent pairs A with G, B with F and D with E.](/courses/fe-ee/figures/dig3-implication-chart.svg)
+
+Running it on this machine, every pair containing exactly one of D or E is
+crossed at round 0, because those two are the only states with output 1. One
+further round of successor implication crosses everything else except three
+cells, and a second round changes nothing. The survivors are
+
+$$A \\equiv G, \\qquad B \\equiv F, \\qquad D \\equiv E$$
+
+which is the same answer as the partition method, obtained by a different
+bookkeeping. Two independent routes agreeing is the check; either method alone
+is easy to run carelessly.
+
+## 9.4 The reduced machine
+
+Rename the classes: $P = \\{A, G\\}$, $Q = \\{B, F\\}$, $R = \\{C\\}$, $T = \\{D, E\\}$.
+
+| State | Next on 0 | Next on 1 | Output |
+|---|---|---|---|
+| P | Q | R | 0 |
+| Q | T | T | **0** |
+| R | T | Q | 0 |
+| T | P | P | **1** |
+
+Check one row against the original to be sure the renaming is faithful. State Q
+stands for B and F. B goes to D on 0 and E on 1; both D and E are in class T, so
+Q goes to T on both inputs, which is what the reduced table says. State R stands
+for C, which goes to D on 0, giving T, and to F on 1, giving Q. Correct.
+
+What the reduction bought: three flip-flops become two, seven rows of
+next-state logic become four, and the two spare codes in the two-bit encoding
+become don't-cares that will simplify the equations further. What it did not
+buy: any change in behaviour. The reduced machine produces exactly the same
+output stream as the original for every input stream, which is what equivalence
+means.
+
+### Worked example 9.1 — spotting the pair that is not equivalent
+
+**Given.** In the machine above, are B and C equivalent? Both have output 0.
+
+**Work.** On input 0, B goes to D and C goes to D — the same state, so that
+input gives no distinction. On input 1, B goes to E and C goes to F. Are E and F
+equivalent? E has output 1 and F has output 0, so no; they are distinguished at
+round 0.
+
+**Answer.** B and C are not equivalent, and one input string of length two
+proves it: apply 1 then anything, and from B the machine is in an output-1 state
+while from C it is not.
+
+**The trap.** Identical entries in one column are seductive. Equivalence requires
+agreement on **every** input, and the recursion means agreement all the way down.
+Half of a matching row is not a partial result; it is nothing.
+
+### Worked example 9.2 — how much a reduction is actually worth
+
+**Given.** A machine reduced from 9 states to 5, and another reduced from 7
+states to 4.
+
+**Work.** For the first: $\\lceil \\log_2 9 \\rceil = 4$ and
+$\\lceil \\log_2 5 \\rceil = 3$, so one flip-flop is saved. For the second:
+$\\lceil \\log_2 7 \\rceil = 3$ and $\\lceil \\log_2 4 \\rceil = 2$, so one flip-flop
+is saved.
+
+Now a third: reduced from 6 states to 5. Then
+$\\lceil \\log_2 6 \\rceil = 3$ and $\\lceil \\log_2 5 \\rceil = 3$ — no flip-flop is
+saved at all.
+
+**Answer.** A reduction saves a register only when it crosses a power of two.
+Otherwise the saving is in the next-state logic and in the extra don't-cares,
+which is real but smaller.
+
+**The trap.** "State minimisation reduces hardware" is stated so often that
+candidates answer "yes, one flip-flop" for any reduction. The count is a ceiling
+of a logarithm, and a ceiling only moves at the boundaries.`,
+      examTip: 'Split on output first, then refine. Any pair whose outputs differ is distinguishable immediately, and on most exam machines that first split does more than half the work.',
+      importantNote: 'Minimisation reduces states, not necessarily flip-flops. Six states down to five still needs three flip-flops; seven down to four saves one. Check the ceiling of the logarithm before claiming a register has been saved.',
+    },
+    { id: 'fsm-unused', title: '10. Unused States, Lock-Up, and Self-Correcting Designs',
+      content: `## 10.1 A don't-care is a promise, and power-up breaks it
+
+Whenever the number of states is not a power of two, some codes are unused.
+Treating them as don't-cares during minimisation is standard and produces smaller
+logic. It also assigns them a behaviour, silently, chosen by whatever made the
+maps smallest. That behaviour is invisible in the state diagram and is never
+what the designer thought about.
+
+The promise a don't-care makes is that the machine is never in that state. The
+promise is broken by power-up before any reset has propagated, by a reset that
+does not reach every flip-flop, by a single-event upset in a radiation
+environment, and by a glitch on an asynchronous input. On any of those the
+machine finds itself in a code whose successor nobody chose deliberately.
+
+There are only two possible outcomes, and the difference between them is the
+difference between a design that recovers and a design that is dead.
+
+## 10.2 The lucky case: a mod-5 counter
+
+Design a counter that visits 000 through 100 and returns, on three flip-flops,
+leaving 101, 110 and 111 as don't-cares. Minimising with those three free gives
+
+$$Q_2^{+} = Q_1 Q_0$$
+
+$$Q_1^{+} = \\overline{Q_1}\\,Q_0 + Q_1\\overline{Q_0}$$
+
+$$Q_0^{+} = \\overline{Q_2}\\,\\overline{Q_0}$$
+
+for a total of 8 literals, and these were confirmed against the five counting
+states by simulation.
+
+Now run the same equations from each unused code:
+
+| Unused code | Next state | In the cycle? |
+|---|---|---|
+| 101 | 010 | yes |
+| 110 | 010 | yes |
+| 111 | 100 | yes |
+
+All three rejoin in a single clock. The design is self-correcting, and it is
+self-correcting **by accident** — nothing in the procedure asked for it.
+
+Forcing the issue instead, by specifying that all three unused codes go to 000
+and minimising with no don't-cares at all, gives
+
+$$Q_2^{+} = \\overline{Q_2}\\,Q_1 Q_0$$
+
+$$Q_1^{+} = \\overline{Q_2}\\,\\overline{Q_1}\\,Q_0 + \\overline{Q_2}\\,Q_1\\overline{Q_0}$$
+
+$$Q_0^{+} = \\overline{Q_2}\\,\\overline{Q_0}$$
+
+for 11 literals. Guaranteed recovery costs 3 extra literals here. On this
+machine that is a price worth paying for the guarantee, and the point of working
+both versions is that the guarantee had to be bought — it was never free.
+
+## 10.3 The unlucky case: a four-bit Johnson counter
+
+Section 10 of the sequential-logic chapter introduced the Johnson counter: a
+shift register whose complemented output feeds back to the input, giving $2n$
+states from $n$ flip-flops. With four flip-flops the feedback is
+
+$$Q_3^{+} = \\overline{Q_0}$$
+
+and the intended sequence, enumerated from all zeros, is
+
+0000, 1000, 1100, 1110, 1111, 0111, 0011, 0001, and back to 0000.
+
+Eight states. Sixteen codes exist. Enumerating the other eight reveals that they
+do not scatter into the main cycle at all — they form a **second, complete cycle
+of their own**:
+
+0010, 1001, 0100, 1010, 1101, 0110, 1011, 0101, and back to 0010.
+
+The two cycles are disjoint. Every one of the eight stray codes leads only to
+other stray codes, forever. A counter that powers up anywhere in the second ring
+runs happily, produces a plausible-looking eight-state sequence, and never once
+visits a state the designer intended.
+
+![Sixteen four-bit codes drawn as two separate rings of eight. The left ring is the intended Johnson sequence and the right ring is the parasitic one, with no arrow joining them, and two dashed arrows showing the only transitions that the repaired feedback moves.](/courses/fe-ee/figures/dig3-johnson-lockup.svg)
+
+This is **lock-up**, and it is the reason the topic exists. It is not a rare
+pathological case invented for teaching; it is the default behaviour of the
+textbook Johnson counter.
+
+## 10.4 Repairing it, and what the repair costs
+
+The feedback is pinned on the eight codes of the intended cycle and completely
+free on the other eight, so there are $2^{8} = 256$ possible feedback functions
+that all produce the correct sequence. Enumerating all 256 and testing each for
+recovery from every one of the sixteen codes finds that **132 of them are
+self-correcting** and 124 are not.
+
+The cheapest self-correcting choice is
+
+$$Q_3^{+} = \\overline{Q_0} + Q_2\\overline{Q_1}$$
+
+at 3 literals against the original 1, and it recovers from any starting code
+within at most 5 clocks. Comparing it with the original on the eight states of
+the intended cycle confirms they agree everywhere, so the counter's specified
+behaviour is untouched.
+
+What is striking is how little changes. Of the eight transitions in the stray
+ring, the repaired feedback moves only two: 0101 now goes to 1010 instead of
+0010, and 1101 now goes to 1110, which is inside the intended cycle. That single
+escape route is enough to drain the whole parasitic ring, because everything in
+it eventually reaches 1101.
+
+| Design | Feedback | Literals | Codes that never recover | Worst recovery |
+|---|---|---|---|---|
+| Textbook Johnson | $\\overline{Q_0}$ | 1 | 8 of 16 | never |
+| Self-correcting | $\\overline{Q_0} + Q_2\\overline{Q_1}$ | 3 | 0 of 16 | 5 clocks |
+
+## 10.5 The three ways to guarantee recovery
+
+- **Force the unused states explicitly.** Specify a next state for every code
+  rather than leaving don't-cares, as in the mod-5 example. Costs logic, gives a
+  certain answer, and makes the intent visible in the equations.
+- **Audit the don't-care result.** Minimise freely, then run the finished
+  equations from every unused code and check that all of them return. Costs
+  nothing but the check, and the check is the part people skip.
+- **Guarantee the reset.** If reset provably reaches every flip-flop before the
+  first clock edge, and nothing can disturb the state afterwards, unused states
+  are genuinely unreachable. This is the usual answer in commercial synchronous
+  logic and the wrong answer in anything exposed to radiation or to a
+  brown-out.
+
+### Worked example 10.1 — auditing a don't-care resolution
+
+**Given.** A mod-6 counter on three D flip-flops counting 000 through 101, with
+110 and 111 left as don't-cares. Minimising each next-state function over the
+six used codes with the two spares free gives
+
+$$Q_2^{+} = Q_1 Q_0 + Q_2\\overline{Q_0}$$
+
+$$Q_1^{+} = Q_1\\overline{Q_0} + \\overline{Q_2}\\,\\overline{Q_1}\\,Q_0$$
+
+$$Q_0^{+} = \\overline{Q_0}$$
+
+**Work.** Evaluate the finished equations at each unused code.
+
+At 110, where $Q_2 = 1$, $Q_1 = 1$, $Q_0 = 0$:
+$Q_2^{+} = 1 \\cdot 0 + 1 \\cdot 1 = 1$, $Q_1^{+} = 1 \\cdot 1 + 0 = 1$ and
+$Q_0^{+} = 1$. The successor is **111**, which is the other unused code.
+
+At 111, where all three are 1:
+$Q_2^{+} = 1 \\cdot 1 + 1 \\cdot 0 = 1$, $Q_1^{+} = 1 \\cdot 0 + 0 = 0$ and
+$Q_0^{+} = 0$. The successor is **100**, which is state 4 of the counting
+sequence.
+
+**Answer.** Neither code loops. Code 111 rejoins in one clock and code 110
+rejoins in two, by way of 111, so this don't-care resolution is self-correcting
+and needs no extra logic.
+
+**The trap.** Stopping the audit after one step would have condemned this design:
+110 goes to another illegal code, which looks exactly like the first step of a
+lock-up. An audit has to follow each stray code until it either reaches a legal
+state or revisits a code it has already been in. It must also evaluate the
+**finished, minimised** equations rather than the state table, because the table
+says nothing about the unused codes by construction — only the equations know
+where the minimiser sent them.
+
+### Worked example 10.2 — deciding whether to pay for self-correction
+
+**Given.** Two designs of the same 12-state controller on four flip-flops. Design
+A leaves the four unused codes as don't-cares and, on audit, two of them form a
+two-state loop that never rejoins. Design B forces all four to the reset state
+and costs 6 more literals. The controller is in a mains-powered instrument with
+a properly designed reset, but it drives a motor.
+
+**Work.** The probability of entering the parasitic loop through a clean
+power-up with a working reset is essentially zero. The probability through
+supply glitches, brown-outs and electrically noisy motor switching is not. The
+consequence is a controller stuck in an unspecified state driving a motor.
+
+**Answer.** Design B. Six literals is a trivial price against an
+unrecoverable-without-power-cycling failure in a machine with an actuator on it.
+
+**The trap.** The argument "reset handles it" is correct about power-up and says
+nothing at all about disturbance during operation. Where the consequence of a
+lock-up is severe, or where a watchdog cannot recover it, the guarantee is worth
+buying regardless of how unlikely the entry looks.`,
+      examTip: 'A four-bit Johnson counter is the standard lock-up example: eight intended states, eight more that form a separate cycle, and no path between them. If a question asks whether a counter is self-correcting, run its equations from each unused code rather than reasoning from the diagram.',
+      importantNote: 'Self-correction is a property of the finished equations, not of the design method. The mod-5 counter in this section self-corrects for free and the Johnson counter does not, and both came out of the same standard procedure.',
+    },
+    { id: 'fsm-overlap', title: '11. Sequence Detectors With and Without Overlap',
+      content: `## 11.1 The one specification detail that changes the machine
+
+"Detect the pattern 1101 in a serial bit stream" is an incomplete specification,
+and the missing clause is what happens immediately after a match. Two readings
+exist and they build different machines.
+
+**Overlapping detection** allows the tail of a completed match to serve as the
+head of the next one. After matching 1101 the machine keeps the final 1 and
+continues from the state meaning "one character matched".
+
+**Non-overlapping detection** discards everything after a match and restarts
+from scratch, as if the stream began again.
+
+The difference is one row of the state table. In the Moore machine of Section 6,
+the accepting state S4 has transitions
+
+$$\\text{overlapping:} \\quad S_4 \\xrightarrow{0} S_0, \\quad S_4 \\xrightarrow{1} S_2$$
+
+$$\\text{non-overlapping:} \\quad S_4 \\xrightarrow{0} S_0, \\quad S_4 \\xrightarrow{1} S_1$$
+
+Everything else is identical. One arrow decides the specification.
+
+## 11.2 What the difference is worth, measured
+
+Take the stream 1101101. Tracing both machines bit by bit:
+
+| Position | Bit | Overlapping state | Non-overlapping state |
+|---|---|---|---|
+| 0 | 1 | S1 | S1 |
+| 1 | 1 | S2 | S2 |
+| 2 | 0 | S3 | S3 |
+| 3 | 1 | **S4 detect** | **S4 detect** |
+| 4 | 1 | S2 | S1 |
+| 5 | 0 | S3 | S0 |
+| 6 | 1 | **S4 detect** | S1 |
+
+The overlapping machine reports two matches and the non-overlapping machine
+reports one. Both are correct answers to their own specification, and only one
+is correct for a given question.
+
+Scaling that up, running both machines over **all 1024 ten-bit streams** counts
+448 overlapping detections against 417 non-overlapping ones, so 31 detections
+are lost to the restart. The loss is modest for this pattern because 1101
+overlaps itself in only one character. For a pattern with a longer self-overlap
+the gap widens sharply: 0101 overlaps itself in two characters, so the stream
+010101 contains two overlapping occurrences and only one non-overlapping one.
+
+The general rule is that the overlap available to a pattern is the length of its
+longest proper prefix that is also a suffix — the same quantity that defines the
+state transitions in the first place:
+
+| Pattern | Longest prefix that is also a suffix | Overlap available |
+|---|---|---|
+| 1101 | 1 | one character |
+| 0101 | 01 | two characters |
+| 1111 | 111 | three characters |
+| 1000 | none | none, the two designs coincide |
+
+That last row is worth noticing. When a pattern has no self-overlap at all, the
+overlapping and non-overlapping machines are the same machine, and the
+specification detail stops mattering.
+
+## 11.3 Where each is the right answer
+
+Overlapping detection is the default for pattern matching in a data stream:
+protocol framing, start-of-packet detection, and any search where every
+occurrence matters.
+
+Non-overlapping detection is right when a match **consumes** something. A
+machine that dispenses one item per matched token, or that counts groups rather
+than occurrences, must not count the same characters twice.
+
+### Worked example 11.1 — counting matches both ways
+
+**Given.** The pattern 1010 and the stream 101010101.
+
+**Work.** 1010 has 10 as its longest prefix that is also a suffix, so it overlaps
+itself in two characters. Scanning for occurrences ending at each position:
+
+- ending at position 3: characters 0 to 3 are 1010, a match
+- ending at position 5: characters 2 to 5 are 1010, a match
+- ending at position 7: characters 4 to 7 are 1010, a match
+
+giving three overlapping matches. Non-overlapping, the machine restarts after
+each match: it matches at position 3, then begins again at position 4 with the
+remaining stream 10101, which contains 1010 ending at position 7, and then only
+one character remains.
+
+**Answer.** Three matches with overlap, two without.
+
+**The trap.** Restarting is not the same as skipping the matched characters and
+carrying on — it is that, but candidates often restart from the wrong position,
+either re-reading the last character of the match or dropping one too many. The
+state machine gets this right automatically because S4 on a 1 goes to S1 in the
+non-overlapping design, which is exactly "this character is now the first
+character of a fresh attempt".
+
+### Worked example 11.2 — reading the specification off the application
+
+**Given.** Two requirements. (a) A receiver must raise a flag every time the
+eight-bit sync word appears anywhere in the incoming bit stream, so the link can
+be re-aligned. (b) A ticket machine must advance a counter every time it sees
+the four-pulse pattern that means one complete ticket has passed a sensor.
+
+**Work.** In (a), every appearance is evidence about alignment, including one
+that shares bits with a previous appearance, and no resource is consumed by
+reporting it. In (b), a ticket is a physical object; the four pulses that
+recorded it cannot also record a second one.
+
+**Answer.** (a) overlapping, (b) non-overlapping.
+
+**The trap.** The word "every" in a specification does not settle the question.
+Both machines fire on every occurrence — they simply disagree about what
+counts as an occurrence once characters have been used. The deciding question is
+always whether a match consumes the characters that produced it.`,
+      examTip: 'Sequence detectors are the most common FSM exam problem, and the overlap clause is the most common thing left implicit. If the question says nothing, assume overlapping, and say so in your working.',
+      importantNote: 'The overlap a pattern can have equals the length of its longest proper prefix that is also a suffix. For a pattern with no such prefix, the overlapping and non-overlapping machines are identical and the distinction disappears.',
+    },
+    { id: 'fsm-fulldesign', title: '12. A Full Design from Words to Gates, and Its Simulation',
+      content: `## 12.1 The specification, in sentences
+
+A coin controller accepts nickels and dimes. An item costs 20 cents. When the
+accumulated total first reaches or exceeds 20 cents the controller asserts VEND
+for one cycle and returns to empty. If the total reaches 25 cents — which can
+only happen by dropping a dime on top of 15 cents — it asserts CHANGE at the
+same time, returning a nickel. Coins arrive one per clock cycle at most, so the
+two coin inputs are never both asserted together. No coin in a cycle means the
+controller holds.
+
+This is the shape of every controller question worth asking: a few sentences, an
+implicit state that has to be discovered, and two outputs whose conditions differ.
+
+## 12.2 Finding the states
+
+The state is whatever the controller must remember, which is the amount already
+paid. Because it always vends and empties at 20, the amount held can only be 0,
+5, 10 or 15 cents — four states, two flip-flops.
+
+That reasoning is the whole design step. Everything from here is bookkeeping.
+
+Writing N for a nickel arriving and D for a dime arriving, and working out each
+destination arithmetically:
+
+| Held | Coin | Total | Next held | VEND | CHANGE |
+|---|---|---|---|---|---|
+| 0c | N | 5 | 5c | 0 | 0 |
+| 0c | D | 10 | 10c | 0 | 0 |
+| 5c | N | 10 | 10c | 0 | 0 |
+| 5c | D | 15 | 15c | 0 | 0 |
+| 10c | N | 15 | 15c | 0 | 0 |
+| 10c | D | $10 + 10 = 20$ | 0c | **1** | 0 |
+| 15c | N | $15 + 5 = 20$ | 0c | **1** | 0 |
+| 15c | D | $15 + 10 = 25$ | 0c | **1** | **1** |
+
+plus four rows in which no coin arrives and the state holds. The two coins
+arriving together is impossible by specification, so those four rows are
+don't-cares available to the minimiser.
+
+![A state graph of the coin controller with four states holding zero, five, ten and fifteen cents laid out left to right. Nickel and dime arcs move rightwards along and across the chain, and three arcs return to the empty state carrying the vend output, one of them also carrying the change output.](/courses/fe-ee/figures/dig3-vending-graph.svg)
+
+## 12.3 Encoding and synthesis
+
+Assign $Q_1 Q_0 = 00, 01, 10, 11$ to 0c, 5c, 10c and 15c, so the state code is
+the amount held divided by five in binary. Building the four-variable truth table
+over $(Q_1, Q_0, N, D)$ with the four impossible rows as don't-cares and
+minimising each output exactly gives
+
+$$Q_1^{+} = \\overline{Q_1}\\,D + \\overline{Q_1}\\,Q_0 N + Q_1\\overline{N}\\,\\overline{D} + Q_1 \\overline{Q_0}\\,\\overline{D}$$
+
+$$Q_0^{+} = \\overline{Q_0}\\,N + Q_0\\overline{N}\\,\\overline{D} + \\overline{Q_1}\\,Q_0 D$$
+
+$$\\text{VEND} = Q_1 D + Q_1 Q_0 N$$
+
+$$\\text{CHANGE} = Q_1 Q_0 D$$
+
+Since the flip-flops are D types, the two next-state expressions are the
+flip-flop input equations directly.
+
+The output equations read as English. VEND fires when a dime lands on 10c or
+15c, which is $Q_1 D$, or when a nickel lands on 15c, which is $Q_1 Q_0 N$.
+CHANGE fires on exactly one condition: a dime landing on 15c. Both outputs
+contain a coin input, so this is a Mealy machine, and the one-cycle-earlier
+response is what lets the item drop in the same cycle the last coin is accepted.
+
+All four expressions were compared against the twelve legal rows of the truth
+table by enumeration, with zero mismatches.
+
+## 12.4 Simulating the finished gates against the specification
+
+Checking the equations against the table they came from catches transcription
+errors and nothing else. The stronger check is to run the netlist against the
+**words** of the specification.
+
+The gates were driven with every possible coin sequence of length one to six —
+1092 sequences in all, over the alphabet of nothing, nickel and dime — while an
+independent counter tracked the true running total. Two properties were asserted
+on every cycle of every sequence:
+
+- the state code always equals the running total divided by five
+- every cycle in which VEND is asserted is a cycle in which the true total has
+  just reached exactly 20 or exactly 25, and CHANGE accompanies it in the 25
+  case and only in the 25 case
+
+Both held for all 1092 sequences. That is a different claim from "the equations
+match the table", because the running total was computed by adding coins, not by
+consulting the state machine.
+
+### Worked example 12.1 — a trace through the netlist
+
+**Given.** The coin sequence nickel, nickel, dime, nickel, dime, dime, starting
+from empty.
+
+**Work.** Evaluate the output equations before each edge, then update the state.
+
+| Cycle | Coin | State before | VEND | CHANGE | State after | Total paid |
+|---|---|---|---|---|---|---|
+| 1 | N | 0c | 0 | 0 | 5c | 5 |
+| 2 | N | 5c | 0 | 0 | 10c | 10 |
+| 3 | D | 10c | **1** | 0 | 0c | 20, vended |
+| 4 | N | 0c | 0 | 0 | 5c | 5 |
+| 5 | D | 5c | 0 | 0 | 15c | 15 |
+| 6 | D | 15c | **1** | **1** | 0c | 25, vended with change |
+
+**Answer.** Two items dispensed, one of them with a nickel returned. The customer
+paid 45 cents in total for two 20-cent items and received 5 cents back, which
+balances.
+
+**The trap.** In cycle 3 the machine is in state 10c and a dime arrives, so VEND
+is asserted in that same cycle — before the state changes. That is Mealy
+behaviour. Reading the VEND column as belonging to the state **after** the edge
+shifts every output down one row and produces a machine that dispenses one cycle
+late and, on the last row, appears to dispense from the empty state.
+
+### Worked example 12.2 — extending the specification
+
+**Given.** The same controller, now required to accept quarters as well, still
+with a 20-cent price, returning a nickel of change on a 25-cent total as before.
+
+**Work.** A quarter arriving on an empty machine gives 25 cents, so it must vend
+with change. A quarter arriving on any non-empty state gives at least 30 cents,
+which the machine cannot return correctly with a single nickel of change.
+
+**Answer.** The specification is incomplete as stated. Either the machine must
+refuse a quarter when it is not empty, which is one extra output and no extra
+state, or the change mechanism must be able to return 10, 15 or 20 cents, which
+means the change output becomes a multi-bit amount and the state must be
+extended to hold what is owed.
+
+**The trap.** Adding an input to a state machine is easy; adding one that
+enlarges the range of the outputs is not. The instinct is to add more states,
+but here the states are already sufficient — the total held before a quarter is
+still one of four values. What overflows is the output, and no amount of extra
+state fixes an output that cannot express the answer.`,
+      examTip: 'Find the state by asking what the machine must remember, not by counting inputs. In a coin controller the memory is the amount already paid, and because the machine empties on every vend that amount can only take a few values.',
+      importantNote: 'Checking equations against the table they were derived from proves only that the algebra was copied correctly. Running the finished logic against an independent model of the specification — here, a counter adding coins — is what catches an error in the table itself.',
+    },
+    { id: 'fsm-probs-a', title: '13. Problem Set A: Analysing and Tracing State Machines',
+      content: `## Problem Set A
+
+**A1.** A Moore machine has states P, Q, R with outputs 0, 0, 1 and transitions
+P on 0 to P, P on 1 to Q, Q on 0 to R, Q on 1 to Q, R on 0 to P, R on 1 to Q.
+Starting in P, what output sequence does the input 011011 produce?
+
+**A2.** A machine's output equation is found to be $Y = Q_1\\overline{Q_0}X$. Is it
+Moore or Mealy, and how many states does it have at least?
+
+**A3.** How many flip-flops are needed for a 20-state machine in binary and in
+one-hot, and how many codes are unused in each?
+
+**A4.** A four-state Mealy detector for 1101 uses the assignment
+S0 = 00, S1 = 01, S2 = 11, S3 = 10 and has $Q_0^{+} = X$. Verify that this is
+correct on all four states.
+
+**A5.** Two states of a Moore machine both have output 0, both go to state C on
+a 0 and both go to state D on a 1. Are they equivalent?
+
+**A6.** A synchronous machine's designer left three unused codes as don't-cares.
+The finished equations send code 110 to 111 and code 111 to 110. What has
+happened, and is a reset enough?
+
+---
+
+### Worked solution A1
+
+Trace the state after each bit, then read the output of the state occupied.
+
+| Bit | 0 | 1 | 1 | 0 | 1 | 1 |
+|---|---|---|---|---|---|---|
+| State after | P | Q | Q | R | Q | Q |
+| Output | 0 | 0 | 0 | **1** | 0 | 0 |
+
+**Answer: 000100.**
+
+**Trap.** The Moore output belongs to the state the machine has just entered, so
+it must be read after the transition, not before it. Reading the output of the
+state occupied **before** each bit gives 000010, the same single pulse shifted
+one place early, and that shifted answer is the distractor this question is
+built around.
+
+### Worked solution A2
+
+The input $X$ appears in the output equation, so the output depends on the input
+as well as the state: the machine is **Mealy**. Two state variables appear,
+$Q_1$ and $Q_0$, so there are at least three states — two flip-flops can only be
+justified by more than two states, and two flip-flops encode at most four.
+
+**Answer: Mealy, with at least three and at most four states.**
+
+**Trap.** Answering "four states" assumes all codes are used. Two flip-flops
+encode up to four states but a three-state machine also needs two, so the
+equation alone cannot distinguish them.
+
+### Worked solution A3
+
+$$\\lceil \\log_2 20 \\rceil = 5, \\qquad 2^{5} - 20 = 12$$
+
+so binary needs 5 flip-flops with 12 unused codes. One-hot needs 20 flip-flops,
+and of its $2^{20} = 1048576$ codes only 20 are legal, leaving 1 048 556 unused.
+
+**Answer: 5 flip-flops and 12 unused codes in binary; 20 flip-flops and
+1 048 556 unused codes in one-hot.**
+
+**Trap.** The one-hot unused count surprises people, and it is the reason one-hot
+machines in disturbance-prone environments carry explicit illegal-state
+detection. Answering "no unused codes, because there is one per state" confuses
+the number of states with the size of the code space.
+
+### Worked solution A4
+
+Under this assignment $Q_0$ is the low bit of 00, 01, 11, 10 for S0 to S3. Check
+each transition's destination low bit against the input that caused it:
+
+| From | On 0 goes to | Low bit | On 1 goes to | Low bit |
+|---|---|---|---|---|
+| S0 (00) | S0 = 00 | 0 | S1 = 01 | 1 |
+| S1 (01) | S0 = 00 | 0 | S2 = 11 | 1 |
+| S2 (11) | S3 = 10 | 0 | S2 = 11 | 1 |
+| S3 (10) | S0 = 00 | 0 | S1 = 01 | 1 |
+
+The low bit of the next state equals the input on all eight rows.
+
+**Answer: correct, $Q_0^{+} = X$ on every row.**
+
+**Trap.** This collapse is a property of the assignment, not of the machine. Move
+to straight binary, with S2 = 10 and S3 = 11, and the same low bit needs three
+product terms and nine literals. Quoting $Q_0^{+} = X$ for the wrong encoding is
+a favourite distractor.
+
+### Worked solution A5
+
+Not yet. They agree on output and their successors are the same states, so they
+are equivalent **provided** those successors do not distinguish them — and since
+both go to the same C and the same D, no experiment can separate them at all.
+
+**Answer: yes, they are equivalent.**
+
+**Trap.** The recursion in the definition makes people hesitate here, and
+hesitating is right in general. What settles it in this case is that the
+successors are *identical*, not merely equivalent, so the recursion terminates
+immediately. Had one gone to C and the other to some C-equivalent state, the
+same conclusion would follow but only after checking that pair.
+
+### Worked solution A6
+
+Codes 110 and 111 map into each other, so a machine that enters either one
+alternates between them forever and never reaches a legal state. This is a
+two-state **lock-up cycle** created by the don't-care minimisation.
+
+A reset is enough only if it provably reaches every flip-flop before the first
+clock edge and nothing can disturb the state afterwards. It does not protect
+against a supply glitch, a brown-out or an upset during operation.
+
+**Answer: a parasitic cycle has been created; reset covers power-up only, and
+the equations should be re-derived with the unused codes forced to a legal
+state.**
+
+**Trap.** "Those states can never occur" is the assumption the don't-care
+encoded, and the audit exists precisely because that assumption is not
+enforceable in hardware. The cost of forcing them is a few literals, as Section
+10 measured.`,
+      examTip: 'For a trace question build one table with a row for the state and a row for the output, and be explicit about whether the output belongs to the state before or after the edge. That single decision separates the Moore answer from the Mealy answer.',
+    },
+    { id: 'fsm-probs-b', title: '14. Problem Set B: Designing and Encoding State Machines',
+      content: `## Problem Set B
+
+**B1.** Design the state table for a Moore detector for the pattern 011 with
+overlap, and say how many flip-flops it needs.
+
+**B2.** The same detector without overlap. Which single entry changes?
+
+**B3.** A machine has 6 states. After minimisation it has 5. How much hardware
+was saved?
+
+**B4.** A four-state machine is to be encoded in two bits. How many distinct
+assignments exist, and why does it matter?
+
+**B5.** A traffic controller has states GREEN, YELLOW, RED and holds each for a
+fixed number of clocks driven by an external timer pulse T. Write the state
+table, and say whether the output should be Moore or Mealy.
+
+**B6.** A Mealy machine's output must drive the write-enable of a memory. What
+must be checked before connecting it, and what is the fix if the check fails?
+
+---
+
+### Worked solution B1
+
+Name states by how much of 011 has been matched.
+
+| State | Meaning | On 0 | On 1 | Output |
+|---|---|---|---|---|
+| S0 | nothing | S1 | S0 | 0 |
+| S1 | matched 0 | S1 | S2 | 0 |
+| S2 | matched 01 | S1 | **S3** | 0 |
+| S3 | matched 011 | S1 | S0 | **1** |
+
+Check the two awkward rows. S1 on a 0 stays in S1, because the new 0 is itself a
+valid first character. S3 on a 1 gives 0111, whose longest suffix that is a
+prefix of 011 is nothing, so it goes to S0. S3 on a 0 gives 0110, whose last
+character 0 is a valid first character, so it goes to S1.
+
+Four states need $\\lceil \\log_2 4 \\rceil = 2$ flip-flops.
+
+**Answer: as tabulated, two flip-flops.**
+
+**Trap.** Sending S1 on a 0 back to S0 is the standard error. A repeated 0 does
+not destroy the match in progress; it restarts it, and S1 is exactly the state
+that means "one 0 seen".
+
+### Worked solution B2
+
+Without overlap the machine restarts from scratch after a detection, so the
+transitions out of S3 must both behave as if the stream were beginning.
+
+**Answer: only S3 on a 0 changes, from S1 to S1 — which is unchanged — and S3 on
+a 1 stays S0, which is also unchanged.**
+
+That is the real answer and it is worth the surprise: 011 has no proper prefix
+that is also a suffix, so it cannot overlap itself, and the overlapping and
+non-overlapping machines are identical.
+
+**Trap.** The question invites you to change something. Checking the
+prefix-suffix property first tells you there is nothing to change, and it takes
+five seconds.
+
+### Worked solution B3
+
+$$\\lceil \\log_2 6 \\rceil = 3, \\qquad \\lceil \\log_2 5 \\rceil = 3$$
+
+**Answer: no flip-flops are saved. The saving is one row of next-state logic and
+one extra don't-care code, both of which shrink the combinational logic
+slightly.**
+
+**Trap.** "Minimisation saves hardware" is true in general and false for the
+register count here. The flip-flop count is a ceiling of a logarithm, and a
+ceiling only changes at a power of two.
+
+### Worked solution B4
+
+Four distinct codes assigned to four distinct states gives
+
+$$4! = 24 \\text{ assignments}$$
+
+It matters because the minimum sum-of-products cost varies across them. On the
+1101 detector in this chapter the range is 7 to 18 literals, and the obvious
+binary assignment lands at 17.
+
+**Answer: 24 assignments, with more than a factor of two between the best and
+the worst.**
+
+**Trap.** Answering $2^{4} = 16$ counts subsets rather than assignments, and
+answering 4 counts states. The count is a permutation because each state gets a
+distinct code.
+
+### Worked solution B5
+
+| State | On T = 0 | On T = 1 | Output |
+|---|---|---|---|
+| GREEN | GREEN | YELLOW | green lamp |
+| YELLOW | YELLOW | RED | yellow lamp |
+| RED | RED | GREEN | red lamp |
+
+The output should be **Moore**. The lamp is a function of the state alone, it
+must be steady for the whole interval, and a Mealy output would flicker with the
+timer pulse.
+
+**Answer: as tabulated, with Moore outputs.**
+
+**Trap.** Making the output Mealy so it "responds faster" is exactly wrong for
+this application. There is nothing to respond to — the lamp should be constant
+across the entire state, which is the definition of a Moore output.
+
+### Worked solution B6
+
+A Mealy output follows the input within a cycle, so it can move at any moment
+during the cycle. A memory write-enable that moves mid-cycle can produce a write
+that was never intended, or a write to an address that is itself still changing.
+
+The check is on the **input** the Mealy output depends on. If that input is
+registered in the same clock domain, it settles shortly after the edge and the
+enable is stable in time for the memory. If it is combinational or from another
+clock domain, it is not.
+
+The fix is a register on the output, which removes the glitch and delays the
+enable by one cycle — turning it into the Moore output of the same machine, so
+the address and data must be delayed by one cycle to match.
+
+**Answer: check whether the deciding input is registered in the same domain; if
+not, register the output and delay the address and data with it.**
+
+**Trap.** Registering only the enable and leaving the address and data
+unregistered fixes the glitch and breaks the write, because the enable now
+arrives a cycle after the values it was supposed to capture. Whatever pipeline
+stage the enable moves into, its companions must move with it.`,
+      examTip: 'Design questions almost always want the state table, not the gates. Name the states by what has been matched or accumulated, fill in every row, and only then worry about encoding — the marks are in the table.',
+      importantNote: 'Before designing an overlapping and a non-overlapping detector separately, check whether the pattern has a proper prefix that is also a suffix. If it does not, the two machines are identical and there is no second design to do.',
     },
   ],
   keyTakeaways: [
