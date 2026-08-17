@@ -5303,8 +5303,7 @@ $$T(s) = \\frac{K_pG(s)}{1 + K_pG(s)} = \\frac{2K_p}{s^{2} + 5s + 4 + 2K_p}$$
 The final value follows from the DC gain of that transfer function, and the
 error is what is left over:
 
-$$y(\\infty ) = \\frac{2K_p}{4 + 2K_p}, \\qquad
-e_{ss} = 1 - y(\\infty ) = \\frac{4}{4 + 2K_p} = \\frac{1}{1 + 0.5K_p}$$
+$$y(\\infty ) = \\frac{2K_p}{4 + 2K_p}, \\qquad e_{ss} = 1 - y(\\infty ) = \\frac{4}{4 + 2K_p} = \\frac{1}{1 + 0.5K_p}$$
 
 The denominator is $1 + K_{pos}$ with $K_{pos} = K_pG(0)$, which is the
 position-error constant of the time-specification chapter arriving by a
@@ -5313,8 +5312,7 @@ different door. **Proportional gain divides the offset; it never deletes it.**
 The poles move as the gain rises. Matching $s^{2} + 5s + (4 + 2K_p)$ to the
 standard form gives
 
-$$\\omega _n = \\sqrt{4 + 2K_p}, \\qquad 2\\zeta \\omega _n = 5
-\\Rightarrow \\zeta = \\frac{2.5}{\\sqrt{4 + 2K_p}}$$
+$$\\omega _n = \\sqrt{4 + 2K_p}, \\qquad 2\\zeta \\omega _n = 5 \\Rightarrow \\zeta = \\frac{2.5}{\\sqrt{4 + 2K_p}}$$
 
 so every unit of gain that shrinks the offset also shrinks the damping ratio.
 Simulating the step response at each gain and measuring the peak confirms the
@@ -5345,13 +5343,11 @@ gain produces.
 
 **Offset requirement.** Set the offset formula equal to 0.02:
 
-$$\\frac{1}{1 + 0.5K_p} = 0.02 \\Rightarrow 1 + 0.5K_p = 50
-\\Rightarrow K_p = 98$$
+$$\\frac{1}{1 + 0.5K_p} = 0.02 \\Rightarrow 1 + 0.5K_p = 50 \\Rightarrow K_p = 98$$
 
 **Resulting poles.** With that gain,
 
-$$\\omega _n = \\sqrt{4 + 2 \\times 98} = \\sqrt{200} = 14.142\\ \\mathrm{rad/s},
-\\qquad \\zeta = 2.5/14.142 = 0.17678$$
+$$\\omega _n = \\sqrt{4 + 2 \\times 98} = \\sqrt{200} = 14.142\\ \\mathrm{rad/s}, \\qquad \\zeta = 2.5/14.142 = 0.17678$$
 
 **Resulting overshoot.**
 
@@ -5369,8 +5365,7 @@ gain whatever. That impossibility is the entire argument for integral action.
 Add an integral term, so the controller becomes $C(s) = K_p + K_i/s$. The loop
 gain now carries a pole at the origin, so the loop is Type 1 and
 
-$$e_{ss} = \\lim_{s \\to 0} \\frac{s \\cdot (1/s)}{1 + C(s)G(s)}
-= \\lim_{s \\to 0} \\frac{s}{s + K_pG(s)s + K_iG(s)} = 0$$
+$$e_{ss} = \\lim_{s \\to 0} \\frac{s \\cdot (1/s)}{1 + C(s)G(s)} = \\lim_{s \\to 0} \\frac{s}{s + K_pG(s)s + K_iG(s)} = 0$$
 
 for **any** positive $K_i$, however small. The offset is not reduced, it is
 removed, and the size of $K_i$ decides only how quickly.
@@ -5379,17 +5374,14 @@ The bill arrives in phase. Writing the controller in the ideal form
 $C = K_p[1 + 1/(T_is)]$, its contribution to the loop phase at frequency
 $\\omega$ is
 
-$$\\angle \\left[1 + \\frac{1}{jT_i\\omega }\\right]
-= \\angle \\left[1 - \\frac{j}{T_i\\omega }\\right]
-= -\\arctan \\frac{1}{T_i\\omega }$$
+$$\\angle \\left[1 + \\frac{1}{jT_i\\omega }\\right] = \\angle \\left[1 - \\frac{j}{T_i\\omega }\\right] = -\\arctan \\frac{1}{T_i\\omega }$$
 
 which is negative everywhere: integral action always subtracts phase, and the
 subtraction is worst at low frequency. Put the PI zero a factor $m$ below the
 gain crossover, that is $T_i = m/\\omega _c$, and the cost is
 $\\arctan (1/m)$, independent of the plant:
 
-$$m = 3 \\Rightarrow 18.43^\\circ , \\quad m = 5 \\Rightarrow 11.31^\\circ ,
-\\quad m = 10 \\Rightarrow 5.71^\\circ$$
+$$m = 3 \\Rightarrow 18.43^\\circ , \\quad m = 5 \\Rightarrow 11.31^\\circ , \\quad m = 10 \\Rightarrow 5.71^\\circ$$
 
 Measuring this on the plant of Section 5.2 with $K_p = 10$ held fixed: the
 proportional-only loop crosses over at 3.586 rad/s with a 63.70° margin. Adding
@@ -5426,8 +5418,7 @@ than 6° of phase margin.
 **Step 1 — turn the budget into a frequency ratio.** The PI lag at the
 crossover is $\\arctan (1/(T_i\\omega _c))$, so
 
-$$\\arctan \\frac{1}{T_i\\omega _c} \\leq 6^\\circ
-\\Rightarrow \\frac{1}{T_i\\omega _c} \\leq \\tan 6^\\circ = 0.105104$$
+$$\\arctan \\frac{1}{T_i\\omega _c} \\leq 6^\\circ \\Rightarrow \\frac{1}{T_i\\omega _c} \\leq \\tan 6^\\circ = 0.105104$$
 
 $$T_i\\omega _c \\geq \\frac{1}{0.105104} = 9.5144$$
 
@@ -5474,8 +5465,7 @@ $$C_d(s) = \\frac{K_ds}{1 + sT_d/N}, \\qquad N \\approx 5 \\text{ to } 20$$
 
 whose magnitude flattens above $\\omega = N/T_d$ at the ceiling
 
-$$\\lim_{\\omega \\to \\infty }\\lvert C_d(j\\omega )\\rvert
-= \\frac{K_dN}{T_d} = K_pN$$
+$$\\lim_{\\omega \\to \\infty }\\lvert C_d(j\\omega )\\rvert = \\frac{K_dN}{T_d} = K_pN$$
 
 so the derivative path can never amplify by more than $N$ times the
 proportional gain. Implemented as the difference equation
@@ -5576,8 +5566,7 @@ $$C(s) = K_c'f\\left[1 + \\frac{1}{T_i'fs} + \\frac{T_d'}{f}s\\right]$$
 Comparing that with the ideal form term by term gives the conversion, and note
 that the middle result simplifies beautifully:
 
-$$K_c = K_c'f, \\qquad T_i = T_i'f = T_i' + T_d', \\qquad
-T_d = \\frac{T_d'}{f} = \\frac{T_i'T_d'}{T_i' + T_d'}$$
+$$K_c = K_c'f, \\qquad T_i = T_i'f = T_i' + T_d', \\qquad T_d = \\frac{T_d'}{f} = \\frac{T_i'T_d'}{T_i' + T_d'}$$
 
 The ideal integral time is the **sum** of the series times; the ideal
 derivative time is their **parallel combination**. Both are worth remembering
@@ -5590,13 +5579,11 @@ write the same controller in ideal and parallel form.
 
 $$f = 1 + \\frac{T_d'}{T_i'} = 1 + \\frac{1}{4} = 1.25$$
 
-$$K_c = 3 \\times 1.25 = 3.75, \\qquad T_i = 4 + 1 = 5\\ \\mathrm{s},
-\\qquad T_d = \\frac{4 \\times 1}{4 + 1} = 0.8\\ \\mathrm{s}$$
+$$K_c = 3 \\times 1.25 = 3.75, \\qquad T_i = 4 + 1 = 5\\ \\mathrm{s}, \\qquad T_d = \\frac{4 \\times 1}{4 + 1} = 0.8\\ \\mathrm{s}$$
 
 Then the parallel gains follow directly:
 
-$$K_p = 3.75, \\qquad K_i = \\frac{3.75}{5} = 0.75,
-\\qquad K_d = 3.75 \\times 0.8 = 3.0$$
+$$K_p = 3.75, \\qquad K_i = \\frac{3.75}{5} = 0.75, \\qquad K_d = 3.75 \\times 0.8 = 3.0$$
 
 **Check by an independent route.** Multiply out the series numerator directly:
 $3(1 + 1/(4s))(1 + s) = 3(1 + s + 1/(4s) + 1/4) = 3.75 + 0.75/s + 3s$, which is
@@ -5607,13 +5594,11 @@ the parallel triple just derived. The two routes agree exactly.
 Going the other way needs a quadratic. Substituting $T_i' = \\alpha T_i$ into
 $T_i' + T_d' = T_i$ and $T_i'T_d'/(T_i' + T_d') = T_d$ gives
 
-$$\\alpha ^{2}T_i - \\alpha T_i + T_d = 0 \\Rightarrow
-\\alpha = \\frac{1}{2}\\left[1 + \\sqrt{1 - \\frac{4T_d}{T_i}}\\right]$$
+$$\\alpha ^{2}T_i - \\alpha T_i + T_d = 0 \\Rightarrow \\alpha = \\frac{1}{2}\\left[1 + \\sqrt{1 - \\frac{4T_d}{T_i}}\\right]$$
 
 and then
 
-$$K_c' = \\alpha K_c, \\qquad T_i' = \\alpha T_i,
-\\qquad T_d' = \\frac{T_d}{\\alpha }$$
+$$K_c' = \\alpha K_c, \\qquad T_i' = \\alpha T_i, \\qquad T_d' = \\frac{T_d}{\\alpha }$$
 
 The square root is real only when
 
@@ -5635,14 +5620,11 @@ zeros. An ideal controller with complex zeros has no series equivalent.
 **Given** $K_c = 2$, $T_i = 10$ s, $T_d = 1$ s, find the equivalent series
 settings.
 
-$$\\frac{4T_d}{T_i} = \\frac{4}{10} = 0.4, \\qquad
-\\sqrt{1 - 0.4} = \\sqrt{0.6} = 0.774597$$
+$$\\frac{4T_d}{T_i} = \\frac{4}{10} = 0.4, \\qquad \\sqrt{1 - 0.4} = \\sqrt{0.6} = 0.774597$$
 
 $$\\alpha = \\frac{1 + 0.774597}{2} = 0.887298$$
 
-$$K_c' = 2 \\times 0.887298 = 1.7746, \\qquad
-T_i' = 10 \\times 0.887298 = 8.8730\\ \\mathrm{s}, \\qquad
-T_d' = \\frac{1}{0.887298} = 1.1270\\ \\mathrm{s}$$
+$$K_c' = 2 \\times 0.887298 = 1.7746, \\qquad T_i' = 10 \\times 0.887298 = 8.8730\\ \\mathrm{s}, \\qquad T_d' = \\frac{1}{0.887298} = 1.1270\\ \\mathrm{s}$$
 
 **Check by the forward conversion.** $T_i' + T_d' = 8.8730 + 1.1270 = 10.000$ s
 and $T_i'T_d'/(T_i' + T_d') = 1.0000$ s, recovering the ideal times exactly;
@@ -5696,8 +5678,7 @@ $T_d = 0.4535$ s, and type those three numbers into a controller that
 implements the series form. The controller actually running is the ideal one
 with
 
-$$K_c = 4.8 \\times 1.25 = 6.0, \\qquad T_i = 2.2672\\ \\mathrm{s},
-\\qquad T_d = 0.3628\\ \\mathrm{s}$$
+$$K_c = 4.8 \\times 1.25 = 6.0, \\qquad T_i = 2.2672\\ \\mathrm{s}, \\qquad T_d = 0.3628\\ \\mathrm{s}$$
 
 Simulating both on the three-lag plant:
 
@@ -5763,8 +5744,7 @@ nothing about any of this, keeps accumulating error.
 
 Take the Ziegler-Nichols PI of Section 4 on the same three-lag plant:
 
-$$G(s) = \\frac{1}{(s+1)^{3}}, \\qquad K_p = 3.6,
-\\qquad T_i = 3.023\\ \\mathrm{s}, \\qquad K_i = 1.1909$$
+$$G(s) = \\frac{1}{(s+1)^{3}}, \\qquad K_p = 3.6, \\qquad T_i = 3.023\\ \\mathrm{s}, \\qquad K_i = 1.1909$$
 
 The plant has unity DC gain, so holding the output at a setpoint of 1 requires
 a steady command of exactly 1. Two arithmetic facts bracket the whole problem:
@@ -5825,8 +5805,7 @@ command on the stop long after the error has changed sign.
 whenever the command is saturated *and* the error would drive it further into
 saturation:
 
-$$\\frac{dI}{dt} = \\begin{cases} 0 & \\text{if } u \\neq u_{sat}
-\\text{ and } e \\cdot u > 0 \\\\ e & \\text{otherwise}\\end{cases}$$
+$$\\frac{dI}{dt} = \\begin{cases} 0 & \\text{if } u \\neq u_{sat} \\text{ and } e \\cdot u > 0 \\\\ e & \\text{otherwise}\\end{cases}$$
 
 The second condition matters: an unconditional freeze would also block the
 integrator from unwinding, which is the opposite of what is wanted.
@@ -5898,8 +5877,7 @@ then feed the windup mechanism of Section 7.2.
 
 **The cure** is to differentiate the measurement instead of the error:
 
-$$u(t) = K_p\\left[r - y\\right] + K_i\\int (r - y)\\,d\\tau
-- K_d\\frac{dy}{dt}$$
+$$u(t) = K_p\\left[r - y\\right] + K_i\\int (r - y)\\,d\\tau - K_d\\frac{dy}{dt}$$
 
 Since $y$ cannot jump when $r$ does, the kick disappears. The **characteristic
 equation is unchanged** — the derivative still acts on the same signal inside
@@ -5931,8 +5909,7 @@ $$K_d = K_pT_d = 2.5 \\times 0.8 = 2.0$$
 
 **Step 2 — the filtered derivative's ceiling.**
 
-$$\\frac{K_dN}{T_d} = \\frac{2.0 \\times 15}{0.8} = 37.5 = K_pN
-= 2.5 \\times 15$$
+$$\\frac{K_dN}{T_d} = \\frac{2.0 \\times 15}{0.8} = 37.5 = K_pN = 2.5 \\times 15$$
 
 Both routes give the same number, which is the check that the algebra of
 Section 5.4 is being applied correctly.
@@ -6029,8 +6006,7 @@ $$y(t) = 1 - e^{-t}\\left(1 + t + \\frac{t^{2}}{2}\\right)$$
 Differentiating twice locates the inflection point, which is where the tangent
 construction is drawn:
 
-$$y'(t) = \\frac{t^{2}}{2}e^{-t}, \\qquad
-y''(t) = e^{-t}\\left(t - \\frac{t^{2}}{2}\\right)$$
+$$y'(t) = \\frac{t^{2}}{2}e^{-t}, \\qquad y''(t) = e^{-t}\\left(t - \\frac{t^{2}}{2}\\right)$$
 
 so $y'' = 0$ at $t = 2$ and the steepest slope is
 
@@ -6039,13 +6015,11 @@ $$y'(2) = 2e^{-2} = 0.27067, \\qquad y(2) = 1 - 5e^{-2} = 0.32332$$
 The tangent at that point crosses zero at $t = \\theta$ and crosses the final
 value at $t = \\theta + \\tau$. Both intercepts come out in closed form:
 
-$$\\frac{y(2)}{y'(2)} = \\frac{1 - 5e^{-2}}{2e^{-2}} = \\frac{e^{2}}{2} - \\frac{5}{2}
-= 1.19453$$
+$$\\frac{y(2)}{y'(2)} = \\frac{1 - 5e^{-2}}{2e^{-2}} = \\frac{e^{2}}{2} - \\frac{5}{2} = 1.19453$$
 
 $$\\frac{1 - y(2)}{y'(2)} = \\frac{5e^{-2}}{2e^{-2}} = \\frac{5}{2} = 2.5$$
 
-$$\\theta = 2 - 1.19453 = 0.80547\\ \\mathrm{s}, \\qquad
-\\tau = 2 + 2.5 - 0.80547 = 3.69453\\ \\mathrm{s}$$
+$$\\theta = 2 - 1.19453 = 0.80547\\ \\mathrm{s}, \\qquad \\tau = 2 + 2.5 - 0.80547 = 3.69453\\ \\mathrm{s}$$
 
 and $\\tau$ is exactly $e^{2}/2$. The process gain is the DC gain, $K = 1$.
 
@@ -6053,8 +6027,7 @@ Feeding those into the reaction-curve PID row of Section 2.1:
 
 $$K_p = \\frac{1.2\\tau }{K\\theta } = 1.2 \\times 3.69453/0.80547 = 5.504$$
 
-$$T_i = 2\\theta = 2 \\times 0.80547 = 1.61094\\ \\mathrm{s}, \\qquad
-T_d = 0.5\\theta = 0.5 \\times 0.80547 = 0.4027\\ \\mathrm{s}$$
+$$T_i = 2\\theta = 2 \\times 0.80547 = 1.61094\\ \\mathrm{s}, \\qquad T_d = 0.5\\theta = 0.5 \\times 0.80547 = 0.4027\\ \\mathrm{s}$$
 
 ## 8.3 Relay Feedback, and Why It Gets $K_u$ Slightly Wrong
 
@@ -6075,8 +6048,7 @@ The limit cycle is a closed-loop oscillation, so $N(a)G(j\\omega ) = -1$, which
 forces $G(j\\omega )$ to be real and negative. That happens only at the phase
 crossover, and there
 
-$$\\lvert G(j\\omega _u)\\rvert = \\frac{\\pi a}{4d}
-\\Rightarrow K_u = \\frac{4d}{\\pi a}$$
+$$\\lvert G(j\\omega _u)\\rvert = \\frac{\\pi a}{4d} \\Rightarrow K_u = \\frac{4d}{\\pi a}$$
 
 So one relay experiment yields $K_u$ from the measured amplitude and $P_u$ from
 the measured period — without ever making the loop unstable.
@@ -6181,16 +6153,14 @@ measured period of 12 s, produce PI settings.
 
 **Step 1 — ultimate gain from the describing function.**
 
-$$K_u = \\frac{4d}{\\pi a} = \\frac{4 \\times 2.5}{\\pi \\times 0.40}
-= \\frac{10}{1.2566} = 7.958$$
+$$K_u = \\frac{4d}{\\pi a} = \\frac{4 \\times 2.5}{\\pi \\times 0.40} = \\frac{10}{1.2566} = 7.958$$
 
 **Step 2 — ultimate period.** The limit-cycle period is $P_u$ directly:
 $P_u = 12$ s.
 
 **Step 3 — apply the PI row.**
 
-$$K_p = 0.45K_u = 0.45 \\times 7.958 = 3.581, \\qquad
-T_i = \\frac{P_u}{1.2} = \\frac{12}{1.2} = 10\\ \\mathrm{s}$$
+$$K_p = 0.45K_u = 0.45 \\times 7.958 = 3.581, \\qquad T_i = \\frac{P_u}{1.2} = \\frac{12}{1.2} = 10\\ \\mathrm{s}$$
 
 $$K_i = \\frac{K_p}{T_i} = 3.581/10 = 0.3581$$
 
@@ -6225,8 +6195,7 @@ $$u_k = K_pe_k + K_iI_k + K_dD_k$$
 In practice the derivative is filtered exactly as in Section 5.4, which in
 discrete form is one first-order recursion:
 
-$$x_k = x_{k-1} + \\alpha (e_k - x_{k-1}), \\qquad
-\\alpha = \\frac{T_s}{\\tau + T_s}, \\qquad \\tau = \\frac{T_d}{N}$$
+$$x_k = x_{k-1} + \\alpha (e_k - x_{k-1}), \\qquad \\alpha = \\frac{T_s}{\\tau + T_s}, \\qquad \\tau = \\frac{T_d}{N}$$
 
 $$D_k = \\frac{K_d(e_k - x_k)}{\\tau }$$
 
@@ -6236,8 +6205,7 @@ The zero-order hold holds each command for a full sample interval, which on
 average delays the signal by half a sample. A delay of $T_s/2$ contributes
 phase
 
-$$\\angle e^{-sT_s/2}\\Big|_{s = j\\omega } = -\\frac{\\omega T_s}{2}
-\\ \\mathrm{rad}$$
+$$\\angle e^{-sT_s/2}\\Big|_{s = j\\omega } = -\\frac{\\omega T_s}{2} \\ \\mathrm{rad}$$
 
 and no magnitude change at all. **Sampling is a phase-margin tax, payable at
 the gain crossover.** Take the detuned PID of Section 4.4 on the three-lag
@@ -6256,8 +6224,7 @@ The tax at each sample interval, and the measured consequence:
 
 At $T_s = 0.8$ s the arithmetic is
 
-$$\\frac{\\omega _cT_s}{2} = 1.1395 \\times 0.8/2 = 0.4558\\ \\mathrm{rad}
-= 26.11^\\circ$$
+$$\\frac{\\omega _cT_s}{2} = 1.1395 \\times 0.8/2 = 0.4558\\ \\mathrm{rad} = 26.11^\\circ$$
 
 which is more than half of the 49.17° the design started with. What is left,
 23.06°, is the margin of a badly under-damped loop, and the measured overshoot
@@ -6278,8 +6245,7 @@ $$5^\\circ = 5 \\times \\pi /180 = 0.08727\\ \\mathrm{rad}$$
 
 **Step 2 — invert the half-sample lag.**
 
-$$\\frac{\\omega _cT_s}{2} \\leq 0.08727 \\Rightarrow
-T_s \\leq \\frac{2 \\times 0.08727}{1.1395} = 0.1532\\ \\mathrm{s}$$
+$$\\frac{\\omega _cT_s}{2} \\leq 0.08727 \\Rightarrow T_s \\leq \\frac{2 \\times 0.08727}{1.1395} = 0.1532\\ \\mathrm{s}$$
 
 **Step 3 — cross-check against the two rules of thumb.** The sampling frequency
 rule asks for $\\omega _s \\geq 20\\omega _c$, that is
@@ -6319,11 +6285,9 @@ rad/s.
 **Cascade design.** Close a proportional inner loop with $K_2 = 9$ around
 $G_2$. Two things happen at once:
 
-$$T_2(s) = \\frac{K_2}{s + 1 + K_2} = \\frac{9}{s + 10}
-\\Rightarrow \\tau _{inner} = \\frac{1}{1 + K_2} = 0.1\\ \\mathrm{s}$$
+$$T_2(s) = \\frac{K_2}{s + 1 + K_2} = \\frac{9}{s + 10} \\Rightarrow \\tau _{inner} = \\frac{1}{1 + K_2} = 0.1\\ \\mathrm{s}$$
 
-$$S_2(s) = \\frac{1}{1 + K_2G_2(s)} = \\frac{s+1}{s+10}
-\\Rightarrow S_2(0) = \\frac{1}{1 + K_2} = 0.1$$
+$$S_2(s) = \\frac{1}{1 + K_2G_2(s)} = \\frac{s+1}{s+10} \\Rightarrow S_2(0) = \\frac{1}{1 + K_2} = 0.1$$
 
 The inner loop is **ten times faster** than the process it replaces, and it
 rejects steady disturbances by a factor of ten before the outer loop is even
@@ -6382,8 +6346,7 @@ the disturbance by $S_2(0) = 1/(1 + K_2)$ before the outer loop acts, and the
 single-loop deviation is 0.34465. A crude screen assumes the outer loop is
 unchanged:
 
-$$\\frac{0.34465}{1 + K_2} \\leq 0.05 \\Rightarrow 1 + K_2 \\geq 6.893
-\\Rightarrow K_2 \\geq 5.89$$
+$$\\frac{0.34465}{1 + K_2} \\leq 0.05 \\Rightarrow 1 + K_2 \\geq 6.893 \\Rightarrow K_2 \\geq 5.89$$
 
 **Step 2 — check the screen against measurement.** From the sweep, $K_2 = 3$
 gives 0.07045 (fails) and $K_2 = 9$ gives 0.02660 (passes with a factor of
@@ -6820,35 +6783,27 @@ Sections 1 to 4 quoted the specification formulas. Every one of them falls out
 of a single expression, and deriving it once makes the rest bookkeeping. Drive
 the standard second-order system with a unit step:
 
-$$Y(s) = \\frac{\\omega _n^{2}}{s\\left(s^{2} + 2\\zeta \\omega _ns
-+ \\omega _n^{2}\\right)}$$
+$$Y(s) = \\frac{\\omega _n^{2}}{s\\left(s^{2} + 2\\zeta \\omega _ns + \\omega _n^{2}\\right)}$$
 
 Split off the DC term and complete the square in the remainder:
 
-$$Y(s) = \\frac{1}{s} - \\frac{s + 2\\zeta \\omega _n}
-{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
+$$Y(s) = \\frac{1}{s} - \\frac{s + 2\\zeta \\omega _n} {(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
 
-$$= \\frac{1}{s} - \\frac{s + \\zeta \\omega _n}
-{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}
-- \\frac{\\zeta \\omega _n}{\\omega _d}\\cdot
-\\frac{\\omega _d}{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
+$$= \\frac{1}{s} - \\frac{s + \\zeta \\omega _n} {(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}} - \\frac{\\zeta \\omega _n}{\\omega _d}\\cdot \\frac{\\omega _d}{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
 
 Both remaining terms are standard transforms, so
 
-$$y(t) = 1 - e^{-\\zeta \\omega _nt}\\left[\\cos \\omega _dt
-+ \\frac{\\zeta }{\\sqrt{1 - \\zeta ^{2}}}\\sin \\omega _dt\\right]$$
+$$y(t) = 1 - e^{-\\zeta \\omega _nt}\\left[\\cos \\omega _dt + \\frac{\\zeta }{\\sqrt{1 - \\zeta ^{2}}}\\sin \\omega _dt\\right]$$
 
 Collapsing the bracket into a single sinusoid with
 $\\varphi = \\arccos \\zeta$ gives the form everything else comes from:
 
-$$y(t) = 1 - \\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}}
-\\sin (\\omega _dt + \\varphi )$$
+$$y(t) = 1 - \\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}} \\sin (\\omega _dt + \\varphi )$$
 
 Differentiating, the two exponential-times-sinusoid terms cancel and leave
 something remarkably simple:
 
-$$\\frac{dy}{dt} = \\frac{\\omega _n}{\\sqrt{1 - \\zeta ^{2}}}
-e^{-\\zeta \\omega _nt}\\sin \\omega _dt$$
+$$\\frac{dy}{dt} = \\frac{\\omega _n}{\\sqrt{1 - \\zeta ^{2}}} e^{-\\zeta \\omega _nt}\\sin \\omega _dt$$
 
 The velocity is a pure damped sine with **no phase shift**. That single fact
 gives the peak time in one line.
@@ -6865,9 +6820,7 @@ with no approximation anywhere. Substituting back, and using
 $\\sin (\\pi + \\varphi ) = -\\sin \\varphi$ together with
 $\\sin \\varphi = \\sqrt{1 - \\zeta ^{2}}$:
 
-$$y(t_p) = 1 + \\frac{e^{-\\zeta \\omega _n\\pi /\\omega _d}}
-{\\sqrt{1 - \\zeta ^{2}}}\\sqrt{1 - \\zeta ^{2}}
-= 1 + e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}$$
+$$y(t_p) = 1 + \\frac{e^{-\\zeta \\omega _n\\pi /\\omega _d}} {\\sqrt{1 - \\zeta ^{2}}}\\sqrt{1 - \\zeta ^{2}} = 1 + e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}$$
 
 $$OS = 100\\,e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}\\ \\%$$
 
@@ -6881,8 +6834,7 @@ The response first reaches its final value when the sinusoid crosses zero:
 
 $$\\sin (\\omega _dt + \\varphi ) = 0 \\Rightarrow \\omega _dt + \\varphi = \\pi$$
 
-$$t_r = \\frac{\\pi - \\varphi }{\\omega _d}
-= \\frac{\\pi - \\arccos \\zeta }{\\omega _d}$$
+$$t_r = \\frac{\\pi - \\varphi }{\\omega _d} = \\frac{\\pi - \\arccos \\zeta }{\\omega _d}$$
 
 Three exact results, three lines of algebra. The fourth specification is where
 the exactness stops.
@@ -6891,16 +6843,13 @@ the exactness stops.
 
 Settling requires $\\lvert y - 1\\rvert$ to stay below a band, and
 
-$$\\lvert y(t) - 1\\rvert = \\frac{e^{-\\zeta \\omega _nt}}
-{\\sqrt{1 - \\zeta ^{2}}}\\lvert \\sin (\\omega _dt + \\varphi )\\rvert$$
+$$\\lvert y(t) - 1\\rvert = \\frac{e^{-\\zeta \\omega _nt}} {\\sqrt{1 - \\zeta ^{2}}}\\lvert \\sin (\\omega _dt + \\varphi )\\rvert$$
 
 is a decaying exponential multiplied by an oscillation. Setting that equal to
 0.02 is transcendental — there is no closed form. What can be solved exactly is
 the **envelope**, obtained by replacing the sine by 1:
 
-$$\\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}} = 0.02
-\\Rightarrow t_{env} = \\frac{\\ln 50 - \\tfrac{1}{2}\\ln (1 - \\zeta ^{2})}
-{\\zeta \\omega _n}$$
+$$\\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}} = 0.02 \\Rightarrow t_{env} = \\frac{\\ln 50 - \\tfrac{1}{2}\\ln (1 - \\zeta ^{2})} {\\zeta \\omega _n}$$
 
 with $\\ln 50 = 3.912023$. The familiar rule drops the logarithm of
 $1 - \\zeta ^{2}$ and rounds 3.912 up to 4:
@@ -6956,8 +6905,7 @@ specification and compare each with a simulation.
 
 **Step 1 — read the standard form.**
 
-$$\\omega _n^{2} = 36 \\Rightarrow \\omega _n = 6\\ \\mathrm{rad/s},
-\\qquad 2\\zeta \\omega _n = 4.8 \\Rightarrow \\zeta = 4.8/12 = 0.4$$
+$$\\omega _n^{2} = 36 \\Rightarrow \\omega _n = 6\\ \\mathrm{rad/s}, \\qquad 2\\zeta \\omega _n = 4.8 \\Rightarrow \\zeta = 4.8/12 = 0.4$$
 
 **Step 2 — damped frequency.**
 
@@ -6970,13 +6918,11 @@ $$OS = 100e^{-1.37110} = 25.383\\ \\%$$
 
 **Step 4 — peak and rise times.** With $\\arccos 0.4 = 1.15928$ rad,
 
-$$t_p = \\pi /5.49909 = 0.57129\\ \\mathrm{s}, \\qquad
-t_r = (3.14159 - 1.15928)/5.49909 = 0.36048\\ \\mathrm{s}$$
+$$t_p = \\pi /5.49909 = 0.57129\\ \\mathrm{s}, \\qquad t_r = (3.14159 - 1.15928)/5.49909 = 0.36048\\ \\mathrm{s}$$
 
 **Step 5 — settling time, three ways.**
 
-$$\\frac{4}{\\zeta \\omega _n} = 4/2.4 = 1.6667\\ \\mathrm{s}, \\qquad
-t_{env} = \\frac{3.912023 + 0.087177}{2.4} = 1.6663\\ \\mathrm{s}$$
+$$\\frac{4}{\\zeta \\omega _n} = 4/2.4 = 1.6667\\ \\mathrm{s}, \\qquad t_{env} = \\frac{3.912023 + 0.087177}{2.4} = 1.6663\\ \\mathrm{s}$$
 
 **Step 6 — simulate and compare.**
 
@@ -7025,8 +6971,7 @@ the first peak at 0.4 s, recover $\\zeta$, $\\omega _n$ and the settling time.
 **Step 1 — damping ratio from the overshoot.** Inverting the exact overshoot
 formula with $\\ln 0.20 = -1.609438$:
 
-$$\\zeta = \\frac{1.609438}{\\sqrt{9.869604 + 2.590290}}
-= \\frac{1.609438}{3.529858} = 0.455950$$
+$$\\zeta = \\frac{1.609438}{\\sqrt{9.869604 + 2.590290}} = \\frac{1.609438}{3.529858} = 0.455950$$
 
 **Step 2 — damped frequency from the peak time.** Since $t_p = \\pi /\\omega _d$
 is exact,
@@ -7035,8 +6980,7 @@ $$\\omega _d = \\pi /0.4 = 7.85398\\ \\mathrm{rad/s}$$
 
 **Step 3 — natural frequency.**
 
-$$\\omega _n = \\frac{\\omega _d}{\\sqrt{1 - \\zeta ^{2}}}
-= 7.85398/0.890007 = 8.8246\\ \\mathrm{rad/s}$$
+$$\\omega _n = \\frac{\\omega _d}{\\sqrt{1 - \\zeta ^{2}}} = 7.85398/0.890007 = 8.8246\\ \\mathrm{rad/s}$$
 
 **Step 4 — settling estimate.** With
 $\\zeta \\omega _n = 4.0236$,
@@ -7066,8 +7010,7 @@ defined for overdamped systems too and is what an oscilloscope measures.
 
 The 10-90 rise time has no closed form. Its defining condition,
 
-$$\\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}}
-\\sin (\\omega _dt + \\varphi ) = 0.9 \\quad \\text{and} \\quad 0.1$$
+$$\\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}} \\sin (\\omega _dt + \\varphi ) = 0.9 \\quad \\text{and} \\quad 0.1$$
 
 is transcendental at both ends, so every published 10-90 formula is a fit. What
 follows is a fit made here, from simulated responses, so its error is known
@@ -7104,8 +7047,7 @@ mental anchor and a poor design tool.
 Fitting a cubic in $\\zeta$ to the measured values over the range designers
 actually use, $0.3 \\leq \\zeta \\leq 0.9$, gives
 
-$$\\omega _nt_r \\approx 1.981\\zeta ^{3} - 0.798\\zeta ^{2}
-+ 1.247\\zeta + 0.966$$
+$$\\omega _nt_r \\approx 1.981\\zeta ^{3} - 0.798\\zeta ^{2} + 1.247\\zeta + 0.966$$
 
 whose largest relative error anywhere in that range is **0.11%** — three
 hundred times better than the flat rule at $\\zeta = 0.9$, and better than the
@@ -7129,8 +7071,7 @@ $$t_r \\approx 1.8/4 = 0.45\\ \\mathrm{s}$$
 **Step 2 — the cubic.** With $\\zeta ^{2} = 0.36$ and
 $\\zeta ^{3} = 0.216$:
 
-$$1.981 \\times 0.216 = 0.427896, \\qquad 0.798 \\times 0.36 = 0.28728,
-\\qquad 1.247 \\times 0.6 = 0.7482$$
+$$1.981 \\times 0.216 = 0.427896, \\qquad 0.798 \\times 0.36 = 0.28728, \\qquad 1.247 \\times 0.6 = 0.7482$$
 
 $$\\omega _nt_r \\approx 0.427896 - 0.28728 + 0.7482 + 0.966 = 1.854816$$
 
@@ -7151,11 +7092,9 @@ $$OS = e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}$$
 
 Take logarithms of both sides, square, and solve for $\\zeta$:
 
-$$\\ln OS = \\frac{-\\pi \\zeta }{\\sqrt{1 - \\zeta ^{2}}}
-\\Rightarrow \\ln^{2}OS\\,(1 - \\zeta ^{2}) = \\pi ^{2}\\zeta ^{2}$$
+$$\\ln OS = \\frac{-\\pi \\zeta }{\\sqrt{1 - \\zeta ^{2}}} \\Rightarrow \\ln^{2}OS\\,(1 - \\zeta ^{2}) = \\pi ^{2}\\zeta ^{2}$$
 
-$$\\zeta ^{2}\\left(\\pi ^{2} + \\ln^{2}OS\\right) = \\ln^{2}OS
-\\Rightarrow \\zeta = \\frac{-\\ln OS}{\\sqrt{\\pi ^{2} + \\ln^{2}OS}}$$
+$$\\zeta ^{2}\\left(\\pi ^{2} + \\ln^{2}OS\\right) = \\ln^{2}OS \\Rightarrow \\zeta = \\frac{-\\ln OS}{\\sqrt{\\pi ^{2} + \\ln^{2}OS}}$$
 
 with $OS$ written as a fraction. Because $\\zeta = \\cos \\varphi$ where
 $\\varphi$ is the pole's angle from the negative real axis, every overshoot
@@ -7208,8 +7147,7 @@ else.
 **Step 1 — damping ratio from the overshoot.** With
 $\\ln 0.05 = -2.995732$ and $\\ln^{2}0.05 = 8.974412$:
 
-$$\\zeta = \\frac{2.995732}{\\sqrt{9.869604 + 8.974412}}
-= \\frac{2.995732}{4.340970} = 0.690107$$
+$$\\zeta = \\frac{2.995732}{\\sqrt{9.869604 + 8.974412}} = \\frac{2.995732}{4.340970} = 0.690107$$
 
 **Step 2 — decay rate from the settling time.** The corner of the feasible
 region takes both constraints with equality, so
@@ -7219,8 +7157,7 @@ $$\\omega _n = 4/0.690107 = 5.7962\\ \\mathrm{rad/s}$$
 
 **Step 3 — the poles.**
 
-$$\\omega _d = 5.7962\\sqrt{1 - 0.476248} = 5.7962 \\times 0.723707
-= 4.1948\\ \\mathrm{rad/s}$$
+$$\\omega _d = 5.7962\\sqrt{1 - 0.476248} = 5.7962 \\times 0.723707 = 4.1948\\ \\mathrm{rad/s}$$
 
 $$s = -4 \\pm j4.1948$$
 
@@ -7304,8 +7241,7 @@ more. This section measures what a third pole and a zero each do to all four
 transient specifications, so the size of the error in a second-order estimate
 is known rather than hoped for. Throughout, the reference system is
 
-$$T_2(s) = \\frac{1}{s^{2} + s + 1}, \\qquad \\zeta = 0.5,
-\\qquad \\omega _n = 1\\ \\mathrm{rad/s}$$
+$$T_2(s) = \\frac{1}{s^{2} + s + 1}, \\qquad \\zeta = 0.5, \\qquad \\omega _n = 1\\ \\mathrm{rad/s}$$
 
 whose measured specifications are 16.303% overshoot, peak at 3.6276 s, 0-100%
 rise at 2.4184 s and 2% settling at 8.0763 s.
@@ -7316,8 +7252,7 @@ Add a real pole at $s = -\\alpha \\zeta \\omega _n$, scaled so that $\\alpha$
 measures how far out it sits compared with the dominant pair's own distance
 from the imaginary axis. Keep the DC gain at 1:
 
-$$T_3(s) = \\frac{\\alpha \\zeta \\omega _n\\,\\omega _n^{2}}
-{(s + \\alpha \\zeta \\omega _n)(s^{2} + 2\\zeta \\omega _ns + \\omega _n^{2})}$$
+$$T_3(s) = \\frac{\\alpha \\zeta \\omega _n\\,\\omega _n^{2}} {(s + \\alpha \\zeta \\omega _n)(s^{2} + 2\\zeta \\omega _ns + \\omega _n^{2})}$$
 
 Simulating each and measuring:
 
@@ -7383,11 +7318,9 @@ Both the peak time and the rise time with a zero can be solved in closed form.
 Setting $y_z' = 0$ and $y_z = 1$ in turn, and using
 $\\sigma = \\zeta \\omega _n$:
 
-$$t_p = \\frac{1}{\\omega _d}\\left[\\pi - \\arctan \\frac{\\omega _d}
-{z - \\sigma }\\right]$$
+$$t_p = \\frac{1}{\\omega _d}\\left[\\pi - \\arctan \\frac{\\omega _d} {z - \\sigma }\\right]$$
 
-$$t_r = \\frac{1}{\\omega _d}\\arctan \\frac{\\omega _d}
-{\\omega _n^{2}/z - \\sigma }$$
+$$t_r = \\frac{1}{\\omega _d}\\arctan \\frac{\\omega _d} {\\omega _n^{2}/z - \\sigma }$$
 
 taking the first positive root in each case. Both reproduce the simulated
 values to five decimal places at every zero location in the table above.
@@ -7397,8 +7330,7 @@ $B = \\omega _dt_r$ and using the tangent subtraction formula, the numerator and
 denominator share the factor $z^{2} - 2\\zeta z + 1$ (for $\\omega _n = 1$),
 which cancels to leave
 
-$$\\tan (A - B) = \\frac{\\omega _d}{\\zeta } \\Rightarrow
-\\omega _d\\left(t_p - t_r\\right) = \\arccos \\zeta$$
+$$\\tan (A - B) = \\frac{\\omega _d}{\\zeta } \\Rightarrow \\omega _d\\left(t_p - t_r\\right) = \\arccos \\zeta$$
 
 **independent of the zero.** A zero pulls the peak time and the rise time
 forward by exactly the same amount; the interval between them is a property of
@@ -7439,8 +7371,7 @@ imaginary axis.
 **Step 2 — test dominance by residue, not by distance.** Expanding the step
 response in partial fractions gives modal amplitudes
 
-$$\\lvert R_{far}\\rvert = 0.172414, \\qquad
-\\lvert R_{pair}\\rvert = 2 \\times 0.622841 = 1.245682$$
+$$\\lvert R_{far}\\rvert = 0.172414, \\qquad \\lvert R_{pair}\\rvert = 2 \\times 0.622841 = 1.245682$$
 
 $$\\frac{0.172414}{1.245682} = 0.13841$$
 
@@ -7482,15 +7413,13 @@ $z = 1.5$.
 
 **Step 2 — peak time.**
 
-$$\\frac{\\omega _d}{z - \\sigma } = \\frac{0.866025}{1.0} = 0.866025,
-\\qquad \\arctan 0.866025 = 0.713724\\ \\mathrm{rad}$$
+$$\\frac{\\omega _d}{z - \\sigma } = \\frac{0.866025}{1.0} = 0.866025, \\qquad \\arctan 0.866025 = 0.713724\\ \\mathrm{rad}$$
 
 $$t_p = \\frac{3.141593 - 0.713724}{0.866025} = 2.803467\\ \\mathrm{s}$$
 
 **Step 3 — rise time.** With $\\omega _n^{2}/z = 1/1.5 = 0.6666667$:
 
-$$\\frac{\\omega _d}{0.6666667 - 0.5} = \\frac{0.866025}{0.1666667} = 5.19615,
-\\qquad \\arctan 5.19615 = 1.380671\\ \\mathrm{rad}$$
+$$\\frac{\\omega _d}{0.6666667 - 0.5} = \\frac{0.866025}{0.1666667} = 5.19615, \\qquad \\arctan 5.19615 = 1.380671\\ \\mathrm{rad}$$
 
 $$t_r = \\frac{1.380671}{0.866025} = 1.594262\\ \\mathrm{s}$$
 
@@ -7577,8 +7506,7 @@ with no zero. The zero pulls the peak 0.1245 s earlier.`,
 Section 2 listed the error constants. They all come from one expression. For
 unity feedback the error is the input minus the output, and
 
-$$E(s) = R(s) - Y(s) = R(s) - \\frac{G(s)}{1 + G(s)}R(s)
-= \\frac{R(s)}{1 + G(s)}$$
+$$E(s) = R(s) - Y(s) = R(s) - \\frac{G(s)}{1 + G(s)}R(s) = \\frac{R(s)}{1 + G(s)}$$
 
 Provided the closed loop is stable, the Final Value Theorem gives
 
@@ -7588,21 +7516,17 @@ Now feed it the three standard inputs in turn.
 
 **Step, $R(s) = 1/s$:**
 
-$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{1 + G(s)} = \\frac{1}{1 + K_{p}},
-\\qquad K_{p} = \\lim_{s \\to 0}G(s)$$
+$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{1 + G(s)} = \\frac{1}{1 + K_{p}}, \\qquad K_{p} = \\lim_{s \\to 0}G(s)$$
 
 **Ramp, $R(s) = 1/s^{2}$:**
 
-$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{s\\left[1 + G(s)\\right]}
-= \\lim_{s \\to 0}\\frac{1}{s + sG(s)} = \\frac{1}{K_{v}},
-\\qquad K_{v} = \\lim_{s \\to 0}sG(s)$$
+$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{s\\left[1 + G(s)\\right]} = \\lim_{s \\to 0}\\frac{1}{s + sG(s)} = \\frac{1}{K_{v}}, \\qquad K_{v} = \\lim_{s \\to 0}sG(s)$$
 
 because the bare $s$ vanishes and only $sG(s)$ survives.
 
 **Parabola, $R(s) = 1/s^{3}$:**
 
-$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{s^{2}\\left[1 + G(s)\\right]}
-= \\frac{1}{K_{a}}, \\qquad K_{a} = \\lim_{s \\to 0}s^{2}G(s)$$
+$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{s^{2}\\left[1 + G(s)\\right]} = \\frac{1}{K_{a}}, \\qquad K_{a} = \\lim_{s \\to 0}s^{2}G(s)$$
 
 ## 8.2 Why the Table Has That Staircase Shape
 
@@ -7701,8 +7625,7 @@ not independent. Overshoot fixes $\\zeta$; settling time then fixes
 $\\zeta \\omega _n$ and therefore $\\omega _n$; and once both are fixed, the
 rise time is **determined**, not chosen:
 
-$$t_r = \\frac{f(\\zeta )}{\\omega _n}
-= \\frac{f(\\zeta )\\,\\zeta \\,t_s}{4}$$
+$$t_r = \\frac{f(\\zeta )}{\\omega _n} = \\frac{f(\\zeta )\\,\\zeta \\,t_s}{4}$$
 
 where $f(\\zeta ) = \\omega _nt_r$ is the measured 10-90 curve of Section 6.
 A designer who writes down all three has already over-specified the problem.
@@ -8300,8 +8223,7 @@ For an underdamped pair there are two equally good coordinate systems, and the
 whole of second-order design consists of moving between them. In Cartesian
 form the pair sits at $-\\sigma \\pm j\\omega_d$. In polar form,
 
-$$\\omega_n = \\lvert p \\rvert = \\sqrt{\\sigma^{2} + \\omega_d^{2}}, \\qquad
-\\zeta = \\frac{\\sigma}{\\omega_n} = \\cos\\theta$$
+$$\\omega_n = \\lvert p \\rvert = \\sqrt{\\sigma^{2} + \\omega_d^{2}}, \\qquad \\zeta = \\frac{\\sigma}{\\omega_n} = \\cos\\theta$$
 
 where $\\theta$ is measured at the origin from the **negative** real axis round
 to the pole. Going the other way,
@@ -8334,16 +8256,14 @@ one on a simulated step rather than trusting the map.
 
 **Polar coordinates.**
 
-$$\\omega_n = \\sqrt{3^{2} + 4^{2}} = 5\\ \\mathrm{rad/s}, \\qquad
-\\zeta = 3/5 = 0.6, \\qquad \\theta = \\arccos 0.6 = 0.927295\\ \\mathrm{rad}$$
+$$\\omega_n = \\sqrt{3^{2} + 4^{2}} = 5\\ \\mathrm{rad/s}, \\qquad \\zeta = 3/5 = 0.6, \\qquad \\theta = \\arccos 0.6 = 0.927295\\ \\mathrm{rad}$$
 
 which is $53.1301^\\circ$ off the negative real axis. The transfer function
 that goes with this is $G(s) = 25/(s^{2} + 6s + 25)$.
 
 **Overshoot.** The formula gives
 
-$$M_p = 100\\,e^{-\\pi\\zeta/\\sqrt{1-\\zeta^{2}}} = 100\\,e^{-\\pi(0.6)/0.8}
-= 100\\,e^{-2.356194} = 9.4780\\%$$
+$$M_p = 100\\,e^{-\\pi\\zeta/\\sqrt{1-\\zeta^{2}}} = 100\\,e^{-\\pi(0.6)/0.8} = 100\\,e^{-2.356194} = 9.4780\\%$$
 
 The simulated response peaks at 1.094780, so the **measured** overshoot is
 9.4780%. Formula and simulation agree to four decimals.
@@ -8356,8 +8276,7 @@ gives $1.8/5 = 0.36$ s. The measured **10–90%** rise is 0.370810 s, so the
 estimate is 2.92% low. The measured **0–100%** rise is 0.553574 s, which is
 53.8% larger than that estimate and which matches its own closed form:
 
-$$t_{r,100} = \\frac{\\pi - \\arccos\\zeta}{\\omega_d}
-= \\frac{3.141593 - 0.927295}{4} = 0.553574\\ \\mathrm{s}$$
+$$t_{r,100} = \\frac{\\pi - \\arccos\\zeta}{\\omega_d} = \\frac{3.141593 - 0.927295}{4} = 0.553574\\ \\mathrm{s}$$
 
 The two rise times are different quantities. Section 5.4 returns to this,
 because the chapter above states the wrong one.
@@ -8371,8 +8290,7 @@ print should be solved for, never estimated from a corner.
 **Resonant peak.** Differentiating the magnitude and solving for the stationary
 point gives $\\omega_r = 2.645751$ rad/s, and there
 
-$$\\lvert G(j\\omega_r) \\rvert = \\frac{1}{2\\zeta\\sqrt{1-\\zeta^{2}}}
-= \\frac{1}{0.96} = 1.041667$$
+$$\\lvert G(j\\omega_r) \\rvert = \\frac{1}{2\\zeta\\sqrt{1-\\zeta^{2}}} = \\frac{1}{0.96} = 1.041667$$
 
 so this pair has a mild 0.354 dB hump well below $\\omega_n$.
 
@@ -8386,15 +8304,13 @@ $$-3 \\pm j4: \\quad \\omega_n = 5, \\quad \\zeta = 3/5 = 0.6, \\quad \\sigma = 
 
 All three tests pass, so this pair is admissible.
 
-$$-1.5 \\pm j6: \\quad \\omega_n = \\sqrt{38.25} = 6.184658, \\quad
-\\zeta = 1.5/6.184658 = 0.242536$$
+$$-1.5 \\pm j6: \\quad \\omega_n = \\sqrt{38.25} = 6.184658, \\quad \\zeta = 1.5/6.184658 = 0.242536$$
 
 The radius is fine but the angle is far too open and the decay rate of 1.5 is
 below the floor of 2, so this pair fails on two counts at once — which is the
 usual pattern, because $\\sigma = \\zeta\\omega_n$ ties the two together.
 
-$$-6 \\pm j5: \\quad \\omega_n = \\sqrt{61} = 7.810250, \\quad
-\\zeta = 6/7.810250 = 0.768221, \\quad \\sigma = 6$$
+$$-6 \\pm j5: \\quad \\omega_n = \\sqrt{61} = 7.810250, \\quad \\zeta = 6/7.810250 = 0.768221, \\quad \\sigma = 6$$
 
 Admissible, and comfortably so: it sits just inside the outer circle.
 
@@ -8413,10 +8329,7 @@ Each factor $(s_0 - z_i)$ is the vector drawn from the zero $z_i$ to the test
 point $s_0$. Since magnitudes of a product multiply and angles of a product
 add,
 
-$$\\lvert H(s_0) \\rvert = \\lvert K \\rvert
-\\frac{\\prod_i \\lvert s_0 - z_i \\rvert}{\\prod_j \\lvert s_0 - p_j \\rvert},
-\\qquad
-\\angle H(s_0) = \\angle K + \\sum_i \\angle(s_0 - z_i) - \\sum_j \\angle(s_0 - p_j)$$
+$$\\lvert H(s_0) \\rvert = \\lvert K \\rvert \\frac{\\prod_i \\lvert s_0 - z_i \\rvert}{\\prod_j \\lvert s_0 - p_j \\rvert}, \\qquad \\angle H(s_0) = \\angle K + \\sum_i \\angle(s_0 - z_i) - \\sum_j \\angle(s_0 - p_j)$$
 
 That is the graphical rule, and it is exact. **It is also conditional on the
 factored form**, and here is where a very common error lives: those rules apply
@@ -8431,16 +8344,13 @@ terms. Adding term angles is not an approximation; it is meaningless.
 
 **Each term separately.**
 
-$$\\frac{1}{1 + j2} = 0.200000 - j0.400000, \\qquad
-\\lvert \\cdot \\rvert = 0.447214, \\quad \\angle = -63.4349^\\circ$$
+$$\\frac{1}{1 + j2} = 0.200000 - j0.400000, \\qquad \\lvert \\cdot \\rvert = 0.447214, \\quad \\angle = -63.4349^\\circ$$
 
-$$\\frac{4}{5 + j2} = 0.689655 - j0.275862, \\qquad
-\\lvert \\cdot \\rvert = 0.742781, \\quad \\angle = -21.8014^\\circ$$
+$$\\frac{4}{5 + j2} = 0.689655 - j0.275862, \\qquad \\lvert \\cdot \\rvert = 0.742781, \\quad \\angle = -21.8014^\\circ$$
 
 **Add them as complex numbers**, which is the only legal move:
 
-$$G(j2) = 0.889655 - j0.675862, \\qquad
-\\lvert G(j2) \\rvert = 1.117263, \\quad \\angle G(j2) = -37.2236^\\circ$$
+$$G(j2) = 0.889655 - j0.675862, \\qquad \\lvert G(j2) \\rvert = 1.117263, \\quad \\angle G(j2) = -37.2236^\\circ$$
 
 **The wrong routes, with their wrong numbers.** Adding the two angles gives
 $-63.4349 - 21.8014 = -85.2363^\\circ$, off by 48 degrees. Adding the two
@@ -8456,8 +8366,7 @@ magnitude 13.453624 and angle $48.0128^\\circ$; the denominator is
 $(1+j2)(5+j2) = 1 + j12$, of magnitude 12.041595 and angle $85.2364^\\circ$.
 Then
 
-$$\\lvert G(j2) \\rvert = \\frac{13.453624}{12.041595} = 1.117263, \\qquad
-\\angle G(j2) = 48.0128 - 85.2364 = -37.2236^\\circ$$
+$$\\lvert G(j2) \\rvert = \\frac{13.453624}{12.041595} = 1.117263, \\qquad \\angle G(j2) = 48.0128 - 85.2364 = -37.2236^\\circ$$
 
 which reproduces the honest answer exactly.
 
@@ -8503,9 +8412,7 @@ $$Y(s) = \\frac{H(s)}{s}$$
 and the step's own pole at the origin joins the poles of the plant. If all the
 poles of Y are simple, Y splits into one first-order piece per pole:
 
-$$Y(s) = \\sum_{k} \\frac{r_k}{s - p_k}
-\\qquad\\Longrightarrow\\qquad
-y(t) = \\sum_{k} r_k e^{p_k t}$$
+$$Y(s) = \\sum_{k} \\frac{r_k}{s - p_k} \\qquad\\Longrightarrow\\qquad y(t) = \\sum_{k} r_k e^{p_k t}$$
 
 One pole, one term, one residue. Nothing is lost and nothing is shared: the
 response is a bookkeeping sum over the poles, and the residue $r_k$ is the
@@ -8514,8 +8421,7 @@ weight the system gives that mode.
 The residue at a simple pole is obtained by killing the singularity and
 evaluating:
 
-$$r_k = \\lim_{s \\to p_k} (s - p_k) Y(s)
-= \\frac{N(p_k)}{\\left.\\dfrac{d}{ds}D(s)\\right|_{s = p_k}}$$
+$$r_k = \\lim_{s \\to p_k} (s - p_k) Y(s) = \\frac{N(p_k)}{\\left.\\dfrac{d}{ds}D(s)\\right|_{s = p_k}}$$
 
 writing $Y = N/D$. The derivative form is the one to use in practice because it
 needs no cancelling by hand, and it is what a calculator or a script evaluates.
@@ -8545,8 +8451,7 @@ know it before you draw anything.
 Conjugate poles have conjugate residues, and the pair collapses to a single
 real waveform. With $p = -\\sigma + j\\omega_d$ and residue $r = \\lvert r \\rvert e^{j\\phi}$,
 
-$$r e^{pt} + \\bar{r} e^{\\bar{p}t}
-= 2\\lvert r \\rvert e^{-\\sigma t}\\cos(\\omega_d t + \\phi)$$
+$$r e^{pt} + \\bar{r} e^{\\bar{p}t} = 2\\lvert r \\rvert e^{-\\sigma t}\\cos(\\omega_d t + \\phi)$$
 
 So the **magnitude** of the residue sets the ringing amplitude and its
 **angle** sets the phase of the ring. A candidate who computes a complex
@@ -8634,10 +8539,7 @@ overshoot of this system is 24.4463% and its peak arrives at 1.3861 s.
 
 If a pole is repeated m times, the expansion needs m terms for it:
 
-$$\\frac{r_{k,1}}{s-p_k} + \\frac{r_{k,2}}{(s-p_k)^{2}} + \\dots
-+ \\frac{r_{k,m}}{(s-p_k)^{m}}
-\\;\\longrightarrow\\;
-\\left(r_{k,1} + r_{k,2}t + \\dots + \\frac{r_{k,m}t^{m-1}}{(m-1)!}\\right)e^{p_k t}$$
+$$\\frac{r_{k,1}}{s-p_k} + \\frac{r_{k,2}}{(s-p_k)^{2}} + \\dots + \\frac{r_{k,m}}{(s-p_k)^{m}} \\;\\longrightarrow\\; \\left(r_{k,1} + r_{k,2}t + \\dots + \\frac{r_{k,m}t^{m-1}}{(m-1)!}\\right)e^{p_k t}$$
 
 The polynomial prefactor is why repeated poles **on the imaginary axis** are
 unstable: $t$ grows without bound and there is no decaying exponential to hold
@@ -8667,9 +8569,7 @@ numerator**, so a zero sitting near $p_k$ multiplies the residue by a short
 vector and shrinks it. **Every other pole appears in the denominator**, so a
 neighbouring pole divides by a short vector and inflates it. In one line:
 
-$$\\lvert r_k \\rvert = \\lvert K \\rvert
-\\frac{\\text{product of distances from } p_k \\text{ to the zeros}}
-{\\text{product of distances from } p_k \\text{ to the other poles}}$$
+$$\\lvert r_k \\rvert = \\lvert K \\rvert \\frac{\\text{product of distances from } p_k \\text{ to the zeros}} {\\text{product of distances from } p_k \\text{ to the other poles}}$$
 
 The limiting case is the one that matters. If a zero lands exactly on $p_k$,
 one numerator vector has length zero, so $r_k = 0$ and the mode is **not
@@ -8688,8 +8588,7 @@ $$H_z(s) = \\frac{3}{z}\\cdot\\frac{s + z}{(s+1)(s+3)}, \\qquad H_z(0) = 1$$
 
 The step response residue at the pole $s = -1$ is
 
-$$r_{-1} = \\frac{3}{z}\\cdot\\frac{-1 + z}{(-1)(-1+3)}
-= -\\frac{3(z-1)}{2z}$$
+$$r_{-1} = \\frac{3}{z}\\cdot\\frac{-1 + z}{(-1)(-1+3)} = -\\frac{3(z-1)}{2z}$$
 
 Write $\\Delta = z - 1$ for the gap between the zero and that pole. Then
 $\\lvert r_{-1} \\rvert = 1.5\\Delta/(1 + \\Delta)$, which for small gaps is
@@ -8717,11 +8616,7 @@ $s = -1$ is under 5% of the DC gain, and confirm the answer on a response.
 
 **Set up the inequality.** We need $\\lvert r_{-1} \\rvert \\leq 0.05$, that is
 
-$$\\frac{1.5\\Delta}{1 + \\Delta} \\leq 0.05
-\\quad\\Longrightarrow\\quad
-1.5\\Delta \\leq 0.05 + 0.05\\Delta
-\\quad\\Longrightarrow\\quad
-\\Delta \\leq \\frac{0.05}{1.45} = 0.034483$$
+$$\\frac{1.5\\Delta}{1 + \\Delta} \\leq 0.05 \\quad\\Longrightarrow\\quad 1.5\\Delta \\leq 0.05 + 0.05\\Delta \\quad\\Longrightarrow\\quad \\Delta \\leq \\frac{0.05}{1.45} = 0.034483$$
 
 So the zero must lie between $-1$ and $-1.034483$: a window only 3.4% wide in
 pole position. **Exact cancellation is not required, but near-exact is.**
@@ -8748,8 +8643,7 @@ $$r_{-1} = \\frac{40(-1+4.2)}{(-1)(-1+4)(-1+21)} = \\frac{128}{-60} = -2.133333$
 
 $$r_{-4} = \\frac{40(-4+4.2)}{(-4)(-4+1)(-4+21)} = \\frac{8}{204} = +0.039216$$
 
-$$r_{-21} = \\frac{40(-21+4.2)}{(-21)(-21+1)(-21+4)}
-= \\frac{-672}{-7140} = +0.094118$$
+$$r_{-21} = \\frac{40(-21+4.2)}{(-21)(-21+1)(-21+4)} = \\frac{-672}{-7140} = +0.094118$$
 
 **Read the answer off the residues.** The mode at $-1$ carries 2.133333. The
 mode at $-4$ carries 0.039216, which is 1.84% of it, because the zero at
@@ -8780,8 +8674,7 @@ $$G_r(s) = \\frac{r}{(s+1)(s+r)}$$
 and compare its step response against the first-order response of $1/(s+1)$.
 Both expansions are elementary:
 
-$$y_r(t) = 1 - \\frac{r}{r-1}e^{-t} + \\frac{1}{r-1}e^{-rt},
-\\qquad y_1(t) = 1 - e^{-t}$$
+$$y_r(t) = 1 - \\frac{r}{r-1}e^{-t} + \\frac{1}{r-1}e^{-rt}, \\qquad y_1(t) = 1 - e^{-t}$$
 
 Subtract, and the whole approximation error is one clean expression:
 
@@ -8789,8 +8682,7 @@ $$e_r(t) = y_r(t) - y_1(t) = \\frac{1}{r-1}\\left(e^{-rt} - e^{-t}\\right)$$
 
 Differentiate and set to zero to find where the error is worst:
 
-$$e_r'(t) = 0 \\;\\Longrightarrow\\; e^{(r-1)t} = r
-\\;\\Longrightarrow\\; t^{*} = \\frac{\\ln r}{r - 1}$$
+$$e_r'(t) = 0 \\;\\Longrightarrow\\; e^{(r-1)t} = r \\;\\Longrightarrow\\; t^{*} = \\frac{\\ln r}{r - 1}$$
 
 Substituting back and simplifying collapses everything to a single power:
 
@@ -8953,8 +8845,7 @@ Take the reference pair of Section 5, $H(s) = 25/(s^{2}+6s+25)$, whose
 undecorated step response overshoots 9.478%. Its derivative is available in
 closed form,
 
-$$y'(t) = \\frac{\\omega_n^{2}}{\\omega_d}e^{-\\sigma t}\\sin(\\omega_d t)
-= 6.25\\,e^{-3t}\\sin 4t$$
+$$y'(t) = \\frac{\\omega_n^{2}}{\\omega_d}e^{-\\sigma t}\\sin(\\omega_d t) = 6.25\\,e^{-3t}\\sin 4t$$
 
 whose maximum is found by solving $4\\cos 4t = 3\\sin 4t$, giving
 $t = 0.231824$ s and $y'_{\\max} = 2.494196$. That number sets the scale: a zero
@@ -9013,8 +8904,7 @@ that the step response must go negative, then measure how far.
 $H_z(s) = 25(1 - s/z)/(s^{2}+6s+25)$, the initial slope follows from the
 initial value theorem applied to $\\dot{y}$:
 
-$$y_z'(0^{+}) = \\lim_{s \\to \\infty} s\\left[sY_z(s)\\right]
-= \\lim_{s \\to \\infty} sH_z(s) = -\\frac{\\omega_n^{2}}{z} = -\\frac{25}{z}$$
+$$y_z'(0^{+}) = \\lim_{s \\to \\infty} s\\left[sY_z(s)\\right] = \\lim_{s \\to \\infty} sH_z(s) = -\\frac{\\omega_n^{2}}{z} = -\\frac{25}{z}$$
 
 Negative for every positive z. The output leaves the origin heading the wrong
 way, and it must, because the relative degree is two so $y'(0^{+})$ of the bare
@@ -9067,9 +8957,7 @@ roughly quadruples.
 Where a zero adds a derivative, an extra pole adds an integration. Attaching a
 pole at $s = -p$ in the gain-preserving way gives
 
-$$H_p(s) = \\frac{H(s)}{1 + s/p}
-\\qquad\\Longleftrightarrow\\qquad
-\\frac{1}{p}\\,\\dot{y}_p + y_p = y$$
+$$H_p(s) = \\frac{H(s)}{1 + s/p} \\qquad\\Longleftrightarrow\\qquad \\frac{1}{p}\\,\\dot{y}_p + y_p = y$$
 
 so the augmented response is the original passed through a first-order lag of
 time constant $1/p$. The consequences are exactly the ones the measured table
@@ -9108,16 +8996,14 @@ settling-time specification.
 **Given** a plant with a slow pole at $s = -0.4$ and faster poles at $-5$ and
 $-8$, compensated by a zero intended to sit on the slow pole,
 
-$$H(s) = \\frac{16}{z_c}\\cdot\\frac{s + z_c}{(s+0.4)(s+5)(s+8)}, \\qquad
-z_c = 0.4(1 + \\delta)$$
+$$H(s) = \\frac{16}{z_c}\\cdot\\frac{s + z_c}{(s+0.4)(s+5)(s+8)}, \\qquad z_c = 0.4(1 + \\delta)$$
 
 with unit DC gain for every $\\delta$. Report what a mismatch $\\delta$ leaves.
 
 **The residue at the slow pole.** Applying the geometric rule of Section 7.1
 to $Y = H/s$,
 
-$$r_{-0.4} = \\frac{16}{z_c}\\cdot\\frac{-0.4 + z_c}{(-0.4)(4.6)(7.6)}
-= -\\,\\frac{16}{13.984}\\cdot\\frac{\\delta}{1+\\delta}$$
+$$r_{-0.4} = \\frac{16}{z_c}\\cdot\\frac{-0.4 + z_c}{(-0.4)(4.6)(7.6)} = -\\,\\frac{16}{13.984}\\cdot\\frac{\\delta}{1+\\delta}$$
 
 because $z_c - 0.4 = 0.4\\delta$ and the $0.4$ cancels. The coefficient is
 $16/13.984 = 1.144165$, so a mismatch of $\\delta$ leaves a residue of about
@@ -9199,8 +9085,7 @@ is a system that only appears to work.`,
 A digital controller sees the plant only at the sampling instants $t = kT$.
 Sample the continuous mode $e^{pt}$ at those instants:
 
-$$\\left.e^{pt}\\right|_{t = kT} = e^{pkT} = \\left(e^{pT}\\right)^{k} = z^{k},
-\\qquad z = e^{pT}$$
+$$\\left.e^{pt}\\right|_{t = kT} = e^{pkT} = \\left(e^{pT}\\right)^{k} = z^{k}, \\qquad z = e^{pT}$$
 
 A continuous mode becomes a geometric sequence, and the number that governs it
 is $z = e^{pT}$. That single substitution is the whole of the mapping between
@@ -9250,8 +9135,7 @@ discrete poles and everything they imply.
 
 **Radius and angle.**
 
-$$\\lvert z \\rvert = e^{-3(0.1)} = e^{-0.3} = 0.740818, \\qquad
-\\angle z = 4(0.1) = 0.4\\ \\mathrm{rad} = 22.9183^\\circ$$
+$$\\lvert z \\rvert = e^{-3(0.1)} = e^{-0.3} = 0.740818, \\qquad \\angle z = 4(0.1) = 0.4\\ \\mathrm{rad} = 22.9183^\\circ$$
 
 **Rectangular form.** With $\\cos 0.4 = 0.921061$ and $\\sin 0.4 = 0.389418$,
 
@@ -9268,8 +9152,7 @@ discretisation; for the poles it **is** the discretisation.
 **Decay in samples.** The envelope shrinks by the factor $\\lvert z \\rvert$ per
 sample. Solving $\\lvert z \\rvert^{k} = 0.05$ gives
 
-$$k = \\frac{\\ln 0.05}{\\ln 0.740818} = \\frac{-2.995732}{-0.300000} = 9.9858
-\\ \\mathrm{samples}$$
+$$k = \\frac{\\ln 0.05}{\\ln 0.740818} = \\frac{-2.995732}{-0.300000} = 9.9858 \\ \\mathrm{samples}$$
 
 which is $9.9858 \\times 0.1 = 0.99858$ s, against the continuous estimate
 $3/\\sigma = 1$ s. The two agree because they are the same calculation.
@@ -9302,8 +9185,7 @@ without any oscillation at all.
 
 **The negative real one.** A negative z has angle $\\pi$, so
 
-$$s = \\frac{\\ln 0.5 + j\\pi}{0.1} = \\frac{-0.6931472 + j3.1415927}{0.1}
-= -6.931472 + j31.415927$$
+$$s = \\frac{\\ln 0.5 + j\\pi}{0.1} = \\frac{-0.6931472 + j3.1415927}{0.1} = -6.931472 + j31.415927$$
 
 The imaginary part is exactly $\\pi/T = 31.4159$ rad/s, the Nyquist frequency.
 The sampled sequence is $(-0.5)^{k}$, which alternates sign at every step: the
@@ -9322,9 +9204,7 @@ angle sets the character.
 
 Undoing the map gives the continuous parameters directly from a discrete pole:
 
-$$\\sigma = -\\frac{\\ln \\lvert z \\rvert}{T}, \\qquad
-\\omega_d = \\frac{\\angle z}{T}, \\qquad
-\\zeta = \\frac{\\sigma}{\\sqrt{\\sigma^{2} + \\omega_d^{2}}}$$
+$$\\sigma = -\\frac{\\ln \\lvert z \\rvert}{T}, \\qquad \\omega_d = \\frac{\\angle z}{T}, \\qquad \\zeta = \\frac{\\sigma}{\\sqrt{\\sigma^{2} + \\omega_d^{2}}}$$
 
 Because $\\zeta$ depends on the ratio of $\\ln\\lvert z\\rvert$ to $\\angle z$,
 the constant-$\\zeta$ loci — straight rays in the s-plane — become
@@ -9359,8 +9239,7 @@ offered, and thirty seconds are available. Work the map in this order.
    each other cancel almost exactly; strike both out and note the residual.
 6. **Get the DC gain from distances**, using the magnitude rule at $s = 0$:
 
-$$H(0) = K\\,\\frac{\\prod_i (0 - z_i)}{\\prod_j (0 - p_j)}
-= K\\,\\frac{\\prod_i (-z_i)}{\\prod_j (-p_j)}$$
+$$H(0) = K\\,\\frac{\\prod_i (0 - z_i)}{\\prod_j (0 - p_j)} = K\\,\\frac{\\prod_i (-z_i)}{\\prod_j (-p_j)}$$
 
 Then convert $\\zeta$ and $\\omega_n$ into an overshoot and a peak time using
 the standard formulas, and you have the response.
@@ -9383,8 +9262,7 @@ $$H(s) = \\frac{6.25(s+8)}{(s^{2}+3s+6.25)(s+8)} = \\frac{6.25}{s^{2}+3s+6.25}$$
 
 **Step 4, geometry.**
 
-$$\\omega_n = \\sqrt{1.5^{2} + 2^{2}} = 2.5\\ \\mathrm{rad/s}, \\qquad
-\\zeta = 1.5/2.5 = 0.6$$
+$$\\omega_n = \\sqrt{1.5^{2} + 2^{2}} = 2.5\\ \\mathrm{rad/s}, \\qquad \\zeta = 1.5/2.5 = 0.6$$
 
 **Step 6, DC gain.** $6.25/6.25 = 1$, as stated.
 
@@ -9422,14 +9300,11 @@ zeros**.
 
 **Assemble and fix the gain.**
 
-$$H(s) = \\frac{K}{(s+2)(s+10)}, \\qquad H(0) = \\frac{K}{20} = 1
-\\;\\Rightarrow\\; K = 20$$
+$$H(s) = \\frac{K}{(s+2)(s+10)}, \\qquad H(0) = \\frac{K}{20} = 1 \\;\\Rightarrow\\; K = 20$$
 
 **Verify by re-expanding.** The residues of $20/[s(s+2)(s+10)]$ are
 
-$$r_0 = \\frac{20}{20} = 1, \\qquad
-r_{-2} = \\frac{20}{(-2)(8)} = -1.25, \\qquad
-r_{-10} = \\frac{20}{(-10)(-8)} = 0.25$$
+$$r_0 = \\frac{20}{20} = 1, \\qquad r_{-2} = \\frac{20}{(-2)(8)} = -1.25, \\qquad r_{-10} = \\frac{20}{(-10)(-8)} = 0.25$$
 
 reproducing the measured response exactly. Fitting the simulated step response
 of $20/[(s+2)(s+10)]$ onto its mode basis returns the same three residues.
@@ -9479,8 +9354,7 @@ zeros. Find $\\omega_n$, $\\zeta$, the percent overshoot and the peak time.
 
 *Solution.* The two coordinates come straight off the geometry:
 
-$$\\omega_n = \\sqrt{2^{2} + 2^{2}} = \\sqrt{8} = 2.828427\\ \\mathrm{rad/s},
-\\qquad \\zeta = 2/2.828427 = 0.707107$$
+$$\\omega_n = \\sqrt{2^{2} + 2^{2}} = \\sqrt{8} = 2.828427\\ \\mathrm{rad/s}, \\qquad \\zeta = 2/2.828427 = 0.707107$$
 
 This is the classic $\\zeta = 1/\\sqrt{2}$ case, and the overshoot formula
 collapses beautifully because $\\zeta/\\sqrt{1-\\zeta^{2}} = 1$:
@@ -9521,8 +9395,7 @@ response looks like.
 
 *Solution.* Assemble from the map and fix the gain:
 
-$$H(s) = \\frac{K(s+4)}{(s^{2}+2s+5)(s+10)}, \\qquad
-H(0) = \\frac{4K}{50} = 2 \\;\\Rightarrow\\; K = 25$$
+$$H(s) = \\frac{K(s+4)}{(s^{2}+2s+5)(s+10)}, \\qquad H(0) = \\frac{4K}{50} = 2 \\;\\Rightarrow\\; K = 25$$
 
 Residues of $H(s)/s$: $r_0 = 2$ at the origin, $r_{-10} = +0.176471$, and
 $r_{-1\\pm j2} = -1.088235 \\pm j0.102941$, whose pair form is
@@ -9598,8 +9471,7 @@ would settle at 0.05, not 1.
 *Solution.* The rule $t_s \\approx 4/(\\zeta\\omega_n)$ gives
 $\\zeta\\omega_n = 4/2 = 2$, so $\\sigma = 2$ and
 
-$$\\omega_n = \\sigma/\\zeta = 2/0.5 = 4\\ \\mathrm{rad/s}, \\qquad
-\\omega_d = 4\\sqrt{1 - 0.25} = 3.464102\\ \\mathrm{rad/s}$$
+$$\\omega_n = \\sigma/\\zeta = 2/0.5 = 4\\ \\mathrm{rad/s}, \\qquad \\omega_d = 4\\sqrt{1 - 0.25} = 3.464102\\ \\mathrm{rad/s}$$
 
 so the poles go at $s = -2 \\pm j3.464102$, and the transfer function is
 $16/(s^{2}+4s+16)$.
@@ -9618,8 +9490,7 @@ at $T = 0.2$ s. Where are the discrete poles, and is the sampled system stable?
 
 *Solution.* Apply $z = e^{sT}$ in polar form:
 
-$$\\lvert z \\rvert = e^{-4(0.2)} = e^{-0.8} = 0.449329, \\qquad
-\\angle z = 3(0.2) = 0.6\\ \\mathrm{rad} = 34.3775^\\circ$$
+$$\\lvert z \\rvert = e^{-4(0.2)} = e^{-0.8} = 0.449329, \\qquad \\angle z = 3(0.2) = 0.6\\ \\mathrm{rad} = 34.3775^\\circ$$
 
 $$z = 0.449329(\\cos 0.6 \\pm j\\sin 0.6) = 0.370847 \\pm j0.253710$$
 
@@ -9636,8 +9507,7 @@ equivalent continuous pole and describe the mode.
 
 *Solution.* A negative real z has angle $\\pi$, so
 
-$$\\sigma = -\\frac{\\ln 0.5}{0.1} = 6.931472\\ \\mathrm{s}^{-1}, \\qquad
-\\omega = \\frac{\\pi}{0.1} = 31.415927\\ \\mathrm{rad/s}$$
+$$\\sigma = -\\frac{\\ln 0.5}{0.1} = 6.931472\\ \\mathrm{s}^{-1}, \\qquad \\omega = \\frac{\\pi}{0.1} = 31.415927\\ \\mathrm{rad/s}$$
 
 giving $s = -6.931472 + j31.415927$. The frequency is exactly the Nyquist rate,
 so the sampled mode is $(-0.5)^{k}$: it flips sign every sample and its

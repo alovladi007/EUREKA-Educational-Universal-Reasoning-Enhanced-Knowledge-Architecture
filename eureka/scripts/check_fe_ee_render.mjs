@@ -83,6 +83,30 @@ function mathSpans(md) {
 const PROSE_WORDS =
   /(?<=^|[\s(){}])(to|or|and|per|with|where|when|then|the|each|from|into|than|about)(?=[\s(){},.]|$)/g;
 
+// remark-math cannot carry a $$...$$ block across a newline. It mis-pairs the
+// delimiters and hands KaTeX a span that starts mid-equation and runs past the
+// closing $$ into the following prose, which renders as a visible red
+// ParseError on the page.
+//
+// This gate could not see that, and the reason is worth keeping: mathSpans()
+// pairs $$ using [\s\S]+?, which ALLOWS the newline the real parser forbids. So
+// the checker built a span the application never builds, validated it, and
+// reported success. Re-implementing a parser's delimiter rules instead of using
+// them is how a gate ends up agreeing with itself. 111 blocks shipped this way
+// in a single chapter and showed as 9 KaTeX errors on one rendered page.
+//
+// The depth checker missed it for a different reason: its stray-dollar mask
+// matches a bare `$$` as an EMPTY inline span, erasing the evidence.
+function delimiterDefects(md) {
+  const hits = [];
+  md.split('\n').forEach((line, i) => {
+    const n = (line.match(/\$\$/g) || []).length;
+    if (n % 2 === 1)
+      hits.push(`display block does not open and close on one line (line ${i + 1}) — remark-math mis-pairs it: ${line.trim().slice(0, 78)}`);
+  });
+  return hits;
+}
+
 function silentDefects(tex) {
   const hits = [];
   // subscript/superscript opened with a paren instead of a brace: a_(n-1)
@@ -128,6 +152,10 @@ for (const file of readdirSync(DIR).filter((f) => f.endsWith('.ts')).sort()) {
   const src = readFileSync(path.join(DIR, file), 'utf8');
   for (const { value } of extractContents(src)) {
     chapters += 1;
+    for (const hit of delimiterDefects(value)) {
+      silent += 1;
+      if (!quiet) console.log(`DELIM  ${file}: ${hit}`);
+    }
     for (const span of mathSpans(value)) {
       spansChecked += 1;
       try {
