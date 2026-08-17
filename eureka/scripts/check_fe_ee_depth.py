@@ -58,7 +58,13 @@ EQUATION_TARGET = 40
 WORKED_TARGET = 8
 PROBLEM_SET_TARGET = 2
 
-CONTENT = re.compile(r"content: `(.*?)`,", re.S)
+# Consume to the first UNESCAPED backtick. A lazy `(.*?)`,` stopped at the first
+# escaped backtick that happened to precede a comma, so an inline code span
+# written \`like this\`, silently truncated the measured content — one chapter
+# read 5,691 words against a true 12,484. Truncation only ever under-counts, so
+# the bug produced false negatives rather than false passes, but a gate that
+# mismeasures is not a gate.
+CONTENT = re.compile(r"content: `((?:[^`\\]|\\.)*)`", re.S)
 TOPIC = re.compile(r"topicId: '(fee_[a-z0-9_]+)'")
 # Titles in this file are quoted three different ways - '...', "...", and
 # `...` - depending on whether they contain an apostrophe. Matching only the
