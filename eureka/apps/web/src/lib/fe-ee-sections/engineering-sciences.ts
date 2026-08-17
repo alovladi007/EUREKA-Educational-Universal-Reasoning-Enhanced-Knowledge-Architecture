@@ -2193,9 +2193,12 @@ A current-carrying loop in a magnetic field experiences torque:
 
 **$\\tau = N\\cdot B\\cdot I\\cdot A\\cdot \\sin \\theta$**
 
-Where N = turns, B = flux density, I = current, A = loop area, θ = angle to field.
+Where N = turns, B = flux density, I = current, A = loop area, and θ is the
+angle between the **loop normal** (its magnetic moment) and B — not the angle
+between the plane of the loop and B, which is its complement.
 
-- **Maximum torque**: τ_max = NBIA (when θ = 90°)
+- **Maximum torque**: τ_max = NBIA (when θ = 90°, so the field lies in the
+  plane of the loop and the moment is perpendicular to it)
 - **Motor equation**: V_applied = I·R + E_back
 - **Back-EMF**: E_back = k·ω (proportional to speed)
 
@@ -2490,6 +2493,1173 @@ loading error.`,
       examTip: 'When a problem hands you a voltmeter input resistance, compute the parallel combination with the resistance being measured and use the divider formula on that. The answer is always lower than the unloaded voltage, so an answer choice above the ideal value can be eliminated on sight.',
       importantNote: 'Bridge output formulas assume the small-signal case ΔR ≪ R. For strain gauges (ΔR/R around 10⁻³) the approximation errs by hundredths of a percent; for a thermistor whose resistance halves, it is useless and you must use the exact divider expression.',
     },
+    {
+      id: 'em-magnetic-circuit',
+      title: '5. The Magnetic Circuit: One Idea, and Where It Stops Working',
+      content: `## 5.1 Three quantities and a law that looks familiar
+
+Nearly every device in this chapter is a coil wound on iron with, more often
+than not, a deliberate slot of air cut into the iron. One piece of bookkeeping
+handles all of them. A winding of $N$ turns carrying current $I$ drives a
+**magnetomotive force**
+
+$$\\mathcal{F} = N I$$
+
+quoted in ampere-turns, which is to say in amperes: the turn count is a pure
+number and brings no dimension of its own. That drive pushes a **flux** $\\Phi$,
+in webers, round a closed path whose opposition to flux is its **reluctance**
+
+$$\\mathcal{R} = \\frac{\\ell}{\\mu_{r}\\mu_{0}A}$$
+
+with $\\ell$ the mean path length in metres, $A$ the cross-section in square
+metres, and $\\mu_{0} = 4\\pi \\times 10^{-7}\\ \\mathrm{H/m}$. Push the units
+through before trusting the formula: metres divided by henries-per-metre times
+square-metres leaves inverse henries, and one henry is one weber per ampere, so
+reluctance carries amperes per weber. The three quantities are tied by
+
+$$\\mathcal{F} = \\Phi\\,\\mathcal{R}$$
+
+which is the magnetic-circuit law, and its arithmetic is the arithmetic of
+Ohm's law with different labels on the boxes.
+
+| Electric circuit | Magnetic circuit | Unit of the magnetic quantity |
+|---|---|---|
+| EMF $V$ | MMF $\\mathcal{F} = NI$ | $\\mathrm{A}$ |
+| current $I$ | flux $\\Phi$ | $\\mathrm{Wb}$ |
+| resistance $R = \\ell/(\\sigma A)$ | reluctance $\\mathcal{R} = \\ell/(\\mu A)$ | $\\mathrm{A/Wb}$ |
+| conductance $G$ | permeance $\\mathcal{P} = 1/\\mathcal{R}$ | $\\mathrm{H}$ |
+| loop rule on voltages | Ampere's law on $H\\ell$ terms | $\\mathrm{A}$ |
+| node rule on currents | flux continuity at a joint | $\\mathrm{Wb}$ |
+
+Everything that follows from that table follows without further thought.
+Reluctances in series add. Reluctances in parallel combine as product over sum.
+The drive divides across series elements in **proportion** to reluctance, and
+the flux divides between parallel branches in **inverse** proportion. Solving a
+magnetic circuit is solving a resistive network you have already solved a
+hundred times.
+
+## 5.2 Four places where the correspondence fails
+
+The table above is a tool, not a truth, and a candidate who forgets the
+difference will be caught by one of these four.
+
+**Reluctance is not a constant.** In a resistor, $R$ does not depend on how
+much current flows. In iron, $\\mu_{r}$ collapses as the material saturates, so
+$\\mathcal{R}$ depends on the very flux you are trying to find. A problem that
+states a permeability has quietly told you to stay in the linear region; a
+problem that gives a B-H curve has told you to iterate instead.
+
+**Flux leaks, and current does not.** The ratio of conductivities between
+copper and air is of order $10^{20}$, so current stays in the wire to a
+precision no experiment will ever question. The ratio of permeabilities between
+iron and air is of order $10^{3}$ to $10^{4}$. Iron therefore guides flux the
+way a levee guides a river rather than the way a wire guides current, and a few
+percent of the flux takes a path through the air outside the core. That
+**leakage flux** links some windings and not others, and it is the entire
+reason a real transformer has leakage reactance.
+
+**Gaps fringe.** Flux crossing an air gap bows outward, so the effective area
+of the gap exceeds the area of the iron face. Section 5.4 puts a number on it.
+
+**There is no magnetic Joule heating, and the dimensions prove it.** In the
+electric circuit, $I^{2}R$ is a power, and a steady current in a steady
+resistance dissipates energy for as long as it flows. Form the same product
+magnetically and look at what comes out:
+
+$$\\tfrac{1}{2}\\Phi^{2}\\mathcal{R} \\longrightarrow \\mathrm{Wb}^{2}\\cdot\\frac{\\mathrm{A}}{\\mathrm{Wb}} = \\mathrm{Wb}\\cdot\\mathrm{A} = \\mathrm{V}\\cdot\\mathrm{s}\\cdot\\mathrm{A} = \\mathrm{J}$$
+
+Joules, not watts. That expression is not a dissipation at all: it is the
+**energy stored** in the magnetic circuit, and it comes straight back out when
+the current is switched off. A steady flux held by a superconducting winding
+would cost nothing to maintain forever. So the algebra of the analogy survives
+into the magnetic domain and its energetics does not, and any argument that
+reasons from "reluctance is like resistance, therefore something is being
+dissipated" is wrong. The genuine losses in iron are hysteresis and eddy
+currents, they are properties of a **changing** field, and section 6 treats
+them on their own terms.
+
+## 5.3 Worked example: a gapped ring, solved by two routes
+
+A rectangular ring of silicon steel has mean magnetic path length
+$\\ell_{c} = 0.60\\ \\mathrm{m}$ and a square section 20 mm on a side, so
+$A = 4.0\\ \\mathrm{cm}^{2} = 4.0 \\times 10^{-4}\\ \\mathrm{m}^{2}$. Treat the
+iron as linear with $\\mu_{r} = 2500$. A gap $g = 1.0\\ \\mathrm{mm}$ is cut in
+it, and a winding of $N = 500$ turns carries $I = 2.0\\ \\mathrm{A}$. Neglect
+fringing and leakage. Find the flux, the flux density, and how the drive
+divides.
+
+**Step 1 -- the two reluctances.**
+
+$$\\mathcal{R}_{c} = \\frac{0.60}{(4\\pi \\times 10^{-7})(2500)(4.0 \\times 10^{-4})} = 4.7746 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+$$\\mathcal{R}_{g} = \\frac{1.0 \\times 10^{-3}}{(4\\pi \\times 10^{-7})(4.0 \\times 10^{-4})} = 1.9894 \\times 10^{6}\\ \\mathrm{A/Wb}$$
+
+**Step 2 -- the ratio, before any arithmetic.** Divide one by the other and the
+areas and $\\mu_{0}$ both cancel:
+
+$$\\frac{\\mathcal{R}_{g}}{\\mathcal{R}_{c}} = \\mu_{r}\\,\\frac{g}{\\ell_{c}} = 2500 \\cdot \\frac{0.001}{0.60} = 4.1667$$
+
+One millimetre of air out of 601 mm of path presents **more than four times**
+the opposition of all 600 mm of the iron. That single line is the reason air
+gaps dominate magnetic-circuit problems, and it is worth carrying as a formula:
+the gap wins whenever $\\mu_{r}g > \\ell_{c}$, which for ordinary steel means
+whenever the gap exceeds a few ten-thousandths of the path length.
+
+**Step 3 -- flux and flux density.** With
+$\\mathcal{R} = 4.7746 \\times 10^{5} + 1.9894 \\times 10^{6} = 2.4669 \\times 10^{6}\\ \\mathrm{A/Wb}$
+and $\\mathcal{F} = 500 \\times 2.0 = 1000\\ \\mathrm{A}$,
+
+$$\\Phi = \\frac{\\mathcal{F}}{\\mathcal{R}} = \\frac{1000}{2.4669 \\times 10^{6}} = 4.0537 \\times 10^{-4}\\ \\mathrm{Wb}$$
+
+$$B = \\frac{\\Phi}{A} = \\frac{4.0537 \\times 10^{-4}}{4.0 \\times 10^{-4}} = 1.0134\\ \\mathrm{T}$$
+
+**Step 4 -- how the drive divides.** In proportion to reluctance, exactly as
+voltage divides across series resistors:
+
+$$\\mathcal{F}_{g} = \\Phi\\,\\mathcal{R}_{g} = (4.0537 \\times 10^{-4})(1.9894 \\times 10^{6}) = 806.45\\ \\mathrm{A}$$
+
+$$\\mathcal{F}_{c} = 1000 - 806.45 = 193.55\\ \\mathrm{A}$$
+
+so the gap takes $806.45/1000 = 80.6\\%$ of the drive. The fraction is exactly
+$25/31$, because the reluctance ratio was exactly $25/6$.
+
+**The second route, as a check.** Forget reluctance and apply Ampere's law
+directly. Flux density is continuous across the iron-air interface, so $B$ is
+the same on both sides while $H$ is not:
+
+$$H_{c} = \\frac{B}{\\mu_{r}\\mu_{0}} = \\frac{1.0134}{(2500)(4\\pi \\times 10^{-7})} = 322.58\\ \\mathrm{A/m}$$
+
+$$H_{g} = \\frac{B}{\\mu_{0}} = \\frac{1.0134}{4\\pi \\times 10^{-7}} = 8.0645 \\times 10^{5}\\ \\mathrm{A/m}$$
+
+$$H_{c}\\ell_{c} + H_{g}g = (322.58)(0.60) + (8.0645 \\times 10^{5})(0.001) = 193.55 + 806.45 = 1000.0\\ \\mathrm{A}$$
+
+The loop closes on the 1000 ampere-turns we started from, which is the whole
+content of Ampere's law and confirms every number above by a path that never
+mentions reluctance. Note also that $H_{g}/H_{c} = 2500$ exactly, which is
+$\\mu_{r}$: the field strength jumps by the permeability ratio at the interface
+because the flux density may not.
+
+![Two stacked panels against air-gap length from zero to two millimetres. The upper panel splits the thousand ampere-turns of drive between the gap and the iron, the two shares crossing at about one quarter of a millimetre and the gap share reaching eighty-one percent at the one millimetre operating point marked with a dot. The lower panel plots the resulting core flux, falling steeply from about two point one milliwebers with no gap to the marked 0.4054 milliweber operating point.](/courses/fe-ee/figures/sci3-reluctance-ladder.svg)
+
+The upper panel is the sentence "the gap dominates" turned into a curve, and
+the crossing point tells you where domination begins: at roughly $0.24$ mm, a
+quarter of a millimetre of air already matches 600 mm of iron. The lower panel
+is the price. Cutting the gap divided the flux by a factor of $5.17$ against
+the ungapped ring, and section 10 explains why an inductor designer pays that
+price gladly and a transformer designer never does.
+
+## 5.4 Worked example: what neglecting fringing costs
+
+Flux crossing the gap bulges sideways, and the standard first correction adds
+one gap length to each transverse dimension of the pole face. For our 20 mm
+square face with a 1.0 mm gap,
+
+$$A_{\\mathrm{eff}} = (a + g)(b + g) = (0.021)(0.021) = 4.41 \\times 10^{-4}\\ \\mathrm{m}^{2}$$
+
+which is $10.25\\%$ more area than the iron has, so the gap reluctance falls by
+the same factor to $1.8045 \\times 10^{6}\\ \\mathrm{A/Wb}$. Redo step 3:
+
+$$\\Phi = \\frac{1000}{4.7746 \\times 10^{5} + 1.8045 \\times 10^{6}} = 4.3822 \\times 10^{-4}\\ \\mathrm{Wb}$$
+
+That is $8.11\\%$ more flux than the unfringed calculation predicted, and
+$B$ rises from 1.0134 T to 1.0956 T. Two lessons sit in the gap between
+$10.25\\%$ and $8.11\\%$. First, the correction is **diluted**: the gap is only
+part of the circuit, so an error in the gap reaches the answer reduced by the
+gap's share of the total. Second, eight percent is larger than the tolerance on
+any permeability figure you were given, which is why practical gap formulas
+carry correction factors and why designers who care about the answer measure
+the finished part.
+
+## 5.5 Worked example: a parallel magnetic circuit with one gap
+
+A shell-type core has a centre limb 0.10 m long of section
+$8.0\\ \\mathrm{cm}^{2}$ and two outer limbs each 0.30 m long of section
+$4.0\\ \\mathrm{cm}^{2}$; the iron has $\\mu_{r} = 2000$ throughout. The coil on
+the centre limb has 300 turns and carries 0.40 A. A gap of 0.5 mm is cut into
+**one** outer limb. Find the flux in each limb.
+
+The centre limb is made twice the area of each outer limb on purpose, so that
+in the symmetric case every part of the core runs at the same flux density.
+Adding the gap destroys that symmetry, which is exactly what makes the problem
+worth working.
+
+**Step 1 -- the three branch reluctances.**
+
+$$\\mathcal{R}_{1} = \\frac{0.10}{(4\\pi \\times 10^{-7})(2000)(8.0 \\times 10^{-4})} = 4.9736 \\times 10^{4}\\ \\mathrm{A/Wb}$$
+
+$$\\mathcal{R}_{A} = \\frac{0.30}{(4\\pi \\times 10^{-7})(2000)(4.0 \\times 10^{-4})} = 2.9842 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+The gapped limb is 0.2995 m of iron in series with 0.5 mm of air:
+
+$$\\mathcal{R}_{B} = 2.9792 \\times 10^{5} + 9.9472 \\times 10^{5} = 1.2926 \\times 10^{6}\\ \\mathrm{A/Wb}$$
+
+**Step 2 -- combine and solve.** The two outer limbs are in parallel:
+
+$$\\mathcal{R}_{\\parallel} = \\frac{\\mathcal{R}_{A}\\mathcal{R}_{B}}{\\mathcal{R}_{A} + \\mathcal{R}_{B}} = 2.4245 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+$$\\Phi_{\\mathrm{total}} = \\frac{300 \\times 0.40}{4.9736 \\times 10^{4} + 2.4245 \\times 10^{5}} = 4.1070 \\times 10^{-4}\\ \\mathrm{Wb}$$
+
+**Step 3 -- divide the flux.** Inverse proportion, so the easy branch takes
+most of it:
+
+$$\\Phi_{A} = \\Phi_{\\mathrm{total}}\\,\\frac{\\mathcal{R}_{B}}{\\mathcal{R}_{A} + \\mathcal{R}_{B}} = 3.3367 \\times 10^{-4}\\ \\mathrm{Wb}$$
+
+$$\\Phi_{B} = \\Phi_{\\mathrm{total}} - \\Phi_{A} = 7.7031 \\times 10^{-5}\\ \\mathrm{Wb}$$
+
+| Limb | Reluctance (A/Wb) | Flux (mWb) | Share | $B$ (T) |
+|---|---|---|---|---|
+| Centre | $4.9736 \\times 10^{4}$ | 0.41070 | 100% | 0.5134 |
+| Outer, solid | $2.9842 \\times 10^{5}$ | 0.33367 | 81.2% | 0.8342 |
+| Outer, gapped | $1.2926 \\times 10^{6}$ | 0.07703 | 18.8% | 0.1926 |
+
+**Step 4 -- check it two ways.** Both parallel branches must carry the same
+magnetomotive force, because they hang between the same pair of joints:
+
+$$\\Phi_{A}\\mathcal{R}_{A} = 99.57\\ \\mathrm{A} \\qquad \\Phi_{B}\\mathcal{R}_{B} = 99.57\\ \\mathrm{A}$$
+
+and the loop through the centre limb closes on the drive:
+
+$$\\Phi_{\\mathrm{total}}\\mathcal{R}_{1} + 99.57 = 20.43 + 99.57 = 120.0\\ \\mathrm{A}$$
+
+Both checks pass. Notice how sharply half a millimetre of air redistributes the
+field: the gapped limb runs at 0.19 T while the solid one runs at 0.83 T, over
+four times higher, from the same drive. That is the design mechanism behind every
+flux-diverting shunt and every magnetic proximity sensor.
+
+![Flux in the three limbs of the shell core plotted against the gap cut into one outer limb, from zero to one millimetre. At zero gap the two outer limbs share equally at 0.30 milliwebers each; as the gap opens, the gapped limb falls steeply while the solid limb rises slightly and the centre limb, being their sum, falls. Circles mark the worked 0.5 millimetre case.](/courses/fe-ee/figures/sci3-parallel-core.svg)
+
+The slight **rise** of the solid limb is the part worth understanding. Cutting
+the gap raises the total reluctance, so less flux enters the core overall, but
+it raises the gapped branch far more than it raises the parallel combination,
+so the solid branch ends up with a larger share of a smaller total, and the two
+effects nearly cancel. That kind of near-cancellation is invisible in the
+formulas and obvious in the plot, which is what plots are for.`,
+      examTip: 'On any gapped magnetic circuit, compute the ratio of gap to core reluctance FIRST, as mu_r times g over the core path length. If that ratio is large the gap carries almost all the drive and the iron can often be neglected entirely, turning a two-element problem into a one-element one. On the FE this shortcut is usually worth more than the exact answer, because the answer choices are far apart.',
+      importantNote: 'Reluctance is measured in A/Wb, which is the same as inverse henries. It is NOT measured in ohms and it does not dissipate anything. The product one half Phi squared times reluctance carries units of joules, not watts, and is the energy stored in the field. Any argument of the form "reluctance is like resistance so power is lost in it" is dimensionally incoherent.',
+    },
+    {
+      id: 'em-core-loss',
+      title: '6. The B-H Curve, Saturation, and the Two Core Losses',
+      content: `## 6.1 Permeability is an operating point, not a material property
+
+Section 5 assumed a constant $\\mu_{r} = 2500$. Real iron does no such thing.
+To make the departure concrete, this section uses a magnetisation curve that is
+written down rather than measured, so every number below can be reproduced:
+
+$$B(H) = \\frac{2B_{s}}{\\pi}\\arctan\\!\\left(\\frac{\\pi \\mu_{i}H}{2B_{s}}\\right)$$
+
+with saturation flux density $B_{s} = 1.8\\ \\mathrm{T}$ and initial slope
+$\\mu_{i} = 5000\\mu_{0}$. The two limits are the two facts the model has to
+carry: for small $H$ the arctangent is its own argument and $B \\to \\mu_{i}H$,
+while for large $H$ the arctangent approaches $\\pi/2$ and $B \\to B_{s}$. The
+inverse is closed-form, which makes the later energy integrals exact:
+
+$$H(B) = \\frac{2B_{s}}{\\pi \\mu_{i}}\\tan\\!\\left(\\frac{\\pi B}{2B_{s}}\\right)$$
+
+The **secant permeability** at a working point is $B/(\\mu_{0}H)$, and on this
+curve it is anything but constant:
+
+| $H$ (A/m) | $B$ (T) | secant $\\mu_{r} = B/(\\mu_{0}H)$ |
+|---|---|---|
+| 100 | 0.575 | 4574 |
+| 300 | 1.174 | 3114 |
+| 425 | 1.336 | 2500 |
+| 681 | 1.500 | 1754 |
+| 1000 | 1.593 | 1268 |
+
+The third row is the honest reconciliation with section 5: the constant 2500
+used there is the secant permeability of this material at about 1.34 T. Below
+that flux density the linear model **understates** the flux; above it, it
+overstates it, and near saturation it overstates it badly.
+
+![Two panels. The upper plots flux density against field strength for the stated arctangent model, rising steeply from the origin and flattening toward the 1.8 tesla saturation line, with a marked point at 425 amperes per metre and 1.34 tesla. The lower panel plots secant relative permeability against flux density, falling from 5000 at low flux through the marked 2500 point at 1.34 tesla and on down past 1000 near saturation.](/courses/fe-ee/figures/sci3-bh-curve.svg)
+
+The lower panel is the one to remember. **Permeability is a number you read off
+a curve at the flux density you are running at**, and a designer who pushes a
+core 20% harder does not get 20% more flux for 20% more current.
+
+## 6.2 Worked example: hysteresis loss is the area of a loop
+
+Real iron does not retrace the same curve going down as it took going up. Give
+the model a coercivity by displacing the two branches symmetrically, with a
+displacement that vanishes at the tips so the loop closes:
+
+$$H_{\\uparrow,\\downarrow}(B) = H(B) \\pm H_{c}\\left[1 - \\left(\\frac{B}{B_{m}}\\right)^{2}\\right]$$
+
+Take $H_{c} = 50\\ \\mathrm{A/m}$ and drive the core to $B_{m} = 1.5\\ \\mathrm{T}$.
+The energy the source must supply per unit volume in one traversal is
+
+$$w_{h} = \\oint H\\,dB$$
+
+and its dimensions settle the question of what it is:
+$(\\mathrm{A/m})(\\mathrm{Wb/m^{2}}) = \\mathrm{A}\\cdot\\mathrm{V}\\cdot\\mathrm{s}/\\mathrm{m}^{3} = \\mathrm{J/m^{3}}$,
+an energy density. Because the two branches differ only by the displacement
+term, the integral collapses:
+
+$$w_{h} = \\int_{-B_{m}}^{B_{m}}\\left(H_{\\uparrow} - H_{\\downarrow}\\right)dB = 2H_{c}\\int_{-B_{m}}^{B_{m}}\\left[1 - \\frac{B^{2}}{B_{m}^{2}}\\right]dB = \\frac{8}{3}H_{c}B_{m}$$
+
+$$w_{h} = \\frac{8}{3}(50)(1.5) = 200.0\\ \\mathrm{J/m^{3}}\\ \\text{per cycle}$$
+
+**The loss is per cycle, so the power is proportional to frequency:**
+
+$$P_{h} = f\\,w_{h} = (60)(200.0) = 12{,}000\\ \\mathrm{W/m^{3}}$$
+
+and at a steel density of $7650\\ \\mathrm{kg/m^{3}}$ that is
+$12000/7650 = 1.569\\ \\mathrm{W/kg}$.
+
+![The hysteresis loop of the stated model, flux density against field strength, with the enclosed area shaded. The dashed anhysteretic curve runs up the middle of the loop. Markers show the coercivity at plus and minus 50 amperes per metre where the branches cross zero flux, and the remanence at plus and minus 0.295 tesla where they cross zero field.](/courses/fe-ee/figures/sci3-hysteresis-loop.svg)
+
+Two consequences follow from "the loss is an area". A **narrow** loop means a
+soft magnetic material and a low-loss core, which is what transformer steel is
+bred for; a **fat** loop means a permanent magnet, where the whole point is to
+resist being demagnetised. And driving a core harder costs more than
+proportionally, because widening the loop in $B$ also widens it in $H$: the
+empirical summary of that is the Steinmetz form $P_{h} = k_{h}fB_{m}^{n}$ with
+the exponent $n$ between about 1.6 and 2.0. The model above happens to give
+$n = 1$ exactly, because a fixed coercivity was assumed; real coercivity grows
+with drive, and that is where the extra exponent comes from.
+
+## 6.3 Worked example: eddy currents, and why cores are laminated
+
+A changing flux induces a voltage round every closed path in the core itself,
+and the core is a conductor. For a sheet of thickness $d$ thin compared with
+the skin depth, the classical result is
+
+$$P_{e} = \\frac{\\pi^{2}d^{2}f^{2}B_{m}^{2}}{6\\rho}$$
+
+Check the dimensions before using it:
+$\\mathrm{m}^{2}\\cdot\\mathrm{s}^{-2}\\cdot\\mathrm{T}^{2}/(\\Omega\\cdot\\mathrm{m})$
+reduces to $\\mathrm{V}^{2}/(\\Omega\\cdot\\mathrm{m}^{3}) = \\mathrm{W/m^{3}}$,
+a power density, as it must be. Take laminations
+$d = 0.35\\ \\mathrm{mm}$ thick of resistivity
+$\\rho = 4.7 \\times 10^{-7}\\ \\Omega\\cdot\\mathrm{m}$, at 60 Hz and
+$B_{m} = 1.5\\ \\mathrm{T}$:
+
+$$P_{e} = \\frac{(9.8696)(3.5 \\times 10^{-4})^{2}(60)^{2}(1.5)^{2}}{(6)(4.7 \\times 10^{-7})} = 3473\\ \\mathrm{W/m^{3}}$$
+
+Add the hysteresis term and the core loses
+$12{,}000 + 3473 = 15{,}473\\ \\mathrm{W/m^{3}}$, which is
+$2.02\\ \\mathrm{W/kg}$ -- squarely in the range a real grain-oriented steel
+would quote at this flux density and frequency, which is a reassuring sign that
+neither model has gone off the rails.
+
+**The thickness dependence is the design lever.** Eddy loss goes as $d^{2}$, so
+switching to 0.50 mm laminations multiplies it by $(0.50/0.35)^{2} = 2.041$, to
+$7087\\ \\mathrm{W/m^{3}}$, while the hysteresis term does not move at all.
+Halving the lamination thickness quarters the eddy term. Nothing else in
+magnetics offers that kind of leverage for that little effort, which is why
+every AC core you will ever meet is built from stacked insulated sheets rather
+than solid metal.
+
+**The formula has a validity limit, and it is worth respecting.** It assumes
+the field penetrates the sheet fully, which requires the thickness to be small
+against the skin depth
+
+$$\\delta = \\sqrt{\\frac{2\\rho}{\\omega \\mu}}$$
+
+At 60 Hz, with the secant permeability at 1.5 T being $1754\\mu_{0}$, this gives
+$\\delta = 1.064\\ \\mathrm{mm}$, so $d/\\delta = 0.33$ and the formula is safe.
+At 400 Hz the skin depth falls to 0.412 mm and $d/\\delta = 0.85$, close enough
+to the limit that the classical expression begins to overestimate. For a
+**solid** 20 mm core the ratio would be about 19, the formula would be
+nonsense, and the true loss would be governed by the field failing to reach the
+interior at all. The qualitative conclusion is unchanged -- do not build AC
+cores out of solid iron -- but the number would be meaningless.
+
+## 6.4 Which loss wins, and where
+
+The two terms scale differently, so their relative sizes depend entirely on
+frequency:
+
+| Quantity | Hysteresis | Eddy current |
+|---|---|---|
+| Frequency | $\\propto f$ | $\\propto f^{2}$ |
+| Peak flux | $\\propto B_{m}^{n}$, $n \\approx 1.6$ to $2.0$ | $\\propto B_{m}^{2}$ |
+| Lamination thickness | no dependence | $\\propto d^{2}$ |
+| Resistivity | no dependence | $\\propto 1/\\rho$ |
+| At 60 Hz, this core | $12{,}000\\ \\mathrm{W/m^{3}}$ (78%) | $3473\\ \\mathrm{W/m^{3}}$ (22%) |
+| At 400 Hz, this core | $80{,}000\\ \\mathrm{W/m^{3}}$ (34%) | $154{,}344\\ \\mathrm{W/m^{3}}$ (66%) |
+
+They cross where $w_{h}f = k_{e}f^{2}$, that is at $f = w_{h}/k_{e}$:
+
+$$f_{\\times} = \\frac{200.0}{0.96465} = 207.3\\ \\mathrm{Hz}$$
+
+With 0.50 mm laminations the crossing falls to 101.6 Hz, exactly a factor
+$2.041$ lower, since the crossing frequency is inversely proportional to
+$k_{e}$ and therefore to $d^{2}$.
+
+![Loss density against frequency from 20 to 400 hertz at 1.5 tesla peak. The hysteresis line rises linearly, and two eddy-current parabolas rise from the origin, the thicker 0.50 millimetre lamination steeply and the 0.35 millimetre one about half as fast. A dot marks where the 0.35 millimetre eddy curve crosses the hysteresis line at 207 hertz.](/courses/fe-ee/figures/sci3-core-loss.svg)
+
+This is why aircraft power systems at 400 Hz use very thin laminations or
+powdered cores, and why the same steel that is efficient in a 60 Hz distribution
+transformer would be unusable in a switching converter running at tens of
+kilohertz.`,
+      examTip: 'Separate the two loss terms by their frequency exponent. If a problem gives loss at two frequencies at the same flux density, write P = a f + b f squared, solve the two equations for a and b, and you have separated hysteresis from eddy current without knowing anything about the material. That separation is a standard exam question and it needs no data beyond the two measurements.',
+      importantNote: 'The classical eddy-current formula assumes the lamination is thin compared with the skin depth. Before quoting it, compute the skin depth at the working frequency and the working permeability. For 0.35 mm steel at 60 Hz the ratio is about a third and the formula is fine; for a solid core it is off by orders of magnitude and the honest answer is that the field never reaches the middle.',
+    },
+    {
+      id: 'em-inductance-coupling',
+      title: '7. Inductance from Geometry, and What Couples Two Windings',
+      content: `## 7.1 Three expressions for one quantity
+
+**Flux linkage** is the bookkeeping quantity that makes inductance simple. If
+every one of $N$ turns encloses the same flux $\\Phi$, then
+
+$$\\lambda = N\\Phi \\qquad [\\,\\mathrm{Wb}\\,]$$
+
+and inductance is defined as flux linkage per ampere. Combining that definition
+with the magnetic-circuit law gives three faces of the same number:
+
+$$L = \\frac{\\lambda}{i} = \\frac{N\\Phi}{i} = \\frac{N^{2}}{\\mathcal{R}}$$
+
+The last form is the useful one, and it carries two statements worth
+memorising. Inductance goes as the **square** of turns, because turns both
+create the flux and link it. And inductance is fixed entirely by turns and
+**geometry** through the reluctance -- put the same coil on a bigger core and
+you get more inductance without touching the winding.
+
+For a long straight solenoid with no iron, $\\mathcal{R} = \\ell/(\\mu_{0}A)$
+and the standard formula drops out:
+
+$$L = \\frac{\\mu_{0}N^{2}A}{\\ell}$$
+
+**Worked check.** A 200-turn coil 0.15 m long of cross-section
+$3.0\\ \\mathrm{cm}^{2}$, air-cored:
+
+$$L = \\frac{(4\\pi \\times 10^{-7})(200)^{2}(3.0 \\times 10^{-4})}{0.15} = 1.0053 \\times 10^{-4}\\ \\mathrm{H} = 100.53\\ \\mu\\mathrm{H}$$
+
+Slide a closed iron core of $\\mu_{r} = 2500$ into the same winding and the
+reluctance falls by 2500, so $L$ rises to $251.3\\ \\mathrm{mH}$ -- a factor of
+2500 for no change in the copper. That is what iron is for.
+
+## 7.2 Worked example: two windings, mutual inductance and coupling
+
+Return to the gapped ring of section 5.3, with
+$\\mathcal{R} = 2.4669 \\times 10^{6}\\ \\mathrm{A/Wb}$. Wind a second coil of
+$N_{2} = 200$ turns on the same core beside the existing
+$N_{1} = 500$.
+
+**Self-inductances.** Each is its own turns squared over the shared reluctance:
+
+$$L_{1} = \\frac{500^{2}}{2.4669 \\times 10^{6}} = 101.3417\\ \\mathrm{mH} \\qquad L_{2} = \\frac{200^{2}}{2.4669 \\times 10^{6}} = 16.2147\\ \\mathrm{mH}$$
+
+Their ratio is $101.3417/16.2147 = 6.2500$, which is $(500/200)^{2}$, as the
+turns-squared law demands.
+
+**Mutual inductance** is the flux linkage of one winding per ampere in the
+other. Current $i_{1}$ drives flux $N_{1}i_{1}/\\mathcal{R}$, all of which
+threads winding 2 if none of it leaks, so
+
+$$M = \\frac{N_{2}\\Phi}{i_{1}} = \\frac{N_{1}N_{2}}{\\mathcal{R}} = \\frac{(500)(200)}{2.4669 \\times 10^{6}} = 40.5367\\ \\mathrm{mH}$$
+
+**The coupling coefficient** compares that with the largest value the two
+self-inductances permit:
+
+$$k = \\frac{M}{\\sqrt{L_{1}L_{2}}}$$
+
+$$\\sqrt{L_{1}L_{2}} = \\sqrt{(101.3417)(16.2147)} = 40.5367\\ \\mathrm{mH} \\quad \\Rightarrow \\quad k = 1.0000$$
+
+The idealisation returns $k = 1$ exactly, and the algebra shows why it must:
+$\\sqrt{(N_{1}^{2}/\\mathcal{R})(N_{2}^{2}/\\mathcal{R})} = N_{1}N_{2}/\\mathcal{R}$,
+which is $M$. **Perfect coupling is not an approximation in this model; it is a
+consequence of assuming that every line of flux threads both windings.** Real
+values of $k$ fall short only because some flux does not, and that is the
+single physical meaning of the coupling coefficient: $k^{2}$ is the fraction of
+one winding's flux that reaches the other.
+
+## 7.3 Worked example: measuring $M$ with an inductance meter
+
+You cannot put a meter directly across a mutual inductance, but you can measure
+it in two connections. Wire the coils in series so their fluxes add, then
+reverse one:
+
+$$L_{\\mathrm{aid}} = L_{1} + L_{2} + 2M \\qquad L_{\\mathrm{opp}} = L_{1} + L_{2} - 2M$$
+
+Subtract, and everything but the quantity you want cancels:
+
+$$M = \\frac{L_{\\mathrm{aid}} - L_{\\mathrm{opp}}}{4}$$
+
+Suppose the core above achieves $k = 0.94$ in practice, so
+$M = 0.94 \\times 40.5367 = 38.1045\\ \\mathrm{mH}$ and $2M = 76.2090\\ \\mathrm{mH}$.
+The meter would then read
+
+$$L_{\\mathrm{aid}} = 101.3417 + 16.2147 + 76.2090 = 193.7654\\ \\mathrm{mH}$$
+
+$$L_{\\mathrm{opp}} = 101.3417 + 16.2147 - 76.2090 = 41.3474\\ \\mathrm{mH}$$
+
+$$193.7654 - 41.3474 = 152.4180 \\qquad \\frac{152.4180}{4} = 38.1045\\ \\mathrm{mH}$$
+
+which recovers what we put in. Two details make this a favourite exam question.
+The **opposing** reading is the smaller one, always, so if your two
+measurements are handed to you unlabelled the smaller is $L_{\\mathrm{opp}}$.
+And the factor is **four**, not two: the aiding case adds $2M$ and the opposing
+case subtracts it, so the difference is $4M$. Dropping to a factor of two is
+the single most common arithmetic slip in this topic.
+
+| Quantity | Perfect coupling | With $k = 0.94$ |
+|---|---|---|
+| $L_{1}$ | 101.3417 mH | 101.3417 mH |
+| $L_{2}$ | 16.2147 mH | 16.2147 mH |
+| $M$ | 40.5367 mH | 38.1045 mH |
+| $L_{\\mathrm{aid}}$ | 198.6298 mH | 193.7654 mH |
+| $L_{\\mathrm{opp}}$ | 36.4830 mH | 41.3474 mH |
+
+Note that imperfect coupling **raises** the opposing reading and **lowers** the
+aiding one, squeezing the two together. In the limit $k \\to 0$ both readings
+collapse onto $L_{1} + L_{2}$, which is exactly what two coils on opposite
+sides of the room would give.`,
+      examTip: 'When two coils sit on a common core, do not compute M from a flux argument if you can avoid it. Compute the reluctance once, then read off L1, L2 and M as N1 squared, N2 squared and N1 times N2, all over that same reluctance. Three answers from one division, and the coupling coefficient is then 1 by construction unless the problem says otherwise.',
+      importantNote: 'Mutual inductance from a series test uses M = (L_aiding minus L_opposing) over FOUR. The factor is four because the aiding connection adds 2M and the opposing connection subtracts 2M, so the difference between them is 4M. Halving that to 2M is the standard mistake.',
+    },
+    {
+      id: 'em-energy-force',
+      title: '8. Energy, Co-energy, and Force by the Energy Method',
+      content: `## 8.1 Two areas on one curve
+
+Draw the flux linkage of a device against its current. The area **above** the
+curve, integrated along the $\\lambda$ axis, is the energy stored in the field:
+
+$$W_{f} = \\int_{0}^{\\lambda} i\\,d\\lambda'$$
+
+The area **below** it, integrated along the $i$ axis, is the **co-energy**:
+
+$$W' = \\int_{0}^{i} \\lambda\\,di'$$
+
+Together they fill the rectangle, so
+
+$$W_{f} + W' = \\lambda i$$
+
+always, for any characteristic whatever. Co-energy has no physical existence --
+nothing in the device is storing it -- but it is the correct thing to
+differentiate when current is the variable you control, and that is why it
+earns a name.
+
+If the device is **linear**, $\\lambda = Li$, the curve is a straight line, the
+two areas are congruent triangles, and every expression collapses:
+
+$$W_{f} = W' = \\tfrac{1}{2}\\lambda i = \\tfrac{1}{2}Li^{2} = \\frac{\\lambda^{2}}{2L}$$
+
+This is why so many textbook problems never mention co-energy: in the linear
+case it equals the energy numerically and the distinction is invisible. It
+stops being invisible the moment the iron saturates.
+
+Field energy can also be counted where it actually sits, as a density
+integrated over volume:
+
+$$w = \\int_{0}^{B} H\\,dB' \\quad\\longrightarrow\\quad w = \\frac{B^{2}}{2\\mu} \\ \\text{when linear}$$
+
+and $\\mathrm{T}^{2}/(\\mathrm{H/m})$ does reduce to $\\mathrm{J/m^{3}}$, as the
+name requires.
+
+## 8.2 Worked example: the two areas, when they differ
+
+Take the **ungapped** ring of section 5, using the saturating curve of section
+6, and drive it to $B_{m} = 1.5\\ \\mathrm{T}$. The coil sees
+
+$$i = \\frac{\\ell_{c}H(B_{m})}{N} = \\frac{(0.60)(680.64)}{500} = 0.81677\\ \\mathrm{A}$$
+
+$$\\lambda = NAB_{m} = (500)(4.0 \\times 10^{-4})(1.5) = 0.30000\\ \\mathrm{Wb}$$
+
+so the enclosing rectangle is $\\lambda i = 0.24503\\ \\mathrm{J}$. The stored
+energy is the volume integral of the energy density, and since the flux density
+is uniform the volume comes straight out:
+
+$$W_{f} = V\\!\\int_{0}^{B_{m}}\\!H\\,dB = (2.40 \\times 10^{-4})(282.48) = 0.067794\\ \\mathrm{J}$$
+
+$$W' = \\lambda i - W_{f} = 0.24503 - 0.067794 = 0.17724\\ \\mathrm{J}$$
+
+The two are **not** equal: co-energy is 2.61 times the energy, taking 72.3% of
+the rectangle against 27.7%. Half the rectangle would be
+$0.12252\\ \\mathrm{J}$, and neither quantity is anywhere near it. A saturating
+device stores far less energy than its terminal inductance suggests, because
+the extra amperes near the top of the curve buy almost no extra flux.
+
+![The flux linkage of the saturating ungapped core plotted against coil current, bending over as the iron saturates. The region between the curve and the horizontal line at the top is shaded and labelled as the field energy of 0.0678 joules; the region below the curve is shaded and labelled as the co-energy of 0.1772 joules. A dashed straight chord from the origin to the operating point marks what a linear device would have done.](/courses/fe-ee/figures/sci3-coenergy.svg)
+
+The dashed chord is the linear device that has the same inductance at this one
+operating point, $L = \\lambda/i = 0.3673\\ \\mathrm{H}$. It splits the
+rectangle down the middle. The real curve does not, and any energy calculation
+that uses $\\tfrac{1}{2}Li^{2}$ on a saturating device is quoting the chord
+rather than the curve.
+
+## 8.3 The force rules, and the sign that trips people
+
+The energy method says: hold one electrical variable fixed, differentiate the
+appropriate energy function with respect to position, and read off the force.
+There are two correct statements and they are not interchangeable.
+
+$$f = -\\left.\\frac{\\partial W_{f}(\\lambda, x)}{\\partial x}\\right|_{\\lambda} \\qquad\\qquad f = +\\left.\\frac{\\partial W'(i, x)}{\\partial x}\\right|_{i}$$
+
+**The held variable and the sign travel together, and the reason is energy
+bookkeeping.** At constant flux linkage the induced voltage $d\\lambda/dt$ is
+zero, so the electrical source delivers nothing and any mechanical work must be
+paid for out of the field: energy goes down as work comes out, hence the minus.
+At constant current the source **is** delivering, and what it delivers over a
+small displacement is $i\\,d\\lambda = i^{2}\\,dL$; exactly half of that goes into
+the field and the other half emerges as mechanical work, which is why the
+co-energy derivative carries a plus.
+Writing $f = +\\partial W_{f}/\\partial x$ at constant $\\lambda$ gets the
+direction of the force backwards.
+
+For a linear device both routes reduce to the expression you will actually use:
+
+$$f = \\tfrac{1}{2}i^{2}\\frac{dL}{dx} \\qquad\\text{or equivalently}\\qquad f = -\\tfrac{1}{2}\\Phi^{2}\\frac{d\\mathcal{R}}{dx}$$
+
+Check the dimensions of the first:
+$\\mathrm{A}^{2}\\cdot\\mathrm{H/m} = \\mathrm{A}^{2}\\cdot\\mathrm{V}\\cdot\\mathrm{s}/(\\mathrm{A}\\cdot\\mathrm{m}) = \\mathrm{J/m} = \\mathrm{N}$.
+And of the second:
+$\\mathrm{Wb}^{2}\\cdot\\mathrm{A}/(\\mathrm{Wb}\\cdot\\mathrm{m}) = \\mathrm{J/m} = \\mathrm{N}$.
+Both are forces. The sign structure is now readable at a glance: **the force
+always acts to increase inductance, equivalently to decrease reluctance**,
+which is the same as saying that magnetic systems pull themselves toward
+configurations that make it easier for flux to flow.
+
+## 8.4 Worked example: the pull of a plunger, by three routes
+
+Give the ring of section 5 a movable armature so the gap length $x$ is
+variable, keep $N = 500$ and $i = 2.0\\ \\mathrm{A}$, and ask for the pull at
+$x = 1.0\\ \\mathrm{mm}$.
+
+**Route 1 -- energy method, iron neglected.** With
+$L(x) = \\mu_{0}N^{2}A/x$,
+
+$$\\frac{dL}{dx} = -\\frac{\\mu_{0}N^{2}A}{x^{2}} \\quad\\Rightarrow\\quad |f| = \\frac{\\mu_{0}N^{2}i^{2}A}{2x^{2}}$$
+
+$$|f| = \\frac{(4\\pi \\times 10^{-7})(500)^{2}(2.0)^{2}(4.0 \\times 10^{-4})}{2(1.0 \\times 10^{-3})^{2}} = 251.33\\ \\mathrm{N}$$
+
+**Route 2 -- direct field calculation.** Ampere's law with no iron drop gives
+$B = \\mu_{0}Ni/x = 1.2566\\ \\mathrm{T}$. Magnetic pressure on a pole face is
+the energy density itself:
+
+$$f = \\frac{B^{2}}{2\\mu_{0}}A = \\frac{(1.2566)^{2}}{2(4\\pi \\times 10^{-7})}(4.0 \\times 10^{-4}) = (6.2832 \\times 10^{5})(4.0 \\times 10^{-4}) = 251.33\\ \\mathrm{N}$$
+
+The two routes agree to the last figure printed, and they agree **identically**
+rather than numerically: substituting $B = \\mu_{0}Ni/x$ into
+$B^{2}A/(2\\mu_{0})$ reproduces $\\mu_{0}N^{2}i^{2}A/(2x^{2})$ term by term.
+That is the confirmation the energy method needs, because nothing in its
+derivation ever mentioned a field.
+
+**Now keep the iron.** The real inductance is
+$L(x) = N^{2}/(\\mathcal{R}_{c} + x/\\mu_{0}A)$, and at
+$x = 1.0\\ \\mathrm{mm}$ this gives $dL/dx = -81.727\\ \\mathrm{H/m}$, so
+
+$$f = \\tfrac{1}{2}(2.0)^{2}(-81.727) = -163.45\\ \\mathrm{N}$$
+
+the minus sign meaning the force pulls the gap **closed**. The direct route
+agrees: the true flux density is only $1.0134\\ \\mathrm{T}$, so the pressure is
+$4.0864 \\times 10^{5}\\ \\mathrm{Pa}$ and the pull is
+$163.45\\ \\mathrm{N}$. And a **third** route, differentiating field energy at
+constant flux, gives the same again:
+
+$$f = -\\tfrac{1}{2}\\Phi^{2}\\frac{d\\mathcal{R}}{dx} = -\\frac{\\Phi^{2}}{2\\mu_{0}A} = -\\frac{(4.0537 \\times 10^{-4})^{2}}{2(4\\pi \\times 10^{-7})(4.0 \\times 10^{-4})} = -163.45\\ \\mathrm{N}$$
+
+Neglecting the iron overstated the pull by a factor of
+$251.327/163.454 = 1.5376$, which is exactly the square of the flux-density
+ratio, $(1.2566/1.0134)^{2}$ -- force follows $B^{2}$, so a 24% error in flux
+density becomes a 54% error in force.
+**Force errors are always worse than flux errors, and always by the square.**
+
+| Gap $x$ | $L$ (mH) | Pull, iron ignored | Pull, iron kept | Overstatement |
+|---|---|---|---|---|
+| 0.5 mm | 169.82 | 1005.3 N | 459.0 N | $\\times 2.19$ |
+| 1.0 mm | 101.34 | 251.3 N | 163.5 N | $\\times 1.54$ |
+| 2.0 mm | 56.100 | 62.8 N | 50.1 N | $\\times 1.25$ |
+
+The overstatement is worst where the gap is smallest, because that is where the
+iron is the largest share of what is left. A 163 N pull would hold
+$163.45/9.80665 = 16.67\\ \\mathrm{kg}$ against standard gravity, which is a
+realistic figure for a relay of this size and a useful sanity check on the
+arithmetic.
+
+![Pull on the plunger against gap length from 0.2 to 3 millimetres on a logarithmic force axis. The dashed upper curve is the iron-free idealisation falling as one over gap squared; the solid lower curve keeps the iron reluctance and falls less steeply. Open circles at six gap values are the independently computed Maxwell-stress result and lie exactly on the solid curve.](/courses/fe-ee/figures/sci3-actuator-force.svg)
+
+The circles are the point of the figure. They are not sampled from the line;
+they are computed from $B^{2}A/2\\mu_{0}$ with $B$ taken from the magnetic
+circuit, and they land on a curve produced by numerically differentiating an
+inductance. Two different pieces of physics, one answer.
+
+## 8.5 Worked example: the sideways pull, which is much weaker
+
+Not every actuator closes a gap. Hold the gap fixed at
+$g = 1.0\\ \\mathrm{mm}$ and let a plunger of width
+$w = 20\\ \\mathrm{mm}$ slide across it, so that the **overlap** $u$ changes
+while the separation does not. Now $L(u) = \\mu_{0}N^{2}wu/g$ and
+
+$$f = \\tfrac{1}{2}i^{2}\\frac{dL}{du} = \\frac{\\mu_{0}N^{2}i^{2}w}{2g} = \\frac{(4\\pi \\times 10^{-7})(500)^{2}(2.0)^{2}(0.020)}{2(1.0 \\times 10^{-3})} = 12.566\\ \\mathrm{N}$$
+
+positive, so the plunger is pulled **in** to increase the overlap. The direct
+route applies the same magnetic pressure, but to the face that is being swept
+out, whose area is $wg$ rather than $A$:
+
+$$f = \\frac{B^{2}}{2\\mu_{0}}(wg) = (6.2832 \\times 10^{5})(2.0 \\times 10^{-5}) = 12.566\\ \\mathrm{N}$$
+
+Agreement again, and the ratio to the gap-closing force is instructive:
+
+$$\\frac{f_{\\mathrm{normal}}}{f_{\\mathrm{lateral}}} = \\frac{A}{wg} = \\frac{4.0 \\times 10^{-4}}{2.0 \\times 10^{-5}} = 20.0$$
+
+**A magnetic actuator pulls twenty times harder along the gap than across it**,
+at these proportions. That single ratio explains the whole zoo of actuator
+geometries: relays and contactors close a gap because that is where the force
+is, while linear motors and rotary machines accept the weaker sideways force
+because it is the one that can act through an unlimited stroke.
+
+## 8.6 Worked example: reluctance torque, and where the energy goes
+
+Rotation is the same calculation with an angle in place of a length:
+
+$$\\tau = \\tfrac{1}{2}i^{2}\\frac{dL}{d\\theta}$$
+
+and $\\mathrm{A}^{2}\\cdot\\mathrm{H} = \\mathrm{A}^{2}\\cdot\\mathrm{V}\\cdot\\mathrm{s}/\\mathrm{A} = \\mathrm{J}$,
+which per radian is a newton-metre. A salient two-pole rotor in a stator bore
+presents an inductance that varies twice per revolution:
+
+$$L(\\theta) = L_{0} + L_{2}\\cos 2\\theta$$
+
+Take $L_{0} = 100\\ \\mathrm{mH}$, $L_{2} = 40\\ \\mathrm{mH}$ and
+$i = 5\\ \\mathrm{A}$ held constant:
+
+$$\\tau = \\tfrac{1}{2}i^{2}(-2L_{2}\\sin 2\\theta) = -i^{2}L_{2}\\sin 2\\theta = -(25)(0.040)\\sin 2\\theta = -1.000\\sin 2\\theta\\ \\mathrm{N}\\cdot\\mathrm{m}$$
+
+| $\\theta$ | $L(\\theta)$ | $\\tau$ | Interpretation |
+|---|---|---|---|
+| 0 deg | 140 mH | 0 | aligned, stable |
+| 30 deg | 120 mH | $-0.866\\ \\mathrm{N}\\cdot\\mathrm{m}$ | pulled back toward 0 |
+| 45 deg | 100 mH | $-1.000\\ \\mathrm{N}\\cdot\\mathrm{m}$ | strongest pull |
+| 60 deg | 80 mH | $-0.866\\ \\mathrm{N}\\cdot\\mathrm{m}$ | still pulled back |
+| 90 deg | 60 mH | 0 | unaligned, unstable |
+
+The torque is negative throughout the first quadrant, meaning it always drives
+$\\theta$ back toward zero -- toward the position of **maximum inductance**,
+just as section 8.3 promised. Both equilibria have zero torque, but only the
+aligned one is stable; nudge the rotor off 90 degrees and it runs away. That is
+the operating principle of a switched-reluctance machine, and it also explains
+why such a machine needs no rotor winding, no magnets and no brushes.
+
+**Now close the energy ledger over a finite rotation.** Turn the rotor from 0 to
+90 degrees while holding the current at 5 A. The mechanical work done **by** the
+field is
+
+$$W_{\\mathrm{mech}} = \\int_{0}^{\\pi/2}\\tau\\,d\\theta = -1.000\\int_{0}^{\\pi/2}\\sin 2\\theta\\,d\\theta = -1.000\\ \\mathrm{J}$$
+
+negative, so 1.000 J of work must be done **on** the rotor to drag it to the
+unaligned position. The stored energy also falls, because the inductance did:
+
+$$\\Delta W_{f} = \\tfrac{1}{2}i^{2}\\Delta L = \\tfrac{1}{2}(25)(0.060 - 0.140) = -1.000\\ \\mathrm{J}$$
+
+and the electrical port, held at constant current, absorbs
+
+$$W_{\\mathrm{elec}} = i\\,\\Delta\\lambda = i^{2}\\Delta L = (25)(-0.080) = -2.000\\ \\mathrm{J}$$
+
+The ledger reads $-2.000 = -1.000 + (-1.000)$: two joules were returned to the
+supply, one from the field and one from the work done on the shaft. **Exactly
+half the electrical energy exchanged at constant current appears as mechanical
+work and half as a change in stored field energy** -- which is the finite-motion
+statement of the factor of one half in $\\tfrac{1}{2}i^{2}\\,dL/dx$, and the
+cleanest way to remember where that half comes from.
+
+![Two stacked panels against rotor angle from 0 to 180 degrees. The upper panel shows inductance varying sinusoidally at twice the angle between 140 and 60 millihenries. The lower panel shows the resulting torque, a negative sine at twice the angle reaching minus one newton-metre at 45 degrees and plus one at 135 degrees, with open circles at seven angles marking the independently differentiated result.](/courses/fe-ee/figures/sci3-reluctance-torque.svg)`,
+      examTip: 'Every energy-method force problem reduces to one question: how does the inductance change as the part moves? Write L as a function of position, differentiate, multiply by half the current squared. If the inductance rises with the motion, the force pushes that way. You almost never need the field itself.',
+      importantNote: 'The two force expressions are minus the derivative of FIELD energy at constant flux linkage, and plus the derivative of CO-ENERGY at constant current. Mixing them up -- differentiating field energy while holding current -- gives an answer with the wrong sign in a saturating device. In a linear device the two agree numerically, which is why the error survives so long undetected.',
+    },
+    {
+      id: 'em-lorentz-linear-machine',
+      title: '9. The Lorentz Pair, and the Linear DC Machine',
+      content: `## 9.1 Two laws with the same constant in them
+
+A straight conductor of length $\\ell$ carrying current $i$ across a
+perpendicular flux density $B$ feels a force
+
+$$f = B\\ell i$$
+
+and the same conductor moving at speed $v$ across the same field develops an
+electromotive force
+
+$$e = B\\ell v$$
+
+Check both: $\\mathrm{T}\\cdot\\mathrm{m}\\cdot\\mathrm{A} = (\\mathrm{V}\\cdot\\mathrm{s}/\\mathrm{m}^{2})\\cdot\\mathrm{m}\\cdot\\mathrm{A} = \\mathrm{N}$
+for the first, and
+$\\mathrm{T}\\cdot\\mathrm{m}\\cdot(\\mathrm{m/s}) = \\mathrm{V}$ for the
+second. These are the two faces of electromechanical conversion, and the fact
+that they wear the **same coefficient** $B\\ell$ is not a coincidence. Multiply
+each by the quantity that turns it into a power:
+
+$$P_{\\mathrm{mech}} = f v = (B\\ell i)v \\qquad P_{\\mathrm{elec}} = e i = (B\\ell v)i$$
+
+They are the same product. Not approximately, not to within an efficiency
+factor: **the conversion itself is exactly lossless, and the two expressions
+are algebraically identical.** Everything that is lost in a real machine is lost
+somewhere else -- in the winding resistance, in the core, in friction -- and
+none of it happens in the conversion. That is why the energy audit of a machine
+always closes, and why a mismatch in your arithmetic is a mistake rather than a
+physical effect.
+
+This is the linear counterpart of the statement in section 3.1 that the same
+constant $k$ appears in $\\tau = ki$ and $e = k\\omega$. One idea, two
+geometries.
+
+## 9.2 Worked example: a rail bar driven from rest
+
+A conducting bar of mass $m = 2.0\\ \\mathrm{kg}$ slides without friction on
+rails $\\ell = 0.50\\ \\mathrm{m}$ apart in a vertical field
+$B = 0.80\\ \\mathrm{T}$. The rails are fed from
+$V = 24\\ \\mathrm{V}$ through a total loop resistance
+$R = 0.40\\ \\mathrm{\\Omega}$. Describe the motion from rest, and audit the
+energy.
+
+The conversion coefficient is $B\\ell = (0.80)(0.50) = 0.40\\ \\mathrm{V}\\cdot\\mathrm{s}/\\mathrm{m}$,
+and the two governing relations are the loop equation and Newton's second law:
+
+$$i = \\frac{V - B\\ell v}{R} \\qquad m\\frac{dv}{dt} = B\\ell\\,i$$
+
+Eliminate the current and the whole problem becomes one first-order equation:
+
+$$\\frac{dv}{dt} = \\frac{(B\\ell)^{2}}{mR}\\left(v_{\\infty} - v\\right), \\qquad v_{\\infty} = \\frac{V}{B\\ell}, \\qquad T = \\frac{mR}{(B\\ell)^{2}}$$
+
+The time constant deserves a dimensional look, because it is built entirely
+from things that are not seconds:
+$\\mathrm{kg}\\cdot\\Omega/(\\mathrm{T}\\cdot\\mathrm{m})^{2}$ reduces to
+$\\mathrm{kg}\\cdot\\mathrm{m}^{2}/(\\mathrm{J}\\cdot\\mathrm{s})$, and since a
+joule is $\\mathrm{kg}\\cdot\\mathrm{m}^{2}/\\mathrm{s}^{2}$ that is a second.
+
+**The three numbers that bound the motion.**
+
+- **At rest**, there is no back-EMF, so $i = 24/0.40 = 60\\ \\mathrm{A}$, the
+  thrust is $(0.80)(0.50)(60) = 24\\ \\mathrm{N}$, and the acceleration is
+  $24/2.0 = 12\\ \\mathrm{m/s^{2}}$.
+- **At steady state**, the bar has no force on it, so the current is zero and
+  the back-EMF has grown to equal the supply: $v_{\\infty} = 24/0.40 = 60\\ \\mathrm{m/s}$.
+- **In between**, the time constant is $T = 0.80/0.16 = 5.0\\ \\mathrm{s}$.
+
+$$v(t) = 60\\left(1 - e^{-t/5}\\right)\\ \\mathrm{m/s} \\qquad i(t) = 60\\,e^{-t/5}\\ \\mathrm{A}$$
+
+**The energy audit, and a result that surprises people.** The charge delivered
+over the whole run-up is $\\int i\\,dt = (60)(5.0) = 300\\ \\mathrm{C}$, so the
+supply hands over
+
+$$W_{\\mathrm{in}} = V\\!\\int i\\,dt = (24)(300) = 7200\\ \\mathrm{J}$$
+
+The bar ends up with
+
+$$W_{\\mathrm{kin}} = \\tfrac{1}{2}mv_{\\infty}^{2} = 0.5 \\times 2.0 \\times 3600 = 3600\\ \\mathrm{J}$$
+
+and the resistance has burned
+
+$$W_{R} = \\int i^{2}R\\,dt = R\\,i_{0}^{2}\\frac{T}{2} = 0.40 \\times 3600 \\times 2.5 = 3600\\ \\mathrm{J}$$
+
+**Exactly half of the supplied energy reached the bar, and exactly half was
+burned in the resistance -- and that split does not depend on a single one of
+the numbers.** In symbols the supplied energy is
+$W_{\\mathrm{in}} = V(V/R)(mR/(B\\ell)^{2}) = mV^{2}/(B\\ell)^{2}$, while the
+kinetic energy is $W_{\\mathrm{kin}} = \\tfrac{1}{2}m(V/B\\ell)^{2}$, exactly
+half of it for any $m$, $R$, $B$, $\\ell$ or $V$. It is the same
+theorem as charging a capacitor through a resistor from a fixed source, and it
+is the reason nobody accelerates a load by simply connecting it to a supply and
+waiting: half the bill is unavoidable waste.
+
+![Two stacked panels against time over twenty-five seconds. The upper panel shows the bar speed rising exponentially toward sixty metres per second while the current falls exponentially from sixty amperes to zero, both with a five-second time constant. The lower panel shows cumulative energy: the supplied curve rising to 7200 joules and the kinetic and resistive curves each rising to 3600 joules, the resistive one leading early and the kinetic one catching up.](/courses/fe-ee/figures/sci3-linear-machine.svg)
+
+The lower panel shows where the waste is incurred: the resistive curve rises
+fastest at the beginning, when the current is largest and the bar is barely
+moving, so almost none of the early energy does useful work. A drive that ramps
+the voltage instead of applying it in one step keeps the current low throughout
+and beats the fifty-percent limit -- which is exactly the argument for
+soft-starters in section 3.4, arriving here from a different direction.
+
+## 9.3 Worked example: loaded, and then generating
+
+**Pulling a load.** Attach a constant opposing force of
+$6.0\\ \\mathrm{N}$. In steady state the thrust must match it, so
+
+$$i = \\frac{6.0}{0.40} = 15\\ \\mathrm{A} \\qquad e = 24 - 15 \\times 0.40 = 18\\ \\mathrm{V} \\qquad v = \\frac{18}{0.40} = 45\\ \\mathrm{m/s}$$
+
+$$P_{\\mathrm{mech}} = 6.0 \\times 45 = 270\\ \\mathrm{W} \\qquad P_{\\mathrm{in}} = 24 \\times 15 = 360\\ \\mathrm{W} \\qquad P_{R} = 225 \\times 0.40 = 90\\ \\mathrm{W}$$
+
+and $270 + 90 = 360$, so the ledger closes. Efficiency is
+$270/360 = 0.75$, which is also $e/V = 18/24 = 0.75$: **for this machine
+efficiency is simply the fraction of the supply that shows up as back-EMF**,
+the same result section 3.3 obtained for the rotary machine as the fraction of
+no-load speed.
+
+**Driving it backwards.** Now disconnect nothing, but force the bar along at
+$80\\ \\mathrm{m/s}$, above its no-load speed:
+
+$$e = 0.40 \\times 80 = 32\\ \\mathrm{V} \\qquad 32 - 24 = 8\\ \\mathrm{V} \\qquad i = \\frac{8}{0.40} = 20\\ \\mathrm{A}$$
+
+The current now flows **out** of the bar and into the supply. The force on the
+bar is $0.40 \\times 20 = 8.0\\ \\mathrm{N}$, opposing the motion, so whoever is
+pushing must supply $8.0 \\times 80 = 640\\ \\mathrm{W}$. Of that,
+$24 \\times 20 = 480\\ \\mathrm{W}$ is returned to the supply and
+$400 \\times 0.40 = 160\\ \\mathrm{W}$ is lost in the resistance:
+$480 + 160 = 640$. The machine has become a generator without any change of
+hardware, wiring or equation -- only the sign of the current changed.
+
+| Mode | $v$ (m/s) | $e$ (V) | $i$ (A) | Force (N) | Mechanical | Electrical |
+|---|---|---|---|---|---|---|
+| Stall | 0 | 0 | 60 | $+24$ | 0 W | 1440 W in |
+| Loaded | 45 | 18 | 15 | $+6.0$ | 270 W out | 360 W in |
+| No load | 60 | 24 | 0 | 0 | 0 W | 0 W |
+| Generating | 80 | 32 | $-20$ | $-8.0$ | 640 W in | 480 W out |
+
+Read the table down the current column. The current, and with it the force,
+changes sign exactly at the no-load speed, and nothing else about the machine
+changes at all. **Motoring and generating are the same device on two sides of
+one operating point**, which is the single most useful thing to know about any
+electric machine.`,
+      examTip: 'Whenever a question mixes electrical and mechanical quantities, write the power balance first and solve it for whatever is missing: supply power equals copper loss plus mechanical power, exactly. That one equation replaces most of the algebra, and it works in generating mode too, with the signs of the mechanical and supply terms swapped.',
+      importantNote: 'The product B times l appears in BOTH the force law and the EMF law with the same value, so mechanical power out and electrical power converted are the same number by construction. If your two power figures differ, the arithmetic is wrong; there is no loss mechanism inside the conversion itself.',
+    },
+    {
+      id: 'em-transformer-coupling',
+      title: '10. The Transformer: Coupling Without Motion',
+      content: `## 10.1 The ideal ratios come straight from flux linkage
+
+A transformer is the case of section 7 with nothing moving. Two windings share
+one core, so they share one flux, and Faraday's law applied to each gives
+
+$$v_{1} = N_{1}\\frac{d\\Phi}{dt} \\qquad v_{2} = N_{2}\\frac{d\\Phi}{dt} \\qquad\\Rightarrow\\qquad \\frac{v_{1}}{v_{2}} = \\frac{N_{1}}{N_{2}}$$
+
+The current ratio comes from the magnetic circuit rather than from Faraday. The
+net drive round the core is the difference of the two sets of ampere-turns, and
+it must equal the flux times the reluctance:
+
+$$N_{1}i_{1} - N_{2}i_{2} = \\Phi\\,\\mathcal{R}$$
+
+Let the reluctance go to zero and the right-hand side vanishes, leaving
+
+$$\\frac{i_{1}}{i_{2}} = \\frac{N_{2}}{N_{1}}$$
+
+**The ideal transformer is the zero-reluctance limit of a magnetic circuit.**
+Every departure from ideality in a real transformer is a named piece of
+reluctance or resistance that this limit threw away: finite $\\mathcal{R}$
+becomes magnetising reactance, leakage flux becomes leakage reactance, winding
+resistance becomes copper loss, and hysteresis and eddy currents become core
+loss.
+
+## 10.2 Worked example: magnetising current, and the price of a stray gap
+
+The magnetising current is the current the primary draws with the secondary
+open, and it is set entirely by the reluctance:
+
+$$L_{m} = \\frac{N_{1}^{2}}{\\mathcal{R}} \\qquad X_{m} = \\omega L_{m} \\qquad I_{m} = \\frac{V_{1}}{X_{m}}$$
+
+Take the ring of section 5, 500 turns, on 120 V at 60 Hz, and compare the
+ungapped core against the gapped one:
+
+| | Ungapped | With a 1.0 mm gap |
+|---|---|---|
+| $\\mathcal{R}$ (A/Wb) | $4.7746 \\times 10^{5}$ | $2.4669 \\times 10^{6}$ |
+| $L_{m}$ | 523.60 mH | 101.34 mH |
+| $X_{m}$ at 60 Hz | 197.392 $\\Omega$ | 38.205 $\\Omega$ |
+| $I_{m}$ at 120 V | $120/197.392 = 0.6079$ A | $120/38.205 = 3.141$ A |
+
+The magnetising current rose by $3.141/0.6079 = 5.167$, which is exactly the
+ratio of the reluctances, $31/6$. **For a transformer that is a disaster**:
+magnetising current is pure overhead, flowing whether or not the secondary is
+loaded, filling the winding with copper loss that produces nothing.
+
+The practical version of this is a stacking error. Take a core with mean path
+0.50 m, section $6.0\\ \\mathrm{cm}^{2}$, $\\mu_{r} = 4000$, 250 turns, on 120 V
+at 60 Hz. Assembled properly, $\\mathcal{R} = 165{,}786\\ \\mathrm{A/Wb}$,
+$L_{m} = 0.37699\\ \\mathrm{H}$, $X_{m} = 142.1223\\ \\Omega$ and
+$I_{m} = 120/142.1223 = 0.84434\\ \\mathrm{A}$. Now suppose the E and I
+laminations are stacked with a 0.2 mm film of burr and varnish between them:
+
+$$\\mathcal{R} = 165{,}720 + 265{,}258 = 430{,}978\\ \\mathrm{A/Wb}$$
+
+$$L_{m} = 0.14502\\ \\mathrm{H} \\qquad X_{m} = 54.671\\ \\Omega \\qquad I_{m} = \\frac{120}{54.671} = 2.195\\ \\mathrm{A}$$
+
+The reluctance ratio is $430978.3/165786.4 = 2.5996$, so **two tenths of a
+millimetre of dirt has multiplied the magnetising current by 2.6**. This is why
+transformer laminations are interleaved rather than butted, and why a
+transformer that hums, runs warm and draws current with nothing connected has a
+mechanical fault rather than an electrical one.
+
+## 10.3 Why an inductor wants a gap and a transformer never does
+
+The same gap that ruins a transformer is deliberately designed into a
+smoothing choke, and the reason is where the energy sits. Energy density is
+$B^{2}/2\\mu$, so at equal flux density the air stores $\\mu_{r}$ times more per
+cubic metre than the iron does. Return to the gapped ring of section 5.3, at
+$B = 1.0134\\ \\mathrm{T}$:
+
+| Region | Volume | Energy density | Energy |
+|---|---|---|---|
+| Air gap | $0.40\\ \\mathrm{cm}^{3}$ | $408{,}636\\ \\mathrm{J/m^{3}}$ | 0.163454 J |
+| Iron | $240\\ \\mathrm{cm}^{3}$ | $163.45\\ \\mathrm{J/m^{3}}$ | 0.039229 J |
+| Total | | | 0.202683 J |
+
+$$0.163454 + 0.039229 = 0.202683\\ \\mathrm{J} \\qquad \\text{and} \\qquad \\tfrac{1}{2}Li^{2} = \\tfrac{1}{2}(0.1013417)(4.0) = 0.202683\\ \\mathrm{J}$$
+
+The field-integral route and the circuit route give the same joule, which is
+the check that matters here because the two calculations have almost nothing in
+common. And the split is striking: **one six-hundredth of the volume holds 80.6% of
+the energy**, since $0.40/240.4 = 1/601$. The ratio of the two energies is
+$0.163454/0.039229 = 4.1667$ -- the reluctance ratio again, exactly, because at
+constant flux each region stores energy in proportion to its reluctance.
+
+So the two devices have opposite goals built from identical parts:
+
+| | Energy-storage inductor | Transformer |
+|---|---|---|
+| Wants reluctance | high, and mostly in air | as low as physically possible |
+| Gap | designed in, tightly controlled | a defect |
+| Stores energy | yes, that is the job | no, storage is pure overhead |
+| Saturation behaviour | gap holds $L$ up to high current | avoided by design margin |
+| Magnetising current | irrelevant | the figure of merit |
+
+The last row of that table is the exam-ready summary. A gap also **linearises**:
+gap reluctance is a constant of geometry and cannot saturate, so a heavily
+gapped inductor holds its inductance to far higher currents than an ungapped
+one, at the cost of needing more turns to reach the same value in the first
+place.`,
+      examTip: 'Treat any transformer question as a magnetic-circuit question that has been told to ignore its own reluctance. The turns ratio for voltage comes from the shared flux, the turns ratio for current comes from ampere-turn cancellation, and everything a real transformer does that an ideal one does not is a piece of reluctance or resistance the ideal model dropped.',
+      importantNote: 'At the same flux density, an air gap stores roughly mu_r times more energy per unit volume than the iron beside it. In the worked ring, one six-hundredth of the volume holds 80.6 percent of the energy. That single fact explains why energy-storage inductors are gapped on purpose and why the same gap is a manufacturing defect in a transformer.',
+    },
+    {
+      id: 'em-problem-sets',
+      title: '11. Problem Sets',
+      content: `## Problem Set 11.1 -- Magnetic circuits, inductance and stored energy
+
+Work each one all the way to a number before reading the answer. Take
+$\\mu_{0} = 4\\pi \\times 10^{-7}\\ \\mathrm{H/m}$ and neglect leakage and
+fringing unless told otherwise.
+
+**Problem 1.** A toroid of mean radius 60 mm and cross-section
+$2.5\\ \\mathrm{cm}^{2}$ is wound with 400 turns on a core of
+$\\mu_{r} = 1800$, and carries 0.30 A. Find the reluctance, the flux, the flux
+density, the inductance and the stored energy. Confirm the energy by a second
+formula.
+
+*Answer.* The mean path is $\\ell = 2\\pi(0.060) = 0.37699\\ \\mathrm{m}$, so
+
+$$\\mathcal{R} = \\frac{0.37699}{(4\\pi \\times 10^{-7})(1800)(2.5 \\times 10^{-4})} = 6.6667 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+With $\\mathcal{F} = 120\\ \\mathrm{A}$: $\\Phi = 0.18000\\ \\mathrm{mWb}$,
+$B = 0.72000\\ \\mathrm{T}$, and $L = N^{2}/\\mathcal{R} = 0.24000\\ \\mathrm{H}$.
+The energy is $\\tfrac{1}{2}Li^{2} = 10.800\\ \\mathrm{mJ}$, and the check
+$\\tfrac{1}{2}\\Phi^{2}\\mathcal{R}$ gives the same 10.800 mJ.
+
+**Problem 2.** Saw a 0.8 mm gap in that toroid and raise the current to 2.0 A.
+Find the flux density and the force pulling the gap shut, then say what mass
+that force would hold up.
+
+*Answer.* The iron path shortens to 0.37619 m, giving
+$\\mathcal{R}_{\\mathrm{iron}} = 6.6525 \\times 10^{5}$ and
+$\\mathcal{R}_{\\mathrm{gap}} = 2.5465 \\times 10^{6}\\ \\mathrm{A/Wb}$, so the
+gap carries 79.3% of the drive. With $\\mathcal{F} = 800\\ \\mathrm{A}$:
+$\\Phi = 0.24909\\ \\mathrm{mWb}$, $B = 0.99635\\ \\mathrm{T}$ and
+$L = 49.817\\ \\mathrm{mH}$. The pull is
+
+$$f = \\frac{B^{2}A}{2\\mu_{0}} = 98.75\\ \\mathrm{N}$$
+
+which the energy method confirms as $-\\tfrac{1}{2}\\Phi^{2}/(\\mu_{0}A)$, the
+same 98.75 N. Against $g = 9.80665\\ \\mathrm{m/s^{2}}$ that would hold
+$10.069\\ \\mathrm{kg}$.
+
+**Problem 3.** Add a second winding of 150 turns to the gapped toroid of
+Problem 2. Find $L_{2}$, $M$, $k$, and the two series readings.
+
+*Answer.* $L_{1} = 49.8174\\ \\mathrm{mH}$ and
+$L_{2} = 150^{2}/\\mathcal{R} = 7.0056\\ \\mathrm{mH}$, while
+$M = (400)(150)/\\mathcal{R} = 18.6815\\ \\mathrm{mH}$. Since all three come
+from one reluctance, $k = 1.0000$ exactly. The series readings are
+
+$$L_{\\mathrm{aid}} = 49.8174 + 7.0056 + 37.3630 = 94.186\\ \\mathrm{mH}$$
+
+$$L_{\\mathrm{opp}} = 49.8174 + 7.0056 - 37.3630 = 19.460\\ \\mathrm{mH}$$
+
+**Problem 4.** Take the shell core of section 5.5 -- centre limb 0.10 m by
+$8.0\\ \\mathrm{cm}^{2}$, two outer limbs 0.30 m by $4.0\\ \\mathrm{cm}^{2}$,
+$\\mu_{r} = 2000$, 300 turns at 0.40 A -- but cut the 0.5 mm gap into the
+**centre** limb instead of an outer one. Find the flux density everywhere, and
+explain the result.
+
+*Answer.* Now the gap is in series with everything, so the two outer limbs stay
+symmetric and simply parallel to $1.4921 \\times 10^{5}\\ \\mathrm{A/Wb}$. The
+gapped centre limb is $5.4685 \\times 10^{5}$, so
+$\\mathcal{R} = 6.9605 \\times 10^{5}\\ \\mathrm{A/Wb}$ and
+$\\Phi = 0.17240\\ \\mathrm{mWb}$. The centre limb runs at
+$B = 0.21550\\ \\mathrm{T}$, and each outer limb carries half the flux through
+half the area, so it runs at $0.21550\\ \\mathrm{T}$ too. **Moving the gap to
+the centre restores uniform flux density**, at the price of a lower total flux
+than the outer-limb version delivered: this is the standard way to gap a shell
+core, and the reason the centre limb is made double the area.
+
+## Problem Set 11.2 -- Force, torque and electromechanical conversion
+
+**Problem 1.** A solenoid actuator has 800 turns, a pole face of
+$6.0\\ \\mathrm{cm}^{2}$, and a working gap of 1.5 mm. Neglect the iron. At
+1.5 A, find the flux density and the pull, and check the pull by a second
+route.
+
+*Answer.* $B = \\mu_{0}Ni/x = 1.0053\\ \\mathrm{T}$, and the magnetic pressure
+$B^{2}/2\\mu_{0}$ acting on the face gives
+
+$$f = \\frac{(1.0053)^{2}(6.0 \\times 10^{-4})}{2(4\\pi \\times 10^{-7})} = 241.27\\ \\mathrm{N}$$
+
+The energy method, $\\tfrac{1}{2}i^{2}\\mu_{0}N^{2}A/x^{2}$, returns the same
+241.27 N. That would hold $24.603\\ \\mathrm{kg}$.
+
+**Problem 2.** A salient rotor has
+$L(\\theta) = 80 + 30\\cos 2\\theta$ millihenries and carries a constant 8.0 A.
+Find the peak torque and where it occurs, then the mechanical work, the change
+in stored energy and the electrical energy exchanged when the rotor is dragged
+from aligned to unaligned.
+
+*Answer.* $\\tau = -i^{2}L_{2}\\sin 2\\theta = -(64)(0.030)\\sin 2\\theta$, so the
+peak magnitude is $1.9200\\ \\mathrm{N}\\cdot\\mathrm{m}$ at 45 degrees. Over
+the quarter turn, $W_{\\mathrm{mech}} = -1.9200\\ \\mathrm{J}$,
+$\\Delta W_{f} = \\tfrac{1}{2}i^{2}\\Delta L = -1.9200\\ \\mathrm{J}$ and
+$W_{\\mathrm{elec}} = i^{2}\\Delta L = -3.8400\\ \\mathrm{J}$. The ledger reads
+$-3.8400 = -1.9200 + (-1.9200)$: half the exchanged energy is mechanical and
+half is field, as always at constant current.
+
+**Problem 3.** A rail machine has $B = 0.60\\ \\mathrm{T}$, rails 0.80 m apart,
+a 40 V supply, 0.50 ohm loop resistance, a 3.0 kg bar and a constant 4.0 N of
+friction. Find the steady-state current, speed and efficiency, and the
+acceleration at the instant of switch-on.
+
+*Answer.* $B\\ell = 0.4800\\ \\mathrm{V}\\cdot\\mathrm{s}/\\mathrm{m}$. Steady
+state needs thrust equal to friction:
+
+$$i = \\frac{4.0}{0.48} = 8.3333\\ \\mathrm{A} \\qquad e = 40 - 8.3333 \\times 0.50 = 35.833\\ \\mathrm{V} \\qquad v = \\frac{35.833}{0.48} = 74.652\\ \\mathrm{m/s}$$
+
+$$P_{\\mathrm{mech}} = 4.0 \\times 74.652 = 298.61\\ \\mathrm{W} \\qquad P_{\\mathrm{in}} = 40 \\times 8.3333 = 333.33\\ \\mathrm{W} \\qquad P_{R} = 69.4439 \\times 0.50 = 34.722\\ \\mathrm{W}$$
+
+and $298.61 + 34.72 = 333.33\\ \\mathrm{W}$ closes the ledger. Efficiency is
+$\\eta = e/V = 35.833/40 = 0.8958$, or 89.58%. At switch-on there is no
+back-EMF, so $i = 40/0.50 = 80\\ \\mathrm{A}$, the thrust is
+$0.48 \\times 80 = 38.4\\ \\mathrm{N}$, the net force is
+$38.4 - 4.0 = 34.4\\ \\mathrm{N}$ and the acceleration is
+$34.4/3.0 = 11.467\\ \\mathrm{m/s^{2}}$.
+
+**Problem 4.** A relay has a C-shaped core of iron path 0.18 m and section
+$2.0\\ \\mathrm{cm}^{2}$ with $\\mu_{r} = 3000$; the armature closes across
+**two** gaps of 0.6 mm each. The coil has 1200 turns. At 0.25 A, find the flux
+density and the total pull. Then find the current needed to hold a 12 N return
+spring.
+
+*Answer.* The iron contributes $2.3873 \\times 10^{5}$ and the two gaps
+together $4.7746 \\times 10^{6}\\ \\mathrm{A/Wb}$, so
+
+$$\\mathcal{R} = 238{,}732 + 4{,}774{,}648 = 5{,}013{,}380\\ \\mathrm{A/Wb}$$
+
+With $\\mathcal{F} = 300\\ \\mathrm{A}$: $\\Phi = 0.059840\\ \\mathrm{mWb}$ and
+$B = 0.29920\\ \\mathrm{T}$. Each face pulls
+$B^{2}A/2\\mu_{0} = 7.1238\\ \\mathrm{N}$, so the total is
+$2 \\times 7.1238 = 14.248\\ \\mathrm{N}$; the energy route,
+$\\tfrac{1}{2}\\Phi^{2}\\,d\\mathcal{R}/dx$ with two gaps opening together,
+gives the same 14.248 N. Since the circuit is linear, force goes as the square
+of the current, so holding 12 N needs
+
+$$i = 0.25\\sqrt{\\frac{12}{14.248}} = 0.22944\\ \\mathrm{A}$$
+
+Note that the relay **drops out** well below the current that pulled it in,
+because the gaps close as it operates and the force rises steeply -- the
+hysteresis in a relay is geometric, not magnetic.`,
+      examTip: 'Every problem in these two sets has the same skeleton: build the reluctance, divide the ampere-turns by it to get flux, divide by area to get B, then either differentiate an inductance or apply B squared over two mu-nought to a face. If a question asks for a force and you have not yet found B, you are not ready to answer it.',
+      importantNote: 'When an armature closes TWO gaps at once, both shrink together, so the reluctance derivative carries a factor of two and the total pull is twice the single-face figure. Forgetting the second face halves the answer, and it is the most common error in relay problems.',
+    },
   ],
   keyTakeaways: [
     'Motor torque: τ = NBIA·sinθ; maximum when loop perpendicular to field.',
@@ -2497,6 +3667,16 @@ loading error.`,
     'Generator EMF: ε = NBAω·cos(ωt); higher speed = higher voltage.',
     'Strain gauge: ΔR/R = GF·ε (GF ≈ 2); thermistor: exponential R(T).',
     'Wheatstone bridge: balance condition R₁/R₂ = R₃/R₄; detects small ΔR.',
+    'Magnetic circuit: F = NI drives Φ against reluctance R = ℓ/(μA), in A/Wb. Series adds, parallel is product over sum.',
+    'An air gap dominates: R_gap/R_core = μ_r·g/ℓ_c. One millimetre of air in the worked 0.60 m ring beats all the iron by 25 to 6.',
+    'The analogy has no dissipation term. Half Φ²R carries units of joules, not watts — it is the stored energy, not a loss.',
+    'Core loss splits by frequency exponent: hysteresis ∝ f (the loop area per cycle), eddy current ∝ d²f²/ρ. Halving lamination thickness quarters the eddy term.',
+    'L = N²/R, M = N₁N₂/R, k = M/√(L₁L₂). From a series test, M = (L_aiding − L_opposing)/4 — the factor is four.',
+    'Force by the energy method: f = ½i²·dL/dx at constant current, or f = −½Φ²·dR/dx at constant flux. Force always acts to raise inductance.',
+    'Direct check on any of those: magnetic pressure B²/(2μ₀) times pole-face area. The worked plunger gives 163.45 N by both routes.',
+    'Reluctance torque τ = ½i²·dL/dθ. Over a finite move at constant current, exactly half the electrical energy becomes work and half becomes field.',
+    'BLI and BLv carry the same coefficient, so f·v = e·i identically — the conversion itself is lossless.',
+    'A gap is designed into an energy-storage inductor and is a defect in a transformer: at equal B, air stores μ_r times the energy density of the iron.',
   ],
 },
 
