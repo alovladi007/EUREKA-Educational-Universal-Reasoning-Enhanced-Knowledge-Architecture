@@ -3194,8 +3194,10 @@ measurement of anything.
 
 ## 4.2 Prediction, inside and outside the data
 
-Interpolating at 3.5 A: ŷ = 0.21 + 1.73(3.5) = **6.27 °C**, trustworthy to
-roughly ±Se.
+Interpolating at 3.5 A: ŷ = 0.21 + 1.73(3.5) = **6.27 °C**. A single future
+reading at 3.5 A scatters by rather more than ±Se, because the uncertainty in
+the fitted line adds to the process noise; Section 9 turns that statement into a
+proper prediction interval, which is always wider than ±Se and never narrower.
 
 Extrapolating to 12 A: the formula happily returns 0.21 + 1.73(12) = 21.0 °C,
 but nothing in the data says the relationship stays linear out there —
@@ -3213,10 +3215,13 @@ does not mean "no relationship"; it means no LINEAR one, or a real linear one
 buried under noise. The residual plot, not R², is the shape check: curvature in
 the residuals convicts the model even when R² looks excellent.
 
-A related trap: R² never decreases when the data range widens, because spread
-in x inflates the explained variance. Comparing R² between two experiments run
-over different x-ranges is comparing apples to oranges — compare Se instead,
-which stays in physical units.`,
+A related trap: R² usually RISES when the range of x is widened, because
+spreading the predictor inflates the explained variance while the noise level
+stays put. It is a tendency, not a theorem — adding points that lie off the line
+can lower R² even as the range grows — but it is strong enough that comparing R²
+between two experiments run over different x-ranges is comparing apples to
+oranges. Compare Se instead, which stays in physical units and does not respond
+to the spread of x at all.`,
       examTip: 'If r is given and R² is asked, square it and keep the story straight: r = 0.9 means 81% of variance explained, not 90%. The unsquared number is always among the answer choices.',
     },
     {
@@ -3245,9 +3250,12 @@ formulas above are the complete toolkit for it.
 | One point far off the band | outlier or recording error | investigate before deleting anything |
 | Runs of same-sign residuals in time order | drift during the experiment | randomise run order; check instrumentation |
 
-A useful numerical companion: the residuals from any least-squares line sum to
-exactly zero. If yours do not, the slope or intercept is wrong — the same kind
-of built-in check as deviations about a mean.
+A useful numerical companion: the residuals from any least-squares line THAT
+INCLUDES AN INTERCEPT sum to exactly zero, because that is precisely the first
+normal equation derived in Section 7.2. If yours do not, the slope or intercept
+is wrong — the same kind of built-in check as deviations about a mean. The
+guarantee lapses for a fit forced through the origin, which drops that equation
+along with the intercept.
 
 ## 5.3 Where marks are lost
 
@@ -3289,12 +3297,13 @@ Relation: ln R is linear in 1/T with slope B, so from two points
 B = (ln R₁ − ln R₂) / (1/T₁ − 1/T₂)
 
 Substitution: T₁ = 298.15 K, T₂ = 323.15 K.
-ln(10000) − ln(3588) = ln(10000/3588) = ln 2.787 = 1.025.
+ln(10000) − ln(3590) = ln(10000/3590) = ln 2.7855 = 1.0245.
 1/298.15 − 1/323.15 = 3.354×10⁻³ − 3.095×10⁻³ = 2.595×10⁻⁴ K⁻¹.
 
-B = 1.025 / 2.595×10⁻⁴ = **3950 K**
+B = 1.0245 / 2.595×10⁻⁴ = **3948 K**
 
-which is a standard catalogue value — the arithmetic closes the loop. With more
+against a catalogue figure of 3950 K for this part — the arithmetic closes the
+loop to within the rounding of the two printed resistances. With more
 than two calibration points, the same B comes from the least-squares slope of
 ln R against 1/T, and R² computed on the TRANSFORMED variables tells you how
 exponential the device really is.
@@ -3310,6 +3319,1153 @@ log C, not C itself, so exponentiate before reporting. A fitted intercept of
 2.3 on semilog axes means C = e^2.3 ≈ 10, and quoting 2.3 as the prefactor is
 the standard lost mark on this item.`,
       examTip: 'Choose the transform from the model, not from habit: exponentials go straight on semilog paper, power laws on log-log. An exam item showing curved data on linear axes and straight data on log-log axes has told you the exponent model without saying so.',
+    },
+    {
+      id: 'reg-derivation',
+      title: '7. Least Squares Derived from the Objective Function',
+      content: `## 7.1 What "best fit" is being asked to mean
+
+A straight line carries two unknowns, an intercept and a slope, and ten data
+points almost never sit on any single line. Fitting therefore means choosing the
+two numbers that leave the smallest total disagreement — and until "smallest
+disagreement" is defined arithmetically, nothing has been decided at all.
+
+Write the vertical gap between the measurement and the line as the residual
+
+$$e_{i} = y_{i} - (a + bx_{i})$$
+
+and add up the squares of those gaps across the whole record:
+
+$$S(a,b) = \\sum_{i=1}^{n}\\left[y_{i} - (a + bx_{i})\\right]^{2}$$
+
+Squaring is not the only possible choice, and it is worth knowing why it wins.
+Adding the raw residuals is useless, because positive and negative misses cancel
+and every line through the mean point scores zero. Adding absolute values is a
+legitimate criterion — least absolute deviations, which resists outliers far
+better — but the absolute value has a corner at zero, so the minimum cannot be
+found by differentiation and there is no closed formula. Squares are smooth
+everywhere, produce one linear equation per unknown, and give a unique answer
+that a calculator can reach in five sums. The price is sensitivity: a residual
+twice as large contributes four times as much, so a single wild point steers the
+fit, which is exactly the vulnerability Section 10 makes quantitative.
+
+## 7.2 Setting the two partial derivatives to zero
+
+At the minimum of a smooth surface both partial derivatives vanish. Differentiate
+the objective with respect to the intercept, holding the slope fixed:
+
+$$\\frac{\\partial S}{\\partial a} = -2\\sum_{i=1}^{n}\\left[y_{i} - a - bx_{i}\\right] = 0$$
+
+and then with respect to the slope, where the chain rule contributes an extra
+factor of the abscissa:
+
+$$\\frac{\\partial S}{\\partial b} = -2\\sum_{i=1}^{n}x_{i}\\left[y_{i} - a - bx_{i}\\right] = 0$$
+
+Divide both by minus two and rearrange, and out fall the two NORMAL EQUATIONS:
+
+$$\\sum_{i=1}^{n}y_{i} = na + b\\sum_{i=1}^{n}x_{i}$$
+
+$$\\sum_{i=1}^{n}x_{i}y_{i} = a\\sum_{i=1}^{n}x_{i} + b\\sum_{i=1}^{n}x_{i}^{2}$$
+
+Everything that follows in this chapter is a consequence of those two lines.
+They are linear in the unknowns even though the objective was quadratic, which
+is the whole reason linear regression has a formula at all and non-linear
+fitting has an iteration instead.
+
+## 7.3 Solving the normal equations
+
+Divide the first equation by the sample size. The sums become means:
+
+$$\\bar{y} = a + b\\bar{x} \\qquad\\Longrightarrow\\qquad a = \\bar{y} - b\\bar{x}$$
+
+which is the pass-through-the-means property, now derived rather than asserted:
+it is the first normal equation, and nothing else. Substitute that intercept into
+the second normal equation and collect the slope:
+
+$$\\sum x_{i}y_{i} = \\left(\\bar{y} - b\\bar{x}\\right)\\sum x_{i} + b\\sum x_{i}^{2}$$
+
+$$\\sum x_{i}y_{i} - \\frac{\\left(\\sum x_{i}\\right)\\left(\\sum y_{i}\\right)}{n} = b\\left[\\sum x_{i}^{2} - \\frac{\\left(\\sum x_{i}\\right)^{2}}{n}\\right]$$
+
+Both bracketed quantities are corrected sums of squares and cross products, and
+naming them shortens every formula in the rest of the chapter:
+
+$$S_{xx} = \\sum(x_{i}-\\bar{x})^{2} = \\sum x_{i}^{2} - \\frac{\\left(\\sum x_{i}\\right)^{2}}{n}$$
+
+$$S_{xy} = \\sum(x_{i}-\\bar{x})(y_{i}-\\bar{y}) = \\sum x_{i}y_{i} - \\frac{\\left(\\sum x_{i}\\right)\\left(\\sum y_{i}\\right)}{n}$$
+
+$$S_{yy} = \\sum(y_{i}-\\bar{y})^{2} = \\sum y_{i}^{2} - \\frac{\\left(\\sum y_{i}\\right)^{2}}{n}$$
+
+so that the slope is a single ratio:
+
+$$b = \\frac{S_{xy}}{S_{xx}}$$
+
+The familiar correlation form is one algebraic step further. Multiply and divide
+by the square root of the product of the corrected sums:
+
+$$b = \\frac{S_{xy}}{\\sqrt{S_{xx}S_{yy}}}\\cdot\\frac{\\sqrt{S_{yy}}}{\\sqrt{S_{xx}}} = r\\,\\frac{s_{y}}{s_{x}}$$
+
+because the sample standard deviations both carry the same factor of n minus
+one, which cancels in the ratio. That is why the two slope formulas in Section 1
+are not two facts to memorise but one fact written twice.
+
+## 7.4 It really is a minimum
+
+Vanishing derivatives locate a stationary point, not necessarily a lowest one.
+The second derivatives of the objective are
+
+$$\\frac{\\partial^{2}S}{\\partial a^{2}} = 2n, \\qquad \\frac{\\partial^{2}S}{\\partial b^{2}} = 2\\sum x_{i}^{2}, \\qquad \\frac{\\partial^{2}S}{\\partial a\\,\\partial b} = 2\\sum x_{i}$$
+
+and the determinant of that two-by-two matrix of second derivatives is
+
+$$4\\left[n\\sum x_{i}^{2} - \\left(\\sum x_{i}\\right)^{2}\\right] = 4nS_{xx}$$
+
+which is strictly positive whenever the abscissas are not all identical. With a
+positive leading second derivative and a positive determinant the stationary
+point is a minimum, and because the objective is quadratic it is the ONLY one —
+there are no local traps to fall into. If every x is the same the determinant is
+zero, the slope is not identified, and no amount of data repairs it: a fit needs
+spread in the predictor.
+
+Holding the intercept at its best value for each candidate slope profiles the
+surface into an exact parabola,
+
+$$S\\left(\\bar{y}-b\\bar{x},\\,b\\right) = \\mathrm{SSE} + S_{xx}\\left(b-\\hat{b}\\right)^{2}$$
+
+whose curvature is the corrected sum of squares of the predictor. Wide spread in
+x means a steep bowl, which means a slope that is hard to move — and Section 9
+turns exactly that curvature into the standard error of the slope.
+
+![The sum of squared residuals for the calibration data, drawn twice: contours over the intercept-slope plane showing a single elliptical basin centred on a equals 4.5 and b equals 0.5, and the parabolic cross-section obtained by holding the intercept at its best value, which bottoms out at SSE equals 1.82.](/courses/fe-ee/figures/prob3-ls-objective.svg)
+
+## 7.5 The geometry: projection and two orthogonality conditions
+
+Read the two normal equations again as statements about the residuals rather
+than about the coefficients. The first says the residuals sum to zero; the
+second says they have zero cross product with the predictor:
+
+$$\\sum_{i=1}^{n}e_{i} = 0 \\qquad\\text{and}\\qquad \\sum_{i=1}^{n}x_{i}e_{i} = 0$$
+
+In vector language the fitted values live in the plane spanned by the all-ones
+vector and the predictor vector, and the residual vector is perpendicular to
+both spanning directions — so the fit is the orthogonal projection of the data
+onto that plane, and least squares is the Pythagorean statement that the
+shortest route from a point to a plane is the perpendicular one. The right angle
+delivers a Pythagorean identity for free:
+
+$$\\sum(y_{i}-\\bar{y})^{2} = \\sum(\\hat{y}_{i}-\\bar{y})^{2} + \\sum(y_{i}-\\hat{y}_{i})^{2}$$
+
+usually written as a decomposition of total variation into explained and
+unexplained parts:
+
+$$\\mathrm{SST} = \\mathrm{SSR} + \\mathrm{SSE}$$
+
+One caution that the derivation makes visible and the formula hides: the
+residuals sum to zero BECAUSE the all-ones column is in the model. Force the
+line through the origin and the first normal equation disappears with the
+intercept; the residuals of a no-intercept fit generally do not sum to zero, and
+the variance decomposition above no longer holds in the same form.
+
+## 7.6 Worked: the normal equations solved three ways
+
+Given the calibration record of Section 8, whose five sums are n = 10,
+sum x = 550, sum y = 320, sum xy = 21725 and sum x squared = 38500, find the
+fitted line by solving the normal equations directly, and confirm it by two
+routes that never form the ratio Sxy over Sxx.
+
+**Route 1 — elimination.** The normal equations are
+
+$$10a + 550b = 320 \\qquad\\text{and}\\qquad 550a + 38500b = 21725$$
+
+Multiply the first by 55 to match the intercept coefficients, giving
+550a + 30250b = 17600, and subtract it from the second:
+
+$$(38500 - 30250)\\,b = 21725 - 17600 \\quad\\Longrightarrow\\quad 8250b = 4125$$
+
+so **b = 0.500 mV/kPa**, and back-substitution in the first equation gives
+10a = 320 − 275, so **a = 4.50 mV**.
+
+**Route 2 — Cramer's rule.** The coefficient determinant is
+10(38500) − 550² = 385000 − 302500 = 82500, and the two numerator determinants
+are 10(21725) − 550(320) = 217250 − 176000 = 41250 for the slope and
+320(38500) − 550(21725) = 12320000 − 11948750 = 371250 for the intercept:
+
+$$b = \\frac{41250}{82500} = 0.5 \\qquad\\text{and}\\qquad a = \\frac{371250}{82500} = 4.5$$
+
+**Route 3 — the orthogonality test.** A candidate line is correct only if its
+residuals satisfy both conditions of Section 7.5. With a = 4.5 and b = 0.5 the
+residuals are −0.2, −0.4, +0.6, −0.4, +0.3, +0.6, +0.3, −0.6, −0.4, +0.2, which
+sum to exactly zero; and their cross product with x is
+10(−0.2) + 20(−0.4) + 30(0.6) + 40(−0.4) + 50(0.3) + 60(0.6) + 70(0.3) +
+80(−0.6) + 90(−0.4) + 100(0.2) = −2 − 8 + 18 − 16 + 15 + 36 + 21 − 48 − 36 + 20,
+which is also exactly zero. Two conditions, two unknowns, both satisfied: this
+is the fit and no other line can match it.
+
+Three routes agreeing is worth more than one route repeated. Elimination and
+Cramer's rule use different arithmetic on the same system, and the orthogonality
+test does not use the system at all — it checks the property the solution must
+have. A slip in any single route shows up immediately as a disagreement.`,
+      examTip: 'Every regression formula on the reference sheet is a rearrangement of two normal equations. If you can write the objective and differentiate it, you can rebuild the slope and intercept from memory in about ninety seconds — and the pass-through-the-means relation a = ȳ − b·x̄ IS the first normal equation, which is why it is always exactly true and always worth checking.',
+      importantNote: 'The residuals of a least-squares fit sum to zero only when the model contains an intercept. A regression forced through the origin drops the first normal equation, and its residuals generally do not sum to zero — so the usual SST = SSR + SSE bookkeeping, and the usual reading of R², do not carry over unchanged.',
+    },
+    {
+      id: 'reg-calibration',
+      title: '8. A Ten-Point Calibration, Worked End to End',
+      content: `## 8.1 The record
+
+A pressure transducer is calibrated on a deadweight tester at ten applied
+pressures, and the conditioned output is recorded in millivolts. The complete
+record, with the three product columns the normal equations need, is:
+
+| i | x (kPa) | y (mV) | x·y | x² | y² |
+|---|---|---|---|---|---|
+| 1 | 10 | 9.3 | 93 | 100 | 86.49 |
+| 2 | 20 | 14.1 | 282 | 400 | 198.81 |
+| 3 | 30 | 20.1 | 603 | 900 | 404.01 |
+| 4 | 40 | 24.1 | 964 | 1600 | 580.81 |
+| 5 | 50 | 29.8 | 1490 | 2500 | 888.04 |
+| 6 | 60 | 35.1 | 2106 | 3600 | 1232.01 |
+| 7 | 70 | 39.8 | 2786 | 4900 | 1584.04 |
+| 8 | 80 | 43.9 | 3512 | 6400 | 1927.21 |
+| 9 | 90 | 49.1 | 4419 | 8100 | 2410.81 |
+| 10 | 100 | 54.7 | 5470 | 10000 | 2992.09 |
+| sum | 550 | 320.0 | 21725 | 38500 | 12304.32 |
+
+Ten rows, five totals, and the fit is already determined. Note that nothing in
+this table required a calculator with statistics keys: it is four multiplications
+and five column sums, and building it first is the discipline that keeps the
+arithmetic honest.
+
+## 8.2 Worked: the corrected sums, the slope and the intercept
+
+Given the totals above, find the least-squares line.
+
+The means are $\\bar{x} = 550/10 = 55$ kPa and $\\bar{y} = 320/10 = 32$ mV. The
+corrected sums follow from the computational forms of Section 7.3:
+
+$$S_{xx} = 38500 - \\frac{550^{2}}{10} = 38500 - 30250 = 8250$$
+
+$$S_{xy} = 21725 - \\frac{(550)(320)}{10} = 21725 - 17600 = 4125$$
+
+$$S_{yy} = 12304.32 - \\frac{320^{2}}{10} = 12304.32 - 10240 = 2064.32$$
+
+so the slope and intercept are
+
+$$b = \\frac{S_{xy}}{S_{xx}} = \\frac{4125}{8250} = 0.500\\ \\mathrm{mV/kPa}$$
+
+$$a = \\bar{y} - b\\bar{x} = 32 - 0.5(55) = 32 - 27.5 = 4.50\\ \\mathrm{mV}$$
+
+The fitted calibration is therefore ŷ = 4.50 + 0.500x, with a sensitivity of
+0.500 millivolts per kilopascal and a zero-pressure offset of 4.50 millivolts.
+Both numbers have units, and both are quotable to a technician: the offset is
+the reading the conditioner puts out with the port vented, and the slope is the
+number that converts a future reading back into a pressure.
+
+The fitted values and residuals, computed from that line, are:
+
+| x (kPa) | y measured (mV) | ŷ fitted (mV) | e = y − ŷ (mV) | leverage h |
+|---|---|---|---|---|
+| 10 | 9.3 | 9.5 | −0.2 | 0.3455 |
+| 20 | 14.1 | 14.5 | −0.4 | 0.2485 |
+| 30 | 20.1 | 19.5 | +0.6 | 0.1758 |
+| 40 | 24.1 | 24.5 | −0.4 | 0.1273 |
+| 50 | 29.8 | 29.5 | +0.3 | 0.1030 |
+| 60 | 35.1 | 34.5 | +0.6 | 0.1030 |
+| 70 | 39.8 | 39.5 | +0.3 | 0.1273 |
+| 80 | 43.9 | 44.5 | −0.6 | 0.1758 |
+| 90 | 49.1 | 49.5 | −0.4 | 0.2485 |
+| 100 | 54.7 | 54.5 | +0.2 | 0.3455 |
+
+The residual column sums to zero and its cross product with x is zero, as
+Section 7.6 verified digit by digit. The leverage column is derived in Section
+10.2; it is placed here so the whole fit lives in one table.
+
+## 8.3 Worked: the variance decomposition and R-squared
+
+Given the residuals above, split the total variation and report the coefficient
+of determination.
+
+The error sum of squares is the sum of squared residuals:
+
+$$\\mathrm{SSE} = \\sum e_{i}^{2} = 2(0.04) + 3(0.16) + 2(0.09) + 3(0.36) = 1.82$$
+
+and the regression sum of squares follows from the corrected sums without
+recomputing any fitted value:
+
+$$\\mathrm{SSR} = \\frac{S_{xy}^{2}}{S_{xx}} = \\frac{4125^{2}}{8250} = \\frac{17015625}{8250} = 2062.5$$
+
+Their total is 2062.5 + 1.82 = 2064.32, which reproduces Syy exactly — the
+Pythagorean identity of Section 7.5, confirmed on real numbers. Then
+
+$$R^{2} = \\frac{\\mathrm{SSR}}{\\mathrm{SST}} = \\frac{2062.5}{2064.32} = 0.99912$$
+
+$$r = \\frac{S_{xy}}{\\sqrt{S_{xx}S_{yy}}} = \\frac{4125}{\\sqrt{8250 \\times 2064.32}} = \\frac{4125}{4126.82} = 0.99956$$
+
+and squaring that correlation returns 0.99912, the same number.
+
+A caution about what has just been demonstrated. Computing R² as SSR/SST, as
+1 − SSE/SST, and as r squared are not three checks; they are one identity
+written three ways, and they would all agree even if the arithmetic behind Sxy
+were wrong. The genuinely independent confirmations of this fit are the ones in
+Section 7.6 — elimination, Cramer's rule, and the orthogonality test — plus the
+fact that SSR and SSE, computed by completely separate routes, add to the Syy
+that came off the y² column. A formula checked against itself proves nothing.
+
+## 8.4 Reading the fit
+
+An R² of 0.99912 says the applied pressure accounts for 99.912 per cent of the
+variation in output over this range. That is an unremarkable figure for a
+calibration and a spectacular one for a field study, which is the first lesson
+about R²: it is only interpretable against the spread of the predictor and the
+noise of the instrument, never on an absolute scale. The residual standard
+deviation is far more portable, because it stays in millivolts.
+
+![The ten calibration points with the fitted line, shown beside the residuals alone. Vertical stems join each measurement to the line; the residual panel shows a band of the order of half a millivolt with no curvature, no widening and no drift across the pressure range.](/courses/fe-ee/figures/prob3-calibration-fit.svg)
+
+The residual panel is the part worth studying. Five sign changes in ten points,
+no arc, no fanning: the linear model is doing its job across the whole tested
+range, and there is no evidence in this record that a quadratic term would earn
+its degree of freedom. Section 10 makes that judgement systematic.`,
+      examTip: 'Build the sum table before touching any formula. Five totals — n, Σx, Σy, Σxy, Σx² — determine the slope and intercept completely, and a sixth, Σy², adds R² and the standard error at no extra cost. Exam items that hand you the totals directly are testing whether you know which formula consumes which total.',
+    },
+    {
+      id: 'reg-inference',
+      title: '9. Standard Errors, Confidence Intervals and Prediction Intervals',
+      content: `## 9.1 Where the uncertainty comes from
+
+Everything so far was arithmetic on a fixed table. To attach uncertainty to the
+slope, a model of how the data were generated is needed, and the standard one is
+
+$$y_{i} = \\beta_{0} + \\beta_{1}x_{i} + \\varepsilon_{i}, \\qquad \\varepsilon_{i} \\sim N\\!\\left(0,\\sigma^{2}\\right)\\ \\text{independent}$$
+
+with the predictor treated as fixed and known. Four assumptions are hiding in
+that one line — linearity of the mean, independence of the errors, constant
+error variance, and normality — and every interval below inherits all four.
+
+The fitted slope is a weighted sum of the responses, which is what makes its
+variance computable. Because the residual-weight coefficients sum to zero,
+
+$$\\hat{\\beta}_{1} = \\frac{S_{xy}}{S_{xx}} = \\sum_{i=1}^{n}c_{i}y_{i}, \\qquad c_{i} = \\frac{x_{i}-\\bar{x}}{S_{xx}}$$
+
+and since the observations are independent the variance of a weighted sum is the
+weighted sum of variances:
+
+$$\\operatorname{Var}\\!\\left(\\hat{\\beta}_{1}\\right) = \\sigma^{2}\\sum_{i=1}^{n}c_{i}^{2} = \\sigma^{2}\\,\\frac{\\sum(x_{i}-\\bar{x})^{2}}{S_{xx}^{2}} = \\frac{\\sigma^{2}}{S_{xx}}$$
+
+That single line explains most of experimental design: the precision of a slope
+improves with the SPREAD of the predictor, not merely with the number of points.
+Doubling the range of a calibration is worth far more than doubling the number
+of readings taken over the old range.
+
+The error variance is unknown and is estimated from the residuals. Two degrees
+of freedom were consumed fitting the intercept and slope, so the divisor is
+n minus two:
+
+$$s^{2} = \\frac{\\mathrm{SSE}}{n-2} = \\frac{1}{n-2}\\sum_{i=1}^{n}\\left(y_{i}-\\hat{y}_{i}\\right)^{2}$$
+
+$$\\operatorname{se}\\!\\left(\\hat{\\beta}_{1}\\right) = \\frac{s}{\\sqrt{S_{xx}}}, \\qquad \\operatorname{se}\\!\\left(\\hat{\\beta}_{0}\\right) = s\\sqrt{\\frac{1}{n}+\\frac{\\bar{x}^{2}}{S_{xx}}}$$
+
+Because sigma had to be estimated, the reference distribution is Student-t with
+n minus two degrees of freedom rather than the standard normal.
+
+## 9.2 Worked: is the slope real, and how well is it pinned down?
+
+Given SSE = 1.82, n = 10 and Sxx = 8250 from the calibration, test the slope
+against zero at the 5 per cent level and give a 95 per cent interval for it.
+
+The residual variance and the residual standard deviation are
+
+$$s^{2} = \\frac{1.82}{10-2} = \\frac{1.82}{8} = 0.2275 \\qquad\\Longrightarrow\\qquad s = 0.47697\\ \\mathrm{mV}$$
+
+so the standard error of the slope is
+
+$$\\operatorname{se}(b) = \\frac{0.47697}{\\sqrt{8250}} = \\frac{0.47697}{90.8295} = 0.005251\\ \\mathrm{mV/kPa}$$
+
+and the test statistic against a null slope of zero is
+
+$$t = \\frac{b - 0}{\\operatorname{se}(b)} = \\frac{0.500}{0.005251} = 95.2$$
+
+with 8 degrees of freedom. The two-sided 5 per cent critical value of the
+Student-t distribution on 8 degrees of freedom, taking 2.5 per cent in each
+tail, is 2.306, so the null slope is rejected by a margin that is not close. The
+95 per cent interval for the slope is
+
+$$b \\pm t_{0.975,8}\\,\\operatorname{se}(b) = 0.500 \\pm 2.306(0.005251) = 0.500 \\pm 0.0121$$
+
+giving **(0.4879, 0.5121) mV/kPa**. The corresponding interval for the intercept
+uses its own standard error,
+$0.47697\\sqrt{0.1 + 3025/8250} = 0.47697(0.68313) = 0.32583$ mV, and comes to
+4.50 ± 2.306(0.32583) = 4.50 ± 0.751, or **(3.749, 5.251) mV**. The intercept is
+about seven times less precisely known than the slope in relative terms, which
+is normal: the data sit between 10 and 100 kPa, so the value at zero is an
+extrapolation and pays for it.
+
+## 9.3 Two different questions at the same abscissa
+
+Ask a fitted line for a value at x-nought and there are two distinct questions in
+play, with two distinct answers. "What is the AVERAGE output of transducers of
+this type at 75 kPa?" asks about the line. "What will the NEXT unit read at 75
+kPa?" asks about one item, which carries its own measurement scatter on top of
+the uncertainty in the line. The point estimate is identical in both cases;
+the intervals are not.
+
+For the mean response, the fitted value is a weighted sum of the responses again,
+and its variance works out to
+
+$$\\operatorname{Var}\\!\\left(\\hat{y}_{0}\\right) = \\sigma^{2}\\left[\\frac{1}{n} + \\frac{(x_{0}-\\bar{x})^{2}}{S_{xx}}\\right]$$
+
+whose two terms are the uncertainty in the height of the line at the centroid and
+the uncertainty contributed by the slope acting over a lever arm. For a single
+future observation, that same line uncertainty is present and the new unit's own
+error is added on top; the two are independent, so their variances add:
+
+$$\\operatorname{Var}\\!\\left(y_{\\mathrm{new}} - \\hat{y}_{0}\\right) = \\sigma^{2}\\left[1 + \\frac{1}{n} + \\frac{(x_{0}-\\bar{x})^{2}}{S_{xx}}\\right]$$
+
+The intervals are therefore
+
+$$\\hat{y}_{0} \\pm t_{1-\\alpha/2,\\,n-2}\\;s\\sqrt{\\frac{1}{n}+\\frac{(x_{0}-\\bar{x})^{2}}{S_{xx}}} \\quad\\text{(mean response)}$$
+
+$$\\hat{y}_{0} \\pm t_{1-\\alpha/2,\\,n-2}\\;s\\sqrt{1+\\frac{1}{n}+\\frac{(x_{0}-\\bar{x})^{2}}{S_{xx}}} \\quad\\text{(one new unit)}$$
+
+and the only difference is a single added one under the radical. That one is the
+entire distinction, and it is decisive: as the sample grows the confidence
+interval shrinks toward zero width, while the prediction interval shrinks only
+toward plus or minus t times s. No quantity of data makes a single future
+measurement predictable to better than the process noise.
+
+## 9.4 Worked: both intervals at 75 kPa, on the same data
+
+Given the calibration fit ŷ = 4.50 + 0.500x with s = 0.47697 mV, n = 10,
+x̄ = 55 kPa and Sxx = 8250, compute the 95 per cent confidence interval for the
+mean output and the 95 per cent prediction interval for the next unit, both at
+75 kPa.
+
+The point estimate is $\\hat{y}_{0} = 4.5 + 0.5(75) = 42.00$ mV. The bracketed
+leverage term is
+
+$$\\frac{1}{10} + \\frac{(75-55)^{2}}{8250} = 0.1 + \\frac{400}{8250} = 0.1 + 0.048485 = 0.148485$$
+
+so the two standard errors are
+
+$$s\\sqrt{0.148485} = 0.47697(0.38534) = 0.18379\\ \\mathrm{mV}$$
+
+$$s\\sqrt{1.148485} = 0.47697(1.07167) = 0.51116\\ \\mathrm{mV}$$
+
+Multiplying each by the same t-multiplier 2.306, from the Student-t distribution
+on 8 degrees of freedom with 2.5 per cent in each tail:
+
+$$\\text{CI: } 42.00 \\pm 2.306(0.18379) = 42.00 \\pm 0.424 \\Rightarrow (41.58,\\ 42.42)\\ \\mathrm{mV}$$
+
+$$\\text{PI: } 42.00 \\pm 2.306(0.51116) = 42.00 \\pm 1.179 \\Rightarrow (40.82,\\ 43.18)\\ \\mathrm{mV}$$
+
+The prediction interval is 2.78 times wider than the confidence interval on the
+same data, at the same abscissa, with the same confidence level. Quoting the
+narrower one when the question was about an individual unit understates the real
+uncertainty by nearly a factor of three, and that substitution is the single
+most common error in this part of the topic.
+
+![Both intervals plotted as departures from the fitted calibration line, so that bands about one millivolt wide are visible on a sixty-millivolt fit. The inner band is the confidence interval for the mean response, the outer the prediction interval for one new unit; both are hyperbolas pinched narrowest at the mean pressure of 55 kPa and flaring toward the ends of the tested range.](/courses/fe-ee/figures/prob3-ci-vs-pi.svg)
+
+Both bands are narrowest at the centroid, where the lever-arm term vanishes and
+the half-widths reduce to 0.348 mV and 1.154 mV respectively, and both flare
+toward the ends of the data — which is the quantitative form of the warning
+against extrapolation. Push x-nought far outside the tested window and the
+lever-arm term dominates everything else in the bracket, so the interval widens
+without limit even though the point estimate marches on happily.
+
+## 9.5 Does a 95 per cent interval actually cover 95 per cent of the time?
+
+That question has a definite answer, and it is worth settling by experiment
+rather than by faith. Take the fitted line as the truth, with the residual
+standard deviation of this calibration as the true sigma, generate a fresh set of
+ten responses at the same ten pressures, refit, rebuild each interval from the
+new data alone, and record whether it captured the quantity it claims to
+capture. Over **200,000 simulated calibrations** the counts were:
+
+| Interval | What it claims to capture | Nominal | Simulated coverage | Trials |
+|---|---|---|---|---|
+| Slope, 95% | the true slope 0.500 | 0.9500 | 0.94937 | 200,000 |
+| Mean response at 75 kPa | the true mean 42.00 mV | 0.9500 | 0.94937 | 200,000 |
+| Prediction, one new unit | a freshly drawn observation | 0.9500 | 0.94981 | 200,000 |
+
+All three land within about seven parts in ten thousand of the nominal level,
+which is the size of the simulation's own standard error at this many trials
+(the standard error of a proportion near 0.95 on 200,000 draws is about 0.0005).
+The intervals do what they say. Note what the third row confirms: the prediction
+interval is not "conservative" or "padded" — it is calibrated for a different,
+harder target, and it needs every millivolt of its extra width to hit the same
+95 per cent.
+
+The slope test can be checked without any distributional assumption at all. Shuffle
+the ten outputs against the ten pressures at random, refit, and see how often
+chance alone produces a slope as large in magnitude as the observed 0.500. In
+**100,000 random shuffles** exactly one reached that magnitude, so the
+permutation estimate is 1 × 10⁻⁵, which is the resolution floor of a
+hundred-thousand-shuffle test. The t-based two-sided p-value
+is 1.7 × 10⁻¹³, far below anything a hundred thousand shuffles could resolve, so
+the two agree as well as they possibly can: both say the slope is not an accident
+of arrangement.`,
+      examTip: 'Confidence interval or prediction interval is decided by the noun in the question. "The mean output of units at this pressure" is the line — no extra 1. "The reading of the next unit" is an item — the extra 1 goes under the root, and the interval is much wider. Both appear in the answer choices, every time.',
+      importantNote: 'Increasing n shrinks the confidence interval toward zero width but shrinks the prediction interval only toward ±t·s. No amount of calibration data makes a single future measurement more repeatable than the instrument itself.',
+    },
+    {
+      id: 'reg-diagnostics',
+      title: '10. Residual Diagnostics, Leverage and Influence',
+      content: `## 10.1 What the residual plot sees that R-squared cannot
+
+R-squared answers one question — how much of the variation the line captured —
+and is silent about whether a line was the right shape, whether the noise was
+even, and whether one point wrote the answer by itself. Those are questions
+about the PATTERN of the residuals, and only a plot of them answers.
+
+![Four residual plots generated from stated models: an adequate fit leaving a patternless band, a quadratic truth forced through a straight line leaving a smooth U, errors proportional to x leaving a widening funnel, and a single depressed point at the far end of the range dragging the fitted slope from 0.500 down to 0.484.](/courses/fe-ee/figures/prob3-residual-gallery.svg)
+
+Each panel comes from a model written out in the caption, so the shapes are not
+illustrations of a pattern but consequences of a cause. The second panel is the
+sharpest warning: those data have an R² of 0.9591, which most engineers would
+call an excellent fit, and yet the residuals trace a perfect parabola because
+the underlying relation carried a quadratic term. High R² and a curved residual
+plot together mean the model is wrong and the predictor happens to be strong,
+not that the model is right.
+
+| Plot to make | What a healthy version looks like | What a defect looks like, and what it means |
+|---|---|---|
+| Residual against fitted value | horizontal band centred on zero | a curve means the mean function is wrong; a funnel means the variance is not constant |
+| Residual against predictor | same band, no structure | structure means a term in x is missing from the model |
+| Residual against run order | no drift, no runs | drift means the instrument or the operator changed during the experiment |
+| Normal quantile plot of residuals | points near a straight line | heavy curvature at the ends means the t-based intervals of Section 9 are optimistic |
+| Residual against an omitted variable | no relationship | a relationship means that variable belongs in the model — Section 11 |
+
+## 10.2 Leverage: how much say each point has
+
+Not every observation gets an equal vote. The fitted value at the i-th point can
+be written as a weighted sum of ALL the responses, and the weight a point puts on
+its own fitted value is its leverage:
+
+$$h_{i} = \\frac{1}{n} + \\frac{(x_{i}-\\bar{x})^{2}}{S_{xx}}$$
+
+Leverage depends only on where the point sits along the x-axis, never on its
+response. Two properties make it easy to check. First, the leverages of a simple
+linear regression sum to the number of fitted coefficients:
+
+$$\\sum_{i=1}^{n}h_{i} = 2$$
+
+so the average leverage is 2/n, and a common rule of thumb flags any point above
+twice that. Second, leverage shrinks the apparent size of a residual, because a
+high-leverage point pulls the line toward itself:
+
+$$\\operatorname{Var}(e_{i}) = \\sigma^{2}\\left(1-h_{i}\\right)$$
+
+which is why raw residuals should be standardised before they are compared:
+
+$$r_{i} = \\frac{e_{i}}{s\\sqrt{1-h_{i}}}$$
+
+A point with leverage near one has almost no residual no matter how wrong it is,
+because the line simply goes there. That is the trap: the most influential point
+in a data set is often the one with the smallest visible residual.
+
+## 10.3 Worked: leverage across the calibration
+
+Given the ten pressures 10 through 100 kPa with x̄ = 55 and Sxx = 8250, compute
+the leverage of the extreme and central points and check the total.
+
+At the first point, x = 10 kPa, the lever arm is 10 − 55 = −45, so
+
+$$h_{1} = \\frac{1}{10} + \\frac{(-45)^{2}}{8250} = 0.1 + \\frac{2025}{8250} = 0.1 + 0.245455 = 0.345455$$
+
+and by symmetry the point at 100 kPa has the same leverage. The two central
+points, at 50 and 60 kPa, have lever arm ±5:
+
+$$h_{5} = 0.1 + \\frac{25}{8250} = 0.1 + 0.003030 = 0.103030$$
+
+The full column appears in the table of Section 8.2. Summing it,
+2(0.345455 + 0.248485 + 0.175758 + 0.127273 + 0.103030) = 2(1.000001) = 2.000,
+which reproduces the identity above and confirms the whole column at once. The
+average leverage is 0.2, and the extreme points sit at 1.73 times average — high,
+but that is inherent in an evenly spaced calibration and not a defect. It does
+mean the endpoints deserve the most careful measurement: they are the points the
+slope listens to.
+
+## 10.4 Worked: how far one bad reading moves the line
+
+Given the same calibration, suppose the reading at 100 kPa were recorded 3.0 mV
+below its true value. By how much would the fitted slope be wrong?
+
+Because the slope is linear in the responses, the effect of perturbing one
+response by an amount delta is exact and requires no refitting:
+
+$$\\Delta b = \\frac{\\delta\\,(x_{k}-\\bar{x})}{S_{xx}}$$
+
+Substituting delta = −3.0 mV at x = 100 kPa, where the lever arm is 45:
+
+$$\\Delta b = \\frac{(-3.0)(45)}{8250} = \\frac{-135}{8250} = -0.016364\\ \\mathrm{mV/kPa}$$
+
+so the slope would read 0.500 − 0.016 = **0.4836 mV/kPa**, an error of 3.3 per
+cent — and the recorded 95 per cent interval for the slope, (0.4879, 0.5121),
+would not contain the truth. One mistyped digit at the end of the range breaks
+the calibration, while the same error at 50 kPa would move the slope by only
+(−3)(−5)/8250 = +0.00182, a tenth as much and comfortably inside the interval.
+
+That contrast is the practical content of leverage. It also suggests the routine
+defence: refit with each point deleted in turn and watch the slope. If dropping
+one observation moves a coefficient by more than its standard error, that
+observation is running the analysis and needs to be understood before anything is
+concluded.
+
+| Symptom | Likely cause | What to do next |
+|---|---|---|
+| Large standardised residual, low leverage | a genuine outlier in the response | investigate the measurement; never delete without a reason recorded |
+| Small residual, very high leverage | an isolated x that the line is chasing | refit without it and compare coefficients |
+| Smooth curve in the residuals | missing non-linear term | add a quadratic term or transform, then re-plot |
+| Funnel opening with x | error proportional to level | fit in logs, or use weights proportional to the reciprocal of the variance |
+| Residuals correlated in run order | drift or autocorrelation | randomise the run order; the t-intervals of Section 9 are invalid until this is fixed |`,
+      examTip: 'Leverage is a property of the x-values alone, computable before a single response is measured. If an exam item gives you the pressures, currents or temperatures at which readings will be taken, you can already say which point will dominate the slope — and the answer is always the one furthest from the mean of the predictor.',
+    },
+    {
+      id: 'reg-confounding',
+      title: '11. Correlation Is Not Causation: a Confounded Fit',
+      content: `## 11.1 Twelve feeders and a tempting conclusion
+
+A utility reviews twelve distribution feeders. For each it records the lightning
+ground-flash density of the territory the feeder crosses, Z, in flashes per
+square kilometre per year; the density of surge arresters installed, X, in
+arresters per kilometre of line; and the flashover count, Y, in insulator
+flashovers per 100 kilometres per year. The complete record is:
+
+| Feeder | Z (flashes/km²/yr) | X (arresters/km) | Y (flashovers/100 km·yr) |
+|---|---|---|---|
+| 1 | 1 | 2 | 37 |
+| 2 | 1 | 3 | 32 |
+| 3 | 1 | 4 | 30 |
+| 4 | 2 | 4 | 41 |
+| 5 | 2 | 5 | 39 |
+| 6 | 2 | 6 | 37 |
+| 7 | 3 | 6 | 48 |
+| 8 | 3 | 7 | 46 |
+| 9 | 3 | 8 | 41 |
+| 10 | 4 | 8 | 55 |
+| 11 | 4 | 9 | 49 |
+| 12 | 4 | 10 | 49 |
+
+The column totals a fit needs are n = 12, sum X = 72, sum Z = 30, sum Y = 504,
+so the means are x̄ = 6, z̄ = 2.5 and ȳ = 42, and the corrected sums are
+Sxx = 68, Szz = 15, Sxz = 30, Sxy = 156, Szy = 90 and Syy = 624.
+
+## 11.2 Worked: the naive regression of flashovers on arresters
+
+Given those totals, fit flashover count on arrester density alone and test the
+slope.
+
+$$b = \\frac{S_{xy}}{S_{xx}} = \\frac{156}{68} = 2.2941 \\qquad a = 42 - 2.2941(6) = 28.235$$
+
+The error sum of squares is Syy minus the explained part,
+
+$$\\mathrm{SSE} = S_{yy} - b\\,S_{xy} = 624 - 2.2941(156) = 624 - 357.88 = 266.12$$
+
+giving $s = \\sqrt{266.12/10} = 5.159$ and
+$\\operatorname{se}(b) = 5.159/\\sqrt{68} = 0.6256$, so
+
+$$t = \\frac{2.2941}{0.6256} = 3.667 \\qquad \\text{on } n-2 = 10 \\text{ degrees of freedom}$$
+
+The two-sided 5 per cent critical value of Student-t on 10 degrees of freedom is
+2.228, and 3.667 exceeds it; the two-sided p-value is 0.0043. The regression is
+significant, R² is 0.5735, and read literally the fitted line says that each
+additional arrester per kilometre comes with **2.29 more flashovers** per 100
+kilometre-years. Taken as an engineering finding, that is the claim that surge
+arresters cause flashovers.
+
+## 11.3 Worked: the same twelve feeders with the confounder included
+
+Given the same totals, fit flashovers on BOTH arrester density and lightning
+density. The centred normal equations for two predictors are
+
+$$S_{xx}b_{X} + S_{xz}b_{Z} = S_{xy} \\qquad S_{xz}b_{X} + S_{zz}b_{Z} = S_{zy}$$
+
+which for these data are 68b_X + 30b_Z = 156 and 30b_X + 15b_Z = 90. Divide the
+second by 15 to get 2b_X + b_Z = 6, so b_Z = 6 − 2b_X, and substitute:
+
+$$68b_{X} + 30(6-2b_{X}) = 156 \\quad\\Longrightarrow\\quad 8b_{X} = -24$$
+
+$$b_{X} = -3.00, \\qquad b_{Z} = 6 - 2(-3) = 12.00$$
+
+$$b_{0} = \\bar{y} - b_{X}\\bar{x} - b_{Z}\\bar{z} = 42 + 18 - 30 = 30.00$$
+
+The sign has reversed. Holding lightning exposure fixed, each additional arrester
+per kilometre is associated with **three FEWER flashovers** per 100 kilometre-
+years, which is what an arrester is for. The residual sum of squares collapses
+from 266.12 to
+
+$$\\mathrm{SSE} = S_{yy} - b_{X}S_{xy} - b_{Z}S_{zy} = 624 + 468 - 1080 = 12.00$$
+
+on n − k − 1 = 9 degrees of freedom, so s = 1.155 and R² rises to 0.9808. The
+standard error of the arrester coefficient, derived in Section 13.5, is 0.4082,
+giving t = −7.35 against a critical 2.262 on 9 degrees of freedom: the protective
+effect is significant, and so was the spurious one.
+
+![Twelve feeders plotted as flashover count against arrester density. The dashed line through all twelve rises with a slope of plus 2.29; the four short solid lines, fitted inside each lightning-density band separately, all fall with slopes near minus 3.](/courses/fe-ee/figures/prob3-confounded.svg)
+
+The picture explains the reversal without any algebra. Within each lightning
+band the relationship is downward — the four within-band slopes are −3.5, −2.0,
+−3.5 and −3.0 — but the bands are stacked in a rising staircase, because the
+utility installs more arresters exactly where lightning is worst. Ignore the
+bands and the staircase wins.
+
+## 11.4 The omitted-variable formula, and why it is exact here
+
+The reversal is not a coincidence of these numbers. When the true relation
+includes Z but Z is left out, the fitted simple slope is
+
+$$b_{\\text{simple}} = \\beta_{X} + \\beta_{Z}\\,\\frac{S_{xz}}{S_{xx}}$$
+
+the true partial effect plus the effect of the omitted variable times the slope
+of a regression of the omitted variable on the included one. Substituting the
+numbers from this data set:
+
+$$-3 + 12\\left(\\frac{30}{68}\\right) = -3 + 5.2941 = 2.2941$$
+
+which reproduces the naive slope to every digit computed in Section 11.2. The
+bias term is large here because the two predictors are strongly related:
+$r_{XZ} = 30/\\sqrt{68 \\times 15} = 30/31.937 = 0.9393$. The formula also says
+when omitting a variable is harmless — if the omitted variable has no effect,
+or is uncorrelated with the included one, the bias term vanishes.
+
+## 11.5 What a p-value can and cannot rescue
+
+A natural objection is that the naive result was a fluke. It was not, and this is
+worth being blunt about. Shuffling the twelve flashover counts at random against
+the arrester densities **100,000 times**, a slope as large in magnitude as
++2.294 arose in 526 shuffles, a permutation p-value of 0.0053 — in close
+agreement with the 0.0043 the t-distribution gave, and comfortably below any
+conventional threshold. The association is real. It is simply not causal.
+
+That is the entire lesson of this section, and it survives every statistical
+refinement: significance testing asks whether an association could plausibly be
+an accident of sampling, and confounding is not an accident of sampling. More
+data would have made the wrong slope MORE significant, not less. Only a change
+in what is measured or how the units are assigned rescues the conclusion.
+
+| Study design | What a significant slope licenses | What it does not license |
+|---|---|---|
+| Observational, one predictor | an association exists in this population | any statement about what happens if the predictor is changed |
+| Observational, confounder measured and included | an association holding that confounder fixed | protection against confounders nobody measured |
+| Randomised assignment of the predictor | a causal effect, because assignment is independent of everything else | transfer to units unlike those studied |
+| Physical mechanism established independently | causal reading of the same coefficient | extrapolation past the tested range |
+
+The practical form of the warning for the exam: when a stem describes data
+merely collected rather than assigned, the credited conclusion is always about
+association, and the distractor is always the causal sentence.`,
+      examTip: 'A coefficient that reverses sign when another variable is added is the signature of confounding, not of an arithmetic error. Check the correlation between the two predictors: if it is large, neither coefficient can be read in isolation, and the simple regression is estimating the true effect PLUS the omitted variable\'s effect routed through that correlation.',
+      importantNote: 'A small p-value rules out chance as an explanation for an association. It does not rule out a lurking variable, reverse causation, or a selection effect, and a larger sample makes a confounded association look stronger rather than weaker.',
+    },
+    {
+      id: 'reg-transform',
+      title: '12. Linearising Transforms and the Bias They Introduce',
+      content: `## 12.1 Eight coupons on a voltage-endurance test
+
+Eight identical insulation coupons are aged to breakdown, each at a different
+electric stress, and the time to breakdown is recorded. The expected model is
+exponential in the stress, t = C·e^(kV) with k negative, so the natural fitting
+coordinates are stress against the logarithm of life. The complete record, with
+the logarithms rounded to six decimals:
+
+| Coupon | V (kV/mm) | t (h) | ln t |
+|---|---|---|---|
+| 1 | 8 | 3880 | 8.263590 |
+| 2 | 9 | 2740 | 7.915713 |
+| 3 | 10 | 814 | 6.701960 |
+| 4 | 11 | 453 | 6.115892 |
+| 5 | 12 | 280 | 5.634790 |
+| 6 | 13 | 196 | 5.278115 |
+| 7 | 14 | 184 | 5.214936 |
+| 8 | 15 | 131 | 4.875197 |
+
+Lifetimes scatter multiplicatively — a coupon lasts half as long or twice as
+long, not fifty hours more or fewer — which is exactly the situation the log
+transform is built for, and exactly the situation that makes the back-transform
+biased. Both halves of that sentence are worked below.
+
+## 12.2 Worked: fitting the endurance line
+
+Given the table, fit ln t as a linear function of stress.
+
+The stress values are symmetric about V̄ = 11.5, so
+$S_{VV} = 2(3.5^{2}+2.5^{2}+1.5^{2}+0.5^{2}) = 2(21) = 42$. The logarithms total
+50.000193, so the mean log-life is 6.250024, and the cross product works out to
+$S_{V\\ln t} = -20.9876$. Therefore
+
+$$k = \\frac{-20.9876}{42} = -0.499706\\ (\\mathrm{kV/mm})^{-1}$$
+
+$$\\ln C = 6.250024 + 0.499706(11.5) = 11.99664 \\quad\\Longrightarrow\\quad C = 1.622 \\times 10^{5}\\ \\mathrm{h}$$
+
+The fitted endurance law is ln t = 11.997 − 0.4997V. Its residual sum of squares
+is 0.84824 on n − 2 = 6 degrees of freedom, so
+
+$$\\hat{\\sigma}^{2} = \\frac{0.84824}{6} = 0.141374 \\qquad \\hat{\\sigma} = 0.3760$$
+
+in log units, and R² in the transformed variables is 0.9252. The standard error
+of the exponent is $0.3760/\\sqrt{42} = 0.05802$, so t = −8.61 on 6 degrees of
+freedom against a critical 2.447: the stress dependence is unambiguous. A 95 per
+cent interval for the exponent is −0.4997 ± 2.447(0.05802), or (−0.6417,
+−0.3577), which is wide — eight coupons buy an order of magnitude, not a third
+significant figure.
+
+![The endurance data plotted twice: as log-life against stress, where the least-squares line has slope minus 0.4997, and back on the raw hour scale, where the exponentiated log fit is shown beside a direct least-squares fit performed on the untransformed lifetimes. The two raw-scale curves are visibly different, the direct fit passing much higher at low stress.](/courses/fe-ee/figures/prob3-log-bias.svg)
+
+## 12.3 What the exponentiated fit actually estimates
+
+Exponentiating a fitted log-line looks like it returns the fitted life. It does
+not — it returns the fitted MEDIAN life. If the log-life at a given stress is
+normal with mean mu and variance sigma squared, then the life itself is
+lognormal, and its two central measures differ:
+
+$$\\operatorname{median}(t) = e^{\\mu}, \\qquad E[t] = \\exp\\!\\left(\\mu + \\tfrac{1}{2}\\sigma^{2}\\right)$$
+
+so the naive back-transform understates the mean by the smearing factor
+
+$$\\frac{E[t]}{\\operatorname{median}(t)} = e^{\\sigma^{2}/2}$$
+
+Because the exponential is convex, the mean of the exponential exceeds the
+exponential of the mean — the inequality is Jensen's, and it is strict whenever
+the log-scale variance is non-zero. The correction is small when the log-scale
+scatter is small and grows fast when it is not: a log standard deviation of 0.1
+costs half a per cent, one of 0.5 costs 13 per cent, and one of 1.0 costs 65 per
+cent.
+
+An estimator that does not assume normality is available. Duan's smearing
+estimate replaces the theoretical factor with the average of the exponentiated
+residuals actually observed:
+
+$$\\hat{\\lambda} = \\frac{1}{n}\\sum_{i=1}^{n}e^{\\hat{r}_{i}}$$
+
+which is the same idea with the distributional assumption removed.
+
+## 12.4 Worked: the median, the mean and the correction at 12 kV/mm
+
+Given the fitted line and the log-scale variance, report the estimated life at
+12 kV/mm as both a median and a mean.
+
+The fitted log-life is
+
+$$\\ln t = 11.99664 - 0.499706(12) = 11.99664 - 5.99647 = 6.00017$$
+
+so the estimated **median life is e^6.00017 = 403.5 h**. The smearing factor from
+the fitted log-scale variance is
+
+$$e^{\\hat{\\sigma}^{2}/2} = e^{0.141374/2} = e^{0.070687} = 1.07325$$
+
+so the estimated **mean life is 403.5 × 1.07325 = 433.1 h**, 7.3 per cent higher.
+Duan's estimate, formed from the eight observed log residuals, is 1.05379,
+giving 425.2 h — a little lower than the lognormal figure, which is what one
+expects from eight residuals that are not perfectly normal. Report the median
+when the question is "how long does a typical coupon last"; report the mean when
+lifetimes are being added up, as in a spares budget or an expected-cost
+calculation. Reporting 403.5 h as a mean is the error, and it is systematically
+optimistic in the same direction every time.
+
+## 12.5 Worked: least squares in ln t is not least squares in t
+
+Given the same eight coupons, fit the exponential model directly on the raw hour
+scale by minimising the sum of squared errors in hours, and compare.
+
+Minimising the raw-scale objective by Gauss-Newton iteration returns
+C = 5.576 × 10⁵ h and k = −0.6158, against C = 1.622 × 10⁵ h and k = −0.4997
+from the log route — a 23 per cent difference in the exponent and more than a
+factor of three in the prefactor. Neither is a mistake. They minimise different
+things, and each wins on its own criterion:
+
+| Criterion being minimised | Fit through ln t | Direct fit in t |
+|---|---|---|
+| Sum of squared errors in hours | 1,829,775 | 520,569 |
+| Sum of squared RELATIVE errors | 0.9005 | 1.0148 |
+| Exponent k obtained | −0.4997 | −0.6158 |
+| Prefactor C obtained (h) | 1.622 × 10⁵ | 5.576 × 10⁵ |
+
+Taking logs converts a multiplicative error into an additive one, so squaring in
+log space is equivalent to squaring PROPORTIONAL error on the raw scale. The
+coupon that lasted 131 hours then counts as much as the one that lasted 3880,
+whereas the raw-scale fit is dominated by the two longest-lived coupons because
+their absolute errors are by far the largest. For life data, where a 20 per cent
+error means the same thing at every stress, the log route is the physically
+appropriate one — and it is also the one the FE expects, because it is the one
+that reduces to a straight-line fit.
+
+The transform-back arithmetic is the other place marks disappear. A fitted
+intercept in log coordinates is ln C, not C, and a fitted intercept on a
+base-ten log plot is log C. An intercept of 11.997 means C = e^11.997 = 162,200
+hours; quoting 11.997 as the prefactor, or exponentiating a base-ten intercept
+with e, are the two standard slips.
+
+| Physical model | Transform | Straight line obtained | Recover the constants by |
+|---|---|---|---|
+| t = C·e^(kV) | take ln of both sides | ln t = ln C + kV | C = exp(intercept), k = slope |
+| y = C·x^m | take log of both sides | log y = log C + m log x | C = 10^(intercept), m = slope |
+| R = R₀·e^(B/T) | take ln, plot against 1/T | ln R = ln R₀ + B(1/T) | R₀ = exp(intercept), B = slope |
+| 1/y = a + bx (rate law) | take reciprocal of y | 1/y linear in x | read a and b directly, then invert |`,
+      examTip: 'Exponentiating a log-scale fit gives the median, not the mean. On the exam the transform itself is the credited step, but if a stem asks for an EXPECTED total — total spares, total downtime, total cost — the smearing factor exp(σ²/2) is the difference between a right and a wrong answer, and it is always an increase.',
+    },
+    {
+      id: 'reg-multivariable',
+      title: '13. Multiple Regression and Degrees-of-Freedom Bookkeeping',
+      content: `## 13.1 The model in matrix form
+
+With k predictors the model is written once and solved once, whatever k is:
+
+$$y_{i} = \\beta_{0} + \\beta_{1}x_{i1} + \\beta_{2}x_{i2} + \\cdots + \\beta_{k}x_{ik} + \\varepsilon_{i}$$
+
+Stack the responses into a column and the predictors into a design matrix whose
+first column is all ones, and the whole system compresses to
+
+$$\\mathbf{y} = \\mathbf{X}\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon}$$
+
+Minimising the same objective — the squared length of the residual vector —
+gives the same stationarity condition, now written as a matrix equation. The
+residual vector must be orthogonal to every column of the design matrix, which is
+one condition per coefficient:
+
+$$\\mathbf{X}^{\\mathsf{T}}\\left(\\mathbf{y}-\\mathbf{X}\\hat{\\boldsymbol{\\beta}}\\right) = \\mathbf{0} \\quad\\Longleftrightarrow\\quad \\mathbf{X}^{\\mathsf{T}}\\mathbf{X}\\hat{\\boldsymbol{\\beta}} = \\mathbf{X}^{\\mathsf{T}}\\mathbf{y}$$
+
+$$\\hat{\\boldsymbol{\\beta}} = \\left(\\mathbf{X}^{\\mathsf{T}}\\mathbf{X}\\right)^{-1}\\mathbf{X}^{\\mathsf{T}}\\mathbf{y}$$
+
+For k = 1 those matrix normal equations are literally the two scalar equations of
+Section 7.2, so nothing new has been introduced: the projection picture and both
+orthogonality conditions generalise unchanged, with one condition per column
+instead of two.
+
+In centred form, which is what a hand calculation uses, the intercept drops out
+and a k-by-k system in the corrected sums remains. For two predictors:
+
+$$\\begin{bmatrix} S_{11} & S_{12} \\\\ S_{12} & S_{22} \\end{bmatrix}\\begin{bmatrix} b_{1} \\\\ b_{2} \\end{bmatrix} = \\begin{bmatrix} S_{1y} \\\\ S_{2y} \\end{bmatrix}$$
+
+$$b_{0} = \\bar{y} - b_{1}\\bar{x}_{1} - b_{2}\\bar{x}_{2}$$
+
+## 13.2 The degrees-of-freedom ledger
+
+Every coefficient estimated costs one degree of freedom, and the bookkeeping is
+the part that goes wrong under time pressure:
+
+$$\\mathrm{df}_{\\text{total}} = n-1, \\qquad \\mathrm{df}_{\\text{model}} = k, \\qquad \\mathrm{df}_{\\text{error}} = n-k-1$$
+
+and those three add up, which is the check. The residual variance divides by the
+error degrees of freedom, never by n:
+
+$$s^{2} = \\frac{\\mathrm{SSE}}{n-k-1}$$
+
+The n − 2 of simple regression is this formula at k = 1. Every t-test on a
+coefficient, and every interval built from one, uses n − k − 1 degrees of
+freedom, and a model with as many coefficients as observations has zero of them:
+it fits the data perfectly, reports SSE = 0 and R² = 1, and says nothing at all.
+
+## 13.3 Adjusted R-squared and the overall F test
+
+Ordinary R² can only rise when a predictor is added, however useless the
+predictor, because the larger model contains the smaller one and least squares
+will never do worse on its own training data. Comparing models therefore needs a
+statistic that charges for the degree of freedom spent. Adjusted R² divides each
+sum of squares by its own degrees of freedom before taking the ratio:
+
+$$R^{2}_{\\text{adj}} = 1 - \\frac{\\mathrm{SSE}/(n-k-1)}{\\mathrm{SST}/(n-1)} = 1-\\left(1-R^{2}\\right)\\frac{n-1}{n-k-1}$$
+
+which CAN fall, and does fall whenever the added predictor buys less explanation
+than a degree of freedom is worth. It can even go negative for a model worse than
+the mean.
+
+![Adjusted R-squared against the number of predictors for a fixed sample of twelve observations, drawn for an unadjusted R-squared of 0.98 and of 0.60. Both dashed reference lines are flat; both adjusted curves fall away from them, the weaker model far faster, reaching 0.12 by six predictors.](/courses/fe-ee/figures/prob3-adjusted-r2.svg)
+
+The whole model is tested at once by comparing explained variance per degree of
+freedom against unexplained variance per degree of freedom:
+
+$$F = \\frac{\\mathrm{SSR}/k}{\\mathrm{SSE}/(n-k-1)} = \\frac{\\mathrm{MSR}}{\\mathrm{MSE}}$$
+
+whose null distribution is F with k and n − k − 1 degrees of freedom. That test
+asks whether ANY predictor matters; the individual t-tests ask which ones. They
+can disagree, and when predictors are strongly correlated they frequently do — a
+significant F with no significant t is the classic signature of collinearity.
+
+## 13.4 Worked: the full analysis of variance for the feeder model
+
+Given the twelve feeders of Section 11 with Syy = 624 and the two-predictor fit
+leaving SSE = 12, build the analysis-of-variance table and test the model.
+
+The regression sum of squares is 624 − 12 = 612 on k = 2 degrees of freedom, and
+the error sum of squares is 12 on n − k − 1 = 12 − 2 − 1 = 9:
+
+| Source | Sum of squares | df | Mean square | F |
+|---|---|---|---|---|
+| Regression | 612.00 | 2 | 306.00 | 229.5 |
+| Error | 12.00 | 9 | 1.3333 | — |
+| Total | 624.00 | 11 | — | — |
+
+The degrees of freedom column adds: 2 + 9 = 11, as it must. The mean squares are
+612/2 = 306 and 12/9 = 1.3333, so
+
+$$F = \\frac{306}{1.3333} = 229.5$$
+
+against the upper 5 per cent point of the F distribution on 2 and 9 degrees of
+freedom, which is 4.256. The model is rejected as a whole against the
+no-predictors alternative by an enormous margin; the p-value is 1.9 × 10⁻⁸.
+The residual standard deviation is $s = \\sqrt{1.3333} = 1.155$ flashovers per
+100 kilometre-years.
+
+Comparing the two models on the same data makes the bookkeeping concrete:
+
+$$R^{2} = 1 - \\frac{12}{624} = 0.98077 \\qquad R^{2}_{\\text{adj}} = 1-(1-0.98077)\\frac{11}{9} = 0.97650$$
+
+against R² = 0.5735 and adjusted R² = 1 − (0.42648)(11/10) = 0.5309 for the
+one-predictor model of Section 11.2. Adding the lightning density cost one degree
+of freedom and bought 0.45 of adjusted R-squared, which is an overwhelmingly good
+trade — and, more importantly, it changed the SIGN of the coefficient that
+matters.
+
+## 13.5 Worked: standard errors from the cross-product inverse
+
+Given the centred cross-product matrix of the feeder data and MSE = 1.3333, find
+the standard error of the arrester coefficient and test it.
+
+The centred system of Section 11.3 has matrix entries Sxx = 68, Sxz = 30 and
+Szz = 15, so its determinant is
+
+$$\\det = (68)(15) - (30)^{2} = 1020 - 900 = 120$$
+
+and the inverse of a two-by-two symmetric matrix swaps the diagonal and negates
+the off-diagonal, all divided by the determinant. The entry needed for the first
+coefficient is therefore Szz over the determinant:
+
+$$\\operatorname{Var}(b_{X}) = s^{2}\\,\\frac{S_{zz}}{\\det} = \\frac{4}{3}\\left(\\frac{15}{120}\\right) = 0.16667$$
+
+$$\\operatorname{se}(b_{X}) = \\sqrt{0.16667} = 0.40825$$
+
+$$t = \\frac{-3.00}{0.40825} = -7.348 \\qquad \\text{on } 9 \\text{ degrees of freedom}$$
+
+The two-sided 5 per cent critical value on 9 degrees of freedom is 2.262, so the
+protective effect of the arresters is significant; the p-value is 4.3 × 10⁻⁵. The
+same route gives the lightning coefficient a variance of (4/3)(68/120) =
+0.75556, a standard error of 0.86923, and t = 12.00/0.86923 = 13.81.
+
+Notice how the determinant carries the collinearity. With Sxz = 30 out of a
+maximum of $\\sqrt{68 \\times 15} = 31.937$, the determinant is only 120 where two
+uncorrelated predictors would have given 1020, and both standard errors are
+inflated by that shortfall — by a factor of $\\sqrt{1020/120} = 2.92$ for the
+arrester coefficient. Collinearity does not bias the coefficients; it makes them
+imprecise. Fit two nearly identical predictors and the fitted plane is still
+correct on average, but the individual slopes swing wildly from sample to sample,
+which is exactly why a significant F can sit beside two insignificant t values.
+
+| Quantity | Simple regression | Multiple regression, k predictors |
+|---|---|---|
+| Error degrees of freedom | n − 2 | n − k − 1 |
+| Residual variance | SSE/(n − 2) | SSE/(n − k − 1) |
+| Coefficient standard error | s/√Sxx | s times the root of the matching diagonal of the inverse cross-product matrix |
+| Overall test | t on the single slope, equivalently F on 1 and n − 2 | F on k and n − k − 1 |
+| Model comparison statistic | R² is adequate | adjusted R² or the partial F test |`,
+      examTip: 'Error degrees of freedom are n minus the number of coefficients, counting the intercept. Two coefficients gives n − 2, three gives n − 3, and the exam distractor is always n − 1 or n. Write the three-line ledger — total n − 1, model k, error n − k − 1 — and check that it adds before entering any table.',
+    },
+    {
+      id: 'reg-problems',
+      title: '14. Problem Sets',
+      content: `## 14.1 Problem Set A — fitting, inference and diagnostics
+
+Every problem uses the calibration record of Section 8: ten points, n = 10,
+sum x = 550, sum y = 320, sum xy = 21725, sum x² = 38500, sum y² = 12304.32,
+with fitted line ŷ = 4.50 + 0.500x and SSE = 1.82.
+
+**A1.** Compute Sxx, Sxy and the slope from the totals alone.
+*Answer.* Sxx = 38500 − 550²/10 = 8250; Sxy = 21725 − (550)(320)/10 = 4125;
+b = 4125/8250 = 0.500 mV/kPa.
+
+**A2.** Predict the output at 45 kPa and state whether the prediction is an
+interpolation or an extrapolation.
+*Answer.* ŷ = 4.5 + 0.5(45) = 27.0 mV; 45 kPa lies inside the tested range of 10
+to 100 kPa, so it is an interpolation and the fit supports it.
+
+**A3.** Compute the residual standard deviation and the standard error of the
+slope.
+*Answer.* s² = 1.82/8 = 0.2275, s = 0.47697 mV;
+se(b) = 0.47697/√8250 = 0.47697/90.8295 = 0.005251 mV/kPa.
+
+**A4.** Give the 95 per cent confidence interval for the slope.
+*Answer.* The two-sided 5 per cent critical value of Student-t on 8 degrees of
+freedom is 2.306, so 0.500 ± 2.306(0.005251) = 0.500 ± 0.0121, giving
+(0.4879, 0.5121) mV/kPa.
+
+**A5.** At 20 kPa, compute the 95 per cent confidence interval for the mean
+output and the 95 per cent prediction interval for one new unit.
+*Answer.* ŷ = 14.50 mV. The leverage term is 0.1 + (20 − 55)²/8250 = 0.1 +
+1225/8250 = 0.248485. Then s√0.248485 = 0.47697(0.49848) = 0.23776 and
+s√1.248485 = 0.47697(1.11736) = 0.53295. Multiplying by 2.306 gives half-widths of
+0.548 and 1.229, so the confidence interval is (13.95, 15.05) mV and the
+prediction interval is (13.27, 15.73) mV.
+
+**A6.** A colleague computes the standard error of the estimate as √(SSE/n).
+What value do they get, and by what factor is it wrong?
+*Answer.* √(1.82/10) = 0.42661 mV instead of 0.47697 mV, low by the factor
+√(8/10) = 0.8944, an understatement of 10.6 per cent. The divisor must be n − 2
+because two coefficients were fitted.
+
+**A7.** The transducer's data sheet claims a sensitivity of 0.480 mV/kPa. Test
+that claim against a two-sided alternative at the 5 per cent level.
+*Answer.* t = (0.500 − 0.480)/0.005251 = 3.809 on 8 degrees of freedom, against a
+critical 2.306. Reject: this unit is measurably more sensitive than the data
+sheet says. Equivalently, 0.480 lies outside the interval found in A4.
+
+**A8.** Which point in this calibration has the greatest influence on the slope,
+and what is its leverage?
+*Answer.* The two endpoints, at 10 and 100 kPa, tie at h = 0.1 + 2025/8250 =
+0.3455, against an average leverage of 2/10 = 0.2. A 1 mV error at either
+endpoint moves the slope by (1)(45)/8250 = 0.00545 mV/kPa, about one standard
+error.
+
+## 14.2 Problem Set B — transforms, confounding and multiple regression
+
+Problems B1 through B4 use the twelve-feeder record of Section 11; B5 through B8
+use the eight-coupon endurance record of Section 12.
+
+**B1.** From the feeder totals Sxx = 68, Szz = 15 and Sxz = 30, compute the
+correlation between arrester density and lightning density.
+*Answer.* r = 30/√(68 × 15) = 30/31.937 = 0.9393. The two predictors are almost
+interchangeable, which is why omitting one distorts the other so badly.
+
+**B2.** Using the omitted-variable formula and the fitted partial effects
+βX = −3 and βZ = +12, predict the slope a simple regression of Y on X alone
+would return.
+*Answer.* −3 + 12(30/68) = −3 + 5.2941 = 2.2941, which is exactly the naive slope
+computed in Section 11.2.
+
+**B3.** A third predictor is added to the feeder model and R² rises from 0.98077
+to 0.98100. Compute the new adjusted R² and say whether the predictor earned its
+place.
+*Answer.* With k = 3 and n = 12, adjusted R² = 1 − (1 − 0.98100)(11/8) =
+1 − 0.019(1.375) = 0.97388, against 0.97650 for the two-predictor model. Adjusted
+R² FELL, so the predictor did not pay for its degree of freedom.
+
+**B4.** State the error degrees of freedom for the one-, two- and
+three-predictor feeder models.
+*Answer.* n − k − 1 gives 10, 9 and 8 respectively. With twelve observations, an
+eleven-predictor model would have zero error degrees of freedom, R² = 1, and no
+usable standard errors at all.
+
+**B5.** From the endurance fit ln t = 11.99664 − 0.499706V, estimate the median
+life at 13.5 kV/mm.
+*Answer.* ln t = 11.99664 − 0.499706(13.5) = 11.99664 − 6.74603 = 5.25061, so the
+median life is e^5.25061 = 190.7 h.
+
+**B6.** Convert the answer to B5 into an estimated MEAN life, given a fitted
+log-scale variance of 0.141374.
+*Answer.* The smearing factor is e^(0.141374/2) = e^0.070687 = 1.07325, so the
+mean is 190.7 × 1.07325 = 204.6 h, 7.3 per cent above the median.
+
+**B7.** The same model is asked for the life at 20 kV/mm. Compute it and say what
+is wrong with quoting it.
+*Answer.* ln t = 11.99664 − 9.99412 = 2.00252, so t = 7.41 h. The arithmetic is
+correct and the number is not trustworthy: 20 kV/mm is five units beyond the
+tested range, where a different breakdown mechanism is expected to dominate, and
+nothing in the eight coupons demonstrates that the exponential law continues.
+
+**B8.** Suppose all eight lifetimes had been recorded in minutes rather than
+hours. Which of k, C, R² and the log-scale variance would change?
+*Answer.* Only C, which is multiplied by 60. Adding a constant ln 60 to every
+log-life shifts the intercept and leaves the slope, the residuals, the log-scale
+variance and R² untouched — a useful check that a unit conversion has been done
+correctly.`,
+      examTip: 'Work the sums first, the coefficients second, the standard errors third and the intervals last, and never restart the chain from rounded intermediates. Carrying 0.5251 × 10⁻² rather than 0.005 through the interval arithmetic is the difference between an answer that matches a choice exactly and one that lands between two of them.',
     },
   ],
   keyTakeaways: [
@@ -3353,7 +4509,7 @@ fee_hypothesis: {
 
 ### t-Test (comparing means)
 
-**$t = (x - \\mu _{0}) / (s/\\sqrt{n})$**
+**$t = (\\bar{x} - \\mu _{0}) / (s/\\sqrt{n})$**
 
 - Degrees of freedom: df = n - 1
 - Compare t to critical value from t-table at significance α
@@ -3365,7 +4521,7 @@ fee_hypothesis: {
 - O = observed frequency, E = expected frequency
 - Compare χ² to critical value from chi-square table`,
       examTip: 'The most common FE exam mistake in hypothesis testing: "fail to reject H₀" does NOT mean "accept H₀." We never prove the null hypothesis — we only fail to find evidence against it. Also, a smaller p-value means stronger evidence against H₀.',
-      importantNote: 'Reducing Type I error (lowering α) increases Type II error (β) and vice versa. The only way to reduce both simultaneously is to increase sample size n. This tradeoff is fundamental to statistical testing.',
+      importantNote: 'Moving the cutoff trades the two error rates against each other: lowering α raises β and vice versa. Escaping the trade means shrinking the standard error, and sample size is only the most obvious way to do that — reducing σ with better instrumentation, or removing a nuisance source of variation by pairing or blocking, lowers both error rates just as effectively and often more cheaply.',
     },
     {
       id: 'ht-confidence',
@@ -3374,7 +4530,7 @@ fee_hypothesis: {
 
 A **confidence interval** estimates a population parameter:
 
-**$CI = x \\pm t(\\alpha /2, n-1) \\cdot s/\\sqrt{n}$**
+**$CI = \\bar{x} \\pm t(\\alpha /2, n-1) \\cdot s/\\sqrt{n}$**
 
 Where:
 - x̄ is the sample mean
@@ -3384,11 +4540,15 @@ Where:
 
 ### Common Confidence Levels
 
-| Confidence Level | α | t-multiplier (large n) |
+| Confidence Level | α | two-sided multiplier as n → ∞ (the z value) |
 |---|---|---|
 | 90% | 0.10 | 1.645 |
 | 95% | 0.05 | 1.960 |
 | 99% | 0.01 | 2.576 |
+
+These are the limiting values the t-multiplier approaches as the degrees of
+freedom grow. At any finite n the t-multiplier is larger — 2.262 rather than
+1.960 at 9 degrees of freedom — and Section 9.2 tabulates the difference.
 
 ## 2.2 Interpretation
 
@@ -3448,11 +4608,13 @@ cutoff is 100 + 1.645(0.7) = 101.15 Ω. If the process has actually drifted to
 β = P(x̄ < 101.15 given μ = 102) = Φ((101.15 − 102)/0.7) = Φ(−1.21) = **0.11**
 
 so the **power** is 1 − β = 0.89: this test catches a 2 Ω drift about nine
-times in ten. Three levers raise power, and only three: a bigger true shift, a
-larger α (moving the cutoff left, at the price of more false alarms), or a
-larger n (shrinking SE so both curves thin out and separate). The α–β trade at
-fixed n is a see-saw; sample size is the only lever that lowers both ends at
-once.`,
+times in ten. Four levers raise power: a bigger true shift, a larger α (moving
+the cutoff left, at the price of more false alarms), a larger n, and a smaller σ
+— the last two both shrink SE, so both curves thin out and separate. Moving the
+cutoff is a see-saw, trading α against β; anything that shrinks the standard
+error lowers both ends at once, and sample size is not the only way to do that.
+Better instrumentation, tighter fixturing, and the pairing of Section 10 all
+attack σ directly, and are often cheaper than more measurements.`,
       examTip: 'Match the tail count to the words: "differs / changed / not equal" is two-sided, "exceeds / at least / dropped below" is one-sided. Both critical values appear among the choices, and the question stem is the only place the right one is announced.',
     },
     {
@@ -3472,6 +4634,13 @@ read in opposite directions: the test fails to reject exactly when the null
 value falls inside the interval. Computing one answers both, which on a timed
 exam is occasionally the whole trick — an item that hands you an interval and
 asks for a test decision requires no new arithmetic at all.
+
+The duality is exact whenever the test and the interval use the SAME standard
+error, which is why it holds without qualification for the one-sample t above.
+It is not a universal law of testing: the ordinary test for a proportion puts
+the null value p₀ inside its standard error while the Wald interval puts the
+observed p̂ there, so the two can disagree near the boundary. Section 11.5 works
+a case where they do.
 
 ## 4.2 Planning a sample size
 
@@ -3596,7 +4765,7 @@ effect — pairing is a design decision that buys power without buying samples.
 | Design | Use when | Statistic tested | df |
 |---|---|---|---|
 | One sample vs claim | a stated standard exists | x̄ − μ₀ | n − 1 |
-| Two independent samples | different units in each group | x̄₁ − x̄₂ | conservative: smaller n − 1 |
+| Two independent samples | different units in each group | x̄₁ − x̄₂ | pooled: n₁ + n₂ − 2; Welch fallback: smaller n − 1 |
 | Paired | same units measured twice | mean of differences vs 0 | pairs − 1 |
 
 The give-away words in an exam stem: "the same specimens were retested" means
@@ -3604,6 +4773,1126 @@ paired; "two separate batches" means independent. The paired computation is
 just a one-sample test on the differences, so no new formulas are involved —
 only the recognition.`,
       examTip: 'If the same units are measured twice, difference first and run a one-sample test on the differences — df is pairs minus one. Treating paired data as two independent samples is the tested error, and it always UNDERSTATES the evidence.',
+    },
+    {
+      id: 'ht-logic',
+      title: '7. The Logic of a Test, Stated Precisely',
+      content: `## 7.1 What is assumed before any data are looked at
+
+A significance test is a conditional argument, and its conditions are easy to
+lose sight of because they are agreed before the first number arrives. Three
+things are fixed in advance.
+
+First, a MODEL for how the data were generated: independent draws, a stated
+distributional family, and a stated variance structure. Second, a NULL
+HYPOTHESIS, which is a specific numerical claim inside that model — a mean equal
+to 100 ohms, a difference of zero, counts that follow stated proportions. Third,
+a TEST STATISTIC whose distribution is completely known when the null hypothesis
+and the model are both true. Nothing about the data may influence any of those
+three choices, because the whole calculation is about how surprising the data
+are under an assumption made without seeing them.
+
+That is why the alternative hypothesis has to be written down first as well. The
+alternative decides which departures count as evidence, and therefore which tail
+or tails the probability is taken from:
+
+$$H_{0}: \\mu = \\mu_{0} \\qquad H_{1}: \\mu \\ne \\mu_{0} \\quad \\text{(two-sided)}$$
+
+$$H_{0}: \\mu \\le \\mu_{0} \\qquad H_{1}: \\mu > \\mu_{0} \\quad \\text{(one-sided)}$$
+
+The null always contains the equality, because the equality is what makes the
+null distribution computable. An alternative chosen after seeing which direction
+the data went is not a one-sided test; it is a two-sided test with its
+significance level quietly doubled.
+
+## 7.2 The three probabilities, defined once
+
+Three probabilities run through the whole topic, and each is a probability of a
+DATA event given a hypothesis, never the other way round:
+
+$$\\alpha = P\\!\\left(\\text{reject } H_{0}\\;\\middle|\\;H_{0}\\ \\text{true}\\right)$$
+
+$$\\beta(\\theta) = P\\!\\left(\\text{fail to reject } H_{0}\\;\\middle|\\;\\theta\\ \\text{true}\\right)$$
+
+$$\\text{power}(\\theta) = 1-\\beta(\\theta) = P\\!\\left(\\text{reject } H_{0}\\;\\middle|\\;\\theta\\ \\text{true}\\right)$$
+
+The significance level is a single number chosen by the analyst. The Type II
+error rate and the power are FUNCTIONS of whatever the truth happens to be:
+there is no such thing as "the power of a test" without naming an effect size,
+and an exam stem that asks for power always supplies one.
+
+The p-value is a fourth quantity, and it is not any of the three above:
+
+$$p = P\\!\\left(\\left|T\\right| \\ge \\left|t_{\\mathrm{obs}}\\right|\\;\\middle|\\;H_{0}\\ \\text{true}\\right)$$
+
+for a two-sided test, with the one-sided version dropping the absolute values.
+It is the probability of data at least this extreme, computed in a world where
+the null and the model both hold.
+
+![The Student-t density on nine degrees of freedom, with the two tails beyond an observed statistic of 2.60 shaded. The shaded area is 0.0287, the two-tailed p-value; dashed lines at plus and minus 2.262 mark the five per cent cutoffs, which the observation lies outside.](/courses/fe-ee/figures/prob3-null-and-pvalue.svg)
+
+## 7.3 What a rejection concludes, and what a failure to reject does not
+
+Reject the null and the licensed statement is narrow and precise: the data are
+improbable under the conjunction of the null hypothesis AND the model, at the
+level chosen. Note the conjunction. A small p-value is evidence against the whole
+package, and the model is part of the package. Non-independent observations, a
+skewed distribution at small sample size, or an unnoticed drift will all produce
+small p-values with a perfectly true null hypothesis, which is why residual and
+design checks are not optional decoration.
+
+Fail to reject and almost nothing has been concluded. The licensed statement is
+that the data are compatible with the null value at this sample size. It is NOT
+that the null is true, not that the effect is zero, and not that the effect is
+negligible. Absence of evidence becomes evidence of absence only when the test
+had enough power to have found the effect, and power is exactly what a
+non-significant p-value does not report. The disciplined follow-up is always to
+give the confidence interval: an interval running from −0.2 to +0.3 units says
+the effect is small, while an interval running from −8 to +9 units says nothing
+was learned at all, and both correspond to p greater than 0.05.
+
+The test is sometimes described as proof by contradiction. The analogy is worth
+having and worth distrusting in equal measure. In logic, a premise that implies a
+false consequence is false. In testing, a hypothesis that implies an IMPROBABLE
+consequence is merely suspect — and the argument runs backwards for the same
+reason: improbable things happen at exactly the rate their probability says, so
+one rejection in twenty is manufactured by the procedure itself when the null is
+true.
+
+## 7.4 Worked: one test carried through to a defensible sentence
+
+Given a sample of 10 machined shims with mean thickness 2.043 mm and sample
+standard deviation 0.052 mm, test whether the process mean differs from the
+2.00 mm target at the 5 per cent level, and state the conclusion carefully.
+
+**Assumptions.** Ten independent shims, thickness approximately normal, sigma
+unknown and estimated from the sample. **Hypotheses.** H₀: μ = 2.00 against
+H₁: μ ≠ 2.00, two-sided, because drift in either direction is out of
+specification.
+
+$$\\mathrm{SE} = \\frac{s}{\\sqrt{n}} = \\frac{0.052}{\\sqrt{10}} = \\frac{0.052}{3.1623} = 0.016445\\ \\mathrm{mm}$$
+
+$$t = \\frac{\\bar{x}-\\mu_{0}}{\\mathrm{SE}} = \\frac{2.043-2.000}{0.016445} = \\frac{0.043}{0.016445} = 2.615$$
+
+on n − 1 = 9 degrees of freedom. The two-sided 5 per cent critical value of
+Student-t on 9 degrees of freedom, taking 2.5 per cent in each tail, is 2.262.
+Since 2.615 exceeds it, **reject H₀**; the two-sided p-value is 0.0280.
+
+The 95 per cent interval for the mean is
+2.043 ± 2.262(0.016445) = 2.043 ± 0.0372, giving **(2.006, 2.080) mm**, and it
+excludes the target, which is the same conclusion read the other way round.
+
+**The sentence.** "The mean thickness of shims from this process differs from
+2.00 mm; the data put the mean between 2.006 and 2.080 mm with 95 per cent
+confidence, so the offset is somewhere between 6 and 80 micrometres." That last
+clause is the part a decision can be made from. "The difference is statistically
+significant" alone is not, because it does not say how big the difference is.
+
+| Statement | Licensed? | Why |
+|---|---|---|
+| The data are unlikely if the mean is 2.00 mm | yes | that is what the p-value computes |
+| The mean is between 2.006 and 2.080 mm, with 95% confidence | yes | that is the interval the same arithmetic produces |
+| There is a 2.8% chance the mean is 2.00 mm | no | the p-value is conditioned on the null, not a probability of it |
+| There is a 97.2% chance the effect is real | no | same error, complemented |
+| The offset matters in service | no | that is an engineering judgement about 6 to 80 micrometres, not a statistical one |`,
+      examTip: 'Write the hypotheses before computing anything, and write the alternative in the words of the stem. "Differs from" is two-sided; "exceeds", "is at least", "has dropped below" are one-sided. Choosing the tail after seeing the data doubles the true false-alarm rate, and the exam tests the distinction by putting both critical values among the choices.',
+      importantNote: 'A small p-value is evidence against the conjunction of the null hypothesis and every modelling assumption behind the test — independence, the distributional family, and constant variance. Before concluding that the effect is real, confirm that the assumption that failed was not one of the others.',
+    },
+    {
+      id: 'ht-power',
+      title: '8. Type I and Type II Error, Power and Sample Size',
+      content: `## 8.1 Deriving beta instead of quoting it
+
+Take the cleanest case: a one-sided test of a mean with sigma known, so the null
+distribution of the sample mean is exactly normal. The test rejects when the
+sample mean exceeds a cutoff placed to leave alpha in the upper tail:
+
+$$\\bar{x}^{*} = \\mu_{0} + z_{\\alpha}\\frac{\\sigma}{\\sqrt{n}}$$
+
+If the truth is not the null value but $\\mu_{1} = \\mu_{0}+\\delta$, the sample
+mean is still normal with the same standard error, centred delta higher. A Type
+II error is a sample mean falling short of the cutoff:
+
+$$\\beta = P\\!\\left(\\bar{X} < \\bar{x}^{*}\\;\\middle|\\;\\mu=\\mu_{1}\\right) = \\Phi\\!\\left(\\frac{\\bar{x}^{*}-\\mu_{1}}{\\sigma/\\sqrt{n}}\\right)$$
+
+Substituting the cutoff and simplifying gives the form worth remembering, in
+which the whole problem depends on one dimensionless group:
+
+$$\\beta = \\Phi\\!\\left(z_{\\alpha} - \\frac{\\delta\\sqrt{n}}{\\sigma}\\right) \\qquad \\text{power} = 1-\\beta = \\Phi\\!\\left(\\frac{\\delta\\sqrt{n}}{\\sigma}-z_{\\alpha}\\right)$$
+
+Everything about the design enters through $\\delta\\sqrt{n}/\\sigma$: the effect
+size in standard-error units. Halving the noise and quadrupling the sample size
+buy exactly the same power, which is a useful thing to know before ordering
+either.
+
+![Power of the one-sided thickness test drawn twice: against sample size, for true shifts of 0.05, 0.03 and 0.02 mm, showing that n equals 22 reaches 90 per cent for the largest shift; and against the true mean at fixed sample sizes of 25 and 9, where every curve passes through alpha equals 0.05 at the null value.](/courses/fe-ee/figures/prob3-power-curve.svg)
+
+The right-hand panel makes a point the formula hides: the power curve passes
+through alpha exactly at the null value, so a test always has SOME chance of
+rejecting, and never has zero chance of missing an arbitrarily small real
+effect. Power is a function of the truth, and quoting one number for it without
+naming the effect size it belongs to is meaningless.
+
+## 8.2 Worked: alpha, beta and power for a real effect size
+
+Given a cable extrusion line whose insulation thickness has a known standard
+deviation of 0.080 mm, tested against a nominal mean of 2.000 mm with a sample of
+25 at the 5 per cent one-sided level, find the probability of missing a genuine
+drift to 2.050 mm.
+
+The standard error and the rejection cutoff are
+
+$$\\frac{\\sigma}{\\sqrt{n}} = \\frac{0.080}{5} = 0.016\\ \\mathrm{mm}$$
+
+$$\\bar{x}^{*} = 2.000 + 1.6449(0.016) = 2.000 + 0.026318 = 2.026318\\ \\mathrm{mm}$$
+
+where 1.6449 is the standard normal value leaving 5 per cent in the upper tail.
+If the true mean is 2.050, the standardised distance from the cutoff to the truth
+is
+
+$$z = \\frac{2.026318 - 2.050}{0.016} = \\frac{-0.023682}{0.016} = -1.4801$$
+
+so that
+
+$$\\beta = \\Phi(-1.4801) = 0.0694 \\qquad \\text{power} = 1-0.0694 = 0.9306$$
+
+The test misses a 0.05 mm drift about 7 times in 100 and catches it about 93.
+
+That analytic answer was checked by simulation rather than by re-deriving it.
+Drawing **400,000 samples** of 25 from a normal population centred on 2.050 with
+standard deviation 0.080 and applying the same cutoff, 93.083 per cent were
+rejected, against the analytic 93.058 per cent — agreement to within the
+simulation's own standard error of about 0.04 per cent. Repeating the exercise
+with the population centred on the null value 2.000 rejected 5.040 per cent of
+the time, confirming that the cutoff really does deliver its nominal 5 per cent
+false-alarm rate.
+
+## 8.3 Worked: the sample size for a target power
+
+Given the same line and the same 0.05 mm drift, how many measurements are needed
+for 90 per cent power at the 5 per cent one-sided level?
+
+Set the power expression equal to the target and solve for n. Power equals
+1 − beta when
+
+$$\\frac{\\delta\\sqrt{n}}{\\sigma} - z_{\\alpha} = z_{\\beta} \\quad\\Longrightarrow\\quad n = \\left[\\frac{\\left(z_{\\alpha}+z_{\\beta}\\right)\\sigma}{\\delta}\\right]^{2}$$
+
+With $z_{\\alpha} = 1.6449$ for 5 per cent in one tail and $z_{\\beta} = 1.2816$
+for 10 per cent in one tail:
+
+$$n = \\left[\\frac{(1.6449+1.2816)(0.080)}{0.050}\\right]^{2} = \\left[2.9265(1.6)\\right]^{2} = (4.6824)^{2} = 21.92$$
+
+which **rounds UP to n = 22**; rounding down would deliver less power than
+promised. Checking directly, n = 22 gives a cutoff of
+2.000 + 1.6449(0.080/4.6904) = 2.028057 and a power of 0.9009, while n = 21
+gives only 0.8886. The formula and the direct evaluation agree on which integer
+is the first to clear the bar.
+
+For a TWO-sided test at the same level the only change is the multiplier, from
+$z_{0.05} = 1.6449$ to $z_{0.025} = 1.9600$:
+
+$$n = \\left[\\frac{(1.9600+1.2816)(0.080)}{0.050}\\right]^{2} = (5.1864)^{2} = 26.90 \\rightarrow 27$$
+
+Insisting on two-sidedness costs five extra measurements out of twenty-two, which
+is the price of not having decided the direction in advance.
+
+| Change to the design | Effect on power | Cost |
+|---|---|---|
+| Raise n by a factor of 4 | the effect size in SE units doubles | four times the measurement effort |
+| Halve sigma (better instrument or fixturing) | same doubling | capital, or a slower method |
+| Raise alpha from 0.05 to 0.10 | cutoff moves toward the null, power rises | twice as many false alarms |
+| Pair the measurements (Section 10) | sigma of the DIFFERENCE collapses | none, if the design allows it |
+| Chase a smaller effect delta | power falls with delta squared | nothing gained; the requirement changed |
+
+Note what that table settles. Alpha and beta do trade against each other at
+fixed n, but sample size is not the only lever that lowers both: reducing the
+measurement noise, or removing a nuisance source of variation by pairing or
+blocking, lowers both as well, and often more cheaply. The correct general
+statement is that alpha and beta cannot both be reduced by moving the cutoff —
+everything else about the experiment remains available.`,
+      examTip: 'Every power and sample-size question reduces to the single group δ√n/σ. Write it, compare it with z_α, and the rest is a normal-table lookup. Sample sizes ALWAYS round up: 21.92 becomes 22, and the rounded-down 21 sits among the answer choices for anyone who reaches for the nearest integer.',
+      importantNote: 'Power is a function of the effect size, not a property of the test. "This test has 80% power" is incomplete until the effect size, the significance level, the sample size and the standard deviation are all named.',
+    },
+    {
+      id: 'ht-z-or-t',
+      title: '9. Choosing Between z and t, and Where Critical Values Come From',
+      content: `## 9.1 What you know decides the reference distribution
+
+The test statistic for a mean always has the same shape — the estimate minus the
+null value, divided by the standard error of the estimate. What changes is
+whether the denominator is known or estimated:
+
+$$z = \\frac{\\bar{x}-\\mu_{0}}{\\sigma/\\sqrt{n}} \\qquad t = \\frac{\\bar{x}-\\mu_{0}}{s/\\sqrt{n}}$$
+
+If sigma is genuinely known — from a long calibration history, from a physical
+argument, or because the exam says so — the numerator is normal, the denominator
+is a constant, and the ratio is standard normal. If sigma has to be estimated
+from the same small sample, the denominator is itself random, and the ratio
+follows Student's t with n − 1 degrees of freedom:
+
+$$T = \\frac{Z}{\\sqrt{V/\\nu}}, \\qquad Z \\sim N(0,1), \\qquad V \\sim \\chi^{2}_{\\nu}\\ \\text{independent of } Z$$
+
+The extra randomness in the denominator makes extreme ratios more likely than the
+normal allows, which is exactly why the t distribution has heavier tails and
+larger critical values.
+
+![Student-t densities against the standard normal at 4 and 15 degrees of freedom, and the two-sided five per cent critical value plotted against degrees of freedom, falling from 4.30 at two degrees of freedom toward the limiting normal value of 1.960.](/courses/fe-ee/figures/prob3-t-vs-z.svg)
+
+As the degrees of freedom grow the estimate of sigma becomes reliable and the two
+distributions merge:
+
+$$\\lim_{\\nu\\to\\infty} t_{\\nu}(x) = \\phi(x)$$
+
+The convergence is quick in the middle and slow in the tails, which is why the
+usual rule of thumb — use z when n exceeds 30 — is a convenience rather than a
+theorem. At 30 degrees of freedom the two-sided 5 per cent multiplier is 2.042
+against the normal's 1.960, an error of 4 per cent in the width of every
+interval; at 120 degrees of freedom it is 1.980, an error of 1 per cent.
+
+## 9.2 Where the numbers in the table come from
+
+Every critical value quoted in this chapter is defined by an area under a density
+that can be written down explicitly. For Student's t on nu degrees of freedom,
+
+$$f_{\\nu}(x) = \\frac{\\Gamma\\!\\left(\\frac{\\nu+1}{2}\\right)}{\\sqrt{\\nu\\pi}\\;\\Gamma\\!\\left(\\frac{\\nu}{2}\\right)}\\left(1+\\frac{x^{2}}{\\nu}\\right)^{-\\frac{\\nu+1}{2}}$$
+
+and the two-sided 5 per cent critical value is the number c for which
+
+$$\\int_{-c}^{c} f_{\\nu}(x)\\,dx = 0.95$$
+
+Each value in the table below was obtained from the inverse distribution function
+and then re-verified by integrating the density above between the stated limits;
+every one returned 0.950000000 to nine decimal places. The convention throughout
+this chapter is UPPER-TAIL area: t(0.975, ν) leaves 2.5 per cent above it, so a
+symmetric interval built from it holds 95 per cent.
+
+| ν | one tail 5%, t(0.95, ν) | two tails 5%, t(0.975, ν) | two tails 1%, t(0.995, ν) |
+|---|---|---|---|
+| 1 | 6.3138 | 12.7062 | 63.6567 |
+| 2 | 2.9200 | 4.3027 | 9.9248 |
+| 4 | 2.1318 | 2.7764 | 4.6041 |
+| 8 | 1.8595 | 2.3060 | 3.3554 |
+| 9 | 1.8331 | 2.2622 | 3.2498 |
+| 10 | 1.8125 | 2.2281 | 3.1693 |
+| 15 | 1.7531 | 2.1314 | 2.9467 |
+| 18 | 1.7341 | 2.1009 | 2.8784 |
+| 20 | 1.7247 | 2.0860 | 2.8453 |
+| 30 | 1.6973 | 2.0423 | 2.7500 |
+| 60 | 1.6706 | 2.0003 | 2.6603 |
+| 120 | 1.6577 | 1.9799 | 2.6174 |
+| ∞ (normal) | 1.6449 | 1.9600 | 2.5758 |
+
+## 9.3 Worked: the same sample tested both ways
+
+Given a sample of 12 relay operating times with mean 18.4 ms and sample standard
+deviation 1.5 ms, test against a specification mean of 17.5 ms at the 5 per cent
+two-sided level, first treating 1.5 ms as a known process sigma and then
+treating it as an estimate.
+
+The standard error is the same number either way:
+
+$$\\mathrm{SE} = \\frac{1.5}{\\sqrt{12}} = \\frac{1.5}{3.4641} = 0.43301\\ \\mathrm{ms}$$
+
+$$\\text{statistic} = \\frac{18.4-17.5}{0.43301} = \\frac{0.9}{0.43301} = 2.0785$$
+
+**Treating sigma as known.** The reference value is z(0.975) = 1.9600. Since
+2.0785 exceeds it, reject; the two-sided p-value is 0.0377.
+
+**Treating sigma as estimated.** The reference value is t(0.975, 11) = 2.2010.
+Now 2.0785 falls short, so fail to reject; the two-sided p-value is 0.0619.
+
+Identical data, identical arithmetic, opposite conclusions — and the difference
+is entirely a statement about what was known before the sample was taken. The
+t-based answer is the honest one unless the process standard deviation really is
+established independently, because with 12 observations the estimate of sigma
+carries meaningful uncertainty of its own. The 95 per cent intervals show the
+same thing: 18.4 ± 1.96(0.43301) = (17.55, 19.25) excludes 17.5, while
+18.4 ± 2.2010(0.43301) = (17.45, 19.35) includes it.
+
+| Situation described in the stem | Statistic | Reference distribution |
+|---|---|---|
+| Population sigma stated as known | z | standard normal |
+| Sigma estimated from the sample, small n | t | Student-t, n − 1 df |
+| Sigma estimated, n comfortably above 30 | t, approximated by z | difference under 4% |
+| Two independent samples, variances pooled | t | Student-t, n₁ + n₂ − 2 df |
+| Two independent samples, variances clearly unequal | Welch t | Student-t, fractional df; conservatively the smaller n − 1 |
+| Paired measurements | t on the differences | Student-t, pairs − 1 df |
+
+The fourth and fifth rows deserve a note, because they are the source of a
+common inconsistency. When the two groups have equal size, the pooled and the
+unpooled standard errors are algebraically identical, so the pooled degrees of
+freedom n₁ + n₂ − 2 are the right ones to use. The conservative "smaller n − 1"
+rule belongs to the Welch procedure with unequal sample sizes and unequal
+variances, and using it where the pooled test applies simply throws away
+degrees of freedom.`,
+      examTip: 'The word "known" in a stem is doing real work: it selects z over t and changes the multiplier. If a problem gives you a sample standard deviation s and a sample size below about 30, it wants t with n − 1 degrees of freedom, and the z-based answer will be sitting among the choices as the near miss.',
+    },
+    {
+      id: 'ht-paired',
+      title: '10. Paired and Unpaired Designs on the Same Ten Splices',
+      content: `## 10.1 The record
+
+Ten fusion splices in an installed fibre run are measured for insertion loss,
+re-polished, and measured again. Because the same ten splices appear in both
+columns, the design is paired, and the whole record is:
+
+| Splice | Before (dB) | After (dB) | d = before − after (dB) |
+|---|---|---|---|
+| 1 | 0.42 | 0.35 | 0.07 |
+| 2 | 0.55 | 0.47 | 0.08 |
+| 3 | 0.38 | 0.33 | 0.05 |
+| 4 | 0.61 | 0.50 | 0.11 |
+| 5 | 0.49 | 0.44 | 0.05 |
+| 6 | 0.71 | 0.59 | 0.12 |
+| 7 | 0.34 | 0.31 | 0.03 |
+| 8 | 0.58 | 0.49 | 0.09 |
+| 9 | 0.46 | 0.40 | 0.06 |
+| 10 | 0.66 | 0.55 | 0.11 |
+| mean | 0.5200 | 0.4430 | 0.0770 |
+
+Two features of the record decide everything that follows. The splices differ
+enormously among themselves — from 0.34 to 0.71 dB before the re-polish, a
+two-fold range. And every single difference is positive.
+
+## 10.2 Worked: the paired test
+
+Given the difference column, test whether the re-polish changed insertion loss at
+the 5 per cent level.
+
+A paired test is a one-sample test performed on the differences, so the
+hypotheses are about their mean: H₀: μ_d = 0 against H₁: μ_d ≠ 0. The sum of the
+differences is 0.77, so d̄ = 0.0770 dB, and the corrected sum of squares is
+
+$$S_{dd} = \\sum d_{i}^{2} - \\frac{\\left(\\sum d_{i}\\right)^{2}}{n} = 0.0675 - \\frac{0.5929}{10} = 0.0675 - 0.05929 = 0.00821$$
+
+$$s_{d}^{2} = \\frac{0.00821}{9} = 0.00091222 \\qquad s_{d} = 0.030203\\ \\mathrm{dB}$$
+
+$$\\mathrm{SE} = \\frac{0.030203}{\\sqrt{10}} = 0.0095510 \\qquad t = \\frac{0.0770}{0.0095510} = 8.062$$
+
+on 9 degrees of freedom, against a two-sided 5 per cent critical value of 2.262.
+**Reject decisively**; the p-value is 2.1 × 10⁻⁵. The 95 per cent interval for the
+mean improvement is 0.0770 ± 2.262(0.0095510) = 0.0770 ± 0.0216, or
+**(0.055, 0.099) dB** — which is the number a link budget can actually use.
+
+## 10.3 Worked: the same twenty numbers as two independent groups
+
+Given the same table, now analysed as though the "before" and "after" columns
+came from two unrelated sets of splices, repeat the test.
+
+The two sample standard deviations are s_before = 0.12238 dB and
+s_after = 0.09440 dB, from corrected sums of squares of 0.1348 and 0.08021. The
+pooled variance and the standard error of the difference of means are
+
+$$s_{p}^{2} = \\frac{(n_{1}-1)s_{1}^{2}+(n_{2}-1)s_{2}^{2}}{n_{1}+n_{2}-2} = \\frac{0.1348+0.08021}{18} = 0.011945$$
+
+$$\\mathrm{SE} = s_{p}\\sqrt{\\frac{1}{n_{1}}+\\frac{1}{n_{2}}} = 0.109293\\sqrt{0.2} = 0.048877\\ \\mathrm{dB}$$
+
+$$t = \\frac{0.5200-0.4430}{0.048877} = \\frac{0.0770}{0.048877} = 1.575$$
+
+on 18 degrees of freedom, against a critical 2.101. **Fail to reject**; the
+p-value is 0.133, and the 95 per cent interval for the difference,
+0.0770 ± 2.101(0.048877) = (−0.026, 0.180) dB, includes zero and is almost five
+times wider than the paired one.
+
+The point estimate is IDENTICAL in the two analyses — the difference of the means
+always equals the mean of the differences — and the conclusions are opposite. The
+standard error did all of the work: 0.0489 dB unpaired against 0.0096 dB paired,
+a factor of 5.1.
+
+![The ten splices with each before-and-after pair joined by a line, all ten falling; beside them the two reference distributions the same data support, a narrow one with standard error 0.0096 dB from the paired analysis and a broad one with standard error 0.0489 dB from the pooled analysis, against the observed difference of 0.077 dB.](/courses/fe-ee/figures/prob3-paired-vs-unpaired.svg)
+
+## 10.4 Why pairing works, in one identity
+
+The variance of a difference of two correlated measurements is
+
+$$\\operatorname{Var}(B-A) = \\sigma_{B}^{2}+\\sigma_{A}^{2}-2\\rho\\,\\sigma_{B}\\sigma_{A}$$
+
+and pairing is nothing more than the decision to let the correlation term work
+for you. On these data the before-and-after readings correlate at r = 0.9944,
+because a splice that starts poor stays comparatively poor. Substituting:
+
+$$0.014978+0.008912-2(0.9944)(0.12238)(0.09440) = 0.023890-0.022978 = 0.000912$$
+
+which reproduces the paired variance $s_{d}^{2} = 0.00091222$ to five decimal
+places. The nuisance variation — the splice-to-splice differences that have
+nothing to do with the re-polish — cancels inside each pair instead of being
+counted as noise. That is the entire mechanism, and it costs nothing: no extra
+measurements, only a decision about which units to measure twice.
+
+The identity also shows when pairing is a bad idea. If the correlation were
+negative, the differences would be MORE variable than the individual readings,
+and the paired analysis would be worse than the pooled one. Pairing pays exactly
+to the extent that the paired units resemble themselves.
+
+## 10.5 A check that assumes nothing about normality
+
+Both analyses above assumed normal populations. The paired conclusion can be
+verified without that assumption by a permutation argument tailored to the
+design. Under the null that the re-polish did nothing, the sign attached to each
+difference is arbitrary, so every one of the 2¹⁰ = 1024 sign patterns is equally
+likely. Enumerating **all 1024 patterns exactly** — no sampling involved — the
+number producing a mean of magnitude at least 0.0770 dB is 2, namely the observed
+all-positive pattern and its mirror image. The permutation p-value is therefore
+
+$$p = \\frac{2}{1024} = 0.001953$$
+
+which is the smallest value this test can return with ten pairs; the t-based
+2.1 × 10⁻⁵ is below the resolution of the permutation test rather than in conflict
+with it. Both say the same thing: an all-positive run of ten is not something
+sign-flipping produces.
+
+The unpaired analysis can be checked the same way, by enumerating all
+$\\binom{20}{10} = 184{,}756$ ways of splitting the twenty readings into two
+groups of ten. Of these, **25,356 gave a difference of means at least as large as
+0.0770 dB**, for a permutation p-value of 0.1372 — in close agreement with the
+0.1326 that Student's t gave, and confirming that the pooled analysis really does
+fail to see the effect. The failure is not an artefact of the normal assumption;
+it is what discarding the pairing costs.`,
+      examTip: 'Look for the phrase that identifies the units: "the same specimens were retested", "before and after on each machine", "each operator measured both gauges" all mean paired, and the degrees of freedom are pairs minus one. Treating paired data as two independent samples always understates the evidence, and the unpaired t-value is always among the distractors.',
+      importantNote: 'The difference of the two means always equals the mean of the differences, so the point estimate cannot tell you which analysis was used. Only the standard error and the degrees of freedom change — and they change the conclusion.',
+    },
+    {
+      id: 'ht-proportions',
+      title: '11. Tests and Intervals for Proportions',
+      content: `## 11.1 The statistic, and where its standard error comes from
+
+A count of defectives out of n independent units is binomial, with mean np and
+variance np(1 − p). Dividing by n turns that into a statement about the sample
+proportion:
+
+$$E\\!\\left[\\hat{p}\\right] = p \\qquad \\operatorname{Var}\\!\\left(\\hat{p}\\right) = \\frac{p(1-p)}{n}$$
+
+For a test, the null supplies the value of p, so the standard error is computed
+at the NULL value rather than at the observed one — the calculation is being done
+in a world where the null is true:
+
+$$z = \\frac{\\hat{p}-p_{0}}{\\sqrt{\\dfrac{p_{0}(1-p_{0})}{n}}}$$
+
+For an interval there is no null value to use, so the observed proportion is
+substituted, and that substitution is the source of the trouble in Section 11.5.
+
+## 11.2 Worked: one proportion against a supplier's claim
+
+Given a lot of 400 relays from a supplier who claims no more than 2 per cent are
+defective, of which 13 are found defective, test the claim at the 5 per cent
+level against the alternative that the true rate exceeds 2 per cent.
+
+$$\\hat{p} = \\frac{13}{400} = 0.0325 \\qquad \\mathrm{SE}_{0} = \\sqrt{\\frac{(0.02)(0.98)}{400}} = \\sqrt{0.000049} = 0.007$$
+
+$$z = \\frac{0.0325-0.0200}{0.007} = \\frac{0.0125}{0.007} = 1.7857$$
+
+The one-sided 5 per cent critical value is 1.6449, and 1.7857 exceeds it, so the
+normal approximation rejects the claim; its p-value is 0.0371.
+
+That answer should not be reported without a second look, because the borderline
+is exactly where a discrete count is least well described by a continuous curve.
+Two independent routes disagree with it:
+
+| Route | p-value | Decision at 5% |
+|---|---|---|
+| Normal approximation, as computed above | 0.0371 | reject |
+| Normal approximation with a continuity correction | 0.0540 | do not reject |
+| Exact binomial, P(X ≥ 13) with n = 400, p = 0.02 | 0.0619 | do not reject |
+
+The continuity correction subtracts half a unit from the count before
+standardising, because the discrete value 13 stands for the continuous interval
+from 12.5 to 13.5:
+
+$$z_{c} = \\frac{13-0.5-8}{\\sqrt{400(0.02)(0.98)}} = \\frac{4.5}{\\sqrt{7.84}} = \\frac{4.5}{2.8} = 1.6071$$
+
+and the exact figure comes from summing binomial terms, which needs no
+approximation at all. The honest conclusion is that this lot does not clear the
+5 per cent bar: the uncorrected normal approximation was optimistic by a factor
+of 1.7 in the p-value, which is enough to flip the decision. The usual np ≥ 5
+guideline was satisfied here — np₀ is 8 — and it still was not enough, because
+the guideline governs the centre of the distribution and the test lives in the
+tail.
+
+## 11.3 Comparing two proportions
+
+For two independent samples the difference of proportions has variance equal to
+the sum of the two variances. Under a null of equality the common proportion is
+unknown, so it is estimated by pooling both samples — the only place in this
+chapter where the standard error uses data from both groups at once:
+
+$$\\hat{p}_{\\text{pool}} = \\frac{x_{1}+x_{2}}{n_{1}+n_{2}}$$
+
+$$z = \\frac{\\hat{p}_{1}-\\hat{p}_{2}}{\\sqrt{\\hat{p}_{\\text{pool}}\\left(1-\\hat{p}_{\\text{pool}}\\right)\\left(\\dfrac{1}{n_{1}}+\\dfrac{1}{n_{2}}\\right)}}$$
+
+## 11.4 Worked: two production lines compared
+
+Given 22 defectives out of 500 boards from line 1 and 10 out of 400 from line 2,
+test whether the defect rates differ at the 5 per cent level.
+
+$$\\hat{p}_{1} = \\frac{22}{500} = 0.0440 \\qquad \\hat{p}_{2} = \\frac{10}{400} = 0.0250$$
+
+$$\\hat{p}_{\\text{pool}} = \\frac{32}{900} = 0.035556$$
+
+$$\\mathrm{SE} = \\sqrt{0.035556(0.964444)(0.002+0.0025)} = \\sqrt{0.00015431} = 0.012422$$
+
+$$z = \\frac{0.0440-0.0250}{0.012422} = \\frac{0.0190}{0.012422} = 1.5295$$
+
+Against a two-sided critical value of 1.9600, **fail to reject**; the p-value is
+0.126. The observed gap of 1.9 percentage points is not beyond what sampling
+alone produces from samples of this size, and the 95 per cent interval for the
+difference — computed from the UNpooled standard error of 0.012044, since there
+is no null to pool under — is 0.0190 ± 1.96(0.012044), or (−0.0046, 0.0426). The
+interval includes zero, consistent with the test, and it also shows that a real
+difference as large as four percentage points has not been ruled out. Failing to
+reject settled nothing about whether the lines differ.
+
+## 11.5 A 95 per cent interval that is not 95 per cent
+
+The textbook Wald interval substitutes the observed proportion into the standard
+error:
+
+$$\\hat{p} \\pm z_{1-\\alpha/2}\\sqrt{\\frac{\\hat{p}\\left(1-\\hat{p}\\right)}{n}}$$
+
+and it systematically under-covers, badly so near the ends of the scale, because
+the substituted variance is itself too small exactly when the observed proportion
+is extreme. The Wilson interval instead inverts the test — it collects the values
+of p that the test would NOT reject — and the algebra gives
+
+$$\\frac{\\hat{p}+\\dfrac{z^{2}}{2n} \\pm z\\sqrt{\\dfrac{\\hat{p}(1-\\hat{p})}{n}+\\dfrac{z^{2}}{4n^{2}}}}{1+\\dfrac{z^{2}}{n}}$$
+
+The difference is not academic. Coverage can be computed EXACTLY for a given n
+and p, with no simulation, by enumerating all n + 1 possible counts, computing
+each one's binomial probability, and adding the probabilities of those whose
+interval happens to contain p:
+
+| True p, with n = 40 | Wald exact coverage | Wilson exact coverage |
+|---|---|---|
+| 0.10 | 0.9145 | 0.9433 |
+| 0.30 | 0.9299 | 0.9443 |
+| 0.50 | 0.9193 | 0.9615 |
+
+![Exact coverage of the Wald and Wilson 95 per cent intervals for a binomial proportion at n equal to 40, computed by enumerating all 41 possible counts at each true p. Wilson oscillates about the nominal 0.95 line; Wald sits below it almost everywhere, dropping under 0.86 at several points.](/courses/fe-ee/figures/prob3-wald-wilson.svg)
+
+Both curves are sawtoothed, because the count is discrete and the interval jumps
+as it moves from one integer to the next; no interval for a discrete quantity can
+hold its nominal level exactly at every p. But the Wald interval is not merely
+ragged, it is biased low — a nominal 95 per cent interval delivering 91 to 93 per
+cent. For the 13-out-of-400 lot of Section 11.2 the two intervals are (0.0151,
+0.0499) and (0.0191, 0.0548), and only the Wilson one is consistent with the
+exact test's refusal to reject a true rate of 0.02.
+
+That last observation is worth generalising. The exact duality between a
+two-sided test and a confidence interval — reject if and only if the null value
+falls outside — holds when the interval and the test use the SAME standard error.
+The one-sample t of Section 4 satisfies that, so the duality is exact there. The
+Wald interval does not, because the test uses the null proportion in its standard
+error and the interval uses the observed one, and the duality breaks in
+consequence.`,
+      examTip: 'Use p₀ in the standard error for a TEST and p̂ in the standard error for an INTERVAL. That single difference is the most-missed step in proportion problems, and both versions of the answer will be among the choices. For two proportions, pool for the test and do not pool for the interval.',
+    },
+    {
+      id: 'ht-chisquare',
+      title: '12. Chi-Square: Goodness of Fit and Independence',
+      content: `## 12.1 Where the statistic comes from
+
+A count in a cell with expected value E has, under a Poisson or multinomial
+model, a variance of roughly E. Standardising each cell and squaring gives a
+quantity that behaves like a squared standard normal, and adding those across
+cells gives the Pearson statistic:
+
+$$\\chi^{2} = \\sum_{j=1}^{k}\\frac{\\left(O_{j}-E_{j}\\right)^{2}}{E_{j}}$$
+
+Its null distribution is chi-square, whose degrees of freedom count the number of
+independent ways the observed counts can differ from the expected ones. Start
+with k cells, subtract one because the counts must total n, and subtract one more
+for every parameter estimated from the same data to build the expected counts:
+
+$$\\mathrm{df} = k - 1 - m$$
+
+The chi-square family has a density of its own,
+
+$$f_{k}(x) = \\frac{x^{k/2-1}e^{-x/2}}{2^{k/2}\\,\\Gamma\\!\\left(k/2\\right)}, \\qquad x>0$$
+
+and every critical value quoted here was obtained from its inverse distribution
+function and re-verified by integrating that density from zero to the value,
+returning 0.95 to nine decimals.
+
+![Chi-square densities for one, two, four and six degrees of freedom, with the upper five per cent cutoffs marked: 3.841, 5.991, 9.488 and 12.592. The density is strongly right-skewed at low degrees of freedom and becomes progressively more symmetric.](/courses/fe-ee/figures/prob3-chisq-densities.svg)
+
+| df | upper 5% cutoff | upper 1% cutoff |
+|---|---|---|
+| 1 | 3.841 | 6.635 |
+| 2 | 5.991 | 9.210 |
+| 3 | 7.815 | 11.345 |
+| 4 | 9.488 | 13.277 |
+| 5 | 11.070 | 15.086 |
+| 6 | 12.592 | 16.812 |
+
+The test is always upper-tailed, whatever the alternative, because both kinds of
+departure — too many in a cell and too few — make the squared numerator larger.
+
+## 12.2 Worked: goodness of fit to a Poisson with an estimated mean
+
+Given 60 weeks of protective-relay trip counts on one feeder — 22 weeks with no
+trips, 18 with one, 12 with two, 6 with three and 2 with four — test whether
+weekly trips follow a Poisson law at the 5 per cent level.
+
+The Poisson mean is not supplied, so it is estimated from the same data, and that
+estimate costs a degree of freedom. The total number of trips is
+0(22) + 1(18) + 2(12) + 3(6) + 4(2) = 68, so
+
+$$\\hat{\\lambda} = \\frac{68}{60} = 1.13333\\ \\text{trips per week}$$
+
+Expected counts are 60 times the Poisson probabilities at that rate, with the
+last cell taking everything from four upward so the probabilities total one:
+
+| trips k | observed | P(k) | expected E |
+|---|---|---|---|
+| 0 | 22 | 0.321958 | 19.3175 |
+| 1 | 18 | 0.364886 | 21.8932 |
+| 2 | 12 | 0.206769 | 12.4061 |
+| 3 | 6 | 0.078113 | 4.6868 |
+| 4 or more | 2 | 0.028274 | 1.6965 |
+
+The expected count in the last cell is 1.70, which breaches the usual
+requirement that expected counts be at least about 5 — the chi-square
+approximation to a discrete sum degrades badly when a denominator is that small.
+The standard repair is to pool adjacent cells until the requirement is met, so
+the last two rows are combined into "3 or more" with observed 8 and expected
+6.3832. The statistic is then
+
+$$\\chi^{2} = \\frac{(22-19.3175)^{2}}{19.3175}+\\frac{(18-21.8932)^{2}}{21.8932}+\\frac{(12-12.4061)^{2}}{12.4061}+\\frac{(8-6.3832)^{2}}{6.3832}$$
+
+$$\\chi^{2} = 0.3725+0.6923+0.0133+0.4095 = 1.488$$
+
+with df = 4 − 1 − 1 = 2: four cells after pooling, minus one for the total, minus
+one for the estimated rate. The upper 5 per cent cutoff on 2 degrees of freedom
+is 5.991, and 1.488 falls far short, so **fail to reject**; the p-value is 0.475.
+Weekly trip counts are consistent with a Poisson process at 1.13 trips per week.
+
+Note what that conclusion is and is not. It is not a demonstration that trips ARE
+Poisson; with 60 weeks the test has limited power against modest departures. It
+is a statement that this record gives no reason to abandon the Poisson model,
+which is exactly the strength of evidence a goodness-of-fit test can supply.
+
+Had the rate been specified in advance — by a design calculation rather than by
+these data — the degrees of freedom would have been 4 − 1 = 3 and the cutoff
+7.815. Forgetting to subtract for an estimated parameter makes the test too
+conservative here and too liberal in other configurations, and it is the single
+most common error in goodness-of-fit problems.
+
+## 12.3 Independence in a contingency table
+
+For a two-way table the null is that the row and column classifications are
+independent, so each cell probability factorises into the product of its
+marginals. Estimating those marginals from the table itself gives expected counts
+
+$$E_{ij} = \\frac{R_{i}\\,C_{j}}{N}$$
+
+and the degrees of freedom follow from the same accounting: rc cells, minus one
+for the total, minus (r − 1) free row proportions, minus (c − 1) free column
+proportions, leaving
+
+$$\\mathrm{df} = rc-1-(r-1)-(c-1) = (r-1)(c-1)$$
+
+## 12.4 Worked: two suppliers across three quality grades
+
+Given 200 assemblies from each of two suppliers, graded pass, marginal or fail as
+shown, test whether grade is independent of supplier at the 5 per cent level.
+
+| | pass | marginal | fail | row total |
+|---|---|---|---|---|
+| Supplier A | 138 | 42 | 20 | 200 |
+| Supplier B | 112 | 48 | 40 | 200 |
+| column total | 250 | 90 | 60 | 400 |
+
+The expected counts are the row total times the column total over the grand
+total. Because both row totals are 200, both rows share the same expectations:
+200(250)/400 = 125, 200(90)/400 = 45 and 200(60)/400 = 30. Then
+
+$$\\chi^{2} = \\frac{13^{2}}{125}+\\frac{3^{2}}{45}+\\frac{10^{2}}{30}+\\frac{13^{2}}{125}+\\frac{3^{2}}{45}+\\frac{10^{2}}{30}$$
+
+$$\\chi^{2} = 2(1.352)+2(0.2)+2(3.3333) = 9.771$$
+
+with df = (2 − 1)(3 − 1) = 2. The cutoff is 5.991 and 9.771 exceeds it, so
+**reject independence**; the p-value is 0.0076. Supplier B fails twice as often
+in absolute count, and the cell contributions locate the effect: the fail column
+contributes 6.67 of the 9.77, and the marginal column almost nothing.
+
+The chi-square distribution is an asymptotic approximation to a discrete
+distribution, so it is worth confirming. Generating **200,000 tables** at random
+under exact independence — each row multinomially distributed over the three
+grades using the observed column proportions, with both row totals held at 200 —
+and computing the same statistic each time, 0.7415 per cent equalled or exceeded
+9.771. The chi-square approximation gave 0.7557 per cent. The two agree to within
+the simulation's own error, so the asymptotic p-value can be trusted here.
+
+| Question being asked | Expected counts come from | Degrees of freedom |
+|---|---|---|
+| Do counts match stated proportions? | the stated proportions times n | k − 1 |
+| Do counts follow a distribution with parameters estimated from the data? | the fitted distribution times n | k − 1 − m |
+| Are two classifications independent? | row total times column total over N | (r − 1)(c − 1) |
+| Are several groups homogeneous in their category proportions? | same formula as independence | (r − 1)(c − 1) |`,
+      examTip: 'Degrees of freedom for goodness of fit are CATEGORIES minus one minus estimated parameters, never observations minus one. With 60 weeks of data in five categories the answer is 3, or 2 after pooling and estimating the rate — and 59 is always among the choices.',
+      importantNote: 'Pool adjacent cells until every expected count is at least about 5, and recount the degrees of freedom afterwards using the number of cells you actually used. Pooling changes k, and therefore changes the cutoff.',
+    },
+    {
+      id: 'ht-anova',
+      title: '13. Analysis of Variance and the F Ratio',
+      content: `## 13.1 Comparing three means without running three tests
+
+Comparing three group means pairwise takes three tests, and Section 14.5 shows
+what that does to the false-alarm rate. Analysis of variance asks the question
+once: is the spread BETWEEN the group means larger than the spread WITHIN the
+groups would lead you to expect?
+
+Write the identity that makes this possible. For observation j in group i, split
+its deviation from the grand mean into two pieces and square the sum:
+
+$$y_{ij}-\\bar{y} = \\left(\\bar{y}_{i}-\\bar{y}\\right)+\\left(y_{ij}-\\bar{y}_{i}\\right)$$
+
+Summing the squares over everything, the cross term vanishes because within each
+group the deviations from that group's own mean sum to zero — the same
+orthogonality that made the regression decomposition work. What remains is
+
+$$\\underbrace{\\sum_{i}\\sum_{j}\\left(y_{ij}-\\bar{y}\\right)^{2}}_{\\mathrm{SST}} = \\underbrace{\\sum_{i}n_{i}\\left(\\bar{y}_{i}-\\bar{y}\\right)^{2}}_{\\mathrm{SSB}} + \\underbrace{\\sum_{i}\\sum_{j}\\left(y_{ij}-\\bar{y}_{i}\\right)^{2}}_{\\mathrm{SSW}}$$
+
+Each sum of squares is divided by its own degrees of freedom to give a mean
+square, and the ratio of the two mean squares is the test statistic:
+
+$$\\mathrm{MSB} = \\frac{\\mathrm{SSB}}{k-1} \\qquad \\mathrm{MSW} = \\frac{\\mathrm{SSW}}{N-k} \\qquad F = \\frac{\\mathrm{MSB}}{\\mathrm{MSW}}$$
+
+Under the null that all group means are equal, both mean squares estimate the
+same error variance and their ratio is near one; when the means differ, only the
+numerator is inflated. That is why the test is upper-tailed even though the
+alternative is two-sided in every group.
+
+## 13.2 The record
+
+Five circuit boards from each of three assembly lines are pull-tested at a
+solder joint, and the failure load is recorded in newtons:
+
+| Line | Measurements (N) | Sum | Mean |
+|---|---|---|---|
+| A | 42, 45, 39, 44, 40 | 210 | 42 |
+| B | 47, 50, 46, 49, 48 | 240 | 48 |
+| C | 44, 41, 45, 43, 42 | 215 | 43 |
+| all | fifteen values | 665 | 44.3333 |
+
+## 13.3 Worked: the one-way analysis of variance
+
+Given the fifteen measurements, test whether the three line means differ at the
+5 per cent level.
+
+The between-groups sum of squares weights each group's squared departure from the
+grand mean by its size:
+
+$$\\mathrm{SSB} = 5\\left[(42-44.3333)^{2}+(48-44.3333)^{2}+(43-44.3333)^{2}\\right] = 5(20.6667) = 103.33$$
+
+The within-groups sum of squares adds the squared deviations inside each group:
+line A gives 0 + 9 + 9 + 4 + 4 = 26, line B gives 1 + 4 + 4 + 1 + 0 = 10, and
+line C gives 1 + 4 + 4 + 0 + 1 = 10, so SSW = 46.00. Their total is 149.33, which
+matches the total sum of squares computed directly about the grand mean — the
+decomposition identity, confirmed on the numbers.
+
+| Source | Sum of squares | df | Mean square | F |
+|---|---|---|---|---|
+| Between lines | 103.33 | 2 | 51.667 | 13.478 |
+| Within lines | 46.00 | 12 | 3.8333 | — |
+| Total | 149.33 | 14 | — | — |
+
+$$F = \\frac{51.667}{3.8333} = 13.478 \\qquad \\text{on } (k-1,\\ N-k) = (2,\\ 12) \\text{ degrees of freedom}$$
+
+The upper 5 per cent point of the F distribution on 2 and 12 degrees of freedom
+is 3.885, and 13.478 far exceeds it, so **reject**; the p-value is 0.00085. At
+least one line differs, and the group means say which: line B is running about
+5 to 6 newtons stronger than the other two.
+
+![The fifteen pull-test measurements plotted by line, with heavy bars at the three group means of 42, 48 and 43 newtons and a dashed line at the grand mean of 44.33. The vertical distance from the dashed line to each bar is between-group spread; the distance from each bar to its points is within-group spread.](/courses/fe-ee/figures/prob3-anova-decomposition.svg)
+
+Two checks on that result, neither of which repeats the formula. First, a
+permutation test: reassigning the fifteen numbers to three groups of five at
+random **100,000 times** and recomputing the ratio each time, 101 shuffles reached
+an F of 13.478 or more, a rate of 0.00101 against the F-distribution's 0.00085 —
+agreement to within the simulation's error at this many trials. Second,
+the algebraic identity that ties this test back to Section 6: with only two
+groups the F statistic is exactly the square of the two-sample t statistic.
+Testing lines A and C alone gives a pooled standard deviation of 2.1213, a t of
+−0.7454, and t² = 0.5556; the one-way analysis of those same ten numbers returns
+F = 0.5556 exactly.
+
+## 13.4 What the F test does not tell you
+
+A significant F says the group means are not all equal. It does not say which
+pair differs, and picking the largest gap after the fact and testing it with an
+ordinary two-sample t is precisely the multiple-comparisons error of Section
+14.5 — the gap was selected BECAUSE it was largest, so its null distribution is
+not the one the ordinary test assumes. The correct follow-ups adjust for the
+selection: Tukey's honest significant difference, Bonferroni-adjusted pairwise
+tests, or contrasts specified before the data were seen.
+
+| Assumption | What breaks if it fails | Cheap check |
+|---|---|---|
+| Independent observations | the whole F distribution | randomise run order; do not treat repeat readings on one board as separate boards |
+| Equal variances across groups | F is distorted, badly with unequal group sizes | compare group standard deviations; here 2.55, 1.58 and 1.58 |
+| Approximate normality within groups | matters mainly in small groups | residual plot; the permutation test above avoids the assumption entirely |
+| Groups fixed in advance | selecting groups after seeing the data inflates F | state the comparison before collecting |`,
+      examTip: 'The F ratio is always the between-groups mean square over the within-groups mean square, and its degrees of freedom are always (k − 1, N − k) in that order. Reversing them turns a critical value of 3.885 into 19.41, which is why both appear in the answer set.',
+    },
+    {
+      id: 'ht-pvalues',
+      title: '14. What a p-Value Is, and What It Is Not',
+      content: `## 14.1 Under the null, p is uniform
+
+The most useful single fact about p-values is that when the null hypothesis and
+the model are both true, the p-value is uniformly distributed on the interval
+from zero to one. The argument is one line. If the test statistic has a
+continuous distribution with cumulative function F under the null, then for a
+one-sided test $p = 1 - F(T)$, and the probability integral transform gives
+
+$$P(p \\le q) = P\\!\\left(1-F(T)\\le q\\right) = P\\!\\left(F(T)\\ge 1-q\\right) = q$$
+
+for every q between zero and one. So p ≤ 0.05 happens 5 per cent of the time,
+p ≤ 0.01 happens 1 per cent of the time, and the significance level is not a
+convention layered on top of the calculation — it IS the calculation.
+
+![Cumulative distribution of the p-value for a one-sided z test, drawn exactly rather than simulated. Under the null the curve is the forty-five degree line, so p is uniform; for true shifts of one and of 2.93 standard errors the curves bow sharply upward, the latter passing through 0.90 at a threshold of 0.05.](/courses/fe-ee/figures/prob3-pvalue-uniform.svg)
+
+The uniformity was also confirmed empirically, because it is the kind of claim
+that deserves a check it cannot pass by construction. Drawing **200,000**
+standard normal test statistics and converting each to a two-sided p-value gave
+these tail proportions:
+
+| threshold q | expected P(p ≤ q) | observed in 200,000 draws |
+|---|---|---|
+| 0.01 | 0.0100 | 0.01000 |
+| 0.05 | 0.0500 | 0.04937 |
+| 0.10 | 0.1000 | 0.09853 |
+| 0.25 | 0.2500 | 0.24879 |
+| 0.50 | 0.5000 | 0.49994 |
+| 0.90 | 0.9000 | 0.89988 |
+
+with a Kolmogorov-Smirnov distance from the uniform of 0.00225, which is what a
+sample of this size produces from a genuinely uniform variable.
+
+## 14.2 What a p-value is not
+
+Every misreading in the list below has the same root: the p-value is a
+probability about DATA given a hypothesis, and each error turns it into a
+probability about the hypothesis given the data.
+
+| Claim about p = 0.03 | Status | The quantity actually described |
+|---|---|---|
+| "There is a 3% chance the null is true" | false | that is a posterior probability, and it needs a prior |
+| "There is a 97% chance the effect is real" | false | the same error, complemented |
+| "The effect is large" | false | p mixes effect size with sample size; use the interval |
+| "The result will replicate 97% of the time" | false | replication probability depends on the true effect and the new sample size |
+| "Data this extreme occur 3% of the time when the null holds" | true | the definition |
+
+The first two are quantitatively wrong, not merely loosely worded, and Bayes's
+rule shows by how much. Write the prior probability that the null is true as
+pi-nought. Among all experiments run, the fraction that are null and get rejected
+is alpha times pi-nought, and the fraction that are non-null and get rejected is
+the power times one minus pi-nought, so
+
+$$P\\!\\left(H_{0}\\ \\text{true}\\;\\middle|\\;\\text{rejected}\\right) = \\frac{\\alpha\\,\\pi_{0}}{\\alpha\\,\\pi_{0}+\\left(1-\\beta\\right)\\left(1-\\pi_{0}\\right)}$$
+
+## 14.3 What that posterior actually works out to
+
+Take a field in which nine hypotheses out of ten tested are in fact null, tests
+run at alpha = 0.05, and typical power of 0.80. Then
+
+$$\\frac{0.05(0.9)}{0.05(0.9)+0.80(0.1)} = \\frac{0.045}{0.045+0.080} = \\frac{0.045}{0.125} = 0.360$$
+
+so **36 per cent of the "significant" findings in that field are false alarms**,
+even though every single test was run correctly at 5 per cent. Lower the power
+to 0.35 with an even prior and the figure is
+0.05(0.5)/[0.05(0.5)+0.35(0.5)] = 0.125; raise the power to 0.93 with an even
+prior and it falls to 0.051. The false-discovery rate depends on the power and
+on the plausibility of what is being tested, neither of which appears anywhere in
+the p-value.
+
+## 14.4 Worked: significance without importance, and importance without significance
+
+Given a resistor process with a known standard deviation of 2.0 ohms and a
+nominal mean of 100.0 ohms, examine two audits: one of 40,000 units with a sample
+mean of 100.02 ohms, and one of 25 units with a sample mean of 100.5 ohms. Both
+are tested two-sided at the 5 per cent level.
+
+**The large audit.** The standard error is $2.0/\\sqrt{40000} = 0.010$ ohms, so
+
+$$z = \\frac{100.02-100.00}{0.010} = 2.00 \\qquad p = 0.0455 \\quad \\text{(reject)}$$
+
+The result is significant. The 95 per cent interval for the mean is
+100.02 ± 1.96(0.010) = **(100.0004, 100.0396) ohms**, so the entire interval lies
+within 0.04 ohms of nominal — four hundredths of one per cent of the value, and
+far inside any sane tolerance band. The process offset has been established
+beyond doubt AND shown to be irrelevant. Significance measured the evidence, not
+the size.
+
+**The small audit.** The standard error is $2.0/\\sqrt{25} = 0.400$ ohms, so
+
+$$z = \\frac{100.5-100.0}{0.400} = 1.25 \\qquad p = 0.211 \\quad \\text{(fail to reject)}$$
+
+Not significant — and the 95 per cent interval is
+100.5 ± 1.96(0.400) = **(99.72, 101.28) ohms**, which is compatible with an offset
+of well over one per cent. Here failing to reject established nothing at all: an
+offset of engineering importance sits comfortably inside the interval. The
+correct report is not "no difference" but "this audit was too small to say".
+
+| Audit | n | p-value | Decision at 5% | 95% interval | Engineering reading |
+|---|---|---|---|---|---|
+| Large | 40,000 | 0.0455 | reject | (100.0004, 100.0396) | real, and negligible |
+| Small | 25 | 0.211 | do not reject | (99.72, 101.28) | undetermined; could matter |
+
+The interval answers the engineering question in both rows and the p-value
+answers it in neither. That is the whole argument for reporting intervals
+alongside tests, and it is why a well-written conclusion always states a
+magnitude with its uncertainty rather than a verdict.
+
+## 14.5 Twenty questions at 5 per cent each
+
+Run one test at alpha and the false-alarm probability is alpha. Run m
+independent tests, all with true nulls, and at least one false alarm becomes
+likely:
+
+$$P(\\text{at least one false rejection}) = 1-(1-\\alpha)^{m}$$
+
+For twenty tests at 5 per cent that family-wise error rate is
+
+$$1-(0.95)^{20} = 1-0.35849 = 0.6415$$
+
+so a project that runs twenty comparisons and reports the significant ones has
+about a **64 per cent chance of reporting at least one thing that is not there**.
+Simulating **200,000 families** of twenty independent null tests produced at
+least one rejection in 64.343 per cent of families, against the analytic 64.151
+per cent.
+
+The Bonferroni correction tests each hypothesis at alpha over m, which bounds the
+family-wise rate at alpha regardless of dependence:
+
+$$1-\\left(1-\\frac{\\alpha}{m}\\right)^{m} \\le \\alpha, \\qquad \\lim_{m\\to\\infty}\\left[1-\\left(1-\\frac{\\alpha}{m}\\right)^{m}\\right] = 1-e^{-\\alpha}$$
+
+which for alpha = 0.05 approaches 0.04877 from above — always at or below the
+nominal level, and never by much.
+
+| Number of independent tests m | Uncorrected family-wise rate | Each test at 0.05/m |
+|---|---|---|
+| 1 | 0.0500 | 0.0500 |
+| 2 | 0.0975 | 0.0494 |
+| 5 | 0.2262 | 0.0490 |
+| 10 | 0.4013 | 0.0489 |
+| 20 | 0.6415 | 0.0488 |
+| 50 | 0.9231 | 0.0488 |
+| 100 | 0.9941 | 0.0488 |
+
+![Family-wise error rate against the number of independent tests. Without correction the curve climbs from 0.05 to 0.99 by one hundred tests; with each test run at 0.05 divided by m it stays flat just below the nominal 0.05 line throughout.](/courses/fe-ee/figures/prob3-fwer.svg)
+
+The cost of the correction is power: each individual test now needs a much
+larger effect to clear its stricter threshold. That trade is the reason
+practitioners distinguish confirmatory analyses, where the family is small and
+declared in advance, from exploratory ones, where a great many comparisons are
+made and the honest report is a list of leads rather than a list of findings.`,
+      examTip: 'Two sentences are worth memorising verbatim. A p-value is the probability of data at least this extreme GIVEN the null hypothesis. A confidence interval, not a p-value, answers "how big is the effect". Every conceptual question in this topic is a rearrangement of those two.',
+      importantNote: 'Statistical significance and practical significance are independent. A large enough sample makes any non-zero effect significant, and a small enough sample makes any effect non-significant. Report the interval, then decide with engineering judgement whether its endpoints matter.',
+    },
+    {
+      id: 'ht-problems',
+      title: '15. Problem Sets',
+      content: `## 15.1 Problem Set A — tests, errors and power
+
+**A1.** A sample of 25 castings has a mean hardness of 214 HB with a sample
+standard deviation of 12 HB. Test against a specification mean of 208 HB,
+two-sided, at the 5 per cent level.
+*Answer.* SE = 12/√25 = 2.40; t = (214 − 208)/2.40 = 2.500 on 24 degrees of
+freedom, against a critical 2.064. Reject: the mean hardness differs from
+specification.
+
+**A2.** Give the 95 per cent confidence interval for the mean in A1, and use it
+to reach the same conclusion.
+*Answer.* 214 ± 2.064(2.40) = 214 ± 4.95, or (209.05, 218.95) HB. The
+specification value 208 lies outside, which is the same decision — the duality
+holds exactly because the test and the interval use the same standard error.
+
+**A3.** For a one-sided z test at α = 0.05 with σ = 4.0 and n = 16, compute the
+power against a true shift of 3.0 units.
+*Answer.* SE = 4.0/4 = 1.0; the cutoff is 1.6449 above the null; the standardised
+distance is 3.0/1.0 − 1.6449 = 1.3551, so power = Φ(1.3551) = 0.912 and β = 0.088.
+
+**A4.** How many observations would raise the power in A3 to 0.99?
+*Answer.* n = [(z₀.₀₅ + z₀.₀₁)σ/δ]² = [(1.6449 + 2.3263)(4.0)/3.0]² =
+(5.2949)² = 28.04, which rounds up to 29.
+
+**A5.** A test at α = 0.05 fails to reject with a 95 per cent interval of
+(−9.4, +11.2) units. What may be concluded?
+*Answer.* Almost nothing. The interval is compatible with effects of ±10 units in
+either direction, so the study lacked the power to resolve an effect that would
+matter. The correct statement is that the experiment was uninformative, not that
+the effect is zero.
+
+**A6.** Explain why lowering α from 0.05 to 0.01 at fixed n necessarily raises β.
+*Answer.* Lowering α moves the rejection cutoff further from the null, so fewer
+samples land in the rejection region whatever the truth. That reduces the
+rejection probability under the null (which is α) and equally under the
+alternative (which is the power), so β = 1 − power rises. Only changes to n, to
+σ, or to the design escape the trade.
+
+**A7.** A colleague runs a two-sided test, sees the sample mean above the null,
+and re-reports the result as a one-sided test to halve the p-value. What is the
+true false-alarm rate of that procedure?
+*Answer.* 0.05, not 0.025 — the direction was chosen after seeing the data, so
+both tails remain available to produce a rejection. The reported significance
+level is wrong by a factor of two.
+
+## 15.2 Problem Set B — proportions, chi-square, ANOVA and multiplicity
+
+**B1.** In 250 inspected welds, 18 are rejected. Test the claim that the true
+reject rate is 5 per cent, two-sided at the 5 per cent level.
+*Answer.* p̂ = 18/250 = 0.072; SE₀ = √(0.05 × 0.95/250) = √0.00019 = 0.013784;
+z = (0.072 − 0.050)/0.013784 = 1.596. Against 1.960, fail to reject.
+
+**B2.** Give the Wald 95 per cent interval for the weld reject rate in B1 and
+explain why it is not the interval to trust.
+*Answer.* 0.072 ± 1.96√(0.072 × 0.928/250) = 0.072 ± 1.96(0.016348) =
+(0.0400, 0.1040). The Wald interval substitutes the observed proportion into the
+standard error and under-covers systematically; the Wilson interval, which
+inverts the test, is the better choice at this sample size and this proportion.
+
+**B3.** Four categories of failure are expected in the ratio 4:3:2:1 out of 200
+failures. The observed counts are 90, 52, 38 and 20. Test the ratio at the 5 per
+cent level.
+*Answer.* Expected counts are 80, 60, 40 and 20. The statistic is
+100/80 + 64/60 + 4/40 + 0/20 = 1.250 + 1.0667 + 0.100 + 0 = 2.417 with df = 3
+(no parameters estimated). The cutoff is 7.815, so fail to reject: the observed
+counts are consistent with the stated ratio.
+
+**B4.** A 3-by-4 contingency table is tested for independence. State the degrees
+of freedom, and state them again for a goodness-of-fit test of the same twelve
+cells against fully specified proportions.
+*Answer.* Independence gives (3 − 1)(4 − 1) = 6. Goodness of fit against
+specified proportions gives 12 − 1 = 11, because no marginals are estimated.
+
+**B5.** An analysis of variance on four groups of six gives SSB = 84.0 and
+SSW = 120.0. Complete the table and test at the 5 per cent level.
+*Answer.* df are 3 and 20; MSB = 28.0, MSW = 6.0, F = 4.667 against
+F(0.05; 3, 20) = 3.098. Reject: at least one group mean differs.
+
+**B6.** In B5, what would F have been if the same sums of squares had come from
+two groups of twelve?
+*Answer.* df would be 1 and 22; MSB = 84.0, MSW = 5.4545, F = 15.40. The same
+sums of squares tell a much stronger story when spread over fewer groups,
+because the between-groups mean square carries fewer degrees of freedom.
+
+**B7.** Twelve independent comparisons are each tested at α = 0.05, and all
+twelve nulls are true. What is the probability of at least one rejection, and
+what per-test level would hold that probability at 0.05?
+*Answer.* 1 − 0.95¹² = 1 − 0.54036 = 0.4596, about 46 per cent. Bonferroni sets
+each test at 0.05/12 = 0.004167, for a family-wise rate of
+1 − (1 − 0.004167)¹² = 0.04888, which is at or below the nominal level.
+
+**B8.** A study of 500,000 components reports that a coating raises mean life by
+0.3 hours out of 5,000, with p = 0.001. Should the coating be adopted?
+*Answer.* The p-value establishes that the 0.3-hour effect is real, not that it
+is worth having: a 0.006 per cent improvement is almost certainly outweighed by
+the cost of the coating. Significance is about evidence; adoption is a decision
+about magnitude against cost, and it needs the interval and the price, not the
+p-value.`,
+      examTip: 'Under time pressure, write four things before computing: the hypotheses, the significance level, the statistic\'s formula, and the degrees of freedom. Three of the four determine which table row to read, and the most expensive mistakes in this topic — wrong tail, wrong df, wrong denominator — are all made before any arithmetic starts.',
     },
   ],
   keyTakeaways: [
