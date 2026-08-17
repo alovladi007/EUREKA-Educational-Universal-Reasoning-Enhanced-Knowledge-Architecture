@@ -278,8 +278,8 @@ air out.
 
 | Connection | Combination | Shared quantity | Consequence |
 |---|---|---|---|
-| Series | $1/C_{eq} = \\Sigma (1/C_i)$ | same charge Q | smaller C takes the larger voltage |
-| Parallel | $C_{eq} = \\Sigma C_i$ | same voltage V | larger C takes the larger charge |
+| Series | $1/C_{eq} = \\sum (1/C_i)$ | same charge Q | smaller C takes the larger voltage |
+| Parallel | $C_{eq} = \\sum C_i$ | same voltage V | larger C takes the larger charge |
 
 **Worked**: 100 pF in series with 300 pF across 12 V.
 $C_{eq} = (100)(300)/400 = 75$ pF, so $Q = 75 \\times 12 = 900$ pC flows onto
@@ -2092,7 +2092,7 @@ In **free space** (no charges, no currents: ρ = 0, J = 0), combining Faraday an
 
 These are **wave equations** with propagation velocity:
 
-**$v = 1/\\sqrt{\\mu _{0}\\varepsilon _{0}} = c \\approx 3 \\times 10^{8} m/s$**
+**$v = 1/\\sqrt{\\mu _{0}\\varepsilon _{0}} = c \\approx 3 \\times 10^{8}\\ \\mathrm{m/s}$**
 
 Maxwell's prediction: light is an electromagnetic wave.
 
@@ -2333,6 +2333,836 @@ tangential field drives surface currents that cancel it inside.`,
       examTip: 'Almost every plane-wave number can be reconstructed from η₀ = 377 Ω and c = 3 × 10⁸ m/s plus one square root. In a non-magnetic medium the speed is c/√ε_r, the wavelength is λ₀/√ε_r, and the impedance is 377/√ε_r. If a question gives a velocity factor instead of a permittivity, square its reciprocal to recover ε_r.',
       importantNote: 'The wave equation derivation only removes the ∇(∇·E) term because the region is source free. Inside a conductor, where ρ and J are not zero, the same algebra gives a diffusion-like equation instead — the mathematical origin of skin depth, covered in the wave propagation topic.',
     },
+    {
+      id: 'mx-forms-and-theorems',
+      title: '5. Integral Form, Differential Form, and the Theorems Between Them',
+      content: `## 5.1 Why every equation is quoted twice
+
+Every reference prints Maxwell's set in two columns, and the reason is that
+the two columns answer different questions. The integral column speaks about a
+region: how much flux crosses this closed surface, how much circulation runs
+around this loop. That is the column to reach for when a problem hands you a
+symmetry, because the integral can then be done by inspection instead of by
+calculus. The differential column speaks about a single point: what the field
+is doing right here, expressed as a divergence and a curl. That is the column a
+numerical solver marches forward in time, and it is the column from which the
+wave equation falls out.
+
+Neither column holds information the other lacks. Two theorems of vector
+calculus carry each statement across, and knowing which theorem serves which
+equation is worth more under exam pressure than memorising eight expressions
+separately.
+
+The **divergence theorem** converts a closed-surface integral into a volume
+integral of the divergence over the interior:
+
+$$\\oint _{S} \\boldsymbol{A}\\cdot d\\boldsymbol{S} = \\int _{V} (\\nabla \\cdot \\boldsymbol{A})\\, dV$$
+
+The **curl theorem**, normally called Stokes' theorem, converts a closed-loop
+integral into a surface integral of the curl over any surface that the loop
+bounds:
+
+$$\\oint _{C} \\boldsymbol{A}\\cdot d\\boldsymbol{\\ell} = \\int _{S} (\\nabla \\times \\boldsymbol{A})\\cdot d\\boldsymbol{S}$$
+
+Read together, they say something simple. A divergence is flux per unit volume
+in the limit of a shrinking volume; a curl is circulation per unit area in the
+limit of a shrinking loop. The integral form is the differential form added up
+over a finite piece of space.
+
+## 5.2 The four equations, converted
+
+| Law | Integral statement | Theorem applied | Differential statement |
+|---|---|---|---|
+| Gauss, electric | $\\oint \\boldsymbol{D}\\cdot d\\boldsymbol{S} = Q_{enc}$ | divergence | $\\nabla \\cdot \\boldsymbol{D} = \\rho _{v}$ |
+| Gauss, magnetic | $\\oint \\boldsymbol{B}\\cdot d\\boldsymbol{S} = 0$ | divergence | $\\nabla \\cdot \\boldsymbol{B} = 0$ |
+| Faraday | $\\oint \\boldsymbol{E}\\cdot d\\boldsymbol{\\ell} = -d\\Phi _{B}/dt$ | curl | $\\nabla \\times \\boldsymbol{E} = -\\partial \\boldsymbol{B}/\\partial t$ |
+| Ampere-Maxwell | $\\oint \\boldsymbol{H}\\cdot d\\boldsymbol{\\ell} = I_{enc} + d\\Psi _{D}/dt$ | curl | $\\nabla \\times \\boldsymbol{H} = \\boldsymbol{J} + \\partial \\boldsymbol{D}/\\partial t$ |
+
+The pattern is exact: the two flux laws are divergence laws, and the two
+circulation laws are curl laws. A scenario question that mentions a **closed
+surface** is a divergence question; one that mentions a **closed path** is a
+curl question. Nothing else has to be recalled to pick the right starting
+line.
+
+One detail earns its own sentence. In the Ampere-Maxwell integral,
+$\\Psi _{D} = \\int \\boldsymbol{D}\\cdot d\\boldsymbol{S}$ is the electric flux
+through the same surface the loop bounds, and the surface may be any surface at
+all. Section 6 shows that this freedom is exactly what the displacement term
+was invented to protect.
+
+## 5.3 Flux by quadrature, so the theorem is checked and not merely quoted
+
+![Closed-surface flux computed by numerical quadrature for a 2.0 nC charge placed at the centre, 3.0 cm off centre and 6.0 cm off centre: the integral is exactly q over epsilon-nought whenever the charge is inside and exactly zero whenever it is outside, at every radius.](/courses/fe-ee/figures/em3-gauss-flux-numeric.svg)
+
+The figure was made by evaluating $\\boldsymbol{E}\\cdot \\hat{n}$ at 160000
+points spread over each sphere and summing, with Gauss-Legendre weights in
+$\\cos \\theta$ and equal weights in $\\phi$. No symmetry was used and Gauss's
+law was never invoked. The Coulomb field of a charge sitting off the centre is
+strongly non-uniform over the surface — near the closest point it is many times
+its value at the far point — and yet the sum comes out at the same number
+whatever the radius, and at the same number whatever the offset, provided only
+that the charge is inside.
+
+That is the divergence theorem doing its work. Everywhere except at the charge
+itself, $\\nabla \\cdot \\boldsymbol{E} = 0$, so the volume integral picks up a
+contribution from one point only, and the surface integral cannot depend on
+anything but whether that point is enclosed.
+
+### Worked Example 1 — the flux integral, by hand and by machine
+
+**Given**: $q = 2.0$ nC in air, inside a closed surface of any shape.
+
+By Gauss's law the flux of $\\boldsymbol{E}$ is
+
+$$\\oint \\boldsymbol{E}\\cdot d\\boldsymbol{S} = \\frac{q}{\\varepsilon _{0}} = \\frac{2.0 \\times 10^{-9}}{8.8541878128 \\times 10^{-12}} = 225.88\\ \\mathrm{V}\\cdot \\mathrm{m}$$
+
+The same quadrature returns 225.8819 for a sphere of radius 5.0 cm with the
+charge at the centre, 225.8819 with the charge 3.0 cm off centre, and 225.8819
+for a 10 cm sphere with the charge 6.0 cm off centre. The three agree with the
+closed form to nine significant figures, and the same integral over a sphere
+that excludes the charge returns a number smaller than $10^{-9}$ of that,
+which is the numerical rendering of zero.
+
+**Units check**: coulombs divided by farads per metre gives
+$\\mathrm{C}\\cdot \\mathrm{m}/\\mathrm{F}$, and since a volt is a coulomb per
+farad this is volt-metres — which is also what $\\mathrm{V/m}$ times
+$\\mathrm{m^{2}}$ gives. The two routes to the unit agree, which is the check
+worth running before any number is trusted.
+
+### Worked Example 2 — Stokes' theorem on a current-carrying wire
+
+**Given**: a long straight wire carrying $I = 10.0$ A, and a circular path of
+radius $a = 2.0$ cm centred on it and lying in a plane perpendicular to it.
+
+The **left** side of Stokes' theorem is the circulation. The field of a long
+wire is $B = \\mu _{0}I/(2\\pi a)$, constant in magnitude along the path and
+everywhere parallel to it, so
+
+$$B = \\frac{(4\\pi \\times 10^{-7})(10.0)}{2\\pi (0.020)} = 1.000 \\times 10^{-4}\\ \\mathrm{T}, \\qquad \\oint \\boldsymbol{B}\\cdot d\\boldsymbol{\\ell} = B\\,(2\\pi a) = 1.2566 \\times 10^{-5}\\ \\mathrm{T}\\cdot \\mathrm{m}$$
+
+The **right** side is the flux of $\\nabla \\times \\boldsymbol{B}$, which in
+this static case is $\\mu _{0}\\boldsymbol{J}$, so the surface integral is
+$\\mu _{0}$ times the current threading the loop:
+
+$$\\mu _{0}I = (4\\pi \\times 10^{-7})(10.0) = 1.2566 \\times 10^{-5}\\ \\mathrm{T}\\cdot \\mathrm{m}$$
+
+**Answer: 100 microtesla at the path, and both sides of Stokes' theorem equal
+1.2566e-5 T.m.** The radius cancelled: $B$ fell as $1/a$ while the path length
+grew as $a$. That cancellation is the whole reason Ampere's law is useful, and
+it is also the reason the answer is insensitive to where the loop is drawn as
+long as it still encircles the wire.
+
+## 5.4 Which form to reach for
+
+| Situation | Form to use | Reason |
+|---|---|---|
+| Symmetric charge or current distribution | integral | the integral collapses to a product |
+| Field asked for at one specific point | differential | divergence and curl are local |
+| Deriving a wave equation or a boundary condition | differential | the operators can be combined |
+| Total charge, total current, total flux wanted | integral | the answer is the integral itself |
+| Numerical solution on a grid | differential | each cell updates from its neighbours |
+
+A last caution about the surface in a curl law. Stokes' theorem allows **any**
+surface bounded by the loop, but the integral form of Ampere's law was written
+before displacement current existed and does not survive that freedom without
+it. That failure, and its repair, are the subject of the next section.`,
+      examTip: 'Read the geometry named in the question before choosing an equation. A closed surface always means a divergence law: Gauss for electric, and the zero-divergence statement for magnetic. A closed path always means a curl law: Faraday if a flux is changing, Ampere-Maxwell if a current is threading. Getting that first choice right converts most FE electromagnetics questions into one line of algebra.',
+      importantNote: 'The divergence theorem and Stokes theorem are statements about any vector field, not about electromagnetism. They carry no physics. All the physics sits in the four right-hand sides: charge, zero, the rate of change of magnetic flux, and current plus the rate of change of electric flux.',
+    },
+    {
+      id: 'mx-displacement-continuity',
+      title: '6. Displacement Current, Forced by Charge Conservation',
+      content: `## 6.1 The continuity equation
+
+Charge is conserved. Written as a statement about a fixed closed surface, the
+current flowing out equals the rate at which the charge inside is falling:
+
+$$\\oint \\boldsymbol{J}\\cdot d\\boldsymbol{S} = -\\frac{dQ_{enc}}{dt}$$
+
+Applying the divergence theorem to the left side and writing
+$Q_{enc} = \\int \\rho _{v}\\, dV$ on the right gives the point form:
+
+$$\\nabla \\cdot \\boldsymbol{J} = -\\frac{\\partial \\rho _{v}}{\\partial t}$$
+
+This is not an extra law of electromagnetism. It is bookkeeping, and Maxwell's
+set has to respect it or it is wrong.
+
+## 6.2 Ampere's original law fails the test
+
+Take the divergence of the pre-Maxwell curl law
+$\\nabla \\times \\boldsymbol{H} = \\boldsymbol{J}$. The divergence of any curl
+vanishes identically — that is a theorem about vector fields, with no physics
+in it:
+
+$$\\nabla \\cdot (\\nabla \\times \\boldsymbol{H}) = 0 \\quad \\Longrightarrow \\quad \\nabla \\cdot \\boldsymbol{J} = 0$$
+
+Compare that with continuity. It says the charge density can never change
+anywhere, which is false the moment a capacitor begins to charge. The old law
+is not merely incomplete; it is inconsistent with charge conservation.
+
+Now add an unknown term $\\boldsymbol{X}$ and demand consistency:
+
+$$\\nabla \\times \\boldsymbol{H} = \\boldsymbol{J} + \\boldsymbol{X} \\quad \\Longrightarrow \\quad \\nabla \\cdot \\boldsymbol{J} + \\nabla \\cdot \\boldsymbol{X} = 0$$
+
+Continuity says $\\nabla \\cdot \\boldsymbol{J} = -\\partial \\rho _{v}/\\partial t$,
+and Gauss's law says $\\rho _{v} = \\nabla \\cdot \\boldsymbol{D}$. Substituting
+both gives
+
+$$\\nabla \\cdot \\boldsymbol{X} = \\frac{\\partial}{\\partial t}(\\nabla \\cdot \\boldsymbol{D}) = \\nabla \\cdot \\frac{\\partial \\boldsymbol{D}}{\\partial t}$$
+
+so the missing term is $\\partial \\boldsymbol{D}/\\partial t$, up to something
+with zero divergence that experiment finds to be absent. **The displacement
+current is not an extra assumption. It is the only term that lets Ampere's law
+and charge conservation coexist**, and once written down it also lets waves
+exist.
+
+## 6.3 The size of the term, in a real capacitor
+
+### Worked Example 3 — displacement current in a driven capacitor
+
+**Given**: parallel plates of area $A = 25$ cm² separated by $d = 0.50$ mm in
+air, driven by $v(t) = 5.00\\sin (2\\pi f t)$ volts at $f = 1.00$ MHz.
+
+Capacitance first:
+
+$$C = \\frac{\\varepsilon _{0}A}{d} = \\frac{(8.8541878128 \\times 10^{-12})(2.50 \\times 10^{-3})}{5.00 \\times 10^{-4}} = 4.427 \\times 10^{-11}\\ \\mathrm{F} = 44.27\\ \\mathrm{pF}$$
+
+The terminal current is $i = C\\, dv/dt$, whose peak is $\\omega CV$ with
+$\\omega = 2\\pi (1.00 \\times 10^{6}) = 6.2832 \\times 10^{6}$ rad/s:
+
+$$I_{pk} = \\omega C V = (6.2832 \\times 10^{6})(4.427 \\times 10^{-11})(5.00) = 1.391 \\times 10^{-3}\\ \\mathrm{A}$$
+
+Now the same answer from the field side, with no circuit theory used. The peak
+field in the gap is $E_{pk} = V/d = 5.00/(5.00 \\times 10^{-4}) = 1.00 \\times 10^{4}$
+V/m, so the peak rate of change is $\\omega E_{pk} = 6.2832 \\times 10^{10}$
+V/(m.s), and the displacement current density is
+
+$$J_{d} = \\varepsilon _{0}\\frac{\\partial E}{\\partial t} = (8.8541878128 \\times 10^{-12})(6.2832 \\times 10^{10}) = 0.5563\\ \\mathrm{A/m^{2}}$$
+
+Multiplying by the plate area, $0.5563 \\times 2.50 \\times 10^{-3} = 1.391$ mA,
+which is the terminal current to four figures.
+
+**Answer: 44.27 pF, 1.391 mA peak, and a gap displacement current density of
+0.5563 A/m².** *Trap*: reading 5.00 V as an RMS value and then reporting a peak
+current gives 1.967 mA, high by $\\sqrt{2}$. The wave was written with a
+$\\sin$, so 5.00 V is an amplitude.
+
+**Units check**: farads per metre times volts per metre per second is
+$\\mathrm{F}\\cdot \\mathrm{V}/(\\mathrm{m^{2}}\\cdot \\mathrm{s})$; a farad-volt
+is a coulomb, and a coulomb per second is an ampere, so the result is amperes
+per square metre. Displacement current density carries exactly the units of
+conduction current density, which is why it can be added to it.
+
+### Worked Example 4 — which current dominates, and at what frequency
+
+**Given**: seawater, $\\sigma = 4.0$ S/m and $\\varepsilon _r = 81$.
+
+The two current densities in a sinusoidal field are $J_{c} = \\sigma E$ and
+$J_{d} = \\omega \\varepsilon E$, so their ratio is the loss tangent:
+
+$$\\frac{J_{c}}{J_{d}} = \\frac{\\sigma}{\\omega \\varepsilon} = \\frac{\\sigma}{2\\pi f \\varepsilon _{0}\\varepsilon _r}$$
+
+They are equal when
+
+$$f = \\frac{\\sigma}{2\\pi \\varepsilon _{0}\\varepsilon _r} = \\frac{4.0}{(6.2831853)(8.8541878128 \\times 10^{-12})(81)} = 8.877 \\times 10^{8}\\ \\mathrm{Hz}$$
+
+| Frequency | $\\sigma /(\\omega \\varepsilon)$ | Which current wins | Behaviour |
+|---|---|---|---|
+| 1.0 kHz | 8.877e5 | conduction, overwhelmingly | a conductor |
+| 1.0 MHz | 887.7 | conduction | a conductor |
+| 887.7 MHz | 1.000 | neither | the crossover |
+| 10 GHz | 0.0888 | displacement | a lossy dielectric |
+
+**Answer: the crossover is at 888 MHz, and seawater is a conductor below it and
+a dielectric above it.** *Trap*: using $\\varepsilon _{0}$ alone and forgetting
+$\\varepsilon _r$ puts the crossover at $7.19 \\times 10^{10}$ Hz, eighty-one
+times too high, and would tell you that seawater behaves as a metal at 10 GHz.
+It does not.
+
+## 6.4 What the term is and is not
+
+- It is **not** moving charge. Nothing crosses the vacuum gap of a capacitor.
+- It **is** a source of magnetic field, exactly as real current is, which is
+  why the magnetic field around the gap matches the field around the wire.
+- Its magnitude is fixed by $\\partial \\boldsymbol{D}/\\partial t$, so it
+  vanishes in the steady state. A capacitor blocking DC is the same statement
+  as a displacement current falling to zero once the field stops changing.
+- Inside a dielectric it has two parts: the vacuum part
+  $\\varepsilon _{0}\\partial E/\\partial t$ and the polarisation part
+  $\\partial P/\\partial t$, which really is moving charge — bound charge
+  shifting within molecules.
+
+The last point matters for the exam only in one way. When a problem supplies
+$\\varepsilon _r$, use $\\varepsilon = \\varepsilon _{0}\\varepsilon _r$ in the
+displacement term. Dropping $\\varepsilon _r$ is the single most common numeric
+error in this material, and it is always wrong by exactly that factor.`,
+      examTip: 'Whenever a question mixes a capacitor with a magnetic-field argument, the answer is displacement current, and the current in the gap equals the current in the leads at every instant. If the question instead asks whether a material behaves as a conductor or a dielectric at some frequency, compute the ratio sigma over omega-epsilon first and let the number choose the model. The ratio is dimensionless, so any answer with units attached signals a slip.',
+      importantNote: 'The derivation in 6.2 shows that displacement current was not fitted to data. It is forced by two things already believed: that charge is conserved and that the divergence of a curl is zero. Maxwell then discovered that the repaired set predicts waves travelling at a speed built only from the electrostatic and magnetostatic constants.',
+    },
+    {
+      id: 'mx-faraday-forms',
+      title: '7. Faraday\'s Law in Every Form the Exam Asks For',
+      content: `## 7.1 One law, three appearances
+
+$\\Phi _{B} = \\int \\boldsymbol{B}\\cdot d\\boldsymbol{S}$ can change because the
+field changes, because the area changes, or because the orientation changes.
+Faraday's law does not distinguish between them:
+
+$$\\mathrm{emf} = -\\frac{d\\Phi _{B}}{dt}, \\qquad \\mathrm{emf} = -N\\frac{d\\Phi _{B}}{dt}\\ \\text{for an N-turn coil}$$
+
+Expanding the derivative of $BA\\cos \\theta$ shows all three routes at once:
+
+$$\\frac{d}{dt}(BA\\cos \\theta ) = A\\cos \\theta \\frac{dB}{dt} + B\\cos \\theta \\frac{dA}{dt} - BA\\sin \\theta \\frac{d\\theta}{dt}$$
+
+The first term is transformer action, the second is a conductor sweeping out
+area, the third is a rotating machine. Most exam problems switch off two of the
+three.
+
+| Route | What varies | Working expression | Typical hardware |
+|---|---|---|---|
+| Transformer | $B$ | $\\mathrm{emf} = NA\\,dB/dt$ | transformers, inductive sensors |
+| Motional | area | $\\mathrm{emf} = B\\ell v$ | rail generators, flow meters |
+| Rotational | angle | $\\mathrm{emf} = NBA\\omega \\sin \\omega t$ | alternators, tachometers |
+
+## 7.2 The rotating coil, the standard alternator question
+
+![Flux linkage and induced emf for a 200-turn coil of area 0.015 square metres spun at 1800 revolutions per minute in a 0.35 tesla field: the emf is a quarter cycle behind the linkage and peaks at 197.92 volts.](/courses/fe-ee/figures/em3-rotating-coil-emf.svg)
+
+The two curves in the figure are drawn as fractions of their own peaks so that
+one axis can carry both. The emf curve was also recomputed by differencing the
+linkage curve numerically rather than by differentiating the cosine, and the
+two agree to better than one part in ten million, which is the check that the
+quarter-cycle offset is real and not a plotting artefact.
+
+### Worked Example 5 — an alternator from first principles
+
+**Given**: $N = 200$ turns, coil area $A = 0.015$ m², field $B = 0.35$ T,
+rotating at 1800 rev/min.
+
+Angular speed first, because the units trap lives here:
+
+$$\\omega = \\frac{2\\pi (1800)}{60} = 188.496\\ \\mathrm{rad/s}, \\qquad f = \\frac{\\omega}{2\\pi} = 30.0\\ \\mathrm{Hz}$$
+
+Peak flux linkage and peak emf:
+
+$$\\lambda _{pk} = NBA = (200)(0.35)(0.015) = 1.050\\ \\mathrm{Wb}, \\qquad \\mathrm{emf}_{pk} = \\lambda _{pk}\\omega = (1.050)(188.496) = 197.92\\ \\mathrm{V}$$
+
+$$\\mathrm{emf}_{rms} = \\frac{197.92}{1.41421} = 139.95\\ \\mathrm{V}$$
+
+**Answers: 30.0 Hz, 197.92 V peak, 139.95 V rms.** *Trap*: using 1800 directly as
+$\\omega$ gives 1890 V, high by the factor $60/2\\pi = 9.55$. Revolutions per
+minute is not radians per second, and the exam always offers the unconverted
+answer.
+
+**Units check**: turns are dimensionless, tesla times square metres is webers,
+and webers per second is volts. So $NBA\\omega$ is
+$\\mathrm{Wb}\\cdot \\mathrm{rad/s}$, and since the radian is dimensionless that
+is volts.
+
+### Worked Example 6 — volts per turn in a transformer core
+
+**Given**: a core of cross-section $A = 12$ cm² operating at $f = 60$ Hz with a
+peak flux density $B_{max} = 1.5$ T.
+
+With sinusoidal flux $\\Phi = B_{max}A\\sin \\omega t$, the peak emf per turn is
+$\\omega B_{max}A$ and the rms value divides that by $\\sqrt{2}$:
+
+$$\\frac{E_{rms}}{N} = \\frac{2\\pi f B_{max}A}{\\sqrt{2}} = 4.443\\, f B_{max} A$$
+
+$$\\frac{E_{rms}}{N} = (4.443)(60)(1.5)(12.0 \\times 10^{-4}) = 0.4798\\ \\mathrm{V/turn}$$
+
+A 240 V winding therefore needs $240/0.4798 = 500$ turns.
+
+**Answers: 0.480 V per turn, and 500 turns for 240 V.** *Trap*: using the peak
+emf rather than the rms value gives 0.6786 V per turn and 354 turns, a winding
+that would drive the core deep into saturation. The 4.44 in the classic
+transformer formula **is** the $2\\pi /\\sqrt{2}$ that converts peak flux to rms
+volts, and it is the whole content of that formula.
+
+## 7.3 The minus sign, stated so it survives
+
+Lenz's law is the minus sign, and the phrasing that holds up under pressure is:
+**the induced current flows so as to oppose the change that produced it** — not
+the flux itself, the change in the flux. Push a magnet toward a loop and the
+loop pushes back; withdraw it and the loop pulls. Any other sign would let a
+magnet and a coil deliver energy without limit, so the minus sign is
+conservation of energy wearing electromagnetic clothes.
+
+Two consequences appear constantly in practice. A shorted turn anywhere near a
+transformer core carries a large current, because a small emf drives it through
+a very low resistance. And a loop of oscilloscope ground lead near a mains
+transformer picks up hum in exact proportion to the area it encloses, which is
+why the fix is to shrink the loop rather than to add shielding.`,
+      examTip: 'Convert rotational speed to radians per second before anything else: omega equals two pi times rev/min divided by 60. Then check whether the question wants peak or rms, because the two differ by 1.414 and both appear among the offered answers. For transformers the 4.44 factor already contains the rms conversion, so dividing by root two a second time is a double correction.',
+      importantNote: 'Motional emf and transformer emf are the same law seen from two frames. A bar sliding on rails in a static field sees no changing B, yet an emf appears; an observer riding the bar sees a changing field instead. Faraday\'s law in the flux form covers both without needing the distinction, which is why it is written about the flux and not about the field.',
+    },
+    {
+      id: 'mx-boundary-derivations',
+      title: '8. Boundary Conditions Derived from a Pillbox and a Loop',
+      content: `## 8.1 The pillbox argument gives the normal components
+
+Straddle an interface with a flat cylinder — a pillbox — of face area $\\Delta S$
+and vanishing height, so that the curved side contributes nothing. Gauss's law
+applied to it reads
+
+$$\\oint \\boldsymbol{D}\\cdot d\\boldsymbol{S} = (D_{n1} - D_{n2})\\Delta S = \\rho _{s}\\Delta S \\quad \\Longrightarrow \\quad D_{n1} - D_{n2} = \\rho _{s}$$
+
+with both normals taken pointing from medium 2 into medium 1. With no free
+surface charge the normal component of $\\boldsymbol{D}$ simply crosses
+unchanged. The same argument on $\\nabla \\cdot \\boldsymbol{B} = 0$ has zero on
+the right, because there is no magnetic surface charge to put there:
+
+$$B_{n1} = B_{n2}$$
+
+## 8.2 The loop argument gives the tangential components
+
+Now lay a thin rectangular loop across the interface, of length $\\Delta \\ell$
+along it and vanishing height across it. Faraday's law gives
+
+$$\\oint \\boldsymbol{E}\\cdot d\\boldsymbol{\\ell} = (E_{t1} - E_{t2})\\Delta \\ell = -\\frac{d\\Phi _{B}}{dt} \\to 0 \\quad \\Longrightarrow \\quad E_{t1} = E_{t2}$$
+
+The flux term dies because the loop encloses no area once the height goes to
+zero, and this holds however fast the field is changing. The same loop applied
+to Ampere-Maxwell gives
+
+$$H_{t1} - H_{t2} = J_{s}$$
+
+where $J_{s}$ is a genuine surface current in amperes per metre, which only a
+perfect conductor can support. Between ordinary materials, tangential
+$\\boldsymbol{H}$ is continuous.
+
+| Quantity | Condition | Source of the jump | Holds at any frequency |
+|---|---|---|---|
+| Tangential $\\boldsymbol{E}$ | $E_{t1} = E_{t2}$ | never jumps | yes |
+| Tangential $\\boldsymbol{H}$ | $H_{t1} - H_{t2} = J_{s}$ | surface current | yes |
+| Normal $\\boldsymbol{D}$ | $D_{n1} - D_{n2} = \\rho _{s}$ | surface charge | yes |
+| Normal $\\boldsymbol{B}$ | $B_{n1} = B_{n2}$ | never jumps | yes |
+
+The mnemonic that survives an exam: **the tangential pair that is continuous is
+E and H, and the normal pair that is continuous is D and B**, with each pair
+broken only by a surface source that ordinary dielectrics cannot supply.
+
+## 8.3 What that does to a field crossing a boundary
+
+![Field components across an air to relative-permittivity-four interface: normal D and tangential E hold their values across the boundary while normal E drops by a factor of four.](/courses/fe-ee/figures/em3-boundary-fields.svg)
+
+### Worked Example 7 — a field entering a dielectric
+
+**Given**: in air, a field with normal component $E_{n1} = 100$ V/m and
+tangential component $E_{t1} = 60$ V/m meets a slab with
+$\\varepsilon _{r2} = 4.0$ and no surface charge.
+
+Tangential $\\boldsymbol{E}$ crosses unchanged, so $E_{t2} = 60$ V/m. Normal
+$\\boldsymbol{D}$ crosses unchanged, so
+$\\varepsilon _{0}E_{n1} = \\varepsilon _{0}\\varepsilon _{r2}E_{n2}$ and
+
+$$E_{n2} = \\frac{E_{n1}}{\\varepsilon _{r2}} = \\frac{100}{4.0} = 25.0\\ \\mathrm{V/m}$$
+
+Magnitudes and angles from the normal follow:
+
+$$\\lvert \\boldsymbol{E}_{1} \\rvert = \\sqrt{100^{2} + 60^{2}} = 116.6\\ \\mathrm{V/m}, \\qquad \\lvert \\boldsymbol{E}_{2} \\rvert = \\sqrt{25^{2} + 60^{2}} = 65.00\\ \\mathrm{V/m}$$
+
+$$\\theta _{1} = \\arctan (60/100) = 30.96°, \\qquad \\theta _{2} = \\arctan (60/25) = 67.38°$$
+
+Dividing the two tangents recovers the refraction law without assuming it:
+$\\tan \\theta _{2}/\\tan \\theta _{1} = 2.400/0.6000 = 4.000 = \\varepsilon _{r2}/\\varepsilon _{r1}$.
+
+**Answers: 25.0 V/m normal, 60 V/m tangential, 65.00 V/m total, at 67.38° from
+the normal.** *Trap*: assuming that $\\boldsymbol{E}$ is what crosses unchanged
+leaves $E_{n2}$ at 100 V/m and gives 116.6 V/m at 30.96°, unchanged from
+medium 1 — an answer that says a dielectric does nothing at all.
+
+### Worked Example 8 — the surface of a perfect conductor
+
+**Given**: a plane wave of amplitude $E_{0} = 100$ V/m in air strikes a perfect
+conductor at normal incidence. Separately, a static field of 300 kV/m in air
+meets a conductor face perpendicularly.
+
+Inside a perfect conductor the fields are zero, so the four conditions collapse
+to $E_{t} = 0$, $B_{n} = 0$, $D_{n} = \\rho _{s}$ and $H_{t} = J_{s}$. At
+normal incidence the wave reflects completely with $\\Gamma = -1$, so the
+tangential magnetic fields of incident and reflected waves add:
+
+$$J_{s} = H_{t} = \\frac{2E_{0}}{\\eta _{0}} = \\frac{200}{376.730313} = 0.5309\\ \\mathrm{A/m}$$
+
+For the static case the field terminates on induced surface charge:
+
+$$\\rho _{s} = \\varepsilon _{0}E_{n} = (8.8541878128 \\times 10^{-12})(3.00 \\times 10^{5}) = 2.656 \\times 10^{-6}\\ \\mathrm{C/m^{2}}$$
+
+**Answers: 0.5309 A/m of surface current, and 2.656 microcoulombs per square
+metre of surface charge.** *Trap*: using $E_{0}$ rather than $2E_{0}$ for the
+surface field gives 0.2654 A/m, half the right answer. The reflected wave
+reverses $\\boldsymbol{E}$ so that the tangential total is zero, which forces
+$\\boldsymbol{H}$ to double instead.
+
+## 8.4 Why the conductor conditions carry so much weight
+
+The condition $E_{t} = 0$ on a metal surface is doing more work in engineering
+than any other line in this chapter. It is why a hollow metal pipe supports only
+a discrete set of field patterns, each of which can meet that condition on every
+wall — the origin of waveguide modes and of cutoff frequency. It is why a
+metal box shields: an incident tangential field drives surface currents whose
+own field cancels it inside. And it is why a slot in that box is far worse than
+a hole of the same area, because a slot interrupts the surface current path
+while a round hole mostly does not.`,
+      examTip: 'Write down which pair the question is about before substituting anything. If the field is drawn parallel to the interface it is a tangential question and E carries across untouched. If it is drawn perpendicular it is a normal question and D carries across untouched, so E jumps by the permittivity ratio. Mixing the two produces an answer that is wrong by exactly epsilon-r, which is always among the offered choices.',
+      importantNote: 'Every one of these conditions was derived by shrinking a region to zero, so none of them depends on frequency. The same four statements govern a static field, a 60 Hz field and an optical wave. What changes with frequency is only whether a real material can be treated as a perfect conductor.',
+    },
+    {
+      id: 'mx-wave-numeric',
+      title: '9. The Wave Equation, Checked by Time-Stepping',
+      content: `## 9.1 The derivation, and the same result for H
+
+In a source-free region take the curl of Faraday's law and substitute
+Ampere-Maxwell:
+
+$$\\nabla \\times (\\nabla \\times \\boldsymbol{E}) = -\\frac{\\partial}{\\partial t}(\\nabla \\times \\boldsymbol{B}) = -\\mu _{0}\\varepsilon _{0}\\frac{\\partial ^{2}\\boldsymbol{E}}{\\partial t^{2}}$$
+
+The vector identity
+$\\nabla \\times (\\nabla \\times \\boldsymbol{E}) = \\nabla (\\nabla \\cdot \\boldsymbol{E}) - \\nabla ^{2}\\boldsymbol{E}$
+turns the left side into $-\\nabla ^{2}\\boldsymbol{E}$, because
+$\\nabla \\cdot \\boldsymbol{E} = 0$ where there is no charge. What is left is
+
+$$\\nabla ^{2}\\boldsymbol{E} = \\mu _{0}\\varepsilon _{0}\\frac{\\partial ^{2}\\boldsymbol{E}}{\\partial t^{2}}$$
+
+Starting from the curl of Ampere-Maxwell instead produces the identical
+equation in $\\boldsymbol{B}$. Both fields obey the same wave equation, which
+is why a single number, the speed, describes the pair.
+
+## 9.2 A check that never substitutes the answer
+
+Substituting $\\cos (\\omega t - kz)$ into the wave equation and finding that it
+fits is a weak test: the solution was chosen because it fits. A stronger test is
+to step the two curl equations forward in time on a grid and see what emerges.
+
+Stagger $E_{x}$ and $H_{y}$ half a cell apart in space and half a step apart in
+time, and the curl equations become two update rules:
+
+$$H_{y}^{\\,n+1/2} = H_{y}^{\\,n-1/2} - \\frac{\\Delta t}{\\mu _{0}\\Delta z}\\left(E_{x}^{\\,n}\\big|_{k+1} - E_{x}^{\\,n}\\big|_{k}\\right)$$
+
+$$E_{x}^{\\,n+1} = E_{x}^{\\,n} - \\frac{\\Delta t}{\\varepsilon _{0}\\Delta z}\\left(H_{y}^{\\,n+1/2}\\big|_{k+1/2} - H_{y}^{\\,n+1/2}\\big|_{k-1/2}\\right)$$
+
+Nothing in those two lines mentions waves, speed or impedance. They contain
+only $\\varepsilon _{0}$, $\\mu _{0}$ and two difference quotients. Stability
+requires the Courant condition $c\\,\\Delta t/\\Delta z \\le 1$ in one dimension;
+the runs below use 0.5.
+
+![A Gaussian pulse laid on a vacuum grid and advanced by the two curl equations alone, shown at zero, five and ten nanoseconds: it keeps its shape and moves 2.9975 metres in 9.9986 nanoseconds.](/courses/fe-ee/figures/em3-fdtd-pulse.svg)
+
+### Worked Example 9 — measuring the speed of light off a grid
+
+**Given**: 2400 cells over 6.00 m, so $\\Delta z = 2.50$ mm; Courant number 0.5,
+so $\\Delta t = 0.5\\,\\Delta z/c = 4.170$ ps. A Gaussian bump of width 0.30 m is
+laid at $z = 1.000$ m and the pair of update rules is applied 2398 times, which
+is $t = 9.99858$ ns.
+
+The peak of the resulting field, located to sub-cell precision by fitting a
+parabola through three samples, sits at $z = 3.99746$ m. So
+
+$$v = \\frac{3.99746 - 1.00000}{9.99858 \\times 10^{-9}} = \\frac{2.99746}{9.99858 \\times 10^{-9}} = 2.99789 \\times 10^{8}\\ \\mathrm{m/s}$$
+
+against the defined value $c = 2.99792458 \\times 10^{8}$ m/s. The gap is
+13 parts per million.
+
+Taking the ratio of the two fields at the same peak gives
+$E_{x}/H_{y} = 376.75$ ohm, against $\\eta _{0} = 376.730$ ohm — a gap of
+41 parts per million.
+
+**Answers: 2.99789e8 m/s and 376.75 ohm, both recovered from difference
+equations that were never told either number.** The remaining discrepancy is
+numerical dispersion, which the next example shows to be a property of the grid
+rather than of the physics.
+
+![Relative error of the stepped solution against the analytic pulse, plotted against cell size: halving the cell quarters the error, the signature of a second-order scheme.](/courses/fe-ee/figures/em3-fdtd-convergence.svg)
+
+### Worked Example 10 — proving the residual is the grid, not the physics
+
+**Given**: the same run repeated at five cell sizes, comparing the stepped field
+against the analytic Gaussian displaced by $ct$.
+
+| Cells | $\\Delta z$ | Relative error | Error ratio |
+|---|---|---|---|
+| 150 | 40.0 mm | 2.157e-2 | — |
+| 300 | 20.0 mm | 5.386e-3 | 4.005 |
+| 600 | 10.0 mm | 1.346e-3 | 4.003 |
+| 1200 | 5.00 mm | 3.360e-4 | 4.004 |
+| 2400 | 2.50 mm | 8.406e-5 | 3.997 |
+
+Each halving of the cell divides the error by four, so the observed order is
+$\\log _{2}(4.00) = 2.00$ to three figures.
+
+**Answer: second order, with no error floor.** This is the diagnostic that
+matters. If the code had used a wrong constant — $\\varepsilon _{0}$ where
+$\\varepsilon _{0}\\varepsilon _r$ belonged, say, or a stray factor of two — the
+error would stop falling and settle on a plateau, because refining a grid cannot
+fix a wrong equation. A clean slope of two says the discretisation is the only
+thing left.
+
+## 9.3 The two constants, by independent routes
+
+### Worked Example 11 — c and the free-space impedance, three ways each
+
+$$c = \\frac{1}{\\sqrt{\\mu _{0}\\varepsilon _{0}}} = \\frac{1}{\\sqrt{(1.25663706 \\times 10^{-6})(8.8541878128 \\times 10^{-12})}} = 2.997925 \\times 10^{8}\\ \\mathrm{m/s}$$
+
+For the impedance, three expressions that must agree:
+
+$$\\eta _{0} = \\sqrt{\\frac{\\mu _{0}}{\\varepsilon _{0}}} = 376.7303, \\qquad \\eta _{0} = \\mu _{0}c = 376.7303, \\qquad \\eta _{0} = \\frac{1}{\\varepsilon _{0}c} = 376.7303$$
+
+All three land on 376.7303 ohm, agreeing to seven figures. The familiar
+$120\\pi = 376.9911$ ohm is 0.069 % above that, and the difference exists only
+because $120\\pi$ is exact when $c$ is taken as exactly
+$3.000 \\times 10^{8}$ m/s.
+
+**Answer: 2.9979e8 m/s and 376.73 ohm.** *Trap*: writing $\\eta _{0} = \\mu _{0}/c$
+instead of $\\mu _{0}c$ gives $4.192 \\times 10^{-15}$ ohm, an answer whose sheer
+absurdity is the reason a dimensional check should precede every substitution.
+Henries per metre times metres per second is henries per second, which is ohms;
+henries per metre divided by metres per second is not.`,
+      examTip: 'Any plane-wave number can be rebuilt from c and eta-nought with one square root. In a non-magnetic medium the speed is c over root epsilon-r, the wavelength shrinks by the same factor, and the impedance is 377 over root epsilon-r. Memorise those three scalings rather than a table of media, and check the direction each time: a denser dielectric slows the wave and lowers the impedance, never the reverse.',
+      importantNote: 'The convergence test in Worked Example 10 is the check that a formula-substitution cannot perform. Verifying an answer by re-deriving it confirms the algebra; watching the numerical error fall at the predicted rate confirms that the constants themselves are right, because a wrong constant produces an error that no amount of grid refinement removes.',
+    },
+    {
+      id: 'mx-static-limits',
+      title: '10. Static, Quasi-Static and Full-Wave: Which Chapter Applies',
+      content: `## 10.1 Setting the time derivatives to zero
+
+Delete every $\\partial /\\partial t$ from Maxwell's set and it falls into two
+halves that no longer speak to one another:
+
+$$\\nabla \\cdot \\boldsymbol{D} = \\rho _{v}, \\qquad \\nabla \\times \\boldsymbol{E} = 0$$
+
+$$\\nabla \\cdot \\boldsymbol{B} = 0, \\qquad \\nabla \\times \\boldsymbol{H} = \\boldsymbol{J}$$
+
+The first pair is electrostatics: a curl-free field, so a potential exists and
+$\\boldsymbol{E} = -\\nabla V$. The second pair is magnetostatics. Nothing
+couples them, which is why those two chapters can be studied separately and why
+neither predicts a wave.
+
+## 10.2 The two quasi-static approximations
+
+Between full statics and full electrodynamics sit two useful halfway houses,
+each obtained by keeping one time derivative and dropping the other.
+
+**Electroquasistatics** keeps $\\partial \\boldsymbol{D}/\\partial t$ and drops
+$\\partial \\boldsymbol{B}/\\partial t$. The electric field stays curl-free, so
+voltage remains a well-defined function of position, but currents may charge
+capacitances. This is circuit theory with capacitors.
+
+**Magnetoquasistatics** keeps $\\partial \\boldsymbol{B}/\\partial t$ and drops
+$\\partial \\boldsymbol{D}/\\partial t$. Now induced emfs exist, so transformers
+and eddy currents are described, but displacement current is neglected. This is
+circuit theory with inductors, and it is the setting for skin effect.
+
+| Regime | Kept | Dropped | Describes |
+|---|---|---|---|
+| Statics | neither derivative | both | fixed charges, steady currents |
+| Electroquasistatic | $\\partial D/\\partial t$ | $\\partial B/\\partial t$ | capacitance, dielectric loss |
+| Magnetoquasistatic | $\\partial B/\\partial t$ | $\\partial D/\\partial t$ | inductance, eddy currents, skin depth |
+| Full wave | both | nothing | radiation, propagation, waveguides |
+
+## 10.3 The test that decides: electrical size
+
+The honest criterion is not the frequency but the size of the object measured
+in wavelengths. If a signal takes a time $L/c$ to cross the object and that time
+is short compared with a period, every part of the object sees essentially the
+same instantaneous field and a lumped description holds. Writing that as a
+phase:
+
+$$\\Delta \\phi = \\beta L = \\frac{2\\pi L}{\\lambda}, \\qquad \\text{lumped when} \\quad \\frac{L}{\\lambda} \\lesssim \\frac{1}{20}$$
+
+One twentieth of a wavelength is 18 degrees of phase across the object, which
+most engineers accept as negligible. Some use a tenth and some a fiftieth; what
+matters is that the criterion is a ratio and not a frequency.
+
+![Electrical size against frequency for objects one metre, ten centimetres and one centimetre across, with the one-twentieth-wavelength lumped limit marked: a ten centimetre board leaves the lumped regime at 149.9 megahertz.](/courses/fe-ee/figures/em3-quasistatic-map.svg)
+
+### Worked Example 12 — is this board a lumped circuit?
+
+**Given**: a circuit board 10.0 cm across, considered at 60 Hz, at 100 MHz and
+at 2.45 GHz.
+
+$$\\lambda = \\frac{c}{f}: \\qquad \\lambda _{60} = 4.997 \\times 10^{6}\\ \\mathrm{m}, \\quad \\lambda _{100M} = 2.998\\ \\mathrm{m}, \\quad \\lambda _{2.45G} = 0.1224\\ \\mathrm{m}$$
+
+$$\\frac{L}{\\lambda}: \\qquad 2.00 \\times 10^{-8}, \\qquad 0.03336, \\qquad 0.8172$$
+
+At 60 Hz the board is twenty billionths of a wavelength across and static
+reasoning is beyond reproach. At 100 MHz it is 0.0334 wavelengths, just inside
+the one-twentieth limit, so lumped analysis is defensible but transmission-line
+effects are beginning. At 2.45 GHz it is 0.817 wavelengths across, the phase
+varies by 294 degrees from edge to edge, and lumped analysis is meaningless.
+
+The frequency at which this particular board reaches the limit is
+
+$$f_{lim} = \\frac{c}{20L} = \\frac{2.99792458 \\times 10^{8}}{(20)(0.100)} = 1.499 \\times 10^{8}\\ \\mathrm{Hz}$$
+
+**Answers: lumped at 60 Hz and marginally at 100 MHz, full-wave at 2.45 GHz,
+with the crossover at 149.9 MHz.** *Trap*: judging by frequency alone. A 60 Hz
+transmission line 3000 km long is 0.6 wavelengths and is emphatically not a
+lumped circuit, while a 1 mm package at 10 GHz is one thirtieth of a wavelength
+and is. Size in wavelengths decides, never frequency by itself.
+
+### Worked Example 13 — how fast charge disappears from a conductor
+
+**Given**: place a charge density inside a material of conductivity $\\sigma$
+and permittivity $\\varepsilon$. Continuity, Ohm's law in point form and Gauss's
+law combine into
+
+$$\\frac{\\partial \\rho _{v}}{\\partial t} + \\frac{\\sigma}{\\varepsilon}\\rho _{v} = 0 \\quad \\Longrightarrow \\quad \\rho _{v}(t) = \\rho _{v}(0)e^{-t/\\tau}, \\quad \\tau = \\frac{\\varepsilon}{\\sigma}$$
+
+| Material | $\\sigma$ (S/m) | $\\varepsilon _r$ | Relaxation time $\\tau$ |
+|---|---|---|---|
+| Copper | 5.8e7 | 1 | 1.53e-19 s |
+| Seawater | 4.0 | 81 | 1.79e-10 s |
+| Glass | 1.0e-12 | 5.0 | 44.3 s |
+
+Copper: $\\tau = (8.8541878128 \\times 10^{-12})/(5.8 \\times 10^{7}) = 1.527 \\times 10^{-19}$ s.
+Glass: $\\tau = (5.0)(8.8541878128 \\times 10^{-12})/(1.0 \\times 10^{-12}) = 44.27$ s.
+
+**Answers: 0.153 attoseconds in copper, 179 picoseconds in seawater, 44.3
+seconds in glass.** *Trap*: quoting the copper figure as physically meaningful.
+It is far shorter than the mean time between electron collisions, so the simple
+model has already broken down; the honest statement is that charge reaches the
+surface of a metal effectively instantly on any timescale an engineer meets.
+The useful entries are the other two: seawater relaxes fast enough to behave as
+a conductor through the whole radio spectrum, and glass holds a static charge
+for the best part of a minute.`,
+      examTip: 'Compute L over lambda before deciding how to analyse anything. Under one twentieth, use lumped circuits and the static chapters. Over about a quarter, use transmission lines or full-wave methods. In between, expect the answer to depend on how much error is tolerable. The same rule explains why a power system is analysed with phasors and a phone antenna is not.',
+      importantNote: 'The static chapters are not approximations that were superseded. They are the exact zero-frequency limit of the full set, and they remain exact whenever the object is small compared with a wavelength. What the full equations add is what happens when it is not, which is radiation.',
+    },
+    {
+      id: 'mx-problem-sets',
+      title: '11. Practice Problems with Full Solutions',
+      content: `## 11.1 How to use these
+
+Each problem states its givens, drives them to a number, and then names the
+distractor the exam offers beside the right answer, together with the wrong
+number that trap produces. Commit to an answer before reading the solution; the
+trap line is only useful once you have something to compare it against.
+
+## Problem Set D — The four equations, both forms, and the theorems
+
+**D1.** A closed surface encloses a $+8.0$ nC charge and a $-3.0$ nC charge, and a $+5.0$ nC charge sits just outside it. Find the electric flux through the surface.
+
+$$\\oint \\boldsymbol{E}\\cdot d\\boldsymbol{S} = \\frac{Q_{enc}}{\\varepsilon _{0}} = \\frac{(8.0 - 3.0) \\times 10^{-9}}{8.8541878128 \\times 10^{-12}} = 564.7\\ \\mathrm{V}\\cdot \\mathrm{m}$$
+
+**Answer: 564.7 V.m.** *Trap*: including the external charge gives
+$10.0 \\times 10^{-9}/\\varepsilon _{0} = 1129$ V.m, exactly double. An outside
+charge sends as much flux in through one part of the surface as it sends out
+through another, so its net contribution is zero however close it sits.
+
+**D2.** Find the circulation of $\\boldsymbol{H}$ around a circular path of radius 5.0 cm that encircles a bundle carrying 12 A up and 4.0 A down.
+
+By Ampere's law the circulation is the net enclosed current, and in terms of
+$\\boldsymbol{H}$ there is no $\\mu _{0}$:
+
+$$\\oint \\boldsymbol{H}\\cdot d\\boldsymbol{\\ell} = I_{enc} = 12 - 4.0 = 8.0\\ \\mathrm{A}$$
+
+**Answer: 8.0 A.** *Trap*: multiplying by $\\mu _{0}$ gives
+$1.005 \\times 10^{-5}$, which is the circulation of $\\boldsymbol{B}$, not of
+$\\boldsymbol{H}$. The $\\boldsymbol{H}$ form is the one with no material
+constant in it, which is exactly why it is the form used at boundaries. A second
+trap is to use the radius: it does not appear, because the circulation depends
+only on what is threaded.
+
+**D3.** A magnetic field of 0.80 T threads a 150-turn coil of area 40 cm². The field collapses linearly to zero in 25 ms. Find the induced emf.
+
+$$\\lvert \\mathrm{emf} \\rvert = N A \\frac{\\Delta B}{\\Delta t} = (150)(40.0 \\times 10^{-4})\\frac{0.80}{0.025} = 19.2\\ \\mathrm{V}$$
+
+**Answer: 19.2 V.** *Trap*: leaving the area in square centimetres gives
+$150 \\times 40 \\times 32 = 192000$ V. Every FE electromagnetics problem that
+quotes an area in square centimetres is testing the conversion
+$1\\ \\mathrm{cm^{2}} = 10^{-4}\\ \\mathrm{m^{2}}$, and the wrong answer differs
+by a clean factor of ten thousand.
+
+**D4.** A conducting bar 40 cm long slides at 6.0 m/s along rails in a field of 0.25 T perpendicular to the plane of the rails. Find the emf, and state which end is positive.
+
+$$\\mathrm{emf} = B\\ell v = (0.25)(0.40)(6.0) = 0.60\\ \\mathrm{V}$$
+
+**Answer: 0.60 V, with the positive end the one toward which the force
+$q\\boldsymbol{v}\\times \\boldsymbol{B}$ pushes positive carriers.** *Trap*:
+using the area swept per second and then multiplying by a turn count that was
+never given. There is one conductor, not a coil, so no $N$ appears. A second
+trap is including the rail separation twice, once as $\\ell$ and again inside a
+computed area.
+
+**D5.** State which Maxwell equation forbids each of the following, and why. (a) A magnetic field line that starts on a north pole and simply stops. (b) A region of empty space in which the electric flux out of a closed surface is not zero. (c) A capacitor in which the magnetic field around the gap differs from the field around the lead.
+
+(a) $\\nabla \\cdot \\boldsymbol{B} = 0$ forbids it. Magnetic field lines have no
+sources, so they close on themselves, returning through the magnet.
+
+(b) $\\nabla \\cdot \\boldsymbol{D} = \\rho _{v}$ forbids it. With no charge
+inside, the net flux out is zero, though the field itself need not be.
+
+(c) The Ampere-Maxwell law forbids it. The displacement current in the gap
+equals the conduction current in the lead at every instant, so both surfaces
+give the same circulation.
+
+**Answer: Gauss for magnetism, Gauss for electricity, Ampere-Maxwell.** *Trap*:
+answering (b) with Faraday's law. Faraday concerns circulation around a loop,
+not flux through a closed surface; the words "closed surface" always select a
+divergence law.
+
+## Problem Set E — Displacement current, boundaries and limits
+
+**E1.** An air-gap capacitor of area 50 cm² and separation 1.0 mm has a field rising at 4.0e9 V/(m.s). Find the displacement current.
+
+$$I_{d} = \\varepsilon _{0}A\\frac{dE}{dt} = (8.8541878128 \\times 10^{-12})(50.0 \\times 10^{-4})(4.0 \\times 10^{9}) = 1.771 \\times 10^{-4}\\ \\mathrm{A}$$
+
+**Answer: 177.1 microamperes.** *Trap*: dividing by the separation as well,
+as though the formula contained a capacitance. It does not: the separation
+enters only if the problem gives a voltage rate instead of a field rate. Doing
+so here gives 0.1771 A, a thousand times too large.
+
+**E2.** A material has $\\sigma = 0.010$ S/m and $\\varepsilon _r = 15$. Classify it at 1.0 kHz and at 1.0 GHz.
+
+$$\\frac{\\sigma}{\\omega \\varepsilon} = \\frac{\\sigma}{2\\pi f\\varepsilon _{0}\\varepsilon _r}: \\qquad \\frac{0.010}{(6.2831853)(1.0 \\times 10^{3})(8.8541878128 \\times 10^{-12})(15)} = 1.198 \\times 10^{4}$$
+
+At 1.0 GHz the same expression with $f$ a million times larger gives
+$1.198 \\times 10^{-2}$.
+
+**Answer: a good conductor at 1 kHz (ratio 12000) and a low-loss dielectric at
+1 GHz (ratio 0.012), crossing over at 12.0 MHz.** *Trap*: classifying by
+conductivity alone. Conductivity does not move with frequency; the comparison
+quantity $\\omega \\varepsilon$ does, by nine decades between these two cases.
+
+**E3.** A field of 500 V/m in a dielectric with $\\varepsilon _{r1} = 2.5$ strikes a boundary with $\\varepsilon _{r2} = 8.0$ at 40° from the normal. Find the transmitted angle and magnitude.
+
+$$\\tan \\theta _{2} = \\frac{\\varepsilon _{r2}}{\\varepsilon _{r1}}\\tan \\theta _{1} = 3.200\\tan 40° = 2.685 \\quad \\Rightarrow \\quad \\theta _{2} = 69.58°$$
+
+The tangential part survives: $500\\sin 40° = 321.4$ V/m. The normal part
+$500\\cos 40° = 383.0$ V/m is scaled by
+$\\varepsilon _{r1}/\\varepsilon _{r2} = 0.3125$ to 119.7 V/m, so
+
+$$\\lvert \\boldsymbol{E}_{2} \\rvert = \\sqrt{321.4^{2} + 119.7^{2}} = 342.9\\ \\mathrm{V/m}$$
+
+**Answers: 69.58° and 342.9 V/m.** *Trap*: inverting the ratio gives
+$\\tan \\theta _{2} = 0.2622$ and $\\theta _{2} = 14.68°$, bending the field the
+wrong way. The field always leans further from the normal on the
+higher-permittivity side.
+
+**E4.** A 20 cm module is to be analysed at 500 MHz. Is a lumped model acceptable?
+
+$$\\lambda = \\frac{2.99792458 \\times 10^{8}}{5.00 \\times 10^{8}} = 0.5996\\ \\mathrm{m}, \\qquad \\frac{L}{\\lambda} = \\frac{0.200}{0.5996} = 0.3336$$
+
+**Answer: no. At a third of a wavelength the phase varies by 120 degrees across
+the module, so transmission-line or full-wave analysis is required.** *Trap*:
+reasoning that 500 MHz is "not that high". The threshold for this module is
+$c/(20L) = 74.9$ MHz, and 500 MHz is nearly seven times past it.
+
+**E5.** A plane wave in air of amplitude 60 V/m reflects from a perfect conductor. Find the surface current density, and the total tangential E just outside the conductor.
+
+Total tangential $\\boldsymbol{E}$ at the surface must be zero, which is what
+$\\Gamma = -1$ enforces. The magnetic fields then add:
+
+$$J_{s} = \\frac{2E_{0}}{\\eta _{0}} = \\frac{120}{376.730313} = 0.3185\\ \\mathrm{A/m}, \\qquad E_{t} = 0$$
+
+**Answers: 0.3185 A/m and zero.** *Trap*: reporting $E_{t} = 60$ V/m because
+that is the incident amplitude. The reflected wave is present too, and its
+tangential electric field exactly cancels the incident one at the surface —
+which is the boundary condition that forced $\\Gamma = -1$ in the first place.`,
+      examTip: 'Two conversions account for most lost marks in this chapter: square centimetres to square metres, which is a factor of ten thousand, and revolutions per minute to radians per second, which is a factor of 9.55. Do both before touching a formula. After that, the most common remaining slip is a forgotten relative permittivity, so check whether the problem named a material before using epsilon-nought on its own.',
+      importantNote: 'Every trap named in these solutions is a factor error rather than a conceptual gulf: a factor of two from an external charge, of ten thousand from an area unit, of epsilon-r from a forgotten dielectric, of mu-nought from confusing B with H. The physics being right and the constant being wrong scores the same as knowing nothing, so the last check before moving on is always the number in front.',
+    },
   ],
   keyTakeaways: [
     "Gauss (E): ∇·E = ρ/ε₀ — charges produce electric field.",
@@ -2400,10 +3230,10 @@ In a **good conductor** (σ >> ωε), electromagnetic fields decay exponentially
 
 At depth z = δ, amplitude drops to **$e^{-1} \\approx 37\\%$** of surface value.
 
-| Material | $\\sigma (S/m)$ | $\\delta at 60\\ \\mathrm{Hz}$ | $\\delta at 1\\ \\mathrm{GHz}$ |
+| Material | $\\sigma$ (S/m) | $\\delta$ at 60 Hz | $\\delta$ at 1 GHz |
 |---|---|---|---|
-| Copper | $5.8 \\times 10^{7}$ | 8.5 mm | $2.1 \\mu m$ |
-| Aluminum | $3.5 \\times 10^{7}$ | 11 mm | $2.7 \\mu m$ |
+| Copper | $5.8 \\times 10^{7}$ | 8.5 mm | $2.1\\ \\mu \\mathrm{m}$ |
+| Aluminum | $3.5 \\times 10^{7}$ | 11 mm | $2.7\\ \\mu \\mathrm{m}$ |
 | Seawater ($\\varepsilon _r = 81$) | 4 | 32 m | 1.3 cm |
 
 Seawater is only a "good conductor" at low frequency, so its 1 GHz entry
@@ -2640,6 +3470,926 @@ statement — in field language — as "a badly mismatched load reflects most of
 the power", which is where the transmission-line topic picks up.`,
       examTip: 'Watch whether a field amplitude is peak or RMS. S_avg = E₀²/(2η) with peak values and E_rms²/η with RMS values; using the wrong pair is a factor-of-two error, which becomes 3 dB and usually matches one of the distractors exactly. Exposure limits are almost always quoted in RMS; wave equations written with cos(ωt − kz) are almost always peak.',
       importantNote: 'Field strength falls as 1/r but power density falls as 1/r². Halving a field means quartering the power density, so a "6 dB" change in received power is a factor of two in volts per metre and a factor of four in watts per square metre.',
+    },
+    {
+      id: 'wp-plane-wave-derived',
+      title: '5. The Uniform Plane Wave as the Solution, and Where the Impedance Comes From',
+      content: `## 5.1 What the wave equation admits
+
+The source-free wave equation says only that the second space derivative and
+the second time derivative are proportional. Look for a solution in which
+nothing varies across the direction of travel — a **uniform plane wave** — and
+take the field along $\\hat{x}$ while the wave moves along $\\hat{z}$:
+
+$$\\frac{\\partial ^{2}E_{x}}{\\partial z^{2}} = \\mu \\varepsilon \\frac{\\partial ^{2}E_{x}}{\\partial t^{2}}$$
+
+Any twice-differentiable function of the single combination $t - z/v$ satisfies
+this if $v = 1/\\sqrt{\\mu \\varepsilon}$, which is the mathematical way of saying
+"a disturbance that keeps its shape and moves". Substituting the sinusoidal
+case gives the form the exam uses:
+
+$$E_{x}(z,t) = E_{0}\\cos (\\omega t - \\beta z), \\qquad \\beta = \\omega \\sqrt{\\mu \\varepsilon} = \\frac{2\\pi}{\\lambda}$$
+
+The wave equation alone does **not** fix the magnetic field. For that, go back
+one step to Faraday's law.
+
+## 5.2 The impedance is not assumed, it is forced
+
+Write the field as a phasor, $\\boldsymbol{E} = \\hat{x}E_{0}e^{-j\\beta z}$, and
+apply $\\nabla \\times \\boldsymbol{E} = -j\\omega \\mu \\boldsymbol{H}$. For a field
+with only an $x$ component varying only with $z$, the curl has only a $y$
+component:
+
+$$(\\nabla \\times \\boldsymbol{E})_{y} = \\frac{\\partial E_{x}}{\\partial z} = -j\\beta E_{0}e^{-j\\beta z} = -j\\omega \\mu H_{y}$$
+
+$$H_{y} = \\frac{\\beta}{\\omega \\mu}E_{0}e^{-j\\beta z} = \\frac{\\omega \\sqrt{\\mu \\varepsilon}}{\\omega \\mu}E_{0}e^{-j\\beta z} = \\sqrt{\\frac{\\varepsilon}{\\mu}}\\,E_{0}e^{-j\\beta z}$$
+
+So the ratio of the two field magnitudes is a property of the medium alone:
+
+$$\\eta = \\frac{E_{x}}{H_{y}} = \\sqrt{\\frac{\\mu}{\\varepsilon}}$$
+
+Three facts fall out of that one line and none of them was put in by hand.
+$\\boldsymbol{H}$ points along $\\hat{y}$, perpendicular to both
+$\\boldsymbol{E}$ and the direction of travel. The ratio is real in a lossless
+medium, so the two fields are exactly in phase. And
+$\\boldsymbol{E}\\times \\boldsymbol{H}$ points along $\\hat{z}$, which is the
+direction the wave is going.
+
+![One instant of a 300 megahertz plane wave in polyethylene: the electric field as a line, eta times the magnetic field as markers that land on it, and the Poynting product as a squared cosine that never goes negative and averages half its peak.](/courses/fe-ee/figures/em3-plane-wave-snapshot.svg)
+
+### Worked Example 1 — a complete parameter set for one wave
+
+**Given**: 300 MHz in polyethylene, $\\varepsilon _r = 2.25$, $\\mu _r = 1$, with
+a peak electric field of 50.0 V/m.
+
+$$n = \\sqrt{\\varepsilon _r \\mu _r} = 1.500, \\qquad v = \\frac{c}{n} = \\frac{2.99792458 \\times 10^{8}}{1.500} = 1.99862 \\times 10^{8}\\ \\mathrm{m/s}$$
+
+$$\\lambda = \\frac{v}{f} = \\frac{1.99862 \\times 10^{8}}{3.00 \\times 10^{8}} = 0.66621\\ \\mathrm{m}, \\qquad \\beta = \\frac{2\\pi}{\\lambda} = 9.4313\\ \\mathrm{rad/m}$$
+
+$$\\eta = \\frac{\\eta _{0}}{n} = \\frac{376.730313}{1.500} = 251.15\\ \\Omega, \\qquad H_{0} = \\frac{E_{0}}{\\eta} = \\frac{50.0}{251.15} = 0.19908\\ \\mathrm{A/m}$$
+
+$$S_{avg} = \\frac{E_{0}^{2}}{2\\eta} = \\frac{2500}{502.31} = 4.9770\\ \\mathrm{W/m^{2}}$$
+
+As a check by a different route, $\\beta$ can be built from the constants
+instead of from $\\lambda$:
+$\\beta = \\omega \\sqrt{\\mu _{0}\\varepsilon _{0}\\varepsilon _r} = 9.4313$ rad/m,
+and $S_{avg} = \\tfrac{1}{2}E_{0}H_{0} = \\tfrac{1}{2}(50.0)(0.19908) = 4.9770$
+W/m². Both agree to five figures.
+
+**Answers: v = 1.9986e8 m/s, lambda = 66.62 cm, eta = 251.15 ohm, H0 = 199.08
+mA/m, S = 4.977 W/m².** *Trap*: dividing the free-space wavelength by
+$\\varepsilon _r$ rather than by $\\sqrt{\\varepsilon _r}$ gives 44.4 cm. The
+wavelength scales with the speed, and the speed carries a square root.
+
+### Worked Example 2 — the free-space impedance, three ways
+
+$$\\eta _{0} = \\sqrt{\\frac{\\mu _{0}}{\\varepsilon _{0}}} = 376.7303\\ \\Omega, \\qquad \\eta _{0} = \\mu _{0}c = 376.7303\\ \\Omega, \\qquad \\eta _{0} = \\frac{1}{\\varepsilon _{0}c} = 376.7303\\ \\Omega$$
+
+The three expressions are algebraically identical once $c = 1/\\sqrt{\\mu _{0}\\varepsilon _{0}}$
+is substituted, but they use different pairs of tabulated numbers, so agreement
+to seven figures is a real check on the arithmetic rather than a tautology.
+
+**Units check**: henries per metre divided by farads per metre leaves henries
+per farad, and the square root of a henry over a farad is an ohm — the same
+combination that gives $\\sqrt{L/C}$ for a transmission line, which is not a
+coincidence.
+
+**Answer: 376.73 ohm, usually rounded to 377 or written as 120 pi.**
+
+| Quantity | Free space | Medium with $\\varepsilon _r$, $\\mu _r = 1$ | Direction of change |
+|---|---|---|---|
+| Speed | $c$ | $c/\\sqrt{\\varepsilon _r}$ | slower |
+| Wavelength at fixed $f$ | $\\lambda _{0}$ | $\\lambda _{0}/\\sqrt{\\varepsilon _r}$ | shorter |
+| Phase constant | $\\beta _{0}$ | $\\beta _{0}\\sqrt{\\varepsilon _r}$ | larger |
+| Impedance | 376.73 ohm | $376.73/\\sqrt{\\varepsilon _r}$ | lower |
+| Frequency | $f$ | $f$ | unchanged |
+
+The last row is the one candidates forget. Frequency is set by the source and
+cannot change at a boundary; everything else adjusts around it.`,
+      examTip: 'Build every plane-wave answer from three numbers: c, eta-nought and the square root of the relative permittivity. Speed and wavelength divide by that root, impedance divides by it, phase constant multiplies by it, and frequency does not move. If an answer has the wavelength growing inside a dielectric, the root has been applied upside down.',
+      importantNote: 'The wave equation fixes the speed but says nothing about the magnetic field. The impedance comes from Faraday law alone, which is why it is a property of the medium and not of the wave. A stronger field simply carries a proportionally stronger H, and the ratio never changes.',
+    },
+    {
+      id: 'wp-velocities',
+      title: '6. Wavelength, Phase Velocity and Group Velocity Kept Apart',
+      content: `## 6.1 Three quantities that coincide only in free space
+
+**Phase velocity** is the speed of a point of constant phase,
+$v_{p} = \\omega /\\beta$. **Group velocity** is the speed of a modulation
+envelope, $v_{g} = d\\omega /d\\beta$. **Wavelength** is the spatial period of the
+phase, $\\lambda = 2\\pi /\\beta$. In a uniform lossless medium
+$\\beta = \\omega \\sqrt{\\mu \\varepsilon}$ is proportional to $\\omega$, so the two
+velocities are equal and the distinction never arises.
+
+The moment $\\beta$ stops being proportional to $\\omega$ — inside a waveguide,
+in a plasma, in glass at optical frequencies — the two part company:
+
+$$v_{p} = \\frac{\\omega}{\\beta}, \\qquad v_{g} = \\frac{d\\omega}{d\\beta} = \\left(\\frac{d\\beta}{d\\omega}\\right)^{-1}$$
+
+A medium in which they differ is called **dispersive**, and the consequence is
+that a pulse spreads as it travels, because its frequency components move at
+different speeds.
+
+## 6.2 The cutoff dispersion, and a phase velocity above c
+
+A guided mode with a cutoff obeys $\\omega ^{2} = \\omega _{c}^{2} + (c\\beta)^{2}$.
+Rearranging and differentiating gives the pair
+
+$$v_{p} = \\frac{c}{\\sqrt{1 - (f_{c}/f)^{2}}}, \\qquad v_{g} = c\\sqrt{1 - (f_{c}/f)^{2}}, \\qquad v_{p}v_{g} = c^{2}$$
+
+The product is $c^{2}$ at every frequency, which is the resolution of the
+apparent paradox. The phase velocity exceeds $c$ and always has; but a point of
+constant phase on an infinite sinusoid carries no information, and the envelope
+that does carry it moves at $v_{g}$, which is always below $c$ by exactly the
+compensating factor.
+
+![Phase and group velocity for a mode with a cutoff, in units of c: the phase velocity rises above c near cutoff, the group velocity falls below it, and their product is exactly c squared at every frequency.](/courses/fe-ee/figures/em3-phase-group-velocity.svg)
+
+### Worked Example 3 — a guide operated well above cutoff
+
+**Given**: a rectangular guide of broad-wall width $a = 22.86$ mm, operated at
+10.0 GHz in the mode whose cutoff is $f_{c} = c/(2a)$.
+
+$$f_{c} = \\frac{2.99792458 \\times 10^{8}}{2(0.02286)} = 6.5571 \\times 10^{9}\\ \\mathrm{Hz}$$
+
+$$\\sqrt{1 - (f_{c}/f)^{2}} = \\sqrt{1 - (0.65571)^{2}} = \\sqrt{0.57004} = 0.75501$$
+
+$$v_{p} = \\frac{c}{0.75501} = 3.9707 \\times 10^{8}\\ \\mathrm{m/s}, \\qquad v_{g} = (0.75501)c = 2.2635 \\times 10^{8}\\ \\mathrm{m/s}$$
+
+$$\\lambda _{g} = \\frac{v_{p}}{f} = \\frac{3.9707 \\times 10^{8}}{1.00 \\times 10^{10}} = 0.039707\\ \\mathrm{m} = 3.9707\\ \\mathrm{cm}$$
+
+The free-space wavelength at 10 GHz is 2.9979 cm, so the guide wavelength is
+32 % longer. The signal delay is $1/v_{g} = 4.418$ ns per metre, against
+3.336 ns per metre in free space.
+
+**Answers: cutoff 6.5571 GHz, v_p = 1.324c, v_g = 0.755c, guide wavelength
+3.9707 cm, delay 4.418 ns/m.** *Trap*: quoting $v_{p}$ as the signal speed and
+concluding that the guide transmits faster than light. It does not; the
+envelope arrives at $v_{g}$, and the product check $v_{p}v_{g} = c^{2}$ catches
+the error instantly.
+
+### Worked Example 4 — velocity factor back to permittivity
+
+**Given**: a coaxial cable specified with a velocity factor of 0.660, and
+another with 0.850.
+
+Velocity factor is $v/c$, and in a non-magnetic dielectric
+$v/c = 1/\\sqrt{\\varepsilon _r}$, so
+
+$$\\varepsilon _r = \\frac{1}{(v/c)^{2}}: \\qquad \\frac{1}{0.4356} = 2.296, \\qquad \\frac{1}{0.7225} = 1.384$$
+
+**Answers: 2.296 for the first cable, consistent with solid polyethylene, and
+1.384 for the second, which can only be a foamed dielectric that is mostly
+air.** *Trap*: taking $\\varepsilon _r = 1/0.660 = 1.515$, forgetting the square.
+That would put the cable's dielectric between air and Teflon, which no
+manufacturer offers.
+
+| Quantity | Symbol | Free space | Non-magnetic medium | Dispersive guide |
+|---|---|---|---|---|
+| Phase velocity | $v_{p}$ | $c$ | $c/\\sqrt{\\varepsilon _r}$ | above the medium value |
+| Group velocity | $v_{g}$ | $c$ | $c/\\sqrt{\\varepsilon _r}$ | below the medium value |
+| Their product | $v_{p}v_{g}$ | $c^{2}$ | $c^{2}/\\varepsilon _r$ | $c^{2}/\\varepsilon _r$ |
+| Wavelength | $\\lambda$ | $c/f$ | $\\lambda _{0}/\\sqrt{\\varepsilon _r}$ | longer than either |
+
+A second example makes the same point outside guided optics. A radio wave at
+15.0 MHz entering an ionospheric layer whose plasma frequency is 9.00 MHz sees
+$\\sqrt{1 - (9/15)^{2}} = 0.800$, so $v_{p} = 1.25c$ and $v_{g} = 0.800c$. Below
+9 MHz the root turns imaginary, the wave does not propagate at all, and the
+layer reflects — which is how short-wave broadcasting reaches over the
+horizon.`,
+      examTip: 'Compute the group velocity whenever a question asks how long a signal takes to arrive, and the phase velocity whenever it asks about wavelength or phase shift along a path. Mixing them is the classic error in guided-wave questions and it always produces an answer on the wrong side of c. If a question quotes a velocity factor, remember it is a speed ratio, so squaring its reciprocal is what returns the permittivity.',
+      importantNote: 'A phase velocity greater than c violates nothing. An infinite sinusoid has been present forever and carries no information; the crest you are tracking was never launched. Information rides on a change in the wave, and every change travels at the group velocity or slower.',
+    },
+    {
+      id: 'wp-poynting-integrated',
+      title: '7. Power Flow, by Integrating the Poynting Vector',
+      content: `## 7.1 The instantaneous vector and its average
+
+The Poynting vector is the instantaneous power crossing unit area:
+
+$$\\boldsymbol{S}(t) = \\boldsymbol{E}(t)\\times \\boldsymbol{H}(t) \\quad [\\mathrm{W/m^{2}}]$$
+
+For a plane wave in a lossless medium both fields are cosines of the same
+argument, so their product is a squared cosine:
+
+$$S(t) = \\frac{E_{0}^{2}}{\\eta}\\cos ^{2}(\\omega t - \\beta z)$$
+
+Two features of that expression carry all the physics. It is **never
+negative**, so power flows steadily in one direction rather than sloshing back
+and forth. And it oscillates at $2\\omega$, twice the field frequency, about a
+mean that a period-long integral fixes:
+
+$$S_{avg} = \\frac{1}{T}\\int _{0}^{T} \\frac{E_{0}^{2}}{\\eta}\\cos ^{2}(\\omega t)\\, dt = \\frac{E_{0}^{2}}{\\eta}\\cdot \\frac{1}{2} = \\frac{E_{0}^{2}}{2\\eta}$$
+
+The one half is the average of a squared cosine and nothing more. In phasor
+form the same result is written
+
+$$\\boldsymbol{S}_{avg} = \\tfrac{1}{2}\\mathrm{Re}\\left(\\boldsymbol{E}\\times \\boldsymbol{H}^{*}\\right)$$
+
+which reduces to $E_{0}^{2}/2\\eta$ when $\\eta$ is real and generalises correctly
+when it is not.
+
+![Instantaneous Poynting flux for a ten volt per metre wave in air and the running mean of its integral, which settles onto 132.72 milliwatts per square metre after exactly one period.](/courses/fe-ee/figures/em3-poynting-average.svg)
+
+### Worked Example 5 — the average found by integration, not by formula
+
+**Given**: $E_{0} = 10.0$ V/m peak, in air, at 100 MHz.
+
+The peak flux is
+
+$$S_{pk} = \\frac{E_{0}^{2}}{\\eta _{0}} = \\frac{100}{376.730313} = 0.265442\\ \\mathrm{W/m^{2}}$$
+
+Integrating $S(t)$ numerically over exactly one period of 10.0 ns and dividing
+by that period returns 0.1327209 W/m². The closed form gives
+$E_{0}^{2}/2\\eta _{0} = 100/753.4606 = 0.1327209$ W/m². The two agree to eleven
+significant figures, which is the arithmetic saying that the factor of one half
+really is the average of $\\cos ^{2}$ and not a fudge.
+
+**Answer: 132.72 mW/m².** *Trap*: reading 10.0 V/m as an rms value, which
+drops the factor of one half and gives 265.44 mW/m² — exactly twice the true
+answer. The cosine in the field expression is what makes 10.0 a peak.
+
+### Worked Example 6 — peak, rms, and the three decibel error
+
+**Given**: an exposure reference level of 61.0 V/m, which like all such limits
+is quoted as an rms value, at 2.45 GHz in air.
+
+With **rms** amplitude the one half is already inside the square, so
+
+$$S_{avg} = \\frac{E_{rms}^{2}}{\\eta _{0}} = \\frac{3721}{376.730313} = 9.8770\\ \\mathrm{W/m^{2}}$$
+
+Had the same 61.0 been treated as a peak value, the answer would have been
+4.9385 W/m², a factor of two low, which is 3.01 dB.
+
+$$E_{pk} = \\sqrt{2}\\,E_{rms} = 86.267\\ \\mathrm{V/m}, \\qquad S_{avg} = \\frac{86.267^{2}}{2(376.730313)} = 9.8770\\ \\mathrm{W/m^{2}}$$
+
+The two routes agree, as they must, because $\\sqrt{2}$ squared and divided by
+two is one.
+
+**Answer: 9.877 W/m², whichever amplitude convention is used, provided the
+matching formula is used with it.** *Trap*: mixing an rms field with the peak
+formula. The wrong answer is always a clean factor of two in power, and both
+values are offered.
+
+| Given amplitude | Correct expression | Wrong pairing gives |
+|---|---|---|
+| Peak $E_{0}$ | $S_{avg} = E_{0}^{2}/2\\eta$ | twice the true power |
+| RMS $E_{rms}$ | $S_{avg} = E_{rms}^{2}/\\eta$ | half the true power |
+| Peak $H_{0}$ | $S_{avg} = \\tfrac{1}{2}\\eta H_{0}^{2}$ | twice the true power |
+| Both peaks | $S_{avg} = \\tfrac{1}{2}E_{0}H_{0}$ | twice the true power |
+
+## 7.2 Spreading, and the two different exponents
+
+An isotropic source of radiated power $P_{t}$ spreads it over a sphere, so
+
+$$S = \\frac{P_{t}}{4\\pi r^{2}}, \\qquad E_{0} = \\sqrt{2\\eta _{0}S} = \\frac{1}{r}\\sqrt{\\frac{\\eta _{0}P_{t}}{2\\pi}}$$
+
+Power density falls as $1/r^{2}$ while field strength falls as $1/r$, because
+one is the square of the other. Doubling the range quarters the power density
+and halves the field. Any answer in which both fall by the same factor has
+confused the two.`,
+      examTip: 'Decide first whether the amplitude you were handed is peak or rms, then pick the matching expression. Wave equations written with a cosine give peaks; exposure limits, meter readings and power ratings give rms. The penalty for mismatching them is a factor of two in watts, which is exactly 3 dB, and the distractor list always contains it.',
+      importantNote: 'The Poynting vector is a power density, in watts per square metre, not a power. To get watts you must multiply by an area, and for a spreading wave that area grows as r squared. This is why a receiver of fixed aperture collects power falling as one over r squared while the field it sees falls only as one over r.',
+    },
+    {
+      id: 'wp-polarization-detail',
+      title: '8. Polarization from the Phase Between Components',
+      content: `## 8.1 Two components and one phase angle
+
+Any transverse field can be written as two orthogonal linear components. Give
+them amplitudes $E_{x0}$ and $E_{y0}$ and a relative phase $\\delta$:
+
+$$\\boldsymbol{E}(t) = \\hat{x}E_{x0}\\cos (\\omega t) + \\hat{y}E_{y0}\\cos (\\omega t + \\delta)$$
+
+The tip of the vector traces a closed figure once per period, and the shape of
+that figure is the polarization. Everything follows from $\\delta$ and the
+amplitude ratio:
+
+- $\\delta = 0$ or $180°$ gives **linear** polarization, tilted at
+  $\\arctan (E_{y0}/E_{x0})$ from the x axis.
+- $\\delta = \\pm 90°$ with $E_{x0} = E_{y0}$ gives **circular** polarization,
+  right-handed or left-handed with the sign.
+- Everything else gives **elliptical** polarization, of which the other two are
+  the limiting cases.
+
+![Locus of the electric-field tip for equal-amplitude components at phase differences of zero, forty-five and ninety degrees: a line, an ellipse tilted at forty-five degrees, and a circle.](/courses/fe-ee/figures/em3-polarization-ellipse.svg)
+
+## 8.2 The ellipse, solved
+
+For the equal-amplitude case the algebra closes in two lines. Rotate into the
+frame at $45°$ by forming $u = (E_{x}+E_{y})/\\sqrt{2}$ and
+$w = (E_{x}-E_{y})/\\sqrt{2}$, and use the sum-to-product identities:
+
+$$u = \\sqrt{2}\\cos (\\delta /2)\\cos (\\omega t + \\delta /2), \\qquad w = \\sqrt{2}\\sin (\\delta /2)\\sin (\\omega t + \\delta /2)$$
+
+Those are the parametric equations of an ellipse with semi-axes
+$\\sqrt{2}\\cos (\\delta /2)$ and $\\sqrt{2}\\sin (\\delta /2)$, tilted at $45°$.
+The **axial ratio**, major over minor, is therefore
+
+$$AR = \\cot (\\delta /2)$$
+
+which is infinite at $\\delta = 0$ (a line), unity at $\\delta = 90°$ (a circle),
+and finite in between.
+
+### Worked Example 7 — the axial ratio of a 45 degree pair
+
+**Given**: equal amplitudes with $\\delta = 45.0°$.
+
+$$AR = \\cot (22.5°) = 2.41421, \\qquad AR_{dB} = 20\\log _{10}(2.41421) = 7.6555\\ \\mathrm{dB}$$
+
+The semi-axes are $\\sqrt{2}\\cos 22.5° = 1.306563$ and
+$\\sqrt{2}\\sin 22.5° = 0.541196$ in units of the component amplitude, and their
+ratio is $1.306563/0.541196 = 2.414214$, confirming the closed form. Tracing the
+locus numerically and measuring its extent in the rotated frame returns the
+same two numbers to six decimals.
+
+**Answers: axial ratio 2.414, or 7.66 dB.** *Trap*: reporting the ratio of the
+two component amplitudes, which here is 1.000, and concluding the wave is
+circular. Equal amplitudes are necessary for circularity but not sufficient;
+the phase must also be a quarter cycle.
+
+### Worked Example 8 — what misalignment costs
+
+**Given**: a linearly polarized transmitter and a linearly polarized receiver
+whose axis is rotated by $\\psi$.
+
+Only the projection is received, so the voltage goes as $\\cos \\psi$ and the
+power as $\\cos ^{2}\\psi$:
+
+$$L_{dB} = -10\\log _{10}(\\cos ^{2}\\psi ) = -20\\log _{10}(\\cos \\psi )$$
+
+| Misalignment $\\psi$ | Power fraction | Loss |
+|---|---|---|
+| 0° | 1.000 | 0 dB |
+| 30° | 0.750 | 1.25 dB |
+| 45° | 0.500 | 3.01 dB |
+| 60° | 0.250 | 6.02 dB |
+| 90° | 0.000 | total, in principle |
+
+A circularly polarized wave received on a linear antenna loses 3.01 dB
+whatever the rotation, because only one of the two equal components is
+collected.
+
+**Answers: 1.25 dB at 30 degrees, 3.01 dB at 45, 6.02 dB at 60, and a null at
+90.** *Trap*: using $\\cos \\psi$ for the power rather than for the voltage. At
+60° that gives 0.500 instead of 0.250, understating the loss by 3 dB.
+
+## 8.3 Why any of this is engineered deliberately
+
+Terrestrial point-to-point links use linear polarization and take care to
+align, because the 3 dB penalty of circular is not worth paying when the
+geometry is fixed. Satellite and navigation links use circular precisely
+because the geometry is not fixed: a tumbling spacecraft or a hand-held
+receiver has no defined rotation, and circular polarization makes the link
+indifferent to it. Reflection off a surface reverses the handedness of a
+circular wave, which is also why a right-hand-circular receiver rejects the
+single-bounce multipath that would otherwise interfere with the direct path.`,
+      examTip: 'Read the phase difference before the amplitudes. Zero or 180 degrees is linear no matter what the amplitudes are; 90 degrees with equal amplitudes is circular; anything else is elliptical. Then for a link-budget question remember that misalignment loss goes as cosine squared in power, and that circular into linear is always 3 dB.',
+      importantNote: 'Handedness is defined by which way the field tip rotates as seen by an observer, and the two common conventions look at the wave from opposite ends. An exam question will not turn on the convention, but a specification sheet might, so check which end the standard is looking from before matching two antennas.',
+    },
+    {
+      id: 'wp-lossy-limits',
+      title: '9. The Two Limits of a Lossy Medium, Derived',
+      content: `## 9.1 Where the limits come from
+
+The exact propagation constant follows from substituting a total current
+density $\\boldsymbol{J} + \\partial \\boldsymbol{D}/\\partial t = (\\sigma + j\\omega \\varepsilon)\\boldsymbol{E}$
+into the curl equations, which gives
+
+$$\\gamma ^{2} = j\\omega \\mu (\\sigma + j\\omega \\varepsilon), \\qquad \\gamma = \\alpha + j\\beta$$
+
+Both limits come from expanding that square root, and both are worth doing once
+rather than memorising.
+
+**Good conductor**, $\\sigma \\gg \\omega \\varepsilon$. Drop the displacement term
+entirely and use $\\sqrt{j} = (1+j)/\\sqrt{2}$:
+
+$$\\gamma \\approx \\sqrt{j\\omega \\mu \\sigma} = (1+j)\\sqrt{\\frac{\\omega \\mu \\sigma}{2}} = (1+j)\\sqrt{\\pi f\\mu \\sigma}$$
+
+so $\\alpha = \\beta = \\sqrt{\\pi f\\mu \\sigma}$ and the penetration depth is
+$\\delta = 1/\\alpha = 1/\\sqrt{\\pi f\\mu \\sigma}$. That $\\alpha$ and $\\beta$ come
+out equal is the signature of a conductor: the field loses one neper in the
+same distance it turns through one radian.
+
+The intrinsic impedance follows from the same substitution:
+
+$$\\eta = \\sqrt{\\frac{j\\omega \\mu}{\\sigma}} = (1+j)\\sqrt{\\frac{\\omega \\mu}{2\\sigma}} = \\frac{1+j}{\\sigma \\delta}$$
+
+so $\\lvert \\eta \\rvert = \\sqrt{\\omega \\mu /\\sigma}$ at an angle of exactly 45°.
+
+**Good dielectric**, $\\sigma \\ll \\omega \\varepsilon$. Factor out the
+displacement term and expand the root binomially:
+
+$$\\gamma = j\\omega \\sqrt{\\mu \\varepsilon}\\sqrt{1 + \\frac{\\sigma}{j\\omega \\varepsilon}} \\approx j\\omega \\sqrt{\\mu \\varepsilon}\\left(1 + \\frac{\\sigma}{2j\\omega \\varepsilon}\\right) = \\frac{\\sigma}{2}\\sqrt{\\frac{\\mu}{\\varepsilon}} + j\\omega \\sqrt{\\mu \\varepsilon}$$
+
+so $\\alpha = (\\sigma /2)\\sqrt{\\mu /\\varepsilon} = \\sigma \\eta /2$ while
+$\\beta$ keeps its lossless value. The wave propagates essentially unchanged and
+merely fades.
+
+### Worked Example 9 — dielectric loss on a circuit board, two ways
+
+**Given**: a substrate with $\\varepsilon _r = 4.40$ and a loss tangent of 0.0200
+at 1.00 GHz.
+
+Loss tangent is defined as $\\sigma /(\\omega \\varepsilon)$, so the effective
+conductivity is
+
+$$\\sigma = \\omega \\varepsilon _{0}\\varepsilon _r \\tan \\delta = (6.28319 \\times 10^{9})(8.8541878128 \\times 10^{-12})(4.40)(0.0200) = 4.8957 \\times 10^{-3}\\ \\mathrm{S/m}$$
+
+Route one, through the impedance:
+$\\eta = 376.730313/\\sqrt{4.40} = 179.60$ ohm, so
+
+$$\\alpha = \\frac{\\sigma \\eta}{2} = \\frac{(4.8957 \\times 10^{-3})(179.60)}{2} = 0.43963\\ \\mathrm{Np/m}$$
+
+Route two, eliminating $\\sigma$ and $\\eta$ entirely in favour of the loss
+tangent:
+
+$$\\alpha = \\frac{\\pi f \\sqrt{\\varepsilon _r}\\tan \\delta}{c} = \\frac{(3.14159 \\times 10^{9})(2.09762)(0.0200)}{2.99792458 \\times 10^{8}} = 0.43963\\ \\mathrm{Np/m}$$
+
+The two agree to five figures, and the exact expression of section 3.1 gives
+0.43961, confirming that the low-loss approximation is good to five parts in
+one hundred thousand at this loss tangent.
+
+In decibels, $\\alpha _{dB} = 8.6859\\alpha = 3.819$ dB/m.
+
+**Answer: 0.4396 Np/m, or 3.82 dB per metre.** *Trap*: converting nepers to
+decibels with a factor of 20 rather than 8.686. A neper is a factor of $e$ in
+amplitude, so one neper is $20\\log _{10}e = 8.686$ dB, not 20.
+
+### Worked Example 10 — how far a signal reaches into seawater
+
+**Given**: seawater, $\\sigma = 4.00$ S/m, at 1.00 kHz. Find the depth at which
+the field and the power have fallen to a given fraction.
+
+At 1 kHz the loss tangent is enormous, so the good-conductor limit applies:
+
+$$\\delta = \\frac{1}{\\sqrt{\\pi f\\mu _{0}\\sigma}} = \\frac{1}{\\sqrt{(3.14159 \\times 10^{3})(1.25664 \\times 10^{-6})(4.00)}} = 7.958\\ \\mathrm{m}$$
+
+so $\\alpha = 0.12566$ Np/m. At a depth of 10.0 m,
+
+$$\\frac{E}{E_{0}} = e^{-\\alpha z} = e^{-1.2566} = 0.2846, \\qquad \\frac{S}{S_{0}} = e^{-2\\alpha z} = e^{-2.5133} = 0.08100$$
+
+so the field is at 28.5 % and the power at 8.10 % — a loss of
+$8.6859 \\times 1.25664 = 10.915$ dB. The exact expression returns
+$\\delta = 7.9578$ m, agreeing with the approximation to five figures because
+$\\sigma /(\\omega \\varepsilon)$ here is about $8.9 \\times 10^{5}$.
+
+**Answers: 7.96 m of skin depth, 10.9 dB of loss in 10 m.** *Trap*: applying
+$e^{-\\alpha z}$ to the power as well as to the field. Power carries twice the
+exponent, so the power loss in dB is $8.686\\alpha z$ using the amplitude
+convention of 20 log, or equivalently $10\\log _{10}$ of $e^{-2\\alpha z}$; both
+give 10.915 dB, and quoting 5.457 dB means the factor of two was dropped.
+
+| Quantity | Decays as | In decibels |
+|---|---|---|
+| Field amplitude $E$ | $e^{-\\alpha z}$ | $8.686\\,\\alpha z$ |
+| Power density $S$ | $e^{-2\\alpha z}$ | $8.686\\,\\alpha z$ |
+| Field after one $\\delta$ | 0.3679 | 8.686 dB |
+| Power after one $\\delta$ | 0.1353 | 8.686 dB |
+
+The two decibel columns are identical, which surprises people the first time.
+A decibel is defined so that the same number of decibels describes an amplitude
+ratio and its corresponding power ratio; that is the entire purpose of the 20
+against 10 in the two definitions.`,
+      examTip: 'Compute sigma over omega-epsilon before choosing a formula, and use the exact expression whenever the ratio lies between about 0.01 and 100. When converting an attenuation constant to decibels, use 8.686 per neper, and remember that a distance quoted in skin depths already tells you the answer: n skin depths is 8.686n decibels, for both field and power.',
+      importantNote: 'The good-conductor result alpha equals beta has a physical reading worth keeping. Inside a metal the wave turns through one radian of phase in the same distance it loses 63 per cent of its amplitude, so barely a sixth of a wavelength exists inside the material before the field is gone. This is why a conductor reflects rather than absorbs.',
+    },
+    {
+      id: 'wp-normal-incidence',
+      title: '10. Normal Incidence: Reflection, Transmission and Standing Waves',
+      content: `## 10.1 Two boundary conditions, two coefficients
+
+At a plane boundary between two lossless media, tangential $\\boldsymbol{E}$ and
+tangential $\\boldsymbol{H}$ must both be continuous. Writing the incident,
+reflected and transmitted amplitudes as $E_{i}$, $E_{r}$ and $E_{t}$, those two
+statements are
+
+$$E_{i} + E_{r} = E_{t}, \\qquad \\frac{E_{i}}{\\eta _{1}} - \\frac{E_{r}}{\\eta _{1}} = \\frac{E_{t}}{\\eta _{2}}$$
+
+The minus sign on the second line is the whole content of the problem: the
+reflected wave travels backwards, so its Poynting vector must reverse, and
+since $\\boldsymbol{E}$ is taken unreversed it is $\\boldsymbol{H}$ that flips.
+Solving the pair gives
+
+$$\\Gamma = \\frac{E_{r}}{E_{i}} = \\frac{\\eta _{2} - \\eta _{1}}{\\eta _{2} + \\eta _{1}}, \\qquad \\tau = \\frac{E_{t}}{E_{i}} = \\frac{2\\eta _{2}}{\\eta _{2} + \\eta _{1}} = 1 + \\Gamma$$
+
+Only the **ratio** of the impedances appears, which is why the same two formulas
+serve a dielectric interface and a transmission-line joint.
+
+![Reflection at normal incidence from air onto a non-magnetic dielectric, as amplitude and as power: the reflected and transmitted power fractions add to one at every permittivity.](/courses/fe-ee/figures/em3-reflection-normal.svg)
+
+## 10.2 The standing wave that results
+
+In medium 1 the incident and reflected waves superpose. With the boundary at
+$z = 0$ and the incident wave arriving from negative $z$,
+
+$$\\lvert E_{1}(z) \\rvert = \\lvert E_{i} \\rvert \\left\\lvert 1 + \\Gamma e^{j2\\beta z} \\right\\rvert$$
+
+which swings between $\\lvert E_{i} \\rvert (1 + \\lvert \\Gamma \\rvert )$ and
+$\\lvert E_{i} \\rvert (1 - \\lvert \\Gamma \\rvert )$. The ratio of those two is
+the **standing wave ratio**:
+
+$$SWR = \\frac{1 + \\lvert \\Gamma \\rvert}{1 - \\lvert \\Gamma \\rvert}, \\qquad \\lvert \\Gamma \\rvert = \\frac{SWR - 1}{SWR + 1}$$
+
+Adjacent maxima are half a wavelength apart, and a maximum is a quarter
+wavelength from a minimum, because the exponent carries $2\\beta z$ rather than
+$\\beta z$.
+
+### Worked Example 11 — air onto polyethylene, in full
+
+**Given**: a 300 MHz wave of peak amplitude 50.0 V/m in air, striking
+polyethylene ($\\varepsilon _r = 2.25$) at normal incidence.
+
+$$\\eta _{2} = \\frac{376.730313}{1.500} = 251.153\\ \\Omega, \\qquad \\Gamma = \\frac{251.153 - 376.730}{251.153 + 376.730} = \\frac{-125.577}{627.883} = -0.2000$$
+
+$$\\tau = 1 + \\Gamma = 0.8000, \\qquad SWR = \\frac{1.200}{0.800} = 1.500$$
+
+Power: the reflected fraction is $\\lvert \\Gamma \\rvert ^{2} = 0.0400$. The
+transmitted fraction, computed the honest way from the transmitted intensity
+rather than by subtraction, is
+
+$$\\frac{\\lvert \\tau \\rvert ^{2}/\\eta _{2}}{1/\\eta _{1}} = \\lvert \\tau \\rvert ^{2}\\frac{\\eta _{1}}{\\eta _{2}} = (0.6400)(1.500) = 0.9600$$
+
+and $0.0400 + 0.9600 = 1.0000$, so energy balances without having been assumed.
+In absolute terms, $S_{inc} = 2500/753.461 = 3.3180$ W/m², of which 0.13272
+W/m² returns and 3.1853 W/m² enters. Checking the transmitted figure directly:
+$E_{t} = 40.0$ V/m and $40^{2}/(2 \\times 251.153) = 3.1853$ W/m².
+
+The standing wave in air has $\\lvert E \\rvert _{max} = 60.0$ V/m and
+$\\lvert E \\rvert _{min} = 40.0$ V/m. Since $\\Gamma$ is negative and real, the
+minimum sits at the boundary and the first maximum is a quarter wavelength
+back, at $0.99931/4 = 0.2498$ m.
+
+**Answers: Gamma = -0.200, tau = 0.800, SWR 1.50, 4.00 % of the power
+reflected, 60.0 and 40.0 V/m in the standing wave, first maximum 25.0 cm from
+the surface.** *Trap*: reporting the transmitted power fraction as
+$\\lvert \\tau \\rvert ^{2} = 0.64$. Amplitude transmission and power
+transmission differ by the impedance ratio, and 0.64 plus 0.04 does not make
+one, which is the check that catches it.
+
+### Worked Example 12 — a hard mismatch, and what return loss means
+
+**Given**: the same wave striking fresh water, $\\varepsilon _r = 81.0$.
+
+$$\\eta _{2} = \\frac{376.730313}{9.000} = 41.859\\ \\Omega, \\qquad \\Gamma = \\frac{41.859 - 376.730}{418.589} = -0.8000$$
+
+$$SWR = \\frac{1.800}{0.200} = 9.000, \\qquad \\lvert \\Gamma \\rvert ^{2} = 0.6400$$
+
+Sixty-four per cent of the power comes straight back and only 36 % enters. The
+power check again: $\\tau = 0.200$, so
+$\\lvert \\tau \\rvert ^{2}\\eta _{1}/\\eta _{2} = (0.0400)(9.000) = 0.3600$, and
+$0.6400 + 0.3600 = 1.0000$.
+
+In the language of radio engineering,
+
+$$RL = -20\\log _{10}\\lvert \\Gamma \\rvert = -20\\log _{10}(0.800) = 1.938\\ \\mathrm{dB}$$
+
+**Answers: Gamma = -0.800, SWR 9.00, 64 % reflected, return loss 1.94 dB.**
+*Trap*: assuming a large return loss means a large reflection. It is the
+reverse: return loss is how far **down** the reflected signal is, so 1.94 dB is
+a terrible match and 20 dB is a good one. A well-matched interface has
+$\\lvert \\Gamma \\rvert = 0.1$ and a return loss of 20 dB.
+
+| $\\lvert \\Gamma \\rvert$ | SWR | Power reflected | Return loss |
+|---|---|---|---|
+| 0.000 | 1.00 | 0 % | infinite |
+| 0.100 | 1.22 | 1.00 % | 20.0 dB |
+| 0.200 | 1.50 | 4.00 % | 13.98 dB |
+| 0.500 | 3.00 | 25.0 % | 6.02 dB |
+| 0.800 | 9.00 | 64.0 % | 1.94 dB |
+| 1.000 | infinite | 100 % | 0 dB |`,
+      examTip: 'Compute the impedance ratio first, because Gamma depends on nothing else. Then decide whether the question wants amplitude or power: Gamma and tau are amplitude ratios, and only Gamma squares directly into a power fraction. The transmitted power fraction is tau squared times the impedance ratio, never tau squared on its own, and the two power fractions must add to one.',
+      importantNote: 'A negative Gamma is not an error, it is a 180 degree phase reversal, and it happens whenever the wave enters a medium of lower impedance, which for non-magnetic materials means a higher permittivity. That phase reversal is what puts a standing-wave minimum at the boundary rather than a maximum.',
+    },
+    {
+      id: 'wp-oblique-brewster',
+      title: '11. Oblique Incidence, Brewster\'s Angle and Total Reflection',
+      content: `## 11.1 Snell's law, and why the polarizations split
+
+At oblique incidence the phase along the boundary must match on both sides,
+which is the whole content of the reflection and refraction laws:
+
+$$\\theta _{i} = \\theta _{r}, \\qquad n_{1}\\sin \\theta _{i} = n_{2}\\sin \\theta _{t}$$
+
+The two boundary conditions now involve the components of the fields along the
+interface, so the amount of each field that lies along it depends on the
+orientation. That splits the problem into two independent cases:
+
+- **Perpendicular** (also called s, or transverse electric): $\\boldsymbol{E}$
+  lies in the plane of the interface, perpendicular to the plane of incidence.
+- **Parallel** (also called p, or transverse magnetic): $\\boldsymbol{E}$ lies
+  in the plane of incidence.
+
+$$\\Gamma _{\\perp} = \\frac{\\eta _{2}\\cos \\theta _{i} - \\eta _{1}\\cos \\theta _{t}}{\\eta _{2}\\cos \\theta _{i} + \\eta _{1}\\cos \\theta _{t}}, \\qquad \\Gamma _{\\parallel} = \\frac{\\eta _{2}\\cos \\theta _{t} - \\eta _{1}\\cos \\theta _{i}}{\\eta _{2}\\cos \\theta _{t} + \\eta _{1}\\cos \\theta _{i}}$$
+
+At $\\theta _{i} = 0$ both reduce to the normal-incidence result, as they must.
+
+![Reflection magnitude against angle of incidence for light passing from air onto glass: the perpendicular curve rises monotonically while the parallel curve dips to a true zero at the Brewster angle of 56.31 degrees.](/courses/fe-ee/figures/em3-brewster-fresnel.svg)
+
+## 11.2 Brewster's angle: one polarization vanishes
+
+$\\Gamma _{\\parallel}$ passes through zero when
+$\\eta _{2}\\cos \\theta _{t} = \\eta _{1}\\cos \\theta _{i}$. For non-magnetic media
+$\\eta = \\eta _{0}/n$, and combining that condition with Snell's law gives the
+compact result
+
+$$\\theta _{B} = \\arctan \\left(\\frac{n_{2}}{n_{1}}\\right) = \\arctan \\sqrt{\\frac{\\varepsilon _{r2}}{\\varepsilon _{r1}}}$$
+
+$\\Gamma _{\\perp}$ has no such zero, so at $\\theta _{B}$ the reflected beam is
+purely perpendicular whatever the incident polarization. That is how polarizing
+sunglasses work: light reflected from a horizontal surface near Brewster's
+angle is almost entirely horizontally polarized, so a vertically oriented
+filter removes it.
+
+### Worked Example 13 — Brewster and a general oblique case
+
+**Given**: air onto glass, $n_{1} = 1.000$ and $n_{2} = 1.500$.
+
+$$\\theta _{B} = \\arctan (1.500) = 56.310°, \\qquad \\theta _{t} = \\arcsin \\left(\\frac{\\sin 56.310°}{1.500}\\right) = 33.690°$$
+
+The two add to exactly $90.000°$: at Brewster's angle the reflected and
+transmitted rays are perpendicular to one another, which is the geometric
+statement of the same condition.
+
+Now take a general angle, $\\theta _{i} = 60.000°$. Snell gives
+$\\sin \\theta _{t} = \\sin 60°/1.500 = 0.57735$, so $\\theta _{t} = 35.264°$, and
+with $\\eta _{1} = 376.730$ ohm and $\\eta _{2} = 251.154$ ohm,
+
+$$\\Gamma _{\\perp} = \\frac{(251.154)(0.50000) - (376.730)(0.81650)}{(251.154)(0.50000) + (376.730)(0.81650)} = \\frac{125.577 - 307.599}{125.577 + 307.599} = -0.42020$$
+
+$$\\Gamma _{\\parallel} = \\frac{(251.154)(0.81650) - (376.730)(0.50000)}{(251.154)(0.81650) + (376.730)(0.50000)} = \\frac{205.066 - 188.365}{393.431} = 0.04245$$
+
+**Answers: Brewster at 56.31°, and at 60° the perpendicular reflection is 0.4202
+in amplitude (17.66 % of the power) against 0.04245 for the parallel (0.18 %).**
+*Trap*: using the same formula for both polarizations. At 60° the two differ by
+a factor of ten in amplitude and a factor of a hundred in power, so the wrong
+formula is not a small error.
+
+## 11.3 Total internal reflection
+
+Going the other way, from dense to rare, Snell's law demands
+$\\sin \\theta _{t} = (n_{1}/n_{2})\\sin \\theta _{i}$, and once
+$\\sin \\theta _{i}$ exceeds $n_{2}/n_{1}$ there is no real transmitted angle.
+The critical angle is
+
+$$\\theta _{c} = \\arcsin \\left(\\frac{n_{2}}{n_{1}}\\right)$$
+
+and beyond it $\\lvert \\Gamma \\rvert = 1$ for both polarizations: all the power
+returns. The field does not stop dead at the boundary — an evanescent field
+decays exponentially into the rarer medium — but it carries no time-averaged
+power across.
+
+### Worked Example 14 — critical angle and a fibre's acceptance cone
+
+**Given**: glass to air, $n_{1} = 1.500$ and $n_{2} = 1.000$. Separately, a
+step-index fibre with a core index of 1.480 and a cladding index of 1.460.
+
+$$\\theta _{c} = \\arcsin \\left(\\frac{1.000}{1.500}\\right) = \\arcsin (0.66667) = 41.810°$$
+
+For the fibre, guiding requires total reflection at the core-cladding wall, and
+translating that back through the end face gives the numerical aperture:
+
+$$NA = \\sqrt{n_{core}^{2} - n_{clad}^{2}} = \\sqrt{1.480^{2} - 1.460^{2}} = \\sqrt{0.058800} = 0.24249$$
+
+$$\\theta _{max} = \\arcsin (0.24249) = 14.033°$$
+
+**Answers: 41.81° critical angle for glass to air, and a fibre acceptance half
+angle of 14.03°.** *Trap*: computing the numerical aperture as the difference
+of the indices, $1.480 - 1.460 = 0.020$, which is more than ten times too
+small. The definition is a difference of **squares** under a root, and the
+factorisation $\\sqrt{(n_{1}+n_{2})(n_{1}-n_{2})}$ shows why the sum of the two
+indices enters as well.
+
+| Case | Condition | What happens |
+|---|---|---|
+| Normal incidence | $\\theta _{i} = 0$ | both polarizations identical |
+| Brewster | $\\theta _{i} = \\arctan (n_{2}/n_{1})$ | parallel reflection is zero |
+| Below critical, dense to rare | $\\theta _{i} < \\theta _{c}$ | partial transmission |
+| At or beyond critical | $\\theta _{i} \\ge \\theta _{c}$ | total reflection, evanescent field only |
+| Grazing | $\\theta _{i} \\to 90°$ | both magnitudes tend to 1 |`,
+      examTip: 'Brewster is an arctangent of the index ratio and the critical angle is an arcsine of it, so the two are never interchangeable and only the critical angle requires going from dense to rare. Check the direction of travel before choosing. A useful memory hook: at Brewster the reflected and refracted rays are at right angles, and beyond critical there is no refracted ray at all.',
+      importantNote: 'Total internal reflection is total only in the time-averaged sense. An evanescent field penetrates the rarer medium and decays over roughly a wavelength, which is why placing a second dense medium within that distance lets power tunnel across. That effect is used deliberately in fibre couplers and in the sensors that read a fingerprint through a prism.',
+    },
+    {
+      id: 'wp-guided-waves',
+      title: '12. The Guided Case: A Transmission Line Is a Plane Wave in a Box',
+      content: `## 12.1 The same algebra, different symbols
+
+A two-conductor line carrying a TEM wave has $\\boldsymbol{E}$ and
+$\\boldsymbol{H}$ transverse to the direction of travel, exactly as a plane wave
+does. The only change is bookkeeping: instead of field amplitudes the line is
+described by a voltage between the conductors and a current along them, and
+instead of $\\eta$ it has a characteristic impedance.
+
+| Plane wave | Transmission line | Relationship |
+|---|---|---|
+| $E$ | $V$ | integrate E across the gap |
+| $H$ | $I$ | integrate H around a conductor |
+| $\\eta = \\sqrt{\\mu /\\varepsilon}$ | $Z_{0} = \\sqrt{L/C}$ | same square root, per-unit-length quantities |
+| $v = 1/\\sqrt{\\mu \\varepsilon}$ | $v = 1/\\sqrt{LC}$ | identical in form |
+| $\\Gamma = (\\eta _{2}-\\eta _{1})/(\\eta _{2}+\\eta _{1})$ | $\\Gamma = (Z_{L}-Z_{0})/(Z_{L}+Z_{0})$ | identical in form |
+| $SWR$ from $\\lvert \\Gamma \\rvert$ | $SWR$ from $\\lvert \\Gamma \\rvert$ | identical |
+
+Because the forms are identical, everything already derived transfers without
+new work. A load resistance is an impedance mismatch, a standing wave forms on
+the line exactly as it does in front of a dielectric slab, and the quarter-wave
+transformer is the same trick as an anti-reflection coating.
+
+### Worked Example 15 — a 50 ohm line, from the ground up
+
+**Given**: a coaxial line filled with polyethylene, $\\varepsilon _r = 2.25$,
+designed for $Z_{0} = 50.0$ ohm.
+
+Speed and velocity factor first:
+
+$$v = \\frac{c}{\\sqrt{2.25}} = 1.99862 \\times 10^{8}\\ \\mathrm{m/s}, \\qquad \\frac{v}{c} = 0.66667$$
+
+Per-unit-length inductance and capacitance follow from
+$Z_{0} = \\sqrt{L/C}$ and $v = 1/\\sqrt{LC}$, which invert to $L = Z_{0}/v$ and
+$C = 1/(Z_{0}v)$:
+
+$$L = \\frac{50.0}{1.99862 \\times 10^{8}} = 250.17\\ \\mathrm{nH/m}, \\qquad C = \\frac{1}{(50.0)(1.99862 \\times 10^{8})} = 100.07\\ \\mathrm{pF/m}$$
+
+Checking backwards, $\\sqrt{L/C} = \\sqrt{2500} = 50.00$ ohm and
+$1/\\sqrt{LC} = 1.99862 \\times 10^{8}$ m/s, so the pair is self-consistent. The
+propagation delay is $1/v = 5.003$ ns per metre, the number a board designer
+uses directly.
+
+Now terminate the line in 75.0 ohm:
+
+$$\\Gamma _{L} = \\frac{75.0 - 50.0}{75.0 + 50.0} = \\frac{25.0}{125.0} = 0.2000, \\qquad SWR = \\frac{1.200}{0.800} = 1.500$$
+
+That is the same 0.200 and the same 1.500 as the air-to-polyethylene interface
+in section 10, because the impedance ratio is the same 1.5 either way. The
+return loss is 13.98 dB and the mismatch loss is
+$-10\\log _{10}(1 - 0.0400) = 0.1773$ dB — a reflection of four per cent costs
+less than two tenths of a decibel in through power, which is why moderate
+mismatches are tolerated far more often than the SWR figure suggests.
+
+To remove the reflection entirely, insert a quarter-wave section of
+
+$$Z_{qw} = \\sqrt{Z_{0}Z_{L}} = \\sqrt{(50.0)(75.0)} = \\sqrt{3750} = 61.237\\ \\Omega$$
+
+whose input impedance is $Z_{qw}^{2}/Z_{L} = 3750/75.0 = 50.00$ ohm. At 1.00
+GHz its physical length is
+$\\lambda /4 = (1.99862 \\times 10^{8})/(4.00 \\times 10^{9}) = 0.049965$ m, close
+to 5.00 cm.
+
+**Answers: 250.17 nH/m, 100.07 pF/m, 5.003 ns/m, Gamma 0.200, SWR 1.50, return
+loss 13.98 dB, mismatch loss 0.177 dB, and a 61.24 ohm quarter-wave section
+4.997 cm long.** *Trap*: computing the quarter-wave length from the free-space
+wavelength, giving 7.495 cm. The transformer sits inside the dielectric, so its
+length must use the wavelength there.
+
+## 12.2 When a line must be treated as a line
+
+The same electrical-size test from the Maxwell chapter decides it. A connection
+shorter than about a twentieth of a wavelength behaves as a lumped wire; longer
+than that, its impedance and delay start to matter. On this cable at 1 GHz a
+twentieth of a wavelength is almost exactly 1.0 cm, so essentially every trace on a
+gigahertz board is a transmission line and must be given a controlled
+impedance.
+
+The physical picture behind all of it is worth holding on to. A wave launched
+into a mismatched load cannot deposit all its energy there, because the ratio
+of voltage to current the load demands is not the ratio the line supplies. The
+surplus has nowhere to go but back up the line, and the interference between
+the outgoing and returning waves is the standing wave. Matching, in every one
+of its forms, is the art of arranging that the load asks for the same ratio the
+line offers.`,
+      examTip: 'Treat a transmission-line question and a normal-incidence question as the same problem with different letters. Compute the impedance ratio, form Gamma, and read off SWR, reflected power and return loss from it. When a physical length is wanted, use the wavelength inside the line, which is the free-space wavelength divided by the square root of the relative permittivity.',
+      importantNote: 'Characteristic impedance is not a resistance and dissipates nothing. It is the ratio of voltage to current that the line geometry enforces on a travelling wave, in exactly the way eta is the ratio the medium enforces on a plane wave. A 50 ohm line terminated in 50 ohm delivers all its power to the load, and none of it to the line.',
+    },
+    {
+      id: 'wp-problem-sets',
+      title: '13. Practice Problems with Full Solutions',
+      content: `## 13.1 How to use these
+
+Each problem states its givens, drives them to a number, and then names the
+distractor the exam offers beside the correct answer, together with the wrong
+number that trap produces. Work each problem to a number before reading on; the
+trap line only helps once you have something to compare it against.
+
+## Problem Set D — Plane waves, velocities and power
+
+**D1.** A 2.00 GHz wave travels in a medium with $\\varepsilon _r = 6.25$ and $\\mu _r = 1$. Find the wavelength, the phase constant and the intrinsic impedance.
+
+$$n = \\sqrt{6.25} = 2.500, \\qquad \\lambda = \\frac{c}{nf} = \\frac{2.99792458 \\times 10^{8}}{(2.500)(2.00 \\times 10^{9})} = 0.059959\\ \\mathrm{m}$$
+
+$$\\beta = \\frac{2\\pi}{\\lambda} = 104.79\\ \\mathrm{rad/m}, \\qquad \\eta = \\frac{376.730313}{2.500} = 150.69\\ \\Omega$$
+
+**Answers: 5.996 cm, 104.8 rad/m, 150.7 ohm.** *Trap*: dividing the free-space
+wavelength by 6.25 rather than by 2.5, giving 2.398 cm. Both the speed and the
+wavelength carry the square root of the permittivity, never the permittivity
+itself.
+
+**D2.** A plane wave in air has a peak magnetic field of 2.00 mA/m. Find the peak electric field and the average power density.
+
+$$E_{0} = \\eta _{0}H_{0} = (376.730313)(2.00 \\times 10^{-3}) = 0.75346\\ \\mathrm{V/m}$$
+
+$$S_{avg} = \\tfrac{1}{2}\\eta _{0}H_{0}^{2} = \\tfrac{1}{2}(376.730313)(4.00 \\times 10^{-6}) = 7.5346 \\times 10^{-4}\\ \\mathrm{W/m^{2}}$$
+
+**Answers: 0.7535 V/m and 0.7535 mW/m².** *Trap*: dividing by the impedance
+instead of multiplying, giving $5.31 \\times 10^{-6}$ V/m. The impedance is
+volts per amp-per-metre, so it multiplies H to give E and divides E to give H;
+a dimensional glance settles which.
+
+**D3.** The same 100 W isotropic source is observed at 10.0 m and at 40.0 m. By what factor do the power density and the field strength fall?
+
+$$S \\propto \\frac{1}{r^{2}}: \\quad \\left(\\frac{10.0}{40.0}\\right)^{2} = 0.0625, \\qquad E \\propto \\frac{1}{r}: \\quad \\frac{10.0}{40.0} = 0.250$$
+
+**Answers: power density falls to one sixteenth, field to one quarter — a 12.0
+dB change in both.** *Trap*: reporting a 24 dB change for the field because the
+ratio is 0.25 and $20\\log _{10}(0.25) = -12.0$ dB. It is 12 dB, because
+decibels already reconcile the two: $10\\log _{10}(0.0625)$ is also $-12.0$ dB.
+
+**D4.** A guide has a cutoff of 4.00 GHz and is used at 5.00 GHz. Find the phase and group velocities and the guide wavelength.
+
+$$\\sqrt{1 - (4.00/5.00)^{2}} = \\sqrt{0.360} = 0.600$$
+
+$$v_{p} = \\frac{c}{0.600} = 4.9965 \\times 10^{8}\\ \\mathrm{m/s}, \\qquad v_{g} = (0.600)c = 1.7988 \\times 10^{8}\\ \\mathrm{m/s}$$
+
+$$\\lambda _{g} = \\frac{v_{p}}{f} = \\frac{4.9965 \\times 10^{8}}{5.00 \\times 10^{9}} = 0.099930\\ \\mathrm{m}$$
+
+**Answers: 1.667c, 0.600c and 9.993 cm, against a free-space wavelength of
+5.996 cm.** *Trap*: using the free-space wavelength to space slots or probes in
+the guide. The guide wavelength here is 67 % longer, and the product check
+$v_{p}v_{g} = c^{2}$ confirms the pair.
+
+**D5.** An antenna delivers 12.0 W into a 1.50 m² aperture at some distance. Find the power density and the rms field.
+
+$$S = \\frac{12.0}{1.50} = 8.00\\ \\mathrm{W/m^{2}}, \\qquad E_{rms} = \\sqrt{\\eta _{0}S} = \\sqrt{(376.730313)(8.00)} = 54.90\\ \\mathrm{V/m}$$
+
+**Answers: 8.00 W/m² and 54.90 V/m rms, equivalently 77.64 V/m peak.** *Trap*:
+using $\\sqrt{2\\eta _{0}S}$ and calling the result rms. That expression returns
+the peak value, 77.64 V/m; the factor of two belongs with the peak convention
+only.
+
+## Problem Set E — Lossy media, boundaries and polarization
+
+**E1.** Find the skin depth of aluminium ($\\sigma = 3.50 \\times 10^{7}$ S/m) at 10.0 MHz, and the attenuation in decibels through 50.0 micrometres of it.
+
+$$\\delta = \\frac{1}{\\sqrt{\\pi f\\mu _{0}\\sigma}} = \\frac{1}{\\sqrt{(3.14159 \\times 10^{7})(1.25664 \\times 10^{-6})(3.50 \\times 10^{7})}} = 2.6902 \\times 10^{-5}\\ \\mathrm{m}$$
+
+Fifty micrometres is $50.0/26.902 = 1.8586$ skin depths, so the attenuation is
+$8.686 \\times 1.8586 = 16.14$ dB.
+
+**Answers: 26.9 micrometres, and 16.1 dB through a 50 micrometre foil.**
+*Trap*: forgetting that the skin depth falls only as the square root of
+frequency. Assuming it scales inversely with frequency would give a foil
+thickness of hundreds of skin depths and a wildly optimistic shielding figure.
+
+**E2.** A wave in air of peak amplitude 30.0 V/m strikes a large slab with $\\varepsilon _r = 4.00$ at normal incidence. Find the reflected and transmitted amplitudes and the SWR.
+
+$$\\eta _{2} = \\frac{376.730313}{2.000} = 188.37\\ \\Omega, \\qquad \\Gamma = \\frac{188.37 - 376.73}{188.37 + 376.73} = -0.33333$$
+
+$$E_{r} = \\Gamma E_{i} = -10.00\\ \\mathrm{V/m}, \\qquad E_{t} = (1 + \\Gamma )E_{i} = 20.00\\ \\mathrm{V/m}, \\qquad SWR = \\frac{1.3333}{0.66667} = 2.000$$
+
+**Answers: 10.0 V/m reflected with a phase reversal, 20.0 V/m transmitted, SWR
+2.00, and 11.1 % of the power reflected.** *Trap*: writing
+$E_{t} = E_{i} - E_{r}$ and getting 40 V/m. The boundary condition is
+$E_{i} + E_{r} = E_{t}$, and the sign of the reflection is already carried by
+$\\Gamma$.
+
+**E3.** A material has $\\varepsilon _r = 3.00$ and a loss tangent of 0.0100 at 5.00 GHz. Find the attenuation in dB per metre.
+
+$$\\alpha = \\frac{\\pi f\\sqrt{\\varepsilon _r}\\tan \\delta}{c} = \\frac{(1.57080 \\times 10^{10})(1.73205)(0.0100)}{2.99792458 \\times 10^{8}} = 0.90753\\ \\mathrm{Np/m}$$
+
+$$\\alpha _{dB} = 8.6859 \\times 0.90753 = 7.8827\\ \\mathrm{dB/m}$$
+
+**Answers: 0.9075 Np/m, 7.88 dB/m.** *Trap*: converting nepers to decibels with
+a factor of 20, giving 18.15 dB/m. One neper is 8.686 dB, and the 20 belongs to
+the definition of the decibel from an amplitude ratio, not to the neper.
+
+**E4.** Light in air meets water, $n = 1.333$. Find the Brewster angle, and the refracted angle at that incidence.
+
+$$\\theta _{B} = \\arctan (1.333) = 53.123°, \\qquad \\theta _{t} = 90.000 - 53.123 = 36.877°$$
+
+Checking with Snell: $\\sin 53.123° = 0.799928$, and
+$0.799928/1.333 = 0.600096$, whose arcsine is $36.877°$ — the same angle to
+three decimals.
+
+**Answers: 53.12° and 36.88°.** *Trap*: using an arcsine and reporting
+$\\arcsin (1/1.333) = 48.61°$, which is the critical-angle formula applied where
+no critical angle exists. Brewster is an
+arctangent; only the critical angle uses an arcsine, and there is no critical
+angle going from air into water.
+
+**E5.** A transmitter is linearly polarized and the receiving antenna is rotated 25.0° from it. A second link uses circular polarization at the transmitter and a linear receiver. Compare the polarization losses.
+
+$$L_{1} = -20\\log _{10}(\\cos 25.0°) = -20\\log _{10}(0.906308) = 0.8545\\ \\mathrm{dB}$$
+
+For the circular-to-linear case only one of the two equal components is
+collected, so the loss is $-10\\log _{10}(0.500) = 3.010$ dB regardless of
+rotation.
+
+**Answers: 0.855 dB for the misaligned linear pair, 3.01 dB for the circular
+into linear.** *Trap*: assuming that circular polarization always helps. It
+costs a fixed 3 dB against a linear transmitter, and it only wins when the
+alignment is unknown, since a linear pair misaligned by more than 45° is
+already worse than 3 dB.`,
+      examTip: 'Three conversions cover most of the lost marks in this chapter: nepers to decibels at 8.686 per neper, peak to rms at 1.414, and permittivity to speed through a square root. Do all three before substituting, and sanity-check the direction each time. A wave should slow down in a denser medium, a field should fall as one over r, and power should fall as one over r squared.',
+      importantNote: 'Every trap named in these solutions is a factor error rather than a conceptual gulf: a square root left off a permittivity, a factor of two between peak and rms, a factor of 2.3 between 20 and 8.686, a factor of ten between an index difference and a numerical aperture. Getting the physics right and the constant wrong scores the same as knowing nothing, so the last thing to check is always the number in front.',
     },
   ],
   keyTakeaways: [
