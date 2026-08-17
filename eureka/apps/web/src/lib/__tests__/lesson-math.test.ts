@@ -49,11 +49,23 @@ describe('FE EE lesson mathematics', () => {
     // "pm", "cdot", "sqrt" and friends appearing as bare words inside maths
     // means the backslash was eaten on the way through the template literal.
     const bare = /\$[^$\n]*?(?<![\\A-Za-z])(pm|cdot|sqrt|approx|angle|Omega|theta|omega|frac|times|le|ge)(?![A-Za-z])[^$\n]*?\$/;
+    // That premise holds in maths mode only. Inside \text{} these are ordinary
+    // English words, so \text{unless every load shares one angle} was read as a
+    // mangled \angle. Strip text-mode group CONTENTS first -- the same thing
+    // check_fe_ee_render.mjs does before looking for prose left in maths.
+    const stripText = (s: string) =>
+      s.replace(/\\(?:text|mathrm|mathbf|mathit|textbf|textit|operatorname)\s*\{[^{}]*\}/g, ' ');
+    // Guard the narrowing. A check that stops firing is indistinguishable from
+    // a check that passes, so prove it still catches a genuinely eaten
+    // backslash and still ignores a correctly escaped command.
+    expect(bare.test(`$${stripText('R_1 pm 5')}$`)).toBe(true);
+    expect(bare.test(`$${stripText('\\theta = 30^\\circ')}$`)).toBe(false);
+    expect(bare.test(`$${stripText('\\text{one angle}')}$`)).toBe(false);
     const hits: string[] = [];
     for (const { topic, section, text } of bodies()) {
       for (const m of text.matchAll(MATH)) {
         const tex = m[1] ?? m[2];
-        if (bare.test(`$${tex}$`)) hits.push(`${topic}/${section}: ${tex}`);
+        if (bare.test(`$${stripText(tex)}$`)) hits.push(`${topic}/${section}: ${tex}`);
       }
     }
     expect(hits).toEqual([]);
