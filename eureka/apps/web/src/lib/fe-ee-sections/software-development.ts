@@ -3112,6 +3112,1120 @@ exception leaks the file handle, the lock, or the connection.`,
       examTip: 'Abstract class = is-a with shared state, one parent only. Interface = can-do capability, any number implemented. If two unrelated classes need the same capability, it must be an interface.',
       importantNote: 'Aggregation (hollow diamond) means the part survives the whole; composition (filled diamond) means it does not. Department-to-Employee is aggregation, House-to-Room is composition — the fill of the diamond is the entire difference.',
     },
+    { id: 'oop-memory', title: '6. An Instance Is a Memory Layout, Not a Metaphor',
+      content: `## 6.1 What the Machine Actually Allocates
+
+The pictures in most introductions show an object as a rounded box with the
+word *Dog* inside it. That picture explains nothing, because it hides the two
+facts an engineer needs: an instance is a fixed run of bytes, and a method call
+on it is an address computation. Everything else about objects follows from
+those two facts, and both are arithmetic.
+
+Take a class holding five fields on a 64-bit target. The compiler must place
+each field at an offset that satisfies its **natural alignment** — an 8-byte
+integer must begin at a multiple of 8, a 4-byte integer at a multiple of 4, a
+single byte anywhere. Writing $o_k$ for the offset of field $k$, $s_k$ for its
+size and $a_k$ for its alignment, placement is the recurrence
+
+$$o_{k+1} = \\left\\lceil \\frac{o_k + s_k}{a_{k+1}} \\right\\rceil a_{k+1}$$
+
+starting from $o_1 = h$, where $h$ is the header the runtime inserts. On a
+single-inheritance C++ class with at least one virtual function that header is
+one pointer, $h = 8$. The total size rounds up once more, to the largest
+alignment present, so that consecutive elements of an array stay aligned:
+
+$$S = \\left\\lceil \\frac{o_n + s_n}{a_{\\max}} \\right\\rceil a_{\\max}$$
+
+The bytes nobody asked for are the difference between what was reserved and
+what was requested:
+
+$$P = S - h - \\sum_{k=1}^{n} s_k$$
+
+and the share of the instance that carries data is
+
+$$\\eta = \\frac{1}{S}\\sum_{k=1}^{n} s_k$$
+
+## 6.2 Worked Example 6A: Two Field Orders for One Class
+
+A sensor record declares, in this order, an 8-byte identifier, a 1-byte
+active flag, an 8-byte reading, a 1-byte scale code and a 4-byte sample count.
+Payload is $8 + 1 + 8 + 1 + 4 = 22$ bytes. Applying the recurrence from
+$o_1 = 8$:
+
+| Field | Size | Align | Offset | Padding before it |
+|---|---|---|---|---|
+| id | 8 | 8 | 8 | 0 |
+| active | 1 | 1 | 16 | 0 |
+| reading | 8 | 8 | 24 | 7 |
+| scale | 1 | 1 | 32 | 0 |
+| count | 4 | 4 | 36 | 3 |
+
+The last field ends at 40, which is already a multiple of 8, so $S = 40$ and
+
+$$P = 40 - 8 - 22 = 10 \\ \\text{bytes}$$
+
+Now declare the same five fields widest first — id, reading, count, active,
+scale. The offsets become 8, 16, 24, 28 and 29; the last ends at 30, which
+rounds up to $S = 32$, and
+
+$$P = 32 - 8 - 22 = 2 \\ \\text{bytes}$$
+
+![Two horizontal byte maps of the same five-field class. The declared order occupies forty bytes with two orange padding runs of seven and three bytes; the widest-first order occupies thirty-two bytes with a single two-byte run at the end. Both carry twenty-two bytes of payload.](/courses/fe-ee/figures/sw3-object-layout.svg)
+
+Both numbers were produced twice in the figure generator: once by the
+placement recurrence above and once by marking every byte an object touches on
+a map and subtracting. Packing efficiency rises from $22 / 40 = 0.55$ to
+$22 / 32 = 0.6875$, and the object shrinks by eight bytes without a single
+field being removed.
+
+## 6.3 Worked Example 6B: What Eight Bytes Buy at Scale
+
+An array of one million such records costs
+$1{,}000{,}000 \\times 40 = 40{,}000{,}000$ bytes in declared order and
+$1{,}000{,}000 \\times 32 = 32{,}000{,}000$ bytes sorted — a saving of 8 MB.
+The more interesting consequence is on the memory system. A cache line on a
+typical processor is $B = 64$ bytes, and the number of whole objects it can
+hold is
+
+$$q = \\left\\lfloor \\frac{B}{S} \\right\\rfloor$$
+
+which is $1$ at 40 bytes and $2$ at 32. A linear sweep of the array touches
+
+$$L(N) = \\left\\lceil \\frac{N S}{B} \\right\\rceil$$
+
+lines, so 625,000 lines in declared order against 500,000 sorted. The ratio is
+exactly the size ratio, $40 / 32 = 1.25$, because the sweep is bandwidth-bound
+rather than latency-bound. **Twenty-five per cent more memory traffic, for the
+same program, because of the order the fields were typed in.**
+
+## 6.4 Why This Is an Encapsulation Argument
+
+None of the callers of this class know or care where *reading* sits. That is
+the whole point. Because the fields are private, the offsets are an
+implementation choice the class may revise; because a public field is a
+published offset in every compiled caller, exposing one converts a layout
+decision into part of the interface. Encapsulation is not politeness about
+naming — it is what makes the layout table above negotiable.
+
+## 6.5 Objects, References and What a Variable Holds
+
+A local variable of class type does not hold the object in most managed
+languages; it holds a **reference**, a machine word of $w = 8$ bytes pointing
+at the run of bytes described above. Assignment copies the word, not the
+bytes, so after
+
+    Sensor a = new Sensor();
+    Sensor b = a;
+
+there is one instance and two references to it. The cost of that assignment is
+8 bytes regardless of how large the instance is, which is the reason references
+exist and also the reason the aliasing defect in section 13 is possible at all.
+
+| Quantity | Symbol | Value here |
+|---|---|---|
+| Header | $h$ | 8 bytes |
+| Payload | $\\sum s_k$ | 22 bytes |
+| Instance, declared order | $S$ | 40 bytes |
+| Instance, widest first | $S$ | 32 bytes |
+| Reference | $w$ | 8 bytes |
+| Cache line | $B$ | 64 bytes |`,
+      examTip: 'Field order changes object size because each field must start at a multiple of its own alignment. Sorting fields widest-first minimises padding; the exam version of this asks you to compute the object size from a declaration.',
+      importantNote: 'A public field publishes a byte offset into every compiled caller. That is why encapsulation is a layout decision as much as a design one: private fields can be reordered, retyped or computed on demand, and public ones cannot.',
+    },
+    { id: 'oop-dispatch', title: '7. Dispatch: What a.speak() Actually Costs',
+      content: `## 7.1 The Vtable, as Address Arithmetic
+
+Section 3.3 said the runtime type decides which override runs, and named the
+mechanism a vtable pointer. Here is the mechanism itself. Every class with
+virtual methods owns one **virtual function table**: an array of code
+addresses, one slot per virtual method, in a slot order fixed by the base
+class and inherited by every subclass. Each instance carries a pointer to its
+own class table in the header.
+
+A call therefore takes three steps. Given the object address $o$, the machine
+word size $w$ and the slot index $m$ assigned to the method at compile time:
+
+$$V = M[\\,o\\,] \\qquad \\text{(load the table address from the header)}$$
+
+$$A_m = V + w\\,m \\qquad \\text{(index the table)}$$
+
+$$f = M[\\,A_m\\,] \\qquad \\text{(load the target and jump to it)}$$
+
+With $w = 8$ and a table based at 0x4000, slot 0 sits at 0x4000, slot 1 at
+0x4008 and slot 5 at 0x4028. Nothing is searched and nothing is compared: the
+slot index is a constant the compiler already knows, so dispatch is two
+dependent loads and an indirect jump, whatever the depth of the hierarchy.
+**Dynamic dispatch is O(1) in the number of subclasses**, which is the fact
+that makes polymorphism affordable.
+
+## 7.2 Costing It
+
+Take as model parameters, in cycles on a machine where the loads hit the
+first-level cache: a direct call $t_c = 1$, a cached load $t_L = 4$, an
+indirect jump $t_i = 2$, and a mispredicted indirect jump costing an extra
+$C_{\\mathrm{miss}} = 15$. A direct call to a body of $t_b$ cycles costs
+
+$$T_{\\mathrm{d}} = t_c + t_b$$
+
+and the virtual call adds the two loads and the indirection:
+
+$$T_{\\mathrm{v}} = t_c + 2 t_L + t_i + t_b$$
+
+so the overhead is the constant
+
+$$\\Delta = 2 t_L + t_i = 2 \\times 4 + 2 = 10 \\ \\text{cycles}$$
+
+What varies is not the overhead but its **share**:
+
+$$\\rho(t_b) = \\frac{\\Delta}{t_c + t_b}$$
+
+![Dispatch overhead as a percentage of the direct call, against the number of cycles executed inside the method body, on logarithmic axes. The monomorphic virtual call falls from 500 per cent at a one-cycle body through 10 per cent at a hundred-cycle body; the megamorphic curve with three calls in four mispredicted sits about a factor of two above it throughout.](/courses/fe-ee/figures/sw3-dispatch-overhead.svg)
+
+## 7.3 Worked Example 7A: The Overhead at Three Body Sizes
+
+A trivial accessor whose body is a single load, $t_b = 4$: direct cost
+$1 + 4 = 5$ cycles, virtual cost $5 + 10 = 15$, so
+$\\rho = 10 / 5 = 2.0$ — the dispatch costs twice as much as the work.
+
+A small method, $t_b = 12$: direct $1 + 12 = 13$, virtual $13 + 10 = 23$, and
+$100 \\times 10 / 13 = 76.9$ per cent overhead.
+
+A method that does something, $t_b = 100$: direct $1 + 100 = 101$, virtual
+111, and $10 / 101 = 0.099$, under ten per cent. Inverting
+
+$$t_b^{\\ast} = \\frac{\\Delta}{\\rho^{\\ast}} - t_c$$
+
+at $\\rho^{\\ast} = 0.10$ gives $t_b^{\\ast} = 99$, so the first integer body
+length whose overhead is genuinely below a tenth is 100 cycles. **The rule of
+thumb this licenses: virtual dispatch is negligible on methods that do real
+work and dominant on one-line accessors.** That is why accessors are the
+methods worth declaring non-virtual, and why a hot inner loop that calls a
+one-line virtual getter a hundred million times is a legitimate target for
+redesign.
+
+## 7.4 Worked Example 7B: A Megamorphic Call Site
+
+A call site is **monomorphic** when only one concrete type ever arrives there,
+and the processor predicts the indirect jump correctly. It is **megamorphic**
+when many do. Adding a misprediction probability $p$:
+
+$$T_{\\mathrm{m}} = T_{\\mathrm{v}} + p\\,C_{\\mathrm{miss}}$$
+
+At $t_b = 12$ and $p = 0.75$ the virtual call costs $23 + 11.25 = 34.25$
+cycles against 13 direct, so the overhead is
+$100 \\times 21.25 / 13 = 163.5$ per cent — more than double the monomorphic
+figure. Nothing about the source changed; only the mix of types flowing
+through it did.
+
+## 7.5 Worked Example 7C: Putting It in Program Terms
+
+A rendering loop issues $N = 2 \\times 10^{8}$ virtual calls per frame batch on
+a 3 GHz core. The extra cycles are $N\\Delta$, and the extra wall time is
+
+$$\\Delta t = \\frac{N \\Delta}{f_{\\mathrm{clk}}}$$
+
+which is $2 \\times 10^{9}$ cycles, or 0.667 seconds. Whether that matters
+depends entirely on the frame budget, and the point of the calculation is that
+the question is answerable rather than a matter of taste.
+
+## 7.6 Static Against Dynamic, Side by Side
+
+| | Static dispatch (overload) | Dynamic dispatch (override) |
+|---|---|---|
+| Decided by | The declared types of the arguments | The runtime type of the receiver |
+| Decided when | Compile time | Run time |
+| Mechanism | Name mangling and a direct call | Header pointer, table index, indirect jump |
+| Cost here | $t_c + t_b$ | $t_c + 2t_L + t_i + t_b$ |
+| Inlinable | Always | Only after devirtualisation proves the type |
+| Cost of a deeper hierarchy | None | None |
+
+The last row is worth dwelling on, because the intuition is usually wrong.
+Adding five levels to a hierarchy does not slow dispatch down at all: the slot
+index is resolved statically and the table for the most derived class already
+holds the final address. What a deep hierarchy costs is comprehension and
+fragility, not cycles.
+
+## 7.7 The Cost of Not Having Dispatch
+
+A language without virtual dispatch writes the same behaviour as a switch on a
+type tag. That version is not free either: it costs a load of the tag, a bounds
+check and a jump through a table — the same shape of work — and it additionally
+requires that every such switch be edited whenever a type is added. Dispatch
+moves a cost that would otherwise be paid in source edits into a cost paid in
+two loads.`,
+      examTip: 'A virtual call is one load of the vtable pointer, one indexed load of the slot, and an indirect jump: constant cost regardless of hierarchy depth. Overloading is resolved at compile time from the argument types and costs nothing extra.',
+      importantNote: 'The dispatch overhead is a fixed number of cycles, so its significance is inversely proportional to the size of the method body. It is negligible on real work and can exceed 100 per cent on a one-line accessor.',
+    },
+    { id: 'oop-invariants', title: '8. Encapsulation: Invariants Are the Point',
+      content: `## 8.1 An Invariant Is a Predicate on the State
+
+The usual justification for private fields — "hiding the internals" — is too
+weak to act on, because it does not say what goes wrong when they are public.
+The precise statement is this. A class defines a predicate $I$ over its own
+state that must hold before and after every public operation. That predicate is
+the **class invariant**, and encapsulation exists to make it enforceable.
+
+A bounded buffer with a fill level $b$ and a capacity $c$ has the invariant
+
+$$I(\\sigma)  \\equiv  \\bigl(0 \\le b \\le c\\bigr)$$
+
+If both are public fields, the set of states the outside world can produce is
+the whole Cartesian product of their ranges:
+
+$$\\lvert \\mathcal{S}_{\\mathrm{pub}} \\rvert = \\prod_{k} n_k$$
+
+whereas the states the class is prepared to behave correctly in are only
+
+$$\\lvert \\mathcal{S}_{\\mathrm{ok}} \\rvert = \\bigl\\lvert \\{\\sigma : I(\\sigma)\\} \\bigr\\rvert$$
+
+## 8.2 Worked Example 8A: Counting the Illegal States
+
+Let $b$ and $c$ each be one unsigned byte, so $n_b = n_c = 256$ and
+
+$$\\lvert \\mathcal{S}_{\\mathrm{pub}} \\rvert = 256 \\times 256 = 65{,}536$$
+
+The states satisfying $b \\le c$ are the pairs with $b$ at or below $c$, which
+is the triangular number
+
+$$\\lvert \\mathcal{S}_{\\mathrm{ok}} \\rvert = \\frac{256 \\times 257}{2} = 32{,}896$$
+
+so the legal fraction is $32{,}896 / 65{,}536 = 0.502$. **Just under half of
+the states reachable through public fields are states the class has no defined
+behaviour for.** Making the fields private and routing every change through
+methods that re-establish $I$ shrinks the reachable set from 65,536 to 32,896
+by construction, and does so once, in one file, rather than at every call site.
+
+## 8.3 Worked Example 8B: Why One Careful Caller Is Not Enough
+
+Suppose the fields stay public and every write site is expected to check the
+invariant by hand. If each of $k$ write sites is checked correctly with
+probability $p$, the probability that the whole program preserves the invariant
+is
+
+$$P = p^{\\,k}$$
+
+With a generous $p = 0.98$ and $k = 30$ write sites, $P = 0.98^{30} = 0.545$ —
+a coin flip. At $k = 60$ it is 0.297. The exponent is the argument: **manual
+discipline degrades geometrically in the number of places it must be applied,
+and a compiler-enforced boundary does not degrade at all.**
+
+| Enforcement | Places it must hold | Failure probability at $p = 0.98$ |
+|---|---|---|
+| Private field, one setter | 1 | 0.020 |
+| Public field, 10 write sites | 10 | 0.183 |
+| Public field, 30 write sites | 30 | 0.455 |
+| Public field, 60 write sites | 60 | 0.702 |
+
+## 8.4 The Access Levels, Restated as Scope of Obligation
+
+Section 5.1 listed the four access modifiers. Read them again as answers to the
+question *who is obliged to preserve the invariant*:
+
+| Modifier | Who must preserve $I$ | Size of the obligation |
+|---|---|---|
+| private | The declaring class only | One file |
+| package | Every class in the module | One directory |
+| protected | Every subclass, everywhere, forever | Unbounded |
+| public | Every caller, everywhere, forever | Unbounded |
+
+Protected is the row people misread. A protected field is very nearly as
+exposed as a public one, because a subclass may be written by anyone at any
+time, and each new subclass is a new place the invariant can be broken. That is
+one concrete strand of the fragile base class problem in the next section.
+
+## 8.5 Getters Are Not Encapsulation
+
+Wrapping every private field in a getter and a setter that do nothing
+reproduces a public field with more typing. The test of whether a boundary is
+real is whether the class could change how the value is stored without any
+caller noticing. A temperature class that stores kelvin and exposes
+degreesCelsius passes that test; one that stores celsius and exposes
+getCelsius and setCelsius does not, because the setter admits every value the
+field admits and the invariant is back in the callers.`,
+      examTip: 'Encapsulation exists to make a class invariant enforceable in one place. If you can name the predicate the class maintains, you can say exactly what a public field would cost.',
+      importantNote: 'Protected is much closer to public than to private: the obligation to preserve the invariant passes to every subclass ever written, and that set is unbounded. Prefer private fields with protected accessors when an extension point is genuinely needed.',
+    },
+    { id: 'oop-inherit-compose', title: '9. Inheritance Against Composition, and the Fragile Base Class',
+      content: `## 9.1 Two Costs Inheritance Charges
+
+Section 3.2 gave the qualitative comparison. Two of its rows can be turned into
+numbers, and both are worth having.
+
+**The first is duplication in the layout.** When a class derives from two bases
+that themselves share a base, the shared base appears once for every distinct
+path through the inheritance graph. Writing $c(X)$ for the number of copies of
+the root inside an instance of $X$:
+
+$$c(X) = \\sum_{B \\,\\in\\, \\mathrm{bases}(X)} c(B), \\qquad c(\\mathrm{root}) = 1$$
+
+**The second is the size of the hierarchy itself.** If a family of objects
+varies along $k$ independent axes with $n_i$ options on axis $i$, a hierarchy
+that models each combination as its own class needs
+
+$$N_{\\mathrm{sub}} = \\prod_{i=1}^{k} n_i$$
+
+classes, while a design that holds one component per axis needs
+
+$$N_{\\mathrm{parts}} = \\sum_{i=1}^{k} n_i$$
+
+## 9.2 Worked Example 9A: The Diamond, Counted
+
+Class A holds 24 bytes of state. B and C each derive from A, and D derives
+from both. Enumerating the paths from D to A gives exactly two, D-B-A and
+D-C-A, so $c(D) = 2$ and an instance of D contains
+$2 \\times 24 = 48$ bytes of A where the programmer expected 24. Two consequences
+follow immediately: an A field written through the B path is not the one read
+through the C path, and an upcast from D to A is ambiguous and will not
+compile.
+
+Stack a second diamond — E also deriving from B and C, and F deriving from D
+and E — and the path enumeration returns four, so $c(F) = 4$. The growth is
+the number of distinct routes through the graph, not the number of levels.
+
+**Virtual inheritance** collapses the copies back to one, at the price of an
+extra indirection to reach the shared base, because its offset can no longer be
+a compile-time constant. Languages that allow only single inheritance of
+implementation, plus any number of interfaces, avoid the question entirely:
+with one implementation parent there is only ever one path.
+
+The other thing a diamond forces is a **method resolution order** — a total
+ordering of the classes searched when a name is looked up. The C3
+linearisation, computed for this diamond, is D, B, C, A: the derived class
+first, then the bases in declaration order, then the shared root exactly once
+and last. That last property is what makes the ordering usable — a base never
+precedes something that derives from it.
+
+## 9.3 Worked Example 9B: Class Explosion in a Vehicle Catalogue
+
+A catalogue varies along three independent axes: four body styles, three
+drivetrains and five fuel systems. Modelling every combination as a class
+requires $4 \\times 3 \\times 5 = 60$ classes, and the enumeration of the
+Cartesian product confirms it exactly. Holding one component per axis requires
+$4 + 3 + 5 = 12$, a ratio of $60 / 12 = 5$.
+
+![Classes to write against the number of independent axes of variation, on a logarithmic axis, for three options on each axis. Subclasses follow a product and reach 729 at six axes; components follow a sum and reach 18. The worked vehicle case of sixty subclasses against twelve components is marked at three axes.](/courses/fe-ee/figures/sw3-class-explosion.svg)
+
+The ratio $\\prod n_i / \\sum n_i$ is 1.5 at two axes of three, 3 at three
+axes, 6.75 at four and 40.5 at six. **The gap is not a matter of taste; it is
+the difference between a product and a sum**, and it is the mechanical content
+of the advice to favour composition. Adding a sixth fuel system costs one class
+under composition and twelve under the hierarchy.
+
+## 9.4 The Fragile Base Class, on a Real Hierarchy
+
+Here is the failure in its smallest honest form. A collection base class offers
+two methods:
+
+    class Bag:
+        add(item):        store item; count = count + 1
+        addAll(items):    for each item in items: add(item)
+
+A subclass wants to count everything ever inserted:
+
+    class CountingBag extends Bag:
+        addAll(items):    inserted = inserted + size(items)
+                          super.addAll(items)
+
+Insert a list of five items. Bag.addAll calls this.add five times, which is
+CountingBag.add — but CountingBag did not override add, so nothing is
+double-counted and the tally is 5. Correct.
+
+Now the base class is optimised in a later release. addAll is rewritten to copy
+the items in bulk rather than calling add. The subclass still adds 5 for the
+batch, and now nothing else counts anything, so the tally is still 5. Also
+correct — by luck.
+
+Reverse the subclass instead: override add rather than addAll.
+
+    class CountingBag extends Bag:
+        add(item):        inserted = inserted + 1
+                          super.add(item)
+
+Under the original base class, addAll calls add five times and the tally is 5.
+Under the optimised base class, addAll never calls add and the tally is 0 — the
+counter silently stops counting. And a maintainer who, seeing that, defensively
+overrides **both** methods gets 5 from the batch plus 5 from the individual
+calls: a tally of 10, a 100 per cent error, from a change in a file the
+subclass author never saw.
+
+| Base class behaviour | Subclass overrides | Tally for 5 items | Correct? |
+|---|---|---|---|
+| addAll calls add | add only | 5 | Yes |
+| addAll copies in bulk | add only | 0 | No |
+| addAll calls add | addAll only | 5 | Yes |
+| addAll calls add | add and addAll | 10 | No |
+
+**The defining property of the fault: nothing in the subclass changed, and
+nothing in the base class interface changed.** What changed was an internal
+implementation detail — whether one public method happens to call another —
+which inheritance silently made part of the contract. Composition has no such
+failure mode, because a wrapper that holds a Bag and forwards to it sees only
+the public methods it calls, never the base class calling itself.
+
+## 9.5 Worked Example 9C: How Likely Is a Break?
+
+Model a base class release as independently endangering each subclass with
+probability $q$. Over $d$ subclasses the chance that at least one breaks is
+
+$$P_{\\mathrm{break}} = 1 - (1 - q)^{d}$$
+
+At a modest $q = 0.05$ and $d = 4$ subclasses this is 0.185; at $d = 20$ it is
+0.642; at $d = 40$ it is 0.871. This is the quantitative content of the advice
+to keep inheritance hierarchies shallow **and narrow**: the exposure grows with
+the number of subclasses, and the base class author cannot see any of them.
+
+## 9.6 When Inheritance Is Still Right
+
+| Situation | Use | Because |
+|---|---|---|
+| A genuine is-a with substitutable behaviour | Inheritance | The subtype passes every test written against the base |
+| Shared behaviour across unrelated types | Interface | No implementation is being inherited, so nothing is fragile |
+| Reuse of an implementation | Composition | The wrapper depends only on the public interface |
+| Varying along several independent axes | Composition | A sum instead of a product |
+| Framework extension points | Inheritance, with the protocol documented | The base class states which methods call which |
+
+The last row is the escape hatch. Inheritance is safe when the base class
+**documents its self-calls** — states which of its methods are template methods
+and which are hooks. What makes the base class fragile is not inheritance but
+an undocumented internal protocol.`,
+      examTip: 'Count paths, not levels: a base class appears once per distinct path through the inheritance graph, so a diamond gives two copies and stacked diamonds give four. Virtual inheritance collapses them at the cost of an indirection.',
+      importantNote: 'The fragile base class fault has a signature: no change to the subclass, no change to the base class interface, and a wrong answer. It happens because inheritance turns which-method-calls-which into part of the contract.',
+    },
+    { id: 'oop-liskov', title: '10. Liskov Substitution as a Checkable Condition',
+      content: `## 10.1 The Condition, Stated So It Can Be Tested
+
+Section 5.3 gave the informal Liskov rule: a subtype must be usable wherever
+its base type is. Informal is not checkable. The testable form is three
+implications on the contract of every overridden method, plus one on the class
+invariant.
+
+**Preconditions may be weakened, never strengthened** — a subtype must accept
+everything the base accepted:
+
+$$P_{\\mathrm{base}}  \\Rightarrow  P_{\\mathrm{sub}}$$
+
+**Postconditions may be strengthened, never weakened** — a subtype must promise
+at least what the base promised:
+
+$$Q_{\\mathrm{sub}}  \\Rightarrow  Q_{\\mathrm{base}}$$
+
+**The invariant must be preserved**:
+
+$$I_{\\mathrm{sub}}  \\Rightarrow  I_{\\mathrm{base}}$$
+
+The first two point in opposite directions, which is the part worth
+memorising. Parameters are **contravariant** and results are **covariant**,
+because the caller was written against the base and may pass anything the base
+allowed and may rely on anything the base guaranteed.
+
+There is a fourth rule that catches the cases the first three miss. The
+**history constraint**: a subtype may not permit state changes that the base
+type forbids. A mutable subclass of an immutable base violates substitutability
+even though every individual method signature checks out, because a caller
+holding the base type reasonably assumes the value it read stays read.
+
+| Element | Base to subtype | Name | Failure looks like |
+|---|---|---|---|
+| Precondition | May only weaken | Contravariance | The subtype rejects an input the base accepted |
+| Postcondition | May only strengthen | Covariance | The subtype returns less than the base promised |
+| Invariant | Must be implied | Preservation | The subtype admits a state the base forbids |
+| Mutability | May not be added | History constraint | An immutable base gains a mutable subtype |
+| Exceptions | May only narrow | Contravariance | The subtype throws something the caller cannot catch |
+
+## 10.2 Worked Example 10A: Violating It on Purpose
+
+Take the rectangle. Its setWidth carries the postcondition that the height is
+untouched, so the area afterwards is
+
+$$Q_{\\mathrm{base}}:\\quad A' = w' h$$
+
+where $h$ is the height before the call. Square inherits from Rectangle and
+overrides setWidth to keep the sides equal, so its actual postcondition is
+
+$$Q_{\\mathrm{sub}}:\\quad A' = w'^{\\,2}$$
+
+The implication $Q_{\\mathrm{sub}} \\Rightarrow Q_{\\mathrm{base}}$ requires
+$w'^{2} = w' h$ for every $w'$, which holds only when $w' = h$. The condition
+fails, so the subtype is not substitutable — and this is now a fact, not an
+opinion.
+
+Running the two classes bears it out. Starting from a $5 \\times 4$ shape and
+calling setWidth(10):
+
+| Receiver | Height before | Area promised | Area delivered | Error |
+|---|---|---|---|---|
+| Rectangle | 4 | 40 | 40 | 0 |
+| Square | 4 | 40 | 100 | 60 |
+
+![Area after setWidth against the requested width, for a shape that starts five by four. The straight line is what the Rectangle base class promises, four times the new width; the curve is what a Square actually delivers, the new width squared. The two cross only where the requested width equals the original height of four.](/courses/fe-ee/figures/sw3-lsp-square.svg)
+
+## 10.3 Worked Example 10B: How Big the Error Gets
+
+The relative error of the subtype against the base promise is
+
+$$\\varepsilon(w') = \\frac{w'^{\\,2} - w' h}{w' h} = \\frac{w'}{h} - 1$$
+
+which is zero at $w' = h$ and grows without bound thereafter. On the $h = 4$
+shape: setWidth(4) gives $\\varepsilon = 0$, setWidth(8) gives 1.00,
+setWidth(10) gives 1.50 and setWidth(20) gives 4.00.
+
+The first row is the trap. **A test suite that happens to exercise the case
+$w' = h$ passes**, and the defect ships. This is the general shape of a Liskov
+violation: it is not a crash but a silent disagreement that shows up only on
+inputs nobody chose deliberately.
+
+## 10.4 The Repairs
+
+There are exactly three honest fixes, and choosing between them is the exam
+question:
+
+| Repair | What it changes | When to use it |
+|---|---|---|
+| Make the base immutable | Removes setWidth, so there is no postcondition to break | Value-like geometry |
+| Break the inheritance link | Square and Rectangle both implement a Shape interface | The behaviours genuinely differ |
+| Weaken the base postcondition | Rectangle no longer promises the height is untouched | Almost never; it weakens every existing caller |
+
+The third is listed to be rejected. Weakening a base class contract to
+accommodate a subtype fixes the type check by breaking every caller that was
+relying on the original promise — the defect is not removed, only moved
+somewhere with no compiler to catch it.
+
+## 10.5 Liskov Against the Other Four Letters
+
+Liskov is the principle that makes the others cash out. Open-closed depends on
+it: extending a system by adding a subtype is only safe if the subtype
+substitutes. Dependency inversion depends on it: depending on an abstraction is
+only useful if every implementation honours the abstraction's contract.
+Interface segregation is partly a way of achieving it, because a smaller
+interface has fewer promises for a subtype to break. **Substitutability is the
+property; the other principles are ways of arranging code so that it holds.**`,
+      examTip: 'Preconditions weaken and postconditions strengthen going down a hierarchy. If a subtype refuses an input the base accepted, or delivers less than the base promised, it is not substitutable, whatever the vocabulary says.',
+      importantNote: 'A Liskov violation is usually silent. Square passes every test that happens to set the width equal to the current height, so the defect survives testing and appears in production on an input nobody thought about.',
+    },
+    { id: 'oop-coupling', title: '11. Coupling and Cohesion, Measured on Two Designs',
+      content: `## 11.1 The Metrics Worth Computing
+
+Coupling and cohesion are usually taught as adjectives. They have definitions
+that produce numbers, and the numbers separate designs that the adjectives do
+not.
+
+For a module, count the modules it depends on, $C_e$ (efferent), and the
+modules that depend on it, $C_a$ (afferent). Then
+
+$$I = \\frac{C_e}{C_a + C_e}$$
+
+is **instability**, running from 0 for a module nothing depends on to 1 for a
+module that depends on everything and is depended on by nothing. For a package,
+with $N_a$ abstract types out of $N_c$ total,
+
+$$A = \\frac{N_a}{N_c}, \\qquad D = \\lvert A + I - 1 \\rvert$$
+
+$D$ is the distance from the line $A + I = 1$: stable packages should be
+abstract, unstable ones concrete, and a large $D$ marks a package that is
+either rigid and concrete or abstract and useless.
+
+For a whole system of $n$ modules with $E$ direct dependency edges, the density
+
+$$\\kappa = \\frac{E}{n(n-1)}$$
+
+says how much of the possible coupling has been used. Much more informative is
+the **propagation cost**: build the reachability matrix $R$, where $R_{ij} = 1$
+when module $i$ depends on module $j$ directly or through any chain, and take
+
+$$\\mathrm{PC} = \\frac{1}{n^{2}} \\sum_{i=1}^{n} \\sum_{j=1}^{n} R_{ij}$$
+
+The number a project manager actually wants is the average count of modules a
+change can reach, which is
+
+$$\\bar{r} = n \\cdot \\mathrm{PC}$$
+
+## 11.2 Worked Example 11A: One System, Two Designs
+
+An order-processing system has six modules: ui, order, price, tax, store and
+report. Design T lets each module call whatever it needs; design L arranges the
+same six into layers. The dependency lists are these:
+
+| Module | Design T depends on | Design L depends on |
+|---|---|---|
+| ui | order, price, tax, store, report | order |
+| order | price, tax, store, report | price, store |
+| price | tax, store | tax |
+| tax | store | — |
+| store | report | — |
+| report | order, price, tax, store | store |
+
+Design T has 17 edges out of $6 \\times 5 = 30$ possible, a density of 0.567;
+design L has 5, a density of 0.167. Walking the closure from every module — a
+breadth-first search per node, not a formula — fills 30 of the 36 cells of $R$
+in design T and 9 in design L, so
+
+$$\\mathrm{PC}_{T} = \\frac{30}{36} = 0.833, \\qquad \\mathrm{PC}_{L} = \\frac{9}{36} = 0.25$$
+
+a ratio of $30 / 9 = 3.333$. In operational terms, $\\bar{r}$ is 5.0 modules
+for design T and 1.5 for design L: **a change in the tangled design can reach
+five of the six modules, and the same change in the layered one reaches one and
+a half.**
+
+![Propagation cost as a percentage of ordered module pairs, against the number of modules, for a fully tangled system and for a strict layer chain. The tangled reference sits flat at one hundred per cent because every module lies on a cycle; the chain rises towards fifty per cent. The measured tangled design is marked at 83.3 per cent and the re-layered version of the same system at 25.0 per cent.](/courses/fe-ee/figures/sw3-propagation-cost.svg)
+
+Two rows of the instability table are worth reading. In design T, store has
+$C_e = 1$ and $C_a = 5$, so $I = 0.167$ — highly stable, five modules resting
+on it, exactly what a storage layer should be. But store also depends on
+report, and report depends back on order, which depends on store: there is a
+cycle, and it is the cycle that pushes the propagation cost to 83 per cent. In
+design L, store has $C_e = 0$ and $C_a = 2$, giving $I = 0$ and no cycle at
+all.
+
+## 11.3 Cohesion, and How to Measure It
+
+Cohesion asks the opposite question: do the things inside one module belong
+together? Take the class as a bipartite graph of methods and the fields they
+touch. Over the $\\binom{m}{2}$ method pairs, let $q$ be the number that share
+at least one field and $p$ the number that share none. Then
+
+$$\\mathrm{LCOM} = \\max\\bigl(0,  p - q\\bigr)$$
+
+is high for an incoherent class and zero for a coherent one. A sharper variant,
+**LCOM4**, is simply the number of connected components of that graph — which
+is to say, the number of classes that are actually hiding inside the one you
+wrote.
+
+$$\\mathrm{WMC} = \\sum_{i=1}^{m} c_i$$
+
+completes the picture by weighting each method by its own cyclomatic complexity
+$c_i$, so a class of five gnarly methods scores worse than one of five trivial
+ones.
+
+## 11.4 Worked Example 11B: Splitting a Class the Metric Chose
+
+A checkout class has seven methods over five fields:
+
+| Method | Fields it touches |
+|---|---|
+| addItem | items, total |
+| removeItem | items, total |
+| subtotal | items, total |
+| formatHtml | theme, locale |
+| formatText | theme, locale |
+| openSocket | conn |
+| sendReceipt | conn |
+
+There are $\\binom{7}{2} = 21$ method pairs. Enumerating them gives $q = 5$
+sharing pairs and $p = 16$ disjoint pairs, so
+$\\mathrm{LCOM} = 16 - 5 = 11$. Running a union-find over the same pairs
+returns **three** connected components — the cart methods, the formatters and
+the mailer — so $\\mathrm{LCOM4} = 3$.
+
+That is not a suggestion to refactor; it is a specification of the refactor.
+Split along the components and recompute: each of the three resulting classes
+has $p = 0$, so $\\mathrm{LCOM} = 0$ and $\\mathrm{LCOM4} = 1$. The metric
+found the seam, and it found it without anyone having an opinion about
+single responsibility.
+
+| Class | Methods | $p$ | $q$ | LCOM | LCOM4 |
+|---|---|---|---|---|---|
+| Original checkout | 7 | 16 | 5 | 11 | 3 |
+| Cart | 3 | 0 | 3 | 0 | 1 |
+| Formatter | 2 | 0 | 1 | 0 | 1 |
+| Mailer | 2 | 0 | 1 | 0 | 1 |
+
+## 11.5 Reading the Numbers Without Being Ruled by Them
+
+These metrics are diagnostics, not targets. A propagation cost of 83 per cent
+is a reliable sign that the module boundaries are not doing any work; a
+propagation cost of zero would mean the modules never talk, which is not a
+system. LCOM4 above one is a reliable sign that a class has more than one
+reason to change; LCOM4 of one on a class with forty methods is no evidence of
+anything. **Use them to find the places worth looking at, and then look.**`,
+      examTip: 'Instability is efferent coupling over total coupling: a module that depends on many and is depended on by none scores 1. Propagation cost is the fraction of module pairs joined by any dependency chain, and it is what a cycle destroys.',
+      importantNote: 'LCOM4 counts the connected components of the method-and-field graph, so it names how many classes are hiding inside one. It does not merely say cohesion is low; it says where to cut.',
+    },
+    { id: 'oop-patterns', title: '12. Patterns, Each With Its Problem Stated First',
+      content: `## 12.1 A Pattern Is a Named Answer
+
+A design pattern is only useful if the question comes first. The list below
+states the problem, then the answer, then the structural clue an exam question
+will show you. Section 3.1 introduced five of these; the treatment here adds
+the cost of not using them, which is what makes the choice an engineering
+decision rather than a preference.
+
+| Problem | Pattern | Structural clue |
+|---|---|---|
+| One resource must have exactly one instance | Singleton | Private constructor, static accessor |
+| Callers must not name the concrete class they get | Factory method | A creator returning a base type |
+| A family of related objects must be built consistently | Abstract factory | A factory interface with several create methods |
+| An algorithm must be swappable at run time | Strategy | An interface stored in a field and called |
+| Many objects must learn that one object changed | Observer | A subscriber list and a notify loop |
+| Behaviour must be added without subclass explosion | Decorator | A wrapper implementing the same interface it holds |
+| Two incompatible interfaces must work together | Adapter | A class implementing one interface over another |
+| A skeleton is fixed but some steps vary | Template method | A final method calling abstract hooks |
+| A huge number of objects share most of their state | Flyweight | An intrinsic state cache keyed by value |
+| An expensive or remote object needs a stand-in | Proxy | Same interface, lazy or remote delegate |
+
+## 12.2 Worked Example 12A: What Strategy Saves
+
+An invoicing system supports several discount rules, selected at run time. In
+the switch-statement version, the rule is chosen inside a conditional that
+appears at $k$ call sites — pricing, quoting, refunding, reporting, and so on.
+Adding a rule then costs
+
+$$\\Delta_{\\mathrm{switch}} = k \\ \\text{edited sites}$$
+
+In the strategy version each rule is a class implementing one interface, and
+adding a rule costs
+
+$$\\Delta_{\\mathrm{strategy}} = 1 \\ \\text{new file, 0 edited}$$
+
+At $k = 7$ call sites, that is seven opportunities to forget one against zero.
+This is the open-closed principle expressed as an edit count, and it is also
+where the price is paid: strategy costs one interface, one field, one indirect
+call per invocation, and a reader who must open two files to follow one
+decision.
+
+## 12.3 Worked Example 12B: Decorator Against Subclassing
+
+Three optional behaviours can be applied in any combination — logging,
+caching, compression. Subclassing every combination needs one class per
+non-empty subset, which is
+
+$$N_{\\mathrm{sub}} = 2^{k} - 1$$
+
+or 7 classes at $k = 3$ and 31 at $k = 5$. Decorators need $k$ classes, one per
+behaviour, and compose at run time to reach all
+
+$$N_{\\mathrm{comb}} = 2^{k}$$
+
+configurations including the bare one. Three wrapper classes cover eight
+configurations; five cover thirty-two. The catch, and it is a real one, is that
+the stack of wrappers is assembled somewhere the debugger will show as five
+identical-looking frames.
+
+## 12.4 Worked Example 12C: Observer Against Polling
+
+Forty components need to know when a shared document changes. Under polling at
+frequency $f$, with each check costing $\\tau$ of CPU time,
+
+$$T_{\\mathrm{poll}} = f\\, n\\, \\tau$$
+
+and under a push notification at the actual change rate $r$,
+
+$$T_{\\mathrm{push}} = r\\, n\\, \\tau$$
+
+With $n = 40$, $\\tau = 0.5$ microseconds, $f = 100$ per second and a real
+change rate of $r = 3$ per second, polling costs 2.0 milliseconds of CPU per
+second and pushing costs 0.06 — a ratio of $100 / 3 = 33.33$. The ratio is
+$f / r$ and nothing else, which is the useful form: **observer pays off exactly
+in proportion to how much more often you would have asked than the answer
+changed.**
+
+## 12.5 Worked Example 12D: Flyweight, and Its Break-Even
+
+A document editor represents each character as an object carrying its glyph
+outline. Storing the outline in every character costs
+
+$$M_{\\mathrm{plain}} = N s_i$$
+
+and sharing $u$ distinct glyph objects while each position keeps only a
+reference costs
+
+$$M_{\\mathrm{shared}} = N s_e + u\\, s_i$$
+
+With $s_i = 40$ bytes of intrinsic state, $s_e = 8$ bytes per position and
+$u = 96$ distinct glyphs, a two-million-character document costs
+$2{,}000{,}000 \\times 40 = 80{,}000{,}000$ bytes plainly and
+$2{,}000{,}000 \\times 8 + 96 \\times 40 = 16{,}003{,}840$ bytes shared — a
+saving of 80.0 per cent.
+
+![Memory against document length in millions of characters, comparing one whole object per character with ninety-six shared glyph objects plus eight bytes per position. At two million characters the plain representation costs eighty megabytes and the shared one sixteen.](/courses/fe-ee/figures/sw3-flyweight-memory.svg)
+
+Setting the two expressions equal gives the break-even length
+
+$$N^{\\ast} = \\frac{u\\, s_i}{s_i - s_e}$$
+
+which is $96 \\times 40 / 32 = 120$ characters. Below that the shared table
+costs more than it saves, which is the honest version of the pattern: it is a
+memory optimisation with a threshold, not a virtue.
+
+## 12.6 The Two Patterns Most Often Misused
+
+**Singleton** solves "exactly one instance must exist" and is routinely used
+for "it is convenient to reach this from anywhere". The second use is a global
+variable with extra ceremony: it hides a dependency from every constructor
+signature, it makes the object impossible to substitute in a test, and, as
+section 3.1 noted, the lazy version is not thread-safe without explicit care.
+
+**Inheritance-as-reuse** is the other. Extending a class purely to get at its
+methods is the fragile base class problem of section 9.4 invited in
+deliberately. The adapter and decorator patterns exist precisely so that reuse
+can be had through a public interface instead.`,
+      examTip: 'Identify a pattern from its structural clue: private constructor and static accessor is Singleton, an interface held in a field is Strategy, a wrapper implementing the interface it holds is Decorator, a subscriber list is Observer.',
+      importantNote: 'Every pattern has a price. Strategy costs an indirection and a second file; decorator costs debugger frames; flyweight only pays above a break-even length, which is 120 characters in the worked case.',
+    },
+    { id: 'oop-lifetime', title: '13. Object Lifetime, References and the Aliasing Bug',
+      content: `## 13.1 Two Objects or One?
+
+Because a variable of class type holds a reference, the question *how many
+objects are there* is not answered by counting variables. Writing
+$r \\mapsto o$ for "reference $r$ names object $o$", the number of live names
+for an object is
+
+$$\\mathrm{rc}(o) = \\bigl\\lvert \\{\\, r : r \\mapsto o \\,\\} \\bigr\\rvert$$
+
+Two references naming the same object are **aliases**, and every write through
+one is visible through the other. This is not a defect in itself — it is how a
+shared cache, a parent pointer and a dependency injection all work — but it is
+a defect whenever the code was written as though the two were independent.
+
+## 13.2 Worked Example 13A: The Aliasing Defect, Traced
+
+A scheduling class keeps a list of blackout dates and offers a method to hand
+them out:
+
+    class Schedule:
+        blackouts = [Jan 1, Jul 4]
+        getBlackouts():   return blackouts        # returns the reference
+
+A caller does something entirely reasonable:
+
+    dates = schedule.getBlackouts()
+    dates.add(Dec 25)                             # meant as a local addition
+
+The list now holds three dates, and so does the schedule, because there is one
+list with two names. Every subsequent query against the schedule answers
+differently, and nothing in the caller looks like a mutation of the schedule.
+Trace the reference count: after the call, $\\mathrm{rc} = 2$; after the add,
+still 2, and the object both names point at has changed.
+
+The three repairs, in increasing cost:
+
+| Repair | Cost per call | Protects against |
+|---|---|---|
+| Return an unmodifiable view | One small wrapper object | Modification through the returned name |
+| Return a shallow copy | One list allocation, $n$ reference copies | Structural change, not element mutation |
+| Return a deep copy | Every reachable object copied | Everything |
+
+## 13.3 Worked Example 13B: What a Deep Copy Costs
+
+A shallow copy duplicates the top-level object only, so its cost is the machine
+word or the one instance:
+
+$$T_{\\mathrm{shallow}} = S$$
+
+A deep copy duplicates everything reachable:
+
+$$T_{\\mathrm{deep}} = \\sum_{o \\,\\in\\, \\mathrm{reach}(x)} S_o$$
+
+For a graph of 5,000 nodes at 48 bytes each, the deep copy moves 240,000 bytes
+and the reference copy moves 8. The ratio is $240{,}000 / 8 = 30{,}000$, which
+is why "just copy it defensively" is advice with a hidden invoice. **Copy-on-
+write** splits the difference: readers share one representation, and the copy
+happens on the first write. With twelve readers and no writer, copy-on-write
+moves 240,000 bytes once instead of $12 \\times 240{,}000 = 2{,}880{,}000$.
+
+## 13.4 Lifetime: Who Destroys It, and When
+
+| Scheme | Freed when | Cost | Fails on |
+|---|---|---|---|
+| Manual | The programmer says so | None at run time | Leaks, double frees, use-after-free |
+| Scope-bound (RAII) | The owning scope exits | None at run time | Objects outliving any single scope |
+| Reference counting | $\\mathrm{rc}(o)$ reaches 0 | An increment and decrement per assignment | Cycles |
+| Tracing garbage collection | Unreachable from any root | Periodic pause, extra header word | Nothing, but timing is not the programmer's |
+
+The reference-counting failure is worth constructing. Give object A a field
+naming B and object B a field naming A, then drop every external name. Counting
+the references that remain: $\\mathrm{rc}(A) = 1$, held by B, and
+$\\mathrm{rc}(B) = 1$, held by A. Neither ever reaches zero, and neither is
+reachable from anywhere a program could use. **A cycle of two objects leaks
+under pure reference counting**, which is why counted schemes add either a
+cycle collector or a weak reference — a name that does not contribute to the
+count.
+
+## 13.5 Equality Is Two Questions
+
+Aliasing forces a distinction that trips up exam candidates. **Reference
+equality** asks whether two names denote the same object; **value equality**
+asks whether two objects carry the same data. A language that spells both with
+the same operator for objects and with different operators for primitives is
+the source of an entire genre of defect.
+
+The contract that must hold whenever value equality is redefined: equal objects
+must produce equal hash codes, or every hash-based container will lose them.
+Formally, for a hash function $H$,
+
+$$x = y  \\Rightarrow  H(x) = H(y)$$
+
+and the converse is explicitly not required — unequal objects may collide. The
+one-way direction is exactly the property a hash table needs, and it is the
+direction people forget when they override equality and leave the hash alone.
+
+## 13.6 Immutability Removes the Whole Category
+
+An object whose fields are set once at construction and never changed cannot be
+aliased into a defect, because there is no write to be visible through the
+other name. It is also free to share: the defensive copy of section 13.3 costs
+nothing when there is nothing to defend against. The price is an allocation per
+logical change, which is why immutable value types are the default for small
+records and mutable ones survive for large buffers.`,
+      examTip: 'Assignment of an object variable copies a reference, not the object. Returning an internal collection hands the caller a name for your own state; return an unmodifiable view or a copy instead.',
+      importantNote: 'Pure reference counting leaks cycles: two objects naming each other each keep a count of one forever. Tracing collectors do not have this problem because they ask what is reachable from a root, not how many names exist.',
+    },
+    { id: 'oop-problems-1', title: '14. Problem Set A: Layout, Dispatch and Substitutability',
+      content: `## 14.1 Problem Set A
+
+Work each one through before reading the answer. Every number below is
+reproducible from the models stated in sections 6 to 10.
+
+**A1.** A class on a 64-bit target has an 8-byte header and declares, in order,
+a 1-byte flag, an 8-byte double, a 2-byte short and a 4-byte int. Give the
+offsets, the object size and the padding.
+
+*Answer.* Placement from $o_1 = 8$: flag at 8. The double needs a multiple of
+8, so it goes at 16, leaving 7 bytes of padding. The short needs a multiple of
+2 and lands at 24. The int needs a multiple of 4, so it goes at 28, leaving 2
+bytes. It ends at 32, already a multiple of 8, so $S = 32$. Payload is
+$1 + 8 + 2 + 4 = 15$ and $P = 32 - 8 - 15 = 9$ bytes.
+
+**A2.** Reorder the same four fields to minimise the object, and state the
+saving.
+
+*Answer.* Widest first — double at 8, int at 16, short at 20, flag at 22 —
+ends at 23 and rounds up to 24. Padding is $24 - 8 - 15 = 1$ byte, and the
+object shrinks from 32 to 24. Across ten million instances that is 80 MB.
+
+**A3.** Using the cycle model of section 7.2, at what body length does a
+megamorphic call with a misprediction probability of 0.5 fall below 20 per cent
+overhead?
+
+*Answer.* The overhead is $\\Delta + p C_{\\mathrm{miss}} = 10 + 7.5 = 17.5$
+cycles. Setting $17.5 / (1 + t_b) = 0.20$ gives $1 + t_b = 87.5$, so
+$t_b = 86.5$ and the first integer body length that qualifies is 87 cycles.
+
+**A4.** A class D derives from B and C, both of which derive from A, and A
+carries 12 bytes. How many bytes of A does an instance of D contain, with and
+without virtual inheritance? What if D also derived from a third class E that
+derives from A?
+
+*Answer.* Enumerate paths. Two paths D-B-A and D-C-A give
+$2 \\times 12 = 24$ bytes without virtual inheritance and 12 with. Adding E
+gives three paths, so $3 \\times 12 = 36$ bytes without and still 12 with.
+
+**A5.** A product varies along four axes with 3, 4, 2 and 6 options. Compare
+the class count under a hierarchy with the component count under composition.
+
+*Answer.* $3 \\times 4 \\times 2 \\times 6 = 144$ classes against
+$3 + 4 + 2 + 6 = 15$ components, a ratio of 9.6. Adding a fifth option to the
+last axis takes the hierarchy to 168 and the composition to 16.
+
+**A6.** A subtype of a Stack overrides push so that it silently discards items
+once the stack holds 100. Which Liskov condition does it break, and give the
+implication that fails.
+
+*Answer.* The postcondition. The base promises
+$Q_{\\mathrm{base}}: \\mathrm{size}' = \\mathrm{size} + 1$ after a push, and
+the subtype delivers $\\mathrm{size}' = \\min(\\mathrm{size} + 1, 100)$.
+$Q_{\\mathrm{sub}} \\Rightarrow Q_{\\mathrm{base}}$ fails for every state with
+size 100, so the subtype is not substitutable. Note that no precondition was
+strengthened and no signature changed — the type checker sees nothing.
+
+**A7.** A base class release endangers each subclass independently with
+probability 0.04. A framework has 25 published subclasses. What is the chance
+at least one breaks, and how many subclasses would give an even chance?
+
+*Answer.* $P = 1 - 0.96^{25} = 0.640$. For an even chance, solve
+$0.96^{d} = 0.5$, giving $d = \\ln 0.5 / \\ln 0.96 = 16.98$, so 17 subclasses.
+
+**A8.** A bounded counter has a value and a limit, both 16-bit unsigned, with
+the invariant that the value never exceeds the limit. What fraction of the
+publicly reachable state space is legal?
+
+*Answer.* The full space is $65{,}536 \\times 65{,}536$ states. The legal
+states number $65{,}536 \\times 65{,}537 / 2$, so the legal fraction is
+$65{,}537 / 131{,}072 = 0.50000763$ — just over half, and it approaches one
+half as the width grows.`,
+      examTip: 'For a layout question, walk the fields in declaration order, round each offset up to the field alignment, then round the total up to the largest alignment present. Do not forget the header.',
+      importantNote: 'Problem A6 is the shape most Liskov questions take: the signatures match, the compiler is happy, and the postcondition implication fails on a state the tests did not reach.',
+    },
+    { id: 'oop-problems-2', title: '15. Problem Set B: Coupling, Cohesion, Patterns and Lifetime',
+      content: `## 15.1 Problem Set B
+
+**B1.** A module depends on four others and is depended on by one. Give its
+instability and say what kind of module the number describes.
+
+*Answer.* $I = 4 / (1 + 4) = 0.8$. It is close to maximally unstable: it
+depends on a great deal and almost nothing rests on it, which is the correct
+profile for a user interface or an application entry point and the wrong one
+for a shared library.
+
+**B2.** A system of eight modules has 14 direct dependency edges. Give the
+coupling density. If a closure walk fills 40 of the 64 cells of the
+reachability matrix, give the propagation cost and the average number of
+modules a change can reach.
+
+*Answer.* $\\kappa = 14 / 56 = 0.25$. The propagation cost is
+$40 / 64 = 0.625$ and the average reach is $8 \\times 0.625 = 5$ modules. Note
+how far the second number is from the first: only a quarter of the possible
+direct edges exist, and a change still reaches five modules in eight, because
+reachability compounds along chains.
+
+**B3.** A class has six methods. Four of them touch a shared field; the other
+two touch a different shared field and nothing else. Give $p$, $q$, LCOM and
+LCOM4.
+
+*Answer.* There are $\\binom{6}{2} = 15$ pairs. Within the group of four,
+$\\binom{4}{2} = 6$ pairs share; within the pair, 1 shares; across the groups,
+$4 \\times 2 = 8$ pairs share nothing. So $q = 7$, $p = 8$,
+$\\mathrm{LCOM} = 8 - 7 = 1$ and $\\mathrm{LCOM4} = 2$. LCOM4 is the more
+useful answer: there are two classes here.
+
+**B4.** Four optional behaviours must combine freely. How many decorator
+classes are needed, how many configurations do they reach, and how many
+subclasses would the same coverage need?
+
+*Answer.* Four decorator classes reach $2^{4} = 16$ configurations including
+the undecorated one. Subclassing every non-empty combination needs
+$2^{4} - 1 = 15$ classes, and each new behaviour would double that.
+
+**B5.** Sixty observers are notified of a value that changes 5 times a second.
+Polling would run at 250 Hz. Each check or notification costs 0.4 microseconds.
+Give both CPU costs and the ratio.
+
+*Answer.* $T_{\\mathrm{poll}} = 250 \\times 60 \\times 0.4$ microseconds per
+second, which is 6,000 microseconds or 6.0 milliseconds. $T_{\\mathrm{push}}$
+is $5 \\times 60 \\times 0.4 = 120$ microseconds. The ratio is
+$250 / 5 = 50$, exactly $f / r$, and the observer count cancels.
+
+**B6.** A flyweight scheme has 40 distinct intrinsic objects of 64 bytes and an
+extrinsic cost of 12 bytes per position. Find the break-even instance count and
+the saving at one million instances.
+
+*Answer.* $N^{\\ast} = 40 \\times 64 / (64 - 12) = 2560 / 52 = 49.23$, so from
+50 instances upward the scheme saves memory. At one million instances the plain
+form costs 64,000,000 bytes and the shared form
+$1{,}000{,}000 \\times 12 + 40 \\times 64 = 12{,}002{,}560$, a saving of 81.2
+per cent.
+
+**B7.** Three objects form a reference cycle, X names Y, Y names Z and Z names
+X, and no external name remains. Give each reference count and say what happens
+under reference counting and under tracing collection.
+
+*Answer.* Each count is 1, held by the previous object in the cycle. Under pure
+reference counting none reaches zero and all three leak. Under tracing
+collection none is reachable from a root, so all three are collected — the
+collector asks a reachability question, not a counting one.
+
+**B8.** A method returns the internal list backing a class. A caller sorts the
+returned list in place. State what has happened in terms of reference counts,
+and give the cheapest repair that prevents it.
+
+*Answer.* The return created a second name for one list, so
+$\\mathrm{rc} = 2$, and the in-place sort mutated the single object both names
+denote. The class invariant, if it depended on insertion order, is now broken
+with no line in the class having executed. The cheapest repair is an
+unmodifiable view: one small wrapper allocation per call, against a shallow
+copy at $n$ reference copies or a deep copy at every reachable byte.`,
+      examTip: 'Instability, propagation cost, LCOM and the pattern counts are all arithmetic. In the exam, compute rather than judge: the numbers separate designs that the adjectives do not.',
+      importantNote: 'In problem B2 the coupling density is 0.25 and the propagation cost is 0.625. Direct coupling always understates exposure, because reachability compounds along chains of dependencies.',
+    },
   ],
   keyTakeaways: [
     'Four pillars: encapsulation, inheritance, polymorphism, abstraction.',
@@ -3245,8 +4359,8 @@ Take this routine:
     2  while x > 0:
     3      if x is even:
     4          halve x
-    5      else:
-    6          decrement x
+           else:
+    5          decrement x
     6      continue the loop
     7  print done
 
@@ -3423,9 +4537,13 @@ shows where the shift-left effort pays:
 | **Escaping to production** | **3 %** | **6** |
 
 Six field defects at the 100× cost multiplier cost as much as 600 caught at
-review. Halving the review's effectiveness — moving 55 % to 27.5 % and pushing
-the difference downstream — roughly doubles the escape rate, and therefore
-roughly doubles the total cost of the release.
+review. Halving the review's effectiveness — moving 55 % to 27.5 % and leaving
+every later stage working exactly as hard as before — raises escapes from 6 to
+9.667, a factor of **1.611**, and raises the total defect cost by a factor of
+**1.524**. Section 11.3 recovers the per-stage efficiencies these counts imply
+and computes both figures; the point they make is that a multi-stage process is
+partly self-correcting, because the stages downstream of a weakened one simply
+receive more work and remove most of it.
 
 **Availability** closes the loop with the operations side:
 
@@ -3439,6 +4557,1253 @@ left, and the reason CI/CD pipelines are judged on how fast they can revert as
 well as how fast they can deploy.`,
       examTip: 'Verification asks "did we build it right" (against the spec); validation asks "did we build the right thing" (against the need). In the V-model only acceptance testing is validation — every other level is verification.',
       importantNote: 'Semantic versioning MAJOR.MINOR.PATCH is a compatibility contract: MAJOR breaks the interface, MINOR adds compatibly, PATCH fixes compatibly. Availability = MTTF/(MTTF+MTTR), so halving repair time improves uptime as much as doubling time-between-failures.',
+    },
+    { id: 'sdlc-phases-cost', title: '6. The Phases, Their Products, and the Cost-of-Change Curve',
+      content: `## 6.1 What Each Phase Is Obliged to Hand Over
+
+A lifecycle model is a schedule of **artefacts**, not a mood. Whatever the
+model, the same products have to exist before the next activity can start, and
+naming them is what makes a phase reviewable:
+
+| Phase | Product handed over | The question it settles |
+|---|---|---|
+| Concept and feasibility | Business case, constraint list | Is this worth building at all |
+| Requirements | Specification, acceptance criteria | What must be true when we are finished |
+| Architecture | Component and interface definitions | Who owns which decision |
+| Detailed design | Module specifications, data model | How each component meets its part |
+| Implementation | Source, unit tests, build scripts | Does the code exist and compile |
+| Integration | An assembled system, interface tests | Do the parts fit |
+| Verification | Test reports against the specification | Was it built right |
+| Validation | Acceptance evidence against the need | Was the right thing built |
+| Release | Baselined configuration, release notes | Exactly what is being shipped |
+| Operation and maintenance | Change requests, defect reports, patches | What has been learned in service |
+
+Waterfall runs those rows once, top to bottom. Iterative and agile methods run
+a subset of them repeatedly over a smaller scope. **The rows do not disappear
+in an iterative model; they get shorter and more frequent.** An agile team that
+skips acceptance criteria has not removed a phase, it has removed a product,
+and the cost of that shows up in section 7.
+
+## 6.2 The Cost of a Change, as a Model Rather Than a Slogan
+
+Section 3.3 quoted the familiar band of multipliers — roughly 1 at
+requirements rising to 100 or more in production. Those figures are **model
+parameters** drawn from Boehm's cost-of-change data as it is usually reported,
+and they should be treated as a calibration rather than a measurement of any
+particular project. What they let us do is build a model and then compute with
+it rather than gesture at it.
+
+Take the driver of cost to be the **elapsed time between the decision that
+caused the defect and the test that caught it**. Calibrate a geometric law so
+that a defect surviving a whole project of length $T$ costs $m$ times what it
+would have cost immediately:
+
+$$k(\\Delta) = m^{\\,\\Delta/T}$$
+
+With the quoted end point $m = 100$ and a project of $T = 20$ months, a change
+caught after $\\Delta = 0$ costs 1, after 3 months costs 1.9953, after 8 months
+costs 6.310, and after 16.5 months costs 44.668.
+
+## 6.3 Worked Example 6A: Waterfall Against Iterative, Priced
+
+A 20-month project absorbs 30 changes. Under a single waterfall pass, the
+requirements are written across the first three months (mean month 1.5) and
+system test runs over the last four (mean month 18), so the mean detection
+delay is $18 - 1.5 = 16.5$ months and each change is priced at
+$k(16.5) = 44.668$.
+
+Under iterations of length $L$, a change is caught within the same iteration,
+so the delay is at most $L - 1$ months. At $L = 4$ the multiplier is
+$k(3) = 1.9953$, and the ratio of the two regimes is
+$44.668 / 1.9953 = 22.39$.
+
+Iterating is not free. Each iteration costs a fixed overhead $\\omega$ for
+planning, regression and release, and there are $T/L$ of them, so the total
+cost over the project is
+
+$$C(L) = \\frac{T}{L}\\,\\omega + n\\,m^{(L-1)/T}$$
+
+With $n = 30$ changes and $\\omega = 6$ cost units per iteration:
+
+| Iteration length $L$ | Iteration overhead | Cost of change | Total |
+|---|---|---|---|
+| 1 month | 120.00 | 30.00 | 150.00 |
+| 2 months | 60.00 | 37.77 | 97.77 |
+| **3 months** | **40.00** | **47.55** | **87.55** |
+| 4 months | 30.00 | 59.86 | 89.86 |
+| 5 months | 24.00 | 75.36 | 99.36 |
+| 8 months | 15.00 | 150.36 | 165.36 |
+| 10 months | 12.00 | 238.30 | 250.30 |
+| 20 months (one pass) | 6.00 | 2,382.98 | 2,388.98 |
+
+![Total project cost against iteration length on a logarithmic axis, split into per-iteration overhead falling as one over the length, cost of change rising geometrically with it, and their sum. The sum has a clear minimum at three months and rises to 2,389 units for a single twenty-month pass.](/courses/fe-ee/figures/sw3-cost-of-change.svg)
+
+Three readings follow, and only the first is the one usually stated.
+
+1. The single-pass column is 27.29 times the optimum:
+   $2{,}388.98 / 87.55 = 27.29$. Almost all of that excess is rework, not work.
+2. **There is a minimum, and it is not at zero.** Iterating weekly costs 150
+   units here, more than iterating quarterly, because the overhead term
+   dominates. Agile is not the claim that shorter is always better; it is the
+   claim that the optimum is much shorter than a waterfall.
+3. The curve is flat near its base — 87.55 at three months against 89.86 at
+   four. **Getting the iteration length roughly right matters; getting it
+   exactly right does not.**
+
+## 6.4 Where the Models Actually Differ
+
+| | Waterfall | V-model | Spiral | Iterative or agile |
+|---|---|---|---|---|
+| Phase order | Once, sequential | Once, each phase paired with a test | Repeated risk-driven loops | Repeated full loops over a slice |
+| Requirements assumed | Complete and stable | Complete and stable | Discovered by risk analysis | Discovered by delivery |
+| Feedback arrives | At system test | At the paired test level | At each loop | At each iteration |
+| Contract shape | Fixed scope, fixed price | Fixed scope with staged evidence | Staged funding by risk | Fixed cadence, variable scope |
+| Effective $\\Delta$ | The project | The phase distance | The loop | The iteration |
+
+The last row is the whole comparison in one line. **What a lifecycle model
+really chooses is the value of $\\Delta$ in the cost equation of section 6.2.**
+Every other difference between the models follows from that choice.
+
+## 6.5 When Waterfall Is the Correct Answer
+
+The arithmetic above assumes changes arrive. Where they do not — a
+re-implementation of a fully specified protocol, a regulated device whose
+requirements are frozen by an approval authority, a subcontract whose interface
+is fixed by treaty — the cost-of-change term is small and the iteration
+overhead is pure loss. That is a real regime, and it is why the exam answer is
+never simply "agile".`,
+      examTip: 'A lifecycle model is a choice about how long a defect survives before something catches it. Compute the cost with k = m raised to the delay over the project length, and the comparison stops being a matter of opinion.',
+      importantNote: 'The total-cost curve has a minimum, not a monotone slope. Iterating weekly in the worked model costs 150 units against 87.55 at three months, because per-iteration overhead dominates when iterations are very short.',
+    },
+    { id: 'sdlc-requirements', title: '7. Requirements Engineering: Ambiguity Has a Price',
+      content: `## 7.1 What Makes a Requirement Testable
+
+A requirement is a claim about the finished system that someone must later be
+able to confirm or refute. Four properties make that possible, and a
+requirement failing any of them is a defect in the specification:
+
+| Property | Test for it | Failure looks like |
+|---|---|---|
+| Unambiguous | Two competent readers agree on the meaning | "The system shall respond quickly" |
+| Verifiable | A finite procedure decides it | "The interface shall be intuitive" |
+| Complete | No case is silently unhandled | Nothing said about an empty input |
+| Consistent | No other requirement contradicts it | Two clauses, two different timeouts |
+| Traceable | It has an identity carried into design and test | A paragraph with no number |
+
+## 7.2 Worked Example 7A: Counting the Readings of One Sentence
+
+Take a sentence that would pass a casual review:
+
+    The system shall alert the operator and log the event if a sensor
+    reading exceeds the limit or the checksum fails.
+
+Three independent ambiguities are present. Does *and* bind tighter than *if*,
+so is the logging conditional? Does *or* scope over both clauses or only the
+second? Does *the limit* mean the per-sensor limit or the global one? With each
+choice binary, the number of consistent readings is
+
+$$N_{\\mathrm{read}} = \\prod_{j=1}^{3} a_j = 2^{3} = 8$$
+
+Eight implementable systems, all faithful to the sentence, only one of which is
+wanted. The rewrite that removes them is longer and duller, and that is the
+point:
+
+    R-114. When a sensor reading exceeds that sensor's configured limit,
+           the system shall write an event record within 200 ms.
+    R-115. When a checksum verification fails, the system shall write an
+           event record within 200 ms.
+    R-116. On writing any event record, the system shall raise an operator
+           alert within 1 s.
+
+## 7.3 Worked Example 7B: Ambiguity Across a Whole Specification
+
+A specification has $r = 40$ requirements. Let $p$ be the probability that one
+requirement is read as intended. Treating the readings as independent, the
+probability the whole specification is implemented as meant is
+
+$$P_{\\mathrm{clean}} = p^{\\,r}$$
+
+and the expected number misread is
+
+$$E[w] = r\\,(1 - p)$$
+
+| $p$ | $P_{\\mathrm{clean}}$ | Expected misreadings |
+|---|---|---|
+| 0.99 | 0.6690 | 0.4 |
+| 0.97 | 0.2957 | 1.2 |
+| 0.95 | 0.1285 | 2.0 |
+| 0.90 | 0.0148 | 4.0 |
+
+At a very respectable 95 per cent per requirement, the chance of getting a
+40-requirement specification entirely right is 12.85 per cent, and
+$40 \\times 0.05 = 2$ requirements are expected to be wrong. Those two are not
+free. Caught at the requirements review they cost 2 units on the scale of
+section 3.3; caught during coding they cost $2 \\times 10 = 20$; caught in the
+field they cost 200.
+
+$$C_{\\mathrm{rework}} = E[w]\\,\\kappa_{\\mathrm{phase}}$$
+
+**The argument for spending a week on a requirements review is not that reviews
+are virtuous. It is that the review costs less than 18 units of rework, and the
+model says the exposure is 200.**
+
+## 7.4 Functional and Non-Functional, and Why the Second Bites
+
+| Kind | Asks | Example | Why it is missed |
+|---|---|---|---|
+| Functional | What shall it do | Compute the tariff for a meter reading | Visible in every demonstration |
+| Performance | How fast, how many | 500 readings per second at the 99th percentile | Only visible under load |
+| Reliability | How often may it fail | Mean time to failure of 720 hours | Only visible over time |
+| Security | What must it refuse | Reject an unsigned firmware image | Only visible under attack |
+| Maintainability | How cheaply may it change | A new tariff added without a release | Only visible years later |
+
+Non-functional requirements are the ones that are cheap to state and expensive
+to retrofit, because they constrain the architecture rather than a module. A
+throughput requirement discovered after integration is not a defect in a
+function; it is a defect in the choice of where the boundaries went, and the
+cost multiplier that applies to it is the architectural one.
+
+## 7.5 Traceability, and What It Is For
+
+A traceability matrix maps every requirement to the design elements that
+implement it and the tests that verify it. Two questions it answers that
+nothing else does: **which requirements have no test** (a coverage gap) and
+**which code exists for no requirement** (scope that nobody asked for). Both
+are cheap to find with the matrix and nearly impossible without it.
+
+| Requirement | Design element | Test case | Status |
+|---|---|---|---|
+| R-114 | EventWriter | T-31, T-32 | Verified |
+| R-115 | EventWriter | T-33 | Verified |
+| R-116 | AlertService | — | **No test** |
+
+The third row is the whole value of the table: it is a defect found by looking
+at a list, at a cost of 1 on the section 3.3 scale.`,
+      examTip: 'A requirement that cannot be tested is not a requirement. If you cannot write the pass or fail procedure in one sentence, the requirement is still ambiguous.',
+      importantNote: 'At 95 per cent per-requirement accuracy, a 40-requirement specification has only a 12.85 per cent chance of being entirely right, and two requirements are expected to be wrong. That is the arithmetic that pays for a requirements review.',
+    },
+    { id: 'sdlc-estimation', title: '8. Estimation: A COCOMO Model Worked End to End',
+      content: `## 8.1 The Basic Model
+
+Boehm's Constructive Cost Model estimates effort from size. Its published basic
+form is
+
+$$E = a\\,K^{\\,b}$$
+
+where $E$ is effort in person-months and $K$ is thousands of delivered source
+instructions, with a companion schedule equation
+
+$$T_d = c\\,E^{\\,d}$$
+
+and an implied average staffing level
+
+$$N = \\frac{E}{T_d}$$
+
+The four coefficients are model parameters, published by Boehm for three
+development modes and used here exactly as published:
+
+| Mode | $a$ | $b$ | $c$ | $d$ | Typical setting |
+|---|---|---|---|---|---|
+| Organic | 2.4 | 1.05 | 2.5 | 0.38 | A small experienced team, familiar problem |
+| Semi-detached | 3.0 | 1.12 | 2.5 | 0.35 | Mixed experience, medium constraints |
+| Embedded | 3.6 | 1.20 | 2.5 | 0.32 | Tight hardware, regulatory or interface constraints |
+
+The exponent $b$ exceeding 1 is the substantive claim: **effort grows faster
+than size**, so two projects of half the size are cheaper than one of the whole.
+
+## 8.2 Worked Example 8A: 42 KLOC, Three Modes
+
+A substation monitoring product is estimated at 42 KLOC. Evaluating all three
+rows:
+
+| Mode | Effort (person-months) | Schedule (months) | Average staff | Productivity (LOC per person-month) |
+|---|---|---|---|---|
+| Organic | 121.51 | 15.49 | 7.84 | 345.6 |
+| Semi-detached | 197.32 | 15.89 | 12.41 | 212.9 |
+| Embedded | 319.30 | 15.82 | 20.18 | 131.5 |
+
+![Effort in person-months against programme size in KLOC on logarithmic axes for the three basic COCOMO modes. All three are straight lines of slope greater than one, with embedded above semi-detached above organic, and the worked case of 42 KLOC semi-detached marked at 197.3 person-months.](/courses/fe-ee/figures/sw3-cocomo-effort.svg)
+
+Take the middle row as the estimate. Average staffing is the effort divided by
+the schedule, 12.41 people, and at a fully burdened 12,000 per person-month the
+labour cost is $197.32 \\times 12{,}000 = 2{,}367{,}840$.
+
+The column that repays study is the last one. Productivity is not a constant of
+the organisation; it falls from 345.6 to 131.5 lines per person-month purely
+because of which row the project sits in. **Quoting a productivity figure
+without naming the mode is quoting nothing.**
+
+Notice too that the schedule column barely moves — 15.49, 15.89 and 15.82
+months for efforts differing by a factor of 2.6. The model is saying that
+harder projects are staffed up rather than stretched out, which is both what
+organisations do and, as section 9 shows, a large part of why they struggle.
+
+## 8.3 Worked Example 8B: What Doubling the Code Does
+
+Doubling the size multiplies effort by
+
+$$\\frac{E(2K)}{E(K)} = 2^{\\,b}$$
+
+which for semi-detached is 2.1735. Explicitly, 84 KLOC gives 428.86
+person-months against 197.32, and $428.86 / 197.32 = 2.173$. Productivity falls
+from 212.9 to 195.9 lines per person-month — the same team writing the same
+code more slowly, because there is more of everything else.
+
+The local sensitivity is cleaner still. Since
+
+$$\\frac{\\mathrm{d}\\ln E}{\\mathrm{d}\\ln K} = b$$
+
+a 10 per cent size overrun costs $1.10^{1.12} = 1.1127$, or 11.3 per cent more
+effort, and the linear estimate $1 + 0.10 \\times 1.12 = 1.112$ agrees to
+within a tenth of a per cent. **The elasticity is the exponent**, which makes
+$b$ the single number worth arguing about in any estimate.
+
+## 8.4 Worked Example 8C: Cost Drivers and Their Swing
+
+Intermediate COCOMO multiplies the nominal effort by an effort adjustment
+factor, the product of fifteen rated cost drivers:
+
+$$E = a\\,K^{\\,b} \\prod_{i=1}^{15} c_i$$
+
+Rating four drivers away from nominal on this project:
+
+| Driver | Rating | Multiplier |
+|---|---|---|
+| Required software reliability | High | 1.15 |
+| Product complexity | High | 1.15 |
+| Analyst capability | High | 0.86 |
+| Use of software tools | Low | 1.10 |
+| All others | Nominal | 1.00 |
+
+$$\\mathrm{EAF} = 1.15 \\times 1.15 \\times 0.86 \\times 1.10 = 1.2511$$
+
+so the adjusted estimate is 246.86 person-months against a nominal 197.32.
+
+Now the sensitivity that matters for planning. Suppose the strong analysts are
+not available and that driver is re-rated from high (0.86) to very low (1.46).
+The estimate becomes 419.08 person-months, a factor of
+$1.46 / 0.86 = 1.698$. **One personnel driver moves the estimate by 70 per
+cent — more than the difference between organic and semi-detached.** That is
+the model's most useful message: in a size-driven estimate, the largest single
+lever is who is on the team.
+
+## 8.5 The Schedule Floor
+
+COCOMO carries a compression limit: schedules below about 75 per cent of the
+nominal $T_d$ are not achievable by adding people. On this project the nominal
+is 15.89 months, the floor is $0.75 \\times 15.89 = 11.92$ months, and holding
+the effort constant the staffing needed at the floor is
+$197.32 / 11.92 = 16.55$ people against 12.41.
+
+$$T_{\\min} = 0.75\\,T_d$$
+
+Asking for a 9-month delivery of this scope is therefore not an aggressive
+target; under the model it is outside the feasible region, and the honest
+response is to cut scope rather than to promise the date. The reason it is
+outside is the subject of the next section.`,
+      examTip: 'Basic COCOMO is E = a K^b with b greater than 1, so effort is superlinear in size. Learn the three coefficient rows, and remember that the schedule equation gives a duration, from which staffing is effort divided by duration.',
+      importantNote: 'Re-rating a single personnel cost driver from high to very low multiplies the estimate by 1.698 in the worked case. Size sets the scale of an estimate; the cost drivers decide whether it is right.',
+    },
+    { id: 'sdlc-team', title: '9. Team Size and the Communication Penalty',
+      content: `## 9.1 Why Adding People Stops Working
+
+The schedule floor in section 8.5 is not an arbitrary constant. Its cause is
+countable. A team of $n$ people has
+
+$$L = \\binom{n}{2} = \\frac{n(n-1)}{2}$$
+
+distinct pairs who may need to agree about something, and this is one of the
+few quantities in the chapter that can be verified simply by listing them:
+
+| Team size $n$ | Communication pairs $L$ | Pairs added by one more person |
+|---|---|---|
+| 3 | 3 | 3 |
+| 5 | 10 | 5 |
+| 8 | 28 | 8 |
+| 12 | 66 | 12 |
+| 20 | 190 | 20 |
+
+The right-hand column is the mechanism: the $n$-th person adds $n - 1$ new
+relationships, so the coordination load grows quadratically while the
+productive capacity grows linearly.
+
+## 9.2 Worked Example 9A: An Output Model With a Peak
+
+Give each person $\\alpha$ units of output and charge each communication pair
+$\\beta$ units of overhead. Net output is
+
+$$O(n) = \\alpha n - \\beta\\,\\frac{n(n-1)}{2}$$
+
+Differentiating and setting to zero gives the optimum
+
+$$n^{\\ast} = \\frac{\\alpha}{\\beta} + \\frac{1}{2}$$
+
+Take $\\alpha = 1$ and $\\beta = 0.12$, meaning each pairwise relationship costs
+about an eighth of one person's output. Then
+$1 / 0.12 + 0.5 = 8.83$, and scanning integer team sizes confirms the peak:
+
+| $n$ | $O(n)$ |
+|---|---|
+| 5 | 3.800 |
+| 8 | 4.640 |
+| **9** | **4.680** |
+| 10 | 4.600 |
+| 15 | 2.400 |
+| 20 | -2.800 |
+
+At $n = 9$, $9 - 0.12 \\times 36 = 4.68$. At $n = 20$ the coordination charge
+exceeds the whole team's output and the net contribution is negative.
+
+**The value of $\\beta$ is a modelling choice and not a measurement**, and the
+peak moves with it: $\\beta = 0.20$ puts the optimum at 5.5 people,
+$\\beta = 0.05$ at 20.5, and $\\beta = 0.02$ at 50.5. What survives the choice
+of $\\beta$ is the shape — a rise, a peak and a decline — and the design
+response, which is not to pick the right number of people but to **cut $\\beta$
+by cutting the pairs that need to agree**.
+
+## 9.3 What Actually Reduces the Coupling
+
+| Mechanism | What it removes | Cost |
+|---|---|---|
+| Split into sub-teams with a defined interface | Cross-team pairs, leaving one liaison pair | The interface must be designed first |
+| Publish an interface contract | The need to ask | Writing and maintaining it |
+| Code ownership | Pairs consulting about the same file | Bottlenecks on the owner |
+| Automated tests as the specification | Pairs asking "what should this do" | Test maintenance |
+
+Every row of that table is the same manoeuvre as section 11 of the
+object-oriented chapter: it lowers propagation cost. **Module boundaries and
+team boundaries are the same problem**, which is the operational content of the
+observation that a system's structure tends to mirror the structure of the
+organisation that built it.
+
+## 9.4 Worked Example 9B: The Late Project
+
+A project is four months behind at month 12 of a 16-month schedule and has 8
+people. Adding 4 more takes the pairs from 28 to 66 — 38 new relationships —
+and under the model of section 9.2 output moves from 4.640 to 4.400, a
+reduction. The new people also cannot contribute until they are trained, at a
+cost borne by the existing team.
+
+That is the arithmetic behind the well-known observation that adding people to
+a late project makes it later. It is not a universal law: it fails when the
+work genuinely partitions, when the new people arrive at the start of a phase,
+and when they are already familiar with the system. **What the model actually
+says is that headcount is a poor lever late, and scope is a good one.**`,
+      examTip: 'Communication pairs are n(n-1)/2, so the n-th person adds n-1 relationships. That quadratic against a linear output is the reason a schedule cannot be compressed indefinitely by adding staff.',
+      importantNote: 'The peak team size depends entirely on the assumed cost per communication pair, which is a modelling choice. What does not depend on it is the shape: output rises, peaks and then falls.',
+    },
+    { id: 'sdlc-coverage', title: '10. The Testing Pyramid and Coverage, Computed on a Real Function',
+      content: `## 10.1 The Pyramid, and Why It Is That Shape
+
+| Level | Typical share of the suite | Runs in | Catches |
+|---|---|---|---|
+| Unit | Many | Milliseconds | Logic errors inside one module |
+| Integration | Fewer | Seconds | Interface and contract mismatches |
+| System | Fewer still | Minutes | Emergent and configuration faults |
+| Acceptance and manual | Fewest | Hours or days | Whether the right thing was built |
+
+The shape follows from feedback delay, which is the same variable as section
+6.2. A unit test caught the defect $\\Delta$ seconds after it was written; an
+acceptance test catches it weeks later. **Inverting the pyramid — a thin unit
+layer under a heavy manual layer — raises $\\Delta$ for every defect in the
+system.**
+
+## 10.2 A Function to Measure
+
+Arguing about coverage in the abstract is how the subject becomes vague. Here
+is a real routine, with every statement labelled and every decision named:
+
+    classify(age, income, years, flagged):
+      s1:   score = 0
+      s2:   test   age >= 21                      -- decision d1
+      s3:      score = score + 10                 -- d1 true
+      s4:      score = score - 5                  -- d1 false
+      s5:   test   income >= 30000                -- decision d2
+              and  years  >= 2                    -- decision d3
+      s6:      score = score + 25                 -- both true
+      s7:      score = score + 5                  -- otherwise
+      s8:   test   flagged                        -- decision d4
+      s9:      score = 0                          -- d4 true
+      s10:  return score
+
+Ten statements, four decisions. Because the compound condition short-circuits,
+d3 is evaluated only when d2 is true, and that single fact drives most of what
+follows.
+
+## 10.3 The Three Criteria, Defined So They Can Be Computed
+
+$$\\mathrm{SC} = \\frac{s_{\\mathrm{hit}}}{s_{\\mathrm{total}}}, \\qquad \\mathrm{BC} = \\frac{b_{\\mathrm{hit}}}{2d}, \\qquad \\mathrm{PC} = \\frac{\\pi_{\\mathrm{hit}}}{\\pi_{\\mathrm{total}}}$$
+
+Statement coverage counts lines executed; branch coverage counts decision
+outcomes taken, of which there are $2d$; path coverage counts complete routes
+through the routine, of which there may be very many.
+
+## 10.4 Worked Example 10A: One Happy-Path Test
+
+Run classify(30, 50000, 5, false) and record what it touched. The trace is
+s1, s2, s3, s5, s6, s8, s10 — seven statements of ten, so
+$\\mathrm{SC} = 7 / 10 = 0.7$. The decision outcomes are d1 true, d2 true,
+d3 true and d4 false — four of the eight, so $\\mathrm{BC} = 4 / 8 = 0.5$.
+
+**Seventy per cent statement coverage from one test**, and every one of the
+error and rejection paths untouched. This is the sense in which statement
+coverage flatters a suite.
+
+## 10.5 Worked Example 10B: The Minimum Test Sets, Found by Search
+
+Searching combinations of a candidate pool and recording what each one covers
+gives two answers rather than one.
+
+**Two cases reach 100 per cent statement coverage:**
+
+| Case | age | income | years | flagged | Statements added |
+|---|---|---|---|---|---|
+| 1 | 30 | 50000 | 5 | false | s1, s2, s3, s5, s6, s8, s10 |
+| 2 | 18 | 20000 | 0 | true | s4, s7, s9 |
+
+Those same two cases reach only **seven of the eight** branch outcomes: d3
+false is never produced, because case 2 has an income below the threshold and
+short-circuits before d3 is reached.
+
+**Three cases are needed for 100 per cent branch coverage**, adding one that
+passes the income test and fails the years test:
+
+| Case | age | income | years | flagged | New outcome |
+|---|---|---|---|---|---|
+| 1 | 30 | 50000 | 5 | false | d1 true, d2 true, d3 true, d4 false |
+| 3 | 30 | 50000 | 1 | false | **d3 false** |
+| 2 | 18 | 20000 | 0 | true | d1 false, d2 false, d4 true |
+
+That set also happens to reach all ten statements. **Branch coverage subsumes
+statement coverage and the converse is false**, which is exactly what these two
+tables demonstrate rather than assert.
+
+## 10.6 Worked Example 10C: Paths, Enumerated and Counted
+
+Draw the control-flow graph of classify. Its nodes are entry, d1, s3, s4, d2,
+d3, s6, s7, d4, s9 and exit, so $N = 11$; note that s7 does double duty as the
+join for both ways of failing the income test, since d2 false and d3 false both
+arrive there. Its edges are entry to d1; d1 to s3 and to s4; s3 and s4 to d2;
+d2 to d3 and to s7; d3 to s6 and to s7; s6 and s7 to d4; d4 to s9 and to exit;
+and s9 to exit — so $E = 14$. Then
+
+$$V(G) = E - N + 2P = 14 - 11 + 2 = 5$$
+
+which agrees with the decision count plus one, $4 + 1 = 5$.
+
+Enumerating every complete route from entry to exit by walking the graph
+returns **12 paths**. Executing the routine over the 16-point input grid
+formed by age in {18, 30}, income in {20000, 50000}, years in {1, 5} and
+flagged in {false, true} produces **12 distinct decision sequences** — the two
+counts agree, which is the cross-check that the drawn graph matches the code.
+
+A naive multiplication over four binary decisions predicts $2^{4} = 16$, so
+$16 - 12 = 4$ of those combinations are **infeasible**: they require d3 to have
+been evaluated while d2 was false, which short-circuiting forbids.
+
+| Criterion | Cases needed here | Grows with $d$ as |
+|---|---|---|
+| Statement | 2 | Roughly constant |
+| Branch | 3 | 2 |
+| Basis paths, $V(G)$ | 5 | $d + 1$ |
+| All feasible paths | 12 | Up to $2^{d}$ |
+
+![Test cases demanded by three coverage criteria against the number of independent binary decisions in a routine, on a logarithmic axis. Branch coverage stays flat at two, the basis set grows linearly as d plus one, and enumerating every path grows as two to the d, reaching 1,048,576 at twenty decisions.](/courses/fe-ee/figures/swe-coverage-paths.svg)
+
+One notational point that trips people up. Section 4.2 computed $V(G)$ as
+enclosed regions plus one on a plain drawing of the graph. McCabe's original
+statement adds an edge from exit back to entry, making the graph strongly
+connected, and then counts **all** regions of the drawing including the outer
+one. The two recipes agree: the extra edge creates exactly one more bounded
+region, and the outer region supplies the plus one. For the loop of section 4.1
+both give 3, and for classify both give 5.
+
+## 10.7 Modified Condition and Decision Coverage
+
+Branch coverage is satisfied by taking each decision both ways, which for a
+compound condition can be done without ever showing that each atomic condition
+matters. **MC/DC** closes that gap: every atomic condition must be shown to
+independently change the decision outcome. For a decision of $n$ conditions the
+test count satisfies
+
+$$n + 1 \\;\\le\\; T_{\\mathrm{MCDC}} \\;\\le\\; 2n$$
+
+For the two-condition income test, the lower bound of three is achievable, and
+here is the set:
+
+| Case | income >= 30000 | years >= 2 | Decision | Shows |
+|---|---|---|---|---|
+| 1 | true | true | true | baseline |
+| 2 | false | true | false | d2 flips the outcome alone |
+| 3 | true | false | false | d3 flips the outcome alone |
+
+MC/DC is mandated for the most critical avionics software precisely because it
+grows **linearly** in the number of conditions where exhaustive combination
+testing grows exponentially.
+
+## 10.8 Worked Example 10D: Pairwise Testing
+
+Interaction faults usually involve two parameters, not five. Suppose four
+configuration parameters each take three legal values. Exhaustive testing needs
+
+$$N_{\\mathrm{full}} = v^{\\,k} = 3^{4} = 81$$
+
+runs. Covering every **pair** of values needs, at most, all pairs of parameters
+times all pairs of values:
+
+$$N_{\\mathrm{pairs}} = \\binom{k}{2}\\,v^{2} = 6 \\times 9 = 54$$
+
+pairs to be covered. A nine-row orthogonal array covers all 54 — verified by
+generating every pair each row supplies and comparing the two sets — so the
+suite shrinks from 81 runs to 9, a reduction of $81 / 9 = 9$.
+
+![Test cases required against the number of three-valued parameters, on a logarithmic axis. The full factorial rises as three to the k, reaching 6,561 at eight parameters, while a measured greedy pairwise cover stays between 9 and 15 across the whole range.](/courses/fe-ee/figures/sw3-pairwise-cover.svg)
+
+Running a greedy set cover for two to eight parameters returns suites of 9, 10,
+9, 14, 15, 15 and 15 rows against full factorials of 9, 27, 81, 243, 729, 2,187
+and 6,561. Two honest remarks about that lower curve. It is **measured** — the
+size a stated procedure achieved, not a proven bound — and it is **not
+monotone**, because greedy set cover is a heuristic that returns ten rows for
+three parameters where nine are achievable. Pairwise testing buys a suite that
+grows roughly logarithmically in the parameter count; what it does not buy is
+any guarantee about faults that need three parameters to align.`,
+      examTip: 'Branch coverage subsumes statement coverage, and path coverage subsumes branch. Count decision outcomes as 2d, and remember that short-circuit evaluation makes some naive combinations infeasible.',
+      importantNote: 'One happy-path test reached 70 per cent statement coverage of the worked function and only 50 per cent branch coverage. Statement coverage is the criterion that most flatters a weak suite.',
+    },
+    { id: 'sdlc-defects', title: '11. Defect Density, Removal Efficiency and Where Defects Are Cheapest',
+      content: `## 11.1 The Two Quantities
+
+Defect density normalises a defect count by size so that two releases can be
+compared:
+
+$$\\delta = \\frac{D}{K}$$
+
+and it is used predictively by applying a measured density to a new release:
+
+$$\\hat{D} = \\delta\\,K'$$
+
+Section 5.4 measured 0.80 defects per KLOC after hardening and predicted 200
+defects for a 250 KLOC release. **Defect removal efficiency** asks what
+fraction of those a process catches before the customer does:
+
+$$\\mathrm{DRE} = \\frac{D_{\\mathrm{found}}}{D_{\\mathrm{found}} + D_{\\mathrm{escaped}}} = 1 - \\frac{D_{\\mathrm{esc}}}{D_0}$$
+
+## 11.2 Worked Example 11A: Recovering the Stage Efficiencies
+
+The table in section 5.4 gives absolute counts: 110 removed at review, then 50,
+24, 10 and 6 escaping. Those counts imply a **conditional** efficiency at each
+stage — the fraction of what actually arrives there that the stage removes —
+and recovering them is the step that makes the model usable:
+
+| Stage | Arrives | Removed | Efficiency $e_j$ |
+|---|---|---|---|
+| Design and code review | 200 | 110 | 0.5500 |
+| Unit test | 90 | 50 | 0.5556 |
+| Integration test | 40 | 24 | 0.6000 |
+| System test | 16 | 10 | 0.6250 |
+| Escaping to the field | 6 | — | — |
+
+Check the arithmetic in both directions. Forward:
+$200 \\times 0.55 = 110$ removed, leaving 90; $90 \\times 0.5556 = 50.00$,
+leaving 40; $40 \\times 0.6 = 24$, leaving 16; $16 \\times 0.625 = 10$, leaving
+6. Backwards, the closed form
+
+$$D_{\\mathrm{esc}} = D_0 \\prod_{j} \\bigl(1 - e_j\\bigr)$$
+
+gives the same 6, and the overall removal efficiency is 97.0 per cent.
+
+## 11.3 Worked Example 11B: Correcting the Sensitivity Claim
+
+Section 5.4 asserted that halving the review's effectiveness roughly doubles
+the escape rate and therefore roughly doubles the cost. **Computing it shows
+both figures are overstated, and the corrected version is now in that
+section.** Setting $e_1 = 0.275$ and leaving every downstream efficiency alone:
+
+| Stage | Arrives | Removed | Remaining |
+|---|---|---|---|
+| Review at 0.275 | 200 | 55.00 | 145.00 |
+| Unit test at 0.5556 | 145.00 | 80.56 | 64.44 |
+| Integration at 0.600 | 64.44 | 38.67 | 25.78 |
+| System test at 0.625 | 25.78 | 16.11 | 9.67 |
+
+Escapes rise from 6 to 9.667, a factor of $9.667 / 6 = 1.611$ — not two. The
+general form makes it obvious why:
+
+$$\\frac{D'_{\\mathrm{esc}}}{D_{\\mathrm{esc}}} = \\frac{1 - e'_1}{1 - e_1}$$
+
+which is $0.725 / 0.45 = 1.611$ exactly. **Halving a removal efficiency does
+not halve the removals downstream; it feeds them more work, and they catch most
+of it.** That is a genuinely useful property of a multi-stage process, and it
+is invisible if the sensitivity is asserted instead of computed.
+
+![Defects remaining in the product after each removal stage, plotted as a step function for the measured review efficiency and for half of it. The base curve falls from 200 through 90, 40 and 16 to 6 escaping; the halved-review curve falls through 145, 64.4 and 25.8 to 9.7.](/courses/fe-ee/figures/sw3-defect-cascade.svg)
+
+## 11.4 Worked Example 11C: The Cost, Not Just the Count
+
+Attach the section 3.3 multipliers as model parameters — 1 at review, 5 at unit
+test, 10 at integration, 20 at system test and 100 in the field:
+
+$$C = \\sum_j r_j\\,\\kappa_j + D_{\\mathrm{esc}}\\,\\kappa_{\\mathrm{field}}$$
+
+At the measured efficiencies:
+$110 + 250 + 240 + 200 + 600 = 1400$ cost units, of which
+$6 \\times 100 = 600$ — **43 per cent of the total defect cost is the six that
+got out.** With the review halved, the same sum comes to 2,133.33 units, a
+factor of $2133.33 / 1400 = 1.524$. So the honest statement is that halving
+review effectiveness raises escapes by 61 per cent and total defect cost by 52
+per cent. Both are serious; neither is a doubling.
+
+Sweeping the review efficiency alone shows how flat the response is:
+
+| Review efficiency | Escapes | Interpretation |
+|---|---|---|
+| 0.30 | 9.333 | Cursory reading |
+| 0.40 | 8.000 | Unprepared review |
+| 0.55 | 6.000 | The measured baseline |
+| 0.70 | 4.000 | Checklist-driven inspection |
+| 0.85 | 2.000 | Formal inspection with preparation |
+
+Escapes are linear in $1 - e_1$, so every ten points of review efficiency is
+worth about 1.33 field defects, or 133 cost units. **A review that costs less
+than that pays for itself**, and now the sentence has a number in it.
+
+## 11.5 Worked Example 11D: How Many Defects Are Left?
+
+The awkward question at the end of any review is how many were missed. If two
+reviewers work independently, the overlap in what they found estimates the
+total by the Lincoln-Petersen capture-recapture formula:
+
+$$\\hat{N} = \\frac{n_1\\,n_2}{m}$$
+
+where $n_1$ and $n_2$ are the counts each found and $m$ is the number both
+found. Reviewer one found 11 defects, reviewer two found 12, and 6 appear on
+both lists, so
+
+$$\\hat{N} = \\frac{11 \\times 12}{6} = 22$$
+
+The union of the two lists holds 17 distinct defects, so the estimate says
+about $22 - 17 = 5$ remain, and the review's own efficiency is
+$17 / 22 = 0.773$.
+
+The assumptions are strong and worth stating: the reviewers must be
+independent, and every defect must be equally findable. Neither is exactly
+true, and both fail in the direction that makes $\\hat{N}$ an
+**under**-estimate, because reviewers tend to find the same easy defects. The
+number is a floor on what remains, which is still far more useful than a
+shrug.
+
+## 11.6 Phase Containment
+
+| Metric | Definition | What a poor value means |
+|---|---|---|
+| Defect density | Defects per KLOC | The product is faulty |
+| Removal efficiency | Fraction caught before release | The process is leaky |
+| Phase containment | Fraction of a phase's own defects caught in that phase | Defects are travelling |
+| Escape rate | Defects per KLOC found in the field | The customer is the test team |
+
+Phase containment is the one that localises the problem. A design phase that
+injects 60 defects and catches 12 of them has a containment of 0.20 and is
+exporting 48 defects to phases where they cost five to twenty times more —
+and that is an argument for a design review specifically, not for testing
+harder in general.`,
+      examTip: 'Removal efficiency is the fraction of defects caught before release. Cascade it stage by stage: escapes are the initial count times the product of one minus each stage efficiency.',
+      importantNote: 'Halving the review efficiency multiplies escapes by 1.611 and total defect cost by 1.524, not by two. Downstream stages absorb most of what an earlier stage misses, which is why a multi-stage process is robust to one weak stage.',
+    },
+    { id: 'sdlc-reliability', title: '12. Reliability Growth and Deciding When to Ship',
+      content: `## 12.1 Testing Buys Reliability at a Falling Rate
+
+The question that ends every test phase is whether the product is good enough
+yet. Reliability growth models answer it by fitting the observed failure rate
+and extrapolating. Musa's basic execution-time model assumes each repair
+removes one fault and that the remaining failure intensity is proportional to
+the faults still present:
+
+$$\\lambda(\\tau) = \\lambda_0\\,e^{-\\lambda_0 \\tau / \\nu_0}$$
+
+with cumulative failures
+
+$$\\mu(\\tau) = \\nu_0\\bigl(1 - e^{-\\lambda_0 \\tau / \\nu_0}\\bigr)$$
+
+Here $\\tau$ is **execution** time, not calendar time; $\\lambda_0$ is the
+initial failure intensity and $\\nu_0$ is the total number of failures the
+model expects to be found eventually. Both are fitted from early test data, and
+both are model parameters rather than facts about the code.
+
+## 12.2 Worked Example 12A: How Long to Test
+
+A subsystem enters test with $\\lambda_0 = 12$ failures per CPU-hour and a
+fitted $\\nu_0 = 180$. Inverting the intensity equation gives the execution
+time needed to fall from a present intensity to a target:
+
+$$\\Delta\\tau = \\frac{\\nu_0}{\\lambda_0}\\,\\ln\\frac{\\lambda_P}{\\lambda_F}$$
+
+| Elapsed test time | Failure intensity per CPU-hour | Cumulative failures |
+|---|---|---|
+| 0 h | 12.000 | 0.0 |
+| 5 h | 8.598 | 51.0 |
+| 10 h | 6.161 | 87.6 |
+| 20 h | 3.163 | 132.6 |
+| 40 h | 0.834 | 167.5 |
+| 80 h | 0.058 | 179.1 |
+
+To reach 0.5 failures per CPU-hour takes 47.67 hours, by which point 172.5 of
+the 180 failures have been seen. To reach 0.05 takes 82.21 hours and 179.25
+failures.
+
+![Two stacked panels sharing a test-time axis. The upper panel shows failure intensity falling exponentially on a logarithmic scale, with markers where it reaches 0.5 per hour at 47.7 hours and 0.05 per hour at 82.2 hours. The lower panel shows cumulative failures rising towards the 180-failure ceiling the model assumes.](/courses/fe-ee/figures/sw3-reliability-growth.svg)
+
+## 12.3 The Result Worth Remembering
+
+Because the intensity falls exponentially in test time, the time to gain a
+**factor** in reliability is constant:
+
+$$\\Delta\\tau_{\\mathrm{decade}} = \\frac{\\nu_0}{\\lambda_0}\\,\\ln 10$$
+
+which here is $15 \\times 2.3026 = 34.54$ hours. The 47.67 and 82.21 hour
+figures differ by $82.21 - 47.67 = 34.54$, exactly as the formula requires.
+**Every further decade of reliability costs the same 34.5 hours of test
+execution.** That single sentence sets test budgets more reliably than any
+argument about diminishing returns, and it also explains why the last decade is
+the one that gets cut.
+
+## 12.4 From Intensity to the Numbers Operations Care About
+
+For a constant failure intensity $\\lambda$, the reliability over a mission of
+length $t$ and the mean time to failure are
+
+$$R(t) = e^{-\\lambda t}, \\qquad \\mathrm{MTTF} = \\frac{1}{\\lambda}$$
+
+At the 0.5 per hour target, MTTF is 2 hours and the probability of running an
+8-hour shift without a failure is 0.0183. At the 0.05 target, MTTF is 20 hours
+and the same probability is 0.6703. **Whether 34.5 more hours of testing is
+worth buying is a question about the mission, and now it has an answer.**
+
+Availability then folds in repair, as section 5.4 stated:
+
+$$A = \\frac{\\mathrm{MTTF}}{\\mathrm{MTTF} + \\mathrm{MTTR}}$$
+
+and for a service assembled from components in series,
+
+$$A_{\\mathrm{sys}} = \\prod_{i} A_i$$
+
+so five components each at 99.9 per cent give a system at 99.5 per cent. The
+product is the reason a distributed system needs component targets stricter
+than its own.
+
+## 12.5 The Release Decision
+
+| Criterion | Says ship when | Weakness |
+|---|---|---|
+| Zero known defects | No open reports | Says nothing about unknown ones |
+| Defect arrival rate | New reports per test hour is falling | The testers may simply be tired |
+| Reliability target | $\\lambda$ is below the agreed intensity | Depends on the fitted parameters |
+| Removal efficiency | Estimated escapes are below a threshold | Needs the section 11.5 estimate |
+| Coverage | Branch coverage is above a threshold | Covered is not the same as correct |
+
+No single row is sufficient, and the practical answer uses three of them at
+once: a coverage floor to establish that the tests exercise the code, a
+reliability target to establish that the failure rate is acceptable, and an
+escape estimate to establish that the review process was not simply lucky.`,
+      examTip: 'Reliability growth is exponential in execution time, so each decade of failure-intensity improvement costs the same fixed amount of testing. Note that the model uses execution time, not calendar time.',
+      importantNote: 'Availability multiplies across components in series, so five components at 99.9 per cent give a system at 99.5 per cent. Component targets must be stricter than the system target.',
+    },
+    { id: 'sdlc-cm-maintenance', title: '13. Configuration Management, and Maintenance as the Majority Cost',
+      content: `## 13.1 What Configuration Management Controls
+
+Section 5.3 introduced repositories, branches and baselines. The discipline
+around them exists to answer four questions at any moment, and an organisation
+that cannot answer all four does not know what it has shipped:
+
+| Question | Mechanism | Failure if missing |
+|---|---|---|
+| What exactly is in this release? | A baseline of identified items | A patch cannot be reproduced |
+| Who changed this, and why? | Commit history tied to a change request | No way to assess a regression |
+| What else does this change affect? | Impact analysis over the item list | Unplanned breakage |
+| Can we rebuild last year's release? | Versioned tools and dependencies as items | The build cannot be reproduced |
+
+The last row is the one most often skipped. A configuration item is not only
+source: the compiler version, the library versions, the build scripts and the
+test data are all items, because a release that cannot be rebuilt cannot be
+patched.
+
+**Branching strategies** trade the same variable as section 6.2. A long-lived
+feature branch raises the delay between a decision and the integration test
+that judges it, and the merge conflict at the end is the accumulated interest.
+Trunk-based development with short-lived branches lowers that delay, at the
+cost of needing the discipline to keep the trunk releasable.
+
+## 13.2 Worked Example 13A: Maintenance Is Most of the Money
+
+A product costs 1,800,000 to develop and is maintained for 12 years at 15 per
+cent of the development cost per year. The undiscounted arithmetic:
+
+$$C_{\\mathrm{maint}} = \\gamma\\,L\\,C_{\\mathrm{dev}}$$
+
+so $1{,}800{,}000 \\times 0.15 = 270{,}000$ per year and
+$270{,}000 \\times 12 = 3{,}240{,}000$ over the life. Lifetime cost is
+$1{,}800{,}000 + 3{,}240{,}000 = 5{,}040{,}000$, and maintenance is
+$3{,}240{,}000 / 5{,}040{,}000 = 0.643$ of it — **just under two-thirds of the
+money is spent after the first release.**
+
+## 13.3 Worked Example 13B: The Same Sum, Discounted
+
+Undiscounted totals overstate the future, so bring the twelve annual payments
+back to the present at 8 per cent using the uniform-series present-worth
+factor:
+
+$$P = C_m\\,\\frac{(1+i)^{L} - 1}{i\\,(1+i)^{L}}$$
+
+This gives 2,034,741, and discounting each of the twelve payments individually
+and summing them reproduces the same figure to the cent. The maintenance share
+of the present-worth lifetime cost is then
+$2{,}034{,}741 / 3{,}834{,}741 = 0.531$, still the larger half.
+
+The engineering consequence is the one to carry into a design review: **a
+decision that saves 100,000 of development and adds 20,000 a year of
+maintenance loses money.** Twenty thousand a year for twelve years at 8 per
+cent has a present worth of 150,722, so the trade is a net loss of
+50,722. Maintainability is not a virtue, it is a cash flow.
+
+## 13.4 What Maintenance Actually Consists Of
+
+The Lientz and Swanson categorisation, used here as a model parameter with its
+source named rather than as a measurement of any particular project:
+
+| Category | Share | Applied to 270,000 a year | What it is |
+|---|---|---|---|
+| Perfective | 50 per cent | 135,000 | New and changed function requested by users |
+| Adaptive | 25 per cent | 67,500 | Keeping up with platforms, formats and regulations |
+| Corrective | 21 per cent | 56,700 | Fixing defects |
+| Preventive | 4 per cent | 10,800 | Restructuring to keep future change cheap |
+
+**Seventy-nine per cent of maintenance is not bug fixing.** That is the fact
+that reframes the whole activity: most maintenance spending is continued
+development on a codebase that was designed once, under different assumptions,
+by people who have moved on. It is also why the preventive row being the
+smallest is a false economy — it is the only row that reduces the others.
+
+## 13.5 Software Entropy
+
+Lehman's observations on evolving systems make two claims that are worth
+stating because they are testable. A system in use is under **continuing
+change**, or it becomes progressively less useful; and unless work is done to
+prevent it, its **complexity increases** with every change. The second claim is
+what turns maintenance cost from a constant into a rising curve, and it is the
+justification for the preventive category above.
+
+The counter-measures are all things that lower the propagation cost of section
+11 in the object-oriented chapter: module boundaries that hold, tests that let
+a change be made confidently, and a dependency structure without cycles. **A
+maintainable system is one where the average number of modules a change can
+reach is small**, and that quantity is measurable long before the maintenance
+bill arrives.
+
+## 13.6 Semantic Versioning, Restated as a Contract
+
+| Change | Increment | What the consumer may assume |
+|---|---|---|
+| Interface broken | MAJOR | Nothing; read the notes and expect work |
+| Function added compatibly | MINOR | Existing calls still behave as before |
+| Defect fixed compatibly | PATCH | Behaviour matches what was documented |
+
+The version number is the only part of a release that every consumer reads.
+Getting it wrong — shipping a breaking change as a PATCH — is not a
+documentation lapse; it converts a decision the consumer could have made into
+an outage they could not have predicted.`,
+      examTip: 'Maintenance is the majority of lifetime cost even after discounting: 64 per cent undiscounted and 53 per cent at 8 per cent in the worked case. Perfective and adaptive work together outweigh corrective work by roughly three to one.',
+      importantNote: 'A design decision that saves development cost and adds annual maintenance must be evaluated at present worth. Saving 100,000 now to add 20,000 a year for 12 years at 8 per cent is a net loss of about 50,700.',
+    },
+    { id: 'sdlc-risk', title: '14. Risk Management with Expected-Value Arithmetic',
+      content: `## 14.1 Risk Exposure
+
+A risk is a possible future loss with a probability attached, and its **risk
+exposure** is the product:
+
+$$\\mathrm{RE} = p \\times \\ell$$
+
+For a register of risks the total exposure is the sum, because expectations add
+whether or not the risks are independent:
+
+$$\\mathrm{RE}_{\\mathrm{total}} = \\sum_{i} p_i\\,\\ell_i$$
+
+## 14.2 Worked Example 14A: A Register, Priced
+
+| Risk | Probability $p$ | Loss $\\ell$ | Exposure |
+|---|---|---|---|
+| Key vendor breaks its API | 0.30 | 240,000 | 72,000 |
+| Lead engineer leaves | 0.15 | 180,000 | 27,000 |
+| Load target missed | 0.40 | 90,000 | 36,000 |
+| Audit finding on logging | 0.10 | 500,000 | 50,000 |
+| Third-party licence dispute | 0.05 | 750,000 | 37,500 |
+
+The total is
+$72{,}000 + 27{,}000 + 36{,}000 + 50{,}000 + 37{,}500 = 222{,}500$.
+
+The ordering is the first useful output. The largest **loss** is the licence
+dispute at 750,000, and it is the fourth-largest **exposure** at 37,500. The
+largest exposure is the vendor API at 72,000, which nobody would have picked
+from the loss column alone. **A register sorted by exposure is a different
+document from one sorted by fear.**
+
+## 14.3 Worked Example 14B: Which Mitigations Are Worth Buying
+
+A mitigation changes the probability, the loss, or both, and costs money. The
+figure of merit is **risk reduction leverage**:
+
+$$\\mathrm{RRL} = \\frac{\\mathrm{RE}_{\\mathrm{before}} - \\mathrm{RE}_{\\mathrm{after}}}{C_{\\mathrm{mitigation}}}$$
+
+An RRL above 1 returns more expected loss than it costs.
+
+| Mitigation | Exposure before | Exposure after | Cost | RRL |
+|---|---|---|---|---|
+| Pin the vendor API behind an adapter, with contract tests | 72,000 | 19,200 | 18,000 | 2.933 |
+| Prototype the load path early and cap the scope | 36,000 | 6,000 | 25,000 | 1.200 |
+
+The first reduces the probability from 0.30 to 0.08 at unchanged loss:
+$0.08 \\times 240{,}000 = 19{,}200$, a reduction of
+$72{,}000 - 19{,}200 = 52{,}800$ for 18,000, so
+$52{,}800 / 18{,}000 = 2.933$. The second reduces both the probability, from
+0.40 to 0.10, and the loss, from 90,000 to 60,000.
+
+Buying both takes total exposure from 222,500 to 139,700 for a spend of
+43,000, a net expected gain of
+$222{,}500 - 139{,}700 = 82{,}800$ less the spend, or
+$82{,}800 - 43{,}000 = 39{,}800$. **Both are worth buying, and the first is
+worth buying first**, which is precisely the ordering RRL exists to give.
+
+## 14.4 Worked Example 14C: Schedule Risk as a Distribution
+
+A single-point schedule estimate hides its own uncertainty. The PERT technique
+takes three estimates per task — optimistic $a$, most likely $m$, pessimistic
+$b$ — and forms
+
+$$t_e = \\frac{a + 4m + b}{6}, \\qquad \\sigma = \\frac{b - a}{6}$$
+
+| Task | $a$ | $m$ | $b$ | $t_e$ | $\\sigma$ | $\\sigma^{2}$ |
+|---|---|---|---|---|---|---|
+| Specify | 3 | 5 | 13 | 6.000 | 1.667 | 2.778 |
+| Design | 4 | 6 | 14 | 7.000 | 1.667 | 2.778 |
+| Build | 10 | 16 | 34 | 18.000 | 4.000 | 16.000 |
+| Integrate | 4 | 7 | 16 | 8.000 | 2.000 | 4.000 |
+| Certify | 5 | 9 | 19 | 10.000 | 2.333 | 5.444 |
+
+Expected durations add: $6 + 7 + 18 + 8 + 10 = 49$ weeks. **Standard
+deviations do not** — variances do:
+
+$$\\sigma_T = \\sqrt{\\sum_i \\sigma_i^{2}}$$
+
+which is the square root of 31.000, or 5.568 weeks. The probability of
+finishing by a promised date $T_p$ is then read from the normal approximation
+using
+
+$$z = \\frac{T_p - t_{e,\\mathrm{total}}}{\\sigma_T}$$
+
+| Promised date | $z$ | Probability of meeting it |
+|---|---|---|
+| 49 weeks | 0.000 | 0.500 |
+| 52 weeks | 0.539 | 0.705 |
+| 55 weeks | 1.078 | 0.859 |
+| 58 weeks | 1.616 | 0.947 |
+
+![Probability of finishing by a promised date against that date in weeks, from a normal approximation with a mean of 49 weeks and a standard deviation of 5.57. The curve passes through 50 per cent at 49 weeks and 90 per cent at 56.1 weeks.](/courses/fe-ee/figures/sw3-schedule-risk.svg)
+
+**Promising the expected date is promising a coin flip.** A 90 per cent
+confidence date needs $z = 1.282$, which is
+$49 + 1.282 \\times 5.568 = 56.14$ weeks — seven weeks of buffer, and the
+buffer is now a computed quantity rather than a negotiation.
+
+## 14.5 Worked Example 14D: The Contract Decision
+
+Offered a contract with a 200,000 bonus for delivery inside 55 weeks and a
+300,000 penalty otherwise, the expected value is
+
+$$\\mathrm{EV} = P\\,B - (1 - P)\\,\\ell$$
+
+With $P = 0.859$ from the table above,
+$0.8594 \\times 200{,}000 = 171{,}880$ against
+$0.1406 \\times 300{,}000 = 42{,}180$, so the expected value is
+$171{,}880 - 42{,}180 = 129{,}700$. Positive, so the clause is worth accepting
+**at that date**. Rerun it at 49 weeks and the expectation is
+$0.5 \\times 200{,}000 = 100{,}000$ against
+$0.5 \\times 300{,}000 = 150{,}000$, an expected loss of 50,000. The same
+contract, the same project, the opposite decision — and the only thing that
+changed was the date, which is exactly the variable the estimate was supposed
+to inform.
+
+## 14.6 The Standing Process
+
+| Step | Product | Frequency |
+|---|---|---|
+| Identify | A risk register with owners | Continuous, reviewed each iteration |
+| Analyse | Probability, loss and exposure per risk | Each review |
+| Prioritise | The register sorted by exposure | Each review |
+| Plan | Mitigations with cost and RRL | For the top items only |
+| Track | Exposure over time, plus a trigger per risk | Each iteration |
+| Retire or realise | Closed risks and issues opened | On the trigger |
+
+The last row is the discipline that keeps the register honest. A risk that has
+occurred is no longer a risk — it is an issue, with a real cost rather than an
+expected one — and a register in which nothing ever retires is a list of
+worries rather than a management tool.`,
+      examTip: 'Risk exposure is probability times loss, and risk reduction leverage is the exposure removed divided by the cost of removing it. Anything above 1 pays for itself; sort the register by exposure, not by the size of the loss.',
+      importantNote: 'PERT variances add, standard deviations do not. The expected finish date carries a 50 per cent probability, and a 90 per cent date is the expectation plus 1.282 standard deviations.',
+    },
+    { id: 'sdlc-problems-1', title: '15. Problem Set A: Lifecycle, Estimation and Coverage',
+      content: `## 15.1 Problem Set A
+
+**A1.** Using the model of section 6.2 with $m = 100$ and a 24-month project,
+what does a change cost if it is caught 18 months after the decision that
+caused it, and how many times more is that than catching it at 4 months?
+
+*Answer.* $k(18) = 100^{18/24} = 100^{0.75} = 31.62$ and
+$k(4) = 100^{4/24} = 2.154$. The ratio is $31.62 / 2.154 = 14.68$. Note that
+the ratio is $100^{14/24}$, so only the difference in delay matters, not the
+absolute times.
+
+**A2.** A project is estimated at 64 KLOC in the embedded mode. Give effort,
+schedule and average staffing.
+
+*Answer.* $E = 3.6 \\times 64^{1.20} = 529.32$ person-months.
+$T_d = 2.5 \\times 529.32^{0.32} = 18.60$ months. Average staffing is
+$529.32 / 18.60 = 28.46$ people, which should immediately prompt a question
+about whether the work partitions into sub-teams.
+
+**A3.** The same 64 KLOC project is re-scoped to 48 KLOC. By what factor does
+embedded effort fall, and does the schedule fall by the same factor?
+
+*Answer.* Effort falls by $(48/64)^{1.20} = 0.75^{1.20} = 0.7080$, a reduction
+of about 29 per cent. Schedule falls by $0.7080^{0.32} = 0.8954$, a reduction
+of only about 10 per cent. **Cutting scope buys effort much faster than it buys
+calendar time**, which is why a scope cut late in a project disappoints the
+people who asked for it.
+
+**A4.** A team grows from 6 to 11. How many communication pairs are added, and
+what is the percentage increase?
+
+*Answer.* From $6 \\times 5 / 2 = 15$ to $11 \\times 10 / 2 = 55$, so 40 pairs
+are added — a 267 per cent increase in coordination load for an 83 per cent
+increase in people.
+
+**A5.** A routine contains three sequential if-statements, none of them
+compound and none nested. Give the statement, branch and basis-path test counts
+and the number of complete paths.
+
+*Answer.* One test can execute every statement if all three conditions can be
+true at once. Branch coverage needs 2 (all true, then all false). $V(G)$ is
+$3 + 1 = 4$ basis paths. Complete paths number $2^{3} = 8$. The pattern is the
+one in the section 4.4 table: statement roughly constant, branch fixed at 2,
+basis linear, paths exponential.
+
+**A6.** Add a fourth condition to the third if, joined by a logical AND. What
+changes?
+
+*Answer.* $V(G)$ becomes 5, because a short-circuit AND contributes one
+decision per operator. Branch coverage is still 2 tests. MC/DC on that
+two-condition decision needs 3. Complete feasible paths become 12 rather than
+16, since the second condition is not evaluated when the first is false —
+exactly the count worked in section 10.6.
+
+**A7.** Five configuration parameters each take four legal values. Give the
+full factorial size and the number of value pairs a pairwise suite must cover.
+
+*Answer.* Full factorial is $4^{5} = 1024$. Parameter pairs number
+$\\binom{5}{2} = 10$, each with $4^{2} = 16$ value pairs, so
+$10 \\times 16 = 160$ pairs must be covered. A pairwise suite typically needs a
+few tens of rows against 1,024 — the exact figure depends on the construction,
+and any figure quoted for it should say which construction produced it.
+
+**A8.** A 40-requirement specification is written at 97 per cent
+per-requirement accuracy. Give the probability it is entirely correct and the
+expected number of faulty requirements, then state the rework cost if they are
+found during coding at a multiplier of 10.
+
+*Answer.* $P = 0.97^{40} = 0.2957$, and the expected count is
+$40 \\times 0.03 = 1.2$. At a coding-phase multiplier of 10, the expected
+rework is $1.2 \\times 10 = 12$ cost units against 1.2 if caught at review.`,
+      examTip: 'In estimation problems the exponent does the work: effort scales as size to the b, and schedule as effort to the d, so a scope cut moves effort far more than it moves the calendar.',
+      importantNote: 'Problem A3 is the one candidates get wrong. Cutting scope by a quarter cuts embedded effort by 29 per cent and the schedule by only 11 per cent, because the schedule exponent is small.',
+    },
+    { id: 'sdlc-problems-2', title: '16. Problem Set B: Defects, Reliability, Maintenance and Risk',
+      content: `## 16.1 Problem Set B
+
+**B1.** A 180 KLOC release has a measured defect density of 1.2 per KLOC. A
+four-stage removal process has efficiencies 0.50, 0.60, 0.50 and 0.40 in order.
+Give the predicted defects, the escapes and the overall removal efficiency.
+
+*Answer.* $\\hat{D} = 1.2 \\times 180 = 216$ defects. Escapes are
+$216 \\times 0.5 \\times 0.4 \\times 0.5 \\times 0.6 = 12.96$, and the overall
+DRE is $1 - 12.96/216 = 0.94$, or 94 per cent.
+
+**B2.** In that process, which single stage improvement removes the most
+escapes: raising the first stage from 0.50 to 0.60, or the last from 0.40 to
+0.50?
+
+*Answer.* Escapes scale with the product of $(1 - e_j)$, so raising the first
+stage multiplies escapes by $0.40 / 0.50 = 0.8$ and raising the last multiplies
+them by $0.50 / 0.60 = 0.833$. The first-stage improvement is slightly better,
+giving 10.37 escapes against 10.80. **Ten points of efficiency are worth more
+where the residual fraction is smaller**, which is the precise version of
+"shift left" and is not the same as saying earlier is always better by a wide
+margin.
+
+**B3.** Two reviewers examine a module. One finds 9 defects, the other 14, and
+4 appear on both lists. Estimate the total, the number remaining, and the
+review efficiency.
+
+*Answer.* $\\hat{N} = 9 \\times 14 / 4 = 31.5$. The union holds
+$9 + 14 - 4 = 19$, so about 12.5 remain and the review efficiency is
+$19 / 31.5 = 0.603$. The low overlap is what drives the pessimistic estimate:
+independent reviewers finding largely different defects implies a large unseen
+population.
+
+**B4.** A component enters test at 8 failures per CPU-hour with a fitted
+$\\nu_0 = 240$. How long to reach 0.8 per hour, and how much longer to reach
+0.08?
+
+*Answer.* $\\Delta\\tau = (240/8)\\ln(8/0.8) = 30 \\times 2.3026 = 69.08$ hours.
+The next decade costs the same again, $30\\ln 10 = 69.08$ hours, for a total of
+138.2 hours. The constant cost per decade is the whole content of the model.
+
+**B5.** Three services are chained in series with availabilities 0.999, 0.995
+and 0.9999. Give the system availability and the annual downtime.
+
+*Answer.* $A_{\\mathrm{sys}} = 0.999 \\times 0.995 \\times 0.9999 = 0.993906$.
+Annual downtime is $(1 - 0.993906) \\times 8760 = 53.4$ hours, and 43.8 of those
+hours come from the 0.995 component alone. **The weakest component dominates**,
+which is why hardening the already-good one is usually wasted money.
+
+**B6.** A refactoring costs 240,000 now and reduces annual maintenance from
+400,000 to 310,000 for the remaining 9 years at 8 per cent. Is it worth doing?
+
+*Answer.* The annual saving is 90,000. The uniform-series present-worth factor
+at 8 per cent over 9 years is 6.2469, so the saving is worth
+$90{,}000 \\times 6.2469 = 562{,}221$ against a cost of 240,000. Net present
+worth is $562{,}221 - 240{,}000 = 322{,}221$, so yes — and note that the same
+refactoring evaluated over 2 years instead of 9 would have a factor of 1.7833,
+a present worth of 160,497, and would lose money.
+
+**B7.** A risk has probability 0.25 and a loss of 400,000. A mitigation costing
+30,000 reduces the probability to 0.10. Give the exposure before and after and
+the risk reduction leverage. Would you buy it if the mitigation cost 70,000?
+
+*Answer.* Before, $0.25 \\times 400{,}000 = 100{,}000$; after,
+$0.10 \\times 400{,}000 = 40{,}000$. The reduction is 60,000, so
+$\\mathrm{RRL} = 60{,}000 / 30{,}000 = 2.0$. At 70,000 the leverage is
+$60{,}000 / 70{,}000 = 0.857$, below 1, and on expected value alone it is not
+worth buying — though a risk-averse organisation facing a survival-threatening
+loss may rationally pay above expected value, which is what insurance is.
+
+**B8.** Four tasks have PERT triples (2, 4, 12), (5, 8, 17), (3, 5, 13) and
+(6, 10, 20). Give the expected duration, the standard deviation of the chain,
+and the date that carries an 84 per cent chance of being met.
+
+*Answer.* The expected durations are 5.000, 9.000, 6.000 and 11.000, summing
+to 31.000. The standard deviations are 1.6667, 2.0000, 1.6667 and 2.3333, with
+variances 2.7778, 4.0000, 2.7778 and 5.4444 summing to 15.000, so
+$\\sigma_T = 3.873$. An 84 per cent date is approximately one standard
+deviation above the mean, $31 + 3.873 = 34.87$ weeks.`,
+      examTip: 'Escapes cascade as the product of one minus each stage efficiency, so a sensitivity question is answered by a ratio of residual fractions rather than by intuition about which stage feels more important.',
+      importantNote: 'Problem B5 is the one to remember for system design: availabilities multiply in series, and the least available component supplies most of the downtime.',
     },
   ],
   keyTakeaways: [
