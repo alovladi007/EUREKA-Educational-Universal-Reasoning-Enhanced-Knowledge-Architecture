@@ -3716,12 +3716,12 @@ is quoted as an rms value, at 2.45 GHz in air.
 
 With **rms** amplitude the one half is already inside the square, so
 
-$$S_{avg} = \\frac{E_{rms}^{2}}{\\eta _{0}} = \\frac{3721}{376.730313} = 9.8770\\ \\mathrm{W/m^{2}}$$
+$$S_{avg} = \\frac{E_{rms}^{2}}{\\eta _{0}} = \\frac{3721}{376.730313} = 9.8771\\ \\mathrm{W/m^{2}}$$
 
 Had the same 61.0 been treated as a peak value, the answer would have been
 4.9385 W/m², a factor of two low, which is 3.01 dB.
 
-$$E_{pk} = \\sqrt{2}\\,E_{rms} = 86.267\\ \\mathrm{V/m}, \\qquad S_{avg} = \\frac{86.267^{2}}{2(376.730313)} = 9.8770\\ \\mathrm{W/m^{2}}$$
+$$E_{pk} = \\sqrt{2}\\,E_{rms} = 86.267\\ \\mathrm{V/m}, \\qquad S_{avg} = \\frac{86.267^{2}}{2(376.730313)} = 9.8771\\ \\mathrm{W/m^{2}}$$
 
 The two routes agree, as they must, because $\\sqrt{2}$ squared and divided by
 two is one.
@@ -4000,7 +4000,7 @@ $\\beta z$.
 **Given**: a 300 MHz wave of peak amplitude 50.0 V/m in air, striking
 polyethylene ($\\varepsilon _r = 2.25$) at normal incidence.
 
-$$\\eta _{2} = \\frac{376.730313}{1.500} = 251.153\\ \\Omega, \\qquad \\Gamma = \\frac{251.153 - 376.730}{251.153 + 376.730} = \\frac{-125.577}{627.883} = -0.2000$$
+$$\\eta _{2} = \\frac{376.730313}{1.500} = 251.154\\ \\Omega, \\qquad \\Gamma = \\frac{251.154 - 376.730}{251.154 + 376.730} = \\frac{-125.576}{627.884} = -0.2000$$
 
 $$\\tau = 1 + \\Gamma = 0.8000, \\qquad SWR = \\frac{1.200}{0.800} = 1.500$$
 
@@ -4013,7 +4013,7 @@ $$\\frac{\\lvert \\tau \\rvert ^{2}/\\eta _{2}}{1/\\eta _{1}} = \\lvert \\tau \\
 and $0.0400 + 0.9600 = 1.0000$, so energy balances without having been assumed.
 In absolute terms, $S_{inc} = 2500/753.461 = 3.3180$ W/m², of which 0.13272
 W/m² returns and 3.1853 W/m² enters. Checking the transmitted figure directly:
-$E_{t} = 40.0$ V/m and $40^{2}/(2 \\times 251.153) = 3.1853$ W/m².
+$E_{t} = 40.0$ V/m and $40^{2}/(2 \\times 251.154) = 3.1853$ W/m².
 
 The standing wave in air has $\\lvert E \\rvert _{max} = 60.0$ V/m and
 $\\lvert E \\rvert _{min} = 40.0$ V/m. Since $\\Gamma$ is negative and real, the
@@ -4115,7 +4115,7 @@ Now take a general angle, $\\theta _{i} = 60.000°$. Snell gives
 $\\sin \\theta _{t} = \\sin 60°/1.500 = 0.57735$, so $\\theta _{t} = 35.264°$, and
 with $\\eta _{1} = 376.730$ ohm and $\\eta _{2} = 251.154$ ohm,
 
-$$\\Gamma _{\\perp} = \\frac{(251.154)(0.50000) - (376.730)(0.81650)}{(251.154)(0.50000) + (376.730)(0.81650)} = \\frac{125.577 - 307.599}{125.577 + 307.599} = -0.42020$$
+$$\\Gamma _{\\perp} = \\frac{(251.154)(0.50000) - (376.730)(0.81650)}{(251.154)(0.50000) + (376.730)(0.81650)} = \\frac{125.577 - 307.600}{125.577 + 307.600} = -0.42020$$
 
 $$\\Gamma _{\\parallel} = \\frac{(251.154)(0.81650) - (376.730)(0.50000)}{(251.154)(0.81650) + (376.730)(0.50000)} = \\frac{205.066 - 188.365}{393.431} = 0.04245$$
 
@@ -4422,7 +4422,7 @@ For a lossy line: **$Z_{0} = \\sqrt{(R + j\\omega L)/(G + j\\omega C)}$**
 |---|---|---|
 | Coaxial cable | $50\\ \\Omega$ | RF measurement, instruments, radio |
 | Coaxial cable | $75\\ \\Omega$ | TV, video, cable distribution |
-| Microstrip (PCB) | 50–100 Ω (set by geometry) | on-board RF and digital routing |
+| Microstrip (PCB) | 30–120 Ω (set by geometry) | on-board RF and digital routing |
 | Twin-lead (open wire) | $300\\ \\Omega$ | antenna feeders, folded dipoles |
 
 ### Propagation Velocity
@@ -4718,6 +4718,1442 @@ domain rather than at a single frequency.`,
       examTip: 'Convert between Γ and VSWR without hesitating: VSWR = (1 + |Γ|)/(1 − |Γ|) and |Γ| = (VSWR − 1)/(VSWR + 1). Then reflected power is |Γ|², transmitted is 1 − |Γ|². A load of 2Z₀ and a load of Z₀/2 give the same VSWR and the same reflected power — only the sign of Γ, and hence the position of the standing-wave minimum, distinguishes them.',
       importantNote: 'A quarter-wave transformer is quarter-wave only at one frequency, and the wavelength that matters is the one inside that section — shortened by √ε_r relative to free space. Sizing the section with the free-space wavelength is a standard trap and puts the match at the wrong frequency by that factor.',
     },
+    {
+      id: 'emtx-electrical-length',
+      title: '5. Lumped or Distributed: the Criterion, Computed',
+      content: `## 5.1 The only question that matters
+
+Nothing about a piece of cable tells you whether to reach for Ohm's law or for
+a wave equation. The hardware is identical either way. What decides is the
+**electrical length**: how far the signal advances in phase, or in time,
+between one end of the piece and the other. Write it as an angle,
+
+$$\\theta = \\beta \\ell = \\frac{2\\pi \\ell}{\\lambda} = \\frac{2\\pi f \\ell}{v_{p}}$$
+
+and check the units before going further: $\\beta$ carries rad/m, $\\ell$
+carries m, so $\\theta$ is in radians and is dimensionless, as an angle must
+be. The second form says the same thing in wavelengths, and the third makes
+the frequency dependence explicit — the *same* hardware moves along this scale
+as you change the frequency, which is why one cable can be two different
+components in two different circuits.
+
+Lumped circuit theory is the statement that $\\theta$ is small enough to
+ignore, so every node in the piece has the same voltage at the same instant.
+That is never exactly true and often true enough. The useful engineering
+question is not "is it a transmission line" (everything is) but **how much
+error does pretending otherwise cost**, and that can be computed exactly.
+
+## 5.2 The cost of pretending, in closed form
+
+Take the cleanest possible test case: a length $\\ell$ of lossless line with a
+short circuit on the end. The exact input reactance is the transformation
+formula with $Z_L = 0$, and the lumped model is simply the inductance of the
+piece, $L'\\ell$:
+
+$$X_{sc} = Z_{0}\\tan (\\beta \\ell), \\qquad X_{lump} = \\omega L' \\ell = Z_{0}\\,\\beta \\ell$$
+
+The second identity is worth checking, because it is the one that carries the
+units: $\\omega L' \\ell$ has $(\\mathrm{rad/s})(\\mathrm{H/m})(\\mathrm{m}) = \\mathrm{H/s} = \\Omega$.
+And $Z_{0}\\beta \\ell = \\sqrt{L'/C'} \\cdot \\omega \\sqrt{L'C'} \\cdot \\ell$, which is
+$\\omega L' \\ell$ identically. So the
+lumped inductor is exactly the **first term** of the exact answer, since
+
+$$\\tan \\theta = \\theta + \\frac{\\theta^{3}}{3} + \\frac{2\\theta^{5}}{15} + \\cdots$$
+
+and the fractional error of the lumped model follows immediately:
+
+$$\\varepsilon_{sc} = \\left\\lvert 1 - \\frac{\\theta}{\\tan \\theta}\\right\\rvert \\approx \\frac{\\theta^{2}}{3}$$
+
+Everything about the line has cancelled. $Z_{0}$ is gone, the dielectric is
+gone, the frequency is gone except through $\\theta$. **The error of a lumped
+model is a function of electrical length and nothing else**, which is why the
+criterion can be stated once and used everywhere.
+
+![Error of the single-lump model against electrical length, for a shorted stub replaced by one inductor and an open stub replaced by one capacitor: both errors are pure functions of the electrical angle and pass 3 per cent near one twentieth of a wavelength.](/courses/fe-ee/figures/em4-electrical-length.svg)
+
+Repeating the exercise for an **open** stub replaced by one capacitor gives
+$\\varepsilon_{oc} = \\lvert \\tan \\theta / \\theta - 1\\rvert$, which is also
+$\\theta^{2}/3$ to leading order and slightly worse beyond it. The
+numbers that come out are the reason for the folklore:
+
+| Electrical length | $\\theta$ | Error, shorted stub | Error, open stub |
+|---|---|---|---|
+| $\\lambda/50$ | 7.2° | 0.53% | 0.53% |
+| $\\lambda/20$ | 18.0° | 3.31% | 3.43% |
+| $\\lambda/10$ | 36.0° | 13.52% | 15.63% |
+| $\\lambda/8$ | 45.0° | 21.46% | 27.32% |
+
+The often-quoted $\\lambda/20$ rule is therefore a **3 per cent rule**, and the
+$\\lambda/10$ rule is a 14 per cent rule. Neither is a law; both are a choice
+about how much error is tolerable. Below about $\\lambda/50$ the lumped model
+is inside typical component tolerances and arguing further is wasted effort.
+
+### Worked example 1 — one cable, two entirely different components
+
+**Given**: the 1.5 m polyethylene coax of section 3, with
+$v_{p} = 1.9986 \\times 10^{8}$ m/s. Classify it at 1.0 MHz and at 900 MHz.
+
+At 1.0 MHz the wavelength on the line is
+
+$$\\lambda = \\frac{v_{p}}{f} = \\frac{1.9986 \\times 10^{8}}{1.0 \\times 10^{6}} = 199.86\\ \\mathrm{m}$$
+
+so $\\ell/\\lambda = 1.5/199.86 = 0.0075$, or $\\theta = 2.70^\\circ$. By the table
+above the lumped error is under 0.1 per cent: the cable is a 150 pF capacitor
+in parallel with nothing worth naming, and no wave analysis is warranted.
+
+At 900 MHz, $\\lambda = 22.21$ cm, so $\\ell/\\lambda = 6.755$ and
+$\\theta = 2432^\\circ$. The cable is nearly seven wavelengths long. There is no
+lumped equivalent at all — an inductor and a capacitor cannot reproduce an
+impedance that cycles through the whole complex plane thirteen times as you
+walk the length. **The hardware did not change; the frequency did.**
+
+### Worked example 2 — the digital criterion, and why it looks different
+
+Digital designers rarely know the frequency, so the same criterion is written
+against the **edge rate**. A reflection that leaves the driver, reaches the far
+end and comes back within the rise time merges into the edge and is invisible;
+one that returns later shows as a separate step. The break-even length is
+
+$$\\ell_{crit} \\approx \\frac{t_{r}v_{p}}{2}$$
+
+**Given**: $t_{r} = 1.0$ ns on the same cable.
+
+$$\\ell_{crit} = \\frac{(1.0 \\times 10^{-9})(1.9986 \\times 10^{8})}{2} = 0.0999\\ \\mathrm{m}$$
+
+so about 10 cm. Units check: $(\\mathrm{s})(\\mathrm{m/s}) = \\mathrm{m}$. The
+1.5 m run is fifteen times that, with a one-way delay of 7.51 ns and a round
+trip of 15.0 ns, so termination is not optional.
+
+The two criteria are the same criterion. A 1.0 ns edge carries significant
+energy up to roughly $0.35/t_{r} = 350$ MHz; at 350 MHz the wavelength on this
+cable is 57 cm, and $\\ell_{crit} = 10$ cm is $0.175\\lambda$ — the same order
+as the $\\lambda/10$ line, arrived at from the time domain instead of the
+frequency domain.`,
+      examTip: 'Compute the electrical length before anything else, and state it in wavelengths. Under about one twentieth of a wavelength you may use lumped circuit theory with roughly 3 per cent error; beyond about one tenth you must not. The same physical cable crosses that boundary as the frequency changes, so the classification belongs to the problem, not to the hardware.',
+      importantNote: 'The error of a lumped model depends only on electrical length, not on the impedance, the dielectric or the frequency separately. That is why one number — length in wavelengths, or delay against rise time — settles the question for coax, twisted pair, PCB trace and busbar alike.',
+    },
+    {
+      id: 'emtx-telegrapher',
+      title: "6. The Telegrapher's Equations, from One Slice of Line",
+      content: `## 6.1 A differential section
+
+Cut a slice of line of length $\\Delta z$, short enough that it *is* a lumped
+element by the criterion just established. It has four per-unit-length
+parameters: series resistance $R'$ from conductor loss, series inductance $L'$
+from the magnetic field around the conductors, shunt conductance $G'$ from
+dielectric loss, and shunt capacitance $C'$ from the electric field between
+them. The slice is a series arm $(R' + j\\omega L')\\Delta z$ and a shunt arm
+$(G' + j\\omega C')\\Delta z$.
+
+Kirchhoff's voltage law across the series arm, and current law at the shunt
+node, give
+
+$$v(z + \\Delta z, t) - v(z,t) = -\\left(R'\\,\\Delta z\\; i + L'\\,\\Delta z\\,\\frac{\\partial i}{\\partial t}\\right)$$
+
+$$i(z + \\Delta z, t) - i(z,t) = -\\left(G'\\,\\Delta z\\; v + C'\\,\\Delta z\\,\\frac{\\partial v}{\\partial t}\\right)$$
+
+Divide by $\\Delta z$ and let it go to zero. The result is the pair that this
+whole topic rests on, the **telegrapher's equations**:
+
+$$\\frac{\\partial v}{\\partial z} = -R'i - L'\\frac{\\partial i}{\\partial t}, \\qquad \\frac{\\partial i}{\\partial z} = -G'v - C'\\frac{\\partial v}{\\partial t}$$
+
+Check the dimensions of the first: $\\partial v/\\partial z$ is V/m;
+$R'i$ is $(\\Omega/\\mathrm{m})(\\mathrm{A}) = \\mathrm{V/m}$; and
+$L'\\,\\partial i/\\partial t$ is $(\\mathrm{H/m})(\\mathrm{A/s}) = \\mathrm{V/m}$.
+All three agree, which they must.
+
+## 6.2 From two first-order equations to one wave equation
+
+Differentiate the first with respect to $z$, substitute the second, and in
+the sinusoidal steady state (replace $\\partial/\\partial t$ by $j\\omega$)
+the pair collapses to a single ordinary differential equation:
+
+$$\\frac{d^{2}V}{dz^{2}} = \\gamma^{2}V, \\qquad \\gamma^{2} = (R' + j\\omega L')(G' + j\\omega C')$$
+
+whose general solution is two waves running in opposite directions,
+
+$$V(z) = V^{+}e^{-\\gamma z} + V^{-}e^{+\\gamma z}, \\qquad I(z) = \\frac{V^{+}e^{-\\gamma z} - V^{-}e^{+\\gamma z}}{Z_{0}}$$
+
+with
+
+$$\\gamma = \\alpha + j\\beta = \\sqrt{(R' + j\\omega L')(G' + j\\omega C')}, \\qquad Z_{0} = \\sqrt{\\frac{R' + j\\omega L'}{G' + j\\omega C'}}$$
+
+Three things deserve emphasis. First, the **minus sign** in the current: the
+backward wave carries current the other way, and forgetting it is the single
+most common algebra slip in this topic. Second, $Z_{0}$ appears as a *ratio of
+a voltage wave to a current wave*, not as a component. Third, the units:
+$\\sqrt{(\\Omega/\\mathrm{m})/(\\mathrm{S/m})} = \\sqrt{\\Omega/\\mathrm{S}} = \\Omega$,
+and $\\sqrt{(\\Omega/\\mathrm{m})(\\mathrm{S/m})} = \\sqrt{1/\\mathrm{m}^{2}} = 1/\\mathrm{m}$.
+**A per-unit-length quantity is
+never an impedance on its own** — only the ratio of a series quantity to a
+shunt quantity has ohms in it. An inductance of 0.250 microhenry per metre is
+not "half of 50 ohms"; it is 0.250 microhenry per metre, and it produces
+50 ohms only when divided by 100 picofarad per metre and square-rooted.
+
+![Snapshots of a five volt step integrated numerically from the telegrapher equations on a 1.5 metre line driven through 25 ohms into an open circuit, showing the launched 3.33 volt plateau and the doubling at the open end.](/courses/fe-ee/figures/em4-telegrapher-fdtd.svg)
+
+The figure is not a sketch of the solution: it is the solution. The curves come
+from integrating the two coupled equations above on a staggered grid, with the
+source and the open end written as node equations. Nothing in that computation
+knows what $Z_{0}$, $\\Gamma$ or VSWR are, and every plateau it produces will
+be checked against the algebra later in this chapter.
+
+## 6.3 Lossless and low-loss
+
+Setting $R' = G' = 0$ collapses everything:
+
+$$\\gamma = j\\omega \\sqrt{L'C'}, \\qquad \\beta = \\omega\\sqrt{L'C'}, \\qquad Z_{0} = \\sqrt{\\frac{L'}{C'}}, \\qquad v_{p} = \\frac{\\omega}{\\beta} = \\frac{1}{\\sqrt{L'C'}}$$
+
+$Z_{0}$ becomes purely real and frequency-independent, and every frequency
+travels at the same speed, so a pulse keeps its shape. That is the ideal a
+good cable is built to approach.
+
+Real cable is *low-loss*, meaning $R' \\ll \\omega L'$ and $G' \\ll \\omega C'$.
+Expanding the square root to first order in the small quantities gives
+
+$$\\alpha \\approx \\frac{R'}{2Z_{0}} + \\frac{G'Z_{0}}{2}, \\qquad \\beta \\approx \\omega \\sqrt{L'C'}$$
+
+The two terms of $\\alpha$ are the **conductor loss** and the **dielectric
+loss**, and they behave differently with frequency: $R'$ grows as $\\sqrt{f}$
+through the skin effect, while $G' = \\omega C' \\tan \\delta$ grows linearly
+with $f$. Dielectric loss therefore wins eventually in every cable, which is
+why the top decade of a cable's usable range is set by the plastic, not by the
+copper.
+
+### Worked example 3 — how good is "low-loss"?
+
+**Given**: the polyethylene coax with $L' = 249.98$ nH/m and
+$C' = 100.15$ pF/m, at 100 MHz, with a measured conductor resistance
+$R' = 0.35\\ \\Omega/\\mathrm{m}$ and a dielectric loss tangent
+$\\tan \\delta = 4.0 \\times 10^{-4}$.
+
+First the shunt conductance, from its definition
+$G' = \\omega C' \\tan \\delta$:
+
+$$G' = 2\\pi (1.00 \\times 10^{8})(100.15 \\times 10^{-12})(4.0 \\times 10^{-4}) = 25.17\\ \\mu\\mathrm{S/m}$$
+
+Now compare the two routes. The **approximation**, with
+$Z_{0} = 49.96\\ \\Omega$:
+
+$$\\alpha \\approx \\frac{0.35}{2(49.96)} + \\frac{(25.17 \\times 10^{-6})(49.96)}{2} = 3.503 \\times 10^{-3} + 0.629 \\times 10^{-3}$$
+
+giving $\\alpha = 4.1315 \\times 10^{-3}$ Np/m. The **exact** complex square
+root of $(R' + j\\omega L')(G' + j\\omega C')$ gives
+$\\gamma = 4.13145 \\times 10^{-3} + j3.143769$ per metre. The approximation is
+in error by four parts in ten million — for a line this good the low-loss form
+is not an approximation in any practical sense.
+
+Converting to the unit cable is sold in, with 1 Np = 8.6859 dB:
+
+$$\\alpha = (4.1315 \\times 10^{-3})(8.6859)(100) = 3.589\\ \\mathrm{dB\\ per\\ 100\\ m}$$
+
+and conductor loss is 85 per cent of it at this frequency. The exact $Z_{0}$
+is $49.9615 - j0.0457\\ \\Omega$: a phase angle of $-0.052^\\circ$, so treating it as
+a real 49.96 Ω costs nothing. Over a 30 m run the loss is 1.077 dB, and the
+fraction of power surviving is $10^{-0.1077} = 0.780$.`,
+      examTip: 'Know the four per-unit-length parameters and what each represents, and be able to write the two telegrapher equations from a slice. Then the lossless results Z0 = sqrt(L/C) and v_p = 1/sqrt(LC) are not memorised, they are what those equations give when R and G vanish. Watch the units: L in henry per metre over C in farad per metre gives ohms squared, and the square root gives ohms.',
+      importantNote: 'A per-unit-length inductance or capacitance is not an impedance, and no rearrangement of one alone can produce ohms. Only the ratio of a series parameter to a shunt parameter has the dimensions of impedance. Any statement of the form "L prime is half the characteristic impedance" is dimensionally impossible and should be read as a warning that the units were never checked.',
+    },
+    {
+      id: 'emtx-geometry',
+      title: '7. Characteristic Impedance from Geometry',
+      content: `## 7.1 One integral, three structures
+
+For every two-conductor line, $L'$ and $C'$ come from the same field problem
+solved twice — once for the magnetic energy and once for the electric — so
+their product is fixed by the dielectric alone and their ratio by the shape
+alone. That single fact organises the whole subject:
+
+$$L'C' = \\mu_{0}\\varepsilon_{0}\\varepsilon_{r} = \\frac{\\varepsilon_{r}}{c^{2}}, \\qquad \\frac{L'}{C'} = Z_{0}^{2}$$
+
+The consequences are worth stating baldly. **The speed on a line is set only by
+what fills it**, never by how big it is; and **the impedance is set only by a
+ratio of dimensions**, never by an absolute size. Scaling a cable up by a
+factor of ten changes nothing electrical except its power handling.
+
+### Coaxial line
+
+$$L' = \\frac{\\mu_{0}}{2\\pi}\\ln \\frac{b}{a}, \\qquad C' = \\frac{2\\pi \\varepsilon_{0}\\varepsilon_{r}}{\\ln (b/a)}, \\qquad Z_{0} = \\frac{\\eta_{0}}{2\\pi \\sqrt{\\varepsilon_{r}}}\\ln \\frac{b}{a}$$
+
+The third form is the first two combined, and it is worth carrying separately
+because the numerical prefactor $\\eta_{0}/2\\pi = 59.96\\ \\Omega$ makes coax
+arithmetic a single logarithm.
+
+### Parallel two-wire (twin lead)
+
+$$Z_{0} = \\frac{\\eta_{0}}{\\pi \\sqrt{\\varepsilon_{r}}}\\operatorname{arccosh}\\frac{D}{d}$$
+
+with $D$ the centre-to-centre spacing and $d$ the wire diameter. The inverse
+hyperbolic cosine is exact for round conductors at any spacing; the familiar
+$\\ln (2D/d)$ form is its wide-spacing limit and is several per cent optimistic
+once the wires are close.
+
+### Microstrip
+
+A microstrip is the awkward one, because its field lives partly in the
+substrate and partly in the air above, so it has no single dielectric
+constant. The standard treatment defines an **effective** permittivity that
+the mixed field behaves as though it saw:
+
+$$\\varepsilon_{eff} = \\frac{\\varepsilon_{r}+1}{2} + \\frac{\\varepsilon_{r}-1}{2}\\left(1 + \\frac{12h}{W}\\right)^{-1/2}$$
+
+$$Z_{0} = \\frac{\\eta_{0}}{\\sqrt{\\varepsilon_{eff}}\\left[\\dfrac{W}{h} + 1.393 + 0.667\\ln\\left(\\dfrac{W}{h} + 1.444\\right)\\right]}, \\qquad \\frac{W}{h} \\ge 1$$
+
+$$Z_{0} = \\frac{\\eta_{0}}{2\\pi\\sqrt{\\varepsilon_{eff}}}\\ln\\left(\\frac{8h}{W} + \\frac{W}{4h}\\right), \\qquad \\frac{W}{h} \\le 1$$
+
+$$v_{p} = \\frac{c}{\\sqrt{\\varepsilon_{eff}}}, \\qquad t_{d} = \\frac{\\sqrt{\\varepsilon_{eff}}}{c}$$
+
+Note that $\\varepsilon_{eff}$ always lies between 1 and $\\varepsilon_{r}$,
+and that it depends on $W/h$: **a wide trace is more buried in the substrate
+and therefore slower than a narrow one on the same board.** Two traces of
+different width on one PCB do not have the same delay per millimetre, which is
+why length-matching a bus means matching electrical length, not physical
+length.
+
+### Worked example 4 — designing a 75 ohm coax backwards
+
+**Given**: a cable to be built with foamed polyethylene,
+$\\varepsilon_{r} = 1.50$, inner conductor radius $a = 0.500$ mm.
+
+Solve the coax expression for the ratio:
+
+$$\\frac{b}{a} = \\exp\\left(\\frac{2\\pi Z_{0}\\sqrt{\\varepsilon_{r}}}{\\eta_{0}}\\right) = \\exp\\left(\\frac{2\\pi (75)(1.2247)}{376.730}\\right) = \\exp (1.53199) = 4.6274$$
+
+so $b = 2.314$ mm and the dielectric is 4.63 mm across. Checking forwards with
+the prefactor: $\\eta_{0}/(2\\pi\\sqrt{1.50}) = 48.956\\ \\Omega$, and
+$48.956 \\times 1.53199 = 75.00\\ \\Omega$. The per-unit-length values follow:
+
+| Quantity | Computation | Value |
+|---|---|---|
+| $L'$ | $(2 \\times 10^{-7})(1.53199)$ | 306.40 nH/m |
+| $C'$ | $2\\pi (8.8542 \\times 10^{-12})(1.50)/1.53199$ | 54.471 pF/m |
+| $Z_{0}$ | $\\sqrt{L'/C'}$ | 75.000 Ω |
+| $v_{p}$ | $c/\\sqrt{1.50}$ | 2.4478 × 10⁸ m/s |
+| Velocity factor | $v_{p}/c$ | 0.8165 |
+| Delay | $1/v_{p}$ | 4.0853 ns/m |
+
+The foam has bought speed: 0.8165 c against 0.6667 c for solid polyethylene,
+so the same physical run has a delay 18 per cent shorter. It has also made the
+cable fatter for the same impedance, since a lower $\\varepsilon_{r}$ needs a
+larger $b/a$.
+
+### Worked example 5 — 300 ohm twin lead, and why it is so wide
+
+**Given**: 300 Ω in air, wire diameter $d = 1.00$ mm.
+
+$$\\operatorname{arccosh}\\frac{D}{d} = \\frac{\\pi Z_{0}\\sqrt{\\varepsilon_{r}}}{\\eta_{0}} = \\frac{\\pi (300)}{376.730} = 2.50173$$
+
+$$\\frac{D}{d} = \\cosh (2.50173) = 6.1428 \\quad\\Longrightarrow\\quad D = 6.14\\ \\mathrm{mm}$$
+
+Check the per-unit-length values: $L' = (\\mu_{0}/\\pi)(2.50173) = 1000.7$ nH/m
+and $C' = \\pi \\varepsilon_{0}/2.50173 = 11.119$ pF/m, giving
+$\\sqrt{L'/C'} = 300.00\\ \\Omega$ and
+$1/\\sqrt{L'C'} = 2.9979 \\times 10^{8}$ m/s — the speed of light exactly, as it
+must be for an air line.
+
+Compare with the coax: a 50 Ω coax needs $b/a = 3.49$, a 300 Ω open line needs
+$D/d = 6.14$. High impedance means conductors far apart relative to their size,
+because impedance rises with inductance and falls with capacitance, and
+separating the conductors does both.
+
+| $D/d$ | $Z_{0}$ in air |
+|---|---|
+| 2.0 | 157.9 Ω |
+| 4.0 | 247.4 Ω |
+| 6.0 | 297.1 Ω |
+| 10.0 | 358.9 Ω |
+
+The logarithmic dependence is the practical point: doubling the spacing adds
+only about 80 Ω. Getting much above 600 Ω needs impractically thin wire, and
+getting below about 100 Ω needs the conductors nearly touching — which is why
+low impedances are built as coax or stripline and high impedances as open
+wire.
+
+### Worked example 6 — a 50 ohm trace on FR-4
+
+**Given**: FR-4 with $\\varepsilon_{r} = 4.4$ and substrate height
+$h = 1.60$ mm. Find the width for 50 Ω, and the delay.
+
+The impedance expressions cannot be inverted in closed form, so solve
+numerically. Bisection on $W/h$ converges to $W/h = 1.9246$, that is
+$W = 3.079$ mm. Substituting back:
+
+$$\\varepsilon_{eff} = \\frac{5.4}{2} + \\frac{3.4}{2}\\left(1 + \\frac{12}{1.9246}\\right)^{-1/2} = 2.70 + 1.70(0.37177) = 3.3320$$
+
+$$Z_{0} = \\frac{376.730}{\\sqrt{3.3320}\\left[1.9246 + 1.393 + 0.667\\ln (3.3686)\\right]} = 50.00\\ \\Omega$$
+
+The effective permittivity sits 68.6 per cent of the way from air to bulk
+FR-4, which is a fair description of where the field is. The delay follows:
+
+$$t_{d} = \\frac{\\sqrt{3.3320}}{2.9979 \\times 10^{8}} = 6.089\\ \\mathrm{ps/mm}$$
+
+against 3.336 ps/mm in free space. At 2.0 GHz the wavelength on this trace is
+82.12 mm, so a quarter-wave section is 20.53 mm — while the free-space quarter
+wave is 37.47 mm. **Cutting the trace to the free-space length would make it
+1.83 times a quarter wave**, and the circuit would not do what the schematic
+says.
+
+| $W/h$ | $\\varepsilon_{eff}$ | $Z_{0}$ |
+|---|---|---|
+| 0.5 | 3.040 | 95.6 Ω |
+| 1.0 | 3.171 | 71.0 Ω |
+| 1.9246 | 3.332 | 50.0 Ω |
+| 3.0 | 3.460 | 37.6 Ω |
+| 5.0 | 3.622 | 25.9 Ω |
+
+The whole practical range of microstrip on this board is about 26 Ω to 96 Ω,
+and it takes a ten-to-one change in width to cover it — the same logarithmic
+insensitivity seen in coax and twin lead.`,
+      examTip: 'Every geometry expression here is a ratio of dimensions inside a logarithm or an inverse cosh, divided by the square root of the dielectric constant. If a problem changes only the physical size and keeps the ratio, the impedance is unchanged. If it changes only the dielectric, the impedance scales as one over the square root of it and the velocity does too.',
+      importantNote: 'Microstrip has no single dielectric constant: part of its field is in air. Use the effective permittivity for both the impedance and the delay, and remember that it depends on trace width, so wide and narrow traces on the same board do not have the same propagation delay per millimetre.',
+    },
+    {
+      id: 'emtx-boundary',
+      title: '8. The Reflection Coefficient, Derived from the Boundary',
+      content: `## 8.1 Where the formula comes from
+
+Nothing about a load imposes a reflection. What a load imposes is a
+**relation between the total voltage and the total current at its terminals**,
+and a single travelling wave generally cannot satisfy it. Put the load at
+$z = 0$ and write the two waves the telegrapher's equations allow:
+
+$$V(0) = V^{+} + V^{-}, \\qquad I(0) = \\frac{V^{+} - V^{-}}{Z_{0}}$$
+
+The load says $V(0) = Z_{L}I(0)$. Substituting,
+
+$$V^{+} + V^{-} = \\frac{Z_{L}}{Z_{0}}\\left(V^{+} - V^{-}\\right)$$
+
+and collecting terms gives the reflection coefficient as a *ratio of the two
+wave amplitudes the boundary forces*:
+
+$$\\Gamma = \\frac{V^{-}}{V^{+}} = \\frac{Z_{L} - Z_{0}}{Z_{L} + Z_{0}}, \\qquad Z_{L} = Z_{0}\\,\\frac{1 + \\Gamma}{1 - \\Gamma}$$
+
+Read that derivation once and the three memorised special cases stop being
+memorised. $Z_{L} = Z_{0}$ makes the numerator vanish: one wave already
+satisfies the boundary condition, so no second wave is needed. $Z_{L} = 0$
+forces $V(0) = 0$, so $V^{-} = -V^{+}$ and $\\Gamma = -1$. $Z_{L} \\to \\infty$
+forces $I(0) = 0$, so $V^{-} = +V^{+}$ and $\\Gamma = +1$. A purely reactive
+load can absorb nothing, so $\\lvert \\Gamma \\rvert = 1$ with the phase set by
+the reactance.
+
+**Two solvers, one answer.** The two-equation system above can be solved
+numerically for $V^{+}$ and $V^{-}$ without ever writing the ratio down, and
+that was done for five different loads while preparing this chapter; the
+magnitudes and phases agree with the formula to the last digit a computer
+carries. That is the check worth doing on any derivation of this kind.
+
+## 8.2 One mismatch, five units
+
+Reflected power is $\\lvert \\Gamma \\rvert^{2}$ of incident, so the rest of the
+vocabulary is bookkeeping:
+
+$$\\mathrm{VSWR} = \\frac{1 + \\lvert \\Gamma \\rvert}{1 - \\lvert \\Gamma \\rvert}, \\qquad \\lvert \\Gamma \\rvert = \\frac{\\mathrm{VSWR} - 1}{\\mathrm{VSWR} + 1}$$
+
+$$RL = -20\\log_{10}\\lvert \\Gamma \\rvert, \\qquad \\lvert \\Gamma \\rvert = 10^{-RL/20}$$
+
+$$ML = -10\\log_{10}\\left(1 - \\lvert \\Gamma \\rvert^{2}\\right), \\qquad \\lvert \\Gamma \\rvert^{2} = 1 - 10^{-ML/10}$$
+
+![Two panels: VSWR against the resistive load ratio, showing that a load of twice and half the line impedance give the same VSWR, and return loss and mismatch loss in decibels against the magnitude of the reflection coefficient.](/courses/fe-ee/figures/em4-mismatch-ladder.svg)
+
+Note which conversions use 20 and which use 10. Return loss compares two
+**voltages**, so it carries 20; mismatch loss compares two **powers**, so it
+carries 10. Mixing them is the most common decibel error in this topic and it
+doubles or halves the answer.
+
+### Worked example 7 — a complex load, worked twice
+
+**Given**: $Z_{L} = 30 + j40\\ \\Omega$ on a 50 Ω line.
+
+$$\\Gamma = \\frac{(30 + j40) - 50}{(30 + j40) + 50} = \\frac{-20 + j40}{80 + j40}$$
+
+Multiply above and below by the conjugate of the denominator:
+
+$$\\Gamma = \\frac{(-20 + j40)(80 - j40)}{80^{2} + 40^{2}} = \\frac{-1600 + j800 + j3200 + 1600}{8000} = \\frac{j4000}{8000} = j0.500$$
+
+The real part cancels exactly, so $\\Gamma = 0.500\\angle 90^\\circ$. The
+magnitude route confirms it: $\\lvert -20 + j40\\rvert = 44.7214$ and
+$\\lvert 80 + j40\\rvert = 89.4427$, whose ratio is $0.500000$; the angles
+are $116.57^\\circ$ and $26.57^\\circ$, differing by exactly $90^\\circ$.
+
+Everything else follows:
+
+| Quantity | Expression | Value |
+|---|---|---|
+| VSWR | $(1 + 0.5)/(1 - 0.5)$ | 3.000 |
+| Return loss | $-20\\log_{10}(0.5)$ | 6.021 dB |
+| Reflected power | $\\lvert \\Gamma \\rvert^{2}$ | 25.00% |
+| Mismatch loss | $-10\\log_{10}(0.75)$ | 1.249 dB |
+| Load impedance back | $50(1 + j0.5)/(1 - j0.5)$ | 30 + j40 Ω |
+
+The last row is the round trip: recovering the load from $\\Gamma$ confirms
+that no information was lost, which is exactly what makes the standing-wave
+measurement of the next section possible.
+
+### Worked example 8 — reading the instrument backwards
+
+Instruments report VSWR or return loss; problems ask for impedance. Both
+conversions must run in reverse without hesitation.
+
+**Given (a)**: an antenna analyser reads VSWR = 2.50 on a 50 Ω system.
+
+$$\\lvert \\Gamma \\rvert = \\frac{2.50 - 1}{2.50 + 1} = \\frac{1.50}{3.50} = 0.42857$$
+
+$$RL = -20\\log_{10}(0.42857) = 7.360\\ \\mathrm{dB}, \\qquad \\lvert \\Gamma \\rvert^{2} = 18.37\\%$$
+
+$$ML = -10\\log_{10}(1 - 0.18367) = 0.881\\ \\mathrm{dB}$$
+
+If — and only if — the load is known to be purely resistive, it is
+$Z_{L} = 50 \\times 2.50 = 125\\ \\Omega$ **or**
+$Z_{L} = 50/2.50 = 20\\ \\Omega$. VSWR alone cannot choose between them, because
+it discards the sign of $\\Gamma$ along with its phase.
+
+**Given (b)**: a network analyser reports 12.0 dB return loss.
+
+$$\\lvert \\Gamma \\rvert = 10^{-12.0/20} = 0.25119, \\qquad \\mathrm{VSWR} = \\frac{1.25119}{0.74881} = 1.671$$
+
+$$\\lvert \\Gamma \\rvert^{2} = 6.310\\%, \\qquad ML = -10\\log_{10}(0.93690) = 0.283\\ \\mathrm{dB}$$
+
+Six per cent of the power comes back and less than three tenths of a decibel
+is lost from the forward path. That asymmetry is the reason matching is
+usually chased for the sake of the *source* rather than the *signal*: 0.28 dB
+of insertion loss is invisible, but six per cent of a kilowatt returning into
+a power amplifier is not.`,
+      examTip: 'Derive the reflection coefficient rather than recalling it: two waves, one load relation, solve. Then the open, short and matched cases fall out and cannot be mixed up. Keep the two decibel conversions straight — return loss uses 20 log because it compares voltages, mismatch loss uses 10 log because it compares powers.',
+      importantNote: 'VSWR and return loss both discard the phase of the reflection coefficient, so neither can distinguish a load of 2 Z0 from one of Z0 over 2, and neither can identify a complex load at all. Recovering the impedance needs one more measurement: the position of a standing-wave minimum, or a vector instrument.',
+    },
+    {
+      id: 'emtx-standing',
+      title: '9. Standing Waves, and Solving for an Unknown Load',
+      content: `## 9.1 The envelope
+
+Measure back from the load a distance $d$, so that $z = -d$. The forward wave
+has advanced in phase and the reflected wave has retreated:
+
+$$V(d) = V^{+}\\left(e^{+j\\beta d} + \\Gamma e^{-j\\beta d}\\right)$$
+
+Factor out the forward wave, whose magnitude is constant on a lossless line:
+
+$$\\lvert V(d)\\rvert = \\lvert V^{+}\\rvert \\left\\lvert 1 + \\lvert \\Gamma \\rvert e^{j(\\theta_{\\Gamma} - 2\\beta d)}\\right\\rvert$$
+
+Everything about the standing wave is in that one bracket. The two terms add
+when the angle is zero and subtract when it is $180^\\circ$, so
+
+$$V_{max} = \\lvert V^{+}\\rvert \\left(1 + \\lvert \\Gamma \\rvert\\right), \\qquad V_{min} = \\lvert V^{+}\\rvert \\left(1 - \\lvert \\Gamma \\rvert\\right)$$
+
+$$d_{max} = \\frac{\\theta_{\\Gamma}\\lambda}{4\\pi} + \\frac{n\\lambda}{2}, \\qquad d_{min} = d_{max} + \\frac{\\lambda}{4}$$
+
+The factor of 2 in $2\\beta d$ is the whole reason the pattern repeats every
+**half** wavelength rather than every wavelength: the reflected wave travels
+the distance twice. It is also why maxima and minima are a **quarter**
+wavelength apart, not a half.
+
+![Voltage envelope along a lossless 50 ohm line terminated in 150 ohms and in 25 ohms, with the closed-form envelope drawn as a line and a numerical solution of the telegrapher equations drawn as circles on top of it.](/courses/fe-ee/figures/em4-standing-wave-fdtd.svg)
+
+The circles in the figure are not decoration. They are the envelope extracted
+from a time-domain integration of the telegrapher's equations, driven
+sinusoidally to steady state and Fourier-projected at the drive frequency. The
+solver was given only $L'$, $C'$, a source and a load; it produced a VSWR of
+3.001 against the algebraic 3.000, and put its minima where the formula says.
+
+Note the sign check the figure makes visible. The 150 Ω load, being **above**
+$Z_{0}$, has $\\Gamma$ real and positive, so $\\theta_{\\Gamma} = 0$ and there
+is a **maximum at the load**. The 25 Ω load, being below $Z_{0}$, has
+$\\theta_{\\Gamma} = 180^\\circ$ and a **minimum at the load**. Both give
+VSWR values of 3.0 and 2.0 respectively, and no amount of VSWR measurement
+distinguishes high from low; the position of the pattern does.
+
+### Worked example 9 — where the peaks are, and why they matter
+
+**Given**: the load of worked example 7, $Z_{L} = 30 + j40\\ \\Omega$ on a 50 Ω
+line at 300 MHz in a cable of velocity factor 0.6667, so
+$\\lambda = 66.62$ cm.
+
+From worked example 7, $\\Gamma = 0.500\\angle 90^\\circ$, so
+$\\theta_{\\Gamma} = \\pi/2$ rad.
+
+$$d_{max} = \\frac{(\\pi/2)\\lambda}{4\\pi} = \\frac{\\lambda}{8} = 0.1250\\lambda = 8.33\\ \\mathrm{cm}$$
+
+$$d_{min} = \\frac{\\lambda}{8} + \\frac{\\lambda}{4} = 0.3750\\lambda = 24.98\\ \\mathrm{cm}$$
+
+with both repeating every $\\lambda/2 = 33.31$ cm thereafter.
+
+Now the engineering consequence. With $\\lvert \\Gamma \\rvert = 0.5$ the
+envelope runs from $0.5\\lvert V^{+}\\rvert$ to $1.5\\lvert V^{+}\\rvert$, so
+**the peak voltage on the line is 1.5 times what a matched line would carry**
+for the same forward power. Voltage breakdown scales with the square of that:
+a connector that flashes over at some power into a matched load will do so at
+$1/1.5^{2} = 0.444$ of that power into this one. Meanwhile only 25 per cent of
+the power is reflected and the delivered power falls by 1.25 dB. **The voltage
+stress is the severe consequence of a mismatch, not the lost power** — which
+is the opposite of most students' intuition.
+
+### Worked example 10 — identifying an unknown load from a slotted line
+
+This is the classical measurement, and it is a good test of whether the
+standing-wave algebra has been understood rather than memorised.
+
+**Given**: on a 50 Ω slotted line the ratio of maximum to minimum voltage is
+3.00, adjacent minima are 33.31 cm apart, and the first minimum lies
+24.98 cm from the load. Find $Z_{L}$.
+
+**Step 1 — wavelength.** Minima repeat every half wavelength, so
+$\\lambda$ is twice 33.31 cm, that is 66.62 cm.
+
+**Step 2 — magnitude.** VSWR is 3.00, so
+
+$$\\lvert \\Gamma \\rvert = \\frac{3.00 - 1}{3.00 + 1} = 0.500$$
+
+**Step 3 — phase.** At a minimum the bracket angle is $180^\\circ$, so
+$\\theta_{\\Gamma} - 2\\beta d_{min} = -\\pi$. The measured 24.98 cm is
+$0.3750\\lambda$, so
+
+$$\\theta_{\\Gamma} = 2\\beta d_{min} - \\pi = 4\\pi (0.3750) - \\pi = 1.5\\pi - \\pi = 0.5\\pi$$
+
+that is $90^\\circ$, so $\\Gamma = 0.500\\angle 90^\\circ = j0.500$.
+
+**Step 4 — impedance.**
+
+$$Z_{L} = Z_{0}\\frac{1 + \\Gamma}{1 - \\Gamma} = 50\\,\\frac{1 + j0.5}{1 - j0.5} = 50\\,\\frac{(1 + j0.5)^{2}}{1.25} = 50(0.600 + j0.800)$$
+
+$$Z_{L} = 30 + j40\\ \\Omega$$
+
+which is exactly the load worked example 9 started from. Two scalar
+measurements — a ratio and a position — recover a complex impedance, because
+the ratio carries the magnitude and the position carries the phase. That is
+the whole idea behind every reflectometer since.`,
+      examTip: 'Remember that the standing-wave pattern repeats every half wavelength and that maxima and minima are a quarter wavelength apart, because the reflected wave covers each distance twice. A resistive load above the line impedance puts a maximum at the load; below it, a minimum. That sign check catches wrong answers faster than recomputing.',
+      importantNote: 'The peak voltage on a mismatched line is (1 + |Gamma|) times the matched value, so a 3:1 VSWR raises it by half again and cuts the safe power to about 44 per cent. Cable and connector ratings are quoted into a matched load; a bad antenna can destroy hardware at well under its nameplate power while losing only about a decibel of delivered signal.',
+    },
+    {
+      id: 'emtx-transformation',
+      title: '10. The Impedance Transformation, Derived',
+      content: `## 10.1 What a length of line does
+
+Divide the total voltage by the total current at a distance $d$ back from the
+load. Both are known from section 9:
+
+$$Z_{in}(d) = \\frac{V(d)}{I(d)} = Z_{0}\\,\\frac{e^{+j\\beta d} + \\Gamma e^{-j\\beta d}}{e^{+j\\beta d} - \\Gamma e^{-j\\beta d}}$$
+
+Divide top and bottom by $e^{+j\\beta d}$ and the whole transformation reduces
+to a single rotating phasor:
+
+$$Z_{in}(d) = Z_{0}\\,\\frac{1 + \\Gamma e^{-2j\\beta d}}{1 - \\Gamma e^{-2j\\beta d}}, \\qquad \\Gamma (d) = \\Gamma_{L}e^{-2j\\beta d}$$
+
+That second statement is the one to remember: **moving along a lossless line
+does not change $\\lvert \\Gamma \\rvert$, it only rotates its phase**, at
+$2\\beta$ radians per metre. Every impedance a length of line can present lies
+on a circle of fixed radius. Substituting
+$\\Gamma = (Z_{L}-Z_{0})/(Z_{L}+Z_{0})$ and clearing the exponentials returns
+the familiar form:
+
+$$Z_{in}(d) = Z_{0}\\,\\frac{Z_{L} + jZ_{0}\\tan \\beta d}{Z_{0} + jZ_{L}\\tan \\beta d}$$
+
+and on a lossy line the tangent becomes a hyperbolic tangent of $\\gamma d$:
+
+$$Z_{in}(d) = Z_{0}\\,\\frac{Z_{L} + Z_{0}\\tanh \\gamma d}{Z_{0} + Z_{L}\\tanh \\gamma d}$$
+
+which is the general result; the lossless form is the case $\\gamma = j\\beta$,
+since $\\tanh (j\\theta) = j\\tan \\theta$.
+
+## 10.2 The two special cases, derived rather than quoted
+
+**Half wave.** At $d = \\lambda/2$, $\\beta d = \\pi$ and $\\tan \\pi = 0$, so
+every tangent term vanishes:
+
+$$Z_{in}(\\lambda/2) = Z_{0}\\,\\frac{Z_{L} + 0}{Z_{0} + 0} = Z_{L}$$
+
+Equivalently, $2\\beta d = 2\\pi$, a full rotation of $\\Gamma$, so nothing has
+changed. Impedance repeats every half wavelength on a lossless line — which is
+why an impedance measured through any multiple of $\\lambda/2$ of cable is the
+load itself, and why a half-wave section is the standard way to move a
+measurement plane without disturbing it.
+
+**Quarter wave.** At $d = \\lambda/4$, $\\beta d = \\pi/2$ and the tangent
+diverges, so divide numerator and denominator by it before taking the limit:
+
+$$Z_{in} = Z_{0}\\,\\frac{Z_{L}/\\tan \\beta d + jZ_{0}}{Z_{0}/\\tan \\beta d + jZ_{L}} \\;\\longrightarrow\\; Z_{0}\\,\\frac{jZ_{0}}{jZ_{L}} = \\frac{Z_{0}^{2}}{Z_{L}}$$
+
+$$Z_{in}(\\lambda/4) = \\frac{Z_{0}^{2}}{Z_{L}}$$
+
+The rotation picture says the same thing: $2\\beta d = \\pi$, so
+$\\Gamma \\to -\\Gamma$, and negating $\\Gamma$ in
+$Z = Z_{0}(1+\\Gamma)/(1-\\Gamma)$ inverts the normalised impedance. **A
+quarter wave is an impedance inverter**: it turns a short into an open, an
+open into a short, a low resistance into a high one, and an inductance into a
+capacitance.
+
+![Resistance and reactance looking into a 50 ohm line terminated in 25 ohms, against length in wavelengths, with squares marking values obtained by numerically integrating the telegrapher equations at three lengths.](/courses/fe-ee/figures/em4-zin-locus.svg)
+
+The squares in the figure come from the time-domain solver, not from the
+formula above. At an eighth, a quarter and three eighths of a wavelength the
+numerical input impedance agrees with the closed form to better than one part
+in a thousand, which is as much as a discretised wave equation can be asked
+for.
+
+## 10.3 Stubs, and a bench measurement worth knowing
+
+Two terminations make the transformation especially simple:
+
+$$Z_{sc}(d) = jZ_{0}\\tan \\beta d, \\qquad Z_{oc}(d) = -jZ_{0}\\cot \\beta d$$
+
+Both are **purely reactive**, which is the basis of stub matching: a length of
+shorted or open line is an adjustable inductor or capacitor with no component
+in it. A shorted stub shorter than $\\lambda/4$ looks inductive; an open stub
+shorter than $\\lambda/4$ looks capacitive; each flips character every quarter
+wavelength thereafter.
+
+Multiplying the two removes the length entirely:
+
+$$Z_{sc}Z_{oc} = \\left(jZ_{0}\\tan \\beta d\\right)\\left(-jZ_{0}\\cot \\beta d\\right) = Z_{0}^{2} \\quad\\Longrightarrow\\quad Z_{0} = \\sqrt{Z_{sc}Z_{oc}}$$
+
+which is how the characteristic impedance of an unknown cable is measured:
+short one end and read the input impedance, open it and read again, take the
+geometric mean. It works at any length and needs no knowledge of the
+dielectric.
+
+### Worked example 11 — one load, six lengths of line
+
+**Given**: $Z_{L} = 25\\ \\Omega$ on a 50 Ω lossless line. Tabulate
+$Z_{in}$ against length.
+
+At $d = 0.05\\lambda$, $\\beta d = 18.0^\\circ$ and $\\tan \\beta d = 0.32492$:
+
+$$Z_{in} = 50\\,\\frac{25 + j50(0.32492)}{50 + j25(0.32492)} = 50\\,\\frac{25 + j16.246}{50 + j8.123} = 26.93 + j11.87\\ \\Omega$$
+
+Repeating at the other lengths:
+
+| $d$ | $\\tan \\beta d$ | $Z_{in}$ | $\\lvert Z_{in}\\rvert$ |
+|---|---|---|---|
+| 0 | 0 | 25.00 + j0 Ω | 25.00 Ω |
+| $0.050\\lambda$ | 0.3249 | 26.93 + j11.87 Ω | 29.43 Ω |
+| $0.125\\lambda$ | 1.0000 | 40.00 + j30.00 Ω | 50.00 Ω |
+| $0.250\\lambda$ | ∞ | 100.00 + j0 Ω | 100.00 Ω |
+| $0.375\\lambda$ | −1.0000 | 40.00 − j30.00 Ω | 50.00 Ω |
+| $0.500\\lambda$ | 0 | 25.00 + j0 Ω | 25.00 Ω |
+
+Three structural facts are visible in that table and none of them are
+accidents. The quarter-wave row is $50^{2}/25 = 100\\ \\Omega$, purely real.
+The half-wave row is the load again. And the $\\lambda/8$ and $3\\lambda/8$
+rows are complex conjugates with $\\lvert Z_{in}\\rvert = 50\\ \\Omega$
+exactly — they sit where the rotating $\\Gamma$ crosses the imaginary axis, so
+their magnitude is $Z_{0}$ whatever the load is.
+
+### Worked example 12 — a complex load through a length of line
+
+**Given**: $Z_{L} = 30 + j40\\ \\Omega$ on a 50 Ω line, $d = 0.100\\lambda$.
+
+Here $\\beta d = 36.0^\\circ$ and $\\tan \\beta d = 0.72654$. The rotation
+route is quicker than the tangent form and less error-prone. From worked
+example 7, $\\Gamma_{L} = 0.500\\angle 90^\\circ$. The rotation is
+$2\\beta d = 72.0^\\circ$, so
+
+$$\\Gamma (d) = 0.500\\angle (90^\\circ - 72.0^\\circ) = 0.500\\angle 18.0^\\circ$$
+
+$$Z_{in} = 50\\,\\frac{1 + 0.500\\angle 18.0^\\circ}{1 - 0.500\\angle 18.0^\\circ} = 125.44 + j51.68\\ \\Omega$$
+
+Two sanity checks. First, $\\lvert \\Gamma \\rvert$ is unchanged, so the VSWR
+is still 3.00 wherever the meter is placed — **VSWR is a property of the
+mismatch, not of where you stand**. Second, the input impedance has moved a
+long way (from $\\lvert Z_{L}\\rvert = 50\\ \\Omega$ to
+$\\lvert Z_{in}\\rvert = 135.7\\ \\Omega$) for a tenth of a wavelength of
+cable. That sensitivity is why an impedance measured at the end of an
+unspecified length of coax tells you almost nothing about the load.
+
+### Worked example 13 — the characteristic impedance of an unknown cable
+
+**Given**: a length of unknown cable measures $Z_{sc} = j40.0\\ \\Omega$ with
+its far end shorted and $Z_{oc} = -j62.5\\ \\Omega$ with it open, at the same
+frequency.
+
+$$Z_{0} = \\sqrt{Z_{sc}Z_{oc}} = \\sqrt{(j40.0)(-j62.5)} = \\sqrt{2500} = 50.0\\ \\Omega$$
+
+The electrical length falls out of the ratio:
+
+$$\\tan^{2}\\beta d = \\frac{Z_{sc}}{Z_{oc}} \\cdot (-1) = \\frac{40.0}{62.5} = 0.640 \\quad\\Longrightarrow\\quad \\tan \\beta d = 0.800$$
+
+so $\\beta d = 38.66^\\circ$, that is $d = 0.1074\\lambda$. Two reactance
+readings have produced both the impedance and the length, with no knowledge of
+the cable's construction — and the same pair of measurements on a lossy line,
+using $\\tanh$ instead of $\\tan$, yields the complex $Z_{0}$ and $\\gamma$
+together.`,
+      examTip: 'Work impedance transformations through the rotating reflection coefficient rather than the tangent formula wherever you can: the magnitude never changes, only the angle, at 720 degrees per wavelength travelled. Then the quarter-wave inversion is a 180 degree rotation and the half-wave repeat is a full turn, and neither needs to be memorised as a separate rule.',
+      importantNote: 'The quarter-wave and half-wave results hold only for a lossless line. With loss, tan becomes tanh of a complex argument, the reflection coefficient spirals inward instead of rotating on a circle, and a long enough line looks like Z0 no matter what is on the far end — which is why a badly matched but very long cable can measure as a good match.',
+    },
+    {
+      id: 'emtx-qwt',
+      title: '11. The Quarter-Wave Transformer, Designed and Swept',
+      content: `## 11.1 The design equation, in one line
+
+Put a section of line of impedance $Z_{1}$, one quarter wavelength long,
+between a source system of $Z_{S}$ and a load $Z_{L}$. The section inverts, so
+
+$$Z_{in} = \\frac{Z_{1}^{2}}{Z_{L}} \\stackrel{!}{=} Z_{S} \\quad\\Longrightarrow\\quad Z_{1} = \\sqrt{Z_{S}Z_{L}}$$
+
+The geometric mean, not the arithmetic mean. Units check trivially:
+$\\sqrt{\\Omega \\cdot \\Omega} = \\Omega$. Two restrictions come with it, and
+both are examined: $Z_{L}$ must be **real** for a single section to work at
+all (a complex load must first be rotated onto the real axis by a length of
+line, or cancelled by a reactance), and the match is exact at **one
+frequency**.
+
+The physical length is where designs go wrong. It is a quarter of the
+wavelength **inside the section**, not in free space:
+
+$$\\ell = \\frac{\\lambda_{1}}{4} = \\frac{c}{4f_{0}\\sqrt{\\varepsilon_{r}}}$$
+
+## 11.2 Bandwidth, by sweeping rather than asserting
+
+Off the design frequency the section is no longer $90^\\circ$ long. Its
+electrical length is proportional to frequency,
+
+$$\\theta (f) = \\frac{\\pi}{2}\\cdot \\frac{f}{f_{0}}$$
+
+so the input impedance and hence the reflection can be computed at any
+frequency by putting $\\theta (f)$ back into the transformation:
+
+$$\\Gamma_{in}(f) = \\frac{Z_{in}(f) - Z_{S}}{Z_{in}(f) + Z_{S}}, \\qquad Z_{in}(f) = Z_{1}\\,\\frac{Z_{L} + jZ_{1}\\tan \\theta (f)}{Z_{1} + jZ_{L}\\tan \\theta (f)}$$
+
+![Input reflection magnitude against frequency for a single quarter-wave transformer matching 100 ohms to 50 ohms, showing the shaded band where the standing wave ratio stays below 1.25, the unmatched level for comparison, and the curve that results from cutting the section to a free-space quarter wavelength.](/courses/fe-ee/figures/em4-qwt-sweep.svg)
+
+The band edges are found by solving
+$\\lvert \\Gamma_{in}(f)\\rvert = 0.1111$ numerically, not by quoting a
+bandwidth formula. For a 2:1 impedance ratio they come out at
+$0.7952f_{0}$ and $1.2048f_{0}$, symmetric about $f_{0}$, a fractional
+bandwidth of **40.97 per cent** at the 1.25 VSWR level. The symmetry is not a
+coincidence: $\\tan \\theta$ at $\\pi/2 + x$ is the negative reciprocal of
+$\\tan$ at $\\pi/2 - x$, which leaves $\\lvert \\Gamma \\rvert$ unchanged.
+
+At $2f_{0}$ the section is a **half** wave, so it repeats the load and the
+reflection returns to the unmatched value of $1/3$ — visible in the figure as
+the point where the transformer curve touches the no-transformer line.
+
+### Worked example 14 — a 1.000 GHz transformer, cut and swept
+
+**Given**: match a 100 Ω antenna to a 50 Ω system at $f_{0} = 1.000$ GHz,
+using line with a PTFE dielectric, $\\varepsilon_{r} = 2.10$.
+
+**Step 1 — impedance.**
+
+$$Z_{1} = \\sqrt{(50)(100)} = \\sqrt{5000} = 70.711\\ \\Omega$$
+
+**Step 2 — wavelength in the section.**
+
+$$\\lambda_{1} = \\frac{c}{f_{0}\\sqrt{\\varepsilon_{r}}} = \\frac{2.99792 \\times 10^{8}}{(1.000 \\times 10^{9})(1.44914)} = 0.206876\\ \\mathrm{m}$$
+
+**Step 3 — physical length.**
+
+$$\\ell = \\frac{\\lambda_{1}}{4} = 51.72\\ \\mathrm{mm}$$
+
+**Step 4 — check the match.** At $f_{0}$, $\\tan \\theta$ diverges and
+$Z_{in} = Z_{1}^{2}/Z_{L} = 5000/100 = 50.0\\ \\Omega$ exactly, so
+$\\Gamma_{in} = 0$.
+
+**Step 5 — sweep.** Recomputing across frequency:
+
+| $f/f_{0}$ | $\\lvert \\Gamma_{in}\\rvert$ | VSWR |
+|---|---|---|
+| 0.500 | 0.2425 | 1.640 |
+| 0.7952 | 0.1111 | 1.250 |
+| 0.800 | 0.1086 | 1.244 |
+| 1.000 | 0.0000 | 1.000 |
+| 1.200 | 0.1086 | 1.244 |
+| 1.2048 | 0.1111 | 1.250 |
+| 2.000 | 0.3333 | 2.000 |
+
+**Step 6 — the trap.** Suppose the section had been cut to a free-space
+quarter wave instead:
+
+$$\\ell_{wrong} = \\frac{c}{4f_{0}} = 74.95\\ \\mathrm{mm}$$
+
+That is $\\sqrt{2.10} = 1.4491$ times too long, so at 1.000 GHz the section is
+$0.3623\\lambda_{1}$, or $130.4^\\circ$, instead of $90^\\circ$. The
+reflection is then $\\lvert \\Gamma_{in}\\rvert = 0.2235$, a VSWR of 1.576 —
+**worse than half of the improvement thrown away**, and the actual match has
+moved down to $f_{0}/\\sqrt{\\varepsilon_{r}} = 690$ MHz. A network that
+measures beautifully at the wrong frequency is the signature of this error.
+
+**Independent confirmation.** The whole structure — a 50 Ω feed, a 70.711 Ω
+section 51.72 mm long, a 100 Ω load — was also built inside a time-domain
+solver and driven at 0.80, 1.00 and 1.20 $f_{0}$, with the forward and
+backward waves on the feed separated by a least-squares fit exactly as a
+slotted line separates them. It returned $\\lvert \\Gamma \\rvert$ of 0.10855,
+0.00013 and 0.10856 against the algebraic 0.10861, 0 and 0.10861. The match at
+$f_{0}$ is not an artefact of the algebra.
+
+## 11.3 When one section is not enough
+
+A single section is a two-to-one impedance ratio's worth of bandwidth. Wider
+matches cascade sections with intermediate impedances, each a quarter wave, so
+that the small reflections from the several steps partly cancel. The design
+rules for those (binomial for maximum flatness, Chebyshev for equal ripple)
+are beyond the FE syllabus, but the reason they exist is not: **bandwidth is
+bought with sections**, and the exam-level statement is that one quarter-wave
+section gives a narrowband match whose bandwidth shrinks as the impedance
+ratio grows.`,
+      examTip: 'Three steps, in order: geometric mean for the impedance, wavelength inside the section for the length, and a check that the load is real. If the load is complex, either move along the line to a point where the impedance is real (a standing-wave maximum or minimum) and transform from there, or cancel the reactance first. Quoting the geometric mean for a complex load is a guaranteed wrong answer.',
+      importantNote: 'The quarter wavelength is the one inside the matching section, shortened by the square root of its dielectric constant. Using the free-space wavelength makes the section too long by that factor and moves the match down in frequency by it — for PTFE that is a factor of 1.449, so a 1.000 GHz design ends up matching at 690 MHz.',
+    },
+    {
+      id: 'emtx-smith',
+      title: '12. The Smith Chart Is a Bilinear Map',
+      content: `## 12.1 What the chart actually is
+
+The Smith chart looks like a graphical trick and is nothing of the kind. It is
+the image of the right half of the impedance plane under one complex function:
+
+$$\\Gamma = \\frac{z - 1}{z + 1}, \\qquad z = \\frac{1 + \\Gamma}{1 - \\Gamma}, \\qquad z = \\frac{Z}{Z_{0}}$$
+
+This is a **bilinear** (Möbius) map, and bilinear maps have one property that
+makes the whole chart work: **they send circles and straight lines to circles
+and straight lines**. The vertical lines of constant resistance and the
+horizontal lines of constant reactance in the $z$ plane are therefore circles
+in the $\\Gamma$ plane, and their equations can be written down:
+
+$$\\left(\\Gamma_{r} - \\frac{r}{1+r}\\right)^{2} + \\Gamma_{i}^{2} = \\left(\\frac{1}{1+r}\\right)^{2}$$
+
+$$\\left(\\Gamma_{r} - 1\\right)^{2} + \\left(\\Gamma_{i} - \\frac{1}{x}\\right)^{2} = \\left(\\frac{1}{x}\\right)^{2}$$
+
+The constant-resistance circles all pass through $\\Gamma = +1$ and shrink
+towards it as $r$ grows; the constant-reactance circles are all centred on the
+vertical line through $\\Gamma = +1$ and are cut off by the unit circle. Every
+passive load has $\\lvert \\Gamma \\rvert \\le 1$, so the entire infinite right
+half plane of impedance is packed into a disc of radius one. That compression
+is the chart's whole reason for existing.
+
+Four landmarks fix the orientation and are worth deriving once each:
+
+| Point | $z$ | $\\Gamma$ | Where |
+|---|---|---|---|
+| Matched | 1 | 0 | centre |
+| Short | 0 | −1 | far left |
+| Open | ∞ | +1 | far right |
+| Pure reactance | $jx$ | $\\lvert \\Gamma \\rvert = 1$ | on the rim |
+
+## 12.2 Why a line length is a rotation
+
+Section 10 gave $\\Gamma (d) = \\Gamma_{L}e^{-2j\\beta d}$. On the chart that
+is a rotation about the centre, clockwise as you move **towards the
+generator**, through
+
+$$\\Delta \\phi = -2\\beta d = -\\frac{4\\pi d}{\\lambda} \\qquad \\text{that is} \\qquad -720^\\circ \\frac{d}{\\lambda}$$
+
+A half wavelength is one full turn, which is why the printed "wavelengths
+toward generator" scale runs from 0 to 0.5 around the rim. The radius never
+changes on a lossless line, so **the whole traverse is a rotation and nothing
+else** — which is also why the chart carries VSWR on a radial scale: a circle
+of constant radius is a circle of constant VSWR.
+
+![A Smith chart drawn as the image of the impedance plane under the bilinear map, with constant-resistance and constant-reactance circles, and a worked traverse of 0.15 wavelengths towards the generator shown as an arc of constant radius.](/courses/fe-ee/figures/em4-smith-map.svg)
+
+One more property earns the chart its place in matching work: because
+$y = 1/z$ corresponds to $\\Gamma \\to -\\Gamma$, **converting impedance to
+admittance is a 180° rotation** — a quarter-wave move. The same printed chart
+therefore serves as an admittance chart, which is what makes shunt-stub design
+graphical.
+
+### Worked example 15 — one traverse, read and checked
+
+**Given**: $Z_{L} = 20 + j40\\ \\Omega$ on a 50 Ω line. Find the impedance
+$0.150\\lambda$ towards the generator.
+
+**Step 1 — normalise.** $z_{L} = (20 + j40)/50 = 0.400 + j0.800$.
+
+**Step 2 — map to $\\Gamma$.**
+
+$$\\Gamma_{L} = \\frac{z_{L}-1}{z_{L}+1} = \\frac{-0.600 + j0.800}{1.400 + j0.800}$$
+
+The numerator has magnitude $\\sqrt{0.36 + 0.64} = 1.0000$ and angle
+$126.870^\\circ$; the denominator has magnitude
+$\\sqrt{1.96 + 0.64} = 1.61245$ and angle $29.745^\\circ$. So
+
+$$\\lvert \\Gamma_{L}\\rvert = 1.0000/1.61245 = 0.62017, \\qquad \\angle \\Gamma_{L} = 126.870^\\circ - 29.745^\\circ = 97.125^\\circ$$
+
+**Step 3 — read the rim.** The wavelengths-toward-generator scale reads
+$(180^\\circ - 97.125^\\circ)/720^\\circ$, which is $0.1151\\lambda$. Adding
+the traverse gives $0.1151 + 0.150 = 0.2651\\lambda$.
+
+**Step 4 — rotate.** The new angle is
+$180^\\circ - 720^\\circ (0.2651) = -10.875^\\circ$, consistent with rotating
+the original angle clockwise by $720 \\times 0.150 = 108.0$ degrees.
+
+$$\\Gamma_{in} = 0.62017\\angle -10.875^\\circ = 0.60904 - j0.11701$$
+
+**Step 5 — map back.**
+
+$$z_{in} = \\frac{1 + \\Gamma_{in}}{1 - \\Gamma_{in}} = \\frac{1.60904 - j0.11701}{0.39096 + j0.11701} = 3.6950 - j1.4051$$
+
+$$Z_{in} = 50\\,z_{in} = 184.75 - j70.26\\ \\Omega$$
+
+**Checks.** The magnitude of $\\Gamma$ is unchanged, so the VSWR is 4.2656 at
+both ends, and $\\lvert z_{in}\\rvert = 3.9532$ is comfortably inside the VSWR
+circle radius of 4.2656 — a point can never leave it. Feeding
+$Z_{L} = 20 + j40$ and $d = 0.150\\lambda$ into the tangent transformation of
+section 10 returns $3.695045 - j1.405114$ normalised, agreeing with the
+rotation route to twelve significant figures. **The chart is not an
+approximation to the algebra; it is a picture of it.**
+
+## 12.3 What the chart is still for
+
+Vector network analysers compute all of this instantly, and the chart survives
+anyway, for three reasons an exam will test. It shows at a glance whether a
+load is inductive (upper half) or capacitive (lower half); it makes the effect
+of *adding* a series reactance or a shunt susceptance a slide along a printed
+circle rather than a calculation; and it turns matching from algebra into the
+geometric question of how to get from one point to the centre. Those are
+reasoning tools, and they do not become obsolete because the arithmetic did.`,
+      examTip: 'Three facts carry most Smith chart questions: the centre is a perfect match, the radius is fixed on a lossless line so a length of line is a pure rotation, and a full turn is half a wavelength. Convert between impedance and admittance by rotating 180 degrees. The upper half is inductive and the lower half capacitive.',
+      importantNote: 'Rotating toward the generator is clockwise, and 720 degrees per wavelength, not 360. The factor of two is the same one that puts standing-wave minima half a wavelength apart, and getting it wrong sends every stub design to a point a quarter wavelength away from the right answer.',
+    },
+    {
+      id: 'emtx-stub',
+      title: '13. Stub Matching',
+      content: `## 13.1 The idea
+
+A quarter-wave transformer needs a real load and a section of a special
+impedance. Stub matching needs neither: it uses only lengths of the **same**
+line already in use, which is why it dominates in printed circuits, where a
+stub is a piece of copper and an extra impedance is an extra process step.
+
+The method uses shunt elements, so work in **admittance**. Two steps:
+
+1. Move a distance $d$ from the load until the normalised admittance has
+   **unit conductance**, $y(d) = 1 + jb$. Such a point always exists, because
+   the rotating $\\Gamma$ must cross the $g = 1$ circle.
+2. Put a shunt stub there whose susceptance is $-jb$. Total: $y = 1$, that is
+   $Z_{in} = Z_{0}$, a perfect match.
+
+The stub is a length of shorted or open line, so it supplies pure susceptance:
+
+$$y_{sc} = -j\\cot \\beta \\ell_{s}, \\qquad y_{oc} = +j\\tan \\beta \\ell_{s}$$
+
+and the length needed for a required susceptance $-b$ follows by inversion:
+
+$$\\ell_{s} = \\frac{\\lambda}{2\\pi}\\operatorname{arccot}(b) \\quad \\text{(shorted)}, \\qquad \\ell_{s} = \\frac{\\lambda}{2\\pi}\\arctan (-b) \\quad \\text{(open)}$$
+
+Shorted stubs are preferred in coax and waveguide, where a short is a reliable
+cap and an open radiates; open stubs are preferred on PCBs, where etching a
+stub is free and a via to ground is not.
+
+## 13.2 Finding the distance
+
+Writing $y(d) = 1/z(d)$ with the transformation of section 10 and setting the
+real part to one gives a transcendental equation in $\\tan \\beta d$. It is
+solvable in closed form but the algebra is unpleasant and error-prone; on the
+chart it is simply "rotate until you hit the $g = 1$ circle", and numerically
+it is a two-line root find. **There are always two solutions per half
+wavelength**, because the rotating point crosses the unit-conductance circle
+twice, and they give equal and opposite susceptances.
+
+![Two panels: normalised conductance and susceptance against distance from a load of 100 plus j50 ohms, showing the two crossings of unit conductance, and the resulting matched network reflection against frequency.](/courses/fe-ee/figures/em4-stub-match.svg)
+
+### Worked example 16 — a single shunt stub, both solutions
+
+**Given**: $Z_{L} = 100 + j50\\ \\Omega$ on a 50 Ω line; design a
+short-circuited shunt stub match.
+
+**Step 1 — normalise and invert.** $z_{L} = 2.00 + j1.00$, so
+
+$$y_{L} = \\frac{1}{2.00 + j1.00} = \\frac{2.00 - j1.00}{5.00} = 0.400 - j0.200$$
+
+**Step 2 — walk to unit conductance.** Sweeping $d$ and solving
+$\\mathrm{Re}\\left[y(d)\\right] = 1$ gives two roots in the first half
+wavelength:
+
+| Solution | $d$ | $y(d)$ | Stub must add | Shorted stub $\\ell_{s}$ |
+|---|---|---|---|---|
+| A | $0.19879\\lambda$ | $1 + j1$ | $-j1$ | $0.12500\\lambda$ |
+| B | $0.37500\\lambda$ | $1 - j1$ | $+j1$ | $0.37500\\lambda$ |
+
+**Step 3 — the stub.** For solution A the stub must present $-j1.000$. A
+shorted stub has $y_{sc} = -j\\cot \\beta \\ell_{s}$, so
+$\\cot \\beta \\ell_{s} = 1$, giving $\\beta \\ell_{s} = 45^\\circ$ and
+
+$$\\ell_{s} = \\frac{45^\\circ}{360^\\circ}\\lambda = 0.12500\\lambda$$
+
+**Step 4 — verify.** At the stub plane,
+
+$$y_{total} = (1 + j1) + (-j1) = 1 + j0 \\quad\\Longrightarrow\\quad Z_{in} = \\frac{50}{1} = 50.0\\ \\Omega$$
+
+The residual reflection computes to $1.6 \\times 10^{-16}$, which is machine
+zero: the match is exact, not approximate. Solution B works equally well and
+needs $0.37500\\lambda$ of stub — three times as much copper for the same
+result, so A is the one to build. If an **open** stub is wanted instead,
+solution A needs $\\tan \\beta \\ell_{s} = -1$, that is
+$\\ell_{s} = 0.37500\\lambda$; the shorted and open stubs differ by exactly a
+quarter wavelength, as they must.
+
+**Step 5 — bandwidth.** Both $d$ and $\\ell_{s}$ are electrical lengths, so
+both drift with frequency, and the match degrades on either side. Sweeping the
+finished network (holding the load impedance fixed) gives VSWR below 1.25 over
+**11.9 per cent** of bandwidth, against the unmatched
+$\\lvert \\Gamma \\rvert = 0.4472$, a VSWR of 2.618. A stub match is narrower
+than the quarter-wave transformer of section 11 because two lengths are
+drifting instead of one.
+
+## 13.3 Practical notes the exam likes
+
+- The stub is in **shunt**, so susceptances add. A series stub would need
+  reactances to add and is far harder to build in most media.
+- A stub is a length of line, not a lumped element: its susceptance is
+  $\\cot$ or $\\tan$, not $1/\\omega L$ or $\\omega C$, and it repeats every
+  half wavelength.
+- **Double-stub tuners** use two fixed-position stubs and adjust only their
+  lengths, which is what makes a bench tuner practical; the price is a
+  forbidden region of loads that cannot be matched at all.
+- Everything here assumed a lossless line and a frequency-independent load.
+  Real antennas move with frequency, and the measured bandwidth of a stub
+  match is usually narrower than this calculation suggests.`,
+      examTip: 'Stub problems are admittance problems. Normalise, invert to admittance, rotate until the conductance is 1, then cancel whatever susceptance is left with a stub. Remember that a shorted stub gives minus j cot and an open stub plus j tan, and that the two differ by a quarter wavelength for the same job.',
+      importantNote: 'There are always two stub positions within half a wavelength, giving equal and opposite susceptances and therefore two different stub lengths. Both match exactly at the design frequency; the shorter total length is usually the better build, and neither is more correct than the other.',
+    },
+    {
+      id: 'emtx-tdr',
+      title: '14. Time-Domain Reflectometry and Bounce Diagrams',
+      content: `## 14.1 Radar down a cable
+
+A time-domain reflectometer launches a fast step into a line and watches the
+same point. Anything that is not $Z_{0}$ sends part of the step back, and the
+**round-trip time** locates it while the **step size** identifies it:
+
+$$d = \\frac{v_{p}t_{rt}}{2} = \\frac{k_{v}\\,c\\,t_{rt}}{2}, \\qquad \\Gamma = \\frac{\\Delta V}{V_{inc}}, \\qquad Z = Z_{0}\\,\\frac{1 + \\Gamma}{1 - \\Gamma}$$
+
+The factor of two is the round trip, and it is the single most common source
+of a doubled or halved answer. The velocity factor $k_{v}$ must be the
+cable's own; using 1.0 by mistake overstates every distance by about half
+again for common polyethylene cable.
+
+| What the trace does | $\\Gamma$ | Diagnosis |
+|---|---|---|
+| Rises to the full open-circuit source voltage | $+1$ | open circuit, broken conductor |
+| Falls to zero | $-1$ | short circuit |
+| Steps part way up | $0 < \\Gamma < 1$ | series resistance, or a higher-impedance section |
+| Steps part way down | $-1 < \\Gamma < 0$ | shunt loading, water, a crushed or pinched cable |
+| Stays flat | $0$ | correctly terminated, or no discontinuity yet |
+
+## 14.2 The bounce diagram
+
+For a line between a resistive source and a resistive load, everything follows
+from three numbers and a ledger:
+
+$$\\Gamma_{S} = \\frac{R_{S}-Z_{0}}{R_{S}+Z_{0}}, \\qquad \\Gamma_{L} = \\frac{R_{L}-Z_{0}}{R_{L}+Z_{0}}, \\qquad V_{1} = V_{S}\\,\\frac{Z_{0}}{R_{S}+Z_{0}}$$
+
+$V_{1}$ is the **launched step**: at the instant the source is applied, the
+line looks like a resistor of $Z_{0}$ ohms, so the source and the line form an
+ordinary divider. It is the only place lumped circuit thinking is allowed, and
+it works because the line has not yet had time to know what is on the far end.
+Thereafter each wave that arrives at an end is reflected by that end's
+coefficient, and at any observation point the visible voltage is the running
+sum of everything that has passed.
+
+For a mismatch **inside** the line, the same ledger runs with a transmission
+coefficient as well:
+
+$$\\tau = 1 + \\Gamma$$
+
+which is not a typo and not a violation of energy conservation: the
+transmitted *voltage* can exceed the incident voltage when the impedance rises,
+because the transmitted *current* falls by more.
+
+![A time-domain reflectometry trace at the instrument, computed both from a bounce-diagram ledger and by integrating the telegrapher equations, showing a step down at 148 nanoseconds where the cable impedance falls, and the staircase up to the full source voltage from the open far end.](/courses/fe-ee/figures/em4-tdr-trace.svg)
+
+### Worked example 17 — locating and identifying a fault
+
+**Given**: a TDR with a 50 Ω head launches a 1.000 V open-circuit step into a
+50 Ω cable of velocity factor 0.66. The trace shows 0.500 V immediately, a
+**drop to 0.400 V at 148 ns**, then a rise to 0.880 V at 198 ns, 0.976 V at
+248 ns, and so on towards 1.000 V.
+
+**Step 1 — the launched step.** With $R_{S} = Z_{0} = 50\\ \\Omega$,
+
+$$V_{1} = 1.000 \\times \\frac{50}{50 + 50} = 0.500\\ \\mathrm{V}$$
+
+so the instrument's own 0.500 V plateau is the incident wave, and a matched
+source means nothing re-reflects at the head — every step in the trace is one
+more round trip further into the cable.
+
+**Step 2 — locate.** The first discontinuity returns at 148 ns:
+
+$$v_{p} = 0.66\\,c = 1.9786 \\times 10^{8}\\ \\mathrm{m/s}, \\qquad d = \\frac{(1.9786 \\times 10^{8})(148 \\times 10^{-9})}{2} = 14.64\\ \\mathrm{m}$$
+
+**Step 3 — identify.** The step is $0.400 - 0.500 = -0.100$ V against an
+incident 0.500 V, so
+
+$$\\Gamma_{1} = \\frac{-0.100}{0.500} = -0.200 \\quad\\Longrightarrow\\quad Z = 50\\,\\frac{1 - 0.200}{1 + 0.200} = 33.3\\ \\Omega$$
+
+A **negative** step of that size means the impedance has fallen to a third of
+the way down, which is the signature of a crushed cable or water ingress, not
+of a break.
+
+**Step 4 — what lies beyond.** The transmission coefficient into the damaged
+section is $\\tau_{1} = 1 + \\Gamma_{1} = 0.800$, so a 0.400 V wave continues.
+It returns at 198 ns, 50 ns later, so the far end is
+$(1.9786 \\times 10^{8})(50 \\times 10^{-9})/2 = 4.95$ m beyond the fault, at
+19.59 m of cable in total. It comes back with the full $+1$ of an open circuit
+and crosses the junction outward with
+$\\tau_{2} = 1 + \\Gamma_{2} = 1.200$, giving $0.400 \\times 1.200 = 0.480$ V
+and a trace level of $0.500 - 0.100 + 0.480 = 0.880$ V. Each further round
+trip inside the damaged section contributes $\\Gamma_{2} = +0.200$ times the
+last, so the levels are 0.976, 0.9952, 0.99904 V.
+
+**Step 5 — the self-check.** The trapped wave is a geometric series, and it
+must sum to the DC answer, because the far end is open and no current can
+flow in the steady state:
+
+$$V_{\\infty} = V_{1}(1 + \\Gamma_{1})\\left[1 + \\frac{1 + \\Gamma_{2}}{1 - \\Gamma_{2}}\\right] = 0.500 \\times 0.800 \\times 2.500 = 1.000\\ \\mathrm{V}$$
+
+which is the full open-circuit source voltage, as it must be. **If the ledger
+does not converge to the DC answer, the ledger is wrong** — and that check
+costs nothing.
+
+**Independent confirmation.** The identical two-segment cable was integrated in
+the time domain from the telegrapher's equations, with no reflection or
+transmission coefficient anywhere in the solver. Its trace reads 0.50000,
+0.40006, 0.88029, 0.97617, 0.99522 and 0.99899 V at the six plateaux, against
+the ledger's 0.500, 0.400, 0.880, 0.976, 0.9952 and 0.99904.
+
+### Worked example 18 — three ways to terminate the same line
+
+**Given**: the 1.5 m, 50 Ω line of section 4, one-way delay 7.51 ns, driven
+from a 5.0 V source, with a high-impedance CMOS receiver at the far end.
+Compare three treatments.
+
+**(a) Unterminated, 25 Ω source.** From section 4:
+$V_{1} = 5.0 \\times 50/75 = 3.33$ V, $\\Gamma_{L} = +1$,
+$\\Gamma_{S} = -0.333$. The receiver sees 6.67 V — **33 per cent above the
+rail** — then 4.44, 5.19, 4.94 V, settling only after four round trips, about
+60 ns.
+
+**(b) Series-terminated: raise the source resistance to $Z_{0}$.** Now
+$\\Gamma_{S} = 0$:
+
+$$V_{1} = 5.0 \\times \\frac{50}{50 + 50} = 2.50\\ \\mathrm{V}$$
+
+Half the supply travels down the line; the open end doubles it to 5.00 V; the
+returning wave reaches the source and is absorbed. **Settled in one round
+trip, 15.0 ns, with no overshoot and no DC current at all.** The catch is
+visible in the arithmetic: for 7.51 ns the line carries only 2.50 V, so a
+second receiver tapped part way along would see a half-amplitude plateau and
+could latch a wrong level. Series termination serves point-to-point links, not
+multi-drop buses.
+
+**(c) Parallel-terminated: put $Z_{0}$ across the far end.** Now
+$\\Gamma_{L} = 0$, so the launched step arrives and stays; the waveform is
+clean everywhere along the line, at every moment, which is what a multi-drop
+bus needs. The price is DC:
+
+$$V_{\\infty} = 5.0 \\times \\frac{50}{25 + 50} = 3.33\\ \\mathrm{V}, \\qquad I = \\frac{3.33}{50} = 66.7\\ \\mathrm{mA}$$
+
+$$P_{term} = \\frac{(3.33)^{2}}{50} = 0.222\\ \\mathrm{W}, \\qquad P_{supply} = 5.0 \\times 0.0667 = 0.333\\ \\mathrm{W}$$
+
+so the logic high has fallen to 3.33 V and a third of a watt burns
+continuously in one net. That trade — clean everywhere and expensive, against
+clean only at the end and free — is the whole of practical termination
+choice.
+
+| Scheme | Overshoot | Settling | Static power | Good for |
+|---|---|---|---|---|
+| None | +33% | 4 round trips | 0 | short runs only |
+| Series at source | 0% | 1 round trip | 0 | point to point |
+| Parallel at load | 0% | 1 one-way delay | 0.222 W | multi-drop |
+
+## 14.3 The same physics in two domains
+
+Nothing in section 14 is new physics. A TDR step is a superposition of
+frequencies; the ringing of an unterminated line is the time-domain face of
+the standing wave of section 9; a bounce diagram is the geometric series that
+the frequency-domain input impedance sums in closed form. Which domain to use
+is a question of which one makes the answer visible: a fault at 14.64 m is
+obvious in time and nearly unreadable in frequency, while a 41 per cent
+matching bandwidth is obvious in frequency and nearly unreadable in time.`,
+      examTip: 'TDR questions almost always reduce to two steps: divide the round-trip time by two before multiplying by the velocity, and turn the step ratio into an impedance with Z0(1+Gamma)/(1-Gamma). A step that rises means the impedance went up; a step that falls means it went down; full rise means open and full fall means short.',
+      importantNote: 'The launched step is set by the source resistance against Z0, never against the load, because the line cannot know what terminates it until a round trip has elapsed. Every bounce ledger must converge to the ordinary DC divider answer once the reflections die out; if it does not, a reflection coefficient has the wrong sign.',
+    },
+    {
+      id: 'emtx-problems-a',
+      title: '15. Problem Set A: Lines, Impedance and Mismatch',
+      content: `Work each one before reading the answer. Values are given to the
+precision they should be worked at, and every answer below was computed from
+the equations of sections 5 to 9.
+
+## Problem Set A
+
+**A1.** A 75 Ω coaxial cable has a velocity factor of 0.820 and carries a
+200 MHz signal. Find the wavelength on the line and the delay per metre, then
+decide whether a 4.00 cm pigtail may be treated as a lumped element, and
+estimate the error if it is.
+
+**A2.** A line is measured to have $L' = 320$ nH/m and $C' = 128$ pF/m. Find
+$Z_{0}$, $v_{p}$, the delay per metre, and the effective dielectric constant.
+
+**A3.** On a 50 Ω system the load is $Z_{L} = 20 - j35\\ \\Omega$. Find
+$\\Gamma$ in polar form, the VSWR, the return loss, the fraction of power
+reflected, and the mismatch loss.
+
+**A4.** An antenna analyser reads VSWR = 1.80 on a 50 Ω system. Find
+$\\lvert \\Gamma \\rvert$, the return loss, the reflected power fraction, the
+mismatch loss, and the two purely resistive loads consistent with the reading.
+
+**A5.** On a 50 Ω slotted line the VSWR is 2.00, adjacent minima are 20.0 cm
+apart, and the first minimum is 4.00 cm from the load. Find the wavelength,
+$\\Gamma$ and $Z_{L}$.
+
+**A6.** A 25 m cable with an attenuation of 0.0500 dB/m at 500 MHz feeds a
+load whose true reflection magnitude is 0.400. What return loss does an
+instrument at the input end measure, and what apparent
+$\\lvert \\Gamma \\rvert$ does that correspond to?
+
+### Answers, Problem Set A
+
+**A1.** $v_{p} = 0.820c = 2.4583 \\times 10^{8}$ m/s;
+$\\lambda = v_{p}/f = 1.2291$ m; delay $= 1/v_{p} = 4.068$ ns/m. The pigtail is
+$0.04/1.2292 = 0.03254$ wavelengths, that is $11.72^\\circ$ — below the
+$\\lambda/20$ line, so lumped treatment is acceptable. The error estimate
+$\\theta^{2}/3$ with $\\theta = 0.20447$ rad gives 1.39 per cent, and the exact
+value is 1.40 per cent.
+
+**A2.** The ratio of the two per-unit-length values is
+$320 \\times 10^{-9}/128 \\times 10^{-12} = 2500$, so $Z_{0} = 50.0\\ \\Omega$;
+$v_{p} = 1/\\sqrt{L'C'} = 1.5625 \\times 10^{8}$ m/s; delay
+$= \\sqrt{L'C'} = 6.40$ ns/m; and
+$\\varepsilon_{eff} = (c/v_{p})^{2} = 3.681$. Note the delay is the reciprocal
+of the velocity and comes out in seconds per metre, not the other way round.
+
+**A3.** $\\Gamma = (-30 - j35)/(70 - j35) = -0.1429 - j0.5714$, which is
+$0.5890\\angle -104.04^\\circ$. VSWR $= 1.5890/0.4110 = 3.866$;
+$RL = -20\\log_{10}(0.5890) = 4.597$ dB; reflected power
+$= \\lvert \\Gamma \\rvert^{2} = 34.69$ per cent; mismatch loss
+$= -10\\log_{10}(0.65306) = 1.850$ dB.
+
+**A4.** $\\lvert \\Gamma \\rvert = 0.80/2.80 = 0.28571$;
+$RL = 10.881$ dB; reflected power 8.163 per cent; mismatch loss 0.370 dB. The
+resistive candidates are $50 \\times 1.80 = 90.0\\ \\Omega$ and
+$50/1.80 = 27.8\\ \\Omega$, and the VSWR reading cannot distinguish them.
+
+**A5.** Minima are half a wavelength apart, so $\\lambda = 40.0$ cm.
+$\\lvert \\Gamma \\rvert = (2.00-1)/(2.00+1) = 0.3333$. The first minimum at
+$0.100\\lambda$ gives
+$\\theta_{\\Gamma} = 4\\pi (0.100) - \\pi = -0.600\\pi$, that is
+$-108.0^\\circ$, so $\\Gamma = -0.1030 - j0.3170$ and
+
+$$Z_{L} = 50\\,\\frac{1 + \\Gamma}{1 - \\Gamma} = 33.74 - j24.07\\ \\Omega$$
+
+Substituting that load back into $\\Gamma = (Z_{L}-Z_{0})/(Z_{L}+Z_{0})$
+returns $0.3333\\angle -108.0^\\circ$, closing the loop.
+
+**A6.** The wave is attenuated once outbound and once returning, so the
+measured magnitude is the true one reduced by the **round-trip** loss of
+$2 \\times 1.25 = 2.50$ dB:
+
+$$\\lvert \\Gamma \\rvert_{meas} = 0.400 \\times 10^{-2.50/20} = 0.3000$$
+
+$$RL_{meas} = -20\\log_{10}(0.3000) = 10.46\\ \\mathrm{dB}$$
+
+against a true 7.96 dB. **Cable loss always flatters a match**, and a
+sufficiently long cable measures as a perfect load whatever is on the end of
+it. This is the practical reason return-loss measurements are made at the
+device, not at the far end of a long feed.`,
+      examTip: 'Two habits catch most errors in this material. Convert a mismatch into every unit as soon as you have it, so a later part of the question is a lookup rather than a rework. And always substitute a recovered impedance back into the reflection formula: it costs a line of algebra and catches sign errors in the phase, which are the errors that survive undetected.',
+      importantNote: 'A return-loss or VSWR measurement made through a lossy cable reports a better match than the load has, by twice the one-way cable loss in decibels. Any measured return loss must state the plane it refers to.',
+    },
+    {
+      id: 'emtx-problems-b',
+      title: '16. Problem Set B: Transformation, Matching and Time Domain',
+      content: `## Problem Set B
+
+**B1.** A 50 Ω lossless line is terminated in 200 Ω. Find $Z_{in}$ at
+$0.125\\lambda$, $0.250\\lambda$ and $0.375\\lambda$ from the load, and say
+what relates the first and third answers.
+
+**B2.** Design a quarter-wave transformer to match a 300 Ω folded dipole to a
+75 Ω feed at 600 MHz, in a medium with $\\varepsilon_{r} = 2.30$. Give the
+section impedance and its physical length, and state what length would result
+from the free-space wavelength error.
+
+**B3.** For the transformer of B2, find $\\lvert \\Gamma_{in}\\rvert$ and the
+VSWR at $0.80f_{0}$, and compare its fractional bandwidth at VSWR 1.25 with
+the 40.97 per cent of the two-to-one transformer in section 11.
+
+**B4.** A normalised load $z = 2.00 - j1.00$ sits on a 50 Ω line. Find
+$\\Gamma$, the VSWR, and the impedance $0.200\\lambda$ towards the generator,
+using the rotation method.
+
+**B5.** Design a short-circuited shunt stub match for
+$Z_{L} = 25 - j50\\ \\Omega$ on a 50 Ω line: give the stub distance from the
+load and the stub length, both in wavelengths.
+
+**B6.** A TDR with a 75 Ω head examines a 75 Ω cable of velocity factor 0.850.
+A reflection arrives at 260 ns with an amplitude one third of the incident
+step and the **same** polarity. Locate the discontinuity and identify it.
+
+### Answers, Problem Set B
+
+**B1.** With $\\tan \\beta d = 1$ at $0.125\\lambda$:
+
+$$Z_{in} = 50\\,\\frac{200 + j50}{50 + j200} = 23.53 - j44.12\\ \\Omega$$
+
+At $0.250\\lambda$ the inverter gives $Z_{0}^{2}/Z_{L} = 2500/200 = 12.50$ ohms,
+purely real. At $0.375\\lambda$, $\\tan \\beta d = -1$ and the answer
+is $23.53 + j44.12\\ \\Omega$ — the **complex conjugate** of the first, because
+those two points are mirror images about the real axis on the constant-VSWR
+circle. Both have magnitude 50.0 Ω, which is $Z_{0}$, for the same reason as
+in worked example 11.
+
+**B2.** $Z_{1} = \\sqrt{(300)(75)} = \\sqrt{22500} = 150.0\\ \\Omega$. The
+wavelength in the section is
+$\\lambda_{1} = c/(f_{0}\\sqrt{\\varepsilon_{r}}) = 0.32946$ m, so
+$\\ell = 82.37$ mm. Using the free-space wavelength would give 124.91 mm,
+longer by $\\sqrt{2.30} = 1.5166$, and would move the match down to
+$600/1.5166 = 396$ MHz.
+
+**B3.** At $0.80f_{0}$, $\\theta = 72.0^\\circ$ and $\\tan \\theta = 3.0777$:
+
+$$Z_{in} = 150\\,\\frac{300 + j150(3.0777)}{150 + j300(3.0777)} = 80.79 - j35.61\\ \\Omega$$
+
+$$\\Gamma_{in} = \\frac{Z_{in}-75}{Z_{in}+75} \\quad\\Longrightarrow\\quad \\lvert \\Gamma_{in}\\rvert = 0.2258, \\quad \\mathrm{VSWR} = 1.583$$
+
+The VSWR 1.25 band runs from $0.9047f_{0}$ to $1.0953f_{0}$, a fractional
+bandwidth of **19.05 per cent** — less than half the 40.97 per cent of the
+two-to-one case. **Bandwidth falls as the impedance ratio rises**, which is the
+argument for multi-section transformers.
+
+**B4.** $\\Gamma = (z-1)/(z+1) = (1.00 - j1.00)/(3.00 - j1.00)$, which is
+$0.400 - j0.200$, so $\\lvert \\Gamma \\rvert = 0.4472$ at
+$-26.565^\\circ$ and VSWR $= 2.618$. Moving $0.200\\lambda$ towards the
+generator rotates by $720 \\times 0.200 = 144.0$ degrees clockwise, to
+$-170.565^\\circ$:
+
+$$\\Gamma_{in} = 0.4472\\angle -170.565^\\circ = -0.4412 - j0.0733$$
+
+$$z_{in} = \\frac{1+\\Gamma_{in}}{1-\\Gamma_{in}} = 0.3842 - j0.0704 \\quad\\Longrightarrow\\quad Z_{in} = 19.21 - j3.52\\ \\Omega$$
+
+An inductive load has become slightly capacitive and much lower in resistance;
+only the angle changed.
+
+**B5.** Normalising, $z_{L} = 0.500 - j1.000$ and
+$y_{L} = 0.400 + j0.800$. Sweeping for unit conductance, the first solution is
+$d = 0.06313\\lambda$, where $y = 1 + j1.5811$. The stub must supply
+$-j1.5811$, so a shorted stub needs $\\cot \\beta \\ell_{s} = 1.5811$, giving
+$\\beta \\ell_{s} = 32.31^\\circ$ and $\\ell_{s} = 0.08975\\lambda$.
+Substituting back gives a total normalised admittance of $1.000 + j0.000$ and
+an input impedance of exactly 50.0 Ω. The unmatched load had
+$\\lvert \\Gamma \\rvert = 0.6202$ and a VSWR of 4.266.
+
+**B6.** $v_{p} = 0.850c = 2.5482 \\times 10^{8}$ m/s, so
+
+$$d = \\frac{(2.5482 \\times 10^{8})(260 \\times 10^{-9})}{2} = 33.13\\ \\mathrm{m}$$
+
+A positive reflection of one third means
+
+$$Z = 75\\,\\frac{1 + 0.3333}{1 - 0.3333} = 150\\ \\Omega$$
+
+so the cable has been spliced to a section of twice its impedance — or, in a
+harness, a connector has an open shield and the effective impedance has
+doubled. **The polarity carries the diagnosis**: the same magnitude with the
+opposite sign would have meant 37.5 Ω and a crushed or shunt-loaded cable
+instead.`,
+      examTip: 'Every problem in this set is one of four moves: rotate the reflection coefficient, invert with a quarter wave, cancel a susceptance with a stub, or divide a round-trip time by two. Identify which move the question wants before touching a calculator, and the arithmetic is short in every case.',
+      importantNote: 'Both matching networks in this set are exact at one frequency and degrade either side of it, and the wider the impedance ratio the narrower the band. Any claim that a network is matched must state the frequency, and any measured bandwidth must state the criterion — 1.25 VSWR here, but 1.5 and 2.0 are equally common and give very different numbers.',
+    },
   ],
   keyTakeaways: [
     'Characteristic impedance: Z₀ = √(L/C); typical values 50 Ω (RF), 75 Ω (video).',
@@ -4726,6 +6162,14 @@ domain rather than at a single frequency.`,
     'Quarter-wave transformer: Z₀(match) = √(Z_S·Z_L); inverts impedance.',
     'Standing waves: V_max = V_inc(1 + |Γ|), V_min = V_inc(1 − |Γ|).',
     'Reflected power fraction = |Γ|²; transmitted = 1 − |Γ|².',
+    'Electrical length decides everything: under ~λ/20 a lumped model is ~3% wrong; the error is θ²/3 and depends on nothing else.',
+    'The telegrapher equations come from one slice: ∂v/∂z = −R′i − L′ ∂i/∂t and ∂i/∂z = −G′v − C′ ∂v/∂t.',
+    'A per-unit-length L or C is not an impedance — only the ratio √(L′/C′) has ohms.',
+    'Moving along a lossless line rotates Γ at 720° per wavelength and never changes |Γ|; the Smith chart is that rotation drawn.',
+    'Low loss: α ≈ R′/2Z₀ + G′Z₀/2 (conductor + dielectric), β ≈ ω√(L′C′).',
+    'Z₀ = √(Z_sc · Z_oc): shorting and opening the far end measures an unknown cable.',
+    'Stub matching: rotate to y = 1 + jb, then cancel jb with a shorted (−j cot βℓ) or open (+j tan βℓ) stub.',
+    'TDR: distance = v_p·t/2 (halve the round trip), and Z = Z₀(1 + Γ)/(1 − Γ) from the step height.',
   ],
 },
 
