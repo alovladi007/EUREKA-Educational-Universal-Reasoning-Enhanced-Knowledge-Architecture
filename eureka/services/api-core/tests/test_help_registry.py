@@ -18,8 +18,26 @@ import pytest
 from app.services import help_service as hs
 from app.services.help_registry import ESCALATE_ALWAYS, TOPICS
 
-# services/api-core/tests/ -> repo/eureka/apps/web/src/app
-_APP_DIR = Path(__file__).resolve().parents[3] / "apps" / "web" / "src" / "app"
+# Find the Next.js route tree by WALKING UP rather than by a fixed parent index.
+# `parents[3]` assumed the repo layout (services/api-core/tests -> eureka/), but
+# in the container the suite lives at /app/tests, where index 3 walks past the
+# filesystem root and raises IndexError AT IMPORT — aborting the whole pytest
+# run, not just this module. The web source is not shipped in the API image at
+# all, so the honest behaviour there is to skip, not to fail.
+def _find_app_dir() -> Path | None:
+    for base in Path(__file__).resolve().parents:
+        candidate = base / "apps" / "web" / "src" / "app"
+        if candidate.is_dir():
+            return candidate
+    return None
+
+
+_APP_DIR = _find_app_dir()
+
+pytestmark = pytest.mark.skipif(
+    _APP_DIR is None,
+    reason="Next.js route tree not present (API-only image); run from a repo checkout",
+)
 
 
 def _resolve(base: Path, parts: list[str]) -> bool:
@@ -66,7 +84,7 @@ def _route_exists(route: str) -> bool:
     return False
 
 
-@pytest.mark.skipif(not _APP_DIR.exists(), reason="web app not present in this checkout")
+@pytest.mark.skipif(_APP_DIR is None, reason="web app not present in this checkout")
 @pytest.mark.parametrize("topic", TOPICS, ids=lambda t: t.key)
 def test_every_topic_route_exists(topic) -> None:
     assert _route_exists(topic.route), (

@@ -6,12 +6,18 @@ import pytest
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 
-from app.core.security import (
-    get_password_hash,
+# `app.core.security` has never existed in this service. The password and JWT
+# helpers live in `app.utils.auth`, which is what the application itself
+# imports, and the hashing helper is named `hash_password` there. This file
+# therefore failed at COLLECTION, which aborts the entire pytest run before a
+# single test executes — and because CI only ever invoked `test_phase*.py`, the
+# breakage was invisible to the pipeline.
+from app.utils.auth import (
+    hash_password as get_password_hash,
     verify_password,
     create_access_token,
     create_refresh_token,
-    verify_token
+    verify_token,
 )
 from app.core.config import get_settings
 
@@ -134,24 +140,25 @@ class TestJWTTokens:
         assert payload["sub"] == "user123"
         assert payload["email"] == "test@example.com"
 
+    # These three asserted `verify_token(...) is None`, the contract of the
+    # `app.core.security` module this file was written against — a module that
+    # has never existed here. The real `app.utils.auth.verify_token` RAISES
+    # JWTError, as its own docstring states, and that is the safer contract:
+    # a caller who forgets to check a None return carries on with an invalid
+    # token, whereas an exception cannot be ignored by accident. The code is
+    # right; the expectation was fiction. Rewritten to assert the rejection.
+
     def test_verify_token_invalid(self):
-        """Test token verification with invalid token."""
-        invalid_token = "invalid.token.here"
-
-        payload = verify_token(invalid_token)
-
-        assert payload is None
+        """A structurally invalid token must be rejected, not returned."""
+        with pytest.raises(JWTError):
+            verify_token("invalid.token.here")
 
     def test_verify_token_expired(self):
-        """Test token verification with expired token."""
-        data = {"sub": "user123"}
-        # Create token that expires immediately
-        expires_delta = timedelta(seconds=-1)
-        token = create_access_token(data, expires_delta)
+        """An expired token must be rejected."""
+        token = create_access_token({"sub": "user123"}, timedelta(seconds=-1))
 
-        payload = verify_token(token)
-
-        assert payload is None
+        with pytest.raises(JWTError):
+            verify_token(token)
 
 
 @pytest.mark.unit
@@ -188,9 +195,13 @@ class TestTokenSecurity:
 
         # Tamper with the token
         parts = token.split('.')
-        if len(parts) == 3:
-            # Change a character in the payload
-            tampered_token = f"{parts[0]}.{parts[1][:-1]}X.{parts[2]}"
+        assert len(parts) == 3, "a JWT must have three segments to tamper with"
 
-            payload = verify_token(tampered_token)
-            assert payload is None
+        # Change a character in the payload
+        tampered_token = f"{parts[0]}.{parts[1][:-1]}X.{parts[2]}"
+
+        # Must be rejected outright. The original `if len(parts) == 3:` guard
+        # meant a malformed token would have skipped the assertion entirely and
+        # the test would have passed without checking anything.
+        with pytest.raises(JWTError):
+            verify_token(tampered_token)
