@@ -511,7 +511,7 @@ $$M_{p} = e^{-\\pi (0.3)/0.9539} = 0.3723 = 37.23\\%$$
 
 $$t_{r} = \\frac{\\pi - \\arccos (0.3)}{19.078} = \\frac{3.1416 - 1.2661}{19.078} = 0.0983\\ \\mathrm{s}$$
 
-$$t_{s} = \\frac{\\ln (52.414)}{6} = \\frac{3.959}{6} = 0.6599\\ \\mathrm{s}$$
+$$t_{s} = \\frac{\\ln (52.414)}{6} = \\frac{3.9592}{6} = 0.6599\\ \\mathrm{s}$$
 
 ![An underdamped step response for a damping ratio of 0.3 and a natural frequency of 20 rad/s, with the rise time of 0.0983 s, the 37.23 percent peak at 0.1647 s, the decaying envelope and the 2 percent settling instant at 0.6599 s all marked on the same trace.](/courses/fe-ee/figures/lin2-td-spec-marks.svg)
 
@@ -5025,7 +5025,7 @@ A transfer function is decomposed into FACTORS, each contributing to the total B
 
 | Factor in H(s) | Magnitude slope | Phase contribution |
 |---|---|---|
-| Constant K | 20·log₁₀(K) dB everywhere | $0^\\circ if K > 0, \\pm 180^\\circ if K < 0$ |
+| Constant K | 20·log₁₀(K) dB everywhere | $0^\\circ$ for positive K, $\\pm 180^\\circ$ for negative K |
 | Pole at origin: 1/s | -20 dB/decade | -90° everywhere |
 | Zero at origin: s | +20 dB/decade | +90° everywhere |
 | Real pole 1/(s/p + 1) | 0 below p, -20 dB/decade above p | 0° below p/10, -90° above p·10, -45° at p |
@@ -5050,8 +5050,13 @@ question actually interrogates.
 
 Bode plots use TIME-CONSTANT form, not pole-zero form. Convert:
 
-  Pole-zero form: H(s) = K' · (s - $z_{1}$) / (s - $p_{1}$)
+  Pole-zero form: H(s) = K' · (s + $z_{1}$) / (s + $p_{1}$)
   Time-constant form: H(s) = K · (s/$z_{1}$ + 1) / (s/$p_{1}$ + 1)   (assuming $p_{1}$, $z_{1}$ are not at origin)
+
+Both lines above use $p_{1}$ and $z_{1}$ for the POSITIVE corner frequencies, so
+the pole itself sits at $s = -p_{1}$ and the zero at $s = -z_{1}$. Writing the
+pole-zero form with a minus sign and then reusing the same symbol as a corner
+frequency is a sign error that propagates into every phase term.
 
 In time-constant form, the breakpoint of each factor is the "1" — i.e., the corner frequency for a factor (s/p + 1) is ω = p.
 
@@ -5083,8 +5088,9 @@ Step 2: corner frequencies: ω = 10 (pole), ω = 100 (zero)
 
 Step 3: start of magnitude plot:
 - Pole at origin: slope -20 dB/decade everywhere as starting condition
-- Pick a low frequency, say ω = 1: |H| ≈ |100/1| / |1| = 100 = 40 dB
-- So the curve passes through 40 dB at ω = 1, going down at -20 dB/decade
+- Pick a low frequency, say ω = 1. The straight-line value there is $\\lvert 100/(j1)\\rvert = 100$, which is 40 dB
+- So the SKETCH passes through 40 dB at ω = 1, going down at -20 dB/decade
+- The exact value is not 40 dB. Evaluating the whole complex function, $\\lvert H(j1)\\rvert = 10\\sqrt{1 + 100^{2}}/(1 \\cdot \\sqrt{1 + 10^{2}}) = 1000.05/10.049876 = 99.5087$, which is 39.9572 dB. The sketch is 0.0428 dB high, because ω = 1 sits a decade below the nearest corner
 
 Step 4: change slopes at corners:
 - At ω = 10 (pole): slope goes from -20 to -40 dB/decade
@@ -5118,8 +5124,8 @@ Both should be POSITIVE for stability; larger = more robust.
 ## 2.2 Reading gain margin from Bode plot
 
 1. Find the PHASE CROSSOVER frequency ω_pc — where the phase plot crosses -180°
-2. At ω_pc, read the magnitude in dB
-3. Gain Margin = -|M(ω_pc)| in dB (i.e., the magnitude reading expressed as a negative number is the gain margin if magnitude is below 0)
+2. At ω_pc, read the magnitude in dB. Call that reading $M_{pc}$, keeping its sign
+3. Gain Margin = $-M_{pc}$ in dB. The minus sign flips the SIGNED reading; there is no absolute value in this formula. A reading of $-12$ dB gives a gain margin of $+12$ dB, and a reading of $+4$ dB gives $-4$ dB, which is an unstable loop. Writing the rule with a modulus sign, as $-\\lvert M_{pc}\\rvert$, makes every gain margin come out negative and every loop look unstable
 
 If |L(jω_pc)| < 0 dB → GM > 0 (system is stable; can add up to GM more gain before instability)
 If |L(jω_pc)| > 0 dB → GM < 0 (system is UNSTABLE)
@@ -5200,10 +5206,10 @@ Used for: simple RC low-pass filters, first-order systems.
 - Natural frequency: ωₙ
 - Damping ratio: ζ
 - Magnitude slope: 0 below ωₙ, -40 dB/decade above
-- Peak in magnitude at ωₙ if ζ < 0.707 (resonant peak; height = 1/(2ζ√(1-ζ²))
-- Phase: 0° at low freq, -90° at ωₙ, -180° at high freq
+- A resonant peak exists whenever $\\zeta < 1/\\sqrt{2} = 0.7071$, and it does NOT sit at ωₙ. It sits at $\\omega_{r} = \\omega_{n}\\sqrt{1 - 2\\zeta^{2}}$, always BELOW the natural frequency, and its height is $1/(2\\zeta\\sqrt{1-\\zeta^{2}})$. Section 8 derives both
+- Phase: 0° at low freq, exactly -90° at ωₙ for every ζ, -180° at high freq
 
-For ζ = 0.5: 1.25 dB resonant peak. For ζ = 0.1: 14 dB peak. For ζ ≥ 0.707: no peak.
+For ζ = 0.5 the peak is 1.2494 dB, at 0.7071ωₙ. For ζ = 0.1 it is 14.0230 dB, at 0.9899ωₙ. For ζ ≥ 0.7071 there is no peak at all and the magnitude falls monotonically.
 
 ## 3.4 Pole at origin (integrator)
 
@@ -5272,6 +5278,1598 @@ Or if the magnitude shows a peak near 5 rad/s, the answer is a complex pair:
   H(s) = 25 / (s² + 2ζ·5·s + 25) for some ζ < 0.707`,
       examTip: `Recognize the slope: -20 = one pole. -40 = two poles. Recognize where the change happens: that's a corner frequency. Read DC gain from the flat low-frequency portion (in linear units, 0 dB = gain 1).`,
     },
+    {
+      id: 'bode-log-foundation',
+      title: '4. Why Both Axes Are Logarithmic, and What a Decibel Actually Is',
+      content: `## 4.1 The construction rests on one algebraic identity
+
+Everything in this chapter follows from a single property of the logarithm:
+it converts multiplication into addition. A rational transfer function is a
+PRODUCT, and a graph is not something you can multiply, so the whole apparatus
+of corner frequencies and slopes exists to turn that product into a stack of
+contributions you can lay on top of one another with a pencil.
+
+Write any rational transfer function in the factored time-constant form, with
+$m$ finite zeros, $q$ finite poles and $n$ poles sitting at the origin:
+
+$$H(j\\omega) = K\\,\\frac{\\prod_{k=1}^{m}\\left(1 + j\\omega/z_{k}\\right)}{(j\\omega)^{n}\\prod_{k=1}^{q}\\left(1 + j\\omega/p_{k}\\right)}$$
+
+The modulus of a product is the product of the moduli and the argument of a
+product is the sum of the arguments, so without any approximation at all:
+
+$$\\lvert H(j\\omega)\\rvert = \\lvert K\\rvert\\,\\frac{\\prod_{k=1}^{m}\\lvert 1 + j\\omega/z_{k}\\rvert}{\\omega^{n}\\prod_{k=1}^{q}\\lvert 1 + j\\omega/p_{k}\\rvert}$$
+
+$$\\angle H(j\\omega) = \\angle K + \\sum_{k=1}^{m}\\arctan\\!\\left(\\frac{\\omega}{z_{k}}\\right) - n\\frac{\\pi}{2} - \\sum_{k=1}^{q}\\arctan\\!\\left(\\frac{\\omega}{p_{k}}\\right)$$
+
+The phase is already a sum. The magnitude is still a product, and that is the
+one thing a decibel axis repairs. Taking twenty times the base-ten logarithm
+of both sides of the magnitude expression:
+
+$$20\\log_{10}\\lvert H\\rvert = 20\\log_{10}\\lvert K\\rvert + \\sum_{k=1}^{m}20\\log_{10}\\lvert 1 + j\\omega/z_{k}\\rvert - 20n\\log_{10}\\omega - \\sum_{k=1}^{q}20\\log_{10}\\lvert 1 + j\\omega/p_{k}\\rvert$$
+
+Every factor now contributes an additive term. Draw each term as its own
+curve, add the curves ordinate by ordinate, and the result is the exact
+magnitude plot. Nothing has been approximated yet: the approximation arrives
+only in Section 5, when each individual term is replaced by two straight lines.
+
+![Three separate contributions and their sum, for a transfer function that is fifty times a zero at four radians per second over a pole at sixty. The constant contributes a flat thirty three point nine seven nine four decibels, the zero curves upward, the pole curves downward, and the top curve is their arithmetic sum at every single frequency.](/courses/fe-ee/figures/lin4-log-sum.svg)
+
+## 4.2 Why the FREQUENCY axis is logarithmic too
+
+The decibel axis is what makes factors additive. The logarithmic frequency
+axis does something different and equally necessary: it makes every factor of
+the same TYPE the same SHAPE.
+
+Substitute $\\omega = p\\,u$ into a real-pole factor. The result,
+$\\lvert 1 + ju\\rvert^{-1}$, does not contain $p$ at all. On a linear
+frequency axis a pole at 2 rad/s and a pole at 2000 rad/s draw two curves of
+wildly different width. On a logarithmic axis they draw the SAME curve,
+displaced horizontally by $\\log_{10}(2000/2) = 3$ decades. That is the
+property a template exploits, and it is why a sketching rule can be memorized
+once and applied to every corner frequency you will ever meet.
+
+## 4.3 The decibel is defined on POWER, and the factor of two is not optional
+
+A decibel is one tenth of a bel, and a bel is the base-ten logarithm of a
+POWER ratio. The definition is therefore
+
+$$L_{\\mathrm{dB}} = 10\\log_{10}\\!\\left(\\frac{P_{2}}{P_{1}}\\right)$$
+
+Bode plots do not plot power; they plot the modulus of a transfer function,
+which is a ratio of amplitudes. The twenty appears only because power in a
+common resistance goes as the square of amplitude, $P = V^{2}/R$:
+
+$$10\\log_{10}\\!\\left(\\frac{V_{2}^{2}/R}{V_{1}^{2}/R}\\right) = 10\\log_{10}\\!\\left(\\frac{V_{2}}{V_{1}}\\right)^{2} = 20\\log_{10}\\!\\left(\\frac{V_{2}}{V_{1}}\\right)$$
+
+So the two coefficients are not two conventions to choose between. They are
+one convention applied to two different quantities, and the factor of two
+between them is the square in the power law. The trap is that a bare ratio
+such as "0.35" carries no label saying which it is, and the two readings
+differ by a factor of two in decibels.
+
+Three consequences worth committing to memory:
+
+- A doubling of AMPLITUDE is $20\\log_{10}2 = 6.0206\\ \\mathrm{dB}$.
+- A doubling of POWER is $10\\log_{10}2 = 3.0103\\ \\mathrm{dB}$.
+- The half-power point is where the amplitude ratio is $1/\\sqrt{2}$, and
+  $20\\log_{10}(1/\\sqrt{2}) = -3.0103\\ \\mathrm{dB}$. It is called the 3 dB point
+  because it is 3 dB down in power, and it is also 3 dB down in amplitude
+  decibels, which is exactly why the two conventions are so easy to conflate
+  and so rarely caught.
+
+### Worked Example 1 - One Ratio, Two Decibel Answers
+
+**Given.** Two networks in a matched 50 ohm system. Network A passes an output
+voltage amplitude equal to 0.35 of its input amplitude. Network B delivers an
+output POWER equal to 0.35 of its input power.
+
+**Find.** The decibel figure for each, and the other quantity in each case.
+
+**Solution.** For network A the given ratio is an amplitude ratio, so the
+twenty applies directly:
+
+$$L_{A} = 20\\log_{10}(0.35) = -9.1186\\ \\mathrm{dB}$$
+
+Its power ratio is the square, $0.35^{2} = 0.1225$, and the ten-times rule on
+that number returns the same decibel figure, as it must:
+
+$$10\\log_{10}(0.1225) = -9.1186\\ \\mathrm{dB}$$
+
+For network B the given ratio is a power ratio, so the ten applies:
+
+$$L_{B} = 10\\log_{10}(0.35) = -4.5593\\ \\mathrm{dB}$$
+
+and its amplitude ratio is the square root, $\\sqrt{0.35} = 0.591608$, which
+returns the same figure through the other route:
+
+$$20\\log_{10}(0.591608) = -4.5593\\ \\mathrm{dB}$$
+
+**Answer.** The identical number 0.35 means $-9.1186$ dB for an amplitude
+ratio and $-4.5593$ dB for a power ratio - a factor of two apart, exactly
+$-9.1186/(-4.5593) = 2.0000$. A Bode magnitude axis is always the first of
+these, because a transfer function is an amplitude ratio.
+
+## 4.4 The slope of 20 dB per decade is a property of the logarithm
+
+Suppose that over some band the magnitude behaves as a power law,
+$\\lvert H\\rvert = C\\omega^{r}$. In decibels,
+
+$$20\\log_{10}\\lvert H\\rvert = 20\\log_{10}C + 20r\\log_{10}\\omega$$
+
+Now change the horizontal variable to $x = \\log_{10}\\omega$, which is exactly
+what a logarithmic frequency axis draws. The equation becomes
+
+$$20\\log_{10}\\lvert H\\rvert = 20\\log_{10}C + 20r\\,x$$
+
+a straight line of slope $20r$ decibels per unit of $x$. One unit of $x$ is
+one decade. So the slope is $20r$ dB per decade, and $r$ is simply the net
+number of zeros minus poles that have already broken at that frequency. There
+is no separate rule to remember for a double pole or a triple zero: the
+exponent adds, so the slope adds.
+
+An octave is a doubling, so it is $\\log_{10}2 = 0.30103$ of a decade, and
+therefore
+
+$$20\\ \\mathrm{dB/decade} \\times 0.30103 = 6.0206\\ \\mathrm{dB/octave}$$
+
+| Net order $r$ at that frequency | Slope (dB/decade) | Slope (dB/octave) | Ultimate phase from those factors |
+|---|---|---|---|
+| $+2$ | $+40$ | $+12.0412$ | $+180^\\circ$ |
+| $+1$ | $+20$ | $+6.0206$ | $+90^\\circ$ |
+| $0$ | $0$ | $0$ | $0^\\circ$ |
+| $-1$ | $-20$ | $-6.0206$ | $-90^\\circ$ |
+| $-2$ | $-40$ | $-12.0412$ | $-180^\\circ$ |
+| $-3$ | $-60$ | $-18.0618$ | $-270^\\circ$ |
+
+### Worked Example 2 - Recovering the Order From Two Measured Points
+
+**Given.** A magnitude measurement reads $-6.0$ dB at 50 rad/s and $-42.0$ dB
+at 200 rad/s, with no corner frequency in between.
+
+**Find.** How many net poles are active over that band.
+
+**Solution.** The slope in decibels per decade is the change in decibels
+divided by the change in $\\log_{10}\\omega$:
+
+$$\\log_{10}\\!\\left(\\frac{200}{50}\\right) = \\log_{10}4 = 0.602060\\ \\mathrm{decades}$$
+
+$$\\mathrm{slope} = \\frac{-42.0 - (-6.0)}{0.602060} = \\frac{-36.0}{0.602060} = -59.7947\\ \\mathrm{dB/decade}$$
+
+Divide by 20 to get the net order:
+
+$$r = \\frac{-59.7947}{20} = -2.9897$$
+
+**Answer.** The net order is $-3$: three more poles than zeros are active in
+that band. The measured $-2.9897$ misses the integer by 0.0103, which is the
+0.2 dB of rounding in the two printed readings, not a fractional pole. Note
+also the octave check: $-59.7947 \\times 0.30103 = -18.0000$ dB per octave,
+against the ideal $3 \\times 6.0206 = 18.0618$.
+
+## 4.5 What the plot is worth before any approximation
+
+It is worth being explicit about what has and has not been assumed so far.
+Sections 4.1 through 4.4 contain no approximation whatsoever. The additive
+decomposition is an identity, the twenty-versus-ten distinction is a
+definition, and the slope rule is a change of variable. Every number in this
+section is exact.
+
+The approximation begins in the next section, where each factor's genuine
+curve is replaced by two straight lines meeting at a corner. From that point
+on, every quantity read off the sketch carries an error, and the rest of the
+chapter is devoted to measuring it. Any question that asks for a margin, a
+crossover frequency or a gain at a specific frequency must ultimately be
+answered from the exact expressions above, with the sketch used only to
+locate the neighbourhood and to catch gross blunders.`,
+      examTip: 'Two coefficients, one definition. Power ratios take ten times the logarithm; amplitude ratios take twenty, because power goes as amplitude squared. A Bode magnitude axis is always the twenty. If a problem hands you a bare ratio, decide what physical quantity it is before you reach for a coefficient, and remember that a doubling is 6.0206 dB of amplitude but only 3.0103 dB of power.',
+      importantNote: 'The additive decomposition of a Bode magnitude is an exact identity, not an approximation. What is approximate is replacing each factor by straight lines. Keep the two ideas separate: you may always add factor contributions, but you may only trust the straight lines to within the error budget quantified in Sections 6 and 7.',
+    },
+    {
+      id: 'bode-primitives',
+      title: '5. The Four Primitive Factors, Each One Derived',
+      content: `## 5.1 Why the list of primitives is closed at four
+
+A transfer function with real coefficients has a numerator and a denominator
+that are real polynomials, and every real polynomial factors over the reals
+into linear terms and irreducible quadratics. Complex roots must appear in
+conjugate pairs, and a conjugate pair multiplies out to a real quadratic.
+That is the entire argument, and it is why the inventory of Bode primitives
+is short and complete:
+
+1. a real constant $K$;
+2. a pole or zero at the origin, $(j\\omega)^{\\pm n}$;
+3. a real pole or zero away from the origin, $(1 + j\\omega/a)^{\\pm 1}$;
+4. a conjugate pair, $\\left(1 - \\omega^{2}/\\omega_{n}^{2} + 2j\\zeta\\omega/\\omega_{n}\\right)^{\\pm 1}$.
+
+Nothing else can occur. A fifth-order plant is four of these in some
+combination, and the sketching procedure never needs a fifth template.
+
+## 5.2 The constant
+
+$$\\lvert K\\rvert_{\\mathrm{dB}} = 20\\log_{10}\\lvert K\\rvert, \\qquad \\angle K = \\begin{cases} 0^\\circ, & K > 0 \\\\ \\pm 180^\\circ, & K < 0 \\end{cases}$$
+
+It is a horizontal line with no corner. Note immediately that a sign change in
+$K$ moves the phase by half a turn and leaves the magnitude bit-for-bit
+identical. This is the first and simplest instance of a theme that Section 11
+develops: a magnitude plot is blind to a whole class of changes.
+
+## 5.3 Poles and zeros at the origin
+
+For $H(j\\omega) = (j\\omega)^{r}$ with integer $r$ of either sign,
+
+$$\\lvert H\\rvert_{\\mathrm{dB}} = 20r\\log_{10}\\omega, \\qquad \\angle H = 90r\\ \\mathrm{degrees}$$
+
+Both are exact at every frequency; there is no corner and no error. The
+magnitude is a straight line of slope $20r$ dB per decade that passes through
+0 dB at $\\omega = 1$, because $\\log_{10}1 = 0$. The phase is a constant.
+
+A useful companion result: for $H = K/(j\\omega)^{n}$, the magnitude reaches
+unity where $K/\\omega^{n} = 1$, that is at
+
+$$\\omega = K^{1/n}$$
+
+so an integrator with gain 40 crosses 0 dB at 40 rad/s and a double
+integrator with gain 40 crosses at $\\sqrt{40} = 6.3246$ rad/s. This is one of
+the very few crossover frequencies you may legitimately read straight off a
+sketch, because for this factor the sketch is the exact curve.
+
+## 5.4 The real pole, and the real zero as its mirror
+
+Take the single real pole in time-constant form and write $u = \\omega/a$ for
+the frequency measured in units of its corner:
+
+$$H(j\\omega) = \\frac{1}{1 + ju}, \\qquad \\lvert H\\rvert = \\frac{1}{\\sqrt{1 + u^{2}}}, \\qquad \\angle H = -\\arctan u$$
+
+$$\\lvert H\\rvert_{\\mathrm{dB}} = -10\\log_{10}\\left(1 + u^{2}\\right)$$
+
+**The low-frequency asymptote.** For $u \\ll 1$ the $u^{2}$ is negligible
+against 1, so the decibel value tends to $-10\\log_{10}1 = 0$. The line is flat
+at 0 dB.
+
+**The high-frequency asymptote.** For $u \\gg 1$ the 1 is negligible against
+$u^{2}$, so the decibel value tends to $-10\\log_{10}u^{2} = -20\\log_{10}u$.
+By the argument of Section 4.4 that is a straight line of slope $-20$ dB per
+decade.
+
+**Where the two lines meet.** Setting them equal, $0 = -20\\log_{10}u$, gives
+$\\log_{10}u = 0$ and therefore $u = 1$, that is $\\omega = a$. The corner
+frequency is not a definition imposed from outside; it is the intersection of
+the two asymptotes, which is why it is also called the break frequency.
+
+**The exact value at the corner.** Put $u = 1$ into the exact expressions:
+
+$$\\lvert H\\rvert_{\\mathrm{dB}} = -10\\log_{10}2 = -3.0103\\ \\mathrm{dB}, \\qquad \\angle H = -\\arctan 1 = -45^\\circ$$
+
+**The exact slope at the corner.** Differentiate the decibel expression with
+respect to $x = \\log_{10}u$, remembering that $u = 10^{x}$ so
+$\\mathrm{d}(u^{2})/\\mathrm{d}x = 2u^{2}\\ln 10$:
+
+$$\\frac{\\mathrm{d}}{\\mathrm{d}x}\\left[-10\\log_{10}\\left(1+u^{2}\\right)\\right] = \\frac{-10}{\\left(1+u^{2}\\right)\\ln 10}\\cdot 2u^{2}\\ln 10 = \\frac{-20u^{2}}{1+u^{2}}$$
+
+At $u = 1$ this is $-10$ dB per decade, exactly half the ultimate slope. The
+true curve therefore leaves the flat asymptote gradually and only reaches the
+full $-20$ dB per decade asymptotically; the kink in the sketch is a fiction
+that the exact curve rounds off over roughly two decades.
+
+**The zero is the same derivation with both signs reversed.** For
+$1 + ju$ the decibel contribution is $+10\\log_{10}(1+u^{2})$ and the phase is
+$+\\arctan u$. Every number below can therefore be quoted once and applied to a
+zero by changing its sign.
+
+## 5.5 The conjugate pair
+
+Write the standard second-order denominator in time-constant form with
+$u = \\omega/\\omega_{n}$:
+
+$$H(j\\omega) = \\frac{1}{1 - u^{2} + 2j\\zeta u}$$
+
+$$\\lvert H\\rvert = \\frac{1}{\\sqrt{\\left(1 - u^{2}\\right)^{2} + 4\\zeta^{2}u^{2}}}, \\qquad \\lvert H\\rvert_{\\mathrm{dB}} = -10\\log_{10}\\left[\\left(1-u^{2}\\right)^{2} + 4\\zeta^{2}u^{2}\\right]$$
+
+$$\\angle H = -\\operatorname{atan2}\\left(2\\zeta u,\\; 1 - u^{2}\\right)$$
+
+The two-argument arctangent is not a nicety here. The real part $1 - u^{2}$
+changes sign at $u = 1$, so a one-argument arctangent returns a value that
+jumps from near $-90^\\circ$ to near $+90^\\circ$ at the resonance instead of
+continuing smoothly down toward $-180^\\circ$. Every phase number in this
+chapter for a conjugate pair comes from the two-argument form.
+
+**Asymptotes.** For $u \\ll 1$ the bracket tends to 1, so the line is flat at
+0 dB. For $u \\gg 1$ the bracket is dominated by $u^{4}$, so the decibel value
+tends to $-10\\log_{10}u^{4} = -40\\log_{10}u$: a slope of $-40$ dB per decade,
+which is the $r = -2$ row of the table in Section 4.4. Equating the two lines
+again gives $u = 1$, so the corner is at $\\omega_{n}$ irrespective of damping.
+
+**The exact value at the corner.** Put $u = 1$: the real part vanishes and
+
+$$\\lvert H(j\\omega_{n})\\rvert = \\frac{1}{2\\zeta}, \\qquad \\angle H(j\\omega_{n}) = -90^\\circ$$
+
+The phase at the natural frequency is exactly a quarter turn for EVERY damping
+ratio, which makes it the single most reliable landmark on a second-order
+phase curve. The magnitude, by contrast, is $20\\log_{10}(1/2\\zeta)$ decibels
+away from the asymptote, and that gap is unbounded as damping goes to zero.
+Where a real pole is always 3.0103 dB off at its corner, a pair with
+$\\zeta = 0.25$ is $20\\log_{10}2 = 6.0206$ dB off, and a pair with
+$\\zeta = 0.05$ is $20\\log_{10}10 = 20$ dB off. The straight-line sketch of a
+lightly damped pair is not slightly wrong; it is useless without correction.
+
+## 5.6 The complete primitive table
+
+Every entry below is exact, not asymptotic. The asymptotes are the last two
+columns' limiting behaviour, and the errors are quantified in Sections 6 to 8.
+
+| Primitive | Exact magnitude (dB) | Exact phase | Slope far above the corner | Value at the corner |
+|---|---|---|---|---|
+| $K > 0$ | $20\\log_{10}K$ | $0^\\circ$ | $0$ | no corner |
+| $(j\\omega)^{-1}$ | $-20\\log_{10}\\omega$ | $-90^\\circ$ | $-20$ dB/dec | no corner |
+| $(j\\omega)^{+1}$ | $+20\\log_{10}\\omega$ | $+90^\\circ$ | $+20$ dB/dec | no corner |
+| $(1+ju)^{-1}$ | $-10\\log_{10}(1+u^{2})$ | $-\\arctan u$ | $-20$ dB/dec | $-3.0103$ dB, $-45^\\circ$ |
+| $(1+ju)^{+1}$ | $+10\\log_{10}(1+u^{2})$ | $+\\arctan u$ | $+20$ dB/dec | $+3.0103$ dB, $+45^\\circ$ |
+| pair, denominator | $-10\\log_{10}[(1-u^{2})^{2}+4\\zeta^{2}u^{2}]$ | $-\\operatorname{atan2}(2\\zeta u, 1-u^{2})$ | $-40$ dB/dec | $20\\log_{10}(1/2\\zeta)$ dB, $-90^\\circ$ |
+| pair, numerator | $+10\\log_{10}[(1-u^{2})^{2}+4\\zeta^{2}u^{2}]$ | $+\\operatorname{atan2}(2\\zeta u, 1-u^{2})$ | $+40$ dB/dec | $-20\\log_{10}(1/2\\zeta)$ dB, $+90^\\circ$ |
+
+### Worked Example 3 - All Four Primitives at a Single Frequency
+
+**Given.** The system that this chapter will assemble in Section 9,
+
+$$G(s) = \\frac{40\\left(1 + s/2\\right)}{s\\left(1 + s/40\\right)\\left(1 + s/60 + s^{2}/900\\right)}$$
+
+whose quadratic factor has $\\omega_{n} = 30$ rad/s and, from
+$2\\zeta/\\omega_{n} = 1/60$, a damping ratio $\\zeta = 30/120 = 0.25$.
+
+**Find.** The exact magnitude and phase contribution of each of the four
+factors at $\\omega = 30$ rad/s, and the totals.
+
+**Solution.** Take them one at a time, from the exact expressions of this
+section. Constant and origin pole together:
+
+$$20\\log_{10}\\!\\left(\\frac{40}{30}\\right) = 2.4988\\ \\mathrm{dB}, \\qquad -90^\\circ$$
+
+The real zero at 2 rad/s, at $u = 30/2 = 15$:
+
+$$+10\\log_{10}\\left(1 + 15^{2}\\right) = 10\\log_{10}226 = 23.5411\\ \\mathrm{dB}, \\qquad +\\arctan 15 = +86.1859^\\circ$$
+
+The real pole at 40 rad/s, at $u = 30/40 = 0.75$:
+
+$$-10\\log_{10}\\left(1 + 0.5625\\right) = -1.9382\\ \\mathrm{dB}, \\qquad -\\arctan 0.75 = -36.8699^\\circ$$
+
+The conjugate pair, at $u = 1$ exactly, where the real part of the factor
+vanishes:
+
+$$-20\\log_{10}(2\\zeta) = -20\\log_{10}(0.5) = +6.0206\\ \\mathrm{dB}, \\qquad -90^\\circ$$
+
+**Answer.** Adding the four columns,
+
+$$\\lvert G(j30)\\rvert_{\\mathrm{dB}} = 2.4988 + 23.5411 - 1.9382 + 6.0206 = 30.1223\\ \\mathrm{dB}$$
+
+$$\\angle G(j30) = -90 + 86.1859 - 36.8699 - 90 = -130.6840^\\circ$$
+
+**Check.** Evaluating the complete complex expression for $G(j30)$ in one
+step, without decomposing it, returns a modulus of 32.0710 and an argument of
+$-130.6840^\\circ$; and $20\\log_{10}(32.0710) = 30.1223$ dB. The decomposition
+is exact, as Section 4.1 promised.`,
+      examTip: 'Learn the four primitives as EXACT expressions first and the straight lines second. Two landmarks pay for themselves on almost every exam question: a real pole is 3.0103 dB below its corner asymptote with a phase of exactly minus 45 degrees, and a conjugate pair has a phase of exactly minus 90 degrees at its natural frequency no matter what the damping is.',
+      importantNote: 'Use the two-argument arctangent for a conjugate pair. The real part of the quadratic factor changes sign at the natural frequency, so a one-argument arctangent folds the phase back toward zero there instead of carrying it on down to minus 180 degrees. This single mistake accounts for most wrong second-order phase plots.',
+    },
+    {
+      id: 'bode-corner-error',
+      title: '6. How Wrong the Straight Lines Are, Measured in Decibels',
+      content: `## 6.1 The magnitude error depends on one variable only
+
+Define the error of the straight-line construction as the exact value minus
+the line, in decibels. For a real pole, using $u = \\omega/a$ as before, the
+line is 0 dB below the corner and $-20\\log_{10}u$ above it, so the error has
+two pieces:
+
+$$e(u) = -10\\log_{10}\\left(1 + u^{2}\\right) \\qquad \\mathrm{for}\\ u \\le 1$$
+
+$$e(u) = -10\\log_{10}\\left(1 + u^{2}\\right) + 20\\log_{10}u = -10\\log_{10}\\!\\left(\\frac{1+u^{2}}{u^{2}}\\right) = -10\\log_{10}\\!\\left(1 + \\frac{1}{u^{2}}\\right) \\qquad \\mathrm{for}\\ u \\ge 1$$
+
+Compare the two lines. The second is the first with $u$ replaced by $1/u$.
+That is a genuine symmetry, not a coincidence:
+
+$$e(u) = e\\!\\left(\\frac{1}{u}\\right) \\ \\mathrm{for\\ every}\\ u > 0$$
+
+On a logarithmic frequency axis, $u$ and $1/u$ sit equal distances either side
+of the corner, so the error curve is a symmetric notch centred on the corner.
+One table of numbers therefore serves both sides.
+
+The deepest point is at $u = 1$, where both expressions give
+$-10\\log_{10}2 = -3.0103$ dB. The error is always negative for a pole: the
+straight lines always sit ABOVE the truth, so a sketch always overstates the
+gain of a low-pass system. For a zero every sign flips and the lines sit
+below the truth.
+
+![Exact magnitude minus straight-line magnitude for one real pole, plotted against frequency measured in units of the corner. The notch bottoms out at minus three point zero one zero three decibels at the corner, passes minus zero point nine six nine one an octave to either side, and has shrunk to minus zero point zero four three two a decade out on both sides.](/courses/fe-ee/figures/lin4-pole-error.svg)
+
+## 6.2 The error table worth memorizing
+
+| Distance from the corner | $u = \\omega/a$ | Exact (dB) | Line (dB) | Error (dB) |
+|---|---|---|---|---|
+| a decade below | $0.1$ | $-0.0432$ | $0$ | $-0.0432$ |
+| two octaves below | $0.25$ | $-0.2633$ | $0$ | $-0.2633$ |
+| an octave below | $0.5$ | $-0.9691$ | $0$ | $-0.9691$ |
+| half an octave below | $0.7071$ | $-1.7609$ | $0$ | $-1.7609$ |
+| at the corner | $1$ | $-3.0103$ | $0$ | $-3.0103$ |
+| half an octave above | $1.4142$ | $-4.7712$ | $-3.0103$ | $-1.7609$ |
+| an octave above | $2$ | $-6.9897$ | $-6.0206$ | $-0.9691$ |
+| two octaves above | $4$ | $-12.3045$ | $-12.0412$ | $-0.2633$ |
+| a decade above | $10$ | $-20.0432$ | $-20.0000$ | $-0.0432$ |
+
+Read the shape of that table rather than the digits. The construction is
+wrong by about 3 dB where it matters, by about 1 dB an octave away, by about a
+quarter of a decibel two octaves away, and by less than the thickness of a
+pencil line a decade away. It is a good approximation everywhere except in the
+one place a question is most likely to ask about.
+
+### Worked Example 4 - The Whole Error Budget of a Single Pole
+
+**Given.** The low-pass filter $H(s) = 25/(s + 25)$, that is
+$H = 1/(1 + s/25)$ with its corner at 25 rad/s.
+
+**Find.** The exact magnitude in decibels at 2.5, 12.5, 25, 50 and 250 rad/s,
+and the error the straight-line sketch commits at each.
+
+**Solution.** Convert each frequency to $u$ and use the exact expression
+$-10\\log_{10}(1+u^{2})$, then subtract the line.
+
+At $\\omega = 2.5$, $u = 0.1$: exact $-10\\log_{10}(1.01) = -0.0432$ dB, line
+0 dB, error $-0.0432$ dB.
+
+At $\\omega = 12.5$, $u = 0.5$: exact $-10\\log_{10}(1.25) = -0.9691$ dB, line
+0 dB, error $-0.9691$ dB.
+
+At $\\omega = 25$, $u = 1$: exact $-10\\log_{10}(2) = -3.0103$ dB, line 0 dB,
+error $-3.0103$ dB.
+
+At $\\omega = 50$, $u = 2$: exact $-10\\log_{10}(5) = -6.9897$ dB, line
+$-20\\log_{10}2 = -6.0206$ dB, error $-0.9691$ dB.
+
+At $\\omega = 250$, $u = 10$: exact $-10\\log_{10}(101) = -20.0432$ dB, line
+$-20$ dB, error $-0.0432$ dB.
+
+**Answer.** The errors at 12.5 and 50 rad/s are identical to four decimal
+places, as are those at 2.5 and 250, which is the symmetry $e(u) = e(1/u)$
+made visible. The total swing of the error over five frequencies spanning two
+decades is under 3.1 dB, and 3.0103 of it is concentrated at one point.
+
+## 6.3 The errors of separate factors add, exactly
+
+This is the single most useful fact in the whole construction, and it needs no
+approximation to justify. From Section 4.1 the exact decibel value is a sum
+over factors, $D = \\sum_{k=1}^{N} D_{k}$. The composite straight-line
+construction of Section 1.5 accumulates slope changes corner by corner, which
+is precisely the statement that the composite line is the sum of the
+individual lines, $A = \\sum_{k=1}^{N} A_{k}$. Subtracting,
+
+$$E = D - A = \\sum_{k=1}^{N}\\left(D_{k} - A_{k}\\right) = \\sum_{k=1}^{N} e_{k}$$
+
+The correction to apply at any frequency is therefore the SUM of the
+individual corrections, each of which is a lookup in the one table of Section
+6.2 at that factor's own value of $u$. Nothing about neighbouring corners
+interacts; the errors simply pile up.
+
+![The magnitude error of two real poles an octave apart, at ten and twenty radians per second, drawn as three curves. The two individual error notches are dashed and the error of the pair is solid, and the solid curve is the sum of the dashed ones at every frequency, reaching minus three point nine seven nine four decibels at each of the two corners.](/courses/fe-ee/figures/lin4-error-add.svg)
+
+### Worked Example 5 - Two Corners an Octave Apart
+
+**Given.** $H(s) = \\dfrac{1}{(1 + s/10)(1 + s/20)}$.
+
+**Find.** The exact magnitude and the straight-line magnitude at 10, 14.1421
+and 20 rad/s, and confirm that the errors of the two poles add.
+
+**Solution.** At $\\omega = 10$ the first pole is at $u_{1} = 1$ and the second
+at $u_{2} = 0.5$. From the table, $e_{1} = -3.0103$ and $e_{2} = -0.9691$, so
+the predicted composite error is $-3.0103 - 0.9691 = -3.9794$ dB. Both lines
+are still flat, so the construction says 0 dB. Predicted exact value:
+$-3.9794$ dB. Evaluating the complex expression,
+
+$$\\lvert H(j10)\\rvert = \\frac{1}{\\sqrt{2}\\,\\sqrt{1.25}} = \\frac{1}{\\sqrt{2.5}} = 0.632456 \\ \\Longrightarrow\\ -3.9794\\ \\mathrm{dB}$$
+
+At $\\omega = 20$ the roles swap: $u_{1} = 2$ gives $e_{1} = -0.9691$ and
+$u_{2} = 1$ gives $e_{2} = -3.0103$, so the composite error is again
+$-3.9794$ dB. The line has now fallen one octave at $-20$ dB per decade, to
+$-6.0206$ dB, so the prediction is $-6.0206 - 3.9794 = -10.0000$ dB.
+Evaluating directly,
+
+$$\\lvert H(j20)\\rvert = \\frac{1}{\\sqrt{5}\\sqrt{2}} = \\frac{1}{\\sqrt{10}} = 0.316228 \\ \\Longrightarrow\\ -10.0000\\ \\mathrm{dB}$$
+
+At the geometric mean $\\omega = \\sqrt{200} = 14.1421$ both poles sit half an
+octave from their corners, at $u_{1} = \\sqrt{2}$ and $u_{2} = 1/\\sqrt{2}$, so
+each contributes $-1.7609$ dB of error and the total is $-3.5218$ dB. The
+line, having fallen from 10 rad/s at $-20$ dB per decade, is at
+$-3.0103$ dB, so the prediction is $-6.5321$ dB. Direct evaluation confirms
+$-6.5321$ dB, and the phase there is exactly $-90^\\circ$ because
+$\\arctan\\sqrt{2} + \\arctan(1/\\sqrt{2}) = 90^\\circ$.
+
+**Answer.** The composite error is $-3.9794$ dB at BOTH corners and
+$-3.5218$ dB between them. Notice that the deepest point of the composite
+notch is not somewhere new; it is at each corner, and it is the single-pole
+$-3.0103$ plus the octave-away $-0.9691$ of its neighbour.
+
+## 6.4 A practical correction rule that follows from the table
+
+Because the errors add and the individual errors die away so fast, a
+three-line rule captures essentially all of the correction anyone needs by
+hand:
+
+- at each corner, drop the sketch by 3.0103 dB per pole breaking there (raise
+  it for a zero);
+- add a further 0.9691 dB per neighbouring corner an octave away, and 0.2633
+  dB per corner two octaves away;
+- ignore anything a decade or more away, which contributes 0.0432 dB.
+
+Applied to a corner with one neighbouring pole an octave off, that gives
+$3.0103 + 0.9691 = 3.9794$ dB, which Worked Example 5 confirms exactly. With
+the nearest neighbour a full decade away it gives $3.0103 + 0.0432 = 3.0535$
+dB, so an isolated corner really is the textbook 3 dB case.
+
+## 6.5 Why this matters more than it looks
+
+An error of a few decibels in the middle of a plot is cosmetic. The same error
+where the curve crosses a level you care about is not, because the crossing
+FREQUENCY moves by the error divided by the local slope. On a $-20$ dB per
+decade segment, 3 dB of error displaces the crossing by
+$10^{3/20} = 1.4125$, a 41 per cent shift; on a $-40$ dB per decade segment it
+is $10^{3/40} = 1.1885$, still 19 per cent. Section 9 works exactly this
+calculation on a real loop and finds a crossover frequency 27 per cent away
+from the corner an unwary reader would have quoted.`,
+      examTip: 'One notch, one table, and it is symmetric. Memorize three numbers - 3.0103 dB at the corner, 0.9691 dB an octave away, 0.0432 dB a decade away - and remember that they are the same on both sides of the corner and that contributions from different factors simply add. That is enough to correct any hand sketch to better than a tenth of a decibel.',
+      importantNote: 'The straight lines always lie above the true curve for poles and below it for zeros, so the errors do not cancel in a system with poles and zeros interleaved unless the corners nearly coincide. Sum the signed errors; do not assume they wash out.',
+    },
+    {
+      id: 'bode-phase-rule',
+      title: '7. The Phase Transition and the One-Decade Rule',
+      content: `## 7.1 What the rule says and why the window is a decade wide
+
+The exact phase of a real pole is $-\\arctan u$, a smooth curve that starts at
+$0^\\circ$, passes through $-45^\\circ$ at the corner and settles at
+$-90^\\circ$. The straight-line stand-in replaces it with three segments:
+
+$$\\phi_{\\mathrm{line}}(u) = \\begin{cases} 0^\\circ, & u \\le 0.1 \\\\ -45^\\circ\\left(\\log_{10}u + 1\\right), & 0.1 < u < 10 \\\\ -90^\\circ, & u \\ge 10 \\end{cases}$$
+
+The middle segment falls $90^\\circ$ over two decades, so its slope is
+$-45^\\circ$ per decade. The window is a decade either side because that is
+where the true curve has essentially finished moving: at $u = 0.1$ the exact
+phase is $-\\arctan(0.1) = -5.7106^\\circ$, and at $u = 10$ it is
+$-\\arctan(10) = -84.2894^\\circ$. Between those two frequencies the curve
+completes
+
+$$\\frac{84.2894 - 5.7106}{90} = \\frac{78.5788}{90} = 0.873098$$
+
+or 87.31 per cent of its total travel. The remaining 12.69 per cent is spread
+over the infinite tails, which is why the rule truncates there and accepts a
+discontinuity in slope rather than chasing them.
+
+The one point where the ramp is exactly right is the corner: it is built to
+pass through $-45^\\circ$ at $u = 1$, and the true curve passes through
+$-45^\\circ$ there too, because $\\arctan 1 = 45^\\circ$ exactly.
+
+## 7.2 How wrong the ramp really is
+
+Define the phase error as the ramp minus the exact curve, in degrees:
+
+$$\\varepsilon(u) = -45\\left(\\log_{10}u + 1\\right) + \\frac{180}{\\pi}\\arctan u \\qquad \\mathrm{for}\\ 0.1 < u < 10$$
+
+Two exact statements pin the whole curve down.
+
+**Anti-symmetry about the corner.** Since
+$\\arctan u + \\arctan(1/u) = 90^\\circ$ for $u > 0$, the exact phases at $u$ and
+$1/u$ sum to $-90^\\circ$; and since
+$\\log_{10}u + \\log_{10}(1/u) = 0$, the two ramp values also sum to
+$-90^\\circ$. Subtracting,
+
+$$\\varepsilon(u) = -\\varepsilon\\!\\left(\\frac{1}{u}\\right)$$
+
+so the error curve is odd about the corner, where it vanishes.
+
+**Its interior extremes.** Differentiate and set to zero:
+
+$$\\frac{\\mathrm{d}\\varepsilon}{\\mathrm{d}u} = \\frac{-45}{u\\ln 10} + \\frac{180}{\\pi}\\cdot\\frac{1}{1+u^{2}} = 0 \\ \\Longrightarrow\\ 1 + u^{2} = \\frac{4\\ln 10}{\\pi}\\,u$$
+
+$$u^{2} - 2.9317424\\,u + 1 = 0 \\ \\Longrightarrow\\ u = 2.5376820 \\ \\mathrm{or}\\ u = 0.3940604$$
+
+The two roots multiply to 1, as the anti-symmetry demands. At them the error
+reaches $\\pm 5.2929^\\circ$.
+
+**Its largest value.** The error does not peak in the interior. At the ramp's
+own break points the exact curve has not yet reached the clipped value, and
+
+$$\\varepsilon(0.1) = 0 - (-5.7106) = +5.7106^\\circ, \\qquad \\varepsilon(10) = -90 - (-84.2894) = -5.7106^\\circ$$
+
+So the phase construction for one real pole is never wrong by more than
+$5.7106^\\circ$, and that worst case sits exactly at the two frequencies where
+the ramp is switched on and off.
+
+![Two stacked panels sharing a frequency axis for one real pole. The upper panel shows the exact arctangent phase against the three-segment straight-line ramp; the lower panel shows the ramp minus the exact curve, which is odd about the corner, reaches plus and minus five point two nine two nine degrees inside the window and plus and minus five point seven one zero six degrees at the two break points.](/courses/fe-ee/figures/lin4-phase-ramp.svg)
+
+## 7.3 The phase construction is the weaker half of the sketch
+
+It is worth being blunt about the comparison. A magnitude sketch is wrong by
+at most 3.0103 dB for one pole, and that error is concentrated in a narrow
+notch that a single correction removes. A phase sketch is wrong by up to
+$5.7106^\\circ$ for one pole, and the error is spread across two full decades,
+so there is no single frequency at which one correction fixes it. Since phase
+margins are specified and argued over in units of five degrees, a phase read
+from a ramp is at the edge of usefulness for one pole and past it for two.
+The stability consequences of that are the subject of the companion chapter on
+Bode and Nyquist analysis in the Control Systems section; here the point is
+narrower and purely constructional: sketch the phase to know its SHAPE, then
+evaluate the arctangents at whatever frequency the question actually asks
+about.
+
+## 7.4 Overlapping ramps, and errors that add
+
+Ramps add exactly as magnitude errors do, and for the same reason: the exact
+phase is a sum over factors and the composite ramp is a sum of individual
+ramps, so their difference is a sum of individual errors. The practical
+consequence is that the $5.7106^\\circ$ bound is a bound PER FACTOR, not per
+plot. Two corners inside a decade of each other can produce a composite phase
+error well past seven degrees.
+
+### Worked Example 6 - Ramp Phase Against Arctangent Phase
+
+**Given.** The same two-pole system as Worked Example 5,
+$H(s) = 1/[(1+s/10)(1+s/20)]$.
+
+**Find.** The exact phase and the composite ramp phase at 10, 14.1421, 20 and
+50 rad/s.
+
+**Solution.** The pole at 10 rad/s has its ramp running from 1 to 100 rad/s;
+the pole at 20 rad/s has its ramp running from 2 to 200 rad/s. The two windows
+overlap almost completely.
+
+At 10 rad/s the two exact contributions are
+
+$$-\\arctan(1) - \\arctan(0.5) = -45.0000^\\circ - 26.5651^\\circ = -71.5651^\\circ$$
+
+while the two ramp contributions, the first at its own corner and the second
+half a decade short of its, are
+
+$$-45.0000^\\circ - 45^\\circ\\left(\\log_{10}0.5 + 1\\right) = -45.0000^\\circ - 31.4537^\\circ = -76.4537^\\circ$$
+
+Repeating that pair of calculations at the other three frequencies:
+
+| $\\omega$ (rad/s) | Exact phase | Ramp phase | Error |
+|---|---|---|---|
+| $10$ | $-71.5651^\\circ$ | $-76.4537^\\circ$ | $-4.8886^\\circ$ |
+| $14.1421$ | $-90.0000^\\circ$ | $-90.0000^\\circ$ | $0.0000^\\circ$ |
+| $20$ | $-108.4349^\\circ$ | $-103.5463^\\circ$ | $+4.8886^\\circ$ |
+| $50$ | $-146.8887^\\circ$ | $-139.3610^\\circ$ | $+7.5277^\\circ$ |
+
+At the geometric mean the error vanishes exactly. The two poles sit at
+reciprocal values of $u$ there, namely $\\sqrt{2}$ and $1/\\sqrt{2}$, so their
+individual errors of $+2.9624^\\circ$ and $-2.9624^\\circ$ cancel by the
+anti-symmetry proved in Section 7.2. The exact phase at that frequency is a
+quarter turn to the last decimal, since
+
+$$\\arctan\\sqrt{2} + \\arctan\\!\\left(\\frac{1}{\\sqrt{2}}\\right) = 54.7356^\\circ + 35.2644^\\circ = 90.0000^\\circ$$
+
+**Answer.** The composite error runs from zero at the geometric mean to
+$+7.5277^\\circ$ at 50 rad/s. That last figure exceeds the single-factor bound
+of $5.7106^\\circ$ because the two contributions, $+2.2364^\\circ$ from the pole
+at 10 and $+5.2913^\\circ$ from the pole at 20, happen to have the same sign
+there - and the second is within a fiftieth of a degree of the theoretical
+worst case of $5.2929^\\circ$, since $50/20 = 2.5$ is almost exactly the
+stationary point $u = 2.5377$ derived in Section 7.2.
+
+## 7.5 The rule does not transfer to a lightly damped pair
+
+The one-decade ramp is a template fitted to an arctangent. A conjugate pair's
+phase is not an arctangent; it is a two-argument arctangent whose transition
+width collapses as the damping falls. In the limit $\\zeta \\to 0$ the phase
+steps from $0^\\circ$ to $-180^\\circ$ discontinuously at $\\omega_{n}$, which no
+finite-width ramp can imitate. Applying the decade rule anyway - as many
+handbooks do, running the ramp from $\\omega_{n}/10$ to $10\\omega_{n}$ over a
+$180^\\circ$ swing - produces the errors quantified in Section 9, which for
+$\\zeta = 0.25$ reach $49.9474^\\circ$. For a conjugate pair, sketch the
+magnitude by the rules and compute the phase.`,
+      examTip: 'Three phase landmarks are exact and worth more than the whole ramp: minus 45 degrees at a real corner, minus 5.7106 and minus 84.2894 degrees at a tenth and ten times it, and minus 90 degrees at the natural frequency of any conjugate pair regardless of damping. Anchor a sketch on those and interpolate; do not read a margin off the interpolation.',
+      importantNote: 'The 5.7106 degree bound applies to ONE factor. Phase errors add just as magnitude errors do, so a plot with several corners inside a decade of each other can be out by well over ten degrees, all in the same direction. Worked Example 6 reaches 7.5277 degrees with only two poles.',
+    },
+    {
+      id: 'bode-resonant-pair',
+      title: '8. The Resonant Peak: Where It Sits and How Tall It Is',
+      content: `## 8.1 Finding the peak by minimizing the denominator
+
+The conjugate pair is the only primitive whose magnitude can rise above its
+low-frequency asymptote, and the two questions a plot answers about it - how
+tall and at what frequency - both follow from one differentiation. Write the
+squared modulus of the standard pair with $u = \\omega/\\omega_{n}$:
+
+$$\\lvert H\\rvert^{2} = \\frac{1}{D(u)}, \\qquad D(u) = \\left(1 - u^{2}\\right)^{2} + 4\\zeta^{2}u^{2}$$
+
+Maximizing $\\lvert H\\rvert$ means minimizing $D$. Substituting $v = u^{2}$
+turns the quartic into a quadratic, which is why this derivation is short:
+
+$$D = (1 - v)^{2} + 4\\zeta^{2}v, \\qquad \\frac{\\mathrm{d}D}{\\mathrm{d}v} = -2(1 - v) + 4\\zeta^{2} = 0$$
+
+$$v = 1 - 2\\zeta^{2} \\qquad \\Longrightarrow \\qquad \\omega_{r} = \\omega_{n}\\sqrt{1 - 2\\zeta^{2}}$$
+
+The second derivative is $\\mathrm{d}^{2}D/\\mathrm{d}v^{2} = 2 > 0$, so this
+stationary point is a minimum of $D$ and therefore a maximum of the magnitude.
+
+Two consequences follow immediately and are both regularly got wrong.
+
+**The peak is never at the natural frequency.** Since
+$\\sqrt{1 - 2\\zeta^{2}} < 1$ for every $\\zeta > 0$, the resonance always sits
+BELOW $\\omega_{n}$. It is also below the damped natural frequency
+$\\omega_{d} = \\omega_{n}\\sqrt{1 - \\zeta^{2}}$ that governs the step response,
+so a system has three distinct second-order frequencies and a Bode plot shows
+the smallest of them.
+
+**The peak exists only for light damping.** The root is real only when
+$1 - 2\\zeta^{2} > 0$, that is
+
+$$\\zeta < \\frac{1}{\\sqrt{2}} = 0.7071$$
+
+At exactly $\\zeta = 0.7071$ the peak frequency has retreated to zero and the
+magnitude falls monotonically from its DC value. That is the maximally flat
+second-order response.
+
+## 8.2 The height of the peak
+
+Substitute $v = 1 - 2\\zeta^{2}$ back into $D$:
+
+$$D_{\\min} = \\left(2\\zeta^{2}\\right)^{2} + 4\\zeta^{2}\\left(1 - 2\\zeta^{2}\\right) = 4\\zeta^{4} + 4\\zeta^{2} - 8\\zeta^{4} = 4\\zeta^{2}\\left(1 - \\zeta^{2}\\right)$$
+
+so the peak magnitude and its decibel value are
+
+$$M_{p} = \\frac{1}{2\\zeta\\sqrt{1 - \\zeta^{2}}}, \\qquad M_{p,\\mathrm{dB}} = -10\\log_{10}\\left[4\\zeta^{2}\\left(1 - \\zeta^{2}\\right)\\right]$$
+
+Compare this with the value AT the natural frequency, which Section 5.5
+established as $1/(2\\zeta)$. The peak exceeds it by
+
+$$M_{p,\\mathrm{dB}} - 20\\log_{10}\\!\\left(\\frac{1}{2\\zeta}\\right) = -10\\log_{10}\\left(1 - \\zeta^{2}\\right)$$
+
+a quantity that depends on damping alone. For light damping the two are
+practically the same - 0.0436 dB apart at $\\zeta = 0.1$ - which is why the
+sloppy statement that the peak sits at $\\omega_{n}$ survives so long. It
+becomes an outright error as damping rises: at $\\zeta = 0.5$ the gap is
+1.2494 dB and the peak has moved to $0.7071\\omega_{n}$.
+
+![Two stacked panels against damping ratio. The upper panel plots the true peak height in decibels beside the magnitude evaluated at the natural frequency, which are close for light damping and diverge as damping rises; the lower panel plots the peak frequency divided by the natural frequency, falling from one to zero as damping approaches zero point seven zero seven one.](/courses/fe-ee/figures/lin4-resonance.svg)
+
+## 8.3 The asymptote error of a pair is unbounded
+
+The straight-line construction puts the corner of a pair at $\\omega_{n}$ and
+reads 0 dB there relative to the low-frequency asymptote. The exact value is
+$1/(2\\zeta)$, so the error at the corner is
+
+$$e(\\omega_{n}) = -20\\log_{10}(2\\zeta)\\ \\mathrm{dB}$$
+
+Unlike the real pole, whose corner error is fixed at 3.0103 dB, this grows
+without bound as damping falls. It is 6.0206 dB at $\\zeta = 0.25$, 20 dB at
+$\\zeta = 0.05$ and 40 dB at $\\zeta = 0.005$. A straight-line sketch of a
+lightly damped resonance is not approximately right; it is qualitatively
+wrong, because it shows no peak at all.
+
+| $\\zeta$ | $\\omega_{r}/\\omega_{n}$ | Peak height (dB) | Value at $\\omega_{n}$ (dB) | Gap (dB) |
+|---|---|---|---|---|
+| $0.05$ | $0.997497$ | $20.0109$ | $20.0000$ | $0.0109$ |
+| $0.10$ | $0.989949$ | $14.0230$ | $13.9794$ | $0.0436$ |
+| $0.20$ | $0.959166$ | $8.1361$ | $7.9588$ | $0.1773$ |
+| $0.25$ | $0.935414$ | $6.3009$ | $6.0206$ | $0.2803$ |
+| $0.30$ | $0.905539$ | $4.8466$ | $4.4370$ | $0.4096$ |
+| $0.50$ | $0.707107$ | $1.2494$ | $0.0000$ | $1.2494$ |
+| $0.60$ | $0.529150$ | $0.3546$ | $-1.5836$ | $1.9382$ |
+| $0.7071$ | $0$ | $0.0000$ | $-3.0103$ | $3.0103$ |
+
+The last row is worth a second look. At $\\zeta = 0.7071$ the response has no
+peak and the value at the corner is $-3.0103$ dB, exactly the half-power
+point. For that one damping ratio the natural frequency and the 3 dB
+bandwidth coincide, which is why the maximally flat second order is so often
+the default filter target.
+
+### Worked Example 7 - A Pair From the Formula Outward
+
+**Given.** A conjugate pair with $\\omega_{n} = 50$ rad/s and $\\zeta = 0.15$,
+that is $H(s) = 1/\\left(1 + s/166.6667 + s^{2}/2500\\right)$, since
+$2\\zeta/\\omega_{n} = 0.3/50 = 1/166.6667$.
+
+**Find.** The peak height and frequency, the value and phase at the natural
+frequency, and the straight-line error at 100 rad/s.
+
+**Solution.** Peak frequency, from Section 8.1:
+
+$$\\omega_{r} = 50\\sqrt{1 - 2(0.15)^{2}} = 50\\sqrt{0.955} = 50 \\times 0.977241 = 48.8621\\ \\mathrm{rad/s}$$
+
+Peak height, from Section 8.2:
+
+$$M_{p,\\mathrm{dB}} = -10\\log_{10}\\left[4(0.0225)(0.9775)\\right] = -10\\log_{10}(0.0879750) = 10.5564\\ \\mathrm{dB}$$
+
+Value at the natural frequency:
+
+$$20\\log_{10}\\!\\left(\\frac{1}{2 \\times 0.15}\\right) = 20\\log_{10}(3.333333) = 10.4576\\ \\mathrm{dB}$$
+
+and the phase there is exactly $-90^\\circ$.
+
+At $\\omega = 100$ rad/s, $u = 2$, the exact decibel value is
+
+$$-10\\log_{10}\\left[\\left(1 - 4\\right)^{2} + 4(0.0225)(4)\\right] = -10\\log_{10}(9.36) = -9.7128\\ \\mathrm{dB}$$
+
+while the straight line reads $-40\\log_{10}2 = -12.0412$ dB.
+
+**Answer.** The peak is 10.5564 dB at 48.8621 rad/s. The value at
+$\\omega_{n} = 50$ is 10.4576 dB, only 0.0988 dB lower but at a different
+frequency. The straight-line error at 100 rad/s is
+$-9.7128 - (-12.0412) = +2.3284$ dB, and note its SIGN: above a resonance the
+lines run BELOW the truth, the opposite of a well-damped pole, because the
+peak is still pulling the curve up an octave later.
+
+**Check.** Evaluating the complex expression at 48.8621 rad/s gives a modulus
+of 3.371478, and $20\\log_{10}(3.371478) = 10.5564$ dB.
+
+## 8.4 Inverting the peak: damping from a measured plot
+
+The forward calculation is the easy direction. The exam skill is the reverse:
+a measured plot shows a peak of a certain height, and the damping ratio is
+wanted. Set $q = 10^{-M_{p,\\mathrm{dB}}/10}$ and invert the height formula:
+
+$$4\\zeta^{2}\\left(1 - \\zeta^{2}\\right) = q \\ \\Longrightarrow \\ \\zeta^{4} - \\zeta^{2} + \\frac{q}{4} = 0 \\ \\Longrightarrow \\ \\zeta^{2} = \\frac{1 - \\sqrt{1 - q}}{2}$$
+
+The quadratic in $\\zeta^{2}$ has two roots; the minus sign is the right one
+because it is the root that stays below $1/2$, and $\\zeta^{2} > 1/2$ would
+mean no peak existed to measure. Then the natural frequency follows from the
+measured peak location:
+
+$$\\omega_{n} = \\frac{\\omega_{r}}{\\sqrt{1 - 2\\zeta^{2}}}$$
+
+### Worked Example 8 - Damping and Natural Frequency From a Peak
+
+**Given.** A measured magnitude plot is flat at 0 dB at low frequency, peaks
+at 8.00 dB, and the peak occurs at 10.00 rad/s. Above the peak the slope
+settles at $-40$ dB per decade.
+
+**Find.** $\\zeta$ and $\\omega_{n}$.
+
+**Solution.** The $-40$ dB per decade slope with a peak identifies a single
+conjugate pair. Invert the height:
+
+$$q = 10^{-8/10} = 0.158489, \\qquad \\zeta^{2} = \\frac{1 - \\sqrt{1 - 0.158489}}{2} = \\frac{1 - 0.917339}{2} = 0.0413305$$
+
+$$\\zeta = \\sqrt{0.0413305} = 0.203299$$
+
+Now the natural frequency:
+
+$$\\sqrt{1 - 2(0.0413305)} = \\sqrt{0.917339} = 0.957778, \\qquad \\omega_{n} = \\frac{10.00}{0.957778} = 10.4408\\ \\mathrm{rad/s}$$
+
+**Answer.** $\\zeta = 0.2033$ and $\\omega_{n} = 10.4408$ rad/s.
+
+**Check.** Building $H(s) = 1/\\left(1 + 2(0.203299)s/10.4408 + s^{2}/109.011\\right)$
+and evaluating it numerically returns a maximum modulus of 2.511886 at
+10.0000 rad/s, and $20\\log_{10}(2.511886) = 8.0000$ dB.
+
+**The trap.** Reading the peak frequency as the natural frequency would give
+$\\omega_{n} = 10.00$ instead of 10.4408, an error of 4.22 per cent, and would
+then propagate into every pole location, every time constant and every
+settling-time estimate derived from it. The correction factor is
+$1/\\sqrt{1 - 2\\zeta^{2}}$, and it is worth applying whenever the peak is
+above about 3 dB.`,
+      examTip: 'Three formulas carry the whole of second-order Bode work: the peak sits at omega-n times the square root of one minus two zeta squared, its height is one over two zeta root one minus zeta squared, and the magnitude at omega-n itself is one over two zeta with a phase of exactly minus 90 degrees. The first is the one candidates forget, and it is the one that moves the answer.',
+      importantNote: 'A straight-line sketch of a lightly damped pair shows no peak at all, and its error at the corner is minus twenty log of two zeta, which grows without limit as damping falls. Never quote a gain near a resonance from a sketch: evaluate the quadratic.',
+    },
+    {
+      id: 'bode-assembly',
+      title: '9. Assembling a Plot Factor by Factor, Then Correcting It',
+      content: `## 9.1 The procedure with the correction step attached
+
+Section 1.5 gives the sketching procedure. Everything since has been about the
+step that is usually left off the end, so here is the complete version:
+
+1. Put $H(s)$ into time-constant form and identify $K$, the number of origin
+   poles or zeros $n$, and every corner frequency with its type.
+2. Draw the low-frequency asymptote. Its slope is $-20n$ dB per decade and it
+   passes through $20\\log_{10}K$ dB at $\\omega = 1$.
+3. At each corner, change the slope by $\\pm 20$ per real factor and
+   $\\pm 40$ per conjugate pair, accumulating as you go.
+4. Draw the composite phase ramp as the sum of the individual ramps.
+5. **Correct the magnitude** by adding, at each frequency of interest, the sum
+   of the per-factor errors from the table of Section 6.2, plus
+   $-20\\log_{10}(2\\zeta)$ at the corner of any pair.
+6. **Correct the phase**, or better, abandon the ramp and evaluate the
+   arctangents, since Section 7 showed the ramp is the weaker construction.
+7. **Solve, do not read**, for any frequency the question actually wants: a
+   crossover, a bandwidth, a half-power point.
+
+Steps 5 to 7 are what separate a sketch that orients you from an answer you
+can defend.
+
+## 9.2 The worked system
+
+Take a plant that contains one of every primitive:
+
+$$G(s) = \\frac{40\\left(1 + s/2\\right)}{s\\left(1 + s/40\\right)\\left(1 + s/60 + s^{2}/900\\right)}$$
+
+Reading it off: the constant is $K = 40$; there is one pole at the origin, so
+$n = 1$; a real zero corners at 2 rad/s; a real pole corners at 40 rad/s; and
+the quadratic has $\\omega_{n}^{2} = 900$, so $\\omega_{n} = 30$ rad/s, with
+$2\\zeta/\\omega_{n} = 1/60$ giving $\\zeta = 30/120 = 0.25$.
+
+The low-frequency behaviour is $\\lvert G\\rvert \\approx 40/\\omega$, a line of
+slope $-20$ dB per decade that reaches 0 dB at $\\omega = 40$ rad/s. The slope
+schedule is then:
+
+| Band (rad/s) | Active factors | Slope (dB/decade) | Asymptote level at the top of the band |
+|---|---|---|---|
+| below $2$ | origin pole | $-20$ | $20\\log_{10}(40/2) = 26.0206$ dB |
+| $2$ to $30$ | origin pole, zero | $0$ | $26.0206$ dB |
+| $30$ to $40$ | plus the pair | $-40$ | $26.0206 - 40\\log_{10}(40/30) = 21.0231$ dB |
+| above $40$ | plus the real pole | $-60$ | falls without limit |
+
+### Worked Example 9 - Sketch, Then Correct, Factor by Factor
+
+**Given.** The system $G(s)$ above.
+
+**Find.** The corrected magnitude at eight frequencies, with the correction
+broken out by factor, and a comparison with direct evaluation.
+
+**Solution.** At each frequency the correction is the sum of three numbers:
+the zero's error at $u = \\omega/2$, the real pole's at $u = \\omega/40$ and the
+pair's at $u = \\omega/30$. The origin pole contributes no error, since its
+straight line is its exact curve. Signs follow Section 6: positive for the
+zero, negative for the pole, and positive for the pair wherever the resonance
+lifts the curve.
+
+| $\\omega$ | Line (dB) | Zero error | Pole error | Pair error | Total correction | Corrected (dB) | Direct evaluation (dB) |
+|---|---|---|---|---|---|---|---|
+| $2$ | $26.0206$ | $+3.0103$ | $-0.0108$ | $+0.0338$ | $+3.0333$ | $29.0539$ | $29.0539$ |
+| $10$ | $26.0206$ | $+0.1703$ | $-0.2633$ | $+0.8730$ | $+0.7800$ | $26.8006$ | $26.8006$ |
+| $20$ | $26.0206$ | $+0.0432$ | $-0.9691$ | $+3.7701$ | $+2.8442$ | $28.8648$ | $28.8648$ |
+| $27.3128$ | $26.0206$ | $+0.0232$ | $-1.6621$ | $+6.2616$ | $+4.6228$ | $30.6434$ | $30.6434$ |
+| $30$ | $26.0206$ | $+0.0193$ | $-1.9382$ | $+6.0206$ | $+4.1017$ | $30.1223$ | $30.1223$ |
+| $40$ | $21.0231$ | $+0.0108$ | $-3.0103$ | $+4.7882$ | $+1.7888$ | $22.8118$ | $22.8118$ |
+| $60$ | $10.4576$ | $+0.0048$ | $-1.5970$ | $+2.0412$ | $+0.4490$ | $10.9066$ | $10.9066$ |
+| $100$ | $-2.8534$ | $+0.0017$ | $-0.6446$ | $+0.7027$ | $+0.0599$ | $-2.7934$ | $-2.7934$ |
+
+**Answer.** The corrected column and the directly evaluated column agree to
+every digit shown, at every frequency, which is the identity of Section 6.3
+demonstrated rather than asserted.
+
+**What the table teaches.** Two things, neither of which a sketch alone
+reveals. First, the largest gap between the lines and the truth is 4.6228 dB
+and it occurs at 27.3128 rad/s, which is NOT a corner frequency: it sits
+between the resonance and the real pole, where the pair is still lifting the
+curve and the pole has not yet pulled it down. Anyone who checks corrections
+only at corners will miss the worst one. Second, at 40 rad/s the pair
+contributes $+4.7882$ dB of error even though its own corner is 10 rad/s
+lower - a lightly damped pair casts a long shadow, and the assumption that
+corners a factor of 1.33 apart can be treated independently is simply false.
+
+![The assembled magnitude of the worked system, with the straight-line construction dashed and the exact curve solid. Corners are marked at two, thirty and forty radians per second, the worst gap of four point six two two eight decibels falls at twenty seven point three one two eight, and the exact curve reaches zero decibels at eighty nine point nine four six eight radians per second.](/courses/fe-ee/figures/lin4-assembly-mag.svg)
+
+## 9.3 The phase of the same system
+
+The magnitude construction came out well; the phase construction does not.
+Building the composite ramp from three pieces - the zero at 2 rad/s ramping
+up over 0.2 to 20, the real pole at 40 ramping down over 4 to 400, and the
+pair at 30 ramping down through 180 degrees over 3 to 300 - and comparing with
+the exact per-factor angle sum gives:
+
+| $\\omega$ (rad/s) | Exact phase | Ramp construction | Error |
+|---|---|---|---|
+| $2$ | $-49.7801^\\circ$ | $-45.0000^\\circ$ | $+4.7801^\\circ$ |
+| $10$ | $-35.9658^\\circ$ | $-78.5127^\\circ$ | $-42.5469^\\circ$ |
+| $20$ | $-63.2394^\\circ$ | $-105.6054^\\circ$ | $-42.3660^\\circ$ |
+| $30$ | $-130.6840^\\circ$ | $-129.3778^\\circ$ | $+1.3062^\\circ$ |
+| $40$ | $-187.2611^\\circ$ | $-146.2445^\\circ$ | $+41.0166^\\circ$ |
+| $56.2773$ | $-216.2088^\\circ$ | $-166.2614^\\circ$ | $+49.9474^\\circ$ |
+| $100$ | $-239.9842^\\circ$ | $-199.9664^\\circ$ | $+40.0178^\\circ$ |
+
+The construction is out by more than forty degrees over most of the middle of
+the plot, and the worst case, 49.9474 degrees at 56.2773 rad/s, was located by
+searching rather than by looking at corners. The cause is entirely the pair:
+its true phase is still near zero at 10 rad/s where the ramp has already
+spent 45 degrees, and it has already passed 180 degrees near 40 rad/s where the
+ramp has spent barely 60. A one-decade ramp fitted to an arctangent cannot
+imitate a $\\zeta = 0.25$ transition, exactly as Section 7.5 warned.
+
+![The same system's phase, with the ramp construction dashed and the exact per-factor angle sum solid. The exact curve turns much faster through the resonance than the ramp does, and the two differ by up to forty nine point nine four seven four degrees near fifty six radians per second.](/courses/fe-ee/figures/lin4-assembly-phase.svg)
+
+## 9.4 Solving for a frequency instead of reading one
+
+The single most consequential misuse of a Bode sketch is reading a crossing
+frequency off a corner. Corners are where ASYMPTOTES meet; they have no
+special relationship to where the exact curve crosses a level.
+
+### Worked Example 10 - Unity Gain, Read and Then Solved
+
+**Part one: the assembled system.** Continuing the plot above, the straight
+lines cross 0 dB on the $-60$ dB per decade segment. Solving the line
+equation,
+
+$$21.0231 - 60\\log_{10}\\!\\left(\\frac{\\omega}{40}\\right) = 0 \\ \\Longrightarrow \\ \\omega = 40 \\times 10^{21.0231/60} = 89.6281\\ \\mathrm{rad/s}$$
+
+Solving instead the exact condition $\\lvert G(j\\omega)\\rvert = 1$ by bisection
+on the complex expression gives $\\omega = 89.9468$ rad/s. The gap is only 0.36
+per cent, because at 90 rad/s every corner is far away and the corrections
+have died to 0.09 dB.
+
+**Part two: a loop where the reading is badly wrong.** Now take
+
+$$L(s) = \\frac{400}{s(s + 20)} = \\frac{20}{s\\left(1 + s/20\\right)}$$
+
+Its straight lines are $20\\log_{10}(20/\\omega)$ below the corner and a
+$-40$ dB per decade continuation above, and at $\\omega = 20$ the low-frequency
+line reads $20\\log_{10}(20/20) = 0$ dB exactly. The lines therefore cross 0 dB
+AT the corner, and the tempting answer is 20 rad/s.
+
+**Find.** The true frequency at which $\\lvert L\\rvert = 1$.
+
+**Solution.** Write the exact condition and square it:
+
+$$\\lvert L(j\\omega)\\rvert = \\frac{20}{\\omega\\sqrt{1 + \\omega^{2}/400}} = 1 \\ \\Longrightarrow \\ 400 = \\omega^{2}\\left(1 + \\frac{\\omega^{2}}{400}\\right)$$
+
+Divide through by 400 and set $x = \\omega^{2}/400$:
+
+$$1 = x + x^{2} \\ \\Longrightarrow \\ x = \\frac{\\sqrt{5} - 1}{2} = 0.618034$$
+
+That is the reciprocal of the golden ratio, and it makes this particular
+answer memorable:
+
+$$\\omega_{gc} = 20\\sqrt{0.618034} = 20 \\times 0.786151 = 15.7230\\ \\mathrm{rad/s}$$
+
+**Answer.** The exact crossing is at 15.7230 rad/s. The corner reading of 20
+rad/s is high by
+
+$$\\frac{20 - 15.7230}{15.7230} = 0.27202 \\ \\Longrightarrow \\ 27.20\\ \\mathrm{per\\ cent}$$
+
+**Why the discrepancy is so large here.** At the corner the exact magnitude is
+not 0 dB but $-3.0103$ dB, and the local slope there is only $-30$ dB per
+decade, part way between the $-20$ below and the $-40$ above. Three decibels
+of error divided by a slope of that order displaces the crossing by roughly
+$10^{3/30} = 1.26$, which is the order of the discrepancy observed. Any
+quantity computed at the crossover - a phase margin, a closed-loop bandwidth,
+a delay margin - inherits the whole of that error.
+
+![Magnitude near unity gain for a loop whose straight lines cross zero decibels exactly at the corner. The dashed lines cross at twenty radians per second while the exact curve, which is three point zero one zero three decibels below the corner of the lines, crosses at fifteen point seven two three zero.](/courses/fe-ee/figures/lin4-crossover-solve.svg)
+
+**Check.** Substituting back, $\\lvert L(j15.7230)\\rvert = 1.000000$ to six
+decimal places, and a numerical bisection on the exact magnitude returns
+15.723028 rad/s, agreeing with the closed form to nine digits. The exact phase
+there is $-90^\\circ - \\arctan(15.7230/20) = -128.1727^\\circ$; what that implies
+for stability belongs to the companion Bode and Nyquist chapter, and the point
+here is only that a margin quoted at 20 rad/s would have been computed at the
+wrong frequency in the first place.`,
+      examTip: 'Build the sketch to find the neighbourhood; solve an equation to find the number. Whenever an answer is a FREQUENCY - crossover, bandwidth, half-power point - set the exact magnitude equal to the level and solve, because the corner nearest that level can be tens of per cent away from the true crossing.',
+      importantNote: 'The worst straight-line error in a multi-corner plot need not sit at a corner. In the worked system it falls at 27.3128 rad/s, between the resonance and the next pole, and is 0.52 dB deeper than the error at the resonant corner itself. Sample the correction between corners as well as at them.',
+    },
+    {
+      id: 'bode-identification',
+      title: '10. Reading a Transfer Function Back Off a Measured Plot',
+      content: `## 10.1 The harder direction
+
+Going from a formula to a plot is bookkeeping: factor, look up, add. Going the
+other way is the skill that separates candidates, because a measured curve
+does not announce how many factors made it, and because several different
+transfer functions can produce the same magnitude curve. Section 11 catalogues
+exactly which differences a magnitude plot cannot see; this section covers what
+it CAN see and how to extract it reliably.
+
+The whole procedure rests on inverting the three things Section 4 established:
+a slope is a net order, a break is a factor, and a level is a gain.
+
+## 10.2 The reading procedure
+
+1. **Read the low-frequency slope.** Divide it by 20 to get the net number of
+   origin zeros minus origin poles. A flat start means none; $-20$ dB per
+   decade means one integrator; $+20$ means one differentiator.
+2. **Read the gain from an asymptote, not from the curve.** If the plot starts
+   flat, the level of the flat part is $20\\log_{10}K$ directly. If it starts
+   sloping, extend the sloping asymptote to $\\omega = 1$ and read its
+   intercept, or equivalently find where that asymptote crosses 0 dB: for a
+   low-frequency behaviour $K/\\omega^{n}$ the crossing is at
+   $\\omega = K^{1/n}$.
+3. **Mark every slope change.** A change of $-20$ dB per decade is one real
+   pole at that frequency; $+20$ is one real zero; $\\pm 40$ is either a
+   conjugate pair or two coincident real factors.
+4. **Resolve any $\\pm 40$ break.** If the curve peaks near the break, it is a
+   lightly damped pair, and Section 8.4 turns the peak height into $\\zeta$ and
+   the peak frequency into $\\omega_{n}$. If it does not peak, it is either a
+   pair with $\\zeta \\ge 0.7071$ or a repeated real factor, and the two are
+   told apart by the depth of the curve at the break: a double real pole is
+   exactly $2 \\times 3.0103 = 6.0206$ dB below the break, whereas a pair sits
+   $-20\\log_{10}(2\\zeta)$ below it.
+5. **Audit with the phase.** The phase far above every corner must equal
+   $90^\\circ$ times the number of zeros minus the number of poles. If your
+   reconstructed formula does not reproduce the measured high-frequency phase,
+   you have missed a factor, or the plant is one of the cases in Section 11.
+
+![A measured band-pass magnitude with the straight lines a reader would draw on it. The lines rise at twenty decibels per decade and reach zero decibels at half a radian per second, run flat at twenty decibels between five and fifty, then fall at twenty decibels per decade; the measured curve peaks at nineteen point one seven two one decibels at fifteen point eight one one four radians per second.](/courses/fe-ee/figures/lin4-inverse-target.svg)
+
+### Worked Example 11 - A Band-Pass Recovered From Its Straight Lines
+
+**Given.** A measurement whose straight-line reading is: a rise at $+20$ dB
+per decade at low frequency, with that rising line reaching 0 dB at 0.5 rad/s;
+a break to a flat segment at 5 rad/s at a level of 20 dB; and a break to
+$-20$ dB per decade at 50 rad/s.
+
+**Find.** The transfer function, then the exact magnitude at the two corners
+and at the true maximum.
+
+**Solution.** Step 1: the low-frequency slope is $+20$ dB per decade, so there
+is exactly one zero at the origin and no others below 5 rad/s. The form is
+$H(s) = Ks/[(1 + s/z_{1})(1 + s/z_{2})]$ with two poles to be located.
+
+Step 2: on the rising segment $\\lvert H\\rvert \\approx K\\omega$, so the
+asymptote reaches unity at $\\omega = 1/K$. The plot says that happens at 0.5
+rad/s, so
+
+$$K = \\frac{1}{0.5} = 2$$
+
+Step 3: the breaks at 5 and 50 rad/s are each a slope change of $-20$ dB per
+decade, so each is one real pole:
+
+$$H(s) = \\frac{2s}{\\left(1 + s/5\\right)\\left(1 + s/50\\right)} = \\frac{500\\,s}{(s+5)(s+50)}$$
+
+Step 4: cross-check the gain against the flat level, which was not used in
+step 2. In the flat band the zero at the origin and the pole at 5 rad/s cancel
+in slope, leaving $\\lvert H\\rvert \\approx K\\omega/(\\omega/5) = 5K = 10$, which
+is 20 dB. That matches the measurement, so the two independent gain readings
+agree.
+
+**The exact numbers the lines do not give.** The true maximum of a band-pass
+of this form is at the geometric mean of the two corners. Setting the
+derivative of $\\lvert H\\rvert^{2}$ to zero gives $\\omega^{2} = z_{1}z_{2}$, so
+
+$$\\omega_{\\max} = \\sqrt{5 \\times 50} = \\sqrt{250} = 15.8114\\ \\mathrm{rad/s}$$
+
+and substituting back collapses to a compact closed form:
+
+$$\\lvert H\\rvert_{\\max} = \\frac{K z_{1} z_{2}}{z_{1} + z_{2}} = \\frac{2 \\times 250}{55} = 9.090909 \\ \\Longrightarrow \\ 19.1721\\ \\mathrm{dB}$$
+
+so the true peak is $20 - 19.1721 = 0.8279$ dB BELOW the flat line, not on it.
+At the two corners themselves,
+
+$$\\lvert H(j5)\\rvert_{\\mathrm{dB}} = \\lvert H(j50)\\rvert_{\\mathrm{dB}} = 16.9465\\ \\mathrm{dB}$$
+
+identical to four decimals, because the two corners are exactly a decade apart
+and the configuration is symmetric about their geometric mean. The shortfall
+against the 20 dB line is $20 - 16.9465 = 3.0535$ dB, which is exactly the
+$3.0103$ of the near corner plus the $0.0432$ of the far one - the Section 6.2
+table, used in the inverse direction as a consistency check.
+
+**Answer.** $H(s) = 2s/[(1 + s/5)(1 + s/50)]$.
+
+**Check.** Solving $\\lvert H(j\\omega)\\rvert = 1$ on the rising side returns
+0.502545 rad/s against the line's 0.5, a discrepancy of 0.51 per cent, and the
+phase at 15.8114 rad/s evaluates to $0.0000^\\circ$, as it must for a
+symmetric band-pass at its centre.
+
+### Worked Example 12 - A Lag Network, With the Phase as the Audit
+
+**Given.** A measured magnitude that is flat at 20 dB below 5 rad/s, falls at
+$-20$ dB per decade between 5 and 50 rad/s, and is flat at 0 dB above 50
+rad/s. The measured phase is zero at both extremes and dips to about
+$-55^\\circ$ in between.
+
+**Find.** The transfer function, and confirm it against the phase.
+
+**Solution.** The low-frequency slope is zero, so there are no origin factors
+and the DC level gives the gain directly:
+
+$$20\\log_{10}K = 20 \\ \\Longrightarrow \\ K = 10$$
+
+The break down at 5 rad/s is a real pole; the break back to flat at 50 rad/s
+is a real zero. So
+
+$$H(s) = \\frac{10\\left(1 + s/50\\right)}{1 + s/5}$$
+
+Sanity-check the high-frequency level: as $\\omega \\to \\infty$ the ratio tends
+to $10 \\times (5/50) = 1$, which is 0 dB, matching the measurement. This is a
+LAG network: unity gain at high frequency, gain at low frequency, and lagging
+phase in between.
+
+**The phase audit.** The exact phase is
+
+$$\\angle H = \\arctan\\!\\left(\\frac{\\omega}{50}\\right) - \\arctan\\!\\left(\\frac{\\omega}{5}\\right)$$
+
+Its extreme lies at the geometric mean $\\sqrt{5 \\times 50} = 15.8114$ rad/s,
+where
+
+$$\\angle H = 17.5484^\\circ - 72.4516^\\circ = -54.9032^\\circ$$
+
+and there is a closed form worth knowing. For a lag network whose pole and
+zero are a factor $\\alpha$ apart, here $\\alpha = 50/5 = 10$,
+
+$$\\sin\\lvert \\phi_{\\max}\\rvert = \\frac{\\alpha - 1}{\\alpha + 1} = \\frac{9}{11} = 0.818182 \\ \\Longrightarrow \\ \\lvert \\phi_{\\max}\\rvert = 54.9032^\\circ$$
+
+The two routes agree to four decimals, so the identification is consistent
+with both plots.
+
+**Answer.** $H(s) = 10(1 + s/50)/(1 + s/5)$, a lag network with a maximum
+phase lag of $54.9032^\\circ$ at 15.8114 rad/s.
+
+**Exact values at the corners.** At 5 rad/s the exact magnitude is
+$20 + 0.0432 - 3.0103 = 17.0329$ dB against a line reading of 20 dB; at 50
+rad/s it is $20 + 3.0103 - 20.0432 = 2.9671$ dB against a line reading of 0 dB.
+The two errors, $-2.9671$ and $+2.9671$, are equal and opposite, which is the
+signature of a pole and a zero placed symmetrically about the geometric mean.
+Halfway between, at 15.8114 rad/s, the exact magnitude is 10.0000 dB, exactly
+the midpoint of the two flat levels.
+
+## 10.3 Common traps in the inverse direction
+
+- **Reading the gain off the curve rather than the asymptote.** At a corner
+  the curve is 3 dB below the line, so a DC gain read at the corner is 3 dB
+  low. Read a flat segment well away from any break.
+- **Reading a corner off the curve's own bend.** The corner is where the two
+  ASYMPTOTES intersect, not where the curve looks steepest. Draw both lines
+  and intersect them.
+- **Calling a $-40$ break two real poles without checking for a peak.** If a
+  peak is there, the answer needs a damping ratio, and Section 8.4 supplies it.
+- **Forgetting that a slope of zero at high frequency means equal numbers of
+  poles and zeros**, which in turn means the high-frequency phase must return
+  to a multiple of $180^\\circ$. If the measured phase keeps falling while the
+  magnitude has gone flat, no rational minimum-phase model fits, and Section 11
+  explains what does.`,
+      examTip: 'Work the inverse problem in a fixed order: slope first for the order, asymptote intercept second for the gain, breaks third for the corner frequencies, peak fourth for any damping ratio, phase last as the audit. Read every quantity from a straight line you have drawn, never from the measured curve at a break, because there the curve is 3 dB away from the line by construction.',
+      importantNote: 'Two independent gain readings should always agree. In Worked Example 11 the low-frequency asymptote crossing gives K = 2 and the flat mid-band level gives 5K = 10; if those disagree, a corner has been misplaced or a factor missed. Build that cross-check into every identification.',
+    },
+    {
+      id: 'bode-magnitude-blind',
+      title: '11. What a Magnitude Plot Cannot Tell You',
+      content: `## 11.1 A factor with unity magnitude everywhere
+
+Section 10 assumed that a magnitude curve determines a transfer function. It
+does not, and the counterexample is easy to build. Consider
+
+$$A(s) = \\frac{1 - s/a}{1 + s/a}, \\qquad a > 0$$
+
+Its numerator evaluated on the imaginary axis, $1 - j\\omega/a$, is the complex
+CONJUGATE of its denominator, $1 + j\\omega/a$. Conjugates have equal moduli
+and opposite arguments, so
+
+$$\\lvert A(j\\omega)\\rvert = \\frac{\\sqrt{1 + \\omega^{2}/a^{2}}}{\\sqrt{1 + \\omega^{2}/a^{2}}} = 1 \\ \\mathrm{exactly,\\ at\\ every}\\ \\omega$$
+
+$$\\angle A(j\\omega) = \\arctan\\!\\left(-\\frac{\\omega}{a}\\right) - \\arctan\\!\\left(\\frac{\\omega}{a}\\right) = -2\\arctan\\!\\left(\\frac{\\omega}{a}\\right)$$
+
+This is a first-order ALL-PASS. Multiplying any transfer function by it leaves
+the magnitude plot bit-for-bit unchanged and subtracts up to $180^\\circ$ of
+phase. It contains a zero at $s = +a$, in the right half of the plane, which
+is why plants with such factors are called non-minimum phase: among all
+systems sharing that magnitude curve, the one without the all-pass has the
+least phase lag at every frequency.
+
+## 11.2 A factor that is not rational at all
+
+A transport lag of $T$ seconds contributes $e^{-sT}$, whose frequency response
+is
+
+$$\\lvert e^{-j\\omega T}\\rvert = 1, \\qquad \\angle e^{-j\\omega T} = -\\omega T\\ \\mathrm{rad} = -57.2958\\,\\omega T\\ \\mathrm{degrees}$$
+
+Again the magnitude is untouched. The phase, though, is proportional to
+$\\omega$ rather than to $\\log\\omega$, so on a logarithmic frequency axis it
+does not settle at any value: it accelerates downward for ever. That is the
+qualitative difference from the all-pass, whose lag saturates at $180^\\circ$
+per factor.
+
+## 11.3 The two are hard to tell apart at low frequency and impossible to confuse at high
+
+Match their initial slopes. Expanding both phases for small $\\omega$,
+
+$$-2\\arctan\\!\\left(\\frac{\\omega}{a}\\right) \\approx -\\frac{2\\omega}{a}, \\qquad -\\omega T$$
+
+so an all-pass with corner $a$ imitates a delay of $T = 2/a$ near DC. Take
+$a = 4$ rad/s and $T = 0.5$ s:
+
+| $\\omega$ (rad/s) | All-pass phase | Delay phase | Difference |
+|---|---|---|---|
+| $1$ | $-28.0725^\\circ$ | $-28.6479^\\circ$ | $0.5754^\\circ$ |
+| $4$ | $-90.0000^\\circ$ | $-114.5916^\\circ$ | $24.5916^\\circ$ |
+| $20$ | $-157.3801^\\circ$ | $-572.9578^\\circ$ | $415.5777^\\circ$ |
+
+Half a degree apart at 1 rad/s, and more than four hundred degrees apart at 20.
+Both remain invisible on the magnitude plot at every one of those frequencies.
+
+![Two unity-magnitude factors compared by phase on a logarithmic frequency axis: a first-order all-pass with its zero at plus four radians per second, whose lag flattens out at one hundred eighty degrees, and a half-second transport delay, whose lag falls in proportion to frequency and never stops. Both pass through roughly minus twenty eight degrees at one radian per second.](/courses/fe-ee/figures/lin4-allpass-delay.svg)
+
+## 11.4 When magnitude DOES determine phase
+
+For a stable, rational, minimum-phase system - no poles or zeros in the right
+half plane and no delay - the magnitude and phase are not independent. Bode's
+gain-phase relation ties them together exactly:
+
+$$\\angle H(j\\omega_{0}) = \\frac{1}{\\pi}\\int_{-\\infty}^{+\\infty}\\frac{\\mathrm{d}M}{\\mathrm{d}\\nu}\\,\\ln\\coth\\frac{\\lvert \\nu\\rvert}{2}\\,\\mathrm{d}\\nu, \\qquad M = \\ln\\lvert H\\rvert, \\quad \\nu = \\ln\\!\\left(\\frac{\\omega}{\\omega_{0}}\\right)$$
+
+The weighting function $\\ln\\coth(\\lvert \\nu\\rvert/2)$ is sharply peaked at
+$\\nu = 0$, so the phase at a frequency is dominated by the SLOPE of the
+magnitude near that frequency. That is the formal justification for the
+approximation every engineer uses:
+
+$$\\angle H \\approx -90^\\circ \\times \\frac{\\mathrm{slope\\ in\\ dB\\ per\\ decade}}{20}$$
+
+A stretch of $-20$ dB per decade carries about $-90^\\circ$, a stretch of
+$-40$ about $-180^\\circ$. The approximation is good in the middle of a long
+uniform-slope band and poor near corners, which is precisely where the
+straight-line ramp of Section 7 is also poor.
+
+The practical rule that follows is the one to carry into an exam: if a
+measured magnitude has settled to a constant slope but the measured phase is
+still marching past what that slope implies, the plant is not minimum phase.
+Either it carries a right-half-plane zero or it carries a delay, and the
+magnitude plot alone cannot say which.
+
+### Worked Example 13 - Three Systems, One Magnitude Plot
+
+**Given.** Three plants,
+
+$$H_{1}(s) = \\frac{10}{1 + s/40}, \\qquad H_{2}(s) = H_{1}(s)\\cdot\\frac{1 - s/4}{1 + s/4}, \\qquad H_{3}(s) = H_{1}(s)\\,e^{-0.5s}$$
+
+**Find.** Their magnitudes and phases at 1, 4 and 20 rad/s.
+
+**Solution.** The extra factor in each of $H_{2}$ and $H_{3}$ has unit modulus
+at every frequency, so all three share one magnitude column:
+
+$$\\lvert H(j1)\\rvert_{\\mathrm{dB}} = 19.9973, \\qquad \\lvert H(j4)\\rvert_{\\mathrm{dB}} = 19.9568, \\qquad \\lvert H(j20)\\rvert_{\\mathrm{dB}} = 19.0309$$
+
+The phases separate completely:
+
+| $\\omega$ (rad/s) | Shared magnitude | $\\angle H_{1}$ | $\\angle H_{2}$ | $\\angle H_{3}$ |
+|---|---|---|---|---|
+| $1$ | $19.9973$ dB | $-1.4321^\\circ$ | $-29.5046^\\circ$ | $-30.0800^\\circ$ |
+| $4$ | $19.9568$ dB | $-5.7106^\\circ$ | $-95.7106^\\circ$ | $-120.3022^\\circ$ |
+| $20$ | $19.0309$ dB | $-26.5651^\\circ$ | $-183.9452^\\circ$ | $-599.5228^\\circ$ |
+
+**Answer.** One magnitude plot, three plants, and by 20 rad/s the widest
+spread between them is $-26.5651 - (-599.5228) = 572.9577$ degrees, between
+the minimum-phase plant and the delayed one. No amount of care with the
+magnitude sketch can distinguish them; only the phase measurement can.
+
+**What this costs.** All three have the same gain crossover frequency, because
+that depends on magnitude alone. They therefore have completely different
+phase margins, and consequently completely different closed-loop behaviour,
+from the same magnitude plot. The stability arithmetic for that situation is
+developed in the companion chapter on Bode and Nyquist analysis in the Control
+Systems section; the construction lesson here is simply that a Bode plot has
+two halves and only one of them is optional to sketch, never optional to
+measure.
+
+## 11.5 A short catalogue of magnitude-invisible changes
+
+| Change to the plant | Effect on magnitude plot | Effect on phase plot |
+|---|---|---|
+| sign of the gain, $K \\to -K$ | none | shifts by $180^\\circ$ at all frequencies |
+| a zero moved from $-a$ to $+a$ | none | subtracts $2\\arctan(\\omega/a)$ |
+| a pole moved from $-a$ to $+a$ | none | subtracts $2\\arctan(\\omega/a)$, and the plant becomes unstable |
+| a transport delay $T$ added | none | subtracts $57.2958\\,\\omega T$ degrees |
+| an all-pass pair added | none | subtracts up to $360^\\circ$ |
+
+Note the third row in particular: a magnitude plot cannot even tell you whether
+the plant is stable, because moving a pole across the imaginary axis leaves
+$\\lvert H\\rvert$ unchanged.`,
+      examTip: 'If a question gives you only a magnitude plot and asks for a transfer function, the honest answer is the minimum-phase one, and it is what the examiner wants. If the question also gives phase, use the phase to test your answer: reconstruct the phase from your formula and compare. A gap that grows in proportion to frequency is a delay; a gap that saturates at a multiple of 180 degrees is a right-half-plane zero.',
+      importantNote: 'A magnitude plot cannot distinguish a stable plant from an unstable one, cannot see a transport delay, and cannot see the sign of the gain. Every one of those changes leaves the modulus identical at every frequency. Identification from magnitude alone is therefore always a choice of the minimum-phase representative, not a determination.',
+    },
+    {
+      id: 'bode-problems-forward',
+      title: '12. Problem Set A - From Formula to Plot',
+      content: `## 12.1 Problem Set A - Constructing and Correcting
+
+Work each problem to four decimal places and resist the urge to stop at the
+asymptote. Every frequency asked for below is to be SOLVED, and every
+magnitude is to be evaluated from the complex expression, not from a slope.
+
+**A1.** (a) Express an amplitude ratio of 0.05 in decibels. (b) Convert
+$-14.00$ dB back into an amplitude ratio. (c) A network has a POWER gain of 8.
+Give its decibel figure, and state what the same numeral 8 would mean as a
+decibel figure if it were an amplitude ratio instead.
+
+**A2.** For $L(s) = \\dfrac{100}{s\\left(1 + s/25\\right)}$, find (a) the
+frequency at which the straight-line construction crosses 0 dB, (b) the exact
+frequency at which $\\lvert L\\rvert = 1$, and (c) the exact phase there.
+
+**A3.** A conjugate pair has $\\omega_{n} = 80$ rad/s and $\\zeta = 0.35$. Find
+(a) the frequency of the resonant peak, (b) its height in decibels, (c) the
+magnitude at $\\omega_{n}$ itself, and (d) the straight-line error at
+$\\omega_{n}$.
+
+**A4.** For $H(s) = \\left(1 + s/4\\right)^{-2}$, give (a) the exact magnitude
+and phase at 4 rad/s, and (b) the frequency at which the magnitude is
+$-20$ dB, both exactly and as the straight lines would predict it.
+
+**A5.** Repeat A4 for $H(s) = \\left(1 + s/6\\right)^{-3}$.
+
+**A6.** A measured magnitude reads $15.0$ dB at 12 rad/s and $-25.5$ dB at 120
+rad/s, with no corner in between. How many net poles are active in that band?
+
+**A7.** For $H(s) = \\left[\\left(1 + s/8\\right)\\left(1 + s/32\\right)\\right]^{-1}$,
+tabulate the straight-line value, the per-factor corrections and the exact
+magnitude at 8, 16 and 32 rad/s.
+
+**A8.** For the assembled system of Section 9,
+$G(s) = 40(1 + s/2)/\\left[s(1 + s/40)(1 + s/60 + s^{2}/900)\\right]$, find the
+straight-line value, the three per-factor corrections and the exact magnitude
+at 50 rad/s.
+
+## 12.2 Answers to Problem Set A
+
+**A1.** (a) $20\\log_{10}(0.05) = -26.0206$ dB. (b)
+$10^{-14/20} = 0.199526$. (c) As a power gain,
+$10\\log_{10}8 = 9.0309$ dB; the corresponding amplitude ratio is
+$\\sqrt{8} = 2.828427$, and $20\\log_{10}(2.828427) = 9.0309$ dB, the same
+figure by the other route. Had 8 been an amplitude ratio it would have been
+$20\\log_{10}8 = 18.0618$ dB, twice as many decibels.
+
+**A2.** (a) Below the corner the line is $20\\log_{10}(100/\\omega)$, which
+would reach 0 dB at 100 rad/s - beyond the corner, so that segment is not the
+one that crosses. At 25 rad/s the line is $20\\log_{10}4 = 12.0412$ dB, and the
+$-40$ dB per decade continuation reaches 0 dB at
+
+$$\\omega = 25 \\times 10^{12.0412/40} = 25 \\times 2 = 50\\ \\mathrm{rad/s}$$
+
+(b) Exactly: square the condition $\\lvert L\\rvert = 1$ to get
+$10^{4} = \\omega^{2}\\left(1 + \\omega^{2}/625\\right)$, a quadratic in
+$\\omega^{2}$ whose positive root is
+
+$$\\omega^{2} = \\frac{625\\left(\\sqrt{65} - 1\\right)}{2} = 2206.9556 \\ \\Longrightarrow \\ \\omega = 46.9782\\ \\mathrm{rad/s}$$
+
+(c) $\\angle L = -90^\\circ - \\arctan(46.9782/25) = -151.9798^\\circ$. Note that
+the line's answer of 50 rad/s is 6.43 per cent high.
+
+**A3.** (a) $\\omega_{r} = 80\\sqrt{1 - 2(0.1225)} = 80\\sqrt{0.755} = 69.5126$
+rad/s. (b)
+$M_{p} = -10\\log_{10}\\left[4(0.1225)(0.8775)\\right] = -10\\log_{10}(0.429975) = 3.6656$
+dB. (c) $20\\log_{10}(1/0.7) = 3.0980$ dB. (d) The line reads 0 dB at
+$\\omega_{n}$, so the error is $+3.0980$ dB. Notice that the peak is 0.5676 dB
+higher than the value at $\\omega_{n}$ and sits 10.4874 rad/s lower in
+frequency.
+
+**A4.** (a) $\\lvert H\\rvert = 1/(1 + u^{2})$ with $u = \\omega/4$, so at
+$u = 1$ the value is $1/2$, that is $-6.0206$ dB, and the phase is
+$2 \\times (-45) = -90^\\circ$. (b) Exactly:
+$1 + u^{2} = 10 \\Rightarrow u = 3 \\Rightarrow \\omega = 12.0000$ rad/s. The
+lines say $-40\\log_{10}u = -20$, so $u = \\sqrt{10} = 3.162278$ and
+$\\omega = 12.6491$ rad/s, which is 5.41 per cent high.
+
+**A5.** (a) $3 \\times (-3.0103) = -9.0309$ dB and
+$3 \\times (-45) = -135^\\circ$. (b) Exactly: $-30\\log_{10}(1 + u^{2}) = -20$
+gives $u = 1.908294$ and $\\omega = 11.4498$ rad/s; the lines give
+$u = 10^{20/60} = 2.154435$ and $\\omega = 12.9266$ rad/s, 12.90 per cent high.
+
+**A6.** The span is one decade, so the slope is
+$-25.5 - 15.0 = -40.5$ dB per decade, and $-40.5/20 = -2.025$. Two net poles;
+the 0.025 is rounding in the two readings, not a fractional pole.
+
+**A7.** The corrections come straight from the Section 6.2 table.
+
+| $\\omega$ | Line (dB) | Error from pole at 8 | Error from pole at 32 | Exact (dB) | Exact phase |
+|---|---|---|---|---|---|
+| $8$ | $0.0000$ | $-3.0103$ ($u = 1$) | $-0.2633$ ($u = 0.25$) | $-3.2736$ | $-59.0362^\\circ$ |
+| $16$ | $-6.0206$ | $-0.9691$ ($u = 2$) | $-0.9691$ ($u = 0.5$) | $-7.9588$ | $-90.0000^\\circ$ |
+| $32$ | $-12.0412$ | $-0.2633$ ($u = 4$) | $-3.0103$ ($u = 1$) | $-15.3148$ | $-120.9638^\\circ$ |
+
+The corners are two octaves apart, so the composite error at each is
+$3.0103 + 0.2633 = 3.2736$ dB, and at the geometric mean 16 rad/s the phase is
+exactly $-90^\\circ$.
+
+**A8.** At 50 rad/s the line reads
+$21.0231 - 60\\log_{10}(50/40) = 15.2084$ dB. The three corrections are
+$+0.0069$ from the zero at 2 rad/s ($u = 25$), $-2.1484$ from the pole at 40
+($u = 1.25$) and $+3.0138$ from the pair at 30 ($u = 1.6667$), totalling
+$+0.8723$ dB. The corrected value is $16.0807$ dB, and direct evaluation of
+$\\lvert G(j50)\\rvert$ gives $16.0807$ dB. The pair is still contributing more
+than 3 dB of lift two thirds of an octave above its own corner.`,
+      examTip: 'On every problem in this set the straight-line answer and the exact answer differ, and the difference is largest exactly where a question is most likely to point: at a corner, at a resonance, at a crossing. Build the habit of finishing with an evaluation of the complex expression, even when the sketch looks convincing.',
+      importantNote: 'Problems A2, A4 and A5 all ask for a frequency, and in all three the straight-line reading is between 5 and 13 per cent away from the truth. That error is not a rounding artefact; it is the 3 dB corner error divided by the local slope, exactly as Section 6.5 predicts.',
+    },
+    {
+      id: 'bode-problems-inverse',
+      title: '13. Problem Set B - From Plot to Formula',
+      content: `## 13.1 Problem Set B - Identification
+
+These run the other way. In each case a measured plot is described by the
+straight lines a reader would draw on it, and the task is to recover a
+transfer function and then say something exact about the true curve.
+
+**B1.** A magnitude plot is flat at $26.0206$ dB below 6 rad/s, falls at
+$-20$ dB per decade between 6 and 60 rad/s, and falls at $-40$ dB per decade
+above 60. Give $H(s)$, and the exact magnitude at both corners.
+
+**B2.** A magnitude plot rises at $+20$ dB per decade at low frequency, with
+that rising line reaching 0 dB at 4 rad/s. It breaks flat at 25 rad/s and
+breaks down to $-20$ dB per decade at 400 rad/s. Give $H(s)$ and the level of
+the flat segment.
+
+**B3.** A magnitude plot is flat at 0 dB at low frequency, shows a peak of
+exactly $5.00$ dB at 120 rad/s, and settles at $-40$ dB per decade above.
+Find $\\zeta$ and $\\omega_{n}$.
+
+**B4.** A magnitude plot breaks from flat to $-40$ dB per decade at 30 rad/s.
+(a) If the measured curve is $6.0206$ dB below the break, what is the factor?
+(b) If instead the measured curve is $2.00$ dB ABOVE the break, find $\\zeta$,
+the peak frequency and the peak height.
+
+**B5.** A plant's measured magnitude is $0.0000$ dB at every frequency tested,
+and its measured phase at 10 rad/s is $-114.5916^\\circ$. Give two different
+plants consistent with both measurements, and find how far apart their phases
+are at 20 rad/s.
+
+**B6.** The low-frequency asymptote of a magnitude plot falls at $-40$ dB per
+decade and crosses 0 dB at 7 rad/s. What is the low-frequency form of $H$, and
+what does the asymptote read at 0.7 rad/s?
+
+## 13.2 Answers to Problem Set B
+
+**B1.** A flat start means no origin factors, so the level gives the gain
+directly: $26.0206$ dB is $10^{26.0206/20} = 20$. The break at 6 rad/s is one
+real pole and the break at 60 rad/s is a second, so
+
+$$H(s) = \\frac{20}{\\left(1 + s/6\\right)\\left(1 + s/60\\right)}$$
+
+The corners are exactly a decade apart, so the composite correction at each is
+$3.0103 + 0.0432 = 3.0535$ dB. At 6 rad/s the line reads $26.0206$ dB and the
+exact value is $22.9671$ dB; at 60 rad/s the line reads
+$26.0206 - 20 = 6.0206$ dB and the exact value is $2.9671$ dB.
+
+**B2.** The $+20$ dB per decade start is one zero at the origin, so
+$\\lvert H\\rvert \\approx K\\omega$ near DC, and that line reaches unity at
+$\\omega = 1/K$. Reading 4 rad/s gives $K = 1/4 = 0.25$. The two breaks are
+real poles:
+
+$$H(s) = \\frac{0.25\\,s}{\\left(1 + s/25\\right)\\left(1 + s/400\\right)}$$
+
+In the flat band the origin zero and the pole at 25 cancel in slope, leaving
+$\\lvert H\\rvert \\approx 0.25 \\times 25 = 6.25$, that is
+$20\\log_{10}(6.25) = 15.9176$ dB.
+
+**B3.** Invert the peak height with $q = 10^{-5/10} = 0.316228$:
+
+$$\\zeta^{2} = \\frac{1 - \\sqrt{1 - 0.316228}}{2} = \\frac{1 - 0.826905}{2} = 0.086547 \\ \\Longrightarrow \\ \\zeta = 0.294189$$
+
+$$\\omega_{n} = \\frac{120}{\\sqrt{1 - 2(0.086547)}} = \\frac{120}{0.909343} = 131.9634\\ \\mathrm{rad/s}$$
+
+The natural frequency is 9.97 per cent above the peak frequency; treating the
+peak as $\\omega_{n}$ would have carried that error into every time constant
+derived from it.
+
+**B4.** (a) A curve $6.0206$ dB below the break is $2 \\times 3.0103$, the
+signature of two coincident real poles, so the factor is
+$\\left(1 + s/30\\right)^{-2}$. A conjugate pair would have to satisfy
+$-20\\log_{10}(2\\zeta) = -6.0206$, giving $\\zeta = 1$, which is the critically
+damped case and is exactly the double real pole again. (b) Here
+$-20\\log_{10}(2\\zeta) = +2.00$, so
+$2\\zeta = 10^{-0.1} = 0.794328$ and $\\zeta = 0.397164$. The peak sits at
+
+$$\\omega_{r} = 30\\sqrt{1 - 2(0.397164)^{2}} = 30\\sqrt{0.684521} = 24.8207\\ \\mathrm{rad/s}$$
+
+and its height is
+$-10\\log_{10}\\left[4(0.157739)(0.842261)\\right] = 2.7455$ dB, which is 0.7455
+dB above the value at the corner - the gap $-10\\log_{10}(1 - \\zeta^{2})$ from
+Section 8.2.
+
+**B5.** Both a pure transport delay and a first-order all-pass have unity
+magnitude at every frequency, so both fit the magnitude data. Matching the
+phase at 10 rad/s:
+
+$$\\mathrm{delay:}\\quad 10T = 114.5916 \\times \\frac{\\pi}{180} = 2.0000\\ \\mathrm{rad} \\ \\Longrightarrow \\ T = 0.2000\\ \\mathrm{s}$$
+
+$$\\mathrm{all\\ pass:}\\quad 2\\arctan\\!\\left(\\frac{10}{a}\\right) = 114.5916^\\circ \\ \\Longrightarrow \\ \\frac{10}{a} = \\tan(57.2958^\\circ) = 1.557408 \\ \\Longrightarrow \\ a = 6.4209$$
+
+At 20 rad/s the delay gives $-20 \\times 0.2 = -4$ rad, that is
+$-229.183^\\circ$, while the all-pass gives
+$-2\\arctan(20/6.4209) = -144.402^\\circ$. They differ by $84.781^\\circ$, so a
+second phase measurement settles which plant it is - and no magnitude
+measurement ever will.
+
+**B6.** A $-40$ dB per decade start is two poles at the origin, so
+$\\lvert H\\rvert \\approx K/\\omega^{2}$. The crossing condition $K/49 = 1$ gives
+$K = 49$, so the low-frequency form is $H(s) \\approx 49/s^{2}$. One decade
+below the crossing the asymptote is 40 dB higher, so it reads $40$ dB at 0.7
+rad/s; checking directly, $49/0.49 = 100$, which is 40 dB.
+
+## 13.3 Where to go next
+
+The construction is now complete in both directions: a formula becomes a plot,
+a plot becomes a formula, and every number in between carries a known error
+bar. What has deliberately been left out is what the plot MEANS for a feedback
+loop - gain and phase margins, the Nyquist criterion, conditional stability
+and compensator design. Those belong to the Bode and Nyquist chapter of the
+Control Systems section, which assumes exactly the construction skills built
+here and adds the stability arithmetic on top. The single habit to carry
+across is the one this chapter exists to install: locate with the lines, then
+solve for the number.`,
+      examTip: 'Identification questions almost always give you two independent ways to read the gain: the level of a flat segment and the frequency at which a sloped asymptote crosses 0 dB. Use both and check them against each other. A mismatch means a corner is in the wrong place or a factor has been missed.',
+      importantNote: 'Answer B5 is the whole of Section 11 in one problem: two completely different plants match the same magnitude data and the same single phase reading, and are separated only by a second phase measurement 84.781 degrees apart. Never report an identification from magnitude data alone as if it were unique.',
+    },
   ],
   keyTakeaways: [
     'Convert H(s) to time-constant form. Identify DC gain K and each corner frequency.',
@@ -5281,6 +6879,16 @@ Or if the magnitude shows a peak near 5 rad/s, the answer is a complex pair:
     'Gain Margin: -|L| at phase-crossover ω_pc (where phase = -180°). Stable if GM > 0.',
     'Phase Margin: ∠L + 180° at gain-crossover ω_gc (where |L| = 0 dB). Stable if PM > 0. Target 45-60°.',
     'Rough approximation: damping ratio ζ ≈ PM(degrees)/100. PM 45° gives ζ ≈ 0.45 (well-damped second order).',
+    'The additive decomposition is EXACT: 20·log₁₀|H| is the sum of the factor contributions, and the phase is the sum of the factor angles. Only the straight lines are approximate.',
+    'Decibels: 10·log₁₀ for power ratios, 20·log₁₀ for amplitude ratios. A doubling is 6.0206 dB of amplitude but 3.0103 dB of power; a Bode magnitude axis is always the amplitude convention.',
+    'Magnitude error of one real pole: −3.0103 dB at the corner, −0.9691 dB an octave either side, −0.0432 dB a decade either side, and it is symmetric because e(u) = e(1/u).',
+    'Errors of separate factors ADD exactly. Two corners an octave apart give −3.9794 dB at each of them, not −3.0103.',
+    'Phase ramp error is at most 5.7106° per factor, at a tenth and ten times the corner, with interior extremes of ±5.2929°. Errors add, so a two-pole plot can be out by 7.5277°.',
+    'A resonant peak sits at ωr = ωₙ√(1−2ζ²), BELOW ωₙ, with height 1/(2ζ√(1−ζ²)); it exists only for ζ < 0.7071. The magnitude at ωₙ is 1/(2ζ) and the phase there is exactly −90°.',
+    'The straight-line error of a pair at its corner is −20·log₁₀(2ζ) and is unbounded: 6.0206 dB at ζ = 0.25, 20 dB at ζ = 0.05.',
+    'Never read a crossing frequency off a corner. For L = 20/[s(1+s/20)] the lines cross 0 dB at 20 rad/s but |L| = 1 at 15.7230 rad/s, 27.2% lower.',
+    'Identification order: low-frequency slope for the order, asymptote intercept for the gain, breaks for the corners, peak height for ζ, phase as the audit.',
+    'Magnitude plots are blind to the sign of K, to a zero or pole reflected across the imaginary axis, and to a transport delay. Identification from magnitude alone always yields the minimum-phase representative.',
   ],
 },
 
