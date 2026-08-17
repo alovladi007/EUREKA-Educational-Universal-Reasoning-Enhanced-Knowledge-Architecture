@@ -5020,8 +5020,8 @@ Apply a step input to the open-loop plant and measure:
 Design the PID so the open-loop Bode plot has:
 - **Gain crossover** at the desired bandwidth
 - **Phase margin** of 45–60° for good damping`,
-      examTip: 'Ziegler-Nichols tuning tends to produce aggressive controllers with about 25% overshoot. The FE exam may ask you to apply the ultimate gain method: find K_u (gain at sustained oscillation), measure P_u (oscillation period), then use the table to compute K_p, T_i, T_d.',
-      importantNote: 'The derivative term amplifies noise because it differentiates the error signal. In practice, a low-pass filter is always added to the D term: K_d·s/(1 + s/N) where N is typically 10–20. Pure derivative (K_d·s) is never used in real implementations.',
+      examTip: 'Ziegler-Nichols tuning is aggressive by design: it targets a quarter-amplitude decay of the DISTURBANCE response, and the setpoint-step overshoot that comes with it is much larger than the quarter that name suggests — 40.6% on the three-lag plant worked in Section 4. The FE exam may ask you to apply the ultimate gain method: find K_u (gain at sustained oscillation), measure P_u (oscillation period), then use the table to compute K_p, T_i, T_d.',
+      importantNote: 'The derivative term amplifies noise because it differentiates the error signal. In practice, a low-pass filter is always added to the D term: K_d·s/(1 + s·T_d/N), where N is typically 10–20 and T_d = K_d/K_p. Writing the filter as 1/(1 + s/N) is dimensionally wrong — N is a pure number, so it has to divide the derivative time, not the frequency. The filter caps the derivative path gain at N·K_p. Pure derivative (K_d·s) is never used in real implementations.',
     },
     {
       id: 'pid-tuning-worked',
@@ -5075,39 +5075,60 @@ Controller must add: −130° − (−158.2°) = **+28.2° of phase lead**
 
 Using the PID transfer function: C(s) = K_p(1 + 1/(T_i·s) + T_d·s)
 
-Choose **$T_d = 0.15\\ \\mathrm{s}$** (provides phase lead near ω = 5):
-- Phase from D term at ω = 5: arctan(T_d·ω) = arctan(0.75) = +36.9°
+Choose **$T_d = 0.15\\ \\mathrm{s}$** and **$T_i = 2\\ \\mathrm{s}$**. The parallel
+PID is a **sum** of three terms, not a product, so their phases cannot be added
+one at a time — the three contributions must be collected into a single complex
+number before any angle is taken:
 
-Choose **$T_i = 2\\ \\mathrm{s}$** (integral time, slow enough not to destabilize):
-- Phase from I term at ω = 5: −arctan(1/(T_i·ω)) = −arctan(0.1) = −5.7°
+$$C(j\\omega )/K_p = 1 + j[T_d\\omega - 1/(T_i\\omega )]$$
 
-Net controller phase: +36.9° − 5.7° = **$+31.2^\\circ$** (close to target of +28.2°, with margin)
+At ω = 5 rad/s the derivative part of the bracket is $T_d\\omega = 0.75$ and the
+integral part is $1/(T_i\\omega ) = 0.10$, so the bracket is $1 + j0.65$ and
+
+$$\\angle C(j5) = \\arctan (0.65) = +33.02^\\circ$$
+
+which clears the +28.2° the specification asks for, with room to spare. Adding
+the term phases separately would have given
+$+36.9^\\circ - 5.7^\\circ = +31.2^\\circ$, which is close enough to look right
+and is nonetheless the wrong calculation; on a PID with a larger derivative
+time the two answers diverge badly.
 
 **Step 4 — Set K_p for 0 dB gain crossover at ω = 5:**
 
 |C(j5)| · |G(j5)| = 1
 
-|C(j5)| = |K_p| · |1 + 1/(j10) + j0.75| = K_p · |1.75 + j0.65| = K_p · 1.867
+$$\\lvert C(j5)\\rvert /K_p = \\sqrt{1^{2} + 0.65^{2}} = \\sqrt{1.4225} = 1.19269$$
 
-$$K_p = 1/(1.867 \\times 0.0371) = 14.4$$
+$$K_p = \\frac{1}{1.19269 \\times 0.0371391} = 22.5757$$
 
 ## 3.4 Final PID Parameters
 
 | Parameter | Value | Derived Values |
 |---|---|---|
-| **K_p** | 14.4 | Proportional gain |
-| **T_i** | 2.0 s | $K_i = K_p/T_i = 7.2$ |
-| **T_d** | 0.15 s | $K_d = K_p\\cdot T_d = 2.16$ |
+| **K_p** | 22.576 | Proportional gain |
+| **T_i** | 2.0 s | $K_i = K_p/T_i = 11.288$ |
+| **T_d** | 0.15 s | $K_d = K_p\\cdot T_d = 3.386$ |
 
-**Controller**: C(s) = 14.4 + 7.2/s + 2.16s
+**Controller**: C(s) = 22.576 + 11.288/s + 3.386s
 
 ## 3.5 Verification — Closed-Loop Stability
 
-Open-loop transfer function: L(s) = C(s)·G(s) = (14.4 + 7.2/s + 2.16s) · 1/[s(s+2)]
+Open-loop transfer function: L(s) = C(s)·G(s) = (22.576 + 11.288/s + 3.386s) · 1/[s(s+2)]
 
-At ω = 5 rad/s: |L(j5)| ≈ 1 (0 dB) and ∠L(j5) ≈ −130° → **$PM \\approx 50^\\circ$**
+At ω = 5 rad/s the magnitude is 1 by construction, and the phase is the plant's
+−158.20° plus the controller's +33.02°, so
 
-The closed-loop system is stable with good damping (ζ ≈ 0.5, ~16% overshoot).
+$$\\mathrm{PM} = 180^\\circ - 125.18^\\circ = 54.82^\\circ$$
+
+Now stop trusting the margin and simulate the closed loop. Its step response
+overshoots by **23.25%**, peaks at 0.622 s and stays inside ±2% from 1.214 s
+onward. That overshoot is nearly double the 12.7% predicted by the
+$\\zeta \\approx \\mathrm{PM}/100$ rule, and the pole-zero pattern says why: the
+closed-loop poles are −2.409 ± j3.746 and −0.569, a pair whose own damping
+ratio is 0.541, but the controller also plants closed-loop **zeros** at −0.544
+and −6.122. The first nearly cancels the slow real pole; the second is close
+enough to the pair to add derivative-like lift. Phase margin predicts the
+damping of the poles, never the overshoot of a loop that also carries zeros.
 
 ## 3.6 Ziegler-Nichols Quick Reference (For Higher-Order Plants)
 
@@ -5123,7 +5144,7 @@ When the ultimate gain method IS applicable (3rd order or higher):
 | **PI** | $0.45\\cdot K_u$ | $0.45\\cdot K_u/(P_u/1.2)$ | — |
 | **PID** | $0.6\\cdot K_u$ | $0.6\\cdot K_u/(P_u/2) = 1.2\\cdot K_u/P_u$ | $0.6\\cdot K_u\\cdot P_u/8 = 0.075\\cdot K_u\\cdot P_u$ |`,
       examTip: 'If the FE exam gives a 2nd-order plant with no delay, the Ziegler-Nichols ultimate gain method may not apply directly (the system may be stable for all gains). In that case, use the frequency response approach or recognize that the exam expects you to apply the table formulas with given K_u and P_u values.',
-      importantNote: 'Ziegler-Nichols tuning is a starting point, not a final design. It typically produces about 25% overshoot. For tighter specifications, reduce K_p by 20-30% from the Z-N value and increase T_i. The FE exam usually tests the Z-N table lookup, not iterative refinement.',
+      importantNote: 'Ziegler-Nichols tuning is a starting point, not a final design. The quarter-decay target it is built around applies to the disturbance response; the setpoint overshoot it delivers is far larger, 40.6% on the plant of Section 4. For tighter specifications, reduce K_p by 20-30% from the Z-N value and increase T_i — Section 4.4 measures the payoff. The FE exam usually tests the Z-N table lookup, not iterative refinement.',
     },
     {
       id: 'pid-zn-on-a-real-plant',
@@ -5166,11 +5187,11 @@ $P_u$ without ever running the experiment.
 |---|---|---|---|---|---|
 | P | $0.5K_u$ = 4.0 | — | — | — | — |
 | PI | $0.45K_u$ = 3.6 | $P_u/1.2$ = 3.023 s | — | 1.191 | — |
-| PID | $0.6K_u$ = 4.8 | $P_u/2$ = 1.814 s | $P_u/8$ = 0.4535 s | 2.646 | 2.176 |
+| PID | $0.6K_u$ = 4.8 | $P_u/2$ = 1.814 s | $P_u/8$ = 0.4535 s | 2.646 | 2.177 |
 
 The PID controller is therefore
 
-$$C(s) = 4.8 + 2.646/s + 2.176s$$
+$$C(s) = 4.8 + 2.646/s + 2.177s$$
 
 ## 4.3 What Each Row Actually Does
 
@@ -5179,7 +5200,7 @@ Simulating all three closed loops turns the table into performance:
 | Controller | Steady-state error to a step | Overshoot | Settling time (2%) |
 |---|---|---|---|
 | P, $K_p$ = 4 | **0.200** | 54.3% (of its own final value) | — (never reaches 1) |
-| PI | 0 | 56.1% | 30.7 s |
+| PI | 0 | 56.1% | 30.77 s |
 | PID | 0 | 40.6% | 9.37 s |
 
 The P-only offset is not a simulation artefact — it is exactly
@@ -5236,7 +5257,10 @@ Two related practicalities that exam questions like to name:
 - **Derivative on measurement.** Differentiating the error means
   differentiating the setpoint too, so a step change in setpoint produces an
   impulse-like kick at the actuator. Taking the derivative of the measured
-  output instead removes the kick and leaves the loop dynamics unchanged.
+  output instead removes the kick and leaves the **characteristic equation**
+  untouched, so stability and disturbance rejection are unchanged. The
+  setpoint response does change, because derivative action no longer acts on
+  the setpoint path; Section 7 measures both effects.
 - **Integral windup.** While the actuator is saturated the loop is
   effectively open, but the integrator keeps accumulating error. Anti-windup —
   clamping or back-calculating the integral state while saturated — prevents
@@ -5254,6 +5278,1172 @@ Two related practicalities that exam questions like to name:
 | "Why is a filter added to the D term?" | Noise amplification at high frequency |`,
       examTip: 'When a problem hands you a transfer function instead of test data, you can still run the ultimate-gain method on paper: Routh gives K_u from the first-column entry that goes to zero, and the auxiliary polynomial at that gain gives ω_u, from which P_u = 2π/ω_u. Both Ziegler-Nichols columns follow from those two numbers.',
       importantNote: 'Ziegler-Nichols settings are aggressive by design and routinely produce 40% or more overshoot on a step. Backing the proportional gain off to about 70% of the table value and lengthening the integral time often improves overshoot AND settling time simultaneously — the table is a starting point, not an optimum.',
+    },
+    {
+      id: 'pid-terms-derived',
+      title: '5. Each Term Derived From the Defect It Repairs',
+      content: `## 5.1 One Plant, Three Repairs
+
+Sections 1 to 4 stated what the three terms do. This section derives each one
+from the specific failure it exists to cure, and puts a number on the price it
+charges for the cure. Everything below runs on a single second-order process
+
+$$G(s) = \\frac{2}{(s+1)(s+4)}, \\qquad G(0) = \\frac{2}{4} = 0.5$$
+
+with no integrator of its own, so it is Type 0 and its steady-state behaviour
+is governed by the position-error constant.
+
+## 5.2 Proportional Action and the Offset It Cannot Remove
+
+Close the loop with pure gain. The characteristic polynomial is the plant
+denominator plus the loop numerator:
+
+$$T(s) = \\frac{K_pG(s)}{1 + K_pG(s)} = \\frac{2K_p}{s^{2} + 5s + 4 + 2K_p}$$
+
+The final value follows from the DC gain of that transfer function, and the
+error is what is left over:
+
+$$y(\\infty ) = \\frac{2K_p}{4 + 2K_p}, \\qquad
+e_{ss} = 1 - y(\\infty ) = \\frac{4}{4 + 2K_p} = \\frac{1}{1 + 0.5K_p}$$
+
+The denominator is $1 + K_{pos}$ with $K_{pos} = K_pG(0)$, which is the
+position-error constant of the time-specification chapter arriving by a
+different door. **Proportional gain divides the offset; it never deletes it.**
+
+The poles move as the gain rises. Matching $s^{2} + 5s + (4 + 2K_p)$ to the
+standard form gives
+
+$$\\omega _n = \\sqrt{4 + 2K_p}, \\qquad 2\\zeta \\omega _n = 5
+\\Rightarrow \\zeta = \\frac{2.5}{\\sqrt{4 + 2K_p}}$$
+
+so every unit of gain that shrinks the offset also shrinks the damping ratio.
+Simulating the step response at each gain and measuring the peak confirms the
+overshoot formula to four decimal places, which is the expected outcome for a
+system that really is second order with no zeros:
+
+| $K_p$ | Offset $1/(1 + 0.5K_p)$ | $\\omega _n$ (rad/s) | $\\zeta$ | Overshoot (formula) | Overshoot (measured) |
+|---|---|---|---|---|---|
+| 2 | 0.5000 | 2.828 | 0.8839 | 0.264% | 0.264% |
+| 4 | 0.3333 | 3.464 | 0.7217 | 3.780% | 3.780% |
+| 10 | 0.1667 | 4.899 | 0.5103 | 15.502% | 15.502% |
+| 20 | 0.0909 | 6.633 | 0.3769 | 27.851% | 27.851% |
+| 50 | 0.0385 | 10.198 | 0.2451 | 45.186% | 45.186% |
+| 98 | 0.0200 | 14.142 | 0.1768 | 56.879% | 56.879% |
+
+![Three closed-loop step responses of the same second-order plant under proportional control at gains of two, ten and fifty. The offsets below the setpoint are one half, one sixth and one twenty-sixth, exactly one over one plus half the gain in each case, while the overshoot climbs from a quarter of a percent to forty-five percent. Arrows mark each remaining offset against the setpoint line.](/courses/fe-ee/figures/ctl4-pid-p-offset.svg)
+
+Read the arrows and the ringing together and the proportional term's whole
+character is on one page. The gap to the setpoint closes like $1/K_p$, which is
+slow going: each halving of the offset costs roughly a doubling of gain, and
+the damping ratio falls like $1/\\sqrt{K_p}$ the whole way down.
+
+### Worked Example 1 — The Gain That Buys a 2% Offset, and Its Bill
+
+**Given** the plant above under proportional control, find the gain that holds
+the steady-state offset to 2% of the setpoint, then find the overshoot that
+gain produces.
+
+**Offset requirement.** Set the offset formula equal to 0.02:
+
+$$\\frac{1}{1 + 0.5K_p} = 0.02 \\Rightarrow 1 + 0.5K_p = 50
+\\Rightarrow K_p = 98$$
+
+**Resulting poles.** With that gain,
+
+$$\\omega _n = \\sqrt{4 + 2 \\times 98} = \\sqrt{200} = 14.142\\ \\mathrm{rad/s},
+\\qquad \\zeta = 2.5/14.142 = 0.17678$$
+
+**Resulting overshoot.**
+
+$$\\frac{\\zeta}{\\sqrt{1 - \\zeta ^{2}}} = \\frac{0.17678}{0.98425} = 0.17961$$
+
+and $e^{-\\pi \\cdot 0.17961} = 0.5688$, so the response overshoots by
+**56.88%**. Simulating the loop gives the same 56.88%.
+
+**The lesson.** A 2% steady-state specification and a 10% overshoot
+specification cannot both be met by proportional gain on this plant, at any
+gain whatever. That impossibility is the entire argument for integral action.
+
+## 5.3 Integral Action Removes the Offset and Charges Phase
+
+Add an integral term, so the controller becomes $C(s) = K_p + K_i/s$. The loop
+gain now carries a pole at the origin, so the loop is Type 1 and
+
+$$e_{ss} = \\lim_{s \\to 0} \\frac{s \\cdot (1/s)}{1 + C(s)G(s)}
+= \\lim_{s \\to 0} \\frac{s}{s + K_pG(s)s + K_iG(s)} = 0$$
+
+for **any** positive $K_i$, however small. The offset is not reduced, it is
+removed, and the size of $K_i$ decides only how quickly.
+
+The bill arrives in phase. Writing the controller in the ideal form
+$C = K_p[1 + 1/(T_is)]$, its contribution to the loop phase at frequency
+$\\omega$ is
+
+$$\\angle \\left[1 + \\frac{1}{jT_i\\omega }\\right]
+= \\angle \\left[1 - \\frac{j}{T_i\\omega }\\right]
+= -\\arctan \\frac{1}{T_i\\omega }$$
+
+which is negative everywhere: integral action always subtracts phase, and the
+subtraction is worst at low frequency. Put the PI zero a factor $m$ below the
+gain crossover, that is $T_i = m/\\omega _c$, and the cost is
+$\\arctan (1/m)$, independent of the plant:
+
+$$m = 3 \\Rightarrow 18.43^\\circ , \\quad m = 5 \\Rightarrow 11.31^\\circ ,
+\\quad m = 10 \\Rightarrow 5.71^\\circ$$
+
+Measuring this on the plant of Section 5.2 with $K_p = 10$ held fixed: the
+proportional-only loop crosses over at 3.586 rad/s with a 63.70° margin. Adding
+integral action moves the crossover slightly and eats margin:
+
+| $T_i$ (s) | Crossover (rad/s) | Phase margin | Margin lost | PI lag at the new crossover |
+|---|---|---|---|---|
+| — (P only) | 3.586 | 63.70° | — | — |
+| 2.653 | 3.600 | 57.55° | 6.15° | 5.98° |
+| 2.000 | 3.611 | 55.52° | 8.18° | 7.88° |
+| 1.000 | 3.680 | 47.39° | 16.32° | 15.20° |
+| 0.500 | 3.898 | 32.97° | 30.74° | 27.16° |
+
+The last two columns nearly agree, and the gap between them is the crossover
+shifting: adding gain at low frequency pushes the crossover up, and the extra
+plant phase there is not recovered. The rule of thumb "the PI costs
+$\\arctan (1/(T_i\\omega _c))$" is good to a third of a degree for the two
+gentle integral times, to 1.1° at $T_i = 1$ s and to 3.6° at $T_i = 0.5$ s —
+the approximation degrades exactly as the crossover moves most.
+
+![A two-panel figure. The upper panel compares the proportional-only step response, which stops one sixth short of the setpoint, with the proportional-integral response, which reaches it. The lower panel plots the phase the integral term subtracts against frequency for three integral times, with the gain crossover of three point five nine radians per second marked; the lag at that frequency is twenty-seven degrees for the shortest integral time and eight degrees for the longest.](/courses/fe-ee/figures/ctl4-pid-integral-cost.svg)
+
+The transient cost is real too. With $K_p = 10$ the proportional loop
+overshoots 15.50% and settles at 1.625 s; adding integral action at
+$T_i = 1$ s raises the overshoot to 20.79% and pushes settling to 1.868 s,
+while removing the offset entirely. Integral action is never free.
+
+### Worked Example 2 — Sizing the Integral Time From a Phase Budget
+
+**Given** the loop above with $K_p = 10$, a gain crossover of 3.586 rad/s and a
+63.70° phase margin, choose $T_i$ so that adding integral action costs no more
+than 6° of phase margin.
+
+**Step 1 — turn the budget into a frequency ratio.** The PI lag at the
+crossover is $\\arctan (1/(T_i\\omega _c))$, so
+
+$$\\arctan \\frac{1}{T_i\\omega _c} \\leq 6^\\circ
+\\Rightarrow \\frac{1}{T_i\\omega _c} \\leq \\tan 6^\\circ = 0.10510$$
+
+$$T_i\\omega _c \\geq \\frac{1}{0.10510} = 9.5144$$
+
+**Step 2 — convert to seconds.**
+
+$$T_i \\geq \\frac{9.5144}{3.586} = 2.653\\ \\mathrm{s}$$
+
+**Step 3 — check by computing the margin, not by trusting the rule.**
+Evaluating the actual loop with $T_i = 2.653$ s gives a crossover of 3.600
+rad/s and a phase margin of 57.56°, a loss of 6.15° — within a sixth of a
+degree of the budget, and slightly over it because the crossover moved.
+Rounding $T_i$ up to 3 s brings the loss under the budget with room to spare.
+
+**Step 4 — confirm the offset is gone.** The simulated step response reaches
+the setpoint, overshoots 6.00% and is inside the ±2% band from 5.23 s onward:
+the offset is gone, the margin is intact, and the price is a slower approach.
+
+## 5.4 Derivative Action and the Noise It Multiplies
+
+The derivative term contributes $+\\arctan (T_d\\omega )$ of phase when taken on
+its own, and that lead is what lets a loop run more gain at the same margin.
+Its magnitude, though, is $K_d\\omega$ — a straight line rising forever on a
+log-log plot. Sensor noise lives at high frequency, which is exactly where that
+line is largest.
+
+Quantify it on the Ziegler-Nichols PID of Section 4, where $K_p = 4.8$ and
+$T_d = 0.4535$ s, so $K_d = 2.1766$. Suppose the measurement carries white
+noise of RMS 0.01 — one percent of the setpoint step — and the controller runs
+at a sample interval $T_s = 0.01$ s. The unfiltered discrete derivative is
+$K_d(e_k - e_{k-1})/T_s$, whose impulse response is the two-sample pair
+$\\pm K_d/T_s$, so its RMS gain is exactly
+
+$$\\sqrt{2}\\,\\frac{K_d}{T_s} = \\sqrt{2} \\times 217.66 = 307.81$$
+
+Feeding four million samples of noise through it measures 307.79 — the closed
+form and the experiment agree to five significant figures. That turns 0.01
+units of sensor noise into **3.08 units** of actuator command, on a loop whose
+entire steady-state command is one unit. The actuator would be doing nothing
+but chasing noise.
+
+The cure is a first-order filter on the derivative path,
+
+$$C_d(s) = \\frac{K_ds}{1 + sT_d/N}, \\qquad N \\approx 5 \\text{ to } 20$$
+
+whose magnitude flattens above $\\omega = N/T_d$ at the ceiling
+
+$$\\lim_{\\omega \\to \\infty }\\lvert C_d(j\\omega )\\rvert
+= \\frac{K_dN}{T_d} = K_pN$$
+
+so the derivative path can never amplify by more than $N$ times the
+proportional gain. Implemented as the difference equation
+$u_k = au_{k-1} + b(e_k - e_{k-1})$ with $a = \\tau /(\\tau + T_s)$,
+$b = K_d/(\\tau + T_s)$ and $\\tau = T_d/N$, its impulse response sums to a
+closed-form RMS gain of
+
+$$b\\sqrt{\\frac{2}{1 + a}}$$
+
+which the Monte-Carlo experiment reproduces in every row below.
+
+| Derivative path | $\\tau$ (s) | Ceiling $K_pN$ | RMS gain (closed form) | RMS gain (measured) | Actuator noise for 0.01 sensor noise |
+|---|---|---|---|---|---|
+| Unfiltered | 0 | none | 307.81 | 307.79 | 3.078 |
+| $N = 20$ | 0.02267 | 96 | 72.386 | 72.388 | 0.7239 |
+| $N = 10$ | 0.04535 | 48 | 41.234 | 41.236 | 0.4123 |
+| $N = 5$ | 0.09069 | 24 | 22.174 | 22.175 | 0.2217 |
+| Proportional path only | — | 4.8 | 4.8 | 4.8 | 0.0480 |
+
+![Log-log magnitude of the derivative path against frequency for filter constants of five, ten and twenty, with the unfiltered straight line for comparison. Each filtered curve follows the unfiltered line at low frequency and then flattens at a ceiling equal to the proportional gain times the filter constant, namely twenty-four, forty-eight and ninety-six.](/courses/fe-ee/figures/ctl4-pid-noise-gain.svg)
+
+The filtered curves and the unfiltered line share their low-frequency
+behaviour, which is the point: the filter changes nothing where the loop
+actually works, near 1.7 rad/s here. It takes hold only at its own pole,
+$N/T_d$, which is 11.0, 22.1 and 44.1 rad/s for the three cases drawn — six to
+twenty-five times above the crossover, in the band where only noise lives.
+
+### Worked Example 3 — Choosing the Filter Constant From a Noise Budget
+
+**Given** the PID above, a sensor whose noise RMS is 0.01, a sample interval of
+0.01 s, and an actuator specification that the noise-driven command must stay
+below 0.25 RMS, choose $N$.
+
+**Step 1 — reject the unfiltered option immediately.** Its RMS gain of 307.81
+gives 3.078, more than twelve times the budget.
+
+**Step 2 — evaluate the ceiling first, as a screen.** The ceiling $K_pN$ is an
+upper bound on the gain at any frequency, so a design with $K_pN$ below
+$0.25/0.01 = 25$ is guaranteed to pass. That gives $N \\leq 25/4.8 = 5.2$.
+
+**Step 3 — evaluate the actual RMS gain for the candidates.** From the table,
+$N = 5$ gives 0.2217 and $N = 10$ gives 0.4123. So $N = 5$ passes with 11%
+of margin and $N = 10$ fails by a factor of 1.65.
+
+**Step 4 — check the filter has not eaten the design.** With $N = 5$ the filter
+pole sits at $N/T_d = 5/0.4535 = 11.03$ rad/s, still 6.4 times above the
+1.73 rad/s crossover region of the Section 4 loop, so the loop sees essentially
+the pure derivative it was designed with.
+
+**Answer:** $N = 5$. Note how the screen and the exact calculation agree in
+their verdicts but not in their numbers — the ceiling is a bound, the RMS gain
+is the truth, and both are worth having.`,
+      examTip: 'Three one-line facts carry most of the marks on this material. Proportional control on a Type 0 plant leaves the offset 1/(1 + K_p·G(0)) — the position-error constant is the loop gain at DC, not just the controller gain. Integral action makes that offset exactly zero for any K_i > 0, and costs arctan(1/(T_i·ω_c)) of phase margin. Filtered derivative action cannot amplify by more than N·K_p, whatever the noise looks like.',
+      importantNote: 'The three terms are not independent knobs on the same quantity. Proportional gain sets the offset AND the damping; integral time sets the speed of offset removal AND the phase lost; the derivative filter constant sets the noise ceiling AND how faithfully the loop gets the lead it was designed for. Every FE question that looks like "increase K_d to reduce overshoot" is really asking whether you know what else moved.',
+    },
+    {
+      id: 'pid-three-forms',
+      title: '6. Parallel, Ideal and Series Forms Reconciled',
+      content: `## 6.1 The Same Controller, Written Three Ways
+
+A tuning table is useless unless you know which algebraic form it was written
+for. Three forms are in circulation, and vendors use all three.
+
+**Parallel (independent gains).** The form used everywhere in this chapter's
+Laplace algebra:
+
+$$C(s) = K_p + \\frac{K_i}{s} + K_ds$$
+
+**Ideal, also called standard or non-interacting.** One gain multiplies
+everything; the other two parameters are times:
+
+$$C(s) = K_c\\left[1 + \\frac{1}{T_is} + T_ds\\right]$$
+
+**Series, also called interacting or classical.** A PI block feeding a PD
+block, which is what an analogue pneumatic controller physically was:
+
+$$C(s) = K_c'\\left[1 + \\frac{1}{T_i's}\\right](1 + T_d's)$$
+
+Parallel and ideal are the same object with the parameters renamed:
+
+$$K_p = K_c, \\qquad K_i = \\frac{K_c}{T_i}, \\qquad K_d = K_cT_d$$
+
+$$T_i = \\frac{K_p}{K_i}, \\qquad T_d = \\frac{K_d}{K_p}$$
+
+Series is genuinely different, and that is where errors get made.
+
+## 6.2 Series to Ideal, by Expansion
+
+Multiply the series form out:
+
+$$C(s) = K_c'\\left[1 + T_d's + \\frac{1}{T_i's} + \\frac{T_d'}{T_i'}\\right]$$
+
+Collect the two constant terms and factor $f = 1 + T_d'/T_i'$ out of the whole
+bracket:
+
+$$C(s) = K_c'f\\left[1 + \\frac{1}{T_i'fs} + \\frac{T_d'}{f}s\\right]$$
+
+Comparing that with the ideal form term by term gives the conversion, and note
+that the middle result simplifies beautifully:
+
+$$K_c = K_c'f, \\qquad T_i = T_i'f = T_i' + T_d', \\qquad
+T_d = \\frac{T_d'}{f} = \\frac{T_i'T_d'}{T_i' + T_d'}$$
+
+The ideal integral time is the **sum** of the series times; the ideal
+derivative time is their **parallel combination**. Both are worth remembering
+as shapes rather than formulas.
+
+### Worked Example 4 — Series Settings Into Ideal and Parallel
+
+**Given** a series controller with $K_c' = 3$, $T_i' = 4$ s, $T_d' = 1$ s,
+write the same controller in ideal and parallel form.
+
+$$f = 1 + \\frac{T_d'}{T_i'} = 1 + \\frac{1}{4} = 1.25$$
+
+$$K_c = 3 \\times 1.25 = 3.75, \\qquad T_i = 4 + 1 = 5\\ \\mathrm{s},
+\\qquad T_d = \\frac{4 \\times 1}{4 + 1} = 0.8\\ \\mathrm{s}$$
+
+Then the parallel gains follow directly:
+
+$$K_p = 3.75, \\qquad K_i = \\frac{3.75}{5} = 0.75,
+\\qquad K_d = 3.75 \\times 0.8 = 3.0$$
+
+**Check by an independent route.** Multiply out the series numerator directly:
+$3(1 + 1/(4s))(1 + s) = 3(1 + s + 1/(4s) + 1/4) = 3.75 + 0.75/s + 3s$, which is
+the parallel triple just derived. The two routes agree exactly.
+
+## 6.3 Ideal to Series, and When It Is Impossible
+
+Going the other way needs a quadratic. Substituting $T_i' = \\alpha T_i$ into
+$T_i' + T_d' = T_i$ and $T_i'T_d'/(T_i' + T_d') = T_d$ gives
+
+$$\\alpha ^{2}T_i - \\alpha T_i + T_d = 0 \\Rightarrow
+\\alpha = \\frac{1}{2}\\left[1 + \\sqrt{1 - \\frac{4T_d}{T_i}}\\right]$$
+
+and then
+
+$$K_c' = \\alpha K_c, \\qquad T_i' = \\alpha T_i,
+\\qquad T_d' = \\frac{T_d}{\\alpha }$$
+
+The square root is real only when
+
+$$T_i \\geq 4T_d$$
+
+That is not an algebraic curiosity. Write the ideal PID over a common
+denominator:
+
+$$C(s) = K_c\\,\\frac{T_iT_ds^{2} + T_is + 1}{T_is}$$
+
+A PID is **two zeros and one pole at the origin**. The discriminant of that
+numerator is $T_i^{2} - 4T_iT_d = T_i(T_i - 4T_d)$, so $T_i \\geq 4T_d$ is
+exactly the condition for the two zeros to be **real**. The series form is a
+product of two real first-order factors, so it can only ever produce real
+zeros. An ideal controller with complex zeros has no series equivalent.
+
+### Worked Example 5 — Ideal Settings Into Series Settings
+
+**Given** $K_c = 2$, $T_i = 10$ s, $T_d = 1$ s, find the equivalent series
+settings.
+
+$$\\frac{4T_d}{T_i} = \\frac{4}{10} = 0.4, \\qquad
+\\sqrt{1 - 0.4} = \\sqrt{0.6} = 0.774597$$
+
+$$\\alpha = \\frac{1 + 0.774597}{2} = 0.887298$$
+
+$$K_c' = 2 \\times 0.887298 = 1.7746, \\qquad
+T_i' = 10 \\times 0.887298 = 8.8730\\ \\mathrm{s}, \\qquad
+T_d' = \\frac{1}{0.887298} = 1.1270\\ \\mathrm{s}$$
+
+**Check by the forward conversion.** $T_i' + T_d' = 8.8730 + 1.1270 = 10.000$ s
+and $T_i'T_d'/(T_i' + T_d') = 1.0000$ s, recovering the ideal times exactly;
+$K_c'(1 + T_d'/T_i') = 1.7746 \\times 1.12702 = 2.0000$, recovering the gain.
+
+### Worked Example 6 — Why Ziegler-Nichols PID Sits Exactly on the Boundary
+
+**Given** the ultimate-gain PID rule $T_i = P_u/2$ and $T_d = P_u/8$, examine
+its zeros.
+
+$$\\frac{4T_d}{T_i} = \\frac{4(P_u/8)}{P_u/2} = \\frac{P_u/2}{P_u/2} = 1$$
+
+The ratio is 1 for **every plant**, because the ultimate period cancels. So the
+discriminant is exactly zero, $\\alpha = 1/2$ exactly, and the Ziegler-Nichols
+PID always has a **repeated real zero** at
+
+$$s = -\\frac{T_i}{2T_iT_d} = -\\frac{1}{2T_d} = -\\frac{4}{P_u}$$
+
+For the three-lag plant of Section 4, $T_d = 0.4535$ s puts that double zero at
+$s = -1.1027$, and the series equivalent is
+$K_c' = 2.4$, $T_i' = T_d' = 0.9069$ s. Ziegler-Nichols is not merely
+convertible to series form; it is the one ideal tuning that converts to a
+series controller whose two blocks have identical time constants.
+
+### Worked Example 7 — A Tuning With No Series Equivalent
+
+**Given** $K_c = 2$, $T_i = 2$ s, $T_d = 1$ s, find the series settings.
+
+$$\\frac{4T_d}{T_i} = \\frac{4}{2} = 2 > 1$$
+
+so $\\sqrt{1 - 2}$ is imaginary and no series settings exist. The zeros confirm
+it: the numerator is $2s^{2} + 2s + 1$, whose roots are
+
+$$s = \\frac{-2 \\pm \\sqrt{4 - 8}}{4} = -0.5 \\pm j0.5$$
+
+a complex pair. A series controller cannot place complex zeros, so this
+controller simply cannot be built from a PI block followed by a PD block. On a
+plant that needs a resonant notch from its controller, the ideal form is not a
+convenience — it is a requirement.
+
+## 6.4 What Happens When the Forms Are Confused
+
+The forms differ by the factor $f = 1 + T_d/T_i$, which is 1.25 for a
+Ziegler-Nichols PID and can reach 2 or more for derivative-heavy tunings. Typing
+ideal numbers into a series controller therefore multiplies the effective
+proportional gain by $f$, stretches the integral time by $f$ and shrinks the
+derivative time by $f$.
+
+Take the Section 4 Ziegler-Nichols PID, $K_c = 4.8$, $T_i = 1.8138$ s,
+$T_d = 0.4535$ s, and type those three numbers into a controller that
+implements the series form. The controller actually running is the ideal one
+with
+
+$$K_c = 4.8 \\times 1.25 = 6.0, \\qquad T_i = 2.2672\\ \\mathrm{s},
+\\qquad T_d = 0.3628\\ \\mathrm{s}$$
+
+Simulating both on the three-lag plant:
+
+| Controller actually running | Overshoot | Peak time | 2% settling |
+|---|---|---|---|
+| Ideal form, as intended | 40.57% | 2.206 s | 9.373 s |
+| Series box fed ideal numbers | 46.62% | 2.032 s | 12.033 s |
+
+Six extra points of overshoot and 28% more settling time, from a documentation
+error rather than a design error. On a derivative-heavy tuning the gap is much
+larger.
+
+| Form | Parameters | Zeros | Converts to the others? |
+|---|---|---|---|
+| Parallel | $K_p$, $K_i$, $K_d$ | Real or complex | Always, by renaming |
+| Ideal | $K_c$, $T_i$, $T_d$ | Real or complex | Always, by renaming |
+| Series | $K_c'$, $T_i'$, $T_d'$ | Real only | To ideal always; from ideal only if $T_i \\geq 4T_d$ |
+
+## 6.5 Problem Set A — Form Conversions
+
+**A1.** A parallel PID has $K_p = 6$, $K_i = 1.5$, $K_d = 4.5$. Find $T_i$ and
+$T_d$, and decide whether a series equivalent exists.
+*Answer:* $T_i = 6/1.5 = 4$ s and $T_d = 4.5/6 = 0.75$ s. Then
+$4T_d/T_i = 3/4 = 0.75 < 1$, so a series form exists.
+
+**A2.** Continue A1: find the series settings.
+*Answer:* $\\sqrt{1 - 0.75} = 0.5$, so $\\alpha = (1 + 0.5)/2 = 0.75$. Then
+$K_c' = 6 \\times 0.75 = 4.5$, $T_i' = 4 \\times 0.75 = 3$ s and
+$T_d' = 0.75/0.75 = 1$ s. Check: $3 + 1 = 4$ s and
+$3 \\times 1/(3 + 1) = 0.75$ s, both recovered.
+
+**A3.** A series controller reads $K_c' = 2.5$, $T_i' = 6$ s, $T_d' = 2$ s.
+What parallel gains does it implement?
+*Answer:* $f = 1 + 2/6 = 4/3$. So $K_c = 2.5 \\times 4/3 = 3.3333$,
+$T_i = 6 + 2 = 8$ s, $T_d = 6 \\times 2/8 = 1.5$ s, and the parallel gains are
+$K_p = 3.3333$, $K_i = 10/24 = 0.41667$, $K_d = 3.3333 \\times 1.5 = 5.0$.
+
+**A4.** For which ratio $T_d/T_i$ does the ideal-to-series conversion give
+$\\alpha = 1/2$, and what does that mean for the controller's zeros?
+*Answer:* $\\alpha = 1/2$ requires the square root to vanish, so
+$T_d/T_i = 1/4$. The two zeros coincide at $s = -1/(2T_d)$, and the series
+blocks have equal time constants $T_i' = T_d' = T_i/2$.
+
+**A5.** An exam question gives $K_c = 5$, $T_i = 1$ s, $T_d = 0.4$ s and asks
+for $K_i$ and $K_d$. Give them, and say whether the controller has real zeros.
+*Answer:* $K_i = 5/1 = 5$ and $K_d = 5 \\times 0.4 = 2$. Since
+$4T_d/T_i = 1.6 > 1$, the zeros are complex; the roots of
+$0.4s^{2} + s + 1$ are $s = -1.25 \\pm j1.0897$.`,
+      examTip: 'When a problem hands you PID settings, check the form before you compute. The three giveaways: three gains with different units means parallel; one gain and two times means ideal; one gain and two times WITH the words "interacting", "series" or "classical" means series. Converting series to ideal is one multiplication by f = 1 + T_d\u2032/T_i\u2032; going the other way needs the square root and can fail.',
+      importantNote: 'The condition T_i ≥ 4T_d is the same statement as "the PID zeros are real". It is worth carrying because it explains an otherwise arbitrary-looking restriction on hardware: a series controller is two cascaded first-order blocks, and two real first-order blocks can never produce a complex pair of zeros. Ziegler-Nichols PID sits exactly on the boundary for every plant, since T_i = P_u/2 and T_d = P_u/8 make the ratio exactly one.',
+    },
+    {
+      id: 'pid-windup-and-kick',
+      title: '7. Windup, Derivative Kick, and the Two Fixes',
+      content: `## 7.1 Every Real Actuator Has a Ceiling
+
+The algebra of Sections 1 to 6 assumes the controller output reaches the plant
+untouched. It never does. A valve closes fully, a heater draws its rated
+current, an amplifier clips at its rail. The moment the commanded signal
+exceeds what the hardware can deliver, **the loop is open** — the plant no
+longer sees what the controller computed — and the integrator, which knows
+nothing about any of this, keeps accumulating error.
+
+Take the Ziegler-Nichols PI of Section 4 on the same three-lag plant:
+
+$$G(s) = \\frac{1}{(s+1)^{3}}, \\qquad K_p = 3.6,
+\\qquad T_i = 3.023\\ \\mathrm{s}, \\qquad K_i = 1.1909$$
+
+The plant has unity DC gain, so holding the output at a setpoint of 1 requires
+a steady command of exactly 1. Two arithmetic facts bracket the whole problem:
+
+$$u(0^{+}) = K_p \\cdot e(0^{+}) = 3.6 \\times 1 = 3.6, \\qquad u_{ss} = 1$$
+
+The controller asks for 3.6 units at the instant of the step and needs 1 unit
+forever after. **Any ceiling between 1 and 3.6 saturates the actuator without
+making the setpoint unreachable** — and that interval is exactly where windup
+lives. Below 1 the setpoint simply cannot be held; above 3.6 nothing saturates.
+
+## 7.2 Windup Measured, Not Asserted
+
+Fix the ceiling at 1.05, integrate the nonlinear loop with the limit in place,
+and measure. Three runs, one 90-second window:
+
+| Run | Overshoot | 2% settling | Time saturated |
+|---|---|---|---|
+| No limit at all (the algebra of Section 4) | 56.09% | 30.77 s | 0 s |
+| Ceiling 1.05, plain PI | 5.00% | 45.42 s | 42.34 s |
+| Ceiling 1.05, integrator clamped | 0.33% | 13.45 s | 4.03 s |
+
+The unlimited loop's command peaks at 3.994, so an actuator ceiling of 1.05 is
+being asked for nearly four times what it can deliver.
+
+Three things in that table repay attention, and only the first is the one
+textbooks usually describe.
+
+**The overshoot is 5.00%, exactly the ceiling.** With the command pinned at
+1.05 and a plant of unity DC gain, the output can climb to 1.05 and no
+further, so the saturated run's "overshoot" is not a property of the loop at
+all — it is the actuator's headroom, read back. Saturation *reduces* peak
+overshoot here, which is why looking only at overshoot hides windup completely.
+
+**The damage shows up in settling time.** The wound-up loop needs 45.42 s
+against the clamped loop's 13.45 s — a factor of 3.4. The actuator sits pinned
+for 42.34 s of the 90-second window against 4.03 s for the clamped version. All
+that pinned time is the loop running open while the integral state grows,
+and every unit of accumulated integral has to be paid back before the command
+can come off the stop.
+
+**The fix beats even the unlimited loop.** Clamping settles in 13.45 s, less
+than half the 30.77 s of the ideal, unlimited Ziegler-Nichols loop. That is not
+magic: holding the integrator still while the actuator is on its stop is a mild
+form of the detuning Section 4.4 recommended, and this aggressive tuning had
+plenty of ringing to lose.
+
+![Two stacked panels over ninety seconds. The upper panel shows the plant output for an unlimited controller, a controller whose actuator stops at one point zero five with no anti-windup, and the same limit with the integrator clamped. The wound-up run rides the ceiling value for tens of seconds and takes forty-five seconds to settle; the clamped run settles in thirteen. The lower panel shows the corresponding actuator signals against the ceiling line, with the wound-up run pinned for forty-two of the ninety seconds.](/courses/fe-ee/figures/ctl4-pid-windup.svg)
+
+The lower panel is where the mechanism is visible. Both limited runs deliver
+the same signal at first, because both are hard against the stop. They separate
+at the moment the plain PI's integral state is so large that it holds the
+command on the stop long after the error has changed sign.
+
+## 7.3 The Two Standard Fixes
+
+**Conditional integration, also called clamping.** Freeze the integrator
+whenever the command is saturated *and* the error would drive it further into
+saturation:
+
+$$\\frac{dI}{dt} = \\begin{cases} 0 & \\text{if } u \\neq u_{sat}
+\\text{ and } e \\cdot u > 0 \\\\ e & \\text{otherwise}\\end{cases}$$
+
+The second condition matters: an unconditional freeze would also block the
+integrator from unwinding, which is the opposite of what is wanted.
+
+**Back-calculation.** Feed the saturation error back into the integrator
+through a tracking time $T_t$:
+
+$$\\frac{dI}{dt} = e + \\frac{1}{K_iT_t}\\left(u_{sat} - u\\right)$$
+
+While unsaturated the second term is zero and the integrator behaves normally.
+While saturated it pulls the integral state towards whatever value would have
+produced exactly $u_{sat}$, with time constant $T_t$. The usual starting choice
+is $T_t = T_i$ for a PI and $T_t = \\sqrt{T_iT_d}$ for a PID.
+
+Both fixes cost one conditional or one extra term. Neither changes the
+controller at all while the actuator is inside its range, which is why they are
+safe to add unconditionally.
+
+### Worked Example 8 — Which Ceilings Actually Cause Windup
+
+**Given** the loop above, decide for each actuator ceiling whether windup is
+possible, then read the measured cost.
+
+**Step 1 — the two brackets.** From Section 7.1, the steady command is 1 and
+the initial command is 3.6, so windup requires $1 < u_{max} < 3.6$.
+
+**Step 2 — check three candidates.** Ceilings of 1.05, 1.10 and 1.30 all fall
+inside that interval, so all three saturate at $t = 0$ and none makes the
+setpoint unreachable.
+
+**Step 3 — measure, do not guess.** Simulating each:
+
+| Ceiling | Plain PI: settling | Plain PI: saturated | Clamped: settling | Clamped: saturated |
+|---|---|---|---|---|
+| 1.05 | 45.42 s | 42.34 s | 13.45 s | 4.03 s |
+| 1.10 | 27.90 s | 20.74 s | 13.27 s | 3.69 s |
+| 1.30 | 18.78 s | 6.63 s | 17.35 s | 2.76 s |
+
+**Step 4 — read the pattern.** The tighter the ceiling, the longer the loop
+runs open and the worse windup gets: saturated time roughly doubles for each
+halving of the headroom above 1, and settling time follows it. At a 1.30
+ceiling there is enough headroom that windup costs only 1.4 s of settling, and
+anti-windup is nearly a formality. **The cost of leaving windup unhandled
+scales with how marginal the actuator is**, which is why it bites hardest on
+exactly the plants where authority is expensive.
+
+## 7.4 Derivative Kick and the Filtered-Derivative Cure
+
+A second defect appears the moment anyone moves the setpoint. If the derivative
+acts on the error, then
+
+$$u_D(t) = K_d\\frac{de}{dt} = K_d\\frac{dr}{dt} - K_d\\frac{dy}{dt}$$
+
+and a step change in $r$ makes $dr/dt$ an impulse. In an ideal controller the
+command is briefly infinite; in a real one with the filtered derivative of
+Section 5.4 it is finite but very large, because the filtered derivative's
+ceiling is $K_pN$ and a unit setpoint step drives it straight there. The peak
+command is therefore
+
+$$u(0^{+}) = K_p + K_pN = K_p(1 + N)$$
+
+For the Ziegler-Nichols PID of Section 4 with $N = 10$:
+
+$$u(0^{+}) = 4.8 \\times 11 = 52.8$$
+
+against a steady-state requirement of 1 unit. Simulating the loop returns
+exactly 52.80. Any real actuator would clip that instantly, and the clip would
+then feed the windup mechanism of Section 7.2.
+
+**The cure** is to differentiate the measurement instead of the error:
+
+$$u(t) = K_p\\left[r - y\\right] + K_i\\int (r - y)\\,d\\tau
+- K_d\\frac{dy}{dt}$$
+
+Since $y$ cannot jump when $r$ does, the kick disappears. The **characteristic
+equation is unchanged** — the derivative still acts on the same signal inside
+the loop — so stability, gain margin, phase margin and disturbance rejection
+are all exactly as designed. What does change is the setpoint response, because
+derivative action no longer helps damp the setpoint transient:
+
+| Derivative acts on | Peak command | Overshoot | 0→100% rise | 2% settling |
+|---|---|---|---|---|
+| The error | 52.80 | 42.73% | 1.282 s | 9.193 s |
+| The measurement | 5.23 | 52.19% | 1.608 s | 9.674 s |
+
+![Two stacked panels. The upper panel plots the controller output during the first three seconds after a unit setpoint step, comparing derivative action on the error, which spikes to fifty-two point eight, with derivative action on the measurement, which peaks at five point two three. The lower panel shows the two plant outputs: the error form overshoots forty-three percent, the measurement form fifty-two percent, and both settle in about nine and a half seconds.](/courses/fe-ee/figures/ctl4-pid-kick.svg)
+
+A factor of **10.1** off the peak command, paid for with 9.5 extra points of
+setpoint overshoot. On any plant where the actuator would have clipped the
+52.8-unit spike, that is not a trade at all — the spike was never going to be
+delivered, and pretending otherwise only invites windup.
+
+### Worked Example 9 — Sizing the Kick Before It Is Built
+
+**Given** a PID with $K_p = 2.5$, $T_i = 4$ s, $T_d = 0.8$ s, a derivative
+filter constant $N = 15$, and an actuator that saturates at 8 units, decide
+whether a unit setpoint step will clip the actuator, and by how much.
+
+**Step 1 — the derivative gain.**
+
+$$K_d = K_pT_d = 2.5 \\times 0.8 = 2.0$$
+
+**Step 2 — the filtered derivative's ceiling.**
+
+$$\\frac{K_dN}{T_d} = \\frac{2.0 \\times 15}{0.8} = 37.5 = K_pN
+= 2.5 \\times 15$$
+
+Both routes give the same number, which is the check that the algebra of
+Section 5.4 is being applied correctly.
+
+**Step 3 — the peak command.**
+
+$$u(0^{+}) = K_p(1 + N) = 2.5 \\times 16 = 40$$
+
+**Step 4 — compare with the limit.** The actuator saturates at 8, so the
+command is clipped by a factor of 5. The actuator will sit on its stop for as
+long as the filtered derivative takes to decay, roughly
+
+$$3\\frac{T_d}{N} = 3 \\times \\frac{0.8}{15} = 0.16\\ \\mathrm{s}$$
+
+**Step 5 — the fix and its price.** Moving the derivative onto the measurement
+drops the peak command to $K_p = 2.5$, comfortably inside the limit, at the
+cost of a slower and more overshooting setpoint response. Alternatively, keep
+the derivative on the error and add setpoint weighting: use $\\beta r - y$ in
+the proportional term and $\\gamma r - y$ in the derivative term, with
+$\\gamma = 0$ recovering derivative-on-measurement exactly and intermediate
+values trading kick against setpoint damping.
+
+## 7.5 Problem Set B — Saturation and Kick
+
+**B1.** A PI controller with $K_p = 4$ drives a plant of DC gain 2 to a
+setpoint of 3. The actuator saturates at 10 units. Does the loop saturate at
+the instant of the step, and can it hold the setpoint?
+*Answer:* The initial command is $4 \\times 3 = 12 > 10$, so yes it saturates.
+The steady command is $3/2 = 1.5 < 10$, so the setpoint is reachable. Windup
+is possible.
+
+**B2.** Same loop, but the actuator saturates at 1.2 units. What happens?
+*Answer:* The steady command of 1.5 exceeds the limit, so the setpoint can
+never be reached. The error stays positive forever and the integrator grows
+without bound — this is not windup, it is an under-sized actuator, and
+anti-windup will not fix it.
+
+**B3.** A PID has $K_p = 6$ and a derivative filter constant $N = 12$. What is
+the peak controller output immediately after a setpoint step of 0.5 units, with
+the derivative taken on the error?
+*Answer:* $u(0^{+}) = K_p(1 + N) \\times 0.5 = 6 \\times 13 \\times 0.5 = 39$.
+
+**B4.** Explain why clamping the integrator only when the error would push
+further into saturation, rather than whenever the actuator is saturated, is the
+correct condition.
+*Answer:* An unconditional freeze would also stop the integrator unwinding
+while saturated. Since coming off the stop requires the integral term to fall,
+an unconditional freeze would leave the loop stuck on the stop.
+
+**B5.** A back-calculation anti-windup uses $T_t = T_i$. During a long
+saturation with a constant offset $u - u_{sat} = \\Delta$, what value does the
+integral term settle towards?
+*Answer:* Setting $dI/dt = 0$ in the back-calculation law gives
+$e = \\Delta /(K_iT_t)$, so the integral term settles wherever it makes the
+computed command exceed the saturation limit by $K_iT_te$ — that is, it
+tracks the saturated value rather than running away. The loop leaves saturation
+as soon as the error changes sign.
+
+**B6.** Why does derivative-on-measurement leave the phase margin unchanged?
+*Answer:* The phase margin is a property of the loop gain
+$L(s) = C(s)G(s)$, which is determined by how the controller responds to the
+measurement. Moving the derivative from $r - y$ to $-y$ changes only the path
+from setpoint to output, not the loop that closes around the plant, so the
+characteristic equation $1 + L(s) = 0$ is untouched.`,
+      examTip: 'Two numbers settle almost every saturation question. The steady command u_ss = r/G(0) says whether the setpoint is reachable at all; the initial command K_p·e(0) says whether the actuator saturates immediately. Windup is only possible when the ceiling lies between them. For the kick, the single formula K_p(1 + N) gives the peak command after a unit setpoint step with a filtered derivative on the error.',
+      importantNote: 'Saturation frequently REDUCES measured overshoot, because a limited actuator cannot push the output past the ceiling value. Judging anti-windup by overshoot alone will therefore tell you nothing. Judge it by settling time and by how long the actuator stays on its stop — those are the quantities windup actually destroys.',
+    },
+    {
+      id: 'pid-tuning-measured',
+      title: '8. Tuning Rules, Their Assumptions, and What Measurement Says',
+      content: `## 8.1 Three Experiments, Three Sets of Assumptions
+
+Ziegler and Nichols published two procedures, and a third — relay feedback —
+became standard later. All three produce $K_p$, $T_i$ and $T_d$ from an
+experiment rather than from a model, and all three rest on assumptions worth
+stating out loud.
+
+| Experiment | What is measured | What it assumes | What it costs |
+|---|---|---|---|
+| Reaction curve (open loop) | Dead time $\\theta$, time constant $\\tau$, gain $K$ | The plant looks like a first-order lag plus dead time | The loop must be opened; the plant must be driven off its operating point |
+| Ultimate gain (closed loop) | $K_u$, $P_u$ | The plant can be driven to sustained oscillation safely | The plant is deliberately made marginally stable |
+| Relay feedback | Limit-cycle amplitude $a$, period | The plant filters harmonics well enough that only the fundamental matters | A small, bounded oscillation |
+
+Sections 3 and 4 used the ultimate-gain method. This section works the other
+two on the same three-lag plant, so all three can be compared against a single
+simulated response.
+
+## 8.2 The Reaction Curve, Derived Rather Than Traced
+
+The three-lag plant has an exact open-loop step response:
+
+$$y(t) = 1 - e^{-t}\\left(1 + t + \\frac{t^{2}}{2}\\right)$$
+
+Differentiating twice locates the inflection point, which is where the tangent
+construction is drawn:
+
+$$y'(t) = \\frac{t^{2}}{2}e^{-t}, \\qquad
+y''(t) = e^{-t}\\left(t - \\frac{t^{2}}{2}\\right)$$
+
+so $y'' = 0$ at $t = 2$ and the steepest slope is
+
+$$y'(2) = 2e^{-2} = 0.27067, \\qquad y(2) = 1 - 5e^{-2} = 0.32332$$
+
+The tangent at that point crosses zero at $t = \\theta$ and crosses the final
+value at $t = \\theta + \\tau$. Both intercepts come out in closed form:
+
+$$\\frac{y(2)}{y'(2)} = \\frac{1 - 5e^{-2}}{2e^{-2}} = \\frac{e^{2}}{2} - \\frac{5}{2}
+= 1.19453$$
+
+$$\\frac{1 - y(2)}{y'(2)} = \\frac{5e^{-2}}{2e^{-2}} = \\frac{5}{2} = 2.5$$
+
+$$\\theta = 2 - 1.19453 = 0.80547\\ \\mathrm{s}, \\qquad
+\\tau = 2 + 2.5 - 0.80547 = 3.69453\\ \\mathrm{s}$$
+
+and $\\tau$ is exactly $e^{2}/2$. The process gain is the DC gain, $K = 1$.
+
+Feeding those into the reaction-curve PID row of Section 2.1:
+
+$$K_p = \\frac{1.2\\tau }{K\\theta } = 1.2 \\times 3.69453/0.80547 = 5.504$$
+
+$$T_i = 2\\theta = 2 \\times 0.80547 = 1.61094\\ \\mathrm{s}, \\qquad
+T_d = 0.5\\theta = 0.5 \\times 0.80547 = 0.4027\\ \\mathrm{s}$$
+
+## 8.3 Relay Feedback, and Why It Gets $K_u$ Slightly Wrong
+
+Replace the controller with an on-off relay of amplitude $d$ switching on the
+sign of the error. The loop settles into a limit cycle. If the plant is a good
+enough low-pass filter, only the fundamental of the relay's square wave
+survives to come back round the loop, and the square wave's fundamental has
+amplitude
+
+$$\\frac{4d}{\\pi }$$
+
+Dividing by the amplitude $a$ of the oscillation at the relay input gives the
+relay's **describing function** — its equivalent gain to that fundamental:
+
+$$N(a) = \\frac{4d}{\\pi a}$$
+
+The limit cycle is a closed-loop oscillation, so $N(a)G(j\\omega ) = -1$, which
+forces $G(j\\omega )$ to be real and negative. That happens only at the phase
+crossover, and there
+
+$$\\lvert G(j\\omega _u)\\rvert = \\frac{\\pi a}{4d}
+\\Rightarrow K_u = \\frac{4d}{\\pi a}$$
+
+So one relay experiment yields $K_u$ from the measured amplitude and $P_u$ from
+the measured period — without ever making the loop unstable.
+
+**Now measure the error the assumption costs.** Running the relay experiment on
+$1/(s+1)^{3}$ with $d = 1$ and letting the limit cycle settle:
+
+| Quantity | Relay experiment | Exact value from Section 4 | Error |
+|---|---|---|---|
+| Amplitude $a$ | 0.16306 | — | — |
+| $K_u = 4/(\\pi a)$ | 7.808 | 8.000 | −2.40% |
+| Period | 3.6797 s | 3.6276 s | +1.44% |
+
+![A relay feedback experiment on the three-lag plant after the limit cycle has settled. The process output is a nearly sinusoidal oscillation of amplitude zero point one six three, and the relay output is a square wave shown scaled down to fit. Arrows mark the measured amplitude and the measured period of three point six eight seconds.](/courses/fe-ee/figures/ctl4-pid-relay.svg)
+
+The output really is nearly sinusoidal, which is the visual form of the
+assumption: three cascaded lags attenuate the third harmonic by roughly
+$3^{3} = 27$, so the fundamental dominates and the describing function is
+close. On a plant with less filtering — one lag instead of three, or a
+resonance near the third harmonic — the same experiment can be several times
+worse. A 2.4% error in $K_u$ is entirely acceptable given that the tuning
+table it feeds is itself only a starting point.
+
+### Worked Example 10 — Two Ziegler-Nichols Methods, One Plant
+
+**Given** the plant $1/(s+1)^{3}$, compare the PID produced by the
+reaction-curve method with the PID produced by the ultimate-gain method.
+
+**Step 1 — collect both parameter sets.** From Section 8.2 and Section 4.2:
+
+| Method | $K_p$ | $T_i$ (s) | $T_d$ (s) |
+|---|---|---|---|
+| Reaction curve | 5.504 | 1.6109 | 0.4027 |
+| Ultimate gain | 4.800 | 1.8138 | 0.4535 |
+
+**Step 2 — notice they disagree.** The reaction-curve method asks for 15% more
+proportional gain and 11% less integral time, which is a materially more
+aggressive controller. The two procedures are not two routes to one answer.
+
+**Step 3 — simulate both closed loops and measure.**
+
+| Method | Overshoot | Peak time | 2% settling |
+|---|---|---|---|
+| Reaction curve | 51.77% | 2.117 s | 12.98 s |
+| Ultimate gain | 40.57% | 2.206 s | 9.373 s |
+
+**Step 4 — explain the gap.** The reaction-curve method models the plant as a
+first-order lag plus a pure dead time. The three-lag plant has no dead time at
+all; the 0.805 s the construction reports is an artefact of fitting a tangent
+to an S-curve. Feeding a fictitious dead time into a rule built for real dead
+time produces a gain that is too high for the plant that actually exists.
+
+**The lesson.** When a plant genuinely has transport delay — a conveyor, a long
+pipe, a communication link — the reaction-curve method is the appropriate one.
+When the lag is distributed rather than transported, the ultimate-gain or relay
+route measures the plant as it is.
+
+## 8.4 Tuning by Sweeping and Measuring
+
+Neither table is an optimum, and nothing stops a designer from sweeping the
+gains and measuring what comes out. Holding the Ziegler-Nichols integral and
+derivative times fixed and sweeping the proportional gain alone:
+
+| $K_p$ | Overshoot | 2% settling |
+|---|---|---|
+| 1.0 | 8.65% | 8.715 s |
+| 2.0 | 22.28% | 8.711 s |
+| 3.0 | 30.85% | 9.356 s |
+| 4.0 | 36.85% | 8.283 s |
+| 4.8 (Z-N) | 40.57% | 9.373 s |
+| 6.0 | 44.99% | 8.539 s |
+
+![Two stacked panels sweeping the proportional gain from zero point four to six with the Ziegler-Nichols integral and derivative times held fixed. The upper panel shows measured overshoot climbing smoothly from below ten percent to forty-five percent, with the Ziegler-Nichols point marked at forty point six percent and the ten percent budget drawn as a dashed line. The lower panel shows measured two percent settling time, which does not fall smoothly but jumps as ripple peaks cross the band edge.](/courses/fe-ee/figures/ctl4-pid-tuning-sweep.svg)
+
+Two features of that picture are worth naming. Overshoot rises smoothly and
+monotonically with gain, so it is a well-behaved thing to design against.
+Settling time does **not**: it jumps up and down, because the 2% settling time
+is the moment the *last* ripple peak falls inside the band, and as the gain
+changes a peak crosses the band edge discontinuously. Any automatic tuner that
+minimises settling time alone will chase those jumps.
+
+Opening the sweep to two dimensions, over the proportional gain and the
+integral time together, finds a controller the table never suggests:
+
+| Tuning | $K_p$ | $T_i$ (s) | $T_d$ (s) | Overshoot | 2% settling |
+|---|---|---|---|---|---|
+| Ziegler-Nichols PID | 4.80 | 1.814 | 0.4535 | 40.57% | 9.373 s |
+| Section 4.4 detuning | 3.36 | 3.628 | 0.4535 | 14.25% | 6.515 s |
+| Swept, best settling with overshoot under 10% | 1.20 | 2.400 | 0.4535 | 0.97% | 4.282 s |
+
+The swept controller settles **2.2 times faster** than Ziegler-Nichols with
+essentially no overshoot, using a quarter of the proportional gain. That is not
+a criticism of the table so much as a statement of what the table is for: it
+produces a working controller from two measured numbers in under a minute, and
+it is a starting point that a short sweep will always beat.
+
+### Worked Example 11 — Reading a Relay Test
+
+**Given** a relay test on an unknown process with relay amplitude
+$d = 2.5$ units, a measured limit-cycle amplitude of $a = 0.40$ units and a
+measured period of 12 s, produce PI settings.
+
+**Step 1 — ultimate gain from the describing function.**
+
+$$K_u = \\frac{4d}{\\pi a} = \\frac{4 \\times 2.5}{\\pi \\times 0.40}
+= \\frac{10}{1.2566} = 7.958$$
+
+**Step 2 — ultimate period.** The limit-cycle period is $P_u$ directly:
+$P_u = 12$ s.
+
+**Step 3 — apply the PI row.**
+
+$$K_p = 0.45K_u = 0.45 \\times 7.958 = 3.581, \\qquad
+T_i = \\frac{P_u}{1.2} = \\frac{12}{1.2} = 10\\ \\mathrm{s}$$
+
+$$K_i = \\frac{K_p}{T_i} = 3.581/10 = 0.3581$$
+
+**Step 4 — state the uncertainty honestly.** The describing function ignores
+harmonics, and Section 8.3 measured that approximation at −2.4% on a
+well-filtered plant. If this process filters less well, $K_u$ could be low by
+several percent, so the resulting $K_p$ inherits that error. Since the whole
+tuning will be detuned by 20% to 30% anyway, a few percent of describing-function
+error is not the binding uncertainty.
+
+**Step 5 — sanity check the direction.** A larger relay amplitude with the same
+process gives a proportionally larger oscillation, so $K_u$ is unchanged — the
+ratio $d/a$ is the invariant. If doubling the relay amplitude does **not**
+double the oscillation, the process is nonlinear and none of this applies.`,
+      examTip: 'The relay formula K_u = 4d/(πa) is the one piece of describing-function analysis the FE expects. Remember its shape: relay amplitude on top, oscillation amplitude on the bottom, and 4/π from the fundamental Fourier coefficient of a square wave. The period you measure IS P_u, with no conversion.',
+      importantNote: 'The reaction-curve and ultimate-gain methods do NOT agree, even on the same plant. On the three-lag process worked here they differ by 15% in proportional gain and produce 51.8% against 40.6% overshoot. Which is right depends on whether the plant has real transport delay (reaction curve) or distributed lag (ultimate gain or relay). An exam question that supplies θ and τ wants the reaction-curve table; one that supplies K_u and P_u wants the ultimate-gain table.',
+    },
+    {
+      id: 'pid-discrete-and-cascade',
+      title: '9. Discrete PID and Cascade Control',
+      content: `## 9.1 The Same Controller, Now Sampled
+
+Every PID built since about 1980 runs in software. The integral becomes a
+running sum, the derivative a difference, and the plant sees a signal held
+constant between samples. Writing $e_k = e(kT_s)$ and using a backward
+difference for both operations:
+
+$$I_k = I_{k-1} + T_se_k, \\qquad D_k = \\frac{e_k - e_{k-1}}{T_s}$$
+
+$$u_k = K_pe_k + K_iI_k + K_dD_k$$
+
+In practice the derivative is filtered exactly as in Section 5.4, which in
+discrete form is one first-order recursion:
+
+$$x_k = x_{k-1} + \\alpha (e_k - x_{k-1}), \\qquad
+\\alpha = \\frac{T_s}{\\tau + T_s}, \\qquad \\tau = \\frac{T_d}{N}$$
+
+$$D_k = \\frac{K_d(e_k - x_k)}{\\tau }$$
+
+## 9.2 What Sampling Costs, in Degrees
+
+The zero-order hold holds each command for a full sample interval, which on
+average delays the signal by half a sample. A delay of $T_s/2$ contributes
+phase
+
+$$\\angle e^{-sT_s/2}\\Big|_{s = j\\omega } = -\\frac{\\omega T_s}{2}
+\\ \\mathrm{rad}$$
+
+and no magnitude change at all. **Sampling is a phase-margin tax, payable at
+the gain crossover.** Take the detuned PID of Section 4.4 on the three-lag
+plant, whose continuous loop crosses over at 1.1395 rad/s with a 49.17° margin.
+The tax at each sample interval, and the measured consequence:
+
+| $T_s$ (s) | Samples per rise time | Half-sample lag at crossover | Overshoot | 2% settling |
+|---|---|---|---|---|
+| — (continuous) | ∞ | 0° | 14.25% | 6.515 s |
+| 0.05 | 36.1 | 1.63° | 17.98% | 6.200 s |
+| 0.10 | 18.1 | 3.26° | 20.92% | 9.600 s |
+| 0.20 | 9.0 | 6.53° | 27.76% | 9.800 s |
+| 0.40 | 4.5 | 13.06° | 44.04% | 15.60 s |
+| 0.80 | 2.3 | 26.11° | 80.48% | 59.20 s |
+| 1.20 | 1.5 | 39.17° | unstable | — |
+
+At $T_s = 0.8$ s the arithmetic is
+
+$$\\frac{\\omega _cT_s}{2} = 1.1395 \\times 0.8/2 = 0.4558\\ \\mathrm{rad}
+= 26.11^\\circ$$
+
+which is more than half of the 49.17° the design started with. What is left,
+23.06°, is the margin of a badly under-damped loop, and the measured overshoot
+is 80.5%. The last row is the same tax pushing
+the remaining margin to nothing.
+
+![Step responses of the three-lag plant under the same PID design, first in continuous time and then sampled at zero point zero five, zero point four and zero point eight seconds. The continuous design overshoots fourteen percent; at the coarsest sample interval the overshoot is eighty percent and settling takes almost sixty seconds. Each sampled curve is labelled with the half-sample phase lag it incurs at the crossover.](/courses/fe-ee/figures/ctl4-pid-sampling.svg)
+
+### Worked Example 12 — Choosing the Sample Interval
+
+**Given** a loop whose continuous design crosses over at $\\omega _c = 1.1395$
+rad/s with a 49.17° phase margin, choose $T_s$ so that sampling costs no more
+than 5° of margin.
+
+**Step 1 — turn degrees into radians.**
+
+$$5^\\circ = 5 \\times \\pi /180 = 0.08727\\ \\mathrm{rad}$$
+
+**Step 2 — invert the half-sample lag.**
+
+$$\\frac{\\omega _cT_s}{2} \\leq 0.08727 \\Rightarrow
+T_s \\leq \\frac{2 \\times 0.08727}{1.1395} = 0.1532\\ \\mathrm{s}$$
+
+**Step 3 — cross-check against the two rules of thumb.** The sampling frequency
+rule asks for $\\omega _s \\geq 20\\omega _c$, that is
+
+$$T_s \\leq \\frac{2\\pi }{20 \\times 1.1395} = 0.2757\\ \\mathrm{s}$$
+
+and the time-domain rule asks for at least ten samples across the rise time of
+1.806 s, that is $T_s \\leq 0.1806$ s. All three land between 0.15 and 0.28 s,
+which is the usual outcome — the rules of thumb are the phase budget in
+disguise.
+
+**Step 4 — check what the loosest of them actually delivers.** From the table,
+$T_s = 0.20$ s gives 27.8% overshoot against the continuous design's 14.3%.
+The loop is stable and usable, but the overshoot has doubled. **A rule of thumb
+buys stability, not fidelity**; if the specification is the overshoot rather
+than the margin, sample faster or re-tune for the sampled loop.
+
+**Answer:** $T_s = 0.1$ s or faster, which the table shows costs 3.3° and
+6.7 points of overshoot.
+
+## 9.3 Cascade Control: the Inner Loop Does the Work
+
+A cascade puts a second, faster feedback loop inside the first. The primary
+controller no longer commands the actuator; it commands the **setpoint of a
+secondary loop** that closes around the fast part of the process.
+
+The configuration below is the standard one. A secondary process
+$G_2(s) = 1/(s+1)$ — a valve and flow, say — feeds a slow primary process
+$G_1(s) = 1/[(4s+1)(10s+1)]$, and the load disturbance enters at the output of
+$G_2$, which is where supply-pressure changes and valve nonlinearities live.
+
+**Single-loop design.** One PI controller sees the whole chain
+$G_1G_2$. Put its zero on the 10 s pole, so $T_i = 10$ s, and set the gain for
+a 50° phase margin. That gives $K_c = 1.8033$ and a gain crossover of 0.1523
+rad/s.
+
+**Cascade design.** Close a proportional inner loop with $K_2 = 9$ around
+$G_2$. Two things happen at once:
+
+$$T_2(s) = \\frac{K_2}{s + 1 + K_2} = \\frac{9}{s + 10}
+\\Rightarrow \\tau _{inner} = \\frac{1}{1 + K_2} = 0.1\\ \\mathrm{s}$$
+
+$$S_2(s) = \\frac{1}{1 + K_2G_2(s)} = \\frac{s+1}{s+10}
+\\Rightarrow S_2(0) = \\frac{1}{1 + K_2} = 0.1$$
+
+The inner loop is **ten times faster** than the process it replaces, and it
+rejects steady disturbances by a factor of ten before the outer loop is even
+consulted. The outer PI, designed on $G_1T_2$ for the **same** 50° margin, gets
+$K_c = 2.8730$ and a crossover of 0.2013 rad/s.
+
+**Measure the result.** A unit step load disturbance at the inner output:
+
+| Design | Outer gain | Crossover | Peak deviation | Integrated absolute error |
+|---|---|---|---|---|
+| Single loop | 1.8033 | 0.1523 rad/s | 0.34465 | 5.549 |
+| Cascade, $K_2 = 9$ | 2.8730 | 0.2013 rad/s | 0.02660 | 0.3866 |
+
+A **13.0-fold** reduction in peak deviation and a **14.4-fold** reduction in
+integrated error, at identical phase margin. The setpoint response improves too
+— 9.38 s to first reach the setpoint against 12.39 s, and 32.5 s to settle
+against 40.8 s — but that is the smaller prize.
+
+![Primary output deviation after a unit load step inside the inner loop, comparing a single PI loop with a cascade whose inner proportional gain is nine. Both controllers are tuned to the same fifty degree phase margin. The single loop deviates by zero point three four five and takes most of a minute to recover; the cascade deviates by zero point zero two seven.](/courses/fe-ee/figures/ctl4-pid-cascade.svg)
+
+## 9.4 The Inner Loop's Speed Is the Whole Point
+
+Sweeping the inner gain and re-designing the outer controller for 50° each
+time separates the two effects:
+
+| $K_2$ | Inner time constant | $S_2(0) = 1/(1+K_2)$ | Outer gain | Peak deviation |
+|---|---|---|---|---|
+| 1 | 0.500 s | 0.500 | 4.290 | 0.15273 |
+| 3 | 0.250 s | 0.250 | 3.192 | 0.07045 |
+| 9 | 0.100 s | 0.100 | 2.873 | 0.02660 |
+| 29 | 0.0333 s | 0.0333 | 2.778 | 0.00862 |
+| 99 | 0.0100 s | 0.0100 | 2.750 | 0.00256 |
+
+The peak deviation falls faster than $1/(1 + K_2)$ alone would explain — at
+$K_2 = 9$ the DC sensitivity is 0.1 but the measured deviation is 7.7% of the
+single-loop value. The extra comes from the inner loop's **speed**: with the
+secondary lag reduced from 1 s to 0.1 s, the outer loop's own crossover rises
+from 0.1523 to 0.2013 rad/s at the same margin, so the outer loop cleans up the
+residue faster as well.
+
+This is the design rule in one line: **the inner loop must be much faster than
+the outer one, or the cascade buys nothing.** Here the inner time constant is
+0.1 s against an outer response time of about 5 s, a ratio of 50. The usual
+minimum quoted is 5, and the table shows why — at $K_2 = 1$ the inner loop is
+only twice as fast as before and the peak deviation improves by a factor of 2.3
+rather than 13.
+
+### Worked Example 13 — Sizing an Inner Loop From a Disturbance Specification
+
+**Given** the cascade above, a load disturbance step of 1 unit at the inner
+output, and a specification that the primary output must not deviate by more
+than 0.05, choose the inner proportional gain.
+
+**Step 1 — use the sensitivity as a first screen.** The inner loop attenuates
+the disturbance by $S_2(0) = 1/(1 + K_2)$ before the outer loop acts, and the
+single-loop deviation is 0.34465. A crude screen assumes the outer loop is
+unchanged:
+
+$$\\frac{0.34465}{1 + K_2} \\leq 0.05 \\Rightarrow 1 + K_2 \\geq 6.893
+\\Rightarrow K_2 \\geq 5.89$$
+
+**Step 2 — check the screen against measurement.** From the sweep, $K_2 = 3$
+gives 0.07045 (fails) and $K_2 = 9$ gives 0.02660 (passes with a factor of
+1.9 in hand). The screen said $K_2 \\approx 6$; the true threshold is lower
+than that, because the screen ignores the outer loop speeding up.
+
+**Step 3 — check the inner loop is fast enough to count.** With $K_2 = 9$ the
+inner time constant is 0.1 s against an outer response time near 5 s, a ratio
+of 50, comfortably above the factor of 5 the rule of thumb asks for.
+
+**Step 4 — check what limits $K_2$.** Nothing in this idealised inner process
+does: $9/(s+10)$ is stable for any positive gain. In practice the secondary
+loop has its own unmodelled lags, sensor noise and actuator limits, and those
+set the ceiling. Doubling $K_2$ doubles the inner loop's noise gain as surely
+as it doubles its speed.
+
+**Answer:** $K_2 = 9$, with the measured deviation of 0.0266 against the
+specified 0.05.
+
+## 9.5 Problem Set C — Sampling and Cascades
+
+**C1.** A continuous design has a gain crossover of 4 rad/s. What sample
+interval costs exactly 10° of phase margin?
+*Answer:* $10^\\circ = 0.174533$ rad, so
+$T_s = 2 \\times 0.174533/4 = 0.08727$ s.
+
+**C2.** Same loop. What does the "twenty times the crossover" sampling rule
+give, and how many degrees does that cost?
+*Answer:* $\\omega _s \\geq 80$ rad/s so
+$T_s \\leq 2\\pi /80 = 0.07854$ s. The lag is
+$4 \\times 0.07854/2 = 0.15708$ rad, which is 9°.
+
+**C3.** A loop has a 45° phase margin in continuous time and is sampled at
+$T_s = 0.25$ s with a crossover of 2 rad/s. Estimate the sampled phase margin.
+*Answer:* Lag $= 2 \\times 0.25/2 = 0.25$ rad = 14.32°, so the margin falls
+to about 30.7°.
+
+**C4.** An inner loop closes proportional gain 19 around a first-order process
+$1/(2s+1)$. Find the inner closed-loop time constant and the DC disturbance
+sensitivity.
+*Answer:* $T_2 = 19/(2s + 20)$, so the time constant is $2/20 = 0.1$ s
+against the original 2 s, a factor of 20 faster, and the sensitivity is
+$1/(1 + 19) = 0.05$.
+
+**C5.** Why must the secondary measurement respond to the disturbance before
+the primary measurement does, for a cascade to help?
+*Answer:* The cascade's advantage is that the inner loop sees the disturbance
+early and corrects it before it propagates. If the disturbance affects both
+measurements at the same time, the inner loop offers no head start and the
+cascade reduces to a single loop with extra hardware.
+
+**C6.** A cascade's inner loop is tuned to be only 1.5 times faster than the
+outer loop. What goes wrong?
+*Answer:* The inner loop's dynamics now sit inside the outer loop's bandwidth,
+so the outer controller sees them as extra lag rather than as a fast slave. The
+outer loop must then be detuned, giving away the bandwidth the cascade was
+supposed to buy, and the two loops can interact and oscillate against one
+another.`,
+      examTip: 'The one formula to carry for discrete control is the half-sample lag, ω_c·T_s/2 radians. It converts a sample interval into degrees of phase margin lost, and it is the reason every sampling rule of thumb — twenty times the crossover, ten samples per rise time — lands in the same place. For cascades, remember two numbers: the inner loop is 1/(1 + K_2) times as sensitive to disturbances and 1/(1 + K_2) times as slow as the process it wraps.',
+      importantNote: 'A cascade only pays if the secondary measurement responds to the disturbance sooner than the primary one does, and if the inner loop is much faster than the outer. Both conditions are about TIMING, not about gain. A cascade around a disturbance that hits both measurements simultaneously, or an inner loop no faster than the outer, is extra hardware with no benefit.',
     },
   ],
   keyTakeaways: [
@@ -5378,7 +6568,7 @@ line each:
 | Damped frequency | $\\omega _d = \\omega _n\\sqrt{1-\\zeta ^{2}} = 5(0.8)$ | 4.000 rad/s |
 | Percent overshoot | $e^{-\\pi \\zeta /\\sqrt{1-\\zeta ^{2}}}\\times 100$ | 9.478% |
 | Peak time | $t_p = \\pi /\\omega _d$ | 0.7854 s |
-| Rise time (0→100%) | $t_r = (\\pi - \\arccos \\zeta)/\\omega _d$ | 0.5540 s |
+| Rise time (0→100%) | $t_r = (\\pi - \\arccos \\zeta)/\\omega _d$ | 0.5536 s |
 | Settling time (2%) | $t_s \\approx 4/(\\zeta \\omega _n) = 4/3$ | 1.333 s |
 | Settling time (5%) | $t_s \\approx 3/(\\zeta \\omega _n) = 3/3$ | 1.000 s |
 
@@ -5388,8 +6578,14 @@ its **last** exit from the ±2% band at 1.189 s, not 1.333 s. The formula is not
 wrong, it is deliberately conservative — it tracks the exponential envelope
 $e^{-\\zeta \\omega _n t}$ rather than the oscillation inside it, and the
 oscillation usually happens to be near a zero crossing when the envelope
-reaches 2%. Expect the true settling time to be equal to or a little better
-than $4/(\\zeta \\omega _n)$, never worse.
+reaches 2%. It is tempting to conclude that the rule is always conservative,
+and at $\\zeta = 0.6$ it is. **It is not conservative in general.** The rule
+drops a term that grows with damping, and above $\\zeta = 0.4017$ that omission
+outweighs the rounding of $\\ln 50 = 3.912$ up to 4, so the rule starts
+promising a settling time the response does not deliver: at $\\zeta = 0.9$ it
+predicts $4.444/\\omega _n$ where the measured value is $4.700/\\omega _n$.
+Section 5.4 derives the crossover and tabulates the error at every damping
+ratio.
 
 ![A single second-order step response with every specification marked on it. The curve peaks at nine point four eight percent above the final value at zero point seven eight five seconds, first reaches one hundred percent at zero point five five four seconds, and enters the plus or minus two percent band by the estimate four over zeta omega n equal to one point three three three seconds. The dashed decay envelope shows where the settling formula comes from.](/courses/fe-ee/figures/ctrl-step-spec-anatomy.svg)
 
@@ -5431,10 +6627,12 @@ satisfies both:
 
 $$\\zeta = 0.5912, \\qquad \\omega _n = 2/0.5912 = 3.383\\ \\mathrm{rad/s}$$
 
-$$s = -2 \\pm j2.730$$
+$$s = -2 \\pm j2.729$$
 
 Simulating that design gives exactly 10.0% overshoot and a settling estimate
-of exactly 2 s: both specifications met, neither exceeded.
+of exactly 2 s: both specifications met, neither exceeded. The measured 2%
+settling time is 1.752 s, comfortably inside the 2 s the estimate promises —
+the usual direction for that rule to be wrong.
 
 ![Three step responses at the same natural frequency of five radians per second with damping ratios of zero point two, zero point five and zero point eight. The measured peaks are fifty-two point seven, sixteen point three and one point five percent, matching the exponential overshoot formula in each case. All three settle to the same final value.](/courses/fe-ee/figures/ctrl-damping-family.svg)
 
@@ -5612,6 +6810,1016 @@ right with it. What it costs is 90° of phase, which is why Type 2 loops are
 rare and Type 3 loops essentially do not exist outside textbooks.`,
       examTip: 'Logarithmic decrement questions are usually given as two peak amplitudes and a time interval. Compute δ = ln(A₁/A₂) first, then ζ = δ/√(4π² + δ²), then read ω_d straight from the peak spacing as 2π/T_d. Do not try to get ω_n before ζ — the conversion ω_n = ω_d/√(1 − ζ²) needs ζ.',
       importantNote: 'Keep ω_r, ω_d and ω_n distinct: ω_r = ω_n√(1 − 2ζ²) is where the frequency response peaks, ω_d = ω_n√(1 − ζ²) is the ringing frequency of the step response, and ω_n is the undamped natural frequency and the pole distance from the origin. They satisfy ω_r < ω_d < ω_n, and ω_r does not exist at all for ζ ≥ 0.707.',
+    },
+    {
+      id: 'ts-derived-from-the-response',
+      title: '5. Every Specification Derived From the Response Itself',
+      content: `## 5.1 The Step Response, Once, in Closed Form
+
+Sections 1 to 4 quoted the specification formulas. Every one of them falls out
+of a single expression, and deriving it once makes the rest bookkeeping. Drive
+the standard second-order system with a unit step:
+
+$$Y(s) = \\frac{\\omega _n^{2}}{s\\left(s^{2} + 2\\zeta \\omega _ns
++ \\omega _n^{2}\\right)}$$
+
+Split off the DC term and complete the square in the remainder:
+
+$$Y(s) = \\frac{1}{s} - \\frac{s + 2\\zeta \\omega _n}
+{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
+
+$$= \\frac{1}{s} - \\frac{s + \\zeta \\omega _n}
+{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}
+- \\frac{\\zeta \\omega _n}{\\omega _d}\\cdot
+\\frac{\\omega _d}{(s + \\zeta \\omega _n)^{2} + \\omega _d^{2}}$$
+
+Both remaining terms are standard transforms, so
+
+$$y(t) = 1 - e^{-\\zeta \\omega _nt}\\left[\\cos \\omega _dt
++ \\frac{\\zeta }{\\sqrt{1 - \\zeta ^{2}}}\\sin \\omega _dt\\right]$$
+
+Collapsing the bracket into a single sinusoid with
+$\\varphi = \\arccos \\zeta$ gives the form everything else comes from:
+
+$$y(t) = 1 - \\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}}
+\\sin (\\omega _dt + \\varphi )$$
+
+Differentiating, the two exponential-times-sinusoid terms cancel and leave
+something remarkably simple:
+
+$$\\frac{dy}{dt} = \\frac{\\omega _n}{\\sqrt{1 - \\zeta ^{2}}}
+e^{-\\zeta \\omega _nt}\\sin \\omega _dt$$
+
+The velocity is a pure damped sine with **no phase shift**. That single fact
+gives the peak time in one line.
+
+## 5.2 Peak Time and Overshoot Are Exact
+
+The derivative vanishes when $\\sin \\omega _dt = 0$, that is at
+$\\omega _dt = 0, \\pi , 2\\pi , \\ldots$ The first interior extremum is the
+maximum, so
+
+$$t_p = \\frac{\\pi }{\\omega _d}$$
+
+with no approximation anywhere. Substituting back, and using
+$\\sin (\\pi + \\varphi ) = -\\sin \\varphi$ together with
+$\\sin \\varphi = \\sqrt{1 - \\zeta ^{2}}$:
+
+$$y(t_p) = 1 + \\frac{e^{-\\zeta \\omega _n\\pi /\\omega _d}}
+{\\sqrt{1 - \\zeta ^{2}}}\\sqrt{1 - \\zeta ^{2}}
+= 1 + e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}$$
+
+$$OS = 100\\,e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}\\ \\%$$
+
+The $\\sqrt{1 - \\zeta ^{2}}$ cancels exactly, which is why overshoot depends on
+$\\zeta$ and on nothing else — not on $\\omega _n$, not on the DC gain, not on
+the size of the step.
+
+## 5.3 Rise Time to 100% Is Also Exact
+
+The response first reaches its final value when the sinusoid crosses zero:
+
+$$\\sin (\\omega _dt + \\varphi ) = 0 \\Rightarrow \\omega _dt + \\varphi = \\pi$$
+
+$$t_r = \\frac{\\pi - \\varphi }{\\omega _d}
+= \\frac{\\pi - \\arccos \\zeta }{\\omega _d}$$
+
+Three exact results, three lines of algebra. The fourth specification is where
+the exactness stops.
+
+## 5.4 Settling Time Is Not Exact, and the Usual Rule Is Not Even Conservative
+
+Settling requires $\\lvert y - 1\\rvert$ to stay below a band, and
+
+$$\\lvert y(t) - 1\\rvert = \\frac{e^{-\\zeta \\omega _nt}}
+{\\sqrt{1 - \\zeta ^{2}}}\\lvert \\sin (\\omega _dt + \\varphi )\\rvert$$
+
+is a decaying exponential multiplied by an oscillation. Setting that equal to
+0.02 is transcendental — there is no closed form. What can be solved exactly is
+the **envelope**, obtained by replacing the sine by 1:
+
+$$\\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}} = 0.02
+\\Rightarrow t_{env} = \\frac{\\ln 50 - \\tfrac{1}{2}\\ln (1 - \\zeta ^{2})}
+{\\zeta \\omega _n}$$
+
+with $\\ln 50 = 3.912023$. The familiar rule drops the logarithm of
+$1 - \\zeta ^{2}$ and rounds 3.912 up to 4:
+
+$$t_s \\approx \\frac{4}{\\zeta \\omega _n}$$
+
+Those two moves push in **opposite directions**. Rounding up makes the estimate
+longer; dropping $-\\tfrac{1}{2}\\ln (1 - \\zeta ^{2})$, which is positive,
+makes it shorter. They cancel exactly when
+
+$$-\\tfrac{1}{2}\\ln (1 - \\zeta ^{2}) = 4 - \\ln 50 = 0.087977$$
+
+$$1 - \\zeta ^{2} = e^{-0.175954} = 0.838657 \\Rightarrow \\zeta = 0.401676$$
+
+**Above $\\zeta = 0.4017$ the four-over rule falls below the true envelope**, so
+past that damping it is no longer a guaranteed bound. Whether it also falls below
+the settling time a simulation *measures* is intermittent rather than universal —
+the measured value is a staircase, so the overrun appears at some damping ratios
+and not at others. Measuring both against a dense step response with
+$\\omega _n = 1$ rad/s:
+
+| $\\zeta$ | $t_p$ exact | $t_r$ exact | $t_s$ measured | Envelope | $4/(\\zeta \\omega _n)$ | Rule error |
+|---|---|---|---|---|---|---|
+| 0.2 | 3.2064 | 1.8087 | 19.602 | 19.662 | 20.000 | +2.03% |
+| 0.3 | 3.2933 | 1.9661 | 11.230 | 13.197 | 13.333 | +18.73% |
+| 0.4 | 3.4278 | 2.1629 | 8.4093 | 9.9980 | 10.000 | +18.92% |
+| 0.5 | 3.6276 | 2.4184 | 8.0763 | 8.1117 | 8.0000 | **−0.95%** |
+| 0.6 | 3.9270 | 2.7679 | 5.9430 | 6.8919 | 6.6667 | +12.18% |
+| 0.7 | 4.3991 | 3.2853 | 5.9788 | 6.0696 | 5.7143 | **−4.42%** |
+| 0.8 | 5.2360 | 4.1635 | 3.7558 | 5.5286 | 5.0000 | +33.13% |
+| 0.9 | 7.2073 | 6.1726 | 4.6996 | 5.2693 | 4.4444 | **−5.43%** |
+
+The peak and rise columns reproduce the closed forms to every digit shown,
+because those formulas are exact. The settling column does not, and the three
+bold rows are cases where the rule promises a settling time the loop does not
+achieve. The envelope column never under-predicts — it is a genuine bound — so
+when a specification must be **guaranteed** rather than estimated, use the
+envelope, not the rule.
+
+![Measured two percent settling time against damping ratio at unit natural frequency, drawn beside the envelope estimate and the four-over-zeta-omega-n rule. The measured curve is a descending staircase rather than a smooth line, dropping abruptly each time a ripple peak falls inside the band. The envelope curve stays above the measured one everywhere; the four-over rule crosses below it above a damping ratio of about zero point four.](/courses/fe-ee/figures/ctl4-ts-settling-rules.svg)
+
+The staircase in that figure is the reason the settling column wanders. The
+2% settling time is the instant the **last** ripple peak drops inside the band,
+so as $\\zeta$ changes continuously, a peak eventually crosses the band edge
+and the settling time falls discontinuously by roughly half a damped period.
+Settling time is not a smooth function of the design parameters, and no formula
+built on the envelope can capture that.
+
+### Worked Example 1 — All Five Specifications From One Transfer Function
+
+**Given** $T(s) = 36/(s^{2} + 4.8s + 36)$, compute every transient
+specification and compare each with a simulation.
+
+**Step 1 — read the standard form.**
+
+$$\\omega _n^{2} = 36 \\Rightarrow \\omega _n = 6\\ \\mathrm{rad/s},
+\\qquad 2\\zeta \\omega _n = 4.8 \\Rightarrow \\zeta = 4.8/12 = 0.4$$
+
+**Step 2 — damped frequency.**
+
+$$\\omega _d = 6\\sqrt{1 - 0.16} = 6 \\times 0.916515 = 5.49909\\ \\mathrm{rad/s}$$
+
+**Step 3 — overshoot.** The exponent is
+$\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}} = 1.37110$, so
+
+$$OS = 100e^{-1.37110} = 25.383\\ \\%$$
+
+**Step 4 — peak and rise times.** With $\\arccos 0.4 = 1.15928$ rad,
+
+$$t_p = \\pi /5.49909 = 0.57129\\ \\mathrm{s}, \\qquad
+t_r = (3.14159 - 1.15928)/5.49909 = 0.36048\\ \\mathrm{s}$$
+
+**Step 5 — settling time, three ways.**
+
+$$\\frac{4}{\\zeta \\omega _n} = 4/2.4 = 1.6667\\ \\mathrm{s}, \\qquad
+t_{env} = \\frac{3.912023 + 0.087177}{2.4} = 1.6663\\ \\mathrm{s}$$
+
+**Step 6 — simulate and compare.**
+
+| Specification | Formula | Simulation | Agreement |
+|---|---|---|---|
+| Overshoot | 25.383% | 25.383% | exact |
+| Peak time | 0.57129 s | 0.57130 s | exact |
+| Rise time (0→100%) | 0.36048 s | 0.36048 s | exact |
+| 2% settling | 1.6667 s (rule) | 1.4016 s | rule 18.9% conservative |
+
+At $\\zeta = 0.4$ the rule is just below the crossover of Section 5.4, so it is
+still on the safe side — barely.
+
+### Worked Example 2 — Where the Settling Rule Is Optimistic
+
+**Given** $\\zeta = 0.7$ and $\\omega _n = 2$ rad/s, decide whether a
+specification of "settles within 3 s" is met.
+
+**Step 1 — apply the rule.**
+
+$$t_s \\approx \\frac{4}{0.7 \\times 2} = 4/1.4 = 2.857\\ \\mathrm{s}$$
+
+which passes with 5% to spare.
+
+**Step 2 — apply the envelope instead.** With
+$-\\tfrac{1}{2}\\ln (1 - 0.49) = 0.336633$,
+
+$$t_{env} = \\frac{3.912023 + 0.336633}{1.4} = 3.035\\ \\mathrm{s}$$
+
+which **fails**. The two estimates disagree about the verdict, which is the
+whole point of knowing where they diverge.
+
+**Step 3 — settle it by simulation.** The measured last exit from the ±2% band
+is at **2.989 s**, so the specification is met, but by 0.4% rather than by 5%.
+The rule was optimistic by 4.4%, exactly as the Section 5.4 table predicts for
+$\\zeta = 0.7$, and the envelope was conservative by 1.5%.
+
+**The lesson.** At $\\zeta$ above 0.4 the four-over rule is an estimate, not a
+bound. When a margin is thin, either simulate or use the envelope.
+
+### Worked Example 3 — Working Backwards From a Measured Trace
+
+**Given** an oscilloscope trace of a step response showing 20% overshoot with
+the first peak at 0.4 s, recover $\\zeta$, $\\omega _n$ and the settling time.
+
+**Step 1 — damping ratio from the overshoot.** Inverting the exact overshoot
+formula with $\\ln 0.20 = -1.609438$:
+
+$$\\zeta = \\frac{1.609438}{\\sqrt{9.869604 + 2.590290}}
+= \\frac{1.609438}{3.529858} = 0.455950$$
+
+**Step 2 — damped frequency from the peak time.** Since $t_p = \\pi /\\omega _d$
+is exact,
+
+$$\\omega _d = \\pi /0.4 = 7.85398\\ \\mathrm{rad/s}$$
+
+**Step 3 — natural frequency.**
+
+$$\\omega _n = \\frac{\\omega _d}{\\sqrt{1 - \\zeta ^{2}}}
+= 7.85398/0.890007 = 8.8246\\ \\mathrm{rad/s}$$
+
+**Step 4 — settling estimate.** With
+$\\zeta \\omega _n = 4.0236$,
+
+$$t_s \\approx 4/4.0236 = 0.9941\\ \\mathrm{s}$$
+
+**Step 5 — check the whole reconstruction.** Building
+$T(s) = \\omega _n^{2}/(s^{2} + 2\\zeta \\omega _ns + \\omega _n^{2})$ from
+those two recovered numbers and simulating it returns 20.000% overshoot and a
+peak at 0.4000 s — the measurements we started from — and a measured settling
+time of 0.9436 s against that 0.9941 s estimate. Two measured numbers determine
+the entire second-order model, which is why a scope trace is worth as much as a
+transfer function.`,
+      examTip: 'Three of the five specifications are EXACT for a second-order system and one is not. Peak time π/ω_d, overshoot e^(−πζ/√(1−ζ²)) and 0→100% rise (π − arccos ζ)/ω_d have no approximation in them at all. Settling time is transcendental, and 4/(ζω_n) is a rounded envelope estimate that drops below the envelope above ζ = 0.4017, where it stops being a guaranteed bound. If a question asks you to "verify" a settling time, expect the simulated value to differ.',
+      importantNote: 'The four-over rule is NOT conservative for well-damped systems. It drops the +½|ln(1−ζ²)| term, which grows with damping, and only the rounding of ln 50 = 3.912 up to 4 pushes the other way. Above ζ = 0.4017 the second effect wins and the rule sinks below the envelope, so it is no longer a bound you can rely on — and at some damping ratios the real response does overrun it: at ζ = 0.9 it promises 4.444/ω_n where the response actually needs 4.700/ω_n, an optimism of 5.4%. Because measured settling is a staircase, that overrun comes and goes with ζ (it appears at 0.5, 0.7 and 0.9 but not at 0.6 or 0.8), so quote the rule as an estimate and the envelope as the bound.',
+    },
+    {
+      id: 'ts-approximations-and-inversion',
+      title: '6. Rise-Time Rules Measured, and the Map Run Backwards',
+      content: `## 6.1 Two Different Rise Times
+
+"Rise time" means two different things depending on who is asking. Section 5
+derived the **0 to 100%** rise time exactly, because for an underdamped
+second-order system the response does reach its final value. Instrument makers
+and most design texts instead quote the **10% to 90%** rise time, which is
+defined for overdamped systems too and is what an oscilloscope measures.
+
+The 10-90 rise time has no closed form. Its defining condition,
+
+$$\\frac{e^{-\\zeta \\omega _nt}}{\\sqrt{1 - \\zeta ^{2}}}
+\\sin (\\omega _dt + \\varphi ) = 0.9 \\quad \\text{and} \\quad 0.1$$
+
+is transcendental at both ends, so every published 10-90 formula is a fit. What
+follows is a fit made here, from simulated responses, so its error is known
+rather than assumed.
+
+## 6.2 The Flat 1.8 Rule, Measured
+
+The commonest shortcut is
+
+$$t_r \\approx \\frac{1.8}{\\omega _n}$$
+
+which has the virtue of not mentioning damping at all, and the corresponding
+defect. Measuring $\\omega _nt_r$ from dense simulated step responses:
+
+| $\\zeta$ | $\\omega _nt_r$ (10-90, measured) | Error of the 1.8 rule |
+|---|---|---|
+| 0.10 | 1.1042 | +63.0% |
+| 0.20 | 1.2034 | +49.6% |
+| 0.30 | 1.3213 | +36.2% |
+| 0.40 | 1.4635 | +23.0% |
+| 0.50 | 1.6376 | +9.9% |
+| 0.5770 | 1.8000 | 0.0% |
+| 0.60 | 1.8541 | −2.9% |
+| 0.70 | 2.1262 | −15.3% |
+| 0.80 | 2.4675 | −27.1% |
+| 0.90 | 2.8830 | −37.6% |
+
+The rule is exact at exactly one damping ratio, $\\zeta = 0.577$, and is wrong
+by more than a quarter at both ends of the useful range. It is a reasonable
+mental anchor and a poor design tool.
+
+## 6.3 A Fit With a Known Error
+
+Fitting a cubic in $\\zeta$ to the measured values over the range designers
+actually use, $0.3 \\leq \\zeta \\leq 0.9$, gives
+
+$$\\omega _nt_r \\approx 1.981\\zeta ^{3} - 0.798\\zeta ^{2}
++ 1.247\\zeta + 0.966$$
+
+whose largest relative error anywhere in that range is **0.11%** — three
+hundred times better than the flat rule at $\\zeta = 0.9$, and better than the
+precision of any specification a candidate is likely to be given.
+
+![Measured ten to ninety percent rise time against damping ratio at unit natural frequency, with the cubic fit drawn over it as a dashed line and the flat one point eight rule as a horizontal line. The measured curve rises from about one point one at low damping to about two point nine at damping zero point nine; the flat rule crosses it at a single point near damping zero point five eight.](/courses/fe-ee/figures/ctl4-ts-rise-fit.svg)
+
+The dashed fit is indistinguishable from the measurement at this scale, which
+is what a 0.11% error looks like. The horizontal line is the 1.8 rule, and the
+single crossing is the whole of its accuracy.
+
+### Worked Example 4 — Three Estimates of One Rise Time
+
+**Given** $\\zeta = 0.6$ and $\\omega _n = 4$ rad/s, estimate the 10-90 rise
+time by both rules and check against simulation.
+
+**Step 1 — the flat rule.**
+
+$$t_r \\approx 1.8/4 = 0.45\\ \\mathrm{s}$$
+
+**Step 2 — the cubic.** With $\\zeta ^{2} = 0.36$ and
+$\\zeta ^{3} = 0.216$:
+
+$$1.981 \\times 0.216 = 0.427896, \\qquad 0.798 \\times 0.36 = 0.28728,
+\\qquad 1.247 \\times 0.6 = 0.7482$$
+
+$$\\omega _nt_r \\approx 0.427896 - 0.28728 + 0.7482 + 0.966 = 1.854816$$
+
+$$t_r \\approx 1.854816/4 = 0.463704\\ \\mathrm{s}$$
+
+**Step 3 — simulate.** The measured 10-90 rise time is **0.463513 s**.
+
+**Step 4 — compare.** The cubic is high by 0.041%; the flat rule is low by
+2.9%. For this damping ratio the flat rule is near its crossing point and does
+respectably; at $\\zeta = 0.8$ it would be low by 27%.
+
+## 6.4 Running the Overshoot Map Backwards
+
+Design questions almost always start from a specification and work towards a
+pole location, which means inverting
+
+$$OS = e^{-\\pi \\zeta /\\sqrt{1 - \\zeta ^{2}}}$$
+
+Take logarithms of both sides, square, and solve for $\\zeta$:
+
+$$\\ln OS = \\frac{-\\pi \\zeta }{\\sqrt{1 - \\zeta ^{2}}}
+\\Rightarrow \\ln^{2}OS\\,(1 - \\zeta ^{2}) = \\pi ^{2}\\zeta ^{2}$$
+
+$$\\zeta ^{2}\\left(\\pi ^{2} + \\ln^{2}OS\\right) = \\ln^{2}OS
+\\Rightarrow \\zeta = \\frac{-\\ln OS}{\\sqrt{\\pi ^{2} + \\ln^{2}OS}}$$
+
+with $OS$ written as a fraction. Because $\\zeta = \\cos \\varphi$ where
+$\\varphi$ is the pole's angle from the negative real axis, every overshoot
+figure is also an angle, and the constraint "no more than this much overshoot"
+is the wedge of Section 3.2. Worth having on tap:
+
+| Overshoot | $\\zeta$ | Wedge half-angle $\\arccos \\zeta$ | $100\\zeta$ (phase-margin rule) |
+|---|---|---|---|
+| 1% | 0.8261 | 34.30° | 82.6° |
+| 2% | 0.7797 | 38.77° | 78.0° |
+| 5% | 0.6901 | 46.36° | 69.0° |
+| 10% | 0.5912 | 53.76° | 59.1° |
+| 15% | 0.5169 | 58.87° | 51.7° |
+| 20% | 0.4560 | 62.87° | 45.6° |
+| 25% | 0.4037 | 66.19° | 40.4° |
+| 30% | 0.3579 | 69.03° | 35.8° |
+| 40% | 0.2800 | 73.74° | 28.0° |
+| 50% | 0.2155 | 77.56° | 21.5° |
+
+The last column is the "phase margin in degrees is about a hundred times
+$\\zeta$" rule, included here so the two most-used approximations sit side by
+side. It is honest between roughly 20% and 60% phase margin and drifts
+elsewhere.
+
+![The complex plane with two shaded design regions overlaid. A wedge opening leftwards from the origin at a half-angle of fifty-three point seven six degrees is the set of poles with damping at least zero point five nine one two, which is the ten percent overshoot limit. A half-plane two units left of the imaginary axis is the set that settles inside two seconds. The corner where the two boundaries meet is marked with crosses at minus two plus or minus j two point seven two nine.](/courses/fe-ee/figures/ctl4-ts-design-region.svg)
+
+Drawn on the plane, the inverse map becomes geometry. The overshoot budget is a
+**wedge**, because it constrains only the angle; the settling budget is a
+**half-plane**, because it constrains only the real part. Their boundaries
+cross at one point, and that point is the least aggressive design meeting both
+— the corner computed in Section 3.2 at $s = -2 \\pm j2.729$.
+
+## 6.5 The Complete Inverse Recipe
+
+Given any two of the five specifications, the second-order model is determined.
+The three routes worth memorising:
+
+| Given | Get $\\zeta$ from | Get $\\omega _n$ from |
+|---|---|---|
+| Overshoot and settling time | $\\zeta = -\\ln OS/\\sqrt{\\pi ^{2} + \\ln^{2}OS}$ | $\\omega _n = 4/(\\zeta t_s)$ |
+| Overshoot and peak time | the same inversion | $\\omega _n = \\pi /(t_p\\sqrt{1 - \\zeta ^{2}})$ |
+| Peak time and settling time | $\\zeta \\omega _n = 4/t_s$ and $\\omega _d = \\pi /t_p$, then $\\zeta = \\cos [\\arctan (\\omega _d/\\zeta \\omega _n)]$ | $\\omega _n = \\sqrt{(\\zeta \\omega _n)^{2} + \\omega _d^{2}}$ |
+
+### Worked Example 5 — A Design From Two Specifications, Checked
+
+**Given** a requirement of no more than 5% overshoot and a 2% settling time no
+greater than 1.0 s, place the closed-loop poles and then predict everything
+else.
+
+**Step 1 — damping ratio from the overshoot.** With
+$\\ln 0.05 = -2.995732$ and $\\ln^{2}0.05 = 8.974412$:
+
+$$\\zeta = \\frac{2.995732}{\\sqrt{9.869604 + 8.974412}}
+= \\frac{2.995732}{4.340970} = 0.690107$$
+
+**Step 2 — decay rate from the settling time.** The corner of the feasible
+region takes both constraints with equality, so
+$\\zeta \\omega _n = 4/1.0 = 4$ and
+
+$$\\omega _n = 4/0.690107 = 5.7962\\ \\mathrm{rad/s}$$
+
+**Step 3 — the poles.**
+
+$$\\omega _d = 5.7962\\sqrt{1 - 0.476248} = 5.7962 \\times 0.723707
+= 4.1948\\ \\mathrm{rad/s}$$
+
+$$s = -4 \\pm j4.1948$$
+
+**Step 4 — predict the rest before simulating.** Peak time
+$\\pi /4.1948 = 0.7490$ s; 0 to 100% rise
+$(\\pi - \\arccos 0.690107)/4.1948 = 0.5560$ s; 10-90 rise from the cubic,
+$0.361891$ s.
+
+**Step 5 — simulate and compare.**
+
+| Specification | Predicted | Simulated |
+|---|---|---|
+| Overshoot | 5.000% | 5.000% |
+| Peak time | 0.7490 s | 0.7489 s |
+| Rise time (0→100%) | 0.5560 s | 0.5560 s |
+| Rise time (10-90%) | 0.3619 s | 0.3617 s |
+| 2% settling | 1.0000 s (rule) | 1.0343 s |
+
+Four of the five agree to four figures. The settling time does not, and it
+misses on the **wrong side**: the measured 1.0343 s violates the 1.0 s
+specification by 3.4%. At $\\zeta = 0.690$ the four-over rule is well past the
+0.4017 crossover of Section 5.4, so the rule was never a bound here — an
+overrun was possible, though the staircase means it is not guaranteed at every
+damping ratio past the crossover. Backing $\\omega _n$
+up to $4.14/0.690107 = 6.0$ rad/s brings the measured settling inside the
+specification with margin.
+
+## 6.6 Problem Set A — Forwards and Backwards
+
+**A1.** A second-order system has $\\zeta = 0.3$ and $\\omega _n = 10$ rad/s.
+Find the overshoot, peak time and 0-100% rise time.
+*Answer:* $\\omega _d = 10\\sqrt{0.91} = 9.53939$ rad/s. Overshoot
+$= 100e^{-\\pi (0.3)/0.953939} = 37.23$%. Peak time
+$= \\pi /9.53939 = 0.32933$ s. Rise time
+$= (3.14159 - 1.26610)/9.53939 = 0.19660$ s.
+
+**A2.** The same system: which settling estimate should you quote, and is the
+rule safe here?
+*Answer:* $4/(\\zeta \\omega _n) = 4/3 = 1.3333$ s. Since
+$\\zeta = 0.3 < 0.4017$, the rule sits above the envelope and is on the safe
+side; the measured value is 1.1230 s.
+
+**A3.** A specification asks for at most 15% overshoot. What is the minimum
+damping ratio and the maximum pole angle from the negative real axis?
+*Answer:* $\\zeta \\geq 0.5169$ and the angle is at most
+$\\arccos 0.5169 = 58.87^\\circ$.
+
+**A4.** A trace shows a 10-90% rise time of 0.25 s and 20% overshoot. Estimate
+$\\omega _n$.
+*Answer:* 20% overshoot gives $\\zeta = 0.45595$, so
+$\\zeta ^{2} = 0.207889$ and $\\zeta ^{3} = 0.094787$. The cubic terms are
+0.187773, 0.165895 and 0.568570, so
+$\\omega _nt_r = 0.187773 - 0.165895 + 0.568570 + 0.966 = 1.556448$
+and $\\omega _n = 1.556448/0.25 = 6.2258$ rad/s.
+
+**A5.** Why does the flat 1.8 rule under-predict rise time for well-damped
+systems?
+*Answer:* Increasing $\\zeta$ at fixed $\\omega _n$ moves the poles towards the
+real axis, slowing the approach to the final value. The measured
+$\\omega _nt_r$ therefore grows with $\\zeta$, from 1.10 at $\\zeta = 0.1$ to
+2.88 at $\\zeta = 0.9$, while a rule that ignores $\\zeta$ stays at 1.8.
+
+**A6.** A design requires $t_p \\leq 0.5$ s and at most 10% overshoot. Find the
+pole location that meets both with nothing to spare.
+*Answer:* 10% overshoot gives $\\zeta = 0.591155$, and
+$\\sqrt{1 - 0.349464} = 0.806558$. Then
+$\\omega _d = \\pi /0.5 = 6.28319$ rad/s, so
+$\\omega _n = 6.28319/0.806558 = 7.7901$ rad/s and
+$\\zeta \\omega _n = 0.591155 \\times 7.7901 = 4.6052$. The poles are
+$s = -4.605 \\pm j6.283$.`,
+      examTip: 'Keep the two rise times apart. The 0 to 100% rise time (π − arccos ζ)/ω_d is EXACT and is what the second-order derivation gives you; the 10 to 90% rise time is what instruments measure and has no closed form. If a question quotes a rise time without saying which, the presence of the arccos in the answer options tells you it wants the exact one.',
+      importantNote: 'The inverse overshoot formula ζ = −ln(OS)/√(π² + ln²OS) takes OS as a FRACTION, not a percentage. Feeding it 10 instead of 0.10 gives ln 10 = +2.303, a positive numerator, and a nonsense negative damping ratio. The sign of the logarithm is the built-in check: for any real overshoot the fraction is below 1, so its logarithm is negative and the leading minus makes ζ positive.',
+    },
+    {
+      id: 'ts-extra-pole-and-zero',
+      title: '7. What an Extra Pole or Zero Does to Every Specification',
+      content: `## 7.1 Nothing Real Is Second Order
+
+Every formula so far assumes exactly two poles and no zeros. Real loops have
+more. This section measures what a third pole and a zero each do to all four
+transient specifications, so the size of the error in a second-order estimate
+is known rather than hoped for. Throughout, the reference system is
+
+$$T_2(s) = \\frac{1}{s^{2} + s + 1}, \\qquad \\zeta = 0.5,
+\\qquad \\omega _n = 1\\ \\mathrm{rad/s}$$
+
+whose measured specifications are 16.303% overshoot, peak at 3.6276 s, 0-100%
+rise at 2.4184 s and 2% settling at 8.0763 s.
+
+## 7.2 A Third Pole Slows Everything and Eats the Overshoot
+
+Add a real pole at $s = -\\alpha \\zeta \\omega _n$, scaled so that $\\alpha$
+measures how far out it sits compared with the dominant pair's own distance
+from the imaginary axis. Keep the DC gain at 1:
+
+$$T_3(s) = \\frac{\\alpha \\zeta \\omega _n\\,\\omega _n^{2}}
+{(s + \\alpha \\zeta \\omega _n)(s^{2} + 2\\zeta \\omega _ns + \\omega _n^{2})}$$
+
+Simulating each and measuring:
+
+| $\\alpha$ | Pole at | Overshoot | Peak time | Rise (0-100%) | 2% settling |
+|---|---|---|---|---|---|
+| 2 | −1.00 | 8.147% | 4.922 s | 3.779 s | 6.637 s |
+| 3 | −1.50 | 12.172% | 4.461 s | 3.262 s | 6.421 s |
+| 5 | −2.50 | 14.770% | 4.100 s | 2.891 s | 8.384 s |
+| 10 | −5.00 | 15.939% | 3.847 s | 2.638 s | 8.261 s |
+| 20 | −10.0 | 16.217% | 3.733 s | 2.523 s | 8.173 s |
+| ∞ | — | 16.303% | 3.628 s | 2.418 s | 8.076 s |
+
+Three patterns, all monotone in $\\alpha$ and all in the same direction. The
+extra pole **reduces** overshoot, **delays** the peak and **slows** the rise.
+The reason is the same in each case: a pole is a lag, and the lag both damps
+the response and postpones it.
+
+The commonly quoted factor-of-five rule says a pole five times farther out can
+be ignored. Measured, at $\\alpha = 5$ the overshoot estimate is off by 1.53
+percentage points (10.4% of the true value) and the rise time by 16.3%. **The
+rule is good for overshoot and poor for timing** — which is worth knowing,
+because most exam questions about dominance are about overshoot.
+
+![Two stacked panels. The upper panel shows step responses of the same dominant pair with a third pole at minus one, minus two point five and minus ten, against the dashed response of the pair alone; the closer the extra pole, the later and lower the peak. The lower panel plots measured overshoot against the extra pole's distance in multiples of zeta omega n, rising towards the second-order value of sixteen point three percent, with the factor-of-five rule of thumb marked.](/courses/fe-ee/figures/ctl4-ts-third-pole.svg)
+
+## 7.3 A Zero Adds a Scaled Derivative
+
+A zero at $s = -z$ multiplies the transfer function by $(s/z + 1)$, and
+multiplying by $s$ in the Laplace domain is differentiating in time. So the
+response with a zero is
+
+$$y_z(t) = y(t) + \\frac{1}{z}\\frac{dy}{dt}$$
+
+exactly. That single line explains everything a zero does. The derivative of a
+step response is a large positive pulse early on, so adding a fraction of it
+**raises the early part of the response** — the output rises sooner and
+overshoots more — and the effect scales as $1/z$, so a nearby zero matters and
+a distant one does not.
+
+Simulating the closed loop and comparing against
+$y + y'/z$ computed independently from the second-order response, the two agree
+to better than $3\\times 10^{-5}$ at every zero location tested, which is the
+check that the identity is being applied correctly rather than merely quoted.
+
+| Zero at | Overshoot | Peak time | Rise (0-100%) | 2% settling |
+|---|---|---|---|---|
+| −0.25 | 171.23% | 1.489 s | 0.280 s | 10.151 s |
+| −0.50 | 69.94% | 1.814 s | 0.605 s | 7.383 s |
+| −1.00 | 29.84% | 2.418 s | 1.209 s | 7.505 s |
+| −1.50 | 21.71% | 2.804 s | 1.594 s | 7.606 s |
+| −2.50 | 17.99% | 3.156 s | 1.947 s | 7.742 s |
+| −5.00 | 16.68% | 3.408 s | 2.199 s | 7.890 s |
+| −10.0 | 16.39% | 3.523 s | 2.313 s | 7.979 s |
+| none | 16.30% | 3.628 s | 2.418 s | 8.076 s |
+
+A zero at $-0.25$, a quarter as far from the origin as the pole pair, turns a 16%
+overshoot into **171%**. Nothing in the second-order formulas anticipates that,
+which is why "check for zeros" belongs before "read off $\\zeta$".
+
+## 7.4 Two Exact Results for the Zero
+
+Both the peak time and the rise time with a zero can be solved in closed form.
+Setting $y_z' = 0$ and $y_z = 1$ in turn, and using
+$\\sigma = \\zeta \\omega _n$:
+
+$$t_p = \\frac{1}{\\omega _d}\\left[\\pi - \\arctan \\frac{\\omega _d}
+{z - \\sigma }\\right]$$
+
+$$t_r = \\frac{1}{\\omega _d}\\arctan \\frac{\\omega _d}
+{\\omega _n^{2}/z - \\sigma }$$
+
+taking the first positive root in each case. Both reproduce the simulated
+values to five decimal places at every zero location in the table above.
+
+Subtracting them gives something unexpected. Writing $A = \\omega _dt_p$ and
+$B = \\omega _dt_r$ and using the tangent subtraction formula, the numerator and
+denominator share the factor $z^{2} - 2\\zeta z + 1$ (for $\\omega _n = 1$),
+which cancels to leave
+
+$$\\tan (A - B) = \\frac{\\omega _d}{\\zeta } \\Rightarrow
+\\omega _d\\left(t_p - t_r\\right) = \\arccos \\zeta$$
+
+**independent of the zero.** A zero pulls the peak time and the rise time
+forward by exactly the same amount; the interval between them is a property of
+the pole pair alone. Numerically, for $\\zeta = 0.5$ the product
+$\\omega _d(t_p - t_r)$ comes out as 1.04719755 at every zero location tested,
+against $\\arccos 0.5 = 1.04719755$.
+
+## 7.5 A Right-Half-Plane Zero Digs a Hole First
+
+If the zero sits at $s = +z$ instead, the identity becomes
+$y_z = y - y'/z$, so the derivative pulse is **subtracted**. Since $y'(0^{+})$
+dominates the early response, the output starts in the wrong direction:
+
+| Zero at | Overshoot | Deepest undershoot | 2% settling |
+|---|---|---|---|
+| +1.00 | 20.87% | −0.280 | 8.993 s |
+| +2.50 | 17.31% | −0.062 | 8.487 s |
+
+![Two stacked panels. The upper panel shows step responses with a left-half-plane zero at minus zero point five, minus one point five and minus five against the no-zero reference; the nearest zero nearly quadruples the overshoot. The lower panel shows two right-half-plane zeros, at plus one and plus two point five, whose responses dip below zero before climbing to the final value.](/courses/fe-ee/figures/ctl4-ts-zero-effect.svg)
+
+The dip deepens sharply as the zero approaches the origin — moving it from
+$+2.5$ to $+1.0$ takes the undershoot from $-0.062$ to $-0.280$ — and, like the
+overshoot lift of a left-half-plane zero, it vanishes as the zero moves away. A right-half-plane zero is the signature of a
+system that must go the wrong way to go the right way, and no controller can
+remove it.
+
+### Worked Example 6 — Is the Second-Order Estimate Good Enough?
+
+**Given** $T(s) = 30/[(s + 6)(s^{2} + 2s + 5)]$, decide whether the dominant
+pair alone predicts the response, and measure the error if it is used.
+
+**Step 1 — identify the pair.** The quadratic gives
+$\\omega _n = \\sqrt{5} = 2.2361$ rad/s and
+$2\\zeta \\omega _n = 2$, so $\\zeta = 1/\\sqrt{5} = 0.4472$. The poles are
+$-1 \\pm j2$ and the extra pole is at $-6$, six times farther from the
+imaginary axis.
+
+**Step 2 — test dominance by residue, not by distance.** Expanding the step
+response in partial fractions gives modal amplitudes
+
+$$\\lvert R_{far}\\rvert = 0.172414, \\qquad
+\\lvert R_{pair}\\rvert = 2 \\times 0.622841 = 1.245682$$
+
+$$\\frac{0.172414}{1.245682} = 0.13841$$
+
+The far mode carries under 14% of the dominant pair's amplitude and decays six
+times faster, so the pair should dominate.
+
+**Step 3 — predict from the pair alone.** With $\\zeta = 0.4472$ and
+$\\omega _n = 2.2361$: overshoot 20.788%, peak time 1.5708 s, rise time
+1.0172 s, measured settling 3.7352 s.
+
+**Step 4 — simulate the real third-order system.**
+
+| Specification | Pair alone | Full system | Error |
+|---|---|---|---|
+| Overshoot | 20.788% | 19.148% | +1.640 points (+8.6%) |
+| Peak time | 1.5708 s | 1.7611 s | −10.8% |
+| Rise time (0-100%) | 1.0172 s | 1.2076 s | −15.8% |
+| 2% settling | 3.7352 s | 3.8946 s | −4.1% |
+
+**Step 5 — read the verdict.** The overshoot estimate is good to under two
+percentage points, which for most purposes is fine. The timing estimates are
+optimistic by 11% and 16%, which for most purposes is not. Moving the far pole
+to $-10$ shrinks the overshoot error to 0.58 points and the largest response
+deviation from 0.199 to 0.125.
+
+**The rule to carry.** Dominant-pole reduction is a good estimator of
+**overshoot** and a poor estimator of **speed**, and the direction of the speed
+error is always the same: the reduced model is faster than reality, because it
+has thrown away a lag.
+
+### Worked Example 7 — Predicting a Zero's Effect Without Simulating
+
+**Given** a second-order system with $\\zeta = 0.5$, $\\omega _n = 1$ rad/s and
+a zero added at $s = -1.5$, predict the peak time and the rise time.
+
+**Step 1 — collect the constants.**
+$\\sigma = \\zeta \\omega _n = 0.5$, $\\omega _d = \\sqrt{0.75} = 0.866025$,
+$z = 1.5$.
+
+**Step 2 — peak time.**
+
+$$\\frac{\\omega _d}{z - \\sigma } = \\frac{0.866025}{1.0} = 0.866025,
+\\qquad \\arctan 0.866025 = 0.713724\\ \\mathrm{rad}$$
+
+$$t_p = \\frac{3.141593 - 0.713724}{0.866025} = 2.803467\\ \\mathrm{s}$$
+
+**Step 3 — rise time.** With $\\omega _n^{2}/z = 1/1.5 = 0.666667$:
+
+$$\\frac{\\omega _d}{0.666667 - 0.5} = \\frac{0.866025}{0.166667} = 5.196150,
+\\qquad \\arctan 5.196150 = 1.380605\\ \\mathrm{rad}$$
+
+$$t_r = \\frac{1.380605}{0.866025} = 1.594186\\ \\mathrm{s}$$
+
+**Step 4 — check the invariant.**
+
+$$\\omega _d\\left(t_p - t_r\\right) = 0.866025 \\times 1.209281 = 1.047268$$
+
+against $\\arccos 0.5 = 1.047198$, agreeing to five figures — the difference is
+the rounding carried through the arctangents.
+
+**Step 5 — check against simulation.** The measured values are 2.80346 s and
+1.59426 s. Both predictions land within 0.0001 s.
+
+### Worked Example 8 — Which Effect Dominates?
+
+**Given** a closed loop with poles at $-1 \\pm j2$ and $-8$, and a zero at
+$-1.2$, decide whether the second-order estimate of 20.8% overshoot is usable.
+
+**Step 1 — rank the two perturbations by distance.** The extra pole is 8 units
+out against the pair's 1 unit of real part, a factor of 8 — comfortably beyond
+the factor-of-five rule, so on its own it would cost roughly a point of
+overshoot.
+
+**Step 2 — assess the zero.** The zero at $-1.2$ is only 1.2 units out,
+comparable to the pair's own distance from the origin of
+$\\sqrt{1^{2} + 2^{2}} = 2.236$. Section 7.3 shows a zero this close raising
+overshoot substantially.
+
+**Step 3 — decide the direction of each error.** The pole lowers overshoot by
+about 1 point; the zero raises it by tens of points. They do not cancel; the
+zero wins by an order of magnitude.
+
+**Step 4 — the answer.** The 20.8% estimate is not usable. When a zero lies
+inside the radius of the dominant pair, no pole-based reduction is meaningful
+and the response must be computed, either from $y + y'/z$ or by simulation.
+
+**The general rule.** Rank perturbations by their distance from the origin
+relative to $\\omega _n$, not by whether they are poles or zeros. Anything
+inside the dominant pair's radius controls the answer.
+
+## 7.6 Problem Set B — Extra Poles and Zeros
+
+**B1.** A system has poles at $-2 \\pm j3$ and $-30$. Estimate the overshoot.
+*Answer:* The pair gives $\\omega _n = \\sqrt{13} = 3.6056$ and
+$\\zeta = 2/3.6056 = 0.5547$, so overshoot
+$= 100e^{-\\pi (0.5547)/0.832050} = 12.28$%. The extra pole is 15 times farther
+out, so the estimate is good to a small fraction of a point.
+
+**B2.** Same poles, but a zero is added at $-2.5$. Is the estimate still good?
+*Answer:* No. The zero is at 2.5, well inside the pair's radius of 3.606, so it
+will raise the overshoot substantially. Compute $y + y'/2.5$ or simulate.
+
+**B3.** A step response starts by dipping to $-0.15$ before rising to 1.
+What does that say about the transfer function?
+*Answer:* It has an odd number of right-half-plane zeros. The initial slope has
+the wrong sign, which only a zero in the right half-plane produces.
+
+**B4.** Why does an extra pole always delay the peak?
+*Answer:* Convolving with an extra decaying exponential smooths and shifts the
+response later. In transform terms the extra pole adds phase lag at every
+frequency, and lag is delay.
+
+**B5.** A dominant pair sits at $-1 \\pm j2$ and a third pole at $-3$. Compute
+$\\alpha$ and say from the Section 7.2 table what overshoot error to expect.
+*Answer:* $\\alpha = 3/1 = 3$. The table's $\\alpha = 3$ row shows measured
+12.17% against the pair's 16.30%, so a second-order estimate would be about 4
+points high — too large to ignore.
+
+**B6.** For a system with $\\zeta = 0.6$, $\\omega _n = 4$ rad/s and a zero at
+$-10$, use the exact peak-time formula.
+*Answer:* $\\sigma = 2.4$, $\\omega _d = 4\\sqrt{0.64} = 3.2$ rad/s. Then
+$\\omega _d/(z - \\sigma ) = 3.2/7.6 = 0.421053$, and
+$\\arctan 0.421053 = 0.398457$ rad, so
+$t_p = (3.141593 - 0.398457)/3.2 = 0.857230$ s, against $\\pi /3.2 = 0.981748$ s
+with no zero. The zero pulls the peak 0.1245 s earlier.`,
+      examTip: 'The one identity to carry about zeros is y_z(t) = y(t) + y\u2032(t)/z. It says immediately that a zero raises the early part of the response (more overshoot, earlier peak, faster rise), that the effect scales as 1/z so distant zeros do nothing, and that a right-half-plane zero subtracts the derivative and therefore drives the output backwards first.',
+      importantNote: 'Dominant-pole reduction is much better at overshoot than at timing. On the worked third-order system, dropping a pole six times farther out costs 1.6 percentage points of overshoot but 11% of peak time and 16% of rise time, and the timing error is always in the optimistic direction. If a specification is about speed rather than shape, do not reduce the model.',
+    },
+    {
+      id: 'ts-error-constants-and-tradeoffs',
+      title: '8. Error Constants Derived, and the Specifications You Cannot Have',
+      content: `## 8.1 One Derivation Produces the Whole Type Table
+
+Section 2 listed the error constants. They all come from one expression. For
+unity feedback the error is the input minus the output, and
+
+$$E(s) = R(s) - Y(s) = R(s) - \\frac{G(s)}{1 + G(s)}R(s)
+= \\frac{R(s)}{1 + G(s)}$$
+
+Provided the closed loop is stable, the Final Value Theorem gives
+
+$$e_{ss} = \\lim_{s \\to 0}sE(s) = \\lim_{s \\to 0}\\frac{sR(s)}{1 + G(s)}$$
+
+Now feed it the three standard inputs in turn.
+
+**Step, $R(s) = 1/s$:**
+
+$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{1 + G(s)} = \\frac{1}{1 + K_{p}},
+\\qquad K_{p} = \\lim_{s \\to 0}G(s)$$
+
+**Ramp, $R(s) = 1/s^{2}$:**
+
+$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{s\\left[1 + G(s)\\right]}
+= \\lim_{s \\to 0}\\frac{1}{s + sG(s)} = \\frac{1}{K_{v}},
+\\qquad K_{v} = \\lim_{s \\to 0}sG(s)$$
+
+because the bare $s$ vanishes and only $sG(s)$ survives.
+
+**Parabola, $R(s) = 1/s^{3}$:**
+
+$$e_{ss} = \\lim_{s \\to 0}\\frac{1}{s^{2}\\left[1 + G(s)\\right]}
+= \\frac{1}{K_{a}}, \\qquad K_{a} = \\lim_{s \\to 0}s^{2}G(s)$$
+
+## 8.2 Why the Table Has That Staircase Shape
+
+Write the loop gain in the general form with $N$ free integrators:
+
+$$G(s) = \\frac{K\\prod_i(s + z_i)}{s^{N}\\prod_j(s + p_j)}$$
+
+Each constant is a limit of $s^{m}G(s)$ as $s \\to 0$, so the answer depends
+only on how $m$ compares with $N$:
+
+- $m < N$: the limit is $\\infty$ — the constant is infinite, the error zero.
+- $m = N$: the $s$ powers cancel and the limit is
+  $K\\prod z_i/\\prod p_j$ — finite constant, finite error.
+- $m > N$: the limit is 0 — the constant is zero, the error infinite.
+
+That is the whole staircase. **Each integrator moves the finite entry one
+column to the right**, and everything to its left becomes zero error while
+everything to its right becomes infinite error.
+
+| Loop type | $K_{p}$ | $K_{v}$ | $K_{a}$ | Step error | Ramp error | Parabola error |
+|---|---|---|---|---|---|---|
+| 0 | finite | 0 | 0 | $1/(1 + K_{p})$ | ∞ | ∞ |
+| 1 | ∞ | finite | 0 | 0 | $1/K_{v}$ | ∞ |
+| 2 | ∞ | ∞ | finite | 0 | 0 | $1/K_{a}$ |
+
+![Tracking error against time for three loops of the same gain but different integrator counts, each driven by the input it can just barely track: a Type 0 loop against a step settling at zero point two, a Type 1 loop against a ramp settling at zero point two five, and a Type 2 loop against a parabola settling at zero point one two five.](/courses/fe-ee/figures/ctl4-ts-error-types.svg)
+
+All three loops in that figure carry the same gain of 40. Only the integrator
+count differs, and only the integrator count decides which input each can
+follow with a bounded error.
+
+### Worked Example 9 — Error Constants With the Stability Check First
+
+**Given** the unity-feedback loop $G(s) = 40/[s(s+2)(s+5)]$, find the
+steady-state error to a unit ramp.
+
+**Step 1 — check stability, because the Final Value Theorem needs it.** The
+closed-loop denominator is
+
+$$s(s+2)(s+5) + 40 = s^{3} + 7s^{2} + 10s + 40$$
+
+All coefficients are positive, and for a cubic the Routh condition is
+$bc > ad$:
+
+$$7 \\times 10 = 70 > 40$$
+
+Stable. The closed-loop poles are $-6.4133$ and $-0.2934 \\pm j2.4801$.
+
+**Step 2 — identify the type.** One pole at the origin, so Type 1: zero error
+to a step, finite error to a ramp, infinite error to a parabola.
+
+**Step 3 — the velocity constant.**
+
+$$K_{v} = \\lim_{s \\to 0}sG(s) = \\frac{40}{2 \\times 5} = 40/10 = 4$$
+
+**Step 4 — the error.**
+
+$$e_{ss} = 1/K_{v} = 1/4 = 0.25$$
+
+**Step 5 — confirm by simulating the error signal.** Driving the loop with a
+unit ramp and watching $e(t) = r(t) - y(t)$, the error settles at exactly
+0.250000 and stays there. Simulating the same loop against a unit step gives an
+error that decays to zero, and against a parabola an error that grows without
+bound — the three predictions of the type table, all confirmed.
+
+### Worked Example 10 — A Compound Input
+
+**Given** the same loop, find the steady-state error to
+$r(t) = 4 + 6t$.
+
+**Step 1 — use superposition.** The loop is linear, so the error is the sum of
+the errors to each component.
+
+**Step 2 — the step component.** Type 1 gives zero error to a step of any
+size, so the constant 4 contributes nothing.
+
+**Step 3 — the ramp component.** A ramp of slope 6 contributes
+
+$$e_{ss} = \\frac{6}{K_{v}} = 6/4 = 1.5$$
+
+**Step 4 — the total.** $e_{ss} = 0 + 1.5 = 1.5$.
+
+**Step 5 — the design consequence.** The **slope** scales the error directly.
+A specification worded as "track a 6 unit per second ramp with error under 0.4"
+requires
+
+$$K_{v} \\geq \\frac{6}{0.4} = 15$$
+
+not 15/6. Reading the slope into $K_v$ correctly is where most marks on this
+topic are lost.
+
+## 8.3 Specifications That Cannot Coexist
+
+For a genuinely second-order design, three of the transient specifications are
+not independent. Overshoot fixes $\\zeta$; settling time then fixes
+$\\zeta \\omega _n$ and therefore $\\omega _n$; and once both are fixed, the
+rise time is **determined**, not chosen:
+
+$$t_r = \\frac{f(\\zeta )}{\\omega _n}
+= \\frac{f(\\zeta )\\,\\zeta \\,t_s}{4}$$
+
+where $f(\\zeta ) = \\omega _nt_r$ is the measured 10-90 curve of Section 6.
+A designer who writes down all three has already over-specified the problem.
+
+The remaining freedom is bounded by hardware. Every actuator and sensor sets a
+ceiling on the achievable $\\omega _n$; take 10 rad/s for the sake of a
+concrete table. Then each demanded pair puts a floor under $\\omega _n$, and a
+specification set is feasible only if the largest floor stays under the
+ceiling:
+
+| Demanded OS | Demanded $t_s$ | Demanded $t_r$ (10-90) | $\\zeta$ | $\\omega _n$ needed by $t_s$ | $\\omega _n$ needed by $t_r$ | Binding | Feasible at 10 rad/s? |
+|---|---|---|---|---|---|---|---|
+| 2% | 1.00 s | 0.30 s | 0.7797 | 5.130 | 7.981 | rise | yes |
+| 5% | 1.00 s | 0.30 s | 0.6901 | 5.796 | 6.992 | rise | yes |
+| 10% | 1.00 s | 0.30 s | 0.5912 | 6.766 | 6.113 | settling | yes |
+| 2% | 2.00 s | 0.60 s | 0.7797 | 2.565 | 3.991 | rise | yes |
+| 16.3% | 0.80 s | 0.25 s | 0.5000 | 9.999 | 6.551 | settling | yes, just |
+| 10% | 0.50 s | 0.20 s | 0.5912 | 13.533 | 9.1645 | settling | **no** |
+| 20% | 0.50 s | 0.20 s | 0.4560 | 17.546 | 7.784 | settling | **no** |
+| 5% | 0.40 s | 0.10 s | 0.6901 | 14.491 | 20.977 | rise | **no** |
+
+![Natural frequency required by a design against its overshoot budget, drawn for settling-time demands of zero point four, one and two seconds, with the ten radian per second hardware ceiling as a dashed line. Each curve dips where the rise-time demand takes over from the settling demand as the binding constraint. The tightest settling demand sits entirely above the ceiling.](/courses/fe-ee/figures/ctl4-ts-feasible-map.svg)
+
+Two structural facts show up in that map. Each curve has a **minimum**, because
+tightening the overshoot budget raises $\\zeta$, which relaxes the settling
+requirement on $\\omega _n$ but tightens the rise requirement — the two pull in
+opposite directions and the cheapest design sits where they cross. And the
+tightest settling demand never comes below the ceiling at any overshoot budget,
+which is the graphical form of "this specification set is infeasible with this
+hardware".
+
+### Worked Example 11 — Diagnosing an Infeasible Specification
+
+**Given** a demand for at most 10% overshoot, 2% settling within 0.5 s and a
+10-90 rise time within 0.2 s, on hardware limited to $\\omega _n = 10$ rad/s,
+say whether it can be met and what has to give.
+
+**Step 1 — damping ratio from the overshoot.** 10% gives
+$\\zeta = 0.5912$, non-negotiable, since overshoot depends on nothing else.
+
+**Step 2 — the settling floor.**
+
+$$\\omega _n \\geq \\frac{4}{\\zeta t_s} = 4/0.29558 = 13.533\\ \\mathrm{rad/s}$$
+
+**Step 3 — the rise floor.** At $\\zeta = 0.5912$ the measured
+$f(\\zeta ) = 1.8329$, so
+
+$$\\omega _n \\geq 1.8329/0.2 = 9.1645\\ \\mathrm{rad/s}$$
+
+**Step 4 — compare with the ceiling.** The binding requirement is 13.533
+rad/s, 35% above the 10 rad/s the hardware allows. **Infeasible.**
+
+**Step 5 — say what has to give, quantitatively.** Three exits, and only three:
+
+- **Relax the settling time.** At $\\omega _n = 10$ the achievable value is
+  $4/(0.5912 \\times 10) = 0.6766$ s, so the specification must move from 0.5 s
+  to 0.68 s.
+- **Relax the overshoot.** Holding $t_s = 0.5$ s at $\\omega _n = 10$ needs
+  $\\zeta \\geq 4/(10 \\times 0.5) = 0.8$, which corresponds to 1.52%
+  overshoot — a *tighter* overshoot budget, not a looser one. Allowing more
+  overshoot makes this worse, not better.
+- **Buy faster hardware.** $\\omega _n = 13.6$ rad/s meets everything with the
+  rise time to spare.
+
+**Step 6 — note the counter-intuitive part.** The instinct on failing a speed
+specification is to allow more overshoot. Here that is exactly wrong: the
+settling time depends on the product $\\zeta \\omega _n$, so with
+$\\omega _n$ capped, more overshoot means less damping means **slower**
+settling. The trade-off only runs the useful way when the rise time is the
+binding constraint.
+
+## 8.4 Problem Set C — Errors and Trade-offs
+
+**C1.** For $G(s) = 100/[(s + 4)(s + 25)]$, find the steady-state error to a
+unit step.
+*Answer:* Type 0, so $K_p = 100/(4 \\times 25) = 100/100 = 1$ and
+$e_{ss} = 1/2 = 0.5$.
+
+**C2.** For $G(s) = 500/[s(s + 10)(s + 50)]$, find $K_v$ and the error to a
+ramp of slope 2. Check stability first.
+*Answer:* Closed-loop denominator $s^{3} + 60s^{2} + 500s + 500$, and
+$60 \\times 500 = 30000 > 500$, so it is stable. Then
+$K_v = 500/(10 \\times 50) = 500/500 = 1$, and the error to a slope-2 ramp is
+$2/1 = 2$.
+
+**C3.** A Type 2 loop has $K_a = 20$. What is its error to
+$r(t) = t^{2}/2$, and to $r(t) = 3t$?
+*Answer:* $1/20 = 0.05$ to the unit parabola, and zero to any ramp — a Type 2
+loop tracks ramps exactly.
+
+**C4.** Why must stability be checked before quoting any of these errors?
+*Answer:* The Final Value Theorem is valid only when $sE(s)$ has all its poles
+in the left half-plane. An unstable loop has no steady state, and the limit
+still returns a finite number, so the formula gives a confident wrong answer.
+
+**C5.** A design must meet 5% overshoot and a 10-90 rise time of 0.3 s. What
+settling time comes with it, whether or not it was asked for?
+*Answer:* 5% gives $\\zeta = 0.6901$ and $f(\\zeta ) = 2.0976$, so
+$\\omega _n = 2.0976/0.3 = 6.992$ rad/s. Then
+$t_s \\approx 4/(0.6901 \\times 6.992) = 4/4.82518 = 0.8290$ s. A settling
+specification tighter than about 0.83 s is already violated by the other two.
+
+**C6.** A loop meets its overshoot and settling specifications at
+$\\omega _n = 8$ rad/s and $\\zeta = 0.6$. The customer now asks for half the
+rise time. What must change?
+*Answer:* Rise time scales as $1/\\omega _n$ at fixed $\\zeta$, so
+$\\omega _n$ must double to 16 rad/s. That also halves the settling time, which
+is free, but doubles the required bandwidth and therefore the actuator effort
+and the noise admitted. Overshoot does not change at all, because $\\zeta$ has
+not moved.
+
+**C7.** Adding an integrator to fix a ramp-tracking error costs what?
+*Answer:* 90° of phase lag at every frequency, so the phase margin falls and
+the loop must usually be detuned to recover it. That is why Type 2 loops are
+uncommon and Type 3 loops essentially do not exist.`,
+      examTip: 'Work the type question in this order every time: check stability, count the integrators in the loop gain, pick the matching error constant, then divide the input SLOPE or curvature by it. Skipping the stability check is the classic trap, because the limit still evaluates to a comfortable-looking number on an unstable loop.',
+      importantNote: 'Overshoot, settling time and rise time are not three independent specifications for a second-order design — any two determine the third through t_r = f(ζ)·ζ·t_s/4. If all three are written into a requirement, either one is redundant or the set is infeasible. And when the bandwidth is capped, allowing MORE overshoot makes settling time worse, not better, because settling depends on the product ζω_n.',
     },
   ],
   keyTakeaways: [

@@ -4922,7 +4922,7 @@ Wider guard bands improve adjacent-channel rejection but waste spectrum. Narrowe
 
 **Given**: Chip rate = 1.2288 Mcps (IS-95 standard), data rate = 9.6 kbps.
 
-**Processing gain**: G_p = chip_rate / data_rate = 1,228,800 / 9,600 = **$128 = 21.1\\ \\mathrm{dB}$**
+**Processing gain**: G_p = chip_rate / data_rate = 1,228,800 / 9,600 = **$128$**, which is **$10\\log_{10}(128) = 21.07\\ \\mathrm{dB}$**
 
 This means the signal is spread across 128x the minimum bandwidth, providing 21 dB of interference rejection.
 
@@ -5099,6 +5099,1007 @@ single fibre carries several terabits per second.`,
       examTip: 'Processing gain is a ratio of rates: G_p = chip rate / data rate, and 10 log10 of it in dB. For OFDM, the only relationship you need is subcarrier spacing = 1/T_u; everything else in the standard follows from that and the FFT size.',
       importantNote: 'CDMA capacity is limited by interference, so it depends on the required E_b/N_0, voice activity and neighbouring cells — quoting a single user count without stating those assumptions is meaningless. The near-far problem is why power control, not spreading gain, is the hard engineering in a CDMA system.',
     },
+    { id: 'mux-fdm-ledger', title: '6. The FDM Bandwidth Ledger, Computed',
+      content: `## 6.1 A frequency plan is a ledger, and every hertz sits on one side of it
+
+Frequency division hands each conversation a private strip of spectrum and asks
+nobody to take turns. The price is that neighbouring strips may not touch. A
+real filter rolls off across a finite width, and whatever the filter cannot
+reject has to be left empty. Writing the plan down as a ledger removes the
+guesswork: for n channels of width B_c separated by guard bands of width B_g,
+
+$$B_{\\mathrm{total}} = n B_c + (n - 1) B_g$$
+
+The guard count is the detail that decides most examination questions. Guards
+live in the gaps between neighbours, and n strips laid side by side have n - 1
+gaps rather than n. Placing an extra guard at each outer edge is a defensible
+choice when the block has to sit beside spectrum somebody else owns, but it is
+not what the bare phrase about guard bands between channels asks for, and the
+two readings differ by one whole guard band.
+
+The payload share of the ledger follows at once, and so does its limit:
+
+$$\\eta_{\\mathrm{FDM}} = \\frac{n B_c}{n B_c + (n - 1) B_g}$$
+
+$$\\lim_{n \\to \\infty} \\eta_{\\mathrm{FDM}} = \\frac{B_c}{B_c + B_g}$$
+
+That limit is the whole story of frequency division. Because guards are bought
+one per gap, the ratio of guard to payload never improves; enlarging the block
+buys nothing back. Section 4 drew the consequence, and the two panels below
+show the same 12-channel plan as an actual strip of spectrum with its intervals
+laid end to end.
+
+![A 12-channel FDM group drawn as the band plan itself: twelve 4 kHz payload bands separated by eleven 1 kHz guard bands, occupying 59 kHz in total, above a curve of payload share against channel count that starts near 89 percent, passes through 81.36 percent at twelve channels, and settles onto an 80 percent floor.](/courses/fe-ee/figures/com4-fdm-ledger.svg)
+
+Both panels were produced by laying the intervals down one after another and
+reading the final edge, not by evaluating the ledger equation. The two agree to
+machine precision, which is the point of doing it twice.
+
+### Worked example 6A — the twelve-channel voice group
+
+Twelve speech channels of 4 kHz each, with 1 kHz between neighbours.
+
+$$B_{\\mathrm{total}} = 12 \\times 4 + 11 \\times 1 = 59\\ \\mathrm{kHz}$$
+
+$$\\eta_{\\mathrm{FDM}} = 48/59 = 0.81356$$
+
+So 81.356% of the block carries speech and 18.644% carries nothing at all. The
+occupied width, 48 kHz, is what a naive answer reports; the extra 11 kHz is the
+part the exam is testing.
+
+### Worked example 6B — a wideband plan where the guards barely matter
+
+Eight television-style channels of 200 kHz separated by 25 kHz.
+
+$$B_{\\mathrm{total}} = 8 \\times 200 + 7 \\times 25 = 1775\\ \\mathrm{kHz}$$
+
+$$\\eta_{\\mathrm{FDM}} = 1600/1775 = 0.90141$$
+
+Nothing changed except the ratio of guard to channel. Efficiency is governed by
+that ratio alone, never by the absolute widths:
+
+$$\\eta_{\\mathrm{FDM}} = \\frac{1}{1 + \\frac{n-1}{n}\\left(\\frac{B_g}{B_c}\\right)}$$
+
+With B_g/B_c = 0.25 the first plan sits near four fifths; with B_g/B_c = 0.125
+the second sits near eight ninths. A designer who wants efficiency does not
+widen the block, he narrows the guard, and pays for it in filter skirts.
+
+### Worked example 6C — stacking groups into a block
+
+Five of the 59 kHz groups from example 6A are combined, with 8 kHz between
+adjacent groups. Treat each group as one composite channel:
+
+$$B_{\\mathrm{block}} = 5 \\times 59 + 4 \\times 8 = 327\\ \\mathrm{kHz}$$
+
+$$\\eta_{\\mathrm{block}} = 240/327 = 0.733945$$
+
+Sixty voice channels now occupy 327 kHz. The hierarchy has cost a second layer
+of guards, so the end-to-end efficiency, 73.3945%, is lower than either layer on
+its own — overheads at different levels multiply rather than merge. Checking
+that claim: the within-group share is 48/59 and the between-group share is
+295/327, and the product of those two fractions is 14160/19293, which reduces to
+exactly the 240/327 counted directly. Layered overheads multiply, and the
+multiplication is exact, not approximate.
+
+| Plan | Channels | Payload | Guards | Total | Payload share |
+|---|---|---|---|---|---|
+| Voice group | 12 | 48 kHz | 11 kHz | 59 kHz | 81.36% |
+| Wideband group | 8 | 1600 kHz | 175 kHz | 1775 kHz | 90.14% |
+| Five-group block | 60 | 240 kHz | 87 kHz | 327 kHz | 73.39% |
+| Narrow guards, 60 ch | 60 | 240 kHz | 59 kHz | 299 kHz | 80.27% |
+
+The last row is the same sixty channels arranged flat, with no intermediate
+grouping: one layer of guards instead of two, and eight percentage points of
+efficiency recovered. Hierarchy buys manageability and costs spectrum.`,
+      examTip: `Count the gaps, not the channels. n bands have n - 1 gaps between them, so the total is n B_c + (n - 1) B_g. If a question mentions guard bands at the edges of the block as well, that is n + 1 guards, and the difference from the usual reading is one guard band.`,
+      importantNote: `FDM efficiency depends only on the RATIO of guard width to channel width, never on the absolute widths. Doubling every number in a plan leaves the payload share untouched.`,
+    },
+    { id: 'mux-tdm-frames', title: '7. TDM Frames, Counted Bit by Bit',
+      content: `## 7.1 What a frame must carry before it carries anything useful
+
+A time-division frame is a repeating pattern of bits. Every receiver watching
+it has one hard problem to solve first: knowing where the pattern starts. Until
+it does, the bits are a stream of ones and zeros with no channel boundaries in
+them, and a receiver one bit out of step delivers each caller to the wrong
+listener. So a frame buys alignment with bits it could otherwise have spent on
+payload, and the whole accounting of time division follows from that purchase.
+
+Let each of n sources be sampled f_s times a second and quantised to b bits.
+The frame then holds
+
+$$N_f = n b + v$$
+
+bits, where v is whatever the format spends on framing, signalling and
+synchronisation. The frame repeats once per sampling interval, so
+
+$$R_{\\mathrm{line}} = N_f f_s = (n b + v) f_s$$
+
+$$\\eta_{\\mathrm{TDM}} = \\frac{n b}{n b + v}$$
+
+Two timing quantities fall out of the same frame and are asked for constantly:
+
+$$T_{\\mathrm{frame}} = \\frac{1}{f_s}, \\qquad T_{\\mathrm{slot}} = \\frac{T_{\\mathrm{frame}}}{n}, \\qquad T_{\\mathrm{bit}} = \\frac{1}{R_{\\mathrm{line}}}$$
+
+Note what does not appear anywhere above: the number of sources does not change
+the frame period. Adding channels lengthens the frame in bits and therefore
+raises the line rate, but the frame still repeats at the sampling rate, because
+each source must be visited once per sample.
+
+## 7.2 The two frames the exam actually uses
+
+![Two frames drawn slot by slot. The upper strip is a T1 frame of 193 bit positions with the single framing bit marked at the front, giving a 99.48 percent payload share. The lower strip is an E1 frame of 32 eight-bit slots with slot 0 and slot 16 marked as framing and signalling, giving a 93.75 percent payload share.](/courses/fe-ee/figures/com4-tdm-frame.svg)
+
+Both strips above were built as lists of labelled bit positions and then
+counted, so the efficiencies printed on them are census results rather than
+formula evaluations.
+
+### Worked example 7A — the T1 frame, one bit at a time
+
+Voice is band-limited to 3.4 kHz, sampled at 8 kHz, and companded to 8 bits.
+Twenty-four such channels share one frame with a single framing bit.
+
+$$N_f = 24 \\times 8 + 1 = 193\\ \\mathrm{bits}$$
+
+$$R_{\\mathrm{line}} = 193 \\times 8000 = 1544000\\ \\mathrm{bit/s}$$
+
+$$\\eta_{\\mathrm{TDM}} = 192/193 = 0.994819$$
+
+$$T_{\\mathrm{slot}} = \\frac{125\\ \\mu\\mathrm{s}}{24} = 5.2083\\ \\mu\\mathrm{s}, \\qquad T_{\\mathrm{bit}} = \\frac{1}{1.544\\ \\mathrm{MHz}} = 647.67\\ \\mathrm{ns}$$
+
+The framing bit costs exactly one bit every 125 microseconds, which is 8 kbit/s
+out of 1544 kbit/s, or 0.518% of the line. A single bit per frame is enough
+because the receiver does not have to recognise it in one frame; it watches the
+same bit position over many frames and locks onto the pattern the framing bits
+spell out across them.
+
+### Worked example 7B — the E1 frame, which spends whole slots
+
+E1 keeps the 8 kHz frame rate and the 8-bit sample but organises the frame as
+32 equal slots rather than 24 slots plus a stray bit.
+
+$$N_f = 32 \\times 8 = 256\\ \\mathrm{bits}$$
+
+$$R_{\\mathrm{line}} = 256 \\times 8000 = 2048000\\ \\mathrm{bit/s}$$
+
+Two of the 32 slots are not voice: one carries the alignment pattern and one
+carries signalling. So
+
+$$\\eta_{\\mathrm{TDM}} = 30/32 = 0.9375$$
+
+$$T_{\\mathrm{slot}} = \\frac{125\\ \\mu\\mathrm{s}}{32} = 3.90625\\ \\mu\\mathrm{s}, \\qquad T_{\\mathrm{bit}} = \\frac{1}{2.048\\ \\mathrm{MHz}} = 488.28\\ \\mathrm{ns}$$
+
+E1 therefore spends 128 kbit/s on overhead against T1's 8 kbit/s — sixteen
+times as much — and gets in return a signalling channel that lives outside the
+voice samples entirely. T1 has no such luxury and historically borrowed the
+least significant bit of every sixth sample for signalling, which is why a
+T1 voice channel is sometimes quoted as 56 kbit/s rather than 64 kbit/s. That
+robbed bit is a payload bit repurposed, so it does not appear in the framing
+ledger at all; it appears as reduced voice quality.
+
+### Worked example 7C — a frame you are asked to design
+
+Twelve sensor streams, each sampled at 8000 per second and quantised to 4 bits,
+share a link with one framing bit per frame. Find the line rate, the efficiency
+and the slot time.
+
+$$N_f = 12 \\times 4 + 1 = 49\\ \\mathrm{bits}$$
+
+$$R_{\\mathrm{line}} = 49 \\times 8000 = 392000\\ \\mathrm{bit/s}$$
+
+$$\\eta_{\\mathrm{TDM}} = 48/49 = 0.979592$$
+
+$$T_{\\mathrm{slot}} = \\frac{125\\ \\mu\\mathrm{s}}{12} = 10.4167\\ \\mu\\mathrm{s}$$
+
+Compare with the T1 result: the same single framing bit now costs 2.04% instead
+of 0.518%, because there is less payload to spread it over. Time-division
+overhead is a fixed cost per frame, so it hurts short frames and vanishes in
+long ones.
+
+## 7.3 Superframes: buying more overhead deliberately
+
+One framing bit per frame is enough for alignment and nothing else. Grouping
+frames into a superframe pools those bits into a channel with room for more.
+
+$$N_{\\mathrm{SF}} = 12 \\times 193 = 2316\\ \\mathrm{bits}, \\qquad T_{\\mathrm{SF}} = 12 \\times 125 = 1500\\ \\mu\\mathrm{s}$$
+
+$$N_{\\mathrm{ESF}} = 24 \\times 193 = 4632\\ \\mathrm{bits}, \\qquad T_{\\mathrm{ESF}} = 24 \\times 125 = 3000\\ \\mu\\mathrm{s}$$
+
+The extended superframe collects 24 framing bits across 3 milliseconds and
+divides them among an alignment pattern, an error-check remainder and a
+maintenance channel. The line rate does not change — it is still 193 bits every
+125 microseconds — but those 8 kbit/s now do three jobs instead of one. That is
+the general lesson: overhead is not waste, it is capability, and the honest
+comparison is between what two formats deliver, not between their headline
+efficiencies.
+
+| Format | Slots | Bits per frame | Line rate | Overhead rate | Payload share |
+|---|---|---|---|---|---|
+| T1 | 24 + 1 bit | 193 | 1.544 Mbit/s | 8 kbit/s | 99.48% |
+| E1 | 32 slots | 256 | 2.048 Mbit/s | 128 kbit/s | 93.75% |
+| Sensor frame, 7C | 12 + 1 bit | 49 | 392 kbit/s | 8 kbit/s | 97.96% |
+| Sixteen 64 kbit/s streams | 16 + 1 bit | 129 | 1.032 Mbit/s | 8 kbit/s | 99.22% |`,
+      examTip: `Get the frame rate from the sampling theorem before anything else: voice sampled at 8 kHz means 8000 frames per second and a 125 microsecond frame, whatever the channel count. Then line rate = bits per frame times frame rate, and every timing answer is a division of 125 microseconds.`,
+      importantNote: `Adding channels to a TDM frame does not change the frame period, only the number of bits inside it. The frame period is set by the sampling rate of the sources, and every source must be visited once per sample.`,
+    },
+    { id: 'mux-statistical', title: '8. Synchronous against Statistical TDM, and the Queue',
+      content: `## 8.1 Reserving for the peak, or providing for the average
+
+Synchronous time division gives every source its slot whether or not the source
+has anything to put in it. The slot is transmitted regardless, so the link must
+be sized for the sum of the peaks:
+
+$$R_{\\mathrm{sync}} = \\sum_{k=1}^{n} R_k$$
+
+Statistical time division hands each slot to whoever is ready, and therefore
+needs only enough capacity for what the sources actually generate on average:
+
+$$R_{\\mathrm{avg}} = \\sum_{k=1}^{n} a_k R_k$$
+
+where a_k is the fraction of time source k is active. The ratio of the two is
+the multiplexing gain,
+
+$$G_{\\mathrm{stat}} = \\frac{R_{\\mathrm{sync}}}{R_{\\mathrm{avg}}} = \\frac{1}{\\bar{a}}$$
+
+for equal sources, and it is nothing more than the reciprocal of the duty
+cycle. Statistical multiplexing does not create capacity; it declines to
+reserve capacity that nobody is using.
+
+### Worked example 8A — the gain, and where it comes from
+
+Forty sources, each 64 kbit/s when active, each active 20% of the time.
+
+$$R_{\\mathrm{sync}} = 40 \\times 64 = 2560\\ \\mathrm{kbit/s}$$
+
+$$R_{\\mathrm{avg}} = 40 \\times 0.2 \\times 64 = 512\\ \\mathrm{kbit/s}$$
+
+$$G_{\\mathrm{stat}} = 2560/512 = 5$$
+
+The gain is exactly 1/0.2, as it must be. Nothing about the source count enters
+it — forty sources at 20% and four hundred sources at 20% both give a gain of
+five. What the source count changes is how reliably that average is met, and
+that is a separate calculation entirely.
+
+## 8.2 The consequence: demand is random, so sometimes it overflows
+
+Sizing a link at the mean guarantees that roughly half the time demand exceeds
+supply. The number of simultaneously active sources is a binomial variable,
+
+$$P(K = k) = \\binom{n}{k} a^{k} (1-a)^{n-k}$$
+
+$$E[K] = n a, \\qquad \\mathrm{Var}(K) = n a (1 - a)$$
+
+so the probability that a link of m channels cannot serve everyone is the upper
+tail
+
+$$P_{\\mathrm{overflow}} = \\sum_{k=m+1}^{n} \\binom{n}{k} a^{k} (1-a)^{n-k}$$
+
+![Probability that demand exceeds supply, against the number of channels a statistical multiplexer provides, for forty sources each active twenty percent of the time. The curve is the exact binomial upper tail on a logarithmic axis, falling from about forty percent at eight channels through 1.94 percent at thirteen channels to five parts per million at twenty channels.](/courses/fe-ee/figures/com4-statmux-gain.svg)
+
+### Worked example 8B — how much to over-provision
+
+Take the same forty sources. The mean demand is
+
+$$E[K] = 40 \\times 0.2 = 8, \\qquad \\sigma = \\sqrt{40 \\times 0.2 \\times 0.8} = 2.5298$$
+
+Summing the exact binomial tail at several link sizes:
+
+| Channels provided | Overflow probability | Headroom above the mean |
+|---|---|---|
+| 8 | 40.69% | 0 |
+| 10 | 16.08% | 0.79 sigma |
+| 12 | 4.324% | 1.58 sigma |
+| 13 | 1.941% | 1.98 sigma |
+| 14 | 0.7916% | 2.37 sigma |
+| 16 | 0.0991% | 3.16 sigma |
+| 20 | 0.000503% | 4.74 sigma |
+
+Thirteen channels — 832 kbit/s rather than the 2560 kbit/s a synchronous
+multiplexer would need — hold the overflow probability under two percent. The
+realised gain is therefore
+
+$$G_{\\mathrm{realised}} = 2560/832 = 3.0769$$
+
+not the 5 that the mean promised. The difference between 5 and 3.077 is the
+price of reliability, and quoting the first number without the second is the
+most common way this subject is misrepresented.
+
+## 8.3 Where the overflow goes: the queue
+
+An overflow does not have to be a lost bit. A statistical multiplexer holds the
+excess in a buffer and sends it when a slot frees up, which converts a loss
+into a delay. Modelling the multiplexer as a single server with Poisson
+arrivals and exponential service times gives the standard result
+
+$$\\rho = \\frac{\\lambda}{\\mu}, \\qquad L = \\frac{\\rho}{1 - \\rho}, \\qquad W = \\frac{1}{\\mu - \\lambda}$$
+
+with lambda the arrival rate, mu the service rate, and rho the utilisation. The
+shape of that expression is the whole engineering lesson: delay is finite for
+any rho below one and unbounded as rho approaches one, so a link loaded at its
+average throughput has infinite queueing delay in the limit.
+
+### Worked example 8C — delay against loading
+
+A multiplexer serves 1000 packets per second. Feed it 500, then 800, then 950.
+
+$$W_{500} = \\frac{1}{1000 - 500} = 2.0\\ \\mathrm{ms}, \\qquad \\rho = 0.5$$
+
+$$W_{800} = \\frac{1}{1000 - 800} = 5.0\\ \\mathrm{ms}, \\qquad \\rho = 0.8$$
+
+$$W_{950} = \\frac{1}{1000 - 950} = 20.0\\ \\mathrm{ms}, \\qquad \\rho = 0.95$$
+
+Raising the load from 50% to 95% — not quite doubling the traffic — multiplies
+the delay by ten. The mean queue lengths tell the same story: 1.0, 4.0 and 19.0
+packets waiting. A synchronous multiplexer has none of this behaviour: its
+delay is fixed at one frame period whatever the traffic, because the slot is
+reserved. That is the trade in one sentence. **Synchronous time division buys
+constant delay with wasted capacity; statistical time division buys capacity
+with variable delay.**
+
+| Property | Synchronous TDM | Statistical TDM |
+|---|---|---|
+| Link sized for | Sum of peak rates | Aggregate average plus headroom |
+| Slot assignment | Fixed, by position | Dynamic, by demand |
+| Idle source | Empty slot transmitted | Slot given to somebody else |
+| Delay | One frame period, constant | Load dependent, unbounded near full |
+| Overhead | One framing pattern per frame | An address or label per burst |
+| Failure mode | None; capacity is guaranteed | Buffer overflow or growing delay |`,
+      examTip: `Multiplexing gain is the reciprocal of the duty cycle and nothing else. If a question then asks for a link size at a stated reliability, that is a binomial tail, not a mean — and the realised gain will be well below the reciprocal of the duty cycle.`,
+      importantNote: `Queueing delay grows without bound as utilisation approaches one. A statistical multiplexer loaded exactly at its average throughput is not adequately provisioned; it is critically loaded, and the buffer it needs is unbounded.`,
+    },
+    { id: 'mux-wdm-grid', title: '9. WDM and the Optical Channel Grid',
+      content: `## 9.1 A grid defined in frequency, sold in wavelength
+
+Wavelength division multiplexing is frequency division carried out at about
+193 terahertz. The confusion it causes is entirely a units problem: the channel
+plan is specified as a uniform grid in FREQUENCY, while the hardware, the
+fibre loss curve and the catalogue are all described in WAVELENGTH. The two are
+related by
+
+$$\\lambda = \\frac{c}{f}$$
+
+and a uniform step in one is therefore not a uniform step in the other.
+Differentiating gives the conversion the exam wants:
+
+$$\\frac{d\\lambda}{df} = -\\frac{c}{f^{2}} = -\\frac{\\lambda^{2}}{c}$$
+
+$$\\lvert \\Delta\\lambda \\rvert \\approx \\frac{\\lambda^{2}}{c}\\,\\Delta f$$
+
+The minus sign says only that wavelength falls as frequency rises; the
+magnitude is what gets used. The approximation is excellent here because a
+100 GHz step is about half a part in two thousand of the carrier.
+
+![The 100 GHz optical grid drawn across the C band as a comb of wavelengths, showing that a grid evenly spaced in frequency is unevenly spaced in wavelength, above a log-log plot of wavelength spacing against frequency spacing at 1552.5 nm running from 0.100 nm at 12.5 GHz to 1.606 nm at 200 GHz.](/courses/fe-ee/figures/com4-wdm-grid.svg)
+
+### Worked example 9A — converting a grid spacing
+
+At the 193.1 THz anchor, the wavelength is
+
+$$\\lambda = \\frac{2.9979 \\times 10^{8}}{193.1 \\times 10^{12}} = 1.5525\\ \\mu\\mathrm{m}$$
+
+For a 100 GHz channel spacing,
+
+$$\\Delta\\lambda = \\frac{(1.5525 \\times 10^{-6})^{2}}{2.9979 \\times 10^{8}} \\times 100 \\times 10^{9} = 8.04 \\times 10^{-10}\\ \\mathrm{m}$$
+
+which is 0.804 nm, the familiar 0.8 nm of the dense grid. The exact difference
+of the two wavelengths, computed without the derivative, is 0.8036 nm — the
+approximation is high by about one part in two thousand, which is nothing here
+and would matter only across a very wide span.
+
+Repeating the conversion at the other standard spacings:
+
+| Frequency spacing | Wavelength spacing at 1552.5 nm | Channels across the C band |
+|---|---|---|
+| 200 GHz | 1.606 nm | 21 |
+| 100 GHz | 0.804 nm | 43 |
+| 50 GHz | 0.402 nm | 87 |
+| 25 GHz | 0.201 nm | 175 |
+| 12.5 GHz | 0.100 nm | 350 |
+
+### Worked example 9B — how many channels the C band holds
+
+The conventional band runs from 1530 nm to 1565 nm. Convert both edges to
+frequency and subtract:
+
+$$f_{\\mathrm{hi}} = \\frac{2.9979 \\times 10^{8}}{1530 \\times 10^{-9}} = 195.94\\ \\mathrm{THz}$$
+
+$$f_{\\mathrm{lo}} = \\frac{2.9979 \\times 10^{8}}{1565 \\times 10^{-9}} = 191.56\\ \\mathrm{THz}$$
+
+$$\\Delta f = 195.94 - 191.56 = 4.38\\ \\mathrm{THz}$$
+
+$$N_{100} = 4.38/0.1 = 43.8 \\to 43\\ \\mathrm{channels}$$
+
+Halving the grid to 50 GHz doubles that to 87. Note that the same 35 nm of
+wavelength gives 4.38 THz here but would give a different frequency span at a
+different centre — another reason the standard is written in frequency.
+
+### Worked example 9C — the capacity a fibre carries
+
+Take the 43 channels of the 100 GHz grid, each carrying 100 Gbit/s.
+
+$$C_{\\mathrm{fibre}} = 43 \\times 100 = 4300\\ \\mathrm{Gbit/s}$$
+
+Move to the 50 GHz grid at the same per-channel rate and it doubles to
+8.7 Tbit/s. The spectral efficiency implied is
+
+$$\\eta_{\\mathrm{opt}} = \\frac{100 \\times 10^{9}}{50 \\times 10^{9}} = 2.0\\ \\mathrm{bit/s/Hz}$$
+
+which is a number the Shannon chapter can be asked to justify: 2 bit/s/Hz
+requires an optical signal-to-noise ratio of at least 3, or 4.77 dB, and real
+coherent systems run well above that. The grid, in other words, is not an
+arbitrary convention — it is the width at which a chosen modulation and a
+chosen noise budget happen to fit.
+
+## 9.2 Where WDM differs from radio FDM
+
+The physics is identical and the engineering is not. An optical channel is
+separated by a thin-film filter or an arrayed waveguide rather than by a
+crystal filter, and the guard band is set by laser wavelength drift and filter
+passband shape rather than by adjacent-channel emission. Coarse plans widen the
+grid until the components become cheap:
+
+| Scheme | Typical spacing | Spacing in nm at 1550 nm | Cooling required |
+|---|---|---|---|
+| Coarse WDM | 2500 GHz | 20 nm | No |
+| Dense WDM, wide grid | 200 GHz | 1.6 nm | Yes |
+| Dense WDM, standard | 100 GHz | 0.8 nm | Yes |
+| Dense WDM, narrow | 50 GHz | 0.4 nm | Yes, tightly |
+
+The 20 nm of a coarse plan is roughly 2500 GHz, wide enough that an uncooled
+laser may wander with temperature and still stay inside its slot. That is the
+entire reason coarse plans exist, and it is the same argument as the radio
+guard band: the guard is as wide as the transmitter is uncertain.`,
+      examTip: `Convert an optical spacing with delta-lambda = (lambda squared over c) times delta-f. At 1550 nm the useful shortcut is that 100 GHz is 0.8 nm, and every other standard spacing scales linearly from it.`,
+      importantNote: `The optical grid is uniform in FREQUENCY, so its wavelength steps are not equal: at 1530 nm a 100 GHz step is 0.780 nm and at 1565 nm the same step is 0.817 nm. Treating the grid as uniform in wavelength introduces a five percent error across the C band.`,
+    },
+    { id: 'mux-cdma-codes', title: '10. CDMA: Users Separated by Correlation',
+      content: `## 10.1 Sharing everything, and telling users apart afterwards
+
+Frequency division separates users before transmission by giving each a private
+band. Time division separates them before transmission by giving each a private
+instant. Code division does neither: every user transmits over the whole band
+for the whole time, and the separation happens in the receiver, arithmetically.
+What makes that possible is a set of sequences whose pairwise correlations
+vanish.
+
+Give user k a sequence c_k of L chips, each plus or minus one, and let it send
+data bit b_k by transmitting b_k c_k. The air carries the sum of everything:
+
+$$r[i] = \\sum_{k=1}^{K} b_k c_k[i] + n[i]$$
+
+There are no labels in that sum. To recover user j, the receiver correlates
+against user j's own sequence and normalises:
+
+$$\\hat{b}_j = \\frac{1}{L}\\sum_{i=1}^{L} r[i]\\, c_j[i] = \\frac{1}{L}\\sum_{k=1}^{K} b_k \\left(\\sum_{i=1}^{L} c_k[i] c_j[i]\\right) + \\frac{1}{L}\\sum_{i=1}^{L} n[i] c_j[i]$$
+
+Every unwanted term carries the inner product of two different codes. If the
+code set is orthogonal, meaning
+
+$$\\sum_{i=1}^{L} c_k[i]\\, c_j[i] = L\\,\\delta_{kj}$$
+
+then every unwanted term is exactly zero and only user j's own bit survives.
+That is the entire mechanism, and it is worth noticing that nothing was
+filtered, gated or switched.
+
+## 10.2 Building a code set: Walsh sequences
+
+The standard orthogonal set is generated by doubling a matrix:
+
+$$H_1 = [\\,1\\,], \\qquad H_{2N} = \\begin{bmatrix} H_N & H_N \\\\ H_N & -H_N \\end{bmatrix}$$
+
+Each doubling preserves orthogonality, because the inner product of two rows
+from the top half is twice what it was, and the inner product of a top row with
+a bottom row is the old inner product minus itself. Three doublings give the
+eight codes below, written as sign patterns:
+
+| Code | Chip pattern | Sign changes |
+|---|---|---|
+| W0 | + + + + + + + + | 0 |
+| W1 | + - + - + - + - | 7 |
+| W2 | + + - - + + - - | 3 |
+| W3 | + - - + + - - + | 4 |
+| W4 | + + + + - - - - | 1 |
+| W5 | + - + - - + - + | 6 |
+| W6 | + + - - - - + + | 2 |
+| W7 | + - - + - + + - | 5 |
+
+The sign-change count is the sequence ordering used in practice, and it doubles
+as a check: a set of eight orthogonal binary codes of length eight must contain
+exactly one code with each of the eight possible sign-change counts.
+
+![The eight-by-eight Walsh correlation matrix, every diagonal entry exactly one and every off-diagonal entry exactly zero, beside the chip sequence four users produce on the air, a stream reading zero, four, zero, zero, zero, zero, four, zero with no user labels in it.](/courses/fe-ee/figures/com4-walsh-corr.svg)
+
+### Worked example 10A — four users through one chip stream
+
+Users take codes W0, W3, W5 and W6 and send bits +1, -1, -1 and +1. The air
+carries their sum, chip by chip:
+
+$$r = (+1)W_0 + (-1)W_3 + (-1)W_5 + (+1)W_6$$
+
+$$r = [\\,0,\\ 4,\\ 0,\\ 0,\\ 0,\\ 0,\\ 4,\\ 0\\,]$$
+
+Six of the eight chips are zero. Nothing in that sequence says who transmitted,
+how many transmitted, or what any of them sent. Now correlate:
+
+$$\\hat{b}_0 = \\frac{1}{8}(0 + 4 + 0 + 0 + 0 + 0 + 4 + 0) = +1$$
+
+$$\\hat{b}_3 = \\frac{1}{8}(0 - 4 + 0 + 0 + 0 + 0 - 4 + 0) = -1$$
+
+$$\\hat{b}_5 = \\frac{1}{8}(0 - 4 + 0 + 0 + 0 + 0 - 4 + 0) = -1$$
+
+$$\\hat{b}_6 = \\frac{1}{8}(0 + 4 + 0 + 0 + 0 + 0 + 4 + 0) = +1$$
+
+All four bits come back exactly, from one stream, with no filtering. The four
+codes nobody used are equally informative:
+
+$$\\hat{b}_1 = \\frac{1}{8}(0 - 4 + 0 + 0 + 0 + 0 + 4 + 0) = 0$$
+
+$$\\hat{b}_7 = \\frac{1}{8}(0 - 4 + 0 + 0 + 0 + 0 + 4 + 0) = 0$$
+
+A receiver assigned an idle code sees exactly nothing, which is what "the users
+do not interfere" means when it is stated precisely.
+
+### Worked example 10B — what spreading costs and what it buys
+
+Spreading a bit over L chips multiplies the occupied bandwidth by L, and the
+correlator recovers exactly that factor as processing gain:
+
+$$G_p = \\frac{B_{\\mathrm{spread}}}{B_{\\mathrm{data}}} = \\frac{R_c}{R_b} = L$$
+
+For a 1.2288 Mchip/s carrier holding a 9.6 kbit/s stream,
+
+$$G_p = 1228800/9600 = 128$$
+
+$$10\\log_{10}(G_p) = 10\\log_{10}(128) = 21.07\\ \\mathrm{dB}$$
+
+and for a 3.84 Mchip/s carrier holding a 64 kbit/s stream,
+
+$$G_p = 3840000/64000 = 60, \\qquad 10\\log_{10}(60) = 17.78\\ \\mathrm{dB}$$
+
+The wider chip rate does not automatically win: gain is the RATIO, so the
+higher data rate in the second case gives it less protection despite the wider
+spectrum.
+
+### Worked example 10C — how many users the interference floor allows
+
+Because unwanted users only vanish when their codes are exactly orthogonal at
+the receiver, a real link treats them as noise and asks how many fit under the
+required energy per bit:
+
+$$\\frac{E_b}{N_0} = \\frac{G_p}{K - 1}$$
+
+$$K = 1 + \\frac{G_p}{(E_b/N_0)_{\\mathrm{req}}} = 1 + 128/7 = 19.286 \\to 19\\ \\mathrm{users}$$
+
+Section 5 already computed this and then corrected it for voice activity and
+neighbouring cells. The point to carry forward is structural: the denominator
+is a required quality, so a CDMA cell trades users against link quality
+continuously, with no slot count anywhere in the arithmetic.
+
+## 10.3 What breaks orthogonality, and why power control follows
+
+Walsh codes are orthogonal only when the correlation is taken over the same
+chip window. Shift one user's sequence by even a single chip and its inner
+product with another is generally not zero. On the downlink every signal leaves
+the same transmitter and arrives aligned, so Walsh orthogonality holds. On the
+uplink the users are scattered, arrive at different delays, and orthogonality is
+lost; systems therefore overlay long pseudo-noise sequences whose correlations
+are small but not zero, and accept the residue as interference.
+
+That residue is what makes the near-far problem fatal rather than merely
+inconvenient. With a residual cross-correlation of even 1/L, a user arriving
+21 dB stronger contributes as much to the correlator output as the wanted
+signal does. The remedy is not a better code; it is closed-loop power control
+that equalises every arriving signal at the base station.
+
+| Separation mechanism | What enforces it | What breaks it |
+|---|---|---|
+| FDM | Filter selectivity | Transmitter spectral regrowth |
+| TDM | Frame timing | Clock drift and propagation delay spread |
+| CDM, synchronous | Exact code orthogonality | Any chip misalignment |
+| CDM, asynchronous | Low cross-correlation, not zero | Power imbalance between users |`,
+      examTip: `Processing gain is a ratio of rates, chip rate over data rate, and its decibel value is 10 log10 of that ratio. To check an orthogonal code claim, just multiply the two sign patterns chip by chip and add: an orthogonal pair sums to zero, and a code correlated with itself sums to the code length.`,
+      importantNote: `Walsh codes are orthogonal only when perfectly aligned. That holds on a downlink, where one transmitter sends everything, and fails on an uplink, where users arrive at different delays — which is why the uplink needs power control and the downlink needs much less of it.`,
+    },
+    { id: 'mux-ofdm-integral', title: '11. OFDM: Orthogonality from the Integral',
+      content: `## 11.1 Where the subcarrier spacing comes from
+
+OFDM divides a wide channel among many narrow subcarriers whose spectra
+overlap. That sounds like a mistake until the orthogonality condition is
+written down, because the subcarriers are separable despite the overlap. Take
+two of them over one symbol window of length T_u and form the inner product:
+
+$$I_{km} = \\frac{1}{T_u}\\int_{0}^{T_u} e^{\\,j 2\\pi k \\Delta f\\, t}\\, e^{-j 2\\pi m \\Delta f\\, t}\\, dt$$
+
+$$I_{km} = \\frac{1}{T_u}\\int_{0}^{T_u} e^{\\,j 2\\pi (k-m) \\Delta f\\, t}\\, dt = \\frac{e^{\\,j 2\\pi (k-m)\\Delta f T_u} - 1}{j 2\\pi (k-m) \\Delta f\\, T_u}$$
+
+The numerator vanishes whenever the exponent is a whole multiple of two pi,
+which happens for every non-zero k - m provided
+
+$$\\Delta f\\, T_u = 1 \\qquad \\Longleftrightarrow \\qquad \\Delta f = \\frac{1}{T_u}$$
+
+That single condition is all of OFDM. Writing the result for a general spacing
+makes the tolerance visible:
+
+$$\\lvert I_{km} \\rvert = \\left\\lvert \\mathrm{sinc}\\big((k-m)\\Delta f\\, T_u\\big) \\right\\rvert, \\qquad \\mathrm{sinc}(x) = \\frac{\\sin \\pi x}{\\pi x}$$
+
+![Three overlapping subcarrier spectra of sinc shape, each peaking exactly where the others are zero, above a plot of the magnitude of the normalised inner product against subcarrier separation, which is zero at every integer multiple of the reciprocal symbol time and rises to 0.212 at a half-integer separation.](/courses/fe-ee/figures/com4-ofdm-orthogonality.svg)
+
+The lower panel is the tolerance budget. At exactly the right spacing the leak
+is zero; at a spacing half a bin wrong it is
+
+$$\\lvert I \\rvert = \\lvert \\mathrm{sinc}(1.5) \\rvert = \\frac{2}{3\\pi} = 0.2122$$
+
+which is 13.5 dB of inter-carrier interference and enough to close a
+high-order constellation. That is why carrier frequency offset and Doppler are
+the dominant impairments in an OFDM receiver: they move the sampling comb off
+the nulls.
+
+### Worked example 11A — a 20 MHz channel with a 64-point transform
+
+$$\\Delta f = \\frac{20\\ \\mathrm{MHz}}{64} = 312.5\\ \\mathrm{kHz}$$
+
+$$T_u = \\frac{1}{\\Delta f} = \\frac{1}{312500} = 3.2\\ \\mu\\mathrm{s}$$
+
+Adding a 0.8 microsecond cyclic prefix gives a symbol period of 4.0 microsecond,
+so the symbol rate is 250 000 per second. With 48 of the 64 bins carrying data,
+64-QAM on each and a rate-3/4 code,
+
+$$R_{\\mathrm{sym}} = 48 \\times 6 \\times 0.75 = 216\\ \\mathrm{bit/symbol}$$
+
+$$R_b = 216/0.000004 = 54000000\\ \\mathrm{bit/s}$$
+
+which is exactly the top rate of that generation of wireless LAN. Every number
+in the standard follows from the transform size and the channel width.
+
+### Worked example 11B — what the cyclic prefix costs and buys
+
+The prefix is a copy of the tail of each symbol pasted onto its front. Any echo
+arriving within the prefix therefore lands inside the same symbol and adds
+vectorially instead of smearing into the next one. Its cost is pure overhead:
+
+$$\\eta_{\\mathrm{CP}} = \\frac{T_u}{T_u + T_g} = 3.2/4.0 = 0.8$$
+
+so 20% of the air time carries no new information. Its benefit is a delay-spread
+tolerance measured in metres of extra path:
+
+$$d_{\\max} = c\\, T_g = 3.00 \\times 10^{8} \\times 0.8 \\times 10^{-6} = 240\\ \\mathrm{m}$$
+
+Indoors that is ample, which is why the number was chosen. An outdoor cell
+needs far more, and gets it by choosing a much narrower spacing: at 15 kHz,
+
+$$T_u = \\frac{1}{15000} = 66.67\\ \\mu\\mathrm{s}$$
+
+A half-millisecond slot holding seven such symbols leaves
+
+$$T_{g,\\mathrm{total}} = 500 - 7 \\times 66.67 = 33.3\\ \\mu\\mathrm{s}$$
+
+for prefixes, an overhead of 6.67% and an average guard of 4.76 microsecond per
+symbol, worth about 1430 m of echo. Narrower subcarriers buy multipath immunity
+and pay for it in sensitivity to frequency offset, since the offset that matters
+is measured as a fraction of the spacing.
+
+The full efficiency of the air interface multiplies the two independent losses:
+
+$$\\eta_{\\mathrm{air}} = \\frac{48}{64} \\times \\frac{3.2}{4.0} = 0.75 \\times 0.8 = 0.60$$
+
+Sixteen of the 64 bins are spent on the direct-current bin and on the band edges
+where the transmit mask must roll off, and a fifth of the time is spent on
+prefix, so only 60% of the raw time-bandwidth product is available before any
+coding is applied.
+
+### Worked example 11C — peak-to-average power, the price of the sum
+
+An OFDM symbol is the sum of many independently modulated subcarriers. When
+their phases happen to line up the amplitudes add coherently, so the peak power
+of a symbol with N loaded subcarriers can reach
+
+$$\\mathrm{PAPR}_{\\max} = N \\quad \\Longrightarrow \\quad 10\\log_{10}(48) = 16.81\\ \\mathrm{dB}$$
+
+for the 48 loaded bins above. That ceiling is real but astronomically unlikely,
+because it requires every subcarrier to carry the same phase. What matters is
+the distribution.
+
+![Two measured distributions of peak-to-average power ratio for twenty thousand random symbols on 48 subcarriers, one sampled at the Nyquist rate and one eight times oversampled, with the Gaussian tail approximation drawn as a dashed reference; the oversampled median sits at 7.14 dB and one symbol in a hundred exceeds about 9.67 dB.](/courses/fe-ee/figures/com4-papr-ccdf.svg)
+
+Modelling the time samples as complex Gaussian gives the tail form
+
+$$P(\\mathrm{PAPR} > z) \\approx 1 - \\left(1 - e^{-z}\\right)^{N}$$
+
+At z = 9 dB, that is 1.69% of symbols, and the measurement at the Nyquist rate
+lands on the same figure. The oversampled measurement — which is what a power
+amplifier actually meets, since the analogue waveform peaks between samples —
+gives 4.07% at the same threshold and a median 0.55 dB higher. So a designer
+sizing an amplifier for OFDM must back off roughly 8 to 10 dB from saturation,
+against 3 dB or less for a constant-envelope scheme. **That back-off, not the
+transform, is the real cost of OFDM.**
+
+| Parameter | 20 MHz, 64-point | 10 MHz, 1024-point | 20 MHz, 15 kHz spacing |
+|---|---|---|---|
+| Subcarrier spacing | 312.5 kHz | 9.7656 kHz | 15 kHz |
+| Useful symbol time | 3.2 microsecond | 102.4 microsecond | 66.67 microsecond |
+| Guard interval | 0.8 microsecond | 6.4 microsecond | 4.76 microsecond |
+| Prefix overhead | 20% | 5.882% | 6.67% |
+| Echo tolerance | 240 m | 1920 m | 1430 m |`,
+      examTip: `Only one relationship matters for OFDM: subcarrier spacing equals the reciprocal of the useful symbol time. Everything else in a standard follows from that, the transform size and the channel width. Cyclic-prefix overhead is guard divided by TOTAL symbol time, not by the useful time.`,
+      importantNote: `The cyclic prefix carries no new information, so it is pure overhead — but it converts a multipath channel into a set of independent flat subchannels, which is what allows a one-tap equaliser per subcarrier. Paying 20% of the air time to delete the equaliser is usually the right trade.`,
+    },
+    { id: 'mux-access-compare', title: '12. Multiple Access on One Yardstick',
+      content: `## 12.1 Making the comparison fair before making it
+
+Comparisons of FDMA, TDMA, CDMA and OFDMA are usually a list of adjectives.
+They become arithmetic as soon as three things are fixed and held: the total
+bandwidth W, the noise density N0, and the received power P per user. One
+dimensionless quantity then describes the whole setting,
+
+$$\\gamma = \\frac{P}{N_0 W}$$
+
+which is the signal-to-noise ratio a single user would enjoy if it occupied the
+entire band by itself. Every scheme is now asked the same question: with K
+users present, what rate does each one get?
+
+**FDMA.** Each user owns W/K hertz continuously. Its noise falls in proportion
+to its narrower band, so its ratio rises to K gamma:
+
+$$R_{\\mathrm{FDMA}} = \\frac{W}{K}\\log_{2}\\!\\left(1 + K\\gamma\\right)$$
+
+**TDMA.** Each user owns all of W for a fraction 1/K of the time. Holding the
+AVERAGE power at P means the burst power is K P, so the burst ratio is again
+K gamma, and averaging the burst rate over the duty cycle gives
+
+$$R_{\\mathrm{TDMA}} = \\frac{1}{K}\\,W\\log_{2}\\!\\left(1 + K\\gamma\\right)$$
+
+which is the same expression. **On a common power and bandwidth basis, FDMA and
+TDMA deliver identical rates.** The two differ in hardware, latency, and peak
+power demand, not in capacity.
+
+**OFDMA.** A user is assigned a set of subcarriers rather than a contiguous
+band. Because the subcarriers are already orthogonal, no guard band is needed
+between users, but the partition is still a partition, so the ideal expression
+is the FDMA one. Its advantage is granularity and the absence of inter-user
+guard bands, not a different capacity law.
+
+**CDMA.** Every user occupies all of W all of the time, and the other K - 1
+users land inside the correlator as interference:
+
+$$R_{\\mathrm{CDMA}} = W\\log_{2}\\!\\left(1 + \\frac{\\gamma}{1 + (K-1)\\gamma}\\right)$$
+
+![Per-user rate against the number of users sharing one 1.25 MHz carrier, with the orthogonal schemes on one curve and CDMA on a lower one, above the total delivered rate showing orthogonal access climbing steadily while the CDMA total saturates at 1.803 Mbps.](/courses/fe-ee/figures/com4-access-compare.svg)
+
+### Worked example 12A — twenty users on a 1.25 MHz carrier
+
+Take W = 1.25 MHz and gamma = 0.5, so a lone user would see -3.01 dB across the
+whole band. With K = 20:
+
+$$R_{\\mathrm{FDMA}} = \\frac{1250000}{20}\\log_{2}(1 + 20 \\times 0.5) = 62500 \\times 3.4594 = 216.21\\ \\mathrm{kbit/s}$$
+
+$$R_{\\mathrm{TDMA}} = \\frac{1}{20}\\times 1250000 \\times 3.4594 = 216.21\\ \\mathrm{kbit/s}$$
+
+$$R_{\\mathrm{CDMA}} = 1250000 \\times \\log_{2}\\!\\left(1 + \\frac{0.5}{1 + 9.5}\\right) = 1250000 \\times 0.067114 = 83.89\\ \\mathrm{kbit/s}$$
+
+Each orthogonal user sees 20 times 0.5 = 10, or 10.00 dB, in its own narrow
+band; the CDMA user sees 0.047619, or -13.22 dB, because nineteen neighbours
+are inside its correlator. The orthogonal schemes deliver 2.58 times the rate.
+
+### Worked example 12B — the one user case, as a check
+
+Set K = 1 in both expressions. The interference term disappears and the
+partition becomes the whole band:
+
+$$R_{\\mathrm{FDMA}}(1) = 1250000 \\times \\log_{2}(1.5) = 731.20\\ \\mathrm{kbit/s}$$
+
+$$R_{\\mathrm{CDMA}}(1) = 1250000 \\times \\log_{2}(1.5) = 731.20\\ \\mathrm{kbit/s}$$
+
+They agree exactly, as they must — with one user there is no access scheme, only
+a channel. Any comparison that fails this check has an inconsistent power or
+bandwidth assumption hiding in it.
+
+### Worked example 12C — where the totals end up
+
+Multiply each per-user rate by the user count. For orthogonal access the total
+is W log2(1 + K gamma), which keeps rising:
+
+$$C_{\\mathrm{orth}}(20) = 1250000 \\times \\log_{2}(11) = 4.3243\\ \\mathrm{Mbit/s}$$
+
+For CDMA the total approaches a ceiling. As K grows the interference term
+dominates and the argument of the logarithm approaches 1 + 1/(K-1), so
+
+$$\\lim_{K \\to \\infty} K\\,R_{\\mathrm{CDMA}} = \\frac{W}{\\ln 2} = 1250000/0.693147 = 1.8034\\ \\mathrm{Mbit/s}$$
+
+At twenty users CDMA already delivers 1.6779 Mbit/s, which is 93% of everything
+it will ever deliver, while orthogonal access at the same point has delivered
+4.3243 Mbit/s and is still climbing.
+
+This is not an argument that CDMA is a bad idea. It is an argument that its
+advantages lie elsewhere: universal frequency reuse, soft handover, graceful
+overload, and immunity to narrowband interference. Judged purely on rate under
+a fixed power and bandwidth budget, orthogonal access wins, and the schemes that
+survived in modern standards are the orthogonal ones.
+
+| Scheme | Band per user | Time per user | Interference inside the receiver | Rate at K = 20 |
+|---|---|---|---|---|
+| FDMA | W/K | All | None | 216.21 kbit/s |
+| TDMA | W | 1/K | None | 216.21 kbit/s |
+| OFDMA | Subcarrier subset | All or scheduled | None | 216.21 kbit/s |
+| CDMA | W | All | K - 1 users | 83.89 kbit/s |`,
+      examTip: `Before comparing access schemes, fix the total bandwidth, the noise density and the per-user power, then write each rate from Shannon. FDMA and TDMA come out identical; only CDMA differs, because only CDMA leaves the other users inside the receiver.`,
+      importantNote: `A TDMA burst must carry K times the average power to match an FDMA user's rate. That peak-power demand, not the capacity, is the real engineering difference between them, and it is why TDMA handsets have a harder amplifier problem.`,
+    },
+    { id: 'mux-problems-a', title: '13. Problem Set A: Frames, Bands and Buffers',
+      content: `## 13.1 Practice problems, worked answers below
+
+Work each one to a number before reading on. Every answer here comes from a
+relationship stated earlier in this chapter.
+
+**A1.** Eight channels of 200 kHz are stacked with 25 kHz guard bands between
+neighbours. Find the total bandwidth and the payload share.
+
+**A2.** What fraction of a T1 line rate is spent on framing?
+
+**A3.** Sixteen 64 kbit/s sources share a frame with one framing bit. Find the
+frame length, the line rate and the efficiency.
+
+**A4.** Find the slot time and the bit time of an E1 frame.
+
+**A5.** Forty sources are each active 20% of the time. A statistical multiplexer
+provides thirteen channels. Find the mean demand and the probability that demand
+exceeds supply.
+
+**A6.** A statistical multiplexer serves 1000 packets per second and is offered
+950. Find the mean waiting time and the mean number in the system.
+
+**A7.** Four channels of 6 MHz are stacked with 250 kHz guard bands. Find the
+total bandwidth and the payload share.
+
+**A8.** A T1 borrows the least significant bit of every sixth sample for
+signalling. What is the resulting usable voice rate per channel?
+
+## 13.2 Answers
+
+**A1.** Seven gaps, not eight:
+
+$$B_{\\mathrm{total}} = 8 \\times 200 + 7 \\times 25 = 1775\\ \\mathrm{kHz}$$
+
+$$\\eta = 1600/1775 = 0.90141$$
+
+**A2.** One bit per 193, or 8 kbit/s of 1544 kbit/s:
+
+$$\\eta_{\\mathrm{overhead}} = 1/193 = 0.00518135$$
+
+which is 0.518%.
+
+**A3.** Sixteen slots of eight bits plus one:
+
+$$N_f = 16 \\times 8 + 1 = 129\\ \\mathrm{bits}$$
+
+$$R_{\\mathrm{line}} = 129 \\times 8000 = 1032000\\ \\mathrm{bit/s}$$
+
+$$\\eta = 128/129 = 0.992248$$
+
+**A4.** The frame is 125 microsecond and holds 32 slots:
+
+$$T_{\\mathrm{slot}} = \\frac{125}{32} = 3.90625\\ \\mu\\mathrm{s}, \\qquad T_{\\mathrm{bit}} = \\frac{1}{2048000} = 488.28\\ \\mathrm{ns}$$
+
+**A5.** The mean is n a and the overflow is the binomial upper tail:
+
+$$E[K] = 40 \\times 0.2 = 8, \\qquad P(K > 13) = 0.019407$$
+
+so 1.94% — under two percent on a link carrying 832 kbit/s instead of the
+2560 kbit/s a synchronous multiplexer would need.
+
+**A6.** With mu = 1000 and lambda = 950,
+
+$$W = \\frac{1}{1000 - 950} = 0.020\\ \\mathrm{s} = 20\\ \\mathrm{ms}$$
+
+$$L = \\frac{0.95}{1 - 0.95} = 19\\ \\mathrm{packets}$$
+
+**A7.** Three gaps:
+
+$$B_{\\mathrm{total}} = 4 \\times 6 + 3 \\times 0.25 = 24.75\\ \\mathrm{MHz}$$
+
+$$\\eta = 24/24.75 = 0.969697$$
+
+**A8.** One bit of eight is lost in one frame of six, so the average loss is
+1/6 of one bit per 8-bit sample:
+
+$$R_{\\mathrm{voice}} = 64 \\times \\left(1 - \\frac{1}{48}\\right) = 62.667\\ \\mathrm{kbit/s}$$
+
+For signalling purposes the channel is conventionally treated as 56 kbit/s,
+because a data application cannot rely on the robbed bit position at all and
+therefore uses only seven bits of every sample. That distinction — average loss
+against guaranteed availability — is the reason two different numbers are both
+quoted as correct.`,
+      examTip: `Every frame question reduces to the same three steps: get the frame rate from the sampling theorem, count the bits in one frame, multiply. Every band-plan question reduces to counting gaps.`,
+    },
+    { id: 'mux-problems-b', title: '14. Problem Set B: Codes, Carriers and Access',
+      content: `## 14.1 Practice problems, worked answers below
+
+**B1.** Using the Walsh-8 table, two users send on W2 and W4 with bits +1 and
+-1. Write the transmitted chip sequence and show that correlating with W6
+returns zero.
+
+**B2.** A 3.84 Mchip/s carrier holds a 64 kbit/s stream. Find the processing
+gain in ratio and in decibels.
+
+**B3.** A 10 MHz channel uses a 1024-point transform and a cyclic prefix one
+sixteenth of the useful symbol time. Find the subcarrier spacing, the useful
+symbol time, the guard interval and the prefix overhead.
+
+**B4.** Find the wavelength spacing of a 50 GHz optical grid at 1552.5 nm.
+
+**B5.** How many 25 GHz channels fit between 1530 nm and 1565 nm?
+
+**B6.** An OFDM symbol loads 256 subcarriers. What is the largest peak-to-average
+power ratio it could ever produce?
+
+**B7.** Twenty users share 1.25 MHz with gamma = 0.5. Compare the per-user rate
+under orthogonal access and under CDMA.
+
+**B8.** What total rate does CDMA approach on a 5 MHz carrier as the user count
+grows without limit?
+
+## 14.2 Answers
+
+**B1.** With W2 = + + - - + + - - and W4 = + + + + - - - -, the sum of
+(+1)W2 and (-1)W4 is
+
+$$r = [\\,0,\\ 0,\\ -2,\\ -2,\\ 2,\\ 2,\\ 0,\\ 0\\,]$$
+
+Correlating against W6 = + + - - - - + + gives
+
+$$\\hat{b}_6 = \\frac{1}{8}(0 + 0 + 2 + 2 - 2 - 2 + 0 + 0) = 0$$
+
+**B2.** Processing gain is a ratio of rates:
+
+$$G_p = 3840000/64000 = 60$$
+
+$$10\\log_{10}(60) = 17.78\\ \\mathrm{dB}$$
+
+**B3.** Spacing is the channel width over the transform size:
+
+$$\\Delta f = 10000000/1024 = 9765.625\\ \\mathrm{Hz}$$
+
+$$T_u = \\frac{1}{9765.625} = 102.4\\ \\mu\\mathrm{s}, \\qquad T_g = 102.4/16 = 6.4\\ \\mu\\mathrm{s}$$
+
+$$\\eta_{\\mathrm{CP}} = 6.4/108.8 = 0.058824$$
+
+so 5.88% of the air time is prefix, and the echo tolerance is
+6.4 microsecond times the speed of light, or 1920 m.
+
+**B4.** From the derivative form at 1552.5 nm:
+
+$$\\Delta\\lambda = \\frac{(1.5525 \\times 10^{-6})^{2}}{2.9979 \\times 10^{8}} \\times 50 \\times 10^{9} = 4.02 \\times 10^{-10}\\ \\mathrm{m}$$
+
+which is 0.402 nm, exactly half the 100 GHz figure, as a linear relationship
+requires.
+
+**B5.** The band spans 4.38 THz, so
+
+$$N_{25} = 4.38/0.025 = 175.2 \\to 175\\ \\mathrm{channels}$$
+
+**B6.** Every subcarrier in phase gives a peak equal to the loaded count:
+
+$$10\\log_{10}(256) = 24.08\\ \\mathrm{dB}$$
+
+Random data never approaches this: for 48 subcarriers the measured median was
+7.14 dB against a 16.81 dB ceiling.
+
+**B7.** From the two access expressions with K = 20 and gamma = 0.5:
+
+$$R_{\\mathrm{orth}} = 62500 \\times 3.4594 = 216.21\\ \\mathrm{kbit/s}$$
+
+$$R_{\\mathrm{CDMA}} = 1250000 \\times 0.067114 = 83.89\\ \\mathrm{kbit/s}$$
+
+a ratio of 2.58 in favour of orthogonal access.
+
+**B8.** The CDMA total saturates at the bandwidth divided by the natural
+logarithm of two:
+
+$$C_{\\infty} = \\frac{W}{\\ln 2} = 5000000/0.693147 = 7.2135\\ \\mathrm{Mbit/s}$$
+
+no matter how many users are added. Orthogonal access on the same carrier has
+no such ceiling, because its total is W log2(1 + K gamma).`,
+      examTip: `Check any code-division answer by correlating with a code nobody used: the result must be exactly zero. If it is not, either the code set is not orthogonal or the arithmetic slipped.`,
+      importantNote: `Cyclic-prefix overhead is the guard divided by the TOTAL symbol time, so a prefix of one sixteenth of the useful time is 1/17 of the symbol, or 5.88%, not 6.25%. That off-by-one denominator is the most common slip in OFDM arithmetic.`,
+    },
   ],
   keyTakeaways: [
     'FDM: separate frequency bands; total BW = sum + guard bands.',
@@ -5180,7 +6181,7 @@ This is the LINEAR regime. Most modern systems operate at SNR around 10-30 dB, w
 
 The fundamental SNR-per-bit limit is:
 
-  $$E_b / N_0 = \\ln  2 \\approx 0.693 = -1.59\\ \\mathrm{dB}$$
+  $$E_b / N_0 = \\ln  2 \\approx 0.693 \\to -1.59\\ \\mathrm{dB}$$
 
 This is the SHANNON LIMIT — no system can transmit information with E_b/N_0 below -1.59 dB without errors, regardless of bandwidth.
 
@@ -5560,6 +6561,1001 @@ two dBm figures and therefore has units of dB — subtracting a dBm from a dBm
 gives a ratio, never an absolute level.`,
       examTip: `Reconstruct a forgotten FSPL constant instead of guessing: metres to kilometres is 60 dB, MHz to GHz is another 60 dB. Or avoid constants entirely with FSPL = 20 log10(4 pi d / lambda), which is the definition and always right.`,
       importantNote: `Doubling either the distance or the frequency adds 6.02 dB of free-space loss. Both appear as 20 log10, so the two rules are the same rule — which is why moving a link from 2.4 GHz to 5.8 GHz costs 7.66 dB before any other effect is considered.`,
+    },
+    { id: 'sh-entropy', title: `5. Source Entropy and Coding Efficiency`,
+      content: `## 5.1 How much information is actually there
+
+Before asking what a channel can carry, it is worth asking how much the source
+is really producing. A source that emits one of six symbols is often described
+as producing log2(6) = 2.585 bits per symbol, but that is true only if the six
+are equally likely. When they are not, the surprising symbols carry more
+information than the common ones, and the average is smaller. The information
+content of one symbol of probability p is
+
+$$I(p) = \\log_{2}\\!\\left(\\frac{1}{p}\\right) = -\\log_{2} p$$
+
+and the entropy of the source is the average of that over its own distribution:
+
+$$H(X) = -\\sum_{k=1}^{M} p_k \\log_{2} p_k$$
+
+Entropy is measured in bits per symbol, it is never negative, and it is bounded
+above by the equiprobable case:
+
+$$0 \\le H(X) \\le \\log_{2} M$$
+
+with equality on the right only when every symbol is equally likely. The
+special case of two symbols is worth memorising, because it appears constantly:
+
+$$H_b(p) = -p\\log_{2} p - (1-p)\\log_{2}(1-p)$$
+
+$$H_b(0.5) = 1.000, \\qquad H_b(0.25) = 0.8113, \\qquad H_b(0.1) = 0.4690, \\qquad H_b(0.01) = 0.0808$$
+
+A binary source that is 99% predictable produces less than a tenth of a bit per
+symbol. Everything a compressor does follows from that observation.
+
+## 5.2 Coding to the entropy, and the efficiency of the attempt
+
+Shannon's source coding theorem says the average codeword length L of any
+uniquely decodable code satisfies
+
+$$L \\ge H(X)$$
+
+and that a code exists with
+
+$$H(X) \\le L < H(X) + 1$$
+
+Coding efficiency and redundancy measure how close a particular code came:
+
+$$\\eta_{\\mathrm{code}} = \\frac{H(X)}{L}, \\qquad r = 1 - \\eta_{\\mathrm{code}}$$
+
+Any prefix code — one in which no codeword begins another, so the decoder never
+needs to look ahead — obeys the Kraft inequality on its lengths:
+
+$$\\sum_{k=1}^{M} 2^{-\\ell_k} \\le 1$$
+
+with equality exactly when the code tree has no unused branch.
+
+![The ideal codeword length minus log base two of p compared with the Huffman length actually issued for each of six symbols, beside three bars giving the source entropy at 2.201 bits, the Huffman average length at 2.250 bits and a fixed three-bit code, so the coding efficiency reads 97.81 percent.](/courses/fe-ee/figures/com4-entropy-code.svg)
+
+### Worked example 5A — entropy of a six-symbol source
+
+A source emits six symbols with probabilities 0.40, 0.25, 0.15, 0.10, 0.06 and
+0.04. Its entropy is the probability-weighted sum of the individual surprises:
+
+$$H(X) = -[0.40\\log_{2}0.40 + 0.25\\log_{2}0.25 + 0.15\\log_{2}0.15 + 0.10\\log_{2}0.10 + 0.06\\log_{2}0.06 + 0.04\\log_{2}0.04]$$
+
+$$H(X) = 0.5288 + 0.5000 + 0.4105 + 0.3322 + 0.2435 + 0.1858 = 2.2008\\ \\mathrm{bit/symbol}$$
+
+The equiprobable bound for six symbols is log2(6) = 2.585, so this source is
+already 0.384 bits per symbol short of the maximum simply because it is
+lopsided. A fixed-length binary code needs
+
+$$\\ell_{\\mathrm{fixed}} = \\lceil \\log_{2} 6 \\rceil = 3\\ \\mathrm{bit/symbol}$$
+
+for an efficiency of only
+
+$$\\eta_{\\mathrm{fixed}} = 2.2008/3 = 0.73360$$
+
+### Worked example 5B — the Huffman code, and what it recovers
+
+Build the code by repeatedly merging the two least likely symbols. The merges
+run 0.04 with 0.06 to give 0.10, then 0.10 with 0.10 to give 0.20, then 0.15
+with 0.20 to give 0.35, then 0.25 with 0.35 to give 0.60, and finally 0.60 with
+0.40. Reading the branch labels back out gives lengths of 1, 2, 3, 4, 5 and 5
+bits.
+
+| Probability | Ideal length | Huffman length | Contribution |
+|---|---|---|---|
+| 0.40 | 1.322 | 1 | 0.400 |
+| 0.25 | 2.000 | 2 | 0.500 |
+| 0.15 | 2.737 | 3 | 0.450 |
+| 0.10 | 3.322 | 4 | 0.400 |
+| 0.06 | 4.059 | 5 | 0.300 |
+| 0.04 | 4.644 | 5 | 0.200 |
+
+$$L = 0.400 + 0.500 + 0.450 + 0.400 + 0.300 + 0.200 = 2.250\\ \\mathrm{bit/symbol}$$
+
+$$\\eta_{\\mathrm{code}} = 2.2008/2.250 = 0.97813, \\qquad r = 0.02187$$
+
+The Kraft sum for lengths 1, 2, 3, 4, 5, 5 is
+
+$$\\sum 2^{-\\ell_k} = 0.5 + 0.25 + 0.125 + 0.0625 + 0.03125 + 0.03125 = 1$$
+
+exactly, so the tree is full and no shorter assignment of these lengths exists.
+The bound is satisfied comfortably: 2.2008 is at or below 2.250, which is below
+3.2008.
+
+### Worked example 5C — what the coding is worth on the wire
+
+Suppose the source emits 10 000 symbols per second.
+
+$$R_{\\mathrm{fixed}} = 10000 \\times 3 = 30000\\ \\mathrm{bit/s}$$
+
+$$R_{\\mathrm{Huffman}} = 10000 \\times 2.250 = 22500\\ \\mathrm{bit/s}$$
+
+$$R_{\\mathrm{entropy}} = 10000 \\times 2.2008 = 22008\\ \\mathrm{bit/s}$$
+
+Huffman coding saved 25% of the line rate against the fixed code and came
+within 2.2% of the theoretical floor. To close the remaining 2.2% you must
+code blocks of symbols rather than single symbols, because the residual loss
+is entirely the rounding of each length up to an integer, and coding n symbols
+at a time divides that rounding by n:
+
+$$H(X) \\le \\frac{L_n}{n} < H(X) + \\frac{1}{n}$$
+
+### Worked example 5D — a source where the code is perfect
+
+Four symbols with probabilities 0.5, 0.25, 0.125 and 0.125.
+
+$$H(X) = 0.5(1) + 0.25(2) + 0.125(3) + 0.125(3) = 1.750\\ \\mathrm{bit/symbol}$$
+
+Every probability is a negative power of two, so every ideal length is already
+an integer and the Huffman lengths 1, 2, 3, 3 match them exactly:
+
+$$L = 1.750, \\qquad \\eta_{\\mathrm{code}} = 1.750/1.750 = 1$$
+
+This is the only circumstance under which a symbol-by-symbol code reaches the
+entropy: dyadic probabilities. Everything else leaves a rounding loss, which is
+why real compressors either work on blocks or abandon integer codeword lengths
+altogether.
+
+| Source | Entropy | Best symbol code | Efficiency | Where the loss goes |
+|---|---|---|---|---|
+| Six symbols, 5A | 2.2008 | 2.250 | 97.81% | Integer rounding |
+| Four dyadic, 5D | 1.7500 | 1.750 | 100% | None |
+| Binary, p = 0.1 | 0.4690 | 1.000 | 46.90% | One bit minimum per symbol |
+| Binary, p = 0.1, pairs | 0.4690 | 0.6450 | 72.71% | Halved rounding |
+
+The third row is the failure mode that motivates everything else: a
+symbol-by-symbol code cannot spend less than one bit on a symbol, so a highly
+predictable binary source is coded at more than twice its entropy. Grouping the
+bits into pairs — four composite symbols with probabilities 0.81, 0.09, 0.09
+and 0.01 — gives a Huffman code of lengths 1, 2, 3, 3 and an average of 1.29
+bits per pair, or 0.645 per original bit, which recovers more than half the
+loss in one step.`,
+      examTip: `Entropy is an average of log2(1/p) over the source's own distribution, so it is always at or below log2(M) and equals it only for equiprobable symbols. Coding efficiency is entropy divided by the average codeword length, never the other way round.`,
+      importantNote: `A code can never beat entropy and a symbol-by-symbol code can never spend less than one bit per symbol. Those two facts together explain why block coding exists: the gap between them is pure integer rounding, and blocking divides it by the block length.`,
+    },
+    { id: 'sh-terms', title: `6. Shannon-Hartley, Term by Term`,
+      content: `## 6.1 Reading the formula rather than reciting it
+
+$$C = B\\log_{2}\\!\\left(1 + \\frac{S}{N}\\right)$$
+
+Four things are worth extracting before any number is put in.
+
+**C is a rate, in bits per second, and it is a supremum.** It is the largest
+rate at which the error probability can be driven arbitrarily close to zero
+with unlimited coding complexity and delay. It is not a rate anyone achieves;
+it is the rate above which nobody can operate at all.
+
+**B is the noise-equivalent bandwidth of the channel, in hertz.** It multiplies
+the whole logarithm, so capacity is LINEAR in bandwidth. Doubling B doubles C,
+provided the signal-to-noise ratio is held fixed — and that proviso is the
+subtlety, because widening the band admits more noise.
+
+**S/N is a power ratio and it is LINEAR.** Substituting a decibel value here is
+the single most common error in this subject. Convert first:
+
+$$\\frac{S}{N} = 10^{(\\mathrm{SNR_{dB}}/10)}$$
+
+**The 1 inside the logarithm is not decoration.** It is what makes capacity
+vanish when the signal does, and it is what makes the low-SNR behaviour linear
+rather than logarithmic. Dropping it gives a formula that predicts negative
+capacity for a weak signal.
+
+Writing the noise explicitly as density times bandwidth exposes the tension:
+
+$$N = N_0 B \\qquad \\Longrightarrow \\qquad C = B\\log_{2}\\!\\left(1 + \\frac{P}{N_0 B}\\right)$$
+
+Now B appears twice, once multiplying and once dividing, and the two effects
+compete. That competition is the subject of the next two sections.
+
+![Capacity per hertz against signal-to-noise ratio in decibels, with the exact logarithmic curve between its two asymptotes: a straight low-SNR line of slope one in the linear ratio, and a high-SNR line rising one bit per hertz for every 3.01 dB, with markers at 20 dB reading 6.658 and at 30 dB reading 9.967 bits per second per hertz.](/courses/fe-ee/figures/com4-capacity-sweep.svg)
+
+## 6.2 The two regimes, and the rule of thumb each one gives
+
+At low signal-to-noise ratio the logarithm linearises:
+
+$$\\log_{2}(1+x) \\approx \\frac{x}{\\ln 2} \\quad (x \\ll 1) \\qquad \\Longrightarrow \\qquad C \\approx \\frac{B}{\\ln 2}\\cdot\\frac{S}{N} = 1.4427\\,B\\,\\frac{S}{N}$$
+
+Capacity is then proportional to power and independent of bandwidth in any
+useful sense, which is the regime deep-space links live in.
+
+At high signal-to-noise ratio the 1 becomes negligible and
+
+$$C \\approx B\\log_{2}\\!\\left(\\frac{S}{N}\\right) = \\frac{B}{10\\log_{10} 2}\\,\\mathrm{SNR_{dB}} = \\frac{B}{3.0103}\\,\\mathrm{SNR_{dB}}$$
+
+which is the famous rule: **every 3.01 dB of extra signal-to-noise ratio buys
+one more bit per second per hertz**, and only at high ratios. Below about 10 dB
+the exchange rate is much better than that, which is exactly why heavily coded
+low-rate systems are efficient.
+
+### Worked example 6A — the telephone channel
+
+A voiceband channel of 3 kHz at 30 dB.
+
+$$\\frac{S}{N} = 10^{3.0} = 1000$$
+
+$$C = 3000\\log_{2}(1001) = 3000 \\times 9.96723 = 29901.7\\ \\mathrm{bit/s}$$
+
+Roughly 30 kbit/s, which is where analogue modems stalled. Note what raising
+the line quality would have bought: at 40 dB the same channel gives 39 864
+bit/s, so a hundredfold increase in power adds 33.3%.
+
+### Worked example 6B — a wireless channel, and the gap to practice
+
+A 20 MHz channel at 20 dB.
+
+$$\\frac{S}{N} = 10^{2.0} = 100$$
+
+$$C = 20000000 \\times \\log_{2}(101) = 20000000 \\times 6.65821 = 133164200\\ \\mathrm{bit/s}$$
+
+So 133 Mbit/s of capacity. A real system on that channel delivers 70 to
+100 Mbit/s, and the shortfall is not a failure of Shannon: it is the cyclic
+prefix, the pilot subcarriers, the preamble, the acknowledgements and the
+contention window, none of which are in the channel model at all.
+
+### Worked example 6C — the exchange rate, measured
+
+Hold B at 1 MHz and ask what each additional megabit costs.
+
+| Target | Efficiency needed | 1 + S/N | S/N linear | S/N in dB | Extra over previous |
+|---|---|---|---|---|---|
+| 1 Mbit/s | 1 b/s/Hz | 2 | 1 | 0.00 dB | — |
+| 2 Mbit/s | 2 b/s/Hz | 4 | 3 | 4.77 dB | 4.77 dB |
+| 3 Mbit/s | 3 b/s/Hz | 8 | 7 | 8.45 dB | 3.68 dB |
+| 4 Mbit/s | 4 b/s/Hz | 16 | 15 | 11.76 dB | 3.31 dB |
+| 5 Mbit/s | 5 b/s/Hz | 32 | 31 | 14.91 dB | 3.15 dB |
+| 6 Mbit/s | 6 b/s/Hz | 64 | 63 | 17.99 dB | 3.08 dB |
+| 7 Mbit/s | 7 b/s/Hz | 128 | 127 | 21.04 dB | 3.04 dB |
+| 8 Mbit/s | 8 b/s/Hz | 256 | 255 | 24.07 dB | 3.03 dB |
+
+The increments converge on 3.01 dB from above, exactly as the high-SNR
+approximation predicts, and the first bit is by far the cheapest.
+
+### Worked example 6D — bandwidth against power, on the same channel
+
+A channel offers 1 MHz at 10 dB. Compute the capacity, then ask what happens if
+the bandwidth is doubled with the same total signal power. Doubling B doubles
+the noise as well, so the ratio halves:
+
+$$C_1 = 1000000 \\times \\log_{2}(1 + 10) = 3459432\\ \\mathrm{bit/s}$$
+
+$$C_2 = 2000000 \\times \\log_{2}(1 + 5) = 5169925\\ \\mathrm{bit/s}$$
+
+Capacity rose by 49%, not by 100%, because the extra bandwidth arrived carrying
+its own noise. Repeating the doubling takes 2 MHz to 4 MHz, drops the ratio to
+2.5, and gives 7 229 420 bit/s — another 40%. The returns diminish, and
+Section 8 finds where they stop.`,
+      examTip: `Convert the signal-to-noise ratio to a linear value before touching the logarithm, and keep the 1. Capacity is linear in bandwidth only if the SNR is held fixed; if the noise is specified as a density, widening the band lowers the SNR and the two effects fight.`,
+      importantNote: `The 3.01 dB per bit rule is a HIGH-SNR result. At low SNR each extra bit costs far more than 3 dB in absolute terms but far less in ratio terms, which is why the exchange-rate column converges on 3.01 dB from above rather than being constant.`,
+    },
+    { id: 'sh-bw-snr', title: `7. Trading Bandwidth Against Signal-to-Noise Ratio`,
+      content: `## 7.1 The same rate, bought two different ways
+
+Fix a target rate R and ask what combinations of bandwidth and signal-to-noise
+ratio deliver it. Setting C = R and solving,
+
+$$\\frac{S}{N} = 2^{R/B} - 1$$
+
+This is the trade in one line. The exponent is a spectral efficiency, so the
+required power ratio grows EXPONENTIALLY as the bandwidth shrinks, while it
+falls only towards a floor as the bandwidth grows. The asymmetry is the whole
+point: bandwidth is cheap to give away and expensive to buy back.
+
+![Three iso-capacity contours on a logarithmic power axis, for 1, 10 and 100 Mbit/s, showing the required signal-to-noise ratio falling steeply as bandwidth increases and rising without bound as bandwidth shrinks.](/courses/fe-ee/figures/com4-iso-capacity.svg)
+
+### Worked example 7A — 10 Mbit/s, four ways
+
+| Bandwidth | R/B | 2^(R/B) - 1 | Required SNR |
+|---|---|---|---|
+| 2.5 MHz | 4 | 15 | 11.76 dB |
+| 5 MHz | 2 | 3 | 4.77 dB |
+| 10 MHz | 1 | 1 | 0.00 dB |
+| 20 MHz | 0.5 | 0.4142 | -3.83 dB |
+
+Halving the bandwidth from 10 MHz to 5 MHz costs 4.77 dB. Halving it again, to
+2.5 MHz, costs a further 6.99 dB. Halving it a third time would demand a ratio
+of 255, or 24.07 dB — another 12.30 dB. Each halving costs more than the last,
+and the cost is unbounded.
+
+$$\\mathrm{SNR}_{2.5} - \\mathrm{SNR}_{5} = 11.76 - 4.77 = 6.99\\ \\mathrm{dB}$$
+
+$$\\mathrm{SNR}_{1.25} - \\mathrm{SNR}_{2.5} = 24.065 - 11.761 = 12.304\\ \\mathrm{dB}$$
+
+### Worked example 7B — the other direction, where the trade dies
+
+Going the other way, the required ratio falls but never below a limit. With the
+noise written as a density, the requirement in terms of received power is
+
+$$P = N_0 B \\left(2^{R/B} - 1\\right)$$
+
+Take R = 10 Mbit/s and N0 = 10^-20 W/Hz:
+
+| Bandwidth | Required SNR | Required power |
+|---|---|---|
+| 5 MHz | 4.771 dB | 1.5000 x 10^-13 W |
+| 10 MHz | 0.000 dB | 1.0000 x 10^-13 W |
+| 20 MHz | -3.828 dB | 8.2843 x 10^-14 W |
+| 40 MHz | -7.231 dB | 7.5683 x 10^-14 W |
+| 160 MHz | -13.539 dB | 7.0838 x 10^-14 W |
+| 1 GHz | -21.577 dB | 6.9556 x 10^-14 W |
+| Unbounded | Vanishing | 6.9315 x 10^-14 W |
+
+The power requirement is falling towards a floor rather than towards zero.
+Widening from 5 MHz to 10 MHz saved a third of the power; widening from 160 MHz
+to 1 GHz — more than six times the bandwidth — saved 1.8%, and the last row
+shows the floor those figures are converging on. Section 8 derives it, and it is
+the reason spreading a signal ever wider stops helping.
+
+### Worked example 7C — solving for the bandwidth instead
+
+A design must carry 50 Mbit/s and the link delivers 12 dB. What bandwidth is
+needed at capacity?
+
+$$\\frac{S}{N} = 10^{1.2} = 15.849$$
+
+$$\\eta = \\log_{2}(16.849) = 4.074585\\ \\mathrm{b/s/Hz}$$
+
+$$B = 50000000/4.074585 = 12271188\\ \\mathrm{Hz}$$
+
+So 12.27 MHz at capacity, and a real system needing 7 dB of implementation
+margin would ask for considerably more. The exam form of this question stops at
+the 12.27 MHz.
+
+### Worked example 7D — one more bit, at three different starting points
+
+The cost of the next bit per hertz depends entirely on where you start:
+
+$$\\Delta\\mathrm{SNR} = 10\\log_{10}\\!\\left(\\frac{2^{\\eta+1} - 1}{2^{\\eta} - 1}\\right)$$
+
+$$\\eta: 1 \\to 2 \\quad 10\\log_{10}(3/1) = 4.771\\ \\mathrm{dB}$$
+
+$$\\eta: 3 \\to 4 \\quad 10\\log_{10}(15/7) = 3.310\\ \\mathrm{dB}$$
+
+$$\\eta: 6 \\to 7 \\quad 10\\log_{10}(127/63) = 3.045\\ \\mathrm{dB}$$
+
+The sequence approaches 3.0103 dB and never reaches it, which is the precise
+statement of the rule of thumb quoted everywhere.
+
+| Regime | What limits capacity | What buys more | Typical system |
+|---|---|---|---|
+| Power limited, low SNR | Received power | More power, or more bandwidth | Deep space, spread spectrum |
+| Balanced, 0 to 10 dB | Both | Either, roughly equally | Cellular cell edge |
+| Bandwidth limited, high SNR | Spectrum | More bandwidth, 3.01 dB per bit otherwise | Microwave backhaul, cable |`,
+      examTip: `To find the SNR a rate needs, invert Shannon directly: S/N = 2 raised to the power (R/B), minus one. To find the bandwidth a rate needs, compute the spectral efficiency from the SNR first, then divide the rate by it.`,
+      importantNote: `Trading bandwidth for power is not symmetric. Narrowing the band raises the required power exponentially and without limit; widening it lowers the required power only towards a hard floor set by the energy per bit.`,
+    },
+    { id: 'sh-floor', title: `8. The Infinite-Bandwidth Limit and the -1.59 dB Floor`,
+      content: `## 8.1 What happens when bandwidth stops being scarce
+
+Section 7 showed the required power falling towards something as the bandwidth
+grows. Finding what it falls towards is a limit, and it is one of the few
+derivations the exam actually rewards knowing.
+
+Start from the capacity written with a noise density:
+
+$$C(B) = B\\log_{2}\\!\\left(1 + \\frac{P}{N_0 B}\\right)$$
+
+Let x = P/(N0 B), so that B = P/(N0 x) and x approaches zero as B grows:
+
+$$C = \\frac{P}{N_0}\\cdot\\frac{\\log_{2}(1+x)}{x}$$
+
+The limit of log2(1+x)/x as x tends to zero is 1/ln 2, so
+
+$$C_{\\infty} = \\lim_{B \\to \\infty} C(B) = \\frac{P}{N_0 \\ln 2} = 1.4427\\,\\frac{P}{N_0}$$
+
+**Infinite bandwidth does not give infinite capacity.** With the power fixed,
+capacity saturates at 1.4427 bits per second for every unit of P/N0, and every
+hertz added beyond that point is wasted.
+
+### Worked example 8A — watching the limit arrive
+
+Take P = 1 pW and N0 = 10^-20 W/Hz, so P/N0 = 10^8 Hz. The ceiling is
+
+$$C_{\\infty} = 1.4427 \\times 100000000 = 144270000\\ \\mathrm{bit/s}$$
+
+Now evaluate the exact capacity as the bandwidth grows:
+
+| Bandwidth | P/(N0 B) | Capacity | Fraction of the ceiling |
+|---|---|---|---|
+| 10 MHz | 10 | 34.594 Mbit/s | 23.98% |
+| 100 MHz | 1 | 100.000 Mbit/s | 69.31% |
+| 1 GHz | 0.1 | 137.504 Mbit/s | 95.31% |
+| 10 GHz | 0.01 | 143.553 Mbit/s | 99.50% |
+| 1 THz | 0.0001 | 144.262 Mbit/s | 99.995% |
+
+A hundredfold increase in bandwidth from 10 GHz to 1 THz buys 0.5%. That is
+what a saturating limit looks like from the inside.
+
+## 8.2 From the limit to a floor on energy per bit
+
+The limit becomes far more useful when restated per bit. Signal power is energy
+per bit times bit rate,
+
+$$P = E_b R$$
+
+so at the very best a system can do, R equals C, and
+
+$$C = \\frac{E_b C}{N_0 \\ln 2} \\qquad \\Longrightarrow \\qquad \\frac{E_b}{N_0} = \\ln 2 = 0.6931$$
+
+$$10\\log_{10}(0.6931) \\to -1.5917\\ \\mathrm{dB}$$
+
+**No system, with any code, any modulation and any amount of bandwidth, can
+communicate reliably below -1.59 dB of energy per bit to noise density.** This
+is the Shannon limit in its most quoted form, and it is a floor rather than a
+target: real systems approach it and never reach it.
+
+The general relationship behind that floor is worth writing out, because it is
+the one the exam uses. With spectral efficiency
+
+$$\\eta = \\frac{R}{B} \\qquad \\text{and} \\qquad \\frac{S}{N} = \\eta\\,\\frac{E_b}{N_0}$$
+
+capacity gives
+
+$$\\eta = \\log_{2}\\!\\left(1 + \\eta\\,\\frac{E_b}{N_0}\\right) \\qquad \\Longrightarrow \\qquad \\frac{E_b}{N_0}\\bigg|_{\\min} = \\frac{2^{\\eta} - 1}{\\eta}$$
+
+![Minimum energy per bit to noise density against spectral efficiency, falling from above ten decibels at high efficiency to a floor at minus 1.59 decibels as the efficiency tends to zero, with markers at one, two and six bits per second per hertz.](/courses/fe-ee/figures/com4-ebn0-floor.svg)
+
+### Worked example 8B — the floor at several efficiencies
+
+$$\\eta = 1: \\quad \\frac{2^{1}-1}{1} = 1.000 \\to 0.00\\ \\mathrm{dB}$$
+
+$$\\eta = 2: \\quad \\frac{2^{2}-1}{2} = 1.500 \\to 1.76\\ \\mathrm{dB}$$
+
+$$\\eta = 4: \\quad \\frac{2^{4}-1}{4} = 3.750 \\to 5.74\\ \\mathrm{dB}$$
+
+$$\\eta = 6: \\quad \\frac{2^{6}-1}{6} = 10.500 \\to 10.21\\ \\mathrm{dB}$$
+
+$$\\eta = 8: \\quad \\frac{2^{8}-1}{8} = 31.875 \\to 15.03\\ \\mathrm{dB}$$
+
+Every one of these is a floor for that efficiency, not an achievable figure. A
+system running at 6 b/s/Hz must supply at least 10.21 dB per bit no matter how
+good its code is.
+
+### Worked example 8C — approaching the floor from below
+
+Evaluate the same expression at efficiencies heading towards zero:
+
+| Spectral efficiency | Minimum Eb/N0 | In dB |
+|---|---|---|
+| 1 | 1.0000 | 0.000 dB |
+| 0.5 | 0.8284 | -0.817 dB |
+| 0.25 | 0.7568 | -1.210 dB |
+| 0.1 | 0.7177 | -1.440 dB |
+| 0.01 | 0.6956 | -1.577 dB |
+| Limit | 0.6931 | -1.592 dB |
+
+The approach is slow. Reaching within a tenth of a decibel of the floor demands
+an efficiency below about 0.1 b/s/Hz, which is to say a bandwidth ten times the
+bit rate. That is exactly the trade a deep-space link makes: enormous bandwidth
+and a very low-rate code, because power is the only thing it does not have.
+
+### Worked example 8D — is the floor negative because something is wrong?
+
+A negative decibel value for energy per bit surprises people, so it is worth
+stating plainly what it means. Eb/N0 = -1.59 dB is the ratio 0.693: the energy
+delivered per information bit is less than the noise power spectral density.
+That is possible because N0 is a density in joules, not an energy, and because
+each bit is spread over a long time and a wide band, so the receiver integrates
+many noisy samples per bit. What cannot happen is a system with
+
+$$\\frac{E_b}{N_0} < 0.6931$$
+
+communicating at any positive rate with arbitrarily low error probability, at
+any bandwidth. The floor is on the RATIO, not on any individual quantity.`,
+      examTip: `Two facts carry most of the marks here: infinite bandwidth gives a finite capacity of 1.4427 P over N0, and the resulting floor on energy per bit is ln 2, which is -1.59 dB. Both come from the same limit of log2(1+x) over x.`,
+      importantNote: `The -1.59 dB floor applies only in the limit of vanishing spectral efficiency. At any useful efficiency the floor is higher and given by (2 to the power eta, minus one) divided by eta — 0 dB at 1 b/s/Hz, 10.21 dB at 6 b/s/Hz.`,
+    },
+    { id: 'sh-gap', title: `9. Spectral Efficiency and the Practical Gap`,
+      content: `## 9.1 One plane that holds every design
+
+Section 8 produced a bound that relates two quantities every radio engineer
+already tracks: how many bits per second per hertz a scheme delivers, and how
+much energy per bit it needs. Plotting one against the other puts every
+modulation, every code and the bound itself on a single picture.
+
+$$\\eta = \\frac{R}{B}\\ \\mathrm{[b/s/Hz]}, \\qquad \\frac{E_b}{N_0}\\bigg|_{\\min} = \\frac{2^{\\eta}-1}{\\eta}$$
+
+The bound is a curve, not a point. Everything to the LEFT of it is
+unreachable — no code exists — and everything to the right is in principle
+achievable, though possibly only with unbounded complexity and delay.
+
+![Uncoded modulations at a bit error rate of one in a hundred thousand, plotted as points on a plane of spectral efficiency against energy per bit, against the Shannon bound drawn as a curve with the unreachable region shaded and the minus 1.59 decibel asymptote marked.](/courses/fe-ee/figures/com4-shannon-plane.svg)
+
+## 9.2 Where uncoded modulation actually sits
+
+Each modulation's requirement is found by inverting its own error expression at
+a chosen error rate. For binary and quaternary phase shift keying,
+
+$$P_b = Q\\!\\left(\\sqrt{2\\,\\frac{E_b}{N_0}}\\right)$$
+
+and for square quadrature amplitude modulation with Gray mapping,
+
+$$P_b \\approx \\frac{4}{\\log_{2}M}\\left(1 - \\frac{1}{\\sqrt{M}}\\right) Q\\!\\left(\\sqrt{\\frac{3\\log_{2}M}{M-1}\\cdot\\frac{E_b}{N_0}}\\right)$$
+
+Setting P_b to 10^-5 and solving for the ratio gives the second column below;
+the third is the bound from Section 8 evaluated at that scheme's own
+efficiency; the fourth is the difference, which is the whole subject of channel
+coding.
+
+| Scheme | Bits per symbol | Uncoded Eb/N0 | Shannon floor at that efficiency | Gap |
+|---|---|---|---|---|
+| BPSK | 1 | 9.59 dB | 0.00 dB | 9.59 dB |
+| QPSK | 2 | 9.59 dB | 1.76 dB | 7.83 dB |
+| 8-PSK | 3 | 12.97 dB | 3.68 dB | 9.29 dB |
+| 16-QAM | 4 | 13.43 dB | 5.74 dB | 7.69 dB |
+| 64-QAM | 6 | 17.79 dB | 10.21 dB | 7.58 dB |
+| 256-QAM | 8 | 22.50 dB | 15.03 dB | 7.47 dB |
+
+Three readings are worth taking from that table.
+
+**The gap is roughly constant.** Between seven and eight decibels separate every
+square constellation from its own bound, and the constellation order barely
+matters. The gap is a property of uncoded detection, not of the alphabet.
+
+**BPSK and QPSK need identical energy per bit.** They differ in efficiency, not
+in power: QPSK carries two bits in the same symbol at the same energy per bit,
+so it sits one step higher on the plane at the same horizontal position. That is
+why QPSK is almost always preferred where bandwidth costs anything.
+
+**8-PSK is the outlier.** Its gap is 9.29 dB against 7.69 dB for 16-QAM, which
+carries MORE bits per symbol. Phase-only constellations pack points onto a
+circle, so their minimum distance shrinks faster with order than a
+two-dimensional lattice's does; beyond eight points, amplitude and phase
+together beat phase alone.
+
+### Worked example 9A — the gap, computed for one case
+
+For 16-QAM at 10^-5, the prefactor is
+
+$$\\frac{4}{4}\\left(1 - \\frac{1}{4}\\right) = 0.75$$
+
+so the required Q-function argument satisfies Q(x) = 10^-5/0.75 = 1.333 x 10^-5,
+giving x = 4.2002. Then
+
+$$\\frac{E_b}{N_0} = \\frac{x^{2}(M-1)}{3\\log_{2}M} = 17.642 \\times 15/12 = 22.0525 \\to 13.43\\ \\mathrm{dB}$$
+
+The floor at 4 b/s/Hz is 3.75, or 5.74 dB, so the gap is
+
+$$13.43 - 5.74 = 7.69\\ \\mathrm{dB}$$
+
+### Worked example 9B — what coding recovers
+
+Coding does not change the modulation; it spends bandwidth to buy back the gap.
+A rate-r code carrying the same information rate needs 1/r times the symbol
+rate, so the efficiency falls to r times the uncoded value, and the required
+energy per bit falls by the coding gain.
+
+| Code rate on 64-QAM | Delivered efficiency | Shannon floor there | Floor moved by |
+|---|---|---|---|
+| 1 (uncoded) | 6.00 b/s/Hz | 10.21 dB | — |
+| 5/6 | 5.00 b/s/Hz | 7.92 dB | -2.29 dB |
+| 3/4 | 4.50 b/s/Hz | 6.82 dB | -3.39 dB |
+| 2/3 | 4.00 b/s/Hz | 5.74 dB | -4.47 dB |
+| 1/2 | 3.00 b/s/Hz | 3.68 dB | -6.53 dB |
+
+The fourth column is the point. Adding redundancy does not only improve the
+receiver; it also LOWERS THE TARGET, because the scheme now runs at a smaller
+spectral efficiency where the bound itself is lower. A code must therefore be
+judged against the bound AT ITS OWN EFFICIENCY, and quoting raw decibels of
+coding gain across two different rates compares nothing. Section 3.3 lists how
+close each code family gets to its own bound; the iterative families sit within
+about a decibel of it, which is why every standard designed after the middle of
+the 1990s uses one of them.
+
+### Worked example 9C — reading the plane backwards
+
+A satellite operator has 5 dB of energy per bit and needs to know what
+efficiency is even possible. Solve the bound numerically for the efficiency at
+which the floor equals 5 dB, that is 3.1623:
+
+$$\\frac{2^{\\eta}-1}{\\eta} = 3.1623$$
+
+Trying values: at eta = 3.6 the left side is 3.0905 and at eta = 3.7 it is
+3.2422, so the answer lies between, near 3.65. No scheme may exceed
+3.65 b/s/Hz at 5 dB, so 16-QAM at rate 3/4 — which delivers 3.0 — is feasible
+and 16-QAM uncoded, at 4.0, is not, whatever code is wrapped around it.
+
+$$\\eta_{\\max}(5\\ \\mathrm{dB}) \\approx 3.65\\ \\mathrm{b/s/Hz}$$
+
+That is the correct order of operations for any link design: find the ceiling
+first, then choose a scheme underneath it, and never the reverse.`,
+      examTip: `Uncoded modulation sits seven to nine decibels from the Shannon bound, and modern codes close all but half a decibel of that. When comparing coded schemes, always evaluate the bound at the CODED spectral efficiency, not at the modulation's raw efficiency.`,
+      importantNote: `A code changes the spectral efficiency, so it moves the target as well as the arrow. Halving the code rate halves the efficiency and lowers the bound too — which is why a five decibel coding gain can leave the distance to the bound unchanged.`,
+    },
+    { id: 'sh-nyquist', title: `10. Nyquist Against Shannon, Kept Separate`,
+      content: `## 10.1 Two different limits that are constantly confused
+
+Both results put a ceiling on a data rate over a channel of bandwidth B, and
+they are not the same ceiling. They constrain different things, and a question
+that mixes them is a question answered wrongly.
+
+**Nyquist limits the SYMBOL rate.** A channel of bandwidth B can carry at most
+2B symbols per second without intersymbol interference. Noise appears nowhere
+in the statement. If each symbol chooses among M levels,
+
+$$C_{\\mathrm{Nyquist}} = 2B\\log_{2} M$$
+
+and this can be made as large as you like by increasing M, because a noiseless
+channel distinguishes any number of levels.
+
+**Shannon limits the INFORMATION rate.** Levels appear nowhere in the statement;
+the constraint is entirely the noise:
+
+$$C_{\\mathrm{Shannon}} = B\\log_{2}\\!\\left(1 + \\frac{S}{N}\\right)$$
+
+and this cannot be made large by any choice of alphabet.
+
+![Rate against signal-to-noise ratio for a 1 MHz channel: the Shannon capacity curve rising steadily, crossed by three horizontal Nyquist ceilings for two, four and sixteen levels, with a marker on each crossing showing the SNR at which the noiseless ceiling and the noisy capacity coincide.](/courses/fe-ee/figures/com4-nyquist-shannon.svg)
+
+Whichever is SMALLER is the binding constraint. At low signal-to-noise ratio
+Shannon binds and adding levels achieves nothing; at high ratio Nyquist binds
+and adding power achieves nothing. The two agree when
+
+$$2B\\log_{2}M = B\\log_{2}(1 + S/N) \\qquad \\Longrightarrow \\qquad \\frac{S}{N} = M^{2} - 1$$
+
+### Worked example 10A — the crossing points
+
+$$M = 2: \\quad \\frac{S}{N} = 2^{2} - 1 = 3 \\to 4.77\\ \\mathrm{dB}$$
+
+$$M = 4: \\quad \\frac{S}{N} = 4^{2} - 1 = 15 \\to 11.76\\ \\mathrm{dB}$$
+
+$$M = 16: \\quad \\frac{S}{N} = 16^{2} - 1 = 255 \\to 24.07\\ \\mathrm{dB}$$
+
+Below 4.77 dB, even two-level signalling is asking more of the channel than the
+noise permits; above it, binary signalling is leaving capacity unused and more
+levels are the answer. The crossing values are the reason adaptive modulation
+switches where it does.
+
+### Worked example 10B — a 20 MHz channel, both ways
+
+Compute both ceilings for a 20 MHz channel at 30 dB.
+
+$$C_{\\mathrm{Shannon}} = 20000000 \\times \\log_{2}(1001) = 199344.5\\ \\mathrm{kbit/s}$$
+
+$$C_{\\mathrm{Nyquist}}(M{=}16) = 2 \\times 20000000 \\times 4 = 160000\\ \\mathrm{kbit/s}$$
+
+$$C_{\\mathrm{Nyquist}}(M{=}256) = 2 \\times 20000000 \\times 8 = 320000\\ \\mathrm{kbit/s}$$
+
+At 30 dB, sixteen levels leave 39 Mbit/s of capacity unclaimed, while 256 levels
+demand more than the noise allows. The channel wants something in between, and
+the exact answer is the efficiency Shannon gives, 9.967 b/s/Hz, which
+corresponds to 2 raised to the power 9.967/2, or 31.64 levels per dimension.
+Real systems round to 32-QAM or run 64-QAM with a code.
+
+### Worked example 10C — what a real pulse shape costs
+
+Nyquist's 2B symbols per second requires an ideal brick-wall filter, which is
+not realisable. A raised-cosine pulse with roll-off factor alpha needs
+
+$$B = \\frac{R_s}{2}(1 + \\alpha) \\qquad \\Longrightarrow \\qquad R_s = \\frac{2B}{1 + \\alpha}$$
+
+For a 20 MHz channel:
+
+$$\\alpha = 0: \\quad R_s = 40/1 = 40\\ \\mathrm{Mbaud}$$
+
+$$\\alpha = 0.25: \\quad R_s = 40/1.25 = 32\\ \\mathrm{Mbaud}$$
+
+$$\\alpha = 0.35: \\quad R_s = 40/1.35 = 29.63\\ \\mathrm{Mbaud}$$
+
+At alpha = 0.25 and 256-QAM the throughput is 32 x 8 = 256 Mbit/s, which is
+above the 199 Mbit/s Shannon allows at 30 dB. So this design is not
+bandwidth-limited at all — it is power-limited, and it needs
+
+$$\\frac{S}{N} = 2^{12.8} - 1 = 7130.6 \\to 38.53\\ \\mathrm{dB}$$
+
+to be legal, which is 8.5 dB more than the link was assumed to have. That is
+the calculation the exam is testing: Nyquist tells you the symbols fit, Shannon
+tells you whether the information does, and both must be satisfied.
+
+| Question wording | Which limit | What you need |
+|---|---|---|
+| Noiseless channel, M levels | Nyquist | 2B log2 M |
+| Bandwidth and SNR given | Shannon | B log2(1 + S/N) |
+| Both given, asks maximum rate | The smaller of the two | Compute both |
+| Asks how many levels are useful | Shannon first, then invert Nyquist | M = 2 to the power (C/2B) |
+| Mentions roll-off or excess bandwidth | Nyquist, corrected | Rs = 2B over (1 + alpha) |`,
+      examTip: `Nyquist is noiseless and counts symbols; Shannon is noisy and counts information. If a problem gives you levels but no SNR, it is a Nyquist problem. If it gives you an SNR but no levels, it is a Shannon problem. If it gives you both, compute both and take the smaller.`,
+      importantNote: `The Nyquist rate 2B symbols per second assumes an unrealisable brick-wall filter. Any real pulse shape with roll-off alpha delivers 2B/(1 + alpha) symbols per second, so a 35% roll-off gives up 26% of the theoretical symbol rate before any noise is considered.`,
+    },
+    { id: 'sh-full-link', title: `11. A Full Link, Reconciled End to End`,
+      content: `## 11.1 The question every one of these chapters is building towards
+
+A 12 km point-to-point backhaul at 5.8 GHz uses 24 dBm transmitters, 23 dBi
+antennas at both ends, 1.5 dB of feeder loss at each end, a 20 MHz channel and
+a receiver with a 5 dB noise figure. Find the received power, the noise floor,
+the signal-to-noise ratio, the channel capacity, and the highest uncoded
+modulation the link supports. This single question uses everything in the
+chapter, and it is worked here in the order that makes each answer check the
+previous one.
+
+**Step 1 — path loss, twice.** From the definition, with the wavelength
+computed first:
+
+$$\\lambda = \\frac{2.9979 \\times 10^{8}}{5.8 \\times 10^{9}} = 0.051688\\ \\mathrm{m}$$
+
+$$L_{\\mathrm{FS}} = 20\\log_{10}\\!\\left(\\frac{4\\pi d}{\\lambda}\\right) = 20\\log_{10}(2917440) = 129.30\\ \\mathrm{dB}$$
+
+From the kilometre-and-gigahertz constant, which must agree:
+
+$$L_{\\mathrm{FS}} = 20\\log_{10}(12) + 20\\log_{10}(5.8) + 92.45 = 21.58 + 15.27 + 92.45 = 129.30\\ \\mathrm{dB}$$
+
+The two routes agree to a hundredth of a decibel. Running both is the habit
+that prevents the 60 dB unit error, because a constant borrowed from the wrong
+unit system disagrees with the wavelength form immediately and unmistakably.
+
+**Step 2 — the budget as a running total.**
+
+| Term | Value | Running total |
+|---|---|---|
+| Transmitter output | +24.00 dBm | +24.00 dBm |
+| Transmit feeder | -1.50 dB | +22.50 dBm |
+| Transmit antenna | +23.00 dBi | +45.50 dBm (EIRP) |
+| Free-space loss, 12 km at 5.8 GHz | -129.30 dB | -83.80 dBm |
+| Receive antenna | +23.00 dBi | -60.80 dBm |
+| Receive feeder | -1.50 dB | **-62.30 dBm** |
+
+$$P_{\\mathrm{RX}} = 24 + 23 + 23 - 3 - 129.30 = -62.30\\ \\mathrm{dBm}$$
+
+**Step 3 — the noise floor, built from the constants rather than quoted.**
+Thermal noise density at 290 K is
+
+$$k T_0 = 1.380649 \\times 10^{-23} \\times 290 = 4.0039 \\times 10^{-21}\\ \\mathrm{W/Hz}$$
+
+$$10\\log_{10}\\!\\left(\\frac{4.0039 \\times 10^{-21}}{0.001}\\right) = -173.975\\ \\mathrm{dBm/Hz}$$
+
+which is the -174 dBm/Hz everyone memorises, now with a derivation attached.
+Adding the bandwidth and the noise figure:
+
+$$N = -173.975 + 10\\log_{10}(20000000) + 5 = -173.975 + 73.010 + 5 = -95.965\\ \\mathrm{dBm}$$
+
+**Step 4 — the signal-to-noise ratio, and the capacity it implies.**
+
+$$\\mathrm{SNR_{dB}} = -62.300 - (-95.965) = 33.665\\ \\mathrm{dB}$$
+
+$$\\frac{S}{N} = 10^{3.3665} = 2325.4$$
+
+$$C = 20000000 \\times \\log_{2}(2326.4) = 223678000\\ \\mathrm{bit/s}$$
+
+$$\\eta_{\\max} = 223678000/20000000 = 11.184\\ \\mathrm{b/s/Hz}$$
+
+![The chosen modulation against the signal-to-noise ratio it requires, with the horizontal line the link actually delivers at 33.66 decibels and a vertical line at the capacity of 11.18 bits per second per hertz, showing 256-QAM clearing the requirement with about two decibels to spare.](/courses/fe-ee/figures/com4-link-reconcile.svg)
+
+**Step 5 — choosing a modulation, and pricing every candidate.** Required
+signal-to-noise ratio is the modulation's energy-per-bit requirement scaled by
+its efficiency:
+
+$$\\mathrm{SNR_{req}} = \\eta \\cdot \\frac{E_b}{N_0}$$
+
+| Scheme | Efficiency | Uncoded Eb/N0 | Required SNR | Margin on this link |
+|---|---|---|---|---|
+| BPSK | 1 | 9.588 dB | 9.588 dB | 24.08 dB |
+| QPSK | 2 | 9.588 dB | 12.598 dB | 21.07 dB |
+| 16-QAM | 4 | 13.435 dB | 19.455 dB | 14.21 dB |
+| 64-QAM | 6 | 17.787 dB | 25.568 dB | 8.10 dB |
+| 256-QAM | 8 | 22.503 dB | 31.534 dB | 2.13 dB |
+
+$$\\mathrm{Margin}_{256} = 33.665 - 31.534 = 2.131\\ \\mathrm{dB}$$
+
+So the link runs 256-QAM uncoded with 2.13 dB in hand and delivers
+
+$$R = 8 \\times 20000000 = 160000000\\ \\mathrm{bit/s}$$
+
+**Step 6 — the reconciliation.** Three numbers must now be consistent, and
+their differences must each mean something.
+
+- Capacity says 11.184 b/s/Hz is the ceiling
+- The chosen uncoded scheme delivers 8 b/s/Hz
+- The unused 3.184 b/s/Hz is the price of not coding
+
+$$\\Delta\\eta = 11.184 - 8 = 3.184\\ \\mathrm{b/s/Hz}$$
+
+Equivalently, in power terms: the link supplies 33.665 dB and the scheme needs
+31.534 dB, so 2.131 dB of the budget is unclaimed. A rate-5/6 low-density
+parity-check code on 1024-QAM would deliver 10 x 5/6 = 8.33 b/s/Hz at
+essentially the same required ratio, converting most of that unclaimed margin
+into throughput. **The gap between capacity and delivered rate is never a
+mystery; it is always either unspent power or unspent complexity.**
+
+### Worked example 11A — the same link in the rain, or at longer range
+
+Move the same equipment to 24 km. Doubling the distance adds 6.02 dB:
+
+$$L_{\\mathrm{FS}}(24\\ \\mathrm{km}) = 129.30 + 6.02 = 135.32\\ \\mathrm{dB}$$
+
+$$P_{\\mathrm{RX}} = -62.300 - 6.02 = -68.320\\ \\mathrm{dBm}, \\qquad \\mathrm{SNR} = 27.645\\ \\mathrm{dB}$$
+
+That is 2.08 dB above the 25.568 dB that 64-QAM needs and 3.89 dB below what
+256-QAM needs, so the link drops one step and carries
+
+$$R = 6 \\times 20000000 = 120000000\\ \\mathrm{bit/s}$$
+
+Adaptive modulation is exactly this calculation performed continuously.
+
+### Worked example 11B — the same link with a worse receiver
+
+Replace the 5 dB receiver with a 9 dB one and change nothing else. The floor
+rises 4 dB to -91.965 dBm, the ratio falls to 29.665 dB, and
+
+$$C = 20000000 \\times \\log_{2}(926.8) = 197122000\\ \\mathrm{bit/s}$$
+
+Capacity fell 11.9% for 4 dB of noise figure, and 256-QAM, needing 31.534 dB, no
+longer fits at all. Four decibels of receiver quality bought a whole modulation
+step — which is why the low-noise amplifier is worth more than the last
+increment of transmit power in almost every link.`,
+      examTip: `Work a link budget in this order: path loss twice (definition and constant), running total to received power, noise floor from -174 plus bandwidth plus noise figure, subtract for SNR, then Shannon for the ceiling and eta times Eb/N0 for the requirement. Every step checks the one before it.`,
+      importantNote: `Required SNR is the modulation's Eb/N0 requirement multiplied by its spectral efficiency, not equal to it. Forgetting the eta factor understates the requirement of 256-QAM by 9 dB, which is the difference between a link that works and one that does not.`,
+    },
+    { id: 'sh-problems-c', title: `12. Problem Set C: Capacity, Entropy and Limits`,
+      content: `## 12.1 Practice problems, worked answers below
+
+**C1.** A channel offers 200 kHz at 15 dB. Find its capacity.
+
+**C2.** What signal-to-noise ratio is needed to carry 100 Mbit/s over 20 MHz?
+
+**C3.** What is the minimum energy per bit to noise density for a scheme running
+at 4 b/s/Hz?
+
+**C4.** Find the entropy of a source with probabilities 0.5, 0.25, 0.125 and
+0.125, and the efficiency of the best symbol-by-symbol code for it.
+
+**C5.** A noiseless 20 MHz channel must carry 100 Mbit/s. How many signalling
+levels are required?
+
+**C6.** A deep-space receiver has P/N0 = 10^8 Hz and unlimited bandwidth. What
+is its capacity?
+
+**C7.** Find the free-space path loss at 40 km and 18 GHz.
+
+**C8.** Find the noise floor of a 1 MHz receiver with a 4 dB noise figure.
+
+## 12.2 Answers
+
+**C1.** Convert the ratio first:
+
+$$\\frac{S}{N} = 10^{1.5} = 31.623$$
+
+$$C = 200000 \\times \\log_{2}(32.623) = 1005564\\ \\mathrm{bit/s}$$
+
+**C2.** The efficiency is 5 b/s/Hz, so
+
+$$\\frac{S}{N} = 2^{5} - 1 = 31 \\to 14.91\\ \\mathrm{dB}$$
+
+**C3.** Straight from the bound:
+
+$$\\frac{E_b}{N_0}\\bigg|_{\\min} = \\frac{2^{4}-1}{4} = 3.75 \\to 5.74\\ \\mathrm{dB}$$
+
+**C4.** All four probabilities are powers of one half, so the ideal lengths are
+integers:
+
+$$H = 0.5(1) + 0.25(2) + 0.125(3) + 0.125(3) = 1.75\\ \\mathrm{bit/symbol}$$
+
+The Huffman lengths are 1, 2, 3, 3, giving L = 1.75 and an efficiency of exactly
+100%. Dyadic sources are the only ones for which a symbol code is perfect.
+
+**C5.** Nyquist, inverted:
+
+$$100000000 = 2 \\times 20000000 \\times \\log_{2}M \\qquad \\Longrightarrow \\qquad \\log_{2}M = 2.5$$
+
+$$M = 2^{2.5} = 5.657 \\to 6\\ \\mathrm{levels}$$
+
+Six is the smallest integer that works; a practical design would use eight,
+because a power of two maps cleanly onto bits.
+
+**C6.** The infinite-bandwidth limit:
+
+$$C_{\\infty} = \\frac{P}{N_0 \\ln 2} = 100000000/0.693147 = 144269542\\ \\mathrm{bit/s}$$
+
+**C7.** Kilometres and gigahertz:
+
+$$L_{\\mathrm{FS}} = 20\\log_{10}(40) + 20\\log_{10}(18) + 92.45 = 32.04 + 25.11 + 92.45 = 149.60\\ \\mathrm{dB}$$
+
+Check it against the wavelength form: lambda is 16.66 mm, 4 pi d over lambda is
+30 180 000, and 20 log10 of that is 149.59 dB. The two agree.
+
+**C8.** Density, bandwidth, figure:
+
+$$N = -173.98 + 10\\log_{10}(1000000) + 4 = -173.98 + 60 + 4 = -109.98\\ \\mathrm{dBm}$$
+
+A hundredth of the bandwidth of the 20 MHz case lowers the floor by 13.01 dB,
+which is 10 log10 of 20 — bandwidth enters the noise linearly and nothing else
+in the expression changes.`,
+      examTip: `Every capacity question begins with the same move: turn decibels into a linear ratio. Every noise-floor question begins with the same move: start at -174 dBm/Hz and add 10 log10 of the bandwidth in hertz.`,
+    },
+    { id: 'sh-problems-d', title: `13. Problem Set D: Links, Gaps and Trades`,
+      content: `## 13.1 Practice problems, worked answers below
+
+**D1.** How much extra signal-to-noise ratio buys one more bit per second per
+hertz, starting from 6 b/s/Hz?
+
+**D2.** A design needs 50 Mbit/s and the link delivers 12 dB. What bandwidth
+does capacity demand?
+
+**D3.** A 30 dB channel of 20 MHz is used with uncoded 256-QAM. How far below
+capacity is the delivered rate, in bits per second per hertz?
+
+**D4.** A transmitter outputs 33 dBm into a 2 dB feeder and a 17 dBi antenna;
+the path loses 132 dB; the receiver has a 20 dBi antenna, a 1 dB feeder, a
+10 MHz channel and a 6 dB noise figure. Find the received power, the noise
+floor and the signal-to-noise ratio.
+
+**D5.** What is the highest uncoded modulation from the Section 9 table that
+the link of D4 supports?
+
+**D6.** A binary source is 90% predictable. What is its entropy, and what does a
+symbol-by-symbol code cost against it?
+
+**D7.** A link runs at 3 b/s/Hz. What is the least energy per bit it could
+possibly need?
+
+**D8.** Capacity of a 2 MHz channel at -3 dB.
+
+## 13.2 Answers
+
+**D1.** The ratio of the two required powers:
+
+$$\\Delta\\mathrm{SNR} = 10\\log_{10}\\!\\left(\\frac{2^{7}-1}{2^{6}-1}\\right) = 10\\log_{10}(127/63) = 3.045\\ \\mathrm{dB}$$
+
+Just above the 3.0103 dB asymptote, as every increment at finite efficiency must
+be.
+
+**D2.** Efficiency first, then divide:
+
+$$\\eta = \\log_{2}(1 + 15.849) = 4.074585\\ \\mathrm{b/s/Hz}$$
+
+$$B = 50000000/4.074585 = 12271188\\ \\mathrm{Hz}$$
+
+so 12.27 MHz.
+
+**D3.** Capacity at 30 dB is 9.967 b/s/Hz and 256-QAM delivers 8:
+
+$$\\Delta\\eta = 9.967 - 8 = 1.967\\ \\mathrm{b/s/Hz}$$
+
+which is 19.7% of the capacity left on the table, and it is recovered by coding
+rather than by power.
+
+**D4.** Running total, then floor, then difference:
+
+$$P_{\\mathrm{RX}} = 33 - 2 + 17 - 132 + 20 - 1 = -65\\ \\mathrm{dBm}$$
+
+$$N = -173.98 + 10\\log_{10}(10000000) + 6 = -173.98 + 70 + 6 = -97.98\\ \\mathrm{dBm}$$
+
+$$\\mathrm{SNR_{dB}} = -65 + 97.98 = 32.98\\ \\mathrm{dB}$$
+
+**D5.** From the Section 9 requirements scaled by efficiency, 256-QAM needs
+31.534 dB and 64-QAM needs 25.568 dB. The link has 32.98 dB, so
+
+$$\\mathrm{Margin}_{256} = 32.98 - 31.534 = 1.446\\ \\mathrm{dB}$$
+
+256-QAM fits, but only just; a design with any fade at all would run 64-QAM and
+keep 7.41 dB of margin.
+
+**D6.** Binary entropy at p = 0.1:
+
+$$H_b(0.1) = -0.1\\log_{2}0.1 - 0.9\\log_{2}0.9 = 0.3322 + 0.1368 = 0.4690\\ \\mathrm{bit/symbol}$$
+
+A symbol code must spend at least one bit per symbol, so its efficiency is
+46.90% and it wastes more than half the line. Coding pairs of bits brings the
+average to 0.645 bits per source bit, an efficiency of 72.71%, and longer blocks
+do better still.
+
+**D7.** The bound at 3 b/s/Hz:
+
+$$\\frac{E_b}{N_0}\\bigg|_{\\min} = \\frac{2^{3}-1}{3} = 2.3333 \\to 3.68\\ \\mathrm{dB}$$
+
+**D8.** A negative decibel value is a ratio below one, not an error:
+
+$$\\frac{S}{N} = 10^{-0.3} = 0.50119$$
+
+$$C = 2000000 \\times \\log_{2}(1.50119) = 1172213\\ \\mathrm{bit/s}$$
+
+The channel still carries 1.17 Mbit/s with the signal below the noise, which is
+exactly the regime spread-spectrum and deep-space links operate in, and it is
+the clearest demonstration that capacity does not require a positive
+signal-to-noise ratio.`,
+      examTip: `A negative SNR in decibels is a perfectly ordinary channel: convert to a linear ratio below one, add the one inside the logarithm, and Shannon returns a positive capacity. Only the RATIO Eb/N0 has a hard floor, at -1.59 dB.`,
+      importantNote: `Margin is a difference of two decibel levels and therefore carries units of dB, never dBm. Subtracting a required dBm from a delivered dBm gives a ratio; writing the answer as dBm is the single most common unit error in link budgets.`,
     },
   ],
   keyTakeaways: [

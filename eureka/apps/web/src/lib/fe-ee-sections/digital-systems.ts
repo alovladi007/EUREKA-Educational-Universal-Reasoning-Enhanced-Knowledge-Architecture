@@ -5999,7 +5999,7 @@ fee_memory: { topicId: 'fee_memory', title: 'Memory Systems: ROM, RAM, Cache, FP
 
 | Level | Size | Access |
 |---|---|---|
-| Registers | $< 1 KB$ | ~0.5 ns |
+| Registers | $<1\\ \\mathrm{KB}$ | ~0.5 ns |
 | L1 Cache | 32-64 KB | ~1-4 ns |
 | L2 Cache | 256 KB-1 MB | ~4-10 ns |
 | RAM | 4-64 GB | ~50-100 ns |
@@ -6053,11 +6053,11 @@ Each level: ~10x larger, ~10x slower, ~10x cheaper.`,
 
 | Memory Size | Bytes | Address Lines |
 |---|---|---|
-| 1 KB | $2^10$ | 10 |
-| 64 KB | $2^16$ | 16 |
-| **256 KB** | **$2^18$** | **18** |
-| 1 MB | $2^20$ | 20 |
-| 4 GB | $2^32$ | 32 |
+| 1 KB | $2^{10}$ | 10 |
+| 64 KB | $2^{16}$ | 16 |
+| **256 KB** | **$2^{18}$** | **18** |
+| 1 MB | $2^{20}$ | 20 |
+| 4 GB | $2^{32}$ | 32 |
 
 If each location stores W bits (word width), total bits = 2^n * W. Data bus width = W bits; address bus = n bits.
 
@@ -6274,6 +6274,1738 @@ Section 2.1 applied to whichever pair of levels the question names.`,
       examTip: 'For memory expansion, compute the two factors separately: data-bus width divided by chip width gives chips per bank, and total depth divided by chip depth gives the number of banks. Multiply for the chip count; the decoder needs log2(banks) inputs.',
       importantNote: 'Chip-select decoding uses the HIGH address bits and the chip\'s own address pins take the LOW bits. Wiring it the other way round scatters consecutive addresses across banks, which still stores data correctly but destroys the spatial locality every cache and prefetcher depends on.',
     },
+    { id: 'mem-taxonomy', title: '6. The Three Axes That Actually Sort Memory Devices',
+      content: `## 6.1 Volatility is the first question, and it is the least interesting
+
+Textbook taxonomies open with volatile against nonvolatile and then stop, which
+is why so many candidates can recite that DRAM forgets and flash remembers and
+still cannot choose a part. Volatility settles one thing only: whether the
+contents survive a power cycle. Two further axes settle everything else, and
+both of them appear on the exam disguised as arithmetic.
+
+The second axis is **endurance**, the number of times a storage location may be
+rewritten before it stops holding a value. SRAM and DRAM have no practical
+limit; a bit can be flipped continuously for the life of the part. Every
+floating-gate technology does have a limit, because each program-erase cycle
+drives carriers through a thin oxide and leaves a little damage behind. That
+single fact is why a design that would be trivial in RAM turns into a wear
+budget in flash.
+
+The third axis is **access mode**: what the smallest unit is that you may read,
+the smallest you may write, and the smallest you may erase. In SRAM those three
+are the same, a word. In DRAM a read moves a whole row. In NAND flash the read
+unit is a page of a few kilobytes, the program unit is that same page, and the
+erase unit is a block of dozens of pages. Whenever the write unit and the erase
+unit differ, a controller has to relocate live data to free a block, and the
+system acquires a whole layer of behaviour that has nothing to do with storing
+bits.
+
+Two secondary properties fall out of the three axes and deserve names because
+questions turn on them. A read is **destructive** when the act of reading
+disturbs the stored value, so the value must be written back before the cycle
+ends; DRAM is the standard example and it is the reason its cycle time exceeds
+its access time. And a technology is **read-write asymmetric** when writing
+costs far more time or energy than reading; every nonvolatile memory in the
+table below is asymmetric by at least three orders of magnitude.
+
+| Technology | Volatile | Endurance | Read unit | Write unit | Erase unit | Read destructive |
+|---|---|---|---|---|---|---|
+| SRAM | yes | unlimited | word | word | none | no |
+| DRAM | yes | unlimited | row | row | none | **yes** |
+| Mask ROM | no | none (read only) | word | not writable | none | no |
+| EPROM | no | ~100 cycles | word | word | whole chip (UV) | no |
+| EEPROM | no | $10^{5}$ to $10^{6}$ | byte | byte | byte | no |
+| NOR flash | no | $10^{4}$ to $10^{5}$ | byte | word or page | block | no |
+| NAND flash | no | $10^{3}$ to $10^{5}$ | page | page | block | no |
+
+## 6.2 Capacity arithmetic, stated once so it can be reused
+
+Every sizing question in this chapter rests on three relations. A device with
+$n$ address lines resolves
+
+$$N = 2^{\\,n}$$
+
+distinct locations. If each location holds $w$ bits, the part stores
+
+$$B = N \\times w = 2^{\\,n}\\,w$$
+
+bits, and the inverse question, how many address lines a required location
+count demands, is
+
+$$n = \\lceil \\log_{2} N \\rceil$$
+
+with the ceiling because address lines come in whole numbers. The ceiling is
+not decoration: a system needing 6,000 locations needs 13 lines, and the 2,192
+locations it cannot use are the price of the ceiling.
+
+### Worked Example 6.1 — pins and bits of a 512K x 16 part
+
+**Given.** A memory device is catalogued as $512\\mathrm{K} \\times 16$.
+
+**Find.** Address pins, data pins, and total stored bits.
+
+**Work.** The location count is $512\\mathrm{K} = 512 \\times 1024 = 524288$, so
+
+$$n = \\log_{2} 524288 = 19$$
+
+address pins, and the organisation states 16 bits per location, so 16 data
+pins. The bit count follows from the second relation:
+
+$$B = 524288 \\times 16 = 8388608 \\text{ bits}$$
+
+**Independent check.** Do it entirely in exponents instead of decimals:
+$2^{19} \\times 2^{4} = 2^{23}$, and $2^{23} = 8388608$. The two routes agree,
+which they must, and the exponent route is the one to use under time pressure.
+
+**Answer: 19 address pins, 16 data pins, 8,388,608 bits, which is 1 MiB.**
+
+**Trap.** The part is *not* a "512 K memory" in bytes. Organisation is quoted as
+locations by width, and a $512\\mathrm{K} \\times 16$ device holds 1 MiB while a
+$512\\mathrm{K} \\times 8$ device holds 512 KiB. Reading the first number as the
+byte capacity is the single most common slip on organisation questions.
+
+### Worked Example 6.2 — an endurance budget picks the technology
+
+**Given.** A logger appends one 64-byte record every second for a 10-year
+service life. Two candidate parts: an EEPROM with a 128-byte page and an
+endurance of $10^{6}$ cycles per page, and a NAND flash with a 4 KiB page and
+an endurance of $3 \\times 10^{3}$ cycles.
+
+**Find.** Whether either part can survive, and what the EEPROM needs.
+
+**Work.** First the write count. Ten years of seconds is
+
+$$W = 3600 \\times 24 \\times 365 \\times 10 = 315360000$$
+
+writes. If every record landed on the same EEPROM page, that page would take
+315 million cycles against an allowance of one million, so it fails by a factor
+of 315. Spread the traffic evenly over $P$ pages and each page takes $W/P$
+cycles, so survival needs
+
+$$P \\ge \\frac{W}{E} = \\frac{315360000}{1000000} = 315.36$$
+
+which rounds up to 316 pages. At 128 bytes per page that is 40,448 bytes of
+EEPROM devoted to rotation. A 64 KiB part holds $65536/128 = 512$ pages, giving
+a total allowance of $512 \\times 10^{6}$ cycles against a demand of
+$3.1536 \\times 10^{8}$, a margin of 1.62.
+
+**Independent check.** Compute the margin the other way, as an allowance per
+second of life. The 64 KiB part offers $5.12 \\times 10^{8}$ page writes over
+$3.1536 \\times 10^{8}$ seconds, which is 1.62 writes per second against a
+demand of one. Same number, different arithmetic.
+
+**Answer: a 64 KiB EEPROM cycled round its 512 pages survives with 62 % margin;
+a single page does not, and neither does un-levelled use of the NAND part.**
+
+**Trap.** Endurance is quoted **per erase unit**, not per device. Dividing the
+total write demand by the device capacity, rather than by the number of
+independently erasable units, quietly assumes perfect wear levelling, which is
+exactly the thing the question is asking you to specify.`,
+      examTip: 'Sort every memory question onto the three axes before reaching for a formula. Volatility answers "does it survive power off", endurance answers "how many writes", access mode answers "what is the smallest unit I may touch". Most numeric memory problems are the third axis in disguise.',
+      importantNote: 'Organisation is written locations by width. A 512K x 16 part has 19 address pins and holds 1 MiB, not 512 KiB. Read the second number before computing anything.',
+    },
+    { id: 'mem-sram-cell', title: '7. The SRAM Cell, and Why It Takes Six Transistors',
+      content: `## 7.1 Four transistors to remember, two more to reach
+
+A static cell stores its bit in a **latch**: two CMOS inverters wired output to
+input, so each one holds the other in place. That is four transistors, and it
+is the whole storage mechanism. The value persists with no clock and no
+refresh, for as long as the supply holds, because the latch is sitting in one
+of its two stable states and is actively driving both nodes.
+
+Four transistors can remember but they cannot be reached. Two more, the
+**access transistors**, connect the two internal nodes to a pair of bit lines
+under control of a word line, which is why the cell is a **6T** cell and not a
+4T one. The pair is not redundancy: the cell is read and written
+**differentially**, one bit line carrying the value and the other its
+complement, which halves the swing each line must make and rejects noise that
+lands on both lines equally.
+
+$$\\text{cells} = 2^{\\,n} \\times w, \\qquad \\text{transistors} = 6 \\times 2^{\\,n} \\times w$$
+
+The two access transistors are also where the design tension lives, because the
+same devices serve a read and a write and the two want opposite things. A read
+wants weak access transistors, so that the pre-charged bit lines cannot
+overpower the latch and flip it. A write wants strong access transistors, so
+that the driven bit lines can overpower the latch on purpose. The cell is sized
+to sit between those demands, and the sizing is quoted as ratios.
+
+## 7.2 The cell ratio, and what happens when it is one
+
+During a read both bit lines are pre-charged high and the word line rises. On
+the side storing a zero, current flows from the bit line, through the access
+transistor, into the internal node and down through the driver transistor to
+ground. The two devices form a divider, and the internal node that is supposed
+to be a solid zero is lifted to
+
+$$V_{0} = V_{DD}\\,\\frac{R_{drv}}{R_{drv} + R_{acc}}$$
+
+Model each transistor in its linear region as a resistance inversely
+proportional to its aspect ratio, $R \\propto (W/L)^{-1}$, and define the **cell
+ratio**
+
+$$\\mathrm{CR} = \\frac{(W/L)_{drv}}{(W/L)_{acc}}$$
+
+Substituting the resistances gives the form worth remembering:
+
+$$V_{0} = \\frac{V_{DD}}{1 + \\mathrm{CR}}$$
+
+The opposite inverter flips when its input passes its trip point, near
+$V_{DD}/2$ for a balanced inverter. Setting $V_{0} = V_{DD}/2$ gives
+$\\mathrm{CR} = 1$ exactly, so a cell whose driver and access devices are the
+same size sits precisely on the edge of destroying its own contents every time
+it is read. Real cells are built with $\\mathrm{CR}$ between 1.2 and 2.
+
+| Cell ratio | $V_{0}/V_{DD}$ | $V_{0}$ at $V_{DD} = 1.0$ V | Read margin to the 0.5 V trip point |
+|---|---|---|---|
+| 1.0 | 0.500 | 0.500 V | **0 V — the cell flips** |
+| 1.2 | 0.455 | 0.455 V | 0.045 V |
+| 1.5 | 0.400 | 0.400 V | 0.100 V |
+| 2.0 | 0.333 | 0.333 V | 0.167 V |
+| 3.0 | 0.250 | 0.250 V | 0.250 V |
+
+This is a first-order resistive model and it is presented as one. It gets the
+shape right and the trend right, which is what a design rule needs, and it is
+enough to explain why the rule exists at all.
+
+### Worked Example 7.1 — the device count behind 32 KiB of cache
+
+**Given.** A cache data array of 32 KiB, organised $32\\mathrm{K} \\times 8$, in
+6T SRAM.
+
+**Find.** Cells, transistors, and the comparison with a 1T1C DRAM array of the
+same capacity.
+
+**Work.** Locations and width give the cell count directly:
+
+$$\\text{cells} = 32768 \\times 8 = 262144$$
+
+and the 6T structure multiplies:
+
+$$\\text{transistors} = 6 \\times 262144 = 1572864$$
+
+A DRAM array of the same capacity needs one transistor and one capacitor per
+cell, so 262,144 transistors and 262,144 capacitors.
+
+**Independent check.** Work in powers of two: $2^{15} \\times 2^{3} = 2^{18}$
+cells, and $6 \\times 2^{18} = 1.5 \\times 2^{20}$, which is 1,572,864. The
+device-count ratio is 6 to 1, and because a DRAM cell also packs far tighter
+than a latch the area ratio is larger still, roughly 120 $F^{2}$ against
+6 $F^{2}$ in the same process generation.
+
+**Answer: 262,144 cells and 1,572,864 transistors, against 262,144 transistors
+plus 262,144 capacitors for DRAM.**
+
+**Trap.** The 6T count is the *array* only. Row decoders, column multiplexers,
+sense amplifiers and write drivers add to it, and in small arrays that
+periphery can rival the array itself. Quoting six transistors per bit as the
+whole chip is wrong in the direction that matters for small caches.
+
+### Worked Example 7.2 — sizing a cell so a read cannot destroy it
+
+**Given.** $V_{DD} = 1.0$ V, a balanced inverter with its trip point at 0.5 V,
+and a required read margin of at least 0.10 V.
+
+**Find.** The minimum cell ratio.
+
+**Work.** The margin requirement is $0.5 - V_{0} \\ge 0.10$, so
+$V_{0} \\le 0.40$ V. From the divider result,
+
+$$\\frac{1.0}{1 + \\mathrm{CR}} \\le 0.40 \\;\\Longrightarrow\\; 1 + \\mathrm{CR} \\ge 2.5$$
+
+so $\\mathrm{CR} \\ge 1.5$.
+
+**Independent check.** Substitute back rather than trusting the rearrangement:
+at $\\mathrm{CR} = 1.5$ the node sits at $1.0/2.5 = 0.400$ V, and
+$0.500 - 0.400 = 0.100$ V, exactly the requirement. At $\\mathrm{CR} = 1.4$ it
+sits at $1.0/2.4 = 0.4167$ V for a margin of 0.083 V, which fails.
+
+**Answer: a cell ratio of at least 1.5, meaning the driver transistors are 1.5
+times as wide as the access transistors.**
+
+**Trap.** Raising the cell ratio without limit is not free. A wider driver makes
+the cell larger and makes writing harder, because the write must now overpower
+a stronger latch. That is why the write path is governed by a separate ratio,
+between the access transistor and the load transistor, and why a cell can be
+read-stable and write-broken at the same time.`,
+      examTip: 'Six transistors decomposes as four for the cross-coupled latch and two for access. If a question asks why SRAM is faster than DRAM, the answer is that the latch is already driving both nodes hard, so no charge sharing and no sense amplifier stand between the cell and the output.',
+      importantNote: 'A cell ratio of exactly 1 puts the internal zero node at the inverter trip point, so a read is as likely to flip the cell as to report it. Read stability is a sizing rule, not an afterthought, and it is the reason SRAM cells are not simply built from minimum-size devices.',
+    },
+    { id: 'mem-dram-cell', title: '8. One Transistor, One Capacitor, and the Price of Both',
+      content: `## 8.1 The whole cell is a bucket and a tap
+
+A dynamic cell is a capacitor holding charge and a single transistor connecting
+it to a bit line. There is no latch, nothing drives the node, and nothing
+restores it. The stored quantity is
+
+$$Q = C_{s} V_{s}$$
+
+and everything awkward about DRAM follows from that quantity being small,
+isolated and slowly draining.
+
+Reading works by **charge sharing**. The bit line is pre-charged to $V_{DD}/2$,
+the word line rises, and the cell's charge redistributes between $C_{s}$ and
+the far larger bit-line capacitance $C_{BL}$. The bit line moves by
+
+$$\\Delta V = V_{s}\\,\\frac{C_{s}}{C_{s} + C_{BL}}$$
+
+where $V_{s}$ is the cell's departure from the pre-charge level. With a cell of
+25 fF on a bit line of 250 fF, only one part in eleven of the stored swing
+reaches the sense amplifier, which is why a differential sense amplifier is
+not an optimisation in DRAM but a requirement.
+
+Charge sharing also empties the bucket. After the share, the cell node sits at
+the bit-line voltage, not at its original level, so **the read has destroyed
+the stored value**. Every DRAM read therefore ends with the sense amplifier
+driving the sensed level back down the bit line into the cell, and that
+restore is why the cycle time exceeds the access time:
+
+$$t_{RC} = t_{RAS} + t_{RP}$$
+
+The row-active time $t_{RAS}$ covers sensing and restoring; the pre-charge time
+$t_{RP}$ returns the bit lines to $V_{DD}/2$ before the next row.
+
+## 8.2 Leakage, retention, and the refresh interval
+
+Even untouched, the cell drains through the access transistor's subthreshold
+and junction leakage. Model the loss as a constant current $I_{leak}$ and the
+node falls linearly:
+
+$$V(t) = V_{s} - \\frac{I_{leak}}{C_{s}}\\,t$$
+
+The cell stays readable until its remaining swing produces the sense
+amplifier's minimum input. Inverting the charge-sharing relation for a minimum
+detectable bit-line step $\\Delta V_{min}$ gives the floor,
+
+$$V_{min} = \\Delta V_{min}\\,\\frac{C_{s} + C_{BL}}{C_{s}}$$
+
+and the time to reach it is the **retention time**
+
+$$t_{ret} = \\frac{C_{s}\\,(V_{s} - V_{min})}{I_{leak}}$$
+
+The refresh interval must sit below $t_{ret}$ with margin, and refresh is
+simply a read followed by the restore that a read performs anyway: the array
+walks its rows, and each visit re-establishes full charge.
+
+![Left: the fraction of bandwidth a 64 ms refresh window consumes, plotted against rows per bank for a 50 ns and a 350 ns row-refresh time, each point produced by stepping a distributed-refresh schedule and then checked against the closed form. Right: one cell discharging at 100 fA out of 25 fF, crossing the 0.275 V sense floor at 81.25 ms, with the 64 ms refresh point marked.](/courses/fe-ee/figures/dig4-refresh-budget.svg)
+
+## 8.3 What refresh costs, as a fraction of bandwidth
+
+Refreshing $R$ rows, each occupying the bank for $t_{RFC}$, inside a window
+$t_{REF}$, blocks the array for $R\\,t_{RFC}$ out of every $t_{REF}$. The
+fraction of time, and therefore of peak bandwidth, that never reaches the
+processor is
+
+$$f_{ov} = \\frac{R\\,t_{RFC}}{t_{REF}}$$
+
+and the average spacing between refresh commands, the figure a controller
+actually programs, is
+
+$$t_{REFI} = \\frac{t_{REF}}{R}$$
+
+The figure above plots $f_{ov}$ for two row-refresh times. Both curves were
+produced by stepping a schedule one refresh command at a time across a 64 ms
+window and totalling the blocked time, then comparing that total with the
+closed form; the two agree to within $10^{-12}$ of each other at every point,
+which is the only reason the formula is being offered as a shortcut.
+
+### Worked Example 8.1 — how much signal reaches the sense amplifier
+
+**Given.** $C_{s} = 25$ fF, $C_{BL} = 250$ fF, and a cell driven 0.60 V away
+from the pre-charge level.
+
+**Find.** The bit-line step.
+
+**Work.**
+
+$$\\Delta V = 0.60 \\times \\frac{25}{25 + 250} = 0.60 \\times \\frac{25}{275}$$
+
+$$\\Delta V = 0.0545\\ \\mathrm{V} = 54.5\\ \\mathrm{mV}$$
+
+**Independent check.** Conserve charge instead of using the ratio. Before the
+share the cell holds $25 \\times 0.60 = 15$ fC of excess charge; after it, that
+excess is spread over $25 + 250 = 275$ fF, giving $15/275 = 0.0545$ V. Same
+answer from a conservation argument rather than a divider.
+
+**Answer: 54.5 mV, about one eleventh of the stored swing.**
+
+**Trap.** Bit-line capacitance grows with the number of cells on the line, so
+making a column longer to save decoder area directly shrinks the sense signal.
+That is why arrays are broken into sub-arrays with their own sense amplifiers
+rather than built as one tall column.
+
+### Worked Example 8.2 — retention time and the refresh margin
+
+**Given.** The cell of Example 8.1, a sense amplifier needing 25 mV, and a
+leakage current of 100 fA.
+
+**Find.** The retention time and the margin over a 64 ms refresh interval.
+
+**Work.** The voltage floor comes from inverting the charge-sharing relation:
+
+$$V_{min} = 0.025 \\times \\frac{275}{25} = 0.275\\ \\mathrm{V}$$
+
+so the usable swing is $0.600 - 0.275 = 0.325$ V and
+
+$$t_{ret} = \\frac{25\\ \\mathrm{fF} \\times 0.325\\ \\mathrm{V}}{100\\ \\mathrm{fA}} = 81.25\\ \\mathrm{ms}$$
+
+The margin over a 64 ms interval is $81.25/64 = 1.27$.
+
+**Independent check.** Take the discharge slope instead. A current of 100 fA out
+of 25 fF moves the node by $10^{-13} \\times 10^{-3} / (25 \\times 10^{-15})$
+volts per millisecond, which is 4 mV/ms. Dividing the 325 mV budget by 4 mV/ms
+gives 81.25 ms. The figure's right-hand panel is that straight line, and the
+crossing was read off the plotted curve and compared with this closed form.
+
+**Answer: 81.25 ms retention, a margin of 1.27 over the 64 ms interval.**
+
+**Trap.** Leakage rises steeply with temperature, and the equation says the
+retention time is inversely proportional to it. Double the leakage and the
+retention halves to 40.6 ms, which is *below* the 64 ms interval — which is
+exactly why parts specify a doubled refresh rate above a stated case
+temperature rather than a single interval for all conditions.
+
+### Worked Example 8.3 — refresh as a bandwidth tax
+
+**Given.** A bank of 8,192 rows, $t_{RFC} = 350$ ns, a 64 ms refresh window, and
+a channel whose peak rate is 12.8 GB/s.
+
+**Find.** The refresh interval, the overhead fraction, and the delivered
+bandwidth.
+
+**Work.** The interval between refresh commands is
+
+$$t_{REFI} = \\frac{64\\ \\mathrm{ms}}{8192} = 7.8125\\ \\mathrm{\\mu s}$$
+
+and the blocked fraction is
+
+$$f_{ov} = \\frac{8192 \\times 350\\ \\mathrm{ns}}{64\\ \\mathrm{ms}} = \\frac{2.8672\\ \\mathrm{ms}}{64\\ \\mathrm{ms}} = 0.0448$$
+
+so 4.48 % of the array's time is unavailable. Delivered bandwidth is
+
+$$12.8 \\times (1 - 0.0448) = 12.227\\ \\mathrm{GB/s}$$
+
+**Independent check.** Compute the loss directly and subtract:
+$12.8 \\times 0.0448 = 0.5734$ GB/s lost, and $12.8 - 0.5734 = 12.2266$ GB/s
+delivered, agreeing to the printed precision.
+
+**Answer: 7.8125 us between refreshes, 4.48 % overhead, 12.227 GB/s delivered.**
+
+**Trap.** The overhead scales with the row count, so a denser part with twice
+the rows pays twice the tax at the same $t_{RFC}$ — and $t_{RFC}$ itself grows
+with density, which is why refresh overhead has crept up over successive
+generations instead of shrinking. Assuming refresh is "a fraction of a percent,
+so ignore it" was true at 4,096 rows and 50 ns, where the same formula gives
+0.32 %, and is not true now.`,
+      examTip: 'DRAM cycle time is access time plus recovery, because the read destroyed the data and the restore has to finish before the next row. Any question that quotes both an access time and a cycle time is testing whether you use the cycle time for throughput and the access time for latency.',
+      importantNote: 'Refresh overhead is (rows x t_RFC) / t_REF and nothing else. The trap is using the number of refresh COMMANDS per second instead of the number of rows, or using the burst length instead of t_RFC; both give an answer that is wrong by a factor of the rows per command.',
+    },
+    { id: 'mem-nonvolatile', title: '9. ROM to Flash: What Each Technology Can Actually Do',
+      content: `## 9.1 The family, ordered by who gets to write it and how often
+
+The nonvolatile family is usually presented as a history lesson. It is more
+useful as a sequence of answers to one question: at what point in the product's
+life, and by what physical mechanism, does a bit get set?
+
+- **Mask ROM.** The pattern is a photomask. Contents are fixed when the wafer is
+  made, cost per bit is the lowest of any technology at volume, and the tooling
+  charge and the several-week turnaround are paid whether the code is right or
+  not.
+- **PROM.** Shipped blank with a fusible link at every cell; a programmer blows
+  the links for the required pattern. One time only, because a blown fuse does
+  not grow back.
+- **EPROM.** A floating gate is charged by hot-electron injection during
+  programming and discharged by ultraviolet light through a quartz window.
+  Erase is all-or-nothing across the whole die and takes minutes.
+- **EEPROM.** The same floating gate, but charged and discharged by
+  Fowler-Nordheim tunnelling through a thin oxide, which needs only a voltage
+  and so can be done in circuit, one byte at a time.
+- **Flash.** EEPROM economics with the byte-erase circuitry removed. Erase is
+  performed on a whole block at once, which is what makes the cell small enough
+  to be worth building in gigabytes.
+
+The progression is a single trade repeated: each step gives up erase
+granularity or endurance and buys density and in-system writability.
+
+## 9.2 NAND against NOR: the array topology decides the operations
+
+Both flash types use the same cell. They differ in how the cells are wired to
+the bit line, and that one choice propagates into every operation the part
+supports.
+
+In **NOR** flash each cell hangs directly on the bit line, so any cell can be
+pulled down individually and any address can be read on its own. That makes NOR
+randomly addressable and lets a processor fetch instructions straight out of it,
+the property normally called execute-in-place. The cost is the contact each cell
+needs to the bit line, which is most of why a NOR cell occupies roughly ten
+square feature sizes.
+
+In **NAND** flash the cells are wired in series, thirty-two or more to a string,
+with one contact at each end of the string. Cell area falls to roughly four
+square feature sizes, but no cell can be read alone: the whole string must be
+turned on, and the array is read a page at a time into an internal register and
+then streamed out.
+
+| Operation | NOR | NAND |
+|---|---|---|
+| Read one arbitrary byte | direct, one access | load the whole page first |
+| Execute code in place | yes | no, must be copied to RAM |
+| Program granularity | word or page | page |
+| Erase granularity | block | block |
+| Relative cell area | about 10 $F^{2}$ | about 4 $F^{2}$ |
+| Typical role | boot code, small tables | bulk storage, file systems |
+
+Put numbers on the read behaviour with a stated model. Reading $n$ bytes from
+NOR costs one random access each,
+
+$$t_{NOR}(n) = n\\,t_{acc}$$
+
+while NAND pays a page-load penalty once and then streams,
+
+$$t_{NAND}(n) = t_{R} + n\\,t_{ser}$$
+
+Setting the two equal gives the burst length at which the page-oriented part
+overtakes the byte-oriented one:
+
+$$n^{*} = \\frac{t_{R}}{t_{acc} - t_{ser}}$$
+
+![Time to deliver a burst of n bytes from NOR flash at 70 ns per random byte and from NAND flash with a 25 us page load followed by 25 ns per streamed byte. The lines cross at 556 bytes, the first integer at which the NAND expression is the smaller of the two.](/courses/fe-ee/figures/dig4-nand-nor.svg)
+
+## 9.3 Endurance, write amplification and wear levelling
+
+A block that has been erased three thousand times in a part rated for three
+thousand cycles is finished, and if the file system happens to keep its
+allocation table in that block, the whole device is finished with it. Two
+mechanisms stand between the raw endurance number and the drive's service life.
+
+**Write amplification** is the ratio of flash bytes actually written to host
+bytes requested. It exceeds one because a partially valid block must have its
+live pages copied elsewhere before it can be erased. Total host writes before
+exhaustion are therefore
+
+$$W_{host} = \\frac{C\\,E}{\\mathrm{WA}}$$
+
+for capacity $C$, endurance $E$ and write amplification $\\mathrm{WA}$.
+
+**Wear levelling** is the mapping layer that keeps the erase counts even. Its
+value is not subtle, and it can be measured rather than asserted. Take a
+thousand-block device in which nine writes out of ten land on a hundred hot
+blocks. Under a static map the busiest block absorbs $0.9/100$ of every write
+and reaches its limit while the other nine hundred blocks are barely touched.
+Under levelling every erase is spent on the least-worn block, so the device
+survives until the entire budget is gone. The gain is the ratio of the two
+lifetimes,
+
+$$G = \\frac{N_{blocks}\\,E}{E/p_{max}} = N_{blocks}\\,p_{max}$$
+
+where $p_{max}$ is the largest per-write probability any single block carries.
+
+![Erase counts across a thousand-block device at the instant a statically mapped drive loses its first block, after 333,223 host writes. The static map has spent its hundred hot blocks entirely while the nine hundred cold ones show 37 erases each; a wear-levelled map at the same instant shows 333 erases on every block, 11 percent of the budget.](/courses/fe-ee/figures/dig4-flash-wear.svg)
+
+### Worked Example 9.1 — where NAND overtakes NOR
+
+**Given.** NOR delivers a random byte in 70 ns. NAND loads a page in 25 us and
+then streams at 25 ns per byte.
+
+**Find.** The burst length at which NAND becomes the faster choice.
+
+**Work.** Equate the two models:
+
+$$70\\,n = 25000 + 25\\,n$$
+
+$$45\\,n = 25000 \\;\\Longrightarrow\\; n^{*} = 555.6$$
+
+so from 556 bytes onward NAND wins.
+
+**Independent check.** Evaluate both expressions on either side of the boundary
+rather than trusting the algebra. At $n = 555$: NOR needs
+$70 \\times 555 = 38850$ ns and NAND needs $25000 + 25 \\times 555 = 38875$ ns,
+so NOR is ahead by 25 ns. At $n = 556$: NOR needs
+$70 \\times 556 = 38920$ ns and NAND needs $25000 + 25 \\times 556 = 38900$ ns,
+so NAND is ahead by 20 ns. The crossing sits between them, as the algebra said.
+
+**Answer: 556 bytes.**
+
+**Trap.** The crossing point is a property of the *burst*, not of the part. A
+processor fetching four-byte instructions at random addresses is on the far
+left of that plot forever, which is why boot code lives in NOR even in a system
+whose bulk storage is NAND.
+
+### Worked Example 9.2 — the endurance life of a drive
+
+**Given.** A 256 GB drive built from cells rated at 3,000 program-erase cycles,
+with a write amplification of 1.4, in service at 20 GB of host writes per day.
+
+**Find.** Total host writes and the service life.
+
+**Work.** The endurance budget in flash bytes is
+$256 \\times 10^{9} \\times 3000 = 7.68 \\times 10^{14}$, and dividing by the
+amplification converts it to host bytes:
+
+$$W_{host} = \\frac{7.68 \\times 10^{14}}{1.4} = 5.4857 \\times 10^{14}\\ \\text{bytes}$$
+
+which is 548.6 TB. At $2 \\times 10^{10}$ bytes per day,
+
+$$\\frac{5.4857 \\times 10^{14}}{2 \\times 10^{10}} = 27429\\ \\text{days} = 75.1\\ \\text{years}$$
+
+**Independent check.** Go the other way and ask how many full-drive overwrites
+that is: 548.6 TB divided by 256 GB is 2,143 drive fills, and multiplying by the
+amplification of 1.4 returns $2143 \\times 1.4 = 3000$ cycles, the rated
+endurance. The round trip closes.
+
+**Answer: 548.6 TB written, about 75 years at 20 GB per day.**
+
+**Trap.** That comfortable answer assumes perfect levelling. Remove it and the
+life collapses by the concentration factor of the traffic, which the next
+example measures.
+
+### Worked Example 9.3 — what levelling is worth on skewed traffic
+
+**Given.** A device of 1,000 blocks with an endurance of 3,000 cycles. Nine
+writes in ten fall on a set of 100 hot blocks, evenly within that set; the
+remaining one in ten spreads over the other 900.
+
+**Find.** The lifetime with and without wear levelling.
+
+**Work.** Each hot block carries $p_{max} = 0.9/100 = 0.009$ of the traffic, so
+under a static map its limit arrives after
+
+$$\\frac{E}{p_{max}} = \\frac{3000}{0.009} = 333333\\ \\text{writes}$$
+
+Under levelling the whole budget is available:
+
+$$N_{blocks}\\,E = 1000 \\times 3000 = 3000000\\ \\text{writes}$$
+
+and the gain is
+
+$$G = \\frac{3000000}{333333} = 9.0$$
+
+**Independent check.** The traffic was also stepped one write at a time through
+a round-robin schedule with exactly this distribution, and the first block
+reached 3,000 erases at write 333,223 — 0.033 % below the closed form, the
+difference being that a round robin cannot land exactly on the boundary. At
+that instant the levelled map had used 333 of 3,000 cycles on every block,
+11.1 % of its life, which is the figure above.
+
+**Answer: 333,333 writes without levelling against 3,000,000 with it, a factor
+of 9.**
+
+**Trap.** The gain equals $N_{blocks}\\,p_{max}$, so it depends entirely on how
+concentrated the traffic is. Uniform traffic already has $p_{max} = 1/N$ and
+levelling buys nothing; the more skewed the workload, the more it buys. Quoting
+"wear levelling multiplies life by the block count" ignores the $p_{max}$ term
+and overstates the gain by a factor of ten here.`,
+      examTip: 'NOR is random access and executes in place; NAND is page access and is cheaper per bit. If a question mentions booting, running code from the part, or reading a single byte, the answer is NOR. If it mentions files, pages, blocks or gigabytes, it is NAND.',
+      importantNote: 'Endurance limits ERASE cycles per block, not writes per device. Converting a device-level write budget into a life expectancy requires both the write amplification and an assumption about levelling, and stating neither is the commonest way to get an answer that is off by an order of magnitude.',
+    },
+    { id: 'mem-decoding', title: '10. Address Decoding, Enumerated Rather Than Argued',
+      content: `## 10.1 What a decode has to guarantee
+
+A memory map is correct when every address in the processor's space is answered
+by at most one device, and when every address the software expects to work is
+answered by exactly one. Those are two separate failures — an **overlap**, where
+two devices drive the bus at once, and a **hole**, where nothing responds — and
+a design can contain both at the same time.
+
+Address lines split into two groups. The low $d$ lines go to the device's own
+address pins, where $d$ is fixed by the part's depth, $2^{d}$ locations. The
+remaining high lines are available to the decode logic, and what happens to them
+is the entire subject.
+
+**Full decoding** uses every remaining high line. Each device's chip select is a
+product term over all of them, so the device answers in exactly one window of
+$2^{d}$ addresses and nowhere else. **Partial decoding** ignores one or more high
+lines. The device then answers whenever the lines that *are* decoded match,
+regardless of the ignored ones, so it appears repeatedly across the space.
+
+The number of images is the ratio of the window the decode carves out to the
+size of the part inside it:
+
+$$M = \\frac{2^{\\,h}}{2^{\\,d}} = 2^{\\,h-d}$$
+
+where $h$ counts the address lines the decode leaves free. Consecutive images
+are separated by
+
+$$\\text{stride} = 2^{\\,d}$$
+
+![Top: a full decode of a 64 KiB space into four 16 KiB devices, plotted as the responding device against address, showing four contiguous blocks with no gap and no overlap. Bottom: a partial decode in which an 8 KiB ROM and a 2 KiB RAM each occupy a 32 KiB window, plotted as the offset reached inside each part, so the four ROM images and sixteen RAM images appear as repeated ramps.](/courses/fe-ee/figures/dig4-decode-aliasing.svg)
+
+Both panels were produced by walking all 65,536 addresses and recording, for
+each one, which devices asserted select and which internal offset was reached.
+The full-decode map came back with zero holes, zero overlaps and 65,536
+singly-served addresses, with block edges at 0x0000, 0x4000, 0x8000 and 0xC000.
+The partial map also came back with zero holes and zero overlaps — partial
+decoding is not in itself a fault — but the 8,192 ROM cells were each reachable
+at exactly four addresses, on a stride of 0x2000, and the 2,048 RAM cells at
+exactly sixteen, on a stride of 0x0800. Those multiplicities were counted from
+the map, not deduced from the formula, and they match it.
+
+## 10.2 Deriving a chip select from a required window
+
+The mechanical procedure is to write the first and last address of the required
+window in binary, keep the bits that are identical across both, and form a
+product term from them. Everything that varies belongs to the device.
+
+For a 4 KiB part placed at 0xE000 the window runs 0xE000 to 0xEFFF:
+
+| Address | A15 A14 A13 A12 | A11 to A0 |
+|---|---|---|
+| 0xE000 | 1 1 1 0 | all zero |
+| 0xEFFF | 1 1 1 0 | all one |
+
+The top four bits are constant, the bottom twelve vary, and $2^{12} = 4096$ is
+the part's depth, which confirms the split. The select is the product term over
+the constant bits:
+
+$$CS = A_{15}\\,A_{14}\\,A_{13}\\,\\overline{A_{12}}$$
+
+Devices with an active-low select take the complement of that expression, which
+by De Morgan is a NAND of the same four literals.
+
+## 10.3 Auditing a map instead of trusting it
+
+The audit is mechanical too: evaluate every device's select expression at every
+address and count responders. Anything other than exactly one is a defect. The
+figure below shows a decode that fails in both directions at once — a ROM
+selected by $\\overline{A_{15}}$ and a RAM selected by $A_{14}$, which is the
+shape a partial decode takes when the two devices' select expressions were
+chosen independently.
+
+![Top: an audit of a 64 KiB space in which the ROM is selected by A15 low and the RAM by A14 high, showing 32,768 addresses with a single responder, a 16 KiB region from 0x4000 where both respond, and a 16 KiB region from 0x8000 where neither does. Bottom: the address budget of a 1 MiB slot decode, in which a 256-byte UART occupies a whole 131,072-address slot and five slots totalling 655,360 addresses are unmapped.](/courses/fe-ee/figures/dig4-map-audit.svg)
+
+### Worked Example 10.1 — a chip select for a 2 KiB device at 0x8800
+
+**Given.** A 64 KiB address space, $A_{15}$ down to $A_{0}$, and a 2 KiB device
+that must occupy 0x8800 through 0x8FFF, fully decoded.
+
+**Find.** The device's own address lines and the select expression.
+
+**Work.** A 2 KiB part has $\\log_{2} 2048 = 11$ address lines, $A_{10}$ down to
+$A_{0}$. That leaves $A_{15}$ down to $A_{11}$, five lines, for the decode.
+Write the window's endpoints in binary, low address first:
+
+$$1000\\,1000\\,0000\\,0000 \\qquad \\text{and} \\qquad 1000\\,1111\\,1111\\,1111$$
+
+The top five bits are 10001 in both, so
+
+$$CS = A_{15}\\,\\overline{A_{14}}\\,\\overline{A_{13}}\\,\\overline{A_{12}}\\,A_{11}$$
+
+**Independent check.** Count what the term selects. Five literals fixed out of
+sixteen address bits leaves eleven free, so the term is true for $2^{11} = 2048$
+addresses, which is the part's depth — a select that matched more or fewer
+addresses than the part has locations would be wrong by construction. The same
+count was also obtained by evaluating the expression at all 65,536 addresses,
+where it was true 2,048 times and false everywhere else.
+
+**Answer: 11 device address lines, and $CS = A_{15}\\overline{A_{14}}\\,\\overline{A_{13}}\\,\\overline{A_{12}}A_{11}$.**
+
+**Trap.** Checking only that the expression is true at the first address is not
+an audit. An expression that is true at 0x8800 but omits $A_{11}$ is also true
+at 0x8000, and the resulting device answers a window twice its size — half of
+which is somebody else's.
+
+### Worked Example 10.2 — counting the aliases a lazy decode creates
+
+**Given.** A 2 KiB RAM whose select is driven by $A_{15}$ alone, in a 64 KiB
+space.
+
+**Find.** How many addresses reach each RAM cell, and on what stride.
+
+**Work.** The decode uses one line and the part uses eleven, so four lines,
+$A_{14}$ down to $A_{11}$, are ignored. The window is
+$2^{15} = 32768$ addresses and the part is $2^{11} = 2048$, so
+
+$$M = \\frac{32768}{2048} = 16$$
+
+images, separated by $2^{11} = 2048$ addresses, which is 0x0800.
+
+**Independent check.** The full 64 KiB space was walked and every address's
+internal offset recorded. Each of the 2,048 offsets appeared in exactly sixteen
+addresses, and every gap between consecutive addresses reaching the same offset
+was 0x0800 — a single stride value across all 2,048 cells, with no exceptions.
+
+**Answer: 16 images per cell, on a 2 KiB stride, filling 0x8000 to 0xFFFF.**
+
+**Trap.** Aliases are invisible until something else needs those addresses.
+Writing at 0x8000 and reading back at 0x8000 works perfectly; the failure
+arrives the day a second device is mapped at 0xA000 and the two silently
+overlap. Partial decoding is a decision to spend address space to save gates,
+and it has to be documented as one.
+
+### Worked Example 10.3 — auditing a decode that both clashes and holes
+
+**Given.** A 64 KiB space with a 16 KiB ROM selected whenever $A_{15} = 0$, and
+a 16 KiB RAM selected whenever $A_{14} = 1$.
+
+**Find.** The regions of contention and the regions with no responder.
+
+**Work.** Both conditions hold when $A_{15} = 0$ and $A_{14} = 1$, which is the
+address range with top bits 01, that is 0x4000 to 0x7FFF. Neither holds when
+$A_{15} = 1$ and $A_{14} = 0$, top bits 10, that is 0x8000 to 0xBFFF. Each
+region is
+
+$$2^{14} = 16384\\ \\text{addresses}$$
+
+**Independent check.** Every address in the space was evaluated against both
+expressions and the responders counted. The result was 32,768 addresses with a
+single responder, 16,384 with two, and 16,384 with none, and the two-responder
+set ran from 0x4000 to 0x7FFF while the empty set ran from 0x8000 to 0xBFFF —
+exactly the ranges the Boolean argument predicted, and the counts sum to 65,536.
+
+**Answer: contention over 0x4000 to 0x7FFF and a hole over 0x8000 to 0xBFFF,
+16,384 addresses each.**
+
+**Trap.** Contention is not a soft failure. Two devices driving opposite levels
+onto the same bus wire is a short between the supply rails through two output
+stages, which is a thermal problem as well as a logical one. This is the defect
+that a decode audit exists to catch, and it is why the audit is a walk of the
+space rather than a reading of the schematic.`,
+      examTip: 'Write the first and last address of the required window in binary, keep the bits that agree, and that product term is the chip select. The number of bits that vary must equal the log base two of the part depth; if it does not, one of the two numbers is wrong.',
+      importantNote: 'Partial decoding is not a bug by itself; it is a deliberate trade of address space for gates. It becomes a bug the moment a second device is placed inside one of the alias windows, which is why any partially decoded map has to record the alias range, not just the base address.',
+    },
+    { id: 'mem-expand-2', title: '11. Expansion Arithmetic in Both Directions',
+      content: `## 11.1 Two divisions and a multiplication
+
+Section 5.1 built a 64K x 8 memory from 16K x 4 parts. The arithmetic behind it
+generalises to three relations that answer every expansion question, and they
+are worth writing down separately because candidates routinely merge them and
+get a chip count that is off by the width factor.
+
+Chips per bank, set by the data bus:
+
+$$C = \\frac{D_{sys}}{D_{chip}}$$
+
+Banks, set by the depth:
+
+$$B = \\frac{N_{sys}}{N_{chip}}$$
+
+Total parts:
+
+$$T = C \\times B$$
+
+The address lines divide in the same way the decode of Section 10 divides them.
+Each chip receives $\\log_{2} N_{chip}$ low lines in parallel; the remaining
+$\\log_{2} B$ high lines drive a decoder whose outputs are the bank selects.
+
+$$\\log_{2} N_{sys} = \\log_{2} N_{chip} + \\log_{2} B$$
+
+That identity is the check to run before wiring anything: if the low lines plus
+the decoder inputs do not add up to the system's address width, one of the three
+numbers is wrong.
+
+| Direction | What it changes | What is shared | What differs |
+|---|---|---|---|
+| Width | bits per location | address lines, all control | data bits carried |
+| Depth | number of locations | address lines below the split, data bus | chip select |
+
+The 64K x 8 array of Section 5.1 was also checked by walking its whole address
+space: each of the 65,536 addresses was mapped to a bank and an offset, and the
+result was a bijection onto the 4 banks by 16,384 offsets, with exactly 16,384
+addresses in each bank and both half-width chips participating at every address.
+No address reached two banks and none reached none.
+
+### Worked Example 11.1 — 256K x 16 from 64K x 8 parts
+
+**Given.** A system needing 262,144 locations of 16 bits, built from parts
+organised 65,536 locations of 8 bits.
+
+**Find.** The chip count, the address split and the decoder width.
+
+**Work.** Width first:
+
+$$C = \\frac{16}{8} = 2$$
+
+chips per bank. Then depth:
+
+$$B = \\frac{262144}{65536} = 4$$
+
+banks, so
+
+$$T = 2 \\times 4 = 8$$
+
+parts. Each chip has $\\log_{2} 65536 = 16$ address pins fed by $A_{15}$ down to
+$A_{0}$; the system needs $\\log_{2} 262144 = 18$ lines, so $A_{17}$ and
+$A_{16}$ are left over and drive a 2-to-4 decoder.
+
+**Independent check.** Total the bits both ways. The system holds
+$262144 \\times 16 = 4194304$ bits; the eight parts hold
+$8 \\times 65536 \\times 8 = 4194304$ bits. They agree, so no part is unaccounted
+for. The address identity closes too: $16 + 2 = 18$.
+
+**Answer: 8 parts in 4 banks of 2, sixteen address lines to every chip, and a
+2-to-4 decoder on A17 and A16.**
+
+**Trap.** Dividing the system's total bit count by the chip's total bit count
+gives 8 here and happens to be right, but only because the width factor divided
+evenly. Ask for 256K x 12 from the same parts and the bit-count shortcut gives
+6 chips, which cannot be arranged; the two-division method gives
+$C = 1.5$, which correctly signals that the requirement cannot be met with 8-bit
+parts without wasting bits.
+
+### Worked Example 11.2 — the decoder is fixed by the bank count alone
+
+**Given.** A 1 MiB byte-wide memory assembled from 128K x 8 parts.
+
+**Find.** The organisation and the decoder.
+
+**Work.** The data bus is 8 bits and so is the part, so $C = 1$: no width
+expansion at all. Depth gives
+
+$$B = \\frac{1048576}{131072} = 8$$
+
+banks, so $T = 8$ parts. Each part takes $\\log_{2} 131072 = 17$ lines,
+$A_{16}$ down to $A_{0}$, and the decoder takes $\\log_{2} 8 = 3$ lines,
+$A_{19}$ down to $A_{17}$: a 3-to-8 decoder.
+
+**Independent check.** The identity $17 + 3 = 20$ matches
+$\\log_{2} 1048576 = 20$. The same map was then walked address by address in
+Section 15, where the 3-to-8 slot decode produced exactly 131,072 addresses per
+slot with no overlaps.
+
+**Answer: 8 parts, no width expansion, 17 lines to each part, and a 3-to-8
+decoder on A19 to A17.**
+
+**Trap.** A decoder input count is $\\log_{2} B$, never $\\log_{2} T$. With width
+expansion the two differ, and using the chip count gives a decoder that is one
+or more bits too wide and a map with unreachable banks.`,
+      examTip: 'Do the two divisions separately and label them: bus width over chip width gives chips per bank, system depth over chip depth gives banks. Multiply last. Then check that chip address lines plus decoder inputs equals the system address width before you answer.',
+      importantNote: 'Width expansion shares every address and control line and splits only the data bus; depth expansion shares the data bus and splits only the chip select. Mixing the two up produces a memory that appears to work at low addresses and fails above the first bank boundary.',
+    },
+    { id: 'mem-timing', title: '12. Timing: Access, Cycle, Setup and Hold',
+      content: `## 12.1 Four numbers, and why access time is the least useful
+
+**Access time** is the delay from a stimulus to valid data. It is quoted from
+several stimuli — from address valid, from chip enable, from output enable — and
+the effective one is whichever finishes last.
+
+**Cycle time** is the shortest interval between the starts of two consecutive
+accesses. It is at least the access time, and exceeds it by whatever recovery
+the array needs:
+
+$$t_{cyc} \\ge t_{acc} + t_{rec}$$
+
+In static memory the recovery is small; in DRAM it is the restore-and-precharge
+of Section 8.1 and it is substantial. A part quoting a 50 ns access time and a
+90 ns cycle time supports $1/90\\ \\mathrm{ns} = 11.1$ million accesses per
+second, not the 20 million its access time suggests. Latency and throughput are
+different questions and they read different numbers.
+
+**Setup time** is how long data must be stable before the sampling edge;
+**hold time** is how long it must remain stable after it. At a memory interface
+those constraints run in both directions: the controller must satisfy the
+memory's setup and hold on a write, and the memory must satisfy the
+controller's on a read.
+
+## 12.2 A read cycle, walked
+
+Take an asynchronous static RAM with an address access time of 55 ns and an
+output hold of 10 ns after the address changes, driven by a controller with a
+10 ns input setup requirement and a 5 ns hold requirement, on a 100 ns bus
+cycle.
+
+![A read cycle and a write cycle drawn against a common time axis. In the read cycle the address goes valid at 0 ns, chip enable falls at 5 ns, output enable at 20 ns, data becomes valid at 55 ns and is latched at 90 ns, leaving a 35 ns setup margin. In the write cycle the write enable pulse runs from 25 ns to 90 ns against a 35 ns requirement and the data is driven from 30 ns to 100 ns, giving a 60 ns data setup against a 20 ns requirement.](/courses/fe-ee/figures/dig4-cycle-timing.svg)
+
+Read the margins off the definitions rather than the picture. The controller
+samples at the end of the cycle and needs data stable $t_{su}$ before that
+instant, so the latest acceptable moment for data to become valid is
+$T_{cyc} - t_{su}$, and the margin is
+
+$$m_{su} = (T_{cyc} - t_{su}) - t_{AA} = (100 - 10) - 55 = 35\\ \\mathrm{ns}$$
+
+The data survives $t_{OH}$ past the end of the cycle, while the controller needs
+it for $t_{h}$ past the sampling edge, so
+
+$$m_{h} = t_{OH} - t_{h} = 10 - 5 = 5\\ \\mathrm{ns}$$
+
+Both are positive, so the cycle is legal — and both were also recomputed by
+sampling the data-valid interval on a 0.05 ns grid and finding its first valid
+point, which landed on 55 ns exactly.
+
+## 12.3 A write cycle, walked
+
+A write has more windows to satisfy because the memory latches on an edge and
+needs the address, the data and the pulse itself to be in the right relationship
+to that edge. Five requirements matter, and each is an actual duration compared
+with a required minimum.
+
+| Window | What it constrains | Required | Actual in this cycle | Margin |
+|---|---|---|---|---|
+| $t_{WP}$ | write pulse width | 35 ns | 65 ns | 30 ns |
+| $t_{DW}$ | data setup to end of write | 20 ns | 60 ns | 40 ns |
+| $t_{DH}$ | data hold after end of write | 0 ns | 10 ns | 10 ns |
+| $t_{AW}$ | address valid to end of write | 40 ns | 90 ns | 50 ns |
+| $t_{AS}$ | address setup before write starts | 0 ns | 25 ns | 25 ns |
+
+Every one of those actual values is a difference between two edge times in the
+figure, and all five margins were computed from those edge times and asserted
+non-negative before the figure was drawn.
+
+## 12.4 Wait states
+
+A synchronous bus can only end a transfer on a clock edge, so a slow memory is
+accommodated by inserting whole clock periods. If a transfer occupies a base of
+$N_{0}$ clocks and $W$ wait states are added, the requirement is
+
+$$(N_{0} + W)\\,T_{clk} - t_{su} \\ge t_{acc}$$
+
+which rearranges to
+
+$$W \\ge \\frac{t_{acc} + t_{su}}{T_{clk}} - N_{0}$$
+
+with $W$ rounded up to an integer and floored at zero.
+
+### Worked Example 12.1 — how many wait states
+
+**Given.** A 50 MHz bus, a two-clock base transfer, a memory with
+$t_{acc} = 55$ ns and a controller needing $t_{su} = 10$ ns.
+
+**Find.** The minimum wait-state count and the resulting cycle time.
+
+**Work.** The clock period is $T_{clk} = 1/50\\ \\mathrm{MHz} = 20$ ns. Then
+
+$$W \\ge \\frac{55 + 10}{20} - 2 = 3.25 - 2 = 1.25$$
+
+so $W = 2$, giving a four-clock transfer of 80 ns.
+
+**Independent check.** Test the candidate rather than trusting the inequality.
+With $W = 2$ the transfer is $4 \\times 20 = 80$ ns, data is needed by
+$80 - 10 = 70$ ns and arrives at 55 ns, so it fits with 15 ns to spare. With
+$W = 1$ the transfer is 60 ns, data is needed by 50 ns and arrives at 55 ns, so
+it misses by 5 ns. Two wait states is the minimum.
+
+**Answer: 2 wait states, an 80 ns bus cycle.**
+
+**Trap.** The design in the figure uses three wait states and a 100 ns cycle,
+which is not an error — it buys the 35 ns margin computed above instead of 15 ns.
+The minimum wait-state count and the chosen wait-state count are different
+questions, and a question that supplies a temperature range or a margin
+requirement is asking the second one.
+
+### Worked Example 12.2 — auditing a write cycle against five windows
+
+**Given.** The write cycle drawn above: address valid from 0 to 100 ns, write
+enable asserted from 25 to 90 ns, data driven from 30 to 100 ns. The part
+requires $t_{WP} \\ge 35$, $t_{DW} \\ge 20$, $t_{DH} \\ge 0$, $t_{AW} \\ge 40$
+and $t_{AS} \\ge 0$ nanoseconds.
+
+**Find.** Whether the cycle is legal, and which window is tightest.
+
+**Work.** Each actual value is a difference of edge times:
+
+$$t_{WP} = 90 - 25 = 65, \\qquad t_{DW} = 90 - 30 = 60, \\qquad t_{DH} = 100 - 90 = 10$$
+
+$$t_{AW} = 90 - 0 = 90, \\qquad t_{AS} = 25 - 0 = 25$$
+
+Subtracting the requirements gives margins of 30, 40, 10, 50 and 25 ns. All are
+positive, so the cycle is legal, and the tightest is the data hold at 10 ns.
+
+**Independent check.** Ask what would break first if the whole data phase were
+delayed. Delaying the data by 10 ns leaves $t_{DW}$ at 50 ns, still legal, but
+pushes the data release to 110 ns, which extends $t_{DH}$ rather than shortening
+it; delaying the *release* is what shortens nothing, whereas releasing the data
+early is what kills $t_{DH}$. Releasing at 95 ns instead of 100 leaves
+$t_{DH} = 5$ ns, and at 90 ns it is zero. So the hold window has 10 ns of slack
+against early release, which is the sense in which it is tightest.
+
+**Answer: legal on all five windows, with the 10 ns data hold the least
+comfortable.**
+
+**Trap.** Timing a write from the *falling* edge of write enable is the classic
+error. The array latches on the rising edge, so $t_{DW}$ and $t_{AW}$ are both
+measured to the end of the pulse; measuring them from the start makes a failing
+cycle look comfortable.`,
+      examTip: 'Use cycle time for throughput and access time for latency, and never the other way round. A part with a 50 ns access time and a 90 ns cycle time delivers 11.1 million accesses per second, and answering 20 million is the intended distractor.',
+      importantNote: 'A write is latched on the RISING edge of write enable, so data setup and address setup are measured to the end of the pulse, not to its beginning. Every write-timing question is built on that one convention.',
+    },
+    { id: 'mem-interleave', title: '13. Interleaving and Banking',
+      content: `## 13.1 Why more banks help, and where they stop helping
+
+A single memory bank cannot start a new access until the previous one has fully
+recovered, so its access rate is capped at $1/t_{RC}$ however wide the bus is.
+Splitting the array into $B$ independent banks lets accesses to different banks
+overlap, and the array rate rises to $B/t_{RC}$ — until the bus, which can only
+carry one word every $t_{B}$, becomes the constraint. The steady-state rate is
+therefore
+
+$$r = \\min\\!\\left(\\frac{1}{t_{B}},\\ \\frac{B}{t_{RC}}\\right)$$
+
+and the gain over a single bank is
+
+$$G = \\frac{r}{1/t_{RC}} = \\min\\!\\left(B,\\ \\frac{t_{RC}}{t_{B}}\\right)$$
+
+The saturation point is the bank count at which the two terms are equal:
+
+$$B^{*} = \\frac{t_{RC}}{t_{B}}$$
+
+![Measured throughput against bank count, relative to a single bank, for a 60 ns bank cycle time and a 10 ns bus transfer time. The measured curve follows the ideal one-bank-per-gap line up to six banks and is flat at a gain of six beyond it, because the bus rather than the array has become the limit.](/courses/fe-ee/figures/dig4-interleave-gain.svg)
+
+Each point on that curve came from stepping an access schedule: banks were
+issued round robin, each bank was marked busy for $t_{RC}$ after being started,
+the bus was allowed one issue every $t_{B}$, and the steady-state issue spacing
+was measured over a whole number of rounds. The measured spacing matched
+$\\max(t_{B},\\,t_{RC}/B)$ to within $10^{-12}$ at every bank count, which is
+what licenses the closed form above.
+
+## 13.2 Which address bits choose the bank
+
+Two placements exist and they behave completely differently.
+
+**Low-order interleaving** takes the bank number from the least significant
+$\\log_{2} B$ address bits. Consecutive addresses then land in consecutive banks,
+so a sequential burst spreads across all of them and gets the full gain. This is
+what an interleaved main memory does.
+
+**High-order banking** takes the bank number from the most significant bits, so
+each bank owns a contiguous region. A sequential burst stays inside one bank and
+gets no gain at all — but the regions are contiguous, which is exactly what you
+want when a bank is a separate device that must occupy a stated address range.
+
+| Placement | Bank bits | Sequential burst | Natural use |
+|---|---|---|---|
+| Low-order interleave | least significant | spreads over all banks | bandwidth |
+| High-order banking | most significant | stays in one bank | address mapping |
+
+Both placements were checked by walking a 16-bit space with four banks. Each is
+a bijection onto (bank, row) pairs, so neither loses or duplicates an address.
+Under low-order interleaving no two consecutive addresses share a bank, at any
+point in the space; under high-order banking 65,532 of the 65,535 consecutive
+pairs share a bank, the three exceptions being the bank boundaries themselves.
+
+### Worked Example 13.1 — banks needed for a bandwidth target
+
+**Given.** A bank cycle time of 60 ns, a bus that carries one 8-byte word every
+10 ns, and a target of 800 MB/s.
+
+**Find.** The bank count required, and whether more would help.
+
+**Work.** A single bank delivers 8 bytes per 60 ns:
+
+$$\\frac{8}{60 \\times 10^{-9}} = 133.3\\ \\mathrm{MB/s}$$
+
+so the target needs a gain of $800/133.3 = 6$. From the gain relation,
+$G = \\min(B, 60/10) = \\min(B, 6)$, so $B = 6$ banks reach it and nothing
+larger improves on it.
+
+**Independent check.** Compute the bus ceiling independently: 8 bytes every
+10 ns is $8/(10 \\times 10^{-9}) = 800$ MB/s, which is the target exactly. The
+target is the bus limit, so six banks is both necessary and sufficient — and the
+stepped schedule reported a gain of exactly 6.000 at six banks and again at
+twelve, confirming the plateau.
+
+**Answer: 6 banks; additional banks add nothing because the bus saturates.**
+
+**Trap.** Reading the gain as $B$ without the minimum is the intended error. It
+gives 12 banks for a 1600 MB/s target that the bus cannot deliver at any bank
+count, and the correct answer to that question is that the target is
+unreachable without a wider or faster bus.
+
+### Worked Example 13.2 — assigning the bank-select bits
+
+**Given.** A 64 KiB space, four banks, and a requirement that a sequential burst
+use every bank.
+
+**Find.** Which address bits select the bank, and how many rows each bank holds.
+
+**Work.** Four banks need $\\log_{2} 4 = 2$ select bits, and the sequential
+requirement forces low-order interleaving, so the bits are $A_{1}$ and $A_{0}$.
+Each bank then holds
+
+$$\\frac{65536}{4} = 16384\\ \\text{locations}$$
+
+addressed by $A_{15}$ down to $A_{2}$.
+
+**Independent check.** The mapping was enumerated over all 65,536 addresses.
+Every (bank, row) pair occurred exactly once, so the assignment loses nothing,
+and the bank index changed at every single one of the 65,535 steps from one
+address to the next, which is the sequential-spread property the requirement
+asked for.
+
+**Answer: A1 and A0 select the bank; each bank holds 16,384 locations addressed
+by A15 down to A2.**
+
+**Trap.** Low-order interleaving and high-order banking are not interchangeable
+even though both are bijections. Choosing the high bits here still stores every
+byte correctly and still passes a memory test, and delivers a gain of one on
+exactly the workload the design was meant to accelerate.`,
+      examTip: 'Interleaving gain is the minimum of the bank count and the ratio of bank cycle time to bus transfer time. Compute both terms and take the smaller; the question is usually set so that the second term is the binding one.',
+      importantNote: 'Low-order bits for bandwidth, high-order bits for address maps. Using high-order bits and then expecting interleaving gain is a design that tests clean and performs like a single bank.',
+    },
+    { id: 'mem-ecc', title: '14. Parity and ECC, Verified by Injecting Every Fault',
+      content: `## 14.1 Parity buys one bit of assurance, and no more
+
+A parity bit is the exclusive-or of the data bits,
+
+$$p = d_{m-1} \\oplus d_{m-2} \\oplus \\cdots \\oplus d_{0}$$
+
+appended so that the stored word always has even weight. Any single flip makes
+the weight odd and is caught. Any two flips restore even weight and are not.
+That is the whole of it, and the arithmetic of the guarantee is worth being
+precise about: parity detects an **odd** number of errors and is blind to an
+**even** number.
+
+The blindness is not a theoretical corner. Every one of the 256 possible bytes
+was encoded and then corrupted in all 9 single-bit positions and all 36
+two-bit combinations. All 2,304 single-bit faults produced odd weight and were
+caught; all 9,216 two-bit faults produced even weight and passed as clean data.
+A parity bit is a smoke alarm, and it cannot put anything out.
+
+## 14.2 The check-bit inequality, and why it is an inequality
+
+To *correct* rather than merely detect, the check bits have to name the faulty
+position. With $k$ check bits the syndrome takes $2^{k}$ values, and those
+values must cover every one of the $m$ data positions, every one of the $k$
+check positions, and the all-clear:
+
+$$2^{k} \\ge m + k + 1$$
+
+It is an inequality because $2^{k}$ jumps in powers of two while the right side
+grows by one at a time, so most word widths leave syndrome values unused. For
+$m = 8$ the search is short: $k = 3$ gives $8 \\ge 12$, which is false;
+$k = 4$ gives $16 \\ge 13$, which holds. So an eight-bit word needs four check
+bits and the codeword is twelve bits.
+
+Adding one more bit, an overall parity over the whole codeword, upgrades the
+code from single-error correcting to **single-error correcting, double-error
+detecting**. That is the SEC-DED construction, and its width is $m + k + 1$.
+
+| Data bits $m$ | Check bits $k$ | $2^{k}$ | $m+k+1$ | SEC-DED width | Overhead |
+|---|---|---|---|---|---|
+| 8 | 4 | 16 | 13 | 13 | 62.5 % |
+| 16 | 5 | 32 | 22 | 22 | 37.5 % |
+| 32 | 6 | 64 | 39 | 39 | 21.9 % |
+| 64 | 7 | 128 | 72 | 72 | 12.5 % |
+| 128 | 8 | 256 | 137 | 137 | 7.0 % |
+
+Every row of that table was produced by searching upward for the smallest $k$
+satisfying the inequality and then checking that $k-1$ fails it, so no row is a
+remembered value. The 72-bit codeword over 64 data bits in the fourth row is the
+width real server memory uses, and the table shows why: the overhead falls as
+the word widens, because the check bits grow logarithmically while the data
+grows linearly.
+
+## 14.3 The construction, and how the syndrome names the bit
+
+Number the codeword positions from 1. Put the check bits at the positions that
+are powers of two — 1, 2, 4, 8 — and the data bits everywhere else. The check
+bit at position $2^{j}$ covers every position whose binary representation has
+bit $j$ set:
+
+$$s_{j} = \\bigoplus_{q\\,:\\,q \\wedge 2^{j} \\ne 0} c_{q}$$
+
+The payoff is that the syndrome, read as a binary number, **is** the index of the
+failing position. If bit 9 flips, then 9 is 1001 in binary, so the checks at
+positions 1 and 8 disagree and the checks at 2 and 4 agree, and the syndrome
+reads 1001, which is 9.
+
+## 14.4 What injection actually shows
+
+Claims about error control are cheap and checkable, so they were checked. The
+whole 256-word codebook was generated for three codes and every fault of the
+stated weight was injected into every codeword, one at a time, and decoded.
+
+![Outcome of every injected fault, as a share of the faults injected, for six cases: one-bit and two-bit faults in a plain parity code, in a 12-bit single-error-correcting Hamming code, and in the 13-bit SEC-DED code. Parity catches every single fault and misses every double one; the Hamming code corrects every single fault but turns 77.3 percent of double faults into a wrong answer; SEC-DED corrects every single fault and flags every double fault.](/courses/fe-ee/figures/dig4-ecc-injection.svg)
+
+| Code | Fault weight | Faults injected | Corrected | Flagged | Silently wrong |
+|---|---|---|---|---|---|
+| Parity, 9 bits | 1 | 2,304 | 0 | 2,304 | 0 |
+| Parity, 9 bits | 2 | 9,216 | 0 | 0 | **9,216** |
+| Hamming SEC, 12 bits | 1 | 3,072 | 3,072 | 0 | 0 |
+| Hamming SEC, 12 bits | 2 | 16,896 | 0 | 3,840 | **13,056** |
+| SEC-DED, 13 bits | 1 | 3,328 | 3,328 | 0 | 0 |
+| SEC-DED, 13 bits | 2 | 19,968 | 0 | 19,968 | 0 |
+
+Three results in that table deserve reading twice.
+
+The minimum distance of the 12-bit Hamming code is 3, computed as the smallest
+weight of a nonzero codeword; adding the overall parity bit raises it to 4. That
+jump from 3 to 4 is the entire difference between SEC and SEC-DED, because
+correcting $t$ errors needs $d \\ge 2t+1$ and additionally detecting $t+1$ needs
+$d \\ge 2t+2$.
+
+The 13,056 silently wrong outcomes in row four are the reason SEC alone is not
+enough. A double fault produces a syndrome equal to the exclusive-or of the two
+single-fault syndromes, and for 51 of the 66 possible position pairs that value
+happens to be a legal position index. The decoder then "corrects" a third,
+innocent bit and hands back a word with three errors in it, reporting success.
+
+The last row is the guarantee that makes SEC-DED worth its five extra bits: not
+one of 19,968 double faults escaped, and not one was miscorrected. For
+completeness, triple faults were injected too, and every one of them was
+miscorrected — SEC-DED promises nothing at weight three, and it delivers exactly
+what it promises.
+
+### Worked Example 14.1 — check bits for a 32-bit word
+
+**Given.** A 32-bit data word to be protected by SEC-DED.
+
+**Find.** The check-bit count, the codeword width and the overhead.
+
+**Work.** Search the inequality upward. For $k = 5$: $32 \\ge 38$ is false. For
+$k = 6$:
+
+$$2^{6} = 64 \\ge 32 + 6 + 1 = 39$$
+
+which holds, so six Hamming check bits, plus one overall parity bit for
+double-error detection:
+
+$$n = 32 + 6 + 1 = 39\\ \\text{bits}$$
+
+and the overhead is $7/32 = 21.9\\%$.
+
+**Independent check.** Count what the syndrome must distinguish rather than
+plugging into the formula. It must name any of 39 positions or say "clean",
+which is 40 outcomes; six bits give 64 syndrome values, enough, and five give
+32, not enough. Same conclusion from counting outcomes instead of manipulating
+an inequality.
+
+**Answer: 6 check bits plus 1 parity bit, a 39-bit codeword, 21.9 % overhead.**
+
+**Trap.** The inequality includes the check bits themselves in the count of
+things the syndrome must be able to name, because a check bit can fail too.
+Solving $2^{k} \\ge m + 1$ instead gives $k = 5$ for 32 data bits, one short.
+
+### Worked Example 14.2 — encode a byte
+
+**Given.** The data bits $d_{1}$ through $d_{8}$ equal to 1, 0, 1, 1, 0, 1, 0, 1,
+to be placed at positions 3, 5, 6, 7, 9, 10, 11, 12 of a 12-bit Hamming word.
+
+**Find.** The four check bits and the full codeword.
+
+**Work.** Each check bit is the parity of the positions whose index contains its
+own bit.
+
+$$p_{1} = c_{3} \\oplus c_{5} \\oplus c_{7} \\oplus c_{9} \\oplus c_{11} = 1 \\oplus 0 \\oplus 1 \\oplus 0 \\oplus 0 = 0$$
+
+$$p_{2} = c_{3} \\oplus c_{6} \\oplus c_{7} \\oplus c_{10} \\oplus c_{11} = 1 \\oplus 1 \\oplus 1 \\oplus 1 \\oplus 0 = 0$$
+
+$$p_{4} = c_{5} \\oplus c_{6} \\oplus c_{7} \\oplus c_{12} = 0 \\oplus 1 \\oplus 1 \\oplus 1 = 1$$
+
+$$p_{8} = c_{9} \\oplus c_{10} \\oplus c_{11} \\oplus c_{12} = 0 \\oplus 1 \\oplus 0 \\oplus 1 = 0$$
+
+so the codeword, positions 1 to 12, is 0 0 1 1 0 1 1 0 0 1 0 1.
+
+**Independent check.** Re-derive the check bits by recomputing the syndrome of
+the finished word: every group must now have even parity, and each of the four
+groups does. As a second check the codeword weight is 6, an even number, so the
+overall parity bit that turns this into a 13-bit SEC-DED word is 0.
+
+**Answer: p1 = 0, p2 = 0, p4 = 1, p8 = 0; codeword 001101100101, with a
+SEC-DED parity bit of 0.**
+
+**Trap.** Position numbering starts at 1, not 0, because the syndrome has to be
+able to say "position 1" with a nonzero value and reserve zero for "clean". A
+zero-based layout puts a data bit where the all-clear syndrome lives and the
+code stops working.
+
+### Worked Example 14.3 — decode a word that has been hit
+
+**Given.** The codeword of Example 14.2 with positions 5 and 9 both flipped, so
+the received word is 0 0 1 1 1 1 1 0 1 1 0 1 in the 12-bit code, and the same
+double fault applied to the 13-bit SEC-DED word.
+
+**Find.** What each decoder does with it.
+
+**Work.** A double fault's syndrome is the exclusive-or of the two single-fault
+syndromes, and a single fault at position $q$ has syndrome $q$:
+
+$$s = 5 \\oplus 9 = 0101 \\oplus 1001 = 1100 = 12$$
+
+The 12-bit SEC decoder sees a nonzero syndrome of 12, concludes that position 12
+is wrong, and flips it. Position 12 held $d_{8}$, so the decoder has just
+corrupted a data bit that was fine, and it returns three errors while reporting
+a successful correction.
+
+The 13-bit SEC-DED decoder computes the same syndrome of 12 but also checks the
+overall parity, which is **even** because an even number of bits flipped. A
+nonzero syndrome with even overall parity is the signature of a double fault, so
+the decoder reports an uncorrectable error and corrects nothing.
+
+**Independent check.** This exact pair was among the 16,896 double faults
+injected into the SEC code, where it fell in the 13,056 that miscorrect, and
+among the 19,968 injected into the SEC-DED code, every one of which was flagged.
+The general behaviour and this particular case agree.
+
+**Answer: SEC miscorrects, flipping position 12 and returning bad data as good;
+SEC-DED reports an uncorrectable double error.**
+
+**Trap.** "Nonzero syndrome means correct that position" is the rule for SEC and
+it is wrong for SEC-DED. The SEC-DED decision needs both the syndrome and the
+overall parity: nonzero syndrome with odd parity is a correctable single fault;
+nonzero syndrome with even parity is an uncorrectable double one.`,
+      examTip: 'Solve 2^k >= m + k + 1 by trying k, not by rearranging it, and remember the plus k. For SEC-DED add one further bit. The memorable anchor is 64 data bits needing 8 extra bits for a 72-bit word, which is what server memory actually uses.',
+      importantNote: 'A distance-3 code corrects one error; distance 4 corrects one AND detects two. The overall parity bit is what lifts the Hamming code from 3 to 4, and without it 77 % of double faults are silently miscorrected into triple faults.',
+    },
+    { id: 'mem-map', title: '15. A Memory Map for a Small System',
+      content: `## 15.1 Memory-mapped against isolated
+
+A processor that supports **isolated I/O** has separate instructions and a
+separate address space for peripherals, selected by a control line rather than
+by an address bit. A processor using **memory-mapped I/O** places peripheral
+registers in the ordinary address space, so an ordinary load or store reaches
+them and the decode logic that separates a UART from a RAM is the same decode
+logic that separates one RAM from another.
+
+Memory mapping is the dominant arrangement, and the reasons are all about the
+rest of the system rather than about the peripheral: every addressing mode
+works on a register, pointers to registers are ordinary pointers, and no
+instruction-set extension is needed. The costs are equally concrete. Address
+space is consumed, cacheing has to be suppressed for the mapped region because
+a register read has side effects and must not be served from a cache line, and
+a wild pointer can now reach hardware.
+
+| Property | Memory mapped | Isolated |
+|---|---|---|
+| Instructions used | ordinary load and store | dedicated input and output |
+| Address space consumed | yes | no |
+| Addressing modes available | all of them | usually direct only |
+| Cacheability | must be suppressed for the region | not applicable |
+
+## 15.2 The map, worked
+
+Take a 1 MiB space, $A_{19}$ down to $A_{0}$, decoded by a 3-to-8 decoder on
+$A_{19}$ through $A_{17}$. Each slot is
+
+$$\\frac{2^{20}}{8} = 2^{17} = 131072\\ \\text{addresses}$$
+
+and the system populates three of the eight.
+
+| Slot | Range | Contents | Device depth | Images of each cell |
+|---|---|---|---|---|
+| 0 | 0x00000 to 0x1FFFF | boot ROM, 128 KiB | $2^{17}$ | 1 |
+| 1 | 0x20000 to 0x3FFFF | SRAM, 128 KiB | $2^{17}$ | 1 |
+| 2 | 0x40000 to 0x5FFFF | UART, 256 bytes | $2^{8}$ | **512** |
+| 3 to 7 | 0x60000 to 0xFFFFF | unmapped | — | — |
+
+The interesting row is the UART. Its select comes from the slot decoder, which
+uses only $A_{19}$ through $A_{17}$, and the part itself uses only $A_{7}$
+through $A_{0}$. The nine lines in between, $A_{16}$ through $A_{8}$, go
+nowhere, so by the alias relation of Section 10.1 each of the UART's 256
+registers appears
+
+$$M = 2^{\\,17-8} = 512$$
+
+times inside its slot. That is the ordinary consequence of putting a small
+peripheral behind a coarse decoder, and it is harmless as long as the map
+records the whole slot as belonging to the UART rather than recording only the
+first 256 bytes.
+
+The map was walked address by address. Every one of the 1,048,576 addresses was
+tested against all three select expressions: 393,216 had exactly one responder,
+655,360 had none, and none at all had two. Inside slot 2, each of the UART's
+256 offsets was reached from exactly 512 distinct addresses, while every ROM and
+SRAM cell was reachable from exactly one.
+
+### Worked Example 15.1 — placing a second peripheral safely
+
+**Given.** The map above, and a new 1 KiB peripheral that must be added without
+disturbing anything.
+
+**Find.** Where it can go, and what its select expression is.
+
+**Work.** Slots 3 through 7 are free, so put it at the base of slot 3, address
+0x60000. Slot 3 is selected by $A_{19}A_{18}A_{17} = 011$, and a 1 KiB part uses
+$\\log_{2} 1024 = 10$ lines, $A_{9}$ through $A_{0}$. The simplest select reuses
+the existing decoder:
+
+$$CS = \\overline{A_{19}}\\,A_{18}\\,A_{17}$$
+
+which is one decoder output and nothing more.
+
+**Independent check.** Count the images this creates. The slot is $2^{17}$
+addresses and the part is $2^{10}$, so
+$M = 2^{17-10} = 128$ images on a stride of 1,024 addresses. That is acceptable
+only because nothing else is inside slot 3; the moment a second part is wanted
+there, $A_{16}$ through $A_{10}$ must be brought into the decode.
+
+**Answer: base 0x60000 in slot 3, selected by the decoder output for A19 A18
+A17 = 011, with 128 aliases inside the slot.**
+
+**Trap.** "It works, so the map is fine" is exactly the reasoning that ships the
+overlap of Worked Example 10.3. The map is fine when the audit says every
+address has at most one responder, and the audit is a walk, not a glance.
+
+### Worked Example 15.2 — how much space a coarse decoder wastes
+
+**Given.** The map above.
+
+**Find.** The fraction of the address space that is unreachable or wasted.
+
+**Work.** Five slots are unmapped:
+
+$$5 \\times 131072 = 655360\\ \\text{addresses}$$
+
+which is $655360/1048576 = 62.5\\%$ of the space. Within slot 2 the UART uses
+256 of 131,072 addresses uniquely, so a further
+$131072 - 256 = 130816$ addresses are aliases rather than distinct storage.
+Distinct, usable locations total
+
+$$131072 + 131072 + 256 = 262400$$
+
+which is 25.0 % of the space.
+
+**Independent check.** Add up the three categories and confirm they exhaust the
+space: 262,400 distinct locations, 130,816 alias addresses and 655,360 unmapped
+addresses sum to 1,048,576, the whole 1 MiB. The enumeration reported exactly
+these counts, with 393,216 addresses answered by some device, which is
+$262400 + 130816$.
+
+**Answer: 62.5 % unmapped, 12.5 % alias images, 25.0 % distinct storage.**
+
+**Trap.** Wasting address space is not automatically bad — the gates saved are
+real and a 1 MiB space with 256 KiB of parts has space to waste. It becomes bad
+when a later revision needs the space and the aliases have already been written
+into driver code as if they were separate registers.`,
+      examTip: 'On a memory-map question, list every device with its base address, its depth in address lines, and the lines the decode actually uses. The number of images is two to the power of the lines that are used by neither, and that single count answers most of what these questions ask.',
+      importantNote: 'Memory-mapped peripheral regions must be marked non-cacheable. A status register read that is served from a cache line returns a stale value forever, and it is a defect that appears only after a cache is enabled, long after the map was reviewed.',
+    },
+    { id: 'mem-probs-a', title: '16. Problem Set A: Devices, Timing and Refresh',
+      content: `## Problem Set A
+
+**A1.** A part is organised $128\\mathrm{K} \\times 32$. How many address pins,
+how many data pins, and how many bytes does it hold?
+
+**A2.** A DRAM bank has 16,384 rows, a row-refresh time of 260 ns and a 32 ms
+refresh window. What fraction of the bank's time goes to refresh, and what is
+the interval between refresh commands?
+
+**A3.** A DRAM cell of 30 fF sits on a 270 fF bit line and is charged 0.55 V
+above the pre-charge level. The sense amplifier needs 30 mV. How much signal
+does a read produce, and how far may the cell decay?
+
+**A4.** A memory quotes a 45 ns access time and a 75 ns cycle time. What is the
+maximum sustained access rate, and what is the recovery time?
+
+**A5.** A 66 MHz synchronous bus uses a two-clock base transfer and a controller
+setup requirement of 8 ns. How many wait states does a 70 ns memory need?
+
+**A6.** An SRAM cell is built with $V_{DD} = 1.2$ V, a trip point at 0.6 V and a
+cell ratio of 1.2. What is the read margin, and what cell ratio would double it?
+
+---
+
+### Worked solution A1
+
+Locations are $128 \\times 1024 = 131072$, so
+
+$$n = \\log_{2} 131072 = 17$$
+
+address pins. The width is 32 bits, so 32 data pins, and the capacity is
+
+$$131072 \\times 32 = 4194304\\ \\text{bits}$$
+
+which is 524,288 bytes, or 512 KiB.
+
+**Answer: 17 address pins, 32 data pins, 512 KiB.**
+
+**Trap.** Converting bits to bytes at the end is where this one is lost. Four
+million bits is not four million bytes, and the factor of eight turns a 512 KiB
+part into a 4 MiB one on the answer sheet.
+
+### Worked solution A2
+
+$$f_{ov} = \\frac{16384 \\times 260\\ \\mathrm{ns}}{32\\ \\mathrm{ms}} = \\frac{4.25984\\ \\mathrm{ms}}{32\\ \\mathrm{ms}} = 0.1331$$
+
+so 13.3 % of the bank's time is spent refreshing, and
+
+$$t_{REFI} = \\frac{32\\ \\mathrm{ms}}{16384} = 1.953\\ \\mathrm{\\mu s}$$
+
+**Answer: 13.3 % overhead, 1.953 us between commands.**
+
+**Trap.** Both parameters here are worse than the 8,192-row, 64 ms case of
+Worked Example 8.3 — twice the rows in half the window — and the overhead is
+correspondingly about three times as large. Assuming refresh is always a
+fraction of a percent, as it was in the 4,096-row example of Section 3.3, gives
+an answer two orders of magnitude out.
+
+### Worked solution A3
+
+$$\\Delta V = 0.55 \\times \\frac{30}{30 + 270} = 0.55 \\times 0.1 = 0.055\\ \\mathrm{V}$$
+
+so 55 mV reaches the amplifier. The floor is found by inverting the same
+relation with the amplifier's 30 mV minimum:
+
+$$V_{min} = 0.030 \\times \\frac{300}{30} = 0.30\\ \\mathrm{V}$$
+
+so the cell may fall from 0.55 V to 0.30 V, a usable swing of 0.25 V.
+
+**Answer: 55 mV of signal; the cell may decay by 0.25 V, to 0.30 V.**
+
+**Trap.** The sense-amplifier minimum is specified at the **bit line**, not at
+the cell. Comparing it directly with the cell voltage skips the divider and
+suggests the cell may decay to 30 mV, which is nearly ten times too optimistic.
+
+### Worked solution A4
+
+Sustained rate is set by cycle time:
+
+$$r = \\frac{1}{75 \\times 10^{-9}} = 13.3\\ \\text{million accesses per second}$$
+
+and the recovery is the difference:
+
+$$t_{rec} = 75 - 45 = 30\\ \\mathrm{ns}$$
+
+**Answer: 13.3 M accesses/s and 30 ns of recovery.**
+
+**Trap.** Answering 22.2 million, which is one over the access time, is the
+intended distractor and it overstates the throughput by two thirds. Access time
+governs how long one access takes; cycle time governs how often one may start.
+
+### Worked solution A5
+
+The clock period is $1/66\\ \\mathrm{MHz} = 15.15$ ns, so
+
+$$W \\ge \\frac{70 + 8}{15.15} - 2 = 5.148 - 2 = 3.148$$
+
+which rounds up to $W = 4$, a six-clock transfer of 90.9 ns.
+
+**Answer: 4 wait states.**
+
+**Trap.** Rounding 3.148 down to 3 gives a five-clock transfer of 75.8 ns, in
+which data is needed by 67.8 ns and arrives at 70 ns. It misses by 2.2 ns, and
+the failure is intermittent rather than absolute, which is the worst kind.
+
+### Worked solution A6
+
+$$V_{0} = \\frac{1.2}{1 + 1.2} = 0.5455\\ \\mathrm{V}$$
+
+so the margin is $0.6000 - 0.5455 = 0.0545$ V, that is 54.5 mV. Doubling it to
+0.1090 V needs $V_{0} \\le 0.4910$ V, so
+
+$$\\frac{1.2}{1 + \\mathrm{CR}} \\le 0.4910 \\;\\Longrightarrow\\; 1 + \\mathrm{CR} \\ge 2.4440$$
+
+giving $\\mathrm{CR} \\ge 1.4440$, so about 1.44.
+
+**Answer: 54.5 mV of margin at a cell ratio of 1.2; a ratio of about 1.44
+doubles it.**
+
+**Trap.** The margin is not proportional to the cell ratio, because the ratio
+appears in a denominator. Doubling the margin needed a ratio increase of only
+20 %, and quadrupling it to 0.2180 V needs only
+$\\mathrm{CR} \\ge 1.2/0.3820 - 1 = 2.1414$, nowhere near $4 \\times 1.2$.`,
+      examTip: 'Every problem in this set is one substitution into a relation stated in the chapter. Write the relation before the numbers, and label which time is access and which is cycle, because half the distractors on memory questions are the other one of that pair.',
+    },
+    { id: 'mem-probs-b', title: '17. Problem Set B: Decoding, Expansion and Error Control',
+      content: `## Problem Set B
+
+**B1.** Build a 512K x 32 memory from 128K x 8 parts. How many parts, how many
+banks, and how wide is the decoder?
+
+**B2.** A 4 KiB device in a 64 KiB space is selected by $A_{15}A_{14}$ only. How
+many images does each cell have, and on what stride?
+
+**B3.** Derive the active-high chip select for an 8 KiB device occupying
+0xA000 to 0xBFFF in a 64 KiB space.
+
+**B4.** A 64-bit word is protected by SEC-DED. How many total bits are stored,
+and what is the overhead?
+
+**B5.** A memory system has a 50 ns bank cycle time and a bus that moves one
+word every 12.5 ns. How many banks are worth building?
+
+**B6.** A designer proposes protecting a 16-bit word with a single parity bit
+and argues that since single-bit upsets dominate, the coverage is adequate.
+What does the injection evidence say?
+
+---
+
+### Worked solution B1
+
+Width and depth separately:
+
+$$C = \\frac{32}{8} = 4, \\qquad B = \\frac{524288}{131072} = 4, \\qquad T = 4 \\times 4 = 16$$
+
+Each part takes $\\log_{2} 131072 = 17$ address lines; the system needs
+$\\log_{2} 524288 = 19$; the two left over drive a 2-to-4 decoder.
+
+**Answer: 16 parts in 4 banks of 4, 17 lines per part, 2-to-4 decoder on A18 and
+A17.**
+
+**Trap.** The decoder is sized by the bank count, 4, not the part count, 16. A
+4-to-16 decoder here would leave twelve outputs with nothing attached and would
+place the four real banks in the wrong quarter of the space.
+
+### Worked solution B2
+
+A 4 KiB part uses $\\log_{2} 4096 = 12$ lines, $A_{11}$ through $A_{0}$. The
+decode uses $A_{15}$ and $A_{14}$, so $A_{13}$ and $A_{12}$ are ignored:
+
+$$M = 2^{2} = 4\\ \\text{images, stride } 2^{12} = 4096$$
+
+**Answer: 4 images per cell, on a 4 KiB stride, filling the 16 KiB window the
+two decoded lines select.**
+
+**Trap.** The stride is the size of the **part**, not the size of the ignored
+field. Answering 0x2000 because two lines were ignored confuses the number of
+images with the distance between them.
+
+### Worked solution B3
+
+An 8 KiB part uses 13 lines, $A_{12}$ through $A_{0}$, leaving $A_{15}$,
+$A_{14}$ and $A_{13}$ for the decode. The endpoints in binary are 1010 followed
+by twelve zeros and 1011 followed by twelve ones, so the top three bits are 101
+in both:
+
+$$CS = A_{15}\\,\\overline{A_{14}}\\,A_{13}$$
+
+**Answer: $CS = A_{15}\\overline{A_{14}}A_{13}$.**
+
+**Trap.** Including $A_{12}$ in the term is the error to watch for, because the
+two endpoint addresses differ in that bit. Only bits that are the SAME at both
+ends belong in the select; a bit that changes across the window belongs to the
+part.
+
+### Worked solution B4
+
+Search the inequality: $k = 6$ gives $64 \\ge 71$, false; $k = 7$ gives
+
+$$2^{7} = 128 \\ge 64 + 7 + 1 = 72$$
+
+true. Add the overall parity bit:
+
+$$n = 64 + 7 + 1 = 72\\ \\text{bits}$$
+
+and the overhead is $8/64 = 12.5\\%$.
+
+**Answer: 72 bits stored, 12.5 % overhead.**
+
+**Trap.** This is the one width worth memorising, because 72 over 64 is what
+server DIMMs actually carry and it anchors the whole table. If a calculation
+gives anything other than 72 for a 64-bit SEC-DED word, the arithmetic is wrong.
+
+### Worked solution B5
+
+$$B^{*} = \\frac{t_{RC}}{t_{B}} = \\frac{50}{12.5} = 4$$
+
+so four banks reach the bus limit and the gain saturates there:
+$G = \\min(B, 4)$.
+
+**Answer: 4 banks; a fifth adds nothing.**
+
+**Trap.** Building eight banks here is not merely wasteful, it is invisible. The
+system tests identically to the four-bank version on every benchmark, so the
+cost is discovered only in the bill of materials.
+
+### Worked solution B6
+
+The premise is right and the conclusion does not follow. Parity does detect
+every single-bit upset — all 2,304 injected single faults were caught. But it
+**cannot correct any of them**, so a system whose upsets are all single-bit
+still halts on every one. And of the 9,216 injected double faults, every single
+one passed as clean data, so the residual risk is not reduced, only ignored.
+
+The alternative costs six bits. SEC-DED over 16 data bits needs $k = 5$ check
+bits plus one overall parity, a 22-bit word at 37.5 % overhead, and it corrects
+every single fault silently and flags every double one.
+
+**Answer: parity detects but never corrects, and is blind to every even-weight
+fault; SEC-DED over 16 bits costs six bits and removes both limitations.**
+
+**Trap.** "Single-bit upsets dominate" is an argument for **correction**, not for
+detection. If the dominant fault is one the code can only report, every
+occurrence of the dominant fault becomes an outage.`,
+      examTip: 'Decoding and expansion questions are all counting: lines used by the part, lines used by the decode, lines used by neither. Write those three numbers down first and every sub-question falls out of them, including the image count and the stride.',
+      importantNote: 'The 72-bit codeword over 64 data bits is the anchor to carry into the exam. From it you can reconstruct the inequality, because 7 check bits and 1 parity bit over 64 data bits is the only combination that satisfies 2^k >= m + k + 1 with nothing to spare.',
+    },
   ],
   keyTakeaways: [
     'ROM nonvolatile (PROM, EPROM, Flash). RAM volatile (SRAM fast, DRAM dense/refresh).',
@@ -6282,6 +8014,15 @@ Section 2.1 applied to whichever pair of levels the question names.`,
     'Cache: t_avg = h*t_cache + (1-h)*t_memory; hit rate h is key.',
     'Direct-mapped (fast) vs. fully associative (flexible) vs. N-way (balanced).',
     'FPGA: reconfigurable, low dev cost; ASIC: best performance, high dev cost.',
+    'Sort every part on three axes: volatility, endurance, and access mode (read, write and erase granularity). Most numeric memory questions are the third axis in disguise.',
+    'SRAM is 4 transistors of latch plus 2 of access; the cell ratio must exceed 1 or a read destroys the cell. DRAM is 1T + 1C, its read is destructive, and that restore is why cycle time exceeds access time.',
+    'Charge sharing gives dV = V_s * C_s / (C_s + C_BL); retention is t = C_s (V_s - V_min) / I_leak; refresh overhead is (rows x t_RFC) / t_REF, taken straight off the bandwidth.',
+    'NOR is randomly addressable and executes in place; NAND is page oriented and denser. Flash endurance is per erase block, and wear levelling multiplies life by N_blocks x p_max, not by N_blocks.',
+    'Full decoding uses every spare high address line; partial decoding leaves h - d of them free and creates 2^(h-d) images on a stride of 2^d. Audit a map by counting responders at every address: two is contention, zero is a hole.',
+    'Expansion: chips per bank = bus width / chip width, banks = system depth / chip depth, and the decoder has log2(banks) inputs -- never log2(total chips).',
+    'Use cycle time for throughput and access time for latency. A write latches on the RISING edge of WE, so data and address setup are measured to the end of the pulse.',
+    'Interleaving gain is min(banks, t_RC / t_B). Low-order address bits select the bank for bandwidth; high-order bits for a contiguous map.',
+    'Parity detects odd numbers of errors and corrects none. SEC-DED needs 2^k >= m + k + 1 plus one overall parity bit: 8 data bits give 13, and 64 data bits give the familiar 72.',
   ],
 },
 

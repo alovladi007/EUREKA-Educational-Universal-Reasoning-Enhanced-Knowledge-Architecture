@@ -5165,12 +5165,22 @@ fee_signal_nyquist: {
   topicId: 'fee_signal_nyquist',
   title: `Nyquist Criterion & Aliasing Pitfalls`,
   domainWeight: 'Signal Processing · 4–6%',
-  overview: `The sampling theorem is one of the most-tested concepts in FE Signal Processing because it underlies all digital signal acquisition. Beyond the basic statement, the exam tests numerical aliasing problems (given a sample rate and an input frequency, where does the alias appear?), anti-aliasing filter design (what cutoff?), and reconstruction error analysis. This topic provides the depth NCEES expects.`,
+  overview: `This is the practitioner's companion to "Sampling Theorem and Nyquist Rate". That chapter proves the theorem, derives spectral replication, works the folding rule through six tones, prices the zero-order hold and settles quantization noise. This one starts where a correct-looking system still fails: the criterion applied at the boundary instead of past it, the word "Nyquist" used for two different quantities, band-limitation assumed when nothing in the hardware enforces it, and energy that was never in the signal folding in anyway. It then treats the design decisions that follow — a full anti-alias specification driven from a stated stopband, deliberate sub-Nyquist sampling with its forbidden zones, clock jitter, decimation, and the two ways a sampled spectrum lies to whoever reads it.`,
   sections: [
     {
       id: 'nyquist-statement',
       title: `1. The Nyquist-Shannon Sampling Theorem`,
-      content: `## 1.1 The fundamental statement
+      content: `> **How this chapter divides with its sibling.** The companion chapter,
+*Sampling Theorem and Nyquist Rate*, owns the theorem itself: the derivation
+from the impulse train, the replication picture, the folding rule worked
+across six tones, anti-alias filter order versus sampling rate, zero-order
+hold droop, sinc reconstruction and signal-to-quantization-noise ratio. Go
+there for the machinery. Sections 1 to 3 below restate just enough of it to
+stand on, and Sections 4 to 14 — the bulk of this chapter — cover what the
+machinery does not: the failure modes of a system that appears to satisfy the
+criterion, and the specifications that keep it from appearing to.
+
+## 1.1 The fundamental statement
 
 A bandlimited continuous-time signal x(t) with no frequency components above f_max can be PERFECTLY RECONSTRUCTED from its samples if the sampling rate satisfies:
 
@@ -5192,7 +5202,7 @@ If the criterion is met, the original continuous signal can be reconstructed EXA
 
 where T_s = 1/f_s is the sampling period and sinc(x) = sin(πx)/(πx).
 
-In practice, sinc interpolation requires infinitely many samples (the sinc function is infinitely wide). Real systems use practical reconstruction filters (low-pass with cutoff = f_s/2) which introduce some imperfection.
+In practice, sinc interpolation requires infinitely many samples (the sinc function is infinitely wide). Real systems use a practical reconstruction filter instead, and it introduces some imperfection. Its passband has to reach the top of the wanted band at f_max, while its stopband has to start at f_s − f_max, which is the bottom edge of the first image. Section 6.5 shows why quoting that filter's corner as "f_s/2" describes neither requirement.
 
 ## 1.3 What happens when you VIOLATE Nyquist — aliasing
 
@@ -5342,7 +5352,7 @@ The reverse of the AAF: when converting back from digital to analog, you also ne
 
 The reconstruction filter is also called a SMOOTHING filter or POST-FILTER.
 
-Same design constraints as AAF: cutoff at f_s/2 (or slightly above), with adequate stopband attenuation.
+Its design mirrors the anti-alias filter, and so does the pair of frequencies that pin it down: the passband must still be flat at f_max, and the stopband must be in force by f_s − f_max, where the nearest image begins. Section 6 works that pair out in full. A specification that names only "f_s/2" names neither of them and constrains nothing.
 
 ## 2.8 Practical exam pattern
 
@@ -5355,7 +5365,7 @@ Solution:
 - Fix: install an anti-aliasing low-pass filter with passband edge 5 kHz and stopband edge ≤ 6 kHz, achieving sufficient attenuation at 8 kHz
 
 The required attenuation at 8 kHz depends on the application — typically you want the aliased component at least 40 dB below your desired signal level.`,
-      examTip: `Anti-aliasing filter goes BEFORE the sampler (analog). Reconstruction filter goes AFTER the DAC (also analog). Both are low-pass; both have cutoff at f_s/2.`,
+      examTip: `Anti-aliasing filter goes BEFORE the sampler (analog). Reconstruction filter goes AFTER the DAC (also analog). Both are low-pass, and both are pinned by two frequencies rather than one: the passband edge sits at f_max, the top of the band you care about, and the stopband edge sits at f_s − f_max, the nearest frequency that folds (or images) onto that band. Never answer "cutoff at f_s/2" — Section 6.1 shows that placing the −3 dB corner at the folding frequency guarantees about 3 dB of alias rejection no matter how high the filter order goes.`,
     },
     {
       id: 'common-pitfalls',
@@ -5468,15 +5478,1549 @@ back into band with the alias formula. Any sampling question that looks
 unfamiliar is one of these five rows wearing different numbers.`,
       examTip: `For aliasing calculations, the formula f_alias = |f - n·f_s| works for any n; pick the n that puts f_alias in [0, f_s/2]. Practice mental computation — these are quick if you're fluent.`,
     },
+    {
+      id: 'nyq-misreadings',
+      title: `4. Three Ways the Criterion Is Misread`,
+      content: `## 4.1 A criterion with three hypotheses, not one
+
+Written out with nothing suppressed, the sampling theorem says: *if* the
+spectrum of $x(t)$ vanishes identically outside $\\lvert f\\rvert < B$, *and if*
+
+$$f_{s} > 2B$$
+
+*then* the samples $x(nT_{s})$ determine $x(t)$ everywhere. Three separate
+things have to be true, and each of them is a place where a real system
+quietly departs from the theorem while every number on the block diagram still
+looks right.
+
+- The inequality is **strict**. Equality is a different case with a different
+  answer, and Section 4.2 computes what that answer is.
+- The comparison is between a rate and a bandwidth. Two quantities in this
+  subject are habitually both called "Nyquist", they differ by a factor of two,
+  and Section 4.3 follows a converter clocked at half the rate it needed
+  because of it.
+- The hypothesis about the spectrum is a statement about the *physical signal
+  arriving at the converter pin*, not about the quantity the sensor is
+  advertised to measure. Section 4.4 takes a signal every datasheet would call
+  a 100 Hz signal and shows it corrupting a band it never claimed to occupy.
+
+Everything after Section 4 follows from noticing that the third hypothesis is
+never true by accident. Sections 5 and 6 are about the one component that can
+make it approximately true, and what happens in the absence of that component.
+
+## 4.2 Misreading one: sampling *at* the Nyquist rate instead of above it
+
+Set $f_{s} = 2f_{0}$ exactly and sample $x(t) = A\\cos (2\\pi f_{0}t + \\varphi )$.
+The sample instants are $t_{n} = n/(2f_{0})$, so
+
+$$x[n] = A\\cos (\\pi n + \\varphi ) = A(-1)^{n}\\cos \\varphi$$
+
+Read that carefully. The phase has not been sampled; it has been **evaluated
+once** and baked into a single scale factor. Whatever $\\varphi$ was, the
+sequence is an alternating string of the one value $A\\cos \\varphi$. The
+original waveform carried two free parameters, amplitude and phase. The sample
+sequence carries one. A two-parameter family has been mapped onto a
+one-parameter family, so the map cannot be inverted — which is the whole
+failure, stated without any appeal to spectra.
+
+The recovered amplitude is therefore
+
+$$\\hat{A} = A\\lvert \\cos \\varphi \\rvert$$
+
+and the shortfall in decibels is $20\\log_{10}\\lvert \\cos \\varphi \\rvert$,
+which runs from 0 dB down to minus infinity as the phase walks a quarter turn.
+
+### Worked example 4A: the tone that samples to nothing
+
+**Given**: $A = 1\\ \\mathrm{V}$, $f_{0} = 1\\ \\mathrm{kHz}$,
+$f_{s} = 2\\ \\mathrm{kSa/s}$, so $f_{0}$ sits exactly on the folding frequency.
+
+**Find**: the amplitude a DFT of the samples reports, for
+$\\varphi = 0°, 30°, 45°, 60°, 90°$.
+
+**Method**: build 4096 samples, transform, and read the bin at $f_{s}/2$. The
+tone is exactly on that bin, so its height *is* the answer — no folding
+arithmetic is used anywhere.
+
+| $\\varphi$ | $\\lvert \\cos \\varphi \\rvert$ | amplitude measured off the DFT | shortfall |
+|---|---|---|---|
+| 0° | 1.000000 | 1.0000 V | 0.00 dB |
+| 30° | 0.866025 | 0.8660 V | −1.25 dB |
+| 45° | 0.707107 | 0.7071 V | −3.01 dB |
+| 60° | 0.500000 | 0.5000 V | −6.02 dB |
+| 90° | 0.000000 | 0.0000 V | no signal at all |
+
+**Answer**: anything from full scale to identically zero, decided entirely by
+where the clock edges happen to fall on the waveform. At 90° every sample lands
+on a zero crossing and the converter records a flat line while a one-volt tone
+is present at its input.
+
+![Three copies of the same one-kilohertz cosine, differing only in phase, with the sample points that a two-kilosample-per-second clock takes from each. The zero-phase copy is sampled at its peaks and reads its full amplitude, the sixty-degree copy reads half, and the ninety-degree copy is sampled at every zero crossing and reads nothing at all.](/courses/fe-ee/figures/sig4-critical-sampling.svg)
+
+**Check**: the phase-90° trace in the figure is drawn as a full-amplitude
+cosine, and every marker on it sits on the axis. Nothing is wrong with the
+drawing; that is what the converter sees. Note also that the criterion has not
+been *violated* here in the usual sense — no energy has folded, no alias has
+appeared at a wrong frequency. The failure is a rank collapse in the mapping
+from waveform to samples, and it happens precisely at equality.
+
+### Worked example 4B: one hertz of margin, and what it costs
+
+**Given**: the same converter at $f_{s} = 2\\ \\mathrm{kSa/s}$, but the tone is
+moved to $999\\ \\mathrm{Hz}$ and the worst phase, 90°, is kept.
+
+**Find**: whether amplitude and frequency are recoverable, and how much record
+is needed.
+
+**Handbook relation**: two tones separated by $\\Delta f$ are resolved by a
+record of length
+
+$$T_{\\mathrm{rec}} \\ge \\frac{1}{\\Delta f}$$
+
+Here the tone must be separated from the fold at 1000 Hz, so
+$\\Delta f = 1\\ \\mathrm{Hz}$ and $T_{\\mathrm{rec}} \\ge 1\\ \\mathrm{s}$, which
+at 2 kSa/s is 2000 samples.
+
+**Substitution**: 2000 samples are taken and transformed. The peak bin is
+$999\\ \\mathrm{Hz}$ and its height gives an amplitude of $1.0000\\ \\mathrm{V}$.
+
+**Answer**: both are recovered exactly. Moving 0.1% off the fold turns a
+total failure into a perfect measurement — but only because a full second of
+data was collected. Halve the record and the 999 Hz tone and the 1000 Hz fold
+are no longer distinguishable, and the pathology returns.
+
+**Check**: this is the practical content of the strict inequality. "Sample
+above twice the highest frequency" is not a suggestion to add a safety factor
+for its own sake; the margin you leave and the record length you can afford
+are the *same* engineering quantity, related by $T_{\\mathrm{rec}} \\ge 1/\\Delta f$.
+
+## 4.3 Misreading two: rate and frequency are not the same number
+
+Two quantities in this subject are both named after Nyquist and differ by a
+factor of two. The **Nyquist rate** $2f_{\\max}$ is a property of a waveform and
+is measured in samples per second; the **Nyquist frequency** $f_{s}/2$ is a
+property of a converter and is measured in hertz. Swapping them does not
+produce a slightly wrong answer. It produces a clock running at half or twice
+the intended speed, and half is catastrophic.
+
+### Worked example 4C: a converter clocked at half the rate it needed
+
+**Given**: a vibration front end whose specification sheet reads "Nyquist rate
+600 kSa/s". A designer reads "Nyquist" and sets the sampling clock to
+300 kSa/s, reasoning that the converter's Nyquist frequency should be 300 kHz.
+The signal genuinely contains components at 40 kHz, 180 kHz and 260 kHz.
+
+**Find**: where each component appears in the captured record, at the mistaken
+rate and at the intended one.
+
+**Method**: sample each tone at each rate and transform. The real DFT returns
+bins spanning 0 to $f_{s}/2$, so the bin holding the peak *is* the location.
+
+| component | at 300 kSa/s (the mistake) | at 600 kSa/s (as intended) |
+|---|---|---|
+| 40 kHz | 40 kHz, unharmed | 40 kHz |
+| 180 kHz | 120 kHz | 180 kHz |
+| 260 kHz | 40 kHz | 260 kHz |
+
+**Answer**: at the mistaken rate the 260 kHz component lands exactly on top of
+the genuine 40 kHz component. The record now shows one peak at 40 kHz whose
+height is the vector sum of two unrelated physical processes, and there is no
+measurement that can separate them afterwards.
+
+**Check**: the intended rate is $600\\ \\mathrm{kSa/s}$, giving a folding
+frequency of $600/2 = 300\\ \\mathrm{kHz}$, comfortably above the 260 kHz
+component. The number 300 appears in both readings of the datasheet, which is
+exactly why the error survives inspection. Ask which side of the block diagram
+a quoted number belongs to before using it: a rate belongs to the signal and
+carries the units of a clock, a frequency belongs to the converter and marks a
+place on the frequency axis.
+
+## 4.4 Misreading three: nothing enforces band-limitation
+
+The third hypothesis is the one that is never true. A strictly band-limited
+signal must extend over all time, so no waveform that starts, stops, switches
+or has a corner in it is band-limited. Signals described by their *nominal*
+frequency are the trap: a chopper running at 100 Hz is universally called a
+100 Hz signal, and its spectrum reaches to the megahertz region.
+
+Take an ideal square wave of fundamental $f_{0}$. Its Fourier series is
+
+$$x(t) = \\frac{4}{\\pi }\\sum _{k=1,3,5,\\dots }^{\\infty } \\frac{1}{k}\\sin (2\\pi k f_{0} t)$$
+
+so the amplitude of harmonic $k$ is $4/(\\pi k)$ and there is no last harmonic.
+Every one of them above the folding frequency arrives at the converter, folds,
+and adds to whatever is already sitting at the frequency it folds onto.
+
+### Worked example 4D: a 100 Hz chopper corrupting its own third harmonic
+
+**Given**: a 100 Hz square wave of unit amplitude, sampled at
+$f_{s} = 1\\ \\mathrm{kSa/s}$ with no filter of any kind. The folding frequency
+is 500 Hz, so harmonics 1, 3 and 5 are "in band" and 7, 9, 11, … are not.
+
+**Find**: the amplitudes a DFT of the samples reports for the first three odd
+harmonics, against the true series coefficients $4/(\\pi k)$.
+
+**Method**: sample the square wave for 10 s, transform 10000 points so every
+harmonic is on a bin, and read the heights.
+
+| harmonic | true $4/(\\pi k)$ | measured off the samples | error |
+|---|---|---|---|
+| 100 Hz | 1.273240 | 1.294427 | +0.14 dB |
+| 300 Hz | 0.424413 | 0.494427 | +1.33 dB |
+| 500 Hz | 0.254648 | 0.400000 | +3.92 dB |
+
+**Answer**: every measured harmonic is too large, and the error grows toward
+the fold. The 300 Hz reading is 1.33 dB high — a 17% amplitude error on a
+component sitting at 60% of the folding frequency, well inside what anyone
+would call the safe region.
+
+**Check**: the 500 Hz row has an exact closed form worth recognising. The
+measured-to-true ratio is $0.400000/0.254648 = 1.570796$, which is $\\pi /2$ to
+six figures, because the component sitting exactly on the fold collects the
+infinite family of harmonics that fold onto it and the resulting series sums to
+$\\pi /2$ times the isolated coefficient. The fundamental is corrupted too, by
+0.14 dB, and it is five times below the folding frequency. Nothing in this
+system violates "sample above twice the highest frequency of interest"; what it
+violates is the hypothesis that there is a highest frequency at all.`,
+      examTip: `Three separate hypotheses hide inside "f_s > 2·f_max": the inequality is strict, the two sides are a rate and a bandwidth rather than two frequencies, and the spectrum has to be genuinely empty above f_max. Exam questions that look ambiguous are usually testing which hypothesis a stated system fails. If a question gives a tone at exactly f_s/2, the answer depends on phase and the honest response is that amplitude is not recoverable.`,
+      importantNote: `A component below the folding frequency is not automatically safe. In worked example 4D the 100 Hz fundamental — one fifth of the folding frequency — reads 0.14 dB high because harmonics from above the fold land on it. Whether a given measurement is trustworthy depends on what is present above the fold, not on where the measurement itself sits.`,
+    },
+    {
+      id: 'nyq-uninvited',
+      title: `5. Aliasing of Energy the Signal Never Contained`,
+      content: `## 5.1 Broadband noise folds, and it folds by the octave
+
+Section 4 dealt with a signal misbehaving. This section deals with energy that
+belongs to no signal at all: the amplifier's own thermal and shot noise, and
+interference coupled in from elsewhere on the board. Neither is mentioned in
+the sampling theorem, because the theorem is about a waveform and these are
+about a circuit. Both fold.
+
+Model the front end's noise as flat with one-sided density $S_{0}$ in
+$\\mathrm{V^{2}/Hz}$, occupying everything from dc up to the amplifier's own
+noise bandwidth $B_{n}$. Sampling maps every one of those hertz into the band
+from 0 to $f_{s}/2$, and because noise contributions from disjoint frequency
+ranges are uncorrelated, they add in **power**. Writing
+
+$$M = \\frac{B_{n}}{f_{s}/2}$$
+
+for the number of Nyquist-wide slices the front end passes, the density inside
+the digital band becomes
+
+$$S_{\\mathrm{digital}} = M\\,S_{0}$$
+
+while the total noise power is unchanged — it has simply been squeezed into a
+band $M$ times narrower. Signal power is untouched, so the signal-to-noise
+ratio degrades by
+
+$$\\Delta \\mathrm{SNR} = 10\\log_{10}M \\ \\ \\mathrm{dB}$$
+
+Three decibels per doubling of unfiltered front-end bandwidth, forever. This
+is why "the converter has a 100 dB noise floor" is a claim about the converter
+and not about the measurement.
+
+### Worked example 5A: what an unfiltered front end costs a 16-bit converter
+
+**Given**: a 16-bit converter clocked at $f_{s} = 100\\ \\mathrm{kSa/s}$, fed
+directly from an instrumentation amplifier whose noise bandwidth is
+$B_{n} = 2\\ \\mathrm{MHz}$. No anti-alias filter is fitted.
+
+**Find**: the rise in the in-band noise density and the loss in effective bits.
+
+**Substitution**: the folding frequency is $100/2 = 50\\ \\mathrm{kHz}$, so
+
+$$M = \\frac{2\\,000\\,000}{50\\,000} = 40$$
+
+$$\\Delta \\mathrm{SNR} = 10\\log_{10}40 = 16.02\\ \\mathrm{dB}$$
+
+**Independent route**: rather than trust that, generate 12.8 million samples of
+white noise at 4 MSa/s, keep every fortieth sample, and compare the noise
+density of the two records. Measured rise: **16.02 dB**, against 16.0206 dB
+from the expression above — agreement to four hundredths of a decibel, and the
+simulation never uses the formula.
+
+**Answer**: the converter's own resolution is worth
+$6.02 \\times 16 + 1.76 = 98.08\\ \\mathrm{dB}$, and 16.02 dB of that is thrown
+away before a single bit is quantized. In bits,
+
+$$\\Delta N = \\frac{16.02}{6.02} = 2.66\\ \\mathrm{bits}$$
+
+so the 16-bit part behaves like a 13.3-bit part. Every rupee spent on the extra
+resolution is refunded to the amplifier.
+
+![Rise in in-band noise density against the ratio of front-end noise bandwidth to the folding frequency, on logarithmic axes. Simulated white noise decimated by factors from one to sixty-four is plotted as markers and lands on the ten-log-ten line derived in the text, confirming three decibels of penalty for every doubling of unfiltered bandwidth.](/courses/fe-ee/figures/sig4-noise-folding.svg)
+
+**Check**: the markers in the figure are measurements, not the line evaluated
+at integer points; the largest discrepancy across the whole sweep is 0.02 dB.
+Note the leftmost point: at $M = 1$ the penalty is exactly zero, which is the
+statement that a front end band-limited to the folding frequency folds nothing.
+That is the entire job of the anti-alias filter, drawn as a boundary condition.
+
+## 5.2 Noise bandwidth is not the −3 dB bandwidth
+
+Fitting a filter does not reduce $M$ to one, because a real filter keeps
+passing a little of everything. The quantity that matters is the **equivalent
+noise bandwidth**, the width of the ideal brick wall that would pass the same
+noise power:
+
+$$B_{n} = \\frac{1}{\\lvert H(0)\\rvert ^{2}}\\int_{0}^{\\infty }\\lvert H(f)\\rvert ^{2}\\,df$$
+
+For a Butterworth of order $n$ and −3 dB frequency $f_{c}$, that integral has a
+closed form:
+
+$$\\frac{B_{n}}{f_{c}} = \\frac{\\pi /(2n)}{\\sin \\bigl(\\pi /(2n)\\bigr)}$$
+
+| filter order $n$ | $B_{n}/f_{c}$ closed form | $B_{n}/f_{c}$ by numerical integration | folding penalty |
+|---|---|---|---|
+| 1 | 1.5708 | 1.5706 | 1.96 dB |
+| 2 | 1.1107 | 1.1107 | 0.46 dB |
+| 3 | 1.0472 | 1.0472 | 0.20 dB |
+| 4 | 1.0262 | 1.0262 | 0.11 dB |
+| 6 | 1.0115 | 1.0115 | 0.05 dB |
+| 8 | 1.0065 | 1.0065 | 0.03 dB |
+
+The middle column is the expression above; the right-hand column is the same
+integral evaluated numerically on a four-million-point grid, and the two agree
+to better than $3\\times 10^{-4}$ everywhere. The penalty column assumes the
+−3 dB frequency has been placed at the folding frequency, which as Section 6
+argues is the wrong place to put it — but it does isolate one effect cleanly.
+
+### Worked example 5B: a single-pole filter is not a filter
+
+**Given**: the same 100 kSa/s converter, now preceded by a one-pole RC
+low-pass with its corner at the folding frequency,
+$f_{c} = 50\\ \\mathrm{kHz}$.
+
+**Find**: the residual noise-folding penalty.
+
+**Substitution**: from the table, $B_{n} = 1.5708 \\times 50 = 78.54\\ \\mathrm{kHz}$,
+so $M = 78.54/50 = 1.5708$ and
+
+$$\\Delta \\mathrm{SNR} = 10\\log_{10}(1.5708) = 1.96\\ \\mathrm{dB}$$
+
+**Answer**: 1.96 dB, or about a third of a bit, from a filter that was
+supposed to fix the problem. Going to second order drops it to 0.46 dB and to
+fourth order to 0.11 dB. The single pole is worth having — it took 16.02 dB
+down to 1.96 dB — but it does not finish the job, and the reason is that a
+single pole is still passing appreciable energy an octave and two octaves out.
+
+**Check**: notice that this penalty is independent of the sampling rate. Scale
+$f_{s}$ and $f_{c}$ together and $M$ is unchanged, because $M$ is a ratio of
+bandwidths. Oversampling helps only if the filter corner stays put while
+$f_{s}$ rises, which is precisely what oversampled converter architectures do.
+
+## 5.3 Interference from a source the signal has nothing to do with
+
+Noise is diffuse and its folding is a statistical penalty. An interferer is a
+line, and its folding puts a specific false peak at a specific place. The
+distinguishing feature — and the reason it defeats reasoning of the form "our
+signal only goes to 200 Hz, so 1 kSa/s is plenty" — is that the interferer is
+not part of the signal and was never in anybody's bandwidth budget.
+
+### Worked example 5C: a switching supply inside a strain measurement
+
+**Given**: a bridge amplifier measuring strain, genuine content from dc to
+200 Hz, sampled at $f_{s} = 1\\ \\mathrm{kSa/s}$. Two unrelated sources couple
+into the cable: a dc-dc converter switching at 62.15 kHz, and the third
+harmonic of a nearby motor drive at 38.6 kHz.
+
+**Find**: where each one appears in the captured record.
+
+**Method**: sample each interferer at 1 kSa/s and transform 4000 points; the
+peak bin gives the location directly.
+
+| coupled source | frequency | where the record puts it |
+|---|---|---|
+| dc-dc converter | 62.15 kHz | **150 Hz** |
+| motor-drive harmonic | 38.6 kHz | 400 Hz |
+
+**Answer**: the switching tone lands at 150 Hz, three quarters of the way up
+the band of interest, indistinguishable from strain. The motor harmonic lands
+at 400 Hz, outside the band of interest but inside the digital record, where a
+digital filter can still remove it.
+
+**Check**: the two outcomes are worth separating, because they call for
+different fixes. Anything folding into $(f_{p},\\ f_{s}/2)$ — here 200 Hz to
+500 Hz — is a nuisance that post-processing can delete. Anything folding into
+$(0,\\ f_{p})$ is permanent. Section 6.2 shows that the boundary between those
+two fates is the input frequency $f_{s} - f_{p}$, and that this, not $f_{s}/2$,
+is the frequency an anti-alias filter has to be specified at.
+
+The general point survives the specific numbers. The signal chain does not
+know which energy you meant to measure. Sampling folds everything present at
+the converter pin, and the only place to make a distinction is in front of it,
+in the analog domain, before the fold happens.`,
+      examTip: `Two aliasing questions look identical and are not. "Where does this interferer land?" is answered by folding it into [0, f_s/2]. "Does it matter?" is answered by asking whether it lands below f_p, the top of the band you actually want. Interference that folds into the guard band between f_p and f_s/2 can still be removed digitally; interference that folds below f_p cannot.`,
+      importantNote: `Broadband noise costs 10·log₁₀(B_n / (f_s/2)) decibels of SNR, where B_n is the front end's equivalent noise bandwidth and not its −3 dB bandwidth. For a single-pole filter the two differ by a factor π/2, which is 1.96 dB of penalty that a −3 dB-based calculation does not predict.`,
+    },
+    {
+      id: 'nyq-aa-specification',
+      title: `6. The Anti-Alias Filter Is What Makes the Hypothesis True`,
+      content: `> **Division of labour.** The companion chapter's Section 7 already sets up
+the anti-alias filter as a three-number specification and solves the
+Butterworth order for a stated rejection at $f_{s} - f_{\\max}$, tabulating
+the order against sampling rate. That derivation places the filter's corner
+*on* the passband edge, which silently accepts 3.01 dB of droop at the top of
+the wanted band. This section does three things the companion does not: it
+shows what goes wrong when the corner is placed at $f_{s}/2$ instead, it adds
+the passband-droop constraint so the corner is derived rather than assumed,
+and it separates inputs that reach the wanted band from those that fold only
+into the guard band. The magnitude expression below is the same one the
+companion uses, restated here so this section stands alone.
+
+## 6.1 Why "cutoff at f_s/2" specifies nothing
+
+The single most common written answer to "specify the anti-alias filter" is
+"low-pass, cutoff at $f_{s}/2$". It is worth seeing exactly why that sentence
+carries no design information at all.
+
+"Cutoff", unqualified, means the −3 dB frequency. Take any Butterworth of any
+order $n$ with its −3 dB frequency at $f_{c}$:
+
+$$\\lvert H(f)\\rvert ^{2} = \\frac{1}{1 + (f/f_{c})^{2n}}$$
+
+$$A(f) = 10\\log_{10}\\!\\left[1 + (f/f_{c})^{2n}\\right] \\ \\ \\mathrm{dB}$$
+
+Put $f = f_{c}$ and the order cancels out of the arithmetic entirely:
+
+$$A(f_{c}) = 10\\log_{10}(1 + 1) = 3.01\\ \\mathrm{dB}$$
+
+Now ask what protection that buys. An input just above the folding frequency,
+at $f_{s}/2 + \\delta$, folds to $f_{s}/2 - \\delta$ and arrives attenuated by
+$A(f_{s}/2 + \\delta )$, which for small $\\delta$ is barely more than 3.01 dB.
+Raising the order does almost nothing: with $f = 1.01f_{c}$, a seventh-order
+filter gives 3.32 dB and a fourteenth-order filter gives 3.66 dB. **Doubling
+the order bought a third of a decibel.** Rejection at the corner is set by the
+corner's definition, not by the roll-off, so a specification that names only
+the corner and places it at the fold has specified a filter that lets aliases
+through at essentially full strength.
+
+## 6.2 The frequency that actually matters is f_s − f_p
+
+Let $f_{p}$ be the top of the band you intend to keep. Which input frequencies
+can land inside $(0,\\ f_{p})$ after sampling? An input in the first fold zone,
+$f_{s}/2 < f < f_{s}$, appears at $f_{s} - f$. That result is below $f_{p}$
+exactly when
+
+$$f_{s} - f < f_{p} \\ \\Longleftrightarrow \\ f > f_{s} - f_{p}$$
+
+So the lowest input frequency capable of corrupting the wanted band is
+
+$$f_{\\mathrm{crit}} = f_{s} - f_{p}$$
+
+and inputs between $f_{s}/2$ and $f_{s} - f_{p}$ fold harmlessly into the
+**guard band** $(f_{p},\\ f_{s}/2)$, where a digital filter can still delete
+them. The guard band is $f_{s}/2 - f_{p}$ wide and it is bought entirely with
+sampling rate.
+
+$$\\text{guard band width} = \\frac{f_{s}}{2} - f_{p}$$
+
+This gives the anti-alias filter its real specification, which has two
+frequencies in it and not one:
+
+- **Passband edge** $f_{p}$, with a stated maximum droop (0.5 dB is typical).
+- **Stopband edge** $f_{s} - f_{p}$, with a stated minimum attenuation.
+
+Neither of them is $f_{s}/2$.
+
+## 6.3 How much attenuation, and where the number comes from
+
+The stopband attenuation is not a matter of taste. It is set by the level at
+which a folded residue stops mattering, which for a converter is its own noise
+floor. The ideal signal-to-quantization-noise ratio of an $N$-bit converter is
+
+$$\\mathrm{SQNR} = 6.02N + 1.76\\ \\ \\mathrm{dB}$$
+
+so demanding that folded energy arrive below the quantization floor means
+
+$$A_{\\mathrm{stop}} \\ge 6.02N + 1.76\\ \\ \\mathrm{dB}$$
+
+For 12 bits that is $6.02 \\times 12 + 1.76 = 74.00\\ \\mathrm{dB}$; for 14 bits,
+$6.02 \\times 14 + 1.76 = 86.04\\ \\mathrm{dB}$; for 16 bits,
+$6.02 \\times 16 + 1.76 = 98.08\\ \\mathrm{dB}$. Rounding 74.00 up to 80 dB, as
+the worked example below does, is a modest and normal margin.
+
+### Worked example 6A: a complete anti-alias specification from a stated stopband
+
+**Given**: an audio-grade acquisition channel. Wanted band dc to
+$f_{p} = 20\\ \\mathrm{kHz}$, passband droop at $f_{p}$ not to exceed 0.5 dB,
+alias rejection at least 80 dB, sampling rate
+$f_{s} = 100\\ \\mathrm{kSa/s}$. Butterworth realization.
+
+**Find**: the filter order and its −3 dB frequency.
+
+**Handbook relation**: the two constraints, written against the magnitude
+expression of Section 6.1 with $r = f/f_{c}$:
+
+$$10\\log_{10}\\!\\left[1 + (f_{p}/f_{c})^{2n}\\right] \\le 0.5$$
+
+$$10\\log_{10}\\!\\left[1 + (f_{\\mathrm{crit}}/f_{c})^{2n}\\right] \\ge 80$$
+
+**Substitution**: the critical frequency is
+$f_{\\mathrm{crit}} = 100 - 20 = 80\\ \\mathrm{kHz}$. The droop constraint fixes
+the corner once the order is chosen:
+
+$$\\frac{f_{p}}{f_{c}} \\le \\left(10^{0.05} - 1\\right)^{1/(2n)} = (0.122018)^{1/(2n)}$$
+
+Try $n = 7$: the bound is $(0.122018)^{1/14} = 0.860488$, so
+$f_{c} \\ge 20/0.860488 = 23.24\\ \\mathrm{kHz}$, and at 80 kHz that filter
+delivers 75.15 dB — short of 80. Try $n = 8$: the bound is
+$(0.122018)^{1/16} = 0.876802$, so $f_{c} \\ge 20/0.876802 = 22.81\\ \\mathrm{kHz}$,
+and at 80 kHz it delivers 87.19 dB.
+
+**Answer**: an **eighth-order Butterworth with its −3 dB frequency at
+22.81 kHz**. Written as a specification a vendor could quote against:
+
+| parameter | value |
+|---|---|
+| topology | Butterworth low-pass, analog, ahead of the sampler |
+| order | 8 |
+| passband edge | 20 kHz |
+| passband droop at edge | 0.50 dB |
+| −3 dB frequency | 22.81 kHz |
+| stopband edge | 80 kHz, which is $f_{s} - f_{p}$ |
+| stopband attenuation | 87.19 dB, against 80 dB required |
+| sampling rate assumed | 100 kSa/s |
+
+**Independent route**: handing the same four numbers — 20 kHz, 80 kHz, 0.5 dB,
+80 dB — to a standard filter-order routine returns order 8 with a −3 dB
+frequency of 22 810 Hz, matching the hand derivation to five figures by a
+completely different code path. The same routine for an elliptic realization
+returns **order 5**, and for a Chebyshev type I, order 6 — the usual ordering,
+and the reason production converters rarely use Butterworth here.
+
+**Check**: contrast this with the defective specification. An eighth-order
+Butterworth with its corner placed at $f_{s}/2 = 50\\ \\mathrm{kHz}$ delivers, at
+the 80 kHz that matters, only **32.66 dB**. Same topology, same order, same
+component count, 54.5 dB worse, purely because the corner was named at the
+wrong frequency.
+
+![Two eighth-order Butterworth responses on logarithmic frequency axes, one with its minus-three-decibel corner at twenty-two point eight kilohertz and one with its corner at fifty kilohertz. Vertical guides mark the passband edge, the folding frequency and the critical frequency eighty kilohertz, where the two curves are more than fifty decibels apart.](/courses/fe-ee/figures/sig4-aa-cutoff-defect.svg)
+
+## 6.4 Sampling rate and filter order are one decision, not two
+
+Hold the specification of Section 6.3 fixed — 20 kHz passband, 0.5 dB droop,
+80 dB rejection — and sweep the sampling rate. The critical frequency moves
+with it, and the order follows.
+
+| $f_{s}$ | $f_{\\mathrm{crit}} = f_{s} - f_{p}$ | Butterworth order | −3 dB frequency | elliptic order |
+|---|---|---|---|---|
+| 44.1 kSa/s | 24.1 kHz | 56 | 20.38 kHz | 9 |
+| 48 kSa/s | 28 kHz | 31 | 20.69 kHz | 8 |
+| 60 kSa/s | 40 kHz | 15 | 21.45 kHz | 6 |
+| 100 kSa/s | 80 kHz | 8 | 22.81 kHz | 5 |
+| 200 kSa/s | 180 kHz | 5 | 24.68 kHz | 4 |
+
+Every row is the same channel with a different clock. A 56th-order analog
+filter is not a thing anyone builds; a 5th-order elliptic is an afternoon's
+work. The lesson is that the sampling rate is chosen to make the filter
+buildable, and the theorem's minimum is only the left-hand end of the table.
+
+Comparing this table with the companion chapter's version of the same sweep is
+instructive, because the orders differ and neither is wrong. The companion
+demands 60 dB and puts the corner on the passband edge; this one demands 80 dB
+and holds the droop at that edge to 0.5 dB, which forces the corner up and the
+order with it. Two of the three numbers in a filter specification were changed,
+so the answer changed. That is the whole argument for writing all three down.
+
+### Worked example 6B: reading the table backwards
+
+**Given**: a project constrained to a 5th-order elliptic anti-alias filter by
+board area, with the same 20 kHz passband and 80 dB requirement.
+
+**Find**: the lowest sampling rate that admits it.
+
+**Substitution**: reading the elliptic column, order 5 first appears at
+$f_{s} = 100\\ \\mathrm{kSa/s}$; at 60 kSa/s the same specification needs order 6.
+
+**Answer**: 100 kSa/s, which is 2.5 times the theorem's minimum of
+$2 \\times 20 = 40\\ \\mathrm{kSa/s}$.
+
+**Check**: this is the origin of the rule of thumb that practical systems run
+at 2.2 to 2.5 times the highest wanted frequency. The factor is not a safety
+margin bolted onto the theorem; it is the transition band an implementable
+filter needs, converted into a clock rate.
+
+## 6.5 The same two frequencies on the output side
+
+The reconstruction filter after the converter faces the mirror-image problem
+and is pinned by the mirror-image pair. Its passband must still be flat at
+$f_{p}$, because that is the top of the signal being rebuilt. Its stopband must
+be in force by the bottom edge of the nearest image, which sits at
+
+$$f_{\\mathrm{image}} = f_{s} - f_{p}$$
+
+— numerically the same frequency as $f_{\\mathrm{crit}}$ on the input side, and
+for the same reason. So the specification of worked example 6A serves on both
+sides of a 100 kSa/s, 20 kHz channel. What is *not* shared is the zero-order
+hold: the converter's hold shapes the output spectrum and the input has no
+equivalent, which the companion chapter treats in its Section 7.
+
+Once again, "cutoff at $f_{s}/2$" names neither of the two frequencies that
+define the requirement, and if taken as the −3 dB point it puts 3.01 dB of
+droop at 50 kHz and leaves the image at 80 kHz almost untouched.`,
+      examTip: `Specify an anti-alias filter with two frequencies and two levels: passband edge f_p with a droop limit, and stopband edge f_s − f_p with an attenuation limit taken from the converter's own SQNR, 6.02N + 1.76 dB. If a question offers "cutoff at f_s/2" among the choices, it is the distractor — at the corner the attenuation is 3.01 dB regardless of order.`,
+      importantNote: `The critical frequency for an anti-alias filter is f_s − f_p, not f_s/2. Inputs between f_s/2 and f_s − f_p fold into the guard band above f_p, where digital filtering can still remove them; only inputs above f_s − f_p reach the band you care about. Specifying the stopband at f_s/2 is not wrong, merely more expensive than necessary — specifying the −3 dB corner there is wrong.`,
+    },
+    {
+      id: 'nyq-bandpass',
+      title: `7. Sub-Nyquist Sampling on Purpose: Permitted Bands and Forbidden Zones`,
+      content: `## 7.1 Undersampling is not a violation when the band is narrow
+
+Everything so far has treated folding as damage. It is only damage when the
+folded pieces land on top of each other. If a signal occupies a band
+$[f_{L},\\ f_{H}]$ with $f_{L} > 0$, most of the axis below $f_{H}$ is empty,
+and a sampling rate far below $2f_{H}$ can be chosen so that the replicas
+interleave without touching. The band is then translated down to baseband by
+the sampler itself, with no mixer, no local oscillator and no image filter.
+Radio receivers do this deliberately and call it bandpass sampling, harmonic
+sampling or undersampling.
+
+The floor is set by information, not by frequency: with
+
+$$B = f_{H} - f_{L}$$
+
+no rate below $2B$ can work, because the replicas are $B$ wide and there is not
+enough room. But $2B$ is a floor, not a recipe. Whether a particular rate above
+it works depends on where the band sits, and the permitted rates form
+**disconnected intervals** with forbidden gaps between them.
+
+## 7.2 Deriving the permitted intervals
+
+Sampling at $f_{s}$ puts a copy of the positive-frequency band at
+$[f_{L} - kf_{s},\\ f_{H} - kf_{s}]$ and a copy of the negative-frequency band at
+$[kf_{s} - f_{H},\\ kf_{s} - f_{L}]$, for every integer $k$. For a clean capture
+we need one such copy to sit entirely inside $[0,\\ f_{s}/2]$ with nothing else
+overlapping it. Requiring the $k$-th downshifted copy to clear zero and the
+neighbouring upshifted copy to clear it from above gives, with $n = k + 1$,
+
+$$\\frac{2f_{H}}{n} \\le f_{s} \\le \\frac{2f_{L}}{n - 1}$$
+
+for integer $n$ in the range
+
+$$1 \\le n \\le \\left\\lfloor \\frac{f_{H}}{B} \\right\\rfloor$$
+
+with the $n = 1$ case reading simply $f_{s} \\ge 2f_{H}$, the ordinary
+criterion. The interval for a given $n$ is non-empty only when
+$2f_{H}/n \\le 2f_{L}/(n-1)$, and it collapses to a single rate at the largest
+admissible $n$. Two consequences are worth stating before any numbers:
+
+- The absolute minimum $f_{s} = 2B$ is attainable **only** when $f_{H}/B$ is an
+  integer. Otherwise the lowest usable rate is strictly above $2B$.
+- Because the intervals are disconnected, **raising the sampling rate can break
+  a working design**. That is the opposite of every intuition built up from
+  baseband sampling, and it is the single most useful thing in this section.
+
+## 7.3 Worked example 7A: an intermediate-frequency band, mapped completely
+
+**Given**: an IF band from $f_{L} = 20\\ \\mathrm{MHz}$ to
+$f_{H} = 24\\ \\mathrm{MHz}$, so $B = 24 - 20 = 4\\ \\mathrm{MHz}$.
+
+**Find**: every permitted sampling rate, and the forbidden zones between them.
+
+**Substitution**: $\\lfloor f_{H}/B\\rfloor = \\lfloor 24/4\\rfloor = 6$, so
+$n$ runs from 1 to 6.
+
+| $n$ | lower limit $2f_{H}/n$ | upper limit $2f_{L}/(n-1)$ | permitted interval |
+|---|---|---|---|
+| 1 | 48 MSa/s | — | 48 and above |
+| 2 | 24 MSa/s | 40 MSa/s | 24 to 40 |
+| 3 | 16 MSa/s | 20 MSa/s | 16 to 20 |
+| 4 | 12 MSa/s | 13.333 MSa/s | 12 to 13.333 |
+| 5 | 9.6 MSa/s | 10 MSa/s | 9.6 to 10 |
+| 6 | 8 MSa/s | 8 MSa/s | 8 exactly |
+
+**Answer**: the forbidden zones are 8 to 9.6, 10 to 12, 13.333 to 16, 20 to 24
+and 40 to 48 MSa/s. Note the last one: **44 MSa/s does not work**, even though
+it is 5.5 times the information floor of $2B = 8\\ \\mathrm{MSa/s}$ and only
+just short of $2f_{H}$.
+
+![Permitted sampling rates for a twenty to twenty-four megahertz band, drawn as one horizontal bar per replica index from one to six against a sampling-rate axis. The gaps that no index covers are shaded, and markers show that twelve point five megasamples per second falls inside a permitted bar while forty-four megasamples per second falls in a shaded gap.](/courses/fe-ee/figures/sig4-bandpass-zones.svg)
+
+**Check by measurement, permitted rate**: place four tones across the band and
+sample at 12.5 MSa/s, which is inside the $n = 4$ interval. Transforming the
+samples puts them at
+
+| input tone | where the record puts it |
+|---|---|
+| 20.5 MHz | 4.5 MHz |
+| 21.3 MHz | 3.7 MHz |
+| 22.0 MHz | 3.0 MHz |
+| 23.4 MHz | 1.6 MHz |
+
+Four distinct outputs, so nothing has collided. Sampling the band edges the
+same way puts 20 MHz at 5.0 MHz and 24 MHz at 1.0 MHz, so the whole 4 MHz band
+has been translated into $[1,\\ 5]\\ \\mathrm{MHz}$, comfortably inside the
+$0$ to $6.25\\ \\mathrm{MHz}$ that a 12.5 MSa/s record can hold. The width is
+preserved: $5.0 - 1.0 = 4.0\\ \\mathrm{MHz}$.
+
+**Check by measurement, forbidden rate**: at 44 MSa/s, tones at 20.5 MHz and
+23.5 MHz both land at **20.5 MHz**. Two physically distinct signals, one
+number. The design is broken at a rate nearly six times the theoretical floor.
+
+## 7.4 Spectral inversion, and why the order of the tones reversed
+
+Look again at the permitted-rate table above: 20.5 MHz came out highest and
+23.4 MHz came out lowest. The band has been flipped. This happens whenever the
+copy that lands in baseband is the one derived from the *negative*-frequency
+image, which is the case for even $n$:
+
+$$f_{\\mathrm{out}} = \\begin{cases} f_{\\mathrm{in}} - (n-1)\\dfrac{f_{s}}{2}, & n \\text{ odd} \\\\[4pt] n\\dfrac{f_{s}}{2} - f_{\\mathrm{in}}, & n \\text{ even}\\end{cases}$$
+
+For $n = 4$, even, so the mapping is decreasing and the band is inverted. A
+receiver that undersamples with even $n$ must re-invert in software, or
+demodulate with the sign of its frequency axis flipped — a defect that shows up
+as a perfectly clean signal that demodulates to noise.
+
+### Worked example 7B: how tight is the clock tolerance?
+
+**Given**: a 2.4 to 2.5 GHz band, so $B = 100\\ \\mathrm{MHz}$ and
+$\\lfloor f_{H}/B\\rfloor = \\lfloor 2500/100\\rfloor = 25$.
+
+**Find**: the two highest-$n$ intervals and the clock accuracy each demands.
+
+**Substitution**: for $n = 25$,
+$2 \\times 2500/25 = 200\\ \\mathrm{MSa/s}$ and
+$2 \\times 2400/24 = 200\\ \\mathrm{MSa/s}$ — the interval is the single point
+200 MSa/s. For $n = 24$, the limits are
+$2 \\times 2500/24 = 208.333\\ \\mathrm{MSa/s}$ and
+$2 \\times 2400/23 = 208.696\\ \\mathrm{MSa/s}$.
+
+**Answer**: the $n = 24$ window is 0.363 MSa/s wide on a 208 MSa/s centre, a
+fractional width of
+
+$$\\frac{208.696 - 208.333}{208.333} = 0.0017391$$
+
+or **0.174%**. A clock with 0.2% error walks out of the window.
+
+**Check**: this is why practical undersampling receivers use low $n$ — the
+$n = 2$ window in worked example 7A spans 24 to 40 MSa/s, a 50% fractional
+width, which any crystal will hold. Pushing $n$ toward its ceiling squeezes the
+sampling rate toward $2B$ and the tolerance toward zero at the same time, and
+the two trade against each other directly.`,
+      examTip: `For bandpass sampling, compute n_max = floor(f_H / B) first, then test the intervals 2f_H/n ≤ f_s ≤ 2f_L/(n−1) downward from n_max. A rate is legal only if it lands inside one of them — being above 2B is necessary and nowhere near sufficient. Remember that even n inverts the spectrum.`,
+      importantNote: `Raising the sampling rate can break a bandpass-sampled design. In worked example 7A, 40 MSa/s works and 44 MSa/s does not, even though 44 is higher. This is the one place in the subject where "sample faster" is not a safe default, and it catches people who learned the baseband rule first.`,
+    },
+    {
+      id: 'nyq-jitter',
+      title: `8. Jitter: the Sampling Error That Has Nothing to Do With Rate`,
+      content: `## 8.1 An error in *when*, not in *what*
+
+Every error so far has come from the sampling rate. Jitter is different: the
+rate is right, the filter is right, and the clock edges simply do not arrive
+when they were supposed to. Call the timing error on edge $n$ by
+$\\Delta_{n}$, with zero mean and standard deviation $\\sigma_{t}$. The captured
+value is $x(t_{n} + \\Delta_{n})$ instead of $x(t_{n})$, and for the small
+$\\Delta_{n}$ of any real clock a first-order expansion is exact enough:
+
+$$e_{n} = x(t_{n} + \\Delta_{n}) - x(t_{n}) \\approx \\frac{dx}{dt}\\bigg|_{t_{n}}\\Delta_{n}$$
+
+The error is the signal's slope times the timing error. Everything about jitter
+follows from that one line: a slowly moving signal is barely affected and a
+fast-slewing one is punished, regardless of how fast it is being sampled.
+
+## 8.2 The ceiling, derived
+
+For a full-scale sinusoid $x(t) = A\\sin (2\\pi f_{\\mathrm{in}}t)$ the slope is
+
+$$\\frac{dx}{dt} = 2\\pi f_{\\mathrm{in}}A\\cos (2\\pi f_{\\mathrm{in}}t)$$
+
+If the timing error is independent of the signal phase, the mean-square error
+factorises, and the mean square of the cosine over a cycle is one half:
+
+$$\\overline{e^{2}} = (2\\pi f_{\\mathrm{in}}A)^{2}\\cdot \\tfrac{1}{2}\\cdot \\sigma_{t}^{2}$$
+
+The signal's own mean square is $A^{2}/2$, so the amplitudes cancel entirely:
+
+$$\\mathrm{SNR}_{\\mathrm{jitter}} = \\frac{A^{2}/2}{(2\\pi f_{\\mathrm{in}}A)^{2}\\sigma_{t}^{2}/2} = \\frac{1}{(2\\pi f_{\\mathrm{in}}\\sigma_{t})^{2}}$$
+
+$$\\mathrm{SNR}_{\\mathrm{jitter}} = -20\\log_{10}\\!\\left(2\\pi f_{\\mathrm{in}}\\sigma_{t}\\right)\\ \\ \\mathrm{dB}$$
+
+Read the arguments of that logarithm. The sampling rate does not appear.
+Jitter is charged against the **input** frequency, so oversampling does not
+help, and a converter that behaves perfectly on a 1 kHz input can fail badly on
+a 10 MHz input taken with the same clock.
+
+Inverting it gives the clock specification directly:
+
+$$\\sigma_{t,\\max } = \\frac{1}{2\\pi f_{\\mathrm{in}}\\,10^{\\mathrm{SNR}/20}}$$
+
+### Worked example 8A: ten picoseconds on a one-megahertz input
+
+**Given**: $f_{\\mathrm{in}} = 1\\ \\mathrm{MHz}$, clock jitter
+$\\sigma_{t} = 10\\ \\mathrm{ps}$ rms.
+
+**Find**: the SNR ceiling and the effective number of bits it corresponds to.
+
+**Substitution**:
+
+$$2\\pi \\times 10^{6} \\times 10^{-11} = 6.2832\\times 10^{-5}$$
+
+$$\\mathrm{SNR} = -20\\log_{10}(6.2832\\times 10^{-5}) = 84.04\\ \\mathrm{dB}$$
+
+**Independent route**: generate two million samples of a 1 MHz sine on a 5 MSa/s
+grid, perturb each sample instant by a Gaussian draw of 10 ps, and measure the
+ratio of signal power to error power directly. Measured: **84.03 dB**, against
+84.04 dB from the derivation — three hundredths of a decibel apart, with the
+simulation using no part of the formula.
+
+**Answer**: inverting the resolution relation of Section 6.3,
+
+$$N_{\\mathrm{eff}} = \\frac{84.04 - 1.76}{6.02} = 13.67\\ \\mathrm{bits}$$
+
+so a 16-bit converter fed this clock is a 13.7-bit converter, and paying for
+the extra two and a half bits achieves nothing.
+
+![Jitter-limited signal-to-noise ratio against input frequency on logarithmic axes, for clock jitters of one, ten and one hundred picoseconds rms. Simulated measurements at one hundred kilohertz, one megahertz and ten megahertz sit on the derived lines, and horizontal guides mark the ideal signal-to-noise ratios of twelve-bit and sixteen-bit converters.](/courses/fe-ee/figures/sig4-jitter-snr.svg)
+
+**Check**: the markers on the figure are nine independent simulations, three
+per jitter value, and the largest departure from the derived line across all of
+them is under a quarter of a decibel. Each line falls at 20 dB per decade of
+input frequency, which is the direct reading of the logarithm above.
+
+### Worked example 8B: the clock a 16-bit channel actually requires
+
+**Given**: a 16-bit converter whose ideal SQNR is
+$6.02 \\times 16 + 1.76 = 98.08\\ \\mathrm{dB}$. The jitter contribution is to
+stay at or below that floor.
+
+**Find**: the permitted rms jitter at three input frequencies.
+
+**Substitution**: from the inverted relation,
+$10^{98.08/20} = 8.0276\\times 10^{4}$, so at 100 kHz
+
+$$\\sigma_{t,\\max } = \\frac{1}{2\\pi \\times 10^{5}\\times 8.0276\\times 10^{4}} = 1.9853\\times 10^{-11}\\ \\mathrm{s}$$
+
+| converter | ideal SQNR | 100 kHz input | 500 kHz input | 1 MHz input |
+|---|---|---|---|---|
+| 12 bit | 74.00 dB | 317.6 ps | 63.5 ps | 31.8 ps |
+| 14 bit | 86.04 dB | 79.4 ps | 15.9 ps | 7.94 ps |
+| 16 bit | 98.08 dB | 19.9 ps | 3.97 ps | 1.99 ps |
+
+**Answer**: 19.9 ps at 100 kHz, falling to 1.99 ps at 1 MHz.
+
+**Check**: read the table across rather than down. Each column is a factor of
+four in bits and each row a factor of ten in frequency, and the permitted
+jitter falls in exact proportion to frequency along a row — the 20 dB per
+decade of the figure, seen in the time domain. Two picoseconds is roughly the
+propagation delay of a millimetre of board trace. At the top-right corner of
+this table the oscillator, not the comparator array, is the part that sets the
+achievable resolution — the observation the companion chapter makes in passing
+when it lists jitter among the reasons a real converter falls short of its
+ideal effective bits. Sections 8.1 and 8.2 above derive the relation that
+remark cites.
+
+## 8.3 Where jitter sits in the error budget
+
+Jitter noise, quantization noise and folded broadband noise are mutually
+uncorrelated, so they add in power. Combining the three contributions from
+Sections 5, 6 and 8,
+
+$$\\mathrm{SNR}_{\\mathrm{total}}^{-1} = \\mathrm{SNR}_{\\mathrm{quant}}^{-1} + \\mathrm{SNR}_{\\mathrm{jitter}}^{-1} + \\mathrm{SNR}_{\\mathrm{fold}}^{-1}$$
+
+which means the worst term dominates and improving any other one is wasted
+effort. That is the practical use of the whole chapter: before specifying a
+converter, work out which of the three is largest. A design with an unfiltered
+2 MHz front end (16.02 dB of folding penalty, from worked example 5A) does not
+need a better clock; it needs a filter.`,
+      examTip: `Jitter SNR is −20·log₁₀(2π·f_in·σ_t) and contains no sampling rate. If a question changes f_s and asks what happens to the jitter floor, the answer is nothing. If it changes the input frequency, the floor moves 20 dB per decade.`,
+      importantNote: `Aperture jitter inside the converter and phase noise on the clock source enter this expression identically, because both perturb the instant at which the sample is taken. Adding them requires adding their variances, not their rms values: σ_total² = σ_aperture² + σ_clock².`,
+    },
+    {
+      id: 'nyq-rate-change',
+      title: `9. Rate Conversion: Throwing Samples Away Is Sampling`,
+      content: `## 9.1 The line of code that is a sampler
+
+Nothing in Sections 4 to 8 required an analog-to-digital converter. Any
+operation that keeps some samples and discards others is a sampler, obeys the
+same criterion at its own output rate, and folds anything above half of that
+rate. The dangerous property is that it looks like array indexing:
+
+$$y[m] = x[mM]$$
+
+There is no clock, no filter socket and no analog front end to blame. The new
+folding frequency is
+
+$$f_{s}' = \\frac{f_{s}}{M}, \\qquad \\frac{f_{s}'}{2} = \\frac{f_{s}}{2M}$$
+
+and every component of $x$ above $f_{s}/(2M)$ — all of which were perfectly
+legitimate before the line executed — folds.
+
+### Worked example 9A: a data-logging routine that moves a bearing tone
+
+**Given**: a vibration recorder capturing at $f_{s} = 25.6\\ \\mathrm{kSa/s}$.
+A bearing defect produces a clean tone at 11.0 kHz, well below the original
+folding frequency of $25.6/2 = 12.8\\ \\mathrm{kHz}$. To shrink the archive, a
+script keeps every eighth sample, giving $f_{s}' = 3.2\\ \\mathrm{kSa/s}$.
+
+**Find**: where the tone appears before and after.
+
+**Method**: transform 25 600 samples of the original record, then transform the
+decimated record, and read the peaks. No folding arithmetic.
+
+**Answer**: before, the peak is at **11.0 kHz**. After, the peak is at
+**1.4 kHz**. The tone has moved 9.6 kHz down the axis and now sits in the
+region where imbalance and misalignment faults live, so the diagnosis changes
+from a bearing fault to a shaft fault. Nothing warns the analyst, because the
+decimated record is a perfectly ordinary, perfectly plausible file.
+
+![Two stacked spectra on a shared frequency axis. The upper panel is the spectrum of a record sampled at twenty-five point six kilosamples per second showing one line at eleven kilohertz below its twelve point eight kilohertz limit; the lower panel is the same record after keeping every eighth sample, and the line now stands at one point four kilohertz below the new one point six kilohertz limit.](/courses/fe-ee/figures/sig4-decimation-alias.svg)
+
+**Check**: the two panels share an axis so the migration is visible as a
+displacement rather than as two unrelated plots. The vertical guides mark the
+old and new folding frequencies; the tone was legal against the first and is
+not against the second.
+
+## 9.2 How many source frequencies share an output bin
+
+Decimation is many-to-one, and it is worth knowing how many. A component
+appearing at output frequency $f_{o}$ in $[0,\\ f_{s}'/2]$ could have come from
+any source frequency in the original band $[0,\\ f_{s}/2]$ satisfying
+
+$$f_{\\mathrm{src}} = \\lvert \\pm f_{o} + k f_{s}'\\rvert , \\qquad k = 0, 1, 2, \\dots$$
+
+and counting the members that fall below the original folding frequency gives
+exactly $M$ of them. Decimating by eight makes every output bin the sum of
+eight source bins.
+
+### Worked example 9B: enumerating the eight
+
+**Given**: $f_{s} = 51.2\\ \\mathrm{kSa/s}$ decimated by $M = 8$ to
+$f_{s}' = 6.4\\ \\mathrm{kSa/s}$. An analyst sees a peak at 1.0 kHz.
+
+**Find**: every original frequency that could be responsible.
+
+**Substitution**: taking $\\pm 1.0$ and adding multiples of 6.4 kHz while
+staying below $51.2/2 = 25.6\\ \\mathrm{kHz}$ gives 1.0, 5.4, 7.4, 11.8, 13.8,
+18.2, 20.2 and 24.6 kHz.
+
+**Answer**: eight candidates, which is $M$. Sampling each one at 6.4 kSa/s and
+transforming confirms all eight land on 1.0 kHz.
+
+**Check**: the count is a useful sanity rule. If a decimation stage reduces
+the rate by ten and the input was not filtered, every displayed line is the sum
+of ten unknown contributions, and reasoning about its height is meaningless.
+The same arithmetic governs the noise: decimating unfiltered broadband noise by
+$M$ raises the in-band noise density by $10\\log_{10}M$ decibels, which is the
+identical mechanism measured in Section 5.1, running now inside the software
+rather than at the converter pin.
+
+## 9.3 The filter, and where it must sit
+
+The fix is one filter in one place: a digital low-pass with its stopband in
+force at the *new* folding frequency, applied **before** any samples are
+discarded.
+
+$$x \\rightarrow \\text{LPF at } f_{s}/(2M) \\rightarrow \\text{keep every } M\\text{th sample} \\rightarrow y$$
+
+Reversing the order accomplishes nothing at all, because after the discard the
+folded energy and the wanted energy occupy the same bins.
+
+Going the other way, interpolating by $L$ inserts $L-1$ zeros and creates
+images that a low-pass at the original $f_{s}/2$ must remove. A rational
+conversion by $L/M$ does both, and the single filter that sits between them
+must satisfy whichever constraint is tighter:
+
+$$f_{\\mathrm{cut}} = \\min \\!\\left(\\frac{f_{s}}{2},\\ \\frac{f_{s}'}{2}\\right)$$
+
+### Worked example 9C: studio rate to release rate
+
+**Given**: a 48 kSa/s master to be released at 44.1 kSa/s.
+
+**Find**: the integer ratio, the intermediate rate, and the filter cutoff.
+
+**Substitution**: $44.1/48 = 147/160$ in lowest terms, so $L = 147$ and
+$M = 160$. The intermediate rate is $48\\ \\mathrm{kSa/s} \\times 147 = 7056\\ \\mathrm{kSa/s}$,
+and the check that the chain is right is
+
+$$48000 \\times 147/160 = 44100$$
+
+**Answer**: interpolate by 147 to 7.056 MSa/s, filter, decimate by 160. The
+filter must protect the lower of the two folding frequencies, so
+$f_{\\mathrm{cut}} = \\min (24,\\ 22.05) = 22.05\\ \\mathrm{kHz}$.
+
+**Check**: the intermediate rate is never actually materialised in a real
+implementation — polyphase decomposition computes only the output samples that
+survive — but the cutoff is decided by this picture regardless of how the
+arithmetic is arranged. Choosing 24 kHz instead would let content between 22.05
+and 24 kHz fold into the top of the released band.`,
+      examTip: `Any question containing the words "downsample", "decimate", "keep every Nth sample", "reduce the logging rate" or "resample" is a Nyquist question at the new rate. Compute f_s/(2M) first, then ask which existing components sit above it.`,
+      importantNote: `The order of operations is the entire content of multirate design. Filter then discard is correct; discard then filter is a null operation on aliased energy, because by then the folded and the wanted components occupy the same bins and differ by nothing a filter can act on.`,
+    },
+    {
+      id: 'nyq-reading-spectra',
+      title: `10. Reading a Sampled Spectrum: Scalloping and the Picket Fence`,
+      content: `## 10.1 The DFT does not show you the spectrum
+
+The last two pitfalls do not corrupt the data at all. The record is perfect;
+the misreading happens at the display. An $N$-point DFT of a record taken at
+$f_{s}$ evaluates the underlying continuous transform at exactly $N$ places,
+spaced
+
+$$\\Delta f = \\frac{f_{s}}{N}$$
+
+apart. Between those places it shows nothing. Looking at a spectrum through a
+DFT is looking through a picket fence: what lies behind a picket is invisible,
+and a tone that happens to sit behind one is measured by its skirts rather than
+by its peak.
+
+For a rectangular window the response to a tone offset by $\\delta$ bins from a
+bin centre is the Dirichlet kernel
+
+$$D_{N}(\\delta ) = \\frac{\\sin (\\pi \\delta )}{N\\sin (\\pi \\delta /N)}$$
+
+which equals 1 at $\\delta = 0$ and falls to its minimum at $\\delta = 0.5$,
+midway between two bins. For large $N$ the denominator linearises and
+
+$$\\lim_{N\\to \\infty }D_{N}(0.5) = \\frac{1}{\\pi /2} = \\frac{2}{\\pi } = 0.63662$$
+
+$$L_{\\mathrm{scallop}} = 20\\log_{10}(2/\\pi ) = -3.92\\ \\mathrm{dB}$$
+
+**Scalloping loss**: up to 3.92 dB of amplitude simply missing, decided by
+where the tone happens to sit relative to the bin grid, on a record with no
+aliasing, no noise and no jitter in it.
+
+### Worked example 10A: measuring the worst case
+
+**Given**: $N = 1024$, a unit-amplitude tone placed at bin 102.5 — exactly
+between two bins.
+
+**Find**: the amplitude the DFT reports.
+
+**Method**: build the record, transform, read the tallest bin, scale by
+$2/N$ for a real signal.
+
+**Answer**: **0.638 V** for a 1.000 V tone, a shortfall of 3.92 dB. Moving the
+same tone to bin 102.0 returns 1.000 V exactly.
+
+![The magnitude response around a sixty-four-point discrete Fourier transform for two unit-amplitude tones, one sitting exactly on bin sixteen and one sitting halfway between bins sixteen and seventeen. The continuous interpolated curve is drawn through the discrete bin samples, and the half-bin tone's tallest sample reaches only zero point six three eight where the on-bin tone reaches one.](/courses/fe-ee/figures/sig4-scalloping.svg)
+
+**Check**: the figure draws both the continuum and the bins. The half-bin tone
+has just as much energy as the on-bin tone — the areas under the two curves are
+the same — but the bin grid never lands on its peak, so no single reading
+recovers it.
+
+## 10.2 The frequency is wrong too
+
+The same picket fence limits how precisely a peak can be located. A tone
+midway between bins produces two equal tallest bins, and picking either commits
+an error of half a bin:
+
+$$\\Delta f_{\\mathrm{read}} = \\pm \\frac{f_{s}}{2N}$$
+
+### Worked example 10B: how far off can the reported frequency be?
+
+**Given**: $f_{s} = 10\\ \\mathrm{kSa/s}$ and $N = 1024$.
+
+**Substitution**: the bin spacing is
+$10000/1024 = 9.7656\\ \\mathrm{Hz}$ and half of it is
+$10000/2048 = 4.8828\\ \\mathrm{Hz}$.
+
+**Answer**: any reported peak frequency carries $\\pm 4.88\\ \\mathrm{Hz}$ of
+quantization from the grid alone, before any consideration of noise.
+
+**Check**: this is a display limit, not a resolution limit, and the two are
+routinely confused. Resolution — the ability to separate two nearby tones — is
+set by the record length $N/f_{s}$ and cannot be improved by any amount of
+post-processing. Grid coarseness can be improved: appending zeros to the record
+before transforming evaluates the same continuous transform at more places.
+
+## 10.3 Two fixes, and what each one actually fixes
+
+**Zero-padding** interpolates the display. Padding a 1024-point record to 4096
+points quarters the grid spacing, so the worst offset from a computed point
+falls from half a bin to an eighth of a bin, and the worst-case loss falls to
+
+$$20\\log_{10}\\!\\left[\\frac{\\sin (\\pi /8)}{\\pi /8}\\right] = -0.22\\ \\mathrm{dB}$$
+
+Measured on the bin-102.375 case, a tone that reads 0.784 V unpadded reads
+**0.974 V** after fourfold padding. What has not changed is the ability to
+separate two close tones; padding adds display points, not information.
+
+**Windowing** flattens the response between bins at the cost of widening it.
+Sweeping a tone across a bin in 501 steps and recording the worst reading for
+each window gives:
+
+| window | worst-case scalloping loss, measured | coherent gain |
+|---|---|---|
+| rectangular | −3.92 dB | 1.000 |
+| Hann | −1.42 dB | 0.500 |
+| Hamming | −1.75 dB | 0.540 |
+| Blackman | −1.10 dB | 0.420 |
+| flat-top | −0.01 dB | 0.216 |
+
+Every figure in the middle column is measured from a DFT sweep, not quoted.
+The flat-top window exists for exactly this purpose: its worst-case amplitude
+error is a hundredth of a decibel, which is why calibration instruments use it
+and why its very wide main lobe — which ruins resolution — is an acceptable
+price when the task is to measure one tone's amplitude accurately.
+
+### Worked example 10C: reading a Hann-windowed peak correctly
+
+**Given**: the bin-102.5 tone of worked example 10A, now windowed with a Hann
+window before transforming.
+
+**Find**: the amplitude reported, and the correction needed.
+
+**Substitution**: the window's coherent gain is 0.500, so the raw peak must be
+divided by $0.500N/2$ rather than $N/2$. Doing that, the reported amplitude is
+**0.849 V**.
+
+**Answer**: 0.849 V against a true 1.000 V, a shortfall of 1.42 dB — down from
+3.92 dB, exactly as the table predicts.
+
+**Check**: forgetting the coherent-gain correction is its own error, and a
+large one: without it the Hann-windowed reading would be 0.424 V, understating
+the tone by 7.4 dB. Two separate corrections are in play — coherent gain, which
+is deterministic and always applies, and scalloping, which depends on where the
+tone sits and can only be bounded.`,
+      examTip: `Amplitude read off a DFT bin is a lower bound on the true amplitude, short by up to 3.92 dB with a rectangular window. If a question gives a measured bin height and asks for the tone's amplitude, check whether it also gives a window — and remember the height must be divided by the window's coherent gain before anything else is done to it.`,
+      importantNote: `Zero-padding and record length do different jobs. Padding refines the frequency grid, which reduces scalloping loss and improves peak location; only a longer record improves the ability to resolve two nearby tones. A spectrum that looks smoother after padding contains no more information than it did before.`,
+    },
+    {
+      id: 'nyq-scope',
+      title: `11. Oscilloscope Aliasing, and Why the Slow Sweep Lies`,
+      content: `## 11.1 A scope's sampling rate is not the number on the box
+
+A digital oscilloscope advertises a maximum sampling rate, and that number is
+achieved only at the fastest timebases. The instrument has a fixed acquisition
+memory of $N_{\\mathrm{mem}}$ points and must cover the whole screen, which for
+a ten-division display spans $10 T_{\\mathrm{div}}$ seconds. The rate it can
+actually use is therefore
+
+$$f_{\\mathrm{eff}} = \\min \\!\\left(f_{s,\\max },\\ \\frac{N_{\\mathrm{mem}}}{10\\,T_{\\mathrm{div}}}\\right)$$
+
+and beyond the timebase where the second term takes over, every further click
+of the knob halves or tenths the effective sampling rate. The analog front end
+does not move: its bandwidth is still hundreds of megahertz, so it is still
+delivering everything to the sampler. There is no anti-alias filter that tracks
+the timebase, because such a filter would have to be analog, tunable over five
+decades and switched in step with a front-panel control.
+
+The result is that the same instrument, on the same signal, tells the truth at
+one timebase and lies at another.
+
+### Worked example 11A: a switching ripple that disappears and reappears
+
+**Given**: a scope with $f_{s,\\max } = 1\\ \\mathrm{GSa/s}$ and
+$N_{\\mathrm{mem}} = 10\\ \\mathrm{kpts}$, looking at a supply rail carrying a
+1.203 MHz switching ripple.
+
+**Find**: the effective sampling rate and the apparent ripple frequency at
+1 ms/div and at 10 ms/div.
+
+**Substitution**: at 1 ms/div the screen spans 10 ms, so
+$f_{\\mathrm{eff}} = 10\\,000/0.01 = 1\\ \\mathrm{MSa/s}$; at 10 ms/div the
+screen spans 100 ms and $f_{\\mathrm{eff}} = 10\\,000/0.1 = 100\\ \\mathrm{kSa/s}$.
+
+**Method**: sample the 1.203 MHz ripple at 100 kSa/s and transform.
+
+**Answer**: at 100 kSa/s the ripple is displayed at **3 kHz** — a slow, fat
+wobble roughly four hundred times too slow, which looks exactly like a control
+loop instability. Neither the amplitude nor the shape gives it away, because
+the sample values are genuine measurements of the real waveform; only their
+spacing is wrong.
+
+**Check**: nudge the ripple to 1.200 MHz and sample at 100 kSa/s again. The
+transform now puts it at **0 Hz**: the ripple vanishes entirely into a dc
+offset, and the trace is a flat line on a rail that is visibly rippling on a
+voltmeter's ac range. Both readings come from transforming actual sample
+sequences, and both are what the instrument would show.
+
+![Effective oscilloscope sampling rate against timebase on logarithmic axes, for ten-kilopoint and one-megapoint acquisition memories, both capped at one gigasample per second. A horizontal guide marks the two point four megasample per second rate needed to capture a one point two zero three megahertz ripple honestly, and the region below it is shaded as the range of timebases at which the captured waveform is fiction.](/courses/fe-ee/figures/sig4-scope-rate.svg)
+
+**Interpretation of the figure**: each trace is flat at the instrument maximum
+until memory runs out, then falls at one decade per decade. The shaded region
+is the set of timebase settings at which this particular ripple cannot be
+captured honestly. Deeper memory moves the corner right — a megapoint of memory
+buys two more decades of trustworthy timebase — which is the whole engineering
+argument for acquisition memory, stated in one picture.
+
+## 11.2 What the instrument offers instead
+
+Three features exist because of this, and knowing which one is engaged decides
+whether a trace can be believed.
+
+- **Peak detect.** Instead of keeping one sample per decimated interval, the
+  acquisition hardware keeps the minimum and maximum found at the full rate.
+  The displayed waveshape is still wrong, but the envelope is right, so a fast
+  transient that plain decimation would drop entirely shows up as a vertical
+  band. Peak detect is a detector of the fact that something is there, not a
+  measurement of what it is.
+- **High resolution.** The decimated sample is replaced by the *average* over
+  the interval, which is a genuine low-pass filter ahead of the effective
+  sampler and does suppress folding. It costs bandwidth, which is the point.
+- **Equivalent-time sampling.** For a repetitive signal the instrument builds
+  one composite record from many triggers, each offset by a fraction of a
+  sample period. The effective grid is far finer than the real clock, and a
+  100 MSa/s converter can render a 2 GHz sine faithfully. This does not violate
+  anything: the composite record genuinely has fine spacing, and the criterion
+  is met at that spacing. It fails silently on any signal that is not
+  repetitive, which is why single-shot capture always runs in real time.
+
+### Worked example 11B: choosing a timebase that cannot lie
+
+**Given**: the same 10 kpt instrument, looking for anything up to 5 MHz.
+
+**Find**: the slowest timebase that keeps the effective folding frequency above
+5 MHz.
+
+**Substitution**: the requirement is $f_{\\mathrm{eff}} > 10\\ \\mathrm{MSa/s}$,
+so from the relation above
+$T_{\\mathrm{div}} < 10\\,000/(10 \\times 10\\,000\\,000) = 10^{-4}\\ \\mathrm{s}$.
+
+**Answer**: 100 µs/div, and anything slower is unsafe on this signal.
+
+**Check**: the practical procedure needs no arithmetic. Change the timebase and
+watch the displayed frequency. A real signal keeps its frequency and simply
+shows more or fewer cycles; an aliased one changes frequency, because its
+apparent frequency depends on $f_{\\mathrm{eff}}$ and $f_{\\mathrm{eff}}$ just
+changed. That two-second test catches every case in this section.`,
+      examTip: `Effective scope sampling rate is memory divided by screen time, capped at the instrument maximum. A question that gives memory depth and time per division is asking you to compute it, then treat the scope as an ADC at that rate. The advertised maximum rate is irrelevant at slow timebases.`,
+      importantNote: `Equivalent-time sampling does not beat the sampling theorem; it changes the effective sample spacing by combining many triggers. It is valid only for repetitive signals, and applying it to a one-shot event yields a composite of unrelated fragments that looks like a waveform and is not one.`,
+    },
+    {
+      id: 'nyq-problems-a',
+      title: `12. Problem Set A — Does This System Alias, and Where Does It Land?`,
+      content: `## 12.1 Problem Set A: six systems, one question each
+
+Each item states a complete system. Decide first whether anything folds, then
+where it lands, then whether landing there matters. Every answer below was
+obtained by sampling the stated waveform and transforming the samples, so the
+figures can be reproduced without trusting any formula.
+
+---
+
+**A1.** A bridge amplifier carries genuine content from dc to 2 kHz and is
+sampled at 10 kSa/s with no anti-alias filter. A dc-dc converter on the same
+board switches at 47 kHz and couples into the cable. (a) Where does the
+switching tone appear? (b) Does it damage the measurement? (c) A power-saving
+change drops the rate to 9 kSa/s. Does the answer change?
+
+*Answer.* (a) At 10 kSa/s the tone appears at **3 kHz**. (b) The wanted
+band ends at 2 kHz and half the sampling rate is $10/2 = 5\\ \\mathrm{kHz}$, so
+3 kHz lands in the guard band $(2,\\ 5)\\ \\mathrm{kHz}$; a digital low-pass at
+2 kHz removes it and the measurement survives. (c) At 9 kSa/s the same tone
+appears at **2 kHz**, exactly on the top edge of the wanted band, where no
+digital filter can separate it from real strain. The rate change made a
+harmless coupling path into a fatal one, and nothing on the schematic
+changed.
+
+---
+
+**A2.** A 48 kSa/s audio channel carries content to 20 kHz. An ultrasonic
+proximity sensor nearby radiates a 25 kHz pilot tone that reaches the input.
+(a) Where does the pilot land? (b) A later processing stage decimates the
+record by two to 24 kSa/s with no filter. Where is the pilot now?
+
+*Answer.* (a) At **23 kHz** — above the 20 kHz wanted band but below the
+$48/2 = 24\\ \\mathrm{kHz}$ folding frequency, so it sits in the guard band
+and is still removable. (b) After the unfiltered decimation the folding
+frequency is $24/2 = 12\\ \\mathrm{kHz}$ and the 23 kHz component reappears at
+**1 kHz**, in the middle of the wanted audio band and permanent. The
+converter's anti-alias filter did its job; the software stage undid it.
+
+---
+
+**A3.** A software radio digitizes the whole FM broadcast band, 88 MHz to
+108 MHz, by bandpass sampling. A designer proposes 50 MSa/s on the grounds that
+it comfortably exceeds $2B = 40\\ \\mathrm{MSa/s}$. (a) Is 50 MSa/s permitted?
+(b) Demonstrate the failure with two carriers. (c) Propose a rate that works.
+
+*Answer.* (a) No. With $B = 108 - 88 = 20\\ \\mathrm{MHz}$,
+$\\lfloor 108/20\\rfloor = 5$, and the permitted intervals are 43.2 to 44,
+54 to 58.667, 72 to 88, 108 to 176, and 216 upward, all in MSa/s. The value
+50 falls in the forbidden gap between 44 and 54. (b) At 50 MSa/s, carriers at
+95 MHz and 105 MHz **both appear at 5 MHz**. (c) 43.5 MSa/s lies inside the
+$n = 5$ interval; there the band edges land at 1 MHz and 21 MHz, a span of
+$21 - 1 = 20\\ \\mathrm{MHz}$ exactly equal to $B$, with 95 MHz at 8 MHz and
+105 MHz at 18 MHz — distinct and correctly ordered.
+
+---
+
+**A4.** An 8 kSa/s converter is fed a 4 kHz sinusoid of 2 V amplitude. The
+clock happens to be phase-locked so that samples fall on the waveform's zero
+crossings. What does the record contain, and what can be recovered?
+
+*Answer.* The record contains **zeros**. The tone sits exactly at
+$8/2 = 4\\ \\mathrm{kHz}$, so the sample sequence reduces to
+$2(-1)^{n}\\cos \\varphi$ and this phase makes $\\cos \\varphi = 0$. Amplitude
+is not recoverable at any phase without prior knowledge of the phase, because
+the sampled sequence has one free parameter where the waveform had two. This
+is the equality case of Section 4.2, and it is why the criterion is written
+with a strict inequality.
+
+---
+
+**A5.** An oscilloscope specified at 200 MSa/s with 20 kpts of acquisition
+memory is set to 5 ms/div. A circuit under test oscillates at 2.35 MHz.
+(a) What is the effective sampling rate? (b) What appears on screen?
+
+*Answer.* (a) The screen spans $10 \\times 5 = 50\\ \\mathrm{ms}$, so
+$f_{\\mathrm{eff}} = 20000/0.05 = 400\\ \\mathrm{kSa/s}$ — a factor of 500
+below the number on the front panel. (b) The oscillation is displayed at
+**50 kHz**, and it is stable, repeatable and completely wrong. Speeding the
+timebase up until the displayed frequency stops changing is the field test.
+
+---
+
+**A6.** A 14-bit converter is used at an input frequency of 500 kHz. What rms
+clock jitter keeps the jitter noise at or below the converter's own
+quantization floor?
+
+*Answer.* The ideal SQNR is
+$6.02 \\times 14 + 1.76 = 86.04\\ \\mathrm{dB}$, so
+$10^{86.04/20} = 2.0045\\times 10^{4}$ and
+
+$$\\sigma_{t,\\max } = \\frac{1}{2\\pi \\times 5\\times 10^{5}\\times 2.0045\\times 10^{4}} = 1.588\\times 10^{-11}\\ \\mathrm{s}$$
+
+or **15.9 ps rms**. Note that the sampling rate was never used, and could not
+have been: jitter is charged against the input frequency alone.
+
+## 12.2 The six at a glance
+
+| item | what folds | lands at | verdict |
+|---|---|---|---|
+| A1 at 10 kSa/s | 47 kHz supply tone | 3 kHz | guard band, removable |
+| A1 at 9 kSa/s | 47 kHz supply tone | 2 kHz | in band, permanent |
+| A2 at the converter | 25 kHz pilot | 23 kHz | guard band, removable |
+| A2 after decimating | 23 kHz pilot | 1 kHz | in band, permanent |
+| A3 at 50 MSa/s | 95 and 105 MHz | both 5 MHz | forbidden zone, collision |
+| A3 at 43.5 MSa/s | 95 and 105 MHz | 8 and 18 MHz | permitted, clean |
+| A4 | nothing folds | — | equality case, rank collapse |
+| A5 | 2.35 MHz oscillation | 50 kHz | scope memory limit |
+| A6 | no folding at all | — | jitter, 15.9 ps budget |
+
+Read the verdict column and the structure of the whole chapter is visible: two
+of these failures are prevented by an analog filter, two by a different clock
+rate, one by a different processing order, and one is not a folding problem at
+all.`,
+      examTip: `Work every aliasing question in three steps and never skip the third: where is the folding frequency, where does the component land, and is that inside the band you care about or in the guard band above it. The guard band between f_p and f_s/2 is the difference between a nuisance and a ruined measurement.`,
+    },
+    {
+      id: 'nyq-problems-b',
+      title: `13. Problem Set B — Specifications, Rates and Bands`,
+      content: `## 13.1 Problem Set B: five design decisions
+
+These items ask for a number a vendor could be held to, rather than a
+classification. Each states its givens completely.
+
+---
+
+**B1.** A process-monitoring channel carries content to $f_{p} = 5\\ \\mathrm{kHz}$
+and drives a 12-bit converter at $f_{s} = 40\\ \\mathrm{kSa/s}$. Folded energy is
+to arrive below the converter's own quantization floor. Specify a Butterworth
+anti-alias filter.
+
+*Answer.* The required stopband attenuation is the converter's ideal SQNR,
+$6.02 \\times 12 + 1.76 = 74.00\\ \\mathrm{dB}$. The critical frequency is
+$f_{s} - f_{p} = 40 - 5 = 35\\ \\mathrm{kHz}$, giving a stopband-to-corner
+ratio of $35/5 = 7$ if the corner is placed at the passband edge. From
+$A = 10\\log_{10}[1 + r^{2n}]$,
+
+$$n \\ge \\frac{74.00}{20\\log_{10}7} = \\frac{74.00}{16.90196} = 4.378$$
+
+so **order 5**. Checking the two candidates at 35 kHz: order 4 gives
+67.61 dB, short of the requirement, and order 5 gives 84.51 dB, comfortably
+over. An independent filter-order routine given 5 kHz, 35 kHz, 0.5 dB and
+74 dB also returns order 5.
+
+---
+
+**B2.** The same channel, the same converter, but the clock is reduced to
+$f_{s} = 12.5\\ \\mathrm{kSa/s}$ to cut power. Re-specify.
+
+*Answer.* The critical frequency drops to
+$12.5 - 5 = 7.5\\ \\mathrm{kHz}$ and the ratio to $7.5/5 = 1.5$, so
+
+$$n \\ge \\frac{74.00}{20\\log_{10}1.5} = \\frac{74.00}{3.52183} = 21.012$$
+
+**order 22** — checking, order 21 gives 73.96 dB, a whisker short of 74, and
+order 22 gives 77.48 dB. A 22nd-order analog filter is not a thing anyone
+builds, so the honest answer to the design request is that this sampling rate
+is not viable with this passband; either raise the clock or accept less alias
+rejection. Cutting the rate by a factor of 3.2 multiplied the required order
+by 4.4.
+
+---
+
+**B3.** A channel has a wanted band to 8 kHz and is sampled at 20 kSa/s.
+(a) How wide is the guard band? (b) Which is the lowest input frequency able to
+reach the wanted band? (c) Classify interferers at 11 kHz and at 13 kHz.
+
+*Answer.* (a) The folding frequency is $20/2 = 10\\ \\mathrm{kHz}$ and the
+guard band runs from 8 kHz to 10 kHz, so it is $10 - 8 = 2\\ \\mathrm{kHz}$
+wide. (b) $f_{s} - f_{p} = 20 - 8 = 12\\ \\mathrm{kHz}$. (c) The 11 kHz
+interferer lands at **9 kHz**, inside the guard band, so a digital low-pass
+at 8 kHz deletes it. The 13 kHz interferer lands at **7 kHz**, inside the
+wanted band, and is permanent. Both were located by sampling and
+transforming. Note that 11 kHz is above the folding frequency and still
+harmless — being above $f_{s}/2$ is not by itself a fault.
+
+---
+
+**B4.** A receiver bandpass-samples the 2.4 to 2.5 GHz band. (a) What is the
+largest usable replica index? (b) Give the permitted interval for $n = 24$ and
+the clock accuracy it demands. (c) Comment on the $n = 25$ case.
+
+*Answer.* (a) $B = 100\\ \\mathrm{MHz}$ and
+$\\lfloor 2500/100\\rfloor = 25$. (b) For $n = 24$ the interval runs from
+$2 \\times 2500/24 = 208.333\\ \\mathrm{MSa/s}$ to
+$2 \\times 2400/23 = 208.696\\ \\mathrm{MSa/s}$, a fractional width of
+$(208.696 - 208.333)/208.333 = 0.0017391$, or **0.174%** — tighter than an
+ordinary crystal's tolerance over temperature. (c) At $n = 25$ both limits
+equal 200 MSa/s exactly, so the permitted set is a single point and the
+design has zero clock tolerance. Practical undersampling receivers therefore
+use small $n$, accepting a higher sampling rate in exchange for a window wide
+enough to hold.
+
+---
+
+**B5.** A 16-bit converter runs at 1 MHz input frequency behind an amplifier
+whose noise bandwidth is 2 MHz, with no anti-alias filter, clocked by an
+oscillator with 5 ps rms jitter. (a) What jitter would the converter's
+resolution demand? (b) Which of the three error mechanisms in this chapter
+dominates? (c) What should be fixed first?
+
+*Answer.* (a) With
+$6.02 \\times 16 + 1.76 = 98.08\\ \\mathrm{dB}$ to protect,
+$\\sigma_{t,\\max } = 1.99\\ \\mathrm{ps}$ at 1 MHz, so the 5 ps oscillator
+falls short. Its actual ceiling is
+$-20\\log_{10}(2\\pi \\times 10^{6}\\times 5\\times 10^{-12}) = 90.05\\ \\mathrm{dB}$,
+costing 8.03 dB. (b) The unfiltered front end costs
+$10\\log_{10}(2\\,000\\,000/500\\,000) = 6.02\\ \\mathrm{dB}$ if the converter runs
+at 1 MSa/s — but at a realistic 2.5 MSa/s for a 1 MHz input the folding
+factor is $2\\,000\\,000/1\\,250\\,000 = 1.6$, worth 2.04 dB. So **jitter
+dominates** here, at 8.03 dB against 2.04 dB. (c) The clock. This is the
+point of computing all three: the intuition that "no anti-alias filter" is
+always the biggest problem is wrong in this particular system, and only the
+arithmetic settles it.
+
+## 13.2 The specification pattern, in one table
+
+| quantity wanted | expression | where it comes from |
+|---|---|---|
+| stopband attenuation | $6.02N + 1.76$ dB | the converter's own quantization floor |
+| stopband edge | $f_{s} - f_{p}$ | lowest input that folds into the wanted band |
+| guard band width | $f_{s}/2 - f_{p}$ | bought with sampling rate |
+| Butterworth order | $A/(20\\log_{10}r)$, $r = f_{\\mathrm{crit}}/f_{c}$ | the magnitude expression, solved for $n$ |
+| jitter budget | $1/(2\\pi f_{\\mathrm{in}}10^{\\mathrm{SNR}/20})$ | slope times timing error |
+| permitted sampling rates | $2f_{H}/n \\le f_{s} \\le 2f_{L}/(n-1)$ | replicas not overlapping |
+
+Every row is derived somewhere in Sections 6 to 8; none of them is a rule of
+thumb.`,
+      examTip: `When a problem gives converter resolution and asks for an anti-alias specification, the resolution is telling you the required stopband attenuation through 6.02N + 1.76. When it gives a sampling rate and a passband edge, their difference is telling you the stopband edge. Those two substitutions turn almost every filter-specification question into one order calculation.`,
+      importantNote: `Compute all three error contributions — folding, jitter and quantization — before improving any of them. Problem B5 is a system where the missing anti-alias filter is the smaller problem, and spending the budget on a filter there would buy 2 dB while an 8 dB defect sat untouched.`,
+    },
+    {
+      id: 'nyq-problems-c',
+      title: `14. Practice Problems — Reading a Sampled Spectrum`,
+      content: `## 14.1 Practice Problems: what the display is not telling you
+
+These five items concern records that are entirely correct. Every failure below
+happens in the reading.
+
+---
+
+**C1.** A 1.000 V amplitude tone is transformed with a 1024-point rectangular
+window and happens to sit exactly midway between two bins. What amplitude does
+the tallest bin report, and what is the error in decibels?
+
+*Answer.* **0.638 V**, an error of
+$20\\log_{10}(0.63662) = -3.92\\ \\mathrm{dB}$. This is the worst case for a
+rectangular window and follows from the Dirichlet kernel evaluated at half a
+bin, which tends to $2/\\pi$ for large $N$. Moving the same tone onto a bin
+centre returns 1.000 V exactly, so the 3.92 dB is a property of the
+alignment, not of the signal.
+
+---
+
+**C2.** The same transform is taken at $f_{s} = 10\\ \\mathrm{kSa/s}$ with
+$N = 1024$. (a) What is the bin spacing? (b) What is the worst error in a
+reported peak frequency? (c) Can more processing improve (b)?
+
+*Answer.* (a) $10000/1024 = 9.7656\\ \\mathrm{Hz}$. (b) Half a bin, so
+$10000/2048 = 4.8828\\ \\mathrm{Hz}$, since a tone midway between bins produces
+two equally tall bins and either could be reported. (c) Yes — zero-padding
+refines the grid and improves peak location. What it cannot improve is the
+ability to resolve two tones closer together than about one bin, which is set
+by the record length $1024/10000 = 0.1024\\ \\mathrm{s}$ and by nothing else.
+
+---
+
+**C3.** A tone reads 0.784 V on an unpadded 1024-point transform. The record is
+zero-padded to 4096 points and transformed again. (a) What does it read now?
+(b) What is the worst-case scalloping loss after fourfold padding? (c) Has the
+resolution improved?
+
+*Answer.* (a) **0.974 V**. (b) Padding by four quarters the grid spacing,
+so the largest offset between a tone and the nearest computed point falls to
+an eighth of a bin, and the worst loss becomes
+$20\\log_{10}[\\sin (\\pi /8)/(\\pi /8)] = -0.22\\ \\mathrm{dB}$. (c) No. The
+transform is being evaluated at more points on the same underlying curve, and
+that curve was fixed the moment the record ended.
+
+---
+
+**C4.** The bin-102.5 tone of C1 is windowed with a Hann window before
+transforming. (a) What is the reported amplitude with the coherent-gain
+correction applied? (b) What is reported if the correction is forgotten?
+
+*Answer.* (a) **0.849 V**, an error of −1.42 dB, which is the Hann
+window's worst-case scalloping loss and a substantial improvement on the
+rectangular window's 3.92 dB. (b) The Hann window's coherent gain is 0.500,
+so omitting the correction halves the reading to **0.424 V**, an error of
+−7.44 dB. Two independent corrections are in play, and the deterministic one
+is the larger.
+
+---
+
+**C5.** A spectrum computed from a 10 kSa/s record shows a single peak at
+2 kHz. Name three input frequencies, other than 2 kHz, that would produce
+exactly this display, and state what measurement would distinguish them.
+
+*Answer.* **12 kHz, 18 kHz and 22 kHz** all land on 2 kHz at this sampling
+rate, as does 8 kHz; the family is $\\lvert \\pm 2 + 10k\\rvert$ kHz for
+integer $k$. No processing of this record distinguishes them, because the
+record is numerically identical in every case. The distinguishing measurement
+has to happen upstream: sample the same signal again at a different rate and
+see whether the peak moves. A genuine 2 kHz tone stays at 2 kHz; an alias
+jumps.
+
+## 14.2 Window choice, measured rather than quoted
+
+| window | worst-case scalloping loss | coherent gain | use it when |
+|---|---|---|---|
+| rectangular | −3.92 dB | 1.000 | the tone is known to be on a bin |
+| Hann | −1.42 dB | 0.500 | general-purpose spectral survey |
+| Hamming | −1.75 dB | 0.540 | general purpose, narrower main lobe |
+| Blackman | −1.10 dB | 0.420 | high dynamic range needed |
+| flat-top | −0.01 dB | 0.216 | amplitude calibration of one tone |
+
+Each loss figure was obtained by sweeping a tone across one bin in 501 steps
+and recording the smallest peak reading. Reading down the first column shows
+the trade the whole table exists to make: the flat-top window is nearly perfect
+for amplitude and nearly useless for resolution, and the rectangular window is
+the reverse.`,
+      examTip: `A peak height read off a DFT bin understates the tone unless the tone happens to be bin-centred. With a rectangular window the understatement can reach 3.92 dB; with a Hann window, 1.42 dB. If a question asks for a tone's amplitude from a bin height, check for a window and divide by its coherent gain first.`,
+      importantNote: `Nothing in Section 14 involves aliasing, yet every item is a place where a correct record is read incorrectly. Keep the two apart: aliasing destroys information before the record exists, while scalloping and the picket fence merely obscure information that the record still holds.`,
+    },
   ],
   keyTakeaways: [
     'Nyquist criterion: f_s > 2·f_max (strict). Nyquist frequency = f_s/2.',
     'Aliasing maps frequency f > f_s/2 to f_alias = |f - n·f_s| in [0, f_s/2]. Cannot be undone.',
-    'Anti-aliasing filter (analog LP, cutoff at f_s/2) goes BEFORE the sampler. Reconstruction filter goes AFTER the DAC.',
+    'Anti-aliasing filter (analog LP) goes BEFORE the sampler; reconstruction filter goes AFTER the DAC. Both are pinned by TWO frequencies: passband edge f_p and stopband edge f_s − f_p. Never "cutoff at f_s/2" — at the corner the attenuation is 3.01 dB whatever the order.',
     'Real filters have transition bands — oversample beyond 2·f_max to allow filter rolloff (CD samples at 44.1 kHz for 20 kHz audio)',
     'Higher-order analog filters have steeper rolloff: N-th order = 20·N dB/decade',
     'Modern systems oversample heavily and use digital decimation — easier than designing sharp analog filters',
-    'Bandpass sampling: a band-limited signal between f_L and f_H can be sampled at 2·B (B = f_H - f_L) if frequencies don\'t overlap after replication',
+    'Bandpass sampling: the permitted rates are the intervals 2·f_H/n ≤ f_s ≤ 2·f_L/(n−1) for 1 ≤ n ≤ floor(f_H/B). They are disconnected, so raising f_s can break a working design, and f_s = 2B is reachable only when f_H/B is an integer.',
+    'Sampling exactly AT the Nyquist rate is a different case, not a marginal one: the samples collapse to A·(−1)ⁿ·cos φ, so amplitude depends entirely on phase and at φ = 90° the record is all zeros.',
+    'Required stopband attenuation comes from the converter, not from taste: 6.02N + 1.76 dB, the same expression as its ideal SQNR.',
+    'Broadband front-end noise folds. The SNR penalty is 10·log₁₀(B_n / (f_s/2)) using the EQUIVALENT NOISE bandwidth, which for one pole is π/2 times the −3 dB bandwidth.',
+    'Jitter SNR is −20·log₁₀(2π·f_in·σ_t) and contains no sampling rate. It is charged against the INPUT frequency, so oversampling does not help it.',
+    'Decimation is sampling. Filtering must precede the discard, and after decimating by M each output bin is the sum of M source bins.',
+    'A DFT bin height understates a tone by up to 3.92 dB (rectangular window) purely from where the tone sits between bins. Zero-padding reduces that; only a longer record improves resolution.',
+    'A scope\'s effective rate is memory ÷ screen time, capped at its maximum. At slow timebases it is orders of magnitude below the front-panel number, with no anti-alias filter tracking the knob.',
   ],
 },
 
