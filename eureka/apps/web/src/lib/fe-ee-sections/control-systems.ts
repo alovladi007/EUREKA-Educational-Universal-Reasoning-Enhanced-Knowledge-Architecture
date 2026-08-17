@@ -60,7 +60,7 @@ When blocks cannot be directly combined, use these moves:
 
 For complex multi-loop systems where sequential reduction is tedious:
 
-**$T(s) = \\Sigma (P_k \\cdot \\Delta _k) / \\Delta$**
+**$T(s) = \\sum (P_k \\cdot \\Delta _k) / \\Delta$**
 
 where:
 - **P_k** = gain of the k-th forward path
@@ -659,9 +659,9 @@ Three definitions do all the work:
 
 Mason's gain formula then reads
 
-$$T(s) = (1/\\Delta)\\Sigma _k P_{k}\\Delta _k$$
+$$T(s) = (1/\\Delta)\\sum _k P_{k}\\Delta _k$$
 
-$$\\Delta = 1 - \\Sigma _i L_{i} + \\Sigma _{i,j} L_{i}L_{j} - \\Sigma _{i,j,k} L_{i}L_{j}L_{k} + \\cdots$$
+$$\\Delta = 1 - \\sum _i L_{i} + \\sum _{i,j} L_{i}L_{j} - \\sum _{i,j,k} L_{i}L_{j}L_{k} + \\cdots$$
 
 where the second sum runs over pairs of **non-touching** loops, the third over
 mutually non-touching triples, and so on with alternating signs. The cofactor
@@ -1614,7 +1614,7 @@ $$Y(s)/R(s) = N(s)/D(s), \\qquad D(s) = a_{n}(s - p_{1})(s - p_{2})\\cdots (s - 
 Expanding in partial fractions and inverting term by term turns the response
 into a sum of exponentials, one per root:
 
-$$y(t) = \\Sigma _i r_{i}e^{p_{i}t} + (\\text{terms forced by the input})$$
+$$y(t) = \\sum _i r_{i}e^{p_{i}t} + (\\text{terms forced by the input})$$
 
 Each $p_{i}$ is a **mode**. A real root at $p = -\\sigma$ contributes a decaying
 exponential with time constant $1/\\sigma$. A complex pair
@@ -2674,7 +2674,7 @@ $$\\theta _a = (2k+1)180^\\circ /3 = 60^\\circ,\\ 180^\\circ,\\ 300^\\circ$$
 
 and the centroid is
 
-$$\\sigma _a = (\\Sigma \\mathrm{poles} - \\Sigma \\mathrm{zeros})/(n-m) = (0 - 2 - 4)/3 = -2$$
+$$\\sigma _a = (\\sum \\mathrm{poles} - \\sum \\mathrm{zeros})/(n-m) = (0 - 2 - 4)/3 = -2$$
 
 so two branches leave at ±60° from the point −2 on the real axis, and the
 third runs left along the axis.
@@ -2917,6 +2917,873 @@ tracking accuracy → lag.**`,
       examTip: 'The angle deficiency is the whole lead design in one number: evaluate the open-loop phase at the desired pole location, and whatever it takes to reach an odd multiple of 180° is what the compensator must supply. If the deficiency comes out positive (the plant already lags too little), lead is the wrong tool.',
       importantNote: 'A compensator zero placed exactly on a plant pole cancels it only on paper. Real parameters drift, so the cancellation is always approximate and leaves a low-residue mode behind. Never use pole-zero cancellation to hide an unstable or very slow plant pole — the mode it leaves behind is uncontrollable and still there.',
     },
+    {
+      id: 'rl-conditions-derived',
+      title: '5. Two Conditions, and Every Rule Derived From Them',
+      content: `## 5.1 One Complex Equation Splits Into Two Real Ones
+
+Sections 1 through 4 used the eight rules. This section shows where they come
+from, because a rule you can rebuild in twenty seconds is a rule you cannot
+misremember under exam pressure.
+
+Write the loop transfer function as a gain multiplying a ratio of monic
+polynomials:
+
+$$L(s) = K\\,\\frac{N(s)}{D(s)}, \\qquad N(s) = \\prod_{j=1}^{m}(s - z_{j}), \\qquad D(s) = \\prod_{i=1}^{n}(s - p_{i})$$
+
+The closed-loop poles are the roots of $1 + L(s) = 0$, which rearranges to
+
+$$K\\,\\frac{N(s)}{D(s)} = -1$$
+
+A complex number equals $-1$ precisely when its magnitude is one and its
+argument is an odd multiple of $180^\\circ$. The single complex statement above
+therefore carries two independent real statements inside it:
+
+$$\\left\\lvert K\\,\\frac{N(s)}{D(s)} \\right\\rvert = 1 \\quad \\Longrightarrow \\quad K = \\frac{\\prod_{i=1}^{n}\\lvert s - p_{i}\\rvert}{\\prod_{j=1}^{m}\\lvert s - z_{j}\\rvert}$$
+
+$$\\sum_{j=1}^{m}\\angle (s - z_{j}) \\; - \\; \\sum_{i=1}^{n}\\angle (s - p_{i}) \\; = \\; (2k+1)\\,180^\\circ$$
+
+for any integer $k$. Notice what is missing from the second line: the gain.
+**The shape of the locus is fixed by the pole and zero positions alone**, and
+$K$ only decides how far along that fixed curve a closed-loop pole has
+travelled. Every construction rule in Section 1 is a consequence of the angle
+statement. The magnitude statement is used exactly once, at the very end, to
+attach a number to a chosen point.
+
+Geometrically the angle statement is a bookkeeping exercise you can do with a
+ruler. Draw a vector from every open-loop pole and every open-loop zero to the
+candidate point. Measure each vector's angle from the positive real axis. Add
+the zero angles, subtract the pole angles, and ask whether the total is
+$\\pm 180^\\circ$, $\\pm 540^\\circ$, and so on. The magnitude statement is the
+same picture measured with the other end of the ruler: multiply the pole vector
+lengths, divide by the zero vector lengths, and that is the gain.
+
+### Worked Example 1 - Testing a Point Against Both Conditions
+
+**Given.** $L(s) = K/[s(s+2)(s+4)]$ and the candidate point
+$s_{0} = -0.6667 + j1.1547$, which Section 3 claimed sits on the locus at
+$K = 224/27$.
+
+**Find.** Whether the point satisfies the angle condition, and if so, the gain
+there.
+
+**Solution.** There are no zeros, so the angle sum is a subtraction only. Take
+each pole in turn and form the vector $s_{0} - p_{i}$:
+
+$$s_{0} - 0 = -0.6667 + j1.1547 \\quad \\Rightarrow \\quad \\angle = 180^\\circ - \\arctan\\!\\left(\\frac{1.1547}{0.6667}\\right) = 120.0000^\\circ$$
+
+$$s_{0} + 2 = 1.3333 + j1.1547 \\quad \\Rightarrow \\quad \\angle = \\arctan\\!\\left(\\frac{1.1547}{1.3333}\\right) = 40.8934^\\circ$$
+
+$$s_{0} + 4 = 3.3333 + j1.1547 \\quad \\Rightarrow \\quad \\angle = \\arctan\\!\\left(\\frac{1.1547}{3.3333}\\right) = 19.1066^\\circ$$
+
+Summing and negating,
+
+$$\\angle L(s_{0}) = -(120.0000 + 40.8934 + 19.1066)^\\circ = -180.0000^\\circ$$
+
+which is an odd multiple of $180^\\circ$, so the point is on the locus. Now the
+lengths:
+
+$$\\lvert s_{0}\\rvert = 1.333333, \\qquad \\lvert s_{0}+2\\rvert = 1.763834, \\qquad \\lvert s_{0}+4\\rvert = 3.527668$$
+
+$$K = 1.333333 \\times 1.763834 \\times 3.527668 = 8.2963$$
+
+**Check.** Solving $s^{3} + 6s^{2} + 8s + 8.2963 = 0$ numerically returns
+$-0.6667 \\pm j1.1547$ and $-4.6667$. The gain found from three ruler
+measurements reproduces the root of a cubic exactly, which is the point of the
+whole method.
+
+![Root locus of K over s times s plus two times s plus four with the three vectors drawn from the open-loop poles to the design point at minus zero point six six six seven plus j one point one five four seven. Their angles of one hundred twenty, forty point eight nine three four and nineteen point one zero six six degrees add to exactly one hundred eighty, and their lengths of one point three three three three, one point seven six three eight and three point five two seven seven multiply to the gain of eight point two nine six three.](/courses/fe-ee/figures/ctl3-angle-condition.svg)
+
+## 5.2 Why There Are n Branches, and Where They Begin and End
+
+Clear the denominator in $1 + L(s) = 0$:
+
+$$D(s) + K\\,N(s) = 0$$
+
+With $n > m$ the leading term is $s^{n}$ regardless of $K$, so this is a
+polynomial of degree exactly $n$ for every finite gain. A degree-$n$ polynomial
+has $n$ roots, and those roots move continuously as a coefficient is varied.
+**That single sentence is rule 1**: there are $n$ branches, one per root, and
+each is an unbroken curve.
+
+Set $K = 0$ and the equation collapses to $D(s) = 0$, whose roots are the
+open-loop poles. **That is the first half of rule 2.** For the other half,
+divide through by $K$ and let the gain grow without bound:
+
+$$\\frac{D(s)}{K} + N(s) = 0 \\quad \\xrightarrow{\\;K \\to \\infty\\;} \\quad N(s) = 0$$
+
+So $m$ of the branches converge on the open-loop zeros. The remaining $n - m$
+have nowhere finite to go. Their escape rate follows from the magnitude
+condition: for large $\\lvert s\\rvert$ the ratio behaves as
+$\\lvert L\\rvert \\approx K/\\lvert s\\rvert^{\\,n-m}$, and setting that equal to
+one gives
+
+$$\\lvert s\\rvert \\approx K^{1/(n-m)}$$
+
+A loop with three excess poles pushes its runaway roots outward only as the
+cube root of the gain, which is why the last decade of gain on such a plant
+buys so little extra speed.
+
+## 5.3 Why the Real-Axis Rule Counts Only to the Right
+
+Put a test point $\\sigma$ on the real axis and look at what each singularity
+contributes to the angle sum.
+
+A **real** pole or zero at $-a$ contributes the angle of the vector
+$\\sigma + a$, which is a real number. If $-a$ lies to the left of $\\sigma$ the
+vector points right and the angle is $0^\\circ$. If $-a$ lies to the right the
+vector points left and the angle is $180^\\circ$. Nothing else is possible.
+
+A **complex conjugate pair** at $-\\alpha \\pm j\\beta$ contributes two angles
+that are exact negatives of one another, because the two vectors
+$\\sigma + \\alpha \\mp j\\beta$ are complex conjugates:
+
+$$\\angle (\\sigma + \\alpha - j\\beta) + \\angle (\\sigma + \\alpha + j\\beta) = -\\theta + \\theta = 0^\\circ$$
+
+Complex pairs are invisible to the real-axis test. So the total angle at
+$\\sigma$ is $180^\\circ$ multiplied by the number of real singularities strictly
+to the right of it, and the angle condition is met exactly when that count is
+odd. **That is rule 3, proved in five lines**, and the proof explains the part
+students most often get wrong: complex poles are counted for the branch count
+and the centroid but must be ignored when shading the axis.
+
+### Worked Example 2 - Real-Axis Segments With a Zero in Play
+
+**Given.** $L(s) = K(s+4)/[s(s+1)(s+2)(s+10)]$.
+
+**Find.** Which parts of the real axis belong to the locus.
+
+**Solution.** The real singularities, ordered from the right, are the pole at
+$0$, the pole at $-1$, the pole at $-2$, the zero at $-4$, and the pole at
+$-10$. Walk leftwards, incrementing the count as each is passed:
+
+| Interval on the real axis | Singularities to the right | Count | On the locus? |
+|---|---|---|---|
+| $\\sigma > 0$ | none | 0 | no |
+| $-1 < \\sigma < 0$ | pole at 0 | 1 | yes |
+| $-2 < \\sigma < -1$ | poles at 0, $-1$ | 2 | no |
+| $-4 < \\sigma < -2$ | poles at 0, $-1$, $-2$ | 3 | yes |
+| $-10 < \\sigma < -4$ | those three plus the zero at $-4$ | 4 | no |
+| $\\sigma < -10$ | all five | 5 | yes |
+
+**Answer.** The segments $[-1, 0]$ and $[-4, -2]$, plus the ray
+$(-\\infty, -10]$.
+
+**The trap.** Counting to the left instead of to the right produces the exact
+complement of this answer, and because the complement is also a plausible-looking
+set of alternating segments it does not announce itself as wrong. The
+tie-breaker is the pole at the origin: the segment immediately left of a single
+pole at $0$ is always on the locus, so if your shading leaves it out, you
+counted the wrong way.
+
+## 5.4 Where the Asymptotes Come From
+
+The $n - m$ escaping branches must satisfy the angle condition at large
+$\\lvert s\\rvert$, so start by finding what $L(s)$ looks like out there. Expand
+both monic polynomials, keeping two terms:
+
+$$D(s) = s^{n} - \\left(\\sum_{i} p_{i}\\right)s^{\\,n-1} + \\cdots, \\qquad N(s) = s^{m} - \\left(\\sum_{j} z_{j}\\right)s^{\\,m-1} + \\cdots$$
+
+$$\\frac{D(s)}{N(s)} = s^{\\,n-m}\\left[1 - \\frac{\\sum_{i} p_{i} - \\sum_{j} z_{j}}{s} + \\cdots\\right]$$
+
+Now compare that with a single pole of multiplicity $n - m$ parked at some
+real point $\\sigma_{a}$:
+
+$$(s - \\sigma_{a})^{\\,n-m} = s^{\\,n-m}\\left[1 - \\frac{(n-m)\\,\\sigma_{a}}{s} + \\cdots\\right]$$
+
+The two expansions agree to this order provided
+
+$$(n-m)\\,\\sigma_{a} = \\sum_{i} p_{i} - \\sum_{j} z_{j} \\qquad \\Longrightarrow \\qquad \\sigma_{a} = \\frac{\\sum_{i} p_{i} - \\sum_{j} z_{j}}{n - m}$$
+
+**That is rule 6, and it is not a definition but a matched asymptotic
+expansion**: far from the cluster of singularities, the plant is
+indistinguishable from $n - m$ coincident poles sitting at the centroid. Feed
+that equivalent plant into the angle condition:
+
+$$-(n-m)\\,\\angle (s - \\sigma_{a}) = (2k+1)180^\\circ \\qquad \\Longrightarrow \\qquad \\angle (s - \\sigma_{a}) = \\frac{(2k+1)180^\\circ}{n-m}$$
+
+which is rule 5. Distinct angles appear only for
+$k = 0, 1, \\ldots, n-m-1$; beyond that the values repeat.
+
+### Worked Example 3 - Centroid and Asymptote Angles With Four Poles and a Zero
+
+**Given.** The same loop as Worked Example 2,
+$L(s) = K(s+4)/[s(s+1)(s+2)(s+10)]$.
+
+**Find.** The number of escaping branches, the centroid and the asymptote
+angles.
+
+**Solution.** Here $n = 4$ and $m = 1$, so $n - m = 3$ branches escape and one
+terminates on the zero at $-4$.
+
+$$\\sum_{i} p_{i} = 0 + (-1) + (-2) + (-10) = -13, \\qquad \\sum_{j} z_{j} = -4$$
+
+$$\\sigma_{a} = \\frac{-13 - (-4)}{3} = \\frac{-9}{3} = -3$$
+
+$$\\theta_{a} = \\frac{(2k+1)180^\\circ}{3} = 60^\\circ,\\; 180^\\circ,\\; 300^\\circ$$
+
+**Check by an entirely different route.** Solve
+$s(s+1)(s+2)(s+10) + K(s+4) = 0$ numerically at $K = 10^{8}$. Three of the four
+roots have run far from the origin; their real parts average to $-3.000$, which
+is the centroid, and their angles come out at $60^\\circ$, $180^\\circ$ and
+$300^\\circ$ to three decimals. No construction rule was used to produce those
+numbers, only a root finder.
+
+**The trap.** Dividing by $n$ instead of $n - m$ gives $-9/4 = -2.25$, and
+forgetting to subtract the zero gives $-13/3 = -4.333$. Both are wrong, both
+look reasonable, and both appear as distractors.
+
+![Root locus of K times s plus four over s times s plus one times s plus two times s plus ten, computed from the roots of the quartic characteristic polynomial at several thousand gains, with the three asymptotes drawn from the centroid at minus three at sixty, one hundred eighty and three hundred degrees. One branch terminates on the zero at minus four and three escape along the asymptotes.](/courses/fe-ee/figures/ctl3-asymptote-centroid.svg)`,
+      examTip: 'When a question asks whether a stated point lies on the locus, do not sketch anything. Add the zero angles, subtract the pole angles, and see whether the total is an odd multiple of 180 degrees. It is three arctangents and one addition, and it is exact, whereas a sketch drawn under time pressure is not.',
+      importantNote: 'The angle condition contains no gain, and the magnitude condition contains no shape information. Keeping the two separate prevents the most common conceptual error in this topic: believing that raising K can move a closed-loop pole to an arbitrary point. Gain moves poles ALONG the locus only. To move the locus itself you must add or remove a pole or a zero.',
+    },
+    {
+      id: 'rl-breakaway-crossings',
+      title: '6. Breakaway Points, Axis Crossings and Departure Angles',
+      content: `## 6.1 A Breakaway Point Is a Repeated Root
+
+When two branches travelling along the real axis meet, the characteristic
+polynomial momentarily has a **double root** there. Write the polynomial and
+its derivative, both of which must vanish:
+
+$$F(s) = D(s) + K\\,N(s) = 0, \\qquad F'(s) = D'(s) + K\\,N'(s) = 0$$
+
+Solve the first for the gain, $K = -D(s)/N(s)$, and substitute into the second:
+
+$$D'(s) - \\frac{D(s)}{N(s)}N'(s) = 0 \\qquad \\Longrightarrow \\qquad D'(s)N(s) - D(s)N'(s) = 0$$
+
+Now differentiate the gain expression directly:
+
+$$\\frac{dK}{ds} = -\\frac{D'(s)N(s) - D(s)N'(s)}{N(s)^{2}}$$
+
+The numerator is the same quantity. **So $dK/ds = 0$ and "the characteristic
+polynomial has a repeated root" are the same condition**, which is why rule 7
+works and why it produces extra roots: the equation $D'N - DN' = 0$ knows
+nothing about whether a solution happens to lie on a piece of the axis that is
+actually part of the locus. Discarding the spurious solutions is not a
+correction to the rule; it is the rule finishing its job.
+
+The physical reading is worth carrying into the exam. On a real-axis segment
+bounded by two poles, $K$ starts at zero at each end and is positive in
+between, so it must reach a **maximum** somewhere inside: that is a breakaway.
+On a segment bounded by two zeros, $K$ is infinite at each end and reaches a
+**minimum** inside: that is a break-in.
+
+### Worked Example 4 - Breakaway and Break-In on the Same Locus
+
+**Given.** $L(s) = K(s+3)/[s(s+1)]$.
+
+**Find.** Both real-axis collision points, the gain at each, and the shape of
+the branch that joins them.
+
+**Solution.** Real-axis segments first: to the right of $0$ the count is zero;
+on $(-1, 0)$ it is one; on $(-3, -1)$ it is two; to the left of $-3$ it is
+three. So $[-1, 0]$ and $(-\\infty, -3]$ belong to the locus. Two branches
+start at $0$ and $-1$, collide inside $[-1, 0]$, leave the axis, and must
+return to the axis on the far segment because one of them has to reach the zero
+at $-3$.
+
+Form the gain as a function of position on the axis:
+
+$$K = -\\frac{D(s)}{N(s)} = -\\frac{s(s+1)}{s+3} = -\\frac{s^{2}+s}{s+3}$$
+
+$$\\frac{dK}{ds} = -\\frac{(2s+1)(s+3) - (s^{2}+s)}{(s+3)^{2}} = -\\frac{s^{2}+6s+3}{(s+3)^{2}}$$
+
+$$s^{2} + 6s + 3 = 0 \\qquad \\Longrightarrow \\qquad s = -3 \\pm \\sqrt{6} = -0.5505 \\;\\text{ and }\\; -5.4495$$
+
+Both roots lie on genuine locus segments, so this time neither is discarded.
+Back-substituting gives the gains:
+
+$$K_{\\mathrm{away}} = -\\frac{(-0.5505)^{2} + (-0.5505)}{(-0.5505)+3} = \\frac{0.247449}{2.449490} = 0.101021$$
+
+$$K_{\\mathrm{in}} = -\\frac{(-5.4495)^{2} + (-5.4495)}{(-5.4495)+3} = \\frac{24.247449}{2.449490} = 9.898979$$
+
+**Two checks.** First, the product $0.101021 \\times 9.898979 = 1.0000$, which
+is not a coincidence: substituting $u = s + 3$ turns the gain expression into
+$K = 5 - u - 6/u$, whose stationary values are $5 \\mp 2\\sqrt{6}$; those two
+numbers multiply to $25 - 24 = 1$. Second, and more
+usefully, the complex portion of this locus is **exactly a circle centred on
+the zero**, with radius
+
+$$r = \\sqrt{(z - p_{1})(z - p_{2})} = \\sqrt{(-3-0)(-3+1)} = \\sqrt{6} = 2.4495$$
+
+Sweeping the gain from $0.101021$ to $9.898979$ and solving the quadratic at
+each step puts every complex root on that circle to within one part in
+$10^{9}$, and the two collision points are exactly $-3 \\pm \\sqrt{6}$, the ends
+of its horizontal diameter.
+
+![Root locus of K times s plus three over s times s plus one, computed by solving the characteristic quadratic at several thousand gains. The complex branch is a circle centred on the zero at minus three with radius the square root of six, the breakaway sits at minus zero point five five zero five where the gain is zero point one zero one zero two, and the break-in sits at minus five point four four nine five where the gain is nine point eight nine eight nine eight.](/courses/fe-ee/figures/ctl3-circle-locus.svg)
+
+## 6.2 The Axis Crossing Is the Routh Condition Wearing a Different Hat
+
+Rule 8 says to find the imaginary-axis crossing with a Routh array, which can
+feel like an unrelated technique bolted on. It is not. A branch crosses the
+imaginary axis exactly when the characteristic polynomial acquires a purely
+imaginary root pair, and that is precisely the situation the Routh array
+detects when a whole row vanishes. The auxiliary polynomial built from the row
+above the vanishing row is the factor containing that pair, so it hands you
+$\\omega$ for free.
+
+### Worked Example 5 - Crossing Gain and Frequency for a Fourth-Order Loop
+
+**Given.** $L(s) = K/[s(s+1)(s+2)(s+3)]$.
+
+**Find.** The gain at which the locus reaches the imaginary axis, the crossing
+frequency, and where the other two closed-loop poles sit at that moment.
+
+**Solution.** Multiply out the denominator:
+
+$$s(s+1)(s+2)(s+3) = (s^{2}+s)(s^{2}+5s+6) = s^{4} + 6s^{3} + 11s^{2} + 6s$$
+
+$$F(s) = s^{4} + 6s^{3} + 11s^{2} + 6s + K$$
+
+Build the array:
+
+| Row | Column 1 | Column 2 | Column 3 |
+|---|---|---|---|
+| $s^{4}$ | 1 | 11 | $K$ |
+| $s^{3}$ | 6 | 6 | 0 |
+| $s^{2}$ | 10 | $K$ | 0 |
+| $s^{1}$ | $6 - 0.6K$ | 0 | 0 |
+| $s^{0}$ | $K$ | 0 | 0 |
+
+The $s^{2}$ entry is $(6 \\times 11 - 1 \\times 6)/6 = 10$, and the $s^{1}$ entry
+is $(10 \\times 6 - 6K)/10 = 6 - 0.6K$. That last entry vanishes at
+
+$$6 - 0.6K = 0 \\qquad \\Longrightarrow \\qquad K = 10$$
+
+The auxiliary polynomial comes from the $s^{2}$ row:
+
+$$10s^{2} + K = 10s^{2} + 10 = 0 \\qquad \\Longrightarrow \\qquad s = \\pm j1$$
+
+**Check.** Factor the quartic at $K = 10$:
+
+$$s^{4} + 6s^{3} + 11s^{2} + 6s + 10 = (s^{2}+1)(s^{2}+6s+10)$$
+
+so the other two closed-loop poles are $-3 \\pm j1$. Sweeping the gain
+numerically and watching the largest real part confirms it crosses zero at
+$K = 10.0000$ and at no smaller gain, so $0 < K < 10$ is the stable window.
+
+**The trap.** Reading the auxiliary polynomial off the wrong row. Using the
+$s^{3}$ row here would give $6s^{2} + 6 = 0$, which happens to yield the same
+frequency; on a plant with different coefficients it would not, and the habit
+fails silently. The auxiliary polynomial always comes from the row **above**
+the one that vanished.
+
+## 6.3 Angles of Departure and Arrival
+
+At a complex open-loop pole the branch has to leave in some definite
+direction, and the angle condition fixes it. Put the test point an
+infinitesimal distance $\\varepsilon$ from the pole $p_{1}$ in the direction
+$\\theta_{d}$. Every other vector in the diagram is unchanged to first order,
+because $\\varepsilon$ is negligible compared with the distance to any other
+singularity. Only the vector from $p_{1}$ itself has changed: it now has angle
+$\\theta_{d}$. Writing the angle condition for that configuration,
+
+$$\\sum_{j}\\angle (p_{1} - z_{j}) - \\sum_{i \\neq 1}\\angle (p_{1} - p_{i}) - \\theta_{d} = (2k+1)180^\\circ$$
+
+$$\\theta_{d} = 180^\\circ + \\sum_{j}\\angle (p_{1} - z_{j}) - \\sum_{i \\neq 1}\\angle (p_{1} - p_{i})$$
+
+The arrival angle at a complex zero is the same argument run backwards, with
+the roles of the two sums exchanged and the overall sign flipped.
+
+### Worked Example 6 - Departure Angle From a Complex Pair
+
+**Given.** $L(s) = K/[s(s^{2}+2s+5)]$, whose poles are at $0$ and
+$-1 \\pm j2$.
+
+**Find.** The direction in which the branch leaves $-1+j2$, and the gain at
+which the locus reaches the imaginary axis.
+
+**Solution.** There are no zeros. The two contributing vectors are drawn from
+the other two poles to the departure pole:
+
+$$\\angle (p_{1} - 0) = \\angle (-1 + j2) = 180^\\circ - \\arctan(2) = 116.5651^\\circ$$
+
+$$\\angle (p_{1} - \\bar{p}_{1}) = \\angle (j4) = 90^\\circ$$
+
+$$\\theta_{d} = 180^\\circ - (116.5651^\\circ + 90^\\circ) = -26.5651^\\circ$$
+
+The branch sets off down and to the right, heading for the right half plane.
+
+**Check by a route that uses no rule at all.** Solve $s^{3}+2s^{2}+5s+K = 0$ at
+$K = 10^{-5}$ and measure the direction from $-1+j2$ to the root that moved.
+It comes out at $-26.5651^\\circ$, matching to five decimals.
+
+For the crossing, the array on $s^{3}+2s^{2}+5s+K$ gives the $s^{1}$ entry
+$(10 - K)/2$, so $K = 10$, and the auxiliary polynomial $2s^{2}+10 = 0$ puts
+the crossing at $\\omega = \\sqrt{5} = 2.2361$ rad/s. The third root at that gain
+is at $-2$, since the roots must sum to $-2$.
+
+**Why the departure angle is worth computing.** It is the cheapest possible
+warning that a design is in trouble. A departure angle pointing into the right
+half plane, as here, says the loop goes unstable at modest gain no matter how
+carefully the rest of the sketch is drawn.
+
+![Root locus of K over s times the quadratic s squared plus two s plus five, with the departure angle of minus twenty six point five six five one degrees marked by an arrow at the complex pole minus one plus j two, and the imaginary-axis crossing marked at two point two three six one radians per second where the gain reaches ten.](/courses/fe-ee/figures/ctl3-departure-angle.svg)`,
+      examTip: 'For a loop of the form K over s times s plus a times s plus b, three landmarks come from one line of algebra each: the breakaway from 3s squared plus 2(a+b)s plus ab equals zero, the crossing gain from ab(a+b), and the crossing frequency from the square root of ab. Recognising the shape is faster than rebuilding the Routh array every time.',
+      importantNote: 'A breakaway point found from dK/ds = 0 is only real if the gain there is positive and the point lies on a segment the real-axis rule already admitted. Both filters matter: a root of the derivative sitting on an excluded segment satisfies the algebra and violates the angle condition, so it is not a point of the locus at all.',
+    },
+    {
+      id: 'rl-adding-singularities',
+      title: '7. What Adding a Pole or a Zero Does, and Why It Matters',
+      content: `## 7.1 The Centroid Is the Lever
+
+The centroid formula derived in Section 5.4,
+
+$$\\sigma_{a} = \\frac{\\sum_{i} p_{i} - \\sum_{j} z_{j}}{n-m}$$
+
+is the quickest predictor of what a design change will do. Adding a pole at
+$-a$ makes the numerator more negative but also increases $n - m$ by one;
+adding a zero at $-b$ makes the numerator less negative and decreases $n - m$.
+The direction of travel is easiest to see on a concrete plant, and the two
+outcomes are opposite enough to be worth memorising as a pair.
+
+Take the base loop $L_{0}(s) = K/[s(s+2)]$. Its characteristic equation is
+$s^{2}+2s+K = 0$; the real-axis segment is $[-2, 0]$; the two branches meet at
+the midpoint $-1$ and travel straight up and down forever. The real part of
+every closed-loop pole is fixed at $-1$ once the branches leave the axis, so
+
+$$\\zeta = \\frac{1}{\\sqrt{K}}, \\qquad \\omega_{n} = \\sqrt{K}$$
+
+and no positive gain ever pushes a pole into the right half plane. This is the
+best-behaved loop in the topic, and it is the baseline both experiments below
+are measured against.
+
+### Worked Example 7 - Adding a Pole
+
+**Given.** A pole is added at $-5$, giving $L_{1}(s) = K/[s(s+2)(s+5)]$.
+
+**Find.** The new centroid, the breakaway point, and the gain at which the loop
+first goes unstable.
+
+**Solution.** Now $n - m = 3$, so
+
+$$\\sigma_{a} = \\frac{0 - 2 - 5}{3} = \\frac{-7}{3} = -2.3333, \\qquad \\theta_{a} = 60^\\circ,\\; 180^\\circ,\\; 300^\\circ$$
+
+The two branches that used to run straight up now lean **rightwards** along the
+$\\pm 60^\\circ$ asymptotes. Breakaway:
+
+$$K = -(s^{3} + 7s^{2} + 10s), \\qquad \\frac{dK}{ds} = -(3s^{2} + 14s + 10) = 0$$
+
+$$s = \\frac{-14 \\pm \\sqrt{196 - 120}}{6} = \\frac{-14 \\pm 8.717798}{6} = -0.880367 \\;\\text{ or }\\; -3.786301$$
+
+Only $-0.880367$ lies on the segment $[-2, 0]$, so it is the breakaway, and
+
+$$K_{\\mathrm{away}} = -[(-0.880367)^{3} + 7(-0.880367)^{2} + 10(-0.880367)] = 4.0607$$
+
+For the crossing, the array on $s^{3} + 7s^{2} + 10s + K$ gives the $s^{1}$
+entry $(70 - K)/7$, so
+
+$$K_{\\max} = 7 \\times 10 = 70, \\qquad \\omega_{\\mathrm{cross}} = \\sqrt{10} = 3.1623\\ \\mathrm{rad/s}$$
+
+with the third pole at $-7$. Sweeping the gain numerically, the largest real
+part is negative at $K = 69.9$ and positive at $K = 70.1$, confirming the
+threshold.
+
+**The design consequence.** A loop that was unconditionally stable now has a
+ceiling. Every extra pole in a loop costs $90^\\circ$ of eventual phase, and on
+the locus that phase shows up as branches bending towards, and eventually
+across, the imaginary axis.
+
+### Worked Example 8 - Adding a Zero Instead
+
+**Given.** A zero is added at $-5$, giving $L_{2}(s) = K(s+5)/[s(s+2)]$.
+
+**Find.** The collision points, the best damping ratio the loop can reach, and
+the gain that achieves it.
+
+**Solution.** Now $n - m = 1$, so a single branch escapes, along the
+$180^\\circ$ asymptote. Real-axis segments: $[-2, 0]$ and $(-\\infty, -5]$.
+
+$$K = -\\frac{s(s+2)}{s+5}, \\qquad \\frac{dK}{ds} = -\\frac{(2s+2)(s+5) - (s^{2}+2s)}{(s+5)^{2}} = -\\frac{s^{2}+10s+10}{(s+5)^{2}}$$
+
+$$s^{2} + 10s + 10 = 0 \\qquad \\Longrightarrow \\qquad s = -5 \\pm \\sqrt{15} = -1.1270 \\;\\text{ and }\\; -8.8730$$
+
+Substituting $u = s+5$ into the gain expression gives $K = 8 - u - 15/u$, whose
+values at $u = \\pm\\sqrt{15}$ are
+
+$$K_{\\mathrm{away}} = 8 - 2\\sqrt{15} = 0.2540, \\qquad K_{\\mathrm{in}} = 8 + 2\\sqrt{15} = 15.7460$$
+
+Between those gains the branch is a circle centred on the zero, radius
+$\\sqrt{15} = 3.8730$. **No gain destabilises this loop**, because the entire
+locus lies in the left half plane, and the numerical sweep confirms it: at
+$K = 10^{6}$ the closed-loop poles are still at $-5.000$ and far out on the
+negative real axis.
+
+Because the complex branch is a circle, the worst damping the loop can reach is
+set by the ray from the origin tangent to that circle:
+
+$$\\sin\\theta_{\\max} = \\frac{\\sqrt{15}}{5} = 0.774597 \\qquad \\Longrightarrow \\qquad \\zeta_{\\min} = \\cos\\theta_{\\max} = \\frac{\\sqrt{10}}{5} = 0.6325$$
+
+At the tangent point the distance from the origin is
+$\\sqrt{25 - 15} = \\sqrt{10}$, so $\\omega_{n} = 3.1623$ rad/s and the poles are
+at $-2 \\pm j\\sqrt{6} = -2 \\pm j2.4495$. The gain there is
+
+$$K = \\frac{\\lvert s\\rvert\\,\\lvert s+2\\rvert}{\\lvert s+5\\rvert} = \\frac{3.162278 \\times 2.449490}{3.872983} = 2.0000$$
+
+**Check.** At $K = 2$ the characteristic equation is
+$s(s+2) + 2(s+5) = s^{2}+4s+10 = 0$, whose roots are $-2 \\pm j2.4495$ with
+$\\zeta = 2/\\sqrt{10} = 0.6325$. Sweeping every gain between the two collision
+points and taking the smallest damping the complex pair ever reaches returns
+$0.63246$ at $K = 2.000$, which is the same answer found without any geometry.
+
+![Three root loci of the same base plant K over s times s plus two, all computed from swept characteristic-polynomial roots. The baseline runs straight up and down along the line with real part minus one and is stable for every gain. Adding a pole at minus five bends the branches right so they cross the imaginary axis at three point one six two three radians per second when the gain reaches seventy. Adding a zero at minus five instead bends them left onto a circle of radius the square root of fifteen centred on the zero, and no gain destabilises that loop.](/courses/fe-ee/figures/ctl3-add-pole-vs-zero.svg)
+
+## 7.2 The Two Experiments Side by Side
+
+| Property | Base loop $K/[s(s+2)]$ | Pole added at $-5$ | Zero added at $-5$ |
+|---|---|---|---|
+| Excess poles $n-m$ | 2 | 3 | 1 |
+| Centroid $\\sigma_{a}$ | $-1$ | $-2.3333$ | none finite |
+| Asymptote angles | $\\pm 90^\\circ$ | $60^\\circ$, $180^\\circ$, $300^\\circ$ | $180^\\circ$ |
+| Breakaway | $-1$ at $K = 1$ | $-0.8804$ at $K = 4.0607$ | $-1.1270$ at $K = 0.2540$ |
+| Break-in | none | none | $-8.8730$ at $K = 15.7460$ |
+| Gain ceiling | none | $K = 70$ | none |
+| Best damping reachable | any, as $K \\to 0$ | any, as $K \\to 0$ | $0.6325$ at $K = 2$ once complex |
+| Steady-state benefit | baseline | none | raises $K_{v}$ for the same pole positions |
+
+Read the table as a statement about compensator design rather than as six
+unrelated facts. **A zero pulls the locus left and a pole pushes it right**,
+and that single sentence explains why a lead network, which contributes a zero
+nearer the origin than its pole, improves damping and speed, while a lag
+network, whose pole is nearer the origin than its zero, must be placed close to
+the origin so its rightward push lands where the dominant poles cannot feel it.
+
+## 7.3 What This Costs
+
+Nothing in the table is free. The lead network's zero is a differentiator over
+part of the band, so it amplifies sensor noise; the wider bandwidth it buys is
+bandwidth over which noise now reaches the actuator. The lag network's
+near-cancelled pole and zero leave a slow, low-amplitude mode in the response,
+which shows up as a long tail that a settling-time specification measured to
+2 percent may or may not tolerate. And a zero placed to cancel a plant pole
+never quite does, because the plant pole is not exactly where the data sheet
+says it is. Section 4 made that point with numbers; the locus makes it
+visually, since the leftover pole-zero pair sits on the plot as a tiny separate
+branch that begins and ends within a hair of itself.`,
+      examTip: 'When a question asks what happens to stability if a pole or a zero is added, answer from the centroid before doing any algebra. Adding a pole moves the centroid right and creates or tightens a gain ceiling; adding a zero moves it left and loosens or removes one. That gets the multiple-choice answer in about ten seconds.',
+      importantNote: 'The zero-added loop reaches a best damping ratio of 0.6325 and cannot do better once its branches are complex, because the circle is the whole story. A specification asking for zeta = 0.8 on that loop is unreachable by gain alone even though the loop is stable for every gain - stability and performance are separate questions, and a locus answers both only if you look at both.',
+    },
+    {
+      id: 'rl-gain-selection',
+      title: '8. Reading a Gain Off the Locus, and Confirming It',
+      content: `## 8.1 A Damping Ray Is an Algebraic Constraint
+
+A constant-damping line through the origin at angle
+$\\theta = \\arccos\\zeta$ from the negative real axis is not just a drawing aid.
+Requiring a closed-loop pole pair to sit on it is the same as requiring the
+characteristic polynomial to contain the factor
+
+$$s^{2} + 2\\zeta\\omega_{n}s + \\omega_{n}^{2}$$
+
+for some unknown $\\omega_{n}$. That turns a graphical intersection into
+simultaneous equations in the coefficients, and for a third-order loop the
+system is small enough to solve by hand in a couple of minutes.
+
+Write the cubic characteristic polynomial as the target pair multiplied by the
+leftover real root:
+
+$$(s^{2} + 2\\sigma s + \\omega_{n}^{2})(s + c) = s^{3} + (2\\sigma + c)s^{2} + (\\omega_{n}^{2} + 2\\sigma c)s + \\omega_{n}^{2}c$$
+
+where $\\sigma = \\zeta\\omega_{n}$. Matching the three coefficients against the
+plant's gives three equations in $\\sigma$, $c$ and $K$, and the damping
+specification supplies the link $\\omega_{n} = \\sigma/\\zeta$.
+
+### Worked Example 9 - Gain for a Damping Ratio of 0.7071
+
+**Given.** $L(s) = K/[s(s+2)(s+4)]$, characteristic equation
+$s^{3}+6s^{2}+8s+K = 0$.
+
+**Find.** The gain that places the dominant pair at $\\zeta = 1/\\sqrt{2}$, and
+the resulting pole locations.
+
+**Solution.** At $\\zeta = 1/\\sqrt{2}$ the pair sits at $-\\sigma \\pm j\\sigma$,
+so $\\omega_{n}^{2} = 2\\sigma^{2}$ and the target factorisation is
+
+$$(s^{2} + 2\\sigma s + 2\\sigma^{2})(s + c) = s^{3} + (2\\sigma + c)s^{2} + (2\\sigma^{2} + 2\\sigma c)s + 2\\sigma^{2}c$$
+
+Match coefficients:
+
+$$2\\sigma + c = 6, \\qquad 2\\sigma^{2} + 2\\sigma c = 8, \\qquad 2\\sigma^{2}c = K$$
+
+Substitute $c = 6 - 2\\sigma$ into the middle equation:
+
+$$2\\sigma^{2} + 2\\sigma(6 - 2\\sigma) = 8 \\quad \\Longrightarrow \\quad -2\\sigma^{2} + 12\\sigma = 8 \\quad \\Longrightarrow \\quad \\sigma^{2} - 6\\sigma + 4 = 0$$
+
+$$\\sigma = 3 \\pm \\sqrt{5} \\qquad \\Longrightarrow \\qquad \\sigma = 3 - \\sqrt{5} = 0.763932$$
+
+taking the root that lies between the breakaway and the crossing. Then
+
+$$c = 6 - 2(3-\\sqrt{5}) = 2\\sqrt{5} = 4.472136, \\qquad \\omega_{n} = \\sigma\\sqrt{2} = 1.080363$$
+
+$$K = 2\\sigma^{2}c = 4\\sqrt{5}\\,(14 - 6\\sqrt{5}) = 56\\sqrt{5} - 120 = 5.2198$$
+
+**Answer.** $K = 5.2198$ places closed-loop poles at
+$-0.7639 \\pm j0.7639$ and $-4.4721$.
+
+**Check by a completely different route.** Sweep $K$, solve the cubic at each
+step, compute the damping of whichever complex pair exists, and bisect on the
+gain until that damping equals $0.707107$. The bisection returns
+$K = 5.21981$, with the pair at $-0.763932 \\pm j0.763932$ and the real root at
+$-4.472136$. Nothing in that procedure used a construction rule, a ray or a
+sketch, and it lands on the closed-form answer to five decimals.
+
+![Root locus of K over s times s plus two times s plus four with the forty-five degree damping ray for zeta equal to zero point seven zero seven one drawn from the origin. It meets the locus at minus zero point seven six three nine plus and minus j zero point seven six three nine, where the gain is five point two one nine eight and the remaining closed-loop pole sits at minus four point four seven two one.](/courses/fe-ee/figures/ctl3-damping-ray.svg)
+
+### Worked Example 10 - Does the Dominant Pair Actually Govern?
+
+**Given.** The design of Worked Example 9.
+
+**Find.** The overshoot the two-pole formula predicts, the overshoot the true
+third-order loop produces, and whether the difference is acceptable.
+
+**Solution.** For $\\zeta = 1/\\sqrt{2}$ the standard result is unusually tidy,
+because $\\zeta/\\sqrt{1-\\zeta^{2}} = 1$:
+
+$$M_{p} = 100\\,e^{-\\pi\\zeta/\\sqrt{1-\\zeta^{2}}} = 100\\,e^{-\\pi} = 4.3214\\%$$
+
+Simulating the actual closed loop, $T(s) = 5.2198/(s^{3}+6s^{2}+8s+5.2198)$,
+gives a peak of $4.1660\\%$.
+
+**Interpretation.** The estimate is high by $0.155$ percentage points, or about
+$3.6\\%$ of the value. The reason is visible in the pole ratio:
+
+$$\\frac{4.472136}{0.763932} = 5.8541$$
+
+The neglected pole is nearly six times farther from the imaginary axis than the
+pair, comfortably past the factor of five that the dominant-pole approximation
+conventionally asks for. Note also the direction of the error: the extra pole
+slows the response slightly and therefore **reduces** overshoot below the
+two-pole figure, so the simple formula is conservative here rather than
+optimistic. That is the usual direction for an extra left-half-plane pole, but
+it reverses if the loop also carries a zero near the pair, which is exactly
+what made Design B in Section 4 undershoot its predicted overshoot so
+dramatically.
+
+## 8.2 The Whole Trade in One Curve
+
+Rather than solve for one gain at a time, it is worth seeing the entire
+relationship at once. Sweep $K$ over the stable range of
+$s^{3}+6s^{2}+8s+K$, and at each gain record the damping ratio and natural
+frequency of the complex pair:
+
+| Loop gain $K$ | Dominant pair | $\\zeta$ | $\\omega_{n}$ (rad/s) | Comment |
+|---|---|---|---|---|
+| $3.0792$ | $-0.8453$ (repeated) | $1.0000$ | $0.8453$ | breakaway; the response cannot overshoot |
+| $5.2198$ | $-0.7639 \\pm j0.7639$ | $0.7071$ | $1.0804$ | the classic compromise |
+| $8.2963$ | $-0.6667 \\pm j1.1547$ | $0.5000$ | $1.3333$ | $16.30\\%$ predicted overshoot |
+| $24.000$ | $-0.3283 \\pm j2.0937$ | $0.1549$ | $2.1193$ | badly underdamped |
+| $48.000$ | $\\pm j2.8284$ | $0.0000$ | $2.8284$ | sustained oscillation |
+
+Two things fall out of the table that a single design point hides. First,
+damping and speed move in opposite directions along the locus, so **every gain
+choice on this plant is a compromise, not an optimisation**. Second, the
+frequency gained is modest: raising the gain from $8.2963$ to $48$, a factor of
+$5.79$, lifts $\\omega_{n}$ by only $2.12$ while destroying the damping
+completely, which is the $K^{1/(n-m)}$ escape law from Section 5.2 showing up
+as a design limitation.
+
+![Damping ratio and natural frequency of the dominant closed-loop pair against loop gain for K over s times s plus two times s plus four, both computed from the swept roots of the characteristic cubic. Damping falls from one at the breakaway gain of three point zero seven nine through zero point seven zero seven one at five point two one nine eight and zero point five at eight point two nine six three, reaching zero at forty-eight where the pair sits on the imaginary axis at two point eight two eight four radians per second.](/courses/fe-ee/figures/ctl3-gain-vs-damping.svg)`,
+      examTip: 'The coefficient-matching method is faster than it looks and it is exact. Write the target quadratic times the unknown real root, expand, and match. For a cubic that is three equations in three unknowns and it never requires you to read anything off a sketch.',
+      importantNote: 'Overshoot predicted from a dominant pair is an estimate, not a specification check. Confirm the pole ratio is at least five, and confirm no closed-loop zero sits near the pair. Either condition failing can move the true overshoot by more than ten percentage points, in either direction.',
+    },
+    {
+      id: 'rl-problem-sets',
+      title: '9. Problem Sets',
+      content: `## 9.1 Problem Set A - Construction
+
+Work each one to a number before reading the answer. Every answer names the
+distractor that the most common slip produces, and the wrong value it gives.
+
+**A1.** For $L(s) = K(s+2)/[s(s+4)(s+6)]$, find the asymptote centroid and
+angles.
+
+**A2.** For the same loop, shade the real-axis segments.
+
+**A3.** For $L(s) = K/[s(s+4)]$, find the breakaway point and the gain there.
+
+**A4.** For $L(s) = K/[s(s+2)(s+6)]$, find the gain and frequency at the
+imaginary-axis crossing, and the third closed-loop pole at that gain.
+
+**A5.** For $L(s) = K/[s(s^{2}+4s+13)]$, find the departure angle from
+$-2+j3$ and the crossing gain.
+
+**A6.** Does the point $s = -1 + j1$ lie on the locus of
+$L(s) = K/[s(s+2)(s+4)]$? If so, at what gain?
+
+### Answers to Problem Set A
+
+**A1.** $n = 3$, $m = 1$, so $n - m = 2$ branches escape.
+
+$$\\sigma_{a} = \\frac{(0 - 4 - 6) - (-2)}{2} = \\frac{-8}{2} = -4, \\qquad \\theta_{a} = \\frac{(2k+1)180^\\circ}{2} = 90^\\circ,\\; 270^\\circ$$
+
+Solving the cubic at $K = 10^{8}$ puts the two escaping roots at real part
+$-4.000$ with angles $90.02^\\circ$ and $269.98^\\circ$, confirming both numbers.
+**The trap:** dividing by $n = 3$ rather than $n - m = 2$ gives
+$-8/3 = -2.6667$, which is offered as a distractor and is the single most
+common error on centroid questions.
+
+**A2.** Counting real singularities to the right: on $(-2, 0)$ the count is 1,
+on $(-4, -2)$ it is 2, on $(-6, -4)$ it is 3, and left of $-6$ it is 4. So the
+locus occupies $[-2, 0]$ and $[-6, -4]$ and nothing else on the axis. **The
+trap:** including $(-\\infty, -6]$ by habit, because that ray is on the locus
+whenever the total count of singularities is odd, and here it is even.
+
+**A3.** $K = -s(s+4) = -(s^{2}+4s)$, so $dK/ds = -(2s+4) = 0$ gives $s = -2$
+and
+
+$$K = -[(-2)^{2} + 4(-2)] = -(4 - 8) = 4$$
+
+At $K = 4$ the characteristic polynomial is $s^{2}+4s+4 = (s+2)^{2}$, a genuine
+repeated root. **The trap:** answering $K = 2$ by substituting into $s(s+4)$
+without the sign, or answering $s = -4$ by taking the pole rather than the
+midpoint.
+
+**A4.** The characteristic polynomial is $s^{3} + 8s^{2} + 12s + K$. The array
+gives the $s^{1}$ entry $(96 - K)/8$, so
+
+$$K_{\\max} = 8 \\times 12 = 96, \\qquad 8s^{2} + 96 = 0 \\;\\Rightarrow\\; \\omega = \\sqrt{12} = 3.4641\\ \\mathrm{rad/s}$$
+
+The roots sum to $-8$, so with the pair on the axis the third pole is exactly
+$-8$. A numerical sweep puts the first right-half-plane root at $K = 96.0000$.
+**The trap:** reading $\\omega$ from the $s^{2}$ coefficient rather than from the
+auxiliary polynomial, giving $\\omega = \\sqrt{8} = 2.8284$ rad/s, which is
+offered and is wrong.
+
+**A5.** The poles are $0$ and $-2 \\pm j3$.
+
+$$\\angle (p_{1} - 0) = 180^\\circ - \\arctan(1.5) = 123.6901^\\circ, \\qquad \\angle (p_{1} - \\bar{p}_{1}) = 90^\\circ$$
+
+$$\\theta_{d} = 180^\\circ - (123.6901^\\circ + 90^\\circ) = -33.6901^\\circ$$
+
+Measuring the direction the swept root moves at $K = 10^{-5}$ gives
+$-33.6901^\\circ$. The crossing follows from $s^{3}+4s^{2}+13s+K$: the $s^{1}$
+entry is $(52-K)/4$, so $K = 52$ and $4s^{2}+52 = 0$ puts the crossing at
+$\\omega = \\sqrt{13} = 3.6056$ rad/s. **The trap:** dropping the leading
+$180^\\circ$ and answering $-213.69^\\circ$, or measuring the angle to the pole
+instead of from it and answering $+33.69^\\circ$.
+
+**A6.** Test the angle condition:
+
+$$\\angle (-1+j1) = 135^\\circ, \\qquad \\angle (1+j1) = 45^\\circ, \\qquad \\angle (3+j1) = 18.4349^\\circ$$
+
+$$135 + 45 + 18.4349 = 198.4349^\\circ \\neq 180^\\circ$$
+
+The sum exceeds $180^\\circ$ by $18.4349^\\circ$, so **the point is not on the
+locus and no gain places a closed-loop pole there.** **The trap:** applying the
+magnitude condition anyway. The product of distances is
+$1.414214 \\times 1.414214 \\times 3.162278 = 6.3246$, and $6.3246$ is offered as
+an answer. It is a perfectly valid arithmetic result and a completely
+meaningless one, because the magnitude condition only assigns gains to points
+that already satisfy the angle condition.
+
+## 9.2 Problem Set B - Design
+
+**B1.** For $L(s) = K/[s(s+2)(s+5)]$, find the gain that puts the dominant pair
+at $\\zeta = 0.5$, the resulting pole locations, and the true overshoot.
+
+**B2.** A plant $K/[s(s+4)]$ must meet $\\zeta = 0.6$ with
+$\\omega_{n} = 5$ rad/s. Find the angle deficiency at the target, design a lead
+network by cancelling the plant pole, and find the gain.
+
+**B3.** The loop $K/[s(s+2)]$ has no gain ceiling. A pole is added at $-5$.
+What is the ceiling now?
+
+**B4.** The compensated loop of B2 is $25/[s(s+6)]$. Add a lag network with a
+zero at $-0.05$ and a pole at $-0.005$. Find the velocity constant before and
+after, the phase the lag costs at the design point, and where the closed-loop
+poles end up.
+
+**B5.** For the design of B1, is the dominant-pair approximation trustworthy?
+
+### Answers to Problem Set B
+
+**B1.** The characteristic equation is $s^{3}+7s^{2}+10s+K = 0$. With
+$\\zeta = 0.5$ the pair is at $-\\sigma \\pm j\\sigma\\sqrt{3}$, so
+$\\omega_{n}^{2} = 4\\sigma^{2}$ and
+
+$$(s^{2}+2\\sigma s+4\\sigma^{2})(s+c) = s^{3} + (2\\sigma+c)s^{2} + (4\\sigma^{2}+2\\sigma c)s + 4\\sigma^{2}c$$
+
+$$2\\sigma + c = 7, \\qquad 4\\sigma^{2} + 2\\sigma c = 10$$
+
+Substituting $c = 7 - 2\\sigma$ gives $4\\sigma^{2} + 14\\sigma - 4\\sigma^{2} = 10$,
+so $\\sigma = 5/7 = 0.714286$, $c = 39/7 = 5.571429$ and
+
+$$K = 4\\sigma^{2}c = 4\\left(\\frac{25}{49}\\right)\\left(\\frac{39}{7}\\right) = \\frac{3900}{343} = 11.3703$$
+
+The poles are $-0.714286 \\pm j1.237179$ and $-5.571429$, with
+$\\omega_{n} = 10/7 = 1.4286$ rad/s. Bisecting on the swept damping ratio
+returns $K = 11.37026$, matching the closed form. Simulating the true cubic
+gives an overshoot of $15.69\\%$ against the $16.30\\%$ the two-pole formula
+predicts.
+
+**The trap:** stopping at $\\sigma$ and reporting $K = 4\\sigma^{2} = 2.04$,
+forgetting the third factor $c$.
+
+**B2.** The target poles are $s_{d} = -\\zeta\\omega_{n} \\pm j\\omega_{n}\\sqrt{1-\\zeta^{2}} = -3 \\pm j4$.
+
+$$\\angle s_{d} = 180^\\circ - \\arctan\\!\\left(\\frac{4}{3}\\right) = 126.8699^\\circ, \\qquad \\angle (s_{d}+4) = \\arctan(4) = 75.9638^\\circ$$
+
+$$\\phi_{\\mathrm{def}} = (126.8699 + 75.9638) - 180 = 22.8337^\\circ \\text{ of lead needed}$$
+
+Cancel the plant pole with the compensator zero at $-4$. The zero then supplies
+$+75.9638^\\circ$, which exactly offsets the plant pole's contribution, leaving
+
+$$\\angle (s_{d} + p) = 180^\\circ - 126.8699^\\circ = 53.1301^\\circ$$
+
+$$\\tan 53.1301^\\circ = \\frac{4}{p - 3} \\quad \\Longrightarrow \\quad p - 3 = \\frac{4}{1.333333} = 3.0000 \\quad \\Longrightarrow \\quad p = 6$$
+
+$$K = \\lvert s_{d}\\rvert \\cdot \\lvert s_{d}+6\\rvert = 5 \\times 5 = 25$$
+
+The compensated loop $25/[s(s+6)]$ has characteristic equation
+$s^{2}+6s+25 = 0$, giving $\\omega_{n} = 5$ and $\\zeta = 6/10 = 0.6$ exactly.
+**The trap:** applying the $22.8337^\\circ$ deficiency directly to the
+compensator pole geometry without accounting for the cancelled plant pole,
+which yields a pole near $12.5$ and a loop that misses the specification.
+
+**B3.** With the pole added the characteristic polynomial is
+$s^{3}+7s^{2}+10s+K$, and the Routh condition is $K < 7 \\times 10 = 70$. **The
+trap:** answering $10$, the product of the two finite pole magnitudes, instead
+of $70$, the product of that with their sum. For $K/[s(s+a)(s+b)]$ the ceiling
+is always $ab(a+b)$.
+
+**B4.** Before the lag,
+
+$$K_{v} = \\lim_{s \\to 0} s\\,L(s) = \\frac{25}{6} = 4.1667, \\qquad e_{ss}(\\mathrm{ramp}) = \\frac{6}{25} = 0.24$$
+
+The lag multiplies the low-frequency gain by the zero-to-pole ratio
+$0.05/0.005 = 10$, so
+
+$$K_{v} = \\frac{250}{6} = 41.6667, \\qquad e_{ss} = \\frac{6}{250} = 0.024$$
+
+The phase it costs at $s_{d} = -3+j4$ is the difference of two nearly equal
+angles:
+
+$$\\angle (s_{d}+0.05) - \\angle (s_{d}+0.005) = 126.4088^\\circ - 126.8240^\\circ = -0.4153^\\circ$$
+
+Solving the compensated cubic $s(s+6)(s+0.005) + 25(s+0.05) = 0$ puts the
+dominant pair at $-2.9772 \\pm j3.9831$, with $\\zeta$ slipping only from
+$0.6000$ to $0.5987$, plus a slow pole at $-0.0505$ that the lag zero at
+$-0.05$ all but cancels. **The trap:** believing the slow pole ruins the
+response. Its residue is tiny precisely because the zero sits within one part
+in a hundred of it, so the tenfold accuracy improvement is essentially free.
+
+**B5.** The third pole of B1 is at $-5.571429$ and the pair at
+$-0.714286$, so
+
+$$\\frac{5.571429}{0.714286} = 7.8000$$
+
+That clears the conventional factor of five comfortably, and there is no
+closed-loop zero anywhere, so the dominant-pair reading is trustworthy. The
+simulation bears it out: $15.69\\%$ against a predicted $16.30\\%$, an error of
+$0.61$ percentage points. **The trap:** assuming the approximation is safe
+because the loop "looks second order" without computing the ratio. On the
+otherwise similar loop $K/[s(s+2)(s+2.5)]$ the same procedure yields a third
+pole far closer to the pair, and the estimate degrades badly.`,
+      examTip: 'Under exam conditions the highest-yield root locus skills, in order, are: the real-axis rule, the centroid, the crossing gain for a K over s times s plus a times s plus b loop, and the magnitude condition at a stated point. Those four cover the large majority of what is asked, and each is a single line of arithmetic.',
+      importantNote: 'Every answer in these sets was confirmed by solving the characteristic polynomial numerically across a gain sweep, not by reapplying the construction rule that produced it. That is the habit worth copying: when a locus landmark matters, verify it by substituting the gain back into the characteristic equation and checking that the claimed root really is a root.',
+    },
   ],
   keyTakeaways: [
     'Root locus starts at open-loop poles (K = 0), ends at zeros or infinity (K → ∞).',
@@ -2925,6 +3792,9 @@ tracking accuracy → lag.**`,
     'Damping ratio ζ = cos(θ) where θ is angle from negative real axis.',
     'Gain at any locus point: K = 1/|G(s₀)H(s₀)| (magnitude condition).',
     'Lead compensator pulls locus left (improves stability); lag increases low-frequency gain.',
+    'Both conditions come from 1 + KL(s) = 0: the angle condition fixes the shape, the magnitude condition fixes the gain.',
+    'dK/ds = 0 is the repeated-root condition; keep only roots that lie on a real-axis segment of the locus.',
+    'Adding a pole moves the centroid right and creates a gain ceiling; adding a zero moves it left and can remove one.',
   ],
 },
 
@@ -2950,9 +3820,9 @@ Two semi-log plots:
 | **Constant K** | 20·log₁₀(K) dB (flat line) | $0^\\circ$ (if $K > 0$) or $-180^\\circ$ (if $K < 0$) |
 | **s (zero at origin)** | +20 dB/decade through 0 dB at ω = 1 | +90° at all frequencies |
 | **1/s (pole at origin)** | −20 dB/decade through 0 dB at ω = 1 | −90° at all frequencies |
-| **1 + s/a (real zero)** | 0 for ω < a; +20 dB/decade for ω > a | $0^\\circ \\to +45^\\circ at \\omega = a \\to +90^\\circ$ |
-| **1/(1 + s/a) (real pole)** | 0 for ω < a; −20 dB/decade for ω > a | $0^\\circ \\to -45^\\circ at \\omega = a \\to -90^\\circ$ |
-| **Quadratic pair** (ζ, ω_n) | 0 for ω < ω_n; −40 dB/decade for ω > ω_n | $0^\\circ \\to -90^\\circ at \\omega = \\omega _n \\to -180^\\circ$ |
+| **1 + s/a (real zero)** | 0 for ω < a; +20 dB/decade for ω > a | $0^\\circ \\to +45^\\circ$ at $\\omega = a$, then $\\to +90^\\circ$ |
+| **1/(1 + s/a) (real pole)** | 0 for ω < a; −20 dB/decade for ω > a | $0^\\circ \\to -45^\\circ$ at $\\omega = a$, then $\\to -90^\\circ$ |
+| **Quadratic pair** (ζ, ω_n) | 0 for ω < ω_n; −40 dB/decade for ω > ω_n | $0^\\circ \\to -90^\\circ$ at $\\omega = \\omega _n$, then $\\to -180^\\circ$ |
 
 **Corner frequency** = pole or zero location on the real axis.
 
@@ -3047,7 +3917,7 @@ $$G(s) = 100 / [s \\cdot 10 \\cdot (1 + s/10)] = 10 / [s \\cdot (1 + s/10)]$$
 
 |G(jω)| ≈ 10/ω → slope = −20 dB/decade (integrator dominates)
 
-$$At \\omega = 1: |G| = 10/1 = 10 \\to 20\\ \\mathrm{dB}$$
+At $\\omega = 1$: $|G| = 10/1 = 10$, which is $20\\ \\mathrm{dB}$.
 At ω = 10: |G| = 10/10 = 1 → **0 dB** (before the pole kicks in)
 
 **High frequencies (ω >> 10):**
@@ -3081,24 +3951,39 @@ At ω = 10: |G| = 10/10 = 1 → **0 dB** (before the pole kicks in)
 
 From the magnitude plot: |G(jω_gc)| = 1 → 10/[ω_gc · √(1 + ω_gc²/100)] = 1
 
-At ω = 10: |G| = 10/(10 · √2) = 0.707 → −3 dB (close to 0 dB)
+The straight-line sketch puts the crossing at ω = 10, where the low-frequency
+asymptote 10/ω first reaches unity. The exact curve is already 3 dB below that
+asymptote at its own corner — at ω = 10, |G| = 10/(10·√2) = 0.707, which is
+−3 dB, not 0 dB — so the true crossover lies **below** 10 rad/s. Squaring the
+equation and writing $u = \\omega _{gc}^{2}$ gives
 
-Solving exactly: ω_gc ≈ **9.05 rad/s**
+$$100 = u\\left(1 + \\frac{u}{100}\\right) \\Rightarrow u^{2} + 100u - 10000 = 0 \\Rightarrow u = 50(\\sqrt{5}-1) = 61.8034$$
 
-**Phase margin**: PM = 180° + ∠G(jω_gc) = 180° + (−90° − arctan(9.05/10)) = 180° − 90° − 42.1° = **$47.9^\\circ$**
+$$\\omega _{gc} = \\sqrt{61.8034} = 7.862\\ \\mathrm{rad/s}$$
+
+**Phase margin**: PM = 180° + ∠G(jω_gc) = 180° − 90° − arctan(0.7862), and
+arctan(0.7862) = 38.17°, so
+
+$$PM = 180^\\circ - 90^\\circ - 38.17^\\circ = 51.83^\\circ$$
 
 **Phase crossover frequency ω_pc** (where ∠G = −180°):
 
 Total phase reaches −180° as ω → ∞ (asymptotically). Strictly, ω_pc = **∞**.
 
-**Gain margin**: GM = −20·$\\log _{10}$|G(j∞)| = **$\\infty dB$** (magnitude is zero at infinite frequency)
+**Gain margin**: GM = −20·$\\log _{10}$|G(j∞)| = **$\\infty\\ \\mathrm{dB}$** (magnitude is zero at infinite frequency)
 
 ## 3.6 Step 5 — Stability Conclusion
 
-- **$PM = 47.9^\\circ > 0^\\circ$** → Stable
-- **$GM = \\infty dB > 0\\ \\mathrm{dB}$** → Stable
-- The system is **closed-loop stable** with good phase margin (near the 45–60° design target)
-- Expected damping ratio: ζ ≈ PM/100 ≈ 0.48 → moderate overshoot (~18%)`,
+- **$PM = 51.83^\\circ > 0^\\circ$** → Stable
+- **$GM = \\infty\\ \\mathrm{dB} > 0\\ \\mathrm{dB}$** → Stable
+- The system is **closed-loop stable** with good phase margin (inside the 45–60° design target)
+- Expected damping ratio: ζ ≈ PM/100 ≈ 0.52 → predicted overshoot about 14.9%
+
+The closed loop here is $T(s) = 100/(s^{2}+10s+100)$, so its true damping ratio
+is exactly 0.5 and its true overshoot is 16.30%. The PM/100 shortcut lands 3.7%
+high on ζ and 1.4 percentage points low on overshoot, which is the accuracy to
+expect from it; Section 8 quantifies that error across the whole damping
+range.`,
       examTip: 'On the FE exam, for systems with an integrator (1/s), the low-frequency slope starts at −20 dB/decade. Each additional pole adds another −20 dB/decade at its corner frequency. The magnitude at ω = 1 equals 20·log₁₀(K), which gives you the starting point for the entire plot.',
       importantNote: 'A type-1 system (one integrator) like G(s) = K/[s(s+a)] has phase approaching −180° but never exceeding it. This means GM = infinity. Such systems are always stable for any positive gain K. However, a type-2 system (two integrators) starts at −180° and WILL go unstable at some gain.',
     },
@@ -3213,7 +4098,7 @@ Three standard results drive the design:
 where the plant's own phase is worse, standard practice is to ask for extra —
 take $\\phi _m = 35^\\circ$:
 
-- $\\alpha = (1 - \\sin 35^\\circ)/(1 + \\sin 35^\\circ) = 0.2709$
+- $\\alpha = (1 - \\sin 35^\\circ)/(1 + \\sin 35^\\circ) = 0.2710$
 - The new crossover sits where $|G| = \\sqrt{\\alpha} = 0.521$ (−5.67 dB), so
   the compensator's $1/\\sqrt{\\alpha}$ boost lands it at 0 dB:
   $\\omega _m = 2.636$ rad/s
@@ -3229,12 +4114,12 @@ iterated rather than solved.
 
 | Quantity | First pass (35°) | Second pass (42°) |
 |---|---|---|
-| α | 0.2709 | 0.1982 |
+| α | 0.2710 | 0.1982 |
 | New crossover $\\omega _m$ | 2.636 rad/s | 2.855 rad/s |
 | Zero at 1/T | 1.372 rad/s | 1.271 rad/s |
 | Pole at 1/(αT) | 5.063 rad/s | 6.413 rad/s |
 | Achieved PM | 41.0° | **45.4°** |
-| Simulated overshoot | 30.0% | 24.7% |
+| Simulated overshoot | 30.0% | 24.6% |
 
 The second pass meets the specification. Compare the outcome with the
 gain-reduction alternative: both land near a 45° margin, but the compensated
@@ -3255,6 +4140,787 @@ the crossover frequency is in hand, so spend the time getting that right.`,
       examTip: 'For a loop of the form K/[s(s+a)(s+b)] the phase crossover is always at ω_pc = √(ab), independent of K. Find it once, evaluate the magnitude there, and the gain margin follows. Because gain scales the magnitude curve without touching the phase curve, doubling K always costs exactly 6 dB of gain margin and leaves ω_pc alone.',
       importantNote: 'Straight-line Bode sketches are up to 3 dB optimistic at each corner frequency, and the error accumulates when corners are close together. Use the asymptotes to locate the crossovers quickly, then evaluate the exact magnitude at those frequencies before quoting a gain margin.',
     },
+    {
+      id: 'bn-asymptotes-derived',
+      title: '5. Where the Straight Lines Come From, and What They Cost',
+      content: `## 5.1 The Logarithm Does the Work
+
+A Bode plot is not a different kind of graph from any other frequency
+response. It is the same complex function $L(j\\omega)$ plotted on axes chosen
+so that **multiplication becomes addition**. Write a factored loop:
+
+$$L(s) = \\frac{K\\prod_{j}(1 + s/z_{j})}{s^{q}\\prod_{i}(1 + s/p_{i})}$$
+
+Take the magnitude, then twenty times the base-ten logarithm of both sides:
+
+$$20\\log_{10}\\lvert L(j\\omega)\\rvert = 20\\log_{10}K + \\sum_{j}20\\log_{10}\\lvert 1 + j\\omega/z_{j}\\rvert - 20q\\log_{10}\\omega - \\sum_{i}20\\log_{10}\\lvert 1 + j\\omega/p_{i}\\rvert$$
+
+Every factor now contributes an independent term that is simply added or
+subtracted. The phase does the same thing without needing a logarithm at all,
+because the argument of a product is the sum of the arguments:
+
+$$\\angle L(j\\omega) = \\sum_{j}\\arctan\\!\\left(\\frac{\\omega}{z_{j}}\\right) - q\\,90^\\circ - \\sum_{i}\\arctan\\!\\left(\\frac{\\omega}{p_{i}}\\right)$$
+
+**That decomposition is the entire reason Bode plots are sketchable by hand.**
+A ten-factor transfer function is ten small curves stacked, and each small
+curve has only two interesting regions with a hinge between them.
+
+## 5.2 Why the Slope Is Exactly 20 dB per Decade
+
+Take one real pole and look at what happens well above its corner. For
+$\\omega \\gg a$,
+
+$$\\left\\lvert \\frac{1}{1 + j\\omega/a} \\right\\rvert = \\frac{1}{\\sqrt{1 + (\\omega/a)^{2}}} \\;\\approx\\; \\frac{a}{\\omega}$$
+
+$$20\\log_{10}\\lvert \\cdot \\rvert \\approx 20\\log_{10}a - 20\\log_{10}\\omega$$
+
+That is a straight line when plotted against $\\log_{10}\\omega$, with slope
+$-20$ dB per unit of $\\log_{10}\\omega$. Multiply the frequency by ten and the
+term changes by
+
+$$-20\\log_{10}(10\\omega) + 20\\log_{10}\\omega = -20\\log_{10}(10) = -20\\ \\mathrm{dB}$$
+
+exactly, with no approximation left in that last step. **The "20" in
+"20 dB per decade" is not empirical; it is the definition of the decibel
+meeting the definition of a decade.** The same arithmetic on a doubling gives
+
+$$20\\log_{10}(2) = 6.0206\\ \\mathrm{dB\\ per\\ octave}$$
+
+so a slope quoted as 6 dB per octave and one quoted as 20 dB per decade are the
+same slope, and the 6 is the rounded number of the pair.
+
+## 5.3 How Wrong the Straight Lines Are
+
+The asymptotic sketch replaces the exact curve with two lines meeting at the
+corner. The error is the gap between them, and because it depends only on the
+ratio $r = \\omega/a$ it is the same for every real pole ever drawn:
+
+$$\\mathrm{error}(r) = \\left\\lvert -20\\log_{10}\\sqrt{1+r^{2}} - \\mathrm{asymptote}(r) \\right\\rvert$$
+
+| $\\omega/a$ | Asymptote (dB) | Exact (dB) | Error (dB) | Exact phase |
+|---|---|---|---|---|
+| $0.1$ | $0$ | $-0.0432$ | $0.0432$ | $-5.7106^\\circ$ |
+| $0.5$ | $0$ | $-0.9691$ | $0.9691$ | $-26.5651^\\circ$ |
+| $1$ | $0$ | $-3.0103$ | $3.0103$ | $-45.0000^\\circ$ |
+| $2$ | $-6.0206$ | $-6.9897$ | $0.9691$ | $-63.4349^\\circ$ |
+| $10$ | $-20.0000$ | $-20.0432$ | $0.0432$ | $-84.2894^\\circ$ |
+
+Three things in that table are worth carrying into the exam. The corner error
+is $3.0103$ dB, which is the same $\\sqrt{2}$ that defines a half-power point.
+The error is **symmetric about the corner** on a logarithmic axis: an octave
+below and an octave above both cost $0.9691$ dB. And a decade away the error
+has collapsed to $0.0432$ dB, which is invisible on any sketch, so the
+asymptotes are excellent everywhere except within about one octave of a corner.
+
+![Exact magnitude of a single real pole against its straight-line asymptotes, plotted against frequency as a multiple of the corner. The gap is three point zero one zero three decibels at the corner, zero point nine six nine one decibels an octave either side and zero point zero four three two decibels a decade either side, and the high-frequency slope is exactly twenty decibels per decade.](/courses/fe-ee/figures/ctl3-exact-vs-asymptote.svg)
+
+### Worked Example 1 - Recovering a Transfer Function From an Asymptotic Plot
+
+**Given.** A magnitude sketch that is flat at $20$ dB below
+$\\omega = 2$ rad/s, falls at $-20$ dB/decade between $2$ and $20$ rad/s, and
+falls at $-40$ dB/decade above $20$ rad/s. The phase starts at $0^\\circ$.
+
+**Find.** $G(s)$.
+
+**Solution.** Read the plot backwards through Section 5.1. A flat
+low-frequency asymptote means no integrator, so $q = 0$. Each slope change of
+$-20$ dB/decade marks one real pole at that frequency, so there are poles at
+$2$ and $20$ rad/s and no zeros. The flat level fixes the DC gain:
+
+$$20\\log_{10}K = 20\\ \\mathrm{dB} \\qquad \\Longrightarrow \\qquad K = 10$$
+
+$$G(s) = \\frac{10}{(1 + s/2)(1 + s/20)} = \\frac{10 \\times 2 \\times 20}{(s+2)(s+20)} = \\frac{400}{(s+2)(s+20)}$$
+
+**Check.** $G(0) = 400/40 = 10$, which is $20$ dB. Above $20$ rad/s the
+magnitude falls as $400/\\omega^{2}$, a $-40$ dB/decade slope. Both features
+match the sketch.
+
+**The trap.** Writing $G(s) = 10/[(s+2)(s+20)]$ by putting the plotted gain in
+front of the unnormalised factors. That transfer function has a DC value of
+$10/40 = 0.25$, which is $-12.04$ dB, not $20$ dB. The normalisation
+$(1 + s/p)$ rather than $(s + p)$ is the whole content of "standard Bode form",
+and skipping it misplaces the entire magnitude curve by a fixed offset.
+
+### Worked Example 2 - The Real Magnitude at a Corner
+
+**Given.** The $G(s)$ just recovered.
+
+**Find.** The exact magnitude at $\\omega = 2$ rad/s, and the error the
+asymptotic sketch makes there.
+
+**Solution.** Evaluate the complex expression directly:
+
+$$\\lvert G(j2)\\rvert = \\frac{400}{\\lvert 2 + j2\\rvert \\; \\lvert 20 + j2\\rvert} = \\frac{400}{2.828427 \\times 20.099751} = 7.036418$$
+
+$$20\\log_{10}(7.036418) = 16.9465\\ \\mathrm{dB}$$
+
+The asymptotic sketch reads $20$ dB at that frequency, so the error is
+$3.0535$ dB.
+
+**Where the extra 0.0432 came from.** The table in Section 5.3 says a corner
+costs $3.0103$ dB. The remaining $0.0432$ dB is contributed by the *other*
+pole: at $\\omega = 2$ the pole at $20$ sits at $\\omega/a = 0.1$, one decade
+below its own corner, and the table's first row is exactly that case. The
+errors of separate factors add, because Section 5.1 showed the decibel
+contributions add:
+
+$$3.0103 + 0.0432 = 3.0535\\ \\mathrm{dB}$$
+
+**Why this matters.** A gain margin quoted from a straight-line sketch inherits
+this error directly. Three decibels is a factor of $1.41$ in allowable gain,
+which is the difference between a design that survives a $40\\%$ component
+tolerance and one that does not.
+
+### Worked Example 3 - Magnitude and Phase Away From the Corners
+
+**Given.** The same $G(s)$.
+
+**Find.** The exact magnitude at $\\omega = 20$ and $\\omega = 200$ rad/s, and
+the exact phase at $\\omega = 20$ rad/s.
+
+**Solution.** At $\\omega = 20$ the asymptotic value is
+$20 - 20\\log_{10}(20/2) = 0$ dB, and the exact value is
+
+$$20\\log_{10}\\!\\left(\\frac{400}{\\lvert 2+j20\\rvert\\;\\lvert 20+j20\\rvert}\\right) = 20\\log_{10}\\!\\left(\\frac{400}{20.099751 \\times 28.284271}\\right) = -3.0535\\ \\mathrm{dB}$$
+
+the same $3.0535$ dB of error as at the first corner, by symmetry of the
+arrangement. At $\\omega = 200$,
+
+$$20\\log_{10}\\!\\left(\\frac{400}{200.009999 \\times 200.997512}\\right) = -40.0436\\ \\mathrm{dB}$$
+
+against an asymptotic $-40$ dB, so a decade past the last corner the sketch is
+already good to well under a tenth of a decibel.
+
+The phase at $\\omega = 20$ is the sum of two arctangents:
+
+$$\\angle G(j20) = -\\arctan\\!\\left(\\frac{20}{2}\\right) - \\arctan\\!\\left(\\frac{20}{20}\\right) = -84.2894^\\circ - 45.0000^\\circ = -129.2894^\\circ$$
+
+**Answer.** $-3.0535$ dB, $-40.0436$ dB and $-129.2894^\\circ$.`,
+      examTip: 'To read a transfer function off a magnitude sketch, work from the slopes: the low-frequency slope gives the system type, every downward break of 20 dB/decade is a real pole at that frequency, every upward break is a zero, and a break of 40 dB/decade is a complex pair. Then set the gain from any one point on the low-frequency asymptote, in standard form with each factor written as 1 + s/a.',
+      importantNote: 'Straight-line sketches understate the loss by up to 3.01 dB at a corner, and the errors of nearby corners add. Locate the crossover frequencies from the asymptotes, then evaluate the exact complex magnitude at those frequencies before quoting any margin. A margin quoted from asymptotes alone can be several decibels optimistic.',
+    },
+    {
+      id: 'bn-phase-nmp-delay',
+      title: '6. Phase Told Honestly: Right-Half-Plane Zeros and Time Delay',
+      content: `## 6.1 The Phase Approximation Is the Cruder One
+
+The straight-line phase rule holds the phase at $0^\\circ$ below one decade
+under the corner, at $-90^\\circ$ above one decade over it, and runs a straight
+$-45^\\circ$ per decade in between. Compared with the magnitude approximation
+it is noticeably worse:
+
+$$\\text{exact: } -\\arctan(\\omega/a) \\qquad \\text{versus} \\qquad \\text{line: } -45^\\circ\\left[\\log_{10}(\\omega/a) + 1\\right]$$
+
+clipped to the range $[-90^\\circ, 0^\\circ]$. At the two break points of the
+line the exact curve is $5.7106^\\circ$ away, and that is the worst it gets.
+Five degrees does not sound like much until you notice that phase margins are
+routinely specified to within five degrees.
+
+![Exact phase of a real pole against the straight-line approximation that holds zero below a tenth of the corner, minus ninety above ten times it, and minus forty-five degrees per decade in between. The exact curve is minus five point seven one zero six degrees at a tenth of the corner, minus forty-five degrees exactly at the corner, and minus eighty-four point two eight nine four degrees at ten times it.](/courses/fe-ee/figures/ctl3-phase-decade.svg)
+
+## 6.2 A Right-Half-Plane Zero Has the Gain of a Zero and the Phase of a Pole
+
+Compare two first-order factors that differ only in a sign:
+
+$$1 + \\frac{j\\omega}{a} \\qquad \\text{and} \\qquad 1 - \\frac{j\\omega}{a}$$
+
+Their magnitudes are identical, both being $\\sqrt{1 + (\\omega/a)^{2}}$, so on a
+magnitude plot the two are indistinguishable at every frequency. Their phases
+are exact opposites:
+
+$$\\angle\\left(1 + \\frac{j\\omega}{a}\\right) = +\\arctan\\!\\left(\\frac{\\omega}{a}\\right), \\qquad \\angle\\left(1 - \\frac{j\\omega}{a}\\right) = -\\arctan\\!\\left(\\frac{\\omega}{a}\\right)$$
+
+A zero in the right half plane therefore lifts the magnitude the way a zero
+should while dragging the phase down the way a pole would. **That combination
+is the worst of both worlds for a feedback loop**, because the raised magnitude
+pushes the crossover to a higher frequency at the same time as the phase lag
+is deepening. It is the reason non-minimum-phase plants, which include
+boost converters, flexible arms and steam-drum level, have hard bandwidth
+limits that no amount of controller cleverness removes.
+
+### Worked Example 4 - A Right-Half-Plane Zero Creates a Gain Ceiling
+
+**Given.** The plant $1/[s(s+2)]$, which is stable for every positive gain, is
+fitted first with a zero at $-1$ and then with one at $+1$:
+
+$$L_{\\mathrm{mp}}(s) = \\frac{K(1+s)}{s(s+2)}, \\qquad L_{\\mathrm{nmp}}(s) = \\frac{K(1-s)}{s(s+2)}$$
+
+**Find.** The stable gain range for each.
+
+**Solution.** Form each characteristic polynomial:
+
+$$s(s+2) + K(1+s) = s^{2} + (2+K)s + K$$
+
+$$s(s+2) + K(1-s) = s^{2} + (2-K)s + K$$
+
+For a quadratic, stability requires every coefficient to share a sign. The
+first polynomial satisfies that for **every** $K > 0$. The second loses its
+first-order coefficient at $K = 2$:
+
+$$2 - K > 0 \\qquad \\Longrightarrow \\qquad 0 < K < 2$$
+
+At exactly $K = 2$ the polynomial is $s^{2}+2 = 0$, so the closed loop
+oscillates at
+
+$$\\omega = \\sqrt{2} = 1.4142\\ \\mathrm{rad/s}$$
+
+**Check.** Sweeping the gain and solving the quadratic numerically puts the
+first right-half-plane root at $K = 2.00000$ for the second loop and at no
+gain at all for the first, even at $K = 10^{6}$.
+
+**Answer.** Moving a single zero across the imaginary axis converts an
+unconditionally stable loop into one with a hard ceiling of $K = 2$.
+
+### Worked Example 5 - The Margin the Sign of a Zero Costs
+
+**Given.** The same two loops at $K = 1$.
+
+**Find.** The gain crossover frequency and phase margin of each.
+
+**Solution.** Since the magnitudes are identical, one calculation serves both:
+
+$$\\lvert L(j\\omega)\\rvert = \\frac{\\sqrt{1+\\omega^{2}}}{\\omega\\sqrt{4+\\omega^{2}}} = 1 \\quad \\Longrightarrow \\quad 1 + \\omega^{2} = \\omega^{2}(4 + \\omega^{2})$$
+
+$$\\omega^{4} + 3\\omega^{2} - 1 = 0 \\quad \\Longrightarrow \\quad \\omega^{2} = \\frac{\\sqrt{13}-3}{2} = 0.302776 \\quad \\Longrightarrow \\quad \\omega_{gc} = 0.5503\\ \\mathrm{rad/s}$$
+
+Now the phases at that one frequency. Both loops carry $-90^\\circ$ from the
+integrator and $-\\arctan(\\omega_{gc}/2) = -15.3829^\\circ$ from the pole at
+$-2$. They differ only in the zero, which supplies
+$\\pm\\arctan(\\omega_{gc}) = \\pm 28.8218^\\circ$:
+
+$$\\angle L_{\\mathrm{mp}} = 28.8218^\\circ - 90^\\circ - 15.3829^\\circ = -76.5611^\\circ \\quad \\Longrightarrow \\quad PM = 103.4389^\\circ$$
+
+$$\\angle L_{\\mathrm{nmp}} = -28.8218^\\circ - 90^\\circ - 15.3829^\\circ = -134.2047^\\circ \\quad \\Longrightarrow \\quad PM = 45.7953^\\circ$$
+
+**Answer.** The same magnitude curve, the same crossover, and
+$103.4389 - 45.7953 = 57.6436$ degrees of margin difference, which is exactly
+$2\\arctan(\\omega_{gc})$ because the zero's contribution simply changes sign.
+
+![Open-loop phase of two loops that share every magnitude value: one with a zero at minus two and one with a zero at plus two, both around an integrator and a pole at minus two. Both cross zero decibels at zero point five five zero three radians per second, where the minimum-phase loop has one hundred three point four four degrees of phase margin and the non-minimum-phase twin has only forty-five point eight zero.](/courses/fe-ee/figures/ctl3-nmp-phase.svg)
+
+## 6.3 Time Delay Is Pure Phase
+
+A transport lag of $T$ seconds multiplies the loop by $e^{-sT}$, whose
+frequency response is
+
+$$\\lvert e^{-j\\omega T}\\rvert = 1, \\qquad \\angle e^{-j\\omega T} = -\\omega T \\ \\mathrm{rad} = -57.2958\\,\\omega T\\ \\mathrm{degrees}$$
+
+The magnitude plot does not move at all, so the gain crossover frequency is
+untouched. The phase, however, falls **without bound and in proportion to
+frequency**, not to the logarithm of frequency, so on a Bode plot it plunges
+ever more steeply. That is why a delay cannot be compensated the way a pole
+can: there is no finite network whose phase lead grows linearly with
+frequency.
+
+The design consequence is a one-line formula. The loop stays stable as long as
+the delay's phase at the existing crossover does not exceed the phase margin:
+
+$$\\omega_{gc}T_{\\max} = PM \\ \\mathrm{(radians)} \\qquad \\Longrightarrow \\qquad T_{\\max} = \\frac{PM \\times \\pi/180}{\\omega_{gc}}$$
+
+This quantity is called the **delay margin**, and it is the most physically
+meaningful of the three margins because it is measured in seconds and can be
+compared directly against a sampling period, a network latency or a transport
+time.
+
+### Worked Example 6 - Delay Margin at Two Gains
+
+**Given.** $L(s) = K/[s(s+1)(s+10)]$, the loop of Section 4, at $K = 40$ and
+$K = 10$.
+
+**Find.** The largest transport delay each version tolerates.
+
+**Solution.** Section 4 established the crossovers and margins by exact
+evaluation; reuse them.
+
+At $K = 40$: $\\omega_{gc} = 1.8612$ rad/s and $PM = 17.7050^\\circ$, so
+
+$$T_{\\max} = \\frac{0.309011}{1.861216} = 0.16603\\ \\mathrm{s} \\approx 166\\ \\mathrm{ms}$$
+
+At $K = 10$: $\\omega_{gc} = 0.7844$ rad/s and $PM = 47.4039^\\circ$, so
+
+$$T_{\\max} = \\frac{0.827355}{0.784408} = 1.054751\\ \\mathrm{s}$$
+
+**Check.** Evaluate $\\lvert 1 + L(j\\omega_{gc})e^{-j\\omega_{gc}T_{\\max}}\\rvert$
+at the first answer: it comes out at $7 \\times 10^{-16}$, so the delayed loop
+really does have a closed-loop pole exactly on the imaginary axis at that
+delay.
+
+**Interpretation.** Dropping the gain from $40$ to $10$ multiplies the
+tolerable delay by more than six, from $166$ ms to $1.05$ s. Both the smaller
+crossover frequency and the larger phase margin push in the same direction,
+which is why a loop closed over a network is almost always detuned rather than
+compensated.
+
+| Loop | $\\omega_{gc}$ (rad/s) | $PM$ | Delay margin | Comment |
+|---|---|---|---|---|
+| $40/[s(s+1)(s+10)]$ | $1.8612$ | $17.7050^\\circ$ | $166.0\\ \\mathrm{ms}$ | fast, fragile |
+| $10/[s(s+1)(s+10)]$ | $0.7844$ | $47.4039^\\circ$ | $1.0548\\ \\mathrm{s}$ | slow, robust |
+| $(1+s)/[s(s+2)]$ | $0.5503$ | $103.4389^\\circ$ | $3.2810\\ \\mathrm{s}$ | minimum phase |
+| $(1-s)/[s(s+2)]$ | $0.5503$ | $45.7953^\\circ$ | $1.4526\\ \\mathrm{s}$ | the same gain, a worse zero |`,
+      examTip: 'A time delay changes the phase curve and nothing else. So the gain crossover frequency of a delayed loop is the same as that of the undelayed one, and the whole question reduces to whether omega times T, converted to degrees, is smaller than the phase margin you already have. Remember the conversion: one radian is 57.2958 degrees.',
+      importantNote: 'Magnitude data alone cannot distinguish a zero at plus a from a zero at minus a, and cannot see a time delay at all. Any identification done from a magnitude plot is therefore incomplete, and any margin computed from one is unreliable for exactly those two cases. Whenever a plant might be non-minimum phase or delayed, the phase plot is not optional.',
+    },
+    {
+      id: 'bn-nyquist-counted',
+      title: '7. The Nyquist Contour and Z = N + P, Counted Rather Than Recited',
+      content: `## 7.1 What the Criterion Actually Counts
+
+The closed-loop poles are the zeros of $1 + L(s)$, and the open-loop poles are
+its poles. The argument principle from complex analysis says that if a closed
+contour is traversed once clockwise in the $s$ plane, the image of $1 + L(s)$
+encircles the origin
+
+$$N = Z - P$$
+
+times clockwise, where $Z$ is the number of zeros and $P$ the number of poles
+of $1 + L(s)$ inside the contour. Choose the contour to be the **entire right
+half plane**: up the imaginary axis, around a semicircle of unbounded radius,
+and back down. Then $Z$ counts unstable closed-loop poles and $P$ counts
+unstable open-loop poles, and rearranging gives the form used in practice:
+
+$$Z = N + P$$
+
+Two practical details finish the construction. First, plotting $L(s)$ rather
+than $1 + L(s)$ shifts the reference point from the origin to $-1$, which is
+why the criterion is stated about the critical point. Second, a pole of $L$ on
+the imaginary axis, and an integrator always is one, would sit **on** the
+contour, so the contour is indented around it by a small semicircle bulging
+into the right half plane. That indentation keeps the pole outside, which is
+why an integrator does not count towards $P$.
+
+## 7.2 A Stable Open Loop
+
+### Worked Example 7 - Counting Encirclements With P = 0
+
+**Given.** $L(s) = 6/[(s+1)(s+2)(s+3)]$.
+
+**Find.** $P$, the negative-real-axis crossing, the gain margin, $N$, and $Z$.
+
+**Solution.** The open-loop poles are $-1$, $-2$ and $-3$, all in the left half
+plane, so $P = 0$.
+
+To find where the polar plot crosses the negative real axis, force the
+denominator to be real. Expanding,
+
+$$(j\\omega+1)(j\\omega+2)(j\\omega+3) = (6 - 6\\omega^{2}) + j(11\\omega - \\omega^{3})$$
+
+$$11\\omega - \\omega^{3} = 0 \\qquad \\Longrightarrow \\qquad \\omega_{pc} = \\sqrt{11} = 3.3166\\ \\mathrm{rad/s}$$
+
+At that frequency the denominator is $6 - 6(11) = -60$, so
+
+$$L(j\\omega_{pc}) = \\frac{6}{-60} = -0.1000 \\qquad \\Longrightarrow \\qquad GM = \\frac{1}{0.1} = 10 = 20\\ \\mathrm{dB}$$
+
+Tracing the contour and accumulating the argument of $1 + L(s)$ around it
+returns a winding number of $0.00003$, that is, $N = 0$. Therefore
+
+$$Z = N + P = 0 + 0 = 0$$
+
+and the closed loop is stable, which the roots of
+$s^{3}+6s^{2}+11s+12$ confirm directly: all three have negative real parts.
+
+**Cross-check on the gain margin.** With gain $K$ the characteristic polynomial
+is $s^{3}+6s^{2}+11s+(6+K)$, and the Routh condition is
+$6 \\times 11 - 6 = 60$, so $K < 60$. Since the present gain is $6$, the
+allowable multiplier is $60/6 = 10$, matching the reciprocal of the crossing to
+the digit.
+
+![Nyquist plot of six over the product of s plus one, s plus two and s plus three, with its conjugate mirror. It begins at the DC gain of one, crosses the negative real axis at minus zero point one when the frequency is the square root of eleven, and never encircles the critical point at minus one, so with no open-loop right-half-plane poles the closed loop is stable.](/courses/fe-ee/figures/ctl3-nyquist-stable.svg)
+
+## 7.3 An Unstable Open Loop, Where Bode Reasoning Fails
+
+When $P > 0$ the criterion demands the opposite of what intuition suggests: the
+plot **must** encircle the critical point, $N = -P$ counter-clockwise
+encirclements, for the closed loop to be stable. And the familiar Bode summary,
+"positive margins mean stable", becomes simply untrue.
+
+### Worked Example 8 - Counting Encirclements With P = 1
+
+**Given.** $L(s) = K/[(s-1)(s+3)]$, at $K = 6$ and at $K = 2$.
+
+**Find.** $P$, $N$ and $Z$ for each gain, and the stable gain range.
+
+**Solution.** One open-loop pole sits at $+1$, so $P = 1$. Stability therefore
+requires $N = -1$.
+
+The characteristic polynomial is
+
+$$(s-1)(s+3) + K = s^{2} + 2s + (K - 3)$$
+
+whose coefficients all share a sign only when $K > 3$. That is the algebraic
+answer; now the geometric one.
+
+Both plots start on the negative real axis at
+
+$$L(0) = \\frac{K}{(-1)(3)} = -\\frac{K}{3}$$
+
+which is $-2.0000$ at $K = 6$ and $-0.6667$ at $K = 2$, and both end at the
+origin. The imaginary part of $L(j\\omega)$ vanishes only at $\\omega = 0$, so
+each closed curve crosses the real axis exactly there. Accumulating the
+argument of $1 + L(s)$ around the traced contour gives
+
+| Gain | Start of the plot | $N$ counted | $P$ | $Z = N + P$ | Closed-loop roots |
+|---|---|---|---|---|---|
+| $K = 6$ | $-2.0000$ | $-1$ | $1$ | $0$ | $-1 \\pm j1.7321$, stable |
+| $K = 2$ | $-0.6667$ | $0$ | $1$ | $1$ | $+0.4142$ and $-2.4142$ |
+
+**Answer.** $K = 6$ is stable and $K = 2$ is not, and the stable range is
+$K > 3$, which is where the starting point $-K/3$ moves to the left of $-1$ so
+the curve can enclose it.
+
+**Why this example is worth the effort.** At $K = 2$ the largest value of
+$\\lvert L(j\\omega)\\rvert$ anywhere is $2/3 = 0.6667$, which never reaches
+unity. There is **no gain crossover frequency at all**, so a Bode reading
+reports an infinite phase margin, and the loop is unstable with a closed-loop
+pole at $+0.4142$. Margins are a shortcut that assumes $P = 0$; when the plant
+is open-loop unstable, only the encirclement count is trustworthy.
+
+![Nyquist plots of K over the product of s minus one and s plus three at two gains, with conjugate mirrors. At a gain of six the curve starts at minus two and wraps the critical point once counter-clockwise, so with one open-loop right-half-plane pole the closed loop is stable. At a gain of two it starts at minus zero point six six six seven, stops short of the critical point, and leaves one closed-loop pole at plus zero point four one four two.](/courses/fe-ee/figures/ctl3-nyquist-unstable.svg)
+
+## 7.4 Reading the Two Margins Off the Polar Plot
+
+Everything Section 2 defined on the Bode axes has a picture on the Nyquist
+plane, and the picture makes the relationship between the margins obvious.
+
+| Quantity | On the Bode plot | On the Nyquist plot |
+|---|---|---|
+| Gain crossover $\\omega_{gc}$ | where the magnitude curve meets $0$ dB | where the curve meets the unit circle |
+| Phase crossover $\\omega_{pc}$ | where the phase curve meets $-180^\\circ$ | where the curve meets the negative real axis |
+| Gain margin | $-20\\log_{10}\\lvert L(j\\omega_{pc})\\rvert$ | reciprocal of the distance from the origin to that crossing |
+| Phase margin | $180^\\circ + \\angle L(j\\omega_{gc})$ | angle from the negative real axis up to the unit-circle crossing |
+| Delay margin | $PM$ divided by $\\omega_{gc}$ | arc along the unit circle, divided by $\\omega_{gc}$ |
+| Stability | both margins positive, if $P = 0$ | $N = -P$, always |
+
+The last row is the one worth remembering. The Bode criterion is a convenience
+that happens to be right for the minimum-phase, open-loop-stable case, which is
+most of what the exam asks about. The Nyquist criterion is the actual theorem.`,
+      examTip: 'For an open-loop-stable plant, the fast question to ask is whether the Nyquist curve passes to the right of minus one on its way in. If it does, the closed loop is stable and the gain margin is the reciprocal of that crossing. For an open-loop-unstable plant, count encirclements and nothing else.',
+      importantNote: 'A pole at the origin does not count towards P. The contour is indented around it into the right half plane, which leaves it outside the enclosed region. Counting an integrator as an unstable open-loop pole is a common error and it flips the stability verdict on almost every type-1 loop.',
+    },
+    {
+      id: 'bn-bandwidth-crossover',
+      title: '8. Closed-Loop Bandwidth, Resonant Peak and the Crossover',
+      content: `## 8.1 Three Frequencies, One Damping Ratio
+
+Open-loop crossover, closed-loop bandwidth and resonant peak are three
+different measurements on the same second-order system, and all three are fixed
+by $\\zeta$ once $\\omega_{n}$ sets the scale. Take the standard loop
+
+$$L(s) = \\frac{\\omega_{n}^{2}}{s(s + 2\\zeta\\omega_{n})} \\qquad \\Longrightarrow \\qquad T(s) = \\frac{\\omega_{n}^{2}}{s^{2} + 2\\zeta\\omega_{n}s + \\omega_{n}^{2}}$$
+
+**Gain crossover.** Set $\\lvert L(j\\omega)\\rvert = 1$ and let
+$x = (\\omega/\\omega_{n})^{2}$:
+
+$$\\omega_{n}^{4} = \\omega^{2}\\left(\\omega^{2} + 4\\zeta^{2}\\omega_{n}^{2}\\right) \\quad \\Longrightarrow \\quad x^{2} + 4\\zeta^{2}x - 1 = 0$$
+
+$$\\omega_{gc} = \\omega_{n}\\sqrt{\\sqrt{1 + 4\\zeta^{4}} - 2\\zeta^{2}}$$
+
+**Phase margin.** The phase at that frequency is
+$-90^\\circ - \\arctan[\\omega_{gc}/(2\\zeta\\omega_{n})]$, so
+
+$$PM = 90^\\circ - \\arctan\\!\\left(\\frac{\\omega_{gc}}{2\\zeta\\omega_{n}}\\right) = \\arctan\\!\\left(\\frac{2\\zeta}{\\sqrt{\\sqrt{1+4\\zeta^{4}} - 2\\zeta^{2}}}\\right)$$
+
+**Bandwidth.** Set $\\lvert T(j\\omega)\\rvert = 1/\\sqrt{2}$ and solve:
+
+$$\\omega_{b} = \\omega_{n}\\sqrt{1 - 2\\zeta^{2} + \\sqrt{4\\zeta^{4} - 4\\zeta^{2} + 2}}$$
+
+**Resonant peak.** Differentiate $\\lvert T\\rvert$ and set the derivative to
+zero. For $\\zeta < 1/\\sqrt{2}$ a maximum exists at
+
+$$\\omega_{r} = \\omega_{n}\\sqrt{1 - 2\\zeta^{2}}, \\qquad M_{r} = \\frac{1}{2\\zeta\\sqrt{1 - \\zeta^{2}}}$$
+
+and for $\\zeta \\geq 1/\\sqrt{2}$ the magnitude falls monotonically and there is
+no peak at all.
+
+| $\\zeta$ | $\\omega_{gc}/\\omega_{n}$ | $PM$ | $100\\zeta$ rule | $\\omega_{b}/\\omega_{n}$ | $M_{r}$ | $M_{r}$ (dB) | $\\omega_{r}/\\omega_{n}$ |
+|---|---|---|---|---|---|---|---|
+| $0.3$ | $0.9144$ | $33.2725^\\circ$ | $30^\\circ$ | $1.4537$ | $1.7472$ | $4.8467$ | $0.9055$ |
+| $0.5$ | $0.7862$ | $51.8273^\\circ$ | $50^\\circ$ | $1.2720$ | $1.1547$ | $1.2494$ | $0.7071$ |
+| $0.6$ | $0.7157$ | $59.1873^\\circ$ | $60^\\circ$ | $1.1482$ | $1.0417$ | $0.3546$ | $0.5292$ |
+| $0.7071$ | $0.6436$ | $65.5298^\\circ$ | $70.71^\\circ$ | $1.0000$ | none | none | none |
+
+![Closed-loop magnitude of a standard second-order system at damping ratios of zero point three, zero point five and zero point seven zero seven one, plotted against frequency as a multiple of the natural frequency. The minus three decibel bandwidths are one point four five three seven, one point two seven two zero and one point zero zero zero zero times the natural frequency, and the resonant peaks are four point eight five decibels, one point two five decibels and none at all.](/courses/fe-ee/figures/ctl3-bandwidth-peak.svg)
+
+### Worked Example 9 - Bandwidth of the Section 3 Loop
+
+**Given.** $G(s) = 100/[s(s+10)]$ in unity feedback, so
+$T(s) = 100/(s^{2}+10s+100)$.
+
+**Find.** $\\omega_{n}$, $\\zeta$, the open-loop crossover, the closed-loop
+bandwidth, the resonant peak and the ratio between bandwidth and crossover.
+
+**Solution.** Matching the closed-loop denominator to the standard form,
+
+$$\\omega_{n}^{2} = 100 \\Rightarrow \\omega_{n} = 10\\ \\mathrm{rad/s}, \\qquad 2\\zeta\\omega_{n} = 10 \\Rightarrow \\zeta = 0.5$$
+
+Reading the $\\zeta = 0.5$ row of the table and multiplying by $\\omega_{n}$:
+
+$$\\omega_{gc} = 0.7862 \\times 10 = 7.862\\ \\mathrm{rad/s}, \\qquad \\omega_{b} = 1.2720 \\times 10 = 12.720\\ \\mathrm{rad/s}$$
+
+$$M_{r} = 1.1547 \\;(1.2494\\ \\mathrm{dB}) \\quad \\text{at} \\quad \\omega_{r} = 0.7071 \\times 10 = 7.071\\ \\mathrm{rad/s}$$
+
+**Check.** Solving $\\lvert T(j\\omega)\\rvert = 1/\\sqrt{2}$ numerically gives
+$12.720196$ rad/s, and scanning $\\lvert T\\rvert$ over a dense grid finds a peak
+of $1.154701$ at $7.0711$ rad/s. Both match the closed forms.
+
+**The ratio.** Dividing,
+
+$$\\frac{\\omega_{b}}{\\omega_{gc}} = \\frac{12.720196}{7.861514} = 1.6180$$
+
+Bandwidth exceeds crossover by about $60\\%$ at this damping, and by the table
+the factor runs from $1.59$ at $\\zeta = 0.3$ to $1.55$ at $\\zeta = 0.7071$. So
+the working rule **"closed-loop bandwidth is roughly one and a half times the
+open-loop crossover"** is good across the whole useful damping range, which is
+what makes $\\omega_{gc}$ a usable proxy for speed of response even though it is
+an open-loop measurement.
+
+### Worked Example 10 - How Far the PM Rule of Thumb Can Be Trusted
+
+**Given.** The approximation $\\zeta \\approx PM/100$ used in Section 2.
+
+**Find.** Its error across the damping range, and its effect on a predicted
+overshoot.
+
+**Solution.** Compare the exact expression from Section 8.1 against
+$100\\zeta$ over $0 < \\zeta \\leq 1$. The two agree at small damping, cross near
+$\\zeta = 0.574$, and diverge sharply after that. The largest gap below
+$\\zeta = 0.6$ is $3.3289^\\circ$, at $\\zeta = 0.3353$; by $\\zeta = 1$ the rule is
+$23.65^\\circ$ high.
+
+Now the practical consequence. The loop of Worked Example 9 has an exact phase
+margin of $51.8273^\\circ$, so the rule estimates
+
+$$\\zeta \\approx \\frac{51.8273}{100} = 0.5183$$
+
+against a true value of exactly $0.5$. Feeding both into the overshoot formula:
+
+$$M_{p}(\\text{estimated}) = 100\\,e^{-\\pi(0.5183)/\\sqrt{1-0.5183^{2}}} = 14.90\\%$$
+
+$$M_{p}(\\text{true}) = 100\\,e^{-\\pi(0.5)/\\sqrt{1-0.5^{2}}} = 16.30\\%$$
+
+**Answer.** A $3.7\\%$ error in $\\zeta$ becomes a $1.4$ percentage-point error
+in overshoot, and in the optimistic direction. That is acceptable for choosing
+between design options and not acceptable as evidence that a specification has
+been met.
+
+![Exact phase margin against closed-loop damping ratio for a standard second-order loop, with the phase margin equals one hundred zeta rule drawn beside it. The two agree to within three point three three degrees below a damping ratio of zero point six, cross near zero point five eight, and separate by more than twenty three degrees by a damping ratio of one.](/courses/fe-ee/figures/ctl3-margin-vs-zeta.svg)
+
+## 8.2 Why the Crossover Is the Design Variable
+
+Pulling the three sections together gives the reason frequency-domain design is
+organised around $\\omega_{gc}$ rather than around anything measured on a step
+response.
+
+- **Speed** is set by the crossover, through $\\omega_{b} \\approx 1.6\\omega_{gc}$
+  and the rise-time relation $t_{r} \\approx 2.2/\\omega_{b}$ for a well-damped
+  loop.
+- **Damping** is set by the phase margin at that crossover, through the exact
+  relation of Section 8.1 or the $100\\zeta$ shortcut.
+- **Accuracy** is set by the low-frequency gain, well below the crossover,
+  where the error constants live.
+- **Noise rejection and robustness** are set by the high-frequency roll-off,
+  well above the crossover.
+
+Four requirements, four separate regions of one plot, each adjustable with
+comparatively little interference from the others. That separation is what the
+root locus cannot offer, and it is the reason both methods are taught: the
+locus shows where the poles go, and the Bode plot shows which knob to turn.`,
+      examTip: 'Memorise the zeta = 0.5 column: crossover 0.786 times omega-n, phase margin 51.8 degrees, bandwidth 1.272 times omega-n, resonant peak 1.155 or 1.25 dB at 0.707 times omega-n. It is the most frequently used damping ratio in the topic and having one column exact lets you sanity-check any approximation on the spot.',
+      importantNote: 'Bandwidth is a closed-loop measurement and crossover is an open-loop one. They differ by about a factor of 1.6, so quoting one where the other is wanted is a 60 percent error in speed of response. Read the wording of the question carefully: "the frequency at which the magnitude falls 3 dB" is the bandwidth, and "the frequency at which the magnitude is 0 dB" is the crossover.',
+    },
+    {
+      id: 'bn-problem-sets',
+      title: '9. Problem Sets',
+      content: `## 9.1 Problem Set A - Plots and Margins
+
+**A1.** A magnitude sketch falls at $-20$ dB/decade from the lowest
+frequencies, passes through $0$ dB at $\\omega = 5$ rad/s, and steepens to
+$-40$ dB/decade above $\\omega = 20$ rad/s. Identify $G(s)$.
+
+**A2.** For $L(s) = 50/[s(s+1)(s+5)]$, find the phase crossover frequency, the
+gain margin in dB, and whether the closed loop is stable.
+
+**A3.** Reduce the gain of that loop to $K = 15$. Find the gain crossover
+frequency, both margins, and the delay margin.
+
+**A4.** For $L(s) = 40/[s(s+1)(s+10)]$, find the delay margin.
+
+**A5.** For $G(s) = 400/[(s+2)(s+20)]$, find the asymptotic and exact
+magnitudes at $\\omega = 4$ rad/s, and account for the difference.
+
+### Answers to Problem Set A
+
+**A1.** A $-20$ dB/decade slope at the lowest frequencies means one integrator,
+so $q = 1$ and there are no finite poles below $20$ rad/s. Below the corner the
+magnitude is $K/\\omega$, which is unity at $\\omega = 5$, so $K = 5$ and
+
+$$G(s) = \\frac{5}{s(1 + s/20)} = \\frac{100}{s(s+20)}$$
+
+**Check.** The exact crossover is slightly below the asymptotic one because the
+pole at $20$ has already begun to bite:
+$\\lvert G(j5)\\rvert = 100/103.077641 = 0.97014$, which is $-0.26$ dB, and
+solving $\\lvert G\\rvert = 1$ exactly gives $\\omega_{gc} = 4.8587$ rad/s.
+**The trap:** reading the $0$ dB crossing as a corner frequency and answering
+$100/[s(s+5)]$. That transfer function does cross $0$ dB near $5$ rad/s, but it
+breaks to $-40$ dB/decade there rather than at $20$, so it contradicts the rest
+of the sketch.
+
+**A2.** For a loop with an integrator and two real poles at $a$ and $b$ the
+phase crossover is at $\\omega_{pc} = \\sqrt{ab}$, so
+
+$$\\omega_{pc} = \\sqrt{1 \\times 5} = 2.2361\\ \\mathrm{rad/s}$$
+
+$$\\lvert L(j\\omega_{pc})\\rvert = \\frac{50}{2.236068 \\times 2.449490 \\times 5.477226} = \\frac{50}{30.0000} = 1.6667$$
+
+$$GM = \\frac{1}{1.6667} = 0.6 \\qquad \\Longrightarrow \\qquad GM_{\\mathrm{dB}} = 20\\log_{10}(0.6) = -4.4370\\ \\mathrm{dB}$$
+
+A **negative** gain margin means the loop is already unstable. Routh on
+$s^{3}+6s^{2}+5s+K$ gives the ceiling $K < 30$, and the present gain of $50$
+exceeds it; solving the cubic confirms two right-half-plane roots. **The trap:**
+reporting $+4.44$ dB by taking the magnitude of the decibel figure. The sign is
+the entire answer to the stability part of the question.
+
+**A3.** At $K = 15$ the magnitude curve drops by $20\\log_{10}(50/15) = 10.46$
+dB but the phase curve does not move, so $\\omega_{pc}$ is still
+$2.2361$ rad/s and
+
+$$GM = \\frac{30}{15} = 2 \\qquad \\Longrightarrow \\qquad GM_{\\mathrm{dB}} = 20\\log_{10}(2) = 6.0206\\ \\mathrm{dB}$$
+
+Solving $\\lvert L(j\\omega)\\rvert = 1$ exactly gives
+$\\omega_{gc} = 1.5519$ rad/s, and there
+
+$$PM = 180^\\circ - 90^\\circ - 57.2038^\\circ - 17.2435^\\circ = 15.5527^\\circ$$
+
+$$T_{\\max} = \\frac{0.271446}{1.551922} = 0.174909\\ \\mathrm{s}$$
+
+Simulating the closed-loop step response gives $64.16\\%$ overshoot, which is
+what a $15.55^\\circ$ margin buys. **The trap:** assuming that a $6$ dB gain
+margin implies a healthy phase margin. The two are independent readings taken
+at different frequencies, and this loop has a comfortable one and a dreadful
+one at the same time.
+
+**A4.** From Section 6.3, with $\\omega_{gc} = 1.8612$ rad/s and
+$PM = 17.7050^\\circ$,
+
+$$T_{\\max} = \\frac{17.7050 \\times \\pi/180}{1.861216} = \\frac{0.309011}{1.861216} = 0.16603\\ \\mathrm{s}$$
+
+**The trap:** dividing the phase margin in **degrees** by the crossover
+frequency, which gives $9.51$ and is not a time at all. The formula requires
+radians, because $\\omega T$ is a phase in radians by construction.
+
+**A5.** The asymptotic value at $\\omega = 4$ is the $20$ dB plateau reduced by
+one octave of $-20$ dB/decade slope past the corner at $2$:
+
+$$20 - 20\\log_{10}(2) = 20 - 6.0206 = 13.9794\\ \\mathrm{dB}$$
+
+The exact value is
+
+$$20\\log_{10}\\!\\left(\\frac{400}{\\lvert 2+j4\\rvert\\;\\lvert 20+j4\\rvert}\\right) = 20\\log_{10}\\!\\left(\\frac{400}{4.472136 \\times 20.396078}\\right) = 12.8400\\ \\mathrm{dB}$$
+
+The gap is $1.1394$ dB, and it decomposes exactly as Section 5.3 predicts: the
+pole at $2$ is one octave past its corner and contributes $0.9691$ dB, while
+the pole at $20$ sits at $\\omega/a = 0.2$ and contributes
+$20\\log_{10}\\sqrt{1.04} = 0.1703$ dB. Adding,
+
+$$0.9691 + 0.1703 = 1.1394\\ \\mathrm{dB}$$
+
+**The trap:** quoting only the $0.9691$ dB from the nearer pole. Corner errors
+add across all factors, and on a plant with three or four closely spaced
+corners the accumulated error easily exceeds $3$ dB.
+
+## 9.2 Problem Set B - Nyquist and the Closed Loop
+
+**B1.** For $L(s) = K/[(s+1)(s+2)(s+3)]$, find the negative-real-axis crossing
+and the gain margin at $K = 6$, $K = 30$ and $K = 90$, and state stability in
+each case.
+
+**B2.** For $L(s) = K/[(s-1)(s+3)]$, find $Z$ at $K = 4$ and at $K = 2.5$ using
+the criterion, and confirm by factoring.
+
+**B3.** A design achieves $\\zeta = 0.6$ with $\\omega_{n} = 8$ rad/s. Find the
+closed-loop bandwidth.
+
+**B4.** For the same design, find the resonant peak in dB, the frequency at
+which it occurs, and the exact phase margin. Compare against the $100\\zeta$
+rule.
+
+**B5.** A colleague reports that a loop has infinite phase margin because its
+magnitude never reaches $0$ dB, and concludes the closed loop is stable. Under
+what condition is that reasoning valid, and under what condition does it fail?
+
+### Answers to Problem Set B
+
+**B1.** The crossing frequency is $\\sqrt{11} = 3.3166$ rad/s regardless of
+gain, because gain does not move the phase curve. The crossing value scales
+directly with $K$, being $-K/60$:
+
+| $K$ | Crossing | $GM$ (ratio) | $GM$ (dB) | Closed-loop verdict |
+|---|---|---|---|---|
+| $6$ | $-0.1000$ | $10.0$ | $20.00$ | stable, comfortable |
+| $30$ | $-0.5000$ | $2.0$ | $6.02$ | stable, marginal |
+| $90$ | $-1.5000$ | $0.667$ | $-3.52$ | unstable, two right-half-plane roots |
+
+Factoring $s^{3}+6s^{2}+11s+96$ confirms the last row directly. **The trap:**
+believing the crossing frequency shifts with gain. It does not for any loop:
+$K$ multiplies the magnitude and leaves the phase untouched, which is why
+$\\omega_{pc}$ and the whole shape of the polar plot are gain-independent apart
+from a uniform radial scaling.
+
+**B2.** One open-loop pole lies at $+1$, so $P = 1$ and stability needs
+$N = -1$.
+
+At $K = 4$ the plot starts at $L(0) = -4/3 = -1.3333$, to the **left** of the
+critical point, so the closed curve encloses it once counter-clockwise:
+$N = -1$ and $Z = -1 + 1 = 0$. Factoring $s^{2}+2s+1 = (s+1)^{2}$ gives a
+repeated root at $-1$: stable.
+
+At $K = 2.5$ the plot starts at $-2.5/3 = -0.8333$, to the **right** of the
+critical point, so it fails to enclose it: $N = 0$ and $Z = 1$. Factoring
+$s^{2}+2s-0.5$ gives roots at $+0.2247$ and $-2.2247$: one unstable pole, as
+predicted. **The trap:** applying the "no encirclement means stable" rule that
+holds only for $P = 0$. Here no encirclement means exactly one unstable
+closed-loop pole.
+
+**B3.** From Section 8.1 with $\\zeta = 0.6$:
+
+$$\\frac{\\omega_{b}}{\\omega_{n}} = \\sqrt{1 - 2(0.36) + \\sqrt{4(0.1296) - 4(0.36) + 2}} = \\sqrt{0.28 + \\sqrt{1.0784}} = 1.1482$$
+
+$$\\omega_{b} = 1.148242 \\times 8 = 9.1859\\ \\mathrm{rad/s}$$
+
+Solving $\\lvert T(j\\omega)\\rvert = 1/\\sqrt{2}$ numerically for
+$T(s) = 64/(s^{2}+9.6s+64)$ returns $9.1859$ rad/s. **The trap:** answering
+$\\omega_{n} = 8$ rad/s, on the assumption that bandwidth and natural frequency
+are the same thing. They coincide only at $\\zeta = 0.7071$.
+
+**B4.** Since $0.6 < 1/\\sqrt{2}$ a peak exists:
+
+$$M_{r} = \\frac{1}{2(0.6)\\sqrt{1 - 0.36}} = \\frac{1}{2(0.6)(0.8)} = 1.0417 \\qquad \\Longrightarrow \\qquad 20\\log_{10}(1.0417) = 0.3546\\ \\mathrm{dB}$$
+
+$$\\omega_{r} = 8\\sqrt{1 - 2(0.36)} = 8\\sqrt{0.28} = 4.2332\\ \\mathrm{rad/s}$$
+
+The exact phase margin from the Section 8.1 formula is $59.1873^\\circ$ against
+the rule's $60^\\circ$, an error of $0.81^\\circ$, which is about as well as the
+rule ever does. **The trap:** quoting the peak as a percentage overshoot. A
+resonant peak of $1.0417$ is a frequency-domain amplification of $4.17\\%$; the
+step-response overshoot at this damping is $9.48\\%$, a completely different
+number that happens to be of similar size at moderate damping and diverges
+badly at low damping.
+
+**B5.** The reasoning is valid **only when the open loop has no
+right-half-plane poles**. With $P = 0$ the criterion reads $Z = N$, a plot that
+never reaches unit magnitude cannot enclose a point at distance one from the
+origin, so $N = 0$ and the closed loop is stable.
+
+With $P \\geq 1$ the same evidence proves the opposite. Stability then requires
+$N = -P$, that is, the plot **must** wrap the critical point, and a plot that
+stays inside the unit circle cannot possibly do so. Worked Example 8 is exactly
+this case: at $K = 2$ the peak magnitude is $2/3$, the Bode reading is an
+infinite phase margin, and the closed loop carries a pole at $+0.4142$. **The
+trap** is not the arithmetic but the habit of treating margins as the
+definition of stability rather than as a distance measured from a critical
+point whose enclosure requirement depends on $P$.`,
+      examTip: 'When a question gives an open-loop transfer function with a right-half-plane pole, stop reaching for margins and count encirclements. When it gives a minimum-phase, open-loop-stable plant, which is most of the time, margins are faster and give the same verdict.',
+      importantNote: 'Every numerical answer in these sets was produced by evaluating the complex transfer function on a dense frequency sweep and, where stability was at stake, by accumulating the argument of 1 + L along the traced Nyquist contour - not by applying the criterion symbolically. Where a Routh array offers a second route, it was run as well, and the two agreed to the digit in every case.',
+    },
   ],
   keyTakeaways: [
     'Bode magnitude in dB = 20·log₁₀|G(jω)|; each pole adds −20 dB/decade, each zero adds +20 dB/decade.',
@@ -3263,6 +4929,10 @@ the crossover frequency is in hand, so spend the time getting that right.`,
     'Stability requires GM > 0 dB AND PM > 0°; typical design target PM = 45–60°.',
     'Nyquist: Z = N + P; for stable open-loop (P = 0), no encirclement of (−1, 0).',
     'Approximate: PM ≈ 100·ζ degrees (for ζ < 0.7).',
+    'Asymptote error is 3.01 dB at a corner, 0.97 dB an octave out, 0.04 dB a decade out; errors of separate factors add.',
+    'A right-half-plane zero has the magnitude of a zero and the phase of a pole; a delay adds phase -wT rad and no magnitude.',
+    'Delay margin = PM in radians divided by the gain crossover frequency - the one margin measured in seconds.',
+    'Closed-loop bandwidth is about 1.6 times the open-loop gain crossover across the useful damping range.',
   ],
 },
 
