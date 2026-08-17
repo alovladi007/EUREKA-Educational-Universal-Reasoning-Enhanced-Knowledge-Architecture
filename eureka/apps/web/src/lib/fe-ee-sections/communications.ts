@@ -2286,7 +2286,7 @@ fee_noise_snr: { topicId: 'fee_noise_snr', title: 'Noise and Signal-to-Noise Rat
 - T = temperature in Kelvin (standard: 290 K)
 - B = noise bandwidth (Hz)
 
-At room temperature: **P_n = -174 dBm/Hz** (memorize this!)
+At the standard reference temperature T_0 = 290 K: **P_n = -174 dBm/Hz** (memorize this!)
 
 For bandwidth B: **P_n(dBm) = -174 + 10 log_10(B)**
 
@@ -2303,7 +2303,7 @@ For bandwidth B: **P_n(dBm) = -174 + 10 log_10(B)**
 
 **$F = SNR_{in} / SNR_{out}$** (linear, >= 1)
 
-**$NF = 10 \\log _10(F)$** (dB, >= 0)
+**$NF = 10 \\log_{10}(F)$** (dB, >= 0)
 
 - Ideal amplifier: F = 1 (NF = 0 dB)
 - Passive attenuator with loss L: **$F = L$** (noise figure equals attenuation)
@@ -2354,13 +2354,13 @@ $$F_{total} = 1.585 + (3.981 - 1)/100 + (10 - 1)/(100 * 10)$$
 
 $$F_{total} = 1.585 + 0.0298 + 0.009 = 1.624$$
 
-**$NF_{total} = 10 \\log _10(1.624) = 2.11\\ \\mathrm{dB}$**
+**$NF_{total} = 10 \\log_{10}(1.624) = 2.11\\ \\mathrm{dB}$**
 
 The first stage dominates: 1.585 of 1.624 total. Stages 2 and 3 contribute only 0.039 combined.
 
 ## 3.2 Thermal Noise Power for B = 1 MHz at T = 290 K
 
-**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **$4.0 \\times 10^-15\\ \\mathrm{W}$**
+**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **$4.0 \\times 10^{-15}\\ \\mathrm{W}$**
 
 **Method 2 — dBm shortcut** (faster on exam):
 
@@ -2389,7 +2389,7 @@ resistance sets the open-circuit noise VOLTAGE,
 exactly enough to cancel the difference in delivered power.
 
 **Worked**: at T = 290 K in a 10 kHz bandwidth, a 1 kilohm resistor produces
-V_n = sqrt(4 x 1.381e-23 x 290 x 10^4 x 10^3) = **0.400 microvolt** open
+V_n = sqrt(4 x 1.380649e-23 x 290 x 10^4 x 10^3) = **0.400 microvolt** open
 circuit, while a 1 megohm resistor produces **12.66 microvolt** — a factor of
 31.6, as the square root of a thousand demands. Both deliver
 kTB = 4.00 x 10^-17 W = **-134 dBm** of available power.
@@ -2398,7 +2398,7 @@ The spectral density that the whole subject hangs on is therefore
 N_0 = kT_0 with the standard reference temperature T_0 = 290 K (a tabulated
 convention, not room temperature exactly):
 
-**N_0 = 1.381 x 10^-23 x 290 = 4.004 x 10^-21 W/Hz = -173.98 dBm/Hz**
+**N_0 = 1.380649 x 10^-23 x 290 = 4.004 x 10^-21 W/Hz = -173.98 dBm/Hz**
 
 which is the -174 dBm/Hz everyone quotes, rounded by two hundredths of a
 decibel. Use -174; carry the exact value only if a problem asks for watts.
@@ -2447,17 +2447,17 @@ differ by more than a factor of two in temperature.
 
 ## 4.3 Putting a signal on the floor
 
-**Worked**: a receiver with the 2.105 dB cascade noise figure computed in
+**Worked**: a receiver with the 2.106 dB cascade noise figure computed in
 Section 3.1 handles a -80 dBm signal in a 1 MHz channel.
 
 - Input noise: -174 + 60 = **-114 dBm**
 - Input SNR: -80 - (-114) = **34.0 dB**
-- Output SNR: 34.0 - 2.105 = **31.9 dB**, because that is what a noise figure
+- Output SNR: 34.0 - 2.106 = **31.9 dB**, because that is what a noise figure
   means — the decibels of SNR the receiver itself destroys
 
 The same three lines run backwards give sensitivity. If this receiver needs
 10 dB of SNR to demodulate, the smallest usable signal is
--114 + 2.105 + 10 = **-101.9 dBm**. Written as one formula, the minimum
+-114 + 2.106 + 10 = **-101.9 dBm**. Written as one formula, the minimum
 discernible signal is
 
 **MDS (dBm) = -174 + 10 log10(B) + NF + SNR_required**
@@ -2544,9 +2544,995 @@ than doubling a large reflector.`,
       examTip: 'The cascade question almost always reduces to one comparison: what is in front of the gain? Loss ahead of the LNA adds one-for-one to the system noise figure; loss behind 20 dB of gain is essentially free.',
       importantNote: 'A passive component of loss L has F = L and G = 1/L simultaneously. Both facts are needed in Friis — using F = L while forgetting G = 1/L is the most common cascade error, and it under-predicts the damage badly.',
     },
+    { id: 'noise-ktb-origin', title: '6. Where kTB Comes From, and Why "White" Is an Idealisation',
+      content: `## 6.1 The available-power argument, in full
+
+Johnson measured it and Nyquist explained it: a resistor $R$ held at absolute
+temperature $T$ carries an open-circuit noise voltage whose one-sided power
+spectral density is
+
+$$S_v(f) = 4 k T R \\qquad \\left[\\mathrm{V}^2/\\mathrm{Hz}\\right]$$
+
+Integrating that flat density across a noise bandwidth $B$ gives the
+mean-square open-circuit voltage, and its square root is the number a
+voltmeter would report:
+
+$$\\overline{v_n^2} = 4 k T R B$$
+
+$$v_{n,\\mathrm{rms}} = \\sqrt{4 k T R B}$$
+
+Read literally, that says a big resistor is a loud resistor, and a beginner
+concludes that a receiver should be built out of small resistances. The
+conclusion is wrong because a receiver does not consume open-circuit volts; it
+consumes POWER, and the power a source can deliver depends on its internal
+resistance as well as on its voltage. Terminate the resistor in a matched load
+of the same value $R$. The load then sees half the open-circuit voltage,
+because the two equal resistances form a divider, and the power it absorbs is
+
+$$P_{\\mathrm{av}} = \\frac{\\left(v_{n,\\mathrm{rms}}/2\\right)^2}{R} = \\frac{4 k T R B}{4 R} = k T B$$
+
+The resistance has cancelled. This is the AVAILABLE noise power, and it is the
+foundation the rest of the chapter is built on: every resistor of every value,
+at one temperature, offers exactly the same noise power to a matched load. A
+larger $R$ raises the noise voltage by $\\sqrt{R}$ and raises the source
+impedance by $R$, and the two effects cancel exactly in the delivered power.
+
+## 6.2 Spectral density and the reference temperature
+
+Dividing the available power by the bandwidth that produced it leaves a density
+with no bandwidth in it at all:
+
+$$N_0 = \\frac{P_{\\mathrm{av}}}{B} = k T$$
+
+Communications work fixes the reference at $T_0 = 290\\ \\mathrm{K}$. That is a
+tabulated convention, not a measurement of any particular room; it was chosen
+because it makes noise-figure arithmetic land on convenient numbers. With the
+SI-exact Boltzmann constant $k = 1.380649 \\times 10^{-23}\\ \\mathrm{J/K}$,
+
+$$N_0 = k T_0 = \\left(1.380649 \\times 10^{-23}\\right)\\left(290\\right) = 4.003882 \\times 10^{-21}\\ \\mathrm{W/Hz}$$
+
+$$N_0(\\mathrm{dBm/Hz}) = 10 \\log_{10}\\!\\left(\\frac{4.003882 \\times 10^{-21}\\ \\mathrm{W}}{1\\ \\mathrm{mW}}\\right) = -173.975$$
+
+which is the famous $-174\\ \\mathrm{dBm/Hz}$, short of the exact figure by
+0.025 dB. Use $-174$ for anything you will express in decibels; carry
+$4.003882 \\times 10^{-21}$ only when a problem insists on watts. Every noise
+floor in this chapter is then one addition away:
+
+$$P_n(\\mathrm{dBm}) = -174 + 10 \\log_{10} B$$
+
+![Available thermal noise power in dBm plotted against noise bandwidth on a logarithmic axis, for a source at the standard 290 K reference temperature and for one cooled to 77 K. Both are straight lines of slope exactly 10 dB per decade of bandwidth, marked at 1 Hz giving -174.0 dBm, 1 MHz giving -114.0 dBm and 1 GHz giving -84.0 dBm; the cryogenic line sits 5.76 dB below the 290 K line everywhere.](/courses/fe-ee/figures/com3-noise-floor-bandwidth.svg)
+
+The picture makes two habits automatic. Bandwidth enters only through its
+logarithm, so a decade of bandwidth is always 10 dB and a doubling is always
+3.01 dB, whatever the starting point. Temperature enters as a pure vertical
+offset, so cooling never changes the slope — it only slides the whole line
+down by $10 \\log_{10}(T_0/T)$.
+
+### Worked Example 6.1 — The floor of a 200 kHz channel
+
+A receiver's narrowest filter has a noise bandwidth of 200 kHz. Find the noise
+power at its input, at $T_0$.
+
+The bandwidth term is $10 \\log_{10}(200{,}000) = 53.010\\ \\mathrm{dB}$, so with
+the rounded floor
+
+$$P_n = -174 + 53.010 = -120.990\\ \\mathrm{dBm}$$
+
+Carrying the exact density instead gives $-173.975 + 53.010 = -120.965$ dBm,
+and in watts
+
+$$P_n = \\left(4.003882 \\times 10^{-21}\\right)\\left(200{,}000\\right) = 8.0078 \\times 10^{-16}\\ \\mathrm{W}$$
+
+The two routes differ by 0.025 dB, which is the rounding in $-174$ and nothing
+else. Report $-121.0\\ \\mathrm{dBm}$.
+
+### Worked Example 6.2 — Two very different resistors, one answer
+
+A 1 kilohm and a 1 megohm resistor sit at $T_0$ and are measured in a 10 kHz
+noise bandwidth. Compare their noise voltages and their available powers.
+
+$$v_n(1\\ \\mathrm{k}\\Omega) = \\sqrt{4 k T_0 \\left(10^{3}\\right)\\left(10^{4}\\right)} = 4.0019 \\times 10^{-7}\\ \\mathrm{V} = 0.4002\\ \\mu\\mathrm{V}$$
+
+$$v_n(1\\ \\mathrm{M}\\Omega) = \\sqrt{4 k T_0 \\left(10^{6}\\right)\\left(10^{4}\\right)} = 1.26552 \\times 10^{-5}\\ \\mathrm{V} = 12.655\\ \\mu\\mathrm{V}$$
+
+The ratio is $12.655/0.4002 = 31.62$, which is $\\sqrt{1000}$ to four figures —
+the square root the formula demands, and a useful check that you have not
+slipped a decade. Yet the available powers are identical:
+
+$$P_{\\mathrm{av}} = k T_0 \\left(10^{4}\\right) = 4.0039 \\times 10^{-17}\\ \\mathrm{W} = -133.975\\ \\mathrm{dBm}$$
+
+If a question asks for available noise power and hands you a resistor value,
+the resistor value is a distractor. It matters only when the question asks for
+volts.
+
+## 6.3 White is an idealisation with a stated expiry date
+
+A truly flat spectrum carries infinite power, so $S_v = 4kTR$ cannot be exactly
+right at all frequencies. The quantum-corrected available density is
+
+$$N_0(f) = \\frac{h f}{e^{h f/(k T)} - 1}$$
+
+with $h = 6.62607015 \\times 10^{-34}\\ \\mathrm{J\\,s}$. Expanding the
+exponential for small $hf/kT$ returns $N_0 \\to kT$, which is why the flat
+approximation works, and the correction becomes visible only when $hf$
+approaches $kT$. At $T_0$ that happens at
+
+$$f_{\\mathrm{corner}} = \\frac{k T_0}{h} = \\frac{4.003882 \\times 10^{-21}}{6.62607015 \\times 10^{-34}} = 6.043\\ \\mathrm{THz}$$
+
+| Frequency | $hf/kT_0$ | Density relative to $kT_0$ | Shortfall |
+|---|---|---|---|
+| 1 GHz | 0.0001655 | 0.999917 | 0.0004 dB |
+| 10 GHz | 0.001655 | 0.999173 | 0.0036 dB |
+| 100 GHz | 0.01655 | 0.991748 | 0.0360 dB |
+| 1 THz | 0.16549 | 0.919536 | 0.3643 dB |
+| 6.043 THz | 1.00000 | 0.581977 | 2.351 dB |
+
+Across the whole of radio, through microwave and into millimetre wave, the
+error from calling thermal noise white is under a hundredth of a decibel. It is
+still worth knowing that the idealisation has a boundary, because it is the
+same boundary that makes optical detectors photon-limited rather than
+thermally limited.`,
+      examTip: 'Available noise power kTB has no resistance in it; noise VOLTAGE sqrt(4kTBR) does. Read the question for the word "power" or the word "volts" before you reach for a formula, because the resistor value is a distractor in exactly one of the two.',
+      importantNote: 'The reference temperature is T_0 = 290 K by convention, and it is not room temperature. Using 300 K instead shifts every noise figure by 10 log10(300/290) = 0.147 dB, which is small but wrong, and it will not match the answer key.',
+    },
+    { id: 'noise-shot-flicker', title: '7. Shot Noise and Flicker Noise: Telling the Three Mechanisms Apart',
+      content: `## 7.1 Shot noise counts carriers, one at a time
+
+Thermal noise exists in anything with resistance and temperature. Shot noise
+needs something else: a barrier that carriers cross independently, one by one,
+as in a junction diode or a photodiode. The crossings are a Poisson process, so
+the variance of the count equals its mean, and translating counts per second
+into amperes gives
+
+$$\\overline{i_n^2} = 2 q I_{\\mathrm{DC}} B$$
+
+$$i_{n,\\mathrm{rms}} = \\sqrt{2 q I_{\\mathrm{DC}} B}$$
+
+with $q = 1.602176634 \\times 10^{-19}\\ \\mathrm{C}$. Three properties separate
+it from thermal noise at a glance. It is white, like thermal noise. It grows as
+the SQUARE ROOT of the bias current, so doubling the current raises the noise
+current by 3.01 dB while raising the signal current by 6.02 dB — which is why
+photodiodes are run at as much signal current as they will take. And it
+vanishes without a barrier: a resistor in equilibrium has carriers crossing in
+both directions in equal numbers, and the two Poisson streams cancel in the
+mean, leaving only the thermal term.
+
+### Worked Example 7.1 — Shot noise against a resistor's own noise
+
+A photodiode carries 1 mA of average current into a 1 kilohm load, measured in
+a 1 MHz bandwidth. Compare the shot noise current with the thermal noise
+current of the load.
+
+$$i_{\\mathrm{shot}} = \\sqrt{2 \\left(1.602176634 \\times 10^{-19}\\right)\\left(10^{-3}\\right)\\left(10^{6}\\right)} = 1.7901 \\times 10^{-8}\\ \\mathrm{A} = 17.90\\ \\mathrm{nA}$$
+
+$$i_{\\mathrm{th}} = \\sqrt{\\frac{4 k T_0 B}{R}} = \\sqrt{\\frac{4 k T_0 \\left(10^{6}\\right)}{10^{3}}} = 4.0019 \\times 10^{-9}\\ \\mathrm{A} = 4.002\\ \\mathrm{nA}$$
+
+Shot noise wins by a factor of $17.90/4.002 = 4.473$, or 13.01 dB in power. In
+this detector the load resistor is not the problem; the current is.
+
+### Worked Example 7.2 — The current at which shot noise takes over
+
+At what bias current do the two mechanisms contribute equally into a load $R$?
+
+Setting the two mean squares equal, the bandwidth cancels immediately:
+
+$$2 q I B = \\frac{4 k T B}{R} \\quad \\Longrightarrow \\quad I = \\frac{2 k T}{q R}$$
+
+The group $kT_0/q$ is the thermal voltage, $0.024990\\ \\mathrm{V}$ at 290 K —
+note that it is not the 25.85 mV quoted for 300 K. So
+
+$$I = \\frac{2\\left(0.024990\\right)}{R} = \\frac{0.049981}{R}$$
+
+giving $49.98\\ \\mu\\mathrm{A}$ for $R = 1\\ \\mathrm{k}\\Omega$ and
+$4.998\\ \\mu\\mathrm{A}$ for $R = 10\\ \\mathrm{k}\\Omega$. Bandwidth does not
+appear, so this crossover is a property of the circuit alone.
+
+![Root-mean-square noise current in a 1 MHz bandwidth plotted against DC bias current on logarithmic axes. The shot-noise curve rises with the square root of current as a straight line of slope one half, while the thermal noise currents of a 1 kilohm and a 10 kilohm load are horizontal lines; the curves cross at 49.98 microamp and 4.998 microamp respectively.](/courses/fe-ee/figures/com3-shot-vs-thermal.svg)
+
+## 7.2 Flicker noise, and what a corner frequency means
+
+Flicker noise, also written as $1/f$ noise, comes from slow trapping and
+release of carriers at surfaces and defects. Its density is not flat:
+
+$$S_{\\mathrm{flicker}}(f) = \\frac{K}{f^{\\alpha}}, \\qquad \\alpha \\approx 1$$
+
+Because it falls with frequency while the white terms do not, there is one
+frequency where the two are equal. That is the CORNER frequency $f_c$, and
+above it flicker noise is quickly irrelevant:
+
+$$\\frac{S_{\\mathrm{total}}(f)}{S_{\\mathrm{white}}} = 1 + \\frac{f_c}{f}$$
+
+At $f = f_c$ the total is $1 + 1 = 2$, which is 3.01 dB above the white floor.
+A decade below the corner it is $1 + 10 = 11$, or 10.41 dB above; a decade
+above it is $1 + 0.1$, only 0.41 dB above.
+
+![Noise spectral density normalised to its own white floor, plotted against frequency on logarithmic axes for two devices whose flicker corners are 1 kHz and 100 kHz. Each curve is 3.01 dB above the floor at its corner, rises 10 dB per decade as frequency falls, and settles onto the flat floor well above the corner.](/courses/fe-ee/figures/com3-noise-spectra.svg)
+
+### Worked Example 7.3 — Integrating a 1/f tail
+
+A device draws 100 microamp, so its white current density is
+$2 q I = 3.20435 \\times 10^{-23}\\ \\mathrm{A}^2/\\mathrm{Hz}$, and its flicker
+corner is 10 kHz. Find the total rms noise current between 1 Hz and 1 MHz, and
+compare it with the white contribution alone.
+
+Integrating $S_{\\mathrm{white}}\\left(1 + f_c/f\\right)$ from $f_1$ to $f_2$
+gives a logarithm for the flicker part and a plain difference for the white
+part:
+
+$$\\overline{i_n^2} = S_{\\mathrm{white}}\\left[f_c \\ln\\!\\left(\\frac{f_2}{f_1}\\right) + \\left(f_2 - f_1\\right)\\right]$$
+
+With $\\ln(10^{6}) = 13.8155$ the bracket is
+$10^{4}(13.8155) + 999{,}999 = 1{,}138{,}154\\ \\mathrm{Hz}$, so
+
+$$i_{n,\\mathrm{rms}} = \\sqrt{\\left(3.20435 \\times 10^{-23}\\right)\\left(1.138154 \\times 10^{6}\\right)} = 6.039\\ \\mathrm{nA}$$
+
+against $5.661\\ \\mathrm{nA}$ for the white part alone — an excess of
+$0.562\\ \\mathrm{dB}$. Notice what the logarithm does: extending the lower limit
+from 1 Hz down to 0.001 Hz adds only three more natural-log decades, so the
+flicker contribution creeps up rather than exploding. That slow creep is why
+$1/f$ noise dominates DC-coupled instrumentation and is almost invisible in a
+radio channel.
+
+| Mechanism | Expression | Depends on | Spectrum | Where it dominates |
+|---|---|---|---|---|
+| Thermal | $\\sqrt{4 k T B R}$ | temperature, resistance | flat | passive front ends, high-value resistors |
+| Shot | $\\sqrt{2 q I B}$ | DC current through a barrier | flat | photodiodes, junctions above tens of microamp |
+| Flicker | $K/f^{\\alpha}$ | process quality, device area | rises as frequency falls | DC amplifiers, oscillator phase noise |
+| Quantisation | $q_{\\mathrm{LSB}}/\\sqrt{12}$ | converter step size | roughly flat | inside the ADC, once the analogue chain is quiet |
+
+The last row is worth a sentence, because it is the one noise source you choose
+rather than inherit. A uniform quantiser of step $q_{\\mathrm{LSB}}$ leaves an
+error uniformly distributed over one step, whose rms value is
+$q_{\\mathrm{LSB}}/\\sqrt{12}$; every extra bit halves the step and therefore
+buys 6.02 dB. Everything else in this table is handed to you by physics.`,
+      examTip: 'Identify the mechanism from its dependence, not from the device name. If doubling the bias current raises the noise by 3 dB it is shot noise; if changing the bias does nothing it is thermal; if it gets worse as you go DOWN in frequency it is flicker.',
+      importantNote: 'Shot noise needs a potential barrier. A plain resistor at thermal equilibrium carrying a DC current does NOT add 2qIB to its 4kTB — treating it as if it did is a common and expensive over-estimate in front-end budgets.',
+    },
+    { id: 'noise-networks', title: '8. Noise in a Network: Combinations, Noise Bandwidth and kT/C',
+      content: `## 8.1 Two resistors, one equivalent
+
+Noise voltages from separate resistors are uncorrelated, so their MEAN SQUARES
+add, never their rms values. For two resistors in series the currents are
+common, the voltages add, and the result is the noise of the sum:
+
+$$\\overline{v_n^2} = 4 k T \\left(R_1 + R_2\\right) B$$
+
+In parallel the shortcut is to build the Thevenin equivalent first. The
+equivalent source resistance is $R_1 \\parallel R_2$, and because the network is
+passive and in equilibrium its noise is exactly the noise of that equivalent:
+
+$$\\overline{v_n^2} = 4 k T \\left(\\frac{R_1 R_2}{R_1 + R_2}\\right) B$$
+
+That is the general rule, and it is worth stating in its strongest form: the
+noise of any passive network at a uniform temperature $T$, seen at any pair of
+terminals, is $4kTB\\,\\mathrm{Re}\\{Z\\}$, where $Z$ is the impedance looking
+into those terminals. You never need to track individual resistors once you can
+find the equivalent impedance.
+
+### Worked Example 8.1 — Series against parallel
+
+Take $R_1 = 1\\ \\mathrm{k}\\Omega$ and $R_2 = 3\\ \\mathrm{k}\\Omega$ at $T_0$
+in a 100 kHz noise bandwidth.
+
+In series the equivalent is 4 kilohm:
+
+$$v_n = \\sqrt{4 k T_0 \\left(4000\\right)\\left(10^{5}\\right)} = 2.531 \\times 10^{-6}\\ \\mathrm{V} = 2.531\\ \\mu\\mathrm{V}$$
+
+In parallel the equivalent is $\\left(1000\\right)\\left(3000\\right)/4000 = 750\\ \\Omega$:
+
+$$v_n = \\sqrt{4 k T_0 \\left(750\\right)\\left(10^{5}\\right)} = 1.096 \\times 10^{-6}\\ \\mathrm{V} = 1.096\\ \\mu\\mathrm{V}$$
+
+The ratio should be $\\sqrt{4000/750} = \\sqrt{5.3333} = 2.3094$, and indeed
+$2.531/1.096 = 2.309$. The trap here is adding the two rms voltages. Taken
+separately the 1 kilohm contributes $1.266\\ \\mu\\mathrm{V}$ and the 3 kilohm
+contributes $2.192\\ \\mu\\mathrm{V}$; adding those gives
+$1.266 + 2.192 = 3.458\\ \\mu\\mathrm{V}$, which overstates the true
+$2.531\\ \\mu\\mathrm{V}$ by 2.71 dB. What actually adds is the mean squares,
+$1.6016 \\times 10^{-12}$ and $4.8047 \\times 10^{-12}$, whose sum is
+$6.4062 \\times 10^{-12}$ and whose root is 2.531 microvolt. Square first, add,
+then take the root.
+
+## 8.2 Noise bandwidth is not the 3 dB bandwidth
+
+Every $B$ in this chapter is an EQUIVALENT NOISE BANDWIDTH: the width of the
+ideal brick-wall filter that would pass the same noise power as the real
+response.
+
+$$B_n = \\frac{1}{\\lvert H(f_0) \\rvert^2} \\int_0^{\\infty} \\lvert H(f) \\rvert^2 \\, df$$
+
+For a single-pole low pass with $\\lvert H \\rvert^2 = 1/\\left[1 + (f/f_3)^2\\right]$
+the integral is elementary and gives
+
+$$B_n = \\frac{\\pi}{2} f_3 = 1.5708\\, f_3$$
+
+so using the 3 dB bandwidth in place of the noise bandwidth understates the
+noise by $10\\log_{10}(\\pi/2) = 1.961\\ \\mathrm{dB}$. For an $n$-pole
+Butterworth response the general result is
+
+$$\\frac{B_n}{f_3} = \\frac{\\pi/(2n)}{\\sin\\!\\left[\\pi/(2n)\\right]}$$
+
+which collapses towards 1 as the skirts steepen.
+
+![Equivalent noise bandwidth divided by the 3 dB bandwidth, plotted against Butterworth filter order from one to eight. The closed-form expression and an independent numerical integration of the squared magnitude response are drawn together and agree at every order; the ratio falls from 1.571 at first order through 1.111 at second order to 1.006 at eighth order, approaching the brick-wall value of one.](/courses/fe-ee/figures/com3-noise-bandwidth-order.svg)
+
+| Butterworth order | $B_n/f_3$ | Penalty for using $f_3$ |
+|---|---|---|
+| 1 | 1.5708 | 1.961 dB |
+| 2 | 1.1107 | 0.456 dB |
+| 3 | 1.0472 | 0.200 dB |
+| 4 | 1.0262 | 0.112 dB |
+| 5 | 1.0166 | 0.072 dB |
+| 8 | 1.0065 | 0.028 dB |
+
+Exam problems almost always hand you the noise bandwidth outright, so the
+distinction rarely changes an answer key. It changes measurements constantly,
+and a front end whose selectivity comes from a single pole is exactly the case
+where the error is largest.
+
+## 8.3 kT/C: the noise that does not care about the resistor
+
+Put the same single-pole filter in its most common physical form — a resistor
+$R$ charging a capacitor $C$ — and something remarkable falls out. The source
+density is $4kTR$ and the noise bandwidth is $B_n = 1/(4RC)$, so
+
+$$\\overline{v_C^2} = 4 k T R \\cdot \\frac{1}{4 R C} = \\frac{k T}{C}$$
+
+$$v_{C,\\mathrm{rms}} = \\sqrt{\\frac{k T}{C}}$$
+
+The resistance has cancelled again, for the same reason it cancelled in
+Section 6.1: raising $R$ raises the density and narrows the bandwidth by the
+same factor. A switch with a large on-resistance is slow, but it is not noisy.
+
+### Worked Example 8.2 — Sizing a sampling capacitor
+
+A track-and-hold samples onto $C = 1\\ \\mathrm{pF}$ at $T_0$. Find the sampled
+noise, then find the capacitor a 16-bit converter with a 2 V full scale would
+need.
+
+$$v_{C,\\mathrm{rms}} = \\sqrt{\\frac{4.003882 \\times 10^{-21}}{10^{-12}}} = 6.3276 \\times 10^{-5}\\ \\mathrm{V} = 63.28\\ \\mu\\mathrm{V}$$
+
+A 14-bit converter over 2 V has an LSB of $2/16384 = 122.07\\ \\mu\\mathrm{V}$,
+so 1 pF is comfortable there. A 16-bit converter has an LSB of
+$2/65536 = 30.52\\ \\mu\\mathrm{V}$, and 63.28 microvolt of sampling noise would
+swamp it. Requiring the noise to sit at half an LSB,
+
+$$C \\ge \\frac{k T_0}{\\left(15.259 \\times 10^{-6}\\right)^2} = 1.7197 \\times 10^{-11}\\ \\mathrm{F} = 17.20\\ \\mathrm{pF}$$
+
+Seventeen times the capacitance, for two extra bits. Every bit of resolution
+costs a factor of four in sampling capacitance and therefore in the current
+needed to drive it, which is the reason high-resolution converters are slow and
+hungry, and it follows from one line of thermal noise algebra.
+
+![Two stacked panels sharing a logarithmic resistance axis. The upper panel shows open-circuit noise voltage in a 10 kHz bandwidth rising as the square root of resistance, marked at 0.400 microvolt for 1 kilohm and 12.66 microvolt for 1 megohm. The lower panel shows the available noise power, a perfectly flat line at -134.0 dBm across six decades of resistance.](/courses/fe-ee/figures/com3-resistor-noise.svg)`,
+      examTip: 'Mean squares add, rms values do not. For any passive network at one temperature, find the equivalent resistance seen at the terminals FIRST, then apply 4kTBR once — do not add resistor noises one at a time.',
+      importantNote: 'The kT/C result holds for any series resistance, including the on-resistance of a sampling switch. If a problem gives you R, C and temperature and asks for sampled noise, R is a distractor exactly as it was for available power.',
+    },
+    { id: 'noise-snr-nf-te', title: '9. SNR, Noise Figure and Noise Temperature: the Exact Relations',
+      content: `## 9.1 Signal-to-noise ratio, defined in power
+
+A signal-to-noise ratio compares two POWERS. Both have to be read at one node
+of the chain, through one filter, or the comparison means nothing:
+
+$$\\mathrm{SNR} = \\frac{P_s}{P_n}$$
+
+$$\\mathrm{SNR(dB)} = 10 \\log_{10}\\!\\left(\\frac{P_s}{P_n}\\right) = P_s(\\mathrm{dBm}) - P_n(\\mathrm{dBm})$$
+
+The second form is the one to reach for on an exam: in decibel-milliwatts, SNR
+is a subtraction. When the two quantities are given as voltages across a common
+resistance, the powers go as the squares, so
+
+$$\\mathrm{SNR(dB)} = 20 \\log_{10}\\!\\left(\\frac{V_s}{V_n}\\right)$$
+
+The 20 is not a second convention. It is the 10 with the squaring folded in,
+and it is valid only when both voltages see the same impedance.
+
+### Worked Example 9.1 — From dBm to a decision
+
+A wanted signal arrives at $-85\\ \\mathrm{dBm}$ in the 200 kHz channel of
+Worked Example 6.1, where the noise power was $-120.965\\ \\mathrm{dBm}$.
+
+$$\\mathrm{SNR} = -85 - \\left(-120.965\\right) = 35.965\\ \\mathrm{dB}$$
+
+In linear terms that is $10^{3.5965} = 3949$, so the signal carries about four
+thousand times the noise power. If the demodulator needs 12 dB, there are
+nearly 24 dB in hand — and Section 11 turns exactly that arithmetic around to
+find the weakest signal the receiver can still use.
+
+## 9.2 Noise figure, and the condition hidden in its definition
+
+Noise figure asks how much SNR a device destroys:
+
+$$F = \\frac{\\mathrm{SNR}_{\\mathrm{in}}}{\\mathrm{SNR}_{\\mathrm{out}}}$$
+
+$$\\mathrm{NF(dB)} = 10 \\log_{10} F$$
+
+There is a condition attached that is easy to miss and impossible to work
+without: the SOURCE must be at $T_0 = 290\\ \\mathrm{K}$. Without it the ratio
+is not a property of the device at all, because feeding an amplifier from a
+colder source makes it look worse and from a hotter source makes it look
+better, with no change to the hardware.
+
+With that condition, write the output noise as the amplified input noise plus
+whatever the device adds:
+
+$$N_{\\mathrm{out}} = G\\, k T_0 B + N_{\\mathrm{added}}$$
+
+Because the signal is amplified by the same $G$, the SNR ratio reduces to a
+noise ratio, and the definition unpacks to
+
+$$F = \\frac{N_{\\mathrm{out}}}{G\\, k T_0 B} = 1 + \\frac{N_{\\mathrm{added}}}{G\\, k T_0 B}$$
+
+The leading 1 is the source noise, which no device can remove. Everything above
+1 is the device's own contribution, which is why $F \\ge 1$ always and
+$\\mathrm{NF} \\ge 0\\ \\mathrm{dB}$ always.
+
+## 9.3 Noise temperature is the same statement in kelvin
+
+Define the equivalent input noise temperature $T_e$ as the temperature a
+fictitious extra source at the input would need in order to produce
+$N_{\\mathrm{added}}$ through a noiseless version of the device:
+
+$$N_{\\mathrm{added}} = G\\, k T_e B$$
+
+Substituting into the previous line gives the exact relation between the two
+scales, which is worth committing to memory in both directions:
+
+$$F = 1 + \\frac{T_e}{T_0}$$
+
+$$T_e = \\left(F - 1\\right) T_0$$
+
+The reason both scales survive is that they are convenient in different places.
+Noise figures MULTIPLY down a chain; noise temperatures ADD. For a receiving
+station whose antenna already has a temperature, the additive scale is the only
+one that composes without algebra.
+
+| $\\mathrm{NF}$ | $F$ | $T_e$ | Comment |
+|---|---|---|---|
+| 0.5 dB | 1.1220 | 35.39 K | good satellite LNA |
+| 1.0 dB | 1.2589 | 75.09 K | ordinary low-noise stage |
+| 2.0 dB | 1.5849 | 169.62 K | competent broadband amplifier |
+| 3.0 dB | 1.9953 | 288.63 K | a 3 dB attenuator at $T_0$ |
+| 6.0 dB | 3.9811 | 864.51 K | typical passive mixer |
+| 10.0 dB | 10.000 | 2610.0 K | a poor stage, or a 10 dB pad |
+
+Below about 3 dB the two columns stop tracking each other in the intuition:
+0.5 dB and 1.0 dB look adjacent, yet 75.09 K is more than twice 35.39 K.
+
+### Worked Example 9.2 — Adding temperatures, not figures
+
+A 50 K antenna feeds a 1.0 dB LNA. Find the system noise figure.
+
+The correct route adds temperatures at the antenna terminals:
+
+$$T_{\\mathrm{sys}} = 50 + \\left(10^{0.1} - 1\\right)\\left(290\\right) = 50 + 75.088 = 125.088\\ \\mathrm{K}$$
+
+$$\\mathrm{NF}_{\\mathrm{sys}} = 10 \\log_{10}\\!\\left(1 + \\frac{125.088}{290}\\right) = 1.557\\ \\mathrm{dB}$$
+
+The trap is to convert the antenna to an equivalent noise figure first,
+$10\\log_{10}(1 + 50/290) = 0.691\\ \\mathrm{dB}$, and then add decibels:
+$0.691 + 1.000 = 1.691\\ \\mathrm{dB}$. That is 0.134 dB too pessimistic, and
+the error grows with the numbers involved, because decibels of noise figure are
+not an additive quantity in the first place.
+
+## 9.4 A lossy element in front is a noise source in disguise
+
+Take a matched attenuator of loss $L$ (so its gain is $G = 1/L$) held at
+physical temperature $T_p$. Being passive and in equilibrium, its own available
+output noise corresponds to its own temperature, and the part it adds — over
+and above the attenuated source noise — turns out to be
+
+$$T_e = \\left(L - 1\\right) T_p$$
+
+$$F = 1 + \\left(L - 1\\right)\\frac{T_p}{T_0}$$
+
+Set $T_p = T_0$ and the second line collapses to the result everyone quotes,
+$F = L$: the noise figure of a passive loss equals the loss. That special case
+is so common that the general form is often forgotten, and it is the general
+form that explains cryogenic feeds.
+
+### Worked Example 9.3 — Cooling the feed line
+
+A 1.5 dB feed cable has $L = 10^{0.15} = 1.4125$. Compare its noise figure at
+$T_p = 290\\ \\mathrm{K}$ and at $T_p = 250\\ \\mathrm{K}$.
+
+At $T_p = T_0$:
+
+$$F = 1 + \\left(0.4125\\right)\\left(1.0000\\right) = 1.4125 \\quad \\Rightarrow \\quad \\mathrm{NF} = 1.500\\ \\mathrm{dB}$$
+
+At $T_p = 250\\ \\mathrm{K}$:
+
+$$F = 1 + \\left(0.4125\\right)\\!\\left(\\frac{250}{290}\\right) = 1.3556 \\quad \\Rightarrow \\quad \\mathrm{NF} = 1.321\\ \\mathrm{dB}$$
+
+Forty kelvin of cooling removed 0.179 dB. The loss did not change — the cable
+still throws away 1.5 dB of signal — but the noise it contributes fell with its
+temperature. Both effects are real and they are separate, which is the single
+most useful thing this section has to say.`,
+      examTip: 'Noise figure is defined with the source at 290 K. If a problem gives an antenna or source temperature that is not 290 K, stop using noise figures and switch to noise temperatures: they add, and the source temperature enters as just another term.',
+      importantNote: 'Never add noise figures in decibels. Convert to F, or better to T_e, combine, and convert back. Adding 0.691 dB and 1.000 dB in the antenna-plus-LNA example gives 1.691 dB where the truth is 1.557 dB.',
+    },
+    { id: 'noise-friis-derivation', title: '10. Friis Derived, Not Quoted',
+      content: `## 10.1 Two stages, from noise powers alone
+
+The cascade formula is usually presented as something to memorise. It is three
+lines of bookkeeping, and doing them once makes the result impossible to
+misapply.
+
+Start with a matched source at $T_0$, so the noise entering stage 1 is
+$k T_0 B$. Stage 1 has gain $G_1$ and noise factor $F_1$; by the definition in
+Section 9.2 its output noise is
+
+$$N_1 = G_1 F_1 k T_0 B$$
+
+Stage 2 amplifies that and adds its own $\\left(F_2 - 1\\right) k T_0 B$
+referred to ITS input:
+
+$$N_2 = G_2 N_1 + G_2 \\left(F_2 - 1\\right) k T_0 B = G_1 G_2 k T_0 B \\left[F_1 + \\frac{F_2 - 1}{G_1}\\right]$$
+
+The signal, meanwhile, has simply been multiplied by $G_1 G_2$. So the ratio of
+input SNR to output SNR is the bracket, and nothing else:
+
+$$F_{1,2} = F_1 + \\frac{F_2 - 1}{G_1}$$
+
+Repeating the step for stage 3, stage 4 and onwards produces the general form,
+in which every stage's excess noise is divided by all the gain that precedes
+it:
+
+$$F = F_1 + \\sum_{i=2}^{n} \\frac{F_i - 1}{\\prod_{j=1}^{i-1} G_j}$$
+
+The same statement in kelvin is even cleaner, because the leading 1 disappears:
+
+$$T_e = T_1 + \\frac{T_2}{G_1} + \\frac{T_3}{G_1 G_2} + \\cdots$$
+
+Two consequences follow immediately from the shape of the sum, and they are the
+whole of front-end design. First, $F_1$ is not divided by anything, so the
+first stage sets a floor that no later choice can lower. Second, once
+$G_1$ is large, every later term is crushed, which is why a low-noise amplifier
+is placed as close to the antenna as physically possible.
+
+## 10.2 A complete six-stage receiver
+
+The following chain is deliberately realistic rather than tidy: it has a lossy
+feed, a good LNA, a filter, a lossy mixer, plenty of IF gain and a mediocre
+detector.
+
+| Stage | NF | $F$ | Gain | $G$ |
+|---|---|---|---|---|
+| 1 feed cable | 1.5 dB | 1.41254 | -1.5 dB | 0.70795 |
+| 2 LNA | 1.2 dB | 1.31826 | 18.0 dB | 63.0957 |
+| 3 image filter | 2.0 dB | 1.58489 | -2.0 dB | 0.63096 |
+| 4 mixer | 7.0 dB | 5.01187 | -6.5 dB | 0.22387 |
+| 5 IF amplifier | 3.5 dB | 2.23872 | 30.0 dB | 1000.00 |
+| 6 detector | 12.0 dB | 15.8489 | 0.0 dB | 1.00000 |
+
+### Worked Example 10.1 — The cascade noise figure
+
+Apply the sum term by term, dividing each stage's excess by the running gain
+product ahead of it:
+
+$$F = 1.412538 + \\frac{0.318257}{0.707946} + \\frac{0.584893}{44.6684} + \\frac{4.011872}{28.1838} + \\frac{1.238721}{6.30957} + \\frac{14.848932}{6309.57}$$
+
+$$F = 1.412538 + 0.449550 + 0.013094 + 0.142347 + 0.196324 + 0.002353 = 2.2162$$
+
+$$\\mathrm{NF} = 10 \\log_{10}\\left(2.2162\\right) = 3.456\\ \\mathrm{dB}$$
+
+The distribution of blame is the interesting part. The feed cable alone
+contributes 1.412538 of the 2.2162, or 63.7 per cent; the LNA adds 20.3 per
+cent; the four remaining stages share the last 16.0 per cent between them. A
+1.5 dB length of coaxial cable is the worst component in a receiver containing a
+7 dB mixer.
+
+### Worked Example 10.2 — Confirming it by propagating real powers
+
+The formula above is an algebraic shortcut. The honest way to check it is to
+push an actual signal and an actual noise power through the chain and measure
+what happened to their ratio.
+
+Take $B = 200\\ \\mathrm{kHz}$, so $k T_0 B = -120.965\\ \\mathrm{dBm}$, and an
+input signal of $-85\\ \\mathrm{dBm}$. At each stage, multiply the noise by the
+gain and add that stage's own $\\left(F - 1\\right) k T_0 B$ before amplifying:
+
+$$N_{\\mathrm{out}} = G\\left[N_{\\mathrm{in}} + \\left(F - 1\\right) k T_0 B\\right]$$
+
+| After stage | Signal | Noise | SNR | Implied NF so far |
+|---|---|---|---|---|
+| input | -85.000 dBm | -120.965 dBm | 35.965 dB | — |
+| 1 feed cable | -86.500 dBm | -120.965 dBm | 34.465 dB | 1.500 dB |
+| 2 LNA | -68.500 dBm | -101.765 dBm | 33.265 dB | 2.700 dB |
+| 3 image filter | -70.500 dBm | -103.734 dBm | 33.234 dB | 2.730 dB |
+| 4 mixer | -77.000 dBm | -109.917 dBm | 32.917 dB | 3.048 dB |
+| 5 IF amplifier | -47.000 dBm | -79.513 dBm | 32.513 dB | 3.452 dB |
+| 6 detector | -47.000 dBm | -79.509 dBm | 32.509 dB | 3.456 dB |
+
+The last row reproduces 3.456 dB, computed by a completely different route: no
+Friis sum appears anywhere in the table, only repeated application of the
+definition of noise figure. Notice also that the noise power out of the feed
+cable is unchanged at $-120.965\\ \\mathrm{dBm}$ — a matched attenuator at $T_0$
+passes exactly the noise it receives, while attenuating the signal, which is
+the cleanest possible demonstration that its noise figure equals its loss.
+
+![Cumulative noise figure in decibels after each of six receiver stages, drawn as a step plot for two orderings of the same hardware. With the feed cable first the running total starts at 1.500 dB, jumps to 2.700 dB after the LNA and finishes at 3.456 dB; with the LNA first it starts at 1.200 dB and finishes at 2.250 dB. Both curves are almost flat after stage two.](/courses/fe-ee/figures/com3-friis-stagewise.svg)
+
+### Worked Example 10.3 — What moving one component buys
+
+Move the LNA in front of the feed cable and recompute. The gain product ahead
+of stages 3 to 6 is unchanged, so those three terms keep their values; only the
+first two change:
+
+$$F = 1.318257 + \\frac{0.412538}{63.0957} + 0.013094 + 0.142347 + 0.196324 + 0.002353 = 1.6789$$
+
+$$\\mathrm{NF} = 10 \\log_{10}\\left(1.6789\\right) = 2.250\\ \\mathrm{dB}$$
+
+The improvement is $3.456 - 2.250 = 1.206\\ \\mathrm{dB}$. Note that it is NOT
+the full 1.5 dB of cable loss, and the reason is instructive: the cable is still
+in the chain, still lossy, and still contributes $0.412538/63.0957 = 0.006538$ to
+the sum. Eighteen decibels of gain reduces its damage by a factor of 63, but
+not to zero. A mast-head amplifier recovers most of a feed loss; it does not
+delete it.
+
+## 10.3 Why loss in front costs exactly the loss
+
+For a passive element at $T_0$ ahead of any chain, $F_1 = L$ and $G_1 = 1/L$
+simultaneously. Substituting into the two-stage formula:
+
+$$F_{\\mathrm{total}} = L + \\frac{F_{\\mathrm{rest}} - 1}{1/L} = L + L\\left(F_{\\mathrm{rest}} - 1\\right) = L\\, F_{\\mathrm{rest}}$$
+
+A product in linear terms is a sum in decibels, so
+
+$$\\mathrm{NF}_{\\mathrm{total}} = L_{\\mathrm{dB}} + \\mathrm{NF}_{\\mathrm{rest}}$$
+
+Loss in front adds one-for-one to the system noise figure, exactly, with no
+dependence on what follows it. Checking against the six-stage chain: the
+subchain from the LNA onwards has $F = 2.216205/1.412538 = 1.56895$, or
+1.956 dB, and $1.500 + 1.956 = 3.456\\ \\mathrm{dB}$. The most common cascade
+mistake is to use $F_1 = L$ while forgetting $G_1 = 1/L$; that route would give
+$1.412538 + 0.56895 = 1.9815$, or 2.97 dB, understating the damage by
+0.49 dB in this chain and by much more when the following stages are poor.`,
+      examTip: 'Write the running gain product in a column before you start summing. Almost every cascade error is a term divided by the wrong product — usually including the stage own gain, which belongs to the NEXT term, not this one.',
+      importantNote: 'The improvement from moving an LNA ahead of a lossy feed is slightly less than the feed loss, because the feed still contributes (L-1)/G_LNA after the move. Quoting the full loss as the improvement is a small but systematic over-claim.',
+    },
+    { id: 'noise-sensitivity-chain', title: '11. Sensitivity: Turning the Noise Floor into a Usable Number',
+      content: `## 11.1 The minimum discernible signal
+
+Everything so far assembles into one line. The weakest signal a receiver can
+deliver at a stated output SNR is the noise floor, widened by the bandwidth,
+raised by the noise figure, and raised again by whatever SNR the demodulator
+demands:
+
+$$P_{\\min}(\\mathrm{dBm}) = -174 + 10 \\log_{10} B + \\mathrm{NF} + \\mathrm{SNR}_{\\mathrm{req}}$$
+
+Each term is a design lever, and each has a different price. Bandwidth is set by
+the signal you must pass, so it is rarely free to change. Noise figure is bought
+with front-end components and physical placement. Required SNR is set by the
+modulation and the coding, which is exactly where the companion chapter on
+channel capacity takes over.
+
+![Minimum discernible signal in dBm against noise bandwidth on a logarithmic axis, drawn for noise figures of 2, 6 and 10 dB at a required signal-to-noise ratio of 12 dB. The three lines are parallel because noise figure is a pure offset; the marked design point at 200 kHz and 3.456 dB noise figure gives -105.5 dBm.](/courses/fe-ee/figures/com3-sensitivity-map.svg)
+
+### Worked Example 11.1 — Sensitivity of the six-stage receiver
+
+The chain of Section 10.2 has $\\mathrm{NF} = 3.456\\ \\mathrm{dB}$. In its
+200 kHz channel, with a demodulator needing 12 dB:
+
+$$P_{\\min} = -174 + 53.010 + 3.456 + 12 = -105.534\\ \\mathrm{dBm}$$
+
+Check it against the propagation table of Worked Example 10.2: an input of
+$-85\\ \\mathrm{dBm}$ produced 32.509 dB of output SNR, which is 20.509 dB more
+than the 12 dB required. Lowering the input by that margin gives
+$-85 - 20.509 = -105.509\\ \\mathrm{dBm}$, agreeing with the formula to
+0.025 dB — the same rounding in $-174$ that appeared in Section 6.2, and
+nothing more.
+
+### Worked Example 11.2 — Paying for bandwidth
+
+The same receiver is asked to handle a 1 MHz channel instead. What does it cost?
+
+$$P_{\\min} = -174 + 60.000 + 3.456 + 12 = -98.544\\ \\mathrm{dBm}$$
+
+Sensitivity has degraded by $60.000 - 53.010 = 6.990\\ \\mathrm{dB}$, purely
+because the filter now admits five times the noise. That is
+$10\\log_{10}(5) = 6.990\\ \\mathrm{dB}$, and it can be read off without
+recomputing anything else: at fixed noise figure and fixed required SNR,
+sensitivity tracks bandwidth decibel for decibel.
+
+### Worked Example 11.3 — Working backwards to a noise-figure budget
+
+A designer must hear $-110\\ \\mathrm{dBm}$ in a 200 kHz channel with 10 dB of
+output SNR. What system noise figure is allowed?
+
+Rearranging the sensitivity equation:
+
+$$\\mathrm{NF} = P_{\\min} - \\left(-174\\right) - 10 \\log_{10} B - \\mathrm{SNR}_{\\mathrm{req}}$$
+
+$$\\mathrm{NF} = -110 + 174 - 53.010 - 10 = 0.990\\ \\mathrm{dB}$$
+
+Under one decibel for the WHOLE receiver, which immediately rules out putting
+1.5 dB of cable in front of anything — Section 10.3 showed that loss in front
+adds one-for-one, so the cable alone would exceed the budget before the LNA is
+even specified. The answer to this class of question is almost always a
+mast-head amplifier.
+
+## 11.2 One number for a receiving station: G/T
+
+Where an antenna is part of the system, gain and noise are traded against each
+other constantly, and it is convenient to collapse both into a single figure of
+merit:
+
+$$\\frac{G}{T}\\ \\left(\\mathrm{dB/K}\\right) = G\\left(\\mathrm{dBi}\\right) - 10 \\log_{10} T_{\\mathrm{sys}}$$
+
+Building $T_{\\mathrm{sys}}$ needs the additive scale of Section 9.3, referred
+to the antenna terminals. For an antenna of noise temperature $T_A$ behind a
+feed of loss $L$ at physical temperature $T_p$, followed by a receiver of noise
+temperature $T_R$:
+
+$$T_{\\mathrm{sys}} = T_A + \\left(L - 1\\right) T_p + L\\, T_R$$
+
+The factor $L$ on the last term is the Friis division in disguise: the feed has
+gain $1/L$, so the receiver's contribution referred to the antenna is
+multiplied by $L$.
+
+### Worked Example 11.4 — A complete earth-station budget
+
+An antenna sees $T_A = 60\\ \\mathrm{K}$ of sky, feeds through 0.8 dB of
+waveguide at 290 K, and reaches a 0.9 dB receiver. The dish has 40 dBi of gain.
+
+$$L = 10^{0.08} = 1.20226, \\qquad \\left(L - 1\\right) T_p = \\left(0.20226\\right)\\left(290\\right) = 58.657\\ \\mathrm{K}$$
+
+$$T_R = \\left(10^{0.09} - 1\\right)\\left(290\\right) = 66.778\\ \\mathrm{K}, \\qquad L\\, T_R = 80.285\\ \\mathrm{K}$$
+
+$$T_{\\mathrm{sys}} = 60 + 58.657 + 80.285 = 198.94\\ \\mathrm{K}$$
+
+$$\\frac{G}{T} = 40 - 10 \\log_{10}\\left(198.94\\right) = 40 - 22.987 = 17.013\\ \\mathrm{dB/K}$$
+
+The lesson is in the middle term. Eight tenths of a decibel of waveguide
+contributed 58.657 K, nearly as much as the whole sky, and it also multiplied
+the receiver's own 66.778 K up to 80.285 K. Removing that waveguide — by
+mounting the receiver at the feed — would drop $T_{\\mathrm{sys}}$ to
+$60 + 66.778 = 126.78\\ \\mathrm{K}$ and lift $G/T$ to 18.970 dB/K, a gain of
+1.957 dB for no change in the dish at all.
+
+Because $G/T$ is a difference of decibels, +3 dB of antenna gain and a halving
+of $T_{\\mathrm{sys}}$ are worth exactly the same to the link. That equivalence
+is the whole point of the figure of merit: it tells you where the next decibel
+is cheapest, and for a large reflector it is almost never in the reflector.`,
+      examTip: 'MDS = -174 + 10 log B + NF + SNR_required covers most receiver questions in one line, forwards for sensitivity and backwards for a noise-figure budget. Check which bandwidth the question means: the channel bandwidth, not the RF front-end bandwidth.',
+      importantNote: 'In a G/T budget the receiver noise temperature must be multiplied by the feed loss L when referred to the antenna. Forgetting that factor understates T_sys and flatters G/T — here it would hide 13.5 K out of 198.94 K.',
+    },
+    { id: 'noise-problem-set-e', title: '12. Problem Set E: Noise Power, Noise Voltage and Spectra',
+      content: `## 12.1 Problem Set E: Noise Power, Noise Voltage and Spectra
+
+Attempt each item first. Each solution below identifies the specific
+misconception the question was designed to catch, and prints the value that
+misconception yields, so a wrong answer diagnoses itself.
+
+**E1.** A receiver channel has a noise bandwidth of 4 MHz. Find the available
+noise power at its input at the standard reference temperature, in dBm.
+
+**E2.** A 10 kilohm resistor sits at $T_0$ and is measured in a 1 MHz noise
+bandwidth. Find (a) its open-circuit rms noise voltage and (b) the noise power
+it can deliver to a matched load, in dBm.
+
+**E3.** A front end's selectivity comes from a single-pole low pass with a 3 dB
+bandwidth of 100 kHz. What noise bandwidth should be used, and how much noise
+power is missed by using the 3 dB figure instead?
+
+**E4.** A photodiode carries 200 microamp into a transimpedance amplifier with
+a 50 kilohm feedback resistor, in a 1 MHz bandwidth. Which noise source
+dominates at the summing node, and by how many decibels?
+
+**E5.** A 2 kilohm and an 8 kilohm resistor are connected in parallel at $T_0$.
+Find the open-circuit noise voltage in a 50 kHz noise bandwidth.
+
+**E6.** A 16-bit converter with a 4 V full-scale span samples onto 5 pF at
+$T_0$. Does its kT/C sampling noise stay below half a least significant bit?
+
+### Worked Solutions to Problem Set E
+
+**E1.** The bandwidth term is
+
+$$10 \\log_{10}\\!\\left(4 \\times 10^{6}\\right) = 66.021\\ \\mathrm{dB}$$
+
+$$P_n = -174 + 66.021 = -107.979\\ \\mathrm{dBm} \\approx -108.0\\ \\mathrm{dBm}$$
+
+*Trap*: taking the logarithm of the number 4 rather than of 4 million, which
+gives $-174 + 6.021 = -167.98\\ \\mathrm{dBm}$ — sixty decibels adrift, and the
+same kind of prefix slip that once put a free-space path loss out by exactly
+60 dB in a published link budget. Write the bandwidth in hertz before taking
+any logarithm.
+
+**E2.** (a) With $R = 10^{4}\\ \\Omega$ and $B = 10^{6}\\ \\mathrm{Hz}$:
+
+$$v_n = \\sqrt{4 k T_0 \\left(10^{4}\\right)\\left(10^{6}\\right)} = 1.26552 \\times 10^{-5}\\ \\mathrm{V} = 12.655\\ \\mu\\mathrm{V}$$
+
+(b) The available power carries no resistance at all:
+
+$$P_{\\mathrm{av}} = k T_0 B = 4.0039 \\times 10^{-15}\\ \\mathrm{W} = -113.975\\ \\mathrm{dBm}$$
+
+*Trap*: computing $v_n^2/R$ with the FULL open-circuit voltage, as though the
+load saw all of it. That gives $-107.95\\ \\mathrm{dBm}$, exactly 6.02 dB too
+high, because the matched load sees half the voltage and therefore a quarter of
+that power.
+
+**E3.** For a single pole the equivalent noise bandwidth is
+
+$$B_n = \\frac{\\pi}{2}\\left(100\\ \\mathrm{kHz}\\right) = 157.08\\ \\mathrm{kHz}$$
+
+$$P_n = -174 + 10 \\log_{10}\\left(157{,}080\\right) = -174 + 51.961 = -122.039\\ \\mathrm{dBm}$$
+
+Using the 3 dB figure instead gives $-174 + 50 = -124.0\\ \\mathrm{dBm}$.
+
+*Trap*: that 3 dB answer, which understates the noise by
+$10\\log_{10}(\\pi/2) = 1.961\\ \\mathrm{dB}$. A sensitivity specification
+written that way is optimistic by nearly two decibels, and the hardware will not
+meet it.
+
+**E4.** Compare like with like — both as currents at the summing node.
+
+$$i_{\\mathrm{shot}} = \\sqrt{2 q \\left(2 \\times 10^{-4}\\right)\\left(10^{6}\\right)} = 8.005\\ \\mathrm{nA}$$
+
+$$i_{\\mathrm{th}} = \\sqrt{\\frac{4 k T_0 \\left(10^{6}\\right)}{5 \\times 10^{4}}} = 0.566\\ \\mathrm{nA}$$
+
+Shot noise dominates by a factor of 14.14 in current, which is
+$20\\log_{10}(14.14) = 23.01\\ \\mathrm{dB}$ in power. As a sanity check, the
+crossover current from Worked Example 7.2 is
+$0.049981/50{,}000 = 1.0\\ \\mu\\mathrm{A}$, and the diode is running two
+hundred times above it.
+
+*Trap*: comparing the shot noise CURRENT against the feedback resistor's
+thermal noise VOLTAGE of 28.30 microvolt and declaring the resistor the winner.
+Multiplied by the same 50 kilohm, the shot noise is 400.3 microvolt at the
+output against the resistor's 28.30 microvolt — the opposite conclusion.
+
+**E5.** Build the Thevenin equivalent first:
+
+$$R_{\\mathrm{eq}} = \\frac{\\left(2000\\right)\\left(8000\\right)}{2000 + 8000} = 1600\\ \\Omega$$
+
+$$v_n = \\sqrt{4 k T_0 \\left(1600\\right)\\left(5 \\times 10^{4}\\right)} = 1.132\\ \\mu\\mathrm{V}$$
+
+*Trap*: adding the resistances instead of combining them in parallel, which
+gives 10 kilohm and $2.830\\ \\mu\\mathrm{V}$ — too high by
+$\\sqrt{10000/1600} = 2.5$, or 7.96 dB in power. Parallel resistors are
+QUIETER than either one alone, which is the opposite of the intuition that more
+components mean more noise.
+
+**E6.** The sampled noise is
+
+$$v_{C,\\mathrm{rms}} = \\sqrt{\\frac{k T_0}{C}} = \\sqrt{\\frac{4.003882 \\times 10^{-21}}{5 \\times 10^{-12}}} = 28.30\\ \\mu\\mathrm{V}$$
+
+One LSB is $4/65536 = 61.035\\ \\mu\\mathrm{V}$, so half an LSB is
+$30.518\\ \\mu\\mathrm{V}$. At 28.30 microvolt the design passes, but with only
+$20\\log_{10}(30.518/28.298) = 0.66\\ \\mathrm{dB}$ of margin, which is not
+enough to survive a hotter part or a smaller capacitor.
+
+*Trap*: comparing against a whole LSB rather than half of one, which reports a
+comfortable 6.7 dB of margin where there is 0.66 dB. The half-LSB convention
+exists because the quantiser already contributes its own
+$q_{\\mathrm{LSB}}/\\sqrt{12}$, and two comparable noise sources add in power.`,
+      examTip: 'Before any logarithm, write every quantity in base units: hertz, ohms, watts. The single most expensive error in this subject is a prefix that never made it into the calculator, and it always lands as a clean multiple of 10, 20 or 60 dB.',
+      importantNote: 'Available noise power is v_n squared over 4R, not over R. The factor of four is the matched divider, and dropping it inflates every answer by exactly 6.02 dB.',
+    },
+    { id: 'noise-problem-set-f', title: '13. Problem Set F: Noise Figure, Cascades and Sensitivity',
+      content: `## 13.1 Problem Set F: Noise Figure, Cascades and Sensitivity
+
+**F1.** Stage 1 has $\\mathrm{NF} = 2\\ \\mathrm{dB}$ and 12 dB of gain; stage 2
+has $\\mathrm{NF} = 8\\ \\mathrm{dB}$. Find the system noise figure.
+
+**F2.** A 3 dB attenuator at $T_0$ is inserted in front of the chain in F1.
+Find the new system noise figure two ways, and reconcile them.
+
+**F3.** An amplifier has an equivalent noise temperature of 120 K. Find its
+noise figure. It is then fed from an antenna whose noise temperature is 30 K;
+find the system noise temperature and the system noise figure.
+
+**F4.** A receiver has $\\mathrm{NF} = 6\\ \\mathrm{dB}$, a 25 MHz noise
+bandwidth, and needs 15 dB of SNR at the demodulator. Find its sensitivity.
+
+**F5.** The receiver of F4 is connected to its antenna through 2.5 dB of feed
+line at $T_0$. Find the new sensitivity. Then place a 1.0 dB, 20 dB-gain LNA at
+the antenna, ahead of the feed, and find the sensitivity again. Compare with
+mounting the same LNA at the receiver end of the feed.
+
+**F6.** A dish of 38 dBi gain sees a sky temperature of 25 K through a 0.5 dB
+feed at $T_0$, into a receiver of noise temperature 40 K. Find $G/T$.
+
+### Worked Solutions to Problem Set F
+
+**F1.** Convert everything to linear first:
+$F_1 = 10^{0.2} = 1.5849$, $G_1 = 10^{1.2} = 15.8489$,
+$F_2 = 10^{0.8} = 6.3096$.
+
+$$F = 1.5849 + \\frac{6.3096 - 1}{15.8489} = 1.5849 + 0.3350 = 1.9199$$
+
+$$\\mathrm{NF} = 10 \\log_{10}\\left(1.9199\\right) = 2.833\\ \\mathrm{dB}$$
+
+*Trap*: dividing $F_2$ instead of $F_2 - 1$ by the gain, which gives
+$1.5849 + 0.3981 = 1.9830$, or 2.973 dB. The subtraction removes the source
+noise that stage 2 did not create and must not be charged for twice.
+
+**F2.** Route one uses Section 10.3: loss at $T_0$ in front adds one-for-one,
+so
+
+$$\\mathrm{NF} = 3.000 + 2.833 = 5.833\\ \\mathrm{dB}$$
+
+Route two runs Friis explicitly, with $F = L = 10^{0.3} = 1.9953$ and
+$G = 1/L = 0.5012$:
+
+$$F = 1.9953 + \\frac{1.9199 - 1}{0.5012} = 1.9953 + 1.8354 = 3.8307$$
+
+$$\\mathrm{NF} = 10 \\log_{10}\\left(3.8307\\right) = 5.833\\ \\mathrm{dB}$$
+
+The two agree exactly, as they must.
+
+*Trap*: using $F = L$ for the pad but forgetting that its gain is $1/L$, so
+dividing by 1 instead of by 0.5012. That gives
+$1.9953 + 0.9199 = 2.9152$, or 4.647 dB, understating the damage by
+1.186 dB. Both facts about a passive element are needed, every time.
+
+**F3.** From the definition,
+
+$$F = 1 + \\frac{120}{290} = 1.413793 \\quad \\Rightarrow \\quad \\mathrm{NF} = 1.504\\ \\mathrm{dB}$$
+
+Temperatures add at the antenna terminals:
+
+$$T_{\\mathrm{sys}} = 30 + 120 = 150\\ \\mathrm{K}$$
+
+$$\\mathrm{NF}_{\\mathrm{sys}} = 10 \\log_{10}\\!\\left(1 + \\frac{150}{290}\\right) = 1.811\\ \\mathrm{dB}$$
+
+*Trap*: converting the antenna to an equivalent noise figure of
+$10\\log_{10}(1 + 30/290) = 0.428\\ \\mathrm{dB}$ and adding decibels, giving
+1.931 dB. Noise figures in decibels are not additive; noise temperatures in
+kelvin are.
+
+**F4.** With $10\\log_{10}\\left(25 \\times 10^{6}\\right) = 73.979\\ \\mathrm{dB}$:
+
+$$P_{\\min} = -174 + 73.979 + 6 + 15 = -79.021\\ \\mathrm{dBm}$$
+
+*Trap*: entering the bandwidth as 25 rather than 25 million, which gives
+$-139.02\\ \\mathrm{dBm}$ — a receiver sixty decibels more sensitive than any
+that has ever been built. When an answer looks physically implausible, check
+the prefix before you check the physics.
+
+**F5.** With the feed in front, the loss adds one-for-one:
+
+$$\\mathrm{NF} = 6 + 2.5 = 8.5\\ \\mathrm{dB} \\quad \\Rightarrow \\quad P_{\\min} = -174 + 73.979 + 8.5 + 15 = -76.521\\ \\mathrm{dBm}$$
+
+Now put the LNA at the antenna. Everything behind it — feed plus receiver — has
+$F_{\\mathrm{rest}} = 10^{0.85} = 7.0795$, so with $F_1 = 10^{0.1} = 1.2589$
+and $G_1 = 100$:
+
+$$F = 1.2589 + \\frac{7.0795 - 1}{100} = 1.2589 + 0.0608 = 1.3197$$
+
+$$\\mathrm{NF} = 1.205\\ \\mathrm{dB} \\quad \\Rightarrow \\quad P_{\\min} = -174 + 73.979 + 1.205 + 15 = -83.816\\ \\mathrm{dBm}$$
+
+Mounting the same LNA at the far end of the feed instead puts the cable first,
+with $L = 10^{0.25} = 1.7783$ and $G = 0.5623$:
+
+$$F = 1.7783 + \\frac{0.2589}{0.5623} + \\frac{2.9811}{56.2341} = 1.7783 + 0.4604 + 0.0530 = 2.2917$$
+
+$$\\mathrm{NF} = 3.602\\ \\mathrm{dB} \\quad \\Rightarrow \\quad P_{\\min} = -81.419\\ \\mathrm{dBm}$$
+
+*Trap*: assuming an LNA is an LNA wherever it sits. The identical part is worth
+2.397 dB more at the mast head than at the receiver, and the whole difference
+is which side of the cable it is on.
+
+**F6.** With $L = 10^{0.05} = 1.122018$:
+
+$$\\left(L - 1\\right)T_p = \\left(0.122018\\right)\\left(290\\right) = 35.385\\ \\mathrm{K}, \\qquad L\\, T_R = \\left(1.122018\\right)\\left(40\\right) = 44.881\\ \\mathrm{K}$$
+
+$$T_{\\mathrm{sys}} = 25 + 35.385 + 44.881 = 105.266\\ \\mathrm{K}$$
+
+$$\\frac{G}{T} = 38 - 10 \\log_{10}\\left(105.266\\right) = 38 - 20.223 = 17.777\\ \\mathrm{dB/K}$$
+
+*Trap*: omitting the factor $L$ on the receiver temperature, which gives
+$T_{\\mathrm{sys}} = 100.385\\ \\mathrm{K}$ and
+$G/T = 17.983\\ \\mathrm{dB/K}$ — flattering by 0.206 dB. A half-decibel feed
+loss costs twice: once as its own added temperature, and once as a multiplier on
+everything behind it.`,
+      examTip: 'For any cascade, tabulate NF, gain, F and G before writing a single term of the sum. The tabulation takes twenty seconds and removes the two errors that account for nearly every wrong cascade answer: forgetting the minus one, and using the wrong running gain product.',
+      importantNote: 'A passive loss ahead of the chain adds its decibels directly to the system noise figure. That shortcut is exact only at T_p = 290 K; at any other physical temperature go back to F = 1 + (L-1)T_p/T_0.',
+    },
   ],
   keyTakeaways: [
-    'Thermal noise: P_n = kTB; at room temp, noise floor = -174 dBm/Hz.',
+    'Thermal noise: P_n = kTB; at T_0 = 290 K the noise floor is -174 dBm/Hz.',
     'Noise figure F = SNR_in/SNR_out; NF(dB) = 10 log_10(F); lower is better.',
     'Friis cascade: F_total = F_1 + (F_2-1)/G_1 + (F_3-1)/(G_1*G_2) + ...',
     'First stage dominates: place lowest-NF device first with maximum gain.',
@@ -2564,7 +3550,7 @@ fee_channel_cap: { topicId: 'fee_channel_cap', title: 'Channel Capacity & Shanno
 **C = B * log_2(1 + S/N)** (bits/second)
 
 - C = maximum achievable bit rate with arbitrarily low error
-- B = bandwidth (Hz), S/N = signal-to-noise ratio (LINEAR, not dB)
+- B = bandwidth (Hz), S/N = signal-to-noise ratio as a POWER RATIO, never decibels
 
 ### Key Properties
 
@@ -2601,7 +3587,7 @@ E_b/N_0 is the **universal figure of merit** for digital communication.
 
 ## 2.2 Shannon Limit for E_b/N_0
 
-At capacity: **$E_b/N_0 >= \\ln (2) = -1.59\\ \\mathrm{dB}$** (theoretical minimum)
+At capacity: **$\\left(E_b/N_0\\right)_{\\min} = \\ln 2 = 0.693$**, which is **$-1.59\\ \\mathrm{dB}$** (theoretical minimum)
 
 | Modulation | Required E_b/N_0 for BER = 10^-5 |
 |---|---|
@@ -2629,7 +3615,7 @@ C = B * log_2(1 + S/N) = 4000 * log_2(1 + 31) = 4000 * log_2(32) = 4000 * 5 = **
 
 ## 3.2 Minimum E_b/N_0 for Reliable Communication
 
-At Shannon limit: **$E_b/N_0 >= \\ln (2) = 0.693 = -1.59\\ \\mathrm{dB}$**
+At the Shannon limit: **$\\left(E_b/N_0\\right)_{\\min} = \\ln 2 = 0.693$**, which expressed in decibels is **$-1.59\\ \\mathrm{dB}$**
 
 No system can communicate reliably below this threshold, regardless of coding or modulation.
 
@@ -2815,6 +3801,1011 @@ modulation automates.
   one line to write down.`,
       examTip: 'Coding gain is measured at a fixed BER, and a code rate r multiplies your throughput by r. If a question compares two schemes, compute the spectral efficiency of each first — many "which is better" answers turn on the two ending up at the same eta.',
       importantNote: 'The -1.59 dB Shannon limit applies at vanishing spectral efficiency. At the efficiencies real systems use, the relevant bound is E_b/N_0 = (2^eta - 1)/eta, which is several decibels higher — quoting -1.59 dB as the target for a 6 bit/s/Hz link is off by nearly 12 dB.',
+    },
+    { id: 'cap-information-entropy', title: '6. Information and Entropy: What a Bit Actually Measures',
+      content: `## 6.1 Why information has to be a logarithm
+
+Capacity is measured in bits per second, so the first question is what a bit
+measures. Start from two requirements that any sensible measure of surprise must
+satisfy. A certain event must carry no information. And the information in two
+INDEPENDENT events must be the sum of the information in each, because learning
+both tells you exactly what learning them separately did.
+
+Independent probabilities multiply, and the only continuous function that turns
+multiplication into addition is the logarithm. So the information content of an
+outcome of probability $p$ has to be
+
+$$I(x) = -\\log_b p(x)$$
+
+with the minus sign making rarer outcomes more informative. The base $b$ fixes
+the unit and nothing else: $b = 2$ gives BITS, $b = e$ gives nats and
+$b = 10$ gives hartleys, and they interconvert by a constant,
+$1\\ \\mathrm{nat} = \\log_2 e = 1.4427\\ \\mathrm{bits}$. Base 2 is chosen so
+that a fair coin carries exactly one unit:
+
+$$I\\!\\left(p = \\tfrac{1}{2}\\right) = -\\log_2 \\tfrac{1}{2} = 1\\ \\mathrm{bit}$$
+
+A fair die face carries $-\\log_2(1/6) = 2.585$ bits, and an outcome of
+probability 0.01 carries $6.644$ bits. Notice that information is not
+restricted to whole numbers; only the storage of it is.
+
+## 6.2 Entropy is the average
+
+A source does not emit one outcome, it emits a stream. The average information
+per symbol is the ENTROPY:
+
+$$H(X) = -\\sum_{i} p_i \\log_2 p_i \\qquad \\left[\\mathrm{bits/symbol}\\right]$$
+
+Two bounds follow directly. Entropy is never negative, because each
+$-p\\log_2 p$ term is non-negative for $0 \\le p \\le 1$. And for an alphabet of
+$M$ symbols it is largest when all symbols are equally likely:
+
+$$0 \\le H(X) \\le \\log_2 M$$
+
+The upper bound says that a source whose symbols are equally likely is the one
+you can compress least, because every symbol is a full surprise.
+
+### Worked Example 6.1 — A source whose entropy is exact
+
+A source emits four symbols with probabilities $1/2$, $1/4$, $1/8$, $1/8$.
+
+$$H = \\frac{1}{2}\\left(1\\right) + \\frac{1}{4}\\left(2\\right) + \\frac{1}{8}\\left(3\\right) + \\frac{1}{8}\\left(3\\right) = 1.75\\ \\mathrm{bits/symbol}$$
+
+A fixed-length code needs $\\log_2 4 = 2$ bits per symbol. The variable-length
+assignment 0, 10, 110, 111 has exactly the lengths 1, 2, 3, 3 that the
+information contents call for, so its average length is 1.75 bits — it meets
+the entropy bound with nothing to spare. The saving over the fixed-length code
+is $\\left(2 - 1.75\\right)/2 = 12.5$ per cent, and no lossless scheme can do
+better on this source.
+
+### Worked Example 6.2 — A source whose entropy is not reachable
+
+Now take probabilities 0.4, 0.3, 0.2, 0.1.
+
+$$H = -\\left[0.4\\log_2 0.4 + 0.3\\log_2 0.3 + 0.2\\log_2 0.2 + 0.1\\log_2 0.1\\right] = 1.8464\\ \\mathrm{bits/symbol}$$
+
+Building a Huffman code by repeatedly merging the two least likely symbols
+gives lengths 1, 2, 3, 3, so the average length is
+
+$$\\bar{L} = 0.4\\left(1\\right) + 0.3\\left(2\\right) + 0.2\\left(3\\right) + 0.1\\left(3\\right) = 1.9\\ \\mathrm{bits/symbol}$$
+
+That is 0.054 bits above the entropy, and the gap exists because code lengths
+must be whole numbers while $-\\log_2 0.4 = 1.322$ is not. The source coding
+theorem guarantees only $\\bar{L} \\ge H$, with equality reachable when every
+probability is a power of one half. Coding blocks of symbols together shrinks
+the gap; it never closes it for a general source.
+
+## 6.3 Binary entropy and the channel that loses everything
+
+For a two-outcome source the entropy collapses to a single-variable function
+that is worth recognising on sight:
+
+$$H(p) = -p\\log_2 p - \\left(1 - p\\right)\\log_2\\!\\left(1 - p\\right)$$
+
+It is zero at both ends, symmetric about $p = 0.5$, and equal to exactly one
+bit there. Its shape also answers the question of how much a noisy binary
+channel can carry. If a binary symmetric channel flips each bit independently
+with probability $p$, its capacity in bits per channel use is
+
+$$C_{\\mathrm{BSC}} = 1 - H(p)$$
+
+![Binary entropy H(p) plotted against p from 0 to 1, together with 1 minus H(p), the capacity of a binary symmetric channel. H rises from zero to exactly 1 bit at p equal to one half and falls symmetrically; the capacity curve is its mirror image, touching zero at p equal to one half. Marked points show H(0.01) = 0.081, H(0.1) = 0.469 and H(0.5) = 1.000.](/courses/fe-ee/figures/com3-binary-entropy.svg)
+
+### Worked Example 6.3 — What a 10 per cent error rate costs
+
+A binary channel flips one bit in ten. How much information survives?
+
+$$H(0.1) = -0.1\\log_2 0.1 - 0.9\\log_2 0.9 = 0.3322 + 0.1368 = 0.4690\\ \\mathrm{bits}$$
+
+$$C_{\\mathrm{BSC}} = 1 - 0.4690 = 0.5310\\ \\mathrm{bits\\ per\\ use}$$
+
+So a channel that is right nine times out of ten carries barely half a bit per
+transmission. At $p = 0.5$ the capacity is zero, which is the correct and
+slightly startling statement that a channel whose output is independent of its
+input conveys nothing at all — you would do just as well flipping your own
+coin. At $p = 0.01$ the capacity is $1 - 0.0808 = 0.9192$ bits, so even a one
+per cent error rate costs eight per cent of the channel.
+
+### Worked Example 6.4 — From entropy to a bit rate
+
+A sensor emits 2000 symbols per second from the source of Worked Example 6.1.
+What is the smallest channel bit rate that can carry it losslessly?
+
+The entropy RATE is the entropy per symbol times the symbol rate:
+
+$$R_{\\min} = \\left(2000\\right)\\left(1.75\\right) = 3500\\ \\mathrm{bits/s}$$
+
+A fixed-length code would demand 4000 bits per second for the same stream. The
+difference is not a trick of the encoding; it is the redundancy that was in the
+source all along.`,
+      examTip: 'Information is -log2(p) for one outcome and the probability-weighted average of that for a source. If an exam asks for "the information content" of a message, it wants the entropy times the number of symbols, not the number of symbols times the alphabet width.',
+      importantNote: 'Entropy is an average of logarithms, so it is almost never a whole number. A Huffman code can only use whole-number lengths, which is why its average length sits at or above H, and why equality happens only when every probability is a power of one half.',
+    },
+    { id: 'cap-nyquist-limit', title: '7. The Nyquist Rate Limit, Derived',
+      content: `## 7.1 How many symbols a bandwidth will hold
+
+Before noise enters the argument at all there is a purely geometric limit. A
+channel of bandwidth $B$ cannot carry independent pulses faster than a certain
+rate without them smearing into one another, and the rate is set by the same
+sampling relation that governs digitising a waveform, read backwards.
+
+A pulse shaped to occupy a baseband bandwidth $B$ has a time response whose
+zero crossings are spaced $1/(2B)$ apart. Sending one symbol per zero-crossing
+interval therefore lets every symbol be sampled at an instant where all other
+symbols happen to be zero, which is Nyquist's criterion for no intersymbol
+interference. That gives the maximum SIGNALLING rate:
+
+$$R_{s,\\max} = 2B \\qquad \\left[\\mathrm{symbols/s}\\right]$$
+
+Faster than that and the zero crossings no longer line up, so neighbouring
+symbols contribute to each other's sample and the eye closes.
+
+Each symbol chosen from $M$ distinguishable levels carries $\\log_2 M$ bits, so
+the noiseless capacity is
+
+$$C_{\\mathrm{Nyquist}} = 2 B \\log_2 M \\qquad \\left[\\mathrm{bits/s}\\right]$$
+
+Real systems never quite reach $2B$, because a brick-wall pulse is not
+realisable. A raised-cosine shaping filter with roll-off factor $\\alpha$ costs
+a fraction $\\alpha$ of extra bandwidth, so on a bandpass channel of width $B$
+the usable symbol rate is
+
+$$R_s = \\frac{B}{1 + \\alpha}$$
+
+with $\\alpha$ typically between 0.2 and 0.35. Both expressions matter: the
+first is the theoretical ceiling an exam question will use, the second is what
+a real modem achieves.
+
+### Worked Example 7.1 — Levels into bits
+
+A 3 kHz baseband channel signals at the Nyquist rate with 16 levels per symbol.
+
+$$R_s = 2\\left(3000\\right) = 6000\\ \\mathrm{symbols/s}$$
+
+$$C = \\left(6000\\right)\\log_2 16 = \\left(6000\\right)\\left(4\\right) = 24{,}000\\ \\mathrm{bits/s}$$
+
+Raising the alphabet to 256 levels doubles the bits per symbol and therefore
+doubles the rate to 48 kbps. Notice how weak that lever is: the alphabet grew
+by a factor of sixteen and the rate only doubled, because bits go as the
+LOGARITHM of the level count.
+
+### Worked Example 7.2 — Working back to an alphabet
+
+How many levels does 64 kbps need in a 4 kHz baseband channel?
+
+$$R_s = 2\\left(4000\\right) = 8000\\ \\mathrm{symbols/s} \\quad \\Rightarrow \\quad \\log_2 M = \\frac{64{,}000}{8000} = 8$$
+
+$$M = 2^{8} = 256\\ \\mathrm{levels}$$
+
+## 7.2 Where Nyquist stops and Shannon starts
+
+The Nyquist expression has no ceiling. Push $M$ high enough and it promises any
+rate you like, which cannot be true — the levels get closer together and at
+some point noise makes neighbouring levels indistinguishable. Nyquist counts
+dimensions; it says nothing about how finely each dimension can be divided.
+That is exactly the gap Shannon's theorem fills.
+
+![Bit rate against the number of levels per symbol on a base-two logarithmic axis, for a 3 kHz channel signalling at the Nyquist rate. The Nyquist line rises without limit as levels are added, while horizontal ceilings mark the Shannon capacity at 20 dB signal-to-noise ratio, 19.97 kbps, and at 30 dB, 29.90 kbps. The Nyquist line crosses the 20 dB ceiling between 8 and 16 levels.](/courses/fe-ee/figures/com3-nyquist-levels.svg)
+
+### Worked Example 7.3 — When extra levels stop helping
+
+The 3 kHz channel of Worked Example 7.1 has a signal-to-noise ratio of 20 dB.
+Is 16-level signalling sensible?
+
+Shannon's ceiling at $S/N = 100$ is
+
+$$C = \\left(3000\\right)\\log_2\\left(101\\right) = \\left(3000\\right)\\left(6.658\\right) = 19{,}975\\ \\mathrm{bits/s}$$
+
+Nyquist offered 24,000 bits per second with 16 levels, which exceeds the
+ceiling. Those 16 levels cannot all be told apart at 20 dB, so the extra rate is
+imaginary: the errors it produces destroy more information than the extra levels
+carry. The largest alphabet the channel supports is the one satisfying
+$2B\\log_2 M \\le C$, here $\\log_2 M \\le 3.329$, so $M = 8$ and 18 kbps. To use
+16 levels honestly the channel needs $S/N \\ge 2^{4} - 1 = 15$, or
+$11.76\\ \\mathrm{dB}$ of SNR per DIMENSION, which after accounting for the two
+dimensions per symbol is the 20 dB region — the two limits meet, as they must.`,
+      examTip: 'Nyquist gives 2B log2(M) and takes no account of noise; Shannon gives B log2(1 + S/N) and takes no account of the alphabet. Compute both and take the SMALLER — a question that offers only one of them is usually testing whether you notice the other.',
+      importantNote: 'The factor of 2 in 2B belongs to a BASEBAND channel of bandwidth B. For a bandpass channel of the same width the usable symbol rate is B/(1 + alpha), because the two quadrature carriers already supply the second dimension.',
+    },
+    { id: 'cap-shannon-terms', title: '8. Shannon-Hartley, Term by Term',
+      content: `## 8.1 What each factor is doing
+
+$$C = B \\log_2\\!\\left(1 + \\frac{S}{N}\\right) \\qquad \\left[\\mathrm{bits/s}\\right]$$
+
+Every symbol in that line earns its place, and the theorem becomes memorable
+once each is attached to a physical count.
+
+$B$ counts DIMENSIONS. Over an interval $T$ a channel of bandwidth $B$ supports
+$2BT$ independent real numbers, by the same sampling argument that produced
+Nyquist's rate. So bandwidth is not a rate, it is a supply of degrees of
+freedom, which is why capacity scales with it linearly.
+
+$S/N$ counts LEVELS within each dimension. The received value in each dimension
+is the transmitted level plus a noise sample of mean-square $N$, so two levels
+are distinguishable only if they differ by more than the noise. Total received
+power is $S + N$ and noise power is $N$, so the number of distinguishable
+levels along one dimension is of order $\\sqrt{\\left(S+N\\right)/N}$, and each
+one carries $\\log_2$ of itself in bits.
+
+Multiplying the two counts and dividing by $T$ gives
+
+$$C = \\frac{1}{T}\\left(2BT\\right)\\log_2\\!\\sqrt{1 + \\frac{S}{N}} = B\\log_2\\!\\left(1 + \\frac{S}{N}\\right)$$
+
+The factor of one half from the square root exactly cancels the factor of two
+in the dimension count, which is why the theorem has no stray 2 in it.
+
+The single most common error in using it is arithmetic rather than conceptual:
+$S/N$ must be LINEAR. A signal-to-noise ratio quoted in decibels has to be
+converted first:
+
+$$\\frac{S}{N} = 10^{\\mathrm{SNR(dB)}/10}$$
+
+![Capacity per hertz against signal-to-noise ratio in decibels from -20 to 40 dB. The exact curve log2(1 + S/N) is drawn with its two asymptotes: a straight line of slope one bit per 3.01 dB at high SNR, and a line proportional to the linear power ratio, 1.4427 S/N, at low SNR. Marked points sit at 0, 10, 20 and 30 dB.](/courses/fe-ee/figures/com3-capacity-snr.svg)
+
+## 8.2 The two straight lines the curve hides
+
+At high SNR the 1 is negligible and the logarithm becomes a pure conversion of
+decibels:
+
+$$C/B \\approx \\log_2\\!\\left(\\frac{S}{N}\\right) = \\frac{\\mathrm{SNR(dB)}}{10\\log_{10} 2} = \\frac{\\mathrm{SNR(dB)}}{3.0103}$$
+
+Every 3.01 dB buys exactly one more bit per second per hertz, and every 10 dB
+buys 3.32. At low SNR the logarithm linearises instead, using
+$\\log_2(1+x) \\approx x\\log_2 e$:
+
+$$C/B \\approx 1.4427\\,\\frac{S}{N}$$
+
+so capacity becomes proportional to power rather than to its logarithm. That
+crossover is the whole reason wideband, low-SNR systems behave so differently
+from narrowband, high-SNR ones, and it is the subject of the next section.
+
+### Worked Example 8.1 — Capacity from a decibel SNR
+
+A 3 kHz voice channel has a 10 dB signal-to-noise ratio.
+
+$$\\frac{S}{N} = 10^{10/10} = 10$$
+
+$$C = \\left(3000\\right)\\log_2\\left(11\\right) = \\left(3000\\right)\\left(3.4594\\right) = 10{,}378\\ \\mathrm{bits/s}$$
+
+The trap is to substitute 10 dB straight into the formula, giving
+$3000\\log_2(11)$ by accident — the same answer here, which is why the trap
+survives. Try it with 20 dB: substituting the decibels gives
+$3000\\log_2(21) = 13{,}177$ bits per second, where the correct
+$3000\\log_2(101) = 19{,}975$ is more than half as much again.
+
+### Worked Example 8.2 — A wideband channel
+
+A 20 MHz channel has a 25 dB signal-to-noise ratio.
+
+$$\\frac{S}{N} = 10^{2.5} = 316.23$$
+
+$$C = \\left(2 \\times 10^{7}\\right)\\log_2\\left(317.23\\right) = \\left(2 \\times 10^{7}\\right)\\left(8.309\\right) = 166.19\\ \\mathrm{Mbps}$$
+
+Sanity-check it against the high-SNR shortcut: $25/3.0103 = 8.305$ bits per
+second per hertz, against the exact 8.309. Above about 15 dB the shortcut is
+good to a hundredth of a bit, and it is fast enough to do in your head.
+
+### Worked Example 8.3 — Running the theorem backwards
+
+A designer needs 100 Mbps in a 20 MHz channel. What signal-to-noise ratio does
+the theorem demand, at minimum?
+
+The required spectral efficiency is
+$\\eta = 100/20 = 5\\ \\mathrm{bits/s/Hz}$, so
+
+$$\\frac{S}{N} \\ge 2^{\\eta} - 1 = 2^{5} - 1 = 31$$
+
+$$\\mathrm{SNR} \\ge 10\\log_{10}\\left(31\\right) = 14.914\\ \\mathrm{dB}$$
+
+No modulation, no code and no amount of processing can deliver 100 Mbps in
+20 MHz below 14.914 dB. Section 12 takes that floor and works out what a real
+design actually needs.`,
+      examTip: 'Convert SNR to linear, add one, take log base two, multiply by bandwidth in hertz. Four steps, always in that order. If log base two is awkward, use log2(x) = 3.3219 log10(x).',
+      importantNote: 'B in the Shannon expression is the same noise bandwidth used to compute N. If a problem gives a signal power and a noise DENSITY rather than a noise power, form N = N_0 B first, and do not reuse a noise figure from a different bandwidth.',
+    },
+    { id: 'cap-infinite-bandwidth', title: '9. Infinite Bandwidth and the -1.59 dB Floor, Derived',
+      content: `## 9.1 Rewriting the theorem in energy per bit
+
+Signal power is an awkward variable to compare systems with, because it depends
+on how fast they are sending. The natural currency is energy per information
+bit, $E_b$, against noise spectral density, $N_0$. Substituting
+$S = E_b R_b$ and $N = N_0 B$,
+
+$$\\frac{S}{N} = \\frac{E_b R_b}{N_0 B} = \\frac{E_b}{N_0}\\,\\eta$$
+
+where $\\eta = R_b/B$ is the spectral efficiency in bits per second per hertz.
+A system operating exactly at capacity has $R_b = C$, so $\\eta = C/B$ and the
+theorem becomes an implicit equation in $\\eta$ alone:
+
+$$\\eta = \\log_2\\!\\left(1 + \\frac{E_b}{N_0}\\,\\eta\\right)$$
+
+Exponentiating and rearranging gives the form a designer actually uses, which
+states the least energy per bit that any scheme at that efficiency could
+possibly need:
+
+$$\\frac{E_b}{N_0} = \\frac{2^{\\eta} - 1}{\\eta}$$
+
+## 9.2 Taking the limit properly
+
+Let $\\eta$ shrink towards zero — the regime of vanishing spectral efficiency,
+reached by spreading a fixed bit rate over unlimited bandwidth. Write
+$2^{\\eta} = e^{\\eta \\ln 2}$ and expand the exponential:
+
+$$2^{\\eta} - 1 = \\eta \\ln 2 + \\frac{\\left(\\eta \\ln 2\\right)^2}{2} + \\frac{\\left(\\eta \\ln 2\\right)^3}{6} + \\cdots$$
+
+$$\\frac{2^{\\eta} - 1}{\\eta} = \\ln 2 \\left[1 + \\frac{\\eta \\ln 2}{2} + \\frac{\\left(\\eta \\ln 2\\right)^2}{6} + \\cdots\\right]$$
+
+Every term after the first carries a factor of $\\eta$, so as $\\eta \\to 0$
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{\\min} = \\ln 2 = 0.693147$$
+
+$$10\\log_{10}\\left(0.693147\\right) = -1.5917\\ \\mathrm{dB}$$
+
+That is the celebrated $-1.59\\ \\mathrm{dB}$, derived rather than quoted, and
+the derivation shows exactly what it costs: it is reached only in the limit of
+infinite bandwidth per bit. Watching the convergence numerically makes the
+point better than any assertion:
+
+| $\\eta$ (bits/s/Hz) | $\\left(2^{\\eta}-1\\right)/\\eta$ | In dB | Distance above the floor |
+|---|---|---|---|
+| 2 | 1.500000 | 1.7609 dB | 3.353 dB |
+| 1 | 1.000000 | 0.0000 dB | 1.592 dB |
+| 0.5 | 0.828427 | -0.8175 dB | 0.774 dB |
+| 0.1 | 0.717735 | -1.4404 dB | 0.151 dB |
+| 0.01 | 0.695555 | -1.5767 dB | 0.015 dB |
+| 0.001 | 0.693387 | -1.5902 dB | 0.0015 dB |
+
+The series expansion predicts the third row from the second: at
+$\\eta = 0.01$ it gives
+$0.693147\\left(1 + 0.003466 + 0.000008\\right) = 0.695555$, matching the exact
+value to six decimals. Two independent routes, one answer.
+
+![Spectral efficiency plotted on a logarithmic axis against the minimum Eb/N0 the Shannon theorem allows, computed from (2 to the eta, minus 1, over eta). The curve runs into a vertical asymptote at minus 1.5917 dB as spectral efficiency falls towards zero, and marked points show 0.00 dB at 1 bit per second per hertz, 1.76 dB at 2, 5.74 dB at 4 and 10.21 dB at 6.](/courses/fe-ee/figures/com3-ebn0-floor.svg)
+
+### Worked Example 9.1 — Quoting the floor at the wrong efficiency
+
+A specification calls for 6 bits per second per hertz and claims a target of
+$-1.59\\ \\mathrm{dB}$ for $E_b/N_0$. What is wrong?
+
+$$\\frac{E_b}{N_0} = \\frac{2^{6} - 1}{6} = \\frac{63}{6} = 10.5 \\quad \\Rightarrow \\quad 10.212\\ \\mathrm{dB}$$
+
+The real floor at that efficiency is 10.212 dB, which is
+$10.212 + 1.592 = 11.804\\ \\mathrm{dB}$ above the number quoted. The
+$-1.59\\ \\mathrm{dB}$ figure belongs to a system with essentially no spectral
+efficiency at all, and importing it into a bandwidth-limited design understates
+the power requirement by an order of magnitude.
+
+## 9.3 The other face of the same limit: infinite bandwidth
+
+Approach the same asymptote from the bandwidth side. Hold the received power
+$S$ fixed and let the bandwidth grow, so that $N = N_0 B$ grows with it:
+
+$$C = B\\log_2\\!\\left(1 + \\frac{S}{N_0 B}\\right)$$
+
+For large $B$ the argument of the logarithm approaches 1, and using
+$\\log_2(1+x) \\to x\\log_2 e$ with $x = S/(N_0 B)$,
+
+$$C_{\\infty} = \\frac{S}{N_0}\\log_2 e = 1.4427\\,\\frac{S}{N_0}$$
+
+Infinite bandwidth does NOT give infinite capacity. It gives a finite ceiling
+set entirely by the ratio of received power to noise density, and
+$1.4427 = 1/\\ln 2$ is the same $\\ln 2$ that produced $-1.59\\ \\mathrm{dB}$,
+seen from the other side.
+
+![Capacity against bandwidth on a logarithmic axis at a fixed received power corresponding to S over N-zero of one times ten to the ninth per second. Capacity rises almost linearly through 9.97 Mbps at 1 MHz and 66.6 Mbps at 10 MHz, reaches 1.00 Gbps at 1 GHz, and flattens onto the horizontal asymptote at 1.443 Gbps.](/courses/fe-ee/figures/com3-capacity-bandwidth.svg)
+
+### Worked Example 9.2 — Spending bandwidth instead of power
+
+A link has $S/N_0 = 10^{9}\\ \\mathrm{s}^{-1}$. Tabulate its capacity as the
+bandwidth is widened at constant power.
+
+| Bandwidth | Resulting SNR | Capacity | Fraction of $C_{\\infty}$ |
+|---|---|---|---|
+| 1 MHz | 30.00 dB | 9.967 Mbps | 0.69% |
+| 10 MHz | 20.00 dB | 66.58 Mbps | 4.62% |
+| 100 MHz | 10.00 dB | 345.9 Mbps | 23.98% |
+| 1 GHz | 0.00 dB | 1.000 Gbps | 69.31% |
+| 10 GHz | -10.00 dB | 1.375 Gbps | 95.31% |
+| 100 GHz | -20.00 dB | 1.436 Gbps | 99.50% |
+| infinite | — | 1.443 Gbps | 100% |
+
+The first decade of extra bandwidth multiplies capacity by 6.7; the last one
+adds 4 per cent. Bandwidth is the cheap resource only while the SNR is high,
+and the process is self-limiting because the noise floor rises with the
+bandwidth that is buying the capacity.
+
+### Worked Example 9.3 — Power against bandwidth, decided numerically
+
+The same link at $B = 1\\ \\mathrm{MHz}$ carries 9.967 Mbps. Compare doubling
+the transmit power with doubling the bandwidth.
+
+Doubling power takes the SNR from 1000 to 2000:
+
+$$C = 10^{6}\\log_2\\left(2001\\right) = 10.967\\ \\mathrm{Mbps}$$
+
+Doubling bandwidth halves the SNR to 500 but doubles the dimension count:
+
+$$C = 2 \\times 10^{6}\\log_2\\left(501\\right) = 17.937\\ \\mathrm{Mbps}$$
+
+An extra megahertz is worth $17.937 - 9.967 = 7.970\\ \\mathrm{Mbps}$; an extra
+3 dB of transmitter is worth $1.000\\ \\mathrm{Mbps}$. At high SNR bandwidth
+wins by nearly eight to one, and the ratio only narrows as the SNR falls
+towards 0 dB.`,
+      examTip: 'If a question gives no bandwidth and asks for a minimum E_b/N_0, the answer is -1.59 dB and the sentence that must accompany it is "in the limit of infinite bandwidth". If a spectral efficiency IS given, use (2^eta - 1)/eta instead.',
+      importantNote: 'C_inf = 1.4427 S/N_0 and the -1.59 dB floor are the same statement. Both come from log2(e) = 1/ln 2, and a design that quotes one while ignoring the other is double-counting the same limit.',
+    },
+    { id: 'cap-efficiency-gap', title: '10. Spectral Efficiency and the Gap Real Schemes Live In',
+      content: `## 10.1 Where a scheme sits
+
+Spectral efficiency is the currency in which modulations are compared:
+
+$$\\eta = \\frac{R_b}{B} \\qquad \\left[\\mathrm{bits/s/Hz}\\right]$$
+
+For an uncoded square constellation at the Nyquist symbol rate this is just
+$\\log_2 M$; with a raised-cosine roll-off $\\alpha$ and a code of rate $r$ it
+becomes
+
+$$\\eta = \\frac{r\\log_2 M}{1 + \\alpha}$$
+
+The bound demands $S/N \\ge 2^{\\eta} - 1$ at that efficiency, and the honest
+comparison of a real scheme against Shannon is made at the SAME $\\eta$ — never
+against the $-1.59\\ \\mathrm{dB}$ asymptote, which belongs to a different
+operating point entirely.
+
+## 10.2 What a real modulation demands, computed
+
+The requirements below are not quoted from a table; they come from the standard
+symbol-error expressions with Gray mapping. For antipodal binary signalling,
+
+$$P_b = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)$$
+
+and for square $M$-QAM,
+
+$$P_b \\approx \\frac{4}{\\log_2 M}\\left(1 - \\frac{1}{\\sqrt{M}}\\right) Q\\!\\left(\\sqrt{\\frac{3\\log_2 M}{M-1}\\cdot\\frac{E_b}{N_0}}\\right)$$
+
+Solving each for the $E_b/N_0$ that produces a bit error rate of $10^{-6}$ and
+comparing with the bound at the matching efficiency gives the gap that coding
+exists to close:
+
+| Scheme | $\\eta$ | Needs at $10^{-6}$ | Bound at that $\\eta$ | Gap |
+|---|---|---|---|---|
+| BPSK | 1 | 10.530 dB | 0.000 dB | 10.530 dB |
+| QPSK | 2 | 10.530 dB | 1.761 dB | 8.769 dB |
+| 16-QAM | 4 | 14.402 dB | 5.740 dB | 8.661 dB |
+| 64-QAM | 6 | 18.777 dB | 10.212 dB | 8.565 dB |
+| 256-QAM | 8 | 23.515 dB | 15.035 dB | 8.480 dB |
+
+Two readings matter. The gap is nearly constant at 8.5 to 8.8 dB across four
+constellations, which says it is a property of having no coding rather than a
+property of the constellation. And BPSK is the outlier at 10.530 dB, because
+QPSK delivers twice the efficiency for the same energy per bit — the two
+quadrature carriers are free.
+
+### Worked Example 10.1 — Deriving one row
+
+Find the $E_b/N_0$ that 16-QAM needs for a bit error rate of $10^{-5}$.
+
+With $M = 16$, the prefactor is
+$\\left(4/4\\right)\\left(1 - 1/4\\right) = 0.75$ and the argument coefficient is
+$3\\left(4\\right)/15 = 0.8$. So
+
+$$0.75\\, Q\\!\\left(\\sqrt{0.8\\,\\frac{E_b}{N_0}}\\right) = 10^{-5} \\quad \\Rightarrow \\quad Q(x) = 1.3333 \\times 10^{-5}$$
+
+Inverting the Q-function gives $x = 4.2002$, so
+
+$$\\frac{E_b}{N_0} = \\frac{x^2}{0.8} = \\frac{17.642}{0.8} = 22.052 \\quad \\Rightarrow \\quad 13.435\\ \\mathrm{dB}$$
+
+The bound at $\\eta = 4$ is $\\left(2^{4}-1\\right)/4 = 3.75$, or 5.740 dB, so
+uncoded 16-QAM sits 7.694 dB from capacity at that error rate. Comparing
+instead against $-1.59\\ \\mathrm{dB}$ would claim 15.0 dB of headroom, which is
+roughly twice what any code could actually recover here.
+
+### Worked Example 10.2 — Efficiency with a real pulse shape
+
+A 64-QAM link uses a rate-3/4 code and 25 per cent excess bandwidth. What
+spectral efficiency does it deliver, and what SNR does the bound demand?
+
+$$\\eta = \\frac{\\left(0.75\\right)\\left(6\\right)}{1.25} = 3.6\\ \\mathrm{bits/s/Hz}$$
+
+$$\\frac{S}{N} \\ge 2^{3.6} - 1 = 12.126 - 1 = 11.126 \\quad \\Rightarrow \\quad 10.463\\ \\mathrm{dB}$$
+
+The uncoded, unshaped figure of 6 bits per second per hertz would have demanded
+$2^{6} - 1 = 63$, or 17.993 dB. Coding and pulse shaping between them cut the
+theoretical SNR requirement by 7.53 dB — at the price of carrying 40 per cent
+fewer payload bits in the same channel.`,
+      examTip: 'Always compute eta before comparing two schemes. Many "which is better" questions resolve the moment you notice that a rate-1/2 16-QAM link and an uncoded QPSK link have the same eta, and therefore the same bound to be judged against.',
+      importantNote: 'The gap between an uncoded scheme and the bound must be measured at equal spectral efficiency. Measuring BPSK against -1.59 dB gives 12.1 dB of apparent headroom where the real figure at eta = 1 is 10.5 dB, and the difference is not recoverable by any code.',
+    },
+    { id: 'cap-coding-distance', title: '11. Coding: Minimum Distance, Correction Capability and Gain',
+      content: `## 11.1 Parity, distance and what a code can promise
+
+The simplest code appends one bit chosen so that the number of ones in each
+word is even. Any single error makes the count odd and is therefore detected;
+any two errors restore it and pass unnoticed. That behaviour is completely
+described by one number, the MINIMUM HAMMING DISTANCE $d_{\\min}$: the smallest
+number of bit positions in which two valid codewords differ.
+
+For a single parity check $d_{\\min} = 2$. In general, picture a sphere of
+radius $t$ drawn around every codeword. A received word inside one sphere is
+decoded to its centre. The spheres are disjoint — so that decoding is
+unambiguous — exactly when
+
+$$2t + 1 \\le d_{\\min} \\quad \\Longrightarrow \\quad t = \\left\\lfloor \\frac{d_{\\min} - 1}{2} \\right\\rfloor$$
+
+and if the code is used only to DETECT, any error pattern of fewer than
+$d_{\\min}$ changes cannot possibly land on another codeword, so
+
+$$\\text{detectable errors} = d_{\\min} - 1$$
+
+Both capabilities come from one property of the code, and neither depends on
+how the code is built.
+
+| Code | $d_{\\min}$ | Corrects $t$ | Detects | Rate $k/n$ |
+|---|---|---|---|---|
+| single parity, $(8,7)$ | 2 | 0 | 1 | 0.875 |
+| Hamming $(7,4)$ | 3 | 1 | 2 | 0.571 |
+| Hamming $(15,11)$ | 3 | 1 | 2 | 0.733 |
+| BCH $(15,7)$ | 5 | 2 | 4 | 0.467 |
+| Golay $(23,12)$ | 7 | 3 | 6 | 0.522 |
+| Reed-Solomon $(255,239)$ | 17 | 8 | 16 | 0.937 |
+
+### Worked Example 11.1 — Why (7,4) Hamming is called perfect
+
+The $(7,4)$ code has 3 parity bits, so its syndrome takes
+$2^{7-4} = 8$ distinct values. The error patterns it must distinguish are the
+no-error case plus the seven single-bit errors, which is also 8. The Hamming
+bound requires
+
+$$2^{n-k} \\ge \\sum_{i=0}^{t}\\binom{n}{i} = \\binom{7}{0} + \\binom{7}{1} = 1 + 7 = 8$$
+
+and here it holds with EQUALITY: every syndrome value is used, no capacity is
+wasted, and the spheres of radius 1 around the 16 codewords exactly fill the
+128-point space. That is what "perfect" means for a code. It also means the
+code cannot detect a double error while correcting a single one — every
+received word is inside some sphere, so the decoder always commits.
+
+### Worked Example 11.2 — Buying decades with distance
+
+A 15-bit block travels over a channel with a raw bit error probability $p$.
+Compare codes correcting up to $t = 1$, 2 and 3 errors. A block fails when more
+than $t$ errors arrive:
+
+$$P_{\\mathrm{block}} = 1 - \\sum_{i=0}^{t}\\binom{15}{i} p^{i}\\left(1-p\\right)^{15-i}$$
+
+| $t$ ($d_{\\min}$) | $p = 10^{-2}$ | $p = 10^{-3}$ |
+|---|---|---|
+| 0 (2) | $1.399 \\times 10^{-1}$ | $1.490 \\times 10^{-2}$ |
+| 1 (3) | $9.630 \\times 10^{-3}$ | $1.041 \\times 10^{-4}$ |
+| 2 (5) | $4.158 \\times 10^{-4}$ | $4.509 \\times 10^{-7}$ |
+| 3 (7) | $1.250 \\times 10^{-5}$ | $1.353 \\times 10^{-9}$ |
+
+Each extra correctable error is worth roughly two decades at
+$p = 10^{-2}$ and two and a half at $p = 10^{-3}$, because the leading term of
+the failure probability goes as $p^{t+1}$. That exponent is the whole reason
+error correction is worth its overhead: the improvement compounds as the
+channel gets better.
+
+![Probability that a 15-bit block is not decoded correctly, plotted against raw channel bit error probability on logarithmic axes, for codes correcting up to one, two and three errors, with an uncorrected detect-only reference. The curves are straight lines of slope t plus one; at a raw error rate of one per cent the t equals one code still fails 9.63 in a thousand blocks.](/courses/fe-ee/figures/com3-block-correction.svg)
+
+## 11.2 Coding gain, and the price of the parity
+
+A code of rate $r$ sends $1/r$ channel bits for every information bit. On a
+fixed channel with a fixed symbol rate that means the throughput falls to $r$
+times its uncoded value, and the energy available per CHANNEL bit falls to
+
+$$E_c = r\\,E_b$$
+
+so the demodulator sees a WORSE raw error rate than it would uncoded. The code
+has to win back more than it gave away. CODING GAIN is defined as the reduction
+in $E_b/N_0$ needed to reach a stated bit error rate, and the stated rate is
+part of the definition because the coded and uncoded curves are not parallel.
+
+### Worked Example 11.3 — The gain of a small code, and where it goes negative
+
+Take BPSK with hard-decision decoding of the $(7,4)$ Hamming code. The channel
+bit error probability is $p = Q\\!\\left(\\sqrt{2 r E_b/N_0}\\right)$ with
+$r = 4/7$, and after bounded-distance decoding the information bit error rate
+is
+
+$$P_b = \\frac{1}{n}\\sum_{i=2}^{n} i \\binom{n}{i} p^{i}\\left(1-p\\right)^{n-i}$$
+
+Evaluating both curves and solving each for $P_b = 10^{-5}$:
+
+| Scheme | $E_b/N_0$ at $P_b = 10^{-5}$ |
+|---|---|
+| uncoded BPSK | 9.588 dB |
+| $(7,4)$ Hamming, hard decision | 9.000 dB |
+| coding gain | 0.588 dB |
+
+Half a decibel, for 75 per cent more transmitted bits. Worse, the gain is
+negative below an $E_b/N_0$ of $2.353\\ \\mathrm{dB}$, where the two curves
+cross at a bit error rate of $3.19 \\times 10^{-2}$: down there the code has
+spent energy on parity that the decoder cannot use, because too many errors
+arrive for a single-error-correcting code to handle.
+
+![Bit error probability against Eb per N-zero for uncoded BPSK and for the same link carrying a hard-decision (7,4) Hamming code. The coded curve is worse below about 2.35 dB, crosses the uncoded curve there, and by a bit error rate of ten to the minus five sits 0.59 dB to the left of it.](/courses/fe-ee/figures/com3-hamming-gain.svg)
+
+That is the honest picture of a small block code, and it is why modern systems
+use long codes with soft-decision decoding instead. Handing the decoder a
+confidence value rather than a hard 1 or 0 is worth roughly 2 dB on its own,
+because a hard decision throws away the information that a sample landed near
+the threshold. Long LDPC and turbo codes combine that with block lengths in the
+thousands and reach within about a decibel of the bound at their own spectral
+efficiency.
+
+### Worked Example 11.4 — Propagating a stated coding gain
+
+A 64-QAM link needs 18.777 dB of $E_b/N_0$ uncoded at $P_b = 10^{-6}$. A
+rate-5/6 code is specified with a coding gain of 6.5 dB at that error rate.
+What is the new requirement, and what happens to the throughput?
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{coded}} = 18.777 - 6.5 = 12.277\\ \\mathrm{dB}$$
+
+$$\\eta = r\\log_2 M = \\left(\\frac{5}{6}\\right)\\left(6\\right) = 5\\ \\mathrm{bits/s/Hz}$$
+
+The bound at $\\eta = 5$ is $\\left(2^{5}-1\\right)/5 = 6.2$, or
+$7.924\\ \\mathrm{dB}$, so the coded scheme now sits
+$12.277 - 7.924 = 4.353\\ \\mathrm{dB}$ from capacity where the uncoded scheme
+sat 8.565 dB from it. The code closed roughly half the gap and cost one sixth
+of the payload.`,
+      examTip: 'Correction capability comes from minimum distance alone: t = floor((d_min - 1)/2) corrections, or d_min - 1 detections, never both at full strength simultaneously. If a question gives a generator matrix, find d_min as the smallest weight of a non-zero codeword.',
+      importantNote: 'Coding gain has no meaning without a stated bit error rate, and it can be NEGATIVE at low SNR. A code that gives 0.59 dB at 1e-5 loses outright below 2.35 dB, because the parity bits cost energy the decoder cannot recover from a swamped channel.',
+    },
+    { id: 'cap-link-reconciled', title: '12. One Link, Reconciled: Capacity, Modulation and Required SNR',
+      content: `## 12.1 The design brief
+
+A point-to-point radio must carry 100 Mbps of payload through a 20 MHz channel.
+The receiver has a 5 dB noise figure, the reference temperature is
+$T_0 = 290\\ \\mathrm{K}$, and the target bit error rate after decoding is
+$10^{-6}$. Four questions have to be answered in order, and each one uses a
+different piece of this chapter.
+
+## 12.2 Step 1: the noise floor and the theoretical minimum
+
+The noise power in the channel comes straight from the companion chapter:
+
+$$N = -174 + 10\\log_{10}\\left(20 \\times 10^{6}\\right) + 5 = -174 + 73.979 + 5 = -95.990\\ \\mathrm{dBm}$$
+
+The required spectral efficiency is $\\eta = 100/20 = 5$ bits per second per
+hertz, so the theorem sets an absolute floor on the signal-to-noise ratio:
+
+$$\\frac{S}{N} \\ge 2^{5} - 1 = 31 \\quad \\Rightarrow \\quad \\mathrm{SNR}_{\\min} = 14.914\\ \\mathrm{dB}$$
+
+$$S_{\\min} = -95.990 + 14.914 = -81.076\\ \\mathrm{dBm}$$
+
+No design can receive less than $-81.076\\ \\mathrm{dBm}$ and still deliver
+100 Mbps here. That number is the yardstick everything else is measured
+against.
+
+## 12.3 Step 2: choosing a modulation and a code that fit
+
+With a raised-cosine roll-off of $\\alpha = 0.2$ the usable symbol rate is
+
+$$R_s = \\frac{20 \\times 10^{6}}{1.2} = 16.667\\ \\mathrm{Msymbol/s}$$
+
+Two combinations land exactly on the target. With 256-QAM at 8 bits per symbol
+and a rate-3/4 code:
+
+$$R_b = \\left(16.667 \\times 10^{6}\\right)\\left(8\\right)\\left(0.75\\right) = 100.0\\ \\mathrm{Mbps}$$
+
+With 1024-QAM at 10 bits per symbol and a rate-3/5 code the arithmetic gives
+the same 100.0 Mbps. The first is the sensible choice, because the second
+demands a constellation four times denser for no gain in rate — it would only
+be preferred if a stronger code were needed for some other reason.
+
+![Required signal-to-noise ratio against payload rate for a 20 MHz channel. The lower curve is the Shannon requirement, 2 to the power R over B minus one, passing through 14.91 dB at 100 Mbps. The upper dashed curve is the same shape displaced by a 9.6 dB implementation gap, reaching 24.5 dB at the same rate. Markers show the 100 Mbps design point on both curves.](/courses/fe-ee/figures/com3-link-reconcile.svg)
+
+## 12.4 Step 3: what the chosen scheme actually demands
+
+Uncoded 256-QAM needs $E_b/N_0 = 23.515\\ \\mathrm{dB}$ for a bit error rate of
+$10^{-6}$, from the expression evaluated in Section 10.2. Converting energy per
+bit into a signal-to-noise ratio requires the RAW spectral efficiency, because
+every transmitted bit costs energy whether it carries payload or parity:
+
+$$\\eta_{\\mathrm{raw}} = \\frac{\\left(16.667 \\times 10^{6}\\right)\\left(8\\right)}{20 \\times 10^{6}} = 6.667\\ \\mathrm{bits/s/Hz}$$
+
+$$\\mathrm{SNR}_{\\mathrm{uncoded}} = 23.515 + 10\\log_{10}\\left(6.667\\right) = 23.515 + 8.239 = 31.754\\ \\mathrm{dB}$$
+
+Specify a rate-3/4 LDPC code with a coding gain of 8.0 dB at $10^{-6}$ — a
+realistic figure for a long soft-decision code — and the requirement falls to
+
+$$\\mathrm{SNR}_{\\mathrm{coded}} = 31.754 - 8.0 = 23.754\\ \\mathrm{dB}$$
+
+$$S_{\\mathrm{required}} = -95.990 + 23.754 = -72.236\\ \\mathrm{dBm}$$
+
+### Worked Example 12.1 — Reconciling the two answers
+
+The theorem said $-81.076\\ \\mathrm{dBm}$; the design needs
+$-72.236\\ \\mathrm{dBm}$. Is anything wrong?
+
+Nothing is wrong. The difference,
+
+$$23.754 - 14.914 = 8.840\\ \\mathrm{dB}$$
+
+is the implementation gap: everything the real system spends that an ideal one
+would not. It comprises the roll-off that made the symbol rate 16.667 instead
+of 20 Msymbol/s, the finite block length of the code, hard limits on
+constellation density, and the fact that the target is a bit error rate of
+$10^{-6}$ rather than the vanishing error rate the theorem assumes. A gap of
+8.8 dB for a coded 256-QAM link is entirely ordinary; a claimed gap of 1 dB
+would deserve suspicion, and a claimed gap of zero would be a claim to have
+beaten a proved theorem.
+
+## 12.5 Step 4: closing the link over a distance
+
+Give the link a transmitter of 23 dBm, 20 dBi antennas at both ends, and a
+carrier at 5800 MHz over 15 km. Free-space path loss, written with the
+kilometre form of the constant, is
+
+$$L_{\\mathrm{fs}} = 32.4478 + 20\\log_{10} f_{\\mathrm{MHz}} + 20\\log_{10} d_{\\mathrm{km}}$$
+
+$$L_{\\mathrm{fs}} = 32.4478 + 75.2686 + 23.5218 = 131.238\\ \\mathrm{dB}$$
+
+$$P_r = 23 + 20 + 20 - 131.238 = -68.238\\ \\mathrm{dBm}$$
+
+Against the $-72.236\\ \\mathrm{dBm}$ requirement, the margin is
+$3.998\\ \\mathrm{dB}$ — nearly 4 dB, which is thin for a real deployment but
+positive, so the link closes.
+
+### Worked Example 12.2 — Checking the path loss three ways
+
+Path-loss constants are the most reliable source of sixty-decibel errors in
+this subject, so the number above is worth verifying independently.
+
+Route one, from the definition, with $\\lambda = c/f = 0.051688\\ \\mathrm{m}$
+and $d = 15{,}000\\ \\mathrm{m}$:
+
+$$L_{\\mathrm{fs}} = 20\\log_{10}\\!\\left(\\frac{4\\pi d}{\\lambda}\\right) = 20\\log_{10}\\left(3.6468 \\times 10^{6}\\right) = 131.238\\ \\mathrm{dB}$$
+
+Route two, using the METRE form of the constant with the distance in metres:
+
+$$L_{\\mathrm{fs}} = -27.5522 + 20\\log_{10} f_{\\mathrm{MHz}} + 20\\log_{10} d_{\\mathrm{m}} = -27.5522 + 75.2686 + 83.5218 = 131.238\\ \\mathrm{dB}$$
+
+All three agree. The two constants differ by
+$32.4478 - \\left(-27.5522\\right) = 60.000\\ \\mathrm{dB}$ for the obvious
+reason: a kilometre is a thousand metres, and
+$20\\log_{10}\\left(1000\\right) = 60$. Mixing them — using $+32.4478$ with a
+distance in metres — gives $191.238\\ \\mathrm{dB}$ and a received power of
+$-128.238\\ \\mathrm{dBm}$, which would declare this link 56 dB short when in
+fact it has 4 dB of margin. Always write the unit next to the number, and
+always sanity-check a path loss against the direct
+$20\\log_{10}\\left(4\\pi d/\\lambda\\right)$ form, which has no constant to
+misremember.
+
+| Quantity | Value |
+|---|---|
+| noise power in 20 MHz at NF 5 dB | -95.990 dBm |
+| Shannon minimum SNR for 5 bits/s/Hz | 14.914 dB |
+| Shannon minimum received power | -81.076 dBm |
+| uncoded 256-QAM SNR at BER 1e-6 | 31.754 dB |
+| with 8.0 dB coding gain | 23.754 dB |
+| required received power | -72.236 dBm |
+| implementation gap | 8.840 dB |
+| free-space path loss at 15 km, 5800 MHz | 131.238 dB |
+| received power with 23 dBm and 20 dBi ends | -68.238 dBm |
+| link margin | 3.998 dB |`,
+      examTip: 'Convert energy per bit into SNR with the RAW spectral efficiency, not the payload one: SNR = (E_b/N_0)(R_raw/B). Parity bits cost transmit energy even though they carry no payload, and forgetting them understates the required SNR by 10 log10(1/r).',
+      importantNote: 'The kilometre and metre forms of the free-space path loss constant differ by exactly 60 dB, because 20 log10(1000) = 60. Mixing +32.44 with metres, or -27.55 with kilometres, produces an error of precisely that size and it has shipped in real link budgets.',
+    },
+    { id: 'cap-problem-set-g', title: '13. Problem Set G: Capacity, Nyquist and Entropy',
+      content: `## 13.1 Problem Set G: Capacity, Nyquist and Entropy
+
+**G1.** A channel has a bandwidth of 5 kHz and a signal-to-noise ratio of
+20 dB. Find its capacity.
+
+**G2.** A source emits five equally likely symbols at 1200 symbols per second.
+Find its entropy, its entropy rate, and the bit rate a fixed-length code would
+need.
+
+**G3.** An 8 kHz baseband channel signals at the Nyquist rate with four levels
+per symbol. Find the bit rate, and the signal-to-noise ratio that rate requires.
+
+**G4.** A binary symmetric channel flips bits with probability 0.05. Find its
+capacity per channel use and the number of uses per second needed to carry a
+9600 bps source.
+
+**G5.** Which carries more: 1 MHz at 30 dB, or 10 MHz at 10 dB?
+
+**G6.** A modem claims 56 kbps over a 3.4 kHz telephone channel. What SNR would
+the theorem require, and what does that tell you?
+
+### Worked Solutions to Problem Set G
+
+**G1.** Convert first: $S/N = 10^{20/10} = 100$.
+
+$$C = \\left(5000\\right)\\log_2\\left(101\\right) = \\left(5000\\right)\\left(6.6582\\right) = 33{,}291\\ \\mathrm{bits/s}$$
+
+*Trap*: substituting the decibel value, giving
+$5000\\log_2(21) = 21{,}962\\ \\mathrm{bits/s}$ — 34 per cent low. The
+conversion to linear is not optional, and it is the single most common error in
+this topic.
+
+**G2.** Equally likely symbols give the maximum entropy for the alphabet:
+
+$$H = \\log_2 5 = 2.3219\\ \\mathrm{bits/symbol}$$
+
+$$R_{\\min} = \\left(1200\\right)\\left(2.3219\\right) = 2786.3\\ \\mathrm{bits/s}$$
+
+A fixed-length code needs $\\lceil 2.3219 \\rceil = 3$ bits per symbol, so
+3600 bits per second — 29 per cent more than the entropy rate.
+
+*Trap*: rounding the entropy DOWN to 2 bits and reporting 2400 bits per
+second. Two bits address only four symbols, so a fifth symbol has nowhere to
+go; entropy is a lower bound on the average, never a permitted code width.
+
+**G3.** At the Nyquist rate,
+
+$$R_b = 2\\left(8000\\right)\\log_2 4 = \\left(16{,}000\\right)\\left(2\\right) = 32{,}000\\ \\mathrm{bits/s}$$
+
+The Shannon requirement uses the CHANNEL bandwidth, 8 kHz, so
+$\\eta = 32{,}000/8000 = 4$ bits per second per hertz and
+
+$$\\frac{S}{N} \\ge 2^{4} - 1 = 15 \\quad \\Rightarrow \\quad 11.761\\ \\mathrm{dB}$$
+
+*Trap*: dividing the bit rate by the Nyquist symbol rate instead of by the
+bandwidth, giving $\\eta = 2$ and a requirement of $S/N \\ge 3$, or
+4.771 dB. That understates the needed SNR by 6.99 dB. Spectral efficiency is
+bits per second per HERTZ, not bits per symbol.
+
+**G4.** The binary entropy at $p = 0.05$ is
+
+$$H\\left(0.05\\right) = -0.05\\log_2 0.05 - 0.95\\log_2 0.95 = 0.2161 + 0.0703 = 0.2864\\ \\mathrm{bits}$$
+
+$$C_{\\mathrm{BSC}} = 1 - 0.2864 = 0.7136\\ \\mathrm{bits\\ per\\ use}$$
+
+$$\\text{uses per second} \\ge \\frac{9600}{0.7136} = 13{,}453\\ \\mathrm{s}^{-1}$$
+
+so 13,453 channel uses per second, rounded up. *Trap*: assuming a 5 per cent
+error rate costs 5 per cent of the capacity and answering
+$9600/0.95 = 10{,}105$. It costs 28.6 per cent, because what is lost is
+uncertainty about WHICH bits flipped, not merely the flipped bits themselves.
+
+**G5.** Compute both.
+
+$$C_a = 10^{6}\\log_2\\left(1001\\right) = 9.967\\ \\mathrm{Mbps}$$
+
+$$C_b = 10^{7}\\log_2\\left(11\\right) = 34.594\\ \\mathrm{Mbps}$$
+
+The wideband, low-SNR channel wins by a factor of 3.47.
+
+*Trap*: assuming the 30 dB channel must be better because its SNR is twenty
+decibels higher. Capacity is LINEAR in bandwidth and only logarithmic in SNR,
+so a factor of ten in bandwidth beats a factor of a hundred in power almost
+every time.
+
+**G6.** The claimed efficiency is
+$\\eta = 56{,}000/3400 = 16.47$ bits per second per hertz, so
+
+$$\\frac{S}{N} \\ge 2^{16.47} - 1 = 90{,}811 \\quad \\Rightarrow \\quad 49.58\\ \\mathrm{dB}$$
+
+A telephone line delivers 35 to 40 dB at best, so the claim is impossible for
+an analogue channel — and it is not one. The 56 kbps downstream path is digital
+from the exchange to the modem, so the analogue Shannon model does not describe
+it. The theorem was never violated; the channel in the question is not the
+channel in the specification.
+
+*Trap*: concluding that the theorem is approximate because a real product
+appears to beat it. When a system seems to exceed capacity, the resolution is
+always that the channel being modelled is not the channel being used.`,
+      examTip: 'Read the units on every quantity before computing: SNR in dB or linear, bandwidth in Hz or kHz, spectral efficiency per hertz or per symbol. Every trap in this problem set is a unit or a definition, not an algebraic slip.',
+      importantNote: 'Spectral efficiency is bits per second per hertz of CHANNEL bandwidth. Dividing the bit rate by the symbol rate gives bits per symbol, a different quantity that differs by a factor of two on a baseband channel at the Nyquist rate.',
+    },
+    { id: 'cap-problem-set-h', title: '14. Problem Set H: Energy per Bit, Coding and a Link',
+      content: `## 14.1 Problem Set H: Energy per Bit, Coding and a Link
+
+**H1.** A link carries 2 Mbps with $E_b/N_0 = 12\\ \\mathrm{dB}$ in a 1 MHz
+noise bandwidth. Find the signal-to-noise ratio.
+
+**H2.** Find the minimum $E_b/N_0$ the theorem permits at
+$\\eta = 3$ bits per second per hertz, and compare it with the
+$-1.59\\ \\mathrm{dB}$ figure.
+
+**H3.** A $(15,11)$ Hamming code has $d_{\\min} = 3$. State its rate, overhead,
+correction and detection capability, and find the fraction of blocks that fail
+at a raw bit error probability of $10^{-3}$.
+
+**H4.** Uncoded QPSK needs $10.530\\ \\mathrm{dB}$ at a bit error rate of
+$10^{-6}$. A rate-1/2 code with 5.0 dB of coding gain is applied, with a
+raised-cosine roll-off of 0.25. Find the new requirement, the new spectral
+efficiency, and the remaining distance to the bound.
+
+**H5.** A receiver needs $-72.2\\ \\mathrm{dBm}$. The transmitter delivers
+23 dBm into a 20 dBi antenna and the receiver has another 20 dBi antenna, at
+5800 MHz. Find the maximum free-space range.
+
+**H6.** A 6 MHz cable channel at 35 dB SNR carries 256-QAM with a roll-off of
+0.15 and a rate-7/8 code. Find the payload rate and compare it with capacity.
+
+### Worked Solutions to Problem Set H
+
+**H1.** Energy per bit converts to a power ratio through the spectral
+efficiency:
+
+$$\\mathrm{SNR} = \\frac{E_b}{N_0}\\cdot\\frac{R_b}{B} \\quad \\Rightarrow \\quad \\mathrm{SNR(dB)} = 12 + 10\\log_{10}\\left(\\frac{2 \\times 10^{6}}{10^{6}}\\right) = 12 + 3.010 = 15.010\\ \\mathrm{dB}$$
+
+*Trap*: reporting 12 dB, as though $E_b/N_0$ and SNR were the same quantity.
+They coincide only when the bit rate equals the bandwidth. Here the link sends
+two bits per hertz, so it needs 3.01 dB more power than the energy-per-bit
+figure suggests.
+
+**H2.** At a stated efficiency the bound is the finite expression, not the
+asymptote:
+
+$$\\frac{E_b}{N_0} = \\frac{2^{3} - 1}{3} = \\frac{7}{3} = 2.3333 \\quad \\Rightarrow \\quad 3.680\\ \\mathrm{dB}$$
+
+which is $3.680 + 1.592 = 5.272\\ \\mathrm{dB}$ above the
+$-1.59\\ \\mathrm{dB}$ floor.
+
+*Trap*: quoting $-1.59\\ \\mathrm{dB}$ as the answer. That value belongs to
+$\\eta \\to 0$, and using it here understates the power requirement by more
+than five decibels — enough to turn a working link budget into a fiction.
+
+**H3.** The code carries 11 information bits in 15:
+
+$$r = \\frac{11}{15} = 0.7333, \\qquad \\text{overhead} = \\frac{4}{11} = 36.36\\%$$
+
+$$t = \\left\\lfloor\\frac{3-1}{2}\\right\\rfloor = 1, \\qquad \\text{detects } d_{\\min} - 1 = 2$$
+
+$$P_{\\mathrm{block}} = 1 - \\left(1-p\\right)^{15} - 15p\\left(1-p\\right)^{14} = 1.041 \\times 10^{-4}$$
+
+*Trap*: concluding that four parity bits correct two errors. Parity count sets
+an upper BOUND on distance through the Hamming inequality, not the distance
+itself; only $d_{\\min}$ determines $t$, and this code's minimum distance is 3.
+The wrong answer, $t = 2$, would predict a block failure rate of
+$4.5 \\times 10^{-7}$, which is 231 times too optimistic.
+
+**H4.** The coded requirement drops by the stated gain:
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{coded}} = 10.530 - 5.0 = 5.530\\ \\mathrm{dB}$$
+
+The spectral efficiency falls with both the code rate and the roll-off:
+
+$$\\eta = \\frac{r\\log_2 M}{1+\\alpha} = \\frac{\\left(0.5\\right)\\left(2\\right)}{1.25} = 0.8\\ \\mathrm{bits/s/Hz}$$
+
+$$\\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{bound}} = \\frac{2^{0.8}-1}{0.8} = 0.9264 \\quad \\Rightarrow \\quad -0.332\\ \\mathrm{dB}$$
+
+so the coded scheme sits $5.530 + 0.332 = 5.862\\ \\mathrm{dB}$ from the bound,
+against 8.769 dB uncoded. *Trap*: forgetting the roll-off and computing
+$\\eta = 1$, whose bound is exactly 0.000 dB — that overstates the remaining
+gap by 0.332 dB and, more importantly, credits the link with 25 per cent
+spectral efficiency it does not have.
+
+**H5.** The allowed path loss is everything the link can afford to lose:
+
+$$L_{\\mathrm{fs}} = 23 + 20 + 20 + 72.2 = 135.2\\ \\mathrm{dB}$$
+
+$$20\\log_{10} d_{\\mathrm{km}} = 135.2 - 32.4478 - 20\\log_{10}\\left(5800\\right) = 135.2 - 32.4478 - 75.2686 = 27.484$$
+
+$$d = 10^{27.484/20} = 23.67\\ \\mathrm{km}$$
+
+*Trap*: using the metre-form constant, $-27.5522$, while solving for a distance
+you then read as kilometres. That gives
+$20\\log_{10} d = 87.484$ and $d = 23{,}669$, which if labelled kilometres is
+almost twice the diameter of the Earth. The number is not wrong — it is
+23,669 METRES, which is the same 23.67 km — but the label is, and a mislabelled
+path loss is the classic 60 dB error in this subject.
+
+**H6.** With $\\alpha = 0.15$ the symbol rate is
+$6 \\times 10^{6}/1.15 = 5.2174\\ \\mathrm{Msymbol/s}$, so
+
+$$R_{\\mathrm{raw}} = \\left(5.2174 \\times 10^{6}\\right)\\left(8\\right) = 41.739\\ \\mathrm{Mbps}$$
+
+$$R_{\\mathrm{payload}} = \\left(41.739\\right)\\left(0.875\\right) = 36.522\\ \\mathrm{Mbps}$$
+
+Capacity at 35 dB, where $S/N = 3162.3$, is
+
+$$C = \\left(6 \\times 10^{6}\\right)\\log_2\\left(3163.3\\right) = 69.763\\ \\mathrm{Mbps}$$
+
+The link uses 52.4 per cent of capacity, which is a healthy and buildable
+design.
+
+*Trap*: applying the baseband Nyquist rate $2B\\log_2 M$ to this bandpass
+channel, giving $2\\left(6 \\times 10^{6}\\right)\\left(8\\right) = 96$ Mbps.
+That exceeds the 69.76 Mbps capacity, so it is impossible on its face — which
+makes it a useful self-check. Whenever a rate computed from Nyquist exceeds the
+rate computed from Shannon, the Nyquist figure is the one to re-examine.`,
+      examTip: 'Every link question reduces to the same ladder: noise power, required SNR, required received power, path loss, margin. Write the ladder down before computing anything, and the arithmetic becomes five subtractions.',
+      importantNote: 'A code rate multiplies spectral efficiency and divides throughput, while a roll-off factor divides spectral efficiency again. Both must appear in eta before the bound is applied, or the comparison against Shannon is made at the wrong operating point.',
     },
   ],
   keyTakeaways: [
