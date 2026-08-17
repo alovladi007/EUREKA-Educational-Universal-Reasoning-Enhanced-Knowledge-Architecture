@@ -3116,14 +3116,14 @@ At higher frequencies, slower mechanisms cannot follow the field, reducing εr. 
       content: `## 3.1 One ceramic layer, all the numbers
 
 Given: a single ceramic layer with εr = 2000, plate area 1 cm², dielectric
-thickness 10 µm, operated at 50 V.
+thickness 10 μm, operated at 50 V.
 
 **Capacitance.** C = εr·ε₀·A/d:
 
 C = 2000 × 8.854×10⁻¹² × (1×10⁻⁴) / (10×10⁻⁶) = **177 nF**
 
 **Field check.** E = V/d = 50 / 10×10⁻⁶ = **5 MV/m**. A ceramic layer this
-thin (10 µm) withstands fields of order 100 MV/m — thin layers break down at
+thin (10 μm) withstands fields of order 100 MV/m — thin layers break down at
 far higher fields than bulk ceramic — so the operating field is about 5% of
 breakdown, comfortably inside a 30–50% design ceiling.
 
@@ -3131,7 +3131,7 @@ breakdown, comfortably inside a 30–50% design ceiling.
 
 Three formulas, one component, and every number audited. Real multilayer parts
 stack dozens to hundreds of such layers in parallel — capacitances in parallel
-add, so a 100-layer stack of this geometry is already 17.7 µF in a few cubic
+add, so a 100-layer stack of this geometry is already 17.7 μF in a few cubic
 millimetres. Thin layers are the whole trick, and thin layers are why voltage
 ratings on high-capacitance ceramics are modest: d appears in C's denominator
 AND in E = V/d.
@@ -3186,7 +3186,7 @@ least critical bulk-decoupling roles tolerate it. The rule that follows: any
 capacitor whose VALUE appears in a design equation gets class 1 or film;
 capacitors that merely need to be "big enough" may be class 2. Exam stems that
 mention timing, filtering, or measurement are pointing at the first category.`,
-      examTip: 'Capacitor geometry problems are unit-conversion problems: area arrives in cm², thickness in µm, and both must reach SI before C = εr·ε₀·A/d. A wrong answer that is a clean power of ten away from an option is a conversion slip, not a method error.',
+      examTip: 'Capacitor geometry problems are unit-conversion problems: area arrives in cm², thickness in μm, and both must reach SI before C = εr·ε₀·A/d. A wrong answer that is a clean power of ten away from an option is a conversion slip, not a method error.',
     },
     {
       id: 'diel-loss-worked',
@@ -3264,7 +3264,7 @@ quantity is held fixed decides every before/after energy question.
 
 ## 5.2 Rating a film for voltage
 
-Given: a 10 µm polymer film with breakdown strength 200 MV/m, derated to 40% of
+Given: a 10 μm polymer film with breakdown strength 200 MV/m, derated to 40% of
 breakdown. Maximum working voltage:
 
 V = 0.40 × 200×10⁶ × 10×10⁻⁶ = **800 V**
@@ -3275,7 +3275,7 @@ distractor set.
 
 ## 5.3 Mains-frequency dielectric heating
 
-Given: a 1 µF capacitor with tan δ = 0.02 across 230 V rms, 50 Hz.
+Given: a 1 μF capacitor with tan δ = 0.02 across 230 V rms, 50 Hz.
 
 P = V²·ωC·tan δ = 230² × (2π × 50 × 10⁻⁶) × 0.02
  = 52 900 × 3.14×10⁻⁴ × 0.02 = **0.33 W**
@@ -3300,9 +3300,11 @@ E_air(0.001) + (E_air/4)(0.004) = 10⁴ → E_air × 0.002 = 10⁴
 The LOW-permittivity layer takes the high field — series dielectrics divide
 stress inversely to εr, exactly as series capacitors divide voltage inversely
 to capacitance. And 5 MV/m exceeds air's 3 MV/m breakdown: the air gap
-discharges even though the glass is loafing at under 1% of its strength. Had
-the 5 mm been solid glass, the field would be a uniform 2 MV/m everywhere and
-nothing would break down.
+discharges even though the glass is loafing at about an eighth of its own
+strength — bulk glass withstands of order 10 MV/m, so 1.25 MV/m is roughly 12%
+of it, not the sub-1% figure you would get by mistakenly applying mica's
+150 MV/m to glass. Had the 5 mm been solid glass, the field would be a uniform
+2 MV/m everywhere and nothing would break down.
 
 This is the physics of the most common real insulation failure. A microscopic
 air VOID inside cast resin or cable insulation sees an elevated field, breaks
@@ -3317,11 +3319,1310 @@ acceptance criterion for HV equipment.
 | Error | What it looks like | The fix |
 |---|---|---|
 | εr used where ε belongs | C off by a factor of 8.854×10⁻¹² | the formula needs the ε₀ AND the εr |
-| Thickness left in µm | capacitance 10⁶ too large | d in metres before dividing |
+| Thickness left in μm | capacitance 10⁶ too large | d in metres before dividing |
 | Breakdown field read as a voltage | "the film survives 200 MV" | multiply by thickness: V = E·d |
 | Fixed-Q and fixed-V cases swapped | energy rising when it should fall | disconnected → Q fixed; source attached → V fixed |
 | tan δ treated as frequency-independent | loss extrapolated across decades | tabulated tan δ holds near its stated frequency only |`,
       examTip: 'Dielectric-insertion energy questions hinge on one reading-comprehension bit: is the capacitor still connected to the source? Fixed charge means energy falls when εr rises; fixed voltage means it rises. Decide that before computing anything.',
+    },
+    {
+      id: 'diel-polarisation',
+      title: '6. Polarisation Mechanisms and Dielectric Dispersion',
+      content: `## 6.1 What an insulator does with a field
+
+A conductor answers a field by moving charge through itself. An insulator has
+no charge free to move, so it answers by displacing bound charge *within* each
+atom, ion or molecule. Every such displacement is an electric **dipole moment**
+
+$$\\mathbf{p} = q\\,\\mathbf{d}$$
+
+where $q$ is the displaced charge and $\\mathbf{d}$ the separation vector,
+pointing from the negative to the positive member of the pair. The unit is the
+coulomb-metre; the older molecular unit is the debye, with
+$1\\ \\mathrm{D} = 3.33564 \\times 10^{-30}\\ \\mathrm{C} \\cdot \\mathrm{m}$.
+
+Summing those moments over a volume and dividing by it gives the
+**polarisation**, the single field that carries the whole material response:
+
+$$\\mathbf{P} = \\frac{1}{V}\\sum_k \\mathbf{p}_k = N\\langle \\mathbf{p}\\rangle$$
+
+with $N$ the number density of contributing units. The dimensional reading of
+$\\mathbf{P}$ is worth pausing on:
+$(\\mathrm{C} \\cdot \\mathrm{m})/\\mathrm{m^3} = \\mathrm{C/m^2}$. Polarisation
+carries the units of a SURFACE charge density, and that is not a coincidence —
+uniform polarisation leaves uncompensated bound charge exactly on the two faces
+perpendicular to $\\mathbf{P}$, of areal density $\\sigma_b = P$. Everything a
+dielectric does to a capacitor follows from those two bound sheets partially
+cancelling the free charge on the plates.
+
+## 6.2 Permittivity assembled from polarisation
+
+Gauss's law counts free charge only if the bound charge is folded into a new
+field, the **electric displacement**
+
+$$\\mathbf{D} = \\varepsilon_0\\mathbf{E} + \\mathbf{P}$$
+
+For a linear, isotropic, non-polar-ordered material the polarisation tracks the
+field, $\\mathbf{P} = \\varepsilon_0\\chi_e\\mathbf{E}$, with $\\chi_e$ the
+dimensionless **electric susceptibility**. Substituting,
+
+$$\\mathbf{D} = \\varepsilon_0(1 + \\chi_e)\\mathbf{E} = \\varepsilon_0\\varepsilon_r\\mathbf{E}, \\qquad \\varepsilon_r = 1 + \\chi_e$$
+
+So relative permittivity is not an extra postulate: it is one plus the
+susceptibility, and the susceptibility is the polarisation per unit of
+$\\varepsilon_0\\mathbf{E}$. A vacuum has $\\chi_e = 0$ and therefore
+$\\varepsilon_r = 1$ exactly, which is the anchor every table is written
+against. Throughout this chapter
+$\\varepsilon_0 = 8.8541878128 \\times 10^{-12}\\ \\mathrm{F/m}$.
+
+## 6.3 Four mechanisms, four clocks
+
+Bound charge can be displaced in four physically distinct ways, and they differ
+by more than twelve decades in how fast they can follow a reversing field.
+
+| Mechanism | What moves | Follows the field up to | Contribution to $\\varepsilon_r$ |
+|---|---|---|---|
+| Electronic | the electron cloud against its nucleus | optical, $\\sim 10^{15}$ Hz | 1 to 3, present in every material |
+| Ionic (atomic) | whole ions against one another | infrared, $\\sim 10^{12}$ to $10^{13}$ Hz | a few to tens, in ionic solids |
+| Orientational (dipolar) | permanent molecular dipoles rotating | microwave, $\\sim 10^{9}$ to $10^{11}$ Hz | tens, in polar liquids and polymers |
+| Interfacial (Maxwell-Wagner) | charge piling up at internal boundaries | audio and below, $\\lesssim 10^{4}$ Hz | very large and very variable |
+
+The ordering is by inertia. An electron cloud has almost none, so it keeps up
+with visible light; an ion is thousands of times heavier and gives up in the
+infrared; a whole molecule fighting its neighbours' viscosity gives up in the
+microwave band; and space charge crawling to an internal interface may need
+milliseconds. Each mechanism, as it drops out, subtracts its own contribution
+from $\\varepsilon_r$ — which is why permittivity is a DECREASING staircase in
+frequency, never a single number.
+
+![Real and imaginary permittivity of a four-mechanism model spectrum against frequency on logarithmic axes, computed from two Debye relaxations and two Lorentz oscillators whose parameters are stated in the lesson. The upper panel shows the real part descending in four steps from 233.4 at low frequency to 1 in the far ultraviolet; the lower panel shows that every step down is accompanied by a peak in the loss.](/courses/fe-ee/figures/mat3-polar-dispersion.svg)
+
+The model behind the figure is declared, not measured: two relaxations
+(interfacial with $\\Delta\\varepsilon = 180$ at 300 Hz, orientational with
+$\\Delta\\varepsilon = 45$ at 2 GHz) and two oscillators (ionic with
+$\\Delta\\varepsilon = 5$ at 8 THz, electronic with $\\Delta\\varepsilon = 2.4$
+at 2 PHz). Adding them to the vacuum baseline gives
+$1 + 180 + 45 + 5 + 2.4 = 233.4$ at low frequency and 1 above the last
+resonance, and the figure asserts both endpoints. No real material has exactly
+this spectrum; every real material has this SHAPE.
+
+Between the last relaxation and the first resonance the model sits at
+$1 + 5 + 2.4 = 8.4$, and above the ionic resonance at $1 + 2.4 = 3.4$. That
+last plateau is the OPTICAL permittivity, and its square root
+$\\sqrt{3.4} = 1.8439$ is the refractive index. The identity
+$n = \\sqrt{\\varepsilon_r}$ at optical frequency is the reason a table of
+low-frequency $\\varepsilon_r$ never predicts a material's optics: water has
+$\\varepsilon_r = 80$ at 1 kHz and $n = 1.33$, which is
+$\\varepsilon_r = 1.77$, because 78 of those 80 units are rotation that light
+is far too fast to excite.
+
+## 6.4 Worked: how much of water's permittivity is molecular rotation
+
+Given: water at 20 °C. Tabulated inputs, each named — molecular dipole moment
+1.85 D, density 1000 kg/m³, molar mass 18.015 g/mol,
+$k_B = 1.380649 \\times 10^{-23}$ J/K, $N_A = 6.02214076 \\times 10^{23}$/mol.
+
+Step 1, the moment in SI:
+
+$$p = 1.85\\ \\mathrm{D} \\times 3.33564 \\times 10^{-30}\\ \\mathrm{C} \\cdot \\mathrm{m/D} = 6.171 \\times 10^{-30}\\ \\mathrm{C} \\cdot \\mathrm{m}$$
+
+Step 2, the number density:
+
+$$N = \\frac{\\rho N_A}{M} = \\frac{(1.000 \\times 10^{6}\\ \\mathrm{g/m^3})(6.02214076 \\times 10^{23}\\ \\mathrm{mol^{-1}})}{18.015\\ \\mathrm{g/mol}} = 3.3428 \\times 10^{28}\\ \\mathrm{m^{-3}}$$
+
+Step 3, the Langevin result for weak fields. Thermal agitation randomises the
+dipoles; the field biases them only slightly, and expanding the Langevin
+function for $pE \\ll k_BT$ gives an average moment $\\langle p\\rangle = p^2E/(3k_BT)$,
+so the orientational polarisability is
+
+$$\\alpha_o = \\frac{p^2}{3k_BT} = \\frac{(6.171 \\times 10^{-30})^2}{3(1.380649 \\times 10^{-23})(293.15)} = 3.1362 \\times 10^{-39}\\ \\mathrm{C} \\cdot \\mathrm{m^2/V}$$
+
+Dimensional check: $(\\mathrm{C} \\cdot \\mathrm{m})^2/\\mathrm{J}$, and since
+$1\\ \\mathrm{J} = 1\\ \\mathrm{C} \\cdot \\mathrm{V}$ this is
+$\\mathrm{C} \\cdot \\mathrm{m^2/V}$ — moment per unit field, which is what a
+polarisability must be.
+
+Step 4, susceptibility if every molecule felt the macroscopic field:
+
+$$\\chi_e = \\frac{N\\alpha_o}{\\varepsilon_0} = \\frac{(3.3428 \\times 10^{28})(3.1362 \\times 10^{-39})}{8.8541878128 \\times 10^{-12}} = 11.84$$
+
+giving $\\varepsilon_r = 12.84$ against a measured 80.1. The prediction is low
+by a factor of 6.2, and that gap is the honest lesson: a molecule does not sit
+in the macroscopic field, it sits in the field of its polarised neighbours as
+well. The classical repair, the Clausius-Mossotti relation
+
+$$\\frac{\\varepsilon_r - 1}{\\varepsilon_r + 2} = \\frac{N\\alpha}{3\\varepsilon_0}$$
+
+does not rescue water either: the right-hand side evaluates to 3.95, while the
+left-hand side can never exceed 1. Clausius-Mossotti diverges once
+$N\\alpha/(3\\varepsilon_0)$ reaches 1/3, and hydrogen-bonded liquids sail past
+that. Water's permittivity needs the Onsager and Kirkwood corrections, which
+are outside the FE syllabus — but knowing WHY the simple route fails is not,
+because it is the same reason a mixture rule for a composite dielectric is
+always approximate.
+
+## 6.5 Debye relaxation, and the circle it draws
+
+A rotating dipole does not stop instantly when the field reverses; it relaxes
+with a time constant $\\tau$. Solving the resulting first-order response gives
+the **Debye** form for the complex permittivity
+
+$$\\varepsilon^*(\\omega) = \\varepsilon_\\infty + \\frac{\\varepsilon_s - \\varepsilon_\\infty}{1 + j\\omega\\tau}$$
+
+whose real and imaginary parts separate into
+
+$$\\varepsilon'(\\omega) = \\varepsilon_\\infty + \\frac{\\varepsilon_s - \\varepsilon_\\infty}{1 + \\omega^2\\tau^2}, \\qquad \\varepsilon''(\\omega) = \\frac{(\\varepsilon_s - \\varepsilon_\\infty)\\,\\omega\\tau}{1 + \\omega^2\\tau^2}$$
+
+Here $\\varepsilon_s$ is the static (low-frequency) value and
+$\\varepsilon_\\infty$ what is left once this mechanism has dropped out. Two
+consequences follow immediately. The loss $\\varepsilon''$ is zero at both ends
+and peaks where $\\omega\\tau = 1$, at the value
+$(\\varepsilon_s - \\varepsilon_\\infty)/2$; and eliminating $\\omega\\tau$
+between the two expressions gives a circle,
+
+$$\\left(\\varepsilon' - \\frac{\\varepsilon_s + \\varepsilon_\\infty}{2}\\right)^{2} + (\\varepsilon'')^{2} = \\left(\\frac{\\varepsilon_s - \\varepsilon_\\infty}{2}\\right)^{2}$$
+
+A single relaxation time therefore plots as an exact semicircle in the
+$(\\varepsilon', \\varepsilon'')$ plane. Real materials with a distribution of
+relaxation times plot as a depressed arc, and how far the arc is depressed is
+how spread the distribution is — that is the entire content of the Cole-Cole
+diagnostic.
+
+![Cole-Cole plot of the Debye response of liquid water at twenty degrees Celsius, computed from the stated static permittivity 80.1, high-frequency permittivity 5.6 and relaxation time 9.4 picoseconds. The locus is an exact semicircle from 80.1 down to 5.6 on the real axis, with the apex at the relaxation frequency of 16.9 gigahertz and the 2.45 gigahertz oven band marked well up the low-frequency side.](/courses/fe-ee/figures/mat3-cole-cole-water.svg)
+
+## 6.6 Worked: water at the oven frequency
+
+Given: liquid water at 20 °C with tabulated Debye parameters
+$\\varepsilon_s = 80.1$, $\\varepsilon_\\infty = 5.6$,
+$\\tau = 9.4\\ \\mathrm{ps}$. Those three numbers vary between sources by a
+percent or two and shift substantially with temperature; they are quoted here
+as a 20 °C set, not as constants of nature.
+
+Relaxation frequency:
+
+$$f_{rel} = \\frac{1}{2\\pi\\tau} = \\frac{1}{2\\pi(9.4 \\times 10^{-12}\\ \\mathrm{s})} = 1.6931 \\times 10^{10}\\ \\mathrm{Hz} = 16.93\\ \\mathrm{GHz}$$
+
+At the 2.45 GHz oven band, $\\omega\\tau = 2\\pi(2.45 \\times 10^{9})(9.4 \\times 10^{-12}) = 0.14470$, so
+
+$$\\varepsilon' = 5.6 + \\frac{74.5}{1 + 0.14470^2} = 78.572, \\qquad \\varepsilon'' = \\frac{74.5(0.14470)}{1 + 0.14470^2} = 10.559$$
+
+$$\\tan\\delta = \\frac{\\varepsilon''}{\\varepsilon'} = \\frac{10.559}{78.572} = 0.13439$$
+
+Independent check, from the circle rather than from the two formulas: the point
+$(78.572, 10.559)$ must satisfy
+$(\\varepsilon' - 42.85)^2 + (\\varepsilon'')^2 = 37.25^2$. Left side:
+$(35.722)^2 + (10.559)^2 = 1276.1 + 111.5 = 1387.6$, and $37.25^2 = 1387.6$.
+The figure asserts that identity at every plotted frequency, not merely at
+this one.
+
+Note what the numbers say about oven design. At 2.45 GHz water is NOT at its
+loss peak — the peak is at 16.9 GHz, nearly seven times higher. Ovens sit well
+down the low-frequency flank deliberately: at the peak the loss is so large
+that the field would be absorbed within a few millimetres and cook only the
+surface. Section 8 turns this $\\varepsilon''$ into watts and into a
+penetration depth.
+
+## 6.7 Worked: predicting the relaxation time from viscosity
+
+Debye's own estimate treats the molecule as a sphere of radius $a$ rotating
+against the viscous drag of its neighbours, which gives
+
+$$\\tau = \\frac{4\\pi\\eta a^{3}}{k_BT}$$
+
+Given: water at 20 °C, tabulated viscosity
+$\\eta = 1.002 \\times 10^{-3}\\ \\mathrm{Pa} \\cdot \\mathrm{s}$, molecular
+radius taken as $a = 1.4 \\times 10^{-10}$ m (the conventional van der Waals
+radius of the water molecule).
+
+$$\\tau = \\frac{4\\pi(1.002 \\times 10^{-3})(1.4 \\times 10^{-10})^{3}}{(1.380649 \\times 10^{-23})(293.15)} = \\frac{3.4551 \\times 10^{-32}}{4.0473 \\times 10^{-21}} = 8.537 \\times 10^{-12}\\ \\mathrm{s}$$
+
+Dimensional check:
+$\\mathrm{Pa} \\cdot \\mathrm{s} \\times \\mathrm{m^3} = \\mathrm{N/m^2} \\cdot \\mathrm{s} \\cdot \\mathrm{m^3} = \\mathrm{N} \\cdot \\mathrm{m} \\cdot \\mathrm{s} = \\mathrm{J} \\cdot \\mathrm{s}$,
+divided by $k_BT$ in joules leaves seconds.
+
+That is 8.54 ps against the tabulated 9.4 ps — 9% low, from a model that knows
+nothing but viscosity, temperature and molecular size. The agreement is the
+point: dielectric relaxation in a liquid is a MECHANICAL process, and anything
+that thickens the liquid slows it. Cooling water raises $\\eta$ faster than it
+lowers $T$, so $\\tau$ rises and the loss peak walks down in frequency, which
+is exactly why frozen food heats so badly in a microwave: ice has a relaxation
+frequency in the kilohertz, and at 2.45 GHz its $\\varepsilon''$ is
+comparatively tiny.`,
+      examTip: 'Permittivity is a staircase in frequency, never a single number. If a stem gives you a low-frequency epsilon-r and asks about optical or microwave behaviour, the tabulated value is the wrong one to use, and the intended answer names the mechanism that has dropped out.',
+    },
+    {
+      id: 'diel-boundary',
+      title: '7. Permittivity, Boundary Conditions and Layered Insulation',
+      content: `## 7.1 Two definitions of relative permittivity that must agree
+
+Section 6 built $\\varepsilon_r = 1 + \\chi_e$ out of polarisation. The
+laboratory definition is different in wording and identical in content: fill a
+capacitor with the material and take the capacitance ratio,
+
+$$\\varepsilon_r \\equiv \\frac{C_{\\text{filled}}}{C_{\\text{vacuum}}}$$
+
+For a parallel plate that is immediate. In vacuum
+$C_0 = \\varepsilon_0 A/d$; with the dielectric,
+$D = \\varepsilon_0\\varepsilon_r E$ means the same plate charge supports
+$\\varepsilon_r$ times the field-free-space value, so
+
+$$C = \\varepsilon_0\\varepsilon_r\\frac{A}{d} = \\varepsilon_r C_0$$
+
+and the two definitions coincide. Keeping both in view matters because exam
+items switch between them without warning: a stem that says "the capacitance
+rises by a factor of 4 when the slab is inserted" has just told you
+$\\varepsilon_r = 4$ without using the word permittivity.
+
+The energy stored follows from either route:
+
+$$U = \\tfrac{1}{2}CV^{2} = \\tfrac{1}{2}\\varepsilon_0\\varepsilon_r\\frac{A}{d}V^{2}$$
+
+and, per unit volume of dielectric, from the field alone:
+
+$$u = \\frac{U}{Ad} = \\tfrac{1}{2}\\varepsilon_0\\varepsilon_r E^{2} = \\tfrac{1}{2}DE$$
+
+The two must always reconcile, and section 7.4 checks a real case both ways.
+Dimensional check on $u$: $\\mathrm{(F/m)(V/m)^2} = \\mathrm{F} \\cdot \\mathrm{V^2/m^3} = \\mathrm{J/m^3}$,
+since $\\mathrm{F} \\cdot \\mathrm{V^2} = \\mathrm{C} \\cdot \\mathrm{V} = \\mathrm{J}$.
+
+## 7.2 What survives an interface
+
+At a boundary between two dielectrics carrying no free surface charge, the
+integral forms of Gauss's law and of the electrostatic circulation law give one
+condition each:
+
+$$D_{n1} = D_{n2} \\quad \\Longrightarrow \\quad \\varepsilon_1 E_{n1} = \\varepsilon_2 E_{n2}$$
+
+$$E_{t1} = E_{t2}$$
+
+The NORMAL component of $\\mathbf{D}$ is continuous; the TANGENTIAL component of
+$\\mathbf{E}$ is continuous. Which of the two governs a problem is decided by
+geometry, and for a layered capacitor with the layers perpendicular to the
+field it is the first: the flux density is the same in every layer, and the
+field is therefore inversely proportional to permittivity,
+
+$$E_i = \\frac{D}{\\varepsilon_0\\varepsilon_{r,i}}$$
+
+with the layer voltages adding to the terminal voltage,
+
+$$V = \\sum_i E_i d_i = D\\sum_i \\frac{d_i}{\\varepsilon_0\\varepsilon_{r,i}}$$
+
+That last expression is worth reading as a circuit statement, because the sum
+is exactly the reciprocal of a series capacitance per unit area:
+
+$$\\frac{1}{C_{series}} = \\sum_i \\frac{d_i}{\\varepsilon_0\\varepsilon_{r,i}A}$$
+
+Layered insulation IS series capacitors, and the voltage divides between series
+capacitors inversely to their capacitance — which is the same statement as
+field dividing inversely to permittivity.
+
+## 7.3 Worked: air over glass, three independent routes
+
+Given: 10 kV across a stack of 1 mm of air ($\\varepsilon_r = 1$) in series
+with 4 mm of glass ($\\varepsilon_r = 4$), area 1 m² for convenience.
+
+Route 1 — flux density first.
+
+$$D = \\frac{V}{\\dfrac{d_1}{\\varepsilon_0\\varepsilon_{r1}} + \\dfrac{d_2}{\\varepsilon_0\\varepsilon_{r2}}} = \\frac{10^{4}}{\\dfrac{10^{-3}}{\\varepsilon_0} + \\dfrac{4 \\times 10^{-3}}{4\\varepsilon_0}} = \\frac{10^{4}\\,\\varepsilon_0}{2 \\times 10^{-3}} = 4.4271 \\times 10^{-5}\\ \\mathrm{C/m^2}$$
+
+$$E_{air} = \\frac{D}{\\varepsilon_0} = 5.000 \\times 10^{6}\\ \\mathrm{V/m}, \\qquad E_{glass} = \\frac{D}{4\\varepsilon_0} = 1.250 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+Route 2 — series capacitance. Per square metre,
+$C_1 = \\varepsilon_0/10^{-3} = 8.8542\\ \\mathrm{nF}$ and
+$C_2 = 4\\varepsilon_0/(4 \\times 10^{-3}) = 8.8542\\ \\mathrm{nF}$; the two are
+equal, so the series value is half of either, 4.4271 nF, and
+
+$$D = \\frac{Q}{A} = \\frac{C_{series}V}{A} = (4.4271 \\times 10^{-9})(10^{4}) = 4.4271 \\times 10^{-5}\\ \\mathrm{C/m^2}$$
+
+identical to route 1. The equality of $C_1$ and $C_2$ is the numerical
+signature of the answer: two series capacitors of equal value split the voltage
+evenly, so 5 kV lands on 1 mm of air and 5 kV on 4 mm of glass.
+
+Route 3 — voltage sum, as a check:
+$(5.00 \\times 10^{6})(10^{-3}) + (1.25 \\times 10^{6})(4 \\times 10^{-3}) = 5000 + 5000 = 10\\,000$ V.
+
+![Field, flux density and potential plotted across a series stack of one millimetre of air and four millimetres of glass at ten kilovolts, all computed from the continuity of normal flux density. The upper panel shows the electric field stepping down by a factor of four at the interface while the flux density runs straight through unchanged; the lower panel shows the potential climbing steeply through the thin air layer and gently through the thick glass.](/courses/fe-ee/figures/mat3-layer-field.svg)
+
+## 7.4 Worked: the same stack by energy, both ways
+
+Lumped route, per square metre of plate:
+
+$$U = \\tfrac{1}{2}C_{series}V^{2} = \\tfrac{1}{2}(4.4271 \\times 10^{-9})(10^{4})^{2} = 0.22135\\ \\mathrm{J/m^2}$$
+
+Field route, integrating $u = \\tfrac{1}{2}\\varepsilon_0\\varepsilon_r E^2$ over
+each layer separately, because the integrand is constant inside each:
+
+$$U_{air} = \\tfrac{1}{2}\\varepsilon_0(1)(5.00 \\times 10^{6})^{2}(10^{-3}) = 0.110677\\ \\mathrm{J/m^2}$$
+
+$$U_{glass} = \\tfrac{1}{2}\\varepsilon_0(4)(1.25 \\times 10^{6})^{2}(4 \\times 10^{-3}) = 0.110677\\ \\mathrm{J/m^2}$$
+
+The two layers contribute equally, and their sum of 0.221355 J/m² reproduces
+the lumped result to every printed digit. The split is also instructive: the thin
+air layer, one fifth of the thickness, holds HALF the stored energy, because
+energy density goes as $\\varepsilon_r E^2$ and the field advantage is squared
+while the permittivity handicap is only linear. Where the field is high, the
+energy is; and where the energy is, the failure will be.
+
+This is also the place to name the classic factor error. Writing
+$u = \\tfrac{1}{2}\\varepsilon_0 E^2$ inside a dielectric — dropping the
+$\\varepsilon_r$ — understates the glass layer's energy fourfold, and it looks
+plausible because the vacuum formula is the one most students memorise. The
+guard is the $D$ form: $u = \\tfrac{1}{2}DE$ needs no memory of which
+permittivity belongs where, because $D$ already carries it.
+
+## 7.5 Where the stress goes, as a rule
+
+The result generalises without arithmetic. For two layers of equal thickness,
+the field ratio is exactly the inverse permittivity ratio, and each layer's
+field relative to the average $E_{avg} = V/(d_1 + d_2)$ is
+
+$$\\frac{E_1}{E_{avg}} = \\frac{2k}{k + 1}, \\qquad \\frac{E_2}{E_{avg}} = \\frac{2}{k + 1}, \\qquad k = \\frac{\\varepsilon_{r2}}{\\varepsilon_{r1}}$$
+
+At $k = 1$ both are unity, as they must be. At $k = 10$ the weak layer carries
+$20/11 = 1.82$ times the average field while the strong layer loafs at
+$2/11 = 0.18$ times it. And as $k \\to \\infty$ the weak layer approaches TWICE
+the average — for equal thicknesses it eventually carries the entire voltage
+across half the total gap.
+
+![Layer field divided by average field against the permittivity ratio of a two-layer stack of equal thicknesses, on a logarithmic ratio axis, computed from the continuity of flux density. The low-permittivity layer rises toward twice the average field while the high-permittivity layer falls toward zero, the two curves crossing at unity ratio where both equal the average.](/courses/fe-ee/figures/mat3-stack-stress-ratio.svg)
+
+The design rule is therefore uncomfortable and unavoidable: putting a
+high-permittivity insulator next to a low-permittivity one moves the stress
+ONTO the low-permittivity one, and the lowest-permittivity material in most
+real assemblies is a gas — air in a void, air in a delamination, air under a
+badly seated washer. Section 10 follows that thought to partial discharge.
+
+## 7.6 Worked: a three-layer bushing, and which layer decides the rating
+
+Given: 20 kV across 0.5 mm of air, 2 mm of epoxy ($\\varepsilon_r = 4$), and
+another 0.5 mm of air.
+
+$$\\sum_i \\frac{d_i}{\\varepsilon_{r,i}} = \\frac{0.5}{1} + \\frac{2}{4} + \\frac{0.5}{1} = 1.5\\ \\mathrm{mm}$$
+
+$$D = \\frac{\\varepsilon_0 V}{\\sum_i d_i/\\varepsilon_{r,i}} = \\frac{(8.8541878128 \\times 10^{-12})(2 \\times 10^{4})}{1.5 \\times 10^{-3}} = 1.1806 \\times 10^{-4}\\ \\mathrm{C/m^2}$$
+
+$$E_{air} = \\frac{D}{\\varepsilon_0} = 1.3333 \\times 10^{7}\\ \\mathrm{V/m}, \\qquad E_{epoxy} = \\frac{D}{4\\varepsilon_0} = 3.3333 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+Voltage check:
+$2(1.3333 \\times 10^{7})(5 \\times 10^{-4}) + (3.3333 \\times 10^{6})(2 \\times 10^{-3}) = 13\\,333 + 6667 = 20\\,000$ V.
+
+The air layers stand 13.3 MV/m against a bulk air strength near 3 MV/m: they
+are more than four times over, and the assembly discharges in the air long
+before the epoxy notices. Two thirds of the applied voltage is being spent on
+one third of the thickness. The fix is not thicker epoxy — that makes the
+division WORSE by taking an even larger share of the geometric path away from
+the layer that cannot afford it — but eliminating the air, which is what
+vacuum impregnation and cast-in bushings are for.`,
+      examTip: 'In a layered capacitor the flux density D is the quantity that runs straight through, and the field is D over epsilon-zero times epsilon-r in each layer. Solve for D once from the voltage, then read every layer field off it; solving layer by layer from the voltage invites the reciprocal error.',
+    },
+    {
+      id: 'diel-loss-deep',
+      title: '8. Loss Tangent, Dissipation Factor, ESR and Dielectric Heating',
+      content: `## 8.1 Loss written into the permittivity
+
+A perfect dielectric returns everything it stores. A real one lags, and the
+tidiest bookkeeping makes permittivity complex:
+
+$$\\varepsilon^{*} = \\varepsilon' - j\\varepsilon''$$
+
+with $\\varepsilon'$ the storage term and $\\varepsilon''$ the loss term, both
+usually quoted relative to $\\varepsilon_0$. The current drawn by a capacitor
+whose vacuum capacitance is $C_0$ is then
+
+$$I = j\\omega C_0\\varepsilon^{*}V = \\underbrace{j\\omega C_0\\varepsilon' V}_{\\text{quadrature}} + \\underbrace{\\omega C_0\\varepsilon'' V}_{\\text{in phase}}$$
+
+The in-phase piece is a conductance. Writing $C = C_0\\varepsilon'$ for the
+capacitance actually measured,
+
+$$G_p = \\omega C\\frac{\\varepsilon''}{\\varepsilon'} = \\omega C\\tan\\delta, \\qquad \\tan\\delta \\equiv \\frac{\\varepsilon''}{\\varepsilon'}$$
+
+$\\delta$ is the angle by which the current falls short of a perfect 90°
+quadrature. The **dissipation factor** DF is the same number, usually printed
+as a percentage; the **quality factor** is its reciprocal:
+
+$$Q = \\frac{1}{\\tan\\delta} = \\frac{\\varepsilon'}{\\varepsilon''}$$
+
+Loss driven by a voltage source follows in one line:
+
+$$P = V^{2}G_p = V^{2}\\omega C\\tan\\delta$$
+
+which is the origin of the scaling the older sections quote: loss grows with
+the SQUARE of voltage and the FIRST power of frequency, at fixed $\\tan\\delta$.
+
+## 8.2 The same loss as a series resistance
+
+A capacitor datasheet prefers a series model, because ripple current is what a
+switching converter delivers. Setting the series impedance
+$Z = R_s + 1/(j\\omega C)$ and computing its loss angle gives
+$\\tan\\delta = \\omega C R_s$, hence
+
+$$\\mathrm{ESR} = \\frac{\\tan\\delta}{\\omega C}$$
+
+$$P = I_{rms}^{2}\\,\\mathrm{ESR}$$
+
+The parallel and series pictures are the same physics, and at any one frequency
+they give identical power — a fact worth checking rather than trusting, which
+section 8.3 does. What they do NOT share is frequency behaviour: the
+dielectric part of ESR falls as $1/\\omega$, so a real capacitor's ESR curve
+descends until it hits the floor set by plate, lead and termination
+resistance, and then stops.
+
+![Equivalent series resistance and ripple heating against frequency for a hundred nanofarad capacitor with a loss tangent of 0.025, on logarithmic axes. The dielectric term falls as one over frequency, the total flattens onto a twenty milliohm metallic floor above about two megahertz, and the marked point shows a tenth of a watt of heating at a hundred kilohertz with half an amp of ripple.](/courses/fe-ee/figures/mat3-esr-frequency.svg)
+
+## 8.3 Worked: ripple heating, and the two models reconciled
+
+Given: 100 nF class-2 ceramic, $\\tan\\delta = 0.025$, carrying 0.5 A rms of
+ripple at 100 kHz.
+
+$$\\omega C = 2\\pi(10^{5})(10^{-7}) = 0.0628319\\ \\mathrm{S}$$
+
+$$\\mathrm{ESR} = \\frac{0.025}{0.0628319} = 0.39789\\ \\Omega$$
+
+$$P = I^{2}\\,\\mathrm{ESR} = (0.5)^{2}(0.39789) = 0.09947\\ \\mathrm{W}$$
+
+Independent route, through the parallel model. The same ripple current across
+an ideal 100 nF at 100 kHz develops
+
+$$V = \\frac{I}{\\omega C} = \\frac{0.5}{0.0628319} = 7.9577\\ \\mathrm{V\\,rms}$$
+
+$$P = V^{2}\\omega C\\tan\\delta = (7.9577)^{2}(0.0628319)(0.025) = 0.09947\\ \\mathrm{W}$$
+
+Identical, as the algebra guarantees:
+$V^2\\omega C\\tan\\delta = (I/\\omega C)^2\\omega C\\tan\\delta = I^2\\tan\\delta/(\\omega C)$.
+The check is cheap and it catches the commonest slip in this material, which is
+using the ripple current with the parallel formula or the ripple voltage with
+the series one.
+
+A tenth of a watt inside a 0603 chip is not negligible. With a thermal
+resistance of order 100 K/W to the board, that is a rise of several kelvin
+above an already warm plane — and $\\tan\\delta$ for class-2 ceramics generally
+worsens with temperature, so the loop closes on itself.
+
+## 8.4 Worked: film against class-2 ceramic in the same snubber
+
+Given: 4.7 μF carrying 40 V rms of ripple at 20 kHz. Compare a polypropylene
+film part with $\\tan\\delta = 2 \\times 10^{-4}$ against a class-2 ceramic with
+$\\tan\\delta = 0.025$.
+
+$$\\omega C = 2\\pi(2 \\times 10^{4})(4.7 \\times 10^{-6}) = 0.590619\\ \\mathrm{S}$$
+
+Film:
+
+$$P = V^{2}\\omega C\\tan\\delta = (40)^{2}(0.590619)(2 \\times 10^{-4}) = 0.18900\\ \\mathrm{W}$$
+
+Class-2 ceramic:
+
+$$P = (40)^{2}(0.590619)(0.025) = 23.625\\ \\mathrm{W}$$
+
+A factor of 125, which is simply the ratio of the two loss tangents, because
+everything else in the expression is identical. Twenty-four watts inside a
+surface-mount ceramic is not a derating question, it is a fire; this is why AC
+line and snubber duty is film territory and why substituting "the same
+capacitance in a smaller package" is one of the more dangerous
+value-engineering moves available.
+
+The corresponding equivalent series resistances are
+$2 \\times 10^{-4}/0.590619 = 0.339\\ \\mathrm{m\\Omega}$ and
+$0.025/0.590619 = 42.3\\ \\mathrm{m\\Omega}$ — the same factor of 125, seen from
+the series side.
+
+## 8.5 Heating a volume, and how deep the heat gets
+
+For a field inside a lossy dielectric the dissipated power per unit volume is
+
+$$p_v = \\omega\\varepsilon_0\\varepsilon'' E_{rms}^{2} = \\sigma_{eff}E_{rms}^{2}, \\qquad \\sigma_{eff} = \\omega\\varepsilon_0\\varepsilon''$$
+
+Dimensional check on $\\sigma_{eff}$:
+$\\mathrm{s^{-1}} \\times \\mathrm{F/m} = \\mathrm{F/(m \\cdot s)} = \\mathrm{S/m}$,
+because a farad per second is a siemens. Dielectric loss is
+indistinguishable from an ohmic conductivity as far as the power balance is
+concerned — which is why the two are so often confused, and why the
+distinction only reappears when you change frequency.
+
+How deep the heating reaches is set by attenuation. Writing
+$\\alpha = (\\omega/c)\\,\\mathrm{Im}\\sqrt{\\varepsilon^{*}}$ for the amplitude
+attenuation constant, the power penetration depth is
+
+$$D_p = \\frac{1}{2\\alpha}$$
+
+and in the low-loss limit this reduces to the more quotable
+
+$$D_p \\approx \\frac{\\lambda_0\\sqrt{\\varepsilon'}}{2\\pi\\varepsilon''}$$
+
+## 8.6 Worked: the microwave oven, run backwards
+
+Given: 250 mL of water raised 60 K in 90 s. Water at 2.45 GHz and 20 °C has,
+from section 6.6, $\\varepsilon' = 78.572$ and $\\varepsilon'' = 10.559$;
+specific heat capacity 4182 J/(kg·K).
+
+Effective conductivity:
+
+$$\\sigma_{eff} = 2\\pi(2.45 \\times 10^{9})(8.8541878128 \\times 10^{-12})(10.559) = 1.4392\\ \\mathrm{S/m}$$
+
+Power actually delivered to the load:
+
+$$P = \\frac{mc\\,\\Delta T}{t} = \\frac{(0.250)(4182)(60)}{90} = 697.0\\ \\mathrm{W}$$
+
+Volumetric:
+
+$$p_v = \\frac{P}{\\mathcal{V}} = \\frac{697.0}{2.5 \\times 10^{-4}\\ \\mathrm{m^3}} = 2.788 \\times 10^{6}\\ \\mathrm{W/m^3}$$
+
+and inverting the heating law for the field that must be present:
+
+$$E_{rms} = \\sqrt{\\frac{p_v}{\\sigma_{eff}}} = \\sqrt{\\frac{2.788 \\times 10^{6}}{1.4392}} = 1392\\ \\mathrm{V/m}$$
+
+Check by the other route: $\\sigma_{eff}E_{rms}^2 = (1.4392)(1392)^2 = 2.788 \\times 10^{6}$ W/m³,
+and $p_v\\mathcal{V}/(mc) = 0.667$ K/s, which over 90 s is the 60 K asked for.
+
+Penetration depth, from the exact expression with
+$\\varepsilon^{*} = 78.572 - j10.559$: the square root is
+$8.8840 - j0.59428$, so
+$\\alpha = (2\\pi \\times 2.45 \\times 10^{9}/2.99792458 \\times 10^{8})(0.59428) = 30.52\\ \\mathrm{Np/m}$
+and $D_p = 1/(2 \\times 30.52) = 1.64\\ \\mathrm{cm}$. The low-loss approximation
+gives 1.63 cm, agreeing to within a percent because $\\varepsilon''$ really is
+small next to $\\varepsilon'$ here.
+
+Sixteen millimetres is the whole engineering story of the domestic oven: the
+field is substantially absorbed within about that depth, so anything much
+thicker cooks from the outside inward by ordinary conduction, and the turntable
+exists because the standing-wave pattern of the cavity is not uniform. A 1.4
+kV/m field, meanwhile, is far below air's 3 MV/m breakdown — the oven does not
+arc on water, it arcs on metal edges where the field is concentrated by
+hundreds.`,
+      examTip: 'Loss tangent questions come in two dialects. Given a ripple CURRENT use ESR = tan delta over omega C and P = I squared times ESR; given a ripple VOLTAGE use P = V squared times omega C times tan delta. Both give the same watts, and mixing the two gives an answer wrong by the square of the reactance.',
+    },
+    {
+      id: 'diel-breakdown',
+      title: '9. Breakdown: Mechanisms, Thickness Dependence and the Series Stack',
+      content: `## 9.1 Four ways an insulator stops insulating
+
+Dielectric strength is not one phenomenon, and the mechanism decides which
+variables matter.
+
+| Mechanism | What happens | Time to fail | What controls it |
+|---|---|---|---|
+| Intrinsic (electronic) | field tears electrons from bonds directly | nanoseconds | pure material, field only |
+| Avalanche | a seed electron multiplies through impact ionisation | microseconds | mean free path, thickness |
+| Thermal | loss heating raises conductivity, which raises heating | seconds to hours | $\\tan\\delta$, cooling, ambient |
+| Electrochemical or treeing | discharges and moisture erode a growing channel | months to years | voids, impurities, partial discharge |
+
+Only the first is a material constant. Everything a datasheet calls "dielectric
+strength" is a measurement under a stated waveform, electrode geometry,
+thickness and ramp rate, and the FE-relevant consequence is that a single
+tabulated MV/m is a starting point, never a guarantee.
+
+## 9.2 Why thin is strong
+
+Measured breakdown field rises as the sample gets thinner. Two reasons
+compound: a thinner sample contains fewer of the defects that seed a failure
+(a weakest-link, extreme-value effect), and there is less path length in which
+an avalanche can build. Empirically the field follows a power law over several
+decades,
+
+$$E_{bd}(d) = E_{ref}\\left(\\frac{d}{d_{ref}}\\right)^{-n}$$
+
+with $n$ typically between 0.2 and 0.5 for polymer films. Multiplying by
+thickness turns that into the WITHSTAND VOLTAGE,
+
+$$V_{bd}(d) = E_{bd}(d)\\,d = E_{ref}\\,d_{ref}^{\\,n}\\,d^{\\,1-n}$$
+
+which still increases with thickness, but sublinearly. Doubling the thickness
+does not double the rating.
+
+![Breakdown field and withstand voltage against dielectric thickness on logarithmic axes, computed from a power law anchored at two hundred megavolts per metre at ten micrometres with an exponent of 0.35. The upper panel shows the field falling by a factor of five between ten micrometres and one millimetre; the lower panel shows the voltage still rising, but as thickness to the power 0.65.](/courses/fe-ee/figures/mat3-breakdown-thickness.svg)
+
+## 9.3 Worked: what the exponent costs a designer
+
+Given: a polymer whose breakdown field is 200 MV/m at $d_{ref} = 10\\ \\mu\\mathrm{m}$,
+with $n = 0.35$. These are a stated anchor and a stated exponent, not universal
+constants.
+
+At 1 mm — a hundredfold thickness increase:
+
+$$E_{bd} = 200\\left(\\frac{10^{-3}}{10^{-5}}\\right)^{-0.35} = 200(100)^{-0.35} = 200(0.19953) = 39.91\\ \\mathrm{MV/m}$$
+
+The field capability has fallen fivefold. The voltage capability, however, has
+risen:
+
+$$\\frac{V_{bd}(10^{-3})}{V_{bd}(10^{-5})} = (100)^{1-0.35} = (100)^{0.65} = 19.95$$
+
+so 2000 V becomes 39.9 kV, not 200 kV. And for the everyday case of simply
+doubling a film thickness,
+
+$$\\frac{V_{bd}(2d)}{V_{bd}(d)} = 2^{0.65} = 1.5692$$
+
+Fifty-seven percent more voltage for one hundred percent more thickness, which
+also means half the capacitance for the same area. That trade — capacitance
+falling as $1/d$ while voltage rises only as $d^{0.65}$ — is why the energy
+density of a film capacitor falls as its voltage rating rises, and why
+high-voltage capacitor banks are built from series strings of moderate-voltage
+parts rather than from single thick ones.
+
+## 9.4 Gases: Paschen's law and the gap that is too small to break down
+
+Solid breakdown scales smoothly. Gas breakdown does not, because it needs a
+seed electron to gain ionising energy between collisions AND enough collisions
+to multiply. The Townsend analysis gives
+
+$$V_b = \\frac{B\\,(pd)}{\\ln(A\\,pd) - \\ln\\!\\left[\\ln\\!\\left(1 + \\dfrac{1}{\\gamma}\\right)\\right]}$$
+
+where $p$ is pressure, $d$ the gap, $\\gamma$ the secondary-emission
+coefficient of the cathode, and $A$, $B$ are gas constants. Breakdown voltage
+depends on the PRODUCT $pd$, not on the gap alone — the Paschen similarity law.
+Differentiating gives a minimum at
+
+$$(pd)_{min} = \\frac{e\\,\\ln(1 + 1/\\gamma)}{A}, \\qquad V_{min} = \\frac{e\\,B\\,\\ln(1 + 1/\\gamma)}{A}$$
+
+![Paschen breakdown voltage against pressure-gap product for air on logarithmic axes, computed from the Townsend expression with the stated constants A equal to fifteen per centimetre-torr, B equal to three hundred sixty-five volts per centimetre-torr, and a secondary emission coefficient of 0.01. The curve falls to a minimum of three hundred five volts and rises steeply on both sides, with a shaded band marking where the reduced field stays inside the range over which those constants were fitted.](/courses/fe-ee/figures/mat3-paschen-air.svg)
+
+## 9.5 Worked: the Paschen minimum for air
+
+Given, as stated constants for air with a typical metal cathode:
+$A = 15\\ \\mathrm{(cm \\cdot torr)^{-1}}$,
+$B = 365\\ \\mathrm{V/(cm \\cdot torr)}$, $\\gamma = 0.01$.
+
+$$\\ln(1 + 1/\\gamma) = \\ln(101) = 4.61512$$
+
+$$(pd)_{min} = \\frac{(2.718282)(4.61512)}{15} = 0.83635\\ \\mathrm{torr} \\cdot \\mathrm{cm}$$
+
+$$V_{min} = \\frac{(2.718282)(365)(4.61512)}{15} = 305.27\\ \\mathrm{V}$$
+
+A structural check that costs nothing: at the minimum the reduced field is
+$V_{min}/(pd)_{min} = 305.27/0.83635 = 365.0\\ \\mathrm{V/(cm \\cdot torr)}$,
+which is exactly $B$. That identity falls out of the differentiation and
+confirms both numbers at once.
+
+At atmospheric pressure, 760 torr, the minimum sits at a gap of
+$0.83635/760 = 1.1\\ \\mu\\mathrm{m}$. Below that gap air simply will not break
+down at any voltage the curve permits — the asymptote is at
+$pd = \\ln(101)/15 = 0.3077\\ \\mathrm{torr} \\cdot \\mathrm{cm}$, and inside it
+an electron cannot find enough molecules to ionise. This is why MEMS contacts
+and IC metal spacings survive fields that would be preposterous in a
+millimetre gap, and why vacuum is an excellent insulator until a surface
+supplies its own vapour.
+
+Two honesty notes. The constants $A$ and $B$ are fitted over a limited range of
+reduced field, roughly 100 to 800 V/(cm·torr) for air, and the shaded band on
+the figure marks it; outside that band the curve is qualitatively right and
+quantitatively optimistic. And $\\gamma$ depends on cathode material and
+surface condition, which is why handbook minima for air scatter between about
+300 and 350 V rather than settling on one figure.
+
+## 9.6 Worked: which layer of a series stack fails, with numbers
+
+Given: the three-layer bushing of section 7.6 — 0.5 mm air, 2 mm epoxy
+($\\varepsilon_r = 4$), 0.5 mm air, at 20 kV. Field results carried forward:
+13.33 MV/m in each air layer, 3.33 MV/m in the epoxy. Tabulated strengths:
+about 3 MV/m for bulk air at atmospheric pressure, and 20 MV/m for a
+representative cast epoxy.
+
+Utilisation of each material:
+
+$$\\frac{E_{air}}{E_{bd,air}} = \\frac{13.33}{3} = 4.44, \\qquad \\frac{E_{epoxy}}{E_{bd,epoxy}} = \\frac{3.33}{20} = 0.167$$
+
+The air is at 444% of its strength and the epoxy at 17% of its own. The
+assembly fails in the air, and no amount of better epoxy helps.
+
+Now solve the useful inverse. What terminal voltage keeps the air at 40% of its
+strength, that is at 1.2 MV/m? The flux density that produces that field is
+$D = \\varepsilon_0(1.2 \\times 10^{6}) = 1.0625 \\times 10^{-5}\\ \\mathrm{C/m^2}$,
+and the terminal voltage follows from the same sum as before:
+
+$$V = D\\sum_i\\frac{d_i}{\\varepsilon_0\\varepsilon_{r,i}} = (1.0625 \\times 10^{-5})\\frac{1.5 \\times 10^{-3}}{8.8541878128 \\times 10^{-12}} = 1800\\ \\mathrm{V}$$
+
+Eighteen hundred volts, from an assembly with 3 mm of epoxy in it. The air is
+costing more than an order of magnitude of rating. Replace both air layers with
+epoxy and the whole 3 mm becomes uniform at
+$V/(3 \\times 10^{-3})$; holding 40% of 20 MV/m then allows
+$0.4(20 \\times 10^{6})(3 \\times 10^{-3}) = 24\\ \\mathrm{kV}$. The same
+materials, the same thickness, thirteen times the rating — purely by removing
+the gas.
+
+That comparison is the single most transferable idea in dielectric design, and
+it is the reason section 10 spends its length on voids.`,
+      examTip: 'Breakdown numbers are FIELDS, in volts per metre. Multiply by thickness to get a voltage and divide voltage by thickness to get a field, and check the exponent story before scaling: doubling thickness raises withstand voltage by well under two because the strength itself falls with thickness.',
+    },
+    {
+      id: 'diel-insulation',
+      title: '10. Insulation Resistance, Surface Leakage, Partial Discharge and Corona',
+      content: `## 10.1 Volume resistivity, surface resistivity, and two different failures
+
+An insulator leaks through its bulk and across its surface, and the two are
+measured and defeated differently.
+
+Bulk leakage obeys the ordinary resistance law with the material's **volume
+resistivity** $\\rho$ in Ω·m:
+
+$$R = \\rho\\frac{d}{A}$$
+
+For a coaxial geometry the integral over shells gives
+
+$$R_{ins} = \\frac{\\rho}{2\\pi L}\\ln\\frac{b}{a}$$
+
+Surface leakage uses **surface resistivity** $\\rho_s$, quoted in ohms per
+square, so called because the resistance of any square patch of a surface is
+independent of the square's size:
+
+$$R_{surf} = \\rho_s\\frac{L}{W}$$
+
+Volume resistivities of good polymers sit near $10^{14}$ to $10^{17}$ Ω·m,
+falling steeply with temperature and with absorbed moisture; surface
+resistivity is dominated by contamination and humidity rather than by the
+polymer, which is why a clean dry insulator and the same insulator after a
+season outdoors are different components. Tracking resistance, quoted as a
+comparative tracking index in volts, measures how well a surface survives that
+history.
+
+## 10.2 The one product that does not care about geometry
+
+Multiply the bulk insulation resistance of a capacitor by its own capacitance
+and the geometry cancels exactly:
+
+$$RC = \\left(\\rho\\frac{d}{A}\\right)\\left(\\varepsilon_0\\varepsilon_r\\frac{A}{d}\\right) = \\rho\\,\\varepsilon_0\\varepsilon_r$$
+
+The self-discharge time constant of a capacitor is a MATERIAL property. This is
+why capacitor datasheets specify insulation resistance as an
+"ohm-farad" product (equivalently, megohm-microfarads, which are seconds) above
+some capacitance and as a plain resistance below it. Dimensional check:
+$\\Omega \\cdot \\mathrm{m} \\times \\mathrm{F/m} = \\Omega \\cdot \\mathrm{F} = \\mathrm{s}$.
+
+## 10.3 Worked: self-discharge of three dielectrics
+
+Given tabulated room-temperature volume resistivities and permittivities —
+polypropylene $10^{16}$ Ω·m with $\\varepsilon_r = 2.2$, XLPE $10^{14}$ Ω·m with
+$\\varepsilon_r = 2.3$, class-2 ceramic $10^{11}$ Ω·m with
+$\\varepsilon_r = 2000$. All three vary by orders of magnitude with grade,
+temperature and moisture; these are representative magnitudes.
+
+$$\\tau_{PP} = (10^{16})(8.8541878128 \\times 10^{-12})(2.2) = 1.9479 \\times 10^{5}\\ \\mathrm{s} = 54.1\\ \\mathrm{h}$$
+
+$$\\tau_{XLPE} = (10^{14})(8.8541878128 \\times 10^{-12})(2.3) = 2036\\ \\mathrm{s} = 33.9\\ \\mathrm{min}$$
+
+$$\\tau_{cer} = (10^{11})(8.8541878128 \\times 10^{-12})(2000) = 1771\\ \\mathrm{s} = 29.5\\ \\mathrm{min}$$
+
+The ceramic and the XLPE land within 15% of one another for entirely different
+reasons: the ceramic has a resistivity a thousand times worse but a
+permittivity nearly a thousand times better, and the product is what matters.
+That is the practical content of the geometry-free identity, and it explains why
+a sample-and-hold circuit uses polypropylene or PTFE and never a class-2
+ceramic, regardless of how much capacitance the ceramic offers.
+
+## 10.4 Worked: leakage and insulation resistance of a cable
+
+Given: 1 km of single-core XLPE cable, conductor radius 5 mm, insulation outer
+radius 9.5 mm, $\\rho = 10^{14}$ Ω·m, $\\varepsilon_r = 2.3$, operating at 8.7 kV
+to earth.
+
+$$R_{ins} = \\frac{\\rho}{2\\pi L}\\ln\\frac{b}{a} = \\frac{10^{14}}{2\\pi(1000)}\\ln(1.9) = \\frac{10^{14}(0.641854)}{6283.19} = 1.0215 \\times 10^{10}\\ \\Omega$$
+
+$$I_{leak} = \\frac{8700}{1.0215 \\times 10^{10}} = 8.517 \\times 10^{-7}\\ \\mathrm{A} = 0.85\\ \\mu\\mathrm{A}$$
+
+Independent check by the geometry-free product. The cable's capacitance is
+
+$$C = \\frac{2\\pi\\varepsilon_0\\varepsilon_r L}{\\ln(b/a)} = \\frac{2\\pi(8.8541878128 \\times 10^{-12})(2.3)(1000)}{0.641854} = 199.4\\ \\mathrm{nF}$$
+
+so $R_{ins}C = (1.0215 \\times 10^{10})(1.994 \\times 10^{-7}) = 2037\\ \\mathrm{s}$,
+matching the $\\rho\\varepsilon_0\\varepsilon_r = 2036\\ \\mathrm{s}$ of section
+10.3 to four figures. Two quantities computed from different formulas
+reproducing a material constant is the strongest arithmetic check available in
+this material.
+
+The stress on the insulation is not uniform, incidentally. In a coaxial
+geometry $E(r) = V/(r\\ln(b/a))$, so the maximum sits at the conductor surface:
+
+$$E_{max} = \\frac{8700}{(0.005)(0.641854)} = 2.711 \\times 10^{6}\\ \\mathrm{V/m} = 2.71\\ \\mathrm{MV/m}$$
+
+## 10.5 Voids, and why they are the whole problem
+
+Section 7.5 established that a low-permittivity layer in series takes the high
+field. A gas-filled void inside a solid insulator is that layer, and the
+enhancement depends on its shape. For a flat disc-shaped void with its faces
+perpendicular to the field, the flux density runs straight through and
+
+$$E_{void} = \\varepsilon_r E_{bulk}$$
+
+For a spherical void in a uniform field the solution of Laplace's equation
+gives the milder
+
+$$E_{void} = \\frac{3\\varepsilon_r}{2\\varepsilon_r + 1}E_{bulk}$$
+
+The disc is far worse: at $\\varepsilon_r = 4$ the factors are 4.00 and 1.33
+respectively. Delaminations and flat cracks are therefore much more dangerous
+than round gas bubbles, which is exactly backwards from the intuition that a
+bigger void is a worse void.
+
+Whether the enhanced field actually discharges is a Paschen question, and for
+small gaps in air the streamer inception criterion is usually written
+
+$$E_{inc} = \\left(\\frac{E}{p}\\right)_{cr}p\\left[1 + \\frac{K}{\\sqrt{p\\,d}}\\right]$$
+
+with tabulated air constants $(E/p)_{cr} = 24.2\\ \\mathrm{V/(Pa \\cdot m)}$ and
+$K = 8.6\\ \\mathrm{Pa^{1/2}m^{1/2}}$. The bracket is the size correction: small
+voids need much higher fields.
+
+## 10.6 Worked: does this void discharge
+
+Given: a cast epoxy insulator, $\\varepsilon_r = 4$, carrying a bulk field of
+8 MV/m, containing a spherical air void 0.5 mm across at atmospheric pressure
+101 325 Pa.
+
+Field inside the void:
+
+$$E_{void} = \\frac{3(4)}{2(4) + 1}(8 \\times 10^{6}) = \\frac{12}{9}(8 \\times 10^{6}) = 1.0667 \\times 10^{7}\\ \\mathrm{V/m}$$
+
+Inception field for that size:
+
+$$p\\,d = (101\\,325)(5 \\times 10^{-4}) = 50.66\\ \\mathrm{Pa} \\cdot \\mathrm{m}, \\qquad \\sqrt{p\\,d} = 7.118$$
+
+$$E_{inc} = (24.2)(101\\,325)\\left[1 + \\frac{8.6}{7.118}\\right] = (2.4521 \\times 10^{6})(2.2082) = 5.415 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+Since $1.067 \\times 10^{7} > 5.42 \\times 10^{6}$, the void discharges — the
+enhanced field is nearly twice the inception field. Each discharge dumps a
+small charge, erodes the epoxy wall, and extends a conducting tree; the bulk
+insulation is nowhere near its own 20 MV/m strength, and it will still fail,
+after months or years. Partial discharge is a SLOW failure driven by a fast
+event, which is why acceptance testing for HV apparatus measures picocoulombs
+of discharge rather than merely applying a withstand voltage for a minute.
+
+Had the same void been a flat delamination instead of a sphere, the field in it
+would be $4(8 \\times 10^{6}) = 3.2 \\times 10^{7}$ V/m, six times inception
+instead of twice.
+
+## 10.7 Corona, and Peek's expression
+
+In open air around a conductor, the same physics appears as **corona**: the
+field at the conductor surface exceeds inception in a thin sheath, ionising the
+air there without bridging to anything. Peek's empirical expression for the
+surface field at onset, in SI form, is
+
+$$E_v = 3 \\times 10^{6}\\,m\\,\\delta\\left(1 + \\frac{0.0301}{\\sqrt{\\delta\\,r}}\\right)$$
+
+with $r$ the conductor radius in metres, $\\delta$ the air density relative to
+standard conditions, and $m$ a surface-condition factor (1 for a polished
+conductor, roughly 0.8 to 0.9 for a stranded or weathered one). The
+corresponding line-to-neutral **disruptive critical voltage** for a conductor
+spaced $D$ from its return is
+
+$$V_d = E_v\\,r\\ln\\frac{D}{r}$$
+
+The $1/\\sqrt{r}$ term says thin conductors need a HIGHER surface field to start
+corona, but they reach that field at a much lower voltage — which is why corona
+rings are fat, why EHV lines bundle several conductors per phase, and why a
+sharp burr is where the buzzing starts.
+
+## 10.8 Worked: corona onset on a transmission conductor
+
+Given: a smooth conductor of radius 10 mm, phase spacing 3 m, standard air
+density $\\delta = 1$, surface factor $m = 1$.
+
+$$E_v = 3 \\times 10^{6}\\left(1 + \\frac{0.0301}{\\sqrt{0.01}}\\right) = 3 \\times 10^{6}(1 + 0.301) = 3.903 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+$$V_d = (3.903 \\times 10^{6})(0.01)\\ln\\frac{3}{0.01} = (3.903 \\times 10^{4})(5.7038) = 2.226 \\times 10^{5}\\ \\mathrm{V}$$
+
+That is 223 kV line to neutral, so a line-to-line rating of
+$\\sqrt{3}(223) = 386\\ \\mathrm{kV}$ before fair-weather corona starts — a
+comfortable but not generous margin on a 345 kV line, which is precisely the
+regime where the design is made.
+
+Now shrink the conductor to 1 mm radius:
+
+$$E_v = 3 \\times 10^{6}\\left(1 + \\frac{0.0301}{\\sqrt{0.001}}\\right) = 3 \\times 10^{6}(1.9518) = 5.856 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+$$V_d = (5.856 \\times 10^{6})(0.001)\\ln\\frac{3}{0.001} = (5856)(8.0064) = 4.688 \\times 10^{4}\\ \\mathrm{V}$$
+
+The onset field went UP by 50%, and the onset voltage went DOWN by a factor of
+4.7. Both statements are true simultaneously and neither is the whole answer;
+holding only the first is how a designer talks themselves into a thin
+conductor. A weathered surface would take another 10 to 20% off through $m$,
+and high-altitude air another slice through $\\delta$.`,
+      examTip: 'The insulation-resistance times capacitance product equals rho times epsilon-zero times epsilon-r, in seconds, with the geometry cancelled. If a problem gives you resistivity, permittivity and any capacitance, the self-discharge time constant is available without ever touching the dimensions.',
+    },
+    {
+      id: 'diel-families',
+      title: '11. Capacitor Families Compared with Numbers',
+      content: `## 11.1 The four figures of merit that actually separate families
+
+Selection questions are decided by four quantities, and every family wins one
+of them and loses another.
+
+Energy per unit volume of dielectric, from section 7.1, evaluated at the
+material's own field limit:
+
+$$u_{max} = \\tfrac{1}{2}\\varepsilon_0\\varepsilon_r E_{bd}^{2}$$
+
+Volumetric capacitance, the quantity a decoupling designer cares about:
+
+$$\\frac{C}{\\mathcal{V}} = \\frac{\\varepsilon_0\\varepsilon_r A/d}{Ad} = \\frac{\\varepsilon_0\\varepsilon_r}{d^{2}}$$
+
+Loss, as $\\tan\\delta$; and stability, as the temperature coefficient and the
+voltage coefficient. The last of these is the one that catches people, because
+class-1 and film dielectrics essentially do not have it and class-2 ceramics
+have an enormous one.
+
+## 11.2 Worked: energy density across four dielectrics
+
+Given tabulated permittivities and representative breakdown strengths, each
+named with its material and each varying with grade and thickness: air
+($\\varepsilon_r = 1.0$, 3 MV/m), mica ($\\varepsilon_r = 6$, 150 MV/m),
+biaxially oriented polypropylene film ($\\varepsilon_r = 2.2$, 500 MV/m), and a
+class-2 ceramic ($\\varepsilon_r = 2000$, 20 MV/m).
+
+$$u_{air} = \\tfrac{1}{2}(8.8541878128 \\times 10^{-12})(1.0)(3 \\times 10^{6})^{2} = 39.84\\ \\mathrm{J/m^3}$$
+
+$$u_{mica} = \\tfrac{1}{2}(8.8541878128 \\times 10^{-12})(6)(150 \\times 10^{6})^{2} = 5.977 \\times 10^{5}\\ \\mathrm{J/m^3}$$
+
+$$u_{film} = \\tfrac{1}{2}(8.8541878128 \\times 10^{-12})(2.2)(500 \\times 10^{6})^{2} = 2.435 \\times 10^{6}\\ \\mathrm{J/m^3}$$
+
+$$u_{cer} = \\tfrac{1}{2}(8.8541878128 \\times 10^{-12})(2000)(20 \\times 10^{6})^{2} = 3.542 \\times 10^{6}\\ \\mathrm{J/m^3}$$
+
+The ranking is the surprise: polypropylene, with a permittivity 900 times
+smaller than the ceramic, lands within a factor of 1.5 of it, because the field
+term is squared and film stands 25 times the field. The exponent decides the
+contest, not the permittivity — and this is before the ceramic's voltage
+coefficient is applied, which removes most of its remaining advantage in
+service.
+
+Air is four to five decades below the rest — 4.2 decades below mica and 4.9
+below the ceramic — which is the whole reason vacuum and air-spaced capacitors
+exist only where loss and stability matter far more than size.
+
+## 11.3 The voltage coefficient, and what it does to a nominal value
+
+A class-2 ceramic is ferroelectric. Its permittivity is a small-signal property
+of a domain structure, and a DC bias progressively locks those domains, so the
+capacitance falls. Datasheets present this as a capacitance-versus-DC-bias
+curve, and the derating is severe: a small case size at its rated voltage may
+retain well under half its nominal value. Class-1 (C0G/NP0) ceramics, film and
+mica have no measurable effect of this kind.
+
+Writing $k_V$ for the fractional retention at the applied bias, the effective
+capacitance is
+
+$$C_{eff} = k_V\\,C_{nom}$$
+
+and, because energy goes as the square of voltage but only the first power of
+capacitance,
+
+$$U_{eff} = \\tfrac{1}{2}k_V C_{nom}V^{2}$$
+
+## 11.4 Worked: derating a class-2 ceramic bulk capacitor
+
+Given: a 10 μF X7R rated 25 V, used at 16 V, with a datasheet curve stating a
+60% loss of capacitance at that bias, so $k_V = 0.40$. Tolerance is ±10% and
+the part has aged 5% since manufacture.
+
+$$C_{eff} = (0.40)(10\\ \\mu\\mathrm{F}) = 4.0\\ \\mu\\mathrm{F}$$
+
+Worst case, stacking the tolerance and the ageing multiplicatively:
+
+$$C_{worst} = (0.40)(0.90)(0.95)(10\\ \\mu\\mathrm{F}) = 3.42\\ \\mu\\mathrm{F}$$
+
+A part bought as 10 μF is delivering 3.4 μF. If the design needed 8 μF of bulk
+decoupling, three of these are required, not one — and the arithmetic that
+reveals it takes one line. Temperature has not even been applied yet; X7R adds
+another ±15% over its −55 to +125 °C range.
+
+The same 8 μF in film would occupy a volume larger by roughly the ratio of the
+volumetric capacitances, which is why nobody does it on a logic board and why
+everybody does it on a motor drive.
+
+## 11.5 The selection table, with the trade written out
+
+| Family | $\\varepsilon_r$ (order) | $\\tan\\delta$ (order) | Temperature coefficient | Voltage coefficient | Where it belongs |
+|---|---|---|---|---|---|
+| Air / vacuum | 1 | $< 10^{-5}$ | negligible | none | RF standards, tuning |
+| PTFE, polypropylene film | 2 to 2.3 | $10^{-4}$ | tens of ppm/°C | none | snubbers, AC line, precision |
+| Mica | 6 to 7 | $10^{-4}$ to $10^{-3}$ | tens of ppm/°C | none | RF power, high stability |
+| Class-1 ceramic (C0G) | 10 to 100 | $\\approx 10^{-3}$ | $\\pm 30$ ppm/°C | none | filters, timing, oscillators |
+| Class-2 ceramic (X7R) | $10^{3}$ to $10^{4}$ | 0.01 to 0.03 | $\\pm 15\\%$ over range | large and negative | bulk decoupling |
+| Aluminium electrolytic | effective, very large | $\\approx 10^{-1}$ | strongly temperature-dependent | modest | bulk energy, low frequency |
+
+Read the table by columns and the design rule writes itself: any capacitor
+whose VALUE appears in an equation must come from a row with no voltage
+coefficient and a small temperature coefficient. Any capacitor that merely
+needs to be large may come from the rows below. There is no row that wins every
+column, which is why this is a selection problem and not a lookup.`,
+      examTip: 'Energy density goes as epsilon-r times the SQUARE of breakdown field, so a low-permittivity film with a very high field can beat a high-permittivity ceramic outright. Compute both terms before ranking materials; ranking on permittivity alone is the planted mistake.',
+    },
+    {
+      id: 'diel-temp-freq',
+      title: '12. Temperature, Frequency and Ageing',
+      content: `## 12.1 Temperature coefficient of capacitance
+
+For a stable dielectric the capacitance drifts linearly enough to be quoted as
+a single coefficient:
+
+$$\\frac{\\Delta C}{C} = \\alpha_C\\,\\Delta T$$
+
+with $\\alpha_C$ in parts per million per kelvin. Class-1 ceramics and film
+parts are specified this way; class-2 ceramics are not, because their drift is
+neither small nor linear, and their specification is instead a maximum
+percentage excursion over a named temperature band. Reading a class-2 code is
+therefore reading a promise about a WORST CASE, not a slope.
+
+## 12.2 Worked: a C0G capacitor in an oscillator
+
+Given: a 100 pF C0G with $\\alpha_C = 30$ ppm/K, in an LC oscillator, taken from
+25 °C to 125 °C.
+
+$$\\Delta C = C\\alpha_C\\Delta T = (100\\ \\mathrm{pF})(30 \\times 10^{-6})(100\\ \\mathrm{K}) = 0.30\\ \\mathrm{pF}$$
+
+a drift of 0.30%. Since $f_0 = 1/(2\\pi\\sqrt{LC})$, the fractional frequency
+shift is half the fractional capacitance shift with the sign reversed:
+
+$$\\frac{\\Delta f}{f} = -\\tfrac{1}{2}\\frac{\\Delta C}{C} = -\\tfrac{1}{2}(0.0030) = -0.15\\%$$
+
+Now substitute an X7R of the same value. Its ±15% band gives
+$\\Delta C/C$ up to 0.15, and
+
+$$\\frac{\\Delta f}{f} = -\\tfrac{1}{2}(0.15) = -7.5\\%$$
+
+Fifty times worse, from a part that costs the same and looks identical on the
+board. Timing and filtering are the two words in an exam stem that make this
+distinction the answer.
+
+## 12.3 Frequency: loss, permittivity and the end of capacitance
+
+Three things happen as frequency rises. Permittivity falls, as each
+polarisation mechanism drops out (section 6). Loss tangent generally rises
+through each relaxation region and dips between them, so a $\\tan\\delta$ quoted
+at 1 kHz says little at 1 MHz. And the series inductance of the leads and
+plates eventually dominates, at the **self-resonant frequency**
+
+$$f_{SRF} = \\frac{1}{2\\pi\\sqrt{L_{ESL}C}}$$
+
+above which the component is an inductor with a capacitor in series, not the
+other way round.
+
+## 12.4 Worked: where a decoupling capacitor stops decoupling
+
+Given: 100 nF in a small chip package with an equivalent series inductance of
+1.2 nH including its via and pad.
+
+$$f_{SRF} = \\frac{1}{2\\pi\\sqrt{(1.2 \\times 10^{-9})(1 \\times 10^{-7})}} = \\frac{1}{2\\pi(1.0954 \\times 10^{-8})} = 1.453 \\times 10^{7}\\ \\mathrm{Hz}$$
+
+14.5 MHz. Above it the impedance RISES with frequency, so the part is no longer
+providing a low-impedance return for the 100 MHz edges it was placed there to
+serve. Replacing it with 1 nF in the same package moves resonance up by
+$\\sqrt{100} = 10$ times, to 145 MHz, at the cost of a tenth of the charge — the
+reason boards carry a ladder of decoupling values rather than one big one.
+
+## 12.5 Ageing and the two exponential rules
+
+Two empirical laws govern dielectric lifetime, and both are exponential, so
+both punish overreach much harder than intuition suggests. The thermal rule,
+often attributed to Montsinger, halves life for each fixed temperature
+increment:
+
+$$L = L_0\\,2^{(T_0 - T)/\\Delta}$$
+
+with $\\Delta$ of order 8 to 10 K for organic insulation. The voltage rule is a
+power law:
+
+$$L = L_0\\left(\\frac{V_0}{V}\\right)^{n}$$
+
+with $n$ typically 8 to 12 for solid polymer insulation, which is why a 20%
+overvoltage is not a 20% problem.
+
+Class-2 ceramics have a third, distinct mechanism: their capacitance decays
+logarithmically with time since the last thermal excursion above the Curie
+point of the ceramic, typically a few percent per decade of hours. A part
+measured a week after reflow is not the part that was measured at the factory.
+
+## 12.6 Worked: electrolytic life at a cooler operating point
+
+Given: an aluminium electrolytic rated 2000 h at 105 °C, operating at a case
+temperature of 65 °C, with the 10 K rule.
+
+$$L = 2000 \\times 2^{(105 - 65)/10} = 2000 \\times 2^{4} = 32\\,000\\ \\mathrm{h}$$
+
+$$\\frac{32\\,000\\ \\mathrm{h}}{8760\\ \\mathrm{h/yr}} = 3.65\\ \\mathrm{years}$$
+
+If the 8 K figure is used instead, the multiplier becomes
+$2^{40/8} = 2^{5} = 32$ and the life is 64 000 h, or 7.3 years. The two
+"identical" rules differ by a factor of two over a 40 K span, which is a fair
+statement of how precise lifetime prediction actually is — and a good reason to
+quote the rule you used.
+
+Running the same part at 85 °C instead gives $2000 \\times 2^{2} = 8000$ h, under
+a year of continuous service. Twenty kelvin of cooling bought a factor of four,
+and that is the entire argument for putting the electrolytic away from the heat
+sink.`,
+      examTip: 'Frequency shift is half the capacitance shift and opposite in sign, because frequency depends on the square root of capacitance. A 0.3 percent capacitance drift is a 0.15 percent frequency drift, and forgetting the factor of one half is the standard distractor.',
+    },
+    {
+      id: 'diel-set-a',
+      title: '13. Problem Set A: Fields, Capacitance and Energy',
+      content: `## 13.1 Problem Set A
+
+Work each item to a number before reading on. Every answer here is reproduced
+from a relation stated earlier in this chapter.
+
+**A1.** A single MLCC layer uses a class-2 ceramic with $\\varepsilon_r = 2500$,
+8 μm thick, at 25 V. Find the field, and the total plate area needed for 220 nF.
+
+**A2.** For the same part, find the stored energy by the lumped formula and by
+integrating the energy density over the dielectric volume.
+
+**A3.** A 12 kV supply is applied across 0.6 mm of air in series with 3 mm of
+epoxy, $\\varepsilon_r = 3.5$. Find the field in each layer and compare with the
+uniform field the same total gap would carry if it were all epoxy.
+
+**A4.** A 6 μm polymer film has a breakdown strength of 250 MV/m at that
+thickness. Rate it at 35% of breakdown.
+
+**A5.** A parallel-plate capacitor with a 1 mm air gap is charged to 500 V and
+DISCONNECTED, then a slab of $\\varepsilon_r = 5$ is slid in to fill the gap.
+State what happens to $Q$, $C$, $V$, $E$ and $U$, with factors.
+
+## 13.2 Worked answers to Problem Set A
+
+**A1.** Field first, since it needs no capacitance:
+
+$$E = \\frac{V}{d} = \\frac{25}{8 \\times 10^{-6}} = 3.125 \\times 10^{6}\\ \\mathrm{V/m} = 3.125\\ \\mathrm{MV/m}$$
+
+Area from the capacitance relation, rearranged:
+
+$$A = \\frac{Cd}{\\varepsilon_0\\varepsilon_r} = \\frac{(220 \\times 10^{-9})(8 \\times 10^{-6})}{(8.8541878128 \\times 10^{-12})(2500)} = 7.951 \\times 10^{-5}\\ \\mathrm{m^2} = 0.795\\ \\mathrm{cm^2}$$
+
+Spread over 80 stacked layers in parallel that is 0.994 mm² of plate per layer
+— a chip a millimetre on a side, which is exactly what a 220 nF 0402 part is.
+
+**A2.** Lumped:
+
+$$U = \\tfrac{1}{2}CV^{2} = \\tfrac{1}{2}(220 \\times 10^{-9})(25)^{2} = 6.875 \\times 10^{-5}\\ \\mathrm{J} = 68.75\\ \\mu\\mathrm{J}$$
+
+By energy density:
+
+$$u = \\tfrac{1}{2}\\varepsilon_0\\varepsilon_r E^{2} = \\tfrac{1}{2}(8.8541878128 \\times 10^{-12})(2500)(3.125 \\times 10^{6})^{2} = 1.0808 \\times 10^{5}\\ \\mathrm{J/m^3}$$
+
+$$\\mathcal{V} = Ad = (7.951 \\times 10^{-5})(8 \\times 10^{-6}) = 6.361 \\times 10^{-10}\\ \\mathrm{m^3}$$
+
+$$U = u\\mathcal{V} = (1.0808 \\times 10^{5})(6.361 \\times 10^{-10}) = 6.875 \\times 10^{-5}\\ \\mathrm{J}$$
+
+The two agree exactly, as they must, and the field route is the one that also
+tells you the answer is stored in 0.64 cubic millimetres of ceramic.
+
+**A3.** Sum of reduced thicknesses:
+
+$$\\sum_i \\frac{d_i}{\\varepsilon_{r,i}} = \\frac{0.6}{1} + \\frac{3}{3.5} = 0.6 + 0.857143 = 1.457143\\ \\mathrm{mm}$$
+
+$$D = \\frac{\\varepsilon_0 V}{\\sum d_i/\\varepsilon_{r,i}} = \\frac{(8.8541878128 \\times 10^{-12})(12\\,000)}{1.457143 \\times 10^{-3}} = 7.2917 \\times 10^{-5}\\ \\mathrm{C/m^2}$$
+
+$$E_{air} = \\frac{D}{\\varepsilon_0} = 8.235\\ \\mathrm{MV/m}, \\qquad E_{epoxy} = \\frac{D}{3.5\\varepsilon_0} = 2.353\\ \\mathrm{MV/m}$$
+
+Check: $(8.235)(0.6) + (2.353)(3) = 4.941 + 7.059 = 12.0$ kV. All-epoxy over the
+same 3.6 mm would give
+
+$$E = \\frac{12\\,000}{3.6 \\times 10^{-3}} = 3.333 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+uniformly — under half the field the air is being asked to stand, and
+comfortably inside its own strength. The air layer alone converts a safe design into a
+discharging one.
+
+**A4.**
+
+$$V_{max} = 0.35\\,E_{bd}\\,d = 0.35(250 \\times 10^{6})(6 \\times 10^{-6}) = 525\\ \\mathrm{V}$$
+
+**A5.** Disconnected means $Q$ is FIXED. Then $C$ rises by 5,
+$V = Q/C$ falls to a fifth, $E = V/d$ falls to a fifth, and
+$U = Q^{2}/(2C)$ falls to a fifth. Numerically $V$ goes from 500 V to 100 V and
+$E$ from 500 kV/m to 100 kV/m. The energy that disappeared did mechanical work
+pulling the slab in. Had a source held $V$ at 500 V instead, $C$ would still
+rise by 5 but $Q$ and $U = \\tfrac{1}{2}CV^{2}$ would rise by 5 as well, with
+the source supplying both the extra stored energy and an equal amount of work.`,
+      examTip: 'Before touching a dielectric-insertion problem, write down which of Q or V is held fixed. Disconnected means fixed charge and falling energy; connected means fixed voltage and rising energy. Every other quantity follows in one line from whichever you fixed.',
+    },
+    {
+      id: 'diel-set-b',
+      title: '14. Problem Set B: Loss, Breakdown and Insulation',
+      content: `## 14.1 Problem Set B
+
+**B1.** A 2.2 μF film capacitor with $\\tan\\delta = 3 \\times 10^{-4}$ carries
+400 V rms at 30 kHz. Find its ESR and its dissipation.
+
+**B2.** A slab of insulation with $\\rho = 10^{13}$ Ω·m is 2 mm thick with an
+electrode area of $10^{-3}$ m². Find the insulation resistance and the leakage
+current at 1 kV.
+
+**B3.** A glass with $\\rho = 10^{12}$ Ω·m and $\\varepsilon_r = 6$ is used as a
+capacitor dielectric. Find the self-discharge time constant without using any
+dimension.
+
+**B4.** A 60 Hz core-loss meter is irrelevant here, but the same style of
+question applies to dielectrics: a capacitor dissipating 0.33 W at 50 Hz and
+230 V is moved to 400 Hz at the same voltage. Find the new dissipation, stating
+the assumption.
+
+**B5.** A conductor of 5 mm radius, surface factor $m = 0.85$, sits 2 m from
+its return in standard air. Find the corona onset field and the disruptive
+critical voltage.
+
+## 14.2 Worked answers to Problem Set B
+
+**B1.**
+
+$$\\omega C = 2\\pi(3 \\times 10^{4})(2.2 \\times 10^{-6}) = 0.414690\\ \\mathrm{S}$$
+
+$$\\mathrm{ESR} = \\frac{\\tan\\delta}{\\omega C} = \\frac{3 \\times 10^{-4}}{0.414690} = 7.234 \\times 10^{-4}\\ \\Omega = 0.723\\ \\mathrm{m\\Omega}$$
+
+$$P = V^{2}\\omega C\\tan\\delta = (400)^{2}(0.414690)(3 \\times 10^{-4}) = 19.91\\ \\mathrm{W}$$
+
+Check by the current route: the reactive current is
+$I = V\\omega C = (400)(0.414690) = 165.9$ A rms, and
+$I^{2}\\,\\mathrm{ESR} = (165.9)^{2}(7.234 \\times 10^{-4}) = 19.91$ W. Twenty
+watts from a loss tangent of three parts in ten thousand — because 166 A is
+flowing. Induction-heating tank capacitors are water-cooled for exactly this
+reason.
+
+**B2.**
+
+$$R = \\rho\\frac{d}{A} = (10^{13})\\frac{2 \\times 10^{-3}}{10^{-3}} = 2 \\times 10^{13}\\ \\Omega$$
+
+$$I = \\frac{1000}{2 \\times 10^{13}} = 5 \\times 10^{-11}\\ \\mathrm{A} = 50\\ \\mathrm{pA}$$
+
+Fifty picoamps is below the input bias current of many op-amps, which is the
+practical reason such measurements need guarding: the leakage across the
+BOARD SURFACE will usually exceed the leakage through the insulator.
+
+**B3.**
+
+$$\\tau = \\rho\\varepsilon_0\\varepsilon_r = (10^{12})(8.8541878128 \\times 10^{-12})(6) = 53.1\\ \\mathrm{s}$$
+
+No area, no thickness, no capacitance value required — the geometry cancels
+identically, which is the point of the identity.
+
+**B4.** Assuming $\\tan\\delta$ is unchanged over the eight-to-one frequency
+span, which is the assumption that must be stated:
+
+$$P_2 = P_1\\frac{f_2}{f_1} = 0.33\\left(\\frac{400}{50}\\right) = 2.64\\ \\mathrm{W}$$
+
+Loss is linear in frequency at fixed voltage and fixed $\\tan\\delta$, from
+$P = V^{2}\\omega C\\tan\\delta$. In reality $\\tan\\delta$ drifts across a decade
+of frequency, so 2.64 W is a floor rather than a prediction — and the honest
+answer names the assumption alongside the number.
+
+**B5.**
+
+$$E_v = 3 \\times 10^{6}(0.85)\\left(1 + \\frac{0.0301}{\\sqrt{0.005}}\\right) = (2.55 \\times 10^{6})(1 + 0.42568) = 3.635 \\times 10^{6}\\ \\mathrm{V/m}$$
+
+$$V_d = E_v\\,r\\ln\\frac{D}{r} = (3.635 \\times 10^{6})(0.005)\\ln\\frac{2}{0.005} = (1.8175 \\times 10^{4})(5.9915) = 1.089 \\times 10^{5}\\ \\mathrm{V}$$
+
+109 kV to neutral. Note how much the surface factor cost: with $m = 1$ the
+onset field would be $4.277 \\times 10^{6}$ V/m and the critical voltage 128 kV,
+so weathering alone removed 15% of the margin.
+
+## 14.3 Where marks are lost in this half of the chapter
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Loss tangent applied at the wrong frequency | a 1 kHz figure used at 1 MHz | tan delta is quoted AT a frequency; say which |
+| ESR and parallel conductance mixed | current used with the voltage formula | I with ESR, V with omega C tan delta |
+| Breakdown scaled linearly with thickness | doubling d assumed to double the rating | the strength itself falls; the rating goes as d to the 0.65 |
+| Void field taken as the bulk field | a 20 MV/m epoxy declared safe at 8 MV/m | multiply by epsilon-r for a disc, or by 3 epsilon-r over 2 epsilon-r plus 1 for a sphere |
+| Insulation resistance quoted without temperature | a room-temperature figure used at 90 °C | resistivity falls steeply and roughly exponentially with temperature |
+| Corona onset field confused with onset voltage | a thin wire called corona-resistant | thin wires need a higher FIELD and reach it at a lower VOLTAGE |`,
+      examTip: 'When a stem changes one variable and asks for a new loss, name the exponent before substituting: dielectric loss is linear in frequency, quadratic in voltage, and linear in tan delta. Two of those three are usually held fixed, and the item is testing whether you know which one moved.',
     },
   ],
   keyTakeaways: [
@@ -3383,9 +4684,11 @@ As applied field H increases from zero:
 
 ### Hysteresis Loss
 
-The **area inside the hysteresis loop** represents energy dissipated as heat per cycle:
+The **area inside the hysteresis loop** is the energy dissipated as heat per cycle PER UNIT VOLUME, in J/m³. Turning it into a power therefore needs BOTH a frequency and a core volume:
 
-**W_hysteresis = (loop area) × frequency**
+**P_hysteresis = (loop area) × frequency × (core volume)**
+
+Dropping the volume factor leaves a power density in W/m³, not watts — the slip the error table in section 5 lists.
 
 ## 2.2 Soft vs Hard Magnetic Materials
 
@@ -3451,7 +4754,7 @@ Relation: L = μ₀·μr·N²·A / l.
 
 L = (4π×10⁻⁷)(2000)(100²)(1×10⁻⁴) / 0.1 = **25.1 mH**
 
-The identical winding on air: 25.1 mH / 2000 = **12.6 µH**. The core
+The identical winding on air: 25.1 mH / 2000 = **12.6 μH**. The core
 multiplied inductance by exactly μr — three orders of magnitude of inductance
 for free, EXCEPT that the core saturates, heats, and its μr drifts with
 temperature and drive level. Air never saturates; iron never stops being a
@@ -3607,6 +4910,1125 @@ requested before substituting saves the resolve-and-rearrange minute.
 | Curie behaviour misread | expecting magnetism to survive any temperature | above Tc the material is paramagnetic and the magnet is gone |
 | Eddy scaling applied to hysteresis | quadrupling both losses at double f | only the eddy term carries f² |`,
       examTip: 'μ₀ = 4π×10⁻⁷ H/m is one of the few constants worth having at your fingertips: with H = NI/l and B = μ₀μrH you can move from winding drawing to flux density in two lines, and most magnetic-materials items are exactly that trip.',
+    },
+    {
+      id: 'mag-origin',
+      title: '6. Where Magnetism Comes From, and the Five Classes',
+      content: `## 6.1 Moments, and the two fields they create
+
+A circulating current is a magnetic dipole. For a planar loop of current $I$
+enclosing vector area $\\mathbf{A}$ the moment is
+
+$$\\mathbf{m} = I\\mathbf{A}$$
+
+with units A·m². Placed in a flux density it feels a torque and stores an
+orientation energy,
+
+$$\\boldsymbol{\\tau} = \\mathbf{m}\\times\\mathbf{B}, \\qquad U = -\\mathbf{m}\\cdot\\mathbf{B}$$
+
+so a moment left free will turn until it lies along $\\mathbf{B}$, which is the
+mechanism behind every compass, every relay armature and every rotor.
+
+Inside matter the loops are electrons: orbital motion around a nucleus, and the
+intrinsic spin, which contributes the larger share in the useful materials. The
+natural unit of both is the **Bohr magneton**
+
+$$\\mu_B = \\frac{e\\hbar}{2m_e} = 9.2740100783 \\times 10^{-24}\\ \\mathrm{J/T}$$
+
+Adding the moments in a volume and dividing gives the **magnetisation**
+
+$$\\mathbf{M} = \\frac{1}{V}\\sum_k \\mathbf{m}_k$$
+
+whose units are $\\mathrm{A} \\cdot \\mathrm{m^2/m^3} = \\mathrm{A/m}$ — the same
+units as $\\mathbf{H}$, and that is the whole reason the two can be added:
+
+$$\\mathbf{B} = \\mu_0(\\mathbf{H} + \\mathbf{M})$$
+
+with $\\mu_0 = 4\\pi \\times 10^{-7}\\ \\mathrm{H/m}$. Compare this with
+$\\mathbf{D} = \\varepsilon_0\\mathbf{E} + \\mathbf{P}$ from the dielectrics
+chapter: the structure is identical, with $\\mathbf{H}$ playing the role of the
+field the SOURCES impose and $\\mathbf{M}$ the material's answer. The one
+awkward asymmetry is that $\\varepsilon_0$ multiplies only the vacuum term in
+the electric case, while $\\mu_0$ multiplies both terms in the magnetic one —
+which is exactly why $\\mathbf{M}$ shares units with $\\mathbf{H}$ and
+$\\mathbf{P}$ does not share units with $\\mathbf{E}$.
+
+For a linear material $\\mathbf{M} = \\chi_m\\mathbf{H}$, and substituting gives
+
+$$\\mathbf{B} = \\mu_0(1 + \\chi_m)\\mathbf{H} = \\mu_0\\mu_r\\mathbf{H}, \\qquad \\mu_r = 1 + \\chi_m$$
+
+Relative permeability is one plus the magnetic susceptibility, precisely
+parallel to $\\varepsilon_r = 1 + \\chi_e$. Classifying magnetic materials is
+therefore classifying the sign and size of one dimensionless number.
+
+## 6.2 Five classes, sorted by that one number
+
+| Class | Sign of $\\chi_m$ | Magnitude | Mechanism | Examples |
+|---|---|---|---|---|
+| Diamagnetic | negative | $10^{-6}$ to $10^{-4}$ | induced orbital currents oppose the applied field | copper, bismuth, water, most organics |
+| Paramagnetic | positive | $10^{-6}$ to $10^{-3}$ | existing moments partly align against thermal disorder | aluminium, platinum, liquid oxygen |
+| Ferromagnetic | positive | $10^{2}$ to $10^{6}$ | exchange coupling aligns neighbouring spins parallel | iron, cobalt, nickel, silicon steel |
+| Ferrimagnetic | positive | $10^{2}$ to $10^{4}$ | two opposed sublattices of unequal moment | MnZn and NiZn ferrites, magnetite |
+| Antiferromagnetic | positive, small | $10^{-5}$ to $10^{-3}$ | opposed sublattices of EQUAL moment, cancelling | MnO, NiO, chromium |
+
+Diamagnetism is universal — every material has it, from Lenz's law applied to
+orbital electrons — but it is masked whenever anything stronger is present.
+Paramagnetism needs unpaired moments and no coupling between them.
+Ferromagnetism needs the quantum exchange interaction, which is why only a
+handful of elements have it. Ferrimagnetism is the engineering workhorse above
+audio frequency, because the cancelling sublattices leave a usable but modest
+magnetisation in a material that happens to be a ceramic insulator.
+Antiferromagnets look almost non-magnetic from outside, which is precisely
+what makes them useful as pinning layers in devices.
+
+![Magnitude of volume susceptibility for nine named materials on a logarithmic axis, spanning eleven decades from bismuth at minus 1.66 times ten to the minus four up to supermalloy at one million, with each bar annotated by the sign of its susceptibility. The diamagnetic and paramagnetic bars are nearly indistinguishable in length, and only the sign separates them.](/courses/fe-ee/figures/mat3-susceptibility-ladder.svg)
+
+The figure makes the practical point that a table of numbers hides: dia- and
+paramagnets differ by SIGN, not by size, and both are so close to
+$\\mu_r = 1$ that for circuit purposes they are air. Only the ordered classes
+are worth a core.
+
+## 6.3 Worked: iron's saturation flux density from atomic moments
+
+Given, as tabulated constants: iron density 7874 kg/m³, molar mass
+55.845 g/mol, and a magnetic moment of 2.22 $\\mu_B$ per atom (the accepted
+value for body-centred-cubic iron, which is not an integer because the 3d
+electrons are itinerant rather than localised).
+
+Atomic number density:
+
+$$n = \\frac{\\rho N_A}{M} = \\frac{(7.874 \\times 10^{6}\\ \\mathrm{g/m^3})(6.02214076 \\times 10^{23}\\ \\mathrm{mol^{-1}})}{55.845\\ \\mathrm{g/mol}} = 8.4911 \\times 10^{28}\\ \\mathrm{m^{-3}}$$
+
+Saturation magnetisation, every moment aligned:
+
+$$M_s = n(2.22\\mu_B) = (8.4911 \\times 10^{28})(2.22)(9.2740100783 \\times 10^{-24}) = 1.7482 \\times 10^{6}\\ \\mathrm{A/m}$$
+
+$$B_s = \\mu_0 M_s = (1.2566370614 \\times 10^{-6})(1.7482 \\times 10^{6}) = 2.197\\ \\mathrm{T}$$
+
+The measured saturation of pure iron is about 2.15 T, so the atomic route is
+high by 2.2%. That is a strikingly good agreement from nothing but a density,
+a molar mass and a moment per atom, and it is worth trusting the check for what
+it proves: saturation flux density is not an adjustable engineering parameter,
+it is a count of atoms times the moment each one carries. No processing,
+lamination or annealing can raise it.
+
+Repeating the calculation for nickel (density 8908 kg/m³, molar mass
+58.693 g/mol, 0.606 $\\mu_B$ per atom) gives
+$n = 9.1400 \\times 10^{28}\\ \\mathrm{m^{-3}}$,
+$M_s = 5.137 \\times 10^{5}\\ \\mathrm{A/m}$ and $B_s = 0.646$ T against a
+measured 0.61 T — 6% high, the same story with a smaller moment. This is also
+why silicon steel tops out near 2.0 T rather than iron's 2.15: the silicon
+atoms carry no moment and dilute the count.
+
+## 6.4 Worked: how little a diamagnet actually does
+
+Given: copper, tabulated volume susceptibility
+$\\chi_m = -9.63 \\times 10^{-6}$, sitting where the flux density would be 1 T
+in free space.
+
+$$H = \\frac{B}{\\mu_0} = \\frac{1}{1.2566370614 \\times 10^{-6}} = 7.9577 \\times 10^{5}\\ \\mathrm{A/m}$$
+
+$$M = \\chi_m H = (-9.63 \\times 10^{-6})(7.9577 \\times 10^{5}) = -7.663\\ \\mathrm{A/m}$$
+
+$$\\mu_0 M = -9.63 \\times 10^{-6}\\ \\mathrm{T}$$
+
+Copper's answer to a one-tesla field is under ten microtesla, in the opposing
+direction. Its relative permeability is
+
+$$\\mu_r = 1 + \\chi_m = 0.99999037$$
+
+which is why every inductance formula treats copper windings, aluminium
+chassis and brass hardware as if they were air. The moment a ferromagnetic
+screw or a steel bracket enters the same magnetic path, that assumption fails
+by three orders of magnitude, and this is a real and frequent design error
+rather than a textbook curiosity.
+
+## 6.5 The temperature laws above the ordering point
+
+Paramagnetic susceptibility falls as thermal agitation wins, following the
+**Curie law**
+
+$$\\chi_m = \\frac{C}{T}$$
+
+with $C$ the Curie constant of the material. A ferromagnet heated above its
+ordering temperature becomes paramagnetic but with the exchange interaction
+still biasing it, giving the **Curie-Weiss law**
+
+$$\\chi_m = \\frac{C}{T - \\theta}$$
+
+where $\\theta$ is close to the Curie temperature $T_c$. The divergence at
+$T \\to \\theta$ from above is the transition announcing itself.
+
+## 6.6 Worked: how fast susceptibility falls above the Curie point
+
+Given: iron, with $\\theta = 1043$ K (770 °C). Compare the susceptibility at
+1100 K and at 1300 K. The Curie constant cancels in a ratio, so no fitted
+number is needed:
+
+$$\\frac{\\chi(1100)}{\\chi(1300)} = \\frac{T_2 - \\theta}{T_1 - \\theta} = \\frac{1300 - 1043}{1100 - 1043} = \\frac{257}{57} = 4.509$$
+
+Fifty-seven kelvin above the transition the material is still 4.5 times more
+susceptible than it is two hundred kelvin further up. The lesson for design is
+that the collapse at $T_c$ is not a soft fade: a core run close to its Curie
+point sits on a steep curve, and small temperature excursions move its
+permeability a great deal. Section 11 puts numbers on the other side of the
+transition.`,
+      examTip: 'Relative permeability is one plus the susceptibility, exactly as relative permittivity is one plus the electric susceptibility. If a stem hands you a susceptibility of minus ten to the minus five, the permeability is 0.99999 and the material is magnetically air; the sign is the only thing that distinguishes it from a paramagnet.',
+    },
+    {
+      id: 'mag-permeability',
+      title: '7. Permeability Defined Three Ways, and Why the Distinction Matters',
+      content: `## 7.1 One curve, several slopes, several numbers
+
+"Permeability" names at least four different quantities in datasheets, and
+using the wrong one is worth a factor of six on a real core. All four are read
+off the same normal magnetisation curve.
+
+Amplitude (or normal) permeability, the secant from the origin:
+
+$$\\mu_a = \\frac{1}{\\mu_0}\\frac{B}{H}$$
+
+Initial permeability, its limit at vanishing drive:
+
+$$\\mu_i = \\lim_{H \\rightarrow 0}\\frac{1}{\\mu_0}\\frac{B}{H}$$
+
+Differential permeability, the tangent:
+
+$$\\mu_d = \\frac{1}{\\mu_0}\\frac{dB}{dH}$$
+
+Incremental permeability, the slope of a small minor loop about a DC bias
+$H_{dc}$:
+
+$$\\mu_\\Delta = \\frac{1}{\\mu_0}\\frac{\\Delta B}{\\Delta H}\\ \\text{at}\\ H = H_{dc}$$
+
+At the origin the first three coincide. Everywhere else they differ, and
+$\\mu_\\Delta$ under bias is the one that governs whether a filter inductor
+still has its inductance when the converter is delivering full current.
+
+## 7.2 A curve to compute on
+
+To keep every number below traceable, take a normal curve defined by a stated
+expression rather than by a datasheet trace:
+
+$$B(H) = \\mu_0\\mu_i H + B_s\\frac{(H/H_0)^{2}}{1 + (H/H_0)^{2}}$$
+
+with $\\mu_i = 300$, $B_s = 1.5$ T and $H_0 = 200$ A/m. The first term supplies
+a finite slope at the origin; the second is a sigmoid with an inflection at
+positive $H$, which is what makes the maximum differential permeability exceed
+the initial one — the behaviour every soft material shows and the reason the
+definitions cannot be merged. Differentiating and dividing by $H$ respectively,
+
+$$\\mu_d(H) = \\mu_i + \\frac{B_s}{\\mu_0 H_0}\\frac{2(H/H_0)}{\\left[1 + (H/H_0)^{2}\\right]^{2}}$$
+
+$$\\mu_a(H) = \\mu_i + \\frac{B_s}{\\mu_0 H_0}\\frac{(H/H_0)}{1 + (H/H_0)^{2}}$$
+
+Both reduce to $\\mu_i$ at $H = 0$, as they must.
+
+![A normal magnetisation curve computed from the stated expression, with four constructions drawn on it: the initial tangent of slope three hundred, the tangent at the inflection where the differential permeability peaks at 4177, the steepest secant from the origin where the amplitude permeability peaks at 3284, and a shallow minor-loop slope at a six hundred amp-per-metre bias where the incremental permeability has fallen to 658.](/courses/fe-ee/figures/mat3-permeability-defs.svg)
+
+## 7.3 Worked: the three permeabilities of that curve
+
+The recurring group is
+
+$$k = \\frac{B_s}{\\mu_0 H_0} = \\frac{1.5}{(1.2566370614 \\times 10^{-6})(200)} = 5968.31$$
+
+Initial: both expressions give $\\mu_i = 300$ at $H = 0$.
+
+Maximum differential: $\\mu_d$ peaks where
+$d/dH\\left[2x/(1+x^{2})^{2}\\right] = 0$ with $x = H/H_0$, that is at
+$x = 1/\\sqrt{3}$, so
+
+$$H_{d,max} = \\frac{200}{\\sqrt{3}} = 115.47\\ \\mathrm{A/m}, \\qquad \\mu_{d,max} = 300 + 5968.31\\frac{2/\\sqrt{3}}{(4/3)^{2}} = 4176.5$$
+
+Maximum amplitude: $x/(1+x^{2})$ peaks at $x = 1$, so
+
+$$H_{a,max} = H_0 = 200\\ \\mathrm{A/m}, \\qquad \\mu_{a,max} = 300 + \\frac{5968.31}{2} = 3284.2$$
+
+Three names, three numbers, spanning a factor of 13.9 from 300 to 4176.5 on one
+material. And the ordering is not accidental:
+$\\mu_{d,max} > \\mu_{a,max} > \\mu_i$ always, because a secant from the origin
+can never be as steep as the steepest tangent, and the tangent at the origin is
+shallower than the tangent at the inflection. A datasheet that quotes
+"permeability 3300" and a handbook that quotes "4200" for the same alloy are
+probably both right and answering different questions.
+
+Sanity check on the curve itself: at $H = 200$ A/m,
+
+$$B = (1.2566370614 \\times 10^{-6})(300)(200) + 1.5\\frac{1}{2} = 0.075398 + 0.75 = 0.825398\\ \\mathrm{T}$$
+
+and $B/(\\mu_0 H) = 0.825398/(2.5133 \\times 10^{-4}) = 3284.2$, reproducing
+$\\mu_{a,max}$ by an independent route.
+
+## 7.4 Worked: what a DC bias does to incremental permeability
+
+Given: the same core carrying a DC bias of 600 A/m, with a small AC excursion
+on top.
+
+$$\\mu_\\Delta \\approx \\mu_d(600) = 300 + 5968.31\\frac{2(3)}{(1 + 9)^{2}} = 300 + 358.1 = 658.1$$
+
+$$\\frac{\\mu_{d,max}}{\\mu_\\Delta} = \\frac{4176.5}{658.1} = 6.346$$
+
+The small-signal inductance has fallen by a factor of 6.3 at a bias only five
+times the field at which the differential permeability peaked. The core sits at
+$B = 1.576$ T — 1.350 T of it from the saturating term and 0.226 T from the
+linear one — so it is past its knee but is still carrying flux, which is
+exactly the deceptive region. A filter inductor designed at zero bias and
+measured at full load will disappoint by roughly this factor, and the failure
+looks like ripple that grows with load current rather than like a hard
+saturation event.
+
+One honesty note: a real minor loop about a bias point encloses area, so its
+average slope is somewhat LOWER than the anhysteretic $\\mu_d$ used here, and
+$\\mu_\\Delta$ also depends on the size of the AC excursion. The calculation
+above is the right shape and an optimistic magnitude, which is the correct way
+round for a warning.
+
+## 7.5 Reading a datasheet without being misled
+
+| Datasheet phrase | Which definition | Where it is measured | What it is good for |
+|---|---|---|---|
+| initial permeability $\\mu_i$ | initial | very small drive, often 0.25 mT | small-signal filters, signal transformers |
+| maximum permeability $\\mu_{max}$ | usually maximum amplitude | at the knee | comparing alloys, not designing |
+| amplitude permeability $\\mu_a$ | amplitude | at a stated peak flux density | power transformers at rated flux |
+| incremental permeability $\\mu_\\Delta$ | incremental | at a stated DC bias | DC-biased chokes, output inductors |
+| effective permeability $\\mu_e$ | amplitude of a GAPPED core | whole magnetic path | gapped cores, section 10 |
+
+The last row is the one that catches designers: $\\mu_e$ is a property of the
+core PLUS its gap, not of the material, and it is deliberately much smaller
+than any material figure. Section 10 computes it.`,
+      examTip: 'When an item gives a permeability and a DC bias in the same breath, it wants the incremental value, which is far smaller than the initial one. When it gives a permeability with no operating point at all, it means B = mu-zero times mu-r times H with a single constant, and you should use it and move on.',
+    },
+    {
+      id: 'mag-loop-energy',
+      title: '8. The Hysteresis Loop as Energy, Derived and Integrated',
+      content: `## 8.1 Why the loop area is joules per cubic metre
+
+The statement "the loop area is the energy lost per cycle per unit volume" is
+usually asserted. It is short to derive, and the derivation is worth having
+because it fixes the units and shows where the volume comes from.
+
+Take a toroid of mean path length $l$, cross-section $A$ and $N$ turns. Ampere's
+law around the mean path gives the field from the winding current,
+
+$$H = \\frac{NI}{l} \\quad \\Longrightarrow \\quad I = \\frac{Hl}{N}$$
+
+and Faraday's law gives the terminal voltage from the changing flux,
+
+$$v = N\\frac{d\\Phi}{dt} = NA\\frac{dB}{dt}$$
+
+The instantaneous power into the winding is the product,
+
+$$p = vI = \\left(NA\\frac{dB}{dt}\\right)\\left(\\frac{Hl}{N}\\right) = (Al)\\,H\\frac{dB}{dt}$$
+
+The turns count cancels, leaving the core volume $\\mathcal{V} = Al$ multiplying
+a purely material quantity. Dividing by the volume and integrating over one
+complete cycle,
+
+$$w_{cycle} = \\oint H\\,dB$$
+
+which is the area enclosed by the loop in the $(H, B)$ plane. Units:
+$\\mathrm{(A/m)(T)} = \\mathrm{(A/m)(V \\cdot s/m^2)} = \\mathrm{A} \\cdot \\mathrm{V} \\cdot \\mathrm{s/m^3} = \\mathrm{J/m^3}$.
+Power then needs a frequency and a volume:
+
+$$P_h = f\\,\\mathcal{V}\\oint H\\,dB$$
+
+Both factors are the ones students drop. A loop area alone is not watts, and
+the number of turns never appears — a fact worth trusting, since it means the
+same core loses the same power whether it is wound with 50 turns or 500, as
+long as the flux swing is the same.
+
+## 8.2 Rayleigh's law: a loop with a closed form
+
+Low-field behaviour of a soft material obeys **Rayleigh's law**, in which the
+initial curve is a parabola,
+
+$$B = \\mu_0\\left(\\mu_i H + \\nu H^{2}\\right)$$
+
+with $\\nu$ the Rayleigh constant in m/A. Cycling to $\\pm H_0$ traces two
+parabolic branches,
+
+$$B_{\\pm}(H) = \\mu_0\\left[(\\mu_i + \\nu H_0)H \\pm \\frac{\\nu}{2}\\left(H_0^{2} - H^{2}\\right)\\right]$$
+
+with the upper sign for the descending branch. The amplitude permeability is
+read straight off the linear coefficient,
+
+$$\\mu_a = \\mu_i + \\nu H_0$$
+
+and the enclosed area integrates in one line:
+
+$$W = \\int_{-H_0}^{H_0}\\left(B_+ - B_-\\right)dH = \\mu_0\\nu\\int_{-H_0}^{H_0}\\left(H_0^{2} - H^{2}\\right)dH = \\frac{4}{3}\\mu_0\\nu H_0^{3}$$
+
+A hysteresis loop with an exact area, from two stated constants. Everything in
+this section is checked against it.
+
+![A Rayleigh minor loop computed from the stated initial permeability of 250 and Rayleigh constant of 25 metres per amp at a drive amplitude of fifty amps per metre, with the enclosed area shaded and the parabolic initial curve drawn through it. The coercive points where the branches cross zero flux density are marked at plus and minus 18.1 amps per metre.](/courses/fe-ee/figures/mat3-rayleigh-loop.svg)
+
+## 8.3 Worked: the loop area by two independent routes
+
+Given: $\\mu_i = 250$, $\\nu = 25\\ \\mathrm{m/A}$, driven to
+$H_0 = 50\\ \\mathrm{A/m}$. These are stated fit constants for the material in
+its Rayleigh region, not universal properties.
+
+Amplitude permeability and peak flux density:
+
+$$\\mu_a = 250 + (25)(50) = 1500$$
+
+$$B_0 = \\mu_0\\mu_a H_0 = (1.2566370614 \\times 10^{-6})(1500)(50) = 0.0942478\\ \\mathrm{T}$$
+
+Closed form for the area:
+
+$$W = \\frac{4}{3}(1.2566370614 \\times 10^{-6})(25)(50)^{3} = \\frac{4}{3}(1.2566370614 \\times 10^{-6})(3.125 \\times 10^{6}) = 5.2360\\ \\mathrm{J/m^3}$$
+
+Independent route, the contour integral $\\oint H\\,dB$ evaluated numerically
+around the same two branches, is asserted in the figure generator to agree with
+that closed form to within $10^{-5}$ J/m³ — about two parts per million. A
+third route, integrating the vertical gap between the branches over $H$, agrees
+to a part in ten million. The three are different integrals of the same loop
+and they must coincide; checking that they do is what turns a formula into a
+number you can publish.
+
+Power in a 60 Hz core of volume $5 \\times 10^{-4}$ m³:
+
+$$P_h = f\\mathcal{V}W = (60)(5 \\times 10^{-4})(5.2360) = 0.15708\\ \\mathrm{W}$$
+
+## 8.4 Worked: coercivity of a Rayleigh loop
+
+The ascending branch crosses $B = 0$ where
+
+$$\\frac{\\nu}{2}H^{2} + \\mu_a H - \\frac{\\nu}{2}H_0^{2} = 0$$
+
+so, taking the positive root,
+
+$$H_c = \\frac{\\mu_a}{\\nu}\\left(\\sqrt{1 + \\frac{\\nu^{2}H_0^{2}}{\\mu_a^{2}}} - 1\\right) = 60\\left(\\sqrt{1 + 0.694444} - 1\\right) = 18.10\\ \\mathrm{A/m}$$
+
+Read the structure before the number: coercivity here is not a material
+constant at all, it depends on the drive amplitude $H_0$. That is a genuine
+property of minor loops — drive a soft core harder and its apparent coercivity
+grows, until the drive reaches saturation and the loop becomes the major one
+whose $H_c$ IS quoted as a material figure. Comparing an $H_c$ measured at one
+drive level with a datasheet figure measured at another is a common way to
+conclude that a batch of cores is wrong when it is not.
+
+## 8.5 Worked: where the Steinmetz exponent comes from
+
+The empirical **Steinmetz relation** for hysteresis loss,
+
+$$P_h = k_h\\,f\\,B_m^{\\,n}$$
+
+carries an exponent usually quoted as 1.6 to 2. Rayleigh's law lets that
+exponent be derived rather than fitted, for the low-field regime at least.
+Doubling the drive from 50 to 100 A/m multiplies the area by
+$(100/50)^{3} = 8$, while the peak flux density rises only from
+$\\mu_0(1500)(50)$ to $\\mu_0(2750)(100)$, a factor of 3.6667. The implied
+exponent is
+
+$$n = \\frac{\\ln 8}{\\ln 3.6667} = \\frac{2.0794}{1.2993} = 1.600$$
+
+which lands on the classic value. The same construction between 5 and 10 A/m,
+where the linear $\\mu_i$ term still dominates, gives
+$n = \\ln 8/\\ln 2.6667 = 2.120$. And in the opposite limit, where $\\nu H_0$
+swamps $\\mu_i$, the peak flux density goes as $H_0^{2}$ and the area as
+$H_0^{3}$, giving
+
+$$W \\propto B_0^{3/2} \\quad \\Longrightarrow \\quad n \\rightarrow 1.5$$
+
+So the Steinmetz exponent is not a constant of nature: it runs from 3 at
+vanishing drive down to 1.5 deep in the Rayleigh region, and 1.6 is simply
+where most power materials happen to be operated. An exponent quoted without
+its flux-density range is half a specification.
+
+Rayleigh's law itself expires well before saturation, so none of this licenses
+extrapolating the parabola to the knee; the figure is drawn only over the
+region where the law applies.`,
+      examTip: 'Loop area is joules per cubic metre per cycle. To reach watts you must multiply by BOTH the frequency and the core volume, and the number of turns never enters. An answer in watts that used only one of those two factors is off by whichever one was dropped.',
+    },
+    {
+      id: 'mag-core-loss',
+      title: '9. Core Loss Separated: Hysteresis, Eddy Currents and Lamination Thickness',
+      content: `## 9.1 Deriving the eddy-current loss of a lamination
+
+Hysteresis loss comes from the material. Eddy loss comes from the GEOMETRY of
+the conductor the material happens also to be, and it can be derived from
+scratch for the case that matters — a thin sheet with the flux in its plane.
+
+Let the sheet have thickness $t$, resistivity $\\rho$, and a spatially uniform
+flux density $B(x, t) = B_m\\sin\\omega t$ (this uniformity is the assumption
+whose validity section 9.2 checks). Take $x$ from the mid-plane. The flux
+enclosed by a rectangular circuit lying between $-x$ and $+x$ changes, and
+Faraday's law gives an induced electric field
+
+$$E(x) = -x\\frac{dB}{dt}$$
+
+Ohm's law makes that a dissipation density $E^{2}/\\rho$. Averaging over the
+thickness uses $\\langle x^{2}\\rangle = t^{2}/12$, and averaging over the cycle
+uses $\\langle (dB/dt)^{2}\\rangle = \\omega^{2}B_m^{2}/2$, so
+
+$$p_e = \\frac{\\langle x^{2}\\rangle\\langle (dB/dt)^{2}\\rangle}{\\rho} = \\frac{(t^{2}/12)(\\omega^{2}B_m^{2}/2)}{\\rho} = \\frac{\\pi^{2}f^{2}B_m^{2}t^{2}}{6\\rho}$$
+
+using $\\omega = 2\\pi f$. Dimensional check:
+$\\mathrm{s^{-2}} \\times \\mathrm{T^2} \\times \\mathrm{m^2}/(\\Omega \\cdot \\mathrm{m})$;
+with $\\mathrm{T} = \\mathrm{V} \\cdot \\mathrm{s/m^2}$ this is
+$\\mathrm{V^2}/(\\Omega \\cdot \\mathrm{m^3}) = \\mathrm{W/m^3}$.
+
+Everything the older sections asserted about scaling is now visible in an
+equation with no adjustable constants: loss goes as the SQUARE of frequency,
+the SQUARE of peak flux density, the SQUARE of thickness, and inversely as
+resistivity. Two of those four are the designer's to choose.
+
+## 9.2 The condition under which that formula is true
+
+The derivation assumed the flux density is uniform across the sheet, which
+fails once the eddy currents themselves shield the interior. The scale is the
+**skin depth**
+
+$$\\delta = \\sqrt{\\frac{\\rho}{\\pi f\\mu_0\\mu_r}}$$
+
+and the exact one-dimensional solution gives the ratio of true loss to the
+classical formula as
+
+$$F(\\xi) = \\frac{3}{\\xi}\\,\\frac{\\sinh\\xi - \\sin\\xi}{\\cosh\\xi - \\cos\\xi}, \\qquad \\xi = \\frac{t}{\\delta}$$
+
+Expanding for small $\\xi$ gives $F \\approx 1 - \\xi^{4}/630$, so the classical
+formula is excellent while $t \\ll \\delta$ and progressively OPTIMISTIC beyond.
+For large $\\xi$, $F \\rightarrow 3/\\xi$, so the true loss grows as $t$ rather
+than $t^{2}$ — the interior has stopped participating.
+
+![Eddy-current loss density against lamination thickness on logarithmic axes at sixty hertz and 1.5 tesla in silicon steel, showing the classical thickness-squared law and the exact skin-effect solution. The two coincide below the 1.41 millimetre skin depth marked on the plot and separate above it, and the operating point of a 0.35 millimetre sheet is marked at 3473 watts per cubic metre.](/courses/fe-ee/figures/mat3-eddy-thickness.svg)
+
+## 9.3 Worked: a 0.35 mm silicon-steel lamination at 60 Hz
+
+Given, all named: grain-oriented silicon steel with
+$\\rho = 4.7 \\times 10^{-7}\\ \\Omega \\cdot \\mathrm{m}$, density 7650 kg/m³,
+$\\mu_r \\approx 1000$ at the working point, run at $f = 60$ Hz and
+$B_m = 1.5$ T, in sheets $t = 0.35$ mm thick. Resistivity and permeability both
+vary appreciably with silicon content and with flux density; these are
+representative figures for a common grade.
+
+$$p_e = \\frac{\\pi^{2}(60)^{2}(1.5)^{2}(3.5 \\times 10^{-4})^{2}}{6(4.7 \\times 10^{-7})} = \\frac{9.7931 \\times 10^{-3}}{2.82 \\times 10^{-6}} = 3473\\ \\mathrm{W/m^3}$$
+
+Per unit mass, which is how core loss is actually sold:
+
+$$\\frac{3473}{7650} = 0.454\\ \\mathrm{W/kg}$$
+
+Validity check, not optional:
+
+$$\\delta = \\sqrt{\\frac{4.7 \\times 10^{-7}}{\\pi(60)(1.2566370614 \\times 10^{-6})(1000)}} = 1.409\\ \\mathrm{mm}$$
+
+so $\\xi = 0.35/1.409 = 0.2484$ and $F(\\xi) = 0.999994$. The classical formula
+is in error by six parts per million here, which is why nobody bothers with the
+hyperbolic functions at mains frequency. The number is also a reassuring match
+to reality: measured total core loss for this class of material at 1.5 T and
+60 Hz is a couple of watts per kilogram, of which the eddy share being about
+half a watt is exactly the expected split.
+
+## 9.4 Worked: what a solid core would have cost
+
+Same material, same flux, same frequency, but a solid block 50 mm thick instead
+of a stack of 0.35 mm sheets. The classical law scales by thickness squared:
+
+$$\\frac{p_e(50\\ \\mathrm{mm})}{p_e(0.35\\ \\mathrm{mm})} = \\left(\\frac{50}{0.35}\\right)^{2} = 20\\,408$$
+
+giving $7.087 \\times 10^{7}$ W/m³. Now apply the correction the formula
+demands, since $\\xi = 50/1.409 = 35.5$ is enormous:
+
+$$F(\\xi) = \\frac{3}{\\xi}\\cdot\\frac{\\sinh\\xi - \\sin\\xi}{\\cosh\\xi - \\cos\\xi} = 0.08452$$
+
+$$p_e = (7.087 \\times 10^{7})(0.08452) = 5.99 \\times 10^{6}\\ \\mathrm{W/m^3}$$
+
+The skin effect saves a factor of twelve — and 6 MW per cubic metre is still
+absurd, some 1700 times the laminated figure. Lamination is not an optimisation,
+it is the enabling step, and the honest version of the argument uses the exact
+factor rather than quoting a 20 000-fold penalty that the physics never
+actually delivers.
+
+## 9.5 Worked: choosing lamination thickness against a loss budget
+
+Given: a 60 Hz design at $B_m = 1.5$ T in the same steel, with an eddy-loss
+budget of 1000 W/m³. Rearranging,
+
+$$t = \\sqrt{\\frac{6\\rho\\,p_e}{\\pi^{2}f^{2}B_m^{2}}} = \\sqrt{\\frac{6(4.7 \\times 10^{-7})(1000)}{\\pi^{2}(60)^{2}(1.5)^{2}}} = 1.878 \\times 10^{-4}\\ \\mathrm{m}$$
+
+188 μm, or a standard 0.18 mm grade. Halving the sheet thickness from 0.35 mm
+would have quartered the loss to 868 W/m³, comfortably inside budget — the
+same conclusion by inspection, since the law is quadratic. What the quadratic
+does not tell you is that each halving roughly doubles the number of sheets to
+stack, punches, deburr and insulate, and lowers the stacking factor so more
+core volume is needed for the same flux. That cost is why 0.35 mm and 0.27 mm
+remain the common grades rather than something far thinner.
+
+## 9.6 Separating the two losses on a single straight line
+
+Total core loss per unit volume, with the Steinmetz form for hysteresis and the
+derived expression for eddy currents:
+
+$$p_{total} = k_h f B_m^{\\,n} + \\frac{\\pi^{2}t^{2}}{6\\rho}f^{2}B_m^{2}$$
+
+Divide through by frequency at fixed $B_m$ and it becomes a straight line in
+$f$:
+
+$$\\frac{p_{total}}{f} = \\underbrace{k_h B_m^{\\,n}}_{\\text{intercept}} + \\underbrace{\\frac{\\pi^{2}t^{2}B_m^{2}}{6\\rho}}_{\\text{slope}}f$$
+
+That is the classical **loss separation** measurement: sweep frequency at
+constant peak flux density, plot loss per cycle, and the intercept is the
+hysteresis loop area while the slope is the eddy coefficient.
+
+![Core loss components against frequency for silicon steel at 1.5 tesla, and the same data replotted as loss per cycle against frequency. The first panel shows the linear hysteresis term and the quadratic eddy term crossing at 259 hertz; the second shows loss per cycle as a straight line whose intercept of 250 joules per cubic metre is the loop area and whose slope of 0.965 is the eddy coefficient.](/courses/fe-ee/figures/mat3-loss-separation.svg)
+
+## 9.7 Worked: reading the intercept and the slope
+
+Given: the 0.35 mm silicon steel above at 1.5 T, with a measured loop area of
+250 J/m³ at that flux density.
+
+$$k_e = \\frac{\\pi^{2}t^{2}B_m^{2}}{6\\rho} = \\frac{\\pi^{2}(3.5 \\times 10^{-4})^{2}(1.5)^{2}}{6(4.7 \\times 10^{-7})} = 0.96465\\ \\mathrm{J} \\cdot \\mathrm{s/m^3}$$
+
+Crossover, where the two mechanisms contribute equally:
+
+$$f_{x} = \\frac{250}{0.96465} = 259.2\\ \\mathrm{Hz}$$
+
+At 60 Hz the split is
+
+$$p_h = (250)(60) = 15\\,000\\ \\mathrm{W/m^3}, \\qquad p_e = (0.96465)(60)^{2} = 3473\\ \\mathrm{W/m^3}$$
+
+for a total of 18 473 W/m³, or 2.41 W/kg — in the right range for this grade at
+this flux density, and dominated by hysteresis in the ratio 4.32 to 1. Move the same core to
+400 Hz aircraft power and the ratio inverts: hysteresis rises by 400/60 = 6.67
+to 100 kW/m³ while eddy loss rises by $(400/60)^{2} = 44.4$ to 154 kW/m³. That
+inversion, at a frequency still far below anything a switching converter uses,
+is the whole reason 400 Hz machines use thinner laminations and switching
+converters abandon metal altogether.
+
+Real measurements do not fall perfectly on the line. The residual, called
+anomalous or excess loss, comes from the fact that flux reversal actually
+happens at moving domain walls rather than uniformly through the material, and
+it is usually fitted as a further term proportional to $f^{1.5}$. Its existence
+is worth knowing so that a stubborn 10 to 30% discrepancy between the two-term
+model and a measurement is recognised as physics rather than as a mistake.
+
+## 9.8 Worked: why ferrite wins above about 20 kHz
+
+Given: a core of characteristic dimension 10 mm at 100 kHz and
+$B_m = 0.1$ T, made first from MnZn ferrite ($\\rho \\approx 1\\ \\Omega \\cdot \\mathrm{m}$,
+$\\mu_r \\approx 2000$) and then, hypothetically, from silicon steel of the same
+dimensions ($\\rho = 4.7 \\times 10^{-7}\\ \\Omega \\cdot \\mathrm{m}$).
+
+$$p_{e,ferrite} = \\frac{\\pi^{2}(10^{5})^{2}(0.1)^{2}(10^{-2})^{2}}{6(1)} = 1.645 \\times 10^{4}\\ \\mathrm{W/m^3}$$
+
+$$p_{e,steel} = \\frac{\\pi^{2}(10^{5})^{2}(0.1)^{2}(10^{-2})^{2}}{6(4.7 \\times 10^{-7})} = 3.50 \\times 10^{10}\\ \\mathrm{W/m^3}$$
+
+A ratio of $2.13 \\times 10^{6}$, which is simply the resistivity ratio, since
+every other factor is shared. Validity for the ferrite:
+$\\delta = 35.6$ mm at 100 kHz, comfortably larger than the 10 mm dimension, so
+the classical formula applies without correction.
+
+Ferrite pays for that with a saturation flux density of 0.4 to 0.5 T against
+silicon steel's 2.0 T, so a ferrite core must be roughly four times the
+cross-section for the same volt-seconds per turn. At 100 kHz the volt-seconds
+per turn are a thousandth of what they were at 100 Hz, so the penalty is
+affordable and the eddy-loss advantage is not merely decisive, it is the only
+option.`,
+      examTip: 'Hysteresis loss is linear in frequency and eddy loss is quadratic, so scale them SEPARATELY and add. If an item gives you the split at one frequency and asks for another, multiply the first term by the frequency ratio and the second by its square; a single combined factor is always wrong and is always on the option list.',
+    },
+    {
+      id: 'mag-gap',
+      title: '10. Saturation, Air Gaps and the Fringing Correction',
+      content: `## 10.1 Magnetic circuits, with the analogy stated precisely
+
+Flux obeys an Ohm's-law analogue. Magnetomotive force drives flux through
+reluctance:
+
+$$\\mathcal{F} = NI = \\Phi\\,\\mathcal{R}, \\qquad \\mathcal{R} = \\frac{l}{\\mu_0\\mu_r A}$$
+
+Reluctances in series add, exactly as resistances do, and inductance follows
+from the flux linkage:
+
+$$L = \\frac{N\\Phi}{I} = \\frac{N^{2}}{\\mathcal{R}_{total}}$$
+
+Cutting a gap of length $l_g$ into a core of path length $l_c$ adds a
+reluctance with $\\mu_r = 1$, and the two in series give an **effective
+permeability** for the whole path:
+
+$$\\mu_e = \\frac{\\mu_r}{1 + \\mu_r\\dfrac{l_g}{l_c}}$$
+
+The group $\\mu_r l_g/l_c$ decides everything. When it is large the gap
+dominates and $\\mu_e \\approx l_c/l_g$, a purely geometric number with the
+material's temperamental $\\mu_r$ divided out. That substitution — a machined
+dimension in place of a material property — is why gaps exist.
+
+## 10.2 Worked: a gapped inductor, four quantities at once
+
+Given: 100 turns on a core of cross-section 1 cm², magnetic path 0.1 m,
+$\\mu_r = 2000$, with a 0.5 mm gap. Take $B_s = 0.35$ T for the material.
+
+Reluctances:
+
+$$\\mathcal{R}_c = \\frac{0.1}{(1.2566370614 \\times 10^{-6})(2000)(10^{-4})} = 3.9789 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+$$\\mathcal{R}_g = \\frac{5 \\times 10^{-4}}{(1.2566370614 \\times 10^{-6})(10^{-4})} = 3.9789 \\times 10^{6}\\ \\mathrm{A/Wb}$$
+
+The gap carries ten times the reluctance of the entire core, and the ratio is
+exact rather than approximate:
+$\\mathcal{R}_g/\\mathcal{R}_c = \\mu_r l_g/l_c = (2000)(0.005) = 10$.
+
+Inductance:
+
+$$L = \\frac{N^{2}}{\\mathcal{R}_c + \\mathcal{R}_g} = \\frac{10^{4}}{4.3768 \\times 10^{6}} = 2.285\\ \\mathrm{mH}$$
+
+against $10^{4}/(3.9789 \\times 10^{5}) = 25.13$ mH ungapped — a fall by exactly
+$1 + 10 = 11$.
+
+Saturation current. Since
+$B = \\mu_0 NI/(l_g + l_c/\\mu_r)$, the current that reaches $B_s$ is
+
+$$I_{sat} = \\frac{B_s\\left(l_g + l_c/\\mu_r\\right)}{\\mu_0 N} = \\frac{(0.35)(5.5 \\times 10^{-4})}{(1.2566370614 \\times 10^{-6})(100)} = 1.532\\ \\mathrm{A}$$
+
+against 0.1393 A ungapped — a rise by exactly 11, the same factor the
+inductance fell by.
+
+Storable energy, which is what an inductor is actually for:
+
+$$U = \\tfrac{1}{2}LI_{sat}^{2} = \\tfrac{1}{2}(2.285 \\times 10^{-3})(1.532)^{2} = 2.681\\ \\mathrm{mJ}$$
+
+against $\\tfrac{1}{2}(25.13 \\times 10^{-3})(0.1393)^{2} = 0.2438$ mJ ungapped.
+The gap multiplied the storable energy by 11 as well — because
+$U \\propto LI^{2}$ and $L$ fell by 11 while $I^{2}$ rose by $11^{2}$.
+
+That is the whole case for gapping in one line: a gap does not improve an
+inductor's inductance, it improves its ENERGY, and inductors in switching
+converters are energy stores.
+
+## 10.3 Worked: the same energy by integrating the field
+
+The lumped result deserves a check that never touches $L$ or $I$. At
+$B = B_s = 0.35$ T the energy density is $B^{2}/(2\\mu)$ in each region, so
+
+$$U = \\frac{B^{2}}{2\\mu_0}A\\,l_g + \\frac{B^{2}}{2\\mu_0\\mu_r}A\\,l_c$$
+
+$$U = \\frac{(0.35)^{2}}{2(1.2566370614 \\times 10^{-6})}(10^{-4})(5 \\times 10^{-4}) + \\frac{(0.35)^{2}}{2(1.2566370614 \\times 10^{-6})(2000)}(10^{-4})(0.1)$$
+
+$$U = 2.4371 \\times 10^{-3} + 2.4371 \\times 10^{-4} = 2.6808 \\times 10^{-3}\\ \\mathrm{J}$$
+
+which reproduces the 2.681 mJ of section 10.2 exactly. It also reveals the
+split: 90.9% of the stored energy sits in half a millimetre of air, and 9.1% in
+100 mm of expensive ferrite. The energy fraction in the gap is
+
+$$\\frac{U_g}{U_g + U_c} = \\frac{l_g}{l_g + l_c/\\mu_r}$$
+
+which is identical to the reluctance fraction
+$\\mathcal{R}_g/(\\mathcal{R}_g + \\mathcal{R}_c)$, as it must be — both regions
+carry the same flux through the same area.
+
+![Share of stored magnetic energy held in the air gap, and the effective relative permeability, both against gap length on logarithmic axes for a core of 0.2 metre path length at relative permeability 1500. The energy split reaches fifty-fifty when the gap equals the core path divided by the permeability, 0.133 millimetres, and a one millimetre gap already holds 88.2 percent of the energy while dragging the effective permeability down to 176.](/courses/fe-ee/figures/mat3-gap-energy-split.svg)
+
+The figure uses the toroid of section 3.3 — path 0.2 m, $\\mu_r = 1500$ — so its
+numbers differ from the worked inductor above: there the equivalent air length
+is $l_c/\\mu_r = 0.2/1500 = 0.133$ mm, a 1 mm gap holds 88.2% of the energy, and
+$\\mu_e = 1500/(1 + 7.5) = 176.5$. The shape of the curve is the transferable
+part: the gap takes over as soon as it exceeds $l_c/\\mu_r$, which for any
+decent core material is a fraction of a millimetre.
+
+## 10.4 Fringing, and two corrections that disagree
+
+Flux does not stay inside the gap. It bulges outward, so the effective gap area
+exceeds the core area, the gap reluctance falls, and the real inductance
+exceeds the calculation above. Two corrections are in common use. The first
+simply adds the gap length to each cross-sectional dimension:
+
+$$A_{fr} \\approx (a + l_g)(b + l_g)$$
+
+The second, from magnetics design practice, scales the area by a factor
+involving the winding window height $G$:
+
+$$F = 1 + \\frac{l_g}{\\sqrt{A_c}}\\ln\\frac{2G}{l_g}, \\qquad A_{fr} = F\\,A_c$$
+
+## 10.5 Worked: fringing on the gapped inductor, both ways
+
+Given: the 1 cm² core above as a 10 mm square, $l_g = 0.5$ mm, in a window of
+height $G = 20$ mm.
+
+Dimension-addition:
+
+$$A_{fr} = (10.5\\ \\mathrm{mm})(10.5\\ \\mathrm{mm}) = 110.25\\ \\mathrm{mm^2}$$
+
+a 10.25% increase, which lowers $\\mathcal{R}_g$ to
+$3.9789 \\times 10^{6}/1.1025 = 3.6090 \\times 10^{6}$ and raises the inductance
+to
+
+$$L = \\frac{10^{4}}{3.9789 \\times 10^{5} + 3.6090 \\times 10^{6}} = 2.496\\ \\mathrm{mH}$$
+
+a 9.2% rise over the 2.285 mH computed with no fringing.
+
+The area-factor form:
+
+$$F = 1 + \\frac{0.5}{10}\\ln\\frac{40}{0.5} = 1 + (0.05)(4.3820) = 1.2191$$
+
+giving $A_{fr} = 121.9\\ \\mathrm{mm^2}$, $\\mathcal{R}_g = 3.2638 \\times 10^{6}$
+and $L = 2.731$ mH, a 19.5% rise.
+
+Nine percent against twenty percent, from two respectable approximations
+applied to the same core. That disagreement is the honest headline: fringing
+corrections are estimates, they diverge as the gap grows relative to the core
+dimensions, and a gapped inductor whose inductance matters is measured, not
+merely computed. The two do agree on the direction and on the order of
+magnitude, which is what an approximation is for, and both say the same
+practical thing — split one large gap into several small ones distributed
+around the path, and the fringing penalty (and the winding loss it causes by
+pushing flux through the copper) falls sharply.
+
+## 10.6 Worked: re-checking the gapped toroid of section 3.3
+
+The earlier section computed a 1 mm gap in a 0.2 m path at $\\mu_r = 1500$,
+cross-section 4 cm², driven by 200 turns at 0.5 A. Recomputing every step from
+the definitions above:
+
+$$\\mathcal{R}_c = \\frac{0.2}{(1.2566370614 \\times 10^{-6})(1500)(4 \\times 10^{-4})} = 2.6526 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+$$\\mathcal{R}_g = \\frac{10^{-3}}{(1.2566370614 \\times 10^{-6})(4 \\times 10^{-4})} = 1.9894 \\times 10^{6}\\ \\mathrm{A/Wb}$$
+
+$$\\Phi = \\frac{NI}{\\mathcal{R}_c + \\mathcal{R}_g} = \\frac{100}{2.2547 \\times 10^{6}} = 4.4352 \\times 10^{-5}\\ \\mathrm{Wb}$$
+
+$$B = \\frac{\\Phi}{A} = \\frac{4.4352 \\times 10^{-5}}{4 \\times 10^{-4}} = 0.1109\\ \\mathrm{T}$$
+
+confirming the 0.11 T published there, the reluctance ratio of exactly 7.5, and
+the flux reduction factor of 0.9425/0.1109 = 8.50 against the ungapped case.
+
+One refinement the earlier treatment left implicit: the iron path should
+strictly be 0.199 m once a 1 mm gap has been cut out of a 0.2 m circuit. Redoing
+it that way gives $\\mathcal{R}_c = 2.6393 \\times 10^{5}$ and $B = 0.11094$ T
+against 0.11088 T — a change of 0.06%, far below the uncertainty in $\\mu_r$
+itself. The approximation is safe, and knowing WHY it is safe is better than
+not noticing it was made.
+
+## 10.7 What saturation does to a circuit, not just to a curve
+
+Above the knee, $\\mu_d$ collapses toward 1 and the inductance collapses with
+it. In a converter that is a runaway: inductance falls, so current rises
+faster, so the core saturates harder, so inductance falls further. The current
+waveform stops being a triangle and turns up sharply at its peak, which is the
+oscilloscope signature.
+
+Three defences, in increasing order of cost. Reduce the flux swing by adding
+turns or raising frequency, since $B_m \\propto V/(N A f)$. Add a gap, which
+raises $I_{sat}$ in proportion to $\\mu_e$ reduction as section 10.2 showed. Or
+choose a material with a higher $B_s$ and accept its loss, which at mains
+frequency means silicon steel at 2.0 T and above 20 kHz means it does not.
+
+Note the contrast with the Curie limit of section 11: saturation is instant and
+instantly reversible — drop the current and the inductance returns within the
+cycle. A core taken past its Curie temperature loses its permeability entirely
+and gets it back only on cooling.`,
+      examTip: 'A gap divides the effective permeability by one plus mu-r times gap over path, and multiplies the saturation current by exactly the same factor. Compute that one dimensionless group first; every other number in a gapped-core problem is the ungapped answer scaled by it.',
+    },
+    {
+      id: 'mag-curie-mstr',
+      title: '11. Curie Point, Temperature Effects and Magnetostriction',
+      content: `## 11.1 The Curie transition, computed
+
+Exchange coupling aligns neighbouring spins; thermal agitation randomises them.
+The Weiss mean-field treatment replaces the exchange with an effective internal
+field proportional to the magnetisation itself, and for spin one-half the
+self-consistency condition reduces to
+
+$$m = \\tanh\\!\\left(\\frac{m}{T/T_c}\\right), \\qquad m = \\frac{M}{M_s}$$
+
+Above $T_c$ the only solution is $m = 0$. Below it a non-zero solution appears
+and grows rapidly. Expanding $\\tanh$ to third order near the transition gives
+the shape of that growth,
+
+$$m \\approx \\sqrt{3t^{2}(1 - t)}, \\qquad t = \\frac{T}{T_c}$$
+
+so magnetisation rises as the square root of the distance below $T_c$ — a
+vertical tangent at the transition, not a gentle onset.
+
+![Reduced magnetisation against reduced temperature from the mean-field self-consistency condition, solved numerically, with the square-root approximation near the transition drawn alongside. At half the Curie temperature the material still holds 95.8 percent of full magnetisation, at nine tenths it holds 52.5 percent, and above the Curie point it holds none.](/courses/fe-ee/figures/mat3-weiss-curie.svg)
+
+## 11.2 Worked: reading the curve at three temperatures
+
+Solving $m = \\tanh(m/t)$ numerically at three reduced temperatures:
+
+$$m(0.5) = 0.9575, \\qquad m(0.9) = 0.5254, \\qquad m(0.95) = 0.3795$$
+
+The check on those numbers is the expansion above. At $t = 0.9$ it predicts
+$\\sqrt{3(0.81)(0.1)} = 0.4930$ against the exact 0.5254, a 6% underestimate
+that is entirely appropriate for a third-order expansion 10% away from the
+transition, and the figure asserts the two agree within 2% over the range where
+the expansion is legitimate.
+
+The engineering reading: half the Curie temperature costs 4% of the
+magnetisation, but nine tenths costs 47%. Cores are safe over most of their
+range and then fail rapidly, which is why the datasheet limit is a Curie
+MARGIN rather than a fraction.
+
+## 11.3 Ordering temperatures worth recognising
+
+| Material | Ordering temperature | Class | Consequence |
+|---|---|---|---|
+| Cobalt | 1115 °C | ferro | irrelevant in service |
+| Iron | 770 °C | ferro | irrelevant in service |
+| Nickel | 358 °C | ferro | relevant in some heaters |
+| SmCo magnets | 720 to 800 °C | ferri/ferro | excellent high-temperature magnet |
+| NdFeB magnets | 310 to 370 °C | ferri/ferro | irreversible loss well below this |
+| MnZn power ferrite | 120 to 220 °C | ferri | a real design constraint |
+| Gadolinium | 20 °C | ferro | magnetic near room temperature only |
+| Chromium | 38 °C (Neel) | antiferro | ordering vanishes just above room temperature |
+
+The ferrite row is the one that bites. A switching supply running a core at
+110 °C with a Curie point of 130 °C has almost no margin, and ferrite losses
+generally RISE as the Curie point is approached, so an overheating core loses
+permeability, ripples harder, dissipates more and runs away. Permanent magnets
+have a second, earlier limit: irreversible loss begins at a maximum operating
+temperature far below $T_c$, because partial demagnetisation at the operating
+load line does not recover on cooling.
+
+## 11.4 Magnetostriction: the core changes shape
+
+A magnetised material strains. The fractional length change along the field is
+the **magnetostriction**
+
+$$\\lambda = \\frac{\\Delta l}{l}$$
+
+and its value at saturation, $\\lambda_s$, is quoted in parts per million.
+Crucially the strain is an EVEN function of $B$: reversing the field reverses
+the magnetisation but not the sign of the strain. A core driven at frequency
+$f$ therefore vibrates at
+
+$$f_{acoustic} = 2f$$
+
+which is why a 50 Hz transformer hums at 100 Hz and a 60 Hz one at 120 Hz,
+with harmonics at every further even multiple.
+
+| Material | $\\lambda_s$ (parts per million) | Note |
+|---|---|---|
+| Nickel | $-33$ | large and negative; the classic magnetostrictive metal |
+| Cobalt | $-62$ | polycrystalline value |
+| Iron | $\\approx -7$ | polycrystalline; single crystals are $+21$ along one axis and $-21$ along another |
+| Grain-oriented 3% silicon iron | $+7$ to $+9$ | along the rolling direction; the source of transformer hum |
+| MnZn ferrite | $-1$ to $-3$ | small, which helps quiet switching supplies |
+| Terfenol-D | $+1600$ to $+2000$ | engineered giant magnetostriction, for actuators |
+
+Values depend strongly on crystallographic direction, on alloy composition and
+on applied mechanical stress, so a single number per material is a summary
+rather than a constant.
+
+## 11.5 Worked: the displacement behind transformer hum
+
+Given: a grain-oriented silicon-steel limb 0.3 m long, reaching a peak
+magnetostrictive strain of $2 \\times 10^{-6}$ at working flux density, driven
+at 60 Hz.
+
+$$\\Delta l = \\lambda\\,l = (2 \\times 10^{-6})(0.3) = 6.0 \\times 10^{-7}\\ \\mathrm{m} = 0.60\\ \\mu\\mathrm{m}$$
+
+$$f_{acoustic} = 2(60) = 120\\ \\mathrm{Hz}$$
+
+Six tenths of a micrometre, twice per cycle, radiating from a large flat steel
+surface. That is the entire mechanism of the sound a substation makes. Three
+consequences follow. The hum is at twice line frequency and is therefore a
+diagnostic — a transformer that suddenly hums at line frequency has a
+mechanical problem, not a magnetostrictive one. The displacement grows steeply
+with flux density, so a transformer run above its design flux gets audibly
+louder before it gets measurably hotter. And clamping the core changes the
+sound but cannot remove the source, since the strain is generated inside the
+steel.
+
+For contrast, the same 0.3 m of Terfenol-D at $1.6 \\times 10^{-3}$ would move
+480 μm — nearly half a millimetre, which is why that material is built into
+sonar transducers and precision actuators rather than avoided.
+
+## 11.6 The inverse effect, and why it matters
+
+Magnetostriction runs backwards: applying mechanical stress changes the
+permeability and the magnetisation. This **Villari effect** is the basis of
+magnetoelastic torque and force sensors, and it is also a nuisance, because a
+core that is clamped, potted or thermally stressed has a different permeability
+from the same core sitting loose. Ferrite cores are specified with mounting
+pressure limits for exactly this reason, and a gapped core held together with
+an over-tightened clamp can shift its inductance by a few percent — a change
+large enough to matter in a resonant converter and invisible to every
+electrical measurement made before assembly.`,
+      examTip: 'Magnetostriction is even in flux density, so the acoustic tone is at twice the electrical frequency. An item that asks for the hum frequency of a 60 hertz transformer wants 120 hertz, and the 60 hertz option is there for anyone who did not notice the strain does not care about the sign of B.',
+    },
+    {
+      id: 'mag-set-a',
+      title: '12. Problem Set A: Magnetic Circuits, Flux and Inductance',
+      content: `## 12.1 Problem Set A
+
+Work each to a number first. Every answer comes from a relation stated earlier
+in this chapter.
+
+**A1.** A toroid carries 500 turns on a core of magnetic path length 0.25 m and
+cross-section 6 cm², with $\\mu_r = 1200$, driven at 0.12 A. Find $H$, $B$,
+$\\Phi$ and $L$.
+
+**A2.** Find the stored energy of A1 by the lumped formula and again by
+integrating the field energy density over the core volume.
+
+**A3.** Cut a 0.8 mm gap into the A1 core. Find the reluctance ratio, the new
+inductance, the effective permeability, the flux density at the same 0.12 A,
+and the share of energy now held in the gap.
+
+**A4.** A material has $\\chi_m = 4999$. State $\\mu_r$, and state the flux
+density it produces at $H = 300$ A/m.
+
+**A5.** A cobalt-based amorphous ribbon has $\\mu_r = 40\\,000$ and a core path
+of 0.15 m. What gap length puts half the stored energy in the gap?
+
+## 12.2 Worked answers to Problem Set A
+
+**A1.**
+
+$$H = \\frac{NI}{l} = \\frac{(500)(0.12)}{0.25} = 240\\ \\mathrm{A/m}$$
+
+$$B = \\mu_0\\mu_r H = (1.2566370614 \\times 10^{-6})(1200)(240) = 0.3619\\ \\mathrm{T}$$
+
+$$\\Phi = BA = (0.3619)(6 \\times 10^{-4}) = 2.1715 \\times 10^{-4}\\ \\mathrm{Wb}$$
+
+$$L = \\frac{\\mu_0\\mu_r N^{2}A}{l} = \\frac{(1.2566370614 \\times 10^{-6})(1200)(500)^{2}(6 \\times 10^{-4})}{0.25} = 0.90478\\ \\mathrm{H}$$
+
+Cross-check through reluctance:
+
+$$\\mathcal{R} = \\frac{0.25}{(1.2566370614 \\times 10^{-6})(1200)(6 \\times 10^{-4})} = 2.7631 \\times 10^{5}\\ \\mathrm{A/Wb}$$
+
+$$L = \\frac{N^{2}}{\\mathcal{R}} = \\frac{2.5 \\times 10^{5}}{2.7631 \\times 10^{5}} = 0.90478\\ \\mathrm{H}$$
+
+identical, by a route that never used the permeability twice.
+
+**A2.** Lumped:
+
+$$U = \\tfrac{1}{2}LI^{2} = \\tfrac{1}{2}(0.90478)(0.12)^{2} = 6.5144 \\times 10^{-3}\\ \\mathrm{J}$$
+
+By field energy density, $u = B^{2}/(2\\mu_0\\mu_r)$ over a volume
+$Al = (6 \\times 10^{-4})(0.25) = 1.5 \\times 10^{-4}\\ \\mathrm{m^3}$:
+
+$$U = \\frac{(0.3619)^{2}}{2(1.2566370614 \\times 10^{-6})(1200)}(1.5 \\times 10^{-4}) = 6.5144 \\times 10^{-3}\\ \\mathrm{J}$$
+
+The two agree to five figures, which is the check worth doing whenever a
+magnetic energy is quoted.
+
+**A3.** The controlling group first:
+
+$$\\frac{\\mathcal{R}_g}{\\mathcal{R}_c} = \\mu_r\\frac{l_g}{l_c} = (1200)\\frac{8 \\times 10^{-4}}{0.25} = 3.84$$
+
+$$L = \\frac{0.90478}{1 + 3.84} = 0.18694\\ \\mathrm{H}, \\qquad \\mu_e = \\frac{1200}{4.84} = 247.9$$
+
+$$B = \\frac{0.3619}{4.84} = 0.07478\\ \\mathrm{T}$$
+
+$$\\frac{U_g}{U_{total}} = \\frac{3.84}{4.84} = 0.7934$$
+
+Every one of those is the ungapped answer scaled by the same factor of 4.84 —
+which is why computing that group first is worth the ten seconds.
+
+**A4.**
+
+$$\\mu_r = 1 + \\chi_m = 5000$$
+
+$$B = \\mu_0\\mu_r H = (1.2566370614 \\times 10^{-6})(5000)(300) = 1.885\\ \\mathrm{T}$$
+
+A flux density of 1.885 T is above the saturation of everything except iron and
+cobalt-iron alloys, so the honest answer names the assumption: this is what the
+LINEAR relation predicts, and a real material with that initial permeability
+would have left the linear region long before 300 A/m.
+
+**A5.** Half the energy sits in the gap when the gap length equals the
+equivalent air length of the core:
+
+$$l_g = \\frac{l_c}{\\mu_r} = \\frac{0.15}{40\\,000} = 3.75 \\times 10^{-6}\\ \\mathrm{m} = 3.75\\ \\mu\\mathrm{m}$$
+
+Under four micrometres. On a material this permeable, a gap you could create by
+a fingerprint on a mating face halves the effective permeability — which is why
+very high permeability cores are supplied as uncut toroids and why any
+cut-core assembly of them is lapped, not merely clamped.`,
+      examTip: 'Compute mu-r times gap over core path FIRST in any gapped-core problem. Inductance, flux density and effective permeability all divide by one plus that group, saturation current multiplies by it, and the gap energy share is the group divided by one plus itself.',
+    },
+    {
+      id: 'mag-set-b',
+      title: '13. Problem Set B: Losses, Temperature and Materials',
+      content: `## 13.1 Problem Set B
+
+**B1.** A core dissipates 20 W of hysteresis loss and 10 W of eddy loss at
+50 Hz. At 60 Hz and the same peak flux density, find the total.
+
+**B2.** A material traces a loop of area 300 J/m³ at working flux density. Find
+the hysteresis power in a $8 \\times 10^{-4}$ m³ core at 50 Hz and again at
+60 Hz.
+
+**B3.** A 400 Hz design runs at $B_m = 1.2$ T in a steel of
+$\\rho = 5.5 \\times 10^{-7}\\ \\Omega \\cdot \\mathrm{m}$. Find the lamination
+thickness that meets an eddy-loss budget of 4000 W/m³, and check the thin-sheet
+assumption at $\\mu_r = 4000$.
+
+**B4.** Laminations are changed from 0.50 mm to 0.27 mm with everything else
+held. By what factor does eddy loss change, and does hysteresis loss change?
+
+**B5.** A ferrite has a Curie temperature of 210 °C. At what case temperature
+does the mean-field model say it retains half its saturation magnetisation, and
+why is that not the design limit?
+
+## 13.2 Worked answers to Problem Set B
+
+**B1.** Scale the two mechanisms separately:
+
+$$P = 20\\left(\\frac{60}{50}\\right) + 10\\left(\\frac{60}{50}\\right)^{2} = 24 + 14.4 = 38.4\\ \\mathrm{W}$$
+
+The single-factor answers are 36 W (both scaled linearly) and 43.2 W (both
+scaled quadratically); both will be on the option list.
+
+**B2.**
+
+$$P_h = f\\mathcal{V}W = (50)(8 \\times 10^{-4})(300) = 12.0\\ \\mathrm{W}$$
+
+$$P_h = (60)(8 \\times 10^{-4})(300) = 14.4\\ \\mathrm{W}$$
+
+The loop area itself grows with peak flux density in reality, so holding it
+fixed while changing frequency is the stated assumption, not a law.
+
+**B3.**
+
+$$t = \\sqrt{\\frac{6\\rho\\,p_e}{\\pi^{2}f^{2}B_m^{2}}} = \\sqrt{\\frac{6(5.5 \\times 10^{-7})(4000)}{\\pi^{2}(400)^{2}(1.2)^{2}}} = 7.619 \\times 10^{-5}\\ \\mathrm{m} = 76.2\\ \\mu\\mathrm{m}$$
+
+Validity:
+
+$$\\delta = \\sqrt{\\frac{5.5 \\times 10^{-7}}{\\pi(400)(1.2566370614 \\times 10^{-6})(4000)}} = 2.951 \\times 10^{-4}\\ \\mathrm{m} = 0.295\\ \\mathrm{mm}$$
+
+so $t/\\delta = 0.258$, comfortably thin, and the classical formula stands. Note
+that 76 μm is thin foil rather than sheet, which is precisely why 400 Hz
+aircraft transformers are expensive and why the alternative — moving to a
+ferrite or a nanocrystalline ribbon — is often taken instead.
+
+**B4.** Eddy loss goes as thickness squared:
+
+$$\\frac{p_e(0.27)}{p_e(0.50)} = \\left(\\frac{0.27}{0.50}\\right)^{2} = 0.2916$$
+
+a fall to 29.2% of the original. Hysteresis loss does not change at all: it is
+a property of the material and the flux swing, and thinner sheets of the same
+alloy trace the same loop. An answer that scales both is scaling a geometric
+effect as if it were a material one.
+
+**B5.** Solving $m = \\tanh(m/t)$ for the reduced temperature that gives
+$m = 0.5$ returns $t = 0.9102$, so
+
+$$T = 0.9102\\,T_c = 0.9102(210 + 273) = 439.6\\ \\mathrm{K} = 166.6\\ ^\\circ\\mathrm{C}$$
+
+But that is nowhere near a design limit, for three separate reasons. Ferrite
+core loss rises steeply approaching $T_c$, so thermal runaway arrives first.
+Saturation flux density falls with magnetisation, so a core designed at 0.4 T
+at 25 °C is saturating at 0.2 T long before 165 °C. And the winding insulation
+and the potting compound have their own limits, usually well below. Practical
+ferrite design keeps the core 50 to 80 K below $T_c$, and the mean-field number
+is useful only as an upper bound that shows how much margin the real limits are
+buying.
+
+## 13.3 Where marks are lost in this half of the chapter
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Susceptibility used as permeability | mu-r quoted as 4999 instead of 5000 | mu-r is one PLUS chi, and for ferromagnets the difference is invisible |
+| Loop area quoted as a power | J/m³ reported in watts | multiply by frequency AND core volume |
+| Turns count kept in a loss calculation | core loss said to depend on N | N cancels in the H dB derivation |
+| One permeability used everywhere | initial permeability applied at a DC bias | incremental permeability under bias can be six times smaller |
+| Eddy formula used past its validity | thick block loss taken from the t-squared law | check t against the skin depth first |
+| Gap treated as a small correction | 0.5 mm gap ignored beside 100 mm of core | the gap reluctance is mu-r times larger per unit length |
+| Fringing ignored or over-trusted | a computed inductance quoted to three figures | fringing corrections disagree by a factor of two; measure |
+| Curie point confused with saturation | a saturating core said to be too hot | saturation reverses within the cycle; the Curie loss does not |`,
+      examTip: 'Frequency-scaling items always give you the loss SPLIT, and they give it for a reason: hysteresis carries the first power of frequency and eddy currents the second. Scale each separately, add, and check that your answer sits between the two single-factor traps.',
     },
   ],
   keyTakeaways: [
