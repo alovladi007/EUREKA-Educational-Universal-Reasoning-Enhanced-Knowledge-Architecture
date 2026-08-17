@@ -4790,7 +4790,7 @@ $\\omega_{gc} = 1.5519$ rad/s, and there
 
 $$PM = 180^\\circ - 90^\\circ - 57.2038^\\circ - 17.2435^\\circ = 15.5527^\\circ$$
 
-$$T_{\\max} = \\frac{0.271446}{1.551922} = 0.174909\\ \\mathrm{s}$$
+$$T_{\\max} = \\frac{0.271446}{1.551922} = 0.174910\\ \\mathrm{s}$$
 
 Simulating the closed-loop step response gives $64.16\\%$ overshoot, which is
 what a $15.55^\\circ$ margin buys. **The trap:** assuming that a $6$ dB gain
@@ -5427,9 +5427,9 @@ than 6° of phase margin.
 crossover is $\\arctan (1/(T_i\\omega _c))$, so
 
 $$\\arctan \\frac{1}{T_i\\omega _c} \\leq 6^\\circ
-\\Rightarrow \\frac{1}{T_i\\omega _c} \\leq \\tan 6^\\circ = 0.10510$$
+\\Rightarrow \\frac{1}{T_i\\omega _c} \\leq \\tan 6^\\circ = 0.105104$$
 
-$$T_i\\omega _c \\geq \\frac{1}{0.10510} = 9.5144$$
+$$T_i\\omega _c \\geq \\frac{1}{0.105104} = 9.5144$$
 
 **Step 2 — convert to seconds.**
 
@@ -7487,18 +7487,18 @@ $$\\frac{\\omega _d}{z - \\sigma } = \\frac{0.866025}{1.0} = 0.866025,
 
 $$t_p = \\frac{3.141593 - 0.713724}{0.866025} = 2.803467\\ \\mathrm{s}$$
 
-**Step 3 — rise time.** With $\\omega _n^{2}/z = 1/1.5 = 0.666667$:
+**Step 3 — rise time.** With $\\omega _n^{2}/z = 1/1.5 = 0.6666667$:
 
-$$\\frac{\\omega _d}{0.666667 - 0.5} = \\frac{0.866025}{0.166667} = 5.196150,
-\\qquad \\arctan 5.196150 = 1.380605\\ \\mathrm{rad}$$
+$$\\frac{\\omega _d}{0.6666667 - 0.5} = \\frac{0.866025}{0.1666667} = 5.19615,
+\\qquad \\arctan 5.19615 = 1.380671\\ \\mathrm{rad}$$
 
-$$t_r = \\frac{1.380605}{0.866025} = 1.594186\\ \\mathrm{s}$$
+$$t_r = \\frac{1.380671}{0.866025} = 1.594262\\ \\mathrm{s}$$
 
 **Step 4 — check the invariant.**
 
-$$\\omega _d\\left(t_p - t_r\\right) = 0.866025 \\times 1.209281 = 1.047268$$
+$$\\omega _d\\left(t_p - t_r\\right) = 0.866025 \\times 1.209205 = 1.047202$$
 
-against $\\arccos 0.5 = 1.047198$, agreeing to five figures — the difference is
+against $\\arccos 0.5 = 1.047198$, agreeing to six figures — the difference is
 the rounding carried through the arctangents.
 
 **Step 5 — check against simulation.** The measured values are 2.80346 s and
@@ -7901,9 +7901,9 @@ The damped frequency ω_d = ωₙ · √(1 - ζ²).
 
 For an underdamped second-order system with poles at -σ ± jω_d (ωₙ = √(σ² + ω_d²), ζ = σ/ωₙ):
 
-- **Rise time**: t_r ≈ (1.8) / ωₙ — time to first reach 100% of steady state
+- **Rise time** (10–90% criterion): t_r ≈ 1.8 / ωₙ — the time to climb from 10% to 90% of the final value. This is NOT the time to first reach 100%, which is a different and larger quantity, (π − arccos ζ)/ω_d; at ζ = 0.5 the two differ by 34%. Section 5.4 measures both.
 - **Peak time**: t_p = π / ω_d — time of first peak
-- **Settling time** (5% criterion): t_s ≈ 3 / σ = 3 / (ζ·ωₙ)
+- **Settling time** (5% criterion): t_s ≈ 3 / σ = 3 / (ζ·ωₙ) — an estimate, not a bound; Section 8.2 measures the error, which reaches 33% either way
 - **Percent overshoot**: %OS = e^(-πζ/√(1-ζ²)) · 100
 
 These are exam-tested formulas. The "Standard" rules:
@@ -7996,14 +7996,14 @@ Root locus IS a graphical pole-placement tool — by choosing K, you slide poles
 
 Analysis:
 - Complex pole pair at -2 ± j3: ωₙ = √(4+9) = √13 ≈ 3.6 rad/s, ζ = 2/3.6 ≈ 0.55
-- Zero at -10: far from the poles, so MINIMAL effect on transient (just slight speed-up)
-- Response: underdamped sinusoid with ζ ≈ 0.55:
-  - Damped frequency ω_d = ωₙ·√(1-ζ²) = 3.6·0.835 ≈ 3 rad/s
-  - Rise time ≈ 1.8/3.6 = 0.5 s
-  - Settling time ≈ 3/2 = 1.5 s
-  - Overshoot ≈ exp(-π·0.55/√(1-0.55²)) · 100% ≈ 13%
+- Zero at -10: well outside the pole pair, so a SMALL but measurable effect on the transient
+- Response: underdamped sinusoid with ζ = 0.5547:
+  - Damped frequency ω_d = ωₙ·√(1-ζ²) = 3 rad/s exactly — it is the imaginary part of the pole
+  - Rise time (10–90%) ≈ 1.8/3.6056 = 0.4992 s; simulating the pair gives 0.4853 s
+  - Settling time (5%) ≈ 3/2 = 1.5 s; simulating the pair gives 1.4672 s
+  - Overshoot = exp(-π·0.5547/√(1-0.5547²)) · 100% = 12.31%
 
-The response oscillates at ~3 rad/s, decays in ~1.5 seconds, with ~13% overshoot, and the zero at -10 has negligible effect.
+**Correction to an earlier printing of this example.** Two numbers here used to be wrong. The overshoot formula with the exact ζ = 2/√13 = 0.5547 returns 12.31%, not 13%; and the zero at -10 is not negligible. Simulating the full system, G(s) = 1.3(s+10)/(s²+4s+13), the measured overshoot is 13.36% and the measured 5% settling time is 1.3657 s — the zero adds 1.05 points of overshoot and makes the system 6.9% quicker to settle. The old figure of "≈13%" happened to sit near the true system's overshoot while being attributed to a formula that does not produce it. Section 9 quantifies the effect of an added zero properly.
 
 ## 2.7 Real-axis pole/zero combinations
 
@@ -8255,15 +8255,1481 @@ discards whenever a pole and zero cancel.
       examTip: `For a 2x2 state matrix, skip the determinant expansion: the characteristic polynomial is s² − tr(A)s + det(A). Controllability and observability are then two small determinants. A nonzero determinant means full rank, which is all the FE exam asks you to conclude.`,
       importantNote: `A right-half-plane zero does not make a system unstable — stability is decided by poles alone — but it does force an initial response in the wrong direction and it fundamentally limits achievable bandwidth. The undershoot is a property of the plant, not of the controller, so no amount of tuning removes it.`,
     },
+    {
+      id: 'splane-regions-and-loci',
+      title: `5. The s-Plane as a Map of Modes`,
+      content: `## 5.1 Why a Point in the Plane Is a Waveform
+
+A pole is not a decoration on a diagram. It is a **mode**: a single elementary
+waveform that the system is capable of producing on its own, and the plane is
+just a convenient way of writing down which waveforms those are. Write a pole
+as $p = \\sigma + j\\omega$. The mode attached to it is $e^{pt}$, and its size
+at time t is
+
+$$\\lvert e^{pt} \\rvert = \\lvert e^{\\sigma t} \\rvert \\lvert e^{j\\omega t} \\rvert = e^{\\sigma t}$$
+
+because the rotating factor has unit magnitude at every instant. That single
+line contains all of stability. The imaginary part spins; only the real part
+grows or shrinks. Move a pole up or down and you change how fast the answer
+wiggles; move it left or right and you change whether the wiggle dies.
+
+Since a physical system has real coefficients, complex poles arrive in
+conjugate pairs, and the two complex modes combine into one real waveform:
+
+$$K e^{pt} + \\bar{K} e^{\\bar{p}t} = 2\\lvert K \\rvert e^{\\sigma t} \\cos(\\omega t + \\angle K)$$
+
+So a conjugate pair is one decaying sinusoid, not two of anything. The pair is
+the atom; you never see half of it.
+
+| Region of the plane | What the mode does | Verdict |
+|---|---|---|
+| Strictly left, $\\sigma < 0$ | $e^{\\sigma t}$ decays to zero | asymptotically stable |
+| On the axis, $\\sigma = 0$, simple | constant, or an undying sinusoid | marginal |
+| On the axis, $\\sigma = 0$, repeated | grows like $t$, $t^{2}$, ... | unstable |
+| Strictly right, $\\sigma > 0$ | $e^{\\sigma t}$ runs away | unstable |
+| At the origin, simple | a constant: the integrator's memory | marginal |
+
+The repeated-axis row is the one candidates forget. Two poles stacked at
+$s = \\pm j\\omega$ give a term $t\\sin \\omega t$, whose amplitude climbs without
+limit even though the poles never left the axis. Marginal stability requires
+the axis poles to be **simple**.
+
+## 5.2 Damping Ratio and Natural Frequency Are Polar Coordinates
+
+For an underdamped pair there are two equally good coordinate systems, and the
+whole of second-order design consists of moving between them. In Cartesian
+form the pair sits at $-\\sigma \\pm j\\omega_d$. In polar form,
+
+$$\\omega_n = \\lvert p \\rvert = \\sqrt{\\sigma^{2} + \\omega_d^{2}}, \\qquad
+\\zeta = \\frac{\\sigma}{\\omega_n} = \\cos\\theta$$
+
+where $\\theta$ is measured at the origin from the **negative** real axis round
+to the pole. Going the other way,
+
+$$\\sigma = \\zeta\\omega_n, \\qquad \\omega_d = \\omega_n\\sqrt{1 - \\zeta^{2}}$$
+
+Read as polar coordinates, the three families of design constraint become three
+familiar shapes, and this is the single most useful picture in the chapter:
+
+- fixing $\\omega_n$ fixes the **radius**, so a constant-$\\omega_n$ locus is a
+  circle centred on the origin;
+- fixing $\\zeta$ fixes the **angle**, so a constant-$\\zeta$ locus is a pair of
+  rays from the origin, symmetric about the real axis;
+- fixing $\\sigma$ fixes the **real part**, so a constant-decay locus is a
+  vertical line.
+
+![Upper half of the s-plane showing three constant natural frequency circles at two, five and eight radians per second, three constant damping rays at damping ratios of zero point three, zero point six and zero point nine, and a vertical constant decay line at minus two. The wedge-shaped intersection of all three constraint families is shaded, and the pole at minus three plus j four is marked on it with the angle theta drawn at the origin.](/courses/fe-ee/figures/ctl5-region-map.svg)
+
+A specification that names an overshoot, a speed and a bandwidth therefore
+carves out a **wedge**: bounded on the outside by a circle, on the sides by two
+rays, and on the right by a vertical line. Placing poles is then a matter of
+putting them somewhere in the shaded patch, which is a far easier mental task
+than juggling three formulas.
+
+### Worked Example 5.1 — One Pair, Six Numbers, All Checked Against a Simulation
+
+**Given** a unit-DC-gain system whose only poles are $s = -3 \\pm j4$. Report
+the polar coordinates and every standard response figure — and confirm each
+one on a simulated step rather than trusting the map.
+
+**Polar coordinates.**
+
+$$\\omega_n = \\sqrt{3^{2} + 4^{2}} = 5\\ \\mathrm{rad/s}, \\qquad
+\\zeta = 3/5 = 0.6, \\qquad \\theta = \\arccos 0.6 = 0.927295\\ \\mathrm{rad}$$
+
+which is $53.1301^\\circ$ off the negative real axis. The transfer function
+that goes with this is $G(s) = 25/(s^{2} + 6s + 25)$.
+
+**Overshoot.** The formula gives
+
+$$M_p = 100\\,e^{-\\pi\\zeta/\\sqrt{1-\\zeta^{2}}} = 100\\,e^{-\\pi(0.6)/0.8}
+= 100\\,e^{-2.356194} = 9.4780\\%$$
+
+The simulated response peaks at 1.094780, so the **measured** overshoot is
+9.4780%. Formula and simulation agree to four decimals.
+
+**Peak time.** Predicted $t_p = \\pi/\\omega_d = 3.141593/4 = 0.785398$ s;
+measured 0.785400 s, the difference being the 30 µs spacing of the time grid.
+
+**Rise time, and a warning.** The familiar estimate $t_r \\approx 1.8/\\omega_n$
+gives $1.8/5 = 0.36$ s. The measured **10–90%** rise is 0.370810 s, so the
+estimate is 2.92% low. The measured **0–100%** rise is 0.553574 s, which is
+53.8% larger than that estimate and which matches its own closed form:
+
+$$t_{r,100} = \\frac{\\pi - \\arccos\\zeta}{\\omega_d}
+= \\frac{3.141593 - 0.927295}{4} = 0.553574\\ \\mathrm{s}$$
+
+The two rise times are different quantities. Section 5.4 returns to this,
+because the chapter above states the wrong one.
+
+**Bandwidth — solved, not read off.** It is tempting to call $\\omega_n$ the
+bandwidth. Setting $\\lvert G(j\\omega) \\rvert = 1/\\sqrt{2}$ and solving with a
+bracketed root finder gives $\\omega_B = 5.741212$ rad/s, which is
+$5.741212/5 = 1.14824$ times $\\omega_n$ — nearly 15% away. Every frequency you
+print should be solved for, never estimated from a corner.
+
+**Resonant peak.** Differentiating the magnitude and solving for the stationary
+point gives $\\omega_r = 2.645751$ rad/s, and there
+
+$$\\lvert G(j\\omega_r) \\rvert = \\frac{1}{2\\zeta\\sqrt{1-\\zeta^{2}}}
+= \\frac{1}{0.96} = 1.041667$$
+
+so this pair has a mild 0.354 dB hump well below $\\omega_n$.
+
+### Worked Example 5.2 — Does a Candidate Pole Meet the Specification?
+
+**Given** the design region drawn above — $\\zeta \\geq 0.5$,
+$\\omega_n \\leq 8$ rad/s and $\\sigma \\geq 2$ — decide which of three candidate
+pairs may be used.
+
+$$-3 \\pm j4: \\quad \\omega_n = 5, \\quad \\zeta = 3/5 = 0.6, \\quad \\sigma = 3$$
+
+All three tests pass, so this pair is admissible.
+
+$$-1.5 \\pm j6: \\quad \\omega_n = \\sqrt{38.25} = 6.184658, \\quad
+\\zeta = 1.5/6.184658 = 0.242536$$
+
+The radius is fine but the angle is far too open and the decay rate of 1.5 is
+below the floor of 2, so this pair fails on two counts at once — which is the
+usual pattern, because $\\sigma = \\zeta\\omega_n$ ties the two together.
+
+$$-6 \\pm j5: \\quad \\omega_n = \\sqrt{61} = 7.810250, \\quad
+\\zeta = 6/7.810250 = 0.768221, \\quad \\sigma = 6$$
+
+Admissible, and comfortably so: it sits just inside the outer circle.
+
+*The trap.* Testing only $\\sigma$. A pole at $-9 \\pm j1$ has an excellent
+decay rate of 9, but $\\omega_n = \\sqrt{82} = 9.055385$ breaks the bandwidth
+ceiling, and a system that fast will demand actuator effort the specification
+was written to avoid.
+
+## 5.3 Reading Magnitude and Angle Off the Map — and When You May Not
+
+The map also evaluates the transfer function. Write it in **factored** form,
+
+$$H(s) = K\\,\\frac{\\prod_{i}(s - z_i)}{\\prod_{j}(s - p_j)}$$
+
+Each factor $(s_0 - z_i)$ is the vector drawn from the zero $z_i$ to the test
+point $s_0$. Since magnitudes of a product multiply and angles of a product
+add,
+
+$$\\lvert H(s_0) \\rvert = \\lvert K \\rvert
+\\frac{\\prod_i \\lvert s_0 - z_i \\rvert}{\\prod_j \\lvert s_0 - p_j \\rvert},
+\\qquad
+\\angle H(s_0) = \\angle K + \\sum_i \\angle(s_0 - z_i) - \\sum_j \\angle(s_0 - p_j)$$
+
+That is the graphical rule, and it is exact. **It is also conditional on the
+factored form**, and here is where a very common error lives: those rules apply
+to factors that are *multiplied*. A transfer function presented as a **sum** of
+terms — a parallel path, a two-term compensator, the three branches of a PID —
+is one complex number, and you cannot get its angle by adding the angles of the
+terms. Adding term angles is not an approximation; it is meaningless.
+
+### Worked Example 5.3 — A Sum Is Not a Product
+
+**Given** $G(s) = \\dfrac{1}{s+1} + \\dfrac{4}{s+5}$, evaluate $G(j2)$.
+
+**Each term separately.**
+
+$$\\frac{1}{1 + j2} = 0.200000 - j0.400000, \\qquad
+\\lvert \\cdot \\rvert = 0.447214, \\quad \\angle = -63.4349^\\circ$$
+
+$$\\frac{4}{5 + j2} = 0.689655 - j0.275862, \\qquad
+\\lvert \\cdot \\rvert = 0.742781, \\quad \\angle = -21.8014^\\circ$$
+
+**Add them as complex numbers**, which is the only legal move:
+
+$$G(j2) = 0.889655 - j0.675862, \\qquad
+\\lvert G(j2) \\rvert = 1.117263, \\quad \\angle G(j2) = -37.2236^\\circ$$
+
+**The wrong routes, with their wrong numbers.** Adding the two angles gives
+$-63.4349 - 21.8014 = -85.2363^\\circ$, off by 48 degrees. Adding the two
+magnitudes gives $0.447214 + 0.742781 = 1.189995$, off by 6.5%.
+
+**The right route through the map.** Put the sum over a common denominator
+*first*, so that the expression really is a product of factors:
+
+$$G(s) = \\frac{(s+5) + 4(s+1)}{(s+1)(s+5)} = \\frac{5s + 9}{(s+1)(s+5)}$$
+
+Now the graphical rule applies. The numerator at $s = j2$ is $9 + j10$, of
+magnitude 13.453624 and angle $48.0128^\\circ$; the denominator is
+$(1+j2)(5+j2) = 1 + j12$, of magnitude 12.041595 and angle $85.2364^\\circ$.
+Then
+
+$$\\lvert G(j2) \\rvert = \\frac{13.453624}{12.041595} = 1.117263, \\qquad
+\\angle G(j2) = 48.0128 - 85.2364 = -37.2236^\\circ$$
+
+which reproduces the honest answer exactly.
+
+Notice what the factoring exposed: a **zero at $s = -9/5 = -1.8$** that neither
+term possessed on its own. Summed forms hide zeros. Before any pole-zero map is
+drawn, before any angle is added, the transfer function has to be a single
+ratio of polynomials, and the polynomials have to be factored.
+
+## 5.4 A Correction to Section 1.5
+
+Section 1.5 above lists "$t_r \\approx 1.8/\\omega_n$ — time to first reach 100%
+of steady state". The estimate is real but the description is not: **1.8/ωₙ is
+the 10–90% rise time**, not the time to first touch the final value. Measured
+on simulated second-order steps with $\\omega_n = 1$:
+
+| $\\zeta$ | measured $t_r\\omega_n$, 10–90% | measured $t_r\\omega_n$, 0–100% |
+|---|---|---|
+| 0.3 | 1.3213 | 1.9660 |
+| 0.5 | 1.6376 | 2.4184 |
+| 0.6 | 1.8541 | 2.7679 |
+| 0.7 | 2.1262 | 3.2853 |
+
+Solving for the damping at which the 10–90% figure is exactly 1.8 gives
+$\\zeta = 0.5771$; the rule is a fit near that point and drifts either side of
+it. At $\\zeta = 0.5$ the true 0–100% rise time is $2.4184/\\omega_n$, which is
+34% longer than the quoted $1.8/\\omega_n$ — a large enough gap to change an
+answer. Section 1.5 is otherwise sound; treat its rise-time line as the 10–90%
+estimate and the 0–100% closed form of Worked Example 5.1 as the exact figure.`,
+      examTip: `Convert between the two coordinate systems on sight: ωₙ is the distance from the origin to the pole, ζ is the cosine of the angle back to the negative real axis, σ = ζωₙ is the real part and ω_d is the imaginary part. Constant ωₙ is a circle, constant ζ is a ray, constant σ is a vertical line — a three-part specification is a wedge.`,
+      importantNote: `The graphical magnitude and angle rules require the transfer function in FACTORED form, because they rest on the fact that magnitudes multiply and angles add across a product. A transfer function written as a sum of terms — parallel paths, a PID's three branches — must be combined over a common denominator and refactored first. Adding the angles of summed terms is not an approximation, it is simply wrong, and it also hides zeros that the combined form reveals.`,
+    },
+    {
+      id: 'poles-as-terms',
+      title: `6. Poles Are Terms: Partial Fractions, Done Properly`,
+      content: `## 6.1 The Expansion That Ties a Pole to a Waveform
+
+Section 5 asserted that a pole is a mode. Partial fractions is the calculation
+that proves it and, more usefully, tells you **how loud** each mode is. Drive
+$H(s)$ with a unit step. The transform of the output is
+
+$$Y(s) = \\frac{H(s)}{s}$$
+
+and the step's own pole at the origin joins the poles of the plant. If all the
+poles of Y are simple, Y splits into one first-order piece per pole:
+
+$$Y(s) = \\sum_{k} \\frac{r_k}{s - p_k}
+\\qquad\\Longrightarrow\\qquad
+y(t) = \\sum_{k} r_k e^{p_k t}$$
+
+One pole, one term, one residue. Nothing is lost and nothing is shared: the
+response is a bookkeeping sum over the poles, and the residue $r_k$ is the
+weight the system gives that mode.
+
+The residue at a simple pole is obtained by killing the singularity and
+evaluating:
+
+$$r_k = \\lim_{s \\to p_k} (s - p_k) Y(s)
+= \\frac{N(p_k)}{\\left.\\dfrac{d}{ds}D(s)\\right|_{s = p_k}}$$
+
+writing $Y = N/D$. The derivative form is the one to use in practice because it
+needs no cancelling by hand, and it is what a calculator or a script evaluates.
+
+## 6.2 Two Free Checks Worth Applying Every Time
+
+The expansion carries two arithmetic identities that cost nothing and catch
+most slips.
+
+**Final value.** As $t \\to \\infty$ every decaying term dies and only the
+residue at $s = 0$ survives, so
+
+$$y(\\infty) = r_0 = \\left.sY(s)\\right|_{s=0} = H(0)$$
+
+The residue at the input's pole **is** the DC gain.
+
+**Initial value.** Setting $t = 0$ in the sum,
+
+$$y(0^{+}) = \\sum_k r_k$$
+
+For any strictly proper H the step response starts at zero, so the residues
+must sum to zero. If they do not, an arithmetic error has occurred, and you
+know it before you draw anything.
+
+## 6.3 Complex Poles Give One Real Term
+
+Conjugate poles have conjugate residues, and the pair collapses to a single
+real waveform. With $p = -\\sigma + j\\omega_d$ and residue $r = \\lvert r \\rvert e^{j\\phi}$,
+
+$$r e^{pt} + \\bar{r} e^{\\bar{p}t}
+= 2\\lvert r \\rvert e^{-\\sigma t}\\cos(\\omega_d t + \\phi)$$
+
+So the **magnitude** of the residue sets the ringing amplitude and its
+**angle** sets the phase of the ring. A candidate who computes a complex
+residue and then panics has simply not yet applied this line.
+
+### Worked Example 6.1 — Three Real Poles, Every Term Named
+
+**Given** $G(s) = \\dfrac{60}{(s+1)(s+3)(s+20)}$, expand the step response and
+say what each pole actually contributes.
+
+**DC gain first.** $G(0) = 60/60 = 1$, so the response settles at 1 and the
+residue at the origin must be 1.
+
+**Residues.** Using $r_k = N(p_k)/D'(p_k)$ with $D(s) = s(s+1)(s+3)(s+20)$, or
+equivalently by covering up one factor at a time:
+
+$$r_{-1} = \\frac{60}{(-1)(-1+3)(-1+20)} = \\frac{60}{-38} = -1.578947$$
+
+$$r_{-3} = \\frac{60}{(-3)(-3+1)(-3+20)} = \\frac{60}{102} = +0.588235$$
+
+$$r_{-20} = \\frac{60}{(-20)(-20+1)(-20+3)} = \\frac{60}{-6460} = -0.009288$$
+
+**Check the sum.** $1 - 1.578947 + 0.588235 - 0.009288 = 0.000000$, so the
+response starts at zero as it must. **Check the final value.** The origin
+residue is 1, which is $G(0)$. Both identities hold, so
+
+$$y(t) = 1 - 1.578947e^{-t} + 0.588235e^{-3t} - 0.009288e^{-20t}$$
+
+**Confirmation by a second route.** The response was also produced by
+integrating a state-space realisation, with no partial fractions anywhere in
+the calculation, and the simulated curve was then least-squares fitted onto the
+basis $\\{1, e^{-t}, e^{-3t}, e^{-20t}\\}$. The recovered coefficients agree
+with the residues above to better than $10^{-6}$, and the analytic sum sits on
+the simulated curve to within $10^{-8}$ at every instant.
+
+![Two stacked panels sharing a time axis. The upper panel shows the simulated step response of sixty over the product of s plus one, s plus three and s plus twenty, with the sum of the four residue terms drawn dashed on top of it; the two curves are indistinguishable. The lower panel draws each residue term separately: a constant at plus one, a large negative exponential decaying at one per second, a smaller positive exponential decaying at three per second, and a nearly invisible term for the pole at minus twenty.](/courses/fe-ee/figures/ctl5-mode-decomposition.svg)
+
+**What the numbers say.** The pole at $-1$ carries a weight of 1.578947 and
+decays with a time constant of 1 s. The pole at $-20$ carries 0.009288 — that
+is $0.009288/1.578947 = 0.0058824$, or **0.59%** of the slow pole's weight — and
+it is gone within a quarter of a second. It is present in the algebra and
+absent from anything you could measure. Dominance is not an assumption here;
+it is a computed ratio.
+
+### Worked Example 6.2 — A Complex Pair Plus a Real Pole, in Polar Form
+
+**Given** $H(s) = \\dfrac{25(s+4)}{(s^{2}+2s+5)(s+10)}$, find the step response
+in real form.
+
+**Poles and DC gain.** The quadratic factors as $(s+1)^{2}+4$, so the pair is
+at $-1 \\pm j2$; the third pole is at $-10$; the zero is at $-4$. The DC gain
+is $25(4)/[(5)(10)] = 100/50 = 2$.
+
+**Residues.** With the geometric form of the residue rule — which is the same
+formula written as vectors on the map —
+
+$$r_k = K\\,\\frac{\\prod_i (p_k - z_i)}{\\prod_{j \\neq k}(p_k - p_j)}$$
+
+evaluation at each pole of $sH(s)/s$ gives $r_0 = 2$, $r_{-10} = +0.176471$ and
+
+$$r_{-1+j2} = -1.088235 + j0.102941$$
+
+**Collapse the pair.** Its magnitude and angle are
+
+$$2\\lvert r \\rvert = 2.186187, \\qquad \\phi = 174.5962^\\circ = 3.047279\\ \\mathrm{rad}$$
+
+so the real form of the response is
+
+$$y(t) = 2 + 2.186187e^{-t}\\cos(2t + 3.047279) + 0.176471e^{-10t}$$
+
+**Check.** At $t = 0$ the three terms give
+$2 + 2.186187\\cos(3.047279) + 0.176471$, and $\\cos(3.047279) = -0.9955558$, so
+the middle term is $-2.176471$ and the sum is
+$2 - 2.176471 + 0.176471 = 0.000000$. Evaluating this expression against the simulated step
+response over ten seconds, the largest disagreement anywhere is
+$1.6 \\times 10^{-12}$.
+
+**What it tells you.** The ringing amplitude at $t = 0$ is 2.186187 against a
+final value of 2, and the phase near $\\pi$ radians means the cosine starts
+close to $-1$: the pair pulls the output down hard at the origin, which is
+exactly how a strictly proper response manages to leave from zero. The measured
+overshoot of this system is 24.4463% and its peak arrives at 1.3861 s.
+
+## 6.4 Repeated Poles, Briefly
+
+If a pole is repeated m times, the expansion needs m terms for it:
+
+$$\\frac{r_{k,1}}{s-p_k} + \\frac{r_{k,2}}{(s-p_k)^{2}} + \\dots
++ \\frac{r_{k,m}}{(s-p_k)^{m}}
+\\;\\longrightarrow\\;
+\\left(r_{k,1} + r_{k,2}t + \\dots + \\frac{r_{k,m}t^{m-1}}{(m-1)!}\\right)e^{p_k t}$$
+
+The polynomial prefactor is why repeated poles **on the imaginary axis** are
+unstable: $t$ grows without bound and there is no decaying exponential to hold
+it down. In the left half plane the exponential always wins eventually, so
+repeated LHP poles remain stable — they merely produce the slightly sluggish
+$te^{-at}$ shape that a critically damped system is known for.`,
+      examTip: `Two checks cost nothing and catch nearly every slip: the residue at s = 0 must equal H(0), and for a strictly proper H all residues must sum to zero because y(0⁺) = 0. Apply both before using any expansion.`,
+      importantNote: `A conjugate pole pair produces ONE real term, 2|r|e^(−σt)cos(ω_d t + ∠r). The residue's magnitude sets the ringing amplitude and its angle sets the ringing phase. Never treat the two complex residues as two separate contributions to be added up as real numbers.`,
+    },
+    {
+      id: 'residues-and-nearby-zeros',
+      title: `7. Residues, and Why a Pole Beside a Zero Barely Speaks`,
+      content: `## 7.1 The Residue Is Geometry on the Map
+
+Section 6 computed residues from polynomials. Written in factored form, the
+same quantity becomes a statement about distances and angles on the pole-zero
+map, and that is what makes the map predictive rather than decorative. For
+
+$$H(s) = K\\,\\frac{\\prod_i (s - z_i)}{\\prod_j (s - p_j)}$$
+
+the residue at a simple pole $p_k$ is
+
+$$r_k = K\\,\\frac{\\prod_i (p_k - z_i)}{\\prod_{j \\neq k} (p_k - p_j)}$$
+
+Read the two products as vectors drawn on the map. **Every zero appears in the
+numerator**, so a zero sitting near $p_k$ multiplies the residue by a short
+vector and shrinks it. **Every other pole appears in the denominator**, so a
+neighbouring pole divides by a short vector and inflates it. In one line:
+
+$$\\lvert r_k \\rvert = \\lvert K \\rvert
+\\frac{\\text{product of distances from } p_k \\text{ to the zeros}}
+{\\text{product of distances from } p_k \\text{ to the other poles}}$$
+
+The limiting case is the one that matters. If a zero lands exactly on $p_k$,
+one numerator vector has length zero, so $r_k = 0$ and the mode is **not
+present at all in the output**. The pole is still in the denominator of H, the
+mode is still a solution of the differential equation, and yet its coefficient
+in the response is zero. That is the whole content of pole-zero cancellation,
+and it is also the reason the dominant-pole approximation is ever legitimate:
+a mode with a small residue is quiet whether or not its pole is far away.
+
+## 7.2 How Fast Does a Residue Die as the Zero Closes In?
+
+Linearly, and the constant is computable. Take a family with a fixed pole pair
+and a movable zero, normalised so the DC gain stays at 1 for every member:
+
+$$H_z(s) = \\frac{3}{z}\\cdot\\frac{s + z}{(s+1)(s+3)}, \\qquad H_z(0) = 1$$
+
+The step response residue at the pole $s = -1$ is
+
+$$r_{-1} = \\frac{3}{z}\\cdot\\frac{-1 + z}{(-1)(-1+3)}
+= -\\frac{3(z-1)}{2z}$$
+
+Write $\\Delta = z - 1$ for the gap between the zero and that pole. Then
+$\\lvert r_{-1} \\rvert = 1.5\\Delta/(1 + \\Delta)$, which for small gaps is
+$1.5\\Delta$: **the residue is proportional to the distance from the pole to the
+zero**, with no threshold and no cliff.
+
+| gap $\\Delta$ | zero at | $r_{-1}$ | share of the $\\Delta = 2$ value |
+|---|---|---|---|
+| 0.05 | $-1.05$ | $-0.071429$ | 7.14% |
+| 0.20 | $-1.20$ | $-0.250000$ | 25.0% |
+| 0.50 | $-1.50$ | $-0.500000$ | 50.0% |
+| 1.00 | $-2.00$ | $-0.750000$ | 75.0% |
+| 2.00 | $-3.00$ | $-1.000000$ | 100% |
+
+Every entry was produced twice: once from the closed form above, and once by
+least-squares fitting a simulated step response onto its mode basis. The two
+routes agree to better than $10^{-9}$.
+
+![Two panels. The left panel is a log-log plot of the magnitude of the residue at the pole at minus one against the gap between that pole and a nearby zero, over gaps from one thousandth to two; the measured curve lies on a straight line of slope one at small gaps, marked as one point five times the gap. The right panel shows three simulated step responses for zeros at minus one point zero five, minus one point five and minus three, in which the slow exponential term visibly grows as the zero moves away from the pole.](/courses/fe-ee/figures/ctl5-residue-gap.svg)
+
+### Worked Example 7.1 — How Close Is "Close Enough" to Ignore a Mode?
+
+**Given** the family above, find the zero location for which the residue at
+$s = -1$ is under 5% of the DC gain, and confirm the answer on a response.
+
+**Set up the inequality.** We need $\\lvert r_{-1} \\rvert \\leq 0.05$, that is
+
+$$\\frac{1.5\\Delta}{1 + \\Delta} \\leq 0.05
+\\quad\\Longrightarrow\\quad
+1.5\\Delta \\leq 0.05 + 0.05\\Delta
+\\quad\\Longrightarrow\\quad
+\\Delta \\leq \\frac{0.05}{1.45} = 0.034483$$
+
+So the zero must lie between $-1$ and $-1.034483$: a window only 3.4% wide in
+pole position. **Exact cancellation is not required, but near-exact is.**
+
+**Check at the table entry $\\Delta = 0.05$.** The closed form gives
+$1.5(0.05)/1.05 = 0.071429$, and the fitted residue from the simulated response
+is $-0.071429$. A 5% placement error in the zero leaves a 7.1% mode behind,
+not a negligible one.
+
+**Why this is the honest way to phrase dominance.** Nothing in the calculation
+mentions how far the pole at $-1$ is from anything. A mode is quiet when its
+**residue** is small, and the residue is small either because a zero is nearby
+or because the pole is remote. Section 8 measures the second mechanism.
+
+### Worked Example 7.2 — Which Pole Dominates When a Zero Interferes?
+
+**Given** $H(s) = \\dfrac{40(s + 4.2)}{(s+4)(s+1)(s+21)}$, decide which mode
+dominates the step response — without simulating.
+
+**Distances from each pole.** Apply the geometric residue rule to
+$Y = H/s$, whose poles are $0, -1, -4, -21$.
+
+$$r_{-1} = \\frac{40(-1+4.2)}{(-1)(-1+4)(-1+21)} = \\frac{128}{-60} = -2.133333$$
+
+$$r_{-4} = \\frac{40(-4+4.2)}{(-4)(-4+1)(-4+21)} = \\frac{8}{204} = +0.039216$$
+
+$$r_{-21} = \\frac{40(-21+4.2)}{(-21)(-21+1)(-21+4)}
+= \\frac{-672}{-7140} = +0.094118$$
+
+**Read the answer off the residues.** The mode at $-1$ carries 2.133333. The
+mode at $-4$ carries 0.039216, which is 1.84% of it, because the zero at
+$-4.2$ sits 0.2 away from that pole and nearly silences it. The mode at $-21$
+carries 0.094118 despite being remote, because its distance to the zero is
+large. So the slowest pole dominates — but the **second** most important mode
+is the one at $-21$, not the one at $-4$, which is the opposite of what a
+distance-from-the-axis argument would tell you.
+
+*The trap.* Ranking modes by pole position alone. Ranking by residue is the
+only correct order, and it costs three divisions.`,
+      examTip: `The residue at a pole is the gain K times the product of distances to all zeros, divided by the product of distances to all other poles. A zero close to a pole makes that pole's residue small in direct proportion to the gap — half the distance, half the residue.`,
+      importantNote: `A mode is negligible when its RESIDUE is small, not when its pole is far from the imaginary axis. Those two conditions usually coincide, but a zero parked next to a nearer pole can silence it while a remote pole with no zero nearby stays audible. Always rank modes by residue.`,
+    },
+    {
+      id: 'dominance-measured',
+      title: `8. The Dominant-Pole Approximation, With Its Error Measured`,
+      content: `## 8.1 The Rule of Thumb, and What It Costs
+
+The usual advice is that a pole five or more times deeper into the left half
+plane than the dominant one may be discarded. That is a statement about a time
+response, so it should be settled by measuring one. Take the two-pole family
+with a fixed dominant pole at $-1$ and a second pole at $-r$, normalised to
+unit DC gain,
+
+$$G_r(s) = \\frac{r}{(s+1)(s+r)}$$
+
+and compare its step response against the first-order response of $1/(s+1)$.
+Both expansions are elementary:
+
+$$y_r(t) = 1 - \\frac{r}{r-1}e^{-t} + \\frac{1}{r-1}e^{-rt},
+\\qquad y_1(t) = 1 - e^{-t}$$
+
+Subtract, and the whole approximation error is one clean expression:
+
+$$e_r(t) = y_r(t) - y_1(t) = \\frac{1}{r-1}\\left(e^{-rt} - e^{-t}\\right)$$
+
+Differentiate and set to zero to find where the error is worst:
+
+$$e_r'(t) = 0 \\;\\Longrightarrow\\; e^{(r-1)t} = r
+\\;\\Longrightarrow\\; t^{*} = \\frac{\\ln r}{r - 1}$$
+
+Substituting back and simplifying collapses everything to a single power:
+
+$$\\lvert e_r \\rvert_{\\max} = r^{-r/(r-1)}$$
+
+That is a closed form for the cost of dropping a pole, and it holds for any
+dominant pole location by time scaling — only the **ratio** r matters.
+
+## 8.2 The Numbers, Measured
+
+Every row below was obtained by integrating both systems and taking the largest
+gap between the two curves; the closed form is printed beside it as a check.
+
+| separation r | measured worst error | $r^{-r/(r-1)}$ | instant $t^{*}$ | closed form $\\ln r/(r-1)$ |
+|---|---|---|---|---|
+| 2 | 0.250000 | 0.250000 | 0.693150 s | 0.693147 s |
+| 3 | 0.192450 | 0.192450 | 0.549300 s | 0.549306 s |
+| 5 | 0.133748 | 0.133748 | 0.402350 s | 0.402359 s |
+| 10 | 0.077426 | 0.077426 | 0.255850 s | 0.255843 s |
+| 20 | 0.042707 | 0.042707 | 0.157650 s | 0.157670 s |
+| 50 | 0.018465 | 0.018465 | 0.079850 s | 0.079837 s |
+
+![Two panels. The left panel plots the measured worst-case difference between the full two-pole step response and its one-pole reduction, as a percentage of the final value, against the separation ratio from one point six to thirty, with the closed form drawn dashed on top and the five-times and ten-times cases marked at thirteen point three seven and seven point seven four percent. The right panel plots the error against time for separations of three, five and ten, showing that all the error lives in the first second and that its worst instant moves earlier as the separation grows.](/courses/fe-ee/figures/ctl5-dominance-error.svg)
+
+**So the 5× rule costs 13.37% of the final value at its worst instant.** That
+is not small. Ten times out still costs 7.74%. Solving
+$r^{-r/(r-1)} = 0.01$ with a bracketed root finder gives $r = 95.28$: a
+worst-case error of one percent needs a separation of nearly a hundred, not of
+five.
+
+This also corrects the estimate in Section 4.3 above, which said that going
+from 10× to 5× separation should "roughly double" the error. The measured
+increase is from 0.077426 to 0.133748, a factor of
+$0.133748/0.077426 = 1.72743$ — not two. The ratio of the two closed forms is
+what it is; there is no need to estimate it.
+
+## 8.3 What the Approximation Gets Right and What It Gets Wrong
+
+Look at the right-hand panel of the figure. The error is **one-signed**: the
+reduced model is always ahead of the true response, because dropping a pole
+throws away a lag. So the dominant-pole model systematically predicts a system
+**faster** than the real one, and never slower. The error is also short-lived —
+it is essentially gone after the fast mode decays — so quantities read off the
+tail (final value, settling instant, the frequency and decay of the ringing)
+survive the reduction well, while quantities read off the leading edge (rise
+time, initial slope, peak instant) do not.
+
+### Worked Example 8.1 — A Third Pole Behind a Dominant Pair
+
+**Given** a dominant pair at $-1 \\pm j2$ and a third real pole at $-q$, all
+with unit DC gain,
+
+$$G_q(s) = \\frac{5q}{(s^{2} + 2s + 5)(s + q)}$$
+
+report how the measured response changes as the third pole retreats.
+
+**The pair on its own** has $\\omega_n = \\sqrt{5} = 2.236068$ rad/s and
+$\\zeta = 1/2.236068 = 0.447214$, predicting an overshoot of
+
+$$100\\,e^{-\\pi(0.447214)/\\sqrt{1 - 0.2}} = 20.788\\%$$
+
+and a peak at $t_p = \\pi/2 = 1.570796$ s. Simulated on its own it gives
+exactly 20.788% at 1.5708 s, with 5% settling at 2.3452 s.
+
+**With the third pole present,** measured off simulations:
+
+| $q$ | separation $q/1$ | measured overshoot | measured peak time | measured 5% settling |
+|---|---|---|---|---|
+| 2 | 2 | 9.332% | 2.1752 s | 2.6798 s |
+| 3 | 3 | 14.717% | 1.9704 s | 2.6568 s |
+| 5 | 5 | 18.430% | 1.8028 s | 2.5507 s |
+| 10 | 10 | 20.212% | 1.6801 s | 2.4486 s |
+| 40 | 40 | 20.754% | 1.5964 s | 2.3705 s |
+| — | pair alone | 20.788% | 1.5708 s | 2.3452 s |
+
+**Read the table.** At the celebrated 5× separation the overshoot prediction is
+already good — 18.430% measured against 20.788% predicted, an error of 2.36
+percentage points, or 11.3% relative. But the peak time is out by
+$1.8028 - 1.5708 = 0.2320$ s, which is 14.8% of the true value, and settling by
+0.2055 s. The pattern of Section 8.3 holds exactly: the reduced model is too
+fast, and its timing error is worse than its amplitude error.
+
+**The practical reading.** Use dominant-pole reduction to choose between
+answers that differ in overshoot. Distrust it when the question turns on a
+time, and never quote a reduced-model settling time as a design guarantee.
+
+### Worked Example 8.2 — Settling Time Is a Staircase, Not a Formula
+
+**Given** the standard second-order system, test the claim that
+$t_s \\leq 4/(\\zeta\\omega_n)$ for the 2% band.
+
+**Where the claim comes from.** The response envelope is
+$e^{-\\zeta\\omega_n t}/\\sqrt{1-\\zeta^{2}}$, and setting the exponential alone
+to 0.02 gives $\\zeta\\omega_n t = \\ln 50 = 3.912$, rounded up to 4. But
+settling is decided by the last time the **ripple** leaves the band, not by the
+envelope, and the ripple only touches the envelope at isolated peaks.
+
+**What is measured.** Simulating with $\\omega_n = 1$ and reading the last
+instant outside the 2% band:
+
+| $\\zeta$ | measured $t_s\\zeta\\omega_n$ (2%) | verdict on the rule |
+|---|---|---|
+| 0.2 | 3.9204 | conservative by 2.0% |
+| 0.4 | 3.3637 | conservative by 18.9% |
+| 0.5 | 4.0381 | **optimistic** — the rule fails |
+| 0.6 | 3.5657 | conservative by 12.2% |
+| 0.7 | 4.1851 | **optimistic** — the rule fails |
+| 0.8 | 3.0046 | conservative by 33.1% |
+| 0.9 | 4.2296 | **optimistic** — the rule fails |
+
+**The structure behind the numbers.** As $\\zeta$ increases, each ripple peak in
+turn drops inside the band and stops counting, so the settling time falls off a
+cliff, then climbs again until the next peak surrenders. The measured curve is
+a **staircase with sawtooth teeth**, not a smooth function, and $4/(\\zeta\\omega_n)$
+cuts across it. Scanning $\\zeta$ finely, the bands where the rule is exceeded
+are $0.495$–$0.530$, $0.670$–$0.780$ and above $0.885$; the first failure is at
+$\\zeta = 0.4904$.
+
+![Measured two percent settling time, scaled by the product of the damping ratio and the natural frequency, plotted against damping ratio from zero point one five to zero point nine five. The curve is a sawtooth staircase that drops sharply each time a ripple peak falls inside the band and climbs in between. The horizontal line at four marks the textbook rule, and the three regions where the measured curve rises above it are shaded.](/courses/fe-ee/figures/ctl5-settling-staircase.svg)
+
+**How to use this.** Treat $4/(\\zeta\\omega_n)$ as an estimate with an error of
+roughly $\\pm 35\\%$ in either direction, which is exactly what the table shows.
+It is fine for choosing among exam options that differ by a factor of two. It
+is not a bound, and at $\\zeta = 0.8$ it is 33.1% pessimistic, which would size
+a machine's cycle time a third too long.`,
+      examTip: `Dropping a pole r times deeper than the dominant one costs a worst-case error of r^(−r/(r−1)) of the final value: 25% at r = 2, 13.37% at r = 5, 7.74% at r = 10. The error is one-signed — the reduced model is always faster than reality.`,
+      importantNote: `The settling-time rules t_s ≈ 4/(ζωₙ) at 2% and 3/(ζωₙ) at 5% are NOT upper bounds. Measured settling is a staircase in ζ, dropping abruptly whenever a ripple peak falls inside the band, and it exceeds the 2% rule over roughly ζ = 0.495–0.530, 0.670–0.780 and above 0.885, while being up to 33% pessimistic elsewhere.`,
+    },
+    {
+      id: 'adding-a-zero',
+      title: `9. Adding a Zero: Overshoot, Undershoot and the Derivative Identity`,
+      content: `## 9.1 A Zero Adds a Scaled Derivative — Exactly
+
+There is an identity here that removes all guesswork, and it deserves to be
+better known than it is. Suppose $H(s)$ has step response $y(t)$. Attach a zero
+at $s = -z$ in the DC-gain-preserving way,
+
+$$H_z(s) = \\left(1 + \\frac{s}{z}\\right)H(s)$$
+
+so that $H_z(0) = H(0)$ and only the shape changes. Multiplication by $s$ in
+the Laplace domain is differentiation in time, so the new step response is
+
+$$y_z(t) = y(t) + \\frac{1}{z}\\,y'(t)$$
+
+with no approximation of any kind. Put a zero in the **right** half plane
+instead, at $s = +z$, and the factor is $(1 - s/z)$, giving
+
+$$y_z(t) = y(t) - \\frac{1}{z}\\,y'(t)$$
+
+Everything a zero does follows from those two lines. A left-half-plane zero
+**adds** a scaled copy of the slope, so the response leans forward: it rises
+sooner and overshoots more. A right-half-plane zero **subtracts** the slope,
+and since the slope is largest and positive early on, the response is dragged
+below zero before it recovers. The closer the zero is to the origin, the
+smaller z is, the larger $1/z$ is, and the more violent the effect.
+
+## 9.2 The Effect, Measured
+
+Take the reference pair of Section 5, $H(s) = 25/(s^{2}+6s+25)$, whose
+undecorated step response overshoots 9.478%. Its derivative is available in
+closed form,
+
+$$y'(t) = \\frac{\\omega_n^{2}}{\\omega_d}e^{-\\sigma t}\\sin(\\omega_d t)
+= 6.25\\,e^{-3t}\\sin 4t$$
+
+whose maximum is found by solving $4\\cos 4t = 3\\sin 4t$, giving
+$t = 0.231824$ s and $y'_{\\max} = 2.494196$. That number sets the scale: a zero
+at $-z$ can push the response up by as much as $2.494196/z$ at that instant.
+
+| zero location | measured overshoot | measured minimum | comment |
+|---|---|---|---|
+| none | 9.478% | 0 | the bare pair |
+| $-20$ | 9.843% | 0 | far away, barely felt |
+| $-5$ | 19.448% | 0 | comparable to $\\omega_n$: doubled |
+| $-2$ | 76.269% | 0 | inside the pair: transformed |
+| $+20$ | 9.723% | $-0.025846$ | a nick before the rise |
+| $+5$ | 11.975% | $-0.263442$ | a real dip |
+| $+2$ | 18.294% | $-0.930122$ | almost the full swing backwards |
+
+Each row was measured on a simulated response, and each was also checked
+against $y \\pm y'/z$ evaluated from the closed forms above; the largest
+disagreement across all six systems is $1.6 \\times 10^{-11}$.
+
+![Two panels. The left panel shows, for a zero at minus four on a pair with damping ratio zero point six and natural frequency five, the bare step response, the scaled derivative term, and their sum, demonstrating that the sum of the first two curves is the third. The right panel plots measured overshoot against the zero position from one point two to twenty five, falling steeply from about one hundred and fifty percent towards the no-zero value of nine point four eight percent, with the minus two and minus five cases marked.](/courses/fe-ee/figures/ctl5-zero-derivative.svg)
+
+### Worked Example 9.1 — The Identity Checked at One Instant
+
+**Given** the reference pair with a zero added at $s = -4$, verify
+$y_z = y + y'/4$ numerically at the instant when $y'$ peaks.
+
+**The three numbers at $t = 0.231824$ s.** Simulating the bare pair gives
+$y = 0.401393$. The closed form for the slope gives
+
+$$y'(0.231824) = 6.25\\,e^{-0.695472}\\sin(0.927296) = 2.494196$$
+
+**Combine.**
+
+$$y_z = 0.401393 + \\frac{2.494196}{4} = 0.401393 + 0.623549 = 1.024942$$
+
+Simulating the system **with** the zero and reading its value at the same
+instant returns 1.024942 as well. The output has already passed its final value
+of 1 by this point. Measuring both crossings, the zero-augmented response
+reaches 1 at $t = 0.222120$ s against $t = 0.553574$ s for the bare pair —
+59.88% earlier.
+
+**Overshoot.** The full simulation of the zero-augmented system peaks at
+1.264076, so the measured overshoot is 26.4076% against 9.478% without the
+zero: a single zero at $-4$ has nearly tripled it.
+
+*The trap.* Assuming a left-half-plane zero is harmless because it does not
+threaten stability. Stability is untouched; the transient is not. A zero within
+a factor of two of $\\omega_n$ dominates the shape of the response.
+
+### Worked Example 9.2 — Why a Right-Half-Plane Zero Must Undershoot
+
+**Given** a stable system with unit DC gain and a real zero at $s = +z$, prove
+that the step response must go negative, then measure how far.
+
+**The initial-slope argument.** For the reference pair with an RHP zero,
+$H_z(s) = 25(1 - s/z)/(s^{2}+6s+25)$, the initial slope follows from the
+initial value theorem applied to $\\dot{y}$:
+
+$$y_z'(0^{+}) = \\lim_{s \\to \\infty} s\\left[sY_z(s)\\right]
+= \\lim_{s \\to \\infty} sH_z(s) = -\\frac{\\omega_n^{2}}{z} = -\\frac{25}{z}$$
+
+Negative for every positive z. The output leaves the origin heading the wrong
+way, and it must, because the relative degree is two so $y'(0^{+})$ of the bare
+system is zero and the zero's contribution is all there is.
+
+**The exact-area argument, which is stronger.** The step response has Laplace
+transform $Y_z(s) = H_z(s)/s$. Evaluate that transform at $s = z$:
+
+$$\\int_0^{\\infty} y_z(t)e^{-zt}\\,dt = Y_z(z) = \\frac{H_z(z)}{z} = 0$$
+
+because $H_z(z) = 0$ — that is what it means for z to be a zero. So a
+**strictly positive weighting** of $y_z$ integrates to exactly zero. Since
+$y_z(t) \\to 1 > 0$, the response is positive over most of the axis, and the
+only way the weighted integral can vanish is for $y_z$ to be negative
+somewhere. The undershoot is forced by the location of the zero and no
+controller can argue with it. Evaluating that integral numerically for
+$z = 2, 5$ and $20$ returns $-2.7\\times 10^{-14}$, $-1.3\\times 10^{-15}$ and
+$+5.1\\times 10^{-17}$ — zero to quadrature precision, in all three cases.
+
+**How deep.** For small t the bare response is $y \\approx \\omega_n^{2}t^{2}/2$
+and its slope is $\\omega_n^{2}t$, so
+
+$$y_z \\approx \\frac{\\omega_n^{2}t^{2}}{2} - \\frac{\\omega_n^{2}t}{z}$$
+
+which is least at $t = 1/z$ with value $-\\omega_n^{2}/(2z^{2}) = -12.5/z^{2}$.
+Against the measured depths:
+
+| z | small-t estimate $12.5/z^{2}$ | measured depth | measured instant |
+|---|---|---|---|
+| 2 | 3.125 | 0.930122 | 0.1687 s |
+| 5 | 0.500 | 0.263442 | 0.1159 s |
+| 20 | 0.03125 | 0.025846 | 0.0430 s |
+
+The estimate is only good once z is well beyond $\\omega_n$ — at $z = 20$ it is
+21% high, at $z = 2$ it is more than three times too deep, because by $t = 0.5$
+s the quadratic approximation to $y$ has long since failed. The **inverse-square
+trend** it predicts is nevertheless right, and that is the sentence worth
+carrying: halve the distance of an RHP zero from the origin and the undershoot
+roughly quadruples.
+
+![Two panels. The left panel shows step responses of a fixed pole pair with a right-half-plane zero at plus two, plus five and plus twenty; each starts by moving downwards, most severely for the nearest zero, before recovering to the same final value. The right panel is a log-log plot of measured undershoot depth as a percentage of the final value against zero position, alongside the twelve point five over z squared small-time estimate.](/courses/fe-ee/figures/ctl5-nmp-undershoot.svg)`,
+      examTip: `Adding a zero at s = −z multiplies the transfer function by (1 + s/z) and adds y′/z to the step response; a zero at s = +z multiplies by (1 − s/z) and SUBTRACTS y′/z, which is why right-half-plane zeros undershoot. The effect scales as 1/z, so only zeros within a few times ωₙ matter.`,
+      importantNote: `The undershoot of a non-minimum-phase system is forced by an exact identity, not by tuning: the weighted integral of y(t)e^(−zt) over all time is exactly zero whenever z is a right-half-plane zero. A response that ends up positive and integrates to zero under a positive weight must go negative somewhere.`,
+    },
+    {
+      id: 'adding-a-pole-and-cancellation',
+      title: `10. Adding a Pole, and Cancelling One Badly`,
+      content: `## 10.1 Adding a Pole Is the Mirror Image
+
+Where a zero adds a derivative, an extra pole adds an integration. Attaching a
+pole at $s = -p$ in the gain-preserving way gives
+
+$$H_p(s) = \\frac{H(s)}{1 + s/p}
+\\qquad\\Longleftrightarrow\\qquad
+\\frac{1}{p}\\,\\dot{y}_p + y_p = y$$
+
+so the augmented response is the original passed through a first-order lag of
+time constant $1/p$. The consequences are exactly the ones the measured table
+of Worked Example 8.1 shows: the response is slower, the overshoot is smaller,
+the peak arrives later, and the initial slope is reduced. A pole is a smoother,
+a zero is a sharpener, and both act with a strength proportional to how close
+they sit to the region of the plane the dominant modes occupy.
+
+| | left-half-plane zero at $-z$ | extra pole at $-p$ |
+|---|---|---|
+| Operation on $y$ | adds $y'/z$ | first-order lag, constant $1/p$ |
+| Overshoot | increases | decreases |
+| Rise and peak | earlier | later |
+| Initial slope | increases | decreases |
+| Effect when far out | vanishes as $1/z$ | vanishes as $1/p$ |
+| Stability | untouched | untouched, if in the LHP |
+
+## 10.2 Cancellation, and Why It Is Not a Design Method
+
+If a compensator zero is placed exactly on a plant pole, Section 7 says the
+residue of that mode becomes exactly zero and the mode vanishes from the
+output. On paper this is irresistible: put a zero on the sluggish plant pole,
+replace it with a faster one, and the sluggishness is gone. In practice the
+plant pole is never exactly where the data sheet says, and the question is what
+a small mismatch leaves behind.
+
+Section 7.2 already answers it: **the surviving residue is proportional to the
+gap.** The mode does not decay faster because it was nearly cancelled — its
+pole has not moved, so it decays at exactly the rate it always did. What
+shrinks is only how loud it is. A nearly cancelled slow pole leaves a **small
+but very long** tail, and small-but-long is precisely the shape that ruins a
+settling-time specification.
+
+### Worked Example 10.1 — A 2% Mismatch on a Stable Pole
+
+**Given** a plant with a slow pole at $s = -0.4$ and faster poles at $-5$ and
+$-8$, compensated by a zero intended to sit on the slow pole,
+
+$$H(s) = \\frac{16}{z_c}\\cdot\\frac{s + z_c}{(s+0.4)(s+5)(s+8)}, \\qquad
+z_c = 0.4(1 + \\delta)$$
+
+with unit DC gain for every $\\delta$. Report what a mismatch $\\delta$ leaves.
+
+**The residue at the slow pole.** Applying the geometric rule of Section 7.1
+to $Y = H/s$,
+
+$$r_{-0.4} = \\frac{16}{z_c}\\cdot\\frac{-0.4 + z_c}{(-0.4)(4.6)(7.6)}
+= -\\,\\frac{16}{13.984}\\cdot\\frac{\\delta}{1+\\delta}$$
+
+because $z_c - 0.4 = 0.4\\delta$ and the $0.4$ cancels. The coefficient is
+$16/13.984 = 1.144165$, so a mismatch of $\\delta$ leaves a residue of about
+$1.144165\\delta$ for small $\\delta$ — again strictly linear.
+
+**The measured consequences.**
+
+| mismatch $\\delta$ | residue at $-0.4$ | measured 5% settling | measured 2% settling |
+|---|---|---|---|
+| 0% | 0.000000 | 0.7830 s | 0.9716 s |
+| 2% | $-0.022435$ | 0.8578 s | 1.2065 s |
+| 5% | $-0.054484$ | 1.0339 s | 2.5065 s |
+| 20% | $-0.190694$ | 3.3466 s | 5.6373 s |
+
+**Read the third column against the fourth.** At a 5% mismatch the 5% settling
+time has grown by 32%, but the 2% settling time has grown by **158%**, from
+0.9716 s to 2.5065 s. The tighter the tolerance band, the more damage a small
+leftover residue does, because the leftover mode decays at only $0.4$ per
+second and needs $\\ln(0.054484/0.02)/0.4 = 2.505$ s merely to fall inside a 2%
+band on its own. At a 20% mismatch the specification is not so much missed as
+abandoned.
+
+![Two panels, both with logarithmic vertical axes. The left panel plots the distance of the step response from its final value against time for a stable slow pole cancelled exactly, five percent off and twenty percent off; the exact case plunges out of view while the two mismatched cases leave straight slow tails. The right panel plots the magnitude of the output against time when an unstable pole at plus one is cancelled one, five and twenty percent inexactly; all three cross zero and then grow without bound.](/courses/fe-ee/figures/ctl5-cancellation-risk.svg)
+
+### Worked Example 10.2 — Cancelling an Unstable Pole, Which Is Never Allowed
+
+**Given** a plant with a pole at $s = +1$ and a compensator that places a zero
+at $s = +1(1+\\delta)$ to cancel it, forming
+
+$$L(s) = \\frac{5}{z_c}\\cdot\\frac{s - z_c}{(s - 1)(s + 5)}$$
+
+with unit DC gain, show what a 1% error does.
+
+**On paper.** With $\\delta = 0$ the numerator factor $(s-1)$ cancels the
+denominator factor and $L(s) = 5/(s+5)$: a placid first-order lag with a time
+constant of 0.2 s. Every frequency-domain plot of this system looks perfectly
+healthy.
+
+**With a 1% mismatch.** The residue at the surviving pole $s = +1$ is
+$-0.008251$, so the response contains the term $-0.008251e^{t}$. Small — for a
+while. Measured on the simulation:
+
+$$y(10) = -180.7365, \\qquad y(12) = -1341.8613$$
+
+The output crosses zero on its way past, which on the logarithmic axis of the
+figure appears as the sharp notch, and then grows by a factor of e every second
+forever, in the direction opposite to the setpoint. A 5% mismatch gives a
+residue of $-0.039683$ and $y(10) = -873.0661$, which is
+$873.0661/180.7365 = 4.8306$ times larger; solving for when the 5% case reaches
+the size the 1% case had at ten seconds gives $t = 8.4239$ s, so the mismatch
+buys 1.5761 s and nothing else.
+
+**The rule.** Cancellation can only ever be attempted against **stable,
+well-damped** poles, and even then only as a way of tidying a response, never
+as a way of removing a mode you are relying on being absent. An unstable pole
+must be moved by feedback, which relocates it, rather than by a zero, which
+merely hides it from the output. This is the same fact that Section 3.2 states
+in state-space language: cancellation destroys observability or
+controllability of that mode, and the transfer function stops describing the
+whole system.
+
+## 10.3 What This Means for Reading a Map
+
+Two poles and a zero drawn close together on an exam map are a signal, not a
+coincidence, and the right response is to ask how close is close. A gap of a
+few percent of the pole's distance from the origin leaves a mode of a few
+percent — audible in a 2% specification, invisible in a 10% one. A gap
+comparable to the pole's own distance from the origin leaves the mode almost
+intact. And a pole-zero pair in the right half plane, however tightly matched,
+is a system that only appears to work.`,
+      examTip: `An added pole lags the response — slower, later, less overshoot; an added zero leads it — faster, earlier, more overshoot. Both effects fade in proportion to 1/(distance), so only poles and zeros within a few times ωₙ change the answer.`,
+      importantNote: `Pole-zero cancellation is exact only on paper. A mismatch of δ leaves a residue proportional to δ, and the leftover mode decays at the plant pole's own rate, not faster — a small residue on a slow pole is a small, very long tail. Cancelling an UNSTABLE pole is never acceptable: a 1% mismatch on a pole at +1 leaves 0.008251·e^t, which reaches 180 by ten seconds.`,
+    },
+    {
+      id: 'discrete-map',
+      title: `11. The Discrete Map: z = e^(sT) and the Unit Circle`,
+      content: `## 11.1 Sampling Turns an Exponential into a Power
+
+A digital controller sees the plant only at the sampling instants $t = kT$.
+Sample the continuous mode $e^{pt}$ at those instants:
+
+$$\\left.e^{pt}\\right|_{t = kT} = e^{pkT} = \\left(e^{pT}\\right)^{k} = z^{k},
+\\qquad z = e^{pT}$$
+
+A continuous mode becomes a geometric sequence, and the number that governs it
+is $z = e^{pT}$. That single substitution is the whole of the mapping between
+the two planes. Write $p = \\sigma + j\\omega$ and split it:
+
+$$\\lvert z \\rvert = e^{\\sigma T}, \\qquad \\angle z = \\omega T$$
+
+The **real** part of the continuous pole becomes the **radius** of the discrete
+pole; the **imaginary** part becomes its **angle**. Every statement about the
+left half plane translates immediately:
+
+| s-plane | becomes | z-plane |
+|---|---|---|
+| $\\sigma < 0$ (left half) | $e^{\\sigma T} < 1$ | inside the unit circle |
+| $\\sigma = 0$ (the axis) | $e^{0} = 1$ | on the unit circle |
+| $\\sigma > 0$ (right half) | $e^{\\sigma T} > 1$ | outside the unit circle |
+| $s = 0$ (integrator) | $e^{0} = 1$ | $z = 1$ |
+| vertical line $\\sigma = $ const | fixed radius | circle centred at the origin |
+| horizontal line $\\omega = $ const | fixed angle | ray from the origin |
+| $\\omega = \\pi/T$ (Nyquist) | angle $\\pi$ | $z = -1$ |
+
+**Discrete stability is therefore "all poles strictly inside the unit
+circle"**, and the unit circle plays exactly the role the imaginary axis plays
+in continuous time.
+
+![Two panels. The left panel shows a strip of the s-plane from minus twenty to zero with the Nyquist limits at plus and minus thirty one point four radians per second marked, two vertical constant-decay lines at minus three and minus twelve, four horizontal constant-frequency lines at plus and minus four and plus and minus sixteen, and the pole pair at minus three plus and minus j four. The right panel shows the corresponding z-plane with the unit circle, the two vertical lines mapped to concentric circles of radius zero point seven four one and zero point three zero one, the horizontal lines mapped to rays, and the mapped pole pair marked inside the unit circle.](/courses/fe-ee/figures/ctl5-zplane-map.svg)
+
+## 11.2 The Mapping Is Many-to-One
+
+Because $e^{j\\omega T}$ repeats every $2\\pi$, the continuous frequencies
+$\\omega$ and $\\omega + 2\\pi/T$ land on **the same point** in the z-plane. Only
+the horizontal strip
+
+$$-\\frac{\\pi}{T} < \\omega \\leq \\frac{\\pi}{T}$$
+
+maps one-to-one, and that boundary is the Nyquist frequency. A continuous mode
+ringing faster than the Nyquist rate is indistinguishable, at the sampling
+instants, from a slower one — this is aliasing, seen as a geometric fact rather
+than as a signal-processing slogan. Going backwards from z to s therefore
+returns infinitely many answers, and the convention is to take the one inside
+the strip.
+
+### Worked Example 11.1 — Mapping a Pair into the z-Plane
+
+**Given** the reference pair $s = -3 \\pm j4$ sampled at $T = 0.1$ s, find the
+discrete poles and everything they imply.
+
+**Radius and angle.**
+
+$$\\lvert z \\rvert = e^{-3(0.1)} = e^{-0.3} = 0.740818, \\qquad
+\\angle z = 4(0.1) = 0.4\\ \\mathrm{rad} = 22.9183^\\circ$$
+
+**Rectangular form.** With $\\cos 0.4 = 0.921061$ and $\\sin 0.4 = 0.389418$,
+
+$$z = 0.740818(0.921061 \\pm j0.389418) = 0.682339 \\pm j0.288488$$
+
+Inside the unit circle, so the sampled system is stable.
+
+**Confirmation by a genuinely different route.** Forming the zero-order-hold
+discretisation of the state-space realisation and taking the eigenvalues of the
+discrete state matrix gives the same two numbers to within
+$1.6 \\times 10^{-16}$. The mapping $z = e^{sT}$ is not an approximation to the
+discretisation; for the poles it **is** the discretisation.
+
+**Decay in samples.** The envelope shrinks by the factor $\\lvert z \\rvert$ per
+sample. Solving $\\lvert z \\rvert^{k} = 0.05$ gives
+
+$$k = \\frac{\\ln 0.05}{\\ln 0.740818} = \\frac{-2.995732}{-0.300000} = 9.9858
+\\ \\mathrm{samples}$$
+
+which is $9.9858 \\times 0.1 = 0.99858$ s, against the continuous estimate
+$3/\\sigma = 1$ s. The two agree because they are the same calculation.
+
+**Ringing in samples.** The angle advances by 0.4 rad per sample, so one full
+cycle takes
+
+$$\\frac{2\\pi}{\\omega_d T} = \\frac{6.283185}{0.4} = 15.70796\\ \\mathrm{samples}$$
+
+Roughly sixteen samples per ring: enough for a controller to see the
+oscillation, and a useful sanity check on a chosen sample rate.
+
+**End-to-end check.** Running the discrete state equations forward as a plain
+difference equation for forty steps and comparing against the continuous
+simulation at the same instants gives a worst disagreement of
+$2.3 \\times 10^{-12}$.
+
+### Worked Example 11.2 — Reading a Discrete Pole Backwards
+
+**Given** a discrete pole at $z = 0.9$ with $T = 0.05$ s, and another at
+$z = -0.5$ with $T = 0.1$ s, find the continuous poles they correspond to.
+
+**The positive real one.** With $\\angle z = 0$ the continuous pole is purely
+real:
+
+$$s = \\frac{\\ln 0.9}{0.05} = \\frac{-0.1053605}{0.05} = -2.107210\\ \\mathrm{s}^{-1}$$
+
+so the time constant is $\\tau = 1/2.107210 = 0.474561$ s, and the mode decays
+without any oscillation at all.
+
+**The negative real one.** A negative z has angle $\\pi$, so
+
+$$s = \\frac{\\ln 0.5 + j\\pi}{0.1} = \\frac{-0.6931472 + j3.1415927}{0.1}
+= -6.931472 + j31.415927$$
+
+The imaginary part is exactly $\\pi/T = 31.4159$ rad/s, the Nyquist frequency.
+The sampled sequence is $(-0.5)^{k}$, which alternates sign at every step: the
+fastest oscillation the sample rate can represent. The mode is stable, since
+$\\lvert z \\rvert = 0.5 < 1$, and solving $0.5^{k} = 0.05$ gives
+$k = 4.3219$ samples to reach 5%. But a controller with poles near $z = -1$
+produces a visibly ragged output even while being perfectly stable, which is
+why discrete designs aim for poles on the **positive** real side of the circle.
+
+*The trap.* Treating $\\lvert z \\rvert$ alone as the quality measure. Two poles
+at $z = 0.9$ and $z = -0.9$ have identical decay per sample and completely
+different behaviour, because the second alternates sign. Radius sets the decay;
+angle sets the character.
+
+## 11.3 Damping Read Off the z-Plane
+
+Undoing the map gives the continuous parameters directly from a discrete pole:
+
+$$\\sigma = -\\frac{\\ln \\lvert z \\rvert}{T}, \\qquad
+\\omega_d = \\frac{\\angle z}{T}, \\qquad
+\\zeta = \\frac{\\sigma}{\\sqrt{\\sigma^{2} + \\omega_d^{2}}}$$
+
+Because $\\zeta$ depends on the ratio of $\\ln\\lvert z\\rvert$ to $\\angle z$,
+the constant-$\\zeta$ loci — straight rays in the s-plane — become
+**logarithmic spirals** in the z-plane, winding inward from $z = 1$. That is
+why z-plane design charts look nothing like s-plane ones even though they carry
+the same information.`,
+      examTip: `z = e^(sT) splits into two facts: |z| = e^(σT) and ∠z = ωT. Left half plane maps inside the unit circle, the imaginary axis maps onto it, the right half plane maps outside. Discrete stability is |z| < 1 for every pole.`,
+      importantNote: `The map is many-to-one: ω and ω + 2π/T give the same z, so only |ω| ≤ π/T is represented faithfully. Going from z back to s, take the answer inside that strip. A pole at z = −1 corresponds to exactly the Nyquist frequency and alternates sign every sample.`,
+    },
+    {
+      id: 'reading-the-map',
+      title: `12. Reading a Map by Inspection`,
+      content: `## 12.1 The Six-Step Read
+
+This is the skill the exam actually tests: a map appears, four responses are
+offered, and thirty seconds are available. Work the map in this order.
+
+1. **Count.** Number of poles minus number of finite zeros is the relative
+   degree. Relative degree 1 means the step response leaves the origin with a
+   non-zero slope; 2 or more means it leaves flat. That alone eliminates
+   options.
+2. **Scan the right half plane.** Any pole there and the answer grows. Any
+   *zero* there and the answer starts by moving the wrong way, without
+   affecting stability at all.
+3. **Find the dominant group.** The pole or pair nearest the imaginary axis
+   sets the pace, unless a zero sits beside it, in which case its residue is
+   small and the next group takes over.
+4. **Get $\\zeta$ and $\\omega_n$ from geometry.** The distance from the origin
+   to the dominant pair is $\\omega_n$; the cosine of the angle back to the
+   negative real axis is $\\zeta$.
+5. **Look for near-cancellations.** A pole and a zero drawn almost on top of
+   each other cancel almost exactly; strike both out and note the residual.
+6. **Get the DC gain from distances**, using the magnitude rule at $s = 0$:
+
+$$H(0) = K\\,\\frac{\\prod_i (0 - z_i)}{\\prod_j (0 - p_j)}
+= K\\,\\frac{\\prod_i (-z_i)}{\\prod_j (-p_j)}$$
+
+Then convert $\\zeta$ and $\\omega_n$ into an overshoot and a peak time using
+the standard formulas, and you have the response.
+
+### Worked Example 12.1 — A Map Straight to a Response
+
+**Given** the map: poles at $-1.5 \\pm j2$ and at $-8$; one zero, at $-8$; DC
+gain 1. Predict the step response, then check every prediction on a simulation.
+
+**Step 1, count.** Three poles, one zero, relative degree 2 — the response
+leaves the origin flat.
+
+**Step 2, right half plane.** Empty. Stable, no undershoot.
+
+**Step 5 first, because it is decisive.** The pole at $-8$ and the zero at
+$-8$ coincide, so that mode's residue is exactly zero. Strike them both out.
+What is left is the pair alone:
+
+$$H(s) = \\frac{6.25(s+8)}{(s^{2}+3s+6.25)(s+8)} = \\frac{6.25}{s^{2}+3s+6.25}$$
+
+**Step 4, geometry.**
+
+$$\\omega_n = \\sqrt{1.5^{2} + 2^{2}} = 2.5\\ \\mathrm{rad/s}, \\qquad
+\\zeta = 1.5/2.5 = 0.6$$
+
+**Step 6, DC gain.** $6.25/6.25 = 1$, as stated.
+
+**Predictions.** Overshoot $100e^{-\\pi(0.6)/0.8} = 9.478\\%$; peak time
+$\\pi/\\omega_d = 3.141593/2 = 1.5707965$ s; 5% settling roughly
+$3/\\sigma = 3/1.5 = 2$ s.
+
+**Measured.** Simulating the full third-order system: overshoot 9.4780%, peak
+1.5708 s, 5% settling 2.0916 s. Simulating the reduced pair gives the same
+three numbers, and the two responses agree to within $10^{-9}$ at every instant
+— because the cancellation here is exact, not approximate.
+
+![Two panels. The left panel is the pole-zero map with a conjugate pair at minus one point five plus and minus j two and a pole at minus eight with a zero drawn as a circle around it. The right panel shows the simulated step response of the full third-order system and of the second-order pair alone; the two curves lie exactly on top of one another, and the measured overshoot, peak time and settling time are printed alongside.](/courses/fe-ee/figures/ctl5-map-to-response.svg)
+
+Note that the settling prediction of 2 s is 4.4% low against the measured
+2.0916 s, which is exactly the kind of error Worked Example 8.2 leads you to
+expect: at $\\zeta = 0.6$ the rules are neither bounds nor equalities.
+
+### Worked Example 12.2 — A Response Straight to a Map
+
+**Given** a measured step response fitted as
+
+$$y(t) = 1 - 1.25e^{-2t} + 0.25e^{-10t}$$
+
+recover the transfer function.
+
+**Read the poles off the exponents.** Decay rates of 2 and 10 mean poles at
+$s = -2$ and $s = -10$. The constant term means the input pole at the origin
+is present with residue 1, so $H(0) = 1$.
+
+**Check the residues sum to zero.** $1 - 1.25 + 0.25 = 0.000$, so the response
+starts at zero and H is strictly proper. Since there are two poles and the
+response starts flat, the relative degree is 2, so there are **no finite
+zeros**.
+
+**Assemble and fix the gain.**
+
+$$H(s) = \\frac{K}{(s+2)(s+10)}, \\qquad H(0) = \\frac{K}{20} = 1
+\\;\\Rightarrow\\; K = 20$$
+
+**Verify by re-expanding.** The residues of $20/[s(s+2)(s+10)]$ are
+
+$$r_0 = \\frac{20}{20} = 1, \\qquad
+r_{-2} = \\frac{20}{(-2)(8)} = -1.25, \\qquad
+r_{-10} = \\frac{20}{(-10)(-8)} = 0.25$$
+
+reproducing the measured response exactly. Fitting the simulated step response
+of $20/[(s+2)(s+10)]$ onto its mode basis returns the same three residues.
+
+*The trap.* Reading a residue as a pole or a pole as a residue. In
+$-1.25e^{-2t}$ the number in the **exponent** is the pole and the number in
+**front** is the residue; they answer different questions and are never
+interchangeable.
+
+## 12.2 A Checklist of Shapes
+
+| What you see on the map | What the step response does |
+|---|---|
+| One real pole, no zeros | plain exponential, no overshoot |
+| Two real poles, well separated | dominated by the slower; error $r^{-r/(r-1)}$ |
+| Two real poles, equal | critically damped, the fastest shape with no overshoot |
+| Complex pair, $\\zeta$ near 0.7 | about 5% overshoot, quick and tidy |
+| Complex pair, $\\zeta$ near 0.2 | around 53% overshoot, many visible rings |
+| Pair with an LHP zero inside $\\omega_n$ | overshoot several times larger |
+| Pair with an RHP zero | dips below zero first, depth growing as $1/z^{2}$ |
+| Pole and zero nearly coincident | that mode is present but quiet, in proportion to the gap |
+| Any pole with $\\mathrm{Re}(s) > 0$ | grows without bound; nothing else matters |
+| Repeated poles on the axis | grows like $t$; marginal only if simple |`,
+      examTip: `Work a map in a fixed order: relative degree, right-half-plane content, dominant group, ζ and ωₙ from geometry, near-cancellations, DC gain from distances. The answer usually falls out at step 2 or 3 without any algebra.`,
+      importantNote: `In a term like −1.25e^(−2t), the exponent is the POLE and the coefficient is the RESIDUE. Going from a response back to a map, the decay rates give the pole locations, the residues give the gain and reveal how many zeros there must be, and the number of terms gives the order.`,
+    },
+    {
+      id: 'pzmap-problem-sets',
+      title: `13. Problem Sets`,
+      content: `## 13.1 How to Use These
+
+Set 13A runs from the map to the response, which is the direction the exam asks
+for most often. Set 13B runs the other way, from a response or a specification
+back to pole positions, which is the direction design uses. Set 13C is a set of
+speed drills. Work each to a number before reading the solution; every solution
+names the wrong answer a hurried candidate produces and states the value it
+gives, because recognising your own mistake in a list of four options is a
+skill worth rehearsing.
+
+Every numeric answer below was checked against a simulated response, not read
+off a map.
+
+### Problem Set 13A — From the Map to the Response
+
+**A1.** A unit-DC-gain system has poles at $s = -2 \\pm j2$ and no finite
+zeros. Find $\\omega_n$, $\\zeta$, the percent overshoot and the peak time.
+
+*Solution.* The two coordinates come straight off the geometry:
+
+$$\\omega_n = \\sqrt{2^{2} + 2^{2}} = \\sqrt{8} = 2.828427\\ \\mathrm{rad/s},
+\\qquad \\zeta = 2/2.828427 = 0.707107$$
+
+This is the classic $\\zeta = 1/\\sqrt{2}$ case, and the overshoot formula
+collapses beautifully because $\\zeta/\\sqrt{1-\\zeta^{2}} = 1$:
+
+$$M_p = 100\\,e^{-\\pi} = 4.3214\\%$$
+
+Peak time is $\\pi/\\omega_d = \\pi/2 = 1.570796$ s. Simulating the system
+$8/(s^{2}+4s+8)$ confirms both: measured overshoot 4.3214%, measured peak at
+1.5708 s, with 5% settling at 1.0358 s.
+
+*The trap.* Reporting $\\omega_n = 2$ by reading the imaginary part. The
+imaginary part is $\\omega_d$, the **damped** frequency; $\\omega_n$ is the
+distance from the origin, which here is 41.4% larger.
+
+**A2.** For $G(s) = \\dfrac{40}{(s+2)(s+20)}$, decide whether the pole at
+$-20$ may be dropped, and quantify the cost.
+
+*Solution.* The DC gain is $40/40 = 1$. The separation ratio is
+$20/2 = 10$, so the reduced model is $2/(s+2)$, also of unit DC gain. The
+closed form of Section 8.1 gives a worst-case error of
+
+$$r^{-r/(r-1)} = 10^{-10/9} = 0.077426$$
+
+at $t^{*} = \\ln 10/18 = 0.127921$ s. Simulating both and taking the largest
+difference returns 0.077426 at $t = 0.127920$ s. So the reduction costs 7.74%
+of the final value at its worst instant, and the reduced model settles at
+1.4978 s against a true 1.5505 s — 3.4% optimistic, in the direction Section
+8.3 predicts.
+
+*The trap.* Concluding that "10× is plenty" and quoting the reduced settling
+time as if it were the real one. A 7.74% transient error is fine for choosing
+between options that differ by a factor of two, and useless for a specification
+written to 5%.
+
+**A3.** A map shows poles at $-1 \\pm j2$ and $-10$, one zero at $-4$, and a
+DC gain of 2. Write $H(s)$, then state which mode dominates and what the
+response looks like.
+
+*Solution.* Assemble from the map and fix the gain:
+
+$$H(s) = \\frac{K(s+4)}{(s^{2}+2s+5)(s+10)}, \\qquad
+H(0) = \\frac{4K}{50} = 2 \\;\\Rightarrow\\; K = 25$$
+
+Residues of $H(s)/s$: $r_0 = 2$ at the origin, $r_{-10} = +0.176471$, and
+$r_{-1\\pm j2} = -1.088235 \\pm j0.102941$, whose pair form is
+$2\\lvert r \\rvert = 2.186187$ at an angle of $174.5962^\\circ$. The complex
+pair therefore carries more than twelve times the weight of the real pole, so
+it dominates. With $\\omega_n = \\sqrt{5} = 2.236068$ and
+$\\zeta = 1/2.236068 = 0.447214$ the bare pair would overshoot 20.788%, but the
+zero at $-4$ pushes it up: the measured overshoot of the full system is
+24.4463%, at 1.3861 s, with 5% settling at 3.0395 s.
+
+*The trap.* Ignoring the zero because it is "not near the poles". It sits at a
+distance of 4 from the origin against $\\omega_n = 2.236068$ — well inside the
+region where Section 9.2 says zeros matter, and it adds 3.66 points of
+overshoot.
+
+**A4.** $H(s) = \\dfrac{40(s+4.2)}{(s+4)(s+1)(s+21)}$. Rank the three modes by
+importance.
+
+*Solution.* Apply the geometric residue rule to $H(s)/s$:
+
+$$r_{-1} = \\frac{40(3.2)}{(-1)(3)(20)} = \\frac{128}{-60} = -2.133333$$
+
+$$r_{-4} = \\frac{40(0.2)}{(-4)(-3)(17)} = \\frac{8}{204} = 0.039216$$
+
+$$r_{-21} = \\frac{40(-16.8)}{(-21)(-20)(-17)} = \\frac{-672}{-7140} = 0.094118$$
+
+The ranking is $-1$, then **$-21$**, then $-4$. The mode at $-4$ is nearly
+silent — $0.039216/2.133333 = 0.0183825$, or 1.84% of the dominant mode —
+because the zero at $-4.2$ sits only 0.2 away from it. The remote pole at $-21$
+matters more than the near one.
+
+*The trap.* Ranking by distance from the imaginary axis and putting $-4$
+second. Distance is a proxy for residue; when a zero is in play, the proxy
+fails.
+
+**A5.** A unit-DC-gain plant has poles at $-3 \\pm j4$ and a single zero at
+$s = +5$. Does it overshoot, does it undershoot, and by how much?
+
+*Solution.* Stability is decided by the poles alone, both of which are in the
+left half plane, so the system is stable. The zero is in the right half plane,
+so by the identity of Section 9.1 the step response is $y - y'/5$, and by the
+argument of Worked Example 9.2 it must go negative. The initial slope is
+$-\\omega_n^{2}/z = -25/5 = -5$. Measured on the simulation: the response dips
+to $-0.263442$ at $t = 0.1159$ s, then recovers and overshoots by 11.975%
+before settling at 1. The small-t estimate $12.5/z^{2} = 12.5/25 = 0.5$
+overstates the dip by 90%.
+
+*The trap.* Marking the system unstable because something is in the right half
+plane. Only **poles** decide stability.
+
+### Problem Set 13B — From a Response or a Specification Back to the Map
+
+**B1.** A measured step response fits $y(t) = 1 - 1.25e^{-2t} + 0.25e^{-10t}$.
+Find the transfer function.
+
+*Solution.* Exponents give poles at $-2$ and $-10$; the constant gives
+$H(0) = 1$. The residues sum to $1 - 1.25 + 0.25 = 0$, confirming a strictly
+proper H that starts from zero, and the flat start means relative degree 2, so
+there are no finite zeros. Hence
+
+$$H(s) = \\frac{20}{(s+2)(s+10)}, \\qquad H(0) = \\frac{20}{20} = 1$$
+
+Re-expanding gives $r_{-2} = 20/[(-2)(8)] = -1.25$ and
+$r_{-10} = 20/[(-10)(-8)] = 0.25$, matching the data.
+
+*The trap.* Writing $H(s) = 1/[(s+2)(s+10)]$ and forgetting the numerator
+gain. That system has a DC gain of $1/20 = 0.05$ and the measured response
+would settle at 0.05, not 1.
+
+**B2.** Place a pole pair for $\\zeta = 0.5$ and a 2% settling time of about
+2 s. Give the poles, then check the settling time against a simulation.
+
+*Solution.* The rule $t_s \\approx 4/(\\zeta\\omega_n)$ gives
+$\\zeta\\omega_n = 4/2 = 2$, so $\\sigma = 2$ and
+
+$$\\omega_n = \\sigma/\\zeta = 2/0.5 = 4\\ \\mathrm{rad/s}, \\qquad
+\\omega_d = 4\\sqrt{1 - 0.25} = 3.464102\\ \\mathrm{rad/s}$$
+
+so the poles go at $s = -2 \\pm j3.464102$, and the transfer function is
+$16/(s^{2}+4s+16)$.
+
+**Now check it.** The measured 2% settling time is 2.0191 s and the measured
+overshoot is 16.3034%. The rule was 0.95% optimistic here — and $\\zeta = 0.5$
+sits right at the edge of the first band identified in Worked Example 8.2,
+where the rule stops being conservative at all. Had the specification been a
+hard limit, the design would have missed it.
+
+*The trap.* Treating $4/(\\zeta\\omega_n)$ as a guarantee and reporting 2 s. It
+is an estimate that lands on either side depending on $\\zeta$.
+
+**B3.** A continuous pole pair sits at $s = -4 \\pm j3$ and the loop is sampled
+at $T = 0.2$ s. Where are the discrete poles, and is the sampled system stable?
+
+*Solution.* Apply $z = e^{sT}$ in polar form:
+
+$$\\lvert z \\rvert = e^{-4(0.2)} = e^{-0.8} = 0.449329, \\qquad
+\\angle z = 3(0.2) = 0.6\\ \\mathrm{rad} = 34.3775^\\circ$$
+
+$$z = 0.449329(\\cos 0.6 \\pm j\\sin 0.6) = 0.370847 \\pm j0.253710$$
+
+The magnitude is well under 1, so the sampled system is stable. There are
+$2\\pi/0.6 = 10.472$ samples per ring, which is adequate but not generous;
+below about eight samples per cycle a digital loop starts to struggle.
+
+*The trap.* Testing the real part of z instead of its magnitude. The real part
+here is 0.370847, but a pole at $z = -0.2 + j0.98$ has a smaller real part and
+a magnitude of 1.0002 — unstable.
+
+**B4.** A discrete pole sits at $z = -0.5$ with $T = 0.1$ s. Find the
+equivalent continuous pole and describe the mode.
+
+*Solution.* A negative real z has angle $\\pi$, so
+
+$$\\sigma = -\\frac{\\ln 0.5}{0.1} = 6.931472\\ \\mathrm{s}^{-1}, \\qquad
+\\omega = \\frac{\\pi}{0.1} = 31.415927\\ \\mathrm{rad/s}$$
+
+giving $s = -6.931472 + j31.415927$. The frequency is exactly the Nyquist rate,
+so the sampled mode is $(-0.5)^{k}$: it flips sign every sample and its
+magnitude falls by half each time. Solving $0.5^{k} = 0.05$ gives $k = 4.3219$
+samples, so it is gone in under half a second — stable, fast, and visually
+horrible.
+
+*The trap.* Concluding that a negative pole location is unstable by analogy
+with the s-plane. In the z-plane the test is the magnitude, and
+$\\lvert -0.5 \\rvert = 0.5 < 1$.
+
+**B5.** A compensator zero is to cancel a plant pole at $s = -0.4$ that is
+known only to $\\pm 5\\%$. What residue survives, and what does it do to a 2%
+settling specification?
+
+*Solution.* From Worked Example 10.1 the surviving residue is
+$-1.144165\\,\\delta/(1+\\delta)$, so at $\\delta = 0.05$
+
+$$r_{-0.4} = -1.144165\\left(\\frac{0.05}{1.05}\\right) = -0.054484$$
+
+That mode decays at $0.4$ per second, so on its own it needs
+$\\ln(0.054484/0.02)/0.4 = 2.505$ s to fall inside a 2% band. The measured 2%
+settling time of the whole system rises from 0.9716 s at perfect cancellation
+to 2.5065 s — an increase of 158%.
+
+*The trap.* Assuming a 5% placement error causes a 5% timing error. The
+residue error is proportional, but its effect on settling is not, because the
+leftover mode is the **slowest** one in the system.
+
+### Practice Problems 13C — Speed Drills
+
+**C1.** Poles at $-5 \\pm j5$. Damping ratio?
+*Answer.* $\\zeta = 5/\\sqrt{50} = 0.707107$. Any pole on the $45^\\circ$
+diagonal has $\\zeta = 0.707107$, whatever its distance from the origin.
+
+**C2.** A system's poles are $-1$, $-1$ and $-30$. Is the response
+oscillatory?
+*Answer.* No. All poles are real, so every mode is a decaying exponential; the
+repeated pole at $-1$ contributes $(a + bt)e^{-t}$, which is sluggish but never
+crosses the final value.
+
+**C3.** $H(s) = 100/(s^{2} + 100)$. Stable?
+*Answer.* Marginally. The poles are at $\\pm j10$, simple and on the axis, so
+the response is an undying sinusoid at 10 rad/s. Had they been repeated, the
+response would grow like t and the answer would be "unstable".
+
+**C4.** A step response starts at $y(0^{+}) = 3$. What does that say about the
+transfer function?
+*Answer.* It is **proper but not strictly proper** — the numerator and
+denominator have the same degree, and $y(0^{+}) = \\lim_{s\\to\\infty}H(s) = 3$
+is the direct feedthrough term.
+
+**C5.** Two systems have the same poles; one has a zero at $-30$, the other has
+none. Which settles first?
+*Answer.* Practically neither: at $-30$ the zero is far outside the region
+where it matters, and the measured overshoot changes by well under a percentage
+point. Compare the $-20$ row of the table in Section 9.2, where the overshoot
+moved only from 9.478% to 9.843%.
+
+**C6.** A discrete pole sits at $z = 1$. Stable?
+*Answer.* Marginally, and only if it is simple: $z = 1$ is the image of $s = 0$
+and is the discrete integrator, whose mode is the constant sequence $1^{k}$. A
+repeated pole at $z = 1$ gives a ramp and is unstable.
+
+**C7.** Which is worse for control: a pole at $+2$ or a zero at $+2$?
+*Answer.* The pole, without question — it makes the open-loop system unstable
+and must be moved by feedback. The zero leaves stability intact but forces
+undershoot and caps the achievable bandwidth, and no controller can remove it,
+because feedback moves poles and leaves zeros where they are.
+
+**C8.** A pole pair has $\\omega_n = 10$ rad/s and $\\zeta = 0.6$. Where is it?
+*Answer.* At $-\\zeta\\omega_n \\pm j\\omega_n\\sqrt{1-\\zeta^{2}}$, that is
+$-6 \\pm j8$. The 3-4-5 triangle is worth memorising: $\\zeta = 0.6$ and
+$\\zeta = 0.8$ both give integer poles on a circle of integer radius.`,
+      examTip: `Read the direction of the question first. "Given the map, what does it do?" wants ζ, ωₙ, overshoot and peak time. "Given the response, what is the map?" wants the exponents as poles and the coefficients as residues. Mixing the two up costs more marks than any arithmetic slip.`,
+      importantNote: `Every answer in these sets was produced by simulating the system and measuring the response, then cross-checked against the closed form. Where the two disagree — settling-time rules, the dominant-pole approximation, the small-time undershoot estimate — the measured number is quoted and the size of the rule's error is stated alongside it.`,
+    },
   ],
   keyTakeaways: [
     'LHP poles = stable (decaying response). RHP poles = unstable (growing). Imaginary axis = marginal.',
     'Complex pole pair at -σ ± jω_d: response is e^(-σt)·cos(ω_d·t + φ). σ controls decay; ω_d controls oscillation.',
     'Damping ratio ζ = cos(angle from negative real axis to pole). ζ = 0.7 → ~5% overshoot. ζ = 1 → critically damped.',
-    'Settling time t_s ≈ 3/σ = 3/(ζωₙ). Rise time t_r ≈ 1.8/ωₙ. Peak time t_p = π/ω_d.',
+    'Settling time t_s ≈ 3/σ = 3/(ζωₙ) at 5%, 4/(ζωₙ) at 2%. Rise time t_r ≈ 1.8/ωₙ is the 10–90% figure, not 0–100%. Peak time t_p = π/ω_d is exact.',
     'Zeros don\'t affect stability but shape transient. RHP zero = non-minimum phase = initial inverse response.',
-    'Dominant pole approximation: pole closest to imaginary axis dominates response if others are 5×+ farther away',
+    'Dominant pole approximation: the pole closest to the imaginary axis dominates, but "5× farther" is not free — the measured worst-case error is r^(−r/(r−1)), which is 13.37% of the final value at r = 5 and 7.74% at r = 10.',
     'Routh-Hurwitz: all first-column entries same sign = stable. Number of sign changes = number of RHP roots. Coefficient missing or negative = automatic instability.',
+    'ζ and ωₙ are the polar coordinates of a pole pair: ωₙ is the distance from the origin, ζ is the cosine of the angle back to the negative real axis. Constant ωₙ is a circle, constant ζ is a ray, constant σ is a vertical line.',
+    'Residue at a pole = K × (distances to all zeros) ÷ (distances to all other poles). A mode is negligible when its RESIDUE is small — which a nearby zero causes just as effectively as a remote pole.',
+    'Adding a zero at −z gives y + y′/z (more overshoot, earlier rise); a zero at +z gives y − y′/z (undershoot). The weighted integral of y(t)e^(−zt) is exactly zero for an RHP zero, which is why undershoot is unavoidable.',
+    'Inexact pole-zero cancellation leaves a residue proportional to the mismatch, decaying at the plant pole rate. A 5% miss on a pole at −0.4 stretches 2% settling from 0.9716 s to 2.5065 s. Never cancel an unstable pole.',
+    'Discrete time: z = e^(sT), so |z| = e^(σT) and ∠z = ωT. The left half plane maps inside the unit circle and stability is |z| < 1. Only |ω| ≤ π/T maps one-to-one.',
+    'The settling-time rules are estimates, not bounds. Measured 2% settling exceeds 4/(ζωₙ) over ζ ≈ 0.495–0.530, 0.670–0.780 and above 0.885, and is up to 33% pessimistic elsewhere.',
   ],
 },
 
