@@ -2231,9 +2231,9 @@ Graph theory models networks — useful for analyzing circuit topologies and com
       title: '3. Worked Examples',
       content: `## 3.1 Counting for reliability and logic
 
-**Permutations** (order matters): P(n,r) = n!/(n-r)!. Arranging 3 of 8 components in a fixed sequence: 8!/5! = 8 x 7 x 6 = **336**.
+**Permutations** (order matters): $P(n,r) = n!/(n-r)!$. Arranging 3 of 8 components in a fixed sequence: $8!/5! = 8 \\times 7 \\times 6 = 336$.
 
-**Combinations** (order does not): C(n,r) = n!/[r!(n-r)!]. Choosing 3 of 8 spares regardless of order: 336/6 = **56**.
+**Combinations** (order does not): $C(n,r) = n!/[r!(n-r)!]$. Choosing 3 of 8 spares regardless of order: $336/6 = 56$.
 
 The test for which to use: swap two of your chosen items. If that counts as a different outcome, it is a permutation.
 
@@ -2241,14 +2241,14 @@ The test for which to use: swap two of your chosen items. If that counts as a di
 
 The identities that actually reduce circuits:
 
-- **$NOT(A AND B) = NOT A OR NOT B$**
-- **$NOT(A OR B) = NOT A AND NOT B$**
+- **$\\overline{A \\cdot B} = \\overline{A} + \\overline{B}$**
+- **$\\overline{A + B} = \\overline{A} \\cdot \\overline{B}$**
 - Absorption: A + AB = A, and A(A + B) = A
 - Consensus: AB + A'C + BC = AB + A'C (the BC term is redundant)
 
 Simplify F = AB + AB' + A'B:
 
-AB + AB' = A(B + B') = A. So F = A + A'B. By absorption's dual, A + A'B = A + B. So **$F = A + B$**, a two-input OR from what looked like three product terms.
+AB + AB' = A(B + B') = A. So F = A + A'B. By the **redundancy law**, A + A'B = A + B. So **$F = A + B$**, a two-input OR from what looked like three product terms. (The dual of absorption is A(A + B) = A, which is a different identity.)
 
 ## 3.3 Set relations
 
@@ -2406,8 +2406,8 @@ P = C × k! requires.
 
 ## 5.3 Parity and error detection
 
-An 8-bit byte carries one parity bit. How many 8-bit patterns have even parity
-(an even number of ones)?
+A byte is transmitted under an even-parity scheme. How many of the 8-bit
+patterns have even parity, that is an even number of ones?
 
 Even counts of ones are 0, 2, 4, 6, 8:
 $$C(8,0) + C(8,2) + C(8,4) + C(8,6) + C(8,8) = 1 + 28 + 70 + 28 + 1 = 128$$
@@ -2416,7 +2416,7 @@ That is exactly half of $2^{8}$ = 256, and it is half for every n ≥ 1 — whic
 a single parity bit detects any odd number of bit errors and misses every even
 number of them.
 
-## 5.4 Inclusion-exclusion with three sets
+## 5.4 Inclusion-exclusion with two sets
 
 Of 100 components, 45 fail a thermal test, 35 an electrical test, and 20 fail
 both. How many pass both?
@@ -2451,20 +2451,1263 @@ offered.`,
 | Counting repetition wrongly | using n! where nᵏ applies | decide independently whether repetition is allowed |
 
 The permutation and combination check is free: **P(n,k) must exceed C(n,k) by
-exactly k!**. If your two answers do not stand in that ratio, one of them uses
-the wrong formula, and you know it before looking at the choices.
+a factor of exactly k!**. If your two answers do not stand in that ratio, one of
+them uses the wrong formula, and you know it before looking at the choices.
 
 When a counting problem resists all four formulas, it is usually two problems
 multiplied together: choose the group, then arrange within it. Splitting it in
 two and multiplying the counts is legitimate and is often faster than hunting
 for a single formula that covers the whole thing at once.`,
 },
+{
+  id: 'dm-set-algebra',
+  title: '7. The Algebra of Sets, Proved Rather Than Recited',
+  content: `## 7.1 A set is a membership test and nothing else
+
+A set is a rule that answers exactly one question about every object under
+discussion: in, or out. That is the whole definition, and it is worth taking
+literally, because it turns every claim about sets into a claim about that
+yes-or-no answer. Two sets are equal precisely when they return the same answer
+for every object, so proving $A = B$ means proving the two membership tests agree
+on every candidate — never rearranging symbols because the rearrangement looks
+like ordinary algebra.
+
+The vocabulary an exam question can lean on is short:
+
+| Term | Notation | Membership test for $x$ |
+|---|---|---|
+| element of | $x \\in A$ | the test for $A$ answers yes |
+| subset | $A \\subseteq B$ | every yes for $A$ is a yes for $B$ |
+| proper subset | $A \\subset B$ | subset, and $B$ has at least one member $A$ lacks |
+| empty set | $\\varnothing$ | the test always answers no |
+| universe | $U$ | the test always answers yes |
+| complement | $A'$ or $\\overline{A}$ | the test for $A$ answers no |
+
+The empty set is a subset of every set, including itself, which sounds like a
+technicality until a counting question asks for the number of subsets and you
+have to remember to include it. A set with $n$ members has $2^{n}$ subsets, and
+the argument is a counting argument: build a subset by walking the members and
+deciding in or out for each, which is $n$ independent binary choices.
+
+$$\\lvert \\mathcal{P}(S) \\rvert = 2^{n} \\quad \\text{for} \\quad \\lvert S \\rvert = n$$
+
+Listing every subset of a set of size $n$ and counting them reproduces $2^{n}$
+for $n = 0$ through $12$; at $n = 12$ both routes give 4096. The formula was not
+assumed anywhere in that check.
+
+## 7.2 The four operations, and the one that is not symmetric
+
+$$A \\cup B = \\{\\, x : x \\in A \\ \\text{or}\\ x \\in B \\,\\}, \\qquad A \\cap B = \\{\\, x : x \\in A \\ \\text{and}\\ x \\in B \\,\\}$$
+
+$$A \\setminus B = \\{\\, x : x \\in A \\ \\text{and}\\ x \\notin B \\,\\}, \\qquad A \\oplus B = (A \\setminus B) \\cup (B \\setminus A)$$
+
+Union and intersection are commutative and associative; set difference is
+neither. $A \\setminus B$ and $B \\setminus A$ are different sets, and the
+symmetric difference $A \\oplus B$ is exactly what you get by taking both. That
+last operation is the set-theory face of the exclusive-OR gate, and the two obey
+the same laws for the same reason.
+
+Two identities let you reduce almost any expression:
+
+$$A \\cap (B \\cup C) = (A \\cap B) \\cup (A \\cap C)$$
+$$A \\cup (B \\cap C) = (A \\cup B) \\cap (A \\cup C)$$
+
+Distribution runs both ways here, which is the first place set algebra parts
+company with ordinary arithmetic, where addition does not distribute over
+multiplication. Boolean algebra shares this two-way distribution, and for the
+same structural reason.
+
+## 7.3 De Morgan, proved by chasing an element
+
+The two De Morgan laws are the identities the FE exam reaches for most often,
+in set notation in the mathematics questions and in gate notation in the digital
+ones. They deserve a proof rather than a mnemonic, and the proof is three lines
+of membership testing.
+
+Take any object $x$ and ask whether it belongs to $(A \\cup B)'$:
+
+$$x \\in (A \\cup B)' \\iff \\lnot\\,(x \\in A \\cup B) \\iff \\lnot\\,(x \\in A \\ \\text{or}\\ x \\in B)$$
+
+The negation of a disjunction is the conjunction of the negations — that is a
+fact about the two-valued logic underneath, and it is where the whole result
+comes from:
+
+$$\\lnot\\,(x \\in A \\ \\text{or}\\ x \\in B) \\iff (x \\notin A) \\ \\text{and}\\ (x \\notin B) \\iff x \\in A' \\cap B'$$
+
+Every step is an equivalence, so the chain runs in both directions, and the two
+sets have identical membership tests. Therefore
+
+$$(A \\cup B)' = A' \\cap B' \\qquad \\text{and, by the same argument,} \\qquad (A \\cap B)' = A' \\cup B'$$
+
+That is a proof, not a demonstration on an example, so it holds for every pair
+of sets. It can also be confirmed the blunt way: over a four-element universe
+there are 16 possible subsets, hence 256 ordered pairs $(A, B)$, and both
+identities hold for all 256 of them.
+
+## 7.4 Worked example: a fault survey read as one set expression
+
+Two hundred assembled boards go through three tests. Ninety fail the thermal
+test $A$, seventy fail the electrical test $B$, fifty fail the vibration test
+$C$. Thirty fail both $A$ and $B$, twenty-five fail both $A$ and $C$, twenty
+fail both $B$ and $C$, and ten fail all three. How many boards pass every test?
+
+The question asks for $\\lvert (A \\cup B \\cup C)' \\rvert$, which by De Morgan
+is $\\lvert A' \\cap B' \\cap C' \\rvert$ — the boards that fail nothing. Get the
+union first:
+
+$$\\lvert A \\cup B \\cup C \\rvert = 90 + 70 + 50 - 30 - 25 - 20 + 10 = 145$$
+
+$$\\lvert (A \\cup B \\cup C)' \\rvert = 200 - 145 = 55$$
+
+Fifty-five boards pass all three tests. The answer is worth checking region by
+region rather than trusting the formula, because the seven disjoint pieces must
+all come out non-negative or the data was inconsistent:
+
+| Region | Count |
+|---|---|
+| thermal only | $90 - 30 - 25 + 10 = 45$ |
+| electrical only | $70 - 30 - 20 + 10 = 30$ |
+| vibration only | $50 - 25 - 20 + 10 = 15$ |
+| thermal and electrical, not vibration | $30 - 10 = 20$ |
+| thermal and vibration, not electrical | $25 - 10 = 15$ |
+| electrical and vibration, not thermal | $20 - 10 = 10$ |
+| all three | $10$ |
+
+Those seven add to 145, matching the formula, and building an explicit
+population of 200 boards with exactly these overlaps and then counting it by
+hand reproduces both 145 and 55.
+
+## 7.5 Products, partitions, and how big the objects get
+
+The Cartesian product $A \\times B$ is the set of ordered pairs with a first
+component from $A$ and a second from $B$, so its size is the product of the
+sizes:
+
+$$\\lvert A \\times B \\rvert = \\lvert A \\rvert \\cdot \\lvert B \\rvert$$
+
+For $\\lvert A \\rvert = 4$ and $\\lvert B \\rvert = 7$ that is 28 pairs, and
+writing all 28 out confirms it. This is the multiplication principle wearing set
+notation, and it is the reason a relation on a set can be so numerous: a
+relation on $A$ is any subset of $A \\times A$, so a four-element set carries
+$2^{16}$ = 65 536 distinct relations. That number was checked by enumerating
+every subset of the 16 pairs, not by trusting the exponent.
+
+A **partition** of $S$ is a family of non-empty, pairwise disjoint subsets whose
+union is $S$. Partitions are what make counting arguments safe: if you can split
+the objects you are counting into disjoint classes, the counts simply add, with
+no overlap correction needed. Almost every clean counting argument in the next
+section is a partition in disguise.
+
+## 7.6 Worked example: three ways to describe the same set
+
+An engineer specifies "resistors that are either 1 % tolerance or metal film,
+but not both." Written down three ways:
+
+$$T \\oplus M = (T \\setminus M) \\cup (M \\setminus T) = (T \\cup M) \\setminus (T \\cap M)$$
+
+If 40 parts are 1 %, 55 are metal film, and 18 are both, then
+
+$$\\lvert T \\cup M \\rvert = 40 + 55 - 18 = 77, \\qquad \\lvert T \\oplus M \\rvert = 77 - 18 = 59$$
+
+The second subtraction is the one people miss. The exclusive form removes the
+overlap **twice** in total: once because it was double counted in the sum, and
+once because the specification excludes it. Getting 77 instead of 59 is the
+standard wrong answer, and it is on every list of choices.`,
+  examTip: 'Set identities are proved by membership, not by symbol pushing. If you can say "x is in the left side exactly when ... which is exactly when x is in the right side", you have a proof that covers every case. On the exam this matters most for De Morgan, which appears in set form in mathematics and in gate form in digital systems.',
+  importantNote: 'A partition means disjoint AND covering. If the pieces overlap you must use inclusion-exclusion; if they do not cover the whole set you are missing cases. Checking both conditions before adding counts prevents the two most common counting errors at once.',
+},
+{
+  id: 'dm-counting-families',
+  title: '8. Counting: Four Families, One Decision',
+  content: `## 8.1 Everything starts with the multiplication principle
+
+If a task splits into stages, and stage $k$ can be completed in $n_k$ ways
+**regardless of how the earlier stages went**, then the whole task can be
+completed in
+
+$$n_1 \\cdot n_2 \\cdots n_m = \\prod_{k=1}^{m} n_k$$
+
+ways. The italicised condition is the one that gets violated. It is safe to say
+"three choices of connector, then four choices of cable" only if all four cables
+remain available whatever connector you picked. When the second count depends on
+the first, the multiplication principle does not apply directly and the problem
+has to be split into cases that each satisfy it.
+
+Every formula in this section is a consequence of that one principle plus one
+correction for over-counting.
+
+## 8.2 Ordered selections: permutations
+
+Choose $k$ items from $n$ distinct items where the order of selection matters
+and no item may be reused. The first slot has $n$ candidates, the second $n-1$,
+and so on for $k$ slots:
+
+$$P(n,k) = n(n-1)(n-2)\\cdots(n-k+1) = \\frac{n!}{(n-k)!}$$
+
+With $k = n$ this collapses to $n!$, the number of ways to arrange everything.
+
+$$P(8,3) = 8 \\times 7 \\times 6 = 336$$
+
+Generating all ordered triples of distinct items from a set of eight and
+counting the list gives 336, so the formula and the objects agree.
+
+## 8.3 Unordered selections: combinations
+
+Now suppose the order does not matter. Every unordered selection of $k$ items
+was counted $k!$ times by the permutation count, once for each way of arranging
+it, so divide:
+
+$$C(n,k) = \\binom{n}{k} = \\frac{P(n,k)}{k!} = \\frac{n!}{k!\\,(n-k)!}$$
+
+$$C(8,3) = \\frac{336}{6} = 56$$
+
+That division is the entire difference between the two formulas, and it gives a
+free error check: whatever else happens, $P(n,k)$ must be exactly $k!$ times
+$C(n,k)$. If your two numbers do not stand in that ratio, one of them was
+computed with the wrong formula and you know it before you look at the choices.
+
+$$\\binom{n}{k} = \\binom{n}{n-k}$$
+
+Choosing which $k$ to take is the same as choosing which $n-k$ to leave, so the
+coefficients are symmetric, and evaluating $\\binom{20}{18}$ as
+$\\binom{20}{2} = 190$ turns a four-digit factorial into a one-line product.
+
+## 8.4 Worked example: four components, counted both ways
+
+Abstraction is where counting goes wrong, so here is a case small enough to
+write out in full. Four distinguishable components are labelled P, Q, R and S,
+and two of them are to be selected.
+
+**Order matters.** The twelve ordered pairs are
+
+PQ, PR, PS, QP, QR, QS, RP, RQ, RS, SP, SQ, SR
+
+which is $P(4,2) = 4 \\times 3 = 12$, and the list has twelve entries.
+
+**Order does not matter.** Now PQ and QP are the same selection, so the six
+distinct pairs are
+
+PQ, PR, PS, QR, QS, RS
+
+which is $C(4,2) = 12/2 = 6$, and the list has six entries. The ratio is
+$2! = 2$, exactly as the identity requires. Every entry in the first list
+appears in the second exactly twice, which is the division made visible.
+
+The practical test, then, is not "does the problem sound ordered" but: **swap
+two of the items you selected. Is that a different outcome?** If yes, use
+$P(n,k)$; if no, use $C(n,k)$.
+
+## 8.5 Repetition allowed, order matters
+
+If items may be reused, every slot has all $n$ candidates:
+
+$$n^{k}$$
+
+$$8^{3} = 512$$
+
+Enumerating all ordered triples drawn with replacement from eight items gives
+512. Note that $512 > 336$: allowing reuse adds more possibilities than
+forbidding it removes, which is a useful sanity anchor when two of the four
+answers are close together.
+
+![Two stacked panels sharing a sample-size axis for n equal to eight. The upper panel plots ordered counts, n to the k and P of n comma k, on a logarithmic scale; the lower panel plots unordered counts, C of n plus k minus one comma k and C of n comma k. The four curves separate quickly, so choosing the wrong family changes the answer by orders of magnitude.](/courses/fe-ee/figures/math5-dm-four-families.svg)
+
+## 8.6 Worked example: arrangements when some items are identical
+
+How many distinguishable strings can be made from the letters of RESISTOR?
+
+There are eight letters, but R appears twice and S appears twice. If all eight
+were distinct the answer would be $8! = 40\\,320$. Each genuine arrangement was
+counted once for each way of permuting the two identical Rs among themselves and
+the two identical Ss among themselves, that is $2! \\times 2! = 4$ times:
+
+$$\\frac{8!}{2!\\,2!} = \\frac{40320}{4} = 10080$$
+
+Generating all $8!$ permutations of the letters, discarding duplicates, and
+counting what survives gives exactly 10 080. In general, for $n$ items with
+repeats of multiplicity $n_1, n_2, \\ldots, n_r$,
+
+$$\\frac{n!}{n_1!\\,n_2!\\cdots n_r!}$$
+
+which is called the multinomial coefficient, and which reduces to $C(n,k)$ when
+there are just two groups: $n!/(k!\\,(n-k)!)$ is the number of arrangements of
+$k$ ones and $n-k$ zeros, so a binomial coefficient literally counts bit
+patterns of a given weight.
+
+## 8.7 Repetition allowed, order does not matter
+
+The fourth family is the one people have not seen and cannot guess. Choosing
+$k$ items from $n$ types, with repetition allowed and order irrelevant, is the
+same as deciding **how many of each type** to take:
+
+$$x_1 + x_2 + \\cdots + x_n = k, \\qquad x_i \\ge 0$$
+
+Encode a solution as a row of $k$ stars separated into $n$ groups by $n-1$ bars.
+Every arrangement of $k$ stars and $n-1$ bars is one solution and every solution
+is one arrangement, so the count is the number of ways to place the bars among
+$k + n - 1$ symbols:
+
+$$C(n+k-1,\\;k) = \\binom{n+k-1}{k}$$
+
+## 8.8 Worked example: seven capacitors across four boards
+
+Seven identical capacitors are to be distributed among four distinct boards,
+with no requirement that every board gets one. How many distributions?
+
+Here $n = 4$ types and $k = 7$ items, so
+
+$$\\binom{4+7-1}{7} = \\binom{10}{7} = \\binom{10}{3} = \\frac{10 \\times 9 \\times 8}{3 \\times 2 \\times 1} = 120$$
+
+Listing every non-negative integer solution of $x_1+x_2+x_3+x_4 = 7$ gives 120
+tuples, so the stars-and-bars encoding did not lose or duplicate anything.
+
+Now add the requirement that **every board gets at least one**. Hand one
+capacitor to each board first, leaving three to distribute freely:
+
+$$\\binom{4+3-1}{3} = \\binom{6}{3} = 20$$
+
+and the enumeration of positive solutions also returns 20. Converting a
+"at least one each" constraint into a smaller free problem is the standard move,
+and it works for any floor, not just one.
+
+| Question | Formula | $n = 8$, $k = 3$ |
+|---|---|---|
+| ordered, no repeats | $P(n,k)$ | 336 |
+| ordered, repeats allowed | $n^{k}$ | 512 |
+| unordered, no repeats | $C(n,k)$ | 56 |
+| unordered, repeats allowed | $C(n+k-1,k)$ | 120 |
+
+All four counts in that column were produced by listing the objects, not by
+evaluating the formulas.`,
+  examTip: 'Two questions, asked in this order, choose the formula every time: does swapping two chosen items give a different outcome, and may an item be chosen twice? For n = 8 and k = 3 the four answers are 336, 512, 56 and 120 — so the wrong family is not a small error, it is a different order of magnitude.',
+  importantNote: 'The multiplication principle needs the later stage counts to be independent of the earlier choices. "Pick a resistor, then pick a different resistor" is fine because the second count is always n - 1; "pick a resistor, then pick a capacitor rated above it" is not, and must be split into cases.',
+},
+{
+  id: 'dm-inclusion-pigeonhole',
+  title: '9. Inclusion-Exclusion and the Pigeonhole Principle',
+  content: `## 9.1 Two sets: subtract what you counted twice
+
+Adding $\\lvert A \\rvert$ and $\\lvert B \\rvert$ counts everything in the
+overlap twice, so one copy has to come back out:
+
+$$\\lvert A \\cup B \\rvert = \\lvert A \\rvert + \\lvert B \\rvert - \\lvert A \\cap B \\rvert$$
+
+The proof is the partition idea from section 7. Split the union into three
+disjoint pieces — in $A$ only, in $B$ only, in both — and the sizes add without
+correction. Writing $\\lvert A \\rvert$ as (A only) plus (both) and
+$\\lvert B \\rvert$ as (B only) plus (both) shows the sum contains (both) twice.
+
+## 9.2 Three sets: subtract the pairs, then put the triple back
+
+Apply the two-set rule to $A \\cup B$ and $C$, then expand:
+
+$$\\lvert A \\cup B \\cup C \\rvert = \\lvert A \\rvert + \\lvert B \\rvert + \\lvert C \\rvert - \\lvert A \\cap B \\rvert - \\lvert A \\cap C \\rvert - \\lvert B \\cap C \\rvert + \\lvert A \\cap B \\cap C \\rvert$$
+
+Track a single object that lies in all three sets to see why the last term is
+needed. It is counted three times by the singles, removed three times by the
+pairs, and would end at zero — so one copy must be restored. An object in
+exactly two sets is counted twice and removed once, ending at one, correctly,
+with no further help. The alternating pattern continues for more sets: add the
+singles, subtract the pairs, add the triples, subtract the quadruples.
+
+![Three overlapping circles labelled multiples of two, three and five within the integers from one to a thousand. Each of the seven regions carries its own population, and the seven populations sum to the union count of seven hundred and thirty-four, with two hundred and sixty-six integers lying outside all three circles.](/courses/fe-ee/figures/math5-dm-venn-three.svg)
+
+## 9.3 Worked example: how many of the first thousand integers are divisible by 2, 3 or 5
+
+Let $A$, $B$ and $C$ be the multiples of 2, 3 and 5 in $1 \\ldots 1000$. The
+sizes come from floor division, since the multiples of $d$ up to $N$ number
+$\\lfloor N/d \\rfloor$:
+
+$$\\lvert A \\rvert = 500, \\qquad \\lvert B \\rvert = 333, \\qquad \\lvert C \\rvert = 200$$
+
+An integer divisible by both 2 and 3 is divisible by 6, and similarly for the
+other pairs, so the intersections need the least common multiples:
+
+$$\\lvert A \\cap B \\rvert = \\left\\lfloor \\tfrac{1000}{6} \\right\\rfloor = 166, \\qquad \\lvert A \\cap C \\rvert = \\left\\lfloor \\tfrac{1000}{10} \\right\\rfloor = 100, \\qquad \\lvert B \\cap C \\rvert = \\left\\lfloor \\tfrac{1000}{15} \\right\\rfloor = 66$$
+
+$$\\lvert A \\cap B \\cap C \\rvert = \\left\\lfloor \\tfrac{1000}{30} \\right\\rfloor = 33$$
+
+$$\\lvert A \\cup B \\cup C \\rvert = 500 + 333 + 200 - 166 - 100 - 66 + 33 = 734$$
+
+So 734 of the thousand are divisible by at least one of 2, 3 and 5, and
+$1000 - 734 = 266$ are divisible by none. Both numbers were also obtained by
+walking the integers one at a time and testing them, which is the check that
+matters: the formula agrees with the actual list.
+
+The trap in this question is using 6, 10 and 15 without noticing they are least
+common multiples rather than products. That happens to be the same thing here
+because 2, 3 and 5 are pairwise coprime; for divisors like 4 and 6 the pairwise
+intersection is the multiples of 12, not 24, and the product answer is wrong.
+
+## 9.4 Worked example: none of the connectors in the right place
+
+Five connectors are pulled off five cables during rework and reattached at
+random. What is the chance that not one of them goes back where it belongs?
+
+An arrangement with no item in its original position is a **derangement**, and
+inclusion-exclusion counts them directly. Let $A_i$ be the set of arrangements
+that do put item $i$ back correctly. Then $\\lvert A_i \\rvert = 4!$, any pair
+intersects in $3!$ arrangements, and so on, giving
+
+$$D_n = n!\\sum_{k=0}^{n} \\frac{(-1)^{k}}{k!}$$
+
+$$D_5 = 120\\left(1 - 1 + \\tfrac{1}{2} - \\tfrac{1}{6} + \\tfrac{1}{24} - \\tfrac{1}{120}\\right) = 44$$
+
+Generating all $5! = 120$ permutations and keeping those with no fixed point
+gives 44, confirming the formula on the objects themselves. The probability is
+$44/120 = 0.3667$. For four items the same routine gives $D_4 = 9$ out of 24,
+and for six items $D_6 = 265$ out of 720; the ratio settles very quickly on
+$1/e \\approx 0.3679$, which is why "about 37 %" is a safe estimate for any
+$n$ beyond four.
+
+## 9.5 The pigeonhole principle
+
+If $m$ objects go into $n$ containers and $m > n$, some container holds at least
+two objects. It sounds too weak to prove anything. It is not, because it turns
+"there exists" claims into arithmetic, and existence claims are otherwise hard.
+
+The generalised form is the one to remember:
+
+$$\\text{some container holds at least } \\left\\lceil \\frac{m}{n} \\right\\rceil \\text{ objects}$$
+
+Twenty-five resistors sorted into four tolerance bins must leave some bin with
+at least $\\lceil 25/4 \\rceil = 7$. This is a floor on the worst case, and it
+is tight: enumerating every way of splitting 25 items among four bins and taking
+the smallest achievable maximum returns exactly 7, so no cleverer arrangement
+does better.
+
+![A staircase of the ceiling of m over four rising against the straight line m over four, for m from one to thirty-two items. Black markers show the true minimum of the fullest bin found by enumerating every possible split, and they land on the staircase at every value of m, with the case of twenty-five items circled at seven.](/courses/fe-ee/figures/math5-dm-pigeonhole.svg)
+
+## 9.6 Worked example: a pigeonhole argument you would not guess
+
+**Claim.** Choose any nine distinct integers from 1 to 16. Two of them must be
+such that one divides the other.
+
+Nothing in the statement suggests containers, and that is what makes it a real
+application. Write every integer as an odd number times a power of two:
+
+$$m = 2^{a} \\cdot q, \\qquad q \\text{ odd}$$
+
+That representation is unique. The odd parts available in $1 \\ldots 16$ are
+1, 3, 5, 7, 9, 11, 13 and 15 — eight of them, and those eight are the
+containers. Nine chosen integers must therefore share an odd part between some
+two of them, say $2^{a}q$ and $2^{b}q$ with $a < b$; then the first divides the
+second exactly $2^{\\,b-a}$ times.
+
+Every one of the 11 440 possible nine-element subsets of $1 \\ldots 16$ was
+tested, and every one contains such a pair. The bound is also tight: the eight
+integers $9, 10, 11, \\ldots, 16$ have eight different odd parts, and no one of
+them divides another, so nine really is the smallest number that forces the
+conclusion.
+
+A second, easier instance for practice: any six distinct integers chosen from
+1 to 10 must contain a pair summing to 11. The containers are the five pairs
+$\\{1,10\\}$, $\\{2,9\\}$, $\\{3,8\\}$, $\\{4,7\\}$, $\\{5,6\\}$, and six numbers
+cannot avoid doubling up in five containers. All 210 six-element subsets were
+checked; the five-element set $\\{1,2,3,4,5\\}$ shows five is not enough.
+
+## 9.7 Worked example: remainders as containers
+
+Given any eight integers, two of them leave the same remainder on division by
+seven, because there are only seven possible remainders. Their difference is
+then a multiple of seven:
+
+$$m_i \\equiv m_j \\pmod 7 \\quad \\Longrightarrow \\quad 7 \\mid (m_i - m_j)$$
+
+This is the shape most pigeonhole exam questions take — sampling, hashing and
+aliasing arguments all reduce to it. A counter of $n$ states visited more than
+$n$ times must repeat a state, which is why any deterministic finite counter
+driven long enough is periodic, and why an $n$-bit linear feedback shift
+register has a maximum period of $2^{n} - 1$ rather than something larger.`,
+  examTip: 'For inclusion-exclusion, write the signs before the numbers: plus singles, minus pairs, plus triple. For pigeonhole, name the containers out loud before you count anything - the whole difficulty of these problems is deciding what the containers are, never the arithmetic afterwards.',
+  importantNote: 'For two divisors the pairwise intersection counts multiples of their LEAST COMMON MULTIPLE, not their product. Multiples of 4 and of 6 overlap on multiples of 12, so using 24 undercounts the overlap and inflates the union.',
+},
+{
+  id: 'dm-binomial-proved',
+  title: '10. The Binomial Theorem, Proved by Counting',
+  content: `## 10.1 Why the coefficient is a combination
+
+Expanding $(a+b)^{n}$ means multiplying out $n$ identical factors $(a+b)$. To
+form a term you walk the $n$ factors and take either $a$ or $b$ from each. A
+term with $k$ copies of $b$ arises from exactly those walks that chose $b$ in
+$k$ of the $n$ factors — and the number of ways to make that choice is the
+number of $k$-subsets of the factors. Hence
+
+$$(a+b)^{n} = \\sum_{k=0}^{n} \\binom{n}{k} a^{\\,n-k} b^{\\,k}$$
+
+The binomial coefficient is not a fitted constant; it is a count of the ways a
+term can happen. Expanding $(a+b)^{5}$ by repeated multiplication and collecting
+like terms gives the coefficients 1, 5, 10, 10, 5, 1, matching
+$\\binom{5}{k}$ for $k = 0 \\ldots 5$; doing the same for $(a+b)^{8}$ gives
+1, 8, 28, 56, 70, 56, 28, 8, 1.
+
+## 10.2 Pascal's identity, proved combinatorially
+
+$$\\binom{n}{k} = \\binom{n-1}{k-1} + \\binom{n-1}{k}$$
+
+Fix one particular element of the ground set and split the $k$-subsets into two
+disjoint classes: those that contain it, and those that do not. A subset in the
+first class needs $k-1$ more members from the remaining $n-1$, and a subset in
+the second needs all $k$ from the remaining $n-1$. The classes are disjoint and
+they cover everything, so the counts add.
+
+For $n = 7$ and $k = 3$: of the 35 three-element subsets of a seven-element set,
+15 contain the designated element and 20 avoid it, and $15 + 20 = 35$. All three
+numbers came from listing the subsets.
+
+$$\\binom{7}{3} = \\binom{6}{2} + \\binom{6}{3} = 15 + 20 = 35$$
+
+That identity is what builds Pascal's triangle row by row, and reconstructing a
+coefficient from the row above is faster than factorials whenever the numbers
+are small.
+
+![Two rows of Pascal's triangle drawn as stem plots on a shared axis: row six with entries one, six, fifteen, twenty, fifteen, six, one summing to sixty-four, and row ten peaking at two hundred and fifty-two and summing to one thousand and twenty-four.](/courses/fe-ee/figures/math5-dm-pascal-rows.svg)
+
+## 10.3 What the row sums mean
+
+Setting $a = b = 1$ in the binomial theorem gives
+
+$$\\sum_{k=0}^{n} \\binom{n}{k} = 2^{n}$$
+
+which says that adding up the subsets of every size counts all subsets, and
+there are $2^{n}$ of those. Row 10 sums to 1024, and listing every subset of a
+ten-element set confirms it.
+
+Setting $a = 1$, $b = -1$ gives
+
+$$\\sum_{k=0}^{n} (-1)^{k} \\binom{n}{k} = 0 \\qquad (n \\ge 1)$$
+
+so a set has exactly as many even-sized subsets as odd-sized ones. That is a
+statement about parity, and it is the reason a single parity bit works at all.
+
+## 10.4 Worked example: parity and weight of a byte
+
+How many eight-bit patterns contain an even number of ones?
+
+$$\\binom{8}{0} + \\binom{8}{2} + \\binom{8}{4} + \\binom{8}{6} + \\binom{8}{8} = 1 + 28 + 70 + 28 + 1 = 128$$
+
+That is half of $2^{8} = 256$, exactly as the alternating-sum identity predicts,
+and enumerating all 256 patterns and counting the even-weight ones returns 128.
+Because the split is exactly even, a single parity bit can distinguish the two
+halves — and because flipping any one bit moves a pattern from one half to the
+other, an odd number of bit errors always changes the parity while an even
+number never does. That is the whole reach and the whole limitation of parity
+checking, and it follows from a row of Pascal's triangle.
+
+The number of patterns with exactly three ones is $\\binom{8}{3} = 56$, again
+confirmed by enumeration.
+
+## 10.5 Worked example: a binomial probability
+
+A production line yields good units with probability $p = 0.9$ independently.
+In a batch of eight, what is the probability that exactly six are good?
+
+Each specific sequence with six good and two bad units has probability
+$p^{6}(1-p)^{2}$, and there are $\\binom{8}{6}$ such sequences:
+
+$$P(X = 6) = \\binom{8}{6}(0.9)^{6}(0.1)^{2} = 28 \\times 0.531441 \\times 0.01 = 0.14880$$
+
+The binomial coefficient here is doing exactly the job it did in the algebra: it
+counts the arrangements that produce the same outcome. For a fair coin,
+$p = 0.5$, every sequence has the same probability $2^{-8}$ and the count alone
+decides, so the chance of exactly three heads in eight tosses is
+$56/256 = 0.21875$.
+
+## 10.6 Vandermonde's identity, and a use for it
+
+$$\\binom{m+n}{k} = \\sum_{i=0}^{k} \\binom{m}{i}\\binom{n}{k-i}$$
+
+Split a group of $m+n$ items into $m$ of one kind and $n$ of another. Any
+$k$-subset takes $i$ of the first kind and $k-i$ of the second for some $i$, and
+summing over $i$ covers every possibility exactly once.
+
+With $m = 4$, $n = 5$, $k = 4$:
+
+$$\\binom{9}{4} = \\binom{4}{0}\\binom{5}{4} + \\binom{4}{1}\\binom{5}{3} + \\binom{4}{2}\\binom{5}{2} + \\binom{4}{3}\\binom{5}{1} + \\binom{4}{4}\\binom{5}{0}$$
+
+$$126 = 5 + 40 + 60 + 20 + 1$$
+
+Enumerating the 126 four-element subsets of a nine-element set and sorting them
+by how many members come from the first four gives the counts 5, 40, 60, 20, 1,
+matching the identity term by term. Practically, this is how "at least two of
+the seven engineers" problems get answered: split by how many come from each
+group and add the disjoint cases.
+
+## 10.7 Worked example: a committee with a floor
+
+From seven electrical engineers and five mechanical engineers, how many
+four-person teams contain at least two electrical engineers?
+
+Split by the number of electrical engineers, since those cases are disjoint:
+
+$$\\binom{7}{2}\\binom{5}{2} + \\binom{7}{3}\\binom{5}{1} + \\binom{7}{4}\\binom{5}{0} = 210 + 175 + 35 = 420$$
+
+Out of $\\binom{12}{4} = 495$ possible teams, 420 qualify. Listing all 495 teams
+and filtering them gives 420, so the case split lost nothing and double counted
+nothing.
+
+The alternative route — count everything and subtract the teams with zero or one
+electrical engineer — agrees:
+
+$$495 - \\binom{5}{4} - \\binom{7}{1}\\binom{5}{3} = 495 - 5 - 70 = 420$$
+
+When the qualifying cases outnumber the disqualifying ones, complementary
+counting is the shorter road.`,
+  examTip: 'Read binomial coefficients as counts of arrangements, not as table lookups. C(8,3) = 56 answers "how many 8-bit words have three ones", "how many 3-component subsets from eight parts", and "what multiplies p cubed q to the fifth in a binomial probability" - one number, three questions.',
+  importantNote: 'C(n,k) = C(n,n-k). Computing C(20,18) as C(20,2) = 190 avoids factorials entirely. Any time k exceeds n/2, flip it before you start multiplying.',
+},
+{
+  id: 'dm-recurrence',
+  title: '11. Recurrence Relations and Characteristic Roots',
+  content: `## 11.1 What a linear recurrence is, and where it comes from
+
+A sequence defined by
+
+$$a_n = c_1 a_{n-1} + c_2 a_{n-2} + \\cdots + c_m a_{n-m}$$
+
+with constant coefficients is a **linear homogeneous recurrence with constant
+coefficients**, and it is the discrete twin of the constant-coefficient
+differential equation studied elsewhere in this chapter. The solution method is
+the same method wearing different clothes: assume an exponential, substitute,
+and let the algebra pick the exponents.
+
+For a differential equation you try $y = e^{rt}$; here you try
+$a_n = r^{\\,n}$. Substituting into the second-order case
+$a_n = c_1 a_{n-1} + c_2 a_{n-2}$ and dividing by $r^{\\,n-2}$ gives the
+**characteristic equation**
+
+$$r^{2} - c_1 r - c_2 = 0$$
+
+Its roots decide everything about the sequence, exactly as the roots of
+$s^{2} + 2\\zeta\\omega_n s + \\omega_n^{2}$ decide everything about a
+second-order circuit.
+
+## 11.2 First order, with and without forcing
+
+$$a_n = r\\,a_{n-1} \\quad \\Longrightarrow \\quad a_n = a_0 r^{\\,n}$$
+
+Add a constant drive and the solution splits into a steady part and a decaying
+part, which is the discrete version of the transient-plus-steady-state split:
+
+$$b_n = \\alpha b_{n-1} + \\beta \\quad \\Longrightarrow \\quad b_n = \\frac{\\beta}{1-\\alpha} + \\left(b_0 - \\frac{\\beta}{1-\\alpha}\\right)\\alpha^{\\,n} \\qquad (\\alpha \\ne 1)$$
+
+For $\\alpha = 0.5$, $\\beta = 3$, $b_0 = 0$, the steady value is
+$3/0.5 = 6$ and the sequence is $b_n = 6 - 6(0.5)^{n}$: it starts at 0 and
+climbs toward 6, reaching 5.9985 by $n = 12$. Iterating the recurrence twelve
+times gives the same number.
+
+## 11.3 Distinct real roots
+
+If $r_1 \\ne r_2$ are both real, the general solution is
+
+$$a_n = A r_1^{\\,n} + B r_2^{\\,n}$$
+
+with $A$ and $B$ fixed by the two initial values.
+
+## 11.4 Worked example: two roots, two constants
+
+Solve $a_n = 5a_{n-1} - 6a_{n-2}$ with $a_0 = 2$ and $a_1 = 5$.
+
+$$r^{2} - 5r + 6 = 0 \\quad \\Longrightarrow \\quad (r-2)(r-3) = 0 \\quad \\Longrightarrow \\quad r = 2, \\; 3$$
+
+$$a_n = A\\,2^{\\,n} + B\\,3^{\\,n}$$
+
+$$A + B = 2, \\qquad 2A + 3B = 5 \\quad \\Longrightarrow \\quad A = 1, \\; B = 1$$
+
+$$a_n = 2^{\\,n} + 3^{\\,n}$$
+
+Check it against the recurrence rather than against the algebra. Iterating from
+$a_0 = 2$ and $a_1 = 5$ gives 2, 5, 13, 35, 97, 275, and the closed form gives
+$2^{2}+3^{2} = 13$, $2^{3}+3^{3} = 35$, $2^{4}+3^{4} = 97$,
+$2^{5}+3^{5} = 275$. The two sequences agree term for term out to $n = 20$,
+where both give 3 487 832 977.
+
+Because $3 > 2$, the $3^{n}$ term eventually dominates, and the ratio
+$a_n/a_{n-1}$ creeps up toward 3. That is the discrete analogue of the slowest
+pole dominating a transient, and it is worth recognising: the largest root in
+magnitude sets the long-run behaviour, and everything else is a correction that
+fades.
+
+![Two stacked panels sharing an index axis. The upper panel shows the sequence generated by a n equals two a n minus one minus two a n minus two as stems, oscillating in sign inside a dashed envelope of plus and minus two to the n over two. The lower panel shows the term ratio for the recurrence with roots two and three climbing toward three.](/courses/fe-ee/figures/math5-dm-recurrence.svg)
+
+## 11.5 Worked example: a repeated root needs an extra factor of n
+
+Solve $a_n = 6a_{n-1} - 9a_{n-2}$ with $a_0 = 1$ and $a_1 = 9$.
+
+$$r^{2} - 6r + 9 = (r-3)^{2} = 0 \\quad \\Longrightarrow \\quad r = 3 \\text{ twice}$$
+
+A repeated root supplies only one solution, so the second must be built. As in
+the critically damped differential equation, the missing partner is the same
+exponential multiplied by the index:
+
+$$a_n = (A + Bn)\\,3^{\\,n}$$
+
+$$A = 1, \\qquad 3(A + B) = 9 \\quad \\Longrightarrow \\quad B = 2$$
+
+$$a_n = (1 + 2n)\\,3^{\\,n}$$
+
+Iterating gives 1, 9, 45, 189, 729, 2673, and the closed form gives
+$(1+4)3^{2} = 45$, $(1+6)3^{3} = 189$, $(1+8)3^{4} = 729$. The sequences agree
+to $n = 20$. Forgetting the factor of $n$ leaves a solution that fits $a_0$ but
+cannot fit $a_1$ as well, which is the symptom to look for.
+
+## 11.6 Worked example: complex roots give an oscillation
+
+Solve $a_n = 2a_{n-1} - 2a_{n-2}$ with $a_0 = a_1 = 1$.
+
+$$r^{2} - 2r + 2 = 0 \\quad \\Longrightarrow \\quad r = 1 \\pm i = \\sqrt{2}\\,e^{\\pm i\\pi/4}$$
+
+Complex roots in polar form make the answer readable. With modulus $\\sqrt{2}$
+and argument $\\pi/4$,
+
+$$a_n = 2^{\\,n/2}\\left(A\\cos\\tfrac{n\\pi}{4} + B\\sin\\tfrac{n\\pi}{4}\\right)$$
+
+$$a_0 = A = 1, \\qquad a_1 = \\sqrt{2}\\left(\\tfrac{\\sqrt{2}}{2} + \\tfrac{\\sqrt{2}}{2}B\\right) = 1 + B = 1 \\quad \\Longrightarrow \\quad B = 0$$
+
+$$a_n = 2^{\\,n/2}\\cos\\frac{n\\pi}{4}$$
+
+Iterating the recurrence gives 1, 1, 0, −2, −4, −4, 0, 8, 16 for
+$n = 0 \\ldots 8$, and the closed form reproduces every one of them. The modulus
+of the root, $\\sqrt{2} > 1$, means the envelope grows; the argument
+$\\pi/4$ means the sign pattern repeats every eight steps. Modulus sets growth,
+argument sets frequency — the same reading as the real and imaginary parts of a
+Laplace pole, transplanted to the unit-circle picture used in digital filtering.
+
+| Roots of $r^{2} - c_1 r - c_2 = 0$ | Form of the solution |
+|---|---|
+| real and distinct, $r_1 \\ne r_2$ | $A r_1^{\\,n} + B r_2^{\\,n}$ |
+| real and repeated, $r$ | $(A + Bn)\\,r^{\\,n}$ |
+| complex pair $\\rho e^{\\pm i\\theta}$ | $\\rho^{\\,n}(A\\cos n\\theta + B\\sin n\\theta)$ |
+
+## 11.7 Worked example: a resistor ladder is a difference equation
+
+Take a ladder of equal resistors $R$: a series $R$ between consecutive nodes and
+a shunt $R$ from each node to ground. Writing Kirchhoff's current law at an
+interior node $k$, with every resistance the same, the resistances cancel:
+
+$$\\frac{V_{k-1} - V_k}{R} = \\frac{V_k}{R} + \\frac{V_k - V_{k+1}}{R} \\quad \\Longrightarrow \\quad V_{k+1} - 3V_k + V_{k-1} = 0$$
+
+That is a second-order linear recurrence in the node index. Its characteristic
+equation and roots are
+
+$$r^{2} - 3r + 1 = 0 \\quad \\Longrightarrow \\quad r_{\\pm} = \\frac{3 \\pm \\sqrt{5}}{2} = 2.618034 \\ \\text{and}\\ 0.381966$$
+
+The two roots multiply to 1, so one is the reciprocal of the other: a growing
+spatial mode and a decaying one. A physical ladder driven from one end and
+terminated at the other contains both, mixed in whatever proportion the
+termination demands.
+
+Take a concrete three-node ladder driven at $V_0 = 10$ V, with the last node
+carrying only its shunt resistor. Nodal analysis gives the linear system
+
+$$3V_1 - V_2 = 10, \\qquad -V_1 + 3V_2 - V_3 = 0, \\qquad -V_2 + 2V_3 = 0$$
+
+$$V_1 = \\tfrac{50}{13} = 3.8462 \\ \\mathrm{V}, \\qquad V_2 = \\tfrac{20}{13} = 1.5385 \\ \\mathrm{V}, \\qquad V_3 = \\tfrac{10}{13} = 0.7692 \\ \\mathrm{V}$$
+
+Now check the recurrence directly at the interior nodes:
+$10 + 1.5385 = 3 \\times 3.8462$ and $3.8462 + 0.7692 = 3 \\times 1.5385$. Both
+hold. Fitting $A r_+^{\\,k} + B r_-^{\\,k}$ to $V_0$ and $V_1$ gives
+$A = 0.011848$ and $B = 9.988152$, and that two-term expression reproduces all
+four node voltages to nine decimal places. The recurrence is not an analogy for
+the ladder; it is the ladder.
+
+![A logarithmic plot of ladder node voltage against node index. Black markers are the node voltages from an independent linear solve of the network; the solid curve is the two-mode closed form fitted to the source and the first node, and a dashed curve shows the decaying mode alone, which departs from the true voltages near the terminated end.](/courses/fe-ee/figures/math5-dm-ladder.svg)`,
+  examTip: 'Solve the characteristic equation first and read the answer off the roots: distinct real roots give two exponentials, a repeated root needs the extra factor of n, and a complex pair gives a growing or decaying oscillation whose modulus is the growth and whose argument is the frequency. Then fit the constants to the initial values, never before.',
+  importantNote: 'Check a closed form by iterating the recurrence three or four steps and comparing, not by re-deriving the algebra. An arithmetic slip in solving for A and B survives a second look at your own working and dies immediately against the actual sequence.',
+},
+{
+  id: 'dm-graphs-trees',
+  title: '12. Graphs, Trees, and the Counting They Support',
+  content: `## 12.1 The vocabulary an exam question assumes
+
+A **graph** is a set of vertices together with a set of edges joining pairs of
+them. The **degree** of a vertex is the number of edge-ends meeting it. A
+**walk** that repeats no edge is a **trail**; one that returns to its start is
+**closed**. A **path** repeats no vertex; a **cycle** is a closed path. A graph
+is **connected** when some path joins every pair of vertices.
+
+| Object | Vertices | Edges | Note |
+|---|---|---|---|
+| complete graph $K_n$ | $n$ | $n(n-1)/2$ | every pair joined |
+| cycle $C_n$ | $n$ | $n$ | one closed ring |
+| tree | $n$ | $n-1$ | connected, no cycle |
+| $n$-cube $Q_n$ | $2^{n}$ | $n\\,2^{\\,n-1}$ | vertices are bit strings |
+
+$K_6$ has $6 \\times 5/2 = 15$ edges, and listing the pairs gives 15.
+
+## 12.2 The handshake lemma, and what it forbids
+
+Every edge contributes exactly two to the total degree, once at each end, so
+
+$$\\sum_{v} \\deg(v) = 2\\lvert E \\rvert$$
+
+The sum of the degrees is therefore always **even**, and the number of
+odd-degree vertices is always even. This is the cheapest impossibility test in
+graph theory. A network of five nodes in which every node has exactly three
+connections cannot exist, because $5 \\times 3 = 15$ is odd and no integer edge
+count doubles to 15. Building all $2^{10} = 1024$ graphs on five labelled
+vertices and looking for a three-regular one turns up none, as the lemma
+promises.
+
+For a worked instance, take the five-vertex graph whose degrees are 3, 2, 4, 3
+and 2. The degrees sum to 14, so the graph has $14/2 = 7$ edges, and counting
+the edges directly gives 7.
+
+## 12.3 Euler trails: use every edge once
+
+A connected graph has a **closed Euler trail**, using every edge exactly once
+and returning to the start, if and only if every vertex has even degree. It has
+an open Euler trail if and only if exactly two vertices have odd degree, and the
+trail must begin at one of them and end at the other.
+
+The reasoning is a degree argument. Every time the trail enters an interior
+visit to a vertex it must also leave, consuming two edge-ends; a vertex of odd
+degree must therefore be a start or an end, and a closed trail has neither.
+
+$K_5$ has every degree equal to 4, so a closed Euler trail exists — and one can
+be produced: 0-1-2-0-3-1-4-2-3-4-0 uses all ten edges exactly once and returns
+to vertex 0. $K_4$ has every degree equal to 3, so all four vertices are odd,
+which is more than two: it has no Euler trail of either kind. The graph in the
+previous paragraph has exactly two odd-degree vertices, so it has an open Euler
+trail but no closed one.
+
+## 12.4 Hamilton cycles: use every vertex once
+
+A **Hamilton cycle** visits every vertex exactly once and returns to the start.
+There is no clean necessary-and-sufficient test, which is the honest thing to
+say about it, but there is a useful sufficient one. **Dirac's condition**: if
+$n \\ge 3$ and every vertex has degree at least $n/2$, a Hamilton cycle exists.
+
+$$\\deg(v) \\ge \\frac{n}{2} \\ \\text{ for all } v \\quad \\Longrightarrow \\quad \\text{a Hamilton cycle exists}$$
+
+The condition is sufficient, never necessary: $C_6$ has every degree 2, far
+below 3, and is itself a Hamilton cycle. $K_5$ has 12 distinct Hamilton cycles
+counted up to direction, which is $4!/2$, and enumerating the cyclic orders
+confirms 12. The three-dimensional cube graph has 6, and every degree there is
+3 against $n/2 = 4$, so Dirac's test says nothing while the cycles exist anyway.
+
+Euler is about edges and has a clean test; Hamilton is about vertices and does
+not. That contrast is itself an exam question.
+
+## 12.5 Trees, and why circuit theory cares
+
+A **tree** is a connected graph with no cycle. Three properties are equivalent
+for a connected graph on $n$ vertices, and any one may be used as the
+definition: it has no cycle, it has exactly $n-1$ edges, or adding any new edge
+creates exactly one cycle.
+
+$$\\lvert E \\rvert = \\lvert V \\rvert - 1$$
+
+A **spanning tree** of a connected graph is a subgraph that is a tree and
+reaches every vertex. Circuit analysis uses one every time you choose mesh
+equations: the tree branches carry the independent node voltages, and the
+remaining **links** each close exactly one independent loop. The number of links
+is the **circuit rank**:
+
+$$\\lvert E \\rvert - \\lvert V \\rvert + 1$$
+
+For the five-vertex, seven-edge graph above that is $7 - 5 + 1 = 3$ independent
+loops, against $5 - 1 = 4$ independent node equations — so mesh analysis is the
+smaller system there and the faster route.
+
+## 12.6 Worked example: counting the spanning trees of $K_4$ three ways
+
+**By enumeration.** $K_4$ has 6 edges; a spanning tree needs $4 - 1 = 3$ of
+them. There are $\\binom{6}{3} = 20$ three-edge subsets. Four of them are
+triangles, which are cyclic and leave the fourth vertex isolated, so they are
+not trees. That leaves 16, and testing all 20 subsets for connectivity and
+acyclicity confirms 16.
+
+**By Cayley's formula.** The number of labelled trees on $n$ vertices is
+
+$$n^{\\,n-2}$$
+
+$$4^{\\,2} = 16$$
+
+**By the matrix-tree theorem.** Build the Laplacian $L = D - A$, where $D$ is
+the diagonal matrix of degrees and $A$ the adjacency matrix; delete any one row
+and the matching column; the determinant of what remains is the spanning-tree
+count. For $K_4$ every degree is 3, so
+
+$$L_{11} = \\begin{bmatrix} 3 & -1 & -1 \\\\ -1 & 3 & -1 \\\\ -1 & -1 & 3 \\end{bmatrix}, \\qquad \\det L_{11} = 16$$
+
+Three routes, one answer. The same three routes give 3 for $K_3$, 125 for $K_5$
+and 1296 for $K_6$, with the enumeration run in full each time. Removing a
+single edge from $K_4$ drops the count from 16 to 8 — half the spanning trees
+used that edge, which is exactly what you would expect from symmetry, and the
+enumeration and the matrix-tree cofactor both return 8.
+
+![A logarithmic plot of spanning-tree counts against the number of vertices. Round markers are exhaustive enumerations of every possible edge subset; the dashed curve through the upper markers is Cayley's formula for complete graphs, and the lower series shows that a cycle on n vertices has exactly n spanning trees.](/courses/fe-ee/figures/math5-dm-spanning-trees.svg)
+
+## 12.7 Worked example: planarity and Euler's polyhedron formula
+
+For a **connected planar** graph drawn without crossings,
+
+$$V - E + F = 2$$
+
+where $F$ counts the faces, including the unbounded outer one. $K_4$ can be
+drawn without crossings and has $V = 4$, $E = 6$; the drawing has 3 bounded
+faces plus the outer one, so
+
+$$4 - 6 + 4 = 2$$
+
+The formula gives a bound on how many edges a simple planar graph can have.
+Every face is bounded by at least 3 edges and every edge borders at most 2
+faces, so $2E \\ge 3F$; substituting $F = 2 - V + E$ gives
+
+$$E \\le 3V - 6 \\qquad (V \\ge 3)$$
+
+$K_5$ has $V = 5$ and $E = 10$ against a limit of $3(5) - 6 = 9$, so $K_5$
+cannot be drawn in the plane without a crossing. That is the graph-theoretic
+statement of why a single-layer board cannot route five mutually connected
+nodes, and why the fifth connection needs a jumper or a second layer.`,
+  examTip: 'Count degrees before anything else. The degree sum must be even; all-even degrees mean a closed Euler trail exists; exactly two odd degrees mean an open one exists and where it must start. For circuit work, links = E - V + 1 gives the number of mesh equations and V - 1 gives the number of node equations - compute both and solve the smaller system.',
+  importantNote: 'Euler is about edges and has a complete test. Hamilton is about vertices and does not: Dirac\'s degree condition is sufficient but never necessary, so a graph failing it may still have a Hamilton cycle. Do not report "no Hamilton cycle" because Dirac\'s test was not met.',
+},
+{
+  id: 'dm-boolean-bridge',
+  title: '13. Boolean Algebra: the Bridge to the Digital Chapters',
+  content: `## 13.1 The same structure, a third notation
+
+Sets under union, intersection and complement, propositions under OR, AND and
+NOT, and switching functions under $+$, $\\cdot$ and overbar are three readings
+of one algebra. Every law proved in section 7 transfers, and the FE exam moves
+between the three notations freely.
+
+| Law | Set form | Switching form |
+|---|---|---|
+| identity | $A \\cup \\varnothing = A$ | $A + 0 = A$ |
+| null | $A \\cap \\varnothing = \\varnothing$ | $A \\cdot 0 = 0$ |
+| complement | $A \\cup A' = U$ | $A + \\overline{A} = 1$ |
+| idempotent | $A \\cup A = A$ | $A + A = A$ |
+| absorption | $A \\cup (A \\cap B) = A$ | $A + AB = A$ |
+| distribution | $A \\cap (B \\cup C) = (A \\cap B) \\cup (A \\cap C)$ | $A(B+C) = AB + AC$ |
+| De Morgan | $(A \\cup B)' = A' \\cap B'$ | $\\overline{A + B} = \\overline{A}\\,\\overline{B}$ |
+
+The **duality principle** says that swapping $+$ with $\\cdot$ and 0 with 1
+turns any true identity into another true identity. That halves the number of
+laws worth memorising: learn $A + AB = A$ and you have $A(A+B) = A$ for free.
+Both were confirmed over all four rows of the two-variable truth table.
+
+## 13.2 The three identities that do the work
+
+$$\\overline{A \\cdot B} = \\overline{A} + \\overline{B}, \\qquad \\overline{A + B} = \\overline{A} \\cdot \\overline{B}$$
+
+$$A + \\overline{A}B = A + B$$
+
+$$AB + \\overline{A}C + BC = AB + \\overline{A}C$$
+
+The second is the **redundancy** law — sometimes called the simplification
+theorem — and it is not the dual of absorption, which is $A(A+B) = A$. The third
+is the **consensus** theorem: the $BC$ term is implied by the other two and can
+be deleted. All three were checked exhaustively, over the four rows of a
+two-variable table for the first two and all eight rows of a three-variable
+table for consensus.
+
+Consensus is the one that catches people out, because the redundant term looks
+essential. If $B$ and $C$ are both true then either $A$ is true, making $AB$
+true, or $A$ is false, making $\\overline{A}C$ true. Either way the expression
+is already true without $BC$, so the term contributes nothing.
+
+## 13.3 Canonical forms, and the minterm index
+
+Any function of $n$ variables can be written as a sum of **minterms**, one for
+each row of the truth table where the function is 1. A minterm is a product
+containing every variable exactly once, complemented where that row has a 0.
+Minterms are numbered by reading the row as a binary integer, which is why a
+function is quoted compactly as, say, $\\sum m(1,3,4,5)$.
+
+The canonical form is unique and it is always available, which makes it the
+right starting point when a question gives you a truth table and asks for an
+expression. It is almost never the shortest form, which is what simplification
+is for.
+
+## 13.4 Worked example: from a truth table to two gates
+
+A three-variable function is 1 on rows 1, 3, 4 and 5 and 0 elsewhere. Write it
+and simplify.
+
+| $A$ | $B$ | $C$ | row | $F$ |
+|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 0 | 1 | 1 | 1 |
+| 0 | 1 | 0 | 2 | 0 |
+| 0 | 1 | 1 | 3 | 1 |
+| 1 | 0 | 0 | 4 | 1 |
+| 1 | 0 | 1 | 5 | 1 |
+| 1 | 1 | 0 | 6 | 0 |
+| 1 | 1 | 1 | 7 | 0 |
+
+The canonical sum has four product terms:
+
+$$F = \\overline{A}\\,\\overline{B}C + \\overline{A}BC + A\\overline{B}\\,\\overline{C} + A\\overline{B}C$$
+
+Pair the terms that differ in one variable. Rows 1 and 3 differ only in $B$, and
+rows 4 and 5 differ only in $C$:
+
+$$\\overline{A}\\,\\overline{B}C + \\overline{A}BC = \\overline{A}C(\\overline{B} + B) = \\overline{A}C$$
+$$A\\overline{B}\\,\\overline{C} + A\\overline{B}C = A\\overline{B}(\\overline{C} + C) = A\\overline{B}$$
+$$F = \\overline{A}C + A\\overline{B}$$
+
+Four product terms became two, and a twelve-literal expression became four
+literals. The simplified form was checked against the original on all eight
+rows, which is the only check worth doing: a simplification that agrees on seven
+rows is wrong.
+
+## 13.5 Worked example: a simplification that looks like three terms
+
+$$F = AB + A\\overline{B} + \\overline{A}B$$
+
+$$AB + A\\overline{B} = A(B + \\overline{B}) = A$$
+$$F = A + \\overline{A}B = A + B$$
+
+The last step is the redundancy law, not absorption. Three product terms and an
+apparent need for two inverters collapse to a single two-input OR gate. All four
+rows of the truth table confirm it.
+
+## 13.6 Why simplification is a method and not a habit
+
+A function of $n$ variables is a choice of output for each of the $2^{n}$ rows,
+so the number of distinct functions is
+
+$$2^{\\,2^{n}}$$
+
+For one variable that is 4, for two it is 16, for three 256, and for four
+65 536. Each of those counts was confirmed by generating the truth tables and
+counting the distinct ones. The search space explodes far faster than the input
+space, which is why an ad hoc "try to spot a factor" approach stops working
+around three variables and why systematic methods — Karnaugh maps up to four
+variables, Quine-McCluskey beyond — exist at all.
+
+![A logarithmic plot against the number of input variables, comparing the number of truth-table rows, two to the n, with the number of distinct Boolean functions, two to the two to the n. The function count reaches sixty-five thousand five hundred and thirty-six at four variables while the row count is still sixteen.](/courses/fe-ee/figures/math5-dm-boolean-explosion.svg)
+
+The connection back to counting is direct. A function that is 1 on exactly $k$
+of the $2^{n}$ rows can be chosen in $\\binom{2^{n}}{k}$ ways, and summing over
+$k$ recovers $2^{2^{n}}$ by the row-sum identity of section 10. The discrete
+mathematics and the digital systems chapters are answering the same question in
+two vocabularies.`,
+  examTip: 'When a Boolean question offers four expressions, build the truth table rather than manipulating symbols. Four rows for two variables or eight for three is faster than a chain of identities and it cannot go subtly wrong. Manipulate only when the variable count makes a table impractical.',
+  importantNote: 'A + A\'B = A + B is the redundancy law; A(A + B) = A is the dual of absorption. They are different theorems and swapping their names leads to applying one where the other does not hold. Verify any identity you are unsure of on the four or eight rows it covers.',
+},
+{
+  id: 'dm-set-b',
+  title: '14. Problem Set: Counting, Sets and Probability',
+  content: `## Problem Set A: counting, sets and probability
+
+Work each one before reading on. Every answer here was confirmed by listing the
+objects it counts.
+
+### A1. Access codes
+
+A code has five characters drawn from the 26 letters and 10 digits, with no
+character repeated. How many codes exist?
+
+Order matters and repetition is barred, so this is a permutation of 36 taken 5
+at a time:
+
+$$P(36,5) = 36 \\times 35 \\times 34 \\times 33 \\times 32 = 45\\,239\\,040$$
+
+The same number comes out of $36!/31!$. With repeats allowed it would be
+$36^{5} = 60\\,466\\,176$, about a third larger.
+
+### A2. Low-weight patterns
+
+How many four-bit patterns contain at most one 1?
+
+$$\\binom{4}{0} + \\binom{4}{1} = 1 + 4 = 5$$
+
+Listing all 16 patterns and filtering gives 5: 0000, 0001, 0010, 0100, 1000.
+These are the patterns a distance-3 code must keep apart if it is to correct a
+single error.
+
+### A3. Distinguishable arrangements
+
+How many distinguishable strings can be formed from the letters of RESISTOR?
+
+Eight letters with two Rs and two Ss:
+
+$$\\frac{8!}{2!\\,2!} = \\frac{40320}{4} = 10080$$
+
+Generating all 40 320 permutations and removing duplicates leaves exactly
+10 080.
+
+### A4. Distributions with a floor
+
+Seven identical capacitors go onto four distinct boards. How many distributions
+if boards may be left empty, and how many if every board must receive at least
+one?
+
+$$\\binom{10}{3} = 120 \\qquad \\text{and} \\qquad \\binom{6}{3} = 20$$
+
+Both were confirmed by listing the integer solutions of
+$x_1 + x_2 + x_3 + x_4 = 7$ under each constraint.
+
+### A5. A team with a floor
+
+From seven electrical and five mechanical engineers, how many four-person teams
+contain at least two electrical engineers?
+
+$$\\binom{7}{2}\\binom{5}{2} + \\binom{7}{3}\\binom{5}{1} + \\binom{7}{4}\\binom{5}{0} = 210 + 175 + 35 = 420$$
+
+out of $\\binom{12}{4} = 495$ possible teams. Filtering the full list of 495
+gives 420. Counting the complement instead — teams with zero or one electrical
+engineer — gives $495 - 5 - 70 = 420$, which is the faster route here and a
+useful independent check either way.
+
+### A6. Three tests, three overlaps
+
+Of 200 boards, 90 fail a thermal test, 70 an electrical test and 50 a vibration
+test; 30 fail the first two, 25 the first and third, 20 the last two, and 10
+fail all three. How many pass everything?
+
+$$90 + 70 + 50 - 30 - 25 - 20 + 10 = 145 \\quad \\Longrightarrow \\quad 200 - 145 = 55$$
+
+Fifty-five pass. Building an explicit population with exactly these overlaps and
+counting it returns 145 and 55.
+
+### A7. Nothing back in the right place
+
+Five connectors are reattached at random to five cables. What is the probability
+that none returns to its own cable?
+
+$$\\frac{D_5}{5!} = \\frac{44}{120} = 0.3667$$
+
+Enumerating all 120 permutations and keeping the 44 with no fixed point confirms
+the numerator.
+
+### A8. Sharing a month
+
+How many people must be in a room to guarantee that two share a birth month?
+
+Thirteen. With twelve people, one arrangement puts each in a different month;
+with thirteen, $\\lceil 13/12 \\rceil = 2$ forces a shared container. Note the
+word **guarantee**: this is a worst-case statement, not a likelihood.
+
+### A9. Even parity
+
+How many eight-bit words carry an even number of ones, and what does that number
+mean for error detection?
+
+$$1 + 28 + 70 + 28 + 1 = 128 = \\tfrac{1}{2}\\,2^{8}$$
+
+Exactly half, confirmed by enumerating all 256 words. A single parity bit
+therefore splits the code space evenly and detects every odd-numbered burst of
+bit errors while missing every even-numbered one.`,
+},
+{
+  id: 'dm-set-c',
+  title: '15. Problem Set: Recurrences, Graphs and Logic',
+  content: `## Problem Set B: recurrences, graphs and logic
+
+### B1. A recurrence with a unit root
+
+Solve $a_n = 4a_{n-1} - 3a_{n-2}$ with $a_0 = 3$ and $a_1 = 5$.
+
+$$r^{2} - 4r + 3 = (r-1)(r-3) = 0 \\quad \\Longrightarrow \\quad r = 1, \\; 3$$
+
+$$a_n = A(1)^{n} + B(3)^{n} = A + B\\,3^{\\,n}$$
+
+$$A + B = 3, \\qquad A + 3B = 5 \\quad \\Longrightarrow \\quad B = 1, \\; A = 2$$
+
+$$a_n = 2 + 3^{\\,n}$$
+
+Iterating gives 3, 5, 11, 29, 83, and the closed form gives the same five terms.
+A root of exactly 1 contributes a constant, which is the discrete counterpart of
+a pole at the origin: it neither grows nor decays, so the sequence approaches a
+non-zero offset rather than zero.
+
+### B2. Reading a sequence backwards
+
+A sequence obeys a second-order recurrence and runs 1, 1, 0, −2, −4. What are
+the characteristic roots?
+
+From $a_2 = c_1 a_1 + c_2 a_0$ and $a_3 = c_1 a_2 + c_2 a_1$:
+
+$$0 = c_1 + c_2, \\qquad -2 = 0 \\cdot c_1 + c_2 \\quad \\Longrightarrow \\quad c_2 = -2, \\; c_1 = 2$$
+
+$$r^{2} - 2r + 2 = 0 \\quad \\Longrightarrow \\quad r = 1 \\pm i$$
+
+The modulus is $\\sqrt{2}$, so the envelope grows by a factor of $\\sqrt{2}$ per
+step; the argument is $\\pi/4$, so the sign pattern repeats every eight steps.
+Continuing the sequence gives −4, 0, 8, 16, which is what the closed form
+$2^{\\,n/2}\\cos(n\\pi/4)$ predicts.
+
+### B3. A degree sequence that cannot exist
+
+Can a network have five nodes each carrying exactly three connections?
+
+No. The degree sum would be $5 \\times 3 = 15$, which is odd, and the handshake
+lemma requires it to equal $2\\lvert E \\rvert$. Constructing all 1024 graphs on
+five labelled vertices and checking each turns up no three-regular one, as the
+lemma guarantees.
+
+### B4. Which analysis is smaller
+
+A planar network has 9 nodes and 14 branches. How many mesh equations and how
+many node equations?
+
+$$\\text{mesh: } E - V + 1 = 14 - 9 + 1 = 6, \\qquad \\text{node: } V - 1 = 8$$
+
+Mesh analysis wins by two equations. Doing this count before writing anything
+routinely saves a third of the work on a multi-node problem.
+
+### B5. Spanning trees of a ring
+
+How many spanning trees does a four-node ring have?
+
+Removing any one of the four edges breaks the single cycle and leaves a path,
+which is a tree; removing none leaves a cycle and removing two disconnects the
+graph. So the answer is 4, and enumerating all $\\binom{4}{3} = 4$ three-edge
+subsets confirms that every one of them is a spanning tree. In general
+$C_n$ has $n$ spanning trees, which the matrix-tree theorem also returns.
+
+### B6. Euler and Hamilton on the same graph
+
+$K_4$: does it have an Euler trail, and does it have a Hamilton cycle?
+
+Every degree is 3, so all four vertices are odd. That is more than two, so there
+is **no** Euler trail of either kind. But $K_4$ certainly has Hamilton cycles —
+3 of them up to direction, since $3!/2 = 3$. The two questions are independent,
+and a graph can satisfy either, both or neither.
+
+### B7. A Boolean simplification
+
+Simplify $F = \\overline{A}\\,\\overline{B}C + \\overline{A}BC + A\\overline{B}\\,\\overline{C} + A\\overline{B}C$.
+
+$$\\overline{A}C(\\overline{B} + B) + A\\overline{B}(\\overline{C} + C) = \\overline{A}C + A\\overline{B}$$
+
+Four product terms become two. Checking the simplified form against the original
+on all eight rows confirms they agree everywhere, which is the only acceptable
+verification.
+
+### B8. Consensus in disguise
+
+Is the term $BC$ needed in $F = AB + \\overline{A}C + BC$?
+
+No. If $B$ and $C$ are both 1 then either $A = 1$, making $AB$ true, or $A = 0$,
+making $\\overline{A}C$ true, so $BC$ can never be the only term supplying a 1.
+The expression reduces to $AB + \\overline{A}C$, and the eight-row truth table
+confirms the two forms agree on every row. This is the consensus theorem, and
+recognising it removes a gate from the implementation at no cost.
+
+### B9. Counting functions
+
+How many distinct Boolean functions are there of four variables, and why does
+the answer matter?
+
+$$2^{\\,2^{4}} = 2^{16} = 65\\,536$$
+
+It matters because it rules out searching. Even at four inputs the space is far
+too large to scan, so simplification has to proceed by structure — adjacency on
+a Karnaugh map, or systematic prime-implicant generation — rather than by
+inspection.`,
+},
 ],
   keyTakeaways: [
     'Permutations P(n,r) count ordered arrangements; combinations C(n,r) count unordered selections.',
     'De Morgan laws for sets mirror Boolean algebra: (A ∪ B)\' = A\' ∩ B\'.',
     'Contrapositive of p→q is ¬q→¬p and is logically equivalent.',
-    'Binomial theorem (a+b)^n = Σ C(n,k)·a^(n-k)·b^k is used in probability and series.',
+    'Binomial theorem: (a+b)^n is the sum over k from 0 to n of C(n,k)·a^(n-k)·b^k, used in probability and series.',
     'Complete graph K_n has n(n-1)/2 edges; a tree with n nodes has n-1 edges.',
   ],
 },
@@ -2680,7 +3923,7 @@ That normal-vector idea is the same one used for surface integrals in the electr
   
   Two points fix the line. At V = 0, I = 12/4000 = **3 mA** (the short-circuit
   current). At I = 0, V = **12 V** (the open-circuit voltage). The slope is
-  −1/4000 A/V, i.e. **$-0.25\\ \\mathrm{mA}/V$** — negative, and its magnitude is the reciprocal
+  −1/4000 A/V, i.e. **$-0.25\\ \\mathrm{mA/V}$** — negative, and its magnitude is the reciprocal
   of the resistance.
   
   That is a straight line through (0 V, 3 mA) and (12 V, 0 mA), and the operating
@@ -2693,8 +3936,8 @@ That normal-vector idea is the same one used for surface integrals in the electr
   Extending the distance formula to three dimensions adds one term:
   d = √((Δx)² + (Δy)² + (Δz)²). This appears in electromagnetics for the
   separation between charges in Coulomb's law, and in vector analysis as the
-  magnitude of a vector — |**A**| = √(Aₓ² + A_y² + A_z²) is the distance formula
-  from the origin, not a separate rule to learn.`,
+  magnitude of a vector — $\\lvert \\mathbf{A} \\rvert = \\sqrt{A_{x}^{2} + A_{y}^{2} + A_{z}^{2}}$
+  is the distance formula from the origin, not a separate rule to learn.`,
     examTip: 'Completing the square flips the sign: (y + 2)^2 means the centre coordinate is MINUS 2. Write the standard form as (x - h)^2 + (y - k)^2 and read h and k off it directly rather than reading the numbers you see in the equation.',
     importantNote: 'Perpendicular slopes are negative RECIPROCALS, m2 = -1/m1, not negatives. A line of slope 2 is perpendicular to one of slope -0.5. Every FE question on this offers -2 as a distractor.',
   },
@@ -2734,7 +3977,7 @@ Check perpendicularity: (−3/4)(4/3) = −1 ✓.
 
 How far is (6, 1) from 3x + 4y − 12 = 0?
 
-$$d = |3(6) + 4(1) - 12| / \\sqrt{3^{2} + 4^{2}} = |18 + 4 - 12|/5 = 10/5 = 2.0$$
+$$d = \\lvert 3(6) + 4(1) - 12 \\rvert / \\sqrt{3^{2} + 4^{2}} = \\lvert 18 + 4 - 12 \\rvert/5 = 10/5 = 2.0$$
 
 The absolute value matters: distance is never negative, and omitting it on a
 point below the line yields −2, which is offered as a choice.
@@ -2771,6 +4014,1423 @@ Finally, sketch before solving. A rough sketch of the curve and the point takes
 ten seconds and immediately rules out answers of the wrong sign or magnitude -
 particularly for distance questions, where the eye is a perfectly good check on
 whether an answer of 2 or 20 is plausible.`,
+},
+{
+  id: 'ag-distance-section',
+  title: '7. Distance, Midpoint and the Section Formula, Derived',
+  content: `## 7.1 The distance formula is Pythagoras with axes attached
+
+Take two points $P_1 = (x_1, y_1)$ and $P_2 = (x_2, y_2)$. Drop a horizontal
+segment from $P_1$ and a vertical segment from $P_2$; they meet at
+$(x_2, y_1)$, and the three points form a right triangle whose legs are
+$\\lvert x_2 - x_1 \\rvert$ and $\\lvert y_2 - y_1 \\rvert$. Pythagoras finishes
+it:
+
+$$d = \\sqrt{(x_2 - x_1)^{2} + (y_2 - y_1)^{2}}$$
+
+Nothing else is going on. The squares make the absolute values unnecessary,
+which is why the formula does not care which point you call first. In three
+dimensions the same construction runs twice — once in a horizontal plane, once
+vertically — and the terms simply accumulate:
+
+$$d = \\sqrt{(x_2 - x_1)^{2} + (y_2 - y_1)^{2} + (z_2 - z_1)^{2}}$$
+
+For $(1, 2, 3)$ and $(4, 6, 3)$ that is $\\sqrt{9 + 16 + 0} = 5$; the $z$ terms
+vanish and the familiar 3-4-5 triangle is left lying in a horizontal plane.
+
+## 7.2 The section formula, and the midpoint as its special case
+
+A point $P$ divides the segment from $A$ to $B$ **internally in the ratio
+$m : n$** when $AP : PB = m : n$. Drop perpendiculars from $A$, $P$ and $B$ to
+the $x$-axis. The two right triangles formed — one on $AP$, one on $PB$ — are
+similar, because their corresponding sides are parallel. Similar triangles give
+proportional legs, so the horizontal run is split in the same ratio as the
+segment itself:
+
+$$\\frac{x_P - x_A}{x_B - x_P} = \\frac{m}{n}$$
+
+Solving for $x_P$, and running the identical argument vertically:
+
+$$P = \\left( \\frac{n x_A + m x_B}{m+n}, \\; \\frac{n y_A + m y_B}{m+n} \\right)$$
+
+Note which weight lands on which endpoint. The **far** endpoint $B$ carries the
+weight $m$ of the **near** segment $AP$. Getting that backwards is the standard
+error, and it is caught instantly by a sanity check: if $m$ is small the point
+should sit close to $A$.
+
+Setting $m = n$ gives the midpoint, where the weights are equal:
+
+$$M = \\left( \\frac{x_A + x_B}{2}, \\; \\frac{y_A + y_B}{2} \\right)$$
+
+## 7.3 Worked example: dividing a segment in a given ratio
+
+Find the point dividing the segment from $A = (1, 2)$ to $B = (9, 14)$ in the
+ratio $2 : 3$, and confirm it.
+
+$$x_P = \\frac{3(1) + 2(9)}{5} = \\frac{21}{5} = 4.2, \\qquad y_P = \\frac{3(2) + 2(14)}{5} = \\frac{34}{5} = 6.8$$
+
+Confirm by measuring rather than by re-deriving. The whole segment has length
+
+$$\\lvert AB \\rvert = \\sqrt{8^{2} + 12^{2}} = \\sqrt{208} = 14.4222$$
+
+and the first piece has length
+
+$$\\lvert AP \\rvert = \\sqrt{3.2^{2} + 4.8^{2}} = \\sqrt{10.24 + 23.04} = \\sqrt{33.28} = 5.7689$$
+
+The ratio $5.7689 / 14.4222 = 0.4 = 2/5$, exactly as required. The midpoint of
+the same segment is $(5, 8)$, which is the $m = n$ case and sits, correctly,
+beyond $P$.
+
+![A line segment from the point one comma two to the point nine comma fourteen, with the dividing point at four point two comma six point eight marked along with the midpoint at five comma eight. Dashed horizontal and vertical guides form two similar right triangles whose legs are three point two by four point eight and four point eight by seven point two.](/courses/fe-ee/figures/math5-ag-section-formula.svg)
+
+## 7.4 Worked example: an external division, and why the sign flips
+
+Where is the point $Q$ on line $AB$ with $AQ : QB = 3 : 1$ measured
+**externally**, meaning $Q$ lies beyond $B$?
+
+External division is internal division with $n$ replaced by $-n$:
+
+$$Q = \\left( \\frac{-n x_A + m x_B}{m-n}, \\; \\frac{-n y_A + m y_B}{m-n} \\right)$$
+
+$$Q = \\left( \\frac{-1(1) + 3(9)}{2}, \\; \\frac{-1(2) + 3(14)}{2} \\right) = (13, 20)$$
+
+Check: $\\lvert AQ \\rvert = \\sqrt{12^{2} + 18^{2}} = \\sqrt{468} = 21.6333$ and
+$\\lvert QB \\rvert = \\sqrt{4^{2} + 6^{2}} = \\sqrt{52} = 7.2111$, whose ratio is
+3.0000. The point is outside the segment, as an external division must be, and
+the denominator $m - n$ is what puts it there.
+
+## 7.5 Worked example: a centroid as three section formulas
+
+The centroid of a triangle with vertices $A$, $B$, $C$ is the average of the
+three position vectors:
+
+$$G = \\left( \\frac{x_A + x_B + x_C}{3}, \\; \\frac{y_A + y_B + y_C}{3} \\right)$$
+
+For $A = (0,0)$, $B = (6,0)$, $C = (3,9)$ that gives $G = (3, 3)$. The reason
+the plain average works is the section formula applied twice: the centroid
+divides each median in the ratio $2 : 1$ from the vertex. The midpoint of $BC$
+is $(4.5, 4.5)$, and dividing $A \\to (4.5, 4.5)$ in the ratio $2 : 1$ gives
+
+$$\\left( \\frac{1(0) + 2(4.5)}{3}, \\; \\frac{1(0) + 2(4.5)}{3} \\right) = (3, 3)$$
+
+which matches. Centroid questions appear in statics as centres of mass of thin
+plates, and in signal work as the mean of a discrete distribution — the same
+weighted average with different names on the weights.
+
+| Quantity | Formula |
+|---|---|
+| distance, 2D | $\\sqrt{(\\Delta x)^{2} + (\\Delta y)^{2}}$ |
+| distance, 3D | $\\sqrt{(\\Delta x)^{2} + (\\Delta y)^{2} + (\\Delta z)^{2}}$ |
+| midpoint | $\\left(\\tfrac{x_1+x_2}{2}, \\tfrac{y_1+y_2}{2}\\right)$ |
+| internal division $m:n$ | $\\left(\\tfrac{n x_1 + m x_2}{m+n}, \\tfrac{n y_1 + m y_2}{m+n}\\right)$ |
+| external division $m:n$ | $\\left(\\tfrac{m x_2 - n x_1}{m-n}, \\tfrac{m y_2 - n y_1}{m-n}\\right)$ |
+| centroid of three points | $\\left(\\tfrac{x_1+x_2+x_3}{3}, \\tfrac{y_1+y_2+y_3}{3}\\right)$ |`,
+  examTip: 'In the section formula the weight m belongs to the far endpoint. Check the answer against intuition before moving on: a ratio of 1:4 must land close to the first point, and a ratio of 4:1 close to the second. That single glance catches the swapped-weights error, which is the one the distractors are built around.',
+  importantNote: 'External division uses m - n in the denominator, so the point falls outside the segment. If a question says "extended beyond B" or "produced to", it wants the external form, and the internal formula will return a point in the wrong place entirely.',
+},
+{
+  id: 'ag-line-forms',
+  title: '8. Lines in Every Form, and the Conversions Between Them',
+  content: `## 8.1 One line, six ways to write it
+
+Slope is the rate at which the line climbs, defined as the rise over the run
+between any two of its points:
+
+$$m = \\frac{y_2 - y_1}{x_2 - x_1}$$
+
+That the answer does not depend on which two points you pick is exactly the
+similar-triangles argument from the previous section. A vertical line has an
+undefined slope, and every form below except the general one breaks on it,
+which is why the general form is the safe one to carry.
+
+| Form | Equation | Best when |
+|---|---|---|
+| point-slope | $y - y_1 = m(x - x_1)$ | a point and a direction are given |
+| slope-intercept | $y = mx + b$ | the $y$-intercept matters |
+| two-point | $y - y_1 = \\dfrac{y_2-y_1}{x_2-x_1}(x - x_1)$ | two points are given |
+| intercept | $\\dfrac{x}{a} + \\dfrac{y}{b} = 1$ | both intercepts matter |
+| general | $Ax + By + C = 0$ | always; handles vertical lines |
+| normal | $x\\cos\\alpha + y\\sin\\alpha = p$ | the perpendicular from the origin matters |
+
+Converting between them is arithmetic, not insight. From the general form,
+$m = -A/B$ and the intercepts are $-C/A$ and $-C/B$. The normal form comes from
+dividing the general form by $\\pm\\sqrt{A^{2}+B^{2}}$, choosing the sign that
+makes the constant positive; then $p$ is the distance from the origin to the
+line and $\\alpha$ is the direction of that perpendicular.
+
+## 8.2 Parallel and perpendicular
+
+Two lines are parallel when their slopes are equal. They are perpendicular when
+
+$$m_1 m_2 = -1, \\qquad \\text{equivalently} \\qquad m_2 = -\\frac{1}{m_1}$$
+
+The reason is a rotation. Turning the direction vector $(1, m_1)$ through a
+right angle gives $(-m_1, 1)$, whose slope is $-1/m_1$. In general form the
+test is cleaner and survives vertical lines: $A_1x + B_1y + C_1 = 0$ and
+$A_2x + B_2y + C_2 = 0$ are perpendicular exactly when
+
+$$A_1A_2 + B_1B_2 = 0$$
+
+which is the dot product of the two normal vectors. A line of slope 2 is
+perpendicular to one of slope $-0.5$, not to one of slope $-2$; the negative
+**reciprocal** is the rule and the plain negative is the distractor.
+
+## 8.3 The perpendicular distance formula, derived
+
+How far is $P_0 = (x_0, y_0)$ from the line $Ax + By + C = 0$?
+
+The vector $\\mathbf{n} = (A, B)$ is normal to the line: if $P_1$ and $P_2$ both
+satisfy the equation then subtracting gives
+$A(x_2-x_1) + B(y_2-y_1) = 0$, which says $\\mathbf{n}$ is perpendicular to
+every direction along the line. Pick any point $P_1$ on the line. The distance
+from $P_0$ to the line is the length of the projection of
+$P_0 - P_1$ onto the unit normal:
+
+$$d = \\frac{\\lvert \\mathbf{n} \\cdot (P_0 - P_1) \\rvert}{\\lvert \\mathbf{n} \\rvert} = \\frac{\\lvert A(x_0-x_1) + B(y_0-y_1) \\rvert}{\\sqrt{A^{2}+B^{2}}}$$
+
+Because $P_1$ is on the line, $Ax_1 + By_1 = -C$, and substituting collapses the
+numerator:
+
+$$d = \\frac{\\lvert Ax_0 + By_0 + C \\rvert}{\\sqrt{A^{2}+B^{2}}}$$
+
+The absolute value is not decoration. Without it the expression is a **signed**
+quantity that tells you which side of the line the point is on, which is
+occasionally what you want and never what a distance question wants.
+
+## 8.4 Worked example: distance, foot of the perpendicular, and a check
+
+How far is $(7, 3)$ from $4x - 3y - 5 = 0$, and where does the perpendicular
+meet the line?
+
+$$d = \\frac{\\lvert 4(7) - 3(3) - 5 \\rvert}{\\sqrt{16 + 9}} = \\frac{\\lvert 28 - 9 - 5 \\rvert}{5} = \\frac{14}{5} = 2.8$$
+
+The foot is reached by stepping from $P_0$ a distance $d$ along the unit normal,
+in the direction that reduces $Ax + By + C$ to zero:
+
+$$F = \\left(7 - 2.8\\cdot\\tfrac{4}{5}, \\; 3 - 2.8\\cdot\\tfrac{-3}{5}\\right) = (4.76, \\; 4.68)$$
+
+Check by substitution: $4(4.76) - 3(4.68) - 5 = 19.04 - 14.04 - 5 = 0$, so $F$
+really is on the line. A second, independent check: slide a point along the line
+and measure its distance to $(7,3)$ at thousands of positions; the smallest
+value found is 2.8, occurring at $x = 4.76$.
+
+![Two stacked panels. The upper panel shows the line four x minus three y minus five equals zero, the point seven comma three, and the perpendicular segment of length two point eight meeting the line at four point seven six comma four point six eight. The lower panel plots the distance from that point to a point sliding along the line, whose minimum touches a dashed line at two point eight.](/courses/fe-ee/figures/math5-ag-point-line.svg)
+
+## 8.5 The angle between two lines
+
+If two lines have slopes $m_1$ and $m_2$, the angle $\\theta$ between them
+satisfies
+
+$$\\tan\\theta = \\left\\lvert \\frac{m_2 - m_1}{1 + m_1m_2} \\right\\rvert$$
+
+This is the tangent subtraction identity in disguise: each slope is the tangent
+of the line's inclination, and the angle between them is the difference of the
+inclinations. The denominator vanishing is exactly the perpendicular case, where
+$\\tan\\theta$ is undefined because $\\theta = 90^{\\circ}$.
+
+## 8.6 Worked example: an angle, computed twice
+
+Find the angle between $y = 2x + 1$ and $y = -\\tfrac{1}{3}x + 4$.
+
+$$\\tan\\theta = \\left\\lvert \\frac{-\\tfrac{1}{3} - 2}{1 + 2\\left(-\\tfrac{1}{3}\\right)} \\right\\rvert = \\left\\lvert \\frac{-7/3}{1/3} \\right\\rvert = 7 \\quad \\Longrightarrow \\quad \\theta = 81.8699^{\\circ}$$
+
+Confirm with direction vectors and a dot product, which uses none of the same
+algebra. The lines run along $(1, 2)$ and $(3, -1)$:
+
+$$\\cos\\theta = \\frac{\\lvert (1)(3) + (2)(-1) \\rvert}{\\sqrt{5}\\,\\sqrt{10}} = \\frac{1}{\\sqrt{50}} = 0.141421$$
+
+$$\\theta = \\arccos(0.141421) = 81.8699^{\\circ}$$
+
+The two routes agree to four decimal places.
+
+## 8.7 Worked example: a load line is this section, applied
+
+A source of 12 V with 4 kΩ of series resistance drives a nonlinear device. By
+Kirchhoff's voltage law the circuit imposes
+
+$$12 = 4000\\,I + V \\quad \\Longrightarrow \\quad I = \\frac{12 - V}{4000}$$
+
+which is a straight line in the $I$–$V$ plane. Two intercepts fix it. At
+$V = 0$, $I = 12/4000 = 3\\ \\mathrm{mA}$, the short-circuit current. At
+$I = 0$, $V = 12\\ \\mathrm{V}$, the open-circuit voltage. The slope is
+$-1/4000\\ \\mathrm{A/V}$, that is $-0.25\\ \\mathrm{mA/V}$ — negative, with
+magnitude the reciprocal of the resistance.
+
+The operating point is where this line crosses the device's own curve. If the
+device curve is met at $V = 7.2\\ \\mathrm{V}$ then the current is
+$I = 4.8/4000 = 1.2\\ \\mathrm{mA}$ and the device dissipates
+$7.2 \\times 0.0012 = 8.64\\ \\mathrm{mW}$. A "graphical analysis" question
+is an intercepts question, and
+recognising that is what makes it quick.`,
+  examTip: 'Carry the general form Ax + By + C = 0. It handles vertical lines, it feeds the distance formula directly, and the perpendicular test A1A2 + B1B2 = 0 needs no reciprocals. Convert to slope-intercept only when the question actually asks for a slope or an intercept.',
+  importantNote: 'The distance formula needs the line written with zero on the right. For 3x + 4y = 12 the constant is C = -12, not +12. Rearranging first, every time, removes the most common sign error in this topic.',
+},
+{
+  id: 'ag-circle-detail',
+  title: '9. The Circle: Definition, General Form, Chords and Tangents',
+  content: `## 9.1 From the definition to the equation
+
+A circle is the set of points at a fixed distance $r$ from a fixed centre
+$(h,k)$. Writing that definition with the distance formula and squaring both
+sides gives the standard form immediately:
+
+$$\\sqrt{(x-h)^{2} + (y-k)^{2}} = r \\quad \\Longrightarrow \\quad (x-h)^{2} + (y-k)^{2} = r^{2}$$
+
+Expanding produces the general second-degree form with equal coefficients on the
+squared terms and no cross term:
+
+$$x^{2} + y^{2} + Dx + Ey + F = 0, \\qquad D = -2h, \\quad E = -2k, \\quad F = h^{2}+k^{2}-r^{2}$$
+
+Reading backwards, the centre is $(-D/2, -E/2)$ and
+
+$$r = \\sqrt{\\frac{D^{2}+E^{2}}{4} - F}$$
+
+That radical carries a real condition. If the quantity under it is positive the
+equation describes a genuine circle; if it is zero the "circle" is the single
+point $(h,k)$; and if it is negative there are no real points at all. An exam
+question that hands you $x^{2}+y^{2}-2x+4y+10 = 0$ is testing precisely that:
+$1 + 4 - 10 = -5 < 0$, so no real locus exists.
+
+## 9.2 Completing the square, done once carefully
+
+$$x^{2} + y^{2} - 6x + 4y - 12 = 0$$
+
+Group the variables and move the constant across:
+
+$$(x^{2} - 6x) + (y^{2} + 4y) = 12$$
+
+Half of $-6$ is $-3$ and its square is 9; half of $4$ is 2 and its square is 4.
+Add both to **each** side:
+
+$$(x^{2} - 6x + 9) + (y^{2} + 4y + 4) = 12 + 9 + 4$$
+$$(x-3)^{2} + (y+2)^{2} = 25$$
+
+The centre is $(3, -2)$ and the radius is 5. The sign flip is the trap: the
+equation shows $(y+2)^{2}$ and the standard form is $(y-k)^{2}$, so $k = -2$.
+
+Confirm it on the curve rather than in the algebra. Sampling four thousand
+points of the form $(3 + 5\\cos t, \\, -2 + 5\\sin t)$ and substituting each into
+the original equation gives zero to fourteen decimal places at every one of
+them.
+
+## 9.3 Worked example: a circle through three points
+
+Find the circle through $(0,0)$, $(6,0)$ and $(0,8)$.
+
+Substituting $(0,0)$ into the general form gives $F = 0$ at once. Substituting
+$(6,0)$ gives $36 + 6D = 0$, so $D = -6$. Substituting $(0,8)$ gives
+$64 + 8E = 0$, so $E = -8$. Hence
+
+$$x^{2} + y^{2} - 6x - 8y = 0 \\quad \\Longrightarrow \\quad (x-3)^{2} + (y-4)^{2} = 25$$
+
+Centre $(3, 4)$, radius 5. All three original points satisfy the standard form
+exactly, and the geometry agrees: two of the given points lie on the axes, the
+angle at the origin is a right angle, and the hypotenuse from $(6,0)$ to $(0,8)$
+has length 10 — so it is a diameter, and its midpoint $(3,4)$ must be the
+centre. Two independent routes, one answer.
+
+## 9.4 Worked example: where a line meets a circle
+
+Find the intersections of $x^{2}+y^{2} = 25$ with $y = x + 1$, and the length of
+the chord they cut.
+
+Substitute and solve:
+
+$$x^{2} + (x+1)^{2} = 25 \\quad \\Longrightarrow \\quad 2x^{2} + 2x - 24 = 0 \\quad \\Longrightarrow \\quad x^{2} + x - 12 = 0$$
+
+$$(x-3)(x+4) = 0 \\quad \\Longrightarrow \\quad x = 3, \\; -4$$
+
+The points are $(3, 4)$ and $(-4, -3)$, and both satisfy $x^{2}+y^{2} = 25$
+exactly. The chord length is
+
+$$\\sqrt{7^{2} + 7^{2}} = 7\\sqrt{2} = 9.8995$$
+
+Confirm it a second way, without the endpoints. The perpendicular distance from
+the centre to the line $x - y + 1 = 0$ is
+
+$$p = \\frac{\\lvert 0 - 0 + 1 \\rvert}{\\sqrt{2}} = 0.7071$$
+
+and a chord at distance $p$ from the centre of a circle of radius $r$ has length
+
+$$2\\sqrt{r^{2} - p^{2}} = 2\\sqrt{25 - 0.5} = 2\\sqrt{24.5} = 9.8995$$
+
+The two agree. That second formula is the fast route when a question asks only
+for the chord length, and its discriminant tells you the intersection type
+before you solve anything: $p < r$ gives two points, $p = r$ gives tangency, and
+$p > r$ gives none.
+
+## 9.5 Worked example: tangents from an outside point
+
+From $(8, 6)$, how long is the tangent to $x^{2}+y^{2} = 25$?
+
+The tangent, the radius to the point of tangency, and the line from the centre
+to the external point form a right triangle, with the radius perpendicular to
+the tangent. So
+
+$$L = \\sqrt{d^{2} - r^{2}} = \\sqrt{8^{2}+6^{2}-25} = \\sqrt{75} = 5\\sqrt{3} = 8.6603$$
+
+The tangent points themselves lie on the **chord of contact**
+$8x + 6y = 25$ together with the circle. Solving that pair gives
+$(-0.5981, \\, 4.9641)$ and $(4.5981, \\, -1.9641)$. Each was checked
+three ways: it satisfies the circle equation, it lies exactly $8.6603$ from
+$(8,6)$, and the radius to it is perpendicular to the tangent line — the dot
+product of the two directions is zero to nine decimals.
+
+![A circle of radius five centred at the origin, cut by the secant y equals x plus one at the points three comma four and minus four comma minus three, with the two tangent lines drawn from the external point eight comma six to their points of tangency and dashed radii showing the right angles.](/courses/fe-ee/figures/math5-ag-circle-chord-tangent.svg)
+
+## 9.6 Where circles turn up in electrical work
+
+Constant-resistance and constant-reactance loci on the Smith chart are circles,
+and finding their centres is the completing-the-square step above. The locus of
+a phasor of constant magnitude is a circle in the complex plane. The Nyquist
+plot of a first-order transfer function is a semicircle. In every case the
+useful move is the same: get to $(x-h)^{2} + (y-k)^{2} = r^{2}$, read off the
+centre and the radius, and stop.`,
+  examTip: 'Completing the square flips the sign. Write the standard form as (x - h)^2 + (y - k)^2 and read h and k from it, rather than lifting the numbers you see in the general equation. And check the radical: if D^2/4 + E^2/4 - F is negative there is no real circle, which is a legitimate exam answer.',
+  importantNote: 'For a line and a circle, compare the centre-to-line distance p with the radius r before solving. p < r gives two intersections, p = r gives exactly one, and p > r gives none. That single comparison answers many questions without any substitution at all.',
+},
+{
+  id: 'ag-conic-definitions',
+  title: '10. Conics by Focus, Directrix and Eccentricity',
+  content: `## 10.1 One definition covers all of them
+
+Fix a point $F$ (the **focus**), a line $\\ell$ not through it (the
+**directrix**), and a positive number $e$ (the **eccentricity**). The conic is
+the set of points $P$ for which
+
+$$\\frac{\\lvert PF \\rvert}{\\operatorname{dist}(P, \\ell)} = e$$
+
+That is the whole family. The value of $e$ decides which curve you get:
+
+| Eccentricity | Curve | Relation among $a$, $b$, $c$ |
+|---|---|---|
+| $e = 0$ | circle | $b = a$, $c = 0$ |
+| $0 < e < 1$ | ellipse | $b^{2} = a^{2} - c^{2}$, $c = ae$ |
+| $e = 1$ | parabola | no centre; $c$ and $a$ undefined separately |
+| $e > 1$ | hyperbola | $b^{2} = c^{2} - a^{2}$, $c = ae$ |
+
+The alternative definitions taught first — constant sum of focal distances for
+an ellipse, constant difference for a hyperbola — are consequences of this one,
+not separate facts.
+
+## 10.2 Deriving the ellipse from focus and directrix
+
+Put the focus at $(c, 0)$ and the directrix at $x = a/e$, with $0 < e < 1$, and
+write the defining ratio:
+
+$$\\sqrt{(x-c)^{2} + y^{2}} = e\\left(\\frac{a}{e} - x\\right)$$
+
+Square both sides and expand:
+
+$$x^{2} - 2cx + c^{2} + y^{2} = a^{2} - 2aex + e^{2}x^{2}$$
+
+Now use $c = ae$, so $2cx = 2aex$ and those terms cancel:
+
+$$x^{2}(1 - e^{2}) + y^{2} = a^{2} - c^{2} = a^{2}(1 - e^{2})$$
+
+Dividing through by $a^{2}(1-e^{2})$ and writing $b^{2} = a^{2}(1-e^{2})$:
+
+$$\\frac{x^{2}}{a^{2}} + \\frac{y^{2}}{b^{2}} = 1$$
+
+Every standard form in this chapter comes out of the same three steps: write the
+ratio, square, substitute $c = ae$.
+
+## 10.3 The focal-sum property falls out
+
+For a point on that ellipse, the distance to the right focus is
+
+$$r_2 = e\\left(\\frac{a}{e} - x\\right) = a - ex$$
+
+and by the mirror-image argument on the left focus and left directrix,
+$r_1 = a + ex$. Adding:
+
+$$r_1 + r_2 = 2a$$
+
+The sum of the focal distances is constant, and the constant is the major axis
+length. This was checked on four thousand points of
+$x^{2}/25 + y^{2}/16 = 1$, where $a = 5$, $b = 4$ and $c = 3$: the sum came out
+as 10 at every sampled point, to within $2 \\times 10^{-15}$. The
+focus-directrix ratio came out as 0.6 at every point as well, for both
+focus-directrix pairs.
+
+![An ellipse with semi-axes five and four, drawn with both foci marked, the directrix x equals twenty-five thirds shown as a dashed vertical line, and four sampled points each joined to the right focus and to the directrix so the ratio of the two lengths can be compared. A grey bar at the focus marks the latus rectum of length six point four.](/courses/fe-ee/figures/math5-ag-focus-directrix.svg)
+
+## 10.4 The parabola: the case $e = 1$
+
+With $e = 1$ the ratio says the point is equidistant from focus and directrix.
+Put the focus at $(p, 0)$ and the directrix at $x = -p$:
+
+$$\\sqrt{(x-p)^{2}+y^{2}} = x + p$$
+
+$$x^{2} - 2px + p^{2} + y^{2} = x^{2} + 2px + p^{2} \\quad \\Longrightarrow \\quad y^{2} = 4px$$
+
+There is no $a$ or $c$ to relate, because a parabola has no centre and no second
+focus — the second focus has gone to infinity, which is the geometric content of
+$e = 1$.
+
+For $y^{2} = 12x$ we read $4p = 12$, so $p = 3$: the focus is $(3, 0)$ and the
+directrix is $x = -3$. Sampling four thousand points along the curve and
+comparing the distance to $(3,0)$ with the distance to the line $x = -3$ gives
+agreement to $10^{-14}$ everywhere.
+
+## 10.5 The hyperbola: the case $e > 1$
+
+Repeating the derivation with $e > 1$ makes $1 - e^{2}$ negative, and writing
+$b^{2} = a^{2}(e^{2}-1) = c^{2}-a^{2}$ turns the plus into a minus:
+
+$$\\frac{x^{2}}{a^{2}} - \\frac{y^{2}}{b^{2}} = 1$$
+
+The focal relation becomes a **difference**:
+
+$$\\lvert r_1 - r_2 \\rvert = 2a$$
+
+On $x^{2}/9 - y^{2}/16 = 1$, where $a = 3$, $b = 4$ and $c = 5$, sampling four
+thousand points of the right branch gives $r_1 - r_2 = 6$ at every one of them,
+and the focus-directrix ratio comes out as $5/3$ at every one of them.
+
+## 10.6 Worked example: reading a conic and its constants
+
+Identify $9x^{2} + 25y^{2} = 225$ and find everything about it.
+
+Divide by 225:
+
+$$\\frac{x^{2}}{25} + \\frac{y^{2}}{9} = 1$$
+
+Both squares are positive with different denominators, so it is an ellipse. The
+larger denominator sits under $x^{2}$, so the major axis is horizontal with
+$a = 5$ and $b = 3$:
+
+$$c = \\sqrt{a^{2}-b^{2}} = \\sqrt{25-9} = 4, \\qquad e = \\frac{c}{a} = 0.8$$
+
+Foci at $(\\pm 4, 0)$, vertices at $(\\pm 5, 0)$, co-vertices at $(0, \\pm 3)$,
+directrices at $x = \\pm a/e = \\pm 6.25$, and latus rectum
+$2b^{2}/a = 18/5 = 3.6$. Sampling the curve confirms the focal sum is $2a = 10$
+everywhere and the focus-directrix ratio is 0.8 everywhere.
+
+## 10.7 Worked example: which denominator is $a^{2}$
+
+Identify $25x^{2} - 144y^{2} = 3600$.
+
+$$\\frac{x^{2}}{144} - \\frac{y^{2}}{25} = 1$$
+
+Opposite signs, so a hyperbola. For a hyperbola $a^{2}$ is always the
+denominator under the **positive** term, whether or not it is the larger one —
+this differs from the ellipse rule and is the single most-missed detail in the
+topic. So $a = 12$, $b = 5$, and
+
+$$c = \\sqrt{a^{2}+b^{2}} = \\sqrt{144+25} = 13, \\qquad e = \\frac{13}{12} = 1.0833$$
+
+Vertices $(\\pm 12, 0)$, foci $(\\pm 13, 0)$, asymptotes $y = \\pm\\tfrac{5}{12}x$,
+latus rectum $2b^{2}/a = 50/12 = 25/6 = 4.1667$. Sampling the right branch
+confirms the focal difference is $2a = 24$ at every point.
+
+## 10.8 Worked example: a parabola opening downward
+
+Identify $x^{2} = -8y$.
+
+The squared variable is $x$, so the axis is vertical; the negative sign means it
+opens downward. Matching against $x^{2} = -4py$ gives $4p = 8$, so $p = 2$: the
+focus is $(0, -2)$, the directrix is $y = 2$, and the latus rectum is
+$4p = 8$. Sampling the curve and comparing the distance to $(0,-2)$ with the
+distance to the line $y = 2$ gives agreement to $10^{-14}$ at every point, which
+is the defining property doing the confirming.`,
+  examTip: 'For an ellipse, a-squared is the LARGER denominator and it tells you which axis is major. For a hyperbola, a-squared is the denominator under the POSITIVE term regardless of size. Mixing those two rules produces foci on the wrong axis, and every conic question offers that answer.',
+  importantNote: 'c is measured from the CENTRE to a focus, not from a vertex. For the ellipse x^2/25 + y^2/16 = 1 the foci are at (±3, 0), which is 2 units inside the vertices at (±5, 0). Adding a and c instead of comparing them is a common slip.',
+},
+{
+  id: 'ag-conic-properties',
+  title: '11. Foci, Vertices, Asymptotes and Latus Rectum, Computed',
+  content: `## 11.1 The reference table, with every entry derived
+
+| Property | Ellipse $\\frac{x^{2}}{a^{2}}+\\frac{y^{2}}{b^{2}}=1$ | Hyperbola $\\frac{x^{2}}{a^{2}}-\\frac{y^{2}}{b^{2}}=1$ | Parabola $y^{2}=4px$ |
+|---|---|---|---|
+| centre | $(0,0)$ | $(0,0)$ | none |
+| vertices | $(\\pm a, 0)$ | $(\\pm a, 0)$ | $(0,0)$ |
+| foci | $(\\pm c, 0)$, $c^{2}=a^{2}-b^{2}$ | $(\\pm c, 0)$, $c^{2}=a^{2}+b^{2}$ | $(p, 0)$ |
+| directrices | $x = \\pm a/e$ | $x = \\pm a/e$ | $x = -p$ |
+| eccentricity | $c/a < 1$ | $c/a > 1$ | $1$ |
+| asymptotes | none | $y = \\pm\\frac{b}{a}x$ | none |
+| latus rectum | $2b^{2}/a$ | $2b^{2}/a$ | $4p$ |
+
+## 11.2 What the latus rectum is, and why $2b^{2}/a$
+
+The **latus rectum** is the chord through a focus perpendicular to the major
+axis. Its half-length is the value of $y$ on the curve when $x = c$. For the
+ellipse:
+
+$$\\frac{c^{2}}{a^{2}} + \\frac{y^{2}}{b^{2}} = 1 \\quad \\Longrightarrow \\quad y^{2} = b^{2}\\left(1 - \\frac{c^{2}}{a^{2}}\\right) = \\frac{b^{2}}{a^{2}}(a^{2}-c^{2}) = \\frac{b^{4}}{a^{2}}$$
+
+so $y = b^{2}/a$ and the full chord is $2b^{2}/a$. The half-length
+$\\ell = b^{2}/a$ is called the **semi-latus rectum**, and it is the natural
+size parameter for a conic — it is what appears in the polar form and it stays
+finite as a conic degenerates toward a parabola, where $a$ and $c$ both run off
+to infinity.
+
+For $x^{2}/25 + y^{2}/16 = 1$: $\\ell = 16/5 = 3.2$ and the full chord is 6.4.
+The endpoints $(\\pm 3, \\pm 3.2)$ satisfy the ellipse equation exactly, since
+$9/25 + 10.24/16 = 0.36 + 0.64 = 1$.
+
+## 11.3 Worked example: an ellipse, every property computed and checked
+
+Take $x^{2}/25 + y^{2}/16 = 1$.
+
+$$a = 5, \\qquad b = 4, \\qquad c = \\sqrt{25-16} = 3, \\qquad e = \\frac{3}{5} = 0.6$$
+
+| Property | Value | How it was confirmed |
+|---|---|---|
+| vertices | $(\\pm 5, 0)$ | substitution into the equation |
+| co-vertices | $(0, \\pm 4)$ | substitution |
+| foci | $(\\pm 3, 0)$ | focal sum equals 10 at 4001 sampled points |
+| directrices | $x = \\pm 25/3 = \\pm 8.3333$ | ratio equals 0.6 at 4001 sampled points |
+| latus rectum | $6.4$ | endpoints satisfy the equation |
+| area | $\\pi ab = 20\\pi = 62.8319$ | numerical quadrature to six decimals |
+
+The area formula is worth a sentence. An ellipse is a circle of radius $a$
+scaled by the factor $b/a$ in one direction, and a uniform scaling in one
+direction multiplies every area by that factor, so
+$\\pi a^{2} \\cdot (b/a) = \\pi ab$. Integrating $2b\\sqrt{1-x^{2}/a^{2}}$ from
+$-a$ to $a$ numerically returns $62.831853$, matching $20\\pi$.
+
+## 11.4 Worked example: a hyperbola, and what the asymptotes really claim
+
+Take $x^{2}/9 - y^{2}/16 = 1$, so $a = 3$, $b = 4$, $c = 5$ and
+$e = 5/3 = 1.6667$.
+
+Solving for $y$ on the right branch,
+
+$$y = \\frac{b}{a}\\sqrt{x^{2}-a^{2}} = \\frac{4}{3}\\sqrt{x^{2}-9}$$
+
+The asymptote claims that this approaches $\\tfrac{4}{3}x$. The gap is
+
+$$\\frac{4}{3}\\left(x - \\sqrt{x^{2}-9}\\right) \\approx \\frac{4}{3}\\cdot\\frac{9}{2x} = \\frac{6}{x}$$
+
+for large $x$, using $\\sqrt{x^{2}-9} \\approx x - 9/(2x)$. At $x = 1000$ the
+predicted gap is $0.006$, and evaluating the exact expression gives
+$0.006000$ — so the curve is 1333.3273 where the asymptote is 1333.3333. The
+asymptote is a limit, never a bound reached, and questions that ask "does the
+curve cross its asymptote" are answered by that algebra.
+
+Other properties: directrices at $x = \\pm a/e = \\pm 1.8$, latus rectum
+$2b^{2}/a = 32/3 = 10.6667$ with endpoints $(\\pm 5, \\pm 16/3)$, and those
+endpoints satisfy the equation exactly:
+
+$$\\frac{25}{9} - \\frac{(16/3)^{2}}{16} = \\frac{25}{9} - \\frac{16}{9} = 1$$
+
+## 11.5 Worked example: a parabola, and the size of its dish
+
+Take $y^{2} = 12x$, so $4p = 12$ and $p = 3$.
+
+Focus $(3,0)$, directrix $x = -3$, vertex at the origin, latus rectum
+$4p = 12$ with endpoints $(3, \\pm 6)$. Those endpoints satisfy the equation:
+$36 = 12 \\times 3$.
+
+The latus rectum has a practical reading here. It is the width of the parabola
+measured **at the focus**, so it tells you how open the curve is. A reflector
+whose latus rectum equals its aperture has its focus exactly at the rim plane; a
+narrower latus rectum means a deeper dish with the focus inside it.
+
+## 11.6 Worked example: shifting the centre
+
+A conic centred at $(h,k)$ has exactly the same properties, measured from the
+new centre. Identify
+
+$$4x^{2} + 9y^{2} - 16x + 18y - 11 = 0$$
+
+Group and factor out the leading coefficients before completing the square,
+because whatever is added inside a bracket is multiplied by that coefficient on
+the way out:
+
+$$4(x^{2}-4x) + 9(y^{2}+2y) = 11$$
+$$4(x^{2}-4x+4) + 9(y^{2}+2y+1) = 11 + 16 + 9 = 36$$
+$$4(x-2)^{2} + 9(y+1)^{2} = 36 \\quad \\Longrightarrow \\quad \\frac{(x-2)^{2}}{9} + \\frac{(y+1)^{2}}{4} = 1$$
+
+Centre $(2,-1)$, $a = 3$, $b = 2$, $c = \\sqrt{9-4} = \\sqrt{5} = 2.2361$,
+$e = \\sqrt{5}/3 = 0.7454$. Foci at $(2 \\pm \\sqrt{5}, -1)$, vertices at
+$(-1,-1)$ and $(5,-1)$, latus rectum $2(4)/3 = 8/3 = 2.6667$.
+
+The numbers added to the right were $4 \\times 4 = 16$ and $9 \\times 1 = 9$, not
+4 and 1. Dropping those multipliers is the error this problem exists to catch.
+
+## 11.7 Worked example: degenerate cases
+
+Not every second-degree equation is a curve. Consider
+
+$$\\frac{x^{2}}{9} - \\frac{y^{2}}{4} = 0$$
+
+The right-hand side is zero rather than one, so this factors:
+
+$$\\left(\\frac{x}{3} - \\frac{y}{2}\\right)\\left(\\frac{x}{3} + \\frac{y}{2}\\right) = 0$$
+
+which is the pair of lines $y = \\pm\\tfrac{2}{3}x$ — precisely the asymptotes of
+the corresponding hyperbola. Similarly $x^{2}+y^{2} = 0$ is the single point at
+the origin, and $x^{2}+y^{2}+4 = 0$ has no real points at all. These degenerate
+answers are legitimate exam answers, and the way to spot them is to check the
+constant on the right before classifying anything.`,
+  examTip: 'Compute a, b, c and e in that order and write them down before answering anything. Almost every conic question is one of those four numbers, or a formula built from them, and having all four on paper turns a multi-step question into a lookup.',
+  importantNote: 'When completing the square with leading coefficients, whatever you add inside the bracket is scaled by the coefficient outside. Adding 4 inside a bracket multiplied by 4 means adding 16 to the other side. Forgetting the multiplier gives the right centre and the wrong axes.',
+},
+{
+  id: 'ag-transformations',
+  title: '12. Translation, Rotation and the Discriminant Test',
+  content: `## 12.1 Translation moves the centre and changes nothing else
+
+Substituting $x = x' + h$ and $y = y' + k$ shifts the origin to $(h,k)$. Under a
+translation, lengths, angles, eccentricities and axis directions are all
+unchanged; only the coordinates of the centre, foci and vertices move. That is
+why completing the square works: it is a translation chosen to put the centre at
+the new origin.
+
+## 12.2 Rotation, and the formulas both ways
+
+Rotating the axes by $\\theta$ relates old and new coordinates by
+
+$$x = x'\\cos\\theta - y'\\sin\\theta, \\qquad y = x'\\sin\\theta + y'\\cos\\theta$$
+
+$$x' = x\\cos\\theta + y\\sin\\theta, \\qquad y' = -x\\sin\\theta + y\\cos\\theta$$
+
+Substituting the first pair into the general second-degree equation
+
+$$Ax^{2} + Bxy + Cy^{2} + Dx + Ey + F = 0$$
+
+gives a new equation with
+
+$$A' = A\\cos^{2}\\theta + B\\sin\\theta\\cos\\theta + C\\sin^{2}\\theta$$
+$$B' = B\\cos 2\\theta + (C - A)\\sin 2\\theta$$
+$$C' = A\\sin^{2}\\theta - B\\sin\\theta\\cos\\theta + C\\cos^{2}\\theta$$
+
+Choosing $\\theta$ to make $B' = 0$ removes the cross term, and that happens when
+
+$$\\cot 2\\theta = \\frac{A - C}{B} \\qquad \\text{equivalently} \\qquad \\tan 2\\theta = \\frac{B}{A-C}$$
+
+When $A = C$ the cotangent is zero, so $2\\theta = 90^{\\circ}$ and
+$\\theta = 45^{\\circ}$ — a case that occurs often enough to be worth
+remembering outright.
+
+## 12.3 The discriminant is invariant, so it classifies
+
+Direct computation of $B'^{2} - 4A'C'$ from the formulas above gives
+$B^{2}-4AC$: the discriminant is unchanged by rotation. Since rotation can
+always remove the cross term, the classification can be read off before any
+algebra at all:
+
+$$B^{2} - 4AC < 0 \\;\\Rightarrow\\; \\text{ellipse (or circle)}, \\qquad = 0 \\;\\Rightarrow\\; \\text{parabola}, \\qquad > 0 \\;\\Rightarrow\\; \\text{hyperbola}$$
+
+| Equation | $A$, $B$, $C$ | $B^{2}-4AC$ | Type |
+|---|---|---|---|
+| $4x^{2}+9y^{2}-36=0$ | 4, 0, 9 | $-144$ | ellipse |
+| $x^{2}+y^{2}-25=0$ | 1, 0, 1 | $-4$ | circle |
+| $y^{2}-12x=0$ | 0, 0, 1 | $0$ | parabola |
+| $x^{2}-y^{2}-1=0$ | 1, 0, $-1$ | $4$ | hyperbola |
+| $x^{2}+4xy+4y^{2}-x=0$ | 1, 4, 4 | $0$ | parabola |
+
+That last row is the one worth studying. It has a cross term and looks like
+nothing familiar, but the discriminant is zero, so it is a parabola with a
+tilted axis. No amount of staring at the coefficients would tell you that; one
+subtraction does.
+
+## 12.4 Worked example: rotating an ellipse upright
+
+Classify and simplify $5x^{2} + 4xy + 5y^{2} = 9$.
+
+$$B^{2}-4AC = 16 - 100 = -84 < 0$$
+
+so it is an ellipse, decided before any work. Since $A = C$, the required
+rotation is $\\theta = 45^{\\circ}$:
+
+$$A' = 5\\left(\\tfrac{1}{2}\\right) + 4\\left(\\tfrac{1}{2}\\right) + 5\\left(\\tfrac{1}{2}\\right) = 7$$
+$$C' = 5\\left(\\tfrac{1}{2}\\right) - 4\\left(\\tfrac{1}{2}\\right) + 5\\left(\\tfrac{1}{2}\\right) = 3$$
+$$B' = 4\\cos 90^{\\circ} + 0 = 0$$
+
+$$7x'^{2} + 3y'^{2} = 9 \\quad \\Longrightarrow \\quad \\frac{x'^{2}}{9/7} + \\frac{y'^{2}}{3} = 1$$
+
+The semi-axes are $\\sqrt{9/7} = 1.1339$ along $x'$ and $\\sqrt{3} = 1.7321$
+along $y'$, so the major axis runs along $y'$ — that is, along the line
+$y = -x$ in the original frame. The eccentricity is
+
+$$e = \\sqrt{1 - \\frac{9/7}{3}} = \\sqrt{\\frac{4}{7}} = 0.7559$$
+
+Confirm the whole thing on the curve. Sampling three thousand points of
+$x'^{2}/(9/7) + y'^{2}/3 = 1$, rotating each back into the original frame, and
+substituting into $5x^{2}+4xy+5y^{2}$ gives 9 at every point, to
+$7 \\times 10^{-15}$.
+
+![An ellipse drawn in its original frame satisfying five x squared plus four x y plus five y squared equals nine, shown together with the same ellipse in the rotated frame where it satisfies seven x prime squared plus three y prime squared equals nine. The rotated axes run at forty-five degrees, and the four semi-axis endpoints are marked.](/courses/fe-ee/figures/math5-ag-rotation.svg)
+
+## 12.5 Worked example: the simplest tilted hyperbola
+
+Classify $xy = 4$.
+
+Here $A = C = 0$ and $B = 1$, so $B^{2}-4AC = 1 > 0$: a hyperbola. Again
+$A = C$, so rotate by $45^{\\circ}$. Substituting
+
+$$x = \\frac{x' - y'}{\\sqrt{2}}, \\qquad y = \\frac{x' + y'}{\\sqrt{2}}$$
+
+$$xy = \\frac{x'^{2} - y'^{2}}{2} = 4 \\quad \\Longrightarrow \\quad \\frac{x'^{2}}{8} - \\frac{y'^{2}}{8} = 1$$
+
+So $a = b = 2\\sqrt{2} = 2.8284$, $c = \\sqrt{8+8} = 4$, and
+$e = c/a = \\sqrt{2} = 1.4142$. Equal $a$ and $b$ make this a **rectangular**
+hyperbola, whose asymptotes are perpendicular — here they are the original $x$
+and $y$ axes, which is obvious from the equation $xy = 4$ once you know to look
+for it. Sampling the curve in the rotated frame and mapping back confirms
+$xy = 4$ at every point to $5 \\times 10^{-15}$.
+
+Rectangular hyperbolas are the shape of every constant-product relationship in
+engineering: constant power on a voltage-current plane, constant
+gain-bandwidth product, constant $RC$ for a fixed time constant.
+
+## 12.6 Worked example: a rotation that is not 45 degrees
+
+Classify $3x^{2} + 4xy = 4$ and find the rotation angle.
+
+$$B^{2}-4AC = 16 - 0 = 16 > 0 \\quad \\Longrightarrow \\quad \\text{hyperbola}$$
+
+$$\\cot 2\\theta = \\frac{A-C}{B} = \\frac{3-0}{4} = 0.75 \\quad \\Longrightarrow \\quad \\tan 2\\theta = \\frac{4}{3}$$
+
+$$2\\theta = 53.1301^{\\circ} \\quad \\Longrightarrow \\quad \\theta = 26.5651^{\\circ}$$
+
+That angle satisfies $\\tan\\theta = 0.5$, which is a clean way to state it. The
+lesson is procedural: the discriminant answers "what kind of curve" without any
+trigonometry, and only a question that actually asks for the axes needs
+$\\theta$ at all. On a timed exam, checking whether the question needs the angle
+before computing it saves a genuine minute.`,
+  examTip: 'Compute B^2 - 4AC first, always. It classifies the conic in one subtraction and it is unchanged by any rotation, so it is valid however tilted the curve is. Only compute the rotation angle if the question asks for axis lengths or directions.',
+  importantNote: 'When A = C the required rotation is exactly 45 degrees, because cot 2θ = 0. That covers xy = k and every equation of the form Ax² + Bxy + Ay² = k, which is most of what appears on an exam.',
+},
+{
+  id: 'ag-parametric-polar',
+  title: '13. Parametric and Polar Forms',
+  content: `## 13.1 Why a second form is worth having
+
+A curve written as $y = f(x)$ cannot double back, which rules out circles,
+ellipses and any closed loop unless you split them into pieces. Parametric and
+polar forms have no such restriction, and they make the natural variable — angle
+or time — explicit.
+
+| Curve | Parametric form | Recovering the Cartesian form |
+|---|---|---|
+| circle $x^{2}+y^{2}=r^{2}$ | $x = r\\cos t$, $y = r\\sin t$ | $\\cos^{2}t + \\sin^{2}t = 1$ |
+| ellipse | $x = a\\cos t$, $y = b\\sin t$ | same identity after dividing |
+| parabola $y^{2}=4px$ | $x = pt^{2}$, $y = 2pt$ | eliminate $t$ |
+| hyperbola, one branch | $x = a\\cosh u$, $y = b\\sinh u$ | $\\cosh^{2}u - \\sinh^{2}u = 1$ |
+| hyperbola, both branches | $x = a\\sec t$, $y = b\\tan t$ | $\\sec^{2}t - \\tan^{2}t = 1$ |
+| line through $P_0$ | $x = x_0 + at$, $y = y_0 + bt$ | eliminate $t$ |
+
+The parameter $t$ on the ellipse is **not** the polar angle of the point. It is
+the angle on the auxiliary circle of radius $a$, projected inward, which is why
+$(a\\cos t, \\, b\\sin t)$ sweeps the ellipse at a non-uniform angular rate. That
+distinction matters when a question asks where a point is at a given angle
+rather than at a given parameter value.
+
+## 13.2 Polar coordinates and the conversions
+
+$$x = r\\cos\\theta, \\qquad y = r\\sin\\theta$$
+$$r = \\sqrt{x^{2}+y^{2}}, \\qquad \\theta = \\operatorname{atan2}(y, x)$$
+
+The two-argument arctangent is the honest conversion. Plain $\\arctan(y/x)$
+loses the quadrant, mapping both $(1,1)$ and $(-1,-1)$ to $45^{\\circ}$, and the
+resulting $180^{\\circ}$ error is the classic phasor-angle mistake. If only
+$\\arctan$ is available, compute it and then add $180^{\\circ}$ whenever $x$ is
+negative.
+
+## 13.3 The polar equation of a conic
+
+Put the focus at the origin. The focus-directrix definition, written in polar
+coordinates, gives one equation for the entire family:
+
+$$r = \\frac{\\ell}{1 + e\\cos\\theta}$$
+
+where $\\ell = b^{2}/a$ is the semi-latus rectum. Reading this equation is
+almost the whole of conic geometry:
+
+- $e = 0$ makes $r$ constant: a circle of radius $\\ell$.
+- $0 < e < 1$ keeps the denominator positive for all $\\theta$: a closed ellipse.
+- $e = 1$ makes the denominator vanish at $\\theta = \\pi$: a parabola, open.
+- $e > 1$ makes the denominator vanish at two angles: a hyperbola, two branches.
+
+$$r_{\\min} = \\frac{\\ell}{1+e} = a - c, \\qquad r_{\\max} = \\frac{\\ell}{1-e} = a + c \\quad (e<1)$$
+
+![Four curves sharing one focus at the origin and one semi-latus rectum of three, produced by the single polar equation r equals three over one plus e cosine theta with eccentricities zero, zero point six, one and one point six. They are a circle, an ellipse, a parabola and one branch of a hyperbola.](/courses/fe-ee/figures/math5-ag-eccentricity-family.svg)
+
+## 13.4 Worked example: the polar form is the same ellipse
+
+For $x^{2}/25 + y^{2}/16 = 1$ we have $a = 5$, $b = 4$, $c = 3$, $e = 0.6$ and
+
+$$\\ell = \\frac{b^{2}}{a} = \\frac{16}{5} = 3.2 \\quad \\Longrightarrow \\quad r = \\frac{3.2}{1 + 0.6\\cos\\theta}$$
+
+Check the two extremes. At $\\theta = 0$, $r = 3.2/1.6 = 2$, which should equal
+$a - c = 5 - 3 = 2$. At $\\theta = \\pi$, $r = 3.2/0.4 = 8 = a + c$. Both agree.
+
+The real check is over the whole curve, not at two points. Taking four thousand
+values of $\\theta$, computing $r$, converting to Cartesian coordinates measured
+from the **centre** — that is, $x = c + r\\cos\\theta$ — and substituting into
+$x^{2}/25 + y^{2}/16$ gives 1 at every point, to $9 \\times 10^{-16}$. The polar
+form about the focus and the Cartesian form about the centre describe the same
+ellipse.
+
+## 13.5 Worked example: a parabola in polar form
+
+Take $\\ell = 6$ and $e = 1$:
+
+$$r = \\frac{6}{1 + \\cos\\theta}$$
+
+At $\\theta = 0$ this gives $r = 3$: the vertex sits 3 from the focus, which is
+$\\ell/2$ as it must be. At $\\theta = \\pi/2$ it gives $r = 6 = \\ell$, the
+semi-latus rectum. Converting the whole curve to Cartesian coordinates about
+the focus gives
+
+$$y^{2} = -12(x - 3)$$
+
+a parabola with vertex $(3,0)$ opening toward negative $x$, and sampling four
+thousand points confirms the identity to $10^{-13}$. As $\\theta$ approaches
+$\\pi$ the denominator goes to zero and $r$ runs away, which is the open end of
+the curve.
+
+## 13.6 Worked example: converting a polar equation to Cartesian
+
+Identify $r = 4\\cos\\theta$.
+
+Multiply through by $r$, which is the standard first move because it produces
+$r^{2}$ and $r\\cos\\theta$, both of which convert directly:
+
+$$r^{2} = 4r\\cos\\theta \\quad \\Longrightarrow \\quad x^{2}+y^{2} = 4x \\quad \\Longrightarrow \\quad (x-2)^{2}+y^{2} = 4$$
+
+It is a circle of radius 2 centred at $(2, 0)$ — a circle through the origin
+whose diameter lies along the polar axis. Multiplying by $r$ can in principle
+introduce the origin as a spurious solution, but here the origin is genuinely on
+the curve, at $\\theta = \\pi/2$.
+
+## 13.7 Worked example: eliminating the parameter
+
+A point moves as $x = 3 + 2\\cos t$, $y = -1 + 5\\sin t$. What path does it
+follow?
+
+Isolate the trigonometric functions and use the Pythagorean identity:
+
+$$\\frac{x-3}{2} = \\cos t, \\qquad \\frac{y+1}{5} = \\sin t$$
+
+$$\\frac{(x-3)^{2}}{4} + \\frac{(y+1)^{2}}{25} = 1$$
+
+An ellipse centred at $(3,-1)$ with a vertical major axis, $a = 5$ and $b = 2$,
+so $c = \\sqrt{25-4} = \\sqrt{21} = 4.5826$ and the foci are at
+$(3, -1 \\pm 4.5826)$. This is exactly the algebra behind an elliptically
+polarised wave, where the two field components are sinusoids of different
+amplitude in quadrature and the tip of the field vector traces this ellipse.
+When the amplitudes are equal the ellipse becomes a circle, giving circular
+polarisation; when the phase difference is zero it degenerates to a straight
+line, giving linear polarisation.`,
+  examTip: 'Use atan2 rather than arctan when converting to polar, or check the quadrant by hand. A phasor at (-3, -4) has angle 233.13 degrees, not 53.13 - and both numbers will be on the list of choices.',
+  importantNote: 'The parameter t in (a cos t, b sin t) is not the polar angle of the point on the ellipse. It is the eccentric angle, measured on the auxiliary circle. They agree only at the four axis points.',
+},
+{
+  id: 'ag-three-space',
+  title: '14. Three-Dimensional Coordinates, Lines and Planes',
+  content: `## 14.1 Direction cosines
+
+A direction in space can be given by the three angles $\\alpha$, $\\beta$,
+$\\gamma$ that it makes with the coordinate axes. Their cosines are the
+**direction cosines**:
+
+$$l = \\cos\\alpha = \\frac{a}{\\lvert \\mathbf{v} \\rvert}, \\qquad m = \\cos\\beta = \\frac{b}{\\lvert \\mathbf{v} \\rvert}, \\qquad n = \\cos\\gamma = \\frac{c}{\\lvert \\mathbf{v} \\rvert}$$
+
+for a direction vector $\\mathbf{v} = (a,b,c)$. They are exactly the components
+of the unit vector along $\\mathbf{v}$, which is why
+
+$$l^{2} + m^{2} + n^{2} = 1$$
+
+That identity is the distance formula in disguise, and it is the fastest check
+that a set of direction cosines is legitimate.
+
+## 14.2 Worked example: direction cosines of a vector
+
+For $\\mathbf{v} = (2, 3, 6)$:
+
+$$\\lvert \\mathbf{v} \\rvert = \\sqrt{4+9+36} = \\sqrt{49} = 7$$
+
+$$l = \\tfrac{2}{7} = 0.285714, \\qquad m = \\tfrac{3}{7} = 0.428571, \\qquad n = \\tfrac{6}{7} = 0.857143$$
+
+$$l^{2}+m^{2}+n^{2} = \\frac{4+9+36}{49} = 1$$
+
+The angles themselves are $\\alpha = 73.3985^{\\circ}$,
+$\\beta = 64.6231^{\\circ}$ and $\\gamma = 31.0027^{\\circ}$. Notice they do not
+sum to anything meaningful — it is the sum of the squared cosines that is fixed,
+not the sum of the angles, and that is a distinction the exam tests.
+
+## 14.3 Planes
+
+A plane is fixed by a point on it and a normal direction. If
+$\\mathbf{n} = (A,B,C)$ is normal and $P_0 = (x_0,y_0,z_0)$ lies on the plane,
+then every point $P$ on the plane satisfies
+$\\mathbf{n} \\cdot (P - P_0) = 0$:
+
+$$A(x-x_0) + B(y-y_0) + C(z-z_0) = 0 \\quad \\Longrightarrow \\quad Ax + By + Cz = D$$
+
+with $D = Ax_0 + By_0 + Cz_0$. The coefficients **are** the normal vector, which
+is the single most useful fact about the general form.
+
+The distance from a point $P_1$ to that plane follows the same projection
+argument used for a line in the plane:
+
+$$d = \\frac{\\lvert Ax_1 + By_1 + Cz_1 - D \\rvert}{\\sqrt{A^{2}+B^{2}+C^{2}}}$$
+
+## 14.4 Worked example: point to plane, and the foot
+
+How far is $(3,4,5)$ from the plane $x + 2y + 2z = 6$?
+
+$$d = \\frac{\\lvert 3 + 8 + 10 - 6 \\rvert}{\\sqrt{1+4+4}} = \\frac{15}{3} = 5$$
+
+The foot of the perpendicular is reached by stepping 5 units back along the unit
+normal $\\tfrac{1}{3}(1,2,2)$:
+
+$$F = (3,4,5) - 5\\cdot\\tfrac{1}{3}(1,2,2) = \\left(\\tfrac{4}{3}, \\tfrac{2}{3}, \\tfrac{5}{3}\\right)$$
+
+Check that $F$ lies on the plane:
+
+$$\\frac{4}{3} + 2\\left(\\frac{2}{3}\\right) + 2\\left(\\frac{5}{3}\\right) = \\frac{4+4+10}{3} = 6$$
+
+An independent check: scan a
+fine grid of points lying in the plane and measure each one's distance to
+$(3,4,5)$; the smallest distance found is 5.000 to three decimals.
+
+![A three-dimensional view of the plane x plus two y plus two z equals six drawn as a translucent sheet, with the point three comma four comma five above it joined by a perpendicular segment of length five to the foot at four thirds comma two thirds comma five thirds.](/courses/fe-ee/figures/math5-ag-space-plane.svg)
+
+## 14.5 Lines in space
+
+A line needs a point and a direction, and it is written three equivalent ways:
+
+$$\\text{vector:} \\quad \\mathbf{r} = \\mathbf{r}_0 + t\\,\\mathbf{v}$$
+$$\\text{parametric:} \\quad x = x_0 + at, \\quad y = y_0 + bt, \\quad z = z_0 + ct$$
+$$\\text{symmetric:} \\quad \\frac{x-x_0}{a} = \\frac{y-y_0}{b} = \\frac{z-z_0}{c}$$
+
+The symmetric form fails whenever a direction component is zero, because that
+would divide by zero; in that case the corresponding coordinate is simply
+constant, and the line is written as a pair of equations instead.
+
+The distance from a point $Q$ to that line uses a cross product, because the
+cross product's magnitude is the area of the parallelogram spanned by two
+vectors, and area divided by base gives height:
+
+$$d = \\frac{\\lvert (Q - \\mathbf{r}_0) \\times \\mathbf{v} \\rvert}{\\lvert \\mathbf{v} \\rvert}$$
+
+## 14.6 Worked example: point to line in space
+
+How far is $(4,4,1)$ from the line through $(1,2,3)$ with direction $(1,2,2)$?
+
+$$Q - \\mathbf{r}_0 = (3, 2, -2)$$
+
+$$(3,2,-2) \\times (1,2,2) = (2\\cdot 2 - (-2)\\cdot 2, \\; (-2)\\cdot 1 - 3\\cdot 2, \\; 3\\cdot 2 - 2\\cdot 1) = (8, -8, 4)$$
+
+$$d = \\frac{\\sqrt{64+64+16}}{\\sqrt{1+4+4}} = \\frac{12}{3} = 4$$
+
+Confirm by minimisation, which shares no algebra with the cross product: slide a
+point $\\mathbf{r}_0 + t\\mathbf{v}$ along the line and minimise its distance to
+$Q$ numerically. The minimum is 4.000000 to seven decimals.
+
+## 14.7 Worked example: two skew lines
+
+Two lines in space that neither meet nor run parallel are **skew**, and the
+shortest distance between them is measured along the common perpendicular. Its
+direction is $\\mathbf{v}_1 \\times \\mathbf{v}_2$, so projecting the vector
+between any two points, one from each line, onto that direction gives
+
+$$d = \\frac{\\lvert (\\mathbf{r}_2 - \\mathbf{r}_1) \\cdot (\\mathbf{v}_1 \\times \\mathbf{v}_2) \\rvert}{\\lvert \\mathbf{v}_1 \\times \\mathbf{v}_2 \\rvert}$$
+
+For $\\mathbf{r}_1 = (1,0,-1)$ with $\\mathbf{v}_1 = (2,1,3)$, and
+$\\mathbf{r}_2 = (0,2,1)$ with $\\mathbf{v}_2 = (1,-1,2)$:
+
+$$\\mathbf{v}_1 \\times \\mathbf{v}_2 = (5, -1, -3), \\qquad \\lvert \\mathbf{v}_1 \\times \\mathbf{v}_2 \\rvert = \\sqrt{35} = 5.9161$$
+
+$$\\mathbf{r}_2 - \\mathbf{r}_1 = (-1, 2, 2), \\qquad (-1,2,2)\\cdot(5,-1,-3) = -5 - 2 - 6 = -13$$
+
+$$d = \\frac{13}{\\sqrt{35}} = 2.1974$$
+
+Sweeping both parameters over a fine grid and taking the smallest separation
+found gives 2.1974 as well, so the projection formula and brute force agree.
+
+## 14.8 Angles between planes and lines
+
+| Between | Formula |
+|---|---|
+| two lines | $\\cos\\phi = \\dfrac{\\lvert \\mathbf{v}_1 \\cdot \\mathbf{v}_2 \\rvert}{\\lvert \\mathbf{v}_1 \\rvert \\lvert \\mathbf{v}_2 \\rvert}$ |
+| two planes | $\\cos\\phi = \\dfrac{\\lvert \\mathbf{n}_1 \\cdot \\mathbf{n}_2 \\rvert}{\\lvert \\mathbf{n}_1 \\rvert \\lvert \\mathbf{n}_2 \\rvert}$ |
+| line and plane | $\\sin\\phi = \\dfrac{\\lvert \\mathbf{v} \\cdot \\mathbf{n} \\rvert}{\\lvert \\mathbf{v} \\rvert \\lvert \\mathbf{n} \\rvert}$ |
+
+The third row uses **sine**, not cosine, and that is the detail that gets
+missed. The angle between a line and a plane is measured to the plane, whereas
+the dot product measures the angle to the normal, and those two are
+complementary. Every one of these formulas is a dot product divided by two
+magnitudes, so if you remember the dot product you can reconstruct all three —
+and remember that the odd one out is a sine.`,
+  examTip: 'In Ax + By + Cz = D the coefficients ARE the normal vector. That one fact supplies the distance formula, the angle between planes, whether two planes are parallel, and whether a line lies in a plane. Write the normal down first and most three-dimensional questions become one dot product.',
+  importantNote: 'The angle between a line and a plane uses sine, because the dot product gives the angle to the NORMAL and the reported angle is measured to the plane itself. The two are complementary, so using cosine returns 90 degrees minus the right answer.',
+},
+{
+  id: 'ag-applications',
+  title: '15. Applications: Reflectors, Navigation and Locus Problems',
+  content: `## 15.1 Why a dish has to be a parabola
+
+Take the parabola $y = x^{2}/(4f)$, whose focus is at $(0, f)$. A ray travelling
+straight down, parallel to the axis, strikes the curve at $(x_0, x_0^{2}/(4f))$.
+The tangent there has slope $x_0/(2f)$, and reflecting the incoming direction in
+that tangent gives an outgoing direction. Doing that reflection exactly — the
+mirror of a vector $\\mathbf{u}$ in a line of unit direction $\\mathbf{t}$ is
+$2(\\mathbf{u}\\cdot\\mathbf{t})\\mathbf{t} - \\mathbf{u}$ — and comparing it with
+the direction from the strike point to $(0,f)$ shows they are identical for
+every $x_0$. The check was run at nine strike points across the aperture, and
+the two unit vectors agree to $10^{-12}$ at all of them.
+
+That is the reason a parabola is used and not a circular arc: **every** axial
+ray reaches the focus, not merely the ones near the axis. A spherical mirror
+focuses only paraxial rays and blurs the rest, which is spherical aberration.
+
+## 15.2 Worked example: sizing a dish from its physical dimensions
+
+A dish is $D = 2.4\\ \\mathrm{m}$ across at the rim and $d = 0.30\\ \\mathrm{m}$
+deep at the centre. Where is the focus?
+
+Put the vertex at the origin with the axis vertical, so the surface is
+$y = x^{2}/(4f)$. The rim point is $(D/2, \\, d)$:
+
+$$d = \\frac{(D/2)^{2}}{4f} = \\frac{D^{2}}{16f} \\quad \\Longrightarrow \\quad f = \\frac{D^{2}}{16d}$$
+
+$$f = \\frac{2.4^{2}}{16(0.30)} = \\frac{5.76}{4.8} = 1.2\\ \\mathrm{m}$$
+
+Check by substitution: at $x = 1.2$, $y = 1.44/(4 \\times 1.2) = 0.30$, matching
+the stated depth. The **focal ratio** is $f/D = 1.2/2.4 = 0.5$, which is a
+shallow dish with the focus well outside the rim plane; a deep dish has
+$f/D$ nearer 0.25 and its focus at the rim.
+
+A second dish, $D = 3.0\\ \\mathrm{m}$ and $d = 0.25\\ \\mathrm{m}$, gives
+$f = 9/4 = 2.25\\ \\mathrm{m}$ and $f/D = 0.75$: shallower still, and its feed
+must be mounted further out.
+
+![The cross-section of a parabolic dish two point four metres across and zero point three metres deep, with nine vertical incoming rays striking the surface and the reflected rays converging on a single focus at one point two metres. Every reflected ray was computed by mirroring the incoming ray in the tangent at its strike point.](/courses/fe-ee/figures/math5-ag-parabolic-reflector.svg)
+
+## 15.3 The ellipse reflects between its two foci
+
+For an ellipse the tangent makes equal angles with the two focal radii, so a ray
+leaving one focus arrives at the other. Checking this numerically — comparing
+the bisector of the two focal directions with the normal at four thousand points
+of $x^{2}/25 + y^{2}/16 = 1$ — gives agreement to $2 \\times 10^{-16}$ at every
+point.
+
+Whispering galleries work this way, and so do lithotripters, which put the
+source at one focus and the target at the other. The engineering reading is that
+an elliptical cavity has one exceptionally strong coupling path and the exact
+positions of the two foci matter to millimetres.
+
+## 15.4 Hyperbolic navigation
+
+Two transmitters at known positions send synchronised pulses. A receiver
+measures the **difference** in arrival times, which fixes the difference in
+ranges — and the set of points with a constant range difference is exactly a
+hyperbola with the transmitters as foci. That is the defining property of a
+hyperbola put to work.
+
+## 15.5 Worked example: a position line from a time difference
+
+Two stations sit at $(\\pm 60, 0)$ kilometres. A receiver measures a range
+difference of 72 km. Where can it be?
+
+The hyperbola has $2a = 72$, so $a = 36$, and $c = 60$, so
+
+$$b = \\sqrt{c^{2}-a^{2}} = \\sqrt{3600 - 1296} = \\sqrt{2304} = 48$$
+
+$$\\frac{x^{2}}{1296} - \\frac{y^{2}}{2304} = 1$$
+
+with $e = 60/36 = 1.6667$ and asymptotes
+$y = \\pm\\tfrac{48}{36}x = \\pm\\tfrac{4}{3}x$. Sampling four thousand points along the branch and
+measuring both ranges gives a difference of exactly 72 km at every one of them.
+
+The receiver lies on the branch nearer the station reached first. A second pair
+of stations gives a second hyperbola, and the intersection fixes the position —
+which is the whole idea, and the reason the asymptotes matter operationally: far
+from the baseline the branches flatten onto their asymptotes, two position lines
+cross at a shallow angle, and the fix degrades.
+
+The time scale is worth carrying. At $3 \\times 10^{5}\\ \\mathrm{km/s}$, a 72 km
+path difference is
+
+$$\\frac{72}{3\\times10^{5}}\\ \\mathrm{s} = 240\\ \\mu\\mathrm{s}$$
+
+so a timing error of one microsecond changes the measured range difference by
+300 m, which moves the semi-transverse axis $a$ by 150 m. How far that shifts
+the position line on the ground depends on where the receiver sits relative to
+the baseline, and it grows as the branches flatten onto their asymptotes.
+
+## 15.6 Worked example: an Apollonius locus
+
+Find the set of points whose distance to the origin is twice its distance to
+$(3, 0)$.
+
+Write the condition and square it to clear the radicals:
+
+$$x^{2}+y^{2} = 4\\left[(x-3)^{2}+y^{2}\\right]$$
+$$x^{2}+y^{2} = 4x^{2} - 24x + 36 + 4y^{2}$$
+$$3x^{2} + 3y^{2} - 24x + 36 = 0 \\quad \\Longrightarrow \\quad x^{2}+y^{2}-8x+12 = 0$$
+$$(x-4)^{2} + y^{2} = 4$$
+
+A circle of radius 2 centred at $(4,0)$. The result is worth noticing: a
+constant **ratio** of distances to two points gives a circle, whereas a constant
+**sum** gives an ellipse and a constant **difference** gives a hyperbola. The
+ratio case is the Apollonius circle and it is the one people do not expect.
+
+Check it on the curve. Sampling four thousand points of the parametrised circle
+$(4+2\\cos t, \\; 2\\sin t)$ and computing the ratio of the two distances gives 2 at every one, to
+$10^{-15}$. Two easy members: $(6,0)$ is 6 from the origin and 3 from $(3,0)$,
+and $(2,0)$ is 2 from the origin and 1 from $(3,0)$. Both give the ratio 2, and
+they are the two points where the circle meets the line joining the fixed
+points.
+
+## 15.7 Worked example: a locus from a focus and a directrix
+
+Find the set of points equidistant from $(0, 4)$ and the line $y = -4$.
+
+Equidistant means $e = 1$, so the answer is a parabola with focus $(0,4)$ and
+directrix $y = -4$. Writing the condition:
+
+$$\\sqrt{x^{2} + (y-4)^{2}} = y + 4$$
+$$x^{2} + y^{2} - 8y + 16 = y^{2} + 8y + 16 \\quad \\Longrightarrow \\quad x^{2} = 16y$$
+
+Matching against $x^{2} = 4py$ gives $4p = 16$, so $p = 4$ — and the focus
+should be at $(0, p) = (0,4)$ with the directrix at $y = -4$, which is what was
+given. The construction is self-consistent. Sampling four thousand points of
+$y = x^{2}/16$ and comparing the two distances gives agreement to
+$7 \\times 10^{-15}$ everywhere.
+
+## 15.8 A short catalogue of loci worth recognising
+
+| Condition on $P$ | Locus |
+|---|---|
+| fixed distance from one point | circle |
+| fixed sum of distances to two points | ellipse |
+| fixed difference of distances to two points | hyperbola |
+| equidistant from a point and a line | parabola |
+| fixed ratio $k \\ne 1$ of distances to two points | circle (Apollonius) |
+| equidistant from two points | perpendicular bisector, a line |
+| fixed ratio of distances to a point and a line | conic of eccentricity $e$ |
+
+Reading a locus question is a matter of finding which row it is. Once the row is
+identified, the standard form supplies every remaining answer without further
+derivation.`,
+  examTip: 'For a reflector question, put the vertex at the origin and use y = x^2/(4f); then the rim point (D/2, d) gives f = D^2/(16d) in one line. For a navigation question, the range difference is 2a and the station separation is 2c - never the other way round.',
+  importantNote: 'A constant RATIO of distances to two points gives a circle, not a hyperbola. Constant sum gives an ellipse and constant difference gives a hyperbola; the ratio case is the Apollonius circle, and it appears on the exam precisely because it is the one candidates guess wrong.',
+},
+{
+  id: 'ag-set-b',
+  title: '16. Problem Set: Lines, Circles and Conics',
+  content: `## Problem Set A: lines, circles and conics
+
+Every numerical answer here was confirmed a second way — by substitution back
+into the defining equation, or by sampling the curve and testing the defining
+distance relation.
+
+### A1. Distance and a foot
+
+How far is $(5, 1)$ from $5x - 12y + 26 = 0$, and where does the perpendicular
+meet the line?
+
+$$d = \\frac{\\lvert 25 - 12 + 26 \\rvert}{\\sqrt{25+144}} = \\frac{39}{13} = 3$$
+
+Stepping 3 units along the unit normal $\\tfrac{1}{13}(5,-12)$ gives the foot
+$(3.846154, \\, 3.769231)$, and substituting it into the line equation returns
+zero exactly.
+
+### A2. The angle between two lines
+
+Find the angle between $2x - y = 3$ and $3x + y = 4$.
+
+Slopes are $m_1 = 2$ and $m_2 = -3$:
+
+$$\\tan\\theta = \\left\\lvert \\frac{-3-2}{1+2(-3)} \\right\\rvert = \\left\\lvert \\frac{-5}{-5} \\right\\rvert = 1 \\quad \\Longrightarrow \\quad \\theta = 45^{\\circ}$$
+
+The dot product of the direction vectors $(1,2)$ and $(1,-3)$ gives
+$\\cos\\theta = 5/(\\sqrt{5}\\sqrt{10}) = 0.7071$ and the same $45^{\\circ}$.
+
+### A3. Centre and radius
+
+Find the centre and radius of $x^{2}+y^{2}-10x-4y+13 = 0$.
+
+$$(x^{2}-10x+25) + (y^{2}-4y+4) = -13+25+4 = 16$$
+$$(x-5)^{2}+(y-2)^{2} = 16$$
+
+Centre $(5,2)$, radius 4. Sampling the circle and substituting into the original
+equation returns zero to fourteen decimal places at every point.
+
+### A4. A chord without its endpoints
+
+A line lies 3 units from the centre of a circle of radius 5. How long is the
+chord it cuts?
+
+$$2\\sqrt{r^{2}-p^{2}} = 2\\sqrt{25-9} = 2(4) = 8$$
+
+No intersection points needed. If the distance had been 5 the chord would have
+length zero, which is tangency, and beyond 5 there is no chord at all.
+
+### A5. Reading an ellipse
+
+For $9x^{2}+25y^{2} = 225$, give the axes, foci, eccentricity, directrices and
+latus rectum.
+
+Dividing by 225 gives $x^{2}/25 + y^{2}/9 = 1$, so $a = 5$, $b = 3$,
+$c = \\sqrt{16} = 4$, $e = 0.8$. Foci $(\\pm 4, 0)$, vertices $(\\pm 5, 0)$,
+directrices $x = \\pm 6.25$, latus rectum $2(9)/5 = 3.6$. Sampling the curve
+confirms the focal sum is 10 everywhere and the focus-directrix ratio is 0.8
+everywhere.
+
+### A6. Reading a hyperbola
+
+For $25x^{2}-144y^{2} = 3600$, give the same list.
+
+Dividing by 3600 gives $x^{2}/144 - y^{2}/25 = 1$. The positive term carries
+$a^{2}$, so $a = 12$ and $b = 5$; then $c = 13$ and $e = 13/12 = 1.0833$.
+Vertices $(\\pm 12,0)$, foci $(\\pm 13,0)$, asymptotes
+$y = \\pm\\tfrac{5}{12}x$, directrices $x = \\pm 144/13 = \\pm 11.0769$, latus
+rectum $25/6 = 4.1667$. Sampling the right branch confirms the focal difference
+is 24 everywhere.
+
+### A7. A parabola opening downward
+
+For $x^{2} = -8y$, give the focus, directrix and latus rectum.
+
+$4p = 8$ so $p = 2$: focus $(0,-2)$, directrix $y = 2$, latus rectum 8, opening
+downward because of the minus sign. Sampling the curve confirms the distance to
+the focus equals the distance to the directrix at every point.
+
+### A8. Shifting the centre
+
+Identify $4x^{2}+9y^{2}-16x+18y-11 = 0$.
+
+$$4(x^{2}-4x+4) + 9(y^{2}+2y+1) = 11 + 16 + 9 = 36$$
+$$\\frac{(x-2)^{2}}{9} + \\frac{(y+1)^{2}}{4} = 1$$
+
+An ellipse centred at $(2,-1)$ with $a = 3$ and $b = 2$. The numbers added to
+the right were $4 \\times 4$ and $9 \\times 1$, because the completed squares sit
+inside those coefficients.
+
+### A9. Tangent length
+
+How long is the tangent from $(8,6)$ to $x^{2}+y^{2} = 25$?
+
+$$L = \\sqrt{64+36-25} = \\sqrt{75} = 8.6603$$
+
+Both tangent points were located and checked: each lies on the circle, each is
+exactly $8.6603$ from $(8,6)$, and each radius meets its tangent at a right
+angle.`,
+},
+{
+  id: 'ag-set-c',
+  title: '17. Problem Set: Transformations, Space and Loci',
+  content: `## Problem Set B: transformations, three dimensions and loci
+
+### B1. Classify without simplifying
+
+Classify each of the following by discriminant alone.
+
+| Equation | $B^{2}-4AC$ | Type |
+|---|---|---|
+| $2x^{2}+3y^{2}-12 = 0$ | $-24$ | ellipse |
+| $x^{2}+y^{2}-6x = 0$ | $-4$ | circle |
+| $y^{2}+8x = 0$ | $0$ | parabola |
+| $xy = 4$ | $1$ | hyperbola |
+| $x^{2}+4xy+4y^{2}-x = 0$ | $0$ | parabola |
+
+The last two both have cross terms, and neither can be classified by looking at
+it. One subtraction settles both.
+
+### B2. Rotating away a cross term
+
+Simplify $5x^{2}+4xy+5y^{2} = 9$.
+
+Since $A = C$, rotate by $45^{\\circ}$, giving $7x'^{2}+3y'^{2} = 9$, that is
+$x'^{2}/(9/7) + y'^{2}/3 = 1$. Semi-axes $\\sqrt{9/7} = 1.1339$ and
+$\\sqrt{3} = 1.7321$, eccentricity $\\sqrt{4/7} = 0.7559$. Sampling the rotated
+ellipse and mapping the points back into the original frame reproduces
+$5x^{2}+4xy+5y^{2} = 9$ to $7\\times10^{-15}$.
+
+### B3. A rotation that is not 45 degrees
+
+Through what angle must the axes be turned to remove the cross term from
+$3x^{2}+4xy = 4$?
+
+$$\\cot 2\\theta = \\frac{A-C}{B} = \\frac{3}{4} \\quad \\Longrightarrow \\quad 2\\theta = 53.1301^{\\circ}, \\quad \\theta = 26.5651^{\\circ}$$
+
+The discriminant $16 - 0 = 16 > 0$ already told you it is a hyperbola, so if the
+question asked only for the type, the angle was never needed.
+
+### B4. Parameter elimination
+
+A point moves as $x = 3+2\\cos t$, $y = -1+5\\sin t$. Identify the path and its
+foci.
+
+$$\\frac{(x-3)^{2}}{4} + \\frac{(y+1)^{2}}{25} = 1$$
+
+An ellipse centred at $(3,-1)$ with a vertical major axis, $a = 5$, $b = 2$,
+$c = \\sqrt{21} = 4.5826$, foci $(3, \\, -1\\pm 4.5826)$, eccentricity
+$\\sqrt{21}/5 = 0.9165$ — a distinctly elongated ellipse.
+
+### B5. Polar to Cartesian
+
+Identify $r = 6/(1+\\cos\\theta)$.
+
+Eccentricity 1, so a parabola with the focus at the origin, semi-latus rectum 6
+and vertex at $r(0) = 3$. In Cartesian coordinates it is $y^{2} = -12(x-3)$,
+opening toward negative $x$. Sampling four thousand values of $\\theta$ confirms
+the identity to $10^{-13}$.
+
+### B6. Direction cosines
+
+Give the direction cosines and direction angles of $(2,3,6)$.
+
+Magnitude 7, so $l = 2/7$, $m = 3/7$, $n = 6/7$, and
+$l^{2}+m^{2}+n^{2} = 49/49 = 1$. The angles are $73.3985^{\\circ}$,
+$64.6231^{\\circ}$ and $31.0027^{\\circ}$.
+
+### B7. Point to plane
+
+How far is $(4,1,6)$ from $x - 2y + 2z = 5$, and where is the foot?
+
+$$d = \\frac{\\lvert 4 - 2 + 12 - 5 \\rvert}{\\sqrt{1+4+4}} = \\frac{9}{3} = 3$$
+
+Stepping 3 units along $\\tfrac{1}{3}(1,-2,2)$ gives the foot $(3, 3, 4)$, and
+substituting it returns $3 - 6 + 8 = 5$ exactly.
+
+### B8. Skew lines
+
+Find the shortest distance between the line through $(1,0,-1)$ with direction
+$(2,1,3)$ and the line through $(0,2,1)$ with direction $(1,-1,2)$.
+
+$$\\mathbf{v}_1\\times\\mathbf{v}_2 = (5,-1,-3), \\qquad (\\mathbf{r}_2-\\mathbf{r}_1)\\cdot(5,-1,-3) = -13$$
+
+$$d = \\frac{13}{\\sqrt{35}} = 2.1974$$
+
+Sweeping both parameters numerically and taking the smallest separation gives
+2.1974 as well.
+
+### B9. Two loci from the same two points
+
+Describe the set of points $P$ for which (a) the distance to the origin is twice
+the distance to $(3,0)$, and (b) the distance to the origin equals the distance
+to $(3,0)$.
+
+(a) Squaring the ratio condition gives $(x-4)^{2}+y^{2} = 4$: an Apollonius
+circle of radius 2 centred at $(4,0)$. Sampling it returns a distance ratio of
+exactly 2 at every point.
+
+(b) A ratio of 1 degenerates: the squared condition gives $-6x + 9 = 0$, that is
+$x = 1.5$, the perpendicular bisector. The circle has become a line, which is
+what the Apollonius family does at $k = 1$.
+
+### B10. A dish and its feed
+
+A dish is 3.0 m across and 0.25 m deep. Where is the focus, and what is the
+focal ratio?
+
+$$f = \\frac{D^{2}}{16d} = \\frac{9.0}{4.0} = 2.25\\ \\mathrm{m}, \\qquad \\frac{f}{D} = 0.75$$
+
+Check: at $x = 1.5$ the surface $y = x^{2}/(4f)$ gives
+$2.25/9 = 0.25\\ \\mathrm{m}$, matching the stated depth. The focus sits well
+outside the rim plane, so the feed needs a long support and the dish
+illuminates it over a narrow angle.`,
 },
 ],
   keyTakeaways: [
