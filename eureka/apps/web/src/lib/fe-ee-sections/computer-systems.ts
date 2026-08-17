@@ -3756,6 +3756,1644 @@ the transfer itself is free to it, though it does consume bus bandwidth.`,
       examTip: 'Interrupt-driven I/O costs the service time divided by the FIFO depth per byte, which is why a shallow FIFO makes interrupts barely cheaper than polling. Compute overhead as (bytes per second / block size) times (time per block) and compare against 100 percent.',
       importantNote: 'Memory-mapped device registers must be excluded from the cache and treated as volatile. A cached read of a status register returns a stale value forever, which is a failure mode no amount of correct logic elsewhere can recover from.',
     },
+    { id: 'io-addrmap', title: '6. The Address Map, and What Decoding One Costs',
+      content: `## 6.1 The choice is about the instruction set, not the wires
+
+Section 5.3 introduced the two ways of reaching a peripheral register. The
+distinction is worth pressing on, because it is not really a distinction about
+hardware — the wires that select a device are the same either way — but about
+whether the processor has a second addressing mechanism in its instruction set.
+
+Under **memory-mapped** addressing the register is an address like any other, so
+every addressing mode, every load and store, and every pointer idiom in a
+high-level language reaches it. Under **port-mapped** addressing there is a
+separate I/O address space with its own instructions and its own control line
+telling the bus which space a transaction belongs to.
+
+| Property | Memory-mapped | Port-mapped |
+|---|---|---|
+| Instructions needed | the ordinary loads and stores | a dedicated input and output pair |
+| Addressing modes available | all of them | usually one, a bare port number |
+| Address space consumed | some of the memory map | none of it |
+| Bus signals | address and data only | plus a space-select line |
+| Reachable from a compiled pointer | yes | no, needs assembly or an intrinsic |
+
+The cost column is the one to keep. Port-mapped addressing spends no memory
+addresses, and on a machine with a 16-bit address bus that mattered enormously.
+On a 32-bit machine it does not. Give a peripheral window one mebibyte of a
+four-gibibyte space and the fraction spent is
+
+$$1048576 / 4294967296 = 0.000244$$
+
+which is 0.0244 percent of the map. That is why the memory-mapped scheme won:
+the resource it consumes stopped being scarce, and in exchange every pointer,
+array and structure in the language reaches a device register directly.
+
+## 6.2 Decoding is a comparison, and its width is arithmetic
+
+A device occupying a block of $2^{k}$ bytes uses the low $k$ address bits to
+select a register inside itself, and the decoder must compare the remaining bits
+against the block's base. On an $n$-bit address bus,
+
+$$b = n - k$$
+
+bits must be compared. Nothing else about the decode is free to choose: making
+$b$ smaller is not a simplification, it is a decision to build **aliases**.
+
+### Worked example 6A — a decoder that is too narrow
+
+**Given.** A 32-bit machine. A peripheral occupies a 1 KiB block based at
+0x40020000. To save gates the designer compares only the top 12 address bits.
+Find the correct comparison width, the number of aliases created, and the total
+address footprint the peripheral actually occupies.
+
+**Offset bits.** A 1 KiB block holds 1024 byte addresses, so
+
+$$\\log_{2} 1024 = 10$$
+
+and $k = 10$.
+
+**Correct comparison width.** From the relation above,
+
+$$32 - 10 = 22$$
+
+so 22 bits must be compared for the block to appear exactly once.
+
+**Bits left undecoded.** Comparing only 12 of those 22 leaves
+
+$$22 - 12 = 10$$
+
+address bits that the decoder ignores. Every combination of those ten bits
+selects the same physical registers, so the number of images is
+
+$$2^{10} = 1024$$
+
+**Footprint.** Those 1024 images each span 1 KiB, so the peripheral answers
+across
+
+$$1024 \\times 1024 = 1048576$$
+
+bytes, one full mebibyte. **22 bits are required, 12 were compared, 1024 aliases
+result, and the device occupies 1 MiB instead of 1 KiB.**
+
+The failure this produces is not a wrong read. Every alias works perfectly.
+What breaks is the *next* peripheral, which is assigned an address inside the
+alias region, and then two devices answer the same cycle and drive the data bus
+against each other. Incomplete decoding is a defect that tests clean and fails
+during integration.
+
+## 6.3 Byte offsets are not register indices
+
+Datasheets list registers by **byte offset**. Code reaches them through a
+pointer to a word. Confusing the two is the most common way to read the wrong
+register, and the error is silent because the wrong register usually exists.
+
+### Worked example 6B — offset against index
+
+**Given.** A peripheral with sixteen 32-bit registers. The datasheet places the
+status register at byte offset 28. Find its index in a word-pointer array, and
+find which register is reached if the offset is used as the index directly.
+
+**Correct index.** Each register spans four bytes, so
+
+$$28 / 4 = 7$$
+
+and the status register is element seven of the array.
+
+**The mistake.** Using 28 as an index multiplies by the element size again:
+
+$$28 \\times 4 = 112$$
+
+bytes past the base, which is register
+
+$$112 / 4 = 28$$
+
+The block has only sixteen registers, numbered zero to fifteen, so register 28
+lies
+
+$$28 - 16 = 12$$
+
+registers beyond the end of the block — inside whatever the map places next.
+**Element 7 is correct; the naive version reaches byte offset 112, which is
+outside the device entirely.**
+
+## 6.4 A device register is not memory, and the cache must be told
+
+The consequence flagged at the end of Section 5 deserves a number. A status
+register has two properties ordinary memory does not: reading it twice can
+legitimately give different answers, and reading it can have side effects, such
+as clearing the flag that was just reported.
+
+Put that register on a cacheable page with a 32-byte line. The first read misses
+and pulls in
+
+$$32 / 4 = 8$$
+
+words, the status register among them. Every subsequent read hits in the cache
+and returns the value captured at fill time. The polled loop of the next section
+executes fifteen status tests for every byte it moves; on a cached register,
+fourteen of every fifteen — and in fact all of them after the first — see a
+frozen value, so the loop that waits for a ready flag either exits immediately
+on a stale one or never exits at all. There is no intermediate behaviour and no
+amount of correct logic elsewhere recovers from it.
+
+Two mechanisms prevent this, and both are needed. The **page attribute** marks
+the region uncacheable and unbufferable so the hardware never keeps a copy. The
+**volatile qualifier** in the source tells the compiler it may not cache the
+value in a register, may not reorder the access against other volatile accesses,
+and may not delete a read whose result is discarded. The first stops the
+hardware from optimising the access away; the second stops the compiler. A
+driver that has one and not the other fails on exactly the machines where the
+missing half was doing the work.
+
+**How the exam asks this.** Almost always as a decode-width calculation: given a
+block size and an address width, how many bits must be compared. Take the base-2
+logarithm of the block size for the offset bits and subtract from the address
+width. If the question supplies a comparison narrower than that, it is asking
+for the alias count, which is two raised to the difference.`,
+      examTip: 'Decode width is address bits minus the base-2 logarithm of the block size. If the question decodes fewer bits than that, the number of aliases is two raised to the shortfall, and the footprint is the alias count times the block size. Take the logarithm first; every other number in the problem follows from it.',
+      importantNote: 'A device register needs both an uncacheable page attribute and a volatile qualifier. The attribute stops the cache from keeping a copy, the qualifier stops the compiler from keeping one in a register, and a driver with only one of them fails on the machines where the other was doing the work.',
+    },
+    { id: 'io-polled', title: '7. Programmed I/O, Counted Cycle by Cycle',
+      content: `## 7.1 A machine to count on
+
+The rest of this chapter compares the three transfer methods on one machine, so
+the machine has to be pinned down first. Call it **M**: a 100 MHz processor, so
+
+$$1000 / 100 = 10$$
+
+nanoseconds per clock, with a single bus on which one transaction occupies one
+clock. Attached to it is a byte-wide device that presents a new byte every 100
+clocks, which is
+
+$$100 \\times 10 = 1000$$
+
+nanoseconds per byte, or one megabyte per second.
+
+The polled input loop is eight instructions. Three of them test the status,
+five move the byte:
+
+| Instruction | Purpose | Cycles |
+|---|---|---|
+| load status register | read the flag word | 3 |
+| and with ready mask | isolate the flag | 1 |
+| branch if zero | go back and test again | 2 |
+| load data register | take the byte | 3 |
+| store to buffer | put it away | 3 |
+| add to pointer | advance the destination | 1 |
+| subtract from count | one fewer to go | 1 |
+| branch if not zero | round again | 2 |
+
+The two halves cost
+
+$$3 + 1 + 2 = 6$$
+
+cycles for one status test and
+
+$$3 + 3 + 1 + 1 + 2 = 10$$
+
+cycles to move a byte once the flag is set.
+
+## 7.2 What the loop actually does, one clock at a time
+
+The figure below is a stepped run of this loop, of the interrupt path of Section
+8 and of a DMA channel, over the first two thousand clocks of the same transfer.
+Nothing in it was produced by dividing bytes by a rate; the loop was executed
+one clock at a time and its phases recorded.
+
+![Processor activity over the first two thousand clock cycles of one transfer, drawn as three lanes. The polled lane is almost entirely status testing with a short move every hundred cycles, the interrupt lane is empty until the sixteen-byte buffer fills at cycle sixteen hundred and then shows one two-hundred-and-forty-four-cycle service burst, and the DMA lane shows one stolen bus cycle per byte.](/courses/fe-ee/figures/sys3-io-timeline.svg)
+
+In the steady state the loop settles into a fixed pattern per byte: fifteen
+status tests and one move, which is
+
+$$15 \\times 6 + 10 = 100$$
+
+cycles, exactly the device period. That is the defining property of polling —
+the loop runs at whatever rate the device sets, because it has nothing else to
+do. Of those hundred cycles the ones that accomplish anything are the ten of the
+move, a useful fraction of
+
+$$10 / 100 = 0.1$$
+
+or ten percent. **Ninety percent of a fully occupied processor is spent
+discovering that the device is not ready yet.**
+
+### Worked example 7A — count a 512-byte transfer and check the total
+
+**Given.** Machine M, the loop above, a device period of 100 cycles, and a
+transfer of 512 bytes. Predict the total, then account for the difference
+against a stepped run that reports 51,218 cycles, 7,683 status tests and 5,120
+cycles of byte movement.
+
+**Prediction from the steady state.** At one byte per device period,
+
+$$512 \\times 100 = 51200$$
+
+cycles.
+
+**Check the stepped run against itself first.** The reported tests should
+account for all the spin cycles:
+
+$$7683 \\times 6 = 46098$$
+
+and the moves for the rest:
+
+$$512 \\times 10 = 5120$$
+
+Their sum is
+
+$$46098 + 5120 = 51218$$
+
+which is the reported total, so the run is internally consistent. The tests per
+byte come to
+
+$$7683 / 512 = 15.006$$
+
+confirming the fifteen-per-byte steady state.
+
+**The difference.** The stepped total exceeds the prediction by
+
+$$51218 - 51200 = 18$$
+
+cycles. The last byte arrives at cycle 51,200 with a status test already part
+way through; that test must finish, a fresh test must sample and confirm, and
+the move must run. The confirming test and the move are
+
+$$6 + 10 = 16$$
+
+cycles, so the test that was in flight had
+
+$$18 - 16 = 2$$
+
+cycles left to run. **51,200 cycles of steady state plus an 18-cycle tail, for
+51,218 — and the prediction is short by exactly the tail.**
+
+## 7.3 Two limits, and they are different questions
+
+Polling has a *speed* limit and an *efficiency* limit, and they behave nothing
+alike.
+
+The **speed** limit is set by the shortest path through one iteration, one test
+plus one move:
+
+$$6 + 10 = 16$$
+
+cycles. A device that presents bytes faster than that overruns the loop no
+matter how the code is arranged. On machine M that is
+
+$$100000000 / 16 = 6250000$$
+
+bytes per second, 6.25 MB/s.
+
+The **efficiency** limit is the useful fraction, ten cycles of work in every
+device period $D$:
+
+$$\\eta = 10 / D$$
+
+| Device period $D$ | Byte rate | Useful fraction |
+|---|---|---|
+| 16 cycles | 6.25 MB/s | $10 / 16 = 0.625$ |
+| 100 cycles | 1 MB/s | $10 / 100 = 0.1$ |
+| 1000 cycles | 100 kB/s | $10 / 1000 = 0.01$ |
+
+The table reads backwards from intuition, and that is the point. Polling is at
+its *most* efficient against a device that is nearly too fast for it, and at its
+worst against a slow one. A console port that delivers a character every few
+milliseconds is the worst possible case for a polled loop: the processor is
+fully occupied and essentially all of it is wasted.
+
+## 7.4 Latency, and what happens if you poll too slowly
+
+Two timings matter besides throughput. The **detection latency** is the gap
+between the byte becoming available and the move beginning. The loop samples the
+status once at the start of each six-cycle test, so a byte arriving just after a
+sample waits nearly a full test period, and the test that finally sees it still
+runs to completion before the move starts. The latency therefore lies between
+
+$$6 \\times 10 = 60$$
+
+and
+
+$$12 \\times 10 = 120$$
+
+nanoseconds. That tight bound is polling's one genuine advantage: it is the
+lowest-latency method available, because there is no entry sequence to run.
+
+The second timing is what happens when other work is interleaved between polls.
+
+### Worked example 7B — polling too slowly loses data in proportion
+
+**Given.** The same device, one byte every 100 cycles, but the loop now shares
+the processor and manages a status test only every 120 cycles. The device
+overwrites its data register when a new byte arrives. Find the fraction of bytes
+lost.
+
+**Reasoning.** Each test captures at most one byte, so bytes are captured at one
+per 120 cycles while they are produced at one per 100. The captured fraction is
+the ratio of the production period to the test period, and the lost fraction is
+what remains:
+
+$$1 - 100 / 120 = 0.16667$$
+
+**16.7 percent of the bytes are lost.** Note what the answer does *not* depend
+on: the size of the transfer, the speed of the move, or the processor clock.
+A polled interface that is even slightly too slow does not run slightly late, it
+discards data at a steady rate forever, and the rate is fixed by the ratio of
+the two periods alone.
+
+**How the exam asks this.** Either for the useful fraction, which is the move
+cost over the device period, or for the maximum rate, which is the clock over
+the sum of one test and one move. Read the question for which of the two it
+wants; they differ by more than an order of magnitude on the same hardware.`,
+      examTip: 'Separate the two polling limits. Maximum rate is the clock divided by (one test plus one move). Useful fraction is the move cost divided by the device period. A slow device makes polling less efficient, not more, because the spin grows while the useful work stays the same.',
+      importantNote: 'A polled loop that cannot test often enough does not fall behind gracefully. It loses bytes at a fixed fraction set by the ratio of the device period to the test period, and it loses them silently unless the device reports overrun.',
+    },
+    { id: 'io-interrupts', title: '8. Interrupts: the Service Budget, Nesting and Priority',
+      content: `## 8.1 The path an interrupt takes, phase by phase
+
+Section 1 named interrupt latency without measuring it. On machine M the path
+from the device asserting its request to the handler returning is six phases,
+and only one of them is the handler:
+
+| Phase | What happens | Cycles |
+|---|---|---|
+| recognition | the instruction in flight is finished | 8 |
+| vectoring | the pipeline is flushed, the vector fetched | 6 |
+| context save | twelve registers pushed, two cycles each | 24 |
+| handler body | the fixed part of the service routine | 18 |
+| context restore | twelve registers popped | 24 |
+| return | the interrupted state resumed | 4 |
+
+Two different totals come out of this table, and confusing them is the standard
+error. The **latency** — the delay before the handler's first useful
+instruction — is only the first three phases:
+
+$$8 + 6 + 24 = 38$$
+
+cycles, which on machine M is
+
+$$38 \\times 10 = 380$$
+
+nanoseconds. The **service cost** — what the transfer charges the processor —
+is all six:
+
+$$8 + 6 + 24 + 18 + 24 + 4 = 84$$
+
+cycles, plus whatever the handler does with the data. A question asking how
+quickly the machine can *respond* wants 38; a question asking what the interface
+*costs* wants 84 and more.
+
+## 8.2 Why the buffer depth decides everything
+
+If the device interrupts for every byte, the handler moves one byte at the ten
+cycles established in Section 7, and the whole 84-cycle path is charged against
+it. Give the device a FIFO of depth $F$ and it interrupts once per full buffer,
+so the fixed cost is shared:
+
+$$C = 84 + 10F$$
+
+cycles per interrupt, and per byte
+
+$$c = 84 / F + 10$$
+
+| FIFO depth $F$ | Cycles per interrupt | Cycles per byte | Maximum byte rate |
+|---|---|---|---|
+| 1 | $84 + 10 = 94$ | 94 | 1.06 MB/s |
+| 4 | $84 + 40 = 124$ | 31 | 3.23 MB/s |
+| 16 | $84 + 160 = 244$ | 15.25 | 6.56 MB/s |
+| 64 | $84 + 640 = 724$ | 11.3125 | 8.84 MB/s |
+| infinite | — | 10 | 10 MB/s |
+
+The amortised fixed cost at a depth of sixteen is
+
+$$84 / 16 = 5.25$$
+
+cycles per byte, so the total is
+
+$$5.25 + 10 = 15.25$$
+
+and the maximum rate the path can sustain is
+
+$$100000000 / 15.25 = 6557377$$
+
+bytes per second. Compare that with polling's 6.25 MB/s from Section 7 and the
+first surprise of this chapter appears: **interrupts and polling have almost the
+same peak rate.** Interrupts do not make the interface faster. What they change
+is the cost at rates *below* the peak, because between requests the processor is
+free, and that is a different quantity entirely.
+
+### Worked example 8A — the service budget at one megabyte per second
+
+**Given.** Machine M, the device of Section 7 at one byte per 100 cycles, and a
+16-deep FIFO. Find the processor time the interface consumes, the number of
+interrupts per second, and what a one-byte FIFO would cost instead.
+
+**Cost per byte.** From the table, 15.25 cycles. Against a device period of 100
+cycles the processor fraction is
+
+$$15.25 / 100 = 0.1525$$
+
+**15.25 percent.**
+
+**Interrupt rate.** One request per sixteen bytes at one byte per microsecond is
+
+$$1000000 / 16 = 62500$$
+
+requests per second, each costing 2,440 nanoseconds, which is
+
+$$62500 \\times 0.00000244 = 0.1525$$
+
+of a second per second — the same 15.25 percent by a second route.
+
+**With a one-byte FIFO.** The cost per byte becomes 94 cycles, so
+
+$$94 / 100 = 0.94$$
+
+**94 percent of the processor**, against polling's 100 percent. A shallow FIFO
+turns interrupt-driven I/O into polling with extra steps. **15.25 percent at
+depth sixteen, 94 percent at depth one; the buffer, not the mechanism, is what
+buys the processor its time back.**
+
+## 8.3 Masking, priority and the two triggering styles
+
+An interrupt is **maskable** if software can defer it and **non-maskable** if it
+cannot — a power-fail warning must not be deferrable, because the deferral would
+outlive the supply. **Vectored** interrupts have the device supply the handler
+address, so dispatch is one indirect jump; the alternative is a polled dispatch
+in software, which reintroduces the cost the interrupt was meant to avoid.
+
+Priority is resolved either by a **daisy chain**, where the acknowledge signal
+passes down a physical line and the first device holding a request captures it,
+or by a **priority encoder**, which resolves in parallel. The chain needs no
+per-device wires but its resolution time grows with the number of devices; the
+encoder resolves in constant time but needs a request line each.
+
+The triggering style is examinable and easy to get backwards:
+
+| Style | Request asserted | Missed if | Shared line |
+|---|---|---|---|
+| **Edge-triggered** | for one transition | two devices assert together | poorly |
+| **Level-triggered** | until the handler clears it | never, while it is held | well |
+
+Edge triggering loses a second request that arrives while the first edge is
+still being processed, because there is no state left asserted to notice. Level
+triggering cannot lose one, which is why shared lines are level-triggered — but
+it will re-enter the handler forever if the handler returns without clearing the
+device's flag.
+
+## 8.4 Nesting: who waits, and for how long
+
+Allowing a high-priority request to preempt a running handler is **nesting**.
+Its effect is not that latency improves; it is that latency is *redistributed*,
+and the redistribution can be computed.
+
+Take three sources on machine M, with periods $T$ and handler costs $C$ in
+microseconds, and a 15-microsecond region in which interrupts are disabled
+altogether:
+
+| Source | Period $T$ | Cost $C$ | Priority |
+|---|---|---|---|
+| A | 200 | 20 | highest |
+| B | 500 | 60 | middle |
+| C | 2000 | 200 | lowest |
+
+The processor time these consume is
+
+$$20 / 200 + 60 / 500 + 200 / 2000 = 0.32$$
+
+so 32 percent, leaving plenty of headroom — and headroom says nothing about
+whether the deadlines are met.
+
+### Worked example 8B — worst-case response with nesting and without
+
+**Given.** The three sources above and a 15-microsecond non-preemptable region.
+Find the worst-case response of each source when handlers may nest, and when
+they may not.
+
+**With nesting.** A source waits for the blocking region and for every
+higher-priority handler that can run while it is waiting. For A, nothing outranks
+it, so
+
+$$15 + 20 = 35$$
+
+microseconds. For B, one release of A can intervene:
+
+$$60 + 15 + 20 = 95$$
+
+microseconds, and since 95 is under A's 200-microsecond period no second release
+of A can fit, so the value is stable. For C, releases of both A and B intervene;
+starting from
+
+$$200 + 15 = 215$$
+
+microseconds, two releases of A and one of B fit inside that window, giving
+
+$$200 + 15 + 40 + 60 = 315$$
+
+microseconds — and 315 still admits exactly two releases of A and one of B, so
+it is the answer.
+
+**Without nesting.** Once a handler starts it runs to completion, so the only
+thing a source waits for is the longest handler that can already be running,
+plus any handler that starts ahead of it. For A that is C:
+
+$$200 + 20 = 220$$
+
+microseconds. For B it is C plus one A:
+
+$$200 + 20 + 60 = 280$$
+
+microseconds. For C, everything runs first but nothing preempts it afterwards:
+
+$$15 + 20 + 60 + 200 = 295$$
+
+microseconds.
+
+![Worst-case response time for three interrupt sources, drawn as pairs of bars. With nesting allowed the responses are thirty-five, ninety-five and three hundred and fifteen microseconds; with handlers non-preemptable they are two hundred and nineteen, two hundred and seventy-nine and two hundred and ninety-five.](/courses/fe-ee/figures/sys3-io-priority.svg)
+
+**The trade.** Nesting improves the urgent source by
+
+$$219 / 35 = 6.257$$
+
+and costs the patient one
+
+$$315 / 295 = 1.0678$$
+
+**a factor of 6.26 gained at the top, 6.8 percent lost at the bottom.** That is
+the whole argument for nesting in one pair of numbers: it is nearly free for the
+source that can afford to wait and transformative for the one that cannot.
+
+A note on the two hundred and nineteen. The blocking bound says 220 — the full
+200-microsecond handler plus A's own 20 — but a run of the actual schedule never
+reaches it, because A must arrive *strictly after* C begins for the full block
+to apply. The bound is a supremum the system approaches and does not attain, and
+the gap is exactly one unit of release-time resolution. Design to 220; expect to
+measure 219.
+
+**How the exam asks this.** For latency, sum only the phases before the handler
+body. For cost, sum all of them and add the data movement. For a nested
+worst case, add the blocking to the source's own cost and then add every
+higher-priority handler that fits in the window, iterating until the window
+stops growing.`,
+      examTip: 'Interrupt latency and interrupt cost are different sums over the same table. Latency stops at the first instruction of the handler; cost includes the body, the restore and the return. A question about real-time response wants the first, a question about processor utilisation wants the second.',
+      importantNote: 'Interrupts do not raise the peak transfer rate much above polling on the same machine — 6.56 against 6.25 MB/s here. What they buy is the processor time between requests, and how much they buy is set almost entirely by the depth of the device FIFO.',
+    },
+    { id: 'io-dma', title: '9. DMA: Burst, Cycle Steal, Transparent, and the Bus Arithmetic',
+      content: `## 9.1 What the processor still pays for
+
+A DMA controller moves the bytes, so the processor's charged work is only the
+setup and the completion. On machine M the driver writes five controller
+registers and does its bookkeeping in 220 cycles, and the completion interrupt
+costs the 84 cycles of Section 8 with no data movement in the body:
+
+$$220 + 84 = 304$$
+
+cycles, or
+
+$$304 \\times 10 = 3040$$
+
+nanoseconds, **regardless of how many bytes the transfer moves.** That constant
+is the entire reason DMA exists, and Section 10 turns it into a crossover.
+
+But 304 is not the whole bill. The controller and the processor share one bus,
+and every byte the controller moves is a cycle the processor cannot use for its
+own references. How much that costs depends on the arbitration policy, and the
+three policies are genuinely different.
+
+## 9.2 Three policies, one bus, the same 4096 bytes
+
+Machine M's processor needs the bus on one of every three cycles it executes —
+roughly 1.35 memory references per instruction over about four cycles per
+instruction. Its cycles that do not touch the bus proceed happily while the
+controller owns it; only a reference collides.
+
+The three policies were run cycle by cycle against that processor, moving the
+same 4096 bytes each time.
+
+| Policy | The controller… | Elapsed cycles | Processor cycles lost |
+|---|---|---|---|
+| **Burst** | holds the bus until the block is done | 4,096 | 4,096 |
+| **Cycle steal** | takes one cycle, releases, re-arbitrates | 8,191 | 2,048 |
+| **Transparent** | takes only cycles the processor did not want | 6,144 | 0 |
+
+![Burst, cycle-steal and transparent DMA compared for the same four-thousand-and-ninety-six-byte block, as two stacked panels sharing an x-axis. The upper panel gives elapsed cycles, the lower gives processor cycles lost, and the two orderings are opposite.](/courses/fe-ee/figures/sys3-io-dma-modes.svg)
+
+**Burst** is fastest and brutal. The bus is held for 4,096 consecutive cycles, so
+the processor gets through whatever non-reference cycles it has queued and then
+stalls until the burst ends. In the run above it made no progress at all,
+because its first cycle wanted the bus.
+
+**Cycle steal** takes one cycle in two, so the transfer stretches to
+
+$$8191 / 4096 = 2.0$$
+
+times the burst duration, but the processor keeps running between steals. It
+lost 2,048 cycles, which is
+
+$$2048 / 4096 = 0.5$$
+
+of a cycle per byte moved — a quarter of the elapsed time rather than all of it.
+
+**Transparent** never wins an arbitration. With the processor asking for the bus
+one cycle in three, two cycles in three are free, so the controller needs
+
+$$4096 / 0.66667 = 6144$$
+
+cycles to find 4,096 of them, and it stalls the processor exactly zero times.
+
+## 9.3 The bus is conserved, and that is the arithmetic
+
+The three policies move identical numbers of bytes over identical numbers of bus
+cycles. What differs is how those cycles are distributed, and the cleanest way to
+see it is to add up who used the bus during the transfer.
+
+| Policy | Controller's share | Processor's share | Bus idle |
+|---|---|---|---|
+| Burst | $4096 / 4096 = 1$ | 0 | 0 |
+| Cycle steal | $4096 / 8191 = 0.50006$ | $2048 / 8191 = 0.25003$ | 0.24991 |
+| Transparent | $4096 / 6144 = 0.66667$ | $2048 / 6144 = 0.33333$ | 0 |
+
+For cycle steal the two shares come to
+
+$$0.50006 + 0.25003 = 0.75009$$
+
+leaving
+
+$$1 - 0.75009 = 0.24991$$
+
+of the bus doing nothing — a quarter of the bus wasted, because the policy
+releases cycles on a fixed rhythm rather than on demand. Transparent mode's
+shares come to exactly one: **it is the only one of the three that wastes no bus
+cycle at all**, which is why it finishes sooner than cycle stealing here despite
+never winning an arbitration.
+
+That last sentence contradicts the usual ordering, and the contradiction is
+instructive rather than a mistake. Transparent mode's duration depends entirely
+on how bus-hungry the processor is. Run the same block against a processor that
+wants the bus on seven cycles in ten and the free fraction drops to 0.3, so the
+controller needs
+
+$$4096 / 0.3 = 13653$$
+
+cycles — the stepped run gives 13,658 once the pattern's alignment is counted,
+which is
+
+$$13658 / 4096 = 3.334$$
+
+times the burst duration. **Transparent DMA has no bounded transfer time.** It is
+the right choice when the deadline is loose and the processor's work is not, and
+the wrong choice for anything with a completion deadline.
+
+### Worked example 9A — pick a policy against a deadline
+
+**Given.** Machine M must move a 4,096-byte block and cannot lose more than
+2,500 processor cycles to it, while the block must complete within 7,000 cycles.
+Which policies qualify?
+
+**Burst.** Elapsed 4,096 — inside the deadline. Lost 4,096 cycles, which exceeds
+the budget by
+
+$$4096 - 2500 = 1596$$
+
+cycles. **Fails the processor budget.**
+
+**Cycle steal.** Elapsed 8,191, which exceeds the deadline by
+
+$$8191 - 7000 = 1191$$
+
+cycles. **Fails the completion deadline**, though its 2,048 lost cycles are
+comfortably inside the budget.
+
+**Transparent.** Elapsed 6,144, inside 7,000; lost 0, inside 2,500. **Transparent
+is the only policy that meets both** — but only because this processor leaves two
+cycles in three free. The margin on the deadline is
+
+$$7000 - 6144 = 856$$
+
+cycles, and a processor even slightly hungrier for the bus consumes it.
+
+## 9.4 What stepping the arbiter revealed about the stolen cycle
+
+There is a tempting shortcut for the cost of a paced transfer: the controller
+steals one bus cycle per byte, the processor wants the bus a fraction $m$ of the
+time, so it loses $m$ cycles per byte. On machine M that would be a third of a
+cycle per byte.
+
+Running the arbiter one clock at a time says otherwise, and the reason is worth
+the space.
+
+### Worked example 9B — why a periodic processor loses every stolen cycle
+
+**Given.** Machine M, a device paced at one byte every 100 cycles, DMA in
+cycle-steal mode, and a processor whose bus references fall on a strictly
+periodic one-in-three pattern. Predict the stall count for 4,096 bytes from the
+density argument, then compare it against the stepped run.
+
+**The density prediction.** One stolen cycle per byte, collision probability
+one-third:
+
+$$4096 / 3 = 1365.3$$
+
+cycles.
+
+**The stepped run.** 4,096 stalls — one for every byte, three times the
+prediction.
+
+**Why.** When a reference collides, the processor loses exactly one cycle and
+its whole reference schedule shifts by one. The device period is 100 cycles and
+the processor advanced 99 of them, so its phase relative to the next stolen
+cycle is
+
+$$99 - 33 \\times 3 = 0$$
+
+unchanged. The stall re-synchronises the processor onto the stolen cycle, and
+once locked it never escapes. **A strictly periodic reference pattern converges
+on the worst case: every stolen cycle costs a stall.**
+
+Break the periodicity — keep the density at exactly one in three but arrange the
+references irregularly, as real instruction mixes do — and the same stepped run
+gives 1,393 stalls, which is
+
+$$1393 / 4096 = 0.3401$$
+
+per byte, within four percent of the density argument. **The truth is bracketed:
+between 0.34 and 1.0 stall cycles per byte depending on a phase relationship
+nobody controls.** Design to one cycle per byte; a formula that assumes the
+average is quoting the best case as though it were the answer.
+
+**How the exam asks this.** Usually for the processor's share of the bus, or for
+the transfer duration given a policy. Bus cycles moved divided by elapsed cycles
+is the controller's share; one minus the total share is idle bus. For transparent
+mode, elapsed is the block size divided by the free-cycle fraction.`,
+      examTip: 'All three DMA policies occupy the same number of bus cycles, so they never differ in bus bandwidth consumed. They differ in duration and in processor cycles lost, and the two orderings are opposite: burst is quickest and costliest, transparent is free to the processor and unbounded in time.',
+      importantNote: 'Do not price a stolen bus cycle at the processor bus density. A periodic reference pattern re-synchronises onto the stolen cycle after the first collision and then pays for every one, so the true cost lies between the density and one full cycle per byte. Budget the upper end.',
+    },
+    { id: 'io-crossover', title: '10. One Transfer, Three Methods: Where the Crossover Is',
+      content: `## 10.1 Three cost functions on one machine
+
+Sections 7, 8 and 9 each priced one method on machine M against the same device.
+Put them side by side as functions of the transfer size $N$ in bytes and the
+comparison stops being a matter of opinion.
+
+**Polling** holds the processor for the whole transfer, so it costs the device
+period per byte:
+
+$$P(N) = 100N$$
+
+**Interrupt-driven** service costs the 84-cycle path once per full FIFO and ten
+cycles per byte:
+
+$$I(N) = 84 \\lceil N / 16 \\rceil + 10N$$
+
+**DMA** costs the 304-cycle setup and completion once, plus the worst-case one
+stall cycle per byte established in Section 9:
+
+$$D(N) = 304 + N$$
+
+The shapes are what matter. Polling is steeply linear with no fixed cost.
+Interrupt service is gently linear with a small staircase. DMA is nearly flat
+with a large fixed cost. Two lines that differ in both slope and intercept cross
+exactly once, so there are two crossovers to find.
+
+![Processor cycles consumed against transfer size on logarithmic axes for polling, interrupt-driven service and DMA, with dashed lines marking the crossovers at four bytes and seventeen bytes.](/courses/fe-ee/figures/sys3-io-crossover.svg)
+
+## 10.2 The first crossover: DMA against polling
+
+Setting $P(N) = D(N)$ gives
+
+$$304 / 99 = 3.0707$$
+
+so DMA is cheaper from four bytes upward. Checking the two integers either side
+confirms it: at three bytes polling costs 300 and DMA costs 307; at four bytes
+polling costs 400 and DMA costs 308. **Four bytes.** A DMA channel repays its
+entire setup on a transfer smaller than one machine word on a 64-bit system,
+which is another way of saying that polling a millisecond-scale device is almost
+never defensible on a machine that has a controller available.
+
+## 10.3 The second crossover, and why the smooth answer is wrong
+
+Setting $I(N) = D(N)$ and ignoring the ceiling gives a per-byte interrupt cost
+of
+
+$$84 / 16 + 10 - 1 = 14.25$$
+
+against DMA's fixed 304, so
+
+$$304 / 14.25 = 21.333$$
+
+and the smooth answer is twenty-two bytes. **That answer is wrong**, and the
+reason is the ceiling it discarded.
+
+### Worked example 10A — evaluate both functions instead of solving them
+
+**Given.** $I(N)$ and $D(N)$ above. Find the smallest $N$ at which DMA is
+cheaper, by evaluating rather than by solving.
+
+**At sixteen bytes.** One interrupt serves the whole transfer:
+
+$$84 + 160 = 244$$
+
+cycles, against DMA's
+
+$$304 + 16 = 320$$
+
+Interrupts win, by 76 cycles.
+
+**At seventeen bytes.** The seventeenth byte does not fit the FIFO, so a second
+interrupt is taken for it and the full 84-cycle path is charged for one byte:
+
+$$168 + 170 = 338$$
+
+cycles, against DMA's
+
+$$304 + 17 = 321$$
+
+DMA wins, by 17 cycles.
+
+**The crossover is seventeen bytes, not twenty-two.** The smooth model
+overshoots by
+
+$$22 - 17 = 5$$
+
+bytes because it spreads the 84-cycle entry evenly over sixteen bytes when in
+fact it arrives all at once at every multiple of the depth. **Whenever a cost
+function contains a ceiling, evaluate it at integers; solving the smoothed
+version answers a question about a machine that does not exist.**
+
+## 10.4 What the gap looks like at a realistic size
+
+Crossovers at four and seventeen bytes sound like a technicality until the
+functions are read at a size anybody actually transfers. For a 4 KiB block:
+
+| Method | Cycles | Time at 100 MHz | Relative to DMA |
+|---|---|---|---|
+| Polling | 409,600 | 4.096 ms | $409600 / 4400 = 93.09$ |
+| Interrupt, 16-deep FIFO | 62,464 | 624.6 us | $62464 / 4400 = 14.196$ |
+| **DMA** | **4,400** | **44.0 us** | 1 |
+
+The interrupt figure decomposes as
+
+$$256 \\times 84 = 21504$$
+
+cycles of entry and exit plus
+
+$$4096 \\times 10 = 40960$$
+
+cycles of data movement, for
+
+$$21504 + 40960 = 62464$$
+
+and the DMA figure is the fixed 304 plus one stall per byte:
+
+$$304 + 4096 = 4400$$
+
+**Ninety-three times cheaper than polling, fourteen times cheaper than
+interrupts**, and the ratio keeps growing with the block because DMA's cost is
+almost all fixed.
+
+## 10.5 The summary the exam wants
+
+| Question | Polling | Interrupt | DMA |
+|---|---|---|---|
+| Peak byte rate on M | 6.25 MB/s | 6.56 MB/s | 100 MB/s |
+| Processor cost per byte | 100 cycles | 15.25 cycles | 1 cycle |
+| Fixed cost per transfer | 0 | 0 | 304 cycles |
+| Response latency | 60 to 120 ns | 380 ns | setup, then none |
+| Best when | latency dominates, transfer is tiny | moderate rate, processor has other work | anything above seventeen bytes |
+
+Read the peak-rate row and the cost row together. Polling and interrupts differ
+by five percent in peak rate and by a factor of
+
+$$100 / 15.25 = 6.557$$
+
+in cost per byte. That asymmetry is the single most useful fact in this chapter:
+**changing from polling to interrupts does not make the interface faster, it
+makes it cheaper**, and only DMA changes what the interface can do.
+
+**How the exam asks this.** Give each method a cost per byte and a cost per
+transfer, then compare totals at the stated size. If a FIFO depth is quoted,
+divide the interrupt entry cost by it before adding the per-byte cost — and take
+the ceiling if the size is not a multiple of the depth.`,
+      examTip: 'Write each method as a fixed cost plus a per-byte cost before touching the numbers. Polling has no fixed cost and a huge slope, DMA has a large fixed cost and almost no slope, and the crossover is the fixed-cost difference divided by the slope difference. Then check the integers either side, because a FIFO ceiling moves the answer.',
+      importantNote: 'Polling and interrupt-driven I/O reach nearly the same maximum rate on the same machine. The difference between them is cost per byte, not speed. Only DMA raises the ceiling, because only DMA takes the processor out of the data path.',
+    },
+    { id: 'io-bus', title: '11. Bus Protocols and the Timing Budget',
+      content: `## 11.1 The same five delays, counted twice
+
+Every read on any bus spends time in the same five places, and the protocol only
+decides how they are assembled.
+
+| Symbol | Delay | Value on machine M |
+|---|---|---|
+| $t_{a}$ | address driven and valid | 4 ns |
+| $t_{d}$ | decode, chip select asserted | 6 ns |
+| $t_{acc}$ | the device's own access time | device-dependent |
+| $t_{su}$ | data setup at the receiving latch | 2 ns |
+| $t_{sk}$ | one-way propagation and skew on the backplane | 4 ns |
+
+A **synchronous** bus samples on a clock edge. Everything must be ready before
+the edge, so the requirement is
+
+$$t_{req} = t_{a} + t_{d} + t_{acc} + t_{su} + t_{sk}$$
+
+and the cycle is then rounded *up* to a whole number of clock periods, the extra
+periods being **wait states**.
+
+An **asynchronous** bus has no clock. The master drives the address and asserts
+a request; the slave responds when it is genuinely ready and asserts an
+acknowledge; the master drops the request; the slave drops the acknowledge. That
+is the **four-phase** or full handshake, and each of the four transitions has to
+propagate across the backplane, so the protocol pays
+
+$$4 \\times 4 = 16$$
+
+nanoseconds of interconnect delay in place of the single $t_{sk}$ the clocked
+bus needs.
+
+## 11.2 The budget, for three devices
+
+### Worked example 11A — wait states on a 50 MHz synchronous bus
+
+**Given.** Machine M's numbers above, a 20-nanosecond bus period, and three
+memories with access times of 12, 34 and 90 nanoseconds. Find the wait states
+and the cycle length for each.
+
+**Fast device.** The requirement is
+
+$$4 + 6 + 12 + 2 + 4 = 28$$
+
+nanoseconds. One period supplies 20, leaving
+
+$$28 - 20 = 8$$
+
+nanoseconds to find, which takes one more whole period. Two periods:
+
+$$2 \\times 20 = 40$$
+
+nanoseconds, **one wait state**.
+
+**Typical device.** The requirement is
+
+$$4 + 6 + 34 + 2 + 4 = 50$$
+
+nanoseconds, so three periods:
+
+$$3 \\times 20 = 60$$
+
+nanoseconds, **two wait states**.
+
+**Slow device.** The requirement is
+
+$$4 + 6 + 90 + 2 + 4 = 106$$
+
+nanoseconds, so six periods:
+
+$$6 \\times 20 = 120$$
+
+nanoseconds, **five wait states**.
+
+**The rounding is the cost.** The fraction of each cycle that exists only because
+the clock quantises is
+
+$$1 - 28 / 40 = 0.3$$
+
+for the fast device,
+
+$$1 - 50 / 60 = 0.16667$$
+
+for the typical one and
+
+$$1 - 106 / 120 = 0.11667$$
+
+for the slow one. **The faster the device, the larger the share of its cycle that
+is pure rounding** — 30 percent for the fastest of the three. A clocked bus
+punishes exactly the devices it should be rewarding.
+
+## 11.3 What the handshake buys and what it costs
+
+The asynchronous cycle for the same three devices is $t_{acc}$ plus the fixed 28
+nanoseconds. For the typical device,
+
+$$4 + 6 + 34 + 2 + 16 = 62$$
+
+nanoseconds, and for the slow one
+
+$$4 + 6 + 90 + 2 + 16 = 118$$
+
+nanoseconds.
+
+![Bus cycle length for three device speeds under a twenty-nanosecond synchronous clock and under a four-phase asynchronous handshake, as paired bars. The clocked bus is quicker for the fast and typical devices and slower for the slow one.](/courses/fe-ee/figures/sys3-io-handshake.svg)
+
+| Device | Synchronous | Asynchronous | Winner |
+|---|---|---|---|
+| Fast, 12 ns | 40 ns | 40 ns | tie |
+| Typical, 34 ns | 60 ns | 62 ns | synchronous |
+| Slow, 90 ns | 120 ns | 118 ns | asynchronous |
+
+The handshake loses on the typical device by
+
+$$62 / 60 = 1.0333$$
+
+and wins on the slow one by
+
+$$1 - 118 / 120 = 0.016667$$
+
+Neither margin is dramatic, and that is the honest answer: **on a bus whose
+devices are reasonably matched to its clock, the two protocols are within a few
+percent of each other.** The real distinction is elsewhere.
+
+| Property | Synchronous | Asynchronous |
+|---|---|---|
+| Cycle length | quantised to the clock | exactly what the device needs |
+| Mixed device speeds | each needs a wait-state count configured | handled automatically |
+| A device that never answers | the cycle ends anyway | the bus hangs without a timeout |
+| Maximum length | limited by skew against the period | limited by round-trip delay |
+| Control logic | simple counter | request and acknowledge state machine |
+
+The third row is the one that bites. An asynchronous master waiting for an
+acknowledge that will never arrive waits forever, so every asynchronous bus needs
+a **bus timeout** — a watchdog that abandons the cycle and raises an error after
+a fixed interval. That error is the mechanism by which a read from an unpopulated
+address becomes a fault rather than a hang.
+
+### Worked example 11B — bandwidth, and where the clock ceiling comes from
+
+**Given.** A 32-bit data path, the typical device above, and the two protocols.
+Find the sustained bandwidth of each, and the highest clock the synchronous bus
+can run given its 4-nanosecond skew and a rule that skew may not exceed a fifth
+of the period.
+
+**Bandwidth.** Four bytes per cycle at 60 nanoseconds is
+
+$$4 / 60 = 0.066667$$
+
+bytes per nanosecond, which is 66.67 MB/s. The handshake at 62 nanoseconds gives
+
+$$4 / 62 = 0.064516$$
+
+bytes per nanosecond, 64.52 MB/s, or
+
+$$1 - 64.52 / 66.67 = 0.03225$$
+
+**about 3.2 percent less.**
+
+**Clock ceiling.** The rule requires
+
+$$4 \\times 5 = 20$$
+
+nanoseconds of period at minimum, which is
+
+$$1000 / 20 = 50$$
+
+megahertz. **The bus cannot be clocked above 50 MHz without shortening the
+backplane**, and that — not the memory — is what fixes the period at 20
+nanoseconds in the first place. This is why fast wide buses became short
+point-to-point serial links: skew does not scale, so the only way to keep raising
+the rate is to stop sharing the wires.
+
+**How the exam asks this.** Sum the five delays, compare against the period, and
+take the ceiling of the shortfall divided by the period to get the wait states.
+The total cycle is one period more than the wait-state count. For bandwidth,
+divide the bytes per transfer by the cycle time.`,
+      examTip: 'Wait states are the ceiling of (required time minus one period) divided by the period, and the cycle is one plus that many periods. Do not forget the setup and skew terms: leaving them out typically removes one wait state and produces an answer that is exactly one period short.',
+      importantNote: 'An asynchronous bus with no timeout hangs forever on a device that never acknowledges. The timeout is not an optional refinement; it is what turns a read from an empty address into a reportable fault instead of a dead machine.',
+    },
+    { id: 'io-buffering', title: '12. Buffering, Framing Overhead, and Errors on the Interface',
+      content: `## 12.1 One buffer forces the producer to wait for the consumer
+
+A device fills a buffer; the processor empties it. With a **single** buffer the
+two cannot overlap, because the processor is reading the same storage the device
+would be writing. The device must therefore stop while the processor works, and
+the cycle time is the sum
+
+$$T_{single} = T_{f} + T_{c}$$
+
+of the fill time and the consume time. With **two** buffers the device fills one
+while the processor drains the other, and the cycle time is the larger of the
+two:
+
+$$T_{double} = \\max(T_{f}, T_{c})$$
+
+That is the whole of double buffering, and the consequence is the
+**producer-consumer condition**: the arrangement keeps up if and only if
+
+$$T_{c} \\le T_{f}$$
+
+### Worked example 12A — a 256-byte buffer on a one-megabyte-per-second device
+
+**Given.** Buffers of 256 bytes, a device delivering one megabyte per second so
+each buffer fills in 256 microseconds, and a processing routine that takes 180
+microseconds per buffer. Find the delivered rate with one buffer and with two,
+and the processor slack in each case. Then repeat with a routine that takes 300
+microseconds.
+
+**One buffer.** The cycle is
+
+$$256 + 180 = 436$$
+
+microseconds per 256 bytes, so the delivered rate is
+
+$$256 / 436 = 0.58716$$
+
+bytes per microseconds — **587 kB/s, or 58.7 percent of what the device offers.**
+The missing 41.3 percent is not delayed, it is destroyed: the device has nowhere
+to put the bytes it produces during those 180 microseconds.
+
+**Two buffers.** The condition holds, since 180 is under 256, so the cycle is 256
+microseconds and the delivered rate is the full **1 MB/s**. The processor is idle
+for
+
+$$256 - 180 = 76$$
+
+microseconds of every cycle, a slack of
+
+$$76 / 256 = 0.29688$$
+
+**29.7 percent.** The improvement over single buffering is
+
+$$436 / 256 = 1.7031$$
+
+**times.**
+
+**A slower routine.** At 300 microseconds the condition fails, and now the second
+buffer cannot save it. The cycle becomes 300 microseconds and the delivered rate
+falls to
+
+$$256 / 300 = 0.85333$$
+
+bytes per microsecond, losing
+
+$$1 - 256 / 300 = 0.14667$$
+
+**14.7 percent of the data.**
+
+![Buffer occupancy against time for a single buffer with a fast consumer, two buffers with the same consumer, and two buffers with a consumer that is too slow. Only the middle case keeps the device running without pause.](/courses/fe-ee/figures/sys3-io-buffering.svg)
+
+The stepped run behind that figure counts delivered and lost bytes rather than
+applying either formula, and it lands on 0.5884, 0.9998 and 0.8531 bytes per
+microsecond against the predicted 0.5872, 1.0000 and 0.8533 — agreement to
+within a fifth of a percent, the residue being the partial buffer in flight when
+the run ends.
+
+**The lesson is the third case.** Buffering converts a *rate* mismatch into a
+*loss* and a *jitter* problem into nothing at all. Adding buffers absorbs bursts;
+it never adds throughput. If the consumer is slower than the producer on average,
+no number of buffers is enough, because the queue grows without bound and
+something must eventually be discarded.
+
+## 12.2 Framing: what a bit rate is not
+
+Section 4 counted the start and stop bits of an asynchronous character. Block
+protocols have the same problem in a different shape: every frame carries
+addressing, acknowledgement and check bits that are not payload.
+
+### Worked example 12B — the real cost of an I2C write
+
+**Given.** An I2C master writing 16 data bytes to one device at 400 kHz. The
+frame is a start condition, an address byte followed by an acknowledge bit, then
+each data byte followed by an acknowledge bit, then a stop condition. Take the
+start and stop as one bit time each. Find the framing efficiency and the payload
+throughput.
+
+**Bit times.** The address costs eight bits plus its acknowledge, so nine. Each
+data byte costs the same nine, so
+
+$$16 \\times 9 = 144$$
+
+and the total is
+
+$$1 + 9 + 144 + 1 = 155$$
+
+bit times. The payload is
+
+$$16 \\times 8 = 128$$
+
+bits, so the framing efficiency is
+
+$$128 / 155 = 0.82581$$
+
+**82.6 percent.**
+
+**Throughput.** At 400 kHz a bit time is 2.5 microseconds, so the transfer takes
+
+$$155 / 0.4 = 387.5$$
+
+microseconds, and the payload rate is
+
+$$16 / 387.5 = 0.041290$$
+
+bytes per microsecond, **41.3 kB/s** — not the 50 kB/s that dividing 400 kHz by
+eight would suggest. **The acknowledge bit alone costs an eighth of the link.**
+
+## 12.3 Line coding takes its cut before the protocol does
+
+High-speed serial links have a second overhead below the frame: the line code
+that keeps the receiver's clock recovered and the line DC-balanced.
+
+| Link | Line code | Payload fraction | Raw rate | Payload rate |
+|---|---|---|---|---|
+| USB 3.0, PCIe gen 1 and 2 | 8b/10b | $8 / 10 = 0.8$ | 5 Gb/s | 500 MB/s |
+| PCIe gen 3 and later | 128b/130b | $128 / 130 = 0.98462$ | 8 GT/s | 984.6 MB/s |
+
+For the 8b/10b link,
+
+$$5 \\times 0.8 = 4$$
+
+gigabits per second of payload, which is
+
+$$4000 / 8 = 500$$
+
+megabytes per second. The later scheme carries
+
+$$8 \\times 0.98462 = 7.877$$
+
+gigabits per second, or
+
+$$7877 / 8 = 984.6$$
+
+megabytes per second. Notice that the raw rate rose by 60 percent from 5 to 8
+while the payload rate almost doubled: **changing the line code was worth more
+than most of the frequency increase.** Overhead that sits under everything else
+is the most valuable kind to remove.
+
+## 12.4 Detecting errors, and what happens after
+
+Parity, from Section 4, detects any odd number of flipped bits and corrects
+nothing. A **cyclic redundancy check** appended to a block detects all burst
+errors shorter than the check itself and all odd-weight patterns, which is why
+block protocols use one. Neither corrects; both trigger a **retransmission**, and
+retransmission has a throughput cost of its own.
+
+### Worked example 12C — framing plus retries
+
+**Given.** Frames of 512 payload bytes with an 8-byte header and a 4-byte CRC,
+on a link with a bit error rate of one in a million. Errors are independent.
+Find the framing efficiency, the frame error probability, and the effective
+payload efficiency once retransmissions are counted.
+
+**Framing.** The frame is 524 bytes, so
+
+$$512 / 524 = 0.97710$$
+
+**97.7 percent** before any error.
+
+**Frame error probability.** The frame is
+
+$$524 \\times 8 = 4192$$
+
+bits. A first estimate treats the errors as additive:
+
+$$4192 \\times 0.000001 = 0.004192$$
+
+The exact value is one minus the probability that all 4,192 bits survive, which
+is 0.004183 — slightly less, because the additive estimate double-counts frames
+carrying two errors. Use 0.004183.
+
+**Retries.** A frame succeeds with probability
+
+$$1 - 0.004183 = 0.995817$$
+
+so the mean number of transmissions per delivered frame is
+
+$$1 / 0.995817 = 1.0042$$
+
+**Effective efficiency.** Multiply the framing efficiency by the success
+probability:
+
+$$0.9771 \\times 0.995817 = 0.97301$$
+
+**97.3 percent.** The retransmissions cost only 0.4 percentage points here — but
+the cost scales with frame length twice over, because a longer frame is both more
+likely to be hit and more expensive to resend. That is the whole design tension
+in frame sizing: long frames amortise the header, short frames survive a noisy
+line.
+
+Three more mechanisms belong on the interface and are examinable by name.
+**Timeouts** bound how long a master waits, converting a hang into a reportable
+error. **Sequence numbers** let the receiver discard a duplicate created when an
+acknowledgement was lost rather than the data. **Flow control**, whether a
+hardware ready line or a software pause character, lets a receiver stop a sender
+before its buffer overruns — which is the mechanism that turns the 14.7 percent
+data loss of Worked example 12A into a slowdown instead.
+
+**How the exam asks this.** For buffering, compare the fill time and the consume
+time: their sum is the single-buffer period, their maximum is the double-buffer
+period. For framing, put payload bits over total bits including every
+acknowledge, header and check bit; for a coded link, multiply by the code's
+payload fraction as well.`,
+      examTip: 'Double buffering changes the period from the sum of fill and consume times to the larger of the two, and nothing else. If the consumer is slower than the producer on average, extra buffers only delay the moment data starts being discarded.',
+      importantNote: 'Payload throughput is the raw rate multiplied by every overhead fraction in the stack: the line code, then the frame, then the retransmission rate. Divide a signalling rate by eight and you have counted none of them.',
+    },
+    { id: 'io-problems', title: '13. Practice Problems',
+      content: `Machine M throughout: 100 MHz, one bus transaction per clock, a polled loop
+costing 6 cycles per status test and 10 cycles per byte moved, an interrupt path
+costing 84 cycles plus 10 per byte handled, and a DMA channel costing 220 cycles
+of setup, an 84-cycle completion interrupt, and one stall cycle per byte.
+
+## Problem Set D — polled and interrupt-driven transfer
+
+**D1.** The device now presents a byte every 250 cycles. Find the number of
+status tests per byte in the steady state, the useful fraction of the processor,
+and the maximum byte rate the loop could sustain.
+
+*Answer.* One move accounts for ten of the 250 cycles, leaving
+
+$$250 - 10 = 240$$
+
+cycles of spinning, which at six cycles a test is
+
+$$240 / 6 = 40$$
+
+tests per byte. The useful fraction is
+
+$$10 / 250 = 0.04$$
+
+**40 tests, 4 percent useful.** The maximum rate is unchanged at 6.25 MB/s,
+because it depends on the loop, not the device. **The trap is assuming a slower
+device makes polling cheaper; it makes it worse**, since the wasted cycles grow
+while the useful ones do not.
+
+**D2.** What FIFO depth brings the interrupt path's cost down to 12 cycles per
+byte?
+
+*Answer.* The per-byte cost is the fixed 84 divided by the depth plus the ten
+cycles of movement, so the amortised part must be two cycles:
+
+$$12 - 10 = 2$$
+
+and therefore
+
+$$84 / 2 = 42$$
+
+**A depth of 42.** The distractor is 84 over 12, which is seven, and forgets that
+the ten cycles of data movement can never be amortised away — they are paid per
+byte by definition, so no depth reaches a cost below ten.
+
+**D3.** A revised processor pushes twenty registers instead of twelve, at two
+cycles each. Find the new interrupt latency and the new per-byte cost at a depth
+of sixteen.
+
+*Answer.* The save grows from 24 to 40 cycles, so the latency is
+
+$$8 + 6 + 40 = 54$$
+
+cycles. Both the save and the restore grow by sixteen, so the fixed path becomes
+
+$$84 + 32 = 116$$
+
+cycles. Amortised over sixteen bytes,
+
+$$116 / 16 = 7.25$$
+
+and the total per byte is
+
+$$7.25 + 10 = 17.25$$
+
+cycles, which against the original is
+
+$$17.25 / 15.25 = 1.1311$$
+
+**Latency 540 ns, cost 17.25 cycles per byte, 13.1 percent worse.** Note that
+only *one* of the two extra costs appears in the latency, because the restore
+happens after the handler has already run.
+
+**D4.** Two interrupt sources: A with a 100-microsecond period and a
+10-microsecond handler, B with a 400-microsecond period and a 50-microsecond
+handler, plus an 8-microsecond region with interrupts disabled. Nesting is
+allowed. Find B's worst-case response and the processor utilisation.
+
+*Answer.* B waits for the blocking region, runs its own handler, and is preempted
+by any release of A that fits in the window. Starting from 58 microseconds, one
+release of A fits, giving
+
+$$50 + 8 + 10 = 68$$
+
+microseconds; 68 still admits exactly one release of A, so the iteration has
+converged. Utilisation is
+
+$$10 / 100 + 50 / 400 = 0.225$$
+
+**68 microseconds and 22.5 percent.** The utilisation figure is deliberately
+comfortable: it is included to show that low utilisation is no evidence at all
+that a deadline is met.
+
+**D5.** A polled loop manages one status test every 75 cycles against a device
+presenting a byte every 60. What fraction of the data is lost?
+
+*Answer.* Captured bytes go as the ratio of the periods, so
+
+$$1 - 60 / 75 = 0.2$$
+
+**20 percent, lost silently and forever.** The size of the transfer does not
+enter; a polled interface that is too slow does not finish late, it discards a
+fixed share of everything.
+
+## Problem Set E — DMA, buses and crossovers
+
+**E1.** At what transfer size does the DMA channel become cheaper than the polled
+loop against the 100-cycle device?
+
+*Answer.* Polling costs 100 cycles a byte with no fixed cost, DMA costs 304 plus
+one, so the difference in slope is 99 and
+
+$$304 / 99 = 3.0707$$
+
+**Four bytes.** Checking either side: three bytes costs 300 polled against 307 by
+DMA, four bytes costs 400 against 308.
+
+**E2.** A transparent DMA channel moves 8,192 bytes on a machine whose processor
+requests the bus on 45 percent of its cycles. Find the elapsed time and the
+processor cycles lost.
+
+*Answer.* The free fraction is
+
+$$1 - 0.45 = 0.55$$
+
+and the channel needs 8,192 free cycles, so
+
+$$8192 / 0.55 = 14895$$
+
+cycles elapse and **the processor loses none.** The trap is to divide by 0.45
+instead of by the free fraction, which reports 18,204 cycles — a transfer time
+that assumes the channel uses the cycles the processor wanted, which is precisely
+what transparent mode does not do.
+
+**E3.** A burst channel moves 2,048 bytes at one byte per cycle inside a
+one-millisecond window on machine M. Give the channel's share of the bus averaged
+over the window and during the burst itself.
+
+*Answer.* A millisecond is 100,000 cycles, so the average share is
+
+$$2048 / 100000 = 0.02048$$
+
+**2.05 percent averaged, 100 percent during the burst.** Both numbers are
+correct and they answer different questions: the first says the bus has ample
+capacity, the second says any processor reference issued during those 20.5
+microseconds waits. **Average bus utilisation never bounds worst-case latency.**
+
+**E4.** A memory with a 55-nanosecond access time sits on a synchronous bus with
+25-nanosecond periods and 16 nanoseconds of address, decode, setup and skew
+combined. Find the wait states, the cycle length and the rounding waste.
+
+*Answer.* The requirement is
+
+$$55 + 16 = 71$$
+
+nanoseconds. One period supplies 25, leaving
+
+$$71 - 25 = 46$$
+
+nanoseconds, which needs two more whole periods. The cycle is
+
+$$3 \\times 25 = 75$$
+
+nanoseconds with **two wait states**, and the waste is
+
+$$1 - 71 / 75 = 0.053333$$
+
+**5.3 percent.**
+
+**E5.** Repeat the interrupt-against-DMA crossover of Section 10 with a FIFO
+depth of eight, and say whether the smoothed answer survives.
+
+*Answer.* The amortised entry is
+
+$$84 / 8 = 10.5$$
+
+cycles, so the slope difference is
+
+$$10.5 + 10 - 1 = 19.5$$
+
+and the smoothed crossover is
+
+$$304 / 19.5 = 15.590$$
+
+suggesting sixteen bytes. Checking the integers: at fifteen bytes the interrupt
+path takes two requests,
+
+$$2 \\times 84 = 168$$
+
+plus the movement,
+
+$$168 + 150 = 318$$
+
+cycles, against DMA's
+
+$$304 + 15 = 319$$
+
+so interrupts still win by one cycle; at sixteen bytes interrupts cost 328
+against DMA's 320. **Sixteen bytes, and here the smoothed answer does survive.**
+Compare Section 10, where a depth of sixteen made the smoothed answer wrong by
+five bytes. The rule is that rounding a smoothed crossover is a guess, not a
+derivation, and the only way to know is to evaluate both functions at integers.
+
+## Problem Set F — buffering, framing and errors
+
+**F1.** Buffers of 1,024 bytes, a device delivering 2 MB/s, and a routine taking
+400 microseconds per buffer. Find the delivered rate with one buffer and with
+two, and the processor slack in the double-buffered case.
+
+*Answer.* Each buffer fills in
+
+$$1024 / 2 = 512$$
+
+microseconds. With one buffer the period is
+
+$$512 + 400 = 912$$
+
+microseconds, giving
+
+$$1024 / 912 = 1.1228$$
+
+bytes per microsecond — **1.12 MB/s, 56 percent of the device.** With two, the
+condition holds because 400 is under 512, so the full **2 MB/s** is delivered and
+the slack is
+
+$$512 - 400 = 112$$
+
+microseconds of every 512, or
+
+$$112 / 512 = 0.21875$$
+
+**21.9 percent.**
+
+**F2.** A UART runs 8E2 — eight data bits, even parity, two stop bits — at 57,600
+baud. Find the frame length, the character rate and the payload efficiency.
+
+*Answer.* The frame is
+
+$$1 + 8 + 1 + 2 = 12$$
+
+bits, so the character rate is
+
+$$57600 / 12 = 4800$$
+
+per second and the efficiency is
+
+$$8 / 12 = 0.66667$$
+
+**12 bits, 4,800 characters per second, 66.7 percent.** A third of the line is
+framing — the price of needing no shared clock.
+
+**F3.** An I2C master reads four bytes from one device at 100 kHz. Find the
+transfer time and the payload rate.
+
+*Answer.* Start, an address byte with its acknowledge, four data bytes each with
+an acknowledge, and a stop:
+
+$$1 + 9 + 36 + 1 = 47$$
+
+bit times. At 100 kHz each is 10 microseconds, so
+
+$$47 \\times 10 = 470$$
+
+microseconds, and the payload rate is
+
+$$4 / 470 = 0.0085106$$
+
+bytes per microsecond, **8.51 kB/s.** Against the 12.5 kB/s that dividing the
+clock by eight would give, the short transfer has lost nearly a third to framing
+— overhead hurts small transfers far more than large ones.
+
+**F4.** Frames carry 128 payload bytes with 12 bytes of header and check, on a
+link with a bit error rate of one in one hundred thousand. Find the framing
+efficiency, the mean number of transmissions per delivered frame, and the
+effective efficiency.
+
+*Answer.* The frame is 140 bytes, so
+
+$$128 / 140 = 0.91429$$
+
+and its length in bits is
+
+$$140 \\times 8 = 1120$$
+
+The probability that every bit survives is 0.988863, so a frame needs on average
+
+$$1 / 0.988863 = 1.0113$$
+
+transmissions, and the effective efficiency is
+
+$$0.91429 \\times 0.988863 = 0.90411$$
+
+**91.4 percent framing, 1.011 transmissions, 90.4 percent effective.** Note that
+the additive estimate of the frame error rate, 1,120 times one in a hundred
+thousand, gives 0.0112 against the true 0.011137; the additive form always
+overstates, because it counts frames with two errors twice.
+
+**F5.** A parity bit protects an eight-bit character. Which numbers of flipped
+bits does it detect?
+
+*Answer.* **All odd numbers — one, three, five, seven — and none of the even
+ones.** Parity fixes the total count of ones to a chosen parity, so any even
+number of flips restores it. It corrects nothing in any case: knowing a character
+is wrong does not say which bit is wrong. On a channel whose errors arrive in
+bursts, adjacent bits flip together and roughly half of all bursts pass
+undetected, which is the argument for a cyclic redundancy check on anything
+longer than a character.`,
+      examTip: 'Almost every problem in this chapter is one of three shapes: cycles per byte times bytes, a fixed cost plus a per-byte cost compared against another, or a ratio of two periods. Identify which shape before substituting, and write down whether the question wants latency, cost or peak rate — the same table answers all three and gives different numbers.',
+      importantNote: 'When a cost function contains a ceiling — a FIFO depth, a wait-state count, a whole number of buffers — solve nothing. Evaluate both sides at the integers near the smoothed root and compare. The smoothed answer was wrong by five bytes at a depth of sixteen and exactly right at a depth of eight, and there is no way to tell which case you are in without checking.',
+    },
   ],
   keyTakeaways: [
     'Programmed I/O (busy-wait) < Interrupt < DMA (highest throughput).',
@@ -4075,6 +5713,1651 @@ those two numbers, and treat every other statistic in the question as a
 distractor unless it is asked for by name.`,
       examTip: 'Use the geometric mean for speedup ratios and the arithmetic mean for times. If a question gives per-benchmark speedups and asks for an overall figure, multiply and take the nth root; averaging them directly is the wrong-answer choice the question is testing for.',
       importantNote: 'Lowering clock frequency alone saves power but not energy, because the same job then runs proportionally longer. Energy per operation depends on voltage squared and not on frequency at all, so a DVFS problem is answered by tracking the voltage ratio.',
+    },
+    { id: 'perf-throughput', title: '6. Throughput Against Latency, and Why Improving One Hurts the Other',
+      content: `## 6.1 Two questions that sound like one
+
+"How fast is it?" hides two different measurements.
+
+**Latency** is how long one item takes from arrival to completion. **Throughput**
+is how many items complete per unit time. A pipeline raises throughput and
+*raises* latency, because the registers between stages add delay to every item.
+A batch process raises throughput and raises latency, because items wait for the
+batch to fill. The two are not two views of the same quantity, and a design that
+improves one usually pays in the other.
+
+The clearest place to watch it happen is a server that pays a fixed cost per
+batch and a variable cost per item.
+
+## 6.2 A batch server, run event by event
+
+Take a stage that costs 40 microseconds to set up and 5 microseconds per item,
+fed by a stream of items arriving at random with a mean rate of 0.12 per
+microsecond. It waits until $b$ items are present, then processes them together.
+Its capacity is
+
+$$c(b) = b / (40 + 5b)$$
+
+items per microsecond, which rises with $b$ towards the ceiling
+
+$$1 / 5 = 0.2$$
+
+set by the per-item cost alone. Below a certain batch size it cannot keep up at
+all:
+
+| Batch $b$ | Capacity | Utilisation at 0.12/us | Mean item latency |
+|---|---|---|---|
+| 12 | $12 / 100 = 0.12$ | 1.00 | 1,006 us |
+| **16** | $16 / 120 = 0.13333$ | 0.90 | **205 us** |
+| 32 | $32 / 200 = 0.16$ | 0.75 | 331 us |
+| 64 | $64 / 360 = 0.17778$ | 0.68 | 623 us |
+| 256 | $256 / 1320 = 0.19394$ | 0.62 | 2,382 us |
+
+The latency column comes from running the server event by event over hundreds of
+thousands of items and timing each one from its own arrival, not from a formula.
+
+![Batch server capacity and mean item latency against batch size, as two stacked panels sharing a logarithmic batch axis. Capacity rises monotonically towards a ceiling of 0.2 items per microsecond while latency falls to a minimum at a batch of sixteen and then rises steadily.](/courses/fe-ee/figures/sys3-perf-batching.svg)
+
+## 6.3 Where the latency actually goes
+
+### Worked example 6A — decompose the latency at two batch sizes
+
+**Given.** The server above. Account for the measured 2,382 microseconds at a
+batch of 256 and the measured 205 microseconds at a batch of 16.
+
+**At 256.** An item that arrives must wait for the batch to fill. Averaged over
+the batch, an item waits for half the fill interval, which for 256 arrivals at
+0.12 per microsecond is
+
+$$255 / 0.24 = 1062.5$$
+
+microseconds. The service itself is
+
+$$40 + 1280 = 1320$$
+
+microseconds, and every item leaves when the batch does, so each pays the whole
+of it. The total is
+
+$$1062.5 + 1320 = 2382.5$$
+
+microseconds against a measured 2,382.4 — **agreement to four parts in a hundred
+thousand, with no queueing term at all**, because at 62 percent utilisation the
+server is essentially never busy when a batch is ready.
+
+**At 16.** The same two terms are
+
+$$15 / 0.24 = 62.5$$
+
+and
+
+$$40 + 80 = 120$$
+
+microseconds, totalling
+
+$$62.5 + 120 = 182.5$$
+
+The measurement is 205.3, so
+
+$$205.3 - 182.5 = 22.8$$
+
+microseconds are unaccounted for. That residue is **queueing**: at 90 percent
+utilisation a batch sometimes arrives ready while the previous one is still in
+service. **Small batches trade fill time for queueing time**, which is why the
+latency curve turns around rather than falling forever.
+
+## 6.4 The trade, in one pair of numbers
+
+Moving from a batch of 16 to a batch of 256 changes capacity by
+
+$$0.19394 / 0.13333 = 1.4546$$
+
+and mean latency by
+
+$$2382.4 / 205.3 = 11.6045$$
+
+**Forty-five percent more throughput costs eleven and a half times the latency.**
+Neither number is wrong and neither design is wrong; they answer different
+questions. A batch job that must finish overnight should take the throughput. An
+interactive request should not.
+
+The general shape is worth memorising, because it recurs everywhere in this
+chapter and in the machine:
+
+| Mechanism | Throughput | Latency of one item |
+|---|---|---|
+| Deeper pipeline | up | up, by the added register delays |
+| Larger batch or block | up | up, by the fill time |
+| Wider issue | up | roughly unchanged |
+| Caching | up | down |
+| Higher utilisation | up | up sharply near the knee, as Section 11 shows |
+
+Only two entries in that table improve both. Caching improves both because it
+removes work rather than rearranging it. Wider issue improves throughput without
+touching latency because it adds parallel capacity rather than serialising. Every
+other mechanism on the list is a trade, and the exam's favourite version is the
+pipeline: it multiplies throughput by the stage count and makes every individual
+instruction slower.
+
+### Worked example 6B — a pipeline does both things at once
+
+**Given.** A unit with 12 nanoseconds of combinational logic. It is split into
+four balanced stages with 0.6 nanoseconds of register delay per stage. Find the
+latency and the throughput before and after.
+
+**Before.** Latency is 12 nanoseconds and throughput is
+
+$$1 / 12 = 0.083333$$
+
+items per nanosecond.
+
+**After.** Each stage takes
+
+$$12 / 4 = 3$$
+
+nanoseconds of logic plus 0.6 of register, so the clock period is
+
+$$3 + 0.6 = 3.6$$
+
+nanoseconds. Throughput is one item per period,
+
+$$1 / 3.6 = 0.27778$$
+
+items per nanosecond, and latency is four periods,
+
+$$4 \\times 3.6 = 14.4$$
+
+nanoseconds.
+
+**The result.** Throughput improved by
+
+$$0.27778 / 0.083333 = 3.3334$$
+
+and latency worsened by
+
+$$14.4 / 12 = 1.2$$
+
+**3.33 times the throughput for 20 percent more latency per item** — and note
+that the throughput gain is 3.33 rather than the 4 the stage count suggests,
+because the register delay is charged in every stage. **The overhead that limits
+pipelining is the same overhead that lengthens the latency.**
+
+**How the exam asks this.** Give a stage count, a total logic delay and a
+register overhead. The period is the logic per stage plus the overhead;
+throughput is one over the period; latency is the stage count times the period.
+Read which of the two the question wants, because the same three numbers give
+opposite verdicts.`,
+      examTip: 'Latency is one over throughput only for a machine that handles one item at a time. The moment anything is pipelined, batched or queued, they are independent numbers and must be computed separately: throughput from the bottleneck stage, latency from the sum of every stage the item passes through.',
+      importantNote: 'A deeper pipeline multiplies throughput by less than the stage count and multiplies latency by more than one, both because of the same per-stage register overhead. Any question that reports a speedup exactly equal to the stage count has ignored it.',
+    },
+    { id: 'perf-equation', title: '7. The Performance Equation Applied to Real Comparisons',
+      content: `## 7.1 Three factors, and none of them decides alone
+
+Section 5.2 factorised execution time into instruction count, cycles per
+instruction and clock period. Written with frequency,
+
+$$T = IC \\times CPI / f$$
+
+Every genuine performance question is this expression evaluated twice. The
+difficulty is never the algebra; it is that each factor individually points the
+wrong way often enough that reading any one of them is worse than useless.
+
+### Worked example 7A — two machines, three factors, three verdicts
+
+**Given.** Machine X runs a program with 3.2 billion instructions at a CPI of
+1.4 and a 2.4 GHz clock. Machine Y runs the same program with 4.1 billion
+instructions at a CPI of 0.9 and a 2.0 GHz clock. Which is faster?
+
+**Machine X.** Counting in units of $10^{9}$,
+
+$$3.2 \\times 1.4 / 2.4 = 1.8667$$
+
+seconds.
+
+**Machine Y.**
+
+$$4.1 \\times 0.9 / 2.0 = 1.845$$
+
+seconds.
+
+**Verdict.**
+
+$$1.8667 / 1.845 = 1.01176$$
+
+**Machine Y, by 1.2 percent.** Now read the three factors individually. The clock
+favours X by a factor of 1.2. The instruction count favours X, by 28 percent. The
+CPI favours Y, by 56 percent. **Two of the three factors point at the losing
+machine**, and any comparison based on one of them — including the clock speed
+printed on the box — gets the answer backwards. Only the product is the answer,
+and the margin it gives is so small that the honest conclusion is that these two
+machines perform the same on this program.
+
+## 7.2 An instruction-set change moves two factors at once
+
+The reason the equation has to be evaluated rather than reasoned about is that
+architectural changes rarely move one factor. Adding a powerful instruction
+lowers the instruction count and raises the average CPI, and the two effects can
+cancel exactly.
+
+### Worked example 7B — an extension that gains nothing
+
+**Given.** A baseline of 2.0 billion instructions at a CPI of 1.5 on a 3 GHz
+clock. A proposed instruction replaces every four instructions in a loop that
+accounts for 25 percent of the instruction count. The new instruction has a CPI
+of 6; everything else keeps its CPI of 1.5. Find the new execution time, and the
+CPI at which the change breaks even.
+
+**Baseline.** In units of $10^{9}$,
+
+$$2.0 \\times 1.5 / 3 = 1$$
+
+second.
+
+**New instruction count.** A quarter of the instructions, 0.5 billion, is
+replaced. What remains untouched is
+
+$$2.0 - 0.5 = 1.5$$
+
+billion, and the replacement contributes
+
+$$0.5 / 4 = 0.125$$
+
+billion, for a total of
+
+$$1.5 + 0.125 = 1.625$$
+
+billion — an 18.75 percent reduction.
+
+**New cycle count.** The untouched instructions need
+
+$$1.5 \\times 1.5 = 2.25$$
+
+billion cycles and the new ones need
+
+$$0.125 \\times 6 = 0.75$$
+
+billion, for
+
+$$2.25 + 0.75 = 3$$
+
+billion. The new CPI is therefore
+
+$$3 / 1.625 = 1.8462$$
+
+and the new execution time is
+
+$$3 / 3 = 1$$
+
+second. **Exactly the baseline.** The instruction count fell by nearly a fifth and
+the machine got no faster, because the CPI rose by precisely enough to cancel it.
+
+**Break-even.** The change is neutral when the new instructions consume the same
+0.75 billion cycles the four they replaced did, so the break-even CPI is
+
+$$0.75 / 0.125 = 6$$
+
+At a CPI of 4 instead, the cycle count would be
+
+$$0.125 \\times 4 = 0.5$$
+
+billion for the new instructions,
+
+$$2.25 + 0.5 = 2.75$$
+
+billion in total,
+
+$$2.75 / 3 = 0.91667$$
+
+seconds, and a speedup of
+
+$$1 / 0.91667 = 1.0909$$
+
+**A CPI of 6 breaks even, a CPI of 4 wins 9.1 percent.** The general rule the
+example demonstrates: **a complex instruction pays for itself only if its CPI is
+below the total CPI of everything it replaces**, which here is four instructions
+at 1.5.
+
+## 7.3 Combining changes, and finding the one that matters
+
+When several factors change together the speedup is the product of the
+individual ratios, because the factors multiply.
+
+### Worked example 7C — where a 42 percent gain came from
+
+**Given.** A revised machine executes 10 percent more instructions, at 80 percent
+of the old CPI, on a clock 25 percent faster. Find the speedup and attribute it.
+
+**Speedup.** The new time relative to the old is
+
+$$1.10 \\times 0.80 / 1.25 = 0.704$$
+
+so the speedup is
+
+$$1 / 0.704 = 1.4205$$
+
+**Attribution.** Each factor's own contribution is its ratio inverted:
+
+| Factor | Change | Contribution to speedup |
+|---|---|---|
+| Instruction count | up 10% | $1 / 1.10 = 0.90909$ |
+| Cycles per instruction | down 20% | $1 / 0.80 = 1.25$ |
+| Clock frequency | up 25% | 1.25 |
+
+and the product is
+
+$$0.90909 \\times 1.25 \\times 1.25 = 1.4205$$
+
+**42.0 percent faster overall**, of which the CPI and the clock each contributed
+25 percent and the instruction count gave back 9.1. **The compiler regression
+cost roughly a fifth of the gain the hardware delivered** — which is exactly the
+kind of accounting that a single headline number hides.
+
+## 7.4 CPI is not a constant, and the memory system is why
+
+The CPI in the equation is an *average over the actual run*, not a property of
+the pipeline. Its largest component on most real programs is memory stalls:
+
+$$CPI = CPI_{ideal} + r \\times m \\times p$$
+
+where $r$ is memory references per instruction, $m$ the miss rate and $p$ the
+miss penalty in cycles.
+
+Take an ideal CPI of 1.0, 1.2 references per instruction, a 2 percent miss rate
+and a 120-cycle penalty. The stall term is
+
+$$1.2 \\times 0.02 \\times 120 = 2.88$$
+
+so
+
+$$1 + 2.88 = 3.88$$
+
+and the fraction of all cycles spent waiting for memory is
+
+$$2.88 / 3.88 = 0.74227$$
+
+**Seventy-four percent of the machine's cycles are stalls**, on a memory system
+that misses only one reference in fifty. Two consequences follow and both are
+examinable. First, a perfect cache would speed this machine up by 3.88 times, so
+the memory system is the whole story and the pipeline is a detail. Second, the
+reference count $r$ must include the instruction fetch, which is one per
+instruction before any data reference is counted; dropping it is the standard way
+to understate the stall term by nearly half.
+
+**How the exam asks this.** Compute instruction count times CPI divided by
+frequency for each machine and compare the two times. If an instruction-set
+change is described, recompute both the instruction count and the CPI, because it
+will have moved both. If a memory system is described, build the CPI from the
+ideal value plus the stall term before doing anything else.`,
+      examTip: 'A new instruction is worth adding only if its CPI is lower than the summed CPI of the instructions it replaces. Compute that sum first: four instructions at CPI 1.5 give a budget of 6, so an instruction with CPI 6 changes nothing no matter how many instructions it eliminates.',
+      importantNote: 'The CPI in the performance equation is measured over the whole run, not quoted from the pipeline. On a machine with a 2 percent miss rate and a 120-cycle penalty, three-quarters of all cycles are memory stalls, and any analysis using the ideal CPI is describing a different machine.',
+    },
+    { id: 'perf-rates', title: '8. MIPS and FLOPS: Rates That Rank Machines Backwards',
+      content: `## 8.1 What a rate metric can and cannot see
+
+MIPS counts instructions per second; FLOPS counts floating-point operations per
+second. Both divide a count of *operations* by time. Both are therefore blind to
+whether the operations were necessary, and that single blindness generates every
+failure they have.
+
+The blindness has a precise statement. Execution time is
+
+$$T = W / R$$
+
+where $W$ is the operations performed and $R$ the rate. A rate metric reports $R$
+and drops $W$. Comparing two systems on $R$ alone is valid **only** when $W$ is
+identical between them, and the whole art of making a machine faster consists of
+changing $W$.
+
+## 8.2 The MIPS failure that needs only one machine
+
+The usual complaint about MIPS is that it cannot compare different instruction
+sets, which Section 5.1 demonstrated. The sharper problem is that it does not
+give a single answer for one machine.
+
+Take a 2 GHz processor. On a kernel of register-to-register arithmetic with a CPI
+of 1 it achieves
+
+$$2000 / 1 = 2000$$
+
+MIPS. On a pointer-chasing kernel with a CPI of 4 the same silicon achieves
+
+$$2000 / 4 = 500$$
+
+MIPS. **A factor of four, on one machine, with no hardware change at all.** MIPS
+is therefore not a property of a processor; it is a property of a
+processor-and-program pair, which is precisely what execution time already is,
+except that execution time also tells you how much work got done.
+
+| Quoted figure | What it actually means |
+|---|---|
+| Peak MIPS | the issue width times the clock, achieved by no real program |
+| Native MIPS | measured on some unnamed program, unreproducible |
+| Relative MIPS | this machine against a reference machine nobody has |
+
+None of the three supports a comparison. The FE's position is the correct one:
+**quote execution time on a named program, or quote nothing.**
+
+## 8.3 The FLOPS failure: the faster algorithm scores lower
+
+Floating-point rates fail in a more interesting way, because reducing the work is
+exactly what a better algorithm does, and the metric punishes it.
+
+### Worked example 8A — Strassen scores worse and finishes sooner
+
+**Given.** A 1024 by 1024 matrix multiply. The classical algorithm performs
+$2n^{3}$ floating-point operations and sustains 2.5 GFLOPS. One level of
+Strassen's recursion replaces the eight half-size multiplies with seven, plus 18
+half-size matrix additions, and sustains only 2.3 GFLOPS because the additions
+are memory-bound. Which finishes first, and which scores higher?
+
+**Classical work.**
+
+$$2 \\times 1024 \\times 1024 \\times 1024 = 2147483648$$
+
+operations.
+
+**Strassen work.** Seven multiplies of size 512,
+
+$$7 \\times 2 \\times 512 \\times 512 \\times 512 = 1879048192$$
+
+operations, plus eighteen additions of 512 by 512,
+
+$$18 \\times 512 \\times 512 = 4718592$$
+
+for a total of
+
+$$1879048192 + 4718592 = 1883766784$$
+
+which is
+
+$$1883766784 / 2147483648 = 0.877197$$
+
+of the classical work, a 12.3 percent reduction.
+
+**Times.**
+
+$$2147483648 / 2500000000 = 0.858993$$
+
+seconds classical, against
+
+$$1883766784 / 2300000000 = 0.819029$$
+
+seconds for Strassen — faster by
+
+$$0.858993 / 0.819029 = 1.04879$$
+
+**yet its rate is lower** by
+
+$$2.3 / 2.5 = 0.92$$
+
+![Two panels for the same matrix multiply. The left panel shows the classical algorithm at 2.5 GFLOPS against Strassen at 2.3, the right shows the classical algorithm taking 0.859 seconds against Strassen at 0.819. The two panels rank the algorithms in opposite orders.](/courses/fe-ee/figures/sys3-perf-flops.svg)
+
+**Strassen is 4.9 percent faster and scores 8 percent lower.** A procurement rule
+that selects on GFLOPS chooses the slower algorithm, every time, and the better
+the algorithm the worse it looks. **A rate metric rewards doing unnecessary work
+quickly.**
+
+## 8.4 Two more ways a floating-point rate is inflated
+
+**Counting conventions.** A fused multiply-add computes one result and is
+conventionally counted as two operations. A machine retiring one such
+instruction per cycle at 3 GHz reports
+
+$$2 \\times 3 = 6$$
+
+GFLOPS on that convention and 3 on the other. Neither is dishonest and they
+differ by a factor of two, so a rate quoted without its counting convention
+carries no information.
+
+**Peak against achieved.** Peak is an arithmetic identity about the hardware, not
+a measurement.
+
+### Worked example 8B — why a real kernel reaches 6 percent of peak
+
+**Given.** Eight cores, each retiring one 8-wide fused multiply-add per cycle at
+3 GHz, with 100 GB/s of memory bandwidth. A kernel performs 0.25 floating-point
+operations per byte it moves. Find the peak rate, the achieved rate and the
+ratio.
+
+**Peak.** Cores times lanes times operations per lane times frequency:
+
+$$8 \\times 8 \\times 2 \\times 3 = 384$$
+
+GFLOPS.
+
+**Achieved.** The kernel is limited by how fast bytes arrive, so its rate is the
+arithmetic intensity times the bandwidth:
+
+$$0.25 \\times 100 = 25$$
+
+GFLOPS.
+
+**Ratio.**
+
+$$25 / 384 = 0.065104$$
+
+**6.5 percent of peak**, and no compiler flag recovers the rest, because the
+missing 93.5 percent was never available to this kernel. The break-even
+arithmetic intensity — the point at which the two limits meet — is the peak rate
+over the bandwidth,
+
+$$384 / 100 = 3.84$$
+
+operations per byte. **Below that intensity the machine is a memory system with
+some arithmetic attached**, and its floating-point rating describes hardware the
+program cannot reach.
+
+The three quantities in that example are the whole of what is usually drawn as a
+roofline: a flat ceiling at the peak rate, a sloped ceiling at the bandwidth
+times intensity, and a break-even intensity where they cross. A kernel's position
+against that break-even says which of the two ceilings it is under, and therefore
+which improvement is worth buying.
+
+**How the exam asks this.** Usually by offering a rate comparison that reverses
+when times are computed. Convert every rate to a time by dividing the work by the
+rate, then compare the times. If the work differs between the two options — a
+different algorithm, a different instruction set, a different compiler — the rate
+comparison is not merely unreliable, it is meaningless.`,
+      examTip: 'Convert every quoted rate into a time before comparing anything: time equals work divided by rate. If the two options do different amounts of work, the rate comparison cannot be repaired, only discarded. This is the single most reliable way to answer a MIPS or FLOPS question.',
+      importantNote: 'Peak floating-point rate is an identity about the hardware — cores times lanes times operations times clock. A memory-bound kernel is limited instead by arithmetic intensity times bandwidth, and the two meet at an intensity of peak over bandwidth. Below that intensity, quoting the peak describes a machine the program never sees.',
+    },
+    { id: 'perf-means', title: '9. Summarising a Benchmark Suite, and Why the Geometric Mean',
+      content: `## 9.1 A suite of benchmarks needs one number, and the choice is not free
+
+Section 5.4 asserted that speedup ratios are summarised by the geometric mean.
+That assertion can be *proved*, and the proof is short enough to be worth having,
+because the alternative produces contradictions rather than merely imprecision.
+
+Take two machines and three benchmarks, with times in seconds:
+
+| Benchmark | Machine P | Machine Q |
+|---|---|---|
+| one | 20 | 10 |
+| two | 10 | 40 |
+| three | 40 | 20 |
+| **Total** | **70** | **70** |
+
+The totals are
+
+$$20 + 10 + 40 = 70$$
+
+and
+
+$$10 + 40 + 20 = 70$$
+
+so on the only measure that is unambiguously meaningful — how long it takes to
+run all three — **the two machines are identical.** Any summary that says
+otherwise is wrong, and that is what makes this pair a test case.
+
+## 9.2 The arithmetic mean of ratios contradicts itself
+
+### Worked example 9A — the same data, two references, two opposite verdicts
+
+**Given.** The table above. Summarise Q against P and then P against Q, using
+first the arithmetic and then the geometric mean of the per-benchmark speedups.
+
+**Q measured against P.** The speedup of Q on each benchmark is P's time over
+Q's:
+
+$$20 / 10 = 2$$
+
+$$10 / 40 = 0.25$$
+
+$$40 / 20 = 2$$
+
+Their sum is
+
+$$2 + 0.25 + 2 = 4.25$$
+
+so the arithmetic mean is
+
+$$4.25 / 3 = 1.4167$$
+
+**"Q is 42 percent faster."** The geometric mean is the cube root of
+
+$$2 \\times 0.25 \\times 2 = 1$$
+
+which is **1.000 — "the machines are equal."**
+
+**P measured against Q.** Now the ratios are 0.5, 4 and 0.5, summing to
+
+$$0.5 + 4 + 0.5 = 5$$
+
+for an arithmetic mean of
+
+$$5 / 3 = 1.6667$$
+
+**"P is 67 percent faster"**, while the geometric mean is the cube root of
+
+$$0.5 \\times 4 \\times 0.5 = 1$$
+
+**again 1.000.**
+
+![Two machines with equal total execution time summarised two ways, as paired bars. The arithmetic mean of ratios says Q is 1.4167 times faster when P is the reference and P is 1.6667 times faster when Q is the reference; the geometric mean gives exactly one in both directions.](/courses/fe-ee/figures/sys3-perf-means.svg)
+
+**The contradiction.** The arithmetic mean says Q is faster *and* that P is
+faster. A consistent summary must satisfy one condition above all: the speedup of
+Q over P times the speedup of P over Q must be exactly 1. Here it is
+
+$$1.4167 \\times 1.6667 = 2.3612$$
+
+**A summary that claims a machine is 2.36 times faster than itself is not a
+summary.** The geometric mean gives one times one, as it must.
+
+## 9.3 Why the geometric mean is the one that works
+
+The property that saves it is that the geometric mean of a quotient is the
+quotient of the geometric means. For times $a_i$ normalised to a reference $r_i$,
+
+$$\\left( \\prod_{i=1}^{n} \\frac{a_i}{r_i} \\right)^{1/n} = \\left( \\prod_{i=1}^{n} a_i \\right)^{1/n} \\left( \\prod_{i=1}^{n} r_i \\right)^{-1/n}$$
+
+which is just the statement that a product of quotients is the quotient of the
+products, with the same root taken of both. Write $G(x)$ for the geometric mean.
+Then the summary for machine A relative to reference R is $G(a)/G(r)$, and
+comparing two machines gives
+
+$$\\frac{G(a) / G(r)}{G(b) / G(r)} = \\frac{G(a)}{G(b)}$$
+
+**The reference cancels.** Whatever machine the suite is normalised to, the
+ranking and the ratios between machines are unchanged. No such identity exists
+for the arithmetic mean, because a sum of quotients is not the quotient of the
+sums, and that is exactly why Worked example 9A comes apart.
+
+## 9.4 Which mean for which quantity
+
+The geometric mean is right for ratios and wrong for almost everything else. The
+full rule follows from what is being conserved.
+
+| Quantity being averaged | Correct mean | Because |
+|---|---|---|
+| Times, equally weighted | arithmetic | total time is a sum of times |
+| Times, unequal usage | weighted arithmetic | total time weights by frequency |
+| Normalised ratios | geometric | it is the only reference-independent one |
+| Rates over equal work | harmonic | total time is a sum of reciprocals of rates |
+
+### Worked example 9B — a rate average and a weighted time average
+
+**Given.** A machine processes three equally sized files at 10, 20 and 40 MB/s.
+Separately, benchmarks one, two and three from the table above are run 60, 30 and
+10 percent of the time. Find the correct average rate, and the correct summary
+time for each machine.
+
+**Average rate.** Equal work at different rates means the *times* add, so the
+average rate is the harmonic mean. Taking one megabyte of each file, the times
+sum to
+
+$$0.1 + 0.05 + 0.025 = 0.175$$
+
+seconds for three megabytes, giving
+
+$$3 / 0.175 = 17.143$$
+
+MB/s. The arithmetic mean of the rates would be
+
+$$10 + 20 + 40 = 70$$
+
+over three, or
+
+$$70 / 3 = 23.333$$
+
+MB/s, overstating the truth by
+
+$$23.333 / 17.143 = 1.3611$$
+
+**36 percent.** The slow file dominates the time and therefore must dominate the
+average, which is what taking reciprocals accomplishes.
+
+**Weighted times.** For machine P,
+
+$$0.6 \\times 20 = 12$$
+
+$$0.3 \\times 10 = 3$$
+
+$$0.1 \\times 40 = 4$$
+
+summing to
+
+$$12 + 3 + 4 = 19$$
+
+seconds. For machine Q,
+
+$$0.6 \\times 10 = 6$$
+
+$$0.3 \\times 40 = 12$$
+
+$$0.1 \\times 20 = 2$$
+
+summing to
+
+$$6 + 12 + 2 = 20$$
+
+seconds. **P is faster by**
+
+$$20 / 19 = 1.0526$$
+
+**5.3 percent.** Note what has happened: the unweighted totals said the machines
+were identical, and the weighted totals — which encode how the machine is
+actually used — break the tie in P's favour. **That is not a contradiction of
+Section 9.2; it is a different and better-posed question**, and it is the reason
+real benchmark suites publish weights. The contradiction in 9A came from a
+summary that changed its answer with an arbitrary reference; this one changes its
+answer with a stated fact about the workload, which is what a summary is supposed
+to do.
+
+**How the exam asks this.** Given per-benchmark speedups and asked for an overall
+figure, multiply them and take the $n$-th root. Given times, add them or take a
+weighted sum. Given rates over equal work, take the harmonic mean. The wrong-answer
+choice is nearly always the arithmetic mean of whatever was supplied.`,
+      examTip: 'Ask what the quantity sums to. Times sum, so average them arithmetically. Rates over equal work do not sum but their reciprocals do, so average them harmonically. Ratios have no meaningful sum at all, so average them geometrically.',
+      importantNote: 'The test of a summary statistic is that the speedup of A over B and the speedup of B over A must multiply to one. The geometric mean passes by construction; the arithmetic mean of ratios fails, and on the example here it claims a factor of 2.36 between a machine and itself.',
+    },
+    { id: 'perf-gustafson', title: '10. Amdahl and Gustafson on the Same Workload',
+      content: `## 10.1 One workload, scheduled rather than assumed
+
+Section 4 treated Amdahl's law as an expression to substitute into. Here the same
+workload is built out of actual tasks and actually scheduled, which turns out to
+disagree with the expression in an instructive way.
+
+The workload is **1000 unit tasks**: 100 of them serial, in the sense that
+nothing else may begin until they have all finished, and 900 that may run on any
+processor. The parallel fraction is
+
+$$900 / 1000 = 0.9$$
+
+so this is the middle curve of Section 4.2, and the ceiling is
+
+$$1 / 0.1 = 10$$
+
+### Worked example 10A — schedule the tasks and read the makespan
+
+**Given.** The workload above. Find the speedup on 4, 8 and 1024 processors by
+assigning tasks to processors and reading the finishing time, then compare with
+Amdahl's expression.
+
+**Four processors.** The parallel phase begins at time 100 and 900 tasks divide
+evenly:
+
+$$900 / 4 = 225$$
+
+so the makespan is
+
+$$100 + 225 = 325$$
+
+and the speedup is
+
+$$1000 / 325 = 3.0769$$
+
+Amdahl gives a denominator of
+
+$$0.1 + 0.9 / 4 = 0.325$$
+
+and therefore
+
+$$1 / 0.325 = 3.0769$$
+
+**Identical**, because 900 divides by 4.
+
+**Eight processors.** Now
+
+$$900 / 8 = 112.5$$
+
+which is not a whole number of unit tasks. Four processors receive 113 tasks and
+four receive 112, so the makespan is set by the busiest:
+
+$$100 + 113 = 213$$
+
+and the speedup is
+
+$$1000 / 213 = 4.6948$$
+
+Amdahl's denominator is
+
+$$0.1 + 0.1125 = 0.2125$$
+
+giving
+
+$$1 / 0.2125 = 4.7059$$
+
+The expression is optimistic by
+
+$$4.7059 / 4.6948 = 1.0024$$
+
+**0.24 percent** — small here, and the size is the point rather than the
+direction. **Amdahl's law assumes the parallel work is infinitely divisible.**
+With half a task left over the loss is a quarter of a percent; with tasks a tenth
+of the parallel phase each it would be enormous. The law is an upper bound, and
+what separates the bound from reality is granularity.
+
+**A thousand and twenty-four processors.** Only 900 tasks exist, so 900
+processors take one each and 124 idle:
+
+$$100 + 1 = 101$$
+
+is the makespan, for a speedup of
+
+$$1000 / 101 = 9.901$$
+
+against the ceiling of 10.
+
+![Speedup against processor count on logarithmic axes for a workload that is ninety percent parallel. Amdahl's fixed-size curve flattens against a ceiling of ten with scheduled runs marked as circles on it, while Gustafson's scaled-size line rises almost linearly to over nine hundred.](/courses/fe-ee/figures/sys3-perf-scaling.svg)
+
+## 10.2 Efficiency is the number that decides purchases
+
+Speedup says how much faster. **Efficiency** says how much of the hardware was
+converted into that speed:
+
+$$E = S / P$$
+
+From the scheduled runs,
+
+$$4.6948 / 8 = 0.58685$$
+
+and
+
+$$9.901 / 1024 = 0.0096689$$
+
+| Processors | Scheduled speedup | Efficiency |
+|---|---|---|
+| 4 | 3.077 | 76.9% |
+| 8 | 4.695 | 58.7% |
+| 1024 | 9.901 | **0.97%** |
+
+**On 1024 processors, 99 percent of the machine is producing nothing.** The
+speedup still rose — every column is faster than the one before — which is why
+speedup alone never justifies a purchase. This behaviour, fixed problem size and
+growing processor count, is **strong scaling**, and Amdahl's law is the statement
+that strong scaling always ends this way.
+
+## 10.3 Gustafson asks the other question
+
+Amdahl fixes the problem and asks how much sooner it finishes. Gustafson fixes
+the *time* and asks how much more work gets done — which is what people who buy a
+thousand processors actually do with them.
+
+### Worked example 10B — count the work instead of the time
+
+**Given.** The same workload, but now the machine runs for the same wall-clock
+duration on any number of processors: 100 time units of serial phase and 900 of
+parallel phase, with the parallel phase filled to capacity.
+
+**Eight processors.** During the serial phase one processor does one unit of work
+per unit time, contributing 100. During the parallel phase all eight are busy for
+900 time units, contributing
+
+$$8 \\times 900 = 7200$$
+
+so the work completed is
+
+$$100 + 7200 = 7300$$
+
+units. One processor would need 7,300 time units for that work and the machine
+took 1,000, so the scaled speedup is
+
+$$7300 / 1000 = 7.3$$
+
+Gustafson's expression, with $s$ the serial share of the *scaled* run, is
+
+$$S = P + (1 - P)s$$
+
+which gives
+
+$$8 - 7 \\times 0.1 = 7.3$$
+
+**the same 7.3.**
+
+**A thousand and twenty-four processors.**
+
+$$100 + 1024 \\times 900 = 921700$$
+
+units of work, so
+
+$$921700 / 1000 = 921.7$$
+
+**Against Amdahl's 9.901 on the same hardware and the same serial fraction.**
+
+## 10.4 The two laws are not in conflict
+
+Nothing has been contradicted. The workloads are different: Amdahl's problem
+stayed the size it was, and Gustafson's grew with the machine. The efficiencies
+make the distinction concrete:
+
+| Regime | Problem size | Efficiency at 8 | Efficiency at 1024 |
+|---|---|---|---|
+| **Strong scaling** (Amdahl) | fixed | $4.6948 / 8 = 0.58685$ | 0.97% |
+| **Weak scaling** (Gustafson) | grows with $P$ | $7.3 / 8 = 0.9125$ | $921.7 / 1024 = 0.90010$ |
+
+Weak-scaling efficiency does not collapse; it settles towards the parallel
+fraction itself, 0.9, and stays there. That is the whole reason large machines
+are built at all — not to finish today's problem sooner, but to make tomorrow's
+problem tractable.
+
+Which law applies is decided by one question, and the exam almost always answers
+it in the problem statement:
+
+| The question is | Use | Because |
+|---|---|---|
+| "how much sooner does this job finish?" | Amdahl | the work is fixed |
+| "how much more can I get done in an hour?" | Gustafson | the time is fixed |
+| "should I buy more processors?" | efficiency | speedup rises even when it should not |
+
+FE questions ask the first form overwhelmingly. Use Amdahl unless the problem
+explicitly says the workload grows with the machine — and if it does say so, the
+fixed-size ceiling $1/(1-f)$ does not apply and quoting it is the error being
+tested.
+
+**How the exam asks this.** Identify whether the problem size is fixed. If it is,
+substitute into Amdahl and remember the ceiling. If it grows, the scaled speedup
+is nearly linear and the serial fraction only shaves a little off it. Efficiency
+is always speedup divided by processor count, whichever law produced the speedup.`,
+      examTip: 'Amdahl and Gustafson describe the same machine answering different questions, so they never actually disagree. Read the problem for whether the work is fixed or the time is fixed; that single fact selects the law, and using the wrong one is the mistake the question is built around.',
+      importantNote: 'Amdahl assumes the parallel work divides perfectly. Scheduling 900 unit tasks on 8 processors gives 4.695 against the formula 4.706, because 900 does not divide by 8. The formula is an upper bound and granularity is the gap; with coarse tasks the gap stops being negligible.',
+    },
+    { id: 'perf-queueing', title: '11. Little\'s Law, the Utilisation Knee, and Bottlenecks',
+      content: `## 11.1 One relation that needs almost no assumptions
+
+For any stable system in which items arrive, spend time, and leave,
+
+$$L = \\lambda W$$
+
+where $L$ is the mean number of items present, $\\lambda$ the arrival rate and $W$
+the mean time each spends inside. **Little's law assumes nothing about the arrival
+pattern, the service distribution, the queue discipline or the number of
+servers.** It needs only that the system is stable, so that what goes in comes
+out. That generality is what makes it the most useful single relation in
+performance work.
+
+Its most common use is not to compute $L$ but to expose a constraint that was
+never stated.
+
+### Worked example 11A — a thread pool nobody mentioned
+
+**Given.** A service handles 2,000 requests per second with a mean response time
+of 50 milliseconds. Find the mean number of requests in flight. Then find the
+maximum throughput if the server runs a pool of 64 worker threads, each occupied
+for the whole of a request.
+
+**Concurrency.** By Little's law,
+
+$$2000 \\times 0.05 = 100$$
+
+**100 requests are inside the system at any instant**, which is a number nobody
+measured and everybody needed.
+
+**The constraint.** With 64 threads, $L$ cannot exceed 64. Rearranging the same
+law, $\\lambda = L / W$, so
+
+$$64 / 0.05 = 1280$$
+
+requests per second. **The pool caps throughput at 1,280**, well below the 2,000
+observed — so either the response time is shorter than reported, or requests are
+spending part of their life outside a thread. Little's law does not resolve which;
+it proves that one of the stated numbers is wrong, which is usually the more
+valuable service.
+
+## 11.2 Utilisation drives latency, and the shape is a knee
+
+Throughput and utilisation say nothing about waiting on their own. For a single
+server with random arrivals and exponentially distributed service times, the mean
+time in the system is
+
+$$W = 1 / (\\mu - \\lambda)$$
+
+and, writing $\\rho = \\lambda / \\mu$ for the utilisation, the mean number present is
+
+$$L = \\rho / (1 - \\rho)$$
+
+Both denominators vanish as $\\rho$ approaches one, and that is the entire
+behaviour.
+
+![Mean response time against utilisation for exponential and for constant service times, in units of the service time, with discrete-event results marked as circles on the exponential curve. Both curves are almost flat below sixty percent and rise without bound approaching one.](/courses/fe-ee/figures/sys3-perf-queue.svg)
+
+Discrete-event runs of six million customers each confirm the curve:
+
+| Utilisation | Simulated $W$ | Closed form | Simulated $L$ | Closed form |
+|---|---|---|---|---|
+| 0.5 | 2.0004 | 2 | 0.9987 | 1 |
+| 0.7 | 3.3301 | 3.3333 | 2.3310 | 2.3333 |
+| 0.8 | 4.9964 | 5 | 3.9984 | 4 |
+| 0.9 | 10.0191 | 10 | 9.0132 | 9 |
+
+Agreement is within 0.19 percent everywhere, and the runs also check Little's law
+against itself: at a utilisation of 0.9 the arrival rate times the measured
+waiting time is
+
+$$0.9 \\times 10.0191 = 9.0172$$
+
+against a directly sampled 9.0132, a discrepancy of
+
+$$9.0172 - 9.0132 = 0.004$$
+
+or
+
+$$0.004 / 9.0132 = 0.00044$$
+
+**four parts in ten thousand** — with the number in the system counted by sampling
+the queue, not by applying the law being tested.
+
+**The knee.** Read the multiplier between two operating points. Going from half
+loaded to ninety percent loaded raises utilisation by
+
+$$0.9 / 0.5 = 1.8$$
+
+and raises response time from
+
+$$1 / 0.5 = 2$$
+
+to
+
+$$1 / 0.1 = 10$$
+
+service times, a factor of
+
+$$10 / 2 = 5$$
+
+**Eighty percent more load costs four hundred percent more latency.** Worse, the
+last step is the steepest: pushing from 0.90 to 0.95, a utilisation increase of
+
+$$0.95 / 0.9 = 1.0556$$
+
+takes the response time to
+
+$$1 / 0.05 = 20$$
+
+service times, which is
+
+$$20 / 10 = 2$$
+
+**double, for five and a half percent more work.** This is why systems with
+latency requirements are provisioned at 60 or 70 percent and never at 95: the
+capacity between them is real, and it is unusable.
+
+## 11.3 Variability is half the waiting
+
+The curve depends on how variable the service times are, not only on their mean.
+For a single server with constant service time the mean wait in the queue is
+
+$$W_{q} = \\rho / (2 \\mu (1 - \\rho))$$
+
+which is exactly half the exponential case. At a utilisation of 0.8 the queueing
+wait is
+
+$$0.8 / 0.4 = 2$$
+
+service times, so the total is
+
+$$1 + 2 = 3$$
+
+against the exponential case's 5 — and a run with constant service times gives
+2.9997. The queueing component alone is
+
+$$4 / 2 = 2$$
+
+**times worse when service times are random than when they are fixed.**
+Eliminating variability is worth as much as halving the load, and it is often far
+cheaper.
+
+## 11.4 Bottleneck analysis is Amdahl with a different vocabulary
+
+A system of stages in series has a throughput equal to its slowest stage, and
+nothing else about the other stages matters.
+
+### Worked example 11B — improve the wrong stage and gain nothing
+
+**Given.** Three stages in series with capacities of 1,200, 800 and 1,500 items
+per second. Find the system throughput and each stage's utilisation. Then find
+the throughput after stage two is improved to 1,400, and after it is improved to
+2,000.
+
+**Before.** The throughput is the minimum, **800 items per second.** The stages
+run at
+
+$$800 / 1200 = 0.66667$$
+
+$$800 / 800 = 1$$
+
+$$800 / 1500 = 0.53333$$
+
+so only stage two is saturated. **A stage below 100 percent utilisation is not
+the bottleneck and improving it changes nothing.**
+
+**Improved to 1,400.** The minimum is now stage one at 1,200, so throughput is
+**1,200**, a gain of
+
+$$1200 / 800 = 1.5$$
+
+**Improved to 2,000.** The minimum is still stage one at 1,200, so throughput is
+**still 1,200 — the second half of that improvement bought nothing at all.**
+
+The lesson is Amdahl's in another dress. The bottleneck is the part you did not
+improve, the ceiling is set by it alone, and **the bottleneck moves**: every
+successful optimisation relocates it, so the next improvement must be re-aimed
+rather than continued. A programme of work that keeps optimising the stage it
+optimised last is the commonest way to spend effort for no result.
+
+**How the exam asks this.** For Little's law, identify which two of the three
+quantities are given and solve for the third, watching the units — a response time
+in milliseconds against a rate per second needs one of them converted. For
+queueing, compute the utilisation first; every other quantity is a function of it.
+For a bottleneck, take the minimum capacity and check which stages are saturated.`,
+      examTip: 'Little\'s law works in any consistent unit set and needs no assumption about the arrival process, so it is safe on almost any problem. Convert the response time and the arrival rate to the same time unit before multiplying: a rate per second against a time in milliseconds is the error that produces answers wrong by a thousand.',
+      importantNote: 'Response time depends on utilisation and on service-time variability, not on utilisation alone. Constant service times halve the queueing wait against exponential ones at the same load, so reducing variability can be worth as much as buying half again as much capacity.',
+    },
+    { id: 'perf-energy', title: '12. Power, Energy per Operation, and the Energy-Delay Product',
+      content: `## 12.1 Power and energy answer different questions
+
+Dynamic power in CMOS is
+
+$$P = \\alpha C V^{2} f$$
+
+and the energy spent on one operation is that power divided by the operation
+rate, which removes the frequency:
+
+$$E = \\alpha C V^{2}$$
+
+**Power is a rate; energy is a total.** A cooling system is sized by power. A
+battery is drained by energy. Section 5.3 established the key consequence —
+lowering frequency alone cuts power and leaves energy untouched, because the job
+runs proportionally longer. Everything below builds on that.
+
+Real silicon adds a second term. Leakage flows whether or not anything is
+switching, so the energy charged to one operation includes a share of the static
+power proportional to how long the operation took:
+
+$$E = \\alpha C V^{2} + P_{leak} / f$$
+
+That second term is what makes running slowly expensive, and it is why the
+question "what frequency should this run at?" has a non-trivial answer.
+
+## 12.2 Voltage and frequency are not independent
+
+A transistor switches more slowly at a lower supply, so a frequency reduction is
+what *permits* a voltage reduction. The relation, in the alpha-power form with
+$\\alpha = 2$, is
+
+$$f = k (V - V_{th})^{2} / V$$
+
+Take a threshold of 0.35 volts and calibrate $k$ so that one volt yields two
+gigahertz. Then
+
+$$1 - 0.35 = 0.65$$
+
+$$0.65 \\times 0.65 = 0.4225$$
+
+and
+
+$$2 / 0.4225 = 4.7337$$
+
+gigahertz per volt. Every other point on the curve now follows rather than being
+chosen — which matters, because the shape of that curve is what produces the
+result below.
+
+## 12.3 Three metrics, three different answers
+
+### Worked example 12A — find the optimum for energy, for delay, and for their product
+
+**Given.** The voltage-frequency relation above, a switching energy of $V^{2}$
+nanojoules per operation in units where the coefficient is one, and a leakage
+contribution of 0.5 nanojoules times gigahertz per operation. Find the frequency
+that minimises energy per operation, the one that minimises delay, and the one
+that minimises their product, searching the curve rather than differentiating.
+
+**Energy.** Sweeping the frequency and evaluating $V^{2} + 0.5 / f$ at each point
+gives a minimum at **1.102 GHz**, where the supply is 0.775 volts and the energy
+is **1.0538 nJ** per operation. Below that frequency the leakage term grows faster
+than the switching term shrinks; above it the reverse.
+
+**Delay.** Delay per operation is $1/f$, which falls monotonically, so it is
+minimised at **the top of the achievable range** and nowhere else. Delay alone
+never selects an interior point.
+
+**The product.** The energy-delay product $E / f$ has its minimum at **3.412
+GHz**, where the supply is 1.329 volts and the energy is **1.9118 nJ** per
+operation.
+
+![Energy per operation, delay and their product plotted against clock frequency, each normalised to its own minimum. Energy bottoms out near 1.1 gigahertz, the energy-delay product near 3.4, and delay only at the top of the range.](/courses/fe-ee/figures/sys3-perf-edp.svg)
+
+**Three metrics on one curve pick three different operating points**, and they are
+not close together: the energy optimum and the product optimum are a factor of
+
+$$3.412 / 1.102 = 3.096$$
+
+apart in frequency. Moving from the energy optimum to the product optimum costs
+
+$$1.9118 / 1.0538 = 1.8142$$
+
+in energy — **81 percent more per operation** — and buys a delay of
+
+$$1.102 / 3.412 = 0.32298$$
+
+of the old one, a saving of
+
+$$1 - 0.32298 = 0.67702$$
+
+**68 percent.** Whether that is a good trade is exactly the question the
+energy-delay product exists to answer, and its answer here is yes.
+
+## 12.4 Why a product, and which product
+
+Minimising energy alone drives the design towards the slowest clock that leakage
+permits, producing a machine nobody wants to use. Minimising delay alone drives
+it to the highest voltage the silicon survives, producing a machine nobody can
+cool. **The energy-delay product is the simplest statistic that refuses both
+degenerate answers**, because each factor blows up where the other is minimised.
+
+| Metric | Minimised by | Fails because |
+|---|---|---|
+| Power | idling | says nothing about work completed |
+| Energy per operation | running slowly | ignores that time has value |
+| Delay | running fast | ignores that energy has value |
+| **Energy-delay product** | an interior point | weights the two equally |
+| Energy times delay squared | a higher interior point | weights delay more, for servers |
+
+The choice among the last two is a policy decision, not a physical one. A
+battery-powered sensor that wakes once a minute should be judged on energy; a
+processor in a datacentre where the machine is a fixed cost per hour should be
+judged closer to energy times delay squared, because idle time is wasted capital.
+
+## 12.5 Racing to idle, and why the answer depends on the platform
+
+A recurring design question is whether to run slowly for a long time or quickly
+and then idle. On the switching term alone, running slowly always wins, since
+energy per operation falls with voltage. The platform changes the answer.
+
+### Worked example 12B — a task of one billion operations
+
+**Given.** The machine above, a task of $10^{9}$ operations, and a rest of the
+platform — memory, interfaces, regulators — drawing a constant 2 watts while the
+task runs and nothing afterwards. Compare running at the energy optimum with
+running at the product optimum.
+
+**At 1.102 GHz.** The processor spends 1.0538 joules on the billion operations,
+and the task takes
+
+$$1 / 1.102 = 0.9074$$
+
+seconds. The platform adds
+
+$$2 \\times 0.9074 = 1.8148$$
+
+joules, for a total of
+
+$$1.0538 + 1.8148 = 2.8686$$
+
+joules.
+
+**At 3.412 GHz.** The processor spends 1.9118 joules, and the task takes
+
+$$1 / 3.412 = 0.29308$$
+
+seconds. The platform adds
+
+$$2 \\times 0.29308 = 0.58616$$
+
+joules, for
+
+$$1.9118 + 0.58616 = 2.49796$$
+
+joules.
+
+**The fast setting wins** by
+
+$$2.8686 / 2.49796 = 1.1484$$
+
+**14.8 percent**, despite spending 81 percent more energy inside the processor.
+The platform draws power for as long as the task runs, so shortening the task
+saves more than the processor loses. **Race-to-idle is right whenever the
+constant platform draw exceeds the marginal energy cost of going faster**, and
+wrong when the processor is the whole system. Neither is a general rule, and a
+question that states a platform power is telling you which regime it is in.
+
+**How the exam asks this.** Track the voltage ratio for energy questions and the
+voltage-squared-times-frequency product for power questions. If a total energy for
+a job is wanted, multiply the energy per operation by the operation count and add
+any constant draw times the runtime — the second term is the one that gets left
+out.`,
+      examTip: 'Power is voltage squared times frequency; energy per operation is voltage squared alone. A DVFS question is answered by identifying which of the two it asks for, then tracking only the voltage ratio for energy and both ratios for power.',
+      importantNote: 'Energy, delay and the energy-delay product select three different clock frequencies on the same silicon, here 1.10, the maximum, and 3.41 GHz. Quoting an optimum without naming the metric it optimises is meaningless, and the gap between them is a factor of three in frequency and nearly two in energy.',
+    },
+    { id: 'perf-problems', title: '13. Practice Problems',
+      content: `## Problem Set D — the performance equation and rate metrics
+
+**D1.** A program executes 5.0 billion instructions at a CPI of 2.2 on a 3.3 GHz
+processor. Find the execution time and the MIPS rating, and confirm the two
+against each other.
+
+*Answer.* In units of $10^{9}$,
+
+$$5.0 \\times 2.2 / 3.3 = 3.3333$$
+
+seconds. The rating is the clock in megahertz over the CPI,
+
+$$3300 / 2.2 = 1500$$
+
+MIPS. Confirming: 5.0 billion instructions in 3.3333 seconds is 1.5 billion per
+second, which is 1500 million per second. **3.33 seconds and 1500 MIPS.** The two
+routes must agree because the rating is nothing more than the equation rearranged
+— which is also why it adds no information.
+
+**D2.** An instruction mix is 45 percent ALU at CPI 1, 22 percent load at CPI 4,
+13 percent store at CPI 3 and 20 percent branch at CPI 2. Find the average CPI,
+the share contributed by loads, and the speedup if load CPI is halved.
+
+*Answer.* The contributions are
+
+$$0.45 \\times 1 = 0.45$$
+
+$$0.22 \\times 4 = 0.88$$
+
+$$0.13 \\times 3 = 0.39$$
+
+$$0.20 \\times 2 = 0.4$$
+
+summing to
+
+$$0.45 + 0.88 + 0.39 + 0.4 = 2.12$$
+
+Loads contribute
+
+$$0.88 / 2.12 = 0.41509$$
+
+**41.5 percent of all cycles from 22 percent of the instructions.** Halving their
+CPI to 2 gives a contribution of
+
+$$0.22 \\times 2 = 0.44$$
+
+and a new average of
+
+$$0.45 + 0.44 + 0.39 + 0.4 = 1.68$$
+
+for a speedup of
+
+$$2.12 / 1.68 = 1.2619$$
+
+**CPI 2.12, loads 41.5 percent, speedup 1.26.** The trap is ranking optimisation
+targets by instruction frequency; rank them by their contribution to the CPI,
+which is frequency times cost.
+
+**D3.** Machine A sustains 1.8 GFLOPS and finishes a job in 40 seconds. Machine B
+sustains 1.5 GFLOPS and finishes the same job in 30 seconds. Which is faster, and
+what does the difference in rate tell you?
+
+*Answer.* The work each performed is the rate times the time:
+
+$$1.8 \\times 40 = 72$$
+
+and
+
+$$1.5 \\times 30 = 45$$
+
+billion operations. **B is faster by a third and performs**
+
+$$72 / 45 = 1.6$$
+
+**times less work.** The rate difference does not indicate a slower machine; it
+indicates that B is running a better algorithm, and the rate metric penalises it
+for that. **The only correct comparison here is the 40 seconds against the 30.**
+
+**D4.** A routine accounting for 65 percent of runtime is made five times faster.
+Find the speedup, the ceiling, and how much of the ceiling was captured.
+
+*Answer.* The improved portion shrinks to
+
+$$0.65 / 5 = 0.13$$
+
+so the denominator is
+
+$$0.35 + 0.13 = 0.48$$
+
+and the speedup is
+
+$$1 / 0.48 = 2.0833$$
+
+The ceiling is
+
+$$1 / 0.35 = 2.8571$$
+
+and the fraction captured is
+
+$$2.0833 / 2.8571 = 0.729166$$
+
+**2.08 times, against a ceiling of 2.86, capturing 72.9 percent of what is
+available.** The remaining 27 percent would cost an infinitely fast routine, which
+is the standard demonstration that a fivefold improvement is already most of the
+benefit there is.
+
+## Problem Set E — scaling, summaries and queueing
+
+**E1.** A machine is 1.6, 0.8 and 3.0 times as fast as a reference on three
+benchmarks. Summarise it correctly, and say how far the wrong summary is off.
+
+*Answer.* These are ratios, so the geometric mean applies. The product is
+
+$$1.6 \\times 0.8 \\times 3.0 = 3.84$$
+
+whose cube root is **1.566**. The arithmetic mean would be
+
+$$1.6 + 0.8 + 3.0 = 5.4$$
+
+over three, or
+
+$$5.4 / 3 = 1.8$$
+
+overstating by
+
+$$1.8 / 1.566 = 1.1494$$
+
+**1.566 correct, 1.8 wrong, 15 percent overstated.** The arithmetic mean is pulled
+up by the single benchmark on which the machine excels, which is precisely the
+behaviour that makes it unusable for ratios.
+
+**E2.** A disk subsystem is observed holding 12 requests on average while
+receiving 350 requests per second. Its maximum rate is 400 per second. Find the
+mean response time, and say what the number implies about service variability.
+
+*Answer.* By Little's law,
+
+$$12 / 350 = 0.034286$$
+
+seconds, **34.3 milliseconds.** The utilisation is
+
+$$350 / 400 = 0.875$$
+
+and a single server with exponential service at that load would hold
+
+$$0.875 / 0.125 = 7$$
+
+requests. **The observed 12 is well above 7, so service times are more variable
+than exponential** — bursty, or with occasional very long operations. Little's law
+gave the response time with no distributional assumption at all; comparing its
+answer against a model is what exposed the variability.
+
+**E3.** At what utilisation does the mean response time of a single exponential
+server reach eight service times?
+
+*Answer.* Response time in service times is one over one minus the utilisation, so
+
+$$1 / 8 = 0.125$$
+
+and
+
+$$1 - 0.125 = 0.875$$
+
+**87.5 percent.** Note how little headroom that leaves: the same server at 75
+percent responds in four service times, so **the last 12.5 points of utilisation
+double the latency.**
+
+**E4.** A workload is 5 percent serial. Find the strong-scaling speedup and
+efficiency on 64 processors, and the weak-scaling speedup and efficiency on the
+same machine.
+
+*Answer.* For strong scaling the parallel part shrinks to
+
+$$0.95 / 64 = 0.014844$$
+
+so the denominator is
+
+$$0.05 + 0.014844 = 0.064844$$
+
+and the speedup is
+
+$$1 / 0.064844 = 15.422$$
+
+with efficiency
+
+$$15.422 / 64 = 0.24097$$
+
+For weak scaling the scaled speedup is the processor count less the serial share
+of the extra processors,
+
+$$63 \\times 0.05 = 3.15$$
+
+$$64 - 3.15 = 60.85$$
+
+with efficiency
+
+$$60.85 / 64 = 0.95078$$
+
+**15.4 times at 24 percent efficiency, or 60.9 times at 95 percent, on identical
+hardware with an identical serial fraction.** The whole difference is whether the
+problem grew.
+
+**E5.** Four stages in series have capacities of 500, 900, 650 and 400 items per
+second. Find the throughput, the effect of doubling the second stage, and the
+best single improvement available.
+
+*Answer.* Throughput is the minimum, **400 items per second**, set by the fourth
+stage. Doubling the second stage to 1,800 leaves the minimum at 400: **no gain
+whatever.** The only useful improvement is to the fourth stage, and its value is
+capped by the next-slowest, so raising it above 500 is wasted. Taking it to 500
+or beyond gives
+
+$$500 / 400 = 1.25$$
+
+**a 25 percent gain, and not one percent more until the first stage is also
+improved.** The bottleneck moves the moment it is relieved, which is why
+improvement programmes must be re-aimed after every success rather than continued.
+
+## Problem Set F — power and energy
+
+**F1.** A processor's supply is cut by 15 percent and its clock by 25 percent.
+Find the ratios for power, energy per operation, runtime and total energy for a
+fixed job.
+
+*Answer.* Power goes as voltage squared times frequency:
+
+$$0.85 \\times 0.85 = 0.7225$$
+
+$$0.7225 \\times 0.75 = 0.541875$$
+
+so power falls to **54.2 percent.** Energy per operation goes as voltage squared
+alone, **72.25 percent.** The runtime stretches by
+
+$$1 / 0.75 = 1.3333$$
+
+and the total energy is power times runtime,
+
+$$0.541875 \\times 1.3333 = 0.72248$$
+
+**Total energy 72.25 percent — identical to the energy per operation**, as it must
+be, because the frequency cancels between the power reduction and the longer run.
+**Only the voltage saved energy; the frequency reduction saved power and made the
+voltage reduction legal.**
+
+**F2.** Design A uses 1.4 nJ per operation with a 0.5 ns delay. Design B uses 2.2
+nJ with a 0.3 ns delay. Rank them on energy, on the energy-delay product, and on
+energy times delay squared.
+
+*Answer.* On energy alone A wins by
+
+$$2.2 / 1.4 = 1.5714$$
+
+On the product,
+
+$$1.4 \\times 0.5 = 0.7$$
+
+against
+
+$$2.2 \\times 0.3 = 0.66$$
+
+so **B wins** by
+
+$$0.7 / 0.66 = 1.0606$$
+
+On energy times delay squared,
+
+$$0.5 \\times 0.5 = 0.25$$
+
+$$1.4 \\times 0.25 = 0.35$$
+
+against
+
+$$0.3 \\times 0.3 = 0.09$$
+
+$$2.2 \\times 0.09 = 0.198$$
+
+so B wins by
+
+$$0.35 / 0.198 = 1.7677$$
+
+**A on energy, B on the product by 6 percent, B on the delay-weighted product by
+77 percent.** Three metrics, two different winners, and the margin grows the more
+delay is weighted. **Name the metric before ranking anything.**
+
+**F3.** A task of 2 billion operations may run at 1.5 GHz costing 0.9 nJ per
+operation, or at 3.0 GHz costing 1.6 nJ. The rest of the platform draws 1.5 watts
+while the task runs. Which setting uses less total energy, and at what platform
+power would the answer change?
+
+*Answer.* **Slow setting.** The processor spends
+
+$$2 \\times 0.9 = 1.8$$
+
+joules over
+
+$$2 / 1.5 = 1.3333$$
+
+seconds, during which the platform adds
+
+$$1.5 \\times 1.3333 = 2$$
+
+joules, for
+
+$$1.8 + 2 = 3.8$$
+
+joules.
+
+**Fast setting.** The processor spends
+
+$$2 \\times 1.6 = 3.2$$
+
+joules over
+
+$$2 / 3 = 0.66667$$
+
+seconds, and the platform adds
+
+$$1.5 \\times 0.66667 = 1$$
+
+joule, for
+
+$$3.2 + 1 = 4.2$$
+
+joules.
+
+**The slow setting wins by**
+
+$$4.2 / 3.8 = 1.1053$$
+
+**10.5 percent.** The break-even platform power is where the extra 1.4 joules of
+processor energy equals the platform energy saved by finishing 0.6667 seconds
+sooner:
+
+$$1.4 / 0.66667 = 2.1$$
+
+**watts.** Above 2.1 W racing to idle wins; below it, running slowly does. Compare
+Worked example 12B, where a 2 W platform and a steeper energy curve put the answer
+the other way — **race-to-idle is a calculation, never a rule.**`,
+      examTip: 'Every problem here reduces to writing the quantity as a product of factors and tracking each factor separately: time as instruction count times CPI over frequency, power as voltage squared times frequency, energy as power times time. Once the factorisation is on the page the arithmetic is trivial and the trap is disarmed.',
+      importantNote: 'Rank optimisation targets by their contribution, not their frequency. Loads that are 22 percent of the instruction mix can be 41 percent of the cycles, and a bottleneck stage at 100 percent utilisation is the only stage whose improvement changes anything at all.',
     },
   ],
   keyTakeaways: [

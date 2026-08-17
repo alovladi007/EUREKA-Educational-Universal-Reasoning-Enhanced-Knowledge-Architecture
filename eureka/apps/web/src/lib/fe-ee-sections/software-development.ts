@@ -6000,8 +6000,14 @@ can silently remove years of orders.
 ## 4.3 What an Index Actually Saves
 
 An index is a B-tree over one or more columns. Its height determines the
-lookup cost, and the height is small because the fan-out is large — a 8 KB
-page holding 100-byte entries branches roughly 100 ways at every level.
+lookup cost, and the height is small because the fan-out is large. An 8 KB
+page of 8,192 bytes holding 80-byte **index entries** branches about 100 ways
+at every level, because $8192/80 = 102.4$. The same page holding 100-byte
+**table rows** holds 81 of them, because $8192/100 = 81.92$, which is where
+the last column of the table below comes from. Index entries and table rows are
+different widths, and interchanging the two is the usual reason a hand-computed
+index height comes out wrong. Section 14.2 counts these heights on trees that
+are actually built rather than deriving them.
 
 ![Pages touched to find one row, plotted against table size on logarithmic axes. The full-scan curve is N divided by 81 rows per page and rises proportionally; the B-tree curve is the tree height plus one and rises as a staircase. At a million rows the scan touches 12,346 pages against the index's four.](/courses/fe-ee/figures/swe-btree-vs-scan.svg)
 
@@ -6054,7 +6060,7 @@ to a 1,000-row table:
 | Hash join | N + M | **11,000** |
 | Sort-merge | N log N + M log M | 142,843 |
 
-Hash join wins by nearly a factor of 909 over the naive nested loop, and the
+Hash join wins by a factor of $10000000/11000 = 909.09$ over the naive nested loop, and the
 reason is structural rather than clever: it replaces a scan of the inner table
 per outer row with a single hash-table build and one probe each. Sort-merge is
 slower here but wins when the inputs are already sorted or when the result
@@ -6177,6 +6183,1775 @@ their constraints. A system can be perfectly ACID on each node and eventually
 consistent across nodes, which is precisely what most large-scale stores are.`,
       examTip: 'Learn the isolation table as a staircase: READ UNCOMMITTED allows all three anomalies, and each higher level removes one more — dirty read, then non-repeatable read, then phantom.',
       importantNote: 'A table can be in 3NF and still violate BCNF, which happens when a non-superkey determines a PRIME attribute. BCNF is the one-line test: every determinant must be a superkey.',
+    },
+    { id: 'db-relational-sets', title: '6. The Relational Model as a Set Construction',
+      content: `## 6.1 A Relation Is a Subset of a Cartesian Product
+
+Everything later in this chapter — keys, joins, normal forms, even the strange
+behaviour of NULL — falls out of one definition, so it is worth stating that
+definition exactly rather than by analogy. Give every column a **domain**, the
+set of values it is permitted to hold, and name those domains
+$D_1, D_2, \\ldots, D_n$. The Cartesian product of the domains is the set of
+every tuple that could conceivably be assembled from them:
+
+$$D_1 \\times D_2 \\times \\cdots \\times D_n = \\{\\, (v_1, v_2, \\ldots, v_n) \\;:\\; v_i \\in D_i \\,\\}$$
+
+A **relation** is any subset of that product. A **table** is simply how a
+relation is written down:
+
+$$R \\subseteq D_1 \\times D_2 \\times \\cdots \\times D_n$$
+
+The product is astronomically larger than any relation drawn from it, because
+its size is the product of the domain sizes:
+
+$$\\lvert D_1 \\times \\cdots \\times D_n \\rvert = \\prod_{i=1}^{n} \\lvert D_i \\rvert$$
+
+Two numbers describe a relation. Its **degree** is the number of attributes,
+$n$; its **cardinality** is the number of tuples it currently contains,
+$\\lvert R \\rvert$. Degree is a property of the schema and changes only when
+somebody alters the table; cardinality is a property of the current state and
+changes with every insert.
+
+## 6.2 What "Set" Buys, and Where SQL Departs From It
+
+Because a relation is a *set*, two properties come free. No tuple appears
+twice, and the tuples have no order — a relation is unordered, so any
+ordering you see in a result was produced by an ORDER BY clause, not stored.
+The same holds across attributes: a tuple is properly a function from attribute
+*names* to values, so column order is presentation, not meaning.
+
+SQL relaxes the first property. A SQL table is a **bag**, not a set, and a
+projection keeps duplicates unless you ask it not to. On the running instance
+used throughout this chapter — five employees, three departments, defined in
+section 7.1 — the two forms differ by two rows:
+
+$$\\lvert \\pi_{\\mathrm{dept\\_id}}^{\\text{bag}}(\\mathrm{emp}) \\rvert = 5, \\qquad \\lvert \\pi_{\\mathrm{dept\\_id}}^{\\text{set}}(\\mathrm{emp}) \\rvert = 3$$
+
+Both counts came out of the engine: SELECT dept_id FROM emp returns five rows,
+SELECT DISTINCT dept_id FROM emp returns three. The three are 10, 20 and NULL,
+which is the first sign that NULL is not a value like the others — DISTINCT
+treats all NULLs as one group even though the comparison NULL = NULL is not
+true. Section 10 makes that behaviour precise.
+
+## 6.3 The Key Vocabulary, Counted
+
+Section 4.1 lists the key terms; here they are as conditions you can check. Let
+$K$ be a set of attributes of $R$ and let $R^{+}$ denote the full attribute set.
+
+$$K \\text{ is a superkey} \\iff K \\rightarrow R^{+}$$
+
+$$K \\text{ is a candidate key} \\iff K \\rightarrow R^{+} \\text{ and no proper subset of } K \\text{ does}$$
+
+Superkeys are cheap: any set containing a candidate key is one. If $R$ has $n$
+attributes and $K$ is a candidate key, every superkey containing $K$ is $K$
+together with any subset of the remaining attributes, so
+
+$$\\#\\{\\text{superkeys} \\supseteq K\\} = 2^{\\,n - \\lvert K \\rvert}$$
+
+For the nine-attribute relation of section 11.3, whose only candidate key is the
+pair (sid, cid), that is $2^{9-2} = 2^{7} = 128$ superkeys containing the key —
+which is exactly why "uniquely identifies a row" is not a useful test on its
+own. Minimality is what makes a candidate key worth naming.
+
+### 6.4 Worked Example — Uniqueness in One State Is Not a Key
+
+**Given.** The table emp(emp_id, ename, dept_id, salary) holding five rows:
+(1, Ada, 10, 92000), (2, Bo, 10, 78000), (3, Cy, 20, 85000),
+(4, Di, NULL, 61000), (5, Ed, 20, NULL).
+
+**Asked.** How many of the 15 non-empty attribute subsets are unique in this
+state, and which of them may be declared a key?
+
+**Method.** A subset $A$ is unique in the current state when projecting onto
+it loses no rows, that is when
+
+$$\\lvert \\pi_{A}^{\\text{set}}(\\mathrm{emp}) \\rvert = \\lvert \\mathrm{emp} \\rvert = 5$$
+
+Each of the 15 subsets was tested by executing
+SELECT COUNT(*) FROM (SELECT DISTINCT ... FROM emp) and comparing with 5.
+
+**Result.** Fourteen of the fifteen subsets are unique. The single exception is
+{dept_id}, which collapses five rows to three. Every other subset contains
+emp_id, ename or salary, and each of those three columns happens to hold five
+distinct entries in this state.
+
+**Reading the result.** Only one of the fourteen is a key. A key is a
+constraint on *every legal state*, not an observation about one of them: two
+employees may later share a name, so {ename} fails. And {salary} is unique here
+only because SQL's DISTINCT treats the single NULL as a value of its own — a
+column that admits NULL can never be a primary key, whatever one instance
+happens to show. Of the fourteen, exactly $2^{4-1} = 8$ contain emp_id, and
+those eight are the superkeys the declared key generates.
+
+**Exam trap.** Given a small table and asked "which columns form the primary
+key", candidates that are merely unique *in the printed rows* are the
+distractors. Ask instead which uniqueness the business rules force.
+
+## 6.5 Referential Integrity Is a Containment
+
+A foreign key constraint says that the values appearing in a child column all
+appear in the parent's key column. Written as sets, with NULL excluded because
+a NULL foreign key means "not related yet" rather than "related to nothing":
+
+$$\\pi_{\\mathrm{dept\\_id}}(\\mathrm{emp}) \\setminus \\{\\mathrm{NULL}\\} \\;\\subseteq\\; \\pi_{\\mathrm{dept\\_id}}(\\mathrm{dept})$$
+
+The engine enforces this on every insert, update and delete. Inserting an
+employee in department 40 when no such department exists is refused with
+FOREIGN KEY constraint failed; inserting Di with a NULL department is accepted.
+Both outcomes were produced by running the statements.
+
+### 6.6 Worked Example — The Three Delete Actions, Counted
+
+**Given.** The same emp and dept tables, with two employees in department 10.
+Department 10 is deleted.
+
+**Asked.** How many employee rows survive under NO ACTION, CASCADE and
+SET NULL?
+
+**Method.** Three copies of the schema were built, one per declared action, and
+the same DELETE FROM dept WHERE dept_id = 10 was executed against each. The
+surviving rows were then counted.
+
+| Declared action | Result of the DELETE | Employee rows after | Rows with a NULL department |
+|---|---|---|---|
+| NO ACTION (default) | refused, error raised | 5 | 1 |
+| ON DELETE CASCADE | succeeds | **3** | 1 |
+| ON DELETE SET NULL | succeeds | 5 | **3** |
+
+**Reading the result.** CASCADE destroyed two employee records as a
+side-effect of removing one department row — the delete of a single parent row
+removed $2$ children, and in a real schema the multiplier is the number of
+descendants, not two. SET NULL kept every employee but doubled the population
+of unattached rows from one to three, which is honest but pushes the problem
+into every later query that forgets to handle NULL. NO ACTION refused, which is
+the safe default precisely because it makes the operator decide.
+
+**Exam trap.** CASCADE is often presented as the tidy option. Count what it
+deletes before choosing it.`,
+      examTip: 'A relation is a SET of tuples, so it has no duplicates and no row order; SQL tables are BAGS, so SELECT keeps duplicates until you write DISTINCT. Any ordering in a result came from ORDER BY.',
+      importantNote: 'Uniqueness observed in one instance is not a key. A key constrains every legal state, and a NULLable column can never be a primary key however unique the sample rows look.',
+    },
+    { id: 'db-algebra', title: '7. Relational Algebra and Its Image in SQL',
+      content: `## 7.1 The Running Instance
+
+Every count in sections 7 to 10 was produced by executing the statement
+against these two tables in SQLite. They are deliberately tiny so the four
+join results can be compared row by row.
+
+**dept** — three rows:
+
+| dept_id | dname |
+|---|---|
+| 10 | Power |
+| 20 | Signals |
+| 30 | Controls |
+
+**emp** — five rows:
+
+| emp_id | ename | dept_id | salary |
+|---|---|---|---|
+| 1 | Ada | 10 | 92000 |
+| 2 | Bo | 10 | 78000 |
+| 3 | Cy | 20 | 85000 |
+| 4 | Di | NULL | 61000 |
+| 5 | Ed | 20 | NULL |
+
+Two rows do the work of the whole chapter. Di has no department, so she is the
+row an inner join loses. Controls has no staff, so it is the row a left join
+loses. Ed has no salary, so he is the row the aggregates argue about.
+
+## 7.2 The Six Primitive Operators
+
+Relational algebra is closed: every operator takes relations and returns a
+relation, which is why operators compose into expressions. Six are primitive.
+
+**Selection** $\\sigma$ keeps the tuples satisfying a predicate $P$. It changes
+cardinality, never degree:
+
+$$\\sigma_{P}(R) = \\{\\, t \\in R \\;:\\; P(t) \\,\\}, \\qquad 0 \\le \\lvert \\sigma_{P}(R) \\rvert \\le \\lvert R \\rvert$$
+
+**Projection** $\\pi$ keeps a list of attributes. It changes degree, and in set
+semantics it can reduce cardinality by collapsing duplicates:
+
+$$\\pi_{A}(R) = \\{\\, t[A] \\;:\\; t \\in R \\,\\}, \\qquad \\lvert \\pi_{A}(R) \\rvert \\le \\lvert R \\rvert$$
+
+**Cartesian product** $\\times$ pairs every tuple with every tuple, adding
+degrees and multiplying cardinalities:
+
+$$\\lvert R \\times S \\rvert = \\lvert R \\rvert \\cdot \\lvert S \\rvert, \\qquad \\deg(R \\times S) = \\deg(R) + \\deg(S)$$
+
+**Union**, **difference** and **rename** complete the set. Union and difference
+require union-compatible operands — same degree, same domains in order:
+
+$$R \\cup S, \\qquad R - S, \\qquad \\rho_{b}(R)$$
+
+Intersection and join are derived rather than primitive:
+
+$$R \\cap S = R - (R - S)$$
+
+$$R \\bowtie_{\\theta} S = \\sigma_{\\theta}(R \\times S)$$
+
+That last identity is the one worth remembering, because it explains the cost
+model of section 14: a join is conceptually a product followed by a filter, and
+every join algorithm is an attempt to avoid materialising the product.
+
+## 7.3 Each Operator's SQL Image
+
+| Algebra | SQL | On the running instance | Rows |
+|---|---|---|---|
+| $\\sigma_{\\mathrm{dept\\_id} = 10}(\\mathrm{emp})$ | WHERE dept_id = 10 | the two Power staff | 2 |
+| $\\pi_{\\mathrm{dept\\_id}}(\\mathrm{emp})$ | SELECT DISTINCT dept_id | 10, 20, NULL | 3 |
+| bag projection | SELECT dept_id | one per employee | 5 |
+| $\\mathrm{emp} \\times \\mathrm{dept}$ | CROSS JOIN | every pairing | 15 |
+| $\\mathrm{emp} \\bowtie \\mathrm{dept}$ | JOIN ... ON | matched pairings | 4 |
+| $\\pi_{\\mathrm{dept\\_id}}(\\mathrm{dept}) \\cup \\pi_{\\mathrm{dept\\_id}}(\\mathrm{emp})$ | UNION | 10, 20, 30 | 3 |
+| $\\pi_{\\mathrm{dept\\_id}}(\\mathrm{dept}) \\cap \\pi_{\\mathrm{dept\\_id}}(\\mathrm{emp})$ | INTERSECT | 10, 20 | 2 |
+| $\\pi_{\\mathrm{dept\\_id}}(\\mathrm{dept}) - \\pi_{\\mathrm{dept\\_id}}(\\mathrm{emp})$ | EXCEPT | 30, the empty department | 1 |
+
+Every row of that table is an executed count, not an estimate. Notice that
+UNION returns 3 and not 6: SQL's UNION, unlike SELECT, is a *set* operator and
+removes duplicates, while UNION ALL keeps them. That asymmetry — SELECT is a
+bag, UNION is a set — is a standing source of confusion and a favourite of
+multiple-choice questions.
+
+### 7.4 Worked Example — Predicting Three Cardinalities Before Running Them
+
+**Given.** $\\lvert \\mathrm{emp} \\rvert = 5$ and $\\lvert \\mathrm{dept} \\rvert = 3$.
+
+**Asked.** The sizes of the cross product, the equijoin on dept_id, and the
+theta join emp $\\bowtie_{a.\\mathrm{salary} > b.\\mathrm{salary}}$ emp.
+
+**Method and result.**
+
+The product multiplies:
+
+$$\\lvert \\mathrm{emp} \\times \\mathrm{dept} \\rvert = 5 \\times 3 = 15$$
+
+The equijoin counts, for each department, the employees that point at it.
+Power has two, Signals has two, Controls has none, and Di points at nothing:
+
+$$\\lvert \\mathrm{emp} \\bowtie \\mathrm{dept} \\rvert = 2 + 2 + 0 = 4$$
+
+The self theta join on strict inequality pairs comparable salaries. Four of the
+five salaries are non-NULL, and a strict order over four distinct values gives
+one ordered pair per unordered pair:
+
+$$\\binom{4}{2} = \\frac{4 \\times 3}{2} = 6$$
+
+Executing all three returns 15, 4 and 6. The last one is the instructive
+prediction: Ed's NULL salary satisfies neither $>$ nor $\\le$ against anything,
+so he contributes zero pairs rather than four.
+
+**Exam trap.** A theta join on an inequality is not "about half the product".
+Here half the product would be $\\tfrac{1}{2}(5 \\times 5) = 12.5$; the answer
+is 6, because the NULL row is excluded on both sides and no row pairs with
+itself under a strict inequality.
+
+## 7.5 Why Division and Aggregation Sit Outside the Six
+
+Two things learners expect to find in the algebra are not primitive operators.
+**Aggregation** is not an algebra operator at all in the original formulation —
+it is an extension, usually written $\\gamma$, because MIN, SUM and COUNT map a
+*set* of tuples to a single value rather than a relation to a relation.
+**Division**, written $R \\div S$, answers "which tuples of $R$ are associated
+with *every* tuple of $S$", and it is derived:
+
+$$R \\div S = \\pi_{A}(R) - \\pi_{A}\\big((\\pi_{A}(R) \\times S) - R\\big)$$
+
+In SQL, division is written with a doubled NOT EXISTS, which is why questions
+of the form "students enrolled in every required course" are notoriously hard
+to write. Recognising them as division is most of the battle.`,
+      examTip: 'Learn the cardinality rules, not just the operator names: product multiplies, selection can only shrink, projection can only shrink under set semantics, and a join is a product followed by a selection.',
+      importantNote: 'SELECT keeps duplicates but UNION, INTERSECT and EXCEPT remove them. If you want a bag union you must write UNION ALL, which is also the cheaper operator because it does not have to sort or hash to deduplicate.',
+    },
+    { id: 'db-joins', title: '8. The Four Joins, Executed on One Pair of Tables',
+      content: `## 8.1 Five Results From the Same Two Tables
+
+The whole point of comparing joins on one small instance is that the row counts
+can be held in the head at once. Each of the five statements below was
+executed against the tables of section 7.1; the counts are what came back.
+
+![Bar chart of rows returned by five joins of the same five-row employee table and three-row department table: inner 4, left 5, right 5, full 6, cross 15. Annotations state that FULL equals LEFT plus RIGHT minus INNER, and that CROSS at 15 is the upper bound on every join.](/courses/fe-ee/figures/sw4-join-sizes.svg)
+
+| Join | Statement | Rows | Which rows are added or lost |
+|---|---|---|---|
+| INNER | JOIN dept ON emp.dept_id = dept.dept_id | **4** | Di and Controls both absent |
+| LEFT | LEFT JOIN | **5** | Di returns, padded with NULL department |
+| RIGHT | RIGHT JOIN | **5** | Controls returns, padded with NULL employee |
+| FULL OUTER | FULL OUTER JOIN | **6** | both padded rows present |
+| CROSS | CROSS JOIN | **15** | every pairing, matched or not |
+
+## 8.2 The Identity That Ties Them Together
+
+Let $I$, $L$, $R$ and $F$ be the four counts. An outer join is the inner join
+plus the unmatched rows of the preserved side, so
+
+$$L = I + u_{\\text{left}}, \\qquad R = I + u_{\\text{right}}$$
+
+$$F = I + u_{\\text{left}} + u_{\\text{right}} = L + R - I$$
+
+On the instance, $u_{\\text{left}} = 1$ (Di) and $u_{\\text{right}} = 1$
+(Controls), so
+
+$$F = 5 + 5 - 4 = 6$$
+
+which is what the engine returned. The identity is the fastest check on a
+multiple-choice answer: if the four numbers offered do not satisfy
+$F = L + R - I$, at least one of them is wrong. The cross product bounds them
+all from above:
+
+$$I \\le L, R \\le F \\le \\lvert \\mathrm{emp} \\rvert \\cdot \\lvert \\mathrm{dept} \\rvert = 15$$
+
+## 8.3 Equijoin, Natural Join, Theta Join, Self Join
+
+The four names describe the *predicate*, not the preservation rule, and they
+combine freely with INNER and OUTER.
+
+| Name | Predicate | On the instance |
+|---|---|---|
+| Equijoin | equality of named columns | 4 rows |
+| Natural join | implicit equality on every shared column name | 4 rows, dept_id appearing once |
+| Theta join | any comparison | 6 rows for the salary inequality of section 7.4 |
+| Self join | the table joined to itself under an alias | the same 6 rows |
+
+The natural join is a trap in production code even though it is convenient in
+exams. Its predicate is generated from whatever column names the two tables
+share, so adding a column called created_at to both tables silently changes the
+join condition and usually returns nothing at all.
+
+### 8.4 Worked Example — The Outer-Join Count That Is Off By One
+
+**Given.** Every department, with the number of employees in it. Two versions
+are written:
+
+- SELECT d.dname, COUNT(*) FROM dept d LEFT JOIN emp e ON e.dept_id = d.dept_id GROUP BY d.dname
+- SELECT d.dname, COUNT(e.emp_id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.dept_id GROUP BY d.dname
+
+**Asked.** What does each return for Controls, the department with no staff?
+
+**Result.** Executing both:
+
+| Department | COUNT(*) | COUNT(e.emp_id) | Correct |
+|---|---|---|---|
+| Controls | **1** | **0** | 0 |
+| Power | 2 | 2 | 2 |
+| Signals | 2 | 2 | 2 |
+
+**Why.** The left join emits one row for Controls, padded with NULLs on the
+employee side. COUNT(*) counts *rows*, and that padded row is a row, so it
+counts 1. COUNT(e.emp_id) counts *non-NULL values of that column*, and the
+padded row contributes a NULL, so it counts 0. Formally, for a group $g$,
+
+$$\\mathrm{COUNT}(*) = \\lvert g \\rvert, \\qquad \\mathrm{COUNT}(c) = \\lvert \\{\\, t \\in g \\;:\\; t.c \\neq \\text{NULL} \\,\\} \\rvert$$
+
+and the two differ exactly by the number of NULLs in $c$.
+
+**Exam trap.** This is the single most common outer-join error in practice, and
+it is silent: the query runs, returns a plausible-looking table, and reports
+that the empty department has one employee. Whenever a COUNT sits on the
+nullable side of an outer join, count a column from that side, never $*$.
+
+### 8.5 Worked Example — Reading a Join Back From Its Row Count
+
+**Given.** Table $A$ has 8 rows, table $B$ has 5. A query joining them returns
+40 rows.
+
+**Asked.** What can be concluded about the join?
+
+**Method.** Compare against the bounds of section 8.2:
+
+$$\\lvert A \\rvert \\cdot \\lvert B \\rvert = 8 \\times 5 = 40$$
+
+**Result.** The result equals the product exactly, so every pairing survived
+the predicate. That happens in exactly two ways: the join is a CROSS JOIN, or
+the ON condition is a tautology such as ON 1 = 1 or ON A.x = A.x. In practice
+the second is the diagnosis, and the usual cause is a missing join predicate
+after a table was added to the FROM list.
+
+**Reading the result.** The general rule is a useful sanity check on any
+result set: a many-to-one join returns at most the many side's cardinality, so
+$8$ would be the expected order of magnitude here, and $40$ signals an
+accidental product. Conversely a result of $0$ rows from an inner join usually
+means the join columns hold values from different domains — codes stored as
+text on one side and integers on the other.`,
+      examTip: 'Check any set of four join counts against F = L + R − I before trusting it, and check every one of them against the product as an upper bound.',
+      importantNote: 'On the nullable side of an outer join, COUNT(*) and COUNT(column) differ by the number of padded rows. COUNT(*) reports one employee for a department that has none.',
+    },
+    { id: 'db-grouping', title: '9. Grouping, Aggregation and Subqueries',
+      content: `## 9.1 GROUP BY Partitions, and Aggregates Collapse
+
+GROUP BY partitions the rows into equivalence classes under equality of the
+grouping columns, and each aggregate then maps one class to one value. Writing
+$G$ for the grouping attributes, the result has one row per distinct value:
+
+$$\\lvert \\gamma_{G, f}(R) \\rvert = \\lvert \\pi_{G}^{\\text{set}}(R) \\rvert$$
+
+On the running instance, GROUP BY dept_id returns three rows — 10 with two
+employees, 20 with two, and one more. That third group is NULL, holding Di
+alone. Grouping deliberately departs from the comparison rules of section 10:
+NULL = NULL is not true, yet GROUP BY places every NULL in a single group. Both
+behaviours are in the standard, and the inconsistency is a favourite exam
+question.
+
+## 9.2 The Clause Order Explains the Restrictions
+
+Section 3.1 gives the logical evaluation order. Its consequences are worth
+stating as rules rather than as a list, because each restriction the exam tests
+follows from one step happening before another:
+
+| Step | Clause | What exists after it |
+|---|---|---|
+| 1 | FROM / JOIN | the joined row set, padding already applied |
+| 2 | WHERE | rows for which the predicate is TRUE |
+| 3 | GROUP BY | groups, not rows |
+| 4 | HAVING | groups for which the predicate is TRUE |
+| 5 | SELECT | the output columns, aliases now defined |
+| 6 | ORDER BY | the ordering, applied last |
+
+WHERE cannot mention an aggregate because at step 2 no group exists yet.
+HAVING can, because at step 4 the groups do. WHERE cannot use a SELECT alias
+because aliases are created at step 5, while ORDER BY can, because it runs at
+step 6. And a filter that belongs in WHERE should never be written in HAVING:
+moving it earlier discards rows before they are grouped, which is both correct
+and cheaper.
+
+## 9.3 Subqueries: Uncorrelated Runs Once, Correlated Runs Per Row
+
+An **uncorrelated** subquery mentions no column of the outer query, so it is
+evaluated once and its value reused:
+
+$$\\text{cost} \\approx C_{\\text{outer}} + C_{\\text{inner}}$$
+
+A **correlated** subquery mentions an outer column, so in the naive execution
+it is evaluated once per candidate outer row:
+
+$$\\text{cost} \\approx C_{\\text{outer}} + \\lvert R_{\\text{outer}} \\rvert \\cdot C_{\\text{inner}}$$
+
+Modern optimisers frequently rewrite a correlated subquery into a join or a
+grouped derived table, collapsing the second form into the first. That is a
+decision the planner makes, not a guarantee, which is why an EXISTS clause over
+a large outer table is worth checking in the execution plan.
+
+### 9.4 Worked Example — Above Your Own Department's Mean
+
+**Given.** The five employees of section 7.1.
+
+**Asked.** Who earns more than the mean salary of their own department, and how
+does the answer differ from "more than the overall mean"?
+
+**Method.** The correlated form compares each row against an aggregate computed
+over the rows sharing its department:
+
+- SELECT e.ename FROM emp e WHERE e.salary > (SELECT AVG(x.salary) FROM emp x WHERE x.dept_id = e.dept_id)
+
+Computing the group means first:
+
+$$\\bar{s}_{10} = \\frac{92000 + 78000}{2} = 85000, \\qquad \\bar{s}_{20} = \\frac{85000}{1} = 85000$$
+
+The Signals mean uses one value, not two: AVG ignores Ed's NULL, so it divides
+by the count of non-NULL salaries.
+
+**Result.** Executing the query returns exactly one name, Ada. Three different
+mechanisms exclude the other four:
+
+| Employee | Comparison | Outcome |
+|---|---|---|
+| Ada | $92000 > 85000$ | TRUE, kept |
+| Bo | $78000 > 85000$ | FALSE |
+| Cy | $85000 > 85000$ | FALSE — strict inequality, and the mean equals the value |
+| Di | department is NULL, so the inner query matches no rows and AVG returns NULL | UNKNOWN |
+| Ed | salary is NULL | UNKNOWN |
+
+The uncorrelated version compares against the global mean instead:
+
+$$\\bar{s} = \\frac{316000}{4} = 79000$$
+
+and returns two names, Ada and Cy, because Cy's 85000 clears 79000 even though
+it does not clear the Signals mean of 85000. Both results came out of the
+engine.
+
+**Exam trap.** The one-name answer is not a rounding accident: an empty inner
+result makes AVG return NULL, and every comparison against NULL is UNKNOWN, so
+Di is dropped silently. Section 10 is entirely about that mechanism.`,
+      examTip: 'WHERE runs before grouping and cannot see aggregates or SELECT aliases; HAVING runs after grouping and can see aggregates. Put every non-aggregate filter in WHERE — it is both correct and cheaper.',
+      importantNote: 'GROUP BY puts all NULLs in ONE group even though NULL = NULL is never true. Grouping uses "not distinct from", not equality, and that inconsistency is deliberate in the standard.',
+    },
+    { id: 'db-null-logic', title: '10. NULL and Three-Valued Logic',
+      content: `## 10.1 NULL Is a Marker, Not a Value
+
+NULL records that a value is absent. It is not zero, not the empty string, and
+not equal to another NULL. Because a predicate involving an absent value cannot
+be settled, SQL evaluates conditions in three truth values — TRUE, FALSE and
+UNKNOWN — and the connectives extend accordingly. The two tables below were
+read straight out of the engine by evaluating SELECT 1 AND NULL and its eight
+siblings.
+
+![Two three-by-three grids showing the SQL AND and OR truth tables over TRUE, FALSE and UNKNOWN. AND returns FALSE whenever either operand is FALSE, and UNKNOWN otherwise if either is unknown. OR returns TRUE whenever either operand is TRUE, and UNKNOWN otherwise if either is unknown.](/courses/fe-ee/figures/sw4-null-logic.svg)
+
+Ordering the truth values as $\\text{FALSE} < \\text{UNKNOWN} < \\text{TRUE}$
+makes both connectives one-liners:
+
+$$a \\wedge b = \\min(a, b), \\qquad a \\vee b = \\max(a, b), \\qquad \\neg a = 1 - a$$
+
+with FALSE $= 0$, UNKNOWN $= \\tfrac{1}{2}$ and TRUE $= 1$. The absorbing cases
+survive: FALSE AND UNKNOWN is FALSE because $\\min(0, \\tfrac{1}{2}) = 0$, and
+TRUE OR UNKNOWN is TRUE because $\\max(1, \\tfrac{1}{2}) = 1$. But the law of
+the excluded middle does not survive:
+
+$$a \\vee \\neg a = \\max(\\tfrac{1}{2}, \\tfrac{1}{2}) = \\tfrac{1}{2} \\neq \\text{TRUE}$$
+
+That single failure is the source of every trap in this section.
+
+## 10.2 WHERE Keeps Only TRUE
+
+WHERE, ON and HAVING all discard both FALSE and UNKNOWN. A CHECK constraint
+does the opposite: it rejects only FALSE, so a check passes when its test is
+UNKNOWN. The asymmetry is deliberate and both halves were confirmed by
+execution — a CHECK (level > 0) column accepted a NULL level and rejected a
+zero.
+
+The consequence for WHERE is that a partition into two complementary
+predicates loses rows:
+
+$$\\lvert \\sigma_{s > 80000} \\rvert + \\lvert \\sigma_{s \\le 80000} \\rvert = 2 + 2 = 4 \\;<\\; 5 = \\lvert \\mathrm{emp} \\rvert$$
+
+Ed's NULL salary satisfies neither branch. To recover him the predicate must be
+made three-valued explicitly, with OR salary IS NULL.
+
+### 10.3 Worked Example — Why NOT IN Returned Nothing
+
+**Given.** The question "which departments have no employees?", asked three
+ways against the tables of section 7.1. Controls is the correct answer.
+
+**Asked.** What does each formulation return, and why?
+
+**Method and result.** All four statements were executed:
+
+| Formulation | Rows returned | Correct |
+|---|---|---|
+| dept_id IN (SELECT dept_id FROM emp) | Power, Signals | yes, as a positive test |
+| dept_id NOT IN (SELECT dept_id FROM emp) | **none** | **no** |
+| dept_id NOT IN (SELECT dept_id FROM emp WHERE dept_id IS NOT NULL) | Controls | yes |
+| NOT EXISTS (SELECT 1 FROM emp e WHERE e.dept_id = d.dept_id) | Controls | yes |
+
+**Why the second is empty.** NOT IN expands into a conjunction of inequalities.
+For Controls, whose dept_id is 30, and the list (10, 10, 20, NULL, 20):
+
+$$30 \\neq 10 \\;\\wedge\\; 30 \\neq 10 \\;\\wedge\\; 30 \\neq 20 \\;\\wedge\\; 30 \\neq \\text{NULL} \\;\\wedge\\; 30 \\neq 20$$
+
+The first four comparisons are TRUE; the one against NULL is UNKNOWN. By the
+minimum rule, $\\min(1, 1, 1, \\tfrac{1}{2}, 1) = \\tfrac{1}{2}$, so the whole
+conjunction is UNKNOWN, WHERE discards it, and no department qualifies. Note
+what happened: a single NULL anywhere in the subquery result makes NOT IN
+return the empty set *for every outer row*, regardless of the data.
+
+**Why IN is safe.** IN expands into a disjunction, and $\\max$ absorbs: one TRUE
+makes the whole thing TRUE whatever the NULL does. That is why the positive test
+behaves and the negative test does not.
+
+**Exam trap.** The two-line summary to memorise is: IN tolerates NULL, NOT IN
+does not. Prefer NOT EXISTS, which is two-valued because EXISTS asks only
+whether a row was produced, or write the anti-join as LEFT JOIN ... WHERE the
+right key IS NULL — that formulation also returned Controls, giving three
+independent confirmations of the same one-row answer.
+
+### 10.4 Worked Example — Which Denominator Did AVG Use?
+
+**Given.** The salary column of section 7.1: 92000, 78000, 85000, 61000 and one
+NULL.
+
+**Asked.** The values of COUNT(*), COUNT(salary), SUM(salary), AVG(salary), and
+of SUM(salary)/COUNT(*).
+
+**Method.** Every aggregate except COUNT(*) ignores NULL inputs entirely, so
+
+$$\\mathrm{SUM}(s) = 92000 + 78000 + 85000 + 61000 = 316000$$
+
+$$\\mathrm{COUNT}(*) = 5, \\qquad \\mathrm{COUNT}(s) = 4$$
+
+$$\\mathrm{AVG}(s) = \\frac{\\mathrm{SUM}(s)}{\\mathrm{COUNT}(s)} = \\frac{316000}{4} = 79000$$
+
+$$\\frac{\\mathrm{SUM}(s)}{\\mathrm{COUNT}(*)} = \\frac{316000}{5} = 63200$$
+
+**Result.** Executing all five returns 5, 4, 316000, 79000 and 63200. The gap
+between 79000 and 63200 is 15800, a 20 % error, and it comes entirely from
+disagreeing about the denominator.
+
+**Which is right?** Neither, until the question is stated. AVG answers "the mean
+salary among employees whose salary is recorded". The hand-rolled ratio answers
+"total payroll divided by headcount", which is a different and often more
+useful quantity — but only if the NULL genuinely means zero, and here it means
+unknown. Two further executed results complete the picture: SUM over an empty
+selection returns NULL rather than 0, while COUNT over an empty selection
+returns 0. A report that adds up SUMs of empty groups therefore produces NULL,
+not zero, and any arithmetic on it propagates NULL onwards.
+
+**Exam trap.** COUNT(*) is the only aggregate that counts rows. Every other one
+counts values, so all of them silently change the denominator when NULLs are
+present.
+
+## 10.5 Where Else NULL Changes the Rules
+
+| Construct | Behaviour with NULL | Executed evidence |
+|---|---|---|
+| PRIMARY KEY | NULL forbidden | inserting a NULL key part raised NOT NULL constraint failed |
+| UNIQUE | repeated NULLs allowed | two NULL codes coexisted in a UNIQUE column |
+| FOREIGN KEY | NULL allowed, meaning "unrelated" | Di was inserted with a NULL department |
+| CHECK | passes when UNKNOWN | a NULL level survived CHECK (level > 0) |
+| GROUP BY | all NULLs form one group | three groups from five rows |
+| ORDER BY | NULLs sort together, at one end | dialect-dependent placement |
+| DISTINCT | NULLs are "not distinct" from each other | three distinct dept_id values |
+
+Read down the column and one pattern emerges: constructs that *compare* treat
+NULLs as incomparable, while constructs that *collect* treat them as identical.
+UNIQUE compares, so it lets NULLs repeat; DISTINCT and GROUP BY collect, so
+they merge them. Getting that distinction straight resolves most of the
+apparent contradictions.`,
+      examTip: 'Order the truth values FALSE < UNKNOWN < TRUE and both connectives become min and max. AND with UNKNOWN is FALSE only if the other side is FALSE; OR with UNKNOWN is TRUE only if the other side is TRUE.',
+      importantNote: 'A single NULL in a NOT IN subquery makes the whole predicate UNKNOWN for every outer row, so the query returns an empty result rather than an error. Use NOT EXISTS or an anti-join instead.',
+    },
+    { id: 'db-fds', title: '11. Functional Dependencies and Finding a Key',
+      content: `## 11.1 The Definition, and Armstrong's Rules
+
+A functional dependency $X \\rightarrow Y$ asserts that any two tuples agreeing
+on $X$ must agree on $Y$:
+
+$$X \\rightarrow Y \\iff \\forall\\, t_1, t_2 \\in R : \\; t_1[X] = t_2[X] \\Rightarrow t_1[Y] = t_2[Y]$$
+
+It is a statement about every legal state, exactly like a key, and cannot be
+read off one instance — the same warning as section 6.4. Three axioms generate
+every dependency implied by a set $F$, and they are sound and complete:
+
+$$Y \\subseteq X \\;\\Rightarrow\\; X \\rightarrow Y \\qquad \\text{(reflexivity)}$$
+
+$$X \\rightarrow Y \\;\\Rightarrow\\; XZ \\rightarrow YZ \\qquad \\text{(augmentation)}$$
+
+$$X \\rightarrow Y, \\; Y \\rightarrow Z \\;\\Rightarrow\\; X \\rightarrow Z \\qquad \\text{(transitivity)}$$
+
+Three convenient consequences follow: union ($X \\rightarrow Y$ and
+$X \\rightarrow Z$ give $X \\rightarrow YZ$), decomposition (the converse), and
+pseudo-transitivity. A dependency whose right side is contained in its left is
+**trivial** and constrains nothing.
+
+## 11.2 Attribute Closure Is the Only Algorithm You Need
+
+The closure $X^{+}$ is everything $X$ determines. Compute it by repeatedly
+applying any dependency whose left side is already inside:
+
+$$X^{+} \\leftarrow X; \\quad \\text{repeat: if } (V \\rightarrow W) \\in F \\text{ and } V \\subseteq X^{+} \\text{ then } X^{+} \\leftarrow X^{+} \\cup W$$
+
+Two questions reduce to closure. Does $F$ imply $X \\rightarrow Y$? Yes exactly
+when $Y \\subseteq X^{+}$. Is $X$ a superkey? Yes exactly when
+$X^{+} = R^{+}$, the whole attribute set.
+
+### 11.3 Worked Example — Finding the Key of the Enrolment Report
+
+**Given.** REPORT(sid, sname, aid, aname, aoffice, cid, ctitle, credits, grade)
+with the business rules
+
+$$\\mathrm{sid} \\rightarrow \\mathrm{sname}, \\mathrm{aid}$$
+
+$$\\mathrm{aid} \\rightarrow \\mathrm{aname}, \\mathrm{aoffice}$$
+
+$$\\mathrm{cid} \\rightarrow \\mathrm{ctitle}, \\mathrm{credits}$$
+
+$$\\mathrm{sid}, \\mathrm{cid} \\rightarrow \\mathrm{grade}$$
+
+**Asked.** The candidate keys.
+
+**Method.** Take closures. Starting from the single attributes:
+
+| $X$ | $X^{+}$ | Size | Superkey? |
+|---|---|---|---|
+| sid | sid, sname, aid, aname, aoffice | 5 | no |
+| cid | cid, ctitle, credits | 3 | no |
+| aid | aid, aname, aoffice | 3 | no |
+| sid, cid | all nine attributes | **9** | **yes** |
+
+The pair reaches everything: sid brings sname and aid, aid then brings aname
+and aoffice, cid brings ctitle and credits, and the pair itself brings grade.
+
+**Minimality.** Neither half alone is a superkey — sid stops at 5 attributes,
+cid at 3 — so {sid, cid} is minimal and therefore a candidate key.
+
+**Uniqueness of the key.** No attribute outside {sid, cid} appears on the left
+of any dependency, so no other set can determine sid or cid, and there is no
+second candidate key. An exhaustive search over all 511 non-empty attribute
+subsets, run as a program rather than by hand, confirms exactly one candidate
+key.
+
+**Consequences.** Every attribute except sid and cid is non-prime, so
+$2^{9-2} = 128$ supersets of the key are superkeys, and the relation is ripe
+for the 2NF and 3NF violations that section 12 removes.
+
+### 11.4 Worked Example — Two Overlapping Candidate Keys
+
+**Given.** ADVISES(sid, area, faculty) with the rules that a student has one
+adviser per area, and each member of faculty covers exactly one area:
+
+$$\\mathrm{sid}, \\mathrm{area} \\rightarrow \\mathrm{faculty}, \\qquad \\mathrm{faculty} \\rightarrow \\mathrm{area}$$
+
+**Asked.** The candidate keys, and whether any attribute is non-prime.
+
+**Method.** Closures again:
+
+$$\\{\\mathrm{sid}, \\mathrm{area}\\}^{+} = \\{\\mathrm{sid}, \\mathrm{area}, \\mathrm{faculty}\\}, \\qquad \\{\\mathrm{sid}, \\mathrm{faculty}\\}^{+} = \\{\\mathrm{sid}, \\mathrm{faculty}, \\mathrm{area}\\}$$
+
+**Result.** Both pairs are superkeys and both are minimal, so there are two
+candidate keys, {sid, area} and {sid, faculty}. They overlap in sid. Since
+every one of the three attributes belongs to some candidate key, all three are
+prime and there are no non-prime attributes at all.
+
+**Reading the result.** That is precisely the configuration in which a relation
+satisfies 3NF and violates BCNF, because 3NF excuses a dependency whose right
+side is prime. Section 12.6 works the consequences through on this relation,
+and section 5.3 states the general rule.
+
+**Exam trap.** Candidate keys are not required to be disjoint, and a relation
+may have several. Finding one and stopping is the usual mistake; check every
+minimal set whose closure is complete.
+
+## 11.5 Canonical Cover, in One Paragraph
+
+A **canonical cover** $F_c$ is a minimal set of dependencies equivalent to $F$:
+every right side is a single attribute, no left side contains an extraneous
+attribute, and no dependency is implied by the rest. It is built by splitting
+right sides, then testing each attribute of each left side for extraneousness
+with a closure computation, then deleting redundant dependencies. The cover
+matters because the standard 3NF synthesis algorithm builds one relation per
+dependency in $F_c$, so a smaller cover yields a smaller schema.`,
+      examTip: 'Attribute closure answers both exam questions about dependencies: X → Y holds exactly when Y is inside X-plus, and X is a superkey exactly when X-plus is everything.',
+      importantNote: 'A functional dependency is a rule about all legal states. You cannot read one off a sample of rows — you can only refute one, by finding two rows that agree on the left and disagree on the right.',
+    },
+    { id: 'db-normalisation', title: '12. Normalisation, Anomaly by Anomaly, on One Instance',
+      content: `## 12.1 The Instance That Runs Through Every Form
+
+Three students, two advisers, three courses, six enrolments. Every count below
+was produced by building the schema in SQLite, running the statement, and
+reading the result.
+
+| Student | Adviser | Office | Courses taken |
+|---|---|---|---|
+| Ada | Ohm | E-204 | EE201, EE310 |
+| Bo | Ohm | E-204 | EE201, EE350 |
+| Cy | Hertz | E-310 | EE310, EE350 |
+
+![Two stacked bar panels sharing an x-axis of UNF, 1NF, 2NF and 3NF. The upper panel counts stored values: 18, 54, 42, 42. The lower panel counts copies of the office string E-204: 2, 4, 2, 1. The unnormalised table is the smallest and the third normal form stores the office exactly once.](/courses/fe-ee/figures/sw4-normal-forms.svg)
+
+The upper panel carries a lesson that is easy to miss. **The unnormalised table
+is the smallest**, at 18 stored values against 42 for the third normal form.
+Normalisation is not a compression technique; it buys queryability and freedom
+from anomalies, and on small instances it costs space rather than saving it.
+
+## 12.2 Unnormalised to 1NF: Atomic Values
+
+The unnormalised table packs the course list into one cell, so it has three
+rows and $3 \\times 6 = 18$ values. Three things go wrong at once, and all
+three were demonstrated by execution:
+
+- **Searching is a scan, not a lookup.** The only available test is a LIKE with
+  a leading wildcard, which no B-tree index can serve (section 14.7).
+- **It over-matches.** Searching for the non-existent code EE35 returned two
+  rows, because EE35 is a substring of EE350.
+- **Counting needs string surgery.** Getting the six enrolments out required
+  counting commas: $\\text{enrolments} = \\text{commas} + 1$ summed over rows,
+  which returned 6.
+
+First normal form requires every cell to hold a single atomic value from its
+domain, which is just the requirement that the table be a relation at all under
+the definition of section 6.1. Splitting the list gives one row per enrolment:
+six rows of nine columns, $6 \\times 9 = 54$ stored values, with primary key
+(sid, cid).
+
+## 12.3 The Three Anomalies, Each Executed
+
+The 1NF table is a legal relation and still unusable, because the key is
+composite and most columns do not depend on the whole of it. The classical
+three anomalies were each triggered against it:
+
+**Insertion.** Adding a course nobody has enrolled in requires a row with no
+student, so sid must be NULL — and sid is part of the primary key. The engine
+answered NOT NULL constraint failed. A fact about a course cannot be recorded
+until somebody enrols.
+
+**Deletion.** Deleting the two EE350 enrolments removed the last rows mentioning
+EE350, and a follow-up query for its title returned 0 rows. The course's title
+and credit count were collateral damage.
+
+**Update.** Changing Ada's adviser office in her rows only, then asking for the
+distinct offices of adviser 7, returned **two** rows: B-12 and E-204. One
+adviser now has two offices on file, and nothing in the schema forbids it.
+
+The update anomaly is the one to reason about quantitatively. The office E-204
+is stored four times, once per enrolment of Ohm's two students, so a correct
+office change is a four-row update and a partial one is a corrupted database.
+In general the copy count is
+
+$$\\#\\text{copies of an adviser's office} = \\sum_{\\text{students of that adviser}} \\#\\text{enrolments}$$
+
+which grows with enrolment while the fact itself does not.
+
+## 12.4 2NF Removes Partial Dependencies
+
+Second normal form: 1NF, and no non-prime attribute depends on a proper subset
+of a candidate key. With key {sid, cid} there are two offending groups —
+{sname, aid, aname, aoffice} depend on sid alone and {ctitle, credits} on cid
+alone. Splitting them out:
+
+$$\\mathrm{STUDENT}(\\underline{\\mathrm{sid}}, \\mathrm{sname}, \\mathrm{aid}, \\mathrm{aname}, \\mathrm{aoffice})$$
+
+$$\\mathrm{COURSE}(\\underline{\\mathrm{cid}}, \\mathrm{ctitle}, \\mathrm{credits})$$
+
+$$\\mathrm{ENROL}(\\underline{\\mathrm{sid}, \\mathrm{cid}}, \\mathrm{grade})$$
+
+That is $3 \\times 5 + 3 \\times 3 + 6 \\times 3 = 42$ stored values, and the
+office copy count falls from 4 to 2 — one per student of that adviser, no
+longer one per enrolment.
+
+**Where 2NF cannot apply.** A relation whose primary key is a single attribute
+has no proper non-empty subset of the key to depend on, so it is in 2NF
+automatically. Check for a composite key first; if there is none, skip straight
+to 3NF.
+
+## 12.5 3NF Removes Transitive Dependencies
+
+Third normal form: 2NF, and no non-prime attribute depends on another non-prime
+attribute. Inside STUDENT, sid determines aid and aid determines aname and
+aoffice, so those two travel through a non-key attribute:
+
+$$\\mathrm{sid} \\rightarrow \\mathrm{aid} \\rightarrow \\mathrm{aoffice}$$
+
+Splitting on the middle term:
+
+$$\\mathrm{STUDENT}(\\underline{\\mathrm{sid}}, \\mathrm{sname}, \\mathrm{aid}), \\qquad \\mathrm{ADVISER}(\\underline{\\mathrm{aid}}, \\mathrm{aname}, \\mathrm{aoffice})$$
+
+The stored-value count is unchanged at
+$3 \\times 3 + 2 \\times 3 + 3 \\times 3 + 6 \\times 3 = 42$, which is worth
+dwelling on: **3NF bought no space here at all**. What it bought is the copy
+count, which fell from 2 to 1. The office now exists in exactly one row, so the
+update anomaly is not merely unlikely, it is unrepresentable. Rerunning the
+same three statements against the 3NF schema confirmed it:
+
+| Statement | 1NF result | 3NF result |
+|---|---|---|
+| Insert a course with no students | rejected, NOT NULL constraint failed | accepted |
+| Delete all EE350 enrolments, then look for the course | title lost, 0 rows | course intact, 1 row |
+| Change the office in some rows, then count distinct offices | 2 offices on file | 1 office on file |
+| Insert an enrolment for a non-existent student | silently accepted | rejected, FOREIGN KEY constraint failed |
+
+The last row is a bonus that comes with the split rather than from the normal
+form: once students live in their own table, the enrolment's sid can be
+declared a foreign key, and the engine starts enforcing a rule that the flat
+table could only hope for.
+
+**The decomposition is lossless.** Joining the four tables back together and
+comparing with the original returned exactly the six original rows, attribute
+for attribute. That is the property a decomposition must have: for
+$R = R_1 \\cup R_2$, the join is lossless when the shared attributes form a key
+of at least one part,
+
+$$R_1 \\cap R_2 \\rightarrow R_1 \\quad \\text{or} \\quad R_1 \\cap R_2 \\rightarrow R_2$$
+
+Each split above shares exactly the primary key of the extracted table, so each
+qualifies.
+
+### 12.6 Worked Example — 3NF Holds, BCNF Fails, and What the Fix Costs
+
+**Given.** ADVISES(sid, area, faculty) from section 11.4, with candidate keys
+{sid, area} and {sid, faculty}, and the dependency
+$\\mathrm{faculty} \\rightarrow \\mathrm{area}$.
+
+**Asked.** Which forms hold, what anomaly survives, and what the BCNF
+decomposition gives up.
+
+**Step 1 — 3NF holds.** The only non-trivial non-key dependency is
+faculty → area, and area is prime, belonging to the candidate key {sid, area}.
+3NF explicitly permits a dependency whose right side is prime, so the relation
+is in 3NF.
+
+**Step 2 — BCNF fails.** BCNF asks that every determinant be a superkey.
+$\\{\\mathrm{faculty}\\}^{+} = \\{\\mathrm{faculty}, \\mathrm{area}\\}$, which is
+not the whole relation, so faculty is not a superkey and the relation is not in
+BCNF.
+
+**Step 3 — the surviving anomaly, executed.** Loading three rows — Ada and Bo
+both advised by Ohm in Power, Cy by Hertz in Signals — stores the fact "Ohm
+covers Power" twice. Changing the area on Ada's row alone and then asking for
+Ohm's distinct areas returned **two** rows, Machines and Power. A rule the
+business states as absolute has been broken by a single-row update.
+
+**Step 4 — the decomposition.** Split on the determinant:
+
+$$\\mathrm{TEACHES}(\\underline{\\mathrm{faculty}}, \\mathrm{area}), \\qquad \\mathrm{TAKES}(\\underline{\\mathrm{sid}, \\mathrm{faculty}})$$
+
+Now faculty is the primary key of TEACHES, so the fact is stored once — a
+second row for Ohm was rejected outright by the engine — and the anomaly is
+gone.
+
+**Step 5 — the price.** The dependency
+$\\{\\mathrm{sid}, \\mathrm{area}\\} \\rightarrow \\mathrm{faculty}$ spans both
+tables and can no longer be enforced by a constraint on either one. Inserting a
+second Power lecturer, Volta, and enrolling Ada with Volta was accepted by both
+tables; a query joining them then reported that Ada has **2** advisers in
+Power, which the original single table could never have represented.
+
+**Reading the result.** BCNF is always achievable and sometimes not
+dependency-preserving; 3NF is always achievable *and* always
+dependency-preserving, but may leave redundancy. That is the trade, and it is
+the reason 3NF remains the working target in practice while BCNF is the
+theoretical ideal.
+
+| Property | 3NF | BCNF |
+|---|---|---|
+| Lossless decomposition always possible | yes | yes |
+| Dependency preservation always possible | **yes** | **no** |
+| Redundancy fully removed | not always | yes |
+
+## 12.7 Beyond BCNF, Briefly
+
+Fourth normal form addresses **multivalued dependencies**: two independent
+repeating facts about the same key, such as a lecturer's courses and their
+qualifications, which in one table produce a Cartesian product of rows. Fifth
+normal form addresses join dependencies that only a three-way split removes.
+Both are rare in exam scope; recognising that 4NF is about *independent*
+multi-valued facts is normally enough.`,
+      examTip: 'Work the forms in order and name the offending dependency each time: 1NF atomic values, 2NF no dependency on part of a composite key, 3NF no dependency on a non-key attribute, BCNF every determinant a superkey.',
+      importantNote: 'Normalisation does not shrink the database. On the worked instance the unnormalised table stores 18 values and the 3NF schema stores 42. What normalisation removes is the possibility of two rows disagreeing about the same fact.',
+    },
+    { id: 'db-denorm-priced', title: '13. Denormalisation as a Priced Trade',
+      content: `## 13.1 Two Cost Functions, One Crossover
+
+Section 5.4 says to denormalise only against a measured bottleneck. This
+section puts a number on "measured". Take one field — an adviser's office —
+and copy it onto every enrolment row. A larger instance was built to make the
+duplication realistic: 400 students, 10 advisers, six enrolments each, giving
+2,400 rows, of which 240 carry any one adviser's office. Both counts came out
+of the engine.
+
+Let $p$ be the fraction of operations that are reads. With $R$ for the cost of
+a read and $W$ for the cost of a write, the mean cost per operation is
+
+$$C(p) = p\\,R + (1 - p)\\,W$$
+
+The normalised schema pays for joins on read and nothing extra on write; the
+denormalised one pays nothing on read and updates every copy on write. Using
+the page counts of section 14, where a lookup through a three-level index costs
+four page reads:
+
+$$R_{\\text{norm}} = 1 + 3 \\times 4 = 13, \\qquad R_{\\text{denorm}} = 1$$
+
+$$W_{\\text{norm}} = 1, \\qquad W_{\\text{denorm}} = 1 + 240 = 241$$
+
+![Two cost curves against the share of operations that are reads, on a logarithmic cost axis. The normalised curve rises gently from 1 to 13 pages per operation; the denormalised curve falls steeply from 241 to 1. They cross at 95.24 per cent reads, marked with a dotted line.](/courses/fe-ee/figures/sw4-denorm-tradeoff.svg)
+
+### 13.2 Worked Example — The Break-Even Read Fraction
+
+**Given.** The four costs above.
+
+**Asked.** Above what read fraction does denormalising pay?
+
+**Method.** Set the two cost functions equal and solve for $p$:
+
+$$p\\,R_{n} + (1-p)\\,W_{n} = p\\,R_{d} + (1-p)\\,W_{d}$$
+
+$$p\\,(R_{n} - R_{d}) = (1-p)\\,(W_{d} - W_{n})$$
+
+$$p^{*} = \\frac{W_{d} - W_{n}}{(R_{n} - R_{d}) + (W_{d} - W_{n})}$$
+
+**Result.** Substituting:
+
+$$p^{*} = \\frac{241 - 1}{(13 - 1) + (241 - 1)} = \\frac{240}{252} = 0.95238$$
+
+so denormalising pays only above **95.24 %** reads. The algebraic answer was
+checked independently by evaluating both cost functions on a grid of 100,001
+values of $p$ and locating the crossing numerically; the two agree to five
+decimal places.
+
+**Reading the result.** The break-even is high because the duplication factor
+is high. Rearranged, the rule is that duplication of $k$ copies needs
+
+$$\\frac{1 - p^{*}}{p^{*}} = \\frac{R_{n} - R_{d}}{k}$$
+
+so the tolerable write share falls as $1/k$: at 24 copies rather than 240 the
+break-even drops to about 66.7 %, and at 2 copies it is 14.3 %. Count the
+copies before arguing about the design.
+
+## 13.3 The Cost That Does Not Appear in the Model
+
+The model prices pages, and pages are the easy part. The expensive failure is
+correctness. On the denormalised instance, one deliberately partial update —
+touching only the rows with cid below 3 — was executed, and the follow-up query
+found **2** distinct offices for one adviser, with **120** rows left stale. The
+schema itself cannot object, because there is no constraint that could express
+"these 240 copies must agree".
+
+| Denormalisation form | What it buys | What must now be maintained by hand |
+|---|---|---|
+| Duplicated column | one fewer join per read | every copy on every update |
+| Pre-aggregated total | no scan of the detail rows | the total on every detail change |
+| Materialised view | arbitrary joins precomputed | a refresh policy and its staleness window |
+| Repeating group in one row | no junction table | atomicity, and every query that reads it |
+
+The rule that follows is procedural rather than numeric: normalise first,
+measure, denormalise the one thing the measurement blames, and write down how
+the copies are kept in step. Every entry in the right-hand column is code that
+must be written, tested and maintained, and it does not appear in any page
+count.`,
+      examTip: 'Denormalisation is a read-write trade with a computable break-even. Equate the two cost functions and solve for the read fraction; the answer scales as 1/k in the number of duplicated copies.',
+      importantNote: 'The page-count model understates the cost. A duplicated field has no constraint that can enforce agreement, so a partial update leaves the database with two answers and no error.',
+    },
+    { id: 'db-indexing', title: '14. Indexing: Heights Counted, Not Quoted',
+      content: `## 14.1 Where the Fan-Out Comes From
+
+An index page is a disk page, so the fan-out is a division. On an 8 KB page of
+8,192 bytes, an internal B-tree entry holding a key and a child pointer at
+about 80 bytes gives
+
+$$b = 8192/80 = 102.4 \\;\\Rightarrow\\; 102 \\text{ children per node}$$
+
+which is the "roughly 100" used in the table of section 4.3. The same page
+holding 100-byte *table rows* gives
+
+$$8192/100 = 81.92 \\;\\Rightarrow\\; 81 \\text{ rows per page}$$
+
+which is where the 81 rows per page in that table's last column comes from. The
+two numbers are different because they measure different things: index entries
+are narrow, table rows are wide, and confusing them is the usual reason a
+hand-computed index height comes out wrong.
+
+## 14.2 The Height Is a Staircase, and It Was Counted
+
+The claim "an index lookup costs $O(\\log N)$" is true and almost useless,
+because what a reader needs is the small integer. That integer was obtained by
+building real B+-trees — nodes, children, keys — bulk-loading them with $N$
+sorted keys, then descending from the root to the leaf and counting the nodes
+touched. Leaf capacity is 100 entries and internal fan-out is 100 children, the
+value computed in section 14.1 rounded down to a round number.
+
+![Step plot of nodes visited per lookup against the number of rows indexed, on a logarithmic row axis. The counted curve is a staircase at 1, 2, 3 and 4 visits with risers at 100, 10,000 and 1,000,000 rows; a dashed smooth curve, one plus the base-100 logarithm of N over 100, passes through the corners.](/courses/fe-ee/figures/sw4-btree-visits.svg)
+
+Packing bottom-up, the number of leaves is $\\lceil N/L \\rceil$ for leaf
+capacity $L$, and each level above divides by the fan-out $b$ until one node
+remains. That gives the level count directly:
+
+$$h(N) = 1 + \\left\\lceil \\log_{b} \\left\\lceil \\frac{N}{L} \\right\\rceil \\right\\rceil \\quad (N > L), \\qquad h(N) = 1 \\quad (N \\le L)$$
+
+### 14.3 Worked Example — Node Visits at Seven Table Sizes
+
+**Given.** $L = b = 100$.
+
+**Asked.** The nodes visited per lookup, and whether the formula matches the
+built tree.
+
+**Method.** For each $N$ a tree was built and a key was actually looked up; the
+descent counted its own node visits. As a control, 37 further keys spread
+across each tree were also looked up, and every one of them cost the same
+number of visits — the tree is perfectly balanced, so there is no best case to
+hope for and no worst case to fear.
+
+| $N$ | Leaves $\\lceil N/L \\rceil$ | Levels above the leaves | **Nodes visited, counted** |
+|---|---|---|---|
+| 1 | 1 | 0 | **1** |
+| 100 | 1 | 0 | **1** |
+| 101 | 2 | 1 | **2** |
+| 1,000 | 10 | 1 | **2** |
+| 10,000 | 100 | 1 | **2** |
+| 10,001 | 101 | 2 | **3** |
+| 1,000,000 | 10,000 | 2 | **3** |
+
+**Reading the result.** Three observations matter more than the numbers. The
+cost is a **staircase**: three visits cover every table from 10,001 rows to a
+million, so a hundredfold growth in data costs nothing at all. The riser sits
+where the leaf count crosses a power of the fan-out, not where $N$ does — the
+step to 3 happens at 10,001 rows, one row past $100 \\times L$. And the smooth
+logarithm is not the answer: $\\log_{100} 1 = 0$, yet the tree with one row
+still has a node to read.
+
+**Adding the table fetch.** A non-covering index gives a row pointer, so the
+row itself is one more page. That is why section 4.3 lists 4 pages read for a
+million rows against a height of 3: three index pages, one heap page.
+
+## 14.4 A Real Index Is Not Full
+
+The staircase above assumes a perfectly packed tree, which is what CREATE INDEX
+builds. An index that grows by insertion splits full nodes in half, so nodes
+sit between half full and full. Inserting 200,000 keys in random order into a
+tree with capacity 100 and walking the result gave:
+
+| Quantity | Packed | After random insertion |
+|---|---|---|
+| Leaf nodes | 2,000 | **2,883** |
+| Internal nodes | 21 | 35 |
+| Mean leaf occupancy | 100 % | **69.4 %** |
+
+The measured occupancy of 0.694 sits on the classical value $\\ln 2 = 0.6931$,
+which is the limiting mean fill of a B-tree grown by random insertions. The
+practical consequence is the inflation factor:
+
+$$\\frac{2883}{2000} = 1.4415$$
+
+An index built by insertion occupies about **44 %** more space than the same
+index rebuilt from scratch, which is the entire argument for periodically
+rebuilding or reorganising a heavily updated index. The height is unaffected —
+both trees are three levels here — so the cost is space and cache footprint,
+not extra visits.
+
+## 14.5 When a Scan Beats the Index
+
+An index is not free to use. A non-covering index lookup reads $h$ index pages
+and then one heap page per matching row, and those heap reads are random. For
+$k$ matching rows uniformly spread over $P$ heap pages, the expected number of
+*distinct* pages touched is
+
+$$E[\\text{pages}] = P\\left(1 - \\left(1 - \\frac{1}{P}\\right)^{k}\\right)$$
+
+That expectation was confirmed by sampling: drawing $k$ page numbers at random,
+400 times over, and averaging the distinct count reproduced the formula to
+within 0.03 % at $k = 100$, $1{,}000$ and $10{,}000$.
+
+![Log-log plot of cost against selectivity for a million-row table of 12,346 pages. The index cost rises from about 15 to a plateau near 50,000 sequential-page equivalents while the full scan is flat at 12,346; a dotted line marks the crossover at 0.355 per cent selectivity.](/courses/fe-ee/figures/sw4-index-crossover.svg)
+
+### 14.6 Worked Example — The Selectivity at Which the Index Loses
+
+**Given.** $N = 10^{6}$ rows at 81 rows per page, so
+
+$$P = \\lceil 10^{6}/81 \\rceil = 12346 \\text{ pages}$$
+
+an index of $h = 3$ levels, and a random page read costing $w = 4$ sequential
+page reads.
+
+**Asked.** The selectivity $s$ at which the index stops paying.
+
+**Method.** Equate the two costs, with $k = sN$ matching rows:
+
+$$w\\left(h + P\\left(1 - \\left(1 - \\tfrac{1}{P}\\right)^{sN}\\right)\\right) = P$$
+
+**Result.** Solving numerically by bisection gives
+
+$$s^{*} = 0.0035476 \\;\\Rightarrow\\; 0.355 \\%, \\qquad k^{*} = s^{*}N = 3548 \\text{ rows}$$
+
+A simpler model that ignores page sharing — charging one page per matching row
+— gives
+
+$$s^{*}_{\\text{naive}} = \\frac{P/w - h}{N} = \\frac{12346/4 - 3}{10^{6}} = 0.00308$$
+
+or 0.308 %. The two differ by 13 %, which is the useful takeaway: the
+crossover is **a fraction of one percent**, not "a few percent". Anything
+returning more than roughly one row in three hundred is better read by scanning.
+
+**Exam trap.** The intuition that "an index always helps" is wrong in the
+direction that matters. Section 4.4's boolean-flag row is the extreme case: at
+50 % selectivity the index costs about four times the scan.
+
+## 14.7 What an Index Cannot Serve At All
+
+| Predicate | Usable? | Why |
+|---|---|---|
+| col = value, col BETWEEN a AND b | yes | a contiguous range of the sorted keys |
+| col LIKE 'abc%' | yes | a prefix is a range |
+| col LIKE '%abc' | **no** | the leading wildcard fixes no prefix |
+| UPPER(col) = 'ABC' | **no** | the index stores col, not the function of it |
+| col + 0 = 7 | **no** | same reason; rewrite as col = 7 |
+| col <> value | usually no | the complement of a range is most of the table |
+| col IS NULL | dialect-dependent | some engines omit NULLs from the index entirely |
+
+The pattern is one rule: an index answers questions about a **prefix of the
+stored sort order**. Anything that transforms the column, or that fails to fix
+a leading portion of it, forces a scan of the index or of the table.
+
+## 14.8 Composite Indexes and the Leftmost-Prefix Rule
+
+A composite index on $(a, b)$ sorts by $a$, and within equal $a$ by $b$. To
+measure what that costs, a 100,000-row index was built with 200 distinct values
+of $a$ and 50 of $b$, so each $a$ covers 500 entries, each $b$ covers 2,000 and
+each pair covers 10. Four query shapes were run against it, counting the index
+entries actually examined.
+
+![Grouped bar chart on a logarithmic axis comparing index entries examined with entries matched for four query shapes. With both columns bound, 500 examined and 10 matched. With only the first column bound, 500 and 500. With only the second column bound against an index ordered a then b, 100,000 examined for 2,000 matched. Against an index ordered b then a, 2,000 and 2,000.](/courses/fe-ee/figures/sw4-prefix-rule.svg)
+
+### 14.9 Worked Example — Choosing the Column Order
+
+**Given.** The index above and the four shapes.
+
+**Asked.** Which shapes the index serves, and what column order to choose.
+
+**Result.** The measured counts:
+
+| Query | Entries examined | Entries matched | Waste factor |
+|---|---|---|---|
+| a = 7 AND b = 3 | 500 | 10 | 50 |
+| a = 7 | 500 | 500 | 1 |
+| b = 3, index on (a, b) | **100,000** | 2,000 | **50** |
+| b = 3, index on (b, a) | 2,000 | 2,000 | 1 |
+
+**Reading the result.** Binding only the trailing column is the failure case:
+with no constraint on $a$ there is no contiguous range to seek to, so the whole
+index is read — all 100,000 entries to find 2,000. Reordering the index to
+$(b, a)$ turns the same query into a 2,000-entry range scan, a saving of a
+factor of 50.
+
+The first row is more subtle. Both columns are bound, yet 500 entries are
+examined for 10 matches. That is because the model here seeks on $a$ and filters
+on $b$; an engine that can seek on the full composite key touches only the 10.
+The distinction shows up in execution plans as an index *seek* against an index
+*range scan with a residual predicate*.
+
+**The rule.** Order the columns so that the ones tested for equality come
+first, most selective first among those, and put range-tested columns last —
+because a range on the first column ends the usable prefix for everything after
+it. A single index on $(a, b)$ serves queries on $a$ and on $(a, b)$, so it
+also makes a separate index on $a$ alone redundant. It does nothing for $b$.
+
+**Exam trap.** "Add an index on every column in the WHERE clause" is the wrong
+answer twice over: separate single-column indexes cannot in general be combined
+as cheaply as one composite, and each of them slows every write.`,
+      examTip: 'Compute the height from the leaf count, not from N: levels = 1 + ceil(log_b(ceil(N/L))). Then add one page for the table row unless the index covers the query.',
+      importantNote: 'The leftmost-prefix rule is the whole of composite indexing. An index on (a, b) serves a and (a, b) and does nothing for b alone — measured here as 100,000 entries examined instead of 2,000.',
+    },
+    { id: 'db-transactions-measured', title: '15. Transactions, Isolation and Deadlock, Measured',
+      content: `## 15.1 Atomicity Is Not a Slogan
+
+Section 2.2 names the ACID properties; this section demonstrates the first two.
+An account table was built with a CHECK (balance >= 0) constraint and two rows,
+A holding 100 and B holding 200, so the invariant is
+
+$$\\sum_{\\text{accounts}} \\mathrm{balance} = 100 + 200 = 300$$
+
+A transfer of 250 from A to B was then attempted inside a transaction. The
+first UPDATE violates the CHECK, the engine raises an error, and the
+transaction is rolled back. Re-reading the table afterwards returned A = 100
+and a total of 300: not one of the statements survived. A subsequent transfer
+of 50 committed cleanly, giving A = 50, B = 250 and a total that is still 300.
+
+That pair of results is the operational content of two letters. **Atomicity**
+is that the failed transfer left *no* trace, not a half-completed one.
+**Consistency** is that the declared constraint held before and after both
+transactions; the engine achieved it by refusing to commit a state that would
+have broken it.
+
+## 15.2 The Anomaly Table, Read as a Staircase
+
+Section 5.1 defines the three read anomalies and 5.2 gives the level table.
+Drawn as a grid, the staircase shape is the memorable part:
+
+![Four-by-three grid of isolation levels against anomalies. Read uncommitted permits all three; read committed blocks dirty reads; repeatable read blocks dirty and non-repeatable reads; serializable blocks all three.](/courses/fe-ee/figures/sw4-isolation-anomalies.svg)
+
+The count of permitted anomalies falls by exactly one per level, 3, 2, 1, 0,
+and nothing else about the table needs memorising. What each level costs is the
+other half:
+
+| Level | Read locks | Write locks | Typical use |
+|---|---|---|---|
+| READ UNCOMMITTED | none | held to commit | analytics that tolerate garbage |
+| READ COMMITTED | released at once | held to commit | the common default |
+| REPEATABLE READ | held to commit | held to commit | reports needing a stable snapshot |
+| SERIALIZABLE | held to commit, plus range locks | held to commit | money, inventory, anything counted |
+
+The extra guarantee at SERIALIZABLE is the range lock, and it exists precisely
+to stop phantoms: a phantom is a *new row entering a range*, so no lock on any
+existing row can prevent it.
+
+**Two-phase locking** is what makes serialisability provable. A transaction
+acquires locks in a growing phase and releases in a shrinking phase, never
+acquiring after its first release. Under 2PL there is a point — the lock point,
+where the last lock is taken — and ordering transactions by their lock points
+gives a serial schedule equivalent to the concurrent one.
+
+## 15.3 Deadlock, Simulated and Counted
+
+2PL buys serialisability and sells deadlock. To put a number on it, a simulator
+was written: each of $T$ transactions picks two of six rows, locks the first,
+and then all of them request their second simultaneously. A deadlock is a cycle
+in the resulting wait-for graph, detected by an actual cycle search rather than
+assumed.
+
+![Deadlock rate against the number of concurrent transactions, each locking two of six rows. Under arbitrary ordering the rate rises from 3.4 per cent at two transactions to 8.7 per cent at four and falls to 1.6 per cent at six; under ascending-key ordering it is zero at every point.](/courses/fe-ee/figures/sw4-deadlock-rate.svg)
+
+### 15.4 Worked Example — The Two-Transaction Deadlock Rate
+
+**Given.** Two transactions, six rows, each transaction locking two distinct
+rows in a random order.
+
+**Asked.** The probability of deadlock, by argument and by measurement.
+
+**Method — closed form.** A cycle of length two needs each transaction to be
+waiting for the other, which happens only if they chose the *same* pair of rows
+in *opposite* orders. The number of unordered pairs is
+
+$$\\binom{6}{2} = \\frac{6 \\times 5}{2} = 15$$
+
+so the second transaction picks the same pair with probability $1/15$, and
+given that, it picks the opposite order with probability $1/2$:
+
+$$\\Pr[\\text{deadlock}] = \\frac{1}{2 \\times 15} = \\frac{1}{30} = 0.03333$$
+
+**Method — measurement.** Running the simulator 200,000 times gave 0.032835,
+which is 1.2 standard errors from the closed form — a binomial proportion at
+this rate has standard error
+
+$$\\sigma = \\sqrt{\\frac{p(1-p)}{n}} = \\sqrt{\\frac{0.03333 \\times 0.96667}{200000}} = 0.000401$$
+
+**Result and reading.** The two routes agree. Extending the simulation to more
+transactions gives a rate that rises and then falls — 3.4 %, 7.8 %, 8.7 %,
+5.6 %, 1.6 % for two through six transactions on six rows, each from its own
+40,000-run sample, which is why the two-transaction entry reads 3.4 % against
+the 3.28 % of the 200,000-run measurement above — because with six
+transactions competing for six rows most of them block on their *first* lock
+and never reach the state in which a cycle can form. Deadlock needs contention,
+but saturating contention converts deadlocks into ordinary waits.
+
+**The prevention, and why it is exact.** Repeating every run with the locks
+acquired in ascending row order produced **zero** deadlocks at every
+concurrency level, across all 200,000 runs of that sweep. That is not luck. If every transaction
+locks in ascending order, every wait-for edge points from a holder of a lower
+row to a holder of a higher one, so the graph is acyclic by construction and no
+cycle can exist. Ordered acquisition is one of the few concurrency techniques
+with a proof rather than a mitigation.
+
+## 15.5 What the Engine Does When It Happens Anyway
+
+| Response | Mechanism | Cost |
+|---|---|---|
+| Detection | search the wait-for graph for a cycle, abort a victim | one transaction's work is lost |
+| Timeout | abort anything waiting past a threshold | false positives on slow but healthy waits |
+| Prevention by ordering | acquire locks in a fixed global order | needs discipline in every code path |
+| Prevention by timestamp | wait-die or wound-wait on transaction age | some transactions restart repeatedly |
+
+Detection is the usual production choice, and the application-side consequence
+is the one exams ask about: any transaction may be chosen as the victim and
+rolled back through no fault of its own, so **every** transaction must be
+written to be retryable.
+
+## 15.6 Durability and the Write-Ahead Log
+
+Durability is bought by writing the log before the data. The rule is that a
+log record describing a change reaches stable storage before the changed page
+does, so recovery can always finish what a crash interrupted:
+
+$$\\text{LSN}(\\text{log flushed}) \\;\\ge\\; \\text{LSN}(\\text{page written})$$
+
+Recovery then makes two passes. **Redo** replays every committed change whose
+page may not have reached disk; **undo** rolls back every change belonging to a
+transaction that never committed. The pair is what makes a commit meaningful:
+after the log flush returns, the transaction survives a power failure even
+though its data pages may still be in memory.`,
+      examTip: 'Deadlock is a cycle in the wait-for graph. Detection aborts a victim, so every transaction must be retryable; ascending-order lock acquisition removes the possibility entirely rather than mitigating it.',
+      importantNote: 'A phantom is a NEW row entering a range, so no lock on an existing row can stop it. That is why SERIALIZABLE needs range or predicate locks and why REPEATABLE READ does not prevent phantoms.',
+    },
+    { id: 'db-er-mapping', title: '16. From ER Diagram to Schema',
+      content: `## 16.1 The Three Things an ER Diagram Records
+
+An entity-relationship diagram is a design notation, not a schema. It records
+**entities** (things with independent existence), **attributes** (their
+properties), and **relationships** (associations between entities), and it
+annotates every relationship with two facts:
+
+| Annotation | Question it answers | Notation |
+|---|---|---|
+| Cardinality | how many of each side may participate | 1:1, 1:N, M:N |
+| Participation | must every instance participate | total (double line) or partial |
+
+Attributes carry their own classification, and two of the kinds force extra
+tables:
+
+| Attribute kind | Example | Effect on the schema |
+|---|---|---|
+| Simple | a surname | one column |
+| Composite | an address of street, city, postcode | one column per component |
+| Derived | age, from a date of birth | no column; compute it |
+| **Multivalued** | several phone numbers | **its own table** |
+| Key | a student number | the primary key |
+
+A **weak entity** has no key of its own and is identified only through its
+owner — a line item identified by its order plus a line number. Its primary key
+is the owner's key plus a partial key, and its foreign key to the owner is
+mandatory.
+
+## 16.2 The Mapping Rules
+
+| Diagram element | Becomes |
+|---|---|
+| Entity | a table, with the key attribute as primary key |
+| 1:N relationship | a foreign key on the **N** side |
+| 1:1 relationship | a foreign key with a UNIQUE constraint, on either side |
+| M:N relationship | a **junction table** holding both foreign keys as its composite key |
+| Multivalued attribute | a table of owner key plus value |
+| Weak entity | a table keyed by owner key plus partial key |
+| Relationship attribute | a column on the junction table |
+
+Counting the output is then arithmetic. With $E$ entities, $R_{1:1}$ and
+$R_{1:N}$ binary relationships that need no table, $R_{M:N}$ many-to-many
+relationships and $M$ multivalued attributes:
+
+$$T = E + R_{M:N} + M$$
+
+$$F = R_{1:1} + R_{1:N} + 2R_{M:N} + M$$
+
+The junction table contributes two foreign keys because it points at both
+sides; a multivalued attribute table contributes one.
+
+### 16.3 Worked Example — Mapping a Small University Diagram
+
+**Given.** Four entities — Department, Instructor, Student, Course — with
+
+- Department to Student, one-to-many
+- Department to Instructor, one-to-many
+- Instructor to Course, one-to-many
+- Student to Course, many-to-many, carrying a grade
+- Student has a multivalued attribute, phone
+
+**Asked.** How many tables and foreign keys does the mapping produce?
+
+**Method.** Substituting $E = 4$, $R_{1:N} = 3$, $R_{M:N} = 1$, $M = 1$:
+
+$$T = 4 + 1 + 1 = 6$$
+
+$$F = 0 + 3 + 2 \\times 1 + 1 = 6$$
+
+**Result.** The schema was then written out and created in SQLite, and the
+engine's own catalogue was queried: six tables — course, department, enrolment,
+instructor, student, student_phone — and, summing the foreign-key lists over
+all six, six foreign keys. Formula and engine agree.
+
+| Table | Primary key | Foreign keys |
+|---|---|---|
+| department | dept_id | none |
+| instructor | inst_id | dept_id |
+| student | sid | dept_id |
+| course | cid | inst_id |
+| student_phone | (sid, phone) | sid |
+| enrolment | (sid, cid) | sid, cid |
+
+**Reading the result.** The grade lives on enrolment, not on student or course,
+because it is a property of the *pair*. That is the single most common ER
+mistake, and it is also exactly the 2NF question of section 12.4 seen from the
+design side: an attribute of the pair belongs with the pair, and an attribute
+of one member belongs with that member.
+
+**Exam trap.** The many-to-many relationship never becomes a foreign key on
+either entity. If a diagram shows M:N and the proposed schema has no third
+table, the schema is wrong regardless of what else it gets right.
+
+## 16.4 Reading a Diagram Back Out of a Schema
+
+The mapping runs in reverse, which is how you audit an inherited database:
+
+- A table whose primary key is entirely made of foreign keys is a junction
+  table, so the two tables it points at have an M:N relationship.
+- A nullable foreign key marks partial participation; NOT NULL marks total.
+- A UNIQUE constraint on a foreign key turns 1:N into 1:1.
+- A table of exactly two columns, one a foreign key and both together the
+  primary key, is a multivalued attribute.
+
+Applying those four rules to the six tables above recovers the original diagram
+exactly, which is the test that a mapping was faithful.`,
+      examTip: 'Count the output before drawing it: tables = entities + M:N relationships + multivalued attributes; foreign keys = 1:1 + 1:N + twice the M:N count + multivalued attributes.',
+      importantNote: 'An attribute of a relationship — a grade, a quantity, a start date — belongs on the junction table, never on either entity. Putting it on an entity is the design-side form of a 2NF violation.',
+    },
+    { id: 'db-problems-a', title: '17. Problem Set A: Model, Algebra, Joins, NULL, Aggregation',
+      content: `## 17.1 Problem Set A
+
+Work each problem before reading its answer. Every numeric answer below was
+obtained by executing the statement against the tables of section 7.1 —
+emp with five rows, dept with three — not by inspection.
+
+**A1.** An employee table of 5 rows is left-joined to a department table of
+3 rows on the department key. How many result rows have a NULL department, and
+which employee produces them?
+
+**A2.** Write a predicate that selects everyone earning more than 80,000
+*together with* anyone whose salary is unrecorded. How many rows does it
+return?
+
+**A3.** Group the five employees by department and take the mean salary of each
+group. How many groups are there, and what is the mean of each?
+
+**A4.** How many rows satisfy WHERE dept_id <> 10?
+
+**A5.** How many rows does SELECT dept_id FROM emp UNION SELECT dept_id FROM
+dept return?
+
+**A6.** Compare COUNT(DISTINCT dept_id) against the row count of
+SELECT DISTINCT dept_id. Should they agree?
+
+**A7.** A relation has 7 attributes and exactly one candidate key, of 3
+attributes. How many superkeys contain that candidate key?
+
+**A8.** Tables $A$ and $B$ hold 12 and 7 rows. An inner join of the two returns
+84 rows. What went wrong?
+
+**A9.** For Ed, whose salary is NULL and whose department is 20, evaluate
+(salary > 80000) OR (dept_id = 30) in three-valued logic. Is Ed returned?
+
+**A10.** MAX, MIN and COUNT are taken over the salary column. Give all three,
+and say which of them counts the NULL.
+
+## 17.2 Answers
+
+**A1 — one row, Di.** The left join preserves all five employee rows, and the
+one whose department key is NULL matches nothing, so the department columns are
+padded. Executing the count returned **1**. Note that the padding is caused by
+a *NULL foreign key*, not by a missing department: the other unmatched thing in
+this instance, Controls, is invisible to a left join in this direction.
+
+**A2 — three rows.** The predicate must be made three-valued explicitly:
+
+- WHERE salary > 80000 OR salary IS NULL
+
+Executed, it returns **3**: Ada and Cy from the comparison, Ed from the IS NULL
+branch. Without the second branch, the count is 2 — the demonstration of
+section 10.2, where the two complementary halves summed to 4 out of 5.
+
+**A3 — three groups.** GROUP BY dept_id puts all NULL departments in a single
+group, so the result is
+
+| Group | Mean salary |
+|---|---|
+| NULL | 61000 |
+| 10 | 85000 |
+| 20 | 85000 |
+
+The Signals mean is 85000 and not 42500: AVG divides by the count of non-NULL
+salaries, which is 1 in that group, not by the group size of 2.
+
+**A4 — two rows.** Only Cy and Ed, the two in department 20. Di's NULL
+department makes NULL <> 10 evaluate to UNKNOWN, and WHERE discards UNKNOWN, so
+she is excluded from *both* dept_id = 10 and dept_id <> 10. This is the same
+partition failure as A2, in negated form.
+
+**A5 — four rows.** The employee side contributes 10, 20 and NULL; the
+department side contributes 10, 20 and 30. UNION removes duplicates and treats
+the NULLs as not distinct from one another, giving
+
+$$\\{10, 20, \\text{NULL}\\} \\cup \\{10, 20, 30\\} = \\{10, 20, 30, \\text{NULL}\\}$$
+
+so **4**. UNION ALL would return $5 + 3 = 8$.
+
+**A6 — no, they differ by one.** COUNT(DISTINCT dept_id) returned **2**;
+counting the rows of SELECT DISTINCT dept_id returned **3**. The aggregate
+ignores NULL, as every aggregate but COUNT(*) does; the DISTINCT clause keeps
+it as one group. Both behaviours are correct and they contradict each other in
+appearance only.
+
+**A7 — sixteen.** By the rule of section 6.3,
+
+$$2^{\\,n - \\lvert K \\rvert} = 2^{7-3} = 2^{4} = 16$$
+
+Those 16 include the candidate key itself, since every set is a superset of
+itself.
+
+**A8 — the join predicate is missing or always true.** The product is
+
+$$12 \\times 7 = 84$$
+
+and the result equals it, so no pairing was rejected. In practice this means a
+table was added to the FROM list without a matching ON condition, or the
+condition compares a column to itself. Any result whose row count equals the
+product should be treated as a bug until proven otherwise.
+
+**A9 — UNKNOWN, and Ed is not returned.** The first disjunct is
+NULL > 80000, which is UNKNOWN; the second is 20 = 30, which is FALSE. By the
+maximum rule of section 10.1,
+
+$$\\max\\!\\left(\\tfrac{1}{2},\\, 0\\right) = \\tfrac{1}{2} = \\text{UNKNOWN}$$
+
+and WHERE keeps only TRUE. Had the second disjunct been TRUE, Ed would have
+been returned despite the unknown salary, because $\\max(\\tfrac{1}{2}, 1) = 1$.
+
+**A10 — 92000, 61000 and 4.** Executed together, MAX returns 92000, MIN returns
+61000 and COUNT(salary) returns 4. **None** of the three counts the NULL. MIN in
+particular does not return NULL as "the smallest value"; NULL is not in the
+ordering at all. The only aggregate that sees Ed's row is COUNT(*), which
+returns 5.
+
+## 17.3 What Each Problem Was Testing
+
+| Problem | The mechanism behind it |
+|---|---|
+| A1, A8 | join cardinality and its bounds |
+| A2, A4, A9 | WHERE keeps TRUE only, so complementary predicates lose rows |
+| A3, A6, A10 | aggregates ignore NULL; COUNT(*) does not |
+| A5 | set operators deduplicate and treat NULLs as not distinct |
+| A7 | superkeys are generated by any candidate key |
+
+Six of the ten turn on one fact: an unknown value is not a value. If you can
+say for each of the ten which of TRUE, FALSE and UNKNOWN the predicate produced
+and what the clause did with it, this half of the topic is secure.`,
+      examTip: 'When a question involves a nullable column, evaluate the predicate to TRUE, FALSE or UNKNOWN explicitly, then apply the clause rule: WHERE and HAVING keep TRUE, CHECK rejects only FALSE.',
+      importantNote: 'COUNT(DISTINCT col) and the row count of SELECT DISTINCT col differ by one whenever the column holds a NULL. The first is an aggregate and ignores it; the second is a projection and keeps it.',
+    },
+    { id: 'db-problems-b', title: '18. Problem Set B: Dependencies, Normal Forms, Indexes, Transactions',
+      content: `## 18.1 Problem Set B
+
+**B1.** $R(A, B, C, D, E)$ with $A \\rightarrow B$, $BC \\rightarrow D$,
+$D \\rightarrow E$ and $E \\rightarrow A$. Find every candidate key, and say
+which attributes are non-prime.
+
+**B2.** ORDERLINE(order_id, product_id, quantity, unit_price, product_name) has
+primary key (order_id, product_id), and product_name depends on product_id
+alone. Which normal form is violated, and what is the decomposition?
+
+**B3.** An index has leaf capacity 20 and fan-out 20 and covers 40,000 rows.
+How many nodes does one lookup visit, and how many pages are read in total for
+a non-covering index?
+
+**B4.** A table of 12,346 pages carries a three-level index. Using the simple
+model that charges one random page per matching row and prices a random read at
+4 sequential reads, at what selectivity does the index stop paying?
+
+**B5.** A composite index exists on (region, order_date). Which of these are
+served by it: WHERE region = 'N'; WHERE order_date > '2026-01-01';
+WHERE region = 'N' AND order_date > '2026-01-01'; WHERE order_date > '2026-01-01' AND region = 'N'?
+
+**B6.** A field is duplicated onto $k$ rows. The normalised read costs 13 pages
+and the denormalised read costs 1. At what read fraction does denormalising
+break even for $k = 24$ and for $k = 2$?
+
+**B7.** A report must run twice within one transaction and see the same rows
+both times, including no newly inserted rows. Which isolation level, and what
+does it lock?
+
+**B8.** An ER diagram has 5 entities, 4 one-to-many relationships, 2
+many-to-many relationships and no multivalued attributes. How many tables and
+foreign keys does the mapping produce?
+
+**B9.** Two transactions each update the same two rows and deadlock
+intermittently. Give the fix that removes the possibility rather than reducing
+its frequency, and say why it works.
+
+**B10.** A transfer debits one account and the credit then fails a constraint.
+What does the database guarantee about the debit, and which ACID letters are
+involved?
+
+## 18.2 Answers
+
+**B1 — four candidate keys, and no non-prime attributes.** Closures:
+
+$$\\{A\\}^{+} = \\{A, B\\}, \\qquad \\{C\\}^{+} = \\{C\\}$$
+
+$$\\{A, C\\}^{+} = \\{A, B, C, D, E\\}$$
+
+From $A$ you reach $B$; with $C$ present, $BC \\rightarrow D$ fires, then
+$D \\rightarrow E$, so $\\{A, C\\}$ is a key. Because $E \\rightarrow A$ and
+$D \\rightarrow E$ and $A \\rightarrow B$, the same closure is reachable from
+$\\{B, C\\}$, $\\{C, D\\}$ and $\\{C, E\\}$. An exhaustive search over all 31
+non-empty subsets confirms exactly four candidate keys:
+
+$$\\{A, C\\}, \\quad \\{B, C\\}, \\quad \\{C, D\\}, \\quad \\{C, E\\}$$
+
+$C$ appears in all four, which is forced: $C$ occurs on no right-hand side, so
+nothing determines it and every key must contain it. Every attribute belongs to
+some key, so there are **no** non-prime attributes — and a relation with no
+non-prime attributes is automatically in 3NF, since 3NF only constrains
+non-prime attributes.
+
+**B2 — 2NF, violated by a partial dependency.** product_name depends on part of
+the composite key, which is the definition of a partial dependency, so the
+table is in 1NF and not 2NF. The decomposition:
+
+$$\\mathrm{ORDERLINE}(\\underline{\\mathrm{order\\_id}, \\mathrm{product\\_id}}, \\mathrm{quantity}, \\mathrm{unit\\_price})$$
+
+$$\\mathrm{PRODUCT}(\\underline{\\mathrm{product\\_id}}, \\mathrm{product\\_name})$$
+
+unit_price stays on the line because the price *charged on this order* is a
+property of the pair, not of the product; a current list price belongs on
+PRODUCT and is a different column. Confusing the two is a real modelling error,
+not a technicality — it is what makes historical invoices reprice themselves.
+
+**B3 — four nodes, five pages.** The leaves hold
+$\\lceil 40000/20 \\rceil = 2000$ entries' worth of nodes; dividing by the
+fan-out gives 100, then 5, then 1, so the tree has 4 levels. Building the tree
+and walking it confirmed **4** node visits. A non-covering index then needs one
+more page for the row itself:
+
+$$4 + 1 = 5 \\text{ pages}$$
+
+**B4 — about 0.3 %.** Equate the two costs with $h = 3$, $P = 12346$ and
+$w = 4$:
+
+$$w(h + sN) = P \\;\\Longrightarrow\\; s^{*} = \\frac{P/w - h}{N}$$
+
+$$s^{*} = \\frac{12346/4 - 3}{10^{6}} = \\frac{3086.5 - 3}{10^{6}} = 0.0030835$$
+
+so 0.308 %, or about 3,084 rows in a million. The more careful model of section
+14.6, which accounts for several matching rows sharing a page, gives 0.355 %.
+Either way the answer is a fraction of one percent.
+
+**B5 — the first, third and fourth; not the second.** region is the leading
+column, so anything that fixes it can seek. The third and fourth are the same
+query — predicate order in the WHERE clause is irrelevant, since the optimiser
+reorders freely. The second binds only the trailing column and has no usable
+prefix, so it degenerates to a full index scan. Measured on the instance of
+section 14.8, that distinction was a factor of 50 in entries examined.
+
+**B6 — 66.7 % and 14.3 %.** With $R_{n} - R_{d} = 13 - 1 = 12$ and
+$W_{d} - W_{n} = k$:
+
+$$p^{*} = \\frac{k}{12 + k}$$
+
+$$p^{*}(24) = \\frac{24}{36} = 0.667, \\qquad p^{*}(2) = \\frac{2}{14} = 0.143$$
+
+The break-even falls fast as the duplication factor falls, which is the reason
+denormalising *one* narrow field into *few* rows is often reasonable while
+fanning it across a large child table almost never is.
+
+**B7 — SERIALIZABLE, and it needs range locks.** REPEATABLE READ guarantees
+that rows already read keep their values, which handles the non-repeatable
+read, but it says nothing about rows that did not exist at the first read. A
+newly inserted matching row is a phantom, and stopping it requires locking the
+*range* the query covers rather than any existing row. That is exactly the
+extra guarantee SERIALIZABLE provides, and exactly why it costs the most
+throughput.
+
+**B8 — seven tables and eight foreign keys.** By the counting rules of section
+16.2:
+
+$$T = E + R_{M:N} + M = 5 + 2 + 0 = 7$$
+
+$$F = R_{1:N} + 2R_{M:N} + M = 4 + 2 \\times 2 + 0 = 8$$
+
+Each junction table carries two foreign keys, which is why the many-to-many
+count is doubled in the second formula and not in the first.
+
+**B9 — acquire the locks in a fixed global order, for example ascending primary
+key.** Then every wait-for edge runs from a transaction holding a lower key to
+one holding a higher key, so the wait-for graph is a strict order and cannot
+contain a cycle. This is a proof, not a mitigation: a simulation of two to six
+concurrent transactions produced deadlock rates from 1.6 % to 8.7 % under
+arbitrary ordering, and exactly **zero** deadlocks under ascending ordering
+across all 200,000 simulated runs. Reducing lock duration or retrying on failure lowers the
+rate; ordering removes the possibility.
+
+**B10 — the debit is undone entirely; atomicity and consistency.** Atomicity
+guarantees all-or-nothing, so the rolled-back transaction leaves no partial
+effect: executing exactly this scenario on a two-account table left the debited
+account at its original 100 and the total at its original 300. Consistency is
+the property that the declared constraint — a non-negative balance — held both
+before and after. Isolation and durability are not what is being tested here;
+isolation concerns other concurrent transactions, and durability concerns
+surviving a crash after commit.
+
+## 18.3 Scoring Yourself
+
+| If you missed | Reread |
+|---|---|
+| B1 | section 11.2, attribute closure |
+| B2 | section 12.4, partial dependencies |
+| B3, B4 | sections 14.2 and 14.6, heights and crossover |
+| B5 | section 14.8, the leftmost prefix |
+| B6 | section 13.2, the break-even |
+| B7 | section 15.2, what a range lock is for |
+| B8 | section 16.2, the mapping counts |
+| B9, B10 | sections 15.1 and 15.3 |
+
+The through-line of this set is that every claim has a number attached. A key
+is found by a closure computation, a normal form by naming the offending
+dependency, an index height by counting levels, a crossover by equating two
+cost functions, and a deadlock fix by showing a graph cannot have a cycle.
+Answers that stop at the name of the concept are the ones that fail under
+examination pressure.`,
+      examTip: 'For any "which normal form" question, name the offending dependency explicitly before naming the form. Partial dependency means 2NF, transitive dependency means 3NF, and a determinant that is not a superkey means BCNF.',
+      importantNote: 'A relation whose attributes are all prime is automatically in 3NF, because 3NF constrains only non-prime attributes. It may still violate BCNF — that is exactly the overlapping-candidate-key case.',
     },
   ],
   keyTakeaways: [

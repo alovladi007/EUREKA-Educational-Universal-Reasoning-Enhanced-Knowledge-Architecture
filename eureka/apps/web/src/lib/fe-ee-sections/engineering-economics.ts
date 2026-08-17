@@ -2939,9 +2939,9 @@ Accelerated depreciation reduces taxes earlier → better cash flow due to **tim
 Sum of years for n-year life: SYD = n(n+1)/2
 
 Example: 5-year life → SYD = 15
-- Year 1: $D_{1}$ = (5/15)(Cost-Salvage) = 33.3%
-- Year 2: $D_{2}$ = (4/15)(Cost-Salvage) = 26.7%
-- Year 3: $D_{3}$ = (3/15)(Cost-Salvage) = 20.0%
+- Year 1: $D_{1}$ = (5/15)(Cost-Salvage), which is 33.3% of the depreciable amount
+- Year 2: $D_{2}$ = (4/15)(Cost-Salvage), which is 26.7% of the depreciable amount
+- Year 3: $D_{3}$ = (3/15)(Cost-Salvage), which is 20.0% of the depreciable amount
 
 | Method | Pattern | Salvage Value | Tax Use |
 |---|---|---|---|
@@ -2968,7 +2968,7 @@ Depreciation reduces taxable income, creating a **tax shield**:
 
 **Tax savings = D × Tax rate**
 
-Example: \\$10,000 depreciation at 30% tax rate \\rightarrow  \\$3,000 tax savings
+Example: 10,000 of depreciation at a 30% tax rate saves 3,000 of tax
 
 ### After-Tax Cash Flow
 
@@ -3237,6 +3237,1185 @@ with a small number of rows.`,
       examTip: 'Use ATCF = (R − E)(1 − t) + D·t when the question asks about the effect of depreciation, because it shows the shield D·t as its own term. Use ATCF = R − E − taxes when the question just wants the cash number. They always agree.',
       importantNote: 'On disposal, the gain that gets taxed is measured against BOOK value under the schedule in use, not against the original purchase price. Selling an asset for less than you paid can still create taxable recapture if depreciation has already been deducted below the sale price.',
     },
+    {
+      id: 'dep-three-senses',
+      title: '5. What Depreciation Is For: The Book, Tax and Economic Senses',
+      content: `## 5.1 One asset, three questions
+
+Sections 1 through 4 built schedules. This section steps back and asks what a
+schedule is **for**, because the commonest way an FE candidate loses a
+depreciation mark is doing correct arithmetic on the wrong question. Every
+amount from here on is in dollars, and the currency symbol is dropped so the
+algebra stays readable.
+
+Three people look at the same machine and ask three different things.
+
+- The **accountant** asks how much of the purchase price belongs to this
+  reporting period. That answer is **book depreciation**, and the rule is the
+  firm's own accounting policy — most often straight line.
+- The **tax authority** asks how much of the purchase price may be subtracted
+  from taxable income this year. That answer is **tax depreciation**, and the
+  rule is statutory. In the United States it is MACRS, and no opinion of the
+  firm's enters into it.
+- The **buyer** asks what the machine would fetch today. That answer is
+  **market value**, and no rule sets it at all: condition, demand and
+  obsolescence do.
+
+Only the third is depreciation in the everyday sense of losing value. The first
+two are **allocations of a price already paid**, and an allocation cannot be
+right or wrong in the way a measurement can be — it can only follow its rule or
+fail to. Once that lands, several exam traps stop working. A book schedule that
+never approaches resale value is not defective. A tax schedule that writes an
+asset down to zero while the asset still runs is not claiming the asset is
+worthless. And an asset with a healthy market value can still be sitting at
+zero on both sets of records.
+
+![Three ways of carrying the same 165,000 asset over ten years. Book value under straight line with a 15,000 salvage falls in equal 15,000 steps to 15,000. The unrecovered tax basis under seven-year MACRS falls faster and reaches zero in the eighth tax year. Market value under a stated resale model of eighteen percent a year falls fastest early and then flattens. At the end of year five the three read 90,000, 36,811.50 and 61,172.07.](/courses/fe-ee/figures/econ3-three-senses.svg)
+
+The figure is the whole distinction in one picture. At the end of year 5 the
+machine stands at 90,000 on the books, 36,811.50 in the tax accounts, and
+61,172.07 in the resale model this lesson posits — three numbers, one machine,
+no contradiction. Note also the order in which the two lower curves sit. Market
+value falls **faster** than straight line at first, so for most of the life the
+books carry the asset above what it would fetch; the curves cross only late,
+here at $t = 9.24$, after which the linear book value has dropped toward salvage
+while resale value has flattened out. That is the ordinary shape for equipment
+on straight line, and it is why a firm using straight line tends to book a
+**loss** on an early disposal and a **gain** on a late one — the opposite of
+what the word "conservative" suggests about the method.
+
+## 5.2 The four quantities, defined precisely
+
+| Term | Symbol | What it is | Common trap |
+|---|---|---|---|
+| Cost basis | $B$ | Everything spent to get the asset in service | Financing interest is not part of it |
+| Salvage value | $S$ | Estimated disposal value at the end of the life | MACRS ignores it entirely |
+| Useful life | $n$ | Years the firm expects to use it | A book estimate, chosen by the firm |
+| Recovery period | $n_{\\mathrm{r}}$ | Years the statute allows for write-off | Set by class, not by expectation |
+| Book value | $\\mathrm{BV}_t$ | Basis less accumulated depreciation | Not market value, ever |
+
+**Basis** is not the invoice price. It is the invoice price plus everything
+needed to place the asset in service:
+
+$$ B = P_{\\text{invoice}} + C_{\\text{freight}} + C_{\\text{install}} + C_{\\text{commission}} - \\text{trade discounts} $$
+
+Sales tax, delivery, rigging, foundations, initial calibration and the wiring
+run that connects the machine all capitalise into $B$. Interest on the loan
+used to buy it does not; neither does the first year's insurance premium, nor
+routine maintenance. The distinction is between getting the asset **ready** and
+**running** it afterwards.
+
+**Salvage value** is an estimate made at purchase, and every book method except
+declining balance subtracts it before allocating. **Useful life** is likewise
+an estimate. **Recovery period** is neither: it is a statutory class, and for
+the same asset it is usually shorter than the useful life, which is exactly why
+tax depreciation outruns book depreciation in the figure above.
+
+## 5.3 Straight line, derived rather than quoted
+
+Straight line is the answer to one requirement: allocate the depreciable amount
+$B - S$ over $n$ years so that every year gets the same share. Writing that
+requirement out,
+
+$$ \\sum_{t=1}^{n} D_t = B - S \\quad\\text{subject to}\\quad D_1 = D_2 = \\cdots = D_n $$
+
+gives $n D = B - S$ immediately, so
+
+$$ D_{\\mathrm{SL}} = \\frac{B - S}{n} $$
+
+Book value is the basis less what has accumulated, which for a constant
+deduction is linear in $t$:
+
+$$ \\mathrm{BV}_t = B - t\\,\\frac{B - S}{n} $$
+
+Two identities follow, and both are worth carrying into the exam as checks. The
+schedule lands exactly on salvage,
+
+$$ \\mathrm{BV}_n = B - n\\,\\frac{B - S}{n} = S $$
+
+and at **every** intermediate year the account closes:
+
+$$ \\mathrm{BV}_t + \\sum_{k=1}^{t} D_k = B $$
+
+That second identity holds for every method in this chapter, not just straight
+line, and it is the fastest way to catch a slipped row in a schedule you built
+under time pressure.
+
+### Worked example 5.1 — building the basis
+
+A utility buys a pad-mounted distribution transformer. The invoice is 142,000.
+Freight and rigging come to 4,500. The concrete pad, grounding grid and
+terminations cost 18,500. The first year of insurance is 2,000, and the
+purchase is financed at 6%, costing 8,500 of interest in year 1. What is the
+depreciable basis?
+
+Only the amounts that put the transformer in service capitalise:
+
+$$ B = 142{,}000 + 4{,}500 + 18{,}500 = 165{,}000 $$
+
+Insurance and interest are **period expenses**: they are deducted in full in
+the year incurred and never enter the schedule. Answer: 165,000.
+
+### Worked example 5.2 — a straight-line schedule and a mid-life book value
+
+The transformer of example 5.1 has an estimated salvage of 15,000 and a useful
+life of 10 years. Find the annual deduction, the book value after 4 years, and
+verify the schedule closes.
+
+$$ D = \\frac{165{,}000 - 15{,}000}{10} = 15{,}000 $$
+
+$$ \\mathrm{BV}_4 = 165{,}000 - 4 \\times 15{,}000 = 105{,}000 $$
+
+Closure check at year 4: accumulated depreciation is $4 \\times 15{,}000 = 60{,}000$,
+and $60{,}000 + 105{,}000 = 165{,}000$, which is the basis. At year 10 the
+accumulated total is 150,000, which is $B - S$ exactly, and book value is
+15,000, which is $S$ exactly. Both identities hold, so the schedule is an
+account and not merely a list.`,
+      examTip: 'When a question gives you a purchase price plus a list of other costs, decide for each one whether it was needed to place the asset in service. Freight, installation and foundations go into the basis; interest, insurance and maintenance do not. Getting the basis wrong makes every later row wrong, and it is the single most expensive slip in this topic.',
+      importantNote: 'Book value, tax basis and market value are three different numbers that answer three different questions. A question asking for "the value of the asset" after some years is ambiguous unless it names one of them — read for the words "book", "for tax purposes", or "sold for".',
+    },
+    {
+      id: 'dep-declining-balance-switch',
+      title: '6. Declining Balance, the Salvage Floor, and the Switch — Derived',
+      content: `## 6.1 The recursion and what it implies
+
+Declining balance is defined by one sentence: take the same fraction of
+whatever book value is left. Writing that fraction as $d$,
+
+$$ D_t = d\\,\\mathrm{BV}_{t-1}, \\qquad \\mathrm{BV}_t = (1 - d)\\,\\mathrm{BV}_{t-1} $$
+
+Unrolling the second relation from $\\mathrm{BV}_0 = B$ gives a closed form, and
+substituting it back gives the deduction directly:
+
+$$ \\mathrm{BV}_t = B\\,(1 - d)^{t} $$
+
+$$ D_t = B\\,d\\,(1 - d)^{t-1} $$
+
+Three consequences follow before any number is chosen. Book value is a
+**geometric** sequence, so it never reaches zero in finite time. The deductions
+themselves form a geometric sequence with the same ratio $1-d$, so the
+schedule's shape is fixed the moment $d$ is. And **salvage value appears
+nowhere** in either formula — it enters only as a floor, which is what section
+6.2 is about.
+
+The rate is quoted as a multiple $\\alpha$ of the straight-line rate $1/n$:
+
+$$ d = \\frac{\\alpha}{n}, \\qquad \\alpha = 2 \\;\\text{gives double declining balance} $$
+
+so $\\alpha = 2$ is "200% declining balance" or DDB, and $\\alpha = 1.5$ is "150%
+declining balance". For a 5-year life those are $d = 0.40$ and $d = 0.30$.
+
+## 6.2 The salvage floor, and the year it bites
+
+Since $B(1-d)^n$ is set entirely by $B$, $d$ and $n$, it will generally miss
+the salvage value in one direction or the other. Overshooting is illegal: no
+book method may depreciate an asset below its estimated salvage. So the rule is
+to cut the deduction in whichever year the recursion would break the floor:
+
+$$ D_t = \\min\\!\\left(d\\,\\mathrm{BV}_{t-1},\\;\\; \\mathrm{BV}_{t-1} - S\\right) $$
+
+The first year in which the floor bites can be found in closed form. The
+unrestrained book value passes through $S$ when $B(1-d)^{t} = S$, that is at
+
+$$ t_{\\text{floor}} = \\frac{\\ln(S/B)}{\\ln(1-d)} $$
+
+which is generally not an integer; the **first cut year** is the next integer
+above it. Every year after that gets nothing at all, which surprises people the
+first time they see it.
+
+There is also a rate that lands exactly on salvage with no cutting, obtained by
+setting $B(1-d)^n = S$:
+
+$$ d^{*} = 1 - \\left(\\frac{S}{B}\\right)^{1/n} $$
+
+This is sometimes called the matching or implied declining-balance rate. It is
+rarely the rate a question gives you, but it tells you at a glance whether the
+stated $d$ will overshoot ($d > d^{*}$) or undershoot ($d < d^{*}$).
+
+### Worked example 6.1 — 200% declining balance against a floor
+
+A switchgear line-up costs 60,000, has an estimated salvage of 8,000, and a
+5-year life. Build the DDB schedule, and say which year the floor first bites.
+
+The rate is
+
+$$ d = \\frac{2}{5} = 0.40 $$
+
+Unrestrained book values are $60{,}000(0.60)^t$: 36,000, 21,600, 12,960, 7,776
+and 4,665.60. The fourth of those is already under the 8,000 floor, and the
+closed form agrees:
+
+$$ t_{\\text{floor}} = \\frac{\\ln(8{,}000/60{,}000)}{\\ln 0.60} = 3.944 $$
+
+so year 4 is the first cut year. The allowed deduction there is whatever brings
+book value exactly to salvage:
+
+$$ D_4 = 12{,}960 - 8{,}000 = 4{,}960 $$
+
+against the 5,184 the recursion wanted. Year 5 gets nothing, because the asset
+is already at its floor.
+
+| Year | Unrestrained $d\\,\\mathrm{BV}_{t-1}$ | Allowed $D_t$ | Accumulated | Book value |
+|---|---|---|---|---|
+| 1 | 24,000 | 24,000 | 24,000 | 36,000 |
+| 2 | 14,400 | 14,400 | 38,400 | 21,600 |
+| 3 | 8,640 | 8,640 | 47,040 | 12,960 |
+| 4 | 5,184 | 4,960 | 52,000 | 8,000 |
+| 5 | 3,110.40 | 0 | 52,000 | 8,000 |
+
+Accumulated plus book value is 60,000 on every row, and the column totals
+52,000, which is $B - S$ exactly. The schedule closes.
+
+![Book value under 200 percent declining balance on a 60,000 asset with an 8,000 salvage floor. The unrestrained geometric curve passes below the floor between years 3 and 4 at t equals 3.944, so the year-4 deduction is cut from 5,184 to 4,960 and the schedule flattens onto the floor, leaving year 5 with no deduction at all.](/courses/fe-ee/figures/econ3-db-floor.svg)
+
+## 6.3 Why a switch to straight line exists, and when it happens
+
+Undershooting is the opposite problem and the more common one. At 150% on the
+same asset, $d = 0.30$ and $\\mathrm{BV}_5 = 60{,}000(0.70)^5 = 10{,}084.20$, which
+is 2,084.20 **above** the 8,000 salvage. Declining balance alone would leave
+that amount permanently undeducted. Since the firm is entitled to recover
+$B - S$ over the life, something has to give — and what gives is the method.
+
+The switch rule is: in each year, compare the declining-balance deduction with
+the straight-line deduction computed over the life still remaining, and take
+the larger. The straight-line candidate at the start of year $t$ is the book
+value less salvage spread over the $n - t + 1$ years left:
+
+$$ D_t^{\\mathrm{SL}} = \\frac{\\mathrm{BV}_{t-1} - S}{n - t + 1}, \\qquad D_t^{\\mathrm{DB}} = d\\,\\mathrm{BV}_{t-1} $$
+
+and the switch happens in the first year satisfying
+
+$$ \\frac{\\mathrm{BV}_{t-1} - S}{n - t + 1} \\;\\ge\\; d\\,\\mathrm{BV}_{t-1} $$
+
+Once the inequality holds it keeps holding, because the declining-balance
+candidate shrinks geometrically while the straight-line candidate is constant
+from the switch onward. So there is exactly one switch, never a switch back.
+
+For the salvage-free case $S = 0$ the book value cancels out of the inequality
+entirely. Writing $r_t$ for the recovery period still to run at the start of
+year $t$, the condition collapses to
+
+$$ \\frac{1}{r_t} \\ge d \\quad\\Longleftrightarrow\\quad r_t \\le \\frac{1}{d} $$
+
+so the switch happens as soon as the time left to run falls to $1/d$ years,
+whatever the basis, whatever the book value. With no first-year convention the
+count is $r_t = n - t + 1$ and the switch year is
+
+$$ t^{*} = \\left\\lceil\\, n + 1 - \\frac{1}{d} \\,\\right\\rceil = \\left\\lceil\\, n + 1 - \\frac{n}{\\alpha} \\,\\right\\rceil $$
+
+That is the switch year **derived**, not asserted. It carries one warning worth
+underlining: $r_t$ is a count of recovery years remaining, so a convention that
+credits year 1 with less than a full year changes that count and moves the
+switch. Section 7.2 redoes this line for MACRS, where the half-year convention
+shifts the answer by as much as a full year in the longer classes.
+
+When $S > 0$ the cancellation fails and the switch comes **later**, because
+subtracting salvage shrinks the straight-line candidate but not the
+declining-balance one.
+
+### Worked example 6.2 — 150% declining balance with the switch
+
+Same 60,000 switchgear, 8,000 salvage, 5-year life, now at 150% declining
+balance with a switch to straight line. Build the schedule and identify the
+switch year.
+
+$$ d = \\frac{1.5}{5} = 0.30 $$
+
+| Year | $D_t^{\\mathrm{DB}}$ | $D_t^{\\mathrm{SL}}$ | Taken | Book value |
+|---|---|---|---|---|
+| 1 | 18,000 | 10,400 | 18,000 | 42,000 |
+| 2 | 12,600 | 8,500 | 12,600 | 29,400 |
+| 3 | 8,820 | 7,133.33 | 8,820 | 20,580 |
+| 4 | 6,174 | 6,290 | 6,290 | 14,290 |
+| 5 | 4,287 | 6,290 | 6,290 | 8,000 |
+
+The candidates cross during year 4: 6,290 beats 6,174, so the schedule switches
+there. The deductions total 52,000, book value lands on 8,000, and accumulated
+plus book value is 60,000 on every row.
+
+Note the discrepancy with the closed form. The salvage-free rule predicts
+$t^{*} = \\lceil 5 + 1 - 5/1.5 \\rceil = \\lceil 2.667 \\rceil = 3$, one year earlier than the
+schedule above actually switches. Both are correct for their own case: the
+closed form is the $S = 0$ answer, and this asset has $S = 8{,}000$. Use a
+closed form only where salvage really is zero — which means MACRS, and then in
+the convention-adjusted form of section 7.2 — and the year-by-year comparison
+whenever a salvage value is in play.
+
+![The two candidate deductions each year for 150 percent declining balance on a 60,000 asset with 8,000 salvage over five years. Declining balance starts at 18,000 and decays geometrically; straight line over the remaining life starts at 10,400 and falls far more slowly. They cross during year four, at 6,174 against 6,290, which is where the schedule switches and then stays flat.](/courses/fe-ee/figures/econ3-switch-construction.svg)
+
+## 6.4 Sum-of-years-digits, derived
+
+Sum-of-years-digits asks for deductions that fall in a straight line rather
+than geometrically: year $t$ should be weighted by the number of years of life
+still remaining, $n - t + 1$. Normalising those weights so they sum to one
+requires their total,
+
+$$ \\mathrm{SYD} = \\sum_{k=1}^{n} k = \\frac{n(n+1)}{2} $$
+
+which gives the method in one line:
+
+$$ D_t = \\frac{n - t + 1}{\\mathrm{SYD}}\\,(B - S) $$
+
+Accumulating that from year 1 to year $t$ and subtracting from the basis gives
+a closed form for book value that saves building the whole table when only one
+year is wanted:
+
+$$ \\mathrm{BV}_t = B - (B - S)\\,\\frac{t\\,(2n + 1 - t)}{n\\,(n+1)} $$
+
+Because the weights are symmetric about the middle of the life, the middle-year
+deduction of an odd-lived SYD schedule equals the straight-line deduction
+exactly — a fast sanity check.
+
+### Worked example 6.3 — sum-of-years-digits two ways
+
+Same 60,000 asset, 8,000 salvage, 5 years. Find $D_2$ and $\\mathrm{BV}_3$.
+
+$$ \\mathrm{SYD} = \\frac{5 \\times 6}{2} = 15 $$
+
+$$ D_2 = \\frac{4}{15}\\,(60{,}000 - 8{,}000) = 13{,}866.67 $$
+
+For book value at year 3, the closed form gives
+
+$$ \\mathrm{BV}_3 = 60{,}000 - 52{,}000\\,\\frac{3\\,(11 - 3)}{30} = 60{,}000 - 52{,}000\\,(0.8) = 18{,}400 $$
+
+and the year-by-year route confirms it: 17,333.33 plus 13,866.67 plus 10,400.00
+is 41,600.00 of accumulated depreciation, and $60{,}000 - 41{,}600 = 18{,}400$.
+Middle-year check: $D_3 = 10{,}400$, and straight line on this asset would be
+$52{,}000/5 = 10{,}400$ as well.
+
+## 6.5 Units of production, for assets that wear rather than age
+
+Some assets are consumed by use, not by time, and for those an allocation
+proportional to output is the honest one. With $U$ units of total rated output
+and $U_t$ units produced in year $t$,
+
+$$ u = \\frac{B - S}{U}, \\qquad D_t = u\\,U_t $$
+
+The schedule closes automatically provided the usages sum to the rated output,
+which is the assumption to state and check. Nothing about the calendar appears,
+so a year of idleness produces no deduction at all — the feature that makes the
+method attractive for cyclical operations and unattractive for tax authorities,
+who prefer a rule that cannot be managed.
+
+### Worked example 6.4 — units of production on a plant air compressor
+
+A compressor costs 96,000, has a salvage of 6,000, and is rated for 300,000
+machine-hours. It runs 52,000, 68,000, 71,000, 60,000 and 49,000 hours in its
+five years. Build the schedule.
+
+$$ u = \\frac{96{,}000 - 6{,}000}{300{,}000} = 0.30 $$
+
+| Year | Hours | $D_t = 0.30\\,U_t$ | Accumulated | Book value |
+|---|---|---|---|---|
+| 1 | 52,000 | 15,600 | 15,600 | 80,400 |
+| 2 | 68,000 | 20,400 | 36,000 | 60,000 |
+| 3 | 71,000 | 21,300 | 57,300 | 38,700 |
+| 4 | 60,000 | 18,000 | 75,300 | 20,700 |
+| 5 | 49,000 | 14,700 | 90,000 | 6,000 |
+
+The hours total 300,000, the deductions total 90,000, which is $B - S$, and
+book value lands on 6,000. Every row closes.
+
+## 6.6 The book methods side by side
+
+| Method | Deduction shape | Uses $S$? | Ends at | Needs a switch? |
+|---|---|---|---|---|
+| Straight line | Constant | Subtracted first | $S$ | No |
+| Declining balance | Geometric, ratio $1-d$ | Floor only | $S$ by cutting, or above it | Only if it undershoots |
+| DB with switch | Geometric then constant | Both ways | $S$ exactly | That is the point |
+| Sum-of-years-digits | Linearly decreasing | Subtracted first | $S$ | No |
+| Units of production | Proportional to output | Subtracted first | $S$ | No |`,
+      examTip: 'Read the multiplier before you compute anything. "Double declining balance" and "200% declining balance" are the same thing, d = 2/n. "150% declining balance" is d = 1.5/n. Neither subtracts salvage inside the formula — salvage is only a floor. If you subtract salvage first and then apply d, every row will be wrong.',
+      importantNote: 'Declining balance is the only method here whose book value can miss the salvage value in either direction. It overshoots if d exceeds the matching rate, in which case a year gets cut short and later years get nothing; it undershoots if d is smaller, in which case a switch to straight line is needed to finish the recovery.',
+    },
+    {
+      id: 'dep-macrs-derived',
+      title: '7. MACRS from First Principles: Conventions and the Published Table',
+      content: `## 7.1 MACRS is an algorithm, not a table
+
+The percentages in a MACRS table look like data. They are not: they are the
+output of a short algorithm applied to a basis of 1, and every entry can be
+regenerated from four statutory choices. Knowing the algorithm turns a table
+you must be handed into a table you can rebuild, and it makes the shape of the
+column — the rise from year 1 to year 2, the flat tail, the extra year at the
+end — obvious instead of mysterious.
+
+The four choices are:
+
+1. a **recovery period** $n$ set by property class, not by expected service life;
+2. a **declining-balance multiplier** $\\alpha$, which is 2 for the 3-, 5-, 7- and
+   10-year classes and 1.5 for the 15- and 20-year classes;
+3. a **switch to straight line** over the recovery period still remaining, in
+   the first year that gives the larger deduction, as derived in section 6.3
+   with $S = 0$ and with the remaining-period count adjusted for the
+   convention;
+4. a **convention** fixing how much of the first year counts.
+
+Salvage value is absent by statute, so the whole basis is recovered and the
+$S = 0$ switch condition of section 6.3 applies — once its count of remaining
+recovery years is adjusted for the convention, which section 7.2 does.
+
+Writing $q$ for the fraction of a year credited to year 1, the algorithm reads
+
+$$ D_1 = q\\,d\\,B, \\qquad d = \\frac{\\alpha}{n} $$
+
+$$ r_t = n - q - (t - 2), \\qquad D_t = \\max\\!\\left(d\\,\\mathrm{BV}_{t-1},\\; \\frac{\\mathrm{BV}_{t-1}}{r_t}\\right) $$
+
+where $r_t$ is the recovery period still unused at the start of year $t$, and
+the final year takes whatever book value is left. Because year 1 is short by
+$1 - q$ of a year, the recovery always spills into year $n+1$: a 5-year class
+occupies **six** tax years.
+
+## 7.2 The half-year convention, and why year 2 exceeds year 1
+
+The default convention treats every item of personal property as placed in
+service at the midpoint of the tax year, no matter which day it actually
+arrived, so $q = 1/2$. Two consequences are tested constantly. First, the
+year-1 percentage is half what the declining-balance rate alone would give, so
+the column **rises** from year 1 to year 2. Among the systematic methods in this
+chapter it is the only one whose largest deduction is not in year 1; units of
+production can peak anywhere, but only because its shape follows usage rather
+than a rule. Second, an $n$-year class runs for
+$n+1$ tax years, and a schedule with only $n$ entries is wrong on sight.
+
+The convention is a simplification, not a favour: it removes any need to know
+the purchase date, and over the full recovery it gives back exactly what it
+took, since the missing half-year at the front is the half-year granted at the
+end.
+
+The convention also **moves the switch**, and this is where section 6.3's
+warning becomes concrete. With a first-year fraction $q$, the recovery still to
+run at the start of year $t$ is $r_t = n - q - (t - 2)$, so with $q = 1/2$ it is
+$r_t = n - t + 1.5$ rather than $n - t + 1$. Feeding that into the condition
+$r_t \\le 1/d$ gives the MACRS switch year:
+
+$$ t^{*} = \\left\\lceil\\, n + 1.5 - \\frac{1}{d} \\,\\right\\rceil = \\left\\lceil\\, n + 1.5 - \\frac{n}{\\alpha} \\,\\right\\rceil $$
+
+The extra half-year is not cosmetic. It agrees with the no-convention formula
+for the three shortest classes and disagrees by a full year for the three
+longest ones, which is exactly the kind of off-by-one that survives a plausible
+check and still produces a wrong column.
+
+| Class | $\\alpha$ | $1/d$ | $t^{*}$ with the convention | $t^{*}$ without it | Actual |
+|---|---|---|---|---|---|
+| 3-year | 2 | 1.5 | 3 | 3 | 3 |
+| 5-year | 2 | 2.5 | 4 | 4 | 4 |
+| 7-year | 2 | 3.5 | 5 | 5 | 5 |
+| 10-year | 2 | 5 | 7 | 6 | 7 |
+| 15-year | 1.5 | 10 | 7 | 6 | 7 |
+| 20-year | 1.5 | 13.333 | 9 | 8 | 9 |
+
+The last column is what running the algorithm actually produces, and it matches
+the convention-adjusted formula in every class.
+
+### Worked example 7.1 — deriving the 5-year column by hand
+
+Run the algorithm on a basis of 1 with $n = 5$, $\\alpha = 2$, $q = 1/2$.
+
+$$ d = \\frac{2}{5} = 0.40 $$
+
+$$ D_1 = 0.5 \\times 0.40 = 0.20, \\qquad \\mathrm{BV}_1 = 0.80 $$
+
+Year 2: the recovery left is $r_2 = 5 - 0.5 = 4.5$, so the candidates are
+$0.40 \\times 0.80 = 0.32$ from declining balance and $0.80/4.5 = 0.1778$ from
+straight line. Declining balance wins, and $\\mathrm{BV}_2 = 0.48$.
+
+Year 3: $r_3 = 3.5$, candidates $0.40 \\times 0.48 = 0.192$ and $0.48/3.5 = 0.1371$.
+Declining balance again, $\\mathrm{BV}_3 = 0.288$.
+
+Year 4 is the switch, and the convention-adjusted closed form predicted it:
+$t^{*} = \\lceil 5 + 1.5 - 2.5 \\rceil = \\lceil 4 \\rceil = 4$. The two candidates are
+equal there,
+
+$$ 0.40 \\times 0.288 = 0.1152, \\qquad \\frac{0.288}{2.5} = 0.1152 $$
+
+and from year 4 onward straight line governs, so years 4 and 5 are both
+0.1152 and year 6 takes the remaining 0.0576. Multiplying by 100 gives
+**20.00, 32.00, 19.20, 11.52, 11.52, 5.76**, which is the published column to
+the last digit, and the entries sum to exactly 100%.
+
+## 7.3 The derived columns against the published ones
+
+Running the same algorithm for the six personal-property classes gives the
+table below. The published source is IRS Publication 946, Appendix A — a work
+of the United States government — and every value here was **derived**, then
+compared with it.
+
+| Year | 3-year | 5-year | 7-year | 10-year |
+|---|---|---|---|---|
+| 1 | 33.33 | 20.00 | 14.29 | 10.00 |
+| 2 | 44.44 | 32.00 | 24.49 | 18.00 |
+| 3 | 14.81 | 19.20 | 17.49 | 14.40 |
+| 4 | 7.41 | 11.52 | 12.49 | 11.52 |
+| 5 | — | 11.52 | 8.92 | 9.22 |
+| 6 | — | 5.76 | 8.92 | 7.37 |
+| 7 | — | — | 8.92 | 6.55 |
+| 8 | — | — | 4.46 | 6.55 |
+| 9 | — | — | — | 6.55 |
+| 10 | — | — | — | 6.55 |
+| 11 | — | — | — | 3.28 |
+
+The derivation reproduces the published table entry for entry with one narrow
+class of exception, and it is worth stating precisely because it is easy to
+mistake for an error in the method.
+
+| Class | Entries that differ | Derived | Published | Exact value |
+|---|---|---|---|---|
+| 3-year | year 2 | 44.44 | 44.45 | 44.44444 |
+| 5-year | none | — | — | exact at two decimals |
+| 7-year | years 5 and 7 | 8.92 | 8.93 | 8.92485 |
+| 10-year | year 9 | 6.55 | 6.56 | 6.55360 |
+| 15-year | years 9, 11, 13, 15 | 5.90 | 5.91 | 5.90490 |
+| 20-year | years 10, 12, 14, 16, 18, 20 | 4.462 | 4.461 | 4.46152 |
+
+Every disagreement is one unit in the last printed digit, and every one of them
+sits in the flat post-switch tail where the exact deductions are all equal. The
+cause is not the method: it is that the IRS rounds so the column totals exactly
+100.000%. Rounding each exact value on its own gives column totals of 99.99,
+99.98, 99.99 and 99.96 for the 3-, 7-, 10- and 15-year classes, and 100.006 for
+the 20-year class, so a few entries in the tail are nudged up or down to close
+the gap. **The underlying exact fractions agree in every case.** Use the
+published column when a question supplies one; the derivation is here so the
+column is never a black box, and so a missing table is never fatal.
+
+### Worked example 7.2 — the mid-quarter convention
+
+The half-year convention is suspended when more than 40% of the aggregate basis
+placed in service during the year lands in the final quarter — a rule that
+stops a firm from buying everything on 31 December and still claiming half a
+year. Under the **mid-quarter convention** each asset is treated as placed in
+service at the midpoint of its own quarter, so the first-year fraction becomes
+
+$$ q \\in \\left\\{ \\tfrac{7}{8},\\; \\tfrac{5}{8},\\; \\tfrac{3}{8},\\; \\tfrac{1}{8} \\right\\} $$
+
+for the first through fourth quarters. Take the 165,000 transformer of section
+5 as 5-year property and compare a first-quarter purchase with a
+fourth-quarter one.
+
+Running the algorithm with $q = 7/8$ gives 35.00, 26.00, 15.60, 11.01, 11.01,
+1.38, and with $q = 1/8$ it gives 5.00, 38.00, 22.80, 13.68, 10.94, 9.58. Both
+columns total exactly 100%, and both reproduce the published mid-quarter tables
+to the last digit with **no** rounding disagreement anywhere. Applied to
+165,000:
+
+| Tax year | Half-year | Mid-quarter, Q1 | Mid-quarter, Q4 |
+|---|---|---|---|
+| 1 | 33,000 | 57,750 | 8,250 |
+| 2 | 52,800 | 42,900 | 62,700 |
+| 3 | 31,680 | 25,740 | 37,620 |
+| 4 | 19,008 | 18,166.50 | 22,572 |
+| 5 | 19,008 | 18,166.50 | 18,051 |
+| 6 | 9,504 | 2,277 | 15,807 |
+| Total | 165,000 | 165,000 | 165,000 |
+
+The first-year deduction swings from 8,250 to 57,750 — a factor of seven — on
+an asset that is otherwise identical. Nothing about the total changes; only its
+timing does, which is precisely what the shield analysis of section 8 puts a
+price on.
+
+![Cumulative recovery of a five-year MACRS asset under three conventions: half-year, mid-quarter first quarter, and mid-quarter fourth quarter. All three columns come from the same algorithm with only the first-year fraction changed, all three finish at one hundred percent in the sixth tax year, and the first-quarter curve leads the fourth-quarter curve by roughly thirty percentage points through the middle years.](/courses/fe-ee/figures/econ3-macrs-conventions.svg)
+
+### Worked example 7.3 — the mid-month convention on a building
+
+Real property gets neither of the above. Residential rental property (27.5-year
+recovery) and nonresidential real property (39-year recovery) are depreciated
+**straight line** under a **mid-month convention**: the asset is treated as
+placed in service at the midpoint of the month it entered service, so for month
+$m$ of the tax year,
+
+$$ q_{m} = \\frac{12 - m + \\tfrac{1}{2}}{12}, \\qquad D_1 = \\frac{B}{n}\\,q_{m} $$
+
+A firm places a nonresidential building in service in May. The purchase was
+3,050,000, of which 650,000 is allocated to land. Find the first-year
+deduction.
+
+Land is **never depreciable**, so the basis is the structure alone:
+
+$$ B = 3{,}050{,}000 - 650{,}000 = 2{,}400{,}000 $$
+
+A full year at 39 years would be
+
+$$ \\frac{2{,}400{,}000}{39} = 61{,}538.46 $$
+
+May is month 5, so $q_5 = 7.5/12 = 0.625$ and
+
+$$ D_1 = 61{,}538.46 \\times 0.625 = 38{,}461.54 $$
+
+The remaining 4.5 months, worth 23,076.92, are recovered in tax year 40. As a
+check on the convention, the year-1 and final-year fractions add back to a full
+year: $0.625 + 0.375 = 1$, so 39 full years of recovery are delivered in 40 tax
+years. Applying the same formula to a 27.5-year residential rental placed in
+service in month 1 gives 3.4848%, which matches the published first-month entry
+of 3.485% exactly.
+
+### Worked example 7.4 — a full 7-year schedule, checked as an account
+
+The 165,000 transformer is classed as 7-year property. Build the tax schedule
+and verify it closes at every year.
+
+| Tax year | Rate | $D_t$ | Accumulated | Book value |
+|---|---|---|---|---|
+| 1 | 14.29% | 23,578.50 | 23,578.50 | 141,421.50 |
+| 2 | 24.49% | 40,408.50 | 63,987.00 | 101,013.00 |
+| 3 | 17.49% | 28,858.50 | 92,845.50 | 72,154.50 |
+| 4 | 12.49% | 20,608.50 | 113,454.00 | 51,546.00 |
+| 5 | 8.93% | 14,734.50 | 128,188.50 | 36,811.50 |
+| 6 | 8.92% | 14,718.00 | 142,906.50 | 22,093.50 |
+| 7 | 8.93% | 14,734.50 | 157,641.00 | 7,359.00 |
+| 8 | 4.46% | 7,359.00 | 165,000.00 | 0.00 |
+
+Accumulated plus book value is 165,000 on every one of the eight rows, and the
+deductions total 165,000 exactly — the whole basis, with the 15,000 of expected
+salvage playing no part whatsoever. Book value after year 5 is 36,811.50, and
+that is the number section 9 needs for a disposal at that date.`,
+      examTip: 'Three MACRS facts settle most questions before any arithmetic. Salvage is ignored, so the schedule ends at zero. The half-year convention makes an n-year class run for n+1 tax years, so the answer with n entries is wrong. And the year-2 percentage exceeds the year-1 percentage for every class — if your first year is the largest, you have forgotten the convention.',
+      importantNote: 'A recovery period is a statutory class, not an engineering estimate. A transformer with a 25-year service life can be 7-year property, and nothing about that is inconsistent: the tax code is allocating a cost on its own schedule, not predicting when the transformer fails.',
+    },
+    {
+      id: 'dep-shield-value',
+      title: '8. Taxes, Cash Flow, and What the Shield Is Worth',
+      content: `## 8.1 A non-cash expense that moves cash
+
+Everything so far has been bookkeeping. This section is the part that changes a
+project decision, and it turns on one observation: **depreciation is not a
+payment, but it is a deduction, and deductions are worth money.**
+
+Posting a schedule moves no cash. What it does is lower taxable income, which
+lowers the tax bill, and the tax bill is paid in cash. So a deduction of $D$
+at a tax rate $t$ leaves $tD$ of cash in the firm that would otherwise have
+gone to the treasury. That amount is the **depreciation tax shield**.
+
+The bookkeeping, with $R$ for revenue and $E$ for cash operating expenses:
+
+$$ \\mathrm{TI} = R - E - D $$
+
+$$ T = t\\,(R - E - D) $$
+
+$$ \\mathrm{ATCF} = R - E - T $$
+
+Substituting the tax into the cash flow and collecting terms gives the second
+standard form, which is the one to reach for whenever a question is about the
+**effect** of depreciation:
+
+$$ \\mathrm{ATCF} = (R - E) - t\\,(R - E - D) = (R - E)(1 - t) + t\\,D $$
+
+The two forms are the same identity written twice; they can never disagree.
+The first is faster when you only want the number. The second is better when
+you want to see why the number is what it is, because it separates the
+operating part $(R-E)(1-t)$, which no depreciation choice can touch, from the
+shield $tD$, which is the only part a schedule controls.
+
+### Worked example 8.1 — a full after-tax table
+
+The 165,000 transformer is treated as 5-year MACRS property. It earns 46,000 a
+year of revenue less cash expenses, and the firm's tax rate is 21%. Build the
+after-tax cash flow year by year and find its present worth at 10%.
+
+| Tax year | $D_t$ | $\\mathrm{TI}$ | Tax at 21% | Shield $tD_t$ | ATCF |
+|---|---|---|---|---|---|
+| 1 | 33,000 | 13,000 | 2,730 | 6,930 | 43,270 |
+| 2 | 52,800 | −6,800 | −1,428 | 11,088 | 47,428 |
+| 3 | 31,680 | 14,320 | 3,007.20 | 6,652.80 | 42,992.80 |
+| 4 | 19,008 | 26,992 | 5,668.32 | 3,991.68 | 40,331.68 |
+| 5 | 19,008 | 26,992 | 5,668.32 | 3,991.68 | 40,331.68 |
+| 6 | 9,504 | 36,496 | 7,664.16 | 1,995.84 | 38,335.84 |
+
+Every row satisfies both forms of the identity. Year 1, by the tax route:
+$46{,}000 - 2{,}730 = 43{,}270$. By the shield route:
+$46{,}000 \\times 0.79 = 36{,}340$ plus $0.21 \\times 33{,}000 = 6{,}930$, which is
+43,270 again.
+
+Year 2 is the instructive row. Depreciation of 52,800 exceeds the 46,000 of
+operating profit, so taxable income from this asset is **negative** and the
+tax entry is a credit of 1,428. That is not a bookkeeping trick: a firm with
+other profitable operations really does pay 1,428 less tax overall, and the
+after-tax cash flow of 47,428 exceeds the 46,000 the asset actually earned.
+Depreciation did not create cash — it protected 11,088 of it from tax.
+
+Discounting the six after-tax flows one year at a time at 10% gives a present
+worth of **185,063.65**. The same number arrives from the split form: the
+operating part is $36{,}340\\,(P/A, 10\\%, 6) = 158{,}270.17$ and the shield part is
+26,793.47, and those add to 185,063.64, agreeing to the rounding.
+
+## 8.2 The present worth of the shield
+
+Since the shield is just $t D_k$ in year $k$, its present worth is
+
+$$ \\mathrm{PW}_{\\text{shield}} = t \\sum_{k=1}^{N} D_k\\,(1 + i)^{-k} $$
+
+and for a straight-line schedule, where every $D_k$ is the same, the sum
+collapses onto the uniform-series factor:
+
+$$ \\mathrm{PW}_{\\text{shield}}^{\\mathrm{SL}} = \\frac{t\\,B}{n}\\,(P/A,\\, i,\\, n) $$
+
+Two things are fixed no matter which schedule is used, and it saves a great
+deal of confusion to name them. The **nominal** total shield is $tB$ for any
+method that writes off the whole basis — here $0.21 \\times 165{,}000 = 34{,}650$ —
+and it is the same for MACRS, straight line, or anything else. And at a
+discount rate of zero all schedules are worth exactly that. Every difference
+between methods is therefore a **discounting** difference, and it vanishes as
+$i \\to 0$.
+
+### Worked example 8.2 — the shield three ways
+
+For the 165,000 basis at a 21% rate and a 10% discount rate, compare 5-year
+MACRS against straight line over 6 years and straight line over 10 years.
+
+Straight line over 6 years deducts $165{,}000/6 = 27{,}500$ a year, so the annual
+shield is $0.21 \\times 27{,}500 = 5{,}775$ and
+
+$$ \\mathrm{PW} = 5{,}775\\,(P/A,\\, 10\\%,\\, 6) = 25{,}151.63 $$
+
+Straight line over 10 years deducts 16,500 a year, an annual shield of 3,465:
+
+$$ \\mathrm{PW} = 3{,}465\\,(P/A,\\, 10\\%,\\, 10) = 21{,}290.93 $$
+
+The two factors are 4.355261 and 6.144567; both are quoted here to six decimals
+and the products above come from the unrounded factors, which is why the second
+lands on a half-cent that rounds up. MACRS has to be discounted year by year
+because its deductions are not level; doing so gives **26,793.47**.
+
+| Schedule | Nominal shield | Present worth at 10% | Against MACRS |
+|---|---|---|---|
+| 5-year MACRS | 34,650 | 26,793.47 | — |
+| Straight line, 6 years | 34,650 | 25,151.63 | −1,641.84 |
+| Straight line, 10 years | 34,650 | 21,290.93 | −5,502.54 |
+
+All three shield the same 34,650 in nominal dollars. Acceleration over the same
+six years is worth 1,641.84; stretching the same total over ten years instead
+of six costs 3,860.71, more than twice as much. That ordering is the practical
+lesson: **the length of the recovery period matters more than the shape of the
+schedule inside it.**
+
+![Present worth of the depreciation tax shield against the discount rate, for a 165,000 basis at a 21 percent tax rate. All three schedules are worth 34,650 at a zero discount rate and separate as the rate rises. Five-year MACRS is highest, straight line over six years next, and straight line over ten years lowest. At ten percent they read 26,793.47, 25,151.63 and 21,290.93.](/courses/fe-ee/figures/econ3-shield-pv.svg)
+
+The figure makes the structure plain. All three curves start together at 34,650
+because at a zero discount rate timing is worth nothing, and they fan out as
+the rate rises. The gap between the two six-year schedules stays small at every
+rate, while the ten-year curve falls away steadily — which is why a firm
+lobbies for a shorter class life far harder than it argues about the
+declining-balance multiplier.`,
+      examTip: 'ATCF = (R − E)(1 − t) + tD is the form to memorise. The first term contains no depreciation at all, so any question about the effect of a depreciation choice is a question about tD and nothing else. If your answer changes the first term, you have made an error.',
+      importantNote: 'The nominal total shield is tB for every method that recovers the whole basis, so no method shields more money than another — it only shields it sooner. Anything that appears to change the total is really changing the amount deducted, which happens when one schedule subtracts salvage and another does not.',
+    },
+    {
+      id: 'dep-disposal-depletion',
+      title: '9. Disposal, Recapture, and Depletion',
+      content: `## 9.1 Book value sets the tax, not the purchase price
+
+Section 4.3 stated the disposal rule. This section derives its shape and works
+the three cases, because disposal is where an otherwise correct after-tax study
+most often goes wrong.
+
+Write $\\mathrm{SP}$ for the sale price and $\\mathrm{BV}$ for the book value under
+the schedule actually used. The gain is measured against book value:
+
+$$ G = \\mathrm{SP} - \\mathrm{BV} $$
+
+and when the sale price does not exceed the original basis the whole gain is
+**depreciation recapture**, taxed at the ordinary rate because it is simply the
+reversal of deductions already taken:
+
+$$ T_{\\text{disposal}} = t\\,(\\mathrm{SP} - \\mathrm{BV}), \\qquad \\mathrm{NP} = \\mathrm{SP} - t\\,(\\mathrm{SP} - \\mathrm{BV}) $$
+
+If the sale price exceeds the original basis, the excess is not a reversal of
+anything — it is genuine appreciation — and it is split off and taxed at the
+capital-gain rate $t_{g}$:
+
+$$ R_{\\text{ord}} = \\min(\\mathrm{SP},\\, B) - \\mathrm{BV}, \\qquad G_{\\text{cap}} = \\max(0,\\; \\mathrm{SP} - B) $$
+
+$$ \\mathrm{NP} = \\mathrm{SP} - t\\,R_{\\text{ord}} - t_{g}\\,G_{\\text{cap}} $$
+
+A sale below book value produces a **loss**, and the same first formula handles
+it with no special case: $G$ is negative, the tax is negative, and the firm
+keeps more than the sale price because the loss shelters income earned
+elsewhere.
+
+![Net after-tax proceeds against sale price for a 165,000 asset with a book value of 36,811.50 at disposal. The forty-five degree line is the sale price itself; the net-after-tax line lies above it left of book value, where a deductible loss adds to the proceeds, and below it to the right, where recapture is taxed at twenty-one percent. A second slope change occurs at the original basis of 165,000, where the lower capital-gain rate takes over.](/courses/fe-ee/figures/econ3-disposal-regions.svg)
+
+The figure shows why this cannot be reasoned about with intuition alone. Left
+of book value the after-tax line sits **above** the sale price. Right of it the
+line falls below, and it crosses the sale-price line exactly at the book value
+— the only price with no tax consequence at all.
+
+### Worked example 9.1 — three disposals of one asset
+
+The 165,000 transformer is 7-year MACRS property, so from the schedule of
+example 7.4 its book value at the end of tax year 5 is 36,811.50. The ordinary
+rate is 21% and the capital-gain rate is 15%. Find the net after-tax proceeds
+for sale prices of 60,000, 25,000 and 180,000.
+
+**Sold for 60,000.** The gain is entirely recapture:
+
+$$ G = 60{,}000 - 36{,}811.50 = 23{,}188.50 $$
+
+$$ T = 0.21 \\times 23{,}188.50 = 4{,}869.585, \\qquad \\mathrm{NP} = 60{,}000 - 4{,}869.59 = 55{,}130.41 $$
+
+Because the two-decimal MACRS percentages leave the book value on a half-cent,
+the tax lands on 4,869.585 and is carried as 4,869.59; every disposal figure in
+this section is rounded to the cent the same way.
+
+Note that the transformer sold for far less than the 165,000 it cost — a loss
+in ordinary language — and still generated a tax bill, because MACRS had
+already deducted more than the asset's real decline in value.
+
+**Sold for 25,000.** Now the sale is below book value:
+
+$$ G = 25{,}000 - 36{,}811.50 = -11{,}811.50 $$
+
+The tax is $0.21 \\times (-11{,}811.50) = -2{,}480.42$, a credit, so the firm nets
+$25{,}000 + 2{,}480.42 = 27{,}480.42$ — more than the buyer paid.
+
+**Sold for 180,000.** The price exceeds the original basis, so the gain splits.
+Recapture runs from book value up to the basis,
+
+$$ R_{\\text{ord}} = 165{,}000 - 36{,}811.50 = 128{,}188.50, \\qquad G_{\\text{cap}} = 180{,}000 - 165{,}000 = 15{,}000 $$
+
+$$ T = 0.21 \\times 128{,}188.50 + 0.15 \\times 15{,}000 = 26{,}919.59 + 2{,}250 = 29{,}169.59 $$
+
+leaving 150,830.41. The recaptured portion is by far the larger piece, which is
+the general case: an asset has usually been depreciated much further than it
+has appreciated.
+
+## 9.2 The half-year convention applies on the way out as well
+
+One detail catches people in replacement studies. If MACRS property is disposed
+of before the end of its recovery period, only **half** the year's normal
+deduction is allowed in the year of disposal, because the half-year convention
+runs in both directions. Selling the 7-year transformer during tax year 6 would
+allow $0.5 \\times 14{,}718 = 7{,}359$ rather than 14,718, and the book value used
+for the gain calculation must be computed after that half deduction, not
+before. Forgetting this overstates book value, understates the gain, and
+understates the tax.
+
+## 9.3 Depletion, for exhaustible resources
+
+Depreciation allocates the cost of an asset that wears out. **Depletion**
+allocates the cost of a natural deposit that is used up — ore, oil, gas,
+timber, gravel. Two methods coexist, and the taxpayer generally takes whichever
+is larger in a given year.
+
+**Cost depletion** is units-of-production applied to a deposit. With
+$B_{p}$ the depletable basis of the property and $Q$ the recoverable quantity,
+
+$$ u_{\\text{dep}} = \\frac{B_{p}}{Q}, \\qquad D_{\\text{cost}} = u_{\\text{dep}}\\,Q_t $$
+
+where $Q_t$ is the quantity extracted and sold in year $t$. Like units of
+production, cost depletion can never recover more than the basis in total.
+
+**Percentage depletion** ignores the basis and takes a statutory fraction $r$
+of gross income from the property, subject to a ceiling of half the taxable
+income from that property before the depletion deduction:
+
+$$ D_{\\text{pct}} = \\min\\!\\left(r\\,\\mathrm{GI},\\; 0.5\\,\\mathrm{TI}_{p}\\right) $$
+
+The statutory rates come from the Internal Revenue Code; 15% covers a broad
+group of hard-rock minerals, with lower rates for common materials such as sand
+and gravel and higher ones for a short list including sulphur and uranium.
+Because it is a fraction of income rather than of cost, percentage depletion
+can in principle exceed the original basis over the life of the property — the
+structural difference from every method in this chapter.
+
+### Worked example 9.2 — cost against percentage depletion
+
+A mine has a depletable basis of 4,800,000 and an estimated recoverable reserve
+of 1,600,000 tons. In one year it extracts and sells 180,000 tons for gross
+income of 2,700,000, and taxable income from the property before depletion is
+760,000. The statutory percentage rate is 15%. Find the allowable deduction.
+
+Cost depletion first:
+
+$$ u_{\\text{dep}} = \\frac{4{,}800{,}000}{1{,}600{,}000} = 3.00 \\ \\text{per ton} $$
+
+$$ D_{\\text{cost}} = 3.00 \\times 180{,}000 = 540{,}000 $$
+
+Percentage depletion next, with its ceiling:
+
+$$ r\\,\\mathrm{GI} = 0.15 \\times 2{,}700{,}000 = 405{,}000, \\qquad 0.5\\,\\mathrm{TI}_{p} = 0.5 \\times 760{,}000 = 380{,}000 $$
+
+so percentage depletion is limited to 380,000. The larger of the two methods is
+cost depletion, and the deduction is **540,000**. Note that the ceiling bound,
+not the rate, decided the percentage figure — checking the 50% limit before
+comparing methods is the step most often skipped.`,
+      examTip: 'On any disposal, compute book value under the schedule actually in force before you touch the sale price. Then gain equals sale price minus book value, and the sign of that difference tells you whether tax is owed or refunded. Comparing the sale price with the purchase price answers no question the tax code asks.',
+      importantNote: 'Depletion and depreciation are different allowances. Cost depletion cannot recover more than the property basis, exactly like a depreciation schedule; percentage depletion is a fraction of income and over a long life can exceed the basis entirely. When both are available, the larger is taken in each year.',
+    },
+    {
+      id: 'dep-decision',
+      title: '10. One Project, Two Schedules: NPV and IRR Both Ways',
+      content: `## 10.1 The only comparison that matters
+
+A depreciation method is not chosen for its own sake. It is chosen — where
+there is any choice — because of what it does to a project decision. So take
+one project and run it twice, changing nothing but the schedule.
+
+- First cost 165,000 at time zero
+- Revenue less cash operating expenses 42,000 a year for 6 years
+- Sold at the end of year 6 for 30,000
+- Ordinary tax rate 21%, after-tax MARR 10%
+- Schedule A: 5-year MACRS, half-year convention
+- Schedule B: straight line over 6 years to zero
+
+Both schedules recover the whole 165,000 by the end of year 6, so book value at
+disposal is zero under **both**, the entire 30,000 sale price is recapture under
+both, and the disposal tax is identical:
+
+$$ \\mathrm{NP} = 30{,}000 - 0.21 \\times 30{,}000 = 23{,}700 $$
+
+That is deliberate. With the disposal held identical and the total deduction
+held identical, the only surviving difference between the two runs is **when**
+the deductions land, which is exactly the quantity under study.
+
+### Worked example 10.1 — present worth under both schedules
+
+The operating part of the after-tax cash flow is common to both:
+$42{,}000 \\times 0.79 = 33{,}180$. Adding each schedule's shield gives:
+
+| Year | $D$ (MACRS) | ATCF (MACRS) | $D$ (SL) | ATCF (SL) |
+|---|---|---|---|---|
+| 1 | 33,000 | 40,110 | 27,500 | 38,955 |
+| 2 | 52,800 | 44,268 | 27,500 | 38,955 |
+| 3 | 31,680 | 39,832.80 | 27,500 | 38,955 |
+| 4 | 19,008 | 37,171.68 | 27,500 | 38,955 |
+| 5 | 19,008 | 37,171.68 | 27,500 | 38,955 |
+| 6 | 9,504 | 58,875.84 | 27,500 | 62,655 |
+
+Year 6 carries the 23,700 of after-tax disposal proceeds in both columns.
+Discounting each year separately at 10% and subtracting the 165,000 first cost:
+
+$$ \\mathrm{PW}_{\\mathrm{MACRS}} = 19{,}679.06, \\qquad \\mathrm{PW}_{\\mathrm{SL}} = 18{,}037.21 $$
+
+The difference is 1,641.84, and it can be predicted without building either
+column, because the whole gap is the shield gap:
+
+$$ \\Delta\\mathrm{PW} = t\\sum_{k=1}^{6}\\left(D_k^{\\mathrm{A}} - D_k^{\\mathrm{B}}\\right)(1+i)^{-k} $$
+
+which is 26,793.47 minus 25,151.63 from worked example 8.2 — the same
+1,641.84, arrived at from a completely different direction. Two independent
+routes agreeing to the cent is the check worth doing on any after-tax
+comparison.
+
+### Worked example 10.2 — internal rate of return, and where the decision flips
+
+Setting present worth to zero and solving for the rate gives
+
+$$ \\mathrm{IRR}_{\\mathrm{MACRS}} = 13.84\\%, \\qquad \\mathrm{IRR}_{\\mathrm{SL}} = 13.43\\% $$
+
+against a pre-tax IRR of 16.44% on the same project. Three readings follow, and
+the third is the one an exam is most likely to test.
+
+**Tax lowers the return.** Going from 16.44% to the low thirteens is the tax
+rate at work; a pre-tax IRR compared against an after-tax MARR is the classic
+inconsistent comparison.
+
+**Acceleration raises it, modestly.** 41 basis points on this project. Real,
+computable and small — not the transformation the phrase "accelerated
+depreciation" suggests.
+
+**There is a band where the choice decides the project.** For any after-tax
+MARR strictly between 13.43% and 13.84%, straight line rejects this project and
+MACRS accepts it. Outside that band both schedules agree, and the depreciation
+choice changes the size of the answer without changing the answer.
+
+![After-tax present worth against MARR for one project under two depreciation schedules. The five-year MACRS curve lies slightly above the six-year straight-line curve at every rate, crossing zero at 13.84 percent against 13.43 percent, and the narrow band between the two crossings is shaded as the region where the same project is rejected under one schedule and accepted under the other.](/courses/fe-ee/figures/econ3-npv-by-method.svg)
+
+## 10.2 What changes and what does not
+
+| Quantity | Changed by the depreciation choice? |
+|---|---|
+| First cost | No |
+| Revenue and cash operating expenses | No |
+| Nominal total deduction | No, if both recover the whole basis |
+| Timing of the deductions | Yes — this is the whole effect |
+| Present worth of the shield | Yes |
+| After-tax present worth and IRR | Yes, by exactly the shield difference |
+| Book value at any interim date | Yes, which changes the tax on an early disposal |
+
+The last row is the one that turns a small effect into a large one. In this
+project both schedules reach zero book value by the disposal date, so the
+disposal tax was identical and the effect stayed at 1,641.84. Move the sale to
+the end of year 3 and the book values differ by
+$82{,}500 - 47{,}520 = 34{,}980$, so for any sale price above both book values
+the recapture differs by that same 34,980 and the disposal tax differs by
+$0.21 \\times 34{,}980 = 7{,}345.80$ — several times
+the entire timing effect. **When a study includes an early disposal, the
+depreciation method is doing most of its work through the book value, not
+through the annual shield.**`,
+      examTip: 'When a question asks how a depreciation method affects a project, compute the present worth of the shield for each method and take the difference. That difference IS the difference in after-tax present worth, provided both schedules recover the same total and the disposal treatment is unchanged. Building two full cash-flow tables gets the same answer far more slowly.',
+      importantNote: 'Never compare a pre-tax rate of return with an after-tax MARR, or the reverse. On the project above they differ by more than 250 basis points, which is enough to flip an accept into a reject on its own, before any depreciation question is asked.',
+    },
+    {
+      id: 'dep-problem-sets',
+      title: '11. Problem Sets',
+      content: `Work each problem on paper before reading the answer. Every schedule you
+build should be checked the same way the worked examples were: accumulated
+depreciation plus book value must equal the basis on every row, and the column
+must total the depreciable amount exactly. All amounts are in dollars.
+
+## Problem Set A — building a schedule
+
+**A1.** A CNC machining centre is invoiced at 78,000. Sales tax is 4,680,
+inbound freight and rigging 1,900, and the reinforced foundation with power
+and coolant connections 9,420. Operator training costs 3,000 and a first-year
+maintenance contract costs 2,500. Find the depreciable basis.
+
+*Answer:* only the amounts required to place the asset in service capitalise:
+$78{,}000 + 4{,}680 + 1{,}900 + 9{,}420 = 94{,}000$. Training and the maintenance
+contract are period expenses. **B = 94,000.**
+
+**A2.** The machine of A1 has an estimated salvage of 10,000 and an 8-year
+useful life. Using straight line, find the annual deduction and the book value
+after 5 years, and verify the closure identity at year 5.
+
+*Answer:* $D = (94{,}000 - 10{,}000)/8 = 10{,}500$ a year, so
+$\\mathrm{BV}_5 = 94{,}000 - 5 \\times 10{,}500 = 41{,}500$. Accumulated depreciation is
+52,500, and $52{,}500 + 41{,}500 = 94{,}000$, the basis. **10,500 and 41,500.**
+
+**A3.** A packaging line costs 96,000, has an estimated salvage of 24,000, and
+an 8-year life. Under 200% declining balance, in which year does the salvage
+floor first bite, what deduction is allowed that year, and what happens
+afterwards?
+
+*Answer:* $d = 2/8 = 0.25$, and unrestrained book values are
+$96{,}000(0.75)^t$: 72,000, 54,000, 40,500, 30,375, 22,781.25. The floor is
+crossed at $t_{\\text{floor}} = \\ln(0.25)/\\ln(0.75) = 4.819$, so **year 5** is the
+first cut year and its deduction is $30{,}375 - 24{,}000 = 6{,}375$ rather than the
+7,593.75 the recursion wanted. Years 6, 7 and 8 get **nothing**. The five
+non-zero deductions total 72,000, which is $B - S$.
+
+**A4.** A test rig costs 80,000, has a salvage of 5,000 and a 6-year life.
+Under 150% declining balance with a switch to straight line, identify the
+switch year and the deduction taken from that year onward.
+
+*Answer:* $d = 1.5/6 = 0.25$. The declining-balance candidates are 20,000,
+15,000, 11,250, 8,437.50; the straight-line-over-remaining candidates are
+12,500, 11,000, 10,000, 9,583.33. They cross in **year 4**, where 9,583.33
+beats 8,437.50, and 9,583.33 is then taken in years 4, 5 and 6. Book value
+lands on 5,000 and the column totals 75,000.
+
+**A5.** A substation battery bank costs 120,000, has a salvage of 12,000 and an
+8-year life. Under sum-of-years-digits, find $D_3$ and $\\mathrm{BV}_3$, using the
+closed form for the book value.
+
+*Answer:* $\\mathrm{SYD} = 8 \\times 9/2 = 36$, so
+$D_3 = (6/36)(108{,}000) = 18{,}000$. The closed form gives
+$\\mathrm{BV}_3 = 120{,}000 - 108{,}000\\,[3(17-3)]/[8 \\times 9] = 120{,}000 - 63{,}000 = 57{,}000$.
+Year by year, $24{,}000 + 21{,}000 + 18{,}000 = 63{,}000$ of accumulated
+depreciation confirms it. **18,000 and 57,000.**
+
+**A6.** A stamping press costs 210,000, has a salvage of 30,000, and is rated
+for 900,000 strokes. It runs 120,000, 165,000 and 145,000 strokes in its first
+three years. Find $D_3$ and the book value at the end of year 3.
+
+*Answer:* $u = 180{,}000/900{,}000 = 0.20$ per stroke, so
+$D_3 = 0.20 \\times 145{,}000 = 29{,}000$. Total strokes to date are 430,000, giving
+86,000 of accumulated depreciation and a book value of 124,000. **29,000 and
+124,000.**
+
+**A7.** A 250,000 asset is 5-year MACRS property placed in service under the
+half-year convention. Build the column, give the book value at the end of tax
+year 3, and state how many tax years the schedule occupies.
+
+*Answer:* the percentages are 20.00, 32.00, 19.20, 11.52, 11.52 and 5.76, so
+the deductions are 50,000, 80,000, 48,000, 28,800, 28,800 and 14,400. They sum
+to 250,000. Accumulated through year 3 is 178,000, so
+$\\mathrm{BV}_3 = 72{,}000$. The schedule occupies **six** tax years, because the
+half-year convention pushes half of the first year to the end.
+
+**A8.** The same 250,000 asset is instead placed in service in the third
+quarter of a year in which the mid-quarter convention applies. Find the
+first-year deduction and compare it with the half-year answer.
+
+*Answer:* the third-quarter first-year fraction is $q = 3/8$, and running the
+algorithm gives a first-year rate of 15.00%, so $D_1 = 37{,}500$ against the
+50,000 the half-year convention would have allowed — 12,500 less, deferred into
+later years. The column still totals 250,000.
+
+## Problem Set B — reading a decision off the schedule
+
+Unless stated otherwise, use an ordinary tax rate of 21% and an after-tax MARR
+of 12%.
+
+**B1.** The 250,000 asset of A7 produces 90,000 a year of revenue less cash
+operating expenses. Find the after-tax cash flow in tax year 2, by both forms
+of the identity.
+
+*Answer:* $D_2 = 80{,}000$. By the shield form,
+$90{,}000 \\times 0.79 = 71{,}100$ plus $0.21 \\times 80{,}000 = 16{,}800$, giving
+**87,900**. By the tax form, taxable income is $90{,}000 - 80{,}000 = 10{,}000$, the
+tax is 2,100, and $90{,}000 - 2{,}100 = 87{,}900$. They agree, as they must.
+
+**B2.** Find the present worth of the depreciation tax shield on that asset at
+12%, and compare it with straight line over 5 years on the same 250,000 basis.
+
+*Answer:* discounting $0.21 D_k$ year by year gives **38,750.07** for MACRS.
+Straight line deducts 50,000 a year, an annual shield of 10,500, and
+$(P/A, 12\\%, 5) = 3.604776$, so its present worth is
+$10{,}500 \\times 3.604776 = 37{,}850.15$. The nominal shield is
+$0.21 \\times 250{,}000 = 52{,}500$ under both. Acceleration is worth **899.92**.
+
+**B3.** The asset is sold at the end of tax year 4 for 100,000. Find the book
+value, the taxable gain and the net after-tax proceeds.
+
+*Answer:* accumulated through year 4 is 82.72% of the basis, so
+$\\mathrm{BV}_4 = 250{,}000 \\times 0.1728 = 43{,}200$. The gain is
+$100{,}000 - 43{,}200 = 56{,}800$, all of it recapture because the price is below
+the original basis. The tax is $0.21 \\times 56{,}800 = 11{,}928$, leaving
+**88,072**.
+
+**B4.** The same asset is sold at the end of tax year 4 for 30,000 instead.
+Find the net after-tax proceeds.
+
+*Answer:* the gain is $30{,}000 - 43{,}200 = -13{,}200$, a deductible loss. The tax
+is $0.21 \\times (-13{,}200)$, a credit of 2,772, so the firm nets
+$30{,}000 + 2{,}772 = 32{,}772$ — more than the buyer paid. **32,772.**
+
+**B5.** By how much does the choice between 5-year MACRS and 5-year straight
+line change the after-tax present worth of the project in B1, assuming the
+asset is kept for the full recovery and the disposal treatment is identical
+under both?
+
+*Answer:* the operating term $(R-E)(1-t)$ is untouched by the depreciation
+choice and the disposal is identical, so the entire difference is the shield
+difference from B2: **899.92 in favour of MACRS**. No cash-flow table is
+needed.
+
+**B6.** A firm buys a warehouse for 4,200,000, of which 900,000 is allocated to
+land, and places it in service in September. Find the first-year depreciation
+deduction.
+
+*Answer:* land is not depreciable, so $B = 3{,}300{,}000$ over a 39-year recovery,
+straight line, mid-month. September is month 9, so $q_9 = 3.5/12$ and
+
+$$ D_1 = \\frac{3{,}300{,}000}{39} \\times \\frac{3.5}{12} = 84{,}615.38 \\times 0.291667 = 24{,}679.49 $$
+
+**24,679.49.** A full year would be 84,615.38.
+
+**B7.** A quarry has a depletable basis of 6,300,000 against an estimated
+recoverable reserve of 2,100,000 tons. In one year it sells 240,000 tons for
+gross income of 3,600,000, and taxable income from the property before
+depletion is 1,000,000. The statutory rate is 15%. Find the allowable
+depletion.
+
+*Answer:* cost depletion is $(6{,}300{,}000/2{,}100{,}000) = 3.00$ per ton, so
+$3.00 \\times 240{,}000 = 720{,}000$. Percentage depletion is
+$0.15 \\times 3{,}600{,}000 = 540{,}000$, but the ceiling is
+$0.5 \\times 1{,}000{,}000 = 500{,}000$, so it is limited to 500,000. The larger is
+**720,000**, from cost depletion.
+
+**B8.** A colleague argues that switching from straight line to MACRS "creates"
+about 900 of extra tax deduction on the asset in B2. What is wrong with that
+statement, and what would you say instead?
+
+*Answer:* nothing is created. Both schedules deduct the full 250,000 and both
+shield exactly $0.21 \\times 250{,}000 = 52{,}500$ of tax in nominal dollars. What
+MACRS changes is **when** those deductions land, and 899.92 is the present
+worth at 12% of moving them earlier — a timing gain, not extra deduction. The
+distinction matters because the timing gain shrinks toward zero as the discount
+rate falls, while a genuine increase in deduction would not.`,
+      examTip: 'Under exam time pressure, build the schedule as a four-column table — deduction, accumulated, book value, and a running check of accumulated plus book value — rather than computing single years in isolation. The fourth column costs nothing and catches the arithmetic slip that would otherwise propagate through every remaining row.',
+      importantNote: 'In every problem above, the sanity check is the same and it is fast: a book method must end on the salvage value, a MACRS column must end on zero and total 100% of the basis, and accumulated depreciation plus book value must equal the basis at every intermediate year.',
+    },
   ],
   keyTakeaways: [
     'Straight-line: D = (Cost-Salvage)/Life; produces equal annual deductions.',
@@ -3244,6 +4423,14 @@ with a small number of rows.`,
     'SYD: D_t = (Remaining years/SYD)×(Cost-Salvage); SYD = n(n+1)/2.',
     'Book value = Cost - Accumulated depreciation; differs from market value.',
     'Depreciation creates tax shield: tax savings = D × tax rate.',
+    'Book, tax and economic depreciation answer three different questions; only the third is loss of value.',
+    'Basis is the invoice price plus everything needed to place the asset in service — not interest or insurance.',
+    'Declining balance uses salvage only as a floor; it switches to straight line once the recovery left to run falls to 1/d years.',
+    'MACRS percentages are derivable: declining balance, switch to straight line, half-year convention, no salvage.',
+    'ATCF = (R − E)(1 − t) + tD isolates the shield, so a depreciation choice can only move the tD term.',
+    'The nominal shield tB is the same for every method that recovers the full basis; methods differ only in timing.',
+    'On disposal, gain is measured against BOOK value, and recapture up to the original basis is taxed as ordinary income.',
+    'A schedule closes when accumulated depreciation plus book value equals the basis at every year.',
   ],
 },
 
