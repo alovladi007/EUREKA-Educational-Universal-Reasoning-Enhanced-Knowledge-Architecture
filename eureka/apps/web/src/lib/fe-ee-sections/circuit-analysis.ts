@@ -3264,9 +3264,9 @@ Low PF means:
       title: '2. Complex Power and Power Factor Correction',
       content: `## 2.1 Complex Power
 
-**$S = V \\cdot I$*** (voltage phasor times conjugate of current phasor)
+Complex power is the voltage phasor multiplied by the CONJUGATE of the current phasor. The star belongs to the definition; it is not decoration.
 
-**$S = P + jQ = |V|\\cdot |I|\\angle (\\theta v - \\theta i)$**
+$$\\mathbf{S} = \\mathbf{V}\\,\\mathbf{I}^{*} = P + jQ = \\lvert V \\rvert \\lvert I \\rvert \\angle(\\theta_{v} - \\theta_{i})$$
 
 For a load with impedance Z = R + jX:
 - **$P = I^{2}\\cdot R$** (real power dissipated in resistance)
@@ -3301,9 +3301,13 @@ The capacitor bank must supply 42.1 kVAR of reactive power.`,
 
 A single-phase load draws 20 A rms at 240 V rms with a lagging power factor of 0.80.
 
-$$S = V I = 240 \\times 20 = 4800 VA$$
-P = S cos(theta) = 4800 x 0.80 = **3840 W**
-Q = S sin(theta), and sin(theta) = sqrt(1 - 0.64) = 0.60, so Q = 4800 x 0.60 = **2880 VAR** (lagging, so inductive and positive by convention)
+$$S = VI = 240 \\times 20 = 4800\\ \\mathrm{VA}$$
+
+$$P = S\\cos\\theta = 4800 \\times 0.80 = 3840\\ \\mathrm{W}$$
+
+$$\\sin\\theta = \\sqrt{1 - 0.64} = \\sqrt{0.36} = 0.60 \\qquad Q = 4800 \\times 0.60 = 2880\\ \\mathrm{VAR}$$
+
+The factor is lagging, so the load is inductive and Q is positive by the usual convention.
 
 Check the triangle: sqrt(3840^2 + 2880^2) = sqrt(14.75e6 + 8.29e6) = sqrt(23.04e6) = 4800 VA. Consistent.
 
@@ -3313,17 +3317,27 @@ The phase angle is arccos(0.80) = **36.9 degrees**, current lagging.
 
 Correct the load above to unity power factor at 60 Hz. The capacitor must supply the whole 2880 VAR:
 
-$$Q_C = V^2/X_C, so X_C = V^2/Q_C = 240^2/2880 = 57600/2880 = 20 ohm$$.
+A capacitor's reactive output is fixed by its reactance through $Q_C = V^{2}/X_C$, so
 
-C = 1/(omega X_C) = 1/(377 x 20) = 1/7540 = **133 microfarad**.
+$$X_C = V^{2}/Q_C = 57600/2880 = 20\\ \\Omega$$
+
+$$C = \\frac{1}{\\omega X_C} = \\frac{1}{377 \\times 20} = 133\\ \\mu\\mathrm{F}$$
 
 What changes: P stays at 3840 W — the capacitor supplies no real power. But S falls from 4800 VA to 3840 VA, so the line current falls from 20 A to 3840/240 = **16 A**, a 20% reduction. That current reduction is the whole economic point: smaller conductors and lower I squared R losses in the feeder.
 
 ## 3.3 Correcting to 0.95 rather than unity
 
-Full correction is rarely economic. At pf = 0.95, theta = 18.2 degrees and the load may retain Q = P tan(theta) = 3840 x 0.329 = **1264 VAR**.
+Full correction is rarely economic. At pf = 0.95 the angle is 18.19 degrees and its tangent is 0.32868, so the supply is allowed to keep carrying
 
-The capacitor supplies only the difference: 2880 - 1264 = **1616 VAR**, needing X_C = 57600/1616 = 35.6 ohm and C = 1/(377 x 35.6) = **74.5 microfarad** — barely more than half the capacitance for most of the benefit. Diminishing returns near unity is why utilities set a target rather than demanding unity.
+$$Q_{2} = P\\tan\\phi_{2} = 3840 \\times 0.32868 = 1262.1\\ \\mathrm{VAR}$$
+
+The capacitor supplies only the shortfall between what the load wants and what the supply may still deliver:
+
+$$Q_C = 2880 - 1262.1 = 1617.9\\ \\mathrm{VAR}$$
+
+$$X_C = 57600/1617.9 = 35.60\\ \\Omega \\qquad C = \\frac{1}{377 \\times 35.60} = 74.5\\ \\mu\\mathrm{F}$$
+
+That is **74.5 microfarad** — barely more than half the capacitance of the unity-correction case, for most of the benefit. Diminishing returns near unity is why utilities set a target rather than demanding unity.
 
 ## 3.4 Reading the sign of Q
 
@@ -3395,10 +3409,9 @@ while the current is at full amplitude.
 
 ## 4.3 Complex power, and the sign convention that matters
 
-**$S = V I$*** (voltage phasor times the CONJUGATE of the current phasor)
-$$= P + jQ$$.
+$$\\mathbf{S} = \\mathbf{V}\\,\\mathbf{I}^{*} = P + jQ$$
 
-The conjugate is not optional. Using V I instead of V I* flips the sign of Q
+The star is the conjugate of the current phasor, and it is not optional. Using V I instead of V I* flips the sign of Q
 and turns a lagging load into a leading one.
 
 **Worked:** V = 240 at 0 degrees, I = 12 at -30 degrees (lagging).
@@ -3521,7 +3534,7 @@ Q_allowed = 10 x 0.203 = **2.03 kVAR**
 The capacitor bank must produce the remainder: Q_C = 4.5 - 2.03 =
 **2.47 kVAR**. Converting that to hardware,
 
-X_C = V^2/Q_C = 57600/2470 = 23.3 ohm, and C = 1/(omega X_C) = 1/(377 x 23.3) = **113.8 microfarad**
+$$X_C = V^{2}/Q_C = 57600/2470 = 23.3\\ \\Omega \\qquad C = \\frac{1}{\\omega X_C} = \\frac{1}{377 \\times 23.3} = 113.8\\ \\mu\\mathrm{F}$$
 
 After correction the apparent power falls to 10/0.98 = 10.2 kVA and the line
 current to 10,200/240 = **42.5 A** — a 7% reduction for the climb from 0.912
@@ -3555,6 +3568,1233 @@ delivered — capacity recovered from bookkeeping rather than from copper.`,
         },
       ],
     },
+    {
+      id: 'acpw-instantaneous',
+      title: '6. Instantaneous Power from the Product of the Waveforms',
+      content: `## 6.1 Fixing the sign before fixing the algebra
+
+Every sign in this chapter descends from one bookkeeping choice, so the choice is worth stating before any expansion happens. Under the **passive sign convention** the reference arrow for current enters the terminal marked positive, and the instantaneous power of the element is the plain product of the two waveforms:
+
+$$p(t) = v(t)\\,i(t)$$
+
+A positive $p$ then means the element is taking energy out of the circuit at that instant; a negative $p$ means it is handing energy back. An ideal resistor never shows a negative $p$; an ideal source usually does. Every later sign - the sign of Q, the direction a capacitor bank pushes VARs, whether a load is called leading or lagging - is a consequence of this one convention, and reversing it reverses all of them together.
+
+Take the voltage as the angle reference and let the current lag it by $\\theta$:
+
+$$v(t) = V_m\\cos(\\omega t) \\qquad i(t) = I_m\\cos(\\omega t - \\theta)$$
+
+## 6.2 The product-to-sum expansion
+
+Multiplying two cosines of the same frequency produces a constant and a second harmonic, never anything else. The identity that does the work is
+
+$$\\cos A\\,\\cos B = \\tfrac{1}{2}\\left[\\cos(A - B) + \\cos(A + B)\\right]$$
+
+Applying it with $A = \\omega t$ and $B = \\omega t - \\theta$ gives
+
+$$p(t) = \\frac{V_m I_m}{2}\\left[\\cos\\theta + \\cos(2\\omega t - \\theta)\\right]$$
+
+The prefactor $V_m I_m/2$ is exactly the product of the two rms values, since $V = V_m/\\sqrt{2}$ and $I = I_m/\\sqrt{2}$. Writing $S = VI$ for that product,
+
+$$p(t) = \\underbrace{S\\cos\\theta}_{\\text{constant}} + \\underbrace{S\\cos(2\\omega t - \\theta)}_{\\text{twice line frequency}}$$
+
+Two facts fall out of the shape alone, before any number is put in. The oscillating part swings with amplitude $S$ whatever the phase angle is, so the *size* of the ripple is set by the apparent power and not by the useful power. And the whole waveform is offset by $S\\cos\\theta$, so the phase angle controls only where the ripple is centred.
+
+## 6.3 The same expansion, split the other way
+
+Expanding the second cosine instead of leaving it whole exposes the two named halves of AC power directly:
+
+$$\\cos(2\\omega t - \\theta) = \\cos 2\\omega t\\,\\cos\\theta + \\sin 2\\omega t\\,\\sin\\theta$$
+
+$$p(t) = S\\cos\\theta\\,(1 + \\cos 2\\omega t) + S\\sin\\theta\\,\\sin 2\\omega t$$
+
+$$p(t) = P\\,(1 + \\cos 2\\omega t) + Q\\,\\sin 2\\omega t$$
+
+This second form is the more informative one. The first group can never be negative, because $P \\ge 0$ for a passive load and $1 + \\cos 2\\omega t \\ge 0$ always: it is a one-way flow of energy that pulses but never reverses. The second group is a pure oscillation of amplitude $Q$ whose average is exactly zero: energy goes out and comes straight back, twice per cycle, forever. Real power and reactive power are therefore not two kinds of power at all - they are the unidirectional part and the sloshing part of a single product.
+
+![Instantaneous power for a 170 V peak, 12 A peak load at a 40 degree lagging angle, drawn as the pointwise product of the two waveforms. The double-frequency component is overlaid separately and the dashed line marks the constant term; the shaded lobes are the intervals in which the product is negative and energy travels back toward the source.](/courses/fe-ee/figures/ckt3-pt-decomposition.svg)
+
+## 6.4 Average power, obtained rather than asserted
+
+Average power is the cycle mean of the product, which is what a watt-hour meter accumulates:
+
+$$P = \\frac{1}{T}\\int_{0}^{T} v(t)\\,i(t)\\,dt$$
+
+Substituting the expansion of section 6.2 and integrating term by term, the second harmonic contributes nothing because a full cosine cycle integrates to zero over $T$:
+
+$$\\frac{1}{T}\\int_{0}^{T}\\cos(2\\omega t - \\theta)\\,dt = \\frac{1}{2\\omega T}\\Big[\\sin(2\\omega t - \\theta)\\Big]_{0}^{T} = 0$$
+
+$$P = S\\cos\\theta = VI\\cos\\theta$$
+
+That is where $VI\\cos\\theta$ comes from. It is not a definition but the surviving term of an integral, which is why it stops being true the moment the waveforms are not both sinusoids at one frequency - a point section 10 returns to at length.
+
+## 6.5 How long the power runs backwards
+
+The product dips below zero whenever $S\\cos\\theta + S\\cos(2\\omega t - \\theta) < 0$, that is whenever
+
+$$\\cos(2\\omega t - \\theta) < -\\cos\\theta$$
+
+Let $x = 2\\omega t - \\theta$ be the doubled angle. The inequality holds for $x$ between $180^{\\circ} - \\theta$ and $180^{\\circ} + \\theta$, a window of width $2\\theta$ out of every $360^{\\circ}$ of $x$. So the fraction of every cycle spent pushing energy back toward the source is
+
+$$\\text{backflow fraction} = \\frac{2\\theta}{360^{\\circ}} = \\frac{\\theta}{180^{\\circ}}$$
+
+a clean linear result that is easy to sanity-check at both ends: a resistive load ($\\theta = 0$) never reverses, and a pure reactance ($\\theta = 90^{\\circ}$) reverses for half of every cycle, which is precisely the statement that its average power is zero.
+
+| Phase angle | Power factor | Backflow fraction | Peak of $p(t)$ | Minimum of $p(t)$ |
+|---|---|---|---|---|
+| $0^{\\circ}$ | 1.000 | 0 | $2S$ | 0 |
+| $30^{\\circ}$ | 0.866 | 1/6 | $1.866S$ | $-0.134S$ |
+| $40^{\\circ}$ | 0.766 | 2/9 | $1.766S$ | $-0.234S$ |
+| $60^{\\circ}$ | 0.500 | 1/3 | $1.500S$ | $-0.500S$ |
+| $90^{\\circ}$ | 0.000 | 1/2 | $S$ | $-S$ |
+
+The peak and minimum columns are just $P \\pm S$, since the ripple amplitude is $S$ and it rides on an offset of $P$.
+
+### Worked example 6.1 - every quantity read off one product
+
+A load carries $v(t) = 170\\cos(377t)$ V and $i(t) = 12\\cos(377t - 40^{\\circ})$ A. Find the rms values, the apparent, real and reactive power, and the extremes of $p(t)$.
+
+Start with the rms magnitudes, since everything on the power triangle is built from them:
+
+$$V = 170/\\sqrt{2} = 120.21\\ \\mathrm{V} \\qquad I = 12/\\sqrt{2} = 8.4853\\ \\mathrm{A}$$
+
+$$S = VI = 120.21 \\times 8.4853 = 1020.0\\ \\mathrm{VA}$$
+
+The shortcut worth remembering is that $S = V_m I_m/2$ directly, so $S = 170 \\times 12/2 = 1020$ VA with no square roots at all. Now the two components:
+
+$$P = S\\cos 40^{\\circ} = 1020 \\times 0.7660444 = 781.365\\ \\mathrm{W}$$
+
+$$Q = S\\sin 40^{\\circ} = 1020 \\times 0.6427876 = 655.643\\ \\mathrm{VAR}$$
+
+The instantaneous power is therefore $p(t) = 781.365 + 1020\\cos(754t - 40^{\\circ})$ watts, which reaches
+
+$$p_{max} = 781.365 + 1020 = 1801.365\\ \\mathrm{W} \\qquad p_{min} = 781.365 - 1020 = -238.635\\ \\mathrm{W}$$
+
+**The independent check.** None of the numbers above may be taken on trust from the formula that produced them, so the average power is recomputed by integrating the product itself over one 16.67 ms period, with no phasor anywhere in the calculation. That quadrature returns 781.3653 W, agreeing with $VI\\cos\\theta$ to nine significant figures. Reactive power gets the same treatment: multiplying $p(t)$ by $\\sin 2\\omega t$ and averaging extracts the quadrature coefficient of the ripple, and twice that average is 655.6434 VAR. The waveform and the triangle agree because they are the same statement written twice.
+
+By section 6.5 this load pushes power backwards for $40/180 = 0.2222$ of every cycle, and counting the sampled instants at which the product is negative confirms 0.2222 as well.
+
+### Worked example 6.2 - how much energy actually comes back
+
+For the load of example 6.1, how much energy is returned to the source per cycle, and how does it compare with the energy delivered?
+
+Integrate only the negative excursions. With $x = 2\\omega t - \\theta$, the product is negative for $x$ from $140^{\\circ}$ to $220^{\\circ}$, and over that window
+
+$$W_{back} = \\frac{1}{2\\omega}\\int_{x_1}^{x_2}\\left[P + S\\cos x\\right]dx = \\frac{P(x_2 - x_1) + S(\\sin x_2 - \\sin x_1)}{2\\omega}$$
+
+With $x_2 - x_1 = 1.396263$ rad, $\\sin 220^{\\circ} = \\sin 140^{\\circ} = -0.642788$ so their difference is $-1.285575$, and $2\\omega = 753.98$ rad/s:
+
+$$P(x_2 - x_1) = 781.365 \\times 1.396263 = 1090.991$$
+
+$$S(\\sin x_2 - \\sin x_1) = 1020 \\times (-1.285575) = -1311.29$$
+
+$$W_{back} = \\frac{1090.991 - 1311.29}{753.98} = -0.2922\\ \\mathrm{J}$$
+
+Both numerators carry units of volt-amperes times radians; dividing by $2\\omega$ in rad/s leaves joules. That is one lobe, and there are two lobes per line period, so 0.5844 J travels back toward the source every 16.67 ms. Against that, the net energy delivered per period is
+
+$$W_{net} = P\\,T = 781.365 \\times 0.016667 = 13.023\\ \\mathrm{J}$$
+
+So roughly 4.5 percent of the delivered energy makes a round trip before settling - and every joule of it was carried by conductors that heated on the way out and again on the way back. Numerically integrating the negative part of the sampled product returns 0.58435 J per period, which is the closed form to five figures.
+
+## 6.6 What the picture is for
+
+Two loads at the same rms voltage and the same rms current heat their feeder identically, because feeder heating depends on $I^{2}R$ and nothing else. What separates them is only where the ripple is centred. That is the whole physical content of power factor, and it is visible in the figure without a single equation: the resistive case is a curve that never crosses zero, the reactive case is the same curve slid downward until part of it does.`,
+      examTip: 'Two forms of p(t) are worth carrying into the exam. Use p = P + S cos(2wt - theta) when a question asks for the peak or minimum of instantaneous power, because those are just P + S and P - S. Use p = P(1 + cos 2wt) + Q sin 2wt when a question asks which part of the flow is unidirectional, because the first group is the answer and the second averages to nothing.',
+      quiz: [
+        {
+          question: 'A load draws current at a 60 degree lagging angle. For what fraction of each cycle is the instantaneous power negative?',
+          options: ['1/3', '1/6', '1/2', '2/3'],
+          correctIndex: 0,
+          explanation: 'The backflow window is theta/180 degrees, so 60/180 = 1/3. The result is linear in the angle, which is easy to check at the endpoints: a resistor at 0 degrees never reverses and a pure reactance at 90 degrees reverses for half of every cycle.',
+        },
+        {
+          question: 'A load has S = 500 VA and a power factor of 0.6 lagging. What is the peak value of p(t)?',
+          options: ['800 W', '300 W', '500 W', '1000 W'],
+          correctIndex: 0,
+          explanation: 'The ripple has amplitude S and rides on an offset of P, so the peak is P + S = 500(0.6) + 500 = 300 + 500 = 800 W. The minimum is P - S = -200 W. Note that the ripple amplitude does not depend on the power factor at all; only the offset does.',
+        },
+        {
+          question: 'In the decomposition p(t) = P(1 + cos 2wt) + Q sin 2wt, which statement is correct?',
+          options: [
+            'The first group never goes negative; the second averages to zero',
+            'Both groups average to zero',
+            'The first group averages to zero; the second carries the real power',
+            'Neither group can go negative for a passive load',
+          ],
+          correctIndex: 0,
+          explanation: 'For a passive load P is non-negative and (1 + cos 2wt) is non-negative, so their product is a one-way flow that pulses without reversing. The Q sin 2wt group is a pure sinusoid about zero, so it transfers nothing on average even though it is fully present in the conductor current.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-rms',
+      title: '7. RMS: The Number That Lets AC Be Treated Like DC',
+      content: `## 7.1 Where the definition comes from
+
+The whole of AC power analysis rests on one substitution: replace a time-varying waveform with the single DC value that would heat the same resistor at the same rate. Write the average power in a resistor and the substitution appears on its own.
+
+$$P_{avg} = \\frac{1}{T}\\int_{0}^{T}\\frac{v^{2}(t)}{R}\\,dt = \\frac{1}{R}\\left[\\frac{1}{T}\\int_{0}^{T}v^{2}(t)\\,dt\\right]$$
+
+The bracket is a property of the waveform alone, with no resistance in it. Name its square root and the equation collapses to the DC form:
+
+$$V_{rms} = \\sqrt{\\frac{1}{T}\\int_{0}^{T}v^{2}(t)\\,dt} \\qquad P_{avg} = \\frac{V_{rms}^{2}}{R}$$
+
+Read the name backwards and it is a recipe: square the waveform, take the mean of that, take the root. Everything in this section is that recipe applied to a different shape, and the answer always comes out as the peak multiplied by a number that depends only on the shape.
+
+One consequence deserves stating early, because it is the source of more wrong answers than any subtlety: **rms is not the average**. The average of a symmetric AC waveform is zero, while its rms is not, and the two differ even for waveforms that never go negative.
+
+## 7.2 The sine
+
+For $v = V_m\\sin\\omega t$, square first and use the half-angle identity to make the mean visible:
+
+$$v^{2}(t) = V_m^{2}\\sin^{2}\\omega t = \\frac{V_m^{2}}{2}\\left(1 - \\cos 2\\omega t\\right)$$
+
+The cosine term averages to zero across a whole period, leaving a mean square of $V_m^{2}/2$, so
+
+$$V_{rms} = \\sqrt{\\frac{V_m^{2}}{2}} = \\frac{V_m}{\\sqrt{2}} = 0.7071\\,V_m$$
+
+Notice how little was assumed. The result does not depend on frequency, on the starting phase, or on the amplitude - only on the shape being a sinusoid. That is why the factor $\\sqrt{2}$ can be applied blindly to sinusoids and must never be applied to anything else.
+
+## 7.3 The square wave
+
+For a symmetric square wave alternating between $+V_m$ and $-V_m$, the square of the waveform is the constant $V_m^{2}$ at every instant. Its mean is therefore $V_m^{2}$ and
+
+$$V_{rms} = V_m$$
+
+The square wave is the only common shape whose rms equals its peak, which makes it the worst case for insulation stress at a given heating duty.
+
+## 7.4 The triangle and the sawtooth
+
+A triangle wave rises linearly from zero to $V_m$ over a quarter period. Because squaring destroys the sign and every quarter is a mirror image of its neighbour, the mean square over the whole period equals the mean square over that one rising quarter. Substituting $u = 4t/T$, which runs from 0 to 1 across the quarter,
+
+$$\\overline{v^{2}} = \\int_{0}^{1}V_m^{2}u^{2}\\,du = V_m^{2}\\left[\\frac{u^{3}}{3}\\right]_{0}^{1} = \\frac{V_m^{2}}{3}$$
+
+$$V_{rms} = \\frac{V_m}{\\sqrt{3}} = 0.5774\\,V_m$$
+
+The sawtooth gives the same answer by the same argument: it is also a straight-line ramp, and the rms of a ramp cares about the ramp, not about how the return happens. The $1/\\sqrt{3}$ shows up again for a triangular current ripple in a switching converter, which is where most people meet it in practice.
+
+![Sine, triangle and square waves at the same plus or minus ten volt peak, each drawn over one period with a dashed line at its own rms level. The square sits at 10.000 V, the sine at 7.071 V and the triangle at 5.774 V, so three waveforms with identical peaks deliver three different heating rates.](/courses/fe-ee/figures/ckt3-rms-waveforms.svg)
+
+## 7.5 Pulses, and the square-root law of duty
+
+A rectangular pulse train that sits at $V_m$ for a fraction $D$ of the period and at zero otherwise has a mean square of $D\\,V_m^{2}$, because the squared waveform is $V_m^{2}$ for that fraction and zero for the rest. Hence
+
+$$V_{rms} = V_m\\sqrt{D} \\qquad V_{avg} = V_m D$$
+
+The two obey different laws, and the gap between them is the whole reason a chopped supply is described by its rms. Halving the duty halves the average but only divides the rms by $\\sqrt{2}$, while the delivered power - which follows the *square* of the rms - halves exactly.
+
+![Root-mean-square and mean voltage of a 240 volt bus gated at a variable duty cycle, with the power delivered into a twenty ohm load on the right-hand axis. The rms follows a square-root law while the mean is a straight line, and the delivered power is linear in duty because it depends on the square of the rms.](/courses/fe-ee/figures/ckt3-rms-duty.svg)
+
+## 7.6 Composites: the orthogonality rule
+
+Real supply waveforms are sums - a DC level plus a ripple, or a fundamental plus harmonics. Squaring a sum produces cross terms, and the rule that makes composites tractable is that those cross terms vanish. For any two sinusoids at *different* harmonic frequencies, the product integrates to zero over the common period, and so does the product of a DC level with any harmonic. What survives is only the sum of squares:
+
+$$v(t) = V_{0} + \\sum_{k=1}^{n} V_{k,m}\\cos(k\\omega t + \\varphi_{k})$$
+
+$$V_{rms} = \\sqrt{V_{0}^{2} + \\sum_{k=1}^{n}\\left(\\frac{V_{k,m}}{\\sqrt{2}}\\right)^{2}} = \\sqrt{V_{DC}^{2} + V_{ac,rms}^{2}}$$
+
+Two practical consequences. First, the phase angles $\\varphi_{k}$ do not appear, so shifting a harmonic in time cannot change the rms. Second, components add in quadrature, which means a small ripple riding on a large DC level barely moves the rms at all - a 5 percent ripple changes the rms by well under 1 percent.
+
+| Waveform, peak $V_m$ | rms | full-cycle average | crest factor |
+|---|---|---|---|
+| Sine | $0.7071\\,V_m$ | 0 | 1.414 |
+| Full-wave rectified sine | $0.7071\\,V_m$ | $0.6366\\,V_m$ | 1.414 |
+| Half-wave rectified sine | $0.5000\\,V_m$ | $0.3183\\,V_m$ | 2.000 |
+| Square, symmetric | $1.0000\\,V_m$ | 0 | 1.000 |
+| Triangle or sawtooth | $0.5774\\,V_m$ | 0 | 1.732 |
+| Pulse train, duty $D$ | $V_m\\sqrt{D}$ | $V_m D$ | $1/\\sqrt{D}$ |
+
+Crest factor is peak divided by rms, and it is the column that tells you what a meter is up against: a half-wave rectified waveform has twice the crest factor of a sine, and instruments specified for sinusoids commonly misread it.
+
+### Worked example 7.1 - a triangle, and the cost of averaging instead
+
+A triangular voltage of 10 V peak drives a 25 ohm heater. Find the delivered power, and find what an answer based on the average magnitude would have claimed.
+
+$$V_{rms} = \\frac{10}{\\sqrt{3}} = 5.7735\\ \\mathrm{V} \\qquad P = \\frac{V_{rms}^{2}}{25} = \\frac{33.333}{25} = 1.3333\\ \\mathrm{W}$$
+
+The mean of the magnitude of a triangle is half its peak, or 5.000 V, and treating that as if it were the heating value gives
+
+$$P_{wrong} = \\frac{5.000^{2}}{25} = \\frac{25.00}{25} = 1.0000\\ \\mathrm{W}$$
+
+which understates the real answer by 25 percent. **Independent route:** integrating $v^{2}(t)/25$ over one full period by quadrature returns 1.3333 W directly, without ever forming an rms - the square of the sampled triangle has mean 33.333 V squared, matching $V_m^{2}/3$ to six figures.
+
+### Worked example 7.2 - DC with a ripple on top
+
+A rectifier output holds 48 V DC with a 6 V peak-to-peak triangular ripple. Find the rms voltage and the power into a 12 ohm load.
+
+The ripple is a triangle of 3 V peak about zero, so its own rms is
+
+$$V_{ripple,rms} = \\frac{3}{\\sqrt{3}} = 1.7321\\ \\mathrm{V}$$
+
+Combining in quadrature with the DC level,
+
+$$V_{rms} = \\sqrt{48^{2} + 1.7321^{2}} = \\sqrt{2307.0} = 48.0312\\ \\mathrm{V}$$
+
+$$P = \\frac{2307.0}{12} = 192.25\\ \\mathrm{W}$$
+
+The DC alone would deliver $2304/12 = 192.00$ W, so the ripple contributes exactly 0.25 W - and indeed $1.7321^{2}/12 = 3/12 = 0.25$ W, because in a resistor the power contributions of orthogonal components add just as their mean squares do. The rms sits only 0.065 percent above the DC value, which is the quadrature rule doing its work: a ripple has to be large before it matters to heating. **Independent route:** the mean square of the sampled composite waveform, integrated over one ripple period, is 2306.9996 V squared, whose root is 48.031240 V.
+
+### Worked example 7.3 - a chopped DC bus
+
+A 240 V DC bus feeds a 20 ohm heater through a switch closed for 36 percent of each cycle. Find the rms voltage and the delivered power, then check the power by a route that never mentions rms.
+
+$$V_{rms} = 240\\sqrt{0.36} = 240 \\times 0.6 = 144\\ \\mathrm{V}$$
+
+$$P = \\frac{144^{2}}{20} = \\frac{20736}{20} = 1036.8\\ \\mathrm{W}$$
+
+**Independent route.** While the switch is closed the heater sees the full 240 V and dissipates $240^{2}/20 = 2880$ W; while it is open it dissipates nothing. Averaging that two-valued power over the cycle,
+
+$$P = 0.36 \\times 2880 = 1036.8\\ \\mathrm{W}$$
+
+which is the same number obtained without forming an rms at all. Note what the *mean* voltage would have given: $240 \\times 0.36 = 86.4$ V, and $86.4^{2}/20 = 373.2$ W, low by a factor of nearly three. The mean is the wrong statistic for heating, and this is the cleanest demonstration of it.
+
+### Worked example 7.4 - a three-term composite
+
+Find the rms value of $v(t) = 12 + 20\\cos\\omega t + 6\\cos(3\\omega t + 30^{\\circ})$ volts, and the power it delivers to 8 ohms.
+
+The DC term contributes its own square; each sinusoid contributes the square of its own rms, which is its peak over $\\sqrt{2}$:
+
+$$V_{rms}^{2} = 12^{2} + \\frac{20^{2}}{2} + \\frac{6^{2}}{2} = 144 + 200 + 18 = 362\\ \\mathrm{V^{2}}$$
+
+$$V_{rms} = \\sqrt{362} = 19.0263\\ \\mathrm{V} \\qquad P = \\frac{362}{8} = 45.25\\ \\mathrm{W}$$
+
+The 30 degree phase never entered the arithmetic, and that is not an oversight - orthogonality removes it. **Independent route:** numerically integrating $v^{2}(t)$ over one fundamental period gives a mean square of 362.000 V squared and an rms of 19.026298 V, matching the quadrature sum to eight figures.
+
+### Worked example 7.5 - why an averaging meter lies
+
+A 170 V peak sinusoid is half-wave rectified. Find the true rms, and find what an average-responding meter scaled for sinusoids would display.
+
+$$V_{rms} = \\frac{170}{2} = 85.00\\ \\mathrm{V} \\qquad V_{avg} = \\frac{170}{\\pi} = 54.11\\ \\mathrm{V}$$
+
+An average-responding instrument measures $V_{avg}$ and multiplies by the form factor of a *sine*, which is 1.11, on the assumption that a sine is what it is looking at:
+
+$$V_{displayed} = 54.11 \\times 1.11 = 60.06\\ \\mathrm{V}$$
+
+against a true 85.00 V - an error of 29 percent, all of it caused by the instrument's assumption rather than by any fault in it. The half-wave waveform's own form factor is $85.00/54.11 = 1.571$, which is $\\pi/2$. This is the practical reason equipment specifications insist on true-rms meters for anything downstream of a rectifier or a phase-angle dimmer.`,
+      examTip: 'Memorise three shape factors and derive the rest: 1/sqrt(2) for a sinusoid, 1/sqrt(3) for any straight-line ramp, and 1 for a symmetric square. For composites, square the pieces, add, take the root - phase angles never enter. And if a waveform has a DC component, it belongs inside the sum of squares, not outside it.',
+      importantNote: 'The sqrt(2) factor belongs to sinusoids only. Applying it to a triangular ripple, a chopped waveform or a rectifier output is one of the most reliable ways to get an FE power question wrong, because the arithmetic looks right the whole way through.',
+      quiz: [
+        {
+          question: 'A triangular current of 6 A peak flows in a 4 ohm resistor. What average power is dissipated?',
+          options: ['48 W', '72 W', '144 W', '24 W'],
+          correctIndex: 0,
+          explanation: 'I_rms = 6/sqrt(3) = 3.4641 A, so P = I_rms^2 R = 12 x 4 = 48 W. Using the peak directly gives 144 W and using the sqrt(2) sine factor gives 72 W; both apply a shape factor the waveform does not have.',
+        },
+        {
+          question: 'A waveform is 20 V DC with a superimposed 8 V rms sinusoidal ripple. What is its rms value?',
+          options: ['21.54 V', '28.00 V', '20.00 V', '22.63 V'],
+          correctIndex: 0,
+          explanation: 'Components at different frequencies add in quadrature: V_rms = sqrt(20^2 + 8^2) = sqrt(464) = 21.54 V. Adding the magnitudes gives 28 V, which double counts because the two never peak together in any consistent way.',
+        },
+        {
+          question: 'A 100 V DC source is switched to a load at 25 percent duty. What is the rms of the applied voltage?',
+          options: ['50 V', '25 V', '100 V', '70.7 V'],
+          correctIndex: 0,
+          explanation: 'V_rms = V_m sqrt(D) = 100 sqrt(0.25) = 50 V. The mean is 25 V, which is a different quantity: the rms follows the square root of duty while the mean follows duty itself, and only the rms predicts heating.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-complex',
+      title: '8. Complex Power: Deriving S = VI* Instead of Declaring It',
+      content: `## 8.1 Why the conjugate has to be there
+
+Section 6 produced two real numbers from the waveform: a unidirectional part $P$ and an oscillating part of amplitude $Q$. Packing them into one complex number is a convenience, and complex power is defined as exactly that package:
+
+$$\\mathbf{S} = P + jQ$$
+
+The question is which phasor product delivers it. Write the two rms phasors in polar form:
+
+$$\\mathbf{V} = V\\angle\\theta_{v} \\qquad \\mathbf{I} = I\\angle\\theta_{i}$$
+
+The naive product multiplies the magnitudes and **adds** the angles:
+
+$$\\mathbf{V}\\mathbf{I} = VI\\angle(\\theta_{v} + \\theta_{i})$$
+
+That cannot be a physical quantity, and the reason is worth pausing on. Shifting the time origin adds the same constant to $\\theta_{v}$ and to $\\theta_{i}$, so $\\theta_{v} + \\theta_{i}$ shifts by twice that constant. A load's real power does not depend on when somebody started the clock, so any expression whose value moves with the time origin is disqualified before its magnitude is even checked.
+
+Conjugating the current negates its angle, so the product **subtracts** the angles instead, and the difference is exactly the quantity that survives a shift of origin:
+
+$$\\mathbf{S} = \\mathbf{V}\\mathbf{I}^{*} = VI\\angle(\\theta_{v} - \\theta_{i}) = VI\\cos\\theta + jVI\\sin\\theta$$
+
+with $\\theta = \\theta_{v} - \\theta_{i}$. The real part is the $P$ of section 6.4 and the imaginary part is the $Q$ of section 6.3, so the package is correct. The conjugate is not a convention chosen for tidiness; it is what makes the answer independent of the clock.
+
+## 8.2 Three ways to write the same S
+
+Substituting $\\mathbf{V} = \\mathbf{Z}\\mathbf{I}$ into the definition gives a form built entirely from the current and the impedance:
+
+$$\\mathbf{S} = (\\mathbf{Z}\\mathbf{I})\\mathbf{I}^{*} = \\lvert I \\rvert^{2}\\mathbf{Z} = \\lvert I \\rvert^{2}R + j\\lvert I \\rvert^{2}X$$
+
+Substituting $\\mathbf{I} = \\mathbf{V}/\\mathbf{Z}$ instead gives one built from the voltage:
+
+$$\\mathbf{S} = \\mathbf{V}\\left(\\frac{\\mathbf{V}}{\\mathbf{Z}}\\right)^{*} = \\frac{\\lvert V \\rvert^{2}}{\\mathbf{Z}^{*}}$$
+
+The conjugate in that denominator is the single most-missed detail in this chapter. Dividing by $\\mathbf{Z}$ rather than by $\\mathbf{Z}^{*}$ returns a complex number with the right magnitude and the wrong sign of $Q$, which relabels every inductive load as capacitive without changing anything a magnitude check would catch.
+
+| Form | Use it when | Watch out for |
+|---|---|---|
+| $\\mathbf{S} = \\mathbf{V}\\mathbf{I}^{*}$ | both phasors are known | conjugate the CURRENT, never the voltage |
+| $\\mathbf{S} = \\lvert I \\rvert^{2}\\mathbf{Z}$ | series elements share one current | $\\lvert I \\rvert$ must be rms, and it is squared |
+| $\\mathbf{S} = \\lvert V \\rvert^{2}/\\mathbf{Z}^{*}$ | parallel elements share one voltage | the star sits on Z, in the denominator |
+
+## 8.3 The power triangle is the impedance triangle, scaled
+
+Because $\\mathbf{S} = \\lvert I \\rvert^{2}\\mathbf{Z}$ and $\\lvert I \\rvert^{2}$ is a positive real number, the complex power is the impedance rotated by nothing and stretched by a constant. The triangle with legs $P$ and $Q$ and hypotenuse $S$ is therefore *similar* to the triangle with legs $R$ and $X$ and hypotenuse $\\lvert Z \\rvert$, and the two share an angle:
+
+$$\\angle\\mathbf{S} = \\angle\\mathbf{Z} \\qquad \\cos\\theta = \\frac{P}{S} = \\frac{R}{\\lvert Z \\rvert}$$
+
+That similarity is a free consistency check on any answer in this chapter. If a computed power factor does not equal $R/\\lvert Z \\rvert$ for the same load, one of the two calculations is wrong, and finding which is usually faster than redoing either.
+
+### Worked example 8.1 - the whole triangle from one impedance
+
+An impedance $\\mathbf{Z} = 8 + j6$ ohms is connected across a 120 V rms supply. Find the current, the complex power, and the power factor.
+
+$$\\lvert Z \\rvert = \\sqrt{8^{2} + 6^{2}} = \\sqrt{100} = 10\\ \\Omega \\qquad \\theta = \\arctan(6/8) = 36.87^{\\circ}$$
+
+$$\\mathbf{I} = \\frac{120\\angle 0^{\\circ}}{10\\angle 36.87^{\\circ}} = 12\\angle{-36.87^{\\circ}}\\ \\mathrm{A}$$
+
+$$\\mathbf{S} = \\mathbf{V}\\mathbf{I}^{*} = (120)(12\\angle 36.87^{\\circ}) = 1440\\angle 36.87^{\\circ}\\ \\mathrm{VA}$$
+
+$$P = 1440 \\times 0.8 = 1152\\ \\mathrm{W} \\qquad Q = 1440 \\times 0.6 = 864\\ \\mathrm{VAR}$$
+
+**Two independent checks.** The impedance form gives $P = \\lvert I \\rvert^{2}R = 144 \\times 8 = 1152$ W and $Q = \\lvert I \\rvert^{2}X = 144 \\times 6 = 864$ VAR, agreeing exactly. And the power factor computed two ways agrees as well: $1152/1440 = 0.8$ from the triangle, $8/10 = 0.8$ from the impedance. **Time-domain check:** integrating $v(t)i(t)$ over a full cycle, with $v$ of amplitude $120\\sqrt{2}$ and $i$ of amplitude $12\\sqrt{2}$ lagging by 36.87 degrees, returns 1152.000 W.
+
+### Worked example 8.2 - the same load, and the sign trap
+
+Recompute the complex power of example 8.1 from the voltage form, and show what dropping the conjugate does.
+
+$$\\mathbf{S} = \\frac{\\lvert V \\rvert^{2}}{\\mathbf{Z}^{*}} = \\frac{14400}{8 - j6} = \\frac{14400}{10\\angle{-36.87^{\\circ}}} = 1440\\angle 36.87^{\\circ} = 1152 + j864\\ \\mathrm{VA}$$
+
+which reproduces example 8.1. Now the mistake:
+
+$$\\frac{\\lvert V \\rvert^{2}}{\\mathbf{Z}} = \\frac{14400}{10\\angle 36.87^{\\circ}} = 1440\\angle{-36.87^{\\circ}} = 1152 - j864\\ \\mathrm{VA}$$
+
+Same magnitude, same real power, and a reactive power of the wrong sign - an inductive load reported as a capacitive one. A magnitude check will never find this error; only the sign of Q will, which is why the sign should be predicted from the circuit before the arithmetic starts.
+
+### Worked example 8.3 - running the triangle backwards
+
+A single-phase load on a 240 V rms feeder draws 4.8 kW at a power factor of 0.6 lagging. Find its equivalent series impedance.
+
+$$S = \\frac{4800}{0.6} = 8000\\ \\mathrm{VA} \\qquad I = \\frac{8000}{240} = 33.333\\ \\mathrm{A}$$
+
+$$\\lvert Z \\rvert = \\frac{240}{33.333} = 7.2\\ \\Omega \\qquad \\theta = \\arccos 0.6 = 53.13^{\\circ}$$
+
+$$R = \\lvert Z \\rvert\\cos\\theta = 7.2 \\times 0.6 = 4.32\\ \\Omega \\qquad X = \\lvert Z \\rvert\\sin\\theta = 7.2 \\times 0.8 = 5.76\\ \\Omega$$
+
+**Independent routes, two of them.** The impedance magnitude also follows from $\\lvert Z \\rvert = V^{2}/S = 57600/8000 = 7.2$ ohms without computing a current at all. And running the powers forward from the impedance closes the loop: $P = \\lvert I \\rvert^{2}R = 1111.1 \\times 4.32 = 4800$ W and $Q = S\\sin\\theta = 8000 \\times 0.8 = 6400$ VAR, which is also $1111.1 \\times 5.76 = 6400$ VAR from the reactance.`,
+      examTip: 'Predict the sign of Q from the circuit before you compute it. Motors, transformers and anything with a coil absorb VARs, so Q is positive and the factor is lagging; capacitor banks and lightly loaded cables supply VARs, so Q is negative and the factor is leading. If the arithmetic disagrees with that prediction, the conjugate went missing somewhere.',
+      quiz: [
+        {
+          question: 'A load has Z = 5 - j12 ohms and carries 4 A rms. What is its complex power?',
+          options: ['80 - j192 VA', '80 + j192 VA', '20 - j48 VA', '52 - j52 VA'],
+          correctIndex: 0,
+          explanation: 'S = |I|^2 Z = 16(5 - j12) = 80 - j192 VA. The negative Q says the load supplies reactive power, which is right for a net capacitive impedance. Using |I| instead of |I| squared gives the 20 - j48 option.',
+        },
+        {
+          question: 'For a load of impedance Z, which expression gives the correct complex power from the terminal voltage alone?',
+          options: ['|V|^2 / Z*', '|V|^2 / Z', '|V|^2 Z', 'V^2 / |Z|'],
+          correctIndex: 0,
+          explanation: 'S = V I* and I = V/Z, so S = V (V/Z)* = |V|^2 / Z*. Dividing by Z instead of by its conjugate keeps the magnitude but reverses the sign of Q, converting an inductive load into a capacitive one on paper.',
+        },
+        {
+          question: 'A load draws 10 kW at 0.5 lagging from a 400 V rms supply. What is the magnitude of its impedance?',
+          options: ['8 ohms', '16 ohms', '4 ohms', '20 ohms'],
+          correctIndex: 0,
+          explanation: 'S = P/pf = 10000/0.5 = 20 kVA, and |Z| = V^2/S = 160000/20000 = 8 ohms. As a check, I = 20000/400 = 50 A and |Z| = 400/50 = 8 ohms. Using P instead of S in the |Z| formula returns 16 ohms.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-practice-a',
+      title: '9. Problem Set A: Instantaneous Power and RMS',
+      content: `## Problem Set A - Instantaneous Power and RMS
+
+Work each problem through before reading the answer. Every number below is reproducible from the equations of sections 6 to 8 with nothing more than a calculator.
+
+**A1.** A load carries $v(t) = 340\\cos(377t)$ V and $i(t) = 5\\cos(377t - 25^{\\circ})$ A. Find the apparent, real and reactive power.
+
+**A2.** For the load of A1, what fraction of each cycle does the instantaneous power spend below zero?
+
+**A3.** For the load of A1, find the largest and smallest values reached by $p(t)$.
+
+**A4.** A sawtooth voltage of 15 V peak, symmetric about zero, drives a 10 ohm resistor. Find the average power.
+
+**A5.** A supply holds 100 V DC with 20 V rms of ripple at 120 Hz. Find the rms of the composite waveform.
+
+**A6.** A symmetric square wave of 24 V peak drives an 8 ohm heater. Find the average power.
+
+**A7.** A 480 V DC bus is chopped at 64 percent duty into a 32 ohm heater. Find the rms voltage and the delivered power, then verify the power without using the rms.
+
+**A8.** Find the rms value of $v(t) = 30 + 40\\cos\\omega t$ volts.
+
+---
+
+### Answers
+
+**A1.** Apparent power comes straight from the peaks, since $S = V_m I_m/2$:
+
+$$S = \\frac{340 \\times 5}{2} = 850\\ \\mathrm{VA}$$
+
+$$P = 850\\cos 25^{\\circ} = 850 \\times 0.90631 = 770.36\\ \\mathrm{W}$$
+
+$$Q = 850\\sin 25^{\\circ} = 850 \\times 0.42262 = 359.23\\ \\mathrm{VAR}$$
+
+**A2.** The backflow fraction is $\\theta/180^{\\circ}$, so $25/180 = 0.1389$, or 13.9 percent of every cycle.
+
+**A3.** The ripple amplitude is $S$ and it rides on an offset of $P$:
+
+$$p_{max} = 770.36 + 850 = 1620.36\\ \\mathrm{W} \\qquad p_{min} = 770.36 - 850 = -79.64\\ \\mathrm{W}$$
+
+The small negative excursion is consistent with A2: a 25 degree angle is close to resistive, so very little energy comes back.
+
+**A4.** A sawtooth is a straight-line ramp, so its rms is the peak over $\\sqrt{3}$:
+
+$$V_{rms} = \\frac{15}{\\sqrt{3}} = 8.6603\\ \\mathrm{V} \\qquad P = \\frac{75.00}{10} = 7.500\\ \\mathrm{W}$$
+
+**A5.** Different frequencies add in quadrature, and DC counts as one of the components:
+
+$$V_{rms} = \\sqrt{100^{2} + 20^{2}} = \\sqrt{10400} = 101.98\\ \\mathrm{V}$$
+
+**A6.** For a symmetric square wave the rms equals the peak, so $V_{rms} = 24$ V and
+
+$$P = \\frac{576}{8} = 72.0\\ \\mathrm{W}$$
+
+**A7.** The rms follows the square root of duty:
+
+$$V_{rms} = 480\\sqrt{0.64} = 480 \\times 0.8 = 384\\ \\mathrm{V} \\qquad P = \\frac{147456}{32} = 4608\\ \\mathrm{W}$$
+
+Verification without rms: while the switch is closed the heater dissipates $480^{2}/32 = 7200$ W, and it is closed for 64 percent of the time, so the average is $0.64 \\times 7200 = 4608$ W. The two routes agree.
+
+**A8.** The DC term enters as its own square and the sinusoid enters as the square of its rms:
+
+$$V_{rms} = \\sqrt{30^{2} + \\frac{40^{2}}{2}} = \\sqrt{1700} = 41.231\\ \\mathrm{V}$$`,
+      examTip: 'On problems like A7, always finish with the second route. Computing an rms and then squaring it to get power is two chances to slip a shape factor; averaging the instantaneous power directly is one step and it uses different arithmetic, so agreement between the two is real evidence.',
+    },
+    {
+      id: 'acpw-harmonics',
+      title: '10. Power Factor When the Current Is Not a Sinusoid',
+      content: `## 10.1 The definition that survives, and the one that does not
+
+Two statements about power factor look interchangeable in section 1 and are not:
+
+$$PF = \\frac{P}{S} \\qquad\\text{versus}\\qquad PF = \\cos\\theta$$
+
+The first is the definition. The second is a *consequence* of the first that holds only when the voltage and the current are both single-frequency sinusoids. Rectifiers, switch-mode supplies, LED drivers and variable-frequency drives all draw current in bursts rather than sinusoids, and for those loads the two expressions give different numbers. The FE reference material distinguishes them by name: $\\cos\\theta_{1}$ is the **displacement** power factor and $P/S$ is the **true** power factor.
+
+Take a clean sinusoidal supply voltage and a periodic but distorted current expressed as a harmonic series:
+
+$$v(t) = \\sqrt{2}\\,V_{1}\\cos\\omega t \\qquad i(t) = \\sqrt{2}\\sum_{h=1}^{n} I_{h}\\cos(h\\omega t - \\theta_{h})$$
+
+Average power is the cycle mean of the product, and the orthogonality argument of section 7.6 applies again: every harmonic of the current except the first is at a frequency the voltage does not contain, so every cross term integrates to zero. Only one term survives:
+
+$$P = \\frac{1}{T}\\int_{0}^{T}v\\,i\\,dt = V_{1}I_{1}\\cos\\theta_{1}$$
+
+Harmonic currents carry **no average power at all** against a sinusoidal voltage. They still flow, still heat conductors, still load the transformer - they simply do no work.
+
+## 10.2 Where the true power factor goes
+
+The rms current, by contrast, counts every harmonic:
+
+$$I_{rms} = \\sqrt{\\sum_{h=1}^{n} I_{h}^{2}}$$
+
+so the apparent power is $S = V_{1}I_{rms}$ and the true power factor factorises cleanly into two independent penalties:
+
+$$PF = \\frac{P}{S} = \\frac{V_{1}I_{1}\\cos\\theta_{1}}{V_{1}I_{rms}} = \\underbrace{\\frac{I_{1}}{I_{rms}}}_{k_{d}}\\;\\underbrace{\\cos\\theta_{1}}_{\\text{displacement}}$$
+
+The first factor $k_{d}$ is the **distortion factor**: it asks what share of the current is doing anything at all. The second is the familiar displacement factor. Total harmonic distortion connects them, because splitting the rms into fundamental and everything else gives
+
+$$THD_{I} = \\frac{\\sqrt{\\sum_{h\\ge 2} I_{h}^{2}}}{I_{1}} \\qquad I_{rms} = I_{1}\\sqrt{1 + THD_{I}^{2}}$$
+
+$$k_{d} = \\frac{1}{\\sqrt{1 + THD_{I}^{2}}}$$
+
+| Current THD | Distortion factor $k_{d}$ | Best PF reachable by any capacitor |
+|---|---|---|
+| 0 % | 1.0000 | 1.0000 |
+| 20 % | 0.9806 | 0.9806 |
+| 30 % | 0.9578 | 0.9578 |
+| 50 % | 0.8944 | 0.8944 |
+| 73 % | 0.8086 | 0.8086 |
+| 100 % | 0.7071 | 0.7071 |
+| 150 % | 0.5547 | 0.5547 |
+
+The third column is the point of the table. A capacitor bank changes $\\theta_{1}$ and nothing else, so $k_{d}$ is a hard ceiling on what correction can achieve. A load at 100 percent current THD cannot be brought past 0.707 by any amount of capacitance, and pouring more in only makes the resonance problem of section 11.5 worse.
+
+![True power factor plotted against current total harmonic distortion for three displacement factors, with the six-pulse rectifier of worked example 10.1 marked at 73 percent distortion and a true power factor of 0.733. All three curves fall together as distortion grows, so improving the displacement factor slides the operating point up between curves but never moves it left.](/courses/fe-ee/figures/ckt3-distortion-pf.svg)
+
+## 10.3 Reading the two penalties apart
+
+A single measured power factor of 0.73 does not say what to do about it, and the two penalties call for opposite remedies:
+
+- A **low displacement factor** with clean current means motors, and the answer is capacitors. Cheap, well understood, effective.
+- A **low distortion factor** means switching converters, and the answer is a filter, a line reactor, or a converter with an active front end. Capacitors do not help and may hurt.
+
+The diagnosis is one measurement: if the current waveform on a scope looks like a sinusoid shifted in time, it is displacement; if it looks like a pair of spikes near the voltage peaks, it is distortion.
+
+### Worked example 10.1 - a six-pulse rectifier, all three factors
+
+A single-phase load on a 120 V rms sinusoidal supply draws rms current harmonics of 15 A at the fundamental (lagging 25 degrees), 9 A at the third, 5.4 A at the fifth and 3 A at the seventh. Find the real power, the apparent power, the true power factor, the displacement factor and the current THD.
+
+Real power comes from the fundamental alone:
+
+$$P = V_{1}I_{1}\\cos\\theta_{1} = 120 \\times 15 \\times 0.9063078 = 1631.354\\ \\mathrm{W}$$
+
+The rms current counts everything:
+
+$$I_{rms} = \\sqrt{15^{2} + 9^{2} + 5.4^{2} + 3^{2}} = \\sqrt{344.16} = 18.5516\\ \\mathrm{A}$$
+
+$$S = 120 \\times 18.5516 = 2226.19\\ \\mathrm{VA} \\qquad PF = \\frac{1631.354}{2226.19} = 0.7328$$
+
+Now split that 0.7328 into its two causes:
+
+$$k_{d} = \\frac{I_{1}}{I_{rms}} = \\frac{15}{18.5516} = 0.80856 \\qquad \\cos\\theta_{1} = 0.90631$$
+
+$$k_{d}\\cos\\theta_{1} = 0.80856 \\times 0.90631 = 0.7328$$
+
+which reproduces the true power factor, confirming the factorisation. The distortion itself is
+
+$$THD_{I} = \\frac{\\sqrt{81 + 29.16 + 9}}{15} = \\frac{10.9160}{15} = 0.72773$$
+
+or 72.8 percent, and the ceiling check closes the loop: $1/\\sqrt{1 + 0.72773^{2}} = 0.80856$, the same $k_{d}$ read off the currents.
+
+**Independent route.** Both headline numbers were recomputed from the waveform rather than the series. Summing the four harmonic cosines into an actual $i(t)$, multiplying by $v(t)$ and integrating over one 60 Hz cycle returns 1631.354017 W - the harmonics contribute nothing, exactly as the orthogonality argument predicted. Integrating $i^{2}(t)$ over the same cycle and taking the root returns 18.551550 A. Neither number came from the formula it is being used to test.
+
+### Worked example 10.2 - the ceiling a capacitor cannot break
+
+Take the rectifier of example 10.1 and correct its displacement factor all the way to unity. What is the resulting power factor?
+
+The capacitor cancels the quadrature part of the fundamental current, leaving only its in-phase component:
+
+$$I_{1}' = I_{1}\\cos\\theta_{1} = 15 \\times 0.906308 = 13.5946\\ \\mathrm{A}$$
+
+Real power is untouched, since a capacitor consumes none: $P$ is still 1631.354 W. The harmonics are untouched too, so the new rms current is
+
+$$I_{rms}' = \\sqrt{13.5946^{2} + 81 + 29.16 + 9} = \\sqrt{303.973} = 17.4348\\ \\mathrm{A}$$
+
+$$S' = 120 \\times 17.4348 = 2092.18\\ \\mathrm{VA} \\qquad PF' = \\frac{1631.354}{2092.18} = 0.77974$$
+
+and the ceiling formula agrees: with the displacement factor now exactly 1, the power factor equals the distortion factor, $13.5946/17.4348 = 0.77974$. So perfect displacement correction moved the power factor from 0.7328 to 0.77974 and stopped dead. Note also that the THD *rose*, to $10.9160/13.5946 = 0.80297$, because the fundamental shrank while the harmonics did not - a reminder that THD is a ratio and can be improved or worsened by changing either end of it.
+
+### Worked example 10.3 - a plant with one dominant harmonic
+
+A 480 V rms feeder carries 22 A rms of fundamental at a displacement factor of 0.98 lagging, plus 6.6 A rms of fifth harmonic. Find the THD, the distortion factor, the true power factor, and the apparent power.
+
+$$THD_{I} = \\frac{6.6}{22} = 0.30 \\qquad k_{d} = \\frac{1}{\\sqrt{1 + 0.09}} = 0.957826$$
+
+$$PF = 0.98 \\times 0.957826 = 0.9387$$
+
+**Independent route.** Build the same answer from powers rather than from factors:
+
+$$I_{rms} = \\sqrt{22^{2} + 6.6^{2}} = \\sqrt{527.56} = 22.9687\\ \\mathrm{A}$$
+
+$$P = 480 \\times 22 \\times 0.98 = 10348.8\\ \\mathrm{W} \\qquad S = 480 \\times 22.9687 = 11024.98\\ \\mathrm{VA}$$
+
+$$PF = \\frac{10348.8}{11024.98} = 0.9387$$
+
+The two routes agree, and the distortion factor checks as well: $22/22.9687 = 0.95783$. A displacement factor of 0.98 sounds excellent and would satisfy most utility tariffs, yet the true power factor is 0.9387 and the feeder carries 0.97 A more than the fundamental alone would explain. That extra current does no work anywhere.`,
+      examTip: 'When a question mentions rectifiers, drives, THD or harmonics, stop using PF = cos(theta). Compute P from the fundamental only, compute I_rms from the sum of squares of all harmonics, and divide. If the question gives THD directly, the shortcut is PF = cos(theta_1)/sqrt(1 + THD^2).',
+      importantNote: 'Harmonic currents transfer zero average power against a sinusoidal voltage, but they are fully present in every I^2R loss, in transformer heating, and in the rms rating of every conductor and breaker in the path. "Carries no power" and "does no harm" are entirely different claims.',
+      quiz: [
+        {
+          question: 'A load draws current with 50 percent THD at a displacement factor of 0.90. What is its true power factor?',
+          options: ['0.805', '0.900', '0.894', '0.450'],
+          correctIndex: 0,
+          explanation: 'The distortion factor is 1/sqrt(1 + 0.25) = 0.8944, and the true power factor is the product 0.90 x 0.8944 = 0.805. Quoting 0.90 reports the displacement factor only, which is what a meter that assumes a sinusoid would tell you.',
+        },
+        {
+          question: 'A capacitor bank is added to a load whose current has 100 percent THD. What is the best power factor achievable?',
+          options: ['0.707', '1.000', '0.500', '0.866'],
+          correctIndex: 0,
+          explanation: 'Capacitors change only the displacement factor, so the distortion factor 1/sqrt(2) = 0.707 is a hard ceiling. Reaching it requires perfect displacement correction, and no amount of additional capacitance goes past it - it only risks resonance with the harmonics already present.',
+        },
+        {
+          question: 'A 240 V sinusoidal supply feeds a load drawing 10 A of fundamental in phase with the voltage plus 6 A rms of third harmonic. What is the average power?',
+          options: ['2400 W', '2800 W', '3840 W', '1440 W'],
+          correctIndex: 0,
+          explanation: 'Only the fundamental produces average power against a sinusoidal voltage: P = 240 x 10 x 1 = 2400 W. The third harmonic raises I_rms to sqrt(136) = 11.66 A and therefore raises S to 2799 VA, dropping the true power factor to 0.857, but it contributes no watts.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-sizing',
+      title: '11. Sizing a Capacitor Bank, and the Price of Overshooting It',
+      content: `## 11.1 Correction is sized from a deficit, never from a total
+
+The most common sizing error is to install enough capacitance to cancel *all* of the load's reactive power. That is the answer to a question nobody asked. What the bank must supply is the difference between the reactive power the load demands and the reactive power the supply is still permitted to deliver at the target factor:
+
+$$Q_{C} = Q_{1} - Q_{2} = P\\tan\\phi_{1} - P\\tan\\phi_{2} = P\\left(\\tan\\phi_{1} - \\tan\\phi_{2}\\right)$$
+
+Real power does not appear as a variable to be solved for, because correction never changes it: the capacitor is lossless in the ideal case and very nearly so in practice. The same size follows from the triangle sides if tangents feel unsafe:
+
+$$Q_{C} = \\sqrt{S_{1}^{2} - P^{2}} - \\sqrt{S_{2}^{2} - P^{2}} \\qquad S_{k} = \\frac{P}{PF_{k}}$$
+
+Both routes are exact, and computing one and checking with the other costs about fifteen seconds.
+
+## 11.2 From kVAR on paper to a component
+
+A capacitor across the line produces reactive power fixed by its reactance, and the reactance fixes the capacitance:
+
+$$Q_{C} = \\frac{V^{2}}{X_{C}} \\qquad X_{C} = \\frac{V^{2}}{Q_{C}} \\qquad C = \\frac{1}{\\omega X_{C}} = \\frac{Q_{C}}{\\omega V^{2}}$$
+
+Two properties of that last expression matter in the field. The output scales with the **square** of the applied voltage, so a bank rated 50 kVAR at 480 V delivers only $50(440/480)^{2} = 42.0$ kVAR on a sagging 440 V bus - exactly when the extra VARs were most needed. And it scales with frequency, so a 60 Hz bank on a 50 Hz system produces five sixths of its nameplate.
+
+## 11.3 What the correction releases
+
+Because $P$ is fixed, apparent power and line current both scale as $1/PF$:
+
+$$\\frac{S_{2}}{S_{1}} = \\frac{I_{2}}{I_{1}} = \\frac{PF_{1}}{PF_{2}} \\qquad \\frac{P_{loss,2}}{P_{loss,1}} = \\left(\\frac{PF_{1}}{PF_{2}}\\right)^{2}$$
+
+The released transformer capacity is $S_{1} - S_{2}$, in kVA, and the feeder loss falls with the *square* of the current ratio - which is why correction so often pays for itself out of the loss saving alone, before any tariff penalty is considered.
+
+![Capacitor kVAR required, resulting line current and resulting feeder loss, all plotted against the target power factor for a 75 kW load starting at 0.72 lagging on a 480 volt feeder. The kVAR curve steepens sharply near unity while the current curve flattens, so the last few hundredths of power factor cost the most capacitance and return the least benefit.](/courses/fe-ee/figures/ckt3-correction-ladder.svg)
+
+## 11.4 Overcorrection is symmetric
+
+Push past full compensation and net reactive power changes sign, but its magnitude starts growing again - and apparent power, which depends only on the magnitude, retraces its own curve:
+
+$$S(Q_{C}) = \\sqrt{P^{2} + \\left(Q_{1} - Q_{C}\\right)^{2}}$$
+
+This is a hyperbola in $Q_{C}$ with its minimum at $Q_{C} = Q_{1}$, where $S = P$ and the factor is unity. Installing $2Q_{1}$ returns the apparent power exactly to its uncorrected value, at a leading power factor numerically equal to the original lagging one. Every kVAR past the minimum is money spent buying current back.
+
+## 11.5 The two hazards past unity
+
+Beyond simply wasting capacitance, overcorrection creates two problems that a power triangle cannot show.
+
+**Voltage rise.** Injecting leading VARs into a source with reactance $X_{s}$ lifts the bus voltage by approximately
+
+$$\\frac{\\Delta V}{V} \\approx \\frac{Q_{C}X_{s}}{V^{2}} = \\frac{Q_{C}}{S_{sc}}$$
+
+where $S_{sc} = V^{2}/X_{s}$ is the short-circuit capacity at the bus. A bank sized at 4 percent of the short-circuit level lifts the bus by roughly 4 percent, which at light load can push equipment above its rated voltage.
+
+**Harmonic resonance.** The bank's capacitance and the source's inductance form a parallel resonant circuit seen from the load, tuned to the harmonic order
+
+$$h_{r} = \\sqrt{\\frac{S_{sc}}{Q_{C}}}$$
+
+If $h_{r}$ lands on a harmonic the plant actually produces - the 5th and 7th for six-pulse rectifiers, from section 10 - that harmonic current circulates between the capacitor and the source, magnified many times over. Growing the bank *lowers* $h_{r}$ toward the low-order harmonics where the energy is, so overcorrection walks the resonance into the worst possible place.
+
+![Apparent power drawn from a 480 volt feeder by a 75 kilowatt load, plotted against the size of the installed capacitor bank, together with the parallel-resonant harmonic order on a 2.5 megavolt-ampere bus. Apparent power falls to a minimum at full compensation and then climbs again symmetrically, while the resonant order slides downward toward the fifth harmonic as the bank grows.](/courses/fe-ee/figures/ckt3-overcorrection.svg)
+
+### Worked example 11.1 - sizing a bank for a 75 kW load
+
+A 480 V, 60 Hz single-phase feeder supplies 75 kW at 0.72 lagging. Size the capacitor bank that brings the feeder to 0.95 lagging, and give the capacitance.
+
+$$\\tan\\phi_{1} = \\tan(\\arccos 0.72) = 0.96385 \\qquad \\tan\\phi_{2} = \\tan(\\arccos 0.95) = 0.32868$$
+
+$$Q_{1} = 75 \\times 0.96385 = 72.289\\ \\mathrm{kVAR}$$
+
+$$Q_{C} = 75 \\times (0.96385 - 0.32868) = 75 \\times 0.63517 = 47.638\\ \\mathrm{kVAR}$$
+
+Turning that into hardware,
+
+$$X_{C} = \\frac{V^{2}}{Q_{C}} = \\frac{230400}{47638} = 4.8365\\ \\Omega \\qquad C = \\frac{1}{\\omega X_{C}} = 548.4\\ \\mu\\mathrm{F}$$
+
+**Independent route.** The triangle-side formula must give the same kVAR without ever taking a tangent. With $S_{1} = 75/0.72 = 104.167$ kVA and $S_{2} = 75/0.95 = 78.947$ kVA, the two reactive powers are $\\sqrt{104.167^{2} - 75^{2}} = 72.289$ kVAR and $\\sqrt{78.947^{2} - 75^{2}} = 24.651$ kVAR, whose difference is 47.638 kVAR. The two routes agree to the digit.
+
+### Worked example 11.2 - what the released capacity is worth
+
+For the installation of example 11.1, the feeder has 0.06 ohm of resistance in each of its two conductors and is fed from a 100 kVA transformer. Quantify the benefit of the correction.
+
+$$I_{1} = \\frac{104167}{480} = 217.01\\ \\mathrm{A} \\qquad I_{2} = \\frac{78947}{480} = 164.47\\ \\mathrm{A}$$
+
+The current ratio is $0.72/0.95 = 0.7579$, a reduction of 24.2 percent. Feeder loss, counting both conductors:
+
+$$P_{loss,1} = 2 \\times 47093.3 \\times 0.06 = 5651.2\\ \\mathrm{W}$$
+
+$$P_{loss,2} = 2 \\times 27050.4 \\times 0.06 = 3246.05\\ \\mathrm{W}$$
+
+$$\\Delta P_{loss} = 5651.2 - 3246.05 = 2405.15\\ \\mathrm{W}$$
+
+using $217.01^{2} = 47093.3$ and $164.47^{2} = 27050.4$. **Independent check on the ratio:** $3246.05/5651.2 = 0.5744$, which is exactly the square of the current ratio, $0.7579^{2} = 0.5744$, as section 11.3 requires.
+
+Transformer loading tells the same story from a different direction. Before correction the feeder demanded 104.167 kVA from a 100 kVA transformer, a 4 percent overload; afterwards it demands 78.947 kVA, or 78.9 percent of rating. The correction released
+
+$$S_{1} - S_{2} = 104.167 - 78.947 = 25.220\\ \\mathrm{kVA}$$
+
+of capacity for future load, without changing the 75 kW actually being used.
+
+### Worked example 11.3 - the same plant, overcorrected
+
+The engineer in example 11.1 cannot buy a 47.6 kVAR bank and installs a standard 100 kVAR unit instead. The bus short-circuit capacity is 2.5 MVA. What happens?
+
+Net reactive power reverses sign:
+
+$$Q_{net} = 72.289 - 100 = -27.711\\ \\mathrm{kVAR}$$
+
+$$S = \\sqrt{75^{2} + 27.711^{2}} = \\sqrt{6392.9} = 79.956\\ \\mathrm{kVA} \\qquad PF = \\frac{75}{79.956} = 0.9380\\ \\text{leading}$$
+
+$$I = \\frac{79956}{480} = 166.575\\ \\mathrm{A}$$
+
+That is **more** current than the correctly sized bank produced (164.47 A), at a power factor **worse** than the 0.95 target, and many tariffs penalise leading power factor as readily as lagging. The two hidden costs:
+
+$$\\frac{\\Delta V}{V} \\approx \\frac{100}{2500} = 0.04 \\qquad V_{bus} \\approx 480 \\times 1.04 = 499.2\\ \\mathrm{V}$$
+
+$$h_{r} = \\sqrt{\\frac{2500}{100}} = \\sqrt{25} = 5.00$$
+
+A four percent voltage rise, and a parallel resonance sitting exactly on the fifth harmonic - the dominant harmonic of every six-pulse rectifier in the building. The correctly sized 47.638 kVAR bank would have given a 1.91 percent rise and $h_{r} = 7.24$, which is close enough to the seventh harmonic to be worth a check but not a coincidence with it. Sizing a capacitor bank is never only a power-triangle problem.
+
+| Quantity | Uncorrected | 47.6 kVAR bank | 100 kVAR bank |
+|---|---|---|---|
+| Real power | 75.000 kW | 75.000 kW | 75.000 kW |
+| Net reactive power | +72.289 kVAR | +24.651 kVAR | -27.711 kVAR |
+| Apparent power | 104.167 kVA | 78.947 kVA | 79.956 kVA |
+| Power factor | 0.720 lag | 0.950 lag | 0.938 lead |
+| Line current | 217.01 A | 164.47 A | 166.575 A |
+| Voltage rise | 0 | 1.91 % | 4.00 % |
+| Resonant order | none | 7.24 | 5.00 |`,
+      examTip: 'Q_C = P(tan(phi1) - tan(phi2)) is the one formula to have cold. Both angles come from arccos of a power factor, both tangents are positive for lagging factors, and P is the SAME number in both terms because correction never changes real power. If your answer for Q_C exceeds the load Q, you corrected to a leading factor - check whether you meant to.',
+      importantNote: 'A capacitor bank produces reactive power proportional to the square of the voltage across it. That makes its output collapse exactly when a sagging bus needs support most, and it makes an over-voltage self-reinforcing: more volts gives more VARs gives more volts. Utilities switch banks in steps for precisely this reason.',
+      quiz: [
+        {
+          question: 'A 200 kW load at 0.75 lagging is corrected to 0.92 lagging. What capacitor rating is required?',
+          options: ['91.2 kVAR', '176.4 kVAR', '85.2 kVAR', '46.0 kVAR'],
+          correctIndex: 0,
+          explanation: 'tan(arccos 0.75) = 0.88192 and tan(arccos 0.92) = 0.42615, so Q_C = 200(0.88192 - 0.42615) = 200 x 0.45577 = 91.2 kVAR. The 176.4 kVAR option cancels the entire load reactive power, which would overcorrect to unity and beyond.',
+        },
+        {
+          question: 'Correcting a feeder from 0.70 to 0.98 reduces the line current by what factor?',
+          options: ['To 71.4 percent of its original value', 'To 28.6 percent', 'To 98 percent', 'The current does not change'],
+          correctIndex: 0,
+          explanation: 'With P fixed, current scales as 1/PF, so I2/I1 = PF1/PF2 = 0.70/0.98 = 0.714. Feeder loss falls with the square of that, to 51 percent of its original value - roughly half the copper loss removed for no change in delivered work.',
+        },
+        {
+          question: 'A capacitor bank rated 60 kVAR at 480 V is installed on a bus that is actually running at 456 V. What does it deliver?',
+          options: ['54.2 kVAR', '57.0 kVAR', '60.0 kVAR', '63.2 kVAR'],
+          correctIndex: 0,
+          explanation: 'Output scales with the square of applied voltage: 60 x (456/480)^2 = 60 x 0.9025 = 54.2 kVAR. This is the awkward property of capacitive compensation - the support weakens just as the voltage it is meant to hold up begins to sag.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-practice-b',
+      title: '12. Problem Set B: Power Factor, Correction and Distortion',
+      content: `## Problem Set B - Power Factor, Correction and Distortion
+
+Every problem here uses the machinery of sections 10 and 11. Answers follow the full set.
+
+**B1.** A 40 kW single-phase load runs at 0.65 lagging on a 480 V, 60 Hz feeder. Find its apparent power, line current and reactive power.
+
+**B2.** Size the capacitor bank that brings the load of B1 to 0.93 lagging.
+
+**B3.** Give the capacitance of the B2 bank.
+
+**B4.** Find the corrected line current of B1 and the fraction of the original feeder loss that remains.
+
+**B5.** A load draws 12 A rms of fundamental current at a displacement factor of 0.88, plus 5 A rms of harmonics taken together. Find the THD, the distortion factor and the true power factor.
+
+**B6.** What capacitor rating would return the apparent power of the B1 load to its *uncorrected* value, and at what power factor would it then operate?
+
+**B7.** A capacitor bank rated 25 kVAR at 240 V is installed on a 208 V bus. What does it actually deliver?
+
+**B8.** A 160 kVAR bank is installed on a bus whose short-circuit capacity is 4 MVA. Find the approximate voltage rise and the parallel-resonant harmonic order.
+
+---
+
+### Answers
+
+**B1.** Apparent power first, then current, then the reactive leg:
+
+$$S = \\frac{40}{0.65} = 61.5385\\ \\mathrm{kVA} \\qquad I = \\frac{61538.5}{480} = 128.205\\ \\mathrm{A}$$
+
+$$\\tan\\phi_{1} = \\tan(\\arccos 0.65) = 1.16913 \\qquad Q = 40 \\times 1.16913 = 46.765\\ \\mathrm{kVAR}$$
+
+The triangle route confirms it: $\\sqrt{61.5385^{2} - 40^{2}} = \\sqrt{2186.99} = 46.765$ kVAR.
+
+**B2.** With $\\tan(\\arccos 0.93) = 0.39523$,
+
+$$Q_{C} = 40\\,(1.16913 - 0.39523) = 40 \\times 0.77390 = 30.956\\ \\mathrm{kVAR}$$
+
+**B3.**
+
+$$X_{C} = \\frac{230400}{30956} = 7.4428\\ \\Omega \\qquad C = \\frac{1}{\\omega X_{C}} = 356.4\\ \\mu\\mathrm{F}$$
+
+**B4.**
+
+$$S_{2} = \\frac{40}{0.93} = 43.011\\ \\mathrm{kVA} \\qquad I_{2} = \\frac{43011}{480} = 89.606\\ \\mathrm{A}$$
+
+The current ratio is $0.65/0.93 = 0.6989$, so the remaining loss fraction is $0.6989 \\times 0.6989 = 0.4885$ - a little under half of the original copper loss, for no change in the 40 kW delivered.
+
+**B5.**
+
+$$THD_{I} = \\frac{5}{12} = 0.41667 \\qquad I_{rms} = \\sqrt{12^{2} + 5^{2}} = \\sqrt{169} = 13\\ \\mathrm{A}$$
+
+$$k_{d} = \\frac{12}{13} = 0.92308 \\qquad PF = 0.88 \\times 0.92308 = 0.81231$$
+
+Reading it from the THD gives the same distortion factor: $1/\\sqrt{1 + 0.17361} = 0.92308$.
+
+**B6.** Apparent power is symmetric about full compensation, so returning it to the uncorrected 61.5385 kVA takes twice the load reactive power:
+
+$$Q_{C} = 2 \\times 46.765 = 93.530\\ \\mathrm{kVAR}$$
+
+At that size the net reactive power is $-46.765$ kVAR and the factor is 0.65 **leading** - the mirror image of where the plant started, with the same current, the same losses, and a voltage rise thrown in.
+
+**B7.** Output scales with the square of applied voltage, and $208/240 = 0.86667$:
+
+$$Q = 25 \\times 0.75111 = 18.778\\ \\mathrm{kVAR}$$
+
+**B8.**
+
+$$\\frac{\\Delta V}{V} \\approx \\frac{160}{4000} = 0.04 \\qquad h_{r} = \\sqrt{\\frac{4000}{160}} = \\sqrt{25} = 5.00$$
+
+A 4 percent rise, and a resonance parked on the fifth harmonic. If the plant contains six-pulse drives, this bank should not be installed without a detuning reactor.`,
+      examTip: 'Every one of these problems is the same triangle answered from a different corner. Write P, Q, S and the angle for the starting condition, write them again for the target, and the capacitor is whatever the Q column has to lose. Working in kW and kVAR throughout keeps the arithmetic small and the units honest.',
+    },
+    {
+      id: 'acpw-maxpower',
+      title: '13. Maximum Power Transfer in the AC Case',
+      content: `## 13.1 Two variables, taken one at a time
+
+Reduce the source to a Thevenin equivalent $\\mathbf{V}_{th}$ behind $\\mathbf{Z}_{th} = R_{th} + jX_{th}$ and attach a load $\\mathbf{Z}_{L} = R_{L} + jX_{L}$. The current and the load power follow at once:
+
+$$\\mathbf{I} = \\frac{\\mathbf{V}_{th}}{(R_{th}+R_{L}) + j(X_{th}+X_{L})}$$
+
+$$P_{L} = \\lvert I \\rvert^{2}R_{L} = \\frac{\\lvert V_{th} \\rvert^{2}R_{L}}{(R_{th}+R_{L})^{2} + (X_{th}+X_{L})^{2}}$$
+
+There are two knobs, but they are not symmetric. The reactance $X_{L}$ appears **only in the denominator**, and only inside a square, so whatever $R_{L}$ turns out to be, the best possible $X_{L}$ is the one that annihilates that square:
+
+$$X_{L} = -X_{th}$$
+
+This is worth naming plainly: the load reactance should cancel the source reactance, leaving a purely resistive series loop. Substituting it back leaves a one-variable problem,
+
+$$P_{L} = \\frac{\\lvert V_{th} \\rvert^{2}R_{L}}{(R_{th}+R_{L})^{2}}$$
+
+and differentiating,
+
+$$\\frac{dP_{L}}{dR_{L}} = \\lvert V_{th} \\rvert^{2}\\,\\frac{(R_{th}+R_{L})^{2} - 2R_{L}(R_{th}+R_{L})}{(R_{th}+R_{L})^{4}} = \\lvert V_{th} \\rvert^{2}\\,\\frac{R_{th}-R_{L}}{(R_{th}+R_{L})^{3}}$$
+
+which vanishes at $R_{L} = R_{th}$. The two conditions together are the **conjugate match**:
+
+$$\\mathbf{Z}_{L} = \\mathbf{Z}_{th}^{*} \\qquad P_{max} = \\frac{\\lvert V_{th} \\rvert^{2}}{4R_{th}}$$
+
+with $V_{th}$ in rms volts. If a problem hands you a peak amplitude instead, the same expression divides by $8R_{th}$, and mixing the two conventions is the most common way this formula goes wrong.
+
+## 13.2 The efficiency nobody mentions
+
+At the conjugate match the source resistance and the load resistance are equal and carry the same current, so they dissipate equally:
+
+$$\\eta = \\frac{P_{L}}{P_{L} + \\lvert I \\rvert^{2}R_{th}} = \\frac{1}{2}$$
+
+Half the generated power is burned inside the source. That is perfectly acceptable when the source is an antenna, a sensor or a signal generator, where the object is to recover the largest possible signal and the internal loss is nobody's revenue. It is unthinkable on a distribution feeder, where a utility matched to its load would waste half its generation as heat in the network. **Power systems deliberately operate far from the matched condition**, with source impedance kept as small as possible so that efficiency approaches unity and the delivered power is limited by thermal ratings rather than by a maximum-transfer condition.
+
+## 13.3 Constraint one: a load that cannot be reactive
+
+If the load is forced to be purely resistive, $X_{L} = 0$ and the source reactance stays in the denominator:
+
+$$P_{L} = \\frac{\\lvert V_{th} \\rvert^{2}R_{L}}{(R_{th}+R_{L})^{2} + X_{th}^{2}}$$
+
+Setting the derivative's numerator to zero gives $(R_{th}+R_{L})^{2} + X_{th}^{2} - 2R_{L}(R_{th}+R_{L}) = 0$, which expands and cancels to
+
+$$R_{th}^{2} + X_{th}^{2} - R_{L}^{2} = 0 \\qquad R_{L} = \\lvert Z_{th} \\rvert$$
+
+The optimum resistance is the **magnitude** of the source impedance, not its real part. Substituting back and simplifying the denominator to $2\\lvert Z_{th} \\rvert(\\lvert Z_{th} \\rvert + R_{th})$,
+
+$$P_{max,R} = \\frac{\\lvert V_{th} \\rvert^{2}}{2\\left(\\lvert Z_{th} \\rvert + R_{th}\\right)}$$
+
+## 13.4 Constraint two: a load whose angle is fixed
+
+Motors and many practical loads come with a power factor attached: the angle of $\\mathbf{Z}_{L}$ is set by the machine and only its magnitude can be scaled. Write $\\mathbf{Z}_{L} = m\\angle\\theta$ with $m$ free, and the load power becomes
+
+$$P_{L} = \\frac{\\lvert V_{th} \\rvert^{2}\\,m\\cos\\theta}{\\lvert Z_{th} \\rvert^{2} + m^{2} + 2m\\lvert Z_{th} \\rvert\\cos(\\theta - \\theta_{th})}$$
+
+Group the denominator as $a + m^{2} + bm$ with $a = \\lvert Z_{th} \\rvert^{2}$ and $b = 2\\lvert Z_{th} \\rvert\\cos(\\theta - \\theta_{th})$. The derivative of $m/(a + m^{2} + bm)$ has numerator $(a + m^{2} + bm) - m(2m + b) = a - m^{2}$, so
+
+$$m = \\sqrt{a} = \\lvert Z_{th} \\rvert$$
+
+The optimum magnitude is $\\lvert Z_{th} \\rvert$ regardless of what the angle happens to be - and the previous case is the special instance $\\theta = 0$. All three results are one family: cancel the reactance if you may, and otherwise match magnitudes.
+
+![Power delivered to the load plotted against load resistance for a 24 volt rms source behind six plus j eight ohms, under three policies: full conjugate match, resistive load only, and a load whose angle is pinned at 0.8 lagging. The three peaks sit at 24.0, 18.0 and 11.76 watts, at load resistances of six, ten and eight ohms respectively.](/courses/fe-ee/figures/ckt3-max-power.svg)
+
+| Constraint | Optimum load | Power delivered | Share of the unconstrained maximum |
+|---|---|---|---|
+| None | $\\mathbf{Z}_{th}^{*} = 6 - j8$ | 24.00 W | 100 % |
+| $X_{L} = 0$ | $R_{L} = \\lvert Z_{th} \\rvert = 10$ | 18.00 W | 75 % |
+| Angle fixed at 0.8 lag | $\\mathbf{Z}_{L} = 8 + j6$ | 11.76 W | 49 % |
+
+### Worked example 13.1 - the unconstrained match
+
+A source of 24 V rms behind $\\mathbf{Z}_{th} = 6 + j8$ ohms drives an adjustable load. Find the load for maximum power, the power, the load voltage and the efficiency.
+
+$$\\mathbf{Z}_{L} = \\mathbf{Z}_{th}^{*} = 6 - j8\\ \\Omega \\qquad \\mathbf{Z}_{total} = 12\\ \\Omega\\ \\text{(purely real)}$$
+
+$$I = \\frac{24}{12} = 2\\ \\mathrm{A} \\qquad P_{L} = \\lvert I \\rvert^{2}R_{L} = 4 \\times 6 = 24\\ \\mathrm{W}$$
+
+**Independent route:** the closed form gives $P_{max} = 576/24 = 24$ W, agreeing without ever computing a current. The load voltage is $\\lvert I \\rvert\\lvert Z_{L} \\rvert = 2 \\times 10 = 20$ V, which is *less* than the 24 V source - matching does not mean maximising load voltage. And the source resistance dissipates $4 \\times 6 = 24$ W as well, so the efficiency is exactly 50 percent.
+
+### Worked example 13.2 - a resistive load, and why $R_{L} = R_{th}$ is wrong here
+
+The same source now drives a load that must be purely resistive. Find the best resistance and the power, then show what happens if the resistance is naively set equal to $R_{th}$.
+
+$$R_{L} = \\lvert Z_{th} \\rvert = \\sqrt{6^{2} + 8^{2}} = 10\\ \\Omega$$
+
+$$\\lvert Z_{total} \\rvert = \\sqrt{16^{2} + 8^{2}} = \\sqrt{320} = 17.889\\ \\Omega \\qquad I = \\frac{24}{17.889} = 1.3416\\ \\mathrm{A}$$
+
+$$P_{L} = 1.800 \\times 10 = 18.00\\ \\mathrm{W}$$
+
+**Independent route:** the closed form of section 13.3 gives $P_{max,R} = 576/32 = 18.00$ W, since $2(\\lvert Z_{th} \\rvert + R_{th}) = 2 \\times 16 = 32$.
+
+Now the naive choice $R_{L} = R_{th} = 6$ ohms. The total impedance is $12 + j8$, whose squared magnitude is 208, so
+
+$$\\lvert I \\rvert^{2} = \\frac{576}{208} = 2.7692 \\qquad P_{L} = 2.7692 \\times 6 = 16.615\\ \\mathrm{W}$$
+
+which is 8 percent below the correct 18.00 W. Matching the resistance is the right answer only when the reactance has already been cancelled; with $X_{th}$ still present, the load must be larger to compensate.
+
+### Worked example 13.3 - a load with a fixed power factor
+
+The same source drives a machine whose power factor is fixed at 0.8 lagging, with only its size adjustable. Find the best load and the power.
+
+The optimum magnitude is $\\lvert Z_{th} \\rvert = 10$ ohms, and at 0.8 lagging that magnitude splits as
+
+$$\\mathbf{Z}_{L} = 10\\angle 36.87^{\\circ} = 8 + j6\\ \\Omega \\qquad \\mathbf{Z}_{total} = 14 + j14\\ \\Omega$$
+
+$$\\lvert Z_{total} \\rvert^{2} = 196 + 196 = 392 \\qquad \\lvert I \\rvert^{2} = \\frac{576}{392} = 1.46939$$
+
+$$P_{L} = 1.46939 \\times 8 = 11.755\\ \\mathrm{W}$$
+
+That is $11.755/24 = 0.4898$ of the unconstrained maximum: pinning the angle costs more than half the available power. **Independent route:** a numerical sweep of $P_{L}$ over load magnitudes from 1 to 30 ohms, with the angle held at 36.87 degrees, peaks at a magnitude of 10.000 ohms and a power of 11.755102 W - the closed form located by search rather than by calculus.
+
+### Worked example 13.4 - why 50 ohms is nearly always good enough
+
+A signal source of 10 V rms behind $50 + j30$ ohms feeds a receiver. Compare the best possible load, a standard 50 ohm resistive termination, and the best resistive termination.
+
+$$P_{max} = \\frac{100}{4 \\times 50} = \\frac{100}{200} = 0.5000\\ \\mathrm{W}$$
+
+With a plain 50 ohm load, the loop is $100 + j30$ ohms and
+
+$$\\lvert I \\rvert^{2} = \\frac{100}{10900} = 0.0091743 \\qquad P_{L} = 0.0091743 \\times 50 = 0.4587\\ \\mathrm{W}$$
+
+or $0.4587/0.5 = 0.9174$ of the maximum. The best resistive value is $\\lvert Z_{th} \\rvert = \\sqrt{3400} = 58.31$ ohms, giving
+
+$$P_{L} = \\frac{100}{2 \\times 108.31} = \\frac{100}{216.62} = 0.4616\\ \\mathrm{W}$$
+
+or $0.4616/0.5 = 0.9232$ of the maximum. So the optimal resistive load beats the standard one by less than a percentage point, and both sit within 8 percent of a perfect conjugate match. The peak of the power curve is broad, which is exactly why a single standardised impedance works across an entire industry.`,
+      examTip: 'Read the constraint before reaching for a formula. "Find the load for maximum power" with no restriction means Z_L = Z_th* and P = |V|^2/(4 R_th). "The load must be a resistor" means R_L = |Z_th| and P = |V|^2 / (2(|Z_th| + R_th)). Using the first pair on the second question is the standard trap, and it always overstates the answer.',
+      importantNote: 'Maximum power transfer and maximum efficiency are opposite design goals. The conjugate match delivers the most watts at exactly 50 percent efficiency; a power system chooses efficiency instead, keeping source impedance far below load impedance and never approaching the matched condition.',
+      quiz: [
+        {
+          question: 'A source of 100 V rms behind 20 + j15 ohms drives an adjustable load. What is the maximum power the load can absorb?',
+          options: ['125 W', '100 W', '250 W', '166.7 W'],
+          correctIndex: 0,
+          explanation: 'Conjugate match gives Z_L = 20 - j15, so P = |V|^2/(4 R_th) = 10000/80 = 125 W. Using |Z_th| = 25 in place of R_th gives 100 W, which is the answer to the different question of a purely resistive load.',
+        },
+        {
+          question: 'The same 100 V source behind 20 + j15 ohms must drive a purely resistive load. What resistance maximises the delivered power?',
+          options: ['25 ohms', '20 ohms', '15 ohms', '35 ohms'],
+          correctIndex: 0,
+          explanation: 'With the reactance uncancelled the optimum is R_L = |Z_th| = sqrt(400 + 225) = 25 ohms, delivering 10000/(2(25 + 20)) = 111.1 W. Choosing R_L = R_th = 20 ohms gives only 10000 x 20/(1600 + 225) = 109.6 W, slightly less.',
+        },
+        {
+          question: 'At the conjugate-matched condition, what fraction of the power generated by the source reaches the load?',
+          options: ['One half', 'All of it', 'One quarter', 'It depends on the reactance'],
+          correctIndex: 0,
+          explanation: 'R_L equals R_th and both carry the same current, so both dissipate equally and the efficiency is exactly 50 percent, whatever the reactance was before cancellation. This is why matching belongs to signal circuits and not to power distribution.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-combination',
+      title: '14. Complex Power in Series and Parallel, and the Route to Three Phase',
+      content: `## 14.1 What is conserved and what is not
+
+In any network, the complex power delivered by the sources equals the sum of the complex powers absorbed by every element:
+
+$$\\mathbf{S}_{source} = \\sum_{k}\\mathbf{S}_{k} \\qquad P_{source} = \\sum_{k}P_{k} \\qquad Q_{source} = \\sum_{k}Q_{k}$$
+
+Real power and reactive power are each conserved **separately**, which is the practical content of the statement and the reason the componentwise method always works. Apparent power is a magnitude, and magnitudes obey no conservation law at all:
+
+$$S_{source} \\ne \\sum_{k}S_{k} \\qquad\\text{unless every load shares one angle}$$
+
+The inequality is strict whenever two loads sit at different angles, and it always runs the same way: the sum of the magnitudes exceeds the magnitude of the sum, by the ordinary triangle inequality. Adding kVA ratings therefore never underestimates a feeder - it just wastes money on the oversizing.
+
+## 14.2 Series elements: one shared current
+
+Elements in series carry the same current, so factoring $\\lvert I \\rvert^{2}$ out of the impedance sum gives the whole answer at once:
+
+$$\\mathbf{S}_{total} = \\lvert I \\rvert^{2}\\sum_{k}\\mathbf{Z}_{k} = \\lvert I \\rvert^{2}\\sum_{k}R_{k} + j\\lvert I \\rvert^{2}\\sum_{k}X_{k}$$
+
+Real power is distributed among series elements in proportion to their resistances, and reactive power in proportion to their reactances - signed, so a capacitor's negative reactance subtracts from an inductor's.
+
+## 14.3 Parallel elements: one shared voltage
+
+Elements in parallel share a voltage, and it is the admittance sum that factors:
+
+$$\\mathbf{S}_{total} = \\mathbf{V}\\left(\\sum_{k}\\mathbf{Y}_{k}\\mathbf{V}\\right)^{*} = \\lvert V \\rvert^{2}\\sum_{k}\\mathbf{Y}_{k}^{*}$$
+
+The conjugate lands on the admittance this time. Writing $\\mathbf{Y} = G + jB$, the complex power is $\\lvert V \\rvert^{2}(G - jB)$, so a *negative* susceptance produces a *positive* reactive power - which is correct, because an inductor has $\\mathbf{Y} = 1/(jX) = -j/X$ and does absorb VARs.
+
+| Configuration | Shared quantity | Complex power | What adds directly |
+|---|---|---|---|
+| Series | current | $\\lvert I \\rvert^{2}\\sum \\mathbf{Z}_{k}$ | impedances, and P and Q |
+| Parallel | voltage | $\\lvert V \\rvert^{2}\\sum \\mathbf{Y}_{k}^{*}$ | admittances, and P and Q |
+| Any mixture | neither | $\\sum P_{k} + j\\sum Q_{k}$ | P and Q only |
+
+The last row is the one to remember. Whatever the topology, converting every load into a $(P, Q)$ pair, adding the two columns, and rebuilding $S = \\sqrt{P^{2}+Q^{2}}$ at the very end is a method that cannot go wrong.
+
+## 14.4 Handing the result to three phase
+
+Everything above transfers to a balanced three-phase system without modification, because a balanced system is three identical single-phase problems sharing a neutral. Per phase,
+
+$$\\mathbf{S}_{\\phi} = \\mathbf{V}_{\\phi}\\mathbf{I}_{\\phi}^{*} \\qquad \\mathbf{S}_{3\\phi} = 3\\,\\mathbf{V}_{\\phi}\\mathbf{I}_{\\phi}^{*}$$
+
+and substituting the wye relations $V_{LL} = \\sqrt{3}\\,V_{\\phi}$ with $I_{L} = I_{\\phi}$ turns that into the line-quantity form the reference handbook prints:
+
+$$S_{3\\phi} = 3V_{\\phi}I_{\\phi} = \\sqrt{3}\\,V_{LL}I_{L} \\qquad P_{3\\phi} = \\sqrt{3}\\,V_{LL}I_{L}\\cos\\theta$$
+
+One warning carries all the weight here: $\\theta$ remains the angle between the **phase** voltage and the **phase** current, which is the impedance angle of the load. It is not the angle between line voltage and line current, and the $\\sqrt{3}$ in front is the only place the connection enters. Power triangles, power factor, correction sizing and released capacity all behave in three phase exactly as they do here, with $P$, $Q$ and $S$ read as three-phase totals and a correction bank's kVAR split across three capacitors. The dedicated three-phase chapter carries the connections themselves - wye against delta, line-to-phase conversions, the neutral current, and unbalanced systems - and none of that is repeated here.
+
+### Worked example 14.1 - two impedances in series
+
+A 100 V rms source drives $\\mathbf{Z}_{1} = 4 + j3$ ohms in series with $\\mathbf{Z}_{2} = 6 - j10$ ohms. Find the complex power in each element, the total, and the power factor.
+
+$$\\mathbf{Z}_{total} = 10 - j7\\ \\Omega \\qquad \\lvert Z_{total} \\rvert = \\sqrt{149} = 12.2066\\ \\Omega$$
+
+$$I = \\frac{100}{12.2066} = 8.1923\\ \\mathrm{A} \\qquad \\lvert I \\rvert^{2} = \\frac{10000}{149} = 67.114$$
+
+$$\\mathbf{S}_{1} = 67.114\\,(4 + j3) = 268.46 + j201.34\\ \\mathrm{VA}$$
+
+$$\\mathbf{S}_{2} = 67.114\\,(6 - j10) = 402.68 - j671.14\\ \\mathrm{VA}$$
+
+$$\\mathbf{S}_{total} = 671.14 - j469.80\\ \\mathrm{VA}$$
+
+**Independent route:** the source sees $S = VI = 100 \\times 8.1923 = 819.23$ VA, and the magnitude of the componentwise total is $\\sqrt{671.14^{2} + 469.80^{2}} = \\sqrt{671141} = 819.23$ VA. The two agree, so the bookkeeping closed. The power factor is $671.14/819.23 = 0.81923$ **leading**, because the capacitive reactance of the second element outweighs the inductive reactance of the first.
+
+Now the mistake this section exists to prevent. The individual apparent powers are $67.114 \\times 5 = 335.57$ VA and $67.114 \\times 11.6619 = 782.68$ VA, and
+
+$$335.57 + 782.68 = 1118.25\\ \\mathrm{VA}$$
+
+against a true 819.23 VA. That is $1118.25/819.23 = 1.3650$, an overstatement of 36.5 percent - large because these two elements sit almost 90 degrees apart in angle. **Time-domain check:** integrating $v(t)i(t)$ over one cycle, with the current lagging by the angle of $\\mathbf{Z}_{total}$, returns 671.140940 W, matching the real part exactly.
+
+### Worked example 14.2 - three loads on one bus
+
+A 600 V rms single-phase bus supplies three loads: 30 kW at 0.85 lagging; 18 kVA at 0.60 leading; and 12 kW of resistance heating. Find the total apparent power, the power factor and the line current.
+
+Convert each load to a $(P, Q)$ pair. For the first, $\\sin(\\arccos 0.85) = 0.52678$, so its tangent is $0.52678/0.85 = 0.61974$ and
+
+$$S_{1} = \\frac{30}{0.85} = 35.2941\\ \\mathrm{kVA} \\qquad Q_{1} = 30 \\times 0.619744 = 18.5923\\ \\mathrm{kVAR}$$
+
+The triangle route agrees: $\\sqrt{35.2941^{2} - 30^{2}} = \\sqrt{345.674} = 18.5923$ kVAR. The second load is leading, so its reactive power is negative:
+
+$$P_{2} = 18 \\times 0.6 = 10.8\\ \\mathrm{kW} \\qquad Q_{2} = -18 \\times 0.8 = -14.4\\ \\mathrm{kVAR}$$
+
+The third contributes 12 kW and nothing else. Adding the columns:
+
+$$P = 30 + 10.8 + 12 = 52.8\\ \\mathrm{kW} \\qquad Q = 18.5923 - 14.4 = 4.1923\\ \\mathrm{kVAR}$$
+
+$$S = \\sqrt{52.8^{2} + 4.1923^{2}} = \\sqrt{2805.42} = 52.966\\ \\mathrm{kVA}$$
+
+$$PF = \\frac{52.8}{52.966} = 0.9969\\ \\text{lagging} \\qquad I = \\frac{52966}{600} = 88.277\\ \\mathrm{A}$$
+
+The leading load has very nearly cancelled the lagging one, which is the whole mechanism of power factor correction appearing here as an accident of the load mix. Compare the wrong method: $35.294 + 18 + 12 = 65.294$ kVA, which is $65.294/52.966 = 1.233$ times the true burden - 23 percent of oversizing bought with a single misplaced addition.
+
+Note the value of $\\sin(\\arccos 0.85)$ used above. It is 0.52678, not 0.527: the two differ by 0.14 percent, which propagates straight into $Q_{1}$ and from there into the bank size if this bus is ever corrected.
+
+### Worked example 14.3 - the same demand, delivered as three phase
+
+Take the 52.8 kW and 4.1923 kVAR of example 14.2 and supply the same demand instead as a balanced three-phase load at 480 V line-to-line. Find the line current and the per-phase quantities.
+
+The triangle is unchanged, so $S = 52.966$ kVA still, and the line current follows from the three-phase form:
+
+$$I_{L} = \\frac{S}{\\sqrt{3}\\,V_{LL}} = \\frac{52966}{831.384} = 63.71\\ \\mathrm{A}$$
+
+using $\\sqrt{3} \\times 480 = 831.384$ V. **Independent route, per phase:** each phase carries a third of the complex power, $52966/3 = 17655$ VA, across a phase voltage of $480/1.7320508 = 277.13$ V, giving a phase current of $17655/277.13 = 63.71$ A - identical, as it must be for a wye where line and phase currents are the same conductor.
+
+The load angle is unchanged as well: $\\arccos 0.9969 = 4.54$ degrees, whether the demand is met by one phase or three. Compare the currents, though: 88.28 A single-phase at 600 V against 63.71 A per line at 480 V. That reduction, for identical delivered work, is the practical argument for three-phase distribution, and the dedicated chapter develops it properly.`,
+      examTip: 'When several loads share a bus, never add kVA. Build a two-column table of P and Q, put every load in it - watts positive, VARs positive for lagging and negative for leading - add the columns, and only then form S and the power factor. The method is identical whether the loads are series, parallel or a mixture, and it is the same method in three phase with the totals read as three-phase quantities.',
+      quiz: [
+        {
+          question: 'A bus carries 20 kW at 0.8 lagging and 15 kVA at 0.6 leading. What is the total apparent power?',
+          options: ['26.0 kVA', '35.0 kVA', '29.0 kVA', '25.0 kVA'],
+          correctIndex: 0,
+          explanation: 'First load: P = 20 kW, Q = +15 kVAR. Second: P = 15(0.6) = 9 kW, Q = -15(0.8) = -12 kVAR. Totals P = 29 kW, Q = 3 kVAR, so S = sqrt(841 + 9) = sqrt(850) = 29.2 kVA. Adding the apparent powers gives 40 kVA, and adding the real powers alone gives 29 kVA - the option list contains both errors.',
+        },
+        {
+          question: 'For loads in parallel, which expression gives the total complex power from the bus voltage?',
+          options: ['|V|^2 times the sum of the conjugated admittances', '|V|^2 times the sum of the admittances', '|V|^2 divided by the sum of the impedances', 'The sum of the individual apparent powers'],
+          correctIndex: 0,
+          explanation: 'S = V I* and I is the sum of Y_k V, so S = |V|^2 sum(Y_k*). Omitting the conjugate reverses the sign of every reactive contribution, and summing apparent powers ignores that the loads sit at different angles.',
+        },
+        {
+          question: 'A balanced three-phase load draws 40 kW at 0.85 lagging from a 480 V line-to-line supply. What is the line current?',
+          options: ['56.6 A', '98.0 A', '32.7 A', '48.1 A'],
+          correctIndex: 0,
+          explanation: 'S = 40/0.85 = 47.06 kVA and I_L = S/(sqrt(3) V_LL) = 47059/831.4 = 56.6 A. Dropping the sqrt(3) gives 98 A; using the phase voltage 277 V with the three-phase total gives another of the wrong options.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-practice-c',
+      title: '15. Problem Set C: Combination, Matching and the Three-Phase Hand-off',
+      content: `## Problem Set C - Combination, Matching and Three-Phase
+
+**C1.** A 208 V bus supplies two parallel loads: 5 kW at 0.8 lagging, and 3 kVA at unity power factor. Find the total apparent power, the power factor and the line current.
+
+**C2.** A 120 V rms source drives $3 + j4$ ohms in series with $5 - j2$ ohms. Find the total real and reactive power and the power factor.
+
+**C3.** Size the capacitor, in kVAR and in microfarads, that raises the C1 bus to 0.97 lagging at 60 Hz.
+
+**C4.** A 15 V rms source behind $8 + j6$ ohms drives an adjustable load. Find the maximum power the load can absorb.
+
+**C5.** Repeat C4 with the load constrained to be purely resistive.
+
+**C6.** A balanced three-phase load draws 60 kW at 0.88 lagging from a 460 V line-to-line supply. Find the line current.
+
+**C7.** Find the reactive power of the C6 load and the three-phase capacitor rating needed to reach 0.95 lagging, then give the per-phase rating.
+
+**C8.** The C7 bank is installed where the short-circuit capacity is 9 MVA. Find the parallel-resonant harmonic order and say whether it is a concern.
+
+---
+
+### Answers
+
+**C1.** Load one: $P = 5$ kW and, with $\\tan(\\arccos 0.8) = 0.75$,
+
+$$Q_{1} = 5 \\times 0.75 = 3.75\\ \\mathrm{kVAR}$$
+
+Load two contributes 3 kW and no VARs. Totals are 8 kW and 3.75 kVAR:
+
+$$S = \\sqrt{8^{2} + 3.75^{2}} = \\sqrt{78.0625} = 8.8353\\ \\mathrm{kVA}$$
+
+$$PF = \\frac{8}{8.8353} = 0.90546 \\qquad I = \\frac{8835.3}{208} = 42.477\\ \\mathrm{A}$$
+
+**C2.** The series impedance is $8 + j2$ ohms, whose squared magnitude is 68, so
+
+$$\\lvert I \\rvert^{2} = \\frac{14400}{68} = 211.765 \\qquad P = 211.765 \\times 8 = 1694.12\\ \\mathrm{W}$$
+
+$$Q = 211.765 \\times 2 = 423.53\\ \\mathrm{VAR} \\qquad PF = \\frac{8}{8.2462} = 0.97014\\ \\text{lagging}$$
+
+The power factor read from the impedance, $R/\\lvert Z \\rvert$, matches the one read from the powers, $P/S$ - the similarity of section 8.3 doing its job.
+
+**C3.** At the 0.97 target, $\\tan(\\arccos 0.97) = 0.25062$, so the bus may keep
+
+$$Q_{2} = 8 \\times 0.25062 = 2.005\\ \\mathrm{kVAR} \\qquad Q_{C} = 3.75 - 2.005 = 1.745\\ \\mathrm{kVAR}$$
+
+$$X_{C} = \\frac{43264}{1745} = 24.793\\ \\Omega \\qquad C = \\frac{1}{\\omega X_{C}} = 107.0\\ \\mu\\mathrm{F}$$
+
+**C4.** Conjugate match, so $\\mathbf{Z}_{L} = 8 - j6$ ohms and
+
+$$P_{max} = \\frac{\\lvert V \\rvert^{2}}{4R_{th}} = \\frac{225}{32} = 7.031\\ \\mathrm{W}$$
+
+**C5.** With the reactance uncancelled, the optimum resistance is the impedance magnitude, $\\lvert Z_{th} \\rvert = 10$ ohms:
+
+$$P_{max,R} = \\frac{225}{2 \\times 18} = \\frac{225}{36} = 6.250\\ \\mathrm{W}$$
+
+or 88.9 percent of the unconstrained maximum.
+
+**C6.**
+
+$$S = \\frac{60}{0.88} = 68.182\\ \\mathrm{kVA} \\qquad I_{L} = \\frac{68182}{796.743} = 85.576\\ \\mathrm{A}$$
+
+using $\\sqrt{3} \\times 460 = 796.743$ V.
+
+**C7.** With $\\tan(\\arccos 0.88) = 0.53974$ and $\\tan(\\arccos 0.95) = 0.32868$,
+
+$$Q_{1} = 60 \\times 0.53974 = 32.384\\ \\mathrm{kVAR} \\qquad Q_{2} = 60 \\times 0.32868 = 19.721\\ \\mathrm{kVAR}$$
+
+$$Q_{C} = 32.384 - 19.721 = 12.663\\ \\mathrm{kVAR} \\qquad \\frac{12.663}{3} = 4.221\\ \\mathrm{kVAR\\ per\\ phase}$$
+
+**C8.**
+
+$$h_{r} = \\sqrt{\\frac{9000}{12.663}} = \\sqrt{710.73} = 26.66$$
+
+An order of 26.66 sits far above the harmonics any ordinary plant produces in quantity, so this bank presents no resonance concern. The contrast with worked example 11.3 is instructive: a bank an order of magnitude larger, on a bus with less short-circuit strength, landed exactly on the fifth.`,
+      examTip: 'Problems C4 and C5 differ by one word in the statement and by 11 percent in the answer. Read for the constraint every time: unrestricted load means the conjugate and |V|^2/(4 R_th); resistive load means |Z_th| and |V|^2/(2(|Z_th| + R_th)).',
+    },
   ],
   keyTakeaways: [
     'P = VI·cosφ (real, watts); Q = VI·sinφ (reactive, VAR); S = VI (apparent, VA).',
@@ -3562,6 +4802,15 @@ delivered — capacity recovered from bookkeeping rather than from copper.`,
     'Lagging PF (inductive loads) is most common; correct with parallel capacitors.',
     'Q_C = P·(tanφ₁ - tanφ₂) calculates required capacitive reactive power.',
     'Low PF increases current, losses, and equipment sizing requirements.',
+    'p(t) = P(1 + cos 2ωt) + Q sin 2ωt: the first group never reverses, the second averages to zero.',
+    'Instantaneous power runs backwards for θ/180° of every cycle — zero for a resistor, half a cycle for a pure reactance.',
+    'RMS comes from the defining integral: Vm/√2 for a sinusoid, Vm/√3 for any straight-line ramp, Vm for a symmetric square, Vm√D for a pulse train.',
+    'Components at different frequencies add in quadrature: V_rms² = V_DC² + ΣV_k,rms², and phase angles never enter.',
+    'S = VI* requires the conjugate; dropping it keeps the magnitude and reverses the sign of Q, relabelling every lagging load as leading.',
+    'With distorted current, PF = (I₁/I_rms)·cosθ₁ = cosθ₁/√(1 + THD²). Capacitors change only the displacement factor, so 1/√(1 + THD²) is a hard ceiling.',
+    'Overcorrection is symmetric: past unity S climbs again, the bus rises by roughly Q_C/S_sc, and the resonant order √(S_sc/Q_C) slides toward the 5th and 7th harmonics.',
+    'Maximum AC power transfer needs Z_L = Z_th*, giving |V|²/(4R_th) at exactly 50% efficiency; a resistance-only load wants R_L = |Z_th| and gets |V|²/(2(|Z_th| + R_th)).',
+    'Complex powers add and apparent powers do not: convert every load to a (P, Q) pair, add the two columns, and rebuild S at the end.',
   ],
 },
 

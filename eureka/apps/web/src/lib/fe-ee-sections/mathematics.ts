@@ -11673,9 +11673,9 @@ for one of them in disguise is usually faster than any computation.`,
 
 fee_vector_analysis: {
   topicId: 'fee_vector_analysis',
-  title: 'Laplace Transform & Vector Analysis',
+  title: 'Vector Analysis (with a Laplace Refresher)',
   domainWeight: 'Mathematics · 7–11%',
-  overview: 'The Laplace transform converts time-domain differential equations into algebraic equations in the s-domain. Vector analysis — gradient, divergence, and curl — is essential for electromagnetics. Together these tools solve circuit transients and field problems.',
+  overview: 'Vector analysis is the language every field problem on this exam is written in: the two products and what each measures, gradient, divergence and curl built from the limits that define them, line and surface integrals, and the three integral theorems that connect them. A short Laplace refresher stays for continuity — the full treatment lives in the Differential Equations chapter and in Linear Systems.',
   sections: [
     {
       id: 'va-laplace',
@@ -11719,8 +11719,8 @@ The Final Value Theorem finds steady-state WITHOUT inverse transforming — a ma
       title: '2. Vector Calculus for Electromagnetics',
       content: `## 2.1 Vector Operations
 
-- **Dot product**: A·B = |A||B|cosθ = AxBx + AyBy + AzBz (scalar result)
-- **Cross product**: |A×B| = |A||B|sinθ (vector result, direction by right-hand rule)
+- **Dot product**: $\\mathbf{A}\\cdot\\mathbf{B} = \\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert\\cos\\theta = A_{x}B_{x} + A_{y}B_{y} + A_{z}B_{z}$ (scalar result)
+- **Cross product**: $\\lvert \\mathbf{A}\\times\\mathbf{B}\\rvert = \\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert\\sin\\theta$ (vector result, direction by right-hand rule)
 
 The dot product tests perpendicularity (A·B = 0 if perpendicular).
 The cross product finds the area of the parallelogram and the normal direction.
@@ -11756,9 +11756,9 @@ A = 3i + 4j and B = 2i - j.
 
 **Dot** (scalar, measures alignment): A.B = (3)(2) + (4)(-1) = 6 - 4 = **2**. Since A.B = |A||B|cos(theta), and |A| = 5, |B| = 2.24, cos(theta) = 2/11.2 = 0.179, so theta = **79.7 degrees**.
 
-**Cross** (vector, measures perpendicularity, right-hand rule): A x B = (3)(-1) - (4)(2) in the k component = **-11k**. The magnitude 11 equals |A||B|sin(theta) = 5(2.24)(0.983) = 11. Consistent.
+**Cross** (vector, measures perpendicularity, right-hand rule): the k component of $\\mathbf{A}\\times\\mathbf{B}$ is $(3)(-1) - (4)(2) = -11$, so $\\mathbf{A}\\times\\mathbf{B} = -11\\,\\mathbf{k}$. The magnitude 11 equals $\\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert\\sin\\theta = 5(2.236)(0.9839) = 11.0$. Consistent.
 
-Which to use, in physical terms: **work and power are dot products** (W = F.d, P = V.I in the phasor sense), while **forces and torques are cross products** (F = qv x B, tau = r x F). If the answer should be a number, use dot; if it should be a direction, use cross.
+Which to use, in physical terms: **work and power are dot products** ($W = \\mathbf{F}\\cdot\\mathbf{d}$, and P = VI cos θ in the phasor sense), while **forces and torques are cross products** ($\\mathbf{F} = q\\,\\mathbf{v}\\times\\mathbf{B}$, $\\boldsymbol{\\tau} = \\mathbf{r}\\times\\mathbf{F}$). If the answer should be a number, use dot; if it should be a direction, use cross.
 
 ## 3.2 The three operators
 
@@ -11780,9 +11780,9 @@ Note that curl F = (d/dx)(x) - (d/dy)(y) = 1 - 1 = 0, so this field is conservat
 
 ## 3.4 Flux through a surface
 
-Flux = integral of F.n dA. For a uniform field F = 5k passing through a flat 2 m x 3 m plate lying in the xy plane, n = k and F.n = 5, so flux = 5 x 6 = **30**.
+Flux is the integral of $\\mathbf{F}\\cdot\\mathbf{n}$ over the surface. For a uniform field $\\mathbf{F} = 5\\,\\mathbf{k}$ passing through a flat plate 2 m by 3 m lying in the xy plane, $\\mathbf{n} = \\mathbf{k}$ and $\\mathbf{F}\\cdot\\mathbf{n} = 5$, so the flux is $5 \\times 6 = 30$.
 
-Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 5 cos(60) = 2.5, so flux = **15**. The cosine factor is the whole of Gauss's-law geometry, and it is why a Gaussian surface is chosen so the field is either parallel or perpendicular to it everywhere.`,
+Tilt the plate 60 degrees from the xy plane and the normal tilts with it: $\\mathbf{F}\\cdot\\mathbf{n} = 5\\cos 60^\\circ = 2.5$, so the flux is $2.5 \\times 6 = 15$. The cosine factor is the whole of Gauss's-law geometry, and it is why a Gaussian surface is chosen so the field is either parallel or perpendicular to it everywhere.`,
       examTip: 'Test whether a field is conservative by taking its curl BEFORE computing a line integral. If curl F = 0 the integral depends only on the endpoints, and finding the potential function is far quicker than parametrising the path.',
       quiz: [
         {
@@ -11801,7 +11801,7 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
           question: 'A uniform field of magnitude 8 passes through a 4 m^2 flat surface whose normal makes 60 degrees with the field. What is the flux?',
           options: ['16', '32', '27.7', '8'],
           correctIndex: 0,
-          explanation: 'Flux = F A cos(theta) = 8 x 4 x cos(60) = 8 x 4 x 0.5 = 16. Using sin instead of cos gives 27.7 - the cosine applies because flux depends on the component of the field ALONG the normal.',
+          explanation: 'Flux equals F A cos(theta), which is (8)(4)(cos 60 degrees) = (8)(4)(0.5) = 16. Using sin instead of cos gives 27.7 - the cosine applies because flux depends on the component of the field ALONG the normal.',
         },
       ],
     },
@@ -11820,9 +11820,9 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
   from the origin and div **F** = ∂x/∂x + ∂y/∂y = 2 everywhere.
   
   **Curl** measures circulation — whether the field would spin a paddle wheel
-  placed in it. For **G** = (−y, x), the arrows circulate and curl **G** =
-  ∂(x)/∂x − ∂(−y)/∂y... more carefully, the z-component is
-  ∂G_y/∂x − ∂G_x/∂y = 1 − (−1) = 2, while its divergence is 0.
+  placed in it. For **G** = (−y, x), the arrows circulate, and the z-component of
+  the curl is $\\partial G_{y}/\\partial x - \\partial G_{x}/\\partial y = 1 - (-1) = 2$,
+  while its divergence is 0.
   
   These are exactly the operators Maxwell's equations are written in, which is why
   this topic sits under Mathematics but is examined through Electromagnetics:
@@ -11927,7 +11927,8 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
 Dot: **A**·**B** = (3)(2) + (4)(−1) = 6 − 4 = **2**
 
 Cross (z-component only, since both lie in the xy-plane):
-**A**×**B** = (AₓB_y − A_yBₓ)**k** = (3(−1) − 4(2))**k** = **$-11k$**
+
+$$\\mathbf{A}\\times\\mathbf{B} = (A_{x}B_{y} - A_{y}B_{x})\\,\\mathbf{k} = \\bigl(3(-1) - 4(2)\\bigr)\\mathbf{k} = -11\\,\\mathbf{k}$$
 
 The angle between them follows from either: |A| = 5, |B| = √5 = 2.236, so
 cos θ = 2/(5 × 2.236) = 0.179, giving θ = **$79.7^\\circ$**. Cross-checking with the
@@ -11942,8 +11943,8 @@ div **F** = ∂(x²)/∂x + ∂(yz)/∂y + ∂(z)/∂z = 2x + z + 1
 
 At the point (1, 2, 3): div **F** = 2 + 3 + 1 = **6**.
 
-The x-component of the curl is ∂F_z/∂y − ∂F_y/∂z = 0 − y = −y, which at that
-point is **$-2$**. A field can have both a divergence and a curl; they are
+The x-component of the curl is $\\partial F_{z}/\\partial y - \\partial F_{y}/\\partial z = 0 - y = -y$,
+which at that point is **$-2$**. A field can have both a divergence and a curl; they are
 independent measurements, not alternatives.
 
 ## 5.3 Inverse transform by partial fractions
@@ -11969,6 +11970,1724 @@ numbers come straight from the pole coordinates with no inverse transform
 required — which is the practical reason control engineers work in the s-plane
 at all.`,
 },
+{
+  id: 'va-products-depth',
+  title: '6. Vectors, and What Each Product Measures',
+  content: `## 6.1 A vector is three numbers plus an agreement
+
+Written in components against three fixed perpendicular directions, a vector in
+space is
+
+$$\\mathbf{A} = A_{x}\\mathbf{i} + A_{y}\\mathbf{j} + A_{z}\\mathbf{k}$$
+
+and Pythagoras applied twice — once in the base plane, once out of it — gives
+its length:
+
+$$\\lvert \\mathbf{A}\\rvert = \\sqrt{A_{x}^{2} + A_{y}^{2} + A_{z}^{2}}$$
+
+Dividing a vector by its own length leaves the direction and discards the size,
+which is what a unit vector is for:
+
+$$\\hat{\\mathbf{a}} = \\frac{\\mathbf{A}}{\\lvert \\mathbf{A}\\rvert}, \\qquad \\lvert \\hat{\\mathbf{a}}\\rvert = 1$$
+
+Addition and scaling act one component at a time, so nothing new has to be
+learned for them. What is genuinely new is that there are **two** ways to
+multiply vectors, they return different kinds of object, and each one measures
+something a problem might actually be asking for.
+
+The pair used throughout this section is
+
+$$\\mathbf{A} = 3\\mathbf{i} - 2\\mathbf{j} + 6\\mathbf{k}, \\qquad \\mathbf{B} = 2\\mathbf{i} + 3\\mathbf{j} + 6\\mathbf{k}$$
+
+chosen because both have length exactly 7: $9 + 4 + 36 = 49$ and
+$4 + 9 + 36 = 49$. Every number below is a consequence of those six components
+and nothing else.
+
+## 6.2 The dot product, and why its two definitions agree
+
+The component definition is a sum of matched products, and the answer is a
+plain number:
+
+$$\\mathbf{A}\\cdot\\mathbf{B} = A_{x}B_{x} + A_{y}B_{y} + A_{z}B_{z}$$
+
+The geometric definition looks unrelated:
+
+$$\\mathbf{A}\\cdot\\mathbf{B} = \\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert\\cos\\theta$$
+
+They agree, and the law of cosines is the reason. Put the two vectors tail to
+tail; the third side of the triangle is $\\mathbf{A} - \\mathbf{B}$, and the law of
+cosines says
+
+$$\\lvert \\mathbf{A} - \\mathbf{B}\\rvert^{2} = \\lvert \\mathbf{A}\\rvert^{2} + \\lvert \\mathbf{B}\\rvert^{2} - 2\\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert\\cos\\theta$$
+
+Expanding the same left-hand side in components instead gives
+
+$$\\lvert \\mathbf{A} - \\mathbf{B}\\rvert^{2} = \\lvert \\mathbf{A}\\rvert^{2} + \\lvert \\mathbf{B}\\rvert^{2} - 2\\bigl(A_{x}B_{x} + A_{y}B_{y} + A_{z}B_{z}\\bigr)$$
+
+Cancel the squared lengths, divide by $-2$, and the component sum and the
+cosine expression are the same quantity. That derivation is worth carrying,
+because it explains the one thing the dot product is for: **it reports how much
+of one vector lies along another.** Formally,
+
+$$\\text{comp}_{\\mathbf{B}}\\mathbf{A} = \\frac{\\mathbf{A}\\cdot\\mathbf{B}}{\\lvert \\mathbf{B}\\rvert}, \\qquad \\text{proj}_{\\mathbf{B}}\\mathbf{A} = \\frac{\\mathbf{A}\\cdot\\mathbf{B}}{\\mathbf{B}\\cdot\\mathbf{B}}\\,\\mathbf{B}$$
+
+the first a signed length, the second a vector pointing along $\\mathbf{B}$.
+
+Two consequences are examined directly. For two non-zero vectors the dot product
+vanishes exactly when they are perpendicular, which is the fastest orthogonality
+test available. And it is **commutative**: order never matters.
+
+## 6.3 The cross product, and why its magnitude is an area
+
+The cross product is most reliably remembered as a determinant with the unit
+vectors in the top row:
+
+$$\\mathbf{A}\\times\\mathbf{B} = \\begin{vmatrix} \\mathbf{i} & \\mathbf{j} & \\mathbf{k} \\\\ A_{x} & A_{y} & A_{z} \\\\ B_{x} & B_{y} & B_{z}\\end{vmatrix}$$
+
+Expanding along the first row,
+
+$$\\mathbf{A}\\times\\mathbf{B} = (A_{y}B_{z} - A_{z}B_{y})\\mathbf{i} - (A_{x}B_{z} - A_{z}B_{x})\\mathbf{j} + (A_{x}B_{y} - A_{y}B_{x})\\mathbf{k}$$
+
+The middle sign is the one people drop; it belongs to the cofactor position, not
+to the numbers.
+
+The magnitude has a geometric reading:
+
+$$\\lvert \\mathbf{A}\\times\\mathbf{B}\\rvert = \\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert\\sin\\theta$$
+
+which is base times perpendicular height — the **area of the parallelogram** the
+two vectors span. Half of it is the area of the triangle they span, which is how
+areas of triangles in space are found without any trigonometry at all.
+
+Direction comes from the right-hand rule, and reversing the order reverses the
+answer:
+
+$$\\mathbf{A}\\times\\mathbf{B} = -(\\mathbf{B}\\times\\mathbf{A}), \\qquad \\mathbf{A}\\times\\mathbf{A} = \\mathbf{0}$$
+
+The two products are tied together by an identity worth knowing because it turns
+one into a check on the other:
+
+$$(\\mathbf{A}\\cdot\\mathbf{B})^{2} + \\lvert \\mathbf{A}\\times\\mathbf{B}\\rvert^{2} = \\lvert \\mathbf{A}\\rvert^{2}\\,\\lvert \\mathbf{B}\\rvert^{2}$$
+
+This is Lagrange's identity, and it is just $\\cos^{2}\\theta + \\sin^{2}\\theta = 1$
+multiplied through by the squared lengths.
+
+![Left: two vectors of length seven drawn tail to tail, with the projection of the first onto the second marked as a length of 5.143 along the base. Right: the same two vectors spanning a shaded parallelogram of height 4.749 and area 33.24.](/courses/fe-ee/figures/math6-va-products.svg)
+
+## 6.4 Worked: both products on the same pair
+
+Take $\\mathbf{A} = (3, -2, 6)$ and $\\mathbf{B} = (2, 3, 6)$.
+
+**Dot.** $6 - 6 + 36 = 36$. Because both lengths are 7,
+
+$$\\cos\\theta = \\frac{36}{49} = 0.734694, \\qquad \\theta = 42.72^\\circ$$
+
+**Cross.** Expanding the determinant,
+
+$$\\mathbf{A}\\times\\mathbf{B} = \\bigl((-2)(6) - (6)(3)\\bigr)\\mathbf{i} - \\bigl((3)(6) - (6)(2)\\bigr)\\mathbf{j} + \\bigl((3)(3) - (-2)(2)\\bigr)\\mathbf{k}$$
+
+$$\\mathbf{A}\\times\\mathbf{B} = -30\\,\\mathbf{i} - 6\\,\\mathbf{j} + 13\\,\\mathbf{k}, \\qquad \\lvert \\mathbf{A}\\times\\mathbf{B}\\rvert = \\sqrt{900 + 36 + 169} = \\sqrt{1105} = 33.2415$$
+
+**Three independent checks.** First, the cross product must be perpendicular to
+both inputs: $(-30)(3) + (-6)(-2) + (13)(6) = -90 + 12 + 78 = 0$, and
+$(-30)(2) + (-6)(3) + (13)(6) = -60 - 18 + 78 = 0$. Second, the angle from the
+cross product must match the angle from the dot product:
+$\\sin\\theta = 33.2415/49 = 0.678398$, and $49 \\times 0.678398 = 33.2415$, giving
+$\\theta = 42.72^\\circ$ again. Third, Lagrange's identity:
+$1296 + 1105 = 2401 = 49^{2}$.
+
+**Projection.** The component of $\\mathbf{A}$ along $\\mathbf{B}$ is
+$36/7 = 5.142857$, and the projection vector is
+
+$$\\text{proj}_{\\mathbf{B}}\\mathbf{A} = \\frac{36}{49}(2, 3, 6) = (1.469388,\\; 2.204082,\\; 4.408163)$$
+
+Its length is $5.142857$, as it must be, and subtracting it from $\\mathbf{A}$
+leaves a piece perpendicular to $\\mathbf{B}$ of length
+$\\sqrt{49 - 26.448980} = 4.748791$ — which multiplied by $\\lvert \\mathbf{B}\\rvert = 7$
+returns the parallelogram area $33.2415$ once more.
+
+| Question the problem is really asking | Product | Result | Vanishes when |
+|---|---|---|---|
+| How much of one vector lies along another | dot | scalar | perpendicular |
+| Work done, or real power | dot | scalar | force perpendicular to motion |
+| Angle between two directions | either | scalar | — |
+| Area spanned, or a normal direction | cross | vector | parallel |
+| Force on a moving charge, or a torque | cross | vector | parallel |
+
+## 6.5 The scalar triple product measures a volume
+
+Feed the cross product into a dot product and the answer is a number:
+
+$$\\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{C}) = \\begin{vmatrix} A_{x} & A_{y} & A_{z} \\\\ B_{x} & B_{y} & B_{z} \\\\ C_{x} & C_{y} & C_{z}\\end{vmatrix}$$
+
+Read geometrically, $\\lvert \\mathbf{B}\\times\\mathbf{C}\\rvert$ is the area of the base
+parallelogram and the dot with $\\mathbf{A}$ picks out the height above that base,
+so the absolute value of the whole thing is the **volume of the parallelepiped**
+the three vectors span. Two facts follow immediately:
+
+- The value is unchanged by a **cyclic** shift, since cycling the rows of a
+  determinant twice restores it: $\\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{C}) = \\mathbf{B}\\cdot(\\mathbf{C}\\times\\mathbf{A}) = \\mathbf{C}\\cdot(\\mathbf{A}\\times\\mathbf{B})$.
+- It is **zero exactly when the three vectors are coplanar**, because a flat box
+  has no volume. That is the standard coplanarity test.
+
+## 6.6 Worked: a volume, and a coplanarity test
+
+With $\\mathbf{A} = (3, -2, 6)$, $\\mathbf{B} = (2, 3, 6)$ and $\\mathbf{C} = (1, 1, 1)$,
+
+$$\\mathbf{B}\\times\\mathbf{C} = (3 - 6)\\mathbf{i} - (2 - 6)\\mathbf{j} + (2 - 3)\\mathbf{k} = (-3, 4, -1)$$
+
+$$\\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{C}) = -9 - 8 - 6 = -23$$
+
+so the parallelepiped has volume 23, and the sign says the three vectors form a
+left-handed set in the order given. Expanding the determinant along its first
+row instead gives $3(3 - 6) + 2(2 - 6) + 6(2 - 3) = -9 - 8 - 6 = -23$: same
+number, different route.
+
+**Coplanarity.** Replace $\\mathbf{C}$ by $\\mathbf{C}' = \\mathbf{A} + \\mathbf{B} = (5, 1, 12)$.
+Now the triple product must vanish, because $\\mathbf{C}'$ lies in the plane of the
+other two by construction:
+
+$$\\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{C}') = \\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{A}) + \\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{B}) = 0 + 0 = 0$$
+
+The first term dies because $\\mathbf{B}\\times\\mathbf{A}$ is perpendicular to
+$\\mathbf{A}$; the second because any vector crossed with itself is zero.
+
+## 6.7 The vector triple product, and the expansion that saves it
+
+Cross a vector into a cross product and the answer is a vector again — one that
+lies in the plane of the two innermost vectors. The expansion, usually
+remembered by the shape of its right-hand side, is
+
+$$\\mathbf{A}\\times(\\mathbf{B}\\times\\mathbf{C}) = \\mathbf{B}\\,(\\mathbf{A}\\cdot\\mathbf{C}) - \\mathbf{C}\\,(\\mathbf{A}\\cdot\\mathbf{B})$$
+
+Note carefully that the cross product is **not associative**: moving the
+brackets changes the answer, which is why the expansion is worth having at all.
+
+## 6.8 Worked: the expansion checked against the direct route
+
+Using the same three vectors, $\\mathbf{A}\\cdot\\mathbf{C} = 3 - 2 + 6 = 7$ and
+$\\mathbf{A}\\cdot\\mathbf{B} = 36$, so the expansion predicts
+
+$$7(2, 3, 6) - 36(1, 1, 1) = (14 - 36,\\; 21 - 36,\\; 42 - 36) = (-22, -15, 6)$$
+
+Computing it directly instead, with $\\mathbf{B}\\times\\mathbf{C} = (-3, 4, -1)$ from
+above,
+
+$$\\mathbf{A}\\times(-3, 4, -1) = \\bigl((-2)(-1) - (6)(4),\\; (6)(-3) - (3)(-1),\\; (3)(4) - (-2)(-3)\\bigr)$$
+
+$$= (2 - 24,\\; -18 + 3,\\; 12 - 6) = (-22, -15, 6)$$
+
+The two routes agree. As a final consistency check, the result must be
+perpendicular to $\\mathbf{A}$, since $\\mathbf{A}\\times(\\text{anything})$ always is:
+$(-22)(3) + (-15)(-2) + (6)(6) = -66 + 30 + 36 = 0$.`,
+  examTip: 'Decide dot or cross before touching the numbers. If the answer is a magnitude, an amount, or an angle, it is a dot product; if it is a direction, an area, or a moment, it is a cross product. The two answers differ by a cosine against a sine, and both usually appear among the choices.',
+  importantNote: 'The middle term of the cross-product determinant carries a minus sign that belongs to the position, not to the entries. Dropping it is the single most common vector-algebra error on this exam, and the result still looks plausible because only one component is wrong.',
+},
+{
+  id: 'va-curves-frame',
+  title: '7. Vector Functions, Derivatives and the Moving Frame',
+  content: `## 7.1 A curve is a vector that depends on one parameter
+
+Let a point trace out a path, and record where it is at each instant:
+
+$$\\mathbf{r}(t) = x(t)\\,\\mathbf{i} + y(t)\\,\\mathbf{j} + z(t)\\,\\mathbf{k}$$
+
+Differentiation is componentwise, and the two derivatives already have names
+from mechanics:
+
+$$\\mathbf{v}(t) = \\frac{d\\mathbf{r}}{dt}, \\qquad \\mathbf{a}(t) = \\frac{d^{2}\\mathbf{r}}{dt^{2}}$$
+
+The velocity is **tangent** to the curve; the speed is its magnitude. Because
+distance is the running total of speed, arc length is an ordinary integral:
+
+$$s = \\int_{a}^{b} \\left\\lvert \\frac{d\\mathbf{r}}{dt}\\right\\rvert dt = \\int_{a}^{b}\\sqrt{\\left(\\frac{dx}{dt}\\right)^{2} + \\left(\\frac{dy}{dt}\\right)^{2} + \\left(\\frac{dz}{dt}\\right)^{2}}\\,dt$$
+
+Products of vector functions differentiate exactly like products of scalars,
+provided the order is preserved in the cross product because it is not
+commutative:
+
+$$\\frac{d}{dt}(\\mathbf{u}\\cdot\\mathbf{v}) = \\frac{d\\mathbf{u}}{dt}\\cdot\\mathbf{v} + \\mathbf{u}\\cdot\\frac{d\\mathbf{v}}{dt}, \\qquad \\frac{d}{dt}(\\mathbf{u}\\times\\mathbf{v}) = \\frac{d\\mathbf{u}}{dt}\\times\\mathbf{v} + \\mathbf{u}\\times\\frac{d\\mathbf{v}}{dt}$$
+
+One corollary is used constantly: if $\\lvert \\mathbf{u}\\rvert$ is constant then
+$\\mathbf{u}\\cdot\\mathbf{u}$ is constant, so differentiating gives
+$2\\,\\mathbf{u}\\cdot d\\mathbf{u}/dt = 0$. **A vector of fixed length is always
+perpendicular to its own derivative.** That single fact generates the whole
+moving frame below.
+
+## 7.2 The frame a curve carries with it
+
+Normalising the velocity strips out how fast the point is moving and leaves pure
+direction — the unit tangent:
+
+$$\\mathbf{T} = \\frac{\\mathbf{v}}{\\lvert \\mathbf{v}\\rvert}$$
+
+Since $\\mathbf{T}$ has fixed length, $d\\mathbf{T}/dt$ is perpendicular to it, and
+normalising that gives the **principal unit normal** $\\mathbf{N}$, which points
+toward the inside of the bend. Completing the set with a cross product,
+
+$$\\mathbf{B} = \\mathbf{T}\\times\\mathbf{N}$$
+
+produces three mutually perpendicular unit vectors that travel with the point.
+$\\mathbf{T}$ and $\\mathbf{N}$ span the plane the curve is momentarily bending in;
+$\\mathbf{B}$ is perpendicular to it.
+
+Two numbers describe the shape. **Curvature** measures how fast the direction
+turns per unit distance travelled:
+
+$$\\kappa = \\left\\lvert \\frac{d\\mathbf{T}}{ds}\\right\\rvert = \\frac{\\lvert \\mathbf{r}'\\times\\mathbf{r}''\\rvert}{\\lvert \\mathbf{r}'\\rvert^{3}}, \\qquad \\rho = \\frac{1}{\\kappa}$$
+
+and $\\rho$ is the radius of the circle that best fits the curve there. **Torsion**
+measures how fast the bending plane itself twists:
+
+$$\\tau = \\frac{(\\mathbf{r}'\\times\\mathbf{r}'')\\cdot\\mathbf{r}'''}{\\lvert \\mathbf{r}'\\times\\mathbf{r}''\\rvert^{2}}$$
+
+A plane curve has zero torsion, because its bending plane never changes.
+
+Acceleration splits along the frame, and the split is the reason a car on a bend
+needs grip even at constant speed:
+
+$$\\mathbf{a} = \\frac{d\\lvert \\mathbf{v}\\rvert}{dt}\\,\\mathbf{T} + \\kappa\\lvert \\mathbf{v}\\rvert^{2}\\,\\mathbf{N}$$
+
+The first term changes the speed; the second changes only the direction, and it
+grows with the **square** of the speed.
+
+![A helical arc rising around a vertical axis, with the unit tangent, principal normal and binormal drawn at one point, and a dotted horizontal circle of radius three marking the cross-section the normal points into.](/courses/fe-ee/figures/math6-va-frenet.svg)
+
+## 7.3 Worked: the frame on a helix
+
+Take the helix
+
+$$\\mathbf{r}(t) = 3\\cos t\\,\\mathbf{i} + 3\\sin t\\,\\mathbf{j} + 4t\\,\\mathbf{k}$$
+
+**Velocity and speed.** Differentiating,
+$\\mathbf{r}' = (-3\\sin t,\\; 3\\cos t,\\; 4)$, so
+
+$$\\lvert \\mathbf{r}'\\rvert = \\sqrt{9\\sin^{2}t + 9\\cos^{2}t + 16} = \\sqrt{25} = 5$$
+
+The speed is constant, which makes the arc length trivial: one full turn takes
+$t$ from 0 to $2\\pi$, so $s = 5(2\\pi) = 10\\pi = 31.4159$.
+
+**Tangent.** $\\mathbf{T} = (-0.6\\sin t,\\; 0.6\\cos t,\\; 0.8)$, a unit vector because
+$0.36 + 0.64 = 1$.
+
+**Curvature.** $\\mathbf{r}'' = (-3\\cos t,\\; -3\\sin t,\\; 0)$, so
+$\\mathbf{r}'\\times\\mathbf{r}'' = (12\\sin t,\\; -12\\cos t,\\; 9)$ and
+$\\lvert \\mathbf{r}'\\times\\mathbf{r}''\\rvert = \\sqrt{144 + 81} = 15$. Therefore
+
+$$\\kappa = \\frac{15}{5^{3}} = \\frac{15}{125} = 0.12, \\qquad \\rho = \\frac{1}{0.12} = 8.3333$$
+
+**Normal and binormal.** Since $d\\mathbf{T}/dt = (-0.6\\cos t,\\; -0.6\\sin t,\\; 0)$
+has magnitude 0.6, the normal is $\\mathbf{N} = (-\\cos t,\\; -\\sin t,\\; 0)$ — exactly
+the horizontal direction pointing at the axis, which is what the picture shows.
+Then $\\mathbf{B} = \\mathbf{T}\\times\\mathbf{N} = (0.8\\sin t,\\; -0.8\\cos t,\\; 0.6)$, and
+$0.64 + 0.36 = 1$ confirms it is a unit vector.
+
+**Torsion.** With $\\mathbf{r}''' = (3\\sin t,\\; -3\\cos t,\\; 0)$,
+
+$$\\tau = \\frac{36\\sin^{2}t + 36\\cos^{2}t}{15^{2}} = \\frac{36}{225} = 0.16$$
+
+**Acceleration split.** The speed is constant, so the tangential term is zero and
+all the acceleration is normal: $\\kappa\\lvert \\mathbf{v}\\rvert^{2} = 0.12 \\times 25 = 3$.
+Independently, $\\lvert \\mathbf{r}''\\rvert = 3$. The two agree, which is the check
+worth running whenever the split is used.
+
+**Reading the two numbers.** A radius-$a$ helix of pitch coefficient $c$ has
+$\\kappa = a/(a^{2} + c^{2})$ and $\\tau = c/(a^{2} + c^{2})$; here $3/25 = 0.12$ and
+$4/25 = 0.16$. Setting $c = 0$ collapses the helix to a circle of radius $a$,
+whose curvature is $1/a$ and whose torsion is zero — both formulas degrade to the
+right answers, which is the sanity check a memorised formula should always be
+put through.`,
+  examTip: 'The FE rarely asks for torsion, but it does ask for speed, arc length, curvature and the normal component of acceleration. Compute the speed first; on a constant-speed path the whole acceleration is normal and equals kappa times speed squared, which turns a messy differentiation into one multiplication.',
+},
+{
+  id: 'va-gradient-depth',
+  title: '8. Fields, the Gradient, and the Directional Derivative',
+  content: `## 8.1 Two kinds of field
+
+A **scalar field** attaches a number to every point: temperature in a heat sink,
+electric potential in a dielectric, pressure in a duct. A **vector field**
+attaches an arrow: electric field strength, current density, fluid velocity.
+Almost every quantity on this exam is one or the other, and the operators in the
+next three sections are the four ways of moving between them.
+
+| Operator | Eats | Returns | Answers the question |
+|---|---|---|---|
+| gradient | scalar field | vector field | which way is uphill, and how steeply |
+| divergence | vector field | scalar field | is this point a source or a sink |
+| curl | vector field | vector field | does the field circulate here |
+| Laplacian | scalar field | scalar field | how far is this value below its neighbours |
+
+A scalar field is pictured by its **level sets** — the curves or surfaces on
+which it holds a constant value. Contour lines on a map, equipotentials around a
+charged conductor and isotherms in a slab are all level sets, and a great deal of
+field intuition is just knowing what the level sets look like.
+
+## 8.2 The directional derivative, and the gradient falling out of it
+
+Ask how fast $f$ changes as a point moves through $P$ in the direction of a unit
+vector $\\hat{\\mathbf{u}}$. Write the motion as $\\mathbf{r}(h) = P + h\\hat{\\mathbf{u}}$
+and apply the chain rule:
+
+$$D_{\\hat{\\mathbf{u}}}f = \\frac{d}{dh}f\\bigl(\\mathbf{r}(h)\\bigr)\\Big|_{h=0} = \\frac{\\partial f}{\\partial x}u_{x} + \\frac{\\partial f}{\\partial y}u_{y} + \\frac{\\partial f}{\\partial z}u_{z}$$
+
+The right-hand side is a dot product of $\\hat{\\mathbf{u}}$ with a vector built from
+the three partial derivatives. **That vector is the gradient**, and it was not
+assumed — it appeared:
+
+$$\\nabla f = \\frac{\\partial f}{\\partial x}\\mathbf{i} + \\frac{\\partial f}{\\partial y}\\mathbf{j} + \\frac{\\partial f}{\\partial z}\\mathbf{k}, \\qquad D_{\\hat{\\mathbf{u}}}f = \\nabla f \\cdot \\hat{\\mathbf{u}}$$
+
+Everything the gradient is famous for now follows from one line. Since
+$\\hat{\\mathbf{u}}$ is a unit vector,
+
+$$D_{\\hat{\\mathbf{u}}}f = \\lvert \\nabla f\\rvert\\cos\\phi$$
+
+where $\\phi$ is the angle between the chosen direction and the gradient. So:
+
+- The largest possible rate of increase occurs at $\\phi = 0$, and its value is
+  $\\lvert \\nabla f\\rvert$. **The gradient points along steepest ascent and its
+  length is that steepest slope.**
+- The rate is zero at $\\phi = 90^\\circ$. Moving perpendicular to the gradient does
+  not change $f$ at all, which means **the gradient is perpendicular to the level
+  set** through the point.
+- The most negative rate is $-\\lvert \\nabla f\\rvert$, straight down the gradient.
+
+Because the gradient is normal to the level surface $f = c$, the tangent plane to
+that surface at $P$ is
+
+$$\\nabla f(P)\\cdot(\\mathbf{r} - P) = 0$$
+
+![Left: elliptical level curves of a scalar field with gradient arrows crossing every one of them at right angles, and the tangent direction marked at one point. Right: the directional derivative plotted against the angle from the gradient, peaking at plus ten, crossing zero at ninety degrees and reaching minus ten at one hundred and eighty.](/courses/fe-ee/figures/math6-va-gradient.svg)
+
+## 8.3 Worked: steepest ascent and a directional derivative
+
+Let $f(x, y) = x^{2} + 4y^{2}$, and work at the point $(3, 1)$.
+
+**Gradient.** $\\nabla f = (2x,\\; 8y)$, so at that point $\\nabla f = (6, 8)$ and
+
+$$\\lvert \\nabla f\\rvert = \\sqrt{36 + 64} = 10$$
+
+**Steepest ascent.** The direction is $(6, 8)/10 = (0.6, 0.8)$, and the rate is
+10 per unit length. Checking with the dot product,
+$(6)(0.6) + (8)(0.8) = 3.6 + 6.4 = 10$.
+
+**Along the level curve.** The perpendicular direction is $(0.8, -0.6)$, and
+$(6)(0.8) + (8)(-0.6) = 4.8 - 4.8 = 0$. The level curve through the point is the
+ellipse $x^{2} + 4y^{2} = 13$, and the field really is flat along it.
+
+**A direction in between.** At $60^\\circ$ off the gradient the rate is
+$10\\cos 60^\\circ = 5$ — exactly half the maximum, even though the direction is only
+two thirds of the way to the level curve. That non-uniformity is the cosine, and
+it is the reason questions about intermediate directions are worth a moment
+rather than a guess.
+
+**Trap.** Using a direction vector that is not a unit vector. Taking
+$\\mathbf{u} = (3, 4)$ instead of $(0.6, 0.8)$ gives $18 + 32 = 50$, five times too
+big, because $\\lvert (3,4)\\rvert = 5$. Normalise first, every time.
+
+## 8.4 Worked: a level surface and its tangent plane
+
+Let $f(x, y, z) = x^{2}y + yz^{3}$ and take the point $P = (1, 2, 3)$, where
+$f = 2 + 54 = 56$.
+
+$$\\nabla f = \\bigl(2xy,\\; x^{2} + z^{3},\\; 3yz^{2}\\bigr) = (4,\\; 28,\\; 54)$$
+
+The level surface through $P$ is $x^{2}y + yz^{3} = 56$, and the tangent plane
+there is
+
+$$4(x - 1) + 28(y - 2) + 54(z - 3) = 0, \\qquad 4x + 28y + 54z = 222$$
+
+Substituting $P$ confirms it: $4 + 56 + 162 = 222$. The unit normal to the
+surface is $\\nabla f/\\lvert \\nabla f\\rvert$, with
+$\\lvert \\nabla f\\rvert = \\sqrt{16 + 784 + 2916} = \\sqrt{3716} = 60.9590$.
+
+**Where this is used.** In electrostatics the potential $V$ is the scalar field
+and the electric field is
+
+$$\\mathbf{E} = -\\nabla V$$
+
+The minus sign says the field points from high potential toward low, and the
+perpendicularity result says **field lines cross equipotentials at right
+angles** — which is why a conductor surface, being an equipotential, always has
+the field normal to it. The Electromagnetics chapters use that fact constantly;
+it is proved here.
+
+## 8.5 The gradient of a distance, and why it appears everywhere
+
+Let $r = \\sqrt{x^{2} + y^{2} + z^{2}}$ be the distance from the origin. Then
+
+$$\\frac{\\partial r}{\\partial x} = \\frac{x}{r}, \\qquad \\nabla r = \\frac{(x, y, z)}{r} = \\hat{\\mathbf{a}}_{r}$$
+
+The gradient of distance is the unit radial vector, which is obvious once stated:
+moving one metre straight out increases the distance by one metre. Applying the
+chain rule to any function of distance alone,
+
+$$\\nabla f(r) = f'(r)\\,\\hat{\\mathbf{a}}_{r}$$
+
+so for the Coulomb potential $V = k/r$,
+
+$$\\mathbf{E} = -\\nabla V = \\frac{k}{r^{2}}\\,\\hat{\\mathbf{a}}_{r}$$
+
+The inverse-square field is not an extra postulate; it is the derivative of the
+inverse-distance potential.`,
+  examTip: 'Three gradient facts answer most of what is asked: it points uphill, its magnitude is the steepest slope, and it is perpendicular to the level set. If a question gives a direction, normalise it before dotting — an unnormalised direction is the most common wrong answer offered.',
+  importantNote: 'E = -grad V has a minus sign and grad r is the unit radial vector. Getting either wrong flips a field direction, and a flipped field direction usually still satisfies the magnitude the question asks about, so the error survives every check except this one.',
+},
+{
+  id: 'va-div-curl-depth',
+  title: '9. Divergence from a Box, Curl from a Loop',
+  content: `## 9.1 Divergence is flux per unit volume
+
+Surround a point $P$ with a small box of edge $h$, aligned with the axes, and add
+up the outward flux of a vector field $\\mathbf{F}$ through its six faces. On the
+two faces perpendicular to $x$ the outward normals are $\\pm\\mathbf{i}$, so those
+two faces contribute
+
+$$\\bigl[F_{x}(x_{0} + \\tfrac{h}{2}) - F_{x}(x_{0} - \\tfrac{h}{2})\\bigr]h^{2} \\approx \\frac{\\partial F_{x}}{\\partial x}h^{3}$$
+
+The other two pairs behave identically. Dividing the total by the volume $h^{3}$
+and shrinking the box gives a quantity that depends only on the point:
+
+$$\\nabla\\cdot\\mathbf{F} = \\lim_{h\\to 0}\\frac{1}{h^{3}}\\oint_{S}\\mathbf{F}\\cdot\\mathbf{n}\\,dS = \\frac{\\partial F_{x}}{\\partial x} + \\frac{\\partial F_{y}}{\\partial y} + \\frac{\\partial F_{z}}{\\partial z}$$
+
+That limit **is** the definition; the sum of partial derivatives is what it
+evaluates to in Cartesian coordinates. Keeping the limit in mind is what makes
+the cylindrical and spherical formulas in Section 14 look inevitable rather than
+arbitrary, and it is what makes the divergence theorem obvious.
+
+Physically, positive divergence means more field leaves a neighbourhood than
+enters it, so something inside is producing it. In electrostatics that something
+is charge:
+
+$$\\nabla\\cdot\\mathbf{D} = \\rho_{v}$$
+
+and the statement $\\nabla\\cdot\\mathbf{B} = 0$ says nothing produces magnetic flux
+— it only ever circulates.
+
+## 9.2 Curl is circulation per unit area
+
+Now run round a small square loop of edge $h$ lying in a plane through $P$, and
+add up $\\mathbf{F}\\cdot d\\mathbf{r}$ as you go. For a loop in the plane $z$ =
+constant, traversed counterclockwise seen from $+z$, the two horizontal edges
+contribute the change in $F_{x}$ across the loop and the two vertical edges the
+change in $F_{y}$, with signs set by the direction of travel:
+
+$$\\oint \\mathbf{F}\\cdot d\\mathbf{r} \\approx \\left(\\frac{\\partial F_{y}}{\\partial x} - \\frac{\\partial F_{x}}{\\partial y}\\right)h^{2}$$
+
+Dividing by the area and shrinking the loop gives the component of the curl along
+the loop's normal:
+
+$$(\\nabla\\times\\mathbf{F})\\cdot\\mathbf{n} = \\lim_{h\\to 0}\\frac{1}{h^{2}}\\oint\\mathbf{F}\\cdot d\\mathbf{r}$$
+
+Doing the same in the other two coordinate planes assembles the whole vector,
+which is again most safely written as a determinant:
+
+$$\\nabla\\times\\mathbf{F} = \\begin{vmatrix} \\mathbf{i} & \\mathbf{j} & \\mathbf{k} \\\\ \\dfrac{\\partial}{\\partial x} & \\dfrac{\\partial}{\\partial y} & \\dfrac{\\partial}{\\partial z} \\\\ F_{x} & F_{y} & F_{z}\\end{vmatrix}$$
+
+$$\\nabla\\times\\mathbf{F} = \\left(\\frac{\\partial F_{z}}{\\partial y} - \\frac{\\partial F_{y}}{\\partial z}\\right)\\mathbf{i} + \\left(\\frac{\\partial F_{x}}{\\partial z} - \\frac{\\partial F_{z}}{\\partial x}\\right)\\mathbf{j} + \\left(\\frac{\\partial F_{y}}{\\partial x} - \\frac{\\partial F_{x}}{\\partial y}\\right)\\mathbf{k}$$
+
+Note the middle component: written this way it reads $\\partial F_{x}/\\partial z$
+first, which already absorbs the cofactor sign. Writing the middle bracket in the
+same order as the other two and forgetting to negate it is the standard mistake.
+
+## 9.3 Worked: measuring both limits on a real field
+
+Take the field used from here on,
+
+$$\\mathbf{F} = x^{2}y\\,\\mathbf{i} + yz^{2}\\,\\mathbf{j} + xz\\,\\mathbf{k}$$
+
+and the point $P = (1, 2, 3)$.
+
+**By differentiation.**
+
+$$\\nabla\\cdot\\mathbf{F} = 2xy + z^{2} + x, \\qquad \\text{at } P: \\; 4 + 9 + 1 = 14$$
+
+$$\\nabla\\times\\mathbf{F} = (0 - 2yz,\\; 0 - z,\\; 0 - x^{2}) = (-2yz,\\; -z,\\; -x^{2}), \\qquad \\text{at } P: \\; (-12,\\; -3,\\; -1)$$
+
+**By the limits.** Wrapping a cube of edge $h$ around $P$ and integrating the
+outward flux over its faces gives, exactly,
+
+$$\\frac{1}{h^{3}}\\oint_{S}\\mathbf{F}\\cdot\\mathbf{n}\\,dS = 14 + \\frac{h^{2}}{12}$$
+
+and running a square loop of edge $h$ in the plane $z = 3$ gives, exactly,
+
+$$\\frac{1}{h^{2}}\\oint\\mathbf{F}\\cdot d\\mathbf{r} = -1 - \\frac{h^{2}}{12}$$
+
+Both converge on the differentiated answers, and both do so as $h^{2}$. The
+discrepancy is not numerical noise: averaging $z^{2}$ over an interval of width
+$h$ centred on $z_{0}$ gives $z_{0}^{2} + h^{2}/12$, and averaging $-x^{2}$ the
+same way gives $-x_{0}^{2} - h^{2}/12$. The measured curves below sit on those
+two expressions to ten decimal places.
+
+| Edge $h$ | Flux ÷ volume | Circulation ÷ area |
+|---|---|---|
+| 0.4 | 14.013333 | −1.013333 |
+| 0.2 | 14.003333 | −1.003333 |
+| 0.1 | 14.000833 | −1.000833 |
+| 0.05 | 14.000208 | −1.000208 |
+
+![Two stacked panels. The upper plots measured flux divided by volume against cube edge, with points sitting on the curve fourteen plus h squared over twelve and approaching a horizontal line at fourteen. The lower plots measured circulation divided by area against square edge, approaching minus one from below.](/courses/fe-ee/figures/math6-va-shrinking-limits.svg)
+
+**What the numbers say.** Halving the edge divides the error by four, which is
+the signature of second-order convergence. That is a useful check in its own
+right: if a numerical estimate of a derivative does not improve at the rate the
+theory predicts, the code is wrong somewhere, not the mathematics.
+
+## 9.4 Worked: divergence and curl are independent
+
+Two plane fields make the point.
+
+**Pure source.** $\\mathbf{F} = x\\,\\mathbf{i} + y\\,\\mathbf{j}$ has
+$\\nabla\\cdot\\mathbf{F} = 1 + 1 = 2$ everywhere, while its curl has $z$-component
+$\\partial(y)/\\partial x - \\partial(x)/\\partial y = 0 - 0 = 0$. Every arrow points
+straight out; nothing swirls.
+
+**Pure swirl.** $\\mathbf{G} = -y\\,\\mathbf{i} + x\\,\\mathbf{j}$ has
+$\\nabla\\cdot\\mathbf{G} = 0 + 0 = 0$, while its curl has $z$-component
+$\\partial(x)/\\partial x - \\partial(-y)/\\partial y = 1 - (-1) = 2$. Every arrow
+circles; nothing escapes.
+
+**Both at once.** Their sum $\\mathbf{F} + \\mathbf{G} = (x - y,\\; y + x)$ has
+divergence 2 **and** curl 2. The two measurements are not alternatives, and a
+question that establishes one says nothing whatever about the other.
+
+**A trap worth naming.** A field can circulate visibly and still have zero curl.
+The field $\\mathbf{H} = (-y,\\; x)/(x^{2} + y^{2})$ has closed circular field lines,
+yet its curl vanishes at every point except the origin, where it is undefined.
+Curl is a **local** paddle-wheel test, not a global one — this is exactly the
+field outside a current-carrying wire, and it is why Ampere's law can give a
+non-zero loop integral around a wire even though the curl is zero everywhere the
+loop actually passes.`,
+  examTip: 'Divergence turns a vector into a scalar; curl turns a vector into a vector. If your answer has the wrong type, you used the wrong operator — check that before checking the arithmetic. Gradient is the only one that eats a scalar.',
+  importantNote: 'The j-component of the curl carries the reversed order dFx/dz - dFz/dx. Writing all three components in the same cyclic order without negating the middle one produces a curl whose middle component has the wrong sign, and every magnitude computed from it is still plausible.',
+},
+{
+  id: 'va-laplacian-identities',
+  title: '10. The Laplacian, and the Identities That Come Free',
+  content: `## 10.1 The Laplacian, and what it actually measures
+
+Apply the gradient to a scalar field and then take the divergence of the result:
+
+$$\\nabla^{2}f = \\nabla\\cdot(\\nabla f) = \\frac{\\partial^{2}f}{\\partial x^{2}} + \\frac{\\partial^{2}f}{\\partial y^{2}} + \\frac{\\partial^{2}f}{\\partial z^{2}}$$
+
+The formula is easy; the meaning is worth more. Average $f$ over a small cube of
+edge $h$ centred on a point. Expanding in a Taylor series, the linear terms
+cancel by symmetry and the surviving second-order term is
+
+$$\\langle f\\rangle_{\\text{cube}} = f(P) + \\frac{h^{2}}{24}\\nabla^{2}f + O(h^{4})$$
+
+So **the Laplacian measures how far a point sits below the average of its
+neighbours**. Positive Laplacian means the surroundings are higher — the point is
+in a dip. Zero Laplacian means the value at every point equals the average around
+it, which is precisely what **Laplace's equation** $\\nabla^{2}V = 0$ demands, and
+why a potential satisfying it can have no interior maximum or minimum. Charge
+appears as the departure from that averaging property, in Poisson's equation:
+
+$$\\nabla^{2}V = -\\frac{\\rho_{v}}{\\varepsilon}$$
+
+**Check on the running scalar field.** Take $f = x^{2}y + yz^{3}$ at $P = (1,2,3)$,
+where $f = 56$. Then
+
+$$\\nabla^{2}f = 2y + 0 + 6yz = 4 + 36 = 40$$
+
+and the cube average is predicted to be $56 + 40h^{2}/24 = 56 + 5h^{2}/3$.
+Integrating $f$ over the cube exactly, the average is $56 + h^{2}/6 + 1.5h^{2}$,
+and $1/6 + 3/2 = 5/3$. The prediction is not approximate here — it is exact,
+because $f$ has no fourth derivatives.
+
+The Laplacian of a vector field is defined componentwise in Cartesian
+coordinates:
+
+$$\\nabla^{2}\\mathbf{F} = \\nabla^{2}F_{x}\\,\\mathbf{i} + \\nabla^{2}F_{y}\\,\\mathbf{j} + \\nabla^{2}F_{z}\\,\\mathbf{k}$$
+
+and that componentwise shortcut is valid **only** in Cartesian coordinates — a
+point returned to in Section 14.
+
+## 10.2 Curl of a gradient is always zero
+
+Take any scalar field with continuous second partials and compute the
+$z$-component of the curl of its gradient:
+
+$$(\\nabla\\times\\nabla f)_{z} = \\frac{\\partial}{\\partial x}\\left(\\frac{\\partial f}{\\partial y}\\right) - \\frac{\\partial}{\\partial y}\\left(\\frac{\\partial f}{\\partial x}\\right) = 0$$
+
+by equality of mixed partials. The other two components vanish for the same
+reason, so
+
+$$\\nabla\\times(\\nabla f) = \\mathbf{0}$$
+
+for every well-behaved $f$. This one identity carries an enormous amount of the
+exam. It says a field that is a gradient cannot circulate, so an electrostatic
+field $\\mathbf{E} = -\\nabla V$ satisfies $\\nabla\\times\\mathbf{E} = 0$, so
+electrostatic work is path-independent, so voltage between two points is a
+well-defined number. Every one of those statements is the same statement.
+
+## 10.3 Divergence of a curl is always zero
+
+Write out the divergence of the curl and the six terms cancel in pairs:
+
+$$\\nabla\\cdot(\\nabla\\times\\mathbf{F}) = \\frac{\\partial}{\\partial x}\\left(\\frac{\\partial F_{z}}{\\partial y} - \\frac{\\partial F_{y}}{\\partial z}\\right) + \\frac{\\partial}{\\partial y}\\left(\\frac{\\partial F_{x}}{\\partial z} - \\frac{\\partial F_{z}}{\\partial x}\\right) + \\frac{\\partial}{\\partial z}\\left(\\frac{\\partial F_{y}}{\\partial x} - \\frac{\\partial F_{x}}{\\partial y}\\right) = 0$$
+
+Each mixed partial appears twice with opposite signs. Hence
+
+$$\\nabla\\cdot(\\nabla\\times\\mathbf{F}) = 0$$
+
+for every well-behaved $\\mathbf{F}$. The magnetic consequence is immediate: if
+$\\mathbf{B} = \\nabla\\times\\mathbf{A}$ for some vector potential $\\mathbf{A}$, then
+$\\nabla\\cdot\\mathbf{B} = 0$ automatically. No magnetic monopoles, for free.
+
+## 10.4 The vector Laplacian identity
+
+The third standard identity is the one that turns Maxwell's equations into wave
+equations:
+
+$$\\nabla\\times(\\nabla\\times\\mathbf{F}) = \\nabla(\\nabla\\cdot\\mathbf{F}) - \\nabla^{2}\\mathbf{F}$$
+
+Read right to left it is a **definition** of the vector Laplacian in coordinate
+systems where componentwise differentiation does not work. Read left to right it
+is the manipulation that produces the wave equation: taking the curl of Faraday's
+law and substituting Ampere's law leaves a double curl, and this identity turns
+it into a Laplacian plus a gradient of a divergence that vanishes in free space.
+
+## 10.5 Two product rules
+
+Both mirror the ordinary product rule, with the type of each factor deciding
+which product appears:
+
+$$\\nabla\\cdot(f\\mathbf{F}) = f\\,(\\nabla\\cdot\\mathbf{F}) + \\mathbf{F}\\cdot\\nabla f$$
+
+$$\\nabla\\times(f\\mathbf{F}) = f\\,(\\nabla\\times\\mathbf{F}) + (\\nabla f)\\times\\mathbf{F}$$
+
+Note that the second term of each is forced: a divergence must come out a scalar,
+so it is a dot product; a curl must come out a vector, so it is a cross product.
+Getting the order of the cross product backwards flips the sign of the answer.
+
+## 10.6 Worked: all five identities on one pair of fields
+
+Use $f = x^{2}y + yz^{3}$ and $\\mathbf{F} = (x^{2}y,\\; yz^{2},\\; xz)$ at
+$P = (1, 2, 3)$, where $f = 56$, $\\nabla f = (4, 28, 54)$,
+$\\mathbf{F}(P) = (2, 18, 3)$, $\\nabla\\cdot\\mathbf{F} = 14$ and
+$\\nabla\\times\\mathbf{F} = (-12, -3, -1)$.
+
+**Curl of a gradient.** $\\nabla f = (2xy,\\; x^{2} + z^{3},\\; 3yz^{2})$, so
+
+$$\\nabla\\times(\\nabla f) = \\bigl(3z^{2} - 3z^{2},\\; 0 - 0,\\; 2x - 2x\\bigr) = \\mathbf{0}$$
+
+identically in $x$, $y$ and $z$, not merely at $P$.
+
+**Divergence of a curl.** $\\nabla\\times\\mathbf{F} = (-2yz,\\; -z,\\; -x^{2})$, and
+
+$$\\nabla\\cdot(-2yz,\\; -z,\\; -x^{2}) = 0 + 0 + 0 = 0$$
+
+because each component happens to be independent of its own coordinate — which is
+exactly what the cancellation in Section 10.3 guarantees.
+
+**Vector Laplacian.** The left side: taking the curl again,
+
+$$\\nabla\\times(-2yz,\\; -z,\\; -x^{2}) = \\bigl(0 + 1,\\; -2y + 2x,\\; 0 + 2z\\bigr) = (1,\\; 2x - 2y,\\; 2z)$$
+
+which at $P$ is $(1, -2, 6)$. The right side: $\\nabla(\\nabla\\cdot\\mathbf{F}) = (2y + 1,\\; 2x,\\; 2z)$
+and $\\nabla^{2}\\mathbf{F} = (2y,\\; 2y,\\; 0)$, so the difference is
+$(1,\\; 2x - 2y,\\; 2z)$. The two sides match term for term.
+
+**Product rule for divergence.** $\\mathbf{F}\\cdot\\nabla f = (2)(4) + (18)(28) + (3)(54) = 8 + 504 + 162 = 674$, and $56 \\times 14 = 784$, so
+
+$$\\nabla\\cdot(f\\mathbf{F}) = 784 + 674 = 1458$$
+
+**Product rule for curl.** $(\\nabla f)\\times\\mathbf{F} = (4, 28, 54)\\times(2, 18, 3)$, which is
+
+$$\\bigl((28)(3) - (54)(18),\\; (54)(2) - (4)(3),\\; (4)(18) - (28)(2)\\bigr) = (-888,\\; 96,\\; 16)$$
+
+and therefore
+
+$$\\nabla\\times(f\\mathbf{F}) = 56(-12,\\; -3,\\; -1) + (-888,\\; 96,\\; 16) = (-1560,\\; -72,\\; -40)$$
+
+Every one of these five results was also recomputed by differentiating
+numerically on a grid, with no algebra involved, and every one agreed.
+
+| Identity | Statement | What it buys |
+|---|---|---|
+| curl grad | $\\nabla\\times(\\nabla f) = \\mathbf{0}$ | conservative fields, voltage well defined |
+| div curl | $\\nabla\\cdot(\\nabla\\times\\mathbf{F}) = 0$ | no magnetic monopoles |
+| vector Laplacian | $\\nabla\\times(\\nabla\\times\\mathbf{F}) = \\nabla(\\nabla\\cdot\\mathbf{F}) - \\nabla^{2}\\mathbf{F}$ | the wave equation |
+| divergence product | $\\nabla\\cdot(f\\mathbf{F}) = f\\nabla\\cdot\\mathbf{F} + \\mathbf{F}\\cdot\\nabla f$ | fields in graded media |
+| curl product | $\\nabla\\times(f\\mathbf{F}) = f\\nabla\\times\\mathbf{F} + (\\nabla f)\\times\\mathbf{F}$ | fields in graded media |`,
+  examTip: 'Two identities answer questions on sight: the curl of any gradient is zero and the divergence of any curl is zero. If a multiple-choice item offers a non-zero value for either, it is testing recognition, not computation, and no differentiation is needed.',
+},
+{
+  id: 'va-line-integrals',
+  title: '11. Line Integrals, Work, and Path Independence',
+  content: `## 11.1 Two different integrals along a curve
+
+Integrating along a curve means one of two things, and confusing them is a
+reliable way to lose a question.
+
+**Against arc length**, for a scalar field. Chop the curve into pieces of length
+$ds$, weight each by the field value there, and add:
+
+$$\\int_{C} f\\,ds = \\int_{a}^{b} f\\bigl(\\mathbf{r}(t)\\bigr)\\,\\left\\lvert \\frac{d\\mathbf{r}}{dt}\\right\\rvert dt$$
+
+This is how the mass of a wire of varying density, or the average temperature
+along a path, is found. It does not care which way you travel: reversing the
+direction leaves the answer alone, because $ds$ is a length.
+
+**Against displacement**, for a vector field. Keep only the component of the
+field along the direction of travel:
+
+$$\\int_{C}\\mathbf{F}\\cdot d\\mathbf{r} = \\int_{a}^{b}\\mathbf{F}\\bigl(\\mathbf{r}(t)\\bigr)\\cdot\\frac{d\\mathbf{r}}{dt}\\,dt = \\int_{C}\\bigl(F_{x}\\,dx + F_{y}\\,dy + F_{z}\\,dz\\bigr)$$
+
+This is **work**, and it does care about direction: reversing the path negates
+it. A closed-path version is written with a ring on the integral sign and is
+called the **circulation** of the field.
+
+## 11.2 Worked: the mass of a curved wire
+
+A wire follows $y = x^{2}$ from the origin to $(2, 4)$, with linear density
+$\\lambda = x$ in consistent units. Parametrise by $x$ itself, so
+$\\mathbf{r}(x) = (x,\\; x^{2})$ and
+
+$$ds = \\sqrt{1 + (dy/dx)^{2}}\\;dx = \\sqrt{1 + 4x^{2}}\\;dx$$
+
+Then
+
+$$m = \\int_{0}^{2} x\\sqrt{1 + 4x^{2}}\\;dx = \\left[\\frac{(1 + 4x^{2})^{3/2}}{12}\\right]_{0}^{2} = \\frac{17^{3/2} - 1}{12}$$
+
+Since $17^{3/2} = 17\\sqrt{17} = 70.092796$, the mass is
+$69.092796/12 = 5.757733$.
+
+**Check the shape of the answer.** The wire is longer than the straight line from
+$(0,0)$ to $(2,4)$, whose length is $\\sqrt{20} = 4.4721$; and the density runs
+from 0 to 2, averaging somewhat above 1 because the wire is longer where $x$ is
+large. A mass near 5.76 is consistent with both. The substitution
+$u = 1 + 4x^{2}$ is the only trick, and forgetting the factor of 8 in $du$ is the
+usual slip — it would give an answer eight times too big.
+
+## 11.3 Work, and when the route stops mattering
+
+Take the plane field $\\mathbf{F} = y\\,\\mathbf{i} + 2x\\,\\mathbf{j}$ and go from the
+origin to $(1, 1)$ three different ways.
+
+**Straight line**, $\\mathbf{r}(t) = (t, t)$:
+
+$$\\int_{0}^{1}\\bigl(t + 2t\\bigr)dt = \\int_{0}^{1} 3t\\,dt = 1.5$$
+
+**Parabola**, $\\mathbf{r}(t) = (t, t^{2})$, so $dy = 2t\\,dt$:
+
+$$\\int_{0}^{1}\\bigl(t^{2} + 2t(2t)\\bigr)dt = \\int_{0}^{1} 5t^{2}\\,dt = \\frac{5}{3} = 1.6667$$
+
+**Corner**, along the $x$-axis and then straight up. On the first leg $y = 0$ and
+$dy = 0$, so nothing accumulates. On the second leg $x = 1$ and $dx = 0$, leaving
+
+$$\\int_{0}^{1} 2\\,dy = 2$$
+
+Three routes, three answers. Now the same three routes in
+$\\mathbf{G} = 2xy\\,\\mathbf{i} + x^{2}\\,\\mathbf{j}$ give 1, 1 and 1. The difference
+between the two fields is one number:
+
+$$(\\nabla\\times\\mathbf{F})_{z} = 2 - 1 = 1, \\qquad (\\nabla\\times\\mathbf{G})_{z} = 2x - 2x = 0$$
+
+![Two panels, each showing a straight path, a parabolic path and a right-angled corner path from the origin to the point one one. In the left panel the field has curl one and the three paths give 1.5000, 1.6667 and 2.0000; in the right panel the field has zero curl and all three give 1.0000.](/courses/fe-ee/figures/math6-va-path-work.svg)
+
+**Where the difference goes.** The corner route and the straight route enclose a
+triangle of area $\\tfrac{1}{2}$, traversed counterclockwise if you go out by the
+corner and back by the line. The gap between the two answers is
+$2 - 1.5 = 0.5$, which is the enclosed area multiplied by the curl. That is
+Green's theorem, arriving before it has been stated.
+
+## 11.4 Conservative fields, and four ways to say the same thing
+
+A vector field on a simply connected region is called **conservative** when any
+one of the following holds — and then all four do:
+
+1. $\\nabla\\times\\mathbf{F} = \\mathbf{0}$ throughout the region.
+2. $\\oint_{C}\\mathbf{F}\\cdot d\\mathbf{r} = 0$ for every closed path $C$ in it.
+3. $\\int_{C}\\mathbf{F}\\cdot d\\mathbf{r}$ depends only on the endpoints of $C$.
+4. $\\mathbf{F} = \\nabla\\varphi$ for some scalar potential $\\varphi$.
+
+Given the fourth, the line integral collapses to a subtraction — the **gradient
+theorem**, which is the fundamental theorem of calculus with a curve in place of
+an interval:
+
+$$\\int_{C}\\nabla\\varphi\\cdot d\\mathbf{r} = \\varphi(\\text{end}) - \\varphi(\\text{start})$$
+
+The word **simply connected** is not decoration. In a region with a hole through
+it — the space outside a current-carrying wire, for instance — zero curl no
+longer forces zero circulation, which is exactly the loophole Ampere's law
+exploits.
+
+The practical rule for the exam: **take the curl before you parametrise
+anything.** If it vanishes, find the potential and subtract; the parametrisation
+was never needed.
+
+## 11.5 Worked: finding a potential, and using it
+
+Let $\\mathbf{F} = (2xy + z^{2})\\,\\mathbf{i} + x^{2}\\,\\mathbf{j} + 2xz\\,\\mathbf{k}$.
+
+**Test first.**
+
+$$\\nabla\\times\\mathbf{F} = \\bigl(0 - 0,\\; 2z - 2z,\\; 2x - 2x\\bigr) = \\mathbf{0}$$
+
+so a potential exists.
+
+**Build it.** Integrate the first component with respect to $x$, treating the
+others as constants:
+
+$$\\varphi = \\int (2xy + z^{2})\\,dx = x^{2}y + xz^{2} + g(y, z)$$
+
+Differentiating this with respect to $y$ gives $x^{2} + \\partial g/\\partial y$,
+which must equal $F_{y} = x^{2}$, so $g$ does not depend on $y$. Differentiating
+with respect to $z$ gives $2xz + \\partial g/\\partial z$, which must equal
+$F_{z} = 2xz$, so $g$ does not depend on $z$ either. Taking the constant as zero,
+
+$$\\varphi = x^{2}y + xz^{2}$$
+
+**Use it.** The work from the origin to $(1, 2, 3)$ is
+
+$$\\varphi(1,2,3) - \\varphi(0,0,0) = 2 + 9 = 11$$
+
+**Confirm it, three ways.** Along the straight line $\\mathbf{r}(t) = t(1,2,3)$ the
+integral evaluates to 11. Along the broken path that runs out the $x$-axis, then
+parallel to $y$, then parallel to $z$, the three legs contribute 0, 2 and 9 — and
+$0 + 2 + 9 = 11$. Along a deliberately awkward wiggling path from the same start
+to the same end, numerical quadrature returns 11 to eight decimal places. The
+potential did in one subtraction what three integrals had to work for.
+
+## 11.6 Worked: reading path independence as voltage
+
+In an electrostatic field, $\\mathbf{E} = -\\nabla V$ and therefore
+
+$$V_{a} - V_{b} = \\int_{b}^{a}\\mathbf{E}\\cdot d\\mathbf{l}$$
+
+with the value independent of the route taken. That independence is what allows a
+voltmeter reading to be a property of two terminals rather than of the wire
+between them, and it is why Kirchhoff's voltage law can be written down at all:
+a loop returns to its starting potential because the field is a gradient.
+
+Take a uniform field $\\mathbf{E} = 200\\,\\mathbf{i}$ volts per metre and two points
+2 cm apart along $x$. Then
+
+$$V_{a} - V_{b} = 200 \\times 0.02 = 4$$
+
+volts, whatever path is taken between them, because a constant field is the
+gradient of the linear potential $V = -200x$. Move perpendicular to the field
+instead and the integral is zero — the two points sit on the same equipotential,
+which is the perpendicularity result of Section 8.2 in its most practical form.
+
+When the field is **not** static, this all breaks: Faraday's law makes
+$\\nabla\\times\\mathbf{E} = -\\partial\\mathbf{B}/\\partial t$, the field stops being a
+gradient, and the loop integral becomes the induced electromotive force rather
+than zero. That single change is the whole difference between circuit theory and
+transformer action.`,
+  examTip: 'Compute the curl before parametrising a path. Zero curl means find a potential and subtract two numbers; non-zero curl means you must actually integrate, and the answer depends on the route you were given rather than on the endpoints alone.',
+  importantNote: 'A scalar line integral against ds is unchanged by reversing the path; a work integral against dr changes sign. If a question reverses the direction of travel and the answer does not move, check which of the two integrals was actually asked for.',
+},
+{
+  id: 'va-surface-flux',
+  title: '12. Surface Integrals and Flux',
+  content: `## 12.1 Area on a curved surface
+
+A surface needs two parameters, so it is described by $\\mathbf{r}(u, v)$. The two
+partial derivatives $\\mathbf{r}_{u}$ and $\\mathbf{r}_{v}$ are tangent to it, and a
+small parameter rectangle maps to a small parallelogram whose area is the
+magnitude of their cross product:
+
+$$dS = \\lvert \\mathbf{r}_{u}\\times\\mathbf{r}_{v}\\rvert\\;du\\,dv, \\qquad \\hat{\\mathbf{n}} = \\frac{\\mathbf{r}_{u}\\times\\mathbf{r}_{v}}{\\lvert \\mathbf{r}_{u}\\times\\mathbf{r}_{v}\\rvert}$$
+
+That is the whole apparatus, and it is just the cross-product area rule from
+Section 6.3 applied one small patch at a time. For a surface given as a graph
+$z = g(x, y)$ the parametrisation is $(x,\\; y,\\; g)$ and the formula collapses to
+
+$$dS = \\sqrt{1 + \\left(\\frac{\\partial g}{\\partial x}\\right)^{2} + \\left(\\frac{\\partial g}{\\partial y}\\right)^{2}}\\;dx\\,dy$$
+
+which is the two-dimensional version of the arc-length factor $\\sqrt{1 + (dy/dx)^{2}}$.
+
+Two surfaces come up so often they are worth memorising. On a **sphere** of
+radius $a$, $dS = a^{2}\\sin\\theta\\,d\\theta\\,d\\phi$. On the curved side of a
+**cylinder** of radius $a$, $dS = a\\,d\\phi\\,dz$.
+
+## 12.2 Worked: the area of a paraboloid cap
+
+Find the area of the part of $z = x^{2} + y^{2}$ lying below $z = 4$.
+
+Here $\\partial g/\\partial x = 2x$ and $\\partial g/\\partial y = 2y$, so
+$dS = \\sqrt{1 + 4x^{2} + 4y^{2}}\\,dx\\,dy$. In polar coordinates the region is the
+disc of radius 2 and the integrand depends only on $r$:
+
+$$S = \\int_{0}^{2\\pi}\\!\\!\\int_{0}^{2}\\sqrt{1 + 4r^{2}}\\;r\\,dr\\,d\\theta = 2\\pi\\left[\\frac{(1 + 4r^{2})^{3/2}}{12}\\right]_{0}^{2}$$
+
+$$S = \\frac{2\\pi\\,(17^{3/2} - 1)}{12} = \\frac{\\pi(17^{3/2} - 1)}{6} = 36.1769$$
+
+**Check the shape.** The flat disc underneath has area $4\\pi = 12.566$, and the
+curved cap is much steeper than flat near its rim, so a figure roughly three
+times larger is what one should expect. Numerical quadrature over the same region
+returns 36.176903.
+
+## 12.3 Flux: the surface integral of a vector field
+
+Flux keeps only the part of the field that crosses the surface:
+
+$$\\Phi = \\iint_{S}\\mathbf{F}\\cdot\\hat{\\mathbf{n}}\\;dS$$
+
+The dot product with the unit normal is doing all the work, and the whole art of
+Gauss's-law problems is choosing a surface on which $\\mathbf{F}\\cdot\\hat{\\mathbf{n}}$
+is either constant or zero, so that the integral becomes a multiplication.
+
+Orientation must be declared. For a **closed** surface the convention is
+outward-pointing; for an open surface the choice is free but must then be matched
+by the direction the boundary is traversed, through the right-hand rule.
+
+## 12.4 Worked: three flux calculations that need no integration
+
+**A flat plate in a uniform field.** With $\\mathbf{F} = 5\\,\\mathbf{k}$ and a plate
+2 m by 3 m in the $xy$ plane, $\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = 5$ everywhere, so
+$\\Phi = 5 \\times 6 = 30$. Tilt the plate by $60^\\circ$ and the normal tilts with
+it, giving $\\Phi = 5\\cos 60^\\circ \\times 6 = 15$. Only the projected area matters.
+
+**A sphere in a radial field.** With $\\mathbf{F} = \\mathbf{r} = (x, y, z)$ and a
+sphere of radius 2, the outward normal is $\\mathbf{r}/2$, so
+$\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = \\lvert \\mathbf{r}\\rvert = 2$ at every point. The
+sphere has area $4\\pi(2)^{2} = 16\\pi$, so
+
+$$\\Phi = 2 \\times 16\\pi = 32\\pi = 100.531$$
+
+**A cylinder in a radial plane field.** With $\\mathbf{F} = x\\,\\mathbf{i} + y\\,\\mathbf{j}$,
+a cylinder of radius 2 and height 5 has $\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = 2$ on its
+curved side and 0 on its flat ends, because the field has no $z$-component. The
+curved area is $2\\pi(2)(5) = 20\\pi$, so
+
+$$\\Phi = 2 \\times 20\\pi = 40\\pi = 125.664$$
+
+Every one of these was also evaluated by numerical quadrature over the actual
+surface, and every one agreed to nine decimal places. They are quoted here not
+because the integrals are hard but because **choosing the surface is the skill**,
+and on all three the integral degenerated into an area times a constant.
+
+## 12.5 A flux that does not depend on the surface at all
+
+Take the inverse-square field $\\mathbf{F} = \\hat{\\mathbf{a}}_{r}/r^{2}$. On a sphere of
+radius $a$ centred at the origin, $\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = 1/a^{2}$ and the
+area is $4\\pi a^{2}$, so
+
+$$\\Phi = \\frac{1}{a^{2}} \\times 4\\pi a^{2} = 4\\pi$$
+
+The radius cancels completely. Evaluating the same flux numerically at radii 0.5,
+2 and 7 returns $4\\pi$ every time. This is Gauss's law in its purest form: the
+flux out of any closed surface counts what is inside and is indifferent to the
+shape and size of the surface. Section 13.4 explains why, and Section 14.5 shows
+that the divergence of this field is zero everywhere the field is defined — which
+is the other half of the same story.`,
+  examTip: 'Before integrating a flux, ask whether the field is constant on the surface or perpendicular to part of it. On the surfaces the exam supplies — spheres, cylinders, flat plates — the answer is usually yes, and the integral becomes one multiplication.',
+},
+{
+  id: 'va-three-theorems',
+  title: '13. Green, Stokes and the Divergence Theorem',
+  content: `## 13.1 One idea in three costumes
+
+Each of the three theorems says the same thing: **what a derivative does inside a
+region is decided by what the function does on its boundary.** They differ only in
+how many dimensions the region has.
+
+| Theorem | Region | Boundary | Statement |
+|---|---|---|---|
+| Fundamental theorem of calculus | interval | two endpoints | $\\int_{a}^{b}f'\\,dx = f(b) - f(a)$ |
+| Gradient theorem | curve | two endpoints | $\\int_{C}\\nabla\\varphi\\cdot d\\mathbf{r} = \\varphi(\\text{end}) - \\varphi(\\text{start})$ |
+| Green | plane region | closed curve | circulation equals the integral of the plane curl |
+| Stokes | surface in space | rim of the surface | circulation equals the flux of the curl |
+| Divergence | solid | closed surface | flux equals the integral of the divergence |
+
+Green's theorem is Stokes' theorem with the surface lying flat in a plane, so
+strictly there are two theorems here, not three. Keeping that in mind removes
+half the memorisation.
+
+## 13.2 Green's theorem
+
+**Statement.** Let $C$ be a piecewise-smooth, simple, closed curve traversed
+counterclockwise, bounding a region $R$ in the plane, and let $P$ and $Q$ have
+continuous first partial derivatives on an open set containing $R$. Then
+
+$$\\oint_{C}\\bigl(P\\,dx + Q\\,dy\\bigr) = \\iint_{R}\\left(\\frac{\\partial Q}{\\partial x} - \\frac{\\partial P}{\\partial y}\\right)dA$$
+
+**Hypotheses that matter.** *Simple* means the curve does not cross itself.
+*Counterclockwise* fixes the sign — the region must stay on the left as you
+travel. *Continuous partials on the region* excludes fields with a singularity
+inside, which is the condition the inverse-square swirl of Section 9.4 violates.
+
+**A corollary worth having.** Choosing $P = -y/2$ and $Q = x/2$ makes the
+integrand exactly 1, so
+
+$$\\text{Area}(R) = \\frac{1}{2}\\oint_{C}\\bigl(x\\,dy - y\\,dx\\bigr)$$
+
+Area from a boundary walk alone — which is how a planimeter works.
+
+## 13.3 Worked: Green's theorem on a region with two curved edges
+
+Take the region between $y = x^{2}$ and $y = x$ for $x$ from 0 to 1, and the field
+$\\mathbf{F} = xy\\,\\mathbf{i} + x^{2}\\,\\mathbf{j}$.
+
+**The double integral.** Here $\\partial Q/\\partial x - \\partial P/\\partial y = 2x - x = x$, and the
+region runs from the parabola up to the line:
+
+$$\\iint_{R} x\\,dA = \\int_{0}^{1}\\!\\!\\int_{x^{2}}^{x} x\\;dy\\,dx = \\int_{0}^{1} x(x - x^{2})\\,dx = \\frac{1}{3} - \\frac{1}{4} = \\frac{1}{12}$$
+
+**The line integral.** Counterclockwise means out along the parabola and back
+along the line, because that keeps the region on the left. Out, with $x = t$ and
+$y = t^{2}$:
+
+$$\\int_{0}^{1}\\bigl(t\\cdot t^{2} + t^{2}\\cdot 2t\\bigr)dt = \\int_{0}^{1} 3t^{3}\\,dt = \\frac{3}{4}$$
+
+Back, with $x = y = u$ running from 1 to 0:
+
+$$\\int_{1}^{0}\\bigl(u^{2} + u^{2}\\bigr)du = -\\frac{2}{3}$$
+
+Adding, $3/4 - 2/3 = 9/12 - 8/12 = 1/12$. Both sides come to 0.083333.
+
+![The region between a parabola and a straight line from the origin to the point one one, shaded, with arrows showing the boundary traversed out along the parabola and back along the line, and both sides of Green's theorem printed as 0.083333.](/courses/fe-ee/figures/math6-va-green.svg)
+
+**The area corollary on the same region.** Walking the same boundary with the
+area integrand gives $1/6$, and the double integral of 1 over the region is
+$\\int_{0}^{1}(x - x^{2})dx = 1/2 - 1/3 = 1/6$. Two more numbers that agree.
+
+**Trap.** Traversing the boundary clockwise negates the line integral without
+touching the double integral, giving $-1/12$ against $+1/12$. If the two sides
+of Green's theorem differ only in sign, the orientation is the thing to check.
+
+## 13.4 Stokes' theorem
+
+**Statement.** Let $S$ be a piecewise-smooth oriented surface whose boundary $C$
+is a piecewise-smooth simple closed curve, oriented so that the right-hand rule
+relates it to the chosen normal. If $\\mathbf{F}$ has continuous first partial
+derivatives on an open set containing $S$, then
+
+$$\\oint_{C}\\mathbf{F}\\cdot d\\mathbf{r} = \\iint_{S}(\\nabla\\times\\mathbf{F})\\cdot\\hat{\\mathbf{n}}\\;dS$$
+
+**What it means practically.** The right-hand side depends on the surface only
+through its rim, so **any** surface with the same boundary gives the same answer.
+A loop of wire can be spanned by a flat disc or by a bag-shaped surface, and the
+flux of the curl through both is identical — which is the reason Ampere's law can
+be applied to whichever surface makes the algebra easiest.
+
+**The link to Section 9.2.** Stokes' theorem is the shrinking-loop definition of
+curl, summed over a surface: cut the surface into tiny loops, note that adjacent
+loops cancel along shared edges, and only the outer rim survives.
+
+## 13.5 Worked: Stokes' theorem on a first-octant triangle
+
+Take $\\mathbf{F} = y\\,\\mathbf{i} + z\\,\\mathbf{j} + x\\,\\mathbf{k}$ and the triangle cut
+from the plane $x + y + z = 1$ by the coordinate planes, with vertices
+$(1,0,0)$, $(0,1,0)$ and $(0,0,1)$.
+
+**The surface side.** The curl is constant:
+
+$$\\nabla\\times\\mathbf{F} = (0 - 1,\\; 0 - 1,\\; 0 - 1) = (-1, -1, -1)$$
+
+The unit normal is $\\hat{\\mathbf{n}} = (1,1,1)/\\sqrt{3}$, so
+$(\\nabla\\times\\mathbf{F})\\cdot\\hat{\\mathbf{n}} = -3/\\sqrt{3} = -\\sqrt{3}$. The triangle
+has area $\\sqrt{3}/2$, from half the magnitude of the cross product of two of its
+edges. Therefore
+
+$$\\iint_{S}(\\nabla\\times\\mathbf{F})\\cdot\\hat{\\mathbf{n}}\\,dS = -\\sqrt{3}\\times\\frac{\\sqrt{3}}{2} = -1.5$$
+
+**The rim side.** Traverse the vertices in the order $(1,0,0)$, $(0,1,0)$,
+$(0,0,1)$, which is the direction the right-hand rule pairs with that normal. On
+the first leg, $\\mathbf{r}(t) = (1 - t,\\; t,\\; 0)$ and $d\\mathbf{r} = (-1, 1, 0)dt$,
+while $\\mathbf{F} = (t,\\; 0,\\; 1 - t)$, so the integrand is $-t$ and the leg
+contributes $-\\tfrac{1}{2}$. By the cyclic symmetry of both the field and the
+triangle, each of the other two legs contributes $-\\tfrac{1}{2}$ as well:
+
+$$\\oint_{C}\\mathbf{F}\\cdot d\\mathbf{r} = -\\frac{1}{2} - \\frac{1}{2} - \\frac{1}{2} = -1.5$$
+
+Both sides come to $-1.500000$, computed independently.
+
+![The triangle cut from the plane x plus y plus z equals one by the three coordinate planes, shaded, with arrows around its rim and the unit normal drawn from its centroid, and both sides of Stokes theorem printed as minus 1.5.](/courses/fe-ee/figures/math6-va-stokes.svg)
+
+**Why the sign is negative.** The curl points into the octant, opposite the chosen
+normal, so the flux is negative and the circulation must be too. Reversing the
+traversal would flip both sides together — never one of them.
+
+## 13.6 The divergence theorem
+
+**Statement.** Let $V$ be a solid region bounded by a piecewise-smooth closed
+surface $S$, oriented with outward normals, and let $\\mathbf{F}$ have continuous
+first partial derivatives on an open set containing $V$. Then
+
+$$\\oint_{S}\\mathbf{F}\\cdot\\hat{\\mathbf{n}}\\;dS = \\iiint_{V}(\\nabla\\cdot\\mathbf{F})\\;dV$$
+
+Again this is the shrinking-box definition of Section 9.1 summed over a region:
+fill the solid with tiny boxes, note that the flux out of one face is the flux
+into its neighbour, and only the outer skin survives.
+
+**The hypothesis that gets violated.** *Continuous partials throughout* fails for
+the inverse-square field at the origin, which is why a Gaussian surface enclosing
+a point charge has non-zero flux even though the divergence vanishes everywhere
+the field is defined. Nothing is broken; the theorem simply does not apply to a
+region containing the singularity.
+
+## 13.7 Worked: the divergence theorem on a cylinder
+
+Take $\\mathbf{F} = x\\,\\mathbf{i} + y\\,\\mathbf{j}$ and the solid cylinder of radius 2
+and height 5 standing on the $xy$ plane.
+
+**The volume side.** $\\nabla\\cdot\\mathbf{F} = 1 + 1 = 2$, a constant, so the
+integral is twice the volume:
+
+$$\\iiint_{V} 2\\,dV = 2\\pi(2)^{2}(5) = 40\\pi = 125.6637$$
+
+**The surface side.** On the curved wall $\\hat{\\mathbf{n}} = (x, y, 0)/2$, so
+$\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = (x^{2} + y^{2})/2 = 2$. On the flat top and bottom
+$\\hat{\\mathbf{n}} = \\pm\\mathbf{k}$ and the field has no $z$-component, so both
+contribute nothing. The curved area is $2\\pi(2)(5) = 20\\pi$, giving
+
+$$\\oint_{S}\\mathbf{F}\\cdot\\hat{\\mathbf{n}}\\;dS = 2 \\times 20\\pi = 40\\pi = 125.6637$$
+
+Both sides agree to nine decimal places under numerical quadrature.
+
+![A cylinder of radius two and height five drawn in axonometric projection, with radial arrows leaving its curved wall, and both sides of the divergence theorem printed as 125.6637.](/courses/fe-ee/figures/math6-va-divergence.svg)
+
+## 13.8 Worked: the divergence theorem on a sphere, where the integral is real
+
+The cylinder was easy because the divergence was constant. Take instead
+$\\mathbf{F} = x^{3}\\,\\mathbf{i} + y^{3}\\,\\mathbf{j} + z^{3}\\,\\mathbf{k}$ over the unit
+ball.
+
+**The volume side.** $\\nabla\\cdot\\mathbf{F} = 3(x^{2} + y^{2} + z^{2}) = 3r^{2}$,
+which depends only on $r$, so integrate in shells of volume $4\\pi r^{2}dr$:
+
+$$\\iiint_{V} 3r^{2}\\,dV = \\int_{0}^{1} 3r^{2}\\,(4\\pi r^{2})\\,dr = 12\\pi\\int_{0}^{1} r^{4}\\,dr = \\frac{12\\pi}{5} = 7.5398$$
+
+**The surface side.** On the unit sphere $\\hat{\\mathbf{n}} = (x, y, z)$, so
+$\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = x^{4} + y^{4} + z^{4}$, which is genuinely
+variable over the surface. Integrating it by Gauss-Legendre quadrature in
+$\\cos\\theta$ and the midpoint rule in $\\phi$ gives 7.539822 — the same
+$12\\pi/5$.
+
+This is the case worth practising, because the surface integral could not be
+guessed and the volume integral could. **When one side of the theorem is hard and
+the other is easy, the theorem is a shortcut, not a formality.**`,
+  examTip: 'Read which side of the theorem the question hands you. A closed surface with an awkward field usually means convert to a volume integral of the divergence; a nasty closed-loop integral usually means convert to a flux of the curl through whatever surface is convenient.',
+  importantNote: 'Every one of these theorems has an orientation hypothesis. Counterclockwise for Green, right-hand rule for Stokes, outward normals for the divergence theorem. Getting orientation wrong produces an answer that is correct in magnitude and wrong in sign, and the negated value is almost always among the choices.',
+},
+{
+  id: 'va-curvilinear',
+  title: '14. Cylindrical and Spherical Coordinates',
+  content: `## 14.1 Why change coordinates at all
+
+A coaxial cable, a solenoid and a point charge have no natural corners, and
+Cartesian components of their fields are messy for the same reason square tiles
+are a poor way to describe a circle. Choosing coordinates that match the symmetry
+usually turns a three-variable problem into a one-variable one.
+
+**Cylindrical** coordinates use the distance $\\rho$ from the $z$-axis, the
+azimuth $\\phi$ measured round it, and $z$ itself:
+
+$$x = \\rho\\cos\\phi, \\quad y = \\rho\\sin\\phi, \\quad z = z$$
+
+$$\\rho = \\sqrt{x^{2} + y^{2}}, \\quad \\phi = \\arctan\\frac{y}{x}, \\quad z = z$$
+
+**Spherical** coordinates use the distance $r$ from the origin, the polar angle
+$\\theta$ measured down from the $z$-axis, and the same azimuth $\\phi$:
+
+$$x = r\\sin\\theta\\cos\\phi, \\quad y = r\\sin\\theta\\sin\\phi, \\quad z = r\\cos\\theta$$
+
+$$r = \\sqrt{x^{2} + y^{2} + z^{2}}, \\quad \\theta = \\arccos\\frac{z}{r}, \\quad \\phi = \\arctan\\frac{y}{x}$$
+
+The arctangent needs the quadrant restored by inspection; a calculator returning
+$-53^\\circ$ for a point in the second quadrant is not wrong, only incomplete.
+
+Volume elements follow from the geometry of a small block in each system:
+
+$$dV = \\rho\\;d\\rho\\,d\\phi\\,dz \\quad\\text{(cylindrical)}, \\qquad dV = r^{2}\\sin\\theta\\;dr\\,d\\theta\\,d\\phi \\quad\\text{(spherical)}$$
+
+## 14.2 The unit vectors move, and that is the whole difficulty
+
+In Cartesian coordinates $\\mathbf{i}$, $\\mathbf{j}$, $\\mathbf{k}$ point the same way
+everywhere, so they can be pulled out of any derivative. **The curvilinear unit
+vectors cannot**, because they depend on position:
+
+$$\\hat{\\mathbf{a}}_{\\rho} = \\cos\\phi\\,\\mathbf{i} + \\sin\\phi\\,\\mathbf{j}, \\qquad \\hat{\\mathbf{a}}_{\\phi} = -\\sin\\phi\\,\\mathbf{i} + \\cos\\phi\\,\\mathbf{j}$$
+
+$$\\hat{\\mathbf{a}}_{r} = \\sin\\theta\\cos\\phi\\,\\mathbf{i} + \\sin\\theta\\sin\\phi\\,\\mathbf{j} + \\cos\\theta\\,\\mathbf{k}, \\qquad \\hat{\\mathbf{a}}_{\\theta} = \\cos\\theta\\cos\\phi\\,\\mathbf{i} + \\cos\\theta\\sin\\phi\\,\\mathbf{j} - \\sin\\theta\\,\\mathbf{k}$$
+
+Each set is right-handed in the order given:
+$\\hat{\\mathbf{a}}_{\\rho}\\times\\hat{\\mathbf{a}}_{\\phi} = \\hat{\\mathbf{a}}_{z}$ and
+$\\hat{\\mathbf{a}}_{r}\\times\\hat{\\mathbf{a}}_{\\theta} = \\hat{\\mathbf{a}}_{\\phi}$.
+
+This position dependence is the entire reason the divergence and curl formulas
+below carry extra factors of $\\rho$, $r$ and $\\sin\\theta$: differentiating a field
+also differentiates the directions it is written in, and those factors are the
+bookkeeping. It is also why **the vector Laplacian is not componentwise** outside
+Cartesian coordinates, and why the identity of Section 10.4 has to be used as a
+definition there.
+
+![Left: the cylindrical unit vectors drawn at the point (3, 4) in the plane, with the radius of five and the azimuth of 53.13 degrees marked. Right: the spherical frame drawn at (3, 4, 5) in axonometric projection, with r equal to the square root of fifty, theta forty-five degrees and phi 53.13 degrees.](/courses/fe-ee/figures/math6-va-coordinates.svg)
+
+## 14.3 The operators, stated
+
+**Cylindrical.**
+
+$$\\nabla f = \\frac{\\partial f}{\\partial\\rho}\\hat{\\mathbf{a}}_{\\rho} + \\frac{1}{\\rho}\\frac{\\partial f}{\\partial\\phi}\\hat{\\mathbf{a}}_{\\phi} + \\frac{\\partial f}{\\partial z}\\hat{\\mathbf{a}}_{z}$$
+
+$$\\nabla\\cdot\\mathbf{A} = \\frac{1}{\\rho}\\frac{\\partial(\\rho A_{\\rho})}{\\partial\\rho} + \\frac{1}{\\rho}\\frac{\\partial A_{\\phi}}{\\partial\\phi} + \\frac{\\partial A_{z}}{\\partial z}$$
+
+$$\\nabla^{2}f = \\frac{1}{\\rho}\\frac{\\partial}{\\partial\\rho}\\left(\\rho\\frac{\\partial f}{\\partial\\rho}\\right) + \\frac{1}{\\rho^{2}}\\frac{\\partial^{2}f}{\\partial\\phi^{2}} + \\frac{\\partial^{2}f}{\\partial z^{2}}$$
+
+**Spherical.**
+
+$$\\nabla f = \\frac{\\partial f}{\\partial r}\\hat{\\mathbf{a}}_{r} + \\frac{1}{r}\\frac{\\partial f}{\\partial\\theta}\\hat{\\mathbf{a}}_{\\theta} + \\frac{1}{r\\sin\\theta}\\frac{\\partial f}{\\partial\\phi}\\hat{\\mathbf{a}}_{\\phi}$$
+
+$$\\nabla\\cdot\\mathbf{A} = \\frac{1}{r^{2}}\\frac{\\partial(r^{2}A_{r})}{\\partial r} + \\frac{1}{r\\sin\\theta}\\frac{\\partial(A_{\\theta}\\sin\\theta)}{\\partial\\theta} + \\frac{1}{r\\sin\\theta}\\frac{\\partial A_{\\phi}}{\\partial\\phi}$$
+
+$$\\nabla^{2}f = \\frac{1}{r^{2}}\\frac{\\partial}{\\partial r}\\left(r^{2}\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^{2}\\sin\\theta}\\frac{\\partial}{\\partial\\theta}\\left(\\sin\\theta\\frac{\\partial f}{\\partial\\theta}\\right) + \\frac{1}{r^{2}\\sin^{2}\\theta}\\frac{\\partial^{2}f}{\\partial\\phi^{2}}$$
+
+These are in the reference handbook, so they do not need memorising — but knowing
+**which** one a problem wants, and that the extra factors are not typographical
+noise, does.
+
+| Symmetry in the problem | Coordinates | Field depends on |
+|---|---|---|
+| Long straight wire, coaxial cable, solenoid | cylindrical | $\\rho$ alone |
+| Point charge, isolated sphere, radiating antenna far field | spherical | $r$ alone |
+| Parallel plates, rectangular waveguide | Cartesian | one Cartesian variable |
+
+## 14.4 Worked: converting a point and a vector
+
+Take the point $(3, 4, 5)$.
+
+**Cylindrical.** $\\rho = \\sqrt{9 + 16} = 5$, $\\phi = \\arctan(4/3) = 53.13^\\circ$,
+$z = 5$.
+
+**Spherical.** $r = \\sqrt{9 + 16 + 25} = \\sqrt{50} = 7.0711$, and
+
+$$\\cos\\theta = \\frac{5}{7.0711} = 0.70711, \\qquad \\theta = 45^\\circ$$
+
+with the same $\\phi = 53.13^\\circ$. The polar angle is $45^\\circ$ because the point
+is as far out sideways as it is up, which is a check worth making before trusting
+a calculator entry.
+
+**Now a vector at that point.** Let $\\mathbf{A} = 3\\mathbf{i} + 4\\mathbf{j}$. Its
+cylindrical components come from dotting with the local unit vectors, using
+$\\cos\\phi = 0.6$ and $\\sin\\phi = 0.8$:
+
+$$A_{\\rho} = \\mathbf{A}\\cdot\\hat{\\mathbf{a}}_{\\rho} = 3(0.6) + 4(0.8) = 1.8 + 3.2 = 5$$
+
+$$A_{\\phi} = \\mathbf{A}\\cdot\\hat{\\mathbf{a}}_{\\phi} = -3(0.8) + 4(0.6) = -2.4 + 2.4 = 0$$
+
+So $\\mathbf{A} = 5\\,\\hat{\\mathbf{a}}_{\\rho}$ at that point — which had to happen,
+because $\\mathbf{A}$ points from the axis straight at the point. Its magnitude is
+unchanged at 5, as any change of orthonormal frame must leave it.
+
+**Trap.** Writing $\\mathbf{A} = 5\\,\\hat{\\mathbf{a}}_{\\rho}$ and treating that as a
+statement about the whole field rather than about one point. At $(-3, 4, 0)$ the
+same Cartesian field has $\\cos\\phi = -0.6$, giving $A_{\\rho} = -1.8 + 3.2 = 1.4$
+and $A_{\\phi} = -2.4 - 2.4 = -4.8$. The components of a fixed field in a moving
+frame are position-dependent, and that is not a paradox.
+
+## 14.5 Worked: divergence in cylindrical coordinates, checked against the theorem
+
+Take $\\mathbf{F} = \\rho^{2}\\,\\hat{\\mathbf{a}}_{\\rho}$, a purely radial field growing
+with distance from the axis. Using the cylindrical divergence formula,
+
+$$\\nabla\\cdot\\mathbf{F} = \\frac{1}{\\rho}\\frac{\\partial}{\\partial\\rho}\\bigl(\\rho\\cdot\\rho^{2}\\bigr) = \\frac{3\\rho^{2}}{\\rho} = 3\\rho$$
+
+**Check by the divergence theorem** on a cylinder of radius 2 and height 5. On
+the curved wall $\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = \\rho^{2} = 4$, and the flat ends
+contribute nothing, so
+
+$$\\oint_{S}\\mathbf{F}\\cdot\\hat{\\mathbf{n}}\\;dS = 4 \\times 2\\pi(2)(5) = 80\\pi = 251.327$$
+
+On the other side,
+
+$$\\iiint_{V} 3\\rho\\;dV = \\int_{0}^{5}\\!\\!\\int_{0}^{2\\pi}\\!\\!\\int_{0}^{2} 3\\rho\\cdot\\rho\\;d\\rho\\,d\\phi\\,dz = 3(5)(2\\pi)\\frac{8}{3} = 80\\pi$$
+
+The two agree, and note that the volume element supplied the extra $\\rho$ that
+made the powers work out. **Forgetting that factor is the single most common
+error in cylindrical integration**, and it produces an answer that is out by a
+factor with the wrong units, so it is catchable.
+
+## 14.6 Worked: the Coulomb potential in spherical coordinates
+
+Take $V = k/r$ away from the origin. Since $V$ depends on $r$ alone, only the
+first term of the spherical Laplacian survives:
+
+$$\\frac{\\partial V}{\\partial r} = -\\frac{k}{r^{2}}, \\qquad r^{2}\\frac{\\partial V}{\\partial r} = -k$$
+
+which is a constant, so its $r$-derivative is zero and
+
+$$\\nabla^{2}V = 0 \\quad (r > 0)$$
+
+The Coulomb potential satisfies Laplace's equation everywhere except at the
+charge itself. Correspondingly the field
+
+$$\\mathbf{E} = -\\nabla V = \\frac{k}{r^{2}}\\,\\hat{\\mathbf{a}}_{r}$$
+
+has divergence
+
+$$\\nabla\\cdot\\mathbf{E} = \\frac{1}{r^{2}}\\frac{\\partial}{\\partial r}\\left(r^{2}\\cdot\\frac{k}{r^{2}}\\right) = \\frac{1}{r^{2}}\\frac{\\partial k}{\\partial r} = 0 \\quad (r > 0)$$
+
+and yet its flux out of any sphere is $4\\pi k$, independent of radius. There is no
+contradiction: the divergence theorem requires continuous derivatives throughout
+the region, and the origin is excluded. **All of the source sits at the one point
+the theorem is not allowed to see** — which is the statement Gauss's law makes
+formal, and it is the reason a point charge is described by a delta function
+rather than by an ordinary density.
+
+The same structure one dimension lower gives the field of a line charge:
+$\\mathbf{F} = \\hat{\\mathbf{a}}_{\\rho}/\\rho$ has zero divergence away from the axis,
+and its flux through a cylinder of radius $R$ and height $h$ is
+$(1/R)(2\\pi Rh) = 2\\pi h$ — the radius cancels, so the answer depends only on how
+much of the line is enclosed. That is why the field of a long wire falls as
+$1/\\rho$ while the field of a point falls as $1/r^{2}$.`,
+  examTip: 'Match the coordinate system to the symmetry before writing anything down. A field that depends only on distance from an axis wants cylindrical; a field that depends only on distance from a point wants spherical. Picking correctly usually reduces a triple integral to a single one.',
+  importantNote: 'The volume element carries rho in cylindrical coordinates and r squared sin(theta) in spherical. Omitting it is the most common integration error in this material, and unlike a sign slip it changes the units of the answer, so a quick dimensional check catches it.',
+},
+{
+  id: 'va-crossrefs',
+  title: '15. Where This Material Is Actually Examined',
+  content: `## 15.1 Maxwell's equations are this chapter, applied
+
+Every operator built above appears in the four equations that the
+Electromagnetics topics are organised around. Nothing new is needed to read them
+— only the meanings derived in Sections 8 to 10.
+
+| Equation | Operator | What Sections 8 to 10 said it means |
+|---|---|---|
+| $\\nabla\\cdot\\mathbf{D} = \\rho_{v}$ | divergence | flux per unit volume; charge is a source of $\\mathbf{D}$ |
+| $\\nabla\\cdot\\mathbf{B} = 0$ | divergence | nothing sources $\\mathbf{B}$; it only circulates |
+| $\\nabla\\times\\mathbf{E} = -\\dfrac{\\partial\\mathbf{B}}{\\partial t}$ | curl | circulation per unit area; a changing $\\mathbf{B}$ drives a loop of $\\mathbf{E}$ |
+| $\\nabla\\times\\mathbf{H} = \\mathbf{J} + \\dfrac{\\partial\\mathbf{D}}{\\partial t}$ | curl | current and changing $\\mathbf{D}$ drive a loop of $\\mathbf{H}$ |
+
+Their integral forms are the three theorems of Section 13 applied to those four
+statements — Gauss's law is the divergence theorem applied to the first, and
+Faraday's and Ampere's laws are Stokes' theorem applied to the last two. The
+Electromagnetics chapters work all of that through with numbers; this chapter
+supplies the machinery and the proofs. Two results in particular are used there
+without re-derivation, and both are established above: $\\mathbf{E} = -\\nabla V$
+with the field perpendicular to equipotentials (Section 8.4), and the
+independence of an electrostatic line integral from the path (Section 11.6).
+
+## 15.2 The Laplace transform, and where the full treatment lives
+
+Sections 1, 4 and 5 of this chapter keep a working summary of the Laplace
+transform because the pole-location reading in Section 4.4 belongs next to the
+field material historically. The complete treatment is elsewhere and should be
+studied there rather than here:
+
+- **Differential Equations** develops the transform properly, including the
+  derivative rule carrying initial conditions, partial fractions, and solving
+  circuit transients end to end.
+- **Transfer Functions** in Linear Systems builds the $s$-domain description of
+  systems, poles and zeros, and frequency response.
+- **Z-Transforms** in Linear Systems does the discrete-time counterpart.
+- **Control Systems** uses pole locations for stability, which is the single fact
+  Section 4.4 summarises.
+
+The one connection worth making explicitly here is that the transform and the
+vector operators solve the same kind of problem from opposite ends. The transform
+turns a differential equation in **time** into algebra; the integral theorems turn
+a differential statement in **space** into an algebraic relation between a region
+and its boundary. Both replace calculus with bookkeeping.
+
+## 15.3 A trap table for the whole chapter
+
+| Trap | What it produces | How to catch it |
+|---|---|---|
+| Dot used where cross was needed | a cosine where a sine belongs | check whether the answer should be a number or a direction |
+| Middle term of a cross product not negated | one component wrong, magnitude plausible | the result must dot to zero with both inputs |
+| Direction vector not normalised | directional derivative too large by the vector's length | check that the direction has length 1 |
+| Volume element omitted in cylindrical or spherical integration | answer out by a factor with wrong units | dimensional check |
+| Boundary traversed the wrong way | correct magnitude, wrong sign | region must stay on the left; right-hand rule for Stokes |
+| Theorem applied across a singularity | apparent contradiction between zero divergence and non-zero flux | check the hypothesis of continuous derivatives |
+| Curvilinear unit vectors treated as constants | wrong divergence and curl | they depend on position; use the stated formulas |
+| Vector Laplacian taken componentwise outside Cartesian | wrong answer with no warning | use the double-curl identity as the definition |
+
+## 15.4 What to do in the first ten seconds of a vector question
+
+1. **Identify the types.** Scalar in, vector out means gradient. Vector in, scalar
+   out means divergence or a dot product. Vector in, vector out means curl or a
+   cross product. A type mismatch is an error you can see before computing.
+2. **Look for a symmetry.** Radial from a point, radial from an axis, or neither.
+   That choice decides the coordinate system and often the whole method.
+3. **Take the curl if a path integral is asked for.** Zero curl means find a
+   potential and subtract two numbers.
+4. **Ask whether a theorem converts the hard side into the easy one.** A flux
+   through an awkward closed surface, or a circulation round an awkward closed
+   loop, is nearly always meant to be converted.
+5. **Check the answer against something independent.** Perpendicularity, a sign, a
+   limiting case, or an order of magnitude. Every worked example in this chapter
+   carries such a check, because that habit is what separates a right answer from
+   a plausible one.`,
+  examTip: 'This chapter is examined mostly through Electromagnetics. If a field question looks unfamiliar, name the operator it needs and the symmetry it has before anything else; those two decisions usually determine the answer within a factor you can check.',
+},
+{
+  id: 'va-set-b',
+  title: '16. Problem Set: Products, Fields and Operators',
+  content: `## 16.1 Problem Set A
+
+Work each one before reading on. Every answer below is checked by a second route.
+
+**A1.** For $\\mathbf{A} = (2, -1, 3)$ and $\\mathbf{B} = (1, 4, -2)$, find the dot
+product, the cross product, the angle between them, and the area of the triangle
+they span.
+
+$$\\mathbf{A}\\cdot\\mathbf{B} = 2 - 4 - 6 = -8$$
+
+$$\\mathbf{A}\\times\\mathbf{B} = \\bigl(2 - 12,\\; -(-4 - 3),\\; 8 + 1\\bigr) = (-10,\\; 7,\\; 9)$$
+
+The lengths are $\\lvert \\mathbf{A}\\rvert = \\sqrt{14} = 3.741657$ and
+$\\lvert \\mathbf{B}\\rvert = \\sqrt{21} = 4.582576$, so
+
+$$\\cos\\theta = \\frac{-8}{\\sqrt{294}} = -0.466569, \\qquad \\theta = 117.81^\\circ$$
+
+The triangle area is half the parallelogram area:
+$\\sqrt{230} = 15.165751$, and $15.165751/2 = 7.58288$.
+
+**Check.** The angle from the cross product must agree:
+$\\sin\\theta = 15.165751/17.146428 = 0.884485$, whose obtuse solution is
+$117.81^\\circ$. Lagrange's identity closes it: $64 + 230 = 294$, and
+$14 \\times 21 = 294$.
+
+**Trap.** Taking $\\arcsin(0.884485) = 62.19^\\circ$ and stopping. The sine cannot
+distinguish an angle from its supplement; the **sign of the dot product** decides,
+and here it is negative, so the angle is obtuse.
+
+**A2.** Are $\\mathbf{A} = (2, -1, 3)$, $\\mathbf{B} = (1, 4, -2)$ and
+$\\mathbf{C} = (3, 3, 1)$ coplanar? What is the volume of the box they span?
+
+$$\\mathbf{B}\\times\\mathbf{C} = \\bigl(4 + 6,\\; -(1 + 6),\\; 3 - 12\\bigr) = (10,\\; -7,\\; -9)$$
+
+$$\\mathbf{A}\\cdot(\\mathbf{B}\\times\\mathbf{C}) = 20 + 7 - 27 = 0$$
+
+They are coplanar and the volume is zero. The reason is visible without any
+arithmetic: $\\mathbf{A} + \\mathbf{B} = (3, 3, 1) = \\mathbf{C}$, so the third vector
+is a combination of the other two and cannot leave their plane.
+
+Replace $\\mathbf{C}$ by $(0, 0, 4)$ and the box reappears:
+$\\mathbf{B}\\times(0,0,4) = (16,\\; -4,\\; 0)$ and
+$\\mathbf{A}\\cdot(16, -4, 0) = 32 + 4 = 36$, so the volume is 36.
+
+**A3.** For $f = x^{2}y + 2yz$, find the gradient at $(2, 1, 3)$, the greatest rate
+of increase there, and the rate in the direction $(1, 2, 2)$.
+
+$$\\nabla f = \\bigl(2xy,\\; x^{2} + 2z,\\; 2y\\bigr) = (4,\\; 10,\\; 2)$$
+
+The greatest rate is $\\lvert \\nabla f\\rvert = \\sqrt{16 + 100 + 4} = \\sqrt{120} = 10.954451$.
+The given direction has length 3, so the unit vector is $(1, 2, 2)/3$ and
+
+$$D_{\\hat{\\mathbf{u}}}f = \\frac{4 + 20 + 4}{3} = \\frac{28}{3} = 9.3333$$
+
+**Check.** The directional derivative can never exceed the gradient magnitude, and
+$9.3333 < 10.954451$ as required. The implied angle between the chosen direction
+and the gradient is $\\arccos(0.852013) = 31.57^\\circ$.
+
+**Trap.** Dotting with $(1, 2, 2)$ unnormalised gives 28, which is larger than the
+maximum possible rate — an answer the check above rejects instantly.
+
+**A4.** For $\\mathbf{F} = xy\\,\\mathbf{i} + yz\\,\\mathbf{j} + zx\\,\\mathbf{k}$, find the
+divergence and curl at $(1, 2, 3)$.
+
+$$\\nabla\\cdot\\mathbf{F} = y + z + x, \\qquad \\text{at } (1,2,3): \\; 2 + 3 + 1 = 6$$
+
+$$\\nabla\\times\\mathbf{F} = (0 - y,\\; 0 - z,\\; 0 - x) = (-y,\\; -z,\\; -x) = (-2,\\; -3,\\; -1)$$
+
+**Check.** The divergence of that curl must vanish:
+$\\partial(-y)/\\partial x + \\partial(-z)/\\partial y + \\partial(-x)/\\partial z = 0$.
+It does.
+
+**A5.** Which of these could be a magnetic flux density?
+
+$$\\mathbf{P} = (2x,\\; -3y,\\; z), \\qquad \\mathbf{Q} = (x^{2},\\; y^{2},\\; z^{2})$$
+
+Any $\\mathbf{B}$ is a curl, so its divergence must vanish everywhere.
+$\\nabla\\cdot\\mathbf{P} = 2 - 3 + 1 = 0$, so $\\mathbf{P}$ is admissible.
+$\\nabla\\cdot\\mathbf{Q} = 2x + 2y + 2z$, which is non-zero almost everywhere, so
+$\\mathbf{Q}$ is not. No integration is needed for either.
+
+**A6.** Show that $f = x^{2} + y^{2} - 2z^{2}$ satisfies Laplace's equation.
+
+$$\\nabla^{2}f = 2 + 2 - 4 = 0$$
+
+so $f$ is harmonic. By the mean-value property of Section 10.1, its value at every
+point equals the average over any small ball around it, which is why such a
+function can have no interior maximum or minimum inside a region — a fact worth
+carrying into potential problems.
+
+## 16.2 Practice Problems: decide without computing
+
+Each statement is either always true or not. Decide, then read the reason.
+
+**(i)** If $\\nabla\\cdot\\mathbf{F} = 0$ everywhere then $\\mathbf{F}$ is conservative.
+
+**False.** Zero divergence and zero curl are unrelated conditions.
+$\\mathbf{G} = (-y, x, 0)$ has zero divergence and curl $(0, 0, 2)$, so it is not
+conservative at all.
+
+**(ii)** If $\\mathbf{F} = \\nabla\\varphi$ then $\\oint\\mathbf{F}\\cdot d\\mathbf{r} = 0$
+on every closed path.
+
+**True on a simply connected region**, by the gradient theorem: start and end
+points coincide, so the difference of potentials is zero. On a region with a hole
+it can fail, which is the loophole Ampere's law relies on.
+
+**(iii)** $\\lvert \\mathbf{A}\\times\\mathbf{B}\\rvert \\le \\lvert \\mathbf{A}\\rvert\\,\\lvert \\mathbf{B}\\rvert$.
+
+**True**, with equality exactly when the vectors are perpendicular, since the
+factor is $\\sin\\theta$.
+
+**(iv)** $\\mathbf{A}\\times(\\mathbf{B}\\times\\mathbf{C}) = (\\mathbf{A}\\times\\mathbf{B})\\times\\mathbf{C}$.
+
+**False.** The cross product is not associative. The left side lies in the plane
+of $\\mathbf{B}$ and $\\mathbf{C}$; the right side lies in the plane of $\\mathbf{A}$
+and $\\mathbf{B}$. They agree only in special cases.
+
+**(v)** A field whose field lines are closed circles must have non-zero curl
+somewhere on those circles.
+
+**False**, as stated. The field $(-y, x)/(x^{2} + y^{2})$ has closed circular field
+lines and zero curl at every point where it is defined; the source sits at the
+excluded origin. Curl is a local test.
+
+**(vi)** Changing coordinates from Cartesian to spherical changes the value of
+$\\nabla\\cdot\\mathbf{F}$ at a point.
+
+**False.** Divergence is defined by a limit of flux per unit volume, which knows
+nothing about coordinates. Only the **formula** changes, never the number.`,
+},
+{
+  id: 'va-set-c',
+  title: '17. Problem Set: Integrals and the Three Theorems',
+  content: `## 17.1 Problem Set B
+
+**B1.** Find the work done by
+$\\mathbf{F} = 3x^{2}\\,\\mathbf{i} + 2yz\\,\\mathbf{j} + y^{2}\\,\\mathbf{k}$ in moving
+from the origin to $(1, 2, 3)$.
+
+Take the curl first:
+
+$$\\nabla\\times\\mathbf{F} = \\bigl(2y - 2y,\\; 0 - 0,\\; 0 - 0\\bigr) = \\mathbf{0}$$
+
+so the field is conservative and no path is needed. Integrating $F_{x}$ with
+respect to $x$ gives $x^{3}$, and matching the remaining components gives
+
+$$\\varphi = x^{3} + y^{2}z$$
+
+$$W = \\varphi(1,2,3) - \\varphi(0,0,0) = 1 + 12 = 13$$
+
+**Check.** Integrating along the straight line from the origin to the endpoint by
+quadrature also returns 13.
+
+**Trap.** Parametrising a path immediately. It gives the same 13 after
+considerably more work, and any slip in the parametrisation is invisible.
+
+**B2.** For $\\mathbf{F} = y^{2}\\,\\mathbf{i} + x\\,\\mathbf{j}$, find the work from the
+origin to $(1, 1)$ along $y = x$ and along $y = x^{2}$, and reconcile the
+difference with Green's theorem.
+
+Along the line, with $x = y = t$:
+
+$$\\int_{0}^{1}\\bigl(t^{2} + t\\bigr)dt = \\tfrac{1}{3} + \\tfrac{1}{2} = \\tfrac{5}{6} = 0.8333$$
+
+Along the parabola, with $x = t$, $y = t^{2}$ and $dy = 2t\\,dt$:
+
+$$\\int_{0}^{1}\\bigl(t^{4} + 2t^{2}\\bigr)dt = \\tfrac{1}{5} + \\tfrac{2}{3} = \\tfrac{13}{15} = 0.8667$$
+
+The gap is $\\tfrac{13}{15} - \\tfrac{5}{6} = \\tfrac{1}{30} = 0.03333$. Going out
+along the parabola and back along the line traverses the enclosed region
+counterclockwise, and
+
+$$\\frac{\\partial Q}{\\partial x} - \\frac{\\partial P}{\\partial y} = 1 - 2y$$
+
+$$\\iint_{R}(1 - 2y)\\,dA = \\int_{0}^{1}\\!\\!\\int_{x^{2}}^{x}(1 - 2y)\\,dy\\,dx = \\int_{0}^{1}\\bigl(x - 2x^{2} + x^{4}\\bigr)dx = \\tfrac{1}{2} - \\tfrac{2}{3} + \\tfrac{1}{5} = \\tfrac{1}{30}$$
+
+The gap between the two paths is exactly the enclosed circulation, as it must be.
+
+**B3.** Find the outward flux of
+$\\mathbf{F} = 2x\\,\\mathbf{i} + 3y\\,\\mathbf{j} + z\\,\\mathbf{k}$ through the surface of
+the box $0 \\le x \\le 1$, $0 \\le y \\le 2$, $0 \\le z \\le 3$.
+
+By the divergence theorem, since $\\nabla\\cdot\\mathbf{F} = 2 + 3 + 1 = 6$ is
+constant,
+
+$$\\Phi = 6 \\times (1)(2)(3) = 36$$
+
+**Check face by face.** The face at $x = 1$ contributes
+$2 \\times 6 = 12$; at $y = 2$, $6 \\times 3 = 18$; at $z = 3$, $3 \\times 2 = 6$. The
+three faces through the origin contribute nothing because the field vanishes on
+them. Adding, $12 + 18 + 6 = 36$.
+
+**B4.** Find $\\oint\\mathbf{F}\\cdot d\\mathbf{r}$ for
+$\\mathbf{F} = -y\\,\\mathbf{i} + x\\,\\mathbf{j} + z\\,\\mathbf{k}$ around the unit circle
+in the plane $z = 0$, counterclockwise seen from above.
+
+By Stokes' theorem, $\\nabla\\times\\mathbf{F} = (0, 0, 2)$ and the normal is
+$\\mathbf{k}$, so
+
+$$\\oint\\mathbf{F}\\cdot d\\mathbf{r} = 2 \\times \\pi(1)^{2} = 2\\pi = 6.2832$$
+
+**Check directly.** With $x = \\cos t$ and $y = \\sin t$, the integrand is
+$\\sin^{2}t + \\cos^{2}t = 1$, so the integral is the length of the parameter
+interval, $2\\pi$.
+
+**B5.** A point charge sits at the origin. Its field is
+$\\mathbf{E} = k\\,\\hat{\\mathbf{a}}_{r}/r^{2}$. Find the flux through a cube of side 6
+centred on the charge.
+
+The divergence is zero everywhere the field is defined, but the cube encloses the
+singularity, so the divergence theorem does not apply to the interior as a whole.
+Comparing instead with a sphere inside the cube, the flux through **any** closed
+surface enclosing the charge is the same, so
+
+$$\\Phi = \\frac{k}{a^{2}} \\times 4\\pi a^{2} = 4\\pi k$$
+
+for any radius $a$, and therefore for the cube as well. Numerical integration over
+spheres of radius 0.5, 2 and 7 returns $4\\pi$ for $k = 1$ each time.
+
+**B6.** A long straight wire lies along the $z$-axis and its field is
+$\\mathbf{F} = \\hat{\\mathbf{a}}_{\\rho}/\\rho$. Find the flux through a coaxial cylinder
+of radius $R$ and height 5.
+
+On the curved wall $\\mathbf{F}\\cdot\\hat{\\mathbf{n}} = 1/R$, and the flat ends
+contribute nothing. The area of the wall is $2\\pi R(5)$, so
+
+$$\\Phi = \\frac{1}{R} \\times 2\\pi R(5) = 10\\pi = 31.4159$$
+
+independent of $R$. The divergence is zero for $\\rho > 0$, exactly as in B5, and
+the flux again counts only what is enclosed — here a length 5 of line source
+rather than a point.
+
+## 17.2 Practice Problems: choose the shortest route
+
+For each, name the method before computing anything.
+
+**(i)** The circulation of a field with zero curl around a closed loop in a
+simply connected region.
+
+**Zero**, by Stokes' theorem, with no integration whatever.
+
+**(ii)** The flux of $\\mathbf{F} = (x, y, z)$ out of any closed surface bounding a
+volume $V$.
+
+$$\\nabla\\cdot\\mathbf{F} = 3, \\qquad \\Phi = 3V$$
+
+For a sphere of radius 2 that is $3 \\times \\tfrac{4}{3}\\pi(8) = 32\\pi = 100.531$,
+matching Section 12.4.
+
+**(iii)** The work done by a constant force $\\mathbf{F}$ along any path from
+$\\mathbf{a}$ to $\\mathbf{b}$.
+
+A constant field is the gradient of $\\mathbf{F}\\cdot\\mathbf{r}$, so the work is
+$\\mathbf{F}\\cdot(\\mathbf{b} - \\mathbf{a})$ regardless of the route — the elementary
+formula, recovered as a special case of the gradient theorem.
+
+**(iv)** The area enclosed by a closed curve, given only a parametrisation of the
+curve.
+
+Green's area formula, $\\tfrac{1}{2}\\oint(x\\,dy - y\\,dx)$. On the region of
+Section 13.3 it returned $\\tfrac{1}{6}$, matching the double integral.
+
+**(v)** The flux of the curl of any field through a **closed** surface.
+
+**Zero.** A closed surface has no boundary curve, so Stokes' theorem gives zero;
+equivalently, the divergence theorem applied to $\\nabla\\times\\mathbf{F}$ gives the
+volume integral of $\\nabla\\cdot(\\nabla\\times\\mathbf{F})$, which vanishes
+identically by Section 10.3. Two arguments, one answer.`,
+},
 ],
   keyTakeaways: [
     'Laplace transform converts ODEs to algebraic equations; key pair: e^(-at) → 1/(s+a).',
@@ -11976,6 +13695,13 @@ at all.`,
     'Gradient ∇f gives direction of steepest increase; divergence ∇·F measures outflow.',
     'Curl ∇×F measures rotation; zero curl means conservative (path-independent) field.',
     'Dot product A·B = |A||B|cosθ (scalar); cross product |A×B| = |A||B|sinθ (vector).',
+    'Divergence is the limit of flux per unit volume; curl is the limit of circulation per unit area. The Cartesian formulas are what those limits evaluate to.',
+    'Directional derivative = ∇f · û, so the gradient is steepest ascent, its length is that slope, and it is perpendicular to every level set. Normalise the direction first.',
+    'curl(grad f) = 0 and div(curl F) = 0 always. The first makes electrostatic work path-independent; the second gives div B = 0 for free.',
+    'Green, Stokes and the divergence theorem all say the same thing: a derivative inside a region is fixed by the function on its boundary. Each carries an orientation hypothesis that decides the sign.',
+    'Scalar triple product = box volume, and zero means coplanar; vector triple product expands as B(A·C) − C(A·B).',
+    'Match coordinates to the symmetry, and never drop the volume element: ρ dρ dφ dz in cylindrical, r² sinθ dr dθ dφ in spherical.',
+    'Zero divergence and zero curl are independent conditions; a field can have either, both, or neither.',
   ],
 },
 
