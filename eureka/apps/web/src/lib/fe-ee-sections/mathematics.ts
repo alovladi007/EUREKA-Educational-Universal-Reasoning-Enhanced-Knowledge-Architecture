@@ -2188,7 +2188,7 @@ A **set** is a collection of distinct objects. Operations:
 
 ### The Binomial Theorem
 
-**$(a + b)^n = \\Sigma C(n,k) \\cdot a^{n-k} \\cdot b^k$** for k = 0 to n
+**$(a + b)^n = \\sum_{k=0}^{n} C(n,k) \\cdot a^{n-k} \\cdot b^k$**
 
 This is used in probability (binomial distribution) and series expansion.`,
       examTip: 'Permutations vs. combinations is a common FE question. Ask: "Does order matter?" If selecting a committee (no order), use C(n,r). If arranging items in sequence (order matters), use P(n,r). The binomial coefficient C(n,k) also appears in the binomial probability distribution.',
@@ -5970,7 +5970,7 @@ $$\\alpha = R/(2L) = 100/(2 \\times 0.01) = 5000\\ \\mathrm{s}^{-1}$$
 
 α < ω₀, so **underdamped**, ringing at
 
-$$\\omega _d = \\sqrt{10^{42} - 5000^{2}} = \\sqrt{10^{8} - 2.5\\times 10^{7}} = \\sqrt{7.5\\times 10^{7}} = 8660\\ \\mathrm{rad/s}$$
+$$\\omega _d = \\sqrt{(10\\,000)^{2} - 5000^{2}} = \\sqrt{10^{8} - 2.5\\times 10^{7}} = \\sqrt{7.5\\times 10^{7}} = 8660\\ \\mathrm{rad/s}$$
 
 The damping ratio ζ = α/ω₀ = 0.5, which is the value control-systems questions
 use for a well-damped step response with about 16 % overshoot.
@@ -6014,9 +6014,1351 @@ regime in one line, and it also tells you what the answer should look like
 before you compute it: no overshoot means the response cannot cross its final
 value, so a solution that does is wrong regardless of the algebra behind it.`,
 },
-],
-  keyTakeaways: [
-    'First-order: x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ); τ = RC or L/R.',
+{
+  id: 'de-classify',
+  title: '7. Reading an Equation Before You Solve It',
+  content: `## 7.1 Order, linearity, homogeneity
+
+Three questions decide which methods are even available, and answering them
+costs about ten seconds. Skipping them is how a candidate ends up hunting for a
+characteristic equation in a problem that has none, or grinding an integrating
+factor through something that separates in one line.
+
+**Order** is the highest derivative present. It fixes how many arbitrary
+constants the general solution carries, and therefore how many extra conditions
+are needed to pin one solution down: one for a first-order equation, two for a
+second-order one.
+
+**Linearity** asks whether the equation can be arranged into the shape
+
+$$a_{n}(t)\\frac{d^{n}y}{dt^{n}} + a_{n-1}(t)\\frac{d^{n-1}y}{dt^{n-1}} + \\cdots + a_{1}(t)\\frac{dy}{dt} + a_{0}(t)y = g(t)$$
+
+in which the unknown and every derivative of it stands alone, raised to the
+first power, multiplied by nothing worse than a coefficient built out of the
+independent variable. A product $y\\,y'$, a square $y^{2}$, or the unknown
+buried inside a sine destroys linearity, and with it almost every technique on
+this syllabus.
+
+**Homogeneity** asks whether $g(t)$ vanishes identically. A homogeneous equation
+describes a system left to itself; a non-homogeneous one describes a system
+being pushed by something outside it.
+
+| Equation | Order | Linear | Homogeneous | Coefficients |
+|---|---|---|---|---|
+| $RC\\,v' + v = V_{s}$ | 1 | yes | no | constant |
+| $L\\,i'' + R\\,i' + i/C = 0$ | 2 | yes | yes | constant |
+| $y' = k\\,y(1 - y/N)$ | 1 | no | not applicable | not applicable |
+| $\\theta'' + (g/\\ell)\\sin\\theta = 0$ | 2 | no | not applicable | not applicable |
+| $t\\,y'' + y' + t\\,y = 0$ | 2 | yes | yes | variable |
+
+Homogeneity is only defined once linearity is established, which is why the
+nonlinear rows carry no entry: there is no clean split into a driven part and a
+free part when the unknown multiplies itself.
+
+## 7.2 What linearity buys: superposition, proved
+
+Write the left side as an operator, $L[y] = y'' + p(t)y' + q(t)y$.
+Differentiation is itself linear, so for any constants $c_{1}$ and $c_{2}$
+
+$$L[c_{1}y_{1} + c_{2}y_{2}] = c_{1}L[y_{1}] + c_{2}L[y_{2}]$$
+
+If $y_{1}$ and $y_{2}$ each drive the operator to zero, every combination of
+them does too. That one property is the entire reason a second-order linear
+homogeneous equation can be solved by finding two independent solutions and then
+scaling them to meet the initial conditions. Every technique later in this
+chapter leans on it.
+
+Nonlinear equations forfeit it, and the loss is easy to see. The function
+$y = -1/t$ satisfies $y' = y^{2}$, because $y' = 1/t^{2}$ and $y^{2} = 1/t^{2}$
+agree. Now double it: $w = -2/t$ has $w' = 2/t^{2}$ while $w^{2} = 4/t^{2}$, and
+those are equal at no value of $t$ at all. Scaling a solution of a nonlinear
+equation generally produces something that solves nothing.
+
+## 7.3 The two-part structure of a driven linear equation
+
+For a linear equation the general solution always splits the same way:
+
+$$y(t) = y_{h}(t) + y_{p}(t)$$
+
+where $y_{h}$ is the general solution of the homogeneous version, carrying all
+the arbitrary constants, and $y_{p}$ is any one solution of the driven equation.
+Subtracting shows why: if $y$ and $y_{p}$ both satisfy $L[y] = g$, then
+$L[y - y_{p}] = 0$, so their difference is homogeneous.
+
+The engineering names for the two pieces are **natural response** and **forced
+response**. Two consequences are worth carrying into the exam. First, the
+arbitrary constants belong to the total, not to $y_{h}$ alone, so initial
+conditions are applied only after $y_{p}$ has been added. Fitting the constants
+to the homogeneous part first is the single most common way to lose a
+second-order problem. Second, if every root of the characteristic equation has a
+negative real part, $y_{h}$ decays and $y_{p}$ is what remains at steady state.
+
+### 7.4 Worked example: classify, then name the method
+
+Classify each equation and state the technique it calls for.
+
+$$\\text{(a)}\\quad 3y' + 12y = 24$$
+$$\\text{(b)}\\quad y'' - 4y' + 4y = 3e^{2t}$$
+$$\\text{(c)}\\quad y' = \\frac{t^{2}}{y}$$
+$$\\text{(d)}\\quad t\\,y' + 3y = t^{2}$$
+$$\\text{(e)}\\quad y'' + y = \\sec t$$
+
+**(a)** First order, linear, constant coefficients, non-homogeneous. Both
+routes work: separate the variables, or use the integrating factor $e^{4t}$. The
+fastest route is the three-number shortcut, since $y(\\infty) = 24/12 = 2$ and
+$\\tau = 3/12 = 0.25\\ \\mathrm{s}$.
+
+**(b)** Second order, linear, constant coefficients, non-homogeneous. The
+characteristic equation $s^{2} - 4s + 4 = 0$ has the repeated root $s = 2$, and
+the forcing term $3e^{2t}$ matches it, so undetermined coefficients needs the
+trial form multiplied by $t^{2}$.
+
+**(c)** First order, **nonlinear** because the unknown appears in a
+denominator. It is separable, however: $y\\,dy = t^{2}\\,dt$ integrates to
+$y^{2}/2 = t^{3}/3 + C$. Separability does not require linearity, which is why
+it is worth testing for first.
+
+**(d)** First order, linear, **variable** coefficients. Dividing by $t$ gives
+$y' + (3/t)y = t$, so the integrating factor is $t^{3}$. No characteristic
+equation exists here; the coefficient moves.
+
+**(e)** Second order, linear, constant coefficients, non-homogeneous, but the
+forcing term is not a polynomial, an exponential or a sinusoid. Undetermined
+coefficients has no trial form for $\\sec t$, so variation of parameters is the
+only route.
+
+The point of the drill is that four of the five were decided before any
+integration happened. The classification chooses the method; the method then
+does the work.`,
+  examTip: 'Classify before you compute: order, then linearity, then homogeneity. Nonlinear rules out superposition and every constant-coefficient shortcut, and variable coefficients rule out the characteristic equation. Two of those three checks are pattern recognition, not algebra.',
+  importantNote: 'Apply initial conditions to the COMPLETE solution y_h + y_p, never to the homogeneous part alone. Fitting the constants before the particular solution has been added gives an answer that satisfies the differential equation but not the initial conditions, and the error is invisible in the final expression.',
+},
+{
+  id: 'de-first-methods',
+  title: '8. First-Order Equations: Three Shapes, Three Methods',
+  content: `## 8.1 Separable equations
+
+An equation is separable when it can be written as a function of the
+independent variable multiplied by a function of the unknown:
+
+$$\\frac{dy}{dt} = g(t)\\,h(y) \\quad\\Longrightarrow\\quad \\int\\frac{dy}{h(y)} = \\int g(t)\\,dt$$
+
+The manipulation looks like treating $dy/dt$ as a fraction, which it is not, but
+the result is legitimate: it is the chain rule read backwards. Both sides are
+antiderivatives of the same function of $t$, so they differ by a constant.
+
+The picture below is the other way to see a first-order equation. At every point
+of the plane the equation prescribes a slope, and the solution curves are simply
+the curves that follow those slopes.
+
+![Direction field of the equation y prime equals six minus two y, with three solution curves starting from zero, one and five. Every curve bends toward the horizontal line at y equals three, which is the only place the prescribed slope is zero.](/courses/fe-ee/figures/math4-de-direction-field.svg)
+
+Nothing was solved to draw the arrows: each one is the value of $6 - 2y$ at that
+point. Reading the field alone tells you the equilibrium sits at $y = 3$, that
+it attracts from both sides, and that no solution can cross another.
+
+### 8.2 Worked example: exponential decay and a cooling body
+
+**Decay.** Solve $y' = -0.4y$ with $y(0) = 25$.
+
+$$\\int\\frac{dy}{y} = -\\int 0.4\\,dt \\quad\\Longrightarrow\\quad \\ln y = -0.4t + C \\quad\\Longrightarrow\\quad y = 25e^{-0.4t}$$
+
+At $t = 3$ the value is $25e^{-1.2}$. Since $e^{-1.2} = 0.3011942$, that is
+$25 \\times 0.3011942 = 7.52986$. Numerical integration of the original equation
+reaches 7.529855 at the same instant, which is the check that matters: the
+closed form was never re-read, it was re-derived.
+
+**Cooling.** A body at 90 degrees Celsius cools in a 20 degree room with
+$T' = -k(T - 20)$ and $k = 0.05\\ \\mathrm{min}^{-1}$. The unknown is the
+*excess* temperature, so substitute $u = T - 20$ and the equation becomes
+$u' = -0.05u$, already solved:
+
+$$T(t) = 20 + 70e^{-0.05t}$$
+
+At $t = 30$ minutes, $e^{-1.5} = 0.223130$, so
+$T = 20 + 70 \\times 0.223130 = 35.619$ degrees. To find when it passes 40
+degrees, invert instead of guessing:
+
+$$70e^{-0.05t} = 20 \\quad\\Longrightarrow\\quad t = \\frac{\\ln(70/20)}{0.05} = \\frac{1.252763}{0.05} = 25.06\\ \\mathrm{min}$$
+
+Substituting 25.06 back gives 40.00 degrees, so the inversion is sound.
+
+## 8.3 The integrating factor, derived rather than quoted
+
+For the linear first-order equation
+
+$$\\frac{dy}{dt} + p(t)\\,y = q(t)$$
+
+the trick is to multiply through by some function $\\mu(t)$ chosen so that the
+left side collapses into a single derivative. Expanding the product rule,
+
+$$\\frac{d}{dt}\\left[\\mu y\\right] = \\mu\\frac{dy}{dt} + \\frac{d\\mu}{dt}y$$
+
+Comparing that with $\\mu y' + \\mu p y$ shows the two agree precisely when
+
+$$\\frac{d\\mu}{dt} = p(t)\\,\\mu \\quad\\Longrightarrow\\quad \\mu(t) = \\exp\\!\\left(\\int p(t)\\,dt\\right)$$
+
+which is itself a separable equation, solved by the previous method. So the
+integrating factor is not a rule handed down; it is the unique multiplier that
+makes the product rule run backwards. With it in hand,
+
+$$\\frac{d}{dt}\\left[\\mu y\\right] = \\mu q \\quad\\Longrightarrow\\quad y(t) = \\frac{1}{\\mu(t)}\\left[\\int \\mu(t)q(t)\\,dt + C\\right]$$
+
+The constant of integration in $\\mu$ itself may be dropped, because it appears
+as a common factor on both sides and cancels.
+
+### 8.4 Worked example: constant coefficients by integrating factor
+
+Solve $y' + 2y = 6$ with $y(0) = 1$.
+
+Here $p = 2$, so $\\mu = e^{2t}$, and
+
+$$\\frac{d}{dt}\\left[e^{2t}y\\right] = 6e^{2t} \\quad\\Longrightarrow\\quad e^{2t}y = 3e^{2t} + C \\quad\\Longrightarrow\\quad y = 3 + Ce^{-2t}$$
+
+The initial condition gives $1 = 3 + C$, so $C = -2$ and
+
+$$y(t) = 3 - 2e^{-2t}$$
+
+At $t = 0.5$, $e^{-1} = 0.367879$, so $y = 3 - 2 \\times 0.3678794 = 2.26424$.
+Notice the answer is exactly the universal first-order form with
+$y(0) = 1$, $y(\\infty) = 3$ and $\\tau = 0.5\\ \\mathrm{s}$, which is the check
+to run whenever the coefficients are constant.
+
+### 8.5 Worked example: a variable coefficient, where no shortcut exists
+
+Solve $t\\,y' + 3y = t^{2}$ for $t > 0$ with $y(1) = 1$.
+
+Divide by $t$ to reach standard form, $y' + (3/t)y = t$. Then
+
+$$\\mu = \\exp\\!\\left(\\int\\frac{3}{t}\\,dt\\right) = e^{3\\ln t} = t^{3}$$
+
+$$\\frac{d}{dt}\\left[t^{3}y\\right] = t^{3}\\cdot t = t^{4} \\quad\\Longrightarrow\\quad t^{3}y = \\frac{t^{5}}{5} + C$$
+
+$$y(t) = \\frac{t^{2}}{5} + \\frac{C}{t^{3}}$$
+
+The condition $y(1) = 1$ gives $1 = 1/5 + C$, so $C = 4/5$. At $t = 2$,
+
+$$y(2) = \\frac{4}{5} + \\frac{0.8}{8} = 0.8 + 0.1 = 0.9$$
+
+Marching the original equation numerically from $t = 1$ to $t = 2$ lands on
+0.900000, confirming it. There is no time constant here and no steady state to
+read off, which is exactly what variable coefficients cost you.
+
+### 8.6 Worked example: an RL circuit driven by a sinusoid
+
+A 0.5 H inductor in series with 10 ohms is driven by $20\\sin 20t$ volts from
+rest. The loop equation $0.5\\,i' + 10i = 20\\sin 20t$ becomes
+
+$$i' + 20i = 40\\sin 20t, \\qquad i(0) = 0$$
+
+Take the forced part as $i_{p} = A\\sin 20t + B\\cos 20t$; both terms are
+required, because a first-order system shifts the phase. Substituting and
+matching coefficients,
+
+$$20A\\cos 20t - 20B\\sin 20t + 20A\\sin 20t + 20B\\cos 20t = 40\\sin 20t$$
+
+$$\\sin: \\quad 20A - 20B = 40, \\qquad \\cos: \\quad 20A + 20B = 0$$
+
+so $B = -A$ and $40A = 40$, giving $A = 1$ and $B = -1$. The forced current is
+$\\sin 20t - \\cos 20t$, an amplitude of $\\sqrt{2} = 1.4142$ lagging the drive
+by 45 degrees. Adding the natural part $Ce^{-20t}$ and imposing $i(0) = 0$ gives
+$0 - 1 + C = 0$, so $C = 1$:
+
+$$i(t) = \\sin 20t - \\cos 20t + e^{-20t}$$
+
+![The current in a driven RL circuit split into parts: the forced sinusoid of amplitude root two lagging the drive, the decaying exponential that satisfies the initial condition, and their sum, which is indistinguishable from the forced part after about a quarter of a second.](/courses/fe-ee/figures/math4-de-forced-split.svg)
+
+At $t = 0.05\\ \\mathrm{s}$ the argument $20t$ is one radian, so
+$i = 0.841471 - 0.540302 + 0.367879 = 0.669048\\ \\mathrm{A}$, which adaptive
+Runge-Kutta reproduces to eight figures. This calculation is also the answer to
+why phasors exist: the amplitude and the 45 degree lag are exactly what
+$Z = R + j\\omega L$ delivers in one line, without the algebra above.
+
+## 8.7 Exact equations, and the test for exactness
+
+Some first-order equations are neither separable nor linear but are still the
+total differential of a hidden function. Write the equation as
+
+$$M(x,y)\\,dx + N(x,y)\\,dy = 0$$
+
+If there is a function $F(x,y)$ with $\\partial F/\\partial x = M$ and
+$\\partial F/\\partial y = N$, then the equation says $dF = 0$, so $F = C$ is the
+solution in implicit form. Such an $F$ exists exactly when the mixed second
+partials of $F$ agree, which gives the test:
+
+$$\\frac{\\partial M}{\\partial y} = \\frac{\\partial N}{\\partial x}$$
+
+The test is cheap, it is decisive, and failing it is informative: an inexact
+equation may still be made exact by an integrating factor, which is the same
+device as before, generalised.
+
+### 8.8 Worked example: an exact equation carried to a number
+
+Solve $(2xy + 3)\\,dx + (x^{2} - 4y)\\,dy = 0$ through the point $(1, 2)$.
+
+Test first. With $M = 2xy + 3$ and $N = x^{2} - 4y$,
+
+$$\\frac{\\partial M}{\\partial y} = 2x, \\qquad \\frac{\\partial N}{\\partial x} = 2x$$
+
+They agree, so the equation is exact. Recover $F$ by integrating $M$ in $x$,
+carrying an unknown function of $y$ as the constant:
+
+$$F = \\int (2xy + 3)\\,dx = x^{2}y + 3x + g(y)$$
+
+Differentiate that in $y$ and match it against $N$:
+
+$$\\frac{\\partial F}{\\partial y} = x^{2} + g'(y) = x^{2} - 4y \\quad\\Longrightarrow\\quad g'(y) = -4y \\quad\\Longrightarrow\\quad g = -2y^{2}$$
+
+$$F(x,y) = x^{2}y + 3x - 2y^{2} = C$$
+
+At $(1, 2)$ the value is $2 + 3 - 8 = -3$, so the solution curve is
+$x^{2}y + 3x - 2y^{2} = -3$. To read a value off it at $x = 2$, substitute and
+solve the quadratic $2y^{2} - 4y - 9 = 0$, giving
+
+$$y = \\frac{4 + \\sqrt{88}}{4} = 1 + \\frac{9.380832}{4} = 3.3452$$
+
+Integrating the equivalent explicit equation $dy/dx = -M/N$ numerically from
+$(1, 2)$ holds $F$ at $-3.000000$ the whole way and arrives at the same value,
+which is the independent confirmation.
+
+## 8.9 Choosing among the three
+
+| Test | Passes when | Method | Cost |
+|---|---|---|---|
+| separable | the right side factors as $g(t)h(y)$ | two integrals | lowest |
+| linear | fits $y' + p(t)y = q(t)$ | integrating factor $e^{\\int p\\,dt}$ | one extra integral |
+| exact | $M_{y} = N_{x}$ | recover $F$, set $F = C$ | one integral plus a match |
+
+Test in that order. Separability is checked by eye, linearity by inspection of
+where the unknown sits, and exactness by two partial derivatives. An equation
+can pass more than one test, and when it does the cheapest route is the right
+one; the answers agree because the solution is unique.`,
+  examTip: 'Test for separability first, linearity second, exactness third. The order is cheapest-first, and a linear constant-coefficient equation should never be solved by integrating factor under time pressure when the three-number form x(t) = x(inf) + [x(0) - x(inf)]e^(-t/tau) applies.',
+  importantNote: 'For a sinusoidal drive the trial particular solution must contain BOTH a sine and a cosine at the driving frequency, even when the input has only one of them. Omitting the second term forces the phase shift to be zero and the coefficients then have no consistent solution.',
+},
+{
+  id: 'de-second-cases',
+  title: '9. Second Order: The Characteristic Equation and Its Three Cases',
+  content: `## 9.1 Where the characteristic equation comes from
+
+For the constant-coefficient homogeneous equation $a\\,y'' + b\\,y' + c\\,y = 0$,
+try $y = e^{st}$. Every derivative reproduces the exponential with a factor of
+$s$, so
+
+$$a s^{2}e^{st} + b s e^{st} + c e^{st} = (as^{2} + bs + c)\\,e^{st} = 0$$
+
+An exponential is never zero, so the bracket must be. That is the whole
+derivation, and it explains why the method fails for variable coefficients:
+there the bracket would still contain $t$ and could not be set to zero once and
+for all.
+
+For a series RLC loop the same substitution gives, after dividing by $L$,
+
+$$s^{2} + \\frac{R}{L}s + \\frac{1}{LC} = 0 \\quad\\equiv\\quad s^{2} + 2\\alpha s + \\omega_{0}^{2} = 0$$
+
+$$\\alpha = \\frac{R}{2L}, \\qquad \\omega_{0} = \\frac{1}{\\sqrt{LC}}, \\qquad s = -\\alpha \\pm \\sqrt{\\alpha^{2} - \\omega_{0}^{2}}$$
+
+The damping ratio is the dimensionless version of the same comparison,
+$\\zeta = \\alpha/\\omega_{0}$, and the three cases are three signs of the same
+discriminant.
+
+| Discriminant | Roots | Natural response | Name | $\\zeta$ |
+|---|---|---|---|---|
+| $\\alpha^{2} > \\omega_{0}^{2}$ | two real, both negative | $A e^{s_{1}t} + B e^{s_{2}t}$ | overdamped | $> 1$ |
+| $\\alpha^{2} = \\omega_{0}^{2}$ | one repeated real | $(A + Bt)e^{-\\alpha t}$ | critically damped | $= 1$ |
+| $\\alpha^{2} < \\omega_{0}^{2}$ | complex conjugates | $e^{-\\alpha t}(A\\cos\\omega_{d}t + B\\sin\\omega_{d}t)$ | underdamped | $< 1$ |
+
+The damped ringing frequency is $\\omega_{d} = \\sqrt{\\omega_{0}^{2} - \\alpha^{2}}$,
+always strictly below $\\omega_{0}$. Damping slows the oscillation as well as
+shrinking it, so any answer with $\\omega_{d} > \\omega_{0}$ can be discarded on
+sight.
+
+## 9.2 Why the repeated root needs a factor of t
+
+When the roots coincide, $e^{st}$ supplies only one solution, and a second-order
+equation needs two independent ones to satisfy two initial conditions. Test
+$y = t e^{-\\alpha t}$ against $y'' + 2\\alpha y' + \\alpha^{2}y = 0$:
+
+$$y' = (1 - \\alpha t)e^{-\\alpha t}, \\qquad y'' = (\\alpha^{2}t - 2\\alpha)e^{-\\alpha t}$$
+
+$$y'' + 2\\alpha y' + \\alpha^{2}y = \\left[(\\alpha^{2}t - 2\\alpha) + 2\\alpha(1 - \\alpha t) + \\alpha^{2}t\\right]e^{-\\alpha t} = 0$$
+
+Every term cancels, so $t e^{-\\alpha t}$ is a genuine second solution. Leaving
+it out is not a stylistic omission; it makes the two initial conditions
+unsatisfiable in general.
+
+### 9.3 Worked example: one L and C, three resistors
+
+Take $L = 1\\ \\mathrm{mH}$ and $C = 250\\ \\mu\\mathrm{F}$, so
+
+$$\\omega_{0} = \\frac{1}{\\sqrt{10^{-3}\\times 250\\times 10^{-6}}} = \\frac{1}{\\sqrt{2.5\\times 10^{-7}}} = 2000\\ \\mathrm{rad/s}$$
+
+The capacitor starts charged to 10 V with no current flowing, so $i(0) = 0$ and
+the initial slope comes from the loop equation at $t = 0^{+}$:
+$L\\,i'(0) = v_{C}(0)$, giving $i'(0) = 10/10^{-3} = 10\\,000\\ \\mathrm{A/s}$.
+
+**R = 5 ohm, overdamped.** Here $\\alpha = 5/(2\\times 10^{-3}) = 2500$, and
+
+$$s = -2500 \\pm \\sqrt{2500^{2} - 2000^{2}} = -2500 \\pm 1500 = -1000,\\ -4000$$
+
+With $i = Ae^{-1000t} + Be^{-4000t}$ the conditions give $A + B = 0$ and
+$-1000A - 4000B = 10\\,000$, so $3000A = 10\\,000$ and $A = 10/3$:
+
+$$i(t) = \\tfrac{10}{3}\\left(e^{-1000t} - e^{-4000t}\\right)\\ \\mathrm{A}$$
+
+**R = 4 ohm, critically damped.** Now $\\alpha = 2000 = \\omega_{0}$ exactly, the
+root is repeated, and $i = (A + Bt)e^{-2000t}$. From $i(0) = 0$, $A = 0$; from
+$i'(0) = B = 10\\,000$,
+
+$$i(t) = 10\\,000\\,t\\,e^{-2000t}\\ \\mathrm{A}$$
+
+**R = 2 ohm, underdamped.** Here $\\alpha = 1000 < \\omega_{0}$, so
+
+$$\\omega_{d} = \\sqrt{2000^{2} - 1000^{2}} = \\sqrt{3\\times 10^{6}} = 1732.05\\ \\mathrm{rad/s}$$
+
+and $i = e^{-1000t}(A\\cos\\omega_{d}t + B\\sin\\omega_{d}t)$ with $A = 0$ and
+$B\\omega_{d} = 10\\,000$, so $B = 10\\,000/1732.05 = 5.7735$:
+
+$$i(t) = 5.7735\\,e^{-1000t}\\sin(1732.05\\,t)\\ \\mathrm{A}$$
+
+![Three discharge currents from the same charged capacitor through the same inductor, with two, four and five ohms of resistance. The underdamped case peaks highest and later, then swings negative; the critically damped and overdamped cases peak lower and never reverse.](/courses/fe-ee/figures/math4-de-damping-family.svg)
+
+Each of the three closed forms was confirmed by integrating the original
+second-order equation numerically and comparing at four separate instants. The
+peaks come from setting each derivative to zero: the overdamped case peaks where
+$4e^{-4000t} = e^{-1000t}$, that is at $t = (\\ln 4)/3000\\ \\mathrm{s} = 0.4621\\ \\mathrm{ms}$
+carrying 1.5749 A; the critical case peaks at $t = 1/2000 = 0.5\\ \\mathrm{ms}$
+carrying 1.8394 A; the underdamped case peaks where
+$\\tan\\omega_{d}t = \\omega_{d}/\\alpha = 1.7321$, at
+$t = 0.6046\\ \\mathrm{ms}$ carrying 2.7315 A.
+
+The comparison is the lesson. Identical stored energy, identical L and C, and a
+factor of two and a half in resistance changes the peak current by 73 per cent
+and produces a completely different shape. Only the underdamped case sends
+current backwards through the source.
+
+### 9.4 Worked example: a check that costs nothing
+
+For the overdamped case the roots were $-1000$ and $-4000$. Their sum should be
+$-R/L$ and their product $1/(LC)$, because
+$s^{2} + (R/L)s + 1/(LC) = (s - s_{1})(s - s_{2})$:
+
+$$s_{1} + s_{2} = -5000 = -\\frac{5}{10^{-3}}, \\qquad s_{1}s_{2} = 4\\times 10^{6} = \\frac{1}{LC}$$
+
+Both hold. This is the second-order analogue of the trace and determinant checks
+in the linear algebra chapter, and it is the same fact wearing different
+clothes: the roots of a characteristic polynomial always sum to minus the
+coefficient of $s$ and multiply to the constant term.
+
+## 9.5 Reading damping off a measured trace
+
+An underdamped response gives up its parameters to a ruler. Successive peaks of
+$e^{-\\alpha t}$ separated by one damped period $T_{d} = 2\\pi/\\omega_{d}$ are in
+the fixed ratio
+
+$$\\frac{i_{n}}{i_{n+1}} = e^{\\alpha T_{d}} \\quad\\Longrightarrow\\quad \\delta = \\ln\\frac{i_{n}}{i_{n+1}} = \\alpha T_{d}$$
+
+so measuring the period and any two consecutive peaks yields $\\alpha$ and
+$\\omega_{d}$, and therefore $\\omega_{0} = \\sqrt{\\alpha^{2} + \\omega_{d}^{2}}$
+and $\\zeta = \\alpha/\\omega_{0}$. For the 2 ohm case above,
+$T_{d} = 2\\pi/1732.05 = 3.6276\\ \\mathrm{ms}$ and
+$\\delta = 1000 \\times 0.0036276 = 3.6276$, so consecutive peaks fall by the
+factor $e^{-3.6276} = 0.02658$. A ringing that heavily damped shows barely one
+visible overshoot, which is exactly what the figure shows.`,
+  examTip: 'Compute alpha = R/2L and omega-zero = 1/sqrt(LC) first and compare them; that single comparison names the regime. Then check your roots against the coefficients: they must sum to minus R/L and multiply to 1/(LC). Both checks together take under fifteen seconds.',
+  importantNote: 'The initial slope of a source-free series RLC current is NOT zero even though the current itself starts at zero. It is set by the charged capacitor through L di/dt = v_C(0), and using zero instead makes the whole natural response collapse to nothing.',
+},
+{
+  id: 'de-undetermined',
+  title: '10. Undetermined Coefficients and the Resonance Rule',
+  content: `## 10.1 The trial forms, and why they work
+
+For a constant-coefficient equation driven by a polynomial, an exponential, a
+sinusoid or a product of those, the particular solution has the same shape as
+the drive. The reason is structural: differentiating any of those functions
+returns a function of the same family, so a combination of the family can be
+made to match.
+
+| Forcing term $g(t)$ | Trial particular solution |
+|---|---|
+| constant $K$ | $A$ |
+| polynomial of degree $n$ | $A_{n}t^{n} + \\cdots + A_{1}t + A_{0}$, all terms |
+| $e^{kt}$ | $Ae^{kt}$ |
+| $\\sin\\omega t$ or $\\cos\\omega t$ | $A\\cos\\omega t + B\\sin\\omega t$, both terms |
+| $t^{n}e^{kt}$ | $(A_{n}t^{n} + \\cdots + A_{0})e^{kt}$ |
+| $e^{kt}\\sin\\omega t$ | $e^{kt}(A\\cos\\omega t + B\\sin\\omega t)$ |
+
+Two entries are traps. A polynomial drive needs **every** lower power, not just
+the top one, because differentiation cascades downward. A sinusoidal drive needs
+**both** the sine and the cosine, because the system shifts phase.
+
+## 10.2 The resonance rule
+
+The method breaks when the trial form already solves the homogeneous equation:
+substituting it then gives zero on the left and cannot match a non-zero right.
+The repair is to multiply the trial form by $t$, and by $t^{2}$ if the root is
+repeated. In general, multiply by $t^{m}$ where $m$ is the multiplicity of the
+matching root in the characteristic equation.
+
+$$\\text{root of multiplicity } m \\text{ matches the drive} \\quad\\Longrightarrow\\quad y_{p} = t^{m}\\times(\\text{usual trial form})$$
+
+This is not a patch. It is what the exact solution genuinely looks like, and it
+is the mathematics of resonance: a system driven at a frequency it already wants
+to move at accumulates amplitude instead of settling.
+
+### 10.3 Worked example: no resonance, sinusoidal drive
+
+Solve for the particular solution of $y'' + 3y' + 2y = 10\\sin t$.
+
+The characteristic roots are $-1$ and $-2$; neither is $\\pm j$, so there is no
+clash. Try $y_{p} = A\\cos t + B\\sin t$:
+
+$$y_{p}' = -A\\sin t + B\\cos t, \\qquad y_{p}'' = -A\\cos t - B\\sin t$$
+
+$$(-A + 3B + 2A)\\cos t + (-B - 3A + 2B)\\sin t = 10\\sin t$$
+
+Matching gives $A + 3B = 0$ and $B - 3A = 10$. Substituting $A = -3B$ into the
+second, $B + 9B = 10$, so $B = 1$ and $A = -3$:
+
+$$y_{p} = -3\\cos t + \\sin t, \\qquad \\text{amplitude } \\sqrt{9 + 1} = 3.1623$$
+
+Substituting this back into the differential equation at three separate values
+of $t$ reproduces $10\\sin t$ exactly, which is the check.
+
+### 10.4 Worked example: first-order resonance
+
+Solve $y' + 2y = 5e^{-2t}$ with $y(0) = 0$.
+
+The homogeneous solution is $Ce^{-2t}$, and the drive is that same exponential.
+A trial $Ae^{-2t}$ is annihilated by the left side, so multiply by $t$. With
+$y_{p} = Ate^{-2t}$,
+
+$$y_{p}' = Ae^{-2t} - 2Ate^{-2t}$$
+
+$$y_{p}' + 2y_{p} = Ae^{-2t} - 2Ate^{-2t} + 2Ate^{-2t} = Ae^{-2t} = 5e^{-2t}$$
+
+so $A = 5$ and, with $y(0) = 0$ forcing the homogeneous constant to zero,
+
+$$y(t) = 5t\\,e^{-2t}$$
+
+This response rises from zero, peaks where $y' = 0$ at $t = 0.5$ with
+$y = 2.5e^{-1} = 0.9197$, and then decays. The rise and fall is what resonance
+looks like when there is damping to eventually win: the $t$ factor pushes up,
+the exponential pulls down, and the exponential always wins in the end.
+
+### 10.5 Worked example: undamped resonance, where nothing wins
+
+Solve $y'' + 400y = 100\\cos 20t$ from rest.
+
+The homogeneous solutions are $\\cos 20t$ and $\\sin 20t$, and the drive is at
+that same 20 rad/s. Multiply the trial form by $t$ and take
+$y_{p} = t(A\\cos 20t + B\\sin 20t)$. Differentiating twice,
+
+$$y_{p}'' = -40A\\sin 20t + 40B\\cos 20t - 400\\,t(A\\cos 20t + B\\sin 20t)$$
+
+The bracketed part is exactly $-400y_{p}$, so it cancels against the $400y_{p}$
+term and
+
+$$y_{p}'' + 400y_{p} = -40A\\sin 20t + 40B\\cos 20t = 100\\cos 20t$$
+
+giving $A = 0$ and $B = 100/40 = 2.5$. From rest, the homogeneous constants are
+zero as well:
+
+$$y(t) = 2.5\\,t\\,\\sin 20t$$
+
+![The response of an undamped oscillator driven exactly at its natural frequency grows inside a straight-line envelope of two point five times t, while the same oscillator driven two radians per second away produces bounded beats with a ceiling of two point three eight.](/courses/fe-ee/figures/math4-de-resonance.svg)
+
+The envelope is the straight line $2.5t$, so the amplitude at $t = 4$ is
+$2.5 \\times 4 = 10$ and it keeps climbing. Detune the drive to 22 rad/s and the
+character changes completely. Now $400 - 484 = -84$, so the ordinary trial form
+works with amplitude $100/(-84) = -1.190476$, and the solution from rest is
+
+$$y(t) = -1.190476\\left(\\cos 22t - \\cos 20t\\right) = 2.380952\\,\\sin(21t)\\sin t$$
+
+using the product identity for a difference of cosines. That is bounded, with a
+ceiling of 2.380952 reached whenever $\\sin t$ touches one. The lesson an
+examiner is testing is that unbounded growth is not caused by a large drive but
+by an exact frequency match with no damping present.
+
+### 10.6 Worked example: a repeated root that matches the drive
+
+Solve for the particular solution of $y'' - 4y' + 4y = 3e^{2t}$.
+
+The characteristic equation $s^{2} - 4s + 4 = 0$ has $s = 2$ twice, so both
+$e^{2t}$ and $t e^{2t}$ are homogeneous. The drive matches a root of
+multiplicity two, so the trial form carries $t^{2}$. With $y_{p} = At^{2}e^{2t}$,
+
+$$y_{p}' = 2Ate^{2t} + 2At^{2}e^{2t}, \\qquad y_{p}'' = 2Ae^{2t} + 8Ate^{2t} + 4At^{2}e^{2t}$$
+
+$$y_{p}'' - 4y_{p}' + 4y_{p} = 2Ae^{2t} = 3e^{2t} \\quad\\Longrightarrow\\quad A = 1.5$$
+
+$$y_{p} = 1.5\\,t^{2}e^{2t}$$
+
+Every $t e^{2t}$ and $t^{2}e^{2t}$ term cancelled, leaving only the bare
+exponential; that cancellation is the signature of a correctly chosen trial
+form. Numerical integration from rest tracks $1.5t^{2}e^{2t}$ to six figures.
+
+A candidate who used $Ae^{2t}$ would have found $0 = 3$, and one who used
+$Ate^{2t}$ would have found $0 = 3$ again, since both are homogeneous. Getting
+an impossible equation is the diagnostic: it means the multiplier is one power
+of $t$ short.`,
+  examTip: 'Before writing any trial form, compare the drive with the characteristic roots. A constant drive clashes when a root is zero, an exponential e^(kt) clashes when k is a root, and a sinusoid at omega clashes when the roots are plus and minus j omega. Each clash costs one factor of t per repetition of the root.',
+  importantNote: 'An impossible equation such as 0 = 3 when matching coefficients does not mean the problem is broken. It means the trial form was annihilated by the left side, so it already solves the homogeneous equation and must be multiplied by another power of t.',
+},
+{
+  id: 'de-variation',
+  title: '11. Variation of Parameters, for Everything Else',
+  content: `## 11.1 The construction
+
+Undetermined coefficients covers polynomials, exponentials and sinusoids.
+Anything else, and constant coefficients are not even required, calls for
+variation of parameters. Given two independent homogeneous solutions $y_{1}$ and
+$y_{2}$ of
+
+$$y'' + p(t)y' + q(t)y = g(t)$$
+
+replace the constants in $c_{1}y_{1} + c_{2}y_{2}$ by functions and demand one
+extra condition to keep the algebra closed. The result is
+
+$$W = y_{1}y_{2}' - y_{2}y_{1}', \\qquad y_{p} = -y_{1}\\int\\frac{y_{2}\\,g}{W}\\,dt + y_{2}\\int\\frac{y_{1}\\,g}{W}\\,dt$$
+
+The quantity $W$ is the **Wronskian**, and it does double duty: it appears in the
+formula, and it is non-zero precisely when $y_{1}$ and $y_{2}$ are independent.
+If a Wronskian comes out zero, the two chosen solutions were multiples of each
+other and the construction cannot proceed.
+
+The price of the generality is that the two integrals are often unpleasant, and
+the FE examiner will only set cases where they close in elementary functions.
+
+### 11.2 Worked example: a drive with no trial form
+
+Solve for the particular solution of $y'' + y = \\sec t$.
+
+The homogeneous solutions are $y_{1} = \\cos t$ and $y_{2} = \\sin t$, and
+
+$$W = \\cos t\\cdot\\cos t - \\sin t\\cdot(-\\sin t) = \\cos^{2}t + \\sin^{2}t = 1$$
+
+which is the tidiest Wronskian available. The two integrals are
+
+$$\\int\\frac{y_{2}g}{W}\\,dt = \\int\\sin t\\,\\sec t\\,dt = \\int\\tan t\\,dt = -\\ln\\lvert\\cos t\\rvert$$
+
+$$\\int\\frac{y_{1}g}{W}\\,dt = \\int\\cos t\\,\\sec t\\,dt = \\int dt = t$$
+
+so
+
+$$y_{p} = \\cos t\\,\\ln\\lvert\\cos t\\rvert + t\\sin t$$
+
+Verify by differentiating twice. The first derivative simplifies remarkably,
+because two terms cancel:
+
+$$y_{p}' = -\\sin t\\,\\ln\\lvert\\cos t\\rvert - \\sin t + \\sin t + t\\cos t = -\\sin t\\,\\ln\\lvert\\cos t\\rvert + t\\cos t$$
+
+$$y_{p}'' = -\\cos t\\,\\ln\\lvert\\cos t\\rvert + \\frac{\\sin^{2}t}{\\cos t} + \\cos t - t\\sin t$$
+
+Adding $y_{p}$ cancels both logarithm terms and both terms in $t$, leaving
+
+$$y_{p}'' + y_{p} = \\frac{\\sin^{2}t + \\cos^{2}t}{\\cos t} = \\sec t$$
+
+At $t = 0.5$ the particular solution is
+$0.8775826 \\times (-0.1305842) + 0.2397128 = 0.125114$, and integrating
+the equation numerically from rest reaches the same value.
+
+### 11.3 Worked example: the same answer by two routes
+
+Solve for the particular solution of $y'' - y = e^{t}$, first by variation of
+parameters and then by undetermined coefficients, and compare.
+
+The homogeneous solutions are $e^{t}$ and $e^{-t}$, so
+
+$$W = e^{t}\\left(-e^{-t}\\right) - e^{-t}\\left(e^{t}\\right) = -1 - 1 = -2$$
+
+$$y_{p} = -e^{t}\\int\\frac{e^{-t}e^{t}}{-2}dt + e^{-t}\\int\\frac{e^{t}e^{t}}{-2}dt = \\frac{t}{2}e^{t} - \\frac{1}{4}e^{t}$$
+
+The second term is itself a homogeneous solution, so it can be absorbed into the
+constants and dropped, leaving $y_{p} = \\tfrac{1}{2}te^{t}$.
+
+Now the other route. The drive $e^{t}$ matches the simple root $s = 1$, so
+undetermined coefficients uses $y_{p} = Ate^{t}$:
+
+$$y_{p}' = Ae^{t} + Ate^{t}, \\qquad y_{p}'' = 2Ae^{t} + Ate^{t}$$
+
+$$y_{p}'' - y_{p} = 2Ae^{t} = e^{t} \\quad\\Longrightarrow\\quad A = 0.5$$
+
+The two methods agree, as they must. The value of running both once is that it
+shows where the mysterious factor of $t$ in the resonance rule comes from: it is
+produced automatically by the integral $\\int dt$ in variation of parameters
+whenever the drive matches a homogeneous solution.
+
+## 11.4 Which method, and when
+
+| Situation | Method |
+|---|---|
+| constant coefficients, drive is a polynomial, exponential or sinusoid | undetermined coefficients |
+| constant coefficients, drive matches a characteristic root | undetermined coefficients with the $t^{m}$ factor |
+| any drive at all, homogeneous solutions known | variation of parameters |
+| variable coefficients, homogeneous solutions known | variation of parameters |
+| variable coefficients, homogeneous solutions unknown | outside the FE syllabus |
+
+Variation of parameters subsumes undetermined coefficients, but it is slower and
+its integrals are riskier under time pressure. Reach for it only when the trial
+form does not exist.`,
+  examTip: 'Compute the Wronskian before anything else in variation of parameters. It is the denominator of both integrals, and for the standard homogeneous pairs it is a constant: 1 for cosine and sine, minus two for the exponentials e^t and e^(-t), and the product of the roots for a general exponential pair.',
+  importantNote: 'Any homogeneous piece that falls out of the variation-of-parameters integrals may be discarded, because it is already carried by the arbitrary constants. Keeping it is not wrong, but it makes two correct answers look different, and that is what causes candidates to abandon a right answer on the exam.',
+},
+{
+  id: 'de-ivp-bvp',
+  title: '12. Initial Values Against Boundary Values',
+  content: `## 12.1 Two ways to pin down the constants
+
+A second-order equation has a two-parameter family of solutions. Two extra
+conditions select one of them, and it matters enormously **where** those
+conditions are imposed.
+
+An **initial value problem** puts both conditions at the same point, typically
+$y(t_{0})$ and $y'(t_{0})$. For a linear equation whose coefficients are
+continuous on an interval containing $t_{0}$, exactly one solution exists on
+that whole interval. Existence and uniqueness are both guaranteed, which is why
+circuit transients are never ambiguous: the state of the storage elements at the
+instant of switching is a complete initial condition.
+
+A **boundary value problem** puts one condition at each end of an interval, for
+instance $y(0)$ and $y(L)$. No such guarantee exists. The same equation with the
+same interval can have exactly one solution, none at all, or an infinite family,
+depending only on the numbers in the boundary conditions.
+
+| Feature | Initial value problem | Boundary value problem |
+|---|---|---|
+| Where conditions sit | one point | two points |
+| Existence | guaranteed for linear equations | not guaranteed |
+| Uniqueness | guaranteed for linear equations | not guaranteed |
+| Typical source | a circuit at the instant of switching | a field or a beam between fixed ends |
+| Natural solution route | Laplace transform, marching numerically | eigenvalue expansion, shooting |
+
+### 12.2 Worked example: one equation, three fates
+
+Take $y'' + y = 0$, whose general solution is $y = A\\cos x + B\\sin x$, and
+impose $y(0) = 0$ in every case, which forces $A = 0$ and leaves
+$y = B\\sin x$.
+
+**Unique.** With $y(\\pi/2) = 1$: $B\\sin(\\pi/2) = B = 1$, so $y = \\sin x$ and
+nothing else.
+
+**Infinitely many.** With $y(\\pi) = 0$: $B\\sin\\pi = 0$ holds for every $B$, so
+every multiple of $\\sin x$ solves the problem.
+
+**None.** With $y(\\pi) = 1$: the condition reads $B\\sin\\pi = 0 = 1$, which no
+choice of $B$ can satisfy.
+
+Three outcomes from one differential equation and one change of a boundary
+number. An initial value problem cannot behave this way, and that difference is
+the whole content of the topic.
+
+## 12.3 Eigenvalues of a boundary value problem
+
+The infinitely-many case is not a curiosity, it is the mechanism behind modes.
+Consider
+
+$$y'' + \\lambda y = 0, \\qquad y(0) = 0, \\qquad y(L) = 0$$
+
+For $\\lambda \\le 0$ the solutions are exponentials or straight lines, and the
+two boundary conditions force them to vanish identically. For $\\lambda > 0$
+write $\\lambda = k^{2}$; then $y = B\\sin kx$ after the first condition, and the
+second requires $\\sin kL = 0$, so $kL$ must be a whole multiple of $\\pi$:
+
+$$\\lambda_{n} = \\left(\\frac{n\\pi}{L}\\right)^{2}, \\qquad y_{n}(x) = \\sin\\frac{n\\pi x}{L}, \\qquad n = 1, 2, 3, \\ldots$$
+
+![The first three shapes that fit between two pinned ends on an interval of length two, with one, two and three half waves and eigenvalues of two point four seven, nine point eight seven and twenty two point two one.](/courses/fe-ee/figures/math4-de-bvp-modes.svg)
+
+For $L = 2$ the first three eigenvalues are
+
+$$\\lambda_{1} = \\left(\\frac{\\pi}{2}\\right)^{2} = 2.4674, \\qquad \\lambda_{2} = \\pi^{2} = 9.8696, \\qquad \\lambda_{3} = \\left(\\frac{3\\pi}{2}\\right)^{2} = 22.207$$
+
+Each is verified by substitution: the second derivative of $\\sin(n\\pi x/2)$ is
+$-(n\\pi/2)^{2}$ times the function itself, so the differential equation holds
+identically at that and only that $\\lambda$. Any other value of $\\lambda$ leaves
+only the trivial solution.
+
+This is the same algebra as the eigenvalue problem in the linear algebra
+chapter, with a differential operator in place of a matrix. Standing waves on a
+line, resonant modes of a cavity and the natural frequencies of a coupled
+network are all this calculation.
+
+### 12.4 Worked example: voltage along a leaky line
+
+A distribution line 10 km long leaks current to earth along its length, so the
+steady-state voltage satisfies
+
+$$\\frac{d^{2}V}{dx^{2}} = \\gamma^{2}V, \\qquad \\gamma = 0.2\\ \\mathrm{km}^{-1}$$
+
+with $V(0) = 100\\ \\mathrm{V}$ at the substation and $V(10) = 0$ at a grounded
+far end. This is a boundary value problem with conditions 10 km apart. The
+general solution is a combination of $e^{\\gamma x}$ and $e^{-\\gamma x}$, but the
+boundary conditions are met most directly by the hyperbolic form built to vanish
+at $x = 10$:
+
+$$V(x) = 100\\,\\frac{\\sinh\\gamma(10 - x)}{\\sinh 10\\gamma} = 100\\,\\frac{\\sinh(2 - 0.2x)}{\\sinh 2}$$
+
+Check both ends: at $x = 0$ the fraction is $\\sinh 2/\\sinh 2 = 1$, giving 100 V;
+at $x = 10$ the numerator is $\\sinh 0 = 0$. At the midpoint,
+
+$$V(5) = 100\\,\\frac{\\sinh 1}{\\sinh 2} = 100 \\times 1.175201/3.626860 = 32.403\\ \\mathrm{V}$$
+
+The midpoint sits far below half the source voltage. The reason falls out of the
+double-angle identity $\\sinh 2 = 2\\sinh 1\\cosh 1$, which turns the ratio into
+$1/(2\\cosh 1) = 1/(2 \\times 1.543081) = 0.324027$. Leakage bends the profile
+downward everywhere, so a linear interpolation between the two ends overstates
+the voltage at every interior point. Differentiating the expression twice
+numerically reproduces $\\gamma^{2}V$ to six figures, which confirms the solution
+rather than just the boundary values.
+
+## 12.5 What to do when the boundary problem will not separate
+
+Two routes survive when a boundary value problem has no tidy closed form. The
+**shooting method** converts it into an initial value problem by guessing the
+missing initial slope, integrating to the far boundary, and adjusting the guess
+until the far condition is met; since the map from guess to endpoint value is
+linear for a linear equation, two shots and one interpolation are enough.
+**Finite differences** replace the derivatives by difference quotients on a grid
+and turn the whole problem into a linear system, which is where the linear
+algebra chapter takes over.
+
+For a linear equation the shooting method is exact after two trial integrations,
+because if $y_{a}$ and $y_{b}$ are the endpoint values produced by initial
+slopes $m_{a}$ and $m_{b}$, the slope that hits a target $y^{*}$ is
+
+$$m^{*} = m_{a} + (m_{b} - m_{a})\\,\\frac{y^{*} - y_{a}}{y_{b} - y_{a}}$$
+
+That is straight-line interpolation, and it is exact here only because
+superposition holds. For a nonlinear equation the same procedure becomes an
+iteration.`,
+  examTip: 'When conditions sit at two different points, check for existence before solving. Apply the first boundary condition to the general solution, then substitute the second: if it produces an impossible statement there is no solution, and if it produces an identity there are infinitely many.',
+  importantNote: 'A boundary value problem with homogeneous conditions has non-trivial solutions only at its eigenvalues. Reporting a non-zero solution for some other value of the parameter is the standard error, and it is caught instantly by substituting the claimed solution back into the boundary conditions.',
+},
+{
+  id: 'de-laplace-route',
+  title: '13. The Laplace Route, Carried End to End',
+  content: `## 13.1 Why the transform is worth the trouble
+
+The Laplace transform
+
+$$F(s) = \\mathcal{L}\\{f(t)\\} = \\int_{0}^{\\infty} f(t)\\,e^{-st}\\,dt$$
+
+turns differentiation into multiplication by $s$, and it does so **while
+carrying the initial conditions inside the algebra** rather than as a separate
+step at the end. That second property is what makes it the natural tool for a
+circuit that is already energised when the switch closes.
+
+$$\\mathcal{L}\\{f'\\} = sF(s) - f(0), \\qquad \\mathcal{L}\\{f''\\} = s^{2}F(s) - s f(0) - f'(0)$$
+
+Both come from one integration by parts applied once or twice. The boundary term
+at $t = 0$ is where $f(0)$ enters, and it is the term candidates drop.
+
+| $f(t)$ | $F(s)$ |
+|---|---|
+| unit step | $1/s$ |
+| $t$ | $1/s^{2}$ |
+| $e^{-at}$ | $1/(s+a)$ |
+| $t\\,e^{-at}$ | $1/(s+a)^{2}$ |
+| $\\sin\\omega t$ | $\\omega/(s^{2}+\\omega^{2})$ |
+| $\\cos\\omega t$ | $s/(s^{2}+\\omega^{2})$ |
+| $e^{-at}\\sin\\omega t$ | $\\omega/[(s+a)^{2}+\\omega^{2}]$ |
+| $e^{-at}\\cos\\omega t$ | $(s+a)/[(s+a)^{2}+\\omega^{2}]$ |
+| $f'(t)$ | $sF(s) - f(0)$ |
+| $f''(t)$ | $s^{2}F(s) - sf(0) - f'(0)$ |
+| $\\int_{0}^{t} f(\\tau)\\,d\\tau$ | $F(s)/s$ |
+
+The two shifted rows are worth memorising as a pair: multiplying a time function
+by $e^{-at}$ replaces $s$ by $s + a$ everywhere in its transform. That single
+rule generates half the table.
+
+### 13.2 Worked example: a first-order circuit with a live initial condition
+
+Solve $y' + 4y = 12$ for $t > 0$ with $y(0) = 5$.
+
+$$sY - 5 + 4Y = \\frac{12}{s} \\quad\\Longrightarrow\\quad (s+4)Y = \\frac{12}{s} + 5 \\quad\\Longrightarrow\\quad Y(s) = \\frac{5s + 12}{s(s+4)}$$
+
+Split by residues. At $s = 0$ the numerator over the surviving factor is
+$12/4 = 3$; at $s = -4$ it is $(5(-4) + 12)/(-4) = (-8)/(-4) = 2$:
+
+$$Y(s) = \\frac{3}{s} + \\frac{2}{s+4} \\quad\\Longrightarrow\\quad y(t) = 3 + 2e^{-4t}$$
+
+The answer is the universal first-order form with $y(0) = 5$, $y(\\infty) = 3$
+and $\\tau = 0.25\\ \\mathrm{s}$, which is the check. Notice that the initial value
+5 entered as a term in the numerator, not as a constant fitted afterwards.
+
+### 13.3 Worked example: a series RLC that was already energised
+
+A 1 H inductor, a 5 ohm resistor and a 1/6 F capacitor sit in series. At
+$t = 0$ a 10 V step is applied. At that instant 2 A is already circulating and
+the capacitor already holds 3 V.
+
+Kirchhoff's voltage law gives $L\\,i' + R\\,i + v_{C} = 10$. Differentiating once
+removes the constant source and the integral:
+
+$$i'' + 5i' + 6i = 0$$
+
+The second initial condition comes from the voltage law evaluated at
+$t = 0^{+}$, which is the step most often skipped:
+
+$$L\\,i'(0) = 10 - R\\,i(0) - v_{C}(0) = 10 - 10 - 3 = -3 \\quad\\Longrightarrow\\quad i'(0) = -3\\ \\mathrm{A/s}$$
+
+Transform with both conditions carried:
+
+$$\\left[s^{2}I - 2s + 3\\right] + 5\\left[sI - 2\\right] + 6I = 0 \\quad\\Longrightarrow\\quad (s^{2} + 5s + 6)I = 2s + 7$$
+
+$$I(s) = \\frac{2s + 7}{(s+2)(s+3)} = \\frac{3}{s+2} - \\frac{1}{s+3} \\quad\\Longrightarrow\\quad i(t) = 3e^{-2t} - e^{-3t}$$
+
+The residues came out as $(2(-2)+7)/(-2+3) = 3$ and $(2(-3)+7)/(-3+2) = -1$.
+Check the starting values directly: $i(0) = 3 - 1 = 2$ and
+$i'(0) = -6 + 3 = -3$, both as required.
+
+### 13.4 Worked example: the same circuit solved for the capacitor voltage
+
+Solving for $v_{C}$ instead keeps the source in the equation. Using
+$i = C\\,v_{C}'$ in the voltage law and multiplying through,
+
+$$LC\\,v_{C}'' + RC\\,v_{C}' + v_{C} = 10 \\quad\\Longrightarrow\\quad v_{C}'' + 5v_{C}' + 6v_{C} = 60$$
+
+with $v_{C}(0) = 3$ and $v_{C}'(0) = i(0)/C = 2 \\times 6 = 12$. Transforming,
+
+$$\\left[s^{2}V - 3s - 12\\right] + 5\\left[sV - 3\\right] + 6V = \\frac{60}{s}$$
+
+$$(s^{2} + 5s + 6)V = \\frac{60}{s} + 3s + 27 \\quad\\Longrightarrow\\quad V(s) = \\frac{3(s+4)(s+5)}{s(s+2)(s+3)}$$
+
+Three residues: at $s = 0$, $3(4)(5)/[(2)(3)] = 10$; at $s = -2$,
+$3(2)(3)/[(-2)(1)] = -9$; at $s = -3$, $3(1)(2)/[(-3)(-1)] = 2$. So
+
+$$v_{C}(t) = 10 - 9e^{-2t} + 2e^{-3t}$$
+
+![The capacitor voltage and the loop current of an energised series RLC circuit after a ten volt step, plotted as fractions of ten volts and two amps, with open circles marking an independent Runge-Kutta solution of the same equations.](/courses/fe-ee/figures/math4-de-laplace-rlc.svg)
+
+Now the cross-check that makes the pair trustworthy. Differentiate and multiply
+by $C = 1/6$:
+
+$$i = C\\,v_{C}' = \\tfrac{1}{6}\\left(18e^{-2t} - 6e^{-3t}\\right) = 3e^{-2t} - e^{-3t}$$
+
+which is precisely the current found by the other route. Two independent
+transforms of the same circuit, agreeing exactly, is a stronger statement than
+either result alone. Adaptive Runge-Kutta on both original equations agrees with
+both to nine figures.
+
+At $t = 0.5\\ \\mathrm{s}$, with $e^{-1} = 0.36787944$ and
+$e^{-1.5} = 0.22313016$,
+
+$$i(0.5) = 3 \\times 0.36787944 - 0.22313016 = 0.8805\\ \\mathrm{A}$$
+$$v_{C}(0.5) = 10 - 9 \\times 0.36787944 + 2 \\times 0.22313016 = 7.1353\\ \\mathrm{V}$$
+
+## 13.5 Reading the endpoints straight off the transform
+
+Two theorems save the trouble of inverting when only the ends matter:
+
+$$f(0^{+}) = \\lim_{s\\to\\infty} sF(s), \\qquad f(\\infty) = \\lim_{s\\to 0} sF(s)$$
+
+The final value theorem is valid only when the response actually settles, which
+means every pole of $sF(s)$ must lie strictly in the left half plane. Applied to
+the capacitor voltage above,
+
+$$\\lim_{s\\to\\infty} \\frac{3(s+4)(s+5)}{(s+2)(s+3)} = 3, \\qquad \\lim_{s\\to 0} \\frac{3(s+4)(s+5)}{(s+2)(s+3)} = \\frac{60}{6} = 10$$
+
+which recovers the 3 V initial charge and the 10 V final state without inverting
+anything. Applying the final value theorem to a transform with a pole on the
+imaginary axis, such as an undamped oscillator, returns a finite number for a
+response that never settles, and that is the trap the theorem's condition
+exists to catch.`,
+  examTip: 'The transform of a second derivative carries TWO initial-condition terms, minus s times y(0) and minus y prime of zero. Write them down before touching the algebra. Dropping them turns an energised circuit into one starting from rest, which produces a plausible-looking answer with the wrong starting value.',
+  importantNote: 'The second initial condition for a series RLC current is not given directly; it comes from Kirchhoff\\'s voltage law at t = 0 plus, as L di/dt = V_source - R i(0) - v_C(0). Assuming di/dt starts at zero is the single most common error in Laplace circuit problems.',
+},
+{
+  id: 'de-numerical',
+  title: '14. Numerical Solutions, and What the Order Number Means',
+  content: `## 14.1 Euler, and where the method comes from
+
+Truncate the Taylor expansion of the solution after the linear term:
+
+$$y(t + h) = y(t) + h\\,y'(t) + \\frac{h^{2}}{2}y''(\\xi) \\quad\\Longrightarrow\\quad y_{n+1} = y_{n} + h\\,f(t_{n}, y_{n})$$
+
+The discarded piece is the **local truncation error**, of size $O(h^{2})$. But
+reaching a fixed time $T$ takes $n = T/h$ steps, and the errors accumulate, so
+the **global error** is $n$ times the local one:
+
+$$\\text{global error} \\sim \\frac{T}{h}\\times O(h^{2}) = O(h)$$
+
+That single line is why Euler is called a first-order method even though its
+per-step error goes as $h^{2}$. The same argument applies to every method on the
+syllabus: global order is always one less than local order.
+
+## 14.2 Fourth-order Runge-Kutta
+
+RK4 evaluates the slope four times per step and combines them with the weights
+of Simpson's rule:
+
+$$k_{1} = f(t_{n}, y_{n}), \\qquad k_{2} = f\\!\\left(t_{n} + \\tfrac{h}{2},\\ y_{n} + \\tfrac{h}{2}k_{1}\\right)$$
+$$k_{3} = f\\!\\left(t_{n} + \\tfrac{h}{2},\\ y_{n} + \\tfrac{h}{2}k_{2}\\right), \\qquad k_{4} = f(t_{n} + h,\\ y_{n} + h k_{3})$$
+$$y_{n+1} = y_{n} + \\frac{h}{6}\\left(k_{1} + 2k_{2} + 2k_{3} + k_{4}\\right)$$
+
+The local error is $O(h^{5})$ and the global error $O(h^{4})$. Four function
+evaluations per step buy three extra orders, which is why RK4 rather than Euler
+is what every solver actually runs.
+
+### 14.3 Worked example: measuring the order against an exact solution
+
+Take a test problem whose answer is known in closed form:
+
+$$y' = y - t^{2} + 1, \\qquad y(0) = 0.5, \\qquad y(t) = (t+1)^{2} - \\tfrac{1}{2}e^{t}$$
+
+Verify the closed form by substitution: $y' = 2(t+1) - \\tfrac{1}{2}e^{t}$, while
+$y - t^{2} + 1 = t^{2} + 2t + 1 - \\tfrac{1}{2}e^{t} - t^{2} + 1$, and the two
+agree. At $t = 0$ it gives $1 - 0.5 = 0.5$ as required. The exact value at
+$t = 2$ is
+
+$$y(2) = 9 - \\tfrac{1}{2}e^{2} = 9 - 3.694528 = 5.305472$$
+
+Marching both methods from 0 to 2 and comparing at the end gives:
+
+| $h$ | Euler error | ratio | RK4 error | ratio |
+|---|---|---|---|---|
+| 0.2 | $4.397\\times 10^{-1}$ | — | $1.089\\times 10^{-4}$ | — |
+| 0.1 | $2.420\\times 10^{-1}$ | 1.82 | $6.990\\times 10^{-6}$ | 15.59 |
+| 0.05 | $1.275\\times 10^{-1}$ | 1.90 | $4.421\\times 10^{-7}$ | 15.81 |
+| 0.025 | $6.550\\times 10^{-2}$ | 1.95 | $2.779\\times 10^{-8}$ | 15.91 |
+| 0.0125 | $3.321\\times 10^{-2}$ | 1.97 | $1.742\\times 10^{-9}$ | 15.96 |
+
+Each ratio is the previous error divided by the current one, so it says what
+halving the step buys. Euler's column climbs toward 2 and RK4's toward 16, which
+are $2^{1}$ and $2^{4}$: the order numbers, measured rather than asserted.
+
+![Global error at t equals two plotted against step size on logarithmic axes for Euler and fourth-order Runge-Kutta, with dashed reference lines of slope one and slope four that the two data sets follow.](/courses/fe-ee/figures/math4-de-numerical-order.svg)
+
+On log axes a power law is a straight line whose slope is the exponent. Fitting
+the clean part of each sweep returns 0.99 for Euler and 3.99 for RK4. The
+fitting stops before the finest RK4 steps, where the error has fallen to
+$10^{-12}$ and is dominated by floating-point rounding rather than by
+truncation; past that point the slope means nothing, and reporting it would be
+reading noise.
+
+### 14.4 Worked example: Euler by hand, and the order confirmed twice
+
+For $y' = -2y$ with $y(0) = 1$, Euler multiplies by the same factor every step:
+
+$$y_{n+1} = y_{n} + h(-2y_{n}) = (1 - 2h)\\,y_{n}$$
+
+With $h = 0.1$ the factor is 0.8, so after five steps $y(0.5) = 0.8^{5} = 0.32768$
+against the exact $e^{-1} = 0.3678794$, an error of 0.0401994. Halve the step:
+with $h = 0.05$ the factor is 0.9 and ten steps give
+$0.9^{10} = 0.3486784$, an error of 0.0192010. The ratio is
+
+$$\\frac{0.0401994}{0.0192010} = 2.0936$$
+
+close to the 2 that first order predicts, and closing on it as $h$ shrinks. Both
+Euler results sit **below** the true value, which is not an accident: this
+solution is convex, so every tangent-line step undershoots.
+
+## 14.5 Stability, which is not accuracy
+
+Apply Euler to $y' = \\lambda y$ with $\\lambda$ real and negative. The numerical
+solution is $(1 + \\lambda h)^{n}$, and it decays only when
+
+$$\\lvert 1 + \\lambda h\\rvert < 1 \\quad\\Longrightarrow\\quad 0 < h < \\frac{2}{\\lvert\\lambda\\rvert}$$
+
+Outside that window the method does not merely lose accuracy, it produces a
+growing oscillation for a decaying problem. With $\\lambda = -2$ the limit is
+$h = 1$. Take $h = 1.1$: the factor is $1 + (-2)(1.1) = -1.2$, so five steps give
+$(-1.2)^{5} = -2.48832$ while the true value is $e^{-5.5} = 0.0040868$. The sign
+alternates and the magnitude doubles every couple of steps.
+
+A stiff system, one whose fastest mode decays far quicker than the answer you
+care about, forces $h$ down to the fastest time constant purely for stability
+even when accuracy would allow a step a thousand times larger. That is the
+practical reason implicit methods exist.
+
+| Property | Euler | RK4 |
+|---|---|---|
+| Slope evaluations per step | 1 | 4 |
+| Local truncation error | $O(h^{2})$ | $O(h^{5})$ |
+| Global error | $O(h)$ | $O(h^{4})$ |
+| Halving $h$ divides the error by | 2 | 16 |
+| Stability limit on $y' = \\lambda y$ | $h < 2/\\lvert\\lambda\\rvert$ | $h < 2.785/\\lvert\\lambda\\rvert$ |
+
+The last row is the reason RK4 wins twice: it is more accurate at a given step
+and it tolerates a larger step before going unstable.`,
+  examTip: 'Global order is one less than local order, because the number of steps grows as one over h. Euler is local h squared and global h; RK4 is local h to the fifth and global h to the fourth. A question that halves the step and asks for the new error is testing exactly this: divide by 2 for Euler, by 16 for RK4.',
+  importantNote: 'Stability and accuracy are different failures. A step size inside the stability window can still be far too coarse to be accurate, and a step outside it produces a growing oscillation that no amount of extra precision repairs. Check the stability bound h < 2/|lambda| before judging a numerical result.',
+},
+{
+  id: 'de-set-b',
+  title: '15. Problem Set: Classification and First-Order Equations',
+  content: `## 15.1 Problem Set A
+
+Work each one before reading the solution. Every answer names the distractor it
+is competing against and the number that distractor produces.
+
+**A1.** Solve $4y' + 8y = 0$ with $y(0) = 6$, and give $y(0.5)$.
+
+Convert to standard form first by dividing through by 4: $y' + 2y = 0$. The
+solution is $y = 6e^{-2t}$, so
+
+$$y(0.5) = 6e^{-1} = 6 \\times 0.3678794 = 2.2073$$
+
+**Trap.** Reading the coefficient 8 straight off the unconverted equation gives
+$y = 6e^{-8t}$ and $y(0.5) = 6 \\times 0.0183156 = 0.1099$, twenty times too
+small. Always divide by the coefficient of the highest derivative before
+identifying anything.
+
+**A2.** A 0.4 H inductor in series with 20 ohms is switched onto 24 V at
+$t = 0$ from zero current. Find the current at 30 ms.
+
+$$\\tau = \\frac{L}{R} = \\frac{0.4}{20} = 0.02\\ \\mathrm{s}, \\qquad i(\\infty) = \\frac{24}{20} = 1.2\\ \\mathrm{A}$$
+
+$$i(t) = 1.2\\left(1 - e^{-t/0.02}\\right), \\qquad i(0.03) = 1.2\\left(1 - 0.2231302\\right) = 1.2 \\times 0.7768698 = 0.93224\\ \\mathrm{A}$$
+
+**Trap.** Inverting the time constant to $R/L = 50\\ \\mathrm{s}$ gives
+$i = 1.2(1 - e^{-0.0006}) = 0.00072\\ \\mathrm{A}$, an answer three orders of
+magnitude out. The inductor's time constant is $L/R$; only the capacitor's is a
+product.
+
+**A3.** Solve $dy/dx = x/y$ with $y(0) = 3$, and give $y(4)$.
+
+Separate and integrate: $y\\,dy = x\\,dx$ gives
+$y^{2}/2 = x^{2}/2 + C$, so $y^{2} = x^{2} + 9$ after fitting the initial
+condition. Then
+
+$$y(4) = \\sqrt{16 + 9} = \\sqrt{25} = 5$$
+
+**Trap.** Treating the relationship as linear and writing $y = x + 3$ returns 7.
+Separation produces a relation between the **squares**, and squares only add in
+quadrature.
+
+**A4.** Solve $y' + (2/x)y = x^{2}$ with $y(1) = 0$, and give $y(2)$.
+
+The integrating factor is $\\mu = e^{2\\ln x} = x^{2}$, so
+$(x^{2}y)' = x^{4}$ and $x^{2}y = x^{5}/5 + C$:
+
+$$y = \\frac{x^{3}}{5} + \\frac{C}{x^{2}}, \\qquad y(1) = 0 \\Rightarrow C = -\\tfrac{1}{5}$$
+
+$$y(2) = \\frac{8}{5} - \\frac{1}{20} = 1.6 - 0.05 = 1.55$$
+
+**Trap.** Dropping the homogeneous term $C/x^{2}$ because the initial value is
+zero gives 1.60. An initial value of zero does not make the constant zero; it
+makes it whatever cancels the particular part at that point.
+
+**A5.** Is $(3x^{2}y + 2)\\,dx + (x^{3} + 4y)\\,dy = 0$ exact, and what is the
+solution through $(1, 1)$?
+
+$$\\frac{\\partial M}{\\partial y} = 3x^{2} = \\frac{\\partial N}{\\partial x}$$
+
+so it is exact. Integrating $M$ in $x$ gives $F = x^{3}y + 2x + g(y)$, and
+matching $\\partial F/\\partial y = x^{3} + g'(y)$ against $N$ gives
+$g' = 4y$, hence $g = 2y^{2}$:
+
+$$x^{3}y + 2x + 2y^{2} = C, \\qquad C = 1 + 2 + 2 = 5$$
+
+**Trap.** Carrying $4y^{2}$ instead of $2y^{2}$, by copying $N$ rather than
+integrating it, gives $C = 7$. The potential function is the **integral** of the
+components, never a copy of them.
+
+## 15.2 Practice Problems: choosing the method without solving
+
+For each equation, name the first method to try, in one word.
+
+$$\\text{(i)}\\quad y' = 3ty^{2} \\qquad \\text{(ii)}\\quad y' + y\\tan t = \\sec t \\qquad \\text{(iii)}\\quad (2y - x)\\,dx + (2x + 3y)\\,dy = 0$$
+
+**(i)** Separable. The right side factors as $3t$ times $y^{2}$, so
+$\\int y^{-2}dy = \\int 3t\\,dt$ finishes it. Nonlinearity is no obstacle here,
+which is why separability is the first test.
+
+**(ii)** Linear. It already sits in standard form with $p = \\tan t$, so
+$\\mu = e^{\\int\\tan t\\,dt} = \\sec t$ and $(\\,y\\sec t)' = \\sec^{2}t$, giving
+$y\\sec t = \\tan t + C$ and $y = \\sin t + C\\cos t$.
+
+**(iii)** Exact. Here $\\partial M/\\partial y = 2$ and
+$\\partial N/\\partial x = 2$ agree, so $F = 2xy - x^{2}/2 + 3y^{2}/2 = C$.
+Checking exactness costs two derivatives and saves the wasted effort of hunting
+for a separation that does not exist.`,
+},
+{
+  id: 'de-set-c',
+  title: '16. Problem Set: Second Order, Resonance and Laplace',
+  content: `## 16.1 Problem Set B
+
+**B1.** A series RLC has $R = 40\\ \\Omega$, $L = 0.5\\ \\mathrm{H}$ and
+$C = 20\\ \\mu\\mathrm{F}$. Classify it and give the ringing frequency.
+
+$$\\alpha = \\frac{R}{2L} = \\frac{40}{1} = 40\\ \\mathrm{s}^{-1}, \\qquad \\omega_{0} = \\frac{1}{\\sqrt{0.5 \\times 20\\times 10^{-6}}} = \\frac{1}{\\sqrt{10^{-5}}} = 316.23\\ \\mathrm{rad/s}$$
+
+Since $\\alpha \\ll \\omega_{0}$ the circuit is lightly **underdamped**, with
+
+$$\\omega_{d} = \\sqrt{\\omega_{0}^{2} - \\alpha^{2}} = \\sqrt{100000 - 1600} = \\sqrt{98400} = 313.69\\ \\mathrm{rad/s}$$
+
+and a damping ratio $\\zeta = 40/316.23 = 0.1265$.
+
+**Trap.** Using $\\alpha = R/L = 80$ instead of $R/2L$ still gives
+"underdamped" but reports $\\omega_{d} = \\sqrt{93600} = 305.94$, and the damping
+ratio doubles to 0.253. The factor of two in $\\alpha = R/2L$ is not optional.
+
+**B2.** Solve $y'' + 4y' + 3y = 0$ with $y(0) = 4$ and $y'(0) = 0$, and give
+$y(1)$.
+
+The characteristic equation $s^{2} + 4s + 3 = 0$ factors to $(s+1)(s+3)$, so
+$y = Ae^{-t} + Be^{-3t}$. The conditions give $A + B = 4$ and $-A - 3B = 0$,
+so $A = -3B$ and $-2B = 4$, hence $B = -2$ and $A = 6$:
+
+$$y(t) = 6e^{-t} - 2e^{-3t}, \\qquad y(1) = 6 \\times 0.3678794 - 2 \\times 0.0497871 = 2.1077$$
+
+**Trap.** Attaching the constants to the wrong roots gives
+$6e^{-3t} - 2e^{-t}$, whose value at $t = 1$ is $-0.4370$: negative, whereas the
+true response never crosses zero. Check $y(0)$ and $y'(0)$ against the finished
+expression every time; here $6 - 2 = 4$ and $-6 + 6 = 0$ both hold.
+
+**B3.** Solve $y'' + 3y' = 6$ from rest, and give $y(1)$.
+
+The characteristic roots are 0 and $-3$. A constant trial solution is
+annihilated by the left side, because a constant is exactly the homogeneous
+solution belonging to the root at zero. Multiply by $t$: with $y_{p} = At$,
+$y_{p}'' + 3y_{p}' = 3A = 6$, so $A = 2$ and $y_{p} = 2t$. Adding the
+homogeneous part,
+
+$$y = 2t + C_{1} + C_{2}e^{-3t}, \\qquad y(0) = 0,\\ y'(0) = 0 \\Rightarrow C_{2} = \\tfrac{2}{3},\\ C_{1} = -\\tfrac{2}{3}$$
+
+$$y(1) = 2 - \\tfrac{2}{3} + \\tfrac{2}{3}e^{-3} = 2 - 0.6666667 + 0.0331914 = 1.3665$$
+
+**Trap.** Taking $y_{p} = 6/3 = 2$ by analogy with $y'' + 3y' + ky = 6$ misses
+that the constant term is absent, so there is no $k$ to divide by. That route
+reports $y(1) \\approx 2.0$ and, worse, gives a response that settles instead of
+ramping. A missing $y$ term always means a root at the origin.
+
+**B4.** Solve $y'' + 4y = 8$ with $y(0) = 0$ and $y'(0) = 2$ by Laplace, and
+give $y(0.5)$.
+
+$$s^{2}Y - 2 + 4Y = \\frac{8}{s} \\quad\\Longrightarrow\\quad Y(s) = \\frac{8}{s(s^{2}+4)} + \\frac{2}{s^{2}+4}$$
+
+The first term splits as $2/s - 2s/(s^{2}+4)$, which recombines correctly
+because $2(s^{2}+4) - 2s^{2} = 8$. Inverting term by term,
+
+$$y(t) = 2 - 2\\cos 2t + \\sin 2t$$
+
+$$y(0.5) = 2 - 2\\cos 1 + \\sin 1 = 2 - 1.0806046 + 0.8414710 = 1.7609$$
+
+**Trap.** Forgetting the $-y'(0)$ term in the transform of $y''$ deletes the
+$2/(s^{2}+4)$ piece and gives $y = 2 - 2\\cos 2t$, worth 0.9194 at
+$t = 0.5$. The response would then start with zero slope, contradicting the
+stated initial condition.
+
+**B5.** Which drive makes $y'' + 9y = 6\\cos\\omega t$ grow without bound,
+$\\omega = 3$ or $\\omega = 9$?
+
+The natural frequency is $\\omega_{0} = \\sqrt{9} = 3$, so $\\omega = 3$ resonates.
+Its particular solution needs the extra factor of $t$: with
+$y_{p} = t(A\\cos 3t + B\\sin 3t)$ the second derivative contributes
+$-6A\\sin 3t + 6B\\cos 3t$, so $A = 0$ and $B = 1$, giving $y = t\\sin 3t$ from
+rest. At $t = 10$ the envelope has reached 10 and is still climbing.
+
+**Trap.** Choosing $\\omega = 9$ because 9 appears in the equation. At 9 rad/s
+the ordinary trial form works, with amplitude $6/(9 - 81) = -0.0833$: not only
+bounded, but the smallest response of the two by a wide margin. The 9 in the
+equation is $\\omega_{0}^{2}$, not $\\omega_{0}$.`,
+},
+{
+  id: 'de-set-d',
+  title: '17. Problem Set: Boundary Values and Numerical Marching',
+  content: `## 17.1 Problem Set C
+
+**C1.** For $y'' + \\lambda y = 0$ with $y(0) = 0$ and $y(3) = 0$, what is the
+smallest $\\lambda$ admitting a solution other than $y = 0$?
+
+With $\\lambda = k^{2} > 0$ the first condition leaves $y = B\\sin kx$ and the
+second requires $\\sin 3k = 0$, so $3k = n\\pi$. The smallest positive case is
+$n = 1$:
+
+$$\\lambda_{1} = \\left(\\frac{\\pi}{3}\\right)^{2} = 1.0472^{2} = 1.0966$$
+
+**Trap.** Answering $\\lambda = 0$. That value does satisfy the differential
+equation, but $y'' = 0$ makes $y$ a straight line, and a straight line pinned to
+zero at both ends is identically zero. Zero is not an eigenvalue here because it
+admits no non-trivial solution.
+
+**C2.** Does $y'' + 4y = 0$ with $y(0) = 0$ and $y(\\pi/2) = 1$ have a solution?
+
+The general solution is $y = A\\cos 2x + B\\sin 2x$; the first condition kills
+$A$. The second then reads
+
+$$B\\sin\\pi = 0 = 1$$
+
+which is impossible, so **no solution exists**. The boundary points are exactly
+half a period of $\\sin 2x$ apart, and every candidate solution is forced back to
+zero at the far end.
+
+**Trap.** Writing $B = 1/\\sin\\pi$ and calling it undefined but large. Division
+by zero here is not a large number, it is a contradiction, and the correct
+answer is that the problem has no solution at all.
+
+**C3.** Use Euler with $h = 0.2$ on $y' = t + y$, $y(0) = 1$, to estimate
+$y(0.4)$, and compare with the exact value.
+
+$$y_{1} = 1 + 0.2(0 + 1) = 1.2, \\qquad y_{2} = 1.2 + 0.2(0.2 + 1.2) = 1.2 + 0.28 = 1.48$$
+
+The exact solution comes from the integrating factor $e^{-t}$, giving
+$y = 2e^{t} - t - 1$, so
+
+$$y(0.4) = 2 \\times 1.4918247 - 1.4 = 1.58365$$
+
+Euler is low by 0.1036, about 6.5 per cent, which is what a step of 0.2 buys
+from a first-order method.
+
+**Trap.** Evaluating the slope at the far end of the interval,
+$f(t_{n+1}, y_{n})$, instead of the near end. That produces
+$y_{1} = 1 + 0.2(0.2 + 1) = 1.24$ and a different sequence entirely. Euler uses
+the slope at the point it is standing on.
+
+**C4.** An Euler solution has a global error of 0.08 at $h = 0.05$. Estimate the
+error at $h = 0.0125$.
+
+Euler is globally first order, so the error scales in direct proportion to $h$.
+The step has been cut by a factor of four:
+
+$$0.08 \\times \\frac{0.0125}{0.05} = 0.08 \\times 0.25 = 0.02$$
+
+**Trap.** Applying the fourth-order rule and dividing by $4^{4} = 256$ gives
+0.0003125, more than sixty times too optimistic. Confirm which method produced
+the error before scaling it; the order number is a property of the method, not
+of the problem.
+
+**C5.** What is the largest step size for which Euler remains stable on
+$y' = -50y$?
+
+$$\\lvert 1 + \\lambda h\\rvert < 1 \\quad\\Longrightarrow\\quad h < \\frac{2}{50} = 0.04$$
+
+Any larger step makes the amplification factor exceed one in magnitude and the
+computed solution grows while the true one decays.
+
+**Trap.** Answering 0.02, the time constant $1/50$. That step is comfortably
+stable and is a sensible engineering choice for accuracy, but it is not the
+limit; the limit is twice it. Confusing the time constant with the stability
+bound understates the usable step by a factor of two.
+
+## 17.2 Practice Problems: reading a response and naming its equation
+
+A measured step response overshoots to 1.16 times its final value, rings four
+more times with each peak 53 per cent of the one before, and the peaks are
+7.0 ms apart. Name the damping regime and estimate $\\zeta$, $\\omega_{d}$ and
+$\\omega_{0}$.
+
+Overshoot at all means complex roots, so the response is **underdamped**. From
+the peak ratio,
+
+$$\\delta = \\ln\\frac{1}{0.53} = 0.6349 = \\alpha T_{d} \\quad\\Longrightarrow\\quad \\alpha = \\frac{0.6349}{0.007} = 90.7\\ \\mathrm{s}^{-1}$$
+
+$$\\omega_{d} = \\frac{2\\pi}{0.007} = 897.6\\ \\mathrm{rad/s}, \\qquad \\omega_{0} = \\sqrt{90.7^{2} + 897.6^{2}} = 902.2\\ \\mathrm{rad/s}$$
+
+$$\\zeta = \\frac{\\alpha}{\\omega_{0}} = \\frac{90.7}{902.2} = 0.1005$$
+
+The overshoot gives an independent estimate:
+$\\exp(-\\pi\\zeta/\\sqrt{1-\\zeta^{2}})$ at $\\zeta = 0.1005$ is 0.7275, so the
+first peak should reach 1.73 times the final value. The stated 1.16 corresponds
+instead to $\\zeta = 0.5$, so the two measurements are inconsistent and one of
+them has been misread. Noticing that is the point of the exercise: a lightly
+damped system that rings five times cannot also overshoot by only 16 per cent,
+and any answer combining the two is describing no real circuit.`,
+},
     'Time constant τ: 63.2% change at t = τ; 99.3% at t = 5τ.',
     'Damping ratio ζ determines response: underdamped (ζ<1), critically damped (ζ=1), overdamped (ζ>1).',
     'Series RLC: ωₙ = 1/sqrt(LC), ζ = R/(2sqrt(L/C)).',
@@ -6111,13 +7453,13 @@ Mesh analysis gives 5i1 - 2i2 = 10 and -2i1 + 6i2 = 4.
 
 Coefficient determinant: det(A) = (5)(6) - (-2)(-2) = 30 - 4 = **26**.
 
-Replace column 1 with the right-hand side: det(A1) = (10)(6) - (4)(-2) = 60 + 8 = 68, so **$i1 = 68/26 = 2.62\\ \\mathrm{A}$**.
+Replace column 1 with the right-hand side: det(A1) = (10)(6) - (4)(-2) = 60 + 8 = 68, so **$i_{1} = 68/26 = 2.6154\\ \\mathrm{A}$**.
 
-Replace column 2: det(A2) = (5)(4) - (-2)(10) = 20 + 20 = 40, so **$i2 = 40/26 = 1.54\\ \\mathrm{A}$**.
+Replace column 2: det(A2) = (5)(4) - (-2)(10) = 20 + 20 = 40, so **$i_{2} = 40/26 = 1.5385\\ \\mathrm{A}$**.
 
-Substitute back: 5(2.62) - 2(1.54) = 13.1 - 3.08 = 10.0. Correct.
+Substitute back into the first mesh equation: 5(2.6154) - 2(1.5385) = 13.077 - 3.077 = 10.000. Correct.
 
-For 2x2 and 3x3 systems Cramer's rule is the fastest route on this exam. Beyond that the factorial growth makes Gaussian elimination faster.
+For a 2x2 system Cramer's rule is the fastest route on this exam, because it needs no bookkeeping at all. At 3x3 it is already behind elimination on operation count, and beyond 3x3 the factorial growth of the cofactor determinants makes it hopeless.
 
 ## 3.2 Matrix inverse, and when det = 0 matters
 
@@ -6343,9 +7685,1321 @@ Check all three originals: 1+2+3 = 6 ✓, 2−2+3 = 3 ✓, 1+4−3 = 2 ✓. For 
 system Cramer's rule needs four determinants, which is about the break-even
 point against elimination — beyond 3×3, eliminate.`,
 },
-],
-  keyTakeaways: [
-    'Matrix form Ax = b solves n equations with n unknowns; use Gaussian elimination or Cramer\'s rule.',
+{
+  id: 'la-arithmetic',
+  title: '6. Matrix Arithmetic, and the Operation That Does Not Commute',
+  content: `## 6.1 The four operations and their shape rules
+
+Addition and scalar multiplication are element by element and demand identical
+dimensions. Multiplication is the interesting one, and its rule is a
+consequence of what a matrix *does*: it sends vectors to vectors, so the product
+$AB$ means "apply $B$, then apply $A$", and the shapes must chain.
+
+$$(AB)_{ij} = \\sum_{k=1}^{n} A_{ik}B_{kj}, \\qquad (m\\times n)(n\\times p) = (m\\times p)$$
+
+The inner dimensions must agree and they vanish from the result; the outer ones
+survive. If $B$ is $3\\times 2$ and $A$ is $2\\times 3$, then $AB$ is
+$2\\times 2$ while $BA$ is $3\\times 3$. The two products are not merely
+different numbers, they are different sizes, which is the bluntest possible
+demonstration that order matters.
+
+| Operation | Rule | Shape requirement |
+|---|---|---|
+| $A + B$ | element by element | identical dimensions |
+| $kA$ | every element times $k$ | none |
+| $AB$ | row of $A$ against column of $B$ | columns of $A$ equal rows of $B$ |
+| $A^{T}$ | rows become columns | none |
+| $A^{-1}$ | the matrix undoing $A$ | square, with $\\lvert A\\rvert \\ne 0$ |
+
+### 6.2 Worked example: two matrices, two products, two answers
+
+Let $A$ shear and $B$ swap the axes:
+
+$$A = \\begin{bmatrix} 1 & 2 \\\\ 0 & 1 \\end{bmatrix}, \\qquad B = \\begin{bmatrix} 0 & 1 \\\\ 1 & 0 \\end{bmatrix}$$
+
+$$AB = \\begin{bmatrix} 2 & 1 \\\\ 1 & 0 \\end{bmatrix}, \\qquad BA = \\begin{bmatrix} 0 & 1 \\\\ 1 & 2 \\end{bmatrix}$$
+
+Every entry differs. Both have determinant $-1$, so both preserve area, yet they
+send the unit square to different parallelograms:
+
+![The unit square transformed by A times B and by B times A. Both images are parallelograms of area one, but one leans to the right along the horizontal axis and the other rises steeply along the vertical axis, so the two products are visibly different transformations.](/courses/fe-ee/figures/math4-la-noncommute.svg)
+
+"Shear then swap" and "swap then shear" are different physical operations, and
+matrix multiplication faithfully reports that. The transpose and the inverse
+both reverse the order for the same reason:
+
+$$(AB)^{T} = B^{T}A^{T}, \\qquad (AB)^{-1} = B^{-1}A^{-1}$$
+
+Undoing "put on socks, then shoes" means taking off the shoes first. Exam
+questions on this identity always offer the un-reversed form as the distractor.
+
+### 6.3 Worked example: non-square products, where even the size disagrees
+
+$$A = \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\ (3\\times 2), \\qquad B = \\begin{bmatrix} 7 & 8 & 9 \\\\ 10 & 11 & 12 \\end{bmatrix}\\ (2\\times 3)$$
+
+$$AB = \\begin{bmatrix} 27 & 30 & 33 \\\\ 61 & 68 & 75 \\\\ 95 & 106 & 117 \\end{bmatrix}, \\qquad BA = \\begin{bmatrix} 76 & 100 \\\\ 103 & 136 \\end{bmatrix}$$
+
+The first entry of $AB$ is the first row of $A$ against the first column of $B$:
+$1 \\times 7 + 2 \\times 10 = 27$. The first entry of $BA$ is the first row of $B$
+against the first column of $A$: $7 \\times 1 + 8 \\times 3 + 9 \\times 5 = 76$.
+
+One check survives the size change. The traces agree:
+
+$$\\operatorname{tr}(AB) = 27 + 68 + 117 = 212, \\qquad \\operatorname{tr}(BA) = 76 + 136 = 212$$
+
+That is not a coincidence; $\\operatorname{tr}(AB) = \\operatorname{tr}(BA)$
+holds whenever both products exist, and it is a useful sanity check on any hand
+multiplication.
+
+## 6.4 What multiplication does keep
+
+Associativity survives, even though commutativity does not:
+
+$$(AB)C = A(BC)$$
+
+Take $M_{1} = \\begin{bmatrix} 2 & 1 \\\\ 0 & 3\\end{bmatrix}$,
+$M_{2} = \\begin{bmatrix} 1 & 4 \\\\ 2 & 0\\end{bmatrix}$ and
+$M_{3} = \\begin{bmatrix} 0 & 1 \\\\ 5 & 2\\end{bmatrix}$. Grouping the first two
+gives $M_{1}M_{2} = \\begin{bmatrix} 4 & 8 \\\\ 6 & 0\\end{bmatrix}$ and then
+
+$$(M_{1}M_{2})M_{3} = \\begin{bmatrix} 40 & 20 \\\\ 0 & 6 \\end{bmatrix}$$
+
+Grouping the last two gives
+$M_{2}M_{3} = \\begin{bmatrix} 20 & 9 \\\\ 0 & 2\\end{bmatrix}$ and
+
+$$M_{1}(M_{2}M_{3}) = \\begin{bmatrix} 40 & 20 \\\\ 0 & 6 \\end{bmatrix}$$
+
+Identical. Distribution over addition survives as well, in both directions, so
+$A(B+C) = AB + AC$ and $(B+C)A = BA + CA$ are both valid; note that they are
+different statements, and only commutativity would make them the same one.`,
+  examTip: 'Check the shapes before multiplying anything. An m by n times an n by p is the only legal product, and writing the two dimension pairs side by side makes the illegal ones obvious: the inner numbers must match and they disappear from the answer.',
+  importantNote: 'Both the transpose and the inverse of a product reverse the order. Writing (AB) inverse as A inverse times B inverse gives a matrix that is generally not even close, and it is the offered wrong answer on nearly every question of this type.',
+},
+{
+  id: 'la-determinants',
+  title: '7. Determinants: Two Routes, and the Properties Behind Them',
+  content: `## 7.1 Cofactor expansion
+
+For a $2\\times 2$ matrix the determinant is $ad - bc$. For anything larger,
+expand along a row or a column, alternating signs:
+
+$$\\lvert A\\rvert = \\sum_{j=1}^{n} (-1)^{i+j} a_{ij} M_{ij}$$
+
+where $M_{ij}$ is the determinant of the matrix with row $i$ and column $j$
+deleted. Every row and every column gives the same answer, so choose the one
+with the most zeros: each zero entry removes an entire minor from the work.
+
+### 7.2 Worked example: one determinant, computed twice
+
+$$A = \\begin{bmatrix} 2 & 1 & 3 \\\\ 1 & 4 & -2 \\\\ 3 & 0 & 1 \\end{bmatrix}$$
+
+**By cofactors along the first row**, with the sign pattern plus, minus, plus:
+
+$$\\lvert A\\rvert = 2\\begin{vmatrix} 4 & -2 \\\\ 0 & 1\\end{vmatrix} - 1\\begin{vmatrix} 1 & -2 \\\\ 3 & 1\\end{vmatrix} + 3\\begin{vmatrix} 1 & 4 \\\\ 3 & 0\\end{vmatrix}$$
+
+$$\\lvert A\\rvert = 2(4 - 0) - 1(1 + 6) + 3(0 - 12) = 8 - 7 - 36 = -35$$
+
+**By row reduction**, which is the same quantity reached a completely different
+way. Subtract half the first row from the second and one and a half times the
+first row from the third, then add three sevenths of the new second row to the
+third:
+
+$$U = \\begin{bmatrix} 2 & 1 & 3 \\\\ 0 & 3.5 & -3.5 \\\\ 0 & 0 & -5 \\end{bmatrix}$$
+
+None of those operations changes the determinant, and a triangular determinant
+is the product of its diagonal:
+
+$$\\lvert A\\rvert = 2 \\times 3.5 \\times (-5) = -35$$
+
+Two routes, one number. For a $3\\times 3$ done by hand the cofactor route is
+usually quicker; from $4\\times 4$ upward, reduce.
+
+## 7.3 The properties, and why they hold
+
+The determinant is the unique function of the rows that is linear in each row
+separately, changes sign when two rows are swapped, and equals 1 for the
+identity. Everything else follows from those three.
+
+| Property | Statement | Consequence |
+|---|---|---|
+| Transpose | $\\lvert A^{T}\\rvert = \\lvert A\\rvert$ | anything true of rows is true of columns |
+| Row swap | one swap negates $\\lvert A\\rvert$ | track swaps during elimination |
+| Row scaling | multiplying one row by $k$ multiplies $\\lvert A\\rvert$ by $k$ | $\\lvert kA\\rvert = k^{n}\\lvert A\\rvert$ for $n\\times n$ |
+| Row addition | adding a multiple of one row to another leaves $\\lvert A\\rvert$ alone | elimination is free |
+| Repeated row | two equal rows force $\\lvert A\\rvert = 0$ | dependence destroys the determinant |
+| Product | $\\lvert AB\\rvert = \\lvert A\\rvert\\,\\lvert B\\rvert$ | $\\lvert A^{-1}\\rvert = 1/\\lvert A\\rvert$ |
+| Triangular | product of the diagonal | why elimination computes determinants |
+
+The fourth property is the one that makes Gaussian elimination a determinant
+algorithm, and it deserves its proof. Replace row $i$ by
+$r_{i} + k\\,r_{j}$. Linearity in row $i$ splits the determinant into two: the
+original, plus $k$ times a determinant whose rows $i$ and $j$ are both $r_{j}$.
+The second has two equal rows, and swapping them changes the sign while leaving
+the matrix identical, so it equals its own negative and is therefore zero. What
+survives is the original determinant, unchanged.
+
+The repeated-row property in turn explains the singular case: if the rows are
+linearly dependent, one of them can be reduced to all zeros by exactly those
+free operations, and a zero row expands to a determinant of zero.
+
+### 7.4 Worked example: the product rule on real numbers
+
+$$A = \\begin{bmatrix} 2 & 1 \\\\ 1 & 3\\end{bmatrix},\\quad \\lvert A\\rvert = 6 - 1 = 5; \\qquad B = \\begin{bmatrix} 1 & 4 \\\\ 2 & 3\\end{bmatrix},\\quad \\lvert B\\rvert = 3 - 8 = -5$$
+
+$$AB = \\begin{bmatrix} 4 & 11 \\\\ 7 & 13\\end{bmatrix}, \\qquad \\lvert AB\\rvert = 52 - 77 = -25 = 5 \\times (-5)$$
+
+The rule holds, and it is worth more than a check. It says the determinant is
+**multiplicative**, which is exactly what a scaling factor should be: apply two
+transformations in a row and the areas multiply.
+
+## 7.5 What the number means
+
+Geometrically, $\\lvert A\\rvert$ is the factor by which the transformation
+scales area in two dimensions, or volume in three, and its sign records whether
+orientation is preserved.
+
+![The unit square and its images under a matrix of determinant five, which is a parallelogram of five times the area, and under a shear of determinant one, which changes the shape without changing the area. The two columns of the first matrix are drawn as arrows to the corners of its image.](/courses/fe-ee/figures/math4-la-det-area.svg)
+
+The columns of $A$ are where the two unit basis vectors land, so the image of the
+unit square is the parallelogram they span, and its area is
+$\\lvert A\\rvert$ computed by the cross product of those two columns. For
+$A = \\begin{bmatrix} 2 & 1 \\\\ 1 & 3\\end{bmatrix}$ the columns land at
+$(2,1)$ and $(1,3)$ and the enclosed area is $2 \\times 3 - 1 \\times 1 = 5$,
+which is the determinant formula rediscovered as geometry.
+
+A determinant of zero therefore means the transformation flattens the plane onto
+a line or a point. Area is destroyed, information is destroyed, and no inverse
+can exist. That is the entire content of the singularity condition, and it is
+worth carrying as a picture rather than as a rule.`,
+  examTip: 'Expand along whichever row or column carries the most zeros; each zero deletes a full minor. If the matrix has no zeros, create some first with row operations, because adding a multiple of one row to another leaves the determinant untouched.',
+  importantNote: 'Multiplying a whole n by n matrix by k multiplies the determinant by k to the power n, not by k. Every one of the n rows is scaled, and the determinant is linear in each row separately, so the factors compound.',
+},
+{
+  id: 'la-inverse',
+  title: '8. The Inverse, and What Singularity Costs',
+  content: `## 8.1 Definition and the two-by-two formula
+
+The inverse of a square $A$ is the matrix satisfying
+
+$$AA^{-1} = A^{-1}A = I$$
+
+For $2\\times 2$ it is worth memorising outright:
+
+$$\\begin{bmatrix} a & b \\\\ c & d\\end{bmatrix}^{-1} = \\frac{1}{ad - bc}\\begin{bmatrix} d & -b \\\\ -c & a\\end{bmatrix}$$
+
+The pattern is: swap the diagonal, negate the off-diagonal, divide by the
+determinant. Three separate errors live in that sentence, and the guard against
+all of them is to multiply the answer by the original and confirm the identity.
+
+$$\\begin{bmatrix} 2 & 1 \\\\ 1 & 3\\end{bmatrix}^{-1} = \\frac{1}{5}\\begin{bmatrix} 3 & -1 \\\\ -1 & 2\\end{bmatrix}$$
+
+Checking: the first row of $A$ against the first column of the candidate gives
+$(2 \\times 3 + 1 \\times (-1))/5 = 5/5 = 1$, and against the second column
+$(2 \\times (-1) + 1 \\times 2)/5 = 0$. Both rows check out, so the inverse is
+right.
+
+## 8.2 The general formula, and the cheaper route
+
+$$A^{-1} = \\frac{1}{\\lvert A\\rvert}\\operatorname{adj}(A), \\qquad \\operatorname{adj}(A) = C^{T}$$
+
+where $C$ is the matrix of signed cofactors. The adjugate is the **transpose**
+of the cofactor matrix, and forgetting the transpose is the standard error in
+$3\\times 3$ inversions. For anything above $3\\times 3$ the cofactor route is
+hopeless and Gauss-Jordan elimination on $[\\,A \\mid I\\,]$ is the practical
+method.
+
+### 8.3 Worked example: a three-by-three inverse, verified entry by entry
+
+Invert the matrix whose determinant was found to be $-35$:
+
+$$A = \\begin{bmatrix} 2 & 1 & 3 \\\\ 1 & 4 & -2 \\\\ 3 & 0 & 1 \\end{bmatrix}$$
+
+The nine signed cofactors are
+
+$$C = \\begin{bmatrix} 4 & -7 & -12 \\\\ -1 & -7 & 3 \\\\ -14 & 7 & 7 \\end{bmatrix}$$
+
+taking $C_{11} = +(4 \\times 1 - (-2) \\times 0) = 4$,
+$C_{12} = -(1 \\times 1 - (-2) \\times 3) = -7$, and so on through the grid.
+Transpose it and divide by the determinant:
+
+$$A^{-1} = \\frac{1}{-35}\\begin{bmatrix} 4 & -1 & -14 \\\\ -7 & -7 & 7 \\\\ -12 & 3 & 7 \\end{bmatrix} = \\frac{1}{35}\\begin{bmatrix} -4 & 1 & 14 \\\\ 7 & 7 & -7 \\\\ 12 & -3 & -7 \\end{bmatrix}$$
+
+Now verify, because an inverse is one of the few answers that checks itself
+completely. The first row of $A$ against the three columns of $A^{-1}$:
+
+$$\\frac{(2)(-4) + (1)(7) + (3)(12)}{35} = \\frac{-8 + 7 + 36}{35} = 1$$
+$$\\frac{(2)(1) + (1)(7) + (3)(-3)}{35} = \\frac{2 + 7 - 9}{35} = 0$$
+$$\\frac{(2)(14) + (1)(-7) + (3)(-7)}{35} = \\frac{28 - 7 - 21}{35} = 0$$
+
+The remaining six products give $0, 1, 0$ and $0, 0, 1$ by the same arithmetic,
+so $AA^{-1} = I$ exactly, with no rounding anywhere. Every entry of this inverse
+was confirmed by that product before it was written down.
+
+## 8.4 Singularity, and the useful near miss
+
+$A^{-1}$ exists precisely when $\\lvert A\\rvert \\ne 0$. The determinant of the
+inverse follows from the product rule:
+
+$$\\lvert A\\rvert\\,\\lvert A^{-1}\\rvert = \\lvert I\\rvert = 1 \\quad\\Longrightarrow\\quad \\lvert A^{-1}\\rvert = \\frac{1}{\\lvert A\\rvert}$$
+
+which shows immediately why a zero determinant is fatal: the inverse would have
+to have an infinite determinant.
+
+The engineering warning is that $\\lvert A\\rvert$ close to zero is nearly as bad
+as zero. The entries of $A^{-1}$ carry $1/\\lvert A\\rvert$, so a small
+determinant magnifies every rounding error in the data. In a nodal analysis a
+near-singular conductance matrix usually means two nodes are joined by a
+conductance vastly larger than everything else, so the model is trying to
+resolve a voltage difference that barely exists.
+
+### 8.5 Worked example: solving by inverse against solving by elimination
+
+To solve $A\\mathbf{x} = \\mathbf{b}$ you can form $\\mathbf{x} = A^{-1}\\mathbf{b}$,
+but it is the wrong habit for one right-hand side. Inverting a $3\\times 3$ by
+cofactors costs nine $2\\times 2$ determinants plus a transpose plus nine
+divisions, and then a matrix-vector product on top. Elimination on the same
+system costs seventeen multiplications and finishes.
+
+The inverse earns its keep when there are **many** right-hand sides against one
+matrix: the same network driven by twenty different source vectors, for
+instance. Then one inversion is amortised over twenty solves. Even there, a
+stored LU factorisation beats a stored inverse on both speed and accuracy, which
+is why professional solvers never form an inverse at all.`,
+  examTip: 'After computing any inverse, multiply it by the original. The product must be the identity, and the check costs less than the inversion did. On the FE it also converts a partially remembered formula into a verified answer.',
+  importantNote: 'The adjugate is the TRANSPOSE of the cofactor matrix. Skipping the transpose produces a matrix that looks plausible and fails A times A inverse equals I on the off-diagonal entries, which is exactly why that product must be checked.',
+},
+{
+  id: 'la-elimination',
+  title: '9. Elimination, Partial Pivoting, and What Cramer Costs',
+  content: `## 9.1 Gaussian elimination as an algorithm
+
+Forward elimination clears each column below the pivot using the multiplier
+$m_{ik} = a_{ik}/a_{kk}$, producing an upper-triangular system; back
+substitution then reads the unknowns off from the bottom up. The determinant
+falls out for free as the product of the pivots, times $-1$ for each row swap.
+
+### 9.2 Worked example: a three-node system, eliminated by hand
+
+A nodal analysis produces
+
+$$\\begin{bmatrix} 7 & -2 & -1 \\\\ -2 & 6 & -3 \\\\ -1 & -3 & 9 \\end{bmatrix}\\begin{bmatrix} V_{1} \\\\ V_{2} \\\\ V_{3}\\end{bmatrix} = \\begin{bmatrix} 7 \\\\ 11 \\\\ -2 \\end{bmatrix}$$
+
+The pivot in column one is 7, larger in magnitude than either entry below it, so
+no swap is needed. The multipliers are $-2/7 = -0.285714$ and
+$-1/7 = -0.142857$, and subtracting those multiples of row one gives
+
+$$\\begin{bmatrix} 7 & -2 & -1 \\\\ 0 & 5.428571 & -3.285714 \\\\ 0 & -3.285714 & 8.857143 \\end{bmatrix}, \\qquad \\begin{bmatrix} 7 \\\\ 13 \\\\ -1 \\end{bmatrix}$$
+
+The second pivot, 5.428571, again dominates the entry below it. The multiplier
+is $-3.285714/5.428571 = -0.605263$, and the last row becomes
+
+$$\\begin{bmatrix} 0 & 0 & 6.868421 \\end{bmatrix}, \\qquad 6.868421$$
+
+Back substitution now runs upward:
+
+$$V_{3} = \\frac{6.868421}{6.868421} = 1, \\qquad V_{2} = \\frac{13 + 3.285714}{5.428571} = 3, \\qquad V_{1} = \\frac{7 + 6 + 1}{7} = 2$$
+
+The determinant comes free as the product of the pivots,
+$7 \\times 5.428571 \\times 6.868421 = 261$, and cofactor expansion of the original
+matrix returns 261 as well. Substituting $(2, 3, 1)$ into all three original
+equations reproduces $7$, $11$ and $-2$ exactly, which is the check that costs
+nine multiplications and settles the question.
+
+## 9.3 Why partial pivoting exists
+
+Elimination breaks down outright if a pivot is zero, and it degrades badly if a
+pivot is merely small, because the multiplier $a_{ik}/a_{kk}$ then becomes huge
+and scales the rounding error in the pivot row up with it. **Partial pivoting**
+fixes this by swapping the row with the largest magnitude entry in the current
+column into the pivot position before eliminating, which forces every multiplier
+to have magnitude at most one.
+
+### 9.4 Worked example: the same system, ruined and rescued
+
+Solve, carrying only three significant digits, the system
+
+$$\\begin{bmatrix} \\varepsilon & 1 \\\\ 1 & 1\\end{bmatrix}\\begin{bmatrix} x_{1} \\\\ x_{2}\\end{bmatrix} = \\begin{bmatrix} 1 \\\\ 2\\end{bmatrix}, \\qquad \\varepsilon = 10^{-5}$$
+
+The exact answer is $x_{1} = 1/(1 - \\varepsilon) = 1.00001$ and
+$x_{2} = 1 - \\varepsilon x_{1} = 0.99999$.
+
+**Without pivoting**, the multiplier is $1/\\varepsilon = 10^{5}$. The second row
+becomes $1 - 10^{5}$, which rounds to $-1.00\\times 10^{5}$ in three digits, and
+its right side becomes $2 - 10^{5}$, which rounds to the same
+$-1.00\\times 10^{5}$. So $x_{2} = 1.00$, and back substitution gives
+
+$$x_{1} = \\frac{1 - 1.00}{10^{-5}} = \\frac{0}{10^{-5}} = 0$$
+
+The answer is not slightly wrong, it is 0 instead of 1.00001, a relative error
+of 1. The information about $x_{1}$ was destroyed the moment
+$1 - 10^{5}$ and $2 - 10^{5}$ rounded to the same number.
+
+**With pivoting**, the rows are swapped first because $\\lvert 1\\rvert$ beats
+$\\varepsilon$. The multiplier is now $10^{-5}$, the second row becomes
+$1 - 10^{-5}$ which rounds to 1.00 with no loss that matters, and both unknowns
+come out as 1.00, correct to the three digits carried.
+
+![Relative error in the first unknown against the size of the small pivot, on logarithmic axes, computed in three significant digit arithmetic. Without a row swap the error climbs to one and stays there; with partial pivoting it stays at the rounding limit and falls as the pivot shrinks.](/courses/fe-ee/figures/math4-la-pivot-error.svg)
+
+The figure sweeps $\\varepsilon$ over seven decades with every operation rounded
+to three digits. The unpivoted curve saturates at a relative error of 1, meaning
+the computed first unknown carries no information at all, while the pivoted
+curve never does worse than the rounding unit of three-digit arithmetic, about
+$5\\times 10^{-3}$.
+
+## 9.5 Cramer's rule, and where it stops being sensible
+
+Cramer's rule solves $A\\mathbf{x} = \\mathbf{b}$ with $n+1$ determinants:
+
+$$x_{i} = \\frac{\\lvert A_{i}\\rvert}{\\lvert A\\rvert}$$
+
+where $A_{i}$ is $A$ with column $i$ replaced by $\\mathbf{b}$. It is exact, it
+needs no bookkeeping, and it is genuinely the fastest hand method at
+$2\\times 2$. Its cost, however, grows factorially, because expanding an
+$n\\times n$ determinant by cofactors takes $M(n) = n\\,M(n-1) + n$
+multiplications with $M(2) = 2$.
+
+| $n$ | Cramer, multiplications | Elimination, multiplications |
+|---|---|---|
+| 2 | 8 | 6 |
+| 3 | 39 | 17 |
+| 4 | 204 | 36 |
+| 5 | 1,235 | 65 |
+| 6 | 8,658 | 106 |
+| 8 | 623,528 | 232 |
+| 10 | 68,588,310 | 430 |
+
+The elimination column counts the forward sweep plus back substitution,
+$(2n^{3} + 3n^{2} - 5n)/6 + n(n+1)/2$; the Cramer column counts $n+1$ cofactor
+determinants plus $n$ divisions. At $n = 3$ elimination is already ahead by a
+factor of two, at $n = 5$ by nineteen, and at $n = 10$ by a hundred and sixty
+thousand. Elimination is cubic and Cramer is factorial, and no amount of
+cleverness closes a gap of that shape.
+
+Cramer keeps one genuine advantage: it produces a **single** unknown without
+computing the others, which is occasionally exactly what a question asks for.`,
+  examTip: 'On a three-by-three system where only one unknown is wanted, Cramer delivers it with two determinants. Where all three are wanted, eliminate. The break-even sits right at three-by-three, which is why both methods appear on this exam and neither is always right.',
+  importantNote: 'A small pivot is not a small problem. Three-digit arithmetic on a system with a pivot of ten to the minus five returns zero for an unknown whose true value is one, and no warning is produced. Always move the largest available entry into the pivot position.',
+},
+{
+  id: 'la-rank',
+  title: '10. Rank, Null Space, and When a System Has an Answer',
+  content: `## 10.1 Rank
+
+The **rank** of a matrix is the number of pivots left after row reduction,
+equivalently the number of independent rows, equivalently the number of
+independent columns. That those three counts always agree is the central
+non-obvious fact of the subject, and it is what makes rank a property of the
+matrix rather than of the way it was reduced.
+
+The **null space** of $A$ is the set of vectors it sends to zero,
+$N(A) = \\{\\mathbf{x} : A\\mathbf{x} = \\mathbf{0}\\}$, and its dimension is the
+**nullity**. The two are tied together:
+
+$$\\operatorname{rank}(A) + \\operatorname{nullity}(A) = n \\quad (n = \\text{number of columns})$$
+
+Read it as a conservation law. Each column is either a direction the matrix
+genuinely uses, or a direction it collapses; there are $n$ of them and no
+others.
+
+![The unit circle mapped by a matrix of determinant five, which produces an ellipse, and by a singular matrix of rank one, which flattens the whole circle onto a single line segment. The direction that the singular matrix sends to the origin is marked.](/courses/fe-ee/figures/math4-la-rank-collapse.svg)
+
+The picture is what rank means. A full-rank $2\\times 2$ sends the unit circle to
+an ellipse and loses nothing. A rank-one matrix squashes the same circle onto a
+segment: one whole direction, the null direction, has been sent to the origin,
+and no inverse can recover it because every point on the null line arrived at
+the same place.
+
+### 10.2 Worked example: rank, nullity and a null vector
+
+$$A = \\begin{bmatrix} 1 & 2 & 3 \\\\ 2 & 4 & 6 \\\\ 1 & 1 & 1 \\end{bmatrix}$$
+
+Row two is exactly twice row one, so subtracting kills it. Subtracting row one
+from row three gives $(0, -1, -2)$:
+
+$$\\begin{bmatrix} 1 & 2 & 3 \\\\ 0 & -1 & -2 \\\\ 0 & 0 & 0 \\end{bmatrix}$$
+
+Two pivots, so $\\operatorname{rank}(A) = 2$ and the nullity is
+$3 - 2 = 1$. To find the null direction, set the free variable $z = 1$: the
+second row gives $-y - 2 = 0$, so $y = -2$, and the first gives
+$x - 4 + 3 = 0$, so $x = 1$.
+
+$$A\\begin{bmatrix} 1 \\\\ -2 \\\\ 1\\end{bmatrix} = \\begin{bmatrix} 1 - 4 + 3 \\\\ 2 - 8 + 6 \\\\ 1 - 2 + 1\\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\\\ 0\\end{bmatrix}$$
+
+Confirmed by direct multiplication, which is how a null vector should always be
+checked.
+
+## 10.3 Existence and uniqueness, stated precisely
+
+Form the augmented matrix $[\\,A \\mid \\mathbf{b}\\,]$ by attaching the right-hand
+side as an extra column. Then, for $A\\mathbf{x} = \\mathbf{b}$ with $n$ unknowns:
+
+| Condition | Outcome |
+|---|---|
+| $\\operatorname{rank}(A) < \\operatorname{rank}([\\,A \\mid \\mathbf{b}\\,])$ | no solution |
+| $\\operatorname{rank}(A) = \\operatorname{rank}([\\,A \\mid \\mathbf{b}\\,]) = n$ | exactly one solution |
+| $\\operatorname{rank}(A) = \\operatorname{rank}([\\,A \\mid \\mathbf{b}\\,]) < n$ | infinitely many solutions |
+
+The first line says $\\mathbf{b}$ lies outside the span of the columns, so no
+combination of them can reach it. The third says the columns span enough to
+reach $\\mathbf{b}$ but not independently, so any null vector can be added to a
+solution and it remains one:
+
+$$\\mathbf{x} = \\mathbf{x}_{p} + \\mathbf{x}_{n}, \\qquad A\\mathbf{x}_{n} = \\mathbf{0}$$
+
+That is the same particular-plus-homogeneous structure as a driven differential
+equation, and for the same reason: both are linear operators.
+
+### 10.4 Worked example: the same matrix, two right-hand sides
+
+Keep $A$ from above.
+
+**Consistent.** With $\\mathbf{b} = (6, 12, 3)$ the elimination that killed row
+two also sends its right-hand entry to $12 - 12 = 0$, so no contradiction
+appears and the augmented rank is 2, matching. Setting $z = 0$ gives
+$-y = -3$, so $y = 3$, and then $x + 6 = 6$, so $x = 0$. The whole solution set
+is
+
+$$\\mathbf{x} = \\begin{bmatrix} 0 \\\\ 3 \\\\ 0\\end{bmatrix} + t\\begin{bmatrix} 1 \\\\ -2 \\\\ 1\\end{bmatrix}$$
+
+Test it at $t = 2$: the vector $(2, -1, 2)$ gives
+$2 - 2 + 6 = 6$, $4 - 4 + 12 = 12$ and $2 - 1 + 2 = 3$. All three hold, so the
+whole line really does solve the system.
+
+**Inconsistent.** Change only the middle entry, to
+$\\mathbf{b} = (6, 13, 3)$. Now the same elimination sends it to
+$13 - 12 = 1$, leaving the row
+
+$$\\begin{bmatrix} 0 & 0 & 0 \\mid 1 \\end{bmatrix}$$
+
+which asserts $0 = 1$. The augmented rank is 3 while the coefficient rank is 2,
+so there is **no** solution. One entry changed by one unit moved the problem
+from an infinite family of answers to none at all, and nothing about the
+coefficient matrix changed.
+
+## 10.5 What this means in a circuit
+
+A singular nodal or mesh matrix is almost never an arithmetic slip; it is a
+modelling error, and the null space says which one. A null vector of all ones
+means every node voltage can be shifted by the same amount without changing any
+branch current, which is precisely the symptom of a network with no reference
+node. A null vector supported on one loop means that loop equation was already
+implied by the others.
+
+Grounding a node removes one column and one row and restores full rank. That is
+why every nodal analysis starts by choosing a reference: not for convenience,
+but because without it the system genuinely has no unique answer.`,
+  examTip: 'Compute the rank of the coefficient matrix and of the augmented matrix together, in one reduction. Comparing the two numbers, and then comparing against the number of unknowns, decides existence and uniqueness with no further work.',
+  importantNote: 'Rank plus nullity equals the number of COLUMNS, not the number of rows. For a non-square matrix the distinction changes the answer, and it is the detail that turns a correct reduction into a wrong nullity.',
+},
+{
+  id: 'la-vector-spaces',
+  title: '11. Vector Spaces, Independence and Basis',
+  content: `## 11.1 What a vector space is, in the version the exam uses
+
+A vector space is a set closed under addition and under scalar multiplication,
+containing a zero element. On this exam the sets that matter are
+$\\mathbb{R}^{n}$ and its subspaces, and the useful question is always the same:
+is this particular set a subspace?
+
+Two tests settle it. The set must contain the zero vector, and any combination
+of two members must stay inside. The null space of a matrix passes both, since
+$A\\mathbf{0} = \\mathbf{0}$ and
+$A(c_{1}\\mathbf{x}_{1} + c_{2}\\mathbf{x}_{2}) = \\mathbf{0}$ whenever both
+pieces are annihilated. The column space passes as well. The solution set of
+$A\\mathbf{x} = \\mathbf{b}$ with $\\mathbf{b} \\ne \\mathbf{0}$ fails the very
+first test, because $\\mathbf{x} = \\mathbf{0}$ does not satisfy it; that set is
+a shifted copy of the null space, not a subspace.
+
+## 11.2 Linear independence
+
+Vectors $\\mathbf{v}_{1}, \\ldots, \\mathbf{v}_{k}$ are independent when the only
+combination reaching zero is the trivial one:
+
+$$c_{1}\\mathbf{v}_{1} + c_{2}\\mathbf{v}_{2} + \\cdots + c_{k}\\mathbf{v}_{k} = \\mathbf{0} \\quad\\Longrightarrow\\quad c_{1} = c_{2} = \\cdots = c_{k} = 0$$
+
+The practical test is to stack them as the columns of a matrix. They are
+independent exactly when that matrix has rank $k$, and for $k = n$ square that
+reduces to a determinant test:
+
+$$\\lvert V\\rvert \\ne 0 \\iff \\text{the columns are independent}$$
+
+A **basis** is an independent set that spans the space. Every basis of an
+$n$-dimensional space has exactly $n$ members, so in $\\mathbb{R}^{3}$ any three
+independent vectors form a basis and any four vectors are dependent, without
+computing anything.
+
+### 11.3 Worked example: a dependent set, with the relation found
+
+Test $\\mathbf{v}_{1} = (1, 2, 3)$, $\\mathbf{v}_{2} = (2, 1, 0)$ and
+$\\mathbf{v}_{3} = (4, 5, 6)$.
+
+$$\\lvert V\\rvert = \\begin{vmatrix} 1 & 2 & 4 \\\\ 2 & 1 & 5 \\\\ 3 & 0 & 6\\end{vmatrix} = 1(6 - 0) - 2(12 - 15) + 4(0 - 3) = 6 + 6 - 12 = 0$$
+
+Zero, so the set is dependent, and one member is a combination of the others.
+Finding which takes one small system. Write
+$\\mathbf{v}_{3} = a\\mathbf{v}_{1} + b\\mathbf{v}_{2}$ and read the third
+components: $3a = 6$, so $a = 2$. The first components then give
+$2 + 2b = 4$, so $b = 1$. Verify with the untouched second component:
+$2(2) + 1(1) = 5$, which matches.
+
+$$\\mathbf{v}_{3} = 2\\mathbf{v}_{1} + \\mathbf{v}_{2}$$
+
+The determinant announced the dependence; solving for the relation named it. On
+the exam the first is usually all that is asked, but the second is what a
+circuit question wants when it asks which loop equation was redundant.
+
+### 11.4 Worked example: a basis, and coordinates in it
+
+Test $\\mathbf{u}_{1} = (1, 0, 1)$, $\\mathbf{u}_{2} = (0, 1, 1)$ and
+$\\mathbf{u}_{3} = (1, 1, 0)$.
+
+$$\\lvert U\\rvert = \\begin{vmatrix} 1 & 0 & 1 \\\\ 0 & 1 & 1 \\\\ 1 & 1 & 0\\end{vmatrix} = 1(0 - 1) - 0(0 - 1) + 1(0 - 1) = -1 - 1 = -2$$
+
+Non-zero, so these three are independent and therefore a basis of
+$\\mathbb{R}^{3}$. Express $(3, 4, 5)$ in it by solving
+$c_{1}\\mathbf{u}_{1} + c_{2}\\mathbf{u}_{2} + c_{3}\\mathbf{u}_{3} = (3,4,5)$,
+which reads
+
+$$c_{1} + c_{3} = 3, \\qquad c_{2} + c_{3} = 4, \\qquad c_{1} + c_{2} = 5$$
+
+Adding all three gives $2(c_{1} + c_{2} + c_{3}) = 12$, so the total is 6, and
+each coefficient is 6 minus the equation that omits it:
+
+$$c_{1} = 6 - 4 = 2, \\qquad c_{2} = 6 - 3 = 3, \\qquad c_{3} = 6 - 5 = 1$$
+
+Check by rebuilding the vector:
+$2(1,0,1) + 3(0,1,1) + 1(1,1,0) = (3, 4, 5)$. The coordinates
+$(2, 3, 1)$ describe the same point as $(3, 4, 5)$ does in the standard basis;
+changing basis changes the numbers, never the vector.
+
+## 11.5 The four subspaces attached to a matrix
+
+| Subspace | Definition | Dimension | Lives in |
+|---|---|---|---|
+| column space | all $A\\mathbf{x}$ | $r$ | $\\mathbb{R}^{m}$ |
+| null space | all $\\mathbf{x}$ with $A\\mathbf{x} = \\mathbf{0}$ | $n - r$ | $\\mathbb{R}^{n}$ |
+| row space | all $A^{T}\\mathbf{y}$ | $r$ | $\\mathbb{R}^{n}$ |
+| left null space | all $\\mathbf{y}$ with $A^{T}\\mathbf{y} = \\mathbf{0}$ | $m - r$ | $\\mathbb{R}^{m}$ |
+
+Here $r$ is the rank, $m$ the number of rows and $n$ the number of columns. The
+two dimensions in each column of $\\mathbb{R}$ add to the size of the space they
+sit in, which is the rank-nullity theorem applied to $A$ and to $A^{T}$. The row
+space and the null space are orthogonal complements inside
+$\\mathbb{R}^{n}$, and that orthogonality is exactly the fact least squares will
+exploit.`,
+  examTip: 'To test independence of n vectors in n dimensions, stack them as columns and take one determinant. Non-zero means independent, and it means basis, and it means invertible, and it means unique solutions, all at once. Those are five names for one condition.',
+  importantNote: 'The set of solutions of Ax = b is not a vector space when b is non-zero, because it does not contain the zero vector. It is the null space shifted by any one particular solution, which is why every such solution set has the same shape and size.',
+},
+{
+  id: 'la-eigen-depth',
+  title: '12. Eigenvalues as Invariant Directions',
+  content: `## 12.1 The definition, read as geometry
+
+$$A\\mathbf{v} = \\lambda\\mathbf{v}, \\qquad \\mathbf{v} \\ne \\mathbf{0}$$
+
+Almost every vector is both stretched and turned by a matrix. An eigenvector is
+a direction the matrix refuses to turn: it comes back pointing the same way, or
+exactly reversed, scaled by $\\lambda$. Rearranged, the definition demands that
+
+$$(A - \\lambda I)\\mathbf{v} = \\mathbf{0}$$
+
+have a non-zero solution, which by the previous section means the matrix
+$A - \\lambda I$ must be singular. That gives the characteristic equation:
+
+$$\\lvert A - \\lambda I\\rvert = 0$$
+
+For $2\\times 2$ it expands to a quadratic whose coefficients are already in
+front of you:
+
+$$\\lambda^{2} - \\operatorname{tr}(A)\\,\\lambda + \\lvert A\\rvert = 0$$
+
+so the eigenvalues sum to the trace and multiply to the determinant. Both checks
+are free and both should be used every time.
+
+### 12.2 Worked example: a non-symmetric two-by-two
+
+$$A = \\begin{bmatrix} 4 & -2 \\\\ 1 & 1\\end{bmatrix}, \\qquad \\operatorname{tr}(A) = 5, \\qquad \\lvert A\\rvert = 4 + 2 = 6$$
+
+$$\\lambda^{2} - 5\\lambda + 6 = 0 \\quad\\Longrightarrow\\quad \\lambda = 2, \\ 3$$
+
+For $\\lambda = 2$, the matrix $A - 2I = \\begin{bmatrix} 2 & -2 \\\\ 1 & -1\\end{bmatrix}$
+gives the single independent equation $v_{1} = v_{2}$, so
+$\\mathbf{v} = (1, 1)$. For $\\lambda = 3$, $A - 3I = \\begin{bmatrix} 1 & -2 \\\\ 1 & -2\\end{bmatrix}$
+gives $v_{1} = 2v_{2}$, so $\\mathbf{v} = (2, 1)$.
+
+Verify both by residual, which is the only check that cannot be fooled:
+
+$$A\\begin{bmatrix}1\\\\1\\end{bmatrix} - 2\\begin{bmatrix}1\\\\1\\end{bmatrix} = \\begin{bmatrix}2\\\\2\\end{bmatrix} - \\begin{bmatrix}2\\\\2\\end{bmatrix} = \\begin{bmatrix}0\\\\0\\end{bmatrix}$$
+$$A\\begin{bmatrix}2\\\\1\\end{bmatrix} - 3\\begin{bmatrix}2\\\\1\\end{bmatrix} = \\begin{bmatrix}6\\\\3\\end{bmatrix} - \\begin{bmatrix}6\\\\3\\end{bmatrix} = \\begin{bmatrix}0\\\\0\\end{bmatrix}$$
+
+![The unit circle and its image under a matrix with eigenvalues two and three. The image is an ellipse, and two marked directions come back along themselves, stretched by two and by three, while a control vector drawn from a different quadrant is visibly turned.](/courses/fe-ee/figures/math4-la-eigen-directions.svg)
+
+The two invariant directions are not perpendicular, because this matrix is not
+symmetric. A control vector makes the contrast: $(0,1)$ is sent to $(-2, 1)$, a
+completely different direction. Only two directions in the whole plane survive
+unturned, and they are what the characteristic equation finds.
+
+Eigenvectors are directions, so scale is arbitrary: $(2,1)$, $(4,2)$ and
+$(-2,-1)$ are all correct answers for $\\lambda = 3$. An option that differs
+from your vector by a constant factor is not a wrong option.
+
+### 12.3 Worked example: a three-by-three, where the answer is visible
+
+$$A = \\begin{bmatrix} 2 & 0 & 0 \\\\ 1 & 3 & 0 \\\\ -1 & 2 & 4\\end{bmatrix}$$
+
+The matrix is triangular, so $A - \\lambda I$ is triangular too and its
+determinant is the product of the diagonal. The characteristic equation is
+therefore
+
+$$(2 - \\lambda)(3 - \\lambda)(4 - \\lambda) = 0 \\quad\\Longrightarrow\\quad \\lambda = 2,\\ 3,\\ 4$$
+
+The eigenvalues of any triangular matrix are simply its diagonal entries, which
+is worth recognising instantly. The checks agree: the trace is
+$2 + 3 + 4 = 9$ and the determinant is $2 \\times 3 \\times 4 = 24$.
+
+The eigenvectors still need work. For $\\lambda = 4$ the first two rows of
+$A - 4I$ force $v_{1} = 0$ and then $v_{2} = 0$, leaving $\\mathbf{v} = (0,0,1)$.
+For $\\lambda = 3$ the first row forces $v_{1} = 0$ and the third gives
+$2v_{2} + v_{3} = 0$, so $\\mathbf{v} = (0, 1, -2)$. For $\\lambda = 2$ the second
+row gives $v_{2} = -v_{1}$ and the third gives $-3v_{1} + 2v_{3} = 0$, so
+$\\mathbf{v} = (2, -2, 3)$.
+
+Each was confirmed by residual. Taking the last one:
+
+$$A\\begin{bmatrix}2\\\\-2\\\\3\\end{bmatrix} = \\begin{bmatrix}4\\\\-4\\\\6\\end{bmatrix} = 2\\begin{bmatrix}2\\\\-2\\\\3\\end{bmatrix}$$
+
+## 12.4 Where the exam meets them
+
+Eigenvalues are the same quantity under several names, and recognising the
+disguise is most of the work.
+
+| Context | The eigenvalues are | What they decide |
+|---|---|---|
+| state-space $\\dot{\\mathbf{x}} = A\\mathbf{x}$ | poles of the transfer function | stability |
+| coupled oscillators | squared natural frequencies | mode frequencies |
+| network with symmetric $A$ | principal stiffnesses | energy directions |
+| repeated multiplication $A^{k}$ | growth factors per step | which mode dominates |
+
+Stability in the first row is the statement that every $\\lambda$ has a negative
+real part, which is the same condition the differential equations chapter states
+about characteristic roots. It is the same equation: the characteristic
+polynomial of $A$ and the characteristic polynomial of the corresponding
+scalar ODE are one object.`,
+  examTip: 'Write the characteristic equation for a two-by-two straight from the trace and the determinant, as lambda squared minus trace lambda plus determinant. It is faster than expanding the determinant of A minus lambda I, and the same two numbers then check the roots you get.',
+  importantNote: 'Verify an eigenpair by computing A v minus lambda v and confirming it is the zero vector. Checking that the eigenvalue satisfies the characteristic polynomial confirms only the eigenvalue; a sign slip in the eigenvector survives that check untouched.',
+},
+{
+  id: 'la-diagonalise',
+  title: '13. Diagonalisation, Powers, and What Repetition Forgets',
+  content: `## 13.1 The factorisation
+
+If an $n\\times n$ matrix has $n$ independent eigenvectors, collect them as the
+columns of $P$ and the eigenvalues on the diagonal of $D$. Then
+$AP = PD$ column by column, and since $P$ is invertible,
+
+$$A = PDP^{-1}, \\qquad D = P^{-1}AP$$
+
+The payoff is powers. Every internal $P^{-1}P$ collapses:
+
+$$A^{k} = PDP^{-1}\\cdot PDP^{-1}\\cdots PDP^{-1} = PD^{k}P^{-1}$$
+
+and $D^{k}$ is just each eigenvalue raised to $k$. A problem that would need
+$k$ matrix multiplications becomes one exponentiation of $n$ numbers.
+
+### 13.2 Worked example: a fifth power without five multiplications
+
+Take the matrix from the previous section, with $\\lambda = 2$ and 3 and
+eigenvectors $(1,1)$ and $(2,1)$:
+
+$$P = \\begin{bmatrix} 1 & 2 \\\\ 1 & 1\\end{bmatrix}, \\qquad \\lvert P\\rvert = 1 - 2 = -1, \\qquad P^{-1} = \\begin{bmatrix} -1 & 2 \\\\ 1 & -1\\end{bmatrix}$$
+
+Confirm the factorisation first, because everything downstream depends on it:
+
+$$PDP^{-1} = \\begin{bmatrix} 2 & 6 \\\\ 2 & 3\\end{bmatrix}\\begin{bmatrix} -1 & 2 \\\\ 1 & -1\\end{bmatrix} = \\begin{bmatrix} 4 & -2 \\\\ 1 & 1\\end{bmatrix} = A$$
+
+Now the fifth power, with $2^{5} = 32$ and $3^{5} = 243$:
+
+$$A^{5} = P\\begin{bmatrix} 32 & 0 \\\\ 0 & 243\\end{bmatrix}P^{-1} = \\begin{bmatrix} 32 & 486 \\\\ 32 & 243\\end{bmatrix}\\begin{bmatrix} -1 & 2 \\\\ 1 & -1\\end{bmatrix} = \\begin{bmatrix} 454 & -422 \\\\ 211 & -179\\end{bmatrix}$$
+
+Two independent checks. The trace of $A^{5}$ must be the sum of the fifth powers
+of the eigenvalues, and its determinant must be the fifth power of the
+determinant:
+
+$$454 - 179 = 275 = 32 + 243, \\qquad \\lvert A^{5}\\rvert = 7776 = 6^{5}$$
+
+Both hold, and repeating the multiplication directly five times reproduces the
+same matrix entry for entry.
+
+## 13.3 When diagonalisation is impossible
+
+A repeated eigenvalue is allowed; a shortage of independent eigenvectors is not.
+
+$$A = \\begin{bmatrix} 2 & 1 \\\\ 0 & 2\\end{bmatrix}$$
+
+has $\\lambda = 2$ twice, but $A - 2I = \\begin{bmatrix} 0 & 1 \\\\ 0 & 0\\end{bmatrix}$
+forces $v_{2} = 0$, leaving only the single direction $(1, 0)$. One eigenvector
+for a two-dimensional space is not enough, so no $P$ exists and the matrix is
+**defective**. Its powers still have a closed form, but it carries a factor of
+$k$ that no diagonal matrix can produce:
+
+$$A^{k} = \\begin{bmatrix} 2^{k} & k\\,2^{k-1} \\\\ 0 & 2^{k}\\end{bmatrix}, \\qquad A^{3} = \\begin{bmatrix} 8 & 12 \\\\ 0 & 8\\end{bmatrix}$$
+
+Multiplying $A$ by itself three times confirms the entries. That stray factor of
+$k$ is the discrete counterpart of the factor of $t$ that a repeated root forces
+into the solution of a differential equation, and it appears for the same
+reason: a shortage of independent solutions.
+
+### 13.4 Worked example: what survives repeated multiplication
+
+Take $A = \\begin{bmatrix} 4 & -2 \\\\ 1 & 1\\end{bmatrix}$ again and start from
+$\\mathbf{v} = (1, 0)$. Decompose the start into eigenvectors, which is one small
+system: $(1,0) = a(1,1) + b(2,1)$ gives $a + 2b = 1$ and $a + b = 0$, so
+$a = -1$ and $b = 1$. Then
+
+$$A^{k}\\mathbf{v} = -2^{k}\\begin{bmatrix}1\\\\1\\end{bmatrix} + 3^{k}\\begin{bmatrix}2\\\\1\\end{bmatrix}$$
+
+The two modes grow at different rates, so their **ratio** shrinks like
+$(2/3)^{k}$. Whatever the starting vector, the direction converges to the
+eigenvector of the largest eigenvalue, and the leftover misalignment decays
+geometrically at the ratio of the two eigenvalues.
+
+![The angle between the repeatedly multiplied vector and the dominant eigenvector, plotted against the number of multiplications on a logarithmic scale. The points fall on a straight line parallel to a reference decay of two thirds per step.](/courses/fe-ee/figures/math4-la-power-iteration.svg)
+
+Starting at $(1,0)$ the angle to $(2,1)$ is $26.57$ degrees. After eight
+multiplications it is $0.4578$ degrees, and each further step multiplies the
+angle by a factor approaching $2/3$: the measured ratios are 0.648, 0.655 and
+0.659 at steps 6, 7 and 8, converging on 0.667.
+
+This is the **power method**, the simplest eigenvalue algorithm there is, and it
+also explains the physics. In a system with several modes, repeated application
+of the dynamics leaves only the dominant one, which is why a network settles
+into its slowest mode and why the largest eigenvalue is the one that decides
+long-term behaviour.
+
+## 13.5 The summary table
+
+| Situation | Diagonalisable | Powers |
+|---|---|---|
+| $n$ distinct eigenvalues | always | $PD^{k}P^{-1}$ |
+| repeated eigenvalue, enough eigenvectors | yes | $PD^{k}P^{-1}$ |
+| repeated eigenvalue, too few eigenvectors | no | Jordan form, with $k$ factors |
+| real symmetric | always, and orthogonally | $Q\\Lambda^{k}Q^{T}$ |
+
+The last row is the one an FE candidate meets most, because the matrices that
+come out of circuits and structures are symmetric by construction.`,
+  examTip: 'Distinct eigenvalues guarantee diagonalisability, so you never need to test the eigenvectors in that case. Only a repeated eigenvalue can fail, and then the question is whether it supplies as many independent eigenvectors as its multiplicity.',
+  importantNote: 'A matrix power is not the entrywise power. Raising each element of a two by two to the fourth is a different and generally meaningless matrix; the correct route is repeated multiplication, or the eigenvalue factorisation when it exists.',
+},
+{
+  id: 'la-symmetric',
+  title: '14. Symmetric Matrices, Orthogonality and Energy',
+  content: `## 14.1 Three guarantees
+
+A real symmetric matrix, $A^{T} = A$, comes with promises no general matrix
+makes: every eigenvalue is real, eigenvectors belonging to different eigenvalues
+are orthogonal, and the matrix is always diagonalisable, by an orthogonal
+matrix:
+
+$$A = Q\\Lambda Q^{T}, \\qquad Q^{T}Q = I$$
+
+The orthogonality is worth proving because the proof is three lines and it
+explains the result. Let $A\\mathbf{v}_{1} = \\lambda_{1}\\mathbf{v}_{1}$ and
+$A\\mathbf{v}_{2} = \\lambda_{2}\\mathbf{v}_{2}$. Then
+
+$$\\lambda_{1}(\\mathbf{v}_{1}\\cdot\\mathbf{v}_{2}) = (A\\mathbf{v}_{1})\\cdot\\mathbf{v}_{2} = \\mathbf{v}_{1}\\cdot(A^{T}\\mathbf{v}_{2}) = \\mathbf{v}_{1}\\cdot(A\\mathbf{v}_{2}) = \\lambda_{2}(\\mathbf{v}_{1}\\cdot\\mathbf{v}_{2})$$
+
+so $(\\lambda_{1} - \\lambda_{2})(\\mathbf{v}_{1}\\cdot\\mathbf{v}_{2}) = 0$. If the
+eigenvalues differ, the dot product must vanish. Symmetry entered at exactly one
+step, where $A^{T}$ was replaced by $A$, and without it the argument collapses.
+
+### 14.2 Worked example: a symmetric pair, orthogonal by construction
+
+$$A = \\begin{bmatrix} 5 & 2 \\\\ 2 & 2\\end{bmatrix}, \\qquad \\operatorname{tr}(A) = 7, \\qquad \\lvert A\\rvert = 10 - 4 = 6$$
+
+$$\\lambda^{2} - 7\\lambda + 6 = 0 \\quad\\Longrightarrow\\quad \\lambda = 6, \\ 1$$
+
+For $\\lambda = 6$, the row $-v_{1} + 2v_{2} = 0$ gives $\\mathbf{v} = (2, 1)$;
+for $\\lambda = 1$, the row $4v_{1} + 2v_{2} = 0$ gives $\\mathbf{v} = (1, -2)$.
+Both check by residual, $A(2,1) = (12, 6) = 6(2,1)$ and
+$A(1,-2) = (1, -2)$. Their dot product is
+
+$$(2)(1) + (1)(-2) = 0$$
+
+exactly as the theorem promised. Normalising each and stacking them gives the
+orthogonal matrix
+
+$$Q = \\frac{1}{\\sqrt{5}}\\begin{bmatrix} 2 & 1 \\\\ 1 & -2\\end{bmatrix}, \\qquad Q\\begin{bmatrix} 6 & 0 \\\\ 0 & 1\\end{bmatrix}Q^{T} = A$$
+
+which was confirmed by multiplying it out. Note that $Q^{-1} = Q^{T}$, so this
+factorisation needs no inversion at all: the transpose does the job, and that is
+the whole practical advantage of orthogonality.
+
+## 14.3 Quadratic forms and energy
+
+Every symmetric matrix defines a quadratic form:
+
+$$q(\\mathbf{x}) = \\mathbf{x}^{T}A\\mathbf{x} = \\sum_{i}\\sum_{j} a_{ij}x_{i}x_{j}$$
+
+For the matrix above,
+$q(x, y) = 5x^{2} + 4xy + 2y^{2}$; the off-diagonal entry appears twice, once as
+$a_{12}$ and once as $a_{21}$, which is where the 4 comes from. Quadratic forms
+are how stored energy is written: the energy in a set of coupled capacitors or
+inductors is a quadratic form in the voltages or currents, and its matrix is
+symmetric because the coupling is reciprocal.
+
+### 14.4 Worked example: the same energy, computed two ways
+
+Evaluate $q$ at $\\mathbf{x} = (1, 1)$ directly:
+
+$$q = 5(1)^{2} + 4(1)(1) + 2(1)^{2} = 5 + 4 + 2 = 11$$
+
+Now in the eigenbasis. The components of $(1,1)$ along the two normalised
+eigenvectors are
+
+$$c_{1} = \\frac{(1,1)\\cdot(2,1)}{\\sqrt{5}} = \\frac{3}{\\sqrt{5}}, \\qquad c_{2} = \\frac{(1,1)\\cdot(1,-2)}{\\sqrt{5}} = \\frac{-1}{\\sqrt{5}}$$
+
+In that basis the form is diagonal, so it is just a weighted sum of squares with
+the eigenvalues as weights:
+
+$$q = \\lambda_{1}c_{1}^{2} + \\lambda_{2}c_{2}^{2} = 6\\left(\\tfrac{9}{5}\\right) + 1\\left(\\tfrac{1}{5}\\right) = \\frac{54 + 1}{5} = 11$$
+
+The two agree. The second route is the more informative one: it says the
+quadratic form is nothing but a stretch along the eigenvector directions, with
+the eigenvalues as the stretch factors.
+
+## 14.5 Definiteness, and why circuit matrices are well behaved
+
+| Sign of every eigenvalue | Name | Meaning of $\\mathbf{x}^{T}A\\mathbf{x}$ |
+|---|---|---|
+| all positive | positive definite | strictly positive except at the origin |
+| all non-negative | positive semidefinite | never negative, but can vanish |
+| mixed signs | indefinite | takes both signs |
+| all negative | negative definite | strictly negative except at the origin |
+
+A conductance matrix assembled from positive resistors, with a reference node
+chosen, is symmetric and positive definite. That single fact settles several
+questions at once: its determinant is positive so it is invertible, its
+eigenvalues are real and positive so the nodal system is uniquely solvable, and
+the quadratic form $\\mathbf{V}^{T}G\\mathbf{V}$ is the power dissipated, which
+must be positive for a passive network. The mathematics and the physics are
+saying the same thing.
+
+Losing the reference node makes the matrix positive **semi**definite instead:
+the all-ones vector produces zero power, because shifting every node voltage
+equally dissipates nothing. That null direction is exactly the singularity found
+in the previous chapter, now with a physical reading.`,
+  examTip: 'Symmetry is worth checking before doing anything else with a matrix. If it is symmetric, the eigenvalues are real, the eigenvectors are orthogonal, and the inverse of the eigenvector matrix is its transpose, which removes the single most error-prone step in the whole calculation.',
+  importantNote: 'The off-diagonal entry of a symmetric matrix appears TWICE in its quadratic form. The matrix with 2 in both off-diagonal slots gives the cross term 4xy, not 2xy, and halving it is the standard error when converting a quadratic form back into a matrix.',
+},
+{
+  id: 'la-applications',
+  title: '15. Where the FE Uses It: Mesh, Nodal and Least Squares',
+  content: `## 15.1 Mesh analysis in matrix form
+
+For a planar network of resistors and voltage sources, mesh analysis produces a
+symmetric system $R\\mathbf{I} = \\mathbf{V}$ built by inspection:
+
+- $R_{kk}$ is the sum of every resistance around mesh $k$
+- $R_{jk}$ is minus the resistance shared between meshes $j$ and $k$
+- $V_{k}$ is the net source rise driving mesh $k$
+
+The minus signs on the off-diagonal are not a convention to memorise; they come
+from the neighbouring mesh current flowing the opposite way through the shared
+branch.
+
+### 15.2 Worked example: two meshes, by inspection and by Cramer
+
+Mesh 1 contains a 6 ohm resistor and a 4 ohm resistor shared with mesh 2, driven
+by 16 V. Mesh 2 contains that same 4 ohm resistor and an 8 ohm resistor, driven
+by 4 V.
+
+$$\\begin{bmatrix} 10 & -4 \\\\ -4 & 12\\end{bmatrix}\\begin{bmatrix} I_{1} \\\\ I_{2}\\end{bmatrix} = \\begin{bmatrix} 16 \\\\ 4\\end{bmatrix}, \\qquad \\lvert R\\rvert = 120 - 16 = 104$$
+
+$$I_{1} = \\frac{1}{104}\\begin{vmatrix} 16 & -4 \\\\ 4 & 12\\end{vmatrix} = \\frac{192 + 16}{104} = \\frac{208}{104} = 2\\ \\mathrm{A}$$
+$$I_{2} = \\frac{1}{104}\\begin{vmatrix} 10 & 16 \\\\ -4 & 4\\end{vmatrix} = \\frac{40 + 64}{104} = \\frac{104}{104} = 1\\ \\mathrm{A}$$
+
+Check against the physical circuit rather than against the algebra. Mesh 1:
+$6(2) + 4(2 - 1) = 12 + 4 = 16$, matching its source. Mesh 2:
+$8(1) + 4(1 - 2) = 8 - 4 = 4$, matching its source. The shared branch carries
+$I_{1} - I_{2} = 1\\ \\mathrm{A}$, which is why it contributes 4 V to one loop
+and $-4$ V to the other.
+
+### 15.3 Worked example: three nodes, and a matrix that is its own diagram
+
+Nodal analysis builds $G\\mathbf{V} = \\mathbf{I}$ by the mirror-image rule:
+$G_{kk}$ sums every conductance touching node $k$, $G_{jk}$ is minus the
+conductance directly between nodes $j$ and $k$, and $I_{k}$ is the current
+injected into node $k$.
+
+$$\\begin{bmatrix} 7 & -2 & -1 \\\\ -2 & 6 & -3 \\\\ -1 & -3 & 9\\end{bmatrix}\\begin{bmatrix} V_{1} \\\\ V_{2} \\\\ V_{3}\\end{bmatrix} = \\begin{bmatrix} 7 \\\\ 11 \\\\ -2\\end{bmatrix}$$
+
+The matrix is readable as a wiring diagram. The off-diagonals say the three
+nodes are joined by 2, 1 and 3 siemens, and each diagonal must then account for
+the rest: node 1 has $7 - 2 - 1 = 4$ siemens to ground, node 2 has
+$6 - 2 - 3 = 1$, and node 3 has $9 - 1 - 3 = 5$. Every one is positive, so the
+network is physically realisable.
+
+Elimination in the previous section gave $\\mathbf{V} = (2, 3, 1)$ volts.
+Confirm it at the nodes, which is a stronger check than re-running the algebra:
+
+$$4(2) + 2(2 - 3) + 1(2 - 1) = 8 - 2 + 1 = 7$$
+$$1(3) + 2(3 - 2) + 3(3 - 1) = 3 + 2 + 6 = 11$$
+$$5(1) + 1(1 - 2) + 3(1 - 3) = 5 - 1 - 6 = -2$$
+
+All three injected currents are reproduced, so Kirchhoff's current law holds at
+every node and the solution is right.
+
+## 15.4 Least squares, and what "best fit" means
+
+When a system has more equations than unknowns it usually has no exact solution:
+$A\\mathbf{x} = \\mathbf{b}$ with $\\mathbf{b}$ outside the column space. The least
+squares answer is the $\\mathbf{x}$ making the residual
+$\\mathbf{r} = \\mathbf{b} - A\\mathbf{x}$ as short as possible, and the condition
+for that is geometric. The residual is shortest when it is **perpendicular** to
+everything reachable, that is to every column of $A$:
+
+$$A^{T}\\mathbf{r} = \\mathbf{0} \\quad\\Longrightarrow\\quad A^{T}A\\mathbf{x} = A^{T}\\mathbf{b}$$
+
+Those are the **normal equations**. The matrix $A^{T}A$ is square, symmetric, and
+positive definite whenever the columns of $A$ are independent, so the system has
+exactly one solution.
+
+### 15.5 Worked example: a straight line through five points
+
+Fit $y = a + bx$ to $(1, 2.1)$, $(2, 3.9)$, $(3, 6.2)$, $(4, 7.8)$ and
+$(5, 10.1)$. With a column of ones and a column of $x$ values,
+
+$$A^{T}A = \\begin{bmatrix} 5 & 15 \\\\ 15 & 55\\end{bmatrix}, \\qquad A^{T}\\mathbf{b} = \\begin{bmatrix} 30.1 \\\\ 110.2\\end{bmatrix}, \\qquad \\lvert A^{T}A\\rvert = 275 - 225 = 50$$
+
+The four sums are $n = 5$, $\\sum x = 15$, $\\sum x^{2} = 55$ and
+$\\sum xy = 110.2$, with $\\sum y = 30.1$. Solving by Cramer,
+
+$$a = \\frac{30.1 \\times 55 - 15 \\times 110.2}{50}, \\qquad 30.1 \\times 55 = 1655.5, \\qquad 15 \\times 110.2 = 1653$$
+$$a = \\frac{1655.5 - 1653}{50} = \\frac{2.5}{50} = 0.05$$
+$$b = \\frac{5 \\times 110.2 - 15 \\times 30.1}{50}, \\qquad 5 \\times 110.2 = 551, \\qquad 15 \\times 30.1 = 451.5$$
+$$b = \\frac{551 - 451.5}{50} = \\frac{99.5}{50} = 1.99$$
+
+so the fit is $y = 0.05 + 1.99x$. The same coefficients come out of a QR
+factorisation and out of a general least-squares routine, to nine decimal
+places, which is the independent confirmation.
+
+![Two stacked panels sharing an x-axis. The upper panel shows five data points with the fitted line y equals zero point zero five plus one point nine nine x. The lower panel shows the five residuals on their own much smaller scale, alternating in sign about zero.](/courses/fe-ee/figures/math4-la-least-squares.svg)
+
+### 15.6 Worked example: checking the fit without refitting it
+
+The residuals are the measured values minus the fitted ones:
+
+$$\\mathbf{r} = (0.06,\\ -0.13,\\ 0.18,\\ -0.21,\\ 0.10)$$
+
+The two normal equations, written out, say exactly that the residuals sum to
+zero and that they are uncorrelated with $x$:
+
+$$\\sum r_{i} = 0.06 - 0.13 + 0.18 - 0.21 + 0.10 = 0$$
+$$\\sum x_{i}r_{i} = 0.06 - 0.26 + 0.54 - 0.84 + 0.50 = 0$$
+
+Both hold exactly, which certifies the fit without repeating it. The sum of
+squared residuals is
+
+$$\\sum r_{i}^{2} = 0.0036 + 0.0169 + 0.0324 + 0.0441 + 0.0100 = 0.1070$$
+
+and no other straight line through this data can make it smaller. That is the
+meaning of "least squares", and the orthogonality conditions are how it is
+verified: not by trying other lines, but by confirming that the error has no
+component left in any direction the model could have used.`,
+  examTip: 'Build the mesh or nodal matrix straight from the circuit: diagonal entries sum everything touching that loop or node, off-diagonal entries are minus the shared element, and both matrices come out symmetric. If yours is not symmetric, a shared element has been entered on one side only.',
+  importantNote: 'Least squares makes the residuals ORTHOGONAL to the model, not individually small. A fit with a few large residuals can still be optimal, and the correct test is that the residuals sum to zero and have zero dot product with each column of the design matrix.',
+},
+{
+  id: 'la-set-b',
+  title: '16. Problem Set: Arithmetic, Determinants and Inverses',
+  content: `## 16.1 Problem Set A
+
+**A1.** For $A = \\begin{bmatrix} 2 & 0 \\\\ 1 & 3\\end{bmatrix}$ and
+$B = \\begin{bmatrix} 1 & 4 \\\\ 2 & 0\\end{bmatrix}$, find $AB$ and $BA$.
+
+$$AB = \\begin{bmatrix} 2 & 8 \\\\ 7 & 4\\end{bmatrix}, \\qquad BA = \\begin{bmatrix} 6 & 12 \\\\ 4 & 0\\end{bmatrix}$$
+
+Every entry differs, yet the traces agree at $2 + 4 = 6$ and $6 + 0 = 6$, as
+they must.
+
+**Trap.** Reporting $AB$ for both. Matrix multiplication is associative and
+distributive but not commutative, and the two products here share nothing except
+their trace and their determinant.
+
+**A2.** Find the determinant of
+$\\begin{bmatrix} 4 & -2 & 1 \\\\ 0 & 3 & 5 \\\\ 2 & 1 & -3\\end{bmatrix}$.
+
+Expanding along the first row with the sign pattern plus, minus, plus:
+
+$$4(3 \\times (-3) - 5 \\times 1) - (-2)(0 \\times (-3) - 5 \\times 2) + 1(0 \\times 1 - 3 \\times 2)$$
+$$= 4(-14) + 2(-10) + 1(-6) = -56 - 20 - 6 = -82$$
+
+Row reduction confirms it: clearing the first column leaves pivots
+$4$, $3$ and $-6.833333$, whose product is $-82$.
+
+**Trap.** Dropping the alternating sign on the middle cofactor gives
+$-56 + 20 - 6 = -42$. The sign belongs to the position, $(-1)^{i+j}$, and it is
+applied before the entry's own sign, so a negative entry in a minus position
+contributes positively.
+
+**A3.** Invert $\\begin{bmatrix} 3 & 1 \\\\ 5 & 2\\end{bmatrix}$.
+
+$$\\lvert A\\rvert = 6 - 5 = 1, \\qquad A^{-1} = \\begin{bmatrix} 2 & -1 \\\\ -5 & 3\\end{bmatrix}$$
+
+Check: $3(2) + 1(-5) = 1$ and $3(-1) + 1(3) = 0$, so the first row of the
+product is $(1, 0)$; the second row gives $(0, 1)$ the same way.
+
+**Trap.** Negating the off-diagonal without swapping the diagonal gives
+$\\begin{bmatrix} 3 & -1 \\\\ -5 & 2\\end{bmatrix}$, whose product with $A$ has
+first entry $3(3) + 1(-5) = 4$ rather than 1. The swap and the negation are two
+separate steps and both are required.
+
+**A4.** Solve $4x + 3y = 18$ and $2x - y = 4$ by Cramer's rule.
+
+$$\\lvert A\\rvert = 4(-1) - 3(2) = -10$$
+$$x = \\frac{1}{-10}\\begin{vmatrix} 18 & 3 \\\\ 4 & -1\\end{vmatrix} = \\frac{-18 - 12}{-10} = 3, \\qquad y = \\frac{1}{-10}\\begin{vmatrix} 4 & 18 \\\\ 2 & 4\\end{vmatrix} = \\frac{16 - 36}{-10} = 2$$
+
+Substituting back, $4(3) + 3(2) = 18$ and $2(3) - 2 = 4$.
+
+**Trap.** Replacing a **row** with the right-hand side instead of a column. That
+gives $\\begin{vmatrix} 18 & 4 \\\\ 2 & -1\\end{vmatrix} = -26$ and
+$x = 2.6$, which fails the substitution check immediately. Cramer replaces the
+column belonging to the unknown being solved for.
+
+**A5.** A $3\\times 3$ matrix has $\\lvert A\\rvert = 6$. Give
+$\\lvert 2A\\rvert$, $\\lvert A^{T}\\rvert$, $\\lvert A^{-1}\\rvert$ and
+$\\lvert A^{2}\\rvert$.
+
+$$\\lvert 2A\\rvert = 2^{3} \\times 6 = 48, \\qquad \\lvert A^{T}\\rvert = 6, \\qquad \\lvert A^{-1}\\rvert = \\tfrac{1}{6}, \\qquad \\lvert A^{2}\\rvert = 36$$
+
+**Trap.** Answering 12 for the first, by treating the scalar as multiplying the
+determinant once. Doubling the matrix doubles all three rows, and the
+determinant is linear in each row separately, so the factor is $2^{3}$. On a
+$4\\times 4$ it would be 16.
+
+## 16.2 Practice Problems: reading a matrix for structure
+
+For each statement, decide whether it is true for **all** square matrices.
+
+**(i)** $\\lvert A + B\\rvert = \\lvert A\\rvert + \\lvert B\\rvert$.
+
+False. Take $A = I$ and $B = I$ in two dimensions: the left side is
+$\\lvert 2I\\rvert = 4$ while the right side is $1 + 1 = 2$. The determinant is
+multiplicative, never additive.
+
+**(ii)** $\\lvert AB\\rvert = \\lvert BA\\rvert$.
+
+True, and it holds even though $AB \\ne BA$, because both equal
+$\\lvert A\\rvert\\,\\lvert B\\rvert$ and scalars do commute.
+
+**(iii)** If $A$ is invertible then $A^{T}$ is invertible.
+
+True. $\\lvert A^{T}\\rvert = \\lvert A\\rvert \\ne 0$, and in fact
+$(A^{T})^{-1} = (A^{-1})^{T}$.`,
+},
+{
+  id: 'la-set-c',
+  title: '17. Problem Set: Rank, Eigenvalues and Powers',
+  content: `## 17.1 Problem Set B
+
+**B1.** Give the rank, the nullity and a null vector of
+$\\begin{bmatrix} 1 & 3 & 2 \\\\ 2 & 6 & 4 \\\\ 1 & 0 & 5\\end{bmatrix}$.
+
+Row two is twice row one, so it clears to zero. Row three minus row one is
+$(0, -3, 3)$:
+
+$$\\begin{bmatrix} 1 & 3 & 2 \\\\ 0 & -3 & 3 \\\\ 0 & 0 & 0\\end{bmatrix}$$
+
+Two pivots, so the rank is 2 and the nullity is $3 - 2 = 1$. Setting $z = 1$
+gives $y = 1$ from the second row and then $x + 3 + 2 = 0$, so $x = -5$. The
+null vector is $(-5, 1, 1)$, and multiplying confirms it:
+$-5 + 3 + 2 = 0$, $-10 + 6 + 4 = 0$, $-5 + 0 + 5 = 0$.
+
+**Trap.** Counting the rank as 3 because no row of the original matrix is zero.
+Rank counts **independent** rows, not non-zero ones, and the dependence here is
+only visible after reduction.
+
+**B2.** Find the eigenvalues and eigenvectors of
+$\\begin{bmatrix} 6 & -2 \\\\ -2 & 9\\end{bmatrix}$.
+
+$$\\operatorname{tr} = 15, \\qquad \\lvert A\\rvert = 54 - 4 = 50, \\qquad \\lambda^{2} - 15\\lambda + 50 = 0$$
+
+$$\\lambda = \\frac{15 \\pm \\sqrt{225 - 200}}{2} = \\frac{15 \\pm 5}{2} = 10,\\ 5$$
+
+For $\\lambda = 10$: $-4v_{1} - 2v_{2} = 0$, so $\\mathbf{v} = (1, -2)$, and
+$A(1,-2) = (10, -20)$ confirms it. For $\\lambda = 5$:
+$v_{1} - 2v_{2} = 0$, so $\\mathbf{v} = (2, 1)$, and $A(2,1) = (10, 5)$ confirms
+it. The matrix is symmetric, so the two eigenvectors must be orthogonal, and
+$(1)(2) + (-2)(1) = 0$.
+
+**Trap.** Writing the characteristic equation as
+$\\lambda^{2} + 15\\lambda + 50 = 0$ and reporting $-10$ and $-5$. The trace
+enters with a minus sign. Here the error would also declare a positive definite
+matrix to be negative definite, reversing every conclusion that follows.
+
+**B3.** Find $A^{4}$ for $A = \\begin{bmatrix} 3 & 0 \\\\ 1 & 2\\end{bmatrix}$.
+
+The matrix is triangular, so the eigenvalues are 3 and 2. For $\\lambda = 3$ the
+equation $v_{1} = v_{2}$ gives $(1,1)$; for $\\lambda = 2$ the first row forces
+$v_{1} = 0$, giving $(0,1)$. Then
+
+$$P = \\begin{bmatrix} 1 & 0 \\\\ 1 & 1\\end{bmatrix}, \\qquad P^{-1} = \\begin{bmatrix} 1 & 0 \\\\ -1 & 1\\end{bmatrix}, \\qquad A^{4} = P\\begin{bmatrix} 81 & 0 \\\\ 0 & 16\\end{bmatrix}P^{-1} = \\begin{bmatrix} 81 & 0 \\\\ 65 & 16\\end{bmatrix}$$
+
+Squaring twice by hand agrees: $A^{2} = \\begin{bmatrix} 9 & 0 \\\\ 5 & 4\\end{bmatrix}$
+and squaring that gives the same result, with lower-left entry
+$45 + 20 = 65$.
+
+**Trap.** Raising each entry to the fourth power gives
+$\\begin{bmatrix} 81 & 0 \\\\ 1 & 16\\end{bmatrix}$. The diagonal happens to be
+right, which is what makes this error survive a quick glance; the off-diagonal
+is wrong by a factor of 65.
+
+**B4.** Is $\\begin{bmatrix} 5 & 1 \\\\ 0 & 5\\end{bmatrix}$ diagonalisable? Give
+its cube.
+
+The eigenvalue 5 is repeated, and $A - 5I = \\begin{bmatrix} 0 & 1 \\\\ 0 & 0\\end{bmatrix}$
+forces $v_{2} = 0$, so the only eigenvector direction is $(1, 0)$. One
+independent eigenvector for a multiplicity of two means the matrix is
+**defective** and cannot be diagonalised. Its powers follow the pattern for a
+repeated eigenvalue:
+
+$$A^{k} = \\begin{bmatrix} 5^{k} & k\\,5^{k-1} \\\\ 0 & 5^{k}\\end{bmatrix}, \\qquad A^{3} = \\begin{bmatrix} 125 & 75 \\\\ 0 & 125\\end{bmatrix}$$
+
+Direct multiplication agrees: $A^{2} = \\begin{bmatrix} 25 & 10 \\\\ 0 & 25\\end{bmatrix}$
+and one more multiplication gives $50 + 25 = 75$ in the corner.
+
+**Trap.** Assuming a repeated eigenvalue is enough for diagonalisation and
+writing $A^{3} = \\begin{bmatrix} 125 & 0 \\\\ 0 & 125\\end{bmatrix}$. A repeated
+eigenvalue is permitted; what matters is whether it supplies as many independent
+eigenvectors as its multiplicity, and here it supplies one instead of two.
+
+**B5.** Is the system $\\dot{\\mathbf{x}} = A\\mathbf{x}$ stable for
+$A = \\begin{bmatrix} -1 & 4 \\\\ -2 & -3\\end{bmatrix}$?
+
+$$\\operatorname{tr} = -4, \\qquad \\lvert A\\rvert = 3 + 8 = 11, \\qquad \\lambda^{2} + 4\\lambda + 11 = 0$$
+
+$$\\lambda = \\frac{-4 \\pm \\sqrt{16 - 44}}{2} = -2 \\pm j\\,\\frac{\\sqrt{28}}{2} = -2 \\pm j\\,2.6458$$
+
+Both eigenvalues have real part $-2$, which is negative, so the system is
+**stable** and its modes decay while oscillating at 2.6458 rad/s.
+
+**Trap.** Calling a complex pair "marginally stable" on sight. Only a purely
+imaginary pair, with real part exactly zero, is marginal. Complex simply means
+oscillation; the real part alone decides whether the oscillation grows or dies.`,
+},
+{
+  id: 'la-set-d',
+  title: '18. Problem Set: Circuits, Fitting and Singular Models',
+  content: `## 18.1 Problem Set C
+
+**C1.** A two-mesh network has a 6 ohm resistor in mesh 1 only, an 8 ohm
+resistor in mesh 2 only, and a 4 ohm resistor shared. The sources drive 16 V
+around mesh 1 and 4 V around mesh 2. Find both mesh currents.
+
+$$\\begin{bmatrix} 10 & -4 \\\\ -4 & 12\\end{bmatrix}\\begin{bmatrix} I_{1} \\\\ I_{2}\\end{bmatrix} = \\begin{bmatrix} 16 \\\\ 4\\end{bmatrix}, \\qquad \\lvert R\\rvert = 120 - 16 = 104$$
+
+$$I_{1} = \\frac{192 + 16}{104} = 2\\ \\mathrm{A}, \\qquad I_{2} = \\frac{40 + 64}{104} = 1\\ \\mathrm{A}$$
+
+**Trap.** Entering the shared resistance as $+4$ on the off-diagonal. The
+determinant happens to stay 104, so nothing looks wrong, but the first
+determinant becomes $192 - 16 = 176$ and $I_{1} = 176/104 = 1.6923$. Since mesh
+currents are defined circulating the same way, the neighbouring current traverses
+the shared branch backwards, and the coupling term is always negative.
+
+**C2.** Verify that $\\mathbf{V} = (2, 3, 1)$ solves the nodal system with
+conductance matrix $\\begin{bmatrix} 7 & -2 & -1 \\\\ -2 & 6 & -3 \\\\ -1 & -3 & 9\\end{bmatrix}$
+and injection vector $(7, 11, -2)$.
+
+Multiply row by row:
+
+$$7(2) - 2(3) - 1(1) = 14 - 6 - 1 = 7$$
+$$-2(2) + 6(3) - 3(1) = -4 + 18 - 3 = 11$$
+$$-1(2) - 3(3) + 9(1) = -2 - 9 + 9 = -2$$
+
+All three match, so the solution is confirmed without solving anything.
+
+**Trap.** Checking only the first equation. A wrong vector will often satisfy one
+row by luck; the verification is only complete when every row reproduces its
+right-hand entry.
+
+**C3.** Fit a straight line through $(1, 2.1)$, $(2, 3.9)$, $(3, 6.2)$,
+$(4, 7.8)$, $(5, 10.1)$, then fit a line through the origin, and compare.
+
+The two-parameter fit was found in the previous section:
+$y = 0.05 + 1.99x$, with $\\sum r^{2} = 0.1070$.
+
+Forcing the intercept to zero leaves one unknown, and the single normal equation
+is $b\\sum x^{2} = \\sum xy$:
+
+$$b = \\frac{110.2}{55} = 2.0036$$
+
+Its residuals are $0.0964$, $-0.1073$, $0.1891$, $-0.2145$ and $0.0818$, giving
+$\\sum r^{2} = 0.1093$.
+
+The constrained fit is worse, as it must be: it is a special case of the free
+fit, so it cannot do better. Its residuals also no longer sum to zero, because
+the normal equation that enforced that condition belonged to the intercept and
+has been removed.
+
+**Trap.** Reporting the through-origin slope as the "true" slope because it looks
+tidier. Removing a parameter can only increase the sum of squares; the question
+of which model to use is about physics, not about which number is rounder.
+
+**C4.** A least-squares line has residuals $0.06$, $-0.13$, $0.18$, $-0.21$ and
+$0.10$ at $x = 1$ through 5. Confirm the fit is optimal.
+
+$$\\sum r_{i} = 0.06 - 0.13 + 0.18 - 0.21 + 0.10 = 0$$
+$$\\sum x_{i}r_{i} = 0.06 - 0.26 + 0.54 - 0.84 + 0.50 = 0$$
+
+Both normal equations hold, so no adjustment of intercept or slope can shorten
+the residual vector, and the fit is optimal.
+
+**Trap.** Checking only that the residuals sum to zero. Any line through the
+centroid of the data satisfies that, whatever its slope. The second condition,
+orthogonality to the $x$ column, is what fixes the slope, and both are needed.
+
+**C5.** A nodal analysis produces the conductance matrix
+$\\begin{bmatrix} 3 & -3 \\\\ -3 & 3\\end{bmatrix}$. What is wrong with the model?
+
+$$\\lvert G\\rvert = 9 - 9 = 0$$
+
+The matrix is singular, and its null vector is $(1, 1)$:
+$3(1) - 3(1) = 0$ in both rows. A null direction of all ones means every node
+voltage can be raised by the same amount with no change to any branch current,
+which is the signature of a network with **no reference node**. The two nodes
+are joined to each other by 3 siemens and to nothing else, so only their
+difference is determined.
+
+**Trap.** Concluding that the circuit has infinite voltages or that the
+arithmetic went wrong. Neither is true: the equations are consistent but
+under-determined, and the fix is to ground one node, which deletes a row and a
+column and restores an invertible matrix.
+
+## 18.2 Practice Problems: one condition, five names
+
+A square matrix $A$ satisfies $\\lvert A\\rvert \\ne 0$. State four other things
+that follow, and give the one-line reason for each.
+
+**Invertible.** $A^{-1} = \\operatorname{adj}(A)/\\lvert A\\rvert$ exists because
+the division is legal.
+
+**Full rank.** Elimination reaches $n$ non-zero pivots, since their product is
+the determinant.
+
+**Independent columns.** A dependent set could be reduced to a zero row, forcing
+the determinant to zero.
+
+**Unique solution for every right-hand side.** The nullity is
+$n - n = 0$, so no vector can be added to a solution without changing it, and
+the column space is all of $\\mathbb{R}^{n}$, so every $\\mathbf{b}$ is
+reachable.
+
+A fifth follows for the eigenvalues: their product is $\\lvert A\\rvert$, so a
+non-zero determinant means **no eigenvalue is zero**. Every one of these is the
+same statement about the same matrix, and recognising that a question is asking
+for one of them in disguise is usually faster than any computation.`,
+},
     'Determinant for 2×2: det = ad - bc; non-zero means invertible.',
     'Eigenvalue equation Ax = λx; eigenvalues found from det(A-λI) = 0.',
     'All eigenvalues with negative real parts → stable system.',
