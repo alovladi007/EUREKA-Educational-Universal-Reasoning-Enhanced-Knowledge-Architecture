@@ -18,7 +18,7 @@ export const FE_EE_SIGNAL_PROCESSING: Record<string, TopicLesson> = {
 For a periodic signal with period **$T_{0}$** and fundamental frequency **$f_{0} = 1/T_{0}$**:
 
 **Trigonometric form:**
-**$x(t) = a_{0} + \\Sigma a_{n}\\cdot \\cos (n\\omega _{0}t) + \\Sigma b_{n}\\cdot \\sin (n\\omega _{0}t)$**
+**$x(t) = a_{0} + \\sum _{n=1}^{\\infty} a_{n}\\cos (n\\omega _{0}t) + \\sum _{n=1}^{\\infty} b_{n}\\sin (n\\omega _{0}t)$**
 
 where ω₀ = 2πf₀ and:
 - **$a_{0} = (1/T_{0}) \\int x(t) dt$** (DC component / average value)
@@ -26,7 +26,7 @@ where ω₀ = 2πf₀ and:
 - **$b_{n} = (2/T_{0}) \\int x(t)\\cdot \\sin (n\\omega _{0}t) dt$**
 
 **Complex exponential form** (more compact):
-**$x(t) = \\Sigma c_{n} \\cdot e^{j2\\pi nf_{0}t}$**
+**$x(t) = \\sum _{n=-\\infty}^{\\infty} c_{n} e^{j2\\pi nf_{0}t}$**
 
 where **$c_{n} = (1/T_{0}) \\int x(t) \\cdot e^{-j2\\pi nf_{0}t} dt$**
 
@@ -370,7 +370,7 @@ $a_{3} = -3.00\\ \\mathrm{V}$ and $b_{3} = 4.00\\ \\mathrm{V}$.
 $c_{3}$.
 
 **Handbook relation**: the amplitude-phase form is
-$x(t) = A_{0} + \\Sigma A_{n}\\cos (n\\omega _{0}t + \\phi _{n})$. Expand one term with
+$x(t) = A_{0} + \\sum _{n=1}^{\\infty} A_{n}\\cos (n\\omega _{0}t + \\phi _{n})$. Expand one term with
 the cosine addition rule:
 
 $$A_{n}\\cos (n\\omega _{0}t + \\phi _{n}) = A_{n}\\cos \\phi _{n}\\cos (n\\omega _{0}t) - A_{n}\\sin \\phi _{n}\\sin (n\\omega _{0}t)$$
@@ -413,9 +413,9 @@ factor of two somewhere.
 
 | Form | Written as | Spectrum runs over | Best for |
 |---|---|---|---|
-| Trigonometric | $a_{0} + \\Sigma [a_{n}\\cos + b_{n}\\sin ]$ | $n \\ge 1$, one-sided | hand integration, symmetry arguments |
-| Amplitude-phase | $A_{0} + \\Sigma A_{n}\\cos (n\\omega _{0}t + \\phi _{n})$ | $n \\ge 1$, one-sided | reading a measured spectrum analyser trace |
-| Complex exponential | $\\Sigma c_{n}e^{jn\\omega _{0}t}$ | all integers $n$, two-sided | algebra, filtering, and the leap to the transform |
+| Trigonometric | $a_{0} + \\sum [a_{n}\\cos + b_{n}\\sin ]$ | $n \\ge 1$, one-sided | hand integration, symmetry arguments |
+| Amplitude-phase | $A_{0} + \\sum A_{n}\\cos (n\\omega _{0}t + \\phi _{n})$ | $n \\ge 1$, one-sided | reading a measured spectrum analyser trace |
+| Complex exponential | $\\sum c_{n}e^{jn\\omega _{0}t}$ | all integers $n$, two-sided | algebra, filtering, and the leap to the transform |
 
 The row that catches people out is the third. A two-sided spectrum splits each
 real harmonic into two half-height lines at $\\pm nf_{0}$, so a plot of
@@ -1014,7 +1014,7 @@ the reason ideal reconstruction is unrealisable.
 | $\\delta (t)$ | $1$ | impulse response, flat excitation |
 | $1$ | $\\delta (f)$ | dc offset |
 | $\\cos (2\\pi f_{c}t)$ | $\\tfrac{1}{2}\\delta (f-f_{c}) + \\tfrac{1}{2}\\delta (f+f_{c})$ | carriers, tones |
-| $\\Sigma \\delta (t - kT)$ | $(1/T)\\Sigma \\delta (f - k/T)$ | sampling itself |
+| $\\sum _{k=-\\infty}^{\\infty} \\delta (t - kT)$ | $(1/T)\\sum _{k=-\\infty}^{\\infty} \\delta (f - k/T)$ | sampling itself |
 
 Two entries deserve a second look. The exponential decay $e^{-at}u(t)$ has
 $X(0) = 1/a$ and falls to $1/\\sqrt{2}$ of that at $f = a/(2\\pi )$; for
@@ -1418,7 +1418,7 @@ Multiplying a signal by an ideal impulse train at rate fₛ produces a sampled
 signal whose spectrum is the original spectrum **repeated** at every integer
 multiple of fₛ:
 
-**$X_{s}(f) = (1/T)\\cdot \\Sigma X(f - k\\cdot f_{s})$** over all integers k
+**$X_{s}(f) = (1/T)\\sum _{k=-\\infty}^{\\infty} X(f - k f_{s})$** over all integers k
 
 Each copy is called an **image**. Reconstruction is nothing more than a
 low-pass filter that keeps the k = 0 copy and rejects every other one. Two
@@ -2453,9 +2453,9 @@ exactly what a modulator does.`,
 
 ### Standard Transfer Functions
 
-**First-order LP:** **$H(s) = \\omega c / (s + \\omega c)$**
+**First-order LP:** **$H(s) = \\omega _{c} / (s + \\omega _{c})$**
 
-**Second-order Butterworth LP:** **$H(s) = \\omega c^{2} / (s^{2} + \\sqrt{2}\\cdot \\omega c\\cdot s + \\omega c^{2})$**
+**Second-order Butterworth LP:** **$H(s) = \\omega _{c}^{2} / (s^{2} + \\sqrt{2}\\cdot \\omega _{c}\\cdot s + \\omega _{c}^{2})$**
 
 **General second-order:** **$H(s) = \\omega _{n}^{2} / (s^{2} + 2\\zeta \\omega _{n}s + \\omega _{n}^{2})$**
 
@@ -2480,7 +2480,7 @@ Higher order = steeper transition from passband to stopband, but more components
 
 The **−3 dB cutoff frequency** fₒ (or ωc) is where the output power drops to half (voltage to 1/√2 ≈ 0.707):
 
-**$|H(j\\omega c)| = 1/\\sqrt{2} \\approx -3\\ \\mathrm{dB}$**`,
+**$\\lvert H(j\\omega _{c})\\rvert = 1/\\sqrt{2} \\approx -3\\ \\mathrm{dB}$**`,
         examTip: 'On the FE exam, if you see a transfer function and need to identify the filter type: look at the behavior at DC (s=0) and at high frequency (s→∞). LP has gain at DC and zero at infinity; HP has zero at DC and gain at infinity; BP has gain at a center frequency and zero at both extremes.',
       },
       {
@@ -2655,24 +2655,26 @@ pinned at $A_{p}$,
 
 $$n \\ge \\frac{\\log_{10}[(10^{A_{s}/10}-1)/(10^{A_{p}/10}-1)]}{2\\cdot \\log_{10}(f_{st}/f_{p})}$$
 
-**Substitution**: the numerator bracket is $(10^{3}-1)/(10^{0.1}-1) = 999/0.2589 = 3859$,
-whose log is 3.587. The denominator is $2\\cdot \\log_{10}(2) = 0.602$.
+**Substitution**: the numerator bracket is $(10^{3}-1)/(10^{0.1}-1) = 999/0.2589254 = 3858.254$,
+whose base-ten logarithm is 3.5864. The denominator is $2\\cdot \\log_{10}(2) = 0.60206$.
 
-$$n \\ge 3.587/0.602 = 5.96$$
+$$n \\ge 3.5864/0.60206 = 5.957$$
 
 **Answer**: round up — a **6th-order Butterworth**. Orders always round up:
-5.96 means fifth order misses the stopband spec by a fraction of a dB, and a
-filter that almost meets its specification does not meet it.
+5.957 means fifth order misses the stopband spec by a wide margin, and a
+filter that almost meets its specification does not meet it. (Section 6.4
+computes exactly how wide: a fifth-order design reaches only 24.25 dB where
+30 dB was demanded.)
 
 **Closing the design — where does the cutoff actually go?** The order formula
 pinned the passband edge, so the −3 dB cutoff is *not* at 1 kHz. Solving the
 Butterworth magnitude for the frequency where attenuation equals 1 dB with
 n = 6 gives
 
-$$f_{c} = f_{p}/(10^{A_{p}/10}-1)^{1/2n} = 1\\ \\mathrm{kHz}/(0.2589)^{1/12} = 1.119\\ \\mathrm{kHz}$$
+$$f_{c} = f_{p}/(10^{A_{p}/10}-1)^{1/(2n)} = 1\\ \\mathrm{kHz}/(0.258925)^{1/12} = 1.1192\\ \\mathrm{kHz}$$
 
-Verify the stopband with that cutoff: the ratio 2/1.119 = 1.787, and
-$10\\cdot \\log_{10}[1 + (1.787)^{12}] = 30.3\\ \\mathrm{dB}$ — the 30 dB
+Verify the stopband with that cutoff: the ratio 2/1.1192 = 1.7870, and
+$10\\cdot \\log_{10}[1 + (1.7870)^{12}] = 30.26\\ \\mathrm{dB}$ — the 30 dB
 requirement met with a small margin, which is exactly what rounding the order
 up purchased. This verification step — recompute both band edges after
 choosing n — is the difference between an order calculation and a finished
@@ -2685,10 +2687,10 @@ inverse hyperbolic cosine,
 
 $$n \\ge \\frac{\\cosh^{-1}\\sqrt{(10^{A_{s}/10}-1)/(10^{A_{p}/10}-1)}}{\\cosh^{-1}(f_{st}/f_{p})}$$
 
-**Substitution**: $\\cosh^{-1}\\sqrt{3859} = \\cosh^{-1}(62.1) = 4.82$, and
-$\\cosh^{-1}(2) = 1.317$.
+**Substitution**: $\\cosh^{-1}\\sqrt{3858.254} = \\cosh^{-1}(62.1148) = 4.8221$, and
+$\\cosh^{-1}(2) = 1.31696$.
 
-$$n \\ge 4.82/1.317 = 3.66$$
+$$n \\ge 4.8221/1.31696 = 3.6615$$
 
 **Answer**: a **4th-order Chebyshev** with 1 dB ripple. Same specification,
 two fewer poles — the concrete payoff of tolerating ripple.
@@ -2739,6 +2741,1128 @@ inspection; no factoring was required.`,
         examTip: 'Order results from the design formulas always round UP, never to the nearest integer. If the formula returns 5.96, sixth order is required; if it returns 5.02, sixth order is still required. A computed order that you round down produces a filter that misses its stopband specification.',
         importantNote: 'Sharper magnitude response always costs phase linearity. Butterworth, Chebyshev, elliptic form a sequence of sharper knees and progressively worse group-delay flatness; Bessel sits at the opposite extreme. No single family wins both criteria — the exam expects you to know the trade, not to escape it.',
       },
+      {
+        id: 'filt-ideal-price',
+        title: '5. The Four Ideal Responses and the Price of Being Buildable',
+        content: `## 5.1 Writing the brick walls down
+
+Sections 1 to 4 described the four responses in words. Written as equations
+they are indicator functions — a magnitude that is exactly one inside a band
+and exactly zero outside it, with a vertical wall between:
+
+$$\\lvert H_{\\mathrm{LP}}(j\\omega )\\rvert = 1 \\ \\ (\\lvert \\omega \\rvert \\le \\omega _{c}), \\qquad \\lvert H_{\\mathrm{LP}}(j\\omega )\\rvert = 0 \\ \\ (\\lvert \\omega \\rvert > \\omega _{c})$$
+
+$$\\lvert H_{\\mathrm{HP}}(j\\omega )\\rvert = 1 - \\lvert H_{\\mathrm{LP}}(j\\omega )\\rvert , \\qquad \\lvert H_{\\mathrm{BS}}(j\\omega )\\rvert = 1 - \\lvert H_{\\mathrm{BP}}(j\\omega )\\rvert$$
+
+The last line is worth pausing on: high-pass is the arithmetic complement of
+low-pass, and band-stop is the complement of band-pass, at every frequency.
+Those two identities are the reason one prototype generates all four
+responses, a fact section 3.3 exploited as a table of substitutions and
+section 8.5 will exploit as arithmetic.
+
+![Four small panels, one per filter type, each showing the ideal brick-wall magnitude as a dashed step and a realizable fourth-order curve as a solid line, all against frequency divided by the corner frequency on a logarithmic axis. Every solid curve crosses its corner at seven tenths of unit magnitude and leans away from the wall on both sides; the band-stop curve reaches an exact null at the centre while its wall is a flat-bottomed trench.](/courses/fe-ee/figures/sig3-ideal-four.svg)
+
+Look at how the realizable curve fails in each panel. It is never a small
+failure at one frequency; it is a gradual lean that starts inside the
+passband and continues well into the stopband. That leaning region is the
+**transition band**, and every practical specification exists to bound it.
+
+## 5.2 Why no circuit can do it
+
+Take the inverse Fourier transform of the ideal low-pass magnitude, with
+zero phase:
+
+$$h_{\\mathrm{LP}}(t) = \\frac{1}{2\\pi }\\int _{-\\omega _{c}}^{\\omega _{c}} e^{j\\omega t}\\, d\\omega = \\frac{\\sin (\\omega _{c}t)}{\\pi t} = 2f_{c}\\,\\mathrm{sinc}(2f_{c}t)$$
+
+Two properties of that result kill the idea outright.
+
+**It is non-zero for negative time.** The sinc is even, so
+$h(-t) = h(t)$. A circuit whose impulse response is non-zero before the
+impulse arrives would have to know the future. Causality alone forbids the
+brick wall.
+
+**Its tail decays only as 1/t.** Even if you were willing to wait, the
+response never truly settles; truncating it reintroduces exactly the ripple
+the ideal wall was supposed to avoid.
+
+The formal statement is the **Paley-Wiener condition**: a causal, stable
+filter with a rational transfer function satisfies
+
+$$\\int _{-\\infty }^{\\infty }\\frac{\\bigl\\lvert \\ln \\lvert H(j\\omega )\\rvert \\bigr\\rvert }{1+\\omega ^{2}}\\, d\\omega < \\infty$$
+
+If $\\lvert H\\rvert$ were zero across any band of non-zero width, the
+logarithm would be minus infinity there and the integral would diverge. So a
+realizable filter may have isolated zeros — the band-stop notch is one — but
+it can never be identically zero over a stretch of frequency. **Nothing you
+build will ever have a true stopband.** It will have a band where the
+attenuation exceeds a number you were willing to accept, which is a
+different and much more useful idea.
+
+### Worked example 5.1 — the ideal 1 kHz low-pass, sampled
+
+**Given**: the ideal brick wall at $f_{c} = 1\\ \\mathrm{kHz}$.
+
+**Handbook relation**: $h(t) = 2f_{c}\\,\\mathrm{sinc}(2f_{c}t)$, with
+$\\mathrm{sinc}(x) = \\sin (\\pi x)/(\\pi x)$.
+
+**Substitution and answer**, taking the peak and one point on each side:
+
+- $t = 0$: the argument is 0, $\\mathrm{sinc}(0) = 1$, so $h = 2000\\ \\mathrm{s}^{-1}$.
+- $t = 0.25\\ \\mathrm{ms}$: the argument is 0.5, and $\\mathrm{sinc}(0.5) = 2/\\pi = 0.63662$, so $h = 1273.24\\ \\mathrm{s}^{-1}$.
+- $t = -0.25\\ \\mathrm{ms}$: identical, 1273.24 — response a quarter of a millisecond **before** the impulse.
+- $t = 0.5\\ \\mathrm{ms}$: the argument is 1, a zero of the sinc, so $h = 0$.
+
+**Check**: the area under $h(t)$ over all time must equal $H(0) = 1$, and
+numerical integration of the same expression returns 1.0000. The shape is
+right and the dc gain is right; the only thing wrong with it is that it
+cannot exist.
+
+![Impulse response of the ideal one kilohertz low-pass plotted against time in milliseconds, a tall central lobe of height two thousand per second with decaying ripples on both sides. The region left of time zero is shaded to mark output that appears before the input, and nulls are marked every half millisecond.](/courses/fe-ee/figures/sig3-ideal-sinc.svg)
+
+## 5.3 Order and roll-off, derived rather than quoted
+
+Far above cutoff the Butterworth magnitude simplifies. With
+$u = \\omega /\\omega _{c}$,
+
+$$\\lvert H(j\\omega )\\rvert = \\frac{1}{\\sqrt{1+u^{2n}}} \\longrightarrow \\frac{1}{u^{n}} \\qquad (u \\gg 1)$$
+
+$$20\\log _{10}\\lvert H\\rvert \\longrightarrow -20n\\log _{10}u$$
+
+Multiply $u$ by ten and the second expression drops by $20n$; multiply it by
+two and it drops by $20n\\log _{10}2 = 6.0206n$. The familiar "$-20n$ dB per decade,
+$-6n$ dB per octave" rule says nothing more than those two lines, and it now
+carries its own derivation.
+
+The rule is **asymptotic**, and the table below — every entry produced by
+evaluating the actual pole polynomial at $s = j\\omega$, not by the formula
+above — shows how close the approach is:
+
+| n | attenuation at $10\\omega _{c}$ | attenuation at $100\\omega _{c}$ | difference over that decade |
+|---|---|---|---|
+| 1 | 20.0432 dB | 40.0004 dB | 19.9572 dB |
+| 2 | 40.0004 dB | 80.0000 dB | 39.9996 dB |
+| 3 | 60.0000 dB | 120.0000 dB | 60.0000 dB |
+| 5 | 100.0000 dB | 200.0000 dB | 100.0000 dB |
+| 6 | 120.0000 dB | 240.0000 dB | 120.0000 dB |
+
+One decade past cutoff the asymptote is already good to a twentieth of a
+decibel, and by two decades it is exact to four places. The slope rule is
+safe to use anywhere in the stopband and unsafe near the knee, which is
+precisely where the order formulas of section 4 take over.
+
+### Worked example 5.2 — order from a roll-off requirement
+
+**Given**: a preamplifier must attenuate by at least 45 dB at ten times its
+corner frequency.
+
+**Handbook relation**: attenuation $\\approx 20n\\log _{10}u$ decibels, with
+$u = 10$ giving $20n$.
+
+**Substitution**: $20n \\ge 45$, so $n \\ge 45/20 = 2.25$.
+
+**Answer**: **third order**. Rounding to the nearest integer would give two,
+and the table above says a second-order section reaches only 40.0004 dB one
+decade out — five decibels short. The third-order section delivers 60.0000 dB,
+which is 15 dB of margin, and there is no fractional order available to trim it.
+
+**The distractor**: an answer of 2 comes from rounding 2.25 down or from
+reading "45 dB per decade" as though a filter could be built to any slope you
+like. Filter slopes come in multiples of 20 dB per decade because poles come
+in whole numbers.
+
+## 5.4 What a filter specification must contain
+
+A specification that a designer can act on has **four** numbers, not one:
+
+| Symbol | Name | What it constrains |
+|---|---|---|
+| $f_{p}$ | passband edge | the highest frequency that must survive |
+| $A_{p}$ | passband attenuation | how much loss is tolerable at $f_{p}$ |
+| $f_{st}$ | stopband edge | the lowest frequency that must be rejected |
+| $A_{s}$ | stopband attenuation | how much rejection is required at $f_{st}$ |
+
+**A single cutoff frequency specifies nothing.** "Low-pass with a cutoff at
+half the sampling rate" is the classic empty statement: it places the −3 dB
+point exactly at the folding frequency, which permits a first-order section
+that is only 3 dB down where the aliases begin, and equally permits an
+eighth-order section — both satisfy the words. Every filter of every order
+can be scaled to put its −3 dB point anywhere you name, so naming that point
+constrains nothing about rejection. The transition band is where the whole
+design lives, and it takes two frequencies with two attenuations to pin it
+down.`,
+        examTip: 'Whenever a question hands you a filter specification, write the four numbers in a column before doing anything else: f_p with A_p, f_st with A_s. If one of the four is missing, the missing one is either implied by convention (A_p = 3 dB, meaning the passband edge IS the −3 dB point) or the question is testing whether you notice. The order formulas take exactly those four numbers and nothing else.',
+        importantNote: 'The Paley-Wiener condition is the reason no filter has a true stopband. A realizable response may be zero at isolated frequencies — that is what a notch is — but it cannot be zero across an interval. Every "stopband" in engineering practice is a band where attenuation exceeds an agreed number.',
+      },
+      {
+        id: 'filt-butterworth-deep',
+        title: '6. The Butterworth Approximation from First Principles',
+        content: `## 6.1 One equation, and why it is that equation
+
+$$\\lvert H(j\\omega )\\rvert ^{2} = \\frac{1}{1+(\\omega /\\omega _{c})^{2n}}$$
+
+Four properties are built into that single line, and each one is a design
+decision made for you:
+
+1. It depends only on $\\omega ^{2}$, so it is **even** — a requirement for
+   any real physical filter, whose response at $-\\omega$ mirrors that at
+   $+\\omega$.
+2. At $\\omega = 0$ it equals 1: **unit dc gain**, for every order.
+3. At $\\omega = \\omega _{c}$ the denominator is exactly 2, so
+   $\\lvert H\\rvert = 1/\\sqrt{2}$: the −3.0103 dB point sits at
+   $\\omega _{c}$ **for every order**. This is the property that makes
+   Butterworth cutoffs comparable across orders, and it is not shared by
+   Chebyshev.
+4. It decreases monotonically. No ripple anywhere, in either band.
+
+## 6.2 Maximally flat, proved in two lines
+
+Write $u = \\omega /\\omega _{c}$ and expand as a geometric series, valid for
+$u < 1$:
+
+$$\\frac{1}{1+u^{2n}} = 1 - u^{2n} + u^{4n} - u^{6n} + \\cdots$$
+
+Every power of $u$ below $2n$ is **absent**. A Taylor coefficient that is
+absent is a derivative that vanishes, so
+
+$$\\left.\\frac{d^{m}}{du^{m}}\\lvert H\\rvert ^{2}\\right|_{u=0} = 0 \\qquad (m = 1, 2, \\ldots , 2n-1)$$
+
+and the first derivative that survives is
+
+$$\\left.\\frac{d^{2n}}{du^{2n}}\\lvert H\\rvert ^{2}\\right|_{u=0} = -(2n)!$$
+
+That is what "maximally flat" means, exactly: of all responses with $n$
+poles, this one has the largest possible number of vanishing derivatives at
+dc. For $n = 2$ the first survivor is the fourth derivative, $-24$; for
+$n = 3$ it is the sixth, $-720$; for $n = 6$ it is the twelfth,
+$-479001600$.
+
+### Worked example 6.1 — flatness as a number you can check
+
+**Given**: Butterworth filters of orders 1, 2, 3 and 6, all evaluated at one
+tenth of their cutoff.
+
+**Handbook relation**: the shortfall below unit power gain is
+
+$$1 - \\lvert H\\rvert ^{2} = \\frac{u^{2n}}{1+u^{2n}}$$
+
+**Substitution and answer** at $u = 0.1$:
+
+| n | $u^{2n}$ | shortfall $1-\\lvert H\\rvert ^{2}$ | first non-zero derivative at dc |
+|---|---|---|---|
+| 1 | $10^{-2}$ | $9.9010\\times 10^{-3}$ | 2nd, value $-2$ |
+| 2 | $10^{-4}$ | $9.9990\\times 10^{-5}$ | 4th, value $-24$ |
+| 3 | $10^{-6}$ | $9.99999\\times 10^{-7}$ | 6th, value $-720$ |
+| 6 | $10^{-12}$ | $1.0000\\times 10^{-12}$ | 12th, value $-479001600$ |
+
+Each extra order buys two more decades of flatness at a fixed fraction of
+cutoff. The sixth-order filter is flat to twelve decimal places one tenth of
+the way to its corner — far flatter than any resistor tolerance you could
+build it from, which is why in practice component tolerance, not the
+approximation, sets passband flatness.
+
+![Log-log plot of the shortfall below unit power gain against frequency divided by cutoff, for Butterworth orders one, two and six. Each curve is a straight line whose slope equals twice the order, so the sixth-order line falls twelve decades over one decade of frequency while the first-order line falls only two.](/courses/fe-ee/figures/sig3-butter-flat.svg)
+
+## 6.3 Where the poles have to go
+
+The magnitude-squared function extends to the whole $s$-plane by the
+substitution $\\omega \\to s/j$:
+
+$$H(s)H(-s) = \\frac{1}{1+\\left(s/(j\\omega _{c})\\right)^{2n}}$$
+
+Setting the denominator to zero gives $2n$ roots. They satisfy
+$\\lvert s\\rvert = \\omega _{c}$ — all of them, exactly — so they lie on a
+circle of radius $\\omega _{c}$, spaced by $\\pi /n$ radians. Half of them are
+in the right half-plane and belong to $H(-s)$; the stable filter takes the
+$n$ in the left half-plane:
+
+$$s_{k} = \\omega _{c}\\exp\\left[j\\left(\\frac{\\pi }{2}+\\frac{(2k+1)\\pi }{2n}\\right)\\right], \\qquad k = 0, 1, \\ldots , n-1$$
+
+Three consequences follow immediately. No pole ever lands on the imaginary
+axis, because the angles are odd multiples of $\\pi /(2n)$ offset by
+$\\pi /2$ — so a Butterworth filter is unconditionally stable. The poles come
+in conjugate pairs, so the polynomial has real coefficients. And for odd $n$
+one pole falls on the real axis, at $-\\omega _{c}$ exactly; that lone pole is
+the first-order section every odd-order design carries.
+
+![Pole plot for the sixth-order Butterworth on the circle of radius one, six crosses in the left half-plane at one hundred and five, one hundred and thirty-five and one hundred and sixty-five degrees together with their conjugates. Radii are drawn to the three upper poles and each is annotated with the quality factor of the second-order section it forms.](/courses/fe-ee/figures/sig3-butter-poles.svg)
+
+Every conjugate pair $s_{k}, s_{k}^{*}$ multiplies out to a real quadratic,
+
+$$(s-s_{k})(s-s_{k}^{*}) = s^{2} - 2\\,\\mathrm{Re}(s_{k})\\,s + \\omega _{c}^{2}$$
+
+and setting that alongside $s^{2}+(\\omega _{n}/Q)s+\\omega _{n}^{2}$ reads the
+section quality factor straight off the pole angle:
+
+$$Q_{k} = \\frac{\\omega _{c}}{-2\\,\\mathrm{Re}(s_{k})} = \\frac{1}{-2\\cos \\theta _{k}}$$
+
+### Worked example 6.2 — the third-order poles by hand
+
+**Given**: $n = 3$, normalised so $\\omega _{c} = 1$.
+
+**Handbook relation**: the pole-angle formula above with $n = 3$ gives
+$\\theta _{k} = 90^{\\circ } + (2k+1)30^{\\circ }$.
+
+**Substitution**: $k = 0$ gives $120^{\\circ }$, $k = 1$ gives
+$180^{\\circ }$, $k = 2$ gives $240^{\\circ }$.
+
+**Answer**: the poles are $-0.5 \\pm j0.866$ and $-1$. The conjugate pair
+multiplies to $s^{2}+s+1$ — its middle coefficient is
+$-2\\cos 120^{\\circ } = 1$ — and the real pole contributes $s+1$, so
+
+$$B_{3}(s) = (s+1)(s^{2}+s+1) = s^{3}+2s^{2}+2s+1$$
+
+The section $Q$ is $1/(-2\\cos 120^{\\circ }) = 1.0000$.
+
+**Check**: expand and confirm the coefficients are $1, 2, 2, 1$ — a
+palindrome, as every normalised Butterworth polynomial is, because the poles
+lie on the unit circle and therefore come in reciprocal pairs.
+
+Repeating that construction for orders one through six produces the standard
+normalised Butterworth polynomials. **These are computed here from the pole
+formula, not copied from a table**, and they agree digit for digit with the
+usual tabulations, which are normalised the same way — to $\\omega _{c} = 1$
+radian per second, with a leading coefficient of one and a constant term of
+one:
+
+| n | normalised denominator, $\\omega _{c} = 1$ | pole angles (degrees, upper half) | section Q values |
+|---|---|---|---|
+| 1 | $s+1$ | 180 | first order, no Q |
+| 2 | $s^{2}+1.414214s+1$ | 135 | 0.707107 |
+| 3 | $s^{3}+2s^{2}+2s+1$ | 120, 180 | 1.000000 plus a real pole |
+| 4 | $s^{4}+2.613126s^{3}+3.414214s^{2}+2.613126s+1$ | 112.5, 157.5 | 0.541196, 1.306563 |
+| 5 | $s^{5}+3.236068s^{4}+5.236068s^{3}+5.236068s^{2}+3.236068s+1$ | 108, 144, 180 | 0.618034, 1.618034 plus a real pole |
+| 6 | $s^{6}+3.863703s^{5}+7.464102s^{4}+9.141620s^{3}+7.464102s^{2}+3.863703s+1$ | 105, 135, 165 | 0.517638, 0.707107, 1.931852 |
+
+Two patterns are worth memorising. The **highest** section Q always belongs
+to the pole nearest the imaginary axis and grows quickly with order — 1.93 at
+sixth order, and it keeps climbing. And the fifth-order Q values, 0.618034
+and 1.618034, are the golden ratio and its reciprocal, a consequence of the
+$36^{\\circ }$ pole spacing rather than a coincidence.
+
+## 6.4 Evaluating the polynomial is the check that catches everything
+
+The magnitude formula and the pole polynomial are two routes to the same
+number, so computing both is a genuine verification.
+
+### Worked example 6.3 — third-order attenuation, two ways
+
+**Given**: $B_{3}(s) = s^{3}+2s^{2}+2s+1$, normalised.
+
+**Route one — evaluate the polynomial.** At $u = 2$, substitute $s = j2$:
+
+$$B_{3}(j2) = -j8 - 8 + j4 + 1 = -7 - j4$$
+
+$$\\lvert B_{3}(j2)\\rvert = \\sqrt{49+16} = \\sqrt{65} = 8.062258$$
+
+so the attenuation is $20\\log _{10}(8.062258) = 18.1291\\ \\mathrm{dB}$.
+
+**Route two — the magnitude formula.**
+$10\\log _{10}(1+2^{6}) = 10\\log _{10}(65) = 18.1291\\ \\mathrm{dB}$.
+
+**Answer**: 18.1291 dB, confirmed twice. Repeat at $u = 10$:
+$B_{3}(j10) = -199 - j980$, magnitude $\\sqrt{1000001} = 1000.0005$, giving
+60.0000 dB — and $10\\log _{10}(1+10^{6})$ gives 60.0000 dB as well.
+
+**Why bother**: the two routes fail differently. A slip in the pole angles
+corrupts route one and leaves route two untouched; a slip in reading the
+order corrupts route two and leaves route one untouched. Agreement to four
+decimal places means both are right.
+
+### Worked example 6.4 — why fifth order missed the specification
+
+**Given**: the section 4 specification — 1 kHz at 1 dB, 2 kHz at 30 dB — and
+the question of what a **fifth**-order Butterworth would actually deliver.
+
+**Handbook relation**: pin the passband edge first, exactly as section 4.2
+did, but with $n = 5$:
+
+$$f_{c} = f_{p}/(10^{A_{p}/10}-1)^{1/(2n)} = 1\\ \\mathrm{kHz}/(0.258925)^{1/10} = 1.1447\\ \\mathrm{kHz}$$
+
+**Substitution**: the stopband ratio is $2/1.1447 = 1.7472$, and
+
+$$10\\log _{10}\\left[1+(1.7472)^{10}\\right] = 24.25\\ \\mathrm{dB}$$
+
+**Answer**: **24.25 dB, against 30 dB required — short by 5.75 dB.** The
+order formula returned 5.957, and the fractional part is not a rounding
+nicety; it is nearly six decibels of real shortfall. Sixth order delivers
+30.26 dB, a margin of 0.26 dB.
+
+**The distractor**: a candidate who rounds 5.957 to 6 gets the right answer
+for the right reason; one who rounds 5.2 down to 5 in some other problem
+gets a filter that misses by several decibels. The rule is not "round to the
+nearest integer", it is "the smallest integer at or above the formula's
+value".`,
+        examTip: 'Two Butterworth facts pay for themselves on every filter question. First, the −3 dB point is at ωc for every order — the order changes the slope, never the corner. Second, all poles sit on the circle of radius ωc, so a pole plot with poles at different radii is not Butterworth, whatever the question calls it.',
+        importantNote: 'The section Q values rise with order: 0.707 at second order, 1.31 at fourth, 1.93 at sixth. A high-Q section is the one that peaks, rings and is most sensitive to component tolerance, so in a cascade it is always the stage that limits real performance. Knowing which stage that is tells you where to spend money on precision parts.',
+      },
+      {
+        id: 'filt-cheby-bessel',
+        title: '7. Chebyshev and Bessel: Buying Steepness, Buying Phase',
+        content: `## 7.1 The Chebyshev polynomials
+
+Chebyshev filters replace $u^{2n}$ in the Butterworth denominator with the
+square of a polynomial that oscillates. The polynomials are defined by a
+recursion,
+
+$$T_{0}(x) = 1, \\qquad T_{1}(x) = x, \\qquad T_{n+1}(x) = 2x\\,T_{n}(x) - T_{n-1}(x)$$
+
+which generates $T_{2} = 2x^{2}-1$, $T_{3} = 4x^{3}-3x$ and
+$T_{4} = 8x^{4}-8x^{2}+1$. The property that matters is a change of
+behaviour at $x = 1$:
+
+$$T_{n}(x) = \\cos (n\\arccos x) \\ \\ (\\lvert x\\rvert \\le 1), \\qquad T_{n}(x) = \\cosh (n\\,\\mathrm{arccosh}\\,x) \\ \\ (x > 1)$$
+
+Inside the unit interval it is a cosine of something, so it oscillates
+between $-1$ and $+1$ and never leaves. Outside, it is a hyperbolic cosine,
+which grows explosively. **Bounded oscillation inside, explosive growth
+outside** — that is a passband and a stopband written as one function.
+
+## 7.2 The magnitude and the ripple parameter
+
+$$\\lvert H(j\\omega )\\rvert ^{2} = \\frac{1}{1+\\varepsilon ^{2}T_{n}^{2}(\\omega /\\omega _{p})}, \\qquad \\varepsilon ^{2} = 10^{A_{p}/10}-1$$
+
+Inside the passband $T_{n}^{2}$ swings between 0 and 1, so the magnitude
+swings between 1 and $1/\\sqrt{1+\\varepsilon ^{2}}$ and nowhere else. That
+lower limit **is** the ripple depth:
+
+| passband ripple $A_{p}$ | $\\varepsilon ^{2}$ | $\\varepsilon$ | $1/\\sqrt{1+\\varepsilon ^{2}}$ |
+|---|---|---|---|
+| 0.5 dB | 0.122018 | 0.349311 | 0.944061 |
+| 1.0 dB | 0.258925 | 0.508847 | 0.891251 |
+
+Counting the touches is a favourite exam detail. Over $0 \\le x \\le 1$ the
+polynomial $T_{n}$ reaches $\\pm 1$ at $n+1$ points and zero at $n$ points, so
+an $n$th-order Chebyshev magnitude touches the **bottom** of the ripple band
+$n/2 + 1$ times and the **top** $n/2$ times when $n$ is even. For $n = 4$
+that is three touches of $-A_{p}$ (at dc, at $\\omega /\\omega _{p} = 0.7071$
+and at the edge) and two of 0 dB. Odd orders start at the top instead,
+because $T_{n}(0) = 0$ for odd $n$, so their dc gain is exactly 1.
+
+![Two stacked panels sharing a frequency axis scaled to the passband edge. The upper panel magnifies the passband: the fourth-order one-decibel Chebyshev oscillates between zero and minus one decibel while both Butterworth curves stay pinned near zero. The lower panel shows the full range, where the Chebyshev knee is steeper than the sixth-order Butterworth near the edge and shallower far out.](/courses/fe-ee/figures/sig3-cheby-ripple.svg)
+
+The lower panel repays a second look. Between roughly 1.1 and 1.9 times the
+passband edge the fourth-order Chebyshev is **below** the sixth-order
+Butterworth — a lower-order filter attenuating more. Past about twice the
+edge the sixth-order curve crosses back underneath and stays there forever,
+because asymptotic slope is set by order alone and no amount of ripple
+changes it. Ripple buys a sharper knee, not a steeper skirt.
+
+### Worked example 7.1 — attenuation at twice the passband edge
+
+**Given**: 1 dB ripple, so $\\varepsilon ^{2} = 0.258925$; evaluate at
+$\\omega /\\omega _{p} = 2$ for $n = 3$ and $n = 4$.
+
+**Handbook relation**: attenuation
+$= 10\\log _{10}\\left[1+\\varepsilon ^{2}T_{n}^{2}(2)\\right]$, with $T_{n}$
+from the explicit polynomials.
+
+**Substitution**, third order first:
+
+$$T_{3}(2) = 4(2)^{3}-3(2) = 32-6 = 26$$
+
+$$10\\log _{10}\\left[1+0.258925\\times 676\\right] = 10\\log _{10}(1+175.03) = 10\\log _{10}(176.03) = 22.456\\ \\mathrm{dB}$$
+
+Fourth order:
+
+$$T_{4}(2) = 8(2)^{4}-8(2)^{2}+1 = 128-32+1 = 97$$
+
+$$10\\log _{10}\\left[1+0.258925\\times 9409\\right] = 10\\log _{10}(1+2436.23) = 10\\log _{10}(2437.23) = 33.869\\ \\mathrm{dB}$$
+
+**Answer**: 22.456 dB at third order, 33.869 dB at fourth. Against the
+section 4 requirement of 30 dB, third order fails by 7.5 dB and fourth
+passes with 3.9 dB to spare — which is exactly what the order formula's
+value of 3.6615 predicted.
+
+**Check by an independent route**: building the fourth-order pole polynomial
+from the Chebyshev pole formula and evaluating it at $s = j2$ returns
+33.8690 dB, agreeing with the $T_{4}$ route to four decimals.
+
+## 7.3 The two filters side by side
+
+Both designs from section 4 now exist as polynomials, so their responses can
+simply be evaluated and tabulated. Every entry below comes from computing
+$\\lvert H(j\\omega )\\rvert$ for the actual sixth-order Butterworth (cutoff
+1119.19 Hz) and the actual fourth-order 1 dB Chebyshev (passband edge
+1000 Hz):
+
+| frequency | Butterworth $n=6$ | Chebyshev $n=4$, 1 dB | which is better |
+|---|---|---|---|
+| 500 Hz | 0.0003 dB | 0.2724 dB | Butterworth, by a whisker |
+| 800 Hz | 0.0766 dB | 0.7339 dB | Butterworth |
+| 1000 Hz | 1.0000 dB | 1.0000 dB | tie, by construction |
+| 1200 Hz | 5.196 dB | 10.227 dB | Chebyshev |
+| 1500 Hz | 15.390 dB | 21.583 dB | Chebyshev |
+| 2000 Hz | 30.259 dB | 33.869 dB | Chebyshev |
+| 3000 Hz | 51.386 dB | 49.355 dB | Butterworth |
+| 4000 Hz | 66.379 dB | 59.802 dB | Butterworth |
+
+The crossover sits between 2 and 3 kHz. Inside the passband the Butterworth
+is flatter, in the transition the Chebyshev is far sharper, and deep in the
+stopband the extra two poles win again. A specification that stops at 2 kHz
+sees only the middle of that story, which is why the Chebyshev needs fewer
+poles for it.
+
+## 7.4 Bessel: the other end of the trade
+
+Magnitude is not the only thing a filter does to a signal. **Group delay**
+
+$$\\tau _{g}(\\omega ) = -\\frac{d\\,\\arg H(j\\omega )}{d\\omega }$$
+
+is the time each frequency component is held up. If $\\tau _{g}$ is constant,
+every component is delayed equally and the waveform emerges intact, merely
+late. If it varies, the components rearrange themselves — pulses ring,
+overshoot and smear even though every one of them was passed at full
+amplitude.
+
+A useful shortcut: for a transfer function $b_{0}/(s^{n}+\\cdots +a_{1}s+a_{0})$
+with a constant numerator, the delay at dc is
+
+$$\\tau _{g}(0) = \\frac{a_{1}}{a_{0}}$$
+
+**Bessel** filters are designed by maximising the flatness of $\\tau _{g}$ at
+dc, exactly as Butterworth maximises the flatness of $\\lvert H\\rvert$. Their
+denominators are the reverse Bessel polynomials, generated by
+
+$$\\theta _{n}(s) = (2n-1)\\,\\theta _{n-1}(s) + s^{2}\\,\\theta _{n-2}(s), \\qquad \\theta _{0} = 1, \\ \\theta _{1} = s+1$$
+
+| n | $\\theta _{n}(s)$ | $\\tau _{g}(0) = a_{1}/a_{0}$ |
+|---|---|---|
+| 1 | $s+1$ | $1/1 = 1$ |
+| 2 | $s^{2}+3s+3$ | $3/3 = 1$ |
+| 3 | $s^{3}+6s^{2}+15s+15$ | $15/15 = 1$ |
+| 4 | $s^{4}+10s^{3}+45s^{2}+105s+105$ | $105/105 = 1$ |
+
+The constant term always equals the coefficient of $s$, which is the
+normalisation that puts the dc delay at exactly one second for every order.
+
+### Worked example 7.2 — the second-order Bessel, delay and magnitude
+
+**Given**: $H(s) = 3/(s^{2}+3s+3)$.
+
+**Handbook relation**: differentiate the phase.
+$\\arg H = -\\arctan\\left[3\\omega /(3-\\omega ^{2})\\right]$, and carrying out
+the derivative gives the closed form
+
+$$\\tau _{g}(\\omega ) = \\frac{9+3\\omega ^{2}}{\\omega ^{4}+3\\omega ^{2}+9}$$
+
+**Substitution and answer**:
+
+- $\\omega = 0$: $9/9 = 1.0000$ — matching $a_{1}/a_{0}$, as it must.
+- $\\omega = 1$: $12/13 = 0.923077$, down only 7.7 %.
+- $\\omega = 2$: $21/37 = 0.567568$.
+
+**And the price.** At $\\omega = 1$ the denominator is
+$-1+j3+3 = 2+j3$, of magnitude $\\sqrt{13} = 3.605551$, so
+$\\lvert H\\rvert = 3/3.605551 = 0.832050$, which is **−1.597 dB**. A
+Butterworth of the same order is 3.0103 dB down there. The Bessel is still
+in its passband at the frequency where the Butterworth has reached its
+corner; its own −3 dB point is out at $\\omega = 1.3617$. Bessel filters
+always look "slow" in magnitude because their corner has been pushed out to
+keep the delay flat.
+
+**Check by numerical differentiation**: differentiating the phase of the same
+$H$ numerically returns 1.000000, 0.923077 and 0.567568 — the closed form is
+right.
+
+### Worked example 7.3 — how flat is flat, at fourth order
+
+**Given**: fourth-order Bessel, Butterworth and 1 dB Chebyshev, each scaled
+so its own −3 dB frequency is the unit of comparison.
+
+**Handbook relation**: compute $\\tau _{g}(\\omega )/\\tau _{g}(0)$ across
+$0 \\le \\omega \\le \\omega _{3\\mathrm{dB}}$ and record the spread.
+
+**Answer**:
+
+| family, $n = 4$ | $\\omega _{3\\mathrm{dB}}$ in prototype units | $\\tau _{g}(0)$ | range of $\\tau _{g}/\\tau _{g}(0)$ | spread |
+|---|---|---|---|---|
+| Bessel | 2.113918 | 1.000000 | 0.9819 to 1.0000 | 1.81 % |
+| Butterworth | 1.000000 | 2.613126 | 1.0000 to 1.4961 | 49.61 % |
+| Chebyshev, 1 dB | 1.053002 | 2.694285 | 1.0000 to 3.0162 | 201.62 % |
+
+**Read the third column too.** The Bessel's dc delay is the *smallest* of the
+three in prototype units, and its −3 dB frequency is more than twice as far
+out — it is a gentler filter in every magnitude sense. What it buys is the
+last column: its delay wanders by under two percent where the Chebyshev's
+triples.
+
+![Group delay divided by its own dc value plotted against frequency divided by each filter's own minus three decibel frequency, for fourth-order Bessel, Butterworth and one-decibel Chebyshev. The Bessel trace is a nearly flat line just below one; the Butterworth rises to about one and a half; the Chebyshev climbs past three near the band edge.](/courses/fe-ee/figures/sig3-group-delay.svg)
+
+**The distractor**: a question that asks which filter "distorts least" and
+offers elliptic as an option is testing whether you conflate magnitude
+flatness with waveform fidelity. Elliptic has the sharpest magnitude and the
+worst delay. For a square wave or a data pulse, Bessel wins and elliptic is
+the worst choice available.
+
+## 7.5 Choosing between the four families
+
+| Requirement | Choose | Because |
+|---|---|---|
+| No passband ripple, predictable corner | Butterworth | maximally flat, −3 dB at $\\omega _{c}$ for any order |
+| Fewest poles for a given transition | Elliptic, else Chebyshev | ripple in one or both bands buys the knee |
+| Flat passband, sharp skirt, ripple acceptable in the stopband | Chebyshev type II | equiripple moved to where nothing lives |
+| Pulses, video, data eyes | Bessel | delay flat to 1.8 % at fourth order |
+| Anti-aliasing ahead of a converter | Butterworth or Chebyshev | only magnitude matters before sampling |`,
+        examTip: 'Chebyshev questions almost always turn on one of three facts: the ripple depth is 1/sqrt(1 + ε²) with ε² = 10^(Ap/10) − 1; the ripple lives only inside the passband; and the −3 dB frequency is NOT the passband edge (for 1 dB ripple at fourth order it sits at 1.053 times the edge). Confusing the passband edge with the −3 dB point is the single most common error in this topic.',
+        importantNote: 'Group delay is the derivative of phase with respect to frequency, not the phase itself. A filter can have large phase shift and perfectly flat delay — that is a pure time shift and harms nothing. It is the VARIATION of delay across the band that smears waveforms.',
+      },
+      {
+        id: 'filt-sallen-key',
+        title: '8. Active Realization: The Sallen-Key Section, Derived and Designed',
+        content: `## 8.1 Deriving the transfer function
+
+The unity-gain Sallen-Key low-pass is two resistors, two capacitors and one
+op-amp wired as a follower. The input drives $R_{1}$ into node A; $R_{2}$
+carries node A to node B; $C_{2}$ shunts node B to ground; node B feeds the
+non-inverting input; and $C_{1}$ returns from the op-amp output to node A.
+That single feedback capacitor is what makes complex poles possible.
+
+The follower forces $V_{B} = V_{o}$. Node B then gives
+
+$$\\frac{V_{A}-V_{o}}{R_{2}} = V_{o}\\,sC_{2} \\qquad \\Longrightarrow \\qquad V_{A} = V_{o}(1+sR_{2}C_{2})$$
+
+Kirchhoff's current law at node A, with the $C_{1}$ current flowing back to
+the output, reads
+
+$$\\frac{V_{i}-V_{A}}{R_{1}} = \\frac{V_{A}-V_{o}}{R_{2}} + (V_{A}-V_{o})\\,sC_{1}$$
+
+Substituting $V_{A}-V_{o} = V_{o}\\,sR_{2}C_{2}$ on the right and
+$V_{A} = V_{o}(1+sR_{2}C_{2})$ on the left, then multiplying through by
+$R_{1}$:
+
+$$V_{i} = V_{o}\\left[1 + sC_{2}(R_{1}+R_{2}) + s^{2}R_{1}R_{2}C_{1}C_{2}\\right]$$
+
+$$H(s) = \\frac{1}{R_{1}R_{2}C_{1}C_{2}\\,s^{2} + C_{2}(R_{1}+R_{2})\\,s + 1}$$
+
+Matching this against $\\omega _{n}^{2}/(s^{2}+(\\omega _{n}/Q)s+\\omega _{n}^{2})$:
+
+$$\\omega _{n} = \\frac{1}{\\sqrt{R_{1}R_{2}C_{1}C_{2}}}, \\qquad Q = \\frac{\\sqrt{R_{1}R_{2}C_{1}C_{2}}}{C_{2}(R_{1}+R_{2})}$$
+
+## 8.2 The equal-resistor design equations
+
+Two equations and four components leave two degrees of freedom. Spending one
+of them by setting $R_{1} = R_{2} = R$ shrinks the algebra to two relations simple
+enough to carry unaided:
+
+$$\\omega _{n} = \\frac{1}{R\\sqrt{C_{1}C_{2}}}, \\qquad Q = \\frac{1}{2}\\sqrt{\\frac{C_{1}}{C_{2}}}, \\qquad \\frac{C_{1}}{C_{2}} = 4Q^{2}$$
+
+**The capacitor ratio alone sets Q, and the resistor alone scales the
+frequency.** The two design decisions become independent, which is why this
+form is the one worth carrying into an exam. Note also that $Q$ is set by a
+*ratio* of like components, which tracks well over temperature, while
+$\\omega _{n}$ depends on an $RC$ product, which does not.
+
+### Worked example 8.1 — a 1 kHz Butterworth section
+
+**Given**: $f_{n} = 1\\ \\mathrm{kHz}$, $Q = 1/\\sqrt{2} = 0.7071$, equal
+resistors, $C_{2} = 10\\ \\mathrm{nF}$ chosen as a convenient value.
+
+**Handbook relation**: $C_{1}/C_{2} = 4Q^{2}$ and
+$R = 1/(\\omega _{n}\\sqrt{C_{1}C_{2}})$.
+
+**Substitution**: $Q^{2} = 0.5$, so the ratio is $4\\times 0.5 = 2$ and
+$C_{1} = 20\\ \\mathrm{nF}$. The geometric mean of 20 nF and 10 nF is
+
+$$\\sqrt{C_{1}C_{2}} = \\sqrt{(20\\ \\mathrm{nF})(10\\ \\mathrm{nF})} = 14.1421\\ \\mathrm{nF}$$
+
+and $\\omega _{n} = 2\\pi (1000) = 6283.185\\ \\mathrm{rad/s}$, so
+
+$$R = \\frac{1}{(6283.185)(14.1421\\times 10^{-9})} = 11254\\ \\Omega$$
+
+**Answer**: $R_{1} = R_{2} = 11.25\\ \\mathrm{k}\\Omega$,
+$C_{1} = 20\\ \\mathrm{nF}$, $C_{2} = 10\\ \\mathrm{nF}$.
+
+### Worked example 8.2 — verifying that section by evaluating H
+
+**Given**: the components just chosen.
+
+**Handbook relation**: substitute them back into the derived $H(s)$ and
+evaluate at $s = j2\\pi f$ — the check that catches a design error the design
+equations cannot.
+
+**Answer**:
+
+| frequency | $\\lvert H\\rvert$ | in decibels | expectation |
+|---|---|---|---|
+| 100 Hz | 0.999950 | −0.0004 dB | flat, one tenth of the corner |
+| 500 Hz | 0.970143 | −0.2633 dB | still inside the passband |
+| 1000 Hz | 0.707107 | −3.0103 dB | the corner, exactly |
+| 2000 Hz | 0.242536 | −12.3045 dB | the knee, not yet asymptotic |
+| 10000 Hz | 0.009999 | −40.0004 dB | one decade out, $-20n\\log _{10}10$ with $n=2$ |
+
+The 1 kHz row is the one that proves the design: for $Q = 0.7071$ the
+magnitude at $\\omega _{n}$ is exactly $Q$, and $Q = 1/\\sqrt{2}$ is the
+$-3$ dB value. That coincidence holds only at the Butterworth $Q$; at any
+other $Q$ the −3 dB point and $\\omega _{n}$ part company.
+
+![Three magnitude curves in decibels against frequency on a logarithmic axis, computed from Sallen-Key sections that share a natural frequency of one kilohertz and differ only in the capacitor ratio. The lowest quality factor droops earliest, the Butterworth value crosses minus three decibels exactly at the corner, and the highest peaks six decibels above unity before falling.](/courses/fe-ee/figures/sig3-sallen-key-q.svg)
+
+The peaking of the high-Q trace has a closed form worth knowing:
+
+$$\\lvert H\\rvert _{\\max } = \\frac{Q}{\\sqrt{1-1/(4Q^{2})}} \\qquad (Q > 0.7071)$$
+
+For $Q = 1.9319$ that evaluates to exactly 2, or 6.0206 dB — visible in the
+figure and confirmed by sweeping the transfer function.
+
+## 8.3 Cascading sections
+
+Buffered sections multiply:
+
+$$H_{\\mathrm{total}}(s) = H_{1}(s)\\,H_{2}(s)\\cdots H_{m}(s)$$
+
+so the total order is the sum of the section orders, and the decibel curves
+**add**. An even order is $n/2$ second-order sections; an odd order is
+$(n-1)/2$ second-order sections plus one first-order section for the real
+pole.
+
+Two rules govern the arrangement:
+
+- **Assign the Q values from the pole table, never split them evenly.** A
+  sixth-order Butterworth is Q = 0.5176, 0.7071 and 1.9319 — three different
+  sections. Three identical Q = 0.7071 sections give a completely different
+  (and much droopier) response, which is the cascade trap of section 3.2 in
+  its higher-order form.
+- **Put the lowest-Q section first.** The high-Q section has gain above unity
+  near its natural frequency; placing it early would let it overload the
+  stages that follow on signals the filter is supposed to reject. Ordering
+  low-Q to high-Q keeps the internal signal swing smallest.
+
+## 8.4 Where the ideal section stops being ideal
+
+| Effect | Consequence | Mitigation |
+|---|---|---|
+| Finite op-amp gain-bandwidth | $Q$ and $\\omega _{n}$ both drift upward | choose a device with gain-bandwidth well above $Q\\,f_{n}$ |
+| Component tolerance | $\\omega _{n}$ follows the $RC$ product, $Q$ the capacitor ratio | tolerance on $Q$ is the looser problem |
+| Op-amp output impedance | rises with frequency, degrading the feedback path | keep $R$ in the kilohm range, not tens of ohms |
+| Capacitor dielectric loss | passband droop and $Q$ loss | film capacitors in the signal path |
+
+The middle row is the design lever: because $Q$ depends on a ratio of two
+capacitors and $\\omega _{n}$ on their product with $R$, a five percent
+capacitor pair from the same batch holds $Q$ far better than five percent
+suggests, while the corner frequency moves by the full tolerance.
+
+## 8.5 Transformations, worked
+
+Section 3.3 tabulated the substitutions. Here they are carried out.
+
+### Worked example 8.3 — low-pass prototype to a 4 kHz high-pass
+
+**Given**: the normalised second-order Butterworth
+$H_{p}(s) = 1/(s^{2}+\\sqrt{2}s+1)$ and a target high-pass corner of 4 kHz.
+
+**Handbook relation**: substitute $s \\to \\omega _{h}/s$ and clear
+denominators.
+
+**Substitution**: $\\omega _{h} = 2\\pi (4000) = 25132.74\\ \\mathrm{rad/s}$, and
+
+$$H_{\\mathrm{HP}}(s) = \\frac{1}{(\\omega _{h}/s)^{2}+\\sqrt{2}(\\omega _{h}/s)+1} = \\frac{s^{2}}{s^{2}+\\sqrt{2}\\,\\omega _{h}s+\\omega _{h}^{2}}$$
+
+**Answer**: the substitution has planted a **double zero at the origin** —
+that is the mechanism by which dc is blocked. Evaluating the result:
+
+| frequency | magnitude |
+|---|---|
+| 400 Hz | −40.0004 dB |
+| 2000 Hz | −12.3045 dB |
+| 4000 Hz | −3.0103 dB |
+| 40000 Hz | −0.0004 dB |
+
+Compare with the low-pass table in worked example 8.2: the numbers are the
+same list read backwards. The transformation is a reflection of the response
+about its corner, on a logarithmic frequency axis.
+
+### Worked example 8.4 — low-pass prototype to a band-pass, and the edges it actually produces
+
+**Given**: the first-order prototype $1/(s+1)$, a centre frequency of
+1000 Hz and a bandwidth of 200 Hz.
+
+**Handbook relation**: substitute $s \\to (s^{2}+\\omega _{0}^{2})/(Bs)$.
+
+**Substitution**:
+
+$$H_{\\mathrm{BP}}(s) = \\frac{1}{(s^{2}+\\omega _{0}^{2})/(Bs)+1} = \\frac{Bs}{s^{2}+Bs+\\omega _{0}^{2}}$$
+
+**Answer**: setting $\\lvert H\\rvert = 1/\\sqrt{2}$ gives
+$\\lvert s^{2}+\\omega _{0}^{2}\\rvert = B\\omega$, whose positive solutions are
+
+$$f_{1,2} = \\frac{\\mp B + \\sqrt{B^{2}+4f_{0}^{2}}}{2}$$
+
+With the numbers, $\\sqrt{B^{2}+4f_{0}^{2}} = \\sqrt{4040000} = 2009.975$, so
+
+$$f_{1} = (2009.975-200)/2 = 904.9875\\ \\mathrm{Hz}, \\qquad f_{2} = (2009.975+200)/2 = 1104.9875\\ \\mathrm{Hz}$$
+
+**Check**: the difference is $1104.9875-904.9875 = 200.0000\\ \\mathrm{Hz}$ —
+the requested bandwidth — and the geometric mean
+$\\sqrt{(904.9875)(1104.9875)} = 1000.00\\ \\mathrm{Hz}$, the requested centre.
+Both to six figures, and sweeping the transfer function numerically locates
+the same two edges.
+
+**The distractor**: 900 Hz and 1100 Hz. Those are the *arithmetically*
+centred edges, and they are wrong by about 5 Hz each. The band-pass
+transformation is geometric, as section 3.4 warned from the other direction:
+given edges of 900 and 1100 the centre is 994.99 Hz, not 1000.`,
+        examTip: 'For the equal-resistor Sallen-Key section, memorise exactly two lines: C1/C2 = 4Q² and R = 1/(ωn·sqrt(C1·C2)). Every component question in this family falls out of them. Pick C2 as a round value, get C1 from the ratio, then compute R — never the other way around, because capacitors come in far fewer values than resistors.',
+        importantNote: 'Cascaded sections multiply their transfer functions, so their decibel curves add — but only if each section is buffered from the next. The Sallen-Key op-amp output provides that buffering automatically. Cascading passive RC stages directly does NOT multiply their individual responses, because each stage loads the one before it.',
+      },
+      {
+        id: 'filt-full-design',
+        title: '9. A Complete Design, Verified Numerically',
+        content: `## 9.1 The specification
+
+A voice-band channel is to be low-pass filtered ahead of a converter.
+
+| Parameter | Value |
+|---|---|
+| Passband edge $f_{p}$ | 3.4 kHz |
+| Maximum passband attenuation $A_{p}$ | 0.5 dB |
+| Stopband edge $f_{st}$ | 10 kHz |
+| Minimum stopband attenuation $A_{s}$ | 45 dB |
+
+Four numbers, as section 5.4 demanded. Note what is *not* specified: the
+−3 dB frequency. It is an outcome of the design, not an input to it.
+
+### Worked example 9.1 — the order, both families
+
+**Handbook relation**, Butterworth:
+
+$$n \\ge \\frac{\\log_{10}\\left[(10^{A_{s}/10}-1)/(10^{A_{p}/10}-1)\\right]}{2\\log _{10}(f_{st}/f_{p})}$$
+
+**Substitution**: $10^{4.5}-1 = 31621.78$ and $10^{0.05}-1 = 0.122018$, so
+the ratio inside the bracket is
+
+$$31621.7766/0.1220185 = 259155.6$$
+
+whose logarithm is 5.4135606. The denominator is
+$2\\log _{10}(10/3.4) = 2\\log _{10}(2.941176) = 0.9370422$.
+
+$$n \\ge 5.4135606/0.9370422 = 5.77729$$
+
+**Answer**: a **sixth-order Butterworth**.
+
+**Chebyshev**, same four numbers:
+
+$$n \\ge \\frac{\\cosh^{-1}\\sqrt{259155.6}}{\\cosh^{-1}(10/3.4)} = \\frac{\\cosh^{-1}(509.0733)}{\\cosh^{-1}(2.941176)} = \\frac{6.925738}{1.741717} = 3.976385$$
+
+so a **fourth-order Chebyshev** with 0.5 dB ripple would also do. Two poles
+fewer. This chapter takes the Butterworth route because the channel carries
+waveform-sensitive data, and section 7.4 quantified what Chebyshev group
+delay would do to it.
+
+### Worked example 9.2 — placing the cutoff
+
+**Given**: $n = 6$, $A_{p} = 0.5\\ \\mathrm{dB}$ at $f_{p} = 3.4\\ \\mathrm{kHz}$.
+
+**Handbook relation**: solve the Butterworth magnitude for the frequency at
+which attenuation equals $A_{p}$:
+
+$$f_{c} = \\frac{f_{p}}{(10^{A_{p}/10}-1)^{1/(2n)}}$$
+
+**Substitution**: $(0.122018)^{1/12} = 0.839206$, so
+
+$$f_{c} = 3400/0.839206 = 4051.45\\ \\mathrm{Hz}$$
+
+**Answer**: $f_{c} = 4.0514\\ \\mathrm{kHz}$, comfortably above the 3.4 kHz
+passband edge. Anyone who sets the cutoff at 3.4 kHz has quietly changed the
+specification from 0.5 dB of passband loss to 3.01 dB.
+
+**Advance check on the stopband**: the ratio is
+$10000/4051.45 = 2.46825$, and
+
+$$10\\log _{10}\\left[1+(2.46825)^{12}\\right] = 47.09\\ \\mathrm{dB}$$
+
+against 45 dB required — 2.09 dB of margin, the reward for rounding 5.7774
+up to 6.
+
+## 9.2 From poles to parts
+
+The six poles sit on the circle of radius
+$\\omega _{c} = 2\\pi (4051.45) = 25455.99\\ \\mathrm{rad/s}$ at
+$105^{\\circ }$, $135^{\\circ }$, $165^{\\circ }$ and their conjugates, giving
+the three section Q values from the section 6.3 table. Choosing
+$R = 10\\ \\mathrm{k}\\Omega$ for all three stages fixes
+
+$$\\sqrt{C_{1}C_{2}} = \\frac{1}{\\omega _{c}R} = \\frac{1}{(25455.99)(10000)} = 3.9283\\ \\mathrm{nF}$$
+
+for every stage, and $C_{1}/C_{2} = 4Q^{2}$ then splits that geometric mean
+into the two capacitors.
+
+### Worked example 9.3 — the three sets of capacitors
+
+**Given**: the three Q values, $R = 10\\ \\mathrm{k}\\Omega$, and
+$\\sqrt{C_{1}C_{2}} = 3.9283\\ \\mathrm{nF}$.
+
+**Handbook relation**:
+$C_{2} = \\sqrt{C_{1}C_{2}}/\\sqrt{4Q^{2}} = \\sqrt{C_{1}C_{2}}/(2Q)$ and
+$C_{1} = 4Q^{2}C_{2}$.
+
+**Substitution and answer**:
+
+| stage | Q | $4Q^{2}$ | $C_{2}$ | $C_{1}$ | realised $f_{n}$ |
+|---|---|---|---|---|---|
+| 1 (first in the chain) | 0.517638 | 1.071797 | 3.7945 nF | 4.0669 nF | 4051.45 Hz |
+| 2 | 0.707107 | 2.000000 | 2.7778 nF | 5.5555 nF | 4051.45 Hz |
+| 3 (last) | 1.931852 | 14.928203 | 1.0167 nF | 15.1780 nF | 4051.45 Hz |
+
+All three share the same natural frequency, as the Butterworth circle
+requires — only the capacitor ratio changes from stage to stage. The
+low-Q stage leads and the high-Q stage trails, following the ordering rule
+of section 8.3.
+
+## 9.3 Verifying the circuit, not the formula
+
+The design so far rests on the Butterworth magnitude equation. The test that
+means something is to forget that equation, substitute the **component
+values above** into the Sallen-Key transfer function derived in section 8.1,
+multiply the three sections together and evaluate the product.
+
+$$H_{\\mathrm{total}}(s) = \\prod _{k=1}^{3}\\frac{1}{R^{2}C_{1k}C_{2k}s^{2}+2RC_{2k}s+1}$$
+
+| frequency | cascade magnitude | requirement | verdict |
+|---|---|---|---|
+| 1000 Hz | −0.00000 dB | — | flat |
+| 2000 Hz | −0.00091 dB | — | flat |
+| 3400 Hz | **−0.50000 dB** | at most 0.5 dB | met exactly |
+| 4051.45 Hz | −3.01030 dB | — | the −3 dB point, where predicted |
+| 5000 Hz | −11.29786 dB | — | inside the transition |
+| 8000 Hz | −35.45882 dB | — | approaching the stopband |
+| 10000 Hz | **−47.08687 dB** | at least 45 dB | met, 2.09 dB spare |
+| 15000 Hz | −68.21774 dB | — | −120 dB per decade taking hold |
+| 20000 Hz | −83.21038 dB | — | asymptotic |
+
+The circuit reproduces the specification to five decimal places, and the
+47.08687 dB it delivers at 10 kHz matches the 47.09 dB the magnitude formula
+predicted in worked example 9.2. Two independent routes, one answer.
+
+![Magnitude of the completed sixth-order cascade in decibels against frequency on a logarithmic axis, with the passband requirement drawn as a shaded box that the curve must stay above and the stopband requirement as a second box it must stay below. The curve grazes the passband corner at half a decibel and clears the stopband corner with a visible margin.](/courses/fe-ee/figures/sig3-design-verify.svg)
+
+The last two rows confirm the slope: from 10 kHz to 20 kHz — one octave —
+the response falls by 36.12 dB, and $6.0206 \\times 6 = 36.12$ dB is exactly
+what a sixth-order roll-off should give.
+
+## 9.4 What the verification does not cover
+
+A magnitude check confirms magnitude. It says nothing about:
+
+- **Group delay.** This design's delay varies by about 50 % across its
+  passband, per section 7.4. If the channel carried pulses rather than
+  speech, that would be the dominant defect and a Bessel design or a delay
+  equaliser would be needed.
+- **Component tolerance.** Every capacitor above is quoted to five figures
+  and none of them is purchasable. Rounding to nearest standard values moves
+  $f_{c}$ and each $Q$; the margin of 2.09 dB is what absorbs that movement,
+  which is the real reason to leave margin.
+- **The op-amp.** Section 8.4's gain-bandwidth requirement bites hardest on
+  stage 3, where $Q = 1.93$ demands the most loop gain.
+- **Noise.** Three cascaded stages contribute three times the op-amp noise,
+  weighted by their positions.
+
+Reporting a design as finished on the strength of a magnitude plot alone is
+the mistake this section exists to prevent.`,
+        examTip: 'Design questions on the FE almost always stop at the order, occasionally at the cutoff frequency, and rarely at component values. Practise the sequence anyway — order, then cutoff, then poles, then parts, then verify — because a question that gives you three of those and asks for the fourth is testing whether you know which way the chain runs.',
+        importantNote: 'Two independent routes to the same number is the standard this course holds itself to. Here the Butterworth magnitude formula predicted 47.09 dB at 10 kHz, and evaluating the product of three Sallen-Key sections built from the tabulated capacitors returned 47.08687 dB. If those two had disagreed, one of them would have been wrong, and a plot of either alone would have hidden it.',
+      },
+      {
+        id: 'filt-problems',
+        title: '10. Problem Sets',
+        content: `## 10.1 Working method
+
+Each answer below names the misstep it is built around, together with the
+figure that misstep returns, because on a multiple-choice paper those figures
+sit beside the correct one and are chosen to be within easy reach.
+
+### Problem Set A — identification, order and roll-off
+
+**A1.** A filter has $H(0) = 0$ and $H(s) \\to 3$ as $s \\to \\infty$. What
+type is it, and what is the minimum order?
+
+**A2.** How much attenuation does a fourth-order Butterworth provide three
+octaves above its cutoff?
+
+**A3.** A specification demands 1 dB at 2 kHz and 40 dB at 6 kHz. What
+Butterworth order is required?
+
+**A4.** For the order found in A3, where does the −3 dB frequency land?
+
+**A5.** Two identical buffered first-order sections, each with a 1 kHz
+corner, are cascaded. What is the overall −3 dB frequency, and what is the
+attenuation at 1 kHz?
+
+**A6.** A third-order Butterworth is normalised to $s^{3}+2s^{2}+2s+1$.
+Evaluate its attenuation at $\\omega = 3$ by substituting into the
+polynomial.
+
+**A7.** A band-pass filter has −3 dB edges at 4 kHz and 9 kHz. Give its
+bandwidth, centre frequency and Q.
+
+**A8.** A 1 dB Chebyshev of order 5 is evaluated at its passband edge. What
+is the attenuation there, and what is it at dc?
+
+### Answers, Problem Set A
+
+**A1.** Zero gain at dc and finite non-zero gain at infinity: a **high-pass**,
+and because a single pole is enough to produce that behaviour, minimum order
+is **1**. *Trap*: reading "gain 3 at infinity" as a band-pass because the
+gain is not 1. Gain magnitude is irrelevant to type; only the behaviour at
+the two extremes matters. That misreading yields "band-pass, order 2".
+
+**A2.** Three octaves is a factor $2^{3} = 8$ in frequency. Evaluating the
+magnitude,
+
+$$10\\log _{10}\\left[1+8^{8}\\right] = 10\\log _{10}(16777217) = 72.25\\ \\mathrm{dB}$$
+
+*Trap*: using the octave rule as $-6n$ per octave gives
+$6 \\times 4 \\times 3 = 72\\ \\mathrm{dB}$, which is close but not equal —
+the exact value is 72.25 dB because the asymptote has not fully taken hold.
+Either will be marked right; what matters is being aware of which one is
+exact. The costly error is applying the *decade* rule to an octave question:
+$20 \\times 4 \\times 3 = 240\\ \\mathrm{dB}$, wrong by a factor of more
+than three.
+
+**A3.** With $A_{p} = 1$, $A_{s} = 40$, $f_{st}/f_{p} = 3$:
+
+$$n \\ge \\frac{\\log_{10}\\left[(10^{4}-1)/(10^{0.1}-1)\\right]}{2\\log _{10}3} = \\frac{\\log_{10}(9999/0.2589254)}{0.954243} = \\frac{4.586782}{0.954243} = 4.806723$$
+
+so **fifth order**. *Trap*: rounding 4.8067 to the nearest integer is
+harmless here, but rounding *down* on a value like 4.07 is not — and a
+candidate who has internalised "round to nearest" will do it. The rule is
+always up.
+
+**A4.** With $n = 5$ and the passband edge pinned at 1 dB:
+
+$$f_{c} = 2000/(0.258925)^{1/10} = 2000/0.873610 = 2289.35\\ \\mathrm{Hz}$$
+
+Checking the stopband at that cutoff: the ratio is
+$6000/2289.35 = 2.6208$, and
+$10\\log _{10}\\left[1+(2.6208)^{10}\\right] = 41.84\\ \\mathrm{dB}$, clearing
+the 40 dB requirement with 1.84 dB to spare. *Trap*: answering 2 kHz, i.e. assuming the passband
+edge *is* the −3 dB point. It is only when $A_{p}$ happens to be 3.0103 dB.
+
+**A5.** Each section is 3.0103 dB down at 1 kHz, so the pair is
+**6.0206 dB** down there — not 3 dB. The overall −3 dB frequency is
+
+$$f_{3} = 1000\\sqrt{2^{1/2}-1} = 1000(0.643594) = 643.6\\ \\mathrm{Hz}$$
+
+*Trap*: answering 1 kHz for the corner and 3 dB for the attenuation.
+Cascading sections adds their decibel losses at every frequency, so the
+composite corner always moves **down**. Section 3.2 states the general rule.
+
+**A6.** Substitute $s = j3$:
+
+$$B_{3}(j3) = -j27 - 18 + j6 + 1 = -17 - j21$$
+
+$$\\lvert B_{3}(j3)\\rvert = \\sqrt{289+441} = \\sqrt{730} = 27.0185$$
+
+Attenuation $= 20\\log _{10}(27.0185) = 28.633\\ \\mathrm{dB}$, and the
+magnitude formula agrees: $10\\log _{10}(1+3^{6}) = 10\\log _{10}(730) = 28.633$.
+*Trap*: forgetting that $(j3)^{3} = -j27$ and writing $+j27$, which gives
+$-17+j33$ and an answer near 31.4 dB. Powers of $j$ cycle with period four;
+$j^{3} = -j$.
+
+**A7.** $B = 9-4 = 5\\ \\mathrm{kHz}$;
+$f_{0} = \\sqrt{(4)(9)} = 6\\ \\mathrm{kHz}$; $Q = 6/5 = 1.2$.
+*Trap*: the arithmetic mean, $(4+9)/2 = 6.5\\ \\mathrm{kHz}$, which then gives
+$Q = 1.3$. For a band this wide the two means differ by 500 Hz. The
+geometric mean is the correct one.
+
+**A8.** At the passband edge $T_{5}(1) = 1$, so the attenuation is exactly
+the ripple, **1 dB**. At dc, $T_{5}(0) = 0$ because the order is odd, so the
+attenuation is exactly **0 dB**. *Trap*: answering 3 dB at the edge, or
+answering 1 dB at dc by assuming every Chebyshev starts at the bottom of its
+ripple band. Even orders start at the bottom; odd orders start at the top.
+
+### Problem Set B — approximation families, sections and design
+
+**B1.** A 0.5 dB Chebyshev is required. What is $\\varepsilon$, and what is
+the minimum passband gain as a fraction of the maximum?
+
+**B2.** Compute the attenuation of a 0.5 dB Chebyshev of order 3 at twice
+its passband edge.
+
+**B3.** A Sallen-Key section is to have $Q = 2$ and
+$f_{n} = 5\\ \\mathrm{kHz}$ with equal resistors and $C_{2} = 1\\ \\mathrm{nF}$.
+Find $C_{1}$ and $R$.
+
+**B4.** For the section in B3, how much does the response peak, and at what
+frequency?
+
+**B5.** A fourth-order Butterworth is built as two Sallen-Key sections. What
+Q values must they have, and what happens if both are built at $Q = 0.7071$?
+
+**B6.** A second-order Bessel, $H(s) = 3/(s^{2}+3s+3)$, and a second-order
+Butterworth, $H(s) = 1/(s^{2}+\\sqrt{2}s+1)$, are compared at
+$\\omega = 1$. Give the magnitude and the group delay of each.
+
+### Answers, Problem Set B
+
+**B1.** $\\varepsilon ^{2} = 10^{0.05}-1 = 0.122018$, so
+$\\varepsilon = 0.349311$. The minimum passband gain is
+
+$$\\frac{1}{\\sqrt{1+\\varepsilon ^{2}}} = \\frac{1}{\\sqrt{1.122018}} = 0.944061$$
+
+which is $-0.5$ dB, as it must be. *Trap*: computing
+$\\varepsilon = 10^{0.05}-1 = 0.122$ and stopping — that is
+$\\varepsilon ^{2}$, not $\\varepsilon$. Using 0.122 in place of 0.349 in the
+attenuation formula understates the stopband rejection by about 9 dB.
+
+**B2.** $T_{3}(2) = 26$ from the polynomial $4x^{3}-3x$. Then
+
+$$10\\log _{10}\\left[1+0.122018\\times 676\\right] = 10\\log _{10}(1+82.48) = 10\\log _{10}(83.48) = 19.216\\ \\mathrm{dB}$$
+
+*Trap*: using the 1 dB value $\\varepsilon ^{2} = 0.258925$ out of habit,
+which gives 22.456 dB — 3.24 dB too optimistic. Less ripple always means
+less stopband rejection at the same order; that is the trade in one number.
+
+**B3.** $C_{1}/C_{2} = 4Q^{2} = 4(4) = 16$, so
+$C_{1} = 16\\ \\mathrm{nF}$. The geometric mean is
+$\\sqrt{(16\\ \\mathrm{nF})(1\\ \\mathrm{nF})} = 4\\ \\mathrm{nF}$, and
+$\\omega _{n} = 2\\pi (5000) = 31415.93\\ \\mathrm{rad/s}$, so
+
+$$R = \\frac{1}{(31415.93)(4\\times 10^{-9})} = 7957.7\\ \\Omega$$
+
+**Answer**: $C_{1} = 16\\ \\mathrm{nF}$,
+$R = 7.96\\ \\mathrm{k}\\Omega$. *Trap*: using $C_{1}/C_{2} = 2Q$ instead of
+$4Q^{2}$, giving $C_{1} = 4\\ \\mathrm{nF}$ and a section whose Q is 1, half
+what was asked. The relation is quadratic in Q because Q is *half* the square
+root of the ratio.
+
+**B4.** With $Q = 2$,
+
+$$\\lvert H\\rvert _{\\max } = \\frac{Q}{\\sqrt{1-1/(4Q^{2})}} = \\frac{2}{\\sqrt{1-0.0625}} = \\frac{2}{0.968246} = 2.065591$$
+
+which is $20\\log _{10}(2.065591) = 6.301\\ \\mathrm{dB}$, occurring at
+
+$$\\omega _{\\mathrm{peak}} = \\omega _{n}\\sqrt{1-1/(2Q^{2})} = 31415.93\\sqrt{0.875} = 29386.9\\ \\mathrm{rad/s}$$
+
+that is, at 4677.1 Hz — slightly **below** $f_{n}$. *Trap*: answering that
+the peak is at $f_{n}$ and equal to $Q$, i.e. 6.02 dB at 5 kHz. Both are
+close but neither is exact, and the peak always sits below the natural
+frequency.
+
+**B5.** From the section 6.3 table, $Q = 0.541196$ and $Q = 1.306563$. Two
+sections at 0.7071 would instead give
+$H = 1/(s^{2}+\\sqrt{2}s+1)^{2}$, whose magnitude at $\\omega = 1$ is
+$1/2$ — that is $-6.02$ dB rather than $-3.01$ dB — and whose passband
+droops steadily instead of staying flat. *Trap*: assuming "Butterworth"
+means "every section at Q = 0.707". It means the *poles lie on a circle*,
+which forces different Q values for every order above two.
+
+**B6.** Bessel: the denominator at $\\omega = 1$ is
+$-1+j3+3 = 2+j3$, magnitude $\\sqrt{13} = 3.605551$, so
+$\\lvert H\\rvert = 3/3.605551 = 0.832050$, which is $-1.597$ dB; group
+delay $(9+3)/(1+3+9) = 12/13 = 0.923077$. Butterworth: the denominator is
+$-1+j\\sqrt{2}+1 = j1.414214$, magnitude 1.414214, so
+$\\lvert H\\rvert = 0.707107$, which is $-3.010$ dB; group delay
+$\\sqrt{2}(1+1)/(1+1) = 1.414214$.
+
+**Read the comparison**: at the same normalised frequency the Butterworth is
+1.4 dB further down but holds the signal up 53 % longer, and its delay is
+still climbing while the Bessel's is falling gently. *Trap*: assuming the
+filter with more attenuation at a given frequency is the "better" one. They
+optimise different quantities, and the question of which is better is
+answered by what the signal is, not by the magnitude plot.`,
+        examTip: 'When a problem gives you a transfer function and asks for a number at a specific frequency, substitute s = jω into the polynomial and take the magnitude. It is almost always faster than recalling which approximation formula applies, it works for every family, and it cannot be defeated by a filter that is not one of the named types.',
+        importantNote: 'Every answer above names its distractor because the distractors are systematic, not random: arithmetic mean for geometric mean, ε for ε², nearest-integer for round-up, passband edge for −3 dB point, and one Q value for all sections. Recognising which of those five is being tested identifies the right answer faster than computing it.',
+      },
     ],
     keyTakeaways: [
       'LP, HP, BP, BS filter types determined by which frequencies pass through.',
@@ -2774,7 +3898,7 @@ The **DFT** converts N time-domain samples into N frequency-domain components:
 |---|---|---|
 | **Frequency of bin k** | $f_{k} = k \\cdot f_{s}/N$ | Center frequency of bin k |
 | **Frequency resolution** | $\\Delta f = f_{s}/N$ | Smallest distinguishable frequency difference |
-| **Bin 0** | $f_{0} = 0 (DC)$ | Average value of signal |
+| **Bin 0** | $f_{0} = 0$ (dc) | Average value of signal |
 | **Bin N/2** | fₛ/2 (Nyquist) | Maximum frequency represented |
 | **Bins N/2+1 to N−1** | Negative frequencies | Mirror of bins 1 to N/2−1 for real signals |
 
@@ -2796,7 +3920,7 @@ The **FFT** is an algorithm (not a different transform) that computes the DFT ef
 | Direct DFT | **$O(N^{2})$** | ~1,048,576 |
 | FFT (Cooley-Tukey) | **$O(N \\log _{2} N)$** | ~10,240 |
 
-The Cooley-Tukey algorithm requires N to be a **power of 2** (128, 256, 512, 1024, ...). If your data has a non-power-of-2 length, **zero-pad** to the next power of 2.`,
+The **radix-2** Cooley-Tukey algorithm requires N to be a **power of 2** (128, 256, 512, 1024, ...). Cooley-Tukey itself factors any composite N, and mixed-radix libraries exploit that; but the radix-2 form is the one drawn, counted and examined, so in practice a non-power-of-2 record is **zero-padded** to the next power of 2. Section 9 derives its cost and section 6 explains what that padding does and does not buy.`,
         examTip: 'For FE exam DFT problems: given N samples at rate fₛ, the frequency resolution is Δf = fₛ/N and the maximum frequency is fₛ/2. If asked to identify which bin a frequency falls in: bin k = round(f/Δf). These three formulas solve most DFT exam problems.',
       },
       {
@@ -2810,7 +3934,7 @@ The DFT implicitly assumes the signal **repeats periodically** every N samples. 
 
 A finite-length signal is equivalent to multiplying an infinite signal by a rectangular window. In the frequency domain, this multiplication becomes **convolution** with the window's spectrum (a sinc function), smearing energy into adjacent bins.
 
-![Sixty-four-point DFT magnitude of a cosine that completes ten and a half cycles in the record, computed with and without a Hann window and each trace normalized to its own peak. Without a window the tone smears across every bin at roughly minus thirteen to minus twenty-five decibels; the Hann window widens the peak slightly but drops the distant skirts below minus sixty decibels.](/courses/fe-ee/figures/sig-leakage-window.svg)
+![Sixty-four-point DFT magnitude of a cosine that completes ten and a half cycles in the record, computed with and without a Hann window and each trace normalized to its own peak. Without a window the tone smears across every bin, from about minus nine decibels at the bins flanking the peak down to a floor near minus twenty-six decibels at the far end of the axis; the Hann window widens the peak slightly but drops the distant skirts below minus sixty decibels.](/courses/fe-ee/figures/sig-leakage-window.svg)
 
 The worst case is drawn deliberately: the tone sits exactly halfway between
 bins 10 and 11, so no bin can claim it cleanly. Note what the window does
@@ -2856,7 +3980,7 @@ weighted sum of current and past inputs and past outputs. The z-transform
 does for these equations exactly what the Laplace transform does for
 differential equations — it converts them to algebra:
 
-**$X(z) = \\Sigma x[n]\\cdot z^{-n}$** summed over all n
+**$X(z) = \\sum _{n=-\\infty }^{\\infty } x[n]\\, z^{-n}$** (the bilateral form; causal signals start the sum at n = 0)
 
 The variable z plays the role of a unit advance; its reciprocal $z^{-1}$ is a
 **one-sample delay**, which is the physical building block of every digital
@@ -2968,7 +4092,7 @@ same fact.`,
 
 A discrete LTI system with impulse response h[n] produces
 
-**$y[n] = x[n] * h[n] = \\Sigma x[k]\\cdot h[n-k]$** summed over k
+**$y[n] = x[n] * h[n] = \\sum _{k=-\\infty }^{\\infty } x[k]\\, h[n-k]$**
 
 Same structure as the continuous integral — flip, shift, multiply — but the
 integral becomes a finite sum, which makes hand evaluation genuinely
@@ -3048,6 +4172,979 @@ multiplication in the transform domain, and you pick whichever side of that
 identity involves less arithmetic for the problem in front of you.`,
         examTip: 'Before computing any discrete convolution, write down the output length L₁ + L₂ − 1 and, after computing, check that the output samples sum to (Σx)·(Σh). These two bracket checks catch dropped terms and misaligned shifts — the two errors that account for nearly all convolution mistakes under time pressure.',
         importantNote: 'DFT multiplication gives CIRCULAR convolution, not linear. Zero-pad both sequences to at least L₁ + L₂ − 1 points before using the FFT to convolve, or the wrap-around will corrupt the first samples of the result. This padding requirement is a favorite conceptual question.',
+      },
+      {
+        id: 'dft-finite-sum',
+        title: '5. The DFT as a Finite Sum, and What It Samples',
+        content: `## 5.1 The definition, written honestly
+
+Section 1 stated the transform pair. It is worth restating with the twiddle
+factor named, because every property in this chapter falls out of that one
+symbol:
+
+$$X[k] = \\sum _{n=0}^{N-1} x[n]\\, W_{N}^{kn}, \\qquad W_{N} = e^{-j2\\pi /N}, \\qquad k = 0, 1, \\ldots , N-1$$
+
+$$x[n] = \\frac{1}{N}\\sum _{k=0}^{N-1} X[k]\\, W_{N}^{-kn}$$
+
+Note what is **finite**: the sum runs over exactly N terms, and there are
+exactly N outputs. There is no integral, no limit and no infinity anywhere.
+The DFT is a square matrix multiplication — N inputs, N outputs, $N^{2}$
+products — and the FFT of section 9 is nothing but a way of doing that
+multiplication with fewer of them.
+
+The twiddle factor is an Nth root of unity, and three of its properties do
+all the work later:
+
+$$W_{N}^{k+N} = W_{N}^{k}, \\qquad W_{N}^{k+N/2} = -W_{N}^{k}, \\qquad W_{N}^{2} = W_{N/2}$$
+
+Periodicity gives the spectrum its wrap-around; the half-period sign flip is
+the butterfly's minus sign; and the squaring identity is what lets an
+N-point transform be built from two of half the size.
+
+### Worked example 5.1 — a four-point DFT, by the sum and by the machine
+
+**Given**: $x = \\lbrace 1, 2, 3, 4\\rbrace$, so $N = 4$ and
+$W_{4} = e^{-j\\pi /2} = -j$.
+
+**Handbook relation**: $X[k] = \\sum _{n} x[n]\\,W_{4}^{kn}$.
+
+**Substitution**, term by term:
+
+$$X[0] = 1+2+3+4 = 10$$
+
+$$X[1] = 1 + 2(-j) + 3(-1) + 4(j) = (1-3) + j(4-2) = -2+j2$$
+
+$$X[2] = 1 + 2(-1) + 3(1) + 4(-1) = -2$$
+
+$$X[3] = 1 + 2(j) + 3(-1) + 4(-j) = -2-j2$$
+
+**Answer**: magnitudes 10, 2.828427, 2, 2.828427; phases 0, 135, 180 and
+−135 degrees.
+
+**Checks, three of them.** Running an FFT on the same four samples returns
+the identical complex values to within $2\\times 10^{-15}$. The inverse
+transform of the result returns 1, 2, 3, 4. And Parseval's relation,
+
+$$\\sum _{n=0}^{N-1}\\lvert x[n]\\rvert ^{2} = \\frac{1}{N}\\sum _{k=0}^{N-1}\\lvert X[k]\\rvert ^{2}$$
+
+gives $1+4+9+16 = 30$ on the left and $(100+8+4+8)/4 = 30$ on the right.
+Three independent confirmations of a four-term sum is not overkill when the
+same discipline scales to a 4096-point transform you cannot check by eye.
+
+Notice $X[3] = X^{*}[1]$. That mirror is not an accident of these numbers;
+section 10 shows it holds for every real input and halves the work.
+
+## 5.2 What the DFT is a sample of
+
+Take the same finite record and ask for its **discrete-time Fourier
+transform** — the continuous function of digital frequency:
+
+$$X(e^{j\\omega }) = \\sum _{n=0}^{N-1} x[n]\\, e^{-j\\omega n}$$
+
+Compare it with the DFT definition. They are the same sum, and the DFT is
+that continuous function evaluated at N equally spaced points:
+
+$$X[k] = X(e^{j\\omega })\\Big|_{\\omega = 2\\pi k/N}$$
+
+**The DFT sees N samples of a curve that exists at every frequency.** Between
+those samples the DTFT does whatever it likes, and the DFT is blind to it.
+That single sentence explains zero-padding (section 6), leakage (section 7)
+and scalloping loss (section 7.3) — all three are consequences of sampling a
+curve rather than seeing it.
+
+![Continuous curve of the discrete-time Fourier transform magnitude of an eight-sample record whose first four samples are one and last four are zero, with the eight discrete Fourier transform bins drawn as stems on top of it. Stems land exactly on the curve, and the bins at indices two, four and six land on the curve's nulls, reading zero where the curve between them rises above one.](/courses/fe-ee/figures/sig3-dft-samples-dtft.svg)
+
+The figure is a four-sample rectangle inside an eight-point record. Three
+bins read exactly zero — and yet the DTFT between them climbs above one. A
+spectrum analyser showing only those eight numbers would report no energy at
+three frequencies where energy plainly exists in the continuous transform.
+Nothing is broken; the DFT simply answers the question it was asked.
+
+There is a third reading of the same equations. The inverse DFT writes
+$x[n]$ as a sum of N complex exponentials at frequencies $2\\pi k/N$ — which
+is precisely a **Fourier series** for a periodic sequence of period N. So
+the DFT coefficients, divided by N, are the Fourier series coefficients of
+the **periodic extension** of the record: the infinite signal you get by
+laying copies of the N samples end to end forever. The DFT does not know
+your signal stopped. It assumes it repeated. Section 7 is the bill for that
+assumption.
+
+### Worked example 5.2 — frequency to bin, and bin to frequency
+
+**Given**: $f_{s} = 8\\ \\mathrm{kHz}$, $N = 256$.
+
+**Handbook relation**:
+
+$$\\Delta f = \\frac{f_{s}}{N} = \\frac{1}{NT_{s}} = \\frac{1}{T_{\\mathrm{record}}}, \\qquad k = \\frac{fN}{f_{s}}, \\qquad f_{k} = \\frac{k f_{s}}{N}$$
+
+**Substitution**: $\\Delta f = 8000/256 = 31.25\\ \\mathrm{Hz}$, and the record
+lasts $T = 256/8000 = 0.032\\ \\mathrm{s} = 32\\ \\mathrm{ms}$. Confirming the
+third form, $1/0.032 = 31.25\\ \\mathrm{Hz}$.
+
+**Answer, forward direction** (frequency to bin):
+
+| tone | $k = fN/f_{s}$ | lands where |
+|---|---|---|
+| 1000 Hz | $1000/31.25 = 32$ | exactly on bin 32 |
+| 1250 Hz | $1250/31.25 = 40$ | exactly on bin 40 |
+| 3000 Hz | $3000/31.25 = 96$ | exactly on bin 96 |
+| 1100 Hz | $1100/31.25 = 35.2$ | between bins 35 and 36 |
+
+**Answer, reverse direction** (bin to frequency):
+
+| bin k | $f_{k} = k f_{s}/N$ | interpretation |
+|---|---|---|
+| 0 | 0 Hz | the dc term, the record's mean times N |
+| 32 | 1000 Hz | the tone above |
+| 128 | 4000 Hz | $f_{s}/2$, the folding bin |
+| 200 | 6250 Hz | above folding: read it as $(200-256)(31.25) = -1750\\ \\mathrm{Hz}$ |
+
+**Check**: synthesising a 1000 Hz cosine at this rate and transforming it
+puts $\\lvert X[32]\\rvert = 128$, exactly $N/2$, with every other bin below
+$4\\times 10^{-13}$ — the tone is coherent with the record, which is the
+subject of section 7.
+
+**The trap in the last row.** Bin 200 is above $N/2$, so it belongs to the
+mirror image. Reporting "6250 Hz" for a real input is wrong: 6250 Hz is
+above the folding frequency and cannot be represented. The energy in bin 200
+is the same energy as in bin 56, which sits at 1750 Hz.`,
+        examTip: 'Three formulas answer nearly every DFT bookkeeping question: Δf = fs/N, k = f·N/fs, and fk = k·fs/N. Write all three down before starting, because questions alternate between the forward and reverse directions and the one you did not write is the one you will be asked for. Bins above N/2 belong to the mirror; subtract N before converting.',
+        importantNote: 'The DFT treats its N samples as one period of a periodic signal. That is not an approximation you can improve on with a better algorithm; it is what the transform is. Every leakage, scalloping and windowing effect in this chapter follows from it.',
+      },
+      {
+        id: 'dft-resolution',
+        title: '6. Resolution Against Zero-Padding, on One Signal',
+        content: `## 6.1 What resolution is bought with
+
+$$\\Delta f = \\frac{f_{s}}{N} = \\frac{1}{T_{\\mathrm{record}}}$$
+
+Written the second way, the statement is stark: **frequency resolution is the
+reciprocal of how long you observed.** Nothing else enters. A faster sample
+rate raises the top of the band but, at fixed N, makes the resolution worse.
+A slower rate improves it, right up until aliasing ruins the record. The only
+clean route to finer resolution is a longer observation.
+
+Two tones separated by $\\delta f$ therefore need a record of at least
+$T \\approx 1/\\delta f$ to be distinguished — and "at least" is doing real
+work, as the measurements below show.
+
+## 6.2 The demonstration
+
+One signal, used three ways: two equal cosines at 200 Hz and 210 Hz sampled
+at 1000 Hz, so the separation is 10 Hz.
+
+### Worked example 6.1 — the same 64 samples, transformed three ways
+
+**Given**: 64 samples at $f_{s} = 1000\\ \\mathrm{Hz}$, containing 200 Hz and
+210 Hz at equal amplitude.
+
+**Handbook relation**: $\\Delta f = f_{s}/N$ for the true resolution;
+$f_{s}/N_{\\mathrm{FFT}}$ for the spacing of the displayed points.
+
+**Substitution and answer**:
+
+| transform | true $\\Delta f$ | displayed spacing | maxima found between 165 and 245 Hz |
+|---|---|---|---|
+| 64-point FFT of 64 samples | 15.625 Hz | 15.625 Hz | one, at 203.125 Hz |
+| 512-point FFT of the SAME 64 samples | 15.625 Hz | 1.9531 Hz | one main lobe at 201.17 Hz, plus side lobes 11.84 and 11.18 dB below it |
+| 256-point FFT of 256 samples | 3.90625 Hz | 3.90625 Hz | **two**, at 199.22 Hz and 210.94 Hz |
+
+**Read the middle row carefully.** Zero-padding turned eight sparse points
+into a smooth curve, and the curve has three local maxima — but the two
+outer ones are more than eleven decibels down and are the skirt of the
+rectangular window, not tones. The padded transform contains **exactly the
+information the 64 samples contained**, interpolated. It cannot manufacture
+a second peak because there was never a second peak to find.
+
+The bottom row separates the tones because the record is four times longer,
+so $\\Delta f$ is four times smaller and the 10 Hz gap spans 2.56 bins
+instead of 0.64.
+
+![Three stacked panels sharing a frequency axis from 140 to 280 hertz. The top panel is a stem plot of sixty-four samples with one lobe near 203 hertz; the middle is a smooth interpolated curve from the same sixty-four samples padded to five hundred and twelve points, still with a single main lobe; the bottom is a stem plot of two hundred and fifty-six samples showing two clearly separate lobes with arrows marking them.](/courses/fe-ee/figures/sig3-resolution-zeropad.svg)
+
+### Worked example 6.2 — how long a record does the pair need?
+
+**Given**: tones 10 Hz apart, $f_{s} = 1000\\ \\mathrm{Hz}$, rectangular
+window.
+
+**Handbook relation**: the separation in bins is
+$\\delta f/\\Delta f = \\delta f\\, N/f_{s}$; two lobes are resolved when that
+number is comfortably above one.
+
+**Substitution**, measuring the actual transforms rather than trusting the
+rule:
+
+| N | $\\Delta f$ | separation in bins | maxima observed |
+|---|---|---|---|
+| 64 | 15.6250 Hz | 0.64 | one |
+| 128 | 7.8125 Hz | 1.28 | one |
+| 160 | 6.2500 Hz | 1.60 | two |
+| 192 | 5.2083 Hz | 1.92 | two |
+| 256 | 3.9062 Hz | 2.56 | two |
+
+**Answer**: the pair separates somewhere between 1.28 and 1.60 bins of
+separation — that is, a record of about 160 ms rather than the 100 ms that
+"$\\delta f = \\Delta f$" would suggest. **One bin of separation is
+marginal.** The rectangular window's main lobe is two bins wide null to
+null, so two tones a single bin apart have overlapping main lobes and merge
+into one broader lobe whose peak sits between them, which is exactly what
+the 128-sample row shows.
+
+**The distractor**: answering 100 ms, from $T = 1/\\delta f$. That is the
+right order of magnitude and the standard textbook rule, and it is optimistic
+by roughly half. Whether it counts as wrong depends on the question; what is
+never right is claiming that padding the 100 ms record to 1000 points would
+help.
+
+## 6.3 What zero-padding is genuinely for
+
+| Purpose | Does padding help? | Why |
+|---|---|---|
+| Separating two close tones | **No** | resolution is set by record length alone |
+| Reading a single peak's frequency more precisely | **Yes** | interpolation locates the lobe's summit between bins |
+| Reducing scalloping loss in an amplitude reading | **Yes** | a denser grid lands nearer the true peak |
+| Reaching a power-of-two length for a radix-2 FFT | **Yes** | this is the routine housekeeping use |
+| Making linear convolution out of circular | **Yes** | section 4.3 — a different mechanism entirely |
+| Lowering the noise floor of the spectrum | No | padding adds no data, so it adds no averaging |
+
+The second and third rows are why padding is not merely harmless. A tone
+that falls midway between bins reads up to 3.92 dB low on an unpadded
+rectangular-window transform (section 7.3 derives that number); padding by a
+factor of four cuts the worst case to about 0.22 dB, because the densest
+grid point is now at worst an eighth of a bin from the true peak. Padding
+improves your **reading** of a lobe. It never adds a lobe.`,
+        examTip: 'If a question asks how to distinguish two frequencies that are close together, the answer is always "observe for longer" — more samples at the same rate. If it asks how to make a peak easier to locate or to plot smoothly, the answer is zero-padding. Sorting the question into those two boxes first makes the answer immediate.',
+        importantNote: 'The rule "resolution equals fs/N" describes the bin spacing, not a guarantee of resolvability. Measured on real transforms, two equal tones one bin apart merge into a single lobe; about 1.5 bins of separation is where they reliably split with a rectangular window, and more with any tapered window because tapering widens the main lobe.',
+      },
+      {
+        id: 'dft-leakage-derived',
+        title: '7. Leakage Derived from the Periodic Extension',
+        content: `## 7.1 The rectangular window and its transform
+
+Observing N samples of an infinite signal is multiplication by a rectangular
+window. Multiplication in time is convolution in frequency, so the spectrum
+you obtain is the true spectrum convolved with the window's transform:
+
+$$W_{R}(\\theta ) = \\sum _{n=0}^{N-1} e^{-jn\\theta } = e^{-j(N-1)\\theta /2}\\,\\frac{\\sin (N\\theta /2)}{\\sin (\\theta /2)}$$
+
+That ratio of sines is the **Dirichlet kernel**. Measured in bins of offset
+$d$ from a tone and normalised to its own peak, it is
+
+$$\\lvert D(d)\\rvert = \\left\\lvert \\frac{\\sin (\\pi d)}{N\\sin (\\pi d/N)}\\right\\rvert$$
+
+The numerator vanishes at every integer $d$. **That is the whole mechanism.**
+If a tone sits exactly on a bin centre, every other bin sits at an integer
+offset, lands on a zero of the kernel, and reads zero. If the tone sits
+anywhere else, no bin lands on a zero and every bin reads something.
+
+## 7.2 Coherent and incoherent, measured
+
+A tone is **coherently sampled** when the record holds a whole number of its
+cycles:
+
+$$\\frac{f_{0}N}{f_{s}} = k, \\quad k \\ \\text{an integer} \\qquad \\Longleftrightarrow \\qquad f_{0} = \\frac{k f_{s}}{N}$$
+
+Those two conditions say one thing twice over: whole cycles inside the
+record, and the tone landing dead on a bin centre. When it holds, the periodic extension
+splices together seamlessly and there is no discontinuity to create
+spurious frequencies. When it fails, the extension has a step at every
+record boundary, and a step has energy everywhere.
+
+### Worked example 7.1 — the same record, half a cycle apart
+
+**Given**: $N = 64$, $f_{s} = 1000\\ \\mathrm{Hz}$; a unit cosine at exactly
+10 cycles per record, then at 10.5 cycles.
+
+**Handbook relation**: $f_{0} = k f_{s}/N$ for the coherent case.
+
+**Substitution**: 10 cycles corresponds to
+$10(1000)/64 = 156.25\\ \\mathrm{Hz}$; 10.5 cycles to
+$10.5(1000)/64 = 164.0625\\ \\mathrm{Hz}$. The two frequencies differ by
+7.8125 Hz — exactly five percent.
+
+**Answer**, from the transforms themselves:
+
+| quantity | 10 cycles (coherent) | 10.5 cycles (incoherent) |
+|---|---|---|
+| tallest bin | 10 | 11 |
+| peak magnitude | 32.000000, exactly $N/2$ | 20.675186 |
+| largest other bin | $2.1\\times 10^{-14}$, numerical zero | 20.076, only 0.26 dB below the peak |
+| energy outside the tallest bin | 0.0000 % | **58.26 %** |
+| peak error | none | 3.794 dB low |
+
+**Nearly six tenths of the energy left the peak bin** because the record was
+half a cycle long in the wrong direction. Two adjacent bins now claim the
+tone almost equally, so neither reads the right amplitude and neither reads
+the right frequency.
+
+![Two interleaved bar spectra over the first thirty-two bins of a sixty-four point transform, both normalised to the coherent peak. The coherent trace has exactly one bar, at bin ten. The incoherent trace has a bar in every bin, the tallest pair nearly four decibels below the coherent peak and the rest forming a slowly falling skirt down to about minus thirty decibels.](/courses/fe-ee/figures/sig3-coherent-leak.svg)
+
+## 7.3 Scalloping loss, in closed form
+
+The worst case is a tone exactly halfway between two bins, $d = 0.5$ from
+each. The kernel there gives
+
+$$\\lvert D(0.5)\\rvert = \\frac{\\sin (\\pi /2)}{N\\sin \\bigl(\\pi /(2N)\\bigr)} = \\frac{1}{N\\sin \\bigl(\\pi /(2N)\\bigr)} \\ \\longrightarrow \\ \\frac{2}{\\pi } = 0.636620$$
+
+as N grows, because $N\\sin (\\pi /(2N)) \\to \\pi /2$. In decibels the
+resulting **scalloping loss** is
+
+$$L = -20\\log _{10}(2/\\pi ) = 3.9224\\ \\mathrm{dB}$$
+
+and it converges quickly: 3.9084 dB at $N = 16$, 3.9215 dB at $N = 64$,
+3.9223 dB at $N = 256$. The measured 3.794 dB in the table above is slightly
+smaller only because a real cosine also carries a mirror image at the far end
+of the axis, whose skirt adds a little energy back into the peak bin.
+
+The rest of the kernel, tabulated in bins of offset:
+
+| offset $d$ (bins) | $\\lvert D\\rvert$ | in decibels |
+|---|---|---|
+| 0.0 | 1.000000 | 0.00 |
+| 0.5 | 0.636684 | −3.92 |
+| 1.0 | 0 | null |
+| 1.5 | 0.212398 | −13.46 |
+| 2.5 | 0.127644 | −17.88 |
+| 3.5 | 0.091395 | −20.78 |
+
+The first side lobe at −13.26 dB (its true peak, slightly off the half-bin
+points tabulated) is the rectangular window's headline figure, and it is
+appalling: a tone 13 dB below another one, six bins away, is invisible.
+Section 8 exists to fix that.
+
+### Worked example 7.2 — choosing a coherent record
+
+**Given**: a 1100 Hz tone to be measured at $f_{s} = 8\\ \\mathrm{kHz}$.
+
+**Handbook relation**: coherence requires $f_{0}N/f_{s}$ to be a whole
+number.
+
+**Substitution**: with $N = 64$, $1100(64)/8000 = 8.8$ cycles — not a whole
+number, so leakage is guaranteed. The nearest bin, bin 9, sits at
+$9(8000)/64 = 1125\\ \\mathrm{Hz}$.
+
+**Answer**: the smallest record that makes 1100 Hz coherent at this rate is
+$N = 80$, holding exactly 11 cycles in 10.0 ms. Checking: $1100(80)/8000 = 11$.
+
+**But 80 is not a power of two.** This is the practical bind: coherent
+sampling and radix-2 lengths pull in opposite directions, and only when the
+test frequency can be chosen freely can both be had. In a laboratory you
+choose $f_{0} = k f_{s}/N$ with N a power of two and pick k prime to N; in
+the field, where the signal chooses its own frequency, you cannot, and you
+window instead.
+
+**The distractor**: rounding 8.8 to 9 and reporting the tone as 1125 Hz. The
+tone is at 1100 Hz; bin 9 is merely where most of its energy landed. The DFT
+never reports frequencies between bin centres, and mistaking the bin for the
+tone is a systematic error of up to half a bin — here 62.5 Hz.`,
+        examTip: 'Leakage questions reduce to one test: does the record contain a whole number of cycles? Compute f·N/fs. Integer means no leakage at all and the peak reads the exact amplitude; anything else means leakage in every bin and a peak reading up to 3.92 dB low. That single division answers most of them.',
+        importantNote: 'Scalloping loss and leakage are the same phenomenon seen at the peak and away from it. A tone between bins loses up to 3.92 dB from its tallest bin, and that missing energy is exactly what appears smeared across the others. Nothing is destroyed; it is redistributed.',
+      },
+      {
+        id: 'dft-windows',
+        title: '8. Windows: Main Lobe Traded Against Side Lobes',
+        content: `## 8.1 The four standard windows
+
+Each is a raised cosine of one or two terms, defined over
+$n = 0, 1, \\ldots , N-1$ in the periodic (DFT-even) form used for spectral
+analysis:
+
+$$w_{\\mathrm{rect}}[n] = 1$$
+
+$$w_{\\mathrm{Hann}}[n] = 0.5 - 0.5\\cos\\left(\\frac{2\\pi n}{N}\\right)$$
+
+$$w_{\\mathrm{Hamming}}[n] = 0.54 - 0.46\\cos\\left(\\frac{2\\pi n}{N}\\right)$$
+
+$$w_{\\mathrm{Blackman}}[n] = 0.42 - 0.5\\cos\\left(\\frac{2\\pi n}{N}\\right) + 0.08\\cos\\left(\\frac{4\\pi n}{N}\\right)$$
+
+Two figures of merit follow directly from the coefficients. The **coherent
+gain** is the window's mean, which is the leading constant:
+
+$$\\mathrm{CG} = \\frac{1}{N}\\sum _{n=0}^{N-1}w[n] = 1.00,\\ 0.50,\\ 0.54,\\ 0.42 \\ \\text{respectively}$$
+
+and the **equivalent noise bandwidth**, the width in bins of an ideal filter
+passing the same noise power, is
+
+$$\\mathrm{ENBW} = \\frac{N\\sum _{n} w^{2}[n]}{\\left(\\sum _{n} w[n]\\right)^{2}}$$
+
+![Four small panels showing the rectangular, Hann, Hamming and Blackman windows as sequences over sixty-four samples, each shaded beneath the curve and annotated with its mean value. The rectangular window is flat at one; Hann and Blackman fall to zero at both ends; Hamming stops at zero point zero eight.](/courses/fe-ee/figures/sig3-window-shapes.svg)
+
+The Hamming window's refusal to reach zero is the visible clue to its
+character. That small pedestal is what cancels the first side lobe so
+effectively — and it is also why its side lobes stop falling further out,
+as the measurements below show.
+
+## 8.2 The measured table
+
+Every number in this table was obtained by transforming a 1024-point window
+on a $2^{20}$-point grid and reading the result — not quoted from a
+reference:
+
+| window | coherent gain | ENBW (bins) | −3 dB width (bins) | main lobe null to null | peak side lobe | scalloping loss |
+|---|---|---|---|---|---|---|
+| Rectangular | 1.0000 | 1.0000 | 0.8867 | 2 bins | −13.26 dB | 3.92 dB |
+| Hann | 0.5000 | 1.5000 | 1.4414 | 4 bins | −31.47 dB | 1.42 dB |
+| Hamming | 0.5400 | 1.3628 | 1.3047 | 4 bins | −42.67 dB | 1.75 dB |
+| Blackman | 0.4200 | 1.7268 | 1.6445 | 6 bins | −58.11 dB | 1.10 dB |
+
+The trade is visible along the rows: main-lobe width 2, 4, 4, 6 bins against
+side lobes −13, −31, −43, −58 dB. **You buy stopband cleanliness with
+resolution, in that order.** The ENBW column cross-checks against closed
+forms — 1.5 exactly for Hann, and
+$(0.54^{2}+0.46^{2}/2)/0.54^{2} = 1.362826$ for Hamming — which the
+measurement reproduces.
+
+![Four small panels of window spectra in decibels against bins from the main lobe centre, each normalised to its own peak with a dashed line at its highest side lobe. The rectangular panel's side lobes start near minus thirteen decibels and barely descend; the Hann and Blackman panels start much lower and fall steeply; the Hamming panel starts lowest of the four-term windows but stays nearly level across the plot.](/courses/fe-ee/figures/sig3-window-spectra.svg)
+
+## 8.3 Why the peak side lobe is not the whole story
+
+Reading only the "peak side lobe" column would rank Hamming above Hann by
+11 dB. Measuring the side-lobe envelope further out tells a different story:
+
+| window | 4 bins out | 8 bins out | 16 bins | 32 bins | 64 bins | slope |
+|---|---|---|---|---|---|---|
+| Rectangular | −20.8 dB | −27.4 dB | −33.8 dB | −39.9 dB | −45.9 dB | −6.2 dB/octave |
+| Hann | −41.9 dB | −62.3 dB | −81.3 dB | −99.8 dB | −118.1 dB | −18.6 dB/octave |
+| Hamming | −42.7 dB | −45.0 dB | −50.5 dB | −56.5 dB | −62.5 dB | −5.9 dB/octave |
+| Blackman | −58.1 dB | −70.6 dB | −88.9 dB | −107.2 dB | −125.5 dB | −18.3 dB/octave |
+
+Sixteen bins from the lobe centre, **Hann is 30 dB cleaner than Hamming**
+despite having a first side lobe 11 dB worse. The reason is in the
+coefficients: Hann's 0.5 and 0.5 make the window and its first derivative
+both vanish at the record ends, so its spectrum falls at 18 dB per octave;
+Hamming's pedestal leaves a step at the ends, and a step falls at only
+6 dB per octave, the same rate as the rectangular window it was supposed to
+improve on.
+
+### Worked example 8.1 — which window finds the weak tone?
+
+**Given**: $N = 512$; a strong tone at bin 64.5 and a second tone 60 dB
+weaker at bin 76.5 — twelve bins away, and neither on a bin centre.
+
+**Handbook relation**: the weak tone is visible only if the strong tone's
+leakage at bin 76 is below −60 dB.
+
+**Substitution and answer**, measuring the strong tone's own leakage at that
+bin:
+
+| window | strong tone's leakage at bin 76 | weak tone at −60 dB is |
+|---|---|---|
+| Rectangular | −26.7 dB | buried, by 33 dB |
+| Hamming | −45.8 dB | buried, by 14 dB |
+| Hann | −72.1 dB | **visible, 12 dB above the floor** |
+| Blackman | −80.1 dB | **visible, 20 dB above the floor** |
+
+**Answer**: Hann or Blackman. Hamming fails despite its excellent first side
+lobe, exactly as section 8.3 predicts — twelve bins out is far enough for
+the roll-off rate, not the first side lobe, to decide.
+
+**The distractor**: choosing Hamming from the "peak side lobe" column alone.
+It is the best of the four by that single number and the second worst by the
+number that mattered here.
+
+## 8.4 Windows cost amplitude, and you must give it back
+
+A window with coherent gain CG scales every amplitude by CG. Recovering the
+amplitude of a real sinusoid from its peak bin therefore takes
+
+$$A = \\frac{2\\,\\lvert X[k]\\rvert }{N\\cdot \\mathrm{CG}}$$
+
+The factor of two is the usual one for a real cosine, whose energy splits
+between the positive and negative frequency bins.
+
+### Worked example 8.2 — amplitude recovery, windowed and not
+
+**Given**: a 3 V cosine, $N = 256$, coherent at bin 20, transformed with and
+without a Hann window.
+
+**Handbook relation**: the equation above, with CG = 1 for rectangular and
+0.5 for Hann.
+
+**Substitution**: the predicted peak with the Hann window is
+
+$$\\lvert X[20]\\rvert = \\frac{A\\,N\\,\\mathrm{CG}}{2} = \\frac{(3)(256)(0.5)}{2} = 192$$
+
+**Answer**: the measured peak is exactly 192.000000, and
+
+$$A = \\frac{2(192)}{(256)(0.5)} = 3.00000000\\ \\mathrm{V}$$
+
+Without the window the peak is 384.000000 and
+$A = 2(384)/256 = 3.00000000\\ \\mathrm{V}$ — the same answer by the same
+route with CG = 1.
+
+**The check that reveals the mechanism**: the bins on either side of the
+Hann peak read 96.000000 each, exactly half the peak. A Hann-windowed
+coherent tone always spreads over exactly three bins in the ratio 1 : 2 : 1,
+because the window is a three-term expression in the frequency domain. Add
+the three: $96+192+96 = 384$, the rectangular peak. **The window moved the
+energy; it did not remove it.**
+
+**The distractor**: reporting 1.5 V, from forgetting the coherent-gain
+correction and dividing by N/2 alone. A Hann window halves every amplitude
+reading, and half of 3 is exactly the wrong answer a spectrum analyser gives
+when its window correction is switched off.
+
+### Worked example 8.3 — choosing a window in practice
+
+**Given**: four measurement tasks.
+
+**Answer**, with the reasoning that decides each:
+
+| task | window | why |
+|---|---|---|
+| Coherently sampled test tone, exact amplitude wanted | Rectangular | no leakage exists to suppress, and CG = 1 keeps the amplitude exact |
+| General signal of unknown frequency, amplitude wanted | Hann or flat-top | scalloping loss falls from 3.92 dB to 1.42 dB |
+| Two tones of similar level, close together | Rectangular or Hann | narrow main lobe matters more than the skirt |
+| Weak tone beside a strong one, far apart | Blackman | −58 dB first side lobe and −18 dB/octave beyond it |
+
+The first and last rows are opposite extremes of the same trade, and the
+rule that generates all four is: **wide dynamic range needs a tapered
+window; fine frequency separation needs a narrow one; you cannot have both
+from one record.**`,
+        examTip: 'Memorise the ordering, not the decimals: rectangular has the narrowest main lobe (2 bins) and the worst side lobes (−13 dB); Blackman has the widest (6 bins) and the best (−58 dB); Hann and Hamming sit between with 4-bin lobes. Any question asking which window to use is asking whether the problem is resolution or dynamic range.',
+        importantNote: 'Every window except the rectangular one scales amplitudes by its coherent gain — 0.5 for Hann, 0.54 for Hamming, 0.42 for Blackman. An amplitude read off a windowed spectrum without dividing by CG is low by that factor, and for Hann that is a full factor of two, or 6 dB.',
+      },
+      {
+        id: 'dft-radix2',
+        title: '9. The Radix-2 FFT: Butterfly, Count, Bit Reversal',
+        content: `## 9.1 Splitting the sum
+
+Take the DFT sum and separate the even-indexed from the odd-indexed samples.
+With $N$ even, write $n = 2r$ and $n = 2r+1$:
+
+$$X[k] = \\sum _{r=0}^{N/2-1}x[2r]\\,W_{N}^{2rk} + \\sum _{r=0}^{N/2-1}x[2r+1]\\,W_{N}^{(2r+1)k}$$
+
+Now use $W_{N}^{2} = W_{N/2}$ on both sums and pull the leftover factor out of
+the second:
+
+$$X[k] = \\underbrace{\\sum _{r=0}^{N/2-1}x[2r]\\,W_{N/2}^{rk}}_{E[k]} + W_{N}^{k}\\underbrace{\\sum _{r=0}^{N/2-1}x[2r+1]\\,W_{N/2}^{rk}}_{O[k]}$$
+
+Both braces are **N/2-point DFTs**. That is the entire idea: one transform of
+length N has become two of length N/2 plus a handful of multiplications.
+
+The second half of the output costs nothing extra. $E$ and $O$ have period
+$N/2$ in $k$, and $W_{N}^{k+N/2} = -W_{N}^{k}$, so
+
+$$X[k] = E[k] + W_{N}^{k}O[k], \\qquad X[k+N/2] = E[k] - W_{N}^{k}O[k] \\qquad (k = 0, \\ldots , N/2-1)$$
+
+Those two lines **are** the butterfly: one complex multiplication
+($W_{N}^{k}O[k]$), one addition and one subtraction, producing two outputs.
+The multiplier $W_{N}^{k}$ is called the twiddle factor of the butterfly, and
+the sign flip in the second line is the crossing that gives the diagram its
+name.
+
+## 9.2 Counting, not assuming
+
+Let $M(N)$ be the complex multiplications. Each stage of the recursion does
+$N/2$ butterflies, one multiplication each, and calls itself twice on half
+the data:
+
+$$M(N) = 2M(N/2) + \\frac{N}{2}, \\qquad M(1) = 0$$
+
+Unrolling: there are $\\log _{2}N$ levels of recursion and every level costs
+$N/2$ in total, so
+
+$$M(N) = \\frac{N}{2}\\log _{2}N$$
+
+The additions follow the same argument with two per butterfly:
+
+$$A(N) = 2A(N/2) + N \\qquad \\Longrightarrow \\qquad A(N) = N\\log _{2}N$$
+
+against $N^{2}$ multiplications and $N(N-1)$ additions for the direct sum.
+The speed-up ratio is worth carrying:
+
+$$\\frac{N^{2}}{(N/2)\\log _{2}N} = \\frac{2N}{\\log _{2}N}$$
+
+### Worked example 9.1 — the count, verified by running the algorithm
+
+**Given**: a recursive radix-2 transform with a counter in its inner loop,
+run on random complex data and checked against a library FFT.
+
+**Handbook relation**: the two recursions above.
+
+**Answer**:
+
+| N | stages $\\log _{2}N$ | butterflies counted | $(N/2)\\log _{2}N$ | adds counted | direct-sum mults $N^{2}$ | speed-up |
+|---|---|---|---|---|---|---|
+| 8 | 3 | 12 | 12 | 24 | 64 | 5.33 |
+| 16 | 4 | 32 | 32 | 64 | 256 | 8.00 |
+| 64 | 6 | 192 | 192 | 384 | 4096 | 21.33 |
+| 1024 | 10 | 5120 | 5120 | 10240 | 1048576 | 204.80 |
+
+Every counted figure equals the formula, and every output matched the library
+transform to better than $10^{-13}$. Checking the last row against the ratio
+formula: $2N/\\log _{2}N = 2048/10 = 204.8$.
+
+**The number to remember** is the last row. A 1024-point transform costs
+about five thousand complex multiplications instead of about a million. That
+factor of two hundred is why real-time spectral analysis exists at all, and
+it grows: at $N = 2^{20}$ the ratio is $2097152/20 = 104857.6$.
+
+![Log-log plot of complex multiplications against transform length from eight to one thousand and twenty-four, with one line for the direct sum's N squared and one for the butterflies actually counted by running a recursive radix-2 transform. The lines diverge steadily, reaching a factor of two hundred at one thousand and twenty-four points.](/courses/fe-ee/figures/sig3-fft-cost.svg)
+
+## 9.3 Bit-reversed ordering
+
+Splitting into even and odd, then splitting each of those into even and odd,
+sorts the inputs by their **least** significant bit first, then the next, and
+so on. Doing that $\\log _{2}N$ times leaves each sample at the address whose
+bits are the reverse of its original address.
+
+### Worked example 9.2 — the permutation for eight and sixteen points
+
+**Given**: $N = 8$, so addresses are three bits.
+
+**Handbook relation**: reverse the bits of the index.
+
+**Substitution**:
+
+| index | binary | reversed | new position |
+|---|---|---|---|
+| 0 | 000 | 000 | 0 |
+| 1 | 001 | 100 | 4 |
+| 2 | 010 | 010 | 2 |
+| 3 | 011 | 110 | 6 |
+| 4 | 100 | 001 | 1 |
+| 5 | 101 | 101 | 5 |
+| 6 | 110 | 011 | 3 |
+| 7 | 111 | 111 | 7 |
+
+**Answer**: the input order is 0, 4, 2, 6, 1, 5, 3, 7. For $N = 16$ the same
+rule gives 0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15.
+
+**Check**: reversing twice returns the original, so the permutation is its
+own inverse — which is why the same routine can be used before a forward
+transform or after an inverse one. Indices whose binary form is a palindrome
+(0, 2, 5, 7 at $N = 8$) do not move at all.
+
+![Eight-point decimation-in-time signal flow graph with four columns of eight nodes, straight lines carrying each node forward and crossing lines joining the butterfly partners in each of three stages. Inputs on the left are labelled in bit-reversed order and outputs on the right in natural order, with a note that three stages of four butterflies make twelve.](/courses/fe-ee/figures/sig3-butterfly.svg)
+
+Trace one butterfly in the figure and the pattern is clear: in stage 1 the
+partners are one apart, in stage 2 two apart, in stage 3 four apart. Each
+stage doubles the span, and after $\\log _{2}N$ stages every input has
+influenced every output. **Decimation in time** takes bit-reversed inputs and
+produces natural-order outputs, as drawn; **decimation in frequency**
+reverses that, taking natural inputs and producing bit-reversed outputs.
+Both cost the same.
+
+## 9.4 What "in place" buys
+
+Each butterfly reads two values and writes two values to the same two
+addresses. So the whole transform runs in the array it started in — no
+second buffer of length N is needed, only the bit-reversal shuffle at one
+end. For an embedded processor transforming 4096 complex samples, that is
+the difference between 64 kilobytes of working memory and 32.`,
+        examTip: 'The three FFT numbers worth memorising are (N/2)·log2 N complex multiplications, N·log2 N complex additions, and log2 N stages. Everything else — speed-up ratios, per-stage counts, memory — is arithmetic on those three. And note that N log2 N is the ADDITION count; quoting it as the multiplication count doubles the true figure.',
+        importantNote: 'The FFT computes the same DFT, to the same accuracy — it is an algorithm, not a different transform. In fact its accuracy is BETTER than the direct sum for large N, because each output accumulates log2 N rounding errors instead of N of them.',
+      },
+      {
+        id: 'dft-practical',
+        title: '10. Scaling Conventions and the Real-Input Symmetry',
+        content: `## 10.1 Where the 1/N goes
+
+The transform pair in section 5.1 puts $1/N$ on the inverse. That is the most
+common convention and the one every FE reference uses, but it is not the only
+one, and a spectrum whose amplitudes are off by a factor of N or
+$\\sqrt{N}$ is almost always a convention mismatch rather than a bug.
+
+| convention | forward | inverse | consequence |
+|---|---|---|---|
+| Engineering standard | no factor | $1/N$ | $X[0]$ is the **sum** of the samples |
+| Normalised forward | $1/N$ | no factor | $X[0]$ is the **mean** of the samples |
+| Symmetric | $1/\\sqrt{N}$ | $1/\\sqrt{N}$ | Parseval holds without any factor |
+
+With the engineering convention, three readings follow at once:
+
+$$X[0] = \\sum _{n=0}^{N-1}x[n], \\qquad \\bar{x} = \\frac{X[0]}{N}, \\qquad \\sum _{n}\\lvert x[n]\\rvert ^{2} = \\frac{1}{N}\\sum _{k}\\lvert X[k]\\rvert ^{2}$$
+
+and for a real sinusoid of amplitude A, coherently sampled, the peak bin
+holds $AN/2$ before any window correction — the factor of two that worked
+example 8.2 used.
+
+### Worked example 10.1 — reading a spectrum correctly
+
+**Given**: a 256-point rectangular-window transform of a real signal;
+$X[0] = 512$ and the tallest other bin, $k = 20$, has magnitude 384.
+
+**Handbook relation**: mean $= X[0]/N$; sinusoid amplitude
+$= 2\\lvert X[k]\\rvert /N$; frequency $= k f_{s}/N$.
+
+**Substitution and answer**:
+
+- dc component: $512/256 = 2.0$ — the signal sits on a 2 V offset.
+- tone amplitude: $2(384)/256 = 3.0\\ \\mathrm{V}$.
+- if $f_{s} = 1024\\ \\mathrm{Hz}$, the tone is at
+  $20(1024)/256 = 80\\ \\mathrm{Hz}$.
+
+**The distractor**: reporting the dc component as 512 and the tone amplitude
+as 384. Those are raw bin magnitudes, which scale with N; a 512-point
+transform of the same signal would print 1024 and 768 for the same 2 V
+offset and 3 V tone. **Bin magnitudes are not volts until they are divided
+by N.**
+
+Note also that dc and the folding bin do **not** get the factor of two —
+they have no mirror partner to share energy with. Applying the factor of two
+to $X[0]$ is a classic doubling of the dc reading.
+
+## 10.2 Real inputs give half the spectrum away
+
+If every $x[n]$ is real, then conjugating the defining sum and re-indexing
+gives
+
+$$X[N-k] = X^{*}[k] \\qquad (k = 1, 2, \\ldots , N-1)$$
+
+Magnitude is therefore **even** about $k = N/2$ and phase is **odd**. Only
+
+$$\\frac{N}{2}+1 \\ \\text{bins are independent}$$
+
+running from dc to the folding bin inclusive. Both endpoints, $X[0]$ and
+$X[N/2]$, are purely real — they are their own conjugates.
+
+![Two stacked stem plots of the thirty-two point transform of a real sequence. The upper panel shows magnitude, with the bins up to sixteen in one colour and the mirrored bins beyond it in another; the lower panel shows phase, where the mirrored bins point the opposite way. A dashed line marks the folding bin at sixteen.](/courses/fe-ee/figures/sig3-hermitian.svg)
+
+### Worked example 10.2 — the symmetry, and the work it saves
+
+**Given**: a 16-point transform of a real random sequence.
+
+**Handbook relation**: the conjugate symmetry above.
+
+**Check**: computing $\\lvert X[N-k]-X^{*}[k]\\rvert$ for every k returns 0 to
+machine precision, and both $X[0]$ and $X[8]$ have zero imaginary part.
+Independent bins: $16/2+1 = 9$.
+
+**And the saving.** Two real sequences can share one complex transform. Form
+$z[n] = x[n]+jy[n]$, transform once, then separate:
+
+$$X[k] = \\frac{Z[k]+Z^{*}[N-k]}{2}, \\qquad Y[k] = \\frac{Z[k]-Z^{*}[N-k]}{2j}$$
+
+**Answer**: verified numerically, both reconstructions match the individually
+computed transforms to better than $10^{-15}$. For $N = 1024$ that is 5120
+complex multiplications for two spectra instead of 10240 — **half the work**,
+from symmetry alone. A dedicated real-input FFT applies the same idea one
+level deeper, packing an N-point real transform into an N/2-point complex one
+plus a cheap recombination pass.
+
+## 10.3 Averaging and the noise floor
+
+A single transform of a noisy signal has a noise floor that fluctuates by
+several decibels bin to bin, because each bin is one sample of a random
+variable. Averaging the **magnitude-squared** spectra of M independent
+records reduces the variance by a factor of M without changing resolution:
+
+$$\\bar{S}[k] = \\frac{1}{M}\\sum _{m=1}^{M}\\lvert X_{m}[k]\\rvert ^{2}$$
+
+This is why a spectrum analyser's floor smooths out as it dwells. Two
+warnings come with it. Averaging **magnitudes** is not the same as averaging
+**powers** and biases the result low. And averaging complex spectra instead
+of magnitudes cancels the noise only if the records are phase-coherent — the
+right technique when a trigger is available, and a way to erase the signal
+when it is not.
+
+For converting an averaged spectrum into a noise **density**, the window's
+ENBW from section 8.2 is the divisor:
+
+$$\\text{noise density} = \\frac{\\text{power per bin}}{\\mathrm{ENBW}\\cdot \\Delta f}$$
+
+so a Hann window's 1.5-bin ENBW means each bin collects half again as much
+noise as its spacing suggests.
+
+## 10.4 A checklist for any real measurement
+
+| Step | Question | Section |
+|---|---|---|
+| 1 | Is the sample rate above twice the highest real frequency present? | prerequisite |
+| 2 | What is $\\Delta f = f_{s}/N$, and does the record separate what must be separated? | 6.1 |
+| 3 | Is the tone coherent, or is a window needed? | 7.2 |
+| 4 | Which window, given resolution against dynamic range? | 8.4 |
+| 5 | Divide by N, by the coherent gain, and by two for real sinusoids | 10.1 |
+| 6 | Are the bins above N/2 being double-counted? | 10.2 |
+
+Steps 5 and 6 are where correct spectra become wrong numbers, and they are
+pure bookkeeping.`,
+        examTip: 'Bin magnitudes scale with N, so they are never the answer to "what is the amplitude". Divide by N, multiply by two for a real sinusoid away from dc, and divide by the coherent gain if a window was used. Do NOT apply the factor of two at dc or at the folding bin — they have no mirror partner.',
+        importantNote: 'For a real input only N/2 + 1 bins carry information; the rest are the conjugate mirror. Summing power over all N bins double-counts everything except dc and the folding bin, which is the most common way a correct transform produces a total power that is twice the truth.',
+      },
+      {
+        id: 'dft-problems',
+        title: '11. Problem Sets',
+        content: `## 11.1 Working method
+
+Following the filter chapter, every answer identifies the misstep it guards
+against together with the figure that misstep returns, since those are the
+values printed alongside the correct one.
+
+### Problem Set A — bins, resolution and leakage
+
+**A1.** A 512-point DFT is taken at $f_{s} = 48\\ \\mathrm{kHz}$. Give the
+bin spacing, the record length and the frequency of bin 100.
+
+**A2.** In the same transform, a peak appears at bin 400. What real
+frequency does it represent?
+
+**A3.** Two tones 25 Hz apart must be separated at
+$f_{s} = 10\\ \\mathrm{kHz}$. What is the minimum number of samples, by the
+$\\Delta f = \\delta f$ rule, and what would you actually take?
+
+**A4.** A 1 kHz tone is sampled at 16 kHz with N = 128. Is it coherent? What
+about a 1.05 kHz tone?
+
+**A5.** A 64-sample record of a single cosine gives a peak of 32.0 in bin 10
+and numerical zero everywhere else. What is the amplitude of the cosine?
+
+**A6.** The same measurement, retaken with the tone slightly shifted, gives a
+peak of 20.68 in bin 11 and comparable energy in bin 10. What went wrong, and
+by how much is the amplitude reading low?
+
+**A7.** A 1024-point record is zero-padded to 4096 before transforming. State
+the true resolution and the displayed bin spacing.
+
+**A8.** Parseval's relation is checked on a 4-point sequence
+$\\lbrace 1,2,3,4\\rbrace$. Show that it holds.
+
+### Answers, Problem Set A
+
+**A1.** $\\Delta f = 48000/512 = 93.75\\ \\mathrm{Hz}$; record length
+$T = 512/48000 = 10.667\\ \\mathrm{ms}$, and $1/T = 93.75\\ \\mathrm{Hz}$
+confirms it. Bin 100 sits at $100(93.75) = 9375\\ \\mathrm{Hz}$.
+*Trap*: computing $\\Delta f = f_{s}/2N$ by confusing the resolution with the
+folding frequency, giving 46.875 Hz and halving every subsequent answer.
+
+**A2.** Bin 400 is above $N/2 = 256$, so it is in the mirror. The signed
+frequency is $(400-512)(93.75) = -10500\\ \\mathrm{Hz}$, so the real tone is
+at **10.5 kHz**, the same energy that appears in bin 112.
+*Trap*: $400(93.75) = 37500\\ \\mathrm{Hz}$, which is above the 24 kHz
+folding frequency and therefore cannot be present in a sampled real signal at
+all. Any bin index above N/2 that yields a frequency above $f_{s}/2$ is a
+signal that the mirror has been forgotten.
+
+**A3.** The rule gives $\\Delta f \\le 25\\ \\mathrm{Hz}$, so
+$N \\ge 10000/25 = 400$ samples, a record of 40 ms. In practice, section 6.2
+measured that one bin of separation merges the lobes, so take at least 1.5 to
+2 bins: $N = 800$, a record of 80 ms, and round up to $N = 1024$ for a
+radix-2 transform. *Trap*: answering 400 and stopping. It is the textbook
+answer and it will not resolve the pair.
+
+**A4.** Cycles in the record are $fN/f_{s}$. For 1 kHz:
+$1000(128)/16000 = 8$ — a whole number, so **coherent**, and the tone lands
+exactly on bin 8. For 1.05 kHz: $1050(128)/16000 = 8.4$ — **not coherent**,
+so energy appears in every bin and the peak reads low.
+*Trap*: assuming that any frequency below $f_{s}/2$ is measured exactly.
+Nyquist governs whether the frequency is *representable*; coherence governs
+whether the DFT *reads it cleanly*. They are different questions.
+
+**A5.** A coherent real cosine of amplitude A puts $AN/2$ in its bin, so
+
+$$A = \\frac{2\\lvert X[k]\\rvert }{N} = \\frac{2(32.0)}{64} = 1.0$$
+
+*Trap*: answering 0.5 by dividing by N without the factor of two, or 32 by
+reading the bin as volts. The factor of two exists because the mirror bin
+holds the other half of the cosine's energy.
+
+**A6.** The tone is no longer coherent — it now falls between bins 10 and 11.
+The peak has dropped from 32.00 to 20.68, and
+
+$$20\\log _{10}(32.00/20.68) = 3.79\\ \\mathrm{dB}$$
+
+so the amplitude reads 3.79 dB low, about 35 % low in linear terms. The
+theoretical worst case is $-20\\log _{10}(2/\\pi ) = 3.92\\ \\mathrm{dB}$.
+*Trap*: concluding the tone got weaker. Nothing changed but its frequency,
+by less than five percent. This is scalloping loss, and applying a window
+would reduce it to 1.42 dB.
+
+**A7.** True resolution is set by the 1024 real samples:
+$\\Delta f = f_{s}/1024$. Displayed spacing is $f_{s}/4096$, four times
+finer. Every fourth displayed point is a true DFT bin; the three between are
+interpolated from the same 1024 numbers. *Trap*: reporting $f_{s}/4096$ as
+the resolution — the single most common misconception in this topic, and one
+the importantNote of section 2 already flags.
+
+**A8.** Left side: $1^{2}+2^{2}+3^{2}+4^{2} = 30$. Right side: from worked
+example 5.1 the magnitudes are 10, 2.828427, 2, 2.828427, so the squares are
+100, 8, 4, 8, and
+
+$$\\frac{100+8+4+8}{4} = \\frac{120}{4} = 30$$
+
+*Trap*: forgetting the $1/N$ and reporting 120, or summing magnitudes rather
+than their squares.
+
+### Problem Set B — windows, the FFT and practical readings
+
+**B1.** A Hann window is applied to a 1024-point record. State its coherent
+gain, its main-lobe width in bins and its peak side lobe.
+
+**B2.** A tone of amplitude 5 V is measured with a Hamming window,
+$N = 512$, coherently sampled. What peak bin magnitude is expected?
+
+**B3.** How many complex multiplications does a 4096-point radix-2 FFT
+require, and how does that compare with the direct sum?
+
+**B4.** Give the bit-reversed input order for a 16-point decimation-in-time
+FFT, and name the indices that do not move.
+
+**B5.** A strong tone and a tone 50 dB weaker, ten bins apart, must both be
+seen. Rank rectangular, Hamming and Hann for this task and justify the
+ranking.
+
+**B6.** A real 2048-point transform is used to compute total signal power by
+summing $\\lvert X[k]\\rvert ^{2}$ over all 2048 bins and dividing by
+$N^{2}$. What is wrong with the result?
+
+### Answers, Problem Set B
+
+**B1.** CG = 0.50; main lobe 4 bins null to null (−3 dB width 1.44 bins);
+peak side lobe −31.47 dB. Note that none of these depends on N — they are
+properties of the window shape, expressed in bins.
+*Trap*: expecting the numbers to change with record length. The main lobe is
+4 bins whether N is 64 or 65536; only the width of a bin changes.
+
+**B2.** $\\lvert X[k]\\rvert = A\\,N\\,\\mathrm{CG}/2$, so
+
+$$\\lvert X[k]\\rvert = \\frac{(5)(512)(0.54)}{2} = 691.2$$
+
+*Trap*: omitting CG and answering $5(512)/2 = 1280$, or omitting the factor
+of two and answering 1382.4. Both errors are single factors, both are common,
+and they push the answer in opposite directions.
+
+**B3.** $\\log _{2}4096 = 12$, so
+
+$$M = \\frac{4096}{2}(12) = 2048 \\times 12 = 24576$$
+
+complex multiplications, against $4096^{2} = 16777216$ for the direct sum — a
+ratio of $8192/12 = 682.7$. *Trap*: answering
+$N\\log _{2}N = 49152$, which is the **addition** count. The multiplication
+count carries the factor of one half.
+
+**B4.** 0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15. The fixed
+points are the indices whose four-bit patterns are palindromes: 0 (0000),
+6 (0110), 9 (1001) and 15 (1111).
+*Trap*: reversing the *order* of the list rather than the *bits* of each
+index, which produces 15, 14, 13, ... and is a completely different
+permutation.
+
+**B5.** **Hann first, Hamming second, rectangular last.** Measuring each window's
+side-lobe envelope exactly ten bins from the lobe centre gives −29.5 dB for
+rectangular, −46.7 dB for Hamming and −68.5 dB for Hann. Rectangular fails
+outright: its skirt sits twenty decibels above where a −50 dB tone would
+appear. Hamming is marginal — its first side lobe is an excellent −42.7 dB,
+but the skirt falls at only about 6 dB per octave, so it has barely improved
+by ten bins. Hann's skirt falls at about 18 dB per octave, putting it 18 dB
+below the weak tone and leaving it clearly visible.
+*Trap*: ranking by the peak side-lobe column alone, which puts Hamming
+first. Section 8.3 measured why that ranking is wrong at this distance.
+
+**B6.** Two errors. First, summing over all 2048 bins **double-counts**: for
+a real input, bins 1 through 1023 are duplicated by bins 1025 through 2047,
+so every component except dc and the folding bin is counted twice. Second,
+the correct Parseval normalisation is $1/N$ applied to the sum of
+$\\lvert X[k]\\rvert ^{2}$ to recover the sum of $\\lvert x[n]\\rvert ^{2}$;
+dividing by $N^{2}$ instead gives the **mean** square, which is a different
+quantity — right if average power was wanted, wrong if total energy was.
+
+Taken together the reported figure is roughly twice the mean power rather
+than the total energy. *Trap*: the double-count is invisible because the
+answer looks plausible — it is off by a clean factor of two, which reads like
+a units problem rather than a symmetry problem.`,
+        examTip: 'When a DFT question involves an amplitude, walk the chain in the same order every time: bin magnitude, divide by N, multiply by two (unless dc or the folding bin), divide by coherent gain. Four steps, always the same four, and skipping any one of them produces a plausible wrong answer rather than an obviously wrong one.',
+        importantNote: 'Every answer above turns on one of five recurring confusions: bin spacing against folding frequency, displayed spacing against true resolution, coherence against Nyquist, multiplication count against addition count, and the real-input mirror. Recognising which one is under test identifies the answer before the arithmetic starts.',
       },
     ],
     keyTakeaways: [

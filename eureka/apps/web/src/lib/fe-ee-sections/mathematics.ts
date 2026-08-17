@@ -6966,7 +6966,7 @@ imaginary axis, such as an undamped oscillator, returns a finite number for a
 response that never settles, and that is the trap the theorem's condition
 exists to catch.`,
   examTip: 'The transform of a second derivative carries TWO initial-condition terms, minus s times y(0) and minus y prime of zero. Write them down before touching the algebra. Dropping them turns an energised circuit into one starting from rest, which produces a plausible-looking answer with the wrong starting value.',
-  importantNote: 'The second initial condition for a series RLC current is not given directly; it comes from Kirchhoff\\'s voltage law at t = 0 plus, as L di/dt = V_source - R i(0) - v_C(0). Assuming di/dt starts at zero is the single most common error in Laplace circuit problems.',
+  importantNote: 'The second initial condition for a series RLC current is not given directly; it comes from Kirchhoff\'s voltage law at t = 0 plus, as L di/dt = V_source - R i(0) - v_C(0). Assuming di/dt starts at zero is the single most common error in Laplace circuit problems.',
 },
 {
   id: 'de-numerical',
@@ -7359,6 +7359,8 @@ them has been misread. Noticing that is the point of the exercise: a lightly
 damped system that rings five times cannot also overshoot by only 16 per cent,
 and any answer combining the two is describing no real circuit.`,
 },
+],
+  keyTakeaways: [
     'Time constant τ: 63.2% change at t = τ; 99.3% at t = 5τ.',
     'Damping ratio ζ determines response: underdamped (ζ<1), critically damped (ζ=1), overdamped (ζ>1).',
     'Series RLC: ωₙ = 1/sqrt(LC), ζ = R/(2sqrt(L/C)).',
@@ -9000,6 +9002,8 @@ non-zero determinant means **no eigenvalue is zero**. Every one of these is the
 same statement about the same matrix, and recognising that a question is asking
 for one of them in disguise is usually faster than any computation.`,
 },
+],
+  keyTakeaways: [
     'Determinant for 2×2: det = ad - bc; non-zero means invertible.',
     'Eigenvalue equation Ax = λx; eigenvalues found from det(A-λI) = 0.',
     'All eigenvalues with negative real parts → stable system.',
