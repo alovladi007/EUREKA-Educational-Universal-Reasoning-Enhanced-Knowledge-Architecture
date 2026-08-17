@@ -266,9 +266,31 @@ jobs:
           JWT_SECRET: test_jwt_secret_for_ci_testing_only
           ENVIRONMENT: testing
         run: |
-          # These three files use local async fixtures (see top of
+          # GATE 1 — the whole suite must at least IMPORT.
+          #
+          # This job used to run only the named files below, so any module that
+          # failed at COLLECTION was invisible to CI. Two did, for an unknown
+          # length of time: test_help_registry.py (IndexError from a fixed
+          # parents[3] path index) and tests/unit/test_security.py (importing
+          # app.core.security, a module that has never existed). A collection
+          # error aborts the entire pytest run, so the suite was unrunnable
+          # while CI stayed green.
+          #
+          # --collect-only is cheap, needs no database, and cannot be defeated
+          # by the sync/async conftest split described below. It is deliberately
+          # NOT a claim that the whole suite passes — only that nothing is
+          # broken at import.
+          pytest tests/ --collect-only -q \
+            --override-ini=addopts= \
+            -p no:cacheprovider
+
+          # GATE 2 — the subset that actually runs green.
+          # These files use local async fixtures (see top of
           # test_srs_endpoints.py) and don't touch the global conftest's
-          # sync sqlite — they bring their own aiosqlite engine.
+          # sync sqlite — they bring their own aiosqlite engine. Converting the
+          # global conftest to an async session is what would let the rest of
+          # tests/integration/ run here; until then this list is the honest
+          # green set, and gate 1 covers the rest for import breakage.
           pytest \
             tests/integration/test_srs_endpoints.py \
             tests/integration/test_user_progress_endpoints.py \
