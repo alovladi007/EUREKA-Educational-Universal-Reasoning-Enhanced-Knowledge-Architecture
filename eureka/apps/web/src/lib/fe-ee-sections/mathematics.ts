@@ -13255,7 +13255,7 @@ $z = 5$.
 
 **Spherical.** $r = \\sqrt{9 + 16 + 25} = \\sqrt{50} = 7.0711$, and
 
-$$\\cos\\theta = \\frac{5}{7.0711} = 0.70711, \\qquad \\theta = 45^\\circ$$
+$$\\cos\\theta = \\frac{5}{7.07107} = 0.70711, \\qquad \\theta = 45^\\circ$$
 
 with the same $\\phi = 53.13^\\circ$. The polar angle is $45^\\circ$ because the point
 is as far out sideways as it is up, which is a check worth making before trusting

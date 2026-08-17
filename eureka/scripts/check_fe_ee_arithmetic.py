@@ -51,12 +51,28 @@ CHAIN = re.compile(
     r"\s*=\s*(\d+(?:\.\d+)?)(?![\d.])"
 )
 
+# A division written \frac{a}{b} was invisible to this checker for its whole
+# working life: the chain regex only ever saw infix operators, so every quotient
+# set as a fraction -- which in a maths course is most of them -- went unchecked.
+# An authoring agent found the hole by hand-auditing ~60 fractions in one
+# chapter and turning up 68182/796.743 printed as 85.578 against a true 85.576.
+# Only PURE-NUMERIC numerators and denominators are rewritten; anything with a
+# command, variable or operator inside is left alone, so the checker still never
+# guesses at semantics. No parentheses are emitted deliberately: a/b binds
+# tighter than any neighbouring + or -, and a denominator that would need
+# grouping is by construction not pure-numeric and so is never converted.
+FRAC = re.compile(
+    r"\\{1,2}[dt]?frac\s*\{\s*(\d+(?:\.\d+)?)\s*\}\s*\{\s*(\d+(?:\.\d+)?)\s*\}"
+)
+
 
 def normalise(text: str) -> str:
     for old, new in _STRIP:
         text = text.replace(old, new)
     # thousands separators written as bare commas
-    return re.sub(r"(?<=\d),(?=\d\d\d\b)", "", text)
+    text = re.sub(r"(?<=\d),(?=\d\d\d\b)", "", text)
+    # after the comma strip, so \frac{68{,}182}{796.743} is seen as numeric
+    return FRAC.sub(r"\1/\2", text)
 
 
 def tolerance(printed: str) -> float:

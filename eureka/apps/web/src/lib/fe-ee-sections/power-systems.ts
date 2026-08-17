@@ -820,7 +820,7 @@ not the wye value.
 
 **A3.** In a delta the line current is √3 times the phase current, so
 
-$$I_{ph} = \\frac{18}{\\sqrt{3}} = 10.392\\ \\mathrm{A}, \\qquad |Z_{\\Delta}| = \\frac{240}{10.392} = 23.094\\ \\Omega$$
+$$I_{ph} = \\frac{18}{\\sqrt{3}} = 10.392\\ \\mathrm{A}, \\qquad |Z_{\\Delta}| = \\frac{240}{10.3923} = 23.094\\ \\Omega$$
 
 At **$\\arccos 0.90 = 25.84^\\circ$** this is **$20.78 + j10.07\\ \\Omega$**, and
 
@@ -1376,7 +1376,7 @@ it must be, because a magnetising branch is mostly reactive.
 With the far winding shorted, the shunt branch is bypassed by a near-zero
 impedance and the measurement belongs entirely to the **series** branch:
 
-$$Z_{eq} = \\frac{V_{SC}}{I_{SC}} = \\frac{98}{20.833} = 4.7040\\ \\Omega, \\qquad R_{eq} = \\frac{P_{SC}}{I_{SC}^{2}} = \\frac{650}{20.833^{2}} = 1.4976\\ \\Omega$$
+$$Z_{eq} = \\frac{V_{SC}}{I_{SC}} = \\frac{98}{20.8333} = 4.7040\\ \\Omega, \\qquad R_{eq} = \\frac{P_{SC}}{I_{SC}^{2}} = \\frac{650}{20.833^{2}} = 1.4976\\ \\Omega$$
 
 $$X_{eq} = \\sqrt{Z_{eq}^{2}-R_{eq}^{2}} = \\sqrt{22.128 - 2.243} = 4.4592\\ \\Omega$$
 
@@ -2364,9 +2364,9 @@ $$X_{eq} = \\frac{X_{th}X_{motor}}{X_{th}+X_{motor}}, \\qquad S_{fault} = \\frac
 Add the 8 MVA motor to the bus-4 fault of Section 6.4. Its re-based reactance
 is 2.3114 pu, in parallel with the 1.0280 pu source path:
 
-$$X_{eq} = \\frac{(1.0280)(2.3114)}{1.0280+2.3114} = \\frac{2.3761}{3.3394} = 0.7116\\ \\mathrm{pu}$$
+$$X_{eq} = \\frac{(1.0280)(2.3114)}{1.0280+2.3114} = \\frac{2.37612}{3.3394} = 0.71154\\ \\mathrm{pu}$$
 
-$$S_{fault} = \\frac{100}{0.7116} = 140.5\\ \\mathrm{MVA}, \\qquad I_{f} = \\frac{13{,}879}{0.7116} = 19{,}505\\ \\mathrm{A}$$
+$$S_{fault} = \\frac{100}{0.71154} = 140.5\\ \\mathrm{MVA}, \\qquad I_{f} = \\frac{13{,}879}{0.71154} = 19{,}506\\ \\mathrm{A}$$
 
 The motor added **43.3 MVA, or 44 percent**. A switchgear lineup selected for
 the 97.3 MVA utility contribution would be under-rated by the motors it was
@@ -2593,14 +2593,14 @@ symmetrical fault current with and without the motor contribution.
 
 **B1.**
 
-$$S_{f} = \\frac{100}{0.25} = 400\\ \\mathrm{MVA}, \\qquad I_{f} = \\frac{I_{base}}{0.25} = \\frac{4{,}184}{0.25} = 16{,}735\\ \\mathrm{A}$$
+$$S_{f} = \\frac{100}{0.25} = 400\\ \\mathrm{MVA}, \\qquad I_{f} = \\frac{I_{base}}{0.25} = \\frac{4{,}183.7}{0.25} = 16{,}735\\ \\mathrm{A}$$
 
 *Distractor:* computing 400 MVA and then dividing by 4.16 kV or 138 kV instead
 of 13.8 kV. The fault MVA is level-independent; the amperes are not.
 
 **B2.**
 
-$$X_{eq} = \\frac{(0.30)(0.40)}{0.30+0.40} = 0.1714\\ \\mathrm{pu} \\;\\Rightarrow\\; S_{f} = \\frac{100}{0.1714} = 583.3\\ \\mathrm{MVA}$$
+$$X_{eq} = \\frac{(0.30)(0.40)}{0.30+0.40} = 0.1714\\ \\mathrm{pu} \\;\\Rightarrow\\; S_{f} = \\frac{100}{0.17143} = 583.3\\ \\mathrm{MVA}$$
 
 *Distractor:* adding the two paths gives 0.70 pu and 143 MVA — a factor of
 four low. Parallel sources increase fault duty; only series elements reduce it.
@@ -2639,7 +2639,7 @@ $$I_{f} = \\frac{13{,}879}{0.90} = 15{,}421\\ \\mathrm{A}$$
 
 With them, **$X_{eq} = (0.90)(5.667)/(6.567) = 0.7767$ pu**:
 
-$$I_{f} = \\frac{13{,}879}{0.7767} = 17{,}870\\ \\mathrm{A} \\quad (+15.9\\%)$$
+$$I_{f} = \\frac{13{,}879}{0.77666} = 17{,}870\\ \\mathrm{A} \\quad (+15.9\\%)$$
 
 *Distractor:* ignoring 3 MVA of motors on a bus fed through 0.90 pu looks
 harmless and costs 16 percent of the interrupting duty — enough to change the
@@ -2749,14 +2749,14 @@ $$I_{SC} = \\frac{I_{rated}}{Z_{pu}}, \\qquad S_{SC} = \\frac{S_{rated}}{Z_{pu}}
 bolted three-phase fault current on its secondary, first from an infinite bus
 and then with a utility source of 250 MVA short-circuit capacity.*
 
-$$I_{rated} = \\frac{1{,}500{,}000}{\\sqrt{3}\\times 480} = 1{,}804\\ \\mathrm{A} \\;\\Rightarrow\\; I_{SC} = \\frac{1{,}804}{0.0575} = 31{,}378\\ \\mathrm{A}$$
+$$I_{rated} = \\frac{1{,}500{,}000}{\\sqrt{3}\\times 480} = 1{,}804\\ \\mathrm{A} \\;\\Rightarrow\\; I_{SC} = \\frac{1{,}804.22}{0.0575} = 31{,}378\\ \\mathrm{A}$$
 
 Now bring the utility in. On the transformer's own 1.5 MVA base the source
 impedance is
 
 $$Z_{source} = \\frac{S_{base}}{S_{SC,utility}} = \\frac{1.5}{250} = 0.0060\\ \\mathrm{pu} \\;\\Rightarrow\\; Z_{total} = 0.0635\\ \\mathrm{pu}$$
 
-$$I_{SC} = \\frac{1{,}804}{0.0635} = 28{,}413\\ \\mathrm{A}, \\qquad S_{SC} = \\frac{1.5}{0.0635} = 23.6\\ \\mathrm{MVA}$$
+$$I_{SC} = \\frac{1{,}804.22}{0.0635} = 28{,}413\\ \\mathrm{A}, \\qquad S_{SC} = \\frac{1.5}{0.0635} = 23.6\\ \\mathrm{MVA}$$
 
 The infinite-bus figure is **10.4 percent high**. That is the conservative
 direction for choosing a breaker and the wrong direction for coordinating a
@@ -2871,7 +2871,7 @@ discards the 2.5 percent voltage boost that is the tap's entire purpose.
 
 **C4.**
 
-$$I_{rated} = \\frac{750{,}000}{\\sqrt{3}\\times 208} = 2{,}082\\ \\mathrm{A} \\;\\Rightarrow\\; I_{SC} = \\frac{2{,}082}{0.045} = 46{,}262\\ \\mathrm{A}$$
+$$I_{rated} = \\frac{750{,}000}{\\sqrt{3}\\times 208} = 2{,}082\\ \\mathrm{A} \\;\\Rightarrow\\; I_{SC} = \\frac{2{,}081.79}{0.045} = 46{,}262\\ \\mathrm{A}$$
 
 $$S_{SC} = \\frac{0.750}{0.045} = 16.67\\ \\mathrm{MVA}$$
 
@@ -4856,7 +4856,7 @@ motor. Now walk the chain:
 Two independent checks confirm the torque of Section 3. Torque from developed
 power and *actual* speed, ω_m = 188.5(0.97) = 182.8 rad/s:
 
-$$T = \\frac{22{,}513}{182.8} = 123.1\\ \\mathrm{N{\\cdot}m}$$
+$$T = \\frac{22{,}513}{182.83} = 123.1\\ \\mathrm{N{\\cdot}m}$$
 
 Torque from air-gap power and *synchronous* speed:
 
@@ -6266,7 +6266,7 @@ have a ground fault current larger than its three-phase fault current.
 
 **B1.** With **$V_{LN} = 7{,}967$ V**:
 
-$$I_{f}(0) = \\frac{7{,}967}{0.500} = 15{,}935\\ \\mathrm{A}, \\qquad I_{f}(2) = \\frac{7{,}967}{\\left|j0.5+0.60+j1.20\\right|} = \\frac{7{,}967}{1.803} = 4{,}420\\ \\mathrm{A}$$
+$$I_{f}(0) = \\frac{7{,}967.4}{0.500} = 15{,}935\\ \\mathrm{A}, \\qquad I_{f}(2) = \\frac{7{,}967.4}{\\left|j0.5+0.60+j1.20\\right|} = \\frac{7{,}967.4}{1.80278} = 4{,}420\\ \\mathrm{A}$$
 
 *Distractor:* adding the impedance magnitudes arithmetically, 0.50 + 1.342 =
 1.842 Ω, instead of adding the complex quantities.

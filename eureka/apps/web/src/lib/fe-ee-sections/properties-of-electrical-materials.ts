@@ -4018,7 +4018,7 @@ representative cast epoxy.
 
 Utilisation of each material:
 
-$$\\frac{E_{air}}{E_{bd,air}} = \\frac{13.33}{3} = 4.44, \\qquad \\frac{E_{epoxy}}{E_{bd,epoxy}} = \\frac{3.33}{20} = 0.167$$
+$$\\frac{E_{air}}{E_{bd,air}} = \\frac{13.33}{3} = 4.44, \\qquad \\frac{E_{epoxy}}{E_{bd,epoxy}} = \\frac{3.333}{20} = 0.167$$
 
 The air is at 444% of its strength and the epoxy at 17% of its own. The
 assembly fails in the air, and no amount of better epoxy helps.
@@ -5909,7 +5909,7 @@ $$\\frac{\\mathcal{R}_g}{\\mathcal{R}_c} = \\mu_r\\frac{l_g}{l_c} = (1200)\\frac
 
 $$L = \\frac{0.90478}{1 + 3.84} = 0.18694\\ \\mathrm{H}, \\qquad \\mu_e = \\frac{1200}{4.84} = 247.9$$
 
-$$B = \\frac{0.3619}{4.84} = 0.07478\\ \\mathrm{T}$$
+$$B = \\frac{0.3619}{4.84} = 0.07477\\ \\mathrm{T}$$
 
 $$\\frac{U_g}{U_{total}} = \\frac{3.84}{4.84} = 0.7934$$
 

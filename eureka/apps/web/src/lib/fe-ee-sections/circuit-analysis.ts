@@ -5379,7 +5379,7 @@ that gap is exactly the radical above.
 Keep $L = 100$ mH and $C = 20$ microfarad but reduce the resistance to
 $R = 14.14$ ohm. Find Q, the bandwidth, and both half-power frequencies exactly.
 
-$$Q = \\frac{\\omega_0 L}{R} = \\frac{70.71}{14.14} = 5.000, \\qquad BW = \\frac{f_0}{Q} = \\frac{112.54}{5} = 22.51\\ \\text{Hz}$$
+$$Q = \\frac{\\omega_0 L}{R} = \\frac{70.71}{14.142} = 5.000, \\qquad BW = \\frac{f_0}{Q} = \\frac{112.54}{5} = 22.51\\ \\text{Hz}$$
 
 $$\\sqrt{1 + \\frac{1}{4(25)}} = \\sqrt{1.01} = 1.004988$$
 

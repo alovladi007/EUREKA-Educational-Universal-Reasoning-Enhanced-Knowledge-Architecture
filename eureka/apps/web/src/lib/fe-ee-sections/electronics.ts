@@ -1548,7 +1548,7 @@ $I_{E} = 1.963\\ \\mathrm{mA}$.
 
 **At 1 mA**:
 
-$$g_{m} = \\frac{10^{-3}}{0.026} = 38.5\\ \\mathrm{mS}, \\qquad r_{\\pi} = \\frac{100}{0.0385} = 2600\\ \\Omega, \\qquad r_{e} = 26\\ \\Omega$$
+$$g_{m} = \\frac{10^{-3}}{0.026} = 38.46\\ \\mathrm{mS}, \\qquad r_{\\pi} = \\frac{100}{0.038462} = 2600\\ \\Omega, \\qquad r_{e} = 26\\ \\Omega$$
 
 **At 1.963 mA**:
 
@@ -2004,7 +2004,7 @@ input resistance at the emitter, and the current gain.
 
 **B1 — 38.5 mS, 2.6 kΩ, −181.**
 
-$$g_{m} = \\frac{10^{-3}}{0.026} = 38.5\\ \\mathrm{mS}, \\qquad r_{\\pi} = \\frac{100}{0.0385} = 2600\\ \\Omega$$
+$$g_{m} = \\frac{10^{-3}}{0.026} = 38.46\\ \\mathrm{mS}, \\qquad r_{\\pi} = \\frac{100}{0.038462} = 2600\\ \\Omega$$
 
 $$A_{v} = -g_{m}R_{C} = -(0.0385)(4700) = -181$$
 
@@ -5161,7 +5161,7 @@ $$V_{m} = \\sqrt{2} \\times 240 = 339.4\\ \\mathrm{V}, \\qquad V_{dc,max} = \\fr
 
 **Required cosine**:
 
-$$\\cos\\alpha = \\frac{100}{216.1} = 0.4628 \\;\\Longrightarrow\\; \\alpha = 62.4^{\\circ}$$
+$$\\cos\\alpha = \\frac{100}{216.1} = 0.4627 \\;\\Longrightarrow\\; \\alpha = 62.4^{\\circ}$$
 
 **Output at 30 degrees**:
 
@@ -5387,7 +5387,7 @@ $V_{m} = 169.8\\ \\mathrm{V}$, which returns the same 280.9 V.
 **B5.** $V_{m} = \\sqrt{2}\\times 240 = 339.4\\ \\mathrm{V}$ and
 $V_{dc,max} = 2V_{m}/\\pi = 216.1\\ \\mathrm{V}$, so
 
-$$\\cos\\alpha = \\frac{100}{216.1} = 0.4628, \\qquad \\alpha = 62.4^{\\circ}$$
+$$\\cos\\alpha = \\frac{100}{216.1} = 0.4627, \\qquad \\alpha = 62.4^{\\circ}$$
 
 *Trap*: taking the arccosine of $100/339.4 = 0.295$, which uses the peak
 instead of the α = 0 average and returns 72.8°.

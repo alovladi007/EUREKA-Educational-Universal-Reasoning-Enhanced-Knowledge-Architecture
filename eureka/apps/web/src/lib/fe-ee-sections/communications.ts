@@ -2026,7 +2026,7 @@ $$R_s = \\frac{20.0}{1.35} = 14.815\\ \\mathrm{Msym/s}$$
 
 $$R_b^{QPSK} = 2 \\times 14.815 = 29.63\\ \\mathrm{Mbps}, \\qquad \\eta = \\frac{29.63}{20.0} = 1.481\\ \\mathrm{bit/s/Hz}$$
 
-$$R_b^{256} = 8 \\times 14.815 = 118.5\\ \\mathrm{Mbps}, \\qquad \\eta = \\frac{118.5}{20.0} = 5.926\\ \\mathrm{bit/s/Hz}$$
+$$R_b^{256} = 8 \\times 14.815 = 118.52\\ \\mathrm{Mbps}, \\qquad \\eta = \\frac{118.52}{20.0} = 5.926\\ \\mathrm{bit/s/Hz}$$
 
 **Trap**: quoting 2.00 and 8.00 bit/s/Hz by ignoring the roll-off. A 35%
 roll-off costs a quarter of the throughput, which on a 118 Mbps link is 32 Mbps

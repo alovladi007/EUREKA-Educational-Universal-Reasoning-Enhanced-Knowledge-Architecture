@@ -4099,7 +4099,7 @@ $$\\ln C = 6.250024 + 0.499706(11.5) = 11.99664 \\quad\\Longrightarrow\\quad C =
 The fitted endurance law is ln t = 11.997 − 0.4997V. Its residual sum of squares
 is 0.84824 on n − 2 = 6 degrees of freedom, so
 
-$$\\hat{\\sigma}^{2} = \\frac{0.84824}{6} = 0.141374 \\qquad \\hat{\\sigma} = 0.3760$$
+$$\\hat{\\sigma}^{2} = \\frac{0.84824}{6} = 0.141373 \\qquad \\hat{\\sigma} = 0.3760$$
 
 in log units, and R² in the transformed variables is 0.9252. The standard error
 of the exponent is $0.3760/\\sqrt{42} = 0.05802$, so t = −8.61 on 6 degrees of
@@ -4870,7 +4870,7 @@ unknown and estimated from the sample. **Hypotheses.** H₀: μ = 2.00 against
 H₁: μ ≠ 2.00, two-sided, because drift in either direction is out of
 specification.
 
-$$\\mathrm{SE} = \\frac{s}{\\sqrt{n}} = \\frac{0.052}{\\sqrt{10}} = \\frac{0.052}{3.1623} = 0.016445\\ \\mathrm{mm}$$
+$$\\mathrm{SE} = \\frac{s}{\\sqrt{n}} = \\frac{0.052}{\\sqrt{10}} = \\frac{0.052}{3.1623} = 0.016444\\ \\mathrm{mm}$$
 
 $$t = \\frac{\\bar{x}-\\mu_{0}}{\\mathrm{SE}} = \\frac{2.043-2.000}{0.016445} = \\frac{0.043}{0.016445} = 2.615$$
 
