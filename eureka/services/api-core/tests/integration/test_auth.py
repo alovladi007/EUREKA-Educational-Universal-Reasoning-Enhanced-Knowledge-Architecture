@@ -6,6 +6,30 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+@pytest.fixture
+def mock_email_service(monkeypatch):
+    """Silence outbound mail.
+
+    Three tests requested this fixture and nothing ever defined it, so they
+    errored at setup rather than running. The real module is
+    `app.services.email` (there has never been an `email_service`).
+    """
+    sent: list[dict] = []
+
+    class _Recorder:
+        def __init__(self, *a, **k):
+            pass
+
+        async def send(self, *a, **k):
+            sent.append({"args": a, "kwargs": k})
+            return True
+
+        send_email = send
+
+    monkeypatch.setattr("app.services.email.EmailService", _Recorder, raising=False)
+    return sent
+
+
 from app.models.user import User
 
 
@@ -18,9 +42,9 @@ class TestUserRegistration:
         """Test successful user registration."""
         user_data = {
             "email": "newuser@example.com",
-            "username": "newuser",
             "password": "SecurePassword123!",
-            "full_name": "New User",
+            "first_name": "New",
+            "last_name": "User",
             "role": "student"
         }
 
@@ -30,7 +54,6 @@ class TestUserRegistration:
         data = response.json()
         assert "user" in data
         assert data["user"]["email"] == user_data["email"]
-        assert data["user"]["username"] == user_data["username"]
         assert "access_token" in data
         assert "refresh_token" in data
 
@@ -38,9 +61,9 @@ class TestUserRegistration:
         """Test registration with duplicate email fails."""
         user_data = {
             "email": test_user.email,
-            "username": "differentusername",
-            "password": "SecurePassword123!",
-            "full_name": "Another User",
+                        "password": "SecurePassword123!",
+            "first_name": "Another",
+            "last_name": "User",
             "role": "student"
         }
 
@@ -55,7 +78,8 @@ class TestUserRegistration:
             "email": "different@example.com",
             "username": test_user.username,
             "password": "SecurePassword123!",
-            "full_name": "Another User",
+            "first_name": "Another",
+            "last_name": "User",
             "role": "student"
         }
 
@@ -67,9 +91,9 @@ class TestUserRegistration:
         """Test registration with invalid email fails."""
         user_data = {
             "email": "notanemail",
-            "username": "testuser",
-            "password": "SecurePassword123!",
-            "full_name": "Test User",
+                        "password": "SecurePassword123!",
+            "first_name": "Test",
+            "last_name": "User",
             "role": "student"
         }
 
@@ -81,9 +105,9 @@ class TestUserRegistration:
         """Test registration with weak password fails."""
         user_data = {
             "email": "test@example.com",
-            "username": "testuser",
-            "password": "weak",
-            "full_name": "Test User",
+                        "password": "weak",
+            "first_name": "Test",
+            "last_name": "User",
             "role": "student"
         }
 
@@ -127,8 +151,7 @@ class TestUserLogin:
     def test_login_nonexistent_user(self, client: TestClient):
         """Test login with nonexistent user fails."""
         login_data = {
-            "username": "nonexistent@example.com",
-            "password": "somepassword"
+                        "password": "somepassword"
         }
 
         response = client.post("/api/v1/auth/login", data=login_data)
