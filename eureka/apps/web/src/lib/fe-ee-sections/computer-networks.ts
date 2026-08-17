@@ -2495,9 +2495,11 @@ cheap.
 ## 4.4 Domains, Counted on a Real Diagram
 
 Collision-domain and broadcast-domain counting is best done on a concrete
-layout. Take one switch with eight ports: three ports each feed a four-port
-hub, five ports feed a host directly, and the switch uplinks to a router
-interface.
+layout. Take one switch with nine ports: three ports each feed a hub that
+serves four hosts, five ports feed a host directly, and the ninth port uplinks
+to a router interface. Count the ports before anything else — three plus five
+plus one is nine, and each hub needs five ports of its own, four for hosts and
+one for the link back to the switch.
 
 | Question | Count | Reasoning |
 |---|---|---|
@@ -2509,9 +2511,12 @@ interface.
 The hub-versus-switch distinction is the whole point: the twelve hosts behind
 hubs contend with three other stations each, while the five switched hosts
 contend with nobody and can run full duplex. Replacing the three hubs with
-switches would take the collision-domain count to 17 and eliminate CSMA/CD
-entirely — which is what actually happened to Ethernet, and why collision
-arithmetic is now a historical topic rather than an operational one.`,
+switches raises the count on the same convention used in the table — one
+domain per shared segment or per point-to-point link — to twelve host links,
+plus three switch-to-switch links, plus the five direct hosts, plus the
+uplink, which is **21**. CSMA/CD disappears entirely at that point, which is
+what actually happened to Ethernet, and why collision arithmetic is now a
+historical topic rather than an operational one.`,
       examTip: 'Diameter is the metric behind latency questions: star = 2, ring = floor(N/2), full mesh = 1. Incremental cost is the metric behind scalability questions: star = 1 link per node, full mesh = N links per node.',
       importantNote: 'A VLAN creates a broadcast domain without a router. If a question puts three VLANs on one switch, the answer is three broadcast domains even though there is only one physical switch and possibly no router at all.',
     },
@@ -2608,6 +2613,941 @@ as the parallel-path formula above, now applied to capacity instead of
 availability.`,
       examTip: 'Series availability multiplies (a^k); parallel availability is 1-(1-a)^k. Going from one path to two at 99 % per link buys two extra nines — from 99 % to 99.99 %.',
       importantNote: 'STP elects the switch with the LOWEST bridge ID as root, and because every switch ships with priority 32768 the tie-break falls to the lowest MAC address — typically the oldest switch, which is rarely the one you want at the root.',
+    },
+    { id: 'topo-graph', title: '6. Topology as a Graph: Degree, Diameter, Bisection',
+      content: `## 6.1 Replacing Adjectives With Quantities
+
+The first five sections described topologies in words and gave one formula.
+That is not enough to design with, and it is not enough for the exam either.
+Every arrangement in this chapter is a **graph**: the devices are its vertices
+and the links are its edges. Written that way, six measurable quantities take
+the place of words like "robust" or "expensive", and each of them can be
+computed before anything is bought and counted afterwards to check.
+
+$$G = (V, E), \\qquad n = \\lvert V \\rvert, \\qquad m = \\lvert E \\rvert$$
+
+| Quantity | Written | What it settles |
+|---|---|---|
+| Node count | n | The size of the problem |
+| Link count | m | Cable spend, port count, installation labour |
+| Node degree | d(v) | How many ports each individual device must have |
+| Diameter | D | Worst-case hop count, and therefore worst-case latency |
+| Bisection width | B | Traffic the fabric carries across its own middle |
+| Node connectivity | kappa | How many devices must die before the network splits |
+
+The figures in this section were produced by building each graph in software,
+walking its adjacency lists to count edges, and running breadth-first search
+from every vertex to measure distance. The formulas below are then checked
+against those measurements rather than being trusted on sight, which is
+exactly the discipline to bring to an exam question: derive, then count a
+small case.
+
+## 6.2 Link Count Comes From the Degree Sum
+
+Every edge has two ends, so adding up how many links touch each device counts
+every link exactly twice. That single observation — the **handshake lemma** —
+gives the link count of any topology whose degrees are known.
+
+$$\\sum_{v \\in V} d(v) = 2m$$
+
+For a **regular** topology, where every device has the same degree d, the
+result rearranges into the only link-count formula that has to be memorised:
+
+$$m = \\frac{n\\,d}{2}$$
+
+Apply it once per topology and the whole table falls out. A ring gives every
+device two neighbours, so d = 2 and the links equal the nodes. A square torus
+gives four, a hypercube of n = 2^k nodes gives k = log2 n, and a full mesh
+gives n − 1.
+
+$$m_{\\mathrm{ring}} = \\frac{2n}{2} = n, \\qquad m_{\\mathrm{torus}} = \\frac{4n}{2} = 2n$$
+
+$$m_{\\mathrm{cube}} = \\frac{n \\log_{2} n}{2}, \\qquad m_{\\mathrm{mesh}} = \\frac{n(n-1)}{2}$$
+
+A star and a tree are not regular, so the sum is taken in two pieces. In a
+star the hub has degree n − 1 and each of the n − 1 leaves has degree 1:
+
+$$2m_{\\mathrm{star}} = (n-1) + (n-1)\\cdot 1 = 2(n-1) \\;\\Longrightarrow\\; m_{\\mathrm{star}} = n - 1$$
+
+Any tree obeys the same result for a deeper reason: a connected graph with no
+cycle has exactly one fewer edge than it has vertices, which is why a star, a
+bus drawn as a chain, and a hierarchical tree all cost n − 1 links.
+
+$$m_{\\mathrm{tree}} = n - 1$$
+
+## 6.3 Diameter Is a Shortest-Path Maximum
+
+Diameter is the largest of all the shortest paths, so it bounds the hop count
+of the unluckiest pair of devices on the network.
+
+$$D = \\max_{u,v\\,\\in\\,V} \\operatorname{dist}(u,v)$$
+
+![Diameter against node count for a ring, a hypercube and a full mesh, on doubling axes from four to sixty-four nodes. The ring line rises as floor of n over two, from two hops at four nodes to thirty-two at sixty-four; the hypercube rises as log base two of n, from two to six; the full mesh is flat at one. Every point was measured by breadth-first search on a constructed graph.](/courses/fe-ee/figures/net3-topology-diameter.svg)
+
+Each curve has a one-line derivation. In a ring the two directions split the
+distance, so the worst pair sits half way round. In a hypercube the shortest
+path flips one address bit at a time, so the worst pair differs in all k bits.
+In a full mesh every pair is adjacent.
+
+$$D_{\\mathrm{ring}} = \\left\\lfloor \\frac{n}{2} \\right\\rfloor, \\qquad D_{\\mathrm{cube}} = \\log_{2} n, \\qquad D_{\\mathrm{mesh}} = 1$$
+
+$$D_{\\mathrm{star}} = 2, \\qquad D_{\\mathrm{torus}} = 2\\left\\lfloor \\frac{\\sqrt{n}}{2} \\right\\rfloor$$
+
+A complete binary tree of height h holds n = 2^(h+1) − 1 nodes, and its worst
+pair is two leaves on opposite sides, so the path climbs h levels and descends
+h again:
+
+$$D_{\\mathrm{bintree}} = 2h = 2\\log_{2}(n+1) - 2$$
+
+The contrast that matters is the second column against the first. Going from
+16 nodes to 64 takes a ring from 8 hops to 32 — the latency grows with the
+network — while a hypercube goes from 4 to 6. That is the whole reason
+hierarchical and hypercube-like fabrics exist.
+
+## 6.4 Bisection Width: Bandwidth Through the Middle
+
+Diameter measures the worst *path*; bisection width measures the worst *cut*.
+Split the devices into two halves as evenly as possible, choosing the split
+that severs the fewest links, and count what had to be cut.
+
+$$B = \\min_{\\substack{S \\subset V \\\\ \\lvert S \\rvert = \\lfloor n/2 \\rfloor}} \\lvert \\{\\,uv \\in E : u \\in S,\\; v \\notin S \\,\\} \\rvert$$
+
+![Bisection width against node count for a ring, a hypercube and a full mesh, on doubling axes. The ring is flat at two links cut at every size; the hypercube rises as n over two, reaching thirty-two at sixty-four nodes; the full mesh rises as n squared over four, reaching one thousand and twenty-four. Small cases were confirmed by enumerating every balanced cut.](/courses/fe-ee/figures/net3-bisection-width.svg)
+
+A ring is severed by exactly two links no matter how large it grows, which is
+why a ring cannot be scaled by adding stations: the cross-sectional bandwidth
+is fixed at two links for ever. A hypercube cut along one address bit severs
+half the nodes, one link each. A full mesh has every left-hand node joined to
+every right-hand node.
+
+$$B_{\\mathrm{ring}} = 2, \\qquad B_{\\mathrm{cube}} = \\frac{n}{2}, \\qquad B_{\\mathrm{mesh}} = \\left\\lceil \\frac{n}{2}\\right\\rceil\\left\\lfloor \\frac{n}{2}\\right\\rfloor$$
+
+For even n the mesh expression is simply n²/4, so a 64-node mesh has to have
+1024 links severed before it splits, while the 64-node ring needs two. Every
+one of these was confirmed by brute force at n = 8 and n = 16: the software
+enumerated every balanced partition and took the minimum cut, and the answers
+were 2, 4, 8 and 16 exactly as the formulas predict.
+
+## 6.5 Connectivity: How Much Failure the Shape Absorbs
+
+$$\\kappa(G) \\le \\lambda(G) \\le \\delta(G)$$
+
+Node connectivity kappa is the fewest devices whose loss disconnects the
+survivors, edge connectivity lambda is the same question for links, and delta
+is the smallest degree in the graph. The chain of inequalities says something
+useful without any calculation: **no topology can tolerate more failures than
+its least-connected device has ports.** A device with one uplink is a single
+point of failure regardless of how much redundancy exists elsewhere.
+
+| Topology | kappa | lambda | Smallest degree | Single point of failure |
+|---|---|---|---|---|
+| Star, n = 6 | 1 | 1 | 1 | Yes — the hub, and every leaf link |
+| Bus or line, n = 6 | 1 | 1 | 1 | Yes — every interior node |
+| Ring, n = 6 | 2 | 2 | 2 | No — survives any one failure |
+| Hypercube, n = 8 | 3 | 3 | 3 | No — survives any two |
+| Torus, n = 9 | 4 | 4 | 4 | No — survives any three |
+| Full mesh, n = 6 | 5 | 5 | 5 | No — survives any four |
+
+Every entry in that table was obtained by removing nodes and links from the
+constructed graph and testing whether the survivors could still reach one
+another, not by quoting the formula. That is worth doing once by hand for a
+small ring, because it makes Menger's theorem concrete: the number of
+independent paths between two devices equals the number of failures the pair
+can absorb.
+
+### Worked Example 6.1 — Four Metrics for an Eight-Node Fabric
+
+**Given.** Eight devices. Compare a star, a ring, a hypercube of dimension 3
+and a full mesh on link count, degree, diameter and bisection width.
+
+**Link count.** From the degree sum, m = nd/2 for the regular shapes:
+
+$$m_{\\mathrm{ring}} = \\frac{8 \\times 2}{2} = 8, \\qquad m_{\\mathrm{cube}} = \\frac{8 \\times 3}{2} = 12$$
+
+$$m_{\\mathrm{mesh}} = \\frac{8 \\times 7}{2} = 28, \\qquad m_{\\mathrm{star}} = 8 - 1 = 7$$
+
+**Diameter.** Ring gives floor(8/2) = 4, cube gives log2 8 = 3, mesh gives 1,
+star gives 2.
+
+**Bisection.** Ring 2, cube 8/2 = 4, mesh 4 × 4 = 16, star 4.
+
+| Shape | Links | Degree | Diameter | Bisection |
+|---|---|---|---|---|
+| Star | 7 | 7 at the hub, 1 elsewhere | 2 | 4 |
+| Ring | 8 | 2 | 4 | 2 |
+| Hypercube | 12 | 3 | 3 | 4 |
+| Full mesh | 28 | 7 | 1 | 16 |
+
+**Answer.** The hypercube costs 50 % more links than a ring and buys a
+diameter cut from 4 to 3 and a bisection width doubled from 2 to 4. The mesh
+costs 3.5 times the ring and buys a diameter of 1. All four numbers were
+confirmed by construction: the software built each graph, counted 7, 8, 12 and
+28 edges, and measured diameters of 2, 4, 3 and 1 by breadth-first search.
+
+### Worked Example 6.2 — When Is a Hypercube Cheaper Than a Mesh?
+
+**Given.** Find the smallest n = 2^k at which a hypercube costs less than half
+the links of a full mesh.
+
+**Set up the ratio.**
+
+$$\\frac{m_{\\mathrm{cube}}}{m_{\\mathrm{mesh}}} = \\frac{n\\log_{2}n / 2}{n(n-1)/2} = \\frac{\\log_{2}n}{n-1}$$
+
+**Evaluate.** At n = 4 the ratio is 2/3 = 0.667. At n = 8 it is 3/7 = 0.4286,
+which is already below one half.
+
+**Answer.** n = 8. Beyond that the advantage compounds: at n = 64 the ratio is
+6/63 = 0.0952, so a hypercube of 64 nodes costs under a tenth of the mesh
+while still holding the diameter to 6 hops instead of the ring's 32.
+
+### Worked Example 6.3 — The Incremental Cost of One More Node
+
+**Given.** A network of n devices grows by one. How many new links are needed
+in each topology, and how many existing devices must have a spare port?
+
+**Take the difference of the link-count formulas.**
+
+$$\\Delta m_{\\mathrm{mesh}} = \\frac{(n+1)n}{2} - \\frac{n(n-1)}{2} = n$$
+
+$$\\Delta m_{\\mathrm{star}} = n - (n-1) = 1, \\qquad \\Delta m_{\\mathrm{ring}} = (n+1) - n = 1$$
+
+**Interpret the ring result carefully.** The count rises by one, but the work
+is not one cable: an existing link must be broken and two new ones run, so the
+network is interrupted. The star adds one cable to a spare hub port and
+touches nothing else.
+
+**Answer.** Mesh n new links on n existing devices, ring one net link but two
+cable pulls and an outage, star one cable and one port. For n = 32 the mesh
+answer is 32 new links, every one of them terminating on an incumbent device —
+so all 32 must have been built with a spare port years earlier.`,
+      examTip: 'Learn one formula, not six: the degree sum gives 2m, so m = nd/2 for any regular topology. Ring d = 2 gives m = n, torus d = 4 gives m = 2n, hypercube d = log2 n gives m = n log2 n over 2, full mesh d = n-1 gives m = n(n-1)/2.',
+      importantNote: 'Bisection width, not diameter, is the number that decides whether a topology can carry more traffic as it grows. A ring has bisection width 2 at every size, so doubling the stations on a ring does not double what the ring can carry across itself — it halves the share each station gets.',
+    },
+    { id: 'topo-robust', title: '7. Reliability, Redundancy and the Cost of Robustness',
+      content: `## 7.1 From Two Formulas to a Whole Network
+
+Section 5 gave the two rules that everything else is built from: a path needs
+every hop, so its availability is a product, while parallel paths fail only
+together, so their unavailabilities multiply.
+
+$$A_{\\mathrm{series}} = \\prod_{i=1}^{k} a_i = a^{k} \\quad \\text{(identical links)}$$
+
+$$A_{\\mathrm{parallel}} = 1 - \\prod_{i=1}^{k}(1 - a_i) = 1 - (1-a)^{k}$$
+
+Plotting both on a scale of **nines** makes the asymmetry impossible to miss.
+Define the nines of an availability as
+
+$$N_{9} = -\\log_{10}(1 - A)$$
+
+![Nines of availability against the number of links, for links in series and paths in parallel, each link at ninety-nine per cent. The parallel curve is a straight line rising two nines per added path, reaching sixteen nines at eight paths. The series curve falls from two nines at one link towards about one nine at eight. Both were confirmed by Monte-Carlo trials over independent link failures.](/courses/fe-ee/figures/net3-reliability-paths.svg)
+
+The parallel line is straight because the unavailability is a pure power:
+1 − A = (1 − a)^k, so N9 = −k·log10(1 − a), which at a = 0.99 is exactly 2k.
+**Each redundant path buys two more nines, at this link quality, for ever.**
+The series curve bends the other way and much more slowly, because a^k decays
+gently at first. Both curves were confirmed by simulating independent link
+failures a few hundred thousand times and counting how often the whole
+arrangement worked.
+
+## 7.2 All-Terminal Reliability: The Question a Network Actually Asks
+
+Series and parallel answer "can these two devices talk". A network asks
+something harder: **can every device still reach every other device**. That is
+the all-terminal reliability, and for the shapes on this exam it has closed
+forms worth knowing.
+
+A ring stays fully connected as long as at most one of its n links has failed,
+because cutting one link leaves a chain. Cut two and it splits.
+
+$$R_{\\mathrm{ring}} = a^{n} + n\\,a^{\\,n-1}(1-a)$$
+
+A star needs every leaf link and it needs the hub, so with hub availability h:
+
+$$R_{\\mathrm{star}} = h\\,a^{\\,n-1}$$
+
+At n = 6 and a = 0.99, with a perfect hub for the sake of the comparison:
+
+| Shape | Expression | Value | Unavailability |
+|---|---|---|---|
+| Ring, 6 links | 0.99^6 + 6 × 0.99^5 × 0.01 | 0.99853955 | 0.00146045 |
+| Star, 5 links | 0.99^5 | 0.95099005 | 0.04900995 |
+
+The ring is **33.6 times less likely to be broken**, since 0.04900995 divided
+by 0.00146045 is 33.558. It pays one extra link for that. Both figures were
+confirmed twice over: once by enumerating all 2^6 and 2^5 link-failure
+patterns and adding the probabilities of the connected ones, and once by
+Monte-Carlo trials that failed links at random and ran a reachability search
+on what was left.
+
+## 7.3 Partial Redundancy: k Working Out of n
+
+Full mesh and single path are the two ends of a spectrum. The middle is
+described by the binomial sum, which gives the probability that at least k of
+n parallel components survive.
+
+$$A_{k/n} = \\sum_{j=k}^{n} \\binom{n}{j} a^{j} (1-a)^{\\,n-j}$$
+
+| Requirement | At a = 0.99 | Value |
+|---|---|---|
+| 1 of 2 (plain redundant pair) | 1 − 0.01² | 0.99990000 |
+| 2 of 3 (quorum) | 3 × 0.99² × 0.01 + 0.99³ | 0.99970200 |
+| 3 of 4 (capacity floor) | 4 × 0.99³ × 0.01 + 0.99⁴ | 0.99940797 |
+| 4 of 4 (no spare capacity) | 0.99⁴ | 0.96059601 |
+
+The last two rows are the design lesson. Four bonded links that must all work
+give only 1.40 nines, since the log of 0.03940399 is -1.4045; the same four
+links with a design that tolerates one failure give 3.23 nines *and* keep 75 %
+of the capacity when one does fail. This is why link aggregation is specified
+with a capacity floor rather than as an all-or-nothing bundle.
+
+## 7.4 Blast Radius: What One Failure Costs
+
+Availability says how often something breaks. **Blast radius** says how much
+breaks when it does, and the two are independent design goals. Define the
+expected number of devices that lose service when exactly one device fails,
+averaged over which device it is:
+
+$$E[\\ell] = \\frac{1}{n}\\sum_{v \\in V} \\ell(v)$$
+
+where ℓ(v) counts v itself plus every device cut off from the rest once v is
+gone. Measured by removing each node of a six-device network in turn and
+running a reachability search on the survivors:
+
+| Shape, n = 6 | Hub fails | A leaf or peer fails | Expected loss |
+|---|---|---|---|
+| Star | 5 devices lose service | 1 device | 10/6 = 1.667 |
+| Ring | not applicable | 1 device | 1.000 |
+| Full mesh | not applicable | 1 device | 1.000 |
+
+The star is **1.667 times worse per failure** than either alternative, and all
+of that excess comes from one sixth of the cases. That is the shape of every
+single-point-of-failure argument: rare, but catastrophic when it lands, and
+invisible to an availability figure that averages over time rather than over
+consequence.
+
+## 7.5 Pricing the Trade
+
+Put cost and robustness in the same table and the design conversation becomes
+arithmetic. Take a link cost of one unit and compare at n = 6.
+
+| Shape | Links | Relative cost | kappa | Expected loss per failure |
+|---|---|---|---|---|
+| Star | 5 | 1.00 | 1 | 1.667 |
+| Ring | 6 | 1.20 | 2 | 1.000 |
+| Ring plus a second ring on next-nearest neighbours | 12 | 2.40 | 4 | 1.000 |
+| Full mesh | 15 | 3.00 | 5 | 1.000 |
+
+The 20 % surcharge from star to ring buys the first unit of connectivity and
+removes the single point of failure entirely; the 150 % surcharge from ring to
+full mesh buys three more units of connectivity that no realistic failure rate
+will ever call upon. **Redundancy saturates.** That is the quantitative form
+of the advice in section 2 to use partial mesh rather than full mesh: the
+second path is worth more than the third, fourth and fifth combined.
+
+### Worked Example 7.1 — Nines for a Three-Hop Path With a Backup
+
+**Given.** A primary route crosses three links, each 99.5 % available. A
+backup route crosses five links of the same quality. The two routes share no
+equipment. Find the availability of the pair.
+
+**Step 1 — each route in series.**
+
+$$A_1 = 0.995^{3} = 0.985075, \\qquad A_2 = 0.995^{5} = 0.975249$$
+
+**Step 2 — the routes in parallel.**
+
+$$A = 1 - (1 - 0.985075)(1 - 0.975249) = 1 - 0.014925 \\times 0.024751$$
+
+$$A = 1 - 0.000369 = 0.999631$$
+
+**Step 3 — express it as nines and as downtime.**
+
+$$N_{9} = -\\log_{10}(0.000369) = 3.433, \\qquad U = 0.000369 \\times 525600 = 193.95 \\ \\mathrm{min/yr}$$
+
+**Answer.** 99.9631 %, about 3.4 nines, or 194 minutes of outage a year. The
+weaker five-hop backup still lifts the pair from 1.8 nines to 3.4, which is
+the point: a mediocre second path is worth far more than a better first one.
+
+### Worked Example 7.2 — Choosing Between a Spare and a Better Switch
+
+**Given.** A switch has MTBF 10,000 h and MTTR 4 h. Two proposals: double the
+MTBF to 20,000 h by buying better hardware, or halve the MTTR to 2 h by
+stocking a spare on site. Which wins?
+
+**Use the availability definition.**
+
+$$A = \\frac{\\mathrm{MTBF}}{\\mathrm{MTBF} + \\mathrm{MTTR}}$$
+
+**Baseline.** A = 10000/10004 = 0.99960016, so downtime is
+(1 − 0.99960016) × 8760 = 3.503 h a year.
+
+**Better hardware.** A = 20000/20004 = 0.99980004.
+
+**Spare on site.** A = 10000/10002 = 0.99980004.
+
+**Answer.** They are identical to eight decimal places, and both halve the
+downtime to 1.752 h a year. The algebra explains why: for MTTR much smaller
+than MTBF, 1 − A is very nearly MTTR/MTBF, so halving the numerator and
+doubling the denominator do exactly the same thing. Since a spare unit almost
+always costs less than a doubling of hardware quality, **the cheapest nine on
+the shelf is usually a spare in the cupboard.**
+
+### Worked Example 7.3 — How Many Parallel Paths Reach Five Nines?
+
+**Given.** Each path is 97 % available. How many independent paths are needed
+for 99.999 % overall?
+
+**Set the requirement.**
+
+$$1 - (1 - 0.97)^{k} \\ge 0.99999 \\;\\Longleftrightarrow\\; 0.03^{k} \\le 10^{-5}$$
+
+**Take logarithms.**
+
+$$k \\ge \\frac{-5}{\\log_{10} 0.03} = \\frac{-5}{-1.52288} = 3.283$$
+
+**Answer.** k = 4. Check it: 0.03⁴ = 8.1 × 10⁻⁷, so A = 0.99999919, comfortably
+past five nines, while k = 3 gives 0.03³ = 2.7 × 10⁻⁵ and only 99.9973 %. Note
+how weak each path is allowed to be — 97 % is poor — and how few of them are
+needed. Independence is doing the work, which is why the assumption deserves
+more scrutiny than the arithmetic: two paths in the same duct are not
+independent, and the formula silently assumes they are.`,
+      examTip: 'Series availability is a product and parallel availability is one minus a product of unavailabilities. On a nines scale, -log10(1-A), every extra parallel path at 99 percent per link adds exactly two nines. Availability and blast radius are different questions: a star and a ring can have similar uptime while the star loses five devices per hub failure and the ring loses one.',
+      importantNote: 'MTTR and MTBF are equally powerful levers. For MTTR much smaller than MTBF the unavailability is approximately MTTR divided by MTBF, so halving repair time equals doubling time-between-failures. Stocking a spare is nearly always the cheaper of the two.',
+    },
+    { id: 'topo-loops', title: '8. Loops, Spanning Trees and How Fast a Storm Grows',
+      content: `## 8.1 How Many Trees Does a Fabric Contain?
+
+Section 5 explained that a loop must be broken. The next question is how many
+ways there are to break it, because that is what a spanning-tree protocol is
+choosing among. **Cayley's formula** counts the spanning trees of a complete
+graph, and the cycle has an answer just as simple.
+
+$$\\tau(K_n) = n^{\\,n-2}, \\qquad \\tau(C_n) = n$$
+
+| Fabric | Devices | Links | Spanning trees |
+|---|---|---|---|
+| Ring | 4 | 4 | 4 |
+| Ring | 6 | 6 | 6 |
+| Full mesh | 4 | 6 | 16 |
+| Full mesh | 5 | 10 | 125 |
+| Full mesh | 6 | 15 | 1296 |
+
+The ring result is obvious once stated — remove any one of the n links and
+what remains is a tree — and it was confirmed by enumerating every subset of
+n − 1 links and testing connectivity. The mesh numbers were confirmed the same
+way. A protocol therefore has to *choose*, deterministically and identically on
+every switch, and that is the entire purpose of the root election and the
+path-cost tie-breaks in section 5.3.
+
+## 8.2 How Many Ports Get Blocked
+
+A tree has n − 1 links, so everything else is turned off:
+
+$$b = m - (n - 1)$$
+
+| Fabric | n | m | Forwarding | Blocked | Blocked share |
+|---|---|---|---|---|---|
+| Ring of 6 switches | 6 | 6 | 5 | 1 | 16.7 % |
+| Four meshed switches | 4 | 6 | 3 | 3 | 50.0 % |
+| Five meshed switches | 5 | 10 | 4 | 6 | 60.0 % |
+| Nine switches as a torus | 9 | 18 | 8 | 10 | 55.6 % |
+
+Half or more of a meshed fabric is idle under a single spanning tree. That is
+the cost the techniques in section 5.4 exist to recover, and it is why per-VLAN
+trees and link aggregation are not optional refinements on a densely meshed
+core — they are how the money already spent gets used.
+
+## 8.3 The Growth Law of a Broadcast Storm
+
+A frame that arrives on one trunk port of a switch is flooded out **every other
+trunk port**. If each switch has t trunk ports, one incoming frame becomes
+t − 1 outgoing frames, so the population multiplies once per hop. Starting from
+a single broadcast injected at one switch, which is flooded out all t of its
+trunks:
+
+$$F(1) = t, \\qquad F(g) = F(1)\\,(t-1)^{\\,g-1}$$
+
+There is nothing to stop this. An Ethernet frame carries **no hop count** —
+the time-to-live field lives in the IP header, which a layer-2 switch never
+examines — so nothing decays and nothing expires.
+
+![Broadcast frames in flight against hop generation for two switch fabrics, on a doubling vertical axis. Four fully-meshed switches replicate by two per generation, going three, six, twelve, twenty-four and reaching the twelve-link fabric capacity at the third generation. A triangle of three switches merely circulates two frames for ever. The counts were produced by simulating the flood rather than by evaluating the formula.](/courses/fe-ee/figures/net3-storm-growth.svg)
+
+The triangle in the figure is the instructive counter-case. Three switches in
+a ring give each of them two trunk ports, so t − 1 = 1 and the population is
+constant: the frames circulate for ever without growing, which is bad enough,
+because every host receives a duplicate on every lap. **Growth needs t of at
+least 3**, which four meshed switches supply.
+
+## 8.4 How Long Until the Fabric Is Full
+
+Saturation arrives when the frames in flight exceed what the trunks can hold.
+With m trunk links carrying traffic in both directions, and one frame of
+length L on each direction per serialisation slot, the capacity in frames is
+
+$$C = 2m, \\qquad t_{\\mathrm{slot}} = \\frac{L}{R}$$
+
+and the generation at which the fabric fills follows from setting F(g) = C:
+
+$$g^{*} = 1 + \\left\\lceil \\log_{t-1} \\frac{C}{F(1)} \\right\\rceil$$
+
+$$T^{*} = g^{*}\\,t_{\\mathrm{slot}}$$
+
+### Worked Example 8.1 — Time to Saturation on Four Meshed Switches
+
+**Given.** Four switches, fully meshed, 1 Gbps trunks, minimum-size 64-byte
+frames. One host sends one broadcast. How long until the trunks are full?
+
+**Step 1 — the fabric.** Four meshed switches have m = 4 × 3 / 2 = 6 links, so
+C = 2 × 6 = 12 directed trunk links. Each switch has t = 3 trunk ports.
+
+**Step 2 — the slot.** A 64-byte frame is 512 bits:
+
+$$t_{\\mathrm{slot}} = \\frac{512}{10^{9}} = 5.12 \\times 10^{-7}\\ \\mathrm{s} = 0.512\\ \\mu\\mathrm{s}$$
+
+**Step 3 — the population.** F(1) = 3, and each generation doubles: 3, 6, 12,
+24, 48.
+
+**Step 4 — saturation.**
+
+$$g^{*} = 1 + \\left\\lceil \\log_{2} \\frac{12}{3} \\right\\rceil = 1 + 2 = 3$$
+
+$$T^{*} = 3 \\times 0.512 = 1.536\\ \\mu\\mathrm{s}$$
+
+**Answer.** The trunks are completely full **1.536 microseconds** after a
+single broadcast, and the offered load keeps doubling after that. This is why
+a loop takes a switched network down in less time than a person can notice
+anything is wrong, and why the protection has to be automatic. The generation
+counts were checked by simulating the flood frame by frame — a frame in on one
+trunk, out on the others — which reproduced 3, 6, 12 and 24 exactly.
+
+## 8.5 What the Protocol Costs to Run
+
+Breaking the loop is not free. The 802.1D timers are conservative because they
+must outlast the worst-case propagation of a topology change across a network
+whose diameter the protocol does not know:
+
+$$t_{\\mathrm{converge}} = \\mathrm{MaxAge} + 2 \\times \\mathrm{ForwardDelay}$$
+
+| Timer | Default | Why |
+|---|---|---|
+| Hello | 2 s | How often the root announces itself |
+| MaxAge | 20 s | How long a switch keeps stale information before reacting |
+| Forward delay | 15 s | Listening, then learning, before forwarding |
+| Worst-case convergence | 50 s | 20 + 15 + 15 |
+
+Fifty seconds is an eternity for a voice call, which is the whole motivation
+for the rapid variants that renegotiate in well under a second on
+point-to-point links. Path selection uses additive costs along the route:
+
+$$c_{\\mathrm{path}} = \\sum_{i=1}^{h} c_i$$
+
+| Link rate | 802.1D cost |
+|---|---|
+| 10 Mbps | 2,000,000 |
+| 100 Mbps | 200,000 |
+| 1 Gbps | 20,000 |
+| 10 Gbps | 2,000 |
+
+### Worked Example 8.2 — Which Port Becomes the Root Port?
+
+**Given.** A switch reaches the root two ways. Route A crosses two 1 Gbps
+links and one 100 Mbps link. Route B crosses one 10 Gbps link and one 1 Gbps
+link. Which port forwards?
+
+**Add the costs.**
+
+$$c_A = 20000 + 20000 + 200000 = 240000$$
+
+$$c_B = 2000 + 20000 = 22000$$
+
+**Answer.** Route B, at cost 22,000 against 240,000 — a factor of 10.9 — even
+though both routes are the same number of hops for two of the three legs.
+Notice what the arithmetic punishes: a single 100 Mbps link contributes
+200,000, which is more than eight 1 Gbps links put together. **Spanning tree
+counts bandwidth, not hops**, and one slow link anywhere on a route disqualifies
+it. That is the most commonly missed point in root-port questions, where
+candidates count hops out of habit.`,
+      examTip: 'A broadcast frame has no TTL at layer 2, so a loop never decays. With t trunk ports per switch the frames in flight grow as (t-1) per hop generation, and four fully meshed switches at 1 Gbps fill their own trunks in about 1.5 microseconds. Spanning tree blocks m - (n-1) links, which is half or more of a densely meshed core.',
+      importantNote: 'Spanning tree adds path COSTS, and the 802.1D cost of a 100 Mbps link is 200000 against 20000 for a gigabit link. One slow leg makes an otherwise short route lose. Count cost, never hops.',
+    },
+    { id: 'topo-wireless', title: '9. Physical Against Logical, and Wireless Topologies',
+      content: `## 9.1 The Same Cabling Can Be Two Different Networks
+
+A topology question has two answers, and the exam expects both. The
+**physical** topology is where the cables run; the **logical** topology is how
+frames actually flow. They are frequently different, and the difference is
+where the performance lives.
+
+| Technology | Physical | Logical | Consequence |
+|---|---|---|---|
+| Ethernet over a hub | Star | Bus | One collision domain shared by everyone |
+| Ethernet over a switch | Star | Point-to-point per port | One collision domain per port, full duplex |
+| Token ring on a media access unit | Star | Ring | Deterministic access despite star cabling |
+| Wireless infrastructure mode | Star at the access point | Bus over the air | Shared medium, half duplex, hidden terminals |
+| Wireless ad hoc or mesh | Mesh | Mesh | Multi-hop, no central point of failure |
+
+The pattern is that almost everything is cabled as a star, because a star is
+what a structured-cabling system physically is, and the logical behaviour is
+decided by the box in the middle. Replacing a hub with a switch changes no
+cable and changes everything.
+
+## 9.2 The Cost of Sharing a Medium
+
+Where the logical topology is a bus, capacity has to be shared, and the
+sharing is imperfect. The simplest analysable case is **ALOHA**, where a
+station transmits whenever it has something to send. With offered load G in
+frames per frame-time, and a vulnerable period of two frame times, throughput
+follows from the Poisson probability of no other arrival in that window:
+
+$$S_{\\mathrm{pure}} = G\\,e^{-2G}, \\qquad S_{\\mathrm{slotted}} = G\\,e^{-G}$$
+
+Differentiating each and setting the derivative to zero puts the maxima at
+G = 0.5 and G = 1 respectively:
+
+$$S^{\\max}_{\\mathrm{pure}} = \\frac{1}{2e} = 0.1839, \\qquad S^{\\max}_{\\mathrm{slotted}} = \\frac{1}{e} = 0.3679$$
+
+**Aligning transmissions to slots halves the vulnerable window and exactly
+doubles the peak throughput**, from 18.4 % to 36.8 % of the raw rate. Both
+figures were confirmed by simulating Poisson arrivals and counting the frames
+that survived. Carrier sensing does far better than either, because a station
+that listens first avoids most of the collisions rather than merely detecting
+them, and section 3.3 gives the standard efficiency estimate 1/(1 + 5a) for
+the wired case.
+
+## 9.3 The Hidden Terminal: Carrier Sensing That Cannot Hear
+
+Carrier sensing assumes every station can hear every other. Over the air that
+assumption fails: two stations at opposite edges of an access point's range
+can each hear the access point and neither can hear the other. Both sense an
+idle medium, both transmit, and both frames are destroyed at the receiver.
+Neither sender detects anything wrong.
+
+The probability is computable. If hidden stations offer traffic at a combined
+Poisson rate lambda, and a frame is exposed for a vulnerable period Tv, then
+
+$$T_f = \\frac{L}{R}, \\qquad T_v = 2T_f, \\qquad P_{\\mathrm{coll}} = 1 - e^{-\\lambda T_v}$$
+
+### Worked Example 9.1 — Hidden-Terminal Collision Probability
+
+**Given.** 1500-byte frames at 54 Mbps. Four hidden stations, each offering 50
+frames per second. Find the probability that a given frame is destroyed by a
+hidden transmitter.
+
+**Step 1 — frame time.**
+
+$$T_f = \\frac{1500 \\times 8}{54 \\times 10^{6}} = \\frac{12000}{54 \\times 10^{6}} = 222.22\\ \\mu\\mathrm{s}$$
+
+**Step 2 — vulnerable period.** Tv = 2 × 222.22 = 444.44 microseconds.
+
+**Step 3 — combined rate.** lambda = 4 × 50 = 200 frames per second.
+
+**Step 4 — probability.**
+
+$$P_{\\mathrm{coll}} = 1 - e^{-200 \\times 444.44\\times 10^{-6}} = 1 - e^{-0.088889} = 0.08505$$
+
+**Answer.** 8.5 % of frames are lost to stations the sender cannot hear, and
+no amount of carrier sensing will reduce it. The result was confirmed by
+sampling exponential interarrival times and counting how often the first
+arrival landed inside the window. Note the shape of the answer: because the
+exponent is small, the probability is very nearly lambda × Tv, so it grows
+almost linearly with hidden traffic and with frame length. **Shorter frames
+are more robust to hidden terminals**, which is the reverse of the efficiency
+advice, and the tension between the two is real.
+
+## 9.4 The Handshake, and the Threshold That Justifies It
+
+The defence is to reserve the medium before sending. A request-to-send and a
+clear-to-send are exchanged first; the clear-to-send is heard by every station
+in the *receiver's* range, including the hidden ones, and silences them. The
+cost is airtime. Adding up the interframe spaces and the control frames:
+
+$$T_{\\mathrm{basic}} = \\mathrm{DIFS} + T_f + \\mathrm{SIFS} + T_{\\mathrm{ACK}}$$
+
+$$T_{\\mathrm{rts}} = \\mathrm{DIFS} + T_{\\mathrm{RTS}} + T_{\\mathrm{CTS}} + T_f + T_{\\mathrm{ACK}} + 3\\,\\mathrm{SIFS}$$
+
+$$\\Theta = \\frac{L}{T_{\\mathrm{cycle}}}$$
+
+### Worked Example 9.2 — When Does the Handshake Pay for Itself?
+
+**Given.** Data at 54 Mbps, control frames at 6 Mbps. RTS 20 bytes, CTS and
+ACK 14 bytes each, SIFS 16 microseconds, DIFS 34 microseconds, data 1500
+bytes. Backoff is ignored so that the comparison is between the two cycles
+alone. Find the collision probability above which the handshake wins.
+
+**Step 1 — airtimes.**
+
+$$T_{\\mathrm{RTS}} = \\frac{160}{6 \\times 10^{6}} = 26.667\\ \\mu\\mathrm{s}, \\qquad T_{\\mathrm{CTS}} = T_{\\mathrm{ACK}} = \\frac{112}{6 \\times 10^{6}} = 18.667\\ \\mu\\mathrm{s}$$
+
+**Step 2 — the two cycles.**
+
+$$T_{\\mathrm{basic}} = 34 + 222.2222 + 16 + 18.6667 = 290.8889\\ \\mu\\mathrm{s}$$
+
+$$T_{\\mathrm{rts}} = 34 + 26.6667 + 18.6667 + 222.2222 + 18.6667 + 48 = 368.2223\\ \\mu\\mathrm{s}$$
+
+**Step 3 — goodput of each.**
+
+$$\\Theta_{\\mathrm{basic}} = \\frac{12000}{290.8889 \\times 10^{-6}} = 41.25\\ \\mathrm{Mbps}$$
+
+$$\\Theta_{\\mathrm{rts}} = \\frac{12000}{368.2223 \\times 10^{-6}} = 32.59\\ \\mathrm{Mbps}$$
+
+**Step 4 — the break-even.** Basic access loses a fraction p of its frames to
+hidden terminals; the handshake loses none. Set the two expected goodputs
+equal:
+
+$$(1-p)\\,\\Theta_{\\mathrm{basic}} = \\Theta_{\\mathrm{rts}} \\;\\Longrightarrow\\; p^{*} = 1 - \\frac{32.589}{41.253} = 0.2100$$
+
+**Answer.** The handshake costs 21.0 % of goodput and repays it once the
+hidden-terminal collision probability exceeds **21.0 %**. Below that, turning
+it on makes things worse. This is why the feature is governed by a
+length threshold rather than a switch: long frames are exposed for longer, so
+they cross the break-even first, and short frames are cheaper to lose than to
+protect. Worked example 9.1 gave 8.5 % for four moderately busy hidden
+stations, which is well below the threshold — that network should leave the
+handshake off.
+
+## 9.5 Wireless Topologies in One Table
+
+| Arrangement | Structure | Failure behaviour | Where it fits |
+|---|---|---|---|
+| Infrastructure basic service set | Star at one access point | Access point is a single point of failure | Offices, homes |
+| Extended service set | Several access points on one wired backbone | Loss of one leaves a coverage hole only | Campuses |
+| Ad hoc | Peer-to-peer mesh | No central point of failure | Temporary, field |
+| Wireless mesh backhaul | Multi-hop mesh between access points | Routes around a failed node | Coverage without cabling |
+
+The wired reasoning carries straight over. An infrastructure cell is a star,
+so its connectivity is 1 and its blast radius is every associated station; a
+mesh has connectivity equal to its least-connected node, and it trades that
+robustness for hop count, since every relayed frame consumes airtime twice and
+therefore roughly halves the usable throughput per hop.`,
+      examTip: 'Physical and logical topology are separate answers. A hub is a physical star and a logical bus; a switch is a physical star with a point-to-point logical link per port; a media access unit is a physical star and a logical ring. Slotting a shared medium halves the vulnerable period and doubles peak throughput, from 1/(2e) = 18.4 percent to 1/e = 36.8 percent.',
+      importantNote: 'Carrier sensing cannot detect a station it cannot hear. The RTS/CTS handshake fixes that but costs airtime, so it only pays above a computable collision probability — 21 percent for 1500-byte frames at 54 Mbps with control frames at 6 Mbps. That is why it is enabled by a frame-length threshold rather than always.',
+    },
+    { id: 'topo-cabling', title: '10. Structured Cabling: Where the Distance Limits Come From',
+      content: `## 10.1 Copper Loss Grows With the Square Root of Frequency
+
+The 100-metre rule is not a convention. It is the length at which a cable's
+insertion loss uses up the budget the receiver was designed around. Loss in a
+balanced pair is dominated by conductor skin effect, which makes the
+attenuation per metre grow as the square root of frequency:
+
+$$\\alpha(f) = \\alpha_{100}\\sqrt{\\frac{f}{100}} \\quad [\\mathrm{dB/m},\\ f \\ \\mathrm{in\\ MHz}]$$
+
+$$IL = \\alpha(f)\\,L, \\qquad L_{\\max} = \\frac{IL_{\\mathrm{budget}}}{\\alpha(f)}$$
+
+![Insertion loss against channel length for a twisted-pair cable at one hundred, two hundred and fifty and five hundred megahertz, with a horizontal guide at the twenty-one point seven decibel channel budget. The three lines meet the budget at one hundred and eight point five, sixty-eight point six and forty-eight point five metres, and a vertical guide marks one hundred metres.](/courses/fe-ee/figures/net3-cable-loss.svg)
+
+Take a cable specified at 0.20 dB per metre at 100 MHz as the design input and
+a channel budget of 21.7 dB. Everything else on the figure follows:
+
+| Frequency | alpha (dB/m) | Reach at 21.7 dB |
+|---|---|---|
+| 100 MHz | 0.2000 | 108.5 m |
+| 250 MHz | 0.3162 | 68.6 m |
+| 500 MHz | 0.4472 | 48.5 m |
+
+**Doubling the signalling frequency does not halve the reach — it divides it
+by the square root of two**, which is 1.414. That is why higher-rate copper
+standards are not simply the old cable driven faster: they specify a lower
+alpha, tighter twist, and better balance, all bought to keep the same 100 m.
+
+## 10.2 The Channel Is Not All One Cable
+
+A structured-cabling channel is a fixed horizontal run plus flexible patch
+cords at each end. The patch cords use stranded conductors, which are more
+lossy than solid ones — take a factor of 1.2 as the design allowance — so the
+budget must be spent in two pieces:
+
+$$IL_{\\mathrm{channel}} = \\alpha\\,L_{h} + 1.2\\,\\alpha\\,L_{p}$$
+
+### Worked Example 10.1 — Does a Standard Channel Fit Its Budget?
+
+**Given.** 90 m of solid horizontal cable at 0.20 dB/m and 10 m of stranded
+patch cord, at 100 MHz, against a 21.7 dB channel budget.
+
+**Step 1 — horizontal.** 90 × 0.20 = 18.0 dB.
+
+**Step 2 — patch cords.** 10 × 0.20 × 1.2 = 2.4 dB.
+
+**Step 3 — total and margin.**
+
+$$IL_{\\mathrm{channel}} = 18.0 + 2.4 = 20.4\\ \\mathrm{dB}, \\qquad \\text{margin} = 21.7 - 20.4 = 1.3\\ \\mathrm{dB}$$
+
+**Answer.** 20.4 dB against a 21.7 dB budget, leaving 1.3 dB — about 6 % of
+the budget. That is why the 90 m and 10 m split is written into the design
+rather than left to the installer: swapping 5 m of the horizontal run for 5 m
+of patch cord adds 5 × 0.20 × 0.2 = 0.2 dB, which eats a sixth of the
+remaining margin for no length gained at all. **Patch cords are the most
+expensive metres in the channel.**
+
+## 10.3 The Fibre Loss Budget Is the Same Sum With More Terms
+
+Optical reach is set by a power budget: what the transmitter launches, minus
+what the receiver needs, minus everything the path takes away.
+
+$$P_{\\mathrm{budget}} = P_{\\mathrm{tx}} - S_{\\mathrm{rx}}$$
+
+$$P_{\\mathrm{budget}} = \\alpha_f\\,\\ell + n_c L_c + n_s L_s + M$$
+
+$$\\ell_{\\max} = \\frac{P_{\\mathrm{budget}} - n_c L_c - n_s L_s - M}{\\alpha_f}$$
+
+### Worked Example 10.2 — Reach of a Single-Mode Link
+
+**Given.** Launch power −4 dBm, receiver sensitivity −20 dBm, fibre 0.35 dB/km
+at 1310 nm, two connector pairs at 0.5 dB each, three fusion splices at 0.1 dB
+each, and 3.0 dB of ageing and repair margin.
+
+**Step 1 — the budget.**
+
+$$P_{\\mathrm{budget}} = -4 - (-20) = 16\\ \\mathrm{dB}$$
+
+**Step 2 — the fixed losses.** Connectors 2 × 0.5 = 1.0 dB, splices
+3 × 0.1 = 0.3 dB, margin 3.0 dB. Total fixed = 4.3 dB.
+
+**Step 3 — what is left for fibre, and how far it goes.**
+
+$$16 - 4.3 = 11.7\\ \\mathrm{dB}, \\qquad \\ell_{\\max} = \\frac{11.7}{0.35} = 33.43\\ \\mathrm{km}$$
+
+**Answer.** 33.4 km. Note where the budget actually goes: the 3 dB margin
+alone is worth 8.57 km of fibre, and the five connections together are worth
+3.71 km. **Reach is lost at the joints, not along the glass** — which is why
+splice counts and connector counts appear on link budgets at all, and why an
+extra patch panel in the middle of a long run is never free.
+
+## 10.4 The Other Distance Limit: Collision Detection
+
+For shared-medium Ethernet the distance limit came from timing, not loss. A
+sender must still be transmitting when the first bit of a collision returns to
+it, otherwise it will never learn that its frame was destroyed. That
+requirement fixes the **slot time** at 512 bit times and therefore the minimum
+frame at 64 bytes:
+
+$$t_{\\mathrm{slot}} = \\frac{512}{R}, \\qquad L_{\\min} = R\\,t_{\\mathrm{slot}} = 512\\ \\mathrm{bits} = 64\\ \\mathrm{bytes}$$
+
+$$d_{\\max} = \\frac{t_{\\mathrm{slot}}\\;v}{2}$$
+
+### Worked Example 10.3 — Why 2500 m, and Why Gigabit Needed a Fix
+
+**Given.** Signal velocity 2.31 × 10⁸ m/s in coaxial cable. Compute the
+propagation-only span implied by the slot time at 10 Mbps, 100 Mbps and
+1 Gbps.
+
+**Step 1 — slot times.**
+
+$$t_{10} = \\frac{512}{10 \\times 10^{6}} = 51.2\\ \\mu\\mathrm{s}, \\qquad t_{100} = \\frac{512}{100\\times 10^{6}} = 5.12\\ \\mu\\mathrm{s}$$
+
+**Step 2 — spans at 10 Mbps.** Half the slot is the one-way budget:
+
+$$d_{\\max} = \\frac{51.2 \\times 10^{-6}}{2}\\times 2.31\\times 10^{8} = 5913.6\\ \\mathrm{m}$$
+
+**Step 3 — compare with the standard's 2500 m.** The five-segment rule allows
+only 2500 m, which is 42.3 % of the propagation-only figure, since
+2500 / 5913.6 = 0.42275. The remaining 14.78 microseconds of the one-way
+budget is spent in repeaters, transceivers and the collision-detect logic.
+
+**Step 4 — scale to 100 Mbps and 1 Gbps.** The slot time falls with the rate,
+so the span falls with it: 591.4 m at 100 Mbps on the same arithmetic. At
+1 Gbps a 512-bit slot would give only 59.1 m, which is unusable, so gigabit
+extends the slot to 4096 bit times:
+
+$$t_{1000} = \\frac{4096}{10^{9}} = 4.096\\ \\mu\\mathrm{s}, \\qquad d_{\\max} = \\frac{4.096\\times 10^{-6}}{2}\\times 2.31 \\times 10^{8} = 473.1\\ \\mathrm{m}$$
+
+**Answer.** 5913.6 m, 591.4 m and 473.1 m of propagation-only span. **The
+minimum frame size and the maximum network diameter are the same constraint
+seen from two ends**, which is the single most useful thing to know about the
+64-byte minimum: it is not a header requirement, it is a distance requirement.
+Full-duplex switching removes the constraint entirely — with no collisions
+there is no slot time — and that is why modern segment lengths are set by
+attenuation, as in 10.1, and not by timing at all.
+
+## 10.5 The Three Limits Side by Side
+
+| Limit | Set by | Typical figure | What relaxes it |
+|---|---|---|---|
+| Copper channel length | Insertion loss against the receiver budget | 100 m | Lower-loss cable, lower signalling frequency |
+| Fibre reach | Power budget against connector, splice and margin losses | 33 km at 1310 nm | Fewer joints, better sensitivity, lower fibre loss |
+| Shared-medium diameter | Slot time and propagation velocity | 2500 m at 10 Mbps | Full duplex, which removes it completely |
+
+## Problem Set A — Graph Metrics and Reliability
+
+**A1.** A fabric of 32 switches is arranged as a hypercube. How many links,
+what degree, what diameter and what bisection width?
+*Answer.* n = 32 so k = 5. Links = 32 × 5 / 2 = 80. Degree 5. Diameter 5.
+Bisection 16.
+
+**A2.** A full mesh of 12 routers is proposed. How many links, and how many
+new links would a thirteenth router require?
+*Answer.* 12 × 11 / 2 = 66 links; a thirteenth needs 12 new links, one to each
+incumbent, so all 12 need a spare port.
+
+**A3.** Each of four independent paths is 96 % available. What is the
+availability of the group, and how many nines?
+*Answer.* 1 − 0.04⁴ = 1 − 2.56 × 10⁻⁶ = 0.99999744, which is
+−log10(2.56 × 10⁻⁶) = 5.59 nines.
+
+**A4.** A route crosses six links each 99.8 % available. What is its
+availability and its annual downtime?
+*Answer.* 0.998⁶ = 0.988060. Downtime = 0.011940 × 525600 = 6275.6 minutes,
+about 104.6 hours.
+
+**A5.** A switch has MTBF 40,000 h and MTTR 6 h. What is its availability and
+its annual downtime?
+*Answer.* 40000/40006 = 0.99985002; downtime = 0.00014998 × 8760 = 1.314 h.
+
+**A6.** A six-node ring has links that are each 98 % available. What is the
+probability that all six nodes can still reach one another?
+*Answer.* 0.98⁶ + 6 × 0.98⁵ × 0.02 = 0.885842 + 0.108471 = 0.994313.
+
+**A7.** Which fails more often per year: eight links in series at 99.9 % each,
+or one link at 99.2 %?
+*Answer.* Series gives 0.999⁸ = 0.992028, so the single 99.2 % link is
+marginally worse — 0.99200 against 0.99203. Eight good links are about as
+risky as one mediocre one, which is the practical meaning of the series rule.
+
+**A8.** A design must survive any two simultaneous device failures. What is
+the minimum node connectivity, and what is the minimum degree of every device?
+*Answer.* kappa of at least 3, and since kappa is at most the smallest degree,
+every device needs at least three links.
+
+## Problem Set B — Loops, Wireless and Cabling
+
+**B1.** Six switches are connected as a ring. How many ports does spanning
+tree block, and what fraction of the links is that?
+*Answer.* m − (n − 1) = 6 − 5 = 1 link, which is 16.7 %.
+
+**B2.** Five switches are fully meshed. How many spanning trees exist, and how
+many links are blocked?
+*Answer.* 5³ = 125 spanning trees; m = 10, so 10 − 4 = 6 links blocked, 60 %.
+
+**B3.** A switch reaches the root over three 1 Gbps links, or over one 1 Gbps
+and one 10 Mbps link. Which route wins?
+*Answer.* 3 × 20000 = 60000 against 20000 + 2000000 = 2020000. The three-hop
+gigabit route wins by a factor of 33.7.
+
+**B4.** Six switches are each connected to three others. If one switch has
+t = 3 trunk ports and a broadcast is injected, how many frames are in flight
+at the fourth generation?
+*Answer.* F(1) = 3 and the multiplier is t − 1 = 2, so F(4) = 3 × 2³ = 24.
+
+**B5.** A 2312-byte frame is sent at 54 Mbps. Two hidden stations each offer
+80 frames per second. What is the collision probability?
+*Answer.* Tf = 18496/54e6 = 342.5 microseconds; Tv = 685.0 microseconds;
+lambda = 160/s; P = 1 − exp(−0.10960) = 0.10381, about 10.4 %.
+
+**B6.** A cable is rated 0.24 dB/m at 100 MHz. What is its loss per metre at
+400 MHz, and how far will 21.7 dB reach at that frequency?
+*Answer.* 0.24 × sqrt(4) = 0.48 dB/m; 21.7/0.48 = 45.2 m.
+
+**B7.** A fibre link has a 14 dB budget, 0.25 dB/km fibre, four connector
+pairs at 0.4 dB, two splices at 0.15 dB and 3 dB of margin. What is the reach?
+*Answer.* Fixed losses 1.6 + 0.3 + 3.0 = 4.9 dB; 14 − 4.9 = 9.1 dB;
+9.1/0.25 = 36.4 km.
+
+**B8.** At 100 Mbps, what is the slot time and the propagation-only span at
+2.31 × 10⁸ m/s?
+*Answer.* 512/100e6 = 5.12 microseconds; span = 5.12e−6/2 × 2.31e8 = 591.4 m.`,
+      examTip: 'Copper attenuation grows as the square root of frequency, so doubling the signalling rate divides reach by 1.414, not by 2. A fibre budget is transmit power minus receiver sensitivity, then minus connectors, splices and margin, with only the remainder divided by the per-kilometre loss. The 64-byte minimum Ethernet frame and the maximum collision-domain diameter are one constraint seen from two ends.',
+      importantNote: 'Reach is lost at the joints. In the worked fibre budget the 3 dB margin alone is worth 8.57 km of glass and the five connections are worth 3.71 km, out of a 33.4 km reach — so an extra patch panel is never free.',
     },
   ],
   keyTakeaways: [
@@ -2914,7 +3854,8 @@ achieves an excellent 99 % detection rate at a false-positive rate of only
 a sensor that looks superb on both headline numbers. This is the base-rate
 effect: when the thing you are looking for is rare, even a tiny false-positive
 rate dominates the alert queue. To reach 50 % precision the false-positive
-rate would have to fall to **0.0099 %**, a hundredfold improvement. It is the
+rate would have to fall to **0.0099 %** — a tenfold tightening, since
+0.1 / 0.0099 = 10.1. It is the
 quantitative reason security teams drown in alerts and why correlation,
 allow-listing, and risk scoring exist.
 
@@ -2943,6 +3884,849 @@ with forged source addresses, which is what makes reflection and amplification
 attacks possible.`,
       examTip: 'A port scan distinguishes three states, not two: SYN-ACK means open, RST means closed, and silence means filtered. Configure firewalls to DROP rather than REJECT so scanners get silence and must wait out a timeout on every port.',
       importantNote: 'Detection rate and false-positive rate are not enough to judge a sensor. With rare events, precision = TP/(TP+FP) collapses: a 99 % detector at 0.1 % false positives on a million sessions produces about 1099 alerts of which only 99 are real — 9 % precision.',
+    },
+    { id: 'netsec-cia', title: '6. The CIA Triad, Made Operational',
+      content: `## 6.1 Three Properties, Three Numbers
+
+Confidentiality, integrity and availability are a checklist until each is
+attached to a quantity. Once they are, a security decision becomes the same
+kind of engineering comparison as a cable budget: state the requirement, state
+the mechanism, compute whether the mechanism meets it.
+
+| Property | Mechanism | The number that measures it |
+|---|---|---|
+| Confidentiality | Encryption | Expected work to recover the key, 2 to the power k minus 1 |
+| Integrity | Authentication tag or signature | Probability an altered message passes, 2 to the power minus t |
+| Availability | Redundancy and capacity | Uptime fraction, and the downtime minutes it implies |
+
+Each of those has an exact expression. For confidentiality, an attacker who
+can test r keys per second and faces a k-bit key expects to succeed after
+half the key space:
+
+$$t_{\\mathrm{break}} = \\frac{2^{\\,k-1}}{r}$$
+
+For integrity, an authentication tag of t bits can be guessed blindly with
+probability 2 to the power minus t per attempt, so the expected number of
+attempts before one succeeds is 2 to the power t:
+
+$$P_{\\mathrm{forge}} = 2^{-t}, \\qquad E[\\text{attempts}] = 2^{\\,t}$$
+
+For availability, the arithmetic of section 5 in the topologies chapter
+applies unchanged, because a denial-of-service attack and a failed power
+supply produce the same downtime column:
+
+$$A = \\frac{\\mathrm{MTBF}}{\\mathrm{MTBF} + \\mathrm{MTTR}}, \\qquad U = (1 - A)\\times 525600 \\ \\mathrm{min/yr}$$
+
+## 6.2 Integrity Is Where Truncation Quietly Costs You
+
+The forgery expression makes a common shortcut visible as a number. Tags are
+often truncated to save bytes, and each bit removed halves the work an
+attacker needs.
+
+| Tag length t | Probability one blind forgery passes | Attempts at 10^6 per second |
+|---|---|---|
+| 128 bits | 2.94 × 10^-39 | 1.08 × 10^25 years |
+| 96 bits | 1.26 × 10^-29 | 2.51 × 10^15 years |
+| 64 bits | 5.42 × 10^-20 | 584,542 years |
+| 32 bits | 2.328 × 10^-10 | 71.6 minutes |
+
+### Worked Example 6.1 — Is a 32-Bit Tag Ever Acceptable?
+
+**Given.** A protocol truncates its authentication tag to 32 bits. An attacker
+can submit 10^6 forged messages per second and the system does not rate-limit
+failures. How long until one is accepted?
+
+**Step 1 — attempts needed.** The expected number of blind attempts is 2^32.
+
+**Step 2 — divide by the rate.**
+
+$$\\frac{2^{32}}{10^{6}} = 4295\\ \\mathrm{s} = 71.6\\ \\mathrm{min}$$
+
+**Step 3 — introduce a defence and recompute.** Lock the channel after 10
+consecutive failures, so an attacker gets 10 attempts per session and sessions
+cost one second to establish. The effective rate falls to 10 per second:
+
+$$\\frac{2^{32}}{10} = 4.295\\times 10^{8}\\ \\mathrm{s} = 13.6\\ \\mathrm{years}$$
+
+**Answer.** 71.6 minutes unprotected, 13.6 years with a failure lockout. The
+tag length did not change; the *rate* did. This is the general shape of every
+authentication defence: **when the secret is short, the only remaining lever
+is how fast an attacker may guess**, which is why lockouts, rate limits and
+deliberately slow verification exist at all.
+
+## 6.3 Risk Arithmetic: Deciding Whether a Control Is Worth Buying
+
+Security spending is justified with two multiplications. The single loss
+expectancy is what one incident costs, and the annualised loss expectancy is
+what the risk costs per year.
+
+$$\\mathrm{SLE} = \\mathrm{AV} \\times \\mathrm{EF}, \\qquad \\mathrm{ALE} = \\mathrm{SLE} \\times \\mathrm{ARO}$$
+
+Here AV is the asset value, EF the exposure factor — the fraction of the asset
+lost in one incident — and ARO the annualised rate of occurrence. A control is
+worth buying when the reduction in ALE exceeds its annual cost:
+
+$$\\mathrm{ROSI} = \\frac{\\mathrm{ALE}_{\\mathrm{before}} - \\mathrm{ALE}_{\\mathrm{after}} - C}{C}$$
+
+### Worked Example 6.2 — Justifying a Control
+
+**Given.** An asset valued at 250,000 (all figures in one consistent currency
+unit). An incident destroys 40 % of its value. The incident is expected once
+every four years. A proposed control costs 8,000 a year and cuts the rate to
+once every twenty years. Should it be bought?
+
+**Step 1 — single loss expectancy.**
+
+$$\\mathrm{SLE} = 250000 \\times 0.40 = 100000$$
+
+**Step 2 — annualised loss, before and after.** Once in four years is
+ARO = 0.25; once in twenty is ARO = 0.05.
+
+$$\\mathrm{ALE}_{\\mathrm{before}} = 100000 \\times 0.25 = 25000$$
+
+$$\\mathrm{ALE}_{\\mathrm{after}} = 100000 \\times 0.05 = 5000$$
+
+**Step 3 — return.**
+
+$$\\mathrm{ROSI} = \\frac{25000 - 5000 - 8000}{8000} = \\frac{12000}{8000} = 1.5$$
+
+**Answer.** Yes: the control returns 150 % a year. The break-even is worth
+computing too — the control pays for itself as long as it removes at least
+8,000 of expected loss, which is an ARO reduction of 8000/100000 = 0.08, so
+anything that takes the rate from 0.25 down below 0.17 is profitable. Note
+what this framework does and does not do: it compares *expected* values, so it
+is silent about a rare catastrophic loss that would end the organisation. That
+is why availability requirements are usually written as hard floors rather
+than as expected values.`,
+      examTip: 'Attach a number to each leg of the triad: confidentiality is 2^(k-1)/r seconds of expected search, integrity is 2^-t per forgery attempt, availability is MTBF/(MTBF+MTTR). Risk arithmetic is two multiplications: SLE = AV x EF and ALE = SLE x ARO, and a control is worth buying when the drop in ALE exceeds its annual cost.',
+      importantNote: 'A short authentication tag is not automatically broken — what breaks it is an unlimited guessing rate. A 32-bit tag falls in 71.6 minutes at a million attempts a second and survives 13.6 years at ten a second. Rate limiting is a cryptographic control, not an operational nicety.',
+    },
+    { id: 'netsec-strength', title: '7. Key Strength and Why Length Beats Obscurity',
+      content: `## 7.1 The Only Security Property That Scales Exponentially
+
+Every other defence in this chapter is linear or worse: more firewall rules,
+more sensors, more staff. Key length is the exception, and the reason is the
+shape of the search:
+
+$$N = 2^{k}, \\qquad E[\\text{trials}] = 2^{\\,k-1}, \\qquad t_{\\mathrm{break}} = \\frac{2^{\\,k-1}}{r}$$
+
+An attacker who multiplies their rate by a factor sigma gains only the
+logarithm of that factor in effective key bits:
+
+$$\\Delta k = \\log_{2}\\sigma$$
+
+| Attacker improvement | Bits it is worth |
+|---|---|
+| 10 times faster | 3.32 |
+| 1,000 times faster | 9.97 |
+| One million times faster | 19.93 |
+| One billion times faster | 29.90 |
+
+**A billion-fold improvement in attack hardware is worth thirty bits.** A
+defender adds thirty bits by changing a configuration line. That asymmetry —
+exponential defence against linear attack — is the entire argument for
+choosing long keys rather than secret algorithms, and it is the quantitative
+form of the principle that a system should stay secure even when everything
+except the key is public.
+
+## 7.2 What a Published Algorithm Buys
+
+Keeping an algorithm secret adds, at best, the entropy of "which algorithm",
+which is a handful of bits from a small catalogue and falls to zero the first
+time anyone examines an implementation. Keeping a key secret adds k bits that
+cannot be recovered by examination. Concretely, guessing among 64 plausible
+algorithm choices is worth 6 bits, which a 56-bit key already dwarfs and a
+128-bit key makes irrelevant. Publishing also buys something a secret cannot:
+review. A published algorithm that has survived years of public attack has a
+measured strength; a secret one has an assumed strength, and the difference is
+not a preference but the presence or absence of evidence.
+
+## 7.3 Public Keys Must Be Far Longer, and Here Is Why
+
+Symmetric keys are attacked by exhaustive search, which costs 2^(k−1). Public
+keys are attacked by algorithms that exploit their structure, and those cost
+far less than exhaustive search. Factoring an RSA modulus with the general
+number field sieve costs approximately
+
+$$L(n) = \\exp\\left(1.923\\,(\\ln n)^{1/3}(\\ln\\ln n)^{2/3}\\right)$$
+
+$$\\log_{2} L(n) = \\frac{1.923\\,(\\ln n)^{1/3}(\\ln \\ln n)^{2/3}}{\\ln 2}$$
+
+![Equivalent symmetric strength against public-key modulus width, from five hundred to eight thousand bits, computed from the number field sieve cost expression. The curve passes about eighty-seven bits at a thousand-and-twenty-four-bit modulus, one hundred and seventeen at two thousand and forty-eight, one hundred and thirty-nine at three thousand and seventy-two, and reaches one hundred and ninety-two at about six thousand seven hundred. Horizontal guides mark the one hundred and twelve, one hundred and twenty-eight and one hundred and ninety-two bit symmetric levels.](/courses/fe-ee/figures/net3-keylength-margin.svg)
+
+| Modulus width | Estimated work, log2 L | Nearest symmetric level |
+|---|---|---|
+| 1024 bits | 86.8 | below 112 |
+| 2048 bits | 116.9 | 112 |
+| 3072 bits | 138.7 | 128 |
+| 6706 bits | 192.0 | 192 |
+
+The curve flattens, and that is the whole point. Going from 1024 to 2048 bits
+buys 30 bits; going from 2048 to 3072 buys 22 more; reaching 192 bits of
+strength needs a modulus 3.27 times as wide as the one that reaches 117. A
+symmetric key would have covered the same ground by adding 75 characters of
+nothing to a configuration file. The estimates above drop a slowly varying
+term from the cost expression and therefore run a few bits optimistic against
+the strengths that standards bodies publish; the *shape* — sublinear, sharply
+diminishing — is what to carry into the exam.
+
+Elliptic curves do far better because the best known attack on them is a
+generic square-root search rather than a structural one. Pollard rho on a
+curve group of order 2^m costs
+
+$$W_{\\rho} \\approx \\sqrt{\\frac{\\pi}{4}\\,2^{m}} = 2^{\\,m/2 - 0.175}$$
+
+so a 256-bit curve delivers 127.8 bits of work — matching a 128-bit symmetric
+key with a public value one twelfth the width of the RSA modulus that does the
+same job.
+
+## 7.4 Stretching a Weak Secret Into a Stronger One
+
+Human-chosen secrets are short, and no policy fixes that. What can be fixed is
+the cost of testing one. A key-derivation function repeats its inner operation
+c times, so an attacker pays c times as much per guess, which adds log2 c bits
+of effective strength:
+
+$$H_{\\mathrm{eff}} = H + \\log_{2} c$$
+
+### Worked Example 7.1 — How Much Does Stretching Buy?
+
+**Given.** An eight-character password drawn uniformly from the 95 printable
+ASCII characters, hashed with 600,000 iterations. What is the effective
+strength, and how long does an attacker at 10^10 raw hashes per second need?
+
+**Step 1 — raw entropy.**
+
+$$H = 8 \\times 6.5699 = 52.56\\ \\mathrm{bits}$$
+
+**Step 2 — the stretch.**
+
+$$\\log_{2} 600000 = 19.19\\ \\mathrm{bits}, \\qquad H_{\\mathrm{eff}} = 52.56 + 19.19 = 71.75\\ \\mathrm{bits}$$
+
+**Step 3 — time to search half the space.**
+
+$$t = \\frac{2^{70.75}}{10^{10}} = 1.986 \\times 10^{11}\\ \\mathrm{s} = 6292\\ \\mathrm{years}$$
+
+**Answer.** 71.75 effective bits, about 6,290 years. Without the stretch the
+same password falls after 2^51.56 guesses, which is 3.32 × 10^5 seconds, or
+**3.84 days**. The ratio of the two is 600,000 exactly, which is the iteration
+count — a useful check that the arithmetic has not gone astray. **Iteration
+count is the single most powerful lever available for protecting stored
+credentials**, and it costs the defender one verification per login while
+costing the attacker one per guess, an asymmetry of exactly the ratio between
+logins and guesses.
+
+### Worked Example 7.2 — Comparing Two Key Lengths Honestly
+
+**Given.** An attacker manages 10^12 keys per second. Compare a 56-bit key, a
+112-bit key and a 128-bit key.
+
+**Apply the work-factor expression.**
+
+$$\\frac{2^{55}}{10^{12}} = 36028.8\\ \\mathrm{s} = 10.01\\ \\mathrm{h}$$
+
+$$\\frac{2^{111}}{10^{12}} = 2.596\\times 10^{21}\\ \\mathrm{s} = 8.23\\times 10^{13}\\ \\mathrm{yr}$$
+
+$$\\frac{2^{127}}{10^{12}} = 1.701 \\times 10^{26}\\ \\mathrm{s} = 5.39\\times 10^{18}\\ \\mathrm{yr}$$
+
+**Answer.** Ten hours, 82 trillion years, and 5.4 billion billion years. The
+56-bit figure is the one to remember, because it is the reason a whole
+generation of equipment was retired: the algorithm was never broken, the key
+simply became short enough to enumerate. **Adding 56 bits multiplied the work
+by 7.2 × 10^16** — that is one configuration change against sixteen orders of
+magnitude, and it is why the answer to "is this cipher strong enough" is
+almost always a statement about key length rather than about the cipher.`,
+      examTip: 'Expected brute-force work is 2^(k-1), and an attacker who gets sigma times faster gains only log2(sigma) bits — a billion-fold speedup is worth thirty bits. Public keys need far more bits than symmetric keys because the attack is structural rather than exhaustive: roughly 2048 RSA bits or 256 curve bits to match a 112 to 128 bit symmetric key.',
+      importantNote: 'Key stretching adds log2(c) bits for c iterations, so 600000 iterations add 19.19 bits. The same eight-character password goes from falling in about a third of a second to surviving thousands of years. The password did not improve; the cost per guess did.',
+    },
+    { id: 'netsec-hash', title: '8. Hashing and the Birthday Bound, Derived',
+      content: `## 8.1 Deriving the Collision Probability
+
+A hash maps arbitrary input into one of M = 2^n possible digests. Ask for the
+probability that q distinct inputs produce at least one repeat. It is easier to
+compute the complement: the first input can land anywhere, the second must miss
+one occupied value, the third must miss two, and so on.
+
+$$P_{\\mathrm{no}} = \\prod_{i=0}^{q-1}\\left(1 - \\frac{i}{M}\\right)$$
+
+Take logarithms and use the fact that the logarithm of one minus a small
+quantity is approximately the negative of that quantity:
+
+$$\\ln P_{\\mathrm{no}} = \\sum_{i=0}^{q-1}\\ln\\left(1 - \\frac{i}{M}\\right) \\approx -\\sum_{i=0}^{q-1}\\frac{i}{M} = -\\frac{q(q-1)}{2M}$$
+
+$$P_{\\mathrm{coll}} \\approx 1 - \\exp\\left(-\\frac{q(q-1)}{2M}\\right)$$
+
+Setting that equal to one half and solving for q gives the number of samples
+at which a collision becomes more likely than not:
+
+$$q_{50} \\approx \\sqrt{2 \\ln 2 \\cdot M} = 1.1774\\sqrt{M} = 1.1774 \\times 2^{\\,n/2}$$
+
+**The square root is the entire story.** Doubling the digest width does not
+double the collision resistance; it squares it, which is why an n-bit hash is
+said to give only n/2 bits of collision resistance.
+
+![Probability of at least one collision against the number of items hashed into a twenty-four-bit digest space. The exact product and the exponential approximation lie on top of one another and cross one half at four thousand eight hundred and twenty-three items, and Monte-Carlo points at two thousand, five thousand and nine thousand items sit on the curve.](/courses/fe-ee/figures/net3-birthday-curve.svg)
+
+The classic sanity check is the shared-birthday problem, which is the same
+formula with M = 365:
+
+$$1 - e^{-23 \\times 22 / (2 \\times 365)} = 1 - e^{-0.6932} = 0.5000$$
+
+The exact product gives 0.5073, so the approximation is good to seven parts in
+a thousand at a sample size only 1.2 times the square root of M. Both were
+confirmed by simulation: drawing 23 values from 365 a few hundred thousand
+times produced a collision about 50.7 % of the time.
+
+## 8.2 What the Bound Means for Real Digest Sizes
+
+$$q_{50} = 1.1774 \\times 2^{32} = 5.057\\times 10^{9} \\quad (n = 64)$$
+
+$$q_{50} = 1.1774 \\times 2^{64} = 2.172\\times 10^{19} \\quad (n = 128)$$
+
+$$q_{50} = 1.1774 \\times 2^{128} = 4.006\\times 10^{38} \\quad (n = 256)$$
+
+| Digest | Preimage work | Collision work | Time to a collision at 10^12 hashes per second |
+|---|---|---|---|
+| 64-bit | 2^64 | 2^32 | 5.06 milliseconds |
+| 128-bit | 2^128 | 2^64 | 251 days |
+| 160-bit | 2^160 | 2^80 | 45,100 years |
+| 256-bit | 2^256 | 2^128 | 1.27 × 10^19 years |
+
+The 128-bit row is the one that changes behaviour. A digest that sounds
+enormous falls to a determined adversary inside a year, which is why 128-bit
+digests were retired from signature use while remaining perfectly adequate for
+non-adversarial integrity checks — a corrupted download is not choosing its
+own corruption. **Pair a hash with a cipher of half its width**: a 256-bit
+digest matches a 128-bit key, and a 128-bit digest matches a 64-bit key, which
+is no longer a sensible pairing at all.
+
+## 8.3 The Truncation Trap
+
+Truncating a strong hash to save space cuts the collision resistance by half
+the bits removed, and does so silently.
+
+| Stored digest | Preimage resistance | Collision resistance |
+|---|---|---|
+| Full 256-bit | 256 bits | 128 bits |
+| Truncated to 160 | 160 bits | 80 bits |
+| Truncated to 128 | 128 bits | 64 bits |
+| Truncated to 64 | 64 bits | 32 bits |
+
+A 64-bit truncation of a 256-bit hash has 32 bits of collision resistance,
+which is about four billion attempts — seconds of work. Nothing about the
+underlying algorithm changed.
+
+### Worked Example 8.1 — Collision Risk in a Deduplication Index
+
+**Given.** A storage system identifies blocks by a 64-bit fingerprint and holds
+10^6 blocks. What is the probability that two different blocks are treated as
+identical?
+
+**Apply the approximation with M = 2^64.**
+
+$$P_{\\mathrm{coll}} \\approx 1 - \\exp\\left(-\\frac{10^{6}(10^{6}-1)}{2 \\times 2^{64}}\\right)$$
+
+**Evaluate the exponent.** The numerator q(q − 1) is 9.99999 × 10^11 and the
+denominator 2M is 3.68935 × 10^19, so the exponent is 2.7105 × 10^-8. Because
+that exponent is tiny, the exponential is very nearly one minus itself, and
+the probability equals the exponent to five figures.
+
+$$P_{\\mathrm{coll}} \\approx 2.7105\\times 10^{-8}$$
+
+**Answer.** About one chance in 36.9 million, per index of that size. Now
+scale it: at 10^9 blocks the same expression gives 2.67 × 10^-2, roughly one
+chance in 37, because the probability grows as the *square* of the block
+count. By 5.06 × 10^9 blocks — the q50 figure for a 64-bit space — a collision
+is an even bet. **Collision risk grows quadratically with scale**, so the
+fingerprint that was overwhelmingly safe at a million blocks becomes a coin
+toss after a thousandfold growth, which is the single most useful thing to
+know when a design is asked to scale.
+
+### Worked Example 8.2 — Sizing a Digest for a Stated Risk
+
+**Given.** A system will hash 2^40 items and must keep the collision
+probability below 2^-30. What digest width is needed?
+
+**Start from the approximation and use the small-argument form.**
+
+$$P \\approx \\frac{q^{2}}{2M} = \\frac{2^{80}}{2 \\cdot 2^{n}} = 2^{\\,79-n}$$
+
+**Set the requirement and solve.**
+
+$$2^{\\,79-n} \\le 2^{-30} \\;\\Longrightarrow\\; n \\ge 109$$
+
+**Answer.** At least 109 bits, so a 128-bit digest suffices and a 96-bit one
+does not. Notice the structure of the answer: the required width is roughly
+twice the log of the item count plus the number of bits of safety demanded.
+That rule of thumb — **twice the log of the population, plus the safety
+margin** — sizes a digest correctly without re-deriving anything.
+
+## 8.4 Keyed Hashes: Integrity Against an Adversary
+
+A bare hash proves a message was not corrupted by accident. It proves nothing
+against an adversary, who can recompute the digest of whatever they substitute.
+Integrity against an adversary needs a secret, which is what a message
+authentication code adds:
+
+$$\\mathrm{MAC} = H\\left((K \\oplus \\mathrm{opad}) \\,\\Vert\\, H\\left((K \\oplus \\mathrm{ipad}) \\,\\Vert\\, m\\right)\\right)$$
+
+The nested construction exists because appending a key to a message and
+hashing it is vulnerable to length extension in some hash designs; the two-pass
+form is not. The security of the result is the smaller of the key entropy and
+the tag width, so a 256-bit key with a 96-bit tag delivers 96 bits, and the
+work of matching that tag by chance is the forgery expression of section 6.2.
+
+| Construction | Detects accidental corruption | Detects deliberate substitution | Proves who sent it |
+|---|---|---|---|
+| Plain hash | Yes | No | No |
+| Keyed hash with a shared key | Yes | Yes | Only to the two key holders |
+| Digital signature | Yes | Yes | Yes, to anyone |
+
+The third column is the one exam questions turn on. A shared-key tag cannot
+provide non-repudiation, because either holder of the key could have produced
+it; only a private key held by exactly one party can.`,
+      examTip: 'Collision work is the square root of preimage work: 2^(n/2) against 2^n. The fifty per cent point is 1.1774 times 2^(n/2). Collision probability grows as the SQUARE of the number of items, so a fingerprint that is safe at a million items may not be at a billion. A truncated digest loses collision resistance at half the rate bits are removed.',
+      importantNote: 'A plain hash gives integrity only against accidents. Against an adversary who can recompute it, integrity requires a secret — a keyed tag for two parties, or a signature when anyone must be able to verify. Only the signature gives non-repudiation, because a shared key could have been used by either holder.',
+    },
+    { id: 'netsec-trust', title: '9. Signatures, Certificate Chains and Authentication',
+      content: `## 9.1 A Signature on Exam-Sized Numbers
+
+Section 4.4 built the key pair (e, n) = (7, 143) and (d, n) = (103, 143).
+Signing uses the private exponent on the digest and verification uses the
+public one, which is the reverse of encryption and the most commonly reversed
+answer on this topic.
+
+$$s = H(m)^{d} \\bmod n, \\qquad \\text{verify: } s^{e} \\bmod n \\overset{?}{=} H(m)$$
+
+### Worked Example 9.1 — Sign, Verify, and Watch a Forgery Fail
+
+**Given.** The key pair above. The digest of the message is H(m) = 5.
+
+**Step 1 — sign with the private exponent.**
+
+$$s = 5^{103} \\bmod 143 = 125$$
+
+**Step 2 — verify with the public exponent.**
+
+$$125^{7} \\bmod 143 = 5 = H(m) \\quad \\checkmark$$
+
+**Step 3 — try a forgery.** An attacker who does not know d guesses a
+signature of 124:
+
+$$124^{7} \\bmod 143 = 97 \\ne 5 \\quad \\times$$
+
+**Answer.** The signature is 125, verification returns the digest exactly, and
+a wrong signature returns an unrelated value. The forger's problem is that
+producing a value whose seventh power modulo 143 equals 5 means computing a
+seventh root modulo a composite, which is as hard as factoring 143 — trivial at
+this size, and the reason real moduli are 2048 bits or wider. Every modular
+exponentiation here was recomputed independently by repeated squaring rather
+than reused from the encryption example.
+
+## 9.2 A Certificate Chain Is a Series System
+
+A certificate proves a binding between a name and a public key, and it is
+trusted because something else signed it, and that in turn because something
+else signed *it*. The chain is therefore a **series** arrangement in exactly
+the sense of the reliability algebra: every link must hold.
+
+$$P_{\\mathrm{chain}} = \\prod_{i=1}^{k} p_i = 0.999^{3} = 0.997003$$
+
+The more interesting number is the trust store. A relying party trusts many
+roots, and a compromise of **any one** of them produces a certificate the party
+will accept. That is a parallel arrangement of failures, so the probabilities
+add up rather than multiply down:
+
+$$P_{\\mathrm{any}} = 1 - (1 - \\varepsilon)^{r}$$
+
+| Roots trusted, r | At epsilon = 0.001 per year | At epsilon = 0.0001 |
+|---|---|---|
+| 10 | 0.00996 | 0.00100 |
+| 50 | 0.04879 | 0.00499 |
+| 150 | 0.13936 | 0.01489 |
+| 300 | 0.25929 | 0.02956 |
+
+**A trust store of 150 roots at one-in-a-thousand each fails about 14 % of
+years.** Nothing about the cryptography is weak; the exposure comes entirely
+from the count. This is why pinning a specific key, or constraining a root to
+particular name spaces, buys so much: both reduce r for the connection that
+matters, and r is the term doing the damage.
+
+## 9.3 Revocation Is a Window, Not an Event
+
+Revoking a certificate does not un-issue it. Relying parties learn about the
+revocation only when they next fetch the status, so the exposure is the
+average age of the information they hold:
+
+$$E[\\text{window}] = \\frac{T_{\\mathrm{refresh}}}{2}, \\qquad E[\\text{accepted}] = \\lambda\\,E[\\text{window}]$$
+
+### Worked Example 9.2 — Sizing the Revocation Exposure
+
+**Given.** A service handles 40 transactions per second. Compare a revocation
+list published every 24 hours with a status responder whose answers are cached
+for 4 hours.
+
+**Step 1 — expected windows.** 24/2 = 12 h and 4/2 = 2 h.
+
+**Step 2 — transactions inside each window.**
+
+$$40 \\times 12 \\times 3600 = 1728000 \\ \\text{transactions}$$
+
+$$40 \\times 2 \\times 3600 = 288000 \\ \\text{transactions}$$
+
+**Answer.** 1,728,000 against 288,000 — a factor of six, which is exactly the
+ratio of the refresh intervals. The lesson is that revocation latency is a
+design parameter with a directly computable cost, and that shortening
+certificate lifetimes achieves the same thing from the other end: a certificate
+valid for 90 days cannot be misused for longer than that even if revocation
+fails entirely.
+
+## 9.4 Authentication Factors and the Honest Entropy of a Policy
+
+An authentication factor is something known, something held, or something
+measured. Combining independent factors multiplies the probabilities that each
+is defeated:
+
+$$P_{\\mathrm{joint}} = \\prod_{i} p_i$$
+
+![Secret entropy against length for three alphabets — ten digits, twenty-six lower-case letters and ninety-five printable characters — with dashed guides at the strength needed to survive one day and one century at ten to the tenth guesses per second. Eight printable characters give 52.6 bits, twelve give 78.8 bits, and a four-digit PIN gives 13.3 bits.](/courses/fe-ee/figures/net3-password-entropy.svg)
+
+The entropy of a uniformly drawn secret is exact:
+
+$$H = L \\log_{2} A$$
+
+$$H_{8} = 8 \\times 6.5699 = 52.56\\ \\mathrm{bits}, \\qquad H_{12} = 12 \\times 6.5699 = 78.84\\ \\mathrm{bits}$$
+
+$$H_{\\mathrm{PIN}} = 4 \\times 3.3219 = 13.29\\ \\mathrm{bits}$$
+
+The honest part is admitting that people do not draw uniformly. A policy
+demanding one capital, one digit and one symbol in nine characters is usually
+satisfied by a capital, six lower-case letters, a digit and a symbol, in that
+order. Compute the entropy of *that pattern* rather than of the alphabet:
+
+$$H = \\log_{2}26 + 6\\log_{2}26 + \\log_{2}10 + \\log_{2}32 = 4.700 + 28.203 + 3.322 + 5.000 = 41.225$$
+
+$$9 \\times 6.5699 = 59.13, \\qquad 59.13 - 41.225 = 17.905\\ \\mathrm{bits\\ lost}$$
+
+**The predictable arrangement costs about 17.9 bits**, which is a factor of
+245,000 in attacker work, and it is lost precisely because the policy told
+everyone where to put the capital. A passphrase avoids the problem by making
+the unit of choice a word instead of a character:
+
+$$4\\log_{2}7776 = 4 \\times 12.925 = 51.70\\ \\mathrm{bits}, \\qquad 6 \\times 12.925 = 77.55\\ \\mathrm{bits}$$
+
+Six words from a 7,776-word list land within 1.3 bits of twelve random
+printable characters — 77.55 against 78.84 — and are enormously easier to
+remember and to type. That is the case for length over composition rules,
+stated as arithmetic rather than as opinion: the passphrase reaches the same
+strength through a mechanism people will actually comply with, and compliance
+is what keeps the *actual* distribution close to the uniform one the entropy
+expression assumes.
+
+### Worked Example 9.3 — What Multi-Factor Really Buys
+
+**Given.** A password is compromised with probability 0.03 per user-year. A
+hardware authenticator is compromised with probability 0.002. Compute the
+joint risk, first assuming independence and then allowing that 60 % of
+password compromises come from a phishing page that also captures the second
+factor in real time.
+
+**Step 1 — independent case.**
+
+$$P_{\\mathrm{joint}} = 0.03 \\times 0.002 = 0.00006$$
+
+$$\\text{reduction} = \\frac{0.03}{0.00006} = 500$$
+
+**Step 2 — correlated case.** With correlation c = 0.6, a password compromise
+defeats the second factor outright with probability c, and otherwise only if
+the authenticator is independently compromised:
+
+$$P_{\\mathrm{corr}} = p_1\\left(c + (1-c)\\,p_2\\right) = 0.03 \\times (0.6 + 0.4\\times 0.002) = 0.018024$$
+
+$$\\text{reduction} = \\frac{0.03}{0.018024} = 1.664$$
+
+**Answer.** 500-fold if the factors are independent, **1.66-fold if they are
+not**. The multiplication rule was doing all the work, and correlation
+destroys it. This is exactly why the design question about a second factor is
+not "does it exist" but "can one event defeat both", and why factors bound to
+the origin — so that a relayed challenge simply does not verify — are worth so
+much more than a code a user can be persuaded to read aloud. Both figures were
+confirmed by simulating the two-stage compromise a few hundred thousand times.`,
+      examTip: 'Private key signs, public key verifies — the reverse of encryption. A certificate chain is a series system, so every link must hold, but a trust store is a parallel system, so a compromise of ANY root is enough: 150 roots at 0.001 each give a 13.9 percent annual chance. Revocation exposure is half the refresh interval times the transaction rate.',
+      importantNote: 'Multi-factor authentication multiplies risks only when the factors are independent. If 60 percent of password compromises also capture the second factor, a 500-fold reduction collapses to 1.66-fold. Always ask whether one event can defeat both factors before quoting a product of probabilities.',
+    },
+    { id: 'netsec-controls', title: '10. Firewalls, Segmentation and the Cost of a Tunnel',
+      content: `## 10.1 Rule Order Is a Measurable Cost
+
+A first-match rule list is evaluated top to bottom, so the expected number of
+comparisons per packet is the position of each rule weighted by how often it
+is the one that matches:
+
+$$E[c] = \\sum_{i=1}^{R} i\\,p_i$$
+
+### Worked Example 10.1 — Ordering a Rule Set
+
+**Given.** Five rules match with probabilities 0.60, 0.25, 0.10, 0.04 and
+0.01. Compare the best and worst orderings.
+
+**Best order, most frequent first.**
+
+$$E[c] = (1)(0.60) + (2)(0.25) + (3)(0.10) + (4)(0.04) + (5)(0.01) = 1.61$$
+
+**Worst order, reversed.**
+
+$$E[c]_{\\mathrm{worst}} = (1)(0.01) + (2)(0.04) + (3)(0.10) + (4)(0.25) + (5)(0.60) = 4.39$$
+
+**Ratio.**
+
+$$\\frac{4.39}{1.61} = 2.727$$
+
+**Answer.** 1.61 comparisons against 4.39, a 2.73-fold difference in
+evaluation cost for a rule set that is functionally identical. On a device
+processing millions of packets a second this is the difference between
+comfortable headroom and a forwarding bottleneck. **Ordering is free
+performance**, subject to the constraint that reordering must not change which
+rule matches — which is why specific denies stay above general permits even
+when they are rare.
+
+## 10.2 Segmentation Counted as Reachable Pairs
+
+A flat network lets every host reach every other, so the reachable pairs are
+the same count as full-mesh links:
+
+$$R_{\\mathrm{flat}} = \\frac{n(n-1)}{2}$$
+
+Dividing the hosts into s segments that do not talk to one another leaves only
+the within-segment pairs:
+
+$$R_{\\mathrm{seg}} = s\\,\\frac{(n/s)\\left(n/s - 1\\right)}{2}, \\qquad \\frac{R_{\\mathrm{flat}}}{R_{\\mathrm{seg}}} = \\frac{n-1}{n/s - 1}$$
+
+| Design, n = 1000 | Reachable pairs | Reduction | Hosts one compromise reaches |
+|---|---|---|---|
+| Flat | 499,500 | 1.00 | 999 |
+| 10 segments of 100 | 49,500 | 10.09 | 99 |
+| 20 segments of 50 | 24,500 | 20.39 | 49 |
+| 50 segments of 20 | 9,500 | 52.58 | 19 |
+
+$$\\frac{499500}{49500} = 10.09$$
+
+The reduction is very nearly the segment count, and the blast radius falls in
+exact step with it. That is the quantitative content of the phrase "limit
+lateral movement": segmentation does not stop an intrusion, it divides by s
+the number of things the intrusion can touch next.
+
+## 10.3 Detection: Bayes With Security Labels
+
+The precision expression in section 5.3 is Bayes' theorem written with the
+labels a security team uses. Let pi be the base rate — the fraction of traffic
+that is truly malicious:
+
+$$\\mathrm{PPV} = \\frac{\\mathrm{TPR}\\,\\pi}{\\mathrm{TPR}\\,\\pi + \\mathrm{FPR}\\left(1 - \\pi\\right)}$$
+
+![Precision against base rate for a detector held at a ninety-nine per cent detection rate, at false-positive rates of ten to the minus three, minus four and minus five. All three curves rise from near zero at a base rate of one in a million towards one at one in ten, and each crosses half precision at a base rate approximately equal to its own false-positive rate.](/courses/fe-ee/figures/net3-detection-precision.svg)
+
+$$\\mathrm{PPV} = \\frac{0.99 \\times 10^{-4}}{0.99 \\times 10^{-4} + 10^{-3}\\left(1 - 10^{-4}\\right)} = 0.09009$$
+
+The figure shows the shape that matters: each curve crosses 50 % precision
+where the base rate is about equal to the false-positive rate. **A sensor is
+useful when its false-positive rate is below the base rate of the thing it is
+looking for**, and useless when it is above. That single sentence, read off the
+crossings, answers most tuning questions without further arithmetic.
+
+| Change made | Precision | Comment |
+|---|---|---|
+| Baseline: FPR 10^-3, base rate 10^-4 | 9.0 % | Nine alerts in ten are wrong |
+| Tighten FPR to 10^-5 | 90.8 % | A hundredfold tightening |
+| Instead, narrow the scope so the base rate is 10^-2 | 90.9 % | Same gain, no sensor change |
+| Raise TPR from 0.99 to 0.999, FPR unchanged | 9.1 % | Almost nothing |
+
+The third row is the practical one. Pointing the same sensor at a smaller,
+higher-risk population raises precision exactly as much as a hundredfold
+improvement in the sensor, and costs nothing. The fourth row is the trap:
+improving the detection rate, which is the number vendors quote, barely moves
+precision at all when events are rare.
+
+## 10.4 What a Tunnel Costs in Bytes
+
+Encapsulation adds fixed headers and rounds the payload up to the cipher's
+block size. For a tunnel-mode packet with a new outer header, a sequence and
+index header, an initialisation vector, ciphertext padded to 16-byte blocks,
+and an integrity value:
+
+$$W = 20 + 8 + 16 + P + 12, \\qquad P = 16\\left\\lceil \\frac{\\ell + 2}{16} \\right\\rceil$$
+
+$$\\eta = \\frac{\\ell}{W}$$
+
+![Goodput fraction against inner packet size for a tunnel-mode encapsulation, from forty to fourteen hundred and fifty bytes. The staircase caused by sixteen-byte block padding sits just below the smooth curve for fixed overhead alone. A sixty-four byte packet achieves forty-seven point one per cent, five hundred and seventy-six bytes achieve eighty-eight point nine, and fourteen hundred and thirty-eight achieve ninety-six point one.](/courses/fe-ee/figures/net3-esp-goodput.svg)
+
+### Worked Example 10.2 — Overhead and the Inner MTU
+
+**Given.** A 1500-byte path MTU. Find the wire size and goodput for inner
+packets of 1400 and 64 bytes, and the largest inner packet that avoids
+fragmentation.
+
+**Step 1 — a 1400-byte inner packet.** The padded ciphertext must be a
+multiple of 16 and cover 1400 + 2 = 1402 bytes:
+
+$$P = 16\\left\\lceil \\frac{1402}{16} \\right\\rceil = 16 \\times 88 = 1408$$
+
+$$W = 20 + 8 + 16 + 1408 + 12 = 1464, \\qquad \\eta = \\frac{1400}{1464} = 0.9563$$
+
+**Step 2 — a 64-byte inner packet.** 64 + 2 = 66 rounds up to 80:
+
+$$W_{64} = 20 + 8 + 16 + 80 + 12 = 136, \\qquad \\eta = \\frac{64}{136} = 0.4706$$
+
+**Step 3 — the inner MTU.** The wire size must not exceed 1500, so the padded
+block satisfies P at most 1500 − 56 = 1444, and the largest multiple of 16 not
+exceeding 1444 is 1440, which covers an inner packet of 1438 bytes.
+
+**Answer.** 95.6 % goodput at 1400 bytes, **47.1 % at 64 bytes**, and an inner
+MTU of 1438 with 1496 bytes on the wire. Two consequences follow. Small
+packets — acknowledgements, voice frames, control traffic — lose more than half
+their capacity to encapsulation, so a tunnel carrying mostly small packets
+needs roughly twice the raw bandwidth of the traffic it carries. And the inner
+MTU must be advertised or discovered: a host that keeps sending 1500-byte
+packets into this tunnel will have every one of them fragmented or dropped.
+
+## 10.5 What a Tunnel Costs in Cycles
+
+Bytes are only half the bill. Encryption throughput on a general-purpose core
+is set by the cost of the cipher in cycles per byte:
+
+$$T = \\frac{8f}{c} \\quad [\\mathrm{bit/s}], \\qquad c_{\\max} = \\frac{8f}{T_{\\mathrm{line}}}$$
+
+![Encryption throughput against cipher cost in CPU cycles per byte, for cores at two, three and four gigahertz, on logarithmic axes, with guides at one and ten gigabits per second. A three gigahertz core at zero point six five cycles per byte reaches thirty-six point nine gigabits per second; the same core at fifteen cycles per byte reaches one point six.](/courses/fe-ee/figures/net3-crypto-ceiling.svg)
+
+### Worked Example 10.3 — Can One Core Fill a 10 Gbps Tunnel?
+
+**Given.** A 3 GHz core. Hardware-assisted encryption costs 0.65 cycles per
+byte; a portable software implementation costs 15.
+
+**Step 1 — hardware assisted.**
+
+$$T = \\frac{8 \\times 3\\times 10^{9}}{0.65} = 3.69\\times 10^{10}\\ \\mathrm{bit/s}$$
+
+**Step 2 — software.**
+
+$$T = \\frac{8 \\times 3 \\times 10^{9}}{15} = 1.6\\times 10^{9}\\ \\mathrm{bit/s}$$
+
+**Step 3 — cores needed for a 10 Gbps line.**
+
+$$N_{\\mathrm{cores}} = \\left\\lceil \\frac{10}{1.6} \\right\\rceil = 7$$
+
+**Step 4 — the ceiling that actually applies.** The tunnel delivers the lesser
+of the crypto ceiling and the line rate after encapsulation overhead:
+
+$$\\Theta_{\\mathrm{VPN}} = \\min\\left(\\frac{8f}{c},\\; \\eta\\,R\\right)$$
+
+With eta = 0.9563 on a 10 Gbps line the byte overhead allows 9.56 Gbps, so the
+hardware-assisted core is limited by the line at 9.56 Gbps while the software
+one is limited by the CPU at 1.6 Gbps.
+
+**Answer.** 36.9 Gbps with hardware assistance, 1.6 Gbps without, and seven
+software cores to fill the link. The cycle budget for a 10 Gbps line on one
+3 GHz core is 8 × 3 × 10^9 / 10^10 = 2.4 cycles per byte, which is the number
+to carry: **a cipher costing more than about 2.4 cycles per byte cannot fill a
+10 Gbps link from a single 3 GHz core**, and everything else — core count,
+hardware assistance, offload — follows from that comparison.
+
+## 10.6 Attack Classes and the Threshold That Defends Each
+
+Each of the classes in section 3.1 has a defence whose effectiveness is a
+computable threshold rather than a claim.
+
+| Class | Mechanism | Defence | The number that decides it |
+|---|---|---|---|
+| Address spoofing | Forged source field | Ingress filtering at the edge | Filter coverage: an amplification attack needs unfiltered networks, so the residual risk scales with the unfiltered fraction |
+| Amplification flood | Small query, large reply from a third party | Disable or restrict the amplifier, filter egress | Amplification factor: reply bytes divided by query bytes, which sets the bandwidth an attacker must supply |
+| Credential stuffing | Reused secrets tried in bulk | Rate limit, second factor, stretching | Guesses per second the attacker gets, against the entropy of section 9.4 |
+| Blind forgery | Guessed authentication tag | Longer tag, failure lockout | 2 to the power minus t per attempt, times the allowed attempt rate |
+| Interception | Traffic read or altered in transit | Authenticated encryption with verified identity | Chain and trust-store probabilities of section 9.2 |
+| Injection | Data interpreted as instruction | Separate code from data at the interface | Not probabilistic: the defence either parameterises the interface or it does not |
+
+The last row deserves its own comment, because it is the one that does not
+have a threshold. Injection is defeated structurally — by never constructing
+an instruction out of untrusted text — and no amount of filtering, rate
+limiting or detection substitutes for that. Everything above it is a
+quantitative trade in which the defender pushes a probability below a stated
+tolerance; injection is a design property that is either present or absent.
+
+## Problem Set A — Keys, Hashes and Entropy
+
+**A1.** An attacker manages 10^15 keys per second. How long to exhaust half a
+90-bit key space?
+*Answer.* 2^89/10^15 = 6.19 × 10^11 s = 19,600 years.
+
+**A2.** How many bits does an attacker gain by getting 4,096 times faster?
+*Answer.* log2 4096 = 12 bits.
+
+**A3.** A system hashes 2^32 records into a 96-bit digest. What is the
+approximate collision probability?
+*Answer.* q²/(2M) = 2^64/2^97 = 2^-33 = 1.16 × 10^-10.
+
+**A4.** What sample size makes a collision more likely than not in a 40-bit
+digest space?
+*Answer.* 1.1774 × 2^20 = 1.234 × 10^6 items.
+
+**A5.** A passphrase uses five words from a 2,048-word list. What is its
+entropy, and how does it compare with a ten-character lower-case password?
+*Answer.* 5 × 11 = 55 bits against 10 × 4.7004 = 47.0 bits. The passphrase is
+8 bits stronger, a factor of 256.
+
+**A6.** A key-derivation function is raised from 10,000 to 1,000,000
+iterations. How many bits of effective strength does that add?
+*Answer.* log2(100) = 6.64 bits.
+
+**A7.** A 160-bit digest is truncated to 80 bits for storage. What are the
+preimage and collision resistances afterwards?
+*Answer.* 80 bits preimage, 40 bits collision — the latter is about 10^12
+attempts, which is minutes of work.
+
+**A8.** A tag is 48 bits and an attacker is allowed 100 attempts per second.
+What is the expected time to a successful blind forgery?
+*Answer.* 2^48/100 = 2.815 × 10^12 s = 89,200 years.
+
+## Problem Set B — Controls, Detection and Tunnels
+
+**B1.** A sensor has TPR 0.95 and FPR 0.002 on a population with base rate
+0.0005. What is the precision?
+*Answer.* 0.95 × 0.0005 / (0.95 × 0.0005 + 0.002 × 0.9995) = 0.000475/0.002474
+= 0.1920, about 19.2 %.
+
+**B2.** How many alerts a day does that sensor raise on 500,000 sessions, and
+how many are real?
+*Answer.* Real sessions 250, true positives 237.5, false positives
+0.002 × 499750 = 999.5, total 1237. About 237 of 1237 are real.
+
+**B3.** A flat network of 400 hosts is split into 8 segments. By what factor
+does the reachable-pair count fall?
+*Answer.* 79800 against 8 × 1225 = 9800, a factor of 8.14.
+
+**B4.** Four rules match with probabilities 0.5, 0.3, 0.15 and 0.05. What is
+the expected comparison count in the best order?
+*Answer.* 0.5 + 0.6 + 0.45 + 0.20 = 1.75 comparisons.
+
+**B5.** An inner packet is 900 bytes. What is the wire size and goodput
+fraction under the encapsulation of section 10.4?
+*Answer.* 900 + 2 = 902 rounds to 912; W = 20 + 8 + 16 + 912 + 12 = 968;
+goodput 900/968 = 0.9298.
+
+**B6.** A 2.5 GHz core runs a cipher costing 4 cycles per byte. What
+throughput does it reach, and can it fill a 1 Gbps link?
+*Answer.* 8 × 2.5e9/4 = 5 × 10^9 bit/s = 5 Gbps, so yes, with headroom for
+five such links.
+
+**B7.** A trust store holds 200 roots, each with an annual compromise
+probability of 0.0002. What is the chance at least one is compromised in a
+year?
+*Answer.* 1 − 0.9998^200 = 1 − 0.96079 = 0.03921, about 3.9 %.
+
+**B8.** A certificate revocation list is published every 6 hours and the
+service handles 25 transactions per second. How many transactions can be
+accepted against a revoked certificate on average?
+*Answer.* Window 3 h; 25 × 3 × 3600 = 270,000 transactions.`,
+      examTip: 'Precision crosses fifty per cent where the base rate equals the false-positive rate, so a sensor is useful only when its FPR is below the prevalence of what it hunts. Narrowing the population raises precision as much as a hundredfold sensor improvement. Rule ordering is free performance: most frequent first cut 4.39 expected comparisons to 1.61 in the worked case.',
+      importantNote: 'A tunnel has two independent ceilings. Bytes: goodput is 47 percent at 64-byte inner packets and 96 percent at 1400, with an inner MTU of 1438 for a 1500-byte path. Cycles: throughput is 8f/c, so a 3 GHz core needs a cipher under 2.4 cycles per byte to fill 10 Gbps. The tunnel delivers whichever ceiling is lower.',
     },
   ],
   keyTakeaways: [
