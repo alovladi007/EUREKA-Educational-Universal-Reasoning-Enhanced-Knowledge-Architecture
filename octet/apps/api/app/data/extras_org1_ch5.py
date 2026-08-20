@@ -882,7 +882,14 @@ _add(LessonExtras(
                 "analytical assay, a protecting strategy, an "
                 "enzyme cofactor's target, and a drug "
                 "designer's contact point, all from the same "
-                "squashable cloud of electrons."
+                "squashable cloud of electrons. No other "
+                "single physical property in the course has "
+                "worked harder across more chapters, and "
+                "polarisability - easy to state, easy to "
+                "underestimate - deserves the permanent "
+                "place in your checklist of first "
+                "explanations that this lesson has now "
+                "earned for it several times over."
             ),
         ),
     ),
