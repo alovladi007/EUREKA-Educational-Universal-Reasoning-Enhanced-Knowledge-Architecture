@@ -137,8 +137,15 @@ class TestUserLogin:
 
     def test_login_nonexistent_user(self, client: TestClient):
         """Test login with nonexistent user fails."""
+        # The payload previously omitted `email` entirely, so this never
+        # reached the nonexistent-user branch at all — it only ever exercised
+        # request-schema validation and returned 422. With a well-formed
+        # payload naming an address that does not exist, the endpoint answers
+        # 401 "Incorrect email or password", which is what the name claims and
+        # what the code has always done.
         login_data = {
-                        "password": "somepassword"
+            "email": "no-such-account@gmail.com",
+            "password": "somepassword",
         }
 
         response = client.post("/api/v1/auth/login", json=login_data)
@@ -146,7 +153,7 @@ class TestUserLogin:
         assert response.status_code == 401
 
     def test_login_inactive_user(self, client: TestClient, db_session: Session, test_user: User):
-        """Test login with inactive user fails."""
+        """Test login with an inactive account is refused with 403."""
         # Deactivate user
         test_user.is_active = False
         db_session.commit()
@@ -155,7 +162,14 @@ class TestUserLogin:
 
         response = client.post("/api/v1/auth/login", json=login_data)
 
-        assert response.status_code == 401
+        # 403, not 401. The password WAS correct — the credentials are valid
+        # and the caller is authenticated; the account is simply disabled.
+        # That is exactly the authenticated-but-not-permitted case 403 is for,
+        # and it matches how the endpoint treats a banned account. The check
+        # runs after password verification, so this status only ever reaches
+        # someone who already knows the password.
+        assert response.status_code == 403
+        assert "inactive" in response.json()["detail"].lower()
 
 
 @pytest.mark.integration

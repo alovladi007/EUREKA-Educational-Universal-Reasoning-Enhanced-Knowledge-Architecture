@@ -19,12 +19,33 @@ from app.utils.auth import verify_token
 from app.utils.token_blacklist import is_token_valid
 from app.schemas.auth import UserResponse
 
-# Security scheme
-security = HTTPBearer()
+# Security scheme.
+#
+# auto_error=False ON PURPOSE. FastAPI's HTTPBearer defaults to auto_error=True,
+# which raises 403 Forbidden when the Authorization header is ABSENT. That is
+# wrong per RFC 7235 -- a request that carries no credentials is 401
+# Unauthorized, and the response must include a WWW-Authenticate header telling
+# the client how to authenticate. 403 means "you are authenticated and still may
+# not do this", which is a different condition the app uses elsewhere (inactive,
+# banned, insufficient role).
+#
+# It was also internally inconsistent: every OTHER auth failure below (bad
+# signature, expired, revoked jti, unknown user) already returns 401. Only the
+# missing-header case dissented, purely because of the library default.
+#
+# The frontend had grown a workaround for it -- see apps/web/src/lib/api-client.ts,
+# where the response interceptor treats "403 with no Authorization header" as
+# signed-out. That arm becomes redundant once this returns 401, but it is
+# correctly guarded (`!originalRequest.headers.Authorization`) so it stays
+# harmless and is left alone.
+#
+# Role denials are unaffected: they run AFTER authentication succeeds and still
+# return 403.
+security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     db: AsyncSession = Depends(get_db)
 ) -> User:
     """
@@ -45,7 +66,11 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    
+
+    # auto_error=False hands us None when the header is missing or malformed.
+    if credentials is None:
+        raise credentials_exception
+
     try:
         # Verify token signature + expiration
         token = credentials.credentials

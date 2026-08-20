@@ -7,6 +7,7 @@ Handles user registration, login, token refresh, and email verification.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
+from typing import Optional
 
 from app.core.database import get_db
 from app.core.config import settings
@@ -362,7 +363,7 @@ async def verify_email(
 
 @router.post("/resend-verification", response_model=dict)
 async def resend_verification(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -371,6 +372,17 @@ async def resend_verification(
     Needed because the original link expires in 24h; without a resend path
     an expired token would strand the account unverified forever.
     """
+    # This route verifies the bearer token itself rather than depending on
+    # get_current_user, so it needs its own missing-credentials guard. The
+    # security scheme is auto_error=False (see app/utils/dependencies.py), so
+    # an absent header arrives as None; without this it would be an
+    # AttributeError and a 500 instead of a 401.
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     payload = verify_token(credentials.credentials, token_type="access")
     from uuid import UUID
     user = await user_crud.get_user_by_id(db, UUID(payload["sub"]))
@@ -469,7 +481,10 @@ async def confirm_password_reset(
 
 @router.post("/logout", response_model=dict)
 async def logout(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    # Optional because the scheme is auto_error=False; the get_current_user
+    # dependency below already rejects a missing header with 401 before this
+    # body runs, so no explicit guard is needed here.
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     current_user: User = Depends(get_current_user),
 ):
     """
