@@ -3380,7 +3380,12 @@ _add(LessonExtras(
                 "conditions that hold the gate open or "
                 "closed. Run that audit everywhere it "
                 "applies, and it applies nearly everywhere, "
-                "for the rest of your scientific education."
+                "for the rest of your scientific education - "
+                "in organic chemistry, in biochemistry, in "
+                "pharmacology, and in every laboratory or "
+                "clinical decision where fast and stable "
+                "name different answers and choosing between "
+                "them is precisely the job."
             ),
         ),
     ),
