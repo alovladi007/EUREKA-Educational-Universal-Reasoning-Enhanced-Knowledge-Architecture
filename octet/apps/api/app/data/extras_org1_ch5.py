@@ -870,7 +870,19 @@ _add(LessonExtras(
                 "materials courses should feel "
                 "recognition, not novelty; the "
                 "bromonium ion was the same "
-                "anisotropy caught in the act."
+                "anisotropy caught in the act, and the act, "
+                "once seen clearly in one context, is "
+                "recognisable in every other. That habit of "
+                "recognition - one physical fact, many "
+                "costumes - has been this chapter's quiet "
+                "curriculum all along, and the halogens, "
+                "polarisable and versatile, have turned out "
+                "to be its best teachers: one element family, "
+                "an addition mechanism, a radical chain, an "
+                "analytical assay, a protecting strategy, an "
+                "enzyme cofactor's target, and a drug "
+                "designer's contact point, all from the same "
+                "squashable cloud of electrons."
             ),
         ),
     ),
