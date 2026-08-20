@@ -1641,7 +1641,15 @@ _add(LessonExtras(
                 "process they ever meet - and "
                 "industry keeps inventing them - "
                 "slots into the same three acts on "
-                "sight."
+                "sight. That is the standing return on this "
+                "lesson's investment: two ways to break a "
+                "bond, one ruler to price them, one chain "
+                "anatomy to organise everything the homolytic "
+                "fork produces, and a diagnostic table to "
+                "tell the forks apart in the wild. Small "
+                "toolkit, planetary reach - from the ozone "
+                "layer to the candle flame to the membrane "
+                "of every cell reading this sentence."
             ),
         ),
     ),
