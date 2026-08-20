@@ -4655,7 +4655,7 @@ _add(LessonExtras(
                 "the one reagent whose split personality "
                 "made the method unavoidable, and whose 1933 "
                 "detective story gave the whole approach its "
-                "founding precedent in the mechanistic literature of the field."
+                "founding and still-cited precedent in the whole mechanistic literature of this entire field."
             ),
         ),
     ),
