@@ -1649,7 +1649,10 @@ _add(LessonExtras(
                 "tell the forks apart in the wild. Small "
                 "toolkit, planetary reach - from the ozone "
                 "layer to the candle flame to the membrane "
-                "of every cell reading this sentence."
+                "of every cell in the reader of this "
+                "sentence - the same chain chemistry at every "
+                "scale, priced by the same table, ended by "
+                "the same handful of terminating tricks."
             ),
         ),
     ),
