@@ -2537,8 +2537,8 @@ _add(LessonExtras(
                 "learned it here, on the smallest molecules "
                 "chemistry owns, where every claim in the "
                 "drawing has, somewhere in a table or a "
-                "spectrum, a real measurement standing "
-                "patiently behind it."
+                "spectrum, a genuine published measurement "
+                "standing patiently behind it."
             ),
         ),
     ),
