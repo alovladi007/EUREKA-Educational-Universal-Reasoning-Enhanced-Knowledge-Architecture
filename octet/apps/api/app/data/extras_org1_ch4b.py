@@ -3385,7 +3385,7 @@ _add(LessonExtras(
                 "pharmacology, and in every laboratory or "
                 "clinical decision where fast and stable "
                 "name different answers and choosing between "
-                "them is precisely the job."
+                "between them is, precisely and permanently, the actual job at hand."
             ),
         ),
     ),
