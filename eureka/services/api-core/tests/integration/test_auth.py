@@ -73,7 +73,10 @@ class TestUserRegistration:
 
         response = client.post("/api/v1/auth/register", json=user_data)
 
-        assert response.status_code == 400
+        # 409 Conflict, not 400: the endpoint reports a duplicate as a
+        # conflict, which is the more accurate status. The test held the
+        # older expectation.
+        assert response.status_code == 409
         assert "already registered" in response.json()["detail"].lower()
 
 
@@ -264,7 +267,7 @@ class TestPasswordReset:
     ):
         """Test requesting password reset."""
         response = client.post(
-            "/api/v1/auth/forgot-password",
+            "/api/v1/auth/password-reset",
             json={"email": test_user.email}
         )
 
@@ -277,7 +280,7 @@ class TestPasswordReset:
         """Test successful password reset."""
         # Request reset
         client.post(
-            "/api/v1/auth/forgot-password",
+            "/api/v1/auth/password-reset",
             json={"email": test_user.email}
         )
 
@@ -287,7 +290,7 @@ class TestPasswordReset:
 
         # Reset password
         response = client.post(
-            "/api/v1/auth/reset-password",
+            "/api/v1/auth/password-reset/confirm",
             json={
                 "token": token,
                 "new_password": "NewSecurePassword123!"
@@ -304,7 +307,7 @@ class TestPasswordReset:
     def test_reset_password_invalid_token(self, client: TestClient):
         """Test password reset with invalid token fails."""
         response = client.post(
-            "/api/v1/auth/reset-password",
+            "/api/v1/auth/password-reset/confirm",
             json={
                 "token": "invalid.token",
                 "new_password": "NewPassword123!"
