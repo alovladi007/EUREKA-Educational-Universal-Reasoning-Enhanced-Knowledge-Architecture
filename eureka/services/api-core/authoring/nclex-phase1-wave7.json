@@ -1,0 +1,446 @@
+[
+ {
+  "id": "nx_a7_si_001",
+  "topicId": 1,
+  "subtopic": "Post-fall response",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse finds a client sitting on the floor beside the bed. What should the nurse do first?",
+  "options": [
+   "Assess the client for injury before moving them",
+   "Help the client back to bed immediately, then assess",
+   "Complete the incident report before touching the client",
+   "Call the family to inform them of the fall"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): assessment comes before movement \u2014 lifting a client with an unrecognized hip fracture or head injury converts an injury into a catastrophe. (b) 'Bed first, look later' is the classic error this item tests. (c) Paperwork never precedes patient assessment. (d) Family notification follows assessment, provider notification, and care \u2014 not before them.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_si_002",
+  "topicId": 1,
+  "subtopic": "Internal disaster response",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A tornado warning is issued for the hospital's area. Which action is appropriate for the nurses on an inpatient unit?",
+  "options": [
+   "Move clients away from windows into hallways or interior rooms, and close doors and window coverings",
+   "Evacuate all clients to the parking lot",
+   "Open the windows to equalize air pressure",
+   "Gather all clients in the sunroom to keep them together"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): tornado response is shelter-in-place \u2014 interior spaces away from glass, doors closed, blinds drawn against shattering windows. (b) Evacuating INTO the storm's path is the most dangerous move available. (c) Opening windows is a debunked myth that adds flying glass. (d) A sunroom is a glass box \u2014 the worst room in the building.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_si_003",
+  "topicId": 1,
+  "subtopic": "Scabies precautions",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client is admitted with confirmed scabies. Which precautions should the nurse implement?",
+  "options": [
+   "Contact precautions until 24 hours after effective treatment begins",
+   "Airborne precautions in a negative-pressure room",
+   "Droplet precautions with a surgical mask",
+   "No precautions \u2014 scabies is not transmissible in hospitals"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the mite spreads by skin-to-skin and contaminated linen contact \u2014 gown-and-glove contact precautions, maintained until 24 hours after effective treatment, with linens handled as contaminated. (b) Airborne precautions target droplet-nuclei organisms like TB; mites do not fly. (c) Droplet precautions address respiratory secretions, not a skin parasite. (d) Scabies outbreaks in facilities are well documented; 'not transmissible' is exactly wrong.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_si_004",
+  "topicId": 1,
+  "subtopic": "Needlestick response",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse sustains a needlestick from a used hollow-bore needle. What is the correct immediate sequence?",
+  "options": [
+   "Wash the site with soap and water, report the exposure immediately, and seek evaluation for post-exposure prophylaxis",
+   "Squeeze the site to express blood, apply caustic antiseptic, and finish the shift before reporting",
+   "Cover the site with a bandage and mention it at the next staff meeting",
+   "No action is needed if the source client looks healthy"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): wash promptly, report NOW, and get evaluated \u2014 post-exposure prophylaxis for HIV is dramatically more effective the sooner it starts, and hepatitis B management is time-sensitive too. (b) Squeezing and caustics add tissue damage without reducing risk, and delay costs the PEP window. (c) A bandage and a delayed mention forfeits the exposure protocol entirely. (d) Source appearance predicts nothing \u2014 asymptomatic bloodborne infection is the norm, and source testing is part of the protocol.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_si_005",
+  "topicId": 1,
+  "subtopic": "Look-alike/sound-alike drugs",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse notices that hydroxyzine and hydralazine are stocked side by side in the medication room. Which action best reduces the error risk?",
+  "options": [
+   "Report it so the pair can be separated and labeled per look-alike/sound-alike policy",
+   "Rely on reading labels more carefully from now on",
+   "Move one of the drugs personally without telling anyone",
+   "Memorize which bin is which"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): look-alike/sound-alike pairs are managed by SYSTEM fixes \u2014 physical separation, tall-man lettering (hydrOXYzine / hydrALAZINE), and alerts \u2014 which is why the observation is reported into the system rather than absorbed personally. (b) 'Be more careful' is the weakest error control and fails under workload. (c) A silent personal fix helps one nurse for one week and surprises everyone else. (d) Memory is exactly the fallible layer the storage system exists to back up.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_si_006",
+  "topicId": 1,
+  "subtopic": "Scald prevention",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A home-health nurse is doing a safety review with the family of an older adult with diminished sensation. Which recommendation prevents scald injury?",
+  "options": [
+   "Set the water heater to no more than 120 F (49 C) and test bath water before use",
+   "Set the water heater above 140 F to kill bacteria",
+   "Have the client test water temperature with their feet",
+   "Scalds are only a concern for small children"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): 120 F is the safety ceiling \u2014 hotter water scalds fragile older skin in seconds, and testing the water (with a thermometer or an area with intact sensation) adds a second barrier. (b) 140 F water causes full-thickness burns in under five seconds. (c) The feet often have the WORST sensation in older adults with neuropathy or vascular disease. (d) Older adults are a peak scald-risk group \u2014 thinner skin, slower reactions, and sensory loss.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_rr_001",
+  "topicId": 6,
+  "subtopic": "Wound dehiscence & evisceration",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "While coughing, a client's abdominal surgical wound opens and a loop of bowel protrudes. After calling for help, what should the nurse do?",
+  "options": [
+   "Cover the exposed bowel with sterile gauze moistened with sterile saline and position the client supine with knees flexed",
+   "Push the bowel gently back inside and apply an abdominal binder",
+   "Cover the site with dry gauze and assist the client to sit upright in a chair",
+   "Leave the site open to air and place the client prone"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): evisceration care is moist sterile coverage \u2014 exposed bowel must not dry out \u2014 plus low Fowler's with knees flexed to slacken the abdominal wall, NPO, and emergency surgical notification. (b) Reinserting bowel introduces infection and injures tissue; no one at the bedside does it. (c) Dry gauze desiccates the bowel, and sitting upright tenses the abdomen, extruding more. (d) Open to air guarantees desiccation, and prone positioning presses on the eviscerated organ.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_rr_002",
+  "topicId": 6,
+  "subtopic": "Post-pacemaker care",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client returns to the unit after transvenous permanent pacemaker insertion via the left subclavian approach. Which instruction is correct for the first weeks?",
+  "options": [
+   "Avoid raising the left arm above shoulder level until cleared",
+   "Perform vigorous left-arm stretches to prevent frozen shoulder",
+   "Sleep only on the left side to protect the device",
+   "Avoid all electrical devices, including the television remote"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): overhead motion on the implant side can dislodge the freshly placed leads before they scar in \u2014 the arm stays below shoulder level until the provider clears it. (b) Vigorous stretching is precisely the lead-dislodging motion being avoided; gentle range within limits prevents stiffness. (c) There is no left-side-only sleep rule; comfort and incision protection guide position. (d) Ordinary household electronics are safe; the classic cautions involve strong electromagnetic fields, not remotes.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_rr_003",
+  "topicId": 6,
+  "subtopic": "Thoracentesis aftercare",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "Following a thoracentesis, which assessment finding should the nurse report immediately?",
+  "options": [
+   "New dyspnea with diminished breath sounds on the procedure side",
+   "A small adhesive dressing over the puncture site",
+   "The client reporting relief in breathing compared with before the procedure",
+   "A respiratory rate of 16/min"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): new dyspnea with diminished unilateral breath sounds after a needle has entered the pleural space is pneumothorax until proven otherwise \u2014 the complication thoracentesis monitoring exists to catch. (b) A small dressing is the expected state of the site. (c) Breathing relief is the intended RESULT of removing pleural fluid. (d) A rate of 16 is normal.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_rr_004",
+  "topicId": 6,
+  "subtopic": "EEG preparation",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A client is scheduled for an electroencephalogram (EEG) tomorrow morning. Which instruction should the nurse give?",
+  "options": [
+   "Wash your hair tonight and skip oils, sprays, or gels; avoid caffeine before the test",
+   "Remain NPO after midnight, including water",
+   "Take a sedative at bedtime so you are relaxed for the test",
+   "Shave the scalp areas where electrodes will be placed"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): clean, product-free hair lets electrodes contact the scalp, and caffeine is withheld because it alters brain activity tracings. (b) EEG is not a fasting test \u2014 skipping meals can even cause hypoglycemia that distorts the tracing. (c) Sedatives change the very brain waves being recorded and are held unless specifically ordered as part of the study. (d) No shaving is involved; electrodes attach with conductive paste.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_rr_005",
+  "topicId": 6,
+  "subtopic": "Post-colonoscopy teaching",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A client is being discharged after a screening colonoscopy with polypectomy. Which symptom should the client report immediately?",
+  "options": [
+   "Severe abdominal pain with a rigid abdomen or more than scant rectal bleeding",
+   "Mild gas cramps that ease with walking",
+   "Feeling sleepy for a few hours after sedation",
+   "Passing flatus frequently during the evening"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): severe pain with rigidity suggests perforation, and more than scant bleeding after polypectomy suggests a bleeding site \u2014 both are emergencies. (b) Gas discomfort from insufflated air is expected and walking relieves it. (c) Post-sedation drowsiness is expected, which is why a driver is required. (d) Passing the insufflated air is the desired course.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_rr_006",
+  "topicId": 6,
+  "subtopic": "IV infiltration response",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse finds a client's IV site swollen, cool, and pale, with the pump alarming 'occlusion.' What should the nurse do first?",
+  "options": [
+   "Stop the infusion and remove the catheter, then elevate the limb",
+   "Slow the rate and apply a warm compress over the site with the line running",
+   "Flush the line forcefully to restore flow",
+   "Reposition the arm and restart the pump"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): cool, pale swelling is infiltration \u2014 fluid is entering tissue, so the infusion stops, the catheter comes out, and elevation helps the fluid resorb (compress choice then depends on the solution). (b) Continuing the infusion at any rate pumps more fluid into the tissue. (c) Forceful flushing drives additional volume into the infiltrated space. (d) Restarting the pump on an infiltrated line treats the alarm instead of the client.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_mc_001",
+  "topicId": 0,
+  "subtopic": "Bedside report privacy",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "During bedside shift report, the oncoming and outgoing nurses arrive to find a visitor at the bedside. Which action is appropriate?",
+  "options": [
+   "Ask the client's permission to continue in front of the visitor, or invite the visitor to step out",
+   "Proceed with the full report \u2014 visitors at the bedside are assumed approved",
+   "Skip this client's bedside report entirely",
+   "Give the report in the hallway where the visitor cannot hear"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the client controls who hears their health information \u2014 a simple permission question preserves both the safety benefits of bedside report and confidentiality. (b) Presence in the room is not consent to hear protected information. (c) Skipping the report sacrifices the handoff's safety function when a 30-second question would solve it. (d) Hallway report trades one privacy problem for another \u2014 anyone passing can hear it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_mc_002",
+  "topicId": 0,
+  "subtopic": "Delegation to assistive personnel",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A charge nurse is assigning tasks. Which task is appropriate to delegate to assistive personnel (AP)?",
+  "options": [
+   "Obtaining routine vital signs on a stable client two days after surgery",
+   "Completing the admission assessment for a new client",
+   "Teaching a client how to self-administer insulin",
+   "Evaluating whether a PRN analgesic relieved a client's pain"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): routine data collection on a STABLE client is squarely within AP scope \u2014 the nurse still interprets the numbers. (b) Admission assessment is the nurse's baseline clinical judgment and cannot be delegated. (c) Teaching is a licensed nursing function. (d) Evaluating a medication's effect is assessment/evaluation \u2014 nursing-process steps stay with the nurse.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_mc_003",
+  "topicId": 0,
+  "subtopic": "Conscientious objection",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse has a deeply held personal objection to participating in an elective procedure scheduled on the unit. Which action is appropriate?",
+  "options": [
+   "Notify the supervisor in advance per policy so the assignment can be adjusted, while ensuring the client's care is never abandoned",
+   "Refuse at the bedside at the moment of the procedure",
+   "Attempt to persuade the client to cancel the procedure",
+   "Care for the client but quietly omit the parts of care related to the procedure"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): conscientious objection is exercised in ADVANCE through policy so staffing can accommodate it \u2014 the client's access to care continues with another nurse, and no one is abandoned. (b) A bedside refusal mid-procedure abandons the client at the moment of need. (c) Imposing the nurse's beliefs on the client violates autonomy and the professional role. (d) Silent omission of care is negligence dressed as compromise \u2014 the most dangerous option offered.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_mc_004",
+  "topicId": 0,
+  "subtopic": "Quality improvement participation",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A unit's data show a rise in catheter-associated urinary tract infections. The nurse manager forms a quality improvement team. What is the frontline nurse's most useful contribution?",
+  "options": [
+   "Sharing direct observations of where the insertion and maintenance workflow breaks down",
+   "Waiting for administration to announce the solution",
+   "Identifying which colleagues are to blame",
+   "Declining, since quality improvement is a management responsibility"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): QI runs on frontline knowledge \u2014 the people doing the work know where the process actually fails, which no dashboard shows. (b) Passive waiting produces solutions that do not fit the real workflow. (c) QI examines SYSTEMS, not scapegoats; blame ends the honest reporting QI depends on. (d) Practice improvement is part of professional nursing, not an optional management hobby.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_pa_001",
+  "topicId": 7,
+  "subtopic": "Status asthmaticus warning",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "A client in severe asthma exacerbation has been audibly wheezing for an hour. The nurse now notes the chest has become quiet, and the client appears drowsy. How should the nurse interpret this change?",
+  "options": [
+   "Ominous deterioration \u2014 airflow is so obstructed that wheezing has ceased; escalate emergency care immediately",
+   "Improvement \u2014 the bronchospasm is resolving",
+   "The client is falling asleep from exhaustion and should rest",
+   "The initial wheezing was probably overestimated"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): wheezing requires airflow \u2014 a 'silent chest' with decreasing consciousness means almost no air is moving and respiratory arrest is near; this is an emergency escalation, not a lull. (b) Improvement sounds like BETTER air movement with less work of breathing, not silence with drowsiness. (c) 'Letting them rest' is how silent chest becomes arrest \u2014 the drowsiness is CO2 narcosis and hypoxia. (d) Re-explaining away earlier findings ignores the dangerous trajectory in front of the nurse.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_pa_002",
+  "topicId": 7,
+  "subtopic": "HHS recognition",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "An 78-year-old client with type 2 diabetes is admitted lethargic, profoundly dehydrated, with blood glucose 940 mg/dL and no ketones on urinalysis. Which condition does this picture represent?",
+  "options": [
+   "Hyperosmolar hyperglycemic state (HHS)",
+   "Diabetic ketoacidosis (DKA)",
+   "Hypoglycemic coma",
+   "Lactic acidosis from metformin"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): extreme hyperglycemia, profound dehydration, altered consciousness, and ABSENT ketones in an older type 2 client is HHS \u2014 enough insulin persists to suppress ketogenesis while osmotic diuresis drains the client over days. (b) DKA features ketones, acidosis, and Kussmaul respirations, typically in type 1. (c) A glucose of 940 excludes hypoglycemia by definition. (d) Metformin-associated lactic acidosis presents with acidosis, not a 900+ glucose without ketones.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_pa_003",
+  "topicId": 7,
+  "subtopic": "Heat stroke response",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A marathon volunteer brings a runner to the aid station: temperature 41.1 C (106 F), hot dry skin, and confusion. Which actions are appropriate? Select all that apply.",
+  "options": [
+   "Move the runner to a cool environment and remove excess clothing",
+   "Begin active cooling immediately, such as cool water immersion or ice packs to neck, axillae, and groin",
+   "Monitor the airway and level of consciousness continuously",
+   "Give aspirin to bring the temperature down",
+   "Arrange emergency transport"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a), (b) \u2014 heat stroke outcomes track how FAST core temperature falls, so cooling starts on the spot; (c) \u2014 a confused hyperthermic client can seize or lose the airway at any moment; (e) \u2014 heat stroke with CNS signs is a transport-now emergency. Wrong (d): antipyretics work on the hypothalamic set point, which is not the problem in environmental heat stroke \u2014 aspirin adds bleeding risk in a client who may develop coagulopathy, without lowering temperature.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_pa_004",
+  "topicId": 7,
+  "subtopic": "Adrenal crisis",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "A client with Addison's disease is admitted with vomiting from gastroenteritis and has missed two days of hydrocortisone. The client is now hypotensive, weak, and confused. What should the nurse anticipate as the priority treatment?",
+  "options": [
+   "IV hydrocortisone and IV fluid resuscitation",
+   "An oral double dose of the home hydrocortisone",
+   "Fluid restriction and diuretics",
+   "A sedative for the confusion"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): illness plus missed replacement steroids in Addison's disease is adrenal crisis \u2014 the treatment is parenteral glucocorticoid and aggressive IV volume, without waiting for confirmatory labs. (b) The client is VOMITING; the oral route is exactly what failed. (c) The crisis is volume-depleted and hypotensive \u2014 restriction and diuresis would be lethal. (d) Sedating hypotensive confusion masks the deterioration while treating nothing.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_bc_001",
+  "topicId": 4,
+  "subtopic": "CPAP adherence support",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with obstructive sleep apnea reports abandoning the CPAP machine because 'the mask leaks and my nose gets dry.' Which nursing response is most helpful?",
+  "options": [
+   "'Those problems are usually fixable \u2014 let's arrange a mask refit and ask about adding heated humidification.'",
+   "'Sleep without it on the nights it bothers you.'",
+   "'Everyone dislikes CPAP; you'll get used to it eventually.'",
+   "'Try taking a sleeping pill so you don't notice the mask.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the two commonest adherence barriers \u2014 mask fit and dryness \u2014 have direct equipment solutions (refitting, humidification), and solving them is how adherence is rescued. (b) Untreated nights carry the full apnea risk: hypoxia, arrhythmia, daytime crashes. (c) Dismissing fixable problems as universal teaches the client to give up. (d) Sedatives RELAX the airway and worsen apnea \u2014 the most dangerous suggestion on the list.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_bc_002",
+  "topicId": 4,
+  "subtopic": "Bathing safety",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is preparing a bath for an older adult with fragile skin. Which practice is correct?",
+  "options": [
+   "Use warm (not hot) water, pat the skin dry, and apply moisturizer to dry areas",
+   "Use the hottest water tolerated for better hygiene",
+   "Rub the skin briskly with the towel to stimulate circulation",
+   "Bathe with full soap scrubs twice daily to prevent infection"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): warm water, patting rather than rubbing, and moisturizing protect an older adult's thin, dry skin from tears and cracking. (b) Hot water strips lipids and risks scalds on fragile skin. (c) Brisk rubbing shears fragile skin \u2014 circulation is not improved by abrasion. (d) Overbathing with soap dries and breaks down the very barrier that prevents infection.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_bc_003",
+  "topicId": 4,
+  "subtopic": "Diabetic foot care",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is teaching foot care to a client with diabetes and peripheral neuropathy. Which instructions are correct? Select all that apply.",
+  "options": [
+   "Inspect the feet every day, using a mirror for the soles if needed",
+   "Wear well-fitting shoes and never walk barefoot",
+   "Test bath water with a thermometer or the elbow, not the feet",
+   "Soak the feet in hot water nightly to soften calluses",
+   "Report any sore, blister, or color change promptly rather than self-treating"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 neuropathy silences the pain warning, so the eyes must do the surveillance daily; (b) \u2014 shoes prevent the unfelt injuries that become ulcers; (c) \u2014 insensate feet cannot judge temperature, so something that can judges it; (e) \u2014 early professional attention is what keeps small lesions from becoming amputations. Wrong (d): hot soaks macerate and burn insensate feet \u2014 and home callus 'bathroom surgery' of any kind is specifically warned against.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ },
+ {
+  "id": "nx_a7_bc_004",
+  "topicId": 4,
+  "subtopic": "Lumbar puncture positioning",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is assisting with a lumbar puncture. How should the client be positioned for the procedure?",
+  "options": [
+   "Side-lying with the knees drawn up and the chin tucked toward the chest",
+   "Prone with arms at the sides",
+   "Supine with the legs extended",
+   "High Fowler's leaning back against pillows"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the curled side-lying (fetal) position flexes the spine and opens the spaces between the lumbar vertebrae for the needle (sitting bent over a table is the common alternative). (b) Prone closes the interspaces and gives no access. (c) A straight supine spine keeps the spaces narrow and the site inaccessible. (d) Leaning BACK extends the spine \u2014 the opposite of the flexion the procedure needs.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave7 (2026-08-20)"
+ }
+]
