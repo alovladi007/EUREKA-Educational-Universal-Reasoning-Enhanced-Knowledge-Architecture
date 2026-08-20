@@ -3700,7 +3700,16 @@ _add(LessonExtras(
                 "threading, and this one, like every node "
                 "before it in the expansion programme, is "
                 "now woven as tightly as the gate can "
-                "measure."
+                "measure. What remains of the chapter - the "
+                "radical HBr inversion and the synthesis "
+                "lesson's eliminations - will close the "
+                "parade with the same standards applied: "
+                "mechanism first, evidence named, conditions "
+                "read before structures, and every product "
+                "claim audited against the intermediate that "
+                "must have made it. The scissors are down; "
+                "two lessons remain; the toolkit is nearly "
+                "whole."
             ),
         ),
     ),
