@@ -1,0 +1,461 @@
+[
+ {
+  "id": "nx_a2_si_001",
+  "topicId": 1,
+  "subtopic": "Neutropenic precautions",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is caring for a client with neutropenia following chemotherapy. Which interventions are appropriate? Select all that apply.",
+  "options": [
+   "Place the client in a private room",
+   "Screen visitors and exclude anyone with signs of illness",
+   "Remove fresh flowers and standing water from the room",
+   "Take temperatures rectally for the most accurate reading",
+   "Report a temperature of 38.0 C (100.4 F) to the provider immediately"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 a private room limits exposure to other clients' organisms; (b) \u2014 visitors with any illness are the commonest preventable exposure; (c) \u2014 flowers and standing water harbor gram-negative organisms and molds; (e) \u2014 in neutropenia a fever of 38.0 C is a medical emergency because it may be the ONLY sign of infection. Wrong (d): rectal temperatures (and suppositories or enemas) are avoided \u2014 mucosal injury seeds bacteria in a client with no neutrophil defense.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_si_002",
+  "topicId": 1,
+  "subtopic": "C. difficile precautions",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse exits the room of a client with Clostridioides difficile infection. Which action is correct for hand hygiene?",
+  "options": [
+   "Use alcohol-based hand rub for at least 20 seconds",
+   "Wash hands with soap and water",
+   "Hand hygiene is unnecessary if gloves were worn",
+   "Apply antimicrobial foam and let it air-dry"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): C. difficile forms spores that alcohol does NOT kill \u2014 mechanical washing with soap and water physically removes them. (a) Alcohol rub is the standard for most organisms but is ineffective against spores. (c) Gloves reduce but do not eliminate contamination; hands are cleaned after every glove removal. (d) Foam sanitizers are alcohol-based and share alcohol's weakness against spores.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_si_003",
+  "topicId": 1,
+  "subtopic": "Radiation implant safety",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client has a sealed cervical radiation implant in place. Which occurrence requires the nurse to use long-handled forceps and a lead container?",
+  "options": [
+   "The client reports fatigue after the implant placement",
+   "The implant is found dislodged in the bed linens",
+   "A visitor stays longer than 30 minutes",
+   "The client asks to ambulate to the bathroom"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): a dislodged source is never touched with hands \u2014 it is retrieved with long-handled forceps into the shielded lead container kept in the room, and the radiation safety officer is notified. (a) Fatigue is an expected treatment effect, not a radiation emergency. (c) An over-long visit is corrected by enforcing the time-distance-shielding limits, not with forceps. (d) A client with a cervical implant is kept on bed rest to prevent exactly the dislodgement in (b) \u2014 the request is declined, but no source handling is involved.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_si_004",
+  "topicId": 1,
+  "subtopic": "Medication error prevention",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "Before administering a medication, which method should the nurse use to identify the client?",
+  "options": [
+   "Ask the client to state their name and date of birth and compare with the medication record",
+   "Check the room and bed number against the medication record",
+   "Ask, 'You are Mr. Smith, correct?' and proceed if the client agrees",
+   "Recognize the client from earlier in the shift and proceed"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): two identifiers \u2014 such as stated name and date of birth checked against the record or band \u2014 are required before every administration. (b) Room and bed numbers are NEVER identifiers; clients move. (c) Leading questions invite confused or hard-of-hearing clients to agree with the wrong name. (d) Familiarity substitutes memory for verification, which is how look-alike names cause errors.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_si_005",
+  "topicId": 1,
+  "subtopic": "Home oxygen safety",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is teaching a client who will use home oxygen. Which client statement indicates a need for further teaching?",
+  "options": [
+   "'I will keep my oxygen at least 10 feet away from the gas stove.'",
+   "'I will use a water-based lubricant instead of petroleum jelly on my lips.'",
+   "'I can smoke as long as I turn the oxygen off first.'",
+   "'I will secure the tank upright so it cannot fall.'"
+  ],
+  "correct": 2,
+  "explanation": "Correct to flag (c): oxygen saturates clothing, hair, and furnishings \u2014 smoking anywhere near an oxygen system is a fire hazard even with the flow turned off, so this statement shows misunderstanding. (a) A 10-foot distance from open flames is the standard teaching. (b) Petroleum products are avoided near oxygen because they are combustible; water-based products are the safe substitute. (d) Tanks are secured upright because a knocked-over cylinder with a sheared valve becomes a projectile.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_si_006",
+  "topicId": 1,
+  "subtopic": "Sterile field principles",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is setting up a sterile field for a dressing change. Which event contaminates the field?",
+  "options": [
+   "Sterile saline splashes onto the cloth sterile drape",
+   "A sterile-gloved hand touches a sterile instrument on the field",
+   "The nurse keeps the sterile field in constant view",
+   "A wrapped sterile package is opened with its outer flap away from the body first"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): moisture soaking a cloth drape wicks organisms up from the unsterile surface beneath \u2014 strike-through contamination. (b) Sterile touching sterile is the definition of maintaining sterility. (c) Keeping the field in view is required; it is turning AWAY that contaminates. (d) Opening the far flap first is the correct sequence, keeping the arm from crossing over sterile contents.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_rr_001",
+  "topicId": 6,
+  "subtopic": "Blood transfusion monitoring",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is preparing to administer a unit of packed red blood cells. Which actions are correct? Select all that apply.",
+  "options": [
+   "Verify the blood product and client identity with another qualified staff member",
+   "Obtain a full set of baseline vital signs before starting the transfusion",
+   "Remain with the client for the first 15 minutes of the transfusion",
+   "Infuse the unit with dextrose 5% in water as the carrier fluid",
+   "Complete the transfusion within 6 hours of starting"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2
+  ],
+  "explanation": "Correct (a) \u2014 a two-person bedside check of unit, order, and identity is the last barrier against a hemolytic mismatch; (b) \u2014 baseline vitals are the reference that makes a reaction detectable; (c) \u2014 severe reactions typically declare themselves early, so the nurse stays through the slow first 15 minutes. Wrong (d): only 0.9% sodium chloride runs with blood \u2014 dextrose hemolyzes red cells. Wrong (e): a unit must finish within 4 hours; beyond that, bacterial growth and cell breakdown make it unsafe.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_rr_002",
+  "topicId": 6,
+  "subtopic": "NG tube placement verification",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse has just inserted a nasogastric tube for enteral feeding. Which method confirms correct placement before the first use?",
+  "options": [
+   "Auscultating over the stomach while instilling air",
+   "Radiographic (X-ray) confirmation of the tube tip",
+   "Observing the client for coughing during insertion",
+   "Placing the tube's end in water and watching for bubbling"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): an X-ray showing the tip in the stomach is the only accepted confirmation before anything is instilled. (a) The air-bolus 'whoosh' is unreliable \u2014 sounds transmit even from a lung or esophageal placement \u2014 and is no longer accepted practice. (c) Absence of coughing does not rule out airway placement, especially in clients with a diminished gag reflex. (d) Watching for bubbles is an outdated bedside trick that cannot distinguish placement and delays care.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_rr_003",
+  "topicId": 6,
+  "subtopic": "Hip arthroplasty precautions",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is teaching a client after a total hip arthroplasty with a posterior approach. Which instructions are appropriate? Select all that apply.",
+  "options": [
+   "Avoid bending the hip beyond 90 degrees",
+   "Keep a pillow between the legs when lying on your side",
+   "Use a raised toilet seat at home",
+   "Cross the legs at the knee when sitting to stay comfortable",
+   "Pivot on the surgical leg when turning"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2
+  ],
+  "explanation": "Correct (a) \u2014 flexion past 90 degrees levers the head of the prosthesis out of the posterior capsule; (b) \u2014 an abduction pillow prevents the adduction that dislocates the new joint; (c) \u2014 a raised seat keeps hip flexion under the 90-degree limit during the highest-risk daily task. Wrong (d): crossing the legs is adduction \u2014 the classic dislocating movement. Wrong (e): twisting or pivoting on the operative leg internally rotates the hip, another dislocation mechanism; turns are made by stepping around.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_rr_004",
+  "topicId": 6,
+  "subtopic": "Liver biopsy aftercare",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "Following a percutaneous liver biopsy, how should the nurse position the client?",
+  "options": [
+   "On the right side with a small pillow or roll under the biopsy site",
+   "On the left side with the head of the bed elevated 45 degrees",
+   "Prone with the arms above the head",
+   "Supine with the legs elevated on pillows"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): right side-lying presses the liver against the chest wall, splinting the puncture and tamponading bleeding \u2014 the chief post-biopsy risk in a vascular organ. (b) Left side-lying takes all pressure OFF the site. (c) Prone positioning neither compresses the right upper quadrant effectively nor allows monitoring, and is not the standard. (d) Supine with legs elevated is a hypotension response, not site compression.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_rr_005",
+  "topicId": 6,
+  "subtopic": "Paracentesis preparation",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is preparing a client for an abdominal paracentesis. Which action should the nurse take immediately before the procedure?",
+  "options": [
+   "Have the client empty the bladder",
+   "Place the client flat on the left side",
+   "Give the client a full glass of water to drink",
+   "Administer an enema to empty the bowel"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): an empty bladder drops out of the needle's path \u2014 bladder puncture is the classic preventable complication of paracentesis. (b) The client sits upright or semi-Fowler's so ascitic fluid pools low in the abdomen; flat side-lying works against drainage. (c) Filling the bladder with fluids just before needle insertion increases the very risk being avoided. (d) The bowel is not prepared for paracentesis; an enema adds discomfort without protection.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_rr_006",
+  "topicId": 6,
+  "subtopic": "Contrast studies & metformin",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client taking metformin is scheduled for a CT scan with iodinated contrast. Which nursing action is most important?",
+  "options": [
+   "Verify renal function results and clarify with the provider when metformin should be held",
+   "Encourage the client to double the next metformin dose to control glucose during the scan",
+   "Instruct the client that metformin has no interaction with contrast media",
+   "Hold all of the client's medications for 48 hours before the scan"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): iodinated contrast can impair renal function, and metformin that accumulates in renal impairment risks lactic acidosis \u2014 so kidney function is checked and metformin is held around the study per protocol. (b) Doubling a dose is never a response to a procedure and raises the exact accumulation risk at issue. (c) The interaction is the reason protocols exist; denying it is teaching error. (d) Blanket-holding every medication for two days is unsafe \u2014 cardiac, seizure, and other critical drugs continue unless specifically ordered held.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_pa_001",
+  "topicId": 7,
+  "subtopic": "Increased intracranial pressure",
+  "difficulty": 3,
+  "type": "multi",
+  "question": "A nurse is caring for a client with increased intracranial pressure after a head injury. Which interventions are appropriate? Select all that apply.",
+  "options": [
+   "Maintain the head of the bed at about 30 degrees",
+   "Keep the client's head and neck in midline alignment",
+   "Space nursing activities apart rather than clustering them",
+   "Encourage vigorous coughing exercises every hour",
+   "Administer prescribed stool softeners to prevent straining"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 roughly 30 degrees of elevation promotes venous drainage without dropping cerebral perfusion; (b) \u2014 midline alignment keeps jugular outflow unobstructed; (c) \u2014 stimulation is spaced because stacked activities produce cumulative ICP spikes; (e) \u2014 stool softeners prevent the Valsalva of straining, which transiently raises ICP. Wrong (d): coughing IS a Valsalva-type pressure spike \u2014 it is minimized, not encouraged, in ICP management.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_pa_002",
+  "topicId": 7,
+  "subtopic": "Hypoglycemia management",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "An alert client with diabetes has a blood glucose of 54 mg/dL and reports shakiness. What should the nurse do first?",
+  "options": [
+   "Give about 15 grams of fast-acting carbohydrate, such as 4 oz of fruit juice",
+   "Administer the client's scheduled mealtime insulin to restore balance",
+   "Give a peanut butter sandwich as the initial treatment",
+   "Recheck the blood glucose in one hour before treating"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the 15-15 rule \u2014 15 g of fast carbohydrate, recheck in 15 minutes, repeat if still low \u2014 is the standard for a conscious hypoglycemic client. (b) Insulin LOWERS glucose; giving it now deepens the hypoglycemia. (c) Fat and protein slow absorption \u2014 a sandwich is the follow-up snack after correction, not the rescue. (d) Waiting an hour to treat symptomatic hypoglycemia risks progression to confusion and seizure.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_pa_003",
+  "topicId": 7,
+  "subtopic": "Stroke recognition",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client arrives with sudden right-sided weakness and slurred speech. Beyond the physical assessment, which information is most critical for the nurse to establish immediately?",
+  "options": [
+   "The time the client was last known to be at baseline (last known well)",
+   "The client's dietary history for the past week",
+   "Whether any family members have had strokes",
+   "The client's usual exercise routine"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): eligibility for thrombolytic therapy is decided against the clock from 'last known well' \u2014 without that time, the single most effective treatment may be lost. (b) Diet history has no bearing on emergent treatment decisions. (c) Family history informs long-term risk, not tonight's therapy. (d) Exercise habits are likewise a prevention conversation, not an emergency data point.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_pa_004",
+  "topicId": 7,
+  "subtopic": "Sickle cell crisis",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client is admitted in sickle cell vaso-occlusive crisis with severe leg pain. Which intervention is appropriate?",
+  "options": [
+   "Apply cold packs to the painful areas",
+   "Administer prescribed opioid analgesia and IV fluids",
+   "Restrict fluids to reduce vascular congestion",
+   "Encourage vigorous ambulation to improve circulation"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): the pillars of crisis care are aggressive analgesia \u2014 typically scheduled opioids \u2014 and hydration, which reduces blood viscosity and sickling. (a) Cold causes vasoconstriction and worsens occlusion; warmth is the comfort measure used. (c) Fluid restriction is the opposite of what the pathophysiology needs \u2014 dehydration promotes sickling. (d) During acute crisis the client rests to lower oxygen demand; vigorous activity intensifies ischemic pain.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_pa_005",
+  "topicId": 7,
+  "subtopic": "Tracheostomy emergencies",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "A client with a tracheostomy suddenly develops respiratory distress, and thick secretions are visible at the tube opening. After activating help, what should the nurse do first?",
+  "options": [
+   "Remove and inspect the inner cannula",
+   "Immediately remove the entire tracheostomy tube",
+   "Instill several milliliters of saline and wait for coughing",
+   "Lay the client flat and begin bag-mask ventilation over the mouth"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the commonest cause of sudden distress is an occluded INNER cannula \u2014 removing it (replacing a disposable one, or cleaning a reusable one) often clears the airway in seconds, and suctioning follows if needed. (b) Removing the whole tube converts a partial obstruction into a lost airway and is a last resort. (c) Routine saline instillation is not evidence-based and can drive secretions deeper. (d) Positioning flat worsens work of breathing, and mask ventilation over the mouth bypasses the stoma the client breathes through.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_pa_006",
+  "topicId": 7,
+  "subtopic": "Postoperative hemorrhage",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "Four hours after abdominal surgery, a client becomes restless with a heart rate of 118/min, blood pressure 88/56 mm Hg, and cool, pale skin. How should the nurse interpret these findings?",
+  "options": [
+   "Early signs of hypovolemic shock from possible internal bleeding",
+   "A normal response to anesthesia that will resolve with warm blankets",
+   "Expected postoperative pain requiring an opioid dose",
+   "Fluid overload from intraoperative IV fluids"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): tachycardia, falling blood pressure, restlessness, and cool pale skin is the classic compensating-then-failing pattern of hypovolemia \u2014 after abdominal surgery, internal bleeding until proven otherwise, and the provider is notified immediately. (b) Anesthesia recovery does not explain progressive hypotension with tachycardia. (c) Pain typically RAISES blood pressure; treating this picture with an opioid deepens the hypotension. (d) Fluid overload presents with bounding pulses, hypertension, and crackles \u2014 the opposite hemodynamics.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_mc_001",
+  "topicId": 0,
+  "subtopic": "SBAR communication",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse calls a provider about a deteriorating client using SBAR. Which statement belongs in the 'R' portion of the report?",
+  "options": [
+   "'I am calling about Mr. Lee in room 12 whose oxygen saturation has dropped to 88%.'",
+   "'He was admitted two days ago with pneumonia and has been on 2 L nasal cannula.'",
+   "'His lungs have new crackles at both bases and he is using accessory muscles.'",
+   "'I would like you to come assess him and consider an order for a chest X-ray.'"
+  ],
+  "correct": 3,
+  "explanation": "Correct (d): the Recommendation states what the nurse is asking for \u2014 an assessment, an order, a transfer. (a) Naming the client and the immediate problem is the Situation. (b) Admission diagnosis and current therapy are Background. (c) Examination findings are the Assessment. Ordering the pieces this way is the point of SBAR: the request lands after the evidence for it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_mc_002",
+  "topicId": 0,
+  "subtopic": "Against medical advice",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A client with decision-making capacity states they are leaving the hospital against medical advice (AMA). Which nursing actions are appropriate? Select all that apply.",
+  "options": [
+   "Notify the provider of the client's intention to leave",
+   "Explain the specific risks of leaving and document the discussion",
+   "Ask the client to sign the AMA form, and document if they decline to sign",
+   "Tell the client their insurance will automatically refuse to pay the bill",
+   "Have security detain the client until the provider arrives"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2
+  ],
+  "explanation": "Correct (a) \u2014 the provider must know and may address the client's concerns; (b) \u2014 an informed departure requires a concrete risk discussion, documented; (c) \u2014 the form is requested, and a refusal to sign is simply documented, because the signature is evidence, not permission. Wrong (d): the insurance-will-not-pay claim is a coercive myth \u2014 payment rules do not automatically void coverage for AMA discharges, and threatening a client to obtain compliance is unethical. Wrong (e): a client with capacity cannot be detained \u2014 that is false imprisonment.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_mc_003",
+  "topicId": 0,
+  "subtopic": "Ethical principles",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A client with cancer declines a recommended chemotherapy regimen after understanding the risks and benefits. The nurse supports the decision. Which ethical principle is the nurse upholding?",
+  "options": [
+   "Autonomy",
+   "Beneficence",
+   "Justice",
+   "Fidelity"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): autonomy is the right of a capable, informed client to make their own treatment decisions \u2014 including refusal. (b) Beneficence is acting for the client's good; alone it would argue FOR treating. (c) Justice concerns fair distribution of care across clients. (d) Fidelity is keeping professional promises and commitments. The scenario turns on whose choice it is, which is autonomy.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_mc_004",
+  "topicId": 0,
+  "subtopic": "Organ donation process",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client in the ICU has been declared brain-dead and appears medically suitable for organ donation. Who should approach the family about donation?",
+  "options": [
+   "The bedside nurse, who has built the strongest rapport with the family",
+   "A trained requestor from the organ procurement organization",
+   "The nursing assistant when the family seems calm",
+   "No one \u2014 the family must raise the topic themselves"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): federal rules route donation conversations through the organ procurement organization's trained requestors (or staff trained by them) \u2014 trained requests are both more respectful and more successful. (a) The bedside nurse supports the family and notifies the OPO but does not make the request; blending care with requesting creates conflict-of-interest concerns. (c) Requesting is never delegated to assistive personnel. (d) Waiting for the family to ask misses most donation opportunities and is not the mandated process \u2014 the OPO must be notified of every imminent death.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_mc_005",
+  "topicId": 0,
+  "subtopic": "Room assignments",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A charge nurse is assigning a semi-private room for a newly admitted client who is one day post-op after a total hip arthroplasty. Which roommate is most appropriate?",
+  "options": [
+   "A client on contact precautions for a MRSA wound infection",
+   "A client admitted for observation after an uncomplicated syncopal episode",
+   "A client with influenza on droplet precautions",
+   "A client with profuse diarrhea awaiting C. difficile results"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): a fresh surgical client belongs with a non-infectious roommate, and observation after syncope carries no transmission risk. (a) MRSA contact precautions next to a new surgical wound invites a prosthetic joint infection \u2014 the most feared arthroplasty complication. (c) Droplet-spread influenza is an obvious respiratory exposure. (d) A client with undiagnosed profuse diarrhea is managed as infectious until results return, not paired with a post-op roommate.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ },
+ {
+  "id": "nx_a2_mc_006",
+  "topicId": 0,
+  "subtopic": "Chain of command",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse believes a newly prescribed medication dose is unsafe. The prescribing provider, when called, says to 'give it as written.' What should the nurse do next?",
+  "options": [
+   "Give the dose as prescribed, since the provider confirmed it",
+   "Decline to give the dose, document the concern, and escalate to the nursing supervisor or chain of command",
+   "Give half of the prescribed dose as a compromise",
+   "Hold the dose silently and chart that it was administered"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): a nurse who administers a dose they believe is unsafe is accountable for the harm \u2014 the safe path is to withhold, document the clarification attempt, and move up the chain of command until the concern is resolved. (a) 'The provider said so' is not a defense for administering a dose the nurse assessed as dangerous. (c) Altering a prescription unilaterally is practicing outside nursing scope. (d) Charting a medication as given when it was not is falsification of the record \u2014 the most serious option offered.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave2 (2026-08-20)"
+ }
+]

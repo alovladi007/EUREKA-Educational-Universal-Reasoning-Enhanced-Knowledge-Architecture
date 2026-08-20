@@ -19,3 +19,4 @@ Rules (from the NCLEX build plan, applying to every bank):
 | file | items | seeded | contents |
 |---|---|---|---|
 | nclex-phase1-wave1.json | 24 | 2026-08-20 | Basic Care & Comfort +8, Health Promotion +8, Psychosocial Integrity +8 (6 SATA); rebalances the three thinnest Client Needs categories |
+| nclex-phase1-wave2.json | 24 | 2026-08-20 | Safety & Infection Control +6, Reduction of Risk +6, Physiological Adaptation +6, Management of Care +6 (5 SATA); every non-pharm category now 16-20 |
