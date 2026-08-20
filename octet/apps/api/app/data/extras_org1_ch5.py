@@ -1817,7 +1817,11 @@ _add(LessonExtras(
                 "earning their bench space today - and all "
                 "three now, at the raised depth of this "
                 "chapter, fully yours to choose among with "
-                "reasons attached."
+                "reasons attached, which is the only way this "
+                "course ever wants a reagent chosen: by "
+                "audit, with the mechanism named, and with "
+                "the routes not taken understood well enough "
+                "to say exactly why not."
             ),
         ),
     ),
