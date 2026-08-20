@@ -4235,7 +4235,17 @@ _add(LessonExtras(
                 "atmosphere and a hammer at a hundred. Read "
                 "the whole line, sort the groups, and let "
                 "the product assemble itself from the "
-                "audit."
+                "audit - the same conditions-first reading "
+                "order this chapter has now recommended for "
+                "mechanism, regime, radical flags, and "
+                "selectivity alike, because in organic "
+                "chemistry the fine print above the arrow is "
+                "never fine print. It is half the question, "
+                "and frequently it is the entire answer, "
+                "printed in the one place untrained eyes "
+                "refuse to look. Train yours there first, "
+                "on every reaction, from this page "
+                "forward."
             ),
         ),
     ),
