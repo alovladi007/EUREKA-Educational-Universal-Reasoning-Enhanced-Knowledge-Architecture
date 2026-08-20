@@ -2948,7 +2948,7 @@ _add(LessonExtras(
                 "credit of a checked one. Rituals beat "
                 "vigilance; build the ritual now, while the "
                 "reaction it audits is still the simplest "
-                "one that this whole course will ever ask of you."
+                "reaction that this whole course will ever ask you to check."
             ),
         ),
     ),
