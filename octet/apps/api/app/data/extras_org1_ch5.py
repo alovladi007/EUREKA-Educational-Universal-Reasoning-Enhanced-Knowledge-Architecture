@@ -4653,7 +4653,9 @@ _add(LessonExtras(
                 "the boards - the method scales without "
                 "modification, and it was learned here, on "
                 "the one reagent whose split personality "
-                "made the method unavoidable."
+                "made the method unavoidable, and whose 1933 "
+                "detective story gave the whole approach its "
+                "founding precedent in the literature."
             ),
         ),
     ),
