@@ -2765,7 +2765,11 @@ _add(LessonExtras(
                 "was raised for exactly such places - "
                 "where one lesson, learned completely, "
                 "keeps paying in courses its author never "
-                "sees."
+                "sees, for students it will never meet, on "
+                "exams not yet written - the definition of "
+                "curriculum built to last, and the standard "
+                "every chapter of this programme is now "
+                "being raised to meet."
             ),
         ),
     ),
