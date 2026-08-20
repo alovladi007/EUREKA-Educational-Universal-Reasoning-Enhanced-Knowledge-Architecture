@@ -3743,7 +3743,8 @@ _add(LessonExtras(
                 "count, which is exactly the compression a "
                 "year-long course needs its students to "
                 "find early, practise deliberately, and then "
-                "trust completely under exam pressure."
+                "trust completely under exam pressure, when "
+                "compression is the only speed that exists."
             ),
         ),
     ),
