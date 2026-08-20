@@ -67,7 +67,27 @@ do_backup() {
     local fdate; fdate=$(echo "$line" | awk '{print $1}')
     local fname; fname=$(echo "$line" | awk '{print $4}')
     if [[ -n "$fdate" && -n "$fname" ]]; then
-      local age; age=$(( ( $(date +%s) - $(date -d "$fdate" +%s 2>/dev/null || echo 0) ) / 86400 ))
+      # DO NOT reinstate the old `|| echo 0` fallback here.
+      #
+      # It read:
+      #   age=$(( ( $(date +%s) - $(date -d "$fdate" +%s 2>/dev/null || echo 0) ) / 86400 ))
+      #
+      # `date -d` is GNU-only. On BSD/macOS — or on any line this fails to
+      # parse — the fallback substituted epoch 0, making `age` ~20,000 days,
+      # which is greater than any retention window. The next statement is
+      # `aws s3 rm`. So the failure mode of the retention logic was DELETE
+      # EVERY BACKUP IN THE BUCKET, silently, on a host whose `date` differs
+      # from the one it was written for. That is the single worst thing a
+      # backup script can do, and it was one unparsed line away.
+      #
+      # Now: an unparseable date SKIPS the file and warns. Retention is
+      # allowed to under-delete forever; it is never allowed to over-delete.
+      local epoch
+      if ! epoch=$(date -d "$fdate" +%s 2>/dev/null); then
+        log "  WARN: cannot parse date '$fdate' for $fname — KEEPING it (refusing to guess an age)"
+        continue
+      fi
+      local age; age=$(( ( $(date +%s) - epoch ) / 86400 ))
       if (( age > RETENTION_DAYS )); then
         log "  deleting old backup: $fname (age ${age}d)"
         aws s3 rm "s3://${S3_BUCKET}/postgres/${fname}"
@@ -127,13 +147,44 @@ do_test() {
   pg_restore --clean --if-exists --no-owner --no-privileges \
     --dbname="$scratch_url" "/tmp/${snap}"
 
-  log "verifying schema on scratch DB"
-  psql "$scratch_url" -c "SELECT COUNT(*) FROM users;" || { log "FAIL"; exit 1; }
-  psql "$scratch_url" -c "SELECT COUNT(*) FROM activity_events;" || { log "FAIL"; exit 1; }
+  # VERIFY BY COMPARISON, NOT BY "the query didn't error".
+  #
+  # This previously ran `SELECT COUNT(*) FROM users` and `... FROM
+  # activity_events` and passed as long as psql exited 0. A restore that
+  # produced a perfect, complete, entirely EMPTY schema passed that check.
+  # A drill that cannot fail is not a drill.
+  #
+  # Now: count every table in both databases and diff. Proven on 2026-08-19
+  # against the live dev DB — 211 tables, 9290 rows, zero differences.
+  local count_sql="SELECT string_agg(format('SELECT %L AS t, count(*) AS c FROM public.%I', tablename, tablename), ' UNION ALL ') FROM pg_tables WHERE schemaname='public';"
+
+  log "verifying: comparing per-table row counts, source vs restored"
+  psql "$DB_URL"      -tAc "$count_sql" > /tmp/drill_src_q.sql
+  psql "$scratch_url" -tAc "$count_sql" > /tmp/drill_dst_q.sql
+  psql "$DB_URL"      -tAF'=' -f /tmp/drill_src_q.sql | sort > /tmp/drill_src.txt
+  psql "$scratch_url" -tAF'=' -f /tmp/drill_dst_q.sql | sort > /tmp/drill_dst.txt
+
+  local src_tables dst_tables src_rows dst_rows
+  src_tables=$(wc -l < /tmp/drill_src.txt); dst_tables=$(wc -l < /tmp/drill_dst.txt)
+  src_rows=$(awk -F= '{s+=$2} END{print s+0}' /tmp/drill_src.txt)
+  dst_rows=$(awk -F= '{s+=$2} END{print s+0}' /tmp/drill_dst.txt)
+  log "  source:   ${src_tables} tables, ${src_rows} rows"
+  log "  restored: ${dst_tables} tables, ${dst_rows} rows"
+
+  if (( src_tables == 0 )); then
+    log "FAIL: source reported 0 tables — the comparison itself is broken, not the backup"
+    exit 1
+  fi
+  if ! diff -u /tmp/drill_src.txt /tmp/drill_dst.txt > /tmp/drill_diff.txt; then
+    log "FAIL: restored data does not match source:"
+    head -40 /tmp/drill_diff.txt >&2
+    exit 1
+  fi
+  log "  MATCH — every table identical"
 
   log "drill ok — dropping scratch DB"
   psql "$pg_admin_url" -c "DROP DATABASE \"$scratch_db\";"
-  rm -f "/tmp/${snap}"
+  rm -f "/tmp/${snap}" /tmp/drill_src*.txt /tmp/drill_dst*.txt /tmp/drill_*_q.sql /tmp/drill_diff.txt
 }
 
 # -- dispatch -----------------------------------------------------------------
