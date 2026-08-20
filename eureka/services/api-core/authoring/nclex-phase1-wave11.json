@@ -1,0 +1,440 @@
+[
+  {
+    "id": "nx_a11_si_001",
+    "topicId": 1,
+    "question": "A client is admitted with suspected pulmonary tuberculosis. Which precautions should the nurse implement?",
+    "options": [
+      "Airborne precautions in a negative-pressure room, with staff wearing fitted N95 respirators",
+      "Droplet precautions with a surgical mask worn within three feet of the client",
+      "Contact precautions with gown and gloves for all care",
+      "Standard precautions only until the diagnosis is confirmed by culture"
+    ],
+    "correct": 0,
+    "explanation": "Tuberculosis spreads by droplet nuclei small enough to remain suspended in air and travel on currents, so it requires true airborne precautions: a private negative-pressure room with frequent air exchanges and a fitted N95 respirator (or higher) for everyone entering. A surgical mask within three feet is droplet-level protection - appropriate for influenza or meningococcus - and does not filter the small particles TB produces. Contact precautions address organisms spread by touch, which is not TB's route. Waiting for culture confirmation leaves staff and other clients exposed for weeks; suspicion of TB is itself the trigger for airborne isolation, and precautions are discontinued only after the diagnosis is excluded or treatment renders the client noninfectious.",
+    "difficulty": 1,
+    "subtopic": "Transmission-based precautions",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Precaution questions are a matching exercise with three bins - airborne (TB, measles, varicella: N95 + negative pressure), droplet (flu, meningococcus: surgical mask), contact (MRSA, C. diff, RSV: gown + gloves). Memorise the short airborne list; everything respiratory that isn't on it is droplet."
+  },
+  {
+    "id": "nx_a11_si_002",
+    "topicId": 1,
+    "type": "multi",
+    "question": "The nurse is caring for a client with Clostridioides difficile infection. Which infection-control measures are required? Select all that apply.",
+    "options": [
+      "Wear a gown and gloves when entering the room",
+      "Wash hands with soap and water after removing gloves",
+      "Dedicate equipment such as the stethoscope and blood pressure cuff to this client",
+      "Wear an N95 respirator during all client care",
+      "Rely on alcohol-based hand rub as the primary hand hygiene after contact"
+    ],
+    "correctAnswers": [0, 1, 2],
+    "explanation": "C. difficile requires contact precautions: gown and gloves for room entry, because the organism contaminates surfaces heavily and spreads on hands and equipment. Hand hygiene must be soap and water - the mechanical action rinses away spores that alcohol cannot kill, which is the single most-tested C. diff fact. Dedicated equipment prevents carrying spores to other clients, and shared items must be disinfected with a sporicidal agent. An N95 respirator addresses airborne organisms; C. diff is not airborne. Alcohol-based rub, adequate for most organisms, fails specifically against spore-formers, so relying on it is the incorrect practice the question screens for.",
+    "difficulty": 2,
+    "subtopic": "Contact precautions - C. difficile",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Two organisms break the alcohol-rub rule: C. difficile and scabies get soap and water (spores and mites survive alcohol). When a select-all pairs C. diff with hand hygiene, the soap-and-water option is correct and the alcohol option is the planted error."
+  },
+  {
+    "id": "nx_a11_si_003",
+    "topicId": 1,
+    "question": "The nurse is setting up a sterile field for a dressing change. Which action contaminates the field?",
+    "options": [
+      "Turning away from the field to reach supplies on a shelf behind",
+      "Placing sterile items within the field's borders, inside the outer one-inch edge",
+      "Holding a wrapped sterile package at waist level while opening it",
+      "Pouring sterile saline into a sterile basin near the field's edge from a newly opened bottle"
+    ],
+    "correct": 0,
+    "explanation": "A sterile field must remain in continuous view; turning one's back on it means it is no longer observed and is therefore considered contaminated - the rule exists because unobserved contamination cannot be excluded. The other actions follow sterile technique: the outer one-inch border of the field is treated as non-sterile, so items placed inside that margin are correctly positioned; objects held at or above waist level remain within the sterile zone, as below-waist items are considered contaminated; and pouring from a freshly opened sterile bottle into a sterile basin is standard practice, taking care to avoid splashing, since moisture that soaks through to a non-sterile surface would wick contamination upward (strike-through).",
+    "difficulty": 2,
+    "subtopic": "Surgical asepsis",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Sterile-field violations reduce to four rules: never out of sight, never below the waist, one-inch border is non-sterile, wet is contaminated. Test each option against the four; the option that breaks one is the answer, and 'turning away' breaks the never-out-of-sight rule every time it appears."
+  },
+  {
+    "id": "nx_a11_si_004",
+    "topicId": 1,
+    "question": "The nurse discovers a fire in a client's bathroom trash can. The client is in bed in the room. Which action should the nurse take first?",
+    "options": [
+      "Move the client out of the room to safety",
+      "Pull the nearest fire alarm to activate the response",
+      "Close the door to confine the fire",
+      "Fight the fire with the corridor extinguisher"
+    ],
+    "correct": 0,
+    "explanation": "The RACE sequence orders fire response: Rescue anyone in immediate danger first, then Activate the alarm, then Confine the fire by closing doors, then Extinguish or Evacuate. A client in the room where the fire is burning is in immediate danger, so rescue comes before every other action - the alarm, confinement, and extinguishing all serve people, and the person at risk is served first directly. Pulling the alarm first would be correct only if no one were in danger. Closing the door first would trap the client with the fire. Fighting the fire before removing the client gambles the client's safety on the extinguisher working.",
+    "difficulty": 1,
+    "subtopic": "Fire safety - RACE",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Fire questions test whether you apply RACE in order from the scenario's starting point: if a person is in danger, Rescue is first; if everyone is already safe, the answer advances to Activate. Read who is where before touching the mnemonic."
+  },
+  {
+    "id": "nx_a11_si_005",
+    "topicId": 1,
+    "question": "A nurse sustains a needlestick injury from a used hollow-bore needle. Which action should the nurse take first?",
+    "options": [
+      "Wash the puncture site thoroughly with soap and water",
+      "Complete the facility's incident report",
+      "Ask the client for consent for bloodborne-pathogen testing",
+      "Report to employee health for post-exposure evaluation"
+    ],
+    "correct": 0,
+    "explanation": "Immediate first aid comes first: washing the site with soap and water promptly reduces inoculum at the wound, and it is the only listed action that addresses the exposure itself in the first moments. The remaining steps follow in the post-exposure protocol - reporting the injury, initiating the incident report, arranging source-client testing with consent per policy, and an employee-health evaluation where post-exposure prophylaxis decisions (for example for HIV or hepatitis B) are time-sensitive and made on risk assessment. Those steps matter and are required, but each one presumes the wound has already received basic decontamination; documentation never precedes first aid.",
+    "difficulty": 1,
+    "subtopic": "Needlestick response",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "For any staff exposure - needlestick, splash, chemical - the first action is decontamination of the exposed site; paperwork, reporting, and testing all come after. 'Care before chart' resolves the ordering in one move."
+  },
+  {
+    "id": "nx_a11_si_006",
+    "topicId": 1,
+    "question": "The nurse is teaching a client who will use home oxygen therapy. Which client statement indicates a need for further teaching?",
+    "options": [
+      "\"I can keep using petroleum jelly for my dry nose while wearing the cannula.\"",
+      "\"I will post no-smoking signs and keep everyone from smoking in the house.\"",
+      "\"I will keep the oxygen concentrator at least ten feet from the gas stove.\"",
+      "\"I will use cotton bedding and clothing to reduce static sparks.\""
+    ],
+    "correct": 0,
+    "explanation": "Petroleum-based products are contraindicated around oxygen: petrolatum is combustible, and in an oxygen-enriched atmosphere a spark or flame near the face could ignite it - water-based lubricants are the safe substitute for nasal dryness, so this statement requires correction. The other statements are correct home-oxygen practice: absolutely no smoking near oxygen, since oxygen vigorously accelerates combustion; maintaining distance (commonly cited as at least ten feet) between the oxygen source and open flames such as gas stoves or candles; and preferring cotton over synthetic fabrics, which generate static electricity capable of producing an igniting spark in enriched oxygen.",
+    "difficulty": 1,
+    "subtopic": "Home oxygen safety",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Oxygen-safety questions revolve around one fact - oxygen feeds fire - so hunt the option that introduces a fuel or ignition source near the face: petroleum products, wool/synthetic static, open flame, smoking. The 'further teaching' format means that option is the answer."
+  },
+  {
+    "id": "nx_a11_si_007",
+    "topicId": 1,
+    "question": "The nurse is preparing to administer an oral medication to a hospitalized 4-year-old. Which method correctly verifies the child's identity?",
+    "options": [
+      "Compare the name and medical record number on the ID band with the medication administration record, and confirm identity with the parent",
+      "Ask the child to state their name and proceed if the answer matches",
+      "Confirm the room and bed number against the medication administration record",
+      "Ask the parent only, since young children cannot participate in identification"
+    ],
+    "correct": 0,
+    "explanation": "Safe identification requires two acceptable identifiers - typically name and medical record number or date of birth read from the ID band against the medication record - and in pediatrics the parent or guardian serves as a verifying source alongside the band, not instead of it. A 4-year-old's self-report is unreliable: young children may answer to any name or give playful answers, so a stated name cannot serve as an identifier at this age. Room and bed number are never identifiers; clients change rooms and beds. Relying on the parent alone omits the band check that anchors identification to the chart; the correct standard combines both.",
+    "difficulty": 2,
+    "subtopic": "Pediatric medication safety",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Identifier questions have two absolute rules: two identifiers from the band/chart, and room number is never one of them. In pediatrics add the parent as a witness, subtract the child's self-report - the option honoring both adjustments is correct."
+  },
+  {
+    "id": "nx_a11_si_008",
+    "topicId": 1,
+    "question": "A client with acute confusion is placed in soft wrist restraints after alternatives failed. Which statement about managing the restraints is correct?",
+    "options": [
+      "The provider must assess the client and renew the restraint order at least every 24 hours",
+      "The restraint order may be written as needed (PRN) to cover future episodes",
+      "The restraints may be secured to the side rails with a double knot",
+      "Circulation checks are needed only at the start of each shift"
+    ],
+    "correct": 0,
+    "explanation": "Restraint orders for non-violent medical reasons are time-limited and must be renewed - with provider assessment - at least every calendar day (24 hours); restraints continue only while the clinical justification persists and are removed at the earliest safe moment. PRN restraint orders are prohibited in all settings: each episode of restraint requires its own current order based on current behavior. Restraints are tied with a quick-release knot to the bed frame, never the side rails - rail movement would tighten the restraint and injure the limb, and a double knot defeats emergency release. Circulation, skin integrity, and range of motion are checked frequently, commonly every two hours with periodic release, not once per shift.",
+    "difficulty": 2,
+    "subtopic": "Restraint standards",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "The restraint never-list writes the exam: never PRN, never tied to side rails, never a locking knot, never unmonitored. Any option containing a never is wrong (or, in a 'which is correct' stem, the one option without a never is the answer)."
+  },
+  {
+    "id": "nx_a11_rr_001",
+    "topicId": 6,
+    "question": "During the pre-operative checklist, the nurse notes that a client scheduled for surgery this morning took warfarin yesterday, though the chart states it was to be held for five days. Which action should the nurse take?",
+    "options": [
+      "Notify the surgeon and anesthesia provider before the client leaves for the operating room",
+      "Send the client to surgery since the medication was taken a full day ago",
+      "Administer vitamin K per protocol and send the client when ready",
+      "Document the discrepancy and continue the checklist"
+    ],
+    "correct": 0,
+    "explanation": "Warfarin's anticoagulant effect persists for days - which is exactly why the order was to hold it for five days - so a dose taken yesterday leaves the client at elevated surgical bleeding risk, and the decision to proceed, delay, check an INR, or reverse belongs to the surgeon and anesthesia provider. The nurse's obligation is to communicate the finding before the client leaves the unit. Sending the client anyway substitutes the nurse's judgment for the surgical team's on a bleeding-risk decision. Administering vitamin K requires a current provider order for this situation, not a nursing default. Documentation alone fulfills the recording duty while abandoning the communication duty; a checklist finding that changes surgical risk must be reported, not merely filed.",
+    "difficulty": 2,
+    "subtopic": "Pre-operative safety",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "When a pre-op checklist turns up a risk-changing surprise - anticoagulant taken, NPO broken, consent question, abnormal lab - the answer is 'notify the surgical team before transport'. Options that proceed, self-treat, or only document all fail the same duty."
+  },
+  {
+    "id": "nx_a11_rr_002",
+    "topicId": 6,
+    "question": "The nurse assesses a postoperative client on day 2 and finds the right calf swollen, warm, and tender compared with the left. Which action is appropriate?",
+    "options": [
+      "Keep the client in bed and notify the provider of probable deep vein thrombosis",
+      "Massage the calf to relieve the muscle tenderness",
+      "Apply a sequential compression device to the right leg",
+      "Dorsiflex the foot forcefully to confirm the diagnosis before calling"
+    ],
+    "correct": 0,
+    "explanation": "Unilateral calf swelling, warmth, and tenderness in a postoperative client is deep vein thrombosis until proven otherwise: the nurse limits activity of the affected limb and notifies the provider so diagnostic ultrasound and anticoagulation can be arranged. Massage is contraindicated - mechanical manipulation can dislodge the thrombus and cause pulmonary embolism, the complication all DVT care exists to prevent. Compression devices are prophylaxis for clients without clots; applied over an existing thrombus they risk embolization the same way massage does. Forced dorsiflexion (Homans sign) is unreliable, can itself dislodge clot, and is no longer recommended as an assessment maneuver; diagnosis rests on imaging, not bedside provocation.",
+    "difficulty": 2,
+    "subtopic": "DVT recognition",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Once findings suggest an existing clot, every mechanical option - massage, compression device, Homans testing, ambulation - becomes wrong for one shared reason: it can launch the clot. The safe pattern is immobilize and notify; prophylaxis options only apply before a clot exists."
+  },
+  {
+    "id": "nx_a11_rr_003",
+    "topicId": 6,
+    "question": "The nurse is assisting with removal of a central venous catheter. To prevent air embolism, the nurse should instruct the client to do which of the following as the catheter is withdrawn?",
+    "options": [
+      "Bear down (Valsalva maneuver) while holding the breath",
+      "Inhale deeply and hold the chest very still",
+      "Breathe rapidly and shallowly through the mouth",
+      "Cough forcefully and repeatedly during withdrawal"
+    ],
+    "correct": 0,
+    "explanation": "Air enters an open venous tract when intrathoracic pressure is negative, which is what inspiration produces. The Valsalva maneuver - bearing down against a closed glottis - raises intrathoracic pressure above atmospheric, so no gradient favors air entry during the seconds the tract is open; the site is then immediately sealed with an occlusive dressing. Deep inhalation is the exact opposite: it creates the strongest negative pressure and the greatest risk of entraining air. Rapid shallow breathing cycles through inspiration repeatedly, keeping the danger window open. Coughing produces erratic pressure swings including sharp inspirations between coughs and jostles the site during withdrawal. If air embolism is suspected after the fact, the client is positioned left lateral Trendelenburg to trap air in the right ventricular apex.",
+    "difficulty": 2,
+    "subtopic": "Central line removal",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Air-embolism questions are pressure-gradient questions: air flows into veins when the chest pressure is negative (inspiration) and cannot when it is positive (Valsalva). Pick the option that keeps intrathoracic pressure positive during the open-tract moment; any option involving inhaling is the trap."
+  },
+  {
+    "id": "nx_a11_rr_004",
+    "topicId": 6,
+    "question": "The nurse observes continuous vigorous bubbling in the water-seal chamber of a client's chest tube drainage system while the suction is off. Which interpretation is correct?",
+    "options": [
+      "There is an air leak in the system or from the lung that must be located",
+      "The system is functioning normally and no action is needed",
+      "The suction pressure is set too high and should be reduced",
+      "The lung has fully re-expanded and the tube is ready for removal"
+    ],
+    "correct": 0,
+    "explanation": "The water-seal chamber should show gentle rise and fall with respiration (tidaling) and, in a client with a pneumothorax, intermittent bubbling as pleural air exits on exhalation. Continuous vigorous bubbling means air is entering the system constantly - either from a persistent lung leak or from a loose connection somewhere between client and drainage unit - and the nurse systematically checks the dressing and connections to locate it, notifying the provider if the leak is from the client. Normal function looks like tidaling, not continuous bubbling. Suction level is reflected in the suction-control chamber, not the water seal, so a too-high setting does not explain this finding. Full re-expansion produces the opposite picture: bubbling stops and tidaling diminishes.",
+    "difficulty": 2,
+    "subtopic": "Chest tube assessment",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Map each chest-tube chamber to its one meaning: water seal = client/system air (tidaling normal, continuous bubbling = leak); suction control = ordered suction (gentle bubbling normal); collection = output. Identify which chamber the stem describes before reasoning, and most distractors dissolve."
+  },
+  {
+    "id": "nx_a11_rr_005",
+    "topicId": 6,
+    "question": "Fifteen minutes into a transfusion of packed red blood cells, the client reports chills and low back pain, and the temperature has risen 1.1 degrees C (2 degrees F). Which action should the nurse take first?",
+    "options": [
+      "Stop the transfusion immediately and keep the IV line open with normal saline using new tubing",
+      "Slow the transfusion rate and reassess the client in fifteen minutes",
+      "Administer the prescribed PRN acetaminophen and continue the transfusion",
+      "Notify the blood bank to check whether the correct unit was issued"
+    ],
+    "correct": 0,
+    "explanation": "Chills, back pain, and rising temperature during a transfusion form the classic early picture of an acute hemolytic reaction, and the first action for any suspected transfusion reaction is to stop the blood at once - every additional milliliter worsens a hemolytic process - while maintaining venous access with normal saline through fresh tubing, so no residual blood in the line continues to infuse. Slowing the rate continues the exposure and is never the response to suspected hemolysis. Premedicating and continuing treats the symptom while ignoring its most dangerous cause. Notifying the blood bank, rechecking identifiers, monitoring vitals, and collecting specimens all belong in the protocol, but each comes after the transfusion has been stopped; no notification precedes stopping the infusion.",
+    "difficulty": 2,
+    "subtopic": "Transfusion reaction",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "For any suspected transfusion reaction the first move is always the same regardless of reaction type: stop the blood, keep the line open with saline and new tubing. Distractors offer 'slow it', 'premedicate', or 'verify first' - all keep antigen flowing and all are wrong."
+  },
+  {
+    "id": "nx_a11_rr_006",
+    "topicId": 6,
+    "question": "A client with a seizure disorder begins having a generalized tonic-clonic seizure in bed. Which action should the nurse take?",
+    "options": [
+      "Turn the client onto their side and protect the head",
+      "Insert a padded tongue blade to prevent tongue injury",
+      "Hold the client's limbs firmly to stop the movements",
+      "Run to summon help, leaving briefly to get the crash cart"
+    ],
+    "correct": 0,
+    "explanation": "During a seizure the nursing priorities are airway and injury prevention: side-lying positioning lets secretions drain forward rather than pooling at the glottis, and protecting the head - pillow beneath, hard objects away - prevents the most consequential injuries. Nothing is ever inserted into the mouth of a seizing client; the jaw is clenched, and forcing an object breaks teeth, lacerates tissue, and can obstruct the airway - the padded tongue blade is an obsolete practice kept alive only as an exam distractor. Restraining the limbs does not shorten the seizure and causes musculoskeletal injury; the correct handling is to guide, not resist, movements. Leaving the client alone during a seizure abandons the airway; help is summoned with the call light while the nurse stays.",
+    "difficulty": 1,
+    "subtopic": "Seizure precautions",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Seizure options sort by three verbs: position (side-lying - correct), protect (head, environment - correct), and the three prohibitions - insert nothing, restrain nothing, leave never. Every distractor is one of the three prohibitions dressed as help."
+  },
+  {
+    "id": "nx_a11_rr_007",
+    "topicId": 6,
+    "type": "multi",
+    "question": "A client with type 1 diabetes received insulin two hours ago and has not eaten. Which findings indicate hypoglycemia? Select all that apply.",
+    "options": [
+      "Diaphoresis and cool, clammy skin",
+      "Fine tremor of the hands",
+      "Sudden confusion and irritability",
+      "Fruity odor of the breath",
+      "Deep, rapid Kussmaul respirations"
+    ],
+    "correctAnswers": [0, 1, 2],
+    "explanation": "Hypoglycemia announces itself through two channels: adrenergic activation - sweating with cool clammy skin, tremor, tachycardia, anxiety - as counter-regulatory catecholamines surge, and neuroglycopenia - confusion, irritability, slurred speech, progressing to seizure and coma - as the brain runs short of glucose. Diaphoresis, tremor, and acute confusion in a client dosed with insulin and unfed fit both channels and demand immediate glucose. Fruity breath is acetone from ketone production and belongs to diabetic ketoacidosis, the high-glucose emergency; so do Kussmaul respirations, the deep rapid breathing that blows off carbon dioxide to compensate for metabolic acidosis. Sorting the two emergencies quickly matters because their treatments are opposite: sugar for one, insulin and fluids for the other.",
+    "difficulty": 2,
+    "subtopic": "Hypoglycemia recognition",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Split diabetic-emergency findings into two piles before answering: cold and clammy (hypoglycemia - 'cold and clammy, need some candy') versus hot, dry, fruity, Kussmaul (DKA - 'hot and dry, sugar high'). The stem's insulin-without-food setup tells you which pile the correct options come from."
+  },
+  {
+    "id": "nx_a11_rr_008",
+    "topicId": 6,
+    "question": "A client returns to the unit after cardiac catheterization via the right femoral artery. Which assessment finding requires immediate action?",
+    "options": [
+      "A rapidly enlarging area of firm swelling at the puncture site",
+      "The client's report of pressure at the site under the occlusive dressing",
+      "A pedal pulse in the right foot equal to the left, present on Doppler",
+      "The client asking how long bedrest with the leg straight must continue"
+    ],
+    "correct": 0,
+    "explanation": "An expanding firm swelling at an arterial puncture site is a hematoma from active bleeding out of the femoral artery - potentially into the retroperitoneum - and requires immediate direct pressure and provider notification; arterial bleeding at this site can become hemodynamically significant quickly. A sensation of pressure under an intact dressing without swelling is expected after arterial access and warrants monitoring, not alarm. A pedal pulse equal bilaterally is a normal distal-perfusion finding - the assessment exists to catch its absence, which would signal arterial occlusion or dissection. A question about the duration of straight-leg bedrest is a teaching opportunity (typically several hours per protocol to allow the arteriotomy to seal), not a complication.",
+    "difficulty": 2,
+    "subtopic": "Post-catheterization care",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "After arterial puncture, the two killer findings are bleeding (expanding hematoma, hypotension, back pain) and lost distal perfusion (absent pulse, cold pale limb). Scan the options for either; expected sensations, normal findings, and client questions are the padding around the one dangerous change."
+  },
+  {
+    "id": "nx_a11_pa_001",
+    "topicId": 7,
+    "question": "A client with heart failure has gained 1.4 kg (3 lb) since yesterday and has new crackles at both lung bases. Which action should the nurse take first?",
+    "options": [
+      "Notify the provider of the weight gain and new crackles",
+      "Encourage the client to increase walking to mobilize the fluid",
+      "Record the findings and reassess at the next scheduled check",
+      "Increase the client's fluid intake to improve renal perfusion"
+    ],
+    "correct": 0,
+    "explanation": "Overnight weight gain of more than about 1 kg (2 lb) with new crackles is fluid retention progressing toward pulmonary edema - weight is the most sensitive daily indicator of fluid status in heart failure, and each kilogram is roughly a liter of retained fluid. The provider is notified promptly because diuretic and other adjustments are time-sensitive; waiting invites acute decompensation with dyspnea and hypoxemia. Increasing exertion during fluid overload raises myocardial demand on a failing pump. Documenting without reporting treats an actionable warning as routine data - exactly the error the daily-weight protocol exists to prevent. Increasing fluids is the direct opposite of what the pathophysiology requires; heart-failure regimens typically restrict fluid and sodium.",
+    "difficulty": 2,
+    "subtopic": "Heart failure decompensation",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "In heart failure, the scale is the alarm: more than about 1 kg overnight or 2.3 kg in a week means retained fluid, and paired with any respiratory finding it is a report-now situation. Options that document, wait, exercise, or hydrate all ignore what the number is for."
+  },
+  {
+    "id": "nx_a11_pa_002",
+    "topicId": 7,
+    "question": "The nurse is caring for a client with long-standing COPD receiving oxygen at 2 L/min by nasal cannula. The pulse oximeter reads 90%. Which action is appropriate?",
+    "options": [
+      "Maintain the current oxygen flow, since this saturation is within the goal range for COPD",
+      "Increase the oxygen to 6 L/min until the saturation exceeds 97%",
+      "Remove the oxygen and have the client use pursed-lip breathing instead",
+      "Switch to a non-rebreather mask to correct the low reading quickly"
+    ],
+    "correct": 0,
+    "explanation": "For clients with severe COPD who chronically retain carbon dioxide, the accepted oxygenation target is modest - commonly 88 to 92 percent - because high-flow oxygen can worsen hypercapnia through several mechanisms, including release of hypoxic pulmonary vasoconstriction (worsening ventilation-perfusion matching) and the Haldane effect, with blunted hypoxic drive contributing in some clients. A reading of 90% on 2 L/min sits inside the goal range and calls for no change. Raising the flow to chase a 'normal' saturation above 97% risks progressive CO2 retention, drowsiness, and respiratory acidosis. Removing prescribed oxygen creates hypoxemia; breathing techniques supplement oxygen, not replace it. A non-rebreather delivers the highest concentration available and is reserved for acute severe hypoxemia, not a target-range reading.",
+    "difficulty": 2,
+    "subtopic": "COPD oxygenation targets",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Before judging any saturation number, ask whose lungs it belongs to: 90% is a problem in most clients but on-target in severe COPD (goal 88-92%). Options that push a COPD client's saturation into the high 90s are the trap, not the treatment."
+  },
+  {
+    "id": "nx_a11_pa_003",
+    "topicId": 7,
+    "question": "The nurse is monitoring a client with a head injury. Which finding is the earliest indicator of increasing intracranial pressure?",
+    "options": [
+      "Increasing restlessness and subtle change in level of consciousness",
+      "Dilated, nonreactive pupils bilaterally",
+      "Widening pulse pressure with bradycardia and irregular respirations",
+      "Decerebrate posturing to painful stimulus"
+    ],
+    "correct": 0,
+    "explanation": "Level of consciousness is the most sensitive indicator of neurologic status: the cerebral cortex reacts to small pressure and perfusion changes before any other sign appears, so new restlessness, irritability, or subtle confusion is the earliest warning of rising intracranial pressure and the moment intervention is most effective. The other options are late findings that signal established, often life-threatening, pressure: bilaterally fixed dilated pupils reflect compression at the level of the oculomotor nerves and midbrain; widening pulse pressure, bradycardia, and irregular respirations form Cushing's triad, the brainstem's response to severe hypertension of the cranial vault and a herald of herniation; decerebrate posturing indicates brainstem-level dysfunction. Answering 'earliest' with any late sign means the window for prevention was already missed.",
+    "difficulty": 2,
+    "subtopic": "Increased intracranial pressure",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Neuro-deterioration questions hinge on one ranking: level of consciousness changes first; pupils, vitals (Cushing's triad), and posturing are late. When the stem asks for the earliest sign, eliminate every option dramatic enough to be recognizable at a glance - drama is lateness."
+  },
+  {
+    "id": "nx_a11_pa_004",
+    "topicId": 7,
+    "question": "A client is admitted immediately after rescue from a house fire with singed nasal hairs, soot around the mouth, and a hoarse voice. Which is the priority nursing concern?",
+    "options": [
+      "Impending airway obstruction from inhalation injury",
+      "Fluid resuscitation for the burned body surface area",
+      "Pain management for partial-thickness burns",
+      "Risk of wound infection in the burned areas"
+    ],
+    "correct": 0,
+    "explanation": "Singed nasal hairs, perioral soot, and hoarseness are the classic triad of inhalation injury: heat and combustion products have reached the upper airway, and the resulting mucosal edema can progress over minutes to hours until the airway closes - after which intubation becomes technically difficult or impossible. Airway therefore outranks everything, and early elective intubation is often chosen before edema peaks. Fluid resuscitation is the hallmark of the emergent burn phase and follows immediately, but circulation follows airway and breathing in every priority framework. Pain control matters and partial-thickness burns are intensely painful, but analgesia serves a client who can breathe. Infection is the dominant threat of the later acute phase, not the first hours.",
+    "difficulty": 2,
+    "subtopic": "Burn priorities - inhalation injury",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "In burn scenarios, scan the stem for face/airway clues - singed nares, soot, hoarseness, enclosed-space fire - before anything else; any one of them makes airway the answer over fluids, pain, or wounds. No airway clue, and the emergent-phase answer shifts to fluid resuscitation."
+  },
+  {
+    "id": "nx_a11_pa_005",
+    "topicId": 7,
+    "question": "A client with sickle cell disease is admitted in vaso-occlusive crisis with severe pain. Which combination of interventions is the priority?",
+    "options": [
+      "Aggressive hydration and scheduled opioid analgesia",
+      "Cold compresses to painful joints and restricted fluids",
+      "High-dose NSAIDs alone to avoid opioid dependence",
+      "Bedrest with the affected extremities held in dependent positions"
+    ],
+    "correct": 0,
+    "explanation": "Vaso-occlusive crisis is sludging of sickled cells in the microcirculation; treatment attacks both the occlusion and the pain. Hydration - oral and intravenous - dilutes the blood and interrupts the dehydration-sickling cycle, and severe crisis pain requires opioids, given on a schedule or by PCA rather than PRN-as-needed gaps; oxygen is added when hypoxemia is present. Cold is contraindicated because vasoconstriction promotes further sickling - warmth is the correct thermal choice - and restricting fluids reverses the central intervention. NSAIDs serve as adjuncts, but alone they are inadequate for crisis-level pain, and withholding opioids over dependence fears in acute crisis is a recognized failure of care. Dependent positioning encourages venous stasis in the very vessels where cells are sludging.",
+    "difficulty": 2,
+    "subtopic": "Sickle cell crisis",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Sickle-cell options grade against the sludge model: anything that thins, warms, oxygenates, or relieves pain helps; anything that cools, dries, or pools blood (cold packs, fluid restriction, dependent limbs) worsens sludging and is wrong. The opioid-fear option is a distractor in every crisis question."
+  },
+  {
+    "id": "nx_a11_pa_006",
+    "topicId": 7,
+    "question": "A client with cirrhosis receiving lactulose asks why the medication continues when it causes several stools a day. Which explanation by the nurse is accurate?",
+    "options": [
+      "\"The medication removes ammonia through the bowel, and two to three soft stools daily is the goal that shows it is working.\"",
+      "\"The diarrhea is an unfortunate side effect, and the dose should be reduced until stools are formed.\"",
+      "\"It prevents constipation so you do not strain and bleed from your esophageal veins.\"",
+      "\"It protects your stomach lining from the medications you take for your liver.\""
+    ],
+    "correct": 0,
+    "explanation": "In hepatic encephalopathy, lactulose is dosed specifically to produce two to three soft stools per day: colonic bacteria metabolize it to acids that trap ammonia as ammonium in the bowel lumen and speed its excretion, lowering the blood ammonia that clouds mentation. The stool frequency is the titration target - evidence of effect, not an adverse effect - so reducing the dose to form stools would defeat the therapy; only diarrhea beyond the target range prompts adjustment. While avoiding straining does matter for clients with varices, that is not lactulose's purpose in cirrhosis, and framing it as a stool softener misses the ammonia mechanism. Lactulose has no gastric-protective role. The teaching point the question rewards: know when a 'side effect' is actually the endpoint.",
+    "difficulty": 2,
+    "subtopic": "Hepatic encephalopathy - lactulose",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "A handful of drugs are titrated to an effect that looks like a side effect - lactulose to 2-3 soft stools, and diuretics to output being the obvious pair. When a stem frames the titration endpoint as a complaint, the correct option is the one that reframes it as the goal."
+  },
+  {
+    "id": "nx_a11_pa_007",
+    "topicId": 7,
+    "type": "multi",
+    "question": "The nurse is assessing a client with right-sided heart failure. Which findings are consistent with this diagnosis? Select all that apply.",
+    "options": [
+      "Jugular venous distention observed with the head of bed at 45 degrees",
+      "Pitting edema of both ankles",
+      "Enlarged, tender liver with abdominal distention from ascites",
+      "Crackles throughout both lung fields",
+      "Pink, frothy sputum with severe dyspnea"
+    ],
+    "correctAnswers": [0, 1, 2],
+    "explanation": "The failing right ventricle cannot move systemic venous return forward, so blood dams up behind it in the systemic circulation: jugular venous distention, dependent peripheral edema, hepatomegaly with tenderness, and ascites are the direct hydraulic consequences, along with weight gain and, in advanced cases, anasarca. Crackles belong to left-sided failure, where blood dams up behind the left ventricle into the lungs; pink frothy sputum with severe dyspnea is acute pulmonary edema, the extreme of that left-sided picture. The sorting rule is anatomical - each ventricle floods the circulation directly behind it - and while chronic left failure eventually causes right failure, exam questions reward assigning each finding to its own side.",
+    "difficulty": 2,
+    "subtopic": "Right vs left heart failure",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Assign heart-failure findings by asking what is directly behind the failing ventricle: right ventricle - the body (JVD, edema, big liver, ascites); left ventricle - the lungs (crackles, frothy sputum, orthopnea). On a select-all, pick every option from the named side's territory and none from the other's."
+  },
+  {
+    "id": "nx_a11_pa_008",
+    "topicId": 7,
+    "question": "A client performing peritoneal dialysis at home calls to report that today's drained effluent is cloudy, with mild abdominal tenderness. Which instruction is correct?",
+    "options": [
+      "Save the cloudy effluent and come in promptly for evaluation - cloudiness suggests peritonitis",
+      "Add an extra rinse cycle and call back only if fever develops",
+      "Drink additional fluids today to clear the effluent",
+      "Skip today's remaining exchanges to rest the peritoneum"
+    ],
+    "correct": 0,
+    "explanation": "Cloudy or turbid effluent is the earliest and most reliable sign of peritonitis - the most serious common complication of peritoneal dialysis - and abdominal tenderness strengthens the suspicion; fever is often a later finding. The client comes in promptly, bringing the drained bag when feasible, because the effluent is cultured and analyzed to confirm infection and direct intraperitoneal antibiotic therapy, and treatment cannot wait for the full clinical picture. Rinsing and waiting for fever delays diagnosis of an infection best treated early. Oral fluid intake has no effect on effluent clarity, which reflects peritoneal inflammation, not hydration. Suspending exchanges neither treats the infection nor manages the client's uremia and fluid status; dialysis decisions during peritonitis belong to the treating team.",
+    "difficulty": 2,
+    "subtopic": "Peritoneal dialysis - peritonitis",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave11.json",
+    "strategy": "Every dialysis modality has one signature emergency finding: cloudy effluent for peritoneal dialysis, and for that finding the answer is always 'evaluate now, culture the evidence'. Options that watch, rinse, hydrate, or rest all trade an early cure for a late crisis."
+  }
+]
