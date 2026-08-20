@@ -1,0 +1,466 @@
+[
+ {
+  "id": "nx_a1_bc_001",
+  "topicId": 4,
+  "subtopic": "Crutch walking",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is teaching a client with a right leg injury to descend stairs using crutches. Which technique indicates correct understanding?",
+  "options": [
+   "Advance the crutches and the right (injured) leg down first, then the left leg",
+   "Advance the left (unaffected) leg down first, then the crutches and right leg",
+   "Advance both crutches down two steps at a time, then hop down with the left leg",
+   "Hold both crutches under the right arm and use the rail to hop down on the left leg"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): going DOWN, the crutches and the injured leg lead, and the strong leg follows \u2014 'up with the good, down with the bad.' The strong leg controls the descent from the step above. (b) Leading down with the strong leg leaves the injured leg and crutches bearing weight on the upper step and control is lost. (c) Taking two steps at a time with both crutches is unstable and never taught. (d) Pairing both crutches under one arm removes the tripod base; the rail-plus-one-crutch method still sends crutch and injured leg first.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_002",
+  "topicId": 4,
+  "subtopic": "Urinary catheter care",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is caring for a client with an indwelling urinary catheter. Which actions are appropriate to reduce the risk of catheter-associated urinary tract infection? Select all that apply.",
+  "options": [
+   "Keep the drainage bag below the level of the bladder at all times",
+   "Secure the catheter tubing to the client's thigh",
+   "Irrigate the catheter with sterile saline once per shift",
+   "Perform routine perineal care with soap and water",
+   "Disconnect the catheter from the drainage tubing when the client ambulates"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   3
+  ],
+  "explanation": "Correct (a) \u2014 a dependent bag prevents urine reflux into the bladder; (b) \u2014 securing the tubing prevents urethral traction and meatal injury; (d) \u2014 routine soap-and-water perineal care reduces organism load at the meatus. Wrong (c): routine irrigation opens the closed system and is done only for an obstruction with an order. Wrong (e): the closed drainage system must never be broken for ambulation \u2014 carry the bag below bladder level instead.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_003",
+  "topicId": 4,
+  "subtopic": "Dysphagia & feeding",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is assisting with a meal for a client who has dysphagia after a stroke. Which interventions are appropriate? Select all that apply.",
+  "options": [
+   "Position the client upright at 90 degrees for the meal",
+   "Instruct the client to tuck the chin toward the chest when swallowing",
+   "Offer thin liquids through a straw to reduce effort",
+   "Check for pocketed food in the affected cheek during the meal",
+   "Keep the client upright for at least 30 minutes after eating"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   3,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 a full upright position aligns the airway and esophagus for the safest swallow; (b) \u2014 the chin-tuck narrows the airway entrance and directs food toward the esophagus; (d) \u2014 food pockets on the weak side unnoticed and becomes an aspiration source; (e) \u2014 remaining upright roughly 30 minutes limits reflux and delayed aspiration. Wrong (c): thin liquids are the HARDEST texture to control after stroke, and straws deliver boluses quickly to the pharynx \u2014 liquids are thickened per the swallow evaluation, not thinned.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_004",
+  "topicId": 4,
+  "subtopic": "Heat & cold therapy",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A client sprained an ankle 4 hours ago. Which therapy should the nurse apply?",
+  "options": [
+   "A warm compress to promote circulation to the injury",
+   "A cold pack wrapped in cloth for about 20 minutes at a time",
+   "Continuous cold pack application directly on the skin until swelling resolves",
+   "Alternating heat and cold every 10 minutes"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): in the first 24-48 hours, cold causes vasoconstriction that limits swelling and pain; a cloth barrier and ~20-minute intervals prevent cold injury. (a) Heat vasodilates and worsens acute edema and bleeding into tissue \u2014 it belongs in the later, stiffness phase. (c) Cold applied directly and continuously risks frostbite and reflex vasodilation. (d) Alternating therapies has no role in the acute phase and dilutes the anti-edema effect of cold.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_005",
+  "topicId": 4,
+  "subtopic": "Constipation & elimination",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is counseling an older adult who reports chronic constipation. Which recommendation is most appropriate to offer first?",
+  "options": [
+   "Use a daily stimulant laxative such as senna indefinitely",
+   "Increase dietary fiber and fluid intake and walk daily",
+   "Request a prescription for daily enemas",
+   "Restrict fruit intake to reduce gas and bloating"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): first-line management is lifestyle \u2014 fiber toward 25-38 g/day, adequate fluids, and regular activity, which together restore normal motility. (a) Daily stimulant laxatives are not a first step and chronic use promotes dependence. (c) Routine enemas disrupt normal defecation reflexes and are not a maintenance strategy. (d) Fruit ADDS fiber and fluid; restricting it worsens constipation.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_006",
+  "topicId": 4,
+  "subtopic": "Sleep promotion",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A hospitalized client reports difficulty sleeping. Which nursing intervention is most appropriate?",
+  "options": [
+   "Encourage a long afternoon nap so total sleep is preserved",
+   "Cluster nighttime care activities to allow uninterrupted sleep periods",
+   "Offer coffee in the evening so the client feels more relaxed and 'normal'",
+   "Keep the room lights on at night so staff checks are less startling"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): grouping assessments, medications, and cares into single visits protects continuous sleep cycles, the intervention with the largest effect in hospital. (a) Long late naps reduce nighttime sleep drive. (c) Evening caffeine is a stimulant and delays sleep onset. (d) Nighttime light suppresses melatonin and fragments sleep; the room should be dark and quiet.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_007",
+  "topicId": 4,
+  "subtopic": "Denture & oral care",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is cleaning a client's dentures at the bedside. Which action is correct?",
+  "options": [
+   "Clean the dentures under hot running water to disinfect them",
+   "Line the sink with a towel and clean the dentures with tepid water",
+   "Let the dentures air-dry uncovered overnight on the bedside table",
+   "Wrap the dentures in a paper towel and leave them on the meal tray"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): a padded sink prevents breakage if the dentures slip, and tepid water cleans without damage. (a) Hot water warps denture acrylic. (c) Air-drying dries and distorts the material \u2014 dentures are stored moist, in water or denture solution. (d) Anything wrapped in a paper towel on a tray is routinely thrown away, a classic cause of lost dentures.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_bc_008",
+  "topicId": 4,
+  "subtopic": "Safe client transfers",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is transferring a client with right-sided weakness from bed to a wheelchair. Where should the wheelchair be placed?",
+  "options": [
+   "On the client's left (stronger) side, angled next to the bed",
+   "On the client's right (weaker) side so the nurse can support the weak arm",
+   "Directly facing the client at the foot of the bed",
+   "Against the wall across the room so the client can practice a few steps"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the client transfers TOWARD the stronger side, which bears the pivot \u2014 the chair sits angled on the strong side, brakes locked. (b) Leading with the weak side gives no stable pivot limb and invites a fall. (c) A chair facing the client forces a long, unsupported turn. (d) Adding an unplanned ambulation distance to a transfer defeats its purpose and is unsafe for a hemiparetic client.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_001",
+  "topicId": 2,
+  "subtopic": "Adult screening",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A 50-year-old client at average risk of colorectal cancer asks how often a screening colonoscopy is repeated if the result is normal. Which response by the nurse is correct?",
+  "options": [
+   "Every year",
+   "Every 5 years",
+   "Every 10 years",
+   "Only once in a lifetime"
+  ],
+  "correct": 2,
+  "explanation": "Correct (c): for average-risk adults with a normal examination, colonoscopy is repeated every 10 years. (a) Annual testing describes stool-based screening such as FIT, not colonoscopy. (b) Five-year intervals apply to flexible sigmoidoscopy or to shortened intervals after certain polyp findings \u2014 not to a normal colonoscopy. (d) Screening continues at intervals through the recommended age range; one examination does not end it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_002",
+  "topicId": 2,
+  "subtopic": "Tobacco cessation",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client using transdermal nicotine patches asks how to use them correctly. Which instruction should the nurse give?",
+  "options": [
+   "Apply the patch to a clean, dry, non-hairy site and rotate sites daily",
+   "Apply the patch to the same site each day so absorption stays consistent",
+   "Continue smoking during the first patch week to prevent withdrawal",
+   "Cut the patch in half when cravings lessen to taper the dose"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): a clean, dry, hairless site gives reliable absorption, and daily rotation prevents skin irritation. (b) Reusing one site causes local irritation without improving absorption. (c) Smoking while wearing a patch adds nicotine on top of the patch dose and raises cardiovascular risk \u2014 the quit date is the point of starting. (d) Cutting a patch damages the rate-controlling membrane and can release the drug unpredictably; tapering uses lower-dose patches.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_003",
+  "topicId": 2,
+  "subtopic": "Breastfeeding",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is teaching the parent of a 5-day-old newborn how to tell that breastfeeding is going well. Which findings indicate adequate intake? Select all that apply.",
+  "options": [
+   "The newborn breastfeeds 8 to 12 times in 24 hours",
+   "The newborn has at least 6 wet diapers in 24 hours",
+   "The newborn sleeps 6 hours between daytime feedings",
+   "Audible swallowing is heard during feedings",
+   "The newborn requires supplemental water between feedings"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   3
+  ],
+  "explanation": "Correct (a) \u2014 8-12 feeds per day is the expected newborn pattern; (b) \u2014 by day 5, six or more wet diapers a day reflects adequate milk transfer; (d) \u2014 audible swallowing is direct evidence of transfer at the breast. Wrong (c): a newborn sleeping 6-hour daytime stretches is under-feeding and should be wakened to feed. Wrong (e): breast milk meets all fluid needs \u2014 supplemental water is not given to newborns and can cause hyponatremia.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_004",
+  "topicId": 2,
+  "subtopic": "Oral contraceptive teaching",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client taking combined oral contraceptives reports missing two consecutive active pills. Which instruction should the nurse give?",
+  "options": [
+   "Take the most recent missed pill as soon as possible and use backup contraception for 7 days",
+   "Stop the pack, wait for a withdrawal bleed, and restart a new pack next month",
+   "Double the dose for the rest of the cycle to catch up",
+   "No action is needed if intercourse has not occurred this week"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): after two or more missed active pills, the standard rule is to take the most recent missed pill promptly, continue the pack, and use backup contraception for 7 days. (b) Abandoning the pack removes contraceptive protection entirely for weeks. (c) Taking extra doses beyond the catch-up pill adds side effects without restoring suppression for the cycle. (d) Ovulation can resume after two missed pills regardless of recent intercourse \u2014 backup protection is still required.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_005",
+  "topicId": 2,
+  "subtopic": "Physical activity guidance",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A healthy adult asks how much exercise is recommended each week. Which response by the nurse reflects current guidance?",
+  "options": [
+   "At least 150 minutes of moderate-intensity aerobic activity plus muscle-strengthening on 2 or more days",
+   "30 minutes of vigorous activity once a week is sufficient",
+   "Exercise is only necessary for adults who are overweight",
+   "Strength training should be avoided after age 50"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): guidelines recommend at least 150 minutes/week of moderate aerobic activity (or 75 vigorous) plus muscle-strengthening at least twice weekly. (b) A single weekly session falls far short of the aerobic minimum. (c) Activity benefits every adult regardless of weight \u2014 cardiovascular, metabolic, mood, and bone effects are independent of BMI. (d) Strength training is specifically encouraged with age to preserve muscle mass and bone density.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_006",
+  "topicId": 2,
+  "subtopic": "Lead exposure screening",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "The parent of a 12-month-old living in older housing asks about lead. Which statement by the nurse is appropriate?",
+  "options": [
+   "Blood lead screening is recommended at ages 12 and 24 months",
+   "Lead testing is needed only if the child eats paint chips",
+   "Lead exposure causes obvious symptoms early, so watchful waiting is fine",
+   "Washing toys is unnecessary because lead is only inhaled"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): screening at 12 and 24 months is the standard schedule, and pre-1978 housing is a recognized risk. (b) Most exposure is invisible \u2014 lead-laden household dust on hands and toys, not observed paint eating. (c) Lead toxicity is typically ASYMPTOMATIC while it damages the developing brain, which is exactly why screening exists. (d) Hand-to-mouth ingestion of dust is the dominant route in toddlers, so washing hands and toys matters.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_007",
+  "topicId": 2,
+  "subtopic": "School-age development",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is assessing an 8-year-old at a well-child visit. Which observation is consistent with normal school-age development?",
+  "options": [
+   "Prefers playing alone alongside other children without interacting",
+   "Enjoys rule-based team games and comparing skills with peers",
+   "Cannot yet understand that reshaping clay does not change its amount",
+   "Makes decisions based mainly on abstract hypothetical reasoning"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): school-age children play cooperatively, love rules, and build a sense of industry by measuring skills against peers. (a) Parallel play beside others without interaction is toddler behavior. (c) Conservation \u2014 understanding amount is unchanged by shape \u2014 is normally ACHIEVED in the concrete-operational school years, so its absence at 8 is not expected. (d) Abstract hypothetical reasoning is formal-operational, emerging in adolescence.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_hp_008",
+  "topicId": 2,
+  "subtopic": "Menopause comfort",
+  "difficulty": 1,
+  "type": "multi",
+  "question": "A perimenopausal client asks about nonpharmacologic ways to manage hot flashes. Which suggestions are appropriate for the nurse to make? Select all that apply.",
+  "options": [
+   "Dress in removable layers of lightweight clothing",
+   "Limit caffeine and alcohol, which can trigger flashes",
+   "Keep the sleeping environment cool",
+   "Increase daily intake of hot beverages to build tolerance",
+   "Practice paced, slow breathing when a flash begins"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 layers allow immediate cooling as a flash starts; (b) \u2014 caffeine and alcohol are common vasomotor triggers worth limiting; (c) \u2014 a cool bedroom reduces night sweats and sleep disruption; (e) \u2014 slow paced breathing is a low-risk comfort technique many clients find helpful during a flash. Wrong (d): hot beverages are a recognized TRIGGER \u2014 deliberately increasing them has no tolerance-building effect and worsens symptoms.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_001",
+  "topicId": 3,
+  "subtopic": "Restraint use",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is reviewing safe practice for physical restraints on an adult medical unit. Which statements are correct? Select all that apply.",
+  "options": [
+   "Less restrictive alternatives must be attempted before applying a restraint",
+   "Restraint orders may be written as needed (PRN) for recurring agitation",
+   "The restrained limb's circulation, skin, and range of motion are assessed regularly",
+   "The restraint is secured to the movable side rail with a quick-release tie",
+   "The restraint is removed or the order renewed within the time limits set by policy"
+  ],
+  "correctAnswers": [
+   0,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 restraint is a last resort after alternatives such as reorientation, a sitter, or environmental changes; (c) \u2014 regular neurovascular and skin checks are mandatory because injury under a restraint is common and silent; (e) \u2014 orders are time-limited and require renewal after in-person reassessment. Wrong (b): PRN restraint orders are prohibited \u2014 each episode needs a new assessment and order. Wrong (d): tying to a movable side rail tightens or wrenches the limb when the rail moves; restraints anchor to the bed frame with a quick-release knot.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_002",
+  "topicId": 3,
+  "subtopic": "Hallucinations & delusions",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with schizophrenia says, 'The voices are telling me the food is poisoned.' Which response by the nurse is most appropriate?",
+  "options": [
+   "'There are no voices \u2014 nobody else hears anything.'",
+   "'I don't hear the voices, but I can see this is frightening for you. What are the voices saying?'",
+   "'Let's taste the food together so you can see it is safe.'",
+   "'Try to ignore the voices and eat your meal.'"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): the nurse presents reality without arguing, acknowledges the feeling, and \u2014 critically \u2014 assesses the CONTENT of the voices, because command hallucinations can direct harm. (a) Flatly denying the experience dismisses the client and invites argument about what is real. (c) Participating in checking the food validates the delusion's premise. (d) Telling the client to ignore voices skips the safety assessment and offers no support for the fear.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_003",
+  "topicId": 3,
+  "subtopic": "PTSD care",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with post-traumatic stress disorder begins breathing rapidly and says, 'I'm back there \u2014 it's happening again.' What should the nurse do first?",
+  "options": [
+   "Ask the client to describe the traumatic event in detail",
+   "Speak calmly, say the client's name, and orient them to the present place and time",
+   "Leave the room to give the client privacy until the episode passes",
+   "Administer the client's PRN sleep medication"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): during a flashback the priority is grounding \u2014 calm voice, name, and concrete reminders of the present ('You are in the hospital; you are safe') until reorientation occurs. (a) Pressing for trauma detail mid-flashback deepens re-experiencing. (c) Leaving an unoriented, terrified client alone is unsafe and abandoning. (d) A hypnotic does not treat a flashback and sedating an unoriented client adds risk without grounding them.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_004",
+  "topicId": 3,
+  "subtopic": "Eating disorders",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client hospitalized with anorexia nervosa is starting nutritional rehabilitation. Which nursing intervention is appropriate?",
+  "options": [
+   "Weigh the client at the same time each day, in a gown, after voiding",
+   "Negotiate the meal plan calorie total with the client at each meal",
+   "Leave the client alone during meals to reduce performance pressure",
+   "Praise the client's slim appearance to build rapport before discussing food"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): standardized weighing \u2014 same time, gown, post-void \u2014 gives comparable data and limits manipulation of weights. (b) Calorie totals are set by the treatment plan; renegotiating at the bedside turns every meal into a bargaining session the illness wins. (c) Meals are SUPERVISED, with observation typically continuing about an hour afterward to prevent purging and food disposal. (d) Complimenting thinness reinforces the disorder's core value.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_005",
+  "topicId": 3,
+  "subtopic": "Alcohol use screening",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse uses the CAGE questionnaire during an admission assessment. Which question belongs to this screening tool?",
+  "options": [
+   "'Have you ever felt you should cut down on your drinking?'",
+   "'How many drinks containing alcohol do you have on a typical day?'",
+   "'Have you ever driven a vehicle after drinking?'",
+   "'At what age did you have your first drink?'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): CAGE asks about Cutting down, being Annoyed by criticism, feeling Guilty, and needing an Eye-opener \u2014 option (a) is the C. (b) Typical-day quantity is an AUDIT-C item, a different validated screen. (c) Driving after drinking is a consequence question, not part of CAGE's four items. (d) Age at first drink is a risk-history question outside the tool.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_006",
+  "topicId": 3,
+  "subtopic": "Crisis intervention",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client in the emergency department is pacing, shouting, and clenching their fists. Which initial nursing approach is most appropriate?",
+  "options": [
+   "Stand close and maintain firm, continuous eye contact to establish authority",
+   "Use a calm, low voice, allow personal space, and offer simple choices",
+   "Tell the client that security will be called if the shouting continues",
+   "Direct several staff members to surround the client as a show of support"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): de-escalation pairs a calm tone and unhurried speech with physical space and small offered choices, which return a sense of control. (a) Crowding and fixed eye contact read as challenge and escalate agitation. (c) Leading with a threat is provocation, not limit-setting \u2014 consequences come calmly and only as part of clear limits. (d) Encirclement is threatening; extra staff stay visible but at a distance unless intervention becomes necessary.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_007",
+  "topicId": 3,
+  "subtopic": "Culturally responsive care",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is admitting a client whose primary language is not English and who needs to sign consent for a procedure. Which action is correct?",
+  "options": [
+   "Ask the client's adult child to translate the consent discussion",
+   "Arrange a qualified medical interpreter for the consent discussion",
+   "Speak slowly and loudly in English, using gestures for key points",
+   "Have the client sign now and explain the details after the procedure"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): informed consent requires a qualified medical interpreter \u2014 accuracy, confidentiality, and freedom from family filtering are all at stake. (a) Family members omit, soften, and mistranslate clinical content and put relatives in an untenable role for consent. (c) Volume and gesturing do not create comprehension of risks and alternatives. (d) Consent obtained without understanding is not informed consent at all.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ },
+ {
+  "id": "nx_a1_ps_008",
+  "topicId": 3,
+  "subtopic": "Sensory overload",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "An ICU client is restless, irritable, and disoriented after several days of continuous monitoring alarms and frequent care interruptions. Which interventions address sensory overload? Select all that apply.",
+  "options": [
+   "Cluster assessments and cares to create uninterrupted rest periods",
+   "Dim the room lights at night and reduce non-essential noise",
+   "Reorient the client frequently using a visible clock and calendar",
+   "Turn on the television continuously to mask equipment sounds",
+   "Rotate many different staff through the room for shorter individual visits"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2
+  ],
+  "explanation": "Correct (a) \u2014 clustering care creates the protected rest blocks the client is losing; (b) \u2014 restoring a day-night cycle of light and quiet directly reduces the sensory load; (c) \u2014 a clock, calendar, and brief reorientation anchor the client against ICU disorientation. Wrong (d): continuous television ADDS unpatterned stimulation on top of the alarms. Wrong (e): a parade of unfamiliar faces increases stimulation and confusion \u2014 consistent caregivers reduce it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave1 (2026-08-20)"
+ }
+]
