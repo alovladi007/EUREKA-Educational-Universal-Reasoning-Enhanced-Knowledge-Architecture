@@ -1419,7 +1419,8 @@ _add(LessonExtras(
                 "to, sooner or later, because an instinct that "
                 "has survived a table of measurements is the "
                 "only kind an exam or a laboratory can safely "
-                "run on."
+                "run on, and building that kind is what these "
+                "chapters are for."
             ),
         ),
     ),
