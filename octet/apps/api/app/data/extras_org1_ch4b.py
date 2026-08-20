@@ -2538,7 +2538,7 @@ _add(LessonExtras(
                 "chemistry owns, where every claim in the "
                 "drawing has, somewhere in a table or a "
                 "spectrum, a genuine published measurement "
-                "standing patiently behind it."
+                "standing quietly and patiently right behind it."
             ),
         ),
     ),
