@@ -4244,8 +4244,15 @@ _add(LessonExtras(
                 "and frequently it is the entire answer, "
                 "printed in the one place untrained eyes "
                 "refuse to look. Train yours there first, "
-                "on every reaction, from this page "
-                "forward."
+                "on every reaction, from this page forward - "
+                "and hydrogenation, whose conditions line "
+                "carries catalyst identity, pressure, "
+                "temperature and poisons all at once, is the "
+                "most instructive reagent line in the whole "
+                "first semester to practise that discipline "
+                "on, which is one more reason this simplest "
+                "of additions earned the longest lesson in "
+                "its chapter."
             ),
         ),
     ),
