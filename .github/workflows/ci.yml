@@ -284,25 +284,38 @@ jobs:
             --override-ini=addopts= \
             -p no:cacheprovider
 
-          # GATE 2 — the subset that actually runs green.
-          # These files use local async fixtures (see top of
-          # test_srs_endpoints.py) and don't touch the global conftest's
-          # sync sqlite — they bring their own aiosqlite engine. Converting the
-          # global conftest to an async session is what would let the rest of
-          # tests/integration/ run here; until then this list is the honest
-          # green set, and gate 1 covers the rest for import breakage.
-          pytest \
-            tests/integration/test_srs_endpoints.py \
-            tests/integration/test_user_progress_endpoints.py \
-            tests/integration/test_patent_bar_endpoints.py \
-            tests/integration/test_auth_flow.py \
-            tests/integration/test_settings_endpoints.py \
-            tests/integration/test_srs_review_streaks.py \
-            tests/integration/test_rbac.py \
+          # GATE 2 — the whole integration directory, minus a named deny-list.
+          #
+          # This was an ALLOWLIST of seven files, which is precisely how the
+          # breakage hid: a file outside the list could rot indefinitely and CI
+          # stayed green. It is now a deny-list, so a NEW integration file is
+          # included automatically and has to be explicitly excused to be
+          # skipped. Fail-closed, not fail-open.
+          #
+          # The seven-file list also carried --noconftest, because the global
+          # conftest handed the async app a sync Session. That is fixed (the
+          # conftest now uses create_async_engine + async_sessionmaker), so the
+          # conftest is loaded here and 25 of the 29 integration files pass with
+          # it — up from the 7 that used to run.
+          #
+          # Each exclusion below is a KNOWN failure with a named cause, not a
+          # convenience. Remove the line when the cause is fixed; do not add to
+          # this list to make a red build green.
+          #   test_auth.py    11 fail — request/response drift vs the current
+          #                   API (422s where schemas moved, 404s where routes
+          #                   did) + a verification-token helper that does not
+          #                   exist anywhere in the service
+          #   test_phase12.py  1 fail — gamification leaderboard
+          #   test_phase13.py  1 fail — audit log create/revoke capture
+          #   test_phase7.py   1 fail — IRT calibration assertion
+          pytest tests/integration/ \
+            --ignore=tests/integration/test_auth.py \
+            --ignore=tests/integration/test_phase12.py \
+            --ignore=tests/integration/test_phase13.py \
+            --ignore=tests/integration/test_phase7.py \
             -v --tb=short \
             --override-ini=addopts= \
-            -p no:cacheprovider \
-            --noconftest
+            -p no:cacheprovider
 
   # -------------------------------------------------------------------------
   # api-core Alembic migration smoke test (P1.2 + P1.1-followup)
