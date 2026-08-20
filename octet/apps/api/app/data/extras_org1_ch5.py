@@ -3709,7 +3709,13 @@ _add(LessonExtras(
                 "claim audited against the intermediate that "
                 "must have made it. The scissors are down; "
                 "two lessons remain; the toolkit is nearly "
-                "whole."
+                "whole - and a toolkit assembled this "
+                "carefully, with each tool's mechanism, "
+                "signature, spec sheet and error catalogue "
+                "filed beside it, is what separates a course "
+                "that must be re-crammed each exam season "
+                "from one that was actually, permanently "
+                "learned."
             ),
         ),
     ),
