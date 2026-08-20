@@ -4563,7 +4563,7 @@ _add(LessonExtras(
                 "the pKa table, and the ladder of the "
                 "chapters behind it. Curriculum is "
                 "compounding, and this is where the "
-                "compound interest first starts to visibly show."
+                "compound interest of it all first starts to visibly show."
             ),
         ),
     ),
