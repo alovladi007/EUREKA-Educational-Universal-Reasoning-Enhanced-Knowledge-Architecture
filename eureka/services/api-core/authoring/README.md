@@ -32,3 +32,4 @@ Rules (from the NCLEX build plan, applying to every bank):
 | nclex-phase1-wave7.json | 24 | 2026-08-20 | Safety +6, Reduction of Risk +6, Mgmt +4, Physio +4, Basic Care +4 (2 SATA): emergencies (evisceration, silent chest, HHS, adrenal crisis, heat stroke), procedures, systems safety |
 | nclex-strategy-backfill-1.json | 41 | 2026-08-20 | strategy tips (not items) for all 41 calc-verified dosage items, grounded per calc kind; applied by scripts/backfill_nclex_strategies.py |
 | nclex-strategy-backfill-2.json | 60 | 2026-08-20 | strategy tips for waves 1-3 (clinical + pharm non-calc); coverage now 101/297 |
+| nclex-strategy-backfill-3.json | 40 | 2026-08-20 | strategy tips for waves 4-5 (emergencies, procedures, mgmt-of-care); coverage now 141/297 |
