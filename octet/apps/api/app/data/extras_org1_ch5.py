@@ -4648,7 +4648,12 @@ _add(LessonExtras(
                 "the student who can rebuild the whole table "
                 "from its mechanisms owns every question the "
                 "table can generate, in this chapter and in "
-                "every chapter still to come."
+                "every chapter still to come. Two columns "
+                "today, four columns next term, a dozen by "
+                "the boards - the method scales without "
+                "modification, and it was learned here, on "
+                "the one reagent whose split personality "
+                "made the method unavoidable."
             ),
         ),
     ),
