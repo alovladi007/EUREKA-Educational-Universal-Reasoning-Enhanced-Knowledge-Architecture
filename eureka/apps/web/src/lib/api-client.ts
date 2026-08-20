@@ -567,6 +567,47 @@ class ApiClient {
     return response.data;
   }
 
+  // ── NCLEX review center (NX-9/NX-11; api-core) ──
+  // Same contract as the MCAT review center: attempt_logs only, counts
+  // beside every figure, no percentile. NCLEX adds SATA-aware missed
+  // entries (kind + chosen/correct index SETS instead of single indices).
+
+  async getNclexReviewSummary(): Promise<{
+    by_section: Array<{
+      section: string | null; attempts: number; correct: number;
+      accuracy: number | null;
+    }>;
+    weakest_subtopics: Array<{
+      subtopic: string | null; section: string | null; attempts: number;
+      correct: number; accuracy: number | null;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/nclex/review/summary');
+    return response.data;
+  }
+
+  async getNclexReviewMissed(limit = 20): Promise<{
+    missed: Array<{
+      item_id: string; kind: 'mcq_single' | 'mcq_multi';
+      stem: string; options: string[];
+      // Single-choice entries:
+      chosen_index?: number | null; correct_index?: number;
+      // SATA entries:
+      chosen_indices?: number[] | null; correct_indices?: number[];
+      explanation: string | null; section: string | null;
+      subtopic: string | null;
+      verification: 'calc-verified' | 'unverified' | null;
+      times_attempted: number; last_missed_at: string;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/nclex/review/missed', {
+      params: { limit },
+    });
+    return response.data;
+  }
+
   // ── NCLEX Dosage Mastery (server-generated, server-graded; api-core) ──
   // Serving carries no key; grading returns the verdict, worked explanation,
   // and — when the entered number matches a classic error's value — the

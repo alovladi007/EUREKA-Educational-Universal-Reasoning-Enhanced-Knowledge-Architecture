@@ -64,6 +64,7 @@ import { McatServerQbank } from '@/components/test-prep/McatServerQbank';
 import { NclexServerQbank } from '@/components/test-prep/NclexServerQbank';
 import { McatMockExam } from '@/components/test-prep/McatMockExam';
 import { McatReviewCenter } from '@/components/test-prep/McatReviewCenter';
+import { NclexReviewCenter } from '@/components/test-prep/NclexReviewCenter';
 import { ExamDashboard } from '@/components/test-prep/ExamDashboard';
 import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
@@ -153,6 +154,9 @@ export default function ExamPage() {
       { id: 'exam' as Tab, label: 'Full Exam', icon: <Trophy className="h-4 w-4" /> },
       { id: 'analytics' as Tab, label: 'Analytics', icon: <BarChart3 className="h-4 w-4" /> },
     ] : []),
+    // NCLEX gets Review (the analytics tab id) without Full Exam - no NCLEX
+    // simulator exists yet, and an empty tab would be a broken promise.
+    ...(isNCLEX ? [{ id: 'analytics' as Tab, label: 'Review', icon: <BarChart3 className="h-4 w-4" /> }] : []),
     ...(isSecPlus ? [{ id: 'pbq' as Tab, label: 'PBQ Sims', icon: <Puzzle className="h-4 w-4" /> }] : []),
   ];
 
@@ -233,6 +237,7 @@ export default function ExamPage() {
       {activeTab === 'analytics' && isPEEE && <PEEEAnalyticsTab />}
       {activeTab === 'exam' && isMCAT && <MCATExamTab />}
       {activeTab === 'analytics' && isMCAT && <MCATAnalyticsTab />}
+      {activeTab === 'analytics' && isNCLEX && <NclexReviewCenter />}
       {activeTab === 'exam' && isSecPlus && <SECPLUSExamTab />}
       {activeTab === 'analytics' && isSecPlus && <SECPLUSAnalyticsTab />}
       {activeTab === 'pbq' && isSecPlus && <SecurityPlusPBQTab />}
