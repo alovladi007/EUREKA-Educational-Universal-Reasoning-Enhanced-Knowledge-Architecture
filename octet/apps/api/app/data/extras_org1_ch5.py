@@ -74,7 +74,7 @@ _add(LessonExtras(
                 "total absence of rearranged products is the "
                 "experimental evidence FOR the bridge - the "
                 "bromonium ion earned its place by explaining "
-                "what a free cation could not."
+                "what a free cation could not. The stoichiometry is clean addition, $C_5H_8 + \text{Br}_2 \rightarrow C_5H_8\text{Br}_2$: one bromine per pi bond, which is why the decolourisation doubles as a titration of unsaturation."
             ),
         ),
         ReadingSection(
@@ -318,7 +318,7 @@ _add(LessonExtras(
                 "scale (ethanol and isopropanol from ethylene and "
                 "propene); the laboratory often avoids it "
                 "precisely because of the cation's habits, which "
-                "is the cue for the next two methods."
+                "is the cue for the next two methods. The equilibrium the acid route obeys is $K_{eq} = [\text{ROH}]/([\text{alkene}][\text{H}_2\text{O}])$, and Le Chatelier operates on it directly: flood the water term to push right, remove it to pull left."
             ),
         ),
         ReadingSection(
@@ -586,7 +586,7 @@ _add(LessonExtras(
                 "still with backside attack. Both regiochemical "
                 "regimes share the stereochemical constant that "
                 "matters for this lesson: the nucleophile always "
-                "arrives anti to the epoxide oxygen."
+                "arrives anti to the epoxide oxygen. The spring constant is measurable: ring strain stores roughly $110$ kJ/mol, so opening runs downhill by about that margin - which is why epoxides react where ordinary ethers refuse."
             ),
         ),
         ReadingSection(
@@ -956,7 +956,7 @@ _add(LessonExtras(
                 "7-oxooctanal, fits C8 exactly. Every step was "
                 "bookkeeping - unsaturation, uptake, fragment "
                 "count, carbonyl types - and the structure "
-                "emerged without a spectrum in sight.\n\n"
+                "emerged without a spectrum in sight. The audit formula ran underneath the whole argument: $\text{DoU} = \tfrac{2n + 2 - H}{2}$ - two for $C_8H_{14}$, one spent by hydrogen uptake, one left for the ring.\n\n"
                 "The mechanism behind the saw deserves its one "
                 "paragraph. Ozone first adds across the alkene "
                 "in a concerted cycloaddition to the primary "
@@ -1154,7 +1154,7 @@ _add(LessonExtras(
                 "the window where both steps are exothermic-to-"
                 "neutral, so only HBr sustains the chain; HCl "
                 "and HI stay Markovnikov with or without "
-                "peroxides. This is bond-dissociation-energy "
+                "peroxides. The failing step in each case is one subtraction gone positive: $\Delta H = D_{\text{broken}} - D_{\text{formed}}$ - for HCl at the abstraction ($D_{H-Cl} = 431$ kJ/mol), for HI at the addition - and a chain with an uphill step stalls. This is bond-dissociation-energy "
                 "reasoning doing real predictive work, and it is "
                 "the standard exam follow-up question.\n\n"
                 "Synthetically, the effect is a switch, not a "
@@ -1326,7 +1326,7 @@ _add(LessonExtras(
                 "and H and X are stripped from ADJACENT carbons in "
                 "one concerted step: the base removes the beta "
                 "hydrogen while the C-X bond breaks and the pi "
-                "bond forms, three arrows, no intermediate. This "
+                "bond forms, three arrows, no intermediate - with the bimolecular signature $\text{rate} = k[\text{RX}][\text{base}]$ that chapter 9 turns into the E2/E1 diagnostic. This "
                 "is the E2 mechanism, treated fully in chapter 9; "
                 "what this chapter needs is its product logic. "
                 "Where the substrate offers beta hydrogens on "

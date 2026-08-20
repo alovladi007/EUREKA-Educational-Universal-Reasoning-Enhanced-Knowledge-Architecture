@@ -405,7 +405,7 @@ _add(LessonExtras(
                 "question that produces one geometry is incomplete, "
                 "and the CIP ranking skill practised here is the "
                 "same muscle chapter 6 uses on chirality centres - "
-                "learn it once, use it twice."
+                "learn it once, use it twice. And keep the formula audit running beneath every name: an acyclic monoalkene must fit $C_nH_{2n}$, a monocyclic one $C_nH_{2n-2}$ - a name whose implied formula misses the unsaturation count is wrong before any locant is judged."
             ),
         ),
         ReadingSection(
@@ -527,7 +527,7 @@ _add(LessonExtras(
                 "isomerisation and the mixture drifts toward the "
                 "internal, mostly trans, alkenes. Two independent "
                 "measurements, one ranking - which is what earns the "
-                "rule its load-bearing role."
+                "rule its load-bearing role. Quantitatively, a stability gap of $\Delta E$ kJ/mol sets an equilibrium ratio near $K \approx 10^{\Delta E / 5.7}$ at 298 K - the 4 kJ/mol trans/cis gap becomes the measured 76:24 butene mixture through exactly this arithmetic."
             ),
             table=Table(
                 caption="Heats of hydrogenation of representative alkenes (gas phase, to the corresponding alkane)",
@@ -757,7 +757,7 @@ _add(LessonExtras(
                 "depends on alkene and HX concentrations, and "
                 "more-substituted alkenes react faster because they "
                 "make more stable cations, exactly as a "
-                "cation-forming slow step predicts."
+                "cation-forming slow step predicts. The measured rate law is $\text{rate} = k[\text{alkene}][\text{HX}]$, first order in each partner, and the overall transformation is $C_3H_6 + \text{HBr} \rightarrow C_3H_7\text{Br}$ - one molecule of each, nothing catalytic."
             ),
         ),
         ReadingSection(
@@ -994,7 +994,7 @@ _add(LessonExtras(
                 "60-70 kJ/mol in the gas phase - enormous gaps by "
                 "the standards of this course, which is why cation "
                 "stability so often single-handedly decides a "
-                "reaction's outcome. Two effects build the ladder. "
+                "reaction's outcome. Through the Hammond relation the ladder converts to rates: competing paths differ by $\text{ratio} = e^{-\Delta\Delta G^{\ddagger}/RT}$, so a 10 kJ/mol gap between cation-like transition states buys better than 50:1 selectivity at room temperature. Two effects build the ladder. "
                 "Hyperconjugation: each adjacent C-H or C-C sigma "
                 "bond can lean its electron pair toward the empty p "
                 "orbital, a partial donation that spreads the "
@@ -1204,7 +1204,7 @@ _add(LessonExtras(
                 "available. That timing is why rearrangement cannot "
                 "be ignored as a minor pathway: where the ladder "
                 "permits a climb, the climb happens first and the "
-                "products report only the final cation."
+                "products report only the final cation. Energetically the step is downhill bookkeeping: $\Delta G_{\text{shift}} \approx G_{\text{new}} - G_{\text{old}}$, roughly $-65$ kJ/mol for a secondary-to-tertiary climb - far more than enough to outrun capture."
             ),
         ),
         ReadingSection(

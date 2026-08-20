@@ -72,7 +72,7 @@ _add(LessonExtras(
                 "exchanged = substitution; identical formula with a "
                 "different connectivity = rearrangement. The count "
                 "does the classifying, which means the skill from "
-                "chapter 2 keeps paying rent."
+                "chapter 2 keeps paying rent. The count itself is one formula: $\text{DoU} = \tfrac{2n + 2 - H}{2}$ for $C_nH_x$, computed for both sides before any classification is claimed."
             ),
         ),
         ReadingSection(
@@ -339,7 +339,7 @@ _add(LessonExtras(
                 "stability order - tertiary > secondary > primary > "
                 "methyl - mirrors the carbocation ladder for the "
                 "same hyperconjugative reasons, with smaller "
-                "gaps.\n\n"
+                "gaps. Every propagation step's feasibility is one subtraction: $\Delta H_{\text{step}} = D_{\text{broken}} - D_{\text{formed}}$, and a chain runs only when both steps come out near zero or negative.\n\n"
                 "The parallel between the two ladders is worth "
                 "making explicit: both electron-deficient "
                 "intermediates are stabilised by alkyl "
@@ -1047,7 +1047,7 @@ _add(LessonExtras(
                 "metal with nothing, drifts away. The catalyst "
                 "emerges unchanged, having replaced one impossible "
                 "step with several feasible ones - the catalysis "
-                "lesson's definition made concrete.\n\n"
+                "lesson's definition made concrete. The transformation is $C_nH_{2n} + H_2 \rightarrow C_nH_{2n+2}$ with $\Delta H \approx -110$ to $-137$ kJ/mol per double bond - exothermic overall, blocked only by the uncatalysed barrier.\n\n"
                 "These are heterogeneous catalysts - a solid "
                 "working on dissolved reactants - which brings "
                 "practical virtues (filter the metal off when "
