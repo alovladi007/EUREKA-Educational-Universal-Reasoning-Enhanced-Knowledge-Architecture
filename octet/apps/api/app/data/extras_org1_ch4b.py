@@ -5131,8 +5131,14 @@ _add(LessonExtras(
                 "metal, riding a metre behind every engine on "
                 "the road. Chemistry that can be pointed at "
                 "is chemistry that gets remembered, and this "
-                "chapter, more than most, can be pointed at "
-                "from anywhere."
+                "chapter, more than most in the whole course, "
+                "can be pointed at from nearly anywhere a "
+                "student happens to be standing - a kitchen, "
+                "a car park, a pharmacy, a farm - which is "
+                "the quiet advantage energetics holds over "
+                "every more glamorous subject that follows "
+                "it, and reason enough to have studied it "
+                "this thoroughly before moving on."
             ),
         ),
     ),
