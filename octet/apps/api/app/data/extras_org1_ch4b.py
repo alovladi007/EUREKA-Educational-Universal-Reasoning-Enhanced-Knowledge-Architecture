@@ -1652,7 +1652,8 @@ _add(LessonExtras(
                 "of every cell in the reader of this "
                 "sentence - the same chain chemistry at every "
                 "scale, priced by the same table, ended by "
-                "the same handful of terminating tricks."
+                "the very same small handful of terminating "
+                "tricks that chemists and cells alike deploy."
             ),
         ),
     ),
