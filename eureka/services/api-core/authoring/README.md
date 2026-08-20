@@ -33,3 +33,4 @@ Rules (from the NCLEX build plan, applying to every bank):
 | nclex-strategy-backfill-1.json | 41 | 2026-08-20 | strategy tips (not items) for all 41 calc-verified dosage items, grounded per calc kind; applied by scripts/backfill_nclex_strategies.py |
 | nclex-strategy-backfill-2.json | 60 | 2026-08-20 | strategy tips for waves 1-3 (clinical + pharm non-calc); coverage now 101/297 |
 | nclex-strategy-backfill-3.json | 40 | 2026-08-20 | strategy tips for waves 4-5 (emergencies, procedures, mgmt-of-care); coverage now 141/297 |
+| nclex-strategy-backfill-4.json | 48 | 2026-08-20 | strategy tips for waves 6-7 (fundamentals, peds prevention, mental health, emergencies, delegation); ALL 7 authored waves now covered; coverage 189/297 |
