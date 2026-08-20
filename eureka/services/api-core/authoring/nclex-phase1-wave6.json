@@ -1,0 +1,458 @@
+[
+ {
+  "id": "nx_a6_bc_001",
+  "topicId": 4,
+  "subtopic": "Oral care for the unconscious client",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse prepares to provide mouth care for an unconscious client. Which action is correct?",
+  "options": [
+   "Position the client side-lying with suction equipment at hand",
+   "Position the client supine with the head of the bed flat",
+   "Give small sips of water to rinse after brushing",
+   "Skip oral care, since the client is not eating"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): side-lying lets secretions drain out by gravity, and ready suction guards the airway of a client who cannot protect it. (b) Flat and supine directs fluid toward the airway \u2014 the aspiration setup. (c) An unconscious client cannot swallow or spit; any liquid offered by mouth is an aspiration risk. (d) Oral care matters MORE in the unconscious: a dry, colonized mouth feeds aspiration pneumonia.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_002",
+  "topicId": 4,
+  "subtopic": "Antiembolism stockings",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is applying prescribed knee-high antiembolism stockings. Which actions are correct? Select all that apply.",
+  "options": [
+   "Measure the client's legs to select the correct size",
+   "Apply the stockings before the client gets out of bed in the morning",
+   "Smooth out wrinkles after application",
+   "Fold the stocking tops down if they feel tight",
+   "Remove the stockings daily to inspect the skin per policy"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 sizing from actual measurements is what makes the gradient therapeutic instead of a tourniquet; (b) \u2014 applying before rising catches the legs at their least edematous; (c) \u2014 wrinkles concentrate pressure and break skin; (e) \u2014 daily removal for skin inspection catches damage early. Wrong (d): a folded-down top forms a constricting band that OBSTRUCTS venous return \u2014 the exact opposite of the stocking's purpose.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_003",
+  "topicId": 4,
+  "subtopic": "Enema administration",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "In which position should the nurse place an adult client to administer a cleansing enema?",
+  "options": [
+   "Left side-lying (Sims') with the right knee flexed",
+   "Right side-lying with both legs extended",
+   "Supine with the head of the bed at 45 degrees",
+   "Prone with a pillow under the hips"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): left Sims' follows the anatomy \u2014 the descending colon lies on the left, so solution flows in by gravity with the flexed right knee exposing the anus comfortably. (b) Right side-lying works against the direction of the sigmoid and descending colon. (c) Supine gives no gravitational assist and poor access. (d) Prone is unnecessary, uncomfortable, and impractical for solution flow.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_004",
+  "topicId": 4,
+  "subtopic": "Nonpharmacologic pain relief",
+  "difficulty": 1,
+  "type": "multi",
+  "question": "A client with chronic back pain asks about nonmedication comfort measures to use alongside the prescribed regimen. Which should the nurse suggest? Select all that apply.",
+  "options": [
+   "Repositioning with supportive pillows",
+   "Guided imagery or slow relaxation breathing",
+   "Distraction, such as music or conversation",
+   "Stopping the prescribed analgesics now that other measures are in use",
+   "Heat or cold applications as prescribed"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 positioning off the painful structures is the simplest mechanical relief; (b) \u2014 relaxation techniques reduce the muscle tension and arousal that amplify pain; (c) \u2014 distraction genuinely modulates pain perception; (e) \u2014 thermal therapy within its prescription is a standard adjunct. Wrong (d): nonpharmacologic measures COMPLEMENT the regimen \u2014 abandoning prescribed analgesia because a heating pad exists invites a pain crisis.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_005",
+  "topicId": 4,
+  "subtopic": "Range-of-motion exercises",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse performs passive range-of-motion exercises for a client's arm after a stroke. Which technique is correct?",
+  "options": [
+   "Support the joint above and below, moving slowly to the point of resistance and never into pain",
+   "Move each joint quickly through its range to build strength",
+   "Continue the movement past resistance to stretch the joint further",
+   "Have the client perform the movements against applied resistance"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): passive ROM is done slowly, with the joint supported on both sides, stopping at resistance \u2014 the goal is preserving mobility, not stretching into injury. (b) Speed adds no strength in a PASSIVE exercise and risks tissue injury. (c) Pushing past resistance tears soft tissue in a limb that cannot report pain reliably. (d) Movement against resistance is ACTIVE-resistive exercise \u2014 a different therapy for a client who can participate.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_006",
+  "topicId": 4,
+  "subtopic": "Incontinence skin care",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is caring for a client with urinary incontinence. Which measure best protects the client's skin?",
+  "options": [
+   "Cleanse promptly after each episode and apply a moisture-barrier product",
+   "Scrub the skin vigorously with hot water after each episode",
+   "Limit the client's fluids so episodes are less frequent",
+   "Layer several absorbent pads and change them once per shift"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): prompt gentle cleansing removes the urine whose ammonia breaks down skin, and a barrier product shields against the next exposure. (b) Hot water and friction strip the skin's own barrier and accelerate breakdown. (c) Restricting fluids concentrates urine (more irritating) and risks dehydration \u2014 incontinence is managed, not the client dried out. (d) Stacked pads hold moisture against the skin between infrequent changes; checking and changing promptly is the standard.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_007",
+  "topicId": 4,
+  "subtopic": "Intake & output measurement",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is totaling a client's fluid intake. Which item is counted toward intake?",
+  "options": [
+   "Gelatin dessert consumed at lunch",
+   "A slice of toast eaten at breakfast",
+   "The saline used to clean a wound",
+   "A scrambled egg"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): anything liquid at room temperature counts \u2014 gelatin, ice chips (at roughly half their volume), broth, and IV fluids all belong in intake. (b) and (d) Solid foods are not fluid intake even though they contain water. (c) Wound-cleansing solution never enters the client and is not intake.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_bc_008",
+  "topicId": 4,
+  "subtopic": "Hearing aid care",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is teaching a client how to care for a new hearing aid. Which instruction is correct?",
+  "options": [
+   "Wipe the aid with a soft, dry cloth and open the battery door when not in use",
+   "Rinse the aid under warm running water each evening",
+   "Clean the aid with rubbing alcohol to disinfect it",
+   "Store the aid on a sunny windowsill so moisture evaporates"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): dry-cloth cleaning protects the electronics, and an open battery door overnight lets moisture escape and extends battery life. (b) Water destroys the microphone and receiver. (c) Alcohol degrades the casing and components; manufacturers specify dry or purpose-made wipes. (d) Heat and direct sun damage the device \u2014 storage is cool and dry.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_001",
+  "topicId": 2,
+  "subtopic": "Introducing solid foods",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A parent asks when and how to start solid foods for a healthy infant. Which response by the nurse is correct?",
+  "options": [
+   "Start around 6 months, introducing one new single-ingredient food every few days",
+   "Start rice cereal in the bottle at 2 months to help the baby sleep",
+   "Begin with mixed-ingredient dinners to expose the baby to many foods at once",
+   "Offer honey on a spoon to encourage acceptance of new textures"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): around 6 months, single-ingredient foods one at a time (several days apart) lets any allergy or intolerance be traced to its source. (b) Cereal in the bottle at 2 months is an aspiration and overfeeding risk and does not improve sleep. (c) Mixed foods make reactions untraceable. (d) Honey before 12 months risks infant botulism.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_002",
+  "topicId": 2,
+  "subtopic": "Car seat safety",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is reviewing car safety with the parent of a 15-month-old. Which parent statement indicates correct understanding?",
+  "options": [
+   "'My child rides rear-facing in the back seat until reaching the seat's rear-facing height or weight limit.'",
+   "'Now that my child is one, the seat can be turned forward-facing in the front seat.'",
+   "'A thick winter coat keeps my child warm and snug under the harness.'",
+   "'On short trips I can hold my child on my lap.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): children ride rear-facing as long as the seat allows \u2014 rear-facing distributes crash forces across the whole back and best protects the head and neck, and the back seat is the required position. (b) Age one is not the trigger; the seat's limits are, and the front seat's airbag is a lethal hazard. (c) A bulky coat compresses in a crash, leaving the harness dangerously loose \u2014 coats go OVER the buckled harness. (d) No lap hold survives a crash at any speed; every trip uses the seat.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_003",
+  "topicId": 2,
+  "subtopic": "Preconception folic acid",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client tells the nurse they plan to become pregnant within the year. Which supplement teaching is most important?",
+  "options": [
+   "Begin folic acid (400 mcg daily) now, before conception",
+   "Start folic acid once the pregnancy test is positive",
+   "Take high-dose vitamin A to support fetal growth",
+   "Supplements can wait until the second trimester"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the neural tube closes in the first weeks of pregnancy \u2014 often before the pregnancy is recognized \u2014 so folic acid must be on board BEFORE conception to prevent neural tube defects. (b) Starting at the positive test misses the closure window for many pregnancies. (c) High-dose vitamin A is teratogenic. (d) The critical window is the earliest weeks, not the second trimester.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_004",
+  "topicId": 2,
+  "subtopic": "Sun protection",
+  "difficulty": 1,
+  "type": "multi",
+  "question": "A nurse is teaching a family about reducing skin cancer risk. Which recommendations are correct? Select all that apply.",
+  "options": [
+   "Use broad-spectrum sunscreen of at least SPF 30",
+   "Reapply sunscreen about every 2 hours and after swimming",
+   "Seek shade during midday hours when the sun is strongest",
+   "Use tanning beds instead of outdoor sun as a safer alternative",
+   "Keep infants younger than 6 months in shade and covered rather than relying on sunscreen"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 broad-spectrum SPF 30+ covers both UVA and UVB meaningfully; (b) \u2014 sunscreen degrades and washes off, so reapplication is what maintains protection; (c) \u2014 midday avoidance removes the highest-intensity exposure; (e) \u2014 for young infants, shade and clothing come first, with sunscreen reserved for small exposed areas when unavoidable. Wrong (d): tanning beds are concentrated UV exposure and carry their own well-established skin cancer risk \u2014 there is no 'safe tan.'",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_005",
+  "topicId": 2,
+  "subtopic": "Osteoporosis prevention",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A perimenopausal client asks how to protect bone density. Which recommendation is most appropriate?",
+  "options": [
+   "Weight-bearing exercise such as brisk walking, plus adequate calcium and vitamin D",
+   "Swimming as the primary exercise for bone strength",
+   "Avoiding all dairy products",
+   "Bed rest to avoid stressing the bones"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): bone responds to load \u2014 weight-bearing and resistance exercise plus calcium and vitamin D is the prevention trio. (b) Swimming is excellent cardiovascular exercise but the water carries the weight, so it does little for bone density. (c) Dairy is a primary calcium source; avoiding it works against the goal. (d) Immobility is a CAUSE of bone loss \u2014 bones unload themselves within weeks of disuse.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_006",
+  "topicId": 2,
+  "subtopic": "STI prevention teaching",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is providing sexually transmitted infection prevention teaching. Which client statement indicates a need for further teaching?",
+  "options": [
+   "'Using two condoms at once gives double protection.'",
+   "'Condoms reduce the risk but don't eliminate it completely.'",
+   "'My partner and I should both complete treatment before resuming sex.'",
+   "'I can carry infections without having any symptoms.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct to flag (a): doubled condoms create friction between the layers and tear MORE easily \u2014 one properly used condom is the standard, so this statement shows misunderstanding. (b) Accurate: barrier protection reduces, not eliminates, transmission (skin-contact infections especially). (c) Accurate: treating both partners prevents reinfection ping-pong. (d) Accurate: asymptomatic carriage is common and is exactly why screening exists.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_007",
+  "topicId": 2,
+  "subtopic": "Concussion guidance",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A high-school athlete sustains a suspected concussion during a game. The coach asks when the student can play again. What should the nurse explain?",
+  "options": [
+   "No return to play the same day; return follows a stepwise progression after medical clearance",
+   "The student may return in the second half if the headache eases",
+   "Return is fine tomorrow if the student slept well",
+   "Concussions in teenagers heal within hours"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): same-day return after a suspected concussion is prohibited \u2014 a second impact on an injured brain can be catastrophic \u2014 and return follows a graded, symptom-free progression under medical clearance. (b) Easing symptoms mid-game change nothing about the same-day rule. (c) One night's sleep is not medical clearance. (d) Adolescent brains generally take LONGER to recover, not hours.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_hp_008",
+  "topicId": 2,
+  "subtopic": "Early childhood dental care",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A parent of a 12-month-old asks about dental care. Which guidance is correct?",
+  "options": [
+   "Schedule the first dental visit by the first birthday and brush with a rice-grain smear of fluoride toothpaste",
+   "Delay the first dental visit until all baby teeth have erupted",
+   "Put the child to bed with a bottle of milk to strengthen the new teeth",
+   "Avoid fluoride toothpaste entirely until age six"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the first dental visit comes by age one, and a rice-grain smear of fluoride toothpaste, brushed by the parent, protects erupting teeth safely. (b) Waiting for all primary teeth delays care past the window when early caries start. (c) A bedtime milk bottle bathes the teeth in sugar for hours \u2014 the classic cause of early childhood caries. (d) Tiny fluoride amounts are recommended from the first tooth; the age-related change is the AMOUNT (pea-size at ~3), not the start.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_001",
+  "topicId": 3,
+  "subtopic": "Acute mania care",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A client experiencing acute mania has not slept and eats almost nothing, pacing the unit continuously. Which interventions are appropriate? Select all that apply.",
+  "options": [
+   "Offer high-calorie finger foods and fluids the client can consume while moving",
+   "Reduce environmental stimulation",
+   "Use short, frequent, matter-of-fact interactions",
+   "Invite the client to a competitive table-tennis tournament to burn energy",
+   "Set calm, consistent limits on intrusive behavior"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 a client who cannot sit still can still eat portable calories, which prevents the exhaustion-malnutrition spiral; (b) \u2014 stimulation feeds mania, so the environment is quieted; (c) \u2014 brief and concrete beats long and abstract for a distractible client; (e) \u2014 calm consistent limits contain behavior without power struggles. Wrong (d): competition ESCALATES mania \u2014 energy outlets should be noncompetitive (walking, simple gross-motor tasks).",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_002",
+  "topicId": 3,
+  "subtopic": "OCD & rituals",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A newly admitted client with obsessive-compulsive disorder performs a lengthy hand-washing ritual before meals. What is the most appropriate initial nursing approach?",
+  "options": [
+   "Allow scheduled time for the ritual while the treatment plan is established",
+   "Interrupt and prevent the ritual so the behavior is not reinforced",
+   "Point out how irrational the hand-washing is",
+   "Lock the bathroom before mealtimes"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): early in treatment the ritual is the client's only anxiety control \u2014 time is planned for it, and limits are introduced gradually per the therapy plan. (b) and (d) Abruptly blocking a compulsion strips the defense away and can precipitate panic. (c) The client usually KNOWS it is irrational; pointing it out adds shame without reducing the compulsion.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_003",
+  "topicId": 3,
+  "subtopic": "Delirium vs dementia",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "The family of an 80-year-old reports the client was mentally sharp last week but since yesterday is confused, drifting in and out of attention, and worse at night. How should the nurse interpret this?",
+  "options": [
+   "Probable delirium \u2014 an acute change requiring a search for the underlying cause",
+   "Normal aging of memory",
+   "Early dementia progressing as expected",
+   "Attention-seeking behavior"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): ACUTE onset with FLUCTUATING attention is the signature of delirium \u2014 a medical symptom, not a psychiatric fate, with infection, medications, dehydration, and hypoxia at the top of the cause list. (b) Aging does not produce day-scale acute confusion. (c) Dementia progresses over months to years with stable attention early on. (d) Framing acute brain dysfunction as behavior delays the workup that fixes it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_004",
+  "topicId": 3,
+  "subtopic": "Caregiver strain",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "The spouse of a client with advanced Parkinson's disease says, 'I haven't slept properly in months. I feel like I'm failing him.' Which response by the nurse is best?",
+  "options": [
+   "'Caring for someone around the clock is exhausting. Can we talk about respite options that could give you regular breaks?'",
+   "'Marriage means caring for each other; he would do it for you.'",
+   "'You should sleep when he sleeps.'",
+   "'Everything will work itself out with time.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the response validates the strain and moves to a concrete resource \u2014 respite care \u2014 which is the intervention caregiver burnout actually needs. (b) Duty-shaming deepens the guilt the caregiver just disclosed. (c) Sleep advice trivializes months of accumulated strain and rarely fits caregiving reality. (d) Empty reassurance dismisses a genuine risk \u2014 burned-out caregivers become patients themselves.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_005",
+  "topicId": 3,
+  "subtopic": "Body image support",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "Two days after a mastectomy, a client keeps the surgical site covered and turns away during dressing changes. Which nursing approach is most appropriate?",
+  "options": [
+   "Accept the client's pace and offer opportunities to look and participate when ready",
+   "Insist the client look at the incision today so acceptance can begin",
+   "Maintain cheerful conversation and avoid mentioning the surgery",
+   "Ask the family to persuade the client to look at the site"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): adaptation to an altered body proceeds at the client's pace \u2014 the nurse keeps offering low-pressure openings (holding a mirror, assisting with the dressing) and accepts refusal without judgment. (b) Forced confrontation is experienced as violation and hardens avoidance. (c) Cheerful avoidance tells the client the topic is unspeakable. (d) Delegating pressure to the family converts support into ambush.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_006",
+  "topicId": 3,
+  "subtopic": "Phobia treatment concepts",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A client beginning treatment for a severe flying phobia asks how systematic desensitization works. Which explanation by the nurse is accurate?",
+  "options": [
+   "'You'll learn relaxation skills, then face flying-related situations gradually, from least to most anxiety-provoking.'",
+   "'You'll be booked on a long flight right away so the fear extinguishes at once.'",
+   "'You'll learn to avoid airports more effectively.'",
+   "'Medication alone will remove the phobia permanently.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): systematic desensitization pairs learned relaxation with a graded exposure hierarchy \u2014 pictures of planes before airports before boarding \u2014 replacing the fear response step by step. (b) Immediate maximal exposure describes flooding, a different (and more distressing) technique. (c) Avoidance is what MAINTAINS phobias; treatment reverses it. (d) Medication may ease symptoms but does not by itself unlearn the fear.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_007",
+  "topicId": 3,
+  "subtopic": "Somatic symptom care",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with somatic symptom disorder calls the clinic frequently about varied physical complaints; extensive workups have been negative. Which care approach is most appropriate?",
+  "options": [
+   "Schedule regular, brief appointments with one consistent provider",
+   "Order repeat comprehensive testing at each new complaint",
+   "Tell the client the symptoms are imaginary",
+   "Advise the client to call only when symptoms are 'real'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): scheduled contact with one provider gives predictable attention that is not contingent on new symptoms \u2014 the structure that reduces crisis calls and duplicate workups. (b) Reflexive re-testing reinforces the symptom cycle and adds procedural risk. (c) The distress is genuine even when the pathology is absent; 'imaginary' ruptures the alliance. (d) Asking the client to self-triage 'real' symptoms is both impossible for them and dismissive.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ },
+ {
+  "id": "nx_a6_ps_008",
+  "topicId": 3,
+  "subtopic": "Defense mechanisms",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A hospitalized 5-year-old who has been toilet-trained for two years begins bedwetting and asking for a bottle. The parent is alarmed. What should the nurse explain?",
+  "options": [
+   "This is regression \u2014 a common, usually temporary response to the stress of illness and hospitalization",
+   "This indicates a serious developmental disorder requiring evaluation",
+   "The child is manipulating the parents for attention and should be disciplined",
+   "The child must be retrained from the beginning"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): under stress, children commonly retreat to an earlier, safer developmental stage \u2014 regression \u2014 and previously mastered skills return once the stress resolves; the response is comfort and routine, not alarm. (b) Context makes this expected, not disordered \u2014 the timeline tracks the hospitalization. (c) Punishing a stress response adds stress and prolongs it. (d) No retraining is needed for skills that were mastered and will return.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave6 (2026-08-20)"
+ }
+]
