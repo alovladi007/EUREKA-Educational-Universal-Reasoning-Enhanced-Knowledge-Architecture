@@ -2522,7 +2522,16 @@ _add(LessonExtras(
                 "they belong - that division of labour "
                 "between sketch and instrument is exactly "
                 "how the professionals use the same "
-                "drawing."
+                "drawing: the sketch to organise thought and "
+                "argument at the speed of a pencil, the "
+                "computation or calorimeter to settle any "
+                "ranking the sketch leaves contested, and "
+                "the discipline never to let the one "
+                "impersonate the other. Master both roles "
+                "and every axis labelled with reaction "
+                "progress, in any course or paper for the "
+                "rest of your scientific life, is territory "
+                "you already know how to walk."
             ),
         ),
     ),
