@@ -60,7 +60,9 @@ services:
 
   minio:
     restart: unless-stopped
-    image: minio/minio:latest
+    # PINNED BY DIGEST — do not revert to :latest. See the note on `kafka`.
+    # minio RELEASE.2025-07-23T15-54-02Z
+    image: minio/minio@sha256:d249d1fb6966de4d8ad26c04754b545205ff15a62e4fd19ebd0f26fa5baacbc0
     container_name: eureka-minio
     command: server /data --console-address ":9001"
     environment:
@@ -101,7 +103,19 @@ services:
     restart: unless-stopped
     profiles:
       - full
-    image: docker.redpanda.com/redpandadata/redpanda:latest
+    # PINNED BY DIGEST — do not revert to :latest.
+    #
+    # This is the tag that actually broke. `:latest` floated to Redpanda
+    # v26.1.9 (logical version 18) while the persisted volume had been written
+    # by an older build (logical version 16). Redpanda refuses to upgrade
+    # across that gap, so the broker crash-looped with exit 133 and
+    #   "Assert failure: Attempted to upgrade from incompatible logical
+    #    version 16 to logical version 18!"
+    # until the volume was reset. Nothing in the repo changed; an upstream tag
+    # moved. A floating tag on a stateful service is a time bomb.
+    #
+    # redpanda v26.1.9
+    image: docker.redpanda.com/redpandadata/redpanda@sha256:8cb52078690728e2b3d1507fc84eda4c07d4d59bd8fa241e9b1cc7eb7de096c9
     container_name: eureka-kafka
     command:
       - redpanda
@@ -130,7 +144,10 @@ services:
     profiles:
       - dev-obs
       - full
-    image: jaegertracing/all-in-one:latest
+    # PINNED BY DIGEST — do not revert to :latest. See the note on `kafka`.
+    # jaeger all-in-one (the image exposes no version label; the digest is the
+    # build verified running on 2026-08-19)
+    image: jaegertracing/all-in-one@sha256:ab6f1a1f0fb49ea08bcd19f6b84f6081d0d44b364b6de148e1798eb5816bacac
     container_name: eureka-jaeger
     # The image runs as a non-root user that cannot mkdir inside the
     # root-owned named volume (verified: badger init dies with EACCES).
@@ -1156,7 +1173,9 @@ services:
     restart: unless-stopped
     profiles:
       - full
-    image: qdrant/qdrant:latest
+    # PINNED BY DIGEST — do not revert to :latest. See the note on `kafka`.
+    # qdrant 1.19.0
+    image: qdrant/qdrant@sha256:057ee3a8da769fe7310dd3537b4dc7583bf87a95ce8ac43c0af5a46bc580d1fc
     container_name: eureka-qdrant
     ports:
       - "6333:6333"

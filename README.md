@@ -319,10 +319,13 @@ material — notably USPTO examination content (17 U.S.C. § 105) — remains in
 public domain; the surrounding selection, arrangement, and editorial work does
 not.
 
-> **One thing left for the copyright holder:** `LICENSE` names the holder as
-> `alovladi007`, which is a GitHub handle, not a legal name. Replace it with
-> your full legal name or the owning entity. Have counsel review before any
-> commercial launch or investor conversation.
+Copyright is held by **Louis Vladimir Antoine**. If ownership later moves into a
+company, the notice must be updated *and* a written assignment executed — the
+notice alone transfers nothing.
+
+> This was drafted to record an all-rights-reserved position; it is not legal
+> advice. Have counsel review before any commercial launch or investor
+> conversation.
 
 ---
 
