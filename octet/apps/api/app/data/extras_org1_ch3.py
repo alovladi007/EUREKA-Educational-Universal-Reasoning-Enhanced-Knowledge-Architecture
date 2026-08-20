@@ -14,6 +14,7 @@ the values the arc lessons and app.data.claims already use (acetic acid
 from __future__ import annotations
 
 from app.data.lesson_extras import (
+    Figure,
     LessonExtras,
     ReadingSection,
     Table,
@@ -46,6 +47,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="arrow-grammar",
+            figure=Figure(
+                stem="org1-arrow-grammar",
+                caption=(
+                    "The two legal sentences: one arrow into an empty orbital (association), paired arrows when a full octet must be defended (displacement)."
+                ),
+                alt="Schematic of association with one curved arrow and displacement with two curved arrows including a leaving group.",
+            ),
             heading="Tail, head, and the two legal sentences",
             body=(
                 "A curved arrow starts at an electron pair - a lone pair "
@@ -106,6 +114,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="displacement-steps",
+            figure=Figure(
+                stem="org1-nucleophile-gallery",
+                caption=(
+                    "Six recurring nucleophiles, drawn from their structures: every one attacks through the atom its lone pair sits on."
+                ),
+                alt="Grid of hydroxide, water, ammonia, cyanide, iodide and methanethiolate structures.",
+            ),
             heading="Displacement: attacking a full octet",
             body=(
                 "Most atoms organic chemistry attacks are not electron-"
@@ -242,6 +257,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="bronsted-frame",
+            figure=Figure(
+                stem="org1-conjugate-bases",
+                caption=(
+                    "Three conjugate bases and their parents' pKa values: the anion's comfort with the charge is what the acid's pKa measures."
+                ),
+                alt="Structures of ethoxide, phenoxide and acetate with the parent acids' pKa values.",
+            ),
             heading="Conjugate pairs and what pKa measures",
             body=(
                 "A Bronsted acid donates a proton; a Bronsted base "
@@ -294,6 +316,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="equilibrium-calc",
+            figure=Figure(
+                stem="org1-pka-ladder",
+                caption=(
+                    "The course pKa ladder, drawn from the table's aqueous values: proton transfer always runs toward the weaker (higher) acid."
+                ),
+                alt="Vertical ladder chart of aqueous pKa values from HCl at -7 to ethane near 50.",
+            ),
             heading="The proton-transfer calculation",
             body=(
                 "Every acid-base equilibrium question reduces to one "
@@ -490,6 +519,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="charge-resonance",
+            figure=Figure(
+                stem="org1-conjugate-bases",
+                caption=(
+                    "The three-compound calibration in structures: ethoxide's stranded charge, phenoxide's ring-shared charge, acetate's oxygen-to-oxygen sharing."
+                ),
+                alt="Ethoxide, phenoxide and acetate structures ordered by increasing charge delocalisation.",
+            ),
             heading="Charge type and resonance delocalisation",
             body=(
                 "Second on the checklist: what kind of charge change "
@@ -522,6 +558,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="polar-effect",
+            figure=Figure(
+                stem="org1-polar-effect",
+                caption=(
+                    "The polar effect calibrated on the lesson's carboxylic acid data: chlorines stack (left) and the effect decays with distance (right)."
+                ),
+                alt="Bar chart of pKa values for the chloroacetic series and the chlorobutanoic distance series.",
+            ),
             heading="The polar effect, with distance and count",
             body=(
                 "Fourth: electron-withdrawing neighbours stabilise a "
@@ -682,6 +725,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="spotting-roles",
+            figure=Figure(
+                stem="org1-nucleophile-gallery",
+                caption=(
+                    "The nucleophile side of the cast, by structure: mark the best pair first, then find the most positive carbon."
+                ),
+                alt="Grid of six common nucleophile structures.",
+            ),
             heading="Reading a molecule for its reactive sites",
             body=(
                 "Nucleophiles announce themselves by available electron "
@@ -747,6 +797,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="leaving-groups",
+            figure=Figure(
+                stem="org1-pka-ladder",
+                caption=(
+                    "The same ladder read as a leaving-group ranking: the lower the conjugate acid sits, the better its base leaves."
+                ),
+                alt="Vertical pKa ladder reused to rank leaving-group quality by conjugate acid.",
+            ),
             heading="Leaving groups close the triangle",
             body=(
                 "Displacement at carbon needs a third player: the "

@@ -40,6 +40,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="four-classes",
+            figure=Figure(
+                stem="org1-markovnikov",
+                caption=(
+                    "An addition, worked in structures: atoms gained, unsaturation down - the class read straight off the drawing."
+                ),
+                alt="Propene plus HBr addition scheme as a worked classification example.",
+            ),
             heading="The four classes and their signatures",
             body=(
                 "Addition: two molecules become one, a pi bond is "
@@ -134,6 +141,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="classification-drills",
+            figure=Figure(
+                stem="org1-zaitsev-hofmann",
+                caption=(
+                    "One drill drawn in full: 2-bromobutane loses HBr - unsaturation up, atoms lost - an elimination, with the base choosing the alkene."
+                ),
+                alt="Scheme of 2-bromobutane giving 2-butene with sodium ethoxide and 1-butene with potassium tert-butoxide.",
+            ),
             heading="Six drills, and the oxidation-level ledger",
             body=(
                 "Classification becomes reflex through drills, so run "
@@ -297,6 +311,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="bde",
+            figure=Figure(
+                stem="org1-bde-chart",
+                caption=(
+                    "The lesson's bond dissociation energies as a chart: the weak O-O and Br-Br bonds are where chains are ignited."
+                ),
+                alt="Bar chart of bond dissociation energies for H-H, C-H, tertiary C-H, H-Br, Br-Br and peroxide O-O.",
+            ),
             heading="Bond dissociation energy: the homolytic ruler",
             body=(
                 "The energy to break a bond homolytically in the gas "
@@ -370,6 +391,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="radicals-in-the-world",
+            figure=Figure(
+                stem="org1-radical-chain",
+                caption=(
+                    "The chain as a loop: bromine atom in, product out, carrier regenerated - the geometry of every radical chain in the course."
+                ),
+                alt="Circular diagram of the radical HBr propagation cycle with initiation shown above.",
+            ),
             heading="Radical structure, and radicals outside the flask",
             body=(
                 "A carbon radical's structure sits between the "
@@ -623,6 +651,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="reading-practice",
+            figure=Figure(
+                stem="org1-catalysed-curve",
+                caption=(
+                    "Catalysed and uncatalysed pathways between the same endpoints, drawn from the lesson's description: summits move, endpoints never."
+                ),
+                alt="Two reaction-coordinate curves sharing endpoints, the catalysed one with more, lower humps.",
+            ),
             heading="Catalysed curves, reversibility, and reading practice",
             body=(
                 "Two more curve-reading skills complete the "
@@ -748,6 +783,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="two-regimes",
+            figure=Figure(
+                stem="org1-kinetic-thermo",
+                caption=(
+                    "The two-exit landscape drawn from the text: a low pass to a shallow well against a high pass to a deep one."
+                ),
+                alt="Energy diagram with one starting point, a lower barrier to a shallow product well and a higher barrier to a deeper well.",
+            ),
             heading="The two regimes, on one diagram",
             body=(
                 "Draw one starting valley with two exit passes: a "
@@ -812,6 +854,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="applications",
+            figure=Figure(
+                stem="org1-alkene-stability",
+                caption=(
+                    "Product-stability data reaching into product-like transition states: the ladder Zaitsev ratios follow."
+                ),
+                alt="Hydrogenation enthalpy bar chart reused for elimination product prediction.",
+            ),
             heading="Where the framework bites in this course",
             body=(
                 "The framework's showcase arrives with conjugated "
@@ -1048,6 +1097,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="thermochemistry-and-uses",
+            figure=Figure(
+                stem="org1-aromatic-shortfall",
+                caption=(
+                    "Benzene against three hypothetical cyclohexene reductions: the ~150 kJ/mol shortfall is aromatic stabilisation, measured."
+                ),
+                alt="Bar chart comparing one cyclohexene, three times cyclohexene, and benzene's measured hydrogenation heat.",
+            ),
             heading="Thermochemistry and the reaction's two jobs",
             body=(
                 "Hydrogenation's heat output is data. Because the "
@@ -1082,6 +1138,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="beyond-simple-reduction",
+            figure=Figure(
+                stem="org1-alkene-stability",
+                caption=(
+                    "The ranking data hydrogenation itself generates - the reaction as measurement."
+                ),
+                alt="Hydrogenation enthalpy chart reused in the reduction-family context.",
+            ),
             heading="Partial, transfer, and asymmetric hydrogenation",
             body=(
                 "Three refinements turn the blunt tool precise, "
@@ -1206,6 +1269,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="what-catalysts-do",
+            figure=Figure(
+                stem="org1-catalysed-curve",
+                caption=(
+                    "The whole lesson in one picture: a cheaper route between unmoved endpoints."
+                ),
+                alt="Catalysed versus uncatalysed reaction-coordinate comparison.",
+            ),
             heading="What a catalyst does: new path, same endpoints",
             body=(
                 "On the energy diagram a catalyst redraws the "
@@ -1321,6 +1391,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="cycles-and-numbers",
+            figure=Figure(
+                stem="org1-radical-chain",
+                caption=(
+                    "A loop with a regenerated carrier: the chain diagram shares the cycle grammar every catalytic drawing uses."
+                ),
+                alt="Radical chain loop diagram illustrating cycle-style bookkeeping.",
+            ),
             heading="Catalytic cycles, turnover, and quantified failure",
             body=(
                 "Working chemists draw catalysis as a CYCLE "

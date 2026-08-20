@@ -124,6 +124,28 @@ def main() -> int:
                 )
             slugs[vid.slug] = node
 
+    # Visual standard (2026-08-20 directive): organic chapters must carry
+    # figures, not prose alone. Programme chapters (ORG ch2-5 nodes, i.e.
+    # every ORG node authored by the depth programme after the ch1 reference)
+    # need >= 2 figures each; the ch1 reference nodes need >= 1. GEN nodes
+    # are reported but not gated (their own pass comes later).
+    ORG_FIG_FLOOR = 2
+    CH1_NODES = {
+        "ORG1.ORBITALS", "ORG1.HYBRIDORG", "ORG1.DRAWING",
+        "ORG1.FORMALCHARGEORG", "ORG1.RESONANCEORG", "ORG1.INDUCTIVE",
+        "ORG1.FUNCTIONALGROUPS",
+    }
+    for node, extras in EXTRAS.items():
+        if not node.startswith("ORG"):
+            continue
+        nfigs = len(extras.figures())
+        floor = 1 if node in CH1_NODES else ORG_FIG_FLOOR
+        if nfigs < floor:
+            problems.append(
+                f"{node}: {nfigs} figure(s), visual standard requires >= {floor} "
+                f"- organic chemistry does not ship as prose alone"
+            )
+
     figures = sum(len(e.figures()) for e in EXTRAS.values())
     tables = sum(len(e.tables()) for e in EXTRAS.values())
     videos = sum(1 for e in EXTRAS.values() if e.video is not None)

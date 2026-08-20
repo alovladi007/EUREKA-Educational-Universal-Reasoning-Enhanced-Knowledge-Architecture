@@ -914,6 +914,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="worked-mechanism-step",
+            figure=Figure(
+                stem="org1-conjugate-bases",
+                caption=(
+                    "Formal charge in the wild: three anions whose single negative charge the count assigns to oxygen in each case."
+                ),
+                alt="Structures of ethoxide, phenoxide and acetate, each carrying a formally charged oxygen.",
+            ),
             heading="Worked: charge through one mechanism step",
             body=(
                 "Take the first step of acid catalysed hydration: water "

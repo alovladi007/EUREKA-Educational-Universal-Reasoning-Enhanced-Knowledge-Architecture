@@ -1,0 +1,56 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='538' height='424' viewBox='0 0 538 424'><g transform='translate(14.0,108.5)'><path class='bond-0 atom-0 atom-1' d='M 9.5,53.1 L 66.5,20.2' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 66.5,20.2 L 123.5,53.1' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-2 atom-2 atom-3' d='M 123.5,53.1 L 180.5,20.2' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-3 atom-2 atom-4' d='M 123.5,53.1 L 123.5,82.3' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-3 atom-2 atom-4' d='M 123.5,82.3 L 123.5,111.5' style='fill:none;fill-rule:evenodd;stroke:#8C2121;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 63.6,21.9 L 66.5,20.2 L 69.3,21.9' style='fill:none;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />
+<path class='atom-4' d='M 125.1 118.7
+Q 126.1 119.0, 126.6 119.6
+Q 127.1 120.2, 127.1 121.1
+Q 127.1 122.6, 126.2 123.4
+Q 125.2 124.3, 123.5 124.3
+L 119.9 124.3
+L 119.9 113.6
+L 123.0 113.6
+Q 124.8 113.6, 125.8 114.4
+Q 126.7 115.1, 126.7 116.5
+Q 126.7 118.1, 125.1 118.7
+M 121.3 114.8
+L 121.3 118.2
+L 123.0 118.2
+Q 124.1 118.2, 124.6 117.8
+Q 125.2 117.3, 125.2 116.5
+Q 125.2 114.8, 123.0 114.8
+L 121.3 114.8
+M 123.5 123.1
+Q 124.5 123.1, 125.1 122.6
+Q 125.6 122.1, 125.6 121.1
+Q 125.6 120.3, 125.0 119.8
+Q 124.4 119.4, 123.2 119.4
+L 121.3 119.4
+L 121.3 123.1
+L 123.5 123.1
+' fill='#8C2121'/>
+<path class='atom-4' d='M 129.5 116.6
+L 129.7 117.6
+Q 130.5 116.4, 131.8 116.4
+Q 132.2 116.4, 132.8 116.6
+L 132.6 117.8
+Q 131.9 117.7, 131.6 117.7
+Q 130.9 117.7, 130.5 117.9
+Q 130.1 118.2, 129.8 118.8
+L 129.8 124.3
+L 128.4 124.3
+L 128.4 116.6
+L 129.5 116.6
+' fill='#8C2121'/><text x='95.0' y='161.0' font-family="Helvetica, Arial, sans-serif" font-size='14.5px' fill='#1c1c1e' font-weight='600' text-anchor='middle'>2-bromobutane</text></g><line x1='214.0' y1='86.5' x2='315.0' y2='86.5' stroke='#2a78d6' stroke-width='2'/><polygon points='324.0,86.5 313.0,81.0 313.0,92.0' fill='#2a78d6'/><text x='269.0' y='76.5' font-family="Helvetica, Arial, sans-serif" font-size='13.5px' fill='#2a78d6' text-anchor='middle'>NaOEt</text><text x='269.0' y='106.5' font-family="Helvetica, Arial, sans-serif" font-size='12.5px' fill='#52525b' text-anchor='middle'>Zaitsev: more substituted</text><line x1='214.0' y1='293.5' x2='315.0' y2='293.5' stroke='#2a78d6' stroke-width='2'/><polygon points='324.0,293.5 313.0,288.0 313.0,299.0' fill='#2a78d6'/><text x='269.0' y='283.5' font-family="Helvetica, Arial, sans-serif" font-size='13.5px' fill='#2a78d6' text-anchor='middle'>KOtBu</text><text x='269.0' y='313.5' font-family="Helvetica, Arial, sans-serif" font-size='12.5px' fill='#52525b' text-anchor='middle'>Hofmann: less hindered</text><g transform='translate(334.0,14.0)'><path class='bond-0 atom-0 atom-1' d='M 9.5,74.3 L 69.1,48.9' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 69.1,48.9 L 120.9,87.8' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 67.8,60.0 L 115.0,95.6' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-2 atom-2 atom-3' d='M 120.9,87.8 L 180.5,62.5' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 66.1,50.2 L 69.1,48.9 L 71.7,50.8' style='fill:none;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />
+<path d='M 118.3,85.9 L 120.9,87.8 L 123.9,86.6' style='fill:none;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' /><text x='95.0' y='161.0' font-family="Helvetica, Arial, sans-serif" font-size='14.5px' fill='#1c1c1e' font-weight='600' text-anchor='middle'>trans-2-butene</text><text x='95.0' y='178.0' font-family="Helvetica, Arial, sans-serif" font-size='13.5px' fill='#52525b' text-anchor='middle'>Zaitsev major (NaOEt)</text></g><g transform='translate(334.0,221.0)'><path class='bond-0 atom-0 atom-1' d='M 9.5,78.1 L 69.1,52.8' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 69.1,52.8 L 120.9,91.7' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-2 atom-2 atom-3' d='M 120.9,91.7 L 180.5,66.4' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-2 atom-2 atom-3' d='M 122.2,80.6 L 176.7,57.4' style='fill:none;fill-rule:evenodd;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 66.1,54.0 L 69.1,52.8 L 71.7,54.7' style='fill:none;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />
+<path d='M 118.3,89.8 L 120.9,91.7 L 123.9,90.5' style='fill:none;stroke:#1C1C21;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' /><text x='95.0' y='161.0' font-family="Helvetica, Arial, sans-serif" font-size='14.5px' fill='#1c1c1e' font-weight='600' text-anchor='middle'>1-butene</text><text x='95.0' y='178.0' font-family="Helvetica, Arial, sans-serif" font-size='13.5px' fill='#52525b' text-anchor='middle'>Hofmann major (KOtBu)</text></g></svg>

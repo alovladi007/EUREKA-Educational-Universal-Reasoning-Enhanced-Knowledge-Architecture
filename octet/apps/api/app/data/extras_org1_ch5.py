@@ -9,6 +9,7 @@ elimination routes to alkenes. All prose authored for OCTET.
 from __future__ import annotations
 
 from app.data.lesson_extras import (
+    Figure,
     LessonExtras,
     ReadingSection,
     Table,
@@ -40,6 +41,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="bromonium",
+            figure=Figure(
+                stem="org1-bromonium-product",
+                caption=(
+                    "Cyclopentene plus bromine gives only the trans dibromide - the bridged ion's anti opening stamped into the product."
+                ),
+                alt="Reaction scheme of cyclopentene with Br2 giving trans-1,2-dibromocyclopentane.",
+            ),
             heading="The bromonium ion: a bridged intermediate",
             body=(
                 "As Br2 approaches the pi cloud, the bond polarises "
@@ -149,6 +157,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="stereospecificity-evidence",
+            figure=Figure(
+                stem="org1-cis-trans-butene",
+                caption=(
+                    "The probe pair: separable cis and trans substrates let the mechanism's stereochemical prediction be tested isomer by isomer."
+                ),
+                alt="Structures of cis- and trans-2-butene used as stereochemical probes.",
+            ),
             heading="Stereospecificity as evidence, and the wider halogen toolkit",
             body=(
                 "The bromonium mechanism makes a falsifiable "
@@ -269,6 +284,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="acid-hydration",
+            figure=Figure(
+                stem="org1-three-hydrations",
+                caption=(
+                    "One alkene, three tools: the cationic routes cap the Markovnikov carbon; hydroboration inverts the regiochemistry."
+                ),
+                alt="Scheme of propene giving 2-propanol under Markovnikov methods and 1-propanol under hydroboration-oxidation.",
+            ),
             heading="Acid-catalysed hydration: the cation route",
             body=(
                 "With dilute strong acid, water adds across a "
@@ -379,6 +401,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="decision-drills",
+            figure=Figure(
+                stem="org1-hydride-shift",
+                caption=(
+                    "The rearrangement landmine that forces method choice: acid conditions scramble this skeleton, the bridged and concerted routes do not."
+                ),
+                alt="Hydride-shift scheme reused to justify hydration method selection.",
+            ),
             heading="Decision drills across three substrates",
             body=(
                 "Method choice becomes automatic through contrast, "
@@ -522,6 +551,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="mcpba",
+            figure=Figure(
+                stem="org1-epoxidation-step",
+                caption=(
+                    "The concerted oxygen transfer: cyclohexene to its epoxide, geometry preserved, nothing rearranged."
+                ),
+                alt="Reaction scheme of cyclohexene with mCPBA giving cyclohexene oxide.",
+            ),
             heading="Epoxidation with peroxyacids",
             body=(
                 "A peroxyacid - mCPBA is the standard laboratory "
@@ -582,6 +618,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="syn-diols",
+            figure=Figure(
+                stem="org1-epoxide-diols",
+                caption=(
+                    "The diastereomer switch drawn out: epoxide-then-water delivers the trans diol, osmium delivers the cis - reagent choice is stereochemistry choice."
+                ),
+                alt="Scheme of cyclohexene giving trans-1,2-cyclohexanediol via epoxide hydrolysis and cis-diol via OsO4.",
+            ),
             heading="Syn diols: osmium tetroxide, and the choice between routes",
             body=(
                 "The complementary tool delivers both oxygens at "
@@ -769,6 +812,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="the-cleavage",
+            figure=Figure(
+                stem="org1-ozonolysis",
+                caption=(
+                    "The molecular saw at work: 2-methyl-2-butene falls into acetone and acetaldehyde, each sp2 carbon capped with oxygen."
+                ),
+                alt="Reaction scheme of 2-methyl-2-butene ozonolysis giving acetone plus acetaldehyde.",
+            ),
             heading="What ozone does to a double bond",
             body=(
                 "Ozone adds across the alkene to form an unstable "
@@ -801,6 +851,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="reconstruction",
+            figure=Figure(
+                stem="org1-ozonolysis-ring",
+                caption=(
+                    "The ring case: cyclohexene opens to a single six-carbon dialdehyde - one fragment carrying both new carbonyls."
+                ),
+                alt="Reaction scheme of cyclohexene ozonolysis giving hexanedial.",
+            ),
             heading="Running it backwards: structure determination",
             body=(
                 "Before spectroscopy matured, ozonolysis WAS "
@@ -1001,6 +1058,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="chain-mechanism",
+            figure=Figure(
+                stem="org1-radical-chain",
+                caption=(
+                    "The propagation loop: each turn consumes one alkene and one HBr and returns the bromine atom that keeps the chain alive."
+                ),
+                alt="Circular radical chain diagram for peroxide-promoted HBr addition.",
+            ),
             heading="The radical chain: initiation, propagation, termination",
             body=(
                 "Initiation manufactures the first radicals: heat "
@@ -1034,6 +1098,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="anti-markovnikov",
+            figure=Figure(
+                stem="org1-markovnikov",
+                caption=(
+                    "Both regiochemical outcomes side by side: the intermediate changed, so the product carbon changed with it."
+                ),
+                alt="Two-path scheme of propene with HBr, ionic versus radical conditions.",
+            ),
             heading="Why the regiochemistry inverts",
             body=(
                 "The outcome flips because the SEQUENCE flips. In "
@@ -1241,6 +1312,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="dehydrohalogenation",
+            figure=Figure(
+                stem="org1-zaitsev-hofmann",
+                caption=(
+                    "Base choice is product choice, drawn: small ethoxide reaches the internal hydrogen, bulky tert-butoxide settles for the terminal one."
+                ),
+                alt="Scheme of 2-bromobutane giving Zaitsev 2-butene with NaOEt and Hofmann 1-butene with KOtBu.",
+            ),
             heading="Dehydrohalogenation: base-promoted E2",
             body=(
                 "Treat an alkyl halide with a strong base - "
@@ -1354,6 +1432,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="worked-syntheses",
+            figure=Figure(
+                stem="org1-three-hydrations",
+                caption=(
+                    "Problem one's second step in structures: the anti-Markovnikov tool is what lands the oxygen on C1."
+                ),
+                alt="Three-hydrations scheme reused inside the worked synthesis.",
+            ),
             heading="Two syntheses worked forward and audited",
             body=(
                 "Problem one: from 2-bromobutane, prepare "

@@ -11,6 +11,7 @@ NIST WebBook and standard physical organic references.
 from __future__ import annotations
 
 from app.data.lesson_extras import (
+    Figure,
     LessonExtras,
     ReadingSection,
     Table,
@@ -42,6 +43,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="sigma-pi-anatomy",
+            figure=Figure(
+                stem="org1-orbital-shapes",
+                caption=(
+                    "The ingredients of the pi bond: the p orbitals whose side-on overlap above and below the sigma framework forms it."
+                ),
+                alt="Orbital shape diagrams showing s and p orbitals, the p lobes being the pi bond's components.",
+            ),
             heading="One sigma, one pi: what a double bond is made of",
             body=(
                 "Each alkene carbon is sp2 hybridised: three hybrid "
@@ -70,6 +78,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="restricted-rotation",
+            figure=Figure(
+                stem="org1-cis-trans-butene",
+                caption=(
+                    "cis- and trans-2-butene, drawn from their configurations: no rotation interconverts them, and the constants differ."
+                ),
+                alt="Structures of cis-2-butene and trans-2-butene with boiling points.",
+            ),
             heading="Restricted rotation and cis/trans isomerism",
             body=(
                 "Rotating one end of a double bond by 90 degrees would "
@@ -283,6 +298,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="cip-priorities",
+            figure=Figure(
+                stem="org1-ez-bromopropene",
+                caption=(
+                    "The priority trap drawn out: with bromine on the double bond, E and Z follow CIP ranking, not visual same-sidedness."
+                ),
+                alt="Structures of E- and Z-1-bromo-1-propene labeled with the priority reasoning.",
+            ),
             heading="The CIP priority rules",
             body=(
                 "The Cahn-Ingold-Prelog rules rank the two groups on "
@@ -312,6 +334,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="e-z-assignment",
+            figure=Figure(
+                stem="org1-cis-trans-butene",
+                caption=(
+                    "Where cis/trans still works: one hydrogen on each sp2 carbon makes the informal labels unambiguous."
+                ),
+                alt="cis- and trans-2-butene, the easy case the informal vocabulary covers.",
+            ),
             heading="E and Z, and where cis/trans still lives",
             body=(
                 "With priorities assigned on each carbon separately, "
@@ -467,6 +496,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="hydrogenation-evidence",
+            figure=Figure(
+                stem="org1-alkene-stability",
+                caption=(
+                    "Heats of hydrogenation from the lesson's table: the less heat released to the common alkane, the more stable the alkene started."
+                ),
+                alt="Bar chart of hydrogenation enthalpies from ethylene down to 2,3-dimethyl-2-butene.",
+            ),
             heading="Heats of hydrogenation: the measurement",
             body=(
                 "Add H2 across a double bond and heat comes out; the "
@@ -510,6 +546,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="why-substitution-stabilises",
+            figure=Figure(
+                stem="org1-substitution-ladder",
+                caption=(
+                    "The substitution ladder in structures, mono through tetra: each added alkyl group is another hyperconjugative donor."
+                ),
+                alt="Grid of alkenes from ethylene to 2,3-dimethyl-2-butene labeled by substitution class.",
+            ),
             heading="Why alkyl groups stabilise a double bond",
             body=(
                 "Two electronic accounts, both pointing the same way. "
@@ -719,6 +762,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="markovnikov",
+            figure=Figure(
+                stem="org1-markovnikov",
+                caption=(
+                    "Propene plus HBr, both regimes: the ionic path caps the secondary cation's carbon; peroxides flip the outcome through the radical chain."
+                ),
+                alt="Reaction scheme showing propene giving 2-bromopropane with HBr and 1-bromopropane with HBr and peroxides.",
+            ),
             heading="Markovnikov's rule, said correctly",
             body=(
                 "On an unsymmetrical alkene the proton has a choice "
@@ -759,6 +809,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="regiochemistry-practice",
+            figure=Figure(
+                stem="org1-cation-ladder",
+                caption=(
+                    "The working procedure's ruler: draw both cations, place them on this ladder, commit the proton to the better one."
+                ),
+                alt="Carbocation stability bar chart used as the regiochemistry decision ruler.",
+            ),
             heading="Reading regiochemistry from structure",
             body=(
                 "The working procedure for any HX addition: draw both "
@@ -923,6 +980,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="stability-ladder",
+            figure=Figure(
+                stem="org1-cation-ladder",
+                caption=(
+                    "The carbocation ladder with the lesson's approximate gas-phase spacing: each rung is worth roughly 60-70 kJ/mol."
+                ),
+                alt="Bar chart of relative carbocation energies from methyl to tertiary.",
+            ),
             heading="The stability ladder and its two rungs of reasons",
             body=(
                 "The operational order: tertiary > secondary > "
@@ -958,6 +1022,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="three-fates",
+            figure=Figure(
+                stem="org1-hydride-shift",
+                caption=(
+                    "The third fate drawn: rearrangement firing before capture whenever the ladder permits a climb."
+                ),
+                alt="Hydride-shift scheme illustrating the rearrangement fate of a carbocation.",
+            ),
             heading="The three fates of a carbocation",
             body=(
                 "Every carbocation, however formed, chooses among "
@@ -1138,6 +1209,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="when-and-which",
+            figure=Figure(
+                stem="org1-cation-ladder",
+                caption=(
+                    "The ladder is the driving force: shifts fire only when they climb it."
+                ),
+                alt="Carbocation stability bar chart reused to show the upgrade rule.",
+            ),
             heading="When shifts fire, and which group migrates",
             body=(
                 "The driving question is always the ladder: a shift "
@@ -1171,6 +1249,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="spotting-rearranged-products",
+            figure=Figure(
+                stem="org1-hydride-shift",
+                caption=(
+                    "The canonical rearrangement, drawn: 3-methyl-1-butene delivers the shifted tertiary chloride as major product."
+                ),
+                alt="Scheme of 3-methyl-1-butene with HCl giving rearranged 2-chloro-2-methylbutane and minor unrearranged product.",
+            ),
             heading="Reading rearrangement in products, and its fingerprints",
             body=(
                 "The classic demonstration: add HCl to "

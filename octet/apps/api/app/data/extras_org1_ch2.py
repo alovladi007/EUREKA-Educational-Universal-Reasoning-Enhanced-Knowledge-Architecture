@@ -76,6 +76,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="substitutive-naming",
+            figure=Figure(
+                stem="org1-hexane-isomers",
+                caption=(
+                    "The five hexanes, drawn from their molecular graphs. Naming all five - and finding no sixth - is the algorithm at work."
+                ),
+                alt="Skeletal structures of hexane, 2-methylpentane, 3-methylpentane, 2,2-dimethylbutane and 2,3-dimethylbutane in a grid.",
+            ),
             heading="Substitutive nomenclature, as an algorithm",
             body=(
                 "IUPAC substitutive nomenclature is a deterministic "
@@ -141,6 +148,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="physical-properties",
+            figure=Figure(
+                stem="org1-alkane-bp-trend",
+                caption=(
+                    "Boiling and melting points of the unbranched alkanes, plotted from the table's CRC values: the smooth bp climb against the uneven mp series."
+                ),
+                alt="Line chart of boiling and melting points versus carbon count for C1 through C8 alkanes.",
+            ),
             heading="Boiling points, melting points, and what they measure",
             body=(
                 "An alkane's boiling point measures how much thermal energy "
@@ -263,6 +277,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="what-counts-as-different",
+            figure=Figure(
+                stem="org1-c5-isomers",
+                caption=(
+                    "The three C5H12 constitutional isomers with their boiling points: one formula, three compounds, three sets of constants."
+                ),
+                alt="Skeletal structures of pentane, 2-methylbutane and 2,2-dimethylpropane with boiling points.",
+            ),
             heading="Connectivity is the test, not appearance",
             body=(
                 "Two structures are the same compound if every atom has "
@@ -357,6 +378,13 @@ _add(LessonExtras(
         ),
         ReadingSection(
             id="isomers-properties",
+            figure=Figure(
+                stem="org1-c5-bpmp",
+                caption=(
+                    "Boiling and melting points of the C5H12 trio, from the lesson's data: branching lowers the boiling point while the symmetric isomer melts highest."
+                ),
+                alt="Grouped bar chart of boiling and melting points for the three C5H12 isomers.",
+            ),
             heading="Isomers are different compounds, with the data to prove it",
             body=(
                 "Constitutional isomers are not variants of one substance; "
@@ -478,6 +506,13 @@ _add(LessonExtras(
     sections=(
         ReadingSection(
             id="newman-howto",
+            figure=Figure(
+                stem="org1-newman-projections",
+                caption=(
+                    "Staggered and eclipsed Newman projections, constructed from the 60-degree geometry the text describes."
+                ),
+                alt="Two Newman projections: staggered with back bonds between front bonds, eclipsed with back bonds nearly hidden.",
+            ),
             heading="The Newman projection, constructed",
             body=(
                 "Sight straight down the bond you care about. The front "
