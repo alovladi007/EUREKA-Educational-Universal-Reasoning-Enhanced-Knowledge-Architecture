@@ -2171,7 +2171,10 @@ _add(LessonExtras(
                 "course does not deal in slogans - every "
                 "preference it teaches comes with a size, a "
                 "solvent or phase, and an instrument that "
-                "measured it."
+                "measured it, and the stability ladder built "
+                "in this lesson - counted, cross-checked, and "
+                "priced - is the template for how every later "
+                "ranking earns its keep."
             ),
         ),
     ),
