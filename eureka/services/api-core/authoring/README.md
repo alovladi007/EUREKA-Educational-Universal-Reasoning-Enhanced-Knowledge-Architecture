@@ -35,3 +35,4 @@ Rules (from the NCLEX build plan, applying to every bank):
 | nclex-strategy-backfill-3.json | 40 | 2026-08-20 | strategy tips for waves 4-5 (emergencies, procedures, mgmt-of-care); coverage now 141/297 |
 | nclex-strategy-backfill-4.json | 48 | 2026-08-20 | strategy tips for waves 6-7 (fundamentals, peds prevention, mental health, emergencies, delegation); ALL 7 authored waves now covered; coverage 189/297 |
 | nclex-strategy-backfill-5.json | 108 | 2026-08-20 | strategy tips for the original client-bundle migration items + all 18 NGN case questions (per judgment-step reasoning); backfill COMPLETE 297/297 |
+| nclex-phase1-wave8.json | 24 | 2026-08-20 | Mgmt of Care +8, Physio Adaptation +8, Reduction of Risk +4, Safety +4 (blueprint-underweight categories); FIRST wave authored WITH strategy field; bank 321 (303 discrete + 18 case) |

@@ -1,0 +1,434 @@
+[
+  {
+    "id": "nx_a8_mc_001",
+    "topicId": 0,
+    "question": "A charge nurse is making assignments. Which client is most appropriate to assign to an LPN/LVN?",
+    "options": [
+      "A client 2 days after cholecystectomy receiving scheduled oral medications",
+      "A client admitted 1 hour ago with chest pain of unknown cause",
+      "A client requiring the initial admission assessment and care plan",
+      "A client receiving a blood transfusion started 10 minutes ago"
+    ],
+    "correct": 0,
+    "explanation": "A stable postoperative client on routine oral medications fits the LPN scope: predictable course, established plan, routine interventions. New chest pain is an unstable, undiagnosed presentation requiring RN assessment. The initial admission assessment and care planning are RN-only functions in every jurisdiction. A transfusion in its first 15 minutes requires RN monitoring because that is the highest-risk reaction window.",
+    "difficulty": 2,
+    "subtopic": "Assignment to LPN/LVN",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "LPN assignment questions reward the stable-predictable-established pattern: strike any option containing 'initial', 'new/unknown', or a first-15-minutes intervention, and the remaining stable client is the answer."
+  },
+  {
+    "id": "nx_a8_mc_002",
+    "topicId": 0,
+    "question": "A nurse receives report on four clients. Which client should be assessed first?",
+    "options": [
+      "A client with new tearing chest pain radiating to the back and a blood pressure difference between arms",
+      "A client with chronic stable angina requesting a scheduled nitroglycerin refill",
+      "A client 2 days post-myocardial infarction reporting fatigue after walking",
+      "A client awaiting discharge teaching after pacemaker insertion"
+    ],
+    "correct": 0,
+    "explanation": "Tearing pain radiating to the back with an interarm pressure difference is the classic picture of aortic dissection - immediately life-threatening and first to be seen. Chronic stable angina with a refill request is routine. Fatigue after ambulation two days post-MI is an expected early recovery finding to monitor. Discharge teaching is important but never outranks a potentially lethal acute finding.",
+    "difficulty": 3,
+    "subtopic": "Prioritization - acute vs expected",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "See-first questions hinge on new-and-lethal versus chronic-or-expected: label each option acute/chronic and expected/unexpected, and the acute-unexpected one wins regardless of how dramatic the others sound."
+  },
+  {
+    "id": "nx_a8_mc_003",
+    "topicId": 0,
+    "question": "A client who can no longer make decisions has a living will declining resuscitation, but the designated healthcare proxy insists that 'everything be done.' What should the nurse recognize?",
+    "options": [
+      "The living will's documented wishes guide care, and the team should address the conflict with the proxy and ethics resources",
+      "The proxy's instructions override the living will in all circumstances",
+      "The nurse should follow whichever instruction the physician prefers",
+      "Care decisions should wait until the family reaches unanimous agreement"
+    ],
+    "correct": 0,
+    "explanation": "A proxy's authority is to represent the client's known wishes, not to replace them - a documented living will is direct evidence of those wishes, so the team honors it while engaging the proxy and the ethics process. The proxy does not override a valid, applicable living will. Physician preference is not the legal standard. Waiting for family unanimity delays care and has no legal basis when a valid directive exists.",
+    "difficulty": 3,
+    "subtopic": "Advance directives - proxy vs living will",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Advance-directive conflicts resolve toward the client's own documented voice: proxies speak FOR the client's wishes, never over them, so the option honoring the written directive plus a process for the conflict is correct."
+  },
+  {
+    "id": "nx_a8_mc_004",
+    "topicId": 0,
+    "question": "In the operating room, the nurse notes the surgical site marked on the left leg while the consent form reads right leg. The team is ready to begin. What should the nurse do?",
+    "options": [
+      "Stop the procedure from starting and force reconciliation of the discrepancy before anything proceeds",
+      "Allow the case to start while contacting the surgeon's office to check records",
+      "Assume the consent form contains a clerical error and proceed with the marked site",
+      "Document the discrepancy and let the surgeon make the final call during the case"
+    ],
+    "correct": 0,
+    "explanation": "A site-versus-consent mismatch is exactly the error the time-out exists to catch: the nurse halts the start until client, consent, marking, and imaging all agree. Starting while records are checked risks wrong-site surgery. Assuming either document is wrong replaces verification with a guess. Documentation without stopping the case protects the record, not the client.",
+    "difficulty": 2,
+    "subtopic": "Surgical safety - stopping the line",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Any nurse in the room can and must stop the line: when documents disagree before an irreversible procedure, the only right answer halts everything until every source matches - options that proceed 'while checking' are the trap."
+  },
+  {
+    "id": "nx_a8_mc_005",
+    "topicId": 0,
+    "question": "Which task must the registered nurse perform rather than delegate to an LPN/LVN?",
+    "options": [
+      "Developing the nursing care plan for a newly admitted client",
+      "Administering scheduled oral medications to a stable client",
+      "Reinforcing teaching the RN provided about wound care",
+      "Collecting focused data on a stable client's healing incision"
+    ],
+    "correct": 0,
+    "explanation": "Care-plan development - analyzing assessment data and establishing the plan - is a non-delegable RN function. Scheduled oral medications for stable clients sit squarely in LPN scope. Reinforcing teaching the RN initiated is a classic LPN activity, distinct from initial teaching. Focused data collection on a stable client is within LPN scope; it is the comprehensive initial assessment that is not.",
+    "difficulty": 2,
+    "subtopic": "Non-delegable RN functions",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "The RN keeps the nursing process's thinking steps - assess (initial), analyze, plan, evaluate. Scan options for those verbs; 'reinforce' and 'collect data on stable clients' are the LPN-legal phrasings planted beside them."
+  },
+  {
+    "id": "nx_a8_mc_006",
+    "topicId": 0,
+    "question": "A nurse smells alcohol on a colleague's breath at the start of a shift and notes slurred speech. What is the appropriate action?",
+    "options": [
+      "Ensure the colleague does not assume client care and report observations to the supervisor immediately",
+      "Cover the colleague's assignment quietly and discuss it privately after the shift",
+      "Confront the colleague and accept their assurance that they are fit to work",
+      "Document the observation in a client's chart for the record"
+    ],
+    "explanation": "Client safety requires removing the impaired colleague from care now, and the duty to report to the supervisor is immediate and professional, not optional. Covering the assignment hides a safety threat and enables continued impairment. Accepting reassurance leaves an impaired judgment in charge of judging itself. Client charts document client care - staff impairment belongs in the supervisory report, never in a client's record.",
+    "correct": 0,
+    "difficulty": 2,
+    "subtopic": "Impaired colleague",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Impaired-colleague stems have a fixed two-part answer: remove from care NOW plus report up NOW. Options offering privacy, delay, or peer loyalty are distractors aimed at sympathy rather than safety."
+  },
+  {
+    "id": "nx_a8_mc_007",
+    "topicId": 0,
+    "question": "A caller identifying themselves as a client's sibling asks the nurse for an update on the client's condition. What should the nurse do?",
+    "options": [
+      "Verify the caller is authorized - such as by the client's designated code word - before sharing any information",
+      "Provide a general update since the caller identified themselves as family",
+      "Confirm the client is on the unit but decline further details",
+      "Refer the caller to the client's online medical record portal"
+    ],
+    "correct": 0,
+    "explanation": "Telephone identity cannot be assumed: information is released only to callers the client has authorized, typically verified with a code word or passphrase system. Family relationship claims are unverifiable by voice and do not create authorization. Even confirming presence on the unit discloses protected information. Portal access belongs to the client, and directing others to it does not solve the authorization problem.",
+    "difficulty": 2,
+    "subtopic": "Telephone confidentiality",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Phone-inquiry questions are verification questions: the correct option contains a verification mechanism. Any option that discloses anything - including mere presence - on the strength of a claimed relationship fails."
+  },
+  {
+    "id": "nx_a8_mc_008",
+    "topicId": 0,
+    "question": "Four clients arrive at the emergency department within minutes. Who should be seen first?",
+    "options": [
+      "A client receiving chemotherapy with a temperature of 38.4 C (101.1 F)",
+      "A client with a wrist deformity after a fall, in moderate pain",
+      "A client with a migraine similar to previous episodes",
+      "A client requesting a work note after a minor abrasion"
+    ],
+    "correct": 0,
+    "explanation": "Fever during chemotherapy is presumed febrile neutropenia - a can't-fight-infection emergency where antibiotics within the hour change survival - so this client is seen first despite looking the least dramatic. A deformed wrist needs timely reduction but is not immediately life-threatening. A familiar-pattern migraine is urgent for comfort, not survival. The work-note request is the definition of non-urgent.",
+    "difficulty": 3,
+    "subtopic": "Triage - febrile neutropenia",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Triage questions bury the killer in quiet clothing: immunocompromise plus fever outranks visible injuries because the danger is systemic and hourly. Ask 'who dies untreated tonight', not 'who looks worst'."
+  },
+  {
+    "id": "nx_a8_pa_001",
+    "topicId": 7,
+    "question": "A client with diabetic ketoacidosis has arterial blood gases: pH 7.26, PaCO2 28 mm Hg, HCO3- 12 mEq/L. How should the nurse interpret these values?",
+    "options": [
+      "Metabolic acidosis with partial respiratory compensation",
+      "Respiratory acidosis with renal compensation",
+      "Metabolic alkalosis with respiratory compensation",
+      "Mixed respiratory and metabolic alkalosis"
+    ],
+    "correct": 0,
+    "explanation": "The pH is acidotic and the bicarbonate is markedly low - a metabolic acidosis - while the low PaCO2 shows the lungs blowing off acid in compensation (Kussmaul breathing), incomplete because the pH remains abnormal. Respiratory acidosis would require an ELEVATED CO2. Both alkalosis options contradict the acidic pH outright, and no value here is alkalotic.",
+    "difficulty": 2,
+    "subtopic": "ABG interpretation - DKA",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Read ABGs in fixed order: pH names the state, then find which value (CO2 or HCO3) explains it - that is the primary disorder - and the other value moving the same direction is compensation. Never start from the diagnosis."
+  },
+  {
+    "id": "nx_a8_pa_002",
+    "topicId": 7,
+    "question": "A client's chest tube becomes disconnected from the drainage system, and the tube end falls to the floor. What should the nurse do first?",
+    "options": [
+      "Submerge the tube end in a bottle of sterile water to restore a water seal",
+      "Clamp the chest tube close to the chest wall until a new system arrives",
+      "Reconnect the tube directly to the contaminated tubing",
+      "Remove the chest tube and cover the site with an occlusive dressing"
+    ],
+    "correct": 0,
+    "explanation": "Submerging the tube end 1-2 cm in sterile water instantly recreates a water seal: air can leave the pleural space but cannot enter, protecting the client while a new system is set up. Clamping traps air and invites a tension pneumothorax. Reconnecting contaminated tubing introduces infection into the pleural space. Removing a functioning chest tube is never a nursing response to an equipment problem.",
+    "difficulty": 3,
+    "subtopic": "Chest tube emergencies",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Chest-tube emergencies split by WHERE the break is: disconnected system = water-seal in sterile water; tube pulled OUT of the chest = occlusive dressing taped on three sides. Match the remedy to the location and never clamp as a first move."
+  },
+  {
+    "id": "nx_a8_pa_003",
+    "topicId": 7,
+    "question": "An older client with untreated hypothyroidism is admitted with a temperature of 35 C (95 F), heart rate 48/min, hypotension, and decreasing consciousness. What should the nurse suspect?",
+    "options": [
+      "Myxedema coma requiring emergency management",
+      "Thyroid storm from excess hormone",
+      "An expected medication effect of levothyroxine",
+      "Normal age-related changes in metabolism"
+    ],
+    "correct": 0,
+    "explanation": "Hypothermia, bradycardia, hypotension, and altered consciousness in untreated hypothyroidism form the picture of myxedema coma - profound metabolic slowing that is a medical emergency. Thyroid storm is the OPPOSITE state: fever, tachycardia, agitation. The client is described as untreated, so a levothyroxine effect is impossible - and treatment causes no such crisis at therapeutic doses. Aging never explains this degree of hypothermia and obtundation.",
+    "difficulty": 3,
+    "subtopic": "Myxedema coma",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Thyroid emergencies are mirror images: everything UP (fever, tachycardia, agitation) is storm; everything DOWN (cold, slow, obtunded) is myxedema coma. Sort the vital signs by direction and the diagnosis names itself."
+  },
+  {
+    "id": "nx_a8_pa_004",
+    "topicId": 7,
+    "question": "A client rescued from a house fire has singed nasal hair, soot around the mouth, and a hoarse voice. What should the nurse anticipate?",
+    "options": [
+      "Early intubation before airway edema progresses",
+      "Oral fluids to soothe the irritated throat",
+      "Discharge after a period of observation if oxygen saturation stays normal",
+      "Application of cool compresses to the face as the priority"
+    ],
+    "correct": 0,
+    "explanation": "Singed nasal hair, perioral soot, and hoarseness are the triad of inhalation injury: the airway will swell over the coming hours, and securing it early - before edema makes intubation impossible - is the anticipated intervention. Oral fluids risk aspiration in a threatened airway. Normal current saturation is falsely reassuring because edema is progressive. Facial compresses address the least dangerous part of the presentation.",
+    "difficulty": 3,
+    "subtopic": "Inhalation injury",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Burn questions with face, mouth or voice findings are airway questions in disguise: the airway narrows on a schedule, so 'anticipate' means act before the window closes - normal-now options are the planted false reassurance."
+  },
+  {
+    "id": "nx_a8_pa_005",
+    "topicId": 7,
+    "question": "A client with cirrhosis begins vomiting bright red blood. After activating the rapid response, which nursing action is the priority?",
+    "options": [
+      "Position the client on their side and prepare suction to protect the airway",
+      "Insert a nasogastric tube for feeding access",
+      "Administer the scheduled dose of oral lactulose",
+      "Obtain a detailed dietary history"
+    ],
+    "correct": 0,
+    "explanation": "Massive hematemesis from presumed varices threatens the airway first: side-lying positioning and suction guard against aspiration while the team mobilizes volume and endoscopy. A feeding tube is contraindicated during active variceal bleeding and feeding is not the need. Oral anything - including scheduled lactulose - is withheld while the client vomits blood. History-taking waits until the emergency is controlled.",
+    "difficulty": 2,
+    "subtopic": "Variceal hemorrhage",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "In every massive-bleeding stem the sequence is airway-breathing-circulation even when blood is the drama: the client drowns before they exsanguinate, so positioning and suction outrank everything oral or historical."
+  },
+  {
+    "id": "nx_a8_pa_006",
+    "topicId": 7,
+    "question": "A client begins a generalized tonic-clonic seizure in bed. Which action should the nurse take during the seizure?",
+    "options": [
+      "Turn the client to the side, protect the head, and time the seizure",
+      "Insert a padded tongue blade to prevent tongue injury",
+      "Restrain the client's arms and legs to stop the movements",
+      "Leave to notify the provider while the seizure continues"
+    ],
+    "correct": 0,
+    "explanation": "During a seizure the nurse protects: side-lying for secretions, padding for the head, and timing because duration drives treatment decisions. Nothing ever goes in the mouth - tongue blades break teeth and obstruct airways. Restraining seizing limbs causes fractures and dislocations. The nurse stays with the client; notification happens by call light or delegation, not by abandonment.",
+    "difficulty": 1,
+    "subtopic": "Seizure management",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Seizure options sort into protect versus interfere: side, pad, time, stay are protection; mouth objects, restraint, and leaving are interference. Choose protection every time - the distractors are old folk practice."
+  },
+  {
+    "id": "nx_a8_pa_007",
+    "topicId": 7,
+    "question": "A client in the oliguric phase of acute kidney injury has a urine output of 250 mL/day. Which order should the nurse question?",
+    "options": [
+      "Administer the potassium chloride supplement as scheduled",
+      "Restrict daily fluid intake per calculated allowance",
+      "Weigh the client daily on the same scale",
+      "Monitor serum electrolytes daily"
+    ],
+    "correct": 0,
+    "explanation": "Oliguric kidneys cannot excrete potassium, so a scheduled potassium supplement invites lethal hyperkalemia and must be questioned. Fluid restriction matches the kidney's inability to remove water. Daily weights are the most reliable fluid-balance measure in AKI. Daily electrolytes are exactly the surveillance this phase demands.",
+    "difficulty": 2,
+    "subtopic": "AKI oliguric phase",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Question-the-order stems pair a failing organ with a drug that organ must clear: match each order against what the failed kidney can no longer do, and the potassium order convicts itself."
+  },
+  {
+    "id": "nx_a8_pa_008",
+    "topicId": 7,
+    "question": "On the monitor of a client with a new pacemaker, the nurse sees pacing spikes that are not followed by QRS complexes. How should the nurse interpret this?",
+    "options": [
+      "Failure to capture - the pacemaker fires but the heart does not respond",
+      "Normal pacemaker function with intrinsic rhythm",
+      "Failure to sense - the pacemaker ignores the heart's own beats",
+      "Oversensing - the pacemaker is inhibited by outside signals"
+    ],
+    "correct": 0,
+    "explanation": "A spike with no QRS after it means the stimulus was delivered but did not depolarize the ventricle: failure to capture, often from lead displacement or threshold change, and it needs prompt reporting. Normal function shows each spike followed by a complex. Failure to sense produces spikes falling where they should not - competing with intrinsic beats - not spikes without response. Oversensing produces missing spikes, not ineffective ones.",
+    "difficulty": 3,
+    "subtopic": "Pacemaker malfunction",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Pacemaker strips reduce to two questions: did it fire when it should (sensing), and did the heart answer (capture)? Spike-without-QRS is always a capture problem - file the pairing and the options sort themselves."
+  },
+  {
+    "id": "nx_a8_rr_001",
+    "topicId": 6,
+    "question": "A client with a documented latex allergy is scheduled for surgery. Which arrangement should the nurse advocate for?",
+    "options": [
+      "Schedule the client as the first case of the day in a latex-safe room",
+      "Schedule the client last so the room can be cleaned afterward",
+      "Proceed at any time since the team will wear vinyl gloves",
+      "Premedicate with an antihistamine and use standard equipment"
+    ],
+    "correct": 0,
+    "explanation": "Airborne latex particles accumulate as a room is used, so the latex-allergic client goes FIRST, into a room prepared latex-safe overnight. Scheduling last maximizes airborne exposure - backwards. Gloves are only one of dozens of latex sources in an operating room. Premedication blunts but does not prevent anaphylaxis and never substitutes for avoidance.",
+    "difficulty": 2,
+    "subtopic": "Latex allergy precautions",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Latex questions are airborne-particle questions: exposure accumulates through the day, so first-case scheduling is the recurring correct answer, and glove-only or premedication options undercount the sources."
+  },
+  {
+    "id": "nx_a8_rr_002",
+    "topicId": 6,
+    "question": "Three days after hip surgery, a client has new swelling, warmth, and tenderness in one calf. What should the nurse do?",
+    "options": [
+      "Keep the client in bed and notify the provider promptly for evaluation",
+      "Massage the calf to relieve the discomfort",
+      "Apply a sequential compression device to that leg",
+      "Encourage a brisk walk to improve circulation"
+    ],
+    "correct": 0,
+    "explanation": "Unilateral calf swelling, warmth, and tenderness after surgery is deep-vein thrombosis until proven otherwise: rest the limb and obtain prompt evaluation before any clot can embolize. Massage can dislodge a thrombus toward the lungs. Compression devices are prevention - applied to a leg with a suspected existing clot they risk embolization. Ambulation is likewise prevention, contraindicated once DVT is suspected until anticoagulation is addressed.",
+    "difficulty": 2,
+    "subtopic": "Suspected DVT",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "The DVT trap is prevention-versus-treatment: everything that prevents clots (walking, compression, massage-adjacent care) becomes dangerous once a clot is SUSPECTED. Read the timeline - suspicion flips the entire intervention list."
+  },
+  {
+    "id": "nx_a8_rr_003",
+    "topicId": 6,
+    "question": "Before a CT scan with iodinated contrast, which question by the nurse best identifies the client's risk of a contrast reaction?",
+    "options": [
+      "Have you ever had a reaction to contrast dye in a previous scan?",
+      "Are you allergic to shellfish?",
+      "Do you bruise easily?",
+      "Have you eaten anything today?"
+    ],
+    "correct": 0,
+    "explanation": "A prior reaction to contrast itself is the strongest predictor of another one and drives premedication or protocol changes. The shellfish-iodine link is a persistent myth - shellfish allergy is to proteins, not iodine, and does not specifically predict contrast reactions. Easy bruising concerns hemostasis, not allergy. Fasting status matters for sedation and some protocols but says nothing about reaction risk.",
+    "difficulty": 2,
+    "subtopic": "Contrast reaction screening",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Best-question stems reward the most direct predictor: prior reaction to the same agent class beats every proxy - and the shellfish option is planted specifically to catch the folklore."
+  },
+  {
+    "id": "nx_a8_rr_004",
+    "topicId": 6,
+    "question": "A telemetry client started on a new antiarrhythmic shows a corrected QT interval that has lengthened markedly since baseline. Why does the nurse notify the provider?",
+    "options": [
+      "QT prolongation predisposes the client to torsades de pointes, a lethal ventricular arrhythmia",
+      "A long QT indicates the medication is subtherapeutic",
+      "QT prolongation is an expected sign the drug is working",
+      "The finding suggests the leads are misplaced"
+    ],
+    "correct": 0,
+    "explanation": "A lengthening QT on a QT-prolonging drug is the warning that precedes torsades de pointes - polymorphic ventricular tachycardia that can degenerate into fibrillation - so the provider is notified and the drug reassessed. A long QT does not measure drug level, and 'subtherapeutic' reverses the concern. Some QT effect may accompany certain drugs, but marked prolongation is never dismissed as therapeutic. Lead placement affects waveform appearance, not a progressively measured interval trend.",
+    "difficulty": 3,
+    "subtopic": "QT prolongation",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Link the interval to its arrhythmia: QT belongs to torsades the way PR belongs to blocks. Interval-trend questions ask whether you know WHICH lethal rhythm the trend forecasts - name it and the answer is chosen."
+  },
+  {
+    "id": "nx_a8_si_001",
+    "topicId": 1,
+    "question": "A client with pulmonary tuberculosis is being discharged home on therapy. Which instruction is correct?",
+    "options": [
+      "Continue all medications for the full prescribed course, with periodic sputum testing to confirm clearing",
+      "Stop the medications when the cough resolves",
+      "Family members need no evaluation if they feel well",
+      "Isolation at home must continue until every pill is finished"
+    ],
+    "correct": 0,
+    "explanation": "TB treatment succeeds only with the complete multi-month course, and serial sputum cultures document conversion to noninfectious status. Stopping at symptom relief breeds resistant organisms - the central teaching point of TB therapy. Household contacts require screening regardless of symptoms because latent infection is silent. Home isolation ends with demonstrated response per protocol, typically weeks into effective therapy, not at the end of the entire course.",
+    "difficulty": 2,
+    "subtopic": "TB discharge teaching",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "TB teaching questions revolve around completion and contacts: the correct option pairs full-course adherence with follow-up testing, while the distractors quit early, skip contact screening, or over-extend isolation."
+  },
+  {
+    "id": "nx_a8_si_002",
+    "topicId": 1,
+    "question": "A hospitalized client with confusion repeatedly attempts to get out of bed unassisted. Which intervention should the nurse implement first?",
+    "options": [
+      "Move the client near the nursing station with a bed alarm and scheduled rounding",
+      "Apply a vest restraint to prevent falls",
+      "Administer a sedative to reduce the attempts",
+      "Raise all four side rails and dim the lights"
+    ],
+    "correct": 0,
+    "explanation": "Least restrictive measures come first: proximity, an alarm, and purposeful rounding address the risk while preserving liberty. Restraints require exhausting alternatives first and often worsen agitation and injury. Sedation is chemical restraint with fall-increasing side effects. Four raised rails constitute a restraint and convert bed exits into higher falls - climbing over instead of sliding out.",
+    "difficulty": 2,
+    "subtopic": "Fall prevention - least restrictive",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Climb the restraint ladder from the bottom: environment and supervision first, devices later, chemicals almost never. 'First' in the stem points to the least restrictive rung offered - and four side rails count as a restraint, not a safety measure."
+  },
+  {
+    "id": "nx_a8_si_003",
+    "topicId": 1,
+    "question": "Which personal protective equipment should the nurse wear when performing open tracheostomy suctioning?",
+    "options": [
+      "Gloves, gown if soiling is likely, and a mask with eye protection or a face shield",
+      "Sterile gloves only",
+      "An N95 respirator regardless of the client's infection status",
+      "No additional equipment beyond hand hygiene"
+    ],
+    "correct": 0,
+    "explanation": "Suctioning generates sprayed secretions, so standard precautions demand barrier protection for hands, clothing when soiling is likely, and - critically - the face: mask plus eye protection. Sterile gloves address the catheter's sterility but leave the face exposed to spray. An N95 is reserved for airborne pathogens, not routine suctioning. Hand hygiene alone ignores the visible-spray hazard entirely.",
+    "difficulty": 1,
+    "subtopic": "PPE for aerosol-generating care",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Choose PPE by the route of exposure the task creates: suctioning sprays, so the face needs cover. Options that protect only hands - sterile or not - answer a different hazard than the one in the stem."
+  },
+  {
+    "id": "nx_a8_si_004",
+    "topicId": 1,
+    "question": "A nurse removes a used fentanyl patch from a client. Which disposal action is correct?",
+    "options": [
+      "Fold the patch so the medication surface sticks to itself and dispose per facility controlled-substance policy, with a witness if required",
+      "Place the patch flat in the room's open wastebasket",
+      "Save the used patch in the medication drawer for reuse if pain returns",
+      "Cut the patch into pieces before discarding to inactivate the drug"
+    ],
+    "correct": 0,
+    "explanation": "A used patch retains enough fentanyl to kill a child or pet: folding it onto itself seals the drug surface, and controlled-substance policy - often with witnessed disposal - governs where it goes. An open wastebasket leaves an accessible opioid reservoir. Transdermal systems are single-use; a removed patch is never reapplied. Cutting spreads drug onto hands and surfaces and inactivates nothing.",
+    "difficulty": 2,
+    "subtopic": "Transdermal opioid disposal",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave8.json",
+    "strategy": "Used-patch questions test residual-drug awareness: the patch is still loaded after wear, so the correct option seals it and follows controlled-substance accounting - convenience disposals and reuse options ignore the leftover dose."
+  }
+]
