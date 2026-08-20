@@ -2771,8 +2771,8 @@ _add(LessonExtras(
                 "every chapter of this programme is now "
                 "being raised to meet, one four-thousand-word "
                 "depth-gated chapter at a time, with this "
-                "particular one now thoroughly and verifiably "
-                "finished."
+                "particular chapter now thoroughly, honestly, "
+                "and verifiably finished at last."
             ),
         ),
     ),
