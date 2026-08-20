@@ -410,6 +410,190 @@ CASES = [
             },
         ],
     },
+    {
+        "source_id": "nx_case_cauti_001",
+        "topic_id": 6,
+        "category_id": "reduction_risk",
+        "section": "Reduction of Risk Potential",
+        "subtopic": "Unfolding case: catheter-associated sepsis",
+        "title": "Unfolding case: the catheter nobody questioned",
+        "scenario": (
+            "A nurse on a medical unit is caring for an 84-year-old client "
+            "admitted five days ago after a hip fracture repair. An indwelling "
+            "urinary catheter was placed in the operating room and remains in "
+            "place.\n\n"
+            "Morning assessment (0800):\n"
+            "  - Alert and oriented x3; participating in physical therapy\n"
+            "  - Temperature 37.1 C, HR 78/min, BP 132/74 mm Hg, RR 16/min\n"
+            "  - Catheter draining clear yellow urine; day 5 of catheterization\n"
+            "  - No urinary complaints\n\n"
+            "The questions that follow present the case as it evolves. Answer "
+            "them in order."
+        ),
+        "questions": [
+            {
+                "source_id": "nx_case_cauti_001_q1",
+                "kind": "mcq",
+                "stem": (
+                    "Phase 1 (0800): Reviewing the morning assessment, which "
+                    "aspect of this client's care should the nurse QUESTION "
+                    "today, before any new symptoms appear?"
+                ),
+                "options": [
+                    "The continued need for a urinary catheter on postoperative day 5",
+                    "The client's participation in physical therapy",
+                    "The frequency of vital sign measurement",
+                    "The client's oral fluid intake",
+                ],
+                "correct_index": 0,
+                "explanation": (
+                    "Correct (a): every catheter day raises infection risk, and "
+                    "day 5 after hip surgery in a mobile client rarely has a "
+                    "continuing indication - the strongest CAUTI prevention is "
+                    "REMOVAL, and nurses are expected to challenge lingering "
+                    "catheters daily. (b) Therapy participation is exactly what "
+                    "recovery needs. (c) Routine vitals frequency fits a stable "
+                    "client. (d) Nothing suggests an intake problem, and intake "
+                    "does not offset a lingering catheter."
+                ),
+            },
+            {
+                "source_id": "nx_case_cauti_001_q2",
+                "kind": "multi",
+                "stem": (
+                    "Phase 2 (1500): The catheter remains in place awaiting a "
+                    "provider decision. The client is now newly confused, "
+                    "picking at the bedding. Temperature 38.4 C, HR 112/min, "
+                    "BP 104/60 mm Hg, RR 22/min. Urine in the bag is cloudy "
+                    "with sediment.\n\n"
+                    "Which cues require immediate follow-up? Select all that "
+                    "apply."
+                ),
+                "options": [
+                    "New confusion",
+                    "Temperature 38.4 C with heart rate 112/min",
+                    "Blood pressure trending down from the morning baseline",
+                    "Cloudy urine with sediment",
+                    "The client picking at the bedding as a normal sleep habit",
+                ],
+                "correct_indices": [0, 1, 2, 3],
+                "explanation": (
+                    "Correct (a)-(d): new confusion in an older adult is often "
+                    "the FIRST sign of serious infection; fever with "
+                    "tachycardia, a falling blood pressure, and grossly "
+                    "abnormal urine complete a picture of urinary-source sepsis "
+                    "developing. Wrong (e): carphologia (picking at bedding) in "
+                    "a newly confused client is part of the delirium, not a "
+                    "sleep habit - normalizing it discards a key cue."
+                ),
+            },
+            {
+                "source_id": "nx_case_cauti_001_q3",
+                "kind": "mcq",
+                "stem": (
+                    "Phase 2, continued: Which interpretation best explains "
+                    "this cluster of findings?"
+                ),
+                "options": [
+                    "Developing sepsis from a catheter-associated urinary tract infection",
+                    "Ordinary postoperative pain response",
+                    "A primary psychiatric disturbance",
+                    "Dehydration from therapy exercises",
+                ],
+                "correct_index": 0,
+                "explanation": (
+                    "Correct (a): day-5 catheter + new delirium + fever + "
+                    "tachycardia + falling pressure + cloudy urine is "
+                    "urinary-source sepsis until proven otherwise. (b) Pain "
+                    "raises blood pressure and does not cause fever with "
+                    "confusion. (c) New psychiatric illness at 84 is a "
+                    "diagnosis of last resort - acute confusion is medical "
+                    "until proven otherwise. (d) Therapy-related dehydration "
+                    "does not produce fever or cloudy urine."
+                ),
+            },
+            {
+                "source_id": "nx_case_cauti_001_q4",
+                "kind": "multi",
+                "stem": (
+                    "Phase 2, continued: The provider is notified and suspects "
+                    "urosepsis.\n\n"
+                    "Which orders should the nurse anticipate? Select all that "
+                    "apply."
+                ),
+                "options": [
+                    "Blood cultures and a urine culture",
+                    "Serum lactate measurement",
+                    "IV fluids and IV antibiotics promptly after cultures",
+                    "Removal or replacement of the urinary catheter",
+                    "A sleeping medication for the restlessness",
+                ],
+                "correct_indices": [0, 1, 2, 3],
+                "explanation": (
+                    "Correct (a) - cultures identify the organism, drawn before "
+                    "antibiotics when this does not delay them; (b) - lactate "
+                    "grades perfusion and is central to sepsis protocols; (c) - "
+                    "early fluids and antibiotics are what change sepsis "
+                    "survival; (d) - the infected catheter is the SOURCE, and "
+                    "source control is part of treatment. Wrong (e): sedating "
+                    "new delirium masks the assessment and adds fall and "
+                    "respiratory risk while treating nothing."
+                ),
+            },
+            {
+                "source_id": "nx_case_cauti_001_q5",
+                "kind": "mcq",
+                "stem": (
+                    "Phase 2, continued: While implementing the orders, which "
+                    "task is appropriate for the nurse to DELEGATE to "
+                    "assistive personnel?"
+                ),
+                "options": [
+                    "Taking and reporting repeat vital signs at the ordered frequency",
+                    "Evaluating the client's response to the fluid bolus",
+                    "Providing the SBAR update to the provider",
+                    "Assessing the client's level of consciousness each hour",
+                ],
+                "correct_index": 0,
+                "explanation": (
+                    "Correct (a): measuring and reporting vitals is data "
+                    "collection within AP scope even in a sick client - the "
+                    "NURSE interprets the numbers. (b) Evaluating treatment "
+                    "response is the evaluation step of the nursing process. "
+                    "(c) Provider communication about a deteriorating client is "
+                    "nursing accountability. (d) Level-of-consciousness "
+                    "assessment is clinical assessment, not delegable "
+                    "measurement."
+                ),
+            },
+            {
+                "source_id": "nx_case_cauti_001_q6",
+                "kind": "mcq",
+                "stem": (
+                    "Phase 3 (2000): After fluids and the first antibiotic "
+                    "dose, the nurse evaluates progress.\n\n"
+                    "Which finding best indicates the client is responding to "
+                    "treatment?"
+                ),
+                "options": [
+                    "The client is oriented again, with BP 122/70 mm Hg and heart rate 88/min",
+                    "The temperature is unchanged but the client is asleep",
+                    "Urine output has fallen to 10 mL/hr",
+                    "The client no longer complains because they are difficult to arouse",
+                ],
+                "correct_index": 0,
+                "explanation": (
+                    "Correct (a): clearing mentation with normalizing pressure "
+                    "and heart rate is end-organ perfusion returning - the "
+                    "delirium that announced the sepsis resolves as it is "
+                    "treated. (b) Sleep with an unchanged fever is neutral at "
+                    "best. (c) Falling urine output signals WORSENING "
+                    "perfusion. (d) Decreasing arousability is deterioration "
+                    "wearing the costume of quiet."
+                ),
+            },
+        ],
+    },
 ]
 
 
