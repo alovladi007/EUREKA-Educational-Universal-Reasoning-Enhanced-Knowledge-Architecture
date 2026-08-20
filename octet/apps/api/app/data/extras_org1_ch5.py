@@ -4641,7 +4641,14 @@ _add(LessonExtras(
                 "friendlier version of the "
                 "course\'s biggest comparison "
                 "exercise - final rehearsal "
-                "before the main stage."
+                "before the main stage, with the same grading "
+                "rubric in force there as here: columns "
+                "derived beat columns memorised, conditions "
+                "read first beat structures stared at, and "
+                "the student who can rebuild the whole table "
+                "from its mechanisms owns every question the "
+                "table can generate, in this chapter and in "
+                "every chapter still to come."
             ),
         ),
     ),
