@@ -5121,8 +5121,18 @@ _add(LessonExtras(
                 "performed once per chapter on the best "
                 "artefact available, is the cheapest "
                 "retention strategy this course knows, and "
-                "the converter is this chapter's gift to "
-                "it."
+                "the converter is this chapter's gift to it: "
+                "an everyday object that quietly performs, at "
+                "highway speed and regulatory tolerance, the "
+                "surface activation, site economics, poison "
+                "management, and simultaneous selective "
+                "cycling that these five lessons taught - the "
+                "entire chapter, cast in ceramic and precious "
+                "metal, riding a metre behind every engine on "
+                "the road. Chemistry that can be pointed at "
+                "is chemistry that gets remembered, and this "
+                "chapter, more than most, can be pointed at "
+                "from anywhere."
             ),
         ),
     ),
