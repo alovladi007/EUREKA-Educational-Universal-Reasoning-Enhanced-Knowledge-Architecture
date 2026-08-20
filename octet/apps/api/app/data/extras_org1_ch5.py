@@ -1807,8 +1807,17 @@ _add(LessonExtras(
                 "reagent tables historically - "
                 "what gap did this tool fill? - "
                 "is among the fastest ways to "
-                "remember what each tool is "
-                "for."
+                "remember what each tool is for. Acid for "
+                "cheap bulk work where fidelity is free, "
+                "mercury for the skeletons acid would "
+                "scramble, boron for the regiochemistry and "
+                "faces nothing else could reach: three "
+                "answers to one question, each stamped with "
+                "the decade that needed it, all three still "
+                "earning their bench space today - and all "
+                "three now, at the raised depth of this "
+                "chapter, fully yours to choose among with "
+                "reasons attached."
             ),
         ),
     ),
