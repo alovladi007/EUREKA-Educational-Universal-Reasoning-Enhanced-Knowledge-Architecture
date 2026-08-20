@@ -2536,8 +2536,9 @@ _add(LessonExtras(
                 "and audited rankings is universal, and you "
                 "learned it here, on the smallest molecules "
                 "chemistry owns, where every claim in the "
-                "drawing has a measurement standing behind "
-                "it."
+                "drawing has, somewhere in a table or a "
+                "spectrum, a real measurement standing "
+                "patiently behind it."
             ),
         ),
     ),
