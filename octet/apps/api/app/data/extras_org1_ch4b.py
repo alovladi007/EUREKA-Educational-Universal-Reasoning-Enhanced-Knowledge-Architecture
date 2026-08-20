@@ -4251,8 +4251,9 @@ _add(LessonExtras(
                 "most instructive reagent line in the whole "
                 "first semester to practise that discipline "
                 "on, which is one more reason this simplest "
-                "of additions earned the longest lesson in "
-                "its chapter."
+                "of additions earned itself the longest and "
+                "most heavily instrumented single lesson "
+                "anywhere in its chapter."
             ),
         ),
     ),
