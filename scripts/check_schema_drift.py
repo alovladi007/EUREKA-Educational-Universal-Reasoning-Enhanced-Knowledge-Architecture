@@ -117,6 +117,20 @@ def load_metadata(service_path: Path, module_name: str):
     """Add the service dir to sys.path and import its models module."""
     _purge_service_modules()
     sys.path.insert(0, str(service_path))
+    # Import from INSIDE the service directory.
+    #
+    # Every service's Settings declares `env_file = ".env"`, a RELATIVE path, so
+    # it resolves against the current working directory. Running this checker
+    # from the repo root therefore fed api-core's Settings the whole-PLATFORM
+    # .env — a file written for docker-compose, containing dozens of keys that
+    # service does not declare — and the import died with 67 validation errors
+    # before a single table was harvested. The checker reported a failure that
+    # said nothing about schema drift, which is what it exists to detect.
+    #
+    # chdir-ing makes ".env" mean what each service means by it: its own file,
+    # or none at all.
+    previous_cwd = os.getcwd()
+    os.chdir(service_path)
     try:
         # We just import the models module — its `Base` registers the tables.
         importlib.import_module(module_name)
@@ -125,6 +139,7 @@ def load_metadata(service_path: Path, module_name: str):
         # harvest can't pick up a previous service's tables.
         return _harvest_tables()
     finally:
+        os.chdir(previous_cwd)
         sys.path.pop(0)
 
 
