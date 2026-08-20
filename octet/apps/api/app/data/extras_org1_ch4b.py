@@ -807,7 +807,12 @@ _add(LessonExtras(
                 "taxonomy well-learned buys. Buy it here, "
                 "at four definitions and a counting rule, "
                 "the cheapest price the course will ever "
-                "quote for anything this valuable."
+                "quote for anything this valuable, and one "
+                "that keeps paying every week of every "
+                "chemistry course you take from now to the "
+                "boards, in exactly the coin exams and "
+                "laboratories both spend: correct, fast, "
+                "auditable first moves."
             ),
         ),
     ),
