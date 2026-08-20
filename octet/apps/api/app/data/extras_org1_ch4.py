@@ -3733,7 +3733,16 @@ _add(LessonExtras(
                 "rearrangement, and stereochemical "
                 "expectations are all pre-answered - "
                 "the highest-leverage sorting habit "
-                "the mechanism chapters offer."
+                "the mechanism chapters offer. Ask the "
+                "electron count first, place the species on "
+                "its own ladder second, and only then read "
+                "the specific question: run in that order, "
+                "the three reactive carbons of organic "
+                "chemistry stop being three subjects and "
+                "become one subject with a sign and a "
+                "count, which is exactly the compression a "
+                "year-long course needs its students to "
+                "find."
             ),
         ),
     ),
