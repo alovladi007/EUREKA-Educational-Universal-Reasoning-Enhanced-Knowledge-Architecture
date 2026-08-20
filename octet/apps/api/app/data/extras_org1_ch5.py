@@ -4649,7 +4649,7 @@ _add(LessonExtras(
                 "from its mechanisms owns every question the "
                 "table can generate, in this chapter and in "
                 "every chapter still to come. Two columns "
-                "today, then four columns next term, and a dozen by "
+                "here today, then four columns next term, and a dozen by "
                 "the boards - the method scales without "
                 "modification, and it was learned here, on "
                 "the one reagent whose split personality "
