@@ -306,13 +306,23 @@ Full detail in [docs/ROADMAP.md](docs/ROADMAP.md). Each is gated and tracked:
 ---
 
 ## License
-MIT.
 
-> ⚠️ **There is no `LICENSE` file in this repository.** This README has claimed MIT
-> while linking to a file that does not exist, so the grant is currently
-> unenforceable — nobody can rely on it. Adding one is a call for the copyright
-> holder, not something to generate: drop a standard MIT text at `LICENSE` with
-> the right holder and year, or change this line to match the actual intent.
+**Proprietary — all rights reserved.** See [LICENSE](LICENSE).
+
+This repository previously claimed MIT while linking to a file that did not
+exist. That claim was wrong and is withdrawn: no open-source grant was ever
+made, and none is made now. Viewing this repository grants no right to use,
+copy, modify, distribute, host, or train on the Work.
+
+Third-party dependencies remain under their own licenses. Public-domain source
+material — notably USPTO examination content (17 U.S.C. § 105) — remains in the
+public domain; the surrounding selection, arrangement, and editorial work does
+not.
+
+> **One thing left for the copyright holder:** `LICENSE` names the holder as
+> `alovladi007`, which is a GitHub handle, not a legal name. Replace it with
+> your full legal name or the owning entity. Have counsel review before any
+> commercial launch or investor conversation.
 
 ---
 

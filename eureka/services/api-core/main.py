@@ -74,6 +74,32 @@ async def lifespan(app: FastAPI):
             "MFA secrets become unreadable on restart. See docs/SECURITY.md."
         )
 
+    # Outbound email. app/services/email.py answers an unconfigured mailer with
+    # `logger.warning("SMTP not configured, skipping email send"); return False`
+    # — per send, buried in request logs. SMTP_HOST and SMTP_USERNAME both
+    # default to None, so the out-of-the-box behaviour is that password-reset
+    # and email-verification messages are silently dropped. A user who forgets
+    # their password then has NO recovery path, and nothing about the running
+    # system says so.
+    #
+    # Dev doesn't need a mailer, so this stays a warning there — but a loud one,
+    # at boot, naming the consequence. In production or staging it is fatal:
+    # shipping an auth system whose recovery path is a no-op is not a
+    # degraded mode, it is a broken product.
+    if not (settings.SMTP_HOST and settings.SMTP_USERNAME):
+        if settings.ENVIRONMENT in ("production", "staging"):
+            raise RuntimeError(
+                "SMTP_HOST/SMTP_USERNAME are not set. Password reset and email "
+                "verification would silently do nothing, leaving locked-out "
+                "users with no way back in. Configure a transactional email "
+                "provider before serving %s traffic." % settings.ENVIRONMENT
+            )
+        logger.warning(
+            "SMTP not configured — password-reset and email-verification "
+            "messages will be DROPPED, not sent. Fine for local dev; this is a "
+            "hard failure in staging/production."
+        )
+
     # P1-13 (Gap Register): create_all no longer runs by default anywhere,
     # including development. When it ran on every dev boot, a model change
     # materialized silently without a migration and the drift surfaced only in
