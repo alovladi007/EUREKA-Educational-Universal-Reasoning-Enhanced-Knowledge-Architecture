@@ -2772,7 +2772,7 @@ _add(LessonExtras(
                 "being raised to meet, one four-thousand-word "
                 "depth-gated chapter at a time, with this "
                 "particular chapter now thoroughly, honestly, "
-                "and verifiably finished at last."
+                "and quite verifiably finished, at long last."
             ),
         ),
     ),
