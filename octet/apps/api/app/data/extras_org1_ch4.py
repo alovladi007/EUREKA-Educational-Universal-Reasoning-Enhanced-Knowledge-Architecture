@@ -1,0 +1,1297 @@
+"""Lecture-note depth for ORG1 chapter 4, Alkenes: Structure — part 1 (4A-4D).
+
+Tranche 2 of the organic depth programme (docs/organic_depth_benchmark.md).
+Scope checked against the benchmark's chapter-4 section list (bonding,
+nomenclature, stability, hydrogen-halide addition); all prose authored for
+OCTET. Bond lengths are experimental structural values; heats of
+hydrogenation are the standard gas-phase enthalpies as compiled in the
+NIST WebBook and standard physical organic references.
+"""
+
+from __future__ import annotations
+
+from app.data.lesson_extras import (
+    LessonExtras,
+    ReadingSection,
+    Table,
+)
+
+EXTRAS_ORG1_CH4: dict[str, LessonExtras] = {}
+
+
+def _add(extras: LessonExtras) -> None:
+    EXTRAS_ORG1_CH4[extras.node] = extras
+
+
+# --------------------------------------------------------------------------
+# 4.1 Alkene bonding
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.ALKENEBONDING",
+    lead=(
+        "The carbon-carbon double bond is the first functional group this "
+        "course treats in full, and almost everything alkenes do follows "
+        "from its anatomy: one strong sigma bond lying along the "
+        "internuclear axis, and one weaker pi bond built from parallel p "
+        "orbitals above and below it. The pi bond is the part that reacts, "
+        "the part that blocks rotation, and the part whose electrons reach "
+        "out to electrophiles. Understand its geometry and energetics here "
+        "and the next two chapters of reactions become applications rather "
+        "than new material."
+    ),
+    sections=(
+        ReadingSection(
+            id="sigma-pi-anatomy",
+            heading="One sigma, one pi: what a double bond is made of",
+            body=(
+                "Each alkene carbon is sp2 hybridised: three hybrid "
+                "orbitals at roughly 120 degrees in a plane, one "
+                "unhybridised p orbital perpendicular to it. The sigma "
+                "framework - two C-H or C-C bonds plus the C-C sigma "
+                "bond - lives in the plane; the two parallel p orbitals "
+                "overlap side-on above and below it to form the pi "
+                "bond. Side-on overlap is intrinsically poorer than "
+                "head-on overlap, which is the structural reason the pi "
+                "bond is the weaker partner: the carbon-carbon double "
+                "bond is worth about 611 kJ/mol in total while a single "
+                "bond is about 347, leaving roughly 264 kJ/mol as the "
+                "pi contribution - strong enough to hold, weak enough "
+                "to be the bond every addition reaction spends.\n\n"
+                "Geometry records the hybridisation. The double bond "
+                "pulls the carbons to 1.33 angstroms apart against 1.54 "
+                "for an alkane single bond, and the six atoms attached "
+                "to the two sp2 carbons all lie in one plane. That "
+                "planarity is not a drawing convention; it is a "
+                "measured fact, and it makes the two faces of the "
+                "double bond real, distinguishable places. Reagents in "
+                "chapter 5 will add to one face or both, and "
+                "stereochemistry will hang on which."
+            ),
+        ),
+        ReadingSection(
+            id="restricted-rotation",
+            heading="Restricted rotation and cis/trans isomerism",
+            body=(
+                "Rotating one end of a double bond by 90 degrees would "
+                "turn the parallel p orbitals perpendicular and cut "
+                "their overlap to zero - it would break the pi bond. "
+                "The barrier to rotation is therefore approximately the "
+                "pi-bond strength, around 260 kJ/mol, and thermal "
+                "energy at ordinary temperatures crosses a barrier that "
+                "size essentially never. Compare butane's 19-25 kJ/mol "
+                "rotation summit from chapter 2: single bonds spin "
+                "constantly, double bonds are locked.\n\n"
+                "Locked rotation creates a new kind of isomerism. "
+                "2-Butene with both methyls on the same side (cis) and "
+                "with them on opposite sides (trans) are different "
+                "compounds - separable, with different boiling points "
+                "(3.7 and 0.9 C) and different stabilities - because no "
+                "accessible motion interconverts them. This is the "
+                "distinction chapter 2 promised: conformations "
+                "interconvert by rotation, configurations do not, and "
+                "the double bond is the first structural feature that "
+                "manufactures configurations. The biological world "
+                "runs on the difference - vision begins with light "
+                "doing the one thing heat cannot, flipping a cis "
+                "double bond in retinal to trans - and so does the "
+                "kitchen, where cis fatty-acid kinks keep oils liquid "
+                "while trans and saturated chains stack into solids."
+            ),
+            important=(
+                "Cis/trans alkene isomers are configurational: "
+                "interconverting them requires breaking the pi bond "
+                "(about 260 kJ/mol), not rotating a drawing. Never "
+                "'fix' a cis alkene into trans while checking answer "
+                "choices."
+            ),
+        ),
+        ReadingSection(
+            id="physical-properties",
+            heading="Physical properties, briefly",
+            body=(
+                "Alkenes track alkanes physically: nonpolar, insoluble "
+                "in water, less dense than it, boiling points climbing "
+                "with chain length on the same dispersion logic as "
+                "chapter 2. Ethylene boils at -103.7 C, propene at "
+                "-47.6, 1-butene at -6.3 - each within a few degrees "
+                "of the matching alkane. The one wrinkle worth "
+                "noticing is the small dipole a double bond can "
+                "carry: alkyl groups donate electron density toward "
+                "the sp2 carbons, so cis-2-butene, whose two methyl "
+                "donations add vectorially, has a small net dipole "
+                "while trans-2-butene's cancel. The consequence shows "
+                "up as the cis isomer's slightly higher boiling point "
+                "(3.7 versus 0.9 C) - a two-line preview of how much "
+                "mileage this course gets from vector thinking about "
+                "polarity.\n\n"
+                "Economically, alkenes are anything but a footnote: "
+                "ethylene is the highest-volume organic chemical made "
+                "on earth, the feedstock for polyethylene, ethylene "
+                "glycol and vinyl chloride, and propene stands just "
+                "behind it. The cracking processes that make them and "
+                "the polymerisations that consume them bracket this "
+                "chapter's chemistry on the industrial scale."
+            ),
+        ),
+        ReadingSection(
+            id="unsaturation-in-use",
+            heading="The unsaturation count, now with a functional group",
+            body=(
+                "Chapter 2 introduced the degree of unsaturation as "
+                "arithmetic; alkenes make it an instrument. Each pi "
+                "bond, like each ring, costs two hydrogens against the "
+                "$C_nH_{2n+2}$ ceiling, so an acyclic monoalkene has "
+                "the formula $C_nH_{2n}$ - the same count as a "
+                "cycloalkane, and the formula alone cannot tell the "
+                "two apart. What resolves the ambiguity is chemistry: "
+                "a pi bond reacts (it decolourises bromine, it takes "
+                "up hydrogen over a catalyst) while a plain ring does "
+                "not, and hydrogen uptake can literally count the "
+                "double bonds in a molecule, one $H_2$ per pi bond, "
+                "with any unsaturation left over after exhaustive "
+                "hydrogenation attributable to rings.\n\n"
+                "That counting logic is worth rehearsing because it "
+                "recurs wherever formulas meet structures: a compound "
+                "$C_6H_{10}$ carries two units of unsaturation, which "
+                "may be two double bonds, one triple bond, two rings, "
+                "or one of each kind - and every structure you propose "
+                "for it must spend exactly two units, no more, no "
+                "fewer. Run the count before drawing, spend the units "
+                "deliberately, and let hydrogenation data settle what "
+                "the formula leaves open. It is a small discipline "
+                "that converts guessing into accounting, and it is "
+                "precisely how the structure problems of the "
+                "spectroscopy chapters begin."
+            ),
+        ),
+        ReadingSection(
+            id="pi-in-the-data",
+            heading="Seeing the pi bond in measurements",
+            body=(
+                "The sigma-plus-pi picture is not a cartoon; every "
+                "part of it has a measurement attached, and knowing "
+                "which instrument sees which feature makes the model "
+                "concrete. The shortened bond length (1.33 versus "
+                "1.54 angstroms) comes from diffraction and "
+                "spectroscopy of real molecules. The pi electrons' "
+                "looser hold shows up in ionisation energies - it "
+                "costs less to remove an electron from ethylene's pi "
+                "system than from ethane's sigma framework - which "
+                "is the quantitative face of the claim that pi "
+                "electrons are the exposed, reactive ones. "
+                "Ultraviolet spectroscopy reads the pi system "
+                "directly: promoting a pi electron to the pi* level "
+                "absorbs in the far UV for an isolated double bond, "
+                "and the absorption walks toward the visible as "
+                "conjugation extends - the reason carrots and "
+                "tomatoes are coloured is a chain of interacting "
+                "double bonds, and the reason sunscreen works is a "
+                "pi system tuned to soak up UV.\n\n"
+                "Even the rotation barrier is a measured number: "
+                "heat cis-2-butene hard enough and it slowly "
+                "isomerises to trans, with an activation energy "
+                "near the pi-bond strength - the experiment that "
+                "pins the barrier the lesson has been quoting. "
+                "Infrared spectroscopy adds the finishing touch: "
+                "the C=C stretch appears near 1650 reciprocal "
+                "centimetres, distinct from single-bond "
+                "vibrations, so the double bond announces itself "
+                "in an IR spectrum before any chemistry is run. "
+                "One structural model, five independent "
+                "instruments agreeing with it - that convergence "
+                "is what earns the model the right to carry the "
+                "next two chapters of predictions."
+                "\n\n"
+                "When an exam asks which experiment supports the "
+                "pi-bond picture, any of the five answers - bond "
+                "length, ionisation energy, UV absorption, "
+                "isomerisation barrier, IR stretch - is "
+                "defensible; knowing all five is what makes the "
+                "question easy instead of memorised."
+                " The habit generalises: every structural model in "
+                "this course should be attachable to at least one "
+                "measurement, and asking 'what experiment would show "
+                "this' of each new model is the fastest route from "
+                "recall to understanding - the pi bond simply "
+                "happens to be the model with the richest "
+                "instrument trail so far. Models that survive five independent instruments deserve trust; models resting on one deserve suspicion, and the course will say so whenever the distinction matters."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "A double bond is one sigma plus one pi; the pi part (~264 kJ/mol) is the weaker, reactive partner built from side-on p overlap.",
+        "sp2 carbons are planar, 120-degree, with a shorter C=C (1.33 A vs 1.54 A) - the two faces of the plane are chemically real.",
+        "Rotation about C=C requires breaking the pi bond, so cis and trans alkenes are separable configurational isomers.",
+        "Acyclic monoalkenes fit CnH2n - the same count as a ring; hydrogenation uptake distinguishes and counts pi bonds.",
+        "Alkene physical properties track alkanes, with small cis-isomer dipoles as the polarity wrinkle.",
+    ),
+    exam_tips=(
+        "MCAT loves the retinal example: photoisomerisation works because light supplies what thermal energy cannot - the pi-bond-breaking rotation.",
+        "Formula questions offering CnH2n structures: remember one ring OR one pi bond fits; only reactivity data distinguishes them.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 4.2 Alkene nomenclature and E/Z
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.ALKENENOMEN",
+    lead=(
+        "Alkene names carry two loads the alkane rules never met: the "
+        "position of the double bond, and its geometry. Position rides on "
+        "the familiar numbering algorithm with one new priority; geometry "
+        "needs a new system entirely, because cis and trans stop working "
+        "the moment a double-bond carbon holds two different substituents "
+        "that are both 'something'. The E/Z system and its "
+        "Cahn-Ingold-Prelog priority rules are the fix, and they are worth "
+        "learning cold here because chapter 6 reuses the identical rules "
+        "for R and S."
+    ),
+    sections=(
+        ReadingSection(
+            id="ene-naming",
+            heading="Position: the -ene rules",
+            body=(
+                "Alkene nomenclature modifies the alkane algorithm in "
+                "three places. The parent chain must CONTAIN the double "
+                "bond - a longer chain that misses it loses to a "
+                "shorter one that includes it. Numbering starts from "
+                "the end nearer the double bond, and the bond's locant "
+                "is the number of its first carbon: CH2=CHCH2CH3 is "
+                "1-butene (or but-1-ene in the newer style, with the "
+                "locant against the suffix), never 4-butene. Only when "
+                "the double bond is equidistant from both ends do "
+                "substituent locants break the tie. Everything else - "
+                "alphabetisation, multiplying prefixes, substituent "
+                "naming - carries over unchanged.\n\n"
+                "Two vocabulary items ride along because the "
+                "literature and later chapters assume them: the vinyl "
+                "group (a substituent attached directly to a "
+                "double-bond carbon) and the allyl group (attached to "
+                "the carbon NEXT to a double bond). The distinction is "
+                "worth a moment now, because allylic positions - one "
+                "bond away from the pi system - develop special "
+                "reactivity that gets its own chapter in Organic II, "
+                "and confusing vinylic with allylic scrambles that "
+                "entire discussion. Dienes take the suffix -adiene "
+                "with two locants and keep both in the chain; cyclic "
+                "alkenes number so the double bond takes carbons 1 "
+                "and 2, choosing direction to give substituents low "
+                "numbers."
+            ),
+        ),
+        ReadingSection(
+            id="cip-priorities",
+            heading="The CIP priority rules",
+            body=(
+                "The Cahn-Ingold-Prelog rules rank the two groups on "
+                "each double-bond carbon. Rule one: higher atomic "
+                "number wins at the first atom - Br beats Cl beats O "
+                "beats N beats C beats H. Rule two: on a tie at the "
+                "first atom, list each substituent's OWN attached "
+                "atoms in decreasing order and compare list against "
+                "list at the first point of difference - so ethyl "
+                "(C: C,H,H) beats methyl (C: H,H,H), and isopropyl "
+                "(C: C,C,H) beats ethyl. Rule three: multiple bonds "
+                "are counted as duplicated atoms - a C=O oxygen "
+                "counts as oxygen twice at the carbonyl carbon - "
+                "which is how carbonyl-bearing groups outrank "
+                "alcohols in later chapters.\n\n"
+                "Discipline points that prevent the standard errors: "
+                "compare atom by atom at the FIRST point of "
+                "difference, never by adding atomic numbers or by "
+                "judging overall size (a tert-butyl group loses to a "
+                "CH2Br, because bromine appears at the first "
+                "comparison atom); and explore the branches in "
+                "decreasing order, not along the chain you happen to "
+                "have drawn. The rules are a lexicographic sort, and "
+                "treating them as one - lists, first difference, "
+                "done - makes every priority question mechanical."
+            ),
+        ),
+        ReadingSection(
+            id="e-z-assignment",
+            heading="E and Z, and where cis/trans still lives",
+            body=(
+                "With priorities assigned on each carbon separately, "
+                "geometry becomes one comparison: if the two "
+                "higher-priority groups lie on the same side of the "
+                "double bond the alkene is Z (zusammen, together); on "
+                "opposite sides it is E (entgegen, opposite). The "
+                "descriptor goes in parentheses at the front of the "
+                "name: (Z)-2-butene, (E)-3-methyl-2-pentene. Every "
+                "tetrasubstituted, trisubstituted or awkwardly "
+                "disubstituted alkene that cis/trans cannot describe, "
+                "E/Z describes without ambiguity.\n\n"
+                "Cis and trans survive as informal labels for the "
+                "easy case - a disubstituted alkene with one hydrogen "
+                "on each carbon - and as the standard vocabulary for "
+                "ring substitution. But the mapping is not automatic: "
+                "cis does not always mean Z. In "
+                "1-bromo-1-propene, the bromine and the methyl "
+                "on opposite... rather than memorise treacherous "
+                "examples, adopt the safe habit: assign priorities "
+                "and name E or Z explicitly whenever any double-bond "
+                "carbon carries two non-hydrogen groups, and reserve "
+                "cis/trans for conversation about the simple cases. "
+                "Exams that place a halogen on a double bond are "
+                "usually testing exactly this trap - the halogen "
+                "outranks the alkyl group the eye pairs it with, and "
+                "the correct letter contradicts the visual cis/trans "
+                "impression."
+            ),
+            important=(
+                "Cis/trans and Z/E do NOT always coincide. Priorities "
+                "decide Z and E; visual same-sideness decides "
+                "cis/trans; when a high-priority atom like a halogen "
+                "sits on the double bond, the two systems can "
+                "disagree. When in doubt, rank and use E/Z."
+            ),
+        ),
+        ReadingSection(
+            id="why-geometry-matters",
+            heading="Why the letter in the name is chemistry, not clerical work",
+            body=(
+                "The E/Z label predicts real differences. Stability: "
+                "the next lesson shows trans (usually E) alkenes "
+                "sitting lower in energy than cis by measurable "
+                "kilojoules. Reactivity: eliminations in chapter 9 "
+                "produce E and Z products in ratios the mechanism "
+                "controls, and asking 'which alkene forms' is asking "
+                "for a letter. Spectroscopy: coupling constants in "
+                "proton NMR read the geometry directly, with trans "
+                "couplings characteristically larger than cis - the "
+                "letter in the name becomes a number in the "
+                "spectrum. And biology mostly builds Z: the common "
+                "unsaturated fatty acids are cis, which is why their "
+                "chains kink and their fats stay liquid, and why "
+                "partially hydrogenated 'trans fats' - straightened "
+                "chains from industrial processing - behave like "
+                "saturated ones.\n\n"
+                "The practical takeaway for the working student: "
+                "treat the geometry descriptor as part of the "
+                "compound's identity, as non-negotiable as the "
+                "locants. An answer of '2-pentene' to a synthesis "
+                "question that produces one geometry is incomplete, "
+                "and the CIP ranking skill practised here is the "
+                "same muscle chapter 6 uses on chirality centres - "
+                "learn it once, use it twice."
+            ),
+        ),
+        ReadingSection(
+            id="worked-names",
+            heading="Worked names, and the trivial names worth knowing",
+            body=(
+                "Run the algorithm on three structures of rising "
+                "difficulty. CH3CH=CHCH2CH3: five carbons "
+                "containing the double bond, numbered from the end "
+                "nearer it, bond between C2 and C3 - 2-pentene, "
+                "geometry to be specified, and with a methyl on "
+                "each sp2 carbon it is E if the methyl and ethyl "
+                "sit opposite. Next, "
+                "CH2=C(CH3)CH2CH3: the longest chain through the "
+                "double bond is four carbons, the bond starts at "
+                "C1, a methyl rides at C2 - 2-methyl-1-butene, no "
+                "geometry descriptor because C1 carries two "
+                "hydrogens. Third, a cyclohexene with a methyl at "
+                "the double bond: number the ring so the sp2 "
+                "carbons are 1 and 2 and turn in the direction "
+                "giving the methyl the lower locant - "
+                "1-methylcyclohexene, again no E/Z because ring "
+                "geometry fixes it.\n\n"
+                "A handful of trivial names survive in constant "
+                "use and must be recognised on sight even where "
+                "systematic names exist: ethylene and propylene "
+                "for the two industrial giants, isobutylene for "
+                "2-methylpropene, styrene for vinylbenzene, "
+                "isoprene for the five-carbon diene that nature "
+                "polymerises into rubber and stitches into "
+                "terpenes. Exams and papers use them "
+                "interchangeably with systematic names, and the "
+                "translation should be automatic. The reverse "
+                "skill - drawing a structure from any name in "
+                "either register - is the real test of this "
+                "lesson, and it is worth drilling until a name "
+                "like (Z)-3-methyl-2-hexene converts to a "
+                "correct skeleton in under thirty seconds."
+                "\n\n"
+                "Reverse drills expose the two errors worth "
+                "pre-empting: forgetting that each double bond "
+                "in a diene carries its own geometry letter, and "
+                "dropping the locant when the double bond could "
+                "sit in more than one place - butene without a "
+                "number is not a name, and graders read the "
+                "omission as not knowing why the number "
+                "matters."
+                " A last convention: substituents on the double "
+                "bond itself take their locants from the sp2 "
+                "carbons they occupy, so 2-methyl-2-butene needs "
+                "no geometry letter (one sp2 carbon carries two "
+                "methyls) while 3-methyl-2-pentene does - checking "
+                "whether each sp2 carbon holds two DIFFERENT "
+                "groups is the fast test for whether a geometry "
+                "descriptor is required at all. Ten seconds spent on that check saves the commonest half-point deduction in naming questions, term after term."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Parent chain must contain the C=C; number from the end nearer the double bond; the locant is the bond's first carbon.",
+        "CIP priority: higher atomic number at the first point of difference, branch lists compared lexicographically, multiple bonds counted as duplicated atoms.",
+        "Z = higher priorities together, E = opposite. Assign per carbon, then compare sides.",
+        "Cis/trans is informal and can disagree with Z/E when halogens or heteroatoms sit on the double bond - rank, don't eyeball.",
+        "The same CIP rules return in chapter 6 for R/S; mastering them here is prepaid work.",
+    ),
+    exam_tips=(
+        "When an exam alkene carries a halogen on the double bond, expect the cis-looking drawing to be E (or vice versa) - the question is testing priorities against appearance.",
+        "Vinylic vs allylic position questions are one-bond-away questions: on the sp2 carbon = vinylic, adjacent to it = allylic.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 4.3 Alkene stability
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.ALKENESTABILITY",
+    lead=(
+        "Isomeric alkenes are not equally stable, and the differences are "
+        "measured, not asserted: burn them or hydrogenate them and the "
+        "heat released ranks them directly. The ranking follows one rule "
+        "- more alkyl substituents on the double bond, more stable - with "
+        "trans beating cis as the second-order correction. This lesson "
+        "builds the evidence, the electronic explanation, and the habit "
+        "of using stability rankings to predict products, which is what "
+        "chapter 9's eliminations and half of Organic II quietly assume."
+    ),
+    sections=(
+        ReadingSection(
+            id="hydrogenation-evidence",
+            heading="Heats of hydrogenation: the measurement",
+            body=(
+                "Add H2 across a double bond and heat comes out; the "
+                "amount is the heat of hydrogenation. Isomeric butenes "
+                "all hydrogenate to the same butane, so - exactly as "
+                "with the combustion ruler of chapter 2 - the isomer "
+                "releasing the LEAST heat started lowest and is most "
+                "stable. The numbers arrange themselves cleanly: "
+                "1-butene releases about 127 kJ/mol, cis-2-butene "
+                "about 120, trans-2-butene about 116. Reading "
+                "differences: the disubstituted internal alkenes beat "
+                "the monosubstituted terminal one by 7-11 kJ/mol, and "
+                "trans beats cis by roughly 4. Extend the series with "
+                "more substituted examples - 2-methyl-2-butene "
+                "(trisubstituted) near 113, 2,3-dimethyl-2-butene "
+                "(tetrasubstituted) near 111 - and the monotonic rule "
+                "emerges: stability climbs with substitution, "
+                "tetra > tri > di > mono > ethylene itself "
+                "(137 kJ/mol).\n\n"
+                "The same ordering appears in equilibrium data: "
+                "expose 1-butene to a catalyst that permits "
+                "isomerisation and the mixture drifts toward the "
+                "internal, mostly trans, alkenes. Two independent "
+                "measurements, one ranking - which is what earns the "
+                "rule its load-bearing role."
+            ),
+            table=Table(
+                caption="Heats of hydrogenation of representative alkenes (gas phase, to the corresponding alkane)",
+                columns=("Alkene", "Substitution", "-delta-H_hyd (kJ/mol)"),
+                rows=(
+                    ("ethylene", "unsubstituted", "137"),
+                    ("1-butene", "mono", "127"),
+                    ("cis-2-butene", "di (cis)", "120"),
+                    ("trans-2-butene", "di (trans)", "116"),
+                    ("2-methyl-2-butene", "tri", "113"),
+                    ("2,3-dimethyl-2-butene", "tetra", "111"),
+                ),
+                source="Standard gas-phase hydrogenation enthalpies as compiled in the NIST WebBook and standard physical organic references (values rounded to whole kJ/mol)",
+                note="Smaller heat released = more stable alkene, because all C4 isomers converge on the same butane.",
+            ),
+        ),
+        ReadingSection(
+            id="why-substitution-stabilises",
+            heading="Why alkyl groups stabilise a double bond",
+            body=(
+                "Two electronic accounts, both pointing the same way. "
+                "Hyperconjugation: filled C-H sigma orbitals on the "
+                "alkyl carbons adjacent to the double bond overlap "
+                "with the pi system's antibonding orbital, a small "
+                "stabilising donation available once per adjacent "
+                "alkyl group - more substituents, more such "
+                "interactions. Bond-strength bookkeeping: an sp2-sp3 "
+                "carbon-carbon bond is a little stronger than an "
+                "sp3-sp3 bond because the sp2 orbital's greater s "
+                "character holds electrons closer to the nucleus, and "
+                "more substituted alkenes contain more of the "
+                "stronger kind. Neither effect is large alone; "
+                "together they reproduce the 5-10 kJ/mol steps the "
+                "hydrogenation table records.\n\n"
+                "The cis/trans gap has a simpler, mechanical origin: "
+                "cis places its two alkyl groups on the same side of "
+                "a rigid planar frame, close enough to crowd - the "
+                "same steric strain butane's gauche conformation "
+                "displayed, now locked in place with no rotation to "
+                "relieve it. Roughly 4 kJ/mol for methyl against "
+                "methyl, growing sharply with bulkier groups: "
+                "cis-di-tert-butylethylene is strained enough that "
+                "its trans isomer is favoured by more than 40 "
+                "kJ/mol. Same physics as chapter 2, new venue."
+            ),
+        ),
+        ReadingSection(
+            id="stability-predicts-products",
+            heading="From ranking to prediction: Zaitsev's rule ahead",
+            body=(
+                "Stability rankings earn their keep by predicting "
+                "outcomes. When a reaction can form several isomeric "
+                "alkenes and is either reversible or product-like at "
+                "its transition state, the more substituted alkene "
+                "dominates - that is Zaitsev's rule, stated here a "
+                "chapter early because this is where its logic lives. "
+                "Eliminations in chapter 9 will offer a choice of "
+                "which hydrogen to remove; removing the one that "
+                "yields the more substituted double bond gives the "
+                "major product in the standard cases, and the "
+                "exceptions (bulky bases, certain leaving groups) "
+                "are flagged precisely as departures from this "
+                "baseline.\n\n"
+                "The reasoning template generalises beyond alkenes "
+                "and is worth naming: measure or recall the "
+                "stability order, ask whether the mechanism lets "
+                "products equilibrate or lets stability shape the "
+                "transition state, and only then predict. The first "
+                "step without the second overpredicts - kinetically "
+                "controlled reactions can and do trap less stable "
+                "products, which is the entire subject of the "
+                "kinetic-versus-thermodynamic lesson two sections "
+                "ahead. Stability is a map of where the valleys "
+                "are; the mechanism decides whether the reaction "
+                "reads the map."
+            ),
+        ),
+        ReadingSection(
+            id="rings-and-arithmetic",
+            heading="Rings, Bredt's rule, and turning kilojoules into ratios",
+            body=(
+                "Rings put geometry constraints on the stability "
+                "story. Small and common rings accommodate only "
+                "the cis double bond: cyclohexene's alkene is "
+                "necessarily cis, and a trans-cyclohexene is too "
+                "strained to isolate. The crossover arrives at "
+                "eight carbons - trans-cyclooctene is isolable "
+                "though still about 40 kJ/mol above its cis "
+                "isomer, the inversion of the usual trans-beats-"
+                "cis order being pure ring strain - and by large "
+                "rings the acyclic preference reasserts itself. "
+                "At ring fusions the constraint sharpens into "
+                "Bredt's rule: a double bond cannot sit at the "
+                "bridgehead of a small bicyclic system, because "
+                "the geometry would force the pi system's p "
+                "orbitals out of parallel - the same "
+                "no-twist logic as the rotation barrier, applied "
+                "by a rigid skeleton. These facts matter "
+                "practically because eliminations in rings can "
+                "only form alkenes geometry permits, and answer "
+                "choices offering bridgehead or small-ring trans "
+                "alkenes are eliminable on sight.\n\n"
+                "The second extension converts energy differences "
+                "into populations, closing the loop with chapter "
+                "2's Boltzmann arithmetic and chapter 3's "
+                "5.7-kJ/mol-per-factor-of-ten rule. The "
+                "trans/cis-2-butene gap of about 4 kJ/mol "
+                "corresponds to a factor of roughly five at room "
+                "temperature: equilibrate the pair over an "
+                "isomerisation catalyst and the mixture settles "
+                "near 76 percent trans within the 2-butenes - a "
+                "measured number the energy gap predicts almost "
+                "exactly. The mono-to-disubstituted gap of 7-11 "
+                "kJ/mol predicts internal alkenes outnumbering "
+                "terminal ones by one to two orders of magnitude "
+                "at equilibrium, which is why isomerising "
+                "catalysts in industry walk terminal double "
+                "bonds down the chain. The skill to retain: any "
+                "stability difference in kJ/mol converts to an "
+                "equilibrium ratio by dividing by 5.7 and "
+                "raising ten to the result - stability tables "
+                "and product ratios are the same information in "
+                "two currencies."
+                "\n\n"
+                "Close with the reasoning order that makes "
+                "ranking questions fast. First count substituents "
+                "on the two sp2 carbons - that places a candidate "
+                "on the mono/di/tri/tetra ladder and settles most "
+                "comparisons outright. Second, within a "
+                "substitution class, prefer trans over cis, and "
+                "charge any cis pair of bulky groups extra. "
+                "Third, for ring alkenes, check the geometry is "
+                "even possible - no trans double bonds in rings "
+                "smaller than eight, no bridgehead alkenes in "
+                "small bicyclics - and strike impossible "
+                "candidates rather than ranking them. Fourth, if "
+                "the question supplies hydrogenation or "
+                "combustion data, let the numbers override "
+                "intuition: the compound releasing less heat to "
+                "a COMMON product is more stable, full stop. "
+                "Run the checklist in order and a five-way "
+                "ranking becomes four quick eliminations - and "
+                "it transfers unchanged to elimination-product "
+                "predictions in chapter 9, where the same "
+                "ladder decides which alkene the reaction "
+                "prefers to make."
+                " Two further calibration points anchor the "
+                "scale's ends. Conjugation adds a stabilisation "
+                "the substituent count misses: 1,3-butadiene sits "
+                "notably below an isolated-diene estimate, a "
+                "preview of the delocalisation bookkeeping Organic "
+                "II makes quantitative, and a reminder to scan "
+                "for adjacent pi systems before trusting a bare "
+                "substituent count. And exocyclic double bonds - "
+                "pi bonds from a ring carbon out to a chain - are "
+                "generally less stable than their endocyclic "
+                "isomers, which is why acid-catalysed "
+                "isomerisations walk methylenecyclohexane to "
+                "1-methylcyclohexene. Neither refinement "
+                "overturns the ladder; both extend it, and "
+                "advanced ranking questions are built exactly on "
+                "these two extensions. Where an exam mixes them - a conjugated candidate against a tetrasubstituted one - conjugation generally wins, and saying why (delocalisation beats one more hyperconjugative donor) earns the reasoning credit. The safest expression of the whole lesson remains the data: quote the hydrogenation ladder, place the candidates on it, and let the measured numbers carry the argument wherever intuition feels contested. Numbers first, rationale second: that ordering is the lesson, and it is portable to every stability argument the course will ask you to make."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Heats of hydrogenation rank isomeric alkenes on a common product: less heat = more stable.",
+        "Stability order: tetra > tri > di > mono-substituted, with trans above cis at each level.",
+        "Causes: hyperconjugative sigma-to-pi* donation and stronger sp2-sp3 bonds; the cis penalty is locked steric strain.",
+        "Zaitsev's rule is this ranking applied to elimination products - the more substituted alkene is the default major product.",
+        "Stability predicts outcomes only when the mechanism lets it: thermodynamic maps need kinetic permission.",
+    ),
+    exam_tips=(
+        "Rank-the-alkenes questions: count substituents on the double-bond carbons first, break ties with trans > cis - two steps, no exceptions at this level.",
+        "If a hydrogenation-enthalpy comparison spans different product alkanes, the comparison is invalid - the shared-product requirement is the tested concept.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 4.4 HX addition and Markovnikov's rule
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.HXADDITION",
+    lead=(
+        "Hydrogen halide addition is the course's first full mechanism: "
+        "two steps, one intermediate, and a regiochemical rule with an "
+        "electronic explanation. Everything the arrow notation practised "
+        "in chapter 3 gets used - the pi bond as nucleophile, a "
+        "carbocation as intermediate, a halide capture - and the "
+        "Markovnikov outcome falls out of carbocation stability rather "
+        "than memorisation. Learn this mechanism thoroughly; chapter 5 "
+        "runs variations on it four times."
+    ),
+    sections=(
+        ReadingSection(
+            id="the-mechanism",
+            heading="The two-step electrophilic addition mechanism",
+            body=(
+                "Step one is a proton transfer with an unusual base: "
+                "the pi bond. The alkene's pi electrons - the highest, "
+                "most exposed filled orbitals in the molecule - attack "
+                "the proton of H-X, one arrow from the middle of the "
+                "double bond to H, a second arrow from the H-X bond "
+                "onto the halogen. The products are a halide ion and "
+                "a carbocation: one of the former double-bond carbons "
+                "now bears three groups and a positive charge, the "
+                "other collected the new hydrogen. This step breaks a "
+                "pi bond and forms a sigma bond to hydrogen, is "
+                "strongly uphill, and is the slow, rate-determining "
+                "step.\n\n"
+                "Step two is chapter 3's association sentence: the "
+                "halide's lone pair attacks the empty p orbital of "
+                "the carbocation, one arrow, fast, downhill. Sum the "
+                "steps and H and X have added across the double bond "
+                "- an addition reaction, in the chapter's "
+                "classification - with the alkene's two new sigma "
+                "bonds paid for by the pi bond and the H-X bond. The "
+                "experimental rate law backs the picture: rate "
+                "depends on alkene and HX concentrations, and "
+                "more-substituted alkenes react faster because they "
+                "make more stable cations, exactly as a "
+                "cation-forming slow step predicts."
+            ),
+        ),
+        ReadingSection(
+            id="markovnikov",
+            heading="Markovnikov's rule, said correctly",
+            body=(
+                "On an unsymmetrical alkene the proton has a choice "
+                "of carbons, and the choice decides the product. "
+                "Markovnikov's original phrasing - the hydrogen adds "
+                "to the carbon that already has more hydrogens - is "
+                "a correct summary and a useless explanation. The "
+                "modern statement is mechanistic: the proton adds so "
+                "as to form the MORE STABLE CARBOCATION. Protonate "
+                "propene at the terminal CH2 and the charge lands on "
+                "the secondary middle carbon; protonate the middle "
+                "carbon instead and the charge would sit on a "
+                "primary carbon, roughly 60-70 kJ/mol worse. The "
+                "reaction funnels through the lower barrier to the "
+                "secondary cation, chloride captures it, and "
+                "2-chloropropane is the product - hydrogen on the "
+                "hydrogen-rich carbon, exactly as the old rule "
+                "says, for a reason the old rule never gave.\n\n"
+                "Stating the rule through the cation pays off "
+                "immediately: it predicts the regiochemistry of "
+                "every cation-mediated addition in chapter 5 "
+                "(hydration, halohydrins, oxymercuration), it "
+                "predicts when the rule INVERTS (the radical HBr "
+                "chapter, where the intermediate changes and the "
+                "logic follows it), and it warns of rearrangements "
+                "(next lessons) that the hydrogen-counting slogan "
+                "cannot see coming. One sentence to memorise: "
+                "protonation goes where the positive charge is best "
+                "accommodated."
+            ),
+            important=(
+                "State Markovnikov's rule as 'form the more stable "
+                "carbocation', not as hydrogen-counting. The "
+                "hydrogen-counting version fails silently on "
+                "rearranging substrates and cannot explain the "
+                "peroxide-HBr inversion."
+            ),
+        ),
+        ReadingSection(
+            id="regiochemistry-practice",
+            heading="Reading regiochemistry from structure",
+            body=(
+                "The working procedure for any HX addition: draw both "
+                "possible cations, rank them (tertiary > secondary > "
+                "primary, resonance-stabilised beating all three - "
+                "next lesson's business), commit the proton to the "
+                "path making the better one, and only then attach "
+                "the halide. On 2-methyl-2-butene, protonation at "
+                "C3 gives a tertiary cation at C2; on styrene-like "
+                "substrates, protonation at the terminal carbon "
+                "gives a benzylic, resonance-stabilised cation - in "
+                "both cases the halide lands on the more substituted "
+                "or stabilised carbon. Symmetric alkenes remove the "
+                "choice, and 2-butene gives a single product from "
+                "either protonation.\n\n"
+                "Two boundary notes complete the picture. "
+                "Stereochemistry: the cation is flat, its faces "
+                "equivalent, so capture occurs from both sides and "
+                "any new stereocentre forms as a racemic mixture - "
+                "a fact chapter 6 will make precise. And scope: HCl, "
+                "HBr and HI all add this way; HBr alone can be "
+                "diverted onto a radical path by peroxides, a "
+                "reactivity fork flagged here and resolved in "
+                "chapter 5. Filing the fork now prevents the "
+                "commonest cross-contamination error - applying "
+                "peroxide logic to HCl, which stays Markovnikov "
+                "regardless."
+            ),
+        ),
+        ReadingSection(
+            id="worked-substrates",
+            heading="Three worked substrates, and the evidence file",
+            body=(
+                "Propene plus HBr: protonation at C1 puts the "
+                "charge on secondary C2; protonation at C2 would "
+                "strand it on primary C1. The secondary cation "
+                "wins, bromide caps C2, product 2-bromopropane - "
+                "the baseline case. 2-Methyl-2-butene plus HCl: "
+                "protonating C3 gives a TERTIARY cation at C2 "
+                "while the alternative is secondary at C3; the "
+                "tertiary path dominates overwhelmingly and "
+                "2-chloro-2-methylbutane results - larger "
+                "stability gap, cleaner selectivity, which is the "
+                "general pattern: selectivity tracks the SIZE of "
+                "the cation-stability difference. Styrene plus "
+                "HBr: protonation at the terminal carbon parks "
+                "the charge on the benzylic carbon, where the "
+                "ring delocalises it; the product is "
+                "(1-bromoethyl)benzene, and the example widens "
+                "Markovnikov beyond substitution counting - "
+                "resonance outranks alkyl substitution on the "
+                "cation ladder, so the rule tracks TOTAL "
+                "stabilisation, not hydrogen counts.\n\n"
+                "The evidence file for the mechanism is worth "
+                "one paragraph because exams increasingly ask "
+                "'how do we know'. The rate law is first order "
+                "in alkene and in HX, consistent with both "
+                "meeting in or before the slow step. Rates "
+                "climb steeply with alkene substitution - "
+                "ethylene reacts sluggishly, trisubstituted "
+                "alkenes rapidly - tracking cation stability "
+                "exactly as a cation-forming rate-determining "
+                "step demands. Rearranged products (next "
+                "lesson) betray a genuinely free cation "
+                "intermediate, and adding an external "
+                "nucleophile diverts some product to its "
+                "capture, proving something interceptable "
+                "exists between the steps. Four independent "
+                "observations, one mechanism accommodating "
+                "all of them - the template for every "
+                "mechanism-evidence argument the course will "
+                "make."
+                "\n\n"
+                "A final calibration on selectivity and its "
+                "limits. The regiochemical choice is a "
+                "competition between two transition states, so "
+                "the product ratio reflects their energy GAP, "
+                "not the absolute class labels - and temperature "
+                "flattens selectivity modestly through the "
+                "Boltzmann exponent. On exams, treat 'sole "
+                "product' language with suspicion and 'major "
+                "product' as the honest claim; in mechanisms, be "
+                "ready to draw the minor pathway when asked why "
+                "a trace byproduct exists. The mature statement "
+                "of Markovnikov's rule carries its own error "
+                "bars, and questions at the top of the "
+                "difficulty range test exactly that maturity."
+                " One practical corollary closes the lesson: "
+                "because protonation is reversible in principle, "
+                "traces of acid can isomerise alkenes even when "
+                "no net addition survives - protonate, rotate or "
+                "shift, deprotonate the other way - and "
+                "long-stored or acid-exposed alkene samples "
+                "drift toward their thermodynamic isomer "
+                "mixture. The same three-step logic that "
+                "explains the addition product thus also "
+                "explains why a bottle labelled 1-butene can "
+                "quietly become 2-butene, and reading both "
+                "phenomena from one mechanism is exactly the "
+                "economy mechanisms exist to provide. It also supplies the practical rule for storeroom and exam alike: alkene identity is only trustworthy under acid-free conditions, and any stem mentioning trace acid plus time has quietly granted permission to equilibrate - read such questions as thermodynamic control in disguise, and answer with the most stable accessible alkene rather than the drawn starting isomer. Selectivity, reversibility, and the size of the stability gap: keep the three dials separate when reading any addition question, because each is tested on its own and difficult items deliberately turn two at once - naming which dials a stem has turned is most of the answer. Practise saying the dial settings aloud before choosing an option and the habit becomes automatic within a problem set or two, at which point these questions become the reliable points they were always meant to be."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Mechanism: slow protonation of the pi bond to the better carbocation, fast halide capture - two steps, one intermediate.",
+        "Markovnikov's rule = protonate to form the more stable cation; the hydrogen-counting slogan is a consequence, not the reason.",
+        "More substituted alkenes react faster (better cations), and the halide lands on the more substituted carbon.",
+        "Planar cations are captured from both faces: new stereocentres arrive racemic.",
+        "Only HBr with peroxides deviates (radical path, chapter 5); HCl and HI have no such fork.",
+    ),
+    exam_tips=(
+        "Regiochemistry questions are cation-ranking questions: draw both cations explicitly rather than counting hydrogens - it also catches the rearrangement traps.",
+        "A product with the halogen on the less substituted carbon signals radical HBr conditions - scan the question for the word peroxide.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 4.5 Carbocations
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.CARBOCATION",
+    lead=(
+        "The carbocation is the most important reactive intermediate in "
+        "the first year of organic chemistry: it stands at the centre of "
+        "HX addition, acid-catalysed hydration, SN1 substitution, E1 "
+        "elimination and half the rearrangement chemistry in between. One "
+        "structural picture - a flat, sp2, six-electron carbon with an "
+        "empty p orbital - plus one stability ladder explains all of it. "
+        "This lesson builds both and shows the three things every "
+        "carbocation can do next."
+    ),
+    sections=(
+        ReadingSection(
+            id="structure",
+            heading="Structure: flat, sp2, six electrons",
+            body=(
+                "A carbocation's central carbon bonds to three groups "
+                "and holds six valence electrons - two short of an "
+                "octet. It hybridises sp2: three sigma bonds at 120 "
+                "degrees in a plane, and the unhybridised p orbital "
+                "empty, perpendicular to the plane, lobed above and "
+                "below. That empty orbital is the whole personality "
+                "of the species. It is the Lewis-acid vacancy that "
+                "nucleophiles attack (chapter 3's one-arrow "
+                "association), it is the acceptor that neighbouring "
+                "bonds donate into (the stabilisation story below), "
+                "and its two equal lobes are why capture happens "
+                "from either face with equal ease - the structural "
+                "root of racemisation at cation centres.\n\n"
+                "Flatness is worth dwelling on because it carries "
+                "predictions. A cation forced to be nonplanar is "
+                "destabilised: bridgehead carbons of small bicyclic "
+                "systems, pinned pyramidal by the ring frame, "
+                "essentially refuse to form cations, and reactions "
+                "that need one simply do not go there. Where "
+                "geometry permits planarity, the cation forms, "
+                "flattens, and forgets which face its leaving group "
+                "departed from - a memory loss that chapter 9's SN1 "
+                "stereochemistry measures directly."
+            ),
+        ),
+        ReadingSection(
+            id="stability-ladder",
+            heading="The stability ladder and its two rungs of reasons",
+            body=(
+                "The operational order: tertiary > secondary > "
+                "primary > methyl, each step worth very roughly "
+                "60-70 kJ/mol in the gas phase - enormous gaps by "
+                "the standards of this course, which is why cation "
+                "stability so often single-handedly decides a "
+                "reaction's outcome. Two effects build the ladder. "
+                "Hyperconjugation: each adjacent C-H or C-C sigma "
+                "bond can lean its electron pair toward the empty p "
+                "orbital, a partial donation that spreads the "
+                "positive charge; more alkyl neighbours, more "
+                "donating bonds. Induction: alkyl groups are "
+                "polarisable electron donors relative to hydrogen, "
+                "pushing density toward the electron-poor centre "
+                "through the sigma framework. Both scale with "
+                "substitution and they add.\n\n"
+                "Above the whole alkyl ladder sit the "
+                "resonance-stabilised cations: allylic (positive "
+                "charge shared across two carbons by the adjacent "
+                "pi bond) and benzylic (shared into a ring). "
+                "Delocalisation beats hyperconjugation - a primary "
+                "allylic cation competes with an ordinary secondary "
+                "one - and heteroatom lone pairs are stronger "
+                "still: an oxygen next to the empty orbital makes "
+                "an oxocarbenium ion, the stabilised species that "
+                "runs carbohydrate and acetal chemistry in Organic "
+                "II. The full ranking to carry: resonance-stabilised "
+                "> tertiary > secondary > primary > methyl, with "
+                "vinyl and aryl cations off the bottom of the "
+                "ladder entirely."
+            ),
+        ),
+        ReadingSection(
+            id="three-fates",
+            heading="The three fates of a carbocation",
+            body=(
+                "Every carbocation, however formed, chooses among "
+                "the same three continuations. Capture: a "
+                "nucleophile - halide, water, alcohol, anything "
+                "with a pair - attacks the empty orbital; this "
+                "finishes HX addition and hydration, and it is the "
+                "product-forming step of SN1. Deprotonation: a base "
+                "removes a proton from a carbon ADJACENT to the "
+                "charge, the departing bonding pair folds in to "
+                "become a pi bond, and an alkene results; this is "
+                "E1 elimination, and it is why cation-mediated "
+                "reactions so often ship alkene side products. "
+                "Rearrangement: a hydrogen or alkyl group on the "
+                "adjacent carbon migrates with its bonding pair "
+                "onto the empty orbital, relocating the charge - "
+                "the subject of the next lesson.\n\n"
+                "Which fate wins is bookkeeping you can reason "
+                "through: strong nucleophile present in quantity "
+                "favours capture; heat and weak nucleophiles tilt "
+                "toward elimination; a rearrangement fires first "
+                "whenever it upgrades the cation's stability class. "
+                "Competitions among the three are not noise - they "
+                "are the actual content of 'predict the products' "
+                "questions from here through chapter 9, and "
+                "students who list the three fates explicitly for "
+                "every cation they draw stop being surprised by "
+                "the answer keys."
+            ),
+            important=(
+                "Vinylic and aryl cations - positive charge on an "
+                "sp2 carbon of a double bond or ring - are "
+                "prohibitively unstable at this level. A mechanism "
+                "step that creates one is almost certainly the "
+                "wrong answer choice."
+            ),
+        ),
+        ReadingSection(
+            id="cations-observed",
+            heading="Cations observed, and cations at work in nature",
+            body=(
+                "Carbocations are not hypothetical bookkeeping "
+                "devices; under the right conditions they are "
+                "observable species. In superacid media - acids "
+                "vastly stronger than sulfuric, paired with "
+                "non-nucleophilic counterions and low "
+                "temperatures - simple alkyl cations persist "
+                "long enough to record their NMR spectra, work "
+                "recognised with a Nobel Prize. The spectra "
+                "confirm the model in detail: the cationic "
+                "carbon's signal appears far downfield "
+                "(electron-poor, as drawn), the tert-butyl "
+                "cation shows its three equivalent methyls, and "
+                "rearrangements can be watched in real time as "
+                "signals interconvert. The species this course "
+                "draws as fleeting intermediates are the same "
+                "species chemists have bottled and measured - "
+                "the difference between a mechanism and a "
+                "fantasy is exactly this kind of independent "
+                "observation.\n\n"
+                "Biology runs cation chemistry on production "
+                "scale. Terpene biosynthesis - the pathway to "
+                "menthol, camphor, steroids and thousands of "
+                "natural products - proceeds through enzyme-"
+                "guided carbocation cascades: an allylic "
+                "pyrophosphate ionises to an allylic cation, "
+                "which cyclises onto nearby double bonds, "
+                "hydride-shifts, and is finally quenched, with "
+                "the enzyme's folded pocket steering "
+                "intermediates that would rearrange chaotically "
+                "in a flask toward single products. The "
+                "epic case is squalene folding to the steroid "
+                "skeleton: a polyene chain zipped into four "
+                "rings through successive cation cyclisations "
+                "and 1,2-shifts, each step obeying exactly the "
+                "stability ladder and migration rules of these "
+                "lessons. The MCAT connection is direct - "
+                "biochemistry questions about terpene or "
+                "steroid formation are carbocation questions "
+                "wearing a pathway diagram - and the deeper "
+                "point stands for the whole course: the rules "
+                "learned on two-carbon examples are the rules "
+                "nature scales up."
+                "\n\n"
+                "The observation story also disciplines how "
+                "cations are drawn in ordinary mechanisms. In "
+                "normal solvents the intermediates live for "
+                "nanoseconds - long enough to choose among their "
+                "three fates, far too short to accumulate - so "
+                "concentration intuitions do not apply: a species "
+                "can be present at vanishing concentration and "
+                "still carry the entire product flux, because "
+                "flux depends on formation rate, not standing "
+                "population. That distinction defuses a common "
+                "confusion when rate laws arrive in chapter 9: "
+                "the cation is absent from the rate law not "
+                "because it is unimportant but because it is "
+                "consumed as fast as it forms - the steady-state "
+                "idea, met here informally before kinetics "
+                "formalises it. Draw cations confidently, expect "
+                "them to be invisible in the flask, and let the "
+                "products and the rate law testify to their "
+                "passage."
+                " The ladder also explains reagent design "
+                "choices that otherwise look arbitrary: silver "
+                "salts accelerate halide ionisation by pulling "
+                "the halide into insoluble silver halide, "
+                "non-nucleophilic counterions exist so cations "
+                "can form without being instantly captured, and "
+                "low temperatures extend cation lifetimes for "
+                "study. Each trick manipulates one side of the "
+                "formation-consumption balance, and recognising "
+                "the trick in a question's conditions line is "
+                "recognising which side the examiner wants "
+                "manipulated. The same balance-sheet reading explains why polar protic solvents accelerate cation formation - they stabilise the forming charges - while polar aprotic solvents starve it, a solvent story chapter 9 expands into a full decision axis between the substitution mechanisms. File the solvent lever now: it costs one sentence here and repays a full lesson later, because every cation-forming reaction in the course responds to it identically - stabilise the charges being born and ionisation quickens; starve them and it stalls. One lever, learned once, read everywhere - the definition of a concept worth the space it takes."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Carbocations are flat sp2 centres with six electrons and an empty p orbital - attackable from both faces.",
+        "Stability: resonance-stabilised > 3 > 2 > 1 > methyl, built from hyperconjugation plus induction; steps are huge (~60-70 kJ/mol).",
+        "Allylic/benzylic delocalisation and adjacent heteroatom lone pairs outrank simple alkyl substitution.",
+        "Every cation has three fates: nucleophilic capture, deprotonation to an alkene, or 1,2-rearrangement to a better cation.",
+        "No vinylic or aryl cations in this course's mechanisms - geometry and orbital orientation forbid them.",
+    ),
+    exam_tips=(
+        "Cation-ranking questions hide resonance: scan for an adjacent double bond, ring, or oxygen before applying the 3>2>1 ladder.",
+        "For any mechanism with a cation intermediate, pre-list the three fates - MCAT distractors are usually the two fates the question didn't ask for.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 4.6 Carbocation rearrangements
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.REARRANGEMENT",
+    lead=(
+        "Carbocations cheat. Given one bond's worth of opportunity, a "
+        "cation will relocate its positive charge to a more comfortable "
+        "carbon, and products appear with their skeletons quietly "
+        "rewritten. Rearrangement is not an exotic side reaction - it is "
+        "the predictable consequence of the stability ladder, it happens "
+        "faster than capture when an upgrade is available, and every "
+        "cation-forming reaction from HX addition to SN1 inherits it. "
+        "This lesson teaches when shifts fire, which group moves, and "
+        "how to spot a rearranged product on an exam."
+    ),
+    sections=(
+        ReadingSection(
+            id="the-shift",
+            heading="The 1,2-shift: what actually moves",
+            body=(
+                "A rearrangement is a single elementary step: a group "
+                "on the carbon ADJACENT to the cation - a hydride "
+                "(H with its bonding pair) or an alkyl group (carbon "
+                "with its bonding pair) - slides one position over "
+                "into the empty p orbital. One arrow, drawn from the "
+                "migrating bond to the electron-poor carbon. The "
+                "charge and the group trade places: the old cation "
+                "carbon gains a bond, the neighbour that donated "
+                "loses one and becomes the new cation. The migration "
+                "is strictly 1,2 - between directly bonded carbons - "
+                "because the migrating pair never stops bonding; it "
+                "slips along a three-centre transition state rather "
+                "than dissociating. There are no 1,3-shifts in this "
+                "course, and any answer choice showing a group "
+                "leaping past a carbon is wrong on mechanism.\n\n"
+                "Because the step is fast - often faster than "
+                "diffusion brings a nucleophile - the rearranged "
+                "cation is effectively the ONLY cation the "
+                "nucleophile ever meets when an upgrade is "
+                "available. That timing is why rearrangement cannot "
+                "be ignored as a minor pathway: where the ladder "
+                "permits a climb, the climb happens first and the "
+                "products report only the final cation."
+            ),
+        ),
+        ReadingSection(
+            id="when-and-which",
+            heading="When shifts fire, and which group migrates",
+            body=(
+                "The driving question is always the ladder: a shift "
+                "fires when it converts the cation to a MORE stable "
+                "class - secondary to tertiary is the everyday case, "
+                "primary to secondary or tertiary likewise wherever "
+                "a primary cation would notionally appear. Shifts "
+                "that would demote (tertiary to secondary) do not "
+                "occur, and shifts between equals are invisible "
+                "except to isotopic labels. The complete audit for "
+                "any cation you draw: examine EACH adjacent carbon, "
+                "ask what cation would result if one of its groups "
+                "migrated, and compare classes. No upgrade "
+                "available, no rearrangement - cations flanked only "
+                "by CH2 and CH3 groups that cannot improve the "
+                "charge simply proceed to capture.\n\n"
+                "When both a hydride and an alkyl group could "
+                "migrate, hydride generally wins - it is smaller "
+                "and its bond aligns with the empty orbital more "
+                "easily - unless only an alkyl shift achieves the "
+                "upgrade. The special case worth knowing by name is "
+                "ring expansion: a strained ring carbon migrates to "
+                "relieve ring strain AND upgrade the cation at "
+                "once, so a cyclobutyl-substituted cation balloons "
+                "to a cyclopentyl cation with startling "
+                "enthusiasm. Ring expansions are exam favourites "
+                "precisely because the product skeleton looks "
+                "unrelated to the starting material until the "
+                "shift is drawn."
+            ),
+        ),
+        ReadingSection(
+            id="spotting-rearranged-products",
+            heading="Reading rearrangement in products, and its fingerprints",
+            body=(
+                "The classic demonstration: add HCl to "
+                "3-methyl-1-butene. Markovnikov protonation gives a "
+                "secondary cation at C2 - adjacent to a tertiary "
+                "centre carrying a hydrogen. The hydride shifts, "
+                "the charge upgrades to tertiary at C3, chloride "
+                "captures there, and the major product is "
+                "2-chloro-2-methylbutane: chlorine on a carbon "
+                "that was never part of the double bond. The "
+                "unrearranged secondary chloride appears only as a "
+                "minor companion. The fingerprint generalises: "
+                "whenever a product's functional group sits on a "
+                "carbon the naive mechanism cannot reach, or a "
+                "methyl group has apparently walked down the "
+                "chain, or a ring has changed size, a cation "
+                "rearrangement is the explanation the examiner "
+                "wants named.\n\n"
+                "Strategically, rearrangement is also a design "
+                "constraint. Reactions that traverse free cations "
+                "(HX addition, acid-catalysed hydration, SN1, E1) "
+                "are unreliable on rearrangement-prone substrates, "
+                "and the synthetic chapters respond by offering "
+                "cation-free alternatives - chapter 5's "
+                "oxymercuration and hydroboration exist "
+                "substantially BECAUSE they deliver Markovnikov or "
+                "anti-Markovnikov hydration without a free cation "
+                "and therefore without skeletal surprises. Knowing "
+                "which reagents rearrange is knowing which "
+                "reagents to distrust, and that judgment is what "
+                "the reagent-choice questions in the next chapter "
+                "are actually testing."
+            ),
+            important=(
+                "Audit every cation you ever draw: check each "
+                "adjacent carbon for an available upgrade before "
+                "letting the nucleophile in. The rearrangement "
+                "step is faster than capture whenever the ladder "
+                "permits a climb."
+            ),
+        ),
+        ReadingSection(
+            id="second-worked-case",
+            heading="Ring expansion worked, and the no-upgrade audit",
+            body=(
+                "Walk the ring-expansion case slowly once. Take "
+                "cyclobutylmethanol under hot acid, or any "
+                "process placing a cation on the CH2 carbon "
+                "attached to a cyclobutane. The primary-like "
+                "cation is adjacent to the ring; one of the "
+                "ring's C-C bonds migrates - the ring carbon "
+                "slides over with its bonding pair - and two "
+                "things improve at once: the charge relocates "
+                "onto a ring carbon as a secondary cation, and "
+                "the four-membered ring becomes five-membered, "
+                "shedding most of its angle strain. The product "
+                "cation is cyclopentyl; capture or elimination "
+                "finishes from there, and the isolated product "
+                "carries a ring one size larger than the "
+                "starting material. On paper the transformation "
+                "looks like sorcery; drawn as one migrating "
+                "bond, it is a single legal step with a doubled "
+                "payoff, which is why expansions from strained "
+                "rings are so fast and so common in exam "
+                "problems.\n\n"
+                "Equally important is the disciplined negative "
+                "case. Protonate 1-butene: the secondary cation "
+                "at C2 has neighbours C1 (a methyl-less CH3 "
+                "carbon) and C3 (a CH2). Shifting any hydride "
+                "from either neighbour yields another secondary "
+                "or a primary cation - no upgrade exists - so "
+                "NO rearrangement occurs and the products are "
+                "the plain Markovnikov set. Running this audit "
+                "explicitly, and being willing to conclude "
+                "'nothing shifts', is as much the skill as "
+                "spotting the shifts that do fire: "
+                "over-predicting rearrangement is the mirror "
+                "error to missing it, and examiners plant both "
+                "kinds of substrate. Isotope studies close the "
+                "evidence file - deuterium-labelled substrates "
+                "show the label relocated exactly as the "
+                "hydride-shift arrows predict, and scrambling "
+                "beyond that prediction is absent - so the "
+                "1,2-shift is not a rationalisation after the "
+                "fact but a mechanism with tracked atoms."
+                "\n\n"
+                "Keep one map of where rearrangements will matter "
+                "ahead. In this chapter and the next: HX addition "
+                "and acid-catalysed hydration on branched "
+                "substrates. In chapter 9: SN1 and E1, which share "
+                "the cation and therefore the shifts, against SN2 "
+                "and E2, which have no intermediate and never "
+                "rearrange - so shifted products become diagnostic "
+                "evidence for which mechanism operated, a role "
+                "rearrangement plays in lab problems as often as "
+                "in synthesis. In Organic II the same 1,2-shift "
+                "becomes a deliberate tool, with leaving group "
+                "and migrating group choreographed on purpose. "
+                "One elementary step, three roles - nuisance, "
+                "diagnostic, tool - depending on whether the "
+                "chemist fights it, reads it, or drives it."
+                " A closing habit for products as well as "
+                "mechanisms: when your predicted product "
+                "disagrees with an answer key, redraw the "
+                "cation and run the audit before assuming the "
+                "key errs - in practice the missed shift "
+                "accounts for most such disagreements, and "
+                "finding it yourself is worth more than any "
+                "number of memorised special cases. Treat every disagreement with a key as a rearrangement drill first and a dispute second; the habit converts errors into exactly the practice that prevents their recurrence. Rearrangement mastery is ultimately audit discipline - a fixed habit of inspection applied to every cation, every time, with no exceptions granted for seemingly simple substrates - and disciplined auditors simply stop losing points here. That is the entire secret: not more memory, just an inspection that never skips. Build it now, while the substrates are small, and it will hold at full synthetic scale."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Rearrangements are single-arrow 1,2-shifts of H or alkyl WITH the bonding pair into the adjacent empty orbital.",
+        "They fire only uphill on the stability ladder (2 -> 3 the standard case) and are faster than nucleophilic capture.",
+        "Hydride shifts beat alkyl shifts when both upgrade; ring expansion relieves strain and upgrades at once.",
+        "Fingerprints in products: functional group on an unexpected carbon, wandering methyls, changed ring sizes.",
+        "Cation-free alternatives (oxymercuration, hydroboration) exist to avoid rearrangement - reagent choice is rearrangement management.",
+    ),
+    exam_tips=(
+        "3-methyl-1-butene + HX is THE canonical rearrangement question - if a substrate has a branch adjacent to the double bond, expect the shifted product as the answer.",
+        "A 'why this unexpected product' question is answered in one phrase: hydride (or alkyl) shift to the more stable carbocation.",
+    ),
+))

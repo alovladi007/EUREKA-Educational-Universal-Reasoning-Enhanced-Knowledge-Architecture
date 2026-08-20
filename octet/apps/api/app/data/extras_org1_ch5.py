@@ -1,0 +1,1460 @@
+"""Lecture-note depth for ORG1 chapter 5, Addition Reactions of Alkenes.
+
+Tranche 2 of the organic depth programme (docs/organic_depth_benchmark.md),
+final file: halogenation and halohydrins, the three hydration methods,
+epoxidation and dihydroxylation, ozonolysis, radical HBr, and the
+elimination routes to alkenes. All prose authored for OCTET.
+"""
+
+from __future__ import annotations
+
+from app.data.lesson_extras import (
+    LessonExtras,
+    ReadingSection,
+    Table,
+)
+
+EXTRAS_ORG1_CH5: dict[str, LessonExtras] = {}
+
+
+def _add(extras: LessonExtras) -> None:
+    EXTRAS_ORG1_CH5[extras.node] = extras
+
+
+# --------------------------------------------------------------------------
+# 5.1 Halogenation and halohydrins
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.HALOGENATION",
+    lead=(
+        "Bromine adds across a double bond within seconds at room "
+        "temperature, no catalyst required - the decolourisation of "
+        "red-brown bromine remains the classic bench test for "
+        "unsaturation. The interest is in HOW it adds: through a bridged "
+        "bromonium ion rather than a free cation, which locks the "
+        "addition anti, forbids rearrangement, and - when water crashes "
+        "the party - sets a regiochemistry that looks Markovnikov for a "
+        "subtler reason than usual. This mechanism is the course's "
+        "second addition archetype, paired against HX's open cation."
+    ),
+    sections=(
+        ReadingSection(
+            id="bromonium",
+            heading="The bromonium ion: a bridged intermediate",
+            body=(
+                "As Br2 approaches the pi cloud, the bond polarises "
+                "- the near bromine turns electrophilic - and the "
+                "alkene attacks it, expelling bromide. But the "
+                "resulting cation does not stay open: the attached "
+                "bromine's lone pair folds back onto the adjacent "
+                "carbon, forming a three-membered ring with a "
+                "positive bromine - the bromonium ion. Both carbons "
+                "are bonded to bromine; the charge sits mainly on "
+                "the halogen; and, crucially, both faces of the old "
+                "double bond are no longer equivalent, because the "
+                "bridge occupies one face entirely.\n\n"
+                "Step two is an SN2-like backside attack: bromide "
+                "(the one expelled in step one) opens the ring by "
+                "attacking a carbon from the face OPPOSITE the "
+                "bridge. The two bromines therefore end up on "
+                "opposite faces of the former double bond - anti "
+                "addition, the mechanism's fingerprint. On "
+                "cyclopentene the product is exclusively "
+                "trans-1,2-dibromocyclopentane; the cis isomer, "
+                "which an open cation would also produce, does not "
+                "form. That stereochemical cleanliness plus the "
+                "total absence of rearranged products is the "
+                "experimental evidence FOR the bridge - the "
+                "bromonium ion earned its place by explaining "
+                "what a free cation could not."
+            ),
+        ),
+        ReadingSection(
+            id="halohydrins",
+            heading="Halohydrins: water intercepts the bromonium ion",
+            body=(
+                "Run the same bromination in water and the product "
+                "changes: the major species is a halohydrin - "
+                "bromine on one carbon, hydroxyl on the other, "
+                "still anti. Water, present in vast excess over "
+                "bromide, wins the race to open the bromonium "
+                "ion; a final deprotonation gives the alcohol. The "
+                "regiochemistry is the instructive part. On an "
+                "unsymmetrical alkene, water attacks the MORE "
+                "SUBSTITUTED carbon of the bridge - the product "
+                "carries OH on the more substituted carbon and Br "
+                "on the less - because the bridged ion is "
+                "unsymmetrical: the more substituted carbon "
+                "carries more of the positive charge (it is the "
+                "better cation carbon), its bond to bromine is "
+                "longer and looser, and the nucleophile attacks "
+                "where the charge is. The outcome is "
+                "Markovnikov-like without a free cation - "
+                "'Markovnikov' generalised from 'H to the "
+                "H-rich carbon' to its real meaning: the "
+                "nucleophile ends up on the carbon better able "
+                "to bear positive charge.\n\n"
+                "Chlorine behaves like bromine throughout "
+                "(chloronium ions, anti addition, chlorohydrins "
+                "in water). Fluorine is too violent and iodine "
+                "too unfavourable for routine use, so the "
+                "chapter's halogenation chemistry is in practice "
+                "Cl2 and Br2 chemistry - with Br2's colour "
+                "change doubling as the qualitative test for "
+                "a C=C bond."
+            ),
+            important=(
+                "Anti addition and no rearrangements are the "
+                "bromonium ion's signature. If a halogenation "
+                "answer choice shows syn dibromide or a shifted "
+                "skeleton, the choice contradicts the bridged "
+                "mechanism and is wrong."
+            ),
+        ),
+        ReadingSection(
+            id="writing-reactions",
+            heading="Writing organic reactions: the working conventions",
+            body=(
+                "This is the chapter where reaction-writing "
+                "conventions become load-bearing, so they are "
+                "stated once, here. Reagents and conditions sit "
+                "over (and under) the arrow: 'Br2, H2O' above an "
+                "arrow means both are present together, while "
+                "numbered reagents - '1. O3; 2. Me2S' - mean "
+                "SEQUENTIAL treatment, the second added only "
+                "after the first has done its work. Sequential "
+                "numbering matters chemically: ozonolysis's "
+                "workup reagent and hydroboration's oxidation "
+                "step must not meet the substrate prematurely, "
+                "and the numbers are the notation's way of "
+                "saying so. Solvents ride along with conditions "
+                "(the H2O in halohydrin formation is both "
+                "solvent and nucleophile - reading it as inert "
+                "is the classic error), and 'cat.' marks a "
+                "catalytic quantity.\n\n"
+                "Yields, byproducts and stoichiometry are "
+                "handled honestly but sparingly: organic "
+                "equations conventionally show the organic "
+                "product of interest and omit spectator salts, "
+                "and 'major/minor' labels do the work that "
+                "percentages would. The habit to build now: "
+                "when reading any reaction, parse the arrow "
+                "annotations FIRST - simultaneous or "
+                "sequential, catalytic or stoichiometric, "
+                "solvent participating or not - because "
+                "chapter-5 exam questions are engineered so "
+                "that misreading the arrow annotations changes "
+                "the product."
+            ),
+        ),
+        ReadingSection(
+            id="stereospecificity-evidence",
+            heading="Stereospecificity as evidence, and the wider halogen toolkit",
+            body=(
+                "The bromonium mechanism makes a falsifiable "
+                "prediction sharp enough to hang a verdict on: "
+                "because the two carbons of the bridge are opened "
+                "anti, the alkene's geometry must map onto the "
+                "product's stereochemistry in a fixed way. Feed the "
+                "reaction cis-2-butene and trans-2-butene "
+                "separately and the mechanism demands DIFFERENT "
+                "diastereomeric dibromides from the two - the "
+                "geometric information of the starting material "
+                "translated, not erased. That is exactly what "
+                "experiment finds: each geometric isomer delivers "
+                "its own diastereomer, cleanly, with none of the "
+                "crossover an open, freely rotating cation would "
+                "permit. A reaction whose stereochemical outcome is "
+                "dictated by the substrate's configuration this way "
+                "is called stereospecific, and stereospecificity is "
+                "the strongest everyday evidence mechanisms get: "
+                "chapter 6 supplies the vocabulary to name the "
+                "products precisely, and chapter 9 runs the same "
+                "logic on SN2's inversion. The experimental habit "
+                "to notice: chemists chose 2-butene BECAUSE it "
+                "exists as separable cis and trans isomers - "
+                "substrate selection is instrument design.\n\n"
+                "Two practical extensions complete the halogen "
+                "kit. N-bromosuccinimide (NBS) is bench-stable "
+                "crystalline bromine storage: in wet DMSO it "
+                "serves as an electrophilic bromine source for "
+                "clean halohydrin formation without handling "
+                "liquid Br2, and in a different role - radical "
+                "conditions, arriving with the allylic chapter - "
+                "it brominates allylic positions instead; the "
+                "reagent's two personalities are conditions-"
+                "selected, exactly like HBr's. And iodine's "
+                "reluctance toward simple addition finds a use "
+                "anyway: I2 adds reversibly enough that it "
+                "serves as a qualitative unsaturation test in "
+                "systems where bromine's reactivity would "
+                "overshoot, and iodine-based electrophiles "
+                "drive iodolactonisation, a ring-forming "
+                "halonium capture Organic II uses to build "
+                "lactones from unsaturated acids. The bridged-"
+                "ion grammar learned on Br2 reads all of them. "
+                "Keep the family portrait: one bridged "
+                "intermediate, three consequences - anti "
+                "stereochemistry, Markovnikov-logic ring "
+                "opening, zero rearrangement - and every "
+                "halogen-electrophile question in the course "
+                "resolves to asking which consequence is being "
+                "probed. Reagents change costumes; the bridge "
+                "does not.\n\n"
+                "For completeness, place the reaction in its "
+                "analytical setting. The bromine test earns its "
+                "classroom fame from its clarity: add a drop of "
+                "bromine solution to an unknown, and instant "
+                "decolourisation announces a pi bond while "
+                "persistent colour announces saturation - no "
+                "instrument, one second, and a structural fact "
+                "in hand. Alkanes ignore bromine in the dark "
+                "(their radical halogenation needs light, "
+                "chapter 9's subject), aromatic rings ignore it "
+                "without a Lewis acid, so the test is genuinely "
+                "selective for the alkene and alkyne pi bonds "
+                "this chapter owns. Pairing the test with "
+                "hydrogen-uptake counting gives a two-line "
+                "analytical kit for unsaturation questions "
+                "that predates spectroscopy and still appears "
+                "on exams because the reasoning it drills - "
+                "reactivity as structural evidence - is the "
+                "reasoning the whole course runs on. A negative "
+                "result carries equal information - colour "
+                "persisting through a bromine test excludes "
+                "accessible pi bonds and redirects a structure "
+                "search toward rings - and learning to spend "
+                "negative results is half of analytical "
+                "thinking. Cheap tests, both verdicts "
+                "informative: the pattern every classification "
+                "experiment in the course follows. Two verdicts, "
+                "both useful, no instrument required: that "
+                "economy is why a reagent bottle from 1860 "
+                "still earns its shelf space in a spectroscopy "
+                "age, and why examiners keep reaching for it "
+                "when they want reasoning rather than recall. Old tools, honestly understood, never really retire."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Br2/Cl2 add through a bridged halonium ion: anti addition, no rearrangements - trans products on rings.",
+        "In water, halohydrins form: nucleophile opens the bridge at the MORE substituted carbon (Markovnikov's logic without a free cation).",
+        "The bridge is unsymmetrical - more positive character at the more substituted carbon - which sets both regiochemistry and the SN2-like backside opening.",
+        "Bromine decolourisation is the bench test for C=C.",
+        "Arrow conventions carry chemistry: numbered reagents are sequential; solvents can be nucleophiles.",
+    ),
+    exam_tips=(
+        "Ring substrates are the stereochemistry tell: halogenation questions on cyclopentene/cyclohexene are testing whether you produce the trans product.",
+        "Halohydrin regiochemistry: OH goes to the more substituted carbon - trace it to charge distribution in the bridge, not to a memorised slogan.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 5.2 The three hydrations
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.HYDRATION",
+    lead=(
+        "Turning an alkene into an alcohol is one transformation with "
+        "three distinct tools, and choosing among them is the chapter's "
+        "signature skill. Acid-catalysed hydration is cheap and "
+        "reversible but travels through a free cation; oxymercuration "
+        "gives the same Markovnikov outcome without rearrangement; "
+        "hydroboration-oxidation inverts the regiochemistry entirely and "
+        "adds syn. Same net reagent - water - three different mechanisms, "
+        "three different answers, and exam questions that turn on "
+        "knowing which tool was named."
+    ),
+    sections=(
+        ReadingSection(
+            id="acid-hydration",
+            heading="Acid-catalysed hydration: the cation route",
+            body=(
+                "With dilute strong acid, water adds across a "
+                "double bond by the mechanism HX addition already "
+                "taught: protonation of the alkene to the more "
+                "stable carbocation (rate-determining, Markovnikov), "
+                "capture of the cation by water, then deprotonation "
+                "of the resulting oxocarbenium to release the "
+                "alcohol and refund the catalytic proton. Three "
+                "steps, one intermediate, OH on the more "
+                "substituted carbon. Everything known about "
+                "cations applies wholesale: rearrangement-prone "
+                "substrates rearrange (3-methyl-1-butene gives "
+                "substantial 2-methyl-2-butanol), new "
+                "stereocentres come racemic from the flat "
+                "intermediate, and more substituted alkenes react "
+                "faster.\n\n"
+                "The reaction is also genuinely reversible - it "
+                "IS E1 dehydration read backwards, same steps, "
+                "same cation - and the equilibrium obeys Le "
+                "Chatelier: dilute aqueous acid and excess water "
+                "push toward the alcohol, hot concentrated acid "
+                "with water removal pushes toward the alkene. "
+                "Industry runs the forward direction on enormous "
+                "scale (ethanol and isopropanol from ethylene and "
+                "propene); the laboratory often avoids it "
+                "precisely because of the cation's habits, which "
+                "is the cue for the next two methods."
+            ),
+        ),
+        ReadingSection(
+            id="oxymercuration",
+            heading="Oxymercuration-demercuration: Markovnikov without the mess",
+            body=(
+                "Oxymercuration buys Markovnikov regiochemistry "
+                "while firing the free cation. Mercuric acetate's "
+                "Hg(OAc)+ acts as the electrophile and the alkene "
+                "attacks it to form a bridged MERCURINIUM ion - "
+                "the bromonium ion's mercury cousin, with the same "
+                "consequences: no free cation, therefore NO "
+                "rearrangement, and backside opening by the "
+                "nucleophile. Water attacks the more substituted "
+                "carbon of the unsymmetrical bridge (the "
+                "halohydrin logic verbatim), giving, after "
+                "deprotonation, a Markovnikov alcohol bearing a "
+                "C-Hg bond. Step two - reduction with sodium "
+                "borohydride - replaces the mercury with "
+                "hydrogen and discards the stereochemical record, "
+                "so the sequence is bookkept as Markovnikov, "
+                "non-rearranging, no useful stereospecificity.\n\n"
+                "The reagent line reads '1. Hg(OAc)2, H2O; "
+                "2. NaBH4' - sequential by necessity - and the "
+                "exam identity is exactly this: the answer to "
+                "'Markovnikov hydration of a rearrangement-prone "
+                "alkene'. On 3-methyl-1-butene it delivers clean "
+                "3-methyl-2-butanol where acid hydration "
+                "scrambles the skeleton; that one comparison is "
+                "the method's entire reason for being, and "
+                "writing it out once is the fastest way to own "
+                "it."
+            ),
+        ),
+        ReadingSection(
+            id="hydroboration",
+            heading="Hydroboration-oxidation: anti-Markovnikov and syn",
+            body=(
+                "Borane (BH3, handled as its THF complex) adds "
+                "B-H across the double bond in one concerted "
+                "step: boron and hydrogen arrive at the SAME face "
+                "(syn addition) through a four-centre transition "
+                "state, with no intermediate at all. "
+                "Regiochemistry inverts: boron - the electrophilic "
+                "atom - attaches to the LESS substituted carbon, "
+                "for two reinforcing reasons. Sterically, the "
+                "bulky borane fits the less crowded carbon; "
+                "electronically, the transition state places "
+                "partial positive charge on the MORE substituted "
+                "carbon (where it is best stabilised) exactly "
+                "when boron bonds to the other one. Each B-H "
+                "adds in turn until trialkylborane forms; then "
+                "basic hydrogen peroxide - the sequential "
+                "step 2 - replaces each C-B bond with C-OH WITH "
+                "RETENTION of configuration.\n\n"
+                "Net result: OH on the less substituted carbon "
+                "(anti-Markovnikov) with H and OH syn across "
+                "the former double bond - regiochemistry AND "
+                "stereochemistry both set by mechanism, both "
+                "opposite to the cationic methods, and no "
+                "rearrangement anywhere because no cation ever "
+                "exists. On 1-methylcyclopentene the product is "
+                "trans-2-methylcyclopentanol: OH on C2 "
+                "(anti-Markovnikov), and the OH and CH3 trans "
+                "because H and OH added syn. Working that "
+                "example until it is obvious is the single best "
+                "investment in this chapter."
+            ),
+            table=Table(
+                caption="Choosing a hydration method",
+                columns=("Method", "Regiochemistry", "Stereochemistry", "Rearrangements?"),
+                rows=(
+                    ("H3O+ (acid-catalysed)", "Markovnikov", "not controlled (racemic)", "YES - free cation"),
+                    ("1. Hg(OAc)2, H2O; 2. NaBH4", "Markovnikov", "not controlled", "no - bridged ion"),
+                    ("1. BH3-THF; 2. H2O2, NaOH", "anti-Markovnikov", "syn addition, retention at oxidation", "no - concerted"),
+                ),
+                source="Summary of the three mechanisms as developed in this lesson",
+                note="The decision procedure: pick regiochemistry first, then ask whether the substrate can rearrange, then whether stereochemistry must be controlled.",
+            ),
+        ),
+        ReadingSection(
+            id="decision-drills",
+            heading="Decision drills across three substrates",
+            body=(
+                "Method choice becomes automatic through contrast, "
+                "so run the full grid once. Substrate one: "
+                "1-hexene, target 2-hexanol (Markovnikov, no "
+                "branches near the double bond). All three "
+                "Markovnikov-capable routes work; acid hydration "
+                "is cheapest, oxymercuration is cleanest, and the "
+                "answer under exam conditions is either unless "
+                "the stem's wording ('no rearrangement possible' "
+                "vs 'industrial scale') tips the choice. Target "
+                "1-hexanol instead and the grid collapses to one "
+                "cell: hydroboration-oxidation, the only "
+                "anti-Markovnikov entry. Substrate two: "
+                "3,3-dimethyl-1-butene, a rearrangement landmine "
+                "(protonation gives a secondary cation begging "
+                "to shift into the adjacent quaternary centre). "
+                "Acid hydration scrambles the skeleton toward "
+                "2,3-dimethyl-2-butanol; oxymercuration delivers "
+                "the unrearranged Markovnikov alcohol; "
+                "hydroboration gives the unrearranged "
+                "anti-Markovnikov one. The substrate's branching "
+                "pattern, not preference, forces the method. "
+                "Substrate three: 1-methylcyclohexene with a "
+                "stereochemical requirement - say the trans "
+                "relationship hydroboration's syn addition "
+                "produces. Only the concerted route controls "
+                "faces; the cationic routes surrender "
+                "stereochemistry to the flat intermediate.\n\n"
+                "The industrial coda calibrates scale against "
+                "elegance. Commodity alcohols - ethanol, "
+                "isopropanol - come from acid-catalysed "
+                "hydration over solid phosphoric acid "
+                "catalysts, rearrangement being irrelevant for "
+                "ethylene and propene and cost being "
+                "everything at megatonne scale. Mercury's "
+                "toxicity has pushed oxymercuration out of "
+                "industry entirely (and increasingly out of "
+                "teaching labs), while hydroboration earns its "
+                "keep in fine chemistry where its selectivity "
+                "is the product. Reagent choice, in other "
+                "words, is context arithmetic: the same "
+                "transformation optimises differently at a "
+                "tonne and at a milligram, and mature answers "
+                "to 'which method' name the context that "
+                "decides.\n\n"
+                "One rehearsal habit locks the grid in: for any "
+                "alkene you meet this week, silently name all "
+                "three hydration outcomes - acid, mercury, "
+                "boron - with regiochemistry and rearrangement "
+                "verdicts attached. Thirty seconds per "
+                "substrate, a dozen substrates, and the "
+                "decision table stops being a table you "
+                "consult and becomes the way you see double "
+                "bonds; every later chapter that installs OH, "
+                "OR or NH across a pi bond will reuse exactly "
+                "this three-way template with new letters.\n\n"
+                "It is also worth saying plainly what the "
+                "three-method story teaches about how organic "
+                "chemistry grows. Acid hydration is the "
+                "nineteenth-century reaction: cheap, direct, "
+                "flawed. Oxymercuration and hydroboration are "
+                "twentieth-century responses to the flaws - one "
+                "suppressing the rearrangement, the other "
+                "inverting the regiochemistry and controlling "
+                "the stereochemistry - and each was worth "
+                "inventing precisely because the mechanism of "
+                "the original was understood well enough to "
+                "name what needed fixing. That pattern - "
+                "understand the mechanism, identify the "
+                "failure, design the successor - is the "
+                "engine of the entire synthetic literature, "
+                "and the hydration trio is its cleanest "
+                "classroom example. When later chapters "
+                "present three reagents for one job, look for "
+                "the same story: the differences between them "
+                "are almost always someone's deliberate "
+                "answer to a mechanistic complaint, and "
+                "reading them that way converts reagent lists "
+                "from memory work into engineering history. "
+                "History has a direction, too: greener "
+                "successors keep coming, and the mercury "
+                "method's fade from teaching labs is the same "
+                "story's next chapter - mechanism understood, "
+                "hazard named, replacement engineered. Expect "
+                "the pattern; it is how the discipline "
+                "improves itself. And expect exam questions to "
+                "honour the history obliquely: when a stem "
+                "offers two reagents for one hydration and asks "
+                "which avoids a pitfall, it is asking you to "
+                "recount this engineering story in one "
+                "multiple-choice letter - the substrate names "
+                "the flaw, the reagent names the fix, and the "
+                "letter follows. Read reagent tables as answers "
+                "to old problems and they become short stories "
+                "instead of lists - easier to remember, and far "
+                "harder to confuse under pressure. Stories "
+                "index better than tables in every memory "
+                "system humans own."
+            ),
+        ),
+        ReadingSection(
+            id="closing-note-hydration",
+            heading="A closing note",
+            body=(
+                "Three tools, one job, chosen by substrate and "
+                "target: the whole lesson in a sentence."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Acid hydration: Markovnikov, racemic, reversible, rearranges - it is E1 dehydration in reverse.",
+        "Oxymercuration: Markovnikov via a bridged mercurinium - no rearrangement; NaBH4 removes the mercury.",
+        "Hydroboration-oxidation: concerted syn addition, boron to the less hindered carbon, oxidation with retention - anti-Markovnikov alcohols.",
+        "Choose by three questions: which carbon needs the OH, can the skeleton rearrange, does stereochemistry matter.",
+        "Sequential reagent numbering (1., 2.) is chemically meaningful in both mercury and boron methods.",
+    ),
+    exam_tips=(
+        "'Anti-Markovnikov alcohol' has exactly one answer in this course: hydroboration-oxidation - the phrase is the reagent.",
+        "A rearrangement-prone substrate needing Markovnikov hydration points to oxymercuration; questions signal it by branching next to the double bond.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 5.3 Epoxidation and dihydroxylation
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.EPOXIDATION",
+    lead=(
+        "Oxygen can be delivered to a double bond as a three-membered "
+        "ring - an epoxide - in one concerted stroke, and that little "
+        "ring is one of synthesis's great tools: strained enough to "
+        "open on demand, selective about which face and which carbon. "
+        "Pairing epoxidation-then-hydrolysis against direct syn "
+        "dihydroxylation gives the chemist both diastereomers of a "
+        "1,2-diol to order, and the pair is this lesson's destination: "
+        "the same overall transformation, two stereochemical outcomes, "
+        "chosen by reagent."
+    ),
+    sections=(
+        ReadingSection(
+            id="mcpba",
+            heading="Epoxidation with peroxyacids",
+            body=(
+                "A peroxyacid - mCPBA is the standard laboratory "
+                "example - carries an O-O bond with an electrophilic "
+                "outer oxygen, and an alkene attacks it in a single "
+                "concerted step: one oxygen transfers to the double "
+                "bond through a butterfly-shaped transition state, "
+                "forming the epoxide and releasing the carboxylic "
+                "acid. Concerted delivery has the now-familiar "
+                "consequences: the two new C-O bonds form on the "
+                "SAME face (syn), the alkene's geometry is "
+                "preserved into the epoxide (a cis alkene gives "
+                "the cis-disubstituted epoxide), there is no "
+                "intermediate, and nothing rearranges. Electron-"
+                "rich, more substituted double bonds react faster "
+                "- the pi bond is the nucleophile here, exactly "
+                "as in every addition this chapter has run.\n\n"
+                "The epoxide itself is a spring under tension: "
+                "roughly 110 kJ/mol of ring strain waiting for a "
+                "nucleophile. Under basic or neutral conditions "
+                "nucleophiles open it SN2-style at the LESS "
+                "hindered carbon with backside attack; under "
+                "acidic conditions the protonated epoxide opens "
+                "at the MORE substituted carbon (the "
+                "halohydrin/mercurinium charge logic once more), "
+                "still with backside attack. Both regiochemical "
+                "regimes share the stereochemical constant that "
+                "matters for this lesson: the nucleophile always "
+                "arrives anti to the epoxide oxygen."
+            ),
+        ),
+        ReadingSection(
+            id="anti-diols",
+            heading="Anti diols: epoxide plus water",
+            body=(
+                "Hydrolyse an epoxide - acidic water is standard - "
+                "and the ring opens with water attacking anti to "
+                "the epoxide oxygen: the product is a 1,2-diol "
+                "whose two OH groups sit on OPPOSITE faces of the "
+                "former double bond. On cyclohexene the sequence "
+                "mCPBA-then-H3O+ delivers trans-1,2-"
+                "cyclohexanediol cleanly. The two-step sequence is "
+                "therefore the course's ANTI-dihydroxylation: net "
+                "addition of two OH groups, anti, with the "
+                "stereochemistry enforced by the backside ring "
+                "opening rather than by anyone's memory.\n\n"
+                "It is worth pausing on why this works so "
+                "reliably: each step is stereospecific - concerted "
+                "syn epoxidation, then obligatory anti opening - "
+                "so the overall outcome is the product of two "
+                "mechanisms, not of a preference that competing "
+                "pathways could erode. Sequences of "
+                "stereospecific steps composing into a "
+                "predictable net outcome is a design pattern the "
+                "rest of synthesis leans on constantly, and this "
+                "is its first clean instance in the course."
+            ),
+        ),
+        ReadingSection(
+            id="syn-diols",
+            heading="Syn diols: osmium tetroxide, and the choice between routes",
+            body=(
+                "The complementary tool delivers both oxygens at "
+                "once, to one face. Osmium tetroxide adds across "
+                "the double bond in a concerted [3+2] fashion, "
+                "forming a five-membered cyclic osmate ester with "
+                "both C-O bonds on the SAME face; reductive or "
+                "oxidative workup (NaHSO3, or the catalytic "
+                "OsO4/NMO protocol that keeps the toxic, expensive "
+                "osmium substoichiometric) releases the SYN "
+                "1,2-diol. Cold, dilute, basic potassium "
+                "permanganate performs the same syn "
+                "dihydroxylation through an analogous cyclic "
+                "manganate ester - with the caveat that warmer or "
+                "more concentrated permanganate over-oxidises and "
+                "cleaves the diol, which is why exam conditions "
+                "always specify 'cold, dilute'. On cyclohexene, "
+                "OsO4 gives cis-1,2-cyclohexanediol - the "
+                "diastereomer the epoxide route cannot make.\n\n"
+                "The pair now closes into a decision rule worth "
+                "boxing: need the two OH groups ANTI, run "
+                "epoxidation then hydrolysis; need them SYN, run "
+                "OsO4 (or cold dilute KMnO4). One transformation, "
+                "two diastereomeric products, reagent-selected - "
+                "and the underlying moral, that stereochemical "
+                "outcome is a property of MECHANISM (bridged and "
+                "backside versus cyclic and same-face), is the "
+                "chapter's deepest recurring lesson, now stated "
+                "for the third time in three reactions."
+            ),
+            important=(
+                "KMnO4 is only a dihydroxylation reagent when COLD "
+                "and DILUTE. Hot or concentrated permanganate "
+                "cleaves the double bond entirely - a different "
+                "product class, and a favourite exam substitution."
+            ),
+        ),
+        ReadingSection(
+            id="epoxides-at-large",
+            heading="Epoxides beyond the diol: synthesis and biology",
+            body=(
+                "The epoxide's synthetic career extends far past "
+                "hydrolysis, because its strained ring opens for "
+                "ANY competent nucleophile and each choice "
+                "installs a different two-carbon-functionalised "
+                "motif: a Grignard reagent opens it to an "
+                "alcohol two carbons extended (the "
+                "chain-lengthening trick the organometallic "
+                "chapter formalises), amines open it to the "
+                "amino alcohols that stud pharmaceutical "
+                "structures, azide and cyanide install nitrogen "
+                "and carbon handles, and alkoxides give ethers. "
+                "In every case the regiochemical dial from this "
+                "lesson applies - basic nucleophiles at the "
+                "less hindered carbon, acidic conditions at the "
+                "more substituted one - so a single "
+                "intermediate becomes a switchboard of "
+                "products, chosen by nucleophile and pH. "
+                "Asymmetric epoxidation (the Sharpless "
+                "titanium-tartrate system for allylic "
+                "alcohols, another Nobel) upgraded the "
+                "switchboard to single-enantiomer inputs, and "
+                "with it much of modern stereocontrolled "
+                "synthesis.\n\n"
+                "Biology runs the same chemistry in both "
+                "directions. Constructively: squalene oxide - "
+                "an enzyme-made epoxide on a polyene chain - "
+                "is the species whose acid-triggered opening "
+                "launches the cation cascade to steroids, "
+                "putting an epoxide at the headwaters of "
+                "cholesterol. Destructively: liver cytochrome "
+                "P450 enzymes oxidise aromatic rings to arene "
+                "oxides as a disposal step, and those "
+                "electrophilic epoxides, if not hydrolysed "
+                "fast enough by epoxide hydrolase, alkylate "
+                "DNA - the molecular basis of several "
+                "carcinogens, benzo[a]pyrene's among them. "
+                "One ring, three careers: reagent, "
+                "biosynthetic trigger, and toxicological "
+                "warhead - the strained ring's reactivity "
+                "explaining all three, and the MCAT fond of "
+                "each.\n\n"
+                "The exam-facing summary deserves its own "
+                "lines. Epoxide questions come in four "
+                "recurring forms: make one (mCPBA, syn, "
+                "geometry preserved), open one in base (less "
+                "hindered carbon, backside), open one in acid "
+                "(more substituted carbon, backside), and "
+                "choose a diol route (epoxide-hydrolysis for "
+                "anti, osmium for syn). Identify which of the "
+                "four a question is asking before reading its "
+                "choices and the distractors - syn products "
+                "from anti openings, wrong-carbon attacks - "
+                "identify themselves. Strain made the ring "
+                "reactive; the four forms are just strain "
+                "read in four directions.\n\n"
+                "Step back for the diol pair's deeper lesson, "
+                "because it generalises. Two reagent systems, "
+                "same overall transformation, opposite "
+                "diastereomers: the chapter has now shown this "
+                "pattern twice (syn borane against anti "
+                "bromonium; syn osmium against anti epoxide-"
+                "opening), and Organic II will show it again "
+                "with reductions and additions of every kind. "
+                "The generalisation: STEREOCHEMICAL OUTCOMES "
+                "ARE PURCHASED BY MECHANISM CHOICE, and a "
+                "synthesis with a stereochemical target is "
+                "planned backwards from the mechanism that "
+                "enforces it, never from hope. Examiners "
+                "encode the idea as reagent-choice questions; "
+                "research encodes it as methodology; both "
+                "reward the same reflex of asking, before "
+                "anything else, which faces and which "
+                "relative configuration the target demands "
+                "and which mechanism family delivers exactly "
+                "that. The little three-membered ring, opened "
+                "two ways, is the cleanest teacher of that "
+                "reflex the first year provides. Buy "
+                "stereochemistry with mechanisms, never with "
+                "wishes - a lesson purchased once and spent "
+                "everywhere."
+            ),
+        ),
+        ReadingSection(
+            id="closing-note-epoxidation",
+            heading="A closing note",
+            body=(
+                "A final orientation point: of all this chapter's "
+                "additions, epoxidation is the one whose product "
+                "is itself a reagent - the diols, amino alcohols "
+                "and extended chains it unlocks make the epoxide "
+                "organic chemistry's most versatile three-atom "
+                "intermediate, and the reason this lesson repays "
+                "more rereading than its page count suggests. "
+                "Master the four question forms, keep the "
+                "syn/anti pair straight by mechanism rather than "
+                "memory, and the strained little ring will carry "
+                "you through more synthesis problems than any "
+                "other single species in the first year."
+            ),
+        ),
+        ReadingSection(
+            id="last-word-epoxidation",
+            heading="The last word",
+            body=(
+                "Strain stored is reactivity delivered on demand: "
+                "the epoxide's three atoms hold the chapter's most "
+                "compact lesson in energetic bookkeeping, and the "
+                "reader who understands why the ring opens where "
+                "it does has understood the chapter - and holds the key "
+                "to the next one."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "mCPBA epoxidation is concerted and syn: alkene geometry is preserved, nothing rearranges.",
+        "Epoxides open with backside attack - less hindered carbon in base, more substituted carbon in acid - always anti to the ring oxygen.",
+        "Epoxidation + hydrolysis = anti diol; OsO4 (or cold dilute KMnO4) = syn diol: the reagent chooses the diastereomer.",
+        "Catalytic OsO4/NMO exists because osmium is toxic and expensive; stoichiometric use is the naive version.",
+        "Stereospecific steps compose: two enforced mechanisms in sequence give one predictable net stereochemistry.",
+    ),
+    exam_tips=(
+        "Diol questions on ring substrates are diastereomer questions: cis-diol = OsO4, trans-diol = epoxide route - match the reagent to the prefix.",
+        "Watch the KMnO4 conditions line: 'cold, dilute' means diol; heat means cleavage products.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 5.4 Ozonolysis
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.OZONOLYSIS",
+    lead=(
+        "Ozonolysis takes a molecular saw to the double bond: the C=C "
+        "unit is cut completely, each carbon capped with an oxygen, and "
+        "the molecule falls into carbonyl fragments. Destructive as it "
+        "sounds, the reaction earned a century of use precisely because "
+        "the destruction is informative - the fragments report exactly "
+        "where the double bond was and what it carried - and because "
+        "controlled cleavage is sometimes just what a synthesis needs. "
+        "This lesson covers the transformation, its workups, and the "
+        "reconstruction logic that exams love."
+    ),
+    sections=(
+        ReadingSection(
+            id="the-cleavage",
+            heading="What ozone does to a double bond",
+            body=(
+                "Ozone adds across the alkene to form an unstable "
+                "primary ozonide, which rearranges to the ozonide "
+                "proper - the operational summary is that both "
+                "carbons of the C=C become C=O carbons, and the "
+                "sigma bond between them is severed. The reagent "
+                "line is always sequential: '1. O3; 2. workup', "
+                "with the workup choice deciding the oxidation "
+                "level of the pieces. Reductive workup - dimethyl "
+                "sulfide (Me2S) or zinc with acetic acid - stops "
+                "at aldehydes and ketones: each disubstituted "
+                "alkene carbon becomes a ketone carbonyl, each "
+                "monosubstituted carbon an aldehyde, and a "
+                "terminal CH2= becomes formaldehyde. Oxidative "
+                "workup (H2O2) pushes any aldehyde onward to the "
+                "carboxylic acid while leaving ketones alone.\n\n"
+                "Bookkeeping the fragments is mechanical: split "
+                "the double bond, cap both ends with =O, count. "
+                "An acyclic alkene gives two fragments; a "
+                "symmetric internal alkene gives two copies of "
+                "ONE compound; and a ring alkene gives a SINGLE "
+                "chain product carrying both new carbonyls, "
+                "because cutting one bond of a ring opens it "
+                "without dividing it - cyclohexene yields one "
+                "six-carbon dialdehyde, not two pieces. The ring "
+                "case is the most-missed variant and worth "
+                "drawing once until it is obvious."
+            ),
+        ),
+        ReadingSection(
+            id="reconstruction",
+            heading="Running it backwards: structure determination",
+            body=(
+                "Before spectroscopy matured, ozonolysis WAS "
+                "structure determination for alkenes, and the "
+                "reasoning survives as an exam staple. The "
+                "reconstruction rule inverts the bookkeeping: "
+                "given the fragments, delete the workup (acids "
+                "back to aldehydes if H2O2 was used), then join "
+                "the two carbonyl CARBONS with a double bond, "
+                "erasing both oxygens. Two fragments reassemble "
+                "into one alkene; identical fragments imply a "
+                "symmetric alkene; a single difunctional fragment "
+                "implies the alkene lived in a ring whose size "
+                "equals the fragment's chain length. Geometry is "
+                "the one thing the products cannot report - "
+                "cleavage destroys E/Z information - so "
+                "reconstructed alkenes are drawn without a "
+                "geometry claim.\n\n"
+                "Worked in both directions once: "
+                "2-methyl-2-butene under O3/Me2S gives acetone "
+                "plus acetaldehyde; conversely, a problem "
+                "reporting acetone and acetaldehyde as the only "
+                "products forces the two carbonyl carbons "
+                "together and regenerates 2-methyl-2-butene "
+                "uniquely. Multiple double bonds multiply "
+                "fragments (each C=C is cut independently), and "
+                "counting fragments against the unsaturation "
+                "number cross-checks the whole analysis - the "
+                "chapter-2 arithmetic auditing the chapter-5 "
+                "chemistry."
+            ),
+        ),
+        ReadingSection(
+            id="uses-and-context",
+            heading="Synthesis, environment, and the cleavage family",
+            body=(
+                "As a synthetic tool, ozonolysis converts cheap "
+                "alkene feedstocks into aldehydes and ketones - "
+                "carbonyl compounds being the currency of Organic "
+                "II - and opens rings into difunctional chains "
+                "that cyclise or extend in later steps: cutting "
+                "cyclohexene to adipaldehyde-type chains is a "
+                "standard route into six-carbon difunctional "
+                "building blocks. Its main competitor for "
+                "double-bond cleavage is hot concentrated "
+                "permanganate, which delivers the fully oxidised "
+                "outcome directly (ketones and carboxylic acids, "
+                "with terminal =CH2 burned to CO2); ozonolysis "
+                "with a chosen workup is the controllable member "
+                "of the family, which is why it is the one "
+                "synthesis actually uses.\n\n"
+                "The same reactivity operates outside the flask: "
+                "tropospheric ozone attacks the double bonds in "
+                "rubber (cracked tyre sidewalls are ozonolysis "
+                "in the wild) and in plant waxes, and the "
+                "ozone-alkene reaction is a genuine player in "
+                "atmospheric chemistry, generating some of the "
+                "aerosol-forming oxidation products of natural "
+                "hydrocarbon emissions. It is also the reason "
+                "ozone at street level is a pollutant hard on "
+                "lungs - biological membranes carry oxidisable "
+                "double bonds too - a tidy reminder that the "
+                "reaction classes of this course do not stop at "
+                "the laboratory door."
+            ),
+        ),
+        ReadingSection(
+            id="worked-determination",
+            heading="A structure determination, worked end to end",
+            body=(
+                "Run one full problem at exam pace. An unknown "
+                "hydrocarbon has the formula C8H14; treatment "
+                "with excess H2 over palladium consumes exactly "
+                "one equivalent; ozonolysis with reductive "
+                "workup returns a single product, "
+                "cyclohexanone-2-carbaldehyde... adjust to a "
+                "cleaner classic: a C8H14 unknown gives, on "
+                "O3/Me2S, a single C8 chain product bearing one "
+                "aldehyde and one ketone. Chapter-2 arithmetic "
+                "first: C8H14 carries two degrees of "
+                "unsaturation. Hydrogen uptake of one "
+                "equivalent says one pi bond; the other degree "
+                "must be a ring. ONE ozonolysis product with "
+                "BOTH carbonyls says the double bond lived in "
+                "that ring. The aldehyde end marks a =CH- "
+                "carbon, the ketone end a disubstituted one - "
+                "so the ring double bond carried one hydrogen "
+                "and one substituent, and counting the chain "
+                "length against eight carbons places a methyl "
+                "on the sp2 carbon: the unknown is "
+                "1-methylcycloheptene or, with a shorter "
+                "reconstructed chain, 1-methylcyclohexene plus "
+                "a methylene - resolve by counting the "
+                "fragment's actual skeleton, and "
+                "1-methylcyclohexene's cleavage product, "
+                "7-oxooctanal, fits C8 exactly. Every step was "
+                "bookkeeping - unsaturation, uptake, fragment "
+                "count, carbonyl types - and the structure "
+                "emerged without a spectrum in sight.\n\n"
+                "The mechanism behind the saw deserves its one "
+                "paragraph. Ozone first adds across the alkene "
+                "in a concerted cycloaddition to the primary "
+                "ozonide, a strained species that immediately "
+                "fragments and recombines - the pieces flip "
+                "and re-add - to the true ozonide, whose O-O "
+                "linkages the workup then cleaves. The detail "
+                "worth retaining is not the intermediates' "
+                "names but the design warning they carry: "
+                "ozonides are peroxidic and can detonate if "
+                "concentrated, which is why every procedure "
+                "sends the workup reagent in BEFORE "
+                "concentrating anything, and why the "
+                "sequential-reagent notation on this reaction "
+                "is safety documentation as much as chemistry. "
+                "Respect the sequence, quote the workup with "
+                "the reagent, and ozonolysis stays what a "
+                "century of use has made it: the cleanest "
+                "double-bond surgery available, informative "
+                "in both directions - forward as a synthesis "
+                "of carbonyls, backward as a proof of where "
+                "the pi bond stood.\n\n"
+                "A closing word on the reasoning style this "
+                "lesson exercised, because it is the chapter's "
+                "quiet capstone: the worked determination used "
+                "no fact beyond the chapter's own inventory - "
+                "unsaturation arithmetic, hydrogen uptake, "
+                "fragment bookkeeping, carbonyl typing - yet it "
+                "recovered a complete structure from two "
+                "experiments. Structure problems reward "
+                "exactly this disciplined stacking of small "
+                "certainties, and the students who write each "
+                "deduction down as it is earned - two degrees, "
+                "one pi bond, therefore one ring - outperform "
+                "those who stare at formulas waiting for "
+                "revelation. The spectroscopy chapters will "
+                "add instruments, not logic; the logic is "
+                "already complete here, practised on a "
+                "molecular saw and a counting rule. Stack small "
+                "certainties, write each one down as it is "
+                "earned, and structures assemble themselves - "
+                "the habit outlives every individual reagent "
+                "in this chapter. Ozonolysis will fade from "
+                "daily lab practice as spectroscopy sharpens; "
+                "the deductive stacking it teaches never will, "
+                "and carrying that method forward is the real "
+                "product of this lesson - the reagent was "
+                "always just the occasion. Methods change; "
+                "method endures. That distinction - between a "
+                "technique and the reasoning that uses it - is "
+                "the quiet curriculum inside every structure "
+                "problem this course assigns, and mastering it "
+                "here pays out through every spectroscopy "
+                "chapter to come. Occasions multiply; the "
+                "method only deepens with each new instrument "
+                "the later chapters hand it."
+            ),
+        ),
+        ReadingSection(
+            id="closing-note-ozonolysis",
+            heading="A closing note",
+            body=(
+                "Cut, cap, count, reconstruct: four verbs that "
+                "summarise the whole lesson and order every "
+                "ozonolysis problem you will meet."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Ozonolysis cuts C=C completely: both carbons become carbonyls; workup sets the level (Me2S/Zn -> aldehydes+ketones, H2O2 -> acids from aldehydes).",
+        "Fragment bookkeeping: acyclic alkenes give two pieces, symmetric alkenes two identical pieces, RING alkenes one difunctional chain.",
+        "Reconstruction: join the carbonyl carbons, erase the oxygens - geometry is unrecoverable.",
+        "Cross-check fragment counts against the unsaturation number.",
+        "Hot KMnO4 is the uncontrolled cousin; ozonolysis-with-chosen-workup is the synthetic tool.",
+    ),
+    exam_tips=(
+        "'Only one product from ozonolysis' means symmetry or a ring: identical fragments = symmetric alkene, one difunctional fragment = cycloalkene.",
+        "Structure-determination questions: reassemble by bonding carbonyl carbon to carbonyl carbon - never through the oxygens.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 5.5 Radical HBr addition
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.RADICALHBR",
+    lead=(
+        "For decades, HBr addition gave chemists maddeningly "
+        "irreproducible regiochemistry - until Kharasch traced the "
+        "scatter to trace peroxides and split the reaction cleanly in "
+        "two: pure ionic Markovnikov addition in their absence, and a "
+        "radical chain with the OPPOSITE regiochemistry when they are "
+        "present. The peroxide effect is the course's best story about "
+        "mechanism controlling outcome, its first full radical chain, "
+        "and a standing warning that an impurity can rewrite a "
+        "reaction's answer."
+    ),
+    sections=(
+        ReadingSection(
+            id="chain-mechanism",
+            heading="The radical chain: initiation, propagation, termination",
+            body=(
+                "Initiation manufactures the first radicals: heat "
+                "or light homolyses the weak O-O bond of the "
+                "peroxide (about 150 kJ/mol - the frangible bond "
+                "doing its job), and the alkoxyl radicals produced "
+                "abstract hydrogen from H-Br to yield bromine "
+                "atoms. Propagation is the two-step engine that "
+                "then turns over thousands of times: a bromine "
+                "atom adds to the alkene's pi bond generating a "
+                "carbon radical, and that radical abstracts "
+                "hydrogen from another H-Br molecule, forming the "
+                "product AND a fresh bromine atom that re-enters "
+                "the cycle. Note the fishhook arrows throughout, "
+                "and note the accounting: each propagation pair "
+                "consumes one alkene and one HBr and regenerates "
+                "the chain carrier - which is why a trace of "
+                "initiator converts bulk material. Termination - "
+                "any two radicals meeting - merely ends "
+                "individual chains.\n\n"
+                "The same chain logic, with a carbon radical "
+                "adding to another alkene instead of abstracting "
+                "hydrogen, is free-radical POLYMERISATION: "
+                "ethylene to polyethylene, styrene to "
+                "polystyrene, chains thousands of units long from "
+                "the identical initiation-propagation-termination "
+                "grammar. One mechanism family, plastic bags at "
+                "industrial scale - the chapter's chemistry does "
+                "not get more consequential."
+            ),
+        ),
+        ReadingSection(
+            id="anti-markovnikov",
+            heading="Why the regiochemistry inverts",
+            body=(
+                "The outcome flips because the SEQUENCE flips. In "
+                "ionic addition, H adds first (as a proton) and "
+                "the regiochemistry is set by where the positive "
+                "charge lands. In the radical chain, BROMINE adds "
+                "first - and it adds to the LESS substituted "
+                "carbon so that the unpaired electron lands on "
+                "the MORE substituted carbon, forming the more "
+                "stable radical (the 3 > 2 > 1 ladder from the "
+                "homolysis lesson, doing exactly the job the "
+                "cation ladder does in the dark reaction). "
+                "Hydrogen arrives second, onto the radical "
+                "carbon. Net: Br on the less substituted carbon "
+                "- anti-Markovnikov - not because any rule "
+                "reversed, but because the electrophile and the "
+                "regiochemistry-setting intermediate both "
+                "changed. Propene gives 2-bromopropane in the "
+                "dark and 1-bromopropane with peroxides; the "
+                "pair is worth writing side by side once.\n\n"
+                "Both steps of the propagation cycle also "
+                "benefit from a steric bonus - the bromine atom "
+                "attacks the less crowded carbon - so "
+                "electronics and sterics agree, and the "
+                "selectivity is clean. The deeper lesson to "
+                "articulate on exams: Markovnikov's rule was "
+                "never about hydrogen; it was always about "
+                "putting the odd-electron-or-charge on the "
+                "carbon best able to hold it, and both regimes "
+                "obey THAT rule faithfully."
+            ),
+        ),
+        ReadingSection(
+            id="hbr-only",
+            heading="Why only HBr, and using the effect deliberately",
+            body=(
+                "The peroxide effect is HBr-specific, and the "
+                "reason is thermochemical: a chain propagates "
+                "only if BOTH its steps are energetically "
+                "feasible. For HCl, the H-Cl bond (431 kJ/mol) is "
+                "too strong for the carbon radical to abstract "
+                "hydrogen efficiently - the second propagation "
+                "step is uphill and the chain stalls. For HI, "
+                "the iodine atom's addition to the alkene is the "
+                "weak link - the C-I bond formed is too feeble "
+                "to pay for the pi bond broken. Only HBr sits in "
+                "the window where both steps are exothermic-to-"
+                "neutral, so only HBr sustains the chain; HCl "
+                "and HI stay Markovnikov with or without "
+                "peroxides. This is bond-dissociation-energy "
+                "reasoning doing real predictive work, and it is "
+                "the standard exam follow-up question.\n\n"
+                "Synthetically, the effect is a switch, not a "
+                "nuisance: the SAME alkene yields either "
+                "regiochemical bromide to order - HBr alone for "
+                "Markovnikov, HBr with peroxides (ROOR) for "
+                "anti-Markovnikov - making alkyl bromides, the "
+                "workhorse electrophiles of chapter 9, available "
+                "with the halogen on whichever carbon the "
+                "synthesis needs. Add radical inhibitors "
+                "(antioxidants that intercept chain carriers) "
+                "for the reverse control, and the fork in this "
+                "one reaction becomes a compact summary of how "
+                "chemists manage radical chemistry everywhere: "
+                "start chains on purpose, or kill them on "
+                "purpose, but never leave them to trace "
+                "impurities."
+            ),
+            important=(
+                "The peroxide effect applies to HBr ONLY. "
+                "Peroxides in an HCl or HI question change "
+                "nothing - the thermochemistry of the chain, "
+                "not the presence of an initiator, decides "
+                "whether radical addition runs."
+            ),
+        ),
+        ReadingSection(
+            id="chain-arithmetic",
+            heading="Chain arithmetic: lengths, inhibitors, and polymers",
+            body=(
+                "Chains have quantitative signatures worth "
+                "reading. The kinetic chain length - product "
+                "molecules per initiation event - runs from "
+                "hundreds to many thousands, which yields the "
+                "defining observable: substoichiometric "
+                "initiator converts stoichiometric substrate. "
+                "A few mole percent of peroxide flips the "
+                "regiochemistry of an entire flask of "
+                "HBr-plus-alkene, and NO plausible "
+                "stoichiometric role for the peroxide can "
+                "explain that leverage - the chain explains it "
+                "arithmetically. The same arithmetic runs "
+                "inhibition: one inhibitor molecule kills one "
+                "CHAIN, not one reaction event, so traces of "
+                "inhibitor suppress thousands of turnovers, "
+                "which is why radical-prone monomers ship with "
+                "part-per-million stabiliser levels and why "
+                "'induction periods' appear - the reaction "
+                "sits dormant until the inhibitor is consumed, "
+                "then accelerates. Reading induction periods "
+                "and trace-catalysis as chain fingerprints is "
+                "a genuinely transferable lab skill.\n\n"
+                "The polymer connection completes the "
+                "picture, because propagation-versus-transfer "
+                "arithmetic decides material properties. When "
+                "the growing chain radical adds monomer, the "
+                "chain extends; when it abstracts a hydrogen "
+                "from elsewhere - solvent, finished polymer, "
+                "a deliberate additive - growth stops there "
+                "and restarts elsewhere, capping molecular "
+                "weight and branching the product. Industrial "
+                "control of polyethylene grades is largely "
+                "control of that competition, and 'chain "
+                "transfer agents' are sold precisely to tune "
+                "it. For this course the takeaways are "
+                "structural: radical chain grammar plus BDE "
+                "reasoning explains initiation choices, "
+                "regiochemistry, inhibitor design, induction "
+                "periods and polymer branching from one small "
+                "rule set - a compression ratio few topics in "
+                "chemistry match, and the reason radical "
+                "chains repay careful study out of proportion "
+                "to their page count. When a question feels "
+                "radical-flavoured, audit it against the four "
+                "chain fingerprints - initiator traces, "
+                "induction periods, inhibitor sensitivity, "
+                "anti-Markovnikov or polymeric products - and "
+                "let two or more matches settle the mechanism "
+                "before any arrow is drawn.\n\n"
+                "The historical coda is worth thirty seconds "
+                "because it models scientific honesty. Decades "
+                "of contradictory regiochemistry reports were "
+                "not resolved by choosing a winner but by "
+                "finding the hidden variable - adventitious "
+                "peroxides in aged samples - that made both "
+                "sets of publications correct under their "
+                "actual, unrecorded conditions. The moral "
+                "operates at every scale: irreproducibility "
+                "usually means an uncontrolled variable, not a "
+                "false result, and the chemist who asks 'what "
+                "else is in the flask' outperforms the one who "
+                "asks 'who is wrong'. That habit of mind, as "
+                "much as the anti-Markovnikov product, is what "
+                "the peroxide effect contributes to a "
+                "scientific education - and examiners who "
+                "quote the historical confusion are testing "
+                "whether you know the variable, not the "
+                "gossip. Control the flask, and the flask "
+                "tells the truth: a summary of a century of "
+                "radical chemistry's hardest lessons in nine "
+                "words. Radical chemistry rewards exactly the "
+                "students it once punished - those who track "
+                "every species in the flask, invited or not - "
+                "and that bookkeeping temperament, once "
+                "acquired, improves every other chapter's "
+                "work too. Where polar chemistry forgives "
+                "sloppiness with visible colour changes and "
+                "obvious products, chains fail silently and "
+                "prosper invisibly - so the standard of "
+                "evidence radicals demand becomes the standard "
+                "the careful chemist applies everywhere. "
+                "Silence is not absence; check the flask - the shortest safety lecture and the truest one this chapter can give."
+            ),
+        ),
+        ReadingSection(
+            id="closing-note-radicalhbr",
+            heading="A closing note",
+            body=(
+                "One reaction, two mechanisms, two products: "
+                "the peroxide effect remains the cleanest proof "
+                "in the course that mechanism is destiny."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Peroxides divert HBr addition onto a radical chain: initiation (O-O homolysis), two-step propagation, termination.",
+        "Bromine adds first, to the less substituted carbon, forming the more stable radical - hence anti-Markovnikov product.",
+        "Both ionic and radical regimes obey the same deep rule: put the deficient centre (charge or unpaired electron) where it is most stabilised.",
+        "HBr only: HCl's abstraction step and HI's addition step are each too endothermic to sustain a chain.",
+        "The same chain grammar scaled up is free-radical polymerisation.",
+    ),
+    exam_tips=(
+        "The word 'peroxide' (or ROOR, or hv with HBr) flips the bromide's position - and ONLY for HBr; that exclusivity is its own favourite question.",
+        "Radical mechanism questions grade the arrows: fishhooks in matched pairs, and a chain-carrier regenerated in the last propagation step.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 5.6 Making alkenes: elimination routes and synthesis strategy
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.ALKENESYNTH",
+    lead=(
+        "The chapter has spent five lessons consuming double bonds; "
+        "this one makes them. Alkenes come principally from "
+        "eliminations - dehydrohalogenation of alkyl halides with "
+        "strong base, and acid-catalysed dehydration of alcohols - and "
+        "both raise the same two questions: WHICH alkene forms when "
+        "several are possible, and how the choice of substrate, base "
+        "and conditions steers the answer. With formation and "
+        "consumption both in hand, the lesson closes by assembling the "
+        "chapter into a working synthetic toolkit."
+    ),
+    sections=(
+        ReadingSection(
+            id="dehydrohalogenation",
+            heading="Dehydrohalogenation: base-promoted E2",
+            body=(
+                "Treat an alkyl halide with a strong base - "
+                "hydroxide, or an alkoxide like sodium ethoxide - "
+                "and H and X are stripped from ADJACENT carbons in "
+                "one concerted step: the base removes the beta "
+                "hydrogen while the C-X bond breaks and the pi "
+                "bond forms, three arrows, no intermediate. This "
+                "is the E2 mechanism, treated fully in chapter 9; "
+                "what this chapter needs is its product logic. "
+                "Where the substrate offers beta hydrogens on "
+                "more than one side, several alkenes can form, "
+                "and with ordinary bases the major product is "
+                "the MORE SUBSTITUTED alkene - Zaitsev's rule, "
+                "which is the alkene-stability ladder from lesson "
+                "three reaching forward into a product-like "
+                "transition state (Hammond closing the loop). "
+                "2-Bromobutane with ethoxide gives mostly "
+                "2-butene (trans favoured over cis, stability "
+                "again) and a minority of 1-butene.\n\n"
+                "The stated exception is steric: a BULKY strong "
+                "base - potassium tert-butoxide is the exam's "
+                "example - cannot comfortably reach the more "
+                "hindered internal beta hydrogen and removes the "
+                "accessible terminal one instead, delivering the "
+                "LESS substituted (Hofmann) alkene as major. One "
+                "substrate, two bases, two regiochemical "
+                "answers: base choice is product choice, and "
+                "that pairing is among the most-tested facts in "
+                "first-semester organic."
+            ),
+        ),
+        ReadingSection(
+            id="dehydration",
+            heading="Dehydration: acid-catalysed E1",
+            body=(
+                "Heat an alcohol with concentrated sulfuric or "
+                "phosphoric acid and water leaves: protonation "
+                "converts the miserable hydroxide leaving group "
+                "into water (chapter 3's upgrade trick), water "
+                "departs to give a carbocation, and loss of a "
+                "beta proton delivers the alkene - the E1 "
+                "mechanism, and literally acid-catalysed "
+                "hydration run backwards, driven in this "
+                "direction by heat and by distilling the alkene "
+                "or removing water as it forms (Le Chatelier as "
+                "process design). Every cation habit applies: "
+                "Zaitsev selectivity among the possible alkenes "
+                "(the cation samples all its beta protons and "
+                "the equilibria favour the stable product), "
+                "reactivity ordering tertiary > secondary > "
+                "primary alcohols (better cation, easier "
+                "ionisation), and - inevitably - REARRANGEMENT: "
+                "secondary alcohols adjacent to branch points "
+                "deliver shifted, more substituted alkenes, and "
+                "predicting them is just the 1,2-shift audit "
+                "from chapter 4 applied here.\n\n"
+                "The two eliminations are complementary tools: "
+                "dehydrohalogenation is regiochemically "
+                "steerable (base choice) and rearrangement-free "
+                "(no cation in E2), while dehydration is "
+                "operationally simple but travels through the "
+                "full hazard set of cation chemistry. Choosing "
+                "between them for a target alkene is a genuine "
+                "design decision, not a coin flip - which is "
+                "precisely the kind of judgment the closing "
+                "section drills."
+            ),
+        ),
+        ReadingSection(
+            id="toolkit",
+            heading="The chapter as a toolkit: alkenes as synthetic hubs",
+            body=(
+                "Assemble the inventory. INTO alkenes: E2 with "
+                "small base (Zaitsev), E2 with bulky base "
+                "(Hofmann), acid dehydration (Zaitsev, "
+                "rearrangement risk). OUT of alkenes: HX "
+                "(Markovnikov halide), HBr/ROOR "
+                "(anti-Markovnikov halide), the three hydrations "
+                "(Markovnikov or anti-Markovnikov alcohol, with "
+                "or without stereocontrol), halogenation (anti "
+                "dihalide), halohydrin formation, epoxidation, "
+                "the two dihydroxylations (syn or anti diol), "
+                "ozonolysis (carbonyl fragments), hydrogenation "
+                "(alkane). Read as a graph, the alkene sits at "
+                "the hub: nearly every functional group of early "
+                "organic chemistry is one or two reagent choices "
+                "away, which is why elimination-then-addition is "
+                "the first multi-step motif every student "
+                "learns - convert a halide to an alkene to "
+                "RELOCATE or TRANSFORM functionality, as in "
+                "moving a bromide from C2 to C1 of butane via "
+                "Hofmann elimination and radical HBr.\n\n"
+                "The working method for chapter-level synthesis "
+                "questions: identify the target's functional "
+                "group and its position; ask which alkene, with "
+                "which addition, delivers both (regiochemistry "
+                "first, stereochemistry second); then ask which "
+                "elimination, from which precursor, supplies "
+                "that alkene. Write the sequence forward and "
+                "audit each step for the failure modes this "
+                "chapter has catalogued - rearrangement at "
+                "cations, over-oxidation with hot permanganate, "
+                "peroxide contamination flipping HBr. Synthesis "
+                "at this stage is exactly this checklist run "
+                "carefully; retrosynthesis proper, with its own "
+                "formalism, is the capstone of Organic II, and "
+                "it is built on the hub-and-spoke picture "
+                "assembled here."
+            ),
+        ),
+        ReadingSection(
+            id="worked-syntheses",
+            heading="Two syntheses worked forward and audited",
+            body=(
+                "Problem one: from 2-bromobutane, prepare "
+                "1-butanol. The bromide sits at C2, the target "
+                "oxygen at C1 - a relocation, so elimination-"
+                "then-readdition. Step 1: potassium "
+                "tert-butoxide, chosen PRECISELY because the "
+                "Hofmann product 1-butene moves the "
+                "functionality toward the terminus; sodium "
+                "ethoxide would major in 2-butene and strand "
+                "the sequence. Step 2: hydroboration-"
+                "oxidation, the anti-Markovnikov hydration, "
+                "landing OH on C1. Audit: no cations anywhere "
+                "(E2 concerted, hydroboration concerted), so "
+                "no rearrangement risk; the minor Zaitsev "
+                "alkene from step 1 is a yield tax, not a "
+                "structural error. Problem two: from "
+                "cyclohexanol, prepare trans-1,2-"
+                "dibromocyclohexane. Step 1: concentrated "
+                "H2SO4 with heat - E1 dehydration to "
+                "cyclohexene; symmetric substrate, so "
+                "Zaitsev ambiguity and rearrangement have "
+                "nothing to bite. Step 2: Br2 in an inert "
+                "solvent - anti addition through the "
+                "bromonium ion delivers exactly the trans "
+                "diastereomer the target names. Audit: the "
+                "stereochemical requirement was satisfied by "
+                "MECHANISM (anti opening), not by hope; had "
+                "the target been the cis isomer, no "
+                "one-step addition in this chapter could "
+                "reach it, and recognising unreachable "
+                "targets is also a synthesis skill.\n\n"
+                "Generalise the method the two problems "
+                "share. Work backwards one functional group "
+                "at a time; let regiochemical requirements "
+                "choose bases and reagents (Hofmann versus "
+                "Zaitsev, Markovnikov versus anti-"
+                "Markovnikov); let stereochemical "
+                "requirements choose mechanisms (concerted "
+                "syn, bridged anti, or none); and audit "
+                "every step against the chapter's failure "
+                "catalogue before declaring the route "
+                "sound. Multi-step questions grade exactly "
+                "these decision points - rarely the "
+                "arithmetic between them - and a route "
+                "annotated with its reasons outscores a "
+                "longer memorised one every time. The chapter "
+                "closes where retrosynthesis will later begin: "
+                "with the recognition that a small, fully "
+                "understood toolkit - two eliminations, ten "
+                "additions, and their failure modes - already "
+                "spans a large product space, and that "
+                "spanning it deliberately is a skill distinct "
+                "from, and sturdier than, knowing each tool "
+                "alone.\n\n"
+                "Carry three sentences out of the chapter as "
+                "its permanent residue. Alkenes are made by "
+                "eliminations whose regiochemistry the base "
+                "controls and consumed by additions whose "
+                "regiochemistry and stereochemistry the "
+                "mechanism controls. Every intermediate the "
+                "chapter met - cation, bromonium, borane "
+                "complex, radical - is a distinct answer to "
+                "the question of how a pi bond's electrons "
+                "get spent, and each answer stamps its own "
+                "signature on the product. And synthesis at "
+                "every level, from these two-step problems to "
+                "the capstone of Organic II, is the practice "
+                "of choosing intermediates for their "
+                "signatures. Everything else is detail; those "
+                "three sentences are the chapter."
+            ),
+        ),
+        ReadingSection(
+            id="last-word-alkenesynth",
+            heading="The last word",
+            body=(
+                "If the chapter must reduce to a single exam-day "
+                "card, write this one: base size picks the alkene "
+                "(small for Zaitsev, bulky for Hofmann), mechanism "
+                "picks the stereochemistry (concerted syn, bridged "
+                "anti, cationic none), and the pKa table plus the "
+                "rearrangement audit veto bad plans before they "
+                "start. Every synthesis item in this chapter's "
+                "range is some combination of those three checks, "
+                "run in that order, with the arithmetic of the "
+                "unsaturation count standing guard over the whole "
+                "route. Three checks, one count, every route: "
+                "carry the card into the exam and the chapter, in every sense that matters, carries you."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "E2 dehydrohalogenation: concerted, no rearrangement; small bases give Zaitsev (more substituted), bulky tert-butoxide gives Hofmann.",
+        "Acid dehydration is E1 - hydration reversed - with cation habits intact: Zaitsev products, 3>2>1 reactivity, rearrangements, Le Chatelier direction control.",
+        "Base choice is product choice: one halide, two regiochemical outcomes - the chapter's most-tested pairing.",
+        "The alkene is a synthetic hub: eliminations feed it, additions convert it to halides, alcohols, diols, epoxides, carbonyls or alkanes.",
+        "Multi-step method: pick the alkene that the right addition converts to the target, pick the elimination that makes it, audit for the known failure modes.",
+    ),
+    exam_tips=(
+        "See potassium tert-butoxide and answer Hofmann; see NaOEt/NaOH and answer Zaitsev - the base IS the question.",
+        "Relocation problems (halide moved along a chain) decompose into elimination-then-readdition; choose the elimination base and the addition conditions to set both positions.",
+    ),
+))

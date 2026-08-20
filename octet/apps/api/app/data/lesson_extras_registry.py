@@ -41,6 +41,27 @@ except ImportError:  # pragma: no cover
     pass
 
 try:
+    from app.data.extras_org1_ch4 import EXTRAS_ORG1_CH4 as _CH4
+
+    EXTRAS.update(_CH4)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.extras_org1_ch4b import EXTRAS_ORG1_CH4B as _CH4B
+
+    EXTRAS.update(_CH4B)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.extras_org1_ch5 import EXTRAS_ORG1_CH5 as _CH5
+
+    EXTRAS.update(_CH5)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
     from app.data.extras_gen1_u4 import EXTRAS_GEN1_U4 as _G1U4
 
     EXTRAS.update(_G1U4)
