@@ -2769,7 +2769,9 @@ _add(LessonExtras(
                 "exams not yet written - the definition of "
                 "curriculum built to last, and the standard "
                 "every chapter of this programme is now "
-                "being raised to meet."
+                "being raised to meet, one four-thousand-word "
+                "chapter at a time, with this one now "
+                "finished."
             ),
         ),
     ),
