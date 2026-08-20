@@ -393,3 +393,66 @@ async def test_unknown_item_404(async_client, async_session, seeded_user):
         headers=_auth_headers(seeded_user),
     )
     assert r.status_code == 404
+
+
+# -- review center (NX-9) -----------------------------------------------------
+
+async def test_review_summary_aggregates_recorded_responses(
+    async_client, async_session, seeded_user
+):
+    _, single, sata, _ = await _seed_bank(async_session)
+    h = _auth_headers(seeded_user)
+    # one correct single, one wrong SATA
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(single.id), "choice_index": 2}, headers=h
+    )
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(sata.id), "choice_indices": [0]}, headers=h
+    )
+    r = await async_client.get("/api/v1/nclex/review/summary", headers=h)
+    assert r.status_code == 200
+    body = r.json()
+    sections = {s["section"]: s for s in body["by_section"]}
+    assert sections["Pharmacological & Parenteral Therapies"]["correct"] == 1
+    assert sections["Physiological Adaptation"]["attempts"] == 1
+    assert sections["Physiological Adaptation"]["correct"] == 0
+    # worst subtopic first
+    assert body["weakest_subtopics"][0]["subtopic"] == "Deterioration recognition"
+    assert "percentile" not in str(body).lower() or "No percentile" in body["note"]
+
+
+async def test_review_missed_lists_latest_wrong_with_sata_choices(
+    async_client, async_session, seeded_user
+):
+    _, single, sata, _ = await _seed_bank(async_session)
+    h = _auth_headers(seeded_user)
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(sata.id), "choice_indices": [0, 1]}, headers=h
+    )
+    r = await async_client.get("/api/v1/nclex/review/missed", headers=h)
+    assert r.status_code == 200
+    missed = r.json()["missed"]
+    assert len(missed) == 1
+    entry = missed[0]
+    assert entry["kind"] == "mcq_multi"
+    assert entry["correct_indices"] == [0, 2, 4]
+    assert entry["chosen_indices"] == [0, 1]
+    assert entry["explanation"]  # review is where explanations belong
+
+
+async def test_review_missed_drops_item_after_correct_answer(
+    async_client, async_session, seeded_user
+):
+    _, single, _, _ = await _seed_bank(async_session)
+    h = _auth_headers(seeded_user)
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(single.id), "choice_index": 0}, headers=h
+    )
+    r = await async_client.get("/api/v1/nclex/review/missed", headers=h)
+    assert len(r.json()["missed"]) == 1
+    # now answer it correctly - latest response wins
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(single.id), "choice_index": 2}, headers=h
+    )
+    r = await async_client.get("/api/v1/nclex/review/missed", headers=h)
+    assert r.json()["missed"] == []

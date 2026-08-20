@@ -260,3 +260,174 @@ async def qbank_submit(
         "review_status": item.review_status.value,
         "disclaimer": DISCLAIMER,
     }
+
+
+# -- Review center (NX-9) -----------------------------------------------------
+#
+# The MCAT review pattern (mcat_qbank.py C4) applied to source
+# 'nclex_qbank': fed entirely by attempt_logs, nothing client-claimed, no
+# percentile. Keys and explanations appear here because every listed item
+# was already graded - review is the one place they belong. The NCLEX
+# addition: SATA misses return the chosen index set from the log's
+# metadata alongside the correct set.
+
+REVIEW_SOURCE = "nclex_qbank"
+
+
+@router.get("/nclex/review/summary")
+async def review_summary(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Accuracy by Client Needs category and by subtopic (worst first),
+    from recorded responses only."""
+    from sqlalchemy import Integer, func as sa_func
+
+    bank = await _bank(db)
+    rows = (
+        await db.execute(
+            select(
+                Item.extra_metadata["section"].as_string().label("section"),
+                Item.extra_metadata["subtopic"].as_string().label("subtopic"),
+                sa_func.count().label("attempts"),
+                sa_func.sum(sa_func.cast(AttemptLog.is_correct, Integer)).label("correct"),
+            )
+            .join(Item, Item.id == AttemptLog.item_id)
+            .where(
+                AttemptLog.user_id == current_user.id,
+                AttemptLog.source == REVIEW_SOURCE,
+                Item.bank_id == bank.id,
+            )
+            .group_by("section", "subtopic")
+        )
+    ).all()
+
+    by_section: dict[str, dict] = {}
+    by_subtopic = []
+    for section, subtopic, attempts, correct in rows:
+        correct = int(correct or 0)
+        attempts = int(attempts)
+        s = by_section.setdefault(
+            section, {"section": section, "attempts": 0, "correct": 0}
+        )
+        s["attempts"] += attempts
+        s["correct"] += correct
+        by_subtopic.append(
+            {
+                "subtopic": subtopic,
+                "section": section,
+                "attempts": attempts,
+                "correct": correct,
+                "accuracy": round(correct / attempts, 3) if attempts else None,
+            }
+        )
+    for s in by_section.values():
+        s["accuracy"] = (
+            round(s["correct"] / s["attempts"], 3) if s["attempts"] else None
+        )
+    by_subtopic.sort(key=lambda x: (x["accuracy"] is None, x["accuracy"], -x["attempts"]))
+    return {
+        "by_section": sorted(by_section.values(), key=lambda s: s["section"] or ""),
+        "weakest_subtopics": by_subtopic[:12],
+        "note": (
+            "This account's recorded responses only, with attempt counts "
+            "beside every figure. No percentile: there is no cohort to "
+            "compare against."
+        ),
+    }
+
+
+@router.get("/nclex/review/missed")
+async def review_missed(
+    limit: int = 20,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Items whose LATEST recorded response is wrong, most recent first.
+    Answering one correctly drops it off."""
+    from sqlalchemy import and_ as sa_and, func as sa_func
+
+    if not 1 <= limit <= 50:
+        raise HTTPException(422, "limit must be between 1 and 50")
+    bank = await _bank(db)
+    latest = (
+        select(
+            AttemptLog.item_id.label("item_id"),
+            sa_func.max(AttemptLog.created_at).label("mx"),
+        )
+        .where(
+            AttemptLog.user_id == current_user.id,
+            AttemptLog.source == REVIEW_SOURCE,
+        )
+        .group_by(AttemptLog.item_id)
+        .subquery()
+    )
+    rows = (
+        await db.execute(
+            select(AttemptLog, Item)
+            .join(
+                latest,
+                sa_and(
+                    AttemptLog.item_id == latest.c.item_id,
+                    AttemptLog.created_at == latest.c.mx,
+                ),
+            )
+            .join(Item, Item.id == AttemptLog.item_id)
+            .where(
+                AttemptLog.user_id == current_user.id,
+                AttemptLog.source == REVIEW_SOURCE,
+                AttemptLog.is_correct.is_(False),
+                Item.bank_id == bank.id,
+                Item.deleted_at.is_(None),
+            )
+            .order_by(AttemptLog.created_at.desc())
+            .limit(limit * 2)  # headroom for same-timestamp duplicates
+        )
+    ).all()
+
+    counts = dict(
+        (
+            await db.execute(
+                select(AttemptLog.item_id, sa_func.count())
+                .where(
+                    AttemptLog.user_id == current_user.id,
+                    AttemptLog.source == REVIEW_SOURCE,
+                )
+                .group_by(AttemptLog.item_id)
+            )
+        ).all()
+    )
+
+    seen: set = set()
+    missed = []
+    for log, item in rows:
+        if item.id in seen or len(missed) >= limit:
+            continue
+        seen.add(item.id)
+        options = list(item.content.get("options", []))
+        entry = {
+            "item_id": str(item.id),
+            "kind": item.kind.value,
+            "stem": item.content.get("stem"),
+            "options": options,
+            "explanation": item.explanation,
+            "section": item.extra_metadata.get("section"),
+            "subtopic": item.extra_metadata.get("subtopic"),
+            "verification": item.extra_metadata.get("verification"),
+            "times_attempted": int(counts.get(item.id, 0)),
+            "last_missed_at": log.created_at.isoformat() + "Z",
+        }
+        if item.kind == ItemKind.MCQ_MULTI:
+            entry["correct_indices"] = sorted(item.content["correct_indices"])
+            entry["chosen_indices"] = (log.extra_metadata or {}).get("choice_indices")
+        else:
+            entry["correct_index"] = int(item.content["correct_index"])
+            entry["chosen_index"] = log.answer_index
+        missed.append(entry)
+    return {
+        "missed": missed,
+        "note": (
+            "Each entry is the latest recorded response for that question. "
+            "Answer it correctly and it leaves this list."
+        ),
+    }
