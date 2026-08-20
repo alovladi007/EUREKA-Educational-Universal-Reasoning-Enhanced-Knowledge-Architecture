@@ -889,7 +889,10 @@ _add(LessonExtras(
                 "underestimate - deserves the permanent "
                 "place in your checklist of first "
                 "explanations that this lesson has now "
-                "earned for it several times over."
+                "earned for it several times over - in the "
+                "flask, in the cell, in the crystal, and on "
+                "every exam that asks why bromine behaves "
+                "the way bromine does."
             ),
         ),
     ),
