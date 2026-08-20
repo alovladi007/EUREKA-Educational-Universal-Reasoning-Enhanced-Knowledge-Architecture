@@ -1,0 +1,458 @@
+[
+ {
+  "id": "nx_a4_mc_001",
+  "topicId": 0,
+  "subtopic": "Social media & privacy",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nursing colleague posts on social media: 'Rough shift \u2014 my sweet older stroke patient in the ICU finally smiled today!' No name or photo is included. What is the most accurate assessment of this post?",
+  "options": [
+   "It is a privacy breach even without a name, and it must be reported per facility policy",
+   "It is acceptable because no name or photo was shared",
+   "It is acceptable if the colleague's account is set to private",
+   "It only becomes a breach if the family complains"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): age, diagnosis, unit, and timing can identify a client in combination \u2014 protected health information includes identifying DETAILS, not just names, and breaches are reported through policy. (b) The absence of a name does not de-identify a described client. (c) Privacy settings do not change the disclosure; posts are copied and forwarded beyond any audience setting. (d) A breach exists at the moment of disclosure \u2014 a complaint is not what creates it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_002",
+  "topicId": 0,
+  "subtopic": "Telephone orders",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A provider gives a nurse a telephone order for a medication. Which nursing action is required?",
+  "options": [
+   "Write down the order, then read it back to the provider for confirmation",
+   "Enter the order from memory after the call ends",
+   "Ask the unit clerk to listen on another line and transcribe it",
+   "Decline the order \u2014 medications may never be ordered by telephone"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): write-down-read-back with confirmation is the safety standard for verbal and telephone orders, and the provider countersigns within the policy window. (b) Transcribing from memory after the call is how digits and drug names transpose. (c) Transcription of orders is not delegated to the unit clerk; the receiving nurse owns the read-back. (d) Telephone orders are legitimate when the provider is off-site; the safeguard is the process, not a ban.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_003",
+  "topicId": 0,
+  "subtopic": "Surgical time-out",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "When is the surgical time-out performed, and what does it verify?",
+  "options": [
+   "Immediately before the incision \u2014 the team pauses to confirm correct client, procedure, and site",
+   "During preoperative teaching the day before \u2014 the nurse confirms the client understands the surgery",
+   "After anesthesia induction \u2014 the anesthesiologist alone confirms the airway plan",
+   "In the recovery room \u2014 the team confirms the procedure that was performed"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the time-out is the whole team's final pause immediately before incision, actively confirming right client, right procedure, right site (with the site marked). (b) Preoperative teaching and consent verification matter but are not the time-out. (c) The time-out is a TEAM verification, not a single-discipline check, and it precedes the knife, not just induction. (d) A recovery-room debrief happens after the fact \u2014 the time-out exists to prevent wrong-site surgery before it happens.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_004",
+  "topicId": 0,
+  "subtopic": "Emergency consent",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "An unconscious client arrives in the emergency department with a life-threatening hemorrhage. No family or surrogate can be reached. How may emergency surgery proceed?",
+  "options": [
+   "Under implied consent, because a reasonable person would consent to life-saving treatment",
+   "It cannot proceed until a court order is obtained",
+   "Only if two nurses sign the consent form on the client's behalf",
+   "Only if the client's employer authorizes treatment"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): in a true emergency, when the client cannot consent and no surrogate is available, treatment proceeds under implied consent \u2014 the law presumes a reasonable person would accept life-saving care. (b) Waiting for a court order in an immediately life-threatening emergency abandons the client; courts are for non-emergent disputes. (c) Nurses cannot consent FOR a client; signatures witness, they do not authorize. (d) An employer has no legal role in medical consent.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_005",
+  "topicId": 0,
+  "subtopic": "Client advocacy",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with terminal illness tells the nurse they want to stop aggressive treatment, but the family insists 'everything be done' and asks the nurse to keep persuading the client. Which action best demonstrates client advocacy?",
+  "options": [
+   "Communicate the client's expressed wishes to the provider and support a care conference",
+   "Follow the family's request, since they will live with the outcome",
+   "Avoid the topic with everyone until the conflict resolves on its own",
+   "Persuade the client that the family knows what is best"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): advocacy means representing the CLIENT's expressed wishes to the team and creating the forum \u2014 a care conference \u2014 where those wishes govern the plan. (b) The decision belongs to the client with capacity, not the family. (c) Silence abandons the client at the moment advocacy matters most. (d) Pressuring the client toward the family's preference is the opposite of advocacy.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_006",
+  "topicId": 0,
+  "subtopic": "Discharge planning",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "When should discharge planning begin for a client admitted for elective hip replacement?",
+  "options": [
+   "At the time of admission",
+   "On the morning of discharge",
+   "After the surgeon writes the discharge order",
+   "Only if the client requests home services"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): discharge planning starts at admission \u2014 equipment, home setup, therapy referrals, and caregiver teaching all take days to arrange, and a hip replacement's needs are predictable from day one. (b) and (c) Starting on the day of discharge or at the order guarantees gaps: no walker at home, no follow-up scheduled, teaching crammed into an hour. (d) Planning is proactive and universal, not a service the client must think to request.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_007",
+  "topicId": 0,
+  "subtopic": "Transfer handoff",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is transferring a client from the emergency department to a medical unit. Which handoff practice is correct?",
+  "options": [
+   "Give a structured verbal report to the receiving nurse with a chance to ask questions",
+   "Send the client with the chart and let the receiving nurse read the story",
+   "Leave a voicemail summary for whoever answers the unit phone",
+   "Report only the admitting diagnosis to save the receiving nurse time"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): safe handoff is interactive \u2014 a structured report (such as SBAR) given to the accountable receiving nurse, with the opportunity to question. (b) A chart is a record, not a handoff; critical context and pending items get lost. (c) A voicemail to an unnamed listener transfers information to no accountable person. (d) Diagnosis-only reporting drops the very things handoffs exist to carry: pending results, recent changes, safety concerns.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_mc_008",
+  "topicId": 0,
+  "subtopic": "Refusal of care documentation",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with capacity refuses the evening dose of a prescribed anticoagulant despite the nurse's teaching about the risks. Which documentation is best?",
+  "options": [
+   "'Client refused enoxaparin after education on risks of clotting; provider notified.'",
+   "'Client is noncompliant and difficult tonight.'",
+   "'Medication not given.'",
+   "'Client refused; will hide medication in food at next meal.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the record shows the refusal, the education given, and the provider notification \u2014 objective facts that protect the client and the nurse. (b) 'Noncompliant and difficult' is judgmental labeling, not documentation. (c) 'Not given' without the reason reads as an omission error. (d) Hiding medication in food for a client with capacity who refused is covert administration \u2014 a consent violation, and documenting an intent to do it compounds it.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_pa_001",
+  "topicId": 7,
+  "subtopic": "Pulmonary embolism",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "Two days after pelvic surgery, a client suddenly develops dyspnea, pleuritic chest pain, and a heart rate of 124/min. After calling for help, which action should the nurse take first?",
+  "options": [
+   "Raise the head of the bed and apply oxygen",
+   "Assist the client to ambulate to improve circulation",
+   "Give the scheduled oral opioid for the chest pain",
+   "Perform deep suctioning to clear the airway"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the picture is classic postoperative pulmonary embolism \u2014 the immediate nursing actions are positioning upright and oxygen while the team is mobilized. (b) Ambulating a client with a suspected PE risks dislodging further clot and collapse. (c) An oral opioid neither treats the emergency nor arrives in time; sedation can worsen hypoxia. (d) Nothing suggests secretions; suctioning delays the real response and stresses an already hypoxic client.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_pa_002",
+  "topicId": 7,
+  "subtopic": "Thyroid storm",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "Hours after a thyroidectomy, a client with Graves' disease develops a temperature of 39.6 C, heart rate 148/min, and severe agitation. How should the nurse interpret these findings?",
+  "options": [
+   "Thyroid storm \u2014 a life-threatening emergency requiring immediate provider notification",
+   "An expected inflammatory response to surgery",
+   "Anxiety about the procedure that will settle with reassurance",
+   "Early wound infection, to be reassessed on the next shift"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): hyperpyrexia, extreme tachycardia, and agitation after thyroid manipulation in Graves' disease is thyroid storm \u2014 mortality is high without immediate treatment, so the provider is notified now and the client moved to intensive monitoring. (b) Post-surgical inflammation does not produce this magnitude of fever and tachycardia within hours. (c) Reassurance does not touch a hypermetabolic crisis. (d) Wound infection takes days to declare and is not reassessed-next-shift material even then.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_pa_003",
+  "topicId": 7,
+  "subtopic": "GI bleeding",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client reports black, tarry stools for two days and now feels lightheaded when standing. Which assessment finding most increases the nurse's concern for active bleeding?",
+  "options": [
+   "Heart rate rising from 82 to 118/min with blood pressure falling from 128/76 to 96/58",
+   "Mild epigastric tenderness on palpation",
+   "A hemoglobin drawn last month within normal limits",
+   "The client reports taking a daily multivitamin with iron"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): a climbing heart rate with falling blood pressure is the hemodynamic signature of ongoing volume loss \u2014 melena plus orthostatic symptoms plus these vitals is active upper GI bleeding until proven otherwise. (b) Epigastric tenderness supports the source but says nothing about volume status. (c) Last month's hemoglobin predates the bleed. (d) Iron darkens stool and is a classic mimic, but it does not explain lightheadedness or deteriorating vitals \u2014 the vitals outrank the mimic.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_pa_004",
+  "topicId": 7,
+  "subtopic": "Burn emergent phase",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "During the first 24 hours of fluid resuscitation for a client with major burns, which finding best indicates that resuscitation is adequate?",
+  "options": [
+   "Urine output of at least 0.5 mL/kg/hr",
+   "Thirst decreasing between assessments",
+   "Weight unchanged from admission",
+   "Blood pressure of 88/50 with a heart rate of 128/min"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): urine output \u2014 roughly 0.5 mL/kg/hr in adults \u2014 is the standard bedside index of end-organ perfusion during burn resuscitation and is what titration targets. (b) Thirst is subjective and persists despite adequate volumes. (c) Weight RISES with resuscitation volumes; an unchanged weight measures nothing useful in the first day. (d) Hypotension with tachycardia is the picture of INADEQUATE resuscitation.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_pa_005",
+  "topicId": 7,
+  "subtopic": "Pneumothorax recognition",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "A client with a fractured rib suddenly develops severe dyspnea. The nurse notes absent breath sounds on the right, distended neck veins, and the trachea deviated toward the left. What do these findings indicate?",
+  "options": [
+   "Tension pneumothorax requiring immediate emergency intervention",
+   "An asthma exacerbation requiring a bronchodilator",
+   "Atelectasis that will respond to incentive spirometry",
+   "Pneumonia in the right lower lobe"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): unilateral absent breath sounds with tracheal deviation AWAY from that side and distended neck veins is tension pneumothorax \u2014 trapped air is collapsing the lung and kinking venous return; the team is summoned for immediate decompression. (b) Asthma is bilateral wheezing, not one silent side with a shifted trachea. (c) Atelectasis diminishes sounds gradually and never deviates the trachea. (d) Pneumonia produces crackles and fever over hours to days, not sudden mediastinal shift.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_pa_006",
+  "topicId": 7,
+  "subtopic": "Peritonitis recognition",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client being observed for appendicitis reports that the pain suddenly stopped, and an hour later develops a rigid, board-like abdomen with fever. What should the nurse suspect?",
+  "options": [
+   "The appendix has ruptured and peritonitis is developing",
+   "The appendicitis has resolved and discharge can proceed",
+   "Constipation from bed rest",
+   "Anxiety-related abdominal tension"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): sudden pain relief in appendicitis is the pressure release of RUPTURE, and the rigid abdomen with fever that follows is peritonitis \u2014 a surgical emergency, reported immediately. (b) Reading rupture as recovery is the classic fatal misinterpretation this item exists to test. (c) Constipation does not produce board-like rigidity with fever. (d) Muscle guarding from anxiety is voluntary and releases with distraction; true rigidity does not.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_si_001",
+  "topicId": 1,
+  "subtopic": "Infant security",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is reviewing newborn security practices on a postpartum unit. Which practices are correct? Select all that apply.",
+  "options": [
+   "Verify matching identification bands between parent and newborn at every hand-off",
+   "Release the newborn only to staff wearing the unit's designated identification",
+   "Transport the newborn in a bassinet rather than carried in arms",
+   "Allow anyone in scrubs to take the newborn for testing without question",
+   "Teach parents to question anyone who asks to remove the newborn from the room"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 band matching at every transfer is the core identity control; (b) \u2014 abductors impersonate staff, so the designated badge is the release criterion; (c) \u2014 bassinet transport is the standard, both for safety and because policy-violating carries are an abduction red flag; (e) \u2014 informed parents are the strongest layer of the security system. Wrong (d): scrubs are the abductor's classic costume \u2014 clothing is never a credential.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_si_002",
+  "topicId": 1,
+  "subtopic": "MRI safety",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is preparing a client for an MRI. Which actions are appropriate? Select all that apply.",
+  "options": [
+   "Screen the client for implanted devices such as pacemakers",
+   "Remove transdermal medication patches that have metallic backing per policy",
+   "Have the client remove jewelry, hairpins, and hearing aids",
+   "Bring the standard oxygen tank into the scanner room if the client needs oxygen",
+   "Ask about metal fragments or previous metalwork injuries to the eyes"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 implanted devices are screened because the magnet can disable or displace them; (b) \u2014 some patch backings contain metal foil that heats and burns in the field, so they are removed/replaced per policy; (c) \u2014 loose ferromagnetic objects become projectiles; (e) \u2014 old metallic fragments, especially in the eye, can migrate in the field and must be cleared first. Wrong (d): a standard ferromagnetic oxygen tank is one of the most dangerous projectiles in the MRI suite \u2014 only MR-safe equipment enters the room.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_si_003",
+  "topicId": 1,
+  "subtopic": "Latex allergy",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "During an admission assessment, a client reports lip swelling after eating bananas and kiwi. Why is this significant to the nurse?",
+  "options": [
+   "These food reactions cross-react with latex, so latex-allergy precautions should be considered",
+   "It suggests lactose intolerance requiring a dietary consult",
+   "It indicates the client should avoid all fresh fruit while hospitalized",
+   "It has no clinical significance for nursing care"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): banana, avocado, kiwi, and chestnut share proteins with natural rubber latex \u2014 reactions to them flag possible latex allergy, prompting latex-free gloves and supplies and provider notification. (b) The reaction described is allergic (swelling), not enzymatic intolerance, and involves no dairy. (c) The concern is specific cross-reactive foods and LATEX, not fruit in general. (d) Missing this association exposes the client to latex anaphylaxis during routine care.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_si_004",
+  "topicId": 1,
+  "subtopic": "Chemical exposure response",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A staff member splashes a cleaning chemical into their eyes in the medication room. What is the immediate action?",
+  "options": [
+   "Flush the eyes at the nearest eyewash station for 15 to 20 minutes",
+   "Cover both eyes with dry sterile gauze and go to the emergency department",
+   "Instill lubricating eye drops and reassess in an hour",
+   "Check the safety data sheet before doing anything"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): immediate, prolonged irrigation is the single intervention that limits chemical eye injury \u2014 minutes of delay cost vision, so flushing starts first and continues 15-20 minutes. (b) Covering the eyes seals the chemical against the cornea during the trip. (c) Lubricating drops neither dilute nor remove the agent. (d) The safety data sheet is consulted DURING or after irrigation by someone else \u2014 reading before flushing is the classic harmful delay.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_si_005",
+  "topicId": 1,
+  "subtopic": "Safe client handling",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse must move a client who is unable to assist from bed to a stretcher. Which approach is correct?",
+  "options": [
+   "Use a lateral transfer device and enough staff per the safe-handling policy",
+   "Lift the client manually with one strong colleague to save time",
+   "Have the client grasp the nurse's neck for the transfer",
+   "Drag the client across on the bed sheet alone"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): a dependent lateral transfer calls for friction-reducing equipment and the staffing the safe-patient-handling program specifies \u2014 this protects both the client and the nurses' backs. (b) Manual two-person lifting of a dependent adult exceeds safe lifting limits and is exactly what handling programs exist to eliminate. (c) Pulling on a caregiver's neck injures the caregiver and gives the client an unstable anchor. (d) Dragging on a sheet shears the client's skin and strains staff.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_rr_001",
+  "topicId": 6,
+  "subtopic": "Cast care",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is teaching a client with a new fiberglass arm cast. Which instructions are correct? Select all that apply.",
+  "options": [
+   "Keep the casted arm elevated for the first 24 to 48 hours",
+   "Report pain that keeps worsening despite elevation and prescribed analgesia",
+   "Use a knitting needle to scratch inside the cast when it itches",
+   "Report numbness, tingling, or fingers that turn pale or cold",
+   "Apply ice near the cast during the first day to limit swelling"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   3,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 elevation limits the early swelling that tightens a fresh cast; (b) \u2014 escalating pain unrelieved by elevation and analgesia is the cardinal warning of compartment syndrome; (d) \u2014 neurovascular changes (numbness, pallor, coldness) are the other limb-threatening warnings, reported immediately; (e) \u2014 ice in the first day reduces swelling. Wrong (c): inserting objects breaks skin the client cannot see \u2014 an unseen wound under a cast becomes an infection.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_rr_002",
+  "topicId": 6,
+  "subtopic": "Lumbar puncture aftercare",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "Following a lumbar puncture, a client reports a severe headache that improves when lying flat and worsens when sitting up. Which nursing action is appropriate?",
+  "options": [
+   "Keep the client lying flat, encourage fluids, and notify the provider",
+   "Assist the client to ambulate to walk the headache off",
+   "Position the client upright at 90 degrees for one hour",
+   "Withhold fluids to reduce cerebrospinal fluid production"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): a positional headache after lumbar puncture is CSF leak headache \u2014 lying flat relieves the traction, fluids support CSF replacement, and the provider decides on further measures (such as a blood patch if it persists). (b) and (c) Upright posture and ambulation increase the traction that causes the pain. (d) Fluid restriction works AGAINST replacing the lost CSF.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_rr_003",
+  "topicId": 6,
+  "subtopic": "Post-cardiac catheterization care",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A client returns from cardiac catheterization via the right femoral artery. Which nursing actions are appropriate? Select all that apply.",
+  "options": [
+   "Keep the right leg straight with the head of the bed at or below 30 degrees",
+   "Check the access site and distal pulses frequently per protocol",
+   "Instruct the client to report any warm, wet feeling at the groin immediately",
+   "Assist the client to sit at the bedside within the first 30 minutes",
+   "Encourage fluids to help clear the contrast dye"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 a straight leg and low bed angle protect the arterial puncture from flexion that reopens it; (b) \u2014 the site and distal pulses are the surveillance for bleeding and arterial occlusion; (c) \u2014 a warm wet sensation is arterial bleeding as the client feels it, and seconds matter; (e) \u2014 hydration protects the kidneys from contrast injury. Wrong (d): early sitting flexes the hip across the fresh arterial puncture \u2014 bed rest per protocol comes first.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_rr_004",
+  "topicId": 6,
+  "subtopic": "Central line air embolism",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "While a nurse changes central line tubing, the line is briefly open to air and the client suddenly becomes dyspneic and hypotensive. After clamping the catheter and calling for help, how should the nurse position the client?",
+  "options": [
+   "On the left side with the head lower than the body",
+   "Sitting fully upright with legs dependent",
+   "Supine and completely flat",
+   "On the right side with the head elevated"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): left-lateral positioning with the head down traps the air bolus in the right side of the heart, keeping it from advancing into the pulmonary circulation while oxygen and the team arrive. (b) Upright with legs dependent lets air travel with flow \u2014 the wrong direction entirely. (c) Flat supine does not use gravity to trap the air. (d) Right side-lying positions the air TOWARD the pulmonary outflow tract, the exact opposite of the goal.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ },
+ {
+  "id": "nx_a4_rr_005",
+  "topicId": 6,
+  "subtopic": "Preoperative medication management",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "During a preoperative visit one week before elective surgery, a client mentions taking daily warfarin. Which nursing action is correct?",
+  "options": [
+   "Confirm with the surgical team when the warfarin should be stopped, rather than assuming it continues",
+   "Tell the client to continue all home medications unchanged until the morning of surgery",
+   "Instruct the client to stop the warfarin today on the nurse's own judgment",
+   "Advise doubling the dose the day before surgery to compensate for stopping after"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): anticoagulants are typically held several days before elective surgery ON PROVIDER INSTRUCTION \u2014 the nurse's job at this visit is to surface the medication and confirm the plan, because an unaddressed anticoagulant cancels surgeries and causes bleeding disasters. (b) 'Continue everything' is exactly the assumption that sends anticoagulated clients to the OR. (c) Stopping it on nursing judgment alone exposes the client to thrombotic risk without a provider's plan. (d) Doubling an anticoagulant before surgery is dangerous in the opposite direction.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave4 (2026-08-20)"
+ }
+]
