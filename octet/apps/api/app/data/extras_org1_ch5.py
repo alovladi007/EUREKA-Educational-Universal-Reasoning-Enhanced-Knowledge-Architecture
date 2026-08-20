@@ -2739,7 +2739,17 @@ _add(LessonExtras(
                 "spanning the whole arc, gets "
                 "both - one more reason this "
                 "small ring earned this long "
-                "lesson."
+                "lesson. From Prilezhaev's flask to "
+                "Lefort's silver beds to Sharpless's "
+                "tartrates, the three-membered ring has "
+                "repaid every generation that studied it "
+                "more closely, and the pattern shows no "
+                "sign of stopping: covalent-inhibitor drug "
+                "design and degradable-polymer chemistry "
+                "are both, right now, writing the arc's "
+                "next stage on the same strained "
+                "foundation this lesson has just laid "
+                "down for you in full."
             ),
         ),
     ),
