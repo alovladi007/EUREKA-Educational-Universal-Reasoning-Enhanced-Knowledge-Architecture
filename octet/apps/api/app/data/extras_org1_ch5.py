@@ -892,7 +892,7 @@ _add(LessonExtras(
                 "earned for it several times over - in the "
                 "flask, in the cell, in the crystal, and on "
                 "every exam that asks why bromine behaves "
-                "the way bromine does."
+                "the way that bromine so reliably does."
             ),
         ),
     ),
