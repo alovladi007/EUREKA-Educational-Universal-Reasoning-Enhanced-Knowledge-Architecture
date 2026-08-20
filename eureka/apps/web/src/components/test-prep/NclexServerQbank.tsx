@@ -450,6 +450,12 @@ export function NclexServerQbank() {
           {verdict.explanation && (
             <p className="text-muted-foreground">{verdict.explanation}</p>
           )}
+          {verdict.strategy && (
+            <p className="text-xs border-l-2 border-primary/40 pl-2 text-muted-foreground">
+              <span className="font-semibold">Test-taking strategy:</span>{' '}
+              {verdict.strategy}
+            </p>
+          )}
           <div className="flex flex-wrap gap-2 pt-1">
             {!verdict.is_correct && (
               <Button

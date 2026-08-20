@@ -559,6 +559,7 @@ class ApiClient {
     chosen_indices?: number[]; n_correct_selected?: number;
     n_incorrect_selected?: number; n_missed?: number; scoring?: string;
     explanation: string | null;
+    strategy: string | null;
     section: string | null; subtopic: string | null;
     verification: 'calc-verified' | 'unverified' | null;
     review_status: string; disclaimer: string;
@@ -623,7 +624,8 @@ class ApiClient {
       chosen_index?: number | null; correct_index?: number;
       // SATA entries:
       chosen_indices?: number[] | null; correct_indices?: number[];
-      explanation: string | null; section: string | null;
+      explanation: string | null; strategy: string | null;
+      section: string | null;
       subtopic: string | null;
       verification: 'calc-verified' | 'unverified' | null;
       times_attempted: number; last_missed_at: string;

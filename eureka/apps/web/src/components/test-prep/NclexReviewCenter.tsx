@@ -219,6 +219,11 @@ export function NclexReviewCenter() {
                   {m.explanation && (
                     <p className="text-xs text-muted-foreground">{m.explanation}</p>
                   )}
+                  {m.strategy && (
+                    <p className="text-xs border-l-2 border-primary/40 pl-2 text-muted-foreground">
+                      <span className="font-semibold">Strategy:</span> {m.strategy}
+                    </p>
+                  )}
                   <Button
                     size="sm"
                     variant="outline"

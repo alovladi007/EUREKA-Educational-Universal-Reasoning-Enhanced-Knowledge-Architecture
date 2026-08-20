@@ -181,6 +181,10 @@ async def main(json_path: str) -> None:
                     "section": cat_name,
                     "subtopic": q.get("subtopic"),
                     "verification": q["verification"],
+                    # Silvestri-style test-taking strategy tip: HOW to have
+                    # reasoned to the answer, not just why it is right.
+                    # Optional; revealed only in grading/review responses.
+                    "strategy": q.get("strategy"),
                     # The raw dosage parameters, kept so a reviewer (or a
                     # server-side re-verifier) can recompute the key from
                     # first principles instead of trusting the migration.

@@ -15,6 +15,11 @@ Rules (from the NCLEX build plan, applying to every bank):
   its key is machine-computed (dosage items: 'calc-verified', re-checked
   against the live bank by scripts/verify_nclex_bank_keys.py). A named SME
   approving an item is the only path to APPROVED — authoring is not review.
+- Every item SHOULD carry a `strategy` field (Saunders/Silvestri-style
+  test-taking tip: HOW to reason to the answer — eliminate absolutes, ABC
+  priority, therapeutic-communication rules — not a restated rationale).
+  It is revealed only in grading and review responses, never in serving.
+  Waves 1–7 predate the field; backfill is queued.
 
 | file | items | seeded | contents |
 |---|---|---|---|

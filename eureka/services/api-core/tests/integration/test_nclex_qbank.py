@@ -147,6 +147,7 @@ async def _seed_bank(session: AsyncSession) -> tuple[ItemBank, Item, Item, Item]
             "section": "Pharmacological & Parenteral Therapies",
             "subtopic": "Tablets & capsules",
             "verification": "calc-verified",
+            "strategy": "Confirm ordered dose and supplied strength share a unit before dividing.",
             "calc": {"kind": "tablets",
                      "params": {"ordered_mg": 7.5, "strength_mg": 5},
                      "expected": 1.5, "unit": "tablet(s)", "round": 1},
@@ -210,7 +211,7 @@ async def test_serving_carries_no_keys_or_explanations(
     for it in items:
         # Field-name check, not substring: prose may legally contain these words.
         for forbidden in ("correct", "correct_index", "correct_indices",
-                          "correctAnswers", "explanation", "calc"):
+                          "correctAnswers", "explanation", "calc", "strategy"):
             assert forbidden not in it, f"{forbidden} leaked in serving payload"
         assert it["kind"] in ("mcq_single", "mcq_multi")
         assert it["verification"] in ("calc-verified", "unverified")
@@ -257,6 +258,7 @@ async def test_single_correct_and_wrong(async_client, async_session, seeded_user
     assert body["is_correct"] is True
     assert body["correct_index"] == 2
     assert body["explanation"]  # appears ONLY here
+    assert body["strategy"].startswith("Confirm ordered dose")
     assert body["verification"] == "calc-verified"
 
     r = await async_client.post(
