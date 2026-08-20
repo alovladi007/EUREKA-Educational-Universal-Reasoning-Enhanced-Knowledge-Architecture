@@ -1,0 +1,434 @@
+[
+  {
+    "id": "nx_a9_mc_001",
+    "topicId": 0,
+    "question": "A client is being discharged with home health services after a stroke. Which nursing action best ensures continuity of care?",
+    "options": [
+      "Provide the home health agency a complete handoff including current deficits, medications, and teaching already done",
+      "Tell the client the agency will figure out what is needed at the first visit",
+      "Send only the medication list since other records are confidential",
+      "Schedule the agency to start after the client has settled in for a week"
+    ],
+    "correct": 0,
+    "explanation": "Continuity requires the receiving team to know the client's status, regimen, and what teaching has occurred so care resumes without gaps or repetition. Leaving assessment to the first visit creates a dangerous information gap. Records follow the client for treatment purposes - withholding them misapplies confidentiality. Delaying the start of services for a week leaves the highest-risk transition window uncovered.",
+    "difficulty": 2,
+    "subtopic": "Continuity of care",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Transition questions reward the option that moves complete information ahead of the client: handoff quality is continuity - options that delay, trim, or defer information all recreate the gap the question is about."
+  },
+  {
+    "id": "nx_a9_mc_002",
+    "topicId": 0,
+    "question": "A nurse cares for a client who was medicated but still underwent the wrong procedure years of practice, which term describes performing a procedure on a client who refused it?",
+    "options": [
+      "Battery",
+      "Assault",
+      "Negligence",
+      "Defamation"
+    ],
+    "correct": 0,
+    "explanation": "Battery is unpermitted physical contact - performing a procedure without or against consent is its textbook form. Assault is the THREAT that creates fear of contact, without the touch. Negligence is a careless breach of duty causing harm, not an intentional unconsented act. Defamation is harm to reputation through false statements and involves no touching at all.",
+    "difficulty": 2,
+    "subtopic": "Legal terms - battery vs assault",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Legal-term questions sort on two axes: was there contact (battery) or only threat (assault), and was it intentional (both) or careless (negligence)? Two questions, four terms sorted."
+  },
+  {
+    "id": "nx_a9_mc_003",
+    "topicId": 0,
+    "question": "A nurse realizes an entry was charted in the wrong client's electronic record. What is the correct way to handle the error?",
+    "options": [
+      "Follow the system's correction process so the original entry remains visible with the correction attributed and dated",
+      "Delete the entry so the record is clean",
+      "Ask a colleague with administrator access to remove it",
+      "Leave it and chart correctly going forward without addressing the error"
+    ],
+    "correct": 0,
+    "explanation": "Legal records are corrected transparently: the erroneous entry stays retrievable, and the correction is attributed, dated, and reasoned per the system's process. Deleting entries destroys the legal record and can constitute tampering. Using someone else's access compounds the problem with an access violation. Ignoring the error leaves wrong information in another client's record where it can drive wrong care.",
+    "difficulty": 2,
+    "subtopic": "Documentation error correction",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Documentation questions have one spine: the record is a legal document - corrections add and attribute, never erase. Any option that deletes, hides, or ignores fails on that single principle."
+  },
+  {
+    "id": "nx_a9_mc_004",
+    "topicId": 0,
+    "question": "The unit is short-staffed, and a charge nurse must assign a float nurse from a medical unit. Which client group is most appropriate for the float nurse?",
+    "options": [
+      "Stable clients with common medical diagnoses and predictable care needs",
+      "The unit's unstable clients, freeing regular staff for admissions",
+      "Clients requiring specialty skills the float nurse has not verified",
+      "No clients - float nurses should only do tasks, not carry assignments"
+    ],
+    "correct": 0,
+    "explanation": "Float staff are assigned within their demonstrated competencies: stable clients with care needs resembling their home unit's work. Assigning the unstable clients to the least unit-familiar nurse inverts safety logic. Unverified specialty skills are exactly what a float assignment must avoid. Refusing to give a competent licensed nurse any assignment wastes the resource and has no basis - the restriction is scope-matched assignment, not task-only work.",
+    "difficulty": 2,
+    "subtopic": "Float staffing assignment",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Float questions are competency-matching questions: the float nurse gets the clients most like their home unit's - stable and predictable - while unit-specific and unstable clients stay with unit staff."
+  },
+  {
+    "id": "nx_a9_mc_005",
+    "topicId": 0,
+    "question": "A client says, 'The provider explained the surgery, but I still don't really understand what they will do.' The consent form is signed. What should the nurse do?",
+    "options": [
+      "Notify the provider that the client needs further explanation before the procedure proceeds",
+      "Re-explain the surgical technique in detail so the client understands",
+      "Reassure the client that the surgical team is experienced",
+      "Proceed since the form is already signed"
+    ],
+    "correct": 0,
+    "explanation": "Understanding, not a signature, makes consent valid - the nurse's advocacy duty is to stop the process and route the client back to the provider, who owns the disclosure. Explaining operative technique is the provider's role; the nurse re-explaining it steps outside nursing scope. Reassurance about the team dodges the client's actual statement. A signature without understanding is not informed consent, so proceeding is the legal trap.",
+    "difficulty": 2,
+    "subtopic": "Consent - understanding gap",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Any stem where the client voices confusion after signing has one answer shape: stop and notify the provider - the signature is void without understanding, and the explanation belongs to the person who performs the procedure."
+  },
+  {
+    "id": "nx_a9_mc_006",
+    "topicId": 0,
+    "question": "A unit adopts a new pressure-injury prevention bundle. Which activity reflects the nurse's role in quality improvement?",
+    "options": [
+      "Collecting audit data on bundle adherence and unit injury rates to evaluate the change",
+      "Waiting for the annual survey to reveal whether the bundle works",
+      "Applying the bundle only to clients who already have skin breakdown",
+      "Reporting colleagues who miss bundle steps for discipline"
+    ],
+    "correct": 0,
+    "explanation": "Quality improvement runs on measurement: adherence and outcome data show whether the change works and where it fails. Waiting a year for an external survey abandons the improvement cycle. Applying a PREVENTION bundle only after breakdown occurs defeats its purpose. QI is a just-culture systems process - punitive reporting of individuals chills participation and misses system causes.",
+    "difficulty": 2,
+    "subtopic": "Quality improvement role",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "QI questions reward measure-and-learn options and punish blame-and-wait options: look for data collection tied to the change, and strike anything punitive or passive."
+  },
+  {
+    "id": "nx_a9_mc_007",
+    "topicId": 0,
+    "question": "A nursing student asks why the interprofessional team conducts bedside rounds with the client present. Which response is best?",
+    "options": [
+      "Including the client lets the plan reflect their goals and lets them hear and question the same information the team does",
+      "It saves time because everyone meets once",
+      "It is primarily a teaching exercise for students",
+      "It allows the team to observe the client without their knowing the purpose"
+    ],
+    "correct": 0,
+    "explanation": "Client-present rounds operationalize client-centered care: the plan is built with the person it concerns, who hears one consistent message and can question it in real time. Time efficiency is a side benefit, not the purpose. Student teaching happens but does not justify the format. Observing a client while concealing the purpose describes deception, the opposite of transparent partnership.",
+    "difficulty": 1,
+    "subtopic": "Interprofessional bedside rounds",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "'Why do we include the client' questions always resolve to partnership and shared information - pick the option centered on the client's participation, not on staff convenience."
+  },
+  {
+    "id": "nx_a9_mc_008",
+    "topicId": 0,
+    "question": "A nurse notices a coworker viewing the electronic record of a celebrity admitted to another unit. The coworker has no care relationship with that client. What should the nurse do?",
+    "options": [
+      "Report the access to the supervisor or privacy officer, as it violates minimum-necessary access rules",
+      "Ignore it since the coworker did not share any information",
+      "Warn the coworker privately and leave it there",
+      "Look at the record too to understand what was accessed"
+    ],
+    "correct": 0,
+    "explanation": "Access without a treatment relationship is itself the violation - audit trails will show it, and the duty is to report through the privacy structure. 'No harm because nothing was shared' misstates the rule: unauthorized viewing is the breach. A private warning leaves a reportable violation unaddressed and makes the witness complicit. Accessing the record yourself adds a second identical violation.",
+    "difficulty": 2,
+    "subtopic": "EHR access privacy",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Privacy questions turn on where the breach happens: at ACCESS, not at disclosure. Any option premised on 'no harm done yet' has already missed the rule being tested."
+  },
+  {
+    "id": "nx_a9_mc_009",
+    "topicId": 0,
+    "question": "A client with terminal cancer asks the nurse to promise not to tell the family about the prognosis, while the family separately asks to know everything. How should the nurse proceed?",
+    "options": [
+      "Honor the client's confidentiality and help the client explore communication with the family on their own terms",
+      "Tell the family, since they will provide the care at home",
+      "Promise nothing to either party and avoid the topic entirely",
+      "Ask the provider to tell the family so the nurse keeps the promise technically"
+    ],
+    "correct": 0,
+    "explanation": "The information belongs to the client: confidentiality holds against family, and the nursing role is supporting the client in deciding what to share and how. Caregiving plans do not override the client's right to control their own information. Avoiding the topic abandons the client's need for support. Routing the disclosure through the provider is the same breach with different hands.",
+    "difficulty": 3,
+    "subtopic": "Confidentiality vs family request",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "When client and family wishes collide over information, the client's autonomy wins every time - and the sophisticated correct option adds support for the client's own communication, not just a refusal to the family."
+  },
+  {
+    "id": "nx_a9_mc_010",
+    "topicId": 0,
+    "question": "During a fire drill review, a nurse is asked the correct order for using a fire extinguisher. Which sequence is right?",
+    "options": [
+      "Pull the pin, aim at the base of the fire, squeeze the handle, sweep side to side",
+      "Aim at the top of the flames, pull the pin, sweep, squeeze",
+      "Squeeze the handle to test it, then pull the pin and aim at the flames",
+      "Sweep the area first, then pull, aim, and squeeze"
+    ],
+    "correct": 0,
+    "explanation": "PASS - Pull, Aim (at the base, where the fuel burns), Squeeze, Sweep - is the operating sequence. Aiming at the flame tops misses the fuel source entirely. The extinguisher cannot discharge before the pin is pulled, so squeezing first does nothing. Sweeping is the motion used WHILE discharging, not a preliminary step.",
+    "difficulty": 1,
+    "subtopic": "Fire extinguisher PASS",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "PASS is the acronym, and the tested detail inside it is 'base of the fire' - options that aim at the flames are wrong even when their letter order is right."
+  },
+  {
+    "id": "nx_a9_mc_011",
+    "topicId": 0,
+    "question": "A hospice client's spouse asks the nurse, 'How will I know death is near?' Which response is most appropriate?",
+    "options": [
+      "Describe expected signs such as decreased responsiveness, irregular breathing, mottled skin, and cool extremities",
+      "Tell the spouse not to focus on that and to enjoy the remaining time",
+      "State that no one can ever say anything about the timing",
+      "Refer the question to the physician since prognosis is medical"
+    ],
+    "correct": 0,
+    "explanation": "Preparing families for the recognizable signs of approaching death - somnolence, Cheyne-Stokes-type breathing, mottling, coolness - is core hospice nursing and reduces panic at the bedside. Deflecting the question dismisses a legitimate need. 'No one can say anything' is false; patterns near death are well characterized even when timing is uncertain. Teaching expected signs is squarely within nursing scope and needs no referral.",
+    "difficulty": 2,
+    "subtopic": "End-of-life teaching",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Hospice-family questions reward honest anticipatory teaching: the correct option names concrete expected signs, while distractors deflect, over-hedge, or push the conversation to someone else."
+  },
+  {
+    "id": "nx_a9_mc_012",
+    "topicId": 0,
+    "question": "Which ethical principle is the nurse applying when supporting a client's decision to decline dialysis after full information?",
+    "options": [
+      "Autonomy",
+      "Beneficence",
+      "Justice",
+      "Fidelity"
+    ],
+    "correct": 0,
+    "explanation": "Autonomy is the client's right to self-determination - supporting an informed refusal is its direct application. Beneficence is acting for the client's good and, alone, could argue FOR dialysis. Justice concerns fair distribution of care across people, not one client's choice. Fidelity is keeping promises and commitments, adjacent but not the principle at work in honoring a treatment refusal.",
+    "difficulty": 1,
+    "subtopic": "Ethical principles",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Principle-matching is definitional: informed choice = autonomy, doing good = beneficence, fairness across clients = justice, keeping promises = fidelity - map the scenario's verb to the definition and ignore the moral weight of the outcome."
+  },
+  {
+    "id": "nx_a9_si_001",
+    "topicId": 1,
+    "question": "A nurse prepares to administer intravenous chemotherapy. Which protective equipment is required?",
+    "options": [
+      "Chemotherapy-rated gown and double gloves, with eye protection if splashing is possible",
+      "Standard exam gloves only, since the drug is contained in tubing",
+      "A surgical mask alone",
+      "No special equipment if the pump tubing was primed in pharmacy"
+    ],
+    "correct": 0,
+    "explanation": "Hazardous-drug handling requires a chemotherapy-tested gown and double chemotherapy-rated gloves, adding eye protection for splash risk - dermal exposure is the documented route of harm. Ordinary exam gloves are permeable to many agents. A mask alone leaves the primary exposure route unprotected. Pharmacy priming reduces but does not eliminate exposure at connection, disconnection, and disposal.",
+    "difficulty": 2,
+    "subtopic": "Hazardous drug PPE",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Chemo-handling questions test the double-barrier rule: rated gown plus double gloves is the floor, and any option resting on 'the system is closed' underestimates connection and disposal exposure."
+  },
+  {
+    "id": "nx_a9_si_002",
+    "topicId": 1,
+    "question": "A visitor becomes loud and threatening at the nurses' station, blocking the medication room door. What should the nurse do first?",
+    "options": [
+      "Maintain distance, avoid confrontation, and summon security per the facility's emergency process",
+      "Physically move the visitor away from the door",
+      "Continue working and ignore the behavior to avoid escalation",
+      "Ask another visitor to help calm the person"
+    ],
+    "correct": 0,
+    "explanation": "Staff safety protocols call for distance, a non-confrontational stance, and immediate activation of security - trained responders manage the threat. Physical contact by the nurse escalates danger and legal exposure. Ignoring a threatening person blocking medication access leaves everyone at risk. Recruiting bystanders puts an untrained civilian into a volatile situation.",
+    "difficulty": 2,
+    "subtopic": "Workplace violence response",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Violence stems reward distance-plus-activation: the correct option keeps the nurse out of contact and calls the trained team; every option involving touching, ignoring, or recruiting bystanders fails safety logic."
+  },
+  {
+    "id": "nx_a9_si_003",
+    "topicId": 1,
+    "question": "A nurse finds a portable oxygen cylinder standing upright and unsecured beside a client's bed. What should the nurse do?",
+    "options": [
+      "Secure the cylinder in a stand or holder so it cannot fall",
+      "Lay the cylinder flat on the floor out of the walking path",
+      "Move it closer to the wall but leave it freestanding",
+      "Tape the cylinder to the bed frame"
+    ],
+    "correct": 0,
+    "explanation": "A compressed-gas cylinder whose valve breaks in a fall becomes a projectile - cylinders are always secured in a proper stand, holder, or chained rack. Lying it on the floor creates a trip hazard and still allows valve damage. Freestanding near a wall remains unsecured. Tape is not a securing device and fails the moment the bed moves.",
+    "difficulty": 1,
+    "subtopic": "Oxygen cylinder safety",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Cylinder questions are physics questions: high-pressure gas plus a snapped valve equals a rocket, so the only right answers involve engineered securing - stands, holders, racks - never improvisation."
+  },
+  {
+    "id": "nx_a9_si_004",
+    "topicId": 1,
+    "question": "A nurse draws up a dose from a single-dose vial and uses only half. Another client needs the same medication. What should the nurse do with the remainder?",
+    "options": [
+      "Discard the remainder - single-dose vials are for one client, one use",
+      "Save the vial for the next client since the needle never touched it",
+      "Transfer the remainder to a syringe for later use on the same shift",
+      "Label the vial with the date and refrigerate it"
+    ],
+    "correct": 0,
+    "explanation": "Single-dose vials lack preservatives and are one-client, one-entry containers; the remainder is discarded, full stop - reuse has caused documented outbreaks. 'The needle never touched it' does not sterilize a preservative-free vial opened to air. Pre-drawn unlabeled syringes for later use violate medication safety rules. Dating and refrigerating cannot convert a single-dose container into a multi-dose one.",
+    "difficulty": 2,
+    "subtopic": "Single-dose vial rules",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Vial questions split on one word: single-dose means discard the rest, multi-dose means date it and follow the 28-day rule - identify which vial the stem gave you and the answer is decided."
+  },
+  {
+    "id": "nx_a9_pa_001",
+    "topicId": 7,
+    "question": "A client with a serum potassium of 7.1 mEq/L develops widened QRS complexes. Which prescribed medication should the nurse administer first?",
+    "options": [
+      "IV calcium gluconate",
+      "Oral sodium polystyrene sulfonate",
+      "Regular insulin with dextrose",
+      "A loop diuretic"
+    ],
+    "correct": 0,
+    "explanation": "Widened QRS means the myocardium is destabilizing now: calcium gluconate immediately raises the threshold for lethal arrhythmia, buying time - it is always first when ECG changes exist. Exchange resins remove potassium over hours, far too slow for this moment. Insulin-dextrose shifts potassium into cells effectively but still acts slower than the membrane needs. Diuretics eliminate potassium but only over time and with kidney cooperation.",
+    "difficulty": 3,
+    "subtopic": "Hyperkalemia emergency sequence",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Hyperkalemia drugs sort into protect, shift, and remove: ECG changes call for the protector (calcium) first, then shifters (insulin-glucose), then removers (resins, dialysis) - the stem's ECG finding selects the tier."
+  },
+  {
+    "id": "nx_a9_pa_002",
+    "topicId": 7,
+    "question": "After pituitary surgery, a client produces 6 liters of dilute urine in 24 hours with rising serum sodium. Which condition should the nurse suspect?",
+    "options": [
+      "Diabetes insipidus from ADH deficiency",
+      "Syndrome of inappropriate antidiuretic hormone (SIADH)",
+      "Hyperglycemic osmotic diuresis",
+      "Acute kidney injury in the oliguric phase"
+    ],
+    "correct": 0,
+    "explanation": "Massive dilute urine with hemoconcentration - rising sodium - after pituitary surgery is diabetes insipidus: without ADH the kidneys cannot hold water. SIADH is the mirror image: retained water, LOW sodium, scant concentrated urine. Osmotic diuresis from glucose requires marked hyperglycemia the stem does not give, and the urine carries glucose rather than being simply dilute. Oliguric AKI means almost no urine - the opposite volume story.",
+    "difficulty": 2,
+    "subtopic": "DI vs SIADH",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "DI and SIADH are mirror images filed by two numbers: urine volume and serum sodium. Huge dilute output + high sodium = DI; scant output + low sodium = SIADH - match the pair and the surgery context confirms it."
+  },
+  {
+    "id": "nx_a9_pa_003",
+    "topicId": 7,
+    "question": "A client with myasthenia gravis on pyridostigmine develops worsening weakness, excessive salivation, sweating, and small pupils. How should the nurse interpret these findings?",
+    "options": [
+      "Cholinergic crisis from excess medication",
+      "Myasthenic crisis from too little medication",
+      "An expected therapeutic response",
+      "An unrelated viral illness"
+    ],
+    "correct": 0,
+    "explanation": "Weakness accompanied by muscarinic excess - salivation, sweating, miosis, GI cramping - is cholinergic crisis: too much anticholinesterase drug. Myasthenic crisis also causes weakness but WITHOUT the secretory storm; the distinguishing features are exactly the wet symptoms this client shows. A therapeutic response improves strength without muscarinic flooding. A viral illness explains none of the cholinergic cluster.",
+    "difficulty": 3,
+    "subtopic": "Cholinergic vs myasthenic crisis",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Both crises are weak - the tiebreaker is wet versus dry: salivation, sweating, and small pupils mean cholinergic (too much drug); a weak but dry client points myasthenic (too little). File SLUDGE as the wet checklist."
+  },
+  {
+    "id": "nx_a9_pa_004",
+    "topicId": 7,
+    "question": "A client returns from thrombolytic therapy for an ischemic stroke. Which finding requires the most immediate action?",
+    "options": [
+      "A sudden severe headache with a decline in level of consciousness",
+      "Oozing at the IV insertion site",
+      "Blood pressure of 148/88 mm Hg",
+      "Mild bruising on the forearms"
+    ],
+    "correct": 0,
+    "explanation": "Sudden severe headache with falling consciousness after thrombolysis signals intracranial hemorrhage - the therapy's most feared complication - demanding immediate escalation and imaging. IV-site oozing is expected with lytic therapy and is managed with pressure. A pressure of 148/88 is within the acceptable post-lytic range and is monitored, not emergent. Superficial bruising is a common, minor consequence of systemic fibrinolysis.",
+    "difficulty": 2,
+    "subtopic": "Post-thrombolytic monitoring",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "After any clot-buster, triage findings by compartment: bleeding you can see and compress is expected; bleeding into the head - new headache plus mental-status change - is the emergency the monitoring exists to catch."
+  },
+  {
+    "id": "nx_a9_ph_001",
+    "topicId": 5,
+    "question": "A client is newly prescribed levothyroxine. Which instruction should the nurse include?",
+    "options": [
+      "Take it in the morning on an empty stomach, 30 to 60 minutes before food",
+      "Take it at bedtime with a snack to prevent nausea",
+      "Take it with calcium-fortified juice to protect the stomach",
+      "Take it only on days when feeling fatigued"
+    ],
+    "correct": 0,
+    "explanation": "Levothyroxine absorbs best fasting - morning dosing 30-60 minutes before food gives consistent levels. Bedtime-with-food dosing reduces and varies absorption. Calcium binds the drug and is one of its classic absorption blockers, making fortified juice the worst partner. Thyroid replacement is continuous daily therapy; symptom-based dosing guarantees hypothyroid drift.",
+    "difficulty": 1,
+    "subtopic": "Levothyroxine administration",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "Levothyroxine questions cluster on absorption: empty stomach, morning, and away from calcium and iron - scan the options for the hidden binder (fortified juice, antacids) planted as a comfort measure."
+  },
+  {
+    "id": "nx_a9_ph_002",
+    "topicId": 5,
+    "question": "A client taking warfarin asks about eating salads. Which response by the nurse is correct?",
+    "options": [
+      "Keep your intake of vitamin K foods consistent from week to week rather than avoiding them entirely",
+      "Never eat green leafy vegetables while on warfarin",
+      "Eat extra greens on days you feel bruised",
+      "Vitamin K in food has no relationship to your medication"
+    ],
+    "correct": 0,
+    "explanation": "Warfarin is dosed against the client's habitual vitamin K intake - consistency, not elimination, keeps the INR stable. Total avoidance is unnecessary, unsustainable, and makes the INR hostage to any lapse. Deliberately swinging intake with symptoms destabilizes anticoagulation in the wrong direction. Vitamin K is warfarin's direct antagonist, so 'no relationship' is factually wrong.",
+    "difficulty": 2,
+    "subtopic": "Warfarin diet teaching",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "The warfarin-diet answer is one word: consistency. Options that forbid, encourage, or dismiss vitamin K are the three planted extremes around it."
+  },
+  {
+    "id": "nx_a9_ph_003",
+    "topicId": 5,
+    "question": "A family member asks if they can press the client's PCA button when the client is asleep so pain control 'stays ahead.' What should the nurse explain?",
+    "options": [
+      "Only the client may press the button - sedation naturally limits dosing, and dosing by others removes that safeguard",
+      "Family may press it if they note the time for the record",
+      "Nurses will press it hourly overnight instead",
+      "The button can be pressed by anyone since the pump has a lockout"
+    ],
+    "correct": 0,
+    "explanation": "PCA safety rests on the client's own sedation gating the dosing: a client too sleepy to press cannot overdose. PCA-by-proxy removes that safeguard and has caused respiratory-arrest deaths regardless of documentation. Routine nurse-administered presses recreate the same bypass under a different name. The lockout limits frequency but cannot compensate for dosing a sedated, non-demanding client.",
+    "difficulty": 2,
+    "subtopic": "PCA by proxy",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "PCA questions test one elegant safety loop: sleepiness stops the pressing, which stops the drug. Any option letting someone else press - family, nurse, anyone - cuts the loop and is wrong however caring it sounds."
+  },
+  {
+    "id": "nx_a9_ph_004",
+    "topicId": 5,
+    "question": "A client with stable angina asks how to use sublingual nitroglycerin during chest pain at home. Which instruction is correct?",
+    "options": [
+      "Sit down, take one tablet under the tongue; if pain persists after 5 minutes, call emergency services, and up to two more doses may be taken 5 minutes apart while waiting",
+      "Take tablets every 2 minutes until the pain stops",
+      "Swallow the tablet with a full glass of water",
+      "Stand and walk to test whether the pain is truly cardiac"
+    ],
+    "correct": 0,
+    "explanation": "Current guidance: sit (vasodilation drops blood pressure), one sublingual dose, and if pain is unimproved at 5 minutes call EMS - unrelieved angina may be infarction - with up to three total doses at 5-minute intervals while help comes. Two-minute redosing overdoses a potent vasodilator. Swallowing destroys sublingual bioavailability through first-pass metabolism. Walking increases myocardial demand during ischemia - the test is dangerous, not diagnostic.",
+    "difficulty": 2,
+    "subtopic": "Sublingual nitroglycerin protocol",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave9.json",
+    "strategy": "The modern NTG sequence hides its tested change in the middle: EMS is called after the FIRST unrelieved dose, not after all three - options that delay the call to the end describe the outdated protocol."
+  }
+]
