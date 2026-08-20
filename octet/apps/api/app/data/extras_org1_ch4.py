@@ -3744,7 +3744,7 @@ _add(LessonExtras(
                 "year-long course needs its students to "
                 "find early, practise deliberately, and then "
                 "trust completely under exam pressure, when "
-                "compression is the only speed that exists."
+                "compression is the only kind of speed that truly exists."
             ),
         ),
     ),
