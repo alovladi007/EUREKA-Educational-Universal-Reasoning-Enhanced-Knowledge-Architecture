@@ -2770,7 +2770,8 @@ _add(LessonExtras(
                 "curriculum built to last, and the standard "
                 "every chapter of this programme is now "
                 "being raised to meet, one four-thousand-word "
-                "chapter at a time, with this one now "
+                "depth-gated chapter at a time, with this "
+                "particular one now thoroughly and verifiably "
                 "finished."
             ),
         ),
