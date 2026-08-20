@@ -2174,7 +2174,7 @@ _add(LessonExtras(
                 "measured it, and the stability ladder built "
                 "in this lesson - counted, cross-checked, and "
                 "priced - is the template for how every later "
-                "ranking in the whole course must earn its keep."
+                "ranking in the whole course must first earn its keep."
             ),
         ),
     ),
