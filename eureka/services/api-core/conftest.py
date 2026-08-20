@@ -15,10 +15,12 @@ os.environ.setdefault("OTEL_SDK_DISABLED", "true")
 
 import asyncio
 import pytest
+import pytest_asyncio
 from typing import AsyncGenerator, Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 from faker import Faker
 
@@ -47,16 +49,26 @@ _install_sqlite_compat(Base)
 fake = Faker()
 
 # Test database configuration
-TEST_DATABASE_URL = "sqlite:///:memory:"  # In-memory SQLite for tests
+# The application is async from top to bottom: `get_db` yields an AsyncSession
+# and every CRUD helper awaits `db.execute(...)`. This conftest used to hand the
+# app a SYNC Session, so the moment a test exercised a real code path it raised
+# `TypeError: object ChunkedIteratorResult can't be used in 'await' expression`
+# (see app/crud/organization.py). That single mismatch is why the CI job could
+# only ever run a hand-picked list of seven files with --noconftest, and why the
+# endpoint modules those tests would cover sit at 15-29% coverage.
+TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
-# Create test engine
-engine = create_engine(
+engine = create_async_engine(
     TEST_DATABASE_URL,
     connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# expire_on_commit=False so fixtures can read attributes off an object after
+# commit without triggering a lazy refresh outside the awaited session.
+TestingSessionLocal = async_sessionmaker(
+    bind=engine, class_=AsyncSession, autoflush=False, expire_on_commit=False
+)
 
 
 @pytest.fixture(scope="session")
@@ -67,31 +79,29 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="function")
-def db_session() -> Generator[Session, None, None]:
-    """
-    Create a fresh database for each test.
-    """
-    # Create all tables
-    Base.metadata.create_all(bind=engine)
+@pytest_asyncio.fixture(scope="function")
+async def db_session() -> AsyncGenerator[AsyncSession, None]:
+    """A fresh in-memory database per test, on an ASYNC session."""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-    # Create a new session for the test
     session = TestingSessionLocal()
-
     try:
         yield session
     finally:
-        session.close()
-        # Drop all tables after the test
-        Base.metadata.drop_all(bind=engine)
+        await session.close()
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture(scope="function")
-def client(db_session: Session) -> Generator[TestClient, None, None]:
+def client(db_session: AsyncSession) -> Generator[TestClient, None, None]:
     """
     Create a test client with a fresh database.
     """
-    def override_get_db():
+    async def override_get_db():
+        # Must be an async generator: FastAPI awaits this dependency, and the
+        # endpoints await the session it yields.
         try:
             yield db_session
         finally:
@@ -105,8 +115,8 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def test_organization(db_session: Session) -> Organization:
+@pytest_asyncio.fixture
+async def test_organization(db_session: AsyncSession) -> Organization:
     """Create a test organization."""
     org = Organization(
         name=fake.company(),
@@ -120,13 +130,13 @@ def test_organization(db_session: Session) -> Organization:
         is_active=True
     )
     db_session.add(org)
-    db_session.commit()
-    db_session.refresh(org)
+    await db_session.commit()
+    await db_session.refresh(org)
     return org
 
 
-@pytest.fixture
-def test_user(db_session: Session, test_organization: Organization) -> User:
+@pytest_asyncio.fixture
+async def test_user(db_session: AsyncSession, test_organization: Organization) -> User:
     """Create a test user."""
     user = User(
         email=fake.unique.email(),
@@ -141,13 +151,13 @@ def test_user(db_session: Session, test_organization: Organization) -> User:
         is_email_verified=True
     )
     db_session.add(user)
-    db_session.commit()
-    db_session.refresh(user)
+    await db_session.commit()
+    await db_session.refresh(user)
     return user
 
 
-@pytest.fixture
-def test_admin_user(db_session: Session, test_organization: Organization) -> User:
+@pytest_asyncio.fixture
+async def test_admin_user(db_session: AsyncSession, test_organization: Organization) -> User:
     """Create a test admin user."""
     admin = User(
         email=fake.unique.email(),
@@ -161,13 +171,13 @@ def test_admin_user(db_session: Session, test_organization: Organization) -> Use
         is_email_verified=True
     )
     db_session.add(admin)
-    db_session.commit()
-    db_session.refresh(admin)
+    await db_session.commit()
+    await db_session.refresh(admin)
     return admin
 
 
-@pytest.fixture
-def test_teacher_user(db_session: Session, test_organization: Organization) -> User:
+@pytest_asyncio.fixture
+async def test_teacher_user(db_session: AsyncSession, test_organization: Organization) -> User:
     """Create a test teacher user."""
     teacher = User(
         email=fake.unique.email(),
@@ -180,8 +190,8 @@ def test_teacher_user(db_session: Session, test_organization: Organization) -> U
         is_email_verified=True
     )
     db_session.add(teacher)
-    db_session.commit()
-    db_session.refresh(teacher)
+    await db_session.commit()
+    await db_session.refresh(teacher)
     return teacher
 
 
