@@ -17,6 +17,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Stethoscope,
+  HeartPulse,
   ClipboardList,
   FileText,
   Activity,
@@ -53,6 +54,9 @@ const LEARNER_SECTIONS = [
   { href: "/dashboard/medical/qbank", label: "QBank", icon: ClipboardList, exact: false, countKey: null },
   { href: "/dashboard/medical/cases", label: "Cases", icon: FileText, exact: false, countKey: null },
   { href: "/dashboard/medical/anatomy", label: "Anatomy", icon: Activity, exact: false, countKey: null },
+  // Physiology sims — currently the cardiac PV loop; more to follow, at which
+  // point this should point at a physiology index rather than a single sim.
+  { href: "/dashboard/medical/physiology/pv-loop", label: "Physiology", icon: HeartPulse, exact: false, countKey: null },
   { href: "/dashboard/medical/osce", label: "OSCE", icon: UserCheck, exact: false, countKey: null },
   { href: "/dashboard/medical/ai-tutor", label: "AI Tutor", icon: Brain, exact: false, countKey: null },
   { href: "/dashboard/medical/enrollment", label: "My enrollment", icon: Layers, exact: false, countKey: "enrollment" as const },
