@@ -3714,8 +3714,8 @@ _add(LessonExtras(
                 "signature, spec sheet and error catalogue "
                 "filed beside it, is what separates a course "
                 "that must be re-crammed each exam season "
-                "from one that was actually, permanently "
-                "learned."
+                "from one that was actually, permanently, "
+                "and quite thoroughly learned for good."
             ),
         ),
     ),
