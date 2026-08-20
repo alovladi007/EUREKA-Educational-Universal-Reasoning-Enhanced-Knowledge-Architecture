@@ -1,11 +1,39 @@
 """
 Notification database model for EUREKA API Core
 
-SQLAlchemy ORM model for notifications table.
+Mirrors `notifications` as created by ops/db/00_init_complete.sql.
+
+WHY THIS MODEL IS THIN
+----------------------
+This model previously declared an aspirational superset: 12 columns the live
+table has never had (org_id, type, priority, action_text, data, is_sent,
+is_deleted, deleted_at, sent_at, sent_via_email/push/sms) and none of the 4
+the table actually has (notification_type, channels, metadata, expires_at).
+The schema-drift gate reported all 16 once it was repaired in 2026-08.
+
+Nothing imported it. `Notification` appears in no endpoint, service, or CRUD
+module — only in `app/models/__init__.py`. The columns were never used because
+the model was never used, so the drift was 100% cosmetic and the resolution is
+convergence, not a migration: adding 12 unused columns to a live table (4 rows)
+would be churn with a downgrade path and no consumer.
+
+This follows the precedent set in 2026-07 for api-core's other dormant models
+(assignments, submissions, grades, refresh_tokens, audit_logs, file_uploads),
+recorded in the docstring of scripts/check_schema_drift.py: dormant model
+drifting from init SQL -> rewrite the model to mirror the SQL.
+
+NOT TO BE CONFUSED WITH `PushNotification` (app/models/engagement.py, table
+`push_notifications`). That is the notification table the platform actually
+writes to, it is declared in ops/db/14_engagement.sql, it HAS `sent_at`, and
+app/services/push_notify.py sets it there. The two tables have similar names
+and no relationship.
+
+If in-app notifications are built for real, extend BOTH this model and the init
+SQL together, in one alembic revision.
 """
 
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Index, CheckConstraint, Text
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Index, text
+from sqlalchemy.dialects.postgresql import ARRAY, ENUM, JSONB, UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -13,147 +41,97 @@ import uuid
 from app.core.database import Base
 
 
+# -- PG enum bridges (create_type=False — SQL owns the type) ------------------
+
+_PG_NOTIFICATION_TYPE = ENUM(
+    "info", "success", "warning", "error", "grade", "message", "announcement",
+    name="notification_type", create_type=False,
+)
+_PG_NOTIFICATION_CHANNEL = ENUM(
+    "in_app", "email", "sms", "push",
+    name="notification_channel", create_type=False,
+)
+
+
 class Notification(Base):
-    """Notification model - system notifications for users"""
+    """In-app notification. Currently written by no application code."""
+
     __tablename__ = "notifications"
 
-    # Primary Key
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
 
-    # Foreign Keys
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    org_id = Column(UUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
-
-    # Notification Type and Priority
-    type = Column(String(50), nullable=False, index=True)  # assignment, grade, message, system, etc.
-    priority = Column(String(20), nullable=False, default="normal", index=True)  # low, normal, high, urgent
-
-    # Content
+    notification_type = Column(_PG_NOTIFICATION_TYPE, nullable=False)
     title = Column(String(255), nullable=False)
-    message = Column(Text, nullable=False)
-    action_text = Column(String(100), nullable=True)  # Button text like "View Assignment"
-    action_url = Column(String(500), nullable=True)  # Where the action button should go
+    message = Column(String, nullable=False)
 
-    # Reference Information (what this notification is about)
-    reference_type = Column(String(100), nullable=True, index=True)  # assignment, course, user, etc.
-    reference_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    # DEFAULTS ARE PYTHON-SIDE ON PURPOSE.
+    #
+    # ops/db/00_init_complete.sql owns the server defaults for this table
+    # (ARRAY['in_app'::notification_channel], '{}'::jsonb, false,
+    # CURRENT_TIMESTAMP). Restating them here as `server_default=text(...)`
+    # emits Postgres literals into every CREATE TABLE — including the one the
+    # test harness runs against sqlite, where `ARRAY['in_app'::notification_
+    # channel]` is a syntax error that fails create_all and errors out every
+    # test using the db_session fixture. Python-side defaults express the same
+    # intent and are dialect-portable.
+    channels = Column(ARRAY(_PG_NOTIFICATION_CHANNEL), default=lambda: ["in_app"])
 
-    # Metadata
-    data = Column(JSONB, nullable=True)  # Additional data for notification
+    is_read = Column(Boolean, default=False)
+    read_at = Column(DateTime, nullable=True)
 
-    # Status Flags
-    is_read = Column(Boolean, nullable=False, default=False, index=True)
-    is_sent = Column(Boolean, nullable=False, default=False)  # For email/push notifications
-    is_deleted = Column(Boolean, nullable=False, default=False, index=True)  # Soft delete
+    # What the notification is about.
+    reference_type = Column(String(100), nullable=True)
+    reference_id = Column(UUID(as_uuid=True), nullable=True)
+    action_url = Column(String(500), nullable=True)
 
-    # Channels
-    sent_via_email = Column(Boolean, nullable=False, default=False)
-    sent_via_push = Column(Boolean, nullable=False, default=False)
-    sent_via_sms = Column(Boolean, nullable=False, default=False)
+    # `metadata` is reserved on the declarative Base (it is the MetaData
+    # object), so the attribute is `meta` while the column keeps the name the
+    # table uses. The drift checker compares COLUMN names, so this matches.
+    meta = Column("metadata", JSONB, default=dict)
 
-    # Timestamps
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
-    read_at = Column(DateTime, nullable=True, index=True)
-    sent_at = Column(DateTime, nullable=True)
-    deleted_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    expires_at = Column(DateTime, nullable=True)
 
-    # Relationships
     user = relationship("User")
-    organization = relationship("Organization")
 
-    # Constraints and Indexes
+    # Index names mirror ops/db/00_init_complete.sql.
     __table_args__ = (
-        # Check constraints for data validation
-        CheckConstraint(
-            "type IN ('assignment', 'grade', 'message', 'announcement', 'reminder', 'system', 'achievement', 'deadline')",
-            name='ck_notifications_type'
+        Index("idx_notifications_user", "user_id"),
+        Index(
+            "idx_notifications_unread",
+            "user_id",
+            "is_read",
+            postgresql_where=text("is_read = false"),
         ),
-        CheckConstraint(
-            "priority IN ('low', 'normal', 'high', 'urgent')",
-            name='ck_notifications_priority'
-        ),
-        CheckConstraint(
-            "read_at IS NULL OR read_at >= created_at",
-            name='ck_notifications_read_after_created'
-        ),
-
-        # Indexes for performance
-        Index('ix_notifications_user_unread', 'user_id', 'is_read', 'created_at'),
-        Index('ix_notifications_user_type', 'user_id', 'type', 'created_at'),
-        Index('ix_notifications_user_priority', 'user_id', 'priority', 'created_at'),
-        Index('ix_notifications_reference', 'reference_type', 'reference_id'),
-        Index('ix_notifications_created_desc', created_at.desc()),
-        Index('ix_notifications_unsent', 'is_sent', 'created_at'),
+        Index("idx_notifications_created", "created_at"),
     )
 
     def __repr__(self):
-        return f"<Notification {self.type} for user={self.user_id} read={self.is_read}>"
+        return (
+            f"<Notification {self.notification_type} "
+            f"user={self.user_id} read={self.is_read}>"
+        )
 
     def to_dict(self):
         """Convert notification to dictionary"""
         return {
             "id": str(self.id),
             "user_id": str(self.user_id),
-            "org_id": str(self.org_id) if self.org_id else None,
-            "type": self.type,
-            "priority": self.priority,
+            "notification_type": self.notification_type,
             "title": self.title,
             "message": self.message,
-            "action_text": self.action_text,
-            "action_url": self.action_url,
+            "channels": list(self.channels) if self.channels else [],
+            "is_read": self.is_read,
             "reference_type": self.reference_type,
             "reference_id": str(self.reference_id) if self.reference_id else None,
-            "data": self.data,
-            "is_read": self.is_read,
-            "is_sent": self.is_sent,
-            "is_deleted": self.is_deleted,
-            "sent_via_email": self.sent_via_email,
-            "sent_via_push": self.sent_via_push,
-            "sent_via_sms": self.sent_via_sms,
+            "action_url": self.action_url,
+            "metadata": self.meta,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "read_at": self.read_at.isoformat() if self.read_at else None,
-            "sent_at": self.sent_at.isoformat() if self.sent_at else None,
+            "expires_at": self.expires_at.isoformat() if self.expires_at else None,
         }
-
-    def mark_as_read(self):
-        """Mark notification as read"""
-        if not self.is_read:
-            self.is_read = True
-            self.read_at = datetime.utcnow()
-
-    def mark_as_sent(self, via_email: bool = False, via_push: bool = False, via_sms: bool = False):
-        """Mark notification as sent"""
-        self.is_sent = True
-        self.sent_at = datetime.utcnow()
-        if via_email:
-            self.sent_via_email = True
-        if via_push:
-            self.sent_via_push = True
-        if via_sms:
-            self.sent_via_sms = True
-
-    def soft_delete(self):
-        """Soft delete notification"""
-        self.is_deleted = True
-        self.deleted_at = datetime.utcnow()
-
-    @classmethod
-    def create_for_user(cls, user_id: uuid.UUID, type: str, title: str, message: str,
-                        org_id: uuid.UUID = None, priority: str = "normal",
-                        action_text: str = None, action_url: str = None,
-                        reference_type: str = None, reference_id: uuid.UUID = None,
-                        data: dict = None):
-        """Create a new notification for a user"""
-        return cls(
-            user_id=user_id,
-            org_id=org_id,
-            type=type,
-            priority=priority,
-            title=title,
-            message=message,
-            action_text=action_text,
-            action_url=action_url,
-            reference_type=reference_type,
-            reference_id=reference_id,
-            data=data
-        )
