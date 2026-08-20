@@ -310,7 +310,6 @@ jobs:
           pytest tests/integration/ \
             --ignore=tests/integration/test_auth.py \
             --ignore=tests/integration/test_phase12.py \
-            --ignore=tests/integration/test_phase13.py \
             --ignore=tests/integration/test_phase7.py \
             -v --tb=short \
             --override-ini=addopts= \
