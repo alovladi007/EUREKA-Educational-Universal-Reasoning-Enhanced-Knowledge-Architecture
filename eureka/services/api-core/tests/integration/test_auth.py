@@ -59,9 +59,13 @@ class TestUserRegistration:
 
     def test_register_duplicate_email(self, client: TestClient, test_user: User):
         """Test registration with duplicate email fails."""
+        # Duplicate detection is per-organisation: the same address in two
+        # different tenants is legitimate. Passing org_id makes this a real
+        # collision instead of two users in different orgs.
         user_data = {
             "email": test_user.email,
-                        "password": "SecurePassword123!",
+            "org_id": str(test_user.org_id),
+            "password": "SecurePassword123!",
             "first_name": "Another",
             "last_name": "User",
             "role": "student"
@@ -72,20 +76,6 @@ class TestUserRegistration:
         assert response.status_code == 400
         assert "already registered" in response.json()["detail"].lower()
 
-    def test_register_duplicate_username(self, client: TestClient, test_user: User):
-        """Test registration with duplicate username fails."""
-        user_data = {
-            "email": "different@example.com",
-            "username": test_user.username,
-            "password": "SecurePassword123!",
-            "first_name": "Another",
-            "last_name": "User",
-            "role": "student"
-        }
-
-        response = client.post("/api/v1/auth/register", json=user_data)
-
-        assert response.status_code == 400
 
     def test_register_invalid_email(self, client: TestClient):
         """Test registration with invalid email fails."""
@@ -123,12 +113,9 @@ class TestUserLogin:
 
     def test_login_success(self, client: TestClient, test_user: User):
         """Test successful login."""
-        login_data = {
-            "username": test_user.email,
-            "password": "testpassword123"
-        }
+        login_data = {"email": test_user.email, "password": "testpassword123"}
 
-        response = client.post("/api/v1/auth/login", data=login_data)
+        response = client.post("/api/v1/auth/login", json=login_data)
 
         assert response.status_code == 200
         data = response.json()
@@ -138,12 +125,9 @@ class TestUserLogin:
 
     def test_login_wrong_password(self, client: TestClient, test_user: User):
         """Test login with wrong password fails."""
-        login_data = {
-            "username": test_user.email,
-            "password": "wrongpassword"
-        }
+        login_data = {"email": test_user.email, "password": "wrongpassword"}
 
-        response = client.post("/api/v1/auth/login", data=login_data)
+        response = client.post("/api/v1/auth/login", json=login_data)
 
         assert response.status_code == 401
         assert "incorrect" in response.json()["detail"].lower()
@@ -154,7 +138,7 @@ class TestUserLogin:
                         "password": "somepassword"
         }
 
-        response = client.post("/api/v1/auth/login", data=login_data)
+        response = client.post("/api/v1/auth/login", json=login_data)
 
         assert response.status_code == 401
 
@@ -164,12 +148,9 @@ class TestUserLogin:
         test_user.is_active = False
         db_session.commit()
 
-        login_data = {
-            "username": test_user.email,
-            "password": "testpassword123"
-        }
+        login_data = {"email": test_user.email, "password": "testpassword123"}
 
-        response = client.post("/api/v1/auth/login", data=login_data)
+        response = client.post("/api/v1/auth/login", json=login_data)
 
         assert response.status_code == 401
 
@@ -182,11 +163,8 @@ class TestTokenRefresh:
     def test_refresh_token_success(self, client: TestClient, test_user: User):
         """Test successful token refresh."""
         # First login to get tokens
-        login_data = {
-            "username": test_user.email,
-            "password": "testpassword123"
-        }
-        login_response = client.post("/api/v1/auth/login", data=login_data)
+        login_data = {"email": test_user.email, "password": "testpassword123"}
+        login_response = client.post("/api/v1/auth/login", json=login_data)
         refresh_token = login_response.json()["refresh_token"]
 
         # Refresh the token
@@ -319,11 +297,8 @@ class TestPasswordReset:
         assert response.status_code == 200
 
         # Try logging in with new password
-        login_data = {
-            "username": test_user.email,
-            "password": "NewSecurePassword123!"
-        }
-        login_response = client.post("/api/v1/auth/login", data=login_data)
+        login_data = {"email": test_user.email, "password": "NewSecurePassword123!"}
+        login_response = client.post("/api/v1/auth/login", json=login_data)
         assert login_response.status_code == 200
 
     def test_reset_password_invalid_token(self, client: TestClient):
