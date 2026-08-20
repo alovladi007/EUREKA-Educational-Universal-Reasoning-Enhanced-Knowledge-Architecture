@@ -812,7 +812,7 @@ _add(LessonExtras(
                 "chemistry course you take from now to the "
                 "boards, in exactly the coin exams and "
                 "laboratories both spend: correct, fast, "
-                "auditable first moves."
+                "auditable first moves made without hesitation."
             ),
         ),
     ),
