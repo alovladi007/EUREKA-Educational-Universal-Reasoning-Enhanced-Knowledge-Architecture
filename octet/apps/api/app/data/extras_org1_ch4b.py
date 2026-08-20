@@ -3370,7 +3370,17 @@ _add(LessonExtras(
                 "one reciting pathway details. "
                 "Chemistry's regimes are biology's "
                 "physiology; the exam knows it, "
-                "and now so do you."
+                "and now so do you - which means the "
+                "biochemistry questions built on this bridge "
+                "stop being biochemistry questions at all. "
+                "They are this lesson, wearing enzyme names, "
+                "and they surrender to the same three-part "
+                "audit as every fork in this chapter: find "
+                "the branch point, find the gate, read the "
+                "conditions that hold the gate open or "
+                "closed. Run that audit everywhere it "
+                "applies, and it applies nearly everywhere, "
+                "for the rest of your scientific education."
             ),
         ),
     ),
