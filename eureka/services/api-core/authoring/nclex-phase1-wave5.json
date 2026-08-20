@@ -1,0 +1,308 @@
+[
+ {
+  "id": "nx_a5_mc_001",
+  "topicId": 0,
+  "subtopic": "Incident reporting practice",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client received a medication one hour late because of a pharmacy delay. The nurse completes an incident report. How should the medical record be documented?",
+  "options": [
+   "Chart the facts \u2014 the time the medication was actually given and the client's condition \u2014 without mentioning the incident report",
+   "Chart 'incident report completed, see report for details'",
+   "Attach a copy of the incident report to the chart",
+   "Omit the late dose from the record so the chart stays clean"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the chart records the objective clinical facts; the incident report is a separate quality-improvement document, and referencing it in the chart strips its legal protection and adds nothing to care. (b) 'See incident report' plants the report inside the legal record. (c) Attaching it does the same thing physically. (d) Omitting the event falsifies the record \u2014 the late administration time IS charted; what stays out is only the report's existence.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_mc_002",
+  "topicId": 0,
+  "subtopic": "Medication reconciliation",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client is being transferred from the ICU to a medical unit. Why does the nurse perform medication reconciliation at this handoff?",
+  "options": [
+   "Transitions of care are where medications are most often lost, duplicated, or left at ICU-only doses",
+   "It is only required at hospital discharge",
+   "The pharmacy computer prevents all transition errors automatically",
+   "It replaces the need for a verbal handoff report"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): every transition \u2014 admission, transfer, discharge \u2014 is a documented high-risk point where home medications vanish, infusions continue past their indication, and ICU dosing follows the client to the floor; reconciliation at EACH transition is the defense. (b) Discharge-only reconciliation misses the in-hospital transitions where these errors happen. (c) Order systems carry orders forward faithfully \u2014 including the wrong ones; the comparison step is human. (d) Reconciliation complements the handoff report; neither substitutes for the other.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_si_001",
+  "topicId": 1,
+  "subtopic": "Poisoning response",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A parent calls the clinic: their toddler just swallowed an unknown number of adult acetaminophen tablets but looks fine. What should the nurse instruct?",
+  "options": [
+   "Contact Poison Control immediately for guidance, even though the child appears well",
+   "Give syrup of ipecac to induce vomiting right away",
+   "Watch the child at home and call back if symptoms develop",
+   "Give milk to neutralize the medication"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): Poison Control directs the response to every ingestion \u2014 and acetaminophen is the trap case, because the child looks WELL during the window when the antidote works and liver failure is still preventable. (b) Inducing vomiting is no longer recommended for ingestions and ipecac is obsolete. (c) 'Wait for symptoms' is precisely how acetaminophen poisoning becomes fatal \u2014 symptoms arrive after the treatment window. (d) Milk neither neutralizes nor removes the drug.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_si_002",
+  "topicId": 1,
+  "subtopic": "Elopement precautions",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A hospitalized client with dementia has twice tried to leave the unit saying they must 'get home to work.' Which interventions are appropriate? Select all that apply.",
+  "options": [
+   "Ensure the client wears the facility's wander-alert device per policy",
+   "Move the client to a room away from exits and stairwells",
+   "Increase supervision and engage the client in structured activities",
+   "Remind the client firmly that they no longer have a job",
+   "Alert unit staff to the elopement risk at every handoff"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 the wander-alert system announces exit attempts the staff cannot watch for continuously; (b) \u2014 distance from exits buys response time; (c) \u2014 supervision plus meaningful activity addresses the restlessness that drives exit-seeking; (e) \u2014 elopement risk is a safety flag that must survive every shift change. Wrong (d): confronting the client with reality about the lost job ('reality orientation' used as correction) escalates distress in dementia \u2014 validation and redirection are used instead.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_hp_001",
+  "topicId": 2,
+  "subtopic": "Newborn safe sleep",
+  "difficulty": 1,
+  "type": "multi",
+  "question": "A nurse is teaching new parents about safe infant sleep. Which instructions are correct? Select all that apply.",
+  "options": [
+   "Place the infant on the back for every sleep",
+   "Use a firm, flat sleep surface in the parents' room for the early months",
+   "Keep pillows, blankets, and stuffed toys out of the crib",
+   "Position the infant on the side to prevent choking on spit-up",
+   "Avoid overheating the infant with heavy layers"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 supine positioning for every sleep is the single strongest protection against sudden infant death; (b) \u2014 a firm flat surface, room-sharing without bed-sharing, is the recommended arrangement; (c) \u2014 soft objects and loose bedding are suffocation hazards; (e) \u2014 overheating is an independent risk factor. Wrong (d): side-lying is unstable and rolls to prone \u2014 healthy infants protect their airway when supine, and the choking rationale is a persistent myth.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_hp_002",
+  "topicId": 2,
+  "subtopic": "Adolescent interview",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A 16-year-old arrives for a well visit accompanied by a parent. Which nursing approach is best for the psychosocial history?",
+  "options": [
+   "Interview the adolescent privately for part of the visit, explaining confidentiality and its limits",
+   "Take the entire history with the parent present so nothing is missed",
+   "Skip questions about substances and sexual health to avoid awkwardness",
+   "Promise the adolescent that nothing they say will ever be shared with anyone"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): adolescents disclose risk behaviors when interviewed alone, and the ground rules are stated honestly \u2014 confidential, EXCEPT for safety concerns such as harm to self or others. (b) With a parent present, sensitive answers simply are not given. (c) Substances and sexual health are core adolescent screening; skipping them is a missed visit. (d) Absolute secrecy is a promise the nurse cannot keep \u2014 safety disclosures must be acted on, and saying otherwise betrays trust later.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_ps_001",
+  "topicId": 3,
+  "subtopic": "Postpartum mood changes",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client 2 weeks postpartum tearfully reports feeling unable to care for the baby, sleeping poorly even when the baby sleeps, and having thoughts that the family would be 'better off without me.' How should the nurse interpret this?",
+  "options": [
+   "Signs beyond normal 'baby blues' with a safety concern requiring immediate follow-up",
+   "Typical baby blues that resolve without intervention by week three",
+   "Expected fatigue from newborn care",
+   "A private family matter outside the nurse's role"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): blues peak in the first days and fade by about two weeks \u2014 persistent symptoms, inability to function, sleep loss independent of the infant, and especially 'better off without me' (passive suicidal ideation) mean postpartum depression with a safety assessment NOW. (b) The timeline and the ideation both rule out simple blues. (c) Fatigue does not produce thoughts of the family being better off without her. (d) Perinatal mental health screening and response are squarely nursing responsibilities.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_ps_002",
+  "topicId": 3,
+  "subtopic": "Stages of change",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client who smokes says, 'I know you'll lecture me, but I have no interest in quitting.' Which nursing response best matches the client's stage of change?",
+  "options": [
+   "'I hear you. If you're ever open to it, I'm happy to share what's helped others \u2014 may I check in another time?'",
+   "'Here is a quit plan and a prescription pamphlet; let's set your quit date today.'",
+   "'You will regret this decision when you develop lung cancer.'",
+   "'Then let's not document your smoking at all.'"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the client is in precontemplation \u2014 the effective moves are acknowledging autonomy, offering information conditionally, and leaving the door open, which is motivational interviewing rather than confrontation. (b) A quit date is action-stage planning forced onto someone with no intention to change; it produces resistance, not quitting. (c) Scare-and-shame hardens precontemplation. (d) Not documenting smoking falsifies the history and abandons future opportunities.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_bc_001",
+  "topicId": 4,
+  "subtopic": "Ostomy care",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A nurse is teaching a client with a new colostomy about appliance and skin care. Which instructions are correct? Select all that apply.",
+  "options": [
+   "Size the skin barrier opening to fit close around the stoma",
+   "Empty the pouch when it is about one-third to one-half full",
+   "Report a stoma that turns dark purple or black immediately",
+   "Expect the healthy stoma to be pale gray and painful to touch",
+   "Clean the peristomal skin with water and dry it before applying the barrier"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 a close-fitting barrier keeps effluent off the skin, the main cause of peristomal breakdown; (b) \u2014 emptying at one-third to one-half full prevents the weight from breaking the seal; (c) \u2014 a dusky or black stoma signals ischemia, an emergency; (e) \u2014 clean, dry skin is what the barrier adheres to. Wrong (d): a healthy stoma is moist and RED like the inside of the cheek, and it has no pain nerves \u2014 pale gray describes compromised perfusion, not normal.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_bc_002",
+  "topicId": 4,
+  "subtopic": "Feeding with visual impairment",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse is setting up a meal tray for a client who is blind and eats independently. Which action best supports the client's independence?",
+  "options": [
+   "Describe the food locations using clock positions, such as 'chicken at 6 o'clock'",
+   "Feed the client each bite to prevent spills",
+   "Ask visitors to stay and supervise every meal",
+   "Serve only finger foods so no utensils are needed"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the clock method gives the client a spatial map of the plate, preserving fully independent eating. (b) Feeding a capable adult removes the very independence being supported. (c) Recruiting visitors as supervisors makes dependence social as well as physical. (d) Restricting the diet to finger foods changes what the client eats instead of how the information is conveyed.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_ph_001",
+  "topicId": 5,
+  "subtopic": "Insulin mixing",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client will self-administer regular and NPH insulin in one syringe. Which instruction on drawing up the doses is correct?",
+  "options": [
+   "Draw up the clear regular insulin first, then the cloudy NPH",
+   "Draw up the cloudy NPH first, then the clear regular",
+   "The order does not matter if the total dose is correct",
+   "The two insulins must never be combined in one syringe"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): clear before cloudy \u2014 regular is drawn first so the rapid-acting vial is never contaminated with NPH, whose protamine would blunt the regular insulin's onset in the vial used for emergencies and meals. (b) Cloudy-first risks exactly that contamination. (c) The order is the point; the total being right does not protect the regular vial. (d) Regular and NPH are a classic compatible pair \u2014 the ban applies to insulins like glargine, not these.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_ph_002",
+  "topicId": 5,
+  "subtopic": "Allergy verification",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse prepares to give a client the first dose of a newly prescribed antibiotic. Which action must precede administration?",
+  "options": [
+   "Verify the client's allergy history and check the band against the record",
+   "Ask the pharmacy whether the drug is expensive",
+   "Give the dose and observe afterward, since allergies cannot be predicted",
+   "Have the client sign a consent form for antibiotic therapy"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the allergy check \u2014 record, band, and asking the client \u2014 is the last barrier before a first dose, when an unknown or overlooked allergy is most dangerous. (b) Cost is not a pre-administration safety check. (c) 'Give and watch' treats a preventable anaphylaxis as inevitable; the history predicts a great deal. (d) Routine antibiotic therapy falls under the general consent to treatment; no separate form substitutes for the allergy check.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_rr_001",
+  "topicId": 6,
+  "subtopic": "Post-thyroidectomy monitoring",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "A client returns from a total thyroidectomy. Which equipment should the nurse ensure is immediately available at the bedside?",
+  "options": [
+   "Emergency tracheostomy supplies and calcium gluconate",
+   "A chest tube insertion tray",
+   "A lumbar puncture kit",
+   "Wired jaw cutters"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the two airway-and-metabolic emergencies after thyroidectomy are neck hematoma or laryngeal edema compressing the airway (hence emergency trach supplies) and hypocalcemia from parathyroid injury (hence IV calcium, with monitoring for tingling and spasm). (b) Chest tubes address thoracic problems this surgery does not create. (c) A lumbar puncture kit has no connection to neck surgery. (d) Jaw wires are oral-maxillofacial equipment.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_rr_002",
+  "topicId": 6,
+  "subtopic": "Postoperative urinary retention",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "Eight hours after surgery, a client has not voided and reports lower abdominal discomfort. What should the nurse do first?",
+  "options": [
+   "Use a bladder scanner to measure the urine volume",
+   "Insert an indwelling urinary catheter immediately",
+   "Wait another eight hours before acting",
+   "Restrict fluids so the bladder stops filling"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): assessment precedes intervention \u2014 a bladder scan is noninvasive and tells the team whether this is retention needing drainage or simply low urine volume. (b) Catheterizing without measuring skips assessment and takes on infection risk that may be unnecessary (and an order is required). (c) Sixteen hours without voiding risks bladder overdistension injury. (d) Fluid restriction after surgery neither treats retention nor is safe for recovery.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_pa_001",
+  "topicId": 7,
+  "subtopic": "Hepatic encephalopathy",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client with cirrhosis becomes increasingly drowsy and confused. The nurse asks the client to extend the arms and observes a flapping tremor of the hands. What does this finding indicate?",
+  "options": [
+   "Asterixis, consistent with worsening hepatic encephalopathy",
+   "An expected medication side effect requiring no action",
+   "Early Parkinson's disease",
+   "Simple fatigue from poor sleep"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): the flapping tremor on wrist extension is asterixis \u2014 with confusion in cirrhosis it marks rising ammonia and progressing encephalopathy, reported promptly so treatment (such as lactulose) is adjusted before coma. (b) Attributing a new neuro change in liver failure to medication without assessment is the dangerous default. (c) Parkinsonian tremor is a resting pill-rolling tremor, not a postural flap. (d) Fatigue does not produce asterixis.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ },
+ {
+  "id": "nx_a5_pa_002",
+  "topicId": 7,
+  "subtopic": "Early sepsis recognition",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "An 82-year-old client with a urinary tract infection becomes newly confused, with temperature 38.4 C, heart rate 112/min, respiratory rate 24/min, and blood pressure 100/60 (baseline 142/80). What should the nurse do?",
+  "options": [
+   "Notify the provider now \u2014 this picture suggests developing sepsis",
+   "Reorient the client and reassess in four hours",
+   "Give the scheduled antipyretic and continue routine monitoring",
+   "Ask the family whether confusion is normal at this age"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): infection plus new confusion, tachycardia, tachypnea, fever, and a blood pressure well below the client's own baseline is early sepsis \u2014 in older adults confusion is often the FIRST sign, and early recognition is what changes survival. (b) Four hours is the window in which sepsis becomes septic shock. (c) Masking the fever treats a number while the syndrome progresses. (d) Confusion is never 'normal for age'; new confusion is a clinical finding.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave5 (2026-08-20)"
+ }
+]
