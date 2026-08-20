@@ -278,7 +278,14 @@ async def lesson(node_code: str, _p: Principal = Depends(get_current_principal))
         # from the item templates through /practice/next, which grades on the
         # server. Putting graded questions in the lesson payload would put
         # their answer keys in the client, which the teaching contract forbids.
-        "extras": as_payload(extras_for(node_code)),
+        "extras": as_payload(
+            extras_for(node_code),
+            arc_words=sum(len(t.split()) for t in (
+                found.objective, found.build_on, found.core_idea,
+                found.worked_example, found.try_it_prompt,
+                found.try_it_answer, found.pitfall,
+            )),
+        ),
     }
 
 

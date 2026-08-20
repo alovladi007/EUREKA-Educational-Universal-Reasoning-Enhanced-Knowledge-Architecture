@@ -149,17 +149,38 @@ class LessonExtras:
             words += len(section.body.split())
         return words
 
-    def reading_minutes(self) -> int:
-        """At 200 words per minute, floored at 1 for any non-empty chapter.
+    def reading_minutes(self, arc_words: int = 0) -> int:
+        """Time to actually study the whole chapter page, at 200 wpm prose.
 
-        200 is the low end of adult silent reading for unfamiliar technical
-        prose. Rounding up rather than down because the figures and tables cost
-        time this count does not include.
+        The old version counted only lead + section bodies, which produced
+        the same '7 min' on every chapter because the word floor makes the
+        prose lengths similar - a uniform number that read as hardcoded and
+        undersold the page. This version counts what the reader renders:
+
+          - the six-part arc (passed in as arc_words, since the arc lives
+            on the Lesson, not here), lead, section bodies, callouts,
+            takeaways and exam tips, all at 200 words per minute;
+          - tables at 5 seconds per row plus the caption at reading speed,
+            because scanning a data row is slower than reading its words;
+          - figures at 40 seconds each - the standard study-time estimate
+            for a diagram the text argues from, not decoration glanced at.
+
+        Rounded up; floored at 1 for any non-empty chapter.
         """
-        words = self.word_count()
-        if words == 0:
+        words = arc_words + self.word_count()
+        for section in self.sections:
+            words += len(section.important.split())
+            if section.table is not None:
+                words += len(section.table.caption.split())
+        words += sum(len(t.split()) for t in self.key_takeaways)
+        words += sum(len(t.split()) for t in self.exam_tips)
+        if words == 0 and not self.figures():
             return 0
-        return max(1, -(-words // 200))
+        seconds = words * 60 / 200
+        seconds += sum(len(s.table.rows) for s in self.sections
+                       if s.table is not None) * 5
+        seconds += len(self.figures()) * 40
+        return max(1, -(-int(seconds) // 60))
 
     def figures(self) -> list[Figure]:
         return [s.figure for s in self.sections if s.figure is not None]
@@ -168,8 +189,12 @@ class LessonExtras:
         return [s.table for s in self.sections if s.table is not None]
 
 
-def as_payload(extras: LessonExtras | None) -> dict | None:
-    """Serialise for the lessons endpoint. None stays None."""
+def as_payload(extras: LessonExtras | None, arc_words: int = 0) -> dict | None:
+    """Serialise for the lessons endpoint. None stays None.
+
+    arc_words is the word count of the six-part arc lesson the reader
+    renders above these extras; passing it makes reading_minutes cover
+    the whole page rather than the extras alone."""
     if extras is None:
         return None
     return {
@@ -216,6 +241,6 @@ def as_payload(extras: LessonExtras | None) -> dict | None:
             }
         ),
         "further": [{"label": a, "href": b} for a, b in extras.further],
-        "reading_minutes": extras.reading_minutes(),
+        "reading_minutes": extras.reading_minutes(arc_words=arc_words),
         "word_count": extras.word_count(),
     }
