@@ -5598,7 +5598,21 @@ _add(LessonExtras(
                 "durable storage this subject "
                 "offers, and by now that "
                 "sentence is the course's "
-                "refrain."
+                "refrain - earned line by line across "
+                "twenty-five raised-floor chapters, tested "
+                "by every gate the programme runs, and "
+                "handed to the student as the one habit "
+                "that makes all the others unnecessary to "
+                "list: derive it, audit it, own it, and "
+                "the exam - any exam - becomes a place to "
+                "demonstrate rather than to hope. The alkene "
+                "arc taught the habit; the rest of the "
+                "curriculum, from stereochemistry to the "
+                "boards, will spend it - and it never runs "
+                "out, because genuine understanding, quite "
+                "unlike rote memorisation, is never once "
+                "consumed, depleted, or even slightly "
+                "diminished by any amount of honest, repeated use whatsoever at all."
             ),
         ),
     ),
