@@ -228,16 +228,12 @@ class TestEmailVerification:
 
     def test_verify_email_success(self, client: TestClient, test_user: User):
         """Test successful email verification."""
-        # `create_verification_token` does not exist anywhere in this service
-        # — not in app.utils.auth, not in app.auth.auth_system, nowhere. The
-        # test was written against the same fictional app.core.security as
-        # the rest of this file. Writing the helper to satisfy the test would
-        # be inventing a feature, so this records the gap instead: either
-        # email-verification token minting is unimplemented, or it lives
-        # under a name nobody has documented.
-        pytest.skip("no verification-token helper exists; feature gap, not a test bug")
-        from app.utils.auth import create_verification_token  # noqa: F401
-        token = create_verification_token(test_user.email)
+        # The helper is real — it is `create_email_verification_token`, and
+        # /resend-verification uses it. The test had guessed both the name and
+        # the signature (it takes user_id AND email, like the password-reset
+        # one). Not a feature gap: a misremembered symbol.
+        from app.utils.auth import create_email_verification_token
+        token = create_email_verification_token(str(test_user.id), test_user.email)
 
         response = client.post(
             "/api/v1/auth/verify-email",
