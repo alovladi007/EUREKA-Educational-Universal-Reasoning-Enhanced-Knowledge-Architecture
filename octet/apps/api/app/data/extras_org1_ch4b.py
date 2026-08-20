@@ -797,7 +797,17 @@ _add(LessonExtras(
                 "comes first in the curriculum: "
                 "four words, one ledger, one "
                 "workflow, and the entire subject "
-                "becomes navigable."
+                "becomes navigable. Navigable is not the "
+                "same as easy - the mechanisms ahead have "
+                "real depth and real traps - but a "
+                "navigable subject can be studied in order, "
+                "audited step by step, and passed by "
+                "method rather than memory heroics, and "
+                "that conversion is precisely what a "
+                "taxonomy well-learned buys. Buy it here, "
+                "at four definitions and a counting rule, "
+                "the cheapest price the course will ever "
+                "quote for anything this valuable."
             ),
         ),
     ),
