@@ -3742,7 +3742,8 @@ _add(LessonExtras(
                 "become one subject with a sign and a "
                 "count, which is exactly the compression a "
                 "year-long course needs its students to "
-                "find."
+                "find early, practise deliberately, and then "
+                "trust completely under exam pressure."
             ),
         ),
     ),
