@@ -5107,7 +5107,22 @@ _add(LessonExtras(
                 "among three simultaneous cycles - "
                 "is a complete oral exam on "
                 "catalysis, passed by millions of "
-                "machines every morning."
+                "machines every morning.\n\n"
+                "The case study also models how this course "
+                "wants its chemistry held: not as isolated "
+                "exam topics but as working explanations of "
+                "the built world. A student who can point at "
+                "an exhaust pipe, a margarine tub, a "
+                "fertiliser bag, or a bottle of L-DOPA and "
+                "narrate the catalytic chemistry inside has "
+                "converted coursework into literacy - and "
+                "literacy, unlike memorisation, survives the "
+                "exam it was built for. That conversion, "
+                "performed once per chapter on the best "
+                "artefact available, is the cheapest "
+                "retention strategy this course knows, and "
+                "the converter is this chapter's gift to "
+                "it."
             ),
         ),
     ),
