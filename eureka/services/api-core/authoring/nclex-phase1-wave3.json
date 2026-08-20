@@ -1,0 +1,229 @@
+[
+ {
+  "id": "nx_a3_ph_001",
+  "topicId": 5,
+  "subtopic": "Statin therapy",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client taking atorvastatin reports new, unexplained muscle pain and weakness. Which action should the nurse take?",
+  "options": [
+   "Reassure the client that muscle aches always resolve with continued use",
+   "Hold the next dose and notify the provider; anticipate a creatine kinase level",
+   "Advise the client to take the medication with grapefruit juice to reduce aching",
+   "Suggest doubling fluid intake and continuing the medication unchanged"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): new myalgia with weakness on a statin raises the possibility of myopathy progressing to rhabdomyolysis \u2014 the drug is held pending provider review and a CK level. (a) Dismissing the symptom ignores the recognized serious adverse effect. (c) Grapefruit juice INHIBITS statin metabolism, raising levels and worsening muscle toxicity. (d) Hydration matters if rhabdomyolysis is confirmed, but continuing the drug unchanged in the face of warning symptoms is the error the item tests.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_002",
+  "topicId": 5,
+  "subtopic": "Aminoglycoside monitoring",
+  "difficulty": 3,
+  "type": "mcq",
+  "question": "A client is receiving IV gentamicin every 8 hours. When should the nurse draw the trough level?",
+  "options": [
+   "Immediately after the infusion finishes",
+   "Just before the next scheduled dose",
+   "Two hours after the infusion finishes",
+   "At any convenient time, since timing does not affect the result"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): the trough is the drug's lowest concentration, which occurs just before the next dose \u2014 an elevated trough predicts nephrotoxicity and ototoxicity. (a) A level drawn right after infusion is a peak, not a trough. (c) Two hours post-infusion is a mid-interval level that answers neither question. (d) Aminoglycoside levels are meaningless without exact timing relative to the dose \u2014 that is the entire logic of peak-and-trough monitoring.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_003",
+  "topicId": 5,
+  "subtopic": "Potassium administration",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A provider prescribes IV potassium chloride for a client with hypokalemia. Which administration method is correct?",
+  "options": [
+   "Give the dose by slow IV push over 5 minutes",
+   "Administer diluted in IV fluid by infusion pump at the prescribed rate",
+   "Add the dose to the hanging IV bag and shake, without adjusting the rate",
+   "Give the dose subcutaneously if IV access is difficult"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): potassium is ALWAYS diluted and infused at a controlled, pump-regulated rate with cardiac monitoring per policy for higher rates. (a) IV-push potassium causes fatal arrhythmia \u2014 it is never pushed, ever. (c) Adding potassium to a hanging bag produces an unmixed concentrated layer that infuses first; admixing is pharmacy's controlled task. (d) Potassium is severely irritating and is not given subcutaneously.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_004",
+  "topicId": 5,
+  "subtopic": "Corticosteroid teaching",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client has taken oral prednisone daily for 6 months for autoimmune disease. Which client statement indicates correct understanding?",
+  "options": [
+   "'I can stop the prednisone abruptly once I feel well.'",
+   "'I should never stop this medication suddenly; the dose is tapered.'",
+   "'This medication cannot affect my blood sugar.'",
+   "'I should avoid all vaccinations for life while on this medication.'"
+  ],
+  "correct": 1,
+  "explanation": "Correct (b): long-term corticosteroids suppress the adrenal axis \u2014 abrupt cessation risks adrenal crisis, so the dose is tapered. (a) Stopping abruptly is the classic dangerous error. (c) Corticosteroids RAISE blood glucose; clients with diabetes monitor more closely. (d) Live vaccines are typically deferred at high doses, but killed/inactivated vaccines are generally encouraged \u2014 a lifetime ban on all vaccination is wrong teaching.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_005",
+  "topicId": 5,
+  "subtopic": "MAOI dietary restrictions",
+  "difficulty": 3,
+  "type": "multi",
+  "question": "A nurse is teaching a client who takes phenelzine, a monoamine oxidase inhibitor (MAOI). Which foods should the client avoid? Select all that apply.",
+  "options": [
+   "Aged cheeses",
+   "Cured or smoked meats such as salami",
+   "Fresh apples and pears",
+   "Draft beer and red wine",
+   "Freshly cooked chicken breast"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   3
+  ],
+  "explanation": "Correct (a), (b) and (d): aged, cured, fermented, and draft products are high in tyramine, which an MAOI leaves undegraded \u2014 the result can be hypertensive crisis. Wrong (c): fresh fruit is low in tyramine and unrestricted. Wrong (e): fresh, promptly cooked meats are safe \u2014 it is AGING and CURING that build tyramine, not the meat itself.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_006",
+  "topicId": 5,
+  "subtopic": "Phenytoin care",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client taking phenytoin for a seizure disorder attends a clinic visit. Which finding most clearly relates to the medication and warrants teaching?",
+  "options": [
+   "Tender, overgrown gum tissue that bleeds with brushing",
+   "Increased appetite with weight gain",
+   "A resting heart rate of 72/min",
+   "Improved concentration at work"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): gingival hyperplasia is a hallmark phenytoin effect \u2014 meticulous oral hygiene and regular dental care limit it, so it drives specific teaching. (b) Weight gain is not characteristic of phenytoin. (c) A heart rate of 72 is normal and unrelated. (d) Improved concentration is a welcome nonspecific finding, not an adverse effect requiring teaching.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_007",
+  "topicId": 5,
+  "subtopic": "Chemotherapy safety",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "During a vesicant chemotherapy infusion, the client reports burning at the IV site, and the nurse notes swelling. What should the nurse do first?",
+  "options": [
+   "Stop the infusion immediately while leaving the catheter in place",
+   "Slow the infusion rate and reassess in 15 minutes",
+   "Flush the line rapidly with normal saline to clear the drug",
+   "Remove the IV catheter at once and apply a pressure dressing"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): burning and swelling during a vesicant infusion means suspected extravasation \u2014 the infusion stops instantly, but the catheter STAYS so residual drug can be aspirated and any antidote instilled through it. (b) Slowing continues to deliver a tissue-destroying drug into the extravasation. (c) Flushing pushes more irritant into the infiltrated tissue. (d) Pulling the catheter first forfeits the aspiration/antidote route \u2014 removal comes after those steps.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_008",
+  "topicId": 5,
+  "subtopic": "IV site assessment",
+  "difficulty": 1,
+  "type": "mcq",
+  "question": "A nurse assesses a peripheral IV site that is red, warm, and tender along the vein with a palpable cord. How should the nurse interpret this finding?",
+  "options": [
+   "Phlebitis \u2014 discontinue the IV and restart at another site",
+   "Infiltration \u2014 elevate the arm and continue the infusion",
+   "A normal finding for an IV older than 24 hours",
+   "An allergic reaction requiring epinephrine"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): redness, warmth, tenderness, and a cord-like vein are phlebitis \u2014 the catheter comes out and the infusion restarts elsewhere, with warm compresses for comfort. (b) Infiltration presents as COOL, pale swelling from fluid in tissue \u2014 the opposite skin temperature \u2014 and never continues at the same site. (c) Inflammation is never a 'normal' finding at any catheter age. (d) Local vein inflammation is not anaphylaxis; epinephrine is for systemic allergic reaction.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_009",
+  "topicId": 5,
+  "subtopic": "Beta blocker teaching",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is teaching a client with diabetes who has been prescribed metoprolol. Which caution is specific to this combination?",
+  "options": [
+   "The medication may mask the usual warning signs of hypoglycemia, such as tremor and palpitations",
+   "The medication will cause the blood glucose to rise dangerously with every dose",
+   "The client should skip metoprolol on days when insulin is taken",
+   "The medication makes glucose meters read falsely high"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): beta blockade blunts the adrenergic symptoms of hypoglycemia \u2014 tremor, palpitations, anxiety \u2014 so the client must rely on other cues such as sweating and confusion, and check glucose more deliberately. (b) Beta blockers do not reliably spike glucose with each dose; the masking effect is the tested danger. (c) Skipping a beta blocker abruptly risks rebound tachycardia and angina and is never routine advice. (d) The drug has no effect on meter accuracy.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_010",
+  "topicId": 5,
+  "subtopic": "Loop diuretic monitoring",
+  "difficulty": 2,
+  "type": "multi",
+  "question": "A client with heart failure is starting furosemide. Which points should the nurse include in monitoring and teaching? Select all that apply.",
+  "options": [
+   "Report muscle weakness or cramping, which can signal low potassium",
+   "Take the daily dose in the morning rather than at bedtime",
+   "Expect the medication to have no effect on hearing at any dose",
+   "Rise slowly from sitting or lying to standing",
+   "Weigh yourself daily and report rapid weight changes"
+  ],
+  "correctAnswers": [
+   0,
+   1,
+   3,
+   4
+  ],
+  "explanation": "Correct (a) \u2014 furosemide wastes potassium, and weakness or cramps are the symptom-level warning; (b) \u2014 morning dosing keeps the diuresis out of the night and protects sleep (and reduces nighttime falls); (d) \u2014 orthostatic hypotension is common, so position changes are made slowly; (e) \u2014 daily weights are the most sensitive home measure of fluid status, and rapid change in either direction matters. Wrong (c): high doses or rapid IV administration of loop diuretics can cause ototoxicity \u2014 hearing changes are reportable, not impossible.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_011",
+  "topicId": 5,
+  "subtopic": "Parenteral nutrition",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A client's next bag of total parenteral nutrition (TPN) is delayed in the pharmacy. The current bag has run dry. Which fluid should the nurse anticipate infusing until the new bag arrives?",
+  "options": [
+   "Dextrose 10% in water",
+   "0.9% sodium chloride",
+   "Lactated Ringer's solution",
+   "Nothing \u2014 cap the line until the TPN arrives"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): TPN delivers a continuous high glucose load, and the pancreas is matching it with insulin \u2014 abruptly stopping risks rebound hypoglycemia, so dextrose 10% bridges the gap per protocol. (b) and (c) Saline and LR contain no dextrose and do not protect against the rebound. (d) Capping the line is the most dangerous option: it guarantees the abrupt glucose cutoff the bridge exists to prevent.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ },
+ {
+  "id": "nx_a3_ph_012",
+  "topicId": 5,
+  "subtopic": "Immunization screening",
+  "difficulty": 2,
+  "type": "mcq",
+  "question": "A nurse is preparing to give a live attenuated vaccine. Which client condition requires holding the vaccine and consulting the provider?",
+  "options": [
+   "The client is receiving high-dose immunosuppressive chemotherapy",
+   "The client reports a mild cold without fever",
+   "The client had local soreness after a previous vaccine",
+   "The client ate breakfast an hour ago"
+  ],
+  "correct": 0,
+  "explanation": "Correct (a): live vaccines can cause disseminated infection in a significantly immunosuppressed host \u2014 chemotherapy at immunosuppressive doses is a recognized contraindication. (b) A mild illness without fever is NOT a contraindication; deferring for it is a missed opportunity. (c) Local soreness is an expected minor reaction, not an allergy or contraindication. (d) Food intake is irrelevant to vaccination.",
+  "verification": "unverified",
+  "source_file": "authoring/nclex-phase1-wave3 (2026-08-20)"
+ }
+]
