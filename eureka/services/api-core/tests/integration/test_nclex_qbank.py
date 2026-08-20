@@ -34,7 +34,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.core.database import Base, get_db
 from app.models.exam import AttemptLog
-from app.models.item_bank import Item, ItemBank, ItemKind, ItemReviewStatus
+from app.models.item_bank import Item, ItemBank, ItemKind, ItemReviewStatus, Passage
 from app.models.organization import Organization
 from app.models.skill import SkillFramework
 from app.models.user import User
@@ -456,3 +456,92 @@ async def test_review_missed_drops_item_after_correct_answer(
     )
     r = await async_client.get("/api/v1/nclex/review/missed", headers=h)
     assert r.json()["missed"] == []
+
+
+# -- NGN case studies (NX-14) -------------------------------------------------
+
+async def _seed_case(session: AsyncSession, bank: ItemBank) -> tuple[Passage, list[Item]]:
+    case = Passage(
+        bank_id=bank.id, title="Unfolding case: test scenario",
+        body="Initial presentation: stable client.", topic_id=7,
+        section="Physiological Adaptation",
+        review_status=ItemReviewStatus.DRAFT,
+        extra_metadata={"source_id": "nx_case_t1", "ngn": True},
+    )
+    session.add(case)
+    await session.flush()
+    items = []
+    for n in (1, 2):
+        it = Item(
+            bank_id=bank.id, family_id=uuid4(), passage_id=case.id,
+            kind=ItemKind.MCQ_SINGLE,
+            content={"stem": f"Phase {n}: what now?",
+                     "options": ["a", "b", "c"], "correct_index": 0},
+            explanation=f"Phase {n} rationale.",
+            difficulty_nominal="hard", review_status=ItemReviewStatus.DRAFT,
+            extra_metadata={"source_id": f"nx_case_t1_q{n}", "topic_id": 7,
+                            "category_id": "physio_adaptation",
+                            "section": "Physiological Adaptation",
+                            "subtopic": "Unfolding case: test scenario",
+                            "verification": "unverified",
+                            "ngn": {"case": "nx_case_t1", "phase": n}},
+        )
+        session.add(it)
+        await session.flush()
+        items.append(it)
+    await session.commit()
+    return case, items
+
+
+async def test_case_list_and_detail_carry_no_keys(
+    async_client, async_session, seeded_user
+):
+    bank, *_ = await _seed_bank(async_session)
+    case, _ = await _seed_case(async_session, bank)
+    h = _auth_headers(seeded_user)
+
+    r = await async_client.get(f"{API}/case-studies", headers=h)
+    assert r.status_code == 200
+    listing = r.json()["case_studies"]
+    assert len(listing) == 1
+    assert listing[0]["question_count"] == 2
+    assert listing[0]["review_status"] == "draft"
+
+    r = await async_client.get(f"{API}/case-study/{case.id}", headers=h)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["case"]["scenario"].startswith("Initial presentation")
+    stems = [i["stem"] for i in body["items"]]
+    assert stems == ["Phase 1: what now?", "Phase 2: what now?"]  # creation order
+    for it in body["items"]:
+        for forbidden in ("correct", "correct_index", "correct_indices", "explanation"):
+            assert forbidden not in it
+
+
+async def test_discrete_draw_excludes_case_items_but_submit_grades_them(
+    async_client, async_session, seeded_user
+):
+    bank, *_ = await _seed_bank(async_session)
+    _, case_items = await _seed_case(async_session, bank)
+    h = _auth_headers(seeded_user)
+
+    r = await async_client.get(f"{API}/items?count=40", headers=h)
+    served = {i["item_id"] for i in r.json()["items"]}
+    assert str(case_items[0].id) not in served
+
+    # ...but the case item grades through the same submit path.
+    r = await async_client.post(
+        f"{API}/submit",
+        json={"item_id": str(case_items[0].id), "choice_index": 0},
+        headers=h,
+    )
+    assert r.status_code == 200
+    assert r.json()["is_correct"] is True
+
+
+async def test_unknown_case_404(async_client, async_session, seeded_user):
+    await _seed_bank(async_session)
+    r = await async_client.get(
+        f"{API}/case-study/{uuid4()}", headers=_auth_headers(seeded_user)
+    )
+    assert r.status_code == 404

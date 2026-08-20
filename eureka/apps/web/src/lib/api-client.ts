@@ -567,6 +567,34 @@ class ApiClient {
     return response.data;
   }
 
+  // ── NCLEX NGN unfolding case studies (NX-14; api-core) ──
+  // A case = a scenario (Passage) + sequential questions whose stems carry
+  // the phase updates. Serving carries no keys; grading uses the ordinary
+  // submitNclexQbank per question.
+
+  async getNclexCaseStudies(): Promise<{
+    case_studies: Array<{
+      case_id: string; title: string; topic_id: number; section: string;
+      question_count: number; review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/nclex/qbank/case-studies');
+    return response.data;
+  }
+
+  async getNclexCaseStudy(caseId: string): Promise<{
+    case: {
+      case_id: string; title: string; scenario: string; topic_id: number;
+      section: string; review_status: string;
+    };
+    items: Awaited<ReturnType<ApiClient['getNclexQbankItems']>>['items'];
+    disclaimer: string;
+  }> {
+    const response = await this.client.get(`/nclex/qbank/case-study/${caseId}`);
+    return response.data;
+  }
+
   // ── NCLEX review center (NX-9/NX-11; api-core) ──
   // Same contract as the MCAT review center: attempt_logs only, counts
   // beside every figure, no percentile. NCLEX adds SATA-aware missed

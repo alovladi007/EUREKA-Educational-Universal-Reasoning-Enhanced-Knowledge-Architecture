@@ -35,6 +35,8 @@ type QbankItem = Awaited<
   ReturnType<typeof apiClient.getNclexQbankItems>
 >['items'][number];
 type Verdict = Awaited<ReturnType<typeof apiClient.submitNclexQbank>>;
+type CaseList = Awaited<ReturnType<typeof apiClient.getNclexCaseStudies>>;
+type ActiveCase = Awaited<ReturnType<typeof apiClient.getNclexCaseStudy>>['case'];
 
 const COUNTS = [10, 20, 40];
 
@@ -59,6 +61,11 @@ export function NclexServerQbank() {
   const [selectedTopics, setSelectedTopics] = React.useState<number[]>([]);
   const [count, setCount] = React.useState(10);
 
+  const [caseStudies, setCaseStudies] = React.useState<CaseList | null>(null);
+  // Set while a case session runs: its scenario stays pinned above the
+  // questions, whose stems carry the phase updates.
+  const [activeCase, setActiveCase] = React.useState<ActiveCase | null>(null);
+
   const [session, setSession] = React.useState<{
     items: QbankItem[];
     index: number;
@@ -76,7 +83,12 @@ export function NclexServerQbank() {
   const loadOverview = React.useCallback(async () => {
     try {
       setError(null);
-      setOverview(await apiClient.getNclexQbankOverview());
+      const [ov, cs] = await Promise.all([
+        apiClient.getNclexQbankOverview(),
+        apiClient.getNclexCaseStudies(),
+      ]);
+      setOverview(ov);
+      setCaseStudies(cs);
     } catch {
       setError('Could not load the question bank from the server.');
     }
@@ -103,6 +115,7 @@ export function NclexServerQbank() {
         toast.error('No questions available for that selection.');
         return;
       }
+      setActiveCase(null);
       setSession({ items, index: 0, correct: 0, answered: 0 });
       setVerdict(null);
       setChosen(null);
@@ -110,6 +123,27 @@ export function NclexServerQbank() {
       startedAt.current = Date.now();
     } catch {
       toast.error('Could not start the session.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const startCase = async (caseId: string) => {
+    setBusy(true);
+    try {
+      const detail = await apiClient.getNclexCaseStudy(caseId);
+      if (!detail.items.length) {
+        toast.error('That case study has no questions attached yet.');
+        return;
+      }
+      setActiveCase(detail.case);
+      setSession({ items: detail.items, index: 0, correct: 0, answered: 0 });
+      setVerdict(null);
+      setChosen(null);
+      setMultiChosen([]);
+      startedAt.current = Date.now();
+    } catch {
+      toast.error('Could not load the case study.');
     } finally {
       setBusy(false);
     }
@@ -157,6 +191,7 @@ export function NclexServerQbank() {
     if (!session) return;
     if (session.index + 1 >= session.items.length) {
       setSession(null);
+      setActiveCase(null);
     } else {
       setSession({ ...session, index: session.index + 1 });
       startedAt.current = Date.now();
@@ -262,6 +297,39 @@ export function NclexServerQbank() {
                   Start practice <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
                 </Button>
               </div>
+              {caseStudies && caseStudies.case_studies.length > 0 && (
+                <div className="space-y-2 pt-2 border-t" data-testid="nclex-case-studies">
+                  <p className="text-xs font-semibold">Next Gen NCLEX case studies</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    An evolving clinical scenario with six questions that walk
+                    the clinical-judgment steps. Served and graded server-side
+                    like everything else here.
+                  </p>
+                  {caseStudies.case_studies.map((cs) => (
+                    <div
+                      key={cs.case_id}
+                      className="flex items-center justify-between gap-3 rounded-lg border p-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{cs.title}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {cs.section} &middot; {cs.question_count} questions
+                          {cs.review_status !== 'approved' && ' · awaiting SME review'}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={busy}
+                        onClick={() => void startCase(cs.case_id)}
+                        data-testid={`nclex-case-start-${cs.topic_id}`}
+                      >
+                        Begin case
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
               <p className="text-[11px] text-muted-foreground">{overview.disclaimer}</p>
             </>
           )}
@@ -284,6 +352,17 @@ export function NclexServerQbank() {
           {session.correct}/{session.answered} correct so far
         </span>
       </div>
+      {activeCase && (
+        <div
+          className="rounded-md border bg-muted/30 p-4 max-h-72 overflow-y-auto"
+          data-testid="nclex-case-scenario"
+        >
+          <p className="text-sm font-semibold mb-2">{activeCase.title}</p>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+            {activeCase.scenario}
+          </p>
+        </div>
+      )}
       <div className="flex items-center gap-2 flex-wrap">
         {item.section && <Badge variant="secondary" className="text-xs">{item.section}</Badge>}
         {item.subtopic && <Badge variant="outline" className="text-xs">{item.subtopic}</Badge>}
@@ -393,7 +472,7 @@ export function NclexServerQbank() {
       )}
 
       {!verdict && (
-        <Button size="sm" variant="ghost" onClick={() => setSession(null)}>
+        <Button size="sm" variant="ghost" onClick={() => { setSession(null); setActiveCase(null); }}>
           End session
         </Button>
       )}

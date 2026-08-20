@@ -40,7 +40,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.models import User
 from app.models.exam import AttemptLog
-from app.models.item_bank import Item, ItemBank, ItemKind, ItemReviewStatus
+from app.models.item_bank import Item, ItemBank, ItemKind, ItemReviewStatus, Passage
 from app.utils.dependencies import get_current_active_user
 
 router = APIRouter()
@@ -154,6 +154,10 @@ async def qbank_items(
     q = select(Item).where(
         Item.bank_id == bank.id,
         Item.deleted_at.is_(None),
+        # Case-study questions are unanswerable without their scenario - they
+        # serve only via /case-study/{id}, never in the discrete draw (the
+        # same rule MCAT applies to passage-attached items).
+        Item.passage_id.is_(None),
         # Serving rule shared with MCAT: flagged and retired never serve.
         Item.review_status.notin_(
             (ItemReviewStatus.FLAGGED, ItemReviewStatus.RETIRED)
@@ -258,6 +262,101 @@ async def qbank_submit(
         "subtopic": item.extra_metadata.get("subtopic"),
         "verification": item.extra_metadata.get("verification"),
         "review_status": item.review_status.value,
+        "disclaimer": DISCLAIMER,
+    }
+
+
+# -- NGN unfolding case studies (NX-14) ---------------------------------------
+#
+# Next Gen NCLEX presents an evolving clinical scenario with six sequential
+# questions that walk the clinical-judgment steps (recognize cues -> analyze
+# -> prioritize -> generate solutions -> act -> evaluate). Structurally this
+# is the MCAT passage pattern: a Passage row carries the initial scenario,
+# attached Items carry the phase updates in their stems, and creation order
+# is presentation order. Grading goes through the SAME /submit as everything
+# else - a case question is a bank item and logs like one.
+
+
+@router.get("/nclex/qbank/case-studies")
+async def case_studies(
+    _user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """The available unfolding case studies, with counts and review standing."""
+    bank = await _bank(db)
+    rows = (
+        await db.execute(
+            select(Passage, func.count(Item.id))
+            .join(Item, Item.passage_id == Passage.id, isouter=True)
+            .where(Passage.bank_id == bank.id, Passage.deleted_at.is_(None))
+            .group_by(Passage.id)
+            .order_by(Passage.topic_id, Passage.title)
+        )
+    ).all()
+    return {
+        "case_studies": [
+            {
+                "case_id": str(p.id),
+                "title": p.title,
+                "topic_id": p.topic_id,
+                "section": p.section,
+                "question_count": int(n),
+                "review_status": p.review_status.value,
+            }
+            for p, n in rows
+        ],
+        "disclaimer": DISCLAIMER,
+    }
+
+
+@router.get("/nclex/qbank/case-study/{case_id}")
+async def case_study(
+    case_id: uuid_mod.UUID,
+    _user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """One case study: the initial scenario plus its questions in
+    presentation order. Phase updates live in each question's stem; keys
+    and explanations exist only in the grading response."""
+    bank = await _bank(db)
+    case = (
+        await db.execute(
+            select(Passage).where(
+                Passage.id == case_id,
+                Passage.bank_id == bank.id,
+                Passage.deleted_at.is_(None),
+            )
+        )
+    ).scalar_one_or_none()
+    if case is None:
+        raise HTTPException(404, "unknown case study")
+    items = (
+        (
+            await db.execute(
+                select(Item)
+                .where(
+                    Item.passage_id == case.id,
+                    Item.deleted_at.is_(None),
+                    Item.review_status.notin_(
+                        (ItemReviewStatus.FLAGGED, ItemReviewStatus.RETIRED)
+                    ),
+                )
+                .order_by(Item.created_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return {
+        "case": {
+            "case_id": str(case.id),
+            "title": case.title,
+            "scenario": case.body,
+            "topic_id": case.topic_id,
+            "section": case.section,
+            "review_status": case.review_status.value,
+        },
+        "items": [_serving_view(i) for i in items],
         "disclaimer": DISCLAIMER,
     }
 
