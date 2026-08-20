@@ -51,7 +51,22 @@ FIGURES = ROOT / "apps" / "web" / "public" / "figures" / "octet"
 # The standard a chapter is being written to. Not a hard failure: a chapter
 # below it is under construction rather than broken, and the gate reports the
 # shortfall so the programme has a number to work against.
-TARGET_WORDS = 1200
+TARGET_WORDS = 1200          # baseline floor (GEN + ch1 reference nodes)
+RAISED_WORDS = 4000          # 2026-08-20 "raise the floor": ORG programme nodes
+
+# The ch1 reference nodes predate the raised floor; they queue behind the
+# programme chapters rather than gating red forever.
+CH1_NODES = {
+    "ORG1.ORBITALS", "ORG1.HYBRIDORG", "ORG1.DRAWING",
+    "ORG1.FORMALCHARGEORG", "ORG1.RESONANCEORG", "ORG1.INDUCTIVE",
+    "ORG1.FUNCTIONALGROUPS",
+}
+
+
+def floor_for(node: str) -> int:
+    if node.startswith("ORG") and node not in CH1_NODES:
+        return RAISED_WORDS
+    return TARGET_WORDS
 
 
 def unbalanced_dollars(body: str) -> bool:
@@ -76,7 +91,7 @@ def main() -> int:
         extras = EXTRAS[node]
         words = extras.word_count()
         total_words += words
-        if words < TARGET_WORDS:
+        if words < floor_for(node):
             below.append((node, words))
 
         for section in extras.sections:
@@ -130,11 +145,6 @@ def main() -> int:
     # need >= 2 figures each; the ch1 reference nodes need >= 1. GEN nodes
     # are reported but not gated (their own pass comes later).
     ORG_FIG_FLOOR = 2
-    CH1_NODES = {
-        "ORG1.ORBITALS", "ORG1.HYBRIDORG", "ORG1.DRAWING",
-        "ORG1.FORMALCHARGEORG", "ORG1.RESONANCEORG", "ORG1.INDUCTIVE",
-        "ORG1.FUNCTIONALGROUPS",
-    }
     for node, extras in EXTRAS.items():
         if not node.startswith("ORG"):
             continue
@@ -160,9 +170,18 @@ def main() -> int:
           f"(run check_octet_videos.py for uploads)")
 
     if below:
-        print(f"\nbelow the {TARGET_WORDS} word standard, still being written:")
-        for node, words in below:
-            print(f"  {node:28s} {words:5,d}  needs {TARGET_WORDS - words:+,d}")
+        raised = [(n, w) for n, w in below if floor_for(n) == RAISED_WORDS]
+        base = [(n, w) for n, w in below if floor_for(n) == TARGET_WORDS]
+        if raised:
+            print(f"\nbelow the RAISED {RAISED_WORDS}-word floor "
+                  f"(expansion programme EX, in progress):")
+            for node, words in raised:
+                print(f"  {node:28s} {words:5,d}  needs {RAISED_WORDS - words:+,d}")
+        if base:
+            print(f"\nbelow the {TARGET_WORDS} word baseline, queued for the "
+                  f"raised floor after the ORG programme:")
+            for node, words in base:
+                print(f"  {node:28s} {words:5,d}  needs {TARGET_WORDS - words:+,d}")
 
     if problems:
         print(f"\nFAIL: {len(problems)} problem(s)")
