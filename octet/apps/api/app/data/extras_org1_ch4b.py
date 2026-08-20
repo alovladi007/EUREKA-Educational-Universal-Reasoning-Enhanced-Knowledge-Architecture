@@ -3384,7 +3384,7 @@ _add(LessonExtras(
                 "in organic chemistry, in biochemistry, in "
                 "pharmacology, and in every laboratory or "
                 "clinical decision where fast and stable "
-                "name different answers and choosing between "
+                "truly name two different answers and choosing between "
                 "correctly between them is, precisely and permanently, the actual professional job at hand."
             ),
         ),
