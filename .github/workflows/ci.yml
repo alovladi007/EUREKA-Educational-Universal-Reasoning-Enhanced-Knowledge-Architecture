@@ -305,12 +305,8 @@ jobs:
           #                   API (422s where schemas moved, 404s where routes
           #                   did) + a verification-token helper that does not
           #                   exist anywhere in the service
-          #   test_phase12.py  1 fail — gamification leaderboard
-          #   test_phase7.py   1 fail — IRT calibration assertion
           pytest tests/integration/ \
             --ignore=tests/integration/test_auth.py \
-            --ignore=tests/integration/test_phase12.py \
-            --ignore=tests/integration/test_phase7.py \
             -v --tb=short \
             --override-ini=addopts= \
             -p no:cacheprovider

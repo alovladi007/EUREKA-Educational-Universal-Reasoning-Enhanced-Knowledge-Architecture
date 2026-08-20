@@ -184,7 +184,14 @@ def test_achievement_auto_award(admin, learner):
 
 @pytest.mark.integration
 def test_leaderboard_returns_rows(learner):
-    r = httpx.get(f"{API_BASE}/api/v1/leaderboard?limit=10", timeout=10)
+    # The leaderboard is opt-in and org-scoped: the endpoint takes
+    # current_user and filters rows by org_id, so it requires a token. This
+    # call sent no Authorization header at all and got a 403.
+    r = httpx.get(
+        f"{API_BASE}/api/v1/leaderboard?limit=10",
+        headers=_hdr(learner["token"]),
+        timeout=10,
+    )
     assert r.status_code == 200
     rows = r.json()
     assert len(rows) >= 1

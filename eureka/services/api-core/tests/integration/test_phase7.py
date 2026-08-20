@@ -29,6 +29,46 @@ def _conn():
 
 
 @pytest.fixture(scope="module")
+def admin():
+    """An org_admin identity.
+
+    IRT calibration is an admin operation — /irt/calibrate requires
+    super_admin or org_admin, and rightly so: recalibrating item parameters
+    is a psychometric action, not something a learner should be able to
+    trigger. The test drove it with the learner token and got a 403; the
+    endpoint was correct and the test was using the wrong identity.
+    """
+    suffix = uuid.uuid4().hex[:8]
+    email = f"p7adm-{suffix}@example.com"
+    pw = "P7Admin123!"
+    with _conn() as c, c.cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO users (id, org_id, email, hashed_password,
+                               first_name, last_name, role,
+                               is_active, is_email_verified)
+            VALUES (uuid_generate_v4(),
+                    '550e8400-e29b-41d4-a716-446655440000',
+                    %s, %s, 'P7', 'Admin', 'org_admin', TRUE, TRUE)
+            RETURNING id
+            """,
+            (email, PWD.hash(pw)),
+        )
+        uid = str(cur.fetchone()[0])
+    tok = httpx.post(
+        f"{API_BASE}/api/v1/auth/login",
+        json={"email": email, "password": pw},
+        timeout=10,
+    ).json()["access_token"]
+    yield {"user_id": uid, "token": tok}
+    with _conn() as c, c.cursor() as cur:
+        try:
+            cur.execute("DELETE FROM users WHERE id = %s", (uid,))
+        except Exception:
+            pass
+
+
+@pytest.fixture(scope="module")
 def learner():
     suffix = uuid.uuid4().hex[:8]
     email = f"p7-{suffix}@example.com"
@@ -97,7 +137,7 @@ def test_record_attempt_autogrades(learner):
 
 
 @pytest.mark.integration
-def test_irt_calibration_runs(learner):
+def test_irt_calibration_runs(learner, admin):
     """At minimum, calibration returns a sane summary and writes params back."""
     # Generate a handful more attempts so calibration has data
     items = _items_in_bank(learner["token"], "usmle-step-1-cardio", limit=4)
@@ -115,7 +155,7 @@ def test_irt_calibration_runs(learner):
 
     r = httpx.post(
         f"{API_BASE}/api/v1/irt/calibrate?min_attempts=1",
-        headers=_hdr(learner["token"]),
+        headers=_hdr(admin["token"]),
         timeout=30,
     )
     assert r.status_code == 200, r.text
