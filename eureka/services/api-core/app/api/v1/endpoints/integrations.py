@@ -180,7 +180,16 @@ async def revoke_api_key(
     await ig_svc.log_audit(
         db, event_name="api_key.revoke",
         actor_user_id=current_user.id, subject_user_id=key.user_id,
-        org_id=key.org_id, metadata={"key_id": key.key_id},
+        # `key.org_id` is NULL for a personal (non-org-owned) key, and
+        # _audit_query filters `AuditEvent.org_id == current_user.org_id` for
+        # tenant isolation — so a NULL here made the event unmatchable and
+        # revocations of personal keys never appeared in the org's audit trail
+        # at all. Creation logged current_user.org_id and was visible; only
+        # revocation went missing, which is the wrong half to lose.
+        # Attribute the event to the acting admin's org, as creation does,
+        # falling back to it whenever the key itself is not org-owned.
+        org_id=key.org_id or current_user.org_id,
+        metadata={"key_id": key.key_id},
         request_ip=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )

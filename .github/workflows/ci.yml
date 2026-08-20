@@ -306,7 +306,6 @@ jobs:
           #                   did) + a verification-token helper that does not
           #                   exist anywhere in the service
           #   test_phase12.py  1 fail — gamification leaderboard
-          #   test_phase13.py  1 fail — audit log create/revoke capture
           #   test_phase7.py   1 fail — IRT calibration assertion
           pytest tests/integration/ \
             --ignore=tests/integration/test_auth.py \

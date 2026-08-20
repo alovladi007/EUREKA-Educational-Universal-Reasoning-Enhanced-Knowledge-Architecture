@@ -359,8 +359,44 @@ def test_audit_log_captures_create_and_revoke(admin):
     assert r.status_code == 200, r.text
     events = r.json()
     names = {e["event_name"] for e in events}
-    # Each prior test in this module emits at least one audit event.
-    assert "api_key.create" in names
-    assert "api_key.revoke" in names
+
+    # This used to assert api_key.revoke was present and rely on the comment
+    # "each prior test in this module emits at least one audit event" — i.e. on
+    # sibling tests having already run, against a SHARED audit log on the live
+    # server, within a 100-record window. That is order-dependent and it does
+    # not hold: api_key.create was present and api_key.revoke was not, because
+    # nothing in this test guaranteed a revoke had happened recently.
+    #
+    # The endpoint is correct — integrations.py logs api_key.revoke on the
+    # revoke path. So the test now performs the round trip itself and asserts
+    # its OWN event, which is what makes the assertion mean anything.
+    created = httpx.post(
+        f"{API_BASE}/api/v1/me/api-keys",
+        headers=_hdr(admin["token"]),
+        json={"name": "audit-roundtrip"},
+        timeout=10,
+    )
+    assert created.status_code in (200, 201), created.text
+    kid = created.json()["id"]
+
+    revoked = httpx.post(
+        f"{API_BASE}/api/v1/me/api-keys/{kid}/revoke",
+        headers=_hdr(admin["token"]),
+        timeout=10,
+    )
+    assert revoked.status_code in (200, 204), revoked.text
+
+    after = httpx.get(
+        f"{API_BASE}/api/v1/admin/audit?limit=100",
+        headers=_hdr(admin["token"]),
+        timeout=10,
+    )
+    assert after.status_code == 200, after.text
+    fresh = {e["event_name"] for e in after.json()}
+    assert "api_key.create" in fresh
+    assert "api_key.revoke" in fresh
+
+    # These two are emitted by the compliance tests in this module and are
+    # long-lived rows, so reading them from the shared log is safe.
     assert "compliance.export.request" in names
     assert "compliance.delete.request" in names
