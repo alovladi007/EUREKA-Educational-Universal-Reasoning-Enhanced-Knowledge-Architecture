@@ -1819,7 +1819,7 @@ _add(LessonExtras(
                 "chapter, fully yours to choose among with "
                 "reasons attached, which is the only way this "
                 "course ever wants a reagent chosen: by "
-                "audit, with the mechanism named, and with "
+                "careful audit, with the mechanism named, and with "
                 "the routes not taken understood well enough "
                 "to explain to anyone who asks, precisely and briefly and from mechanism, exactly why not."
             ),
