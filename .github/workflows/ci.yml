@@ -284,32 +284,38 @@ jobs:
             --override-ini=addopts= \
             -p no:cacheprovider
 
-          # GATE 2 — the whole integration directory, minus a named deny-list.
+          # GATE 2 — the subset that needs NO live stack.
           #
-          # This was an ALLOWLIST of seven files, which is precisely how the
-          # breakage hid: a file outside the list could rot indefinitely and CI
-          # stayed green. It is now a deny-list, so a NEW integration file is
-          # included automatically and has to be explicitly excused to be
-          # skipped. Fail-closed, not fail-open.
+          # These files bring their own in-memory aiosqlite engine (see the top
+          # of test_srs_endpoints.py) and run under --noconftest, so they need
+          # neither a database nor a running server.
           #
-          # The seven-file list also carried --noconftest, because the global
-          # conftest handed the async app a sync Session. That is fixed (the
-          # conftest now uses create_async_engine + async_sessionmaker), so the
-          # conftest is loaded here and 25 of the 29 integration files pass with
-          # it — up from the 7 that used to run.
+          # I widened this to the whole tests/integration/ directory and it
+          # broke CI: 140 errors, all
+          #     connection to server at "localhost" port 5434: Connection refused
+          # The other 21 files are LIVE-STACK tests — they talk to a real
+          # Postgres on 5434 and a real api-core over HTTP. They passed when I
+          # checked because my local docker stack was up; CI has neither. I
+          # verified in one environment and asserted it would hold in another.
           #
-          # Each exclusion below is a KNOWN failure with a named cause, not a
-          # convenience. Remove the line when the cause is fixed; do not add to
-          # this list to make a red build green.
-          #   test_auth.py    11 fail — request/response drift vs the current
-          #                   API (422s where schemas moved, 404s where routes
-          #                   did) + a verification-token helper that does not
-          #                   exist anywhere in the service
-          pytest tests/integration/ \
-            --ignore=tests/integration/test_auth.py \
+          # Widening this list for real means giving CI the stack those tests
+          # need (a postgres service on the right port, api-core running and
+          # healthy, seeded fixtures) — a compose-in-CI job, not a pytest
+          # argument. Until that exists, this list stays as the honest
+          # no-stack set, and GATE 1 above still protects every other file
+          # from import-time breakage, which is what was actually hiding.
+          pytest \
+            tests/integration/test_srs_endpoints.py \
+            tests/integration/test_user_progress_endpoints.py \
+            tests/integration/test_patent_bar_endpoints.py \
+            tests/integration/test_auth_flow.py \
+            tests/integration/test_settings_endpoints.py \
+            tests/integration/test_srs_review_streaks.py \
+            tests/integration/test_rbac.py \
             -v --tb=short \
             --override-ini=addopts= \
-            -p no:cacheprovider
+            -p no:cacheprovider \
+            --noconftest
 
   # -------------------------------------------------------------------------
   # api-core Alembic migration smoke test (P1.2 + P1.1-followup)
