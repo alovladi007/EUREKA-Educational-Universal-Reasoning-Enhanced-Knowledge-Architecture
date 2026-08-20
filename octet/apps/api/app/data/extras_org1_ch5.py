@@ -3715,7 +3715,9 @@ _add(LessonExtras(
                 "filed beside it, is what separates a course "
                 "that must be re-crammed each exam season "
                 "from one that was actually, permanently, "
-                "and quite thoroughly learned for good."
+                "and quite thoroughly learned for good - "
+                "which has been the point of the raised "
+                "floor from its first directive."
             ),
         ),
     ),
