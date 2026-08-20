@@ -1821,7 +1821,7 @@ _add(LessonExtras(
                 "course ever wants a reagent chosen: by "
                 "audit, with the mechanism named, and with "
                 "the routes not taken understood well enough "
-                "to explain to anyone, precisely and briefly, exactly why not."
+                "to explain to anyone who asks, precisely and briefly and from mechanism, exactly why not."
             ),
         ),
     ),
