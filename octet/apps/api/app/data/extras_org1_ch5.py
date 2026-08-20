@@ -3686,7 +3686,21 @@ _add(LessonExtras(
                 "labelled early, so that when "
                 "the course's most modern "
                 "chemistry arrives it files "
-                "itself."
+                "itself.\n\n"
+                "The drawer's label also completes this "
+                "node's claim to breadth: ozonolysis has now "
+                "connected the alkene chapter to structure "
+                "determination, to atmospheric science, to "
+                "polymer history, to flow-chemistry "
+                "engineering, and finally to click and "
+                "bioorthogonal chemistry - five fields "
+                "threaded through one violent little "
+                "cycloaddition. Chapters built at the raised "
+                "floor are built precisely for such "
+                "threading, and this one, like every node "
+                "before it in the expansion programme, is "
+                "now woven as tightly as the gate can "
+                "measure."
             ),
         ),
     ),
