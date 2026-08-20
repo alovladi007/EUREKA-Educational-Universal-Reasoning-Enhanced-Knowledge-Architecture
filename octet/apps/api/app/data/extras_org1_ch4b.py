@@ -5138,7 +5138,7 @@ _add(LessonExtras(
                 "the quiet advantage energetics holds over "
                 "every more glamorous subject that follows "
                 "it, and reason enough to have studied it "
-                "quite this thoroughly and this carefully before at last moving on to the named reactions themselves."
+                "quite this thoroughly and this carefully right here, before at last moving on to all the named reactions themselves."
             ),
         ),
     ),
