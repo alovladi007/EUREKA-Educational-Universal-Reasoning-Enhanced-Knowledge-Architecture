@@ -3636,6 +3636,59 @@ _add(LessonExtras(
                 "read."
             ),
         ),
+        ReadingSection(
+            id="dipole-preview",
+            heading="Ozone's family: a first meeting with 1,3-dipoles",
+            body=(
+                "Ozone's opening cycloaddition "
+                "introduces a reagent family the "
+                "later curriculum will formalise, and "
+                "one paragraph of taxonomy here makes "
+                "that meeting a reunion. A 1,3-dipole "
+                "is a three-atom pi system carrying "
+                "separated charge in its resonance "
+                "structures - ozone, azides, "
+                "diazomethane, nitrile oxides - and "
+                "the whole family shares ozone's "
+                "signature move: concerted addition "
+                "across a multiple bond to close a "
+                "five-membered ring. The azide-"
+                "alkyne version, accelerated by "
+                "copper catalysis, is the celebrated "
+                "click reaction of Sharpless's "
+                "second Nobel Prize (2022, shared "
+                "with Bertozzi and Meldal), the "
+                "coupling chemistry that now "
+                "decorates drug candidates, "
+                "polymers and living cells - "
+                "bioorthogonal chemistry's "
+                "workhorse is, structurally, "
+                "ozonolysis's first step with "
+                "nitrogen swapped for oxygen and "
+                "the retro-fragmentation designed "
+                "out. Meeting the family through "
+                "its destructive founding member "
+                "and later through its "
+                "constructive descendants is one "
+                "of the curriculum's better "
+                "ironies.\n\n"
+                "For now the takeaway is "
+                "recognition-scale only: when a "
+                "reagent's structure shows three "
+                "heteroatom-rich atoms with "
+                "charge-separated resonance "
+                "forms, expect cycloaddition "
+                "chemistry, five-membered rings, "
+                "and concerted stereochemistry - "
+                "the pericyclic chapters will "
+                "supply the orbital rules. One "
+                "more drawer in the taxonomy, "
+                "labelled early, so that when "
+                "the course's most modern "
+                "chemistry arrives it files "
+                "itself."
+            ),
+        ),
     ),
     key_takeaways=(
         "Ozonolysis cuts C=C completely: both carbons become carbonyls; workup sets the level (Me2S/Zn -> aldehydes+ketones, H2O2 -> acids from aldehydes).",
