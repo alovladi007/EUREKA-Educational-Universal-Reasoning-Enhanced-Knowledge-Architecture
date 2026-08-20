@@ -4252,8 +4252,9 @@ _add(LessonExtras(
                 "first semester to practise that discipline "
                 "on, which is one more reason this simplest "
                 "of additions earned itself the longest and "
-                "most heavily instrumented single lesson "
-                "anywhere in its chapter."
+                "most heavily instrumented single lesson to "
+                "be found anywhere in this entire opening "
+                "chapter of reaction chemistry."
             ),
         ),
     ),
