@@ -80,13 +80,35 @@ class Settings(BaseSettings):
     )
     
     # CORS
-    CORS_ORIGINS: List[str] = Field(
-        default=[
-            "http://localhost:3000", "http://localhost:3001",
-            "http://localhost:4040", "http://localhost:4041",
-        ],
-        env="CORS_ORIGINS"
+    # Declared as a STRING, not List[str], on purpose.
+    #
+    # pydantic-settings v2 JSON-decodes any "complex" field (list, dict) at the
+    # SOURCE layer, before field validators run. So a perfectly ordinary
+    # dotenv line —
+    #     CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+    # — blew up with 'error parsing value for field "CORS_ORIGINS" from source
+    # "DotEnvSettingsSource"' and took the whole Settings import down with it.
+    # The pre=True validator below could never help: it never got to run.
+    #
+    # That is why scripts/check_schema_drift.py could not import app.models and
+    # had been reporting a failure instead of checking for drift. NoDecode
+    # (pydantic-settings >= 2.3) would be the tidy fix; this project pins 2.1.0,
+    # where it does not exist. Keeping the raw value a string sidesteps the
+    # decoder entirely and works on any 2.x.
+    CORS_ORIGINS_RAW: str = Field(
+        default="http://localhost:3000,http://localhost:3001,"
+                "http://localhost:4040,http://localhost:4041",
+        env="CORS_ORIGINS",
     )
+
+    @property
+    def CORS_ORIGINS(self) -> List[str]:
+        """The parsed allowlist. Accepts comma-separated or a JSON array."""
+        raw = (self.CORS_ORIGINS_RAW or "").strip()
+        if raw.startswith("["):
+            import json
+            return [str(o).strip() for o in json.loads(raw)]
+        return [o.strip() for o in raw.split(",") if o.strip()]
     
     # S3/MinIO
     S3_ENDPOINT: str = Field(default="http://localhost:9000", env="S3_ENDPOINT")
@@ -166,13 +188,6 @@ class Settings(BaseSettings):
     VAULT_ADDR: Optional[str] = Field(default=None, env="VAULT_ADDR")
     VAULT_TOKEN: Optional[str] = Field(default=None, env="VAULT_TOKEN")
     
-    @validator("CORS_ORIGINS", pre=True)
-    def parse_cors_origins(cls, v):
-        """Parse CORS origins from string or list"""
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
-        return v
-
     @validator("DEBUG")
     def _force_debug_off_in_prod(cls, v, values):
         """Never run with DEBUG on in production, even if the env var says so.
