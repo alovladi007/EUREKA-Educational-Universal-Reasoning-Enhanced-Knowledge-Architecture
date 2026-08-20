@@ -1653,7 +1653,7 @@ _add(LessonExtras(
                 "sentence - the same chain chemistry at every "
                 "scale, priced by the same table, ended by "
                 "the very same small handful of terminating "
-                "tricks that chemists, engineers, and living cells alike all deploy."
+                "tricks that working chemists, process engineers, and living cells alike must all deploy."
             ),
         ),
     ),
