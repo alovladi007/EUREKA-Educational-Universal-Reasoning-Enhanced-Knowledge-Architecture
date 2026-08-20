@@ -12,7 +12,7 @@ from app.core.database import get_db
 from app.models import User, Course, Organization
 from app.utils.dependencies import require_admin
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, help, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, mcat_chemistry, mcat_qbank, nclex_dosage, mcat_mock, mcat_sme, mcat_irt, cross_vertical, study_groups, research_collab
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, help, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, mcat_chemistry, mcat_qbank, nclex_dosage, nclex_qbank, mcat_mock, mcat_sme, mcat_irt, cross_vertical, study_groups, research_collab
 
 api_router = APIRouter()
 
@@ -57,6 +57,7 @@ api_router.include_router(test_prep_billing.router, tags=["test-prep-billing"])
 api_router.include_router(mcat_chemistry.router, tags=["mcat-chemistry"])
 api_router.include_router(mcat_qbank.router, tags=["mcat-qbank"])
 api_router.include_router(nclex_dosage.router, tags=["nclex-dosage"])
+api_router.include_router(nclex_qbank.router, tags=["nclex-qbank"])
 api_router.include_router(mcat_mock.router, tags=["mcat-mock"])
 api_router.include_router(mcat_sme.router, tags=["mcat-sme"])
 api_router.include_router(mcat_irt.router, tags=["mcat-irt"])

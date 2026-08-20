@@ -511,6 +511,62 @@ class ApiClient {
     return response.data;
   }
 
+  // ── NCLEX QBank (server item bank, NX-3; api-core) ──
+  // Same contract as the MCAT server bank: serving carries no keys or
+  // explanations; grading is server-side and every response is logged.
+  // NCLEX adds SATA items (kind 'mcq_multi', submitted as an index set,
+  // graded all-or-nothing) and a per-item verification tier.
+
+  async getNclexQbankOverview(): Promise<{
+    sections: Array<{
+      topic_id: number; category_id: string; section: string; items: number;
+      subtopics: Array<{ subtopic: string; items: number }>;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/nclex/qbank/overview');
+    return response.data;
+  }
+
+  async getNclexQbankItems(params: {
+    topic_id?: number; subtopic?: string; count?: number;
+  }): Promise<{
+    items: Array<{
+      item_id: string; kind: 'mcq_single' | 'mcq_multi';
+      stem: string; options: string[]; option_count: number;
+      // Author-assigned label, not a measured statistic.
+      difficulty_nominal: string;
+      topic_id: number | null; category_id: string | null;
+      section: string | null; subtopic: string | null;
+      verification: 'calc-verified' | 'unverified' | null;
+      review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/nclex/qbank/items', { params });
+    return response.data;
+  }
+
+  async submitNclexQbank(payload: {
+    item_id: string; choice_index?: number; choice_indices?: number[];
+    seconds?: number;
+  }): Promise<{
+    is_correct: boolean; kind: 'mcq_single' | 'mcq_multi';
+    // Single-choice verdict fields:
+    correct_index?: number; correct_text?: string; chosen_index?: number;
+    // SATA verdict fields (all-or-nothing score, honest breakdown):
+    correct_indices?: number[]; correct_texts?: string[];
+    chosen_indices?: number[]; n_correct_selected?: number;
+    n_incorrect_selected?: number; n_missed?: number; scoring?: string;
+    explanation: string | null;
+    section: string | null; subtopic: string | null;
+    verification: 'calc-verified' | 'unverified' | null;
+    review_status: string; disclaimer: string;
+  }> {
+    const response = await this.client.post('/nclex/qbank/submit', payload);
+    return response.data;
+  }
+
   // ── NCLEX Dosage Mastery (server-generated, server-graded; api-core) ──
   // Serving carries no key; grading returns the verdict, worked explanation,
   // and — when the entered number matches a classic error's value — the

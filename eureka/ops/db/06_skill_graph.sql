@@ -44,6 +44,7 @@ CREATE TYPE skill_framework AS ENUM (
     'acm_ieee',     -- ACM/IEEE Computing Curricula
     'usmle',        -- United States Medical Licensing Examination (Step 1/2/3)
     'mcat',         -- MCAT content outline (AAMC)
+    'nclex',        -- NCLEX-RN test plan (NCSBN) — added by nclex_framework_001
     'mbe',          -- Multistate Bar Examination outline
     'cpa',          -- AICPA CPA Blueprints
     'gre',          -- GRE General + Subject

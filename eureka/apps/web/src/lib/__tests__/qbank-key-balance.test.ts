@@ -31,8 +31,6 @@ import { PATENT_BAR_GAPFILL_POST_ISSUANCE } from '../patent-bar-gapfill-postissu
 import { PATENT_BAR_GAPFILL_TOPUP } from '../patent-bar-gapfill-topup-data';
 import { LSAT_QUESTIONS } from '../lsat-qbank-data';
 import { CISSP_QUESTIONS } from '../cissp-qbank-data';
-import { NCLEX_QUESTIONS } from '../nclex-qbank-data';
-import { NCLEX_CLINICAL_QUESTIONS_2 } from '../nclex-qbank-clinical2-data';
 import { NCLEX_DOSAGE_BANK2 } from '../nclex-dosage-bank2-data';
 
 const MAX_SHARE = 0.35;
@@ -63,12 +61,10 @@ const BANKS: [string, AnyQuestion[], number?][] = [
   ['PATENT_BAR_GAPFILL_TOPUP', PATENT_BAR_GAPFILL_TOPUP as AnyQuestion[], 54],
   ['LSAT', LSAT_QUESTIONS as AnyQuestion[]],
   ['CISSP', cisspNormalized],
-  // NCLEX: SATA (type 'multi') items carry correctAnswers instead of
-  // `correct` and are excluded by the keyed-filter below, same as
-  // Security+ multi-select items. Part 1 = dosage + clinical topics 0-3;
-  // part 2 = clinical topics 4-7 (declared floor: 44 items, 37 keyed MCQ).
-  ['NCLEX_RN', NCLEX_QUESTIONS as AnyQuestion[]],
-  ['NCLEX_RN_CLINICAL2', NCLEX_CLINICAL_QUESTIONS_2 as AnyQuestion[], 36],
+  // NCLEX: the main QBank (131 items) moved to the server item bank in NX-5
+  // and its client files were deleted — this key-balance check no longer has
+  // keys to inspect for it, by design. Only the offline Dosage Mastery bank
+  // remains client-side.
   ['NCLEX_DOSAGE_BANK2', NCLEX_DOSAGE_BANK2 as AnyQuestion[], 199],
 ];
 

@@ -142,10 +142,11 @@ export const EXAM_SURFACES: Record<string, ExamSurfaces> = {
   // stated rather than rounded up because a learner deciding where to spend
   // an evening deserves the real number.
   GRE: { qbankSize: 53, fullExam: false, analytics: false, flashcards: 100, extras: [] },
-  // NCLEX_RN = 41 dosage-calculation items with machine-verified keys (two
-  // independent computation paths, gated in CI by nclex-dosage-verify.test.ts)
-  // + 90 authored clinical items pending SME review, split across
-  // nclex-qbank-data.ts and nclex-qbank-clinical2-data.ts.
+  // NCLEX_RN = 41 dosage-calculation items with machine-verified keys + 90
+  // authored clinical items pending SME review. Served from the api-core
+  // item bank (slug nclex-qbank-v1) since NX-5 — no keys in the client
+  // bundle; dual-path key verification lives in
+  // services/api-core/scripts/verify_nclex_bank_keys.py against the live bank.
   NCLEX_RN: {
     qbankSize: 131,
     fullExam: false,

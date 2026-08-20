@@ -19,7 +19,7 @@
  * would swamp it.
  */
 
-import type { NclexQuestion } from '@/lib/nclex-qbank-data';
+import type { NclexQuestion } from '@/lib/nclex-types';
 
 export interface NclexDosageBank2Item extends NclexQuestion {
   /** Misconception key per option index; null for the key and for pads. */

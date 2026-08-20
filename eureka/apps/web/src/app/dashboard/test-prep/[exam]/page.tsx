@@ -61,6 +61,7 @@ import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCoh
 import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatmap';
 import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
 import { McatServerQbank } from '@/components/test-prep/McatServerQbank';
+import { NclexServerQbank } from '@/components/test-prep/NclexServerQbank';
 import { McatMockExam } from '@/components/test-prep/McatMockExam';
 import { McatReviewCenter } from '@/components/test-prep/McatReviewCenter';
 import { ExamDashboard } from '@/components/test-prep/ExamDashboard';
@@ -97,6 +98,7 @@ export default function ExamPage() {
   const isFEME = examId === 'FE_ME';
   const isPEEE = examId === 'PE_EE';
   const isMCAT = examId === 'MCAT';
+  const isNCLEX = examId === 'NCLEX_RN';
   const isLSAT = examId === 'LSAT';
   const isSecPlus = examId === 'SECURITY_PLUS';
   const searchParams = useSearchParams();
@@ -213,12 +215,14 @@ export default function ExamPage() {
         </PbContentGate>
       )}
       {activeTab === 'notes' && <NotesTab examType={examId} sections={sections} />}
-      {/* MCAT practice moved to the server item bank (C1): items are served
-          without keys and graded server-side, so the static client-graded
-          flow below no longer applies to it. */}
+      {/* MCAT (C1) and NCLEX (NX-5) practice moved to the server item bank:
+          items are served without keys and graded server-side, so the static
+          client-graded flow below no longer applies to them. */}
       {activeTab === 'qbank' && (isMCAT
         ? <McatServerQbank />
-        : <QBankTab examType={examId} config={config} sections={sections} />)}
+        : isNCLEX
+          ? <NclexServerQbank />
+          : <QBankTab examType={examId} config={config} sections={sections} />)}
       {activeTab === 'mpep' && isPatentBar && <MPEPTab />}
       {activeTab === 'lsat' && isLSAT && <LSATTab />}
       {activeTab === 'exam' && isFEEE && <FEEEExamTab />}
@@ -2068,45 +2072,10 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { alert('No LSAT questions available for the selected sections.'); }
-      } else if (examType === 'NCLEX_RN') {
-        // NCLEX-RN: dosage items (calc-verified, dual-path keys) + authored
-        // clinical items (unverified), split across two modules like the
-        // Patent Bar tranches. SATA items carry type 'multi' and flow through
-        // the same multi-select session UI Security+ uses.
-        const { NCLEX_QUESTIONS } = await import('@/lib/nclex-qbank-data');
-        const { NCLEX_CLINICAL_QUESTIONS_2 } = await import('@/lib/nclex-qbank-clinical2-data');
-        let nxQuestions = [...NCLEX_QUESTIONS, ...NCLEX_CLINICAL_QUESTIONS_2];
-        if (selectedSections.length > 0) {
-          const sectionToTopic: Record<string, number> = {
-            mgmt_of_care: 0, safety_infection: 1, health_promotion: 2,
-            psychosocial: 3, basic_care: 4, pharm_parenteral: 5,
-            reduction_risk: 6, physio_adaptation: 7,
-          };
-          const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
-          if (topicIds.length > 0) {
-            nxQuestions = nxQuestions.filter((q) => topicIds.includes(q.topicId));
-          }
-        }
-        nxQuestions = shuffle(nxQuestions).slice(0, questionCount);
-        if (nxQuestions.length > 0) {
-          const normalized = nxQuestions.map((q: any, i: number) => ({
-            ...q,
-            question_text: q.question,
-            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
-            correct_index: q.correct,
-            explanation_text: q.explanation,
-            section_id: `nx_topic${q.topicId}`,
-            _idx: i,
-            // Provenance badge: 'calc-verified' (dosage, dual-path computed
-            // key) or 'unverified' (authored clinical, pending SME review).
-            verification: q.verification,
-          }));
-          const fakeSessionId = `static-${Date.now()}`;
-          setSessionId(fakeSessionId);
-          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
-          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
-        } else { toast.error('No NCLEX questions available for the selected sections.'); }
       } else if (examType === 'SAT') {
+        // (NCLEX_RN no longer has a static branch here: its QBank moved to
+        // the server item bank (NX-5, NclexServerQbank) — items served
+        // without keys, graded server-side.)
         // Digital SAT QBank: original audited questions, topicId 0=Reading&Writing, 1=Math.
         const { SAT_QUESTIONS } = await import('@/lib/sat-qbank-data');
         let satQuestions = [...SAT_QUESTIONS];

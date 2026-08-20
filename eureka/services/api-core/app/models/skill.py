@@ -47,6 +47,7 @@ class SkillFramework(str, enum.Enum):
     ACM_IEEE = "acm_ieee"
     USMLE = "usmle"
     MCAT = "mcat"
+    NCLEX = "nclex"
     MBE = "mbe"
     CPA = "cpa"
     GRE = "gre"
