@@ -1,0 +1,440 @@
+[
+  {
+    "id": "nx_a10_ps_001",
+    "topicId": 3,
+    "question": "A client who was diagnosed with pancreatic cancer this morning says to the nurse, \"I can't believe this is happening to me. I was fine a month ago.\" Which response by the nurse is most therapeutic?",
+    "options": [
+      "\"This must feel overwhelming. Tell me what is going through your mind right now.\"",
+      "\"Try not to worry until all of the staging results are back.\"",
+      "\"Many pancreatic cancers are found late, so a sudden diagnosis is actually common.\"",
+      "\"Would you like me to call the chaplain to come and sit with you?\""
+    ],
+    "correct": 0,
+    "explanation": "Reflecting the client's feeling and inviting them to talk keeps the focus on the client and opens the conversation, which is the core of therapeutic communication in the shock phase of a new diagnosis. Telling the client not to worry is false reassurance - it dismisses the feeling and closes the conversation. Explaining how pancreatic cancer is usually found responds with facts to a statement that was about emotion; teaching has a place, but not as the first response to distress. Offering the chaplain before exploring the client's feelings deflects the conversation to someone else and can signal that the nurse is unwilling to listen; referral is appropriate only after the client's needs are assessed.",
+    "difficulty": 2,
+    "subtopic": "Therapeutic communication",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "On therapeutic-communication items, choose the option that names the feeling and hands the client an open door. Eliminate anything that reassures ('don't worry'), lectures with facts, or passes the client to someone else before their concern has been heard."
+  },
+  {
+    "id": "nx_a10_ps_002",
+    "topicId": 3,
+    "question": "The nurse on an inpatient psychiatric unit is reviewing four clients. Which client requires the nurse's immediate attention?",
+    "options": [
+      "A client with major depression who has been withdrawn for a week and this morning appears calm, cheerful, and is giving away personal belongings",
+      "A client with generalized anxiety disorder pacing the hallway and asking repeatedly when the provider will arrive",
+      "A client with schizophrenia who is responding to internal stimuli while sitting alone in the day room",
+      "A client with borderline personality disorder demanding a different nurse be assigned for the evening shift"
+    ],
+    "correct": 0,
+    "explanation": "A sudden lift in mood with giving away possessions in a client who has been depressed is a classic warning pattern for suicide: the calm can reflect a decision made and the belongings a form of settling affairs, and the energy that returns before mood fully recovers is exactly what makes this window dangerous. This client needs immediate assessment for suicidal ideation and a plan. Pacing and repeated questions reflect anxiety that needs attention but is not an immediate safety threat. Responding to internal stimuli is expected in schizophrenia and warrants monitoring for command hallucinations, but nothing here signals imminent harm. Splitting behavior in borderline personality disorder is managed with consistent limits and is not an emergency.",
+    "difficulty": 2,
+    "subtopic": "Suicide risk recognition",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "In psychiatric prioritization, behavior that is expected for the diagnosis loses to behavior that has changed. A depressed client who suddenly becomes calm or generous has changed in the direction of highest risk - sudden improvement without treatment is a red flag, not a relief."
+  },
+  {
+    "id": "nx_a10_ps_003",
+    "topicId": 3,
+    "question": "A client is brought to the emergency department after a sexual assault. The client is sitting quietly, staring at the floor, and answers questions in a flat voice. Which action should the nurse take first?",
+    "options": [
+      "Stay with the client and communicate that they are safe now",
+      "Begin collecting the forensic evidence kit before it degrades",
+      "Encourage the client to describe the assault in as much detail as possible",
+      "Ask the family to come into the room to provide support"
+    ],
+    "correct": 0,
+    "explanation": "The first nursing priority in crisis intervention after sexual assault is establishing physical and psychological safety: staying with the client and explicitly communicating safety begins to restore the control the assault took away. The flat, quiet presentation is a recognized acute stress response, not an indication that the client is fine. Evidence collection matters but follows consent and stabilization - and proceeding to procedures before establishing safety and consent repeats the experience of things being done to the client's body without control. Pressing for a detailed account serves the record, not the client, and can be retraumatizing; the client discloses at their own pace. Bringing family in without asking assumes support the nurse has not assessed - family may be a comfort, unknown, or even implicated - so the client decides who is present.",
+    "difficulty": 2,
+    "subtopic": "Crisis intervention",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "In crisis questions, safety and presence come before procedure, and the client's control over what happens next is the therapeutic goal. Eliminate any option that takes more control away from the client - pressing for details, summoning others, starting procedures - no matter how clinically reasonable it sounds."
+  },
+  {
+    "id": "nx_a10_ps_004",
+    "topicId": 3,
+    "question": "The spouse of a client dying of heart failure shouts at the nurse, \"You people are useless! Nobody in this hospital has done anything right since we got here!\" Which response by the nurse is best?",
+    "options": [
+      "\"This is a very hard time. Tell me what is concerning you most about the care.\"",
+      "\"I understand you are upset, but I need you to stop raising your voice at the staff.\"",
+      "\"I will ask the nursing supervisor to come and speak with you about your complaints.\"",
+      "\"We are doing everything possible for your spouse, even if it doesn't feel that way.\""
+    ],
+    "correct": 0,
+    "explanation": "Anger directed at staff by the family of a dying client is commonly displaced grief. Acknowledging the difficulty and inviting the spouse to talk addresses the feeling underneath the outburst and frequently defuses it, while also surfacing any real care concerns. Setting limits on volume is appropriate for threatening behavior, but leading with a boundary treats grief as a conduct problem and escalates the confrontation. Referring to the supervisor passes the family off and confirms their sense that no one will engage. Defending the care ('we are doing everything possible') argues with the anger instead of hearing it, which invites the spouse to argue back with more examples.",
+    "difficulty": 2,
+    "subtopic": "Grief and loss",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "When a grieving family member lashes out, the tested answer treats anger as grief in disguise: acknowledge and explore it. Options that defend the staff, cite policy, or hand the family to someone else all fail for the same reason - they respond to the words instead of the loss."
+  },
+  {
+    "id": "nx_a10_ps_005",
+    "topicId": 3,
+    "question": "A client with schizophrenia tells the nurse, \"I can't eat this food. The government pays the kitchen staff to put poison in it.\" Which response by the nurse is most appropriate?",
+    "options": [
+      "\"I know the thought is frightening. The food here is safe, and I will stay with you while you eat.\"",
+      "\"Why would the government want to poison you, of all the people here?\"",
+      "\"The kitchen staff have all worked here for years and would never do that.\"",
+      "\"If you skip this meal, I will have to document that you are refusing to eat.\""
+    ],
+    "correct": 0,
+    "explanation": "The therapeutic approach to a delusion is to acknowledge the feeling it produces, present reality once calmly and without arguing, and support the need it threatens - here, nutrition - by offering presence and safe alternatives. Asking 'why' demands the client justify the delusion, which forces them to defend and elaborate it. Vouching for the kitchen staff argues with the delusion's content; a fixed false belief does not yield to evidence, and debating it entrenches the client's position. Threatening documentation is punitive, does nothing for the underlying fear, and damages trust. If the fear of this tray persists, options such as sealed or packaged food address the nutritional risk without validating the delusion.",
+    "difficulty": 2,
+    "subtopic": "Delusions and hallucinations",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "For delusion items, the answer acknowledges the feeling, states reality once, and never argues content. Strike every option that debates evidence, asks the client to explain the delusion, or applies pressure - all three make the belief stronger."
+  },
+  {
+    "id": "nx_a10_ps_006",
+    "topicId": 3,
+    "question": "A client with Alzheimer disease becomes increasingly agitated and disoriented each evening, wandering the halls and trying to exit the unit. Which intervention should the nurse implement first?",
+    "options": [
+      "Provide a calm, low-stimulation environment with the lights on before dusk and redirect the client to a supervised activity",
+      "Request a prescription for lorazepam to be given each evening before the agitation begins",
+      "Apply a soft vest restraint during the evening hours to prevent elopement",
+      "Reorient the client repeatedly by explaining that it is evening and they are in the hospital and cannot leave"
+    ],
+    "correct": 0,
+    "explanation": "Sundowning is managed first with environmental measures: turning lights on before dusk reduces disorienting shadows, lowering stimulation reduces the overload that drives agitation, and supervised redirection channels the wandering safely. Nonpharmacologic intervention is always the first step. Benzodiazepines are avoided in older adults with dementia - they worsen confusion, increase fall risk, and can cause paradoxical agitation - and medicating before trying environmental measures inverts the order of care. Restraints increase agitation and injury in dementia and are a last resort requiring specific justification, not a scheduled evening measure. Repeated corrective reorientation of a client who cannot retain it produces repeated distress; brief orientation is fine, but validation and redirection serve the client better than insisting on facts the disease erases.",
+    "difficulty": 2,
+    "subtopic": "Dementia and sundowning",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "For behavioral disturbance in dementia, the test order is environment first, then redirection, with medication late and restraint last. Any option that reaches for a drug or a restraint while an environmental change remains untried can be eliminated on sequence alone."
+  },
+  {
+    "id": "nx_a10_ps_007",
+    "topicId": 3,
+    "type": "multi",
+    "question": "The home health nurse is assessing the adult daughter of a client with advanced Parkinson disease. The daughter has provided all care at home for two years. Which findings indicate caregiver role strain? Select all that apply.",
+    "options": [
+      "She reports sleeping four to five broken hours per night",
+      "She has cancelled her own last three medical appointments",
+      "She says, \"Some days I resent my mother, and then I feel horrible for thinking it.\"",
+      "She attends a monthly Parkinson support group for families",
+      "She has arranged for a neighbor to sit with her mother while she shops"
+    ],
+    "correctAnswers": [0, 1, 2],
+    "explanation": "Chronic sleep deprivation, abandoning one's own health care, and expressions of resentment with guilt are core indicators of caregiver role strain - the caregiver's own physical and emotional reserves are being consumed by the caregiving role. Attending a support group and arranging respite coverage are the opposite: they are adaptive coping behaviors that protect against strain, and their presence is a strength to reinforce, not a finding to report. Distinguishing indicators of strain from evidence of coping is the point of the assessment: the strained findings drive referrals for respite services, counseling, and community resources before the caregiving arrangement collapses.",
+    "difficulty": 2,
+    "subtopic": "Caregiver role strain",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "On select-all items that assess for a problem, test each option against one question: does this show the person's own reserves being depleted? Findings that show the caregiver using help - groups, respite, delegation - are coping, and coping is never evidence of the problem."
+  },
+  {
+    "id": "nx_a10_ps_008",
+    "topicId": 3,
+    "question": "A hospitalized adolescent with anorexia nervosa has a behavioral contract that includes supervised meals. Which nursing action is most important after each meal?",
+    "options": [
+      "Remain with the client for the first hour after eating",
+      "Weigh the client to document the intake",
+      "Praise the client enthusiastically for finishing the tray",
+      "Allow the client uninterrupted privacy to reduce mealtime stress"
+    ],
+    "correct": 0,
+    "explanation": "Observation for at least an hour after meals prevents the compensatory behaviors - self-induced vomiting most importantly - that clients with anorexia nervosa commonly use to undo intake; unsupervised bathroom access immediately after eating is the classic opportunity. Weighing after each meal makes the number the event of the meal, feeds the disorder's preoccupation with weight, and is not how progress is measured - weights are scheduled, typically each morning under standard conditions. Effusive praise tied to eating makes food a performance for the staff and invites conflict the next time the tray is not finished; a matter-of-fact, non-punitive stance toward food is therapeutic. Privacy immediately after meals is precisely the window in which purging occurs, so it is the one thing the plan of care cannot allow.",
+    "difficulty": 3,
+    "subtopic": "Eating disorders",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "For eating-disorder care, ask what the client's illness would do with each option. The disorder purges in private after meals, performs for praise, and obsesses over numbers - so the correct nursing action removes the private window, keeps food neutral, and keeps weights scheduled rather than reactive."
+  },
+  {
+    "id": "nx_a10_hp_001",
+    "topicId": 2,
+    "question": "A client at a preconception visit asks which vaccines cannot be given during pregnancy. The nurse is correct in identifying which vaccine as contraindicated once the client becomes pregnant?",
+    "options": [
+      "Measles, mumps, and rubella (MMR)",
+      "Inactivated influenza",
+      "Tetanus, diphtheria, and acellular pertussis (Tdap)",
+      "Hepatitis B"
+    ],
+    "correct": 0,
+    "explanation": "MMR is a live attenuated vaccine, and live vaccines are contraindicated in pregnancy because of the theoretical risk of transplacental infection of the fetus; rubella infection itself in early pregnancy causes congenital rubella syndrome, which is why the vaccine is given before conception, with pregnancy avoided for the following four weeks. Inactivated influenza vaccine is recommended in any trimester - pregnant clients are at elevated risk of severe influenza. Tdap is recommended during each pregnancy, ideally between 27 and 36 weeks, to transfer pertussis antibodies to the newborn. Hepatitis B vaccine is inactivated and may be given in pregnancy when indicated. The distinction that carries the answer is live versus inactivated, not vaccine versus pregnancy.",
+    "difficulty": 2,
+    "subtopic": "Immunizations in pregnancy",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Vaccine-in-pregnancy questions reduce to one sort: live vaccines (MMR, varicella, live attenuated influenza) are contraindicated; inactivated vaccines are not, and two - inactivated influenza and Tdap - are actively recommended. Sort the options into live and inactivated before reading anything else."
+  },
+  {
+    "id": "nx_a10_hp_002",
+    "topicId": 2,
+    "question": "The nurse is teaching the parents of a newborn about safe sleep. Which statement by a parent indicates that further teaching is needed?",
+    "options": [
+      "\"I will put a thin blanket in the crib once she can roll over.\"",
+      "\"She will sleep on her back for naps as well as at night.\"",
+      "\"Her crib will stay in our room for the first six months.\"",
+      "\"I will offer a pacifier when I put her down to sleep.\""
+    ],
+    "correct": 0,
+    "explanation": "Soft objects and loose bedding - blankets, pillows, bumper pads, stuffed animals - stay out of the infant sleep space for the entire first year, not until the infant can roll; a blanket remains a suffocation hazard regardless of motor milestones, and a wearable blanket or sleep sack replaces it. The other statements are correct safe-sleep practice: supine positioning applies to every sleep, including naps; room-sharing without bed-sharing for at least the first six months is associated with reduced risk of sudden infant death syndrome; and pacifier use at sleep times is also protective. The question asks for the statement requiring further teaching, so the one incorrect practice is the answer.",
+    "difficulty": 1,
+    "subtopic": "Newborn safe sleep",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "'Further teaching needed' flips the question: three options are right and one is wrong, and the wrong one wins. Read each statement as true or false against the guideline before considering which sounds reasonable - the distractor here is designed to sound like a sensible milestone-based rule."
+  },
+  {
+    "id": "nx_a10_hp_003",
+    "topicId": 2,
+    "question": "During a 9-month well-child visit, which finding should prompt the nurse to refer the infant for developmental evaluation?",
+    "options": [
+      "The infant cannot sit without support",
+      "The infant babbles but says no true words",
+      "The infant cries when handed to the nurse",
+      "The infant uses a raking grasp rather than a pincer grasp to pick up small objects"
+    ],
+    "correct": 0,
+    "explanation": "Sitting without support is established by 9 months, and its absence at this age is a motor red flag warranting developmental evaluation - gross motor delay is one of the most reliable early indicators of neuromotor problems. The other findings are age-appropriate: babbling without true words is expected, as first words typically arrive around 12 months; crying at a stranger reflects stranger anxiety, a normal attachment milestone of the second half of the first year; and the refined pincer grasp is a 9-to-12-month skill, so a raking grasp at 9 months is within the normal range. Distinguishing the one finding outside its expected window from three findings comfortably inside theirs is the entire task.",
+    "difficulty": 2,
+    "subtopic": "Developmental milestones",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Milestone questions are calendar questions. Anchor the big norms - sits by 9 months, first words and independent steps around 12, pincer grasp by 12, stranger anxiety normal from about 6 months - then look for the single option that has passed its deadline. Normal-but-not-yet skills are distractors."
+  },
+  {
+    "id": "nx_a10_hp_004",
+    "topicId": 2,
+    "question": "A client planning a first pregnancy asks the nurse why folic acid supplementation should begin before conception. Which explanation is accurate?",
+    "options": [
+      "The neural tube closes in the first weeks of pregnancy, often before the pregnancy is recognized",
+      "Folic acid prevents iron-deficiency anemia from developing during the first trimester",
+      "Folic acid stores must build up for several months to prevent preterm labor",
+      "Beginning supplementation early prevents gestational diabetes later in pregnancy"
+    ],
+    "correct": 0,
+    "explanation": "The neural tube closes by about the fourth week after conception - roughly six weeks after the last menstrual period - which is before many clients know they are pregnant. Adequate folic acid must therefore be on board before conception to reduce the risk of neural tube defects such as spina bifida and anencephaly; the standard recommendation for those planning pregnancy is 400 micrograms daily. Folic acid does participate in red cell production, but preventing iron-deficiency anemia is iron's job, not the reason for preconception timing. Folic acid is not a preterm-labor intervention and does not require months of loading for that purpose. It has no role in preventing gestational diabetes. The timing in the correct option - protection needed before pregnancy is recognized - is the physiologic point of the question.",
+    "difficulty": 1,
+    "subtopic": "Preconception nutrition",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "When a question asks why a practice is timed a certain way, the correct option must explain the timing, not merely state a true fact about the substance. Distractors borrow real benefits from the wrong nutrient or the wrong trimester - check that the mechanism matches the moment."
+  },
+  {
+    "id": "nx_a10_hp_005",
+    "topicId": 2,
+    "question": "A 45-year-old client at average risk for colorectal cancer asks the nurse whether screening is really necessary at this age. Which response is accurate?",
+    "options": [
+      "\"Current guidelines recommend that average-risk adults begin colorectal cancer screening at age 45.\"",
+      "\"Screening starts at age 50 unless you have a family history of colon cancer.\"",
+      "\"Screening is only needed once you have symptoms such as blood in the stool.\"",
+      "\"A yearly digital rectal examination is sufficient screening at your age.\""
+    ],
+    "correct": 0,
+    "explanation": "Guidelines lowered the starting age for average-risk colorectal cancer screening from 50 to 45 in response to rising incidence in younger adults; acceptable strategies include colonoscopy every 10 years and stool-based tests at shorter intervals, and the client chooses among them with the provider. The age-50 rule is the outdated threshold and is now wrong for average-risk adults. Waiting for symptoms defeats the purpose of screening - by definition screening is for asymptomatic people, and colorectal cancers detected after visible bleeding are more advanced. Digital rectal examination alone is not an accepted colorectal cancer screening method; it samples only the distal few centimeters of rectum and misses nearly all colonic lesions.",
+    "difficulty": 2,
+    "subtopic": "Cancer screening guidelines",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Screening questions reward two reflexes: know the current starting age (45 for average-risk colorectal screening), and strike any option that waits for symptoms - screening exists for the asymptomatic, so a symptom-triggered answer is wrong by definition."
+  },
+  {
+    "id": "nx_a10_hp_006",
+    "topicId": 2,
+    "type": "multi",
+    "question": "The nurse is teaching a postpartum client who is breastfeeding a 3-day-old newborn. Which instructions should the nurse include? Select all that apply.",
+    "options": [
+      "Feed the newborn on demand, at least 8 to 12 times in 24 hours",
+      "Position the newborn so the mouth covers the nipple and much of the areola",
+      "Expect at least six wet diapers a day once your milk is fully in",
+      "Offer water between feedings so the newborn stays hydrated",
+      "Put the newborn on a strict 4-hour feeding schedule to establish routine"
+    ],
+    "correctAnswers": [0, 1, 2],
+    "explanation": "Frequent on-demand feeding - 8 to 12 times per 24 hours in the early weeks - establishes milk supply, which is driven by demand. A deep latch taking in much of the areola, not just the nipple, is what compresses the milk ducts effectively and prevents nipple trauma. Diaper output is the practical home gauge of intake: about six or more wet diapers daily once mature milk is in indicates adequate transfer. Supplemental water is wrong for a healthy breastfed newborn - it displaces caloric feeds, adds no needed hydration, and in excess risks hyponatremia; breast milk supplies all fluid needs. A rigid 4-hour schedule is also wrong: newborn stomachs are small, breast milk digests quickly, and stretching intervals undermines both infant intake and maternal supply.",
+    "difficulty": 2,
+    "subtopic": "Breastfeeding teaching",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Breastfeeding select-alls sort cleanly with one principle: supply follows demand and breast milk is complete nutrition. Any option that adds something else (water, formula without indication) or restricts access (schedules, timed feeds) works against that principle and is out."
+  },
+  {
+    "id": "nx_a10_hp_007",
+    "topicId": 2,
+    "question": "A 16-year-old arrives for a well visit accompanied by a parent. To best promote the adolescent's health, the nurse should plan to conduct which part of the visit?",
+    "options": [
+      "An interview with the adolescent alone, after explaining confidentiality and its limits",
+      "The entire visit with the parent present, since the client is a minor",
+      "A written questionnaire completed by the parent about the adolescent's behaviors",
+      "A discussion of risk behaviors only if the parent raises a concern"
+    ],
+    "correct": 0,
+    "explanation": "Standard adolescent preventive care includes time alone with the clinician, with confidentiality explained up front along with its limits - safety concerns such as harm to self or others must be shared. Adolescents disclose sensitive information about mood, substances, sexuality, and safety far more reliably when a parent is not in the room, and building that private clinical relationship is itself a health-promotion intervention. Keeping the parent present for the whole visit conflates legal minority with an inability to have confidential health conversations, and it suppresses exactly the disclosures the visit is for. A parent-completed questionnaire reports the parent's knowledge, which for risk behaviors is often incomplete. Waiting for the parent to raise concerns makes screening contingent on the least-informed observer; risk screening is routine, not complaint-driven.",
+    "difficulty": 2,
+    "subtopic": "Adolescent health screening",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "For adolescent visits, the tested standard is time alone plus a confidentiality statement with its limits. Options that route information through the parent - their presence, their questionnaire, their concerns - all fail the same way: the adolescent is the client."
+  },
+  {
+    "id": "nx_a10_hp_008",
+    "topicId": 2,
+    "question": "The nurse is assessing an 82-year-old client at an annual wellness visit. Which finding should the nurse investigate further rather than attribute to normal aging?",
+    "options": [
+      "New confusion about the day of the week that the family says began about two weeks ago",
+      "Difficulty hearing high-pitched voices in a crowded room",
+      "Needing reading glasses for small print",
+      "Waking earlier in the morning than in past years"
+    ],
+    "correct": 0,
+    "explanation": "Confusion is never a normal finding of aging, and a change with a two-week onset is the signature of delirium or another acute, treatable process - infection, medication effect, metabolic disturbance, or depression among the common culprits in this age group - so it requires prompt evaluation. The other findings are expected age-related changes: presbycusis preferentially affects high-frequency hearing and is worst in background noise; presbyopia makes near focus harder and reading glasses are its standard remedy; and advanced sleep phase - earlier to bed, earlier to rise - is a recognized change in older adults' circadian rhythm. The clinical habit the question tests is refusing to let 'old age' absorb an acute cognitive change.",
+    "difficulty": 2,
+    "subtopic": "Normal aging vs pathology",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Sort geriatric findings by two tags: sensory/sleep changes that drift in over years are aging; anything cognitive with a datable onset is disease until proven otherwise. 'The family says it started two weeks ago' is the exam's way of stamping a finding acute."
+  },
+  {
+    "id": "nx_a10_bc_001",
+    "topicId": 4,
+    "question": "The nurse is caring for a client 3 days after an above-the-knee amputation. Which intervention should the nurse include to prevent contracture of the residual limb?",
+    "options": [
+      "Assist the client to lie prone for 20 to 30 minutes several times a day",
+      "Keep the residual limb elevated on a pillow whenever the client is in bed",
+      "Support the residual limb in a flexed position with a rolled blanket",
+      "Encourage the client to sit in a chair for most of the day"
+    ],
+    "correct": 0,
+    "explanation": "Prone positioning several times daily extends the hip and stretches the flexors, directly opposing the hip flexion contracture that is the chief positioning complication after above-the-knee amputation; a flexion contracture can permanently prevent prosthetic fitting. Elevating the limb on a pillow is appropriate only for the first 24 hours or so to limit edema - continued elevation holds the hip in flexion and produces exactly the contracture being prevented. A rolled blanket maintaining flexion does the same harm deliberately. Prolonged sitting keeps the hip flexed for hours at a time; time out of bed is valuable, but 'most of the day' in a chair is a contracture program, not a mobility program.",
+    "difficulty": 2,
+    "subtopic": "Post-amputation positioning",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Positioning questions after above-the-knee amputation hinge on one hazard: hip flexion. Time-stamp the options - elevation belongs to the first 24 hours only, and after that, every option that keeps the hip flexed (pillow, roll, chair) is the complication. Prone is the answer that extends."
+  },
+  {
+    "id": "nx_a10_bc_002",
+    "topicId": 4,
+    "question": "The nurse is teaching a client with right-sided weakness to walk with a cane. Which instruction is correct?",
+    "options": [
+      "\"Hold the cane in your left hand and move the cane forward together with your right leg.\"",
+      "\"Hold the cane in your right hand and move the cane forward together with your right leg.\"",
+      "\"Hold the cane in your left hand and move the cane forward together with your left leg.\"",
+      "\"Hold the cane in whichever hand feels stronger and step past it with your left leg.\""
+    ],
+    "correct": 0,
+    "explanation": "The cane is held on the strong side - here the left - and advances together with the weak right leg, so that the cane and the strong leg are never off the ground at the same time and the weak leg always has the cane sharing its load. This widens the base of support and mimics the natural reciprocal arm swing of gait. Holding the cane on the weak right side concentrates weight-bearing on the impaired side and narrows the base exactly when support is needed. Moving the cane with the strong left leg leaves the weak leg to swing unsupported. 'Whichever hand feels stronger' abandons the principle for comfort - clients frequently feel inclined to hold the cane on the weak side, which is precisely the error the teaching corrects.",
+    "difficulty": 1,
+    "subtopic": "Assistive devices - cane",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Cane rules compress to COAL: cane opposite affected leg, advancing with the affected leg. Fix the client's weak side first, place the cane opposite it, and the one option matching both halves of the rule is the answer - options that satisfy only one half are the designed traps."
+  },
+  {
+    "id": "nx_a10_bc_003",
+    "topicId": 4,
+    "question": "The nurse notes a persistent area of nonblanchable redness over the sacrum of a client on bedrest. In addition to reporting the finding, which action should the nurse take?",
+    "options": [
+      "Reposition the client off the sacrum and begin a documented turning schedule",
+      "Massage the reddened area briskly to restore circulation",
+      "Position the client directly on the right trochanter for the next two hours",
+      "Apply a heat lamp to the area twice daily to dry and toughen the skin"
+    ],
+    "correct": 0,
+    "explanation": "Nonblanchable erythema over a bony prominence is a stage 1 pressure injury: the immediate intervention is removing pressure from the site and instituting scheduled repositioning - at least every 2 hours, using the 30-degree lateral position - so the damaged tissue is perfused and no new sites are loaded. Massaging reddened skin over bony prominences is contraindicated; the redness signals underlying tissue damage, and massage shears the already-injured capillary bed and can extend the injury. Positioning directly on the trochanter loads a high-risk bony prominence with the client's full weight - the 30-degree oblique position exists to avoid it. Heat lamps dry and further injure vulnerable skin and have no place in pressure injury care.",
+    "difficulty": 2,
+    "subtopic": "Pressure injury prevention",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "For threatened skin, the answer removes the cause; the distractors add insults dressed as care. Massage of reddened bony prominences, direct trochanter positioning, and heat on fragile skin are all named 'nevers' in pressure injury prevention - knowing the short never-list eliminates three options at once."
+  },
+  {
+    "id": "nx_a10_bc_004",
+    "topicId": 4,
+    "question": "A client recovering from a stroke has dysphagia and has been cleared by the speech-language pathologist for thickened liquids. Which nursing action is appropriate during meals?",
+    "options": [
+      "Seat the client fully upright and keep them upright for at least 30 minutes after eating",
+      "Offer thin water between bites to help clear the thickened liquids",
+      "Provide a straw so the client can control the flow of liquid",
+      "Encourage the client to tilt the head back to help liquids reach the pharynx"
+    ],
+    "correct": 0,
+    "explanation": "Full upright positioning during meals and for at least 30 minutes afterward uses gravity to keep the bolus moving toward the stomach and protects against aspiration of refluxed contents after the meal ends. Thin water between bites reintroduces exactly the consistency the swallow evaluation removed - thin liquids are the most easily aspirated - and defeats the thickening order. Straws deliver a fast, poorly controlled bolus to the pharynx and are generally avoided in dysphagia unless the swallow study specifically allows them. Tilting the head back opens the airway path and pours liquid toward an unprotected larynx; the protective maneuver, when prescribed, is the opposite - a chin tuck toward the chest during the swallow.",
+    "difficulty": 2,
+    "subtopic": "Dysphagia and aspiration precautions",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Aspiration questions are physics questions: pick the option that slows the bolus and protects the airway (upright, chin tuck, prescribed thickness), and strike every option that speeds or thins the flow - straws, thin chasers, and a tilted-back head all fail the same physics."
+  },
+  {
+    "id": "nx_a10_bc_005",
+    "topicId": 4,
+    "question": "A hospitalized client reports being unable to sleep since admission. Which intervention should the nurse try first?",
+    "options": [
+      "Cluster nighttime care activities to allow uninterrupted sleep periods",
+      "Request a prescription for a hypnotic medication at bedtime",
+      "Encourage the client to nap frequently during the day to make up the deficit",
+      "Keep the television on softly through the night for relaxing background noise"
+    ],
+    "correct": 0,
+    "explanation": "The dominant cause of sleep disruption in hospitals is interruption - assessments, medications, alarms - so the first intervention is organizational: cluster the required nighttime care into single visits and coordinate with prescribed timing so the client gets protected stretches of sleep. Nonpharmacologic measures precede hypnotics, which in hospitalized and especially older clients add fall risk, delirium risk, and daytime carryover; a hypnotic may follow if sleep hygiene fails, not before it is tried. Encouraging frequent daytime napping fragments the circadian rhythm further and transfers sleep out of the night, worsening the problem it compensates for. All-night television adds light and intermittent sound - both documented sleep disruptors in inpatient settings - and conditions the client to require stimulation for sleep.",
+    "difficulty": 1,
+    "subtopic": "Sleep promotion",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "'Which should the nurse try first' plus a comfort problem almost always selects the independent, nonpharmacologic option that removes the cause. Medication options in a 'first' question are usually the trap; check whether an environmental or scheduling fix is still on the table."
+  },
+  {
+    "id": "nx_a10_bc_006",
+    "topicId": 4,
+    "type": "multi",
+    "question": "The nurse is planning nonpharmacologic pain management for a client with postoperative incisional pain. Which measures are appropriate to include? Select all that apply.",
+    "options": [
+      "Teach the client to splint the incision with a pillow when coughing or moving",
+      "Offer guided imagery or music during dressing changes",
+      "Reposition the client with pillows supporting the operative site",
+      "Remind the client that postoperative pain is expected and must simply be tolerated",
+      "Schedule all care activities together at one time regardless of the pain level"
+    ],
+    "correctAnswers": [0, 1, 2],
+    "explanation": "Splinting the incision during coughing and movement reduces tension on the wound and is a classic, effective comfort measure the client can use independently. Guided imagery and music are distraction and relaxation techniques with documented benefit as adjuncts, particularly during painful procedures such as dressing changes. Supportive repositioning off the operative site relieves pressure-related pain and is basic comfort care. Telling a client that pain must be tolerated dismisses the report - pain is what the client says it is, and unrelieved postoperative pain impairs coughing, mobility, and recovery. Rigidly clustering all care regardless of pain level forces activity through pain peaks; care timing should follow comfort, including timing activity to coincide with analgesic effect.",
+    "difficulty": 2,
+    "subtopic": "Nonpharmacologic pain management",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "On comfort select-alls, keep options that give the client a tool or remove a stressor, and cut options that dismiss the pain report or subordinate comfort to staff convenience. 'Pain is what the client says it is' eliminates any option built on toleration or disbelief."
+  },
+  {
+    "id": "nx_a10_bc_007",
+    "topicId": 4,
+    "question": "The nurse is caring for a client with an indwelling urinary catheter. Which observation requires the nurse to intervene?",
+    "options": [
+      "The drainage bag is resting on the bed beside the client's thigh",
+      "The catheter tubing is secured to the client's thigh with a securement device",
+      "The drainage bag is emptied using a separate clean container for this client",
+      "The tubing is coiled loosely on the mattress with a straight drop to the bag"
+    ],
+    "correct": 0,
+    "explanation": "A drainage bag at bladder level on the bed allows urine to stand in the tubing and can let it flow back toward the bladder, and retrograde flow of contaminated urine is a direct mechanism for catheter-associated urinary tract infection; the bag must hang below bladder level on the bed frame at all times, including during transport. The other observations are correct practice: securing the catheter to the thigh prevents urethral traction and tissue trauma; emptying into a clean container dedicated to that client, without letting the spigot touch the container, is the standard technique; and tubing that runs without dependent loops and drops straight to the bag maintains unobstructed gravity drainage.",
+    "difficulty": 1,
+    "subtopic": "Urinary catheter care",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "'Requires intervention' means find the one error among three correct practices. For catheters, run the gravity checklist - bag below bladder, no dependent loops, secured to the thigh, closed system - and the option that breaks the downhill path of urine is the error."
+  },
+  {
+    "id": "nx_a10_bc_008",
+    "topicId": 4,
+    "question": "A client on prolonged bedrest reports having had no bowel movement for three days, with hard, dry stools before that. Bowel sounds are present and the abdomen is soft. Which intervention should the nurse implement first?",
+    "options": [
+      "Increase fluid and dietary fiber intake and establish a regular toileting time",
+      "Obtain a prescription for a daily stimulant laxative",
+      "Perform digital removal of stool at the bedside",
+      "Restrict fruit juices to reduce stool water loss"
+    ],
+    "correct": 0,
+    "explanation": "With an otherwise benign assessment, first-line management of constipation from immobility is restoring the physiologic drivers of elimination: fluids to keep stool soft, fiber to give it bulk, and a consistent toileting time - ideally after a meal, using the gastrocolic reflex - to retrain the pattern that bedrest disrupted. Reaching for a daily stimulant laxative first skips the reversible causes and risks dependence, with the bowel ceasing to function without stimulation; laxatives are a next step, not a first one. Digital removal is an invasive last resort for confirmed impaction, carries vagal stimulation risk, and nothing here indicates impaction. Restricting juice runs backward - fluid restriction hardens stool, and some juices such as prune juice are themselves part of the dietary intervention.",
+    "difficulty": 2,
+    "subtopic": "Bowel elimination",
+    "verification": "unverified",
+    "source_file": "authoring/nclex-phase1-wave10.json",
+    "strategy": "Elimination questions follow the ladder: diet, fluids, and routine before medications, and medications before invasive measures. When the assessment is benign, the answer is the lowest untried rung - options further up the ladder are only correct when the stem shows the lower rungs failed."
+  }
+]
