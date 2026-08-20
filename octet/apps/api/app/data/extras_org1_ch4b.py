@@ -2531,7 +2531,13 @@ _add(LessonExtras(
                 "and every axis labelled with reaction "
                 "progress, in any course or paper for the "
                 "rest of your scientific life, is territory "
-                "you already know how to walk."
+                "you already know how to walk - because the "
+                "grammar of summits, wells, pinned endpoints "
+                "and audited rankings is universal, and you "
+                "learned it here, on the smallest molecules "
+                "chemistry owns, where every claim in the "
+                "drawing has a measurement standing behind "
+                "it."
             ),
         ),
     ),
