@@ -1270,6 +1270,255 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# The CIA triad.  Definitional relationships only: each property, what it
+# guarantees, and the failure that violates it (the DAD inverse).
+# ---------------------------------------------------------------------------
+
+@figure("cissp-cia-triad")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    import numpy as np
+    fig, ax = plt.subplots(figsize=(8.8, 5.0))
+    # triangle vertices
+    pts = {"C": (5.0, 4.35), "I": (1.6, 0.95), "A": (8.4, 0.95)}
+    tri = [pts["C"], pts["I"], pts["A"], pts["C"]]
+    ax.plot([p[0] for p in tri], [p[1] for p in tri], color=S.GUIDE[mode],
+            linewidth=1.6)
+    spec = [
+        ("C", "CONFIDENTIALITY", "only authorised entities\ncan read the data",
+         "violated by DISCLOSURE", c[0]),
+        ("I", "INTEGRITY", "no unauthorised\nmodification of the data",
+         "violated by ALTERATION", c[1]),
+        ("A", "AVAILABILITY", "authorised entities can access\nthe data when permitted",
+         "violated by DESTRUCTION / DENIAL", c[2]),
+    ]
+    off = {"C": (0, 0.52), "I": (-0.25, -0.5), "A": (0.25, -0.5)}
+    for k, name, what, dad, colour in spec:
+        x, y = pts[k]
+        ax.plot([x], [y], "o", color=colour, markersize=13)
+        dx, dy = off[k]
+        ha = "center"
+        ax.annotate(name, (x + dx, y + dy + 0.28), ha=ha, fontsize=10.5,
+                    color=colour)
+        ax.annotate(what, (x + dx, y + dy - 0.12), ha=ha, fontsize=8.2,
+                    color=ink)
+        ax.annotate(dad, (x + dx, y + dy - 0.6), ha=ha, fontsize=7.8,
+                    color=S.INK_2[mode], style="italic")
+    ax.annotate("ASSETS\n(data, and the systems\nthat process it)", (5.0, 2.05),
+                ha="center", fontsize=8.6, color=ink)
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(-0.8, 5.6)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# One physical/operational example per property - the three canonical control
+# archetypes, drawn as control -> property -> failure prevented.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-cia-examples")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("a LOCK on the cabinet", "CONFIDENTIALITY",
+         "only key-holders can read the contents", c[0]),
+        ("a VERSION-CONTROL baseline", "INTEGRITY",
+         "copies are compared against a known-good reference", c[1]),
+        ("a BACKUP of the data", "AVAILABILITY",
+         "a destroyed primary is restored and service continues", c[2]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 3.6))
+    for i, (ctl, prop, gloss, colour) in enumerate(rows):
+        y = (len(rows) - 1 - i) * 1.05
+        ax.add_patch(plt.Rectangle((0.3, y), 2.9, 0.8, facecolor="none",
+                                   edgecolor=colour, linewidth=1.7))
+        ax.annotate(ctl, (1.75, y + 0.4), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate("", (4.05, y + 0.4), (3.3, y + 0.4),
+                    arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.7))
+        ax.annotate(prop, (4.2, y + 0.4), va="center", fontsize=9.4, color=colour)
+        ax.annotate(gloss, (6.75, y + 0.4), va="center", fontsize=8.0,
+                    color=S.INK_2[mode])
+    ax.annotate("the property names the GOAL; the control is one way to achieve it",
+                (0.3, 3.45), fontsize=8.6, color=ink, style="italic")
+    ax.set_xlim(0, 12.4)
+    ax.set_ylim(-0.3, 3.8)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Properties BEYOND the triad: authenticity and non-repudiation, and where
+# each sits relative to C, I and A.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-beyond-cia")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.0, 3.9))
+    core = [("CONFIDENTIALITY", c[0]), ("INTEGRITY", c[1]), ("AVAILABILITY", c[2])]
+    for i, (name, colour) in enumerate(core):
+        x = 0.5 + i * 2.55
+        ax.add_patch(plt.Rectangle((x, 2.25), 2.25, 0.8, facecolor=colour,
+                                   alpha=0.2, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (x + 1.12, 2.65), ha="center", va="center",
+                    fontsize=8.6, color=ink)
+    ax.annotate("THE TRIAD", (4.3, 3.45), ha="center", fontsize=8.6,
+                color=S.INK_2[mode])
+    extras = [
+        ("AUTHENTICITY", "the data or message genuinely comes\nfrom its claimed origin", 2.15),
+        ("NON-REPUDIATION", "the originator cannot credibly\ndeny the action afterwards", 6.45),
+    ]
+    for name, gloss, x in extras:
+        ax.add_patch(plt.Rectangle((x - 1.55, 0.35), 3.1, 0.95, facecolor="none",
+                                   edgecolor=ink, linewidth=1.6,
+                                   linestyle=(0, (4, 2))))
+        ax.annotate(name, (x, 1.02), ha="center", fontsize=8.8, color=ink)
+        ax.annotate(gloss, (x, 0.62), ha="center", fontsize=7.4,
+                    color=S.INK_2[mode])
+        ax.annotate("", (x, 2.2), (x, 1.35),
+                    arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                    linewidth=1.4))
+    ax.annotate("desirable properties the triad does not name - both delivered by\nauthentication and cryptographic mechanisms covered in later domains",
+                (4.3, -0.35), ha="center", fontsize=7.8, color=S.INK_2[mode])
+    ax.set_xlim(0, 8.6)
+    ax.set_ylim(-0.8, 3.8)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The written-governance hierarchy: policy > standards > guidelines >
+# procedures, with authorship and force for each level.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-governance-hierarchy")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    tiers = [
+        ("POLICY", "senior management", "MANDATORY - strategic direction", 2.1, c[0]),
+        ("STANDARDS", "internal, or external (law,\nindustry, professional bodies)",
+         "MANDATORY - explicit expectations", 3.3, c[1]),
+        ("GUIDELINES", "internal or external", "RECOMMENDED - not mandates", 4.5, c[2]),
+        ("PROCEDURES", "practitioners and SMEs",
+         "MANDATORY IN USE - step-by-step; most detailed", 5.7, c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 4.8))
+    for i, (name, author, force, w, colour) in enumerate(tiers):
+        y = (len(tiers) - 1 - i) * 1.12
+        x0 = (7.4 - w) / 2 - 1.4
+        ax.add_patch(plt.Rectangle((x0, y), w, 0.85, facecolor=colour,
+                                   alpha=0.2, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x0 + w / 2, y + 0.42), ha="center", va="center",
+                    fontsize=9.6, color=ink)
+        ax.annotate(author, (6.05, y + 0.58), fontsize=7.8, color=ink)
+        ax.annotate(force, (6.05, y + 0.2), fontsize=7.6, color=S.INK_2[mode])
+    ax.annotate("WHO AUTHORS IT", (6.05, 4.72), fontsize=8.2, color=ink)
+    ax.annotate("", (-1.15, 0.25), (-1.15, 4.2),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                linewidth=1.5))
+    ax.annotate("more detail,\nless authority", (-1.15, -0.35), ha="center",
+                fontsize=7.4, color=S.INK_2[mode])
+    ax.set_xlim(-1.9, 10.8)
+    ax.set_ylim(-0.85, 5.0)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Policy lifecycle: drafted by SMEs, reviewed by stakeholders, approved and
+# published by senior management, then reviewed on a cycle.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-policy-lifecycle")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    steps = [
+        ("DRAFT", "subject matter experts write it", c[0]),
+        ("REVIEW", "stakeholders comment; revisions", c[1]),
+        ("APPROVE", "senior management signs - the act\nthat gives it authority", c[2]),
+        ("PUBLISH", "promulgated to everyone it binds", c[0]),
+        ("MAINTAIN", "reviewed on a schedule and on\nmajor change", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 3.4))
+    for i, (name, gloss, colour) in enumerate(steps):
+        x = 0.3 + i * 2.1
+        ax.add_patch(plt.Rectangle((x, 1.5), 1.75, 0.8, facecolor="none",
+                                   edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x + 0.87, 1.9), ha="center", va="center",
+                    fontsize=9.2, color=ink)
+        ax.annotate(gloss, (x + 0.87, 1.06), ha="center", fontsize=7.0,
+                    color=S.INK_2[mode])
+        if i < len(steps) - 1:
+            ax.annotate("", (x + 2.06, 1.9), (x + 1.79, 1.9),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.5))
+    # maintain loops back to draft
+    ax.annotate("", (1.17, 2.62), (9.0, 2.62),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                linewidth=1.3, linestyle=(0, (4, 3)),
+                                connectionstyle="arc3,rad=-0.12"))
+    ax.annotate("revision triggers a new cycle", (5.1, 3.0), ha="center",
+                fontsize=7.6, color=S.INK_2[mode])
+    ax.set_xlim(0, 10.8)
+    ax.set_ylim(0.55, 3.3)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Where standards come from: internal vs the four external source families.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-standards-sources")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.0, 4.1))
+    ax.add_patch(plt.Rectangle((3.4, 1.55), 2.4, 0.95, facecolor=c[0],
+                               alpha=0.22, edgecolor=c[0], linewidth=1.8))
+    ax.annotate("STANDARDS\nthe organisation must meet", (4.6, 2.02),
+                ha="center", va="center", fontsize=8.8, color=ink)
+    srcs = [
+        ("INTERNAL", "the organisation's own mandates", 0.9, 3.6),
+        ("STATUTORY / ADMINISTRATIVE LAW", "legislation and regulators", 8.3, 3.6),
+        ("CASE LAW", "court decisions that set precedent", 0.9, 0.45),
+        ("PROFESSIONAL AND INDUSTRY BODIES", "practice standards, sector baselines", 8.3, 0.45),
+    ]
+    for name, gloss, x, y in srcs:
+        ax.add_patch(plt.Rectangle((x - 0.85, y - 0.32), 1.7, 0.0, facecolor="none"))
+        ax.annotate(name, (x, y + 0.22), ha="center", fontsize=7.9, color=c[1])
+        ax.annotate(gloss, (x, y - 0.1), ha="center", fontsize=7.2,
+                    color=S.INK_2[mode])
+        tx = 3.55 if x < 4.6 else 5.65
+        ty = 2.4 if y > 2 else 1.65
+        ax.annotate("", (tx, ty), (x, y - (0.25 if y > 2 else -0.35)),
+                    arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                    linewidth=1.4))
+    S.note(ax, 4.6, -0.5,
+           "non-conformance is evidence of negligence: it adds fines and lawsuits on top of breach costs, "
+           "while documented good-faith adherence attenuates liability",
+           mode, ha="center")
+    ax.set_xlim(-0.6, 9.8)
+    ax.set_ylim(-0.95, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

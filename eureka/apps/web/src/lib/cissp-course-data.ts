@@ -26,6 +26,400 @@ export interface TopicLesson {
 export const CISSP_COURSE: Record<string, TopicLesson> = {
 
 // ===== Domain 1: Security and Risk Management (16%) - Instructor Edition module order =====
+cissp_cia_concepts: {
+  topicId: 'cissp_cia_concepts',
+  title: `Concepts of Confidentiality, Integrity, and Availability`,
+  domainWeight: '16%',
+  overview: `Every domain in this course is an elaboration of three goals: keep data from being read by the wrong entities, keep it from being changed without authorisation, and keep it reachable by the right entities when they need it. That is the CIA triad, and it is not an introductory formality - it is the analytical instrument the exam expects you to reach for first on nearly every question. When a scenario asks what is at stake, the answer is one or more triad properties; when it asks which control fits, the discriminator is which property the control serves. This module defines each property precisely, teaches you to tell them apart in scenarios that deliberately blur them, and places the adjacent properties - authenticity and non-repudiation - that the triad does not name.`,
+  sections: [
+    {
+      id: '1-assets-and-goals',
+      title: `1. What Security Protects: Assets and the Three Goals`,
+      content: `## The asset is the data - in every form it takes
+
+Information security concentrates on three goals, and all three are stated about **assets**. In this field the asset of ultimate concern is **data**: information that requires protection. Two clarifications keep that definition honest, and both are examinable.
+
+First, **form does not matter**. Data held electronically, printed on paper, spoken in a meeting, or memorised by an employee is the same asset with the same protection requirement. A policy that encrypts databases while leaving printed reports in an unlocked room has not protected the asset; it has protected one representation of it. Exam scenarios exploit this constantly - the control set is immaculate for digital data and the breach walks out as a photocopy.
+
+Second, the protection obligation **extends to everything that touches the data**: the systems, mechanisms, and techniques used to process, manipulate, transmit, and store it. A database server, a backup tape, a network link, an application, and the laptop that caches a local copy all inherit the sensitivity of the data they handle. This inheritance principle is why data classification, covered in Domain 2, drives control selection for infrastructure and not just for files.
+
+## The three goals stated precisely
+
+| Property | Definition | The question it answers |
+|---|---|---|
+| Confidentiality | Only authorised entities have access to the data | Who may READ it? |
+| Integrity | There are no unauthorised modifications of the data | Is it still CORRECT? |
+| Availability | Authorised entities can access the data when and how they are permitted | Can I reach it WHEN I NEED it? |
+
+![The CIA triad with each property and the failure that violates it](/courses/cissp/figures/cissp-cia-triad.svg)
+
+Read the definitions closely, because each contains a word candidates skate over.
+
+**Confidentiality says entities, not people.** Processes, services, and systems are entities too. A backup job that copies payroll data to an unprotected staging area has violated confidentiality with no human reader involved.
+
+**Integrity says unauthorised, not incorrect.** An authorised clerk making a typo is a data-quality problem and an integrity concern in the broad sense, but the property as defined is about modification *without authorisation* - which is why integrity controls concentrate on who may change what, through which mechanism, with what evidence.
+
+**Availability says when and how they are permitted.** Availability is not "always up." A system deliberately offline for its maintenance window is not an availability failure; the same system unreachable during business hours is. The property is measured against the authorised pattern of access, which the business defines.
+
+## Why a triad and not a list
+
+The three goals form a genuine trio because **controls that serve one frequently tax another**, and security design is the management of those tensions.
+
+| Tension | Example |
+|---|---|
+| Confidentiality vs availability | Aggressive encryption and access approval flows slow legitimate access; lose the key and availability drops to zero |
+| Integrity vs availability | Blocking all writes during verification preserves integrity at the cost of service |
+| Confidentiality vs integrity | Anonymising data for privacy can destroy the referential accuracy another process depends on |
+
+An organisation therefore does not maximise any single property; it chooses a **balance driven by the mission**. A public news site weights availability far above confidentiality; a diplomatic cable system reverses the weighting; a bank ledger puts integrity first. When an exam stem describes an organisation, part of what it is telling you is the weighting - and the best answer respects it. Reading the organisation before reading the answer options is the earliest habit this course builds, and it starts here: the same technical event is a crisis for one mission profile and a tolerable cost for another, and the triad weighting is what tells you which organisation you are looking at.`
+    },
+    {
+      id: '2-confidentiality',
+      title: `2. Confidentiality: Only Authorised Entities Can Read`,
+      content: `## The property and its violation
+
+Confidentiality is the guarantee that data is accessible only to entities authorised to have it. Its violation is **unauthorised disclosure** - the wrong entity reading, copying, or learning the data. Disclosure is uniquely unforgiving among the three failure classes: altered data can sometimes be corrected and an outage can be recovered, but information once disclosed cannot be undisclosed. That asymmetry is why classification regimes, clearances, and criminal penalties cluster around this property.
+
+## What threatens it
+
+| Threat | Mechanism |
+|---|---|
+| Interception | Reading data in transit - capture on a network, shoulder surfing a screen |
+| Improper access | Permissions broader than need, privilege escalation, stolen credentials |
+| Social engineering | Persuading an authorised person to disclose |
+| Aggregation and inference | Combining individually harmless pieces into sensitive knowledge |
+| Residual data | Discarded media, decommissioned systems, reused storage still holding data |
+| Human error | Misdirected email, data posted publicly, printouts left at the printer |
+
+The last row deserves emphasis because it dominates real incident counts. Confidentiality fails through carelessness at least as often as through attack, which is why training and data-handling procedures are confidentiality controls in exactly the same sense encryption is.
+
+## What protects it
+
+Controls that serve confidentiality operate at every layer of the organisation, and the exam expects you to recognise all of them as serving this one property.
+
+| Control family | Examples |
+|---|---|
+| Cryptographic | Encryption at rest and in transit |
+| Access control | Identification, authentication, authorisation; least privilege; need to know |
+| Physical | Locks, guards, screen placement, clean-desk practice |
+| Administrative | Classification and labelling, handling procedures, NDAs, training |
+| Data lifecycle | Sanitisation and destruction of media at end of life |
+
+A physical illustration makes the property concrete: **a lock on a file cabinet provides confidentiality**, because only the personnel issued a key can read what is inside. The control is mundane; the analysis is the point. Ask "who can read this, and is everyone in that set authorised?" and you are performing a confidentiality assessment whether the asset is a cabinet or a database.
+
+## Related but distinct ideas
+
+Two neighbouring terms appear in stems and reward precision.
+
+**Privacy** is the individual's interest in controlling information about themselves. Confidentiality is a property of data; privacy is a right of a person. An organisation can maintain perfect confidentiality of data it should never have collected - confidentially held, privacy still violated. Domain 2 treats privacy protection in its own right.
+
+**Secrecy versus sensitivity.** Not everything confidential is secret in the dramatic sense. Salary data, health records, and unreleased financials are routine business information whose disclosure causes real harm. The exam's scenarios are mostly about this ordinary sensitivity, not espionage.`
+    },
+    {
+      id: '3-integrity',
+      title: `3. Integrity: No Unauthorised Modification`,
+      content: `## The property and its violation
+
+Integrity is the guarantee that data has not been modified without authorisation. Its violation is **unauthorised alteration** - and the alteration need not be malicious, large, or even deliberate to be a failure. A flipped bit in transmission, a truncated file from a failed write, and an attacker editing a ledger entry are all integrity violations; they differ in cause, not in kind.
+
+Integrity has a second face the definition implies: **the assurance side**. It is not enough for data to be unmodified; the organisation must be able to *demonstrate* it is unmodified. A record that is perfectly intact but unverifiable fails the business need, because decisions, audits, and courts require evidence. Integrity controls therefore come in pairs - one mechanism to prevent improper change, another to detect and prove whether change occurred.
+
+## What threatens it
+
+| Threat | Mechanism |
+|---|---|
+| Unauthorised change | An entity without authority writes to the data |
+| Malicious modification | Fraudulent edits, defacement, log tampering to hide activity |
+| Transmission and storage error | Bit errors, partial writes, media degradation |
+| Software fault | A defect corrupting records at scale |
+| Improper authorised change | An authorised entity acting outside process - the insider case |
+
+## What protects it
+
+| Control family | Examples |
+|---|---|
+| Verification against a reference | Hashes and checksums; comparing copies against a controlled baseline |
+| Change discipline | Version control, change management, approval workflows |
+| Access control | Write permissions narrower than read; separation of duties |
+| Evidence | Audit trails, logging, digital signatures |
+| Error handling | Transactional writes, redundancy codes, validated inputs |
+
+The book-simple illustration is **a version-control template**: keep a controlled reference copy of a document, and verify any working copy by comparing it against that baseline. Every serious integrity mechanism is this idea industrialised - a cryptographic hash is a compact baseline; a signed document carries its baseline with it; file integrity monitoring compares systems against a known-good state on a schedule.
+
+![Three canonical controls mapped to the property each serves](/courses/cissp/figures/cissp-cia-examples.svg)
+
+## Integrity of systems, not only data
+
+The property extends from data to the **processing that produces it**. If an application computes results incorrectly - through tampering or defect - the stored output can be bit-perfect and still wrong. System integrity (unmodified software, trusted configuration, protected processing) is therefore a precondition for data integrity, which is why later domains spend so much effort on secure baselines, code signing, and change control for infrastructure. Corrupt the process and you corrupt every product of the process, with no per-record tampering to detect.`
+    },
+    {
+      id: '4-availability',
+      title: `4. Availability: Access When and How Permitted`,
+      content: `## The property and its violation
+
+Availability is the guarantee that authorised entities can access the data **when and how they are permitted to do so**. Its violation is denial - the data or service being unreachable, unusable, or intolerably slow for the people entitled to it at the time they are entitled.
+
+Note what the definition does not promise. It does not promise access to everyone: unauthorised entities being refused is confidentiality working, not availability failing. It does not promise constant uptime: the standard is the *permitted* pattern of access, so scheduled maintenance inside an agreed window is compliant. And it treats **degradation as failure** - a system that technically responds but too slowly to be usable has failed the "how" clause just as surely as one that is down.
+
+## What threatens it
+
+| Threat class | Examples |
+|---|---|
+| Deliberate attack | Denial-of-service and ransomware - the attacks whose entire aim is this property |
+| Component failure | Disk, server, link, or power failure |
+| Facility and environmental events | Fire, flood, HVAC failure, regional disaster |
+| Human and process error | Misconfiguration, botched change, accidental deletion |
+| Capacity exhaustion | Legitimate demand exceeding design - failure with no attacker at all |
+| Loss of access means | An encrypted asset whose key is lost is destroyed for practical purposes |
+
+The last row is a deliberately uncomfortable one: **a confidentiality control can become an availability threat**. Encryption without key management converts data loss from possible to certain. The triad's tensions are not academic.
+
+## What protects it
+
+| Control family | Examples |
+|---|---|
+| Redundancy | Duplicate components, RAID, clustering, alternate sites |
+| Recovery | Backups tested by restoration, documented recovery procedures |
+| Resilience engineering | Fault tolerance, graceful degradation, capacity planning |
+| Environmental | Power conditioning, UPS and generators, fire suppression, HVAC |
+| Attack mitigation | DDoS absorption, rate limiting, malware defences |
+| Maintenance discipline | Patching and preventive maintenance - controlled downtime preventing uncontrolled downtime |
+
+The canonical illustration: **a backup provides availability**. If the primary copy is rendered useless - corrupted, encrypted by ransomware, destroyed with the hardware - the backup is restored and becomes the new primary. Two properties of that sentence carry exam weight. The backup helps only if it is *restorable*, which is why an untested backup is a hope rather than a control; and restoration takes *time*, which is why Domain 1's business continuity module quantifies how much downtime and data loss the organisation can survive and lets those numbers drive the design.
+
+## Availability is a security property
+
+Teams sometimes treat uptime as an operations concern and "real security" as the other two properties. The exam takes the opposite position, and so does the field: denial of service is an attack, ransomware is an attack on availability first, and the security programme owns the property end to end. When a stem describes harm from systems being unreachable, the security analysis is engaged exactly as it would be for a breach.`
+    },
+    {
+      id: '5-differentiating',
+      title: `5. Differentiating the Three in Scenarios`,
+      content: `## Name the harm first
+
+Exam items rarely ask "define confidentiality." They describe an event and ask what is at stake, which control fits, or which property a requirement expresses. The reliable technique is to **name the harm before naming anything else**: is the damage that the wrong entity *learned* something, that the data is now *wrong*, or that the right entity *could not get to it*?
+
+The inverse of the triad is a convenient mnemonic for the three harms - **DAD**: Disclosure, Alteration, Destruction (or Denial). Every security failure lands in at least one of those bins, and binning the failure identifies the property.
+
+| Scenario | Harm | Property at stake |
+|---|---|---|
+| A database of customer records is copied by an intruder | Disclosure | Confidentiality |
+| A student changes a stored grade | Alteration | Integrity |
+| Ransomware encrypts the file server | Denial | Availability (with an extortion-driven disclosure threat increasingly attached) |
+| A backup tape is left on a train | Disclosure | Confidentiality - the data is exposed even though service is unaffected |
+| A clerk's typo posts the wrong invoice amount | Alteration | Integrity - accuracy is compromised regardless of intent |
+| A construction crew cuts the fibre line | Denial | Availability - no attacker required |
+
+## One event, several properties
+
+Real incidents often strike more than one property, and multi-property analysis is exactly what harder stems reward.
+
+Consider ransomware with data theft, the dominant modern pattern: the exfiltration violates **confidentiality**, the encryption of files violates **availability**, and if the attacker manipulates or corrupts records, **integrity** joins the list. An answer that identifies only one of the three is incomplete; the best response addresses the property the *question* asks about while recognising the others exist.
+
+Or consider an engineer who modifies a firewall rule without change approval and accidentally blocks the payment service. The modification is an **integrity** failure of the configuration - unauthorised change - and its consequence is an **availability** failure of the service. Cause and effect land on different properties, and the exam may probe either end.
+
+## Property-first control selection
+
+The same discipline runs in reverse when a question asks for a control. Identify the property the requirement names, then choose the control whose *purpose* is that property.
+
+| Requirement phrasing | Property named | Control family to reach for |
+|---|---|---|
+| "must not be viewable by...", "prevent exposure" | Confidentiality | Encryption, access control, handling procedures |
+| "detect any tampering", "prove it is unchanged" | Integrity | Hashing, signatures, baselines, audit trails |
+| "must be accessible even if...", "tolerate a failure" | Availability | Redundancy, backups, failover, capacity |
+
+The classic distractor pairs a correct-sounding control with the wrong property: encryption offered where the requirement is tamper-evidence, a backup offered where the requirement is secrecy. A backup famously serves availability while *increasing* confidentiality exposure - it is one more copy to protect - which single fact answers a surprising number of items.
+
+## The sixty-second discipline
+
+Under exam pressure, the property analysis compresses into three questions asked in order: *What is the harm - disclosure, alteration, or denial?* That names the property. *Which state was the data in when the harm occurred - at rest, in transit, in use?* That names the control family. *Does the proposed answer serve that property in that state?* That eliminates the well-dressed distractors. Most triad items fall to this sequence in under a minute, and the ones that do not are usually multi-property items - in which case the same sequence runs once per harm, and the best answer is the one addressing the property the question stem actually asks about.`
+    },
+    {
+      id: '6-beyond-the-triad',
+      title: `6. Beyond the Triad: Authenticity and Non-Repudiation`,
+      content: `## Desirable properties the triad does not name
+
+Some security controls provide guarantees that are genuinely valuable and yet are not aspects of confidentiality, integrity, or availability. The two the course flags at the outset, and develops fully in later domains, are **authentication** and **non-repudiation**.
+
+![Authenticity and non-repudiation alongside the triad](/courses/cissp/figures/cissp-beyond-cia.svg)
+
+**Authenticity** is the assurance that data, a message, or an entity genuinely is what it claims to be - that the order came from the customer, that the update came from the vendor, that the login is the employee. Integrity tells you the message was not altered in transit; authenticity tells you who originated it. The two travel together but are separable: a perfectly intact message from an impostor passes integrity and fails authenticity.
+
+**Non-repudiation** is the property that an entity cannot credibly deny an action afterwards - sending the message, approving the payment, signing the document. It is evidence-grade accountability, and it requires mechanisms a third party would accept, which is why it rests on asymmetric cryptography: a signature made with a private key only one party holds proves origin in a way a shared secret never can. The mechanics arrive with cryptography in Domain 3 and identity in Domain 5.
+
+| Property | Question answered | Primary mechanism (later domains) |
+|---|---|---|
+| Authenticity | Did this really come from its claimed origin? | Authentication; message authentication; certificates |
+| Non-repudiation | Can the originator deny it later? | Digital signatures; audit trails with attribution |
+
+## The five together
+
+Many practitioners work from an expanded set - the triad plus authenticity and non-repudiation - and the exam is comfortable with both framings. The organising logic stays clean if you keep the questions separate: confidentiality, integrity, and availability are about **the data's condition**; authenticity and non-repudiation are about **the actions and actors around it**.
+
+## The triad as the course's spine
+
+Everything ahead attaches to this module, which is why the concepts are placed first.
+
+| Coming module or domain | The triad connection |
+|---|---|
+| Risk management (Domain 1) | Risk is assessed as the impact of losing C, I, or A of an asset |
+| Business continuity (Domain 1) | Engineering availability against major disruption |
+| Classification (Domain 2) | Labels encode how much confidentiality and integrity protection data warrants |
+| Security models (Domain 3) | Bell-LaPadula formalises confidentiality; Biba and Clark-Wilson formalise integrity |
+| Cryptography (Domain 3) | Confidentiality, integrity, authenticity, and non-repudiation from mathematics |
+| Networking (Domain 4) | Protecting all three properties in transit |
+| IAM (Domain 5) | Deciding who is authorised - the word all three definitions depend on |
+| Operations and DR (Domain 7) | Availability under failure and attack; integrity of evidence |
+
+When a later module seems detail-heavy, the recovery move is to ask which of the three goals the mechanism ultimately serves. That question has an answer every time, and finding it is usually the fastest route to the intended choice on an exam item.`
+    },
+    {
+      id: '7-measuring-impact',
+      title: `7. Rating the Properties: Impact Levels and the Chain to Accountability`,
+      content: `## The triad as a measurement instrument
+
+The triad's daily use in a security programme is not philosophical - it is a **rating scheme**. For any asset, the organisation asks three separate questions: how bad would unauthorised disclosure be, how bad would unauthorised modification be, and how bad would loss of access be? Each question gets its own answer, typically on a simple ordinal scale such as low, moderate, and high, and the three answers together form the asset's security profile.
+
+| Asset | Confidentiality impact | Integrity impact | Availability impact |
+|---|---|---|---|
+| Public press releases | Low - already public | High - alteration misinforms the market in the company's name | Moderate |
+| Customer payment records | High | High | Moderate - short outages tolerable, wrong data never |
+| Internal phone directory | Low | Low | Low |
+| Emergency dispatch system | Moderate | High | High - minutes matter |
+
+Three consequences of rating per property, each of which surfaces on the exam.
+
+**Controls follow the highest-rated property, per asset.** The press-release example is the instructive row: a public document scores *low* on confidentiality yet *high* on integrity, so its controls are signing, change approval, and publication integrity - not encryption. Candidates who reflexively equate "important asset" with "encrypt it" miss exactly this pattern; the rating tells you *which* protection matters, not just how much.
+
+**The overall system rating is driven by the high-water mark.** A system processing several data types generally inherits, for each property, the highest impact among them - one high-impact data type on a shared platform pulls the platform's obligations up with it. This is the analytical bridge to Domain 2's classification, where the same logic is formalised into labels and handling rules.
+
+**"When and how permitted" turns availability ratings into numbers.** Rating availability forces the business to state its tolerance - how long an outage is survivable, how much data loss is acceptable - and those statements become the recovery objectives that Domain 1's business continuity module engineers against. The triad is where those numbers are born.
+
+## From properties to accountable people
+
+The three properties describe the data's condition; enforcing them requires deciding **who is authorised** - the word all three definitions depend on - and proving afterwards what each entity did. That is the chain the identity domain builds out fully, and it is worth seeing at the outset how the triad plugs into it.
+
+![Identification, authentication, authorisation, accountability chain](/courses/cissp/figures/cissp-iaaa.svg)
+
+Identification claims an identity; authentication proves it; authorisation applies the rules that make "authorised entities" a real, checkable set rather than a phrase; and accountability records what each identified entity actually did. Every property depends on that chain: confidentiality's "only authorised entities," integrity's "no *unauthorised* modification," and availability's "authorised entities can access" are all promises about the same set of entities - a set that exists only because the chain maintains it. When authentication is weak, all three properties are weakened simultaneously, which is why identity is a domain of its own and not a footnote to any single property.
+
+The accountability link also completes the picture for the beyond-triad properties: **non-repudiation is accountability hardened to evidence grade**, and authenticity is authentication applied to data and messages rather than to sessions. The five properties, the impact ratings, and the identity chain are one connected system - and the exam's scenario questions are, at bottom, checks that you can navigate it in any direction.
+
+## The properties across the three data states
+
+Data spends its life in three states, and each property must be delivered in all three - a control that protects one state routinely does nothing for the others.
+
+| State | Where the data is | Confidentiality delivered by | Integrity delivered by | Availability delivered by |
+|---|---|---|---|---|
+| At rest | Storage - disks, tapes, archives, paper | Storage encryption, physical security, access control | Hashes and baselines, write control, media care | Redundant storage, backups, environmental controls |
+| In transit | Moving across a network or by courier | Transport encryption, protected channels | Message integrity checks, authenticated protocols | Redundant paths, capacity, delivery confirmation |
+| In use | Being processed - in memory, on screen | Screen privacy, memory protection, need-to-know workflow | Application logic, input validation, transaction discipline | Fault-tolerant processing, tested failover |
+
+Two observations convert this from a table into an exam instrument.
+
+**Every cell must be covered for the property to hold.** A database encrypted at rest, transmitted over an encrypted channel, and then displayed on an unattended screen in a public area has confidentiality in two states and a disclosure in the third. Stems that describe an impressive control set and then a breach are usually describing an uncovered cell - name the state, and the gap names itself.
+
+**In use is the historically weak state.** Data must generally be in usable form while processed, which is why the controls in that column lean on physical measures, application discipline, and workflow design rather than cryptography alone. The pattern to recognise: when a scenario's exposure happens during processing or display, controls from the at-rest and in-transit columns are distractors, however strong they sound.
+
+The states also preview Domain 2's structure: classification and handling requirements are stated per state, because "how must this data be protected?" has three answers, not one.`
+    },
+    {
+      id: '8-worked-examples',
+      title: `8. Worked Examples`,
+      content: `## Worked example 1: classifying incidents by property
+
+*For each event, name every triad property violated: (a) a laptop containing an unencrypted customer list is stolen; (b) a payroll clerk rounds salaries in their own favour by editing records; (c) a cloud region outage takes the order system offline for six hours; (d) an attacker exfiltrates a database, then encrypts the original and demands payment.*
+
+**(a) Confidentiality.** The customer list is exposed to whoever holds the laptop. Availability is intact if the data exists elsewhere; nothing was altered. If this laptop held the *only* copy, availability would join the list - the qualifier that separates careful answers from fast ones.
+
+**(b) Integrity.** Records were modified without authorisation. The clerk is an authorised *user* of the system but was not authorised to make *those changes* - authorised access, unauthorised modification. This is why integrity controls emphasise separation of duties and independent verification rather than perimeter access alone.
+
+**(c) Availability.** Authorised users could not reach the service during permitted hours. No disclosure, no alteration - and note that no attacker is required for a security property to fail.
+
+**(d) Confidentiality and availability.** The exfiltration is disclosure; the encryption is denial. Integrity of the stolen copy is untouched - the attacker wants it accurate, it is worth more that way. If the stem adds that records were manipulated, integrity joins. Modern ransomware is the standard example of a multi-property incident, and listing only one property is the standard way to get it wrong.
+
+## Worked example 2: property-driven control selection
+
+*A hospital must ensure that (1) lab results cannot be read by staff without a treatment relationship, (2) results cannot be altered after the pathologist signs them, and (3) clinicians can retrieve results during any shift, including during a system failure. Assign each requirement its property and a fitting control.*
+
+Requirement (1) names **confidentiality**: "cannot be read by" is the disclosure clause. The fitting controls are access controls scoped to the treatment relationship and encryption of the records; audit review of access supports it administratively.
+
+Requirement (2) names **integrity** with an evidence flavour: "cannot be altered after signing" wants both prevention and proof. A **digital signature** over the result at sign-out fits precisely - subsequent alteration invalidates the signature, giving tamper-*evidence* - supported by write restrictions and an audit trail. Note that encryption is the distractor here: encrypted data can still be altered; secrecy is not tamper-proofing.
+
+Requirement (3) names **availability** with a continuity condition: "during any shift, including during a failure." Redundant systems with failover, plus a tested restoration path, fit. A nightly backup alone is insufficient - restoration time would deny access during the failure window, failing the "when" clause.
+
+The example's larger lesson: one asset, three requirements, three different control families. "Protect the lab results" is not one problem; decomposing it by property is what turns it into three solvable ones.
+
+## Worked example 4: reading a control set for its property coverage
+
+*A team protects a document repository with: full-disk encryption on the server, TLS for all client connections, role-based read permissions, and a nightly backup replicated off-site. An assessor is asked: which triad properties are covered, where are the gaps, and what single addition would most improve the weakest property?*
+
+Map each control to the property and state it actually serves.
+
+Full-disk encryption serves **confidentiality at rest** - and only while the disks are out of the running system's hands; on the live server the volume is mounted and readable. TLS serves **confidentiality and integrity in transit**. Role-based read permissions serve **confidentiality in use**. The nightly replicated backup serves **availability** against destruction of the primary.
+
+Now read the gaps by asking what no control answers. Nothing here provides **integrity of the stored documents**: no hashing, no versioning, no signature - an authorised user (or malware running as one) can silently alter a document, and the alteration propagates into the next backup, overwriting the good copy within one cycle. That last point is the subtle one: the backup's usefulness against corruption is bounded by how quickly corruption is *detected*, which is an integrity capability the set lacks.
+
+The single best addition is therefore an integrity mechanism - document versioning with retained history, or file integrity monitoring over the repository - because it fills the one property with zero coverage and simultaneously upgrades the backup from "copy of whatever the primary contains" to "recoverable known-good state." An assessor who answers "add MFA" or "encrypt the backups" has strengthened properties that already had coverage while leaving the empty one empty - the precise error the property-by-property reading exists to prevent.
+
+## Worked example 3: the balance question
+
+*A start-up storing user documents proposes: every document encrypted with a per-user key derived from the user's password, no server-side recovery, so that even the company cannot read user data. What does this design maximise, and what does it sacrifice?*
+
+The design maximises **confidentiality** - genuinely and admirably. The company cannot read user documents, cannot be compelled to disclose them meaningfully, and a server breach yields ciphertext.
+
+The sacrifice is **availability**, concentrated in one event: a forgotten password. With no server-side recovery, key loss is data loss - permanent, by design. The company has converted "we might disclose your data" into "you might irrecoverably lose your data," which is a *transfer between triad properties*, not a free win.
+
+A complete answer names the trade and prices it against the mission: acceptable, perhaps, for a privacy product whose users accept the bargain explicitly; unacceptable for medical records where loss of access can be a safety event. Designs do not escape the triad's tensions - they choose a position among them, and the exam rewards candidates who can say which position and at what cost.`
+    },
+    {
+      id: '9-self-check',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Define each triad property in one sentence, and name the characteristic failure of each.
+
+2. A filing cabinet is fitted with a lock and keys are issued to three authorised clerks. Which property does the lock serve, and what is the analytical question that identifies it?
+
+3. Why does availability's definition say "when and how they are permitted" rather than "at all times"? Give a case that the difference decides.
+
+4. An intact, unaltered message arrives from someone impersonating a supplier. Which properties pass and which desirable property fails?
+
+5. Explain how an encryption control can become an availability threat.
+
+6. A fibre cut caused by roadworks takes a branch office offline. No attacker is involved. Is this a security event? Which property?
+
+7. Ransomware that exfiltrates before encrypting violates which properties, and why is the stolen copy's integrity typically NOT violated?
+
+8. A requirement reads "we must be able to prove the report was not modified after publication." Name the property, and explain why encryption is the wrong control.
+
+9. A press release scores low for confidentiality and high for integrity. What does that rating imply about the right controls, and what common reflex does it correct?
+
+10. Name the three data states, and give one confidentiality exposure that exists only in the "in use" state.
+
+## Answers
+
+**1.** **Confidentiality**: only authorised entities have access to the data; its failure is unauthorised **disclosure**. **Integrity**: no unauthorised modification of the data; its failure is unauthorised **alteration**. **Availability**: authorised entities can access the data when and how they are permitted; its failure is **destruction or denial** of access. The three failures - disclosure, alteration, destruction/denial - are the DAD inverse, and binning a scenario's harm into one of them is the fastest way to identify the property at stake.
+
+**2.** **Confidentiality.** The analytical question is: *who can read this, and is everyone in that set authorised?* The lock restricts the readable set to key-holders, and keys were issued precisely to the authorised clerks. The physical mundanity of the control is irrelevant - the property is defined by the guarantee delivered, not the technology delivering it, which is why administrative and physical controls count as confidentiality controls alongside encryption.
+
+**3.** Because the standard is the **authorised pattern of access**, not constant uptime. The difference decides the maintenance-window case: a system deliberately offline overnight inside an agreed window has not failed availability, while the same outage during business hours has. It also decides the degradation case - a system that responds too slowly to be usable during permitted hours fails the "how" clause even though it is technically up.
+
+**4.** **Integrity passes** - the message is unaltered. **Confidentiality and availability are not at issue** in the delivery itself. What fails is **authenticity**: the message does not genuinely originate from its claimed source. This is the clean demonstration that integrity and authenticity are separable properties - an intact lie is still a lie - and it is why authentication mechanisms exist alongside integrity mechanisms rather than being replaced by them.
+
+**5.** Encryption makes data unreadable without the key, so **the key becomes the availability of the data**. If keys are lost - no escrow, no recovery path, a departed employee's password, a destroyed HSM - the data is intact, unmodified, perfectly confidential, and permanently unusable: availability destroyed by a confidentiality control. This is why key management is treated as seriously as the cipher itself, and why "encrypt everything" without a recovery design is not a conservative decision but a trade of one risk for another.
+
+**6.** **Yes - an availability event.** Authorised users cannot access data during permitted hours, which is the definition of the failure; the property does not require a hostile actor. This is why availability planning spans accidents, component failure, and environmental events as well as attack, and why the security programme owns continuity and recovery rather than treating outages as purely an operations matter.
+
+**7.** The exfiltration violates **confidentiality** (the data reached an unauthorised entity) and the encryption of the originals violates **availability** (authorised users are denied access). The stolen copy's **integrity** is typically intact because the attacker has no incentive to alter it - its value for extortion or resale depends on it being accurate. Integrity enters only if the stem says records were manipulated or corrupted. Enumerating exactly the violated properties - no fewer, no more - is what the harder multi-property items reward.
+
+**8.** The property is **integrity**, specifically its evidence side: the requirement says *prove*, so the control must produce tamper-*evidence* a third party can check. A **cryptographic hash of the published report** (better, a digital signature over it) fits: any later modification changes the hash and invalidates the signature. **Encryption is wrong because secrecy is not tamper-proofing** - encrypted data can still be modified, and decryption would reveal only that the content differs, with no proof of what was original. Confidentiality controls answer "who can read it," not "has it changed."
+
+**9.** The rating says protection effort goes to **integrity**: signing or hashing the published text, change approval before release, and monitoring for alteration - because the harm is a modified release misinforming the market in the company's name, while disclosure of an already-public document is no harm at all. The reflex it corrects is equating "important" with "encrypt": encryption serves confidentiality, the one property this asset does not need. Rating each property separately, per asset, is what routes control spend to the property actually at risk.
+
+**10.** **At rest** (in storage), **in transit** (moving between parties), and **in use** (being processed or displayed). An in-use-only exposure: an authorised user's screen showing sensitive records in view of unauthorised observers - shoulder surfing an open workstation. Storage encryption and transport encryption are both fully in place and both irrelevant, because the disclosure happens in the one state neither control touches. Coverage means every property in every state.`
+    }
+  ],
+},
 cissp_governance: {
   topicId: 'cissp_governance',
   title: `Organizational and Corporate Governance`,
@@ -637,6 +1031,387 @@ Once implemented, policies must be monitored for compliance. This includes techn
 Policies should be reviewed at least annually to assess their effectiveness, identify needed updates, and ensure continued relevance. Changes to the business environment, technology, or regulations may necessitate policy updates. Regular review also demonstrates organizational commitment to continuous improvement.`,
       examTip: `Exam questions often ask about policy lifecycle, types of policies, and the appropriate level of document. Remember: Policies are principles/rules; Standards are specific requirements; Baselines are configurations; Procedures are step-by-step instructions; Guidelines are recommendations.`,
     },
+  ],
+},
+cissp_policy_framework: {
+  topicId: 'cissp_policy_framework',
+  title: `Security Policy, Standards, Procedures, and Guidelines`,
+  domainWeight: '16%',
+  overview: `Governance becomes real when it is written down. This module covers the hierarchy of written governance - policy at the top, standards beneath it, guidelines beside them, and procedures at the working end - and the exam tests it with unusual precision: who authors each document, which ones are mandatory, what each may and may not contain, and what an organisation exposes itself to when its practice does not match its paper. The hierarchy is also where security meets liability law, because documented, followed governance is the evidence of due care that attenuates negligence claims, and its absence is the evidence that amplifies them.`,
+  sections: [
+    {
+      id: '1-written-governance',
+      title: `1. Why Governance Is Written Down`,
+      content: `## Policy is the written aspect of governance
+
+Domain 1's governance module established that senior management directs the organisation and is accountable for it. This module covers the instrument through which that direction operates: the **written body of governance** - policies and the standards, guidelines, and procedures that descend from them.
+
+Writing is not bureaucratic decoration; it does four jobs that verbal direction, however clear, cannot do.
+
+| Job | Why writing is required |
+|---|---|
+| Direction | Intent survives contact with a large organisation only when stated once, identically, for everyone |
+| Authority | A signed policy carries management's authority; verbal direction carries the speaker's memory |
+| Consistency | Decisions repeat correctly across shifts, sites, and staff turnover |
+| Evidence | Auditors, regulators, and courts weigh what was written, published, and followed |
+
+The evidence row is the one with teeth. **Due care** is doing what a reasonable organisation would do; **due diligence** is the continuing effort to verify it is being done. Written governance, promulgated and demonstrably followed, is how both are proven after the fact. An organisation that suffered a breach while adhering to documented, current, industry-aligned practice is in a categorically different legal position from one that cannot show what its rules even were.
+
+## The four document types at a glance
+
+![The written-governance hierarchy with authorship and force](/courses/cissp/figures/cissp-governance-hierarchy.svg)
+
+| Document | What it is | Mandatory? | Who authors it |
+|---|---|---|---|
+| Policy | High-level statement of strategic intent and requirements | Yes | Drafted by SMEs; approved and issued by senior management |
+| Standard | Specific, explicit expectation of performance or conformance | Yes | Internal bodies, or external: law, regulators, industry, professional groups |
+| Guideline | Recommended practice; advice on how best to accomplish goals | No - advisory | Internal, or external parties such as vendors and industry participants |
+| Procedure | Explicit, repeatable steps to accomplish a specific task | Yes, in use | Practitioners and subject matter experts |
+
+Hold the mandatory column firmly: **policies and standards bind; guidelines advise; procedures bind in execution** - once a procedure is the approved way to do a task, doing the task means following it. The exam's favourite discriminators all live in this table, and most wrong answers are documents placed in the wrong row.`
+    },
+    {
+      id: '2-policy',
+      title: `2. Policy: Strategic Intent with Management's Signature`,
+      content: `## What a policy is
+
+A **policy** is a document published and promulgated by senior management that dictates and describes the organisation's strategic goals. Three words in that definition carry the module's weight.
+
+**Published and promulgated** - a policy locked in a drawer governs nothing. Promulgation means the people bound by the policy know it exists, can reach it, and have been told it applies to them; awareness programmes and acknowledgement records are how promulgation is evidenced.
+
+**Senior management** - the policy's force comes from who issues it, not who wrote it. Policies are typically *drafted* by subject matter experts, circulated among stakeholders for review and comment, revised, and then presented to senior management for approval and publication. Security policy follows this path with particular dependence on the practitioners: security is a field where senior management often has limited direct insight and leans on expert advice - which never transfers the accountability. Management signs, management owns.
+
+**Strategic** - long-term, overarching direction addressing the whole organisation. Not every goal is strategic; a department, a project, or a fixed duration can have goals of its own, and documents at that scope are subordinate instruments, not organisational policy.
+
+![The policy lifecycle from drafting to maintenance](/courses/cissp/figures/cissp-policy-lifecycle.svg)
+
+## Security policy specifically
+
+**Security policies** are the policies addressing the organisation's security goals. Typical territory includes data classification, access management, acceptable use, remote work, incident response authority, and personnel security expectations. Structurally, organisations commonly issue an overarching information security policy stating the programme's mandate and management's commitment, supported by issue-specific policies for defined areas and system-specific policies where a platform warrants its own rules.
+
+What belongs in a policy is intent and requirement, not mechanism.
+
+| Belongs in policy | Belongs lower in the hierarchy |
+|---|---|
+| "Company data must be classified and protected according to its sensitivity" | The classification levels and their handling rules (standard) |
+| "Access is granted on least privilege and reviewed periodically" | The review cadence and the ticketing steps (standard, procedure) |
+| "Encryption is required for sensitive data in transit" | Approved algorithms and key lengths (standard) |
+
+## Why policies must stay technology-neutral
+
+A policy that names a product or a protocol version binds the organisation's strategic intent to an implementation detail, and then ages like one. Writing intent at the policy layer and specifics at the standard layer lets technology change without re-opening the document that requires senior management's signature - which is also why policy review cycles (typically annual, plus on major organisational change) can be relatively calm while standards churn beneath them.
+
+The practical test for any sentence: *would this still be true if we changed vendors?* If not, it belongs in a standard or procedure, not in policy.
+
+## What promulgation demands in practice
+
+Because a policy's force depends on the bound population knowing it, promulgation has its own small discipline, and audit items probe each part: the current version is **reachable** by everyone it binds, including staff without regular desks; **acknowledgement is captured** - a dated record that each person received and accepted the obligation, renewed when the policy materially changes; and **enforcement is consistent**, because a policy enforced selectively is discoverable in any dispute and undermines every case built on it. The acknowledgement record is the quiet keystone: when an employee violates policy, the organisation's position rests on proving the person knew the rule - which is precisely what the signature on file provides, and what its absence surrenders.`
+    },
+    {
+      id: '3-standards',
+      title: `3. Standards: Explicit Mandates, Internal and External`,
+      content: `## What a standard is
+
+A **standard** is a specific mandate explicitly stating an expectation of performance or conformance. Where policy says *what the organisation intends*, a standard says *exactly what compliant looks like*. Standards range in granularity: some are detailed and technical - a required configuration for a class of device - while others state a general outcome, such as a legal requirement that a data controller use physical access controls to prevent unauthorised removal of hardware containing personal information. Both are standards; both are binding.
+
+## Where standards come from
+
+![Sources of the standards an organisation must meet](/courses/cissp/figures/cissp-standards-sources.svg)
+
+| Source | Nature | Examples of the type |
+|---|---|---|
+| Internal | The organisation's own mandates, deriving authority from policy | Configuration baselines, password standards, approved-cipher lists |
+| Statutory and administrative law | Legislation and regulator rules with legal force | Data protection statutes, sector regulations |
+| Case law | Court decisions establishing precedent | Rulings that define what "reasonable security" meant in practice |
+| Professional and industry bodies | Practice standards and sector baselines | Payment card requirements, professional codes, sector frameworks |
+
+An organisation is bound by the standards **applicable to it** - those imposed by law and regulation - and by the standards **it subscribes to**, such as contractual and industry schemes it joined. Subscription is voluntary; compliance with what you subscribed to is not.
+
+## The liability engine
+
+This is the part of the module the exam presses hardest, because it is where governance meets consequence. Failure to comply with applicable standards does not merely risk prosecution or regulatory fines - it **changes the organisation's position in every dispute that follows**.
+
+Walk the canonical scenario. A retailer holds customers' personal information, including contact details and purchasing history. A breach occurs. Investigators find the data was stored in files accessible with **default administrative usernames and passwords** - a state contrary to every current industry standard and to common security practice.
+
+Now the accounting:
+
+| Cost layer | Applies when compliant? | Applies when non-compliant? |
+|---|---|---|
+| Direct breach costs - investigation, notification, remediation | Yes | Yes |
+| Regulatory fines | Mitigated | Amplified |
+| Customer lawsuits | Defensible | Fed by the finding of negligence |
+| Reputational damage | Present | Compounded by the headline of the failure |
+
+The mechanism is **negligence**: non-conformance to accepted standards is evidence the organisation failed the reasonable-care test. Conversely, an organisation that took **good-faith steps** to protect data in a professional manner - including adherence to best practices and industry standards - still bears the incident's direct costs but has *attenuated the liability* stacked on top. Standards compliance is therefore not paperwork ahead of an audit; it is pre-positioned legal defence.
+
+## The baseline
+
+A term that travels with standards: a **baseline** is a minimum, uniform starting configuration or level of protection - a floor. Systems may exceed the baseline; none may fall below it without a documented, risk-accepted exception. Baselines operationalise standards for whole classes of systems, and the exception record matters as much as the baseline itself: an undocumented deviation is non-compliance, while a documented, approved exception is governance working as designed.`
+    },
+    {
+      id: '4-procedures',
+      title: `4. Procedures: Repeatable Steps That Prove Diligence`,
+      content: `## What a procedure is
+
+A **procedure** is an explicit, repeatable set of activities that accomplishes a specific task. It is the working end of governance - the document a person actually follows at a keyboard, in a server room, or during an emergency. Two design words define quality here: **explicit**, meaning a qualified person who has never done the task can perform it correctly from the document alone; and **repeatable**, meaning two people following it produce the same outcome.
+
+Procedures cover both rhythms of operational life:
+
+| Rhythm | Character | Examples of the type |
+|---|---|---|
+| One-time or infrequent | High stakes, low practice - the document substitutes for rehearsal | A disaster recovery checklist; decommissioning a system |
+| Regular and recurring | Routine - the document guarantees consistency at volume | Daily review of intrusion detection logs; access provisioning |
+
+The infrequent class is where documentation earns its keep most visibly. A task performed daily survives an undocumented step through habit; a disaster recovery runbook is executed rarely, under stress, possibly by whoever is available rather than whoever is expert - exactly the conditions where memory fails and explicit steps do not.
+
+## Procedures as evidence
+
+Like standards, procedures serve the organisation's legal position: they **demonstrate due diligence and help avoid liability**. The evidentiary value has two halves, and both must exist:
+
+- **Documentation of the procedure itself** - the organisation defined the right way to do the task, and can show the definition existed before the incident, with version history.
+- **Documentation of execution** - records showing the procedure was actually performed: checklists completed, logs reviewed and signed, tickets closed against the steps.
+
+A written procedure nobody follows is worse than none in one specific way: it proves the organisation *knew* the right way and did otherwise. Auditors and opposing counsel read the gap between documented and actual practice as knowledge plus omission - which is the shape of negligence. The operational rule that falls out: keep procedures current with practice, and when practice must change, change the document through its own controlled process.
+
+## Training and findability
+
+A procedure delivers value only if personnel **know it exists, can locate it quickly, and can perform it**. That makes two unglamorous controls part of this module's scope: training people on where procedures live and how to execute them, and maintaining the procedure library so the current version is findable - especially under the conditions where procedures matter most. An incident response procedure stored only on the file server that the incident took down is the standing cautionary example: critical procedures need availability planning of their own, including offline or out-of-band copies.
+
+## Writing procedures that survive contact
+
+| Property | Test |
+|---|---|
+| Explicit | Could a qualified newcomer execute it without asking anyone? |
+| Repeatable | Do two different people produce the same result? |
+| Current | Does it match the systems and organisation as they exist today? |
+| Attributed | Does it state who performs it, and who to escalate to? |
+| Evidenced | Does executing it leave a record that it was executed? |
+
+The last property closes the loop with due diligence: a procedure designed to leave evidence converts every routine execution into an entry in the organisation's defence file.`
+    },
+    {
+      id: '5-guidelines-and-hierarchy',
+      title: `5. Guidelines, and the Hierarchy Assembled`,
+      content: `## Guidelines: recommended, not required
+
+A **guideline** describes practices and expectations for accomplishing tasks and attaining goals - like a standard in content, unlike a standard in force. Guidelines are **recommendations and suggestions, not mandates**. They may be created internally for the organisation's own use, or come from external sources: industry participants, vendors publishing hardening advice for their products, and other interested parties.
+
+Their non-binding nature is the point, not a weakness. Guidelines carry expertise into decisions without collapsing every situation into one required answer; they suit exactly the territory where judgement must remain with the practitioner. And they feed the binding layers: today's guideline, proven in practice, is frequently promoted into tomorrow's standard - guidelines are where the organisation's written governance learns.
+
+One exam-relevant nuance: a guideline followed inconsistently creates no compliance failure, but a guideline the organisation *claims* to follow - in contracts, in public statements, in audit responses - has been converted into a commitment. Force comes from adoption, not only from the document's native type.
+
+The promotion path from guideline to standard is worth seeing as deliberate governance rather than drift. A practice enters as a recommendation, accumulates operational evidence - it works, it is affordable, staff can follow it - and is then promoted through the standards process, gaining testability and force. Running the path consciously gives the organisation a proving ground: mandates are issued only for practices already demonstrated viable, which keeps the mandatory layer credible and enforceable. The reverse path exists too - a standard that technology has obsoleted may be demoted to guidance while a replacement is developed - and both movements should leave version history, because the date a practice became mandatory is exactly the kind of fact an audit or a dispute later turns on.
+
+## The hierarchy, top to bottom
+
+The general ordering of authority, with the usual caveat that not every case fits it perfectly:
+
+| Level | Force | Detail | Informed by |
+|---|---|---|---|
+| Policy | Highest - all activity should conform | Lowest | Applicable law; the organisation's mission |
+| Standards | Mandatory; accountable for compliance | Medium to high | Policy's selection of which standards apply |
+| Guidelines | Advisory | Medium | Expertise, vendors, industry practice |
+| Procedures | Least authority, mandatory in use | Highest | Standards and guidelines they implement |
+
+The relationships matter as much as the ranking. **Policy sits at the pinnacle, informed by applicable law, and specifies which standards and guidelines the organisation follows** - it is the selection mechanism, not just the top document. **Standards implement policy's intent as explicit expectations**, and the organisation can be held accountable for missing them. **Guidelines inform how to conduct activities** and shape both procedures and the path to standards compliance. **Procedures sit at the bottom with the least authority and the most detail** - the actual actions personnel take - and despite their position they are crucial, carrying much of the organisation's due diligence evidence.
+
+Note the deliberate asymmetry the exam likes: **authority and detail run in opposite directions**. The most powerful document says the least about how anything is done; the most detailed document carries the least independent authority, deriving it entirely from the layers above.
+
+## Conflict resolution
+
+When documents disagree, the hierarchy is the resolution mechanism: the higher document prevails, and the lower one is corrected through its change process. A procedure that conflicts with policy is a defect in the procedure. The one apparent exception - applicable law conflicting with internal policy - is not an exception at all: law informs policy from above the hierarchy, so the policy is the document in error and must change.
+
+A conflict discovered is also a signal: something changed - law, technology, structure - without the document set being maintained. Mature governance treats every conflict as two work items: fix the document, and fix the review process that let it go stale.`
+    },
+    {
+      id: '6-document-selection',
+      title: `6. Choosing the Right Instrument`,
+      content: `## The placement decision
+
+A recurring practical (and exam) skill is choosing which document type a given statement belongs in. The two questions that decide it:
+
+1. **Must this bind everyone?** If yes: policy for intent, standard for specifics. If it is advice: guideline.
+2. **Is this direction or steps?** Direction lives in policy and standards; steps live in procedures.
+
+| Statement to place | Correct instrument | Why |
+|---|---|---|
+| "The organisation will protect customer data commensurate with its sensitivity" | Policy | Strategic intent, whole organisation, management's voice |
+| "Mobile devices accessing company mail must enforce a passcode and full-device encryption" | Standard | Specific, testable conformance expectation |
+| "Consider enabling biometric unlock where the hardware supports it well" | Guideline | Recommendation; judgement left with the implementer |
+| "To enrol a device: open the portal, install the profile, verify the compliance check passes" | Procedure | Explicit, repeatable steps for one task |
+| "Servers are built from the approved hardened image; deviations require a documented exception" | Standard (baseline) | Uniform minimum with a controlled exception path |
+
+## Anti-patterns the exam punishes
+
+**Mechanism in policy.** A policy naming products, protocol versions, or key lengths has buried implementation detail where only senior management can change it. The intent belongs in policy; the specifics belong one layer down.
+
+**Intent with no standard beneath it.** A policy requiring "appropriate encryption" with no standard defining *approved* encryption leaves every implementer to guess, and every audit to argue. Each policy requirement should trace down to at least one standard or procedure that makes it testable.
+
+**Everything mandatory.** Organisations that write only mandates discover their documents are widely violated, because real environments need judgement. The guideline layer exists so that advice can be advice - and so that mandates, being fewer, are actually enforceable.
+
+**Orphaned procedures.** A procedure that implements no standard and serves no policy is process for its own sake; when it conflicts with something above it, nobody notices until an incident does.
+
+## Traceability as the health check
+
+Mature governance can answer, for any document, two questions: *what above it authorises it?* and *what below it implements it?* Policy traces up to law and mission; standards trace up to policy; procedures trace up to standards. Run the trace in both directions and the gaps announce themselves - a standard with no implementing procedure is unexecuted intent; a procedure with no parent standard is unauthorised practice. This traceability is precisely what an auditor reconstructs, so an organisation that maintains it has, in effect, pre-answered the audit.`
+    },
+    {
+      id: '7-hierarchy-in-operation',
+      title: `7. The Hierarchy in Operation: Frameworks, Exceptions, and Measurement`,
+      content: `## Where the document set sits among the frameworks
+
+The internal document hierarchy does not float free - it is the instrument through which the governance and management frameworks of Domain 3's landscape actually reach daily work. Seen against the framework stack, the placement is exact: governance frameworks shape what **policy** must say; management-system and control frameworks supply much of what **standards** contain; and the operational layer executes through **procedures**.
+
+![Framework stack from governance through operations](/courses/cissp/figures/cissp-framework-stack.svg)
+
+| Framework layer | What it feeds in the document hierarchy |
+|---|---|
+| Governance (board-level direction) | Policy - the mandate, risk appetite, and accountability statements |
+| Management system | The requirement that policies, standards, and reviews exist at all |
+| Control catalogues | Standards - selected controls become the organisation's explicit mandates |
+| Operations | Procedures - the runbooks that execute the selected controls |
+
+This placement resolves a confusion the exam occasionally probes: adopting a framework does not replace writing policy. A control catalogue is a menu; the organisation's **standard** is the record of what it ordered, and its **policy** is the authority under which the order was placed. An auditor certifying a management system examines precisely this translation - framework requirement to internal document to evidence of practice.
+
+## Exceptions and waivers
+
+No mandatory document survives contact with a real environment without an exception mechanism, and the mechanism's design is what separates governance from wishful thinking.
+
+An **exception** is a documented, approved, time-bounded deviation from a standard or policy for a specific system or situation - typically because compliance is technically impossible, disproportionately costly, or pending a planned remediation. A sound exception record carries five elements: what requirement is not met, why, what compensating controls reduce the resulting risk, who accepted the residual risk, and when the exception expires for re-review.
+
+Two properties of that design carry exam weight. First, **the risk acceptance must be made at an appropriate level of authority** - an engineer cannot waive a requirement senior management imposed; the acceptance climbs to whoever owns the risk. Second, **exceptions expire**. A permanent exception is a policy change wearing a disguise; if the deviation is to be permanent, the honest instrument is amending the standard through its own change process, in daylight.
+
+The contrast worth holding: an **undocumented deviation is non-compliance** and reads as negligence when found, while a **documented, approved exception is governance functioning correctly** - the organisation saw the gap, weighed it, assigned the risk to an accountable owner, and scheduled its review. Identical technical state, opposite legal and audit posture.
+
+## Measuring compliance
+
+Mandatory documents imply measurement - a standard nobody checks is a guideline with extra steps. Programmes measure the document set from three angles:
+
+| Angle | Question | Typical evidence |
+|---|---|---|
+| Coverage | Does a current document exist for each required area? | Document inventory against the policy framework, with review dates |
+| Conformance | Does actual practice match the documents? | Configuration scans against baselines, audit sampling, procedure execution records |
+| Acknowledgement | Do the bound personnel know their obligations? | Promulgation records, training completion, signed acknowledgements |
+
+The third row closes a loop opened at the start of this module: promulgation is not complete when the document is published but when the organisation can *show* the bound population received it. Acknowledgement records are what convert "the policy exists" into "the policy governs" - and in a dispute over an employee's violation, they are the difference between enforcing a rule and announcing one retroactively.
+
+Measurement feeds maintenance. Persistent conformance failures against one standard are a signal to examine the standard as much as the violators - it may be unachievable as written, obsolete against current technology, or genuinely right and merely unenforced. Each diagnosis routes to a different fix, and the review cycle is where the diagnosis happens. A document set that is measured, exception-managed, and reviewed on schedule is governance in operation; one that is merely published is shelf-ware with a signature.
+
+## Adjacent instruments that travel with the document set
+
+Several documents sit alongside the core hierarchy, and stems test whether you can place them correctly relative to it.
+
+| Instrument | What it is | Relation to the hierarchy |
+|---|---|---|
+| Acceptable use policy | The rules bound users agree to for organisational systems | An issue-specific policy; its acknowledgement record is the enforcement predicate |
+| Non-disclosure agreement | A contractual confidentiality obligation on a person or party | Contract law reinforcing policy - binding beyond employment where policy cannot reach |
+| Service level agreement | A contractual commitment to measurable service performance | An external standard the provider is bound to; the customer's availability requirement made enforceable |
+| Contract terms with suppliers | Security obligations imposed on third parties | The only instrument that binds outsiders - internal policy does not govern another organisation |
+
+The pattern across all four rows: **internal documents bind the organisation's own people; contracts are how obligations cross its boundary.** A vendor is not bound by your policy, however well written - it is bound by the contract that imports your requirements. This is why third-party risk work in later modules is largely contract work, and why an exam stem about enforcing security on a supplier is answered from the contract row, not the policy row.`
+    },
+    {
+      id: '8-worked-examples',
+      title: `8. Worked Examples`,
+      content: `## Worked example 1: classify the documents
+
+*An organisation's document set includes: (a) "Information will be classified into four sensitivity levels and handled accordingly," signed by the CEO; (b) "TLS 1.2 or later is required for all data in transit; approved cipher suites are listed in Appendix A"; (c) "Where practical, prefer certificate-based authentication for administrative access"; (d) "Quarterly access review: export the entitlement report, distribute to managers, record attestations in the tracker, escalate non-responses after ten days." Identify each document type.*
+
+**(a) Policy.** Strategic intent, organisation-wide scope, senior management's signature. It deliberately says nothing about which data goes in which level - that specificity belongs below.
+
+**(b) Standard.** Explicit, testable conformance: a version floor and an enumerated cipher list. An auditor can check any system against it and get a yes or no - the signature property of a standard.
+
+**(c) Guideline.** The give-away words are "where practical" and "prefer": this is a recommendation that leaves the decision with the implementer. It cannot be failed in an audit, only ignored unwisely.
+
+**(d) Procedure.** Explicit, repeatable, sequenced steps for one recurring task, with an escalation path. Note that it also *leaves evidence* - recorded attestations - which is what makes it a due diligence instrument and not just an instruction.
+
+## Worked example 2: the breach and the paper trail
+
+*Two companies suffer materially identical breaches of customer personal data via a compromised server. Company A's server was configured to its documented hardening standard, patched to schedule, with records proving both; the intrusion used a previously unknown flaw. Company B's server retained default administrative credentials, contrary to every current industry standard. Compare their positions after the incident.*
+
+**Both companies bear the direct costs** - investigation, notification, remediation, service recovery. Nothing about good governance waives those.
+
+**Company B's exposure is amplified by negligence.** Default credentials contrary to universal industry practice is precisely the fact pattern regulators and plaintiffs build on: the standard existed, was well known, and was not met. Fines are assessed against that backdrop; customer lawsuits acquire a ready-made theory; the finding itself becomes the story.
+
+**Company A's exposure is attenuated by evidence of due care.** It can show a documented standard aligned with industry practice, systems conforming to it, and maintenance performed on schedule - good-faith, professional protection. It was beaten by an unknown flaw, not by omission. It still pays for the breach; it is far better positioned against everything stacked on top.
+
+The exam-grade conclusion: **standards compliance does not prevent all incidents; it changes what an incident costs.** Company A and B illustrate that governance documents are pre-positioned legal defence, drafted before anyone knew they would be needed.
+
+## Worked example 3: the conflicting documents
+
+*A security analyst discovers that the remote access procedure instructs staff to connect via a legacy VPN profile that the current remote access standard explicitly prohibits. Staff have been following the procedure. What is the immediate analysis, and what should happen?*
+
+**The procedure is the defective document.** In the hierarchy, the standard outranks it: procedures implement standards, so a procedure contradicting its parent standard is an error at the procedure layer, whatever its publication date.
+
+**The staff are not the failure.** They followed the promulgated procedure, which is what promulgation asks of them. The governance failure is the organisation's: a document was allowed to go stale against the standard above it.
+
+**Three actions follow.** First, correct the immediate exposure - the prohibited profile is in active use, so treat that as a finding with a remediation clock, not a paperwork note. Second, fix the procedure through its controlled change process so the correction is itself documented. Third - the step distinguishing mature governance - ask *why the conflict survived*: the review cycle that should have caught a procedure contradicting a newer standard did not run, or did not compare. Fix the review, or the same defect regrows elsewhere.
+
+One more edge worth stating: had the conflict been between the standard and **applicable law**, the resolution inverts in form but not in logic - law informs policy from above the entire hierarchy, so the internal document changes, immediately, and legal counsel is in the loop.
+
+## Worked example 4: building the document set for one requirement
+
+*A regulator now requires that customer personal data be protected against unauthorised removal of the hardware that stores it. Trace this single external requirement through the organisation's document set, naming what each layer must contain.*
+
+Start above the hierarchy: the requirement is **administrative law** - an external standard the organisation is bound to whether or not it subscribes.
+
+**Policy** absorbs it as intent, technology-neutrally: the organisation commits to protecting personal data in accordance with applicable law, and names the accountable owner. The policy does not mention cages, locks, or data centres; if the regulation changes, the policy sentence likely survives unchanged.
+
+**Standards** translate it into testable conformance: hardware storing personal data resides in access-controlled facilities; racks holding such systems are locked; media leaving the facility travels only under the approved sanitisation or courier standard. Each statement is auditable with a yes or no, which is what makes it a standard.
+
+**Procedures** make it executable: the visitor escort procedure, the media-removal authorisation steps, the decommissioning checklist that records serial numbers and sanitisation before hardware leaves the building. Each leaves a record when executed - the due diligence evidence.
+
+**Guidelines** carry the judgement layer: recommended cage layouts, advice on choosing between on-site destruction and certified courier for different media types.
+
+Now the payoff question the exam likes: a year later, an auditor asks the organisation to *demonstrate compliance with the regulation*. The answer is the trace itself, run in reverse - execution records prove the procedures ran; the procedures implement the standards; the standards implement the policy; the policy cites the law. Any broken link is a finding: a standard with no procedure is unexecuted intent, and execution with no records may as well not have happened. One regulation, four document types, one continuous chain of evidence - that chain is what "written governance" ultimately means.`
+    },
+    {
+      id: '9-self-check',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Rank the four document types by authority, and state the inverse relationship the ranking has with detail.
+
+2. Who drafts policy, and who must approve and issue it? Why does the distinction matter for security policy in particular?
+
+3. Name the four families of external sources standards can come from, with one example of the type for each.
+
+4. Which document types are mandatory, which is advisory, and what is the precise sense in which procedures bind?
+
+5. A breach investigation finds systems configured contrary to well-known industry standards. Beyond direct breach costs, what two cost layers does this finding feed, and through what legal mechanism?
+
+6. What two kinds of documentation must exist for procedures to deliver their due diligence value?
+
+7. A procedure conflicts with the standard it implements. Which document changes, and what second-order question should the discovery trigger?
+
+8. Why should policy remain technology-neutral? Give the practical test for whether a sentence belongs in policy.
+
+9. What distinguishes a documented exception from an undocumented deviation, given that the technical state of the system is identical?
+
+10. Your organisation needs a supplier to meet its encryption standard. Which instrument makes that binding, and why is policy alone insufficient?
+
+## Answers
+
+**1.** **Policy** highest, then **standards**, then **guidelines**, with **procedures** at the bottom. Authority and detail run in **opposite directions**: policy has the most force and the least detail; procedures have the least independent authority and the most detail, deriving their force entirely from the layers above. Despite their position, procedures are crucial - they describe the actual actions personnel take and carry much of the organisation's due diligence evidence.
+
+**2.** Policy is typically **drafted by subject matter experts**, circulated to stakeholders for review and revision, and then **approved, published, and promulgated by senior management** - the signature is what gives it force. The distinction matters most for security policy because security is an area where senior management often has limited direct insight and relies heavily on practitioners for advice; the drafting is delegated, but the accountability never is. Management signs, management owns.
+
+**3.** **Statutory and administrative law** - legislation and regulator rules, such as a data protection statute. **Case law** - court decisions setting precedent, such as rulings defining what reasonable security required. **Professional bodies** - practice standards from professional organisations. **Industry groups** - sector schemes and baselines, such as payment card requirements. (The fifth source is internal: the organisation's own standards, deriving authority from its policy.)
+
+**4.** **Policies and standards are mandatory** - the organisation can be held accountable for non-compliance. **Guidelines are advisory** - recommendations that leave judgement with the implementer. **Procedures are mandatory in use**: no one is obliged to have a procedure for everything, but once a procedure is the approved way to perform a task, performing the task means following it - and deviating from a documented procedure is itself a finding.
+
+**5.** The finding feeds **regulatory fines** (assessed more harshly against demonstrated non-conformance) and **civil liability** - lawsuits from the individuals whose data was exposed. The mechanism is **negligence**: failure to meet well-known, applicable standards is evidence the organisation failed the reasonable-care test, converting the breach from misfortune into fault. Conversely, documented good-faith adherence to standards attenuates exactly these layers while leaving direct costs unchanged.
+
+**6.** **Documentation of the procedure itself** - proof the organisation defined the correct way to perform the task, with version history predating the incident - and **documentation of execution** - records that the procedure was actually performed: completed checklists, signed log reviews, tickets closed against the steps. Either alone fails: an unexecuted procedure proves knowledge without action, and undocumented execution proves nothing at all.
+
+**7.** **The procedure changes** - in the hierarchy the standard outranks it, so a conflicting procedure is a defect at the procedure layer, corrected through its own controlled change process. The second-order question: **why did the review cycle not catch it?** A conflict that survived to discovery means maintenance failed; fixing the document without fixing the review leaves the defect free to regrow. (Staff who followed the promulgated procedure are not the failure - promulgation is precisely what asks them to follow it.)
+
+**8.** Because policy binds strategic intent with senior management's signature, and naming technologies welds that intent to implementation details that age quickly - forcing executive re-approval for what is really an engineering change, or worse, leaving an obsolete mandate in force. Specifics belong in standards, which churn on their own cycle beneath a stable policy. The practical test: **would this sentence still be true if we changed vendors?** If not, it belongs in a standard or procedure, not in policy.
+
+**9.** Legally and in audit, everything. A **documented exception** shows the organisation saw the gap, weighed the risk, applied compensating controls, had an appropriately senior owner accept the residual risk, and scheduled the deviation for re-review - governance functioning correctly. An **undocumented deviation** is non-compliance discovered after the fact, and it reads as negligence: the standard existed and was silently unmet. Same configuration, opposite posture. Two design rules keep the mechanism honest: risk acceptance climbs to whoever actually owns the risk, and every exception expires - a permanent exception is a standard change avoiding its own approval process.
+
+**10.** **The contract.** Internal policy binds the organisation's own personnel and systems; it has no force over another company, however clearly it is written. Making the supplier's obligation real means importing the encryption standard's requirements into the contract - as terms with acceptance criteria, audit or attestation rights, and remedies - so that contract law supplies the enforcement that internal governance cannot. This is the general boundary rule: internal documents govern inside, contracts carry obligations across the organisational boundary.`
+    }
   ],
 },
 cissp_personnel: {
