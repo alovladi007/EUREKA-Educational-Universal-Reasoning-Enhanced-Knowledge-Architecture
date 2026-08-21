@@ -541,6 +541,132 @@ def fig_cistrans_chairs(mode):
     plt.close(fig)
 
 
+def fig_stereoisomer_map(mode):
+    """The four-member family map for two stereocentres: horizontal pairs
+    are enantiomers, every cross-pair is diastereomeric - and when the two
+    centres are equivalent the bottom pair collapses into one meso
+    compound."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(7.4, 4.6))
+    pos = {"(R,R)": (1.2, 3.0), "(S,S)": (5.6, 3.0),
+           "(R,S)": (1.2, 1.0), "(S,R)": (5.6, 1.0)}
+    for label, (x, y) in pos.items():
+        ax.add_patch(plt.Rectangle((x, y), 1.7, 0.8, facecolor="none",
+                                   edgecolor=c[0], linewidth=1.8))
+        ax.annotate(label, (x + 0.85, y + 0.4), ha="center", va="center",
+                    fontsize=12, color=ink)
+    ax.annotate("", (5.6, 3.4), (2.9, 3.4),
+                arrowprops=dict(arrowstyle="<|-|>", color=c[1], linewidth=1.6))
+    ax.annotate("ENANTIOMERS", (4.25, 3.55), ha="center", fontsize=9.5,
+                color=c[1])
+    ax.annotate("", (5.6, 1.4), (2.9, 1.4),
+                arrowprops=dict(arrowstyle="<|-|>", color=c[1], linewidth=1.6))
+    ax.annotate("ENANTIOMERS", (4.25, 1.55), ha="center", fontsize=9.5,
+                color=c[1])
+    for x0, y0, x1, y1 in ((2.05, 3.0, 2.05, 1.8), (6.45, 3.0, 6.45, 1.8)):
+        ax.annotate("", (x1, y1), (x0, y0),
+                    arrowprops=dict(arrowstyle="<|-|>", color=c[2],
+                                    linewidth=1.4))
+    ax.annotate("", (5.6, 1.8), (2.9, 2.9),
+                arrowprops=dict(arrowstyle="<|-|>", color=c[2], linewidth=1.2,
+                                linestyle="dashed"))
+    ax.annotate("", (5.6, 2.9), (2.9, 1.8),
+                arrowprops=dict(arrowstyle="<|-|>", color=c[2], linewidth=1.2,
+                                linestyle="dashed"))
+    ax.annotate("every cross-pair:\nDIASTEREOMERS", (4.25, 2.35),
+                ha="center", va="center", fontsize=9.5, color=c[2])
+    ax.annotate("if the two stereocentres are EQUIVALENT, (R,S) and (S,R) are the\nSAME molecule - one achiral MESO compound, and the count falls to three",
+                (3.85, 0.35), ha="center", fontsize=9, color=ink,
+                style="italic")
+    ax.set_xlim(0.3, 7.9)
+    ax.set_ylim(0.0, 4.1)
+    ax.axis("off")
+    fs.save(fig, OUT, "org1-stereoisomer-map", mode)
+    plt.close(fig)
+
+
+def fig_separability(mode):
+    """The consequence that matters: on an ordinary achiral column or in a
+    distillation, enantiomers behave identically and give ONE signal, while
+    diastereomers differ in every property and resolve into TWO.  Schematic
+    traces."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    x = np.linspace(0, 10, 600)
+    single = 1.0 * np.exp(-((x - 5.0) ** 2) / 0.30)
+    twin = (0.85 * np.exp(-((x - 3.6) ** 2) / 0.26)
+            + 0.95 * np.exp(-((x - 6.3) ** 2) / 0.26))
+    fig, axes = plt.subplots(1, 2, figsize=(8.0, 3.2), sharey=True)
+    axes[0].plot(x, single, color=c[0], linewidth=2)
+    axes[0].set_title("ENANTIOMERS on an achiral system", fontsize=10)
+    axes[0].annotate("one peak - identical boiling point,\nsolubility and retention:\nNOT separable", (5.0, 1.05),
+                     ha="center", fontsize=8.8, color=ink)
+    axes[1].plot(x, twin, color=c[1], linewidth=2)
+    axes[1].set_title("DIASTEREOMERS on the same system", fontsize=10)
+    axes[1].annotate("two peaks - different properties:\nseparable by ordinary\ndistillation or chromatography", (5.0, 1.05),
+                     ha="center", fontsize=8.8, color=ink)
+    for ax in axes:
+        ax.set_ylim(0, 1.5)
+        ax.set_yticks([])
+        ax.set_xticks([])
+        ax.set_xlabel("retention / fraction")
+        fs.strip(ax) if hasattr(fs, "strip") else None
+    fs.save(fig, OUT, "org1-separability", mode)
+    plt.close(fig)
+
+
+def fig_stereo_relationships(mode):
+    """The relationship decision tree: two structures are constitutional
+    isomers, enantiomers, diastereomers, or the same compound - decided by
+    three yes/no questions asked in a fixed order."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+
+    def box(ax, x, y, w, h, text, colour, fontsize=9):
+        ax.add_patch(plt.Rectangle((x, y), w, h, facecolor="none",
+                                   edgecolor=colour, linewidth=1.7))
+        ax.annotate(text, (x + w / 2, y + h / 2), ha="center", va="center",
+                    fontsize=fontsize, color=ink)
+
+    def arrow(ax, x0, y0, x1, y1, label=""):
+        ax.annotate("", (x1, y1), (x0, y0),
+                    arrowprops=dict(arrowstyle="-|>", color=fs.GUIDE[mode],
+                                    linewidth=1.3))
+        if label:
+            ax.annotate(label, ((x0 + x1) / 2, (y0 + y1) / 2),
+                        ha="center", va="center", fontsize=8.2,
+                        color=fs.GUIDE[mode],
+                        bbox=dict(boxstyle="round,pad=0.15", fc="none",
+                                  ec="none"))
+
+    fig, ax = plt.subplots(figsize=(7.6, 5.2))
+    box(ax, 3.0, 8.4, 4.0, 0.85, "same molecular formula?", c[0])
+    box(ax, 0.2, 6.7, 2.6, 0.8, "different compounds\n(not isomers)", c[1], 8.4)
+    box(ax, 3.0, 6.6, 4.0, 0.85, "same connectivity?", c[0])
+    box(ax, 0.2, 4.9, 2.6, 0.8, "CONSTITUTIONAL\nisomers", c[2], 8.6)
+    box(ax, 3.0, 4.8, 4.0, 0.85, "non-superimposable\nmirror images?", c[0], 8.6)
+    box(ax, 0.2, 2.9, 2.6, 0.9, "DIASTEREOMERS\n(or identical -\ncheck meso)", c[2], 8.4)
+    box(ax, 3.2, 2.9, 3.6, 0.9, "ENANTIOMERS", c[2], 10.5)
+    arrow(ax, 5.0, 8.4, 5.0, 7.45)
+    arrow(ax, 3.0, 8.8, 2.8, 7.1, "no")
+    arrow(ax, 5.0, 6.6, 5.0, 5.65, "yes")
+    arrow(ax, 3.0, 7.0, 2.8, 5.3, "no")
+    arrow(ax, 5.0, 4.8, 5.0, 3.8, "yes")
+    arrow(ax, 3.0, 5.2, 2.8, 3.5, "no")
+    ax.annotate("ask in this order - the answers are independent",
+                (5.0, 2.35), ha="center", fontsize=8.6, color=ink,
+                style="italic")
+    ax.set_xlim(0, 7.6)
+    ax.set_ylim(2.0, 9.6)
+    ax.axis("off")
+    fs.save(fig, OUT, "org1-stereo-relationships", mode)
+    plt.close(fig)
+
+
 def fig_cip_wheel(mode):
     """R vs S by the CIP convention: with the LOWEST priority pointing away
     from the viewer, 1->2->3 clockwise is R (rectus), counterclockwise is S
@@ -759,6 +885,9 @@ def fig_ring_strain(mode):
 
 
 ALL = [
+    fig_stereoisomer_map,
+    fig_separability,
+    fig_stereo_relationships,
     fig_cip_wheel,
     fig_cip_priorities,
     fig_polarimeter,

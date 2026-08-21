@@ -2311,3 +2311,1455 @@ _add(LessonExtras(
         "Polarimetry founded the field and still serves as a fast identity check, but chiral chromatography measures composition directly and has replaced it wherever the number must be trusted.",
     ),
 ))
+
+
+# --------------------------------------------------------------------------
+# 6.4 Enantiomers and diastereomers
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.ENANTIODIA",
+    lead=(
+        "Two structures on a page, and one question that decides everything "
+        "downstream: what is their relationship? The answer is one of four - "
+        "identical, constitutional isomers, enantiomers, or diastereomers - "
+        "and it is reached by asking three yes/no questions in a fixed "
+        "order. This chapter builds that decision procedure, then explains "
+        "the consequence that makes it worth the trouble: enantiomers are "
+        "separable only by chiral means, while diastereomers are separable "
+        "by ordinary distillation and crystallisation - which is the entire "
+        "basis of resolution."
+    ),
+    sections=(
+        ReadingSection(
+            id="ed-tree",
+            heading="The decision procedure",
+            figure=Figure(
+                stem="org1-stereo-relationships",
+                caption=(
+                    "Three questions in order decide any pair of structures: same formula, same connectivity, and non-superimposable mirror images - yielding constitutional isomers, enantiomers, diastereomers, or the same compound."
+                ),
+                alt="Decision tree flowchart from same molecular formula through same connectivity to mirror-image test, branching to constitutional isomers, enantiomers and diastereomers.",
+            ),
+            body=(
+                "Run the questions in the order the figure gives them, and "
+                "never out of order. QUESTION ONE: same molecular formula? "
+                "If not, the structures are unrelated compounds and the "
+                "analysis ends. QUESTION TWO: same CONNECTIVITY - is every "
+                "atom bonded to the same partners? If not, they are "
+                "CONSTITUTIONAL (structural) isomers, differing in their "
+                "bonding skeleton, and stereochemistry never enters. "
+                "Butan-1-ol and butan-2-ol are constitutional isomers; so "
+                "are the pentane isomers of chapter 2.\n\n"
+                "QUESTION THREE, reached only when formula and connectivity "
+                "both match, is the stereochemical one: are the two "
+                "structures non-superimposable MIRROR IMAGES of each other? "
+                "If yes, they are ENANTIOMERS. If they are stereoisomers "
+                "but NOT mirror images, they are DIASTEREOMERS. And if they "
+                "turn out to be superimposable after all, they are the same "
+                "compound drawn twice - the answer students most often miss, "
+                "because rotating a drawing is not a change of "
+                "substance.\n\n"
+                "The order matters because the questions are independent "
+                "and each narrows the field. Attempting the mirror test on "
+                "structures with different connectivity is meaningless "
+                "work, and calling a pair 'isomers' without saying which "
+                "kind conveys almost nothing about how they will behave."
+            ),
+        ),
+        ReadingSection(
+            id="ed-descriptor-test",
+            heading="The fast test when descriptors are given",
+            body=(
+                "When both structures come with R/S labels, the "
+                "relationship falls out of arithmetic rather than "
+                "visualisation - which is why the R/S chapter insisted on "
+                "assigning every centre. Compare the descriptors centre by "
+                "centre and count the inversions.\n\n"
+                "EVERY centre inverted means ENANTIOMERS: $(2R,3S)$ and "
+                "$(2S,3R)$ are mirror images throughout. SOME BUT NOT ALL "
+                "inverted means DIASTEREOMERS: $(2R,3R)$ and $(2R,3S)$ "
+                "differ at one centre only, so they cannot be mirror "
+                "images. NO centres inverted means the SAME compound. The "
+                "rule is exact for as many stereocentres as a molecule "
+                "carries - with a single caution that the next chapter "
+                "develops in full: internal symmetry can make an "
+                "all-inverted pair turn out to be one achiral substance "
+                "rather than two enantiomers, which is exactly what a meso "
+                "compound is.\n\n"
+                "That caution is why the mirror test never fully retires. "
+                "Descriptor counting is fast and correct in the ordinary "
+                "case; the symmetry check catches the exception. Run "
+                "counting first, then ask whether the molecule has an "
+                "internal mirror plane before declaring a pair of "
+                "enantiomers."
+            ),
+        ),
+        ReadingSection(
+            id="ed-properties",
+            heading="Why the distinction has consequences",
+            figure=Figure(
+                stem="org1-separability",
+                caption=(
+                    "The consequence in one picture: on an ordinary achiral system enantiomers are indistinguishable and give a single peak, while diastereomers differ in every property and resolve into two - which is why resolution works by converting the first case into the second."
+                ),
+                alt="Two schematic chromatograms: enantiomers giving one unresolved peak, diastereomers giving two separated peaks.",
+            ),
+            table=Table(
+                caption="Enantiomers vs diastereomers: properties and separability",
+                columns=("Property", "Enantiomers", "Diastereomers"),
+                rows=(
+                    ("melting point, boiling point", "IDENTICAL", "different"),
+                    ("solubility in an achiral solvent", "identical", "different"),
+                    ("density, refractive index", "identical", "different"),
+                    ("IR and standard NMR spectra", "identical", "DIFFERENT - distinguishable signals"),
+                    ("optical rotation", "equal magnitude, OPPOSITE sign", "different, unrelated magnitudes"),
+                    ("reaction with achiral reagents", "same rate", "different rates"),
+                    ("reaction with chiral reagents/enzymes", "different rates", "different rates"),
+                    ("separation by distillation or crystallisation", "IMPOSSIBLE", "POSSIBLE - the basis of resolution"),
+                ),
+                source="Standard physical-organic comparison of stereoisomer classes; the separability row is the operational basis of classical resolution",
+                note="Enantiomers are identical in every achiral environment; diastereomers are simply different compounds.",
+            ),
+            body=(
+                "The table's last row is the one that changes what a "
+                "chemist can DO. Enantiomers have identical boiling "
+                "points, so no fractional distillation separates them; "
+                "identical solubilities, so no recrystallisation does "
+                "either. They are, in an achiral world, the same "
+                "substance twice over.\n\n"
+                "Diastereomers are not. They differ in every scalar "
+                "property, which means they behave like any other pair of "
+                "different compounds: they can be distilled apart, "
+                "crystallised apart, and separated on an ordinary "
+                "chromatography column, and their NMR spectra differ so "
+                "signals can be integrated to measure their ratio "
+                "directly. That single asymmetry - enantiomers "
+                "inseparable, diastereomers separable - is the hinge on "
+                "which the resolution chapter turns: convert a stubborn "
+                "pair of enantiomers into a tractable pair of "
+                "diastereomers by attaching a chiral partner, separate "
+                "them by ordinary means, then remove the partner. The "
+                "trick is to manufacture the very difference the table "
+                "says enantiomers lack."
+            ),
+        ),
+        ReadingSection(
+            id="ed-epimers",
+            heading="Epimers, anomers, and the vocabulary of partial difference",
+            body=(
+                "Diastereomers that differ at exactly ONE stereocentre have "
+                "their own name: EPIMERS. The term is used constantly in "
+                "carbohydrate chemistry, where the sugars form a family "
+                "related by single-centre changes - glucose and galactose "
+                "are epimers at carbon 4, glucose and mannose at carbon 2. "
+                "Enzymes called epimerases interconvert them, one centre at "
+                "a time, and the metabolic cost of a dietary sugar often "
+                "comes down to how many epimerisations the body must "
+                "perform to feed it into glycolysis.\n\n"
+                "ANOMERS are a special case of epimers that appear when a "
+                "sugar cyclises: the carbonyl carbon becomes a new "
+                "stereocentre - the ANOMERIC carbon - and the two resulting "
+                "diastereomers are called alpha and beta. Because ring "
+                "opening and closing happens readily in solution, anomers "
+                "interconvert through the open-chain form in a process "
+                "called MUTAROTATION, which a polarimeter can watch "
+                "directly as the rotation drifts to an equilibrium value - "
+                "the optical-activity chapter's instrument doing structural "
+                "work. Anomers are also where the chair chapters cash out: "
+                "beta-glucopyranose can put every substituent equatorial, "
+                "which is why beta is the major anomer at equilibrium and "
+                "why glucose is the sugar biology built on. Cis-trans ring "
+                "isomers from the previous unit are diastereomers too - the "
+                "vocabulary is one system seen from different angles."
+            ),
+        ),
+        ReadingSection(
+            id="ed-reactions",
+            heading="Making them: what a reaction produces",
+            body=(
+                "Predicting which relationship a reaction delivers is where "
+                "this chapter earns its keep in synthesis. When an ACHIRAL "
+                "substrate meets ACHIRAL reagents in an achiral solvent, no "
+                "influence in the flask can prefer one face over the other, "
+                "so a new stereocentre is formed as a 50:50 mixture - a "
+                "RACEMATE. This is not a limitation of technique but a "
+                "symmetry argument, and it is why racemates are the "
+                "default product of ordinary chemistry.\n\n"
+                "When the substrate ALREADY carries a stereocentre, the "
+                "situation changes: the existing centre makes the two faces "
+                "of the reacting site inequivalent, so the two possible "
+                "products are DIASTEREOMERS rather than enantiomers - and "
+                "diastereomeric transition states have different energies, "
+                "so they form in unequal amounts. That unequal formation is "
+                "called diastereoselectivity, and it is the basis of "
+                "substrate-controlled synthesis: an existing stereocentre "
+                "steering the formation of the next one.\n\n"
+                "The third case is asymmetric catalysis, where the CHIRAL "
+                "influence is supplied by a catalyst rather than the "
+                "substrate. The transition states leading to the two "
+                "enantiomers become diastereomeric through their "
+                "association with the chiral catalyst, differ in energy, "
+                "and one enantiomer forms preferentially - measured as the "
+                "enantiomeric excess of the previous chapter. Each of the "
+                "three cases is the same principle: enantiomers are "
+                "distinguished only when something chiral is present to "
+                "distinguish them."
+            ),
+        ),
+        ReadingSection(
+            id="ed-errors",
+            heading="The error catalogue: four relationship traps",
+            body=(
+                "Trap one: skipping the connectivity question. Two "
+                "structures with the same formula that differ in bonding "
+                "are constitutional isomers, and no amount of "
+                "stereochemical vocabulary applies to them. Trap two: "
+                "calling any two stereoisomers 'enantiomers.' Enantiomers "
+                "are the mirror-image case specifically; everything else "
+                "stereoisomeric is diastereomeric.\n\n"
+                "Trap three: failing to notice that two drawings are the "
+                "SAME compound. Rotating a structure, redrawing it from "
+                "another angle, or flipping a Fischer projection through "
+                "180 degrees changes nothing - and 'identical' is a "
+                "legitimate answer that examiners include precisely "
+                "because candidates assume a question would not be asked "
+                "about one compound. Trap four: expecting enantiomers to "
+                "differ in ordinary properties, or diastereomers to be "
+                "inseparable. The table above inverts both intuitions, and "
+                "the practical stakes are highest here: a chemist who "
+                "believes enantiomers can be recrystallised apart will "
+                "waste a great deal of solvent finding out otherwise."
+            ),
+        ),
+        ReadingSection(
+            id="ed-problems",
+            heading="Problem set: four relationships",
+            body=(
+                "Problem one: $(2R,3S)$-3-bromobutan-2-ol and "
+                "$(2S,3R)$-3-bromobutan-2-ol. Answer: every centre "
+                "inverted - ENANTIOMERS (subject to the meso check, which "
+                "this molecule does not trigger, since its two ends "
+                "differ).\n\n"
+                "Problem two: $(2R,3R)$ and $(2R,3S)$ of the same "
+                "compound. Answer: one centre inverted out of two - "
+                "DIASTEREOMERS, and specifically epimers, since exactly "
+                "one centre differs.\n\n"
+                "Problem three: butan-2-ol and 2-methylpropan-1-ol. "
+                "Answer: both $C_4H_{10}O$, but the carbon skeletons and "
+                "bonding differ - CONSTITUTIONAL isomers. The mirror test "
+                "is never reached.\n\n"
+                "Problem four: a chemist has a racemate and needs the "
+                "$(+)$ enantiomer. Explain why recrystallisation from an "
+                "ordinary solvent cannot work, and what must change. "
+                "Answer: enantiomers have identical solubility in achiral "
+                "solvents, so no ordinary crystallisation discriminates. "
+                "Something CHIRAL must enter - a resolving agent that "
+                "converts the pair into diastereomeric salts with "
+                "genuinely different solubilities, a chiral stationary "
+                "phase, or an enzyme that consumes one hand - which is "
+                "the resolution chapter in one sentence."
+            ),
+        ),
+        ReadingSection(
+            id="ed-nmr",
+            heading="Seeing the difference: spectroscopy of the two classes",
+            body=(
+                "The spectroscopic consequence deserves its own statement, "
+                "because it is how these relationships are diagnosed in "
+                "practice. Enantiomers give IDENTICAL NMR spectra in "
+                "ordinary solvents: every nucleus in one has an exactly "
+                "equivalent nucleus in the other, and an achiral "
+                "spectrometer with achiral solvent cannot tell them apart. "
+                "A single set of signals therefore proves nothing about "
+                "enantiopurity.\n\n"
+                "Diastereomers give DIFFERENT spectra, because their "
+                "nuclei genuinely occupy different environments - the "
+                "chemical shifts differ, and the two sets of signals "
+                "integrate against each other to give the ratio directly. "
+                "This is the whole mechanism behind chiral derivatising "
+                "agents: react a mixture of enantiomers with a single "
+                "enantiomer of some reagent, and the products are "
+                "diastereomers whose signals separate. The same logic runs "
+                "chiral chromatography, where the transient association "
+                "with a chiral stationary phase is diastereomeric and "
+                "therefore differentiating. Every analytical method for "
+                "enantiomeric purity works by manufacturing "
+                "diastereomers, permanently or transiently - which is the "
+                "same trick resolution uses preparatively."
+            ),
+        ),
+        ReadingSection(
+            id="ed-closing",
+            heading="The relationship audit",
+            body=(
+                "Close with the procedure. ONE: compare molecular "
+                "formulas; different formulas end the question. TWO: "
+                "compare connectivity atom by atom; different connectivity "
+                "means constitutional isomers and no stereochemistry. "
+                "THREE: with connectivity matched, assign R/S at every "
+                "centre and count inversions - all inverted suggests "
+                "enantiomers, some inverted means diastereomers, none "
+                "means the same compound. FOUR: before declaring "
+                "enantiomers, run the internal-mirror check, because "
+                "symmetry can collapse an apparent pair into one achiral "
+                "meso substance.\n\n"
+                "FIVE, the step that turns classification into "
+                "prediction: state the CONSEQUENCE. Enantiomers will be "
+                "inseparable by ordinary means and indistinguishable by "
+                "ordinary spectroscopy; diastereomers will differ in "
+                "every property and separate on an ordinary column. The "
+                "next chapter takes the counting seriously - what happens "
+                "when a molecule carries three, four or five "
+                "stereocentres, why $2^n$ is a ceiling rather than a "
+                "count, and how internal symmetry produces the meso "
+                "compounds this chapter has been deferring."
+            ),
+        ),
+        ReadingSection(
+            id="ed-same-compound",
+            heading="The answer people miss: same compound",
+            body=(
+                "Of the four possible answers, IDENTICAL is the one "
+                "candidates rule out first and should not. Two drawings "
+                "can differ in every visual respect and still depict one "
+                "substance, because a molecule is free to rotate and a "
+                "drawing is only one projection of it.\n\n"
+                "Three operations change a drawing without changing the "
+                "compound. Rotating the whole structure in the plane of "
+                "the page. Rotating about any single bond, which "
+                "reshuffles the apparent positions of groups without "
+                "breaking anything - the conformational freedom the ring "
+                "unit spent chapters on. And redrawing from a different "
+                "viewpoint, which can exchange which bonds appear wedged "
+                "and which dashed. None of these is a change of "
+                "substance.\n\n"
+                "The reliable test is the descriptor count: assign R/S at "
+                "every centre in both drawings, and if no centre differs, "
+                "the two are the same compound however unalike they look. "
+                "Physical models settle the remaining doubt in seconds, "
+                "which is the third time this unit has recommended one. "
+                "Examiners include the identical case deliberately, "
+                "because a candidate who assumes a question must concern "
+                "two different substances will invent a relationship "
+                "rather than report the absence of one."
+            ),
+        ),
+        ReadingSection(
+            id="ed-conformers-again",
+            heading="Conformers are not on the list",
+            body=(
+                "One relationship is deliberately missing from the "
+                "decision tree, and its absence is the point. CONFORMERS "
+                "- the staggered and eclipsed forms of butane, the two "
+                "chairs of a substituted cyclohexane, the rotamers of any "
+                "single bond - are not isomers of each other at all. They "
+                "are one compound in different momentary shapes, "
+                "interconverting billions of times a minute at room "
+                "temperature over barriers of tens of kilojoules per "
+                "mole.\n\n"
+                "The operational test the ring unit installed applies "
+                "unchanged: ask what motion relates the two structures. "
+                "If bond ROTATION suffices, they are conformers of one "
+                "substance and the isomer vocabulary does not apply. If "
+                "a bond must BREAK, they are configurational isomers and "
+                "the decision tree runs.\n\n"
+                "Examiners exploit the confusion constantly by drawing "
+                "the same compound in two conformations and asking for "
+                "the relationship - where the correct answer is "
+                "'identical, drawn in two conformations,' not "
+                "'diastereomers.' The confusion is understandable, "
+                "because different chairs of the same molecule genuinely "
+                "have different energies and different reactivities. But "
+                "energy differences do not make substances: what makes "
+                "two substances is a barrier high enough to bottle them "
+                "separately, and rotation never provides one."
+            ),
+        ),
+        ReadingSection(
+            id="ed-worked-pairs",
+            heading="Worked: four pairs run through the tree",
+            body=(
+                "PAIR ONE: $(2R,3R)$-tartaric acid and $(2S,3S)$-tartaric "
+                "acid. Same formula, same connectivity, every centre "
+                "inverted, no internal mirror plane in either - "
+                "ENANTIOMERS, with equal and opposite rotations and "
+                "identical melting points.\n\n"
+                "PAIR TWO: $(2R,3R)$-tartaric acid and the $(2R,3S)$ "
+                "form. Same formula and connectivity, ONE centre "
+                "inverted - DIASTEREOMERS, with different melting "
+                "points, different solubilities, and separable by "
+                "crystallisation. The second member happens also to be "
+                "meso, but that does not change the relationship "
+                "between them.\n\n"
+                "PAIR THREE: cis- and trans-1,2-dimethylcyclohexane. "
+                "Same formula, same connectivity, and not mirror images "
+                "of one another - DIASTEREOMERS, which is exactly what "
+                "the Cyclic Compounds unit concluded through the "
+                "face argument. Two vocabularies, one fact.\n\n"
+                "PAIR FOUR: two drawings of butan-2-ol, one showing the "
+                "hydroxyl wedged and one showing it dashed, with the "
+                "other groups also exchanged. Here the answer depends "
+                "entirely on the assignment: work the R/S label on each "
+                "drawing rather than trusting the wedges, because a "
+                "redrawn viewpoint can invert the appearance without "
+                "inverting the configuration. If both label R, they are "
+                "IDENTICAL."
+            ),
+        ),
+        ReadingSection(
+            id="ed-history-terms",
+            heading="Where the words came from",
+            body=(
+                "The vocabulary has a history worth a paragraph, because "
+                "the terms are opaque otherwise. ISOMER was coined by "
+                "Berzelius in the 1830s from Greek roots meaning 'equal "
+                "parts' - a scandalous idea at the time, since it "
+                "asserted that composition alone does not determine a "
+                "substance. Wohler's urea synthesis and the discovery "
+                "that fulminate and cyanate share a formula forced the "
+                "concept into existence.\n\n"
+                "ENANTIOMER comes from the Greek for 'opposite parts,' "
+                "and DIASTEREOMER from 'through' or 'across' - "
+                "stereoisomers standing across from each other rather "
+                "than opposite. The terms date from the era when "
+                "stereochemistry became systematic, and they replaced a "
+                "clutter of earlier usages including 'optical isomers,' "
+                "a phrase still occasionally seen and worth retiring: it "
+                "suggests that the difference is fundamentally optical "
+                "rather than spatial, and it does not extend to "
+                "diastereomers at all.\n\n"
+                "The modern set is precise because each term names a "
+                "STRUCTURAL relationship with predictable physical "
+                "consequences, rather than naming an observation. That "
+                "is the same upgrade the R/S system made over rotation "
+                "signs, and this unit has now made it twice."
+            ),
+        ),
+        ReadingSection(
+            id="ed-exam-patterns",
+            heading="How examiners ask it",
+            body=(
+                "Three costumes dominate. THE PAIR: two structures with "
+                "'what is the relationship?' - solved by the tree, with "
+                "'identical' and 'conformers of one compound' as the "
+                "planted answers candidates refuse to choose. THE "
+                "PROPERTY INFERENCE: 'these two compounds have different "
+                "melting points - what does that tell you about their "
+                "relationship?' - answered by the table, since "
+                "enantiomers cannot differ in melting point, so the pair "
+                "must be diastereomers or constitutional "
+                "isomers.\n\n"
+                "THE SEPARATION PROBLEM: 'how would you separate these "
+                "two?' - answered by naming the class first, because the "
+                "class dictates the method: ordinary distillation or "
+                "crystallisation for diastereomers and constitutional "
+                "isomers, and something chiral for enantiomers. Notice "
+                "that all three reward the same move - classify first, "
+                "then read the consequence off the table - and that the "
+                "table is short enough to reconstruct from one "
+                "principle: enantiomers are identical except in a chiral "
+                "environment, and diastereomers are simply different "
+                "compounds."
+            ),
+        ),
+        ReadingSection(
+            id="ed-vocabulary",
+            heading="The vocabulary shelf",
+            body=(
+                "ISOMERS: same molecular formula, different substances. "
+                "CONSTITUTIONAL (structural) ISOMERS: different "
+                "connectivity - the bonding skeleton itself differs. "
+                "STEREOISOMERS: same connectivity, different spatial "
+                "arrangement. ENANTIOMERS: stereoisomers that are "
+                "non-superimposable mirror images - identical in achiral "
+                "environments, inseparable by ordinary means.\n\n"
+                "DIASTEREOMERS: stereoisomers that are NOT mirror "
+                "images - different in every scalar property, separable "
+                "by ordinary means. EPIMERS: diastereomers differing at "
+                "exactly one stereocentre. ANOMERS: the epimeric pair at "
+                "a cyclic sugar's anomeric carbon, interconverting by "
+                "mutarotation. CONFORMERS: not isomers at all - one "
+                "substance in different rotational shapes.\n\n"
+                "Each entry carries its separability consequence, "
+                "because that is what makes the classification worth "
+                "performing. A chemist who can name the relationship but "
+                "not predict whether a column will separate the pair has "
+                "learned the vocabulary and missed the point."
+            ),
+        ),
+        ReadingSection(
+            id="ed-drug-consequences",
+            heading="Why industry cares about the distinction",
+            body=(
+                "The classification determines what a process chemist can "
+                "promise. If a target's impurity is a DIASTEREOMER, "
+                "purification is a normal engineering problem: "
+                "crystallise, distil, or chromatograph, and the "
+                "specification is met by ordinary unit operations. If the "
+                "impurity is the ENANTIOMER, none of that works, and the "
+                "options narrow to three - build the molecule "
+                "enantioselectively in the first place, resolve the "
+                "mixture using something chiral, or accept the racemate "
+                "and characterise both hands as separate "
+                "substances.\n\n"
+                "That fork has real economics attached. Diastereomeric "
+                "purification is cheap and scalable; enantiomeric "
+                "purification is neither, and the fifty-percent "
+                "theoretical ceiling on a classical resolution makes it "
+                "worse. It is why the discovery that a route produces a "
+                "diastereomeric rather than enantiomeric impurity is "
+                "genuinely good news in a development meeting, and why "
+                "asymmetric catalysis attracted the investment it did. "
+                "The chapter's abstract classification, in other words, "
+                "is the first question asked about any chiral route, and "
+                "the answer sets the budget."
+            ),
+        ),
+        ReadingSection(
+            id="ed-biology-consequences",
+            heading="How biology reads the difference",
+            body=(
+                "Living systems classify stereoisomers with an accuracy "
+                "no laboratory instrument matched until recently, and the "
+                "mechanism is the one this unit has been developing "
+                "throughout. An enzyme's active site is chiral, so its "
+                "association with each enantiomer of a substrate is "
+                "DIASTEREOMERIC - different energies, different binding, "
+                "different rates. The enzyme does not need a special "
+                "faculty for handedness; it merely has to be handed "
+                "itself.\n\n"
+                "The same logic governs receptors, transporters and "
+                "antibodies, and it explains observations from earlier "
+                "chapters that might otherwise look like curiosities. "
+                "Carvone's two smells, asparagine's sweet and bitter "
+                "forms, the different pharmacology of a drug's two "
+                "hands - each is a chiral protein converting an "
+                "enantiomeric difference into a diastereomeric one at "
+                "the moment of binding. And when a sugar's C4 epimer "
+                "cannot be metabolised without a dedicated enzyme, that "
+                "is the diastereomeric case: genuinely different "
+                "molecules requiring genuinely different machinery. "
+                "Biology, in short, does exactly what a chemist does to "
+                "resolve a racemate - it supplies the chiral partner - "
+                "and it does so at every encounter."
+            ),
+        ),
+        ReadingSection(
+            id="ed-bridge",
+            heading="What the next chapters need from this one",
+            body=(
+                "Everything remaining in the unit assumes this "
+                "classification runs automatically. The multiple-"
+                "stereocentre chapter counts families and asks which "
+                "members are enantiomers and which diastereomers - "
+                "questions that are meaningless without the tree. "
+                "Fischer projections exist to make the classification "
+                "readable at four or five centres, where wedge-dash "
+                "drawings defeat the eye.\n\n"
+                "And resolution is nothing more than this chapter's "
+                "table exploited on purpose: because enantiomers cannot "
+                "be separated and diastereomers can, the entire "
+                "technique consists of converting one into the other, "
+                "separating, and converting back. When that chapter "
+                "arrives, the only genuinely new content will be the "
+                "chemistry of the conversion - the resolving agents, the "
+                "chiral columns, the enzymes. The strategy will already "
+                "be familiar, because it is written in the last row of "
+                "the property table you have already read."
+            ),
+        ),
+        ReadingSection(
+            id="ed-constitutional-depth",
+            heading="The branch most students skip: constitutional isomers",
+            body=(
+                "The tree's second question deserves more attention than "
+                "it usually gets, because constitutional isomerism is "
+                "where the isomer count actually explodes. Chapter 2 "
+                "counted the alkane isomers: three for pentane, five for "
+                "hexane, nine for heptane, and seventy-five for decane - "
+                "all before any stereochemistry enters.\n\n"
+                "Constitutional isomers come in recognisable families. "
+                "CHAIN isomers differ in skeletal branching (pentane "
+                "versus 2-methylbutane). POSITIONAL isomers move a "
+                "functional group along the same skeleton (butan-1-ol "
+                "versus butan-2-ol). FUNCTIONAL isomers share a formula "
+                "across different functional groups entirely - "
+                "$C_2H_6O$ is both ethanol and dimethyl ether, "
+                "compounds so unalike that one is a liquid at room "
+                "temperature and the other a gas.\n\n"
+                "That last example is the cleanest argument for asking "
+                "the connectivity question first. Ethanol and dimethyl "
+                "ether share every atom and differ in nothing but which "
+                "atom is bonded to which - and they are as different as "
+                "two substances can be. Stereochemistry, by comparison, "
+                "produces subtler differences: same connectivity, "
+                "different arrangement, and consequences that range from "
+                "undetectable (enantiomers in a flask) to decisive "
+                "(enantiomers in a body)."
+            ),
+        ),
+        ReadingSection(
+            id="ed-one-line",
+            heading="The chapter in one line",
+            body=(
+                "Ask three questions in order - same formula, same "
+                "connectivity, non-superimposable mirror images - and "
+                "then read the consequence off one row of one table: "
+                "enantiomers are inseparable by ordinary means and "
+                "diastereomers are not. Everything else in this chapter, "
+                "including all of resolution, is that asymmetry being "
+                "exploited on purpose."
+            ),
+        ),
+        ReadingSection(
+            id="ed-physical-basis",
+            heading="The physical reason enantiomers match so exactly",
+            body=(
+                "It is worth asking WHY enantiomers share melting points "
+                "to the decimal place rather than merely coming close, "
+                "because the answer is more interesting than 'they just "
+                "do.' Every intermolecular interaction - dispersion "
+                "forces, dipole attractions, hydrogen bonds - depends on "
+                "distances and angles between atoms. Reflection "
+                "preserves all of them exactly: a mirror image has "
+                "identical bond lengths, identical angles, identical "
+                "charge distribution.\n\n"
+                "So a molecule interacting with an achiral partner "
+                "experiences exactly what its mirror image experiences, "
+                "and the energies are equal by symmetry rather than by "
+                "coincidence. That is why the identity is exact rather "
+                "than approximate, and why no amount of experimental "
+                "refinement will ever reveal a boiling-point difference "
+                "between enantiomers in an achiral solvent.\n\n"
+                "Diastereomers break the symmetry because they are not "
+                "reflections of each other: their internal distances "
+                "genuinely differ, so their packing, their dipoles, and "
+                "their intermolecular energies differ too. The "
+                "separability table is therefore not an empirical "
+                "observation that might have come out otherwise - it is "
+                "a consequence of what reflection does and does not "
+                "preserve, which is the deepest reason this chapter's "
+                "classification is worth trusting."
+            ),
+        ),
+        ReadingSection(
+            id="ed-crystal-exception",
+            heading="One honest exception: crystals",
+            body=(
+                "The rule that enantiomers cannot be separated by "
+                "crystallisation has a famous exception, and it is the "
+                "one Pasteur stumbled into. A few racemates crystallise "
+                "as a CONGLOMERATE - separate crystals of each pure "
+                "enantiomer growing side by side - rather than as a "
+                "racemic compound in which both hands share a lattice. "
+                "When that happens, the crystals themselves are "
+                "chiral objects with distinguishable shapes, and "
+                "mechanical separation becomes possible.\n\n"
+                "Conglomerate behaviour is uncommon, temperature-"
+                "dependent, and not predictable in advance - Pasteur's "
+                "tartrate salt forms one only below about 26 degrees "
+                "Celsius. But it is exploited industrially through "
+                "preferential crystallisation, in which seeding a "
+                "supersaturated racemate with crystals of one hand "
+                "coaxes that hand out of solution.\n\n"
+                "The exception does not undermine the rule, and stating "
+                "it precisely shows why: the separation works because "
+                "the SOLID PHASE is chiral, which is another chiral "
+                "environment doing the discriminating. Nothing achiral "
+                "ever tells the hands apart. Every apparent exception in "
+                "this subject, examined closely, turns out to have "
+                "smuggled chirality in somewhere - which is the "
+                "strongest possible form of the principle."
+            ),
+        ),
+        ReadingSection(
+            id="ed-closing-audit-2",
+            heading="Practising the classification",
+            body=(
+                "The classification is a skill that rewards volume over "
+                "study, and the efficient drill is small. Take any chiral "
+                "molecule with two stereocentres and draw all four "
+                "descriptor combinations. Then, for every one of the six "
+                "possible pairings among them, state the relationship "
+                "from the inversion count alone and predict two "
+                "consequences - whether the pair could be separated on an "
+                "ordinary column, and whether their NMR spectra would "
+                "differ.\n\n"
+                "Six pairings, two predictions each, one molecule: "
+                "twelve answers with a self-checking structure, because "
+                "the four members must resolve into exactly two "
+                "enantiomeric pairs with all remaining links "
+                "diastereomeric. If your answers do not form that "
+                "pattern, an error is present and you can find it "
+                "without an answer key.\n\n"
+                "Doing this on three molecules - one with distinct ends, "
+                "one with identical ends producing a meso compound, and "
+                "one ring case - covers essentially every configuration "
+                "an examiner can construct from two stereocentres, and "
+                "it takes far less time than reading this chapter again."
+            ),
+        ),
+        ReadingSection(
+            id="ed-final-note",
+            heading="A closing caution about vocabulary",
+            body=(
+                "Two phrases still circulate that this chapter should "
+                "retire. 'OPTICAL ISOMERS' is sometimes used to mean "
+                "enantiomers, and it is doubly unhelpful: it implies the "
+                "difference is optical rather than spatial, and it has "
+                "no natural extension to diastereomers, which are "
+                "stereoisomers too. 'GEOMETRIC ISOMERS' for cis-trans "
+                "pairs is similarly dated - those are simply "
+                "diastereomers, and calling them by the general term "
+                "makes their separability predictable rather than "
+                "surprising.\n\n"
+                "Using the modern vocabulary is not pedantry. Each "
+                "current term names a structural relationship that "
+                "predicts physical behaviour, which is exactly what the "
+                "older terms failed to do."
+            ),
+        ),
+        ReadingSection(
+            id="ed-one-more",
+            heading="Reading the table backwards",
+            body=(
+                "A final habit worth building: the property table works "
+                "in reverse, and examiners use it that way. Given an "
+                "OBSERVATION about two substances, the table constrains "
+                "what their relationship can be. Different melting "
+                "points rules out enantiomers entirely. Identical NMR "
+                "spectra in an ordinary solvent rules out diastereomers. "
+                "Equal and opposite rotations with everything else "
+                "matching means enantiomers and nothing else.\n\n"
+                "Reasoning from properties to relationships is what "
+                "characterisation actually looks like in a laboratory, "
+                "where structures are the conclusion rather than the "
+                "premise - and it is worth practising in that direction "
+                "as well as the forward one."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Three questions in fixed order - same formula, same connectivity, non-superimposable mirror images - sort any pair into identical, constitutional isomers, enantiomers or diastereomers.",
+        "With descriptors given: ALL centres inverted means enantiomers, SOME means diastereomers, none means the same compound - subject to the meso symmetry check.",
+        "Enantiomers are identical in every achiral property and INSEPARABLE by distillation or crystallisation; diastereomers differ in everything and separate by ordinary means.",
+        "Epimers differ at one centre (glucose/galactose at C4); anomers are the cyclic-sugar case and interconvert by mutarotation, watchable on a polarimeter.",
+        "Achiral substrate plus achiral reagents gives a racemate by symmetry; an existing stereocentre or a chiral catalyst makes the competing transition states diastereomeric, which is why selectivity becomes possible at all.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 6.5 Multiple stereocenters and meso compounds
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.MULTIPLESTEREO",
+    lead=(
+        "One stereocentre gives two stereoisomers. Two give four - unless "
+        "the molecule is symmetric, in which case they give three, and one "
+        "of those three is achiral despite carrying two stereocentres. This "
+        "chapter works the counting honestly: why $2^n$ is a ceiling rather "
+        "than an answer, how internal symmetry collapses it, what a meso "
+        "compound is and how to spot one, and how the whole family of "
+        "stereoisomers relates - which pairs are enantiomers, which are "
+        "diastereomers, and which are the same substance drawn twice."
+    ),
+    sections=(
+        ReadingSection(
+            id="ms-counting",
+            heading="The 2 to the n ceiling",
+            body=(
+                "Each stereocentre has two possible configurations, R or S, "
+                "and in the absence of symmetry the choices are "
+                "independent - so a molecule with $n$ stereocentres has at "
+                "most $2^n$ stereoisomers. One centre gives $2$; two give "
+                "$4$; three give $8$; four give $16$; and a modest natural "
+                "product with six centres has up to $64$ stereoisomers, of "
+                "which a synthesis must deliver exactly one.\n\n"
+                "Those numbers explain why stereochemistry dominates "
+                "synthetic planning. Getting the constitution right - the "
+                "connectivity - is one problem; getting one of $64$ "
+                "arrangements is a different and harder one, and it is why "
+                "asymmetric methodology has absorbed so much of the "
+                "field's effort. The word CEILING is doing real work in "
+                "that sentence, though: $2^n$ is the maximum, achieved only "
+                "when every combination gives a genuinely distinct "
+                "substance. When the molecule has internal symmetry, some "
+                "of those combinations turn out to describe the same thing, "
+                "and the true count falls below the formula. The rest of "
+                "this chapter is about when and why that happens."
+            ),
+        ),
+        ReadingSection(
+            id="ms-family",
+            heading="Mapping a four-member family",
+            figure=Figure(
+                stem="org1-stereoisomer-map",
+                caption=(
+                    "Two stereocentres give four combinations: the horizontal pairs are enantiomers, every cross-pair is diastereomeric - and when the two centres are equivalent the lower pair collapses into a single achiral meso compound."
+                ),
+                alt="Four boxes labelled R,R and S,S and R,S and S,R with enantiomer arrows horizontally and diastereomer arrows across every other pair.",
+            ),
+            body=(
+                "Take a molecule with two DIFFERENT stereocentres - "
+                "3-bromobutan-2-ol will do, since its two ends are not "
+                "equivalent. The four combinations are $(2R,3R)$, "
+                "$(2S,3S)$, $(2R,3S)$ and $(2S,3R)$, and the relationships "
+                "among them follow the previous chapter's inversion "
+                "count.\n\n"
+                "$(2R,3R)$ and $(2S,3S)$ have every centre inverted: "
+                "ENANTIOMERS. $(2R,3S)$ and $(2S,3R)$ likewise: a second "
+                "enantiomeric pair. But $(2R,3R)$ against $(2R,3S)$ has "
+                "only one centre inverted: DIASTEREOMERS - and the same "
+                "holds for every cross-pair between the two "
+                "enantiomeric pairs.\n\n"
+                "So four stereoisomers organise into TWO enantiomeric "
+                "pairs, with every member of one pair being a "
+                "diastereomer of every member of the other. The practical "
+                "consequence follows directly from the property table: "
+                "the two PAIRS can be separated from each other by "
+                "ordinary distillation or crystallisation, because pairs "
+                "are diastereomeric; but within a pair the two members "
+                "cannot be, because they are enantiomers. That is the "
+                "structure of essentially every multi-centre "
+                "stereochemical problem, and drawing the four-box map "
+                "before answering makes the relationships visible instead "
+                "of memorised."
+            ),
+        ),
+        ReadingSection(
+            id="ms-meso",
+            heading="Meso compounds: symmetry collapses the count",
+            figure=Figure(
+                stem="org1-tartaric-stereoisomers",
+                caption=(
+                    "Tartaric acid's three stereoisomers: the (2R,3R) and (2S,3S) enantiomeric pair, and meso-tartaric acid (2R,3S), which carries two stereocentres yet possesses an internal mirror plane and is achiral. Configurations were assigned computationally."
+                ),
+                alt="Structures of (2R,3R)-, (2S,3S)- and meso-tartaric acid side by side with their configurations labelled.",
+            ),
+            body=(
+                "Now take a molecule whose two stereocentres are "
+                "EQUIVALENT - each bearing the same set of groups. "
+                "Tartaric acid is the classic, and the figure shows what "
+                "happens. The $(2R,3R)$ and $(2S,3S)$ forms are a normal "
+                "enantiomeric pair: both chiral, equal and opposite "
+                "rotations, inseparable by ordinary means.\n\n"
+                "The $(2R,3S)$ form is different. Because the two halves "
+                "of the molecule are constitutionally identical and "
+                "oppositely configured, an internal MIRROR PLANE passes "
+                "between them: one half is the reflection of the other. "
+                "The molecule is therefore superimposable on its own "
+                "mirror image - ACHIRAL - despite containing two "
+                "stereocentres. It is optically inactive, it cannot be "
+                "resolved, and it is a single substance rather than half "
+                "of a pair. Compounds like this are called MESO.\n\n"
+                "And $(2S,3R)$? Rotate the $(2R,3S)$ structure and it "
+                "becomes $(2S,3R)$ - they are the SAME compound, which is "
+                "why the count comes to three rather than four. The "
+                "collapse is exactly the 'identical' branch of the "
+                "relationship tree, appearing where the descriptor "
+                "arithmetic alone would have predicted a fourth "
+                "substance. Meso-tartaric acid is a diastereomer of both "
+                "chiral forms, with its own melting point - separable "
+                "from them by crystallisation, as Pasteur's original "
+                "material demonstrated."
+            ),
+        ),
+        ReadingSection(
+            id="ms-spotting",
+            heading="Spotting a meso compound",
+            body=(
+                "The diagnostic is symmetry, and three checks find nearly "
+                "every case. CHECK ONE: does the molecule have an EVEN "
+                "number of stereocentres with the two halves "
+                "constitutionally identical? Meso compounds require that "
+                "kind of pairing - a molecule whose ends genuinely differ "
+                "cannot be meso.\n\n"
+                "CHECK TWO: are the paired centres OPPOSITELY configured - "
+                "one R, one S? Same-configuration pairs give the chiral "
+                "members of the family; opposite configuration is what "
+                "creates the internal reflection. CHECK THREE, the "
+                "decisive one: can you draw a mirror plane through the "
+                "molecule such that one side reflects onto the other? If "
+                "yes, it is achiral and meso, whatever the stereocentre "
+                "count says.\n\n"
+                "The cyclic cases from the ring unit fit this frame "
+                "exactly: cis-1,2-dimethylcyclohexane and "
+                "cis-1,3-dimethylcyclohexane are meso, with the mirror "
+                "plane running through the ring, and both are optically "
+                "inactive despite carrying two stereocentres apiece. That "
+                "convergence is worth noticing - the ring chapters and "
+                "this one describe the same phenomenon in different "
+                "vocabulary, which is why the symmetry test was declared "
+                "there to overrule stereocentre counting and is declared "
+                "here to lower the $2^n$ ceiling."
+            ),
+        ),
+        ReadingSection(
+            id="ms-counting-honest",
+            heading="Counting honestly: enumerate, then merge",
+            table=Table(
+                caption="Stereoisomer counts when symmetry intervenes",
+                columns=("Compound", "Stereocentres", "2^n predicts", "Actual"),
+                rows=(
+                    ("3-bromobutan-2-ol (ends differ)", "2", "4", "4 - two enantiomeric pairs"),
+                    ("tartaric acid (ends identical)", "2", "4", "3 - one pair plus meso"),
+                    ("1,2-dimethylcyclohexane", "2", "4", "3 - trans pair plus cis meso"),
+                    ("1,3-dimethylcyclohexane", "2", "4", "3 - trans pair plus cis meso"),
+                    ("1,4-dimethylcyclohexane", "0 (by the swap test)", "-", "2 - cis and trans, both achiral"),
+                ),
+                source="Worked by enumeration and symmetry merging; the ring cases are the cis-trans compounds developed in the Cyclic Compounds unit",
+                note="2^n is an upper bound; symmetry merges structures that the formula counts twice.",
+            ),
+            body=(
+                "The reliable procedure never trusts the formula alone. "
+                "ENUMERATE every combination of R and S across the "
+                "stereocentres - $2^n$ of them on paper. Then MERGE any "
+                "that are related by an internal mirror or by a rotation "
+                "of the whole molecule, because those describe one "
+                "substance rather than two. What survives is the true "
+                "count.\n\n"
+                "The table shows the pattern: whenever the molecule's two "
+                "halves are constitutionally identical, one pair of "
+                "descriptors collapses into a single meso compound and "
+                "the count drops from four to three. The 1,4-dimethyl "
+                "case goes further - a mirror plane runs through both "
+                "substituted carbons, so by the swap test they are not "
+                "stereocentres at all, yet cis and trans remain distinct "
+                "diastereomers because the FACE relationship survives. "
+                "That last row is the reminder that stereoisomerism is "
+                "broader than stereocentre counting, and it is why the "
+                "chirality chapter defined everything in terms of "
+                "superimposability rather than in terms of asymmetric "
+                "carbons."
+            ),
+        ),
+        ReadingSection(
+            id="ms-sugars",
+            heading="Where the numbers get large: sugars",
+            body=(
+                "Carbohydrates are where multiple stereocentres stop being "
+                "an exercise. An aldohexose - glucose and its relatives - "
+                "carries FOUR stereocentres in its open-chain form, giving "
+                "$2^4 = 16$ stereoisomers, which organise into eight "
+                "enantiomeric pairs. All sixteen exist and have names; "
+                "biology uses a handful. Cyclise the sugar and the "
+                "anomeric carbon adds a fifth centre, doubling the "
+                "possibilities again into the alpha and beta anomers of "
+                "the previous chapter.\n\n"
+                "None of these sixteen are meso, because a sugar's two "
+                "ends differ - an aldehyde at one end, a primary alcohol "
+                "at the other - so no internal mirror plane is available. "
+                "Reduce both ends to alcohols, though, and symmetry "
+                "becomes possible: some sugar alcohols ARE meso, and "
+                "galactitol is the standard example. The transferable "
+                "lesson is that meso-ness depends on the whole "
+                "molecule's symmetry rather than on any local feature, "
+                "so it can appear or vanish through a reaction at a "
+                "position far from the stereocentres themselves. Fischer "
+                "projections, the next chapter, exist precisely because "
+                "wedge-dash drawings become unreadable at four or five "
+                "centres, and the sugar family is what they were "
+                "invented to organise."
+            ),
+        ),
+        ReadingSection(
+            id="ms-errors",
+            heading="The error catalogue: four counting traps",
+            body=(
+                "Trap one: reporting $2^n$ as the answer. It is the "
+                "ceiling; symmetry lowers it, and the tartaric and "
+                "ring cases in the table are the standard examples "
+                "examiners reach for. Trap two: believing a molecule "
+                "with stereocentres must be chiral. Meso compounds "
+                "carry them and are achiral, optically inactive, and "
+                "unresolvable.\n\n"
+                "Trap three: treating a meso compound as one member of "
+                "an enantiomeric pair. It has no enantiomer - its "
+                "mirror image is itself - so it is a diastereomer of "
+                "the chiral members and a substance in its own right. "
+                "Trap four: assuming a zero polarimeter reading "
+                "identifies a racemate. Meso compounds read zero as "
+                "single pure substances, which is the internal-"
+                "compensation case the optical-activity chapter "
+                "previewed: a racemate cancels BETWEEN molecules while "
+                "a meso compound cancels WITHIN one, and only "
+                "structure - or a chiral column, which resolves a "
+                "racemate into two peaks and a meso compound into one - "
+                "tells them apart."
+            ),
+        ),
+        ReadingSection(
+            id="ms-problems",
+            heading="Problem set: four counts",
+            body=(
+                "Problem one: how many stereoisomers does "
+                "2,3-dibromobutane have? Answer: two identical "
+                "stereocentres, so $2^2 = 4$ on paper but symmetry "
+                "merges the $(R,S)$ and $(S,R)$ forms into one meso "
+                "compound - THREE stereoisomers: an enantiomeric pair "
+                "plus meso.\n\n"
+                "Problem two: how many for 2,3-dibromopentane? Answer: "
+                "the two ends now differ (methyl versus ethyl), so no "
+                "internal mirror is possible and all FOUR exist - two "
+                "enantiomeric pairs.\n\n"
+                "Problem three: an aldohexose has four stereocentres "
+                "and no symmetry. How many stereoisomers, and how many "
+                "enantiomeric pairs? Answer: $2^4 = 16$ stereoisomers "
+                "forming eight enantiomeric pairs.\n\n"
+                "Problem four: a sample of meso-tartaric acid is "
+                "placed in a polarimeter. What is the reading, and "
+                "could chiral chromatography distinguish this sample "
+                "from a racemate of the chiral forms? Answer: zero "
+                "rotation, because the molecule compensates "
+                "internally. Yes - a chiral column gives ONE peak for "
+                "the meso compound (a single achiral substance) and "
+                "TWO for the racemate, which is the practical test the "
+                "polarimeter cannot perform."
+            ),
+        ),
+        ReadingSection(
+            id="ms-closing",
+            heading="The counting audit",
+            body=(
+                "Close with the procedure. ONE: identify and count the "
+                "stereocentres, tracing branches until they genuinely "
+                "differ. TWO: compute $2^n$ and hold it as a CEILING, "
+                "not an answer. THREE: ask whether the molecule's "
+                "halves are constitutionally identical - the "
+                "precondition for meso. FOUR: enumerate the descriptor "
+                "combinations and merge any related by an internal "
+                "mirror or a whole-molecule rotation. FIVE: map the "
+                "survivors into enantiomeric pairs, and note that "
+                "every cross-pair is diastereomeric and therefore "
+                "separable.\n\n"
+                "SIX: state the physical consequences, because that is "
+                "what the count is for - which members can be "
+                "separated from which by ordinary means, which will "
+                "read zero on a polarimeter, and which can be resolved "
+                "at all. The remaining chapters give sugars a notation "
+                "that survives five stereocentres, and then close the "
+                "unit with the practical question this one keeps "
+                "raising: given a racemate that ordinary methods "
+                "cannot touch, how do you obtain a single enantiomer "
+                "in the bottle?"
+            ),
+        ),
+        ReadingSection(
+            id="ms-drawing",
+            heading="Drawing a family without losing track",
+            body=(
+                "Multi-centre problems are lost through bookkeeping far "
+                "more often than through concepts, so the drawing "
+                "discipline matters. Number the stereocentres first and "
+                "keep the numbering fixed across every structure you "
+                "draw, so that $(2R,3S)$ always means the same thing on "
+                "every sheet.\n\n"
+                "Draw the SKELETON identically each time - same "
+                "orientation, same chain direction - and vary only the "
+                "wedges and dashes. A family drawn in four different "
+                "orientations is a family that cannot be compared, and "
+                "most wrong answers come from comparing structures that "
+                "were never aligned. Label each drawing with its full "
+                "descriptor set as you finish it, rather than "
+                "reconstructing labels later.\n\n"
+                "Then build the map: place the four (or however many) "
+                "combinations in a grid like the figure above, draw the "
+                "enantiomeric links, and mark every remaining connection "
+                "diastereomeric. The map takes a minute and answers "
+                "every relationship question the problem can ask, "
+                "including the ones about separability. Students who "
+                "draw it finish faster than students who reason pair by "
+                "pair, because the map is computed once and consulted "
+                "repeatedly."
+            ),
+        ),
+        ReadingSection(
+            id="ms-pseudoasymmetric",
+            heading="When a centre is not a stereocentre",
+            body=(
+                "A subtlety that catches careful students: in some "
+                "symmetric molecules, a carbon bearing four apparently "
+                "different groups turns out not to generate new "
+                "stereoisomers, because two of its branches are "
+                "constitutionally identical and differ only in their own "
+                "configuration. The middle carbon of a "
+                "2,3,4-trisubstituted chain with matching ends is the "
+                "standard case.\n\n"
+                "The rigorous test is the SWAP TEST rather than the "
+                "four-different-groups shortcut: exchange two groups at "
+                "the atom and ask whether the result is a DIFFERENT "
+                "stereoisomer. If it is, the atom is stereogenic; if the "
+                "swap merely redraws the same substance, it is not. The "
+                "swap test is the definition, and the four-different-"
+                "groups rule is a convenient consequence that holds in "
+                "the ordinary case.\n\n"
+                "Formal treatments give these centres their own name - "
+                "pseudoasymmetric - and the CIP system extends with "
+                "lowercase descriptors to handle them. This course does "
+                "not require that machinery, but it does require the "
+                "habit behind it: when a count comes out wrong, return "
+                "to the definition rather than defending the shortcut. "
+                "That is the same instruction the chirality chapter gave "
+                "about superimposability, and it resolves this "
+                "case too."
+            ),
+        ),
+        ReadingSection(
+            id="ms-separation-consequences",
+            heading="What a family means in the laboratory",
+            body=(
+                "Translate a four-member family into practice and the "
+                "consequences separate cleanly. The two enantiomeric "
+                "PAIRS are diastereomeric with respect to each other, so "
+                "a synthesis producing all four gives a mixture that can "
+                "be split into two fractions by ordinary "
+                "chromatography - each fraction being a racemate of one "
+                "pair.\n\n"
+                "Within each fraction, nothing further happens without "
+                "chiral intervention. So the practical outcome of an "
+                "unselective synthesis with two new stereocentres is "
+                "typically two racemates, separable from one another and "
+                "each requiring resolution or asymmetric synthesis to go "
+                "further. When a route is described as "
+                "DIASTEREOSELECTIVE, it means the two pairs are formed "
+                "in unequal amounts - useful, and independent of whether "
+                "either pair is enantiomerically enriched. When it is "
+                "described as ENANTIOSELECTIVE, one member within a pair "
+                "predominates.\n\n"
+                "The two selectivities are reported separately - "
+                "diastereomeric ratio and enantiomeric excess - "
+                "precisely because they are independent achievements "
+                "with independent methods, and a route can succeed at "
+                "one while failing at the other."
+            ),
+        ),
+        ReadingSection(
+            id="ms-meso-history",
+            heading="Meso, Pasteur, and the third crystal",
+            body=(
+                "Tartaric acid is not a textbook invention - it is where "
+                "the whole subject started, and meso-tartaric acid is "
+                "part of that history. Nineteenth-century chemists knew "
+                "two tartaric acids from winemaking: an optically active "
+                "one and an inactive 'racemic acid' whose name gave us "
+                "the word racemate. Pasteur's 1848 separation showed the "
+                "inactive material to be an equal mixture of two "
+                "mirror-image forms.\n\n"
+                "But a third, permanently inactive form was also known - "
+                "one that could not be separated into active components "
+                "no matter what was tried. That was meso-tartaric acid, "
+                "and its existence was a genuine puzzle: how can a "
+                "substance contain asymmetric carbons and yet be "
+                "incapable of optical activity? The tetrahedral carbon "
+                "of van 't Hoff and Le Bel supplied the answer - "
+                "internal compensation - and meso compounds became the "
+                "test case that a structural theory had to explain to be "
+                "taken seriously.\n\n"
+                "The episode repeats this unit's pattern: an anomalous "
+                "MEASUREMENT (inactive despite stereocentres) preceded "
+                "and then constrained the structural theory. Learning "
+                "meso as a rule to memorise misses what it originally "
+                "was - the evidence that molecules have three-dimensional "
+                "shapes with symmetry properties of their own."
+            ),
+        ),
+        ReadingSection(
+            id="ms-exam-patterns",
+            heading="How examiners ask it",
+            body=(
+                "Three costumes recur. THE COUNT: 'how many stereoisomers "
+                "does this compound have?' - where the trap is answering "
+                "$2^n$ without checking symmetry, and the tartaric and "
+                "dimethylcyclohexane cases are the planted examples. THE "
+                "IDENTIFICATION: 'which of these is a meso compound?' - "
+                "solved by hunting the internal mirror plane rather than "
+                "counting centres, since every option will have "
+                "stereocentres.\n\n"
+                "THE ZERO READING: 'this sample shows no optical "
+                "rotation - what could it be?' - answered by enumerating "
+                "achiral, racemic and meso rather than choosing one, and "
+                "by naming the chiral-column experiment that "
+                "distinguishes them. A fourth variant maps the family: "
+                "given four descriptor sets, identify which pairs are "
+                "enantiomers and which diastereomers - solved instantly "
+                "by the inversion count, and slowly by anything else. "
+                "All four reward drawing the map before answering, which "
+                "is why this chapter recommends it twice."
+            ),
+        ),
+        ReadingSection(
+            id="ms-three-centres",
+            heading="Three centres and beyond: the same procedure, more boxes",
+            body=(
+                "Extending to three stereocentres shows that nothing new "
+                "is needed. The eight combinations are $(R,R,R)$, "
+                "$(R,R,S)$, $(R,S,R)$, $(S,R,R)$, and their four "
+                "mirror-image partners obtained by inverting all three "
+                "descriptors - so the family organises into FOUR "
+                "enantiomeric pairs, with every cross-pair "
+                "diastereomeric.\n\n"
+                "The inversion count still decides every relationship: "
+                "three inversions means enantiomers, one or two means "
+                "diastereomers, none means identical. And symmetry can "
+                "still collapse the count, though the conditions grow "
+                "more particular - a molecule needs matching halves for "
+                "internal compensation, which is easier to arrange with "
+                "an even number of centres.\n\n"
+                "The practical scaling is what matters. Each new "
+                "stereocentre doubles the family, so a synthesis that "
+                "sets four centres is choosing one outcome from sixteen. "
+                "This is why modern synthesis prizes reactions that set "
+                "two or more centres in a single step with defined "
+                "relative configuration - each such step collapses a "
+                "branching problem rather than compounding it - and why "
+                "the diastereomeric ratio of a key step is reported as "
+                "prominently as its yield."
+            ),
+        ),
+        ReadingSection(
+            id="ms-relative-absolute",
+            heading="Relative versus absolute configuration",
+            body=(
+                "Multi-centre work introduces a distinction worth naming "
+                "explicitly. RELATIVE configuration describes how the "
+                "centres stand with respect to EACH OTHER - whether two "
+                "substituents are on the same side or opposite sides, "
+                "which is the cis-trans language of the ring unit and the "
+                "syn-anti language of chains. ABSOLUTE configuration "
+                "specifies the actual handedness at each centre, which is "
+                "what R and S report.\n\n"
+                "The distinction has teeth because the two are "
+                "independently determined and independently achieved. "
+                "A diastereoselective reaction controls RELATIVE "
+                "configuration - it decides whether the new centre "
+                "matches or opposes the existing one - while leaving the "
+                "absolute handedness of the pair undetermined if the "
+                "substrate was racemic. An enantioselective reaction "
+                "controls the ABSOLUTE configuration.\n\n"
+                "So a route can deliver a single diastereomer as a "
+                "racemate: perfect relative control, zero absolute "
+                "control. Reading a synthesis paper requires holding "
+                "both axes at once, and reporting conventions reflect "
+                "it - diastereomeric ratio for the relative achievement, "
+                "enantiomeric excess for the absolute one. The two "
+                "numbers answer different questions and neither implies "
+                "the other."
+            ),
+        ),
+        ReadingSection(
+            id="ms-meso-reactions",
+            heading="Meso compounds in reactions: symmetry that can break",
+            body=(
+                "A meso compound's achirality is a property of the whole "
+                "molecule, which means a reaction that destroys the "
+                "internal symmetry can create chirality where none "
+                "existed. Modify one half of a meso compound and the "
+                "mirror plane vanishes - the product is chiral, and if "
+                "the reagent was achiral it forms as a racemate.\n\n"
+                "The reverse also happens: a reaction on a chiral "
+                "substrate can produce a meso product by making the two "
+                "halves equivalent, and the optical activity simply "
+                "disappears. Watching rotation vanish during a reaction "
+                "is therefore ambiguous evidence - it may mean "
+                "racemisation, or it may mean the formation of a meso "
+                "product, and telling them apart requires structure "
+                "rather than the polarimeter.\n\n"
+                "Enzymes exploit this in a way worth knowing: because "
+                "the two halves of a meso compound are related by "
+                "reflection, a chiral enzyme can distinguish them and "
+                "modify one selectively - a strategy called "
+                "desymmetrisation, which converts a cheap achiral "
+                "starting material into an enantiopure product in a "
+                "single step and escapes the fifty-percent ceiling that "
+                "limits classical resolution. It is one of the more "
+                "elegant answers to the problem the next chapters pose, "
+                "and it exists only because meso compounds have "
+                "distinguishable halves that ordinary reagents cannot "
+                "see."
+            ),
+        ),
+        ReadingSection(
+            id="ms-vocabulary",
+            heading="The vocabulary shelf",
+            body=(
+                "STEREOCENTRE: an atom whose group-swap produces a "
+                "different stereoisomer - tested by the swap, not by "
+                "counting substituents. $2^n$: the CEILING on "
+                "stereoisomer count for $n$ centres, lowered by "
+                "symmetry. MESO: a molecule containing stereocentres but "
+                "possessing an internal mirror plane, hence achiral, "
+                "optically inactive, and without an enantiomer.\n\n"
+                "ENANTIOMERIC PAIR: two members of a family related by "
+                "inversion at every centre. DIASTEREOMERIC: every other "
+                "relationship within a family - and therefore separable "
+                "by ordinary means. RELATIVE configuration: how centres "
+                "stand to each other. ABSOLUTE configuration: the actual "
+                "handedness, reported as R or S. DESYMMETRISATION: "
+                "chiral modification of one half of a symmetric "
+                "substrate, escaping the resolution yield ceiling.\n\n"
+                "The through-line for the whole shelf is that "
+                "stereochemistry is decided by the symmetry of the WHOLE "
+                "molecule, never by a local feature counted in "
+                "isolation - which is the single idea this chapter has "
+                "been arguing from its first paragraph."
+            ),
+        ),
+        ReadingSection(
+            id="ms-worked-family",
+            heading="Worked: mapping tartaric acid completely",
+            body=(
+                "Run the full procedure on tartaric acid to see every "
+                "step operate. STEP ONE: count stereocentres - carbons 2 "
+                "and 3, each bearing $H$, $OH$, $COOH$ and the rest of "
+                "the chain. Two centres.\n\n"
+                "STEP TWO: the ceiling is $2^2 = 4$. STEP THREE: are the "
+                "halves constitutionally identical? Yes - carbon 2 and "
+                "carbon 3 each carry a hydroxyl and a carboxyl, so "
+                "internal compensation is possible. STEP FOUR: enumerate "
+                "and merge. $(2R,3R)$ and $(2S,3S)$ are distinct and "
+                "chiral. $(2R,3S)$ has the internal mirror plane; "
+                "$(2S,3R)$ is the same molecule rotated. Merge them. "
+                "THREE stereoisomers survive.\n\n"
+                "STEP FIVE: map the relationships. $(2R,3R)$ and "
+                "$(2S,3S)$ are enantiomers of each other; meso is a "
+                "DIASTEREOMER of both. STEP SIX: state the consequences. "
+                "The two chiral forms have identical melting points and "
+                "equal-and-opposite rotations, and cannot be separated "
+                "from each other by ordinary means. Meso has its own "
+                "distinct melting point, reads zero on a polarimeter as "
+                "a pure substance, and separates from the chiral forms "
+                "by crystallisation - which is precisely the separation "
+                "nineteenth-century chemists achieved before anyone "
+                "could explain it."
+            ),
+        ),
+        ReadingSection(
+            id="ms-one-line",
+            heading="The chapter in one line",
+            body=(
+                "Treat $2^n$ as a ceiling, enumerate the combinations, "
+                "merge whatever internal symmetry makes identical, and "
+                "map what survives into enantiomeric pairs with "
+                "diastereomeric cross-links - and remember that a meso "
+                "compound is what appears when a molecule contains its "
+                "own mirror image, cancelling within itself what a "
+                "racemate cancels between two molecules."
+            ),
+        ),
+        ReadingSection(
+            id="ms-checking-your-count",
+            heading="Checking a count you are unsure of",
+            body=(
+                "When a count feels wrong, three independent checks "
+                "usually locate the error. CHECK ONE - the pairing test: "
+                "every chiral stereoisomer must have exactly one "
+                "enantiomer in the family, so the chiral members must "
+                "come in an EVEN number. An odd count of chiral "
+                "structures means either a merge was missed or a meso "
+                "compound was wrongly classified as chiral.\n\n"
+                "CHECK TWO - the meso test applied to every candidate, "
+                "not just the obvious one: any structure with an "
+                "internal mirror plane is achiral, must have no partner, "
+                "and must be counted once. CHECK THREE - the descriptor "
+                "test: write out the descriptor set for every surviving "
+                "structure and confirm no two are identical, since two "
+                "identical descriptor sets always mean one substance "
+                "counted twice.\n\n"
+                "Applied to tartaric acid: two chiral members - an even "
+                "number, correct; one meso member with no partner, "
+                "correct; three distinct descriptor sets after merging "
+                "$(2R,3S)$ with $(2S,3R)$, correct. Three consistent "
+                "checks make a count trustworthy in a way that "
+                "recomputing $2^n$ never can, and they take seconds "
+                "once the family is drawn."
+            ),
+        ),
+        ReadingSection(
+            id="ms-why-it-scales",
+            heading="Why this chapter's method scales",
+            body=(
+                "The procedure built here - enumerate, merge by "
+                "symmetry, map into pairs, read consequences - does not "
+                "get harder as molecules get more complex. It gets "
+                "longer, but every step stays the same, which is the "
+                "hallmark of a method worth learning rather than a trick "
+                "worth memorising.\n\n"
+                "Contrast it with the alternative students often "
+                "attempt: reasoning about each structure holistically, "
+                "trying to see whether two drawings 'look like' mirror "
+                "images. That approach works at two stereocentres, "
+                "becomes unreliable at three, and fails completely at "
+                "the four or five that natural products routinely "
+                "carry. The descriptor arithmetic does not degrade, "
+                "because it never depended on visualisation in the "
+                "first place.\n\n"
+                "This is also why the R/S chapter insisted on writing "
+                "assignments down with their justifications. Those "
+                "labels are not decoration on a finished analysis - "
+                "they are the data structure the rest of "
+                "stereochemistry computes on, and a family map is only "
+                "as reliable as the assignments feeding it. The next "
+                "chapter gives sugars a notation that keeps five "
+                "centres legible on paper, and the resolution chapter "
+                "finally spends everything this unit has built."
+            ),
+        ),
+        ReadingSection(
+            id="ms-final-caution",
+            heading="Two cautions to carry forward",
+            body=(
+                "First, symmetry is a property of the WHOLE molecule and "
+                "must be re-checked whenever the molecule changes. A "
+                "reaction at a position far from the stereocentres can "
+                "create or destroy the internal mirror plane, converting "
+                "a meso compound into a chiral one or the reverse, "
+                "without touching a stereocentre at all. Counting done "
+                "on the starting material does not transfer to the "
+                "product.\n\n"
+                "Second, the descriptor labels are not the "
+                "stereochemistry - they are a naming convention laid "
+                "over it. The cysteine case from the R/S chapter showed "
+                "a label changing while the geometry stayed fixed, and "
+                "the same caution applies here: when a family map and a "
+                "physical observation disagree, re-examine the "
+                "assignments before doubting the observation. The "
+                "molecule is always right; the labels are only as good "
+                "as the priorities that produced them, and the whole "
+                "point of this unit's insistence on written-out "
+                "assignments is to make that step checkable rather than "
+                "remembered."
+            ),
+        ),
+        ReadingSection(
+            id="ms-what-comes-next",
+            heading="What the notation chapters solve",
+            body=(
+                "Everything this chapter asks for - enumerate, merge, "
+                "map - becomes harder to DRAW long before it becomes "
+                "harder to think about. Four stereocentres in wedge-dash "
+                "notation produce a picture the eye cannot parse "
+                "reliably, and comparing sixteen such pictures is not a "
+                "reasonable task.\n\n"
+                "That practical failure is what the next chapter fixes. "
+                "Fischer projections impose a rigid convention - "
+                "horizontal bonds toward the viewer, vertical bonds "
+                "away - which trades three-dimensional realism for "
+                "instant comparability, and they were invented "
+                "specifically for the sugar families whose sixteen "
+                "members this chapter just counted. The rules are strict "
+                "and the penalties for breaking them are silent "
+                "inversions, so they are learned as rules rather than "
+                "intuition. With that notation in hand, the unit can "
+                "close on resolution."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "2^n is a CEILING on stereoisomer count, not an answer - enumerate the combinations, then merge any related by internal mirror or whole-molecule rotation.",
+        "Four stereoisomers organise as two enantiomeric pairs, with every cross-pair diastereomeric - so the pairs separate from each other by ordinary means while members within a pair do not.",
+        "A meso compound carries stereocentres, has an internal mirror plane, is achiral and optically inactive, and has no enantiomer - tartaric acid's (2R,3S) form is the archetype.",
+        "Spot meso by symmetry: constitutionally identical halves, oppositely configured centres, and a drawable internal mirror plane - the same test that makes cis-1,2- and cis-1,3-dimethylcyclohexane meso.",
+        "A racemate cancels BETWEEN molecules and a meso compound cancels WITHIN one; both read zero, and a chiral column tells them apart by giving two peaks versus one.",
+    ),
+))

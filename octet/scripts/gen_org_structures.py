@@ -163,6 +163,14 @@ MOLS = {
     "3mp": ("3-methylpentane", "CCC(C)CC", "C6H14", ""),
     "22dmb": ("2,2-dimethylbutane", "CCC(C)(C)C", "C6H14", ""),
     "23dmb": ("2,3-dimethylbutane", "CC(C)C(C)C", "C6H14", ""),
+    # ch6 - tartaric acid stereoisomers (CIP codes verified with RDKit)
+    "tartaricRR": ("(2R,3R)-tartaric acid", "O[C@@H](C(=O)O)[C@@H](O)C(=O)O",
+                   "C4H6O6", "natural (+) form - chiral"),
+    "tartaricSS": ("(2S,3S)-tartaric acid", "O[C@H](C(=O)O)[C@H](O)C(=O)O",
+                   "C4H6O6", "its enantiomer, (-) - chiral"),
+    "tartaricMeso": ("meso-tartaric acid (2R,3S)",
+                     "O[C@H](C(=O)O)[C@@H](O)C(=O)O", "C4H6O6",
+                     "internal mirror plane - ACHIRAL, no rotation"),
     # ch6 - stereochemistry (CIP codes verified with RDKit)
     "r2butanol": ("(R)-butan-2-ol", "CC[C@@H](C)O", "C4H10O",
                   "R enantiomer"),
@@ -322,6 +330,10 @@ FIGURES = {
         "org1-ring-gallery",
         ["cyclopropane", "cyclobutane", "cyclopentane", "cyclohexane"], 4, m,
         w=170, h=130),
+    # ch6 - multiple stereocentres
+    "org1-tartaric-stereoisomers": lambda m: grid_figure(
+        "org1-tartaric-stereoisomers",
+        ["tartaricRR", "tartaricSS", "tartaricMeso"], 3, m, w=210, h=175),
     # ch6
     "org1-enantiomer-pair": lambda m: grid_figure(
         "org1-enantiomer-pair", ["r2butanol", "s2butanol"], 2, m,
