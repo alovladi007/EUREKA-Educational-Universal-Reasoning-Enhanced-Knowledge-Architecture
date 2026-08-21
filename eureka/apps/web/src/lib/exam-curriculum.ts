@@ -997,6 +997,22 @@ const NCLEX_RN: ExamCurriculum = [
       t('nx_emergencies', 'Medical Emergencies & Unexpected Responses', 'Recognition-and-first-action for the emergencies the exam loves: anaphylaxis, compartment syndrome, autonomic dysreflexia, malignant hyperthermia, and more.', 15),
     ],
   },
+  {
+    sectionId: 'adult_cardio_resp', sectionName: 'Adult Health: Cardiovascular & Respiratory',
+    topics: [
+      t('nx_cardiac_rhythms', 'ECG Basics & Dysrhythmias', 'The five-step strip-reading method, atrial fibrillation and SVT, the lethal rhythms, and the shock/no-shock and atropine/pacing pairings.', 16),
+      t('nx_cad_acs', 'Coronary Artery Disease & Acute Coronary Syndromes', 'Stable angina through STEMI: the nitroglycerin protocol, the first-minutes response set, reperfusion windows, and the post-MI complication clock.', 16),
+      t('nx_heart_failure', 'Heart Failure & Inflammatory Cardiac Disorders', 'Left versus right failure, daily weights, the medication bundle with digoxin rules, pulmonary edema response, and endocarditis/pericarditis/myocarditis.', 16),
+      t('nx_copd_asthma', 'Asthma & COPD', 'Rescue versus controller therapy, inhaler technique, the silent chest, status asthmaticus, and COPD oxygen and breathing rules.', 15),
+    ],
+  },
+  {
+    sectionId: 'adult_neuro_endo', sectionName: 'Adult Health: Neurologic & Endocrine',
+    topics: [
+      t('nx_stroke_icp', 'Stroke & Increased Intracranial Pressure', 'FAST and the tPA window, CT-before-anticoagulation, left versus right deficits, dysphagia rules, and early-versus-late ICP signs with the care physics.', 16),
+      t('nx_diabetes', 'Diabetes Mellitus & Its Complications', 'The insulin clock, hypoglycemia and the 15-15 rule, sick-day rules, DKA versus HHS with the potassium trap, and foot-care teaching.', 17),
+    ],
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════

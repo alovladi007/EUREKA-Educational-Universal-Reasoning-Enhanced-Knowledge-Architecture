@@ -817,6 +817,232 @@ Two transfusion-adjacent emergencies complete the set. Tension pneumothorax (tra
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// Adult Health wave 1 — Cardiovascular, Respiratory, Neuro, Endocrine
+// ═══════════════════════════════════════════════════════════════
+
+nx_cardiac_rhythms: {
+  topicId: 'nx_cardiac_rhythms',
+  title: `ECG Basics & Dysrhythmias`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `The exam does not ask you to be a cardiologist; it asks you to recognize a handful of rhythms from a description or strip, know which ones kill, and pair each with its first-line response. This chapter builds the five-step reading method, the lethal-versus-stable sorting, and the treatment pairings that answer nearly every rhythm question.`,
+  sections: [
+    {
+      id: '1-reading-a-strip',
+      title: `1. Reading a Strip in Five Steps`,
+      content: `Every rhythm question yields to the same sequence. First, rate: count the QRS complexes in a 6-second strip and multiply by 10, or divide 300 by the number of large boxes between R waves. Normal is 60-100. Second, regularity: march the R-R intervals - are they even? Third, P waves: is there one before every QRS, and do they all look alike? Fourth, PR interval: normal is 0.12-0.20 seconds (3-5 small boxes); longer means the AV node is delaying. Fifth, QRS width: normal is under 0.12 seconds; wide means the impulse is traveling through muscle instead of the conduction system, which usually means ventricular origin.
+
+Sinus rhythm passes all five checks. Sinus bradycardia and tachycardia fail only the rate check - and the nursing response depends entirely on whether the client is symptomatic. A marathon runner at 52 beats per minute needs nothing; a dizzy, hypotensive client at 40 needs atropine. That symptomatic-versus-asymptomatic distinction runs through the whole chapter: treat the client, never the monitor. A monitor showing a lethal rhythm on a client who is talking to you comfortably means loose leads before it means arrest - always check the client first.`,
+    },
+    {
+      id: '2-atrial-rhythms',
+      title: `2. Atrial Fibrillation, Flutter, and SVT`,
+      content: `Atrial fibrillation is the most common sustained dysrhythmia and the exam's favorite: irregularly irregular rhythm with no discernible P waves. The atria quiver instead of contracting, so blood pools and clots - the danger is embolic stroke, which is why chronic AF clients live on anticoagulation and why their level questions (INR for warfarin) recur. Rate control uses beta-blockers, calcium channel blockers (diltiazem), or digoxin. If AF is new and the client is unstable - hypotensive, chest pain, altered - synchronized cardioversion is the answer; if the AF has lasted more than 48 hours, cardioversion waits for anticoagulation or a transesophageal echo to exclude clot, because shocking a clot-filled atrium launches the embolus.
+
+Atrial flutter shows the classic sawtooth baseline with a regular ventricular response. Supraventricular tachycardia (SVT) is a narrow-QRS rate of 150-250: the stepwise response is vagal maneuvers first (bear down, ice to the face), then adenosine given rapid IV push followed by a saline flush - warn the client about the momentary sense of impending doom and the pause on the monitor, both expected. Unstable SVT, like any unstable tachycardia with a pulse, gets synchronized cardioversion. The word synchronized matters: the machine times the shock away from the T wave; an unsynchronized shock on a perfusing rhythm can cause the very VF you are trying to prevent.`,
+    },
+    {
+      id: '3-lethal-rhythms',
+      title: `3. The Lethal Rhythms and Their Responses`,
+      content: `Ventricular tachycardia is a run of wide, bizarre QRS complexes at 100-250. The first nursing action is always the same: check the pulse. VT with a pulse and a stable client gets antiarrhythmics (amiodarone); VT with a pulse but unstable gets synchronized cardioversion; pulseless VT is a cardiac arrest treated exactly like VF - CPR and defibrillation. Ventricular fibrillation is chaotic quivering with no cardiac output: no pulse, no perfusion, and the only definitive treatment is defibrillation - unsynchronized, because there is no QRS to synchronize with. Every minute of delay drops survival; the sequence is start CPR, defibrillate as soon as the machine arrives, resume compressions immediately.
+
+Asystole is the flat line - and the exam point is that you do NOT defibrillate a flat line. Confirm in a second lead (fine VF can masquerade), then CPR and epinephrine. Pulseless electrical activity (PEA) - an organized rhythm on the monitor with no pulse - is treated the same way while hunting the reversible causes (the H's and T's: hypovolemia, hypoxia, hydrogen ion, hypo/hyperkalemia, hypothermia, tension pneumothorax, tamponade, toxins, thrombosis). For blocks: first-degree is a long PR and needs monitoring only; second-degree type I (Wenckebach) shows progressively lengthening PR until a beat drops; type II drops beats without warning and can deteriorate; third-degree (complete) block shows P waves and QRS complexes marching independently - symptomatic blocks get atropine as a bridge and pacing as the answer, with transcutaneous pacing first in an emergency.`,
+    },
+  ],
+  keyTakeaways: [
+    `Treat the client, not the monitor: symptomatic status decides intervention for bradycardia and tachycardia alike, and a "lethal rhythm" in a talking client means check the leads.`,
+    `Atrial fibrillation's danger is clot and stroke - anticoagulation questions, and no elective cardioversion after 48 hours without clot exclusion.`,
+    `SVT ladder: vagal maneuvers, then rapid-push adenosine with a flush, then synchronized cardioversion if unstable.`,
+    `VT: pulse check first - stable gets amiodarone, unstable gets synchronized cardioversion, pulseless gets CPR + defibrillation like VF.`,
+    `Never defibrillate asystole or PEA - CPR and epinephrine while correcting H's and T's; symptomatic blocks bridge with atropine toward pacing.`,
+  ],
+},
+
+nx_cad_acs: {
+  topicId: 'nx_cad_acs',
+  title: `Coronary Artery Disease & Acute Coronary Syndromes`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Chest pain questions test one core skill: distinguishing stable angina from unstable angina from infarction, and pairing each with the right urgency. This chapter covers the spectrum, the immediate response set, what the labs and ECG add, and the post-MI complications the exam plants in "day 2" stems.`,
+  sections: [
+    {
+      id: '1-angina-spectrum',
+      title: `1. Stable Angina to Infarction: One Disease, Three Urgencies`,
+      content: `Coronary artery disease narrows the vessels; the syndromes differ in whether supply-demand mismatch is transient or a vessel is occluding. Stable angina is predictable: exertional chest pain relieved by rest and nitroglycerin within minutes. Teaching centers on the nitroglycerin protocol - stop activity, sit down, one sublingual tablet; if pain is unrelieved or worsening 5 minutes after the FIRST tablet, call emergency services (do not drive), and up to three tablets may be taken 5 minutes apart while waiting. Storage teaching recurs: dark container, replace by expiration, expect a slight sting or headache - and no PDE-5 inhibitors (sildenafil) within 24-48 hours, because the combined vasodilation can be fatal.
+
+Unstable angina breaks the pattern: pain at rest, new-onset severe pain, or a crescendo of frequency and duration - it is an emergency because it usually means a plaque has ruptured and a clot is forming. Myocardial infarction is death of muscle: pain that is typically crushing or pressure-like, radiating to arm or jaw, lasting more than 20 minutes, unrelieved by rest or nitroglycerin, often with diaphoresis, nausea, and dyspnea. The exam expects atypical presentations too: women, older adults, and diabetic clients may present with fatigue, indigestion-like discomfort, or dyspnea alone - a diabetic client with "new heartburn and unusual fatigue" is an MI stem until proven otherwise.`,
+    },
+    {
+      id: '2-acs-response',
+      title: `2. The Acute Response: What You Do in the First Minutes`,
+      content: `The immediate set for suspected ACS: obtain a 12-lead ECG within 10 minutes of presentation, give aspirin 162-325 mg chewed (chewing speeds absorption; it blocks further platelet aggregation), apply oxygen only if saturation is below about 90 percent (routine high-flow oxygen is no longer given - hyperoxia worsens outcomes), give nitroglycerin for pain unless contraindicated (hypotension, right ventricular infarction, recent PDE-5 inhibitor), and give morphine only for pain refractory to nitrates. Draw troponin - the definitive biomarker, rising within 2-3 hours (high-sensitivity assays) and staying elevated for days; serial troponins distinguish infarction (rise and fall) from chronic elevation.
+
+The ECG sorts the pathway: ST elevation (STEMI) means a fully occluded artery and the clock is running - reperfusion by percutaneous coronary intervention (PCI) with a door-to-balloon goal of 90 minutes, or fibrinolytics within 30 minutes if PCI is unavailable within 120 minutes. Fibrinolytic questions test the contraindication screen: active bleeding, recent surgery or trauma, prior hemorrhagic stroke, uncontrolled hypertension. Non-ST-elevation ACS (NSTEMI/unstable angina) gets antiplatelet and anticoagulant therapy with early catheterization by risk. After PCI via the femoral artery, the post-procedure priorities are the ones from procedure care: bedrest with the leg straight, pressure at the site, monitor for the expanding hematoma and lost distal pulse, and report retroperitoneal warning signs (back pain, hypotension) immediately.`,
+    },
+    {
+      id: '3-post-mi',
+      title: `3. After the Infarction: Medications and Complications`,
+      content: `Discharge medication questions follow a standard bundle, each with its teaching hook: aspirin indefinitely (bleeding precautions), a P2Y12 inhibitor such as clopidogrel after stenting (do not stop abruptly - stent thrombosis), a beta-blocker (reduces mortality; teach pulse-taking and never stopping abruptly; masks hypoglycemia in diabetics), an ACE inhibitor (watch for the dry cough that prompts an ARB switch, and for hyperkalemia), and a high-intensity statin (report muscle pain - rhabdomyolysis screen). Cardiac rehabilitation and staged activity resumption round out teaching, including the classic guidance that sexual activity can typically resume when the client can climb two flights of stairs without symptoms.
+
+Complication timing is the exam's favorite trap. In the first hours to days, dysrhythmias are the leading killer - hence continuous monitoring; VF is most likely in the first hours. Days 2-3, pericarditis can appear: sharp pain WORSE lying flat and BETTER leaning forward, with a friction rub - distinguishing it from reinfarction (which would be pressure-like and ECG/troponin-evident) is a classic question. Around days 3-7, the healing wall is weakest: papillary muscle rupture (sudden mitral regurgitation - new murmur and flash pulmonary edema), ventricular septal rupture, or free-wall rupture with tamponade. Heart failure can emerge whenever enough muscle has died - crackles, S3, and the daily-weight logic from the heart failure chapter. Cardiogenic shock - hypotension, cold clammy skin, oliguria despite adequate volume - is the most lethal pump failure and demands ICU-level support.`,
+    },
+  ],
+  keyTakeaways: [
+    `Nitroglycerin protocol: sit, one SL tablet, call EMS if unrelieved 5 minutes after the FIRST dose; dark bottle, no sildenafil within 24-48 h.`,
+    `Suspected ACS: ECG within 10 minutes, chewed aspirin, O2 only if sat < 90%, nitro then morphine for refractory pain, serial troponins.`,
+    `STEMI is a reperfusion race - PCI door-to-balloon 90 minutes; screen fibrinolytics against the bleeding contraindication list.`,
+    `Discharge bundle: aspirin + P2Y12 + beta-blocker + ACE inhibitor + statin, each with its signature teaching point.`,
+    `Complication clock: dysrhythmias first hours; pericarditis days 2-3 (worse supine, better leaning forward); wall rupture days 3-7; watch for new murmurs.`,
+  ],
+},
+
+nx_heart_failure: {
+  topicId: 'nx_heart_failure',
+  title: `Heart Failure & Inflammatory Cardiac Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Heart failure is tested through one anatomical idea - each ventricle floods what lies behind it - plus the daily-weight alarm, the medication bundle with digoxin's rules, and the recognition of acute pulmonary edema. This chapter adds the inflammatory trio (endocarditis, pericarditis, myocarditis) the exam pairs with it.`,
+  sections: [
+    {
+      id: '1-left-vs-right',
+      title: `1. Left Versus Right: The Anatomical Sort`,
+      content: `The failing left ventricle backs blood into the lungs: dyspnea, orthopnea (ask how many pillows), paroxysmal nocturnal dyspnea, crackles, an S3 gallop, and in the extreme, pink frothy sputum. The failing right ventricle backs blood into the body: jugular venous distention, dependent edema, hepatomegaly with right-upper-quadrant tenderness, ascites, and weight gain. Left failure is the most common cause of right failure; pure right failure from lung disease is cor pulmonale. Sorting any finding to its side is the single most reliable HF question format, and the sort is purely anatomical - what is directly behind the failing chamber floods.
+
+B-type natriuretic peptide (BNP) is the confirming lab: the ventricle secretes it when stretched, so elevated BNP distinguishes cardiac dyspnea from pulmonary causes. The monitoring cornerstone is the daily weight - same time, same scale, same clothing, after voiding, before breakfast - because weight is the most sensitive early indicator of fluid retention: more than about 1 kg (2-3 lb) overnight or 2.3 kg (5 lb) in a week is a call-the-provider number, taught to every client and tested constantly.`,
+    },
+    {
+      id: '2-hf-management',
+      title: `2. The Medication Bundle and Digoxin's Rules`,
+      content: `Chronic HF management pairs lifestyle (sodium restriction, often fluid limits, activity as tolerated) with a bundle: ACE inhibitors or ARBs reduce afterload and remodeling (cough, hyperkalemia, monitor renal function); beta-blockers improve survival but are started low and slow - and are held in acute decompensation; loop diuretics (furosemide) relieve congestion - teach potassium-rich foods or supplements, watch for ototoxicity with rapid IV push (give over several minutes), and expect the potassium question (a client on furosemide and digoxin with K+ 3.0 is a classic danger stem); spironolactone spares potassium (so hyperkalemia is ITS risk); and newer agents follow the same logic of unloading the pump.
+
+Digoxin earns its own paragraph every exam cycle. It increases contractility and slows rate. Therapeutic level is 0.5-2.0 ng/mL. Hold and call for a level above range or an apical pulse below 60 (count a full minute). Toxicity presents as anorexia, nausea, vomiting first, then visual changes - halos, yellow-green tint - and dysrhythmias. HYPOKALEMIA POTENTIATES DIGOXIN TOXICITY: low potassium lets digoxin bind more avidly, so the furosemide-digoxin pair without potassium repletion is the stem to flag. The antidote is digoxin immune Fab. Any digoxin question that mentions the client's potassium is telling you the answer's direction.`,
+    },
+    {
+      id: '3-pulmonary-edema-inflammatory',
+      title: `3. Acute Pulmonary Edema and the Inflammatory Trio`,
+      content: `Acute decompensation is a scene question: sudden severe dyspnea, anxiety, cold sweat, crackles throughout, pink frothy sputum. The response set: sit the client upright with legs dependent (high Fowler's - decreases venous return), give oxygen (positive-pressure ventilation if needed), IV furosemide, and nitroglycerin to reduce preload; morphine appears in older references but is used cautiously now. The wrong answers lie the client flat or push fluids - the opposite of unloading a drowning pump.
+
+The inflammatory trio rides along. Infective endocarditis - infection of the valves, risk with IV drug use, prosthetic valves, and invasive procedures - presents with fever, murmur, and embolic signatures (splinter hemorrhages, Janeway lesions, Osler nodes); care is weeks of IV antibiotics and prevention teaching: prophylactic antibiotics before dental work for high-risk clients, and meticulous oral hygiene. Pericarditis - post-MI, post-viral, or uremic - is the positional chest pain (worse supine, better leaning forward) with a friction rub; the feared complication is effusion progressing to tamponade: muffled heart sounds, JVD, hypotension (Beck's triad), pulsus paradoxus - a pericardiocentesis emergency. Myocarditis, often post-viral, presents as new heart failure in someone young; care is supportive with activity restriction. Distinguishing the trio by their signatures - embolic skin signs, positional rub, or unexplained new failure - is the question format.`,
+    },
+  ],
+  keyTakeaways: [
+    `Left failure floods the lungs (crackles, orthopnea, frothy sputum); right failure floods the body (JVD, edema, big liver) - sort every finding anatomically.`,
+    `Daily weight is the alarm: >1 kg overnight or >2.3 kg/week means retained fluid - teach it, act on it.`,
+    `Furosemide drops potassium; hypokalemia potentiates digoxin toxicity - the drug pair plus a low K+ is the exam's favorite danger stem.`,
+    `Digoxin: level 0.5-2.0, hold for apical pulse < 60, toxicity = GI symptoms then visual halos; antidote is digoxin immune Fab.`,
+    `Pulmonary edema: upright, oxygen, IV furosemide, nitrates - never supine, never fluids; tamponade's Beck triad (muffled sounds, JVD, hypotension) is a pericardiocentesis emergency.`,
+  ],
+},
+
+nx_copd_asthma: {
+  topicId: 'nx_copd_asthma',
+  title: `Asthma & COPD`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Obstructive lung disease questions reward three skills: separating rescue from controller therapy, recognizing when an attack is deteriorating (the silent chest), and applying COPD's special oxygen and breathing rules. This chapter builds all three plus the inhaler technique teaching the exam loves to grade.`,
+  sections: [
+    {
+      id: '1-asthma',
+      title: `1. Asthma: Rescue Versus Controller`,
+      content: `Asthma is reversible airway inflammation and bronchospasm: wheezing, chest tightness, cough, and dyspnea, triggered by allergens, exercise, cold air, or infection. The medication logic is a two-shelf system. The rescue shelf is the short-acting beta-agonist (SABA, albuterol) - fast onset, used for acute symptoms and pre-exercise; expect tremor and tachycardia as side effects. The controller shelf prevents attacks and does nothing in one: inhaled corticosteroids (the cornerstone - teach rinse-and-spit to prevent oral thrush), long-acting beta-agonists (NEVER alone in asthma - always paired with an inhaled steroid), and leukotriene modifiers (montelukast, oral, taken in the evening). The classic teaching failure the exam tests: a client using the controller for an acute attack, or using rescue albuterol daily - more than twice-weekly rescue use signals uncontrolled disease and a step-up need.
+
+Inhaler technique is free points: shake, exhale fully, seal lips (or use a spacer - which improves delivery and is standard with steroids), inhale slowly while actuating, hold breath about 10 seconds; wait about a minute between puffs; bronchodilator BEFORE steroid when both are due (open the airways, then deliver the anti-inflammatory); rinse after steroids. Peak flow meters personalize monitoring: green zone (80-100% of personal best) means go, yellow (50-80%) means caution and rescue medication per plan, red (below 50%) means emergency action.`,
+    },
+    {
+      id: '2-status-asthmaticus',
+      title: `2. The Deteriorating Attack and Status Asthmaticus`,
+      content: `Attack severity questions grade recognition of trajectory. A moderate attack: audible wheezing, speaking in phrases, using accessory muscles, tachycardia, oxygen saturation dropping. Deterioration signs: speaking in single words, exhaustion, paradoxical chest movement, and the finding every exam includes - the SILENT CHEST. Wheezing requires air movement; when wheezing disappears while the client worsens, air is no longer moving, and respiratory arrest is imminent. "Diminished wheezing" in a still-distressed client is never improvement - it is the most dangerous answer choice on the page. Rising CO2 on a blood gas tells the same story: an asthmatic working that hard should be blowing CO2 off (low PaCO2); a "normalizing" or rising PaCO2 means fatigue and failure.
+
+Status asthmaticus - a severe attack unresponsive to initial bronchodilators - is an emergency: continuous nebulized SABA, ipratropium, systemic corticosteroids (IV), oxygen, and preparation for intubation if failing; IV magnesium sulfate appears as an adjunct. Position upright, stay with the client, minimize demand. Post-attack, every stem points toward trigger identification and an updated action plan - and the follow-up question is often about stepping up controller therapy.`,
+    },
+    {
+      id: '3-copd',
+      title: `3. COPD: The Special Rules`,
+      content: `COPD - chronic bronchitis and emphysema, overwhelmingly smoking-related - is progressive and only partially reversible. The presentation set: dyspnea, chronic productive cough, prolonged expiration, barrel chest from air trapping, and in advanced disease, weight loss from the work of breathing. Two special rules dominate testing. Oxygen: the target saturation is 88-92 percent, not the high 90s - excessive oxygen in a chronic CO2 retainer worsens hypercapnia, so the wrong answer cranks the flow to chase a normal number, and the right answer maintains low-flow oxygen (1-2 L by cannula) within the target band. Never withhold oxygen from a hypoxic client - titrate to the band. Breathing retraining: pursed-lip breathing (inhale through the nose, exhale slowly through pursed lips, exhalation twice as long as inhalation) creates back-pressure that splints airways open; diaphragmatic breathing and the tripod position complete the set.
+
+Exacerbations - usually infection-triggered - bring increased dyspnea, sputum volume, and purulence: treatment is bronchodilators, systemic corticosteroids, antibiotics when indicated, and controlled oxygen. Teaching bundles recur: smoking cessation (the single most effective intervention at any stage), influenza and pneumococcal vaccination, small frequent high-calorie meals (dyspneic clients cannot eat large ones), hydration to thin secretions, energy conservation, and pacing activities with rest. Right-sided heart failure (cor pulmonale) - edema, JVD, weight gain - is the late complication to recognize and report.`,
+    },
+  ],
+  keyTakeaways: [
+    `Rescue = SABA for the attack; controllers (inhaled steroids, LABA-with-steroid, montelukast) prevent and never treat one; rescue use > 2x/week signals step-up.`,
+    `Inhaler order and technique are graded: bronchodilator before steroid, spacer with steroids, rinse-and-spit after, ~10-second breath hold.`,
+    `A quieting chest in a worsening asthmatic is impending arrest, not improvement; a rising PaCO2 in an attack means fatigue and failure.`,
+    `COPD oxygen target is 88-92% with low-flow titration - never chase 99%, never withhold oxygen either.`,
+    `Pursed-lip breathing, tripod position, small frequent meals, vaccines, and smoking cessation are the COPD teaching core; new edema/JVD = cor pulmonale, report.`,
+  ],
+},
+
+nx_diabetes: {
+  topicId: 'nx_diabetes',
+  title: `Diabetes Mellitus & Its Complications`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Diabetes may be the single highest-yield disease on the exam: insulin timing, hypoglycemia response, sick-day rules, DKA versus HHS, and foot care each generate reliable questions. This chapter organizes them around the numbers and the emergencies.`,
+  sections: [
+    {
+      id: '1-types-and-insulins',
+      title: `1. The Disease and the Insulin Clock`,
+      content: `Type 1 diabetes is autoimmune beta-cell destruction: absolute insulin deficiency, usually younger onset, ketosis-prone, insulin-dependent for life. Type 2 is insulin resistance with relative deficiency: gradual onset, strongly weight-linked, managed stepwise with lifestyle, oral agents, and often eventually insulin. Diagnosis numbers worth holding: fasting glucose 126 mg/dL or higher, random 200 with symptoms, and hemoglobin A1c of 6.5% or higher - with A1c reflecting roughly three months of control (target commonly under 7%).
+
+The insulin clock is pure test material. Rapid-acting (lispro, aspart): onset about 15 minutes, peak 1-2 hours - give with food in reach, because injecting and then delaying the meal invites hypoglycemia. Short-acting (regular): onset 30-60 minutes, peak 2-4 hours; it is the IV insulin. Intermediate (NPH): peak 4-12 hours - the classic mid-afternoon or 3-AM hypoglycemia stems; cloudy, and in mixing "clear before cloudy" (draw regular first). Long-acting (glargine, detemir): essentially peakless basal coverage, never mixed with anything. Every hypoglycemia-timing question is answered by matching the symptom time to a peak. Injection teaching: rotate sites within one region for absorption consistency, abdomen fastest; do not inject into an extremity about to be exercised.`,
+    },
+    {
+      id: '2-hypoglycemia-sickdays',
+      title: `2. Hypoglycemia and the Sick-Day Rules`,
+      content: `Hypoglycemia (glucose below 70) is the emergency of treatment, not of disease: cold sweat, tremor, tachycardia, hunger, then confusion, slurred speech, seizure, coma. The conscious-client response is the 15-15 rule: 15 grams of fast carbohydrate (4 oz juice or regular soda, glucose tablets), recheck in 15 minutes, repeat if still under 70, then follow with a complex carb plus protein snack if the next meal is distant. Wrong answers add fat (slows absorption - no candy bars) or give oral anything to an unconscious client: unconsciousness means IM/subcut glucagon or IV dextrose, side-lying for airway protection. Beta-blockers mask the adrenergic warning signs - diaphoresis persists - so the beta-blocked diabetic is a recurring stem.
+
+Sick-day rules answer the "client with the flu" question set: NEVER stop insulin during illness - counterregulatory stress hormones raise glucose even without eating; check glucose every 2-4 hours; check urine ketones (type 1) when glucose runs high; keep drinking - fluids to prevent the dehydration that accelerates crisis, substituting carbohydrate-containing liquids if unable to eat; call the provider for persistent vomiting, glucose stubbornly above about 240 with ketones, or signs of DKA. The client statement "I skip my insulin when I can't eat" is the further-teaching flag every version of this question uses.`,
+    },
+    {
+      id: '3-dka-hhs-chronic',
+      title: `3. DKA, HHS, and the Long Game`,
+      content: `Diabetic ketoacidosis - mostly type 1, triggered by infection, omitted insulin, or new diagnosis - is the acid emergency: glucose typically 250-600, ketones, metabolic acidosis with Kussmaul respirations (deep, rapid - blowing off CO2) and fruity breath, dehydration, abdominal pain. Management order matters: isotonic fluids FIRST (the client is liters down), then IV regular insulin infusion; add dextrose to fluids when glucose falls to about 250 (prevent hypoglycemia while ketones clear); and the potassium rule the exam adores - insulin drives potassium into cells, so a "normal" starting K+ will plummet: verify adequate potassium and urine output BEFORE and during insulin, replacing as needed. Hyperosmolar hyperglycemic state (HHS) - typically type 2, older clients - runs higher glucose (often above 600), profound dehydration and osmolarity, minimal ketosis, and neurologic changes; treatment is the same fluids-then-insulin logic with even more emphasis on volume. The discriminator: acidosis and Kussmaul breathing = DKA; extreme glucose with neuro changes and no significant ketones = HHS.
+
+The long game is complication surveillance: annual dilated eye exams (retinopathy), urine microalbumin and renal function (nephropathy - ACE inhibitors protect), monofilament foot exams (neuropathy), and aggressive cardiovascular risk management. Foot care teaching is a question factory: inspect feet daily with a mirror, wash and dry thoroughly especially between toes, moisturize but NOT between the toes, never go barefoot, well-fitting shoes broken in gradually, trim nails straight across, no heating pads on the feet, and report any wound that does not heal - because neuropathy hides injuries and vasculopathy stalls healing.`,
+    },
+  ],
+  keyTakeaways: [
+    `Insulin peaks answer timing questions: lispro 1-2 h, regular 2-4 h, NPH 4-12 h (the 3-AM stem), glargine peakless and never mixed; clear before cloudy.`,
+    `Hypoglycemia: 15 g fast carb, recheck in 15 minutes; unconscious = glucagon/IV dextrose, never oral; beta-blockers mask the warnings except sweating.`,
+    `Sick-day rules: never stop insulin, check glucose q2-4h and ketones, push fluids - "I skip insulin when sick" is the correction target.`,
+    `DKA: fluids first, then insulin infusion, dextrose at ~250, and guard the potassium insulin will crash; HHS = higher sugar, no acidosis, more dehydration.`,
+    `Foot care: daily inspection, dry between toes but no lotion there, never barefoot, straight-across nails, no heating pads - neuropathy hides what vasculopathy won't heal.`,
+  ],
+},
+
+nx_stroke_icp: {
+  topicId: 'nx_stroke_icp',
+  title: `Stroke & Increased Intracranial Pressure`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Neuro emergencies test speed and sequence: recognize the stroke, protect the tPA window, sort left-brain from right-brain deficits, and catch rising intracranial pressure at the earliest sign - a change in level of consciousness - not the late, famous ones. This chapter drills all four.`,
+  sections: [
+    {
+      id: '1-stroke-recognition',
+      title: `1. Recognizing Stroke and Protecting the Window`,
+      content: `Ischemic stroke (about 85 percent) is vessel occlusion; hemorrhagic stroke is vessel rupture - and everything in acute management hinges on which, because the treatment for one is catastrophic in the other. Recognition uses FAST: Face droop, Arm drift, Speech slurring, Time - and time is the treatment. The single most important history question is "when was the client last seen normal?" because that timestamp, not symptom discovery, starts the clock. IV fibrinolysis (alteplase) requires onset within 3 hours (up to 4.5 for selected clients) AND a CT scan first to exclude hemorrhage - the non-contrast head CT before any anticoagulation is the non-negotiable sequencing answer. Exclusions mirror the cardiac list: recent surgery or trauma, active bleeding, prior hemorrhagic stroke, uncontrolled severe hypertension. During and after infusion: bleeding precautions, frequent neuro checks, defer non-urgent injections and invasive lines, and immediately report any decline (possible hemorrhagic conversion). A transient ischemic attack - deficits resolving within minutes to an hour - is not a relief but a warning: stroke risk is highest in the following days, so TIA stems point toward urgent workup, not reassurance.
+
+Hemorrhagic stroke - often the "worst headache of my life" with rapid deterioration - is managed by limiting the bleed: blood pressure control, reversing anticoagulation, possible surgery, and strict aneurysm precautions when that is the source: quiet dark room, stool softeners (no straining), limit visitors and stimulation.`,
+    },
+    {
+      id: '2-deficits-and-care',
+      title: `2. Left Brain, Right Brain, and Post-Stroke Care`,
+      content: `Deficit-sorting is reliable test currency because control is crossed: each hemisphere runs the opposite body side. Left-hemisphere stroke: right-sided weakness, and - because language usually lives on the left - aphasia: expressive (Broca's: knows what to say, cannot produce it - give time, ask yes/no questions, offer communication boards), receptive (Wernicke's: fluent but meaningless speech, impaired comprehension - use gestures and simple phrases), or global. Left-stroke clients tend to be slow, cautious, and aware of deficits - depression risk. Right-hemisphere stroke: left-sided weakness, spatial-perceptual deficits, and the dangerous combination of impulsivity with unawareness of deficits - these clients overestimate ability, making them the falls-risk answer. Unilateral neglect - ignoring the affected side, classically with right-brain strokes - generates care questions: initially approach and place items on the UNAFFECTED side for function and safety, then progressively train attention toward the affected side; teach scanning for homonymous hemianopsia (loss of the same half of the visual field in both eyes).
+
+The swallowing rule is absolute: nothing by mouth until a swallow screen is passed - aspiration pneumonia is a leading post-stroke killer. Dysphagia care repeats the basic-care rules: upright 90 degrees, chin tuck if prescribed, thickened liquids per speech pathology, no straws, remain upright after meals. Rehabilitation begins on day one: prevent contractures and shoulder subluxation (support the flaccid arm, never pull it), reposition, range-of-motion exercises, DVT prophylaxis, and early PT/OT/speech involvement.`,
+    },
+    {
+      id: '3-icp',
+      title: `3. Increased Intracranial Pressure: Early, Late, and the Care Set`,
+      content: `The skull is a closed box holding brain, blood, and CSF; when any compartment expands - edema, bleeding, hydrocephalus, tumor - pressure rises and perfusion falls. The EARLIEST indicator of rising ICP is a change in level of consciousness: new restlessness, irritability, confusion, lethargy - the subtle cognitive shift, hours before anything dramatic. The famous signs are LATE: pupil changes (unilateral dilation and sluggishness as the third cranial nerve is compressed - a "blown pupil" means herniation is underway), and Cushing's triad - widening pulse pressure (rising systolic), bradycardia, and irregular respirations - is the brainstem's final warning, not a monitoring milestone. Posturing grades depth: flexor (decorticate) is bad; extensor (decerebrate) is worse. Any question asking for the earliest sign wants the LOC change; any answer waiting for Cushing's triad has waited too long.
+
+The nursing care set is a coherent physics package: head of bed at 30 degrees with head midline (venous drainage); avoid extreme hip flexion and clustering of care; prevent Valsalva - stool softeners, no straining, no isometric pushing; suction only when necessary, for less than 10 seconds, pre-oxygenating first (suctioning spikes ICP); keep the environment calm; manage fever aggressively (each degree raises metabolic demand); maintain oxygenation and normocapnia (hypercapnia dilates cerebral vessels and raises ICP - which is also why brief hyperventilation lowers it and is reserved for emergencies). Osmotic therapy - mannitol or hypertonic saline - pulls water from brain tissue: monitor urine output, serum osmolarity, and for rebound edema. Seizure prophylaxis is common. Everything on the wrong-answer list raises pressure: flat positioning, hip flexion, clustered stimulating care, routine deep suctioning, unmanaged pain or fever.`,
+    },
+  ],
+  keyTakeaways: [
+    `"Last seen normal" starts the tPA clock (3-4.5 h) and a non-contrast CT to exclude hemorrhage comes before any lytic or anticoagulant - always.`,
+    `Left stroke: right weakness + aphasia, cautious and aware; right stroke: left weakness, impulsive and unaware - the falls-risk client; approach neglect from the unaffected side first.`,
+    `NPO until the swallow screen passes - aspiration is the post-stroke killer the exam guards with dysphagia-care questions.`,
+    `Earliest ICP sign = level-of-consciousness change; pupils and Cushing's triad (wide pulse pressure, bradycardia, irregular respirations) are late herniation heralds.`,
+    `ICP care physics: HOB 30, head midline, no Valsalva/hip flexion/clustered care, brief pre-oxygenated suctioning only, treat fever, mannitol with osmolarity and output monitoring.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */
