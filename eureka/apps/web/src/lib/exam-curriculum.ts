@@ -964,6 +964,15 @@ const NCLEX_RN: ExamCurriculum = [
     ],
   },
   {
+    sectionId: 'maternity', sectionName: 'Maternity & Newborn',
+    topics: [
+      t('nx_prenatal', 'Prenatal Care & Reproductive Health', 'Confirming and dating pregnancy, the visit schedule and what each visit screens for, physiologic adaptations that look abnormal but are not, nutrition, and the danger signs that end a routine visit.', 17),
+      t('nx_high_risk_pregnancy', 'High-Risk Pregnancy & Antepartum Complications', 'Hypertensive disorders and magnesium therapy, gestational diabetes, antepartum bleeding (previa vs abruption), preterm labor, hyperemesis, and infections in pregnancy.', 18),
+      t('nx_labor_birth', 'Labor, Birth & Intrapartum Complications', 'The four stages, fetal monitoring and the response bundles, oxytocin and tachysystole, cesarean and operative birth, and the intrapartum emergencies that need a drill.', 18),
+      t('nx_postpartum', 'Postpartum Care & Complications', 'BUBBLE-HE assessment, the hemorrhage watch and its sequence, infection and thromboembolism, lactation support, and the mood-disorder spectrum.', 16),
+    ],
+  },
+  {
     sectionId: 'psychosocial', sectionName: 'Psychosocial Integrity',
     topics: [
       t('nx_therapeutic_comm', 'Therapeutic Communication & Mental Health', 'What a therapeutic response looks like, crisis intervention, suicide risk, abuse and neglect reporting, and substance withdrawal.', 15),

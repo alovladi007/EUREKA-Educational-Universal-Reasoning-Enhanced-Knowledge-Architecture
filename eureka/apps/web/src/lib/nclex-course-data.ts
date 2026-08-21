@@ -2998,6 +2998,554 @@ Driving and lifestyle teaching follows state law and provider guidance — the t
   ],
 },
 
+nx_prenatal: {
+  topicId: 'nx_prenatal',
+  title: `Prenatal Care & Reproductive Health`,
+  domainWeight: 'Health Promotion and Maintenance (6-12%)',
+  overview: `Prenatal items test one discrimination over and over: is this finding the expected physiology of pregnancy, or is it the warning sign that ends the routine visit? This chapter builds the dating arithmetic (Naegele's rule, GTPAL), the visit schedule with what each screening actually looks for, the system-by-system adaptations that mimic pathology, the nutrition and teaching content, and the danger-sign list that converts a scheduled appointment into an evaluation.`,
+  sections: [
+    {
+      id: 'pre-dating',
+      title: `1. Confirming, Dating & Documenting the Pregnancy`,
+      content: `Pregnancy signs sort into three tiers the exam still uses. PRESUMPTIVE signs are what the client feels — amenorrhea, nausea, fatigue, breast tenderness, quickening — and each has other explanations. PROBABLE signs are what the examiner observes — a positive pregnancy test, Goodell sign (cervical softening), Chadwick sign (bluish cervix and vagina), Hegar sign (softening of the lower uterine segment), Braxton Hicks contractions, ballottement. POSITIVE signs are fetal and only three: a fetal heartbeat heard by an examiner, fetal movement felt by an examiner, and visualization of the fetus on ultrasound.
+
+## Dating: Naegele's rule
+
+$$\\text{EDD} = \\text{first day of the last menstrual period} - 3\\text{ months} + 7\\text{ days} \\;(+1\\text{ year})$$
+
+Worked: an LMP of March 10 gives December 17 of the same delivery year — subtract three months (December 10), add seven days (December 17). The rule assumes a regular 28-day cycle; first-trimester ultrasound dates more accurately and overrides it when they conflict by more than the accepted window.
+
+## GTPAL: the obstetric shorthand
+
+| Letter | Counts |
+| --- | --- |
+| G — gravida | total pregnancies, including the current one and any loss |
+| T — term | births at 37 weeks 0 days or later |
+| P — preterm | births from 20 weeks to 36 weeks 6 days |
+| A — abortions | losses before 20 weeks, spontaneous or induced |
+| L — living | children currently living |
+
+The classic trap is MULTIPLES: twins are ONE pregnancy (one gravida, one birth event in T or P) but TWO living children. A client pregnant now, with a term twin birth and one miscarriage at 10 weeks, is G3 T1 P0 A1 L2 — the arithmetic the exam expects you to do without hesitating.
+
+## The visit schedule
+
+Typically every 4 weeks until 28 weeks, every 2 weeks from 28 to 36, then weekly until birth — accelerated for risk factors. Every visit checks weight, blood pressure, urine (protein and glucose), fundal height, fetal heart tones (audible by Doppler around 10-12 weeks), and — after quickening — fetal movement.`,
+      examTip: `Only three signs are POSITIVE, and all three are fetal: examiner-heard heartbeat, examiner-felt movement, ultrasound visualization. A positive home pregnancy test is PROBABLE, no matter how confident the client is.`,
+    },
+    {
+      id: 'pre-adaptations',
+      title: `2. Physiologic Adaptations That Look Like Problems`,
+      content: `![Fundal height against gestational age: from about 20 to 36 weeks the height in centimeters approximates the weeks of gestation within about 2 cm, with landmarks at the symphysis (12 weeks), umbilicus (20 weeks) and xiphoid (36 weeks).](/courses/nclex/figures/nclex-fundal-height.svg)
+
+Pregnancy remodels every system, and the exam's favorite items present a normal adaptation as though it were a complication.
+
+| System | Expected change | Why it looks alarming |
+| --- | --- | --- |
+| cardiovascular | blood volume up 40-50%, cardiac output up, resting pulse up 10-15 | dilutional "physiologic anemia" — hematocrit falls without pathology |
+| blood pressure | falls in the second trimester, returns toward baseline by term | a rise back to baseline can be misread as new hypertension |
+| respiratory | tidal volume up, mild dyspnea, nasal stuffiness | breathlessness at rest late in pregnancy is common |
+| renal | GFR up ~50%, urinary frequency, mild glycosuria | glucose in urine may be physiologic; protein is not |
+| GI | progesterone slows motility — reflux, constipation, gallbladder stasis | heartburn and constipation are near-universal |
+| coagulation | hypercoagulable state | real clot risk — this adaptation is a hazard, not a false alarm |
+| musculoskeletal | relaxin loosens joints, lordosis increases | back pain, waddling gait, balance changes |
+
+Fundal height is the tape-measure version of the figure above: at 12 weeks the fundus reaches the symphysis, at 20 weeks the umbilicus, at 36 weeks the xiphoid, then drops with lightening as the presenting part engages. From roughly 20 to 36 weeks the measurement in centimeters approximates the gestational age within about 2 cm — LARGER suggests multiples, polyhydramnios, or a large-for-dates fetus; SMALLER suggests growth restriction or oligohydramnios, and either discrepancy earns an ultrasound rather than reassurance.
+
+## Discomfort teaching that earns points
+
+Nausea: small dry frequent meals, crackers before rising, avoid an empty stomach. Heartburn: small meals, upright after eating, no lying down for an hour. Constipation: fluids, fiber, activity — not routine laxatives. Backache: pelvic tilt exercises, supportive shoes, no high heels. Varicosities and dependent edema: elevate legs, avoid crossing them, support hose. Supine hypotension: LEFT-LATERAL rest position, because the gravid uterus compresses the vena cava when the client lies flat — dizziness and pallor supine, relieved by turning, is the tested scenario.`,
+      examTip: `Dependent ankle edema late in pregnancy is expected; edema of the FACE and HANDS is not, and pairs with headache and visual changes in the preeclampsia workup.`,
+    },
+    {
+      id: 'pre-screening',
+      title: `3. What Each Screening Is Actually Looking For`,
+      content: `| Timing | Screening | What it detects |
+| --- | --- | --- |
+| first visit | blood type, Rh, antibody screen | Rh-negative clients needing Rho(D) immune globulin |
+| first visit | CBC, rubella immunity, hepatitis B, HIV, syphilis, urine culture | anemia, non-immunity, treatable infections, asymptomatic bacteriuria |
+| first visit | Pap and STI screening per guidelines | cervical disease, chlamydia and gonorrhea |
+| 11-14 weeks | ultrasound dating; first-trimester combined screening | accurate dating, aneuploidy risk |
+| 15-20 weeks | quad screen (AFP and partners) | neural tube defects (high AFP), some aneuploidies (low AFP) |
+| 18-22 weeks | anatomy ultrasound | structural anomalies, placental location, growth |
+| 24-28 weeks | 1-hour glucose challenge | gestational diabetes (3-hour tolerance test confirms) |
+| 28 weeks | repeat antibody screen; Rho(D) immune globulin if Rh-negative | isoimmunization prevention |
+| 35-37 weeks | group B streptococcus culture | GBS colonization — drives intrapartum antibiotics |
+
+Two of these carry standing test logic. Rh incompatibility matters when an Rh-NEGATIVE client carries an Rh-POSITIVE fetus: maternal antibodies formed after fetal blood exposure threaten future pregnancies, so Rho(D) immune globulin is given at about 28 weeks, within 72 hours of birth if the newborn is Rh-positive, and after any bleeding event, amniocentesis, or pregnancy loss. Group B strep colonization is not an infection to treat prenatally — it drives INTRAPARTUM antibiotic prophylaxis to protect the newborn, and a positive result belongs on the labor record.
+
+Fetal surveillance in later pregnancy adds its own vocabulary: kick counts (commonly 10 movements within 2 hours), the nonstress test (REACTIVE — accelerations present — is the reassuring result), the biophysical profile scoring five parameters, and contraction stress testing where indicated. The recurring exam logic: reassuring results mean continue surveillance; nonreassuring results mean escalate, not reassure.`,
+      examTip: `Rh-negative plus any bleeding event, procedure, or birth of an Rh-positive newborn means Rho(D) immune globulin within 72 hours — the timing is as tested as the indication.`,
+    },
+    {
+      id: 'pre-nutrition',
+      title: `4. Nutrition, Weight & Substance Teaching`,
+      content: `Folic acid is the highest-yield teaching point and it works BEFORE conception: 400 mcg daily for all people who could become pregnant, higher doses when a previous pregnancy was affected by a neural tube defect, because the neural tube closes by about 28 days — often before pregnancy is recognized.
+
+| Nutrient | Why it matters | Practical teaching |
+| --- | --- | --- |
+| folic acid | neural tube closure | 400 mcg daily preconception; leafy greens, fortified grains |
+| iron | expanded red cell mass | take with vitamin C, not with milk/antacids; expect darker stools; constipation is common |
+| calcium and vitamin D | fetal skeleton | dairy or fortified alternatives per plan |
+| protein | tissue growth | increased need; distributed across meals |
+
+Weight gain is individualized by pre-pregnancy BMI — commonly cited as roughly 25-35 lb for normal BMI, more for underweight, less for overweight and obese clients — and the pattern matters as much as the total: a SUDDEN gain late in pregnancy suggests fluid retention and belongs in the preeclampsia conversation, not the diet conversation.
+
+## Avoid list, with the reason attached
+
+Alcohol: no known safe amount at any stage — fetal alcohol spectrum disorders are entirely preventable and entirely permanent. Tobacco and vaping: growth restriction, prematurity, placental complications. Listeria-risk foods: unpasteurized dairy and juices, deli meats and hot dogs unless steaming hot, soft cheeses, refrigerated smoked seafood, raw sprouts. Mercury-heavy fish: shark, swordfish, king mackerel, tilefish limited or avoided, while low-mercury fish are encouraged. Cat litter and raw meat: toxoplasmosis — delegate the litter box, cook meat thoroughly, wear gloves gardening. Hot tubs and saunas: hyperthermia, especially first trimester. Over-the-counter and herbal products: cleared with the provider, not assumed safe.
+
+Activity teaching is usually permissive: continuing moderate exercise is encouraged, with the cautions being supine positions after the first trimester, contact and fall-risk sports, scuba diving, and overheating. Travel and seatbelt teaching appears too — the lap belt goes UNDER the abdomen, across the hips, with the shoulder strap between the breasts.`,
+      examTip: `Folic acid is preconception advice, not prenatal advice — an item asking when to start it wants "before pregnancy," because the neural tube closes before most people know they are pregnant.`,
+    },
+    {
+      id: 'pre-danger',
+      title: `5. Danger Signs: When the Routine Visit Stops`,
+      content: `| Finding | Concern | Nursing action |
+| --- | --- | --- |
+| vaginal bleeding, any trimester | loss, previa, abruption | evaluate now; NO vaginal exam until placental location is known |
+| gush or leaking of fluid | rupture of membranes | assess FHR first, check for prolapsed cord, note time and color |
+| severe or persistent headache, visual changes, epigastric pain | preeclampsia with severe features | blood pressure, reflexes, urine protein, notify immediately |
+| facial and hand swelling with sudden weight gain | preeclampsia | as above — not a diet issue |
+| decreased or absent fetal movement | fetal compromise | kick counts, nonstress test, evaluation |
+| persistent vomiting, weight loss, ketonuria | hyperemesis gravidarum | hydration and electrolytes, antiemetics per orders |
+| fever, dysuria, flank pain | pyelonephritis | culture and treat — untreated UTI drives preterm labor |
+| regular contractions before 37 weeks | preterm labor | evaluation, tocolysis and steroids per protocol |
+| calf pain, unilateral swelling, chest pain, dyspnea | VTE — the hypercoagulable adaptation turning dangerous | do not massage; urgent evaluation |
+
+## Worked example: sorting one visit
+
+A client at 30 weeks reports ankle swelling that improves overnight, mild heartburn after meals, and a headache "that won't quit" since yesterday; her blood pressure reads 148/94 today after 118/70 last visit, and her wedding ring no longer fits.
+
+Sort the findings. Ankle swelling that resolves overnight is DEPENDENT edema — expected. Heartburn is progesterone-driven — expected, and teachable. But the persistent headache, the ring that no longer fits (hand edema), and a blood pressure that has risen more than 30 points systolic to above 140/90 form the preeclampsia cluster. The visit stops being routine: repeat the pressure after rest, check deep tendon reflexes and clonus, obtain urine protein, ask about visual changes and epigastric pain, and notify the provider now. Two expected findings and one emergent one in the same client is exactly how NGN items are built.
+
+## Self-Check
+
+1. A client's LMP was June 4. Calculate the estimated date of delivery.
+2. A client is pregnant now; she has a 3-year-old born at 39 weeks, twins born at 34 weeks who are living, and one loss at 12 weeks. Give her GTPAL.
+3. At 24 weeks, fundal height measures 29 cm. Interpret and act.
+4. Which is expected and which is reported: glycosuria on routine dip, or proteinuria on routine dip?
+5. An Rh-negative client at 16 weeks reports a small amount of vaginal bleeding after a fall. Beyond evaluating the bleeding, what does the nurse anticipate?
+
+## Answers
+
+1. March 11 of the following year — subtract 3 months from June 4 (March 4), add 7 days (March 11), add a year.
+2. G4 T1 P1 A1 L3. Four pregnancies including this one; one term birth; the twins count as ONE preterm birth event but THREE living children total with the 3-year-old.
+3. Fundal height exceeds the 24-week expectation by more than 2 cm. Do not reassure — this suggests multiples, polyhydramnios, a large-for-dates fetus, or inaccurate dating, and the appropriate response is ultrasound evaluation per orders.
+4. Mild glycosuria can be physiologic (GFR rises and the renal threshold falls) and is followed up with glucose screening; PROTEINURIA is never dismissed and belongs to the preeclampsia workup.
+5. Rho(D) immune globulin within 72 hours — bleeding after trauma is a sensitizing event in an Rh-negative client, regardless of gestational age, and fetomaternal hemorrhage testing may guide dosing.`,
+    },
+  ],
+  keyTakeaways: [
+    `Only three signs are positive (examiner-heard heartbeat, examiner-felt movement, ultrasound); Naegele's rule dates the pregnancy and GTPAL counts pregnancies, not babies — twins are one birth event, two children.`,
+    `Most alarming-sounding findings are adaptations: dilutional anemia, mild dyspnea, glycosuria, constipation, dependent edema — while facial/hand edema, proteinuria and persistent headache are not.`,
+    `Fundal height tracks gestational age within about 2 cm from 20-36 weeks; discrepancy earns an ultrasound, not reassurance.`,
+    `Screening has a calendar: dating and antibody screen early, quad screen 15-20 weeks, glucose challenge 24-28, Rho(D) at 28, GBS at 35-37 for intrapartum prophylaxis.`,
+    `Folic acid is preconception; alcohol has no safe amount; and any bleeding, fluid gush, severe headache, or decreased fetal movement converts a routine visit into an evaluation.`,
+  ],
+},
+
+nx_high_risk_pregnancy: {
+  topicId: 'nx_high_risk_pregnancy',
+  title: `High-Risk Pregnancy & Antepartum Complications`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `The antepartum complications carry the heaviest maternity testing because each has a fixed recognition-and-response script: hypertensive disorders with magnesium therapy and its surveillance bundle, gestational diabetes with its shifting insulin requirement, the bleeding differential that decides whether a vaginal exam is safe, preterm labor with its narrow intervention window, and the infections that quietly drive preterm birth. This chapter builds each script with the numbers attached.`,
+  sections: [
+    {
+      id: 'hr-hypertensive',
+      title: `1. Hypertensive Disorders of Pregnancy`,
+      content: `The category sorts by timing and by features, and the sorting decides the response.
+
+| Disorder | Definition |
+| --- | --- |
+| chronic hypertension | hypertension predating pregnancy or appearing before 20 weeks |
+| gestational hypertension | new hypertension at or after 20 weeks WITHOUT proteinuria or severe features |
+| preeclampsia | new hypertension at or after 20 weeks WITH proteinuria or severe features |
+| preeclampsia with severe features | the above plus severe-range pressures or organ involvement |
+| eclampsia | preeclampsia plus seizure |
+| HELLP syndrome | Hemolysis, Elevated Liver enzymes, Low Platelets — a severe variant |
+
+Severe features are the tested list: systolic 160 or higher or diastolic 110 or higher on repeat, platelets under 100,000, elevated liver enzymes or severe right-upper-quadrant/epigastric pain, rising creatinine, pulmonary edema, and new cerebral or visual symptoms. The classic triad the exam quotes — HEADACHE that will not resolve, VISUAL changes, EPIGASTRIC pain — is central-nervous-system and hepatic involvement announcing itself, and epigastric pain in particular is often misread as indigestion when it signals hepatic distension.
+
+## Nursing care of severe preeclampsia
+
+Environment first: quiet, dim room with minimal stimulation, seizure precautions in place (side rails padded per policy, suction and oxygen at the bedside), and continuous or frequent monitoring of pressure, reflexes, urine output, and fetal status. Deep tendon reflexes and clonus are assessed on a schedule because they track CNS irritability. Strict intake and output matters in both directions — oliguria signals renal involvement, and these clients are also vulnerable to pulmonary edema, so fluids are not run liberally.
+
+Definitive treatment is BIRTH; everything else is temporizing. Antihypertensives (labetalol, hydralazine, nifedipine per protocol) treat severe-range pressures to prevent maternal stroke, and betamethasone accelerates fetal lung maturity when preterm birth is anticipated.
+
+An ECLAMPTIC seizure follows the seizure script plus obstetric additions: protect the airway and turn the client to her SIDE, nothing in the mouth, note the time and duration, give oxygen, then assess the fetus AFTER the seizure ends — and anticipate magnesium and delivery planning. The fetal assessment follows maternal stabilization, not the reverse.`,
+      examTip: `Epigastric or right-upper-quadrant pain in a pregnant client past 20 weeks is a preeclampsia severe feature until proven otherwise — never charted as heartburn without a blood pressure and a platelet count.`,
+    },
+    {
+      id: 'hr-magnesium',
+      title: `2. Magnesium Sulfate: The Surveillance Bundle`,
+      content: `![Magnesium sulfate levels: normal 1.8-3.0 mg/dL, therapeutic 4-7, loss of deep tendon reflexes at about 8-12 (the earliest toxicity sign), respiratory depression 12-15, and cardiac effects above that — with hourly reflex, respiratory and urine-output checks and calcium gluconate at the bedside.](/courses/nclex/figures/nclex-mag-toxicity.svg)
+
+Magnesium sulfate is given for SEIZURE PROPHYLAXIS in preeclampsia with severe features and for eclampsia — not as an antihypertensive, a distinction the exam tests directly. It is also used for fetal neuroprotection in anticipated early preterm birth per protocol.
+
+Because it is a central nervous system depressant with a narrow window, it arrives with a fixed surveillance bundle:
+
+| Check | Frequency | Action threshold |
+| --- | --- | --- |
+| deep tendon reflexes | hourly | ABSENT reflexes — earliest toxicity sign — stop and notify |
+| respiratory rate | hourly | under 12/min — stop the infusion |
+| urine output | hourly | under 30 mL/h — magnesium is renally cleared, so it accumulates |
+| level of consciousness | continuous | increasing lethargy, slurred speech |
+| fetal heart rate | continuous | decreased variability is expected; decelerations are not |
+| serum magnesium | per protocol | therapeutic roughly 4-7 mg/dL |
+
+The antidote is CALCIUM GLUCONATE and it belongs at the bedside before the infusion starts, not fetched when needed. The response to suspected toxicity is sequenced: STOP the infusion first, then give calcium gluconate per orders, support airway and breathing, and notify — titrating the rate down is not the answer when reflexes are gone.
+
+Expected effects that are not toxicity: feeling warm and flushed during the loading dose, drowsiness, and mild nausea. Decreased fetal heart rate variability is expected on magnesium and is not, by itself, a reason to stop.`,
+      examTip: `Reflexes disappear BEFORE respirations fall, which is why hourly reflex checks are the front line — an item where reflexes are absent but respirations are still 14 is already toxicity.`,
+    },
+    {
+      id: 'hr-diabetes',
+      title: `3. Gestational Diabetes & Pregestational Diabetes`,
+      content: `Gestational diabetes arises when placental hormones (human placental lactogen chiefly) create insulin resistance that the pancreas cannot outpace — which is why it appears in the SECOND half of pregnancy and why insulin requirements RISE as the placenta grows.
+
+Screening runs at 24-28 weeks with a 1-hour glucose challenge; an elevated result goes to a 3-hour tolerance test for diagnosis. Management is nutrition and activity first, with insulin added when targets are not met — and insulin is the classic pharmacologic choice in pregnancy because it does not cross the placenta.
+
+| Risk | Maternal | Fetal/neonatal |
+| --- | --- | --- |
+| during pregnancy | preeclampsia, polyhydramnios, infection, cesarean birth | MACROSOMIA, organomegaly, delayed lung maturity |
+| at birth | shoulder dystocia, birth trauma, hemorrhage | shoulder dystocia injury, birth asphyxia |
+| newborn period | — | HYPOGLYCEMIA in the first hours, hypocalcemia, polycythemia, jaundice |
+| long term | later type 2 diabetes | later obesity and glucose intolerance |
+
+The newborn hypoglycemia logic is worth owning because it is tested constantly: the fetus of a hyperglycemic mother makes extra insulin; at birth the maternal glucose supply stops but the fetal hyperinsulinism persists for hours — so the infant of a diabetic mother is screened early and often, and jitteriness prompts a heel-stick glucose, not swaddling.
+
+## The insulin timeline
+
+For clients with PREGESTATIONAL diabetes, requirements fall in the first trimester (nausea, fetal glucose draw), rise steadily through the second and third as placental resistance grows, and then DROP PRECIPITOUSLY after delivery of the placenta — the source of resistance is gone. That postpartum cliff is the tested moment: insulin doses are recalculated immediately after birth, and a client on her pregnancy dose postpartum is heading for hypoglycemia.
+
+Tight control matters most in the FIRST trimester for anomaly prevention (organogenesis) and throughout for growth — which is why preconception counseling for known diabetes is a strong exam answer.`,
+      examTip: `Insulin needs climb through pregnancy and crash after the placenta delivers. Any item about postpartum insulin dosing in a diabetic client is testing that cliff.`,
+    },
+    {
+      id: 'hr-bleeding',
+      title: `4. Antepartum Bleeding & Preterm Labor`,
+      content: `The bleeding differential decides whether an examination is safe, which is why it is the first sorting in any bleeding stem.
+
+| Condition | Bleeding | Pain/uterus | Key management |
+| --- | --- | --- | --- |
+| placenta previa | PAINLESS, bright red, often later pregnancy | soft, non-tender uterus | NO vaginal exam; ultrasound locates placenta; cesarean if it covers the os |
+| abruptio placentae | dark red, may be concealed | PAINFUL, rigid/board-like, tender | emergency; monitor for shock and DIC; expedited birth |
+| ectopic pregnancy | scant, with unilateral pain | early pregnancy, possible shoulder pain if ruptured | surgical or medical management; shock watch |
+| spontaneous abortion | variable, with cramping, before 20 weeks | cramping | evaluate, Rho(D) if Rh-negative, emotional support |
+| gestational trophoblastic disease | dark brown "prune juice," excessive nausea | uterus LARGER than dates | evacuation; serial hCG follow-up; avoid pregnancy during surveillance |
+
+Concealed abruption is the trap: a client can be hemorrhaging behind the placenta with modest visible bleeding, so the assessment watches vital signs, uterine tone, fundal height, and fetal status rather than the pad count alone.
+
+## Preterm labor
+
+Regular contractions with cervical change before 37 weeks. The intervention window is narrow and the goals are specific — not to stop labor indefinitely, but to buy 48 hours for steroids to work and to transfer to a facility with a nursery when needed.
+
+BETAMETHASONE (or dexamethasone) is the intervention that changes outcomes: two doses 24 hours apart, accelerating fetal lung maturity and reducing respiratory distress, intraventricular hemorrhage and necrotizing enterocolitis. TOCOLYTICS (nifedipine, indomethacin, terbutaline per protocol) delay birth briefly to allow steroid benefit and transfer. MAGNESIUM SULFATE is given for fetal neuroprotection in early preterm birth. Antibiotics are added for GBS prophylaxis or infection.
+
+Teaching for at-risk clients: hydration, recognizing contraction patterns, and reporting pelvic pressure, low backache, cramping, or changes in discharge. Infection is a leading driver of preterm birth, which is why asymptomatic bacteriuria is treated and why untreated pyelonephritis appears in preterm-labor stems.`,
+      examTip: `Painless bright bleeding means previa and forbids the vaginal exam; painful rigid uterus means abruption and means emergency. Getting the pair backwards is the single most consequential error in this chapter.`,
+    },
+    {
+      id: 'hr-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client at 34 weeks has BP 164/108 on repeat, platelets 88,000, and epigastric pain. Classify, and name the two medication categories anticipated.
+2. A client on magnesium sulfate has absent patellar reflexes, respirations 13, and urine output 22 mL/h over the last hour. Interpret and sequence the first three actions.
+3. A client with pregestational type 1 diabetes gives birth. What happens to her insulin requirement, and why?
+4. At 32 weeks a client reports sudden dark red bleeding with constant abdominal pain; the uterus is rigid and tender. Name the condition and the two complications to monitor.
+5. Preterm labor is diagnosed at 30 weeks. Which single medication most changes neonatal outcome, and what is its purpose?
+
+## Answers
+
+1. Preeclampsia with severe features (severe-range pressure, thrombocytopenia, hepatic pain) — and with those platelets, HELLP must be excluded. Anticipate MAGNESIUM SULFATE for seizure prophylaxis and an ANTIHYPERTENSIVE (labetalol, hydralazine or nifedipine per protocol) for the severe-range pressure, plus betamethasone if preterm birth is planned.
+2. Magnesium toxicity — absent reflexes are the earliest sign, and oliguria under 30 mL/h means the drug is accumulating. STOP the infusion, give calcium gluconate per orders, support respirations and notify the provider; continued monitoring and a magnesium level follow.
+3. It drops sharply and immediately once the placenta delivers, because placental hormones were the source of insulin resistance. Doses are recalculated right away to avoid hypoglycemia.
+4. Abruptio placentae. Monitor for HYPOVOLEMIC SHOCK (bleeding may be concealed, so trust vitals and uterine tone over visible blood) and DISSEMINATED INTRAVASCULAR COAGULATION, along with continuous fetal monitoring and preparation for expedited birth.
+5. Betamethasone — an antenatal corticosteroid that accelerates fetal lung maturity and reduces respiratory distress syndrome, intraventricular hemorrhage and necrotizing enterocolitis. Tocolytics matter mainly because they buy the 48 hours the steroid needs.`,
+    },
+  ],
+  keyTakeaways: [
+    `Sort hypertensive disorders by timing and severe features; the headache-visual-epigastric triad signals severe disease, and BIRTH is the only definitive treatment.`,
+    `Magnesium is for seizure prophylaxis, not blood pressure — and its bundle is hourly reflexes (lost first), respirations at least 12, output at least 30 mL/h, with calcium gluconate already at the bedside.`,
+    `Insulin requirements rise through pregnancy and crash after placental delivery; the infant of a diabetic mother is screened for hypoglycemia because fetal hyperinsulinism outlives the maternal glucose supply.`,
+    `Painless bright bleeding is previa (no vaginal exam); painful rigid uterus is abruption (emergency, watch for shock and DIC) — and abruption bleeding can be concealed.`,
+    `In preterm labor the goal is 48 hours: betamethasone changes outcomes, tocolytics buy the time, magnesium provides neuroprotection, and infection is treated because it drives preterm birth.`,
+  ],
+},
+
+nx_labor_birth: {
+  topicId: 'nx_labor_birth',
+  title: `Labor, Birth & Intrapartum Complications`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Intrapartum items are timed items: the four stages with what the nurse does in each, fetal monitoring where a pattern name carries a response bundle, oxytocin with its stop rule, and a short list of emergencies — cord prolapse, uterine rupture, amniotic fluid embolism, shoulder dystocia — where the drill is the answer. This chapter builds the stages, the monitoring vocabulary, the pharmacology, and every emergency script.`,
+  sections: [
+    {
+      id: 'lab-onset',
+      title: `1. True Labor, Admission & the Four Stages`,
+      content: `![Cervical dilation over time: a slow, variable latent phase to 6 cm, then the active phase from 6 to 10 cm where about 1 cm per hour or more is expected, ending at complete dilation when the second stage begins.](/courses/nclex/figures/nclex-labor-curve.svg)
+
+| | True labor | False labor |
+| --- | --- | --- |
+| contractions | regular, intensifying, closer together | irregular, do not intensify |
+| effect of walking/rest | intensify with walking | often ease with rest or hydration |
+| discomfort location | starts in the back, radiates to the abdomen | usually abdominal only |
+| cervix | EFFACES and DILATES — the only definitive criterion | no change |
+| bloody show | often present | absent |
+
+Cervical change is the arbiter; everything else is supporting evidence. Premonitory signs precede labor by days to weeks: lightening, increased Braxton Hicks, bloody show, a burst of energy ("nesting"), and sometimes membrane rupture.
+
+## The four stages
+
+FIRST stage runs from onset to complete dilation, and it is the long one — subdivided into a LATENT phase to about 6 cm (slow, highly variable, often managed at home) and an ACTIVE phase from 6 to 10 cm where progress of about 1 cm per hour or more is expected. Nursing care: monitor contractions and fetal heart rate, encourage position changes and ambulation, support coping and pain management, monitor intake and bladder (a full bladder impedes descent), and keep the client oriented to progress.
+
+SECOND stage is complete dilation to birth — pushing. Care shifts to coaching effort, positioning, monitoring FHR more frequently per protocol, perineal support, and preparing for the birth itself. THIRD stage is birth of the placenta, usually within 30 minutes; signs of separation are a gush of blood, lengthening of the cord, and a globular firm uterus. The placenta is inspected for completeness because retained fragments cause hemorrhage.
+
+FOURTH stage is the first hours of recovery, and it is where hemorrhage risk peaks: assess fundus, lochia, vital signs and bladder on a frequent schedule, promote skin-to-skin and feeding, and keep the client warm.
+
+## Assessing labor progress
+
+The vocabulary the exam assumes: DILATION (0-10 cm), EFFACEMENT (percent thinning), STATION (presenting part relative to the ischial spines — negative above, 0 engaged, positive below), LIE, PRESENTATION and POSITION (three-letter designations such as LOA, left occiput anterior — the most common and most favorable). Ruptured membranes are documented by TIME, AMOUNT and COLOR — and green-stained fluid means meconium, which raises the possibility of fetal compromise and prepares the team for neonatal resuscitation.`,
+      examTip: `Cervical change separates true from false labor — not contraction intensity, not the client's certainty. And after ANY rupture of membranes, the first nursing action is to assess the FETAL HEART RATE, because cord prolapse is the immediate risk.`,
+    },
+    {
+      id: 'lab-monitoring',
+      title: `2. Fetal Monitoring & the Response Bundles`,
+      content: `![Fetal heart rate decelerations against the contraction: EARLY mirrors the contraction (head compression, benign), LATE begins after the peak (uteroplacental insufficiency — intervene), VARIABLE is an abrupt V at any timing (cord compression — reposition first).](/courses/nclex/figures/nclex-fhr-decels.svg)
+
+The baseline vocabulary comes first, because every pattern is read against it: baseline FHR 110-160 bpm, and MODERATE VARIABILITY (fluctuations of 6-25 bpm) as the single best indicator of an intact, well-oxygenated fetal nervous system. Accelerations are reassuring. Minimal or absent variability is the finding that turns other patterns ominous.
+
+| Pattern | Cause | Response |
+| --- | --- | --- |
+| accelerations | fetal well-being | none needed |
+| EARLY decelerations | head compression | benign — continue monitoring |
+| VARIABLE decelerations | cord compression | REPOSITION first; if abrupt and deep, check for prolapse |
+| LATE decelerations | uteroplacental insufficiency | full intrauterine resuscitation bundle |
+| minimal/absent variability | hypoxia, sleep cycle, medications, prematurity | evaluate in context; escalate if with decelerations |
+| tachycardia (over 160) | maternal fever/infection, dehydration, drugs | treat the cause |
+| bradycardia (under 110) | hypoxia, cord event, rapid descent | escalate; resuscitation bundle |
+
+## The intrauterine resuscitation bundle
+
+Memorize it as an ordered sequence, because items ask for the FIRST action:
+
+1. REPOSITION the client — left lateral first (relieves vena cava compression and often the cord)
+2. STOP oxytocin if it is infusing
+3. IV FLUID BOLUS per protocol (improves placental perfusion)
+4. OXYGEN by non-rebreather per protocol
+5. NOTIFY the provider; prepare for possible expedited birth
+6. Consider amnioinfusion for repetitive variables per orders
+
+Position costs nothing and is fastest, which is why it leads. Stopping oxytocin comes early because continued stimulation is actively worsening the problem. Categories I, II and III appear in charting: category I is normal, category III (absent variability with recurrent lates or bradycardia, or a sinusoidal pattern) is abnormal and demands prompt intervention and often expedited birth.`,
+      examTip: `VEAL CHOP with actions attached: Variable-Cord (reposition), Early-Head (watch), Acceleration-Okay, Late-Placental (resuscitate). Position change is the first move in nearly every nonreassuring pattern.`,
+    },
+    {
+      id: 'lab-pharm',
+      title: `3. Intrapartum Pharmacology & Pain Management`,
+      content: `| Drug/method | Purpose | The tested caution |
+| --- | --- | --- |
+| oxytocin (induction/augmentation) | stimulate contractions | TACHYSYSTOLE — stop the infusion; it is a high-alert drug on a pump |
+| cervical ripening agents (prostaglandins) | soften and efface the cervix | tachysystole; not with a prior classical cesarean per protocol |
+| epidural analgesia | regional pain relief | HYPOTENSION — preload fluids, monitor pressure, watch fetal response |
+| opioids (IV) | systemic analgesia | neonatal respiratory depression if given near birth — naloxone available |
+| nitrous oxide | self-administered analgesia | self-administered only; client holds the mask |
+| terbutaline | uterine relaxation in emergencies | maternal tachycardia |
+| magnesium sulfate | seizure prophylaxis / neuroprotection | the full surveillance bundle from the high-risk chapter |
+
+## Oxytocin: the stop rule
+
+Oxytocin is titrated on a pump with continuous fetal and contraction monitoring. TACHYSYSTOLE is defined as more than 5 contractions in 10 minutes averaged over 30 minutes, or contractions lasting more than 2 minutes, or contractions occurring less than 1 minute apart. The response is a fixed sequence: STOP the infusion, reposition left lateral, give fluids and oxygen per protocol, notify the provider, and anticipate terbutaline for uterine relaxation if the pattern persists. Because oxytocin has an antidiuretic effect, prolonged high-dose infusions carry a water-intoxication risk — monitor intake, output and sodium on long inductions.
+
+## Epidural care
+
+The sequence before placement: informed consent by the provider, IV access with a fluid preload per protocol, baseline vitals and fetal status, and positioning (sitting or side-lying, curved). After placement, blood pressure is monitored frequently — HYPOTENSION is the most common complication, treated by turning the client to her side, increasing IV fluids, giving oxygen, and administering a vasopressor (ephedrine or phenylephrine) per orders. Other watch items: bladder distension (sensation is blocked — scheduled catheterization or bladder scanning), limited mobility and fall risk, fever, pruritus, and post-dural-puncture headache if the dura is punctured (positional headache, treated with fluids, caffeine per orders and a blood patch when severe).`,
+      examTip: `Two stop rules define this section: tachysystole stops the oxytocin, and epidural hypotension turns the client to her side with fluids before any drug. Both are first-actions the exam samples directly.`,
+    },
+    {
+      id: 'lab-emergencies',
+      title: `4. Intrapartum Emergencies: Four Drills`,
+      content: `Each of these has a scripted response, and the script is the answer.
+
+## Umbilical cord prolapse
+
+The cord slips ahead of the presenting part after membranes rupture — the FHR shows sudden profound variable decelerations or bradycardia, and the cord may be visible or palpable. Response: call for help immediately; with a gloved hand, LIFT THE PRESENTING PART off the cord and DO NOT REMOVE your hand; position the client KNEE-CHEST or in steep Trendelenburg (or elevate the hips); give oxygen; do NOT attempt to push the cord back in; keep an exposed cord moist with sterile saline; prepare for immediate cesarean birth.
+
+## Uterine rupture
+
+Suspect it with sudden severe abdominal pain often described as "tearing," a loss of contraction pattern, abnormal FHR or loss of the tracing, a change in the abdominal contour, and signs of hypovolemic shock. Highest risk with a previous uterine scar (especially classical incision) and with tachysystole. Response: stop oxytocin, oxygen, fluids, notify surgical team — immediate operative birth and hemorrhage management.
+
+## Amniotic fluid embolism
+
+Sudden respiratory distress, hypotension, hypoxia and cardiovascular collapse, often followed by DIC and hemorrhage. It is rare, unpredictable, and rapidly life-threatening. Response: call the code team, support airway and circulation aggressively, prepare for intubation and massive transfusion, and prepare for perimortem birth per protocol.
+
+## Shoulder dystocia
+
+After the head delivers, the anterior shoulder wedges behind the pubic symphysis — the "turtle sign" of the head retracting. Response is a coordinated maneuver sequence: call for help, McROBERTS maneuver (sharp hyperflexion of the maternal hips onto the abdomen) and SUPRAPUBIC pressure — never fundal pressure, which worsens the impaction. Document times; watch the newborn for brachial plexus injury and clavicle fracture, and the mother for hemorrhage and laceration.
+
+| Emergency | The one action that defines the drill |
+| --- | --- |
+| cord prolapse | lift the presenting part and keep the hand there |
+| uterine rupture | stop oxytocin, prepare for immediate surgery |
+| amniotic fluid embolism | full resuscitation — this is a code |
+| shoulder dystocia | McRoberts plus SUPRAPUBIC (never fundal) pressure |
+
+## Cesarean and operative birth
+
+Indications include nonreassuring fetal status, arrest of labor, malpresentation, placenta previa, and prior classical incision. Pre-op care mirrors the perioperative chapter with obstetric additions: continuous fetal monitoring until the procedure, left-lateral tilt to avoid supine hypotension, and the standard consent-and-verification sequence. Post-op care combines surgical recovery with postpartum assessment — fundus, lochia, and incision together. VBAC (vaginal birth after cesarean) is offered under criteria, with uterine rupture as the risk that drives continuous monitoring and a readiness plan.`,
+      examTip: `Suprapubic pressure helps in shoulder dystocia; FUNDAL pressure makes it worse and is a wrong answer every time it appears.`,
+    },
+    {
+      id: 'lab-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client's membranes rupture and the FHR immediately drops to 80 bpm with a palpable cord in the vagina. Give the first four actions in order.
+2. During an oxytocin induction, contractions occur 7 times in 10 minutes with late decelerations. What is this called, and what is the first action?
+3. Twenty minutes after epidural placement, BP falls to 84/50 and the FHR shows late decelerations. Sequence the response.
+4. Interpret: FHR baseline 140, moderate variability, decelerations that begin with the contraction, reach their nadir at its peak, and recover as it ends. Action?
+5. After the fetal head delivers, it retracts against the perineum and the shoulders do not follow. Name the emergency, the first maneuver, and the pressure that must NOT be used.
+
+## Answers
+
+1. Call for help; with a gloved hand lift the presenting part off the cord and keep it there; position knee-chest or steep Trendelenburg; apply oxygen — while preparing for emergency cesarean. Do not push the cord back; keep it moist if exposed.
+2. Tachysystole (more than 5 contractions in 10 minutes) with a nonreassuring pattern. STOP the oxytocin first, then reposition left lateral, fluids, oxygen, notify, and anticipate terbutaline if it persists.
+3. Turn the client to her side (left lateral), increase the IV fluid rate, apply oxygen, and give a vasopressor per orders — epidural-induced hypotension is reducing placental perfusion, and the lates are its consequence. Notify the anesthesia provider and obstetric provider.
+4. EARLY decelerations — mirroring the contraction, caused by head compression. Benign: continue monitoring, no intervention required. Moderate variability confirms a well-oxygenated fetus.
+5. Shoulder dystocia. First maneuver is McRoberts — sharp hyperflexion of the maternal hips — with SUPRAPUBIC pressure. FUNDAL pressure must never be used; it deepens the impaction and risks uterine rupture.`,
+    },
+  ],
+  keyTakeaways: [
+    `Cervical change defines true labor; the first stage's active phase begins at 6 cm with about 1 cm/hour expected, and the fourth stage is where hemorrhage risk peaks.`,
+    `Moderate variability is the best sign of fetal well-being; VEAL CHOP names the decelerations, and the resuscitation bundle runs reposition, stop oxytocin, fluids, oxygen, notify.`,
+    `Tachysystole (more than 5 contractions in 10 minutes) stops the oxytocin; epidural hypotension is treated with position, fluids, oxygen, then a vasopressor.`,
+    `Cord prolapse means lift the presenting part and keep the hand there; uterine rupture means stop oxytocin and go to surgery; amniotic fluid embolism is a code.`,
+    `Shoulder dystocia is McRoberts plus suprapubic pressure — fundal pressure is always the wrong answer.`,
+  ],
+},
+
+nx_postpartum: {
+  topicId: 'nx_postpartum',
+  title: `Postpartum Care & Complications`,
+  domainWeight: 'Health Promotion and Maintenance (6-12%)',
+  overview: `Postpartum nursing is a structured assessment (BUBBLE-HE) wrapped around one dominant risk: hemorrhage. This chapter builds the involution timeline, the hemorrhage sequence with its three different first actions, the infection and thromboembolism watches, lactation support, the mood-disorder spectrum with its urgent end, and the discharge teaching that catches late complications at home.`,
+  sections: [
+    {
+      id: 'pp-assessment',
+      title: `1. BUBBLE-HE and the Involution Timeline`,
+      content: `![Postpartum fundal involution: the fundus sits at the umbilicus on day 0-1, descends about one fingerbreadth per day, and is no longer palpable abdominally by about day 10 — with boggy meaning massage and rightward deviation meaning a full bladder.](/courses/nclex/figures/nclex-postpartum-fundus.svg)
+
+| Letter | Assessment | What is expected |
+| --- | --- | --- |
+| B — breasts | softness/filling, nipples | filling by day 2-3; intact nipples |
+| U — uterus | fundal height, tone, position | FIRM, MIDLINE, descending ~1 fingerbreadth/day |
+| B — bladder | distension, voiding | voiding within 6-8 hours; no distension |
+| B — bowel | sounds, first movement | may take 2-3 days; softeners often ordered |
+| L — lochia | amount, color, odor, clots | rubra to serosa to alba; no foul odor |
+| E — episiotomy/perineum | REEDA: redness, edema, ecchymosis, discharge, approximation | mild edema; intact approximation |
+| H — Homans/hemodynamics | calf pain, swelling, vital signs | no unilateral swelling |
+| E — emotions | bonding, mood, support | interest in the newborn; blues resolve within ~2 weeks |
+
+## The lochia progression
+
+RUBRA is dark red for about days 1-3; SEROSA is pinkish-brown for roughly days 4-10; ALBA is creamy-white for up to about 6 weeks. Report-now findings: saturating a pad in 15 minutes to an hour per protocol, clots larger than a small egg, a RETURN to bright red after progression, or a foul odor (infection).
+
+## Expected vital-sign oddities
+
+Bradycardia in the 50s-60s is NORMAL in the early postpartum period, reflecting the volume shift after birth. TACHYCARDIA is the warning sign — usually hemorrhage or infection. A temperature up to 38 C (100.4 F) in the first 24 hours can reflect dehydration and exertion; a sustained fever after 24 hours suggests infection. Chills right after birth are common and self-limited. A blood pressure that falls with a rising pulse is hemorrhage until proven otherwise, and postpartum clients compensate well until they suddenly do not.`,
+      examTip: `Postpartum bradycardia is expected; postpartum tachycardia is a red flag. That inversion of normal instincts is one of the most reliably tested facts in the chapter.`,
+    },
+    {
+      id: 'pp-hemorrhage',
+      title: `2. Postpartum Hemorrhage: Three Findings, Three First Actions`,
+      content: `Postpartum hemorrhage is commonly defined as blood loss of 1,000 mL or more, or any loss with signs of hypovolemia — and quantified blood loss has replaced visual estimation because estimation underestimates. The causes are taught as the FOUR T's:
+
+| Cause | Share | Recognition |
+| --- | --- | --- |
+| TONE — uterine atony | most common by far | BOGGY, soft uterus; heavy flow |
+| TRAUMA — laceration, hematoma | second | bleeding despite a FIRM fundus; severe perineal/rectal pain with a hematoma |
+| TISSUE — retained placental fragments | | persistent bleeding, subinvolution, often later onset |
+| THROMBIN — coagulopathy | least common | oozing from puncture sites; abnormal labs |
+
+## The three first actions
+
+The exam rotates the same three findings and expects a different first action for each:
+
+1. FUNDUS BOGGY → MASSAGE the fundus first. It is free, immediate, and treats the most common cause.
+2. FUNDUS DEVIATED (usually to the right) → the bladder is full and displacing it. Assist to void or catheterize per orders, then reassess.
+3. FUNDUS FIRM but bleeding continues → suspect a LACERATION or hematoma; notify the provider for inspection, because massage cannot fix torn tissue.
+
+Escalation after massage: express clots, ensure the bladder is empty, start or increase oxytocin per orders, and move through the uterotonic list — METHYLERGONOVINE (contraindicated in hypertension), CARBOPROST (caution in asthma), MISOPROSTOL, and tranexamic acid per protocol. Alongside: large-bore IV access, fluids and blood products, oxygen, vital signs and output monitoring, and preparation for surgical management (balloon tamponade, uterine artery procedures, hysterectomy as the last resort).
+
+Risk factors worth flagging on admission: overdistended uterus (multiples, polyhydramnios, macrosomia), prolonged or precipitous labor, oxytocin augmentation, grand multiparity, retained placenta, chorioamnionitis, and a history of prior hemorrhage. A hematoma presents differently from visible bleeding — severe unrelieved perineal or rectal pressure with a tense, discolored swelling and vital-sign changes without much external blood.`,
+      examTip: `Boggy means massage; deviated means empty the bladder; firm-but-bleeding means call for inspection. Three findings, three different first actions — the exam's favorite rotation in this chapter.`,
+    },
+    {
+      id: 'pp-infection-vte',
+      title: `3. Infection, Thromboembolism & Other Complications`,
+      content: `| Complication | Recognition | Management focus |
+| --- | --- | --- |
+| endometritis | fever after 24 h, uterine tenderness, FOUL lochia, tachycardia | cultures, IV antibiotics, hydration |
+| wound/perineal infection | REEDA changes, purulence, separation | culture, antibiotics, wound care, sitz baths |
+| mastitis | usually unilateral, wedge-shaped warm red area, fever, flu-like aches | CONTINUE breastfeeding/emptying, antibiotics, warmth, rest, fluids |
+| urinary tract infection | dysuria, frequency, suprapubic pain | culture, antibiotics, hydration |
+| deep vein thrombosis | unilateral calf pain, swelling, warmth | do NOT massage; anticoagulation per orders; imaging |
+| pulmonary embolism | sudden dyspnea, pleuritic pain, tachycardia, apprehension | rapid response, oxygen, upright positioning |
+| subinvolution | uterus stays high and boggy; prolonged lochia | evaluate for retained tissue/infection |
+
+Mastitis carries the counterintuitive teaching the exam loves: the client KEEPS breastfeeding or pumping on the affected side. Emptying the breast is treatment — stopping causes stasis and worsens it, and the milk is safe for the infant. Prevention teaching covers proper latch, frequent emptying, avoiding constrictive bras, and varying positions.
+
+Pregnancy's hypercoagulable state persists into the postpartum period, making VTE a leading cause of maternal death. Prevention is mechanical and behavioral: early ambulation, hydration, sequential compression devices for surgical clients, and prophylactic anticoagulation where indicated. The teaching point for discharge is recognition — unilateral calf pain or swelling, and any sudden shortness of breath or chest pain, means emergency evaluation, not a call to the office next week.
+
+## Warning signs after discharge
+
+Teach these as a written list, because most maternal deaths in the postpartum period occur AFTER discharge: heavy bleeding (soaking a pad in an hour, or clots larger than an egg), fever, severe headache or visual changes (preeclampsia can present or persist postpartum — up to about 6 weeks), chest pain or shortness of breath, unilateral leg pain or swelling, foul discharge, severe abdominal pain, thoughts of harming self or the baby, and any "something is very wrong" feeling.`,
+      examTip: `Mastitis does not stop breastfeeding — emptying the breast is part of the treatment. And postpartum preeclampsia is real: a severe headache two weeks after birth is a blood-pressure check, not a tension headache.`,
+    },
+    {
+      id: 'pp-lactation-mood',
+      title: `4. Lactation Support & the Mood Spectrum`,
+      content: `Lactation physiology in one line: prolactin makes milk, oxytocin releases it (the let-down reflex, which is why some clients feel cramping while feeding), and SUPPLY FOLLOWS DEMAND — the more the breast is emptied, the more it makes.
+
+Effective latch teaching: the infant takes the nipple AND much of the areola, lips flanged outward, chin against the breast, with audible swallowing and no pinching pain. Feed on demand — commonly 8-12 times in 24 hours in the newborn period — with no rigid time limits per side. Engorgement is managed by frequent feeding, warm compresses before feeding to encourage flow, and cold compresses after for comfort; for clients who are not breastfeeding, the approach reverses — support, cold, no stimulation, and no expression, because emptying signals more production. Nipple soreness is usually a latch problem: reassess the latch first, air-dry, express a little milk onto the nipple, and use lanolin per policy.
+
+Adequate intake is judged by OUTPUT and weight: by day 4-5, roughly 6 or more wet diapers a day and regular stools, with return to birth weight by about 2 weeks after the expected early loss of up to about 7-10 percent.
+
+## The mood spectrum
+
+| Condition | Timing | Picture | Response |
+| --- | --- | --- | --- |
+| postpartum blues | onset days 2-5, resolves by ~2 weeks | tearfulness, mood swings, fatigue — able to care for the baby | reassurance, rest, support, screening |
+| postpartum depression | any time in the first year | persistent sadness, anhedonia, guilt, detachment, sleep and appetite change | SCREEN and REFER; treatment works |
+| postpartum psychosis | often within 2 weeks, abrupt | delusions, hallucinations, disorganization, possible harm ideation toward self or infant | PSYCHIATRIC EMERGENCY — never leave alone with the infant |
+
+The line the exam tests: blues RESOLVE and depression PERSISTS or worsens; any thoughts of harming self or the infant escalate immediately regardless of the label. Screening with a validated tool is standard practice at postpartum visits and pediatric visits, and the correct nursing responses are to screen, listen without minimizing, involve support people, and refer — never to reassure a client whose symptoms have persisted beyond two weeks.
+
+Other discharge teaching: contraception discussion before discharge (breastfeeding is not reliable contraception), pelvic rest and activity guidance per provider, the postpartum visit schedule, Rho(D) immune globulin for eligible Rh-negative clients within 72 hours, rubella vaccination for non-immune clients, and infant safety (safe sleep, car seat) from the safety chapter.`,
+      examTip: `Blues resolve within about two weeks; anything persisting, worsening, or involving harm ideation is depression or psychosis and gets referral or emergency response — and psychosis means the infant is never left alone with the client.`,
+    },
+    {
+      id: 'pp-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. Two hours after birth, the fundus is boggy and 2 fingerbreadths above the umbilicus, deviated to the right; lochia is heavy rubra. Sequence the interventions.
+2. On postpartum day 1, vital signs read T 37.6 C, P 54, BP 112/70. Which finding, if any, is concerning?
+3. A client on day 5 has a wedge-shaped red, warm, tender area on one breast with a fever of 38.5 C and body aches. Name it, and state what she does about feeding.
+4. Fundus is firm and midline, yet bright red bleeding continues steadily. What is the likely cause and the correct action?
+5. On day 10, a client's partner reports she believes the baby "has been switched" and she has not slept in three days. Classify and act.
+
+## Answers
+
+1. Massage the fundus first (boggy equals atony) and express clots; then address the rightward deviation by having her void or catheterizing per orders, since a full bladder prevents contraction; then reassess tone, height and lochia, monitor vital signs, and escalate to uterotonics per orders if it remains boggy.
+2. None are concerning. A temperature up to 38 C in the first 24 hours can be dehydration and exertion, bradycardia in the 50s is expected postpartum, and the blood pressure is normal. Tachycardia would be the warning sign.
+3. Mastitis. She CONTINUES breastfeeding or pumping on the affected side — emptying the breast is treatment — along with antibiotics per orders, warmth before feeds, rest and fluids.
+4. A laceration or hematoma — massage cannot fix torn tissue. Notify the provider for inspection and repair, monitor vital signs and blood loss, and assess for severe perineal or rectal pain suggesting a concealed hematoma.
+5. Postpartum psychosis — a psychiatric emergency, marked by delusional content and severe sleep disruption with abrupt onset. Ensure the infant's safety and do not leave her alone with the baby, stay with the client, notify the provider immediately, and arrange urgent psychiatric evaluation.`,
+    },
+  ],
+  keyTakeaways: [
+    `BUBBLE-HE structures every postpartum assessment; the fundus descends about one fingerbreadth per day and lochia progresses rubra to serosa to alba without returning to bright red.`,
+    `Hemorrhage's four T's are led by TONE — and the three findings have three first actions: boggy means massage, deviated means empty the bladder, firm-but-bleeding means call for inspection.`,
+    `Postpartum bradycardia is normal and tachycardia is the warning; fever after 24 hours suggests infection, and preeclampsia can appear or persist for weeks after birth.`,
+    `Mastitis is treated by continuing to empty the breast, and VTE prevention is early ambulation with recognition teaching that survives discharge.`,
+    `Blues resolve within two weeks; persistent symptoms mean depression and referral, while delusions or harm ideation mean psychosis — an emergency where the infant is never left alone with the client.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */

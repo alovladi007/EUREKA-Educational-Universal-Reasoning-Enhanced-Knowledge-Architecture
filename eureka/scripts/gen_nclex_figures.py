@@ -434,6 +434,164 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Fundal height by gestational age (McDonald's rule as taught): from about
+# 20 to 36 weeks the fundal height in cm approximates the weeks of
+# gestation, +/- 2 cm.  Landmarks: ~12 weeks at the symphysis, ~20 weeks at
+# the umbilicus, ~36 weeks at the xiphoid, then dropping with lightening.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-fundal-height")
+def _(mode):
+    ink, ink2 = S.INK[mode], S.INK_2[mode]
+    c = S.SERIES[mode]
+    wk = np.linspace(20, 36, 200)
+    fig, ax = plt.subplots(figsize=(7.0, 4.0))
+    ax.fill_between(wk, wk - 2, wk + 2, color=S.GRID[mode], alpha=0.5)
+    ax.plot(wk, wk, color=c[0], linewidth=2)
+    ax.plot([36, 40], [36, 34.5], color=c[0], linewidth=2,
+            linestyle=(0, (4, 2)))
+    marks = [
+        (12, 0.5, "12 wk: at the symphysis"),
+        (20, 20, "20 wk: at the umbilicus"),
+        (36, 36, "36 wk: at the xiphoid"),
+        (40, 34.5, "term: drops with lightening"),
+    ]
+    for x, y, label in marks:
+        ax.plot([x], [y], "o", color=c[1], markersize=6)
+        ax.annotate(label, (x, y), textcoords="offset points",
+                    xytext=(-8, 10), ha="right", fontsize=8.6, color=ink)
+    S.note(ax, 21, 34,
+           "fundal height (cm) approximates weeks from 20-36 wk, +/- 2 cm;\nlarger suggests multiples, polyhydramnios or LGA - smaller suggests IUGR",
+           mode, ha="left")
+    ax.set_xlabel("weeks of gestation")
+    ax.set_ylabel("fundal height (cm above symphysis)")
+    ax.set_xlim(10, 42)
+    ax.set_ylim(-1, 40)
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Labor: cervical dilation against time.  Current definitions - latent phase
+# to 6 cm (slow and highly variable), active phase 6-10 cm with progress
+# expected at roughly 1 cm/h or more, then the second stage (pushing).
+# Curve shape is schematic; the phase boundaries and rates are the published
+# teaching values.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-labor-curve")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    t_lat = np.linspace(0, 8, 200)
+    d_lat = 1 + 5 * (t_lat / 8) ** 1.9
+    t_act = np.linspace(8, 12, 120)
+    d_act = 6 + (t_act - 8) * 1.0
+    fig, ax = plt.subplots(figsize=(7.2, 4.0))
+    ax.axvspan(0, 8, color=S.GRID[mode], alpha=0.45)
+    ax.plot(t_lat, d_lat, color=c[0], linewidth=2)
+    ax.plot(t_act, d_act, color=c[1], linewidth=2)
+    ax.axhline(6, color=S.GUIDE[mode], linewidth=1, linestyle=(0, (4, 3)))
+    ax.annotate("LATENT phase (to 6 cm)\nslow, variable, may last many hours",
+                (4.0, 2.2), ha="center", fontsize=9, color=ink)
+    ax.annotate("ACTIVE phase (6-10 cm)\nexpect about 1 cm/h or more",
+                (10.2, 7.0), ha="center", fontsize=9, color=ink)
+    ax.annotate("6 cm: the active-phase threshold", (0.2, 6.25),
+                fontsize=8.6, color=S.INK_2[mode])
+    ax.plot([12], [10], "o", color=c[2], markersize=7)
+    ax.annotate("10 cm - complete;\nsecond stage (pushing) begins", (12, 10),
+                textcoords="offset points", xytext=(-10, -6), ha="right",
+                fontsize=8.8, color=c[2])
+    ax.set_xlabel("hours in labor (schematic)")
+    ax.set_ylabel("cervical dilation (cm)")
+    ax.set_xlim(0, 13.5)
+    ax.set_ylim(0, 11.4)
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Postpartum fundal involution: the fundus is at the umbilicus within hours
+# of birth, then descends about one fingerbreadth (about 1 cm) per day, and
+# is no longer palpable abdominally by about day 10.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-postpartum-fundus")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    days = np.arange(0, 11)
+    below = days.astype(float)
+    fig, ax = plt.subplots(figsize=(7.0, 3.8))
+    ax.axhline(0, color=S.GUIDE[mode], linewidth=1.4)
+    ax.annotate("umbilicus", (-0.35, 0.25), fontsize=9, color=ink)
+    ax.plot(days, -below, color=c[0], linewidth=2, marker="o", markersize=5)
+    ax.annotate("day 0-1: at or just below\nthe umbilicus, FIRM and midline",
+                (0.2, -1.6), fontsize=8.8, color=ink)
+    ax.annotate("about 1 fingerbreadth (1 cm) lower each day",
+                (4.6, -4.2), ha="center", fontsize=9, color=c[1])
+    ax.annotate("by ~day 10: no longer\npalpable abdominally", (10, -10),
+                textcoords="offset points", xytext=(-8, 12), ha="right",
+                fontsize=8.8, color=ink)
+    S.note(ax, 0.0, -11.6,
+           "BOGGY = massage first - DEVIATED RIGHT = full bladder, void or catheterise, then reassess",
+           mode, ha="left")
+    ax.set_xlabel("postpartum day")
+    ax.set_ylabel("fingerbreadths below the umbilicus")
+    ax.set_xlim(-0.6, 10.8)
+    ax.set_ylim(-12.4, 1.6)
+    ax.set_yticks([0, -2, -4, -6, -8, -10])
+    ax.set_yticklabels(["0", "2", "4", "6", "8", "10"])
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
+
+# ---------------------------------------------------------------------------
+# Magnesium sulfate: therapeutic window and the toxicity ladder, as taught
+# for obstetric infusions (serum magnesium, mg/dL).  Therapeutic roughly
+# 4-7; loss of deep tendon reflexes is the EARLIEST toxicity sign, then
+# respiratory depression, then cardiac effects.  Institutional protocols
+# govern exact numbers; the ladder's ORDER is the tested content.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-mag-toxicity")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    bands = [
+        (1.8, 3.0, "normal serum magnesium", S.GRID[mode]),
+        (4.0, 7.0, "THERAPEUTIC for seizure prophylaxis", c[0]),
+        (8.0, 12.0, "deep tendon reflexes LOST - earliest toxicity sign", c[1]),
+        (12.0, 15.0, "respiratory depression - rate under 12", c[2]),
+        (15.0, 25.0, "cardiac conduction changes, arrest at the top", c[3] if len(c) > 3 else c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(7.4, 3.6))
+    for i, (lo, hi, label, colour) in enumerate(bands):
+        ax.barh(0, hi - lo, left=lo, height=0.55, color=colour,
+                edgecolor="none", alpha=0.9)
+        y = 0.45 + (i % 2) * 0.34
+        ax.annotate(label, ((lo + hi) / 2, y), ha="center", fontsize=8.6,
+                    color=ink)
+        ax.plot([(lo + hi) / 2, (lo + hi) / 2], [0.30, y - 0.06],
+                color=S.GUIDE[mode], linewidth=0.8)
+    ax.set_xlim(0, 26)
+    ax.set_ylim(-0.9, 1.35)
+    ax.set_yticks([])
+    ax.set_xlabel("serum magnesium (mg/dL)")
+    S.note(ax, 13, -0.75,
+           "surveillance every hour: reflexes, respirations at least 12/min, urine output at least 30 mL/h\nantidote at the bedside: CALCIUM GLUCONATE",
+           mode, ha="center")
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
