@@ -1850,132 +1850,199 @@ cissp_crypto: {
   topicId: 'cissp_crypto',
   title: `Cryptography`,
   domainWeight: '13%',
-  overview: `### Symmetric Encryption`,
+  overview: `Cryptography is the topic candidates fear most and the one the exam treats most conceptually: you are almost never asked to compute a cipher, and almost always asked which service a construction provides, which key does what, and what breaks when a key is handled badly. This chapter builds the four security services and which primitive delivers each, the symmetric/asymmetric/hashing families with their real algorithms and status, the hybrid model every real protocol actually uses, key management as the discipline that decides whether any of it works, PKI, and the attacks the exam samples.`,
   sections: [
     {
-      id: '5-cryptography-and-encryption',
-      title: `5. Cryptography and Encryption`,
-      content: `### Symmetric Encryption
+      id: 'crypto-services',
+      title: `1. Four Services, and Which Primitive Delivers Each`,
+      content: `![Which cryptographic family provides which security service: symmetric encryption gives confidentiality; hashing gives integrity; MACs add authentication; asymmetric encryption and digital signatures reach non-repudiation.](/courses/cissp/figures/cissp-crypto-taxonomy.svg)
 
-Uses the same key for encryption and decryption. Fast but requires secure key distribution.
-| Algorithm | Key Size | Block/Stream | Notes |
-|---|---|---|---|
-| AES (Rijndael) | 128/192/256 bits | Block (128-bit) | NIST standard; currently recommended for all new applications |
-| DES | 56 bits (effective) | Block (64-bit) | Obsolete; too short for modern attacks; broken |
-| 3DES (Triple DES) | 168 bits | Block (64-bit) | Three iterations of DES; still used but deprecated |
-| Blowfish | 32-448 bits | Block (64-bit) | Fast for non-cryptographic purposes; small block size limits use |
-| Twofish | 128-256 bits | Block (128-bit) | AES finalist; rarely adopted; stronger than Blowfish |
-| RC4 | 40-256 bits | Stream | Once widely used; now considered insecure; vulnerable in TLS |
-| IDEA | 128 bits | Block (64-bit) | Used in PGP; patent issues restricted adoption |
+Start here, because most exam items are really asking one question: **which service is required, and which primitive provides it?**
 
-### Asymmetric Encryption
+| Service | What it means | Delivered by |
+|---|---|---|
+| Confidentiality | only authorised parties can read it | encryption (symmetric or asymmetric) |
+| Integrity | unauthorised change is detectable | hashing, MAC, digital signature |
+| Authentication | the origin is who it claims to be | MAC, digital signature, challenge-response |
+| Non-repudiation | the originator cannot credibly deny it | digital signature ONLY |
 
-Uses a pair of keys: public key for encryption, private key for decryption. Enables secure communication without prior key exchange. Slower than symmetric.
-| Algorithm | Key Size | Use Case | Security Basis |
-|---|---|---|---|
-| RSA | 2048+ bits | Encryption, digital signatures, key exchange | Integer factorization problem |
-| ECC (Elliptic Curve) | 256-521 bits | Encryption, signatures, key exchange | Discrete logarithm problem (smaller keys for equivalent security) |
-| Diffie-Hellman | 2048+ bits | Key agreement/exchange | Discrete logarithm in finite fields |
-| ElGamal | 2048+ bits | Encryption, signatures | Discrete logarithm problem |
-| DSA (Digital Signature Algorithm) | 1024-3072 bits | Digital signatures only | Discrete logarithm problem |
+The last row carries the most tested distinction in the domain. A MAC proves that someone holding the shared key produced the message — but BOTH parties hold that key, so either could have produced it, and neither can prove the other did. A digital signature is made with a PRIVATE key held by exactly one party, so it alone supports non-repudiation.
 
-### Cryptographic Hash Functions
+Two more definitions the exam expects precisely. **Encryption is reversible; hashing is not.** A hash has no key and cannot be undone, so "encrypt the password" is wrong on a properly designed system — passwords are hashed with a salt and a slow function. And **encoding is not encryption**: Base64 provides no confidentiality at all, because no key is involved and anyone can reverse it.
 
-One-way functions that produce a fixed-size digest from variable-length input. Any change to input produces completely different hash (avalanche effect).
-| Algorithm | Output Size | Status | Notes |
-|---|---|---|---|
-| MD5 | 128 bits | Broken | Collisions found; do not use for new applications |
-| SHA-1 | 160 bits | Deprecated | Theoretical attacks; NIST deprecated for new use |
-| SHA-2 Family | 224-512 bits | Current standard | SHA-256, SHA-384, SHA-512 are secure |
-| SHA-3 | 224-512 bits | Secure alternative | Latest NIST standard; Keccak algorithm |
-| BLAKE2 | 256-512 bits | High performance | Faster than MD5, as secure as SHA-3 |
-| RIPEMD-160 | 160 bits | Adequate | Used in Bitcoin; older but not broken |
+## Kerckhoffs's principle
 
-### Digital Signatures
-
-Mathematical scheme proving the authenticity and integrity of a message. Uses private key to create signature; public key to verify.
-
-**Process**: Hash the message, encrypt hash with private key, transmit message + signature. Receiver decrypts signature with public key and compares to own hash.
-
-**Provides**: Authentication (sender identity), non-repudiation (sender cannot deny), and integrity (tampering detected).
-### Public Key Infrastructure (PKI)
-
-System managing public-key cryptography through digital certificates, certificate authorities (CAs), and trust hierarchies.
-
-**Components**:
-- **Certificate Authority (CA)**: Trusted third party issuing and revoking certificates
-- **Registration Authority (RA)**: Verifies applicant identity before CA issues certificate
-- **Certificate Repository/LDAP**: Publishes certificates for retrieval
-- **Revocation Services**: CRLs (Certificate Revocation Lists) or OCSP (Online Certificate Status Protocol)
-- **Key Escrow**: Backup of private keys for recovery
-
-### Digital Certificates (X.509)
-
-Binds a public key to an identity. Contains subject name, public key, issuer (CA), serial number, validity period, and CA signature.
-
-**Certificate Chain**: Validates from end-entity certificate up to trusted root CA. Intermediate CAs sign subordinate certificates.
-### Key Management Lifecycle
-
-**Generation**: Cryptographically secure random key generation.
-
-**Storage**: Encrypted key stores, hardware security modules (HSMs), key vaults.
-
-**Distribution**: Secure channel delivery; no key transmitted over insecure networks.
-
-**Rotation**: Periodically replace keys; schedule-based or event-triggered (employee departure, suspected compromise).
-
-**Retirement/Revocation**: Securely destroy old keys; revoke certificates.
-
-**Escrow and Recovery**: Backup mechanisms for critical keys; separate from operational keys.
-### Cryptanalysis and Attacks
-
-- **Brute Force**: Try all possible keys (requires computational power)
-- **Frequency Analysis**: Exploit patterns in plaintext to break substitution ciphers
-- **Known Plaintext**: Attacker has plaintext-ciphertext pairs
-- **Chosen Plaintext**: Attacker can encrypt specific plaintexts and analyze results
-- **Differential Cryptanalysis**: Use input differences and output differences to derive key
-- **Linear Cryptanalysis**: Find linear approximations of encryption operation
-- **Meet-in-the-Middle**: Reduce search space for weak modes (like double encryption)
-
-### Quantum Cryptography and Post-Quantum Encryption
-
-**Quantum Key Distribution (QKD)**: Uses quantum properties (photons) to detect eavesdropping. BB84 protocol is most famous.
-
-**Post-Quantum Cryptography**: Algorithms resistant to quantum attacks. NIST is standardizing lattice-based, code-based, and multivariate polynomial cryptography.
-
-Current asymmetric encryption (RSA, ECC) is vulnerable to quantum computers, so migration to post-quantum algorithms is necessary.`,
-      examTip: `Key sizes matter: RSA/DH need 2048+ bits; ECC 256-bits ≈ RSA 2048-bits. AES is quantum-resistant for symmetric; RSA/ECC are not.`,
+The security of a cryptosystem must depend on the secrecy of the KEY, never on the secrecy of the algorithm. Published, peer-reviewed algorithms are stronger precisely because they have survived public attack — which is why "our proprietary in-house cipher" is a red flag on the exam and in practice, and why the correct response to a vendor claiming secret algorithmic strength is scepticism, not curiosity.`,
+      examTip: `Only digital signatures provide non-repudiation. If an item asks for proof the sender cannot deny, MACs and symmetric encryption are wrong answers no matter how well they protect the data.`,
     },
     {
-      id: '8-advanced-key-management',
-      title: `8. Advanced Key Management`,
-      content: `### Key Escrow and Recovery
+      id: 'crypto-symmetric',
+      title: `2. Symmetric Cryptography`,
+      content: `One shared key encrypts and decrypts. It is fast — orders of magnitude faster than asymmetric — which is why bulk data is always protected symmetrically.
 
-**Key Escrow**: Copies of keys deposited with a trusted third party for recovery.
+| Algorithm | Key size | Type | Status |
+|---|---|---|---|
+| AES (Rijndael) | 128 / 192 / 256 | block, 128-bit | current standard; use for new work |
+| ChaCha20 | 256 | stream | modern stream cipher, strong software performance |
+| 3DES | 168 (effective ~112) | block, 64-bit | deprecated; small block size |
+| DES | 56 effective | block, 64-bit | broken; key far too short |
+| RC4 | 40-2048 | stream | insecure; removed from TLS |
+| Blowfish / Twofish | variable / 128-256 | block | legacy / AES finalist, rarely deployed |
 
-**Use Cases**: Employee departure, disaster recovery, compliance audits.
+**The problem symmetric cryptography cannot solve on its own is key distribution.** Two parties must already share a secret before they can communicate securely, and the number of keys required grows quadratically: for $n$ parties needing pairwise secrecy the count is
 
-**Risks**: Centralizes key compromise risk; requires strict access controls and separation of duties.
+$$\\frac{n(n-1)}{2}$$
 
-**Government Mandates**: U.S. Clipper chip controversy in 1990s; some countries mandate key escrow for lawful intercept.
-### Key Recovery Methods
+so 10 parties need 45 keys, 100 parties need 4,950, and 1,000 need 499,500. That growth is the reason asymmetric cryptography was invented, and the formula is worth being able to produce.
 
-- **M-of-N Control**: Recover key only with M of N key fragments; each fragment held by different authorized party
-- **Hardware Security Modules**: Secure storage and escrow functionality built-in
-- **Cryptographic Threshold Schemes**: Secret sharing to distribute key material
+## Modes of operation matter as much as the cipher
 
-### Key Stretching and Derivation
+A block cipher alone encrypts one block; a MODE describes how blocks chain together.
 
-**PBKDF2**: Derives key from password through repeated hashing; adds salt to prevent rainbow table attacks.
+| Mode | Behaviour | Exam-relevant property |
+|---|---|---|
+| ECB | each block encrypted independently | NEVER use — identical plaintext blocks give identical ciphertext, so patterns survive |
+| CBC | each block XORed with the previous ciphertext | needs an IV; sequential, no parallel encryption |
+| CTR | turns a block cipher into a stream cipher | parallelisable; the nonce must never repeat |
+| GCM | CTR plus an authentication tag | AUTHENTICATED encryption — confidentiality AND integrity together |
 
-**bcrypt, scrypt, Argon2**: Deliberately slow key derivation; resists brute-force password cracking.
-### Hardware Security Modules (HSMs)
+ECB is the single most tested mode, because its failure is visual and absolute. And GCM matters because it is authenticated encryption: modern practice does not encrypt and then hope integrity is handled elsewhere.
 
-Dedicated cryptographic appliances protecting keys and performing crypto operations.
+Initialisation vectors and nonces follow one rule: they need not be secret, but they must never be REUSED with the same key. Reuse is what breaks stream ciphers and CTR-mode constructions catastrophically.`,
+      examTip: `ECB is wrong in every scenario an exam will present. And "fast, bulk data, one shared key" always points to symmetric — with the key distribution problem as the trade-off the question is usually probing.`,
+    },
+    {
+      id: 'crypto-asymmetric',
+      title: `3. Asymmetric Cryptography & the Hybrid Model`,
+      content: `A mathematically related key PAIR: what one key does, only the other can undo. The public key is published; the private key never leaves its owner.
 
-**Features**: FIPS 140-2 Level 3 or higher; isolated processor, tamper detection, key zeroization.
+**The direction decides the service, and this is the most examined idea in the domain:**
 
-**Use**: High-security environments (banking, government, large enterprises).`,
+| Encrypt with | Decrypt with | Service achieved |
+|---|---|---|
+| recipient's PUBLIC key | recipient's PRIVATE key | CONFIDENTIALITY — only the recipient can read it |
+| sender's PRIVATE key | sender's PUBLIC key | AUTHENTICATION / NON-REPUDIATION — only the sender could have produced it |
+
+Say it as a sentence: *to keep a secret, use the recipient's public key; to prove authorship, use your own private key.* An item describing a message encrypted with the sender's private key is describing a signature, not secrecy — anyone with the public key can read it.
+
+| Algorithm | Basis | Typical use |
+|---|---|---|
+| RSA | integer factorisation | encryption, signatures, key transport |
+| ECC | elliptic-curve discrete log | same services with much smaller keys |
+| Diffie-Hellman | discrete logarithm | key AGREEMENT only — no encryption, no signing |
+| DSA / ECDSA | discrete logarithm | signatures only |
+
+ECC's advantage is key size for equivalent strength, which is why constrained devices and mobile platforms prefer it. Diffie-Hellman's peculiarity is worth stating plainly: it lets two parties derive a shared secret over a public channel WITHOUT ever transmitting it, but it authenticates nothing on its own — unauthenticated DH is vulnerable to a machine-in-the-middle, which is why real protocols sign the exchange.
+
+## The hybrid model: what actually happens in TLS
+
+Asymmetric cryptography is slow, so nothing bulk-encrypts with it. Every real protocol is HYBRID:
+
+1. Use asymmetric cryptography (or authenticated Diffie-Hellman) to agree on a **session key**.
+2. Use that symmetric session key to encrypt the actual traffic.
+3. Discard the session key when the session ends.
+
+**Perfect forward secrecy** is the property that compromising a long-term private key later does not decrypt past sessions — achieved by using ephemeral Diffie-Hellman so each session's key is independent and never stored. It is a favourite exam concept because it explains why recording encrypted traffic today to decrypt after a future key theft can be made to fail.`,
+      examTip: `Recipient's public key for secrecy; own private key for signing. Diffie-Hellman agrees a key and proves nothing about identity — that separation is the trap in most key-exchange items.`,
+    },
+    {
+      id: 'crypto-hashing',
+      title: `4. Hashing, MACs & Digital Signatures`,
+      content: `A hash takes input of any length and produces a fixed-length digest. It is one-way, deterministic, and exhibits the avalanche effect — one bit changed in the input changes roughly half the output bits.
+
+| Algorithm | Digest | Status |
+|---|---|---|
+| MD5 | 128-bit | BROKEN — practical collisions; never for security |
+| SHA-1 | 160-bit | broken/deprecated — collisions demonstrated |
+| SHA-256 / SHA-512 | 256 / 512-bit | current standard (SHA-2 family) |
+| SHA-3 | variable | different internal construction; alternative to SHA-2 |
+| bcrypt / scrypt / Argon2 | variable | PASSWORD hashing — deliberately slow, memory-hard |
+
+The last row is a different job from the others. A general-purpose hash is designed to be FAST, which is exactly wrong for passwords, because speed helps the attacker guess. Password hashing uses deliberately slow, salted, memory-hard functions — and the SALT (a unique random value per password) defeats precomputed rainbow tables by ensuring identical passwords produce different digests.
+
+## Collisions and the birthday problem
+
+A collision is two different inputs producing the same digest. Because of the birthday paradox, finding one takes roughly $2^{n/2}$ work rather than $2^{n}$ for an $n$-bit digest — so a 128-bit hash offers only about 64 bits of collision resistance. That halving is why digest lengths look excessive and why MD5 fell.
+
+## Building up to signatures
+
+| Construction | Recipe | Provides |
+|---|---|---|
+| hash | digest of the message | integrity only — anyone can recompute it |
+| MAC / HMAC | hash combined with a SHARED key | integrity + authentication, no non-repudiation |
+| digital signature | hash of the message, encrypted with the SENDER'S PRIVATE key | integrity + authentication + NON-REPUDIATION |
+
+Notice that a digital signature signs the HASH, not the whole message — which is why signing is fast regardless of message size, and why a broken hash function undermines every signature built on it.
+
+Verification runs the same steps in reverse: the recipient hashes the received message, decrypts the signature with the sender's public key, and compares. Match means the message is unaltered and came from the holder of that private key. A digital signature does NOT provide confidentiality — the message is still readable unless separately encrypted, which is a distinction items exploit constantly.`,
+      examTip: `Hash for integrity, MAC for integrity plus shared-key authentication, signature for all three including non-repudiation — and signatures never encrypt the message itself.`,
+    },
+    {
+      id: 'crypto-pki-keys',
+      title: `5. PKI & Key Management`,
+      content: `Public keys solve distribution but create a new problem: how do you know a public key really belongs to the party named? PKI answers it with trusted third parties.
+
+| Component | Role |
+|---|---|
+| Certificate Authority (CA) | issues and signs certificates; the trust anchor |
+| Registration Authority (RA) | verifies identity before the CA issues |
+| Digital certificate (X.509) | binds an identity to a public key, signed by the CA |
+| CRL | list of revoked certificates, periodically published |
+| OCSP | online, real-time revocation status query |
+| Key escrow / recovery | third-party copy so encrypted data survives key loss |
+
+A certificate is simply a public key plus identity information, signed by a CA. Trust is transitive: you trust the CA, the CA vouches for the subject, so you accept the subject's key. That chain is exactly what a machine-in-the-middle attacks by presenting a certificate the client's trust store should reject — and why certificate warnings must never be clicked through.
+
+**Revocation is the part candidates underestimate.** A compromised private key makes its certificate dangerous before expiry, so CRLs and OCSP exist to say "this one is no longer valid." CRLs are periodic and can be stale; OCSP is real-time but requires availability of the responder.
+
+## Key management is the whole ballgame
+
+The exam's recurring theme: strong algorithms fail because of weak key handling. The lifecycle is generation, distribution, storage, use, rotation, and destruction, and every stage has an exam-relevant rule.
+
+| Stage | The rule |
+|---|---|
+| generation | strong randomness; weak entropy makes strong algorithms predictable |
+| distribution | out-of-band or protected by asymmetric methods; never in the clear |
+| storage | protect at rest — HSMs for high assurance; never hardcode in source |
+| use | one key, one purpose — never reuse a signing key for encryption |
+| rotation | periodic and on suspicion of compromise; limits blast radius |
+| destruction | securely destroy retired keys so old ciphertext cannot be revived |
+
+**Split knowledge and dual control** appear here as the separation-of-duties expression: no single person holds a complete critical key, and two people must act together to use it. **Key escrow** trades recoverability against risk — it prevents data loss when keys are lost and creates a concentrated target, which is exactly the balance an exam item will ask you to evaluate.`,
+      examTip: `Hardcoded keys, keys emailed in the clear, one key doing two jobs, and no rotation policy are all wrong answers by construction — key management failure is the intended defect in most cryptography scenarios.`,
+    },
+    {
+      id: 'crypto-attacks',
+      title: `6. Attacks & Self-Check`,
+      content: `| Attack | How it works | Defence |
+|---|---|---|
+| brute force | try every key | longer keys; rate limiting |
+| dictionary / rainbow table | precomputed guesses or digests | salting; slow password hashes |
+| birthday attack | exploits collision probability | longer digests; collision-resistant hashes |
+| known/chosen plaintext | attacker has matched pairs, or chooses inputs | modern ciphers are designed to resist both |
+| machine-in-the-middle | intercepts and relays a key exchange | authenticate the exchange; validate certificates |
+| replay | re-sends a valid captured message | nonces, timestamps, sequence numbers |
+| side channel | reads timing, power, or emissions | constant-time implementations, shielding |
+| downgrade | forces a weaker protocol version | disable legacy versions and ciphers |
+| implementation flaw | the algorithm is fine, the code is not | use vetted libraries; never roll your own |
+
+The last row deserves emphasis because it is the real-world pattern: modern cryptographic FAILURES are overwhelmingly implementation and key-management failures rather than broken mathematics. "Don't roll your own crypto" is not folklore — it is the correct exam answer and the correct engineering answer.
+
+## Self-Check
+
+1. A message is encrypted with the sender's private key. What does this provide, and what does it NOT provide?
+2. Why can a MAC not provide non-repudiation?
+3. A team stores user passwords using SHA-256. What is wrong, and what should they use?
+4. Why is ECB mode unacceptable even when the underlying cipher is AES?
+5. What property ensures that stealing a server's long-term private key today does not decrypt last year's recorded sessions?
+
+## Answers
+
+1. It provides authentication and non-repudiation — only that sender's private key could have produced it — but NOT confidentiality, since anyone holding the widely distributed public key can decrypt and read it.
+2. Because the MAC key is SHARED. Either party could have generated the tag, so neither can prove the other did; non-repudiation requires a key held by exactly one party, which is what a private signing key provides.
+3. SHA-256 is a fast general-purpose hash, which helps an attacker guess quickly, and unsalted digests are vulnerable to rainbow tables. They should use a salted, deliberately slow, memory-hard password hash such as bcrypt, scrypt or Argon2.
+4. Because ECB encrypts every block independently, so identical plaintext blocks produce identical ciphertext blocks and structure in the data survives encryption. Confidentiality is compromised regardless of cipher strength; use an authenticated mode such as GCM.
+5. Perfect forward secrecy, achieved with ephemeral Diffie-Hellman key agreement so each session's key is independent and never stored — the long-term key authenticates the exchange but does not derive the session keys.`,
     },
   ],
 },
