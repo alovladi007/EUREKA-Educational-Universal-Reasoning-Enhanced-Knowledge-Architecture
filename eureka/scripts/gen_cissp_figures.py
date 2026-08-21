@@ -948,6 +948,328 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# OSI layers with the attack and the control that live at each one.  Layer
+# assignment is definitional (ISO/IEC 7498-1); the pairings are the standard
+# exam mapping.
+# ---------------------------------------------------------------------------
+
+_OSI = [
+    ("1 Physical", "bits", "wiretap, cable cut, jamming", "locked conduit, TEMPEST, guards"),
+    ("2 Data Link", "frames", "ARP poisoning, MAC flood, VLAN hop", "port security, DAI, 802.1X"),
+    ("3 Network", "packets", "IP spoofing, smurf, routing attack", "ACLs, ingress filtering, IPsec"),
+    ("4 Transport", "segments", "SYN flood, session hijack", "SYN cookies, TLS, stateful firewall"),
+    ("5 Session", "data", "session replay, MITM on setup", "mutual auth, session tokens"),
+    ("6 Presentation", "data", "malformed encoding, downgrade", "input validation, cipher policy"),
+    ("7 Application", "data", "injection, XSS, phishing, DDoS", "WAF, secure coding, awareness"),
+]
+
+
+@figure("cissp-osi-attacks")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(10.4, 4.6))
+    for i, (name, _pdu, attack, control) in enumerate(_OSI):
+        y = i * 0.62
+        ax.add_patch(plt.Rectangle((0.25, y), 2.35, 0.5, facecolor=c[0],
+                                   alpha=0.14 + i * 0.055, edgecolor=c[0],
+                                   linewidth=1.2))
+        ax.annotate(name, (0.42, y + 0.25), va="center", fontsize=8.6, color=ink)
+        ax.annotate(attack, (2.95, y + 0.25), va="center", fontsize=8.0, color=c[2])
+        ax.annotate(control, (7.05, y + 0.25), va="center", fontsize=8.0,
+                    color=S.INK_2[mode])
+    ax.annotate("LAYER", (0.42, 4.55), fontsize=8.4, color=ink)
+    ax.annotate("TYPICAL ATTACK", (2.95, 4.55), fontsize=8.4, color=c[2])
+    ax.annotate("CONTROL THAT BELONGS THERE", (7.05, 4.55), fontsize=8.4,
+                color=S.INK_2[mode])
+    ax.set_xlim(0, 12.6)
+    ax.set_ylim(-0.25, 4.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+@figure("cissp-osi-encapsulation")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.0, 4.4))
+    for i, (name, pdu, _a, _ctl) in enumerate(_OSI):
+        y = i * 0.6
+        ax.add_patch(plt.Rectangle((0.3, y), 2.5, 0.48, facecolor="none",
+                                   edgecolor=c[0], linewidth=1.3))
+        ax.annotate(name, (0.45, y + 0.24), va="center", fontsize=8.6, color=ink)
+        ax.annotate(pdu.upper(), (3.15, y + 0.24), va="center", fontsize=8.4,
+                    color=c[1])
+    ax.annotate("PDU AT THIS LAYER", (3.15, 4.42), fontsize=8.4, color=c[1])
+    # encapsulation grows the header stack on the way down
+    for i in range(4):
+        x = 5.1 + i * 0.0
+        w = 1.0 + i * 0.75
+        y = (3 - i) * 0.6 + 0.06
+        ax.add_patch(plt.Rectangle((5.1, y), w, 0.36, facecolor=c[2],
+                                   alpha=0.2 + i * 0.14, edgecolor=c[2],
+                                   linewidth=1.0))
+    ax.annotate("each layer down ADDS its own header;\nthe receiver strips them in reverse",
+                (5.1, 2.85), fontsize=8.0, color=S.INK_2[mode])
+    ax.annotate("data", (5.35, 1.98), fontsize=7.6, color=ink, va="center")
+    ax.annotate("+ segment header", (5.35, 1.38), fontsize=7.6, color=ink, va="center")
+    ax.annotate("+ packet header", (5.35, 0.78), fontsize=7.6, color=ink, va="center")
+    ax.annotate("+ frame header and trailer", (5.35, 0.18), fontsize=7.6, color=ink,
+                va="center")
+    ax.set_xlim(0, 10.8)
+    ax.set_ylim(-0.3, 4.8)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The TCP three-way handshake and the two attacks that abuse it.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-tcp-handshake")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.0, 4.6))
+    for name, x in (("CLIENT", 1.2), ("SERVER", 7.8)):
+        ax.add_patch(plt.Rectangle((x - 1.0, 3.7), 2.0, 0.68, facecolor="none",
+                                   edgecolor=ink, linewidth=1.8))
+        ax.annotate(name, (x, 4.04), ha="center", va="center", fontsize=9,
+                    color=ink)
+        ax.plot([x, x], [1.35, 3.65], color=S.GRID[mode], linewidth=1)
+    steps = [(3.25, 1.2, 7.8, "1.  SYN", c[0]),
+             (2.65, 7.8, 1.2, "2.  SYN-ACK   (server allocates state)", c[1]),
+             (2.05, 1.2, 7.8, "3.  ACK   -   connection ESTABLISHED", c[0])]
+    for y, x0, x1, label, colour in steps:
+        ax.annotate("", (x1, y), (x0, y),
+                    arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.8))
+        ax.annotate(label, ((x0 + x1) / 2, y + 0.14), ha="center", fontsize=8.6,
+                    color=ink)
+    key = [
+        ("SYN flood", "send step 1, never send step 3 - the half-open table fills",
+         "SYN cookies, rate limiting"),
+        ("SYN scan", "send step 1, read the reply, send RST - the port is mapped "
+                     "without a full session", "IDS, port-scan detection"),
+    ]
+    for i, (tag, how, fix) in enumerate(key):
+        y = 0.75 - i * 0.55
+        ax.annotate(tag, (0.25, y), fontsize=8.6, color=c[2], va="center")
+        ax.annotate(how, (1.75, y + 0.11), fontsize=7.8, color=ink, va="center")
+        ax.annotate("defence: " + fix, (1.75, y - 0.14), fontsize=7.4,
+                    color=S.INK_2[mode], va="center")
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(-0.15, 4.6)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# DDoS by mechanism.  What distinguishes the classes is WHAT is exhausted.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-ddos-taxonomy")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    kinds = [
+        ("VOLUMETRIC", "saturates BANDWIDTH",
+         "UDP flood, DNS and NTP amplification", c[0]),
+        ("PROTOCOL", "exhausts CONNECTION STATE",
+         "SYN flood, ping of death, fragmentation", c[1]),
+        ("APPLICATION", "exhausts SERVER WORK",
+         "HTTP flood, slowloris, expensive queries", c[2]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.4, 4.0))
+    for i, (name, what, egs, colour) in enumerate(kinds):
+        y = (len(kinds) - 1 - i) * 1.05
+        ax.add_patch(plt.Rectangle((0.3, y), 2.5, 0.82, facecolor=colour,
+                                   alpha=0.2, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (1.55, y + 0.41), ha="center", va="center",
+                    fontsize=9.4, color=ink)
+        ax.annotate(what, (3.15, y + 0.55), fontsize=8.8, color=ink)
+        ax.annotate(egs, (3.15, y + 0.24), fontsize=8.0, color=S.INK_2[mode])
+    S.note(ax, 0.3, -0.75,
+           "amplification multiplies a small spoofed request into a large reply aimed at the victim - "
+           "the defence is at the reflector (disable open resolvers) as much as at the target",
+           mode)
+    ax.set_xlim(0, 11.4)
+    ax.set_ylim(-1.15, 3.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# On-path (man-in-the-middle) interception and the three ways in.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-mitm-path")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.2))
+    nodes = [("CLIENT", 1.2, ink), ("ATTACKER\non path", 5.0, c[2]),
+             ("SERVER", 8.8, ink)]
+    for name, x, colour in nodes:
+        ax.add_patch(plt.Rectangle((x - 1.0, 2.5), 2.0, 0.85, facecolor="none",
+                                   edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x, 2.92), ha="center", va="center", fontsize=8.8,
+                    color=ink)
+    for x0, x1 in ((2.3, 3.9), (6.1, 7.7)):
+        ax.annotate("", (x1, 2.92), (x0, 2.92),
+                    arrowprops=dict(arrowstyle="<|-|>", color=c[2], linewidth=1.7))
+    ax.annotate("the client believes it is talking to the server, and the server believes it is talking to the client",
+                (5.0, 3.65), ha="center", fontsize=8.2, color=ink, style="italic")
+    ways = [
+        ("ARP poisoning", "forge MAC-to-IP bindings on the local segment",
+         "dynamic ARP inspection, static entries"),
+        ("Rogue access point / evil twin", "advertise a familiar SSID and win the association",
+         "802.1X, WIPS, certificate-pinned VPN"),
+        ("DNS spoofing / cache poisoning", "answer the name lookup before the real resolver",
+         "DNSSEC, resolver hardening"),
+    ]
+    for i, (tag, how, fix) in enumerate(ways):
+        y = 1.85 - i * 0.62
+        ax.annotate(tag, (0.3, y), fontsize=8.4, color=c[2], va="center")
+        ax.annotate(how, (3.55, y + 0.12), fontsize=7.8, color=ink, va="center")
+        ax.annotate("defence: " + fix, (3.55, y - 0.14), fontsize=7.4,
+                    color=S.INK_2[mode], va="center")
+    S.note(ax, 0.3, -0.35,
+           "end-to-end authenticated encryption defeats all three - the attacker still sees traffic, but cannot read or alter it",
+           mode)
+    ax.set_xlim(0, 11.0)
+    ax.set_ylim(-0.75, 3.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Insecure protocols and their secure replacements, with IANA-registered
+# default ports.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-secure-protocol-pairs")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    pairs = [
+        ("Telnet", "23", "SSH", "22", "remote shell"),
+        ("FTP", "20/21", "SFTP / FTPS", "22 / 990", "file transfer"),
+        ("HTTP", "80", "HTTPS", "443", "web"),
+        ("SMTP", "25", "SMTP over TLS", "587 / 465", "mail submission"),
+        ("POP3", "110", "POP3S", "995", "mail retrieval"),
+        ("IMAP", "143", "IMAPS", "993", "mail retrieval"),
+        ("LDAP", "389", "LDAPS", "636", "directory"),
+        ("SNMP v1 / v2c", "161/162", "SNMP v3", "161/162", "device management"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 4.6))
+    ax.annotate("INSECURE", (0.3, 8.55), fontsize=8.6, color=c[2])
+    ax.annotate("SECURE REPLACEMENT", (4.3, 8.55), fontsize=8.6, color=c[0])
+    ax.annotate("PURPOSE", (8.6, 8.55), fontsize=8.6, color=S.INK_2[mode])
+    for i, (bad, bport, good, gport, use) in enumerate(pairs):
+        y = len(pairs) - 1 - i
+        ax.annotate(bad, (0.3, y + 0.3), fontsize=8.6, color=ink)
+        ax.annotate(bport, (2.35, y + 0.3), fontsize=8.0, color=S.INK_2[mode])
+        ax.annotate("", (4.15, y + 0.42), (3.35, y + 0.42),
+                    arrowprops=dict(arrowstyle="-|>", color=c[0], linewidth=1.4))
+        ax.annotate(good, (4.3, y + 0.3), fontsize=8.6, color=ink)
+        ax.annotate(gport, (6.85, y + 0.3), fontsize=8.0, color=S.INK_2[mode])
+        ax.annotate(use, (8.6, y + 0.3), fontsize=8.0, color=S.INK_2[mode])
+    ax.set_xlim(0, 11.2)
+    ax.set_ylim(-0.3, 9.0)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# IPsec transport vs tunnel mode: what is protected differs, and that is the
+# whole exam question.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-ipsec-modes")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.2))
+
+    def packet(y, blocks, title, gloss):
+        x = 0.35
+        ax.annotate(title, (0.35, y + 1.02), fontsize=9.2, color=ink)
+        for label, w, filled in blocks:
+            ax.add_patch(plt.Rectangle((x, y), w, 0.62,
+                                       facecolor=c[0] if filled else "none",
+                                       alpha=0.28 if filled else 1.0,
+                                       edgecolor=c[0] if filled else S.GUIDE[mode],
+                                       linewidth=1.4))
+            ax.annotate(label, (x + w / 2, y + 0.31), ha="center", va="center",
+                        fontsize=7.8, color=ink)
+            x += w + 0.08
+        ax.annotate(gloss, (0.35, y - 0.3), fontsize=7.8, color=S.INK_2[mode])
+
+    packet(2.35,
+           [("original IP header", 2.3, False), ("IPsec header", 1.5, True),
+            ("payload", 2.6, True)],
+           "TRANSPORT MODE",
+           "payload encrypted, ORIGINAL HEADER VISIBLE - host to host, inside a trusted network")
+    packet(0.45,
+           [("new IP header", 1.9, False), ("IPsec header", 1.5, True),
+            ("original IP header", 2.3, True), ("payload", 2.6, True)],
+           "TUNNEL MODE",
+           "the WHOLE original packet is encapsulated and encrypted - gateway to gateway, the site-to-site VPN case")
+    ax.annotate("shaded = protected", (7.4, 3.42), fontsize=8.0, color=c[0])
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(-0.1, 3.75)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# TLS handshake: asymmetric crypto is used to agree a SYMMETRIC session key,
+# which then does the bulk work.  This is the hybrid model in one picture.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-tls-handshake")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.6))
+    for name, x in (("CLIENT", 1.3), ("SERVER", 8.3)):
+        ax.add_patch(plt.Rectangle((x - 1.1, 4.05), 2.2, 0.68,
+                                   facecolor="none", edgecolor=ink, linewidth=1.8))
+        ax.annotate(name, (x, 4.39), ha="center", va="center", fontsize=9,
+                    color=ink)
+        ax.plot([x, x], [0.5, 4.0], color=S.GRID[mode], linewidth=1)
+    steps = [
+        (3.6, 1.3, 8.3, "1.  ClientHello - versions, cipher suites, random", c[0]),
+        (3.05, 8.3, 1.3, "2.  ServerHello - chosen suite, certificate, random", c[0]),
+        (2.5, 1.3, 8.3, "3.  key agreement (the client verifies the certificate first)", c[1]),
+        (1.95, 1.3, 8.3, "4.  Finished, under the new keys", c[1]),
+        (1.4, 8.3, 1.3, "5.  Finished - symmetric session established", c[2]),
+    ]
+    for y, x0, x1, label, colour in steps:
+        ax.annotate("", (x1, y), (x0, y),
+                    arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.7))
+        ax.annotate(label, ((x0 + x1) / 2, y + 0.13), ha="center", fontsize=8.0,
+                    color=ink)
+    S.note(ax, 4.8, 0.75,
+           "ASYMMETRIC crypto authenticates the server and agrees the key; SYMMETRIC crypto carries the data - "
+           "ephemeral key agreement is what gives forward secrecy",
+           mode, ha="center")
+    ax.set_xlim(-0.4, 10.2)
+    ax.set_ylim(0.15, 5.0)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

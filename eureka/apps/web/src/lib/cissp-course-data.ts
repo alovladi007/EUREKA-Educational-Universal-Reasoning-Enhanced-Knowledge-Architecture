@@ -3507,131 +3507,430 @@ Dividing network into smaller subnets using subnet masks. Reduces broadcast doma
 
 cissp_protocols: {
   topicId: 'cissp_protocols',
-  title: `Secure Communications`,
+  title: `Network Protocols & Secure Communications`,
   domainWeight: '13%',
-  overview: `### TCP (Transmission Control Protocol)`,
+  overview: `Protocol questions in Domain 4 come in two shapes. The first names a requirement and asks which protocol satisfies it; the second names a legacy protocol and asks for its secure replacement and the port that replacement uses. Both are answerable from a small set of facts held precisely: which layer a protocol lives at, whether it is connection-oriented, what security property it actually provides, and what it deliberately does not. This chapter builds the TCP/IP stack against the OSI model, works through the infrastructure protocols that everything else assumes, sets out the insecure-to-secure replacement map with ports, and covers TLS, IPsec, and the messaging protocols in the detail the exam expects.`,
   sections: [
     {
-      id: '6-protocols-in-depth',
-      title: `6. Protocols in Depth`,
-      content: `### TCP (Transmission Control Protocol)
+      id: '1-two-models',
+      title: `1. Two Models, One Stack`,
+      content: `## OSI and TCP/IP side by side
 
-Connection-oriented, reliable, ordered delivery. Establishes connection via **3-way handshake** (SYN, SYN-ACK, ACK). Guarantees delivery and ordering.
+The OSI model is a teaching and reference framework; the TCP/IP model describes what actually runs. The exam uses OSI vocabulary and TCP/IP reality, so both mappings must be held.
 
-**Security implications**: SYN flood DoS attack exploits handshake. Stateful inspection by firewalls. TCP reset attacks. Sequence number prediction.
-### UDP (User Datagram Protocol)
+| OSI layer | TCP/IP layer | Representative protocols |
+|---|---|---|
+| 7 Application, 6 Presentation, 5 Session | Application | HTTP, DNS, SMTP, FTP, SSH, TLS handshake |
+| 4 Transport | Transport | TCP, UDP |
+| 3 Network | Internet | IP, ICMP, IGMP, IPsec |
+| 2 Data Link, 1 Physical | Network Access | Ethernet, ARP, Wi-Fi, PPP |
 
-Connectionless, unreliable, fast. No handshake. Minimal overhead. Used for real-time applications (VoIP, gaming, DNS).
+![OSI encapsulation and protocol data unit names](/courses/cissp/figures/cissp-osi-encapsulation.svg)
 
-**Security implications**: UDP floods in DDoS attacks. No flow control. Applications must handle reliability themselves.
-### ICMP (Internet Control Message Protocol)
+The most commonly missed mapping is **ARP**. It resolves an IP address to a MAC address and therefore straddles the boundary, but for exam purposes it is treated as a **layer 2** protocol - it operates within a broadcast domain and never crosses a router. **ICMP**, by contrast, is layer 3: it rides inside IP and carries control and error messages, which is why ping and traceroute stop at network boundaries only where policy blocks them.
 
-Used for network diagnostics and error reporting. **Ping** uses Echo Request/Reply. **Traceroute** uses TTL exceeded messages.
+## TCP versus UDP
 
-**Security implications**: Ping of death (oversized ICMP packets cause crash). Smurf attack (broadcast ICMP with spoofed source). Many firewalls block or rate-limit ICMP.
-### ARP (Address Resolution Protocol)
+The transport choice determines what guarantees the application inherits and what an attacker can abuse.
 
-Maps IP addresses to MAC addresses on local network. Broadcasts "Who has IP X?" and learns MAC from responder.
+| Property | TCP | UDP |
+|---|---|---|
+| Connection | Connection-oriented; three-way handshake | Connectionless; no setup |
+| Delivery | Guaranteed, ordered, retransmitted | Best effort; no ordering, no retransmission |
+| Overhead | Higher - sequence numbers, acknowledgements, windows | Minimal header |
+| Congestion control | Yes | No |
+| Typical use | Web, mail, file transfer, database | DNS queries, DHCP, streaming, VoIP media, SNMP |
+| Security consequence | Handshake state can be exhausted (SYN flood) | Trivially spoofed; the amplification vehicle |
 
-**Security implications**: **ARP spoofing/poisoning**: attacker sends fake ARP reply claiming to own an IP address. Enables MITM attacks. Mitigation: static ARP entries, ARP inspection, encrypted communication.
-### DNS (Domain Name System)
+The security consequences row is the examinable one. **UDP's lack of a handshake means the source address is never verified**, which is precisely what makes DNS and NTP usable as amplification reflectors. **TCP's handshake creates state**, which is what a SYN flood exhausts. Neither is more secure in the abstract; each has a characteristic failure the other does not.
 
-Resolves hostnames to IP addresses. Hierarchical system with root nameservers, TLDs, and authoritative servers. Uses UDP port 53 (or TCP for zone transfers).
+## Ports and what they do and do not tell you
 
-**Security implications**: **DNS poisoning**: attacker returns fake IP for domain. **DNS amplification DDoS**: attacker spoofs source, sends DNS queries to open resolvers. **DNSSEC** adds cryptographic signatures. **DNS sinkholing** redirects malware domains.
-### DHCP (Dynamic Host Configuration Protocol)
+A port number identifies a service endpoint on a host, and the ranges are conventional rather than enforced.
 
-Automatically assigns IP addresses, gateway, DNS to clients. Client broadcasts DHCP Discover, server replies with offer, client requests, server acknowledges.
+| Range | Name | Assignment |
+|---|---|---|
+| 0-1023 | Well known | IANA-assigned; on most systems binding requires privilege |
+| 1024-49151 | Registered | IANA-registered for specific applications |
+| 49152-65535 | Dynamic / ephemeral | Allocated per connection by the client |
 
-**Security implications**: **Rogue DHCP servers** provide false gateway for MITM. **DHCP starvation** exhausts IP pool. **DHCP snooping** validates DHCP messages.
-### HTTP/HTTPS
+The security caution the exam draws out: **a port number is a convention, not a guarantee**. Any service can be configured to listen anywhere, and attackers routinely run command-and-control over 443 precisely because it is universally permitted outbound and blends into TLS traffic. Filtering by port alone therefore controls only well-behaved traffic - identifying what a session actually carries requires layer 7 inspection or an application-identity firewall.
 
-**HTTP (port 80)**: Stateless, text-based, unencrypted. **HTTPS (port 443)**: HTTP over TLS/SSL encryption. Modern standard for web.
+## Unicast, broadcast, multicast, anycast
 
-**Security**: HTTPS provides confidentiality, integrity, server authentication. Certificate pinning prevents MITM even if CA compromised. HTTP Strict-Transport-Security (HSTS) forces HTTPS.
-### FTP/SFTP
+| Mode | Delivery | Example |
+|---|---|---|
+| Unicast | One sender to one receiver | An ordinary TCP connection |
+| Broadcast | One sender to every host on the segment | ARP requests, DHCP discovery |
+| Multicast | One sender to a subscribed group | Streaming, routing protocol updates |
+| Anycast | One sender to the nearest of several identical destinations | Root DNS servers, content delivery |
 
-**FTP (port 21)**: File transfer protocol; credentials and data sent in cleartext. **SFTP**: SSH File Transfer Protocol; secure alternative using SSH encryption. **FTPS**: FTP over TLS.
-
-FTP is insecure; SFTP or FTPS preferred.
-### SSH (Secure Shell)
-
-Secure remote login and tunneling. Uses public-key cryptography. Provides confidentiality and integrity. Default port 22.
-
-**Features**: Remote command execution, port forwarding, SFTP, SCP. SSH keys are more secure than passwords. Can tunnel other protocols (SSH -L for local port forwarding).
-### TLS/SSL (Transport Layer Security/Secure Sockets Layer)
-
-Cryptographic protocol securing communications. Provides confidentiality (encryption), integrity (MAC), and authentication (certificates).
-
-**Handshake**: Client Hello (supported ciphers), Server Hello (chosen cipher), server cert exchange, key establishment, Finished messages.
-
-**Versions**: SSL 3.0 (deprecated), TLS 1.0-1.2 (legacy), TLS 1.3 (current, removed CBC mode for GCM).
-
-**Cipher Suites**: Specify key exchange (RSA, ECDHE), authentication (RSA, ECDSA), encryption (AES, ChaCha20), and hash (SHA256, SHA384).
-### IPSec (IP Security)
-
-Cryptographic security at network layer (Layer 3). Two modes: **Transport** (end-to-end) and **Tunnel** (gateway-to-gateway for VPNs).
-
-**Two protocols**: **AH (Authentication Header)** provides authentication and integrity; **ESP (Encapsulating Security Payload)** provides confidentiality, integrity, and authentication.
-
-**IKE (Internet Key Exchange)**: Establishes security association and exchanges keys. IKEv2 preferred over IKEv1.
-
-**Use cases**: Site-to-site VPNs, remote access VPNs, securing individual IP traffic.
-### SNMP (Simple Network Management Protocol)
-
-Manages and monitors network devices (routers, switches, printers). Agents on devices report to manager.
-
-**Security implications**: SNMPv1/v2c use community strings (like passwords) sent in cleartext. **SNMPv3** adds encryption and authentication.`,
-      examTip: `Know the OSI layer and TCP/IP layer for each protocol. TCP/IP is 4-5 layers; OSI is 7. TCP operates at Layer 4; TCP and UDP are used by Layer 5-7 applications.`,
+Broadcast is the one with a direct security history. **Directed broadcasts** - a broadcast addressed to a remote network - were the vehicle for smurf amplification, and the standard hardening step is to stop routers forwarding them. Anycast is worth knowing because it is a genuine availability control: identical service instances announced from many locations mean a volumetric attack lands on the nearest one rather than all of them.`
     },
     {
-      id: '10-secure-communications-technologies',
-      title: `10. Secure Communications Technologies`,
-      content: `### VPNs (Virtual Private Networks)
+      id: '2-infrastructure-protocols',
+      title: `2. The Infrastructure Protocols Everything Else Assumes`,
+      content: `## Address resolution and assignment
 
-**Site-to-Site VPN**: Connects two network gateways securely. All traffic between sites encrypted. Used for branch offices, mergers.
+Before an application protocol can run, a host needs an address, the address of its gateway, a way to resolve names, and a way to map an IP address to a hardware address. Each of those steps was designed without authentication, and each is therefore an attack surface.
 
-**Remote Access VPN**: Individual users connect to corporate network remotely. Encrypts all user traffic through tunnel.
+| Protocol | What it does | Inherent weakness | Control |
+|---|---|---|---|
+| ARP | Maps IP to MAC on the segment | No authentication; any host may answer | Dynamic ARP inspection, static entries |
+| DHCP | Assigns address, gateway, DNS server | No server authentication; any host may offer | DHCP snooping, trusted ports |
+| DNS | Resolves names to addresses | No origin authentication in the base protocol | DNSSEC, resolver hardening |
+| ICMP | Carries control and error messages | Usable for reconnaissance and tunnelling | Rate-limit, filter selectively at the edge |
 
-**Advantages**: Confidentiality over untrusted networks, authentication, data integrity.
+**DHCP deserves specific attention** because the attack is so direct. A rogue DHCP server that answers faster than the legitimate one can set itself as the client's default gateway and DNS server, achieving an on-path position without touching any switch configuration. **DHCP snooping** is the control: the switch learns which ports are permitted to send DHCP server messages and discards offers arriving anywhere else.
 
-**Implementations**: IPSec, TLS/SSL VPN, L2TP/IPSec.
-### IPSec Details
+**ICMP filtering is a judgement call**, not a rule. Blocking it entirely breaks path MTU discovery and makes networks hard to troubleshoot; permitting it entirely enables sweep reconnaissance and ICMP tunnelling. The defensible position is selective: permit the types operationally required, rate-limit, and monitor for volume anomalies.
 
-**AH (Authentication Header)**: Provides authentication and integrity, not confidentiality. Optional in modern use.
+## NAT and what it does for security
 
-**ESP (Encapsulating Security Payload)**: Provides confidentiality (encryption), integrity, and authentication. Preferred.
+Network address translation maps internal addresses to one or more external addresses.
 
-**Transport mode**: End-to-end encryption; header unchanged (allows routing). For host-to-host communication.
+| Type | Mapping | Note |
+|---|---|---|
+| Static NAT | One internal address to one external, permanently | Used to publish a server |
+| Dynamic NAT | Internal addresses to a pool, as needed | Pool exhaustion is possible |
+| PAT / NAT overload | Many internal addresses to one external, distinguished by port | The common home and office case |
 
-**Tunnel mode**: Entire packet encrypted; new IP header added. For gateway-to-gateway (VPN). Security Associations (SAs) define encryption, keys, algorithms.
-### IKE (Internet Key Exchange)
+The exam's point is a correction of a common belief. **NAT is not a security control**, though it has a security side effect: because inbound connections have no mapping until an internal host initiates, unsolicited inbound traffic is dropped. That is a consequence of the translation table, not a policy decision, and it protects nothing once a connection is established or once the internal host initiates to a hostile destination. Treating NAT as a firewall is a documented mistake; a firewall makes policy decisions, NAT rewrites headers.
 
-Establishes IPSec security associations. Exchanges keys securely.
+## Routing
 
-**IKEv1**: Two phases (Main and Aggressive modes). Complex; legacy.
+| Protocol | Type | Metric | Security note |
+|---|---|---|---|
+| RIP | Distance vector | Hop count | Legacy; RIPv2 supports authentication |
+| OSPF | Link state | Cost, derived from bandwidth | Supports cryptographic authentication of adjacencies |
+| EIGRP | Advanced distance vector | Composite | Supports authentication |
+| BGP | Path vector | Policy-driven | The internet's routing protocol; trust-based by design |
 
-**IKEv2**: Simplified; supports mobility and NAT traversal. Preferred.
-### TLS/SSL VPN
+**BGP is the significant one for security.** It was designed on the assumption that peers announce only prefixes they legitimately hold, and it has no built-in mechanism to prove that claim. A **BGP hijack** - announcing someone else's prefix - can pull global traffic toward the announcer, whether by error or intent. Mitigations are external to the base protocol: prefix filtering between peers, route origin authorisation under RPKI, and monitoring for unexpected announcements of your own space.
 
-VPN implemented at Layer 5-6 (Session/Presentation) using TLS. Browser-based (no client software). Good for remote access.
-### SSH Tunneling
+The general lesson generalises across this section. **Routing protocol authentication should be enabled wherever supported**, because an attacker who can inject routes can redirect traffic without touching a single host.
 
-Uses SSH as encrypted tunnel for other protocols. **Local port forwarding** (-L flag): forward local port through SSH to remote; **Remote port forwarding** (-R): expose local service through remote SSH.
-### MPLS (Multiprotocol Label Switching)
+## Time
 
-Fast packet forwarding using short labels instead of full routing lookups. Creates Virtual Private Networks (MPLS VPN).
+**NTP** is the protocol that underpins other controls: Kerberos ticket validity, certificate validity windows, one-time password generation, log correlation during an investigation, and session expiry all depend on agreed time. It is also a favoured amplification reflector in its older versions.
 
-Commonly used by ISPs; provides traffic engineering and QoS.
-### SD-WAN (Software-Defined WAN)
-
-Centrally managed WAN using software instead of hardware appliances. Enables dynamic path selection, load balancing, encryption.
-
-Better application performance; more flexible; lower cost.`,
+The two controls follow directly. **Authenticate time sources** so a client cannot be walked off correct time by a hostile server, and **restrict the diagnostic commands** that produce large replies from small requests. Treat accurate time as a security dependency rather than an operational convenience.`
     },
+    {
+      id: '3-secure-replacements',
+      title: `3. Insecure Protocols and Their Secure Replacements`,
+      content: `## The replacement map
+
+The single most reliably tested table in Domain 4 pairs a legacy plaintext protocol with its modern encrypted equivalent and the port each uses.
+
+![Insecure protocols and their secure replacements with default ports](/courses/cissp/figures/cissp-secure-protocol-pairs.svg)
+
+| Purpose | Insecure | Port | Secure replacement | Port |
+|---|---|---|---|---|
+| Remote shell | Telnet | 23 | SSH | 22 |
+| File transfer | FTP | 20 / 21 | SFTP (over SSH) or FTPS (over TLS) | 22 / 990 |
+| Web | HTTP | 80 | HTTPS | 443 |
+| Mail submission | SMTP | 25 | SMTP with STARTTLS or implicit TLS | 587 / 465 |
+| Mail retrieval | POP3 | 110 | POP3S | 995 |
+| Mail retrieval | IMAP | 143 | IMAPS | 993 |
+| Directory | LDAP | 389 | LDAPS | 636 |
+| Device management | SNMP v1 / v2c | 161 / 162 | SNMP v3 | 161 / 162 |
+| Remote desktop | - | - | RDP (encrypt and authenticate the endpoint) | 3389 |
+
+Several points inside that table are asked directly.
+
+**SFTP is not FTPS.** SFTP is a file-transfer subsystem carried over an SSH connection and therefore uses port 22; FTPS is the traditional FTP protocol wrapped in TLS and uses 990 for implicit mode. They share an acronym family and nothing else. When a stem says "we already permit SSH to that host," SFTP is the answer that requires no new firewall rule.
+
+**SNMP v3 keeps the same ports.** The improvement is in the protocol, not the port: v1 and v2c authenticate with a **community string sent in plaintext**, and the default strings are universally known. Version 3 adds real authentication and encryption. A stem describing device management credentials visible in a capture is describing v1 or v2c.
+
+**FTP's weakness is not only plaintext credentials.** It uses separate control and data connections, and in active mode the server initiates the data connection back to the client - which is precisely the behaviour firewalls are built to refuse, and the reason passive mode exists.
+
+## SSH in more detail
+
+SSH is worth knowing beyond "the secure Telnet" because it does several jobs.
+
+| Capability | What it provides |
+|---|---|
+| Encrypted interactive shell | Confidentiality and integrity for administration |
+| Host key verification | Detects a substituted server - the on-path defence |
+| Public key authentication | Removes the reusable password from the exchange |
+| Port forwarding / tunnelling | Carries another protocol inside the encrypted channel |
+| SFTP subsystem | File transfer over the same connection |
+
+**Host key verification is the property that defeats interception**, and it fails the same way certificate validation fails: a user trained to accept a changed host key without question has removed the control. **Port forwarding cuts both ways** - it is a legitimate administrative tool and a common exfiltration and pivoting technique, which is why outbound SSH from ordinary workstations is often restricted.
+
+## Choosing a replacement in practice
+
+The exam sometimes asks not for the replacement but for the migration decision.
+
+| Constraint in the stem | Preferred move |
+|---|---|
+| A legacy device that cannot be upgraded | Isolate on its own segment; reach it only through a jump host |
+| Third parties must keep using a legacy client | Terminate legacy on a gateway inside a screened subnet; never expose it |
+| The application cannot be modified | Wrap it - VPN, TLS-terminating proxy, or SSH tunnel |
+| Credentials are the only exposure | Move to certificate or key-based authentication |
+
+The general principle is that **you can nearly always wrap what you cannot replace**. A protocol with no security of its own can be carried inside one that has some, which is the reasoning behind both VPNs and TLS-terminating proxies.`
+    },
+    {
+      id: '4-tls',
+      title: `4. TLS: What It Provides and What It Does Not`,
+      content: `## The handshake
+
+TLS is the security layer most other protocols now borrow. Its handshake is a hybrid construction: asymmetric cryptography authenticates the server and agrees a key, and symmetric cryptography then carries the data.
+
+![TLS handshake establishing a symmetric session](/courses/cissp/figures/cissp-tls-handshake.svg)
+
+| Step | What happens | Why it matters |
+|---|---|---|
+| ClientHello | Client offers versions, cipher suites, a random value | The version and suite list is what a downgrade attack manipulates |
+| ServerHello | Server picks a suite and presents its certificate | The certificate is what binds the key to an identity |
+| Certificate validation | Client checks chain, validity dates, name, revocation | The step that actually defeats interception |
+| Key agreement | Both derive the same session key | Ephemeral agreement here is what gives forward secrecy |
+| Finished | Both confirm under the new keys | Detects tampering with the handshake itself |
+
+## The properties TLS gives you
+
+| Property | Provided? | By what |
+|---|---|---|
+| Confidentiality | Yes | Symmetric encryption of the session |
+| Integrity | Yes | Authenticated encryption or a MAC over each record |
+| Server authentication | Yes | The server certificate, if the client validates it |
+| Client authentication | Optional | Mutual TLS with a client certificate |
+| Non-repudiation | No | The session key is symmetric and shared |
+| Availability | No | An on-path attacker can still drop the connection |
+
+Two rows generate items. **Non-repudiation is not a TLS property**: both endpoints hold the session key, so neither can prove the other produced a given message. Non-repudiation requires a signature made with a private key, at the application layer. And **server authentication is conditional on validation** - a client that accepts any certificate gets encryption to an unknown party, which is confidentiality without authenticity and is worth very little.
+
+## Forward secrecy
+
+**Forward secrecy** means that compromising the server's long-term private key later does not decrypt sessions captured earlier. It is achieved by agreeing an **ephemeral** key for each session and discarding it afterwards, so the long-term key authenticates but never encrypts the session.
+
+The threat model it addresses is "capture now, decrypt later": an adversary records traffic today and obtains the private key at some future point. Without forward secrecy, that key unlocks the whole archive; with it, each session must be attacked individually. This is why ephemeral key agreement is the default in modern configurations and why static key exchange was removed.
+
+## Certificates and revocation
+
+| Concept | Meaning |
+|---|---|
+| Certificate authority | The trusted issuer that signs subject certificates |
+| Chain of trust | Subject certificate to intermediate to trusted root |
+| CRL | Certificate revocation list - a published list, downloaded periodically |
+| OCSP | Online Certificate Status Protocol - a live query per certificate |
+| OCSP stapling | The server presents a recent signed status, removing the client's query |
+| Pinning | The client requires a specific certificate or issuer, ignoring the wider trust store |
+
+**Revocation is the weak link in practice.** A CRL can be stale between publications, and an OCSP query adds latency and leaks which sites a client visits to the authority. **Stapling** addresses both by having the server fetch and present the status itself. **Pinning** is the strongest control and the most operationally dangerous, because a certificate change that was not anticipated breaks the application outright.
+
+## Where TLS inspection cuts both ways
+
+Many organisations terminate TLS at a proxy so that content can be inspected for malware and data loss. The security benefit is real, and so are three costs the exam expects you to name: the proxy becomes a **single point holding plaintext for the whole organisation**, certificate pinning in applications breaks, and inspecting employees' traffic - including banking and health sites - raises privacy and, in some jurisdictions, legal obligations. The usual resolution is a documented policy with **category-based exemptions** rather than inspecting everything.`
+    },
+    {
+      id: '5-ipsec-and-messaging',
+      title: `5. IPsec, VPNs, and the Messaging Protocols`,
+      content: `## IPsec components
+
+IPsec secures traffic at layer 3, which means it protects every protocol carried above it without those protocols knowing.
+
+![IPsec transport and tunnel mode compared](/courses/cissp/figures/cissp-ipsec-modes.svg)
+
+| Component | Provides | Does not provide |
+|---|---|---|
+| AH - Authentication Header | Integrity, origin authentication, replay protection | **No confidentiality - it does not encrypt** |
+| ESP - Encapsulating Security Payload | Confidentiality, and optionally integrity and authentication | - |
+| IKE - Internet Key Exchange | Peer authentication and key agreement | - |
+| SA - Security Association | The agreed parameters for one direction | - |
+
+Three facts are asked directly. **AH does not encrypt** - a requirement for confidentiality means ESP. **A security association is unidirectional**, so a two-way protected conversation requires two of them. And **IKE is where the peers authenticate each other**, by pre-shared key or certificate, which is why certificate-based IKE is preferred at any scale: a shared secret across many peers cannot be revoked for one of them.
+
+## Transport versus tunnel mode
+
+| Mode | What is protected | Header visibility | Typical use |
+|---|---|---|---|
+| Transport | The payload only | Original IP header visible | Host to host, inside a trusted network |
+| Tunnel | The entire original packet | New header; original hidden | Gateway to gateway, site-to-site VPN |
+
+The discriminator is **whether the internal addressing must be hidden**. Site-to-site VPNs use tunnel mode because the topology behind each gateway should not be exposed across the intermediate network; host-to-host protection inside an already-private network can use transport mode and save the overhead.
+
+## VPN technologies compared
+
+| Technology | Layer | Strength | Limitation |
+|---|---|---|---|
+| IPsec | 3 | Protects everything above it transparently | Needs a client and traverses NAT awkwardly |
+| TLS VPN | 5-7 | Works from a browser; NAT and firewall friendly | Protects the applications it fronts, not all traffic |
+| SSH tunnel | 7 | No infrastructure required | Per-port, manual, easy to misuse |
+| L2TP | 2 | Carries non-IP protocols | **No encryption of its own - always paired with IPsec** |
+| PPTP | 2 | Historical | **Cryptographically broken; must not be used** |
+
+The L2TP row is a standing exam item: L2TP provides tunnelling without encryption, which is why deployments are written "L2TP/IPsec". PPTP appears as a distractor and is always wrong for a current design.
+
+## Email protocols and their security add-ons
+
+Email was designed with no authentication of the sender, and every control is an addition.
+
+| Control | What it verifies | Mechanism |
+|---|---|---|
+| SPF | The sending server is permitted to send for the domain | A DNS record listing authorised senders |
+| DKIM | The message was signed by the domain and not altered | A signature verified against a DNS-published key |
+| DMARC | Alignment of SPF and DKIM with the visible From address, plus a policy | A DNS record stating what to do on failure |
+| S/MIME | End-to-end message confidentiality and signature | Certificates issued to individuals |
+| PGP | End-to-end message confidentiality and signature | A web of trust rather than a hierarchy |
+
+**DMARC is the one that closes the loop.** SPF and DKIM each validate something that the recipient never sees - the envelope sender and the signing domain respectively - and neither on its own constrains the **From address the user actually reads**. DMARC requires alignment between that visible address and the authenticated identity, and publishes a policy telling receivers to quarantine or reject on failure. A stem describing users receiving mail that appears to come from their own executives is describing a missing or permissive DMARC policy.
+
+**S/MIME and PGP differ in trust model, not in what they achieve.** S/MIME uses certificates from a hierarchy, which suits an enterprise with a PKI; PGP uses a web of trust in which users sign one another's keys, which suits communities without a central authority. Both provide message-level confidentiality and signature, and both therefore survive an intermediate mail server - unlike transport encryption, which protects each hop and leaves the message readable at every relay in between.`
+    },
+    {
+      id: '6-converged-and-api',
+      title: `6. Converged Media, Storage, and API-Era Protocols`,
+      content: `## Voice and video over a data network
+
+Converging voice onto the data network inherits every data-network threat and adds constraints of its own: media is latency-sensitive, so controls that add delay degrade the service rather than merely slowing it.
+
+| Protocol | Role | Security consideration |
+|---|---|---|
+| SIP | Session setup, teardown, and signalling | Plaintext by default; SIP over TLS protects signalling |
+| RTP | Carries the media stream | Plaintext by default; SRTP adds encryption and integrity |
+| H.323 | Older signalling suite | Legacy; complex and firewall-hostile |
+
+The exam's discriminator is that **signalling and media are separate channels with separate protections**. Encrypting SIP hides who called whom and prevents call manipulation; it does nothing to the audio, which travels over RTP. Protecting the conversation itself requires **SRTP**. A design that secures only one of the two leaves an obvious gap, and a stem describing intercepted call audio despite "encrypted VoIP" is describing SIP over TLS without SRTP.
+
+Two attack families are named directly. **Vishing** is phishing conducted by voice, made easier by caller-ID spoofing, and it is answered by user awareness and out-of-band verification rather than by any network control. **Toll fraud** is unauthorised use of the telephony system to place expensive calls, and it is answered by call-permission classes, international dialling restrictions by default, and monitoring for anomalous call patterns - especially outside business hours.
+
+The availability dimension is unusual for a security control. Voice quality depends on **quality of service** marking to prioritise media over bulk traffic, so a denial-of-service condition on a converged network is a voice outage as well as a data one. Where a stem mentions emergency calling, note that it is a **life-safety obligation**: emergency calls must work and must convey accurate location, which constrains how aggressively voice traffic can be segmented or filtered.
+
+## Storage and data-centre protocols
+
+| Protocol | What it carries | Security note |
+|---|---|---|
+| iSCSI | Block storage over TCP/IP | Plaintext by default; use CHAP plus IPsec, or an isolated storage network |
+| Fibre Channel | Block storage over a dedicated fabric | Isolated by design; zoning and LUN masking are the access controls |
+| FCoE | Fibre Channel encapsulated in Ethernet | Loses the physical isolation Fibre Channel assumed |
+| NFS / SMB | File-level sharing | Version matters - SMBv1 is deprecated and must be disabled |
+
+The recurring theme is **assumed isolation**. Storage protocols were designed for a dedicated, physically separate fabric where anyone attached was already trusted, so they carry little authentication of their own. Moving them onto the general IP network - iSCSI, FCoE - removes the assumption without adding the missing controls, which is why the standard answer is a **dedicated storage VLAN or physically separate network**, with encryption where the traffic must traverse anything shared.
+
+**SMBv1 deserves naming.** It is deprecated, has been the vehicle for widely known worm propagation, and should be disabled outright rather than restricted. A stem describing lateral movement across file shares on a flat network is frequently describing exactly this.
+
+## APIs and service-to-service communication
+
+Modern application traffic is increasingly service-to-service rather than user-to-server, and the protections shift accordingly.
+
+| Style | Transport | Authentication | Typical control |
+|---|---|---|---|
+| SOAP | Usually HTTP | WS-Security, message-level signature and encryption | Schema validation; message-level protection survives intermediaries |
+| REST | HTTP / HTTPS | OAuth 2.0 bearer tokens, API keys, mutual TLS | TLS, token scoping and expiry, rate limiting |
+| gRPC | HTTP/2 | Mutual TLS, token-based | Mutual TLS; enforced by a service mesh at scale |
+| GraphQL | HTTP / HTTPS | As REST | Query depth and complexity limits |
+
+The structural difference between SOAP and REST is worth holding. **SOAP's WS-Security operates at the message level**, so a signed and encrypted message stays protected as it passes through intermediaries and queues. **REST relies on transport security**, which protects each hop and leaves the payload readable at every point where TLS terminates - a load balancer, a gateway, a proxy. Where a stem requires protection that survives an intermediary, message-level security is the answer, and that reasoning applies equally to S/MIME versus transport-encrypted email.
+
+Three API-specific controls appear in items. **Token scoping and short expiry** limit what a stolen bearer token can do and for how long, which matters because a bearer token is exactly that - whoever holds it may use it. **Rate limiting** is both an availability control and an abuse control, since an API without one can be enumerated or scraped at machine speed. And **input validation at the API boundary** remains necessary, because a client-side check is a usability feature rather than a control - anything reachable over the network can be called directly.
+
+**Mutual TLS** is the service-to-service norm because there is no human to authenticate: each service presents a certificate and each verifies the other's, which authenticates the workload rather than a user. At scale this is delegated to a **service mesh** that issues short-lived certificates and enforces the policy centrally, so individual services do not each implement it - a direct application of the zero-trust principle that location on the network confers no trust.
+
+## GraphQL and query-cost attacks
+
+GraphQL deserves a note because its flexibility is its exposure. A client composes its own query, so a single crafted request can ask for deeply nested related objects and force the server into an enormous amount of work - an **application-layer denial of service that looks like one legitimate request**. Volume-based defences see nothing. The controls are specific to the shape of the problem: **maximum query depth, complexity scoring with a budget per request, and pagination limits**, applied before the query is executed rather than after.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: choosing a replacement under a constraint
+
+*An organisation transfers nightly batch files to a partner over FTP. Credentials and data are in the clear. The partner cannot change their client software this quarter, and the firewall team will not open new inbound ports. What do you propose?*
+
+Three constraints, and each rules something out.
+
+"Cannot change client software" rules out simply telling the partner to use SFTP - that is a client change. "No new inbound ports" rules out standing up FTPS on 990. And the exposure is both credentials and data, so encrypting only the login would not be sufficient.
+
+The move that satisfies all three is to **wrap the existing protocol rather than replace it**: establish a VPN tunnel to the partner - IPsec site-to-site if both sides have gateways - and carry the unchanged FTP session inside it. The partner's client is untouched, no new inbound port is exposed to the internet because the tunnel terminates on existing VPN infrastructure, and both credentials and payload are protected in transit.
+
+State the residual risk honestly: **the traffic is in the clear at both ends of the tunnel**, so the file is unprotected on each network and at rest. If the data warrants it, add file-level encryption so protection survives the tunnel - and put SFTP on the roadmap for next quarter, because wrapping is a mitigation, not a fix.
+
+## Worked example 2: diagnosing from a capture
+
+*A packet capture from a network segment shows device management traffic in which a string appears in plaintext alongside configuration data. The devices are managed over UDP 161. What is happening, and what is the fix?*
+
+UDP 161 identifies **SNMP**. A management string visible in plaintext is a **community string**, which means the devices are running **SNMP v1 or v2c** - both of which authenticate with a community string sent unprotected, and both of which ship with universally known defaults such as "public" for read and "private" for read-write.
+
+The consequence is worth stating precisely. Anyone able to capture that segment now holds the credential, and if the string is the read-write community they can **reconfigure the devices**, not merely read from them.
+
+The fix is **SNMP v3**, which adds real authentication and encryption. Note two things candidates get wrong: **the port does not change** - v3 still uses 161 and 162 - so a stem offering "move SNMP to a different port" is offering security by obscurity. And until the migration completes, restrict management traffic to a **dedicated management network or VLAN** reachable only from authorised stations, which limits who can capture it in the first place.
+
+## Worked example 3: reasoning about TLS properties
+
+*A financial institution requires that a customer cannot later deny having submitted a transfer instruction. An architect proposes "use HTTPS with TLS 1.3." Is that sufficient?*
+
+No, and the reason is a property boundary rather than a configuration problem.
+
+TLS 1.3 provides **confidentiality**, **integrity**, and **server authentication**, and with mutual TLS it can authenticate the client too. What it does not provide is **non-repudiation**, because the session is protected with a **symmetric key held by both parties**. The bank could have produced any message in that session, so it cannot prove to a third party that the customer produced a particular one.
+
+Non-repudiation requires a **digital signature over the instruction itself**, made with a private key that only the customer holds - so the correct design signs the transaction at the application layer, typically with a key in a smart card or a hardware-backed keystore, and retains the signed artefact as evidence.
+
+The generalisable point: **transport security protects a conversation; it does not create evidence about a message.** Whenever a stem uses the words deny, dispute, or prove-to-a-third-party, look above the transport layer.
+
+## Worked example 4: reading an email spoofing incident
+
+*Staff are receiving convincing messages that appear to come from the organisation's own finance director, requesting urgent payment changes. Headers show the messages originate from an unrelated server. SPF and DKIM records exist. Why is this still happening?*
+
+SPF and DKIM are present, so the gap is in what they cover rather than whether they are configured.
+
+**SPF validates the envelope sender**, the address used in the SMTP conversation, which the recipient never sees. **DKIM validates the signing domain**, which is also not the address displayed. An attacker can pass both by sending from a domain they legitimately control and correctly sign, while placing the finance director's address in the **From header the user actually reads**.
+
+**DMARC** is what closes that gap: it requires the visible From domain to **align** with the authenticated identity from SPF or DKIM, and it publishes a policy - none, quarantine, or reject - telling receiving servers what to do on failure. A missing DMARC record, or one still set to a monitoring policy of none, leaves the display address unconstrained.
+
+The complete answer therefore has three parts: publish DMARC and move it to reject after a monitoring period, ensure inbound filtering enforces other organisations' DMARC policies, and pair the technical control with a **process control** - out-of-band verification for payment changes - because a sufficiently determined attacker can register a lookalike domain that passes every check on its own name.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Give the secure replacement and its default port for each of: Telnet, HTTP, LDAP, IMAP.
+
+2. Why is SFTP not the same thing as FTPS, and which one requires no new firewall rule on a host that already permits SSH?
+
+3. Why does upgrading from SNMP v2c to SNMP v3 not change the port, and what does it actually change?
+
+4. Explain forward secrecy and the specific threat model it defeats.
+
+5. Does IPsec AH encrypt? What must you use if confidentiality is required?
+
+6. An architect proposes L2TP for a site-to-site VPN, with no other protocol named. What is wrong?
+
+7. SPF and DKIM both pass, yet a message displays a forged internal sender. Explain why, and name the control that fixes it.
+
+8. Why is NAT not a security control, and what is the security side effect people mistake for one?
+
+9. A VoIP deployment uses SIP over TLS, yet an investigator recovers intelligible call audio from a network capture. Explain how both facts can be true and name the missing control.
+
+10. Why does UDP's design make it the vehicle of choice for amplification attacks, and what does that imply about where the fix belongs?
+
+## Answers
+
+**1.** Telnet (23) becomes **SSH on 22**. HTTP (80) becomes **HTTPS on 443**. LDAP (389) becomes **LDAPS on 636**. IMAP (143) becomes **IMAPS on 993**. The pattern worth internalising is that most secure variants get a distinct port because they wrap the protocol in TLS - the exceptions are SSH-based replacements, which reuse 22, and SNMP v3, which keeps 161 and 162 because the change is inside the protocol.
+
+**2. SFTP** is a file-transfer subsystem carried inside an **SSH** connection, so it runs on **port 22** and inherits SSH's authentication and host key verification. **FTPS** is the traditional FTP protocol wrapped in **TLS**, using 990 for implicit mode, and it retains FTP's separate control and data connections. They share nothing but an acronym family. **SFTP requires no new firewall rule** where SSH is already permitted, which is frequently the deciding factor in practice.
+
+**3.** The port is a **convention for reaching the service**, not a description of how the service authenticates - so improving the protocol's security does not require moving it. What v3 changes is the security model: v1 and v2c authenticate with a **community string transmitted in plaintext**, with well-known defaults, and offer no encryption. **v3 adds real user authentication and encryption of the payload.** Moving SNMP to a non-standard port instead would be security by obscurity and would not protect the credential at all.
+
+**4. Forward secrecy** means that compromising the server's long-term private key at some future point does **not** allow decryption of sessions captured earlier. It is achieved by agreeing an **ephemeral key per session** and discarding it, so the long-term key authenticates the server but never encrypts the traffic. The threat model is **capture now, decrypt later**: an adversary who records ciphertext today and obtains the private key years afterwards. Without forward secrecy that single key unlocks the entire archive; with it, every session must be attacked separately.
+
+**5. No - AH does not encrypt.** The Authentication Header provides **integrity, origin authentication, and replay protection** only. Where confidentiality is required you must use **ESP**, the Encapsulating Security Payload, which encrypts and can also provide integrity and authentication. ESP is what real deployments use, and "we need IPsec for confidentiality so we will use AH" is a reliably wrong answer.
+
+**6. L2TP provides tunnelling but no encryption of its own.** Used alone it carries traffic in the clear, which defeats the purpose of a VPN. The correct construction is **L2TP/IPsec**, where L2TP provides the tunnel and IPsec supplies confidentiality, integrity, and peer authentication. (If PPTP is offered instead, it is also wrong - it is cryptographically broken and unsuitable for any current design.)
+
+**7.** SPF validates the **envelope sender** used in the SMTP conversation, and DKIM validates the **signing domain** - and the recipient sees neither. An attacker can pass both by sending from a domain they legitimately control and correctly sign, while putting the internal address in the **From header the user actually reads**. **DMARC** is the control that fixes it: it requires the visible From domain to **align** with the identity authenticated by SPF or DKIM, and publishes a policy of none, quarantine, or reject. A missing DMARC record - or one left at none - leaves the display address entirely unconstrained.
+
+**8. NAT is address translation, not policy enforcement.** It rewrites headers so that internal addresses map to one or more external addresses; it makes no decision about whether a given communication should be permitted. The side effect mistaken for security is that **unsolicited inbound traffic has no translation entry and is therefore dropped** - which is a consequence of the translation table, not a rule anyone configured. It protects nothing once an internal host initiates a connection, including to a hostile destination, and it does not inspect or restrict anything about the traffic it does translate. A firewall makes policy decisions; NAT does bookkeeping.
+
+**9.** VoIP uses **two separate channels**, and TLS on one of them says nothing about the other. **SIP carries signalling** - who is calling whom, call setup and teardown - and SIP over TLS protects exactly that. **RTP carries the media**, and it is plaintext by default. So the deployment genuinely has encrypted signalling and genuinely leaks audio; both statements are true at once. The missing control is **SRTP**, the Secure Real-time Transport Protocol, which adds encryption and integrity to the media stream. The generalisable lesson is to ask which channel a protection actually covers before accepting that a system is encrypted.
+
+**10.** UDP is **connectionless**: there is no handshake, so the receiver never verifies that the source address in a request is where the request actually came from. An attacker can therefore send a small request with the **victim's address spoofed as the source**, and the service dutifully sends its much larger reply to the victim. Pair that with services whose replies greatly exceed their requests - older DNS and NTP queries - and a modest attacker generates a flood far larger than their own bandwidth. The implication for defence is that **the fix belongs at the reflector as much as at the target**: the victim can buy upstream scrubbing, but the systemic remedy is operators closing open resolvers, disabling large-reply diagnostic commands, and applying rate limits, so the amplifiers stop existing.`
+    }
   ],
 },
-
 cissp_wireless_net: {
   topicId: 'cissp_wireless_net',
   title: `Wireless & Remote Access`,
@@ -3863,122 +4162,421 @@ cissp_network_attacks: {
   topicId: 'cissp_network_attacks',
   title: `Network Attacks & Countermeasures`,
   domainWeight: '13%',
-  overview: `### Routers`,
+  overview: `Domain 4 items about attacks are rarely satisfied by naming the attack. They describe symptoms and ask what is happening, or name an attack and ask which control belongs at which layer. Both forms reward the same discipline: locate the attack on the OSI stack, identify which resource it exhausts or which trust it abuses, and choose the control that sits at that same layer. A control one layer away is the classic distractor. This chapter maps the stack to its attacks and defences, works through the handshake abuses, separates the three classes of denial of service, covers on-path interception and the spoofing family, and closes with the defence-in-depth architecture that assumes any single control will fail.`,
   sections: [
     {
-      id: '7-network-devices-and-functions',
-      title: `7. Network Devices and Functions`,
-      content: `### Routers
+      id: '1-layer-map',
+      title: `1. Locating an Attack on the Stack`,
+      content: `## Why the layer is the first question
 
-Operate at Layer 3 (Network). Forward packets between networks based on IP addresses and routing tables. Make routing decisions.
+Every network control operates at a specific layer, and it can only see what that layer exposes. A firewall filtering on IP addresses and ports cannot detect SQL injection, because injection lives in an application payload the firewall treats as opaque bytes. A web application firewall inspecting HTTP cannot stop a SYN flood, because the flood never produces a complete request. Choosing a control means matching layers.
 
-**Security**: Access control lists (ACLs), rate limiting, routing protocol authentication, DDoS mitigation.
-### Switches
+![OSI layers with typical attacks and the controls that belong there](/courses/cissp/figures/cissp-osi-attacks.svg)
 
-**Layer 2 Switches**: Forward frames within a network based on MAC addresses. Create separate collision domains for each port.
+| Layer | Typical attack | The control that belongs there |
+|---|---|---|
+| 7 Application | Injection, cross-site scripting, phishing, HTTP flood | Secure coding, WAF, user awareness |
+| 6 Presentation | Malformed encoding, cipher downgrade | Input validation, enforced cipher policy |
+| 5 Session | Session replay, hijack during setup | Mutual authentication, unpredictable tokens |
+| 4 Transport | SYN flood, session hijacking | SYN cookies, stateful inspection, TLS |
+| 3 Network | IP spoofing, smurf, routing manipulation | ACLs, ingress and egress filtering, IPsec |
+| 2 Data Link | ARP poisoning, MAC flooding, VLAN hopping | Port security, dynamic ARP inspection, 802.1X |
+| 1 Physical | Wiretapping, cable cut, RF jamming | Locked conduit, shielding, physical guards |
 
-**Layer 3 Switches**: Combine switching and routing; forward based on IP addresses as well. Can be core of network.
+## Encapsulation and why it constrains visibility
 
-**Security**: VLAN (Virtual LAN) isolation, port security (limit MAC addresses), BPDU guard (prevent spanning tree manipulation), 802.1X port-based access control.
-### Firewalls
+Data descends the stack gaining a header at each layer, and ascends the far side losing them in reverse. The name of the unit changes as it goes, and the exam asks for those names.
 
-**Stateless firewalls**: Filter based on rules (protocol, port, IP). No connection state awareness. Lower overhead but less intelligent.
+![OSI encapsulation and protocol data unit names](/courses/cissp/figures/cissp-osi-encapsulation.svg)
 
-**Stateful firewalls**: Track connection state. Maintain state tables. More intelligent; prevent invalid packets.
+| Layers | Protocol data unit |
+|---|---|
+| 7, 6, 5 | Data |
+| 4 Transport | Segment (TCP) or datagram (UDP) |
+| 3 Network | Packet |
+| 2 Data Link | Frame |
+| 1 Physical | Bits |
 
-**Next-Generation Firewalls (NGFW)**: Layer 7 inspection. Application awareness, TLS inspection, sandboxing, IPS capabilities.
+The consequence for defence is direct. A device operating at layer 3 reads the packet header and treats everything above as payload. To inspect the application content it must reassemble the session and parse it - which is exactly what next-generation firewalls and proxies do, and exactly why they cost more processing than a packet filter.
 
-**Web Application Firewalls (WAF)**: Protect web applications. Detect SQL injection, XSS, CSRF, rate limiting.
-### IDS and IPS
+## Reading the stem for the layer
 
-**IDS (Intrusion Detection System)**: Monitors network traffic, detects attacks, sends alerts. Does not block traffic (**passive**).
+Certain phrases appear repeatedly and each points at one layer.
 
-**IPS (Intrusion Prevention System)**: Monitors and actively **blocks** malicious traffic. Can drop packets, reset connections.
+| Phrase in the stem | Layer it names |
+|---|---|
+| MAC address, switch port, VLAN, ARP | 2 Data Link |
+| IP address, subnet, route, TTL | 3 Network |
+| Port number, TCP flags, handshake, session state | 4 Transport |
+| URL, header, cookie, query string, form field | 7 Application |
+| Cable, connector, signal, interference | 1 Physical |
 
-**Detection methods**: Signature-based (known attack patterns), anomaly-based (deviations from baseline), behavior-based (unusual actions).
-
-**Deployment**: Network-based (NIDS/NIPS) or host-based (HIDS/HIPS).
-### Proxy Servers
-
-Act as intermediary between clients and servers. Can be forward proxy (clients connect through) or reverse proxy (servers behind proxy).
-
-**Forward proxy**: Client initiates connection through proxy to external server. Masks client IP, provides content filtering, caching.
-
-**Reverse proxy**: External clients connect to proxy, which connects to internal servers. Load balancing, SSL offloading, DDoS protection.
-### Load Balancers
-
-Distribute traffic across multiple servers. Improve availability and performance. Can be hardware or software.
-
-**Methods**: Round-robin, least connections, IP hash, weighted distribution.
-### Bridges and Repeaters
-
-**Bridges** (Layer 2): Connect two network segments; forward frames based on MAC address. Create separate broadcast domains (unlike hubs).
-
-**Repeaters** (Layer 1): Regenerate electrical signals; do not filter traffic. Extend cable distance.
-### Gateways
-
-Connect dissimilar networks or protocols. Protocol translation. More sophisticated than routers.
-### Hubs
-
-Legacy Layer 1 device. All ports connected to shared medium. Any frame broadcast to all ports. Half-duplex. Creates large collision domain.
-
-Largely obsolete; replaced by switches.`,
+A device's layer follows the same vocabulary: a **hub** repeats bits at layer 1; a **switch** forwards frames by MAC address at layer 2; a **router** forwards packets by IP address at layer 3; a **traditional firewall** filters at layers 3 and 4; a **proxy or WAF** operates at layer 7.`
     },
     {
-      id: '9-network-attacks',
-      title: `9. Network Attacks`,
-      content: `### Denial of Service (DoS) Attacks
+      id: '2-handshake-and-spoofing',
+      title: `2. Handshake Abuse, Spoofing, and Session Attacks`,
+      content: `## The three-way handshake and the state it creates
 
-**Volume-based**: Flood network with traffic.
-- **UDP flood**: Send massive UDP packets
-- **SYN flood**: Send many TCP SYN packets, exhaust server's half-open connection queue
-- **ICMP flood**: Send many ping requests
-- **DNS amplification**: Spoof source, send DNS queries to open resolvers
+TCP establishes a connection in three steps, and the second step is where the vulnerability lives: on receiving a SYN, the server allocates state and waits.
 
-**Protocol-based**: Exploit protocol weaknesses.
-- **Fragmented packet attack**: Malformed fragments cause reassembly failures
-- **Ping of Death**: Oversized ICMP packets cause crash
-- **Smurf attack**: Broadcast ICMP with spoofed source, all replies go to victim
-- **Fraggle**: UDP variant of smurf
+![TCP three-way handshake with SYN flood and SYN scan](/courses/cissp/figures/cissp-tcp-handshake.svg)
 
-**Application-layer**: Target specific services.
-- **SlowLoris**: Hold connections open with slow requests, exhaust server resources
-- **HTTP flood**: Many legitimate-looking HTTP requests
+**SYN flood** exploits that allocation. The attacker sends step one and never sends step three, usually from spoofed source addresses so the SYN-ACK goes nowhere. Each half-open connection consumes a slot in a finite table; when the table fills, legitimate connections are refused. The defence is **SYN cookies**: the server encodes the connection state into the sequence number it returns rather than storing it, so it allocates nothing until a valid ACK arrives.
 
-### Distributed Denial of Service (DDoS)
+**SYN scanning**, sometimes called half-open scanning, sends step one, reads the reply, and sends RST instead of completing. An open port answers SYN-ACK; a closed port answers RST; a filtered port answers nothing at all. Because no session completes, older logging misses it entirely - which is why the answer to "how do we detect this?" is an IDS or scan-detection rule rather than connection logs.
 
-Multiple compromised systems (botnet) attack one target. Harder to defend; can use multiple attack vectors simultaneously. Mitigation: traffic scrubbing, ISP blocking, rate limiting.
-### Man-in-the-Middle (MITM)
+## Spoofing
 
-Attacker positions between client and server, intercepts and possibly modifies traffic.
-- **ARP spoofing**: Send fake ARP reply, clients send traffic to attacker
-- **DNS spoofing**: Redirect DNS to attacker's IP
-- **SSL/TLS stripping**: Downgrade to HTTP or intercept certificate exchange
-- Mitigation: HTTPS/TLS with certificate pinning, encrypted DNS (DoH), DNSSEC
+**Spoofing** is asserting an identity that belongs to someone else, and it appears at several layers.
 
-### Session Hijacking
+| Kind | What is forged | What defeats it |
+|---|---|---|
+| IP spoofing | Source address in the packet header | Ingress filtering at the perimeter, egress filtering outbound |
+| MAC spoofing | Hardware address on the segment | Port security, 802.1X |
+| ARP spoofing | The IP-to-MAC binding | Dynamic ARP inspection, static entries |
+| Email spoofing | The sender address | SPF, DKIM, DMARC |
+| Caller or SMS spoofing | Origin of a voice or text message | Out-of-band verification, user awareness |
 
-Attacker steals or predicts session identifiers (cookies, tokens) to assume victim's identity.
+Two filtering directions are examined and routinely confused. **Ingress filtering** drops inbound packets whose source address claims to be internal - nothing arriving from outside should carry an inside address. **Egress filtering** drops outbound packets whose source address is not one of yours, which stops your network being used to attack someone else. Ingress protects you; egress protects everyone else and is a good-citizenship control.
 
-**Prevention**: Strong session IDs (cryptographically random), secure cookies (HttpOnly, Secure flags), short expiration, HTTPS.
-### Replay Attacks
+## Session attacks
 
-Attacker captures legitimate message and replays it later.
+**Session hijacking** takes over an authenticated session rather than defeating authentication. Whatever the mechanism - stealing a token, predicting a session identifier, or riding an on-path position - the attacker inherits the user's authenticated state, which is why strong authentication alone does not prevent it. The controls are session-side: unpredictable identifiers with adequate entropy, binding the session to attributes that are hard to replay, re-authentication before sensitive operations, and short idle timeouts.
 
-**Example**: Capture authenticated message, replay to perform unauthorized action.
+**Replay** captures valid traffic and re-sends it. The general defence is a **nonce**, a timestamp, or a sequence number, so that a message valid once is invalid the second time. Kerberos timestamps and TLS sequence numbers are both replay defences, and this is the reason accurate time is a security dependency.
 
-**Prevention**: Timestamps, nonces (one-time values), sequence numbers.
-### Teardrop Attack
+## The smurf and fraggle family
 
-Send fragmented IP packets with overlapping offsets. Reassembly fails on vulnerable systems, causing crash.
-### Land Attack
+**Smurf** sends ICMP echo requests to a network's broadcast address with the victim's address as the spoofed source; every host on that segment replies to the victim. **Fraggle** is the same idea over UDP. Both are amplification attacks, and both are largely historical because the fix - **do not forward directed broadcasts** - became a default. Their value on the exam is as the clean illustration of amplification: a small spoofed request producing many large replies aimed elsewhere.
 
-Send packets with source and destination IP as victim's IP. Confuses some systems.`,
-      examTip: `SYN flood exhausts connection queue; Smurf uses spoofed ICMP broadcast; DNS amplification uses open resolvers. ARP spoofing enables MITM. Always encrypt sensitive traffic with HTTPS/TLS.`,
+## DNS as an attack surface in its own right
+
+DNS deserves separate treatment because it is trusted implicitly by everything and was designed without authentication.
+
+| Attack | Mechanism | Control |
+|---|---|---|
+| Cache poisoning | Inject a forged answer that the resolver caches and serves to everyone | DNSSEC, source-port and transaction-ID randomisation |
+| DNS hijacking | Alter the records at the registrar or authoritative server | Registrar lock, multi-factor on the registrar account |
+| DNS tunnelling | Encode data inside queries and responses to exfiltrate or command | Inspect query volume, entropy, and record types |
+| Domain shadowing | Create subdomains under a legitimate stolen domain | Registrar account protection, certificate transparency monitoring |
+| Typosquatting | Register a visually similar domain and wait for mistyping | Defensive registration, user awareness, brand monitoring |
+
+**DNSSEC** signs records so a resolver can verify that an answer came from the zone's owner and was not altered in transit. Note precisely what it does and does not do: it provides **origin authentication and integrity, not confidentiality** - queries and answers remain in plaintext. Encrypting the query itself is a different problem, addressed by DNS over TLS or DNS over HTTPS, and those in turn create a monitoring problem of their own, because they hide DNS lookups from the security tooling that used to inspect them.
+
+**DNS tunnelling** is worth recognising by symptom rather than by name. Because DNS is almost universally permitted outbound, an attacker can encode command traffic and stolen data inside queries for subdomains of a domain they control. The signature is not the protocol but its **shape**: unusually long or high-entropy subdomain labels, an abnormal volume of TXT or NULL record queries, and a single client generating far more lookups than its peers. A stem describing steady low-volume DNS traffic to one unfamiliar domain from one host is describing command and control, not a misconfiguration.`
     },
+    {
+      id: '3-denial-of-service',
+      title: `3. Denial of Service and Distributed Attacks`,
+      content: `## Three classes, distinguished by what is exhausted
+
+Denial of service attacks the **availability** leg of the triad, and the exam separates them by which resource runs out.
+
+![Denial of service classes by the resource they exhaust](/courses/cissp/figures/cissp-ddos-taxonomy.svg)
+
+| Class | Resource exhausted | Examples | Where it is mitigated |
+|---|---|---|---|
+| Volumetric | Bandwidth | UDP flood, DNS and NTP amplification | Upstream, at the provider or a scrubbing service |
+| Protocol | Connection state | SYN flood, fragmentation attacks | At the edge device - SYN cookies, stateful limits |
+| Application | Server processing | HTTP flood, slowloris, expensive queries | At the application tier - WAF, rate limits, caching |
+
+The mitigation column carries the highest-yield point. **A volumetric attack cannot be mitigated at your own edge**, because by the time traffic reaches your firewall it has already consumed the link. When a stem describes a saturated internet circuit, the answer involves the upstream provider or a scrubbing service, never a bigger firewall.
+
+## Amplification and reflection
+
+Amplification pairs two properties: a protocol that answers a small request with a large reply, and one that does not verify the source address. The attacker sends a small spoofed request to a **reflector** with the victim's address as the source; the reflector sends its large reply to the victim.
+
+DNS and NTP are the classic reflectors because both are UDP-based, both are widely reachable, and both have queries whose replies are many times larger than the request. The defence has two halves that the exam distinguishes: the victim buys upstream scrubbing, while **the reflector operator closes the open service** - restricting recursion, disabling the monlist command, applying rate limits. Fixing the reflectors is the systemic remedy.
+
+## Distributed attacks and botnets
+
+A **distributed** denial of service uses many sources, which defeats source-based blocking and makes the traffic hard to distinguish from a legitimate surge. The sources are usually a **botnet** of compromised hosts under a command-and-control channel, and increasingly of poorly secured embedded devices whose default credentials were never changed.
+
+Two derived exam points follow. First, **your organisation can be the source rather than the target**, which is what egress filtering and outbound anomaly detection address. Second, a DDoS is sometimes a **diversion**: while the operations team fights the outage, a quieter intrusion proceeds elsewhere. A stem describing a DDoS alongside unusual authentication activity is testing whether you treat the flood as the whole incident.
+
+## Slow attacks
+
+**Slowloris** and its relatives invert the usual signature. Rather than flooding, they open many connections and keep each one barely alive - sending a partial request header every few seconds - so the server holds every connection open waiting for a completion that never comes. The traffic volume is trivial, which is precisely why bandwidth-based detection misses it.
+
+The lesson generalises: **low volume does not mean low impact**. Detection must consider connection duration and completion rates, not only throughput, and the mitigations are connection timeouts, per-source connection caps, and a reverse proxy that will not forward until it holds a complete request.`
+    },
+    {
+      id: '4-interception-and-wireless',
+      title: `4. Interception, On-Path Attacks, and Wireless Exposure`,
+      content: `## The on-path position
+
+An on-path attacker - the older term is man-in-the-middle - relays traffic between two parties who each believe they are talking directly to the other.
+
+![On-path interception and the three common ways in](/courses/cissp/figures/cissp-mitm-path.svg)
+
+| Route in | Mechanism | Defence |
+|---|---|---|
+| ARP poisoning | Forge IP-to-MAC bindings on the local segment | Dynamic ARP inspection, static entries for critical hosts |
+| Rogue AP or evil twin | Advertise a familiar SSID and win the association | 802.1X, wireless IPS, certificate-pinned VPN |
+| DNS spoofing | Answer the name lookup before the legitimate resolver | DNSSEC, resolver hardening, split-horizon design |
+
+The unifying defence is **end-to-end authenticated encryption**. An on-path attacker still sees that traffic is flowing and can still deny service, but cannot read or modify content whose integrity is cryptographically protected and whose endpoint is authenticated by a certificate they cannot forge. This is why "implement TLS with certificate validation" answers so many interception items - and why certificate warnings must never be trained away, since dismissing them is what converts a failed attack into a successful one.
+
+## Downgrade and stripping
+
+A sophisticated on-path attacker does not break the cryptography; it prevents the cryptography from being used. **SSL stripping** intercepts a plaintext request before redirection and proxies the secure connection on the user's behalf, leaving the user on HTTP without noticing. **Downgrade attacks** manipulate negotiation so that the weakest mutually supported version or cipher is chosen.
+
+The controls follow directly: **HTTP Strict Transport Security** tells a browser never to use plaintext for a domain again, and disabling obsolete protocol versions and cipher suites removes the weak options from the negotiation entirely. A negotiation can only settle on something both sides still offer.
+
+## Wireless exposure
+
+Wireless removes the physical boundary that other controls assume, so a signal reaching the car park is available to anyone in it.
+
+| Threat | What it is | Control |
+|---|---|---|
+| Rogue access point | Unsanctioned AP attached to the network, often by staff for convenience | Wireless IPS, port security, periodic surveys |
+| Evil twin | Attacker AP mimicking a legitimate SSID | 802.1X with server certificate validation |
+| War driving | Surveying for reachable wireless networks | Signal management, strong authentication |
+| Deauthentication | Forcing clients off so they reconnect to the attacker | Management frame protection |
+| Weak encryption | WEP and early WPA are broken | WPA3, or WPA2-Enterprise where WPA3 is unavailable |
+
+The security history is examinable as a progression. **WEP** is broken and must never be used. **WPA** introduced TKIP as an interim fix and is deprecated. **WPA2** brought AES-CCMP and remains acceptable in its Enterprise form. **WPA3** adds Simultaneous Authentication of Equals, which resists the offline dictionary attack that made weak WPA2-Personal passphrases crackable from a captured handshake.
+
+The personal-versus-enterprise distinction matters more than the version in many items. **Personal mode uses one pre-shared key for everyone**, so it provides no individual accountability and requires re-keying every device when one person leaves. **Enterprise mode authenticates each user individually via 802.1X and a RADIUS server**, which restores accountability and makes revocation a single directory change.`
+    },
+    {
+      id: '5-defence-in-depth',
+      title: `5. Defence in Depth and Control Placement`,
+      content: `## The principle
+
+**Defence in depth** layers independent controls so that the failure of any one does not produce a breach. Its value is not redundancy for its own sake but **diversity**: controls that fail for different reasons. Two firewalls from the same vendor running the same firmware share a vulnerability; a firewall plus network segmentation plus endpoint protection plus monitoring do not.
+
+| Layer of defence | Example controls | What it buys |
+|---|---|---|
+| Perimeter | Firewall, IPS, DDoS scrubbing | Removes bulk hostile traffic |
+| Network | Segmentation, VLANs, NAC, internal ACLs | Limits lateral movement after entry |
+| Host | Patching, host firewall, EDR, hardening | Protects the asset if the network is crossed |
+| Application | Secure coding, WAF, input validation | Addresses what network controls cannot see |
+| Data | Encryption at rest and in transit, DLP, rights management | Protects the asset itself if all else fails |
+| People and process | Training, separation of duties, incident response | Covers what technology cannot |
+
+## Segmentation
+
+Segmentation is the highest-value network control against a determined attacker, because it attacks the **lateral movement** phase rather than the initial intrusion. An attacker who compromises a workstation in a flat network can reach every other host; in a segmented network they reach only their own segment and must defeat another control to progress.
+
+| Approach | What it separates | Typical use |
+|---|---|---|
+| VLANs | Broadcast domains, logically | Departmental separation |
+| Screened subnet (DMZ) | Internet-facing services from the internal network | Public web, mail relay |
+| Microsegmentation | Individual workloads from one another | Data centre, cloud |
+| Air gap | Physically, with no network path | Industrial control, classified processing |
+
+A **screened subnet** deserves precision because its logic is asked directly. Public services are placed in a subnet reachable from the internet, and traffic from that subnet into the internal network is heavily restricted. The point is not to protect the web server - it is exposed by definition - but to ensure that **compromising it does not yield a path inward**.
+
+An **air gap** is the strongest form and is frequently defeated by process rather than technology: removable media, maintenance laptops, and vendor updates all cross gaps that packets cannot. Where a stem describes an air-gapped system compromised anyway, the vector is almost always a human-carried one.
+
+## Zero trust
+
+Zero trust rejects the assumption that location implies trust. In a perimeter model, a host inside the network is trusted because it is inside; zero trust removes that inference and evaluates **every request** against identity, device posture, and context, regardless of origin.
+
+| Principle | What it means in practice |
+|---|---|
+| Never trust, always verify | Every request is authenticated and authorised, including internal ones |
+| Least privilege per request | Access is scoped to this request, not granted standing |
+| Assume breach | Design as though an attacker is already inside |
+| Verify explicitly | Decide from identity, device state, location, and behaviour together |
+
+Zero trust is ABAC in architectural form, and it explains why microsegmentation and strong device identity appear together in modern designs. It does not replace defence in depth; it is a way of applying it that stops treating the perimeter as the boundary of trust.
+
+## Remote access and the tunnelled edge
+
+Remote access reintroduces the perimeter problem in a new place: a device outside your control needs to behave as though it were inside. The controls are chosen by what must be protected and from whom.
+
+| Technology | What it protects | Where it fits |
+|---|---|---|
+| IPsec VPN | The whole packet, at layer 3 | Site-to-site links and full-tunnel remote access |
+| TLS VPN | Specific applications, at layers 5-7 | Clientless or per-application remote access |
+| SSH tunnelling | One forwarded port | Administrative access and ad hoc forwarding |
+| Network access control | Admission itself | Posture-checking a device before it is allowed on |
+
+![IPsec transport and tunnel mode compared](/courses/cissp/figures/cissp-ipsec-modes.svg)
+
+IPsec offers two modes, and the difference is exactly what is protected. **Transport mode** encrypts the payload and leaves the original IP header visible, which suits host-to-host protection inside a network you already trust. **Tunnel mode** encapsulates the entire original packet inside a new one, hiding the internal addressing, which is what site-to-site VPNs require because the internal topology should not be exposed across the intermediate network.
+
+Two IPsec components are asked by name. **AH (Authentication Header)** provides integrity and authentication but **no confidentiality** - it does not encrypt. **ESP (Encapsulating Security Payload)** provides confidentiality and can also provide integrity, which is why ESP is what real deployments use and why "we need IPsec for confidentiality, so we will use AH" is a reliably wrong answer.
+
+**Split tunnelling** is the configuration question that generates items. With split tunnelling, only traffic destined for the corporate network goes through the tunnel and everything else goes directly to the internet. It preserves bandwidth and improves user experience, and it **removes corporate inspection from the majority of the user's traffic** - so a compromised endpoint can communicate with an attacker without any corporate control observing it. Full tunnelling reverses both properties. The trade is performance and cost against visibility, and where the stem emphasises monitoring or data loss prevention, full tunnelling is intended.
+
+**Network access control** addresses the device rather than the traffic. Before admitting an endpoint it evaluates posture - patch level, endpoint protection running and current, configuration compliance - and places non-compliant devices in a **remediation network** with access only to the resources needed to fix them. This is the control that answers "how do we stop an unmanaged or out-of-date laptop joining the network?", and it pairs naturally with 802.1X, which authenticates the device or user at the port before an address is even issued.`
+    },
+    {
+      id: '6-detection',
+      title: `6. Detection: Devices, Signals, and Deception`,
+      content: `## Firewalls by generation
+
+Prevention devices are classified by how deeply they look, and the exam asks which generation is needed for a given requirement.
+
+| Type | Operates at | What it decides on | What it cannot do |
+|---|---|---|---|
+| Packet filter | Layers 3-4 | Source, destination, port, flags - each packet alone | No memory of session; cannot see application content |
+| Stateful inspection | Layers 3-4 | The same, plus the connection state table | Still blind to payload semantics |
+| Application proxy | Layer 7 | Full request semantics; terminates and re-originates | Slower; needs a proxy per protocol |
+| Next-generation | 3-7 | Application identity, user identity, threat signatures | Complexity and cost; TLS inspection has privacy implications |
+| Web application firewall | Layer 7, HTTP only | Request structure - injection, XSS, anomalies | Only web; not a general firewall |
+
+The classic distinguishing item describes an attack in an HTTP body and asks which device sees it. A stateful firewall permitting port 443 sees an allowed connection carrying opaque bytes; only a layer 7 device parses the request. **Statefulness is about connections, not content.**
+
+## Detection versus prevention
+
+| Property | IDS | IPS |
+|---|---|---|
+| Placement | Out of band, on a mirror or tap | In line, traffic passes through it |
+| Action | Alerts | Alerts and blocks |
+| Failure impact | Detection stops; traffic unaffected | Can block legitimate traffic, or drop it entirely |
+| False positive cost | An unnecessary alert | A legitimate user denied service |
+
+That last row is the trade-off the exam builds items around. **An IPS turns a false positive into an outage.** This is why organisations tune in detection mode before enabling blocking, and why a stem describing a business-critical, latency-sensitive flow often favours an IDS plus a response process over an in-line block.
+
+## Detection methods
+
+| Method | How it decides | Strength | Weakness |
+|---|---|---|---|
+| Signature (pattern) | Matches known attack patterns | Precise, low false-positive rate | Blind to anything novel or newly obfuscated |
+| Anomaly (behaviour) | Flags deviation from a learned baseline | Can catch previously unseen attacks | Higher false-positive rate; the baseline can learn a compromise as normal |
+| Heuristic | Applies rules about suspicious behaviour | Catches variants of known families | Needs tuning |
+| Stateful protocol analysis | Compares to how the protocol should behave | Catches protocol abuse | Requires an accurate protocol model |
+
+The anomaly weakness is a genuine exam trap: **if the baseline is established while the environment is already compromised, the compromise becomes the norm** and will never be flagged. Baselines must be built from a known-good state, and re-baselined deliberately rather than continuously.
+
+## The four detection outcomes
+
+| Outcome | Meaning | Consequence |
+|---|---|---|
+| True positive | Attack occurred, alert raised | The system working |
+| True negative | No attack, no alert | The system working |
+| False positive (Type I) | No attack, alert raised | Wasted effort; alert fatigue |
+| False negative (Type II) | Attack occurred, no alert | The dangerous failure - a breach nobody knows about |
+
+**False negatives are the security-consequential error**, mirroring the biometric case where Type II admits the impostor. The relationship between the two is a tuning trade-off: making detection more sensitive reduces false negatives and raises false positives. Excessive false positives cause **alert fatigue**, and a team that has learned to ignore alerts has effectively converted its false positives into false negatives - which is why tuning is a security control, not housekeeping.
+
+## Deception
+
+| Construct | What it is | Primary value |
+|---|---|---|
+| Honeypot | A single decoy system with no production purpose | Any interaction with it is suspicious by definition |
+| Honeynet | A decoy network of several such systems | Observing lateral movement and attacker technique |
+| Honeytoken | A decoy record, credential, or file | Detecting exfiltration and insider access |
+
+The reason deception is valuable is the **signal-to-noise ratio**. A production server generates enormous legitimate traffic in which attack traffic must be found; a honeypot generates none, so **every packet is worth investigating**. Honeytokens extend the idea to data - a fabricated customer record that no legitimate process should ever read, whose appearance anywhere is proof of unauthorised access.
+
+Two cautions are examinable. A honeypot that can be **compromised and used to attack others** creates liability, so it must be contained and monitored. And **entrapment versus enticement** is a legal distinction the exam expects: enticement makes an opportunity available to someone already intent on wrongdoing and is generally acceptable; entrapment induces someone to commit an act they would not otherwise have committed and is not.
+
+## Aggregation and correlation
+
+A **SIEM** collects logs from many sources, normalises them, and correlates events across them. Its value is that individual events are innocuous while their **combination is not**: a failed VPN login is noise, and a failed VPN login from a new country followed by a successful one, a privilege change, and a large outbound transfer is an incident.
+
+Two supporting concepts complete the picture. **Aggregation** combines many similar events into one record so the console stays readable. **Correlation** relates dissimilar events across sources into a single narrative. Both depend on **synchronised time** - correlating events across systems whose clocks disagree produces a sequence that is simply wrong, which is one more reason NTP discipline is a security control rather than an operational nicety.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: reading symptoms to an attack
+
+*Users report that internal file shares are slow but the internet works normally. The switch logs show its MAC address table repeatedly filling and ageing out. A packet capture from one workstation shows traffic destined for other hosts arriving at its interface. What is happening?*
+
+Take the clues in order.
+
+The MAC address table filling and cycling is the signature of **MAC flooding**: the attacker sends frames with thousands of fabricated source addresses until the table's capacity is exceeded.
+
+The consequence explains everything else. A switch that cannot look up a destination **fails open and floods the frame to every port**, reverting to hub behaviour. That is why one workstation sees traffic meant for others - the capture is not a coincidence, it is the effect - and why internal transfers slow while internet traffic, which leaves via the router, is unaffected.
+
+The control is **port security**, limiting the number of MAC addresses learned per port and shutting down or restricting a port that exceeds it. This is a layer 2 attack answered by a layer 2 control; a firewall change would do nothing, because the traffic never leaves the segment.
+
+## Worked example 2: choosing where to mitigate
+
+*An organisation's 1 Gbps internet circuit is saturated by inbound UDP traffic from thousands of sources. The perimeter firewall is dropping the traffic correctly but users still cannot reach anything. What should be done?*
+
+Notice what the stem already tells you: **the firewall is working**. It is identifying and dropping the traffic exactly as configured. The problem is upstream of it.
+
+The circuit is the exhausted resource, and it is exhausted before the packets reach any equipment you own. **No configuration change on your side of that link can help**, because the damage is done in transit. Upgrading the firewall would not help either - it is not the bottleneck.
+
+The correct response is **upstream mitigation**: contact the internet service provider to filter or rate-limit at their edge, or route traffic through a **scrubbing service** that absorbs the volume and forwards only clean traffic. Longer term, the architecture answer is a DDoS protection service arranged before it is needed, since negotiating one during an outage is slow.
+
+Note the discriminator the item is built on: a **protocol** or **application** layer attack of the same apparent severity would be mitigable locally. Only the volumetric class forces the answer off your own premises.
+
+## Worked example 3: separating similar attacks
+
+*Match each description to its attack: (a) a captured authentication message is re-sent later to gain access; (b) an attacker takes over an already-authenticated connection; (c) an attacker relays and can alter traffic between two parties who believe they are talking directly.*
+
+| Description | Attack | Distinguishing feature | Primary control |
+|---|---|---|---|
+| (a) | Replay | Reuses old but valid traffic; no live position needed | Nonce, timestamp, sequence number |
+| (b) | Session hijacking | Joins a live session after authentication succeeded | Unpredictable tokens, re-authentication, short timeouts |
+| (c) | On-path (MITM) | Sits between and can modify in real time | End-to-end authenticated encryption |
+
+The discriminators are worth stating plainly. **Replay does not require a live position** - the attacker can capture now and send later, which is why time-bounded tokens defeat it. **Hijacking requires a live session** and defeats authentication by not engaging with it. **On-path requires a live position between the parties** and is the only one of the three that can modify traffic as it passes.
+
+## Worked example 4: placing controls in layers
+
+*A public web application must be reachable from the internet. Design the layered defence and state what each layer contributes.*
+
+| Layer | Control | What it contributes |
+|---|---|---|
+| Upstream | DDoS scrubbing service | Absorbs volumetric floods before they reach the circuit |
+| Perimeter | Firewall permitting only 443 inbound | Removes everything that is not the intended service |
+| Segmentation | Web tier in a screened subnet, database on an internal segment | Compromising the web server yields no direct path to the data |
+| Application | WAF plus secure coding and input validation | Addresses injection and cross-site scripting, which packet filters cannot see |
+| Host | Hardened build, patching, endpoint detection | Protects the server if the application is exploited |
+| Data | Encryption at rest, least-privilege database account | Limits what is obtainable even after a successful compromise |
+| Monitoring | Centralised logging, alerting, response runbook | Ensures the failure of the layers above is detected |
+
+The database placement is the point most often missed. **A database on a public-facing server means one compromise yields everything.** Placing it on an internal segment, reachable only from the web tier on one port with a least-privilege account, means a compromised web server can retrieve only what the application could retrieve - which is why the segmentation row buys more than the firewall row.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Why can a volumetric DDoS not be mitigated at the organisation's own firewall, when a SYN flood of similar apparent severity can be?
+
+2. A switch's MAC address table is repeatedly overflowing and hosts are seeing traffic addressed to other hosts. Name the attack, explain the mechanism, and give the control.
+
+3. Distinguish ingress filtering from egress filtering. Which one protects other organisations rather than your own?
+
+4. Slowloris generates almost no traffic volume. How does it deny service, and why does bandwidth-based detection miss it?
+
+5. What does an on-path attacker gain against a properly implemented TLS session with certificate validation, and what do they still not get?
+
+6. Explain the difference between WPA2-Personal and WPA2-Enterprise in terms of accountability and offboarding.
+
+7. Why is diversity, rather than redundancy, the property that makes defence in depth work?
+
+8. In a screened subnet design, what is the actual security objective - protecting the web server, or something else?
+
+9. An organisation runs an anomaly-based IDS whose baseline was learned over the two weeks immediately following a deployment. Why might this be a problem, and what does an unmanaged false-positive rate eventually do to detection?
+
+10. Your remote-access VPN uses split tunnelling. State one operational benefit and the specific security exposure it creates.
+
+## Answers
+
+**1.** A volumetric attack exhausts the **internet circuit itself**, which is upstream of every device the organisation owns. By the time packets reach the firewall the bandwidth has already been consumed, so the firewall dropping them correctly changes nothing a user can perceive. Mitigation must happen **at the provider or in a scrubbing service**. A SYN flood exhausts **connection state on the edge device**, a resource you own, so SYN cookies and connection limits on that device genuinely fix it. The discriminator is always which resource runs out and who owns it.
+
+**2. MAC flooding.** The attacker sends frames with thousands of fabricated source MAC addresses until the switch's content-addressable memory table is exhausted. A switch that cannot resolve a destination **fails open and floods the frame out every port**, reverting to hub behaviour - which is why other hosts see traffic that is not theirs, and how the attacker sniffs a switched network. The control is **port security**: cap the MAC addresses learned per port and shut down or restrict a port that exceeds the limit. Layer 2 attack, layer 2 control.
+
+**3. Ingress filtering** drops **inbound** packets whose source address claims to be internal or otherwise cannot legitimately arrive from outside; it protects you from spoofed traffic. **Egress filtering** drops **outbound** packets whose source address is not one you own; it prevents your network being used to launch spoofed attacks. **Egress filtering protects other organisations** - it is the good-citizenship control, and it is also the one that catches compromised hosts inside your network participating in an attack.
+
+**4.** Slowloris opens many connections and keeps each barely alive, sending a fragment of a request header every few seconds so the server holds the connection open awaiting a completion that never arrives. Service is denied by **exhausting the connection pool**, not the link. Bandwidth-based detection misses it because the traffic volume is genuinely trivial - there is no anomaly to see on a throughput graph. Detection must look at **connection duration and request completion rates**; mitigation is connection timeouts, per-source caps, and a reverse proxy that will not forward an incomplete request.
+
+**5.** The attacker gains **traffic analysis and the ability to deny service**: they can see that a connection exists, to which endpoint, how large it is, and when - and they can drop it. They do **not** get the content, because it is encrypted, and they cannot **modify** it undetected, because integrity is cryptographically protected. Crucially they cannot **impersonate the server**, because certificate validation requires a certificate chaining to a trusted authority that they cannot forge. This is also why a user trained to dismiss certificate warnings converts a failed attack into a successful one.
+
+**6. WPA2-Personal** uses a **single pre-shared key shared by every device**. There is no individual identity, so logs cannot attribute activity to a person, and offboarding one employee means **re-keying every device on the network** or accepting that the departed person retains access. **WPA2-Enterprise** authenticates each user individually via **802.1X against a RADIUS server**, so activity is attributable and revocation is a single change in the directory. Accountability and offboarding are the two discriminators, and both favour Enterprise for any organisation of size.
+
+**7.** Redundancy means more of the same control; **diversity means controls that fail for different reasons**. Two identical firewalls share a vulnerability, a misconfiguration template, and a vendor advisory - an attacker who defeats one has already defeated the other, so the second adds availability but no security depth. A firewall plus segmentation plus endpoint detection plus monitoring fail independently, so defeating one leaves the others intact. Depth is only real when the layers are **not correlated**.
+
+**8.** The objective is **not** protecting the web server - it is internet-facing by definition and must be assumed compromisable. The objective is ensuring that **compromising it does not yield a path into the internal network**. The screened subnet exists so that traffic from the exposed tier inward is tightly restricted, so an attacker who owns the web server still faces another control before reaching internal data. This is why placing the database on the same host defeats the design entirely.
+
+**9.** An anomaly baseline is only as trustworthy as the state it was learned from. **If the environment was already compromised during the learning window, the attacker's traffic is absorbed into the definition of normal** and will never be flagged - the detector has been trained to ignore exactly what it exists to find. Baselines must be built from a known-good state and re-baselined deliberately, not continuously. Separately, an unmanaged false-positive rate produces **alert fatigue**: a team that has learned its alerts are usually noise stops investigating them, which converts false positives into effective **false negatives**. Tuning is therefore a security control, not housekeeping.
+
+**10.** The benefit is **performance and cost** - only corporate-bound traffic traverses the tunnel, so the concentrator and the corporate link are not carrying the user's general internet browsing, and latency-sensitive services are not backhauled. The exposure is that **the majority of the endpoint's traffic never passes through corporate inspection**: web filtering, data loss prevention, and outbound anomaly detection see nothing, so a compromised endpoint can reach a command-and-control server without any corporate control observing it. Where the stem emphasises monitoring, DLP, or a regulated data set, full tunnelling is the intended answer.`
+    }
   ],
 },
-
 cissp_auth: {
   topicId: 'cissp_auth',
   title: `Authentication Methods`,
