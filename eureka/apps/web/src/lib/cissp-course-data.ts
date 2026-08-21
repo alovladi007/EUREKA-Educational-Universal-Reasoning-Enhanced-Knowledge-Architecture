@@ -2591,7 +2591,7 @@ cissp_ethics: {
 
 The reasoning behind a mandatory ethics code is commercial as much as moral, and the exam expects you to be able to state it. For clients and the public to see value in a certification, they must be able to **trust its holders** - and that trust rests on the belief that certified members act correctly, professionally, and to the client's benefit. A practitioner tending toward unethical behaviour signals the opposite possibility: that they will act out of short-term self-interest and *add* risk to the client instead of removing it. Every member's conduct therefore either builds or spends the shared credential's credibility.
 
-That is why the certification body's preamble sets a standard beyond private virtue: members must **adhere, and be seen to adhere**, to the highest ethical standards of behaviour. The visibility clause is not vanity - a profession trusted with secrets cannot rely on conduct nobody can observe; it needs conduct that visibly withstands observation. And the preamble's conclusion is enforcement, not aspiration: **strict adherence to the Code is a condition of certification**. Violate it and the credential itself is at stake.
+That is why the certification body's preamble sets a standard beyond private virtue: members must **adhere, and be seen to adhere**, to the highest ethical standards of behaviour. The visibility clause is not vanity - a profession trusted with secrets cannot rely on conduct nobody can observe; it needs conduct that visibly withstands observation. And the preamble's conclusion is enforcement, not aspiration: **strict adherence to the Code is a condition of certification**. Violate it and the credential itself is at stake - the body enforces its standard with the one asset every member needs it to keep issuing.
 
 ## What the safety-and-welfare framing does
 
@@ -2877,6 +2877,360 @@ The transferable rule: when a scenario turns on "the contract doesn't prohibit i
 **11.** Purposely **seeking unauthorised access to resources** (later, the unauthorised-access crime class); **disrupting the intended use of the internet** (denial of service); **wasting resources** - people, capacity, computers (resource abuse; illegal use of resources); **destroying the integrity of computer-based information** (the integrity leg of the triad as an ethical duty); and **compromising users' privacy** (the privacy obligations of the surrounding modules). The list's exam value is the mapping itself: community ethics anticipated the field's later legal and technical structure, clause by clause.
 
 **12.** Because it protects the highest applicable canon while exhausting professional process. "Comply - the client is paying" serves Canon III at the expense of Canons I and II - the precedence error the ordering exists to prevent. Immediate public exposure skips every professional step: it may ultimately be where an unresolvable Canon I conflict ends, but as a first move it abandons the duty of diligent service and due process the Code models in its own enforcement machinery. The third option is the escalation path: the finding is preserved (documented), the principal is given the chance to act correctly (escalated), and the practitioner's integrity is protected (declining participation in concealment). Ethics answers are usually procedural, middle-path, and canon-ordered - the extremes are the distractors. When two middle options remain, the visibility clause is the tiebreaker: prefer the action that would read as proper to an observer who knows every fact.`
+    }
+  ],
+},
+cissp_d1_review: {
+  topicId: 'cissp_d1_review',
+  title: `Domain 1 Review`,
+  domainWeight: '16%',
+  overview: `Domain 1 is the foundation the other seven domains stand on: the concepts introduced here - the triad, risk, governance, the document stack, continuity metrics, legal roles, the canons - are the vocabulary the rest of the course speaks. This review module consolidates the domain the way the Instructor Edition's own review modules do: a summary of the through-lines that connect the ten content modules, the cross-module discriminators where exam questions actually live, worked review scenarios that span several modules at once, a full set of original scenario-based review questions with per-distractor rationales, and a terms-and-definitions table for fast revision. If any answer here surprises you, the module it names is the one to reread before moving to Domain 2 - the review exists to find those surprises now, while they are cheap.`,
+  sections: [
+    {
+      id: '1-domain-in-one-view',
+      title: `1. The Domain in One View`,
+      content: `## Ten modules, three through-lines
+
+![Domain 1 module map with its through-lines](/courses/cissp/figures/cissp-d1-map.svg)
+
+Domain 1's ten content modules organise into three braided threads, and holding the braid is worth more on exam day than holding any single module.
+
+![The CIA triad - the domain's first thread starts here](/courses/cissp/figures/cissp-cia-triad.svg)
+
+**The protection thread: CIA → risk → business continuity.** The triad names *what* security preserves. Risk management prices *how much* preservation each asset warrants - impact and likelihood, then a treatment decision. Business continuity is the engineering of the availability leg against major disruption, with the metric family (MAD/MTD, RTO, RPO) translating business tolerance into design targets. One thread: define the goals, price them, engineer the hardest one.
+
+**The direction thread: governance → policy stack → personnel → awareness.** Governance is how the organisation is directed and held accountable, with senior management owning security whatever they delegate. The written stack - policy, standards, guidelines, procedures - is governance made durable and provable. Personnel security applies it to the employment lifecycle, and the instruction programme carries it into behaviour. One thread: decide, write it down, bind the people, teach the people.
+
+**The obligation thread: compliance → law → ethics.** Compliance answers external mandates; the legal module maps the crime, privacy, IP, and trans-border obligations that follow the data; ethics binds the practitioner personally, above and beyond the organisation's duties, with society ranked first. One thread: what the world requires of the organisation, and of you.
+
+The threads also explain the domain's exam weight - at 16 percent, Domain 1 is the heaviest of the eight - and its question style. Because the material is conceptual rather than technical, items test *placement* and *precedence*: which thread a requirement belongs to, which role owns a decision, which document or canon governs when two collide. Speed on this domain comes from the maps, not from memorised trivia.
+
+| Thread | Modules | The exam's favourite question shape |
+|---|---|---|
+| Protection | 1, 3, 9 | Which property is at stake, and which metric or treatment fits? |
+| Direction | 2, 6, 7, 8 | Who decides, which document, whose accountability? |
+| Obligation | 4, 5, 10 | Which law or canon governs, and who is liable? |
+
+## The domain's three master facts
+
+If Domain 1 compressed to three sentences the rest of the course will keep using, they are these. **Senior management owns security** - practitioners advise, management decides and answers for it; every "who approves / who accepts / who is accountable" question resolves upward. **Everything is decided by risk** - controls, budgets, exceptions, and continuity targets are all outputs of the same impact-and-likelihood reasoning, never of technology preference. **Documentation is evidence** - policies, training records, procedures, and their execution trails are the organisation's proof of due care, and their absence is the plaintiff's proof of negligence.
+
+## How to use this review
+
+Work it in order and honestly. Read the through-lines, then attempt the discriminator table from memory - cover the right column and reconstruct each distinction aloud. Walk the scenarios *before* reading their analyses, sketching your own answer first; the gap between your sketch and the analysis is the highest-value feedback in the module. Sketching forces retrieval, and retrieval - not rereading - is what moves material from recognition into the durable recall the exam's scenario format demands. Then sit the twelve questions under exam conditions - no notes, one pass, commit to an answer before moving on - and grade against the rationales, reading the rationale even for questions you got right, because the per-distractor reasoning is where the discriminators are rehearsed. Finish with the glossary drill, out loud. Budget roughly ninety minutes for the full cycle - unhurried, in one sitting if possible; a rushed review rehearses recognition, and the exam tests recall under pressure.`
+    },
+    {
+      id: '2-discriminators',
+      title: `2. The Cross-Module Discriminators`,
+      content: `## Where wrong answers come from
+
+![The governance hierarchy - the direction thread's document spine](/courses/cissp/figures/cissp-governance-hierarchy.svg)
+
+Exam items in this domain are mostly built on near-neighbour concepts - pairs and families that sound alike and differ on one axis. This section is the domain's confusion map: each row is a discrimination the item writers reuse.
+
+| Confusable pair | The discriminator |
+|---|---|
+| Due care vs due diligence | Care is the duty owed; diligence is the ongoing activity (and its evidence) demonstrating the duty is met |
+| Policy vs standard | Both mandatory; policy is strategic intent from senior management, a standard is a specific testable expectation |
+| Standard vs guideline | Force: standards bind, guidelines advise |
+| Guideline vs procedure | A guideline recommends an approach; a procedure prescribes exact repeatable steps |
+| MAD/MTD vs RTO | MAD is how long the organisation can survive; RTO is the recovery target, always set inside MAD |
+| RTO vs RPO | Time to restore service vs data loss tolerance - clock vs contents |
+| Risk mitigation vs acceptance | Mitigation reduces risk with controls; acceptance takes the remainder - and mitigation always leaves a remainder to accept |
+| Risk transference vs avoidance | Transference pays another party to carry financial impact; avoidance declines the activity entirely |
+| Data owner/controller vs custodian | The owner is accountable and decides; the custodian operates day to day on the owner's behalf |
+| Controller vs processor | The processor works on the controller's behalf; liability for disclosure stays with the controller |
+| Education vs training vs awareness | Formal/external/experts vs semi-formal/tracked/role-specific vs informal/continuous/everyone |
+| Confidentiality vs privacy | A property of data vs a right of a person |
+| Authenticity vs integrity | Genuine origin vs unaltered content - an intact forgery passes integrity and fails authenticity |
+| Canon order | Society > integrity-and-legality > principals > profession - earlier wins on conflict |
+
+## Three traps with teeth
+
+Beyond the pairs, three habits of thought produce wrong answers repeatedly in this domain.
+
+A discipline for using the table: for each row, be able to produce not just the distinction but a one-line scenario that *turns* on it - the exam's items are precisely such scenarios, and generating your own is the strongest rehearsal available.
+
+**Answering from technology when the question is about authority.** Domain 1 stems that mention firewalls, encryption, or tooling are usually testing governance anyway: who approved it, which document mandates it, who accepts the residual risk. The strongest distractor is a technically excellent action taken by the wrong role.
+
+**Treating signatures as decoration.** The domain is precise about what gets signed: NDAs, AUPs, and contracts carry the employee's signature because they are agreements; **policy binds without the employee's signature** because it is promulgated by authority, not negotiated. Acknowledgement records help enforcement, but the policy's force never depended on the individual's consent.
+
+**Forgetting that every mitigation ends in acceptance.** No control set reduces risk to zero; the residue is accepted by someone with the authority to accept it. Any answer implying complete elimination of risk - or acceptance by a practitioner rather than management - is wrong on Domain 1's own terms.`
+    },
+    {
+      id: '3-worked-scenarios',
+      title: `3. Worked Review Scenarios`,
+      content: `## Worked scenario 1: one incident, the whole domain
+
+*A regional insurer suffers a ransomware incident: policyholder PII exfiltrated, core systems encrypted. Recovery takes 31 hours against a published RTO of 24; the BIA set MAD at 72 hours. The response reveals that backups had not been test-restored for a year, breach notices went out late in two of the six jurisdictions involved, and the incident entered through a phishing email to a claims processor whose training had lapsed. Walk the domain through the incident.*
+
+![The continuity metric family the scenario is graded against](/courses/cissp/figures/cissp-bc-metrics.svg)
+
+**Triad:** confidentiality violated by the exfiltration, availability by the encryption; integrity likely intact (the stolen copy is worth more accurate). **Continuity metrics:** RTO missed (31 > 24) but MAD respected (31 < 72) - the organisation survived but failed its own target, and the untested backups are the diagnosis: an untested backup is a hope, and testing is precisely the due diligence activity that converts the control's *existence* into *evidence it works*. **Legal:** notification clocks run per jurisdiction; two late notices are two separate compliance failures with their own penalties, independent of the breach itself. **Awareness:** the lapsed training converts a generic phishing entry into a programme finding - and the training records (or their absence) are now litigation evidence. **Governance:** every one of these threads ends at senior management, who owned the risk decisions that set testing cadence, training enforcement, and notification readiness.
+
+The scenario's lesson is the domain's: a single technical event fans out into availability engineering, jurisdictional law, instruction records, and accountability - and the exam expects you to see all four fans, not the malware.
+
+## Worked scenario 2: the treatment decision
+
+*A firm's new service would process EU residents' personal data in a country with no adequacy recognition. Legal review prices the compliance build (clauses, controls, audits) at a sum that erases the service's margin for two years. Management is deciding. Frame the options in risk-treatment terms.*
+
+**Mitigation:** build the compliance programme - standard contractual clauses, the control set, audit rights - reducing legal risk to a residue, which management must then still accept. **Avoidance:** decline to process EU personal data at all - geo-fence the service - eliminating this risk by not performing the activity; the cost is the foregone market. **Transference:** insurance and contractual indemnities can move some *financial* impact, but note the domain's sharp edge: regulatory liability for the controller cannot be contracted away - transference here is partial by nature. **Acceptance without mitigation** - proceed and hope - is the one option the domain rules out at this impact level, because acceptance is legitimate only for risk that is *within appetite*, and unlawful processing with accumulating daily exposure is not a risk profile any diligent management accepts undocumented.
+
+The framing matters more than the choice: the exam rewards the candidate who names all four treatments, notes that mitigation ends in acceptance of a residue, and puts the decision with management.
+
+## Worked scenario 3: the document that wasn't there
+
+*In a negligence suit after a breach, the plaintiff requests: the security policy, the standard covering the breached system's configuration, the procedure for its maintenance, execution records for that procedure, and training records for its administrators. The organisation can produce the policy and the standard. Assess.*
+
+The request list *is* the governance hierarchy, and the gaps read as a story: intent existed (policy), specifics existed (standard), but there is no evidence anyone was told how to comply (no procedure), did comply (no execution records), or knew how (no training records). The plaintiff's theory writes itself: the organisation knew the right way - its own standard says so - and cannot show it acted on that knowledge. **Documents above the gap become evidence against the organisation**, which is the domain's most counterintuitive lesson: a standard with no implementing procedure and records is worse in litigation than a defensible silence, because it proves knowledge without action. Due care was owed; due diligence - the demonstrable, recorded activity - is what cannot be produced. The remedial programme is the traceability health check from the policy module, run before a plaintiff runs it for you.
+
+## Worked scenario 4: the programme built backwards
+
+*A newly hired CISO inherits: strong firewalls and endpoint tooling, no current risk assessment, a security policy last signed by a manager who left four years ago, training that consists of a slide deck from the same era, and no inventory of which laws apply to the firm's three-country operation. Sequence the first year using Domain 1's logic, and justify the order.*
+
+The temptation is to start where the strength is - the tooling - and the domain's answer is to start where the *authority* is. **First, governance:** a current policy signed by current senior management, because nothing downstream binds anyone until the top document does, and because the signature is the act that puts accountability where it belongs. **Second, the legal map:** three countries means three sets of breach notification, privacy, and sector obligations; until they are inventoried, the firm cannot even state its compliance duties, let alone meet them - and the map's contents will shape the policy's requirements, so these two run together. **Third, risk assessment:** with authority and obligations established, price the risks - because the assessment is what converts the firewall budget from habit into a justified treatment decision, and it may well conclude the tooling is over-provisioned in one direction and naked in another. **Fourth, the document stack and training:** standards and procedures that implement the new policy, and a refreshed instruction programme with tracked completion - the due diligence layer that makes everything provable.
+
+The justification the exam wants is the dependency chain: **authority → obligations → priced risk → implementation → evidence**. Tooling appears nowhere in the first-year headline because Domain 1 treats technology as an *output* of the reasoning, never the starting point. A CISO who begins with a tooling review has produced a better-instrumented version of an unaccountable programme; the one who begins with governance has a defensible organisation that can then instrument itself deliberately - and every later domain in this course assumes the second CISO's foundation is in place.`
+    },
+    {
+      id: '4-self-check-part-1',
+      title: `4. Self-Check: Domain Review Questions I`,
+      content: `## Self-Check Questions 1-6
+
+Answer each before reading the rationales in section 6. Every question is scenario-based and single-best-answer, in the style the exam uses.
+
+**Q1.** A hospital's imaging archive is encrypted at rest with keys held only in one hardware module, which is destroyed in a facility fire. The images' disks are undamaged. Which triad property has been violated, and by what?
+
+- A. Confidentiality, by the fire exposing the disks
+- B. Integrity, by the loss of the key material
+- C. Availability, by the loss of the only means of access
+- D. No property - the data is intact and still confidential
+
+**Q2.** A retailer's BIA concludes the online store can survive 48 hours of outage before the business is unrecoverable, and management wants a 12-hour buffer. Which statement correctly assigns the metrics?
+
+- A. MAD is 48 hours; RTO should be set at or under 36 hours
+- B. RTO is 48 hours; MAD should be set at 36 hours
+- C. RPO is 48 hours; RTO is 12 hours
+- D. MAD and RTO are both 48 hours; the buffer is the RPO
+
+**Q3.** An organisation adopts a control framework, implements its selected controls on a critical system, and documents the result. The security manager states the system's risk "has now been eliminated." What has the manager missed?
+
+- A. Frameworks must be certified before risk is eliminated
+- B. Mitigation always leaves residual risk, which management must formally accept
+- C. Risk elimination requires transference as well as mitigation
+- D. Only avoidance eliminates risk, so the system should be decommissioned
+
+**Q4.** A departing developer signed an NDA at hire. Six months after leaving, they publish an article describing the former employer's internal fraud-detection logic. Which pair correctly names the organisation's protection and its basis?
+
+- A. The security policy, because it binds all personnel
+- B. The NDA, because contract obligations can survive employment
+- C. The AUP, because it governed the developer's system use
+- D. DRM, because the logic was proprietary material
+
+**Q5.** During an audit, a firm produces a current, management-signed information security policy and a detailed configuration standard, but administrators state they "configure from experience" and no build procedure or execution records exist. In due care/due diligence terms, the firm has demonstrated:
+
+- A. Both due care and due diligence
+- B. Due diligence but not due care
+- C. Evidence of intent, but not the diligence that demonstrates the duty is met
+- D. Neither, because policy without procedures is void
+
+**Q6.** A practitioner discovers their client is quietly selling customer PII in violation of the privacy law of the customers' country. The client instructs the practitioner to ignore it, citing confidentiality. Under the canons, the practitioner's duty is governed first by:
+
+- A. Canon III - diligent and competent service to principals
+- B. Canon IV - advance and protect the profession
+- C. Canon II and Canon I - lawful, honorable action and protection of society, which outrank service to the principal
+- D. The engagement contract, which defines the scope of duty`
+    },
+    {
+      id: '5-self-check-part-2',
+      title: `5. Self-Check: Domain Review Questions II`,
+      content: `## Self-Check Questions 7-12
+
+**Q7.** An EU-based controller engages a processor in a country with no adequacy decision and no framework certification. The processor's marketing asserts "full GDPR-grade security controls." May the transfer proceed on that basis?
+
+- A. Yes - equivalent controls satisfy the transfer requirement
+- B. Yes, if the processor also signs an NDA
+- C. No - a lawful transfer path (adequacy, certification, or approved contractual clauses) is required; asserted controls are not one
+- D. No - transfers outside the EU are prohibited in all cases
+
+**Q8.** A company's awareness programme reports 100% completion of annual CBT. Quarterly phishing simulations show click rates rising and reporting rates near zero. The most accurate assessment is:
+
+- A. The programme is effective; completion demonstrates compliance
+- B. The programme generates records but not behaviour change - the effectiveness measures contradict the completion metric
+- C. The simulations are miscalibrated, since trained staff cannot regress
+- D. The organisation needs longer CBT modules
+
+**Q9.** Which action places the *correct* role with the *correct* activity under Domain 1's accountability model?
+
+- A. The database administrator classifies the customer data set
+- B. The security team accepts the residual risk of a legacy system
+- C. Senior management approves the security policy and accepts residual risk; the data owner classifies; the custodian operates
+- D. The data processor assumes liability for a breach it negligently caused
+
+**Q10.** A firm's retention schedule requires deleting closed-project files after one year. Regulators send notice of an investigation naming several closed projects whose files are due for automated deletion this week. The correct action is:
+
+- A. Proceed - the schedule predates the notice and applies neutrally
+- B. Proceed for privacy-law data only
+- C. Suspend deletion for all plausibly relevant data immediately and demonstrably - the legal hold overrides schedule and policy
+- D. Accelerate deletion before the formal hold arrives
+
+**Q11.** An organisation wants its supplier to meet its internal encryption standard. The binding instrument is:
+
+- A. Sending the supplier the standard, which is mandatory
+- B. The organisation's security policy, which covers third parties
+- C. Contract terms importing the standard's requirements, with audit rights
+- D. A guideline, since suppliers cannot be bound by standards
+
+**Q12.** During a tabletop exercise, the team discovers the incident response procedure contradicts the newer incident classification standard. Staff have been following the procedure. The governance-correct reading is:
+
+- A. The procedure prevails - it is most detailed and most current in use
+- B. The standard prevails; the procedure is the defective document, and the review process that let it go stale is the second finding
+- C. Both are suspended until senior management writes a new policy
+- D. Staff should be disciplined for following an outdated document
+
+**Q13.** An analytics start-up's marketing celebrates that its logs "contain no personal data - we only keep IP addresses, device IDs, and behavioural events." Under the domain's privacy reasoning, the claim is:
+
+- A. Correct - identifiers are technical data, not personal data
+- B. Correct if the data is never sold
+- C. Unsafe - several privacy regimes count machine identifiers as PII, so scope is set by each applicable law, not by intuition
+- D. Unsafe only in the healthcare sector
+
+**Q14.** A security manager is asked to "run this year's awareness campaign like last year's, it passed the audit." Simulation data shows failure patterns have shifted from mass phishing to targeted pretext calls against finance. The domain-correct response is:
+
+- A. Repeat the campaign - audit acceptance defines sufficiency
+- B. Update content to the current threat pattern and re-target delivery at the failing population, because dated material is itself a vulnerability
+- C. Replace the campaign with penalties for failures
+- D. Outsource the campaign to eliminate the currency problem
+
+**Q15.** A consultancy's engagement uncovers evidence that its client is breaching a contract with a third party - no law is broken and no one is endangered. The consultant's Code-conformant handling is:
+
+- A. Report the breach to the third party - Canon I requires it
+- B. Raise the finding with the client through the engagement's channels; the duty of diligent service includes honest reporting to the principal, and no higher canon compels external disclosure
+- C. Ignore it - commercial disputes are outside security's scope
+- D. Resign the engagement immediately
+
+**Q16.** Which sequencing correctly reflects Domain 1's dependency chain for building a programme from scratch?
+
+- A. Tooling → training → policy → risk assessment
+- B. Risk assessment → tooling → policy → legal review
+- C. Governance and policy → legal obligations → risk assessment → standards, procedures, and training
+- D. Standards → policy → procedures → governance`
+    },
+    {
+      id: '6-answers',
+      title: `6. Answers and Rationales`,
+      content: `## Answers
+
+**A1 - C.** The images are intact (integrity preserved) and unreadable by anyone (confidentiality arguably perfect), but **no authorised user can ever access them again**: availability has been destroyed by key loss. This is the canonical demonstration that a confidentiality control without key management becomes an availability threat - encrypted data's availability *is* the key's availability. Option D mistakes "intact" for "available"; the triad's third leg is about authorised access, which is now permanently impossible.
+
+**A2 - A.** The BIA's survival limit - 48 hours - is the **MAD/MTD**. The **RTO** is the recovery target and must sit *inside* MAD; management's 12-hour buffer puts it at or under 36 hours. Option B inverts the metrics; C confuses RPO (data loss tolerance, not time-to-restore) with both; D collapses the two metrics the buffer exists to separate. The reliable anchor: MAD is a fact about the business, RTO is a choice made inside it.
+
+**A3 - B.** Mitigation attenuates risk; it never zeroes it. The remainder is **residual risk**, and the domain requires it to be **formally accepted by management** - not by the security manager. "Risk eliminated" is the phrase that fails Domain 1 items on sight: the honest formulation is "risk reduced to a level management has accepted." Options A and C invent requirements; D misapplies avoidance, which means declining the activity, not decommissioning systems after mitigating them.
+
+**A4 - B.** The **NDA** is a contract, and contractual confidentiality obligations are drafted to **survive the employment relationship** - which is exactly why personnel security uses them. The security policy and AUP (A, C) bind *personnel*; the author is no longer one. DRM (D) protects material technologically, but the developer is publishing knowledge, not redistributing protected files. The question is the personnel module's core pattern: which instrument still binds after the badge is returned - and the answer is always the contract family.
+
+**A5 - C.** The policy and standard prove the organisation *knew* what should be done - intent and specifics. **Due diligence is the demonstrable, ongoing activity** - the procedures, their execution records, the training trail - and none of it exists. This is the domain's harshest lesson in action: documents above the gap become evidence *against* the organisation, proving knowledge without action. Option A overstates; B inverts the concepts (care is the duty, diligence the demonstration); D invents a voiding rule - the policy is valid, it is simply unaccompanied by proof of practice.
+
+**A6 - C.** The client's instruction invokes Canon III (service to principals) - but the conduct is **illegal** (Canon II: act legally) and **harms the public** whose PII is being sold (Canon I). Both outrank Canon III, so the practitioner cannot ethically comply with the instruction; the path is documentation, escalation with the client, and refusal to participate in the violation. Option D is the standing distractor: the contract defines the *engagement*, but the canons bind above any contract, and no principal can authorise unlawful conduct.
+
+**A7 - C.** Security controls, however genuine, are **not a lawful transfer basis**. The transfer analysis runs the three paths in order - adequacy (absent), certified framework (absent), approved contractual clauses (available but not yet in place) - and with none satisfied, the transfer may not proceed. The fix is executing the approved clauses. Option A is the trap the module warns about: conflating *protection* with *lawful basis*; the GDPR requires both, and marketing assertions are neither.
+
+**A8 - B.** Completion is a logistics metric; **behaviour is the effectiveness metric**, and the behavioural measures (clicks rising, reports absent) contradict the dashboard. The programme has click-through in its purest form: records without retention. Option C is false - trained behaviour decays, which is why measurement continues; D prescribes more of the failing method. The mature reading pairs the metrics: high completion plus poor simulation results equals a delivery-method and content problem, remediated with live instruction for failing populations and content review.
+
+**A9 - C.** The domain's accountability model in one sentence: **senior management** approves policy and accepts residual risk; the **data owner** classifies and decides; the **custodian** operates on the owner's behalf. Option A gives the custodian the owner's decision; B gives management's acceptance authority to practitioners; D contradicts the liability rule - the *controller* remains liable for disclosure even when the processor was negligent, which is why vendor management exists.
+
+**A10 - C.** Notice of the investigation triggers a **legal hold**, and the preservation duty **overrides the retention schedule, internal policy, and privacy-law destruction duties** for data in scope. Deleting after notice is obstruction exposure regardless of how neutral the schedule is - and option D describes deliberate spoliation, the aggravated form. The operationally correct answer also says *demonstrably*: the suspension itself must leave evidence, which is why hold capability is built into records systems before it is needed.
+
+**A11 - C.** Internal documents bind internal parties; **a supplier is bound only by contract**. Importing the standard's requirements into the agreement - with acceptance criteria and audit or attestation rights - is what converts the organisation's expectation into the supplier's obligation. Options A and B assume internal mandates reach across the organisational boundary; they do not, which is the single rule behind third-party risk management's contractual machinery.
+
+**A12 - B.** In the hierarchy, the **standard outranks the procedure**; a procedure contradicting its parent standard is defective whatever its adoption date, and it is corrected through its own change process. Staff followed the promulgated procedure and are not the failure (option D punishes promulgation working as designed). The mature second finding is the **review-cycle failure** that let the conflict survive - fix the document *and* the maintenance process, or the defect regrows. Option C invents an escalation the hierarchy does not require; policy is not the layer in conflict.
+
+**A13 - C.** What constitutes PII is **defined by each jurisdiction's law**, and several regimes explicitly count IP addresses, device identifiers, and similar machine data as personal data. A pipeline "with no PII" by engineering intuition may be squarely in scope for breach notification, transfer restriction, and retention duties. Option A is the intuition the module warns against; B confuses commercial use with legal scope; D invents a sector limit. The safe posture: the PII determination is a per-law legal question answered early, not an assumption baked into architecture.
+
+**A14 - B.** Dated material is not merely ineffective - **it is a vulnerability**, training confidence against last year's attacks while this year's succeed. The evidence (shifted failure patterns) is exactly what the programme's measurement loop exists to produce, and the loop's second half is acting on it: refresh content to the current pattern, re-target delivery (live instruction for the failing finance population), and keep the simulations honest against the adversary's actual behaviour. Option A mistakes audit acceptance for effectiveness - the completion-vs-behaviour trap in institutional form; C abandons the reporting culture; D outsources the work but not the currency obligation.
+
+**A15 - B.** Run the canons: no public danger engages Canon I, no illegality engages Canon II's floor - so the governing duty is **Canon III's diligent and honest service to the principal**, which means reporting the finding *to the client* through the engagement's channels, not around them. Option A misfires Canon I where society is not at stake and would itself breach the confidentiality owed to the principal; C shirks the honesty component of diligent service; D is disproportionate where no canon bars continued service. The question tests recognising when the *lower* canon legitimately governs because no higher one is engaged.
+
+**A16 - C.** The domain's build order is **authority → obligations → priced risk → implementation and evidence**: governance and policy first (nothing binds until the top document does), the legal map next (obligations shape requirements), the risk assessment on that foundation (pricing what to protect and how much), and only then the standards, procedures, and training that implement and prove it. Options A and B start from tooling or assessment without the authority and obligations that give either meaning; D inverts the hierarchy it is quoting.
+
+## The answer index
+
+Each question's home module and the discriminator it tested, for targeted revision:
+
+| Q | Module | Discriminator exercised |
+|---|---|---|
+| 1 | 1. CIA concepts | Key loss = availability failure; intact ≠ available |
+| 2 | 9. Business continuity | MAD is a business fact; RTO is a choice inside it |
+| 3 | 3. Risk management | Mitigation always leaves a residue for management to accept |
+| 4 | 7. Personnel | Contracts survive employment; policies bind only personnel |
+| 5 | 4. Compliance | Due care is the duty; due diligence is its demonstrable practice |
+| 6 | 10. Ethics | Canons I and II outrank service to the principal |
+| 7 | 5. Legal, global | Controls are not a lawful transfer basis; the three paths are |
+| 8 | 8. Awareness | Completion is logistics; behaviour is effectiveness |
+| 9 | 2. Governance | Management accepts risk; owners classify; custodians operate |
+| 10 | 10. Ethics / 5. Legal | Legal hold overrides schedules and policies |
+| 11 | 6. Policy stack | Only contract crosses the organisational boundary |
+| 12 | 6. Policy stack | The standard outranks the procedure; fix the review cycle too |
+| 13 | 5. Legal, global | PII scope is set by law, not intuition |
+| 14 | 8. Awareness | Dated material is a vulnerability; measurement drives content |
+| 15 | 10. Ethics | The lower canon governs when no higher one is engaged |
+| 16 | Whole domain | Authority → obligations → risk → implementation → evidence |
+
+Score honestly, under the same no-notes conditions the questions were sat in, and read the pattern rather than the total: two misses in one module's rows is a reread signal for that module; misses scattered across threads usually mean the discriminator table in section 2 deserves one more pass. Thirteen or more correct with confident rationales is Domain 2 readiness.`
+    },
+    {
+      id: '7-terms',
+      title: `7. Terms and Definitions`,
+      content: `## The domain glossary
+
+Every definition below is stated in this course's own words for fast revision; each term's full treatment is in the module noted.
+
+| Term | Working definition | Module |
+|---|---|---|
+| Confidentiality | Only authorised entities can access the data; violated by disclosure | 1 |
+| Integrity | No unauthorised modification; includes the ability to demonstrate it | 1 |
+| Availability | Authorised entities can access data when and how permitted | 1 |
+| Authenticity | The data or message genuinely comes from its claimed origin | 1 |
+| Non-repudiation | The originator cannot credibly deny the action afterwards | 1 |
+| Governance | How the organisation is directed and held accountable - decisions, roles, processes | 2 |
+| Security governance | That system applied to security decisions, owned by senior management | 2 |
+| Governance committee | The body that decides how decisions are made and approves exceptions to governance | 2 |
+| Risk | The possibility of harm, weighed with the likelihood of it being realised | 3 |
+| Risk mitigation | Applying controls to attenuate impact or likelihood | 3 |
+| Residual risk | What remains after mitigation - always something, always accepted by management | 3 |
+| Risk acceptance | Proceeding with a function because its benefit outweighs its priced risk | 3 |
+| Risk avoidance | Declining the activity because its risk cannot be justified | 3 |
+| Risk transference | Paying an external party to carry the financial impact | 3 |
+| Acceptable risk | The risk level senior management has judged commensurate with benefit | 3 |
+| Security control framework | The structured catalogue of processes and safeguards an organisation builds from | 3 |
+| Compliance | Adherence to a mandate, plus the tools and records that demonstrate it | 4 |
+| Audit | The tools, processes, and activities of a compliance review | 4 |
+| Due care | The duty of protection owed - the standard of a reasonable organisation | 4 |
+| Due diligence | The ongoing, demonstrable activity (and records) showing due care is met | 4 |
+| Intellectual property | Intangible assets - notably software, data, and proprietary material | 5 |
+| PII | Any data about a person that could identify them - scoped by each law, not intuition | 5 |
+| Data subject | The human being the personal data is about | 5 |
+| Data owner / controller | The entity that collects or creates the data and remains liable for it | 5 |
+| Data processor | An entity handling data on the controller's behalf; liability stays with the controller | 5 |
+| Data custodian | The role managing data day to day for the owner | 5 |
+| Privacy | A person's right to control information about themselves | 5 |
+| Policy | Senior management's published, promulgated statement of strategic intent - mandatory | 6 |
+| Standard | A specific, testable mandate - internal or imposed from outside | 6 |
+| Guideline | Recommended practice; advisory, never a mandate | 6 |
+| Procedure | Explicit, repeatable steps for a task - the most detailed, least powerful layer | 6 |
+| Business continuity (BC) | Keeping critical operations running during a contingency | 9 |
+| Disaster recovery (DR) | Restoring regular operations after contingency operations | 9 |
+| BCDR | The joint term for both efforts | 9 |
+| Business impact analysis (BIA) | The organisation's assets annotated by criticality - the source of the metrics | 9 |
+| MAD / MTD | Maximum allowable (tolerable) downtime - how long the organisation survives interruption | 9 |
+| RTO | The recovery time target, always set inside MAD | 9 |
+| RPO | How much data loss the organisation can tolerate | 9 |
+
+Revision technique: cover the middle column and reconstruct each definition aloud; any term you define by naming its *neighbour* (defining RTO by talking about MAD, defining due care with due diligence's words) is a term whose discriminator you have not yet fixed - return to its module's table before the mock exam.
+
+## The bridge to Domain 2
+
+Domain 2 - Asset Security - takes the working concepts this domain established and follows the asset through its whole life: creation and classification, ownership, privacy, retention, protection in each data state, handling, and defensible destruction. Four Domain 1 ideas carry directly across and are assumed from its first module: the **data roles** (owner/controller deciding, custodian operating, processor working under the controller's liability) become the domain's cast; the **classification logic** sketched in the CIA module's impact ratings becomes a full programme; the **legal hold and retention** tension from the ethics and legal modules becomes the retention module's core; and the **data states** from the CIA module become the organising frame for control selection. If those four feel solid after this review, Domain 2 will read as elaboration rather than novelty - which is exactly how the book's course agenda intends the domains to stack.`
     }
   ],
 },

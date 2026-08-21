@@ -1890,6 +1890,55 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Domain 1 module map: the ten content modules and the through-lines that
+# connect them.  Structure mirrors the Instructor Edition's module list.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-d1-map")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    mods = [
+        ("1", "CIA concepts", 0, 0),
+        ("2", "Governance", 1, 0),
+        ("3", "Risk mgmt", 2, 0),
+        ("4", "Compliance", 3, 0),
+        ("5", "Legal, global", 4, 0),
+        ("6", "Policy stack", 0, 1),
+        ("7", "Personnel", 1, 1),
+        ("8", "Awareness", 2, 1),
+        ("9", "Business continuity", 3, 1),
+        ("10", "Ethics", 4, 1),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 4.4))
+    for num, name, col, row in mods:
+        x = 0.4 + col * 1.95
+        y = 2.75 - row * 1.55
+        colour = c[int(num) % 3]
+        ax.add_patch(plt.Rectangle((x, y), 1.7, 0.95, facecolor=colour,
+                                   alpha=0.15, edgecolor=colour, linewidth=1.5))
+        ax.annotate(num, (x + 0.18, y + 0.72), fontsize=8.0, color=colour)
+        ax.annotate(name, (x + 0.85, y + 0.4), ha="center", va="center",
+                    fontsize=8.2, color=ink)
+    lines = [
+        ("the triad names WHAT is protected; risk prices it; BC engineers the A", c[0], 4.15),
+        ("governance directs; the policy stack writes it down; personnel and awareness carry it to people", c[1], 3.93),
+        ("compliance, law, and ethics are the OUTSIDE forces the programme answers to", c[2], 3.71),
+    ]
+    for text, colour, y in lines:
+        ax.plot([0.45, 0.62], [y + 0.03, y + 0.03], color=colour, linewidth=2.5)
+        ax.annotate(text, (0.75, y), fontsize=7.6, color=S.INK_2[mode], va="center")
+    ax.annotate("DOMAIN 1: ten content modules, one review", (0.4, 0.75),
+                fontsize=8.6, color=ink)
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(0.45, 4.45)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
