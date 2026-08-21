@@ -685,8 +685,9 @@ _add(LessonExtras(
                 "hydrocarbon curve cold, and every "
                 "heterocycle you ever meet is that curve "
                 "plus a named electronic correction - one "
-                "framework, one patch, instead of a new "
-                "subject per ring."
+                "durable framework and one small patch at a "
+                "time, instead of an entirely new subject to "
+                "learn for every ring system chemistry owns."
             ),
         ),
         ReadingSection(
