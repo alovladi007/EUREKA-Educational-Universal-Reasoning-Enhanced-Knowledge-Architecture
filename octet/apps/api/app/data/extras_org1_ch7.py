@@ -687,7 +687,7 @@ _add(LessonExtras(
                 "plus a named electronic correction - one "
                 "durable framework and one small patch at a "
                 "time, instead of an entirely new subject to "
-                "learn for every ring system chemistry owns."
+                "learn afresh for every ring system that chemistry owns."
             ),
         ),
         ReadingSection(
