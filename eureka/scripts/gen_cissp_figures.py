@@ -2020,7 +2020,7 @@ def _(mode):
 
 
 # ---------------------------------------------------------------------------
-# The loss-expectancy arithmetic with the module's worked numbers.
+# The loss-expectancy arithmetic with an original worked case.
 # ---------------------------------------------------------------------------
 
 @figure("cissp-ale-formula")
@@ -2034,14 +2034,15 @@ def _(mode):
     ax.annotate("ALE  =  SLE  x  ARO", (0.6, 2.45), fontsize=12, color=c[1])
     ax.annotate("annual loss expectancy = per-event loss x events per year", (0.6, 2.02),
                 fontsize=8.0, color=S.INK_2[mode])
+    # Original worked numbers (courier-depot case authored for this course).
     rows = [
-        ("worked case: retail shoplifting", ""),
-        ("SLE = $5 per event;  ARO = 1,000 / yr", "ALE = $5,000 / yr"),
-        ("guard $50,000 / yr", "mitigation IRRATIONAL"),
-        ("best control $15,000 / yr", "mitigation IRRATIONAL"),
-        ("insurance $10,000 / yr", "transference IRRATIONAL"),
-        ("remain a retailer", "avoidance UNAVAILABLE"),
-        ("decision", "ACCEPT the $5,000 risk"),
+        ("worked case: depot break-ins", ""),
+        ("SLE = $800 per event;  ARO = 6 / yr", "ALE = $4,800 / yr"),
+        ("overnight guard $30,000 / yr", "mitigation IRRATIONAL"),
+        ("fencing package $6,000 / yr, halves ARO", "control + residual = $8,400"),
+        ("insurance rider $4,200 / yr", "transference DEFENSIBLE"),
+        ("stop deliveries", "avoidance UNAVAILABLE"),
+        ("decision", "ACCEPT, or the $4,200 rider"),
     ]
     for i, (l, r) in enumerate(rows):
         y = 1.45 - i * 0.34
