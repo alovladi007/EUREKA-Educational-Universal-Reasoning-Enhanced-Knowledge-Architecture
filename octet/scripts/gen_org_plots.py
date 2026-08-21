@@ -618,6 +618,144 @@ def fig_separability(mode):
     plt.close(fig)
 
 
+def fig_fischer_convention(mode):
+    """The Fischer convention: the cross intersection IS the stereocentre,
+    horizontal bonds point TOWARD the viewer and vertical bonds point AWAY.
+    Breaking that reading silently inverts the configuration."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(7.4, 4.2))
+    ax.plot([2.2, 5.0], [2.4, 2.4], color=c[0], linewidth=3)
+    ax.plot([3.6, 3.6], [1.1, 3.7], color=c[1], linewidth=3)
+    ax.plot([3.6], [2.4], "o", color=ink, markersize=9)
+    labels = ((3.6, 3.95, "most oxidised group\n(top)", ink),
+              (3.6, 0.75, "carbon chain continues\n(bottom)", ink),
+              (1.85, 2.4, "H", ink), (5.35, 2.4, "OH", ink))
+    for x, y, t, col in labels:
+        ax.annotate(t, (x, y), ha="center", va="center", fontsize=9.5,
+                    color=col)
+    ax.annotate("HORIZONTAL = toward you", (3.6, 2.05), ha="center",
+                fontsize=9.5, color=c[0])
+    ax.annotate("VERTICAL = away from you", (6.6, 2.4), ha="center",
+                fontsize=9.5, color=c[1], rotation=90)
+    ax.annotate("the intersection is the stereocentre", (3.6, 2.72),
+                ha="center", fontsize=8.6, color=fs.GUIDE[mode])
+    ax.annotate("ALLOWED: rotate 180 degrees in the plane\nFORBIDDEN: rotate 90 degrees, or lift out of the plane\n(either one silently inverts the configuration)",
+                (3.6, 0.15), ha="center", fontsize=9, color=ink)
+    ax.set_xlim(0.6, 7.4)
+    ax.set_ylim(-0.3, 4.4)
+    ax.axis("off")
+    fs.save(fig, OUT, "org1-fischer-convention", mode)
+    plt.close(fig)
+
+
+def fig_fischer_dl(mode):
+    """D and L are read off the BOTTOM-most stereocentre in a Fischer
+    projection: the reference hydroxyl on the RIGHT is D, on the LEFT is L -
+    the glyceraldehyde convention the sugar literature still uses."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    fig, axes = plt.subplots(1, 2, figsize=(7.6, 4.0))
+    for ax, side, name, colour in ((axes[0], "right", "D-glyceraldehyde", c[0]),
+                                   (axes[1], "left", "L-glyceraldehyde", c[1])):
+        ax.plot([1.2, 3.4], [2.2, 2.2], color=colour, linewidth=2.6)
+        ax.plot([2.3, 2.3], [1.0, 3.4], color=ink, linewidth=2.6)
+        ax.plot([2.3], [2.2], "o", color=ink, markersize=8)
+        ax.annotate("CHO", (2.3, 3.6), ha="center", fontsize=10, color=ink)
+        ax.annotate("CH2OH", (2.3, 0.75), ha="center", fontsize=10, color=ink)
+        if side == "right":
+            ax.annotate("H", (0.95, 2.2), ha="center", fontsize=10, color=ink)
+            ax.annotate("OH", (3.7, 2.2), ha="center", fontsize=11,
+                        color=colour)
+        else:
+            ax.annotate("HO", (0.85, 2.2), ha="center", fontsize=11,
+                        color=colour)
+            ax.annotate("H", (3.65, 2.2), ha="center", fontsize=10, color=ink)
+        ax.set_title(name, fontsize=10.5)
+        ax.set_xlim(0.2, 4.4)
+        ax.set_ylim(0.3, 4.1)
+        ax.axis("off")
+    fig.text(0.5, 0.04,
+             "reference OH on the RIGHT = D, on the LEFT = L - a positional convention, NOT a rotation direction",
+             ha="center", fontsize=9, color=ink)
+    fs.save(fig, OUT, "org1-fischer-dl", mode)
+    plt.close(fig)
+
+
+def fig_resolution_scheme(mode):
+    """Classical resolution: a racemate plus a single-enantiomer resolving
+    agent gives DIASTEREOMERIC salts, which differ in solubility and
+    separate by crystallisation - then the agent is removed."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+
+    def box(x, y, w, h, text, colour, fs_=9):
+        ax.add_patch(plt.Rectangle((x, y), w, h, facecolor="none",
+                                   edgecolor=colour, linewidth=1.7))
+        ax.annotate(text, (x + w / 2, y + h / 2), ha="center", va="center",
+                    fontsize=fs_, color=ink)
+
+    def arr(x0, y0, x1, y1, label=""):
+        ax.annotate("", (x1, y1), (x0, y0),
+                    arrowprops=dict(arrowstyle="-|>", color=fs.GUIDE[mode],
+                                    linewidth=1.4))
+        if label:
+            ax.annotate(label, ((x0 + x1) / 2 + 0.15, (y0 + y1) / 2),
+                        fontsize=8.4, color=fs.GUIDE[mode], ha="left")
+
+    fig, ax = plt.subplots(figsize=(7.8, 5.0))
+    box(3.0, 8.3, 3.6, 0.8, "RACEMATE  (R) + (S)\ninseparable by ordinary means", c[0], 8.8)
+    box(3.0, 6.7, 3.6, 0.75, "+ single-enantiomer\nRESOLVING AGENT", c[1], 8.8)
+    box(0.6, 4.9, 3.3, 0.85, "salt of (R) with agent\nDIASTEREOMER 1", c[2], 8.6)
+    box(5.7, 4.9, 3.3, 0.85, "salt of (S) with agent\nDIASTEREOMER 2", c[2], 8.6)
+    box(0.6, 3.1, 3.3, 0.8, "crystallises\n(less soluble)", c[0], 8.6)
+    box(5.7, 3.1, 3.3, 0.8, "stays in solution\n(more soluble)", c[0], 8.6)
+    box(0.6, 1.3, 3.3, 0.8, "remove agent:\npure (R)", c[1], 9.2)
+    box(5.7, 1.3, 3.3, 0.8, "remove agent:\npure (S)", c[1], 9.2)
+    arr(4.8, 8.3, 4.8, 7.5)
+    arr(4.3, 6.7, 2.5, 5.8)
+    arr(5.3, 6.7, 7.1, 5.8)
+    arr(2.25, 4.9, 2.25, 3.95)
+    arr(7.35, 4.9, 7.35, 3.95)
+    arr(2.25, 3.1, 2.25, 2.15)
+    arr(7.35, 3.1, 7.35, 2.15)
+    ax.annotate("DIFFERENT properties - ordinary crystallisation now works",
+                (4.8, 4.35), ha="center", fontsize=9, color=ink, style="italic")
+    ax.annotate("maximum yield of either enantiomer: 50 percent",
+                (4.8, 0.75), ha="center", fontsize=9, color=ink)
+    ax.set_xlim(0.2, 9.4)
+    ax.set_ylim(0.4, 9.4)
+    ax.axis("off")
+    fs.save(fig, OUT, "org1-resolution-scheme", mode)
+    plt.close(fig)
+
+
+def fig_resolution_yields(mode):
+    """Theoretical maximum yield of a single enantiomer by method: classical
+    resolution and simple kinetic resolution cap at 50 percent, while
+    dynamic kinetic resolution, desymmetrisation and asymmetric synthesis
+    can in principle reach 100."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    methods = ["classical\nresolution", "kinetic\nresolution",
+               "chiral\nchromatography", "dynamic kinetic\nresolution",
+               "desymmetri-\nsation", "asymmetric\nsynthesis"]
+    ceilings = [50, 50, 50, 100, 100, 100]
+    fig, ax = plt.subplots(figsize=(7.6, 4.0))
+    _bar(ax, methods, ceilings, fs.SERIES[mode][0], ink,
+         "theoretical maximum yield of one enantiomer (%)")
+    ax.axhline(50, color=fs.GUIDE[mode], linewidth=1.2,
+               linestyle=(0, (5, 3)))
+    ax.annotate("the 50 percent ceiling: half the material is the wrong hand",
+                (0.05, 56), fontsize=9, color=ink)
+    ax.set_ylim(0, 118)
+    fs.save(fig, OUT, "org1-resolution-yields", mode)
+    plt.close(fig)
+
+
 def fig_stereo_relationships(mode):
     """The relationship decision tree: two structures are constitutional
     isomers, enantiomers, diastereomers, or the same compound - decided by
@@ -885,6 +1023,10 @@ def fig_ring_strain(mode):
 
 
 ALL = [
+    fig_fischer_convention,
+    fig_fischer_dl,
+    fig_resolution_scheme,
+    fig_resolution_yields,
     fig_stereoisomer_map,
     fig_separability,
     fig_stereo_relationships,

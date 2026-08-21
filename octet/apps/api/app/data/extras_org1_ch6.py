@@ -3763,3 +3763,1446 @@ _add(LessonExtras(
         "A racemate cancels BETWEEN molecules and a meso compound cancels WITHIN one; both read zero, and a chiral column tells them apart by giving two peaks versus one.",
     ),
 ))
+
+
+# --------------------------------------------------------------------------
+# 6.6 Fischer projections
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.FISCHER",
+    lead=(
+        "Wedge-dash drawings collapse under their own complexity at four or "
+        "five stereocentres, which is exactly where sugar chemistry begins. "
+        "Fischer projections solve that by trading realism for a rigid "
+        "convention: a flat cross whose horizontal bonds point at you and "
+        "whose vertical bonds point away. The convention makes sixteen "
+        "stereoisomers comparable at a glance - and it punishes any "
+        "manipulation that violates it with a silent inversion, which is "
+        "why this chapter teaches rules rather than intuition."
+    ),
+    sections=(
+        ReadingSection(
+            id="fp-convention",
+            heading="The convention, and why it is absolute",
+            figure=Figure(
+                stem="org1-fischer-convention",
+                caption=(
+                    "The Fischer convention: the cross intersection is the stereocentre, horizontal bonds point toward the viewer and vertical bonds point away - and only a 180-degree in-plane rotation preserves the configuration."
+                ),
+                alt="A Fischer projection cross with horizontal bonds labelled toward the viewer and vertical bonds labelled away, and the allowed and forbidden manipulations listed.",
+            ),
+            body=(
+                "A Fischer projection is a flat drawing read by a rule "
+                "rather than by perspective. Each CROSS represents a "
+                "stereocentre at the intersection. The two HORIZONTAL "
+                "bonds project TOWARD the viewer, out of the page. The two "
+                "VERTICAL bonds project AWAY, behind the page. The carbon "
+                "chain runs vertically, with the most oxidised carbon "
+                "(the aldehyde or carboxyl) placed at the TOP by "
+                "convention.\n\n"
+                "Picture the molecule as a bow-tie: the horizontal arms "
+                "curve toward you like the ends of a bow held at your "
+                "chest, while the vertical chain arcs away. Nothing about "
+                "the flat drawing shows that, which is precisely the "
+                "point - the geometry lives in the convention, not in the "
+                "picture, so every reader must apply the same rule to "
+                "recover the same molecule.\n\n"
+                "That is also the danger. A drawing whose meaning depends "
+                "entirely on an agreed reading cannot survive careless "
+                "manipulation, and the manipulations that break it are "
+                "exactly the ones that feel harmless: turning the page "
+                "ninety degrees, or flipping the paper over. Both "
+                "silently exchange which bonds are horizontal and which "
+                "are vertical, and therefore silently invert what the "
+                "drawing claims."
+            ),
+        ),
+        ReadingSection(
+            id="fp-manipulations",
+            heading="What you may and may not do",
+            table=Table(
+                caption="Legal and illegal Fischer manipulations",
+                columns=("Operation", "Effect on configuration", "Verdict"),
+                rows=(
+                    ("rotate 180 degrees in the plane of the page", "unchanged", "ALLOWED"),
+                    ("rotate 90 degrees in the plane", "INVERTS every centre", "forbidden"),
+                    ("lift out of the plane and flip over", "INVERTS every centre", "forbidden"),
+                    ("swap any two groups at one centre", "inverts that centre", "inverts once - use deliberately"),
+                    ("swap twice at the same centre", "returns to the original", "a useful check"),
+                    ("hold one group fixed and rotate the other three", "unchanged", "allowed"),
+                ),
+                source="Standard Fischer projection conventions as used in carbohydrate and amino-acid nomenclature",
+                note="Only the 180-degree in-plane rotation is safe; everything else either inverts or must be counted.",
+            ),
+            body=(
+                "The table is the whole operational content of the "
+                "chapter, and it is worth verifying rather than "
+                "memorising. Why does a 180-degree rotation work? Because "
+                "it maps horizontal bonds onto horizontal bonds and "
+                "vertical onto vertical - the convention survives, so the "
+                "molecule does. Why does 90 degrees fail? Because "
+                "horizontals become verticals: bonds that pointed at you "
+                "now claim to point away, and the drawing asserts the "
+                "mirror image of what you started with.\n\n"
+                "The swap rule is the same one the chirality chapter had "
+                "you verify with a model: exchanging any two groups at a "
+                "stereocentre inverts it exactly once. In Fischer "
+                "notation this becomes a technique - two swaps return you "
+                "to the original, so an even number of swaps preserves "
+                "configuration and an odd number inverts it. Counting "
+                "swaps is how experienced workers move groups into "
+                "convenient positions without losing track.\n\n"
+                "The practical discipline: never manipulate a Fischer "
+                "projection casually. Decide what operation you need, "
+                "check it against the table, and count. A drawing that "
+                "has been turned sideways is not the compound you started "
+                "with, and nothing in its appearance will tell you."
+            ),
+        ),
+        ReadingSection(
+            id="fp-rs",
+            heading="Reading R and S off the cross",
+            body=(
+                "Assigning configuration is fast in Fischer notation once "
+                "the convention is respected, because the geometry is "
+                "already fixed. RANK the four groups by the CIP rules of "
+                "chapter 6.2. Then locate the LOWEST priority group.\n\n"
+                "If the lowest priority sits on a VERTICAL bond, it "
+                "already points away from you - exactly the orientation "
+                "the wheel procedure wants - so read priorities one to "
+                "two to three directly: clockwise is R, counterclockwise "
+                "is S. If the lowest priority sits on a HORIZONTAL bond, "
+                "it points TOWARD you, so read the wheel as drawn and "
+                "then INVERT the answer once.\n\n"
+                "That is the same single-inversion rule the R/S chapter "
+                "established for wedge-dash drawings, transplanted "
+                "without modification - which is the argument for having "
+                "learned it as a principle rather than as a picture. "
+                "Worked case: D-glyceraldehyde drawn with $CHO$ on top, "
+                "$CH_2OH$ on the bottom, $OH$ on the right and $H$ on the "
+                "left. Priorities are $OH > CHO > CH_2OH > H$. The "
+                "hydrogen is horizontal, so it points at you: read one to "
+                "two to three as drawn (counterclockwise), then invert - "
+                "the true configuration is R. D-glyceraldehyde is indeed "
+                "(R)-glyceraldehyde, which is the standard result this "
+                "procedure should reproduce."
+            ),
+        ),
+        ReadingSection(
+            id="fp-dl",
+            heading="D and L: a positional convention",
+            figure=Figure(
+                stem="org1-fischer-dl",
+                caption=(
+                    "D and L are read off the bottom-most stereocentre: the reference hydroxyl on the right is D, on the left is L. It is a positional convention about a drawing, not a statement about which way the compound rotates light."
+                ),
+                alt="D-glyceraldehyde and L-glyceraldehyde drawn as Fischer projections side by side with the reference hydroxyl on the right and left respectively.",
+            ),
+            body=(
+                "The D/L system predates absolute configuration and "
+                "survives in two places where tradition is strong: "
+                "carbohydrates and amino acids. Its rule is purely "
+                "positional. Draw the molecule as a Fischer projection "
+                "with the most oxidised carbon at the top. Find the "
+                "BOTTOM-MOST stereocentre. If its reference hydroxyl "
+                "(or amino group, for amino acids) is on the RIGHT, the "
+                "compound is D; on the LEFT, it is L.\n\n"
+                "Three cautions keep the system honest. First, D and L "
+                "say NOTHING about optical rotation - D-fructose is "
+                "levorotatory, and the historical confusion between "
+                "uppercase D/L and lowercase d/l for rotation is exactly "
+                "why modern writing uses $(+)$ and $(-)$ for the "
+                "measurement. Second, D and L describe only the "
+                "BOTTOM-MOST centre, so two D-sugars can differ at every "
+                "other centre - D-glucose and D-galactose are both D and "
+                "are different compounds. Third, the R/S system is the "
+                "universal one; D/L persists because renaming a century "
+                "of biochemical literature was never worth the "
+                "disruption.\n\n"
+                "The biological payoff is the memory hook worth keeping: "
+                "essentially all natural amino acids are L, and "
+                "essentially all natural sugars are D - the "
+                "homochirality the chirality chapter described, stated "
+                "in the notation biochemistry actually uses."
+            ),
+        ),
+        ReadingSection(
+            id="fp-sugars",
+            heading="Why sugars needed this notation",
+            body=(
+                "An aldohexose carries four stereocentres and therefore "
+                "belongs to a family of sixteen stereoisomers, as the "
+                "previous chapter counted. Drawn in wedge-dash notation, "
+                "sixteen such structures are effectively "
+                "incomparable - the eye cannot hold four independent "
+                "three-dimensional judgements at once, and the "
+                "orientation of each drawing becomes a variable in "
+                "itself.\n\n"
+                "In Fischer notation they become a table. Each sugar is a "
+                "vertical chain with four crosses, and the entire "
+                "structure reduces to a pattern of left-and-right "
+                "hydroxyls read down the page. Comparing two sugars means "
+                "comparing two patterns, which the eye does effortlessly. "
+                "The epimer relationships of chapter 6.4 become "
+                "visible: two sugars differing at exactly one cross are "
+                "epimers at that carbon, and the family tree of the "
+                "aldoses - built by branching at each new stereocentre - "
+                "was drawn this way by Emil Fischer himself.\n\n"
+                "Two conventions complete the picture. The mirror image "
+                "of a Fischer projection is obtained by reflecting every "
+                "horizontal group left-to-right, so the enantiomer of a "
+                "D-sugar is the corresponding L-sugar with every hydroxyl "
+                "flipped - not just the bottom one. And the cyclic forms "
+                "that sugars actually adopt in solution are drawn with "
+                "Haworth projections or chair conformations instead, "
+                "with an agreed correspondence between the Fischer "
+                "left-right pattern and the Haworth up-down pattern, "
+                "which is where this notation hands off to the ring "
+                "chapters."
+            ),
+        ),
+        ReadingSection(
+            id="fp-errors",
+            heading="The error catalogue: four Fischer traps",
+            body=(
+                "Trap one: rotating the page. It feels like nothing "
+                "happened, and it inverts every stereocentre. If a "
+                "projection must be reoriented, use the 180-degree "
+                "rotation and nothing else. Trap two: forgetting the "
+                "inversion when the lowest priority is horizontal. The "
+                "answer comes out as the mirror image of the truth, and "
+                "it looks perfectly confident.\n\n"
+                "Trap three: reading D or L as a rotation direction. They "
+                "are positional labels about a drawing; the sign of "
+                "rotation is measured, and D-fructose being levorotatory "
+                "is the standing counterexample. Trap four: assuming D "
+                "describes the whole molecule. It describes the "
+                "bottom-most stereocentre only, which is why the D-aldose "
+                "family has eight members rather than one.\n\n"
+                "A fifth habit worth naming is not a trap but a defence: "
+                "when a Fischer problem matters, convert it to a "
+                "wedge-dash drawing or a model once and check that the "
+                "two agree. The notation is a compression, and "
+                "decompressing it occasionally is how you confirm the "
+                "compression is still lossless in your hands."
+            ),
+        ),
+        ReadingSection(
+            id="fp-problems",
+            heading="Problem set: four projections",
+            body=(
+                "Problem one: a Fischer projection is rotated 90 degrees "
+                "clockwise on the page. What happened to the compound? "
+                "Answer: every stereocentre inverted - the drawing now "
+                "depicts the enantiomer. Only 180-degree in-plane "
+                "rotations are safe.\n\n"
+                "Problem two: in a Fischer projection of an aldohexose, "
+                "the bottom-most stereocentre carries its hydroxyl on the "
+                "left. D or L? Answer: L. The rule reads the "
+                "bottom-most stereocentre only.\n\n"
+                "Problem three: two aldohexoses differ only at carbon 4, "
+                "where one has the hydroxyl left and the other right. "
+                "What is their relationship? Answer: DIASTEREOMERS, and "
+                "specifically epimers at C4 - one centre differing out of "
+                "four.\n\n"
+                "Problem four: you assign a Fischer stereocentre and find "
+                "priorities one to two to three tracing clockwise, with "
+                "the lowest priority on a horizontal bond. What is the "
+                "configuration? Answer: S. Clockwise would mean R with "
+                "the lowest priority pointing away, but a horizontal bond "
+                "points toward you, so invert once."
+            ),
+        ),
+        ReadingSection(
+            id="fp-history",
+            heading="Fischer's projection and Fischer's guess",
+            body=(
+                "Emil Fischer devised the projection in the 1890s while "
+                "determining the structures of the sugars - work that "
+                "earned the 1902 Nobel Prize and remains one of "
+                "chemistry's great feats of deduction, performed with "
+                "melting points, chemical degradations and optical "
+                "rotations, and no spectroscopy of any kind.\n\n"
+                "He faced a problem he could not solve: relative "
+                "configurations were determinable by chemical "
+                "correlation, but ABSOLUTE configuration was not "
+                "accessible by any method then known. So Fischer "
+                "ASSIGNED D-glyceraldehyde its configuration by "
+                "convention, knowing he had even odds of being wrong and "
+                "reasoning that a consistent convention was better than "
+                "none. Every D and L label in the literature descended "
+                "from that choice.\n\n"
+                "In 1951 Bijvoet's anomalous X-ray scattering determined "
+                "a real absolute configuration for the first time - and "
+                "Fischer's guess proved correct, sparing organic "
+                "chemistry a wholesale renumbering of its "
+                "carbohydrate and amino-acid literature. The episode is "
+                "worth remembering when the D/L system feels arbitrary: "
+                "it IS arbitrary in origin, it was ratified by "
+                "experiment half a century later, and the projection "
+                "that carries it remains in use because it does one job "
+                "supremely well."
+            ),
+        ),
+        ReadingSection(
+            id="fp-closing",
+            heading="The Fischer audit",
+            body=(
+                "Close with the checklist. ONE: confirm the drawing "
+                "follows the convention - most oxidised carbon at top, "
+                "chain vertical - because a projection drawn wrongly "
+                "cannot be read rightly. TWO: remember what the cross "
+                "means: horizontal toward you, vertical away, "
+                "intersection is the stereocentre. THREE: manipulate only "
+                "by 180-degree in-plane rotation, or by counted swaps "
+                "where an odd number inverts. FOUR: for R/S, rank by CIP, "
+                "then read directly if the lowest priority is vertical "
+                "and invert once if it is horizontal.\n\n"
+                "FIVE: for D/L, read the bottom-most stereocentre only, "
+                "and say out loud that the label predicts nothing about "
+                "rotation. The unit now has one chapter left, and it is "
+                "the practical one every preceding chapter has pointed "
+                "toward: given a racemate produced by ordinary "
+                "chemistry - which is what ordinary chemistry produces - "
+                "how is a single enantiomer actually obtained?"
+            ),
+        ),
+        ReadingSection(
+            id="fp-converting",
+            heading="Converting between notations",
+            body=(
+                "Fluency means moving between Fischer, wedge-dash and "
+                "Newman representations without losing configuration, and "
+                "the safe route always passes through an explicit "
+                "three-dimensional interpretation rather than a "
+                "pattern-matching shortcut.\n\n"
+                "FISCHER TO WEDGE-DASH: place the vertical chain in the "
+                "plane of the paper going back, then draw the two "
+                "horizontal groups as WEDGES coming toward you. The "
+                "result looks strange at first because a Fischer "
+                "projection depicts an eclipsed, curled conformation that "
+                "no molecule actually adopts at rest - the notation "
+                "prioritises comparability over realism, and this is "
+                "where that shows.\n\n"
+                "WEDGE-DASH TO FISCHER: orient the molecule so the "
+                "carbon chain runs vertically with the most oxidised "
+                "carbon up, and so that the two non-chain groups point "
+                "toward you. Then flatten. The step that goes wrong is "
+                "the orientation: a molecule drawn in a convenient "
+                "wedge-dash pose usually needs rotating before it can be "
+                "flattened honestly, and rotating a three-dimensional "
+                "model is safe while rotating the finished projection is "
+                "not. Assign R/S in BOTH notations and compare - if the "
+                "labels differ, the conversion introduced an inversion, "
+                "and that check costs thirty seconds."
+            ),
+        ),
+        ReadingSection(
+            id="fp-amino-acids",
+            heading="Amino acids in Fischer notation",
+            body=(
+                "Amino acids use the same convention with the carboxyl "
+                "group at the top and the side chain at the bottom, and "
+                "the reference group is the AMINO group rather than a "
+                "hydroxyl: on the left is L, on the right is D. "
+                "Essentially every amino acid in every protein on Earth "
+                "is L, which is the homochirality fact stated in the "
+                "notation biochemistry uses daily.\n\n"
+                "The correspondence with R/S is mostly regular and has "
+                "one famous exception. L-amino acids are (S) at the "
+                "alpha carbon - EXCEPT cysteine, which is (R) because "
+                "its sulfur-bearing side chain outranks the carboxyl "
+                "group under the CIP rules. The chapter on R/S "
+                "introduced cysteine as proof that descriptors are "
+                "conventions applied to fixed geometry; here it "
+                "reappears as proof that two conventions can disagree "
+                "about labelling while agreeing completely about "
+                "structure.\n\n"
+                "That is worth stating plainly because it is a common "
+                "source of confusion in biochemistry courses: L "
+                "describes a position in a Fischer drawing, S describes "
+                "a CIP-ranked arrangement, and cysteine's geometry "
+                "changes not at all when the letters disagree. When the "
+                "two systems collide, neither is wrong - they are "
+                "answering different questions about the same molecule."
+            ),
+        ),
+        ReadingSection(
+            id="fp-multiple-crosses",
+            heading="Reading a chain of crosses",
+            body=(
+                "A four-stereocentre sugar is four crosses stacked "
+                "vertically, and reading the whole molecule means "
+                "assigning each cross independently while remembering "
+                "that they share a chain.\n\n"
+                "Two practices make it reliable. First, NUMBER the "
+                "carbons down the chain and keep the numbering visible, "
+                "because a descriptor set like $(2R,3S,4R,5R)$ is "
+                "meaningless without agreement on which carbon is which. "
+                "Second, assign each centre in turn using the "
+                "vertical-versus-horizontal rule for the lowest priority, "
+                "resisting the temptation to assume that all centres "
+                "with the hydroxyl on the same side share a descriptor - "
+                "they often do not, because the priorities differ "
+                "depending on what lies above and below each "
+                "centre.\n\n"
+                "The relationship shortcuts from the earlier chapters "
+                "then apply directly to the drawing. Two sugars whose "
+                "Fischer patterns differ at exactly one cross are epimers "
+                "at that carbon. Two whose patterns are complete "
+                "left-right mirror images of each other are enantiomers - "
+                "which for the D and L families means every hydroxyl "
+                "flips, not just the reference one. And two that share a "
+                "pattern are the same sugar, however differently they may "
+                "have been drawn before conversion."
+            ),
+        ),
+        ReadingSection(
+            id="fp-limits",
+            heading="What the notation cannot show",
+            body=(
+                "Fischer projections buy comparability by discarding "
+                "information, and knowing what was discarded prevents "
+                "misuse. They show CONFIGURATION and nothing about "
+                "CONFORMATION: the eclipsed, curled arrangement they "
+                "imply is not a real resting shape, and no conformational "
+                "argument - no chair, no Newman analysis, no gauche "
+                "penalty - can be read off a Fischer drawing.\n\n"
+                "They are also poorly suited to rings, which is why "
+                "cyclic sugars are drawn as Haworth projections or chair "
+                "conformations instead, with a translation convention "
+                "connecting the Fischer left-right pattern to the Haworth "
+                "up-down pattern. And they carry no information about "
+                "reaction geometry, so mechanisms are drawn in other "
+                "notations even when the substrate is conventionally "
+                "written as a Fischer projection.\n\n"
+                "The general lesson about notations is worth stating "
+                "once: each one is a lossy compression optimised for a "
+                "particular question. Fischer projections answer 'which "
+                "stereoisomer is this, and how does it compare with its "
+                "relatives' supremely well. Chairs answer 'what does this "
+                "ring cost energetically.' Newman projections answer "
+                "'what is the torsional situation about this bond.' "
+                "Choosing the notation is part of setting up the problem, "
+                "and using one to answer another's question is a "
+                "reliable way to reach a confident wrong answer."
+            ),
+        ),
+        ReadingSection(
+            id="fp-vocabulary",
+            heading="The vocabulary shelf",
+            body=(
+                "FISCHER PROJECTION: a flat cross notation in which "
+                "horizontal bonds point toward the viewer, vertical bonds "
+                "away, and each intersection is a stereocentre. D and L: "
+                "positional descriptors read from the BOTTOM-MOST "
+                "stereocentre's reference group - right for D, left for "
+                "L - carrying no information about rotation.\n\n"
+                "ALDOSE FAMILY: the branching set of sugars generated by "
+                "adding stereocentres, conventionally drawn as Fischer "
+                "projections. EPIMER: relatives differing at one cross. "
+                "HAWORTH PROJECTION: the cyclic-sugar notation Fischer "
+                "projections hand off to. And the two rules that carry "
+                "everything: 180 degrees in the plane is safe, and an "
+                "odd number of swaps inverts.\n\n"
+                "Said compactly: this chapter is one convention, two "
+                "legal manipulations, and one inversion rule, applied to "
+                "the family of molecules that made the convention "
+                "necessary."
+            ),
+        ),
+        ReadingSection(
+            id="fp-exam-patterns",
+            heading="How examiners ask it",
+            body=(
+                "Four costumes recur. THE MANIPULATION: 'the projection "
+                "is rotated 90 degrees - what is the relationship to the "
+                "original?' whose answer is ENANTIOMER, because that "
+                "rotation inverts every centre. THE ASSIGNMENT: 'assign "
+                "R or S to this Fischer stereocentre' - solved by CIP "
+                "ranking plus the vertical-or-horizontal inversion "
+                "rule.\n\n"
+                "THE D/L READING: 'is this sugar D or L?' - solved by "
+                "reading the BOTTOM-MOST stereocentre only, with the "
+                "trap being candidates who read the top one or who "
+                "assume D implies dextrorotatory. THE RELATIONSHIP: two "
+                "projections side by side, 'enantiomers, diastereomers "
+                "or identical?' - solved by comparing patterns, where "
+                "every horizontal group flipped means enantiomers and "
+                "some flipped means diastereomers.\n\n"
+                "All four are mechanical once the convention is trusted, "
+                "which is the argument for learning it as rules. The "
+                "candidates who lose marks here are not the ones who "
+                "misunderstand stereochemistry; they are the ones who "
+                "manipulated a drawing casually and never noticed the "
+                "inversion."
+            ),
+        ),
+        ReadingSection(
+            id="fp-practice",
+            heading="A drill that builds confidence",
+            body=(
+                "The efficient drill mirrors the R/S one. Take any "
+                "Fischer projection with two stereocentres and produce "
+                "four versions: the original, the same drawing rotated "
+                "180 degrees, the drawing with one pair of horizontal "
+                "groups swapped, and the complete left-right mirror "
+                "image.\n\n"
+                "Assign every centre in all four, then state each "
+                "version's relationship to the original. The correct "
+                "answers are: IDENTICAL for the 180-degree rotation, a "
+                "DIASTEREOMER for the single swap (one centre inverted), "
+                "and the ENANTIOMER for the full mirror image. That "
+                "pattern is self-checking - if your four results do not "
+                "come out that way, an error is present and locatable "
+                "without an answer key.\n\n"
+                "Running the drill twice, once on a two-centre molecule "
+                "and once on a four-centre sugar, covers essentially "
+                "every Fischer manipulation an examiner can construct, "
+                "and it converts the convention from something recited "
+                "into something the hand performs correctly under "
+                "pressure."
+            ),
+        ),
+        ReadingSection(
+            id="fp-one-line",
+            heading="The chapter in one line",
+            body=(
+                "Horizontal toward you, vertical away, intersection is "
+                "the stereocentre; rotate only by 180 degrees in the "
+                "plane; invert once when the lowest priority sits "
+                "horizontal; and read D or L from the bottom-most "
+                "stereocentre while claiming nothing about rotation."
+            ),
+        ),
+        ReadingSection(
+            id="fp-why-eclipsed",
+            heading="The eclipsed conformation the notation implies",
+            body=(
+                "A detail that repays attention: the geometry a Fischer "
+                "projection encodes is a fully ECLIPSED, curled "
+                "conformation. With the chain running vertically away "
+                "from the viewer at every centre and the substituents "
+                "curling toward you, adjacent groups line up exactly - "
+                "the arrangement chapter 2 priced as the torsional "
+                "maximum.\n\n"
+                "No molecule sits there. Real chains adopt staggered "
+                "conformations, and a sugar in solution is either "
+                "cyclised or extended in some low-energy zigzag. The "
+                "projection is a bookkeeping device that happens to "
+                "correspond to an unrealistic shape, and it works "
+                "precisely because CONFIGURATION does not depend on "
+                "conformation - the very fact the ring unit spent "
+                "chapters establishing.\n\n"
+                "This explains an observation that confuses students "
+                "converting between notations: a Fischer projection "
+                "turned into a wedge-dash drawing looks wrong, coiled, "
+                "and unlike any structure in a textbook mechanism. The "
+                "drawing is not wrong; it is honest about what the "
+                "projection actually specified. Redraw it in a staggered "
+                "conformation afterwards - the configuration is "
+                "unchanged, and the picture becomes recognisable."
+            ),
+        ),
+        ReadingSection(
+            id="fp-fischer-legacy",
+            heading="Why a nineteenth-century notation survives",
+            body=(
+                "Fischer projections could have been retired when "
+                "absolute configuration became determinable and R/S "
+                "became universal. They were not, and the reasons are "
+                "worth naming because they explain when to reach for "
+                "them.\n\n"
+                "First, PATTERN COMPARISON: for families of related "
+                "stereoisomers - sugars above all - a left-right pattern "
+                "is comparable at a glance in a way that four "
+                "independent R/S labels are not. Second, INSTITUTIONAL "
+                "MEMORY: a century of carbohydrate and amino-acid "
+                "literature uses D/L, and those labels are read off "
+                "Fischer projections, so anyone reading biochemistry "
+                "must be fluent. Third, TEACHING: the notation makes the "
+                "epimer relationships and the aldose family tree "
+                "visible, which is genuinely hard to achieve any other "
+                "way.\n\n"
+                "The honest summary is that Fischer projections are a "
+                "specialist tool that survived in its specialty. Use "
+                "them for sugars, amino acids and family comparisons; "
+                "use wedge-dash for mechanisms and general structures; "
+                "use chairs for six-membered rings. Knowing which "
+                "notation answers which question is a real skill, and "
+                "this unit has now demonstrated it three times."
+            ),
+        ),
+        ReadingSection(
+            id="fp-haworth-bridge",
+            heading="Handing off to Haworth and the chair",
+            body=(
+                "Sugars spend most of their time cyclised, so the "
+                "Fischer projection is a starting point rather than a "
+                "destination. Cyclisation happens when a hydroxyl "
+                "further down the chain attacks the carbonyl carbon, "
+                "producing a ring and creating a new stereocentre at "
+                "that carbon - the ANOMERIC centre met in chapter "
+                "6.4.\n\n"
+                "The translation convention between notations is fixed: "
+                "groups on the RIGHT in a Fischer projection point DOWN "
+                "in a Haworth projection, and groups on the LEFT point "
+                "UP. That single rule lets a chemist convert a family "
+                "table into ring structures, and it is why the two "
+                "notations coexist rather than competing.\n\n"
+                "From Haworth, the final step is the chair, and there "
+                "the Cyclic Compounds unit takes over - which is where "
+                "beta-D-glucopyranose's all-equatorial arrangement, "
+                "flagged twice in earlier chapters, finally becomes "
+                "visible as a consequence rather than an assertion. "
+                "Three notations, one molecule, each answering a "
+                "different question: which stereoisomer (Fischer), which "
+                "ring face (Haworth), what does the conformation cost "
+                "(chair). Carbohydrate chemistry uses all three in a "
+                "single argument routinely, and fluency means moving "
+                "among them without dropping configuration on the "
+                "way."
+            ),
+        ),
+        ReadingSection(
+            id="fp-summary-drill",
+            heading="Two rules that carry the chapter",
+            body=(
+                "If everything else fades, two rules preserve most of "
+                "the value. FIRST: the only safe manipulation is a "
+                "180-degree rotation in the plane of the page, and any "
+                "other reorientation must be treated as suspect until "
+                "checked by assignment. SECOND: when reading R or S, the "
+                "lowest-priority group on a vertical bond points away "
+                "and is read directly, while one on a horizontal bond "
+                "points toward you and forces exactly one "
+                "inversion.\n\n"
+                "Both rules descend from the same source - the "
+                "convention that horizontals come forward - and a reader "
+                "who genuinely holds that geometry in mind can "
+                "reconstruct every other rule in the chapter, including "
+                "the mirror-image pattern and the swap arithmetic. That "
+                "is the test of whether a convention has been learned or "
+                "merely memorised: can you regenerate its consequences, "
+                "or only recite them?"
+            ),
+        ),
+        ReadingSection(
+            id="fp-worked-sugar",
+            heading="Worked: reading a four-cross sugar",
+            body=(
+                "Take an aldohexose Fischer projection with $CHO$ at "
+                "carbon 1, four crosses at carbons 2 through 5, and "
+                "$CH_2OH$ at carbon 6. Suppose the hydroxyls read, from "
+                "top to bottom: right, left, right, right.\n\n"
+                "STEP ONE - D or L: read the BOTTOM-MOST stereocentre, "
+                "carbon 5, whose hydroxyl is on the RIGHT. The sugar is "
+                "a D-aldohexose. STEP TWO - the enantiomer: reflect "
+                "EVERY horizontal group, giving left, right, left, "
+                "left - an L-aldohexose, and note that all four flipped, "
+                "not merely the reference one.\n\n"
+                "STEP THREE - an epimer: change exactly one cross. "
+                "Flipping carbon 4 alone gives right, left, left, right, "
+                "which is a different D-sugar and a C4 epimer of the "
+                "original. STEP FOUR - assign R/S at any centre by CIP "
+                "ranking plus the vertical-horizontal inversion "
+                "rule, remembering that the hydrogen at each cross is "
+                "horizontal and therefore forces one inversion at every "
+                "centre.\n\n"
+                "Four steps, and the entire family structure of the "
+                "sugars becomes navigable - which is precisely what "
+                "Fischer built the notation to accomplish."
+            ),
+        ),
+        ReadingSection(
+            id="fp-closing-note",
+            heading="A note on trusting conventions",
+            body=(
+                "Fischer projections are the clearest example in this "
+                "course of a representation whose meaning is entirely "
+                "conventional. A wedge-dash drawing carries some of its "
+                "meaning visually - a wedge LOOKS like it comes toward "
+                "you - but a Fischer cross carries none: two "
+                "perpendicular lines look identical, and only the "
+                "agreement that horizontals come forward makes the "
+                "drawing say anything at all.\n\n"
+                "That is why the manipulation rules feel arbitrary and "
+                "are not. They are simply the operations under which the "
+                "agreement survives. And it is why casual handling is "
+                "so dangerous here specifically: nothing in the "
+                "appearance of a rotated projection signals that its "
+                "meaning changed. The habit worth carrying forward is to "
+                "ask, of any notation, what agreement makes it "
+                "meaningful and which operations preserve that "
+                "agreement - a question that pays off again with Haworth "
+                "projections, with reaction arrows, and with every "
+                "shorthand this subject will ask you to trust."
+            ),
+        ),
+        ReadingSection(
+            id="fp-last",
+            heading="Before moving on",
+            body=(
+                "Two checks confirm this chapter has landed. Can you "
+                "state, without looking, which single rotation of a "
+                "Fischer projection preserves configuration and why? And "
+                "can you assign R or S to a cross, remembering to invert "
+                "when the lowest-priority group lies horizontal? If both "
+                "answers come readily, the notation is yours and the "
+                "sugar chapters ahead will read as chemistry rather than "
+                "as puzzles about drawings, which is exactly "
+                "the difference the notation was invented to make."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Fischer projections are read by convention, not perspective: horizontal bonds point toward the viewer, vertical bonds away, and the cross intersection is the stereocentre.",
+        "Only a 180-degree in-plane rotation is safe; a 90-degree turn or a flip inverts every centre silently, and swaps invert once each (so an even number is safe).",
+        "For R/S: rank by CIP, read directly when the lowest priority is vertical, invert once when it is horizontal - the same rule as wedge-dash drawings.",
+        "D/L is positional - the bottom-most stereocentre's reference group, right for D and left for L - and predicts nothing about optical rotation (D-fructose is levorotatory).",
+        "The notation exists because sixteen aldohexose stereoisomers are comparable as left-right patterns and incomparable as wedge-dash drawings; Fischer's D-glyceraldehyde assignment was a coin flip vindicated in 1951.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 6.7 Resolution of enantiomers
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.RESOLUTION",
+    lead=(
+        "Ordinary chemistry produces racemates - that is a symmetry "
+        "argument, not a technique failure - and enantiomers cannot be "
+        "separated by distillation or crystallisation because they are "
+        "identical in every achiral property. Resolution is the set of "
+        "answers to that problem, and every one of them works the same "
+        "way: import chirality, convert an inseparable enantiomeric "
+        "relationship into a separable diastereomeric one, separate by "
+        "ordinary means, and remove what you imported."
+    ),
+    sections=(
+        ReadingSection(
+            id="rs2-problem",
+            heading="The problem, stated precisely",
+            body=(
+                "A reaction between achiral reagents in an achiral "
+                "environment cannot prefer one hand: the two transition "
+                "states leading to the two enantiomers are mirror images "
+                "with identical energies, so the product is exactly "
+                "$50:50$. No improvement in technique changes this, "
+                "because it is a consequence of symmetry rather than of "
+                "skill.\n\n"
+                "And the resulting mixture resists ordinary separation "
+                "for the same reason. Enantiomers share melting point, "
+                "boiling point, solubility in achiral solvents, "
+                "chromatographic retention on achiral stationary phases, "
+                "and every spectroscopic property measured with achiral "
+                "instruments. There is, in an achiral world, nothing to "
+                "grip.\n\n"
+                "So the strategy is forced: something CHIRAL must enter "
+                "the system. Once it does, the two enantiomers experience "
+                "different environments - their interactions with the "
+                "chiral partner are diastereomeric, and diastereomers "
+                "differ in every property. The chapter's remaining "
+                "content is a catalogue of what to import, how to "
+                "separate afterwards, and what each approach costs."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-classical",
+            heading="Classical resolution: make salts, crystallise, release",
+            figure=Figure(
+                stem="org1-resolution-scheme",
+                caption=(
+                    "Classical resolution: a racemate plus a single-enantiomer resolving agent gives two diastereomeric salts with different solubilities, which separate by ordinary crystallisation before the agent is removed."
+                ),
+                alt="Flowchart from racemate plus resolving agent to two diastereomeric salts, one crystallising and one remaining in solution, then to the two pure enantiomers.",
+            ),
+            body=(
+                "The oldest general method exploits acid-base chemistry. "
+                "If the racemate is an ACID, treat it with a single "
+                "enantiomer of a chiral BASE - the classical agents are "
+                "naturally occurring alkaloids such as brucine, quinine "
+                "or cinchonidine, available in one hand because biology "
+                "made them. If the racemate is a BASE, use a single "
+                "enantiomer of a chiral acid, tartaric acid being the "
+                "traditional choice.\n\n"
+                "The salts that form are $(R)$-acid with $(S)$-base and "
+                "$(S)$-acid with $(S)$-base: NOT mirror images of each "
+                "other, therefore DIASTEREOMERS, therefore possessing "
+                "different solubilities. Fractional crystallisation "
+                "separates them by ordinary means - the less soluble salt "
+                "crystallises while the other stays in solution - and "
+                "acidifying or basifying each fraction releases the "
+                "resolved enantiomer and recovers the agent for "
+                "reuse.\n\n"
+                "The method's virtues are that it needs no special "
+                "equipment, scales to tonnes, and recycles its agent. Its "
+                "limitations are equally clear: it requires an "
+                "ionisable group, the choice of agent is largely "
+                "empirical (chemists screen a panel), fractional "
+                "crystallisation may need several recrystallisations to "
+                "reach high enantiomeric excess, and the yield ceiling is "
+                "the one every method in this family shares."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-ceiling",
+            heading="The fifty-percent ceiling and how to break it",
+            figure=Figure(
+                stem="org1-resolution-yields",
+                caption=(
+                    "Theoretical yield ceilings: classical resolution, simple kinetic resolution and chiral chromatography cap at 50 percent of the starting racemate, while dynamic kinetic resolution, desymmetrisation and asymmetric synthesis can in principle deliver all of it."
+                ),
+                alt="Bar chart of maximum single-enantiomer yield by method, with three methods at fifty percent and three at one hundred.",
+            ),
+            body=(
+                "A racemate is half wrong-handed material, so any method "
+                "that merely SORTS the two hands can deliver at most $50$ "
+                "percent of the desired one. That arithmetic is the "
+                "central economic fact of resolution, and the figure "
+                "shows which methods live under it.\n\n"
+                "Three escapes exist and each is worth naming. RACEMISE "
+                "AND RECYCLE: if the unwanted enantiomer can be converted "
+                "back to the racemate - by a reaction that passes through "
+                "an achiral intermediate - it can be fed back through the "
+                "resolution repeatedly, approaching full conversion over "
+                "cycles. DYNAMIC KINETIC RESOLUTION does the same thing "
+                "continuously: the substrate racemises IN SITU faster "
+                "than it reacts, so the slow-reacting enantiomer keeps "
+                "being regenerated as the fast one is consumed, and all "
+                "of the material can in principle become one product.\n\n"
+                "DESYMMETRISATION avoids the problem entirely by starting "
+                "from an achiral or meso substrate - which has no wrong "
+                "half to discard - and using a chiral reagent or enzyme "
+                "to modify one of its two equivalent halves selectively. "
+                "The previous chapter flagged this as the elegant "
+                "consequence of meso compounds having distinguishable "
+                "halves. And ASYMMETRIC SYNTHESIS sidesteps resolution "
+                "altogether by never making the racemate: a chiral "
+                "catalyst makes the competing transition states "
+                "diastereomeric, so one enantiomer forms preferentially "
+                "from the start."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-methods",
+            heading="The modern toolkit",
+            table=Table(
+                caption="Resolution and enantiopure-synthesis methods compared",
+                columns=("Method", "What supplies the chirality", "Ceiling / scale note"),
+                rows=(
+                    ("classical salt resolution", "single-enantiomer acid or base", "50% ceiling; scales to tonnes; agent recyclable"),
+                    ("preferential crystallisation", "seed crystals of one enantiomer", "50%; only for conglomerate-forming racemates"),
+                    ("chiral chromatography", "chiral stationary phase", "50%; analytical to preparative; the regulatory standard for measurement"),
+                    ("kinetic resolution (enzyme or catalyst)", "chiral catalyst reacting one hand faster", "50%; excess rises as conversion proceeds"),
+                    ("dynamic kinetic resolution", "chiral catalyst plus in-situ racemisation", "up to 100%"),
+                    ("desymmetrisation", "chiral catalyst acting on an achiral/meso substrate", "up to 100%"),
+                    ("asymmetric synthesis", "chiral catalyst or auxiliary during bond formation", "up to 100%; the industrial default where available"),
+                ),
+                source="Standard synthetic-methodology comparison; the 50 percent ceilings follow from the arithmetic of sorting a racemate",
+                note="Every entry works by making the two enantiomers experience diastereomeric environments.",
+            ),
+            body=(
+                "KINETIC RESOLUTION deserves its own explanation because "
+                "it behaves unlike the others. A chiral catalyst - often "
+                "an enzyme such as a lipase - reacts with one enantiomer "
+                "faster than the other, so as the reaction proceeds the "
+                "fast-reacting hand is depleted and the SLOW one "
+                "accumulates unreacted. Both the product and the "
+                "recovered starting material become enantiomerically "
+                "enriched, and the enrichment of the leftover material "
+                "RISES with conversion while its quantity falls. The "
+                "chemist therefore chooses where to stop, trading yield "
+                "against purity - a genuinely different decision from "
+                "any other method here.\n\n"
+                "CHIRAL CHROMATOGRAPHY has become the analytical "
+                "standard, as the optical-activity chapter noted, and "
+                "preparative versions separate real quantities. "
+                "Simulated moving-bed technology made it viable at "
+                "manufacturing scale, which is why some single-enantiomer "
+                "drugs are produced by separating a racemate rather than "
+                "by building one hand. PREFERENTIAL CRYSTALLISATION is "
+                "the industrialised version of Pasteur's tweezers, "
+                "limited to the minority of racemates that form "
+                "conglomerates.\n\n"
+                "Across the table, notice the invariant: every method "
+                "supplies chirality from somewhere - an alkaloid from a "
+                "plant, an enzyme from a microbe, a designed ligand on a "
+                "metal, a seed crystal. Chirality is never generated from "
+                "nothing, which is the laboratory statement of the "
+                "symmetry principle this unit opened with."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-verifying",
+            heading="Verifying that it worked",
+            body=(
+                "A resolution is not finished until its success is "
+                "measured, and the optical-activity chapter's honest "
+                "hierarchy applies. CHIRAL CHROMATOGRAPHY is the primary "
+                "method: two peaks whose areas give the enantiomeric "
+                "excess directly, without needing a literature rotation "
+                "value or assuming linearity, and with sensitivity to "
+                "fractions of a percent. Regulatory filings expect it.\n\n"
+                "NMR with a chiral shift reagent or chiral derivatising "
+                "agent works by the same principle as the resolution "
+                "itself - manufacture diastereomers, whose signals then "
+                "separate and integrate. POLARIMETRY remains useful as a "
+                "fast confirmation and appears in pharmacopoeial "
+                "monographs, with the caveats already established: it "
+                "depends on a correct pure-rotation value, on linearity, "
+                "and on the absence of chiral impurities.\n\n"
+                "One practical arithmetic worth rehearsing, because it "
+                "recurs in process reports: a resolution delivering "
+                "material at $96$ percent ee contains "
+                "$(100+96)/2 = 98$ percent of the desired enantiomer and "
+                "$2$ percent of its mirror image. Whether that is "
+                "acceptable depends on what the wrong hand does, which is "
+                "a pharmacological question rather than a chemical one - "
+                "and it is why specifications are set per compound rather "
+                "than by a universal threshold."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-industry",
+            heading="Why the industry moved on from resolution",
+            body=(
+                "For most of the twentieth century, resolution was how "
+                "single enantiomers were obtained, and the fifty-percent "
+                "ceiling was simply accepted as the cost. Two pressures "
+                "changed that. Regulators began treating each enantiomer "
+                "as a distinct substance requiring its own "
+                "characterisation, which made racemic products more "
+                "expensive to justify. And asymmetric catalysis matured "
+                "to the point where building the right hand became "
+                "cheaper than sorting hands afterwards.\n\n"
+                "The economics are stark at scale. A classical resolution "
+                "discards or recycles half the material at every pass and "
+                "consumes a stoichiometric quantity of resolving agent, "
+                "while a catalytic asymmetric route uses a small amount "
+                "of catalyst to set the configuration of an unlimited "
+                "quantity of product. The 2001 Nobel Prize recognised "
+                "exactly that transition, and modern process chemistry "
+                "reaches for resolution mainly when no good asymmetric "
+                "route exists, when the racemate is cheap and the "
+                "unwanted hand racemisable, or when a chiral "
+                "chromatographic separation is simply the fastest path to "
+                "clinical supply.\n\n"
+                "Resolution has not disappeared - it remains the honest "
+                "answer for many targets, and enzymatic kinetic "
+                "resolutions in particular are workhorses. But it is now "
+                "one option among several rather than the only door, "
+                "which is a genuine change from the world Pasteur's "
+                "tweezers opened."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-errors",
+            heading="The error catalogue: four resolution traps",
+            body=(
+                "Trap one: proposing an ordinary recrystallisation or "
+                "distillation to separate enantiomers. It cannot work - "
+                "the properties are identical - and any answer that omits "
+                "a chiral element is wrong by construction. Trap two: "
+                "forgetting the yield ceiling. A resolution question "
+                "asking for maximum yield of one enantiomer from a "
+                "racemate has $50$ percent as its answer unless "
+                "racemisation, dynamic kinetic resolution or "
+                "desymmetrisation is in play.\n\n"
+                "Trap three: confusing kinetic resolution's two outputs. "
+                "The unreacted starting material and the product are "
+                "OPPOSITE enantiomers enriched to different extents, and "
+                "the enrichment depends on conversion - so 'which "
+                "enantiomer is enriched' requires knowing whether the "
+                "question means the product or the recovered "
+                "substrate.\n\n"
+                "Trap four: assuming a resolving agent must be exotic. "
+                "The classical agents are natural products - tartaric "
+                "acid from wine, alkaloids from bark - chosen precisely "
+                "because biology supplies them in a single hand cheaply. "
+                "The chiral pool is the practical foundation of the whole "
+                "technique, and it exists because of the homochirality "
+                "this unit began by describing."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-problems",
+            heading="Problem set: four separations",
+            body=(
+                "Problem one: you have $10$ g of a racemic carboxylic "
+                "acid and need the $(R)$ enantiomer. Outline the "
+                "classical approach and state the maximum yield. Answer: "
+                "treat with a single enantiomer of a chiral base to form "
+                "diastereomeric salts, separate by fractional "
+                "crystallisation, then acidify to release the acid and "
+                "recover the base. Maximum yield of $(R)$: $5$ g, fifty "
+                "percent.\n\n"
+                "Problem two: why can a chiral column separate "
+                "enantiomers when an ordinary column cannot? Answer: the "
+                "stationary phase is chiral, so each enantiomer's "
+                "transient association with it is diastereomeric - "
+                "different binding energies mean different retention "
+                "times.\n\n"
+                "Problem three: an enzymatic kinetic resolution is "
+                "stopped at $50$ percent conversion. Describe the two "
+                "fractions. Answer: the product is enriched in the "
+                "fast-reacting enantiomer and the recovered starting "
+                "material is enriched in the slow-reacting one - opposite "
+                "hands, with the leftover material's excess rising if the "
+                "reaction runs further at the cost of quantity.\n\n"
+                "Problem four: a process chemist proposes converting the "
+                "unwanted enantiomer back to racemate and recycling. What "
+                "does this achieve, and what is the requirement? Answer: "
+                "it breaks the fifty-percent ceiling by making the "
+                "wrong hand reusable, approaching complete conversion "
+                "over cycles. The requirement is a racemisation route - "
+                "typically through an achiral intermediate - that does "
+                "not destroy the molecule."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-closing",
+            heading="Closing the unit",
+            body=(
+                "The Stereochemistry unit ends where its chapters "
+                "converge, in one strategic idea. Chirality exists "
+                "because molecules can be non-superimposable on their "
+                "mirror images. R and S let us NAME which hand. Optical "
+                "activity lets us DETECT and quantify what a sample "
+                "contains. The relationship chapters explain what "
+                "follows from a classification, and the counting chapter "
+                "handles families. And resolution spends all of "
+                "it: because enantiomers are distinguishable only in a "
+                "chiral environment, obtaining one hand means building "
+                "such an environment on purpose.\n\n"
+                "Every technique in this chapter is that single sentence "
+                "in different equipment - a salt, a column, an enzyme, a "
+                "catalyst, a seed crystal. And the unit's deeper habit "
+                "transfers well beyond stereochemistry: identify the "
+                "symmetry of the situation, ask what that symmetry "
+                "forbids, and then ask what must be imported to break "
+                "it. ORG2 will spend these tools on reactions - "
+                "eliminations that demand particular geometries, "
+                "substitutions that invert or retain configuration, "
+                "sugars whose every property traces to their "
+                "stereochemistry - and each of those chapters assumes "
+                "the audits built here run automatically."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-agents",
+            heading="Choosing a resolving agent",
+            body=(
+                "Selecting an agent is empirical work with a few "
+                "guiding principles, and knowing them explains why the "
+                "classical agents are what they are. The agent must be "
+                "available in a SINGLE ENANTIOMER at reasonable cost, "
+                "which in practice means it comes from the chiral "
+                "pool - tartaric acid from winemaking, alkaloids such as "
+                "quinine and brucine from bark, amino acids, "
+                "camphorsulfonic acid from camphor.\n\n"
+                "It must form a salt or derivative that CRYSTALLISES "
+                "well, since fractional crystallisation is the "
+                "separation step and an oil separates from nothing. The "
+                "two diastereomers it forms should differ appreciably in "
+                "solubility - the larger the difference, the fewer "
+                "recrystallisations are needed to reach acceptable "
+                "purity. And the derivative must be cleanly REVERSIBLE, "
+                "so the enantiomer is released without racemising and "
+                "the agent is recovered for reuse.\n\n"
+                "Because no theory predicts which agent will crystallise "
+                "well with which substrate, resolution development is "
+                "screening: a panel of agents, a panel of solvents, and "
+                "empirical evaluation. That empirical character is "
+                "another reason the field moved toward asymmetric "
+                "catalysis where possible - a catalytic route can be "
+                "designed and optimised rationally in a way a "
+                "crystallisation seldom can."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-covalent",
+            heading="Covalent auxiliaries: the same trick, bonded",
+            body=(
+                "Salt formation is not the only way to attach a chiral "
+                "partner. A CHIRAL AUXILIARY is covalently bonded to the "
+                "substrate, converting enantiomers into separable "
+                "diastereomers - or, more commonly in synthesis, "
+                "directing a subsequent reaction so that only one "
+                "diastereomeric product forms.\n\n"
+                "The sequence has three stages: ATTACH the auxiliary, "
+                "run the reaction under its stereochemical influence, "
+                "then REMOVE and recover it. Because the auxiliary is "
+                "present in stoichiometric quantity, the atom economy is "
+                "poorer than catalysis - but the diastereoselectivity is "
+                "often excellent, the intermediates are separable by "
+                "ordinary chromatography, and the outcome is "
+                "predictable, which made auxiliaries the workhorse of "
+                "asymmetric synthesis before catalytic methods "
+                "matured.\n\n"
+                "The conceptual point matters more than the specific "
+                "reagents: whether the chiral partner is held by an "
+                "ionic bond (a salt), a covalent bond (an auxiliary), or "
+                "a transient association (a catalyst or a "
+                "chromatographic phase), the mechanism of "
+                "discrimination is identical. Diastereomeric "
+                "relationships have different energies; enantiomeric "
+                "ones do not. Every technique in this chapter is that "
+                "sentence with different hardware."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-enzymes",
+            heading="Enzymes as resolving agents",
+            body=(
+                "Biology supplies the most selective chiral reagents "
+                "available, and enzymatic resolution has become routine "
+                "industrial practice. LIPASES are the workhorses: they "
+                "catalyse ester formation and hydrolysis, tolerate "
+                "organic solvents, accept a wide range of substrates, "
+                "and frequently discriminate between enantiomers by "
+                "large factors.\n\n"
+                "A typical resolution acylates one enantiomer of a "
+                "racemic alcohol far faster than the other, so the "
+                "reaction is stopped near half conversion and the ester "
+                "product is separated from the unreacted alcohol by "
+                "ordinary chromatography - two fractions, opposite "
+                "hands, each enriched. Esterases, proteases, "
+                "dehydrogenases and transaminases perform analogous "
+                "jobs on other functional groups.\n\n"
+                "The advantages are real: mild conditions, aqueous or "
+                "solvent-tolerant, high selectivity, and a biodegradable "
+                "catalyst used in small quantity. The limitations are "
+                "equally real: an enzyme's substrate scope is narrow "
+                "compared with a designed catalyst, its preferred hand "
+                "is fixed by the protein (obtaining the opposite one may "
+                "require a different enzyme entirely), and simple "
+                "kinetic resolution still carries the fifty-percent "
+                "ceiling unless coupled with in-situ racemisation. "
+                "Combining a lipase with a racemisation catalyst is "
+                "precisely how dynamic kinetic resolutions are built, "
+                "and it is one of the cleaner marriages of biological "
+                "and synthetic chemistry."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-worked",
+            heading="Worked: planning a resolution end to end",
+            body=(
+                "A chemist has $20$ g of a racemic amine and needs the "
+                "$(S)$ enantiomer at high enantiomeric excess. Plan the "
+                "work and state the arithmetic honestly.\n\n"
+                "STEP ONE - choose the chemistry: the substrate is a "
+                "BASE, so the agent is a single-enantiomer chiral ACID; "
+                "tartaric acid derivatives are the traditional first "
+                "screen. STEP TWO - form the salts: combining the "
+                "racemic amine with the resolved acid produces two "
+                "diastereomeric salts. STEP THREE - separate: fractional "
+                "crystallisation from a screened solvent, with the less "
+                "soluble salt collected and recrystallised until its "
+                "enantiomeric excess plateaus.\n\n"
+                "STEP FOUR - release: basify to liberate the free amine "
+                "and recover the acid for reuse. STEP FIVE - verify: "
+                "chiral chromatography for the enantiomeric excess, not "
+                "polarimetry alone. STEP SIX - state the yield: the "
+                "theoretical maximum of $(S)$ amine is $10$ g, half the "
+                "starting material, and real recovery after "
+                "recrystallisation losses will be lower - perhaps $6$ to "
+                "$8$ g. If that is unacceptable, the options are to "
+                "racemise the recovered $(R)$ amine and recycle it, or "
+                "to abandon resolution for an asymmetric route. Naming "
+                "the ceiling in the plan rather than discovering it in "
+                "the flask is the professional habit this chapter "
+                "teaches."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-vocabulary",
+            heading="The vocabulary shelf",
+            body=(
+                "RESOLUTION: separating a racemate into its enantiomers. "
+                "RESOLVING AGENT: the single-enantiomer acid or base "
+                "that converts them into diastereomeric salts. CHIRAL "
+                "POOL: the cheap enantiopure natural products - tartaric "
+                "acid, amino acids, sugars, terpenes, alkaloids - that "
+                "supply most agents and many starting materials.\n\n"
+                "KINETIC RESOLUTION: a chiral catalyst consuming one "
+                "hand faster, enriching both fractions in opposite "
+                "enantiomers. DYNAMIC KINETIC RESOLUTION: the same with "
+                "in-situ racemisation, breaking the fifty-percent "
+                "ceiling. DESYMMETRISATION: chiral modification of one "
+                "half of an achiral or meso substrate. CHIRAL "
+                "AUXILIARY: a stoichiometric chiral group attached, used "
+                "to direct, then removed. ASYMMETRIC SYNTHESIS: building "
+                "the desired hand catalytically rather than sorting "
+                "afterwards.\n\n"
+                "Every entry answers the same question - where does the "
+                "chirality come from - which is the question this "
+                "chapter exists to make automatic."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-history",
+            heading="From tweezers to tonnes",
+            body=(
+                "Resolution's history is the history of stereochemistry "
+                "itself. Pasteur's 1848 hand-separation of tartrate "
+                "crystals was the first resolution ever performed, and "
+                "it worked only because that salt happens to form a "
+                "conglomerate below about 26 degrees Celsius - a piece "
+                "of luck that has never been repeatable for most "
+                "racemates.\n\n"
+                "Pasteur went on to demonstrate the other two general "
+                "strategies still in use. He showed that a chiral base "
+                "forms separable diastereomeric salts with a racemic "
+                "acid, which became the classical method. And he "
+                "observed that a MICROORGANISM fed racemic tartrate "
+                "consumed one enantiomer preferentially, leaving the "
+                "other behind - the first kinetic resolution, performed "
+                "a century before the term existed and before anyone "
+                "knew what an enzyme was.\n\n"
+                "So all three families of technique in this chapter "
+                "trace to one worker in the 1840s and 1850s, and the "
+                "century since has industrialised rather than replaced "
+                "them: fractional crystallisation at tonne scale, "
+                "simulated moving-bed chromatography, engineered lipases "
+                "in continuous reactors. What genuinely changed the "
+                "field was not a better resolution but an alternative to "
+                "resolving at all - catalytic asymmetric synthesis - "
+                "which is why the two ideas share this chapter's closing "
+                "sections."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-thermodynamics",
+            heading="Why nothing achiral can ever work",
+            body=(
+                "It is worth stating the impossibility rigorously, "
+                "because students keep proposing achiral schemes and "
+                "the argument that defeats every one of them is the "
+                "same. Two enantiomers have IDENTICAL free energies in "
+                "an achiral environment - exactly identical, by "
+                "symmetry - so any equilibrium between them lies at "
+                "$50:50$, and any process whose selectivity depends on "
+                "an energy difference has no difference to work "
+                "with.\n\n"
+                "That covers distillation (identical vapour pressures), "
+                "recrystallisation from achiral solvent (identical "
+                "solubilities), ordinary chromatography (identical "
+                "affinities), and any achiral reagent (identical "
+                "transition-state energies). No refinement of technique "
+                "escapes it, because the barrier is not experimental "
+                "precision but symmetry.\n\n"
+                "Introduce chirality and the symmetry breaks: the "
+                "interactions become diastereomeric, the energies "
+                "genuinely differ, and every ordinary separation method "
+                "suddenly works. This is why the chapter can promise "
+                "that ANY successful resolution has chirality in it "
+                "somewhere, and why finding that source is the fastest "
+                "way to understand an unfamiliar method. Even the "
+                "conglomerate exception obeys it - there the chiral "
+                "element is the crystal lattice itself."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-exam-patterns",
+            heading="How examiners ask it",
+            body=(
+                "Three costumes. THE METHOD CHOICE: 'how would you "
+                "obtain the pure (R) enantiomer from this racemate?' - "
+                "answered by naming a chiral element and the separation "
+                "it enables, with any achiral proposal wrong by "
+                "construction. THE YIELD: 'what is the maximum yield of "
+                "one enantiomer' - answered $50$ percent unless "
+                "racemisation, dynamic kinetic resolution or "
+                "desymmetrisation appears in the stem.\n\n"
+                "THE MECHANISM OF DISCRIMINATION: 'why does a chiral "
+                "column separate enantiomers?' - answered by "
+                "diastereomeric association, which is the same answer "
+                "for enzymes, salts and auxiliaries. A fourth variant "
+                "asks about kinetic resolution's two fractions, where "
+                "the discriminator is that the product and the recovered "
+                "substrate are OPPOSITE hands.\n\n"
+                "Every one is answered by the chapter's single "
+                "sentence - import chirality, convert enantiomeric into "
+                "diastereomeric, separate, remove - which is worth "
+                "rehearsing as a sentence because it generates the "
+                "specific answers rather than requiring them to be "
+                "memorised individually."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-one-line",
+            heading="The chapter in one line",
+            body=(
+                "Enantiomers are separable only in a chiral environment, "
+                "so every resolution imports chirality - as a salt, a "
+                "column, an enzyme, an auxiliary or a catalyst - "
+                "converts an enantiomeric relationship into a "
+                "diastereomeric one, separates by ordinary means, and "
+                "removes what it imported, paying a fifty-percent "
+                "ceiling unless racemisation or desymmetrisation is "
+                "built into the design."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-scale",
+            heading="What resolution looks like at manufacturing scale",
+            body=(
+                "Scale changes which considerations dominate. At "
+                "milligram scale in a research laboratory, chiral "
+                "preparative chromatography is often simplest - buy the "
+                "column, inject, collect. At kilogram and tonne scale "
+                "the calculus inverts: solvent volumes, cycle times, "
+                "waste streams and the cost of the chiral phase all "
+                "matter, and crystallisation-based methods become "
+                "attractive again because they are cheap per kilogram "
+                "and use equipment plants already own.\n\n"
+                "Three practical realities shape industrial choices. "
+                "RECYCLING the resolving agent is not optional at scale, "
+                "since a stoichiometric chiral reagent discarded each "
+                "batch would dominate cost. RACEMISING and re-resolving "
+                "the unwanted enantiomer converts the fifty-percent "
+                "ceiling from a hard limit into a throughput penalty. "
+                "And solvent selection is a process-safety and "
+                "environmental decision as much as a chemical "
+                "one.\n\n"
+                "Simulated moving-bed chromatography deserves its "
+                "mention here because it changed what was possible: by "
+                "counter-current operation, it uses far less solvent and "
+                "stationary phase per kilogram than batch "
+                "chromatography, which brought preparative chiral "
+                "separation into genuine manufacturing use. Several "
+                "single-enantiomer drugs reach patients through exactly "
+                "that route - the racemate is made cheaply and then "
+                "separated, because separating turned out to cost less "
+                "than building one hand selectively."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-unit-close",
+            heading="The strategic summary of the whole unit",
+            body=(
+                "Set the seven chapters side by side and one argument "
+                "runs through all of them. Molecules can be "
+                "non-superimposable on their mirror images "
+                "(CHIRALITY). We name which hand from structure alone "
+                "(R/S). We detect and quantify what a sample contains "
+                "(OPTICAL ACTIVITY). We classify any pair of structures "
+                "and thereby predict their separability (ENANTIOMERS AND "
+                "DIASTEREOMERS). We count families honestly, allowing "
+                "for symmetry (MULTIPLE STEREOCENTRES). We notate them "
+                "compactly where the counts get large (FISCHER). And we "
+                "obtain one hand in a bottle (RESOLUTION).\n\n"
+                "Underneath every chapter sits the same physical fact: "
+                "enantiomers are distinguishable only in a chiral "
+                "environment. That single principle explains why "
+                "polarised light works as a probe, why enzymes "
+                "discriminate, why receptors give two smells to one "
+                "formula, why ordinary purification fails, and why every "
+                "resolution technique looks structurally alike however "
+                "different its equipment.\n\n"
+                "ORG2 spends this. Substitution reactions that invert or "
+                "retain configuration, eliminations that demand "
+                "particular geometries, additions that create new "
+                "stereocentres with predictable relative configuration, "
+                "and the carbohydrate chapters where every property "
+                "traces to stereochemistry - each assumes the audits "
+                "built here run without conscious effort. That is what a "
+                "foundational unit is for."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-final-audit",
+            heading="The resolution audit",
+            body=(
+                "Close with the checklist that answers any resolution "
+                "question. ONE: identify the CHIRAL SOURCE - what is "
+                "being imported, and is it available in a single hand? "
+                "Any proposed method without one fails by symmetry. TWO: "
+                "identify what DIASTEREOMERIC relationship it creates - "
+                "a salt, a covalent derivative, a transient association "
+                "on a column, or differing transition-state "
+                "energies.\n\n"
+                "THREE: name the ORDINARY separation that then becomes "
+                "possible - crystallisation, chromatography, or simply "
+                "stopping a reaction partway. FOUR: state how the "
+                "imported chirality is REMOVED and whether it is "
+                "recovered. FIVE: compute the yield ceiling honestly, "
+                "and say whether racemisation, dynamic kinetic "
+                "resolution or desymmetrisation lifts it.\n\n"
+                "SIX: choose the VERIFICATION method, remembering that "
+                "chiral chromatography measures composition directly "
+                "while polarimetry infers it. Six steps, and they "
+                "generate a defensible plan for any racemate, which is "
+                "considerably more useful than remembering that brucine "
+                "was once popular."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-one-more",
+            heading="A closing caution about racemisation",
+            body=(
+                "One risk deserves explicit mention because it "
+                "invalidates otherwise sound work: the resolved product "
+                "must be checked for stability. A stereocentre alpha to "
+                "a carbonyl, or one that can ionise, may racemise during "
+                "the very steps used to liberate it - heating, "
+                "acidifying, basifying - so a resolution that succeeded "
+                "in the crystallisation can be undone in the "
+                "workup.\n\n"
+                "The defence is procedural: measure enantiomeric excess "
+                "AFTER the final isolation rather than on the "
+                "intermediate salt, keep conditions as mild as the "
+                "chemistry allows, and store material with its "
+                "stability in mind. This is the optical-activity "
+                "chapter's racemisation section arriving as a practical "
+                "warning rather than a phenomenon, and it is the "
+                "difference between a resolution that worked and one "
+                "that merely appeared to."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-final-word",
+            heading="The unit's final word",
+            body=(
+                "This unit began with hands and ends with bottles. "
+                "Between those two images sits a complete method: "
+                "recognise the symmetry, name what you have, measure "
+                "what a sample contains, classify how two structures "
+                "relate, count the family honestly, notate it "
+                "compactly, and separate what nature or a flask "
+                "delivered as a mixture.\n\n"
+                "The single most portable idea is the one every chapter "
+                "restated: enantiomers differ only in a chiral "
+                "environment. It explains a polarimeter, an enzyme, a "
+                "receptor, a chiral column, a resolving agent and a "
+                "failed recrystallisation, and it will explain the "
+                "stereochemical outcome of every reaction ORG2 "
+                "introduces. Hold that sentence, and the rest of "
+                "stereochemistry is bookkeeping performed carefully."
+            ),
+        ),
+        ReadingSection(
+            id="rs2-last",
+            heading="Before moving on",
+            body=(
+                "One check confirms the chapter has landed: given any "
+                "racemate and any target enantiomer, can you name a "
+                "chiral source, the diastereomeric relationship it "
+                "creates, the ordinary separation that follows, and the "
+                "honest yield ceiling? If so, the unit has done its work "
+                "and ORG2's reactions can be read stereochemically from "
+                "the first page."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Symmetric chemistry gives racemates by necessity, and enantiomers cannot be separated by any achiral method - so resolution always imports chirality from somewhere.",
+        "Classical resolution converts a racemate into diastereomeric salts with a single-enantiomer acid or base, separates them by ordinary crystallisation, then releases the enantiomer and recycles the agent.",
+        "Sorting a racemate caps at 50 percent yield; racemise-and-recycle, dynamic kinetic resolution, desymmetrisation and asymmetric synthesis are the four escapes.",
+        "Kinetic resolution enriches BOTH fractions in opposite hands, with the leftover material's excess rising as conversion increases - the chemist chooses where to stop.",
+        "Verify with chiral chromatography (the regulatory standard) rather than polarimetry alone, and remember 96 percent ee still means 2 percent of the other hand.",
+    ),
+))
