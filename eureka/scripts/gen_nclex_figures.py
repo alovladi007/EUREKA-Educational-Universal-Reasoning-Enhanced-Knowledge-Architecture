@@ -668,6 +668,76 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Pediatric vital-sign bands by age (standard published teaching ranges).
+# The tested logic is the TREND: heart and respiratory rates fall as a child
+# grows while blood pressure rises, so every number is judged against its
+# age band rather than the adult range.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-peds-vitals")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    ages = ["newborn", "infant", "toddler", "preschool", "school-age",
+            "adolescent"]
+    hr = [(110, 160), (90, 160), (80, 140), (70, 120), (60, 110), (60, 100)]
+    rr = [(30, 60), (25, 50), (20, 30), (20, 25), (18, 22), (12, 20)]
+    x = np.arange(len(ages))
+    fig, axes = plt.subplots(1, 2, figsize=(8.4, 3.8))
+    for ax, data, label, colour in ((axes[0], hr, "heart rate (beats/min)", c[0]),
+                                    (axes[1], rr, "respirations (breaths/min)", c[1])):
+        lo = [d[0] for d in data]
+        hi = [d[1] for d in data]
+        ax.fill_between(x, lo, hi, color=colour, alpha=0.35)
+        ax.plot(x, hi, color=colour, linewidth=1.8)
+        ax.plot(x, lo, color=colour, linewidth=1.8)
+        ax.set_xticks(x)
+        ax.set_xticklabels(ages, rotation=30, ha="right", fontsize=8.5)
+        ax.set_ylabel(label, fontsize=9.5)
+        S.strip(ax)
+    axes[0].annotate("rates FALL as the child grows", (0.15, 168),
+                     fontsize=9, color=ink)
+    axes[1].annotate("same direction - judge every\nnumber against its age band",
+                     (0.15, 55), fontsize=9, color=ink)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Infant growth milestones as taught: birth weight DOUBLES by about 6 months
+# and TRIPLES by 12; length increases about 50 percent in the first year;
+# the posterior fontanel closes by 2-3 months and the anterior by 12-18.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-peds-growth")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    months = np.array([0, 6, 12])
+    multiples = np.array([1.0, 2.0, 3.0])
+    fig, ax = plt.subplots(figsize=(7.0, 3.9))
+    ax.plot(months, multiples, color=c[0], linewidth=2, marker="o",
+            markersize=7)
+    for m, v, label in ((0, 1.0, "birth weight"), (6, 2.0, "DOUBLES by ~6 months"),
+                        (12, 3.0, "TRIPLES by ~12 months")):
+        ax.annotate(label, (m, v), textcoords="offset points",
+                    xytext=(8, -14 if m == 0 else 8), fontsize=9.2, color=ink)
+    ax.axhline(1.0, color=S.GRID[mode], linewidth=1)
+    S.note(ax, 0.3, 3.35,
+           "length increases about 50 percent in the first year;\nposterior fontanel closes 2-3 months, anterior 12-18 months",
+           mode, ha="left")
+    ax.set_xlabel("age (months)")
+    ax.set_ylabel("multiple of birth weight")
+    ax.set_xlim(-0.8, 14)
+    ax.set_ylim(0.5, 3.9)
+    ax.set_xticks([0, 6, 12])
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

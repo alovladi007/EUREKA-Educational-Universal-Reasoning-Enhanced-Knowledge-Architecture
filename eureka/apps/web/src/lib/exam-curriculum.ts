@@ -975,6 +975,14 @@ const NCLEX_RN: ExamCurriculum = [
     ],
   },
   {
+    sectionId: 'pediatrics', sectionName: 'Pediatric Nursing',
+    topics: [
+      t('nx_peds_foundations', 'Pediatric Foundations & Assessment', 'Age-banded vital signs and growth milestones, developmental approach to care, hospitalization and separation anxiety, pain assessment by age, safety, and the pediatric emergency picture.', 16),
+      t('nx_peds_resp_cardiac', 'Pediatric Respiratory & Cardiac Disorders', 'Croup vs epiglottitis, bronchiolitis and RSV, asthma in children, cystic fibrosis, congenital heart defects sorted by shunt direction, and heart failure in infants.', 17),
+      t('nx_peds_gi_gu', 'Pediatric GI, Renal & Genitourinary Disorders', 'Dehydration severity and rehydration, pyloric stenosis vs intussusception, cleft lip and palate, Hirschsprung, nephrotic syndrome vs glomerulonephritis, and urinary tract infection.', 16),
+    ],
+  },
+  {
     sectionId: 'psychosocial', sectionName: 'Psychosocial Integrity',
     topics: [
       t('nx_therapeutic_comm', 'Therapeutic Communication & Mental Health', 'What a therapeutic response looks like, crisis intervention, suicide risk, abuse and neglect reporting, and substance withdrawal.', 15),

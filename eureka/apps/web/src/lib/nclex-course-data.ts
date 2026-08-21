@@ -3789,6 +3789,359 @@ Two teaching points ride along. The vastus lateralis is the injection site for i
   ],
 },
 
+nx_peds_foundations: {
+  topicId: 'nx_peds_foundations',
+  title: `Pediatric Foundations & Assessment`,
+  domainWeight: 'Health Promotion and Maintenance (6-12%)',
+  overview: `Pediatric items punish adult reflexes. A heart rate of 150 is an emergency in an adult and expected in a newborn; a child compensates beautifully for shock right up until they crash; and the approach that calms a school-age child terrifies a toddler. This chapter builds the age-banded numbers, the growth milestones, the developmental approach to procedures and hospitalization, pain assessment by age, and the deterioration picture that looks different in children than in adults.`,
+  sections: [
+    {
+      id: 'pf-vitals',
+      title: `1. The Numbers Change With Age`,
+      content: `![Pediatric vital sign bands by age: heart rate falling from 110-160 in newborns to 60-100 in adolescents, and respirations falling from 30-60 to 12-20 across the same span.](/courses/nclex/figures/nclex-peds-vitals.svg)
+
+| Age group | Heart rate | Respirations | Systolic BP (approx.) |
+| --- | --- | --- | --- |
+| newborn | 110-160 | 30-60 | 60-90 |
+| infant (1-12 mo) | 90-160 | 25-50 | 70-100 |
+| toddler (1-3 y) | 80-140 | 20-30 | 80-110 |
+| preschool (3-5 y) | 70-120 | 20-25 | 80-110 |
+| school-age (6-12 y) | 60-110 | 18-22 | 85-120 |
+| adolescent | 60-100 | 12-20 | 90-120 |
+
+The direction is the tested logic: rates FALL and blood pressure RISES as children grow. Every number is judged against its age band, never against the adult range — which is why an item giving a heart rate without an age is incomplete, and why "tachycardia" in a 2-month-old means something different from tachycardia in a 15-year-old.
+
+## The one that matters most
+
+HYPOTENSION IS A LATE SIGN IN CHILDREN. A child compensates for hypovolemia and shock with tachycardia and vasoconstriction so effectively that blood pressure holds nearly normal until compensation exhausts — and then falls precipitously. The early signs are TACHYCARDIA, delayed capillary refill (over 2-3 seconds), cool mottled extremities, decreased urine output, and altered behavior (irritability, then lethargy). By the time a child is hypotensive, they are in decompensated shock and near arrest.
+
+That single fact reorganizes pediatric assessment. Capillary refill and mentation carry more weight than blood pressure; a quiet, floppy, uninterested infant is more alarming than a screaming one, because vigorous crying takes energy a decompensating child does not have.
+
+## Measurement technique
+
+Count apical pulse for a FULL MINUTE in infants and young children (rates are fast and rhythms irregular), count respirations by watching the ABDOMEN in infants (diaphragmatic breathers) also for a full minute, use an appropriately sized blood pressure cuff (a cuff too small reads falsely high), and take the least invasive measurements FIRST while the child is calm — respirations and pulse before temperature, invasive or upsetting steps last.`,
+      examTip: `Hypotension in a child is a pre-arrest finding, not an early warning. Tachycardia with delayed capillary refill and a change in behavior is where the exam wants you to act.`,
+    },
+    {
+      id: 'pf-growth',
+      title: `2. Growth, Milestones & Red Flags`,
+      content: `![Infant growth: birth weight doubles by about 6 months and triples by about 12 months, with length increasing about 50 percent in the first year.](/courses/nclex/figures/nclex-peds-growth.svg)
+
+Growth is the vital sign of childhood, and the exam samples a small set of anchors: birth weight DOUBLES by about 6 months and TRIPLES by 12 months; length increases roughly 50 percent in the first year; the posterior fontanel closes by 2-3 months and the anterior by 12-18 months; and the first teeth erupt around 6 months.
+
+| Age | Gross motor | Fine motor / language / social |
+| --- | --- | --- |
+| 2 months | lifts head prone | social smile, coos |
+| 4 months | rolls front to back | grasps rattle, laughs |
+| 6 months | sits with support, rolls both ways | transfers hand to hand, babbles, stranger anxiety begins |
+| 9 months | sits alone, crawls, pulls to stand | pincer developing, waves, nonspecific mama/dada |
+| 12 months | stands alone, first steps | fine pincer, 1-3 words, follows a simple command |
+| 15-18 months | walks well, climbs | 10-20 words, points to wants, uses a spoon |
+| 2 years | runs, kicks a ball | 2-word phrases, ~50 percent intelligible, parallel play |
+| 3 years | pedals a tricycle | 3-word sentences, ~75 percent intelligible |
+
+Red flags that earn referral: no social smile by 2-3 months, poor head control at 4 months, not sitting by 9 months, no babbling by 9 months, no pincer by 12 months, not walking by 15-18 months, no words by 16 months, no two-word phrases by 2 years — and LOSS OF ANY PREVIOUSLY ACHIEVED SKILL at any age, which always refers.
+
+Plotting on a growth chart matters more than any single measurement: a child tracking steadily along the 10th percentile is usually fine, while a child who FALLS ACROSS percentile lines is being evaluated. The trend is the finding, exactly as with vital signs.`,
+      examTip: `Weight doubles at 6 months and triples at 12; crossing percentile lines downward is the finding, not the percentile itself.`,
+    },
+    {
+      id: 'pf-approach',
+      title: `3. Approaching a Child: Development Decides Everything`,
+      content: `The same intervention succeeds or fails depending on the child's stage — which is why "explain the procedure" is only a correct answer when it matches the age.
+
+| Stage | Core fear | Preparation | Approach that works |
+| --- | --- | --- | --- |
+| infant | separation from caregiver | none needed | keep the parent present, comfort after, consistent caregivers |
+| toddler (1-3) | SEPARATION | immediately before, seconds not minutes | choices within limits, keep rituals and comfort objects, expect regression |
+| preschool (3-5) | BODY INTRUSION and mutilation | just before, with play | simple honest words, let them handle equipment, BANDAGE the site, never say "put to sleep" |
+| school-age (6-12) | loss of control, being left out | days ahead, with models and diagrams | explain how things work, give them a job, protect privacy and schoolwork |
+| adolescent | body image, peer separation | full information | privacy, confidentiality, involve them in decisions, allow peer contact |
+
+Separation anxiety in the hospitalized toddler follows a described sequence the exam tests: PROTEST (crying, clinging, rejecting strangers), then DESPAIR (withdrawal, sadness, decreased play), then DETACHMENT (apparent cheerfulness and interest in strangers). Detachment can be misread as adjustment — it is the most worrying stage, and the nursing response throughout is to keep caregivers present, maintain home routines, and provide consistent staff.
+
+REGRESSION under stress — a toilet-trained child wetting again, a talking child reverting to babble — is a normal coping mechanism. It is accepted and supported, never punished, and it resolves as the stress does.
+
+Play is not entertainment in pediatrics: THERAPEUTIC PLAY lets a child rehearse and master frightening experiences (a preschooler giving the doll an injection), and it is a legitimate nursing intervention with an evidence base behind it.`,
+      examTip: `Toddlers fear separation, preschoolers fear body intrusion, school-agers fear loss of control, adolescents fear body-image and peer loss. Matching the intervention to the fear answers most of these items.`,
+    },
+    {
+      id: 'pf-pain-safety',
+      title: `4. Pain Assessment & Safety by Age`,
+      content: `Children feel pain fully, express it differently, and are historically undertreated — so the exam rewards taking it seriously and choosing the right tool.
+
+| Tool | For whom | What it uses |
+| --- | --- | --- |
+| FLACC | preverbal, roughly 2 months to 7 years | face, legs, activity, cry, consolability — observed |
+| FACES (Wong-Baker) | about 3 years and up | child picks the face matching their hurt |
+| numeric 0-10 | about 8 years and up | self-report, same as adults |
+| behavioral indicators + parent report | nonverbal or cognitively impaired at any age | baseline behavior compared to now |
+
+Self-report is preferred whenever the child can give it, and a parent's report that "this is not how she acts" is data, not opinion. Sedation and respiratory status pair with opioid dosing exactly as in adults, and weight-based dosing makes the dosage-calculation chapter's safe-range check mandatory.
+
+## Age-specific safety
+
+INFANTS: back to sleep, alone, in a bare crib; car seat rear-facing; no small objects; supervise on any elevated surface; check formula/bath temperatures. TODDLERS: drowning (never alone near ANY water, including buckets and toilets), poisoning (locked up and away, poison control posted, no ipecac), choking (nothing smaller than a toilet-paper tube; cut grapes and hot dogs lengthwise), burns (turn pot handles inward, water heater at 120 F / 49 C), falls. PRESCHOOL/SCHOOL-AGE: street and bicycle safety with helmets, water safety and swim lessons, stranger safety, booster seats until the belt fits (typically about 4 feet 9 inches, ages 8-12) with all children under 13 in the back seat. ADOLESCENTS: motor vehicles, substances, firearms, sexual health, and mental health screening.
+
+## Immunizations, in principle
+
+The schedule itself is jurisdictional and updated, so the exam tests PRINCIPLES: mild illness with or without low-grade fever is NOT a contraindication; a previous anaphylactic reaction to a vaccine or component IS; live vaccines are avoided in significant immunosuppression and pregnancy; and informed consent plus documented education accompany every dose. Comfort measures matter for adherence — swaddling, sucrose, breastfeeding during injection in infants, and honest brief warning in older children.`,
+      examTip: `Match the pain tool to the age: FLACC for preverbal, FACES for preschool and up, numeric for school-age and up — and never treat a child's silence as absence of pain.`,
+    },
+    {
+      id: 'pf-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 6-month-old has HR 158, RR 42, and BP 84/50. Which values are concerning?
+2. A 10-month-old has not yet said any words, does not babble, and does not attempt a pincer grasp. Which findings refer?
+3. A hospitalized 2-year-old cried and clung for two days but now smiles at every staff member and no longer protests when her mother leaves. Interpret.
+4. A 4-year-old is scheduled for an IV start. When and how should he be prepared?
+5. A 3-year-old with gastroenteritis has HR 165, capillary refill of 4 seconds, cool mottled legs, and BP 88/56. How sick is this child?
+
+## Answers
+
+1. None are outside the expected infant bands (HR 90-160, RR 25-50, systolic 70-100). Judged against adult ranges they would all look abnormal, which is the trap.
+2. Absent babbling at 10 months and no pincer attempt by 9-12 months both warrant referral (hearing and language evaluation, developmental assessment). Having no true words at 10 months alone is within normal variation.
+3. This is DETACHMENT, the third stage of separation anxiety — not adjustment. It signals that the child has stopped expecting her caregiver, and the response is to increase caregiver presence and consistency rather than to be reassured.
+4. Immediately before the procedure, in simple concrete words, with therapeutic play beforehand if possible — and bandage the site afterward, because preschoolers fear body intrusion and believe their insides can leak out. Avoid the phrase "put you to sleep."
+5. Very sick — decompensating. Marked tachycardia, capillary refill over 3 seconds, and cool mottled skin are compensated shock, and the near-normal blood pressure is falsely reassuring because hypotension arrives LATE in children. Escalate immediately for fluid resuscitation.`,
+    },
+  ],
+  keyTakeaways: [
+    `Rates fall and blood pressure rises with age — judge every value against its age band, and count apical pulse and abdominal respirations for a full minute in infants.`,
+    `Hypotension is a LATE sign of shock in children; tachycardia, delayed capillary refill, mottling and behavior change are the early ones.`,
+    `Weight doubles by 6 months and triples by 12; a downward crossing of percentile lines, or loss of any achieved milestone, is the referral finding.`,
+    `Match care to the developmental fear — separation for toddlers, body intrusion for preschoolers, control for school-agers, body image for adolescents — and read detachment as the worst stage of separation anxiety, not adjustment.`,
+    `Pain tools go by age (FLACC, FACES, numeric), regression under stress is supported rather than punished, and mild illness never contraindicates immunization.`,
+  ],
+},
+
+nx_peds_resp_cardiac: {
+  topicId: 'nx_peds_resp_cardiac',
+  title: `Pediatric Respiratory & Cardiac Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Children's airways are small, soft and easily obstructed, which is why respiratory illness dominates pediatric admissions and why the exam tests recognition of impending failure so heavily. This chapter covers the airway emergencies (croup versus epiglottitis is the classic discrimination), bronchiolitis and RSV, pediatric asthma, cystic fibrosis, and the congenital heart defects sorted by the one feature that predicts their presentation: which way blood is shunting.`,
+  sections: [
+    {
+      id: 'prc-airway',
+      title: `1. Why Children Obstruct: Anatomy First`,
+      content: `A child's airway is not a small adult airway. It is proportionally narrower, its narrowest point is lower, the tissues are softer and swell more readily, the tongue is relatively large, and the chest wall is compliant enough that hard work of breathing produces visible retractions rather than effective air movement. A millimeter of circumferential edema narrows an infant's airway far more, proportionally, than the same edema in an adult — which is why illnesses adults shrug off obstruct children.
+
+## The distress-to-failure ladder
+
+EARLY distress: tachypnea, nasal flaring, mild retractions, restlessness. WORSENING: deeper retractions (intercostal, then subcostal, then sternal), grunting, head bobbing in infants, tripod positioning in older children, inability to speak or feed. IMPENDING FAILURE — the findings that mean act now: a FALLING respiratory rate in a child still working, decreased or absent breath sounds, lethargy or a child who stops fighting, bradycardia, and cyanosis.
+
+That inversion is the chapter's central warning and mirrors the adult asthma chapter: quieting is not improving. A tiring child slows down before arresting, and the exam builds items on the nurse who documents "respirations decreased from 60 to 32, child now calm" as though it were progress.
+
+## Positioning and general care
+
+Let the child assume the position of comfort — often upright or on a caregiver's lap — and do NOT force a distressed child to lie down. Keep them calm, because crying worsens obstruction and increases oxygen demand: procedures that upset a child with a compromised airway are deferred until the airway is secured. Humidified oxygen is given by the least threatening route the child will tolerate, including blow-by held by a parent.`,
+      examTip: `Calm equals oxygen. Anything that makes an obstructed child cry — including a throat exam or an unnecessary IV attempt — worsens the obstruction, which is why the epiglottitis rule below exists.`,
+    },
+    {
+      id: 'prc-croup-epiglottitis',
+      title: `2. Croup vs Epiglottitis, and Bronchiolitis`,
+      content: `| | Croup (laryngotracheobronchitis) | Epiglottitis |
+| --- | --- | --- |
+| cause | usually viral | bacterial (classically H. influenzae type b) |
+| onset | gradual, often at night | ABRUPT, hours |
+| cough | BARKING, seal-like | absent |
+| voice | hoarse | muffled |
+| drooling | no | YES — cannot swallow |
+| posture | variable | TRIPOD, leaning forward, chin out |
+| fever | low grade | high |
+| appearance | uncomfortable | anxious, toxic |
+| management | cool humidified air, corticosteroids, nebulized epinephrine for severe | EMERGENCY: do NOT inspect the throat or place anything in the mouth; keep the child calm with the caregiver; prepare for intubation in a controlled setting; antibiotics |
+
+The absolute rule: with suspected epiglottitis, NOTHING goes in the mouth — no tongue blade, no throat swab, no oral temperature — because examining the throat can trigger complete laryngospasm and total obstruction. Keep the child upright with the caregiver, do not start an IV or draw blood at the bedside, and summon the team who can secure the airway. Hib immunization has made epiglottitis rare, which is itself a teaching point about immunization value.
+
+## Bronchiolitis and RSV
+
+Typically respiratory syncytial virus in children under 2: begins as coryza, progresses to wheezing, tachypnea, retractions and poor feeding, with copious secretions. Management is SUPPORTIVE — suctioning (bulb or nasopharyngeal) before feeds and sleep, hydration, oxygen for hypoxia, and monitoring for apnea in young infants. Antibiotics do nothing for a virus, and bronchodilator response is inconsistent.
+
+Infection control is heavily tested: RSV spreads by CONTACT with droplets on hands and surfaces, so contact precautions with meticulous hand hygiene and cohorting are the answer, and the highest-risk groups are premature infants, those with congenital heart disease, and the immunocompromised. Teaching for home: bulb suction before feeds, small frequent feeds, watch for dehydration and increased work of breathing.`,
+      examTip: `Barking cough with hoarseness is croup; drooling with a muffled voice and tripod posture is epiglottitis — and epiglottitis means hands off the throat and calm the child.`,
+    },
+    {
+      id: 'prc-asthma-cf',
+      title: `3. Pediatric Asthma & Cystic Fibrosis`,
+      content: `Childhood asthma follows the adult pathophysiology of the Asthma & COPD chapter with pediatric emphases. Triggers are hunted and controlled (dust mites, pets, smoke exposure, cold air, exercise, viral infections). The rescue-versus-controller distinction is taught to both child and caregiver, and a written ASTHMA ACTION PLAN with green, yellow and red zones — keyed to symptoms and to peak flow against the child's PERSONAL BEST — goes to school with the child.
+
+Device teaching matters more in children: a SPACER is standard with a metered-dose inhaler, with a MASK for younger children who cannot coordinate a mouthpiece, and the mouth is rinsed after inhaled corticosteroids. The same silent-chest warning applies — a wheezing child who stops wheezing while still retracting is deteriorating, not improving.
+
+## Cystic fibrosis
+
+An autosomal recessive disease of chloride transport that makes exocrine secretions thick, obstructing airways and pancreatic ducts.
+
+| System | Consequence | Nursing focus |
+| --- | --- | --- |
+| respiratory | thick mucus, chronic infection, bronchiectasis | airway clearance therapy DAILY, bronchodilator before clearance, antibiotics per orders |
+| pancreatic | enzyme deficiency, malabsorption | ENZYMES WITH EVERY MEAL AND SNACK, high-calorie high-protein diet, fat-soluble vitamins A D E K |
+| GI | meconium ileus in newborns, constipation | monitor stools — bulky, greasy, foul-smelling means enzymes need adjustment |
+| sweat glands | excessive salt loss | SWEAT CHLORIDE TEST is diagnostic; extra salt in heat and illness |
+| growth | poor weight gain despite appetite | growth is the therapeutic marker |
+
+The two most-tested facts: the SWEAT CHLORIDE test diagnoses it, and pancreatic ENZYMES are taken with every meal and snack — not on a clock, not skipped when the child eats out. Airway clearance precedes meals where possible to reduce vomiting, and bronchodilators come before clearance so the airways are open for it.`,
+      examTip: `Cystic fibrosis teaching is dominated by two habits: enzymes with everything eaten, and daily airway clearance done consistently — and stool character is the feedback signal for enzyme dosing.`,
+    },
+    {
+      id: 'prc-cardiac',
+      title: `4. Congenital Heart Defects: Sort by Shunt`,
+      content: `Congenital defects become learnable when sorted by the DIRECTION blood is shunting, because that predicts whether the child is pink and overloaded or blue and undercirculated.
+
+| Group | Defects | Picture |
+| --- | --- | --- |
+| increased pulmonary flow (LEFT to RIGHT) | atrial septal defect, ventricular septal defect, patent ductus arteriosus | ACYANOTIC; murmur, tachypnea, poor feeding, sweating with feeds, poor weight gain, heart failure signs |
+| decreased pulmonary flow (RIGHT to LEFT) | tetralogy of Fallot, tricuspid atresia | CYANOTIC; hypoxic spells, clubbing over time |
+| obstructive | coarctation of the aorta, aortic/pulmonic stenosis | differential pulses and pressures; coarctation classically gives strong upper and WEAK LOWER extremity pulses with a BP gradient |
+| mixed | transposition of the great arteries, truncus arteriosus | cyanosis plus heart failure; often critical in the newborn period |
+
+## Heart failure in an infant looks like feeding trouble
+
+Infants do not report dyspnea — they show it at the breast or bottle. The classic cluster: TACHYPNEA and tachycardia at rest, DIAPHORESIS WITH FEEDS, feeding that takes too long or stops early, poor weight gain, irritability, and hepatomegaly. Any item describing a baby who "sweats and tires while feeding and isn't gaining weight" is describing heart failure until proven otherwise.
+
+Nursing care clusters around reducing cardiac work: smaller more frequent feeds, high-calorie formula per orders, gavage feeding when the work of sucking exceeds intake, rest between activities, upright positioning, careful intake and output with daily weights, infection prevention, and digoxin administration with the apical-pulse hold parameters and the toxicity watch (vomiting, bradycardia, feeding refusal).
+
+TETRALOGY hypoxic ("tet") spells are a drilled emergency: a distressed cyanotic infant is placed in the KNEE-CHEST position (an older child squats), which raises systemic vascular resistance and pushes blood back through the pulmonary circuit, with oxygen and calming, then provider notification and pharmacologic management per protocol.`,
+      examTip: `Sweating and tiring during feeds with poor weight gain is infant heart failure. And a cyanotic tet spell is treated with knee-chest positioning first — a free intervention that works through physiology.`,
+    },
+    {
+      id: 'prc-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 3-year-old arrives drooling, leaning forward, with a muffled voice, high fever and no cough. What is the diagnosis, and name the single most important thing the nurse must NOT do.
+2. An 18-month-old with RSV bronchiolitis has been retracting and tachypneic at 62; over 20 minutes the rate falls to 30 and he becomes quiet and limp. Interpret.
+3. A parent asks why their child with cystic fibrosis must take enzymes with a snack, since "it's only crackers." Answer.
+4. A 2-month-old is described as sweating and stopping partway through feeds, taking 45 minutes for a bottle, and gaining poorly. What is this?
+5. A toddler with tetralogy of Fallot becomes acutely cyanotic and agitated. What is the first nursing action, and why does it work?
+
+## Answers
+
+1. Epiglottitis. Do NOT inspect or put anything into the mouth — no tongue blade, no throat culture, no oral temperature — because it can trigger complete airway obstruction. Keep the child calm and upright with the caregiver and get the airway team.
+2. Impending respiratory failure. A falling respiratory rate with lethargy in a child who was working hard means exhaustion, not recovery. Escalate immediately and prepare for airway support.
+3. Pancreatic enzymes must accompany ALL food, because without them fat and protein in any meal or snack pass unabsorbed — producing bulky greasy stools and poor growth. Dosing follows what is eaten, not the clock.
+4. Heart failure, most likely from a left-to-right shunt such as a ventricular septal defect. Feeding is an infant's exercise test, and diaphoresis with feeds plus prolonged feeding times plus poor weight gain is the classic triad.
+5. Place the child in the KNEE-CHEST position (or allow squatting in an older child) while calming them and giving oxygen. It increases systemic vascular resistance, which reduces the right-to-left shunt and forces more blood through the pulmonary circulation, improving oxygenation.`,
+    },
+  ],
+  keyTakeaways: [
+    `Children's airways obstruct easily, and impending failure announces itself by a FALLING rate, quieting chest, and a child who stops fighting — calm equals oxygen.`,
+    `Barking cough and hoarseness is croup; drooling, muffled voice and tripod posture is epiglottitis, where nothing enters the mouth and the throat is never examined.`,
+    `RSV bronchiolitis is supportive care plus CONTACT precautions; asthma adds spacers with masks, personal-best peak flow, and a written action plan for school.`,
+    `Cystic fibrosis: sweat chloride diagnoses, enzymes accompany every meal and snack, daily airway clearance after bronchodilators, and growth is the marker of success.`,
+    `Sort heart defects by shunt direction - left-to-right floods the lungs and causes acyanotic heart failure, right-to-left causes cyanosis - and treat a tet spell with knee-chest positioning first.`,
+  ],
+},
+
+nx_peds_gi_gu: {
+  topicId: 'nx_peds_gi_gu',
+  title: `Pediatric GI, Renal & Genitourinary Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Children dehydrate faster than adults, and most pediatric GI emergencies are really fluid emergencies wearing a diagnosis. This chapter builds the dehydration severity assessment and rehydration rules first, then the vomiting differential that separates pyloric stenosis from intussusception, the structural conditions (cleft lip and palate, Hirschsprung), and the renal pair the exam loves to contrast — nephrotic syndrome against acute glomerulonephritis.`,
+  sections: [
+    {
+      id: 'pg-dehydration',
+      title: `1. Dehydration: The Common Emergency`,
+      content: `Children dehydrate quickly because they have a higher proportion of body water, a greater surface-area-to-mass ratio, faster metabolic rates, and no ability to obtain their own fluids. The younger the child, the faster it happens.
+
+| Severity | Weight loss (infants) | Findings |
+| --- | --- | --- |
+| mild | about 3-5% | slightly dry mucosa, normal vitals, alert, normal urine output |
+| moderate | about 6-9% | dry mucosa, decreased turgor, sunken fontanel and eyes, tachycardia, decreased urine, irritable |
+| severe | 10% or more | very dry, tenting skin, markedly sunken fontanel, tachycardia with weak pulses, capillary refill over 3 seconds, oliguria or anuria, lethargy, HYPOTENSION LATE |
+
+WEIGHT is the most accurate measure — an acute loss of 1 kg equals about 1 liter of fluid — which is why a recent pre-illness weight is gold. Urine output is the workhorse bedside measure: fewer than 1 mL/kg/h in infants and young children is inadequate, and counting wet diapers (or weighing them, where 1 g equals about 1 mL) is a real technique, not a folk one.
+
+## Rehydration
+
+ORAL REHYDRATION SOLUTION is first-line for mild to moderate dehydration: small frequent volumes (5-10 mL every few minutes by syringe or spoon, increasing as tolerated), continued even if the child vomits once, because small volumes are absorbed between vomits. Plain water, juice, and sports drinks are NOT appropriate — water lacks electrolytes and can cause hyponatremia, and sugary drinks worsen osmotic diarrhea. Breastfeeding continues throughout.
+
+Severe dehydration or shock goes IV: isotonic bolus (commonly 20 mL/kg of normal saline or lactated Ringer's) with reassessment after each, then maintenance and deficit replacement per orders. Refeeding happens EARLY — an age-appropriate diet resumed as soon as rehydration allows shortens illness, and the old advice to withhold food or use the BRAT diet is outdated and appears as a distractor.`,
+      examTip: `Weight is the truth, urine output is the bedside monitor, and oral rehydration solution — not water or juice — is the fluid. Hypotension appears only at the severe end.`,
+    },
+    {
+      id: 'pg-vomiting',
+      title: `2. The Vomiting Differential`,
+      content: `Three classic conditions present with vomiting and are separated by the character of the vomit, the age, and the abdominal findings.
+
+| Condition | Age | Vomiting | Distinguishing findings |
+| --- | --- | --- | --- |
+| gastroesophageal reflux | infants | effortless spitting after feeds | thriving and gaining; usually positional and dietary management |
+| PYLORIC STENOSIS | 2-8 weeks | PROJECTILE, non-bilious, hungry immediately after | palpable olive-shaped mass right upper quadrant, visible peristaltic waves, weight loss, metabolic ALKALOSIS from acid loss |
+| INTUSSUSCEPTION | 3 months to 3 years | bilious as obstruction progresses | sudden severe intermittent colicky pain with drawing up of legs, sausage-shaped mass, "CURRANT JELLY" stool (blood and mucus) — a late sign |
+
+Pyloric stenosis is a hypertrophied pylorus obstructing gastric outflow: the infant vomits forcefully, is immediately hungry again, loses weight, and — because the vomit is pure gastric acid — develops HYPOCHLOREMIC METABOLIC ALKALOSIS with hypokalemia. That electrolyte picture is the tested link back to the acid-base chapter. Management is surgical (pyloromyotomy) AFTER fluid and electrolyte correction, because operating on an alkalotic infant is dangerous; post-op feeding is advanced gradually per protocol.
+
+Intussusception is telescoping bowel, and it is a surgical emergency because the trapped segment loses its blood supply. The classic triad — colicky pain, palpable sausage mass, currant-jelly stool — is often incomplete, and waiting for the stool means waiting for ischemia. Air or contrast enema can be both diagnostic and therapeutic. The finding that changes everything: PASSAGE OF A NORMAL BROWN STOOL may indicate spontaneous reduction and is reported immediately, because it changes the plan.
+
+Bilious (green) vomiting in an infant is never dismissed — it suggests obstruction below the ampulla and includes malrotation with volvulus in its differential, which is a time-critical surgical emergency.`,
+      examTip: `Projectile, non-bilious, hungry-again, olive mass, alkalosis equals pyloric stenosis. Colicky pain with legs drawn up, sausage mass, currant-jelly stool equals intussusception — and green vomit in an infant is a surgical question until answered.`,
+    },
+    {
+      id: 'pg-structural',
+      title: `3. Structural Conditions: Cleft Lip and Palate, Hirschsprung`,
+      content: `CLEFT LIP AND PALATE are the most common craniofacial anomalies, and the nursing content is feeding, airway and family support.
+
+Feeding challenges arise because a cleft prevents effective suction: the answers are specialized bottles and nipples (wide-based, squeezable, one-way valve), UPRIGHT positioning, frequent burping (these infants swallow air), and small frequent feeds. Growth is the outcome measure. Repair timing is staged — lip earlier, palate later, per surgical judgment — and post-operative care protects the suture line: elbow immobilizers to keep hands away, no straws, no pacifiers, no hard objects in the mouth, feeding per surgeon's orders, and cleaning the suture line as directed. Positioning after lip repair avoids pressure on the repair (often supine or side-lying per orders), while after palate repair prone positioning may be permitted per protocol — always following the surgeon's instructions rather than a memorized rule.
+
+The psychosocial layer is real and tested: parents grieve the expected appearance, and the nursing responses are to model comfortable interaction with the baby, encourage participation in feeding, provide accurate information about staged repair outcomes, and connect families with support resources and speech-therapy planning.
+
+## Hirschsprung disease
+
+Absence of ganglion cells in a segment of colon means that segment cannot relax or propagate stool. The newborn presentation is FAILURE TO PASS MECONIUM within 24-48 hours, with abdominal distension, bilious vomiting and feeding refusal; older infants present with chronic constipation, ribbon-like foul stools and failure to thrive. Diagnosis is confirmed by rectal biopsy showing absent ganglion cells.
+
+The complication to fear is ENTEROCOLITIS — fever, explosive foul diarrhea, worsening distension, and lethargy — which is life-threatening and reported immediately. Management is surgical removal of the aganglionic segment, sometimes with a temporary ostomy, and the pre-operative and post-operative nursing includes measuring ABDOMINAL GIRTH at the widest point on a schedule and marking the spot for consistency.`,
+      examTip: `No meconium in the first 24-48 hours is never normal. And after cleft repair, the whole game is keeping everything away from the suture line — hands, straws, pacifiers, hard foods.`,
+    },
+    {
+      id: 'pg-renal',
+      title: `4. Nephrotic Syndrome vs Acute Glomerulonephritis`,
+      content: `The exam pairs these constantly because both present with edema and both involve the glomerulus, yet almost everything else differs.
+
+| | Nephrotic syndrome | Acute glomerulonephritis |
+| --- | --- | --- |
+| core problem | massive protein loss through a leaky glomerulus | inflammation of the glomerulus, usually POST-STREPTOCOCCAL |
+| onset | insidious over days to weeks | abrupt, 1-3 weeks after strep throat or skin infection |
+| edema | GENERALIZED and severe — periorbital on waking, then dependent, ascites | mild to moderate, periorbital |
+| urine | massive PROTEINURIA, frothy; little or no blood | HEMATURIA — tea-colored or cola-colored urine; mild proteinuria |
+| blood pressure | normal or low | ELEVATED — hypertension is characteristic |
+| blood protein | hypoalbuminemia; hyperlipidemia | usually near normal |
+| treatment | CORTICOSTEROIDS, albumin and diuretics per orders, sodium restriction | supportive: blood pressure control, fluid and sodium restriction, antibiotics for residual infection |
+
+The two-word discriminators: FROTHY urine with normal pressure and huge edema is nephrotic; TEA-COLORED urine with high pressure is glomerulonephritis. Both restrict sodium and both need daily weights, strict intake and output, and skin care over edematous areas.
+
+Nephrotic syndrome adds an infection watch, because the child is losing immunoglobulins along with albumin and is often on steroids — so fever is taken seriously, and the steroid teaching (never stop abruptly, expect appetite and mood changes, monitor growth and glucose) belongs in the discharge plan. Glomerulonephritis adds the hypertension watch, including neurologic signs of hypertensive encephalopathy, and the reassurance that most childhood cases resolve.
+
+## Urinary tract infection
+
+Presentation is age-dependent and non-specific in the young: infants show fever, irritability, poor feeding, vomiting or foul urine rather than dysuria, while older children give the adult picture. Diagnosis requires a properly collected specimen — clean catch in a toilet-trained child, catheterization or suprapubic collection in an infant, never a bag specimen for culture. Teaching covers front-to-back wiping, adequate fluids, avoiding bubble baths and tight synthetic underwear, complete voiding and not delaying, and finishing the full antibiotic course. Recurrent infections in young children prompt evaluation for vesicoureteral reflux.`,
+      examTip: `Frothy urine plus massive edema plus normal blood pressure is nephrotic; tea-colored urine plus hypertension after a recent strep infection is glomerulonephritis. Both get daily weights and sodium restriction.`,
+    },
+    {
+      id: 'pg-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 9-month-old has had diarrhea for two days. Pre-illness weight was 9.0 kg; today he is 8.3 kg. Estimate the severity and name the first-line fluid.
+2. A 5-week-old vomits forcefully across the room after each feed, is immediately hungry, and has lost weight. What is the likely diagnosis and the expected acid-base disturbance?
+3. A 10-month-old has episodes of screaming while drawing his knees up, with normal behavior between, and now passes stool containing blood and mucus. Diagnosis and urgency?
+4. A newborn has not passed meconium at 36 hours and the abdomen is distended. Interpret, and name the complication to watch for after diagnosis.
+5. A 6-year-old has cola-colored urine, periorbital edema and BP 132/86, three weeks after a sore throat. Which condition, and how does it differ from the other edema syndrome?
+
+## Answers
+
+1. About 7.8 percent loss (0.7 kg of 9.0), which is MODERATE dehydration. First-line is ORAL REHYDRATION SOLUTION given in small frequent volumes, with breastfeeding continued; plain water and juice are inappropriate.
+2. Pyloric stenosis. Projectile non-bilious vomiting with immediate hunger and weight loss in a 2-8 week old is classic, and losing gastric acid produces HYPOCHLOREMIC METABOLIC ALKALOSIS with hypokalemia — corrected before surgery.
+3. Intussusception — a surgical emergency. Colicky pain with legs drawn up, well between episodes, and currant-jelly stool is the classic picture; the stool is a LATE sign, so the child needs immediate evaluation for enema reduction or surgery.
+4. Hirschsprung disease is the leading concern — failure to pass meconium within 24-48 hours with distension is never normal. After diagnosis, watch for ENTEROCOLITIS: fever, explosive foul diarrhea, worsening distension and lethargy, which is life-threatening.
+5. Acute post-streptococcal glomerulonephritis. It differs from nephrotic syndrome by having HEMATURIA rather than massive proteinuria, HYPERTENSION rather than normal or low pressure, mild rather than massive edema, and an abrupt post-infectious onset rather than an insidious one; treatment is supportive rather than steroid-based.`,
+    },
+  ],
+  keyTakeaways: [
+    `Children dehydrate fast: weight is the accurate measure, urine under 1 mL/kg/h is inadequate, oral rehydration solution is first-line, and early refeeding beats withholding food.`,
+    `Projectile non-bilious vomiting with an olive mass and metabolic alkalosis is pyloric stenosis; colicky pain with a sausage mass and currant-jelly stool is intussusception, and bilious vomiting in an infant is a surgical question.`,
+    `No meconium within 24-48 hours suggests Hirschsprung, whose feared complication is enterocolitis; cleft repair nursing protects the suture line absolutely.`,
+    `Nephrotic syndrome is frothy urine, massive edema, normal pressure and steroids; glomerulonephritis is tea-colored urine, hypertension, post-streptococcal onset and supportive care.`,
+    `Pediatric UTI presents non-specifically in infants and needs a properly collected specimen - never a bag specimen for culture.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */
