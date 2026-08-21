@@ -847,188 +847,486 @@ Car seats belong to pediatrics but are tested as safety: rear-facing as long as 
 nx_lifespan: {
   topicId: 'nx_lifespan',
   title: `Growth & Development Across the Lifespan`,
-  domainWeight: 'Health Promotion & Maintenance (6-12%)',
-  overview: `Developmental questions are pattern-matching against a small table of anchors: what a healthy child does at each age, which vaccine lands when, and what aging changes are normal versus pathological. The exam offsets a milestone by a stage and asks whether you notice. Learn the anchors cold and the distractors dissolve.`,
+  domainWeight: 'Health Promotion and Maintenance (6-12%)',
+  overview: `Development questions test two skills: recalling the milestone tables precisely enough to spot the child who is off-schedule, and matching nursing approach to developmental stage — how you prepare a toddler versus a school-age child for a procedure, what an adolescent needs from a hospital that a preschooler does not. This chapter carries the milestone tables, the Erikson stages with their nursing translations, age-banded vital signs, and the safety-and-screening calendar from infancy through older adulthood.`,
   sections: [
     {
-      id: 'life-infant-toddler',
-      title: `1. Infants and Toddlers`,
-      content: `The infant motor sequence runs head to toe: social smile around 2 months, head control by 4 months, rolling both ways and sitting with support by 6 months, sitting alone around 8 months, pulling to stand and pincer grasp emerging by 9-10 months, cruising then first steps around 12 months. Language tracks alongside: cooing at 2 months, babbling at 6, "mama/dada" with meaning near 12 months. Red flags include no social smile by 3 months, not rolling by 6-7 months, no babbling by 9, and no single words or inability to walk by 18 months.
+      id: 'dev-infant',
+      title: `1. Infancy: The Fastest Year`,
+      content: `Infant milestones are the most-tested table in the category — learn the anchors and, more importantly, the RED FLAGS that mean referral:
 
-Birth weight arithmetic is tested: weight doubles by about 6 months and triples by 12; the posterior fontanel closes by 2-3 months, the anterior by 12-18 months.
+| Age | Gross motor | Fine motor / social-language |
+| --- | --- | --- |
+| 2 months | lifts head prone | social smile; coos |
+| 4 months | rolls front-to-back; steady head | grasps rattle; laughs |
+| 6 months | rolls both ways; sits with support | transfers objects hand to hand; babbles; stranger anxiety BEGINS |
+| 9 months | sits alone; crawls; pulls to stand | pincer grasp developing; waves bye; "mama/dada" nonspecific |
+| 12 months | stands alone; first steps | fine pincer; 1-3 words; follows simple command |
 
-Toddlers (1-3 years) are Erikson's autonomy versus shame and doubt: the developmental jobs are saying no, choosing between two acceptable options, parallel play, and toilet training when ready (usually 2-3 years). Safety dominates teaching: toddlers are the drowning, poisoning, and choking age group. Round firm foods (hot dog rounds, whole grapes, nuts, hard candy, popcorn) are the classic aspiration set — cut lengthwise or avoid entirely. Car seats stay rear-facing per current guidance until the seat's height/weight limits, and the Poison Control number goes on every caregiver's phone (no ipecac — that guidance is decades gone).`,
-      examTip: `Milestone items usually offset by one stage: the 6-month-old credited with 9-month skills, the 12-month "deficit" that is actually normal. Anchor to 2-6-9-12 months and check the offset direction.`,
+Red flags the exam samples: no social smile by 2-3 months, poor head control at 4 months, not sitting by 9, not babbling by 9, no pincer by 12, not walking by 15-18, loss of ANY previously achieved skill at any age (regression always refers).
+
+Physical growth anchors: birth weight DOUBLES by about 5-6 months and TRIPLES by 12; posterior fontanel closes by about 2-3 months, anterior by 12-18 — a bulging fontanel in a quiet upright infant suggests raised pressure, a sunken one dehydration.
+
+Care by stage: TRUST vs mistrust (Erikson) is built by prompt, consistent responsiveness — the tested answer picks the caregiver who responds over the one who "avoids spoiling." Solids begin around 6 months (iron-fortified cereal classically first, one new food every few days to watch reactions); no honey before 12 months (botulism); no cow's milk as the main drink before 12 months; back-to-sleep, bare crib, rear-facing car seat.
+
+Separation anxiety (peaking late infancy into toddlerhood) and stranger anxiety are NORMAL and tested as such — the answer normalizes and works with the parent present, not around them.`,
+      examTip: `Doubles by 6 months, triples by 12; social smile at 2, sits at 6-with-support and 9-alone, pincer at 9-12, walks around 12-15 — and ANY lost milestone is a referral, not reassurance.`,
     },
     {
-      id: 'life-child-adolescent',
-      title: `2. Preschool Through Adolescence`,
-      content: `Preschoolers (3-5) work on initiative versus guilt: magical thinking, associative play, fears of mutilation and the dark. Their signature clinical need is concrete, honest preparation for procedures — a preschooler told "we're going to put you to sleep" hears the same words used for the family pet.
+      id: 'dev-toddler-preschool',
+      title: `2. Toddlers & Preschoolers: Autonomy and Magic`,
+      content: `TODDLERS (1-3): Erikson's AUTONOMY vs shame — the developmental job is "me do it," and the nursing translations are choices-within-limits ("red cup or blue cup?" never "do you want medicine?"), ritual and routine preserved in the hospital, parallel play (alongside, not with, other children), and tolerance for the negativism ("no!") that marks the stage. Walking refines into running and stair-climbing; vocabulary explodes from a handful of words to short sentences by 2-3 years; toilet training readiness (dry periods, walking to the potty, expressing interest) is a readiness conversation, not a calendar date.
 
-School-age children (6-12) work on industry versus inferiority: rules, projects, teams, collections, and cooperative play. They can understand cause and effect, so teaching can include the why; involving them in care (choosing the injection site, holding the dressing) feeds mastery.
+Toddler safety is the heaviest teaching cluster: drowning (never alone near ANY water — buckets included), poisoning (locked up-and-away, poison control number, NO ipecac), choking (the under-3 small-object rule, cut grapes and hot dogs lengthwise), falls, and the car seat progression from the safety chapter.
 
-Adolescents work on identity versus role confusion: peer group as the organizing force, body image salience, and a developmental drive toward risk-taking as the frontal lobe finishes wiring. Clinically this means confidential interviews without the parent for sensitive topics (HEADSS: home, education, activities, drugs, sexuality, suicide screening), teaching framed in present-tense consequences rather than distant disease, and honest inclusion in decisions about their own bodies.
+PRESCHOOLERS (3-5): INITIATIVE vs guilt — magical thinking rules: illness can feel like PUNISHMENT ("I got sick because I was bad"), body-integrity fears loom huge (adhesive bandages have outsized power), and intrusive procedures terrify beyond their objective severity. Nursing translations: simple honest explanations immediately before procedures (not days of dread), therapeutic play and equipment handling (let the child "listen" to the doll's heart first), bandage the site, and never describe anesthesia as "being put to sleep" (the pet that was "put to sleep" did not come back). Associative-to-cooperative play develops; imaginary friends are normal.
 
-Vaccine anchors worth memorizing: hepatitis B at birth; DTaP/IPV/Hib/PCV/rotavirus through infancy; MMR and varicella at 12-15 months (live vaccines — contraindicated in pregnancy and significant immunosuppression); HPV recommended starting at 11-12; Tdap booster and meningococcal at 11-12 with a booster at 16.`,
-      importantNote: `Live vaccines (MMR, varicella, rotavirus, live attenuated influenza) are the contraindication cluster: pregnancy and immunocompromise. Egg allergy is NOT a contraindication to influenza vaccination in current guidance.`,
+Discipline teaching across both stages: consistent, immediate, brief — time-out arithmetic (about one minute per year of age) is the classic tested detail; and the correct response to regression under stress (a hospitalized 4-year-old wetting again) is acceptance and support, not punishment — regression is a normal coping mechanism that resolves.`,
+      examTip: `Offer toddlers choices between acceptable options, never yes-no questions about required care; give preschoolers honest just-in-time explanations and guard the "sleep" language — each stage has its scripted item.`,
     },
     {
-      id: 'life-older-adult',
-      title: `3. Older Adults: Normal Versus Not`,
-      content: `The normal-aging list is finite: presbyopia (reduced near vision) and presbycusis (high-frequency hearing loss), decreased skin elasticity and subcutaneous fat, slower reaction time and processing speed (with intact intelligence), decreased bladder capacity with nocturia, reduced thirst perception, decreased gastric acid and hepatic/renal clearance (the pharmacology consequence: start low, go slow), and shorter, lighter sleep.
+      id: 'dev-school-adolescent',
+      title: `3. School-Age & Adolescence: Industry and Identity`,
+      content: `SCHOOL-AGE (6-12): INDUSTRY vs inferiority — competence is the currency: collections, rules, skills, teams. Concrete operational thinking arrives: they understand cause and effect, want to know HOW equipment works, and benefit from being given jobs in their own care (holding the dressing, charting their fluids). Explanations can come days ahead with models and diagrams; peers begin to matter; body-image awareness starts. Cooperative play with rules is the signature — and the tested hospital intervention keeps schoolwork and peer contact alive.
 
-Everything on the pathology side gets a workup, never a shrug: confusion and disorientation (delirium until proven otherwise — hunt infection, medications, hypoxia, retention, impaction), incontinence (always investigable), depression (not a normal feature of age, and frequently masquerading as cognitive decline — pseudodementia), and falls (a syndrome with causes, not an age tax).
+ADOLESCENTS (12-18): IDENTITY vs role confusion — peers are the reference group, privacy and confidentiality are clinical tools, and the interview happens partly WITHOUT the parent (screening for risk: mood, substances, sexuality, safety) per policy and law. Abstract thinking matures ahead of risk judgment (the imaginary audience and personal fable — "it cannot happen to me" — explain the risk-taking stems). Body image dominates; chronic illness and visible differences hit hardest here; adherence plans that respect autonomy (letting the adolescent manage their own insulin schedule with support) outperform surveillance.
 
-Delirium versus dementia versus depression is a permanent exam fixture: delirium is acute in onset, fluctuating through the day, with impaired attention and often altered consciousness — and it is reversible when the cause is treated. Dementia is insidious and progressive with attention relatively spared early. Depression brings "I don't know" answers, poor effort, and vegetative signs. An acute change on top of chronic dementia is delirium until proven otherwise, and the first-line response is finding the cause — not sedating the behavior.`,
+| Stage | Erikson task | Play/peer mode | Procedure preparation |
+| --- | --- | --- | --- |
+| infant | trust | sensorimotor | parent present, comfort after |
+| toddler | autonomy | parallel | immediately before; choices; ritual |
+| preschool | initiative | associative/cooperative begins | just before; play-based; bandage it |
+| school-age | industry | cooperative, rules | days ahead; models; give a job |
+| adolescent | identity | peer group | full information; privacy; involve in decisions |
+
+Immunization and screening calendars ride this section on the exam: scoliosis screening in early adolescence, vision and hearing through school years, and the adolescent-visit vaccine cluster per the current schedule — with the standing teaching that mild illness is not a contraindication to vaccination while anaphylaxis to a prior dose is.`,
+      examTip: `Match preparation to cognition: toddlers get minutes and choices, preschoolers get play and honesty, school-agers get days and mechanics, adolescents get information and privacy. The mismatched option is always among the distractors.`,
+    },
+    {
+      id: 'dev-adult-older',
+      title: `4. Adults, Older Adults & Age-Banded Vitals`,
+      content: `Young and middle adulthood (INTIMACY vs isolation, then GENERATIVITY vs stagnation) appear mostly as screening-calendar and life-transition stems: reproductive health, cardiovascular risk emergence, the sandwich-generation stress of midlife caregiving.
+
+OLDER ADULTS (INTEGRITY vs despair) carry the tested content. Normal aging versus pathology is the core discrimination: presbyopia and presbycusis (high-frequency loss first — lower your PITCH, face the client, never shout), slower reaction time and recall speed, decreased skin turgor and thirst sensation, nocturia — all NORMAL. Confusion is NEVER normal aging: new confusion is delirium until proven otherwise (infection — classically urinary, hypoxia, medications, retention, impaction), and the delirium-versus-dementia table (acute and fluctuating with impaired attention versus chronic and progressive) decides its own items. Depression in older adults masquerades as somatic complaints and "just tired" — screened, not dismissed.
+
+Polypharmacy surveillance, fall logic (the safety chapter relocated), skin integrity, and advance-care conversations round out the cluster. Reminiscence and life review are therapeutic, not rumination.
+
+## Vital signs by age — the reference bands
+
+| Age | Heart rate | Respirations | Systolic BP (approx.) |
+| --- | --- | --- | --- |
+| newborn | 110-160 | 30-60 | 60-90 |
+| infant | 90-160 | 25-50 | 70-100 |
+| toddler | 80-140 | 20-30 | 80-110 |
+| preschool | 70-120 | 20-25 | 80-110 |
+| school-age | 60-110 | 18-22 | 85-120 |
+| adolescent/adult | 60-100 | 12-20 | 90-120 |
+
+The direction of the trend is the tested logic: rates FALL and pressures RISE as children grow. A heart rate of 130 is fine in an infant and an emergency in an adolescent; respirations of 45 are expected in a newborn and alarming at 5 years — always index the number to the age before judging it.`,
+      examTip: `New confusion in an older adult is delirium — hunt the cause (infection, drugs, hypoxia, retention) — and hearing loss teaching lowers pitch rather than raising volume. Both appear constantly.`,
+    },
+    {
+      id: 'dev-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 9-month-old at a well visit sits alone and transfers blocks but does not babble and has no pincer attempt. Which findings reassure and which refer?
+
+2. A hospitalized 4-year-old, previously toilet-trained, starts bedwetting and tells the nurse she got sick "because I hit my brother." Interpret both behaviors and respond.
+
+3. Choose the better phrasing for a 2-year-old due for an oral medication, and justify: "Do you want to take your medicine now?" versus "Do you want your medicine in the spoon or the cup?"
+
+4. An 82-year-old with no cognitive history becomes acutely confused overnight; she is afebrile with cloudy, foul urine. Name the syndrome, distinguish it from dementia in one sentence, and state the likely driver.
+
+5. A 15-year-old with newly diagnosed diabetes refuses to check glucose at school "because everyone stares." Which developmental forces are operating, and which plan respects them?
+
+## Answers
+
+1. Sitting alone at 9 months is on time. Absent babbling at 9 months is a red flag (hearing and language referral), and no pincer development by 9-12 months warrants close follow-up — one reassures, the others earn evaluation, and regression anywhere would too.
+
+2. Regression (bedwetting under stress) is normal coping — accept without punishment, keep routines. The guilt statement is preschool magical thinking framing illness as punishment — correct it gently and concretely: "Being sick is not caused by being mad at your brother."
+
+3. The second — toddlers get CHOICES WITHIN LIMITS, never a yes-no on required care. The first phrasing invites the developmental "no" and converts routine care into a battle.
+
+4. Delirium — acute onset with fluctuating attention, versus dementia's slow progressive course. The cloudy urine points to urinary infection, the most classic delirium driver in older women; treat the cause and the confusion follows.
+
+5. Identity formation and the peer reference group — the imaginary audience makes visible illness feel catastrophic. The respectful plan gives autonomy and privacy: a private testing location, self-management authority with support, and peer-normalized education (groups, camps) rather than parental surveillance.`,
     },
   ],
   keyTakeaways: [
-    `Motor anchors: rolls/sits-supported at 6 mo, pincer at 9-10 mo, walks ~12 mo; weight doubles by 6 mo, triples by 12.`,
-    `Erikson ladder: trust → autonomy → initiative → industry → identity, matched to infant → toddler → preschool → school-age → adolescent.`,
-    `Live vaccines (MMR, varicella): 12-15 months, contraindicated in pregnancy and immunocompromise.`,
-    `Normal aging never includes confusion, incontinence, or depression — those get workups.`,
-    `Acute, fluctuating confusion with impaired attention = delirium: find the cause before treating the behavior.`,
+    `Milestone anchors: smile 2, sit 6/9, pincer 9-12, walk 12-15, doubles-by-6 triples-by-12 — and regression at any age refers.`,
+    `Erikson translates to nursing: respond to build trust, offer toddlers choices, play-prepare preschoolers honestly, give school-agers jobs and mechanics, give adolescents privacy and real decisions.`,
+    `Preparation timing scales with cognition: minutes for toddlers, just-before play for preschoolers, days and models for school-age, full information for teens.`,
+    `Pediatric vitals trend predictably — rates fall, pressures rise with age — so every number is judged against its band, not the adult range.`,
+    `Normal aging never includes confusion: acute fluctuation is delirium (find the infection, drug, or retention), and older-adult teaching adapts pitch, pace, and print — not volume.`,
   ],
 },
 
 nx_maternal_newborn: {
   topicId: 'nx_maternal_newborn',
-  title: `Maternal & Newborn Care`,
-  domainWeight: 'Health Promotion & Maintenance (6-12%)',
-  overview: `Obstetric items cluster around a few high-stakes recognitions: the fetal monitor patterns that demand action, the labor and postpartum findings that separate expected from emergency, and the newborn transitions that are normal at hour 12 but alarming at day 3. The volume of memorizable detail is real but bounded — these anchors cover most of what the exam asks.`,
+  title: `Maternal & Newborn Essentials`,
+  domainWeight: 'Health Promotion and Maintenance (6-12%)',
+  overview: `This survey chapter carries the maternity core the exam samples most: prenatal expectations and warning signs, labor's stages with fetal monitoring (the VEAL CHOP patterns, drawn), the postpartum hemorrhage watch, and the newborn's first assessments. Each block is built around the discrimination the items actually test — expected versus report-now — and the full maternity sequence (prenatal through newborn complications) is expanded chapter by chapter in the dedicated maternity unit.`,
   sections: [
     {
-      id: 'mat-antepartum',
-      title: `1. Antepartum Essentials`,
-      content: `Prenatal care anchors: folic acid 400 mcg daily starting BEFORE conception (the neural tube closes by week 4, often before the first missed period is investigated); no alcohol in any amount; expected weight gain about 25-35 lb for normal BMI; and the standard visit rhythm of monthly to 28 weeks, biweekly to 36, weekly to birth.
+      id: 'mat-prenatal',
+      title: `1. Pregnancy: Expected Course & Warning Signs`,
+      content: `Prenatal items sort findings into three bins: expected discomforts, findings needing follow-up, and emergencies. The expected column: nausea easing after the first trimester, physiologic anemia of dilution, round-ligament pain, dependent edema LATE in pregnancy, Braxton Hicks contractions that are irregular and relieved by rest and hydration.
 
-The danger signs that end a "which finding requires immediate report" stem: any vaginal bleeding, severe continuous headache with visual changes or epigastric pain (preeclampsia trio), sudden facial/hand edema, decreased fetal movement after quickening (16-20 weeks), fever, and gush or steady leak of fluid before term.
+| Warning sign | Think |
+| --- | --- |
+| vaginal bleeding — painless, bright, later pregnancy | placenta previa — NO vaginal exams |
+| abdominal pain + rigid uterus + dark bleeding | abruption — emergency |
+| headache + visual changes + epigastric pain + face/hand swelling, after 20 weeks | preeclampsia advancing — check pressure and reflexes |
+| sudden fluid gush before term | rupture of membranes — check FHR first, screen for prolapse |
+| decreased fetal movement | evaluate — kick-count teaching (commonly 10 movements in 2 hours) |
+| persistent vomiting with weight loss | hyperemesis — hydration, electrolytes |
 
-Preeclampsia deserves its own anchor set: new hypertension (≥140/90 twice, four hours apart) after 20 weeks plus proteinuria or end-organ signs. Severe features include BP ≥160/110, persistent headache, visual disturbance, epigastric/RUQ pain, and rising creatinine or falling platelets. Magnesium sulfate is the seizure prophylaxis, and its toxicity sequence — lost deep tendon reflexes first, then respiratory depression under 12/min, then cardiac effects — with calcium gluconate as the antidote and hourly urine output monitoring (magnesium exits by kidney) is among the most retested medication clusters on the exam.
+Preeclampsia is the heaviest tested syndrome: new hypertension (140/90 or higher on repeat) after 20 weeks with proteinuria or severe features (the headache-vision-epigastric triad, brisk reflexes with clonus). Severe management: quiet dim room, seizure precautions, MAGNESIUM SULFATE with the surveillance bundle from the electrolyte chapter (reflexes hourly, respirations at least 12, urine output at least 30 mL/h, calcium gluconate at the bedside) — and delivery as the cure. An eclamptic seizure follows the seizure script plus left-side positioning and FHR evaluation after.
 
-Supine hypotension rounds out the basics: after mid-pregnancy, lying flat lets the uterus compress the vena cava; the position for nearly everything is left lateral.`,
-      examTip: `Magnesium sulfate items: absent DTRs come BEFORE respiratory depression. A stem reporting lost reflexes is the early warning to act on — stop the infusion, assess respirations, have calcium gluconate ready.`,
+Standing prenatal teaching: folic acid before and through early pregnancy (neural tube defects), no alcohol at any dose, smoking cessation, listeria-avoidance foods (unpasteurized cheeses, deli meats heated), weight-gain bands per BMI, and left-lateral rest positioning (aortocaval compression — supine hypotension presents as dizziness and pallor relieved by turning to the side).`,
+      examTip: `Painless bright bleeding = previa = no vaginal exam; painful rigid uterus = abruption. The pair is tested constantly, and the exam wants the exam-refusal detail, not just the diagnosis.`,
     },
     {
-      id: 'mat-labor-monitoring',
+      id: 'mat-labor',
       title: `2. Labor and Fetal Monitoring`,
       content: `![Fetal heart rate decelerations against the contraction (dashed): EARLY mirrors the contraction (head compression - benign), LATE begins after the peak (uteroplacental insufficiency - reposition, oxygen, stop oxytocin), VARIABLE is an abrupt V at any timing (cord compression - reposition first). The VEAL CHOP pattern, drawn.](/courses/nclex/figures/nclex-fhr-decels.svg)
 
-Fetal heart rate interpretation compresses to VEAL CHOP: Variable decelerations = Cord compression; Early decelerations = Head compression (benign, mirror contractions); Accelerations = Okay; Late decelerations = Placental insufficiency. Baseline is 110-160; moderate variability is the single best indicator of fetal well-being.
+Labor stages in one line each: FIRST stage runs from onset to full dilation (latent to 6 cm, then active with expected progress); SECOND is pushing to birth; THIRD is the placenta (up to about 30 minutes); FOURTH is the recovery hours where hemorrhage risk peaks.
 
-Early decelerations require nothing. Variables get position changes first (shifting the cord), then oxygen and further steps if recurrent. Lates trigger the intrauterine resuscitation bundle in one motion: stop any oxytocin, turn to the left side, open IV fluids, apply oxygen at 8-10 L by non-rebreather, and notify the provider. A prolonged deceleration or bradycardia after membrane rupture adds one more reflex: check for cord prolapse — and if the cord is palpable, lift the presenting part off it with a gloved hand, knee-chest or deep Trendelenburg position, call for emergency delivery, and never attempt to push the cord back.
+Fetal monitoring vocabulary: baseline FHR 110-160 with MODERATE VARIABILITY as the single best well-being indicator; accelerations are reassuring. The deceleration table is VEAL CHOP, and the figure above is its picture:
 
-Labor stages in one line each: first stage runs from onset to full dilation (latent to 6 cm, active 6-10 with expected progress); second stage is pushing to birth; third is placenta (up to 30 minutes); fourth is the first hours of recovery where hemorrhage risk peaks. Oxytocin augmentation carries the tachysystole rule: more than 5 contractions in 10 minutes averaged over 30, or contractions lasting over 2 minutes or closer than 1 minute apart, means stop the infusion and resuscitate as for lates.`,
-      importantNote: `Cord prolapse is a hands-on emergency: the ONLY correct first actions are relieving pressure off the cord and repositioning — everything else (including notifying) happens while doing so, and replacing the cord is never an option.`,
+| Deceleration | Cause | Response |
+| --- | --- | --- |
+| Variable | Cord compression | reposition first; check for prolapse if abrupt and deep |
+| Early | Head compression | benign — mirrors the contraction; monitor |
+| Acceleration | Okay — well oxygenated | none needed |
+| Late | Placental insufficiency | intrauterine resuscitation: reposition LEFT, IV fluid bolus, oxygen per protocol, STOP oxytocin, notify |
+
+The intrauterine resuscitation bundle answers every late-decel and minimal-variability stem: side-lying reposition, fluids, oxygen, oxytocin OFF, provider notified — in an order that starts with the free intervention (position).
+
+Oxytocin runs with a tachysystole rule: more than 5 contractions in 10 minutes (averaged over 30), or contractions over 2 minutes long or less than 1 minute apart, means STOP the infusion and resuscitate as above.
+
+Cord prolapse is the drill item: felt or visible cord after rupture — call for help, position knee-chest or deep Trendelenburg, lift the presenting part OFF the cord with a gloved hand and DO NOT let go or replace the cord, prepare for emergency delivery.`,
+      examTip: `VEAL CHOP with responses attached: variables reposition, earlies watch, lates resuscitate (position-fluids-oxygen-oxytocin off). The order of the resuscitation bundle is itself a tested sequence.`,
     },
     {
-      id: 'mat-postpartum-newborn',
-      title: `3. Postpartum and the Newborn`,
-      content: `The postpartum uterus is a predictable object: immediately after birth the fundus sits midline near the umbilicus, firm as a grapefruit, descending about one fingerbreadth per day. Boggy and midline = massage first, then oxytocics as prescribed. Firm but deviated right = full bladder; empty it (the bladder is the most common cause of uterine displacement and early hemorrhage). Lochia runs rubra (red, days 1-3), serosa (pink-brown, to ~day 10), alba (white-yellow, weeks); saturating a pad in 15 minutes or passing large clots is hemorrhage until proven otherwise.
+      id: 'mat-postpartum',
+      title: `3. Postpartum: The Hemorrhage Watch & Recovery`,
+      content: `Postpartum assessment runs on BUBBLE-HE (breasts, uterus, bladder, bowel, lochia, episiotomy/laceration, Homans/hemorrhoids, emotions), and the hemorrhage logic dominates testing.
 
-Postpartum hemorrhage's two big causes: uterine atony (the boggy fundus — massage, empty bladder, oxytocin) and retained fragments or lacerations (firm fundus with continued bright bleeding — provider now). The classic vital-sign trap: a healthy postpartum woman compensates, so tachycardia may be the ONLY early sign before pressure falls.
+The FUNDUS should be firm, midline, and descending about a fingerbreadth daily from the umbilicus. A BOGGY fundus gets MASSAGED first — the uterus that will not clamp down is the most common hemorrhage cause (atony), and massage is the free first intervention. A fundus deviated to the RIGHT means a FULL BLADDER splinting it: assist to void or catheterize per orders, then reassess. Persistent atony escalates to uterotonics per orders (oxytocin, methylergonovine — held for hypertension, carboprost — cautioned in asthma).
 
-Newborn anchors: Apgar at 1 and 5 minutes (7-10 reassuring); normal vitals roughly HR 110-160, RR 30-60 with brief periodic pauses; glucose checks for the at-risk (infants of diabetic mothers, small or large for gestational age) with jitteriness as the signature hypoglycemia cue. Normal-but-alarming-to-parents findings: acrocyanosis in the first day or two, milia, erythema toxicum, molding, vernix, and weight loss up to about 7-10% regaining by two weeks. Never normal: central cyanosis, grunting/flaring/retracting (respiratory distress triad), jaundice in the FIRST 24 hours (pathologic — think hemolysis), and temperature instability. Safe-sleep teaching is unbendable: supine, alone, in a bare crib — and the newborn goes home in a rear-facing car seat.`,
+Lochia grades rubra (days 1-3), serosa, alba — and the report-now findings: saturating a pad in 15 minutes to an hour per protocol, clots larger than a small egg, return to bright red after progression, or foul odor (infection). Bleeding WITH A FIRM fundus points to a laceration — the provider looks, because massage cannot fix anatomy.
+
+The postpartum vital-sign trap: bradycardia to the 50s can be NORMAL in early postpartum, while tachycardia is the hemorrhage compensations sign — the reverse of the usual instincts. Temperature to 38 C in the first 24 hours can reflect exertion and dehydration; sustained fever is infection.
+
+Rh-negative mothers with Rh-positive newborns receive Rho(D) immune globulin within 72 hours; rubella-nonimmune mothers are vaccinated postpartum (live vaccine — avoid pregnancy per teaching window). Breastfeeding support (early, frequent, correct latch — areola not nipple, audible swallows, no timed limits) and the baby-blues-versus-postpartum-depression line (blues peak and RESOLVE within about two weeks; persistent or worsening mood, detachment, or any harm ideation is depression/psychosis territory and reported) round out the tested set.`,
+      examTip: `Boggy fundus: massage first. Deviated right: empty the bladder. Firm fundus but bleeding: suspect a laceration and call. Three findings, three different first actions — the exam rotates them.`,
+    },
+    {
+      id: 'mat-newborn',
+      title: `4. The Newborn: First Hours & First Assessments`,
+      content: `Immediate care runs dry-warm-stimulate: thermoregulation is the newborn's first vulnerability (cold stress burns glucose and oxygen), so skin-to-skin or warmer, hat, and dry blankets lead. Apgar scores at 1 and 5 minutes grade heart rate, respirations, tone, reflex irritability, and color (0-2 each): 7-10 reassuring, 4-6 moderate support, below 4 aggressive resuscitation — but resuscitation decisions NEVER wait for the score.
+
+Expected newborn findings that stems disguise as alarming: acrocyanosis (blue hands and feet, first day) — normal, while CENTRAL cyanosis is an emergency; caput succedaneum (crosses suture lines, from the trip) versus cephalohematoma (does not cross, watch bilirubin); milia, erythema toxicum, Mongolian spots documented; molding; pseudo-menstruation and breast buds from maternal hormones. Normal vitals: HR 110-160, respirations 30-60 with brief periodic pauses, temperature guarded jealously.
+
+Report-now newborn findings: central cyanosis, grunting-flaring-retracting (respiratory distress triad), sustained tachypnea over 60, apnea over 20 seconds, jitteriness (check GLUCOSE — the hypoglycemia sign; at-risk infants are the large, the small, and the diabetic mother's), temperature instability (sepsis presents as cold as often as hot), and jaundice IN THE FIRST 24 HOURS (pathologic — always; physiologic jaundice appears after day 2-3 and is managed by feeding and monitored bilirubin with phototherapy per nomogram: eyes shielded, maximal skin exposed, feeds continued, hydration watched).
+
+Routine prophylaxis: vitamin K IM (absent gut flora cannot make clotting factors), erythromycin eye ointment, hepatitis B vaccine per schedule, newborn metabolic screening after feeds established, hearing screen, and safe-sleep-plus-car-seat discharge teaching from the safety chapter. Umbilical cord care is clean and dry; circumcision care watches for the first void and bleeding.`,
+      examTip: `Jitteriness = check glucose; jaundice before 24 hours = pathologic = report; grunting-flaring-retracting = distress triad. The newborn section is a report-now recognition exam wearing a fuzzy hat.`,
+    },
+    {
+      id: 'mat-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 34-week client calls with painless bright-red bleeding after resting. What may not be done at triage, and why?
+
+2. During oxytocin augmentation, the strip shows decelerations beginning after each contraction peak with minimal variability. Name the pattern and give the response bundle in order.
+
+3. One hour postpartum, the fundus is boggy and deviated right of midline with heavy rubra flow. Sequence the first interventions.
+
+4. A term newborn, 90 minutes old, has blue hands and feet and a respiratory rate of 52 with occasional 5-second pauses. Which findings are expected, and what would change the answer?
+
+5. A day-old newborn of a diabetic mother is jittery with a weak cry. First bedside action and why?
+
+## Answers
+
+1. No vaginal examination — painless bright bleeding in later pregnancy is placenta previa until placental location is confirmed, and an exam finger through a previa causes hemorrhage. Ultrasound localizes first.
+
+2. Late decelerations with minimal variability — uteroplacental insufficiency. STOP the oxytocin, reposition left-lateral, IV fluid bolus, oxygen per protocol, and notify the provider — with continuous monitoring and preparation for expedited delivery if unresolved.
+
+3. Massage the fundus first (atony is the bleeding); the rightward deviation says the bladder is full — assist to void or catheterize per orders — then reassess tone and lochia, quantify blood loss, and escalate to uterotonics per orders if boggy persists.
+
+4. Acrocyanosis and a rate of 52 with brief periodic pauses are NORMAL at this age. Central (trunk, mucous membrane) cyanosis, sustained rate over 60, grunting, flaring, retracting, or pauses over 20 seconds convert the stem into an emergency.
+
+5. Heel-stick glucose — jitteriness is the classic newborn hypoglycemia sign and infants of diabetic mothers are the highest-risk group (fetal hyperinsulinism outlives the maternal glucose supply). Feed or treat per protocol on the result; symptomatic or unresponsive values escalate.`,
     },
   ],
   keyTakeaways: [
-    `VEAL CHOP; lates = stop oxytocin, left side, fluids, O₂, notify — in one motion.`,
-    `Cord prolapse: lift the presenting part off the cord and reposition; never replace the cord.`,
-    `Magnesium toxicity order: reflexes gone → respirations down → cardiac; antidote calcium gluconate.`,
-    `Boggy midline fundus → massage; firm but deviated → empty the bladder; pad/15 min → hemorrhage.`,
-    `Jaundice in the first 24 hours is pathologic; acrocyanosis on day one is normal; central cyanosis never is.`,
+    `Sort pregnancy findings into expected versus warning: the previa/abruption pair, the preeclampsia triad after 20 weeks, and decreased movement all have fixed responses — and previa forbids the vaginal exam.`,
+    `Fetal strips read VEAL CHOP with moderate variability as the reassurance gold standard; lates get the position-fluids-oxygen-oxytocin-off bundle, and tachysystole stops the drip.`,
+    `Postpartum hemorrhage logic: massage the boggy fundus, empty the deviating bladder, suspect laceration when firm-but-bleeding — and postpartum bradycardia is normal while tachycardia is the warning.`,
+    `Newborns: dry-warm-stimulate first, acrocyanosis normal but central cyanosis never, jitteriness checks glucose, jaundice inside 24 hours is pathologic.`,
+    `Magnesium surveillance (reflexes, respirations, output, calcium gluconate ready) spans preeclampsia care — the electrolyte chapter's rules relocated to the birth suite.`,
   ],
 },
 
 nx_therapeutic_comm: {
   topicId: 'nx_therapeutic_comm',
-  title: `Therapeutic Communication & Mental Health`,
+  title: `Psychosocial Integrity & Therapeutic Communication`,
   domainWeight: 'Psychosocial Integrity (6-12%)',
-  overview: `Psychosocial items reward a consistent stance: acknowledge the feeling, invite the story, never argue with an emotion, and never promise what you cannot deliver. Layered on top are the emergencies with fixed protocols — suicide risk, withdrawal syndromes, abuse — where the exam expects direct assessment and mandatory action, not gentle deferral.`,
+  overview: `Psychosocial items are won on technique: the therapeutic response is learnable as a set of moves (and a longer set of blockers to avoid), suicide risk has a fixed assessment protocol that overrides every privacy instinct, and the high-yield psychiatric emergencies — withdrawal timelines, serotonin and neuroleptic crises, lithium and MAOI rules — are recognition tables. This chapter builds all four layers, plus the defense mechanisms, crisis intervention, and grief frameworks the category samples.`,
   sections: [
     {
-      id: 'psy-therapeutic-blocks',
-      title: `1. Therapeutic Techniques and Their Opposites`,
-      content: `The therapeutic toolbox is short: open-ended questions ("What was that like?"), reflection and restatement ("You feel the treatments aren't helping"), clarification, silence that leaves room, offering self ("I'll sit with you"), and focusing. Each one hands the conversation back to the client.
+      id: 'psy-technique',
+      title: `1. Therapeutic Technique: Moves & Blockers`,
+      content: `The correct response almost always does three things: acknowledges the FEELING, stays with the CLIENT's agenda, and keeps the door open. The distractors do recognizable wrong things:
 
-The non-therapeutic list is what the exam actually tests, because the wrong answers are built from it: false reassurance ("everything will be fine"), giving advice ("if I were you..."), asking "why" (demands justification, produces defensiveness), changing the subject, minimizing ("lots of people go through this"), approval/disapproval framing, and asking closed questions when the moment needs open ones.
+| Therapeutic move | Sounds like |
+| --- | --- |
+| open-ended lead | "Tell me more about that." |
+| reflection of feeling | "You sound frightened about the surgery." |
+| restating | "You have not slept in three days." |
+| silence with presence | staying, attending, not filling the pause |
+| offering self | "I will sit with you for a while." |
+| seeking clarification | "Help me understand what you mean by..." |
+| focusing on the here-and-now | "What is worrying you most right now?" |
 
-The recognition rule: the correct response usually restates or explores the client's expressed feeling, and usually looks less "helpful" than the distractors. When a client says "I'm afraid I'm dying," the answer that scores is "Tell me more about what you're afraid of" — not the option that fixes, soothes, or deflects. One consistent exception: direct, closed questioning is CORRECT for suicide assessment, where specificity is the point.`,
-      examTip: `Cross out every option containing "don't worry," "why," or advice before weighing what remains. Most psychosocial items resolve by elimination of the four classic blocks.`,
+| Blocker (always wrong) | Sounds like |
+| --- | --- |
+| false reassurance | "Everything will be fine." |
+| advice | "If I were you, I would..." |
+| WHY questions | "Why did you stop the medication?" (interrogates, produces defensiveness) |
+| changing the subject | "Let's talk about your diet instead." |
+| minimizing | "Lots of people feel that way." |
+| approval/disapproval | "That is the right attitude." (makes care conditional) |
+| defending | "Your doctor is excellent." (dismisses the concern) |
+
+The exam's engineering: the false-reassurance option FEELS kind, the advice option FEELS helpful — the therapeutic option often feels least satisfying because it does not fix anything. It is not supposed to; it keeps the client talking.
+
+Two scope notes: acknowledging feeling does not mean agreeing with delusions (see below), and therapeutic communication coexists with limit-setting — empathic tone, firm boundary.`,
+      examTip: `Eliminate blockers first — false reassurance, advice, "why," subject changes — and two or three options usually vanish. Among survivors, pick the one that names the feeling and stays on the client's topic.`,
     },
     {
-      id: 'psy-suicide-crisis',
-      title: `2. Suicide Risk and Crisis`,
-      content: `Any statement of hopelessness, burden ("everyone would be better off without me"), or farewell behavior (giving away possessions, sudden calm after depression) triggers direct assessment: "Are you thinking about killing yourself?" Asking does not plant the idea — it is the only way to measure plan, means, and intent, which together grade the risk. A specific plan with available means and stated intent is the highest tier and requires continuous one-to-one observation, an environment stripped of means (cords, sharps, glass, plastic bags), and removal to safety. Fifteen-minute checks are for lower risk; no-suicide contracts have no evidence and never substitute for observation.
+      id: 'psy-suicide',
+      title: `2. Suicide Risk, Safety & Crisis Intervention`,
+      content: `Suicide items have bright-line answers. ASK DIRECTLY: "Are you thinking about killing yourself?" — direct asking does not plant the idea (a myth the exam explicitly tests) and is the assessment. Risk stratifies on plan-means-intent: a stated PLAN with available MEANS and expressed INTENT is the highest-acuity psychiatric finding on the exam and initiates constant observation (1:1), means restriction (nothing sharp, no cords/tubing per policy), and provider notification — confidentiality NEVER extends to suicide or homicide risk; safety disclosures are mandatory, and "I will tell you a secret if you promise not to share it" is answered by declining the promise.
 
-The "sudden improvement" pattern deserves its own flag: a severely depressed client who becomes bright and energized may have resolved ambivalence by deciding to die — energy plus a plan is more dangerous than despair without one.
+The classic paradox item: a severely depressed client whose mood SUDDENLY lifts with unexplained calm or giving away possessions may have decided to die — energy returning before mood is the dangerous window (also the tested reason antidepressant initiation carries early risk warnings, especially in young clients). The "improved" client is reassessed, not celebrated.
 
-Crisis intervention outside suicide follows the same skeleton: safety first, then stay present, reduce stimulation, short concrete sentences, and structure. In panic-level anxiety, cognition narrows to the immediate — teaching, reasoning, and problem-solving are physiologically unavailable until arousal falls, which is why "stay with the client and speak simply" beats every insight-oriented option during the attack itself.`,
-      importantNote: `Suicide assessment is the one place closed, direct questions are the therapeutic choice. Softening the question ("you're not thinking of hurting yourself, are you?") signals the desired answer and invalidates the assessment.`,
+Safety contracts do not substitute for observation; environment sweeps and one-to-one continue per policy.
+
+## Crisis intervention
+
+Crisis work is here-and-now and directive: assess safety FIRST, focus on the immediate precipitant not childhood history, mobilize existing supports, and aim for return to baseline function — crisis intervention is short-term by definition. The escalation ladder for agitated clients: least restrictive first — verbal de-escalation (calm tone, space, simple choices, remove the audience), then offered PRN medication, then seclusion/restraint only when danger is imminent, under the strict rules from Legal & Ethical Practice. Personal safety mechanics: stay between the client and the DOOR, keep distance, never turn your back, never block the client's exit while blocking your own.`,
+      examTip: `Ask directly, act on plan-means-intent, break confidentiality for safety, and re-assess the suddenly serene depressed client. These four override every softer instinct the distractors appeal to.`,
     },
     {
-      id: 'psy-withdrawal-abuse',
-      title: `3. Withdrawal Syndromes and Abuse`,
+      id: 'psy-disorders',
+      title: `3. The Clinical Pictures: Psychosis, Mania, Cognition & Defenses`,
+      content: `HALLUCINATIONS AND DELUSIONS have a scripted response: do not argue, do not agree — present reality gently and redirect to feelings and safety. "I do not hear the voices, but I can see they frighten you. What are they saying?" — the content question for COMMAND hallucinations is mandatory safety assessment, not curiosity. For paranoid clients: consistent staff, clear simple language, no whispering in view, packaged foods if food refusal is fear-based, and no touching without warning.
+
+MANIA nursing is environmental engineering: reduce stimulation (private room when possible, calm brief interactions), finger foods and high-calorie portables (the client who cannot sit cannot sit for meals — the tested nutrition answer), physical outlets (walking with staff), firm consistent limits delivered without argument, and safety surveillance for exhaustion and impulsivity.
+
+DELIRIUM vs DEPRESSION vs DEMENTIA in older adults extends the lifespan chapter's table: delirium is acute and fluctuating with clouded attention (find the cause); depression can mimic dementia ("pseudodementia" — answers "I don't know" rather than confabulating); dementia is insidious and progressive. Dementia care: routine, simple one-step directions, orientation supports early, VALIDATION of feeling over harsh reorientation late ("You miss your mother" beats "Your mother died years ago" for the distressed late-stage client), wandering safety, and caregiver support as legitimate nursing territory.
+
+## Defense mechanisms — the naming table
+
+| Mechanism | One-line example |
+| --- | --- |
+| denial | "The biopsy is wrong; I feel fine." |
+| projection | the angry client says everyone else is hostile |
+| displacement | yelled at by the boss, kicks the dog |
+| rationalization | "I only failed because the test was unfair." |
+| regression | the hospitalized 6-year-old wants a bottle |
+| sublimation | channeling aggression into sport (mature) |
+| reaction formation | excessive kindness toward a resented person |
+| intellectualization | reciting statistics about the tumor, no feeling |
+
+Grief runs on Kubler-Ross vocabulary (denial, anger, bargaining, depression, acceptance) with the tested caveats: stages are non-linear and optional, anger directed at staff is grief work not a complaint to defend against, and anticipatory grief before a death is normal. Complicated grief — function still collapsed months-to-years later, or absent grieving with somatic explosion — refers.`,
+      examTip: `For hallucinations the sequence is fixed: acknowledge the feeling, present reality once without arguing, assess command content for safety, redirect. Any option that argues the voices are fake — or plays along — is wrong.`,
+    },
+    {
+      id: 'psy-substance',
+      title: `4. Substance Use: Withdrawal Clocks & Psychiatric Emergencies`,
       content: `![The alcohol withdrawal clock: early tremor and autonomic signs at 6-24 hours after the last drink, peak seizure risk in the first 48, and delirium tremens - the highest-mortality window - at 48-72 hours.](/courses/nclex/figures/nclex-etoh-withdrawal-timeline.svg)
 
-Alcohol withdrawal runs a clock the exam expects you to read: tremor, anxiety, diaphoresis, tachycardia, and hypertension at 6-24 hours after the last drink; peak seizure risk in the first 48; delirium tremens — disorientation, hallucinations, autonomic storm — at 48-72 hours, carrying real mortality. Management is benzodiazepines (dosed by a symptom scale like CIWA), thiamine before or with glucose (Wernicke prophylaxis), magnesium repletion, and seizure precautions. Opioid withdrawal (yawning, rhinorrhea, cramps, dilated pupils, gooseflesh) is miserable but not lethal; alcohol and benzodiazepine withdrawal can kill — that asymmetry decides several exam answers.
+Alcohol withdrawal runs a clock the exam expects you to read: EARLY (6-24 hours after the last drink) tremor, anxiety, diaphoresis, tachycardia, hypertension; SEIZURE risk peaks in the first 48; DELIRIUM TREMENS (48-72 hours) — disorientation, hallucinations, autonomic storm — is the highest-mortality window and a medical emergency, not a behavioral problem. Management: symptom-triggered BENZODIAZEPINES by withdrawal scale, THIAMINE BEFORE GLUCOSE (Wernicke prevention — the sequencing item), seizure precautions, quiet lighting, hydration and electrolytes.
 
-Abuse recognition spans ages: injuries inconsistent with the story, injuries in multiple healing stages, delay in seeking care, a partner or caregiver who answers every question and won't leave, fearfulness toward the caregiver, and in children, fractures or bruises in non-mobile infants and immersion-pattern burns. The nurse's duties are fixed: suspected child or vulnerable-adult abuse is a personal, mandatory report to the protective agency — suspicion suffices, confrontation is contraindicated, and documentation records observations verbatim and factually.
+Opioid withdrawal is miserable but rarely lethal (yawning, rhinorrhea, cramps, dilated pupils — managed supportively and with agonist therapy per orders); opioid OVERDOSE kills: pinpoint pupils, respiratory depression, coma — naloxone, repeated as needed because it outlasts nothing. Stimulant intoxication brings hypertension, hyperthermia, and paranoia; benzodiazepine withdrawal, like alcohol, can seize and is tapered, never stopped cold.
 
-Intimate partner violence screening is universal and PRIVATE: interview alone (imaging trips and procedures are the standard pretexts for separation), ask directly, and if violence is disclosed, assess immediate danger and offer a safety plan. The client who is not ready to leave still gets resources and an unshaken alliance — leaving is a process, and the highest-risk window is precisely when the victim leaves.`,
+## The three drug emergencies
+
+| Emergency | Setting | Signature | Response |
+| --- | --- | --- | --- |
+| serotonin syndrome | SSRI + another serotonergic (MAOI, tramadol, triptan, St. John's wort) | agitation, tremor, HYPERREFLEXIA/clonus, diaphoresis, hyperthermia | stop serotonergics, supportive cooling, notify — often within hours of the combination |
+| neuroleptic malignant syndrome | antipsychotics | LEAD-PIPE RIGIDITY, hyperthermia, autonomic instability, mutism — over days | stop the antipsychotic, aggressive cooling, dantrolene/bromocriptine per orders |
+| acute dystonia | early antipsychotic exposure | torticollis, oculogyric crisis, laryngeal spasm risk | IM anticholinergic (benztropine/diphenhydramine) — frightening, treatable, urgent |
+
+Lithium rides with this section: 0.6-1.2 range, toxicity climbing from GI upset and coarse tremor toward ataxia, confusion, and seizures — DEHYDRATION, sodium loss, and NSAIDs raise levels, so the teaching is steady salt and water intake and no casual ibuprofen. MAOI clients keep the tyramine list from pharmacology. SSRIs take weeks to work (teach the wait), are not stopped abruptly, and carry the early-energization suicide-risk window from section 2.`,
+      examTip: `Clonus-and-hyperreflexia within hours points to serotonin syndrome; rigidity-and-mutism over days on an antipsychotic points to NMS. The reflexes and the clock separate the two hyperthermic emergencies.`,
+    },
+    {
+      id: 'psy-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A pre-op client says, "I am sure I will not wake up from anesthesia." Rank these responses: "You have an excellent surgical team." / "Tell me more about what you are afraid of." / "Do not worry — this surgery is very routine."
+
+2. A client hospitalized for depression suddenly appears peaceful, gives her roommate her books, and thanks the staff "for everything." Interpret and act.
+
+3. A client with schizophrenia reports voices telling him to hurt his roommate. Give the response sequence.
+
+4. A client admitted yesterday afternoon for pancreatitis becomes tremulous and diaphoretic with BP 168/98 and HR 118; he "had a few beers daily" per history. Place him on the clock and name the two medication priorities.
+
+5. Three days after starting an SSRI, a client who also takes tramadol develops agitation, tremor, and inducible ankle clonus with a temperature of 38.6 C. Name it, distinguish it from NMS, and act.
+
+## Answers
+
+1. The open-ended exploration is correct — it names and pursues the client's fear. "Excellent team" is defending, "do not worry / routine" is false reassurance; both blockers close the conversation. (A statement of impending doom also earns a physiologic assessment and provider notification — sudden doom can be somatic.)
+
+2. Sudden peace plus giving away possessions in a depressed client signals a made decision to die. Assess directly for plan, means, and intent now; initiate continuous observation and means restriction per policy; notify. This is the paradox window, not improvement.
+
+3. Command hallucinations targeting another person: assess the content and intent directly, present reality once without arguing, ensure the roommate's and client's immediate safety (separation, observation level), notify the provider, and document — the safety steps outrank the communication finesse.
+
+4. Roughly 18-24 hours since the last drink — early withdrawal, with the seizure window opening through 48 hours and DTs beyond. Priorities: symptom-triggered benzodiazepines per scale, and thiamine BEFORE any glucose-containing fluids, with seizure precautions and quiet environment.
+
+5. Serotonin syndrome — the SSRI-tramadol combination, hours-to-days onset, and HYPERREFLEXIA with clonus distinguish it from NMS's lead-pipe rigidity on antipsychotics over days. Stop the serotonergic agents, cool and support, continuous monitoring, notify now.`,
     },
   ],
   keyTakeaways: [
-    `Therapeutic = reflect, open, clarify, stay; the four classic blocks (reassure, advise, "why," deflect) mark wrong options.`,
-    `Suicidal cues get the direct question; plan + means + intent = one-to-one observation, means removed.`,
-    `Alcohol withdrawal timeline: 6-24 h tremor/autonomic, 48 h seizures, 48-72 h DTs; benzodiazepines + thiamine.`,
-    `Abuse suspicion = mandatory personal report; document verbatim facts; never confront the suspected abuser.`,
-    `IPV screening happens alone — never with the partner present.`,
+    `Kill the blockers first (false reassurance, advice, why, subject changes); the right response names the feeling and keeps the client talking.`,
+    `Ask about suicide directly, act on plan-means-intent with 1:1 and means restriction, never promise secrecy, and re-assess the suddenly calm depressed client.`,
+    `Hallucinations: acknowledge feeling, present reality once, assess command content, redirect; mania gets low stimulation, finger foods, firm limits.`,
+    `Alcohol withdrawal keeps a clock — tremor by 24 h, seizures by 48, DTs 48-72 — managed with scale-driven benzodiazepines and thiamine before glucose.`,
+    `Separate the hyperthermic emergencies by reflexes and time: clonus-fast is serotonin syndrome, rigid-slow on antipsychotics is NMS — and lithium toxicity rides dehydration, sodium loss, and NSAIDs.`,
   ],
 },
 
 nx_basic_care: {
   topicId: 'nx_basic_care',
-  title: `Mobility, Nutrition & Elimination`,
-  domainWeight: 'Basic Care & Comfort (6-12%)',
-  overview: `Basic Care & Comfort is the mechanics of daily nursing: how a body is positioned, moved, fed, and kept intact. The category's exam presence is small but its items are refreshingly concrete — a cane on the correct side, a diet tray with the right items, a pressure injury staged accurately. These are the questions you should bank.`,
+  title: `Basic Care & Comfort`,
+  domainWeight: 'Basic Care and Comfort (6-12%)',
+  overview: `Basic Care and Comfort is the fundamentals category — mobility, skin, nutrition, elimination, sleep, and pain — and its items are decided by precise mechanics: exact positioning names, pressure-injury staging, diet-by-condition tables, catheter and ostomy rules, and the assistive-device gait patterns. This chapter compresses those mechanics into the tables and scripts the items quote.`,
   sections: [
     {
-      id: 'bcc-mobility-devices',
-      title: `1. Positioning and Assistive Devices`,
-      content: `Assistive-device rules compress into mnemonics that survive test-day stress. Cane: COAL — Cane Opposite Affected Leg, advancing with the weak leg so they share the load; the top of the cane meets the wrist crease with the elbow flexed 15-30 degrees. Walker: wall-to-walker sequence — move the walker, then the weaker leg, then the stronger; never carry it up stairs. Crutches: weight on the HANDS, never the axillae (radial nerve palsy); two to three fingerwidths between axilla and crutch pad; stairs run "up with the good, down with the bad" — the strong leg leads ascending, crutches and injured leg lead descending.
+      id: 'bcc-mobility',
+      title: `1. Mobility, Positioning & Assistive Devices`,
+      content: `Positioning is a vocabulary test with a physiologic key:
 
-Positioning by purpose: high-Fowler's for dyspnea and meals; semi-Fowler's 30 degrees for enteral feedings and increased intracranial pressure; left lateral for the pregnant client and for enema administration (Sims'); supine flat post-lumbar-puncture per protocol; prone rarely but memorably for post-amputation hip-flexion-contracture prevention (several sessions daily after above-knee amputation); and the 30-degree lateral incline — not a full 90-degree side-lying on the trochanter — for pressure redistribution.
+| Position | Use it for |
+| --- | --- |
+| high Fowler's (60-90) | dyspnea, meals, NG insertion, pulmonary edema (legs down) |
+| semi-Fowler's (30-45) | head injury/ICP (30, midline), post-thyroidectomy, tube feeding running |
+| left lateral / Sims | enemas, unconscious airway protection, postpartum supine-hypotension rescue |
+| prone | rarely; post-amputation hip-flexion prevention per orders; ARDS per protocol |
+| Trendelenburg variants | central line insertion/removal (air embolism physics); NOT modern shock care |
+| dorsal recumbent / lithotomy | perineal exams and procedures |
 
-Hip precautions after posterior arthroplasty: no flexion past 90 degrees, no adduction past midline, no internal rotation — operationalized as a raised toilet seat, an abduction pillow between the knees, and no crossing legs or bending to tie shoes.`,
-      examTip: `Device items are pure recall — bank them in seconds. COAL, wall-to-walker, up-with-the-good, hands-not-axillae. Spend your time on the judgment items instead.`,
+Classic pairing items: post-lumbar-puncture lies FLAT (headache prevention per protocol); post-cataract surgery avoids the operative side and anything that raises eye pressure; above-knee amputation avoids prolonged sitting and PILLOWS UNDER THE STUMP after the early phase (flexion contracture); post-total-hip-replacement keeps ABDUCTION (pillow between legs), no crossing, no bending past 90 degrees, no internal rotation — the raised toilet seat and no-low-chairs teaching cluster.
+
+## Assistive-device mechanics
+
+Canes: held on the STRONG side, advanced WITH the weak leg; the memory hook "COAL" — cane opposite affected leg. Walkers: move the walker, then step in — "wandering wilma's always late" aside, the tested points are all four legs down before weight, no carrying it up stairs. Crutches: weight on HANDS never axillae (nerve injury), 2-3 fingerwidths below the axilla, and the stair rule "up with the good, down with the bad" — good leg leads ascending, crutches-and-bad leg lead descending. Gait patterns (2-point, 3-point for non-weight-bearing, 4-point, swing-through) match the ordered weight-bearing status.
+
+Immobility's harm map organizes half the category: pneumonia and atelectasis (turn, cough, breathe, spirometer), DVT (SCDs, ambulation, prophylaxis), pressure injury (below), constipation (fluid, fiber, schedule), urinary stasis and stones, orthostatic intolerance (dangle first), contractures and footdrop (ROM, boots per orders), and disuse osteoporosis. Every immobilized-client stem is asking which harm is declaring itself.`,
+      examTip: `Cane strong-side, crutch weight on hands, up-with-the-good-down-with-the-bad, hip replacement = abduction and under-90 flexion. These four mechanical facts each decide recurring items.`,
     },
     {
-      id: 'bcc-skin-wounds',
-      title: `2. Pressure Injuries: Staging and Prevention`,
-      content: `Staging is anatomy: Stage 1 is intact skin with non-blanchable erythema. Stage 2 is partial-thickness loss — a shallow open wound with a red-pink viable bed, or an intact/ruptured serum-filled blister, with NO slough and NO fat visible. Stage 3 is full-thickness into subcutaneous fat (possibly with slough, undermining, tunneling) but no bone, tendon, or muscle. Stage 4 exposes bone, tendon, or muscle. Unstageable means the base is obscured by slough or eschar — you cannot stage what you cannot see. Deep-tissue injury is the purple-maroon intact-skin lesion from shear over bone.
+      id: 'bcc-skin',
+      title: `2. Skin Integrity & Pressure Injury Staging`,
+      content: `Staging is a straight recall table the exam samples verbatim:
 
-Two staging rules the exam checks: staging never runs backward (a healing Stage 3 is a "healing Stage 3," not a Stage 2), and stable dry eschar on heels is generally left intact.
+| Stage | Definition | The tested marker |
+| --- | --- | --- |
+| 1 | intact skin, NON-BLANCHABLE redness | press it — blanchable redness is not yet an injury |
+| 2 | partial-thickness loss — shallow open ulcer or intact/ruptured blister | pink, moist, no slough |
+| 3 | full-thickness — subcutaneous fat visible | no bone/tendon/muscle visible; slough possible |
+| 4 | full-thickness with exposed bone, tendon, or muscle | probe-to-bone territory; osteomyelitis risk |
+| unstageable | base obscured by slough/eschar | cannot stage what you cannot see |
+| deep tissue injury | intact purple/maroon discoloration or blood blister | evolves — protect and watch |
 
-Prevention is a bundle: risk scoring (Braden — lower is worse, ≤18 flags risk), repositioning about every 2 hours in bed and every hour seated (with weight shifts every 15 minutes for the able), the 30-degree lateral position, heels floated on pillows, head-of-bed at or below 30 degrees where tolerated to limit shear, moisture management, nutrition with adequate protein, and NEVER massaging reddened bony prominences or using donut cushions — both concentrate the damage they claim to prevent.`,
-      importantNote: `"Non-blanchable" is the Stage 1 keyword and "slough/eschar obscuring the base" is the unstageable keyword. Most staging distractors hinge on exactly one such keyword.`,
+Prevention is the bundled answer: reposition at least every 2 hours in bed (and shift weight every 15-30 minutes seated), 30-degree lateral tilts rather than direct trochanter pressure, heels FLOATED off the bed, moisture management, no massage over bony reddened areas (it grinds fragile tissue), no donut cushions (they ring-ischemize), lift-don't-drag (shear), nutrition with adequate protein, and a validated risk scale (Braden: sensory, moisture, activity, mobility, nutrition, friction/shear — lower is worse) on schedule.
+
+Wound care logic: moist wound healing beats dry, granulation tissue (beefy red) is protected not scrubbed, necrotic tissue is debrided per orders, and wounds are measured and documented consistently (length, width, depth, tunneling by clock position). Dehisced and infected wounds route back to the perioperative chapter's scripts.`,
+      examTip: `Non-blanchable is the word that makes stage 1; visible fat is 3; visible bone is 4; covered-by-eschar is unstageable. And two prevention absolutes: no donuts, no massaging red bony prominences.`,
     },
     {
-      id: 'bcc-nutrition-elimination',
-      title: `3. Diets, Tubes, and Elimination`,
-      content: `Therapeutic diets by memorable content: clear liquids are see-through at room temperature (broth, gelatin, pulp-free juice, black coffee, popsicles); full liquids add dairy and anything pourable; mechanical soft and pureed track chewing and swallowing ability. Disease pairings: renal diets restrict potassium, phosphorus, and sodium (the potassium bombs — bananas, oranges, potatoes, tomatoes, spinach, avocados — are the tested list); heart failure restricts sodium and often fluids; celiac excludes wheat, barley, and rye (BROW: barley, rye, oats-if-contaminated, wheat); and dysphagia diets thicken liquids per the swallow evaluation, with aspiration precautions — upright for meals and 30-60 minutes after, chin tuck, small bites, no straws.
+      id: 'bcc-nutrition',
+      title: `3. Nutrition & Therapeutic Diets`,
+      content: `Diet-by-condition is a straight table the items quote:
 
-Enteral tubes: initial placement of any blindly inserted feeding tube is verified by X-ray, full stop. Ongoing checks pair aspirate pH (gastric ≤5) with external length marking; auscultating an air bolus is obsolete. Feeding position is head-of-bed ≥30 degrees during and 30-60 minutes after; residuals are checked per policy and feeds are not reflexively held for modest volumes under current practice.
+| Condition | The diet logic |
+| --- | --- |
+| heart failure / hypertension | sodium restriction (commonly 2 g); label literacy over saltshaker virtue |
+| renal failure (pre-dialysis vs dialysis differ) | potassium, phosphorus, sodium restricted; protein per stage and modality |
+| cirrhosis with encephalopathy | sodium restricted; protein managed per provider (not eliminated) |
+| celiac disease | gluten-free — no wheat, barley, rye; oats only if certified |
+| diverticulosis vs diverticulitis | high fiber when well; low residue/bowel rest during flares |
+| dumping syndrome (post-gastrectomy) | small frequent meals, HIGH protein/fat, LOW simple carbs, liquids BETWEEN meals, lie down after |
+| gout | limit purines: organ meats, shellfish, beer |
+| iron therapy | give with vitamin C, not with dairy/antacids; stools darken (expected) |
+| warfarin | CONSISTENT vitamin K greens, not elimination |
+| COPD | small frequent high-calorie meals |
+| pancreatitis recovery | low fat |
 
-Elimination anchors: for constipation, fiber, fluids, and activity precede laxatives, and impaction presents as paradoxical liquid seepage around a mass. Urinary retention is confirmed by bladder scan before catheterization. And every indwelling catheter carries the CAUTI bundle: closed system, bag below the bladder and off the floor, no dependent loops, secured to the thigh, and a daily challenge to remove it.`,
+Aspiration-precaution feeding consolidates the stroke chapter's rules: upright 90 degrees, chin tuck when taught, thickened liquids per speech evaluation, small bites, no straws when directed, check for pocketing on the weak side, stay upright 30+ minutes after.
+
+Enteral feeding mechanics: head of bed at least 30 degrees at ALL times while running (aspiration), placement verified initially by X-ray, residuals and tube patency per policy (flush before and after medications, each medication separately, nothing crushed that cannot be — the pharmacology chapter's rule at the bedside), and formula hang-times per policy. Diarrhea is the most common complication (rate, formula, sorbitol elixirs); the sudden-cessation-hypoglycemia logic from TPN applies in spirit to abruptly stopped continuous feeds in insulin-covered clients.`,
+      examTip: `Dumping syndrome inverts intuition twice: liquids BETWEEN meals not with them, and lying DOWN after eating — the only diet where recumbency after meals is the right answer.`,
+    },
+    {
+      id: 'bcc-elimination',
+      title: `4. Elimination: Catheters, Ostomies & Bowel Care`,
+      content: `Catheter care consolidates the safety chapters: dependent drainage below the bladder, no loops, secured to the thigh, perineal care per shift, sample from the port, and OUT at the earliest order (CAUTI). Intermittent catheterization uses sterile technique in hospital, clean at home — a tested distinction. Post-removal, the void watch (6-8 hours) with bladder scan for retention.
+
+Ostomy assessment: a healthy stoma is PINK-RED and moist; pale, dusky, purple-black is ischemia — a report-now finding, always. Output logic follows anatomy: ileostomies run LIQUID and continuous (dehydration and skin risk, never irrigate, watch for blockage with corn/nuts/popcorn teaching), sigmoid colostomies produce formed stool (and MAY be irrigated on schedule to train regularity). Appliance mechanics: empty at one-third full, size the barrier to the stoma (a few millimeters clearance), expect size change as edema resolves over weeks. The psychosocial layer is tested equally: looking at the stoma is a milestone; the nurse's matter-of-fact competence models acceptance; referral to an ostomy nurse and peer groups is a strong answer.
+
+Bowel program logic: constipation prevention (fluid, fiber, activity, scheduled toileting after meals to ride the gastrocolic reflex, answering the urge); impaction presents as seeping LIQUID stool around a blockage — the paradoxical-diarrhea item — confirmed by exam per policy and treated per orders. Enema mechanics: left Sims position, lubricated tip a few inches, bag height moderate (high pressure cramps), stop-and-breathe for cramping. Digital stimulation and disimpaction carry VAGAL bradycardia risk in cardiac and spinal clients — and in spinal cord injury above T6, a distended bladder or bowel can trigger AUTONOMIC DYSREFLEXIA: pounding headache, hypertension, flushing above the lesion — sit the client up, find and remove the trigger (kinked catheter first), and treat per protocol. It is an emergency the elimination chapter owns.`,
+      examTip: `Stoma color is a traffic light — dusky means call. Ileostomy = liquid, never irrigate; sigmoid colostomy = formed, may irrigate. And liquid stool in a constipated client is impaction until examined.`,
+    },
+    {
+      id: 'bcc-comfort',
+      title: `5. Pain, Sleep & Comfort Measures`,
+      content: `Pain is what the client says it is — the self-report rules, and the exam punishes options that substitute the nurse's skepticism ("he is laughing with visitors, so I held the opioid"). Scales match development and cognition: numeric for adults and older children, FACES for young children, FLACC (face, legs, activity, cry, consolability) for the preverbal, and behavioral indicators plus family input for the nonverbal — but observed calm never overrides a stated 8.
+
+Pain management layers: scheduled dosing beats PRN-chasing for continuous pain; PCA pumps are pressed by the CLIENT ONLY (family-pressed buttons defeat the safety design — a tested teaching point); opioid surveillance pairs sedation level with respirations (sedation precedes depression); and nonpharmacologic measures (repositioning, heat and cold with 15-20-minutes-and-a-barrier rules, massage, distraction, relaxation, guided imagery) are adjuncts, not substitutes, in acute severe pain — but strong answers in chronic and procedural contexts.
+
+Heat and cold mechanics: cold first for acute injury (vasoconstriction limits swelling) typically in the first 24-48 hours, heat for muscle spasm and chronic stiffness; barriers always; timed applications; extra caution with impaired sensation, circulation, and the very young or old — the diabetic-neuropathy heating-pad burn is a standing stem.
+
+Sleep hygiene teaching: consistent schedule, dark cool quiet room, no screens near bedtime, caffeine cut in the afternoon, no alcohol as a sleep aid (fragments sleep), beds for sleep not worry, and daytime naps limited. Hospital sleep is nursing-engineered: cluster care to protect sleep blocks, lights and noise down, pain treated, and unnecessary night vitals questioned per orders — the tested mindset treats sleep as therapy, not a luxury.
+
+End-of-life comfort belongs here too: repositioning, mouth care (often the highest-comfort intervention in final days), secretion management, presence, and honest family coaching (hearing persists late; speak to the client). Comfort-focused does not mean care-free — it means the goal changed.`,
+      examTip: `Self-report outranks appearances, sedation change precedes respiratory depression, and only the client presses the PCA button. Three absolutes that each anchor recurring items.`,
+    },
+    {
+      id: 'bcc-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client with left-leg weakness is learning a cane. Which side holds the cane, which leg advances with it, and who leads on stairs?
+
+2. Stage this wound: full-thickness sacral ulcer with visible subcutaneous fat, slough at the edges, no bone or tendon visible.
+
+3. A post-gastrectomy client reports weakness, sweating, and cramping 20 minutes after meals. Name it and give three diet instructions.
+
+4. A T4 spinal-cord-injured client suddenly develops a pounding headache, BP 210/110, and flushing above the chest. Name it and give the first three actions.
+
+5. An ileostomy client asks whether she should irrigate her stoma like her friend with a colostomy does. Answer, and name the stoma finding that would be an emergency.
+
+## Answers
+
+1. Cane in the RIGHT (strong) hand — opposite the affected leg; the cane advances WITH the weak left leg. Stairs: up with the good (right leads up), down with the bad (cane and left lead down).
+
+2. Stage 3 — full thickness with visible fat but no bone, tendon, or muscle. Slough at the edges does not make it unstageable while the base is visible.
+
+3. Dumping syndrome. Small frequent meals; high protein and fat with LOW simple carbohydrates; liquids BETWEEN meals rather than with them — and lying down briefly after eating slows transit.
+
+4. Autonomic dysreflexia — a lesion above T6 plus a noxious trigger below. Sit the client fully upright (drop the pressure), hunt and remove the trigger — kinked or blocked catheter first, then bowel, then skin — and notify/treat per protocol if pressure persists. Minutes matter; stroke is the risk.
+
+5. No — ileostomy output is liquid and continuous; irrigation is only for trainable formed-stool colostomies (sigmoid). The emergency finding is a dusky, purple, or black stoma — ischemia — reported immediately.`,
     },
   ],
   keyTakeaways: [
-    `COAL; walker-then-weak-leg; up with the good, down with the bad; weight on hands, never axillae.`,
-    `Stage 2 = partial-thickness, no slough; Stage 3 = fat; Stage 4 = bone/tendon/muscle; obscured base = unstageable.`,
-    `Never massage red bony prominences; float heels; 30-degree lateral; Braden ≤18 = at risk.`,
-    `New feeding tube = X-ray before use; ongoing checks = pH ≤5 + external length; HOB ≥30° for feeds.`,
-    `Renal diet cuts K⁺/phosphorus/sodium — bananas, oranges, potatoes, tomatoes, spinach are the flag foods.`,
+    `Device mechanics decide items: cane strong-side with the weak leg, crutch weight on hands, up-with-the-good-down-with-the-bad, hip precautions = abduction and under-90.`,
+    `Stage pressure injuries by what is visible (non-blanchable / fat / bone / obscured), prevent with q2h turns, floated heels, no donuts, no massage on red bone.`,
+    `Diet tables are quotable: renal restricts K-phos-Na, celiac bans wheat-barley-rye, dumping wants liquids between meals and recumbency after.`,
+    `Stoma color is the traffic light, ileostomies never irrigate, paradoxical liquid stool means impaction — and above-T6 injuries convert elimination triggers into autonomic dysreflexia emergencies.`,
+    `Pain is the client's report: match the scale to development, watch sedation before respirations, client-only PCA, and treat sleep and mouth care as real therapy.`,
   ],
 },
 
@@ -1626,47 +1924,110 @@ After procedures, the labs mirror the risk: post-cardiac-catheterization checks 
 nx_periop: {
   topicId: 'nx_periop',
   title: `Perioperative & Procedure Care`,
-  domainWeight: 'Reduction of Risk Potential (10-16%)',
-  overview: `Surgical clients travel a predictable arc, and the exam samples its checkpoints: what must exist before the OR doors (consent, verification, an optimized client), what each post-op day tends to produce (the fever timeline, the complication windows), and the drains, tubes, and devices whose findings you must sort into expected versus emergency.`,
+  domainWeight: 'Reduction of Risk Potential (9-15%)',
+  overview: `Perioperative questions walk the surgical timeline — preparation, the immediate recovery hour, and the complication watch that follows — and each phase has its own checklists and its own emergencies. This chapter covers pre-op verification and medication decisions, PACU priorities, the day-by-day complication calendar (atelectasis to embolism to dehiscence), and the tube-and-drain rules that surgical stems assume you know.`,
   sections: [
     {
       id: 'periop-preop',
-      title: `1. Preoperative: The Gatekeeping Role`,
-      content: `The nurse is the last verification layer before surgery. Consent must be signed BEFORE any sedating premedication — a form signed after midazolam is void, the case waits, and the surgeon is notified. The pre-op checklist verifies identity and site (with the universal protocol's site marking and the OR time-out), NPO status per current anesthesia guidance (commonly clear liquids until 2 hours, light meal 6, heavier 8 — "NPO after midnight" survives institutionally but is no longer the physiologic rule), removal of jewelry, dentures, and nail polish per policy, and documented allergies including latex.
+      title: `1. Pre-Op: Verification, Teaching & Medication Decisions`,
+      content: `Pre-op nursing is a verification engine: consent signed BEFORE any sedating premedication (a sedated signature is invalid — sequence errors here are classic items), NPO status confirmed (typical published guidance: clear liquids up to 2 hours, light meal about 6, heavier meals about 8 — the exam follows the order and the institution), history and allergies (latex, iodine/shellfish for some preps, prior anesthesia reactions and any FAMILY history of malignant hyperthermia), jewelry and prosthetics removed, and the surgical site marked with the client involved.
 
-Medication reconciliation carries the tested decisions: anticoagulants are typically held on a provider-directed schedule; insulin doses adjust (basal usually reduced, not eliminated — clarify, never guess); beta blockers usually CONTINUE (abrupt cessation risks rebound ischemia); metformin pauses around contrast exposure and per policy.
+## The medication sort
 
-Pre-op teaching earns its exam weight through the post-op behaviors it enables: incentive spirometry and splinting demonstrated BEFORE surgery (learning through pain is poor pedagogy), turning-coughing-deep-breathing, early ambulation expectations, and honest pain-management plans. The strongest answer to "which client statement indicates effective pre-op teaching" is the one describing a concrete behavior with its reason — "I'll hold a pillow against my incision when I cough so it hurts less."`,
-      examTip: `Consent-before-sedation outranks nearly everything else in pre-op stems. Once sedation is in, no signature counts and the correct answer escalates rather than improvises.`,
+| Medication | Usual pre-op handling |
+| --- | --- |
+| anticoagulants and antiplatelets | held on a provider-set schedule (warfarin days ahead, verified by INR) |
+| insulin | reduced or adjusted — NPO changes the arithmetic; glucose checked |
+| oral hypoglycemics | typically held the morning of surgery; metformin coordinated around contrast |
+| beta blockers | usually CONTINUED with a sip of water — abrupt stop risks rebound |
+| anticonvulsants, cardiac drugs | usually continued — clarify, do not assume |
+| herbal supplements | the g-list (ginkgo, garlic, ginseng, ginger) increases bleeding — report use |
+
+Pre-op teaching that changes outcomes: incentive spirometry and splinting DEMONSTRATED before surgery (teaching through anesthesia fog fails), turning-coughing-deep-breathing schedule, early ambulation expectations, and honest pain-plan conversation. Effectiveness is the return demonstration, not a nod.`,
+      examTip: `Consent precedes sedation — if the stem shows the premedication given and the consent unsigned, the surgery does not proceed on that signature, and the answer notifies the surgeon. Sequence is the whole item.`,
     },
     {
-      id: 'periop-postop-windows',
-      title: `2. Postoperative Complication Windows`,
-      content: `The post-op fever timeline sorts causes by clock: atelectasis in the first 24-48 hours (low-grade fever, diminished bases — treat with lung expansion: spirometer, deep breathing, ambulation); urinary tract infection around days 3-5 (especially catheterized clients); wound infection days 5-7 (rising incisional pain, erythema, purulence); and deep vein thrombosis anytime from day 3 onward (unilateral calf swelling, warmth — never massage, elevate and anticoagulate per orders).
+      id: 'periop-pacu',
+      title: `2. PACU: The First Hour`,
+      content: `Post-anesthesia priorities are rigidly ordered: AIRWAY (patency, positioning — lateral or head-turned until gag returns for general anesthesia), BREATHING (rate, depth, saturation; anesthetics and opioids depress both), CIRCULATION (pressure, pulse, site bleeding, dressings AND beneath the client — blood tracks), then neurologic recovery and pain. The airway answer beats the pain answer every time in the first-hour stem.
 
-Airway and circulation own the first hours: post-anesthesia clients are positioned to protect the airway (side-lying if unresponsive without contraindication), monitored for respiratory depression from residual anesthetic and opioids, and warmed (shivering raises oxygen demand). Hemorrhage surveillance includes the sheets UNDER the client — blood tracks by gravity — and the earliest shock signs are tachycardia and restlessness, not the late-falling blood pressure.
+Report-now findings in the PACU: stridor or crowing respirations (laryngospasm — airway emergency), saturation falling despite oxygen, systolic pressure trending down with rising pulse (bleeding until proven otherwise), rigidity with a climbing temperature (see malignant hyperthermia below), and a dressing that saturates serially.
 
-Wound catastrophes have a scripted response: dehiscence (edges separate, often heralded by a "giving way" sensation after coughing) and evisceration (organs protrude) mean stay with the client, call for help, cover protruding viscera with STERILE SALINE-MOISTENED gauze — never push anything back — position low-Fowler's with knees flexed to reduce tension, NPO, and prepare for surgery.
+## Spinal and epidural recovery
 
-Paralytic ileus explains the post-op bowel rules: absent bowel sounds and no flatus are expected briefly; advancing diet waits for gut function; increasing distension with vomiting is the escalation cue. Early ambulation is the single intervention that appears in the correct answer to atelectasis, DVT, AND ileus prevention — when in doubt, walk the client.`,
-      importantNote: `Evisceration: sterile saline-moistened gauze over the organs, low-Fowler's with knees bent, NPO, stat call. Every distractor involving reinsertion, dry dressings, or flat positioning is wrong.`,
+Regional anesthesia adds its own rules: motor and sensory return are documented distal-to-proximal; the client stays flat per protocol after spinal anesthesia (post-dural-puncture headache is positional — worse upright — and treated with fluids, caffeine per orders, and blood patch when severe); orthostatic falls are the mobilization risk; and urinary retention is expected surveillance — a palpable bladder with no void within the protocol window gets a bladder scan.
+
+## Malignant hyperthermia
+
+The anesthesia emergency the exam loves: a hypermetabolic crisis triggered by volatile anesthetics and succinylcholine in susceptible clients. EARLIEST signs are unexplained tachycardia, tachypnea, a RISING end-tidal CO2, and muscle rigidity (jaw first) — the temperature spike is a LATE sign despite the name. Response: stop the triggering agent, call for the MH cart, DANTROLENE per protocol, 100% oxygen, active cooling, and treat the potassium the crisis releases. Family history screens for it; a prior uneventful anesthetic does not rule it out.`,
+      examTip: `In MH stems, rising end-tidal CO2 and rigidity BEAT fever as the recognition cue — candidates who wait for temperature pick the late answer. Dantrolene is the drug pairing to know cold.`,
     },
     {
-      id: 'periop-tubes-drains',
-      title: `3. Tubes, Drains, and Chest Tubes`,
-      content: `Wound drains produce numbers to trend: a Jackson-Pratt or Hemovac is emptied and recompressed (that compression IS the suction), output recorded, and a sudden increase or change to frank blood reported. Nasogastric tubes for decompression stay patent per orders; for any tube, "aspirate looks like coffee grounds" is a GI-bleeding cue, not routine.
+      id: 'periop-complications',
+      title: `3. The Complication Calendar`,
+      content: `Post-op complications keep a rough schedule, and the exam writes stems on it:
 
-Chest drainage systems distill to three chambers and two rules. The water-seal chamber should TIDAL (rise and fall with breathing — proof the system communicates with the pleural space); tidaling stops when the lung re-expands or the tubing kinks. Intermittent bubbling in the water seal accompanies a resolving pneumothorax; CONTINUOUS bubbling means an air leak — trace connections from dressing to device and notify. Gentle continuous bubbling in the suction-CONTROL chamber (wet systems) is normal and merely reflects the suction setting.
+| Timing | Complication | The picture | First moves |
+| --- | --- | --- | --- |
+| first 48 h | atelectasis | low-grade temp, diminished bases, mild hypoxia | spirometry, cough-deep-breathe, ambulate |
+| days 1-3 | hypoxemia/pneumonia risk builds | crackles, productive cough, fever climbing | same bundle plus cultures/antibiotics per orders |
+| days 3-5 | wound infection declares | redness, warmth, purulence, fever | assess, culture per orders, notify |
+| days 5-10 | DVT and embolism window peaks | unilateral swelling/warmth; sudden dyspnea if it travels | do NOT massage; notify; anticoagulation pathway; PE = rapid response |
+| days 5-10 | dehiscence/evisceration | "something gave way," serosanguineous gush | low Fowler with knees flexed, cover viscera with STERILE SALINE gauze, NPO, call surgeon — do not push anything back |
+| any time | urinary retention | no void 6-8 h post-op, palpable bladder | bladder scan, then catheterization per orders |
+| any time | paralytic ileus | absent bowel sounds, distension, no flatus | NPO, ambulate, notify; NG decompression per orders |
 
-The emergencies are scripted: tube disconnects from the system — submerge the tube end in sterile water (a makeshift water seal); tube pulls out of the CHEST — occlusive dressing taped on three sides (the flutter valve that vents air out but not in), call immediately. Clamping is reserved for provider-directed moments (changing the unit, assessing a leak's location briefly) — prolonged clamping of a bubbling tube manufactures a tension pneumothorax. Drainage above institutional thresholds (classically >100 mL/hr of frank blood after chest surgery) is a surgeon call, and the system always rides BELOW chest level with tubing free of dependent loops.`,
+Pulmonary embolism is the sudden catastrophe of the calendar: abrupt dyspnea, pleuritic pain, tachycardia, apprehension in a post-op or immobilized client — sit the head of the bed up, oxygen, rapid response, and anticipate the anticoagulation pathway. The paired prevention items (sequential compression devices ON whenever in bed, early ambulation, prophylactic anticoagulants given on time) score as often as the recognition items.
+
+Post-op fever logic follows the timeline: lungs first days, then urine, then wound, then veins — the sequence tells you where to look before the culture results do.`,
+      examTip: `Evisceration has a fixed script the exam quotes verbatim: position low Fowler knees flexed, sterile saline-moistened gauze over the viscera, NPO, notify the surgeon now. Any answer that repositions organs or delays is wrong.`,
+    },
+    {
+      id: 'periop-tubes',
+      title: `4. Tubes, Drains & Surgical Devices`,
+      content: `Device questions test placement checks, expected output, and the report-now thresholds.
+
+Nasogastric tubes: placement verified by X-RAY initially (aspirate pH per policy thereafter — auscultating air is obsolete and appears only as a wrong answer); suction settings per order (low intermittent for single-lumen); the vented lumen of a double-lumen (Salem sump) stays open to air and above the stomach; irrigation per orders with the ordered solution. NG output is measured, described, and REPLACED per orders when large — losing liters of gastric acid builds the metabolic alkalosis from the ABG chapter.
+
+Closed-suction drains (Jackson-Pratt, Hemovac) hold gentle negative pressure: empty, measure, RECOMPRESS to re-establish suction, and chart character — serosanguineous drifting toward serous is the healing arc; a sudden return to frank red, or volumes climbing instead of falling, is a call. Penrose drains are passive and dress-absorbed; T-tubes after biliary surgery drain bile with expected volumes tapering.
+
+Chest tubes summarize into three observations: TIDALING in the water seal with respiration is normal (its absence means lung re-expanded OR tube kinked/clotted — trace the tubing first); CONTINUOUS bubbling in the water seal is an air leak (system or client — locate it); drainage over the ordered threshold (commonly cited around 100 mL/h sustained, or per surgeon parameters) or suddenly bright red is a hemorrhage call. Never clamp a chest tube for transport; never strip/milk routinely; if the system cracks, the tube goes into sterile water while a new unit is set up; an accidental pull-out gets an occlusive dressing taped on three sides.
+
+Urinary catheters: dependent drainage (bag below bladder, tubing unlooped), secured to the thigh, perineal care per shift, sampling from the port never the bag, and out at the earliest order — catheter days are CAUTI risk. Post-removal, the void watch begins.`,
+      examTip: `Chest tube triage in one line: tidaling good, continuous bubbling equals leak, no tidaling equals check the tubing then the lung — and the clamp stays off.`,
+    },
+    {
+      id: 'periop-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. The pre-op checklist shows midazolam given at 0800; the consent is unsigned. The surgeon asks the nurse to witness the signature now. Response?
+
+2. In the PACU, a client develops jaw rigidity, heart rate 138, and end-tidal CO2 climbing; temperature is 37.2 C. What is happening and what drug does the nurse prepare?
+
+3. On post-op day 6, an abdominal surgery client says "I felt something pop," and the dressing shows a sudden serosanguineous gush with a loop of bowel visible. Give the four-part response in order.
+
+4. A chest-tube water seal shows continuous vigorous bubbling. Interpret, and give the first action.
+
+5. A client is post-op day 1 with a temperature of 37.9 C and diminished breath sounds at the bases. Most likely cause and the nursing bundle?
+
+## Answers
+
+1. Decline — the client is sedated and cannot give valid consent. The case waits; the surgeon is notified through channels. Witnessing now creates an invalid consent, and "the surgeon asked" changes nothing.
+
+2. Malignant hyperthermia — rigidity plus tachycardia plus rising CO2 are the EARLY cluster; fever comes late. Prepare dantrolene, stop triggering agents, 100% oxygen, cooling, and the MH protocol.
+
+3. Low Fowler's with knees flexed; cover the viscera with sterile saline-moistened gauze; NPO; notify the surgeon immediately. Nothing gets pushed back in, and the client stays still.
+
+4. An air leak — continuous bubbling in the WATER SEAL chamber is air entering the system. Trace the tubing from dressing to unit for loose connections first; assess the client; notify if not resolved. (Gentle suction-chamber bubbling, by contrast, is normal.)
+
+5. Atelectasis — the day-1-to-2 low-grade fever with diminished bases. Incentive spirometry every hour while awake, cough and deep breathe with splinting, ambulate as ordered, and reassess — escalating only if the picture worsens toward pneumonia.`,
     },
   ],
   keyTakeaways: [
-    `Fever clock: 24-48 h atelectasis (expand lungs), 3-5 d urine, 5-7 d wound, DVT from day 3 (never massage).`,
-    `Earliest hemorrhage signs are tachycardia and restlessness; check beneath the client.`,
-    `Evisceration: sterile moist saline gauze, low-Fowler's knees flexed, NPO, surgery.`,
-    `Chest tube: tidaling normal; continuous water-seal bubbling = air leak; out of chest = 3-sided occlusive dressing.`,
-    `Ambulation is the triple-preventer: atelectasis, DVT, and ileus.`,
+    `Consent before sedation, NPO verified, site marked with the client, anticoagulants held on schedule, beta blockers usually continued — pre-op is sequence and verification.`,
+    `PACU runs airway-breathing-circulation before comfort, and malignant hyperthermia announces itself with rigidity and rising CO2 before fever — dantrolene is the answer.`,
+    `Complications keep a calendar: atelectasis early, infection mid, DVT/PE and dehiscence late — and evisceration has a fixed four-part script.`,
+    `NG placement is verified by X-ray then pH (never air auscultation), drains are recompressed and trended, and chest tubes read tidaling-versus-bubbling with the clamp off.`,
+    `Prevention scores like recognition: spirometry, splinting, SCDs on in bed, early ambulation, timely prophylaxis — taught before surgery, demonstrated back.`,
   ],
 },
 
@@ -1674,104 +2035,221 @@ nx_fluid_electrolyte: {
   topicId: 'nx_fluid_electrolyte',
   title: `Fluids, Electrolytes & Acid-Base`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `This is the exam's physiology core: six electrolytes with signature presentations, a three-step blood-gas method that never fails, and IV fluids sorted by tonicity. The items reward pattern recognition — peaked T waves, Trousseau's sign, Kussmaul respirations — attached to an immediate protective action.`,
+  overview: `Electrolyte questions are pattern-recognition with a safety layer: each imbalance has a signature cluster, a cause list, a correction rule, and one or two absolute prohibitions (never push potassium, never correct sodium fast). This chapter maps fluid volume states, walks all six electrolytes with their signs and treatments, and connects the acid-base chapter's ABG method to the bedside pictures that produce each disturbance.`,
   sections: [
     {
-      id: 'fe-volume-fluids',
-      title: `1. Volume Status and IV Fluids`,
+      id: 'fe-volume',
+      title: `1. Fluid Volume: Deficit & Excess`,
       content: `![Adult serum electrolyte reference intervals - sodium 135-145 and potassium 3.5-5.0 mEq/L, chloride 98-106, calcium 9.0-10.5, magnesium 1.8-2.6, and phosphorus 3.0-4.5 mg/dL - drawn as range bars, each row on its own scale.](/courses/nclex/figures/nclex-electrolyte-ranges.svg)
 
-Fluid volume deficit reads as: thirst, dry mucosa, poor turgor (unreliable in the elderly — use tongue furrows and orthostatics instead), tachycardia, orthostatic hypotension, concentrated urine, rising BUN out of proportion to creatinine, and acute weight LOSS. Fluid volume excess reads as: crackles, dyspnea, JVD, bounding pulses, edema, and acute weight GAIN — and daily weight is the single most sensitive bedside measure of fluid balance (1 kg ≈ 1 L). Same scale, same time, same clothing; a gain of more than about 1 kg overnight or 2.3 kg (5 lb) in a week is a report-now finding in heart failure teaching.
+Fluid volume DEFICIT (hypovolemia): thirst, dry mucosa, poor turgor (unreliable in older adults — check the sternum or inner thigh), flat neck veins, tachycardia with a weak thready pulse, orthostatic drops, concentrated urine with rising specific gravity, climbing BUN out of proportion to creatinine, and weight LOSS. The kidneys speak early: urine output falling below 30 mL/h (0.5 mL/kg/h) is the tested oliguria threshold. Treatment: isotonic fluids, treat the cause, daily weights.
 
-IV fluids sort by tonicity. Isotonic (0.9% NaCl, lactated Ringer's, D5W-in-the-bag) expands the vascular space: resuscitation, maintenance. (D5W behaves hypotonically once the dextrose metabolizes — it has no place in resuscitation or with intracranial pressure concerns.) Hypotonic (0.45% NaCl) hydrates cells: cellular dehydration, hypernatremia — but never for clients at risk of cerebral edema. Hypertonic (3% NaCl, D10W) pulls water out of cells: reserved, pump-controlled, and in 3% saline's case central-line-preferred with serial sodiums and neuro checks.
+Fluid volume EXCESS (hypervolemia): bounding pulse, distended neck veins, crackles, dyspnea and orthopnea, edema (dependent, then generalized), weight GAIN, diluted labs (hematocrit and sodium falling by dilution). Heart failure, renal failure, and over-infusion are the cause triad. Treatment: sodium and fluid restriction, diuretics, daily weights, upright positioning, strict intake and output.
 
-The transfusion-adjacent rule repeats here because it decides answers: sodium corrections run SLOW in both directions. Overcorrecting chronic hyponatremia causes osmotic demyelination; overcorrecting hypernatremia causes cerebral edema. Brains adapt to chronic tonicity, and the exam expects you to protect that adaptation.`,
-      examTip: `When two options both address volume, prefer the one anchored in daily weight or a trend, not a single reading. Weights beat estimates; trends beat snapshots.`,
+Daily weight is the single best fluid-status measure on the exam — same scale, same time, same clothing — and 1 kg equals 1 liter. A 2-kg overnight gain in a heart-failure client is a call, not a chart entry.
+
+Third spacing (burns, ascites, peritonitis, post-op) hides volume the vitals treat as deficit — the client can be edematous AND intravascularly dry, which is why burns resuscitate by formula and why "edema means excess" fails as a rule.`,
+      examTip: `Weights beat intake-output records, which beat vital signs, for tracking fluid state — 1 kg is 1 L, and the same-scale-same-time detail is what makes the trend valid.`,
     },
     {
-      id: 'fe-electrolytes',
-      title: `2. The Six Electrolytes by Signature`,
-      content: `Potassium (3.5-5.0): LOW — muscle weakness, cramps, flat T waves and U waves, dysrhythmias, and it potentiates digoxin toxicity; replace orally or by DILUTED pump infusion (never push). HIGH — muscle weakness progressing to paralysis, peaked T waves then widened QRS; protect the heart with calcium gluconate, shift with insulin-dextrose, remove with dialysis or binders. Both directions: continuous cardiac monitoring.
+      id: 'fe-sodium-potassium',
+      title: `2. Sodium & Potassium: The Two That Kill`,
+      content: `SODIUM (135-145) is a water problem wearing an electrolyte's name — and its symptoms are neurologic, because brain cells swell or shrink with the serum.
 
-Sodium (135-145): LOW — confusion, headache, seizures as water shifts into brain cells; seizure precautions, fluid restriction for dilutional causes, slow correction. HIGH — thirst, dry sticky mucosa, agitation to coma; slow water replacement.
+Hyponatremia (under 135): confusion, headache, lethargy sliding toward seizures and coma as it deepens or falls fast. Causes: SIADH, excess hypotonic fluids or water intake, diuretics, GI losses replaced with plain water. Care: fluid restriction for dilutional forms; 3% saline ONLY for severe symptomatic cases, slowly, with sodium checks — CORRECTING SODIUM TOO FAST INJURES THE BRAIN (osmotic demyelination), a tested absolute.
 
-Calcium (9-10.5): LOW — the excitable picture: paresthesias, Trousseau's (BP-cuff carpal spasm) and Chvostek's (facial tap twitch) signs, laryngospasm risk; think post-thyroidectomy; IV calcium gluconate ready. HIGH — the sluggish picture: weakness, constipation, confusion, stones; hydrate, mobilize, expect loop diuretics.
+Hypernatremia (over 145): thirst, dry sticky mucosa, restlessness, agitation, seizures — the dehydrated-brain picture. Causes: water deprivation (the client who cannot ask), diabetes insipidus, hypertonic losses. Care: slow water replacement — the same speed rule in reverse.
 
-Magnesium (1.5-2.5): LOW — mirrors low calcium (tremor, hyperreflexia, torsades risk) and travels with alcohol use disorder; replete magnesium before potassium will hold. HIGH — usually iatrogenic (magnesium infusions, renal failure): lost reflexes, respiratory depression; calcium gluconate is the antidote.
+POTASSIUM (3.5-5.0) is the cardiac electrolyte, dangerous in both directions.
 
-Phosphorus inverts calcium; chloride follows sodium. The memory scaffold: potassium and the HEART's rhythm, sodium and the BRAIN's water, calcium/magnesium and the MUSCLES' excitability.`,
-      importantNote: `Trousseau's and Chvostek's = hypocalcemia; peaked T waves = hyperkalemia; U waves = hypokalemia; lost reflexes on a magnesium infusion = toxicity. Four signatures, four instant answers.`,
+| | Hypokalemia (under 3.5) | Hyperkalemia (over 5.0) |
+| --- | --- | --- |
+| classic causes | diuretics (loops/thiazides), GI losses, NG suction, steroids | renal failure, K-sparing diuretics, ACE inhibitors, tissue breakdown, acidosis |
+| muscle picture | weakness, leg cramps, hyporeflexia, paralytic ileus | weakness to flaccid paralysis, cramping, diarrhea |
+| ECG | flattened T waves, U waves, ectopy | PEAKED T waves, wide QRS, marching to sine wave |
+| dangerous partner | digoxin (toxicity potentiated) | any K source still running |
+| treatment | replace PO/IV — IV always diluted, always pumped, NEVER pushed | calcium gluconate (protects the heart), insulin + dextrose (shifts K in), kayexalate/dialysis (removes it) |
+
+The hyperkalemia treatment logic is sequenced by mechanism: PROTECT the myocardium first (calcium gluconate), SHIFT potassium into cells second (insulin with dextrose, sometimes bicarbonate or albuterol), REMOVE it third (exchange resins, dialysis). Items that ask "which order first" are testing protect-shift-remove.`,
+      examTip: `Sodium symptoms are neuro, potassium symptoms are cardiac-muscular — and the two absolutes are never-push-potassium and never-correct-sodium-fast. Those four facts answer most items in this section.`,
     },
     {
-      id: 'fe-abg',
-      title: `3. Blood Gases in Three Steps`,
-      content: `Normals: pH 7.35-7.45, PaCO₂ 35-45 mm Hg, HCO₃⁻ 22-26 mEq/L. The three-step method: (1) classify the pH — below 7.35 acidosis, above 7.45 alkalosis; (2) find the culprit — if CO₂ moved OPPOSITE the pH, the cause is respiratory; if bicarbonate moved the SAME direction as pH, metabolic (ROME: Respiratory Opposite, Metabolic Equal); (3) check compensation — the other system unmoved means uncompensated; moving but pH still abnormal, partial; pH back in range, full.
+      id: 'fe-calcium-mag',
+      title: `3. Calcium, Magnesium & Phosphorus`,
+      content: `CALCIUM (9.0-10.5 mg/dL) questions hinge on neuromuscular excitability — low calcium means TWITCHY, high calcium means SLUGGISH.
 
-Attach causes and you can predict the gas before reading it. Respiratory acidosis = hypoventilation: COPD, oversedation, respiratory fatigue; treat the breathing. Respiratory alkalosis = hyperventilation: anxiety, pain, early sepsis; treat the cause, coach the breathing. Metabolic acidosis = acid gained or base lost: DKA, renal failure, lactic acidosis, severe diarrhea; expect Kussmaul respirations (deep, rapid — the lungs compensating). Metabolic alkalosis = acid lost or base gained: vomiting, NG suction, diuretics.
+Hypocalcemia: perioral tingling, muscle cramps, TROUSSEAU sign (carpal spasm with a blood-pressure cuff inflated 3 minutes) and CHVOSTEK sign (facial twitch when the cheek is tapped), hyperactive reflexes, laryngospasm risk, seizures. The tested scenario: post-THYROIDECTOMY (parathyroid injury) — keep calcium gluconate and airway equipment near. Chronic causes: renal failure, vitamin D deficiency, loop diuretics.
 
-Pair the gas with its client: pH 7.30/CO₂ 58/HCO₃ 25 in a COPD client — uncompensated respiratory acidosis; pH 7.30/CO₂ 28/HCO₃ 14 in DKA — partially compensated metabolic acidosis (the low CO₂ is Kussmaul at work, not a second problem); pH 7.49/CO₂ 30 in a panicking client — respiratory alkalosis whose paresthesias resolve with slowed breathing.`,
+Hypercalcemia: the rhyme is real — stones (renal), bones (pain, pathologic fracture from the immobilized skeleton), groans (constipation, anorexia, nausea), and psychiatric moans (lethargy, confusion). Causes: hyperparathyroidism, malignancy, prolonged immobilization. Care: hydrate aggressively (saline), mobilize, loop diuretics per orders, treat the cause; monitor for digoxin issues.
+
+MAGNESIUM (1.8-2.6 mEq/L) travels with potassium and mirrors calcium's logic: low magnesium is hyperexcitable (tremor, hyperreflexia, torsades risk — replace, and check potassium too), high magnesium is depressed everything (hyporeflexia, hypotension, bradypnea) — seen almost exclusively in renal failure and OBSTETRIC magnesium infusions for preeclampsia. The magnesium-drip surveillance bundle: hourly deep tendon reflexes (their LOSS is the earliest toxicity sign), respirations at least 12, urine output at least 30 mL/h — and CALCIUM GLUCONATE at the bedside as the antidote.
+
+PHOSPHORUS (3.0-4.5 mg/dL) moves inversely to calcium: renal failure raises it (with binders as treatment — given WITH meals), refeeding syndrome crashes it. Its symptoms borrow from the calcium it displaces.`,
+      examTip: `Trousseau and Chvostek mean LOW calcium; lost deep-tendon reflexes on a magnesium drip mean TOXICITY. Both are bedside signs the exam prefers over the lab value itself — and calcium gluconate answers both emergencies.`,
+    },
+    {
+      id: 'fe-acidbase',
+      title: `4. Acid-Base at the Bedside`,
+      content: `The ABG method lives in the Laboratory Values chapter; here is the bedside layer — which clients produce which disturbance:
+
+| Bedside story | Disturbance | The tell |
+| --- | --- | --- |
+| COPD crisis, oversedation, splinted breathing | respiratory acidosis | hypoventilation retains CO2 |
+| anxiety attack, pain, early salicylate toxicity, ventilator overshoot | respiratory alkalosis | hyperventilation blows off CO2 |
+| DKA, renal failure, lactic acidosis (shock), severe diarrhea | metabolic acidosis | acid gained or base lost; Kussmaul respirations compensate |
+| vomiting, NG suction, excess antacids, aggressive diuretics | metabolic alkalosis | acid lost or base gained; slow shallow breathing compensates |
+
+Two compensation pictures worth recognizing without a gas: the DKA client breathing deep and fast (Kussmaul — the lungs dumping CO2 to offset ketoacids) and the chronic COPD client with a normal-side pH, high CO2, and high bicarbonate (kidneys compensated over days — do NOT "fix" the CO2 aggressively; their drive and their baseline differ).
+
+The potassium-pH seesaw links the chapters: acidosis pushes potassium OUT of cells (hyperkalemia accompanies DKA even as total-body potassium is depleted), and correcting the acidosis — or giving insulin — drives potassium back IN, sometimes precipitously. This is why DKA protocols replace potassium once it drops into range and why bicarbonate can crash a "normal" potassium.`,
+      examTip: `Match the story to the disturbance before touching numbers: vomiting = metabolic alkalosis, diarrhea = metabolic acidosis, hypoventilation = respiratory acidosis, hyperventilation = respiratory alkalosis. The gas usually just confirms the stem.`,
+    },
+    {
+      id: 'fe-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client on furosemide reports leg cramps; the strip shows flattened T waves and a U wave. Name the imbalance, the value range you expect, and the administration absolute.
+
+2. Two days post-thyroidectomy, a client reports tingling around the mouth; tapping the cheek produces a twitch. Interpret, and name the bedside preparation.
+
+3. A renal-failure client's potassium is 6.9 with peaked T waves. Sequence the three treatment goals with an example of each.
+
+4. A preeclamptic client on magnesium sulfate has absent patellar reflexes and respirations of 10. Interpret and act.
+
+5. An NG tube on continuous suction has drained 1,800 mL overnight. Which acid-base disturbance is building, and which electrolytes travel with it?
+
+## Answers
+
+1. Hypokalemia — expect a value under 3.5 mEq/L; loops waste potassium and the ECG signature confirms. Replacement is oral or DILUTED IV on a pump; potassium is never given IV push.
+
+2. Hypocalcemia from parathyroid injury — Chvostek sign positive, perioral paresthesia is the early cue. Calcium gluconate and airway equipment stay at the bedside; Trousseau confirms; laryngospasm is the feared progression.
+
+3. PROTECT the heart: calcium gluconate. SHIFT potassium in: insulin with dextrose (albuterol/bicarbonate per protocol). REMOVE it: exchange resin or dialysis. Monitoring continues throughout; any K sources stop immediately.
+
+4. Magnesium toxicity — reflex LOSS is the earliest sign and respirations under 12 confirm depression. Stop the infusion, give calcium gluconate per orders, support airway and breathing, notify — the drip does not simply get titrated down.
+
+5. Metabolic alkalosis — gastric acid (HCl) is being suctioned away. Potassium and chloride losses travel with it (hypokalemic, hypochloremic alkalosis), so replacement orders and the potassium check accompany the acid-base watch.`,
     },
   ],
   keyTakeaways: [
-    `Daily weight is the volume-status gold standard: 1 kg = 1 L; >5 lb/week in heart failure = report.`,
-    `Isotonic resuscitates, hypotonic hydrates cells (never with cerebral edema risk), hypertonic is a controlled rescue.`,
-    `K⁺ owns the ECG (peaked T high, U wave low); Ca²⁺/Mg²⁺ own excitability (Trousseau/Chvostek low Ca).`,
-    `Magnesium first: potassium will not correct while magnesium is low.`,
-    `ROME: CO₂ opposite pH = respiratory; HCO₃ with pH = metabolic; then read compensation.`,
+    `Daily weight is the fluid-status gold standard (1 kg = 1 L); deficit shows flat veins and oliguria, excess shows crackles and distended veins — and third spacing can be both at once.`,
+    `Sodium is neuro and corrected slowly in BOTH directions; potassium is cardiac, never pushed, and hyperkalemia treats in protect-shift-remove order.`,
+    `Low calcium twitches (Trousseau/Chvostek, post-thyroidectomy), high calcium groans (stones-bones-groans); magnesium mirrors it, and lost reflexes on a mag drip mean stop and give calcium gluconate.`,
+    `Match story to disturbance: vomiting alkalotic, diarrhea acidotic, hypoventilation acidotic, hyperventilation alkalotic — then let the ABG confirm.`,
+    `The pH-potassium seesaw ties it together: acidosis raises serum potassium, and correcting it (or insulin) drops potassium fast — replace by protocol, monitor by strip.`,
   ],
 },
 
 nx_emergencies: {
   topicId: 'nx_emergencies',
-  title: `Medical Emergencies & Unexpected Responses`,
+  title: `Medical Emergencies: Shock, Sepsis & Anaphylaxis`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `A short list of emergencies appears on the exam over and over because each has a signature presentation and a single best first action. These are recognition-reflex pairs: the stem describes the picture, and the options separate candidates who know the reflex from those who reach for something plausible but slower. Learn them as pairs and the items take seconds.`,
+  overview: `Emergency stems compress the whole exam into minutes: recognize the deteriorating pattern early, name the shock type from the hemodynamic picture, and execute a first-actions sequence that is mostly protocol. This chapter builds the shock taxonomy with its opposing vital-sign signatures, the sepsis hour-one bundle, the anaphylaxis script, and the rapid-response triggers that "requires immediate follow-up" items are written from.`,
   sections: [
     {
-      id: 'emerg-allergic-metabolic',
-      title: `1. Anaphylaxis, Sepsis, and Glucose Emergencies`,
-      content: `Anaphylaxis: exposure followed by any two of urticaria/angioedema, bronchospasm/stridor, hypotension, GI symptoms. Reflex: stop the trigger (infusion OFF first when the drug is the trigger), then epinephrine IM in the anterolateral thigh — before antihistamines, before steroids, before anything else — repeated every 5-15 minutes as needed, with airway watch and volume support. Diphenhydramine and steroids are adjuncts; every exam item plants them as premature answers.
+      id: 'em-shock',
+      title: `1. Shock: One Problem, Four Mechanisms`,
+      content: `All shock is inadequate tissue perfusion; the mechanism sorts the treatment. The compensated phase looks deceptively mild — restlessness or anxiety (the brain feels it first), mild tachycardia, narrowing pulse pressure, cool skin, slowing urine — and the exam rewards catching THIS phase, because decompensation (hypotension, altered mentation, oliguria) is late.
 
-Sepsis: infection plus systemic signs — fever or hypothermia, tachycardia, tachypnea, falling pressure, rising lactate, new confusion (often the FIRST sign in the elderly). Reflex: recognize early, cultures before antibiotics WITHOUT delaying antibiotics beyond the first hour, fluids for hypotension, and escalation. The tested nuance: a normal temperature does not exclude sepsis in the old or immunosuppressed.
+| Shock type | Mechanism | The distinguishing signature | First-line direction |
+| --- | --- | --- | --- |
+| hypovolemic | not enough volume | flat neck veins, dry, hemorrhage or fluid-loss story | stop the loss, isotonic fluids, blood if bleeding |
+| cardiogenic | pump failure (usually MI) | crackles, distended neck veins, cool and wet — the OVERLOADED shocked client | improve pump: inotropes, reduce workload; fluids CAUTIOUSLY |
+| septic (distributive) | vasodilation from infection | warm and flushed EARLY, fever, wide pulse pressure — then cold late | cultures, antibiotics, fluids, vasopressors |
+| anaphylactic (distributive) | mast-cell vasodilation + airway | exposure story, hives, wheeze, swelling — minutes fast | epinephrine, airway, fluids |
+| neurogenic (distributive) | lost sympathetic tone (cord injury) | hypotension WITH BRADYCARDIA, warm dry skin | fluids, vasopressors, atropine for the rate |
 
-Hypoglycemia (below 70 with symptoms): conscious clients get 15 g of fast carbohydrate and a 15-minute recheck; unconscious clients get IV dextrose 50% or IM glucagon — never oral. DKA (type 1 pattern): Kussmaul respirations, fruity breath, dehydration, glucose typically >300, ketones, acidosis. Reflex order matters: FLUIDS first (the deficit is liters), then insulin infusion, with potassium watched obsessively — insulin drives potassium into cells, so a normal-looking initial potassium plummets, and potassium is replaced before or with insulin per protocol once urine output is confirmed. HHS (type 2 pattern) is the same physiology minus ketosis: higher glucose, worse dehydration, no Kussmaul.`,
-      examTip: `Two "first action" traps: antihistamine before epinephrine in anaphylaxis, and insulin before fluids in DKA. Both wrong, both permanent exam fixtures.`,
+The two discriminations the exam loves: hypovolemic versus cardiogenic (both cold and clammy — but neck veins are FLAT in one and DISTENDED in the other, and cardiogenic has crackles: fluids rescue one and drown the other), and septic versus neurogenic (both distributive — but septic runs tachycardic and febrile while neurogenic uniquely pairs hypotension WITH bradycardia).
+
+Positioning and oxygen are universal early moves; the fluid decision is where the taxonomy earns its keep. Urine output is the perfusion meter — below 30 mL/h means the kidneys are being sacrificed.`,
+      examTip: `Restlessness and creeping tachycardia with a normal blood pressure IS shock — compensated. The blood pressure is the last vital sign to fall, and items that ask for the earliest indicator want the mentation and heart-rate answer, not the hypotension answer.`,
     },
     {
-      id: 'emerg-neuro-msk',
-      title: `2. Neurologic and Musculoskeletal Emergencies`,
-      content: `Autonomic dysreflexia (spinal cord injury at T6 or above): pounding headache, flushing and sweating ABOVE the lesion, hypertension with bradycardia. Reflex: sit the client bolt upright FIRST (orthostatic pooling drops pressure faster than any drug), then hunt the trigger — bladder (kinked catheter, retention) is most common, then bowel impaction, then skin. Antihypertensives only if trigger removal fails.
+      id: 'em-sepsis',
+      title: `2. Sepsis: Recognition & the Hour-One Bundle`,
+      content: `Sepsis is infection plus organ dysfunction, and its recognition items reward pattern-spotting in the gray zone: fever OR hypothermia, tachycardia, tachypnea, new confusion (often the FIRST sign in older adults — the "pleasantly confused" UTI client is the classic stem), falling urine output, rising lactate, and a source story (urinary catheter, pneumonia, wound, line).
 
-Increased intracranial pressure: earliest sign is a CHANGE IN LEVEL OF CONSCIOUSNESS — restlessness, subtle confusion — long before the late Cushing triad (widening pulse pressure, bradycardia, irregular respirations). Care bundles: head midline, HOB 30 degrees, minimize stimulation and clustering of care, avoid Valsalva; and for any acute stroke picture, the reflex is the time-stamped "last known well" plus emergent imaging, because thrombolysis runs on a clock.
+The hour-one logic runs on a fixed sequence the exam samples directly:
 
-Compartment syndrome (casted or crushed limb): pain out of proportion, worse on PASSIVE stretch, unrelieved by opioids — plus paresthesia early; pallor, pulselessness, and paralysis are LATE. Reflex: do NOT elevate above the heart, do NOT ice (both reduce perfusion into the compartment); notify immediately, loosen constricting devices per order, prepare for cast splitting or fasciotomy. Muscle dies in hours.
+1. Recognize and escalate — rapid response or provider now; sepsis is a time-critical diagnosis.
+2. CULTURES BEFORE ANTIBIOTICS — two sets of blood cultures (plus source cultures) drawn first, but never delaying antibiotics long for logistics.
+3. Broad-spectrum antibiotics within the hour — the single most outcome-changing medication timing on the exam.
+4. Lactate measured and trended — the perfusion debt meter.
+5. Fluid resuscitation — commonly cited at 30 mL/kg isotonic crystalloid for hypotension or elevated lactate, per protocol.
+6. Vasopressors (norepinephrine first-line per usual protocols) when fluids do not hold the pressure.
 
-Fat embolism (long-bone fractures, 24-72 hours): the triad of hypoxemia, altered mentation, and a PETECHIAL RASH on the chest and axillae — the rash separates it from thromboembolism. Reflex: oxygen, stabilize, urgent escalation.`,
-      importantNote: `Compartment syndrome inverts routine fracture care: elevation and ice — correct for ordinary swelling — become harmful. The phrase "pain unrelieved by opioids" is the stem's alarm bell.`,
+Septic shock is sepsis needing vasopressors despite fluids — the cold, mottled, oliguric late picture. Monitoring loops back through mentation, urine output, lactate clearance, and pressure.
+
+Prevention items are the same chapter in reverse: catheter days minimized, lines scrubbed and removed when idle, wounds assessed, pneumonia bundles (head of bed, oral care, mobility) executed — every device is a portal the exam can build a sepsis stem on.`,
+      examTip: `Two sequencing points decide most sepsis items: cultures BEFORE antibiotics, and antibiotics within the FIRST hour — an option that starts antibiotics after imaging, or cultures after the first dose, is the engineered error.`,
     },
     {
-      id: 'emerg-periop-other',
-      title: `3. Malignant Hyperthermia and the Unexpected-Response Set`,
-      content: `Malignant hyperthermia (triggered by volatile anesthetics and succinylcholine): earliest reliable signs are jaw/muscle rigidity, an unexplained RISING end-tidal CO₂, and tachycardia — temperature elevation is LATE, so no one waits for fever. Reflex: stop the triggering agent, call for the MH cart, give dantrolene, cool actively, manage the potassium the dying muscle releases. Family history of anesthesia deaths is the screening question that prevents it entirely.
+      id: 'em-anaphylaxis',
+      title: `3. Anaphylaxis & Transfusion-Adjacent Emergencies`,
+      content: `Anaphylaxis moves in minutes: exposure (drug, contrast, latex, food, sting) followed by hives and itching, then lip and tongue swelling, stridor or wheeze, hypotension, and the feeling of doom. The script is fixed:
 
-Thyroid storm (thyrotoxic client + stressor): fever, extreme tachycardia, agitation to delirium; beta blockade and antithyroid therapy per orders, cooling without aspirin (aspirin displaces thyroid hormone). Its mirror, myxedema coma: hypothermia, bradycardia, stupor — warm, support, IV thyroid hormone. Adrenal (Addisonian) crisis: hypotension unresponsive to fluids in a steroid-dependent client who stopped abruptly or met major stress — IV hydrocortisone is the fix and the reason "never stop steroids abruptly" is drilled.
+1. STOP the trigger (the infusing drug, the transfusion, the contrast).
+2. EPINEPHRINE intramuscular in the vastus lateralis — first, fast, and repeated per protocol; no antihistamine substitutes for it.
+3. Airway and high-flow oxygen; prepare for advanced airway early — edema closes options.
+4. Recumbent position with legs elevated as tolerated; IV fluids for the vasodilated pressure.
+5. Adjuncts AFTER epinephrine: antihistamines, bronchodilators, corticosteroids (steroids blunt the LATE, biphasic recurrence — which is also why post-anaphylaxis clients are observed, not discharged from the bedside).
 
-Two transfusion-adjacent emergencies complete the set. Tension pneumothorax (trauma, ventilated clients, clamped bubbling chest tubes): escalating dyspnea, unilateral absent breath sounds, tracheal deviation AWAY from the affected side, hypotension — needle decompression/provider now, and if a clamped tube caused it, unclamp. And the universal rule underneath every "unexpected response" item: when a client deteriorates during any infusion, procedure, or new therapy — STOP the suspected cause first. Stopping is free, reversible, and almost always the first correct verb.`,
+The tested error is sequence: diphenhydramine or a steroid chosen FIRST while epinephrine waits. Epinephrine is the answer whenever airway involvement or hypotension appears; mild isolated hives after a bee sting may earn antihistamines alone, but the stem will make the systemic signs unmistakable when it wants epinephrine.
+
+Latex allergy earns its own line: risk concentrates in clients with spina bifida, multiple surgeries, and healthcare exposure; cross-reactions with banana, avocado, kiwi, and chestnut appear in stems; the latex-safe environment is planned BEFORE procedures, first case of the day where policy directs.`,
+      examTip: `Epinephrine IM, first, every time systemic signs appear — and observation afterward for the biphasic second wave. Any option that leads with an antihistamine in a stem containing stridor, wheeze, or hypotension is wrong.`,
+    },
+    {
+      id: 'em-rapid',
+      title: `4. Rapid Response, Codes & the Deterioration Radar`,
+      content: `Rapid response teams exist to be called EARLY — for the deteriorating client who is not yet arrested — and the exam rewards the low threshold: acute changes in heart rate, blood pressure, respiratory rate, saturation, urine output, or mentation; new chest pain; a nurse's unquantifiable "something is wrong." Family activation exists in many systems, and the tested attitude is that calling for help is judgment, not failure.
+
+| Trigger cluster | Think | While waiting for the team |
+| --- | --- | --- |
+| sudden dyspnea + pleuritic pain + tachycardia (post-op, immobile) | pulmonary embolism | head of bed up, oxygen, vitals, stay |
+| crushing chest pain + diaphoresis | acute coronary syndrome | position, oxygen per protocol, vitals, ECG per protocol |
+| new unilateral weakness, facial droop, speech change | stroke | time-last-known-well, glucose check, NPO, neuro checks |
+| worst headache of life, sudden | hemorrhagic stroke | quiet, head of bed per protocol, neuro checks |
+| stridor, drooling, tripod position | airway emergency | do NOT force examination; keep calm; airway team |
+
+Codes: when the client is unresponsive, not breathing normally, and pulseless, compressions start immediately — hard and fast, center chest, 100-120 per minute, at least 2 inches in adults, full recoil, minimal interruptions — with early defibrillation for shockable rhythms (the rhythm chapter's territory). The nurse's code roles include compressions, timing/recording, medication administration per ACLS orders, and family support — family PRESENCE during resuscitation is supported by policy in many institutions, with a staff member assigned to them.
+
+Documentation after any emergency is factual and time-stamped; debriefing is a system tool, not blame.`,
+      examTip: `The rapid-response threshold is deliberately low — the tested answer calls EARLY on trend changes rather than waiting to "gather more data" while the client declines. Waiting is the engineered wrong option.`,
+    },
+    {
+      id: 'em-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A trauma client has BP 88/70, HR 128, flat neck veins, and cool clammy skin. Name the shock, the give-away findings, and the first-line treatment direction.
+
+2. A client with an MI has BP 82/60, distended neck veins, and crackles throughout. Why is a large fluid bolus the WRONG answer, and what direction is right?
+
+3. An older adult with a urinary catheter becomes newly confused; temperature 38.4 C, HR 112, BP 96/58. What is developing, and what two ordered actions must be sequenced correctly?
+
+4. During an IV antibiotic infusion the client develops hives, lip swelling, and audible wheeze. List the first three actions in order.
+
+5. A cervical spinal-cord-injured client has BP 80/50 and HR 48 with warm, dry skin. Which shock is this, and what makes it recognizable among the distributive shocks?
+
+## Answers
+
+1. Hypovolemic shock — the flat neck veins and trauma story distinguish it from cardiogenic. Stop the bleeding and replace volume: isotonic crystalloid and blood products per protocol.
+
+2. The pump is failing, not the tank — distended veins and crackles say the volume is already backing up; a bolus drowns the lungs. Direction: improve contractility and reduce cardiac workload (inotropes, afterload and preload management per orders), with fluids only cautiously.
+
+3. Sepsis from a urinary source, announced by new confusion. Blood (and urine) CULTURES first, broad-spectrum ANTIBIOTICS within the hour second — in that order, with lactate and fluids alongside per protocol.
+
+4. Stop the infusion; give IM epinephrine in the vastus lateralis; manage airway with high-flow oxygen and early escalation. Fluids, antihistamines, and steroids follow — never precede — the epinephrine.
+
+5. Neurogenic shock — the only shock that pairs hypotension with BRADYCARDIA (lost sympathetic tone cannot mount a tachycardia), plus warm dry skin below the injury. Fluids, vasopressors, and atropine per orders.`,
     },
   ],
   keyTakeaways: [
-    `Anaphylaxis: stop trigger → epinephrine IM thigh. Antihistamines are adjuncts, never first.`,
-    `DKA: fluids → insulin → potassium vigilance (insulin crashes K⁺). HHS = same minus ketosis.`,
-    `Autonomic dysreflexia: sit upright first, then bladder → bowel → skin for the trigger.`,
-    `Compartment syndrome: pain beyond analgesia + passive-stretch pain; do not elevate or ice — surgical urgency.`,
-    `MH: rigidity + rising CO₂ before fever; dantrolene. Tension pneumothorax: trachea deviates AWAY; decompress now.`,
-    `Deterioration during any infusion or therapy: stopping the suspected cause is the first correct verb.`,
+    `Compensated shock is restlessness, creeping heart rate, narrowing pulse pressure, and falling urine — the blood pressure falls LAST, and the early answer wins.`,
+    `Neck veins and crackles sort the cold shocks (flat-dry = hypovolemic, distended-wet = cardiogenic); bradycardia-with-hypotension marks neurogenic among the warm ones.`,
+    `Sepsis runs a sequenced hour: recognize, cultures BEFORE antibiotics, antibiotics within 60 minutes, lactate, 30 mL/kg fluids, then vasopressors.`,
+    `Anaphylaxis: stop the trigger, IM epinephrine FIRST, airway — adjuncts follow, and the biphasic second wave keeps the client observed.`,
+    `Call rapid response on trends, not arrests; when pulseless, compress hard-fast-deep with minimal interruption and defibrillate what is shockable.`,
   ],
 },
-
-// ═══════════════════════════════════════════════════════════════
-// Adult Health wave 1 — Cardiovascular, Respiratory, Neuro, Endocrine
-// ═══════════════════════════════════════════════════════════════
 
 nx_cardiac_rhythms: {
   topicId: 'nx_cardiac_rhythms',
@@ -1912,73 +2390,229 @@ nx_cad_acs: {
   topicId: 'nx_cad_acs',
   title: `Coronary Artery Disease & Acute Coronary Syndromes`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `Chest pain questions test one core skill: distinguishing stable angina from unstable angina from infarction, and pairing each with the right urgency. This chapter covers the spectrum, the immediate response set, what the labs and ECG add, and the post-MI complications the exam plants in "day 2" stems.`,
+  overview: `Chest-pain stems run from stable angina in clinic to STEMI on the monitor, and the exam tests the whole arc: distinguishing the pain patterns, executing the acute protocol in order, decoding the ECG-and-troponin diagnosis, the medication armory with its contraindications, and the cardiac-rehab teaching that follows. The discriminations are sharp — relieved-by-rest versus not, nitroglycerin rules, when morphine helps and when a beta blocker must wait — and each is a repeatable item.`,
   sections: [
     {
-      id: '1-angina-spectrum',
-      title: `1. Stable Angina to Infarction: One Disease, Three Urgencies`,
-      content: `Coronary artery disease narrows the vessels; the syndromes differ in whether supply-demand mismatch is transient or a vessel is occluding. Stable angina is predictable: exertional chest pain relieved by rest and nitroglycerin within minutes. Teaching centers on the nitroglycerin protocol - stop activity, sit down, one sublingual tablet; if pain is unrelieved or worsening 5 minutes after the FIRST tablet, call emergency services (do not drive), and up to three tablets may be taken 5 minutes apart while waiting. Storage teaching recurs: dark container, replace by expiration, expect a slight sting or headache - and no PDE-5 inhibitors (sildenafil) within 24-48 hours, because the combined vasodilation can be fatal.
+      id: 'cad-spectrum',
+      title: `1. The Ischemia Spectrum: Reading the Pain`,
+      content: `Coronary artery disease narrows supply; symptoms appear when demand outruns it. The exam expects you to place a client on the spectrum from the story alone:
 
-Unstable angina breaks the pattern: pain at rest, new-onset severe pain, or a crescendo of frequency and duration - it is an emergency because it usually means a plaque has ruptured and a clot is forming. Myocardial infarction is death of muscle: pain that is typically crushing or pressure-like, radiating to arm or jaw, lasting more than 20 minutes, unrelieved by rest or nitroglycerin, often with diaphoresis, nausea, and dyspnea. The exam expects atypical presentations too: women, older adults, and diabetic clients may present with fatigue, indigestion-like discomfort, or dyspnea alone - a diabetic client with "new heartburn and unusual fatigue" is an MI stem until proven otherwise.`,
+| Pattern | Story | Meaning |
+| --- | --- | --- |
+| stable angina | predictable with exertion, relieved by REST and nitroglycerin within minutes | demand ischemia; managed outpatient |
+| unstable angina | NEW onset, at rest, or accelerating; NOT reliably relieved | plaque disrupting — an ACS; troponin negative |
+| NSTEMI | ACS picture WITH positive troponin, no ST elevation | partial-thickness infarction |
+| STEMI | ST elevation in contiguous leads, troponin positive | full-thickness infarction — reperfusion clock running |
+
+MI pain classically: crushing substernal pressure radiating to the left arm, jaw, or back, with diaphoresis, nausea, and dyspnea, lasting over 20 minutes, unrelieved by rest or nitroglycerin. But the exam is scrupulous about ATYPICAL presentations: women (fatigue, dyspnea, epigastric or jaw discomfort), older adults (sudden weakness or confusion), and diabetic clients (silent ischemia from neuropathy — sometimes no pain at all). A diabetic woman with "indigestion," profound fatigue, and diaphoresis is an MI stem until proven otherwise.
+
+Differentials the exam plants: pericarditis pain is sharp, worse supine, better LEANING FORWARD, with a friction rub; GERD burns and follows meals; musculoskeletal pain is reproducible by palpation. None of these excuse skipping the workup when risk factors stack.
+
+Risk factors sort into non-modifiable (age, sex, family history) and modifiable (smoking — the single most tested, hypertension, dyslipidemia, diabetes, obesity, sedentary living) — the teaching chapter of every cardiac stem.`,
+      examTip: `The word RELIEVED does the diagnostic work: relieved by rest = stable angina; not relieved = ACS territory and a protocol, not an antacid. And in diabetic clients, absence of pain excludes nothing.`,
     },
     {
-      id: '2-acs-response',
-      title: `2. The Acute Response: What You Do in the First Minutes`,
-      content: `The immediate set for suspected ACS: obtain a 12-lead ECG within 10 minutes of presentation, give aspirin 162-325 mg chewed (chewing speeds absorption; it blocks further platelet aggregation), apply oxygen only if saturation is below about 90 percent (routine high-flow oxygen is no longer given - hyperoxia worsens outcomes), give nitroglycerin for pain unless contraindicated (hypotension, right ventricular infarction, recent PDE-5 inhibitor), and give morphine only for pain refractory to nitrates. Draw troponin - the definitive biomarker, rising within 2-3 hours (high-sensitivity assays) and staying elevated for days; serial troponins distinguish infarction (rise and fall) from chronic elevation.
+      id: 'cad-acute',
+      title: `2. The Acute Protocol & the Diagnostic Pair`,
+      content: `Suspected ACS runs a fixed opening: position upright, oxygen per protocol IF saturation is low (routine high-flow is out — hyperoxia harms), 12-lead ECG obtained and read within minutes, aspirin 162-325 mg CHEWED (antiplatelet effect fastest chewed — verify no allergy or active bleeding), nitroglycerin sublingual per protocol with pressure checks, IV access, troponin drawn, and continuous monitoring. Morphine remains for pain refractory to nitrates per protocol, with pressure and respiratory surveillance.
 
-The ECG sorts the pathway: ST elevation (STEMI) means a fully occluded artery and the clock is running - reperfusion by percutaneous coronary intervention (PCI) with a door-to-balloon goal of 90 minutes, or fibrinolytics within 30 minutes if PCI is unavailable within 120 minutes. Fibrinolytic questions test the contraindication screen: active bleeding, recent surgery or trauma, prior hemorrhagic stroke, uncontrolled hypertension. Non-ST-elevation ACS (NSTEMI/unstable angina) gets antiplatelet and anticoagulant therapy with early catheterization by risk. After PCI via the femoral artery, the post-procedure priorities are the ones from procedure care: bedrest with the leg straight, pressure at the site, monitor for the expanding hematoma and lost distal pulse, and report retroperitoneal warning signs (back pain, hypotension) immediately.`,
+## Nitroglycerin rules
+
+Sublingual dosing: one tablet or spray under the tongue, may repeat every 5 minutes to a maximum of three doses with EMS/provider activation per protocol; the client sits or lies during dosing (orthostatic drops). HOLD for systolic pressure below the protocol threshold (commonly 90-100) and REFUSE when a phosphodiesterase inhibitor (sildenafil, tadalafil) was taken in the last 24-48 hours — the combination crashes pressure. Storage teaching: dark glass container, replaced on schedule, a burning or tingling under the tongue historically signaled potency.
+
+## The diagnostic pair
+
+The ECG localizes and classifies (ST elevation in contiguous leads = STEMI; depression or T inversion = ischemia/NSTEMI patterns), and TROPONIN confirms myocyte death — rising within hours, peaking around a day, elevated for days after, drawn serially. The pairing logic: ECG decides the reperfusion pathway NOW (it cannot wait for enzymes); troponin separates unstable angina from NSTEMI later.
+
+STEMI starts a literal clock: door-to-balloon (percutaneous coronary intervention) within 90 minutes where available, or fibrinolytics within 30 minutes of arrival when PCI is out of reach and no contraindications exist (active bleeding, recent stroke or surgery, uncontrolled hypertension). Items test the clock numbers and the contraindication screen.`,
+      examTip: `Aspirin is CHEWED, nitroglycerin is held for hypotension and recent sildenafil-class drugs, and the ECG comes before the enzymes — three mechanical facts that each decide their own item.`,
     },
     {
-      id: '3-post-mi',
-      title: `3. After the Infarction: Medications and Complications`,
-      content: `Discharge medication questions follow a standard bundle, each with its teaching hook: aspirin indefinitely (bleeding precautions), a P2Y12 inhibitor such as clopidogrel after stenting (do not stop abruptly - stent thrombosis), a beta-blocker (reduces mortality; teach pulse-taking and never stopping abruptly; masks hypoglycemia in diabetics), an ACE inhibitor (watch for the dry cough that prompts an ARB switch, and for hyperkalemia), and a high-intensity statin (report muscle pain - rhabdomyolysis screen). Cardiac rehabilitation and staged activity resumption round out teaching, including the classic guidance that sexual activity can typically resume when the client can climb two flights of stairs without symptoms.
+      id: 'cad-meds',
+      title: `3. The Medication Armory`,
+      content: `| Class | Prototype | What it does | The tested caution |
+| --- | --- | --- | --- |
+| antiplatelet | aspirin; clopidogrel | keeps the culprit vessel open | bleeding; NEVER stopped abruptly after stents without cardiology |
+| beta blocker | metoprolol | cuts demand (rate, contractility) | hold for HR under 60 or low BP per parameters; masks hypoglycemia; caution in acute heart failure |
+| ACE inhibitor | lisinopril | remodeling protection post-MI | dry cough, hyperkalemia, angioedema; monitor creatinine |
+| statin | atorvastatin | plaque stabilization, LDL lowering | report MUSCLE PAIN (rhabdomyolysis); check LFTs; avoid grapefruit for some |
+| nitrate | nitroglycerin (SL, patch, IV) | venodilation cuts preload; coronary dilation | hypotension; sildenafil-class interaction; patch-free interval prevents tolerance |
+| anticoagulant (acute) | heparin | halts clot propagation during ACS | aPTT monitoring, bleeding watch, protamine available |
+| opioid | morphine | refractory pain, preload reduction | respiratory depression, hypotension — after nitrates, per protocol |
 
-Complication timing is the exam's favorite trap. In the first hours to days, dysrhythmias are the leading killer - hence continuous monitoring; VF is most likely in the first hours. Days 2-3, pericarditis can appear: sharp pain WORSE lying flat and BETTER leaning forward, with a friction rub - distinguishing it from reinfarction (which would be pressure-like and ECG/troponin-evident) is a classic question. Around days 3-7, the healing wall is weakest: papillary muscle rupture (sudden mitral regurgitation - new murmur and flash pulmonary edema), ventricular septal rupture, or free-wall rupture with tamponade. Heart failure can emerge whenever enough muscle has died - crackles, S3, and the daily-weight logic from the heart failure chapter. Cardiogenic shock - hypotension, cold clammy skin, oliguria despite adequate volume - is the most lethal pump failure and demands ICU-level support.`,
+Post-stent teaching is its own cluster: DUAL antiplatelet therapy continues exactly as prescribed — stopping clopidogrel early risks in-stent thrombosis, and the tested client statement error is "I can stop the blood thinner once I feel fine." Radial or femoral access sites get bleeding surveillance (and the femoral client lies flat per protocol, with distal pulses checked; a rapidly expanding groin swelling is a call-now finding).
+
+Post-MI complications the monitor announces: dysrhythmias (the most common early killer — hence continuous monitoring), heart failure (crackles and S3), cardiogenic shock (the emergencies chapter's picture), pericarditis days later (the leaning-forward pain), and ventricular rupture territory in the first week. New murmur + sudden decompensation = call.`,
+      examTip: `Statin muscle pain is never "expected soreness" — unexplained myalgia on a statin is a report-and-check finding (rhabdomyolysis and the kidney injury behind it), and the exam plants it as a casual client remark.`,
+    },
+    {
+      id: 'cad-rehab',
+      title: `4. Recovery, Rehab & Secondary Prevention`,
+      content: `Cardiac rehabilitation begins in the hospital (phase I): progressive supervised activity, no isometric straining or Valsalva (bearing down spikes pressure and vagal swings — stool softeners are ordered for a reason the exam tests), and symptom-guided pacing — activity stops for chest pain, dyspnea, dizziness, or a disproportionate heart-rate jump.
+
+Discharge teaching clusters:
+
+Activity: graded walking programs; sexual activity typically resumable when the client can climb two flights of stairs without symptoms (the standard teaching proxy); no driving until cleared; cardiac rehab referral accepted — it halves the fear as much as it trains the heart.
+
+Diet: the heart-healthy pattern — sodium moderation, saturated and trans fats down, fiber and unsaturated fats up; the exam rewards concrete swaps (grilled for fried, added-salt removal) over abstract "eat better."
+
+Warning plan: nitroglycerin protocol rehearsed (sit, dose, 5 minutes, repeat per protocol, call emergency services rather than driving); which symptoms mean call now (recurrent pain, syncope, palpitations, dyspnea).
+
+Risk-factor work: smoking cessation is the highest-yield modifiable change and appears constantly — pair the ask with resources (counseling, pharmacotherapy per orders), not judgment. Blood pressure, glucose, and lipid targets are managed with adherence teaching: the drugs continue even when the client "feels fine," because atherosclerosis is silent between events.
+
+Depression screening after MI is evidence-based and tested: persistent low mood, anhedonia, or "I'm just done" from a post-MI client is a report-and-refer finding, not expected adjustment — untreated depression worsens cardiac outcomes.`,
+      examTip: `The two-flights-of-stairs proxy, the no-Valsalva rule, and call-EMS-do-not-drive are the three concrete rehab facts stems quote. Teaching effectiveness is always the concrete behavior statement.`,
+    },
+    {
+      id: 'cad-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 58-year-old diabetic woman reports two hours of epigastric discomfort, fatigue, and sweating; she took an antacid without relief. Why does this stem demand an ACS workup, and what are the first two diagnostic moves?
+
+2. A client with chest pain has systolic BP 84 after one sublingual nitroglycerin. The protocol allows two more doses. What does the nurse do?
+
+3. Distinguish unstable angina from NSTEMI in one sentence, and name which test separates them.
+
+4. A client asks why he must chew the aspirin the nurse hands him during chest pain. Answer him, and name one situation where aspirin is withheld.
+
+5. Three days post-MI, a client reports sharp chest pain that eases when he leans forward; a scratchy sound is heard at the sternal border. Interpret — and why is this NOT a reinfarction picture?
+
+## Answers
+
+1. Diabetic neuropathy blunts ischemic pain and women present atypically — epigastric discomfort plus diaphoresis and fatigue in a high-risk client is ACS until excluded. First moves: 12-lead ECG within minutes and serial troponins, with the acute protocol alongside.
+
+2. HOLD further nitroglycerin — systolic 84 is below any hold threshold. Lay the client flat as tolerated, notify per protocol, and anticipate fluids; the remaining protocol doses are cancelled by the hypotension, not owed.
+
+3. Both are ACS with ischemic symptoms and non-elevated ST segments — but NSTEMI has myocyte death and unstable angina does not; TROPONIN separates them.
+
+4. Chewing gets the antiplatelet effect into circulation fastest, and minutes of platelet inhibition matter in a forming coronary clot. Withhold for true aspirin allergy or active serious bleeding, and flag recent GI hemorrhage to the provider.
+
+5. Post-MI pericarditis — positional sharp pain relieved leaning forward with a friction rub, appearing days after infarction. Reinfarction pain is pressure-like, not positional, and has no rub; still, the finding is reported and an ECG per protocol distinguishes formally.`,
     },
   ],
   keyTakeaways: [
-    `Nitroglycerin protocol: sit, one SL tablet, call EMS if unrelieved 5 minutes after the FIRST dose; dark bottle, no sildenafil within 24-48 h.`,
-    `Suspected ACS: ECG within 10 minutes, chewed aspirin, O2 only if sat < 90%, nitro then morphine for refractory pain, serial troponins.`,
-    `STEMI is a reperfusion race - PCI door-to-balloon 90 minutes; screen fibrinolytics against the bleeding contraindication list.`,
-    `Discharge bundle: aspirin + P2Y12 + beta-blocker + ACE inhibitor + statin, each with its signature teaching point.`,
-    `Complication clock: dysrhythmias first hours; pericarditis days 2-3 (worse supine, better leaning forward); wall rupture days 3-7; watch for new murmurs.`,
+    `Place the client on the spectrum by the story: relieved-by-rest stable angina, rest-pain ACS, troponin sorting unstable angina from NSTEMI, ST elevation declaring STEMI and starting the reperfusion clock.`,
+    `The acute protocol is mechanical: upright, ECG in minutes, chewed aspirin, nitroglycerin with hold rules (pressure, sildenafil-class), serial troponins — and door-to-balloon 90 minutes.`,
+    `Know the armory's cautions: beta-blocker holds, ACE cough and potassium, statin myalgia, nitrate interactions, and dual antiplatelets that never stop early after stents.`,
+    `Atypical is typical for women, elders, and diabetics — fatigue, dyspnea, epigastric discomfort, or nothing at all.`,
+    `Rehab teaching is concrete: no Valsalva (stool softeners), two flights before sex, nitro-then-call-EMS, smoking cessation first among equals, and post-MI depression is screened and treated.`,
   ],
 },
 
 nx_heart_failure: {
   topicId: 'nx_heart_failure',
-  title: `Heart Failure & Inflammatory Cardiac Disorders`,
+  title: `Heart Failure & Pulmonary Edema`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `Heart failure is tested through one anatomical idea - each ventricle floods what lies behind it - plus the daily-weight alarm, the medication bundle with digoxin's rules, and the recognition of acute pulmonary edema. This chapter adds the inflammatory trio (endocarditis, pericarditis, myocarditis) the exam pairs with it.`,
+  overview: `Heart failure is among the most stem-friendly diagnoses on the exam: left and right failure have clean opposing signatures, decompensation has an early-warning system (the daily weight), acute pulmonary edema has a fixed crisis script, and the medication list doubles as a monitoring list. This chapter builds the sided-failure table, the exacerbation playbook, the drug-by-drug surveillance map, and the self-management teaching that keeps the readmission stems honest.`,
   sections: [
     {
-      id: '1-left-vs-right',
-      title: `1. Left Versus Right: The Anatomical Sort`,
-      content: `The failing left ventricle backs blood into the lungs: dyspnea, orthopnea (ask how many pillows), paroxysmal nocturnal dyspnea, crackles, an S3 gallop, and in the extreme, pink frothy sputum. The failing right ventricle backs blood into the body: jugular venous distention, dependent edema, hepatomegaly with right-upper-quadrant tenderness, ascites, and weight gain. Left failure is the most common cause of right failure; pure right failure from lung disease is cor pulmonale. Sorting any finding to its side is the single most reliable HF question format, and the sort is purely anatomical - what is directly behind the failing chamber floods.
+      id: 'hf-sides',
+      title: `1. Left vs Right: Two Signatures`,
+      content: `Failure means the ventricle cannot meet demand; WHERE it fails writes the symptoms. Left-sided failure backs blood into the LUNGS; right-sided failure backs it into the BODY.
 
-B-type natriuretic peptide (BNP) is the confirming lab: the ventricle secretes it when stretched, so elevated BNP distinguishes cardiac dyspnea from pulmonary causes. The monitoring cornerstone is the daily weight - same time, same scale, same clothing, after voiding, before breakfast - because weight is the most sensitive early indicator of fluid retention: more than about 1 kg (2-3 lb) overnight or 2.3 kg (5 lb) in a week is a call-the-provider number, taught to every client and tested constantly.`,
+| Left-sided (lungs) | Right-sided (body) |
+| --- | --- |
+| dyspnea on exertion, then at rest | dependent edema (ankles, sacrum when supine) |
+| orthopnea — "how many pillows?" | jugular venous distension |
+| paroxysmal nocturnal dyspnea | hepatomegaly, right-upper-quadrant discomfort |
+| crackles, S3 gallop | ascites, anorexia and early satiety |
+| fatigue, cool extremities | weight gain from fluid |
+| cough, pink frothy sputum when severe | — |
+
+The most common cause of right-sided failure is LEFT-sided failure (the lungs' congestion becomes the right ventricle's afterload); isolated right failure follows pulmonary disease (cor pulmonale) — the COPD client with new edema and distended neck veins is that stem.
+
+Compensation mechanisms (sympathetic drive, renin-angiotensin activation, remodeling) buy time and then become the disease — which is why the drug list is mostly compensation blockers (ACE inhibitors, beta blockers, aldosterone antagonists) rather than stimulants.
+
+BNP is the lab that arbitrates dyspnea: released by stretched ventricles, under 100 pg/mL argues against heart failure, and rising values track worsening. Echocardiography's ejection fraction (normal roughly 55-70%) classifies reduced versus preserved EF — vocabulary the stems use.`,
+      examTip: `Sort every finding by side reflexively: wet lungs = left, wet body = right. Items love the crossover client — the COPD stem growing neck veins (right failure from lung disease) versus the orthopnea stem growing edema (left failure dragging the right down).`,
     },
     {
-      id: '2-hf-management',
-      title: `2. The Medication Bundle and Digoxin's Rules`,
-      content: `Chronic HF management pairs lifestyle (sodium restriction, often fluid limits, activity as tolerated) with a bundle: ACE inhibitors or ARBs reduce afterload and remodeling (cough, hyperkalemia, monitor renal function); beta-blockers improve survival but are started low and slow - and are held in acute decompensation; loop diuretics (furosemide) relieve congestion - teach potassium-rich foods or supplements, watch for ototoxicity with rapid IV push (give over several minutes), and expect the potassium question (a client on furosemide and digoxin with K+ 3.0 is a classic danger stem); spironolactone spares potassium (so hyperkalemia is ITS risk); and newer agents follow the same logic of unloading the pump.
+      id: 'hf-decomp',
+      title: `2. Decompensation & the Pulmonary Edema Script`,
+      content: `Decompensation announces itself in ounces before it arrives in crackles: the DAILY WEIGHT is the early-warning system, and the standard teaching threshold — gain of 2-3 lb (about 1 kg or more) overnight or 5 lb (about 2.3 kg) in a week — is a call-the-provider number, not a diary entry. Escalating orthopnea (more pillows), new nocturnal dyspnea, tightening rings and shoes, and a dry stepping-down cough round out the radar.
 
-Digoxin earns its own paragraph every exam cycle. It increases contractility and slows rate. Therapeutic level is 0.5-2.0 ng/mL. Hold and call for a level above range or an apical pulse below 60 (count a full minute). Toxicity presents as anorexia, nausea, vomiting first, then visual changes - halos, yellow-green tint - and dysrhythmias. HYPOKALEMIA POTENTIATES DIGOXIN TOXICITY: low potassium lets digoxin bind more avidly, so the furosemide-digoxin pair without potassium repletion is the stem to flag. The antidote is digoxin immune Fab. Any digoxin question that mentions the client's potassium is telling you the answer's direction.`,
+Acute pulmonary edema is the crisis form: severe dyspnea, anxiety and restlessness, tachypnea, tachycardia, cold clammy skin, crackles rising from bases toward apices, and PINK FROTHY SPUTUM as alveoli flood. The script is fixed and sequenced:
+
+1. POSITION: high Fowler's, legs dependent — gravity pools volume away from the lungs.
+2. OXYGEN: high-flow per protocol; anticipate noninvasive positive pressure (CPAP/BiPAP) — it splints alveoli open and cuts preload.
+3. IV DIURETIC: furosemide push per orders — output should answer within the hour; a catheter often follows for measurement.
+4. VASODILATION per orders: IV nitroglycerin when pressure allows — unloads the ventricle.
+5. MONITOR: continuous saturation and rhythm, pressures, strict output, serial lung sounds — and potassium after the diuresis.
+
+Morphine's historical role (anxiety and preload) appears in older materials; current protocols use it cautiously if at all — follow the stem's orders rather than importing it.
+
+The positioning point is pure physiology and pure exam: the WRONG answer lays the client flat or lifts the legs (both dump volume into the flooded chest); high Fowler's with legs down is the one-move preload reduction that costs nothing.`,
+      examTip: `Weight thresholds (2-3 lb overnight, 5 lb a week) and the position (high Fowler's, legs DOWN) are the two most-quoted facts in this chapter — and pink frothy sputum means the emergency already started.`,
     },
     {
-      id: '3-pulmonary-edema-inflammatory',
-      title: `3. Acute Pulmonary Edema and the Inflammatory Trio`,
-      content: `Acute decompensation is a scene question: sudden severe dyspnea, anxiety, cold sweat, crackles throughout, pink frothy sputum. The response set: sit the client upright with legs dependent (high Fowler's - decreases venous return), give oxygen (positive-pressure ventilation if needed), IV furosemide, and nitroglycerin to reduce preload; morphine appears in older references but is used cautiously now. The wrong answers lie the client flat or push fluids - the opposite of unloading a drowning pump.
+      id: 'hf-meds',
+      title: `3. The Medication & Monitoring Map`,
+      content: `Heart-failure pharmacology is a monitoring exam in disguise — every drug pairs with a lab or vital sign:
 
-The inflammatory trio rides along. Infective endocarditis - infection of the valves, risk with IV drug use, prosthetic valves, and invasive procedures - presents with fever, murmur, and embolic signatures (splinter hemorrhages, Janeway lesions, Osler nodes); care is weeks of IV antibiotics and prevention teaching: prophylactic antibiotics before dental work for high-risk clients, and meticulous oral hygiene. Pericarditis - post-MI, post-viral, or uremic - is the positional chest pain (worse supine, better leaning forward) with a friction rub; the feared complication is effusion progressing to tamponade: muffled heart sounds, JVD, hypotension (Beck's triad), pulsus paradoxus - a pericardiocentesis emergency. Myocarditis, often post-viral, presents as new heart failure in someone young; care is supportive with activity restriction. Distinguishing the trio by their signatures - embolic skin signs, positional rub, or unexplained new failure - is the question format.`,
+| Drug class | Prototype | Why | Watch |
+| --- | --- | --- | --- |
+| loop diuretic | furosemide | volume off-loading | potassium DOWN (replace per orders), ototoxicity with fast IV push, orthostasis, daily weight |
+| ACE inhibitor / ARB | lisinopril / losartan | blocks remodeling, drops afterload | potassium UP, creatinine, dry cough (ACE), angioedema, first-dose hypotension |
+| beta blocker | metoprolol succinate, carvedilol | blocks sympathetic remodeling | start LOW in stable clients; hold parameters for rate and pressure; fatigue early is expected teaching |
+| aldosterone antagonist | spironolactone | survival benefit | potassium UP — the K-sparing partner to the loop's K-wasting |
+| digoxin | digoxin | symptom control, rate help in a-fib | apical pulse 60 rule, level 0.5-2.0, toxicity (anorexia, nausea, VISUAL changes) — hypokalemia potentiates it |
+| SGLT2 inhibitor | dapagliflozin | outcome benefit even without diabetes | genitourinary infections, euglycemic DKA awareness |
+| vasodilator (acute) | IV nitroglycerin | preload/afterload in decompensation | continuous pressure monitoring |
+
+The potassium choreography is the tested core: loops WASTE it, ACE inhibitors and spironolactone SPARE it, digoxin becomes toxic when it is LOW — so a client on furosemide plus digoxin with potassium 3.1 and new nausea is a toxicity stem, while a client on lisinopril plus spironolactone with potassium 5.9 is the opposite trap. Read the drug list as a potassium equation before answering.
+
+Fluid and sodium restriction orders accompany the drugs (commonly 2 g sodium; fluid limits per provider) — and the intake count includes ice chips, soups, and the water swallowed with pills.`,
+      examTip: `Every heart-failure medication item is secretly a potassium item or a vital-sign-hold item. Compute the client's potassium direction from the drug list first — the answer usually falls out.`,
+    },
+    {
+      id: 'hf-teaching',
+      title: `4. Living With It: Teaching & Readmission Prevention`,
+      content: `Heart failure readmissions are the tested quality problem, and the self-management bundle is the answer bank:
+
+Daily weight, same scale, same time (morning, after voiding, before dressing), written down — with the call thresholds rehearsed as numbers, not vibes. The tested effective statement: "If I gain more than 2 pounds overnight or 5 in a week, I call the office that day."
+
+Sodium literacy over sodium virtue: reading labels (canned soups, deli meats, bread, condiments — the salt hides in packages, not the shaker), restaurant strategies, and no salt substitutes without asking — many are POTASSIUM chloride, which collides with the ACE-spironolactone side of the drug map.
+
+Medication adherence through symptom logic: the diuretic taken in the MORNING (sleep uninterrupted), the beta blocker continued even when fatigue is noticed early, nothing stopped when "feeling better" — feeling better IS the drugs working. Missed-dose plans and refill logistics are teaching content, not administrivia.
+
+Activity: regular paced walking with rest between exertion, no isometrics or breath-holding, energy conservation (sit for tasks, spread chores), and the escalation plan for dyspnea beyond the client's baseline.
+
+Vaccinations (influenza, pneumococcal per schedule) protect against the decompensation trigger the exam likes: infection. Other trigger stems: dietary indiscretion (the holiday-meal admission), medication interruption, uncontrolled hypertension, new arrhythmia (a-fib with rapid rates), and NSAIDs — which retain sodium and blunt diuretics and appear as the innocent over-the-counter culprit in readmission stems.
+
+Advanced-disease conversations (devices, transplant evaluation, palliative integration) are introduced honestly when stems reach refractory symptoms — comfort-focused care and heart-failure care are not opposites, and the exam rewards the answer that discusses goals rather than deflecting.`,
+      examTip: `The NSAID trap recurs: ibuprofen for a heart-failure client's aches is a decompensation trigger (sodium retention, diuretic resistance) — the correct teaching swaps it for acetaminophen per provider guidance.`,
+    },
+    {
+      id: 'hf-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. Sort these findings by failure side: orthopnea, ankle edema, jugular distension, crackles, hepatomegaly, pink frothy sputum.
+
+2. A home-care client's log shows 152.0, 152.4, 153.1, 155.0 lb across four mornings. Interpret and act.
+
+3. A client with acute pulmonary edema is found supine and panicking. Give the first two actions and the physiologic reason for each.
+
+4. A client takes furosemide and digoxin. This morning: potassium 3.0, client reports nausea and "yellow-tinged" vision. Connect the findings and state the priorities.
+
+5. A client with heart failure asks about using a salt substitute and taking ibuprofen for knee pain. Address both.
+
+## Answers
+
+1. Left (lungs): orthopnea, crackles, pink frothy sputum. Right (body): ankle edema, jugular distension, hepatomegaly. The frothy sputum marks acute decompensation of the left side.
+
+2. A 3-lb rise over days with acceleration (0.4, 0.7, 1.9) — fluid gain, decompensation beginning. Call the provider today per the taught threshold; anticipate diuretic adjustment; reinforce sodium review. It is a same-day call, not a next-visit note.
+
+3. Sit the client into high Fowler's with legs dependent — gravity shifts volume out of the pulmonary circuit (preload drops). Apply high-flow oxygen per protocol — the flooded alveoli are shunting; anticipate positive pressure. Diuretic and vasodilator orders follow.
+
+4. Hypokalemia (the loop's work) is potentiating digoxin — nausea plus visual color changes are the toxicity signature. Hold the digoxin, obtain a level and notify, monitor the rhythm, and replace potassium per orders (diluted, pumped, never pushed).
+
+5. No salt substitute without provider approval — most are potassium chloride, and his regimen may already spare potassium. No ibuprofen — NSAIDs retain sodium and blunt diuretics, a classic decompensation trigger; acetaminophen per provider guidance is the usual swap.`,
     },
   ],
   keyTakeaways: [
-    `Left failure floods the lungs (crackles, orthopnea, frothy sputum); right failure floods the body (JVD, edema, big liver) - sort every finding anatomically.`,
-    `Daily weight is the alarm: >1 kg overnight or >2.3 kg/week means retained fluid - teach it, act on it.`,
-    `Furosemide drops potassium; hypokalemia potentiates digoxin toxicity - the drug pair plus a low K+ is the exam's favorite danger stem.`,
-    `Digoxin: level 0.5-2.0, hold for apical pulse < 60, toxicity = GI symptoms then visual halos; antidote is digoxin immune Fab.`,
-    `Pulmonary edema: upright, oxygen, IV furosemide, nitrates - never supine, never fluids; tamponade's Beck triad (muffled sounds, JVD, hypotension) is a pericardiocentesis emergency.`,
+    `Left failure wets the lungs (orthopnea, crackles, frothy sputum), right failure wets the body (edema, JVD, hepatomegaly) — and left failure is right failure's most common cause.`,
+    `The daily weight is the early-warning system: 2-3 lb overnight or 5 lb a week is a call-today number.`,
+    `Pulmonary edema scripts: high Fowler's legs down, oxygen/positive pressure, IV loop diuretic, nitroglycerin per pressure — position first, it is free preload reduction.`,
+    `Read the drug list as a potassium equation: loops waste, ACE/spironolactone spare, digoxin turns toxic when potassium falls.`,
+    `Readmission prevention is concrete: label-reading sodium literacy, morning diuretics, drugs continued while well, vaccines, and no NSAIDs or unapproved salt substitutes.`,
   ],
 },
 
@@ -1986,36 +2620,106 @@ nx_copd_asthma: {
   topicId: 'nx_copd_asthma',
   title: `Asthma & COPD`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `Obstructive lung disease questions reward three skills: separating rescue from controller therapy, recognizing when an attack is deteriorating (the silent chest), and applying COPD's special oxygen and breathing rules. This chapter builds all three plus the inhaler technique teaching the exam loves to grade.`,
+  overview: `Obstructive lung disease stems test two clocks: the asthma attack that escalates in minutes and the COPD course that decompensates over days. The exam's favorite discriminations live here — the silent chest that means worse not better, rescue versus controller inhalers, oxygen titration in the chronic CO2 retainer, and the inhaler technique teaching that decides return-demonstration items. This chapter builds both diseases, their crisis scripts, and the medication table they share.`,
   sections: [
     {
-      id: '1-asthma',
-      title: `1. Asthma: Rescue Versus Controller`,
-      content: `Asthma is reversible airway inflammation and bronchospasm: wheezing, chest tightness, cough, and dyspnea, triggered by allergens, exercise, cold air, or infection. The medication logic is a two-shelf system. The rescue shelf is the short-acting beta-agonist (SABA, albuterol) - fast onset, used for acute symptoms and pre-exercise; expect tremor and tachycardia as side effects. The controller shelf prevents attacks and does nothing in one: inhaled corticosteroids (the cornerstone - teach rinse-and-spit to prevent oral thrush), long-acting beta-agonists (NEVER alone in asthma - always paired with an inhaled steroid), and leukotriene modifiers (montelukast, oral, taken in the evening). The classic teaching failure the exam tests: a client using the controller for an acute attack, or using rescue albuterol daily - more than twice-weekly rescue use signals uncontrolled disease and a step-up need.
+      id: 'resp-asthma',
+      title: `1. Asthma: The Reversible Obstruction`,
+      content: `Asthma is episodic, inflammatory, and REVERSIBLE bronchoconstriction: triggers (allergens, exercise, cold air, infection, stress, aspirin in sensitive clients) provoke wheeze, chest tightness, cough — classically nocturnal — and prolonged expiration. Between attacks the client can be entirely well; the disease lives in the airways' readiness to overreact.
 
-Inhaler technique is free points: shake, exhale fully, seal lips (or use a spacer - which improves delivery and is standard with steroids), inhale slowly while actuating, hold breath about 10 seconds; wait about a minute between puffs; bronchodilator BEFORE steroid when both are due (open the airways, then deliver the anti-inflammatory); rinse after steroids. Peak flow meters personalize monitoring: green zone (80-100% of personal best) means go, yellow (50-80%) means caution and rescue medication per plan, red (below 50%) means emergency action.`,
+Attack assessment ranks by the work of breathing: audible expiratory wheeze first, then inspiratory-plus-expiratory wheeze, accessory-muscle use, speech in words instead of sentences, tripod positioning — and then the finding the exam builds items on: the SILENT CHEST. Wheeze requires airflow; when breath sounds fade in a client still struggling, the airways have closed toward arrest. Silence plus exhaustion, bradycardia after tachycardia, or a "calming" client who is actually obtunded — these are pre-arrest cues demanding rapid response, not documentation of improvement.
+
+Peak expiratory flow personalizes severity: measured against the client's PERSONAL BEST, the standard zone teaching runs green (80-100% — continue plan), yellow (50-80% — caution, deploy the action plan), red (below 50% — rescue medication and emergency help). The written asthma action plan pairs zones with exact medication steps — the tested teaching artifact.
+
+Status asthmaticus is the attack that refuses standard therapy: continuous nebulized bronchodilators, systemic corticosteroids, oxygen, magnesium per protocol, and escalation toward ventilatory support — a client this tight who "suddenly quiets" is deteriorating until proven otherwise.`,
+      examTip: `The silent chest is the classic reverse-logic item: less wheeze in a struggling asthmatic means LESS airflow, not less obstruction. Pair it with exhaustion or a falling respiratory rate and the answer is escalation now.`,
     },
     {
-      id: '2-status-asthmaticus',
-      title: `2. The Deteriorating Attack and Status Asthmaticus`,
-      content: `Attack severity questions grade recognition of trajectory. A moderate attack: audible wheezing, speaking in phrases, using accessory muscles, tachycardia, oxygen saturation dropping. Deterioration signs: speaking in single words, exhaustion, paradoxical chest movement, and the finding every exam includes - the SILENT CHEST. Wheezing requires air movement; when wheezing disappears while the client worsens, air is no longer moving, and respiratory arrest is imminent. "Diminished wheezing" in a still-distressed client is never improvement - it is the most dangerous answer choice on the page. Rising CO2 on a blood gas tells the same story: an asthmatic working that hard should be blowing CO2 off (low PaCO2); a "normalizing" or rising PaCO2 means fatigue and failure.
+      id: 'resp-copd',
+      title: `2. COPD: The Progressive Obstruction`,
+      content: `COPD — chronic bronchitis and emphysema, overwhelmingly smoking-driven — is progressive, partially reversible airflow limitation: dyspnea advancing from exertion to rest, chronic productive cough, prolonged expiration through PURSED LIPS (self-taught physiologic PEEP that splints airways open), barrel chest from air trapping, accessory-muscle work, and eventually the right-heart consequences (cor pulmonale: the neck veins and edema from the heart-failure chapter).
 
-Status asthmaticus - a severe attack unresponsive to initial bronchodilators - is an emergency: continuous nebulized SABA, ipratropium, systemic corticosteroids (IV), oxygen, and preparation for intubation if failing; IV magnesium sulfate appears as an adjunct. Position upright, stay with the client, minimize demand. Post-attack, every stem points toward trigger identification and an updated action plan - and the follow-up question is often about stepping up controller therapy.`,
+The chronic ABG picture: retained CO2 with renal bicarbonate compensation — a normal-side pH riding on abnormal partners (the fully compensated respiratory acidosis worked in the lab chapter). This baseline REWRITES the oxygen rules: the target saturation for CO2-retaining COPD clients is commonly 88-92%, titrated with venturi precision rather than flooded — high-flow oxygen can worsen CO2 retention (ventilation-perfusion shifts and blunted drive), producing the drowsy, confused, oxygen-toxic stem. The tested answer titrates DOWN toward target, never removes oxygen abruptly, and monitors mentation as a CO2 gauge — rising drowsiness in a COPD client on new high-flow oxygen is CO2 narcosis until proven otherwise.
+
+Exacerbations (usually infection-triggered): increased dyspnea, sputum volume or purulence change, wheeze on top of baseline — treated with bronchodilators, systemic corticosteroids, antibiotics per criteria, and controlled oxygen. The positioning answer is upright leaning forward on supports (the tripod the client invented at home).
+
+Daily-living management: pursed-lip and diaphragmatic breathing training, energy conservation (the same pacing logic as heart failure), small frequent high-calorie meals (dyspnea makes eating exercise; weight loss is a poor prognostic marker), hydration to thin secretions, smoking cessation at every contact, and pulmonary rehabilitation referral — the highest-evidence intervention stems undersell.`,
+      examTip: `The COPD oxygen number is 88-92%, and the mechanism item behind it is CO2 narcosis: new confusion or drowsiness on generous oxygen is a gas problem, and the fix is titration and an ABG — not sleep.`,
     },
     {
-      id: '3-copd',
-      title: `3. COPD: The Special Rules`,
-      content: `COPD - chronic bronchitis and emphysema, overwhelmingly smoking-related - is progressive and only partially reversible. The presentation set: dyspnea, chronic productive cough, prolonged expiration, barrel chest from air trapping, and in advanced disease, weight loss from the work of breathing. Two special rules dominate testing. Oxygen: the target saturation is 88-92 percent, not the high 90s - excessive oxygen in a chronic CO2 retainer worsens hypercapnia, so the wrong answer cranks the flow to chase a normal number, and the right answer maintains low-flow oxygen (1-2 L by cannula) within the target band. Never withhold oxygen from a hypoxic client - titrate to the band. Breathing retraining: pursed-lip breathing (inhale through the nose, exhale slowly through pursed lips, exhalation twice as long as inhalation) creates back-pressure that splints airways open; diaphragmatic breathing and the tripod position complete the set.
+      id: 'resp-meds',
+      title: `3. The Inhaler & Medication Table`,
+      content: `| Class | Prototype | Role | The tested points |
+| --- | --- | --- | --- |
+| short-acting beta agonist (SABA) | albuterol | RESCUE — attacks, pre-exercise | first in every acute attack; tremor and tachycardia expected; overuse (more than 2 days/week) means control is failing |
+| inhaled corticosteroid (ICS) | fluticasone, budesonide | CONTROLLER — daily inflammation control | never for acute attacks; RINSE the mouth after (thrush); effect builds over days |
+| long-acting beta agonist (LABA) | salmeterol | controller partner | NEVER alone in asthma (paired with ICS); never for rescue |
+| anticholinergic | ipratropium (short), tiotropium (long) | COPD mainstay, asthma adjunct | dry mouth; caution glaucoma/urinary retention histories |
+| systemic corticosteroid | prednisone, IV methylprednisolone | exacerbations | short bursts; taper longer courses; glucose rises — monitor diabetics |
+| leukotriene modifier | montelukast | oral controller, allergic/exercise asthma | evening dosing; neuropsychiatric mood warnings are the tested caution |
+| methylxanthine | theophylline | rare, refractory | narrow index (10-20 mcg/mL); toxicity = tachycardia, tremor, seizures |
+| magnesium sulfate | IV | severe attacks per protocol | bronchodilating adjunct in status asthmaticus |
 
-Exacerbations - usually infection-triggered - bring increased dyspnea, sputum volume, and purulence: treatment is bronchodilators, systemic corticosteroids, antibiotics when indicated, and controlled oxygen. Teaching bundles recur: smoking cessation (the single most effective intervention at any stage), influenza and pneumococcal vaccination, small frequent high-calorie meals (dyspneic clients cannot eat large ones), hydration to thin secretions, energy conservation, and pacing activities with rest. Right-sided heart failure (cor pulmonale) - edema, JVD, weight gain - is the late complication to recognize and report.`,
+The rescue-versus-controller sort is the highest-yield discrimination: albuterol is the only "right now" inhaler; steroids and LABAs prevent the next attack rather than treating this one, and a stem whose client reaches for salmeterol mid-attack is testing exactly that.
+
+## Technique — where teaching items live
+
+Metered-dose inhaler: shake, exhale fully, seal (or spacer), actuate ONCE while inhaling slowly and deeply, hold breath about 10 seconds, wait about a minute between puffs — bronchodilator FIRST when paired with a steroid (open the doors, then treat the walls), and rinse after the steroid. SPACERS improve delivery for weak technique and children. Dry-powder inhalers reverse the breath: FAST, forceful inhalation, and never exhale into the device. Return demonstration, not a nod, evaluates all of it.`,
+      examTip: `Bronchodilator before steroid, rinse after the steroid, spacer for weak technique, fast breath for dry powder, slow for MDI — five mechanical facts that each anchor their own item.`,
+    },
+    {
+      id: 'resp-crisis',
+      title: `4. Crisis Comparisons & the Deterioration Radar`,
+      content: `The two diseases share a deterioration radar worth holding side by side:
+
+| Finding | In asthma | In COPD |
+| --- | --- | --- |
+| wheeze fading | silent chest — pre-arrest | same meaning at the extreme |
+| speech | words-not-sentences marks severity | same |
+| mentation change | hypoxia/exhaustion — escalate | ADD CO2 narcosis to the differential, check the oxygen flow |
+| respiratory rate FALLING while distressed | fatigue failure — pre-arrest | same |
+| saturation target | normal ranges | 88-92% in retainers |
+| positioning | tripod/upright | tripod/upright |
+
+Shared escalation script: upright, rescue bronchodilator (continuous nebulization per protocol in severe attacks), controlled oxygen to the appropriate target, systemic corticosteroids per orders, IV access, ABG when severity or mentation demands, and early rapid-response involvement — intubating an obstructed chest is hard, and the exam rewards escalation BEFORE arrest.
+
+Pneumothorax lurks in both stems (bleb rupture in emphysema; barotrauma in ventilated asthma): sudden unilateral chest pain, absent breath sounds on one side, tracheal shift late, subcutaneous crackling — a chest-tube emergency the crisis can hide inside.
+
+Infection prevention closes the loop: influenza vaccination annually, pneumococcal per schedule, hand hygiene, early treatment of respiratory infections — the same trigger-blocking logic as heart failure, and the same tested answer when stems ask how to prevent the next admission.`,
+      examTip: `A falling respiratory rate in a client still visibly struggling is never improvement — it is the respiratory muscles failing. Pair it with quieting breath sounds and the only correct options escalate.`,
+    },
+    {
+      id: 'resp-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. Mid-attack, an asthmatic client's loud wheezing fades to near-silence while retractions continue. Interpret and act.
+
+2. A COPD client on 6 L nasal cannula (applied by a well-meaning transporter) is now difficult to rouse; saturation reads 97%. What happened, and what is the response?
+
+3. A client with asthma uses albuterol daily before work "to be safe" and salmeterol when attacks start. Identify both errors.
+
+4. Sequence and explain: a client is due for albuterol MDI and fluticasone MDI, and asks why the order and the mouth rinse matter.
+
+5. During a severe COPD exacerbation, the client develops sudden right-sided chest pain with absent right-sided breath sounds. What has likely happened and what does the nurse anticipate?
+
+## Answers
+
+1. Silent chest — airflow too low to generate wheeze; this is impending respiratory arrest. Rapid response, continuous nebulized bronchodilator per protocol, controlled oxygen, prepare for escalation including ventilatory support.
+
+2. CO2 narcosis: high-flow oxygen in a chronic retainer worsened CO2 retention — the saturation looks fine while the CO2 climbs and sedates. Titrate oxygen toward the 88-92% target (do not remove it abruptly), obtain an ABG, monitor mentation, and notify.
+
+3. Albuterol is RESCUE — daily scheduled use signals uncontrolled asthma and needs a controller review, not a habit. Salmeterol is a CONTROLLER — slow onset, never for acute attacks, and never used alone in asthma without an inhaled steroid.
+
+4. Albuterol first: the bronchodilator opens the airways so the steroid penetrates. Fluticasone second, THEN rinse and spit — residual steroid in the mouth breeds oral candidiasis. About a minute between puffs; hold each breath about 10 seconds.
+
+5. Spontaneous pneumothorax — bleb rupture is a known emphysema event, and unilateral absent sounds with sudden pain is its signature. Anticipate immediate provider notification, chest imaging, and chest-tube insertion; monitor for tension signs (tracheal deviation, worsening pressure) as an emergency-within-the-emergency.`,
     },
   ],
   keyTakeaways: [
-    `Rescue = SABA for the attack; controllers (inhaled steroids, LABA-with-steroid, montelukast) prevent and never treat one; rescue use > 2x/week signals step-up.`,
-    `Inhaler order and technique are graded: bronchodilator before steroid, spacer with steroids, rinse-and-spit after, ~10-second breath hold.`,
-    `A quieting chest in a worsening asthmatic is impending arrest, not improvement; a rising PaCO2 in an attack means fatigue and failure.`,
-    `COPD oxygen target is 88-92% with low-flow titration - never chase 99%, never withhold oxygen either.`,
-    `Pursed-lip breathing, tripod position, small frequent meals, vaccines, and smoking cessation are the COPD teaching core; new edema/JVD = cor pulmonale, report.`,
+    `Asthma severity climbs from wheeze to words-not-sentences to SILENT CHEST — and fading sounds in a struggling client mean escalate, not improve.`,
+    `COPD retainers target 88-92% saturation with titrated oxygen; new drowsiness on generous flow is CO2 narcosis until an ABG says otherwise.`,
+    `Albuterol is the only right-now inhaler; steroids and LABAs prevent, never rescue — and LABAs never fly solo in asthma.`,
+    `Technique is testable mechanics: bronchodilator before steroid, rinse after steroid, spacer for weak technique, fast inhalation for dry powder.`,
+    `Both diseases share the radar (falling rate + quieting chest = failing muscles) and the prevention bundle (vaccines, cessation, early infection treatment, pulmonary rehab).`,
   ],
 },
 
@@ -2169,36 +2873,128 @@ nx_stroke_icp: {
   topicId: 'nx_stroke_icp',
   title: `Stroke & Increased Intracranial Pressure`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `Neuro emergencies test speed and sequence: recognize the stroke, protect the tPA window, sort left-brain from right-brain deficits, and catch rising intracranial pressure at the earliest sign - a change in level of consciousness - not the late, famous ones. This chapter drills all four.`,
+  overview: `Neuro emergencies are clock-driven: stroke runs on time-last-known-well and the thrombolytic window, and rising intracranial pressure runs on catching the EARLIEST sign — a change in level of consciousness — before the Cushing triad announces that time is gone. This chapter covers stroke recognition and the two-pathway split (clot versus bleed), the acute and rehab nursing that follows, the ICP surveillance ladder with its positioning bundle, and the seizure care that travels with brain injury.`,
   sections: [
     {
-      id: '1-stroke-recognition',
-      title: `1. Recognizing Stroke and Protecting the Window`,
-      content: `Ischemic stroke (about 85 percent) is vessel occlusion; hemorrhagic stroke is vessel rupture - and everything in acute management hinges on which, because the treatment for one is catastrophic in the other. Recognition uses FAST: Face droop, Arm drift, Speech slurring, Time - and time is the treatment. The single most important history question is "when was the client last seen normal?" because that timestamp, not symptom discovery, starts the clock. IV fibrinolysis (alteplase) requires onset within 3 hours (up to 4.5 for selected clients) AND a CT scan first to exclude hemorrhage - the non-contrast head CT before any anticoagulation is the non-negotiable sequencing answer. Exclusions mirror the cardiac list: recent surgery or trauma, active bleeding, prior hemorrhagic stroke, uncontrolled severe hypertension. During and after infusion: bleeding precautions, frequent neuro checks, defer non-urgent injections and invasive lines, and immediately report any decline (possible hemorrhagic conversion). A transient ischemic attack - deficits resolving within minutes to an hour - is not a relief but a warning: stroke risk is highest in the following days, so TIA stems point toward urgent workup, not reassurance.
+      id: 'neuro-stroke-recognition',
+      title: `1. Stroke Recognition & the Time Clock`,
+      content: `Stroke recognition items use the public screens because they work: FAST (Face droop, Arm drift, Speech change, Time to call) and the fuller BE-FAST adding Balance and Eyes (sudden visual loss or diplopia). Sudden unilateral weakness or numbness, facial droop, aphasia or slurred speech, visual field loss, ataxia, or the "worst headache of my life" — each is a stroke stem, and the FIRST fact the nurse establishes is TIME LAST KNOWN WELL, because every downstream decision hangs on it.
 
-Hemorrhagic stroke - often the "worst headache of my life" with rapid deterioration - is managed by limiting the bleed: blood pressure control, reversing anticoagulation, possible surgery, and strict aneurysm precautions when that is the source: quiet dark room, stool softeners (no straining), limit visitors and stimulation.`,
+Two mechanisms, opposite treatments:
+
+| | Ischemic (about 85%) | Hemorrhagic |
+| --- | --- | --- |
+| mechanism | thrombus or embolus occludes | vessel ruptures — hypertension, aneurysm, AVM |
+| classic stems | a-fib client, carotid disease | sudden thunderclap headache, rapid deterioration |
+| imaging first | NON-CONTRAST CT — to EXCLUDE bleed | same CT — to FIND the bleed |
+| acute pathway | thrombolytics if inside window and eligible; thrombectomy for large vessels per criteria | reverse anticoagulation, manage pressure, neurosurgery evaluation |
+| anticoagulation | part of prevention (a-fib) | CONTRAINDICATED |
+
+The thrombolytic (alteplase-class) window is commonly cited at 3 to 4.5 hours from last known well with strict eligibility screening — recent surgery, active bleeding, prior hemorrhage, uncontrolled hypertension above protocol thresholds exclude. The screening items test the CONCEPT: a client who woke with symptoms has an UNKNOWN onset (last known well was bedtime), and the nurse who says "it started when he woke at 7" is making the tested error.
+
+TIA — transient symptoms with resolution — is not a reprieve but a WARNING (highest stroke risk in the following days) and earns urgent workup, not reassurance.
+
+Before ANYTHING passes the lips: the swallow screen. Dysphagia is common, silent aspiration is real, and the tested sequence keeps every stroke client NPO until a swallow evaluation clears them — including the pills.`,
+      examTip: `Two clock facts run the chapter: time LAST KNOWN WELL (not symptom discovery) starts the window, and the non-contrast CT precedes any thrombolytic because clot treatment kills the bleeding stroke.`,
     },
     {
-      id: '2-deficits-and-care',
-      title: `2. Left Brain, Right Brain, and Post-Stroke Care`,
-      content: `Deficit-sorting is reliable test currency because control is crossed: each hemisphere runs the opposite body side. Left-hemisphere stroke: right-sided weakness, and - because language usually lives on the left - aphasia: expressive (Broca's: knows what to say, cannot produce it - give time, ask yes/no questions, offer communication boards), receptive (Wernicke's: fluent but meaningless speech, impaired comprehension - use gestures and simple phrases), or global. Left-stroke clients tend to be slow, cautious, and aware of deficits - depression risk. Right-hemisphere stroke: left-sided weakness, spatial-perceptual deficits, and the dangerous combination of impulsivity with unawareness of deficits - these clients overestimate ability, making them the falls-risk answer. Unilateral neglect - ignoring the affected side, classically with right-brain strokes - generates care questions: initially approach and place items on the UNAFFECTED side for function and safety, then progressively train attention toward the affected side; teach scanning for homonymous hemianopsia (loss of the same half of the visual field in both eyes).
+      id: 'neuro-stroke-care',
+      title: `2. Acute Stroke Nursing & Rehabilitation`,
+      content: `Acute surveillance: neuro checks on schedule (level of consciousness FIRST — it moves before pupils do), blood-pressure management per pathway (permissive elevation is often tolerated in ischemic stroke per protocol — aggressive lowering can extend the infarct; post-thrombolytic clients run strict limits with bleeding surveillance), glucose checked (hypoglycemia mimics stroke; hyperglycemia worsens outcomes), temperature managed, and cardiac monitoring (the a-fib that caused it may still be there).
 
-The swallowing rule is absolute: nothing by mouth until a swallow screen is passed - aspiration pneumonia is a leading post-stroke killer. Dysphagia care repeats the basic-care rules: upright 90 degrees, chin tuck if prescribed, thickened liquids per speech pathology, no straws, remain upright after meals. Rehabilitation begins on day one: prevent contractures and shoulder subluxation (support the flaccid arm, never pull it), reposition, range-of-motion exercises, DVT prophylaxis, and early PT/OT/speech involvement.`,
+Post-thrombolytic care is a bleeding watch: neuro checks every 15 minutes initially per protocol, no invasive procedures or injections where avoidable, gums-urine-puncture-site surveillance, and ANY neurologic worsening treated as intracranial hemorrhage until imaged.
+
+## Deficits by side — the rehabilitation map
+
+| Left-hemisphere stroke (right body) | Right-hemisphere stroke (left body) |
+| --- | --- |
+| aphasia (language lives left for most) | spatial-perceptual deficits |
+| slow, cautious behavior | IMPULSIVE, unaware of deficits — the safety problem |
+| right visual field cut | left visual field cut, left NEGLECT |
+| depression, frustration common | overestimates abilities — falls |
+
+The safety logic falls out of the table: the right-hemisphere client with neglect and impulsivity is the fall risk who needs the environment arranged and supervision; approach and place belongings on the UNAFFECTED side initially for neglect clients, then progressively cue toward the neglected side as therapy advances. Homonymous hemianopsia teaching: scan to the blind side deliberately.
+
+Aphasia communication: unhurried, simple direct sentences, one question at a time, yes-no formats for expressive aphasia, gestures and boards, and NEVER answering for the client or pretending to understand. Dysphagia feeding (once cleared for modified diets): upright 90 degrees, chin-tuck if taught, thickened liquids per speech therapy, food placed on the UNAFFECTED side of the mouth, no straws when directed, stay upright 30+ minutes after.
+
+Hemiplegic-limb care: subluxation-prone shoulders supported (never pull the affected arm), range of motion, positioning to prevent contractures, and skin surveillance doubled where sensation is lost — the neglected limb burns and ulcers silently.`,
+      examTip: `Side logic decides safety items: right-hemisphere = impulsive + neglect = the fall-and-injury stems; left-hemisphere = aphasic + cautious = the communication stems. Learn the table both directions.`,
     },
     {
-      id: '3-icp',
-      title: `3. Increased Intracranial Pressure: Early, Late, and the Care Set`,
-      content: `The skull is a closed box holding brain, blood, and CSF; when any compartment expands - edema, bleeding, hydrocephalus, tumor - pressure rises and perfusion falls. The EARLIEST indicator of rising ICP is a change in level of consciousness: new restlessness, irritability, confusion, lethargy - the subtle cognitive shift, hours before anything dramatic. The famous signs are LATE: pupil changes (unilateral dilation and sluggishness as the third cranial nerve is compressed - a "blown pupil" means herniation is underway), and Cushing's triad - widening pulse pressure (rising systolic), bradycardia, and irregular respirations - is the brainstem's final warning, not a monitoring milestone. Posturing grades depth: flexor (decorticate) is bad; extensor (decerebrate) is worse. Any question asking for the earliest sign wants the LOC change; any answer waiting for Cushing's triad has waited too long.
+      id: 'neuro-icp',
+      title: `3. Increased Intracranial Pressure: The Surveillance Ladder`,
+      content: `The skull is a fixed box; blood, brain, and CSF trade space (Monro-Kellie), and when compensation exhausts, pressure climbs and perfusion falls. The surveillance ladder is the chapter's core:
 
-The nursing care set is a coherent physics package: head of bed at 30 degrees with head midline (venous drainage); avoid extreme hip flexion and clustering of care; prevent Valsalva - stool softeners, no straining, no isometric pushing; suction only when necessary, for less than 10 seconds, pre-oxygenating first (suctioning spikes ICP); keep the environment calm; manage fever aggressively (each degree raises metabolic demand); maintain oxygenation and normocapnia (hypercapnia dilates cerebral vessels and raises ICP - which is also why brief hyperventilation lowers it and is reserved for emergencies). Osmotic therapy - mannitol or hypertonic saline - pulls water from brain tissue: monitor urine output, serum osmolarity, and for rebound edema. Seizure prophylaxis is common. Everything on the wrong-answer list raises pressure: flat positioning, hip flexion, clustered stimulating care, routine deep suctioning, unmanaged pain or fever.`,
+EARLIEST: a CHANGE IN LEVEL OF CONSCIOUSNESS — restlessness, irritability, new confusion, increasing drowsiness. Not pupils. Not vitals. The exam asks this directly and constantly.
+
+EARLY-TO-MIDDLE: headache (worse in the morning, worse with strain), projectile vomiting without nausea, and pupil changes beginning — sluggish reaction on one side (the compressing third nerve).
+
+LATE: the CUSHING TRIAD — widening pulse pressure (systolic climbing), BRADYCARDIA, and irregular respirations. This is herniation announcing itself; the exam wants you to name it and treat it as the emergency it is, and to know it is the OPPOSITE of shock's pattern (tachycardia, narrowing pressure).
+
+Glasgow Coma Scale scores eye opening (4), verbal (5), and motor (6): 15 is intact, 8 or below is coma and conventionally the airway-protection threshold ("GCS 8, intubate" as taught shorthand), 3 is the floor. A falling GCS trend outranks any single score.
+
+## The ICP nursing bundle
+
+| Do | Avoid |
+| --- | --- |
+| head of bed 30 degrees, head MIDLINE | neck flexion/rotation, tight tube ties (jugular outflow) |
+| quiet environment, spaced-out care activities | clustering all care at once (stacks the pressure spikes) |
+| stool softeners; instruct no straining | Valsalva, coughing regimens, hip flexion extremes |
+| manage fever aggressively | hyperthermia (raises metabolic demand) |
+| oxygenate; maintain normocapnia per orders | routine hyperventilation (reserved, per protocol, transient) |
+| seizure precautions | suctioning beyond brief, pre-oxygenated passes |
+
+Medical armory: hyperosmolar therapy (mannitol or hypertonic saline per orders — watch for rebound and renal/volume effects; mannitol needs a filter and serum osmolality checks), CSF drainage via ventriculostomy where placed (leveled and zeroed to the tragus per policy), sedation, and surgical decompression as the ceiling. Corticosteroids help tumor-related edema, not traumatic — a detail stems use.`,
+      examTip: `The two most-tested facts in neuro: LOC change is the EARLIEST ICP sign, and Cushing triad (wide pulse pressure, bradycardia, irregular breathing) is the LATE one. Everything between is positioning and prevention.`,
+    },
+    {
+      id: 'neuro-seizure',
+      title: `4. Seizures & Status Epilepticus`,
+      content: `Seizure stems test the during-and-after script more than the classification.
+
+DURING a tonic-clonic seizure: stay, time it, protect — ease the client to the floor or bed, side-lying as soon as possible (secretions drain), loosen clothing, clear hard objects, pad without restraining. NOTHING goes in the mouth — no airways, no fingers, no bite sticks; the tested wrong answers are restraining the limbs and inserting objects. Note onset, progression, duration, and behaviors — the description is diagnostic data.
+
+AFTER (postictal): airway and positioning first, vitals and neuro checks, reorient the confused client calmly, check for injury (tongue, shoulders, head), and let them sleep with monitoring. Document factually.
+
+STATUS EPILEPTICUS — seizure beyond 5 minutes or repeated seizures without recovery between — is a neurologic emergency: airway and oxygen, IV access, BENZODIAZEPINE first-line (lorazepam IV per protocol; midazolam IM when no line), then loading anticonvulsants per orders, glucose checked (hypoglycemia seizes), and rapid response engaged. The timing threshold and the benzo-first sequence are both tested.
+
+Precautions for at-risk clients: bed low, padded rails per policy, suction and oxygen set up at the bedside, IV access maintained, no unsupervised swimming/baths in teaching, and medication adherence emphasized — the most common cause of breakthrough seizures in a known epileptic is MISSED DOSES, and anticonvulsants (phenytoin with its 10-20 level and gum care; levetiracetam with its mood warnings) never stop abruptly.
+
+Driving and lifestyle teaching follows state law and provider guidance — the tested attitude is honest restriction plus adherence support, not indefinite prohibition.`,
+      examTip: `Nothing in the mouth, nothing restrained, side-lying, TIMED — and 5 minutes converts a seizure into status epilepticus with a benzodiazepine-first emergency script.`,
+    },
+    {
+      id: 'neuro-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client's family reports he "seemed fine at breakfast" and was found with right-sided weakness and aphasia at 1300. What time starts the thrombolytic clock, and what imaging precedes treatment?
+
+2. A head-injured client who was alert an hour ago is now irritable and intermittently drowsy; pupils remain equal and reactive. Interpret against the ICP ladder.
+
+3. Interpret: BP 178/58, HR 52, respirations irregular in a client with a large intracerebral hemorrhage. What is this called and what does it signify?
+
+4. A right-hemisphere stroke client with left neglect keeps trying to climb out of bed unaided. Connect the deficits to the risk and name two environmental interventions.
+
+5. A hospitalized client seizes for 7 minutes despite positioning and oxygen. Classify, and name the first-line drug class with its route logic.
+
+## Answers
+
+1. BREAKFAST — the last time he was KNOWN well; symptom discovery at 1300 does not reset it. A non-contrast head CT must exclude hemorrhage before any thrombolytic is considered.
+
+2. This IS the earliest ICP warning — level-of-consciousness change precedes pupil signs and vital-sign changes. Escalate now: neuro assessment, notify, tighten check frequency; waiting for pupils or the triad waits for herniation.
+
+3. Cushing triad: widening pulse pressure, bradycardia, irregular respirations — the LATE sign of critically raised ICP heralding herniation. It is an emergency requiring immediate provider/rapid-response involvement, not a trend to watch.
+
+4. Right-hemisphere injury pairs impulsivity (unaware of deficits) with left-sided neglect — he genuinely does not perceive the left field or his limitations, so he attempts unsafe transfers. Interventions: bed low with alarm, essentials and approach on the seeing/unaffected side initially, frequent rounding/supervision, and progressive cueing toward the neglected side per therapy.
+
+5. Status epilepticus (over 5 minutes). Benzodiazepines first — lorazepam IV when access exists, midazolam IM when it does not — followed by anticonvulsant loading per orders, with airway, oxygen, glucose check, and rapid response running in parallel.`,
     },
   ],
   keyTakeaways: [
-    `"Last seen normal" starts the tPA clock (3-4.5 h) and a non-contrast CT to exclude hemorrhage comes before any lytic or anticoagulant - always.`,
-    `Left stroke: right weakness + aphasia, cautious and aware; right stroke: left weakness, impulsive and unaware - the falls-risk client; approach neglect from the unaffected side first.`,
-    `NPO until the swallow screen passes - aspiration is the post-stroke killer the exam guards with dysphagia-care questions.`,
-    `Earliest ICP sign = level-of-consciousness change; pupils and Cushing's triad (wide pulse pressure, bradycardia, irregular respirations) are late herniation heralds.`,
-    `ICP care physics: HOB 30, head midline, no Valsalva/hip flexion/clustered care, brief pre-oxygenated suctioning only, treat fever, mannitol with osmolarity and output monitoring.`,
+    `Stroke runs on time-last-known-well, and the non-contrast CT decides the pathway split: thrombolyse eligible clots, never bleeds — and every stroke client is NPO until the swallow screen.`,
+    `Side logic maps rehab: left-hemisphere aphasia and caution, right-hemisphere impulsivity and neglect — the latter owns the safety stems.`,
+    `ICP's ladder: LOC change earliest, pupil and headache middle, Cushing triad (wide pulse pressure, bradycardia, irregular breathing) late — and the bundle is 30 degrees, midline, quiet, unclustered, unstrained.`,
+    `GCS 8 protects its own airway no longer; trends outrank scores; mannitol and hypertonic saline per orders with osmolality and volume surveillance.`,
+    `Seizures: nothing in the mouth, side-lying, timed — 5 minutes is status epilepticus and benzodiazepines go first; missed doses are the classic breakthrough cause.`,
   ],
 },
 
