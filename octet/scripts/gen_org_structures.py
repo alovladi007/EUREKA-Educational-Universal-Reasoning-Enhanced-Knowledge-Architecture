@@ -163,6 +163,15 @@ MOLS = {
     "3mp": ("3-methylpentane", "CCC(C)CC", "C6H14", ""),
     "22dmb": ("2,2-dimethylbutane", "CCC(C)(C)C", "C6H14", ""),
     "23dmb": ("2,3-dimethylbutane", "CC(C)C(C)C", "C6H14", ""),
+    # ch6 - stereochemistry (CIP codes verified with RDKit)
+    "r2butanol": ("(R)-butan-2-ol", "CC[C@@H](C)O", "C4H10O",
+                  "R enantiomer"),
+    "s2butanol": ("(S)-butan-2-ol", "CC[C@H](C)O", "C4H10O",
+                  "S enantiomer - non-superimposable mirror image"),
+    "rcarvone": ("(R)-carvone", "CC(=C)[C@@H]1CC=C(C)C(=O)C1", "C10H14O",
+                 "smells of spearmint"),
+    "scarvone": ("(S)-carvone", "CC(=C)[C@H]1CC=C(C)C(=O)C1", "C10H14O",
+                 "smells of caraway - same atoms, different receptor fit"),
     # ch3 - conjugate bases
     "ethoxide": ("ethoxide", "CC[O-]", "C2H5O-", "pKa(EtOH) 15.9"),
     "phenoxide": ("phenoxide", "[O-]c1ccccc1", "C6H5O-", "pKa(PhOH) 10.0"),
@@ -313,6 +322,13 @@ FIGURES = {
         "org1-ring-gallery",
         ["cyclopropane", "cyclobutane", "cyclopentane", "cyclohexane"], 4, m,
         w=170, h=130),
+    # ch6
+    "org1-enantiomer-pair": lambda m: grid_figure(
+        "org1-enantiomer-pair", ["r2butanol", "s2butanol"], 2, m,
+        w=230, h=170),
+    "org1-carvone-pair": lambda m: grid_figure(
+        "org1-carvone-pair", ["rcarvone", "scarvone"], 2, m,
+        w=250, h=190),
     # ch2
     "org1-c5-isomers": lambda m: grid_figure(
         "org1-c5-isomers", ["pentane", "isopentane", "neopentane"], 3, m),

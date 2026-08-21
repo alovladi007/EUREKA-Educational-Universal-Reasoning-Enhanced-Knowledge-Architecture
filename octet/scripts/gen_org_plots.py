@@ -541,6 +541,131 @@ def fig_cistrans_chairs(mode):
     plt.close(fig)
 
 
+def fig_cip_wheel(mode):
+    """R vs S by the CIP convention: with the LOWEST priority pointing away
+    from the viewer, 1->2->3 clockwise is R (rectus), counterclockwise is S
+    (sinister).  Schematic - the convention itself, drawn."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.8))
+    for ax, kind in zip(axes, ("R", "S")):
+        ax.add_patch(Circle((0, 0), 1.0, facecolor="none", edgecolor=ink,
+                            linewidth=1.4))
+        angles = [90, -30, 210] if kind == "R" else [90, 210, -30]
+        for rank, ang in enumerate(angles, start=1):
+            th = np.radians(ang)
+            ax.plot([0, np.cos(th)], [0, np.sin(th)], color=ink, linewidth=2)
+            ax.annotate(str(rank), (1.22 * np.cos(th), 1.22 * np.sin(th)),
+                        ha="center", va="center", fontsize=12, color=c[0])
+        ax.plot([0], [0], "o", color=ink, markersize=7)
+        ax.annotate("4 (lowest) points away", (0.0, -1.45), ha="center",
+                    fontsize=8.5, color=fs.GUIDE[mode])
+        if kind == "R":
+            arc = FancyArrowPatch((0.62, 0.62), (0.62, -0.62),
+                                  connectionstyle="arc3,rad=-0.55",
+                                  arrowstyle="-|>", mutation_scale=14,
+                                  color=c[1], linewidth=1.8)
+        else:
+            arc = FancyArrowPatch((0.62, -0.62), (0.62, 0.62),
+                                  connectionstyle="arc3,rad=-0.55",
+                                  arrowstyle="-|>", mutation_scale=14,
+                                  color=c[1], linewidth=1.8)
+        ax.add_patch(arc)
+        label = ("R - clockwise 1 to 2 to 3" if kind == "R"
+                 else "S - counterclockwise")
+        ax.set_title(label, fontsize=10.5)
+        ax.set_xlim(-1.8, 1.8)
+        ax.set_ylim(-1.9, 1.7)
+        ax.set_aspect("equal")
+        ax.axis("off")
+    fs.save(fig, OUT, "org1-cip-wheel", mode)
+    plt.close(fig)
+
+
+def fig_cip_priorities(mode):
+    """CIP rule 1 is atomic number at the first point of difference.  The
+    plotted values are the periodic table's atomic numbers, which is the
+    ranking itself: I > Br > Cl > S > P > F > O > N > C > H."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    atoms = ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br", "I"]
+    z = [1, 6, 7, 8, 9, 15, 16, 17, 35, 53]
+    fig, ax = plt.subplots(figsize=(6.8, 3.8))
+    _bar(ax, atoms, z, fs.SERIES[mode][0], ink, "atomic number Z")
+    ax.set_xlabel("first atom of the substituent (higher Z = higher priority)")
+    fs.save(fig, OUT, "org1-cip-priorities", mode)
+    plt.close(fig)
+
+
+def fig_polarimeter(mode):
+    """Polarimeter schematic: source, polariser, sample tube of path length
+    l holding concentration c, the rotated plane, analyser - with the
+    defining specific-rotation relation."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(7.6, 3.2))
+    ax.plot([0.2, 9.6], [1.0, 1.0], color=fs.GUIDE[mode], linewidth=1,
+            linestyle=(0, (4, 3)))
+    for x, w, label in ((1.0, 0.28, "polariser"), (7.4, 0.28, "analyser")):
+        ax.add_patch(plt.Rectangle((x, 0.35), w, 1.3, facecolor="none",
+                                   edgecolor=c[0], linewidth=1.8))
+        ax.annotate(label, (x + w / 2, 0.12), ha="center", fontsize=9,
+                    color=ink)
+    ax.add_patch(plt.Rectangle((3.0, 0.55), 3.4, 0.9, facecolor="none",
+                               edgecolor=c[1], linewidth=1.8))
+    ax.annotate("sample tube: path length l (dm), concentration c (g/mL)",
+                (4.7, 0.30), ha="center", fontsize=8.5, color=ink)
+    ax.annotate("source", (0.25, 1.15), fontsize=9, color=ink)
+    for x0 in (1.6, 2.2, 2.7):
+        ax.plot([x0, x0], [0.72, 1.28], color=c[0], linewidth=1.6)
+    for x0 in (6.7, 7.0):
+        ax.plot([x0 - 0.22, x0 + 0.22], [0.74, 1.26], color=c[2],
+                linewidth=1.6)
+    ax.annotate("plane rotated by the\nobserved angle alpha", (6.85, 1.78),
+                ha="center", fontsize=9, color=c[2])
+    ax.annotate("specific rotation:   [alpha] = alpha(observed) / (l x c)",
+                (4.9, 2.45), ha="center", fontsize=10.5, color=ink)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(-0.05, 2.8)
+    ax.axis("off")
+    fs.save(fig, OUT, "org1-polarimeter", mode)
+    plt.close(fig)
+
+
+def fig_ee_rotation(mode):
+    """Observed rotation is LINEAR in enantiomeric excess:
+    alpha(obs) = ee x [alpha](pure).  Computed line; the racemate sits at
+    the origin and the pure enantiomers at the ends."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c = fs.SERIES[mode]
+    ee = np.linspace(-100, 100, 400)
+    alpha_pure = 13.5
+    obs = ee / 100.0 * alpha_pure
+    fig, ax = plt.subplots(figsize=(6.8, 4.0))
+    ax.plot(ee, obs, color=c[0], linewidth=2)
+    ax.axhline(0, color=fs.GUIDE[mode], linewidth=0.9)
+    ax.axvline(0, color=fs.GUIDE[mode], linewidth=0.9)
+    pts = ((100, "pure (+) enantiomer", -8, 8, "right"),
+           (-100, "pure (-) enantiomer", 8, -18, "left"),
+           (0, "racemate: zero rotation", 8, 10, "left"))
+    for x, label, dx, dy, ha in pts:
+        y = x / 100.0 * alpha_pure
+        ax.plot([x], [y], "o", color=c[1], markersize=6)
+        ax.annotate(label, (x, y), textcoords="offset points",
+                    xytext=(dx, dy), ha=ha, fontsize=8.8, color=ink)
+    ax.plot([50], [alpha_pure / 2], "o", color=c[2], markersize=6)
+    ax.annotate("50% ee reads half\nthe pure rotation", (50, alpha_pure / 2),
+                textcoords="offset points", xytext=(6, -26), fontsize=8.5,
+                color=fs.GUIDE[mode])
+    ax.set_xlabel("enantiomeric excess (%)")
+    ax.set_ylabel("observed rotation (degrees, fixed l and c)")
+    fs.save(fig, OUT, "org1-ee-rotation", mode)
+    plt.close(fig)
+
+
 def fig_chair_flip(mode):
     """Ring-flip energy profile: chair -> half-chair TS -> twist-boat ->
     boat TS -> twist-boat -> half-chair TS -> chair.  Levels are the
@@ -634,6 +759,10 @@ def fig_ring_strain(mode):
 
 
 ALL = [
+    fig_cip_wheel,
+    fig_cip_priorities,
+    fig_polarimeter,
+    fig_ee_rotation,
     fig_a_values,
     fig_axeq_populations,
     fig_ring_faces,
