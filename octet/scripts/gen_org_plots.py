@@ -406,6 +406,141 @@ def fig_radical_chain(mode):
 # standard physical-organic compilations; kJ/mol vs the cyclohexane reference)
 # ---------------------------------------------------------------------------
 
+def fig_a_values(mode):
+    """A-values (equatorial preferences, kJ/mol) for common substituents -
+    standard compiled values (Eliel-style conformational-analysis tables):
+    F 1.0, Br 1.6, Cl 1.8, OCH3 2.5, OH ~3.5 (solvent-dependent),
+    CH3 7.3, C2H5 7.5, CH(CH3)2 9.0, C6H5 11.7, C(CH3)3 ~20."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    groups = ["F", "Br", "Cl", "OMe", "OH", "Me", "Et", "iPr", "Ph", "tBu"]
+    vals = [1.0, 1.6, 1.8, 2.5, 3.5, 7.3, 7.5, 9.0, 11.7, 20.0]
+    fig, ax = plt.subplots(figsize=(6.8, 4.0))
+    _bar(ax, groups, vals, fs.SERIES[mode][0], ink, "A-value (kJ/mol)")
+    ax.set_xlabel("substituent")
+    ax.axhline(0, color=fs.GUIDE[mode], linewidth=0.8)
+    fs.save(fig, OUT, "org1-a-values", mode)
+    plt.close(fig)
+
+
+def fig_axeq_populations(mode):
+    """Equatorial population vs A-value at 298 K, computed from
+    K = exp(A/RT), percent_eq = 100 K/(1+K) - pure Boltzmann arithmetic
+    on the published A-values marked as points."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    import numpy as np
+    A = np.linspace(0, 22, 400)
+    K = np.exp(A * 1000.0 / (8.314 * 298.0))
+    pct = 100.0 * K / (1.0 + K)
+    fig, ax = plt.subplots(figsize=(6.8, 4.0))
+    ax.plot(A, pct, color=fs.SERIES[mode][0], linewidth=2)
+    pts = [("Cl", 1.8), ("OH", 3.5), ("Me", 7.3), ("Ph", 11.7), ("tBu", 20.0)]
+    for label, a in pts:
+        k = np.exp(a * 1000.0 / (8.314 * 298.0))
+        p = 100.0 * k / (1.0 + k)
+        ax.plot([a], [p], "o", color=fs.SERIES[mode][1], markersize=6)
+        ax.annotate(f"{label} ({p:.0f}%)", (a, p),
+                    textcoords="offset points", xytext=(6, -11),
+                    fontsize=8.5, color=ink)
+    ax.set_xlabel("A-value (kJ/mol)")
+    ax.set_ylabel("% equatorial at 298 K")
+    ax.set_ylim(48, 102)
+    fs.save(fig, OUT, "org1-axeq-populations", mode)
+    plt.close(fig)
+
+
+def fig_ring_faces(mode):
+    """Cis vs trans on a ring seen edge-on: same face = cis, opposite
+    faces = trans - the face relationship no ring flip can change."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c1 = fs.SERIES[mode][0]
+    c2 = fs.SERIES[mode][1]
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.0))
+    for ax, kind in zip(axes, ("cis", "trans")):
+        ax.add_patch(plt.Polygon([(-1.6, 0.0), (1.6, 0.0), (1.9, -0.35),
+                                  (-1.3, -0.35)], closed=True,
+                                 facecolor="none", edgecolor=ink,
+                                 linewidth=2))
+        x_a, x_b = -0.9, 0.9
+        ax.plot([x_a, x_a], [0.0, 0.85], color=c1, linewidth=2.4)
+        ax.annotate("X", (x_a, 1.0), ha="center", fontsize=11, color=c1)
+        if kind == "cis":
+            ax.plot([x_b, x_b], [0.0, 0.85], color=c2, linewidth=2.4)
+            ax.annotate("Y", (x_b, 1.0), ha="center", fontsize=11, color=c2)
+            ax.set_title("cis - same face", fontsize=10.5)
+        else:
+            ax.plot([x_b + 0.12, x_b + 0.12], [-0.35, -1.2], color=c2,
+                    linewidth=2.4)
+            ax.annotate("Y", (x_b + 0.12, -1.45), ha="center", fontsize=11,
+                        color=c2)
+            ax.set_title("trans - opposite faces", fontsize=10.5)
+        ax.annotate("ring, edge-on", (0.0, -0.18), ha="center", fontsize=8,
+                    color=fs.INK_2[mode] if hasattr(fs, "INK_2") else ink)
+        ax.set_xlim(-2.3, 2.5)
+        ax.set_ylim(-1.8, 1.5)
+        ax.axis("off")
+    fs.save(fig, OUT, "org1-ring-faces", mode)
+    plt.close(fig)
+
+
+def _chair_skeleton(ax, ink, dx=0.0):
+    ring = [(0.0 + dx, 0.55), (1.0 + dx, 0.05), (2.15 + dx, 0.35),
+            (2.75 + dx, 1.05), (1.75 + dx, 1.55), (0.60 + dx, 1.25)]
+    for i in range(6):
+        x0, y0 = ring[i]
+        x1, y1 = ring[(i + 1) % 6]
+        ax.plot([x0, x1], [y0, y1], color=ink, linewidth=2)
+    return ring
+
+
+def fig_cistrans_chairs(mode):
+    """trans-1,2-disubstituted cyclohexane reaches the diequatorial chair;
+    cis-1,2 is forced to keep one substituent axial in EITHER chair -
+    the ~one-axial-methyl (~7 kJ/mol) energy difference."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c_eq = fs.SERIES[mode][0]
+    c_ax = fs.SERIES[mode][1]
+    fig, axes = plt.subplots(1, 2, figsize=(8.0, 3.4))
+    up = [True, False, True, False, True, False]
+
+    def eq_bond(ax, ring, i, colour):
+        x0, y0 = ring[i]
+        prev, nxt = ring[(i - 1) % 6], ring[(i + 1) % 6]
+        ex = x0 - (nxt[0] - prev[0]) * 0.30
+        sign = -1.0 if up[i] else 1.0
+        ey = y0 - (nxt[1] - prev[1]) * 0.30 + sign * 0.10
+        ax.plot([x0, ex], [y0, ey], color=colour, linewidth=2.6)
+        ax.annotate("CH3", (ex, ey + (0.16 if ey > y0 else -0.24)),
+                    ha="center", fontsize=8.5, color=colour)
+
+    def ax_bond(ax, ring, i, colour):
+        x0, y0 = ring[i]
+        dy = 0.62 if up[i] else -0.62
+        ax.plot([x0, x0], [y0, y0 + dy], color=colour, linewidth=2.6)
+        ax.annotate("CH3", (x0, y0 + dy + (0.10 if dy > 0 else -0.24)),
+                    ha="center", fontsize=8.5, color=colour)
+
+    ring = _chair_skeleton(axes[0], ink)
+    eq_bond(axes[0], ring, 1, c_eq)
+    eq_bond(axes[0], ring, 2, c_eq)
+    axes[0].set_title("trans-1,2: BOTH equatorial\n(favoured chair - no axial cost)",
+                      fontsize=9.5)
+    ring = _chair_skeleton(axes[1], ink)
+    eq_bond(axes[1], ring, 1, c_eq)
+    ax_bond(axes[1], ring, 2, c_ax)
+    axes[1].set_title("cis-1,2: one ALWAYS axial\n(either chair - about 7 kJ/mol dearer)",
+                      fontsize=9.5)
+    for a in axes:
+        a.set_xlim(-1.2, 4.1)
+        a.set_ylim(-1.2, 2.6)
+        a.axis("off")
+    fs.save(fig, OUT, "org1-cistrans-chairs", mode)
+    plt.close(fig)
+
+
 def fig_chair_flip(mode):
     """Ring-flip energy profile: chair -> half-chair TS -> twist-boat ->
     boat TS -> twist-boat -> half-chair TS -> chair.  Levels are the
@@ -499,6 +634,10 @@ def fig_ring_strain(mode):
 
 
 ALL = [
+    fig_a_values,
+    fig_axeq_populations,
+    fig_ring_faces,
+    fig_cistrans_chairs,
     fig_chair_flip,
     fig_chair_axeq,
     fig_alkane_bp, fig_c5_bpmp, fig_newman,

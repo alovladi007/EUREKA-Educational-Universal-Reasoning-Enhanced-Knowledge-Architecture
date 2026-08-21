@@ -1543,3 +1543,1643 @@ _add(LessonExtras(
         "Audit every chair: parallel flanks, strictly vertical alternating axials, equatorials parallel to the next-but-one ring bond, faces preserved through the flip.",
     ),
 ))
+
+
+# --------------------------------------------------------------------------
+# 7.3 Substituted cyclohexanes and A-values
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.AVALUES",
+    lead=(
+        "Put one substituent on a cyclohexane and the two chairs stop "
+        "being equal: one parks the group equatorial, the other forces "
+        "it axial, and the energy gap between them - the A-VALUE - is "
+        "the most useful single number in conformational analysis. This "
+        "chapter defines it, shows how it is measured, prices the "
+        "common substituents, explains the sizes (including the halogen "
+        "surprise and the tert-butyl catastrophe), and runs the "
+        "Boltzmann arithmetic that turns each A-value into a "
+        "population you can bet reactions on."
+    ),
+    sections=(
+        ReadingSection(
+            id="av-definition",
+            heading="Defining the A-value: one number per substituent",
+            body=(
+                "A monosubstituted cyclohexane lives in a two-state "
+                "equilibrium: the chair with the substituent "
+                "EQUATORIAL and the flipped chair with it AXIAL. The "
+                "A-value of a substituent is the free-energy "
+                "difference between those two chairs - "
+                "$A = \\Delta G^{\\circ}_{ax \\rightarrow eq}$ - "
+                "quoted as a positive number when equatorial wins, "
+                "which for ordinary substituents it always does. An "
+                "A-value of $7.3$ kJ/mol for methyl means the "
+                "axial-methyl chair sits $7.3$ kJ/mol above the "
+                "equatorial-methyl chair, nothing more and nothing "
+                "less.\n\n"
+                "Three properties make the number so useful. It is "
+                "PER SUBSTITUENT: measured once on the "
+                "monosubstituted ring, then reused everywhere. It is "
+                "approximately ADDITIVE: a ring carrying several "
+                "groups can be priced chair by chair by summing the "
+                "A-values of whatever stands axial, a bookkeeping "
+                "rule the next chapter's cis-trans arguments run "
+                "on. And it is THERMODYNAMIC, not kinetic: an "
+                "A-value says which chair is favoured and by how "
+                "much at equilibrium - it says nothing directly "
+                "about how fast the flip runs (that is the "
+                "45-kJ/mol barrier of chapter 7.2, unchanged by "
+                "the substituent to first approximation) or about "
+                "which conformer reacts faster, a distinction "
+                "the Curtin-Hammett section below sharpens."
+            ),
+        ),
+        ReadingSection(
+            id="av-table",
+            heading="The pricing table, with populations attached",
+            figure=Figure(
+                stem="org1-a-values",
+                caption=(
+                    "A-values for common substituents: halogens cheap despite their size, alkyl groups clustered near 7-9 kJ/mol, and tert-butyl in a class of its own near 20."
+                ),
+                alt="Bar chart of A-values in kJ per mole for F, Br, Cl, OMe, OH, Me, Et, iPr, Ph and tBu.",
+            ),
+            table=Table(
+                caption="A-values and computed equatorial populations at 298 K",
+                columns=("Substituent", "A-value (kJ/mol)", "% equatorial (298 K, computed)"),
+                rows=(
+                    ("F", "1.0", "60"),
+                    ("Br", "1.6", "66"),
+                    ("Cl", "1.8", "67"),
+                    ("OCH3", "2.5", "73"),
+                    ("OH", "~3.5 (solvent-dependent)", "80"),
+                    ("CH3", "7.3", "95"),
+                    ("CH2CH3", "7.5", "95"),
+                    ("CH(CH3)2", "9.0", "97"),
+                    ("C6H5", "11.7", "99"),
+                    ("C(CH3)3", "~20", ">99.9"),
+                ),
+                source="A-values from standard conformational-analysis compilations (Eliel-type tables); populations computed from K = exp(A/RT) at 298 K",
+                note="OH spans roughly 2.2-4.2 kJ/mol across solvents - hydrogen bonding changes its effective size.",
+            ),
+            body=(
+                "Each population column entry is one line of "
+                "arithmetic, and the arithmetic is the skill: "
+                "$K = e^{A/RT}$, then "
+                "$\\%_{eq} = 100 \\, K/(1+K)$. For methyl, "
+                "$K = e^{7300/(8.314 \\times 298)} = e^{2.95} "
+                "\\approx 19$, giving $95$ percent equatorial - "
+                "the number quoted, not memorised, in chapter "
+                "7.2. For chlorine the same computation gives "
+                "$K \\approx 2.1$ and only $67$ percent: a "
+                "chlorocyclohexane sample is one-third "
+                "axial at any instant, a fact NMR confirms "
+                "directly at low temperature.\n\n"
+                "Read the table's SHAPE before its entries: a "
+                "cluster of cheap halogens and oxygens below "
+                "$4$ kJ/mol, an alkyl shelf at $7$ to $9$, "
+                "phenyl at $11.7$, and tert-butyl alone near "
+                "$20$. The rest of the chapter explains that "
+                "shape feature by feature, because the shape - "
+                "not the digits - is what transfers to "
+                "substituents you have never met."
+            ),
+        ),
+        ReadingSection(
+            id="av-measurement",
+            heading="How A-values are measured",
+            body=(
+                "The numbers come from experiments worth knowing. "
+                "The direct route is LOW-TEMPERATURE NMR: cool a "
+                "monosubstituted cyclohexane until the ring flip "
+                "is slow on the NMR timescale (chapter 7.2's "
+                "freezing experiment), and the axial and "
+                "equatorial conformers appear as separate signal "
+                "sets whose INTEGRALS are the populations; "
+                "$\\Delta G^{\\circ} = -RT \\ln K$ converts "
+                "the ratio to the A-value at that temperature.\n\n"
+                "The classical indirect route uses ANANCOMERIC - "
+                "conformationally locked - model compounds. "
+                "Install a tert-butyl group elsewhere on the "
+                "ring: its enormous equatorial preference holds "
+                "the whole chair still, so a second substituent "
+                "can be prepared in a purely axial or purely "
+                "equatorial version (as cis or trans isomers - "
+                "next chapter's vocabulary). Comparing the two "
+                "locked compounds - by equilibration with a "
+                "catalyst, by heats of combustion, by reaction "
+                "rates - yields the axial-equatorial energy "
+                "difference without ever needing to freeze a "
+                "flip. The two routes agree well, which is why "
+                "the table's values are quoted with confidence; "
+                "where they drift (OH across solvents) the drift "
+                "itself is data, pointing at hydrogen bonding "
+                "as part of the effective size of a group."
+            ),
+        ),
+        ReadingSection(
+            id="av-origin",
+            heading="Where the number comes from: counting gauche contacts",
+            body=(
+                "Chapter 7.2 derived the methyl A-value before "
+                "defining it: an axial substituent on carbon 1 "
+                "makes two 1,3-diaxial contacts, one each toward "
+                "the axial hydrogens on carbons 3 and 5, and for "
+                "methyl each contact is geometrically a "
+                "gauche-butane interaction worth about $3.8$ "
+                "kJ/mol - predicting $7.6$, measuring $7.3$. "
+                "That model now explains the alkyl shelf. "
+                "ETHYL's A-value ($7.5$) is barely above "
+                "methyl's, because the ethyl group can ROTATE "
+                "its terminal methyl away from the ring: the "
+                "contact that matters still involves essentially "
+                "one $CH_2$, and free rotation lets the group "
+                "present its slim profile. ISOPROPYL ($9.0$) "
+                "still has one hydrogen to point at the ring, so "
+                "it pays only modestly more.\n\n"
+                "TERT-BUTYL has no escape: every rotation "
+                "presents a methyl to the 1,3-diaxial "
+                "hydrogens, and the penalty jumps to roughly "
+                "$20$ kJ/mol - not a bigger number in the same "
+                "series so much as a different regime, in which "
+                "the axial conformer is effectively abolished "
+                "(under one molecule in a thousand). This is "
+                "the quantitative basis of the anancomeric "
+                "anchor above, and the reason 'tert-butyl "
+                "locks the ring' is a laboratory tool rather "
+                "than a metaphor. The general lesson: A-values "
+                "measure the size a group presents TOWARD THE "
+                "RING FACE, minimised over its internal "
+                "rotations - effective steric bulk, not van "
+                "der Waals volume."
+            ),
+        ),
+        ReadingSection(
+            id="av-halogens",
+            heading="The halogen surprise: big atoms, small A-values",
+            body=(
+                "Bromine is bigger than fluorine by any measure "
+                "of atomic size, yet their A-values are nearly "
+                "the same ($1.6$ versus $1.0$ kJ/mol) and both "
+                "are far below methyl's - chlorocyclohexane is "
+                "a third axial at room temperature while "
+                "methylcyclohexane is one-twentieth. The "
+                "resolution is bond length. The $C-Br$ bond "
+                "($1.94$ angstroms) is much longer than $C-C$ "
+                "($1.54$), so an axial bromine is held FARTHER "
+                "from the 1,3-diaxial hydrogens; distance "
+                "dilutes the contact faster than atomic radius "
+                "concentrates it, and the net crowding stays "
+                "mild. Down the halogen column, increasing "
+                "size and increasing bond length nearly "
+                "cancel - which is why F, Cl, and Br cluster "
+                "within a kilojoule of each other.\n\n"
+                "The teaching point generalises: steric "
+                "arguments must be made about DISTANCES, not "
+                "atom sizes read off the periodic table. The "
+                "same logic explains why OH and OCH3 are "
+                "cheap ($2.5$ to $3.5$): the oxygen presents "
+                "lone pairs, not hydrogens, toward the ring, "
+                "and the group's substituents point away. And "
+                "it warns against a common exam reflex - "
+                "ranking axial penalties by molecular weight. "
+                "The A-value table orders by effective reach "
+                "toward the ring face, and only the arithmetic "
+                "of geometry, never the mass, predicts it."
+            ),
+        ),
+        ReadingSection(
+            id="av-populations",
+            heading="From energy to population: the saturation curve",
+            figure=Figure(
+                stem="org1-axeq-populations",
+                caption=(
+                    "Equatorial population versus A-value at 298 K, computed from K = exp(A/RT): steep through the first few kJ/mol, saturating past ten - why chlorine is a real mixture and tert-butyl is a lock."
+                ),
+                alt="Curve of percent equatorial against A-value with Cl, OH, Me, Ph and tBu marked, rising steeply then saturating toward 100 percent.",
+            ),
+            body=(
+                "Plot the population equation across the whole "
+                "A-value range and a shape appears that is worth "
+                "internalising: STEEP at first, SATURATING "
+                "later. Between $0$ and about $5$ kJ/mol, each "
+                "kilojoule moves the population dramatically - "
+                "from $50$ percent at zero to $80$ percent at "
+                "$3.5$ - because $RT$ at room temperature is "
+                "$2.5$ kJ/mol and energies of a few $RT$ are "
+                "exactly where Boltzmann statistics act "
+                "fastest. Past $10$ kJ/mol the curve flattens: "
+                "phenyl at $11.7$ is $99$ percent equatorial "
+                "and tert-butyl's extra $8$ kJ/mol buys less "
+                "than one further percentage point.\n\n"
+                "The curve disciplines chemical intuition in "
+                "both directions. Small energy differences are "
+                "not negligible - $2$ kJ/mol is a $69:31$ "
+                "split, easily visible in spectra and product "
+                "ratios. And large ones are not infinitely "
+                "large - even tert-butyl's lock leaves a "
+                "0.03-percent axial population, which matters "
+                "whenever the MINOR conformer is the reactive "
+                "one, the situation the next section names. "
+                "Reading energies through the curve, rather "
+                "than as bare numbers, is the habit that "
+                "separates conformational analysis from "
+                "conformational trivia."
+            ),
+        ),
+        ReadingSection(
+            id="av-curtin-hammett",
+            heading="Curtin-Hammett: populations are not fates",
+            body=(
+                "A-values describe equilibrium populations, and "
+                "the flip between conformers is fast "
+                "($10^5$ per second against barriers of "
+                "$45$ kJ/mol). When a REACTION consumes one "
+                "conformer, that speed matters enormously: if "
+                "flipping is much faster than reacting, the "
+                "conformers stay equilibrated throughout, and "
+                "the product ratio is set NOT by which "
+                "conformer is more populated but by the "
+                "difference in transition-state energies - the "
+                "CURTIN-HAMMETT principle. A minor conformer "
+                "with an accessible transition state can "
+                "deliver the major product.\n\n"
+                "The classic ring example, developed fully "
+                "with the E2 reaction in ORG2, is worth "
+                "sketching now: some eliminations require the "
+                "leaving group AXIAL, and a substrate that is "
+                "$95$ percent equatorial still reacts entirely "
+                "through its $5$ percent axial conformer - at "
+                "a rate discounted by the cost of getting "
+                "there, but with stereochemistry dictated by "
+                "the axial geometry. The practical protocol: "
+                "use A-values to compute populations; use "
+                "populations plus the conformational "
+                "requirement of the mechanism to reason about "
+                "rates and products; and never read 'mostly "
+                "equatorial' as 'reacts equatorial.' Locked "
+                "rings - tert-butyl anchors, trans-fused "
+                "decalins, steroids - are precisely the "
+                "systems where population and fate coincide, "
+                "which is why they were the proving grounds "
+                "of conformational analysis."
+            ),
+        ),
+        ReadingSection(
+            id="av-additivity",
+            heading="Additivity and its limits",
+            body=(
+                "For rings carrying several substituents, the "
+                "working rule is ADDITIVITY: price each chair "
+                "by summing the A-values of every group that "
+                "stands axial in it, then compare chairs. A "
+                "chair with an axial methyl and an axial "
+                "chlorine costs about $7.3 + 1.8 = 9.1$ "
+                "kJ/mol against the all-equatorial "
+                "alternative; the equilibrium constant follows "
+                "from the same Boltzmann line as always. The "
+                "next chapter leans on this rule for every "
+                "cis-trans stability verdict, and within a "
+                "kilojoule or two it is reliable.\n\n"
+                "Its limits are instructive rather than "
+                "disqualifying. Substituents on ADJACENT "
+                "carbons interact directly - two equatorial "
+                "groups on carbons 1 and 2 sit gauche to each "
+                "other around the ring bond, so the "
+                "all-equatorial chair of trans-1,2-"
+                "dimethylcyclohexane carries a residual "
+                "gauche interaction the simple sum ignores. "
+                "Very large groups distort the ring itself, "
+                "flattening it toward twist-boat rather than "
+                "paying an impossible diaxial bill - two "
+                "syn-diaxial tert-butyls is a geometry the "
+                "chair simply refuses. And polar substituents "
+                "add electrostatics: adjacent $C-X$ dipoles "
+                "and hydrogen bonds can override a kilojoule "
+                "of sterics, the effect behind sugar "
+                "chemistry's anomeric preferences flagged in "
+                "the biology section. Use additivity as the "
+                "default, and audit it when groups are "
+                "adjacent, enormous, or polar."
+            ),
+        ),
+        ReadingSection(
+            id="av-applications",
+            heading="A-values at work: menthol, glucose, drug scaffolds",
+            body=(
+                "Three applications show the table earning its "
+                "keep. MENTHOL - the mint terpene - carries "
+                "three substituents (methyl, isopropyl, "
+                "hydroxyl) on one cyclohexane, and its "
+                "natural diastereomer is the one that can "
+                "stand ALL THREE equatorial: sum the A-values "
+                "and the all-equatorial chair wins by over "
+                "$19$ kJ/mol, which is why menthol's ring is "
+                "conformationally honest and its reactions "
+                "predictable. Its diastereomers, forced to "
+                "keep a group axial, differ in odour, melting "
+                "point, and reactivity - diastereomers being "
+                "next chapter's subject, priced with this "
+                "chapter's numbers.\n\n"
+                "GLUCOSE repeats the story with oxygens: "
+                "chapter 7.2 noted that beta-glucopyranose "
+                "alone among the hexoses stands every "
+                "substituent equatorial; summing OH-type "
+                "A-values makes the preference quantitative, "
+                "with one famous exception - at the anomeric "
+                "carbon, electronic effects (developed with "
+                "carbohydrates in ORG2) partly offset the "
+                "steric preference, a named reminder that "
+                "additivity has an electronic audit. And in "
+                "MEDICINAL CHEMISTRY, cyclohexane and "
+                "piperidine chairs are among the commonest "
+                "drug scaffolds: designers place substituents "
+                "to hold binding groups equatorial or lock "
+                "conformations with anchors, spending "
+                "A-value logic on molecules the original "
+                "conformational analysts never imagined."
+            ),
+        ),
+        ReadingSection(
+            id="av-errors",
+            heading="The error catalogue: four A-value traps",
+            body=(
+                "Trap one: ranking by atomic size. Bromine "
+                "outweighs methyl fourfold and its A-value is "
+                "a quarter of methyl's - bond length dilutes "
+                "crowding, and only the geometric arithmetic "
+                "predicts the order. Trap two: treating "
+                "populations as verdicts. Ninety-five percent "
+                "equatorial does not mean reactions go through "
+                "the equatorial conformer - Curtin-Hammett "
+                "routes fast-flipping systems through "
+                "whichever conformer's transition state lies "
+                "lower, however rare that conformer is.\n\n"
+                "Trap three: forgetting temperature. A-values "
+                "are free energies; the POPULATION they imply "
+                "depends on $RT$. Cooling sharpens "
+                "preferences (the low-temperature NMR "
+                "experiment relies on it) and heating "
+                "flattens them - a $2$ kJ/mol preference "
+                "that reads $69:31$ at room temperature is "
+                "nearly $50:50$ at combustion temperatures. "
+                "Trap four: summing blindly. Additivity "
+                "fails exactly where the previous section "
+                "said - adjacent groups, giant groups, polar "
+                "groups - and the anomeric effect is the "
+                "canonical electronic override. Each trap, "
+                "as ever, dies against a number: when an "
+                "A-value claim arrives, recompute the "
+                "population, check the geometry, and ask "
+                "what the mechanism requires before "
+                "believing the conclusion."
+            ),
+        ),
+        ReadingSection(
+            id="av-problems",
+            heading="Problem set: four computations",
+            body=(
+                "Problem one: from the table, compute the "
+                "axial population of chlorocyclohexane at "
+                "$298$ K. Answer: $K = e^{1800/2478} = "
+                "e^{0.727} \\approx 2.1$, so axial fraction "
+                "$= 1/(1+2.1) \\approx 32$ percent - "
+                "chlorine rings are genuine mixtures.\n\n"
+                "Problem two: why is ethyl's A-value ($7.5$) "
+                "barely larger than methyl's ($7.3$) when "
+                "ethyl is twice the size? Answer: internal "
+                "rotation lets ethyl point its terminal "
+                "methyl away from the ring, presenting a "
+                "methyl-sized profile to the 1,3-diaxial "
+                "contacts; A-values measure presented bulk, "
+                "not total bulk.\n\n"
+                "Problem three: a ring bears an axial methyl "
+                "and an axial chlorine in one chair, both "
+                "equatorial in the other. Estimate the "
+                "equilibrium at $298$ K. Answer: cost "
+                "$\\approx 7.3 + 1.8 = 9.1$ kJ/mol, "
+                "$K = e^{9100/2478} \\approx 39$ - about "
+                "$97.5$ percent in the diequatorial chair.\n\n"
+                "Problem four: an elimination requires its "
+                "leaving group axial, and the substrate's "
+                "A-value analysis says $95$ percent "
+                "equatorial. Does the reaction fail? Answer: "
+                "no - the flip repopulates the axial "
+                "conformer $10^5$ times per second, and "
+                "Curtin-Hammett lets the reaction drain "
+                "through it; the population cost appears as "
+                "a rate factor, not a roadblock."
+            ),
+        ),
+        ReadingSection(
+            id="av-closing",
+            heading="The A-value audit",
+            body=(
+                "Close with the chapter's portable checklist. "
+                "When a substituted-ring question arrives: "
+                "FIRST, draw both chairs with the ritual of "
+                "chapter 7.2, faces preserved, and list what "
+                "stands axial in each. SECOND, price both "
+                "chairs by summing A-values from the table, "
+                "flagging the additivity audits - adjacent, "
+                "enormous, or polar groups. THIRD, convert "
+                "the difference to a population through "
+                "$K = e^{\\Delta G^{\\circ}/RT}$ and say "
+                "the ratio out loud - $95:5$ argues "
+                "differently than $99.97:0.03$. FOURTH, ask "
+                "what the chemistry in question actually "
+                "requires: an equilibrium property follows "
+                "the population, but a reaction follows "
+                "Curtin-Hammett through whichever conformer "
+                "its mechanism demands.\n\n"
+                "The audit is four lines of arithmetic on "
+                "one table of measured numbers, and it "
+                "settles questions that hand-waving about "
+                "'bulky groups' never can. The next chapter "
+                "adds the last layer this unit needs: two "
+                "substituents whose FACES are fixed relative "
+                "to each other - cis and trans isomers - "
+                "where the same four lines decide not just "
+                "which chair wins but which COMPOUND is more "
+                "stable, and where the distinction between "
+                "conformers and isomers becomes the whole "
+                "point."
+            ),
+        ),
+        ReadingSection(
+            id="av-nmr-worked",
+            heading="A worked measurement: integrals to energies",
+            body=(
+                "Run one measurement end to end so the table's "
+                "numbers feel earned. Chlorocyclohexane is cooled "
+                "until the ring flip freezes on the NMR timescale; "
+                "the carbon bearing chlorine now shows two "
+                "distinct signals, one for the "
+                "equatorial-chlorine chair and one for the axial. "
+                "Suppose the integrals come out $2.1$ to $1$ in "
+                "favour of equatorial - the population ratio "
+                "directly, no inference required. The free-energy "
+                "difference follows from one line: "
+                "$\\Delta G^{\\circ} = -RT \\ln K$, and at the "
+                "measurement temperature the arithmetic returns "
+                "the tabulated $1.8$ kJ/mol within experimental "
+                "error.\n\n"
+                "The exercise teaches three habits. Integrals "
+                "are populations, so the raw data IS the "
+                "equilibrium constant - a rare directness in "
+                "physical measurement. The temperature of the "
+                "measurement matters and is always reported, "
+                "because $K$ changes with $T$ even though "
+                "$\\Delta G^{\\circ}$ changes only slowly. And "
+                "the assignment of which signal is which rests "
+                "on chemical-shift arguments - axial and "
+                "equatorial protons and carbons differ "
+                "systematically - that were themselves "
+                "calibrated on anancomerically locked model "
+                "compounds. Measurement, model, and arithmetic "
+                "interlock; no single leg stands alone, which "
+                "is exactly what makes the resulting table "
+                "trustworthy enough to build two further "
+                "chapters on."
+            ),
+        ),
+        ReadingSection(
+            id="av-history",
+            heading="From steroid puzzles to a quantitative table",
+            body=(
+                "The A-value table is young science: it dates "
+                "from the 1950s, when Barton's demonstration "
+                "that steroid reactivity follows conformation "
+                "(chapter 7.2's history) created sudden demand "
+                "for NUMBERS. Winstein and Holness supplied the "
+                "method in 1955 - the tert-butyl anchor and the "
+                "kinetic comparison of locked axial versus "
+                "locked equatorial substrates - and the "
+                "vocabulary: their paper coined 'anancomeric' "
+                "thinking even before the word existed, and the "
+                "A-value symbol itself. Eliel's school then "
+                "spent two decades refining the table with "
+                "equilibration and NMR methods, publishing the "
+                "compilations every textbook now quotes.\n\n"
+                "The history matters for a practical reason: "
+                "different methods probe slightly different "
+                "quantities - kinetic comparisons assume the "
+                "anchor is innocent, equilibrations assume the "
+                "catalyst reaches true equilibrium, NMR "
+                "assumes correct signal assignment - and the "
+                "small disagreements among published A-values "
+                "(the OH range in the table, the tert-butyl "
+                "tilde) are the residue of those assumptions, "
+                "not sloppiness. Quoting an A-value to three "
+                "decimal places would claim more than the "
+                "field knows; quoting the shelf structure - "
+                "halogens near 2, alkyls near 8, tert-butyl "
+                "near 20 - claims exactly what half a century "
+                "of cross-checked measurement supports."
+            ),
+        ),
+        ReadingSection(
+            id="av-solvent",
+            heading="Solvent, dipoles, and the mobile OH entry",
+            body=(
+                "One table entry refuses to sit still: hydroxyl "
+                "spans roughly $2.2$ to $4.2$ kJ/mol depending "
+                "on solvent, and the reason illuminates what "
+                "A-values actually measure. An axial OH on a "
+                "chair points over the ring face, where it can "
+                "form a weak intramolecular contact with the "
+                "1,3-diaxial hydrogens - but more importantly, "
+                "its hydrogen-bonding to SOLVENT differs "
+                "between the two sites. In aprotic solvents "
+                "the group is compact and the A-value sits "
+                "near the low end; in hydrogen-bonding "
+                "solvents the effective size grows as the "
+                "solvation shell travels with the group, and "
+                "the equatorial preference strengthens.\n\n"
+                "The generalisation: an A-value is a FREE "
+                "energy in a medium, not a property of the "
+                "isolated molecule. Sterics dominate for "
+                "hydrocarbons, so methyl's $7.3$ transfers "
+                "cleanly across solvents; polar groups carry "
+                "electrostatics and solvation with them, so "
+                "their entries travel with the medium. "
+                "Adjacent polar substituents add dipole-dipole "
+                "terms the steric sum never sees - the "
+                "anomeric effect being the celebrated case - "
+                "and careful workers therefore quote solvent "
+                "and temperature beside any polar-group "
+                "A-value. For this course's purposes: use the "
+                "table's central values, and treat polar-group "
+                "predictions within a kilojoule as ties to be "
+                "settled by experiment, not asserted."
+            ),
+        ),
+        ReadingSection(
+            id="av-heterorings",
+            heading="Heteroatom rings: piperidine, THP, and shifted contacts",
+            body=(
+                "Replace a ring $CH_2$ with an oxygen or an "
+                "N-H and the chair machinery survives intact - "
+                "tetrahydropyran and piperidine both adopt "
+                "chairs with axial and equatorial positions - "
+                "but the PRICING shifts, because the "
+                "1,3-diaxial contacts change. A $C-O$ bond "
+                "($1.43$ angstroms) is shorter than $C-C$, "
+                "pulling ring atoms closer; an oxygen carries "
+                "lone pairs where a $CH_2$ carried hydrogens, "
+                "removing two of the contacts an axial "
+                "substituent would have suffered. The net "
+                "result: A-values measured on cyclohexane "
+                "transfer only approximately to heterocycles, "
+                "and substituents adjacent to the heteroatom "
+                "feel electronic effects (the anomeric effect "
+                "chief among them) that can INVERT the "
+                "steric preference outright.\n\n"
+                "Piperidine adds a subtlety with its N-H: "
+                "the hydrogen on nitrogen itself has an "
+                "axial-equatorial choice, and decades of "
+                "argument - resolved by careful spectroscopy "
+                "in favour of a modest equatorial preference - "
+                "taught the field how delicate sub-kilojoule "
+                "conformational claims are. For this course "
+                "the portable rules are two: heteroatom "
+                "chairs obey the same geometry and the same "
+                "Boltzmann arithmetic, and their numbers "
+                "must be measured on the heterocycle itself "
+                "rather than borrowed uncritically - a "
+                "warning that becomes central when the sugar "
+                "chapters price pyranose rings, where both "
+                "corrections operate at once."
+            ),
+        ),
+        ReadingSection(
+            id="av-temperature",
+            heading="Temperature as a dial: the same A-value, different worlds",
+            body=(
+                "Because populations follow "
+                "$K = e^{A/RT}$, temperature is a dial that "
+                "re-reads the whole table without changing a "
+                "single entry. Take methyl's $7.3$ kJ/mol "
+                "across three temperatures. At $200$ K "
+                "(dry-ice territory): "
+                "$K = e^{7300/(8.314 \\times 200)} = e^{4.39} "
+                "\\approx 81$ - the axial conformer falls "
+                "near one percent, and low-temperature "
+                "spectra look almost anancomeric. At $298$ K: "
+                "the familiar $19$ and $95$ percent. At "
+                "$400$ K: $K = e^{2.20} \\approx 9$, and the "
+                "axial population has doubled to ten "
+                "percent - preferences soften as thermal "
+                "energy rises toward the gap.\n\n"
+                "Two working consequences follow. Reactions "
+                "run hot sample MORE of the minor "
+                "conformer - relevant whenever an "
+                "axial-demanding mechanism competes - so "
+                "raising temperature can change "
+                "stereochemical outcomes for conformational "
+                "reasons alone, before any activation "
+                "argument enters. And spectra run cold "
+                "SHARPEN populations toward the favoured "
+                "chair, which is why variable-temperature "
+                "NMR is conformational analysis's native "
+                "instrument: sweep the dial and the "
+                "equilibrium, the barrier, and the "
+                "assignment all reveal themselves in one "
+                "experiment. The A-value stays fixed; the "
+                "world it describes moves with $RT$."
+            ),
+        ),
+        ReadingSection(
+            id="av-vocabulary",
+            heading="The vocabulary shelf: five terms that carry the unit",
+            body=(
+                "This chapter mints vocabulary the rest of the "
+                "course spends, so shelve the definitions "
+                "cleanly. A-VALUE: the equatorial-minus-axial "
+                "free-energy difference for one substituent on "
+                "cyclohexane, positive when equatorial wins. "
+                "1,3-DIAXIAL INTERACTION: the contact between "
+                "an axial substituent and the axial hydrogens "
+                "(or groups) two carbons away on the same "
+                "face - the physical origin of nearly every "
+                "A-value. ANANCOMERIC: conformationally "
+                "locked, usually by a tert-butyl anchor, so "
+                "that one chair describes the whole "
+                "population.\n\n"
+                "CURTIN-HAMMETT CONDITIONS: conformers "
+                "interconverting much faster than they "
+                "react, so product ratios follow "
+                "transition-state energies rather than "
+                "ground-state populations. ADDITIVITY: the "
+                "working rule that a chair's cost is the sum "
+                "of its axial substituents' A-values, "
+                "audited for adjacent, enormous, and polar "
+                "groups. Say each term with its number "
+                "attached - methyl $7.3$, the flip's "
+                "$45$-kJ/mol barrier, $RT$'s $2.5$ at room "
+                "temperature - and the vocabulary stays "
+                "quantitative instead of decorative. The "
+                "next chapter adds cis, trans, and "
+                "diastereomer to the shelf, and prices them "
+                "with exactly these tools."
+            ),
+        ),
+        ReadingSection(
+            id="av-bridge",
+            heading="The bridge to cis and trans",
+            body=(
+                "Everything so far concerned ONE substituent "
+                "choosing between two chairs of the SAME "
+                "compound. The final chapter of this unit "
+                "adds the twist that turns conformational "
+                "analysis into stereochemistry: put TWO "
+                "substituents on the ring and their face "
+                "relationship - same face or opposite - is "
+                "fixed at synthesis, unchangeable by any "
+                "flip, because chapter 7.2 proved the flip "
+                "preserves faces. Cis and trans are "
+                "therefore different COMPOUNDS, separable "
+                "and distinct, each of which still owns two "
+                "chairs priced by this chapter's table.\n\n"
+                "The analysis that results is a two-layer "
+                "audit run in a fixed order: FIRST the "
+                "configurational layer - which isomer is "
+                "this, cis or trans, decided by faces - and "
+                "SECOND the conformational layer - which "
+                "chair does this isomer prefer, decided by "
+                "summed A-values. Confusing the layers is "
+                "the unit's most damaging error, and the "
+                "next chapter's whole design is to make the "
+                "order automatic: faces first, chairs "
+                "second, energies last. With the A-value "
+                "table in hand you already own every number "
+                "the verdicts will need; what remains is "
+                "the bookkeeping of which isomer can put "
+                "which groups equatorial, and that - the "
+                "1,2 / 1,3 / 1,4 alternation - is one "
+                "geometric fact away."
+            ),
+        ),
+        ReadingSection(
+            id="av-limits-of-model",
+            heading="What the gauche model leaves out - and why it still wins",
+            body=(
+                "The counting model - two gauche-butane contacts "
+                "per axial group - is deliberately simple, and "
+                "its omissions deserve naming. It ignores the "
+                "small distortions a real ring makes to relieve "
+                "an axial group: bond angles open a degree or "
+                "two, the chair flattens slightly, and the "
+                "actual penalty lands a little below the rigid "
+                "prediction - one reason methyl measures $7.3$ "
+                "against the modelled $7.6$. It treats contacts "
+                "pairwise, though three-body crowding matters "
+                "for the largest groups. And it says nothing "
+                "about electrostatics, which the polar-group "
+                "sections above had to add by hand.\n\n"
+                "Modern computation can do better in every "
+                "respect - density-functional conformer "
+                "energies reproduce the table to fractions of "
+                "a kilojoule - and yet the counting model "
+                "remains the working instrument, for the "
+                "reason simple models always win in trained "
+                "hands: it is auditable at the speed of "
+                "thought. A chemist who can count diaxial "
+                "contacts on a drawn chair catches errors "
+                "computation would only confirm hours later, "
+                "and knows WHICH corrections matter before "
+                "asking the computer to evaluate them. Learn "
+                "the model as the first draft and the "
+                "measured table as the arbiter; that division "
+                "of labour is conformational analysis's "
+                "actual method, and it generalises to every "
+                "structure-energy argument this course will "
+                "make."
+            ),
+        ),
+        ReadingSection(
+            id="av-exam-patterns",
+            heading="How examiners ask it: three recurring patterns",
+            body=(
+                "A-value questions arrive in three costumes "
+                "worth recognising on sight. PATTERN ONE, the "
+                "ranking: 'order these substituted "
+                "cyclohexanes by axial population' - solved by "
+                "reading the table once and remembering the "
+                "curve saturates, so differences among big "
+                "A-values matter less than among small ones. "
+                "PATTERN TWO, the computation: 'what fraction "
+                "is axial at such-and-such temperature' - "
+                "solved by the two-line Boltzmann arithmetic, "
+                "with the examiner's favourite trap being a "
+                "temperature other than $298$ K quietly "
+                "changing $RT$.\n\n"
+                "PATTERN THREE, the mechanism hook: 'this "
+                "reaction requires the axial conformer - "
+                "explain why the tert-butyl analogue reacts "
+                "a thousandfold slower.' That one is the "
+                "Winstein-Holness experiment wearing exam "
+                "clothes: the anchor abolishes the axial "
+                "population, and the rate falls by the "
+                "Boltzmann factor of the A-value. All three "
+                "patterns reward the same discipline the "
+                "chapter has drilled - name the two chairs, "
+                "price them, convert to population, then ask "
+                "what the question actually requires - and "
+                "all three punish the same reflexes: ranking "
+                "by atomic size, quoting populations without "
+                "temperature, and reading equilibrium "
+                "numbers as kinetic verdicts. Recognise the "
+                "costume, run the audit, and the marks follow "
+                "the arithmetic every single time."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "The A-value is the free-energy gap between a substituent's equatorial and axial chairs - per substituent, approximately additive, and thermodynamic rather than kinetic.",
+        "The table's shape: halogens and oxygens cheap (1-4 kJ/mol - long bonds dilute crowding), alkyls at 7-9 (rotation lets Et hide), phenyl 11.7, tert-butyl ~20 (a lock, and the anancomeric anchor).",
+        "Populations follow K = exp(A/RT): steep below 5 kJ/mol (Cl is a third axial), saturating past 10 - and 2 kJ/mol already means 69:31.",
+        "Curtin-Hammett: fast flipping means product ratios follow transition-state energies, not ground-state populations - the minor axial conformer can carry the whole reaction.",
+        "Additivity prices multi-substituted chairs but is audited for adjacent, giant, and polar groups - the anomeric effect is the canonical electronic override.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 7.4 Cis and trans isomerism in rings
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.CISTRANSRING",
+    lead=(
+        "Two substituents on a ring have a relationship no chair flip "
+        "can touch: they sit on the same face or on opposite faces, and "
+        "that choice was made when the bonds were formed. Cis and trans "
+        "ring compounds are therefore different SUBSTANCES - "
+        "diastereomers with different energies, different properties, "
+        "and different chemistry - and this chapter builds the "
+        "two-layer analysis that handles them: faces first "
+        "(configuration), chairs second (conformation), energies last, "
+        "with the A-value table doing the pricing."
+    ),
+    sections=(
+        ReadingSection(
+            id="ct-faces",
+            heading="Two faces, one unbreakable relationship",
+            figure=Figure(
+                stem="org1-ring-faces",
+                caption=(
+                    "A ring seen edge-on has a top face and a bottom face: substituents on the same face are cis, on opposite faces trans - and no rotation or flip can move a group between faces without breaking a bond."
+                ),
+                alt="Two edge-on ring diagrams: cis with both substituents pointing up from the same face, trans with one up and one down on opposite faces.",
+            ),
+            body=(
+                "View any ring edge-on and it has a top face and a "
+                "bottom face. A substituent attached to a ring "
+                "carbon points toward one face or the other, and "
+                "two substituents therefore stand in one of exactly "
+                "two relationships: SAME face - CIS (Latin, 'on "
+                "this side') - or OPPOSITE faces - TRANS "
+                "('across'). The relationship is set by the bonds "
+                "themselves: to move a group from one face to the "
+                "other you would have to detach it and re-attach "
+                "it, breaking a sigma bond.\n\n"
+                "That impossibility is the chapter's foundation, "
+                "and chapter 7.2 already proved the half of it "
+                "students doubt: the ring flip - the most violent "
+                "conformational motion a cyclohexane owns - "
+                "exchanges axial with equatorial while PRESERVING "
+                "up and down. Axial-up becomes equatorial-up, "
+                "never equatorial-down. So the face relationship "
+                "survives every rotation, every flip, every "
+                "collision at every temperature below "
+                "bond-breaking chemistry: cis stays cis, trans "
+                "stays trans, from synthesis to combustion. Two "
+                "compounds that differ only in this relationship "
+                "are different substances with different "
+                "measurable properties - the claim the next "
+                "section makes precise with the vocabulary of "
+                "isomerism."
+            ),
+        ),
+        ReadingSection(
+            id="ct-diastereomers",
+            heading="Configurational, not conformational: naming the distinction",
+            body=(
+                "The course's isomer taxonomy now gains its most "
+                "important branch point. CONFORMERS - the two "
+                "chairs of methylcyclohexane, the rotamers of "
+                "butane - interconvert by rotation about bonds, "
+                "over barriers of tens of kJ/mol, billions of "
+                "times a minute; they are the SAME compound, and "
+                "no bottle of one can be prepared. CONFIGURATIONAL "
+                "isomers interconvert only by breaking bonds - "
+                "barriers of hundreds of kJ/mol - so each can be "
+                "put in its own bottle, given its own melting "
+                "point, and sold under its own catalogue "
+                "number.\n\n"
+                "Cis- and trans-disubstituted rings are "
+                "configurational isomers of a specific kind: "
+                "same molecular formula, same connectivity "
+                "(every atom bonded to the same partners), "
+                "different fixed spatial arrangement, and NOT "
+                "mirror images of each other. Stereoisomers "
+                "that are not mirror images are DIASTEREOMERS, "
+                "and diastereomers differ in every scalar "
+                "property: energy, melting point, boiling "
+                "point, solubility, spectra, reaction rates. "
+                "Cis- and trans-1,2-dimethylcyclohexane boil "
+                "$4$ degrees apart and differ in stability by "
+                "about $7$ kJ/mol - separable by distillation, "
+                "distinguishable by every instrument in the "
+                "building. The operational test is worth "
+                "keeping explicit: ask what motion "
+                "interconverts the two structures. Rotation "
+                "only - conformers, one compound. Bond "
+                "breaking required - configurational isomers, "
+                "two compounds. Every error this chapter "
+                "catalogues at the end traces to skipping "
+                "that one question."
+            ),
+        ),
+        ReadingSection(
+            id="ct-12-worked",
+            heading="The 1,2 case, worked: why trans wins",
+            figure=Figure(
+                stem="org1-cistrans-chairs",
+                caption=(
+                    "trans-1,2-dimethylcyclohexane reaches a chair with BOTH methyls equatorial; cis-1,2 keeps one methyl axial in either chair - about one axial methyl (~7 kJ/mol) between the diastereomers."
+                ),
+                alt="Two chair drawings: trans-1,2 with both methyl groups equatorial, and cis-1,2 with one methyl equatorial and one axial.",
+            ),
+            body=(
+                "Run the two-layer analysis on "
+                "1,2-dimethylcyclohexane, adjacent carbons. The "
+                "geometric fact that decides everything: axial "
+                "directions ALTERNATE around the ring, so on "
+                "adjacent carbons the axial bonds point in "
+                "OPPOSITE directions - axial-up at carbon 1, "
+                "axial-down at carbon 2. Equivalently, at "
+                "adjacent carbons one face's positions are "
+                "axial-up and equatorial-down at C1 but "
+                "equatorial-up and axial-down at C2.\n\n"
+                "TRANS (opposite faces): one methyl up, one "
+                "down. Place the up-methyl equatorial at C1 "
+                "and check C2: the down position there can "
+                "also be equatorial - BOTH groups equatorial "
+                "in one chair. The flipped chair puts both "
+                "axial (cost by additivity roughly "
+                "$2 \\times 7.3$ plus a diaxial-interaction "
+                "term), so the diequatorial chair dominates "
+                "overwhelmingly and trans-1,2 spends its life "
+                "essentially strain-free.\n\n"
+                "CIS (same face): both methyls up. At C1 'up' "
+                "can be equatorial, but at C2 'up' is AXIAL - "
+                "one methyl is axial in this chair. Flip, and "
+                "the roles trade: the other methyl goes "
+                "axial. The two chairs are equal in energy "
+                "($\\Delta G = 0$, populations $50:50$) and "
+                "NEITHER escapes one axial methyl. Verdict: "
+                "trans-1,2 is more stable than cis-1,2 by "
+                "about one axial-methyl penalty - "
+                "$\\approx 7$ kJ/mol, and the measured "
+                "enthalpy difference sits right there. The "
+                "figure is this paragraph drawn."
+            ),
+        ),
+        ReadingSection(
+            id="ct-alternation",
+            heading="The alternation table: 1,2 / 1,3 / 1,4",
+            table=Table(
+                caption="Which diastereomer reaches the diequatorial chair",
+                columns=("Substitution pattern", "Diequatorial isomer", "Stability verdict (equal groups)"),
+                rows=(
+                    ("1,2 (adjacent)", "trans", "trans more stable by ~1 axial penalty"),
+                    ("1,3", "cis", "CIS more stable by ~1 axial penalty"),
+                    ("1,4 (opposite)", "trans", "trans more stable by ~1 axial penalty"),
+                ),
+                source="Derived from the alternation of axial directions around the chair; energy differences from A-value additivity, consistent with measured enthalpies (~7 kJ/mol for dimethyl cases)",
+                note="Rederive the pattern from axial alternation each time - memorised as 'trans is better' it fails at 1,3.",
+            ),
+            body=(
+                "Generalise the worked case and the pattern "
+                "alternates with distance. On carbons 1 and 3, "
+                "the axial directions are the SAME (up at both, "
+                "or down at both - alternation twice restores "
+                "the direction), so SAME-face substituents can "
+                "both stand equatorial: for a 1,3 pair it is "
+                "CIS that reaches the diequatorial chair, and "
+                "cis-1,3-dimethylcyclohexane is the stable "
+                "diastereomer - the reverse of the 1,2 "
+                "verdict. On carbons 1 and 4 the directions "
+                "oppose again, and TRANS wins as at 1,2.\n\n"
+                "The table compresses the chapter, but the "
+                "note under it carries the pedagogy: the "
+                "pattern is not a rule to memorise, because "
+                "memorised as 'trans is more stable' it "
+                "silently fails for every 1,3 pair. It is a "
+                "two-step derivation to rerun each time - "
+                "count the carbons between the substituents, "
+                "track the alternation of axial directions, "
+                "conclude which face relationship lets both "
+                "groups recline equatorial. Ten seconds of "
+                "derivation, immune to the exam's favourite "
+                "trap. For UNEQUAL substituents the same "
+                "machinery runs with A-values: the favoured "
+                "chair of any isomer parks the LARGER group "
+                "equatorial - cis-1-tert-butyl-4-"
+                "methylcyclohexane holds tert-butyl "
+                "equatorial and pays the methyl's axial "
+                "bill, never the reverse, because $20$ "
+                "kJ/mol outranks $7.3$."
+            ),
+        ),
+        ReadingSection(
+            id="ct-chirality",
+            heading="The chirality layer: meso rings and enantiomer pairs",
+            body=(
+                "Cis-trans assignment answers 'same face or "
+                "opposite?' - it does not answer 'chiral or "
+                "not?', and the two questions are "
+                "independent. Run the mirror test on the "
+                "dimethylcyclohexanes. CIS-1,2: a mirror "
+                "plane passes through the midpoints of the "
+                "C1-C2 bond and the opposite ring bond, "
+                "reflecting one methyl into the other - an "
+                "internal mirror plane, so the compound is "
+                "ACHIRAL despite carrying two stereocentres: "
+                "a MESO compound (the time-averaged "
+                "statement is exact, since its two chairs "
+                "are mirror images interconverted by the "
+                "flip). TRANS-1,2 has no internal mirror: it "
+                "exists as a pair of ENANTIOMERS, separable "
+                "in principle, identical in energy.\n\n"
+                "The 1,3 pair reverses nothing: cis-1,3 is "
+                "meso (mirror plane through C2 and C5), "
+                "trans-1,3 is chiral. And BOTH "
+                "1,4-dimethylcyclohexanes are achiral - the "
+                "mirror plane through C1 and C4 contains "
+                "both substituents - so the 1,4 pair are "
+                "diastereomers with no chirality anywhere. "
+                "Three patterns, three different chirality "
+                "outcomes, one lesson: cis/trans and "
+                "chiral/achiral are separate audits. The "
+                "full R/S machinery for ring stereocentres "
+                "arrives with chapter 6's tools; what this "
+                "chapter fixes is the habit of running the "
+                "mirror test AFTER the face assignment, "
+                "never substituting one for the other."
+            ),
+        ),
+        ReadingSection(
+            id="ct-fused",
+            heading="Fused rings: decalin and the steroid deck",
+            body=(
+                "Fuse two cyclohexanes along an edge and the "
+                "shared carbons' hydrogens have a cis-trans "
+                "relationship with consequences far beyond "
+                "nomenclature. TRANS-DECALIN - ring-junction "
+                "hydrogens on opposite faces - locks both "
+                "rings: a flip of one ring would force the "
+                "other's junction bonds into geometrically "
+                "impossible positions, so trans-decalin is "
+                "conformationally FROZEN, a rigid chassis "
+                "with every position's axial or equatorial "
+                "identity fixed forever. CIS-DECALIN, "
+                "junction hydrogens on the same face, "
+                "remains flexible - its rings flip in "
+                "concert - and sits about $11$ kJ/mol above "
+                "trans, paying gauche interactions at the "
+                "junction.\n\n"
+                "The steroid skeleton is this lesson run "
+                "four rings deep: natural steroids are "
+                "predominantly all-trans-fused, which is "
+                "why chapter 7.2 could call the steroid "
+                "deck rigid and why every substituent on a "
+                "steroid has a permanent, addressable "
+                "axial or equatorial identity - the fact "
+                "Barton's 1950 reactivity arguments and "
+                "half of medicinal chemistry stand on. "
+                "Ring fusion also explains why the "
+                "anancomeric tert-butyl anchor of chapter "
+                "7.3 works: locking is not exotic; it is "
+                "what happens whenever flipping would "
+                "demand an impossible geometry, whether "
+                "the demand comes from a fused ring or an "
+                "unpayable A-value."
+            ),
+        ),
+        ReadingSection(
+            id="ct-menthyl",
+            heading="Reactivity payoff: the menthyl chloride story",
+            body=(
+                "The classic demonstration that ring "
+                "stereochemistry controls reactivity - and "
+                "the bridge to ORG2's eliminations - is the "
+                "pair menthyl and neomenthyl chloride, "
+                "diastereomers from the menthol family. The "
+                "E2 elimination they undergo requires the "
+                "leaving chlorine AXIAL (anti-periplanar to "
+                "the departing hydrogen). NEOMENTHYL "
+                "chloride's favoured chair - big groups "
+                "equatorial - already has chlorine axial: "
+                "it eliminates rapidly. MENTHYL chloride's "
+                "favoured chair has chlorine EQUATORIAL; to "
+                "react it must flip into a chair where "
+                "chlorine is axial but methyl and isopropyl "
+                "are too, an ascent of two A-values, and "
+                "its elimination runs orders of magnitude "
+                "slower - and gives a different alkene "
+                "distribution, dictated by which hydrogens "
+                "are anti-periplanar in the reactive "
+                "chair.\n\n"
+                "Every tool of the unit appears in one "
+                "story: cis-trans configuration decides "
+                "which groups CAN be equatorial together; "
+                "A-values price the chairs; Curtin-Hammett "
+                "connects the rare reactive conformer to "
+                "the observed rate; and the flip's "
+                "face-preservation guarantees the "
+                "diastereomers never interconvert while "
+                "reacting differently. When ORG2 derives "
+                "the E2's geometry, this pair is the "
+                "evidence waiting; for now it stands as "
+                "the answer to 'why does any of this "
+                "matter' - because diastereomers are "
+                "different compounds, all the way down to "
+                "their products."
+            ),
+        ),
+        ReadingSection(
+            id="ct-errors",
+            heading="The error catalogue: four cis-trans traps",
+            body=(
+                "Trap one: 'the flip interconverts cis and "
+                "trans.' Never - the flip exchanges axial "
+                "and equatorial while preserving faces; "
+                "interconverting the isomers requires "
+                "breaking a bond. If your drawing shows "
+                "otherwise, the drawing is wrong, not the "
+                "principle. Trap two: 'trans is more "
+                "stable' as a rule. It is the ANSWER to "
+                "the 1,2 and 1,4 cases and precisely "
+                "backwards at 1,3 - rederive from axial "
+                "alternation every time.\n\n"
+                "Trap three: 'two ring stereoisomers must "
+                "be an enantiomer pair.' Cis- and "
+                "trans-anything are DIASTEREOMERS of each "
+                "other; whether either one is additionally "
+                "chiral is a separate mirror-test "
+                "question, and the meso cases (cis-1,2, "
+                "cis-1,3, both 1,4s among the "
+                "dimethylcyclohexanes) show every "
+                "combination occurs. Trap four: assigning "
+                "cis-trans from a CHAIR drawing by "
+                "comparing axial and equatorial. Faces, "
+                "not environments, decide the label: a "
+                "cis pair on adjacent carbons is "
+                "one-axial-one-equatorial, and at 1,3 a "
+                "cis pair is either both-equatorial or "
+                "both-axial depending on the chair. "
+                "Assign faces on the flat wedge-dash "
+                "drawing first, then translate to chairs "
+                "with the ritual - the order of "
+                "operations is the whole protection."
+            ),
+        ),
+        ReadingSection(
+            id="ct-problems",
+            heading="Problem set: four verdicts to reach",
+            body=(
+                "Problem one: which is more stable, cis- or "
+                "trans-1,3-dimethylcyclohexane, and by "
+                "roughly how much? Answer: CIS - at 1,3 the "
+                "axial directions match, so same-face "
+                "groups can both stand equatorial; trans "
+                "keeps one methyl axial, so cis wins by "
+                "about $7$ kJ/mol, one axial-methyl "
+                "penalty.\n\n"
+                "Problem two: for "
+                "cis-1-tert-butyl-4-methylcyclohexane, "
+                "which chair dominates and what does the "
+                "methyl do? Answer: at 1,4, cis means one "
+                "group axial in either chair; the "
+                "tert-butyl ($A \\approx 20$) claims "
+                "equatorial, so the METHYL rides axial, "
+                "paying $7.3$ - and the compound is "
+                "effectively anancomeric, locked by the "
+                "price of the alternative.\n\n"
+                "Problem three: is "
+                "trans-1,2-dimethylcyclohexane chiral? "
+                "Answer: yes - no internal mirror plane; "
+                "it exists as an enantiomer pair, while "
+                "its cis diastereomer is meso.\n\n"
+                "Problem four: two students draw "
+                "1,2-dimethylcyclohexane chairs; one shows "
+                "methyls equatorial-equatorial, the other "
+                "axial-axial, and both claim 'trans.' Can "
+                "both be right? Answer: yes - they are "
+                "the two flip-related chairs of the SAME "
+                "trans isomer (diequatorial dominant, "
+                "diaxial minor). Faces, preserved in both "
+                "drawings, make them trans; the "
+                "environments differ because the chairs "
+                "do."
+            ),
+        ),
+        ReadingSection(
+            id="ct-closing",
+            heading="The unit's closing audit: faces, chairs, energies",
+            body=(
+                "The Cyclic Compounds unit ends where its "
+                "four chapters converge, in one ordered "
+                "audit for any ring problem. LAYER ZERO, "
+                "strain: what ring size, and what does the "
+                "combustion-derived table say it costs? "
+                "LAYER ONE, configuration: assign faces on "
+                "the flat drawing - cis or trans, then the "
+                "mirror test for chirality - remembering "
+                "that no conformational motion can touch "
+                "these answers. LAYER TWO, conformation: "
+                "draw both chairs with the ritual, faces "
+                "preserved, and list what stands axial in "
+                "each. LAYER THREE, energies: price the "
+                "chairs by A-value additivity, convert "
+                "differences to populations through "
+                "$K = e^{-\\Delta G^{\\circ}/RT}$, and "
+                "state the verdict as a ratio.\n\n"
+                "Then, and only then, ask the chemical "
+                "question - which isomer is more stable, "
+                "which conformer reacts, what "
+                "Curtin-Hammett does to the rate - and the "
+                "answer assembles itself from parts you "
+                "have already verified. The unit's deeper "
+                "lesson is the method: geometry proposes, "
+                "thermodynamics prices, measurement "
+                "arbitrates, and every claim travels with "
+                "its number. ORG2 will spend these tools "
+                "on reactions - eliminations that read "
+                "chairs, sugars that read faces - and the "
+                "audit above is exactly what it will "
+                "assume your hands do automatically."
+            ),
+        ),
+        ReadingSection(
+            id="ct-drawing",
+            heading="Drawing conventions: wedges first, chairs second",
+            body=(
+                "Ring stereochemistry has two drawing languages, "
+                "and fluency means translating between them "
+                "without losing information. The FLAT drawing - a "
+                "hexagon with WEDGE bonds (toward you, the top "
+                "face) and DASHED bonds (away, the bottom face) - "
+                "is the configurational language: it shows faces "
+                "directly, so cis and trans can be read at a "
+                "glance, and it is the form synthesis papers and "
+                "exams use to specify WHICH compound is meant. "
+                "The CHAIR drawing is the conformational "
+                "language: it shows axial and equatorial, so "
+                "energies can be priced, but faces must be "
+                "inferred from the geometry.\n\n"
+                "The safe workflow always runs flat-to-chair, "
+                "never the reverse. Read the faces off the "
+                "wedges; assign cis or trans; THEN build the "
+                "chair with the ritual of chapter 7.2, checking "
+                "at each carbon that an up-substituent lands in "
+                "that carbon's up position (axial-up or "
+                "equatorial-up as the alternation dictates). "
+                "The classic failure is translating a wedge "
+                "directly to 'equatorial' because both feel "
+                "like 'normal' - but wedge encodes FACE and "
+                "equatorial encodes ENVIRONMENT, different "
+                "coordinates entirely, related only through "
+                "the alternation pattern. Ten seconds of "
+                "explicit translation beats every shortcut, "
+                "and the habit pays again in ORG2 when sugar "
+                "Haworth projections - the same wedge logic "
+                "bent into a ring - must become chairs to "
+                "explain reactivity."
+            ),
+        ),
+        ReadingSection(
+            id="ct-13-14-worked",
+            heading="The 1,3 and 1,4 cases, worked in full",
+            body=(
+                "The table asserted the alternation; work it "
+                "twice to own it. 1,3-DIMETHYL: carbons 1 and 3 "
+                "sit two positions apart, so the axial "
+                "direction alternates twice and RETURNS - "
+                "axial-up at C1 means axial-up at C3. CIS "
+                "(both up): place both methyls equatorial-up? "
+                "Check: at C1 up-equatorial exists, at C3 "
+                "up-equatorial exists - YES, the diequatorial "
+                "chair is available, and its flip partner is "
+                "the doubly-axial chair whose two methyls "
+                "share the ring face in the notorious "
+                "1,3-DIAXIAL clash - methyl against methyl, "
+                "far worse than methyl against hydrogen. Cis "
+                "therefore lives diequatorial and is the "
+                "stable isomer. TRANS (one up, one down): "
+                "whichever chair you draw, one methyl is "
+                "axial - the penalty is inescapable, exactly "
+                "as cis suffered at 1,2.\n\n"
+                "1,4-DIMETHYL: three alternations separate "
+                "C1 and C4, so their axial directions "
+                "OPPOSE, restoring the 1,2 logic: TRANS "
+                "reaches diequatorial, cis keeps one methyl "
+                "axial in either chair, trans wins by one "
+                "axial penalty. Notice what repeats across "
+                "all three patterns: the LOSING isomer "
+                "always has two chairs of equal energy "
+                "(one group axial in each), while the "
+                "winning isomer has one dominant "
+                "diequatorial chair. That signature - "
+                "balanced chairs versus dominant chair - is "
+                "itself diagnostic, and low-temperature NMR "
+                "sees it directly."
+            ),
+        ),
+        ReadingSection(
+            id="ct-spectroscopy",
+            heading="Telling them apart: coupling constants and the NMR window",
+            body=(
+                "Cis and trans are different compounds, but a "
+                "bottle does not announce which it holds; the "
+                "assignment is experimental, and NMR carries "
+                "most of the load. The workhorse is the "
+                "three-bond COUPLING CONSTANT between ring "
+                "hydrogens, which depends on their dihedral "
+                "angle (the Karplus relationship, met "
+                "quantitatively in the spectroscopy unit): "
+                "two AXIAL hydrogens on adjacent carbons sit "
+                "anti, dihedral near $180^{\\circ}$, and "
+                "couple strongly - roughly $10$ to $13$ Hz - "
+                "while axial-equatorial and "
+                "equatorial-equatorial pairs sit near "
+                "$60^{\\circ}$ and couple weakly, $2$ to "
+                "$5$ Hz. A ring hydrogen flanked by big "
+                "couplings is axial in a dominant chair, and "
+                "from its axial identity plus the "
+                "alternation pattern the face relationships "
+                "follow.\n\n"
+                "The method's fine print teaches the unit's "
+                "own lessons. Coupling constants report the "
+                "POPULATION-WEIGHTED average over chairs, so "
+                "an isomer with balanced chairs (the "
+                "one-axial-each losers above) shows averaged "
+                "mid-size couplings - the balanced-versus-"
+                "dominant signature made visible. Nuclear "
+                "Overhauser measurements add a distance "
+                "check: same-face hydrogens are close in "
+                "space and enhance each other. And melting "
+                "points, the historical criterion, survive "
+                "as a caution - early workers' rules of "
+                "thumb relating melting point to "
+                "configuration failed often enough that the "
+                "field learned to trust only measurements "
+                "coupled to geometry through physics, a "
+                "standard this course inherits."
+            ),
+        ),
+        ReadingSection(
+            id="ct-small-rings",
+            heading="Cis and trans without chairs: the small rings",
+            body=(
+                "Faces are more fundamental than chairs, and "
+                "the small rings prove it. Cyclopropane is "
+                "PLANAR - no conformational freedom at all - "
+                "yet cis- and trans-1,2-dimethylcyclopropane "
+                "are perfectly good diastereomers: the ring "
+                "has two faces, the methyls stand on the "
+                "same face or opposite ones, and no motion "
+                "short of bond breaking interconverts them. "
+                "Here TRANS is more stable for a reason the "
+                "chair never invokes: on the rigid planar "
+                "ring, cis methyls on adjacent carbons are "
+                "forced toward ECLIPSING each other, while "
+                "trans methyls stagger across the two faces. "
+                "The measured gap runs several kJ/mol, and "
+                "the reasoning is pure chapter-2 torsional "
+                "logic applied to a ring too stiff to "
+                "relax.\n\n"
+                "Cyclobutane and cyclopentane sit between "
+                "worlds: puckered enough to have "
+                "conformational choices, too floppy for the "
+                "clean axial-equatorial dichotomy, so their "
+                "cis-trans energetics are argued case by "
+                "case with models. The portable conclusions: "
+                "FACES and the cis-trans distinction exist "
+                "for every ring size, from three-membered "
+                "up; the CHAIR analysis is the "
+                "six-membered ring's special, powerful "
+                "instrument for pricing them; and when the "
+                "instrument does not apply, the underlying "
+                "tools - torsional strain, sterics, "
+                "measurement - still do."
+            ),
+        ),
+        ReadingSection(
+            id="ct-unequal",
+            heading="Unequal partners: menthol's three-group verdict",
+            body=(
+                "Real molecules rarely carry matched "
+                "substituents, and the unequal cases are "
+                "where A-value bookkeeping earns its keep. "
+                "The protocol: for each chair of each "
+                "isomer, sum the A-values of whatever "
+                "stands axial; the favoured chair minimises "
+                "the bill, and the more stable ISOMER is "
+                "the one whose best chair is cheapest. For "
+                "1-tert-butyl-2-methylcyclohexane, the "
+                "trans isomer parks both groups equatorial "
+                "and wins easily; the cis isomer must "
+                "choose which group rides axial, and it "
+                "always sacrifices the methyl - $7.3$ "
+                "beats $20$ - so cis costs about $7.3$ "
+                "kJ/mol at its best.\n\n"
+                "MENTHOL runs the full three-group audit: "
+                "methyl at C5, isopropyl at C2, hydroxyl "
+                "at C1 (ring numbering per the terpene "
+                "convention), and of the four possible "
+                "diastereomers nature's menthol is the one "
+                "whose faces allow ALL THREE equatorial - "
+                "the alternation pattern happens to permit "
+                "it - making its dominant chair essentially "
+                "strain-free. Its diastereomers "
+                "(neomenthol, isomenthol, neoisomenthol) "
+                "each force at least one group axial, and "
+                "their properties differ accordingly: "
+                "distinct melting points, distinct odours, "
+                "distinct reaction chemistry - the menthyl "
+                "chloride story's raw material. One "
+                "molecule, every tool of the unit, and a "
+                "commercial industry (mint flavouring) "
+                "resting on which diastereomer the plant "
+                "enzyme builds."
+            ),
+        ),
+        ReadingSection(
+            id="ct-counting",
+            heading="Counting stereoisomers: why 2-to-the-n fails on rings",
+            body=(
+                "Chapter 6's counting rule - $2^n$ "
+                "stereoisomers for $n$ stereocentres - "
+                "needs its ring-specific audit, and the "
+                "dimethylcyclohexanes are the perfect "
+                "laboratory. 1,2-dimethyl has two "
+                "stereocentres, so the naive count is "
+                "four; the actual count is THREE - the "
+                "trans enantiomer pair plus the single "
+                "meso cis - because the internal mirror "
+                "plane makes two of the four paper "
+                "structures the same compound. 1,3 repeats "
+                "the arithmetic: three isomers, cis meso, "
+                "trans a chiral pair. 1,4 collapses "
+                "furthest: the mirror plane through both "
+                "substituted carbons kills chirality "
+                "entirely, leaving just TWO stereoisomers, "
+                "the achiral cis and achiral trans - and "
+                "strictly, C1 and C4 are not even "
+                "stereocentres by the swap test, though "
+                "the cis-trans distinction survives "
+                "regardless.\n\n"
+                "The general procedure, which never fails "
+                "where formulas do: enumerate the "
+                "candidate structures, then merge any "
+                "related by an internal mirror or "
+                "rotation. Symmetry is the counting "
+                "correction, and rings - which hold their "
+                "substituents in fixed relative positions "
+                "- have far more symmetry opportunities "
+                "than chains. The habit of drawing and "
+                "merging, rather than computing "
+                "$2^n$ and trusting it, is what the "
+                "sugar chapters will demand, where "
+                "pyranose rings stack five stereocentres "
+                "and every symmetry shortcut lies in "
+                "wait."
+            ),
+        ),
+        ReadingSection(
+            id="ct-history",
+            heading="A history in two bottles: the decalin wager",
+            body=(
+                "The cleanest historical test of everything "
+                "this unit claims came from decalin. Mohr's "
+                "1918 revival of the puckered ring made a "
+                "falsifiable prediction that Baeyer's "
+                "planar theory could not tolerate: if "
+                "six-membered rings are non-planar chairs, "
+                "then fused bicyclic decalin should exist "
+                "as TWO stable, separable configurational "
+                "isomers - cis and trans at the ring "
+                "junction - where planar theory predicted "
+                "one compound only. In 1925 Huckel "
+                "separated and characterised both "
+                "decalins: two boiling points, two "
+                "densities, two heats of combustion, "
+                "exactly as the chair demanded. Two "
+                "bottles on a shelf settled a "
+                "thirty-five-year theoretical argument.\n\n"
+                "The episode is worth carrying beyond "
+                "chemistry trivia for what it models: a "
+                "structural theory earned its acceptance "
+                "not by elegance but by predicting a "
+                "COUNTABLE fact - how many distinct "
+                "substances exist - that experiment could "
+                "check with distillation glassware. This "
+                "unit has run the same pattern in "
+                "miniature throughout: the alternation "
+                "table predicts which isomer is stable, "
+                "coupling constants and combustion "
+                "calorimetry check it, and every claim "
+                "stands or falls on separable, measurable "
+                "differences between real substances. "
+                "Stereochemistry's authority is exactly "
+                "that concrete."
+            ),
+        ),
+        ReadingSection(
+            id="ct-biology",
+            heading="Faces in biology: sugars and inositols",
+            body=(
+                "Biology reads ring faces with an accuracy "
+                "chemists envy, and two families show the "
+                "stakes. The PYRANOSE SUGARS are "
+                "polyhydroxylated oxygen-containing "
+                "six-membered rings whose identities - "
+                "glucose, galactose, mannose - differ "
+                "precisely in the face relationships of "
+                "their hydroxyls: galactose is glucose "
+                "with ONE hydroxyl moved to the other "
+                "face (C4), and that single cis-trans "
+                "change is the difference between a "
+                "universal fuel and a sugar some humans "
+                "cannot metabolise. Enzymes distinguish "
+                "the two instantly, because same-face "
+                "versus opposite-face hydroxyls present "
+                "utterly different hydrogen-bonding "
+                "surfaces to a binding pocket.\n\n"
+                "The INOSITOLS - cyclohexanes bearing six "
+                "hydroxyls, one per carbon - are the "
+                "combinatorial extreme: nine "
+                "diastereomers distinguished ONLY by "
+                "face patterns, of which myo-inositol "
+                "(five equatorial hydroxyls in its "
+                "favoured chair, one axial) is the "
+                "biological signalling workhorse. Cell "
+                "membranes hang phosphate messages on "
+                "specific inositol faces, and misreading "
+                "one axial-equatorial identity would "
+                "scramble the signal. Both families make "
+                "the unit's closing point in biological "
+                "hardware: cis-trans relationships are "
+                "information - synthesized once, "
+                "conserved absolutely, and read by "
+                "machinery that never confuses "
+                "conformers with configurations."
+            ),
+        ),
+        ReadingSection(
+            id="ct-exam-patterns",
+            heading="How examiners ask it: three recurring costumes",
+            body=(
+                "Cis-trans ring questions arrive in three "
+                "recognisable forms. PATTERN ONE, the stability "
+                "verdict: 'which diastereomer of "
+                "1,x-disubstituted cyclohexane is more stable?' "
+                "- solved by the alternation derivation (never "
+                "the memorised slogan) plus A-value additivity "
+                "when the groups differ, and worth showing as "
+                "two priced chairs rather than a bare answer. "
+                "PATTERN TWO, the chirality sort: 'which of "
+                "these ring compounds are chiral / meso / "
+                "achiral?' - solved by assigning faces first, "
+                "then running the internal-mirror test on each "
+                "isomer separately, remembering that the 1,4 "
+                "pattern kills chirality entirely.\n\n"
+                "PATTERN THREE, the conformational-"
+                "configurational trap: a drawing pair, with "
+                "the question 'same compound, conformers, or "
+                "diastereomers?' - solved by the one "
+                "operational test this unit has drilled: what "
+                "motion relates them? If a flip or rotation "
+                "suffices, same compound; if a bond must "
+                "break, different compounds. The three "
+                "costumes share one grading reality: partial "
+                "credit follows the AUDIT TRAIL - faces "
+                "assigned, chairs drawn with the ritual, "
+                "energies summed, verdict stated as a ratio "
+                "- and answers without the trail earn "
+                "nothing when a single sign error flips "
+                "them. The method is the mark scheme."
+            ),
+        ),
+        ReadingSection(
+            id="ct-vocabulary",
+            heading="The vocabulary shelf, completed",
+            body=(
+                "The unit's glossary closes with this "
+                "chapter's entries, each shelved with its "
+                "operational test. CIS / TRANS: same face / "
+                "opposite faces, assigned on the flat "
+                "wedge-dash drawing, invariant under all "
+                "conformational motion. CONFIGURATIONAL "
+                "ISOMERS: interconvertible only by bond "
+                "breaking - separable substances. "
+                "DIASTEREOMERS: stereoisomers that are not "
+                "mirror images - different in every scalar "
+                "property, cis-trans ring pairs being the "
+                "unit's canonical examples. MESO: achiral "
+                "despite stereocentres, by internal "
+                "mirror - cis-1,2- and "
+                "cis-1,3-dimethylcyclohexane on this "
+                "unit's shelf.\n\n"
+                "RING FUSION, cis and trans: the junction "
+                "hydrogens' face relationship, deciding "
+                "locked (trans-decalin) versus flexible "
+                "(cis-decalin). And the unit's verbs: "
+                "ASSIGN faces, TRANSLATE to chairs, PRICE "
+                "with A-values, WEIGHT with Boltzmann, "
+                "TEST with the mirror. Say each noun with "
+                "its test and each verb with its number "
+                "and the vocabulary stays load-bearing. "
+                "The next unit - chapter 6's full "
+                "stereochemistry - generalises faces to "
+                "R/S configuration labels and the mirror "
+                "test to optical activity, with every "
+                "ring example here reappearing as a "
+                "worked case; nothing shelved now gets "
+                "discarded, only renamed with more "
+                "precision."
+            ),
+        ),
+        ReadingSection(
+            id="ct-coda",
+            heading="Coda: one ring, four chapters, one method",
+            body=(
+                "Hold the whole unit in one image before "
+                "leaving it. A single disubstituted cyclohexane "
+                "carries every idea the four chapters built: "
+                "its ring size sets a strain budget priced by "
+                "combustion; its chair geometry creates the "
+                "axial and equatorial worlds and the flip that "
+                "trades them; its substituents' A-values price "
+                "each chair; and its faces - fixed at "
+                "synthesis - decide which chairs are even "
+                "available to it. Strain, conformation, "
+                "preference, configuration: four layers, one "
+                "molecule, and the audit that walks them in "
+                "order is the unit's real deliverable, more "
+                "durable than any single number it computes."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Same face cis, opposite faces trans - fixed at bond formation, untouchable by any flip, making cis and trans separable diastereomers with different properties and energies.",
+        "Rederive the alternation each time: diequatorial goes to trans at 1,2 and 1,4 but to CIS at 1,3 - and with unequal groups the larger A-value claims equatorial.",
+        "Chirality is a separate audit after face assignment: cis-1,2 and cis-1,3 are meso, trans-1,2 and trans-1,3 are enantiomer pairs, both 1,4s are achiral.",
+        "Trans-fused decalins and steroids are conformationally locked chassis; cis fusion stays flexible and pays ~11 kJ/mol - ring fusion is nature's anancomeric anchor.",
+        "The unit's audit runs in order - strain, faces, chairs, energies - and the menthyl/neomenthyl story shows the payoff: diastereomers react at different rates toward different products.",
+    ),
+))
