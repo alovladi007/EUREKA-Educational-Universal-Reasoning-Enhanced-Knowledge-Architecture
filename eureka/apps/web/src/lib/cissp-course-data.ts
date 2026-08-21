@@ -1033,6 +1033,310 @@ Policies should be reviewed at least annually to assess their effectiveness, ide
     },
   ],
 },
+cissp_legal_global: {
+  topicId: 'cissp_legal_global',
+  title: `Legal and Regulatory Issues in a Global Context`,
+  domainWeight: '16%',
+  overview: `Data crosses borders in milliseconds; law stops at them. That mismatch is this module's whole subject. A security practitioner is expected to recognise the computer-crime landscape and the breach notification duties that follow an incident, to keep the organisation on the right side of software licensing and to protect its own intellectual property with digital rights management, to know that cryptography itself is a controlled export in much of the world, and - above all in the current exam's eyes - to understand the machinery that makes international transfers of personal data lawful: adequacy, certification frameworks, and standard contractual clauses. The recurring theme is that legal exposure follows the data, and the practitioner is responsible for knowing the law of every jurisdiction the organisation touches.`,
+  sections: [
+    {
+      id: '1-crime-online',
+      title: `1. Computer Crime and Breach Notification`,
+      content: `## Old crimes, new reach
+
+Most computer crime is not new crime. The technology extends the reach, speed, and efficiency of offences as old as law itself - fraud, theft, extortion, trespass - while a smaller set of statutes creates genuinely new offences. The practitioner's job is to recognise the classes, because incident response, evidence handling, and reporting duties differ by what the act legally *is*.
+
+![Computer crime classes mapped to the traditional offences they modernise](/courses/cissp/figures/cissp-cybercrime-taxonomy.svg)
+
+| Offence class | Modernises | What it looks like |
+|---|---|---|
+| Malware creation and dissemination | A new statutory crime | Many jurisdictions criminalise writing or spreading malicious code in itself |
+| Unauthorised access | Trespassing | Entering a system or network without authority is the offence, even with nothing taken |
+| Ransomware | Extortion | The victim's own data is encrypted and sold back to them |
+| Theft | Theft | Stealing data, or the hardware it lives on |
+| Illegal use of resources | Conversion of property | The victim's storage hides the attacker's files; the victim's CPU stages the attacker's DDoS |
+| Online fraud | Fraud | Impersonation and appeals to greed or sympathy, often targeting the less media-savvy |
+
+Two of these reward a second look. **Unauthorised access requires no further harm** - the access itself completes the offence in many countries, which matters when an intrusion is caught before anything was taken. And **illegal use of resources** explains attacks that puzzle victims who "have nothing worth stealing": the attacker wanted the storage or the processing, not the data. An organisation's assets can make it a target purely as infrastructure.
+
+The ransomware row also carries an uncomfortable operational reality the practitioner should know exists: the tooling has become effective enough that even law enforcement guidance to victims has at times amounted to advising payment as the practical recovery path. That is precisely why the availability controls of later domains - tested, offline backups above all - are the real answer; the legal system is not a recovery mechanism.
+
+## Breach notification
+
+Breach notification law is now close to ubiquitous. Many countries - and sub-national jurisdictions such as U.S. states - require any entity holding personal data to **notify the data subjects** if that data is disclosed in any unauthorised fashion. The elements that vary by jurisdiction are the trigger (what counts as a notifiable breach), the clock (how quickly notice must go out), the recipients (subjects, regulators, sometimes credit bureaus or the public), and the penalties.
+
+The constants matter more than the variations:
+
+- **Failure is expensive.** An organisation that loses personal data and does not make sufficient notification in a timely manner faces severe financial penalties in many jurisdictions - a second, self-inflicted loss on top of the breach itself.
+- **The duty is jurisdictional, and the practitioner owns the map.** The applicable laws are those of *every jurisdiction in which the organisation operates* - and, under many privacy regimes, everywhere its data subjects live. An incident response plan that has not pre-identified the applicable notification laws, clocks, and contacts is planning to research law during an emergency.
+
+Breach notification is also the clean illustration of this module's theme: the technical incident is one event, but the legal obligations it triggers are plural, simultaneous, and foreign.
+
+## What a notification typically contains
+
+Though the statutes vary, the content demanded of a breach notice converges: what happened and when, what categories of data were involved, what the organisation has done and is doing about it, what the affected individual can do to protect themselves, and whom to contact. Preparing template notices per jurisdiction - reviewed by counsel in calm conditions - is standard incident-response hygiene, because the notification clock runs while drafts are argued over. The templates are living documents on the same review cycle as the jurisdictional matrix that indexes them: a statute amended last year invalidates last year's template, and discovering that mid-incident recreates exactly the scramble the templates exist to prevent. The templates also discipline the investigation itself: knowing that "categories of data involved" must be stated publicly focuses forensics on answering exactly that, early.`
+    },
+    {
+      id: '2-licensing-ip',
+      title: `2. Licensing and Intellectual Property`,
+      content: `## Intangible assets
+
+**Intellectual property** is the term for intangible assets - and for an organisation it runs in both directions. The organisation *owns* IP it must protect (proprietary software, designs, content), and it *uses* IP owned by others under terms it must honour. Both directions create work for security.
+
+## Software licensing
+
+Proprietary software is distributed under a **licence**: an agreement between the vendor and the customer codifying the terms - price, duration, number of copies - that govern use. The common forms:
+
+| Licence form | Arrangement |
+|---|---|
+| Site licence | The organisation buys use for all its staff, usually for a stated duration and with a cap on copies |
+| Per-seat licence | A specific number of copies, or a negotiated per-copy price for every copy in use |
+| Shareware / open licensing | Use permitted within stated constraints - commonly free for non-commercial use with payment required for business use, as in some Creative Commons arrangements |
+| Public domain | The software is free to use and even modify, with support or premium features sold separately |
+
+The security relevance is twofold. **Under-licensing is a legal exposure**: using more copies than purchased is infringement, discoverable in any vendor audit, and it is negligence-shaped - the organisation knew the terms and exceeded them. **Unauthorised software is a security exposure**: software outside the approved list is unpatched, unvetted, and invisible to the vulnerability programme.
+
+Both exposures land on the same desk, which is why in many organisations the **security office has become the de facto software librarian** - the entity maintaining the list of authorised software and licensed copy counts, and verifying the organisation stays within terms. The role fits naturally: the same asset inventory that drives patching answers the licensing question, and the same controls that block unauthorised software enforce it.
+
+The librarian role has a rhythm worth naming: periodic **reconciliation** of installed copies against entitlements - the same comparison a vendor audit performs, run internally first. Discrepancies found by the organisation are a purchasing conversation; the same discrepancies found by the vendor's auditors arrive with penalty pricing and negotiating leverage lost. Reconciliation is thus another instance of the domain's due-care pattern: the organisation that can demonstrate it tracks and trues-up its licensing has evidence of good faith even when an error surfaces.
+
+## Protecting your own IP
+
+The reverse direction - the organisation's proprietary material in other people's hands - is what digital rights management exists for, and it is significant enough to take the next section whole. The framing to carry forward: a licence is a *legal* control on use, and it needs a *technical* control to enforce it once the material has left the building. DRM is that technical control.`
+    },
+    {
+      id: '3-drm',
+      title: `3. Digital Rights Management`,
+      content: `## Access control that travels
+
+**Digital rights management (DRM)** enforces intellectual property rights by adding a layer of access control that is bound to the protected material itself, rather than to the system it happens to sit on. Ordinary access control stops governing a file the moment the file is copied out of the environment; DRM's defining ambition is that the protection goes wherever the material goes.
+
+The consumer example that makes the model concrete is optical media encoding. A customer buys a disc and can play it on any compatible player, carry it anywhere, watch it forever, and even sell the disc - selling their *right to view*. What the built-in encryption (and the encryption-aware player) will not permit is *copying* the content, because the customer bought the right to view the work, never the work itself. The rights owner's position is enforced by the technology in every player, everywhere - and the same mechanism has even carried jurisdiction-specific rules, as with region coding, where content lawful in one country's market will not play on another region's hardware.
+
+## The five traits of a DRM solution
+
+![The five traits of a DRM solution](/courses/cissp/figures/cissp-drm-traits.svg)
+
+| Trait | Requirement |
+|---|---|
+| Persistency | The access controls follow the protected material wherever it goes |
+| Dynamic policy control | A central administrative function lets the rights owner update and modify permissions after distribution |
+| Automatic expiration | Permissions are time-limited: access is revoked when a licence lapses, or the material becomes public domain when ownership rights expire |
+| Continuous audit trail | Each protected element recognises and records access events - opening, viewing, running, copying - on itself |
+| Interoperability | The solution works within the customer's environment, integrating with existing access control, file structures, and mail |
+
+Dynamic policy control is the trait that distinguishes **enterprise rights management (ERM/IRM)** from consumer DRM: inside an organisation that creates proprietary material, the owner needs to change permissions on documents already distributed - revoking a departed employee's access to files sitting on a partner's laptop - which only a centrally administered, persistent control can do.
+
+## Agents and their operational cost
+
+DRM implementations typically involve **system agents** installed on every client device. Each device that touches protected material must be DRM-aware - able to recognise protected files and resolve the current permissions for each one. Two operational consequences follow, and both are the kind of deployment reality exams probe:
+
+- **The agent joins the baseline.** It must be added to the organisation's standard build and maintained like any other platform component - which makes the DRM rollout a change-management and configuration-management exercise, not just a purchase.
+- **Personal devices are the hard case.** Where staff use their own devices, users must accept installation, maintenance, and often external audit of the agent on hardware they own. That is a policy negotiation as much as a technical one, and it is a standing reason bring-your-own-device programmes and strong ERM sit uneasily together.
+
+The connection back to the triad is worth making explicit: DRM is a **confidentiality control with an integrity-grade audit trail**, applied to data that has deliberately been given away. It is what "protect the data, not the perimeter" looks like when your business model requires handing the data to outsiders.
+
+One boundary keeps expectations honest: DRM raises the cost of misuse; it does not make misuse impossible. Content that must ultimately be displayed to a human can ultimately be captured by one - the analogue hole no rights technology closes. The design conclusion is not that DRM is futile but that it is one layer: it deters casual redistribution completely, makes systematic leakage expensive and auditable, and pairs with the legal layer (licences, contracts, and the enforcement they enable) for the determined case. Vendors promising leak-proof DRM are selling a property the physics of display does not permit, and recognising that overclaim is itself exam-relevant judgement.`
+    },
+    {
+      id: '4-import-export',
+      title: `4. Import and Export Controls`,
+      content: `## Cryptography as a controlled good
+
+IT hardware and software - and encryption tools above all - are subject to international trade restriction, mainly on national defence grounds. Many governments treat strong cryptography the way they treat armaments: as a technology whose accumulation in the wrong region threatens stability. The practitioner deploying security tooling across borders is, legally speaking, moving controlled goods.
+
+## The multilateral layer
+
+The **Wassenaar Arrangement** is the multilateral export control regime the exam expects by name: dozens of participating states agree not to export certain technologies - conventional weapons and dual-use goods, including cryptographic tools - to regions where their accumulation might disturb the local balance of power. A practitioner employed in a signatory country, or operating where imports are governed by the Arrangement's controls, needs to know which encryption tools may lawfully be shipped where.
+
+## The national layer
+
+National law adds its own rules in both directions, and they do not always align with the multilateral picture.
+
+| Direction | Pattern | Rationale |
+|---|---|---|
+| Import bans | Some states prohibit bringing cryptographic technology in at all | Two official fears: citizens' communications the government cannot intercept (framed as crime control, often reaching political dissent), and foreign crypto containing deliberate backdoors for the vendor's host nation |
+| Export restrictions | Some states - notably the United States - restrict sending certain encryption out | Encryption is dual-use: the same tool serves commerce, crime, and military signal protection |
+
+The two import-ban rationales are worth holding apart because they are almost opposites: one fears cryptography that *works too well* (the government cannot read it), the other fears cryptography that *works too poorly on purpose* (someone else already can). Both lead to the same border rule.
+
+## What this means operationally
+
+For a multinational security programme, export control is a deployment constraint as real as bandwidth:
+
+- **A standard toolset may not be legal everywhere.** The VPN client, disk encryption, or HSM that headquarters standardises on may be prohibited or restricted at a subsidiary. Discovering this after procurement is the expensive version.
+- **Travel counts as export.** A laptop full of cryptographic tooling crossing a border is, in the strict view of several regimes, an export event - which is one reason travel-hardware programmes and clean loaner devices exist.
+- **The check belongs in change management.** The moment a rollout's scope includes a new country, the legal review of that country's crypto import rules belongs on the checklist beside power plugs and language packs - before the shipment, not after the customs seizure.
+
+The exam-level takeaway is modest but firm: know that these regimes exist, know Wassenaar by name, and know that the answer to "can we deploy our encryption there?" is a legal question with a country-specific answer, never an assumption. The pattern to internalise is the module's general one wearing customs livery: the control's *technical* behaviour is identical everywhere, but its *legal* character changes at every border - and the organisation that treats deployment scope as a purely technical variable eventually explains that assumption to a customs authority, a regulator, or a prosecutor, in ascending order of expense.`
+    },
+    {
+      id: '5-transborder-data',
+      title: `5. Trans-Border Data Flow and the GDPR`,
+      content: `## Easy to move, hard to move lawfully
+
+Moving data across international boundaries is technologically trivial and legally treacherous - the defining asymmetry of modern data protection practice. The dominant force is the European Union's **General Data Protection Regulation (GDPR)**, whose express design is to prevent the personal data of people in the EU from flowing to any country - meaning any hardware in any country - that lacks privacy law matching EU standards in breadth and individual protection.
+
+The GDPR's gravitational pull is the reason this is a *global* module: an organisation with no EU presence at all inherits EU-grade obligations the moment it processes EU residents' personal data. Compliance follows the data subject, not the office address - a jurisdictional reach that surprised many organisations into their first serious privacy programmes.
+
+## The lawful transfer paths
+
+![Lawful paths for EU personal data to leave the EU](/courses/cissp/figures/cissp-transborder-paths.svg)
+
+| Path | Mechanism | Who acts |
+|---|---|---|
+| Adequacy | The destination country's own national privacy law is recognised as providing equivalent protection; transfers may then flow as if domestic | The country legislates; the EU recognises |
+| Certified framework | A company in a non-adequate country enrols in an approved certification programme: it adopts GDPR-conformant internal policy, submits to a named regulator, and self-certifies with annual renewal | The receiving company |
+| Standard contractual clauses (SCCs) | Pre-approved contract language binding the specific business relationship to EU-grade protection, included in every contract with EU counterparties | The contracting parties |
+
+**Adequacy** is the country-level path. A stable set of jurisdictions holds adequacy recognition - examples over the years include Switzerland, Japan, Canada for commercial organisations, Israel, Argentina, Uruguay, Andorra, and later the United Kingdom and South Korea - but the list is a living instrument: decisions are added, reviewed, and can be withdrawn. The professional habit the exam rewards is not memorising the roster but knowing that **the current list is published by the European Commission and must be checked**, because relying on a stale adequacy assumption is itself a compliance failure.
+
+**The certified-framework path is the volatile one, and its history is examinable.** The United States has never had a general federal privacy law meeting EU standards, so US transfers have depended on negotiated frameworks: a voluntary programme in which a US company applies through the Department of Commerce (transport carriers answering to the Department of Transportation, essentially everyone else to the Federal Trade Commission), adopts conforming internal policies, submits to that regulator's enforcement, and self-certifies annually. The framework the source book describes, Privacy Shield, was **invalidated by the EU's highest court in 2020** over US surveillance-law concerns - as its predecessor Safe Harbor had been before it - and was succeeded in 2023 by the **EU-U.S. Data Privacy Framework**, built on the same certification skeleton. The structural lesson survives every renaming: the mechanism is *company-level self-certification under regulator enforcement*, and it exists at the pleasure of EU courts.
+
+**Standard contractual clauses** are the relationship-level fallback that works from anywhere: an organisation in a non-approved country stipulates, in the contract itself, that the activity will comply with the GDPR, using clause language approved by the European Commission (or by a member-state authority where the activity is confined to that state). Once approved, the language is reusable across many contracts - which is why SCCs are the workhorse of global data processing agreements, quietly incorporated into the terms of most major service providers.
+
+## Reading a transfer question
+
+Given a scenario - "may this data go there?" - the analysis runs in order: *Is the destination adequate?* If yes, transfer. *If not, is the recipient certified under a current framework?* If yes, transfer to that recipient. *If not, are approved contractual clauses in place for this relationship?* If yes, transfer under them. If none of the three: **the transfer may not lawfully occur**, and the technical ease of doing it anyway is exactly how organisations acquire headline-grade liability.
+
+Two disciplined habits complete the analysis in practice. First, **transfers hide in architecture**: support staff in another country viewing EU data remotely, a backup replicating to a foreign region, a cloud provider's failover - each is a transfer requiring a lawful basis, whether or not anyone calls it one. Mapping where data actually flows, including administrative access paths, precedes the legal analysis. Second, **the basis must be recorded per flow**: which path legitimises which transfer, decided when, reviewed when - because the frameworks and lists this analysis depends on change by judgment and decision, and an undocumented basis cannot be re-verified when they do.`
+    },
+    {
+      id: '6-privacy-terms',
+      title: `6. Privacy Terms and the Cast of Roles`,
+      content: `## PII: defined by the jurisdiction, not by intuition
+
+**Personally identifiable information (PII)** is any data about a human being that could be used to identify that person. The critical nuance: *which* elements legally constitute PII **differs from jurisdiction to jurisdiction and law to law**. Elements commonly counted include name, tax or social insurance number, home address, mobile number, machine identifiers such as MAC and IP addresses, payment card and bank account numbers, and facial photographs - but the list is set by each statute, not by common sense, and some regimes use their own vocabulary entirely, as with health data in the United States being **ePHI** under its healthcare privacy law.
+
+The machine-identifier rows deserve emphasis because they surprise engineers: under several regimes an IP address is personal data. A logging pipeline that "contains no PII" because it strips names may be full of PII in the eyes of the applicable law.
+
+## The roles
+
+![Privacy roles and where liability sits](/courses/cissp/figures/cissp-privacy-roles.svg)
+
+| Role | Definition | The point that gets tested |
+|---|---|---|
+| Data subject | The human being the PII refers to | The person, never an organisation |
+| Data owner / controller | The entity that collects or creates the PII | **Legally responsible for its protection and liable for unauthorised release** |
+| Data processor | Any entity processing PII on the controller's behalf | "Processing" means essentially anything done with data - creating, storing, sending, computing, copying, destroying |
+| Data custodian | The role managing the data day to day for the owner - a database administrator, a system administrator, anyone with privileged access | Operational duty, not legal ownership |
+
+Two refinements complete the picture.
+
+**The owner in practice.** Nominally the owner/controller is the organisation - the legal entity - and in some jurisdictions a named officer is designated as nominal owner. In working terms, though, the "owner" is usually the managerial person or office with the most day-to-day use and control of the data: the department that collected it and puts it to use. Domain 2 builds its whole classification programme on this working owner, who decides sensitivity and approves access.
+
+**Liability does not follow the work.** The processor must comply with applicable law, but **the controller remains legally liable for unauthorised disclosure even when the processor was the negligent or malicious party**. Outsourcing the processing never outsources the accountability - which is the legal engine behind vendor due diligence, data processing agreements, audit rights, and every third-party-risk control in later domains. When an exam stem describes a breach at a service provider and asks who answers to the regulator, the answer is the controller who engaged them.
+
+## The module's one-sentence summary
+
+Law attaches to data through people: the subject it describes, the controller who answers for it, the processor who touches it, and the custodian who tends it - and the controller's liability is the thread that ties every trans-border mechanism, contract clause, and vendor control in this module together.
+
+## The practitioner's legal map
+
+The module closes where it began: legal exposure follows the data, and someone must own the map. Collected in one place, the obligations this module has established and the function that owns each:
+
+| Obligation | Trigger | Primary owner |
+|---|---|---|
+| Recognise and report computer crime | An incident with criminal character | Security, with counsel |
+| Breach notification, per jurisdiction | Unauthorised disclosure of personal data | Incident response, from a pre-built jurisdictional matrix |
+| Licence compliance | Every piece of software in use | Security as software librarian, with procurement |
+| IP protection via DRM/ERM | Proprietary material leaving the organisation's control | Security, with the business owner of the material |
+| Crypto import/export clearance | Deploying or carrying security tooling across borders | Security and legal, inside change management |
+| Lawful transfer basis | Personal data crossing borders | The controller, via adequacy, framework, or SCCs |
+| PII determination | Every data set, per applicable law | Counsel defines; security implements |
+
+The table is the module in miniature, and it doubles as an exam technique: a Domain 1 legal scenario is answered by finding its row - what obligation has been triggered, and whose job is the response. The wrong answers are usually right actions in the wrong row. And the map is only as good as its maintenance: each row's law moves on its own schedule, so each row carries a review date - the habit that separates a legal map from a legal memory.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: naming the offences
+
+*An intruder compromises a mid-sized firm's server. Forensics shows: entry through a stolen password; 40 GB of the firm's design files copied out; the server then used for weeks to store third-party stolen data and to run password-cracking jobs against other victims; finally, the intruder encrypted the design share and demanded payment. Enumerate the offence classes present.*
+
+Work through the timeline. The entry itself is **unauthorised access** - complete as an offence at the moment of login, before anything else happened. Copying the design files is **theft of data**. Parking third-party loot on the victim's disks and burning its CPU on cracking jobs is **illegal use of resources** in both its forms - storage and processing. The final act is **ransomware**, the modernised extortion.
+
+Two analytical points earn the marks. First, the offences are *cumulative*, not alternative - incident reports and legal referrals should name each, because notification duties and prosecutorial options attach differently. Second, the resource-use phase is why "we have nothing worth stealing" is a non-defence: for weeks the firm's value to the attacker was its hardware, and other organisations were being attacked *from* it - which can draw the firm into other victims' investigations as an unwitting launch point.
+
+## Worked example 2: the DRM deployment question
+
+*A design consultancy sends proprietary CAD files to manufacturing partners and wants control after delivery: partners may view and annotate but not re-share; access must end when a contract ends; and the consultancy wants evidence of exactly who opened what. Map the requirements to DRM traits and state the deployment cost the consultancy must plan for.*
+
+The requirement set reads directly onto the trait list. Control that survives delivery is **persistency** - protection bound to the file, not to the consultancy's network. Ending access at contract end is **automatic expiration**, with **dynamic policy control** as the emergency version (revoking a specific partner today, not at expiry). Evidence of who opened what is the **continuous audit trail**. Working inside the partners' environments - their viewers, their mail, their file systems - is **interoperability**.
+
+The cost to plan for is the **agent footprint on hardware the consultancy does not own**. Every partner device touching protected files must run the DRM agent, added to the partners' baselines, maintained, and plausibly audited. That is a contractual negotiation - the partners are accepting software and oversight on their own systems - and it belongs in the commercial agreement beside the confidentiality terms. A DRM purchase without the partner-side agreement is a licence to be ignored.
+
+## Worked example 3: the transfer analysis
+
+*A US-headquartered analytics company signs a client in Germany. Client data - including names, addresses, and device identifiers of EU customers - will be processed in the company's US data centre. The company is not enrolled in any transatlantic certification framework. May the processing proceed, and on what basis?*
+
+Run the three-path analysis in order.
+
+**Adequacy?** The United States holds no general adequacy recognition, so the country-level path is closed.
+
+**Certified framework?** The company is not enrolled, so this path is closed *today* - though enrolment (conforming internal policy, submission to the relevant regulator, annual self-certification) is an available strategic fix if the company expects EU business at scale.
+
+**Standard contractual clauses?** Open, and the immediate answer: incorporate the approved clause language into the agreement with the German client, binding this processing to EU-grade protection. Once adopted, the same approved language serves future EU contracts.
+
+Two further observations complete a strong answer. The device identifiers are squarely PII under EU law even where US intuition might not count them, so scoping the transfer analysis to "names and addresses" would understate the obligation. And roles matter: the analytics company is a **processor** here; its German client is the **controller** who remains liable to the regulator - which is exactly why the client will insist on the clauses, audit rights, and breach notification terms rather than taking the company's word for its security.
+
+## Worked example 4: the jurisdictional breach
+
+*A retailer operating in twelve countries suffers one breach exposing customer PII from all of them. The CISO asserts: "We will notify under the law of our headquarters country; one law, one notice." Evaluate.*
+
+The assertion fails on the module's central principle: **notification duties attach per jurisdiction**, driven by where the organisation operates and where the affected data subjects are - not by where headquarters sits. Twelve countries means up to twelve legal analyses: different triggers (some laws notify on any unauthorised disclosure, others on risk thresholds), different clocks (fixed-hour regulator deadlines versus "without undue delay"), different recipients (subjects, regulators, sometimes further parties), different penalty regimes for getting it wrong.
+
+The practical consequences the answer should name: notification under the strictest applicable clock effectively sets the incident-response tempo for the whole event; the response plan should have contained a **pre-built jurisdictional matrix** - law, trigger, deadline, regulator contact, notice template per country - because assembling one during the incident consumes exactly the hours the strictest clock is counting; and under-notifying in any one country converts that country's breach into a second, separate compliance offence with its own penalties. One incident, many laws, is the normal case, and the plan that assumes otherwise has planned for a different world.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Why can an organisation "with nothing worth stealing" still be a valuable target? Name the offence class involved.
+
+2. Distinguish site licensing from per-seat licensing, and explain why the security office often ends up as the organisation's software librarian.
+
+3. Name the five traits of a DRM solution and identify which one distinguishes enterprise rights management from consumer DRM.
+
+4. What is the Wassenaar Arrangement, and what are the two official rationales governments give for banning cryptographic imports?
+
+5. List the three lawful paths for personal data of EU data subjects to reach a country without EU-grade privacy law, and order them by who must act.
+
+6. What happened to the US certification framework described in older study materials, and what structural lesson survives the change?
+
+7. A breach occurs at a data processor through the processor's own negligence. Who is liable to the regulator for the unauthorised disclosure, and why does that answer drive vendor-management controls?
+
+8. Why is "our logs contain no PII - we strip the names" a dangerous claim under some privacy regimes?
+
+9. Why does a bring-your-own-device programme complicate an enterprise DRM deployment?
+
+10. An organisation's transfer analysis found adequacy for a destination country three years ago and has not revisited it. What is the risk, and what does the professional habit look like?
+
+## Answers
+
+**1.** Because the attacker may want the organisation's **infrastructure rather than its information** - the offence class is **illegal use of resources**. The victim's storage hides data the attacker acquired elsewhere; the victim's processing power stages attacks such as DDoS against third parties. The organisation's assets make it a target as a platform, and its systems can become the launch point in other victims' incidents - a legal and reputational exposure entirely independent of whether its own data had value.
+
+**2.** A **site licence** buys use for the whole organisation's staff, typically for a stated duration with a cap on copies; **per-seat licensing** buys a specific number of copies, or a negotiated price per copy actually used. The security office inherits the librarian role because the enforcement problem is identical to its existing work: the asset inventory that drives patching is the same record that answers "how many copies are we running?", and the controls that block unauthorised software are the same ones that keep the organisation within licence terms. Under-licensing is negligence-shaped legal exposure; unlisted software is unmanaged attack surface - both are security's problem.
+
+**3. Persistency** (protection travels with the material), **dynamic policy control** (central administration can change permissions after distribution), **automatic expiration** (rights lapse on schedule), **continuous audit trail** (each protected object records its own access events), and **interoperability** (the solution works within the customer's environment). **Dynamic policy control** is the enterprise discriminator: consumer DRM rarely changes the rules on a sold disc, but an organisation must be able to revoke a departed employee's access to documents already sitting on external devices - which requires persistent protection under central administration, the defining ERM/IRM capability.
+
+**4.** A **multilateral export control regime** in which several dozen participating states agree not to export certain technologies - conventional weapons and dual-use goods, including cryptographic tools - to regions where their accumulation could destabilise the balance of power. The two import-ban rationales: fear of cryptography that **works too well** (citizens' communications the government cannot intercept, framed as crime control and often reaching political activity), and fear of cryptography that **works too poorly on purpose** (imported tools carrying deliberate backdoors serving the vendor's host nation). Opposite fears, same border rule.
+
+**5.** **Adequacy** - the destination *country* legislates privacy protection recognised as equivalent, and transfers flow as if domestic. **Certified framework** - the receiving *company* enrols in an approved programme: conforming internal policy, submission to a named regulator, annual self-certification. **Standard contractual clauses** - the *contracting parties* incorporate approved clause language binding the specific relationship to EU-grade protection. Ordered by actor: state, company, contract - and the analysis runs in that order, with SCCs as the path available from anywhere.
+
+**6.** The framework was **invalidated by the EU's highest court** (in 2020, over surveillance-law concerns) - as its predecessor had been before it - and was succeeded in 2023 by a renegotiated programme built on the same skeleton: company-level self-certification, conforming internal policies, regulator enforcement, annual renewal. The structural lesson: the certification path is **company-level and court-fragile**. Its vehicles are renamed and renegotiated, but the mechanism-shape persists - and a practitioner relying on it must verify the *current* framework's validity rather than a remembered name, because the whole path can vanish by judgment.
+
+**7. The controller remains liable** - the entity that collected or created the PII answers for unauthorised release **even when the processor is proven negligent or malicious**. Accountability cannot be outsourced with the work. That single rule generates the vendor-management control set: due diligence before engagement, data processing agreements imposing the controller's obligations contractually, audit and attestation rights, breach notification clauses with tight clocks, and termination rights - because the controller's only protections are choosing processors well and binding them in contract, given that the liability stays home regardless.
+
+**8.** Because **what constitutes PII is defined by each jurisdiction's law, not by intuition** - and several regimes count machine identifiers such as **IP addresses and MAC addresses** as personal data. Logs stripped of names but full of IP addresses, device identifiers, and behavioural traces may be squarely within scope of the applicable privacy law: subject to breach notification if disclosed, to transfer restrictions if shipped across borders, and to retention limits. The safe engineering posture is to treat the PII determination as a per-law legal question answered early, not an assumption embedded silently in pipeline design.
+
+**9.** Because every device that touches protected material must run the **DRM agent** - and in a BYOD programme those are devices the organisation does not own. Users must accept installation, ongoing maintenance, and often external audit of organisational software on personal hardware, which is a policy negotiation with real refusal rates, not a push-button rollout. The agent must also join a "baseline" the organisation only partially controls, across whatever device diversity the workforce brings. The general form of the lesson: persistent, agent-enforced controls are strongest exactly where device control is strongest, and BYOD is the opposite pole.
+
+**10.** Adequacy decisions are **living instruments**: they are reviewed, can be withdrawn, and the certification frameworks that substitute for them have been struck down entirely by court judgment - twice, in the most-watched case. A three-year-old adequacy assumption may describe a lawful path that no longer exists, which means transfers continue on a void basis: the exposure is not hypothetical non-compliance but ongoing unlawful processing, accumulating daily. The professional habit: the lawful-basis determination for each cross-border flow is **recorded, dated, and scheduled for re-verification** against the European Commission's current list and framework status - and subscribed to change, the way patch management subscribes to advisories, because the law's "patches" arrive by judgment and decision rather than by bulletin.`
+    }
+  ],
+},
 cissp_policy_framework: {
   topicId: 'cissp_policy_framework',
   title: `Security Policy, Standards, Procedures, and Guidelines`,
@@ -1468,6 +1772,338 @@ Least privilege principle dictates that individuals should have the minimum acce
 Implementing least privilege requires understanding job functions, defining required access, and continuously monitoring for overprivileged accounts. Many organizations have discovered that employees can access data unrelated to their jobs, indicating poor least privilege implementation. Regular access reviews should identify and remove excessive access, and high-risk access should be restricted regardless of job title.`,
       importantNote: `Separation of duties prevents any single person from having unilateral authority. Least privilege limits access to minimum necessary. Job rotation and mandatory vacation enable fraud detection. Background investigations verify trustworthiness.`,
     },
+  ],
+},
+cissp_awareness: {
+  topicId: 'cissp_awareness',
+  title: `Security Awareness, Education, and Training Programs`,
+  domainWeight: '16%',
+  overview: `People are the control surface no technology replaces. Social engineering aims at them, insider risk lives among them, and nearly every technical safeguard depends on someone operating it correctly. This module covers the organisation's instrument for hardening the human layer: the awareness, training, and education programme. The exam is precise about the three words - they are distinct forms of instruction with different formality, providers, and audiences - and it expects a programme view: content kept current against a moving threat landscape, delivery methods chosen for their trade-offs, and effectiveness actually measured rather than assumed from attendance.`,
+  sections: [
+    {
+      id: '1-human-layer',
+      title: `1. Why the Human Layer Is a Control`,
+      content: `## The two risks instruction reduces
+
+An organisation teaches its people security for two specific reasons, and stems reward candidates who can name them rather than gesturing at "culture."
+
+**The internal threat.** Most insider damage is not malice; it is error and ignorance - the misdirected attachment, the reused password, the sensitive report on an unlocked screen. Instruction converts a population that causes incidents into one that prevents them, and it is the only control that addresses mistakes not yet invented, because a person who understands *why* handles novel situations correctly. The economics reinforce the case: the internal incidents instruction prevents - misdirected data, mishandled media, credential reuse - are individually mundane and collectively among the largest loss categories organisations record, which makes the prevention curriculum one of the highest-leverage documents the security office writes.
+
+**The effectiveness of certain attacks.** Social engineering succeeds exactly where awareness fails - phishing, pretexting, tailgating, and fraud all work by exploiting a person who does not recognise the pattern. The attacker's cost calculus explains the persistence: deceiving a person is reliably cheaper than defeating a patched, monitored technical control, so the human layer stays the preferred entry as long as it stays the softest. Every technical mail filter leaks; the trained recipient is the layer behind it.
+
+The framing that organises the whole module: staff who cannot recognise current threats are not a neutral quantity. **Uninformed personnel are a vulnerability** - a weakness in the system as real as an unpatched service, and one the adversary actively scans for.
+
+## Instruction is a security function
+
+Because instruction reduces risk, it is run like a control: with an owner, a documented programme, currency maintenance, and effectiveness measurement. It also carries evidentiary weight - documented, tracked training is part of the organisation's **due diligence** record, the same legal posture the governance module built. When an incident happens through an employee's act, "we trained them, here is the record" and "we assumed they knew" lead to very different places.
+
+| Programme element | What it must exist as |
+|---|---|
+| Content | Built to the organisation's actual threats, laws, tools, and policies |
+| Delivery | Methods chosen deliberately for audience and trade-offs |
+| Currency | Reviewed on schedule by experts; dated material retired |
+| Measurement | Tested outcomes, not attendance counts |
+| Records | Who received what instruction, when - the due diligence trail |
+
+The rest of the module walks that table: first the three forms of instruction and their audiences, then delivery methods, then keeping content current, then finding out whether any of it worked.
+
+## What instruction can and cannot fix
+
+Honesty about the control's limits is part of running it well, and the exam rewards candidates who place instruction correctly among the other control families rather than treating it as a substitute for them.
+
+Instruction is the **right** control where the failure is recognition or knowledge: the employee who does not know the reporting channel, cannot spot the pretext, or has never been told the handling rule. It is the **wrong** primary control where the failure is process or architecture: if a single employee can wire funds on the strength of one email, the deep fix is a verification *procedure* and a separation-of-duties control - training reinforces the procedure but cannot substitute for its absence. The reliable analysis: when a stem describes an incident and offers "more training" among the options, ask whether a *well-trained* person could still have caused it under the existing process. If yes, the process answer outranks the training answer.
+
+The interplay also runs the other way: technical controls degrade without instructed users. The mail filter quarantines less than everything; the badge reader assumes nobody holds the door; the DLP tool generates alerts someone must understand. Each technical layer has a human seam, and the instruction programme is what hardens the seams. This is why defence in depth counts the human layer as a layer - not a compensation for missing technology, but a control surface with its own coverage. The budget conversation follows the same logic: instruction is among the cheapest controls per unit of risk reduced, because one curriculum covers the entire workforce, while most technical controls price per node, per seat, or per gigabyte. That economy is an argument for funding the programme properly - and a warning, because the same cheapness makes it the control organisations most readily fake, running the slides without the measurement that would reveal whether anything changed.`
+    },
+    {
+      id: '2-three-forms',
+      title: `2. Education, Training, and Awareness - Three Different Things`,
+      content: `## The distinctions the exam tests
+
+The three words are not synonyms, and items are written specifically to catch candidates who use them interchangeably. They differ on formality, provider, audience, and purpose.
+
+![The education, training, awareness continuum](/courses/cissp/figures/cissp-learning-continuum.svg)
+
+| Form | Formality | Typically provided by | Typical audience | Character |
+|---|---|---|---|---|
+| Education | Formal | Accredited academic institutions, outside the employer; degree and certification programmes | Practitioners and experts | Deep, foundational, career-scoped |
+| Training | Semi-formal | The organisation itself, or vendors; presented by subject matter experts | Employees tasked with specific duties | Documented and tracked; role-scoped |
+| Awareness | Informal | The organisation, continuously | Everyone | Often unscheduled, not mandatory; reminders and reinforcement |
+
+Three rows, three purposes: education builds **experts**, training builds **operators**, awareness builds **habits**. And the documentation burden runs with formality - training's tracked records are explicitly part of demonstrating due diligence, while awareness earns its keep through repetition rather than records.
+
+## One goal, three forms - an illustration
+
+The cleanest way to hold the distinction is one security goal delivered at all three levels. Take safe handling of sensitive customer data:
+
+- The organisation funds the privacy officer's **postgraduate coursework** in data protection law and privacy engineering at a university. Formal, external, credentialed, aimed at the organisation's expert: **education**.
+- The records team - the people whose daily duties touch the data - attends an internal **class built and taught by the security office** on classification, handling steps, and the approved transfer tools, with completion recorded per person: **training**.
+- Every employee sees the **monthly reminder note, the posters by the printers, and the periodic drill** of reporting a suspicious request: informal, universal, repeated: **awareness**.
+
+The same decomposition works for any goal - and running a stem's scenario through it is the fastest way to answer "is this education, training, or awareness?" Ask three questions: *how formal, provided by whom, aimed at whom?* The answers place it on the continuum every time.
+
+## Matching form to need
+
+The programme design question is which form a given gap calls for. A department mishandling a specific procedure needs **training** - they have duties and lack the skill. An organisation-wide tailgating problem needs **awareness** - everyone, habit-level, continuous. A security team that cannot design controls for a new technology needs **education** - depth that internal classes cannot supply. Choosing awareness posters for a skills gap, or a degree programme for a habits problem, wastes the budget and leaves the risk - a mismatch the exam likes to offer as a distractor.`
+    },
+    {
+      id: '3-delivery',
+      title: `3. Delivery Methods and Their Trade-offs`,
+      content: `## Four families of delivery
+
+No delivery method dominates; each trades something for something. The exam expects the trade-offs, not just the list.
+
+![Delivery methods with the trade each makes](/courses/cissp/figures/cissp-delivery-methods.svg)
+
+| Method | Strengths | The catch |
+|---|---|---|
+| Computer-based training | Self-paced; minimal schedule intrusion; highly efficient; standardised content and delivery; automatic assessment and tracking | **Click-through**: employees page through material they consider a nuisance without absorbing or retaining it |
+| Live instruction | Counters click-through; questions raised and answered in real time; builds rapport between security and the user community | Requires scheduling (which suppresses enthusiasm and attendance) and an SME who is *also* a skilled trainer - two talents not always found together |
+| Reward mechanisms | Reinforces correct behaviour instead of only punishing failure; builds goodwill toward the security office | Must be sustained, visible, and perceived as fair |
+| Regular communications | Newsletters, email items, signage, posters keep security continuously visible at near-zero marginal cost | Passive - no assessment of whether anyone absorbed anything |
+
+## The two headline trade-offs
+
+**CBT's efficiency versus click-through** is the trade every large organisation lives with. The very properties that make computer-based training scale - self-pacing, standardisation, automatic tracking - are what let an unmotivated employee complete it without learning. The tracking data proves *completion*, not *competence*, which is precisely why the measurement section of this module exists.
+
+**Live instruction's power versus its logistics.** In-person delivery answers questions as they arise, defeats click-through by its nature, and - underrated - gives the security department a human face, converting it from the office that says no into colleagues with names. Pairing sessions with a team exercise, a competition, or simply food measurably improves both attendance and reception. The costs are real: calendars, rooms, and the scarce person who knows the subject *and* can teach it.
+
+## Rewards: security as something other than punishment
+
+The reward row carries a cultural point the exam approves of. Traditionally the security office touched employees only as enforcement - policy violations, consequences. Rewarding *demonstrated secure behaviour* inverts the relationship: recognition for reporting a phish, for challenging an unbadged stranger, for a clean desk streak. The mechanism can be as light as a written commendation - made weightier by a senior manager's letterhead and signature - or as substantial as bonuses or leave. The return is twofold: the rewarded behaviour repeats, and the security office accumulates goodwill it will spend later, when it must ask the organisation for inconvenience.
+
+A practical programme uses all four families deliberately: CBT for the baseline and the record, live sessions where stakes or complexity are high, rewards to reinforce, and continuous communications to keep the subject warm between formal touches.
+
+## Choosing by audience and stakes
+
+The selection logic compresses to two questions. *How costly is failure for this population?* High-consequence audiences - finance approvers, privileged administrators, executive assistants - justify live delivery's expense, because a single prevented incident repays years of sessions. *How large and distributed is the audience?* Organisation-wide baselines are CBT territory; no schedule can gather everyone, and the tracked record is needed for every person. The hybrid pattern that falls out is nearly universal: CBT breadth, live depth, rewards and communications as the connective tissue - and simulations, covered with measurement, as the feedback loop that tells you whether the mix is working.`
+    },
+    {
+      id: '4-currency',
+      title: `4. Keeping Content Current`,
+      content: `## Dated material is a vulnerability
+
+The strongest claim in this module, and the exam expects it stated strongly: outdated instructional material does not merely attenuate the programme's effectiveness - **it can decrease the organisation's security**. Personnel who have not been informed of current threats and countermeasures are subject to subversion by exactly those threats; training people confidently against last year's attacks manufactures misplaced confidence against this year's. An out-of-date programme is a vulnerability wearing a control's badge.
+
+![The programme loop: develop, deliver, evaluate, review](/courses/cissp/figures/cissp-awareness-lifecycle.svg)
+
+## The review discipline
+
+Currency is maintained by review, and the module specifies who and what.
+
+**Who reviews:** subject matter experts examine the material for currency and accuracy **on a regular basis** - a schedule, not an intention. Additionally, **external experts** are worth engaging periodically: outsiders bring the widest perspective and catch the assumptions internal reviewers share with the material they wrote.
+
+**What must be checked for currency:**
+
+| Content area | Why it dates quickly |
+|---|---|
+| Applicable laws | Breach notification, intellectual property, and PII law all move; instruction citing superseded law teaches non-compliance |
+| Security tools | The tools staff are taught to use change versions, interfaces, and capabilities |
+| Organisational security policy | Instruction must match the current promulgated policy, or it teaches violations |
+| Recent widespread attack styles and methodology | The half-life of threat content is the shortest of all - this year's phishing does not look like last year's |
+
+The fourth row is the engine of the whole discipline: threats and countermeasures evolve continuously, so instruction is relevant and effective only while it reflects the current landscape. The legal row is its quiet twin - the previous module's jurisdictional map (notification clocks, PII definitions) belongs in the curriculum, and it moves too.
+
+## Review as part of the programme loop
+
+Content review is not a separate chore; it closes the programme's loop. Evaluation results (next section) feed the review - the questions people fail and the mock attacks that succeed are a map of where the material is stale or unabsorbed. The loop runs: develop content against current threats and law, deliver it through chosen methods, evaluate whether behaviour changed, review and update the content with what evaluation revealed, redeliver. A programme that runs this loop annually at minimum - and after any major incident, policy change, or legal development - stays a control. One that delivers the same slides for three years has quietly become shelf-ware, with the extra hazard that everyone believes the control exists. The review's output should be visible in the material itself: dated versions, a change log, and content that names this year's patterns - the same version discipline the governance module demands of policies, applied to the curriculum. An auditor asking "when was this material last reviewed, and against what?" should find the answer written down, because that question is exactly how programme currency is examined.`
+    },
+    {
+      id: '5-effectiveness',
+      title: `5. Measuring Whether It Worked`,
+      content: `## Beyond attendance
+
+An instructional programme must be **continually evaluated for utility and effectiveness** - whether it is accomplishing its intent - and completion statistics do not answer that question. A 100% completion rate measures logistics. Effectiveness lives in *behaviour*, and the module gives three approaches that measure it, usable separately or in concert.
+
+| Approach | Mechanism | What it reveals |
+|---|---|---|
+| Participant testing | Define desired outcomes, then formally test participants against them after instruction; supplement with audits - random spot-checks of trained personnel | Whether the concepts were understood and retained |
+| Penetration testing (social engineering) | Mock attacks - phishing campaigns, pretext calls, tailgating attempts - against trained personnel | Whether training survives contact with a realistic adversary |
+| Log reviews | Survey user event logs and compare actual behaviour against what policy, as conveyed by training, requires | Whether day-to-day behaviour actually changed |
+
+## What each approach is really for
+
+**Testing measures knowledge.** Outcome-based tests confirm the material transferred; spot-check audits confirm it persisted past the quiz. The design discipline is writing the desired outcomes *first* - "after this training, a participant can identify a phishing indicator, report it through the correct channel, and refuse a pretext request" - and testing against those, not against trivia from the slides.
+
+**Mock attacks measure reflexes.** A social-engineering test is the only method that measures what the adversary will measure: does the person click, comply, or hold the door under realistic conditions? Two programme rules keep it constructive: results drive *remediation and content review*, not humiliation - a public wall of shame teaches people to hide mistakes, which is the opposite of the reporting culture the programme needs; and failure patterns are content feedback - if a third of a department fails the same pretext, the material on that pattern is inadequate, whoever the individuals were.
+
+**Log reviews measure habits.** Testing and mock attacks are events; logs are continuous. Reviewing user activity against policy - are files stored where training said, are approved transfer tools being used, have risky behaviours declined since the last campaign - detects both training decay (behaviour drifting back over months) and training gaps (a policy no one follows because no instruction covered it).
+
+## Closing the loop
+
+The three measurements converge into the programme's management rhythm: they tell the organisation which content to fix (feeding the currency review), which populations need reinforcement (feeding delivery planning), and whether the programme deserves its budget (feeding management reporting, in the KPI language the governance modules established). Measured, the programme is a control with evidence; unmeasured, it is an annual ritual with a completion dashboard - and the exam's scenarios are reliably unkind to rituals.`
+    },
+    {
+      id: '6-programme-design',
+      title: `6. Designing the Programme: Mandate, Audiences, and Rhythm`,
+      content: `## The mandate comes from governance
+
+An instruction programme does not authorise itself. Its mandate descends through the written-governance hierarchy built earlier in this domain: **policy** states that personnel will be trained and made aware of their security obligations; **standards** fix the specifics - which roles receive which training, on what cadence, with what completion requirement; **procedures** run the enrolment, delivery, and recording; and the programme's records flow back up as compliance evidence.
+
+![The written-governance hierarchy that mandates the programme](/courses/cissp/figures/cissp-governance-hierarchy.svg)
+
+This placement answers two recurring design questions with governance logic rather than taste. *Is training mandatory?* Whatever the policy and standard say - and for the training layer the answer is normally yes, with completion tracked, because that is what makes the record a due diligence instrument. *Who owns the programme?* The security function typically builds and runs it, but the mandate is senior management's, which is what gives the programme authority when it asks for employee hours and departmental cooperation.
+
+## Audience segmentation
+
+One curriculum for everyone violates the module's own three-form logic. The programme segments:
+
+| Audience | Instruction emphasis |
+|---|---|
+| All personnel | Awareness continuously, plus baseline training: policy obligations, data handling, social engineering recognition, incident reporting |
+| Role-specific populations | Training tied to duties - finance on payment fraud, developers on secure coding, admins on privileged-account conduct |
+| High-exposure roles | Deeper and more frequent - executives and assistants (targeted fraud), HR (PII handling), helpdesk (pretext calls) |
+| Security practitioners | Education - external depth the organisation cannot teach itself |
+
+The high-exposure row reflects how adversaries actually aim: attackers segment their targeting, so the programme segments its preparation. An executive assistant who can authorise calendar access and forward requests to leadership is a higher-value social-engineering target than most managers, and generic annual training does not prepare them for the specific pretexts they will face.
+
+## The programme's rhythm
+
+Instruction has a calendar, and the triggers are examinable:
+
+| Trigger | Instruction delivered |
+|---|---|
+| Onboarding | Baseline training before or at access grant - a person with credentials and no training is an exposed surface |
+| Periodic (typically annual) | Refresher training with updated content; re-acknowledgement of key policies |
+| Role change | The new role's training at transfer, mirroring the provisioning logic of access control |
+| Event-driven | After a significant incident, a new threat pattern, a policy change, or a legal development - content updated and the affected population re-instructed |
+| Continuous | Awareness - communications, reminders, simulations - filling the space between formal touches |
+
+The onboarding row carries the sharpest exam point: training belongs **before access**, because the highest-risk employee is the one with fresh credentials and no instruction. The event-driven row closes the loop with the currency section - when the review process updates content for a new threat, delivery to the affected population is the second half of the update; revised slides that no one has seen protect no one.`
+    },
+    {
+      id: '7-campaigns',
+      title: `7. Running the Awareness Layer: Campaigns and Simulations`,
+      content: `## Awareness as a campaign, not a broadcast
+
+The awareness layer earns its results through design, not volume. A stream of generic reminders trains people to ignore reminders; a campaign - one theme, coordinated across channels, for a bounded period - changes behaviour because it concentrates attention. A quarter themed on credential hygiene puts the same idea in the newsletter item, the posters, the login-screen message, and the manager talking points, then moves on before habituation sets in. The design variables:
+
+| Variable | Good practice | Failure mode |
+|---|---|---|
+| Theme | One behaviour per campaign, drawn from measured weaknesses | Everything at once; nothing lands |
+| Channels | Several, coordinated - message repetition across surfaces | One channel, saturating it |
+| Duration | Bounded, then rotate | Permanent posters that become wallpaper |
+| Tone | Practical and respectful of the audience's time | Fear-heavy or condescending content that breeds resentment |
+| Source | Visibly endorsed by management | Security office broadcasting alone |
+
+The measured-weakness row connects the layer to the programme loop: campaign themes come from evaluation data - the failed simulations, the audit findings, the incident patterns - so the awareness calendar is a response to evidence, not a rotation of stock topics.
+
+## Designing the simulation programme
+
+Phishing and pretext simulations sit in both worlds - they are an evaluation method *and* an awareness instrument - and their design determines which they become.
+
+**The moment of failure is the teaching moment.** A user who clicks a simulated phish should land immediately on a short, private explanation of the indicators they missed. That thirty seconds outperforms an hour of scheduled training because attention is total; batching the feedback into a monthly report discards the effect.
+
+**Reporting is the behaviour to build, not merely non-clicking.** A user who avoids the phish silently has protected themselves; a user who reports it protects the organisation - real campaigns are detected by early reports. The programme therefore makes reporting effortless (a one-click report control in the mail client), acknowledges every report, and celebrates reporters through the reward mechanics established earlier. The mature metric pair is **report rate rising** while **click rate falls**; click rate alone measures half the goal.
+
+**Difficulty must escalate with competence.** A population that passes obvious simulations has learned to spot obvious simulations. Rotating templates, increasing sophistication, and targeting role-specific pretexts (the finance wire request, the executive-assistant calendar lure, the helpdesk password call) keep the exercise aligned with the adversary's actual behaviour rather than with last year's success rate.
+
+**Fairness rules keep the instrument constructive.** Simulations run under management authorisation with defined boundaries - no fake emergencies about family members, no lures that damage trust in internal services beyond repair - because a simulation that burns the workforce's goodwill has spent more than it measured. This mirrors the module's shaming rule: the purpose is a population that reports, and every design choice is tested against whether it increases or suppresses reporting.
+
+## The awareness layer's quiet dependencies
+
+Two supports determine whether the layer works at all. **Management visibility**: awareness content endorsed and occasionally delivered by leadership signals that security is an organisational value rather than a departmental campaign - the same promulgation logic as policy. **Channel hygiene**: the organisation's legitimate communications must themselves be distinguishable from phishing - consistent senders, no unexpected link-heavy blasts, no requests that mirror attack patterns - or the awareness programme is training staff to distrust exactly the channels it depends on. An organisation that sends staff unexpected "click here to complete mandatory training" emails from a third-party domain is running a counter-campaign against itself, and auditing internal communications against the programme's own advice is a small control with outsized return. The audit is straightforward: collect a quarter's internal mass communications and score them against the phishing indicators the programme teaches - unexpected sender domains, urgency language, credential-adjacent links. Whatever fails the organisation's own training is rewritten, and the exercise usually recruits the communications team into the programme as allies rather than accidental adversaries.`
+    },
+    {
+      id: '8-worked-examples',
+      title: `8. Worked Examples`,
+      content: `## Worked example 1: classify the instruction
+
+*Classify each as education, training, or awareness: (a) the organisation pays for its incident-response lead to complete an external certification programme in digital forensics; (b) posters by every lift remind staff that visitors must be badged and escorted; (c) the finance team attends a session, built and delivered by the security office and recorded per attendee, on verifying payment-change requests; (d) a monthly all-staff email summarises one current scam pattern.*
+
+**(a) Education** - formal, external, credentialed, aimed at deepening a practitioner's expertise. **(b) Awareness** - informal, continuous, aimed at everyone, habit-level reinforcement. **(c) Training** - semi-formal, delivered by the organisation's SMEs to staff with specific duties, documented and tracked (note the per-attendee record: that is the due diligence trail). **(d) Awareness** - regular communications keeping the subject visible to the whole population.
+
+The classification keys are formality, provider, and audience - never the topic. Payment fraud could be the subject of all three forms; what made (c) training was the duty-specific audience, the SME delivery, and the tracking.
+
+## Worked example 2: the click-through problem
+
+*An organisation's annual CBT shows 99% completion, yet its quarterly phishing simulations show click rates worsening. The training vendor proposes adding more modules. Evaluate the situation and the proposal.*
+
+The data is not contradictory - it is the classic signature of **click-through**. Completion measures that employees paged to the end; the worsening simulation results measure behaviour, and behaviour is the effectiveness metric. The programme is generating records, not competence.
+
+The vendor's proposal adds volume to a delivery method already failing for this population - more modules to click through faster. The evidence-driven moves instead: **diversify delivery** - live sessions for the highest-failure departments, where click-through is impossible and questions surface; **make the simulations teach** - immediate, private feedback at the moment of a failed test, which is the most attentive a learner ever is; **add reward mechanics** for reporting (recognising the employees who report simulations and real phish alike), shifting the culture from avoiding blame to contributing detections; and **review the content's currency** - worsening results may mean the CBT teaches last year's phishing indicators while the simulations, correctly, use this year's.
+
+The exam-grade summary: when completion is high and behaviour is poor, the problem is the method and the material, not the quantity.
+
+## Worked example 3: proving the programme
+
+*Following a costly incident caused by an employee wiring funds on a fraudulent email, the organisation faces a negligence claim. What programme evidence would strengthen its position, and what gaps would weaken it?*
+
+Strengthening evidence follows the due diligence pattern from the governance module - documentation of the right activity, plus documentation that it occurred: the **training records** showing this employee completed payment-verification training, dated before the incident, with the content version preserved; the **currency trail** showing that content was reviewed by SMEs on schedule and covered the current fraud pattern; the **measurement record** - simulation and testing results showing the programme was evaluated and remediated, not merely delivered; and the **policy linkage** - the procedure the training taught traces to a promulgated policy the employee acknowledged.
+
+Weakening gaps are the mirror image: content that had not been reviewed in years (teaching a world where this fraud pattern did not exist); completion records with no effectiveness measurement (the organisation knew or should have known the training was not working - its own simulation data would be discoverable); or no record that this employee ever received the relevant instruction. Worst of all is measurement data showing known failure with no remediation: evidence the organisation saw the weakness and did nothing, which is the shape of negligence.
+
+The larger lesson: the programme's records are built for two audiences - the workforce today, and the tribunal after the incident. Run it so both are satisfied.
+
+## Worked example 4: building the segment plan
+
+*A 900-person firm has budget for one annual all-staff CBT, four live sessions, and a quarterly phishing simulation. Recent history: two payment-fraud attempts against finance (one succeeded), a tailgating incident, and developer-introduced vulnerabilities found in an assessment. Allocate the delivery budget.*
+
+Start from the risk history, because the programme exists to reduce these specific risks, not to distribute instruction evenly.
+
+The **all-staff CBT** carries the baseline: policy obligations, handling, reporting channels, social-engineering recognition - with the tailgating incident argued into this year's content and the awareness stream (posters at doors, badge-challenge reminders), since tailgating is an everyone-problem at habit level.
+
+The **four live sessions** go where failure is expensive and click-through unaffordable: two to **finance** - the population with a demonstrated, successful attack against it - on payment verification, delivered live because the material must survive real pressure and questions ("what if the CFO emails at 5 p.m. Friday?" gets answered in the room); two to **developers** on the vulnerability classes the assessment actually found, taught by whoever triaged them, because training built from the organisation's own findings lands harder than generic secure-coding content.
+
+The **quarterly simulations** rotate targeting: all-staff baseline phishing twice a year to measure the CBT's effect, and targeted pretexts against finance and executive assistants in the other quarters, matching how the adversary actually aims.
+
+What makes this answer exam-grade is the explicit triage logic: every delivery slot maps to an observed failure mode or a high-exposure population, awareness handles the habit-level problem, and measurement (the simulations) is budgeted as part of delivery, not as an optional extra - because without it, next year's allocation would be guesswork again.`
+    },
+    {
+      id: '9-self-check',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+1. State the two specific risks a security instruction programme exists to reduce.
+
+2. Differentiate education, training, and awareness on formality, provider, and audience.
+
+3. Which form of instruction is tracked and documented, and what legal value does that documentation carry?
+
+4. Name the principal weakness of computer-based training and the delivery method that directly counters it - along with that method's own two costs.
+
+5. Why does the module claim that dated training material can actively *decrease* security rather than merely being ineffective?
+
+6. List the four content areas that must be checked for currency during periodic reviews.
+
+7. Name the three approaches to evaluating programme effectiveness and what each actually measures.
+
+8. An organisation's phishing simulation results identify a department with persistent failures. Give two programme responses that are constructive and one that is counterproductive, with the reason.
+
+9. Where does an instruction programme's mandate come from, and what does that placement imply about whether training is mandatory?
+
+10. Why does baseline training belong at onboarding, before or at the moment access is granted?
+
+11. In a phishing simulation programme, why is report rate a better maturity metric than click rate alone?
+
+12. An incident occurs because one employee could execute a payment on a single emailed instruction. The proposed remediation is organisation-wide anti-phishing training. Evaluate.
+
+## Answers
+
+**1.** The **internal threat** - reducing the incidents caused by employee error and ignorance, which constitute most insider damage - and the **effectiveness of certain attacks**, above all social engineering, which succeeds precisely where the target does not recognise the pattern. Instruction is the control that addresses both, because it changes the behaviour of the population every other control depends on.
+
+**2.** **Education**: formal; provided by accredited academic institutions outside the employer, typically as degree or certification programmes; audience is practitioners and experts. **Training**: semi-formal; provided by the organisation itself or vendors, presented by subject matter experts; audience is employees tasked with specific duties. **Awareness**: informal, often unscheduled and not mandatory; provided continuously by the organisation; audience is everyone. Purpose in three words: experts, operators, habits.
+
+**3.** **Training** is documented and tracked, and the records are part of the organisation's **due diligence** evidence. After an incident involving an employee's act, dated records showing the employee received the relevant instruction - with the content version preserved - materially change the organisation's legal posture, exactly as documented procedures do in the governance module. Awareness earns its value through repetition instead; education is credentialed externally.
+
+**4.** CBT's weakness is **click-through**: employees complete material they consider a nuisance without absorbing it, so tracking proves completion, not competence. **Live instruction** directly counters it - paging through is impossible, questions are handled in real time, and the security team builds rapport. Its two costs: **scheduling** (a fixed meeting time suppresses enthusiasm and attendance) and the **instructor problem** - it requires a subject matter expert who is also a skilled trainer, two talents not reliably found in one person.
+
+**5.** Because personnel trained on outdated threats hold **misplaced confidence**: they believe they can recognise attacks, but they recognise last year's attacks. Against current methods they are subject to subversion - and uninformed personnel are a vulnerability in the same sense as an unpatched system. The material's badge of "training completed" makes it worse, because the organisation also believes the control exists. Dated instruction is thus not a weak control but a false one.
+
+**6.** **Applicable laws** (particularly breach notification, intellectual property, and PII law), **security tools** (versions and capabilities staff are taught to use), **organisational security policy** (instruction must match what is currently promulgated), and **recent widespread attack styles and methodology** (the fastest-moving content of all). Reviews are performed by SMEs on a regular schedule, with periodic external expert review for the widest perspective.
+
+**7.** **Participant testing** - formal testing against pre-defined desired outcomes, plus random spot-check audits - measures whether concepts were understood and retained. **Penetration testing with social engineering** - mock phishing, pretexting, and similar attacks against trained staff - measures whether training survives realistic adversarial contact. **Log reviews** - comparing user activity records against policy as taught - measure whether day-to-day behaviour actually changed and whether it decays over time. Together: knowledge, reflexes, habits.
+
+**8.** Constructive: **remediate with a stronger delivery method** for that department - live instruction where click-through is impossible, with immediate private feedback at the moment of simulated failure - and **treat the failure pattern as content feedback**, reviewing whether the material covering that attack pattern is current and adequate, since a shared failure usually indicates shared instructional gaps. Counterproductive: **public shaming of the failing employees** - it teaches people to hide mistakes and suppresses the reporting culture the programme depends on; the goal is more reported phish, not fewer admitted clicks.
+
+**9.** From the **written-governance hierarchy**: policy states that personnel will be instructed in their security obligations; standards fix which roles receive which training on what cadence; procedures run enrolment, delivery, and recording. The placement means the training question "is it mandatory?" is answered by the documents, not by the trainer - and for the training layer the standard normally says yes with tracked completion, precisely because a tracked record is what converts instruction into due diligence evidence. It also means the programme carries senior management's authority when it asks departments for employee hours.
+
+**10.** Because the highest-risk employee is the one holding **fresh credentials and no instruction** - fully capable of causing an incident and entirely untrained to avoid one. Onboarding training closes that window by pairing the access grant with the knowledge to use it safely: policy obligations, handling rules, reporting channels, and the social-engineering patterns that specifically target new staff (who do not yet know colleagues' voices, normal processes, or what an unusual request looks like). Deferring baseline training to the next annual cycle leaves that exposure open for months.
+
+**11.** Because the two metrics measure different halves of the goal. A falling **click rate** shows individuals protecting themselves; a rising **report rate** shows the organisation gaining a detection capability - real campaigns are caught early because trained people report them, feeding response before the tenth recipient clicks. Report rate is also the culture gauge: it rises only where reporting is easy, acknowledged, and safe, so it measures exactly the constructive climate the programme is supposed to build. A programme with low clicks and low reports has taught avoidance, not participation - safer individuals, but no early-warning network.
+
+**12.** Training is a supporting response here, not the fix. Run the test: could a *well-trained* employee still have caused this incident? Yes - a sufficiently convincing pretext beats any individual eventually, and the process allowed one person, on one unverified instruction, to move funds. The primary remediation is procedural and structural: out-of-band verification for payment changes, and separation of duties so no single employee completes the transaction alone. Training then reinforces the new procedure (and finance-targeted simulation tests it). Offering organisation-wide training as the *whole* answer treats a process failure as a knowledge failure - the exact mismatch the module warns against.`
+    }
   ],
 },
 cissp_bcdr: {
@@ -1940,6 +2576,308 @@ Work each before reading the answer.
 5. **Senior management** is ultimately responsible: they approve the policy and scope, provide resources, accept residual risk, and sign off on the plan and on test disruption. The security professional advises, quantifies, facilitates, documents and tests — but does not decide what the organisation can afford to lose.
 6. An incremental scheme requires the **last full backup plus EVERY incremental in order** (Monday, Tuesday, Wednesday) — slowest and most fragile to restore, since a single missing increment breaks the chain. A differential scheme would need only the **last full plus the single most recent differential**, restoring faster at the cost of larger daily backups.`,
     },
+  ],
+},
+cissp_ethics: {
+  topicId: 'cissp_ethics',
+  title: `Professional Ethics`,
+  domainWeight: '16%',
+  overview: `Security professionals sell trust. Clients hand them the keys, the flaws, and the secrets, and the entire arrangement rests on the belief that the practitioner will act for the client and the public rather than for themselves. Ethics is therefore not a soft topic bolted onto the domain - it is the profession's licence to exist, and (ISC)2 makes strict adherence to its Code of Ethics a condition of holding the certification at all. This module covers the Code - preamble, four canons in order of precedence, and the enforcement process - alongside organisational codes of conduct, an ethics scenario of the kind the exam favours, and the corporate scandal that reshaped the legal duties of every data owner: the collapse that produced Sarbanes-Oxley and the modern law of legal holds.`,
+  sections: [
+    {
+      id: '1-trust-as-product',
+      title: `1. Why Ethics Is a Certification Requirement`,
+      content: `## The trust argument
+
+The reasoning behind a mandatory ethics code is commercial as much as moral, and the exam expects you to be able to state it. For clients and the public to see value in a certification, they must be able to **trust its holders** - and that trust rests on the belief that certified members act correctly, professionally, and to the client's benefit. A practitioner tending toward unethical behaviour signals the opposite possibility: that they will act out of short-term self-interest and *add* risk to the client instead of removing it. Every member's conduct therefore either builds or spends the shared credential's credibility.
+
+That is why the certification body's preamble sets a standard beyond private virtue: members must **adhere, and be seen to adhere**, to the highest ethical standards of behaviour. The visibility clause is not vanity - a profession trusted with secrets cannot rely on conduct nobody can observe; it needs conduct that visibly withstands observation. And the preamble's conclusion is enforcement, not aspiration: **strict adherence to the Code is a condition of certification**. Violate it and the credential itself is at stake.
+
+## What the safety-and-welfare framing does
+
+The preamble grounds the whole Code in **the safety and welfare of society and the common good**, ahead of duty to principals and to fellow members. That ordering is deliberate and load-bearing: it announces that when interests collide, the profession has already decided whose side its members are on. The canons that follow inherit this ordering - which is the subject of the next section - and exam scenarios about conflicting duties are resolved by it.
+
+| Preamble element | What it establishes |
+|---|---|
+| Safety and welfare of society, the common good | The highest interest served |
+| Duty to our principals, and to each other | The professional relationships that follow |
+| Adhere, and be seen to adhere | Conduct must be visibly ethical, not merely privately defensible |
+| Strict adherence is a condition of certification | The Code is enforced, with the credential as the stake |
+
+One vocabulary note worth fixing early: **principals** - the clients and employers on whose behalf the practitioner acts - not "principles." The near-homophone appears in exam options precisely because the slip is common.
+
+## Ethics on the exam: how it is actually tested
+
+Ethics items rarely quote the Code and ask for the missing word. They present a situation - a client pressure, a discovered wrongdoing, a personal temptation - and ask for the *best* action, with every option defensible-sounding. Three reading habits convert the module into marks.
+
+**Find the parties, then the canons.** Every scenario has a cast: the public, the practitioner's own integrity, a principal, the profession. Each maps to a canon, and identifying which parties' interests collide identifies which canons are in tension - at which point the precedence order does the deciding.
+
+**Distinguish the ethical question from the legal one.** Scenarios love the gap: conduct that is lawful but unethical (the corporate case's document destruction), and occasionally conduct that is ethical but legally fraught (truthful disclosure that breaches an NDA). The Code binds where law is silent, and Canon II makes law a floor - so "it was legal" never completes an ethics answer, and "it serves the client" never overrides Canons I and II.
+
+**Prefer the escalation path over the dramatic one.** The Code-conformant action is usually procedural: document, raise with the principal, escalate internally, decline to participate - not instant public exposure, and never silent compliance. Options at the extremes (immediately go to the press; do nothing, it is the client's decision) are typically distractors flanking a middle answer that protects the higher canon while exhausting professional process.`
+    },
+    {
+      id: '2-canons',
+      title: `2. The Four Canons, in Order`,
+      content: `## The canons
+
+![The four canons in order of precedence](/courses/cissp/figures/cissp-ethics-canons.svg)
+
+The Code's operative content is four canons, and **their order is their precedence** - when duties conflict, the earlier canon governs.
+
+| # | Canon | Core duty |
+|---|---|---|
+| I | Protect society, the common good, necessary public trust and confidence, and the infrastructure | The public interest first |
+| II | Act honorably, honestly, justly, responsibly, and legally | Personal integrity and lawfulness |
+| III | Provide diligent and competent service to principals | The client and employer |
+| IV | Advance and protect the profession | The field itself |
+
+## Reading each canon
+
+**Canon I** puts society above every other party the practitioner serves - including the paying client. "The infrastructure" earns its explicit mention because security practitioners hold privileged positions over systems the public depends on; damaging or withholding protection from shared infrastructure harms parties who never signed the engagement letter.
+
+**Canon II** binds personal conduct: honourable, honest, just, responsible, **and legal**. The final word means a practitioner cannot ethically perform an illegal act even at a client's instruction - illegality is an ethics violation per se, which resolves a whole family of scenario questions where a principal requests something unlawful.
+
+**Canon III** is the client's canon, and its two adjectives are chosen: **diligent** (the work is actually performed, with care) and **competent** (within one's actual ability - accepting an engagement one lacks the skill to perform is itself a violation). Note what Canon III does not say: it does not say *unconditional* service. It ranks third.
+
+**Canon IV** protects the profession - advancing its knowledge, mentoring, and refusing conduct that degrades the field's standing, including association with those who do.
+
+## The precedence in action
+
+The ordering resolves conflicts mechanically. A client (Canon III) instructs the practitioner to conceal a breach that endangers the public (Canon I): society wins; the practitioner cannot ethically comply. An action would help the profession's image (Canon IV) but requires dishonesty (Canon II): integrity wins. A competitor's incompetence endangers a client (Canon III) but exposing it truthfully might embarrass the field (Canon IV): the client's protection outranks professional image.
+
+The exam's ethics items are nearly all precedence questions in costume. The technique: identify which canons the scenario places in tension, then apply the order. Answers that serve a lower canon at the expense of a higher one are wrong, however commercially reasonable they sound - and the most tempting distractors are precisely the Canon III answers, because loyalty to the paying client feels like professionalism until Canon I or II is on the other side of the scale.`
+    },
+    {
+      id: '3-enforcement',
+      title: `3. The Enforcement Process`,
+      content: `## From complaint to disposition
+
+The Code is enforced through a formal process, and its stages are examinable in order.
+
+![The ethics complaint process](/courses/cissp/figures/cissp-ethics-complaint-process.svg)
+
+| Stage | What happens |
+|---|---|
+| Complaint | The process can begin with a complaint filed with the certification body (the procedure and form are published alongside the Code) |
+| Finding of facts | The matter is investigated and the facts established |
+| Rebuttal | The accused member has the opportunity to respond |
+| Ethics committee review | The committee reviews; the accused member sees the findings and recommendations *before* they go to the board, and may comment on them |
+| Board ruling | The board makes the final determination - whether the member acted consistently with the Code, and whether certification should be revoked |
+
+## What the process design teaches
+
+Two properties of the design carry the learning value.
+
+**Due process throughout.** The accused is heard at every stage - rebuttal after the facts, review and comment on the committee's findings and recommendations before the board ever sees them. An ethics regime that punished without process would itself violate the fairness its Code demands; the procedure practises what the canons preach.
+
+**The sanction is the credential.** The endpoint is not a fine but potential **revocation of certification** - the body enforces its Code with the one asset it controls, which is also the asset the preamble declared conditional on adherence. For a working practitioner whose role requires the certification, revocation is a career-grade consequence - which is exactly the weight a condition of certification is meant to carry.
+
+## The member's practical duties
+
+Three practical obligations follow for a certified professional: know the Code well enough to recognise a violation - including in scenario form on the exam; understand that the duty includes the profession's self-policing - Canon IV's "protect the profession" is part of why a complaint process exists and why credible complaints belong in it rather than in gossip; and remember the visibility clause - conduct that is technically defensible but *looks* corrupt fails the "be seen to adhere" standard, which is a real standard, not a garnish. The self-policing duty cuts in both directions, and the second direction is tested: filing a complaint one knows to be frivolous - as leverage, retaliation, or competition - abuses the process and is itself conduct the Code condemns, for the same reason the unauthorised-monitoring scenario condemns weaponised capability. The machinery of accountability is entrusted to members, and misusing it is a trust violation of exactly the kind the machinery exists to catch. Where a scenario offers a choice between an act that is proper and one that is proper *and visibly proper*, the Code has already expressed its preference.`
+    },
+    {
+      id: '4-org-codes',
+      title: `4. Organisational Codes of Ethics`,
+      content: `## The employer's layer
+
+Beyond professional-body codes, individual organisations create **their own codes of ethics** and require personnel to comply. Mechanically this is governance of the kind Module 6 described: conduct rules are dictated at the **policy level by senior management**, promulgated, and often integrated with the organisation's overall personnel policies - which places acknowledgement records, training, and enforcement on the same footing as any other policy.
+
+![Codes of conduct sit at the policy level of the governance hierarchy](/courses/cissp/figures/cissp-governance-hierarchy.svg)
+
+## What organisational codes typically proscribe
+
+| Category | Examples | Why the organisation cares |
+|---|---|---|
+| Discriminatory and hostile conduct | Racial, religious, or sexual harassment | Destroys the workplace and creates direct legal liability |
+| Unfair trade practices | Nepotism, bribery, awarding contracts on favours - cash or otherwise | Distorts markets and decisions; corrupts the organisation's dealings |
+
+The observation that binds the table: these behaviours are **often proscribed by law as well**. The organisation is best served by enacting and enforcing codes that ensure compliance with those laws - the code converts an external legal exposure into an internally managed rule, with the organisation's own enforcement as the first line rather than a regulator's. It is the same liability logic as the standards module: documented, enforced internal rules are the evidence of due care when conduct is later challenged.
+
+## Where security meets the code of conduct
+
+The security office intersects the organisational code in two directions, and the second is the one candidates miss.
+
+**Security enforces some of it.** Monitoring, access records, and investigations are how code violations - data misuse, harassment through company systems - are detected and evidenced. The security function must know the code because it supplies the facts when the code is enforced.
+
+**Security is bound by it - with elevated stakes.** Security personnel hold privileged access and investigative capability, which makes *their* ethical conduct disproportionately consequential. An administrator who monitors without authorisation, an analyst who browses records out of curiosity, an investigator who leaks findings - each is a code-of-conduct violation committed with the organisation's most powerful tools, and each corrodes the trust that lets security hold those tools at all. The next section's scenario is exactly this case, and it is the shape the exam most likes: not "is the *target's* behaviour acceptable?" but "was the *watcher's*?"`
+    },
+    {
+      id: '5-ethics-scenario',
+      title: `5. An Ethics Scenario: The Unauthorised Watcher`,
+      content: `## The situation
+
+You are the security manager. A network administrator reports that an employee has been using organisational resources during work hours to browse the internet - against policy, though not illegal. When you ask how the administrator came to know this, the administrator declines to answer. Your initial investigation establishes two facts: the administrator and the employee have a **personal conflict** known to colleagues, and the administrator **had sufficient technical permission** to monitor the employee - but **no explicit authorisation or tasking** to do so.
+
+## Working the analysis
+
+**Is the report valid?** The *information* may be factually true, but the report is tainted. The administrator refuses to disclose the collection method, the apparent motive is personal, and the monitoring - if that is what occurred - was conducted without authorisation. Capability is not authority: holding permissions sufficient to monitor is not a licence to monitor, any more than holding a master key is a licence to search offices. Surveillance of staff is legitimate only under organisational authorisation - and the legal context varies sharply by jurisdiction: some legal systems permit employers broad monitoring of activity on their own property and assets (generally requiring it to be random, pervasive, or management-directed upon cause, rather than personally targeted), while others restrict workplace surveillance severely enough that the *administrator's report itself* could expose the organisation to legal action by the employee.
+
+**What about the employee?** Very little, and that is the uncomfortable, correct answer. Because of how the information was obtained, formal discipline built on it invites claims of a hostile work environment and targeted surveillance. The proportionate response is managerial counselling: a reminder of appropriate workplace behaviour and the acceptable use policy, and - legitimately - a general notice that the organisation monitors its environment under its published policy. The policy violation was real but minor; the evidence is unusable for more.
+
+**And the administrator?** This is the heart of the scenario, and the analysis is severe. The administrator has acted unethically - or at minimum can offer no account under which the act was ethical - by conducting unauthorised, personally motivated surveillance and refusing to explain the collection. The conduct abused a **trusted position of privilege**, appears driven by emotion rather than professional duty, and has manufactured organisational risk (the employee's potential legal claims) far exceeding whatever risk the employee's browsing posed. Unprofessional behaviour by a person holding significant privileged access is cause for grave concern; in all likelihood the abuse of position warrants **termination**.
+
+## The transferable lessons
+
+Three principles generalise beyond the scenario, and each is exam-ready: **authorisation, not capability, legitimises monitoring** - the question is never "could they?" but "were they tasked?"; **the watcher's conduct is judged more strictly than the watched** - privileged access raises the ethical stakes of its holder's every act; and **improperly obtained information poisons the response** - the organisation ends up less able to act on a genuine violation than if the report had come through authorised channels, which is itself an argument for insisting on those channels.`
+    },
+    {
+      id: '6-corporate-failure',
+      title: `6. The Corporate Scandal That Rewrote the Rules`,
+      content: `## The collapse
+
+The early 2000s produced a series of accounting scandals at large publicly traded corporations whose bankruptcies triggered investigations across the audit and consulting industries. The most consequential involved an energy-trading giant whose external auditor was one of the largest accounting firms then in existence - and the auditor's conduct became the ethics case study of the era.
+
+Three findings stand out from the record:
+
+- **Structural conflict of interest.** The audit firm provided the client with *both* business consulting and audit services - roles that are inherently adversarial, since consulting maximises the client's profit while audit exists to verify honest reporting. The firm's assurance that internal policy compartmentalised the two lines did not survive events.
+- **Destruction of evidence.** As the client's collapse and a regulatory investigation unfolded, the firm's executives ordered employees to shred thousands of pages and delete volumes of electronic audit records - explained afterwards as routine application of the firm's end-of-engagement data destruction policy.
+- **Audited concealment.** The client had hidden investment losses inside colourfully named subsidiary entities; the same audit firm had dutifully audited those entities too.
+
+The firm was prosecuted for obstruction of justice and convicted. The conviction was later overturned on appeal over improper jury instructions - but the exoneration was commercially irrelevant: reputational destruction and the surrender of its accountancy licences had already ended it as an audit business. (Its consulting arm survived separately under a new name.) The ethics lesson in that sequence is stark: **the legal verdict and the professional verdict are separate systems, and winning the first does not survive losing the second.**
+
+## The legal aftermath: SOX and the legal hold
+
+The most instructive twist: the document destruction was eventually determined **not to have been illegal at the time** - no law then required the firm to retain the data, and its own policy genuinely mandated end-of-engagement sanitisation. Lawful, catastrophic, and clearly wrong: the gap between those three is precisely why the law changed.
+
+Two changes followed, and both are standing exam material:
+
+![Legal hold: notice of pending action overrides every retention schedule](/courses/cissp/figures/cissp-legal-hold.svg)
+
+**The Sarbanes-Oxley Act (SOX)** imposed transparency in financial reporting for publicly traded corporations and codified accounting practices. Most of SOX is not security's business, but one part is: corporations must report on how they manage **internal controls** - control structures that typically sit under the security officer's purview. SOX also reshaped the audit industry's standards: the older audit standard was replaced (SAS 70 giving way to the SSAE series, later updated again), spawning the **SOC - System and Organization Controls** - reporting framework now ubiquitous in vendor assurance. When Domain 6 examines SOC reports, this is where they came from.
+
+**The amended rules of evidence** created the modern **legal hold**: once a data owner receives notice of a pending legal action or investigation, the owner may not delete or destroy any relevant information, physical or electronic. Critically, this preservation duty **takes precedence over other law and internal policy** - including privacy-law destruction requirements and the owner's own retention schedules. The defence that ended an audit firm ("our policy required destruction") is now foreclosed by design: after notice, the policy yields, and destruction is obstruction regardless of what any schedule says. For the security practitioner this lands as an operational duty - incident response and records management must be able to *suspend* automated deletion, immediately and provably, when the notice arrives.`
+    },
+    {
+      id: '7-other-frameworks',
+      title: `7. Other Ethics Frameworks the Exam Names`,
+      content: `## The internet's own ethics statement
+
+Beyond the certification body's Code and the employer's code of conduct, the exam expects recognition of one more layer: community ethics statements for shared infrastructure. The canonical example is the Internet Activities Board's early formal statement on network ethics (published as RFC 1087, "Ethics and the Internet"), issued when the internet was a research network and its stewards needed to say aloud what responsible use meant. It characterises as unethical any activity that purposely:
+
+| Proscribed activity | Modern echo |
+|---|---|
+| Seeks to gain unauthorised access to resources | The unauthorised-access crime class of the legal module |
+| Disrupts the intended use of the internet | Denial of service in every form |
+| Wastes resources - people, capacity, computers - through such actions | Resource abuse; the illegal-use-of-resources offence |
+| Destroys the integrity of computer-based information | The integrity leg of the triad, stated as an ethical duty |
+| Compromises the privacy of users | The privacy obligations of the surrounding modules |
+
+Its exam value is twofold. Historically, it shows the profession's norms predate most computer-crime statute - the community judged these acts wrong before legislatures made them illegal, which is the ethics-before-law pattern the corporate-scandal section demonstrated in the other direction. Practically, its five clauses map cleanly onto the field's later structure: unauthorised access, availability, resource abuse, integrity, privacy. A candidate who knows the triad already knows most of the list.
+
+## Layering the obligations
+
+A working practitioner is bound by several ethics regimes at once, and scenario questions sometimes turn on which one speaks to a situation:
+
+| Layer | Source | Enforcement lever |
+|---|---|---|
+| Law | Legislatures and courts | Prosecution, liability |
+| Professional code | The certification body | Revocation of the credential |
+| Community norms | Statements like the internet ethics RFC | Reputation, community sanction |
+| Organisational code | The employer, at policy level | Discipline up to termination |
+| Personal integrity | The practitioner | The conscience the other layers assume |
+
+The layers usually agree - the same act that violates the canons typically breaches the employer's code and often the law. Where they diverge, precedence reasoning from the canons applies: **legality is a floor, not a ceiling** (Canon II demands legal *and* honorable conduct - lawful-but-corrupt fails the Code), and no employer instruction can authorise what Canon I or II forbids, just as no client instruction can. The practitioner who can articulate *which layer* an obligation comes from also knows *what is at stake* for violating it: licence, livelihood, liberty, or standing - and exam options frequently differ exactly there.
+
+The quiet fifth row is the load-bearing one. Codes and statutes are external checks on conduct; the profession's daily reality is unobserved privileged access, where only the practitioner's own standards are present. The entire apparatus of this module - canons, processes, cases - exists to shape what that person does when nobody is watching, which is the situation security work mostly is.`
+    },
+    {
+      id: '8-worked-examples',
+      title: `8. Worked Examples`,
+      content: `## Worked example 1: canon precedence under pressure
+
+*During an engagement, a consultant discovers that a client's product ships with a flaw exposing the public to real harm. The client - citing the contract and the consultant's duty of service - instructs the consultant to omit the finding from the report and tell no one. What does the Code require?*
+
+Identify the canons in tension. The client invokes **Canon III** - diligent and competent service to principals - read as loyalty and confidentiality. The flaw's public danger engages **Canon I** - protect society, the common good, public trust, and the infrastructure. Concealing a known public danger may also strain **Canon II**'s honesty.
+
+Precedence resolves it: **Canon I outranks Canon III.** The consultant cannot ethically participate in concealing a danger to the public, however contractually loyal the concealment would be. The professional path is not theatrical whistleblowing but escalation with the client first - documenting the finding, pressing for remediation and appropriate disclosure - with the understanding that if the client insists on concealment, the consultant's obligations to society and to their own integrity cap what instructions they can follow.
+
+The distractor to recognise on exam day is the answer dressed as professionalism: "serve the client; confidentiality is paramount." Confidentiality is a Canon III value, and the Code ranked it third on purpose.
+
+## Worked example 2: the competence trap
+
+*A practitioner is offered a lucrative engagement to design a control system for a technology they have never worked with. The client, impressed by the practitioner's certification, assumes competence. Deadlines rule out learning it properly first. What are the ethical options?*
+
+The governing text is **Canon III**: diligent and *competent* service. Accepting work one lacks the competence to perform is not aggressive business development - it is an ethics violation, because the client is paying for expertise the practitioner knows they do not hold. **Canon II** compounds it: staying silent while the client assumes competence is a form of dishonesty; the certification's halo is doing the misleading.
+
+The ethical options all run through disclosure: decline; or disclose the gap and propose bringing in (or subcontracting to) genuine expertise, with the practitioner in a role they can competently fill; or disclose and let the *informed* client decide with accurate facts. What is not available is silent acceptance. Note also **Canon IV** quietly present: certified members trading on the credential to sell work beyond their skill damages exactly the collective trust the certification exists to build.
+
+## Worked example 3: the deletion schedule and the letter
+
+*A company's records policy requires deletion of project data one year after closure - a schedule driven partly by privacy-law minimisation duties. Regulators send notice of an investigation touching several old projects; some of their data is inside the automated deletion window and will be purged this week. The records manager argues the deletions must proceed: "It's the policy, and privacy law requires it." Evaluate.*
+
+The records manager is making, in good faith, the exact argument that history discredited: *our policy requires destruction*. Since the rules of evidence were amended, **notice of a pending action or investigation triggers a legal hold**, and the preservation duty **takes precedence over internal policy and over other legal requirements** - including privacy-law destruction duties for the data within the hold's scope. Proceeding with this week's purge would be destruction of evidence after notice: obstruction exposure for the company and potentially for individuals, with the policy offering no defence at all.
+
+The correct response sequence: suspend automated deletion for all data plausibly within the investigation's scope - immediately, and in a way that can be *demonstrated* (the suspension itself should leave evidence); involve counsel in defining the hold's boundaries; document the conflict with the privacy schedule rather than resolving it silently, since the privacy regulator will accept "under legal hold" and will not accept "we destroyed it during your colleague's investigation." The operational moral for security: a records system that *cannot* suspend its own automated deletion quickly is a compliance failure waiting for its trigger - build the hold switch before the notice arrives.
+
+## Worked example 4: the visibly-clean rule
+
+*A security consultant finishes an assessment for Client A, a payments firm. Client B - Client A's direct competitor - offers the consultant a lucrative follow-on engagement to "benchmark our security against industry peers," asking specifically about practices at firms the consultant has assessed. Nothing in Client A's contract forbids the consultant taking competitor work. What does the Code require?*
+
+Separate what is contractual from what is ethical, because the stem is built to blur them.
+
+Contractually the consultant may be free to accept. Ethically, three canons converge on the same answer. **Canon III** owes Client A diligent service, which includes the confidentiality of what the assessment revealed - engagement findings do not become the consultant's stock-in-trade when the invoice is paid. **Canon II** (act honorably, honestly) bars the pretence of delivering "industry benchmarking" that is actually Client A's security posture with the name removed. And the preamble's **"be seen to adhere"** clause does independent work here: even a scrupulously sanitised engagement *looks* like selling a client's secrets to its competitor, and appearance is part of the standard.
+
+The Code-conformant options: decline; or accept only a genuinely generic engagement with explicit disclosure to both parties of the prior relationship and a documented commitment - ideally with Client A's informed consent - that nothing from the assessment informs the work. If Client B's interest evaporates under those conditions, that is diagnostic: what they were buying was the conflict.
+
+The transferable rule: when a scenario turns on "the contract doesn't prohibit it," the contract is the distractor. The canons and the visibility clause bind conduct the paperwork never mentions - which is precisely why the profession has a Code and not just standard terms.`
+    },
+    {
+      id: '9-self-check',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Recite the four canons in order, and state what the order means operationally.
+
+2. Why does the preamble require members to "be seen to adhere" rather than merely to adhere?
+
+3. Walk the enforcement process from complaint to final disposition, and name the two due-process protections the accused member receives.
+
+4. A client instructs a practitioner to perform an act that is illegal but commercially advantageous to the client. Which canons govern, and what is the answer?
+
+5. In the unauthorised-monitoring scenario, why is the administrator's conduct treated as more serious than the employee's policy violation?
+
+6. At what organisational level is a company code of ethics established, and what two categories of conduct do such codes typically proscribe?
+
+7. What is a legal hold, what triggers it, and what does it take precedence over?
+
+8. The audit firm in the corporate scandal was ultimately not convicted (on appeal), and its document destruction was found lawful at the time. Why is it still the profession's central cautionary tale?
+
+9. Why is providing both consulting and audit services to the same client considered an inherent conflict of interest?
+
+10. What did the audit-standard lineage that followed SOX produce, and why does it matter to security practitioners today?
+
+11. Name the five activities characterised as unethical by the early internet ethics statement, and connect each to a later structure of the field.
+
+12. A scenario's answer options include "comply - the client is paying," "report immediately to the press," and "document the finding, escalate with the client, and decline to participate in concealment." Why is the third the Code-conformant shape?
+
+## Answers
+
+**1.** **I: Protect society, the common good, necessary public trust and confidence, and the infrastructure. II: Act honorably, honestly, justly, responsibly, and legally. III: Provide diligent and competent service to principals. IV: Advance and protect the profession.** The order is precedence: when duties conflict, the earlier canon governs - society over integrity conflicts is not the usual case, but society over client (I over III) and integrity over client (II over III) resolve most scenario questions, and profession (IV) yields to all three above it.
+
+**2.** Because the profession's product is **trust**, and trust is built on observable conduct. A practitioner whose behaviour is privately defensible but looks corrupt still damages the credential's credibility - clients cannot audit intentions, only appearances and outcomes. The visibility clause makes managing the appearance of integrity part of the duty itself, which is why, between two proper courses of action, the one that is *visibly* proper is the Code-preferred choice.
+
+**3.** **Complaint** filed with the certification body → **finding of facts** (investigation) → **rebuttal** by the accused member → **ethics committee review** → **board ruling** on whether the member acted consistently with the Code and whether certification should be revoked. The two due-process protections: the accused's **opportunity for rebuttal** after the facts are established, and the accused's right to **review and comment on the committee's findings and recommendations before they reach the board**. The ultimate sanction is revocation of the certification itself.
+
+**4.** **Canon II** - act honorably, honestly, justly, responsibly, **and legally** - makes the illegal act an ethics violation per se; no client instruction can authorise it. **Canon III**'s duty of service to principals is subordinate (it ranks below Canon II), and if the illegal act would also harm the public, **Canon I** independently forbids participation. The answer: refuse, document, and if necessary escalate - service to a principal never extends to unlawful acts.
+
+**5.** Because the administrator **abused a trusted position of privilege**: monitoring was conducted without authorisation or tasking, apparently from personal animus, and the collection method was concealed when asked. Capability is not authority - permissions sufficient to monitor are not a licence to monitor. The abuse manufactured organisational risk (potential legal claims by the targeted employee, up to jurisdictions where the surveillance itself may be unlawful) that far exceeds the risk posed by the employee's browsing, and unprofessional conduct by a holder of privileged access is cause for the gravest concern - in all likelihood warranting termination, where the employee's violation warranted counselling.
+
+**6.** At the **policy level**, dictated by **senior management** and typically integrated with the organisation's personnel policies - meaning promulgation, acknowledgement, and enforcement follow the standard governance machinery. The two typical categories: **discriminatory and hostile conduct** (racial, religious, sexual harassment) and **unfair trade practices** (nepotism, bribery, awarding contracts on favours). Both are often proscribed by law as well, so the code doubles as a compliance instrument and due-care evidence.
+
+**7.** A **legal hold** is the duty to preserve - not delete or destroy - any relevant information, physical or electronic, once the data owner **receives notice of a pending legal action or investigation**. It takes precedence over **internal policy** (retention and destruction schedules) and over **other legal requirements** (including privacy-law destruction duties) for the data within its scope. Operationally it demands the ability to suspend automated deletion immediately and demonstrably; destroying data after notice is obstruction regardless of what any policy required.
+
+**8.** Because the case proves that **lawful and ethical are different tests, and the professional verdict is the one that kills**. The firm's destruction followed its own policy and broke no law then in force; its conviction was overturned - and none of that mattered, because clients, regulators, and the public had already withdrawn trust: licences surrendered, business ended. The case also carried structural lessons the law then absorbed: the conflict of combining consulting and audit, and the need for a preservation duty that overrides destruction policies - the legal hold. It is the standing demonstration that a trust-selling profession is judged by its ethics first and its statutes second.
+
+**9.** Because the two roles are **structurally adversarial**: consulting is paid to maximise the client's success and stands to profit from the relationship's growth, while audit exists to verify honest reporting *about* that same client - including reporting that could end the relationship. One firm holding both roles has a financial interest in the findings of its own supposedly independent verification. Policy walls between the practices ask the firm to police a conflict it profits from, which is why the scandal's aftermath pushed audit independence into regulation rather than leaving it to internal compartmentalisation - and why "separation of duties" in later domains treats *structural* independence, not promised independence, as the control.
+
+**10.** SOX's reporting requirements drove replacement of the older audit standard (SAS 70) with the SSAE series - since updated again - which spawned **SOC (System and Organization Controls) reporting**, now the ubiquitous vehicle for third-party assurance. It matters to security practitioners because SOC reports are how organisations evaluate the control environments of vendors and service providers without auditing them personally: Domain 6 examines them as audit artefacts, and vendor-risk work leans on them daily. The lineage also explains *why* they exist - a trust failure in the audit industry produced the standardised, security-relevant attestation formats the industry now runs on.
+
+**11.** Purposely **seeking unauthorised access to resources** (later, the unauthorised-access crime class); **disrupting the intended use of the internet** (denial of service); **wasting resources** - people, capacity, computers (resource abuse; illegal use of resources); **destroying the integrity of computer-based information** (the integrity leg of the triad as an ethical duty); and **compromising users' privacy** (the privacy obligations of the surrounding modules). The list's exam value is the mapping itself: community ethics anticipated the field's later legal and technical structure, clause by clause.
+
+**12.** Because it protects the highest applicable canon while exhausting professional process. "Comply - the client is paying" serves Canon III at the expense of Canons I and II - the precedence error the ordering exists to prevent. Immediate public exposure skips every professional step: it may ultimately be where an unresolvable Canon I conflict ends, but as a first move it abandons the duty of diligent service and due process the Code models in its own enforcement machinery. The third option is the escalation path: the finding is preserved (documented), the principal is given the chance to act correctly (escalated), and the practitioner's integrity is protected (declining participation in concealment). Ethics answers are usually procedural, middle-path, and canon-ordered - the extremes are the distractors. When two middle options remain, the visibility clause is the tiebreaker: prefer the action that would read as proper to an observer who knows every fact.`
+    }
   ],
 },
 // ===== Domain 2: Asset Security (10%) - Instructor Edition module order =====
