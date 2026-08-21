@@ -400,12 +400,31 @@ def fig_radical_chain(mode):
     plt.close(fig)
 
 
+
+# ---------------------------------------------------------------------------
+# ch7: ring strain vs ring size (strain energies from heats of combustion,
+# standard physical-organic compilations; kJ/mol vs the cyclohexane reference)
+# ---------------------------------------------------------------------------
+
+def fig_ring_strain(mode):
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    sizes = ["3", "4", "5", "6", "7", "8"]
+    strain = [115, 110, 26, 0, 26, 40]
+    fig, ax = plt.subplots(figsize=(6.4, 4.0))
+    _bar(ax, sizes, strain, fs.SERIES[mode][0], ink, "total ring strain (kJ/mol)")
+    ax.set_xlabel("ring size (carbons)")
+    ax.axhline(0, color=fs.GUIDE[mode], linewidth=0.8)
+    fs.save(fig, OUT, "org1-ring-strain", mode)
+    plt.close(fig)
+
+
 ALL = [
     fig_alkane_bp, fig_c5_bpmp, fig_newman,
     fig_pka_ladder, fig_polar_effect, fig_arrow_grammar,
     fig_alkene_stability, fig_cation_ladder, fig_bde_chart,
     fig_catalysed, fig_kinetic_thermo, fig_aromatic_shortfall,
-    fig_radical_chain,
+    fig_radical_chain, fig_ring_strain,
 ]
 
 if __name__ == "__main__":

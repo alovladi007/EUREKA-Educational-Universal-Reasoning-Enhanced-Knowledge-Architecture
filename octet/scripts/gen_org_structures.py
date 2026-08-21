@@ -154,6 +154,10 @@ MOLS = {
     "pentane": ("pentane", "CCCCC", "C5H12", "bp 36.1 C"),
     "isopentane": ("2-methylbutane", "CCC(C)C", "C5H12", "bp 27.8 C"),
     "neopentane": ("2,2-dimethylpropane", "CC(C)(C)C", "C5H12", "bp 9.5 C"),
+    "cyclopropane": ("cyclopropane", "C1CC1", "C3H6", "strain 115 kJ/mol"),
+    "cyclobutane": ("cyclobutane", "C1CCC1", "C4H8", "strain 110 kJ/mol"),
+    "cyclopentane": ("cyclopentane", "C1CCCC1", "C5H10", "strain 26 kJ/mol"),
+    "cyclohexane": ("cyclohexane", "C1CCCCC1", "C6H12", "strain ~0 (reference)"),
     "hexane": ("hexane", "CCCCCC", "C6H14", ""),
     "2mp": ("2-methylpentane", "CCCC(C)C", "C6H14", ""),
     "3mp": ("3-methylpentane", "CCC(C)CC", "C6H14", ""),
@@ -304,6 +308,11 @@ def two_path_figure(stem, subst, top_rhs, bot_rhs, mode,
 
 
 FIGURES = {
+    # ch7
+    "org1-ring-gallery": lambda m: grid_figure(
+        "org1-ring-gallery",
+        ["cyclopropane", "cyclobutane", "cyclopentane", "cyclohexane"], 4, m,
+        w=170, h=130),
     # ch2
     "org1-c5-isomers": lambda m: grid_figure(
         "org1-c5-isomers", ["pentane", "isopentane", "neopentane"], 3, m),
