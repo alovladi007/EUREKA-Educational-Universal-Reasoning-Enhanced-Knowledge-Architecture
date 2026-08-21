@@ -4502,6 +4502,228 @@ The schedule itself is jurisdictional and revised, so it is verified against the
   ],
 },
 
+nx_mh_meds: {
+  topicId: 'nx_mh_meds',
+  title: `Psychotropic Medications`,
+  domainWeight: 'Pharmacological and Parenteral Therapies (13-19%)',
+  overview: `Psychotropic items reward a small set of precise facts: which drugs take weeks to work and what that delay creates, which movement disorder is reversible and which is not, what a lithium level means at each threshold, and how to tell the three hyperthermic drug emergencies apart. This chapter builds each class with its monitoring, its teaching, and the emergency it can produce.`,
+  sections: [
+    {
+      id: 'mhm-antidepressants',
+      title: `1. Antidepressants & the Activation Window`,
+      content: `![Antidepressant response over time: energy and activation return within one to two weeks while mood lifts at four to six, creating a window in which a client has the energy to act before the depression has resolved.](/courses/nclex/figures/nclex-antidepressant-onset.svg)
+
+| Class | Examples | Key teaching / monitoring |
+| --- | --- | --- |
+| SSRI | fluoxetine, sertraline, escitalopram | first-line; 4-6 weeks to full effect; GI upset and sexual dysfunction common |
+| SNRI | venlafaxine, duloxetine | monitor blood pressure; duloxetine also used in neuropathic pain |
+| Atypical | bupropion | NO sexual dysfunction; LOWERS seizure threshold — avoid in seizure and eating disorders |
+| Tricyclic | amitriptyline, nortriptyline | anticholinergic effects; LETHAL IN OVERDOSE — cardiac conduction |
+| MAOI | phenelzine, tranylcypromine | TYRAMINE-free diet; hypertensive crisis; many drug interactions |
+
+## The delay is the danger
+
+The figure shows the mechanism behind the most tested fact in this chapter. Antidepressants take **4-6 weeks** for full mood response, but **energy, motivation and psychomotor activation return earlier**. A client who was too depressed to act now has the capacity to act while still feeling hopeless — which is why suicide risk can RISE in the early weeks of treatment, and why close monitoring is intensified rather than relaxed after starting therapy.
+
+Teaching follows directly: continue the medication even though nothing seems to be happening, do not stop abruptly, and report worsening mood or thoughts of self-harm immediately rather than waiting for the next appointment. Abrupt SSRI discontinuation causes a discontinuation syndrome — flu-like symptoms, dizziness, sensory disturbances — so tapering is supervised.
+
+## MAOI dietary teaching
+
+Tyramine-rich foods precipitate hypertensive crisis: aged cheeses, cured and smoked meats, fermented products, soy sauce, tap beer, and overripe fruit. The presentation is a severe occipital headache with surging blood pressure, and it is an emergency. Many over-the-counter cold preparations and other antidepressants are also contraindicated, with washout periods required when switching.`,
+      examTip: `Suicide risk can RISE in the first weeks because energy returns before mood does. An item describing a newly-started depressed client who suddenly seems calmer and more organized is describing that window.`,
+    },
+    {
+      id: 'mhm-antipsychotics',
+      title: `2. Antipsychotics, EPS & the Emergencies`,
+      content: `| Generation | Examples | Profile |
+| --- | --- | --- |
+| First (typical) | haloperidol, fluphenazine, chlorpromazine | strong on positive symptoms; HIGH extrapyramidal risk |
+| Second (atypical) | risperidone, olanzapine, quetiapine, aripiprazole | lower EPS; METABOLIC effects — weight, glucose, lipids |
+| Clozapine | clozapine | for treatment resistance; AGRANULOCYTOSIS — mandatory ANC monitoring |
+
+## The four extrapyramidal syndromes
+
+| Syndrome | Appearance | Timing | Response |
+| --- | --- | --- | --- |
+| Acute dystonia | torticollis, oculogyric crisis, laryngeal spasm | hours to days | IM anticholinergic — benztropine or diphenhydramine; URGENT |
+| Akathisia | inner restlessness, cannot sit still | days to weeks | often misread as agitation; reduce dose or add agent per orders |
+| Pseudoparkinsonism | tremor, rigidity, shuffling gait, masked face | weeks | anticholinergic; dose review |
+| Tardive dyskinesia | lip smacking, tongue rolling, choreiform movements | months to years | often IRREVERSIBLE — screen regularly, report early |
+
+The tested discrimination: **akathisia is frequently mistaken for worsening psychosis or anxiety**, and increasing the antipsychotic makes it worse. And **tardive dyskinesia may be permanent**, which is why routine screening matters — early recognition allows a medication change while the movements can still resolve.
+
+## Metabolic monitoring
+
+Second-generation agents demand baseline and periodic weight, BMI, waist circumference, fasting glucose or A1C, lipids and blood pressure. Clozapine adds absolute neutrophil count on a mandated schedule, because agranulocytosis is life-threatening and silent until infection appears — a client on clozapine with fever and sore throat needs an urgent count, not reassurance.`,
+      examTip: `Dystonia is urgent and treatable; tardive dyskinesia may be permanent. And a clozapine client with a fever needs an ANC now — agranulocytosis presents as infection.`,
+    },
+    {
+      id: 'mhm-mood-anxiolytics',
+      title: `3. Mood Stabilizers & Anxiolytics`,
+      content: `## Lithium: the narrow window
+
+| Serum level | Meaning | Findings |
+| --- | --- | --- |
+| 0.6-1.2 mEq/L | therapeutic maintenance | fine tremor, mild GI upset, thirst common |
+| 1.5-2.0 | early toxicity | coarse tremor, vomiting, diarrhea, drowsiness |
+| 2.0-2.5 | moderate-severe | ataxia, confusion, blurred vision, tinnitus |
+| above 2.5 | severe | seizures, coma, cardiac collapse — dialysis territory |
+
+Lithium is handled by the kidneys and **follows sodium**: anything that lowers sodium or volume raises lithium. Dehydration, sweating, vomiting, diarrhea, low-salt diets, NSAIDs and thiazide diuretics all push levels up. Teaching is therefore concrete — maintain **steady salt and fluid intake**, do not start NSAIDs without asking, report vomiting or diarrhea rather than riding it out, and attend level monitoring. Baseline and periodic renal and thyroid studies are standard, and lithium is contraindicated in pregnancy planning without specialist involvement.
+
+| Alternative stabilizers | Monitoring |
+| --- | --- |
+| valproate | LFTs, platelets, ammonia; teratogenic |
+| carbamazepine | CBC (blood dyscrasias), LFTs, many interactions |
+| lamotrigine | titrate SLOWLY — rash may be Stevens-Johnson; report any rash |
+
+## Anxiolytics and hypnotics
+
+Benzodiazepines (lorazepam, alprazolam, diazepam) work fast, which is their value and their problem: tolerance, dependence and withdrawal that can seize. They are for short-term or situational use, never stopped abruptly, and dangerous with alcohol or opioids. **Flumazenil** reverses them, with seizure risk in dependent clients.
+
+Buspirone is the contrast worth knowing: non-sedating, non-dependence-forming, and **takes weeks** — so it is useless as a rescue medication and appears as a distractor when an item describes acute panic.`,
+      examTip: `Lithium follows sodium and water — dehydration, NSAIDs and thiazides raise it. And buspirone takes weeks, so it never answers an acute anxiety episode.`,
+    },
+    {
+      id: 'mhm-emergencies',
+      title: `4. The Three Drug Emergencies & Self-Check`,
+      content: `| Emergency | Trigger | Signature | Onset | Response |
+| --- | --- | --- | --- | --- |
+| Serotonin syndrome | serotonergic combinations (SSRI + triptan, tramadol, MAOI, St John's wort) | agitation, HYPERREFLEXIA, clonus, diaphoresis, hyperthermia | HOURS | stop agents, cool, support, notify |
+| Neuroleptic malignant syndrome | antipsychotics | LEAD-PIPE RIGIDITY, hyperthermia, autonomic instability, mutism, raised CK | DAYS | stop antipsychotic, cool aggressively, dantrolene/bromocriptine per orders |
+| Anticholinergic toxicity | anticholinergic burden | dry, flushed, hot, dilated pupils, delirium, urinary retention | variable | stop agents, supportive care |
+
+The discriminator is **reflexes plus the clock**: hyperreflexia and clonus within hours points to serotonin syndrome, while rigidity and mutism developing over days on an antipsychotic points to NMS. Both are hyperthermic and both are emergencies; the treatments differ.
+
+## Self-Check
+
+1. A client started sertraline 10 days ago and now appears brighter and more energetic, telling the nurse she has "figured everything out." What must be assessed?
+2. A client on haloperidol paces constantly and says he cannot sit still. Name the syndrome and the error to avoid.
+3. A client on lithium reports three days of vomiting and diarrhea. What is the concern?
+4. Which anxiolytic is inappropriate for acute panic, and why?
+5. Distinguish serotonin syndrome from NMS in one sentence.
+
+## Answers
+
+1. Suicide risk — the activation window. Energy has returned before mood has fully lifted, and a sudden calm resolve with statements of having decided something is a classic warning. Assess directly for plan, means and intent and escalate observation.
+2. Akathisia. The error is treating it as worsening psychosis and INCREASING the antipsychotic, which worsens it; the response is dose review or an added agent per orders.
+3. Lithium toxicity. Fluid and sodium loss concentrates lithium, so vomiting and diarrhea raise the level — obtain a level, hold the dose per protocol, and rehydrate as ordered.
+4. Buspirone — it takes weeks to work and has no rescue effect, so it cannot address an acute episode.
+5. Serotonin syndrome brings HYPERREFLEXIA and clonus within hours of a serotonergic combination, while NMS brings lead-pipe RIGIDITY and mutism over days on an antipsychotic.`,
+    },
+  ],
+  keyTakeaways: [
+    `Antidepressants need 4-6 weeks for mood but restore energy sooner, so suicide risk can rise early — monitoring intensifies after starting, not before.`,
+    `EPS sorts by timing and reversibility: dystonia is urgent and treatable, akathisia is misread as agitation, tardive dyskinesia may be permanent.`,
+    `Clozapine requires ANC monitoring because agranulocytosis presents as infection; second-generation agents require metabolic monitoring.`,
+    `Lithium follows sodium and water — dehydration, NSAIDs and thiazides raise levels — and 1.5 mEq/L begins toxicity.`,
+    `Reflexes and the clock separate the hyperthermic emergencies: hyperreflexia within hours is serotonin syndrome, rigidity over days on an antipsychotic is NMS.`,
+  ],
+},
+
+nx_mh_disorders: {
+  topicId: 'nx_mh_disorders',
+  title: `Mental Health Disorders & Their Nursing Care`,
+  domainWeight: 'Psychosocial Integrity (6-12%)',
+  overview: `Mental health items test recognition and response rather than diagnosis: which findings define the disorder, which intervention matches the developmental and clinical picture, and — above all — which situation is a safety emergency. This chapter covers the mood, anxiety, psychotic, personality and eating disorders with the milieu interventions that work for each, and the escalation ladder that governs an agitated client.`,
+  sections: [
+    {
+      id: 'mhd-mood-anxiety',
+      title: `1. Mood & Anxiety Disorders`,
+      content: `| Disorder | Defining picture | Nursing focus |
+| --- | --- | --- |
+| Major depression | 2+ weeks of low mood or anhedonia, sleep and appetite change, worthlessness, poor concentration | SAFETY first, then activity, nutrition, sleep, realistic goals |
+| Bipolar — manic episode | elevated or irritable mood, grandiosity, decreased sleep need, pressured speech, risk-taking | reduce stimulation, finger foods, firm consistent limits, exhaustion watch |
+| Persistent depressive disorder | chronic lower-grade depression, 2+ years | long-term engagement and adherence |
+| Generalized anxiety | uncontrollable worry most days, 6+ months, somatic tension | grounding, routine, teach recognition of escalation |
+| Panic disorder | recurrent unexpected attacks with peak within minutes | stay with the client, calm brief directions, breathing coaching |
+| PTSD | re-experiencing, avoidance, hyperarousal after trauma | predictability, control, trauma-informed approach |
+| OCD | obsessions with compensatory compulsions | DO NOT abruptly block rituals; allow time, then reduce gradually |
+
+Two interventions carry the section. During a **panic attack**, the client cannot process complex instruction — the correct response is to stay, remain calm, use short simple directions, and reduce stimulation rather than explain or reason. And with **OCD**, preventing a ritual outright raises anxiety sharply; the plan schedules time for it and reduces it gradually as other coping develops.
+
+## Mania nursing is environmental engineering
+
+A manic client cannot sit for a meal, so nutrition arrives as **high-calorie finger foods** eaten while moving. Stimulation is reduced — private room where possible, brief calm interactions, no competitive activities. Limits are set firmly, consistently and without argument, because arguing engages the grandiosity. And exhaustion is a genuine physical risk: a client who has not slept in days is heading toward collapse, and rest is a clinical priority rather than a comfort measure.`,
+      examTip: `Panic means stay and simplify, never explain. Mania means finger foods and low stimulation. OCD means schedule the ritual and taper it, never block it abruptly.`,
+    },
+    {
+      id: 'mhd-psychotic-personality',
+      title: `2. Psychotic, Personality & Eating Disorders`,
+      content: `## Schizophrenia spectrum
+
+| Symptom type | Examples | Response to medication |
+| --- | --- | --- |
+| POSITIVE | hallucinations, delusions, disorganized speech, agitation | usually responsive |
+| NEGATIVE | flat affect, avolition, alogia, anhedonia, social withdrawal | less responsive; often more disabling long-term |
+| Cognitive | attention, memory, executive dysfunction | variable |
+
+The scripted response to hallucinations: **do not argue, do not agree** — present reality once gently, then assess and redirect. "I do not hear the voices, but I can see they frighten you — what are they telling you?" The content question is mandatory safety assessment when command hallucinations are possible, not curiosity.
+
+For **paranoid** clients: consistent staff, clear simple language, no whispering within sight, sealed or packaged food if suspicion centres on poisoning, and no touching without warning.
+
+## Personality disorders and the milieu
+
+| Cluster | Pattern | Nursing emphasis |
+| --- | --- | --- |
+| A (paranoid, schizoid, schizotypal) | odd, eccentric, mistrustful | consistency, non-intrusive approach |
+| B (antisocial, borderline, histrionic, narcissistic) | dramatic, emotional, erratic | CLEAR BOUNDARIES, team consistency |
+| C (avoidant, dependent, obsessive-compulsive) | anxious, fearful | build confidence, gradual independence |
+
+Cluster B carries the tested content, particularly **splitting** — the client experiences staff as all-good or all-bad and communicates accordingly, which fractures teams. The counter is a **consistent team plan** with limits applied identically by everyone and communicated in handoff, so the inconsistency splitting exploits does not exist. Self-harm behaviour is addressed with a matter-of-fact, non-punitive response and a safety plan rather than either alarm or dismissal.
+
+## Eating disorders
+
+| Disorder | Picture | Priority |
+| --- | --- | --- |
+| Anorexia nervosa | restriction, low weight, intense fear of gaining, distorted body image | MEDICAL stabilization; monitor for refeeding syndrome |
+| Bulimia nervosa | binge-purge cycles, usually normal weight | electrolytes (hypokalemia), dental erosion, esophageal risk |
+| Binge eating | binges without compensation | metabolic consequences, psychological support |
+
+**Refeeding syndrome** is the emergency: reintroducing nutrition to a severely malnourished client shifts phosphate, potassium and magnesium into cells, and the resulting hypophosphatemia can cause cardiac and respiratory failure. Nutrition is therefore reintroduced slowly with electrolyte monitoring — an item proposing rapid caloric restoration is describing the danger.
+
+Mealtime nursing is structured rather than negotiated: supervised meals, a set period afterwards during which the bathroom is not used, matter-of-fact discussion of weight-related behaviour, and weighing on a consistent schedule with the facility's protocol on whether the client sees the number.`,
+      examTip: `Present reality once and never argue with a delusion. Splitting is defeated by a consistent team plan. And refeeding a severely malnourished client too fast is the emergency, not the treatment.`,
+    },
+    {
+      id: 'mhd-safety',
+      title: `3. Safety, Escalation & Self-Check`,
+      content: `![The least-restrictive escalation ladder: environment and presence, verbal de-escalation, offered medication, seclusion, and restraint only when danger is imminent, with the legal order limits attached.](/courses/nclex/figures/nclex-restraint-ladder.svg)
+
+Every agitation item is answered by working UP the ladder in the figure and never skipping rungs. Restraint and seclusion are last resorts under the strict rules from the Legal & Ethical chapter: a provider order is required, a face-to-face evaluation follows within one hour for violent or self-destructive behaviour, orders are time-limited (4 hours adult, 2 hours ages 9-17, 1 hour under 9) and **never PRN**, monitoring is continuous, and release happens at the earliest safe moment.
+
+Staff safety is procedural: stay between the client and the door, keep distance, do not turn your back, remove potential weapons from the area, and summon help before intervening rather than after.
+
+## The suicide protocol, restated
+
+Ask **directly** — asking does not plant the idea. Assess **plan, means and intent**; a stated plan with available means and expressed intent is the highest-acuity finding in the domain and triggers one-to-one observation, means restriction, and provider notification. **Confidentiality never extends to safety**, so a request to keep a secret is answered by declining the promise before it is made.
+
+## Self-Check
+
+1. A client with OCD must complete a 40-minute handwashing ritual before breakfast, making him late for medications. What is the appropriate plan?
+2. A newly admitted client with mania has not eaten in two days and cannot sit at the table. What is the intervention?
+3. Two nurses disagree sharply about a client with borderline personality disorder — one finds her cooperative, the other manipulative. What is happening and what fixes it?
+4. A severely malnourished client with anorexia is admitted. What complication must be anticipated during nutritional restoration?
+5. An agitated client is pacing and shouting but has not threatened anyone. What is the correct first action?
+
+## Answers
+
+1. Schedule TIME for the ritual rather than blocking it — wake him earlier so the ritual can be completed without a collision. Abruptly preventing a compulsion sharply raises anxiety; reduction is gradual and paired with alternative coping.
+2. Provide high-calorie, high-protein FINGER FOODS he can eat while moving, along with fluids, and monitor intake and weight. Insisting he sit down to eat fails, because sitting is what he cannot currently do.
+3. Splitting — the client is relating to staff as all-good or all-bad, and the team is absorbing the inconsistency. The fix is a consistent team plan with identical limits, communicated in handoff, so the differing responses splitting exploits no longer exist.
+4. Refeeding syndrome — electrolyte shifts, especially HYPOPHOSPHATEMIA, with cardiac and respiratory consequences. Reintroduce nutrition slowly with close electrolyte monitoring.
+5. Begin at the bottom of the ladder: reduce stimulation, remove the audience, offer space, and use calm verbal de-escalation with simple choices. Medication is offered next if needed, and restraint is considered only if danger becomes imminent.`,
+    },
+  ],
+  keyTakeaways: [
+    `Panic means stay and simplify; mania means finger foods and low stimulation; OCD means scheduling the ritual and tapering it, never blocking it.`,
+    `Present reality once without arguing or agreeing, assess command-hallucination content for safety, and give paranoid clients consistency and no surprises.`,
+    `Splitting is a team problem solved by a consistent plan applied identically and communicated in handoff.`,
+    `Refeeding syndrome — hypophosphatemia with cardiac and respiratory failure — is the danger when restoring nutrition too quickly.`,
+    `Work UP the least-restrictive ladder; restraints need an order, a one-hour face-to-face, strict time limits by age, and are never PRN.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */

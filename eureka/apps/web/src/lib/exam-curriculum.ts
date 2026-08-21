@@ -992,6 +992,13 @@ const NCLEX_RN: ExamCurriculum = [
     ],
   },
   {
+    sectionId: 'mental_health', sectionName: 'Mental Health Nursing',
+    topics: [
+      t('nx_mh_disorders', 'Mental Health Disorders & Their Nursing Care', 'Mood, anxiety, psychotic, personality and eating disorders with the assessment findings, milieu interventions and safety priorities the exam tests.', 17),
+      t('nx_mh_meds', 'Psychotropic Medications', 'Antidepressants and the activation risk window, antipsychotics and EPS, mood stabilizers with lithium monitoring, anxiolytics, and the three drug emergencies.', 17),
+    ],
+  },
+  {
     sectionId: 'basic_care', sectionName: 'Basic Care & Comfort',
     topics: [
       t('nx_basic_care', 'Mobility, Nutrition & Elimination', 'Positioning, assistive devices, pressure-injury staging and prevention, therapeutic diets, tube feeding, and elimination care.', 14),

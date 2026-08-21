@@ -820,6 +820,79 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Antidepressant onset: mood response lags the start of therapy by weeks, while
+# energy and activation return earlier - the gap that creates the elevated
+# suicide-risk window taught with SSRI initiation.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-antidepressant-onset")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    wk = np.linspace(0, 8, 400)
+    energy = 100 / (1 + np.exp(-(wk - 1.6) * 1.6))
+    mood = 100 / (1 + np.exp(-(wk - 4.2) * 1.2))
+    fig, ax = plt.subplots(figsize=(7.4, 4.0))
+    ax.plot(wk, energy, color=c[1], linewidth=2)
+    ax.plot(wk, mood, color=c[0], linewidth=2)
+    S.label_end(ax, 6.6, 99, "MOOD improves (4-6 weeks)", c[0], mode,
+                ha="right", dy=-14)
+    S.label_end(ax, 2.6, 92, "ENERGY and activation return first", c[1], mode,
+                ha="left", dy=6)
+    ax.axvspan(1.2, 4.0, color=c[2], alpha=0.16)
+    ax.annotate("THE RISK WINDOW\nenergy to act returns\nbefore the mood lifts",
+                (2.6, 34), ha="center", fontsize=9, color=ink)
+    ax.set_xlabel("weeks after starting therapy")
+    ax.set_ylabel("relative improvement")
+    ax.set_xlim(0, 8)
+    ax.set_ylim(0, 112)
+    ax.set_yticks([])
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The least-restrictive ladder for an escalating client: verbal de-escalation
+# first, then offered medication, then seclusion or restraint only when danger
+# is imminent - with the legal time limits attached.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-restraint-ladder")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rungs = [
+        ("1. Environment and presence", "reduce stimulation, remove the audience, offer space", c[0]),
+        ("2. Verbal de-escalation", "calm tone, simple choices, name the feeling", c[0]),
+        ("3. Offered PRN medication", "voluntary, explained, least invasive route", c[1]),
+        ("4. Seclusion", "order required; continuous observation", c[2]),
+        ("5. Restraint", "imminent danger only; face-to-face within 1 hour", c[2]),
+    ]
+    fig, ax = plt.subplots(figsize=(8.2, 4.2))
+    for i, (title, note, colour) in enumerate(rungs):
+        y = len(rungs) - 1 - i
+        ax.add_patch(plt.Rectangle((0.3, y + 0.12), 4.4, 0.72, facecolor="none",
+                                   edgecolor=colour, linewidth=1.8))
+        ax.annotate(title, (0.5, y + 0.48), va="center", fontsize=9.6, color=ink)
+        ax.annotate(note, (5.0, y + 0.48), va="center", fontsize=8.2,
+                    color=S.INK_2[mode])
+        if i < len(rungs) - 1:
+            ax.annotate("", (2.5, y + 0.08), (2.5, y + 0.9),
+                        arrowprops=dict(arrowstyle="<|-", color=S.GUIDE[mode],
+                                        linewidth=1.3))
+    S.note(ax, 0.3, -0.55,
+           "restraint order limits: 4 h adults / 2 h ages 9-17 / 1 h under 9 - NEVER PRN, released at the earliest safe moment",
+           mode, ha="left")
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(-0.9, 5.2)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
