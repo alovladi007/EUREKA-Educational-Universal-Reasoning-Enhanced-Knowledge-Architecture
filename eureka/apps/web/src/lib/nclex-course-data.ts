@@ -14,50 +14,120 @@ nx_ngn_exam: {
   topicId: 'nx_ngn_exam',
   title: `The NGN Exam & CAT Strategy`,
   domainWeight: 'Foundations',
-  overview: `The NCLEX-RN is not a fixed test — it is a computerized adaptive test (CAT) that builds itself around you, one item at a time, until it is statistically confident you are above or below the passing standard. Understanding the machine changes how you should sit in front of it: the exam is supposed to feel hard for everyone, a longer test does not mean you are failing, and there is no percentage score to chase. The 2026 test plan changed nothing of substance from the Next Generation NCLEX (NGN) framework, and it is locked through March 31, 2029 — what you study today is what you will face.`,
+  overview: `The NCLEX-RN is not a fixed test — it is a computerized adaptive test (CAT) that builds itself around you, one item at a time, until it is statistically confident you are above or below the passing standard. Understanding the machine changes how you should sit in front of it: the exam is supposed to feel hard for everyone, a longer test does not mean you are failing, and there is no percentage score to chase. The 2026 test plan is locked through March 31, 2029 — what you study today is what you will face. This chapter covers the algorithm, every NGN item type and how it is scored, the official content distribution, and the preparation habits that match how the test actually works.`,
   sections: [
     {
       id: 'ngn-cat-mechanics',
       title: `1. How the CAT Decides`,
       content: `Every candidate answers between 85 and 150 items in up to 5 hours. Of the first 85, only 70 are scored — 15 are unscored pretest items being calibrated for future exams, and you cannot tell which are which, so every item deserves full effort.
 
-The algorithm maintains a running estimate of your ability. Answer correctly and the next item is harder; miss and it gets easier. The exam ends when one of three things happens: the 95% confidence rule (the algorithm is 95% sure your ability is clearly above or clearly below the 0.00-logit passing standard), the maximum-length rule (at item 150, the final ability estimate decides), or the time rule (at 5 hours, a run-out-of-time decision is applied).
+The algorithm maintains a running estimate of your ability. Answer correctly and the next item is harder; miss and it gets easier. The exam ends when one of three things happens:
 
-This is why the test "feels" like a coin flip: the CAT deliberately serves items near your estimated ability, where you have roughly a 50% chance on each. If the questions feel brutally hard, that usually means the algorithm has placed you high and is probing your ceiling. Neither test length nor perceived difficulty predicts the outcome — candidates pass at 85 items and at 150, and fail at both.`,
+| Stopping rule | What it means |
+| --- | --- |
+| 95% confidence | the algorithm is 95% sure your ability is clearly above or clearly below the passing standard — can happen as early as item 85 |
+| maximum length | at item 150, the final ability estimate decides pass or fail |
+| time | at 5 hours, a run-out-of-time rule is applied to the remaining estimate |
+
+This is why the test "feels" like a coin flip: the CAT deliberately serves items near your estimated ability, where you have roughly a 50% chance on each. If the questions feel brutally hard, that usually means the algorithm has placed you high and is probing your ceiling. Neither test length nor perceived difficulty predicts the outcome — candidates pass at 85 items and at 150, and fail at both.
+
+## What this changes about strategy
+
+You cannot skip items or return to previous ones, so committing and moving on IS the strategy — there is no review pass. Mid-exam self-diagnosis ("these are getting easier, I must be failing") reads noise as signal and costs concentration; the honest answer is that you cannot tell, so stop reading tea leaves. Pace arithmetic: 5 hours across at most 150 items is two minutes per item — comfortable, which makes stamina and focus, not speed, the real constraints. Take the offered breaks; fatigue errors cluster late.`,
       examTip: `You cannot skip items or return to previous ones. Commit, move on, and do not diagnose your performance mid-exam — that spiral costs more points than any single wrong answer.`,
     },
     {
       id: 'ngn-item-types',
-      title: `2. The NGN Item Types`,
-      content: `Alongside classic multiple-choice and select-all-that-apply (SATA) items, the NGN introduced case studies and standalone item formats built around the clinical judgment model:
+      title: `2. The NGN Item Types & Their Scoring`,
+      content: `Alongside classic multiple-choice and select-all-that-apply (SATA), the NGN item set is built around the clinical judgment model, and most NGN formats award PARTIAL credit — which changes how you should answer them.
 
-Case studies present one evolving client across six linked questions, each mapped to one step of the clinical judgment model. The record unfolds in tabs — nurses' notes, vital signs, labs, orders — exactly like a chart.
+| Item type | What it looks like | Scoring |
+| --- | --- | --- |
+| case study | one evolving client, six linked questions, chart in tabs | each question scored on its own rubric |
+| bowtie | one screen: condition (center), 2 actions (left), 2 parameters to monitor (right) | partial credit per correct piece |
+| trend | a series of measurements over time to interpret | keyed to the trajectory, not single values |
+| matrix / grid | classify each row (expected / unrelated / requires follow-up) | credit per correctly classified row |
+| cloze (drop-down) | complete sentences by choosing from menus | credit per blank |
+| enhanced hot spot | highlight the relevant text in a record | credit for correct highlights, penalty for wrong ones |
+| extended multiple response | SATA with a longer option list | typically plus-minus scored |
+| extended drag-and-drop | move options into response targets | credit per correct placement |
 
-Bowtie items are a one-screen miniature case: from the presented findings you select the condition most likely developing (center), two actions to take (left), and two parameters to monitor (right).
+Plus-minus scoring is the practical headline: on most NGN multiple-response formats, each correct selection earns a point and each incorrect selection LOSES one (never below zero for the item). That kills the "select everything plausible" strategy — select what you can defend, and leave the coin flips unselected.
 
-Trend items ask you to interpret a series of measurements over time — a falling blood pressure across four readings, a rising temperature curve — rewarding recognition of trajectory, not single values.
+Classic SATA on the same exam is still scored all-or-nothing unless presented in the NGN partial-credit format; treat every option as an independent true-false judged on its own evidence.
 
-Matrix/grid items have you classify each row (e.g., mark each finding as expected, unrelated, or requiring follow-up). Extended drag-and-drop, cloze (drop-down sentence completion), enhanced hot spot (highlighting text in a record), and extended multiple response round out the set.
+Case studies deserve their tabs: the answer to each of the six questions is IN the record — vitals, notes, labs, orders — and the question sequence follows the clinical judgment model in order (recognize cues through evaluate outcomes). Read the tabs the question points to before the options.`,
+      examTip: `On plus-minus items, an unselected maybe costs nothing; a selected wrong answer costs a point. When you cannot defend an option from the stem or the record, leave it alone.`,
+    },
+    {
+      id: 'ngn-blueprint',
+      title: `3. The 2026 Blueprint: Where the Questions Come From`,
+      content: `The test plan publishes the distribution, which is also this course's map — the percentages below are why Management of Care and Pharmacological Therapies get the most chapters:
 
-Most NGN formats use partial-credit scoring: on a "+/-" scored item, correct selections earn points and incorrect selections cost them (never below zero for the item). You do not need a perfect response to earn most of the credit — so on multi-point items, select what you can defend and stop.`,
-      importantNote: `SATA items now appear with the extended multiple response scoring model on many NGN items: partial credit exists. The old all-or-nothing SATA fear should not drive you to under-select defensible answers.`,
+| Client Needs category | % of the exam |
+| --- | --- |
+| Management of Care | 15-21% |
+| Safety and Infection Prevention and Control | 10-16% |
+| Pharmacological and Parenteral Therapies | 13-19% |
+| Physiological Adaptation | 11-17% |
+| Reduction of Risk Potential | 9-15% |
+| Health Promotion and Maintenance | 6-12% |
+| Psychosocial Integrity | 6-12% |
+| Basic Care and Comfort | 6-12% |
+
+Three case-study sets (18 items) appear on every exam, plus roughly 10% stand-alone clinical-judgment items. Integrated throughout — not as separate sections — are nursing process, caring, communication, teaching/learning, and culture and spirituality.
+
+Reading the table strategically: the top four categories together account for roughly half to two-thirds of the exam, and they are also where unstable clients live — prioritization, infection control, drug safety, and deteriorating physiology. A study plan that front-loads those four buys the most points per hour. The bottom four are not skippable (6-12% each is still 10+ items), but they reward breadth over depth — know the frameworks and the classic scenarios.`,
+      examTip: `The blueprint is public and stable through March 2029 — study time should roughly track the percentages, not your comfort. The category you avoid is usually the one taking your points.`,
     },
     {
       id: 'ngn-preparation',
-      title: `3. Preparing for an Adaptive Exam`,
-      content: `Because the CAT samples across the whole test plan, breadth beats depth of any single topic. The eight Client Needs categories carry published weight ranges — Management of Care is the heaviest at 15-21% of scored items, Pharmacological and Parenteral Therapies second at 13-19% — and your preparation time should roughly mirror those weights.
+      title: `4. Preparing for an Adaptive Exam`,
+      content: `Preparation for a CAT differs from preparation for a fixed test in specific, actionable ways.
 
-Practice should be interleaved, not blocked: real exams never give you ten infection-control questions in a row, so drilling in shuffled mixed sets trains the switching your test day requires. Timed practice matters less than on fixed-length exams (the average pace works out to over two minutes per item even at 150 items), but stamina practice matters more — schedule at least two full-length practice sessions before test day.
+Practice should be interleaved, not blocked: real exams never give you ten infection-control questions in a row, so drilling in shuffled mixed sets trains the switching your test day requires. Blocked practice feels better and performs worse — the fluency is an illusion of the format.
 
-Finally, calibrate your self-assessment to behavior, not feeling. After each practice session, sort misses into three bins: didn't know the content (study it), knew it but misread the question (slow down at the stem), and changed a right answer to wrong (trust the first defensible read). The three bins have three different fixes, and lumping them together as "I did badly" fixes none of them.`,
+Practice the FORMATS, not just the content: bowtie, matrix, cloze, and highlighting have mechanics (partial credit, plus-minus penalties) that reward familiarity. The first time you meet a bowtie should not be on test day.
+
+Wrong-answer review is where the points are: for every miss, name WHY — content gap, misread stem, missed cue in the record, or changed answer without evidence. The categories have different fixes (study, slow down, tab-reading discipline, first-answer discipline), and logging them turns practice into diagnosis.
+
+Timed practice matters less than on fixed-length exams (the pace works out to over two minutes per item even at 150 items), but STAMINA practice matters more — schedule at least two full-length practice sessions before test day, because a 5-hour cognitive task is a physical event.
+
+The final week: taper rather than cram, verify your Authorization to Test and ID match exactly, sleep two consecutive full nights, and plan the logistics (route, arrival buffer, permitted items) so test-day working memory is spent on clients, not parking. On the day: breakfast with protein, use the breaks, and expect the coin-flip feeling — it is the algorithm doing its job, not a verdict.`,
+      examTip: `Review misses by CAUSE, not by topic: "misread the stem" and "content gap" are different diseases with different cures, and most candidates have a dominant one they have never named.`,
+    },
+    {
+      id: 'ngn-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A candidate's exam ends at 85 items. What are the possible interpretations?
+
+2. On an NGN extended multiple response item scored plus-minus, you are confident about three options and torn on two more. What do you select?
+
+3. Which two Client Needs categories carry the highest percentage ranges, and what does that imply for study allocation?
+
+4. A candidate reports the questions "felt impossible" from item 40 onward. What is the most accurate interpretation?
+
+5. Why does interleaved practice beat blocked practice for CAT preparation?
+
+## Answers
+
+1. Either outcome — 85 items means the algorithm reached 95% confidence quickly, which happens for clear passes AND clear fails. Length carries no directional information.
+
+2. The three you can defend. On plus-minus scoring, each wrong selection subtracts a point while an omitted maybe costs nothing — select only what the stem or record supports.
+
+3. Management of Care (15-21%) and Pharmacological and Parenteral Therapies (13-19%). Together with Physiological Adaptation and Safety, they form roughly half or more of the exam and deserve proportional study time.
+
+4. The CAT serves items near your estimated ability, so sustained difficulty most plausibly means the estimate is HIGH and the algorithm is probing the ceiling. Feeling is not feedback.
+
+5. Because the real exam interleaves by design — consecutive items jump categories, and practice that rehearses the switching (retrieving the right framework cold, every item) transfers; blocked drilling rehearses a format the exam never uses.`,
     },
   ],
   keyTakeaways: [
-    `85-150 items, 5 hours, 15 unscored pretest items you cannot identify — treat every item as scored.`,
-    `The CAT serves items near your ability: feeling challenged is the algorithm working, not a verdict.`,
-    `NGN case studies follow the six clinical-judgment steps; bowtie and trend items are their standalone forms.`,
-    `Partial credit exists on most NGN formats — select every answer you can defend.`,
-    `The 2026 test plan is frozen through March 2029: weights, item types, and the 0.00-logit standard.`,
+    `The CAT serves items at your estimated ability until 95% confident, item 150, or 5 hours — so difficulty and length carry no directional information about passing.`,
+    `NGN formats award partial credit, and plus-minus scoring punishes indefensible selections: choose what you can defend, omit the coin flips.`,
+    `Case-study answers live in the chart tabs, and the six questions walk the clinical judgment model in order.`,
+    `Study allocation should track the public blueprint — Management of Care and Pharm lead; the category you avoid is taking your points.`,
+    `Prepare with interleaved mixed sets, format practice, cause-coded wrong-answer review, and two full-length stamina sessions.`,
   ],
 },
 
@@ -65,44 +135,119 @@ nx_clinical_judgment: {
   topicId: 'nx_clinical_judgment',
   title: `The Clinical Judgment Model`,
   domainWeight: 'Foundations',
-  overview: `The NCSBN Clinical Judgment Measurement Model (NCJMM) is the skeleton under every NGN case study and most standalone items. Its six steps — recognize cues, analyze cues, prioritize hypotheses, generate solutions, take action, evaluate outcomes — are the exam's formalization of "thinking like a nurse." Learn the steps not as vocabulary but as questions you ask at the bedside, and every case study becomes a familiar walk instead of a puzzle.`,
+  overview: `Every NGN case study and most stand-alone items are written against one scaffold: the NCSBN Clinical Judgment Measurement Model, six cognitive steps from noticing to evaluating. Learning the model is not academic — each step has its own question style, its own verbs, and its own classic errors, so recognizing WHICH step a question is testing tells you what kind of answer it wants. This chapter walks the six steps with the question patterns, builds the cue-recognition habits the model rewards, and maps the model onto the older nursing process the exam still assumes.`,
   sections: [
     {
-      id: 'cjm-recognize-analyze',
-      title: `1. Recognize and Analyze Cues`,
-      content: `Recognizing cues means separating what matters from the noise in the client record. A case study opens with a chart: some findings are expected for the client's condition, some are irrelevant, and a few are the thread the whole case hangs on. The exam asks this directly: "Which findings require immediate follow-up?"
+      id: 'cjm-model',
+      title: `1. The Six Steps and Their Question Styles`,
+      content: `The model runs in order, and NGN case studies ask one question per step, in sequence:
 
-The skill is anchoring each cue to the client's context. A respiratory rate of 24 means one thing in a resting adult and another in a client one hour post-extubation. An oxygen saturation of 94% is acceptable for a client with COPD and alarming in a healthy 25-year-old post-tonsillectomy.
+| Step | The cognitive task | The question sounds like |
+| --- | --- | --- |
+| 1. recognize cues | filter relevant from irrelevant data | "which findings require follow-up?" / highlight items |
+| 2. analyze cues | link cues to possible conditions | "these findings are consistent with..." / matrix items |
+| 3. prioritize hypotheses | rank what is most likely / most urgent | "the client is at highest risk for..." |
+| 4. generate solutions | list interventions that address the priority | "which actions are appropriate?" (multiple response) |
+| 5. take action | choose and sequence what to DO now | "which action should the nurse take FIRST?" |
+| 6. evaluate outcomes | judge whether it worked | "which finding indicates improvement?" |
 
-Analyzing cues links the findings to possible explanations: "The client is 2 days post-op with sudden dyspnea, tachycardia, and pleuritic chest pain — which conditions do these support?" Here the exam rewards pattern recognition across body systems. Practice by naming, for every abnormal cue, at least two conditions that could produce it — then look for the second cue that separates them. Sudden dyspnea could be pulmonary embolism or pneumonia; a low-grade fever with productive cough points one way, a swollen unilateral calf the other.`,
-      examTip: `In case studies, cues from DIFFERENT tabs (vitals + nurses' note + labs) are usually the ones that combine into the answer. A finding repeated across tabs is the exam pointing at it.`,
+The step tells you the answer's shape. A recognize-cues question wants ABNORMAL-for-this-client findings, not interventions. A take-action question wants a doing verb, not more assessment — unless assessment IS the indicated action. An evaluate question wants a finding that moved toward target, not a restatement of the intervention.
+
+## Recognizing cues: relevant beats abnormal
+
+The step-1 trap is equating "abnormal" with "relevant." A chronically elevated creatinine in a dialysis client is abnormal and IRRELEVANT to today's chest pain; a heart rate that climbed from 88 to 112 is technically "normal range" and highly relevant. Relevance = departure from THIS client's baseline plus connection to the presenting problem. NGN highlighting items score exactly this discrimination — and penalize highlighting everything.`,
+      examTip: `Identify which model step the question is asking before reading the options — the step dictates whether the right answer is a finding, a condition, a risk, an action, or an outcome. Half of "hard" NGN questions are just step misidentification.`,
     },
     {
-      id: 'cjm-prioritize-generate',
-      title: `2. Prioritize Hypotheses and Generate Solutions`,
-      content: `Prioritizing hypotheses asks: of the conditions these cues support, which is most likely — and which is most lethal if missed? The exam's ordering logic blends probability with consequence. A client with crushing chest pain probably has acute coronary syndrome; even if anxiety is statistically possible, ACS is pursued first because missing it kills.
+      id: 'cjm-analyze',
+      title: `2. Analyzing & Prioritizing: From Cues to the Working Problem`,
+      content: `Analyzing cues means asking what could explain THIS cluster — and what cannot. The exam builds these items on classic clusters worth knowing cold:
 
-Generate solutions then asks what could be done — the full menu, before choosing. This is where expected prescriptions live: for the client with suspected pulmonary embolism, you anticipate oxygen, anticoagulation, imaging. Bowtie items make this step literal: pick the condition, then the two most appropriate actions.
+| Cue cluster | Points toward |
+| --- | --- |
+| fever + new confusion + hypotension + tachycardia | sepsis (confusion may be the first sign in older adults) |
+| sudden dyspnea + pleuritic pain + tachycardia after surgery or immobility | pulmonary embolism |
+| crushing chest pain + diaphoresis + nausea | myocardial infarction |
+| unilateral leg swelling + warmth + calf tenderness | deep vein thrombosis |
+| headache + visual changes + epigastric pain in pregnancy over 20 weeks | preeclampsia moving toward severe |
+| polyuria + polydipsia + fruity breath + Kussmaul respirations | diabetic ketoacidosis |
+| restlessness + rising BP + widening pulse pressure + slowing pulse | increasing intracranial pressure (Cushing triad forming) |
 
-Two frameworks do most of the prioritization work. ABC (airway, breathing, circulation) ranks physiologic threats; Maslow puts physiologic needs before safety, safety before psychosocial. Acute beats chronic, unstable beats stable, unexpected-for-the-condition beats expected-for-the-condition. When two options both seem right, ask "which client dies or deteriorates first if I delay?" — that is nearly always the intended sort key.`,
-      importantNote: `"Most likely hypothesis" and "priority hypothesis" are different questions. Likelihood follows the cue pattern; priority follows lethality. Read which one the item is asking.`,
+Prioritizing hypotheses is risk-ranking, not diagnosis: the working problem is the one that is most LIKELY and most LETHAL-if-missed, and those are not always the same option. The exam's phrasing — "at highest risk for," "the priority concern" — asks you to weight probability against consequence. A post-op client with sudden dyspnea COULD have anxiety; the working problem is embolism, because being wrong about anxiety costs nothing and being wrong about PE costs the client.
+
+This is also where "worst first" thinking from prioritization plugs in: the hypothesis you act on first is the one whose window for action closes fastest.`,
+      examTip: `When two hypotheses fit the cues, choose the one that kills faster if ignored — the exam ranks by consequence-weighted likelihood, and "rule out the lethal one" beats "name the common one."`,
     },
     {
-      id: 'cjm-act-evaluate',
-      title: `3. Take Action and Evaluate Outcomes`,
-      content: `Take action selects and sequences the interventions — often "what should the nurse do FIRST?" The first action is usually the one that directly interrupts the threat identified in the earlier steps: raise the head of the bed for autonomic dysreflexia, stop the infusion for a transfusion reaction, epinephrine for anaphylaxis. Assessment verbs come first only when the situation is genuinely undiagnosed; once the stem hands you the diagnosis, act.
+      id: 'cjm-action',
+      title: `3. Taking Action: First, Best & In What Order`,
+      content: `Action questions compress the whole model into one verb choice, and three patterns decide most of them.
 
-Evaluate outcomes closes the loop: which findings show the intervention worked — or didn't? The exam phrases this as "which finding indicates improvement?" or "which statement indicates the teaching was effective?" For teaching items, the correct answer is the client statement that translates the instruction into concrete behavior ("I will take this with a full glass of water and stay upright for 30 minutes"), and "indicates a need for further teaching" flips the polarity — hunt for the one wrong statement.
+Assess before you intervene — unless the stem already assessed. If the question gives you raw symptoms ("the client reports dizziness"), gathering the decisive data point (blood pressure, glucose) is usually first. If the stem HANDS you the assessment ("BP 78/50, client diaphoretic"), re-assessing is a stall — the answer is the indicated action. The wrong-answer pattern is assessment-as-avoidance: taking vitals on a client who is visibly not breathing.
 
-Across all six steps, the model rewards the same habit: tie every choice back to a cue in the record. If you cannot point at the finding that justifies an action, the action is probably a distractor.`,
+Least invasive that works, fastest that matters. Reposition before suctioning; oxygen before intubation options; oral before IV when the client can swallow and time permits — but when the scenario is emergent, the definitive action outranks the gentle ladder. The stem's acuity sets which ladder applies.
+
+Safety sequences have fixed first steps the exam samples directly: suspected anaphylaxis — stop the infusion FIRST; tonic-clonic seizure — protect the airway by positioning, nothing in the mouth; fall with suspected injury — assess before moving; wandering client missing — search per protocol while notifying; chest pain — position, oxygen per protocol, vitals, notify, obtain the ECG per protocol.
+
+## Nursing process, still underneath
+
+The older ADPIE nursing process (assess, diagnose, plan, implement, evaluate) maps onto the model — recognize/analyze cues are assessment and diagnosis, prioritize/generate are planning, take action is implementation, evaluate is evaluate. Older-style questions still use its vocabulary ("during the planning phase..."), so keep both frames; they never conflict, because the model is the process with the cognition made explicit.`,
+      examTip: `"FIRST" does not mean "only" — every option may be right eventually. The first action is the one that makes the next minutes safe: stop the harm, secure the airway, get the decisive data point.`,
+    },
+    {
+      id: 'cjm-evaluate',
+      title: `4. Evaluating Outcomes & Teaching Effectiveness`,
+      content: `Evaluate-outcomes items close the loop: which finding shows the intervention worked — or did not? The correct answer is a MEASURED CHANGE tied to the goal of the intervention, not a repetition of the intervention or a vague "client feels better."
+
+| Intervention | The finding that says it worked |
+| --- | --- |
+| bronchodilator for asthma | wheezes clearing, saturation rising, client speaking full sentences |
+| furosemide for fluid overload | urine output up, crackles resolving, daily weight down |
+| naloxone for opioid depression | respirations above 10 and rising, arousable |
+| fluid resuscitation in hypovolemia | BP up, HR down, urine output at least 30 mL/h |
+| insulin for DKA | glucose falling, anion gap closing, respirations normalizing |
+
+Watch the direction of each parameter: heart rate FALLING is improvement in hypovolemia (compensation unwinding) but potentially deterioration in a beta-blocked bradycardic client. Evaluation reads trends against the specific goal, exactly like recognizing cues in reverse.
+
+## Teaching evaluation and the polarity flip
+
+For teaching items, effectiveness is a client STATEMENT that translates instruction into concrete behavior: "I will take this with a full glass of water and stay upright for 30 minutes" evaluates alendronate teaching; "I understand the medication" evaluates nothing.
+
+The polarity flip is the most missed mechanical trap in the category: "indicates a need for FURTHER teaching" asks for the WRONG statement — hunt for the one error among three correct behaviors. Mark the polarity before reading options; readers who skim pick the best statement and miss the reversed question entirely. The same flip appears as "requires immediate follow-up" (find the dangerous finding) versus "expected finding" (find the normal one).`,
+      examTip: `Before reading any option set, name the polarity out loud: am I hunting the RIGHT behavior or the WRONG one? The flip ("further teaching needed") is tested constantly because skimmers fail it reliably.`,
+    },
+    {
+      id: 'cjm-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A case-study question asks: "Click to highlight the findings that require immediate follow-up." Which model step is this, and what defines a correct highlight?
+
+2. A post-op client suddenly reports dyspnea and pleuritic chest pain; HR is 118. Name the priority hypothesis and why it outranks anxiety.
+
+3. The stem states: "BP 82/48, skin cool and clammy, client confused." One option is "obtain a full set of vital signs." Why is it wrong?
+
+4. Which client statement shows warfarin teaching was effective: "I will double my next dose if I miss one," "I will use a soft toothbrush and report black stools," or "I can stop the drug once I feel normal"?
+
+5. A question asks which finding indicates furosemide was effective; one option is "the nurse administered the dose at 0900." Why is that option wrong regardless of content?
+
+## Answers
+
+1. Step 1, recognize cues. A correct highlight departs from THIS client's baseline AND connects to the developing problem — highlighting every abnormal value scores against you on these items.
+
+2. Pulmonary embolism — the cluster fits, and the consequence of missing PE is death while the consequence of missing anxiety is a delayed reassurance. Consequence-weighted likelihood ranks it first.
+
+3. The stem already contains the assessment — pressure, perfusion, and mentation are given. Re-measuring is assessment-as-avoidance; the moment calls for action on the shock picture.
+
+4. The soft toothbrush and black-stool report — concrete bleeding-precaution behavior plus the right warning sign. The other two statements are the classic dangerous errors (dose doubling, self-discontinuation).
+
+5. It restates the INTERVENTION, not an outcome. Evaluation requires a measured change toward the goal — output, weight, breath sounds — and an option describing what the nurse did can never evaluate whether it worked.`,
     },
   ],
   keyTakeaways: [
-    `Six steps: recognize cues → analyze cues → prioritize hypotheses → generate solutions → take action → evaluate outcomes.`,
-    `Cue recognition = relevance against THIS client's context, not textbook normals in isolation.`,
-    `Prioritization blends likelihood with lethality — the not-most-likely-but-fatal condition often outranks.`,
-    `"First action" items: interrupt the identified threat; assess first only when the situation is undiagnosed.`,
-    `"Need for further teaching" reverses polarity — you are hunting the single incorrect statement.`,
+    `Name the model step before the options: it dictates whether the answer is a finding, a condition, a risk, an action, or an outcome.`,
+    `Relevant beats abnormal — cues are read against this client's baseline and the presenting problem, and highlighting everything scores negative.`,
+    `Prioritize hypotheses by consequence-weighted likelihood: rule out what kills fastest, not what occurs most.`,
+    `Assess first only until the stem hands you the assessment — then act; the first action is the one that makes the next minutes safe.`,
+    `Evaluation is a measured change toward the goal, teaching effectiveness is a concrete behavior statement, and the "further teaching" polarity flip is hunted, not skimmed.`,
   ],
 },
 
@@ -110,50 +255,171 @@ nx_prioritization: {
   topicId: 'nx_prioritization',
   title: `Prioritization, Delegation & Assignment`,
   domainWeight: 'Management of Care (15-21%)',
-  overview: `Management of Care is the heaviest category on the exam, and prioritization-delegation questions are its core. These items simulate the real shift: four clients, one nurse, which door first? Or: a team of an RN, an LPN, and assistive personnel — who can safely do what? The rules are learnable, the frameworks are few, and the same patterns repeat endlessly.`,
+  overview: `Management of Care is the heaviest category on the exam, and prioritization-delegation questions are its core. These items simulate the real shift: four clients, one nurse, which door first? Or: a team of an RN, an LPN, and assistive personnel — who can safely do what? The rules are learnable, the frameworks are few, and the same patterns repeat endlessly. This chapter turns them into a decision procedure you can run under time pressure: the four-rung priority cascade, an instability radar, the full delegation scope table, assignment and floating logic, and the inverted rules of disaster triage.`,
   sections: [
     {
-      id: 'pri-frameworks',
-      title: `1. Who Do You See First?`,
-      content: `Every "which client first" item resolves through a short stack of frameworks applied in order:
+      id: 'prio-frameworks',
+      title: `1. Who Do You See First — The Framework Stack`,
+      content: `![The prioritization cascade: worst ABC wins, then unstable beats stable, then acute beats chronic, then Maslow — applied in order, stopping at the first rung that separates the clients.](/courses/nclex/figures/nclex-priority-cascade.svg)
 
-ABC with a caveat: airway compromise beats breathing problems beats circulation problems. Stridor, gurgling, or an obstructed artificial airway outranks nearly everything. The caveat: an ineffective airway beats a merely threatened one, and in CPR-adjacent situations current guidelines run circulation first (CAB) — but for triage-style questions, airway leads.
+Every "which client first" item resolves through the same short stack of frameworks, applied in order. The skill is not memorizing them — it is stopping at the FIRST rung that separates the clients, instead of arguing all four.
 
-Unstable beats stable: new, changing, or unexpected findings outrank chronic, known, expected ones. A client with COPD and chronic O₂ saturation of 91% is expected; a post-op client whose saturation just dropped from 98% to 91% is a trend heading somewhere.
+## Rung 1: worst ABC wins
 
-Acute beats chronic, and unexpected-for-the-condition beats expected-for-the-condition. Pain 8/10 two days after abdominal surgery is expected; sudden severe pain with a rigid abdomen is a possible dehiscence or bleed.
+Airway compromise beats breathing problems beats circulation problems. Stridor, gurgling, an obstructed tracheostomy, or a swelling neck hematoma after thyroidectomy outranks nearly everything on the board. Two caveats the exam loves:
 
-Maslow when nothing is physiologically on fire: physiologic needs, then safety, then psychosocial. The tearful client asking to talk matters — after the client whose IV antibiotic is an hour overdue.`,
-      examTip: `Distractors are engineered to be urgent-sounding but expected: severe pain, high glucose without ketones, a chronic abnormal vital sign. Ask "is this NEW or CHANGING?" before ranking it.`,
+An ACTUAL problem beats a POTENTIAL one at every rung. A client currently wheezing outranks a client at risk of aspiration. Do not let "airway" in a stem about risk trump "breathing" in a stem about an event in progress.
+
+In cardiac arrest, current resuscitation guidance runs circulation first (CAB) — compressions before airway maneuvers. For triage-style "who first" questions outside of arrest, airway leads.
+
+## Rung 2: unstable beats stable
+
+New, changing, or unexpected findings outrank chronic, known, expected ones. A client with COPD and a chronic oxygen saturation of 91% is at their baseline; a post-operative client whose saturation just dropped from 98% to 91% is a trend heading somewhere. Same number, opposite priority.
+
+## Rung 3: acute beats chronic, unexpected beats expected
+
+Pain of 8/10 two days after abdominal surgery is expected and managed; sudden severe pain with a rigid abdomen in the same client is a possible dehiscence or bleed and jumps the line. Ask of every finding: is this what the textbook says this condition does at this point in its course? If yes, it can usually wait behind anything that is not.
+
+## Rung 4: Maslow, when nothing physiologic is on fire
+
+Physiologic needs, then safety, then psychosocial. The tearful client asking to talk matters — after the client whose IV antibiotic is an hour overdue. But do not use Maslow to zero out psychosocial forever: a client expressing suicidal intent is a SAFETY emergency and outranks routine physiologic care.
+
+| Framework | The rule | The stem signal |
+| --- | --- | --- |
+| ABC | actual airway > breathing > circulation | stridor, gurgling, obstructed airway, uncontrolled bleeding |
+| Unstable vs stable | new or changing beats known baseline | "suddenly," "new onset," a changed vital-sign trend |
+| Acute vs chronic | unexpected-for-course beats expected | finding that does not match the condition's script |
+| Maslow | physiologic > safety > psychosocial | no one deteriorating; needs of different kinds compete |
+| Least restrictive | try the smallest intervention first | restraint, seclusion, or limit-setting options offered |`,
+      examTip: `When two options both look urgent, ask which client dies or deteriorates FIRST if you walk past their door. That reframing resolves most ties faster than re-deriving frameworks.`,
     },
     {
-      id: 'pri-delegation-rules',
-      title: `2. What Can Be Delegated to Whom`,
-      content: `Delegation questions test scope boundaries. The stable-vs-unstable axis and the assessment-teaching-evaluation triad decide almost every item.
+      id: 'prio-instability',
+      title: `2. Reading Instability: Expected vs Unexpected`,
+      content: `The single most tested discrimination in this category is not a fact — it is a judgment: is this finding the condition behaving as the textbook says it behaves, or is it a departure? Departures get seen first. Train the reflex on classic pairs:
 
-Assistive personnel (AP/UAP) perform standardized, unchanging tasks for STABLE clients: hygiene, ambulation per established plan, turning, feeding clients without swallowing precautions, measuring and recording vital signs and I&O, applying prescribed sequential compression devices. AP never assess, never teach, never evaluate, never administer medications, and never take verbal orders. The trap items hand AP a task that looks routine but is attached to instability: vital signs on a fresh post-op client (that is assessment data driving immediate decisions) or feeding a client with new dysphagia.
+| Expected — can wait | Unexpected — see first |
+| --- | --- |
+| COPD client at chronic saturation 90-92% on 2 L | post-op client whose saturation fell 98% to 91% over an hour |
+| pain 8/10 on post-op day 2, controlled with the ordered regimen | sudden severe pain with a rigid, board-like abdomen |
+| known atrial fibrillation, rate-controlled, on anticoagulation | new irregular pulse WITH hypotension or chest pain |
+| chronic stable angina relieved by rest and nitroglycerin | chest pain unrelieved by rest — possible infarction |
+| long-standing tracheostomy managing usual secretions | fresh tracheostomy with thick secretions and noisy air movement |
+| expected lochia rubra on postpartum day 1 | saturating a pad in 15 minutes — hemorrhage |
+| serous drainage on a surgical dressing | sudden gush of pink fluid — possible dehiscence/evisceration |
 
-LPN/LVNs care for stable clients with predictable outcomes: administer most oral, subcutaneous, and IM medications, perform sterile procedures (wound care, catheterization), reinforce teaching the RN initiated, and collect focused data (a wound description, a set of lung sounds). In most exam models, LPNs do not perform initial assessments, initial teaching, IV push medications, blood administration, or care planning.
+## The trending rule
 
-The RN keeps everything requiring judgment: initial and ongoing assessment of unstable clients, care-plan development and evaluation, all client teaching that isn't reinforcement, blood products, titrated drips, and clinical decisions. The RN who delegates retains accountability for the delegation decision itself — the right task, right circumstance, right person, right direction, right supervision.`,
-      importantNote: `"Stable" is the load-bearing word in every delegation stem. The same task flips between delegable and not based on that one adjective — read for it before matching task to role.`,
+A trend beats any snapshot. Four blood-pressure readings drifting 128, 118, 104, 92 with a rising pulse describe compensating hemorrhage even though no single reading screams. NGN trend items are built exactly here: read series, not points, and act when the trajectory declares itself — before the last number becomes catastrophic.
+
+## Red flags that jump every line
+
+Some findings simply end the sorting: stridor or a silent chest in an asthmatic (obstruction, not improvement); new confusion in an older adult (hypoxia, sepsis, or stroke until proven otherwise); "the worst headache of my life"; chest pain with diaphoresis and nausea; an absent distal pulse after casting or vascular surgery; arterial bleeding; a client stating suicidal intent with a plan and means. If one of these is among the options, the question is over.`,
+      examTip: `Numbers only matter against the client's baseline and trajectory. The exam gives you the baseline for a reason — a "normal" value can be the emergency when the last value was higher.`,
     },
     {
-      id: 'pri-assignment-conflict',
-      title: `3. Assignments, Floating, and Refusal`,
-      content: `Assignment questions extend the same logic to whole clients. When distributing a team's caseload, the RN takes the unstable, the new admission, the client needing teaching or blood; the LPN takes the stable clients with treatments within scope; AP support across the group.
+      id: 'prio-delegation',
+      title: `3. Delegation: The Five Rights and the Scope Table`,
+      content: `Delegation questions test scope boundaries, and nearly every one resolves on two axes: how STABLE the client is, and whether the task involves ASSESSMENT, TEACHING, or EVALUATION — the triad that never leaves the RN.
 
-Floating scenarios test professional obligation against competence. A nurse floated to an unfamiliar unit does not refuse outright (abandonment risk) and does not silently accept an unsafe assignment. The correct pattern: report to the unit, state competencies honestly, accept the tasks within them, and negotiate the unfamiliar high-risk work to unit staff. If the charge nurse insists on an unsafe assignment, the escalation path is chain of command plus a written protest form where the institution provides one — while continuing to keep clients safe.
+The five rights of delegation: the right task, under the right circumstance, to the right person, with the right direction (clear expectations and limits), and the right supervision (follow-up and availability). The RN who delegates retains accountability for the DECISION to delegate; the delegatee is accountable for their own performance of the task.
 
-For disaster and mass-casualty triage, everyday rules invert: care goes to the salvageable many, not the sickest one. Walking wounded are green; serious-but-survivable injuries with respiratory or circulatory compromise are red and go first; stable significant injuries wait as yellow; the pulseless and the apneic-after-airway-repositioning are black/expectant. The exam signal that inverted rules apply is the phrase "mass casualty" or "disaster" in the stem.`,
+| Task | AP/UAP | LPN/LVN | RN |
+| --- | --- | --- | --- |
+| hygiene, bathing, bed-making (stable client) | yes | yes | yes |
+| vital signs on a STABLE client | yes — RN interprets | yes | yes |
+| intake, output, daily weights | yes | yes | yes |
+| feeding a client WITHOUT swallowing precautions | yes | yes | yes |
+| ambulation per an established plan | yes | yes | yes |
+| oral, subcutaneous, IM medications | no | yes (most states) | yes |
+| sterile procedures: wound care, catheter insertion | no | yes | yes |
+| REINFORCE teaching the RN initiated | no | yes | yes |
+| focused data collection (a wound description, lung sounds) | no | yes | yes |
+| initial and ongoing assessment | no | no | yes |
+| INITIAL teaching; discharge teaching | no | no | yes |
+| IV push medications; titrated drips | no | no | yes |
+| blood products — start and first 15 minutes | no | no | yes |
+| care planning and evaluating outcomes | no | no | yes |
+| anything on an UNSTABLE client | no | no | yes |
+
+## The traps
+
+"Stable" is the load-bearing word in every stem. The same task flips between delegable and not on that one adjective. Vital signs on a fresh post-operative client are not a vital-signs task — they are assessment data driving immediate decisions, so the RN takes them. Feeding a client with NEW dysphagia is a swallowing assessment in disguise. The first set of vital signs after starting a blood transfusion belongs to the RN, because it IS the evaluation of a high-risk intervention.
+
+AP never assess, never teach, never evaluate, never administer medications, and never take verbal or telephone orders. When a stem shows an AP reporting a concerning finding, the correct RN response is to assess the client personally — not to send the AP back for a recheck.`,
+      examTip: `Read the verb. "Reinforce" teaching is LPN-eligible; "teach," "assess," "evaluate," and "develop the plan" are RN verbs no matter how routine the topic sounds.`,
+    },
+    {
+      id: 'prio-assignment',
+      title: `4. Assignments, Floating & Safe Refusal`,
+      content: `Assignment questions extend delegation logic to whole clients: the RN takes the unstable, the fresh post-op, the new admission, the client needing initial teaching or blood; the LPN takes stable clients with predictable treatments; AP support tasks across the group.
+
+## Worked example: distributing a four-client team
+
+The charge nurse has an RN, an LPN, and an AP for: (A) a client two hours post-thyroidectomy; (B) a client with stable heart failure awaiting discharge teaching; (C) a client three days post-hip-replacement needing help bathing; (D) a new admission with chest pain being ruled out for MI.
+
+Work the logic: A is a fresh post-op with a high-risk airway (neck hematoma, laryngeal edema) — RN. D is a new admission, unstable until proven otherwise, needing an initial assessment — RN. B is stable, but discharge TEACHING is an RN function: the LPN can take B's routine care while the RN does the teaching, or B goes to the RN team outright. C's hygiene needs are exactly AP scope. The pattern generalizes: sort clients by instability first, then match the RN-only functions, then fill in with LPN and AP scope.
+
+## Floating
+
+A nurse floated to an unfamiliar unit does not refuse outright — walking away from an accepted assignment risks abandonment — and does not silently accept unsafe work. The tested sequence: report to the unit, state competencies honestly, accept the tasks within them, and negotiate unfamiliar high-risk work (chemotherapy, titrated drips, ventilator management) to the unit's own staff. A medical-surgical nurse floated to pediatrics takes the stable school-age clients, not the infant on a high-alert infusion.
+
+## When the assignment is unsafe
+
+If the charge nurse insists, the escalation path is the chain of command — charge nurse, then supervisor — plus a written protest or assignment-despite-objection form where the institution provides one. Filing the form does NOT release the nurse from caring for the clients in the meantime; it documents the objection while keeping them safe. Refusing an assignment for personal preference is insubordination; refusing to perform a task you are not competent in, while remaining on duty and escalating, is safe practice.`,
+      examTip: `Two different failure modes, two different words: leaving clients after accepting them is ABANDONMENT; accepting work you cannot safely perform without speaking up is unsafe practice. The correct answers thread between them — stay, speak, escalate, document.`,
+    },
+    {
+      id: 'prio-disaster',
+      title: `5. Disaster & Mass-Casualty Triage`,
+      content: `The phrase "mass casualty" or "disaster" in a stem flips the everyday rules: care goes to the salvageable MANY, not the sickest one. The sickest client — the one everyday triage would see first — may be tagged expectant so that limited resources save three others. Recognizing which rulebook the question is using is most of the answer.
+
+| Tag | Category | Criteria (START pattern) | Example |
+| --- | --- | --- | --- |
+| green | minimal — "walking wounded" | can walk to a designated area | abrasions, small lacerations, anxiety |
+| yellow | delayed | significant injuries, but respirations, perfusion, and mental status all pass | closed femur fracture with a strong radial pulse |
+| red | immediate — treat first | respirations over 30, absent radial pulse or cap refill over 2 seconds, or cannot follow commands | tension chest injury, major bleed with thready pulse |
+| black | expectant | not breathing after one attempt to reposition the airway | apneic after airway repositioning |
+
+The START screen runs in that order — respirations, perfusion, mental status — and the FIRST failed check tags the client red. Anyone who can get up and walk is green before you screen anything. The client in cardiac arrest, who would command the entire team on a normal shift, is black when the hallway holds twenty casualties.
+
+Two more disaster reflexes the exam samples: in an evacuation, ambulatory clients move first (they clear fastest with the least staff), then wheelchair, then bedbound — the reverse of "sickest first." And the nurse's own safety comes before rescue: a scene that is not secure produces more casualties, not more rescuers.`,
+      examTip: `Everyday triage saves the sickest first. Disaster triage saves the MOST people. The stem tells you which world you are in — one phrase, opposite answers.`,
+    },
+    {
+      id: 'prio-selfcheck',
+      title: `6. Self-Check: Five Doors`,
+      content: `Work each before reading its answer.
+
+1. Four clients: a COPD client at saturation 91% (baseline), a post-op client reporting 8/10 incisional pain, a client whose new tracheostomy is producing noisy, gurgling respirations, and a client asking to discuss discharge plans. Who first?
+
+2. The AP reports a blood pressure of 88/54 on a client who was 132/80 an hour ago. Best RN action?
+
+3. Which task is appropriate to delegate to an LPN: initial assessment of a new admission, IV push furosemide, reinforcing crutch-walking teaching, or starting a unit of packed cells?
+
+4. A medical-surgical nurse is floated to the oncology unit and asked to administer chemotherapy. Best response?
+
+5. At a highway mass-casualty scene, a client is apneic and remains apneic after the airway is repositioned. Which tag?
+
+## Answers
+
+1. The tracheostomy client — an actual airway problem outranks expected baselines, expected post-op pain, and psychosocial needs. This is rung 1 of the cascade, and the sorting stops there.
+
+2. Go assess the client personally. The AP's number is valid data, but a falling pressure is instability, and instability recalls the assessment to the RN — not a recheck delegated back to the AP.
+
+3. Reinforcing crutch-walking teaching. Initial assessment, IV push medications, and blood administration are RN-only; reinforcement of established teaching is squarely LPN scope.
+
+4. State the competency limit, accept the care within scope, and arrange for a chemotherapy-competent nurse to give that drug. Refusing the whole float risks abandonment; silently administering an unfamiliar high-alert drug is unsafe.
+
+5. Black — expectant. In the mass-casualty rulebook, apnea persisting after one airway repositioning is not survivable with the resources at hand; staying to resuscitate would cost other salvageable lives.`,
     },
   ],
   keyTakeaways: [
-    `Priority stack: airway → breathing → circulation → unstable/new/unexpected → Maslow.`,
-    `AP: standardized tasks for stable clients — never assess, teach, evaluate, or medicate.`,
-    `LPN: stable, predictable clients — meds and sterile procedures, reinforced (not initial) teaching.`,
-    `RN keeps: unstable clients, initial assessment and teaching, blood, titration, care planning.`,
-    `Disaster triage inverts everyday logic: greatest good for the greatest number; expectant = black.`,
+    `Run the cascade in order and stop at the first rung that separates the clients: worst ACTUAL airway-breathing-circulation problem, then unstable over stable, then acute over chronic, then Maslow.`,
+    `A trend beats a snapshot, and every number is read against baseline — the "normal" value that used to be higher is the emergency.`,
+    `Assessment, teaching (initial), and evaluation never leave the RN; "stable" is the word that decides whether anything else can be delegated.`,
+    `Floating: report, state competencies, accept what is within them, negotiate the rest — abandonment and silent unsafe acceptance are both wrong.`,
+    `"Mass casualty" inverts triage: save the most, not the sickest — red goes first, and apnea after one airway repositioning is expectant.`,
   ],
 },
 
@@ -161,136 +427,420 @@ nx_legal_ethical: {
   topicId: 'nx_legal_ethical',
   title: `Legal & Ethical Practice`,
   domainWeight: 'Management of Care (15-21%)',
-  overview: `The exam's legal-ethical items rarely require statute citations. They test whether you know who owns which decision (client, provider, nurse), what must be reported and to whom, and where the paper trail lives. The recurring theme: the client with capacity decides, the provider discloses, the nurse witnesses, advocates, and documents facts.`,
+  overview: `Legal and ethical items are not about memorizing law — they test whether you can protect the client's rights and your license at the same time, inside one scenario. Five clusters cover nearly everything the exam asks: informed consent and refusal, the tort vocabulary, documentation and unsafe orders, the strict clock on restraints, and the ethics-HIPAA-mandatory-reporting triad. Each has a small set of bright-line rules, and the distractors are always the almost-right actions that cross one of them.`,
   sections: [
     {
       id: 'leg-consent',
-      title: `1. Informed Consent and Refusal`,
-      content: `Valid informed consent requires three things: a client with decision-making capacity, a voluntary choice free of coercion, and disclosure — the provider performing the procedure explains its nature, risks, benefits, and alternatives. The nurse's signature witnesses that the client signed voluntarily and appeared to understand; it does not certify the explanation happened. If the client has unanswered questions about risks, the provider returns — the nurse does not fill the gap with a brochure.
+      title: `1. Informed Consent & the Right to Refuse`,
+      content: `Informed consent is a PROCESS that belongs to the provider performing the procedure; the nurse's signature witnesses only that the client signed voluntarily and appeared competent. That division of labor decides most consent items.
 
-Consent is revocable at any moment, verbally, including in the pre-op holding area with the IV running. "But they already signed" is never a reason to proceed; continuing after withdrawal is battery.
+| Element | What it requires |
+| --- | --- |
+| capacity | adult (or lawfully authorized) client who can understand and decide — not sedated, not declared incompetent |
+| disclosure | the provider explains the procedure, its risks and benefits, and the alternatives INCLUDING doing nothing |
+| voluntariness | no coercion — consent signed under pressure is not consent |
 
-Capacity wrinkles the exam loves: sedation destroys capacity, so consent must precede pre-op medication — a form signed after the midazolam is worthless and the case waits. Emancipated minors (married, in the military, court-emancipated, and in many jurisdictions minors who are parents) consent for themselves. In a true emergency with an unconscious client and no surrogate, treatment proceeds under implied consent.
+If the client says "I signed, but what exactly are they doing to my heart?" — the consent is not informed. The nurse stops the line, notifies the provider, and the provider re-explains. The nurse never fills the knowledge gap for a procedure someone else performs; teaching about nursing care is nursing scope, explaining the surgery is not.
 
-Refusal follows the same ownership: a client with capacity may refuse anything, including life-sustaining treatment, and may leave against medical advice. The nurse's job is to ensure the refusal is informed (explain consequences), notify the provider, and document the client's own words — not to guilt, delay, or threaten ("if you leave, insurance won't pay" is both coercive and usually false).`,
-      examTip: `Whenever a consent stem includes sedation timing, that is the question. Sedated = no capacity = no valid signature.`,
+## Who signs
+
+| Situation | Who consents |
+| --- | --- |
+| competent adult | the client — no spouse or family signature substitutes |
+| emancipated minor (married, in the military, court-emancipated) | the minor |
+| minor (not emancipated) | parent or legal guardian |
+| adult declared incompetent | legal guardian or healthcare proxy |
+| life-threatening emergency, client unable, no surrogate | implied consent — treatment proceeds |
+| parents refuse life-saving treatment for a minor | providers may seek a court order |
+
+## Refusal and leaving against medical advice
+
+A competent adult may refuse any treatment — including blood products, including life-sustaining care — and may leave against medical advice. The nurse's tested sequence: assess understanding, inform the provider, explain the risks of leaving without threatening ("we cannot readmit you" is false and coercive), have the AMA form offered, and document. Refusing to sign the form does not stop a competent client from leaving; blocking the door converts the scenario into false imprisonment.`,
+      examTip: `Client questions about the PROCEDURE always route to the provider; the nurse witnesses signatures and advocates. An answer where the nurse explains the surgery's risks is wrong even when the explanation is accurate.`,
     },
     {
-      id: 'leg-directives-privacy',
-      title: `2. Advance Directives and Confidentiality`,
-      content: `An advance directive speaks when the client cannot: a living will states treatment preferences; a durable power of attorney for health care names a surrogate decision-maker. A do-not-resuscitate prescription means exactly one thing — no CPR at the moment of arrest. Everything else continues: oxygen, antibiotics, pain control, comfort, dignity. Treating DNR as "do not treat" is the classic exam error, presented both as a distractor and as a colleague's mistaken statement for you to correct.
+      id: 'leg-torts',
+      title: `2. Torts: The Exam's Legal Vocabulary`,
+      content: `The exam tests torts by scenario, not definition — it describes an action and asks what it constitutes.
 
-The surrogate hierarchy matters when no directive exists: most jurisdictions run spouse → adult children → parents → siblings, and the exam expects you to involve the legally correct decision-maker, not the loudest relative.
+| Tort | Definition | Classic exam scenario |
+| --- | --- | --- |
+| assault | a threat that creates fear of contact | "if you do not take this pill, I will hold you down and inject it" |
+| battery | touching or treating without consent | surgery on a client who revoked consent; forcing the injection |
+| false imprisonment | unlawful restriction of movement | restraints without an order; blocking a competent client from leaving |
+| invasion of privacy | disclosure or intrusion without need | discussing a diagnosis in the elevator; reading a chart out of curiosity |
+| defamation | false statement harming reputation — slander (spoken), libel (written) | telling a colleague an untrue rumor about a client or coworker |
+| negligence | failing the ordinary standard of care | leaving rails down for a fall-risk client who then falls |
+| malpractice | professional negligence | giving the wrong medication and causing harm |
 
-Confidentiality items test the boundary of "need to know." Discussing clients in elevators or cafeterias, looking up records of clients not in your care (including family members and celebrities), sharing information with a client's employer or even family without permission — all breaches. When you witness a breach in progress, the first action is direct: stop the conversation. Reporting up the chain follows for patterns or refusals. The permitted disclosures are the legally mandated ones: suspected abuse and neglect, certain communicable diseases, gunshot and stab wounds, and credible threats to identifiable third parties (duty to warn).`,
-      importantNote: `Mandated reporting requires SUSPICION, not proof. The nurse reports directly and personally — telling the provider or charge nurse does not discharge the individual legal duty in most jurisdictions.`,
+## The four elements of malpractice
+
+All four must exist, in order: DUTY (a nurse-client relationship existed), BREACH (the standard of care was violated), CAUSATION (the breach caused the injury), and DAMAGES (actual harm resulted). A medication error that caused no harm fails the damages element — an incident to report and learn from, but not malpractice. The exam builds distractors on the missing element.
+
+Good Samaritan laws protect care rendered voluntarily at an emergency scene, in good faith, within scope, and without gross negligence — they do not cover paid duty or reckless acts, and no state compels a nurse to stop.`,
+      examTip: `Assault is the THREAT; battery is the TOUCH. The exam pairs them in one stem and asks which occurred — parse the scenario into words versus contact.`,
     },
     {
-      id: 'leg-torts-documentation',
-      title: `3. Torts, Incident Reports, and the Record`,
-      content: `The tort vocabulary maps to concrete bedside acts. Assault is the threat ("hold still or I'll restrain you"); battery is unconsented touching (proceeding after refusal, surgery without valid consent). False imprisonment is unlawful restriction — restraints without an order or clinical justification, or preventing a client with capacity from leaving. Negligence is the umbrella for care falling below standard; malpractice is professional negligence with duty, breach, causation, and damages.
+      id: 'leg-docs',
+      title: `3. Documentation, Incident Reports & Unsafe Orders`,
+      content: `The chart is a legal record, and the exam's documentation rules are bright lines:
 
-Incident (occurrence) reports serve the quality system, not the chart. After any event — medication error, fall, equipment failure — the sequence is: assess and stabilize the client, notify the provider, implement orders, then complete the report. The medical record documents the facts (what happened, assessment findings, who was notified, care given) but NEVER mentions that an incident report exists; referencing it in the chart destroys its legal protection and is the most reliably tested detail of the whole topic.
+| Do | Do not |
+| --- | --- |
+| chart objectively what you observed, heard, measured | chart conclusions ("client is drunk") — describe findings instead |
+| quote the client's own words for subjective data | interpret or paraphrase into diagnosis |
+| label a late entry as a late entry, with both times | insert notes into an earlier time slot |
+| correct errors with a single line, initials, and date | erase, obliterate, or use correction fluid |
+| chart care AFTER it is given | pre-chart anything — a pre-charted dose you never gave is a false record |
 
-Documentation standards close the set: chart facts and observations, not conclusions ("client states..." beats "client is angry"); late entries are labeled as such; errors get a single line, "mistaken entry," and initials — never correction fluid, never deletion. In electronic records, your login is your signature; sharing credentials is both a security violation and a documentation fraud risk.`,
+## Incident reports
+
+An incident (occurrence, variance) report is completed by the person who WITNESSED or discovered the event, for every error and near-miss — including those with no client harm. Two rules carry the points: the report is an internal quality tool, and the chart NEVER mentions that one was filed; the chart documents only the facts of the event and the care given. "Incident report completed" in a nurse's note is the classic wrong answer.
+
+## Verbal, telephone, and unsafe orders
+
+Verbal and telephone orders are for emergencies and off-site providers, not convenience: write it down, READ IT BACK, confirm, and ensure the provider co-signs within the institution's window. Only the RN or LPN receives them — never AP, never students.
+
+An order that is unclear, unsafe, or outside the client's condition obligates the nurse to QUESTION it before executing — the nurse who administers an unsafe order shares liability with the prescriber. The sequence: clarify with the prescriber directly; if the answer does not resolve the safety concern, decline to carry it out and escalate the chain of command (charge nurse, supervisor), documenting the communication. Simply skipping the dose without notifying anyone is never the answer.`,
+      examTip: `Two absolutes worth points: the chart never references the incident report, and no dose is ever charted before it is given.`,
+    },
+    {
+      id: 'leg-restraints',
+      title: `4. Restraints & Seclusion: Last Resort, Strict Clock`,
+      content: `Restraints — physical, chemical, or seclusion — are the LAST resort after less restrictive alternatives fail: reorientation, a sitter or family presence, moving the client near the station, diversion, treating the cause of agitation. The exam expects you to try the least restrictive option in the stem before any restraint answer becomes correct.
+
+The order rules are strict. A provider's order is required, based on a face-to-face evaluation; for violent or self-destructive behavior the provider evaluates in person within one hour. Orders are time-limited and never PRN — "restrain as needed" is an illegal order to refuse. In an emergency the nurse may apply restraints first, but the order must follow immediately.
+
+| Client (behavioral/violent restraint) | Maximum single order |
+| --- | --- |
+| adult 18 and older | 4 hours |
+| age 9 through 17 | 2 hours |
+| under age 9 | 1 hour |
+
+Renewals require reassessment, and nonviolent (medical) restraints — the wrist ties protecting a confused client's endotracheal tube — are renewed per policy, typically each calendar day. The goal at every reassessment is discontinuation at the earliest possible moment.
+
+## Applying and monitoring
+
+Secure ties with a quick-release knot to the BED FRAME or chair frame — never to a side rail, which moves with the rail and tightens. Leave two fingers of slack under the device. Monitor circulation, skin, and behavior on the institution's schedule (every 15 minutes is typical for behavioral restraints), and release for range of motion, toileting, fluids, and skin care at least every 2 hours. Document the behavior that justified the restraint, the alternatives tried, the client's response, and every monitoring cycle.`,
+      examTip: `Numbers the exam samples directly: face-to-face within 1 hour; orders 4 h adult / 2 h ages 9-17 / 1 h under 9; never PRN; frame not rail; two fingers of slack; release q2h.`,
+    },
+    {
+      id: 'leg-ethics',
+      title: `5. Ethics, HIPAA & Mandatory Reporting`,
+      content: `Ethics items give you a principle in action and ask you to name it, or give you a conflict and ask which principle the correct action serves.
+
+| Principle | Meaning | One-line example |
+| --- | --- | --- |
+| autonomy | the client decides | honoring a refusal you disagree with |
+| beneficence | act for the client's good | positioning, comfort, advocacy |
+| nonmaleficence | first, do no harm | questioning the tenfold dose |
+| justice | fair distribution of care | equal triage regardless of ability to pay |
+| fidelity | keep promises | returning with the pain med when you said you would |
+| veracity | tell the truth | not minimizing a serious prognosis when the client asks |
+
+The classic collision is autonomy versus beneficence — the client refuses what would help them. Competent refusal wins; the nurse ensures the refusal is informed, then advocates and documents.
+
+## HIPAA in scenarios
+
+Access follows the need to know: caregivers currently caring for the client, and no one else. Tested violations: discussing clients in elevators and cafeterias, looking up records of clients not assigned to you (including family and celebrities), leaving a screen unlocked, giving information to a phone caller who lacks the client's code or consent, and posting anything — even de-identified-sounding details — on social media. Information may be shared without authorization for treatment, payment, operations, and legally mandated reports.
+
+## Mandatory reporting
+
+Nurses are mandated reporters of SUSPECTED abuse or neglect of children, elders, and vulnerable adults — suspicion triggers the report; proof is the investigator's job, not the nurse's. Certain communicable diseases are reportable to public health, and gunshot and stab wounds to law enforcement, per jurisdiction. An impaired coworker — alcohol on the breath, diverted narcotics, erratic behavior — is reported to the supervisor IMMEDIATELY; the tested wrong answers are confronting them privately, covering their assignment, or waiting to gather proof. Client safety outranks collegial loyalty.`,
+      examTip: `For any confidentiality stem, run one test: does this person need this information to care for this client right now? If not, sharing it is a violation — regardless of relationship, rank, or good intentions.`,
+    },
+    {
+      id: 'leg-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client on the pre-op cart says, "The surgeon mentioned risks, but I do not really understand what could go wrong." The consent is signed. Best action?
+
+2. A nurse tells a confused client, "If you get out of bed again, I will tie you down." Which tort does this describe, and which occurs if the nurse follows through without an order?
+
+3. A nurse gives 10 mg of a drug when 1 mg was ordered; the client suffers no ill effect. Is this malpractice? What two actions follow?
+
+4. A provider orders "restraints PRN for agitation" for a 15-year-old. What is wrong with this order — two things?
+
+5. A nurse overhears a colleague giving a client's lab results to the client's employer by phone. Which principle and law are violated, and what is the nurse's obligation?
+
+## Answers
+
+1. Stop the process and notify the surgeon to re-explain — the client's statement voids the "informed" element. The nurse does not supply the surgical risk discussion.
+
+2. The threat is assault. Applying restraints without an order (absent emergency) adds battery and false imprisonment — one stem, three torts, in that order.
+
+3. Not malpractice — duty, breach, and causation exist, but there are no damages. The error is still charted factually in the record, and an incident report is completed (and never referenced in the chart).
+
+4. Restraint orders may never be PRN, and for a 15-year-old a behavioral restraint order is limited to 2 hours — both violations, either alone invalidates the order.
+
+5. Confidentiality (HIPAA) and the client's autonomy over their information — an employer has no treatment need to know. The nurse reports the breach to the supervisor; institutional obligations to address it follow.`,
     },
   ],
   keyTakeaways: [
-    `Consent: provider discloses, client with capacity decides voluntarily, nurse witnesses — and sedation voids capacity.`,
-    `Consent and refusal are revocable at any time; proceeding after withdrawal is battery.`,
-    `DNR = no CPR at arrest. All other treatment and comfort care continues.`,
-    `Abuse suspicion triggers a personal mandatory report — proof is the agency's job.`,
-    `Incident reports never appear or get mentioned in the medical record; the chart carries only the facts.`,
+    `Consent belongs to the provider; the nurse witnesses, advocates, and stops the line when the client's questions reveal the consent is not informed.`,
+    `Assault is the threat, battery is the touch, false imprisonment is the blocked door — and malpractice requires all four: duty, breach, causation, damages.`,
+    `The chart holds facts only: no pre-charting, single-line corrections, labeled late entries, and never a mention of the incident report.`,
+    `Restraints are last resort on a strict clock — never PRN, 4 h adult / 2 h ages 9-17 / 1 h under 9, quick-release to the frame, release q2h.`,
+    `Report suspected abuse and impaired colleagues immediately — suspicion triggers the duty, and client safety outranks loyalty.`,
   ],
 },
 
 nx_infection_control: {
   topicId: 'nx_infection_control',
   title: `Infection Control & Precautions`,
-  domainWeight: 'Safety & Infection Control (10-16%)',
-  overview: `Transmission-based precautions are among the most predictable points on the exam: a disease, a precaution level, the right PPE, and the right sequence for putting it on and taking it off. The pathogen lists are short and stable. Master the airborne three, the droplet cluster, the contact list, and the C. difficile exception, and this category becomes free points.`,
+  domainWeight: 'Safety and Infection Prevention and Control (10-16%)',
+  overview: `Infection control is one of the most learnable point sources on the exam: a finite set of organisms, three transmission-based precaution categories, one donning-doffing sequence, and a handful of absolute rules (soap for C. diff, N95 and negative pressure for TB, protective environment for neutropenia). This chapter builds the tables you need, the organism-to-precaution map the exam samples constantly, and the sterile-technique rules that decide procedure questions.`,
   sections: [
     {
-      id: 'inf-standard-airborne',
-      title: `1. Standard Precautions and the Airborne Three`,
-      content: `Standard precautions apply to every client, every time: hand hygiene before and after contact, gloves for anticipated contact with blood or body fluids, mask and eye protection for splash risk, safe sharps handling. Alcohol-based hand rub is preferred over soap for routine hygiene — except when hands are visibly soiled and except for spore-formers, which is the C. difficile story below.
+      id: 'inf-standard',
+      title: `1. The Chain of Infection & Standard Precautions`,
+      content: `Every infection-control intervention breaks one link in the chain: infectious agent, reservoir, portal of exit, mode of transmission, portal of entry, susceptible host. The exam's favorite link is TRANSMISSION — that is what the precaution categories are — but stems also test reservoirs (contaminated equipment, water in respiratory tubing) and hosts (why the neutropenic client gets special rules).
 
-Airborne precautions cover pathogens that ride suspended droplet nuclei: tuberculosis, measles (rubeola), and varicella (chickenpox, and disseminated zoster). The bundle: a private negative-pressure airborne infection isolation room with the door closed, and a fit-tested N95 respirator (or PAPR) for everyone entering. For measles and varicella, immune staff should be assigned where possible. The client leaves the room only when essential, wearing a surgical mask (the client wears a surgical mask, not an N95 — the goal is source control).
+Standard precautions apply to EVERY client, every time, regardless of diagnosis: hand hygiene, gloves for any contact with blood or body fluids, mask and eye protection when splash is possible, safe injection practice, and respiratory etiquette. They are the reason "no precautions needed" is never literally true.
 
-The exam's favorite airborne distractors: putting a surgical mask on the caregiver (insufficient), leaving the door open (defeats negative pressure), and cohorting airborne clients with anyone (never, outside declared outbreak protocols).`,
-      examTip: `Memorize the airborne three as "MTV": Measles, TB, Varicella. Everything else respiratory on the exam is droplet.`,
+## Hand hygiene — the highest-yield habit on the exam
+
+Alcohol-based hand rub is preferred for most encounters: before and after every client contact, before aseptic tasks, after removing gloves (gloves are not a substitute — hands are contaminated during removal), after touching the client's surroundings.
+
+Soap and water is REQUIRED — not optional — when hands are visibly soiled and after caring for a client with Clostridioides difficile or norovirus: alcohol does not kill C. diff spores. This single fact is one of the most retested points in the category.
+
+Artificial nails harbor organisms and are prohibited in direct care; natural nails stay short. Wash a minimum of 20 seconds with friction; friction is the mechanism, not the soap brand.`,
+      examTip: `See "C. diff" anywhere in a stem and audit the answers for two things: SOAP AND WATER (not alcohol rub) and a bleach-based (sporicidal) room clean. Most C. diff items are decided on one of the two.`,
     },
     {
-      id: 'inf-droplet-contact',
-      title: `2. Droplet and Contact Precautions`,
-      content: `Droplet precautions cover pathogens in large respiratory droplets that fall within about 3-6 feet: influenza, pertussis, mumps, rubella, meningococcal meningitis and sepsis, and mycoplasma pneumonia. The bundle: private room or cohorting, a surgical mask when within 3 feet of the client (in practice, on room entry), and a mask on the client during transport. Meningococcal disease carries a tested detail: droplet precautions may be discontinued after 24 hours of effective antibiotic therapy.
+      id: 'inf-transmission',
+      title: `2. Transmission-Based Precautions: The Master Table`,
+      content: `Transmission-based precautions are ADDED to standard precautions when the organism's route demands more. The exam expects instant recall of the category, the gear, and the room:
 
-Contact precautions cover organisms spread by touch and fomites: MRSA, VRE, C. difficile, scabies, RSV in infants, and draining wounds that cannot be contained. The bundle: gown and gloves for room entry (donned before, removed at the door), dedicated or disinfected equipment, and a private room or cohort.
+| Category | PPE added | Room | Classic organisms |
+| --- | --- | --- | --- |
+| contact | gown + gloves for every entry | private or cohort; dedicated equipment | MRSA, VRE, C. difficile, scabies, RSV, major draining wounds, norovirus |
+| droplet | surgical mask within 3-6 feet | private or cohort; mask ON THE CLIENT for transport | influenza, pertussis, mumps, rubella, meningococcal meningitis (first 24 h of effective antibiotics) |
+| airborne | fit-tested N95 or PAPR | NEGATIVE-pressure room, door closed, 6-12 air exchanges/hour | tuberculosis, measles (rubeola), varicella, disseminated zoster |
 
-C. difficile adds two exceptions the exam tests relentlessly. First, hand hygiene is soap and water — the mechanical wash removes spores that alcohol cannot kill. Second, room cleaning requires a sporicidal agent (bleach-based). A stem that shows a caregiver using alcohol rub after C. diff care is showing you the error to catch.
+Memory anchor for airborne: measles, varicella, TB — the small-particle organisms that ride air currents beyond six feet. Everything else respiratory is droplet.
 
-Protective (reverse) isolation inverts the direction: neutropenic clients (commonly ANC below 500-1000) are shielded FROM the environment — private positive-pressure room for transplant-level cases, no fresh flowers or standing water, no raw fruits and vegetables on strict protocols, meticulous hand hygiene, and no sick visitors.`,
-      importantNote: `The precaution follows the ORGANISM, not the diagnosis. A pneumonia stem is droplet or standard depending on the named pathogen; a wound stem is contact only if drainage is uncontained or the organism is resistant.`,
+## The details that decide close questions
+
+For measles and varicella, non-immune staff should not enter at all; immune caregivers still follow airborne gear rules per policy. Varicella and disseminated zoster take airborne PLUS contact (lesions shed virus by touch); localized zoster in an immunocompetent client with covered lesions needs standard precautions only.
+
+Meningococcal meningitis is droplet only until 24 hours of effective antibiotics have run — after that, precautions lift. Pertussis stays droplet until 5 days of effective therapy.
+
+Transport rules invert the gear: the CLIENT wears the surgical mask (droplet and airborne both — an N95 is never put on the client), lesions are covered, and transport happens only when essential.
+
+A client on any precaution category is at risk for sensory deprivation and isolation distress — the psychosocial answer (schedule regular contact, explain the gear, provide diversion) is correct surprisingly often once the physical rules are satisfied.`,
+      examTip: `Airborne = "My Chicken Hez TB" — Measles, Chickenpox (varicella), Herpes zoster (disseminated), TB. If the organism is not on that list, it is not airborne, no matter how bad the cough sounds.`,
     },
     {
-      id: 'inf-ppe-sequence',
-      title: `3. PPE Sequences and Asepsis`,
-      content: `Donning order builds from clean to critical: gown first, then mask or respirator, then goggles or face shield, gloves last (pulled over the gown cuffs). Doffing order removes the most contaminated items first: gloves, then goggles, then gown, then mask — with the respirator removed OUTSIDE the room for airborne precautions, and hand hygiene immediately after. If you remember one anchor for each direction: gown on first, gloves off first.
+      id: 'inf-ppe',
+      title: `3. PPE: The Sequence and the N95`,
+      content: `![CDC donning and doffing order: don gown, mask or respirator, goggles or face shield, then gloves; doff gloves, goggles, gown, then mask — with hand hygiene before donning, after doffing, and whenever hands are contaminated.](/courses/nclex/figures/nclex-ppe-sequence.svg)
 
-Surgical asepsis has its own testable geometry. A sterile field's 1-inch border is contaminated; anything below waist or table level is contaminated; reaching over the field contaminates it; sterile objects touched by non-sterile objects are contaminated; a wet field is a contaminated field (strike-through). When pouring liquids, the bottle lip stays off the container and the label faces the palm. Sterile gloves touch only sterile items — the moment of doubt is the moment of contamination, and the correct exam answer is always to start over with new supplies.
+Donning runs clean-to-dirty logic: GOWN first, MASK or respirator second (seal-check the respirator), GOGGLES or face shield third, GLOVES last — pulled over the gown cuffs. Doffing removes the most contaminated items first: GLOVES, then goggles or face shield, then gown (peeled inside-out from the shoulders), then mask or respirator — touched only by the straps.
 
-Order of care across multiple clients follows infection logic too: care for clean clients before colonized or infected ones, and the neutropenic client before the client on contact precautions when one caregiver covers both.`,
+Two placement rules the exam samples: the mask or respirator for an AIRBORNE room is removed OUTSIDE the closed door (the room air is the hazard), and hand hygiene happens after every doffing step where hands may have been contaminated, always at the end, and any time removal goes wrong.
+
+The N95 respirator requires annual fit-testing and a user seal check at every don. Facial hair breaks the seal; a client's family member visiting an airborne room wears a surgical mask if not fit-tested. A PAPR substitutes when fit-testing fails.
+
+Gloves change between tasks on the SAME client when moving from a contaminated site to a clean one (wound care, then IV site care means new gloves and hand hygiene between), and gowns are single-use per room entry on contact precautions — reusing a gown "because it looks clean" is a tested wrong answer.`,
+      examTip: `Order questions are free points: don gown-mask-goggles-gloves; doff gloves-goggles-gown-mask. Gloves are LAST on and FIRST off — everything else follows from that.`,
+    },
+    {
+      id: 'inf-organisms',
+      title: `4. Problem Organisms & the Protective Environment`,
+      content: `A short list of organisms carries special rules the exam tests by name:
+
+| Organism / situation | The special rule |
+| --- | --- |
+| C. difficile | contact precautions + SOAP AND WATER + sporicidal (bleach) cleaning; review the antibiotic and PPI list driving it |
+| tuberculosis | airborne, N95, negative pressure; confirmed by sputum cultures; client masked (surgical) for transport; therapy runs months — teaching targets adherence |
+| MRSA / VRE | contact; dedicated equipment (the shared blood-pressure cuff is the classic vector) |
+| RSV in infants | contact (droplet per policy); cohorting common in season |
+| norovirus | contact; soap and water beats alcohol rub here too |
+| scabies / lice | contact until 24 h after effective treatment |
+| neutropenia (ANC under 500) | PROTECTIVE environment — the isolation arrow reverses |
+
+## The protective environment
+
+For the immunocompromised client the world is the hazard: private room (positive-pressure with HEPA filtration for stem-cell transplant clients), strict hand hygiene for every entrant, no fresh flowers or standing water, no raw or undercooked foods per policy (the low-microbial diet), daily inspection of every line site, no rectal temperatures or suppositories (mucosal injury seeds bacteremia), and visitors screened for even minor illness. A temperature of 38 C / 100.4 F in a neutropenic client is a MEDICAL EMERGENCY — cultures and antibiotics within the hour, and the exam expects you to treat that page as a now problem.`,
+      examTip: `Read the direction of protection. Contact/droplet/airborne protect everyone FROM the client; the protective environment protects the CLIENT from everyone. Neutropenia, not diagnosis, is the trigger word.`,
+    },
+    {
+      id: 'inf-asepsis',
+      title: `5. Sharps, Exposure & Surgical Asepsis`,
+      content: `Sharps rules are absolute: never recap a used needle (the classic exception — recapping with a one-handed scoop only when a safety device is absent and policy allows), activate safety devices immediately, dispose at the point of use in the puncture-proof container, and never force a full container. After a needlestick: wash with soap and water immediately, report at once, and begin the post-exposure protocol (source and exposed testing, prophylaxis timing decisions) — delay is the tested error.
+
+## Surgical asepsis: the sterile field rules
+
+Medical asepsis (clean technique) reduces organisms; surgical asepsis (sterile technique) excludes them — required for injections, central line care, catheter insertion, and surgical procedures. The field rules are mechanical and testable:
+
+A 1-inch border around every sterile field is considered contaminated. Anything below the waist or table level is contaminated. Turning your back on a sterile field, reaching across it, or letting it out of sight contaminates it. Sterile touches only sterile; sterile-to-clean contact contaminates. Moisture wicks organisms upward — a wet spot on the drape contaminates the field (strike-through). Open sterile packages away from the body first, flaps toward you last. Pour liquids from 4-6 inches above the receptacle without touching it, and pour off a lip-splash first if policy requires. When in doubt about sterility, it is contaminated — replace it.
+
+If contamination happens mid-procedure, the correct answer is always to stop and replace the contaminated item or field — never to proceed because the procedure is nearly done.`,
+      examTip: `"When in doubt, throw it out" is literally the tested standard: any answer that continues with questionable sterility is wrong, and any answer that restarts cleanly is a candidate.`,
+    },
+    {
+      id: 'inf-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client is admitted with suspected pulmonary tuberculosis. List the room, the staff PPE, and what the client wears for an essential CT transport.
+
+2. Which client may share a room (cohort): two clients with MRSA in surgical wounds, or a client with MRSA and a client with VRE?
+
+3. After caring for a client with C. difficile, the nurse's hands are not visibly soiled. Alcohol rub or soap? Why?
+
+4. Rank the doffing order for gown, gloves, goggles, and N95 after leaving an airborne-precaution room — and where does the N95 come off?
+
+5. A neutropenic client's dinner tray arrives with a garden salad and a vase of flowers. What does the nurse do?
+
+## Answers
+
+1. Negative-pressure room with the door closed; fit-tested N95 (or PAPR) for every entrant; the client wears a SURGICAL mask for transport — never an N95 on the client.
+
+2. The two MRSA clients — cohorting requires the SAME organism. MRSA plus VRE cross-colonizes two organisms between two clients.
+
+3. Soap and water. Alcohol does not kill C. difficile spores; the friction and rinse remove them mechanically. Visibility of soil is irrelevant to this rule.
+
+4. Gloves first, then goggles, then gown — and the N95 last, OUTSIDE the closed door, handled by the straps, because the room's air is the hazard.
+
+5. Remove both — raw produce and fresh flowers (standing water, soil organisms) violate the protective environment. Then check that everyone entering has performed hand hygiene, and treat any fever as an emergency.`,
     },
   ],
   keyTakeaways: [
-    `Airborne (MTV: measles, TB, varicella): negative-pressure room + N95 on staff; surgical mask on the client for transport.`,
-    `Droplet (flu, pertussis, mumps, rubella, meningococcus): surgical mask; meningococcal precautions end after 24 h of antibiotics.`,
-    `Contact (MRSA, VRE, C. diff, scabies, RSV): gown + gloves on entry; dedicated equipment.`,
-    `C. difficile: soap-and-water hands and bleach cleaning — alcohol does not kill spores.`,
-    `Don: gown → mask → goggles → gloves. Doff: gloves → goggles → gown → mask.`,
+    `Standard precautions are universal; contact, droplet, and airborne are ADDED by transmission route — and airborne is only measles, varicella, disseminated zoster, and TB.`,
+    `C. difficile and norovirus demand soap and water plus sporicidal cleaning — alcohol rub fails against spores.`,
+    `Don gown-mask-goggles-gloves, doff gloves-goggles-gown-mask; the respirator comes off outside the closed airborne door.`,
+    `Neutropenia reverses the arrow: protective environment, no fresh flowers or raw produce, and fever 38 C / 100.4 F is a one-hour-to-antibiotics emergency.`,
+    `Sterile field mechanics: 1-inch border, waist level, no turned backs, moisture equals contamination — when in doubt, replace it.`,
   ],
 },
 
 nx_client_safety: {
   topicId: 'nx_client_safety',
-  title: `Client Safety & Error Prevention`,
-  domainWeight: 'Safety & Infection Control (10-16%)',
-  overview: `Safety items examine the systems that keep hospitalized people from being harmed by the hospital itself: falls, restraints, fires, and medication errors. The through-line is least-restrictive-first and system-over-blame. The exam wants the nurse who redesigns the environment before reaching for a restraint, and who reports errors into a system built to learn from them.`,
+  title: `Client Safety: Falls, Errors & the Environment`,
+  domainWeight: 'Safety and Infection Prevention and Control (10-16%)',
+  overview: `Safety items reward systems thinking: the exam wants the answer that prevents the error class, not the one that scolds the individual. This chapter covers fall prevention, correct-client identification and handoffs, the high-alert medication rules and forbidden abbreviations, fire and oxygen and MRI safety, and the home-safety teaching points — each a compact set of rules the exam samples directly.`,
   sections: [
     {
-      id: 'saf-falls-restraints',
-      title: `1. Falls and Restraints`,
-      content: `Fall prevention is a bundle, not a gadget: identify risk on admission and every shift (age, history of falls, sedating medications, orthostatic hypotension, toileting urgency, cognitive impairment); then bed low and locked, call light within reach and answered promptly, non-skid footwear, clear pathways, adequate lighting, hourly rounding with scheduled toileting, and high-risk clients placed near the nurses' station. Bed and chair alarms notify — they do not prevent — and all four side rails up is not a safety measure at all: it is a restraint that raises the height of the fall.
+      id: 'safe-falls',
+      title: `1. Falls: The Most Tested Adverse Event`,
+      content: `Falls are the most common inpatient adverse event, and fall stems reward layered prevention over any single device. Risk concentrates in: age over 65, previous falls (the strongest single predictor), sedating or blood-pressure medications, orthostatic hypotension, urinary urgency or frequency, impaired gait or vision, cognitive impairment, and unfamiliar environments — which is why risk is reassessed after every transfer, new medication, and status change, not just on admission.
 
-Restraints are the last resort after alternatives fail (reorientation, family or sitter presence, camouflaged tubing, activity, pain management). When required, the rules are rigid and heavily tested: a provider's order is required — never PRN — and if applied emergently, the order must follow within a defined window (commonly one hour for violent/self-destructive behavior, with face-to-face evaluation). Orders are time-limited (behavioral restraints: 4 hours adult, 2 hours ages 9-17, 1 hour under 9, renewable to a 24-hour maximum). The restrained client is observed continuously or on a strict schedule; circulation, skin, and range of motion are checked and the restraint released at least every 2 hours; the tie goes to the bed frame with a quick-release knot, never to a side rail; two fingers must fit between restraint and skin.`,
-      examTip: `Any option that begins with applying a restraint, adding a side rail, or medicating for staff convenience is wrong until the stem shows least-restrictive alternatives already failed.`,
+The intervention bundle the exam expects: bed low and locked, call light and personal items within reach, non-slip footwear, adequate lighting (a night light, not darkness), clear pathways, answer call lights promptly, scheduled (hourly) rounding that offers toileting — because many falls are elimination trips — and bed or chair alarms for clients who forget to call. Orthostatic precautions: sit before standing, dangle, rise slowly, and take the blood pressure lying-sitting-standing when orthostasis is suspected (a drop of 20 systolic or 10 diastolic within 3 minutes is positive).
+
+Two answer patterns to distrust: RESTRAINTS as fall prevention (they increase injury and are last resort under the strict rules covered in Legal & Ethical Practice), and RAISING ALL FOUR SIDE RAILS — four rails constitute a restraint, and climbing over them raises the fall height. If a client falls, assess BEFORE moving them, then notify, document factually in the chart, and complete the incident report that the chart never mentions.`,
+      examTip: `History of falls is the strongest predictor on every risk tool — when a stem asks which client is at highest fall risk, the previous faller usually outranks every single-factor competitor.`,
     },
     {
-      id: 'saf-fire-electrical',
-      title: `2. Fire, Oxygen, and Environmental Safety`,
-      content: `Fire response is RACE, in order: Rescue anyone in immediate danger, Alarm, Confine (close doors), Extinguish if small or Evacuate. The sequencing detail the exam tests: with a person in the room, rescue precedes the alarm; with no one in danger, the alarm comes first. Extinguisher use is PASS: Pull, Aim at the base, Squeeze, Sweep. Horizontal evacuation (behind the next fire doors) precedes vertical; ambulatory clients walk out first in an evacuation, and elevators are never used.
+      id: 'safe-identify',
+      title: `2. Right Client, Right Communication`,
+      content: `Client identification uses TWO identifiers — name plus date of birth or medical record number, checked against the wristband and the order — before every medication, specimen, transfusion, treatment, and transport. The room number is NEVER an identifier; neither is "the client answered to the name." For clients who cannot confirm (confused, sedated, pediatric), the band and a second source carry the identification.
 
-Oxygen enriches fires rather than igniting them, so oxygen safety is distance and materials: no open flames or smoking anywhere near, signage posted, cotton rather than static-prone synthetics, no petroleum-based products around the face (water-based lubricants only), and electrical equipment in good repair.
+Before invasive procedures, the TIME-OUT verifies right client, right procedure, right site with the whole team, and site MARKING involves the client while awake when laterality exists. Any team member may stop the line — the tested answer respects the most junior person's veto.
 
-Electrical and equipment safety round out the set: three-prong grounded plugs, no frayed cords or overloaded outlets, biomedical inspection tags current, and any device involved in an incident is sequestered exactly as it was — settings untouched — for investigation.`,
-      importantNote: `RACE bends to the situation: the step that protects a life comes first. The exam stem tells you whether someone is in the room — read for it before choosing rescue versus alarm.`,
+## Handoffs and SBAR
+
+Communication failures drive a large share of sentinel events, so structured handoff is tested as a skill:
+
+| SBAR step | What it carries |
+| --- | --- |
+| Situation | who you are, who the client is, what is happening right now |
+| Background | diagnosis, relevant history, code status, current therapy |
+| Assessment | your read: vitals, findings, trend — what you think is going on |
+| Recommendation | what you need: orders, evaluation, transfer — by when |
+
+Critical values and critical results are repeated back (read-back) just like telephone orders, and handoff happens at every transition of care — shift change, transfer, procedure, discharge. The tested wrong answers skip the read-back, hand off without the current assessment, or accept "they know the client" as a substitute for the structure.`,
+      examTip: `Two identifiers, neither of which is the room number, before EVERY intervention — a stem that shows the nurse skipping the band check because "I know this client" is showing you the error.`,
     },
     {
-      id: 'saf-med-errors',
-      title: `3. Medication Error Prevention`,
-      content: `The rights of medication administration — right client (two identifiers), drug, dose, route, time, plus documentation, reason, and response — are the personal layer. The systems layer is where modern items live: barcode scanning actually performed at the bedside rather than worked around, smart-pump drug libraries used rather than overridden, high-alert medications (insulin, anticoagulants, opioids, concentrated electrolytes) double-checked independently by a second nurse, and concentrated potassium never stored on the unit and NEVER given IV push.
+      id: 'safe-meds',
+      title: `3. Medication Safety: High-Alert Drugs & Forbidden Shorthand`,
+      content: `Most medication errors are SYSTEM failures, and the exam rewards the systems answer: barcode scanning at the bedside, independent double checks, smart pumps with dose limits, and questioning rather than working around a warning.
 
-Communication failures cause the rest: dangerous abbreviations (U for units, trailing zeros — write 5 mg, never 5.0 mg; leading zeros required — 0.5 mg, never .5 mg), verbal orders repeated back and read back, and complete handoffs using a structured format (SBAR: situation, background, assessment, recommendation).
+High-alert medications — the ones whose errors maim — carry an independent double-check by a second nurse in most institutions:
 
-When an error occurs anyway, the sequence is fixed: client first (assess, stabilize), provider notified, prescribed follow-up done, then the incident report into the quality system — factual chart documentation without mentioning the report. The exam consistently rewards the nurse who reports near-misses too, because the system that hears about the almost-error fixes the process before it reaches a client.`,
+| High-alert class | The tested rule |
+| --- | --- |
+| insulin | second-nurse verification of drug, dose, and route; U-100 syringes only |
+| anticoagulants (heparin, warfarin) | verify dose against the current lab (aPTT/anti-Xa, INR) before giving |
+| opioids | assess sedation level and respirations BEFORE the dose; naloxone available |
+| concentrated electrolytes | IV potassium is NEVER given by push — always diluted, always on a pump |
+| chemotherapy | dose recalculated independently against body surface area |
+
+The rights of medication administration — right client, drug, dose, route, time, documentation, plus the client's right to refuse — apply to every dose, and the three label checks (when reaching for the container, when preparing, at the bedside) survive every technology overlay.
+
+## Error-prone abbreviations
+
+| Never write | Because it reads as | Write instead |
+| --- | --- | --- |
+| U or IU | 0 or 4, or IV | units |
+| QD / QOD | each other | daily / every other day |
+| trailing zero: 5.0 mg | 50 mg | 5 mg |
+| naked decimal: .5 mg | 5 mg | 0.5 mg |
+| MS / MSO4 / MgSO4 | morphine vs magnesium | spell the drug out |
+
+If an error occurs: assess the client FIRST, notify the provider, monitor, document the facts (never the word "error") in the chart, and file the incident report. Punitive answers and concealment answers are always wrong; so is any answer that delays client assessment to do paperwork.`,
+      examTip: `IV potassium by push is lethal and appears as a distractor precisely because an order can say it: the nurse REFUSES, dilutes per protocol, and runs it on a pump. Never-push potassium outranks "follow the order."`,
+    },
+    {
+      id: 'safe-environment',
+      title: `4. Fire, Oxygen, Electrical & MRI Safety`,
+      content: `Fire response is the RACE sequence, in order: RESCUE anyone in immediate danger, ALARM (activate it and call), CONTAIN by closing doors, EXTINGUISH if small — or evacuate. Fire extinguisher operation is PASS: Pull the pin, Aim at the base of the fire, Squeeze, Sweep side to side. In a unit fire, ambulatory clients evacuate first (horizontal evacuation to the adjacent smoke compartment), oxygen zones are shut off per policy by authorized staff, and elevators are never used.
+
+| Mnemonic | Letters | Order matters because |
+| --- | --- | --- |
+| RACE | Rescue - Alarm - Contain - Extinguish | people out before doors close; alarm before you fight anything |
+| PASS | Pull - Aim - Squeeze - Sweep | aiming at the flames instead of the BASE spreads the fire |
+
+Oxygen enriches combustion: no smoking or open flames anywhere near it, no petroleum products on the face, cotton bedding over synthetics to limit static, and "oxygen in use" signage. Electrical safety: no frayed cords or overloaded outlets, three-prong grounded plugs, biomedical inspection of client-owned devices, and never touching the client and faulty equipment simultaneously.
+
+MRI is a magnet that never turns off: screen for pacemakers, implanted defibrillators, aneurysm clips, cochlear implants, metal fragments, and medication patches with foil backings (burn risk); oxygen tanks and standard equipment stay outside the 5-gauss line. The classic stem is the forgotten object — the answer stops the transport and rescreens.`,
+      examTip: `RACE and PASS are pure recall points, but the exam also tests the judgment version: the FIRST action in any fire is to move the person in immediate danger — rescue outranks alarm when someone is burning, and the stem tells you who is in danger.`,
+    },
+    {
+      id: 'safe-home',
+      title: `5. Home & Community Safety Teaching`,
+      content: `Home-safety items test anticipatory guidance by age and hazard:
+
+Infants sleep ALONE, on the BACK, in a bare CRIB — no pillows, bumpers, blankets, or co-sleeping; the crib slat gap is no wider than 2-3/8 inches (6 cm). Set the water heater to 120 F (49 C) or below — scalds are a leading child injury. Small objects, latex balloons, grapes, and hot dogs are choking hazards for children under 3 (the toilet-paper-tube test approximates a dangerous size). Medications and toxics live locked and up high, in original containers; the poison-control number is posted and syrup of ipecac is NOT used — no home-induced vomiting.
+
+Firearms are stored unloaded and locked, ammunition locked separately. Smoke alarms on every level and in sleeping areas, tested monthly; carbon monoxide detectors near sleeping areas — CO poisoning presents as headache, nausea, and confusion in a whole household with a flushed-red color, and the intervention is fresh air and emergency evaluation, never "sleep it off."
+
+For older adults at home: remove throw rugs, light the path to the bathroom, install grab bars and rails on BOTH sides of stairs, wear shoes rather than socks, and review the medication list for sedatives and orthostatic offenders — the same fall logic as the hospital, relocated.
+
+Car seats belong to pediatrics but are tested as safety: rear-facing as long as possible (at least to age 2 per current guidance), then forward-facing harness, then booster until the seat belt fits (typically 4 feet 9 inches, ages 8-12), and children under 13 ride in the back seat — never in front of an active airbag.`,
+      examTip: `Safe-sleep stems are decided by one image: back, alone, bare crib. Any answer adding ANYTHING soft to the crib — or any position but supine — is wrong regardless of the rationale offered.`,
+    },
+    {
+      id: 'safe-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. Which client is at highest fall risk: an 80-year-old two days post-op, a 72-year-old who fell at home last month, a 65-year-old on a new diuretic, or a 90-year-old with stable dementia in long-term care?
+
+2. The pharmacy sends heparin for a client whose morning aPTT is 96 seconds (therapeutic range for the protocol: 60-80). What does the nurse do before giving it?
+
+3. A fire starts in a trash can in an empty client room. Put the nurse's first four actions in order.
+
+4. An order reads "insulin 10U SC now." Name two problems and the correct next step.
+
+5. During transport to MRI, the nurse notices the client is wearing a medication patch. Why does this matter and what happens next?
+
+## Answers
+
+1. The 72-year-old with a fall last month — fall history is the strongest predictor and outranks each single-factor risk in the other options.
+
+2. HOLD the dose and notify the provider — an aPTT above range means the anticoagulant is overshooting; giving a scheduled high-alert drug against a critical lab is the tested error. Verification against the current lab is part of the administration, not an extra.
+
+3. Rescue (confirm the room is empty — no one to rescue), Alarm, Contain (close the door), Extinguish if small with PASS. The room being empty converts Rescue into a check, not a skip.
+
+4. "U" is a forbidden abbreviation (reads as a zero — 100 units) and insulin is a high-alert drug requiring a second-nurse check. Clarify the order with the prescriber, have it rewritten as "units," and verify with a second nurse before administration.
+
+5. Some patches have foil or metalized backings that heat in the magnetic field and burn the client. Stop, notify per protocol, and remove or verify the patch's MRI compatibility before entry — rescreening beats proceeding.`,
     },
   ],
   keyTakeaways: [
-    `Falls: bundle of environment + rounding + toileting; four rails up is a restraint, not protection.`,
-    `Restraints: last resort, timed order (never PRN), release and reassess every 2 h, quick-release to the frame.`,
-    `Fire: RACE and PASS — rescue first when someone is in danger; alarm first when no one is.`,
-    `Oxygen: distance from flames, cotton clothing, water-based (never petroleum) products near the face.`,
-    `High-alert meds get independent double checks; concentrated potassium is never unit-stocked, never IV push.`,
+    `Fall prevention is a bundle — low locked bed, reachable call light, toileting rounds, alarms — and history of falls is the strongest single predictor; restraints and four raised rails are not fall prevention.`,
+    `Two identifiers (never the room number) before every intervention; time-out before procedures; SBAR with read-back at every transition.`,
+    `High-alert drugs get independent double checks; IV potassium is never pushed; forbidden abbreviations (U, QD, naked and trailing decimals) are rewritten, not interpreted.`,
+    `RACE then PASS in order — rescue before alarm, aim at the base; oxygen zones, grounded plugs, and the always-on MRI magnet each carry absolute rules.`,
+    `Home teaching: back-alone-bare crib, 120 F water, locked medications and firearms, CO detectors, cleared floors and grab bars — the hospital fall logic relocated.`,
   ],
 },
 
@@ -484,196 +1034,592 @@ Elimination anchors: for constipation, fiber, fluids, and activity precede laxat
 
 nx_dosage_calc: {
   topicId: 'nx_dosage_calc',
-  title: `Dosage Calculation & Med Math`,
-  domainWeight: 'Pharmacological & Parenteral Therapies (13-19%)',
-  overview: `Every dosage problem on the exam is one of about ten shapes, and every shape yields to the same method: write what is ordered, write what is on hand, keep the units visible, and let them cancel. Nursing programs commonly require 90-100% on dosage exams because a misplaced decimal is a patient injury — the calculations here are worked in full, no shortcuts, and our practice bank's answer keys are machine-verified through two independent computation paths.`,
+  title: `Dosage Calculations & Safe Math`,
+  domainWeight: 'Pharmacological and Parenteral Therapies (13-19%)',
+  overview: `Dosage calculation is the one exam skill where you can guarantee points: the math never changes, the formats repeat, and fill-in-the-blank calculation items have no distractors to outwit — just an answer that is right or wrong. This chapter builds the complete toolkit: the conversion table, the desired-over-have and dimensional-analysis methods, IV flow rates and infusion times, weight-based and titration math, reconstitution, and the safe-dose check that turns arithmetic into nursing judgment. Every example is worked to the final rounded answer.`,
   sections: [
     {
-      id: 'dose-foundations',
-      title: `1. The Method and the Conversions`,
-      content: `Dimensional analysis is the single method that solves every problem type: start with what you want to find, multiply by conversion fractions arranged so unwanted units cancel, and read the answer with its unit attached. The alternative formula — desired over have times vehicle (D/H × V) — is fine for simple problems, but dimensional analysis scales to multi-step infusions where D/H×V users get lost.
+      id: 'calc-foundations',
+      title: `1. Conversions & the Two Methods`,
+      content: `Memorize the conversion table cold — most calculation errors on the exam are unit errors, not arithmetic errors:
 
-The conversion table is short: 1 g = 1,000 mg; 1 mg = 1,000 mcg; 1 kg = 2.2 lb; 1 L = 1,000 mL; 1 tsp = 5 mL; 1 tbsp = 15 mL; 1 oz = 30 mL. Metric conversions move the decimal three places — and direction errors are the fatal ones. 125 mcg = 0.125 mg: moving the decimal the wrong way produces a 1,000-fold error, and with drugs like digoxin or levothyroxine that error is a lethal dose. When in doubt, sanity-check magnitude: micro is smaller, so the mcg number must be BIGGER than the mg number for the same dose.
+| Conversion | Value |
+| --- | --- |
+| 1 g | 1,000 mg |
+| 1 mg | 1,000 mcg |
+| 1 kg | 2.2 lb |
+| 1 L | 1,000 mL |
+| 1 tsp | 5 mL |
+| 1 tbsp | 15 mL |
+| 1 oz | 30 mL |
+| 1 cup | 240 mL |
+| 1 in | 2.5 cm |
 
-Rounding rules the exam expects: drops and pump rates round to whole numbers (you cannot program half a drop); milliliters round to the nearest tenth (hundredth for volumes under 1 mL in high-precision settings); weight-based doses keep a sensible decimal; and rounding happens ONCE, at the end — carrying rounded intermediates through a multi-step problem compounds the error.
+## Desired over have
 
-Formatting rules that prevent tenfold errors: always a leading zero (0.5 mg, never .5 mg), never a trailing zero (5 mg, never 5.0 mg).`,
-      examTip: `Before computing anything, convert the weight and match the units of ordered dose and on-hand concentration. Nearly every distractor is one skipped conversion.`,
+$$\\text{amount to give} = \\frac{\\text{dose desired}}{\\text{dose on hand}} \\times \\text{quantity of the on-hand form}$$
+
+Order: digoxin 0.125 mg PO daily. On hand: 0.25 mg tablets.
+
+$$\\frac{0.125}{0.25} \\times 1 \\text{ tab} = 0.5 \\text{ tab}$$
+
+## Dimensional analysis
+
+Chain the conversion factors so every unwanted unit cancels, and check that the surviving unit is the one the question asks for. Order: amoxicillin 500 mg PO. On hand: suspension 250 mg per 5 mL.
+
+$$500 \\text{ mg} \\times \\frac{5 \\text{ mL}}{250 \\text{ mg}} = 10 \\text{ mL}$$
+
+Both methods give identical answers; dimensional analysis scales better to multi-step problems (mcg/kg/min infusions), so build the habit on easy problems. Either way, finish with the sanity check: is this a plausible amount? An answer of 14 tablets or 0.02 mL means a setup error, not an unusual order.`,
+      examTip: `Convert units FIRST, before any division — write the order and the on-hand strength in the same unit, then calculate. Most wrong answers on calc items are correct arithmetic performed on mismatched units.`,
     },
     {
-      id: 'dose-core-families',
-      title: `2. Tablets, Liquids, and Weight-Based Doses`,
-      content: `Tablets and capsules: divide ordered dose by tablet strength. Levothyroxine 0.075 mg ordered, 25 mcg tablets on hand: convert first (0.075 mg = 75 mcg), then 75 ÷ 25 = 3 tablets. An answer of half a tablet is plausible only for scored tablets; an answer of 6 tablets should trigger a recheck — real answers are usually ½ to 3.
+      id: 'calc-parenteral',
+      title: `2. Oral & Parenteral Doses`,
+      content: `Parenteral problems are desired-over-have with a liquid on-hand quantity. Order: heparin 5,000 units subcutaneously. On hand: 10,000 units/mL.
 
-Oral liquids: desired ÷ have × vehicle volume. Amoxicillin 375 mg ordered from a 250 mg/5 mL suspension: (375 ÷ 250) × 5 = 7.5 mL. The classic error is reporting the bare ratio (1.5) and dropping the "per 5 mL."
+$$\\frac{5000}{10000} \\times 1 \\text{ mL} = 0.5 \\text{ mL}$$
 
-Weight-based dosing: convert pounds to kilograms FIRST (divide by 2.2), then multiply by the mg/kg order. A 22-lb toddler ordered acetaminophen 15 mg/kg: 22 ÷ 2.2 = 10 kg; 15 × 10 = 150 mg. The distractor built from 15 × 22 = 330 mg is sitting in the options waiting for the skipped conversion — and it is a supratherapeutic dose.
+Order: morphine 4 mg IV. On hand: 10 mg/mL.
 
-Safe-dose-range problems add a judgment layer: compute the low and high acceptable doses from the range and the child's weight, then compare the order. Amoxicillin 50 mg/kg/DAY divided every 12 hours for a 16-kg child: 800 mg/day maximum, 400 mg/dose. An order for 500 mg/dose exceeds the safe single dose even though 500 < 800 — the per-day versus per-dose distinction IS the question, every time it appears.`,
-      importantNote: `Read the order's denominator: mg/kg/DOSE and mg/kg/DAY differ by the number of daily doses. The exam plants the daily total among the options for per-dose questions.`,
+$$\\frac{4}{10} \\times 1 \\text{ mL} = 0.4 \\text{ mL}$$
+
+## Rounding rules the exam grades
+
+| Situation | Round to |
+| --- | --- |
+| volumes greater than 1 mL | nearest tenth (0.1 mL) |
+| volumes less than 1 mL | nearest hundredth (0.01 mL) |
+| drops per minute | nearest whole drop |
+| mL per hour on a pump | per facility — the exam states the rule; follow the stem |
+| tablets | only split scored tablets; never split capsules or extended-release forms |
+
+Write the units on every line and follow the stem's rounding instruction EXACTLY — a correct calculation rounded wrong is scored wrong on fill-in-the-blank items. And keep the leading-zero rule from safe documentation: 0.5 mL, never .5 mL.
+
+## Unit-trap examples
+
+Order: levothyroxine 88 mcg PO daily. On hand: 0.088 mg tablets. Convert first: 0.088 mg = 88 mcg — the answer is 1 tablet, and the entire problem was the unit conversion.
+
+Order: 1.5 g of an antibiotic; on hand 500 mg capsules. 1.5 g = 1,500 mg; 1500 / 500 = 3 capsules.`,
+      examTip: `Insulin is measured in UNITS in a U-100 insulin syringe — never converted to mL by arithmetic. Any option that computes insulin volume through a mg or mL conversion is the error the item is testing.`,
     },
     {
-      id: 'dose-iv-calculations',
-      title: `3. IV Rates, Drips, and Critical-Care Math`,
-      content: `Pump rate (mL/hr): volume ÷ hours. 1,000 mL over 8 hours = 125 mL/hr. Infusion time reverses it: volume ÷ rate = hours (1,000 mL at 80 mL/hr = 12.5 hours — useful for anticipating the next bag).
+      id: 'calc-iv',
+      title: `3. IV Flow Rates & Infusion Times`,
+      content: `Two formulas cover every IV rate item.
 
-Gravity drip rate (gtt/min): volume in mL × drop factor (gtt/mL) ÷ time in MINUTES. 100 mL antibiotic over 30 minutes with 10 gtt/mL tubing: (100 × 10) ÷ 30 = 33 gtt/min. Microdrip tubing (60 gtt/mL) has a shortcut worth knowing: gtt/min equals mL/hr numerically, because the 60s cancel.
+## Pump rate (mL/h)
 
-Reconstitution: the concentration that matters is the one AFTER adding the labeled diluent volume — printed on the vial for that volume — not the powder mass. Cefazolin reconstituted to 225 mg/mL with 750 mg ordered: 750 ÷ 225 = 3.3 mL.
+$$\\text{mL/h} = \\frac{\\text{total volume (mL)}}{\\text{time (h)}}$$
 
-Critical-care infusions chain three steps; write each one. Dopamine at 5 mcg/kg/min for an 80-kg client from a 400 mg/250 mL bag: dose = 5 × 80 = 400 mcg/min = 24 mg/hr (× 60 ÷ 1,000 — the mcg-to-mg step is where this calculation dies); concentration = 400 ÷ 250 = 1.6 mg/mL; rate = 24 ÷ 1.6 = 15 mL/hr. Heparin protocols run the same chain without the unit conversion: 18 units/kg/hr × 70 kg = 1,260 units/hr; bag concentration 25,000 units/250 mL = 100 units/mL; rate = 12.6 → 13 mL/hr — then verify against protocol maximums and with a second nurse, because heparin errors are never small errors.`,
+Order: 1,000 mL of normal saline over 8 hours.
+
+$$\\frac{1000}{8} = 125 \\text{ mL/h}$$
+
+## Gravity drip rate (gtt/min)
+
+$$\\text{gtt/min} = \\frac{\\text{volume (mL)} \\times \\text{drop factor (gtt/mL)}}{\\text{time (min)}}$$
+
+Same order by gravity with 15 gtt/mL tubing:
+
+$$\\frac{125 \\text{ mL/h} \\times 15}{60} = 31.25 \\rightarrow 31 \\text{ gtt/min}$$
+
+An antibiotic piggyback: 50 mL over 30 minutes with 10 gtt/mL tubing:
+
+$$\\frac{50 \\times 10}{30} = 16.7 \\rightarrow 17 \\text{ gtt/min}$$
+
+## Infusion time and volume
+
+Time = volume divided by rate: 500 mL at 80 mL/h runs 6.25 h = 6 hours 15 minutes. Started at 1400, it ends at 2015 — the exam asks for completion times in clock form, so practice the conversion of decimal hours to minutes (0.25 h = 15 min).
+
+Micro-drip tubing is 60 gtt/mL, which makes gtt/min NUMERICALLY EQUAL to mL/h — a shortcut worth knowing both to compute and to sanity-check.`,
+      examTip: `Drops are counted whole: always round gtt/min to the nearest whole number. And on micro-drip (60 gtt/mL) tubing, gtt/min equals mL/h — if your two numbers differ on micro-drip, one of them is wrong.`,
+    },
+    {
+      id: 'calc-weight',
+      title: `4. Weight-Based Doses & Titrated Infusions`,
+      content: `Weight-based problems add one step — convert pounds to kilograms FIRST (divide by 2.2), then apply the ordered rate.
+
+A child weighs 22 lb; the order is 40 mg/kg/day divided every 8 hours.
+
+$$22 \\text{ lb} \\div 2.2 = 10 \\text{ kg}; \\quad 40 \\times 10 = 400 \\text{ mg/day}; \\quad \\frac{400}{3} = 133.3 \\text{ mg/dose}$$
+
+## Safe-dose verification
+
+The exam's favorite twist is the dose that calculates cleanly but is NOT SAFE. A child weighing 18 kg is ordered acetaminophen 500 mg PO every 6 hours; the reference range is 10-15 mg/kg/dose.
+
+$$18 \\times 10 = 180 \\text{ mg}; \\quad 18 \\times 15 = 270 \\text{ mg}$$
+
+The safe range is 180-270 mg/dose. The ordered 500 mg exceeds it — the correct action is HOLD AND CLARIFY with the prescriber, not administer, and not silently give the "right" dose. The calculation is nursing judgment with arithmetic inside.
+
+## Continuous titrated infusions (mcg/kg/min)
+
+Order: dopamine at 5 mcg/kg/min for an 80-kg client; the bag is 400 mg in 250 mL. Work to mL/h with dimensional analysis:
+
+$$5 \\times 80 = 400 \\text{ mcg/min} = 24{,}000 \\text{ mcg/h} = 24 \\text{ mg/h}$$
+
+$$\\text{concentration} = \\frac{400 \\text{ mg}}{250 \\text{ mL}} = 1.6 \\text{ mg/mL}; \\quad \\frac{24}{1.6} = 15 \\text{ mL/h}$$
+
+The units walk mcg/min to mcg/h to mg/h to mL/h — write every step; the errors live in the skipped ones. IV insulin drips work the same way at 1 unit/mL: 8 units/h is 8 mL/h.`,
+      examTip: `When a stem gives a weight in POUNDS and a reference range in mg/kg, the item is testing the 2.2 conversion — do it first, label it, and only then touch the ordered dose.`,
+    },
+    {
+      id: 'calc-reconstitution',
+      title: `5. Reconstitution & Multi-Step Problems`,
+      content: `Reconstitution problems hide the concentration in the label text: the diluent volume you add plus the powder yields a stated FINAL concentration — use the label's concentration, not your diluent arithmetic, because the powder displaces volume.
+
+A vial of cefazolin 1 g is reconstituted with 3.4 mL to yield 250 mg/mL. Order: 750 mg IM.
+
+$$\\frac{750}{250} = 3 \\text{ mL}$$
+
+Multi-dose vials: note the concentration, date-time-initial the label, and observe the beyond-use date. If a reconstituted answer exceeds the maximum IM volume for the site (roughly 3 mL for a large adult muscle, 1 mL for the deltoid), the answer may be to divide the dose between sites or question the route.
+
+## Heparin protocol math
+
+Heparin infusions run from weight-based protocols: a bag of 25,000 units in 250 mL (100 units/mL) ordered at 1,200 units/h:
+
+$$\\frac{1200}{100} = 12 \\text{ mL/h}$$
+
+A bolus of 80 units/kg for a 70-kg client is 5,600 units; from a 1,000 units/mL vial that is 5.6 mL. Protocol adjustments ("increase by 2 units/kg/h") repeat the same chain — always resolve to mL/h at the end, because that is what the pump takes.`,
+      examTip: `On reconstitution items, the concentration printed on the label after mixing is the on-hand strength. Diluent volume is a decoy — the powder has volume too, and the label already accounts for it.`,
+    },
+    {
+      id: 'calc-selfcheck',
+      title: `6. Self-Check: Five Calculations`,
+      content: `Work each on paper to the stated rounding before checking.
+
+1. Order: furosemide 60 mg PO. On hand: 20 mg tablets. How many tablets?
+
+2. Order: 1,500 mL lactated Ringer's over 12 hours by gravity, 20 gtt/mL tubing. What drip rate?
+
+3. A child weighs 33 lb. Order: 14 mg/kg/day of an antibiotic once daily; suspension is 125 mg/5 mL. How many mL per dose (nearest tenth)?
+
+4. Heparin infusion: 25,000 units in 250 mL, ordered at 1,400 units/h. Pump setting in mL/h?
+
+5. Order: hydromorphone 0.6 mg IV. On hand: 1 mg/mL. Volume to give (nearest hundredth)?
+
+## Answers
+
+1. 60 / 20 = 3 tablets.
+
+2. 1,500 / 12 = 125 mL/h. Then 125 x 20 / 60 = 41.7, rounds to 42 gtt/min.
+
+3. 33 / 2.2 = 15 kg. 14 x 15 = 210 mg/day in one dose. 210 x 5 / 125 = 8.4 mL.
+
+4. Concentration 25,000 / 250 = 100 units/mL. 1,400 / 100 = 14 mL/h.
+
+5. 0.6 / 1 = 0.6 mL — reported as 0.60 mL to the hundredth, written with the leading zero.`,
     },
   ],
   keyTakeaways: [
-    `One method — dimensional analysis with visible unit cancellation — solves every problem family.`,
-    `Convert weight and match units BEFORE computing; most distractors are one skipped conversion.`,
-    `mg/kg/DOSE vs mg/kg/DAY: the per-day total is always planted among the per-dose options.`,
-    `gtt/min = (mL × drop factor) ÷ minutes; with microdrip (60 gtt/mL), gtt/min = mL/hr.`,
-    `Critical-care chain: dose per minute → per hour → mg → ÷ concentration → mL/hr; write every step.`,
-    `Leading zeros always (0.5), trailing zeros never (5.0) — the notation rules exist to stop tenfold errors.`,
+    `Convert to matching units before any division — 2.2 lb per kg, 1,000 mcg per mg — and label every line; unit mismatch is the exam's favorite calc error.`,
+    `Pump math is volume over hours; gravity math is volume times drop factor over minutes; drops round whole, and micro-drip gtt/min equals mL/h.`,
+    `Weight-based orders are checked against the reference range — a clean calculation outside the safe range is held and clarified, never administered.`,
+    `Titration chains resolve stepwise (mcg/min to mcg/h to mg/h to mL/h) because pumps take mL/h; skipped steps are where the errors live.`,
+    `Reconstitution uses the label's final concentration, insulin stays in units in an insulin syringe, and volumes get leading zeros and the stem's exact rounding.`,
   ],
 },
 
 nx_pharm_principles: {
   topicId: 'nx_pharm_principles',
-  title: `Pharmacology Principles & High-Alert Meds`,
-  domainWeight: 'Pharmacological & Parenteral Therapies (13-19%)',
-  overview: `The exam cannot ask you every drug, so it asks prototypes, patterns, and the short list of medications that kill when mishandled. Learn drug classes by their signature assessment (what you check before giving), signature toxicity (what you watch for after), and antidote — and recognize the high-alert list, where policy adds a second pair of eyes.`,
+  title: `Pharmacology Principles & Drug Safety`,
+  domainWeight: 'Pharmacological and Parenteral Therapies (13-19%)',
+  overview: `Pharmacological and Parenteral Therapies is one of the two heaviest categories on the exam, and its non-calculation items cluster around a learnable core: how drugs move and act, the prototype-and-suffix system that lets you decode unfamiliar names, therapeutic drug monitoring with peaks and troughs, the antidote table, and administration rights and routes. This chapter builds that core; the drug classes themselves are covered with their diseases in the adult-health chapters, which is also how the exam frames them.`,
   sections: [
     {
-      id: 'pharm-cardiac',
-      title: `1. Cardiovascular Prototypes`,
-      content: `Digoxin: check the apical pulse a full minute (hold below 60 adult), monitor the level (therapeutic ~0.5-2.0 ng/mL) and potassium — hypokalemia potentiates toxicity at ANY level. Toxicity announces itself with anorexia, nausea, and visual changes (halos, yellow-green tint), then dysrhythmias; the antidote is digoxin immune Fab.
+      id: 'pharm-kinetics',
+      title: `1. Pharmacokinetics: What the Body Does to the Drug`,
+      content: `Four processes — absorption, distribution, metabolism, excretion — explain most "why" questions in pharmacology.
 
-Beta blockers (-olol): hold parameters for bradycardia and hypotension; mask hypoglycemia's adrenergic warning signs (a diabetic teaching point); never stop abruptly (rebound tachycardia and ischemia). ACE inhibitors (-pril): dry cough is the common nuisance, angioedema the emergency, hyperkalemia the lab effect — no potassium-based salt substitutes. ARBs (-sartan) share the potassium caution without the cough.
+Absorption is route-dependent: IV is complete by definition, IM and subcutaneous depend on perfusion (a shocked client absorbs nothing from muscle — why emergencies go IV), and oral absorption crosses the FIRST-PASS effect: drugs absorbed from the gut transit the liver before reaching circulation, and heavily first-pass drugs (nitroglycerin is the classic) need sublingual, transdermal, or IV routes to work at all.
 
-Anticoagulant pairs are permanent exam material. Warfarin: monitored by INR (therapeutic 2-3 for most indications), reversed by vitamin K, interacts with everything (teach CONSISTENT vitamin K intake, not avoidance). Heparin: monitored by aPTT, reversed by protamine sulfate, and watched for heparin-induced thrombocytopenia (platelet drop >50% — stop the drug, no platelet transfusion). Enoxaparin needs no routine monitoring; direct oral anticoagulants mostly none. Antiplatelets (aspirin, clopidogrel) and thrombolytics (-teplase) complete the bleeding family — thrombolytics carry the strictest exclusion screens (recent surgery, stroke history, active bleeding).
+Distribution hinges on protein binding and barriers: only UNBOUND drug is active, so low albumin (malnutrition, liver disease, age) raises the free fraction of highly bound drugs — standard doses become overdoses. The blood-brain barrier and placenta are the tested barriers.
 
-Nitroglycerin: sublingual tablets every 5 minutes up to three doses with EMS activated per current protocols if pain persists after the first; burning under the tongue is expected; headache is expected; hypotension contraindicates — and combining with phosphodiesterase inhibitors (sildenafil) can be fatal.`,
-      examTip: `Antidote pairs to bank: warfarin/vitamin K, heparin/protamine, digoxin/Fab, opioid/naloxone, benzodiazepine/flumazenil, acetaminophen/acetylcysteine, magnesium/calcium gluconate, iron/deferoxamine.`,
+Metabolism happens mostly in the liver: liver disease slows it, so doses fall; enzyme inducers and inhibitors create interactions. Grapefruit juice inhibits intestinal CYP3A4 and boosts levels of statins and calcium channel blockers — the exam's favorite dietary interaction.
+
+Excretion is mostly renal: creatinine and eGFR are checked before renally cleared drugs (vancomycin, aminoglycosides, digoxin, metformin), and the older adult's normal decline in renal function is why geriatric dosing starts low and goes slow.
+
+Half-life sets the schedule: about five half-lives to reach steady state on repeated dosing, and about five to clear after stopping. A drug with a 6-hour half-life reaches steady state in roughly 30 hours — which is why levels drawn on day one mislead.`,
+      examTip: `When a stem pairs liver disease or low albumin with a standard dose, the answer usually involves toxicity at "normal" doses; when it pairs renal decline with a renally cleared drug, look for the option that checks creatinine or reduces the dose.`,
     },
     {
-      id: 'pharm-endocrine-neuro',
-      title: `2. Endocrine, Psych, and the Level-Monitored Drugs`,
-      content: `Insulin timing is the testable core: rapid analogs (lispro, aspart) onset in ~15 minutes — food must be present or arriving; regular insulin peaks 2-4 hours; NPH peaks roughly 4-12 hours (the mid-afternoon hypoglycemia after a morning dose); glargine and detemir are peakless basals, never mixed in a syringe with anything. When mixing regular and NPH: clear before cloudy. Hypoglycemia treatment follows the 15-15 rule for the conscious client (15 g fast carbohydrate, recheck in 15 minutes); unconscious clients get IV dextrose or IM glucagon — never oral anything.
+      id: 'pharm-dynamics',
+      title: `2. Pharmacodynamics & the Suffix System`,
+      content: `Pharmacodynamics is what the drug does to the body: agonists activate receptors, antagonists block them (naloxone at opioid receptors), and the therapeutic index is the safety margin between the effective dose and the toxic one — narrow-index drugs (digoxin, lithium, warfarin, phenytoin, theophylline) are the monitored ones.
 
-Levothyroxine: morning, empty stomach, alone; excess presents as hyperthyroidism (tachycardia, heat intolerance, insomnia). Corticosteroids: give with food, never stop abruptly (adrenal crisis), watch glucose, infection masking, and bone loss with long use.
+The suffix system converts unfamiliar generic names into classes — the single highest-leverage memorization in NCLEX pharmacology:
 
-The narrow-therapeutic drugs pair a number with a toxicity picture. Lithium (0.6-1.2 mEq/L): toxicity brings coarse tremor, vomiting, ataxia, confusion; sodium depletion and dehydration raise levels — steady salt and fluid intake is the core teaching. Phenytoin (10-20 mcg/mL): nystagmus, ataxia, gingival hyperplasia (teach oral hygiene). Vancomycin and aminoglycosides: trough levels, nephrotoxicity and ototoxicity, and vancomycin's rate-dependent flushing reaction — slow the infusion to at least 60 minutes.
+| Suffix | Class | Prototype |
+| --- | --- | --- |
+| -pril | ACE inhibitor | lisinopril |
+| -sartan | angiotensin receptor blocker | losartan |
+| -olol | beta blocker | metoprolol |
+| -dipine | calcium channel blocker (dihydropyridine) | amlodipine |
+| -statin | HMG-CoA reductase inhibitor | atorvastatin |
+| -prazole | proton pump inhibitor | omeprazole |
+| -tidine | H2 blocker | famotidine |
+| -floxacin | fluoroquinolone | ciprofloxacin |
+| -cillin | penicillin | amoxicillin |
+| -cycline | tetracycline | doxycycline |
+| -azepam / -zolam | benzodiazepine | lorazepam / midazolam |
+| -zosin | alpha-1 blocker | tamsulosin family |
+| -gliptin | DPP-4 inhibitor | sitagliptin |
+| -gliflozin | SGLT2 inhibitor | empagliflozin |
+| -parin | low-molecular-weight heparin | enoxaparin |
+| -triptan | serotonin agonist (migraine) | sumatriptan |
+| -profen / -coxib | NSAID / COX-2 | ibuprofen / celecoxib |
 
-Psych patterns: SSRIs take 2-4 weeks (energy may return before mood — a suicide-risk window); serotonin syndrome (agitation, hyperthermia, clonus) when serotonergic drugs stack; MAOIs plus tyramine (aged cheese, cured meat, tap beer) = hypertensive crisis; antipsychotics carry extrapyramidal effects and the emergency of neuroleptic malignant syndrome (rigidity, hyperthermia, autonomic instability — stop the drug).`,
-      importantNote: `For every level-monitored drug, know three numbers: the range, the toxic threshold, and the lab that travels with it (lithium/sodium, digoxin/potassium, phenytoin/albumin).`,
+Decode, then apply the class rules: any -olol can mask hypoglycemia and worsen asthma; any -pril can cause a dry cough and hyperkalemia and angioedema; any -floxacin carries tendon-rupture warnings. The exam deliberately uses less-common members of a class to reward decoding over rote lists.`,
+      examTip: `When you meet an unfamiliar drug name, read the suffix before the stem options — the class effects and warnings usually answer the question without your ever having seen that specific drug.`,
     },
     {
-      id: 'pharm-high-alert',
-      title: `3. High-Alert Medications and Administration Rights`,
-      content: `The high-alert list — insulin, anticoagulants, opioids, concentrated electrolytes, neuromuscular blockers, chemotherapy — is defined by consequence, not frequency: errors with these drugs maim. Institutional defenses the exam expects you to honor: independent double checks (two nurses, separately, comparing against the order), smart-pump libraries used rather than overridden, insulin drawn only in insulin syringes, and concentrated potassium chloride banished from floor stock and NEVER administered IV push — it stops hearts. IV potassium runs diluted, by pump, at limited rates (commonly ≤10 mEq/hr on a general unit), with the infusion site watched (it burns and blisters).
+      id: 'pharm-monitoring',
+      title: `3. Therapeutic Monitoring: Levels, Peaks & Troughs`,
+      content: `![Serum drug level across repeated IV doses: the level saw-tooths upward to steady state; the peak is drawn about 30 minutes after an infusion ends and the trough immediately before the next dose — a high trough means the drug is accumulating.](/courses/nclex/figures/nclex-peak-trough.svg)
 
-Opioids add the respiratory-depression discipline: rate and sedation level BEFORE each dose (hold and reassess below ~12/min per policy), naloxone available, and sedation scales trusted over self-report — sedation precedes respiratory arrest.
+Narrow-therapeutic-index drugs are dosed by serum level, and the exam tests the sampling mechanics as often as the numbers: the PEAK is drawn about 30 minutes after an IV infusion ends (per protocol), and the TROUGH is drawn immediately BEFORE the next dose — the lowest point of the saw-tooth. A trough drawn late or a peak drawn early produces a level that lies.
 
-The rights of administration are the personal layer under all of it: right client (two identifiers, every time), drug, dose, route, time — plus right documentation (after giving, never before), right reason, right response, and the client's right to refuse. Barcode scanning is the rights automated; scanning the label taped to the pump instead of the client's band defeats the system and is the workaround stems are built from. Verbal and telephone orders are read back completely; error-prone abbreviations (U, IU, QD, trailing zeros) are written out.`,
+| Drug | Therapeutic range | The toxicity picture |
+| --- | --- | --- |
+| digoxin | 0.5-2.0 ng/mL | anorexia, nausea, visual changes (halos), arrhythmias; check apical pulse 1 min, hold under 60 |
+| lithium | 0.6-1.2 mEq/L | tremor to ataxia to seizures; dehydration and NSAIDs raise it; steady salt and water intake |
+| phenytoin | 10-20 mcg/mL | nystagmus, ataxia, gingival hyperplasia at the margin |
+| vancomycin | trough-guided (per protocol) | nephrotoxicity, ototoxicity; infuse slowly to avoid flushing reaction |
+| aminoglycosides | peak and trough per protocol | nephrotoxicity and ototoxicity — tinnitus is a report-now symptom |
+| theophylline | 10-20 mcg/mL | tachycardia, tremor to seizures |
+
+A HIGH TROUGH is the accumulation signal — clearance (usually renal) is failing to keep up, and the tested action is to hold the dose and notify before the next scheduled administration, with a creatinine check close behind.
+
+Warfarin is monitored by INR (therapeutic 2-3 for most indications) and reversed with vitamin K; heparin by aPTT (or anti-Xa) and reversed with protamine sulfate. The pair — lab, range, reversal — is a standing exam favorite.`,
+      examTip: `Sampling time IS the answer on many level questions: trough immediately before the dose, peak shortly after it ends. An option that draws the trough "one hour after administration" is wrong before any number appears.`,
+    },
+    {
+      id: 'pharm-antidotes',
+      title: `4. Antidotes, Interactions & High-Alert Classes`,
+      content: `The antidote table is pure recall and appears constantly:
+
+| Drug / toxin | Antidote |
+| --- | --- |
+| opioids | naloxone |
+| benzodiazepines | flumazenil |
+| heparin | protamine sulfate |
+| warfarin | vitamin K (phytonadione) |
+| acetaminophen | acetylcysteine |
+| digoxin | digoxin immune Fab |
+| iron | deferoxamine |
+| magnesium sulfate | calcium gluconate |
+| methotrexate | leucovorin |
+| cholinergic crisis | atropine |
+| extravasated vesicants | per-drug protocol — stop the infusion first |
+
+Naloxone's half-life is SHORTER than most opioids — respiratory depression can return as it wears off, so the client is monitored, not discharged, after reversal.
+
+## Interactions worth points
+
+Grapefruit juice with statins and calcium channel blockers (levels rise). MAOIs with tyramine-rich foods — aged cheese, cured meats, fermented anything — hypertensive crisis. Warfarin with leafy-green swings (vitamin K intake should be CONSISTENT, not eliminated) and with NSAIDs or aspirin (bleeding). Tetracyclines and fluoroquinolones with antacids, dairy, and iron — chelation blocks absorption; separate the doses. St. John's wort induces metabolism and weakens oral contraceptives, warfarin, and many others. Alcohol with metronidazole (disulfiram-like reaction) and with any CNS depressant.
+
+High-alert administration rules recap from Client Safety: insulin and heparin get independent double checks, IV potassium is never pushed, and opioid dosing follows a sedation-and-respirations assessment, not the clock alone.`,
+      examTip: `Learn the antidote pairs bidirectionally — stems ask "which drug should be available" (drug to antidote) as often as "this reversal agent is ordered for..." (antidote to drug).`,
+    },
+    {
+      id: 'pharm-administration',
+      title: `5. Routes, Rights & Client Teaching`,
+      content: `Route mechanics the exam samples: sublingual drugs stay under the tongue (no swallowing, no water); enteric-coated and extended-release forms are NEVER crushed (decoded from suffixes like SR, XL, ER, EC — crushing converts a 24-hour dose into a bolus); transdermal patches go on clean dry hairless skin, sites rotate, and the OLD PATCH COMES OFF first (two fentanyl patches is an overdose); eye drops press the inner canthus (punctal occlusion) to limit systemic absorption; ear drops pull the pinna up-and-back for adults, down-and-back for children under 3.
+
+Injection technique: subcutaneous insulin and heparin go in the abdomen (heparin 2 inches from the umbilicus, no aspiration, no massage); IM injections use the VENTROGLUTEAL site as the default adult choice and the vastus lateralis for infants, with the Z-track method for irritating drugs; needle length and gauge match the route and the client's size.
+
+NPO and the swallowing-impaired client route through clinical judgment: which scheduled drugs are essential (usually cardiac, seizure, and steroid drugs get clarified for alternate routes), and nothing oral goes down an unassessed dysphagic throat.
+
+## Teaching that finishes the course
+
+Antibiotic courses are FINISHED even when symptoms resolve — stopping early breeds resistance and relapse. Steroids are TAPERED, never stopped abruptly (adrenal suppression). Beta blockers, anticonvulsants, and antidepressants likewise stop only under supervision. "Take with food" belongs to NSAIDs, metformin, and steroids; "empty stomach" to levothyroxine (morning, water, 30-60 minutes before food) and alendronate (upright 30 minutes, full glass of water). The effectiveness statement the exam rewards is always the concrete behavior, never "I understand."`,
+      examTip: `Crush-safety is a two-second check that decides whole items: any ER/SR/XL/EC suffix means do not crush — and the correct alternative is calling the provider for a different form, not "crush it finely."`,
+    },
+    {
+      id: 'pharm-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client with cirrhosis and albumin of 2.1 g/dL takes a highly protein-bound drug at standard doses. What is the risk and why?
+
+2. Decode: a client is started on "nebivolol," which you have never seen. What class, and what two class cautions apply?
+
+3. Vancomycin trough returns elevated before the third dose. First action?
+
+4. A client on an MAOI orders a charcuterie board. What is the danger, and which foods are the problem?
+
+5. The med pass includes "diltiazem XL — crush and give via PEG tube" per a colleague's advice. What does the nurse do?
+
+## Answers
+
+1. Low albumin leaves more drug unbound and active — standard doses behave like overdoses. Monitor for toxicity and expect dose reduction; the liver's slowed metabolism compounds it.
+
+2. The -olol suffix marks a beta blocker: it can mask tachycardia and tremor of hypoglycemia in diabetic clients and can trigger bronchospasm in asthma/COPD — plus hold-and-assess if pulse is bradycardic per parameters.
+
+3. Hold the next dose and notify the provider — a high trough means accumulation, usually from falling renal clearance; expect a creatinine check and a dosing-interval change. Giving the dose "on time" is the tested error.
+
+4. Tyramine-rich foods — aged cheeses and cured meats are the core of the board — can precipitate hypertensive crisis on an MAOI. Severe headache and surging pressure after such a meal is an emergency.
+
+5. Refuse the shortcut: XL marks extended release, and crushing delivers the day's dose at once. Hold, and contact the provider or pharmacist for an immediate-release or liquid formulation appropriate for the tube.`,
     },
   ],
   keyTakeaways: [
-    `Digoxin: apical pulse, level, AND potassium — hypokalemia potentiates toxicity; halos and GI upset announce it.`,
-    `Warfarin→INR→vitamin K; heparin→aPTT→protamine. HIT = platelets down >50% = stop heparin.`,
-    `Insulin peaks decide hypoglycemia timing: rapid ~1 h, regular 2-4 h, NPH 4-12 h; clear before cloudy.`,
-    `Lithium rides sodium; steady salt and fluids. SSRIs lag 2-4 weeks — energy-before-mood is a risk window.`,
-    `Concentrated KCl: never floor stock, never IV push. High-alert drugs get independent double checks.`,
+    `Pharmacokinetics answers the "why": first-pass explains routes, protein binding and liver disease explain toxicity at normal doses, renal decline explains geriatric dosing, five half-lives explains steady state.`,
+    `The suffix system decodes unfamiliar drugs into classes — learn the table and apply class effects and cautions to any member.`,
+    `Peaks are drawn shortly after the infusion, troughs immediately before the next dose, and a high trough means hold and notify — accumulation from failing clearance.`,
+    `The antidote pairs (naloxone, flumazenil, protamine, vitamin K, acetylcysteine, Fab, calcium gluconate) are tested in both directions, and naloxone can wear off before the opioid does.`,
+    `Never crush ER/SR/XL/EC forms, take the old patch off first, finish antibiotic courses, taper steroids — and effective teaching is always the concrete behavior statement.`,
   ],
 },
 
 nx_iv_therapy: {
   topicId: 'nx_iv_therapy',
-  title: `IV Therapy, Blood Products & Parenteral Nutrition`,
-  domainWeight: 'Pharmacological & Parenteral Therapies (13-19%)',
-  overview: `Parenteral therapy items test three competencies: recognizing an IV complication by its local signature, running a blood transfusion by the unbending protocol, and respecting TPN's metabolic rules. The transfusion-reaction sequence — stop, disconnect, saline, verify, notify — is among the most frequently tested action sequences on the entire exam.`,
+  title: `IV Therapy, Blood Products & Central Lines`,
+  domainWeight: 'Pharmacological and Parenteral Therapies (13-19%)',
+  overview: `Parenteral therapy questions cluster around four skill sets: choosing and reading IV fluids (the tonicity table), catching and managing site complications, running blood products by the strict transfusion script, and maintaining central lines without infecting or embolizing them. Each has bright-line rules — stop first, assess, then salvage — and the exam rewards the nurse who acts on the earliest sign, not the full-blown picture.`,
   sections: [
     {
+      id: 'iv-fluids',
+      title: `1. IV Fluids: The Tonicity Table`,
+      content: `Fluid questions are decided by tonicity — where the water goes:
+
+| Fluid | Tonicity | Where it goes | Classic use | Caution |
+| --- | --- | --- | --- | --- |
+| 0.9% NaCl (normal saline) | isotonic | stays intravascular | resuscitation, blood co-infusion, most bolus orders | fluid overload; hyperchloremic acidosis in volume |
+| lactated Ringer's | isotonic | intravascular | surgery, burns, trauma | liver failure (lactate), hyperkalemia risk in renal failure |
+| D5W | isotonic in the bag, hypotonic once dextrose metabolizes | into cells | free-water replacement, some drug dilutions | never for resuscitation; worsens cerebral edema |
+| 0.45% NaCl (half NS) | hypotonic | into cells | cellular dehydration (DKA per protocol after resuscitation) | never in head injury or trauma; can crash intravascular volume |
+| 3% NaCl | hypertonic | pulls water INTO vessels | severe symptomatic hyponatremia, cerebral edema | slow, monitored, often ICU; overshoot risks osmotic injury |
+| D5 1/2 NS, D5 NS | hypertonic in the bag | maintenance with calories | common maintenance orders | not resuscitation fluids |
+
+The two tested absolutes: hypotonic fluids never run in head-injury clients (they swell the brain), and 3% saline runs slowly with sodium checks — correcting sodium too fast injures the brain. Normal saline is the ONLY fluid compatible with blood products.
+
+Older adults and clients with heart or kidney failure develop overload from "routine" rates: crackles, distended neck veins, bounding pulse, and a climbing weight are the assessment cluster; slow the fluid and call before the pulmonary edema completes the picture.`,
+      examTip: `Ask where the water goes: isotonic stays in the vessels (resuscitation), hypotonic moves into cells (never with brain injury), hypertonic pulls water out of cells (severe hyponatremia, slow and monitored).`,
+    },
+    {
       id: 'iv-complications',
-      title: `1. Peripheral and Central Line Complications`,
-      content: `Peripheral IV complications differentiate by look and feel. Infiltration (fluid in tissue): cool, pale, swollen, sluggish — stop, remove, elevate. Extravasation is infiltration with a vesicant (chemotherapy, vasopressors, concentrated electrolytes): stop immediately, leave the catheter for antidote administration per protocol, notify. Phlebitis (vein inflammation): warm, red, tender cord along the vein — remove, warm compress, restart elsewhere, and phlebitis (not infiltration) is graded on the visual scales. Local infection adds purulence and fever; thrombosis adds a palpable cord with sluggish flow.
+      title: `2. Peripheral IV Complications: Recognize, Stop, Salvage`,
+      content: `Every complication item follows the same skeleton — earliest sign, first action, then the specific rescue:
 
-Central lines raise the stakes. Insertion and removal share the air-embolism discipline: for removal, position supine or Trendelenburg, have the client perform Valsalva (bear down) during withdrawal, apply an occlusive — classically petroleum-gauze — dressing, and keep the client flat briefly after. Suspected air embolism (sudden dyspnea, chest pain, "mill-wheel" murmur) = clamp the line, LEFT lateral Trendelenburg (trapping air in the right ventricle apex), oxygen, call for help.
+| Complication | The picture | First action | Then |
+| --- | --- | --- | --- |
+| infiltration (non-vesicant into tissue) | cool, pale, swollen, sluggish or stopped infusion | STOP and remove | elevate; warm or cool per policy; restart proximally or other arm |
+| extravasation (vesicant into tissue) | as above, plus a vesicant drug running | STOP infusion, leave catheter for antidote per protocol | notify; agent-specific antidote; document extent |
+| phlebitis (vein inflammation) | red, warm, tender cord along the vein | STOP and remove | warm compress; new site; grade per scale |
+| infection at site | purulence, spreading redness, fever | remove per policy | culture per orders; sterile dressing |
+| air embolism | sudden dyspnea, chest pain, drop in pressure with line open to air | clamp the line | position LEFT side, head down (trap air in right heart); oxygen; call |
+| catheter embolism | sheared fragment travels | apply tourniquet high on the limb per policy | imaging; retrieval |
 
-Central line-associated bloodstream infection (CLABSI) prevention is a bundle the exam quotes: hand hygiene, maximal barrier precautions at insertion, chlorhexidine skin antisepsis, "scrub the hub" (15 seconds, friction) before every access, dressing changes per protocol with sterile technique, and a daily review of line necessity — the safest line is the one removed.`,
-      examTip: `Infiltration is COOL and pale; phlebitis is WARM and red. One temperature word in the stem usually decides the answer.`,
+The difference between infiltration and extravasation is only the DRUG — the tissue picture is identical, but a vesicant (chemotherapy agents, dopamine, calcium, potassium concentrates) turns a nuisance into a tissue-necrosis emergency with its own antidote pathway, and the catheter may stay in place initially so the antidote can be delivered through it.
+
+Site care standards: the smallest gauge that serves the therapy (large bores — 18 or larger — for trauma and blood when rapid infusion is expected), aseptic insertion, dated dressings, scrub-the-hub before every access, and site assessment every shift and before every medication. A pump alarm of "occlusion" is an assessment trigger, not a silence-and-restart trigger.`,
+      examTip: `For any deteriorating IV site the first verb is STOP — every correct sequence begins by halting the infusion before assessment, elevation, compresses, or restarts. An option that troubleshoots the pump first is wrong.`,
     },
     {
-      id: 'iv-transfusions',
-      title: `2. Blood Products and Transfusion Reactions`,
-      content: `The transfusion protocol is rigid because the failure mode is fatal. Before: type and crossmatch, consent, large-enough gauge (traditionally 18-20 for adults), and NORMAL SALINE ONLY as the companion fluid — dextrose hemolyzes red cells, lactated Ringer's clots them. Verification is two licensed staff at the bedside comparing client, product, and numbers. Baseline vitals; then stay with the client for the first 15 minutes at a slow rate — the window in which acute hemolytic reactions declare themselves. Vitals per policy throughout; the unit infuses within 4 hours of leaving the blood bank.
+      id: 'iv-blood',
+      title: `3. Blood Products: The Transfusion Script`,
+      content: `Transfusion items test a fixed script, and deviations are the wrong answers.
 
-Every suspected reaction begins identically: STOP the transfusion, disconnect the tubing at the hub and run new saline through NEW tubing (keeping the vein open without pushing more product), reverify identifiers, assess, notify the provider and blood bank, and return the unit and tubing to the bank. Then differentiate: acute hemolytic (fever, chills, flank pain, hypotension, red-brown urine — the ABO catastrophe) gets vigorous saline and urine output monitoring; febrile non-hemolytic (fever/chills without hemolysis signs) gets antipyretics; mild allergic (urticaria, itching) gets antihistamine and possibly a physician-approved restart — the only reaction where restart is even discussed; anaphylactic gets epinephrine.
+Before: type and crossmatch on file, consent verified, LARGE-ENOUGH gauge line (18-20 g adult standard), baseline vital signs, and the two-nurse verification at the bedside — client identity (two identifiers), unit number, blood type compatibility, expiration. Only NORMAL SALINE primes and runs with blood; no medications ever enter the blood line.
 
-Volume-status reactions bookend the set: transfusion-associated circulatory overload (dyspnea, hypertension, JVD, crackles — the heart-failure picture) is managed with upright positioning, oxygen, diuretics, and slower future rates; TRALI (transfusion-related acute lung injury: hypoxemia and bilateral infiltrates WITHOUT overload signs) is a ventilation emergency.`,
-      importantNote: `Every transfusion-reaction answer starts with stopping the blood and maintaining the line with fresh saline through new tubing. Any option that keeps the product running — or slows it "to observe" — is wrong.`,
+During: start slowly (about 2 mL/min) and STAY WITH THE CLIENT for the first 15 minutes — most acute hemolytic reactions declare in the first 50 mL. Re-check vitals per protocol, and complete each unit within 4 hours of leaving the blood bank (bacterial growth limit).
+
+| Reaction | The picture | Beyond stopping the blood |
+| --- | --- | --- |
+| acute hemolytic | fever, chills, FLANK PAIN, dark urine, hypotension — within minutes | run saline via NEW tubing, recheck identifiers, send unit and labs to bank |
+| febrile non-hemolytic | fever and chills without hemolysis signs, usually within 2 h | antipyretics per orders; rule out worse first |
+| allergic (mild) | urticaria, itching | antihistamine; per policy may resume slowly if isolated |
+| anaphylactic | wheeze, hypotension, angioedema | epinephrine pathway, airway support |
+| TACO (circulatory overload) | dyspnea, crackles, hypertension, distended neck veins | upright, oxygen, diuretics per orders; slower future rates |
+| TRALI (acute lung injury) | sudden hypoxemia and bilateral infiltrates within 6 h | oxygen and support — a report-and-escalate emergency |
+
+Every suspected reaction starts identically: STOP the transfusion, keep the line open with saline through NEW tubing (the old set holds more blood), assess, and notify provider and blood bank. The saline-through-new-tubing detail is the classic discriminator between right and almost-right options.`,
+      examTip: `The first 15 minutes belong to the nurse at the bedside — and flank pain plus dark urine during a transfusion is hemolysis until proven otherwise: stop, new tubing, saline, recheck the identifiers you verified an hour ago.`,
     },
     {
-      id: 'iv-tpn',
-      title: `3. Total Parenteral Nutrition`,
-      content: `TPN is IV food concentrated beyond what a peripheral vein tolerates: solutions above roughly 10% dextrose require a central line. Its rules are metabolic. Glucose monitoring is scheduled (commonly every 4-6 hours initially) because the infusion is a continuous carbohydrate load; rates ramp up and taper down gradually, because abrupt cessation invites rebound hypoglycemia. If a bag runs dry and the next is unavailable, hang dextrose 10% at the same rate — never plain saline, never nothing.
+      id: 'iv-central',
+      title: `4. Central Lines, PICCs & TPN`,
+      content: `Central venous catheters (internal jugular, subclavian, femoral), PICCs, and implanted ports carry three tested hazard classes: infection, air, and clot.
 
-The line and the formula are single-purpose: no medications, no blood draws, no piggybacks through the TPN lumen; lipids either run separately or arrive premixed as a 3-in-1. Bags and tubing change per protocol (bag typically every 24 hours, lipid-containing tubing on the stricter schedule) because the formula is a culture medium — which is also why refrigerated bags warm to room temperature before hanging and why a cracked, oily-looking, or precipitated bag goes back to pharmacy.
+Central line-associated bloodstream infection (CLABSI) prevention is a bundle the exam quotes: maximal sterile barriers at insertion, chlorhexidine skin prep, hand hygiene and scrub-the-hub (15 seconds, friction) before every access, transparent dressings changed on schedule or when soiled, daily review of line necessity, and prompt removal when no longer needed. Femoral sites carry the highest infection risk and are avoided when possible.
 
-Monitoring beyond glucose: daily weights (the honest measure of nutrition and fluid), intake and output, electrolytes and liver panels per protocol, and vigilance for refeeding syndrome in the chronically malnourished — the phosphate, potassium, and magnesium crash as insulin surges with reintroduced carbohydrate. Infection surveillance never stops: the combination of a central line and sugar-rich fluid makes CLABSI the signature TPN complication, and unexplained fever in a TPN client points at the line first.`,
+Air-embolism defenses are positional and mechanical: clamp lumens when open to air, use Valsalva (bear down) or humming during tubing changes and removal, position the client FLAT or Trendelenburg for insertion and removal, and cover the removal site with an occlusive (petroleum-gauze) dressing while the client holds exhalation. Sudden dyspnea during any line manipulation is the air-embolism picture: clamp, LEFT side head down, oxygen, call.
+
+Occlusion logic: never force a flush against resistance (a clot dislodged is an embolus); reposition, verify clamps, then follow the alteplase-per-protocol pathway. Blood return is verified before high-risk infusions.
+
+## TPN rules
+
+Total parenteral nutrition runs through a CENTRAL line (peripheral parenteral nutrition only at low dextrose concentrations), on a pump, with a dedicated lumen and a filter per policy. The tested cluster: check glucose regularly (hyperglycemia is the most common complication), never catch up a behind-schedule bag by speeding it, and if the next bag is delayed, hang D10W — abrupt cessation of the dextrose load precipitates hypoglycemia. Tubing and bag change on schedule (typically every 24 hours; lipids more often per policy) because the solution feeds bacteria as happily as clients.`,
+      examTip: `Two never-force rules carry the section: never force a central-line flush (embolized clot) and never speed a late TPN bag (osmotic and glycemic injury) — and D10W is the bridge when TPN runs out.`,
+    },
+    {
+      id: 'iv-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client with a head injury has orders for IV fluids. Which bag makes the nurse call the provider: 0.9% NaCl, lactated Ringer's, or 0.45% NaCl?
+
+2. Fifteen minutes into a packed-cell transfusion the client reports chills and flank pain; urine in the catheter bag is darkening. List the first three actions in order.
+
+3. A vesicant chemotherapy infusion site becomes swollen and cool. What distinguishes this from simple infiltration, and what changes about management?
+
+4. During central-line tubing change, the client suddenly becomes dyspneic and hypotensive. Position and first actions?
+
+5. The TPN bag empties and the pharmacy's next bag is 2 hours away. What does the nurse hang, and why?
+
+## Answers
+
+1. 0.45% NaCl — hypotonic fluid shifts water into cells, including brain cells, and is contraindicated with intracranial pathology. The isotonic options are expected.
+
+2. Stop the transfusion; keep the line open with NORMAL SALINE through NEW tubing; assess and notify the provider and blood bank (then re-verify identifiers, send the unit and ordered specimens). The picture is acute hemolysis.
+
+3. The drug makes it extravasation — a tissue-necrosis emergency. Stop the infusion but LEAVE the catheter initially so the agent-specific antidote can be given through it per protocol, then follow documentation and plastic-surgery-consult pathways per policy.
+
+4. Clamp the line, position LEFT lateral with head down to trap air in the right heart, apply oxygen, and call the rapid response — the picture is air embolism during an open-line maneuver.
+
+5. D10W at the ordered rate — the client's insulin response is matched to a continuous dextrose load, and abrupt cessation drops glucose. Speeding the eventual bag to catch up is the paired wrong answer.`,
     },
   ],
   keyTakeaways: [
-    `Infiltration = cool/pale (stop, remove, elevate); phlebitis = warm/red cord; vesicant extravasation = stop, keep the catheter for antidote.`,
-    `Blood runs with saline only, double-verified at the bedside; stay the first 15 minutes.`,
-    `Any reaction: stop → new tubing + saline → reverify → assess → notify → return the unit.`,
-    `TACO looks like heart failure (overload); TRALI is hypoxemia without overload — both stop the transfusion.`,
-    `TPN: central line for high dextrose, scheduled glucose checks, D10W if the bag runs out, nothing else in the lumen.`,
+    `Read fluids by tonicity: isotonic resuscitates, hypotonic hydrates cells (never in brain injury), hypertonic 3% saline runs slow and monitored — and only normal saline touches blood.`,
+    `Every IV-site complication starts with STOP; the drug decides infiltration versus extravasation, and vesicants keep the catheter for the antidote.`,
+    `Transfusions: two-nurse bedside verification, slow start, 15 minutes at the bedside, 4-hour limit — and any reaction means stop, saline via new tubing, assess, notify.`,
+    `Central lines: scrub the hub, clamp open lumens, Valsalva and occlusive dressing at removal, never force a flush — dyspnea during manipulation is air embolism (left side, head down).`,
+    `TPN is central, pumped, glucose-monitored, never sped up — and D10W bridges a late bag.`,
   ],
 },
 
 nx_lab_values: {
   topicId: 'nx_lab_values',
   title: `Laboratory Values & Diagnostics`,
-  domainWeight: 'Reduction of Risk Potential (10-16%)',
-  overview: `The exam expects a compact table of reference ranges and — more importantly — the nursing action attached to each critical deviation. A lab value on the NCLEX is never trivia: it is a cue demanding recognition (is this normal?), analysis (what does it threaten?), and action (monitor what, hold what, call whom?).`,
+  domainWeight: 'Reduction of Risk Potential (9-15%)',
+  overview: `Laboratory items pay twice: once for recall (is this value normal?) and once for judgment (what does the nurse DO about it?). This chapter consolidates the reference table the exam draws from — hematology, chemistry, renal, liver, cardiac, coagulation — then builds the ABG interpretation method with the four-quadrant map, the critical-value playbook, and the pre-procedure lab logic that Reduction of Risk Potential items live on.`,
   sections: [
     {
-      id: 'lab-electrolytes-metabolic',
-      title: `1. Electrolytes and Metabolic Panels`,
-      content: `The ranges to know cold: sodium 135-145 mEq/L; potassium 3.5-5.0; calcium ~9-10.5 mg/dL; magnesium 1.5-2.5 mEq/L (institutional ranges vary slightly); phosphorus 2.5-4.5 mg/dL; chloride 96-106; glucose fasting 70-99 mg/dL (diabetes diagnosed at ≥126 fasting or A1c ≥6.5%; A1c target for most treated diabetics <7%).
+      id: 'lab-core',
+      title: `1. The Core Reference Table`,
+      content: `Adult reference ranges as commonly taught (institutional ranges vary slightly — the exam uses the conventional ones):
 
-Renal function: BUN 10-20 mg/dL, creatinine ~0.6-1.2 mg/dL — creatinine is the kidney number; BUN rises with dehydration, GI bleeding, and steroids independent of kidneys. A rising creatinine flags dose adjustments for renally cleared drugs and gates nephrotoxic exposures: metformin around iodinated contrast, aminoglycosides, vancomycin trough monitoring.
+| Test | Reference range | The tested edge |
+| --- | --- | --- |
+| WBC | 5,000-10,000/mm3 | under 1,000 or ANC under 500 = neutropenic precautions |
+| hemoglobin | male 14-18, female 12-16 g/dL | symptomatic anemia, transfusion conversations |
+| hematocrit | male 42-52%, female 37-47% | roughly 3 x Hgb — a mismatch flags dilution or dehydration |
+| platelets | 150,000-400,000/mm3 | under 50,000 bleeding precautions; under 20,000 spontaneous risk |
+| sodium | 135-145 mEq/L | neuro symptoms at extremes; correct slowly |
+| potassium | 3.5-5.0 mEq/L | cardiac risk both directions — the most dangerous electrolyte |
+| calcium | 9.0-10.5 mg/dL | Trousseau/Chvostek low; stones-bones-groans high |
+| magnesium | 1.8-2.6 mEq/L | mirrors potassium clinically; DTRs are the bedside monitor |
+| glucose (fasting) | 70-99 mg/dL | 100-125 prediabetes; 126+ x2 diabetes |
+| BUN | 10-20 mg/dL | rises with dehydration AND renal failure |
+| creatinine | 0.6-1.2 mg/dL | THE kidney number — trend it before nephrotoxic drugs and contrast |
+| albumin | 3.5-5.0 g/dL | nutrition status; drug binding; edema |
+| bilirubin (total) | 0.3-1.0 mg/dL | jaundice visible around 2.5-3 |
+| AST / ALT | roughly 10-40 / 7-56 units/L | hepatocellular injury; baseline before statins, isoniazid |
+| troponin | essentially undetectable (assay-specific) | THE cardiac injury marker — serial draws |
+| BNP | under 100 pg/mL | heart failure severity; rises with stretch |
 
-The action layer decides exam answers. Potassium below 3.0 or above 6.0: cardiac monitor, provider, and (high) prepare calcium gluconate for membrane protection, insulin-with-dextrose to shift, and definitive removal — while remembering IV potassium replacement is NEVER pushed. Sodium below 120: seizure precautions, correct SLOWLY (osmotic demyelination). Calcium low after thyroid/parathyroid surgery: Trousseau and Chvostek signs, laryngospasm watch, calcium gluconate at the bedside. Magnesium low: often travels with low potassium and calcium — replete magnesium first or potassium will not hold.`,
-      examTip: `For any electrolyte item, the wrong answers usually treat the number; the right answer usually protects the client (monitor, precautions, hold the drug) while the number is corrected per prescription.`,
+Trend beats snapshot here as everywhere: a creatinine of 1.3 means one thing in a client who was 1.2 last year and another in a client who was 0.7 yesterday — the doubling is an acute kidney injury even though 1.3 "looks nearly normal."`,
+      examTip: `Learn potassium, sodium, creatinine, platelets, and glucose to the DIGIT — these five drive the most action items. For the rest, learn the range and the one action each edge demands.`,
     },
     {
-      id: 'lab-heme-coag',
-      title: `2. Hematology and Coagulation`,
-      content: `Complete blood count anchors: hemoglobin ~12-16 g/dL women, 14-18 men (transfusion conversations typically begin below 7-8 in stable clients); hematocrit roughly three times the hemoglobin; platelets 150,000-400,000/mm³; WBC 5,000-10,000/mm³.
+      id: 'lab-coag',
+      title: `2. Coagulation & Drug-Level Monitoring`,
+      content: `Coagulation studies pair with their drugs, and the exam tests the pairing more than the numbers:
 
-Platelet action thresholds: below ~50,000 = bleeding precautions (soft toothbrush, electric razor, no IM injections, no rectal anything, pressure ≥5 minutes after punctures); below ~20,000 = spontaneous bleeding risk — neuro checks for intracranial bleeding, provider notification, anticipated transfusion.
+| Test | Range | Monitors | Reversal |
+| --- | --- | --- | --- |
+| INR | 0.8-1.1 baseline; therapeutic 2-3 on warfarin | warfarin | vitamin K |
+| aPTT | roughly 30-40 s baseline; therapeutic ~1.5-2.5 x control on heparin | IV heparin (or anti-Xa per protocol) | protamine sulfate |
+| platelets | 150,000-400,000/mm3 | heparin-induced thrombocytopenia screen — a FALLING count on heparin | stop heparin, notify |
+| anti-Xa | protocol-specific | LMWH when monitored at all | protamine (partial) |
 
-Neutropenia is the infection mirror: absolute neutrophil count below 1,000 (severe below 500) = protective precautions — private room, meticulous hand hygiene, no fresh flowers or standing water, screen visitors, avoid invasive procedures — and any single fever ≥38.3°C (101°F) or sustained ≥38°C is neutropenic fever, an oncologic EMERGENCY: cultures and broad-spectrum antibiotics within the hour, not routine follow-up.
+Direct oral anticoagulants (apixaban, rivaroxaban, dabigatran) run without routine monitoring — the tested points are renal function checks, strict adherence (short half-lives mean missed doses matter), and specific reversal agents existing for emergencies.
 
-Coagulation pairs: PT/INR monitors warfarin (therapeutic INR 2-3; above ~4.5-5 hold and expect vitamin K); aPTT monitors heparin (therapeutic commonly 1.5-2.5 × control; markedly high = stop infusion per protocol, protamine available). D-dimer rules OUT clot when negative but proves nothing when positive. Troponin is the cardiac injury marker (rises within hours, stays days); BNP tracks heart-failure severity — the two "which lab confirms" favorites.`,
-      importantNote: `Neutropenic fever rewrites priorities: a temperature that would be "recheck in an hour" in anyone else is cultures-and-antibiotics-now in the client with an ANC under 500.`,
+An INR of 4.5 on warfarin is a hold-and-call with bleeding assessment; a falling platelet count on ANY heparin product raises heparin-induced thrombocytopenia — the counterintuitive answer is to STOP the heparin even though the client seems to need anticoagulation, because HIT causes clots, not just bleeding.
+
+Bleeding-precaution bundle for any anticoagulated or thrombocytopenic client: soft toothbrush, electric razor, no IM injections when avoidable, pressure on punctures for 5-10 minutes, fall prevention, report black stools and easy bruising.`,
+      examTip: `Pair test to drug reflexively — PT/INR-warfarin-vitamin K; aPTT-heparin-protamine. Items are engineered so the almost-right option monitors the RIGHT drug with the WRONG test.`,
+    },
+    {
+      id: 'lab-abg',
+      title: `3. Arterial Blood Gases: The Three-Step Read`,
+      content: `![The ABG four-quadrant map: respiratory acidosis (pH down, CO2 up), respiratory alkalosis (pH up, CO2 down), metabolic acidosis (pH down, HCO3 down), metabolic alkalosis (pH up, HCO3 up) — with the classic causes in each cell and the normal ranges beneath.](/courses/nclex/figures/nclex-abg-map.svg)
+
+Normal values: pH 7.35-7.45, PaCO2 35-45 mm Hg, HCO3 22-26 mEq/L (PaO2 80-100 on room air). The three-step method answers every ABG item:
+
+Step 1 — read the pH. Below 7.35 acidosis, above 7.45 alkalosis. (Exactly normal with abnormal partners = fully compensated; note which side of 7.40 it sits.)
+
+Step 2 — find the culprit. Which abnormal value EXPLAINS the pH? CO2 moves opposite to pH when respiratory (ROME: Respiratory Opposite); HCO3 moves the same direction as pH when metabolic (Metabolic Equal).
+
+Step 3 — check compensation. Is the OTHER system abnormal in the rescuing direction? Absent = uncompensated; present but pH still abnormal = partial; pH normalized = full.
+
+Worked read: pH 7.30, PaCO2 52, HCO3 26. Acidotic pH; CO2 elevated (opposite direction — respiratory culprit); HCO3 still normal — uncompensated respiratory acidosis. Picture: the oversedated or COPD-crisis client hypoventilating.
+
+Second read: pH 7.33, PaCO2 30, HCO3 15. Acidotic pH; HCO3 low (same direction — metabolic culprit); CO2 low = the lungs blowing off acid — partially compensated metabolic acidosis. Picture: DKA with Kussmaul respirations doing exactly this.
+
+The nursing layer: treat the CAUSE, not the number — the respiratory acidosis answer ventilates (stimulate, position, reverse opioids, support); the metabolic acidosis answer treats the ketoacidosis or perfusion; the respiratory alkalosis answer slows the breathing (anxiety coaching, pain control); the metabolic alkalosis answer addresses vomiting, suction losses, or diuretics.`,
+      examTip: `ROME carries the read: Respiratory Opposite, Metabolic Equal. Name pH, find the matching culprit, check the rescuer — three steps, every time, before looking at the options.`,
+    },
+    {
+      id: 'lab-critical',
+      title: `4. Critical Values & the Action Table`,
+      content: `Critical values are phone-call values — the lab calls, the nurse read-backs, and something happens NOW. The tested pattern is the paired action:
+
+| Critical finding | The immediate nursing move |
+| --- | --- |
+| potassium 6.5 (or rising with ECG changes) | ECG and cardiac monitor, hold K-containing fluids/drugs, notify — expect calcium gluconate, insulin with dextrose |
+| potassium 2.8 | cardiac monitor, hold digoxin awareness (toxicity risk), replace per orders — NEVER IV push |
+| sodium 118 with confusion | seizure precautions, slow correction per orders — fast correction injures the brain |
+| glucose 40 with symptoms | conscious: 15 g fast carbohydrate; unconscious/NPO: IV dextrose or glucagon — never oral to an unresponsive client |
+| platelets 18,000 | bleeding precautions now; no IMs; notify — spontaneous bleeding territory |
+| INR 6 on warfarin | hold warfarin, assess bleeding, notify — expect vitamin K |
+| troponin positive | this plus symptoms is ACS — ECG, protocol activation, not a recheck-later |
+| ANC under 500 | protective environment; any fever is a one-hour-to-antibiotics emergency |
+
+The mechanics matter as much as the values: critical results get READ BACK, documented with time and provider notified, and re-drawn only when a pre-analytic error is genuinely suspected (a hemolyzed potassium from a tourniquet-squeezed draw is the classic false critical — but the client on the monitor comes first while the redraw runs).`,
+      examTip: `For every critical value, the exam wants the CLIENT action before the paperwork action: monitor, protect, hold the offending drug — then the notification and documentation. An option that files first and assesses second is wrong.`,
     },
     {
       id: 'lab-procedures',
-      title: `3. Diagnostics: Before, During, After`,
-      content: `Procedure questions test the checklists at the edges. Iodinated contrast studies (CT with contrast, angiography): screen for prior contrast reactions and shellfish-allergy folklore (true predictor is prior reaction), check creatinine, hold metformin per protocol around contrast, and push fluids after to clear the dye.
+      title: `5. Pre- & Post-Procedure Lab Logic`,
+      content: `Reduction of Risk Potential frames labs around procedures — what must be checked BEFORE, and what is watched AFTER.
 
-Cardiac catheterization (femoral): afterward, it is the site and the distal limb — pressure device or manual pressure, leg straight, bedrest per protocol, and scheduled checks of the puncture site plus pedal pulses, color, and warmth. A rapidly expanding groin swelling is arterial bleeding: direct pressure and a stat call, in that order.
+Before contrast imaging: creatinine/eGFR (contrast is nephrotoxic — hydrate per protocol) and metformin coordination per policy around contrast timing. Before surgery or biopsy: platelets, PT/INR, aPTT — and the anticoagulant hold schedule (warfarin typically stopped days ahead per provider with INR rechecked; the exam tests that the nurse VERIFIES the result before the client leaves the unit). Before starting nephrotoxic or hepatotoxic drugs: baseline creatinine or LFTs, then scheduled monitoring.
 
-Paracentesis and thoracentesis: void first (paracentesis — a full bladder is a puncture target), position (upright leaning over a table for thoracentesis), and afterward watch for the specific failure — hypotension after large-volume paracentesis, pneumothorax after thoracentesis (dyspnea, unilateral diminished sounds, falling saturation).
+Common specimen rules the exam samples: fasting labs actually fasting (8-12 h for lipids and fasting glucose); blood cultures BEFORE the first antibiotic dose, two sets from different sites; trough levels drawn before the dose (and held pending the result when protocol says so); urine culture from a clean-catch midstream or per sterile technique from a catheter port — never from the drainage bag.
 
-Lumbar puncture: post-procedure flat positioning per protocol and fluids for the spinal headache. Liver biopsy: right side-lying afterward, pressing the puncture against the mattress, with vital signs on a hemorrhage schedule — the liver is a vascular organ and bleeding is THE complication. Endoscopy with sedation: NPO until the gag reflex returns, full stop — the most tested single line in procedure care. And for any sedated or invasive procedure, informed consent precedes premedication.`,
+After procedures, the labs mirror the risk: post-cardiac-catheterization checks include the puncture site AND distal pulses with hemoglobin if bleeding is suspected; post-thyroidectomy calcium (parathyroid injury — tingling and Chvostek/Trousseau signs); post-transfusion hemoglobin timing per policy; dialysis clients get potassium drawn per schedule and NOT from the access limb, and no blood pressures or venipunctures in a fistula arm — auscultate the bruit, palpate the thrill, and report their absence at once.`,
+      examTip: `Blood cultures before antibiotics is a sequencing absolute the exam loves — one dose of antibiotic first is the classic error, and "obtain cultures, then administer the first dose" is the correct ordering whenever sepsis workup and treatment appear together.`,
+    },
+    {
+      id: 'lab-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. Interpret: pH 7.50, PaCO2 29, HCO3 24 — and name the classic bedside cause.
+
+2. A client on IV heparin has platelets of 210,000 on admission and 90,000 on day 4. What is the concern and the counterintuitive first action?
+
+3. The lab calls a potassium of 6.8 on a renal-failure client. List the first three nursing moves.
+
+4. Interpret: pH 7.36, PaCO2 60, HCO3 33 — what happened here over time?
+
+5. A client's morning INR is 5.2; warfarin is due at 1700. What does the nurse do with the dose, and what assessment accompanies it?
+
+## Answers
+
+1. Alkalotic pH with a LOW CO2 moving opposite — uncompensated respiratory alkalosis; HCO3 has not yet moved. The classic cause is hyperventilation from anxiety or pain; coaching slow breathing treats the gas.
+
+2. Heparin-induced thrombocytopenia — a falling count on heparin. STOP all heparin products and notify; HIT paradoxically causes thrombosis, and continuing "because the client needs anticoagulation" is the tested error.
+
+3. Cardiac monitor/ECG first, hold any potassium sources (IV fluids, supplements, K-sparing drugs), and notify the provider — anticipating calcium gluconate for membrane protection and insulin-with-dextrose to shift potassium in.
+
+4. Fully compensated respiratory acidosis: the pH is normal-side-acidic while CO2 is high and HCO3 is high in the rescuing direction. Kidneys retained bicarbonate over days — the chronic CO2-retaining COPD picture, not an acute event.
+
+5. Hold the dose and notify — INR 5.2 is well past therapeutic. Assess for bleeding (gums, urine, stool, bruising, neuro status) and expect vitamin K per orders; documenting and rechecking per protocol follows the client assessment.`,
     },
   ],
   keyTakeaways: [
-    `Core ranges: Na 135-145, K 3.5-5.0, Ca 9-10.5, glucose 70-99 fasting, creatinine ~0.6-1.2, platelets 150-400k, WBC 5-10k.`,
-    `K⁺ extremes = monitor + provider; IV potassium is never pushed. Na⁺ <120 = seizure precautions, correct slowly.`,
-    `Platelets <50k = bleeding precautions; <20k = spontaneous-bleed watch. ANC <500 + fever = emergency antibiotics.`,
-    `INR 2-3 on warfarin (K reverses); aPTT 1.5-2.5× control on heparin (protamine reverses).`,
-    `Post-endoscopy NPO until gag returns; post-cath check site + distal pulses; post-LP flat + fluids.`,
+    `Know potassium, sodium, creatinine, platelets, and glucose to the digit; read every value against the client's trend, not just the range.`,
+    `Pair coagulation tests to drugs bidirectionally — INR-warfarin-vitamin K, aPTT-heparin-protamine — and a falling platelet count on heparin means stop the heparin (HIT clots).`,
+    `ABGs read in three steps with ROME: pH names it, the matching culprit claims it, the other system's rescue grades compensation.`,
+    `Critical values demand the client action before the paperwork: monitor, protect, hold the drug — then notify with read-back.`,
+    `Procedure logic: creatinine before contrast, coags before surgery, cultures before antibiotics, troughs before doses — and nothing punctures a fistula arm.`,
   ],
 },
 
@@ -831,36 +1777,134 @@ nx_cardiac_rhythms: {
   topicId: 'nx_cardiac_rhythms',
   title: `ECG Basics & Dysrhythmias`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `The exam does not ask you to be a cardiologist; it asks you to recognize a handful of rhythms from a description or strip, know which ones kill, and pair each with its first-line response. This chapter builds the five-step reading method, the lethal-versus-stable sorting, and the treatment pairings that answer nearly every rhythm question.`,
+  overview: `Rhythm questions reward a fixed reading method plus a short catalogue of patterns, each with its am-I-worried test and its first-line response. This chapter builds the waveform vocabulary and interval numbers, the six-step strip read, the lethal-versus-tolerated catalogue from sinus rhythms through asystole, and the treatment logic — vagal to adenosine, synchronized cardioversion versus defibrillation, atropine to pacing — that the exam samples over and over.`,
   sections: [
     {
-      id: '1-reading-a-strip',
-      title: `1. Reading a Strip in Five Steps`,
-      content: `Every rhythm question yields to the same sequence. First, rate: count the QRS complexes in a 6-second strip and multiply by 10, or divide 300 by the number of large boxes between R waves. Normal is 60-100. Second, regularity: march the R-R intervals - are they even? Third, P waves: is there one before every QRS, and do they all look alike? Fourth, PR interval: normal is 0.12-0.20 seconds (3-5 small boxes); longer means the AV node is delaying. Fifth, QRS width: normal is under 0.12 seconds; wide means the impulse is traveling through muscle instead of the conduction system, which usually means ventricular origin.
+      id: 'ecg-waveform',
+      title: `1. The Waveform & the Numbers`,
+      content: `![One cardiac cycle: P wave, QRS complex, and T wave, with the tested intervals bracketed — PR 0.12 to 0.20 seconds, QRS under 0.12, corrected QT under about 0.44 — on a grid where each small box is 0.04 seconds.](/courses/nclex/figures/nclex-ecg-intervals.svg)
 
-Sinus rhythm passes all five checks. Sinus bradycardia and tachycardia fail only the rate check - and the nursing response depends entirely on whether the client is symptomatic. A marathon runner at 52 beats per minute needs nothing; a dizzy, hypotensive client at 40 needs atropine. That symptomatic-versus-asymptomatic distinction runs through the whole chapter: treat the client, never the monitor. A monitor showing a lethal rhythm on a client who is talking to you comfortably means loose leads before it means arrest - always check the client first.`,
+Each waveform maps to one electrical event: the P wave is atrial depolarization (the sinus node fired and the atria answered), the QRS is ventricular depolarization (narrow means the signal used the normal highway; wide means it originated in or detoured through ventricular muscle), and the T wave is ventricular repolarization — the recharge, and the vulnerable period an ill-timed shock or PVC can strike.
+
+| Measurement | Normal | Meaning when abnormal |
+| --- | --- | --- |
+| PR interval | 0.12-0.20 s (3-5 small boxes) | prolonged = AV node delay (first-degree block); shortening/variable = block patterns |
+| QRS width | under 0.12 s (under 3 small boxes) | wide = ventricular origin or conduction detour |
+| corrected QT | under about 0.44 s | prolonged = torsades risk — audit the drug list |
+| rate (regular rhythm) | 60-100/min | 300 divided by the number of large boxes between R waves |
+
+Paper mechanics: each small box is 0.04 s, each large box 0.20 s. For irregular rhythms, count QRS complexes in a 6-second strip and multiply by 10.
+
+The prolonged-QT drug audit is a recurring item: certain antiarrhythmics, some antipsychotics, some antibiotics (macrolides, fluoroquinolones), and methadone prolong QT — plus low potassium and magnesium. A QTc creeping past 0.50 s with those aboard is a call-the-provider finding before the torsades happens.`,
+      examTip: `Narrow QRS = above the ventricles; wide QRS = ventricular until proven otherwise. That one discrimination sorts half the strips you will ever be shown.`,
     },
     {
-      id: '2-atrial-rhythms',
-      title: `2. Atrial Fibrillation, Flutter, and SVT`,
-      content: `Atrial fibrillation is the most common sustained dysrhythmia and the exam's favorite: irregularly irregular rhythm with no discernible P waves. The atria quiver instead of contracting, so blood pools and clots - the danger is embolic stroke, which is why chronic AF clients live on anticoagulation and why their level questions (INR for warfarin) recur. Rate control uses beta-blockers, calcium channel blockers (diltiazem), or digoxin. If AF is new and the client is unstable - hypotensive, chest pain, altered - synchronized cardioversion is the answer; if the AF has lasted more than 48 hours, cardioversion waits for anticoagulation or a transesophageal echo to exclude clot, because shocking a clot-filled atrium launches the embolus.
+      id: 'ecg-method',
+      title: `2. The Six-Step Strip Read`,
+      content: `Read every strip the same way and the diagnosis falls out:
 
-Atrial flutter shows the classic sawtooth baseline with a regular ventricular response. Supraventricular tachycardia (SVT) is a narrow-QRS rate of 150-250: the stepwise response is vagal maneuvers first (bear down, ice to the face), then adenosine given rapid IV push followed by a saline flush - warn the client about the momentary sense of impending doom and the pause on the monitor, both expected. Unstable SVT, like any unstable tachycardia with a pulse, gets synchronized cardioversion. The word synchronized matters: the machine times the shock away from the T wave; an unsynchronized shock on a perfusing rhythm can cause the very VF you are trying to prevent.`,
+1. RHYTHM — march the R-R intervals: regular, regularly irregular, or irregularly irregular?
+2. RATE — 300-over-large-boxes if regular; 6-second count times 10 if not.
+3. P WAVES — present? One before every QRS? All the same shape?
+4. PR INTERVAL — measure it; is it constant, lengthening, or absent?
+5. QRS — narrow or wide? All the same shape?
+6. CLIENT — pulse, pressure, perfusion, mentation. The strip is never treated without the client attached to it.
+
+Step 6 is the exam's favorite: STABLE versus UNSTABLE decides treatment more than the rhythm's name does. Unstable means the rhythm is causing hypotension, altered mentation, chest pain, or heart failure signs — and unstable tachyarrhythmias get electricity (synchronized cardioversion) while stable versions of the same rhythm get drugs and vagal maneuvers.
+
+Worked read: irregularly irregular R-R, rate about 110 by 6-second count, NO discernible P waves — just a fibrillating baseline, PR unmeasurable, narrow QRS. Atrial fibrillation with rapid ventricular response. Client check: BP 118/76, alert — stable, so rate control and anticoagulation conversations, not cardioversion this minute.`,
+      examTip: `Every rhythm answer runs through step 6: the same strip has two different correct treatments depending on whether the stem shows stability. Read the vitals before the options.`,
     },
     {
-      id: '3-lethal-rhythms',
-      title: `3. The Lethal Rhythms and Their Responses`,
-      content: `Ventricular tachycardia is a run of wide, bizarre QRS complexes at 100-250. The first nursing action is always the same: check the pulse. VT with a pulse and a stable client gets antiarrhythmics (amiodarone); VT with a pulse but unstable gets synchronized cardioversion; pulseless VT is a cardiac arrest treated exactly like VF - CPR and defibrillation. Ventricular fibrillation is chaotic quivering with no cardiac output: no pulse, no perfusion, and the only definitive treatment is defibrillation - unsynchronized, because there is no QRS to synchronize with. Every minute of delay drops survival; the sequence is start CPR, defibrillate as soon as the machine arrives, resume compressions immediately.
+      id: 'ecg-catalogue',
+      title: `3. The Rhythm Catalogue: Sinus to Blocks`,
+      content: `| Rhythm | Recognition | Worry level & response |
+| --- | --- | --- |
+| sinus bradycardia | normal everything, rate under 60 | treat only if symptomatic: atropine, then pacing — athletes live here normally |
+| sinus tachycardia | normal everything, rate 100-150 | find and treat the CAUSE: fever, pain, hypovolemia, hypoxia, anxiety |
+| atrial fibrillation | irregularly irregular, no P waves | stroke risk from atrial clot — rate control, anticoagulation; cardiovert if unstable (or per protocol after clot evaluation) |
+| atrial flutter | sawtooth flutter waves, often regular | same logic as fib; often responds to cardioversion/ablation |
+| SVT | narrow QRS, rate 150-250, P buried | stable: vagal maneuvers, then adenosine RAPID push with flush; unstable: synchronized cardioversion |
+| first-degree block | PR fixed but over 0.20 | benign alone — monitor, audit AV-slowing drugs |
+| second-degree type I (Wenckebach) | PR lengthens until a QRS drops | usually tolerated — monitor, atropine if symptomatic |
+| second-degree type II | PRs constant, QRS drops without warning | DANGEROUS — pacing territory; atropine often futile |
+| third-degree (complete) block | P waves and QRS march independently | EMERGENCY — pacing; support pressure; atropine ineffective |
 
-Asystole is the flat line - and the exam point is that you do NOT defibrillate a flat line. Confirm in a second lead (fine VF can masquerade), then CPR and epinephrine. Pulseless electrical activity (PEA) - an organized rhythm on the monitor with no pulse - is treated the same way while hunting the reversible causes (the H's and T's: hypovolemia, hypoxia, hydrogen ion, hypo/hyperkalemia, hypothermia, tension pneumothorax, tamponade, toxins, thrombosis). For blocks: first-degree is a long PR and needs monitoring only; second-degree type I (Wenckebach) shows progressively lengthening PR until a beat drops; type II drops beats without warning and can deteriorate; third-degree (complete) block shows P waves and QRS complexes marching independently - symptomatic blocks get atropine as a bridge and pacing as the answer, with transcutaneous pacing first in an emergency.`,
+The block ladder is a classic: type I Wenckebach is the forgiving one, type II and third-degree are the pacemaker rhythms. The tested tell for complete block: atrial rate and ventricular rate each regular but unrelated — Ps marching through QRSs.
+
+Premature ventricular contractions (PVCs) — wide, early, bizarre beats — matter by pattern and context: occasional PVCs are common; increasing frequency, runs, couplets, or PVCs landing on the T wave (R-on-T) in an ischemic client are the warning forms. Check electrolytes (potassium, magnesium), oxygen, and the drug list.`,
+      examTip: `The two "looks-similar, acts-different" pairs the exam loves: Wenckebach (lengthening PR, benign) versus type II (fixed PR, dangerous), and sinus tach (treat the cause) versus SVT (treat the rhythm).`,
+    },
+    {
+      id: 'ecg-lethal',
+      title: `4. Lethal Rhythms & Electricity`,
+      content: `Four patterns end circulation, and their responses are protocol:
+
+Ventricular tachycardia (VT): wide-complex, regular, fast. WITH a pulse and stable — antiarrhythmics (amiodarone) and prepare for cardioversion; WITH a pulse but unstable — synchronized cardioversion; WITHOUT a pulse — it is an arrest rhythm: CPR and DEFIBRILLATION.
+
+Ventricular fibrillation (VF): chaotic quivering, no output, no pulse — CPR and immediate DEFIBRILLATION; every minute of delay costs survival.
+
+Torsades de pointes: polymorphic VT twisting around the baseline, bred by long QT — magnesium sulfate is the specific therapy alongside arrest protocols.
+
+Asystole and PEA (a rhythm on the monitor with no pulse): CPR, epinephrine, and hunting the reversible causes — the Hs and Ts (hypovolemia, hypoxia, hydrogen ion, hypo/hyperkalemia, hypothermia; tension pneumothorax, tamponade, toxins, thrombosis pulmonary and coronary). NEVER shock asystole — there is nothing organized to reset.
+
+## Synchronized versus defibrillation — the discrimination the exam loves
+
+| | Synchronized cardioversion | Defibrillation |
+| --- | --- | --- |
+| for | unstable tachyarrhythmias WITH a pulse (SVT, a-fib, VT with pulse) | pulseless VT and VF only |
+| timing | synchronized to the R wave — avoids the T-wave vulnerable period | immediate, unsynchronized |
+| setup | sync button ON, sedation when time permits | sync OFF; resume CPR immediately after |
+
+The sync detail is the point: shocking on the T wave can induce VF, so any client WITH a pulse gets a synchronized shock. And after any shock in an arrest, compressions resume IMMEDIATELY — rhythm checks wait for the cycle.
+
+Post-arrest and post-cardioversion care: 12-lead ECG, continuous monitoring, airway and oxygenation, targeted temperature discussions per protocol, and the electrolyte-and-cause hunt continues.`,
+      examTip: `Pulse present = synchronized; pulse absent = defibrillate (VT/VF) or compressions-and-epinephrine (asystole/PEA). Every electricity question resolves on the pulse check.`,
+    },
+    {
+      id: 'ecg-nursing',
+      title: `5. Pacemakers, Monitoring & the Nursing Layer`,
+      content: `Pacemaker items test recognition and precautions. Pacing spikes precede the paced chamber's waveform; FAILURE TO CAPTURE is spikes without a following complex (reposition the client per protocol, check connections, notify); failure to sense is spikes marching through native beats. Temporary transvenous and transcutaneous pacing bridge to permanent devices; transcutaneous pacing hurts — sedation/analgesia accompany it.
+
+Post-permanent-pacemaker teaching: keep the arm below shoulder level on the operative side initially, no heavy lifting for the prescribed weeks, report dizziness or syncope (capture failure), carry the device card, and modern devices tolerate most household electronics — but MRI compatibility is device-specific and always verified.
+
+Telemetry nursing: alarms are answered by ASSESSING THE CLIENT, not the screen — a "VT" alarm with a client calmly drinking coffee is artifact from brushing teeth or loose leads; a lead-off alarm on a client who does not answer is a possible arrest. Electrodes get skin prep and daily changes per policy; alarm limits are set per client, and alarm fatigue — silencing without assessing — is a tested safety failure.
+
+The electrolyte-drug loop closes the chapter: hypokalemia and hypomagnesemia breed ectopy and torsades; hyperkalemia peaks T waves, widens QRS, and marches toward sine-wave arrest; digoxin toxicity (nausea, vision changes, new dysrhythmias — check the level and the potassium) and AV-slowing drug stacking (beta blocker plus verapamil/diltiazem plus digoxin) produce the bradycardias and blocks the catalogue just taught.`,
+      examTip: `Treat the client, not the monitor: artifact happens, leads fall off, and the first response to ANY alarm is eyes on the client — the strip confirms what the client already told you.`,
+    },
+    {
+      id: 'ecg-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A strip shows PR intervals of 0.24 s, constant, with every P followed by a QRS. Rhythm and response?
+
+2. A monitored client's strip shows a narrow-complex rate of 190; BP is 74/50 and the client is diaphoretic and confused. Treatment pathway?
+
+3. Differentiate second-degree type I from type II in one sentence each, and state which one gets a pacemaker conversation.
+
+4. The monitor alarms VF. The nurse finds the client pulseless. First two actions, and is the shock synchronized?
+
+5. A client's potassium returns 2.9 while on digoxin, and the strip shows increasing PVCs. Connect the three findings and state the priorities.
+
+## Answers
+
+1. First-degree AV block — prolonged but constant PR with 1:1 conduction. Alone it is benign: monitor, and audit AV-slowing medications; no acute treatment.
+
+2. Unstable SVT: this client gets SYNCHRONIZED cardioversion — the hypotension and altered mentation make drug-first pathways wrong. (Stable, the same strip would get vagal maneuvers then rapid-push adenosine.)
+
+3. Type I: PR lengthens progressively until a beat drops — usually benign. Type II: PR fixed with sudden dropped beats — dangerous and unpredictable. Type II gets the pacemaker conversation (as does third-degree).
+
+4. Begin CPR and defibrillate as soon as the machine arrives — unsynchronized; VF has no R wave to sync on. Compressions resume immediately after the shock.
+
+5. Hypokalemia both breeds ventricular ectopy AND potentiates digoxin toxicity — the PVCs are the rhythm consequence. Priorities: cardiac monitoring continues, hold digoxin pending level per protocol, replace potassium per orders (never IV push), and magnesium gets checked — it travels with potassium.`,
     },
   ],
   keyTakeaways: [
-    `Treat the client, not the monitor: symptomatic status decides intervention for bradycardia and tachycardia alike, and a "lethal rhythm" in a talking client means check the leads.`,
-    `Atrial fibrillation's danger is clot and stroke - anticoagulation questions, and no elective cardioversion after 48 hours without clot exclusion.`,
-    `SVT ladder: vagal maneuvers, then rapid-push adenosine with a flush, then synchronized cardioversion if unstable.`,
-    `VT: pulse check first - stable gets amiodarone, unstable gets synchronized cardioversion, pulseless gets CPR + defibrillation like VF.`,
-    `Never defibrillate asystole or PEA - CPR and epinephrine while correcting H's and T's; symptomatic blocks bridge with atropine toward pacing.`,
+    `PR 0.12-0.20, QRS under 0.12, QTc under about 0.44 — and narrow-versus-wide QRS sorts supraventricular from ventricular at a glance.`,
+    `Read strips in six fixed steps and let step 6 (the client) pick the treatment: stable gets drugs and maneuvers, unstable gets synchronized electricity.`,
+    `Wenckebach forgives, type II and complete block pace; a-fib adds stroke prevention; sinus tach is treated by treating its cause.`,
+    `Pulseless VT and VF are defibrillated during CPR; torsades gets magnesium; asystole and PEA get compressions, epinephrine, and the Hs-and-Ts hunt — never a shock for asystole.`,
+    `Electrolytes write rhythms: low K/Mg breed ectopy and torsades, high K peaks Ts and widens QRS, and digoxin toxicity rides on hypokalemia.`,
   ],
 },
 
