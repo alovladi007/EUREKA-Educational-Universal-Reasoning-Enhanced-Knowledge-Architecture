@@ -362,7 +362,9 @@ Supine hypotension rounds out the basics: after mid-pregnancy, lying flat lets t
     {
       id: 'mat-labor-monitoring',
       title: `2. Labor and Fetal Monitoring`,
-      content: `Fetal heart rate interpretation compresses to VEAL CHOP: Variable decelerations = Cord compression; Early decelerations = Head compression (benign, mirror contractions); Accelerations = Okay; Late decelerations = Placental insufficiency. Baseline is 110-160; moderate variability is the single best indicator of fetal well-being.
+      content: `![Fetal heart rate decelerations against the contraction (dashed): EARLY mirrors the contraction (head compression - benign), LATE begins after the peak (uteroplacental insufficiency - reposition, oxygen, stop oxytocin), VARIABLE is an abrupt V at any timing (cord compression - reposition first). The VEAL CHOP pattern, drawn.](/courses/nclex/figures/nclex-fhr-decels.svg)
+
+Fetal heart rate interpretation compresses to VEAL CHOP: Variable decelerations = Cord compression; Early decelerations = Head compression (benign, mirror contractions); Accelerations = Okay; Late decelerations = Placental insufficiency. Baseline is 110-160; moderate variability is the single best indicator of fetal well-being.
 
 Early decelerations require nothing. Variables get position changes first (shifting the cord), then oxygen and further steps if recurrent. Lates trigger the intrauterine resuscitation bundle in one motion: stop any oxytocin, turn to the left side, open IV fluids, apply oxygen at 8-10 L by non-rebreather, and notify the provider. A prolonged deceleration or bradycardia after membrane rupture adds one more reflex: check for cord prolapse — and if the cord is palpable, lift the presenting part off it with a gloved hand, knee-chest or deep Trendelenburg position, call for emergency delivery, and never attempt to push the cord back.
 
@@ -417,7 +419,9 @@ Crisis intervention outside suicide follows the same skeleton: safety first, the
     {
       id: 'psy-withdrawal-abuse',
       title: `3. Withdrawal Syndromes and Abuse`,
-      content: `Alcohol withdrawal runs a clock the exam expects you to read: tremor, anxiety, diaphoresis, tachycardia, and hypertension at 6-24 hours after the last drink; peak seizure risk in the first 48; delirium tremens — disorientation, hallucinations, autonomic storm — at 48-72 hours, carrying real mortality. Management is benzodiazepines (dosed by a symptom scale like CIWA), thiamine before or with glucose (Wernicke prophylaxis), magnesium repletion, and seizure precautions. Opioid withdrawal (yawning, rhinorrhea, cramps, dilated pupils, gooseflesh) is miserable but not lethal; alcohol and benzodiazepine withdrawal can kill — that asymmetry decides several exam answers.
+      content: `![The alcohol withdrawal clock: early tremor and autonomic signs at 6-24 hours after the last drink, peak seizure risk in the first 48, and delirium tremens - the highest-mortality window - at 48-72 hours.](/courses/nclex/figures/nclex-etoh-withdrawal-timeline.svg)
+
+Alcohol withdrawal runs a clock the exam expects you to read: tremor, anxiety, diaphoresis, tachycardia, and hypertension at 6-24 hours after the last drink; peak seizure risk in the first 48; delirium tremens — disorientation, hallucinations, autonomic storm — at 48-72 hours, carrying real mortality. Management is benzodiazepines (dosed by a symptom scale like CIWA), thiamine before or with glucose (Wernicke prophylaxis), magnesium repletion, and seizure precautions. Opioid withdrawal (yawning, rhinorrhea, cramps, dilated pupils, gooseflesh) is miserable but not lethal; alcohol and benzodiazepine withdrawal can kill — that asymmetry decides several exam answers.
 
 Abuse recognition spans ages: injuries inconsistent with the story, injuries in multiple healing stages, delay in seeking care, a partner or caregiver who answers every question and won't leave, fearfulness toward the caregiver, and in children, fractures or bruises in non-mobile infants and immersion-pattern burns. The nurse's duties are fixed: suspected child or vulnerable-adult abuse is a personal, mandatory report to the protective agency — suspicion suffices, confrontation is contraindicated, and documentation records observations verbatim and factually.
 
@@ -729,7 +733,9 @@ nx_fluid_electrolyte: {
     {
       id: 'fe-volume-fluids',
       title: `1. Volume Status and IV Fluids`,
-      content: `Fluid volume deficit reads as: thirst, dry mucosa, poor turgor (unreliable in the elderly — use tongue furrows and orthostatics instead), tachycardia, orthostatic hypotension, concentrated urine, rising BUN out of proportion to creatinine, and acute weight LOSS. Fluid volume excess reads as: crackles, dyspnea, JVD, bounding pulses, edema, and acute weight GAIN — and daily weight is the single most sensitive bedside measure of fluid balance (1 kg ≈ 1 L). Same scale, same time, same clothing; a gain of more than about 1 kg overnight or 2.3 kg (5 lb) in a week is a report-now finding in heart failure teaching.
+      content: `![Adult serum electrolyte reference intervals - sodium 135-145 and potassium 3.5-5.0 mEq/L, chloride 98-106, calcium 9.0-10.5, magnesium 1.8-2.6, and phosphorus 3.0-4.5 mg/dL - drawn as range bars, each row on its own scale.](/courses/nclex/figures/nclex-electrolyte-ranges.svg)
+
+Fluid volume deficit reads as: thirst, dry mucosa, poor turgor (unreliable in the elderly — use tongue furrows and orthostatics instead), tachycardia, orthostatic hypotension, concentrated urine, rising BUN out of proportion to creatinine, and acute weight LOSS. Fluid volume excess reads as: crackles, dyspnea, JVD, bounding pulses, edema, and acute weight GAIN — and daily weight is the single most sensitive bedside measure of fluid balance (1 kg ≈ 1 L). Same scale, same time, same clothing; a gain of more than about 1 kg overnight or 2.3 kg (5 lb) in a week is a report-now finding in heart failure teaching.
 
 IV fluids sort by tonicity. Isotonic (0.9% NaCl, lactated Ringer's, D5W-in-the-bag) expands the vascular space: resuscitation, maintenance. (D5W behaves hypotonically once the dextrose metabolizes — it has no place in resuscitation or with intracranial pressure concerns.) Hypotonic (0.45% NaCl) hydrates cells: cellular dehydration, hypernatremia — but never for clients at risk of cerebral edema. Hypertonic (3% NaCl, D10W) pulls water out of cells: reserved, pump-controlled, and in 3% saline's case central-line-preferred with serial sodiums and neuro checks.
 
@@ -973,36 +979,145 @@ nx_diabetes: {
   topicId: 'nx_diabetes',
   title: `Diabetes Mellitus & Its Complications`,
   domainWeight: 'Physiological Adaptation (11-17%)',
-  overview: `Diabetes may be the single highest-yield disease on the exam: insulin timing, hypoglycemia response, sick-day rules, DKA versus HHS, and foot care each generate reliable questions. This chapter organizes them around the numbers and the emergencies.`,
+  overview: `Diabetes may be the single highest-yield disease on the exam: insulin timing, hypoglycemia response, oral agents, sick-day rules, DKA versus HHS, and foot care each generate reliable questions. This chapter carries the reference tables and the insulin action curves, a worked dosage calculation, and a self-check set - organized the way the exam actually asks.`,
   sections: [
     {
-      id: '1-types-and-insulins',
-      title: `1. The Disease and the Insulin Clock`,
-      content: `Type 1 diabetes is autoimmune beta-cell destruction: absolute insulin deficiency, usually younger onset, ketosis-prone, insulin-dependent for life. Type 2 is insulin resistance with relative deficiency: gradual onset, strongly weight-linked, managed stepwise with lifestyle, oral agents, and often eventually insulin. Diagnosis numbers worth holding: fasting glucose 126 mg/dL or higher, random 200 with symptoms, and hemoglobin A1c of 6.5% or higher - with A1c reflecting roughly three months of control (target commonly under 7%).
+      id: '1-disease-and-numbers',
+      title: `1. The Disease and the Diagnosis Numbers`,
+      content: `## 1.1 Two diseases, one name
 
-The insulin clock is pure test material. Rapid-acting (lispro, aspart): onset about 15 minutes, peak 1-2 hours - give with food in reach, because injecting and then delaying the meal invites hypoglycemia. Short-acting (regular): onset 30-60 minutes, peak 2-4 hours; it is the IV insulin. Intermediate (NPH): peak 4-12 hours - the classic mid-afternoon or 3-AM hypoglycemia stems; cloudy, and in mixing "clear before cloudy" (draw regular first). Long-acting (glargine, detemir): essentially peakless basal coverage, never mixed with anything. Every hypoglycemia-timing question is answered by matching the symptom time to a peak. Injection teaching: rotate sites within one region for absorption consistency, abdomen fastest; do not inject into an extremity about to be exercised.`,
+Type 1 diabetes is autoimmune beta-cell destruction: absolute insulin deficiency, usually younger onset, ketosis-prone, insulin-dependent for life. Type 2 is insulin resistance with progressive relative deficiency: gradual onset, strongly weight-linked, managed stepwise with lifestyle, oral agents, and often eventually insulin. Gestational diabetes appears in pregnancy, is screened at 24-28 weeks, and marks lifetime type-2 risk for the mother.
+
+## 1.2 The numbers the exam expects cold
+
+| Test | Normal | Prediabetes | Diabetes |
+|---|---|---|---|
+| Fasting plasma glucose | < 100 mg/dL | 100-125 | >= 126 (two occasions) |
+| 2-h OGTT | < 140 mg/dL | 140-199 | >= 200 |
+| Hemoglobin A1c | < 5.7% | 5.7-6.4% | >= 6.5% |
+| Random glucose + symptoms | - | - | >= 200 |
+
+A1c reflects roughly three months of control (the lifespan of a glycated red cell); the usual treatment target is below 7%. The exam's favorite A1c stem: a client whose fingerstick log looks perfect but whose A1c is 10% - the log, not the assay, is the unreliable narrator.
+
+## 1.3 The presentation pattern
+
+The classic triad - polyuria, polydipsia, polyphagia - is osmotic physics: glucose above the renal threshold (~180 mg/dL) drags water into the urine, dehydration drives thirst, and cellular starvation drives hunger. Type 1 tends to announce itself acutely (weight loss, ketosis, sometimes DKA as the first presentation); type 2 is often found on screening or via its complications - which is why an exam client with a silent foot ulcer and blurry vision may be a NEW diabetes stem, not a management one.`,
     },
     {
-      id: '2-hypoglycemia-sickdays',
-      title: `2. Hypoglycemia and the Sick-Day Rules`,
-      content: `Hypoglycemia (glucose below 70) is the emergency of treatment, not of disease: cold sweat, tremor, tachycardia, hunger, then confusion, slurred speech, seizure, coma. The conscious-client response is the 15-15 rule: 15 grams of fast carbohydrate (4 oz juice or regular soda, glucose tablets), recheck in 15 minutes, repeat if still under 70, then follow with a complex carb plus protein snack if the next meal is distant. Wrong answers add fat (slows absorption - no candy bars) or give oral anything to an unconscious client: unconsciousness means IM/subcut glucagon or IV dextrose, side-lying for airway protection. Beta-blockers mask the adrenergic warning signs - diaphoresis persists - so the beta-blocked diabetic is a recurring stem.
+      id: '2-insulin-clock',
+      title: `2. The Insulin Clock`,
+      content: `## 2.1 The four families, drawn and tabulated
 
-Sick-day rules answer the "client with the flu" question set: NEVER stop insulin during illness - counterregulatory stress hormones raise glucose even without eating; check glucose every 2-4 hours; check urine ketones (type 1) when glucose runs high; keep drinking - fluids to prevent the dehydration that accelerates crisis, substituting carbohydrate-containing liquids if unable to eat; call the provider for persistent vomiting, glucose stubbornly above about 240 with ketones, or signs of DKA. The client statement "I skip my insulin when I can't eat" is the further-teaching flag every version of this question uses.`,
+![Insulin action profiles: rapid, regular, and NPH activity curves with their published peak times, and glargine's peakless basal plateau. The shaded band marks NPH's 4-12 hour peak window - the source of the classic 3 AM hypoglycemia stem. Curve shapes are schematic; the labelled times are the standard published values.](/courses/nclex/figures/nclex-insulin-curves.svg)
+
+| Insulin | Onset | Peak | Duration | Exam hook |
+|---|---|---|---|---|
+| Rapid (lispro, aspart) | ~15 min | 1-2 h | 3-5 h | food must be IN REACH at injection |
+| Short (regular) | 30-60 min | 2-4 h | 5-8 h | the only IV insulin; give ~30 min before meals |
+| Intermediate (NPH) | 1-2 h | 4-12 h | 12-18 h | cloudy; the 3 AM / mid-afternoon hypoglycemia stem |
+| Long (glargine, detemir) | 1-2 h | none | ~24 h | peakless basal; NEVER mixed in a syringe |
+
+Every hypoglycemia-timing question is answered by matching symptom time to a peak: morning NPH peaking at 3 PM explains the pre-dinner shakiness; bedtime NPH peaking at 3 AM explains the night sweats and morning headache.
+
+## 2.2 Mixing, injecting, storing
+
+Mixing regular and NPH: draw CLEAR before CLOUDY (air into NPH, air into regular, draw regular, draw NPH) - contaminating the regular vial with NPH would blunt its rapid action for every future dose. Glargine is never mixed with anything. Rotate injection sites WITHIN one anatomical region (the abdomen absorbs fastest and most consistently) rather than region-hopping day to day; do not inject a limb about to be exercised - a pre-soccer thigh injection absorbs unpredictably fast. Unopened insulin lives in the refrigerator; the in-use vial or pen is fine at room temperature (within its labeled day limit) and stings less when not cold.
+
+## 2.3 Basal-bolus logic
+
+Physiologic replacement pairs a peakless basal (glargine) covering hepatic glucose output with rapid boluses covering meals plus correction doses by sliding scale. The exam tests the logic, not just the names: holding the basal because a client is NPO is the classic error - the basal covers the liver, not the meal; the MEAL bolus is what gets held with the tray, while basal continues (often adjusted) and glucose is monitored.`,
     },
     {
-      id: '3-dka-hhs-chronic',
-      title: `3. DKA, HHS, and the Long Game`,
-      content: `Diabetic ketoacidosis - mostly type 1, triggered by infection, omitted insulin, or new diagnosis - is the acid emergency: glucose typically 250-600, ketones, metabolic acidosis with Kussmaul respirations (deep, rapid - blowing off CO2) and fruity breath, dehydration, abdominal pain. Management order matters: isotonic fluids FIRST (the client is liters down), then IV regular insulin infusion; add dextrose to fluids when glucose falls to about 250 (prevent hypoglycemia while ketones clear); and the potassium rule the exam adores - insulin drives potassium into cells, so a "normal" starting K+ will plummet: verify adequate potassium and urine output BEFORE and during insulin, replacing as needed. Hyperosmolar hyperglycemic state (HHS) - typically type 2, older clients - runs higher glucose (often above 600), profound dehydration and osmolarity, minimal ketosis, and neurologic changes; treatment is the same fluids-then-insulin logic with even more emphasis on volume. The discriminator: acidosis and Kussmaul breathing = DKA; extreme glucose with neuro changes and no significant ketones = HHS.
+      id: '3-oral-agents',
+      title: `3. Oral Agents and Non-Insulin Injectables`,
+      content: `## 3.1 The type-2 ladder
 
-The long game is complication surveillance: annual dilated eye exams (retinopathy), urine microalbumin and renal function (nephropathy - ACE inhibitors protect), monofilament foot exams (neuropathy), and aggressive cardiovascular risk management. Foot care teaching is a question factory: inspect feet daily with a mirror, wash and dry thoroughly especially between toes, moisturize but NOT between the toes, never go barefoot, well-fitting shoes broken in gradually, trim nails straight across, no heating pads on the feet, and report any wound that does not heal - because neuropathy hides injuries and vasculopathy stalls healing.`,
+| Class (prototype) | Mechanism, one line | The tested warning |
+|---|---|---|
+| Biguanide (metformin) | reduces hepatic glucose output | hold for iodinated CONTRAST studies and renal impairment - lactic acidosis risk; GI upset early |
+| Sulfonylurea (glipizide) | squeezes insulin from beta cells | true HYPOGLYCEMIA risk (the only common oral class that causes it alone); teach like insulin |
+| SGLT2 inhibitor (empagliflozin) | spills glucose in urine | genital/urinary infections; euglycemic DKA - ketones without high sugar |
+| GLP-1 agonist (semaglutide, injectable) | incretin: slows gastric emptying, satiety | GI effects, weight loss; hold for suspected pancreatitis |
+| DPP-4 inhibitor (sitagliptin) | prolongs incretin action | weight-neutral, well tolerated - the "no hypoglycemia alone" comparator |
+
+Metformin is first-line and its contrast-study rule is the single most-tested fact in the table: hold the dose the day of (per protocol, through 48 hours after) an iodinated contrast scan and confirm renal function before restarting - the combination of contrast nephropathy and metformin accumulation is the lactic-acidosis setup.
+
+## 3.2 Reading the med list as an exam skill
+
+A type-2 client on glipizide who skips lunch is a hypoglycemia stem; the same skipped lunch on metformin alone is not - metformin does not drive sugar below normal by itself. An SGLT2 client with nausea and ketones but glucose of 180 is the euglycemic-DKA trap: normal-ish sugar does NOT exclude DKA on this class. These class-behavior contrasts, not mechanism trivia, are what the exam pays for.`,
+    },
+    {
+      id: '4-hypoglycemia-sickdays',
+      title: `4. Hypoglycemia and the Sick-Day Rules`,
+      content: `## 4.1 Recognize, then treat by consciousness
+
+Hypoglycemia (glucose below 70 mg/dL) announces itself through two channels: adrenergic - cold sweat, tremor, tachycardia, hunger, anxiety - and neuroglycopenic - confusion, slurred speech, drowsiness, seizure, coma. Beta-blockers mask the adrenergic warnings EXCEPT diaphoresis, so the beta-blocked diabetic who "just feels sweaty" is a high-yield stem.
+
+The conscious client gets the 15-15 rule: 15 grams of fast carbohydrate - 4 oz of juice or regular soda, 3-4 glucose tablets - recheck in 15 minutes, repeat if still under 70, then a complex-carb-plus-protein snack if the next meal is over an hour away. Fat slows absorption: the candy bar is a wrong answer, not a treatment. The unconscious client gets nothing by mouth - IM/subcutaneous glucagon (family teaching point) or IV dextrose, positioned side-lying to protect the airway.
+
+## 4.2 Sick-day rules
+
+Illness raises counterregulatory hormones, so glucose RISES even when eating stops. The rules the exam tests verbatim: NEVER stop insulin when ill; check glucose every 2-4 hours; check urine ketones (type 1) when glucose runs high; keep drinking - substituting carbohydrate-containing liquids if solid food fails; call the provider for persistent vomiting, glucose persistently above ~240 with ketones, or DKA symptoms. "I skip my insulin when I can't eat" is the correction-target statement in every version of this question.
+
+## 4.3 Worked dosage example
+
+A client is prescribed regular insulin 0.1 unit/kg/hour IV for DKA. Weight: 80 kg. The vial is 100 units/mL, and pharmacy supplies a 100 units in 100 mL NS infusion.
+
+Dose = 0.1 x 80 = **8 units/hour**. The infusion is 1 unit/mL, so the pump runs at **8 mL/hour**. Cross-check by units: (units/kg/h) x kg = units/h; units/h divided by units/mL = mL/h - the dimensional-analysis chain from the dosage-calculation chapter, applied where the exam most often puts it.`,
+    },
+    {
+      id: '5-dka-vs-hhs',
+      title: `5. DKA versus HHS`,
+      content: `## 5.1 The comparison table
+
+| Feature | DKA | HHS |
+|---|---|---|
+| Typical client | type 1, younger | type 2, older |
+| Glucose | 250-600 mg/dL | often > 600 |
+| Ketones / acidosis | present - pH low, anion gap | minimal / absent |
+| Breathing | Kussmaul (deep, rapid), fruity breath | unremarkable |
+| Dehydration | severe | PROFOUND - the defining feature |
+| Neuro findings | alert to drowsy | prominent - confusion to coma |
+| Onset | hours to a day | days of insidious decline |
+
+The discriminator the exam wants: acidosis with Kussmaul breathing = DKA; extreme glucose with neurologic change and no significant ketosis = HHS.
+
+## 5.2 Management order - and the potassium trap
+
+The sequence is fixed and tested in order: **isotonic fluids FIRST** (the client is liters down; perfusion before chemistry), **then IV regular insulin infusion**, with **dextrose added to fluids when glucose reaches ~250** so ketones can keep clearing without hypoglycemia. The potassium trap decides most DKA questions: acidosis shifts potassium OUT of cells, so the admission K+ looks normal-to-high while total-body potassium is depleted - and insulin drives potassium back INTO cells, crashing the serum level. Verify adequate potassium and urine output BEFORE and during the infusion, replacing as needed; a K+ of 3.0 before insulin starts is a hold-and-replace stem, not a proceed stem. Bicarbonate is not routine. HHS runs the same fluids-then-insulin logic with even greater volume emphasis.
+
+## 5.3 Why each step is the step
+
+Fluids first because osmotic diuresis has drained the tank - insulin into an empty vascular bed drops pressure as glucose (an osmotic hold on water) leaves the blood. Dextrose at 250 because the goal of the infusion is clearing KETONES, not merely lowering sugar; stopping insulin early leaves the acidosis untreated. The potassium rule because the cell membrane is the largest potassium reservoir in the body and insulin is its doorman. Understanding the WHY converts a memorized sequence into a derivable one - the FE-EE standard applied to a medical emergency.`,
+    },
+    {
+      id: '6-long-game',
+      title: `6. Complications, Foot Care, and Self-Check`,
+      content: `## 6.1 Surveillance schedule
+
+Annual dilated eye exam (retinopathy), urine microalbumin and creatinine (nephropathy - ACE inhibitors/ARBs protect the kidney and are preferred antihypertensives here), monofilament foot exam (peripheral neuropathy), lipids and blood pressure aggressively managed (macrovascular disease is the leading killer). Tight control slows microvascular complications - the evidence-backed sentence behind every "why does my A1c matter" teaching stem.
+
+## 6.2 Foot care - the question factory
+
+Inspect feet daily with a mirror; wash and DRY thoroughly, especially between toes; moisturize the tops and soles but NOT between the toes (maceration invites fungus); never go barefoot, even indoors; shoes fitted and broken in gradually, with socks; nails trimmed straight across; no heating pads, hot soaks, or chemical corn removers; report any wound that does not begin healing promptly. The pathophysiology pair to cite: neuropathy HIDES injuries, vasculopathy STALLS healing - which is why a pebble in the shoe can end in amputation, and why every option that applies heat or sharp instruments to a diabetic foot is wrong.
+
+## 6.3 Self-check (answers below - work them first)
+
+1. Bedtime NPH; the client is found diaphoretic and confused at 3 AM. Why?
+2. Type 1 client, vomiting all day, asks whether to take insulin. Your teaching?
+3. DKA admission, K+ 5.0, insulin infusion ordered. Proceed?
+4. Metformin client scheduled for a contrast CT tomorrow. What instruction?
+5. Which oral class causes hypoglycemia as monotherapy?
+
+**Answers.** 1. NPH peaks 4-12 h after injection - the bedtime dose peaks in the small hours; treat, then discuss dose/snack adjustment. 2. Never stop insulin when ill; check glucose q2-4h and urine ketones, push carbohydrate-containing fluids, call for persistent vomiting. 3. Yes - 5.0 with urine output is adequate to start, but expect the level to FALL as insulin drives K+ intracellularly; monitor and be ready to replace. It is the LOW-normal admission K+ that must be replaced first. 4. Hold metformin per protocol for the contrast study and until renal function is confirmed after - lactic-acidosis prevention. 5. Sulfonylureas (glipizide) - they push insulin out regardless of intake; metformin, SGLT2, DPP-4 do not cause hypoglycemia alone.`,
     },
   ],
   keyTakeaways: [
-    `Insulin peaks answer timing questions: lispro 1-2 h, regular 2-4 h, NPH 4-12 h (the 3-AM stem), glargine peakless and never mixed; clear before cloudy.`,
-    `Hypoglycemia: 15 g fast carb, recheck in 15 minutes; unconscious = glucagon/IV dextrose, never oral; beta-blockers mask the warnings except sweating.`,
-    `Sick-day rules: never stop insulin, check glucose q2-4h and ketones, push fluids - "I skip insulin when sick" is the correction target.`,
-    `DKA: fluids first, then insulin infusion, dextrose at ~250, and guard the potassium insulin will crash; HHS = higher sugar, no acidosis, more dehydration.`,
-    `Foot care: daily inspection, dry between toes but no lotion there, never barefoot, straight-across nails, no heating pads - neuropathy hides what vasculopathy won't heal.`,
+    `Diagnosis numbers: fasting >= 126, random >= 200 with symptoms, A1c >= 6.5%; A1c is the three-month truth-teller with a target below 7%.`,
+    `Insulin clock: lispro peaks 1-2 h, regular 2-4 h (only IV insulin), NPH 4-12 h (the 3 AM stem), glargine peakless and never mixed; clear before cloudy.`,
+    `Metformin holds for contrast studies; sulfonylureas alone cause hypoglycemia; SGLT2 can produce euglycemic DKA.`,
+    `Hypoglycemia: 15-15 rule conscious, glucagon/IV dextrose unconscious; beta-blockers mask everything except sweating; never stop insulin on sick days.`,
+    `DKA: fluids -> insulin -> dextrose at ~250, guarding the potassium insulin will crash; HHS is the drier, older, ketone-free cousin; foot care = inspect daily, dry between toes, never barefoot, nothing hot or sharp.`,
   ],
 },
 
