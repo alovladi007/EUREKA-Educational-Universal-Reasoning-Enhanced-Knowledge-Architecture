@@ -1547,6 +1547,20 @@ _add(LessonExtras(
                 "understood without argument."
             ),
         ),
+        ReadingSection(
+            id="rs-one-line",
+            heading="The chapter in one line",
+            body=(
+                "If everything else fades, keep this: rank the four "
+                "groups by the CIP rules, put the lowest priority "
+                "behind the molecule, and read one-two-three - "
+                "clockwise R, counterclockwise S - inverting exactly "
+                "once if you were forced to look from the wrong side. "
+                "Every worked example, every trap, and every exam "
+                "costume in this chapter is that single sentence "
+                "applied carefully rather than quickly."
+            ),
+        ),
     ),
     key_takeaways=(
         "CIP ranks by atomic number at the point of attachment, then by first point of difference exploring outward, with multiple bonds handled by duplicating atoms.",
@@ -1554,5 +1568,746 @@ _add(LessonExtras(
         "R/S, D/L and (+)/(-) are three independent systems: structure-derived, historical-relative, and measured respectively - cysteine and the amino acids prove they do not track each other.",
         "Enantiomers invert EVERY stereocenter, diastereomers invert some - the fastest classification test when descriptors are given, subject to the meso symmetry check.",
         "Write the four groups down and justify each comparison; the assignments that come back inverted are the ones done in one impatient mental motion.",
+    ),
+))
+
+
+# --------------------------------------------------------------------------
+# 6.3 Optical activity
+# --------------------------------------------------------------------------
+_add(LessonExtras(
+    node="ORG1.OPTICALACTIVITY",
+    lead=(
+        "R and S name a shape from a drawing; they say nothing about what a "
+        "sample in a flask will do. Optical activity is the measurement that "
+        "closes that gap - the one physical property in which enantiomers "
+        "genuinely differ, because polarised light is itself a chiral probe. "
+        "This chapter builds the polarimeter and its equation, works the "
+        "specific-rotation arithmetic, defines enantiomeric excess and "
+        "computes compositions from rotations, and is honest about where "
+        "the classical method has been superseded."
+    ),
+    sections=(
+        ReadingSection(
+            id="oa-light",
+            heading="Why polarised light can see handedness",
+            body=(
+                "Ordinary light oscillates in every plane perpendicular to "
+                "its direction of travel. A POLARISER transmits only the "
+                "component oscillating in one plane, producing "
+                "PLANE-POLARISED light. That single plane is the key: a "
+                "plane-polarised beam can be decomposed into two "
+                "circularly polarised components of opposite handedness, "
+                "one turning clockwise and one counterclockwise as it "
+                "advances.\n\n"
+                "In an ACHIRAL medium those two components travel at "
+                "identical speeds, recombine unchanged, and the plane "
+                "emerges where it entered. In a CHIRAL medium they do "
+                "not: a one-handed molecular environment interacts "
+                "slightly differently with the two circular components, "
+                "so they acquire different refractive indices and fall "
+                "out of step. When they recombine, the resultant plane "
+                "has been ROTATED. This is why the previous chapters "
+                "could keep insisting that enantiomers differ only in a "
+                "chiral environment and then quote optical rotation as "
+                "the exception - the exception is not an exception at "
+                "all. Plane-polarised light IS a chiral probe, and a "
+                "polarimeter is the cheapest chiral environment a "
+                "laboratory owns."
+            ),
+        ),
+        ReadingSection(
+            id="oa-polarimeter",
+            heading="The instrument and its equation",
+            figure=Figure(
+                stem="org1-polarimeter",
+                caption=(
+                    "A polarimeter: light is plane-polarised, passes through a sample tube of path length l holding concentration c, and emerges with its plane rotated by the observed angle, which the analyser measures. Specific rotation normalises that angle for path length and concentration."
+                ),
+                alt="Schematic polarimeter showing source, polariser, sample tube, rotated plane of polarisation and analyser, with the specific rotation equation.",
+            ),
+            body=(
+                "The measured quantity, the OBSERVED ROTATION "
+                "$\\alpha_{obs}$, depends on how many chiral molecules "
+                "the beam met - so it grows with both the concentration "
+                "and the length of the tube, and a raw angle is "
+                "meaningless without them. Normalising gives a genuine "
+                "material property, the SPECIFIC ROTATION:\n\n"
+                "$$[\\alpha]_{D}^{20} = \\frac{\\alpha_{obs}}"
+                "{l \\times c}$$\n\n"
+                "with $l$ the path length in DECIMETRES and $c$ the "
+                "concentration in grams per millilitre (for a neat "
+                "liquid, density replaces concentration). The subscript "
+                "$D$ records the wavelength - conventionally the sodium "
+                "D line at $589$ nm - and the superscript records the "
+                "temperature in degrees Celsius, because rotation "
+                "depends on both. A properly reported value therefore "
+                "looks like $[\\alpha]_{D}^{20} = +13.5$ (c 1.0, "
+                "ethanol): number, wavelength, temperature, "
+                "concentration and solvent, because the same compound "
+                "reports differently under different conditions.\n\n"
+                "Sign convention: rotation to the RIGHT (clockwise from "
+                "the observer's view) is DEXTROROTATORY, written $(+)$ "
+                "or the older $d$; rotation to the LEFT is "
+                "LEVOROTATORY, $(-)$ or $l$. Note carefully that the "
+                "lowercase $d$ and $l$ of rotation are NOT the D and L "
+                "of the glyceraldehyde convention - a collision of "
+                "notation that has confused students for a century and "
+                "is the reason modern writing prefers $(+)$ and $(-)$."
+            ),
+        ),
+        ReadingSection(
+            id="oa-worked-specific",
+            heading="Worked: from a reading to a material constant",
+            body=(
+                "A solution is prepared by dissolving $0.40$ g of a "
+                "chiral compound in enough ethanol to make $10.0$ mL, "
+                "and it is measured in a $1.0$ dm tube at $20$ degrees "
+                "Celsius using the sodium D line. The analyser reads "
+                "$+0.54$ degrees. Compute the specific rotation.\n\n"
+                "First the concentration in the units the formula "
+                "wants: $c = 0.40 \\text{ g} / 10.0 \\text{ mL} = "
+                "0.040$ g/mL. Then substitute:\n\n"
+                "$$[\\alpha]_{D}^{20} = \\frac{+0.54}{1.0 \\times "
+                "0.040} = +13.5$$\n\n"
+                "The answer is quoted as $[\\alpha]_{D}^{20} = +13.5$ "
+                "(c 0.04, ethanol) - a number that now belongs to the "
+                "COMPOUND rather than to this particular flask, and "
+                "which another laboratory can reproduce. Reverse the "
+                "calculation to predict a reading: the same compound at "
+                "half the concentration in the same tube would give "
+                "$\\alpha_{obs} = 13.5 \\times 1.0 \\times 0.020 = "
+                "+0.27$ degrees. Two habits prevent the standard "
+                "errors: convert the path length to DECIMETRES (a "
+                "10-cm tube is $1$ dm, not $10$), and keep "
+                "concentration in g/mL rather than the g/L or molarity "
+                "the rest of chemistry uses."
+            ),
+        ),
+        ReadingSection(
+            id="oa-racemate",
+            heading="Why a racemate reads zero",
+            body=(
+                "Enantiomers rotate light by EQUAL magnitudes in "
+                "OPPOSITE directions: if one hand is $[\\alpha]_D = "
+                "+13.5$, its mirror image is exactly $-13.5$ under the "
+                "same conditions. In a racemic mixture, every molecule "
+                "of one hand is matched by one of the other, the two "
+                "contributions cancel exactly, and the polarimeter "
+                "reads ZERO. A racemate is described as OPTICALLY "
+                "INACTIVE, and the older notation $(\\pm)$ marks "
+                "it.\n\n"
+                "The consequence for exam reasoning is sharp: a zero "
+                "reading does NOT mean the sample is achiral. Three "
+                "different situations give zero - a genuinely achiral "
+                "compound, a racemic mixture of enantiomers, and a "
+                "meso compound (chiral centres present but internally "
+                "compensated, the subject of a later chapter). "
+                "Distinguishing them requires other evidence: chiral "
+                "chromatography separates a racemate into two peaks "
+                "while an achiral compound gives one, and structural "
+                "analysis identifies the internal mirror plane of a "
+                "meso compound. A polarimeter answers 'is this sample "
+                "unbalanced?' and nothing more."
+            ),
+        ),
+        ReadingSection(
+            id="oa-ee",
+            heading="Enantiomeric excess: turning an angle into a composition",
+            figure=Figure(
+                stem="org1-ee-rotation",
+                caption=(
+                    "Observed rotation is linear in enantiomeric excess: the racemate sits at zero, the pure enantiomers at the ends, and a sample reading half the pure rotation is 50 percent ee - which is a 75:25 mixture, not 50:50."
+                ),
+                alt="Straight line of observed rotation against enantiomeric excess from minus 100 to plus 100 percent, with the racemate marked at the origin and pure enantiomers at the extremes.",
+            ),
+            body=(
+                "Real samples are usually neither pure nor perfectly "
+                "racemic, and the quantity that describes them is "
+                "ENANTIOMERIC EXCESS - the amount by which the major "
+                "enantiomer exceeds the minor, expressed as a "
+                "percentage of the whole:\n\n"
+                "$$\\%\\,ee = \\frac{|[R] - [S]|}{[R] + [S]} "
+                "\\times 100$$\n\n"
+                "Because each pair of opposite molecules cancels "
+                "optically, only the EXCESS rotates light - which "
+                "makes the relationship between rotation and "
+                "composition perfectly linear, as the figure shows:\n\n"
+                "$$\\%\\,ee = \\frac{\\alpha_{obs}}"
+                "{\\alpha_{pure}} \\times 100 = "
+                "\\frac{[\\alpha]_{observed}}{[\\alpha]_{pure}} "
+                "\\times 100$$\n\n"
+                "The composition follows from the excess by a single "
+                "rearrangement worth memorising, because it is where "
+                "most students slip:\n\n"
+                "$$\\%\\,\\text{major} = \\frac{100 + ee}{2}, "
+                "\\qquad \\%\\,\\text{minor} = "
+                "\\frac{100 - ee}{2}$$\n\n"
+                "So $50$ percent ee is NOT a 50:50 mixture - it is "
+                "$75:25$. The intuition: the $25$ percent minor "
+                "enantiomer cancels $25$ percent of the major, leaving "
+                "$50$ percent uncancelled to rotate the light."
+            ),
+        ),
+        ReadingSection(
+            id="oa-worked-ee",
+            heading="Worked: composition from a reading",
+            body=(
+                "A compound's pure $(+)$ enantiomer has "
+                "$[\\alpha]_{D}^{20} = +13.5$. A sample of the same "
+                "compound, measured under identical conditions, gives "
+                "$[\\alpha]_{D}^{20} = +6.75$. What is in the "
+                "flask?\n\n"
+                "Enantiomeric excess first:\n\n"
+                "$$\\%\\,ee = \\frac{+6.75}{+13.5} \\times 100 "
+                "= 50\\%$$\n\n"
+                "Then composition:\n\n"
+                "$$\\%\\,(+) = \\frac{100 + 50}{2} = 75\\%, "
+                "\\qquad \\%\\,(-) = \\frac{100 - 50}{2} = "
+                "25\\%$$\n\n"
+                "The sample is $75$ percent $(+)$ and $25$ percent "
+                "$(-)$ - equivalently, $50$ percent of it behaves as "
+                "pure $(+)$ and $50$ percent as racemate. Run the "
+                "check backwards to confirm: $75 - 25 = 50$ percent "
+                "excess, and $50$ percent of $+13.5$ is $+6.75$, the "
+                "reading we started from.\n\n"
+                "A second pattern worth rehearsing: if a synthesis "
+                "reports $90$ percent ee, the product is "
+                "$(100+90)/2 = 95$ percent of the desired enantiomer "
+                "and $5$ percent of the unwanted one. For a "
+                "pharmaceutical that $5$ percent is a separate "
+                "substance present at fifty thousand parts per "
+                "million, which is why regulatory specifications are "
+                "written in ee and why the difference between $90$ "
+                "and $99$ percent ee is a process-chemistry "
+                "battleground rather than a rounding argument."
+            ),
+        ),
+        ReadingSection(
+            id="oa-optical-purity",
+            heading="Optical purity, and where it stops agreeing with ee",
+            body=(
+                "OPTICAL PURITY is defined as the ratio of a sample's "
+                "observed specific rotation to that of the pure "
+                "enantiomer, times $100$ - which is exactly the second "
+                "equation above. For well-behaved samples optical "
+                "purity and enantiomeric excess are numerically the "
+                "same, and introductory treatments use the terms "
+                "interchangeably.\n\n"
+                "They are not the same CONCEPT, and the distinction "
+                "matters when precision does. Enantiomeric excess is a "
+                "statement about COMPOSITION - how many molecules of "
+                "each hand are present. Optical purity is a statement "
+                "about a MEASUREMENT - how much the sample rotates "
+                "relative to the pure material. The two coincide only "
+                "when rotation is strictly linear in composition, and "
+                "that linearity can fail: at high concentrations, "
+                "molecules of one hand may associate preferentially "
+                "with their own kind or with the other, and the "
+                "resulting non-ideal behaviour makes the observed "
+                "rotation drift from proportionality. Impurities that "
+                "are themselves chiral corrupt the reading outright, "
+                "as does an incorrect literature value for "
+                "$[\\alpha]_{pure}$ - and historical literature "
+                "contains plenty of those. The modern practice is to "
+                "MEASURE composition directly by chiral "
+                "chromatography and reserve polarimetry for "
+                "confirmation, which is the subject of the honesty "
+                "section below."
+            ),
+        ),
+        ReadingSection(
+            id="oa-variables",
+            heading="What changes a rotation reading",
+            table=Table(
+                caption="Variables that a reported specific rotation must specify",
+                columns=("Variable", "Effect on the reading", "Convention"),
+                rows=(
+                    ("path length l", "rotation proportional to it", "reported in DECIMETRES"),
+                    ("concentration c", "rotation proportional to it", "g/mL, quoted with the value"),
+                    ("wavelength", "rotation varies strongly; larger at shorter wavelengths", "sodium D line, 589 nm (subscript D)"),
+                    ("temperature", "changes rotation measurably", "quoted as a superscript, commonly 20 or 25 C"),
+                    ("solvent", "can change magnitude and even SIGN", "always named alongside the value"),
+                    ("enantiomeric excess", "rotation linear in ee", "the quantity being determined"),
+                ),
+                source="Standard polarimetry reporting conventions as used in the physical-organic and pharmacopoeial literature",
+                note="A specific rotation quoted without wavelength, temperature, concentration and solvent is not reproducible.",
+            ),
+            body=(
+                "The table explains why the notation carries so much "
+                "baggage. Each variable genuinely moves the number, "
+                "and the SOLVENT entry is the one that surprises "
+                "people: a compound can rotate light one way in "
+                "chloroform and the other way in ethanol, because "
+                "solvation changes the molecular environment the light "
+                "actually samples. That single fact should end any "
+                "lingering hope that the sign of rotation encodes "
+                "structure - a property that flips with the bottle you "
+                "dissolve it in cannot be a structural "
+                "descriptor.\n\n"
+                "Wavelength dependence has its own name and its own "
+                "instrument. Measuring rotation ACROSS wavelengths "
+                "gives OPTICAL ROTATORY DISPERSION, and the related "
+                "technique of CIRCULAR DICHROISM measures the "
+                "differential ABSORPTION of the two circularly "
+                "polarised components rather than their differential "
+                "speed. Both carry far more structural information "
+                "than a single-wavelength rotation, and circular "
+                "dichroism in particular is the routine method for "
+                "monitoring protein secondary structure - a direct "
+                "descendant of this chapter's physics, doing work "
+                "that a sodium-lamp polarimeter never could."
+            ),
+        ),
+        ReadingSection(
+            id="oa-honesty",
+            heading="Where polarimetry has been superseded",
+            body=(
+                "This chapter would mislead if it left the impression "
+                "that enantiomeric purity is determined by polarimetry "
+                "in a modern laboratory. It usually is not. CHIRAL "
+                "CHROMATOGRAPHY - a column whose stationary phase is "
+                "itself chiral - separates the two enantiomers into "
+                "distinct peaks whose areas give the composition "
+                "DIRECTLY, without needing a literature value for the "
+                "pure rotation, without linearity assumptions, and "
+                "with sensitivity to fractions of a percent. It is the "
+                "regulatory standard.\n\n"
+                "NMR with a chiral shift reagent or chiral derivatising "
+                "agent does the same job by converting the enantiomers "
+                "into diastereomeric species whose signals separate and "
+                "integrate. Polarimetry survives for three honest "
+                "reasons: it is fast, cheap and non-destructive; it is "
+                "written into pharmacopoeial monographs as an identity "
+                "and purity check; and it remains the clearest "
+                "teaching demonstration that chirality has physical "
+                "consequences. Knowing WHY it was displaced is part of "
+                "understanding it: a method that depends on a "
+                "correct literature constant, on strict linearity, "
+                "and on the absence of chiral impurities has three "
+                "ways to lie, and the chromatographic method has "
+                "none of them."
+            ),
+        ),
+        ReadingSection(
+            id="oa-history",
+            heading="Biot, Pasteur, and a measurement before a theory",
+            body=(
+                "Jean-Baptiste Biot discovered optical activity in the "
+                "early nineteenth century, observing that certain "
+                "natural substances - quartz crystals, turpentine, "
+                "sugar solutions - rotated the plane of polarised "
+                "light, and establishing the proportionalities to path "
+                "length and concentration that still bear on the "
+                "equation above. Crucially, he found that some "
+                "substances rotated light in SOLUTION, not only as "
+                "crystals: the property therefore belonged to the "
+                "MOLECULES, not to a crystal lattice.\n\n"
+                "That was the observation Pasteur inherited in 1848 "
+                "when he separated tartrate crystals by hand and "
+                "measured their solutions separately - the experiment "
+                "the chirality chapter told - and it is why "
+                "polarimetry, not structure determination, was the "
+                "foundational instrument of stereochemistry. For "
+                "roughly a century, optical rotation was the ONLY "
+                "practical window onto molecular handedness: van 't "
+                "Hoff and Le Bel's tetrahedral carbon was proposed to "
+                "EXPLAIN rotation data, and absolute configuration "
+                "remained unknown until Bijvoet's X-ray work in 1951. "
+                "The order matters pedagogically: measurement came "
+                "first, structural interpretation second, and absolute "
+                "assignment third - which is roughly the reverse of "
+                "how the subject is now taught."
+            ),
+        ),
+        ReadingSection(
+            id="oa-errors",
+            heading="The error catalogue: five polarimetry traps",
+            body=(
+                "Trap one: assuming a zero reading means an achiral "
+                "compound. Racemates and meso compounds read zero too, "
+                "and distinguishing the three requires something other "
+                "than a polarimeter. Trap two: treating $50$ percent "
+                "ee as a $50:50$ mixture. It is $75:25$; the "
+                "$(100 \\pm ee)/2$ conversion exists precisely "
+                "because that intuition is wrong.\n\n"
+                "Trap three: predicting the sign of rotation from R or "
+                "S, or from D or L. No rule connects them - the "
+                "systems chapter made this the centrepiece, and "
+                "solvent-dependent sign changes prove it "
+                "physically. Trap four: unit errors in the specific-"
+                "rotation formula - path length in centimetres "
+                "instead of decimetres (a factor of ten), or "
+                "concentration in g/L instead of g/mL (a factor of a "
+                "thousand). Trap five: comparing a measured rotation "
+                "against a literature value obtained at a different "
+                "wavelength, temperature, concentration or solvent. "
+                "The reported conditions are not decoration; two of "
+                "the five traps are unit-and-condition errors, which "
+                "is why the audit at the end of this chapter starts "
+                "by writing the conditions down."
+            ),
+        ),
+        ReadingSection(
+            id="oa-problems",
+            heading="Problem set: four calculations",
+            body=(
+                "Problem one: $0.25$ g of a compound is dissolved to "
+                "$5.0$ mL and read in a $1.0$ dm tube, giving "
+                "$-1.20$ degrees. Find $[\\alpha]$. Answer: "
+                "$c = 0.050$ g/mL, so "
+                "$[\\alpha] = -1.20/(1.0 \\times 0.050) = -24$ - "
+                "levorotatory.\n\n"
+                "Problem two: the pure $(-)$ enantiomer of that "
+                "compound has $[\\alpha] = -24$. A different sample "
+                "reads $-18$ under identical conditions. Give the ee "
+                "and the composition. Answer: "
+                "$ee = (18/24) \\times 100 = 75$ percent; "
+                "composition $(100+75)/2 = 87.5$ percent $(-)$ and "
+                "$12.5$ percent $(+)$.\n\n"
+                "Problem three: a reaction using achiral reagents on "
+                "an achiral substrate produces a chiral product. What "
+                "will the polarimeter read, and why? Answer: zero - a "
+                "symmetric process cannot prefer one hand, so the "
+                "product is racemic and optically inactive by "
+                "cancellation.\n\n"
+                "Problem four: a sample reads $+0.00$ degrees. List "
+                "three structurally different explanations. Answer: "
+                "the compound is achiral; the sample is a racemate; "
+                "or the compound is meso (stereocentres present, "
+                "internally compensated). A fourth practical "
+                "possibility worth naming: the compound is chiral and "
+                "enantiopure but happens to have a very small "
+                "specific rotation at the wavelength used - a real "
+                "phenomenon, and another reason chromatography "
+                "replaced polarimetry for purity work."
+            ),
+        ),
+        ReadingSection(
+            id="oa-closing",
+            heading="The measurement audit",
+            body=(
+                "Close with the checklist this chapter installs. ONE: "
+                "write down the CONDITIONS - path length in "
+                "decimetres, concentration in g/mL, wavelength, "
+                "temperature, solvent - before touching the "
+                "arithmetic, because two of the five standard errors "
+                "live here. TWO: compute the specific rotation and "
+                "recognise it as a material constant, not a property "
+                "of your flask. THREE: if a purity question is being "
+                "asked, convert to enantiomeric excess by comparing "
+                "against the pure value, then convert ee to "
+                "composition with $(100 \\pm ee)/2$ - and say the "
+                "ratio out loud so that $75:25$ never gets reported "
+                "as $50:50$.\n\n"
+                "FOUR: state what the reading cannot tell you - it "
+                "cannot identify which enantiomer is in excess "
+                "without a reference, it cannot distinguish achiral "
+                "from racemic from meso at zero, and it cannot be "
+                "predicted from an R/S label. The next chapters take "
+                "up what happens when a molecule carries SEVERAL "
+                "stereocentres, where compensation can occur inside "
+                "a single molecule rather than between two of them - "
+                "which is exactly how a meso compound comes to read "
+                "zero on this instrument while being, atom for atom, "
+                "a perfectly ordinary stereoisomer."
+            ),
+        ),
+        ReadingSection(
+            id="oa-magnitudes",
+            heading="Reading the magnitudes: what counts as a big rotation",
+            body=(
+                "Specific rotations span an enormous range, and "
+                "calibrating expectations prevents both false alarms "
+                "and false confidence. Simple chiral molecules with a "
+                "single stereocentre often sit in the single or low "
+                "double digits - values of a few degrees are entirely "
+                "normal, and a compound with $[\\alpha]_D$ near $2$ "
+                "is genuinely chiral even though the reading is barely "
+                "above instrument noise at modest concentrations. "
+                "Sucrose, the historical workhorse, sits near $+66$; "
+                "some rigid polycyclic natural products and helicenes "
+                "run into the hundreds or thousands.\n\n"
+                "Two practical consequences follow. A SMALL rotation "
+                "demands a longer tube or higher concentration to "
+                "measure reliably, which is exactly why the equation "
+                "has $l$ and $c$ in it - the experimenter controls "
+                "both to bring $\\alpha_{obs}$ into a readable range. "
+                "And a small literature value makes the ee-from-"
+                "rotation calculation fragile, because a few tenths of "
+                "a degree of error becomes a large percentage error in "
+                "the ratio. Compounds with tiny rotations are precisely "
+                "the ones whose enantiopurity should be determined "
+                "chromatographically rather than optically - the "
+                "instrument's limitation, honestly stated, tells you "
+                "when to reach for a different instrument."
+            ),
+        ),
+        ReadingSection(
+            id="oa-sucrose",
+            heading="Inversion of sucrose: the classic kinetic use",
+            body=(
+                "Polarimetry's other historical role was watching "
+                "reactions in real time, and the standard demonstration "
+                "is the acid-catalysed hydrolysis of sucrose. Sucrose "
+                "itself is dextrorotatory. Hydrolysis cleaves it into "
+                "glucose and fructose - and fructose is strongly "
+                "levorotatory, strongly enough that the MIXTURE rotates "
+                "light to the left. The sign of the solution therefore "
+                "flips from positive to negative as the reaction "
+                "proceeds, which is why the product mixture has been "
+                "called INVERT SUGAR since the nineteenth century and "
+                "why the enzyme that performs the cleavage is called "
+                "invertase.\n\n"
+                "Because rotation is proportional to concentration, "
+                "tracking the angle over time tracks the reaction's "
+                "progress directly - a continuous, non-destructive "
+                "kinetic assay requiring no sampling or quenching. "
+                "Generations of physical-chemistry students determined "
+                "rate constants this way, and the food industry still "
+                "uses polarimetry for sugar analysis. The transferable "
+                "idea is worth naming: any reaction in which optical "
+                "rotation CHANGES - a chiral substrate consumed, a "
+                "chiral product formed, or a stereocentre inverted - "
+                "can in principle be followed on a polarimeter, and "
+                "racemisation reactions in particular are studied "
+                "exactly this way, by watching a rotation decay toward "
+                "zero."
+            ),
+        ),
+        ReadingSection(
+            id="oa-racemisation",
+            heading="Watching configuration die: racemisation",
+            body=(
+                "A sample of one enantiomer whose rotation decays "
+                "toward zero over time is RACEMISING - converting "
+                "toward the 50:50 mixture. Since chapter 6.1 "
+                "established that configuration is protected by "
+                "bond-breaking barriers, racemisation means those "
+                "barriers are being crossed: a stereocentre alpha to a "
+                "carbonyl can lose and regain its proton through an "
+                "achiral enol, a carbocation intermediate can be "
+                "attacked from either face, and a stereogenic nitrogen "
+                "simply inverts.\n\n"
+                "The measurement is diagnostic in two directions. "
+                "Watching rotation decay QUANTIFIES the rate at which "
+                "a compound loses its stereochemical integrity - "
+                "critical information for a drug that must reach its "
+                "target as one hand, and precisely the property "
+                "thalidomide turned out to possess. And observing NO "
+                "decay over long periods is evidence that the "
+                "configuration is robust, which is what allows "
+                "enantiopure compounds to be bottled, shipped and "
+                "sold. The thermodynamics is worth stating plainly: "
+                "racemisation is always downhill, because the racemate "
+                "has higher entropy than either pure enantiomer and "
+                "the two hands are equal in energy. A pure enantiomer "
+                "is therefore a kinetically protected state, never a "
+                "thermodynamically preferred one - it survives only "
+                "because the barrier is high, not because nature "
+                "prefers it."
+            ),
+        ),
+        ReadingSection(
+            id="oa-biology-scale",
+            heading="Where enantiomeric excess is written into law",
+            body=(
+                "Enantiomeric excess stopped being an academic number "
+                "when regulators began treating the two hands of a "
+                "chiral drug as two substances. A single-enantiomer "
+                "product must specify how much of the other hand it "
+                "contains, must characterise that impurity's own "
+                "pharmacology and toxicology, and must demonstrate "
+                "that the specification is met batch after batch. "
+                "Specifications in the high nines are routine, which "
+                "is why process chemists care about the difference "
+                "between $98$ and $99.5$ percent ee in a way that "
+                "looks obsessive from outside.\n\n"
+                "Run the composition arithmetic to see why: $98$ "
+                "percent ee means $1$ percent of the unwanted "
+                "enantiomer, while $99.5$ percent ee means $0.25$ "
+                "percent - a fourfold reduction in a substance that "
+                "may have its own activity, its own metabolism and "
+                "its own safety profile. On a tonne scale that is the "
+                "difference between shipping ten kilograms of a "
+                "second drug and shipping two and a half. The same "
+                "arithmetic governs food and fragrance chemistry, "
+                "where the wrong hand is not dangerous but smells or "
+                "tastes wrong, and agricultural chemistry, where "
+                "single-enantiomer formulations cut the applied mass "
+                "of an active substance roughly in half."
+            ),
+        ),
+        ReadingSection(
+            id="oa-exam-patterns",
+            heading="How examiners ask it",
+            body=(
+                "Four costumes recur. THE CALCULATION: a reading, a "
+                "path length and a concentration, 'find the specific "
+                "rotation' - solved by the formula, with decimetres "
+                "and g/mL as the planted trap. THE COMPOSITION: an "
+                "observed rotation against a pure value, 'what is the "
+                "ee and the percentage of each enantiomer' - solved "
+                "in two steps, with the $50$-percent-ee-is-$75:25$ "
+                "conversion as the discriminator.\n\n"
+                "THE ZERO READING: 'a sample shows no optical "
+                "activity - what can you conclude?' - whose correct "
+                "answer enumerates achiral, racemic and meso rather "
+                "than picking one. THE CROSS-SYSTEM TRAP: 'the (R) "
+                "enantiomer will rotate light in which direction?' - "
+                "whose correct answer is that configuration does not "
+                "determine the sign and only measurement can. Notice "
+                "that two of the four are answered by refusing to "
+                "over-conclude, which is the disposition this chapter "
+                "has been arguing for throughout: the polarimeter "
+                "reports one number about balance, and every claim "
+                "beyond that number needs a different instrument."
+            ),
+        ),
+        ReadingSection(
+            id="oa-vocabulary",
+            heading="The vocabulary shelf",
+            body=(
+                "Shelve these with their tests. OPTICALLY ACTIVE: "
+                "rotates the plane of polarised light - true of any "
+                "sample with an excess of one enantiomer. "
+                "DEXTROROTATORY $(+)$ and LEVOROTATORY $(-)$: the "
+                "measured directions, right and left, unrelated to "
+                "R/S or D/L by any rule. OBSERVED ROTATION: the raw "
+                "angle, meaningless without conditions. SPECIFIC "
+                "ROTATION $[\\alpha]$: the angle normalised by path "
+                "length and concentration - a material constant, "
+                "quoted with wavelength, temperature, concentration "
+                "and solvent.\n\n"
+                "RACEMIC / OPTICALLY INACTIVE: equal hands, "
+                "cancelling to zero. ENANTIOMERIC EXCESS: the "
+                "composition measure, linear in rotation, converted "
+                "to percentages by $(100 \\pm ee)/2$. OPTICAL "
+                "PURITY: the measurement ratio that usually equals "
+                "ee and can diverge from it under non-ideal "
+                "conditions. RACEMISATION: the decay of an excess "
+                "toward zero as configuration is lost. Each term "
+                "carries either a measurement or a conversion, which "
+                "is what makes this chapter's vocabulary usable "
+                "rather than decorative."
+            ),
+        ),
+        ReadingSection(
+            id="oa-meso-preview",
+            heading="Internal compensation: the preview of meso",
+            body=(
+                "One case deserves flagging before the next chapters "
+                "arrive, because it is the most elegant zero reading "
+                "in the subject. A racemate reads zero because two "
+                "SEPARATE molecules cancel each other. A MESO compound "
+                "reads zero because a single molecule cancels ITSELF: "
+                "it carries stereocentres, but an internal mirror "
+                "plane relates one half to the other, so the rotation "
+                "generated by one stereocentre is exactly opposed by "
+                "its partner within the same structure.\n\n"
+                "The distinction is invisible to the polarimeter and "
+                "obvious to a chemist. Separate a racemate on a "
+                "chiral column and you get two peaks; put a meso "
+                "compound on the same column and you get one, because "
+                "there is only one substance present and it is "
+                "achiral. Both read zero, and only structural "
+                "reasoning tells them apart - which is why the "
+                "chirality chapter insisted that the symmetry test "
+                "overrules stereocentre counting, and why the "
+                "multiple-stereocentre chapter can now be written "
+                "without leaving a mystery behind it."
+            ),
+        ),
+        ReadingSection(
+            id="oa-instrument-practice",
+            heading="Running the measurement well",
+            body=(
+                "The practical procedure repays knowing, because most "
+                "bad polarimetry is procedural rather than "
+                "conceptual. ZERO the instrument on the pure solvent "
+                "in the same tube first - any residual reading is "
+                "instrumental or from the glass, and it subtracts "
+                "from every subsequent measurement. FILL the tube "
+                "without bubbles: a bubble in the light path scatters "
+                "and destabilises the reading, which is why sample "
+                "tubes have a bulge to trap one away from the "
+                "beam.\n\n"
+                "CONTROL the temperature, because rotation drifts "
+                "with it and the reported superscript is a promise. "
+                "FILTER particulates, since scattering degrades the "
+                "extinction the analyser depends on. And take "
+                "REPLICATE readings, rotating the analyser toward the "
+                "minimum from both directions, because the human eye "
+                "judging extinction has a systematic bias that "
+                "averaging removes - modern photoelectric instruments "
+                "automate exactly this. Finally, mind the "
+                "AMBIGUITY of large rotations: an instrument reading "
+                "$+20$ degrees cannot distinguish that from $-340$, "
+                "or from $+380$, so a sample suspected of a large "
+                "rotation is re-measured at a different concentration "
+                "or path length, where the true value scales "
+                "predictably and the artefacts do not. That check is "
+                "the one most often skipped and the one most likely "
+                "to embarrass a published number."
+            ),
+        ),
+        ReadingSection(
+            id="oa-bridge",
+            heading="What the next chapters add",
+            body=(
+                "This chapter completes the pair the unit opened with. "
+                "Chapter 6.1 established that handedness exists and "
+                "matters; 6.2 gave it a name that any chemist can "
+                "reproduce from a drawing; and 6.3 has given it a "
+                "measurement that reports on a real sample in a real "
+                "flask, along with the arithmetic that turns an angle "
+                "into a composition.\n\n"
+                "What remains is multiplicity and separation. When a "
+                "molecule carries more than one stereocentre, the "
+                "stereoisomers multiply toward $2^n$, the "
+                "relationships between them stop being simply "
+                "'mirror image or not,' and internal compensation "
+                "produces the meso compounds previewed above - that "
+                "is the diastereomer and multiple-stereocentre "
+                "material. Then Fischer projections give sugars a "
+                "workable notation for five stereocentres at once. "
+                "And resolution closes the unit by answering the "
+                "practical question this chapter's ee arithmetic "
+                "keeps raising: given a racemate, how do you actually "
+                "get one hand out of the bottle? The answer "
+                "involves converting enantiomers into diastereomers "
+                "on purpose, exploiting the property difference this "
+                "chapter has spent its length establishing - that "
+                "hands are distinguishable only in a chiral "
+                "environment, so the way to separate them is to build "
+                "one."
+            ),
+        ),
+        ReadingSection(
+            id="oa-one-line",
+            heading="The chapter in one line",
+            body=(
+                "A polarimeter answers exactly one question - is this "
+                "sample optically unbalanced, and by how much - and it "
+                "answers it through a single normalised constant, the "
+                "specific rotation, measured under conditions that must "
+                "always be quoted. Everything useful downstream is "
+                "arithmetic on that one number: divide by the pure "
+                "value for enantiomeric excess, then convert with "
+                "$(100 \\pm ee)/2$ for the actual composition. "
+                "Everything the instrument cannot do - naming which "
+                "hand, distinguishing achiral from racemic from meso, "
+                "predicting a sign from a structure - needs a "
+                "different method, and knowing which is which is the "
+                "whole professional skill this chapter teaches."
+            ),
+        ),
+    ),
+    key_takeaways=(
+        "Plane-polarised light is a chiral probe: its two circular components travel at different speeds through a chiral medium, so the plane emerges rotated - the one physical property in which enantiomers differ.",
+        "Specific rotation normalises the reading: path length in DECIMETRES, concentration in g/mL, with wavelength, temperature and solvent reported because each changes the number (solvent can even flip the sign).",
+        "Racemates read zero by cancellation - but so do achiral and meso samples, so a zero reading identifies nothing on its own.",
+        "Enantiomeric excess is linear in rotation, and composition is (100 +/- ee)/2 - which makes 50 percent ee a 75:25 mixture, not 50:50.",
+        "Polarimetry founded the field and still serves as a fast identity check, but chiral chromatography measures composition directly and has replaced it wherever the number must be trusted.",
     ),
 ))
