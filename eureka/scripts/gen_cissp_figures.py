@@ -1939,6 +1939,349 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Organizational security roles and the reporting-line signal.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-org-roles")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.9))
+    rows = [
+        ("SENIOR MANAGEMENT", "obligates the organisation; mandates policy; final decisions - and the accountability", c[0]),
+        ("SECURITY MANAGER / CSO", "advises management; drafts policy; runs daily operations; selects solutions", c[1]),
+        ("SECURITY PERSONNEL", "administrators, analysts, responders - perform the security processes", c[2]),
+        ("ADMINISTRATORS / TECHNICIANS", "IT staff with security duties: secure configuration, reporting incidents", c[1]),
+        ("USERS", "operate securely, sign the agreements, report anomalies - human sensors", c[2]),
+    ]
+    for i, (name, gloss, colour) in enumerate(rows):
+        y = 4.9 - i * 1.12
+        ax.add_patch(plt.Rectangle((0.35, y), 3.1, 0.55, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (0.5, y + 0.27), ha="left", va="center",
+                    fontsize=7.6, color=ink)
+        ax.annotate(gloss, (0.5, y - 0.24), ha="left", va="center",
+                    fontsize=7.4, color=S.INK_2[mode])
+        if i:
+            ax.annotate("", (0.25, y + 0.55), (0.25, y + 1.12),
+                        arrowprops=dict(arrowstyle="-", color=S.GRID[mode],
+                                        linewidth=1.2))
+    S.note(ax, 5.0, -0.55,
+           "the reporting line is a signal: security under the CEO says one thing, security buried under an "
+           "admin director says another - and best practice keeps security OUT from under IT "
+           "(the functions are adversarial), except where both report to the CIO",
+           mode, ha="center")
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(-1.05, 5.75)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+@figure("cissp-due-care-diligence")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.2, 4.0))
+    ax.add_patch(plt.Rectangle((0.4, 2.5), 3.6, 1.05, facecolor=c[0],
+                               alpha=0.18, edgecolor=c[0], linewidth=1.8))
+    ax.annotate("DUE CARE", (2.2, 3.25), ha="center", fontsize=10, color=ink)
+    ax.annotate("the DUTY owed - act reasonably so the\ncustomer is not exposed to undue harm", (2.2, 2.82),
+                ha="center", fontsize=7.7, color=S.INK_2[mode])
+    ax.add_patch(plt.Rectangle((5.4, 2.5), 3.6, 1.05, facecolor=c[1],
+                               alpha=0.18, edgecolor=c[1], linewidth=1.8))
+    ax.annotate("DUE DILIGENCE", (7.2, 3.25), ha="center", fontsize=10, color=ink)
+    ax.annotate("the ACTIVITY (and records) that\ndemonstrate the duty is being met", (7.2, 2.82),
+                ha="center", fontsize=7.7, color=S.INK_2[mode])
+    ax.annotate("", (5.3, 3.02), (4.1, 3.02),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.7))
+    ax.annotate("proven by", (4.7, 3.22), ha="center", fontsize=7.6, color=ink)
+    egs = [
+        ("quality and safety testing", c[1]),
+        ("external audits", c[1]),
+        ("vendor security reviews", c[1]),
+        ("personnel screening", c[1]),
+        ("monitoring AND enforcement of policy", c[2]),
+    ]
+    for i, (t, colour) in enumerate(egs):
+        y = 1.75 - i * 0.38
+        ax.annotate("-", (5.55, y), fontsize=8.4, color=colour, va="center")
+        ax.annotate(t, (5.8, y), fontsize=7.9, color=ink, va="center")
+    S.note(ax, 2.3, 1.0,
+           "publishing a policy is NOT sufficient diligence:\ncourts and regulators now require documented,\nactive monitoring and enforcement as well",
+           mode, ha="center")
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(-0.3, 3.9)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The loss-expectancy arithmetic with the module's worked numbers.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-ale-formula")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.2, 4.2))
+    ax.annotate("SLE  =  AV  x  EF", (0.6, 3.55), fontsize=12, color=c[0])
+    ax.annotate("single loss expectancy = asset value x exposure factor", (0.6, 3.12),
+                fontsize=8.0, color=S.INK_2[mode])
+    ax.annotate("ALE  =  SLE  x  ARO", (0.6, 2.45), fontsize=12, color=c[1])
+    ax.annotate("annual loss expectancy = per-event loss x events per year", (0.6, 2.02),
+                fontsize=8.0, color=S.INK_2[mode])
+    rows = [
+        ("worked case: retail shoplifting", ""),
+        ("SLE = $5 per event;  ARO = 1,000 / yr", "ALE = $5,000 / yr"),
+        ("guard $50,000 / yr", "mitigation IRRATIONAL"),
+        ("best control $15,000 / yr", "mitigation IRRATIONAL"),
+        ("insurance $10,000 / yr", "transference IRRATIONAL"),
+        ("remain a retailer", "avoidance UNAVAILABLE"),
+        ("decision", "ACCEPT the $5,000 risk"),
+    ]
+    for i, (l, r) in enumerate(rows):
+        y = 1.45 - i * 0.34
+        w = 9.4 if i == 0 else 8.4
+        ax.annotate(l, (5.05, y), fontsize=7.8 if i else 8.4,
+                    color=ink if i else c[2], va="center")
+        ax.annotate(r, (8.0, y), fontsize=7.8, color=S.INK_2[mode] if i < 6 else c[2],
+                    va="center")
+    ax.annotate("compare every treatment's ANNUAL COST against the ALE -\nthe cheapest rational response wins",
+                (5.05, 3.3), fontsize=8.2, color=ink)
+    ax.set_xlim(0, 11.0)
+    ax.set_ylim(-0.95, 4.05)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Control categories placed on the incident timeline.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-control-categories")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.6, 4.3))
+    ax.annotate("", (9.2, 3.6), (0.4, 3.6),
+                arrowprops=dict(arrowstyle="-|>", color=S.GRID[mode], linewidth=1.6))
+    ax.axvline(4.8, color=c[2], linewidth=2.0, ymin=0.62, ymax=0.92)
+    ax.annotate("THE EVENT", (4.8, 4.05), ha="center", fontsize=8.6, color=c[2])
+    ax.annotate("BEFORE", (2.4, 3.78), ha="center", fontsize=8.0, color=S.INK_2[mode])
+    ax.annotate("AFTER", (7.2, 3.78), ha="center", fontsize=8.0, color=S.INK_2[mode])
+    cats = [
+        ("DIRECTIVE", "mandates behaviour - policy, signage, training", 0.55, c[0]),
+        ("DETERRENT", "discourages the attempt - visible cameras, warnings", 2.0, c[1]),
+        ("PREVENTATIVE", "prohibits the act - walls, fences, locks", 3.45, c[0]),
+        ("DETECTIVE", "recognises it happening - sensors, IDS, guards", 5.15, c[1]),
+        ("CORRECTIVE", "reacts and remediates - suppression, IPS, response", 6.6, c[0]),
+        ("RECOVERY", "restores known-good - backups, DR plans", 8.05, c[1]),
+    ]
+    for name, gloss, x, colour in cats:
+        ax.plot([x], [3.6], "o", color=colour, markersize=7)
+        y = 2.9 - (cats.index((name, gloss, x, colour)) % 3) * 0.75
+        ax.annotate(name, (x, y), ha="center", fontsize=7.9, color=colour)
+        ax.annotate(gloss, (x, y - 0.3), ha="center", fontsize=6.6,
+                    color=S.INK_2[mode])
+    ax.add_patch(plt.Rectangle((0.5, 0.15), 8.6, 0.5, facecolor="none",
+                               edgecolor=c[2], linewidth=1.5, linestyle=(0, (4, 3))))
+    ax.annotate("COMPENSATING - stands in when a primary control fails (manual locks when power dies); spans the whole line",
+                (4.8, 0.4), ha="center", fontsize=7.4, color=ink)
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(-0.15, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# STRIDE, each element mapped to the property it attacks.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-stride")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("S", "Spoofing identity", "posing as another entity", "authenticity"),
+        ("T", "Tampering with data", "unauthorised modification", "integrity"),
+        ("R", "Repudiation", "denying or concealing participation", "non-repudiation"),
+        ("I", "Information disclosure", "data reaching the unauthorised", "confidentiality"),
+        ("D", "Denial of service", "authorised users locked out", "availability"),
+        ("E", "Elevation of privilege", "gaining control beyond access", "authorisation"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 4.3))
+    for i, (letter, name, gloss, prop) in enumerate(rows):
+        y = (len(rows) - 1 - i) * 0.72
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((0.4, y), 0.55, 0.56, facecolor=colour,
+                                   alpha=0.25, edgecolor=colour, linewidth=1.6))
+        ax.annotate(letter, (0.67, y + 0.28), ha="center", va="center",
+                    fontsize=10.5, color=ink)
+        ax.annotate(name, (1.15, y + 0.28), va="center", fontsize=8.8, color=ink)
+        ax.annotate(gloss, (3.75, y + 0.28), va="center", fontsize=7.9,
+                    color=S.INK_2[mode])
+        ax.annotate("violates " + prop.upper(), (7.05, y + 0.28), va="center",
+                    fontsize=7.7, color=colour)
+    ax.annotate("a threat CLASSIFICATION for development - walk the dataflow diagram asking which\nof the six each element is exposed to",
+                (0.4, 4.35), fontsize=8.2, color=ink)
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(-0.25, 4.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The four sources of external mandate.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-mandate-sources")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
+    ax.add_patch(plt.Rectangle((3.6, 1.75), 2.4, 0.95, facecolor=c[0],
+                               alpha=0.2, edgecolor=c[0], linewidth=1.8))
+    ax.annotate("THE ORGANISATION\nmust comply", (4.8, 2.22), ha="center",
+                va="center", fontsize=8.6, color=ink)
+    quads = [
+        ("CONTRACTUAL", "entered voluntarily; enforced by courts;\nexample: the payment-card standard", 1.55, 3.85, c[0]),
+        ("REGULATORY", "government-imposed; fines, orders,\neven imprisonment of principals", 8.05, 3.85, c[1]),
+        ("LEGAL PRECEDENT", "court decisions defining reasonable\ncare for everyone similarly placed", 1.55, 0.55, c[2]),
+        ("INDUSTRY STANDARDS", "set by and for the field; gain legal\nweight when courts recognise them", 8.05, 0.55, c[1]),
+    ]
+    for name, gloss, x, y, colour in quads:
+        ax.annotate(name, (x, y + 0.3), ha="center", fontsize=8.8, color=colour)
+        ax.annotate(gloss, (x, y - 0.18), ha="center", fontsize=7.3,
+                    color=S.INK_2[mode])
+        tx = 3.5 if x < 4.8 else 6.1
+        ty = 2.5 if y > 2 else 1.95
+        ax.annotate("", (tx, ty), (x, y - (0.45 if y > 2 else -0.55)),
+                    arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.4))
+    ax.annotate("compliance = the adherence AND the tools, processes, and documentation that demonstrate it",
+                (4.8, -0.5), ha="center", fontsize=8.0, color=ink, style="italic")
+    ax.set_xlim(-0.4, 10.0)
+    ax.set_ylim(-0.85, 4.6)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The common privacy-law tenets.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-privacy-tenets")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    tenets = [
+        ("NOTIFICATION", "tell the subject before collecting"),
+        ("PARTICIPATION", "the subject may decline"),
+        ("SCOPE", "a stated, lawful purpose"),
+        ("LIMITATION", "use only for that purpose"),
+        ("ACCURACY", "factual, current, correctable"),
+        ("RETENTION", "keep no longer than needed"),
+        ("SECURITY", "the holder must protect it"),
+        ("DISSEMINATION", "no sharing without consent"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.4, 4.2))
+    for i, (name, gloss) in enumerate(tenets):
+        col, row = i % 2, i // 2
+        x = 0.5 + col * 4.7
+        y = 3.3 - row * 1.0
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((x, y), 1.95, 0.62, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (x + 0.97, y + 0.31), ha="center", va="center",
+                    fontsize=8.0, color=ink)
+        ax.annotate(gloss, (x + 2.15, y + 0.31), va="center", fontsize=7.7,
+                    color=S.INK_2[mode])
+    ax.annotate("the common tenets running through modern privacy law - a new use of old data restarts the cycle at notification",
+                (4.9, -0.1), ha="center", fontsize=8.0, color=ink, style="italic")
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(-0.45, 4.25)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The employment lifecycle with the control at each stage.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-employment-lifecycle")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    stages = [
+        ("SCREEN", "job description, references,\nhistory, background,\nfinancial (with consent)", c[0]),
+        ("AGREE", "handbook, employment\ncontract, NDA", c[1]),
+        ("ONBOARD", "terms review, initial security\ntraining, credential issue", c[2]),
+        ("EMPLOY", "AUP in force, least privilege,\nlawful monitoring", c[0]),
+        ("TERMINATE", "lock accounts FIRST, recover\nproperty, exit interview,\nNDA reminder, escort", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 3.6))
+    for i, (name, gloss, colour) in enumerate(stages):
+        x = 0.35 + i * 1.92
+        ax.add_patch(plt.Rectangle((x, 1.85), 1.6, 0.8, facecolor="none",
+                                   edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x + 0.8, 2.25), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate(gloss, (x + 0.8, 1.18), ha="center", fontsize=6.8,
+                    color=S.INK_2[mode])
+        if i < len(stages) - 1:
+            ax.annotate("", (x + 1.88, 2.25), (x + 1.64, 2.25),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.5))
+    ax.annotate("personnel security = minimising the insider threat at every stage of the relationship",
+                (5.1, 3.15), ha="center", fontsize=8.4, color=ink, style="italic")
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(0.45, 3.5)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Controls that distinguish non-employees.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-nonemployee-controls")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("Contractual protections", "penalty payments, required insurance (E&O),\nliability transfer where law allows", c[0]),
+        ("Distinct accounts", "limited access; richer audit trail on\neverything the account touches", c[1]),
+        ("Escort requirements", "continuous surveillance or an employee\npresent at all times", c[2]),
+        ("Distinguishing badges", "visibly different colour or shape -\neveryone can see who is not staff", c[0]),
+        ("NDAs", "external parties sign too - the organisation's\nownership is acknowledged in writing", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 4.0))
+    for i, (name, gloss, colour) in enumerate(rows):
+        y = (len(rows) - 1 - i) * 0.86
+        ax.add_patch(plt.Rectangle((0.35, y), 2.85, 0.68, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.77, y + 0.34), ha="center", va="center",
+                    fontsize=8.4, color=ink)
+        ax.annotate(gloss, (3.5, y + 0.34), va="center", fontsize=7.7,
+                    color=S.INK_2[mode])
+    ax.annotate("vendors, consultants, and contractors get ACCESS without MEMBERSHIP -\nthe controls make that distinction visible, auditable, and enforceable",
+                (0.35, 4.55), fontsize=8.2, color=ink)
+    ax.set_xlim(0, 9.4)
+    ax.set_ylim(-0.25, 5.15)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
