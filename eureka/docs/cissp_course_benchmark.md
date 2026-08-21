@@ -223,3 +223,31 @@ NCLEX (`name.svg` + `name.dark.svg`).
 House rules unchanged: all prose original, every table sourced, no exhibit or
 figure reproduced from the Instructor Edition, and content stays DRAFT until a
 named SME reviews it.
+
+## Progress log
+
+**CS-4 (2026-08-21)** — Security Models & Frameworks (1,114 → 6,222 words) and Access
+Control Models (1,058 → 6,166 words) both reach the FE-EE-grade standard. **4/36
+chapters now at standard**; 32 remain short. Ten new figures: `cissp-bell-lapadula`,
+`cissp-reference-monitor`, `cissp-clark-wilson`, `cissp-cc-eal-ladder`,
+`cissp-framework-stack`, `cissp-access-control-models`, `cissp-iaaa`, `cissp-kerberos`,
+`cissp-auth-factors`, `cissp-federation-saml` — 21 figures / 42 SVGs on disk, all
+verified serving 200 in both themes.
+
+**New gate: `scripts/check_figure_overlaps.py`.** Rendering the figures caught label
+collisions the depth gate passed cleanly — the same failure family as the FE EE
+display-block defect. The checker re-runs each figure function, measures every text
+artist's bounding box in display coordinates, and fails on any pair overlapping by
+more than 6 px and 12% of the smaller box. It is now invoked from
+`check_cissp_depth.py`, so a figure that reads as garbage fails the same gate as a
+chapter that is too short.
+
+It found three real defects: the new `cissp-bell-lapadula` (four mutually overlapping
+rule labels, fixed by moving every gloss into a legend block below the plot), and two
+**already-shipped** figures — `cissp-bc-metrics` (MTD label under a timeline tick, RTO
+and WRT captions overlapping) and `cissp-crypto-taxonomy` (column headers colliding
+because the columns were narrower than the header text). Both rebuilt.
+
+The checker is generator-agnostic. Run against NCLEX it reports **5 broken figures**
+(`nclex-insulin-curves` and `nclex-fundal-height` each have a label rendered 100% on
+top of another), which is unfixed — NCLEX is a paused stream.

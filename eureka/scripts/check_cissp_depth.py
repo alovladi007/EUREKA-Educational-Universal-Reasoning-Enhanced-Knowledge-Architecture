@@ -94,6 +94,18 @@ def main() -> int:
           f"({MIN_WORDS}w / {MIN_FIGS} figs / {MIN_TABLES} tables / {MIN_SUBS} subs / worked / self-check)")
     print(f"total words: {sum(r[1] for r in rows):,}   total figure embeds: {sum(r[2] for r in rows)}")
 
+    # A depth gate cannot see a label collision - only a render can.  Fold the
+    # figure overlap check in here so a figure that reads as garbage on the page
+    # fails the same gate as a chapter that is too short.
+    import subprocess
+    ov = subprocess.run(
+        [sys.executable, str(pathlib.Path(__file__).with_name("check_figure_overlaps.py")),
+         "gen_cissp_figures", "cissp-"],
+        capture_output=True, text=True)
+    print("\n" + ov.stdout.strip())
+    if ov.returncode != 0:
+        failures.append("figure text overlaps - see the OVERLAP lines above")
+
     if failures:
         print(f"\nFAIL - {len(failures)} issue(s):")
         for f in failures[:12]:

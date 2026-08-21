@@ -80,41 +80,49 @@ def _(mode):
 def _(mode):
     ink = S.INK[mode]
     c = S.SERIES[mode]
-    fig, ax = plt.subplots(figsize=(8.0, 4.2))
-    ax.axvline(0, color=ink, linewidth=2)
-    ax.annotate("INCIDENT", (0, 3.35), ha="center", fontsize=10.5, color=ink)
-    ax.plot([-6.5, 7.5], [1.0, 1.0], color=S.GUIDE[mode], linewidth=1)
+    fig, ax = plt.subplots(figsize=(8.6, 4.8))
+    ax.axvline(0, color=ink, linewidth=2, ymin=0.42, ymax=0.92)
+    ax.annotate("INCIDENT", (0, 3.5), ha="center", fontsize=10.5, color=ink)
+    ax.plot([-6.5, 7.0], [1.0, 1.0], color=S.GUIDE[mode], linewidth=1)
 
-    def span(x0, x1, y, label, colour, sub):
+    def span(x0, x1, y, label, colour):
         ax.annotate("", (x1, y), (x0, y),
                     arrowprops=dict(arrowstyle="|-|,widthA=0.3,widthB=0.3",
                                     color=colour, linewidth=2))
-        ax.annotate(label, ((x0 + x1) / 2, y + 0.17), ha="center",
+        ax.annotate(label, ((x0 + x1) / 2, y + 0.16), ha="center",
                     fontsize=10, color=colour)
-        ax.annotate(sub, ((x0 + x1) / 2, y - 0.32), ha="center",
-                    fontsize=8.4, color=ink)
 
-    span(-5.5, 0, 2.5, "RPO", c[0], "last good backup -> incident\nHOW MUCH DATA you can afford to lose")
-    span(0, 3.5, 2.5, "RTO", c[1], "incident -> service restored\nHOW LONG until systems are back")
-    span(3.5, 6.0, 2.5, "WRT", c[2], "restored -> verified and caught up")
-    span(0, 6.0, 0.35, "MTD  (= RTO + WRT)", ink,
-         "the outer limit the business can survive")
-    for x, lbl in ((-5.5, "last\nbackup"), (3.5, "systems\nup"), (6.0, "business\nnormal")):
+    # Only the acronym sits on the timeline; every gloss goes in the key
+    # below, so no two captions can ever collide.
+    span(-5.5, 0, 2.6, "RPO", c[0])
+    span(0, 3.5, 2.6, "RTO", c[1])
+    span(3.5, 6.0, 2.6, "WRT", c[2])
+    span(0, 6.0, 1.75, "MTD", ink)
+
+    for x, lbl in ((-5.5, "last good\nbackup"), (3.5, "systems\nup"),
+                   (6.0, "business\nnormal")):
         ax.plot([x], [1.0], "o", color=S.GUIDE[mode], markersize=6)
-        ax.annotate(lbl, (x, 0.78), ha="center", va="top", fontsize=8.2,
+        ax.annotate(lbl, (x, 0.82), ha="center", va="top", fontsize=8.2,
                     color=ink)
-    ax.set_xlim(-6.8, 7.8)
-    ax.set_ylim(-0.4, 3.8)
+
+    key = [
+        ("RPO", c[0], "last good backup to incident - how much DATA you can afford to lose"),
+        ("RTO", c[1], "incident to service restored - how LONG until systems are back"),
+        ("WRT", c[2], "restored to verified and caught up - the work-recovery tail"),
+        ("MTD", ink, "= RTO + WRT - the outer limit the business can survive"),
+    ]
+    for i, (tag, colour, gloss) in enumerate(key):
+        y = -0.35 - i * 0.42
+        ax.annotate(tag, (-6.5, y), fontsize=8.6, color=colour, va="center")
+        ax.annotate(gloss, (-5.4, y), fontsize=8.0, color=S.INK_2[mode],
+                    va="center")
+
+    ax.set_xlim(-6.9, 7.3)
+    ax.set_ylim(-2.15, 3.9)
     ax.axis("off")
     fig.tight_layout()
     return fig
 
-
-# ---------------------------------------------------------------------------
-# Qualitative risk matrix: risk = likelihood x impact.  The cell shading is
-# computed from the product of the two axis indices, so the ranking is
-# arithmetic rather than asserted.
-# ---------------------------------------------------------------------------
 
 @figure("cissp-risk-matrix")
 def _(mode):
@@ -149,45 +157,45 @@ def _(mode):
     ink = S.INK[mode]
     c = S.SERIES[mode]
     rows = [
-        ("Symmetric\n(AES, ChaCha20)", [1, 0, 0, 0], "one shared key; fast; key distribution is the problem"),
-        ("Asymmetric\n(RSA, ECC)", [1, 0, 1, 1], "key pair; slow; solves distribution and enables signatures"),
-        ("Hashing\n(SHA-2, SHA-3)", [0, 1, 0, 0], "one-way digest; no key; detects change"),
-        ("MAC / HMAC", [0, 1, 1, 0], "hash plus a shared key; origin without non-repudiation"),
-        ("Digital signature", [0, 1, 1, 1], "hash signed with a private key; the full set"),
+        ("Symmetric\n(AES, ChaCha20)", [1, 0, 0, 0],
+         "one shared key; fast; key distribution is the problem"),
+        ("Asymmetric\n(RSA, ECC)", [1, 0, 1, 1],
+         "key pair; slow; solves distribution and signs"),
+        ("Hashing\n(SHA-2, SHA-3)", [0, 1, 0, 0],
+         "one-way digest; no key; detects change"),
+        ("MAC / HMAC", [0, 1, 1, 0],
+         "hash plus a shared key; origin without non-repudiation"),
+        ("Digital signature", [0, 1, 1, 1],
+         "hash signed with a private key; the full set"),
     ]
     cols = ["Confidentiality", "Integrity", "Authentication", "Non-repudiation"]
-    fig, ax = plt.subplots(figsize=(8.4, 4.4))
+    W = 2.25                      # wide enough for the longest header
+    fig, ax = plt.subplots(figsize=(10.6, 4.4))
     for j, cname in enumerate(cols):
-        ax.annotate(cname, (j + 0.5, len(rows) + 0.15), ha="center",
-                    fontsize=9.2, color=ink)
+        ax.annotate(cname, (j * W + W / 2, len(rows) + 0.15), ha="center",
+                    fontsize=8.8, color=ink)
     for i, (name, marks, note) in enumerate(rows):
         y = len(rows) - 1 - i
-        ax.annotate(name, (-0.15, y + 0.45), ha="right", va="center",
-                    fontsize=9.2, color=ink)
-        ax.annotate(note, (4.15, y + 0.45), ha="left", va="center",
+        ax.annotate(name, (-0.2, y + 0.45), ha="right", va="center",
+                    fontsize=9.0, color=ink)
+        ax.annotate(note, (4 * W + 0.3, y + 0.45), ha="left", va="center",
                     fontsize=8.0, color=S.INK_2[mode])
         for j, mk in enumerate(marks):
-            ax.add_patch(plt.Rectangle((j, y), 1, 0.9, facecolor="none",
+            ax.add_patch(plt.Rectangle((j * W, y), W, 0.9, facecolor="none",
                                        edgecolor=S.GRID[mode], linewidth=1))
             if mk:
-                ax.add_patch(plt.Rectangle((j + 0.08, y + 0.08), 0.84, 0.74,
+                ax.add_patch(plt.Rectangle((j * W + 0.18, y + 0.08),
+                                           W - 0.36, 0.74,
                                            facecolor=c[0], alpha=0.75,
                                            edgecolor="none"))
-                ax.annotate("yes", (j + 0.5, y + 0.45), ha="center",
+                ax.annotate("yes", (j * W + W / 2, y + 0.45), ha="center",
                             va="center", fontsize=8.6, color=S.INK["light"])
-    ax.set_xlim(-3.1, 8.4)
+    ax.set_xlim(-3.9, 4 * W + 6.6)
     ax.set_ylim(-0.3, len(rows) + 0.6)
     ax.axis("off")
     fig.tight_layout()
     return fig
 
-
-
-# ---------------------------------------------------------------------------
-# Business impact grows with outage duration.  The curve is schematic; what is
-# definitional is the RELATIONSHIP: impact accelerates, and MTD is the point
-# beyond which the organisation cannot recover - so RTO must be set inside it.
-# ---------------------------------------------------------------------------
 
 @figure("cissp-impact-over-time")
 def _(mode):
@@ -469,6 +477,472 @@ def _(mode):
                 (4.8, 2.65), ha="center", fontsize=8.4, color=ink, style="italic")
     ax.set_xlim(0, 9.6)
     ax.set_ylim(0.1, 3.0)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+
+def _lattice(ax, ink, levels, colour):
+    for i, lv in enumerate(levels):
+        y = i * 1.25
+        ax.add_patch(plt.Rectangle((0.6, y), 3.0, 0.78, facecolor="none",
+                                   edgecolor=colour, linewidth=1.7))
+        ax.annotate(lv, (2.1, y + 0.39), ha="center", va="center",
+                    fontsize=9.2, color=ink)
+    return [i * 1.25 + 0.39 for i in range(len(levels))]
+
+
+# ---------------------------------------------------------------------------
+# Bell-LaPadula protects CONFIDENTIALITY: no read up, no write down.
+# Biba protects INTEGRITY and inverts both rules.  Definitional.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-bell-lapadula")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    levels = ["Unclassified", "Confidential", "Secret", "Top Secret"]
+    fig, axes = plt.subplots(1, 2, figsize=(9.2, 5.0))
+
+    panels = (
+        (axes[0], "BELL-LaPADULA   confidentiality", c[0],
+         [("read", -1, True,  "read DOWN: allowed"),
+          ("read", +1, False, "read UP: denied - simple security property"),
+          ("write", +1, True,  "write UP: allowed"),
+          ("write", -1, False, "write DOWN: denied - star (*) property")]),
+        (axes[1], "BIBA   integrity", c[1],
+         [("read", +1, True,  "read UP: allowed"),
+          ("read", -1, False, "read DOWN: denied - simple integrity axiom"),
+          ("write", -1, True,  "write DOWN: allowed"),
+          ("write", +1, False, "write UP: denied - star (*) integrity axiom")]),
+    )
+
+    for ax, title, colour, rules in panels:
+        # the lattice
+        for i, lv in enumerate(levels):
+            y = i * 1.2
+            ax.add_patch(plt.Rectangle((0.3, y), 3.0, 0.8, facecolor="none",
+                                       edgecolor=colour, linewidth=1.7))
+            ax.annotate(lv, (1.8, y + 0.4), ha="center", va="center",
+                        fontsize=9.0, color=ink)
+        y_mid = 1 * 1.2 + 0.4          # the subject sits at Confidential
+
+        ax.annotate(title, (0.3, 5.35), fontsize=10, color=ink)
+
+        # the subject marker, placed clear of the box
+        ax.plot([3.62], [y_mid], "o", color=c[2], markersize=8)
+        ax.annotate("SUBJECT", (3.78, y_mid), va="center", ha="left",
+                    fontsize=7.6, color=c[2])
+
+        # two arrow columns, labels kept OUT of the plot area entirely
+        cols = {"read": 5.45, "write": 6.35}
+        for kind, direction, allowed, _label in rules:
+            x = cols[kind]
+            y0, y1 = y_mid, y_mid + direction * 1.2
+            ax.annotate("", (x, y1), (x, y0),
+                        arrowprops=dict(
+                            arrowstyle="-|>" if allowed else "-",
+                            color=colour if allowed else S.GUIDE[mode],
+                            linewidth=1.9,
+                            linestyle="solid" if allowed else (0, (3, 3))))
+            if not allowed:
+                ym = (y0 + y1) / 2
+                for dy in (0.14, -0.14):
+                    ax.plot([x - 0.22, x + 0.22], [ym - dy, ym + dy],
+                            color=S.GUIDE[mode], linewidth=2)
+        for kind, x in cols.items():
+            ax.annotate(kind.upper(), (x, y_mid - 1.62), ha="center",
+                        fontsize=7.6, color=S.INK_2[mode])
+
+        # legend below the panel - one rule per line, no overlap possible
+        for j, (_kind, _dir, allowed, label) in enumerate(rules):
+            y = -0.78 - j * 0.46
+            ax.annotate("+" if allowed else "x", (0.32, y), fontsize=8.4,
+                        color=colour if allowed else S.GUIDE[mode],
+                        ha="center", va="center")
+            ax.annotate(label, (0.62, y), fontsize=7.8, va="center",
+                        color=ink if allowed else S.INK_2[mode])
+
+        ax.set_xlim(0, 7.1)
+        ax.set_ylim(-2.75, 5.8)
+        ax.axis("off")
+
+    fig.text(0.5, 0.015,
+             "Biba is Bell-LaPadula inverted: confidentiality stops secrets flowing DOWN, "
+             "integrity stops corruption flowing UP",
+             ha="center", fontsize=8.2, color=S.INK_2[mode])
+    fig.tight_layout(rect=(0, 0.045, 1, 1))
+    return fig
+
+
+@figure("cissp-access-control-models")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    models = [
+        ("DAC", "the data OWNER decides", "flexible; vulnerable to owner error and malware acting as the user"),
+        ("MAC", "the SYSTEM enforces labels", "rigid; used where classification is mandatory"),
+        ("RBAC", "rights attach to a ROLE", "scales with staff turnover; the enterprise default"),
+        ("ABAC", "policy evaluates ATTRIBUTES", "most expressive; context-aware; hardest to audit"),
+        ("RuleBAC", "global RULES apply to all", "firewall ACLs are the classic case"),
+    ]
+    fig, ax = plt.subplots(figsize=(8.4, 4.2))
+    for i, (name, who, note) in enumerate(models):
+        y = len(models) - 1 - i
+        ax.add_patch(plt.Rectangle((0.25, y + 0.1), 1.15, 0.72,
+                                   facecolor=c[0], alpha=0.28, edgecolor=c[0],
+                                   linewidth=1.6))
+        ax.annotate(name, (0.82, y + 0.46), ha="center", va="center",
+                    fontsize=10, color=ink)
+        ax.annotate(who, (1.65, y + 0.46), va="center", fontsize=9.4, color=ink)
+        ax.annotate(note, (4.35, y + 0.46), va="center", fontsize=8.0,
+                    color=S.INK_2[mode])
+    ax.annotate("the exam's question is always WHO SETS THE RULE",
+                (4.6, 5.35), ha="center", fontsize=9, color=ink, style="italic")
+    ax.set_xlim(0, 10.6)
+    ax.set_ylim(-0.3, 5.7)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# IAAA: identification, authentication, authorisation, accountability - the
+# order matters and each stage answers a different question.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-iaaa")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    stages = [
+        ("IDENTIFICATION", "who do you claim to be?", "username, ID badge, account"),
+        ("AUTHENTICATION", "prove it", "password, token, biometric"),
+        ("AUTHORISATION", "what may you do?", "permissions, labels, policy"),
+        ("ACCOUNTABILITY", "what did you do?", "logging, audit trail, non-repudiation"),
+    ]
+    fig, ax = plt.subplots(figsize=(8.6, 3.4))
+    for i, (name, q, eg) in enumerate(stages):
+        x = 0.3 + i * 2.45
+        ax.add_patch(plt.Rectangle((x, 1.35), 2.05, 0.85, facecolor="none",
+                                   edgecolor=c[0], linewidth=1.9))
+        ax.annotate(name, (x + 1.02, 1.78), ha="center", va="center",
+                    fontsize=9.4, color=ink)
+        ax.annotate(q, (x + 1.02, 1.05), ha="center", fontsize=8.6, color=c[1])
+        ax.annotate(eg, (x + 1.02, 0.68), ha="center", fontsize=7.6,
+                    color=S.INK_2[mode])
+        if i < len(stages) - 1:
+            ax.annotate("", (x + 2.42, 1.78), (x + 2.08, 1.78),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.5))
+    ax.annotate("accountability is impossible without unique identification - which is why shared accounts break the whole chain",
+                (5.2, 2.55), ha="center", fontsize=8.4, color=ink, style="italic")
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(0.3, 2.9)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Kerberos exchange: AS issues a TGT, TGS issues a service ticket, the client
+# presents it to the service.  The KDC never sends the password anywhere.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-kerberos")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 4.6))
+    actors = [("CLIENT", 0.9), ("KDC\n(AS + TGS)", 5.0), ("SERVICE", 9.1)]
+    for name, x in actors:
+        ax.add_patch(plt.Rectangle((x - 0.85, 4.45), 1.7, 0.7,
+                                   facecolor="none", edgecolor=ink, linewidth=1.8))
+        ax.annotate(name, (x, 4.8), ha="center", va="center", fontsize=9,
+                    color=ink)
+        ax.plot([x, x], [0.35, 4.4], color=S.GRID[mode], linewidth=1)
+    steps = [
+        (3.95, 0.9, 5.0, "1. request authentication", c[0]),
+        (3.35, 5.0, 0.9, "2. TGT, encrypted with the client key", c[0]),
+        (2.75, 0.9, 5.0, "3. present TGT, request a service ticket", c[1]),
+        (2.15, 5.0, 0.9, "4. SERVICE TICKET issued", c[1]),
+        (1.55, 0.9, 9.1, "5. present the service ticket", c[2]),
+        (0.95, 9.1, 0.9, "6. access granted", c[2]),
+    ]
+    for y, x0, x1, label, colour in steps:
+        ax.annotate("", (x1, y), (x0, y),
+                    arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.7))
+        ax.annotate(label, ((x0 + x1) / 2, y + 0.14), ha="center", fontsize=8.4,
+                    color=ink)
+    S.note(ax, 5.0, 0.15,
+           "the password is never transmitted, and tickets are time-stamped - so clock skew breaks Kerberos, and the KDC is a single point of failure",
+           mode, ha="center")
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(-0.2, 5.4)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+
+# ---------------------------------------------------------------------------
+# The reference monitor: the abstract machine that mediates EVERY access.
+# Its three properties are the exam's favourite triple.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-reference-monitor")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 4.4))
+    ax.add_patch(plt.Rectangle((3.05, 1.15), 3.5, 2.35, facecolor=c[0],
+                               alpha=0.14, edgecolor=c[0], linewidth=1.6))
+    ax.annotate("TRUSTED COMPUTING BASE", (4.8, 3.28), ha="center",
+                fontsize=8.0, color=c[0])
+    ax.add_patch(plt.Rectangle((3.45, 1.55), 2.7, 1.35, facecolor="none",
+                               edgecolor=ink, linewidth=1.9))
+    ax.annotate("REFERENCE MONITOR", (4.8, 2.45), ha="center", fontsize=9.2,
+                color=ink)
+    ax.annotate("(the security kernel\nis its implementation)", (4.8, 1.95),
+                ha="center", fontsize=7.6, color=S.INK_2[mode])
+
+    for label, x in (("SUBJECT", 1.1), ("OBJECT", 8.5)):
+        ax.add_patch(plt.Rectangle((x - 0.8, 1.85), 1.6, 0.75,
+                                   facecolor="none", edgecolor=c[1],
+                                   linewidth=1.7))
+        ax.annotate(label, (x, 2.22), ha="center", va="center", fontsize=9,
+                    color=ink)
+    ax.annotate("", (3.4, 2.22), (1.95, 2.22),
+                arrowprops=dict(arrowstyle="-|>", color=c[1], linewidth=1.8))
+    ax.annotate("", (7.65, 2.22), (6.2, 2.22),
+                arrowprops=dict(arrowstyle="-|>", color=c[1], linewidth=1.8))
+    ax.annotate("request", (2.68, 2.4), ha="center", fontsize=8, color=ink)
+    ax.annotate("mediated access", (6.92, 2.4), ha="center", fontsize=8,
+                color=ink)
+
+    ax.annotate("", (4.8, 1.5), (4.8, 0.98),
+                arrowprops=dict(arrowstyle="-|>", color=c[2], linewidth=1.5))
+    ax.add_patch(plt.Rectangle((3.7, 0.3), 2.2, 0.65, facecolor="none",
+                               edgecolor=c[2], linewidth=1.5))
+    ax.annotate("AUDIT LOG", (4.8, 0.62), ha="center", va="center",
+                fontsize=8.4, color=ink)
+
+    props = [("COMPLETE MEDIATION", "no access bypasses it"),
+             ("TAMPERPROOF", "cannot be altered"),
+             ("VERIFIABLE", "small enough to test exhaustively")]
+    for i, (name, gloss) in enumerate(props):
+        y = 3.95 - i * 0.0
+        ax.annotate(name, (1.0 + i * 3.35, 4.05), fontsize=8.4, color=c[0])
+        ax.annotate(gloss, (1.0 + i * 3.35, 3.75), fontsize=7.4,
+                    color=S.INK_2[mode])
+    ax.set_xlim(0, 10.4)
+    ax.set_ylim(0.05, 4.45)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Clark-Wilson: users never touch data directly; a transformation procedure
+# does, and an integrity verification procedure audits the result.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-clark-wilson")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.6, 4.3))
+    boxes = [("USER\n(subject)", 1.05, c[1]), ("TP\ntransformation\nprocedure", 4.3, c[0]),
+             ("CDI\nconstrained\ndata item", 7.6, c[0])]
+    for label, x, colour in boxes:
+        ax.add_patch(plt.Rectangle((x - 1.05, 2.0), 2.1, 1.25,
+                                   facecolor="none", edgecolor=colour,
+                                   linewidth=1.8))
+        ax.annotate(label, (x, 2.62), ha="center", va="center", fontsize=8.6,
+                    color=ink)
+    for x0, x1 in ((2.2, 3.15), (5.45, 6.4)):
+        ax.annotate("", (x1, 2.62), (x0, 2.62),
+                    arrowprops=dict(arrowstyle="-|>", color=ink, linewidth=1.7))
+    ax.annotate("the ACCESS TRIPLE:  subject -> TP -> CDI", (4.3, 3.62),
+                ha="center", fontsize=9.4, color=c[0])
+    ax.annotate("a user may never read or write a CDI directly", (4.3, 3.32),
+                ha="center", fontsize=7.8, color=S.INK_2[mode])
+
+    ax.add_patch(plt.Rectangle((6.55, 0.5), 2.1, 0.85, facecolor="none",
+                               edgecolor=c[2], linewidth=1.6))
+    ax.annotate("IVP\nintegrity verification", (7.6, 0.92), ha="center",
+                va="center", fontsize=8.0, color=ink)
+    ax.annotate("", (7.6, 1.45), (7.6, 1.95),
+                arrowprops=dict(arrowstyle="-|>", color=c[2], linewidth=1.5))
+    ax.annotate("confirms the CDI is\nin a valid state", (9.0, 0.92),
+                fontsize=7.4, color=S.INK_2[mode], va="center")
+
+    ax.add_patch(plt.Rectangle((0.2, 0.5), 2.1, 0.85, facecolor="none",
+                               edgecolor=c[1], linewidth=1.5, linestyle=(0, (4, 3))))
+    ax.annotate("UDI\nunconstrained data", (1.25, 0.92), ha="center",
+                va="center", fontsize=8.0, color=ink)
+    ax.annotate("", (3.6, 1.95), (2.0, 1.35),
+                arrowprops=dict(arrowstyle="-|>", color=c[1], linewidth=1.4,
+                                linestyle=(0, (4, 3))))
+    ax.annotate("a TP is the only thing that may\npromote UDI to CDI", (2.55, 1.62),
+                fontsize=7.2, color=S.INK_2[mode])
+    ax.set_xlim(0, 11.2)
+    ax.set_ylim(0.25, 3.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Common Criteria assurance ladder.  EAL measures HOW THOROUGHLY a product was
+# evaluated, not how secure it is - the single most-tested nuance.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-cc-eal-ladder")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    eals = [
+        ("EAL1", "functionally tested"),
+        ("EAL2", "structurally tested"),
+        ("EAL3", "methodically tested and checked"),
+        ("EAL4", "methodically designed, tested, reviewed"),
+        ("EAL5", "semi-formally designed and tested"),
+        ("EAL6", "semi-formally verified design and tested"),
+        ("EAL7", "formally verified design and tested"),
+    ]
+    fig, ax = plt.subplots(figsize=(8.6, 4.4))
+    for i, (name, gloss) in enumerate(eals):
+        w = 1.6 + i * 0.42
+        ax.add_patch(plt.Rectangle((0.35, i * 0.55), w, 0.42,
+                                   facecolor=c[0], alpha=0.18 + i * 0.09,
+                                   edgecolor=c[0], linewidth=1.2))
+        ax.annotate(name, (0.55, i * 0.55 + 0.21), va="center", fontsize=8.6,
+                    color=ink)
+        ax.annotate(gloss, (0.4 + w + 0.25, i * 0.55 + 0.21), va="center",
+                    fontsize=8.0, color=S.INK_2[mode])
+    ax.annotate("EAL4 is the highest level mutually recognised across all CCRA signatories,\nwhich is why commercial products cluster there",
+                (0.4, -0.72), fontsize=8.0, color=ink, style="italic")
+    ax.annotate("higher EAL = MORE ASSURANCE THAT THE CLAIMS WERE CHECKED,\nnot more security features",
+                (0.4, 4.35), fontsize=8.6, color=c[2])
+    ax.set_xlim(0, 10.6)
+    ax.set_ylim(-1.15, 4.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The framework stack: each layer answers a different question, and the exam
+# punishes candidates who treat them as interchangeable.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-framework-stack")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    layers = [
+        ("OPERATIONS", "ITIL, ISO 20000", "how do we run services day to day?", c[2]),
+        ("CONTROLS", "ISO 27002, NIST SP 800-53, CIS", "which safeguards do we implement?", c[1]),
+        ("MANAGEMENT SYSTEM", "ISO 27001, NIST RMF, NIST CSF", "how do we run a security programme?", c[0]),
+        ("ARCHITECTURE", "SABSA, TOGAF, Zachman", "how do we structure the enterprise?", c[1]),
+        ("GOVERNANCE", "COSO, COBIT", "who is accountable to the board?", c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(8.8, 4.4))
+    for i, (name, examples, question, colour) in enumerate(layers):
+        y = i * 0.82
+        ax.add_patch(plt.Rectangle((0.3, y), 3.2, 0.66, facecolor=colour,
+                                   alpha=0.2, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.9, y + 0.33), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate(examples, (3.75, y + 0.44), fontsize=8.2, color=ink)
+        ax.annotate(question, (3.75, y + 0.16), fontsize=7.4,
+                    color=S.INK_2[mode], style="italic")
+    ax.annotate("", (0.15, 0.1), (0.15, 4.0),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                linewidth=1.4))
+    ax.annotate("board", (-0.05, 0.1), rotation=90, fontsize=7.4,
+                color=S.INK_2[mode], va="bottom", ha="center")
+    ax.set_xlim(-0.35, 10.6)
+    ax.set_ylim(-0.25, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Authentication factors.  MFA requires factors from DIFFERENT categories -
+# two passwords is still single-factor.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-auth-factors")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    cats = [
+        ("TYPE 1", "something you KNOW", "password, PIN, passphrase,\ncognitive question", c[0]),
+        ("TYPE 2", "something you HAVE", "smart card, hardware token,\nphone with an authenticator", c[1]),
+        ("TYPE 3", "something you ARE", "fingerprint, iris, retina,\nvoice, gait", c[2]),
+    ]
+    fig, ax = plt.subplots(figsize=(8.8, 3.9))
+    for i, (t, name, egs, colour) in enumerate(cats):
+        x = 0.35 + i * 3.45
+        ax.add_patch(plt.Rectangle((x, 1.15), 3.05, 1.75, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.7))
+        ax.annotate(t, (x + 1.52, 2.62), ha="center", fontsize=8.2, color=colour)
+        ax.annotate(name, (x + 1.52, 2.24), ha="center", fontsize=9.4, color=ink)
+        ax.annotate(egs, (x + 1.52, 1.62), ha="center", fontsize=7.8,
+                    color=S.INK_2[mode])
+    ax.annotate("MULTI-FACTOR = factors from DIFFERENT boxes", (5.4, 3.35),
+                ha="center", fontsize=9.6, color=ink)
+    S.note(ax, 5.4, 0.55,
+           "a password plus a security question is TWO type-1 factors - still single-factor authentication; "
+           "somewhere-you-are and something-you-do are attributes, not accepted factors",
+           mode, ha="center")
+    ax.set_xlim(0, 10.8)
+    ax.set_ylim(0.2, 3.7)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Federated identity: the service provider trusts an assertion instead of
+# holding the credential itself.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-federation-saml")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.8, 4.4))
+    actors = [("USER\n(principal)", 1.0), ("SERVICE PROVIDER\n(relying party)", 5.3),
+              ("IDENTITY PROVIDER\n(asserting party)", 9.4)]
+    for name, x in actors:
+        ax.add_patch(plt.Rectangle((x - 1.25, 4.15), 2.5, 0.78,
+                                   facecolor="none", edgecolor=ink, linewidth=1.8))
+        ax.annotate(name, (x, 4.54), ha="center", va="center", fontsize=8.2,
+                    color=ink)
+        ax.plot([x, x], [0.55, 4.1], color=S.GRID[mode], linewidth=1)
+    steps = [
+        (3.65, 1.0, 5.3, "1. request a protected resource", c[0]),
+        (3.1, 5.3, 1.0, "2. redirect with an authentication request", c[0]),
+        (2.55, 1.0, 9.4, "3. authenticate at the home organisation", c[1]),
+        (2.0, 9.4, 1.0, "4. signed ASSERTION (identity + attributes)", c[1]),
+        (1.45, 1.0, 5.3, "5. present the assertion", c[2]),
+        (0.9, 5.3, 1.0, "6. session established - no password ever crossed", c[2]),
+    ]
+    for y, x0, x1, label, colour in steps:
+        ax.annotate("", (x1, y), (x0, y),
+                    arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.7))
+        ax.annotate(label, ((x0 + x1) / 2, y + 0.13), ha="center", fontsize=7.8,
+                    color=ink)
+    S.note(ax, 5.2, 0.3,
+           "SAML carries assertions for authentication; OAuth 2.0 delegates AUTHORISATION; OIDC adds identity on top of OAuth",
+           mode, ha="center")
+    ax.set_xlim(-0.6, 11.2)
+    ax.set_ylim(0.0, 5.05)
     ax.axis("off")
     fig.tight_layout()
     return fig

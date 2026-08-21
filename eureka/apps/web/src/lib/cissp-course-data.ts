@@ -2083,158 +2083,478 @@ cissp_models: {
   topicId: 'cissp_models',
   title: `Security Models & Frameworks`,
   domainWeight: '13%',
-  overview: `### Bell-LaPadula Model (Confidentiality)`,
+  overview: `A security policy says what must be true. A security model says how a machine can be made to enforce it, in terms precise enough to reason about. That gap is the whole subject. Domain 3 questions rarely ask you to recite Bell-LaPadula; they describe an organisation with a problem and ask which model, criterion, or framework addresses it. Answering well means knowing what each construct was invented to solve, what it deliberately ignores, and which layer of the enterprise it belongs to. This chapter builds the reference-monitor foundation, works through the confidentiality and integrity model pair, covers the commercial models the exam favours, then separates evaluation criteria from frameworks - three families candidates routinely blur together.`,
   sections: [
     {
-      id: '2-security-models-and-formal-specifications',
-      title: `2. Security Models and Formal Specifications`,
-      content: `### Bell-LaPadula Model (Confidentiality)
+      id: '1-from-policy-to-enforcement',
+      title: `1. From Policy to Enforcement: Why Formal Models Exist`,
+      content: `## The problem a model solves
 
-This mandatory access control (MAC) model focuses on **preventing unauthorized disclosure** of information. It uses security labels and clearances.
+An organisation writes a policy: "classified material must not reach uncleared staff." That sentence is unambiguous to a human and useless to a kernel. A kernel does not know what "classified" means, cannot recognise "staff," and has no way to evaluate "reach." Before software can enforce a policy, someone must restate it as rules over things the machine actually manipulates - subjects, objects, and operations.
 
-**Key properties**:
-- *Simple Security Property* ("No Read Up"): A subject cannot read information at a higher classification level than its clearance
-- *Star (*) Property* ("No Write Down"): A subject at a higher classification cannot write to lower classification levels to prevent covert channels
-- *Tranquility Property*: Security levels cannot change while the system is running
+A **security model** is that restatement. It is a formal or semi-formal specification that maps a policy onto system state and state transitions, in terms precise enough that you can prove - or at least argue rigorously - that a system obeying the rules cannot enter a state the policy forbids.
 
-**Limitations**: Does not enforce integrity; designed for government/military classification systems.
-### Biba Model (Integrity)
+Three words recur throughout this domain, and the exam assumes you use them precisely.
 
-The inverse of Bell-LaPadula, Biba enforces **integrity** by preventing unauthorized modification and corruption of data.
+| Term | Definition | Typical instance |
+|---|---|---|
+| Subject | An active entity that requests access | A process running on behalf of a user |
+| Object | A passive entity containing or receiving information | A file, a record, a memory page, a device |
+| Operation | The access mode requested | read, write, execute, append, delete |
 
-**Key properties**:
-- *Simple Integrity Axiom* ("No Write Up"): A subject cannot write to objects at a higher integrity level
-- *Integrity Star Property* ("No Read Down"): A subject cannot read data from a lower integrity level
+The subject/object distinction is relational, not absolute. A process is a subject when it opens a file and an object when a debugger attaches to it. Exam items exploit this: if a question describes a program being modified by another program, the program under modification is the object, whatever it does when it runs.
 
-Used in systems where data integrity is critical, such as databases handling financial transactions.
-### Clark-Wilson Model
+## Policy, model, mechanism
 
-Combines elements of both confidentiality and integrity controls using **Certified Data Items** (CDI) and **Transformation Procedures** (TP).
+Candidates lose marks by confusing three layers that sit above one another.
 
-**Key concepts**:
-- Enforces integrity through authorized transactions only
-- Separation of duties: different users handle different transaction phases
-- Audit trails for all transactions
+| Layer | Question it answers | Example |
+|---|---|---|
+| Policy | What outcome does the organisation require? | "Salary data is visible only to HR and the employee" |
+| Model | What abstract rules produce that outcome? | A lattice with a dominance relation and no-read-up |
+| Mechanism | What component actually enforces the rules? | Kernel access checks, file permissions, a label on each page |
 
-### Brewer-Nash Model (Chinese Wall)
+Policy comes from management and is expressed in business language. A model is chosen or designed to satisfy it. Mechanisms implement the model and can be replaced without changing either layer above. When a question describes a technology change - swapping an authentication product, moving to a new operating system - and asks whether the policy must change, the answer is almost always no. Mechanisms change constantly; policy is stable by design.
 
-Dynamically enforces information flow restrictions in multi-party environments where conflicts of interest exist.
+## The reference monitor
 
-**Example**: A consulting firm works for competing clients; consultants cannot access both competitors' data to prevent information leakage.
-### Graham-Denning Model
+The single most important abstraction in this domain is the **reference monitor**: a conceptual machine that mediates all access by subjects to objects. It is not a piece of code. It is a requirement, and the code that implements it is the **security kernel**.
 
-Defines a formal system for managing user rights, object access, and capability-based access control. Includes concepts of subjects, objects, and rights (read, write, execute, control).
-### Harrison-Ruzzo-Ullman (HRU) Model
+![Reference monitor mediating subject access to objects](/courses/cissp/figures/cissp-reference-monitor.svg)
 
-Addresses security policies using a state machine approach where transitions are governed by explicit rules.
-### State Machine Model
+The reference monitor concept comes with three properties, and the exam tests all three by name.
 
-Security system is modeled as a state machine where every state must be secure. Transitions between states must preserve security properties.
-### Information Flow Model
+| Property | Requirement | What violating it looks like |
+|---|---|---|
+| Complete mediation | Every access, without exception, is checked | A driver that reaches hardware directly, bypassing the kernel check |
+| Tamperproof | The monitor cannot be modified by subjects it governs | A user process able to patch kernel memory |
+| Verifiable | Small and simple enough to be analysed exhaustively | A monitor spread through millions of lines, impossible to prove correct |
 
-Restricts the flow of information from one object to another. Prevents data from flowing in unauthorized directions.
-### Lattice-Based Model
+The verifiability property is why security kernels are kept deliberately small. Assurance is a function of what can be examined, and complexity is the enemy of examination. This is the same instinct behind economy of mechanism in secure design, and it is why "add another feature to the kernel" is nearly always the wrong answer.
 
-Uses a mathematical lattice structure to define security levels. Elements in the lattice have partial orderings, allowing formal analysis of information flow.
-### Security Models Comparison
+## The trusted computing base
 
-| Model | Primary Focus |
+The **trusted computing base (TCB)** is the total set of hardware, firmware, and software components that enforce the security policy. It is broader than the security kernel: the kernel is the part of the TCB that implements the reference monitor, while the TCB also includes trusted processes, the hardware protections the kernel relies on, and any component whose failure would break the policy.
+
+Two consequences follow, and both appear on the exam.
+
+First, **trusted does not mean trustworthy**. A trusted component is one that is *able* to violate policy - it sits inside the boundary, so nothing stops it. Trustworthiness is the separate, evidence-based judgement that it will not. A trusted subject in Bell-LaPadula, discussed later, is precisely a subject permitted to break the rules; whether it deserves that permission is an assurance question, not a model question.
+
+Second, **the security perimeter** is the boundary between the TCB and everything else. Communication across it must go through carefully controlled interfaces - trusted paths for user interaction, well-defined system calls for programs. An interface that lets untrusted code hand arbitrary structures into the TCB is where privilege escalation lives.
+
+## Where models stop
+
+Models are abstractions, and every abstraction discards something. Bell-LaPadula says nothing about integrity. Biba says nothing about confidentiality. Neither says anything about availability, and no classical model addresses it - which is why a question asking "which model protects availability?" is testing whether you know the honest answer is none of them.
+
+Models also assume their own rules are enforced perfectly. Real systems leak through **covert channels**: paths not intended for information transfer at all. A storage channel signals by manipulating a shared resource such as disk space or a lock; a timing channel signals by modulating how long an operation takes. A model can be provably correct and the implementation still leaks, because the leak uses a channel the model never modelled.`
+    },
+    {
+      id: '2-lattice-labels-mac',
+      title: `2. The Lattice: Labels, Clearances, and Mandatory Control`,
+      content: `## Why a lattice
+
+Mandatory access control needs an ordering. If a subject holds one clearance and an object carries one classification, the system must decide whether the first is sufficient for the second, and it must do so for every possible pair - deterministically, transitively, and without human judgement at the moment of access.
+
+A **lattice** provides exactly that. Formally it is a partially ordered set in which every pair of elements has a least upper bound and a greatest lower bound. Practically, it is the structure that lets a system say "Secret dominates Confidential" and also handle pairs where neither side dominates the other.
+
+## Labels have two parts
+
+A security label is not just a level. It is a pair.
+
+| Component | Nature | Example |
+|---|---|---|
+| Classification level | Hierarchical, totally ordered | Unclassified < Confidential < Secret < Top Secret |
+| Compartment set | Non-hierarchical categories | {CRYPTO}, {NUCLEAR, NATO}, {} |
+
+Levels answer "how sensitive?" Compartments answer "which programme?" and encode **need to know**. The distinction matters enormously: a Top Secret clearance does not grant access to a Top Secret document in a compartment the subject is not read into. Clearance handles the hierarchical dimension; need to know handles the rest.
+
+## The dominance relation
+
+Label A dominates label B when both conditions hold:
+
+1. A's classification level is greater than or equal to B's level, **and**
+2. A's compartment set is a superset of B's compartment set.
+
+Both, not either. This is the most mechanically testable idea in Domain 3, and items are written to catch candidates who check only the level.
+
+| Subject label | Object label | Dominates? | Reason |
+|---|---|---|---|
+| Secret {CRYPTO} | Confidential {} | Yes | Higher level, superset of an empty set |
+| Secret {} | Confidential {CRYPTO} | No | Level is higher but CRYPTO is missing |
+| Top Secret {NATO} | Secret {NATO, NUCLEAR} | No | Level is higher but NUCLEAR is missing |
+| Secret {A, B} | Secret {A} | Yes | Equal level, superset of compartments |
+| Confidential {A} | Secret {A} | No | Level is lower |
+
+Rows three and two are where marks are lost. A higher clearance never compensates for a missing compartment. When neither label dominates the other - Secret {A} against Secret {B} - the pair is **incomparable**, and under a strict mandatory policy no access flows in either direction.
+
+## Mandatory versus discretionary, precisely
+
+The word **mandatory** in MAC means the rule cannot be overridden by the data owner, however senior they are. The system, acting on labels set by an administrative authority, decides. In discretionary access control the owner decides, and the system enforces whatever the owner chose.
+
+This produces the classic MAC advantage and its cost. The advantage: a user cannot leak data by accident or by being socially engineered into sharing it, and malware running with the user's privileges inherits the user's label rather than the user's generosity. The cost: administrative rigidity. Every object needs a label, every subject needs a clearance, and legitimate collaboration across compartments requires a formal process rather than a right-click.
+
+## Tranquility
+
+If labels can change while a system runs, the proofs collapse: a subject could read a document, have its clearance raised, and carry what it already knows upward - or worse, have an object's classification lowered underneath it. The **tranquility principle** governs this.
+
+| Variant | Rule | Practical reading |
+|---|---|---|
+| Strong tranquility | Labels never change during normal operation | Simple to reason about, operationally inflexible |
+| Weak tranquility | Labels may change, but never in a way that violates the policy | The realistic form; supports the high-water-mark behaviour |
+
+Under weak tranquility a process that starts at Unclassified and reads a Secret object can be raised to Secret - the label floats up to match what the process has seen. What it must never do is float back down while retaining that knowledge.`
+    },
+    {
+      id: '3-blp-and-biba',
+      title: `3. Bell-LaPadula and Biba: The Confidentiality and Integrity Pair`,
+      content: `## Bell-LaPadula: keeping secrets from flowing down
+
+The Bell-LaPadula model was developed for the United States Department of Defense to formalise multilevel confidentiality. Its entire purpose is to prevent information disclosure. It has nothing to say about whether data is correct.
+
+Its rules are stated in terms of a subject with a clearance operating on an object with a classification.
+
+| Rule | Formal name | Plain statement | Direction |
+|---|---|---|---|
+| No read up | Simple security property | A subject may not read an object whose label it does not dominate | Reads flow down |
+| No write down | Star (*) property | A subject may not write to an object at a lower level | Writes flow up |
+| Access matrix check | Discretionary security property | The access matrix must also permit the operation | Both |
+
+![Bell-LaPadula and Biba read and write rules compared](/courses/cissp/figures/cissp-bell-lapadula.svg)
+
+The no-write-down rule surprises candidates because it forbids something that feels harmless: why should a Top Secret analyst be barred from writing an Unclassified memo? Because the model cannot distinguish an analyst deliberately declassifying from a Trojan horse running under that analyst's clearance and copying Top Secret content into an Unclassified file. The rule closes the channel by refusing the direction entirely.
+
+Two refinements complete the picture. The **strong star property** requires that a subject may write only at exactly its own level - closing not just downward writes but upward blind writes as well. The **trusted subject** is an explicit exception: a principal permitted to violate the star property in order to perform legitimate declassification. The moment a system needs to declassify, it needs a trusted subject, and that subject becomes part of the TCB.
+
+The third rule is routinely forgotten. Bell-LaPadula is not purely mandatory: the discretionary security property means the mandatory rules act as a ceiling, and the access matrix still has to grant the access. Both must permit; either can deny.
+
+## Biba: keeping corruption from flowing up
+
+The Biba model addresses integrity, and it does so by inverting Bell-LaPadula's rules. The insight is that confidentiality and integrity have opposite dangers. Confidentiality fears high-value data flowing *down* to unauthorised readers. Integrity fears low-quality data flowing *up* into high-value records.
+
+| Rule | Formal name | Plain statement |
+|---|---|---|
+| No read down | Simple integrity axiom | A subject may not read data of lower integrity than itself |
+| No write up | Star (*) integrity axiom | A subject may not write to an object of higher integrity |
+| No invoking up | Invocation property | A subject may not invoke a service at a higher integrity level |
+
+The invocation property is the rule candidates miss. Reading and writing are not the only ways to contaminate: calling a higher-integrity routine with attacker-chosen arguments lets a low-integrity subject act through a high-integrity one. Biba forbids the call itself.
+
+Biba also defines dynamic variants. Under the **low-water-mark policy**, a subject that reads lower-integrity data has its own integrity level lowered to match, rather than being refused. This mirrors weak tranquility on the confidentiality side, and it degrades gracefully where the static rule would simply block work.
+
+## Holding the pair apart
+
+The exam's favourite trap is a question that describes an integrity requirement and offers Bell-LaPadula among the choices, or describes a disclosure requirement and offers Biba. The reliable technique is to identify the *harm* the scenario is trying to prevent before looking at the rules.
+
+| If the scenario fears... | The property at stake is... | The model is... |
+|---|---|---|
+| A cleared insider leaking to an uncleared reader | Confidentiality | Bell-LaPadula |
+| A junior clerk altering an audited financial record | Integrity | Biba or Clark-Wilson |
+| Untrusted input corrupting a trusted database | Integrity | Biba |
+| A Trojan copying secrets into a public file | Confidentiality | Bell-LaPadula star property |
+| A record being changed correctly but by the wrong person | Integrity plus duty separation | Clark-Wilson |
+
+A second technique is directional. Say the phrase "secrets must not flow down, corruption must not flow up." Bell-LaPadula therefore permits reading down and writing up; Biba permits reading up and writing down. If you can reconstruct the permitted directions, the forbidden ones follow.
+
+## What the pair leaves out
+
+Neither model addresses availability. Neither addresses separation of duties. Neither prevents a properly cleared, properly labelled subject from entering wrong data - Biba constrains *where* data may flow, not whether it is accurate. And both assume labels are correct, which pushes the hard problem into classification and clearance administration, outside the model entirely.
+
+That gap is exactly what the commercial models were built to fill.`
+    },
+    {
+      id: '4-commercial-models',
+      title: `4. Clark-Wilson, Brewer-Nash, and the Commercial Models`,
+      content: `## Clark-Wilson: integrity for businesses, not battlefields
+
+Clark and Wilson observed that commercial integrity requirements look nothing like military confidentiality requirements. A bank does not classify its ledger; it insists that changes to the ledger be made only by authorised people, only through approved procedures, and in ways that keep the books balanced. Their model formalises that.
+
+The vocabulary is examinable in itself.
+
+| Element | Full name | Role |
+|---|---|---|
+| CDI | Constrained data item | Data whose integrity the model protects |
+| UDI | Unconstrained data item | Data outside the protection boundary, such as raw user input |
+| TP | Transformation procedure | The only thing permitted to modify a CDI |
+| IVP | Integrity verification procedure | Audits CDIs to confirm they are in a valid state |
+
+![Clark-Wilson access triple with transformation and verification procedures](/courses/cissp/figures/cissp-clark-wilson.svg)
+
+The central construct is the **access triple**: subject, transformation procedure, constrained data item. A user is never granted access to data. A user is granted access to a *program*, and the program is granted access to the data. This is why the model is sometimes summarised as "no direct access," and why it maps so naturally onto stored procedures, banking applications, and enterprise resource planning systems where nobody edits the underlying tables.
+
+Three further principles come with it.
+
+**Well-formed transactions.** Every change moves the system from one consistent state to another. Partial updates are not permitted; the transaction either completes coherently or does not happen. The IVP exists to verify that consistency independently of the TP that produced it.
+
+**Separation of duties.** No single person may execute every step of a sensitive process. The person who initiates a payment may not be the person who approves it. Clark-Wilson builds this into the model rather than leaving it to policy.
+
+**Certification and enforcement rules.** Certification rules are checked by humans - somebody must certify that a given TP genuinely preserves integrity. Enforcement rules are checked by the system. The split matters: the model is explicit that some assurance can only come from human review, an idea the exam echoes wherever it distinguishes administrative from technical controls.
+
+## Brewer-Nash: the Chinese Wall
+
+Brewer-Nash addresses conflict of interest, and it is unusual in one respect the exam loves: **access rights change dynamically based on prior access**. Nothing else in the classical set does that.
+
+The scenario is a consultancy holding data for competing clients. An analyst may examine any client's data - until they look at one, at which point everything belonging to that client's competitors becomes off limits. Access is unrestricted at the start and narrows with every decision made.
+
+| Concept | Meaning |
 |---|---|
-| Bell-LaPadula | Confidentiality; No Read Up, No Write Down |
-| Biba | Integrity; No Write Up, No Read Down |
-| Clark-Wilson | Integrity with certified transactions |
-| Brewer-Nash | Conflict of interest in multi-party access |
-| Graham-Denning | Capability-based access control rights |
-| State Machine | Secure state transitions and policies |
-| Information Flow | Prevents unauthorized data flow directions |
-| Lattice-Based | Mathematical security level relationships |`,
-      examTip: `For CISSP exam: Bell-LaPadula = Confidentiality (government model), Biba = Integrity. Remember &quot;No Read Up&quot; and &quot;No Write Down&quot; for Bell-LaPadula, and invert them for Biba.`,
+| Object | An individual data item belonging to one company |
+| Company dataset | All objects belonging to a single company |
+| Conflict of interest class | The set of company datasets that compete with one another |
+
+The wall is built from history. Two subjects doing identical work may have entirely different permissions because they read different files first. Brewer-Nash is therefore the answer whenever a question describes law firms, auditors, investment banks, or consultancies with competing clients, and whenever it says access depends on what the user has previously accessed.
+
+## The model zoo
+
+Several smaller models appear as distractors, and each has a one-line identity that is enough to answer correctly.
+
+| Model | What it is known for |
+|---|---|
+| Graham-Denning | Eight primitive protection rules for creating and deleting subjects and objects and transferring rights |
+| Harrison-Ruzzo-Ullman | Extends Graham-Denning; proves the safety question is undecidable in the general case |
+| Take-Grant | Represents rights as a directed graph; four rules - take, grant, create, remove - determine what rights can propagate |
+| Non-interference | Actions at a high level must produce no observable effect at a lower level; aimed squarely at covert channels |
+| Information flow | Generalises Bell-LaPadula and Biba by reasoning about flows between objects rather than read and write operations |
+| Lattice-based access control | The general framework of which Bell-LaPadula and Biba are specific instances |
+| State machine | The general form: a system is secure if it starts in a secure state and every transition preserves security |
+
+The state machine idea deserves emphasis because it underpins the others. A **secure state machine** model defines a set of states, identifies which are secure, and requires that every permitted transition maps a secure state to another secure state. Bell-LaPadula is a state machine model with confidentiality rules; Biba is one with integrity rules. When a question asks what these models have structurally in common, this is the answer.
+
+## Mapping models to requirements
+
+| Requirement in the stem | Correct model |
+|---|---|
+| Multilevel classification with clearances | Bell-LaPadula |
+| Prevent low-integrity data reaching a trusted process | Biba |
+| Force all changes through approved programs | Clark-Wilson |
+| Enforce separation of duties inside the model | Clark-Wilson |
+| Prevent consultants seeing competitors' data | Brewer-Nash |
+| Prove no high-level action is visible below | Non-interference |
+| Analyse whether a right can ever leak | Take-Grant or Harrison-Ruzzo-Ullman |`
     },
     {
-      id: '3-security-evaluation-models-and-standards',
-      title: `3. Security Evaluation Models and Standards`,
-      content: `### Common Criteria (CC)
+      id: '5-evaluation-criteria',
+      title: `5. Evaluation Criteria: TCSEC, ITSEC, and the Common Criteria`,
+      content: `## Why independent evaluation exists
 
-International standard (ISO/IEC 15408) for evaluating IT security. Products are rated on **Evaluation Assurance Levels (EAL)** from 1-7 based on rigor of testing and documentation.
-| EAL Level | Name | Description |
+A vendor claiming its product is secure is making an assertion about its own work. Evaluation criteria exist so that an accredited third party can test that assertion against a published standard, and so that a buyer can compare two products on a common scale. The exam treats the three generations as a lineage.
+
+## TCSEC: the Orange Book
+
+The Trusted Computer System Evaluation Criteria, published by the US Department of Defense and universally called the Orange Book, was the first. It evaluates confidentiality only, on standalone systems, and bundles functionality and assurance into a single rating.
+
+| Division | Meaning | Notable classes |
 |---|---|---|
-| EAL 1 | Functionally Tested | Minimal assurance; basic testing against specification |
-| EAL 2 | Structurally Tested | Structural testing; security design reviewed |
-| EAL 3 | Methodically Tested & Checked | Methodical testing; informal security analysis |
-| EAL 4 | Methodically Designed, Tested & Reviewed | Formal design specification; structural coverage |
-| EAL 5 | Semiformally Designed & Tested | Semiformal specification; formal analysis of key areas |
-| EAL 6 | Semiformally Verified, Designed & Tested | Semiformal verification; detailed analysis |
-| EAL 7 | Formally Verified, Designed & Tested | Formal verification of specification; highest assurance |
+| D | Minimal protection - evaluated and failed | D |
+| C | Discretionary protection | C1 discretionary, C2 controlled access |
+| B | Mandatory protection | B1 labelled, B2 structured, B3 security domains |
+| A | Verified protection | A1 verified design |
 
-### ITSEC (Information Technology Security Evaluation Criteria)
+Two classes are worth remembering specifically. **C2** requires controlled access protection with individual accountability and audit - the level commercial operating systems targeted. **B1** is where mandatory labels first appear. The letters descend in security as they ascend in the alphabet only if you read D as the floor: the ordering from weakest to strongest is D, C1, C2, B1, B2, B3, A1.
 
-European standard that predated Common Criteria. Used similar levels but with different nomenclature. **ITSEC ratings** ranged from E0 (inadequate) to E6 (very high level of assurance).
-### TCSEC (Trusted Computer System Evaluation Criteria)
+TCSEC's limitations drove its replacement. It addressed only confidentiality, assumed a standalone system, and could not separate "what the product does" from "how well we checked."
 
-Also called the **Orange Book** (due to its orange cover). U.S. DoD standard from 1983 for evaluating operating system security. Largely obsolete but important for exam knowledge.
-| Level | Category | Description |
+## ITSEC: separating function from assurance
+
+The European Information Technology Security Evaluation Criteria made the crucial split. It rates **functionality** on one scale (F1 to F10) and **assurance** on another (E0 to E6), and it explicitly covers integrity and availability rather than confidentiality alone. That separation is ITSEC's contribution to the lineage and the reason the Common Criteria adopted the same structure.
+
+## The Common Criteria
+
+The Common Criteria, standardised as ISO/IEC 15408, is the current international scheme and the one most exam items concern. Its vocabulary is heavily tested.
+
+| Term | Meaning |
+|---|---|
+| TOE | Target of Evaluation - the product or system being evaluated |
+| PP | Protection Profile - a customer's statement of security requirements for a class of product |
+| ST | Security Target - the vendor's statement of what this specific TOE does |
+| SFR | Security Functional Requirement - what the product must do |
+| SAR | Security Assurance Requirement - what evidence must be produced |
+| EAL | Evaluation Assurance Level, 1 through 7 |
+
+The relationship between PP and ST is a favourite item. A **Protection Profile is written by or for the consumer** and is implementation-independent: it says what any firewall of this class must do. A **Security Target is written by the vendor** for one product and says what that product does, often claiming conformance to a PP. Buyers compare STs against the PP that expresses their needs.
+
+![Common Criteria evaluation assurance ladder](/courses/cissp/figures/cissp-cc-eal-ladder.svg)
+
+## What EAL actually measures
+
+This is the highest-yield nuance in the whole section. **The EAL measures the depth and rigour of the evaluation, not the security of the product.** An EAL2 product with excellent security functions may be far safer in practice than an EAL5 product designed to do very little, because the EAL says only how thoroughly the claims in the Security Target were examined.
+
+Two consequences follow. First, an EAL rating is meaningless without the ST that accompanies it - "certified EAL4" tells you nothing about what was certified. Second, evaluation applies to a specific configuration; a patched or reconfigured product is strictly no longer the evaluated TOE, which is why maintaining certification requires re-evaluation.
+
+Commercial products cluster at EAL4 because that is the highest level mutually recognised among the signatories of the Common Criteria Recognition Arrangement. Above EAL4, an evaluation is recognised nationally rather than internationally, and the cost rises steeply.
+
+## Certification and accreditation
+
+Two words that sound interchangeable and are not.
+
+| Step | Who does it | What it produces |
 |---|---|---|
-| A1 | Verified Design | Formal top-level specification and verification; highest security |
-| B3 | Security Domains | Formal security model; security administrator role |
-| B2 | Structured Protection | Mandatory and discretionary controls; enforced data hiding |
-| B1 | Labeled Security Protection | Mandatory access control with security labels |
-| C2 | Controlled Access Protection | Discretionary access control; audit capabilities |
-| C1 | Discretionary Security Protection | Basic discretionary access control; minimal protection |
-| D | Minimal Protection | Fails to meet C1 minimum requirements |
+| Certification | Technical evaluators | A technical assessment of how well a system meets its security requirements in a given environment |
+| Accreditation | Management, the authorising official | A formal, signed decision to accept the residual risk and operate the system |
 
-### Rainbow Series
-
-A set of DoD security guidelines, each identified by a colored book. Examples include:
-- Orange Book: TCSEC for operating systems
-- Red Book: Trusted Network Interpretation
-- Green Book: Password Management Guidelines
-- Yellow Book: Database Security
-- Blue Book: Trusted Network Interpretation in detail`,
-      examTip: `TCSEC Orange Book is tested on the exam for historical context. Know the levels: A1 (highest), B3, B2, B1, C2, C1, D (lowest). &quot;A&quot; is for Academics/formal verification.`,
+Certification is technical and produces evidence. Accreditation is managerial and produces acceptance of risk. If a question asks who signs off on operating a system, the answer is management - never the security team, never the evaluators. This maps directly onto the authorisation step of the NIST Risk Management Framework, where the Authorising Official grants an Authority to Operate.`
     },
     {
-      id: '4-security-architecture-vulnerabilities',
-      title: `4. Security Architecture Vulnerabilities`,
-      content: `### Time-of-Check to Time-of-Use (TOCTOU)
+      id: '6-frameworks',
+      title: `6. Frameworks: Governance, Management, Architecture, Operations`,
+      content: `## Frameworks are not models
 
-A race condition vulnerability where the state of a resource changes between when it is checked (TOC) and when it is used (TOU). Attackers exploit the window of time between these events.
+A model constrains a machine. A framework organises an enterprise. The exam sets items that offer both in the same answer list, and the discriminator is scope: if the stem describes kernel behaviour or read and write rules, the answer is a model; if it describes programme structure, board reporting, or control selection, it is a framework.
 
-**Example**: A program checks if a user has permission to read a file, then reads the file. Between the check and read, an attacker changes the file permissions or replaces the file with a link to sensitive data.
+![Framework stack from governance through operations](/courses/cissp/figures/cissp-framework-stack.svg)
 
-**Mitigation**: Atomic operations, proper locking, or using file handles/pointers instead of paths.
-### Covert Channels
+## The governance layer
 
-Unintended communication paths that allow information to flow in ways not controlled by the security policy. Often exploited to bypass access controls.
+**COSO** - the Committee of Sponsoring Organizations of the Treadway Commission - is an internal control framework for the enterprise as a whole, not for IT. It was created in response to fraudulent financial reporting, and it is the framework a board or an auditor reaches for when the question is organisational integrity and reporting reliability.
 
-**Timing Channels**: Information encoded in response times or processing delays.
+**COBIT** - Control Objectives for Information and Related Technologies, from ISACA - governs IT specifically, and it exists to align IT with business objectives. Its defining distinction, and the exam's usual test of it, is that COBIT separates **governance** (setting direction and monitoring, the board's job) from **management** (planning, building, running, monitoring, the executive's job).
 
-**Storage Channels**: Information encoded in system resource allocation (disk space, memory, CPU).
+## The management-system layer
 
-**Example**: A Trojan application could use CPU timing to signal information to an external party one bit at a time.
-### Side-Channel Attacks
+**ISO/IEC 27001** specifies the requirements for an Information Security Management System. It is the standard an organisation is *certified against*. **ISO/IEC 27002** is the accompanying code of practice - a catalogue of controls with implementation guidance. Nobody is certified against 27002; that pairing appears in items regularly.
 
-Attacks that exploit physical information leakage from cryptographic implementations rather than attacking the algorithm itself.
-- **Power Analysis**: Analyzing variations in power consumption during cryptographic operations
-- **Timing Analysis**: Measuring execution time variations
-- **Electromagnetic Analysis**: Detecting electromagnetic emissions from processing
-- **Cache-Timing Attacks**: Exploiting CPU cache behavior
-- **Acoustic Analysis**: Using sound/vibration from hardware to infer computations
+**NIST Cybersecurity Framework** is voluntary and outcome-based, organised around functions that give it its recognisable shape: Govern, Identify, Protect, Detect, Respond, Recover. Version 2.0, released in 2024, added Govern as a function surrounding the other five. It is not a control catalogue; it is a way of expressing and comparing security posture.
 
-### Emanations
+**NIST Risk Management Framework**, defined in SP 800-37, is the process a US federal system follows to authorise operation: Prepare, Categorize, Select, Implement, Assess, Authorize, Monitor. Its control catalogue is **NIST SP 800-53**. The RMF is prescriptive and mandatory for federal systems, where the CSF is descriptive and voluntary - the cleanest way to hold the two apart.
 
-Unintended emissions of data from electronic equipment (electromagnetic, acoustic, optical). **TEMPEST** is a U.S. government program studying vulnerabilities to such attacks.
+| Framework | Type | Certifiable? | Primary audience |
+|---|---|---|---|
+| COSO | Enterprise internal control | No | Board, auditors |
+| COBIT | IT governance | No | IT executives, auditors |
+| ISO/IEC 27001 | Management system requirements | Yes | Any organisation |
+| ISO/IEC 27002 | Control code of practice | No | Implementers |
+| NIST CSF 2.0 | Outcome-based posture framework | No | Any organisation |
+| NIST RMF (SP 800-37) | Authorisation process | Authority to Operate | US federal systems |
+| SABSA | Security architecture | No | Security architects |
+| TOGAF | Enterprise architecture | Practitioner certification | Enterprise architects |
+| Zachman | Architecture taxonomy | No | Enterprise architects |
+| ITIL | Service management | Practitioner certification | Service operations |
 
-**Control**: Shielded cables, Faraday cages, or secure facilities with emission control.
-### Backdoors
+## The architecture layer
 
-Deliberate hidden mechanisms allowing unauthorized access to a system, often planted by developers or attackers during software development.
+**Zachman** is a taxonomy, not a process. It is a matrix crossing six interrogatives - what, how, where, who, when, why - with stakeholder perspectives from the executive's scope down to the implementer's detail. It tells you what artefacts should exist, not how to produce them.
 
-**Mitigation**: Code review, software composition analysis, trusted supply chains, secure development practices.`,
-      examTip: `Covert channels are harder to eliminate than direct security breaches. TOCTOU is a race condition; always ensure atomic operations or synchronization.`,
+**TOGAF** is a process: an enterprise architecture method with an architecture development cycle. It is general-purpose, not security-specific.
+
+**SABSA** is the security-specific one, and its structure deliberately mirrors Zachman's six questions across six layers, from contextual through conceptual, logical, physical, component, and operational. Its defining claim is that security architecture must be **traceable to business requirements** - every control should be justifiable by pointing at the business driver it serves.
+
+## The operations layer
+
+**ITIL** governs IT service management: incident, problem, change, and configuration management among others. Two distinctions from it appear in security items. An **incident** is an unplanned interruption or reduction in quality; a **problem** is the underlying cause of one or more incidents. Incident management restores service; problem management removes the cause. Security incident response borrows this vocabulary directly.
+
+## Choosing between them
+
+The exam does not usually ask which framework is best. It describes a need and asks which fits.
+
+| The organisation needs to... | Reach for |
+|---|---|
+| Demonstrate certified security management to customers | ISO/IEC 27001 |
+| Pick a starting control set and describe posture to a board | NIST CSF 2.0 |
+| Authorise a US federal system to operate | NIST RMF with SP 800-53 |
+| Align IT decisions with business objectives and audit them | COBIT |
+| Address enterprise-wide internal control and reporting fraud | COSO |
+| Trace every security control back to a business driver | SABSA |
+| Structure enterprise architecture artefacts | Zachman or TOGAF |
+| Improve day-to-day service and change management | ITIL |`
     },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: applying dominance
+
+A subject holds the clearance **Secret {ALPHA}**. It requests read access to four objects. Under Bell-LaPadula, which reads are permitted?
+
+| Object | Label | Permitted? | Reasoning |
+|---|---|---|---|
+| Report A | Confidential {} | Yes | Secret exceeds Confidential; the empty set is a subset of {ALPHA} |
+| Report B | Secret {ALPHA} | Yes | Equal level, equal compartments - dominance includes equality |
+| Report C | Secret {BETA} | No | Level is adequate but BETA is not held; labels are incomparable |
+| Report D | Top Secret {} | No | The object's level exceeds the subject's clearance |
+
+Report C is the instructive case. The subject's clearance is high enough. The refusal comes entirely from need to know, which is what the compartment set encodes. Note also that the discretionary security property still applies: even where the mandatory rules permit the read, the access matrix must independently allow it.
+
+Now consider writes by the same subject. Bell-LaPadula permits writing up, so a write to Top Secret {ALPHA} is allowed under the basic star property - which is why the strong star property exists. Under the strong star property, this subject may write only at Secret {ALPHA}, its own exact label, because a blind upward write is itself an integrity problem even when it is not a confidentiality one.
+
+## Worked example 2: identifying the right model
+
+*A pharmaceutical company runs a clinical trials database. Research assistants must not be able to alter validated trial results, and the system must ensure that any change to a result is made only through the validated statistical pipeline, with the person entering data different from the person approving it. Which model applies?*
+
+Work the stem in three passes.
+
+**Pass one - what harm is feared?** Not disclosure. The fear is that results become wrong. That is integrity, which eliminates Bell-LaPadula immediately.
+
+**Pass two - what kind of integrity?** Two clues rule out plain Biba. First, "only through the validated statistical pipeline" describes forcing changes through an approved program - the access triple. Second, "the person entering data different from the person approving it" is separation of duties, which Biba does not model at all.
+
+**Pass three - confirm.** Clark-Wilson covers both: the pipeline is the transformation procedure, the trial results are constrained data items, raw submissions are unconstrained data items until a TP promotes them, and separation of duties is one of its enforcement rules. **Clark-Wilson is the answer.**
+
+Had the stem instead said "readings from an untrusted sensor must not be able to corrupt the trusted control process," with no mention of approved procedures or duty separation, plain **Biba** would be correct.
+
+## Worked example 3: reading a Common Criteria claim
+
+*A vendor advertises a firewall as "Common Criteria certified, EAL4+." A procurement officer asks whether this proves the firewall is more secure than a competitor's EAL2 product. What should you say?*
+
+The honest answer is that it proves nothing of the kind, for three reasons.
+
+First, **EAL measures evaluation rigour, not security**. EAL4 means the design was methodically designed, tested, and reviewed. It says the vendor's claims were examined at that depth - not that the claims were ambitious.
+
+Second, **the claim is meaningless without the Security Target**. The ST states what was evaluated. An EAL4 evaluation of a narrow ST may cover less security functionality than an EAL2 evaluation of a broad one. Ask for both STs and compare them against a Protection Profile expressing your actual requirements.
+
+Third, **the certification applies to a specific configuration and version**. If the product has been patched since evaluation, or will be deployed in a configuration outside the evaluated one, the certificate does not describe what you are buying.
+
+The correct procurement move is to obtain or write a Protection Profile for the requirement, then evaluate each vendor's ST against it - using EAL as a measure of how much confidence to place in each ST, not as a score.
+
+## Worked example 4: separating framework from model
+
+*An organisation must show customers that its information security programme is independently verified, select an appropriate control set, and report posture to its board in language executives understand. Name the constructs.*
+
+Three different needs, three different layers, and none of them is a security model.
+
+- Independent verification of the programme: **ISO/IEC 27001**, because it is the certifiable management-system standard. Controls come from its Annex and from **ISO/IEC 27002** guidance.
+- Board-level posture reporting: **NIST CSF 2.0**, whose Govern, Identify, Protect, Detect, Respond, Recover structure is designed to be communicated to non-specialists.
+- If the organisation also wants every control traceable to a business driver, add **SABSA** at the architecture layer.
+
+A candidate who answers "Bell-LaPadula" or "Clark-Wilson" here has matched the word "model" rather than the requirement. Nothing in the stem concerns how a kernel mediates access.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. A subject cleared **Top Secret {NATO}** requests read access to an object labelled **Secret {NATO, CRYPTO}**. Under Bell-LaPadula, is the access permitted, and why?
+
+2. Which reference monitor property is violated when a device driver writes directly to hardware without passing through the kernel's access check?
+
+3. State the three Biba rules and explain why the invocation property is needed in addition to the read and write rules.
+
+4. What is the difference between a Protection Profile and a Security Target, and which one does a customer write?
+
+5. An analyst at a consultancy reads a file belonging to Client A. Immediately afterwards, files belonging to Client B - a direct competitor - become inaccessible to that analyst. Which model is in force, and what makes it unusual?
+
+6. Distinguish certification from accreditation, and state who performs each.
+
+7. Why is "trusted" not a synonym for "trustworthy" when describing a component of the TCB?
+
+8. An organisation needs to authorise a US federal information system to operate. Which framework applies, which document catalogues its controls, and what is the authorisation decision called?
+
+## Answers
+
+**1. Not permitted.** Dominance requires both a level at least as high *and* a compartment superset. Top Secret exceeds Secret, satisfying the first condition, but the subject holds only {NATO} while the object requires {NATO, CRYPTO}. The missing CRYPTO compartment defeats the access regardless of how high the clearance is. This is the need-to-know dimension, and no amount of clearance substitutes for it.
+
+**2. Complete mediation.** The requirement is that *every* access is checked without exception; a path that reaches the resource without a check breaks it. The monitor may still be tamperproof and verifiable - those are separate properties - but a single bypass is enough to void complete mediation.
+
+**3.** Simple integrity axiom: no read down - a subject may not read lower-integrity data. Star integrity axiom: no write up - a subject may not write to a higher-integrity object. Invocation property: no invoking up - a subject may not call a service at a higher integrity level. The invocation property is needed because reading and writing are not the only contamination paths. A low-integrity subject that calls a high-integrity procedure with chosen arguments acts *through* that procedure, achieving indirectly what the write rule forbids directly.
+
+**4.** A **Protection Profile** is implementation-independent and states the security requirements for a *class* of product; it is written by or on behalf of the **customer** or a user community. A **Security Target** is written by the **vendor** for one specific Target of Evaluation and states what that product actually does, often claiming conformance to a PP. Procurement compares vendors' STs against the PP that expresses the buyer's needs.
+
+**5. Brewer-Nash**, the Chinese Wall model. What makes it unusual is that **access rights change dynamically based on the subject's access history**. Before reading anything, the analyst could have opened either client's data; the first read builds a wall around the conflict-of-interest class. Two analysts with identical roles can hold different permissions purely because of what they read first - no other classical model behaves this way.
+
+**6. Certification** is the technical evaluation of how well a system meets its security requirements in a specific environment, performed by technical evaluators; it produces evidence. **Accreditation** is the formal management decision to accept the residual risk and operate the system, made by an authorising official; it produces acceptance. The technical team never accredits - accepting risk is a management act.
+
+**7.** A **trusted** component is one positioned inside the security perimeter such that it *has the ability* to violate the policy - nothing constrains it. **Trustworthy** is the separate, evidence-based judgement that it will not do so. A Bell-LaPadula trusted subject is explicitly permitted to break the star property in order to declassify; calling it trusted describes its power, not its reliability. Assurance activity is what converts trusted into trustworthy.
+
+**8.** The **NIST Risk Management Framework**, defined in **SP 800-37**, with the steps Prepare, Categorize, Select, Implement, Assess, Authorize, Monitor. Controls are catalogued in **NIST SP 800-53**. The authorisation decision is an **Authority to Operate (ATO)**, granted by the Authorising Official - the accreditation step in the older vocabulary.`
+    }
   ],
 },
-
 cissp_crypto: {
   topicId: 'cissp_crypto',
   title: `Cryptography`,
@@ -3913,132 +4233,435 @@ cissp_access_control: {
   topicId: 'cissp_access_control',
   title: `Access Control Models`,
   domainWeight: '13%',
-  overview: `Access control models define how authorization decisions are made. Each model has different characteristics, granularity, and administrative overhead:`,
+  overview: `Access control is the operational face of every policy in the exam. Domain 5 items almost never ask you to define a term; they describe an organisation and ask which model, factor, or protocol fits its constraints. The reliable discriminator is a single question - who sets the rule? - and the second is what the organisation is willing to pay in administrative effort. This chapter builds the IAAA chain, works through the authentication factors and the biometric error rates that quantify them, separates the five access control models by the decision authority each vests, distinguishes access control lists from capabilities, and finishes with single sign-on, federation, and the AAA protocols that carry the decisions across a network.`,
   sections: [
     {
-      id: '5-access-control-models',
-      title: `5. Access Control Models`,
-      content: `Access control models define how authorization decisions are made. Each model has different characteristics, granularity, and administrative overhead:
-### Discretionary Access Control (DAC)
+      id: '1-iaaa-chain',
+      title: `1. The IAAA Chain: Identification Through Accountability`,
+      content: `## Four stages, in order
 
-**DAC gives resource owners control over who can access their resources.** Owner determines permissions; access based on user or group identity:
-- Resource owner (e.g., file owner) grants/revokes permissions
-- Permissions typically allow read, write, execute, delete
-- Users can delegate access to other users
-- Flexibility: Users control their own resources
-- Risk: Users may grant inappropriate permissions; difficult to enforce policy
-- Example: UNIX file permissions (owner/group/other with rwx bits)
-- Problem: Trojan horses can inherit user permissions and access all owned data
+Access control is not one act but four, and the exam expects you to place any described activity into the right stage. The stages are ordered, and each depends on the one before it.
 
-### Mandatory Access Control (MAC)
+![Identification, authentication, authorisation, accountability chain](/courses/cissp/figures/cissp-iaaa.svg)
 
-**MAC enforces access policy centrally independent of resource owner.** Access based on security labels on subjects (users/processes) and objects (files/data) and a central policy:
-- Security labels: Confidentiality level (unclassified, secret, top secret) and compartments (project codes, locations)
-- Classification: Assigns label to object based on sensitivity of information
-- Clearance: User assigned clearance level and authorized compartments
-- Policy enforcement: User can access object only if clearance >= classification
-- No user override: User cannot grant other users access regardless of ownership
-- Most secure model; prevents information flow violations
-- Administrative overhead: Central authority labels all objects and manages clearances
-- Limited flexibility: Users cannot share resources even when appropriate
-- Example: Military and government systems using Bell-LaPadula model
+| Stage | Question answered | Typical implementation |
+|---|---|---|
+| Identification | Who do you claim to be? | Username, account number, badge ID, certificate subject |
+| Authentication | Can you prove that claim? | Password, token response, biometric sample, private key |
+| Authorisation | What are you permitted to do? | Permissions, labels, role membership, policy evaluation |
+| Accountability | What did you actually do? | Audit logs, monitoring, non-repudiation evidence |
 
-### Role-Based Access Control (RBAC)
+An identity claim is **asserted** and carries no assurance by itself. Authentication supplies the assurance. Only then can authorisation apply rules, and only then can the log entry mean anything.
 
-**RBAC controls access based on user roles within organization.** Simplifies management and aligns with job functions:
-- Role: Collection of permissions appropriate for job function (Manager, Developer, HR)
-- User assigned to roles; derives permissions from role membership
-- Many-to-many relationship: Users can have multiple roles; roles can have many users
-- Simplifies management: Grant/revoke permissions by role rather than per-user
-- Principle of least privilege: Users get minimal permissions needed for role
-- Separation of duties: Different roles perform different functions
-- Reduces complexity: Easier than DAC or MAC for typical enterprises
-- Example: Database roles (data_reader, data_writer, data_admin)
+## Why the order matters operationally
 
-### Attribute-Based Access Control (ABAC)
+The dependency runs one way, and breaking it early breaks everything downstream.
 
-**ABAC makes authorization decisions based on attributes of users, resources, environment, and actions.** Most flexible and granular model:
-- User attributes: Department, job title, location, security clearance, manager
-- Resource attributes: Classification, owner, creation date, data type
-- Environment attributes: Time of day, network location, device type, IP address
-- Action attributes: Read, write, delete, export, print
-- Policies: IF (user attributes AND resource attributes AND environment attributes) THEN allow/deny
-- Example: Allow engineering manager to modify project docs during business hours from corporate network only
-- Implementation: Policy evaluation engine (XACML); complex but powerful
-- Enables context-aware authorization and adaptive security policies
+**Accountability collapses without unique identification.** This is why shared accounts are among the most consistently penalised practices in the exam's world. If four administrators share one credential, every log entry names the account rather than a person. Authentication still works, authorisation still works, and accountability is gone - there is no evidence that attributes any action to any individual. When a stem describes shared or generic accounts, the defect to name is loss of accountability and non-repudiation, not weak authentication.
 
-### Other Access Control Models
+**Authorisation without authentication is anonymous access.** Some systems intentionally allow it - a public web page authorises read access to an unauthenticated subject - but where the policy requires attribution, this is a control gap.
 
-**Rule-Based Access Control:** Access decisions based on specific rules evaluated at request time. Example: Allow users in subnet X to access database Y during hours 8-18. **Risk-Based Access Control:** Grants or denies access based on risk score. High-risk scenarios require additional authentication or approval.
-### Access Control Models Comparison
+**Auditing that nobody reviews is not accountability.** Generating logs is a technical act. Accountability requires that the record be protected from the subject it describes, retained long enough to be useful, and actually examined. An administrator who can edit the log that records their own actions has broken accountability at the last stage, which is why log integrity and separation of duties around log administration recur throughout the domain.
 
-| Model | Characteristics |
-|---|---|
-| DAC | Owner-controlled, flexible but weak, supports delegation |
-| MAC | Policy-enforced, strong but inflexible, security labels required |
-| RBAC | Job-based, simplifies management, aligns with organizations |
-| ABAC | Attribute-based, most flexible and granular, complex to implement |
-| Rule-Based | Rule-evaluated, situational policies, condition-based |
-| Risk-Based | Risk-assessed, adaptive, requires risk calculation engine |`,
+## Identity proofing precedes identification
+
+Before an identity can be issued, the organisation must establish that the person is who they claim to be in the real world. This is **identity proofing** or registration, and it sits before the IAAA chain rather than inside it. It typically involves documentary evidence, in-person verification, or a knowledge-based check against authoritative records.
+
+The strength of everything downstream is bounded by the strength of proofing. A biometric system with an outstanding error rate provides excellent assurance that the person presenting the finger is the person who enrolled - and no assurance whatsoever that the person who enrolled was entitled to the identity they enrolled under. Exam items about credentials issued to an impostor are testing whether you locate the failure at proofing rather than at authentication.
+
+## Non-repudiation
+
+**Non-repudiation** is the property that a subject cannot credibly deny having performed an action. It is the strongest form of accountability, and it requires more than a log entry - it requires evidence a third party would accept.
+
+In practice this means asymmetric cryptography: a digital signature made with a private key that only the subject possesses provides non-repudiation, because the organisation verifying it never held the key and therefore could not have forged the action. Symmetric mechanisms cannot provide it: if both parties hold the same key, either could have produced the message, so neither can be held solely responsible. Message authentication codes therefore give integrity and authenticity but not non-repudiation - a distinction the exam tests directly.`
     },
     {
-      id: '6-access-control-techniques-and-technologies',
-      title: `6. Access Control Techniques and Technologies`,
-      content: `### Access Control Lists (ACLs)
+      id: '2-authentication-factors',
+      title: `2. Authentication Factors and Biometric Error Rates`,
+      content: `## The three factor types
 
-**ACLs are ordered lists specifying which subjects can access which resources and with what permissions.** Examined sequentially until match found:
-- Entry: Specifies subject (user/group), action (read/write), and resource
-- Positive ACL: Specifies who is allowed (default: deny all others)
-- Negative ACL: Specifies who is denied (default: allow all others)
-- Order matters: First matching entry determines access
-- File system ACLs: Permissions stored with file (Windows, UNIX extended ACL)
-- Network ACLs: Filter traffic by IP, port, protocol
-- Database ACLs: Control table/view/column-level access
+Authentication evidence falls into three categories, and multi-factor authentication means evidence from **different** categories.
 
-### Capability-Based Security
+![The three authentication factor types](/courses/cissp/figures/cissp-auth-factors.svg)
 
-**Capability tokens (cryptographic credentials) authorize a subject to perform specific operations on specific objects.** Subject presents capability proving authorization:
-- Capability: Unforgeable token (usually cryptographically signed or protected memory reference)
-- Contains: Subject ID, object ID, operations allowed, expiration
-- Advantages: No need to check ACLs; capability itself is proof of authorization
-- Delegation: User can pass capability to another user
-- Example: Session tokens, API keys, OAuth access tokens function like capabilities
+| Type | Category | Examples | Principal weakness |
+|---|---|---|---|
+| Type 1 | Something you know | Password, PIN, passphrase, cognitive question | Can be guessed, phished, shared, or reused |
+| Type 2 | Something you have | Smart card, hardware token, authenticator app, certificate on a device | Can be lost, stolen, or cloned |
+| Type 3 | Something you are | Fingerprint, iris, retina, voice, face | Cannot be revoked or reissued if compromised |
 
-### Content-Dependent Access Control
+The definitional trap appears constantly: **a password plus a security question is not multi-factor**. Both are things you know. The same applies to a PIN plus a passphrase. Adding a second Type 1 factor increases work for an attacker marginally and does not change the category of the control.
 
-**Access decisions based on actual data content, not just user/role.** Example: Accountant can view expenses under $1000 but manager can view any amount. Requires content inspection at request time; complex to implement.
-### Context-Dependent Access Control
+Two further descriptors are sometimes offered as factors and are better treated as **attributes** that strengthen a decision rather than factors in their own right: somewhere you are (geolocation, network origin) and something you do (behavioural patterns such as typing rhythm or gait). Modern adaptive authentication uses them as risk signals feeding a policy decision.
 
-**Access decisions based on current situation/context.** Examples: Allow printing only during business hours, allow sensitive file access only from corporate network, allow database access only from encrypted connections. Implemented through environment attributes in ABAC.
-### Implicit Deny and Need-to-Know
+## Biometric error rates
 
-**Implicit Deny:** Default is deny unless explicitly allowed. Most secure approach. Prevents accidental over-permissioning. **Need-to-Know:** User authorized only for information necessary for job. Enforced through role design and attribute-based policies. Reduces damage from compromised accounts.
-### Constrained Interfaces
+Biometric systems make two kinds of mistake, and the exam expects the numbering.
 
-**Limit user interface based on authentication and permissions.** Example: Administrative functions hidden from regular users; privileged users see additional menu options. Reduces confusion and accidental misuse.`,
+| Error | Name | Meaning | Consequence |
+|---|---|---|---|
+| Type I | False Rejection Rate (FRR) | A legitimate user is refused | Frustration, help-desk cost, users seek workarounds |
+| Type II | False Acceptance Rate (FAR) | An impostor is accepted | Security breach - the dangerous error |
+| - | Crossover Error Rate (CER) | The rate where FRR equals FAR | The standard single-number accuracy measure |
+
+Three facts follow, and each is examinable.
+
+**FAR is the security-relevant error.** A false rejection annoys someone; a false acceptance admits an attacker. When a stem asks which error a high-security facility must minimise, the answer is Type II / FAR.
+
+**FRR and FAR trade against one another.** Tightening the matching threshold reduces false acceptances and raises false rejections; loosening it does the reverse. The two rates move in opposite directions as the sensitivity is tuned, which is precisely why a single comparison point is needed.
+
+**Lower CER means a more accurate system.** The crossover error rate is the point on the tuning curve where the two error rates are equal, and because it is threshold-independent it allows two systems to be compared fairly. A system with a CER of 1 percent is more accurate than one with a CER of 3 percent. Note that a deployment will usually be tuned *away* from the crossover point - a high-security site deliberately accepts a higher FRR to drive FAR down.
+
+## Acceptance and enrolment
+
+Two practical criteria decide whether a biometric deployment succeeds.
+
+**Enrolment time** is how long it takes to register a new user. A commonly cited usability threshold is around two minutes; beyond that, enrolment becomes an organisational obstacle.
+
+**Throughput time** is how long a routine authentication takes. Systems that take several seconds per person create queues at doors and are abandoned.
+
+**User acceptance** is the criterion that sinks otherwise excellent technologies. Retina scanning is highly accurate and poorly accepted - it requires close contact with an eyepiece and can reveal medical conditions from the vascular pattern. Iris scanning achieves comparable accuracy at a distance without contact, which is why it displaced retina scanning in practice. When a question asks why an accurate biometric was rejected by an organisation, look for acceptance and privacy rather than error rates.
+
+## Passwords and their controls
+
+Passwords remain the dominant Type 1 factor, and the exam covers the controls that compensate for their weaknesses.
+
+| Control | Purpose | Failure mode it addresses |
+|---|---|---|
+| Complexity and length requirements | Raise the cost of guessing | Brute force, dictionary attack |
+| Account lockout threshold | Stop online guessing | Brute force against a live service |
+| Password history | Prevent reuse on rotation | Users cycling back to a favourite |
+| Salted hashing | Defeat precomputation | Rainbow tables against a stolen hash file |
+| Key stretching | Slow each guess | Offline cracking of a stolen hash file |
+
+**Salt** is a random value added per password before hashing. Its purpose is not to make one hash harder to reverse but to ensure that identical passwords hash differently, defeating precomputed tables and preventing an attacker from seeing which accounts share a password. **Key stretching** - repeatedly applying the hash function, as in PBKDF2, bcrypt, or scrypt - makes each individual guess expensive, which matters only in the offline case where the attacker holds the file.
+
+Account lockout defends the online case and creates a denial-of-service exposure of its own: an attacker who knows valid usernames can lock every account. That trade-off is a favourite item, and the expected answer weighs availability against the brute-force risk rather than declaring lockout simply good.`
     },
     {
-      id: '10-authorization-mechanisms',
-      title: `10. Authorization Mechanisms`,
-      content: `### Implicit Deny Principle
+      id: '3-the-five-models',
+      title: `3. The Five Access Control Models`,
+      content: `## The discriminating question
 
-**Default is deny unless explicitly allowed.** Most secure approach. Any access not explicitly granted is denied. Prevents accidental over-permissioning and requires intentional authorization decisions.
-### Need-to-Know Principle
+Every access control model can be identified by asking **who sets the rule**. Memorising features produces hesitation on exam day; asking that one question produces an answer.
 
-Users authorized only for information necessary to perform their job duties. Reduces risk if account compromised. Implemented through careful role design and periodic reviews. Example: Junior developer shouldn't access production database; tester shouldn't see source code.
-### Constrained User Interfaces (CUI)
+![Access control models compared by who sets the rule](/courses/cissp/figures/cissp-access-control-models.svg)
 
-**UI designed to present only options available to user based on authorization.** Administrative functions hidden from users without admin role. Reduces user confusion and accidental misuse. Menu options dynamically rendered based on user permissions.
-### Default Deny vs. Default Allow
+| Model | Who decides | Basis of the decision | Characteristic phrase in a stem |
+|---|---|---|---|
+| DAC | The data owner | Identity of the subject | "The file owner can grant access to colleagues" |
+| MAC | The system, by policy | Labels and clearances | "Classification levels", "need to know", "cannot be overridden" |
+| RBAC | The organisation, by job function | Role membership | "Access is based on job title", "new hires inherit permissions" |
+| ABAC | A policy engine | Attributes of subject, object, action, environment | "Depends on time of day, device, and location" |
+| Rule-BAC | An administrator, globally | Rules applied uniformly to all | "The firewall permits port 443 from any source" |
 
-| Approach | Description |
-|---|---|
-| Default Deny | Access denied unless explicitly allowed. More secure. Requires careful management. |
-| Default Allow | Access allowed unless explicitly denied. Less secure. Dangerous for new resources. |`,
+## Discretionary access control
+
+Under DAC the owner of an object decides who may access it, and the system enforces that choice. Standard file permissions in general-purpose operating systems are DAC. Its strength is flexibility - collaboration needs no administrative ticket. Its weaknesses are structural.
+
+The first is human error at scale: with thousands of owners each making local decisions, nobody has a view of overall exposure, and permissions accumulate. The second is more serious. **Malware inherits the user's authority.** A Trojan running as the user can exercise every permission the user holds, including the power to grant access to others. Bell-LaPadula's star property exists precisely because DAC cannot defend against this, and it is the reason a question describing Trojan horse propagation of permissions points at DAC as the vulnerable model.
+
+## Mandatory access control
+
+Under MAC the system enforces labels assigned by an administrative authority, and no owner may override them. The comparison to DAC is a standard item.
+
+| Dimension | DAC | MAC |
+|---|---|---|
+| Decision authority | Data owner | System, per central policy |
+| Basis | Subject identity | Security labels |
+| Owner may override | Yes | No |
+| Trojan horse resistance | Poor | Strong |
+| Administrative overhead | Low | High |
+| Typical setting | Commercial file sharing | Defence, intelligence, some regulated processing |
+
+MAC's cost is administrative. Every object needs a label and every subject a clearance, both maintained as roles and programmes change. Organisations adopt it where the cost of disclosure dominates the cost of administration.
+
+## Role-based access control
+
+Under RBAC, permissions attach to **roles** and users are assigned to roles. A user's access is the union of the permissions of the roles they hold. This is the enterprise default, and the reason is turnover: when someone changes jobs, the administrator changes role membership rather than auditing hundreds of individual grants.
+
+Three refinements appear in items.
+
+**Role explosion** is the failure mode. Defining a role for every combination of needs produces more roles than users and destroys the benefit. It is a design failure, not a limitation of the model.
+
+**Static separation of duties** prevents a user from holding two conflicting roles at all - nobody may be both a payment initiator and a payment approver. **Dynamic separation of duties** permits holding both but not exercising both in the same transaction or session. The exam distinguishes them by whether the constraint is on assignment or on use.
+
+**RBAC is not MAC.** A role is a job function, not a classification level, and no dominance relation is involved. Items sometimes offer both when the stem says "based on job title," and RBAC is correct.
+
+## Attribute-based access control
+
+ABAC evaluates a policy over attributes of four kinds: the **subject** (department, clearance, employment status), the **object** (classification, owner, data type), the **action** (read, approve, export), and the **environment** (time, location, device posture, network). A rule might permit export of customer records only by a subject in the compliance department, only during business hours, only from a managed device on the corporate network.
+
+ABAC is the most expressive of the five and the most difficult to audit. Because a decision depends on runtime context, answering "who can access this record?" requires evaluating the policy against every possible context rather than reading a list. This expressiveness-versus-auditability trade-off is what items about ABAC usually turn on. Modern zero-trust architectures are ABAC in character: every request is evaluated against current context rather than a standing grant.
+
+## Rule-based access control
+
+Rule-BAC applies global rules to all subjects, without reference to identity or role. Firewall access control lists are the standard example: a rule permitting inbound traffic to port 443 applies to everyone. Content filters and time-of-day restrictions applied uniformly are also Rule-BAC.
+
+The naming trap is real: **RBAC conventionally denotes role-based** access control, and rule-based is written Rule-BAC to distinguish it. Read the answer options carefully when both appear.`
     },
+    {
+      id: '4-matrix-acl-capability',
+      title: `4. The Access Control Matrix, ACLs, and Capabilities`,
+      content: `## The matrix as the underlying abstraction
+
+The **access control matrix** is the conceptual table whose rows are subjects, columns are objects, and cells contain the permitted operations.
+
+| Subject | payroll.db | audit.log | report.tmpl |
+|---|---|---|---|
+| Alvarez (HR) | read, write | - | read |
+| Chen (audit) | read | read | read |
+| Batch process | read, write | append | - |
+
+The matrix is a fine abstraction and a terrible implementation - it is enormous and mostly empty. Real systems store it by slicing it in one of two directions, and which direction you slice determines the properties of the system.
+
+## Access control lists: slicing by column
+
+An **access control list** stores one column: for a given object, the list of subjects and their permitted operations. This is how file systems, network devices, and most databases work.
+
+Its advantage follows from the shape. Answering "who can access this object?" is a single lookup, which is exactly the question an owner or auditor asks about a sensitive file. Revoking access to one object is likewise immediate: edit the object's list.
+
+Its disadvantage is the perpendicular question. Answering "what can this subject access?" requires walking every object in the system - which is why user access reviews are expensive and why an offboarded employee's residual access is so often missed. The permissions live scattered across the objects, not with the person.
+
+## Capabilities: slicing by row
+
+A **capability** stores one row: for a given subject, the list of objects it may reach and how. The subject holds an unforgeable token - the capability - and presents it to gain access. Kerberos tickets are capabilities in this sense.
+
+The properties invert exactly.
+
+| Question or operation | ACL (by object) | Capability (by subject) |
+|---|---|---|
+| Who can access this object? | One lookup | Search every subject |
+| What can this subject access? | Search every object | One lookup |
+| Revoke one subject's access to one object | Easy - edit the object list | Hard - the token is already held |
+| Revoke everything for one subject | Hard - visit every object | Easy - invalidate the capability set |
+| Delegation to another subject | Requires an administrative change | Natural - pass the token |
+
+**Revocation is the classic capability weakness.** Once a subject holds a token, taking it back means either finding every copy or expiring it. This is why capability-style credentials carry short lifetimes and why token expiry, not deletion, is how they are withdrawn - the same reason Kerberos tickets and bearer tokens are time-limited by design.
+
+Both structures usually coexist. A directory holds group memberships (capability-like), file systems hold ACLs, and the effective decision is the intersection.
+
+## Implicit deny
+
+The default answer to an unmatched request must be **deny**. Implicit deny means anything not explicitly permitted is refused, and it is the safe default for firewalls, ACLs, and authorisation policies alike. It is the same instinct as fail-secure: when a decision cannot be made, refuse rather than permit.
+
+The counterweight is availability. A system that fails closed protects confidentiality and integrity at the expense of access - which is the right trade for a database of medical records and the wrong one for a door lock in a burning building, where **fail-safe** behaviour releases the lock to protect life. When a stem involves human safety, life safety overrides every other consideration, and that is the one place the exam expects fail-open.
+
+## Least privilege and need to know
+
+**Least privilege** grants a subject the minimum permissions required to perform its function, and no more. **Need to know** is the information-side counterpart: even a subject with adequate clearance sees only the specific information its duties require. Least privilege governs capability; need to know governs scope.
+
+Both decay over time through **privilege creep** - the accumulation of permissions as a person moves between roles without their old access being removed. The control that detects it is the periodic **user access review**, in which managers reattest that each subordinate's access is still warranted. Because permissions live in ACLs scattered across objects, this review is genuinely laborious, which is why items pair privilege creep with the recommendation to review access on a defined schedule and at every role change.`
+    },
+    {
+      id: '5-sso-federation-aaa',
+      title: `5. Single Sign-On, Federation, and the AAA Protocols`,
+      content: `## What single sign-on buys and costs
+
+Under **single sign-on**, a user authenticates once and gains access to multiple systems without re-entering credentials. The benefits are real: fewer passwords means less reuse and fewer written-down credentials, a single point for enforcing strong authentication, and immediate central revocation.
+
+The cost is equally real, and the exam always wants both halves. SSO creates a **single point of failure and a single point of compromise**. If the identity service is unavailable, nothing is reachable; if a session is hijacked, the attacker inherits everything the user could reach. This is why SSO deployments pair with strong multi-factor authentication at the front door and with high availability for the identity infrastructure.
+
+## Kerberos
+
+Kerberos is the canonical enterprise SSO protocol and the most heavily examined.
+
+![Kerberos ticket exchange between client, KDC, and service](/courses/cissp/figures/cissp-kerberos.svg)
+
+| Component | Role |
+|---|---|
+| KDC | Key Distribution Center - the trusted third party, comprising the AS and TGS |
+| AS | Authentication Service - verifies the principal and issues the TGT |
+| TGS | Ticket Granting Service - exchanges a valid TGT for service tickets |
+| TGT | Ticket Granting Ticket - proof of authentication, presented to obtain service tickets |
+| Principal | Any entity with an identity in the realm - user, service, or host |
+| Realm | The administrative domain the KDC serves |
+
+The flow has three exchanges: the client authenticates to the AS and receives a TGT; it presents the TGT to the TGS and receives a service ticket; it presents the service ticket to the target service. The password itself never crosses the network, and the target service never contacts the KDC to validate the ticket - it decrypts it with its own key.
+
+Three properties generate most Kerberos items.
+
+**Time synchronisation is mandatory.** Tickets carry timestamps and short lifetimes to prevent replay, so clock skew beyond the permitted tolerance breaks authentication outright. When a stem describes users unable to authenticate after a change to a time source, the answer is clock skew.
+
+**The KDC is a single point of failure and a high-value target.** Compromise it and the attacker can mint tickets for any principal. It requires the strongest available protection and redundancy.
+
+**Kerberos provides authentication, not authorisation.** The ticket proves who the principal is; what they may do is decided by the service.
+
+## Federation
+
+Federation extends trust **across organisational boundaries**, so a user authenticates at their home organisation and accesses a resource elsewhere without holding an account there.
+
+![Federated authentication with an identity provider and service provider](/courses/cissp/figures/cissp-federation-saml.svg)
+
+The identity provider (IdP) authenticates the user and issues an **assertion** - a signed statement about who the user is and what attributes they hold. The service provider (SP), or relying party, consumes the assertion and grants a session. The credential never reaches the SP, which is the security benefit: a compromise at the service provider exposes no passwords.
+
+| Standard | What it actually does | Common use |
+|---|---|---|
+| SAML 2.0 | XML-based assertions carrying authentication and attribute statements | Enterprise web SSO to SaaS applications |
+| OAuth 2.0 | **Authorisation** delegation - grants a third party scoped access to a resource | "Allow this app to read your calendar" |
+| OpenID Connect | An identity layer on top of OAuth 2.0, adding an ID token | Consumer and modern enterprise sign-in |
+| SPML | Provisioning - creating and removing accounts across systems | Account lifecycle automation |
+| XACML | Expressing and evaluating access control policy | ABAC policy engines |
+
+The distinction the exam tests hardest is **OAuth is authorisation, not authentication**. Using OAuth alone to sign a user in is a well-known design error; OpenID Connect exists precisely to add the authentication layer on top. If a stem describes delegating limited access to a third-party application, OAuth is right; if it describes proving who the user is, SAML or OIDC is right.
+
+## The AAA protocols
+
+Network access authentication has its own family, and their differences are examinable.
+
+| Protocol | Transport | Encryption scope | Separates AAA functions? |
+|---|---|---|---|
+| RADIUS | UDP (traditionally) | Password only | No |
+| TACACS+ | TCP | Entire payload | Yes - authentication, authorisation, accounting are independent |
+| Diameter | TCP or SCTP | Full, with modern security | Yes |
+
+**TACACS+ encrypts the whole payload and separates the three functions**, which is why it is preferred for administrative access to network devices - authorisation for individual commands can be handled independently of authentication. RADIUS encrypts only the password field, leaving accounting and attribute data exposed, and combines authentication with authorisation. Diameter is the successor to RADIUS, designed for greater reliability and used in mobile network contexts.
+
+The mnemonic that survives exam pressure: TACACS+ is TCP and Total encryption; RADIUS is UDP and the password only.`
+    },
+    {
+      id: '6-lifecycle-and-attacks',
+      title: `6. The Identity Lifecycle and What Attacks It`,
+      content: `## Provisioning, review, deprovisioning
+
+Access control is a lifecycle, not a configuration, and each stage has a control the exam expects.
+
+| Stage | Activity | Control that governs it |
+|---|---|---|
+| Proofing | Verify the person is who they claim | Documentary or in-person verification |
+| Provisioning | Create the account and grant initial access | Role-based templates, manager approval |
+| Maintenance | Adjust access as duties change | Change approval, removal of old access at every transfer |
+| Review | Reattest that current access is warranted | Periodic user access review by managers |
+| Deprovisioning | Remove access on departure | Termination checklist tied to the HR process |
+
+The two failure points that dominate items are **transfers** and **terminations**.
+
+On transfer, new access is added because the person needs it to work, and old access is retained because nobody is inconvenienced by leaving it. Repeated over a career, this is privilege creep, and the fix is to treat a transfer as a termination from the old role followed by provisioning into the new one.
+
+On termination, the timing question is what matters. For a hostile or involuntary departure, access should be revoked **at or before the moment the person is informed** - the classic sequence is that the manager and HR conduct the meeting while access is disabled simultaneously. Where the exam offers "revoke access before the exit interview," that is generally the intended answer for involuntary termination.
+
+Automating the link from the HR system to identity management is the systemic fix. A manual checklist depends on somebody remembering; an authoritative feed from HR removes access when the employment record changes.
+
+## Attacks against the access control chain
+
+| Attack | What it targets | Primary defence |
+|---|---|---|
+| Brute force | Online guessing of a credential | Lockout threshold, rate limiting, MFA |
+| Dictionary attack | Common and reused passwords | Length and complexity rules, banned-password lists |
+| Rainbow table | Precomputed hashes of a stolen file | Salting - defeats precomputation entirely |
+| Credential stuffing | Reuse of passwords breached elsewhere | MFA, breached-credential screening |
+| Password spraying | One common password against many accounts | Detection on failures per source, MFA |
+| Phishing | The human holding the credential | User training, phishing-resistant MFA |
+| Pass the hash | The stored hash used as the credential itself | Privileged access workstations, credential isolation |
+| Session hijacking | The authenticated session after login | Session binding, short timeouts, secure token handling |
+| Privilege escalation | Moving from low to high authority | Least privilege, patching, separation of duties |
+
+Two of these reward extra attention.
+
+**Password spraying evades lockout by design.** Lockout counts failures per account; trying one password against ten thousand accounts produces one failure each and trips nothing. Detection must therefore be per source and per time window rather than per account - a reliable exam discriminator against plain brute force.
+
+**Pass the hash defeats password strength entirely.** If the authentication protocol accepts the hash, the attacker never needs the password, so a longer password changes nothing. The defence is architectural: isolate privileged credentials, avoid using administrative accounts on ordinary workstations, and limit where reusable credentials are cached.
+
+## Accountability in practice
+
+The final stage of IAAA depends on evidence that survives contact with the subject it describes.
+
+**Log integrity** means the subject cannot alter the record of their own actions. Forwarding logs to a separate system under different administrative control is the standard answer, because it removes the administrator's ability to edit their own trail.
+
+**Clipping levels** define the threshold at which routine noise becomes a reportable event - three failed logons is a person mistyping, thirty is an attack. Setting them well is what makes review sustainable.
+
+**Retention** is a policy decision driven by legal and regulatory requirements. The security-relevant point for the exam is that retention must be defined and enforced in both directions: too short and an investigation has no evidence, too long and the organisation holds data it must protect and may have to produce in litigation.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: choosing a model from the stem
+
+*A hospital wants clinicians to reach records appropriate to their job, wants access to change automatically when staff rotate between departments each month, and wants emergency access to any record from the emergency department after hours. Which model or combination fits?*
+
+Split the stem into its three requirements.
+
+"Access appropriate to their job" and "changes automatically when staff rotate" is **RBAC**: permissions attach to roles such as attending physician, ward nurse, or pharmacist, and a rotation becomes a change of role membership rather than hundreds of individual grants. This is the requirement RBAC exists to serve.
+
+"From the emergency department after hours" introduces conditions RBAC cannot express. Location and time are environmental attributes, so the emergency provision is **ABAC**: a policy evaluating subject role, object type, request location, and time of day.
+
+The complete answer is **RBAC as the baseline with ABAC for context-dependent exceptions**, which is how real healthcare systems are built. If the exam forces a single choice and the stem emphasises contextual conditions, ABAC is correct; if it emphasises job function and turnover, RBAC is correct.
+
+Note what is not correct. MAC would require labelling every record and clearing every clinician, which no hospital does. DAC would let each clinician decide who else sees a record, which violates the regulatory model entirely.
+
+## Worked example 2: reading biometric numbers
+
+*Two door-entry biometrics are proposed for a data centre. System A has a CER of 1.2 percent. System B has a CER of 0.7 percent but its vendor notes that at the security setting the site requires, its FRR rises to 4 percent. Which is more accurate, and which should be deployed?*
+
+**System B is more accurate.** The crossover error rate is the threshold-independent comparison point, and a lower CER means the underlying matching is better. On that measure alone, B wins.
+
+The deployment question is different, and this is what the item is really testing. A data centre must minimise **Type II errors - false acceptances** - because admitting an impostor is the consequential failure. Tuning away from the crossover point toward a stricter threshold is therefore correct and expected, and the 4 percent false rejection rate is the price of that choice.
+
+The remaining question is operational: does a 4 percent rejection rate produce a queue the staff will defeat? If people begin holding the door for colleagues to avoid re-scanning, the tuning has produced **tailgating**, and the security gain is negative. The complete answer deploys System B at the strict setting *and* addresses the consequence - a mantrap or turnstile so that a rejected user cannot simply follow someone through, plus a documented alternative for repeated legitimate failures.
+
+## Worked example 3: diagnosing an SSO failure
+
+*After a network change, users at one site can no longer authenticate to any internal service. They receive errors immediately rather than after a delay. The identity service is reachable and its logs show ticket requests arriving and being refused. What is the most likely cause?*
+
+The clues resolve quickly. Every service fails, not one, which points at the identity infrastructure rather than any application. Requests arrive at the KDC, so it is neither a network partition nor a failure of the service itself. The refusal is immediate, which rules out a timeout.
+
+In a Kerberos environment, the classic cause is **clock skew**. Tickets carry timestamps, and a KDC refuses a request whose timestamp falls outside the permitted tolerance - typically a few minutes. A network change that altered the site's time source would push those clients outside tolerance and refuse them at once, exactly as described.
+
+The fix is to restore consistent time synchronisation across clients, servers, and the KDC. The broader lesson the exam draws is that accurate time is a **security dependency**, not merely an operational convenience - it underpins ticket validity, certificate validity windows, log correlation during an investigation, and one-time password generation.
+
+## Worked example 4: placing a failure in the IAAA chain
+
+*An investigation finds that a contractor accessed and exported customer records they had no business need to see. The contractor authenticated with a company-issued smart card and PIN, and the export is fully logged and attributable to them. Where did the control fail?*
+
+Walk the chain in order.
+
+**Identification** succeeded - a unique identity was presented. **Authentication** succeeded and was strong: a smart card is Type 2 and a PIN is Type 1, so this is genuine multi-factor authentication. **Accountability** succeeded - the action is logged and attributable, which is why the investigation could establish what happened.
+
+The failure is at **authorisation**. The contractor was permitted to reach data their duties did not require, which is a violation of **least privilege** and, on the data side, of **need to know**. Strong authentication answers who the subject is; it never limits what they may do.
+
+The remediation follows from the diagnosis: reduce the contractor's entitlements to the minimum their engagement requires, institute periodic user access reviews so unnecessary entitlements are found before they are used, and consider ABAC conditions - such as restricting bulk export by role, volume, and time - rather than relying on the standing grant alone.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. A system requires a password and the answer to a security question. Is this multi-factor authentication? Justify your answer.
+
+2. Which biometric error type must a high-security installation minimise, and what happens to the other error rate as a result?
+
+3. An organisation stores permissions as access control lists. Why is it difficult for them to answer the question "what can this departing employee currently access?"
+
+4. Distinguish OAuth 2.0 from SAML 2.0 by what each was designed to do.
+
+5. Users at one site suddenly cannot obtain Kerberos tickets, and the KDC logs show their requests being refused immediately. Name the most likely cause and the underlying reason.
+
+6. Why does a message authentication code fail to provide non-repudiation, when a digital signature provides it?
+
+7. An attacker tries the single password "Summer2026!" against every account in the directory. Why does the account lockout policy not stop this, and what detects it?
+
+8. Explain the difference between static and dynamic separation of duties, with one example of each.
+
+## Answers
+
+**1. No - it is single-factor authentication.** Both a password and a security question answer are **Type 1** factors, things you know. Multi-factor authentication requires evidence from *different* categories, so a password combined with a smart card (Type 2) or a fingerprint (Type 3) would qualify. Adding a second knowledge factor raises an attacker's effort somewhat but does not change the category of the control, and a phishing attack that captures one commonly captures both.
+
+**2. The Type II error, the False Acceptance Rate.** A false acceptance admits an impostor, which is the security-consequential failure; a false rejection merely inconveniences a legitimate user. Because the two rates trade against one another as the matching threshold is tuned, driving FAR down necessarily **raises the FRR**. The installation accepts more legitimate users being turned away as the price of admitting fewer impostors - and must then manage the operational consequence, since high rejection rates encourage tailgating and other workarounds.
+
+**3.** An ACL stores permissions **by object**: each file, share, or record carries the list of subjects that may reach it. That makes "who can access this object?" a single lookup, but the perpendicular question requires walking **every object in the environment** to see whether the employee appears on its list. The employee's permissions are scattered across thousands of objects rather than held in one place. A capability-based system inverts this - it stores by subject, so the departing-employee question is easy and per-object revocation is hard.
+
+**4.** **SAML 2.0** is an authentication and attribute standard: an identity provider issues a signed assertion stating who the user is and what attributes they hold, and a service provider grants a session on that basis. **OAuth 2.0** is an **authorisation delegation** standard: it grants a third-party application scoped access to a resource on the user's behalf, without sharing the user's credential. Using OAuth alone to log a user in is a known design error; **OpenID Connect** adds the identity layer on top of OAuth to do that properly.
+
+**5. Clock skew.** Kerberos tickets carry timestamps and short validity windows to prevent replay, and the KDC refuses any request whose timestamp lies outside the permitted tolerance - commonly around five minutes. An immediate refusal of every request from one site, with the requests visibly arriving, is the signature of a time-synchronisation failure rather than a network or service outage. Accurate time is a security dependency, also underpinning certificate validity, one-time password generation, and log correlation.
+
+**6.** A **MAC** is computed with a **symmetric** key held by both parties. Either party could have produced any valid MAC, so neither can prove the other created it - the verifier's own ability to generate it destroys the evidentiary value. A **digital signature** uses the sender's **private key**, which by definition nobody else holds; the verifier can check the signature with the public key but could never have produced it. That asymmetry is what makes the action undeniable. A MAC therefore provides integrity and authenticity, but only a signature provides non-repudiation.
+
+**7. Password spraying.** Lockout thresholds count failed attempts **per account**. Trying one password against every account produces a single failure on each, which trips no account's threshold. Detection must therefore operate on a different axis: failure volume **per source address, per time window, and across the directory as a whole**, watching for a broad, shallow pattern rather than a deep one. Multi-factor authentication defeats the attack outright even when a password is guessed correctly.
+
+**8. Static separation of duties** constrains **assignment**: a user may never hold two conflicting roles at all. Example - nobody may be both a vendor-master maintainer and a payment approver, so the conflict cannot arise. **Dynamic separation of duties** constrains **use**: a user may hold both roles but may not exercise both on the same transaction or within the same session. Example - a manager may both submit and approve expenses in general, but may not approve their own submission. Static is the stronger control; dynamic is chosen where staffing levels make strict role exclusion impractical.`
+    }
   ],
 },
-
 cissp_identity: {
   topicId: 'cissp_identity',
   title: `Identity Management`,
