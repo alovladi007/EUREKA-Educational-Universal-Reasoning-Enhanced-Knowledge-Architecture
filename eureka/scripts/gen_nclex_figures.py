@@ -592,6 +592,82 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Neonatal jaundice timing.  The tested discrimination is TIMING, not the
+# number: visible jaundice in the FIRST 24 HOURS is pathologic and always
+# reported; physiologic jaundice appears after day 2, peaks about day 3-5 in
+# term infants (later in preterm), and fades over the following week.
+# Bilirubin values are plotted as a schematic curve; the DAY boundaries are
+# the standard published teaching values.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-bilirubin-timeline")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    t = np.linspace(0, 10, 400)
+    physiologic = 6.5 * np.exp(-((t - 3.8) ** 2) / 6.0) + 1.0
+    physiologic[t < 1.0] = np.nan
+    fig, ax = plt.subplots(figsize=(7.2, 4.0))
+    ax.axvspan(0, 1, color=c[1], alpha=0.28)
+    ax.plot(t, physiologic, color=c[0], linewidth=2)
+    ax.annotate("FIRST 24 HOURS\nany visible jaundice here\nis PATHOLOGIC - report",
+                (0.5, 6.4), ha="center", fontsize=8.8, color=ink)
+    ax.annotate("physiologic jaundice:\nappears after day 2,\npeaks about day 3-5",
+                (4.6, 6.9), ha="center", fontsize=9, color=ink)
+    ax.plot([3.8], [7.5], "o", color=c[2], markersize=6)
+    S.note(ax, 9.6, 1.2,
+           "causes to consider early: hemolysis (ABO/Rh),\nsepsis, or bruising - not normal breakdown",
+           mode, ha="right")
+    ax.set_xlabel("day of life")
+    ax.set_ylabel("serum bilirubin (schematic)")
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 9.5)
+    ax.set_yticks([])
+    ax.set_xticks([0, 1, 2, 3, 4, 5, 6, 8, 10])
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Rho(D) immune globulin: when it is given to an Rh-NEGATIVE client.
+# Routine antepartum dose at about 28 weeks; within 72 HOURS of birth when
+# the newborn is Rh-positive; and after any potentially sensitizing event
+# (bleeding, trauma, amniocentesis, ectopic, loss, version).
+# ---------------------------------------------------------------------------
+
+@figure("nclex-rhogam-timeline")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(7.4, 3.4))
+    ax.plot([0, 44], [1.0, 1.0], color=S.GUIDE[mode], linewidth=1.6)
+    marks = [
+        (28, "28 weeks\nroutine antepartum dose", c[0], 1.0),
+        (40, "birth\n+ within 72 h if newborn\nis Rh-POSITIVE", c[1], 1.0),
+    ]
+    for x, label, colour, y in marks:
+        ax.plot([x], [y], "o", color=colour, markersize=9)
+        ax.annotate(label, (x, y), textcoords="offset points",
+                    xytext=(0, 16), ha="center", fontsize=9, color=ink)
+    for x in (10, 16, 22, 34):
+        ax.plot([x], [1.0], "|", color=c[2], markersize=13)
+    ax.annotate("ANY sensitizing event, any gestational age:\nbleeding, trauma, amniocentesis, ectopic, loss, version",
+                (17, 0.45), ha="center", fontsize=8.8, color=c[2])
+    ax.annotate("given to Rh-NEGATIVE clients only - it prevents antibody formation,\nso it protects FUTURE pregnancies, not this one",
+                (22, 0.05), ha="center", fontsize=8.6, color=S.INK_2[mode])
+    ax.set_xlim(-2, 46)
+    ax.set_ylim(-0.15, 1.75)
+    ax.set_yticks([])
+    ax.set_xticks([0, 10, 20, 28, 40])
+    ax.set_xlabel("weeks of gestation")
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

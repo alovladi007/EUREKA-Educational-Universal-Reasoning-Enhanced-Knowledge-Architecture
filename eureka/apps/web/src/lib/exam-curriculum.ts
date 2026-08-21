@@ -970,6 +970,8 @@ const NCLEX_RN: ExamCurriculum = [
       t('nx_high_risk_pregnancy', 'High-Risk Pregnancy & Antepartum Complications', 'Hypertensive disorders and magnesium therapy, gestational diabetes, antepartum bleeding (previa vs abruption), preterm labor, hyperemesis, and infections in pregnancy.', 18),
       t('nx_labor_birth', 'Labor, Birth & Intrapartum Complications', 'The four stages, fetal monitoring and the response bundles, oxytocin and tachysystole, cesarean and operative birth, and the intrapartum emergencies that need a drill.', 18),
       t('nx_postpartum', 'Postpartum Care & Complications', 'BUBBLE-HE assessment, the hemorrhage watch and its sequence, infection and thromboembolism, lactation support, and the mood-disorder spectrum.', 16),
+      t('nx_newborn', 'The Newborn & Newborn Complications', 'Transition to extrauterine life, Apgar and the head-to-toe assessment, expected-vs-report-now findings, jaundice timing, thermoregulation, hypoglycemia, and the common newborn complications.', 17),
+      t('nx_maternity_meds', 'Maternity & Newborn Medications', 'Uterotonics, tocolytics, antenatal steroids, magnesium, Rho(D) immune globulin, labor analgesia, and the newborn prophylaxis set - each with its indication, contraindication and monitoring.', 16),
     ],
   },
   {

@@ -3546,6 +3546,249 @@ Other discharge teaching: contraception discussion before discharge (breastfeedi
   ],
 },
 
+nx_newborn: {
+  topicId: 'nx_newborn',
+  title: `The Newborn & Newborn Complications`,
+  domainWeight: 'Health Promotion and Maintenance (6-12%)',
+  overview: `Newborn items are recognition items: the same head-to-toe findings appear again and again, sorted into "expected variant" and "report now." This chapter covers the transition to extrauterine life and why it can fail, Apgar scoring, the expected-versus-alarming assessment table, the four great newborn vulnerabilities (temperature, glucose, breathing, bilirubin), and the complications the exam samples most.`,
+  sections: [
+    {
+      id: 'nb-transition',
+      title: `1. Transition: The Riskiest Hours of a Lifetime`,
+      content: `Birth demands three simultaneous conversions. The LUNGS must clear fluid and inflate — the first breaths generate enormous pressures, and surfactant keeps alveoli from collapsing between them. The CIRCULATION must reroute: rising oxygen and falling pulmonary vascular resistance close the ductus arteriosus and foramen ovale functionally within hours, converting fetal parallel circulation into the adult series circuit. And THERMOREGULATION must begin without a placenta.
+
+The nursing sequence at birth is dry, warm, stimulate — in that order, because heat loss is immediate and cold stress cascades. A wet newborn loses heat by EVAPORATION (dry immediately, remove wet linen), CONDUCTION (warm surfaces, pre-warmed blankets), CONVECTION (no drafts) and RADIATION (away from cold windows and walls). Skin-to-skin contact with the parent is both the thermal and the bonding intervention, and it is a strong exam answer.
+
+## Why cold stress is dangerous, not just uncomfortable
+
+A cold newborn burns glucose and oxygen to make heat through non-shivering thermogenesis (brown fat metabolism). The consequences compound quickly: HYPOGLYCEMIA as glucose stores deplete, HYPOXIA as oxygen demand rises, and METABOLIC ACIDOSIS as anaerobic metabolism takes over — and acidosis can reopen the ductus arteriosus, undoing the circulatory transition. That chain is why "put a hat on the baby" is real medicine rather than sentiment.
+
+## Apgar scoring
+
+| Sign | 0 | 1 | 2 |
+| --- | --- | --- | --- |
+| Heart rate | absent | under 100 | 100 or above |
+| Respiratory effort | absent | slow, irregular, weak cry | good cry |
+| Muscle tone | limp | some flexion | active motion |
+| Reflex irritability | no response | grimace | cry, cough, sneeze |
+| Color | blue or pale | body pink, extremities blue | completely pink |
+
+Scored at 1 and 5 minutes (and every 5 minutes thereafter if under 7): 7-10 is reassuring, 4-6 indicates moderate difficulty needing support, and under 4 demands aggressive resuscitation. The point the exam tests hardest: resuscitation NEVER waits for the score. Apgar documents the transition — it does not decide it, and a newborn who is not breathing is resuscitated at 30 seconds, not at one minute.`,
+      examTip: `Acrocyanosis — blue hands and feet with a pink trunk — costs a color point on Apgar yet is entirely NORMAL in the first day. Central cyanosis of the trunk, lips and mucous membranes never is.`,
+    },
+    {
+      id: 'nb-assessment',
+      title: `2. Head-to-Toe: Expected Variants vs Report Now`,
+      content: `Normal newborn vital signs: heart rate 110-160 (up to 180 crying, down to 90 sleeping), respirations 30-60 and irregular with brief pauses, axillary temperature 36.5-37.5 C, and blood pressure that is rarely measured routinely.
+
+| Expected — document and reassure | Report now |
+| --- | --- |
+| acrocyanosis in the first 24 h | CENTRAL cyanosis at any time |
+| caput succedaneum — scalp edema CROSSING suture lines | — (resolves in days) |
+| cephalohematoma — bleed NOT crossing suture lines | watch bilirubin; enlarging swelling |
+| molding of the skull | bulging or markedly sunken fontanel |
+| milia, erythema toxicum, Mongolian spots (congenital dermal melanocytosis) | — (document Mongolian spots to prevent later abuse suspicion) |
+| pseudomenstruation, swollen breasts (maternal hormones) | — |
+| respirations 30-60, irregular, with pauses under 20 s | rate over 60 sustained; APNEA over 20 s |
+| single transient murmur in first hours | persistent murmur; weak femoral pulses |
+| first meconium within 24-48 h | no stool in 48 h; no void in 24 h |
+| weight loss up to about 7-10% in the first days | loss beyond that; failure to regain by ~2 weeks |
+| jaundice appearing AFTER 24 h | jaundice within the FIRST 24 h |
+
+Reflexes worth knowing by name: MORO (startle — symmetric arm abduction then embrace; asymmetry suggests clavicle fracture or brachial plexus injury), ROOTING and SUCKING (feeding), PALMAR and PLANTAR GRASP, BABINSKI (fanning toes — normal in infancy), STEPPING, and TONIC NECK ("fencing"). Absence, asymmetry, or persistence beyond the expected age is the abnormal finding.
+
+The respiratory distress triad is the single most important recognition set: GRUNTING (auto-PEEP against collapsing alveoli), FLARING (nasal), and RETRACTING (intercostal, subcostal, sternal) — with tachypnea over 60 and central cyanosis. Any of these is escalated, not observed.`,
+      examTip: `Caput CROSSES suture lines and resolves; cephalohematoma does NOT cross and carries a bilirubin watch because it is a resolving bleed. That one distinction appears constantly.`,
+    },
+    {
+      id: 'nb-jaundice',
+      title: `3. Jaundice: Timing Is the Diagnosis`,
+      content: `![Neonatal jaundice by day of life: any visible jaundice in the first 24 hours is pathologic and reported, while physiologic jaundice appears after day 2 and peaks around days 3 to 5.](/courses/nclex/figures/nclex-bilirubin-timeline.svg)
+
+Newborns become jaundiced for structural reasons: they are born with a high red-cell mass carrying fetal hemoglobin, those cells have shorter lifespans, and the immature liver conjugates bilirubin slowly. Breakdown outpaces clearance, unconjugated bilirubin accumulates, and the skin yellows from head downward.
+
+| | Physiologic | Pathologic |
+| --- | --- | --- |
+| onset | AFTER 24 hours, typically day 2-3 | within the FIRST 24 HOURS |
+| peak | about day 3-5 (later in preterm) | rises rapidly, often over 5 mg/dL per day |
+| causes | normal breakdown plus immature conjugation | hemolysis (ABO or Rh incompatibility), sepsis, bruising, metabolic disease |
+| response | feeding support, monitoring per nomogram | urgent evaluation and treatment |
+
+The exam's discriminator is the CLOCK, not the number: jaundice in the first 24 hours is pathologic by definition and always reported. Feeding is the frontline intervention for physiologic jaundice — frequent breastfeeding or formula promotes stooling, and bilirubin leaves the body in stool, which is why poor feeding worsens jaundice and why "supplement with water" is a wrong answer (water displaces calories and does not drive stooling).
+
+PHOTOTHERAPY converts bilirubin to a water-soluble form for excretion. Nursing care: maximize skin exposure, apply eye shields whenever the lights are on and remove them during feeds for eye assessment and bonding, monitor temperature (both over- and underheating occur), monitor hydration and output (loose green stools are expected), reposition regularly, and continue feeding. The feared complication of severe untreated hyperbilirubinemia is KERNICTERUS — bilirubin deposition in the brain producing lethargy, poor feeding, a high-pitched cry, arching, and permanent neurologic damage — which is what all the monitoring exists to prevent.`,
+      examTip: `Feeding is treatment: bilirubin exits in stool, so frequent feeds matter more than any comfort measure. Water supplementation is never the answer.`,
+    },
+    {
+      id: 'nb-complications',
+      title: `4. The Common Complications`,
+      content: `| Complication | Recognition | Priority management |
+| --- | --- | --- |
+| hypoglycemia | JITTERINESS, poor feeding, lethargy, temperature instability, weak cry | heel-stick glucose FIRST; feed or IV dextrose per protocol |
+| respiratory distress syndrome (surfactant deficiency, preterm) | grunting, flaring, retracting, tachypnea, worsening over hours | oxygen and support, surfactant, CPAP or ventilation |
+| transient tachypnea (retained fluid, often cesarean birth) | tachypnea shortly after birth, usually resolving in 24-72 h | supportive oxygen, monitoring |
+| meconium aspiration | meconium-stained fluid, distress, barrel chest | resuscitation support per protocol; do not stimulate a depressed meconium-stained infant before airway assessment |
+| neonatal sepsis | TEMPERATURE INSTABILITY (often LOW), poor feeding, lethargy, "not doing well" | cultures then antibiotics urgently; treat early — signs are subtle |
+| neonatal abstinence syndrome | high-pitched cry, tremors, poor feeding, sneezing, diarrhea, sleeplessness | swaddling, low stimulation, small frequent feeds, scoring tool, pharmacologic therapy per protocol |
+| hypothermia / cold stress | axillary temperature under 36.5 C, mottling, lethargy | warm gradually, find the cause, check glucose |
+| developmental dysplasia of the hip | asymmetric thigh folds, positive Ortolani/Barlow, limited abduction | early referral — harness treatment |
+
+Two of these deserve emphasis because their presentation misleads. NEONATAL SEPSIS often presents with a LOW temperature rather than fever, and with nothing more specific than "the baby isn't feeding well and doesn't look right" — a subtle picture that must be escalated rather than watched, because deterioration is fast. And HYPOGLYCEMIA presents as jitteriness that is easily mistaken for normal newborn tremulousness; the response is a glucose check, and the at-risk groups are the infant of a diabetic mother, the large-for-gestational-age infant, the small-for-gestational-age or growth-restricted infant, the preterm infant, and any infant who is cold or septic.
+
+## Routine prophylaxis and screening
+
+Vitamin K by intramuscular injection prevents hemorrhagic disease of the newborn — the gut has no flora yet to synthesize clotting factors. Erythromycin eye ointment prevents gonococcal ophthalmia. Hepatitis B vaccine is given per schedule. The newborn metabolic screen (heel stick) is collected after feeding is established, and hearing screening and critical congenital heart disease pulse-oximetry screening complete the set. Cord care is clean and dry; circumcision care watches for the first void and for bleeding.`,
+      examTip: `Jitteriness means check the glucose. Temperature instability — especially LOW — means think sepsis. Neither is watched and reassessed later.`,
+    },
+    {
+      id: 'nb-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. At 1 minute: heart rate 130, weak irregular cry, some flexion, grimace to suction, body pink with blue hands and feet. Score it and interpret.
+2. A newborn at 18 hours of life appears visibly yellow across the face and chest. Expected or reported?
+3. A 2-hour-old infant of a diabetic mother is jittery with a weak cry. First action?
+4. Distinguish caput succedaneum from cephalohematoma, and state which carries a bilirubin watch.
+5. A 36-hour-old has an axillary temperature of 36.1 C, is feeding poorly and "just seems off"; there is no fever. What must be ruled out and why is the presentation misleading?
+
+## Answers
+
+1. Heart rate 2, respiratory effort 1, tone 1, reflex 1, color 1 — total 6, indicating moderate difficulty requiring stimulation, warmth, and support with reassessment at 5 minutes. Note acrocyanosis costs the color point while being normal.
+2. REPORTED — jaundice inside the first 24 hours is pathologic by definition, and hemolysis (ABO or Rh incompatibility), sepsis or significant bruising must be excluded urgently.
+3. Heel-stick glucose. Fetal hyperinsulinism outlives the maternal glucose supply after cord clamping, making this the classic hypoglycemia scenario; treat by feeding or IV dextrose per protocol on the result.
+4. Caput succedaneum is scalp edema that CROSSES suture lines and resolves within days. Cephalohematoma is a subperiosteal bleed that does NOT cross suture lines, appears or enlarges after birth, and carries a bilirubin watch because the resolving blood adds a bilirubin load.
+5. Neonatal sepsis. Newborns frequently mount HYPOTHERMIA rather than fever, and the early signs are non-specific — poor feeding, lethargy, "not right" — so the absence of fever is not reassuring. Obtain cultures and begin antibiotics urgently per protocol.`,
+    },
+  ],
+  keyTakeaways: [
+    `Transition is lungs, circulation and thermoregulation at once — dry, warm and stimulate, because cold stress burns glucose and oxygen into hypoglycemia and acidosis.`,
+    `Apgar documents the transition at 1 and 5 minutes but never delays resuscitation; acrocyanosis costs a point and is still normal, while central cyanosis never is.`,
+    `Caput crosses suture lines, cephalohematoma does not and earns a bilirubin watch; grunting, flaring and retracting are the distress triad.`,
+    `Jaundice is diagnosed by the clock: within 24 hours it is pathologic; after day 2 it is physiologic, treated by feeding, and monitored against kernicterus.`,
+    `Jitteriness means check glucose; temperature instability — usually LOW — means think sepsis, because newborn infection presents subtly and deteriorates fast.`,
+  ],
+},
+
+nx_maternity_meds: {
+  topicId: 'nx_maternity_meds',
+  title: `Maternity & Newborn Medications`,
+  domainWeight: 'Pharmacological and Parenteral Therapies (13-19%)',
+  overview: `Maternity pharmacology is a small, high-yield list where nearly every drug carries a hard contraindication or a mandatory monitoring bundle: uterotonics that must not be given to the wrong client, tocolytics that only buy time, steroids that change outcomes, magnesium with its reflex-first toxicity ladder, Rho(D) with its 72-hour clock, and the newborn prophylaxis set. This chapter organizes them by moment of use with the tested caution attached to each.`,
+  sections: [
+    {
+      id: 'mm-uterotonics',
+      title: `1. Uterotonics: Making the Uterus Contract`,
+      content: `| Drug | Used for | The tested caution |
+| --- | --- | --- |
+| oxytocin | induction, augmentation, and FIRST-LINE for postpartum hemorrhage | tachystystole (stop the infusion); antidiuretic effect on long infusions; high-alert, always on a pump |
+| methylergonovine | postpartum hemorrhage after oxytocin | CONTRAINDICATED IN HYPERTENSION or preeclampsia — check the blood pressure before every dose |
+| carboprost (prostaglandin F2-alpha) | refractory postpartum hemorrhage | CAUTION IN ASTHMA — it causes bronchospasm; diarrhea and fever are common |
+| misoprostol | hemorrhage; also cervical ripening | causes fever and shivering; never given to continue a desired pregnancy |
+| tranexamic acid | adjunct in postpartum hemorrhage | given early per protocol; thrombosis history is a consideration |
+
+The two contraindications in that table are among the most reliably tested facts in all of maternity nursing, and they pair naturally: METHYLERGONOVINE raises blood pressure, so it is withheld from the hypertensive or preeclamptic client; CARBOPROST constricts bronchi, so it is withheld from the asthmatic. An exam item will hand you a hemorrhaging client with one of those histories and offer the contraindicated drug as a plausible option.
+
+## Oxytocin in its two roles
+
+The same drug behaves differently by context. During LABOR it is titrated cautiously on a pump against continuous fetal monitoring, with tachysystole (more than 5 contractions in 10 minutes averaged over 30) triggering the stop-reposition-fluids-oxygen-notify sequence. AFTER birth it is given at higher effective doses to clamp the uterus down and prevent or treat hemorrhage — the same molecule, opposite goal. Prolonged high-dose infusion carries water intoxication risk from its antidiuretic action, so intake, output and sodium are watched on long inductions.
+
+Cervical ripening agents (prostaglandin preparations) soften and efface before induction, and they carry their own tachysystole risk plus protocol restrictions — notably in clients with a prior classical uterine incision, where the rupture risk governs.`,
+      examTip: `Methylergonovine and hypertension; carboprost and asthma. Two pairs, memorized as pairs, decide a disproportionate number of maternity pharmacology items.`,
+    },
+    {
+      id: 'mm-preterm',
+      title: `2. Preterm Labor: Steroids, Tocolytics & Neuroprotection`,
+      content: `The preterm-labor drug set has a clear hierarchy of impact, and the exam rewards knowing which drug actually changes the newborn's outcome.
+
+BETAMETHASONE (or dexamethasone) is the intervention that matters: two intramuscular doses 24 hours apart, accelerating fetal lung maturity and reducing respiratory distress syndrome, intraventricular hemorrhage and necrotizing enterocolitis. Maternal side effects include transient hyperglycemia — which matters in diabetic clients, whose insulin needs rise during the course — and a transient rise in white cell count that can confuse an infection workup.
+
+TOCOLYTICS delay birth briefly. Their purpose is not to stop labor indefinitely but to buy the 48 hours steroids need and to allow transfer to a facility with an appropriate nursery:
+
+| Tocolytic | Watch for |
+| --- | --- |
+| nifedipine (calcium channel blocker) | maternal hypotension, headache, flushing |
+| indomethacin (NSAID) | limited to short courses and earlier gestations — ductus arteriosus and amniotic fluid effects |
+| terbutaline (beta agonist) | maternal TACHYCARDIA, tremor, hyperglycemia, chest discomfort; short-term use only |
+
+MAGNESIUM SULFATE appears here in its second role: fetal NEUROPROTECTION in anticipated early preterm birth, reducing cerebral palsy risk — distinct from its seizure-prophylaxis role in preeclampsia, though the surveillance bundle is identical either way.
+
+Antibiotics complete the set: group B streptococcus prophylaxis in labor for colonized clients or those with unknown status and risk factors, and treatment for chorioamnionitis or urinary infection — because untreated infection is itself a driver of preterm birth.`,
+      examTip: `Tocolytics buy time; steroids change outcomes. When a stem asks which drug most improves neonatal outcome in preterm labor, the answer is the antenatal corticosteroid.`,
+    },
+    {
+      id: 'mm-magnesium-rhogam',
+      title: `3. Magnesium & Rho(D) Immune Globulin`,
+      content: `![Rho(D) immune globulin timing for Rh-negative clients: a routine dose at about 28 weeks, another within 72 hours of birth if the newborn is Rh-positive, and a dose after any sensitizing event at any gestational age.](/courses/nclex/figures/nclex-rhogam-timeline.svg)
+
+## Magnesium sulfate, consolidated
+
+Indications: seizure prophylaxis in preeclampsia with severe features, treatment of eclampsia, and fetal neuroprotection before early preterm birth. It is NOT an antihypertensive — a distinction the exam tests directly, because clients receive it alongside labetalol or hydralazine for the pressure itself.
+
+The surveillance bundle is fixed: hourly deep tendon reflexes (their LOSS is the earliest toxicity sign), respiratory rate at least 12 per minute, urine output at least 30 mL/h (the drug is renally cleared, so oliguria means accumulation), level of consciousness, and continuous fetal monitoring where applicable. CALCIUM GLUCONATE is the antidote and belongs at the bedside before the infusion begins. Suspected toxicity is sequenced: STOP the infusion, give calcium gluconate per orders, support airway and breathing, notify. Expected non-toxic effects include feeling flushed and warm during the load, drowsiness, and decreased fetal heart rate variability.
+
+## Rho(D) immune globulin
+
+Given to Rh-NEGATIVE clients to prevent the formation of antibodies against Rh-positive fetal red cells. The critical concept: it protects FUTURE pregnancies, not the current one, by preventing sensitization — and it is useless once the client is already sensitized (a positive antibody screen).
+
+| When | Detail |
+| --- | --- |
+| about 28 weeks | routine antepartum dose |
+| within 72 HOURS of birth | when the newborn types Rh-POSITIVE |
+| after any sensitizing event | bleeding, abdominal trauma, amniocentesis or CVS, ectopic pregnancy, miscarriage or termination, external version |
+
+The 72-hour window after birth is the number the exam quotes, and the "any sensitizing event, any gestational age" rule is the one candidates forget.`,
+      examTip: `Magnesium's reflexes disappear before respirations fall — and Rho(D) is for the UNsensitized Rh-negative client, protecting the next pregnancy rather than this one.`,
+    },
+    {
+      id: 'mm-analgesia-newborn',
+      title: `4. Labor Analgesia & Newborn Prophylaxis`,
+      content: `| Agent | Role | Nursing focus |
+| --- | --- | --- |
+| epidural (local anesthetic +/- opioid) | regional labor analgesia | fluid preload, blood pressure monitoring — HYPOTENSION is the common complication; bladder distension; fall risk |
+| spinal (cesarean) | rapid dense block | hypotension, post-dural-puncture headache |
+| IV opioids (e.g., fentanyl, morphine) | systemic analgesia | neonatal respiratory depression if given close to birth — naloxone available for the newborn |
+| nitrous oxide | self-administered analgesia | the client holds the mask herself — never held by staff |
+| local infiltration / pudendal block | perineal repair, second stage | minimal systemic effect |
+
+The epidural hypotension sequence is a first-action item: turn the client to her SIDE, increase IV fluids, apply oxygen, and give a vasopressor (ephedrine or phenylephrine) per orders — because maternal hypotension reduces placental perfusion and produces late decelerations. Bladder care matters because sensation is blocked; scheduled catheterization or bladder scanning prevents the distension that both causes discomfort and impedes descent.
+
+## The newborn prophylaxis set
+
+| Medication | Purpose | Detail |
+| --- | --- | --- |
+| vitamin K (phytonadione), IM | prevents hemorrhagic disease of the newborn | the gut lacks flora to synthesize clotting factors; given in the vastus lateralis |
+| erythromycin ophthalmic ointment | prevents gonococcal and chlamydial ophthalmia neonatorum | given within the protocol window; may be delayed briefly for bonding per policy |
+| hepatitis B vaccine | immunization | per schedule; HBIG added when the mother is positive |
+| naloxone | opioid reversal in the newborn | available when maternal opioids were given near birth |
+
+Two teaching points ride along. The vastus lateralis is the injection site for infants because the gluteal muscles are undeveloped. And a client's refusal of any of these is documented and respected within the institution's consent framework — the nursing role is education about the rationale and risk, not coercion.`,
+      examTip: `Vitamin K is IM in the vastus lateralis and exists because the newborn gut has no flora yet — the "why" is tested as often as the "what."`,
+    },
+    {
+      id: 'mm-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client hemorrhages after birth; the fundus is boggy and oxytocin is already running. Her blood pressure is 158/96. Which second-line uterotonic is contraindicated, and what is a safer alternative?
+2. A client with asthma has continued bleeding despite oxytocin and methylergonovine. Which drug requires caution, and why?
+3. Preterm labor at 29 weeks is diagnosed. Which medication most improves neonatal outcome, and what is the tocolytic's actual purpose?
+4. An Rh-negative client has a spontaneous miscarriage at 11 weeks. Is Rho(D) immune globulin indicated?
+5. A client on magnesium has respirations of 11 and absent reflexes. Give the first two actions.
+
+## Answers
+
+1. METHYLERGONOVINE is contraindicated — it raises blood pressure and this client is hypertensive. Safer alternatives include carboprost (if no asthma), misoprostol, or tranexamic acid per protocol, alongside continued massage, bladder emptying and volume support.
+2. CARBOPROST — a prostaglandin that causes bronchospasm, so it is used with caution or avoided in asthma. Misoprostol or tranexamic acid per protocol would be considered instead.
+3. BETAMETHASONE (antenatal corticosteroid) most improves outcome by accelerating lung maturity and reducing intraventricular hemorrhage and necrotizing enterocolitis. The tocolytic's purpose is to buy roughly 48 hours for the steroid to work and to permit transfer — not to stop labor indefinitely. Magnesium may also be given for neuroprotection at this gestation.
+4. Yes — pregnancy loss is a sensitizing event, and Rho(D) immune globulin is indicated at any gestational age after such an event to protect future pregnancies.
+5. STOP the magnesium infusion immediately, and administer CALCIUM GLUCONATE per orders while supporting airway and breathing — respirations under 12 with absent reflexes is toxicity, not a titration problem. Notify the provider and obtain a magnesium level.`,
+    },
+  ],
+  keyTakeaways: [
+    `Oxytocin is first-line for hemorrhage and high-alert in labor; methylergonovine is contraindicated in hypertension and carboprost is cautioned in asthma — memorize both as pairs.`,
+    `In preterm labor, antenatal corticosteroids change outcomes while tocolytics only buy the 48 hours the steroids need; magnesium adds neuroprotection.`,
+    `Magnesium is seizure prophylaxis, never an antihypertensive, and its bundle is hourly reflexes (lost first), respirations at least 12, output at least 30 mL/h, calcium gluconate ready.`,
+    `Rho(D) immune globulin goes to UNsensitized Rh-negative clients at 28 weeks, within 72 hours of birth if the newborn is Rh-positive, and after any sensitizing event at any gestation.`,
+    `Epidural hypotension is treated with position, fluids, oxygen, then a vasopressor; the newborn set is vitamin K IM, erythromycin eye ointment, and hepatitis B vaccine.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */
