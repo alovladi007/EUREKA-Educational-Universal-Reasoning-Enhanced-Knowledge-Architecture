@@ -4142,6 +4142,366 @@ Presentation is age-dependent and non-specific in the young: infants show fever,
   ],
 },
 
+nx_peds_neuro_msk: {
+  topicId: 'nx_peds_neuro_msk',
+  title: `Pediatric Neuro, Musculoskeletal & Integumentary`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Children's neurologic and musculoskeletal problems are shaped by growth: an open fontanel changes how raised pressure presents, growth plates change how bones break, and a proportionally larger head changes how a burn is calculated. This chapter covers seizures and meningitis, the neural tube and hydrocephalus, head injury, fractures and traction, the screening conditions (scoliosis, hip dysplasia), muscular dystrophy, and pediatric burns.`,
+  sections: [
+    {
+      id: 'pn-neuro',
+      title: `1. Seizures, Meningitis & Raised Pressure`,
+      content: `Raised intracranial pressure presents differently before the sutures fuse. In an INFANT the skull can expand, so the early signs are a BULGING fontanel, increasing head circumference crossing percentile lines, a high-pitched cry, irritability alternating with lethargy, poor feeding and vomiting, and — late — "setting sun" eyes. In an OLDER CHILD the skull is fixed and the adult picture from the Stroke & ICP chapter returns: headache worse in the morning, vomiting, altered level of consciousness first, then pupil changes, then Cushing's triad as a late sign.
+
+Measuring head circumference at the widest point and plotting it is therefore a neurologic assessment in infants, not a growth formality.
+
+## Meningitis
+
+| Age | Presentation |
+| --- | --- |
+| newborn/young infant | NON-SPECIFIC: temperature instability, poor feeding, lethargy, irritability, bulging fontanel, weak cry — no classic signs |
+| older child | fever, severe headache, photophobia, NUCHAL RIGIDITY, positive Kernig and Brudzinski signs, vomiting, altered consciousness |
+
+Bacterial meningitis is a medical emergency: the sequence is DROPLET PRECAUTIONS immediately, blood cultures and lumbar puncture, then ANTIBIOTICS without delay — precautions continue for at least 24 hours of effective therapy. A petechial or purpuric rash raises concern for meningococcal disease and is reported urgently. Post-lumbar-puncture care includes lying flat per protocol and monitoring the site. Prevention is immunization (Hib, pneumococcal, meningococcal), which is why the vaccine-preventable framing belongs in the teaching.
+
+## Febrile seizures and epilepsy
+
+Febrile seizures occur typically between 6 months and 5 years with a rapid temperature RISE; they are usually brief and generalized, and the parent teaching is that they are frightening but generally benign — protect the child during the event, do not restrain, do not put anything in the mouth, time it, position side-lying, and seek evaluation. Antipyretics treat comfort; they do not reliably prevent recurrence.
+
+For epilepsy, the during-and-after script from the adult chapter applies unchanged, with the pediatric additions of medication adherence, growth and school considerations, activity safety (swimming supervised, helmets), and the ketogenic diet as a therapy for refractory cases requiring strict adherence and monitoring.`,
+      examTip: `In infants, a bulging fontanel and a head circumference crossing percentile lines are the ICP findings; the classic meningitis signs are ABSENT, which is why lethargy and poor feeding must be taken seriously.`,
+    },
+    {
+      id: 'pn-neural-tube',
+      title: `2. Neural Tube Defects & Hydrocephalus`,
+      content: `SPINA BIFIDA spans a spectrum: occulta (a bony defect, often with only a skin dimple or tuft of hair), meningocele (meninges protrude), and MYELOMENINGOCELE (meninges and spinal cord protrude — the severe form with motor, sensory and bladder/bowel consequences below the lesion).
+
+Pre-operative care of a myelomeningocele sac is a drilled sequence: position PRONE or side-lying to keep pressure off the sac, cover it with a STERILE MOIST (saline) dressing, keep the area free of stool and urine contamination, use LATEX-FREE supplies (these children have high latex-allergy risk from repeated exposures), monitor for infection and for signs of raised pressure, and measure head circumference because hydrocephalus frequently accompanies it.
+
+Prevention is the highest-yield teaching in the chapter and belongs to preconception care: FOLIC ACID 400 mcg daily for anyone who could become pregnant, because the neural tube closes by about 28 days — often before pregnancy is known.
+
+## Hydrocephalus and shunts
+
+Excess cerebrospinal fluid raises pressure, and the treatment is usually a ventriculoperitoneal shunt. The nursing content is post-operative and long-term: position per surgeon's orders (often flat initially to avoid rapid decompression), monitor for INFECTION (fever, redness along the tract, irritability) and MALFUNCTION (the raised-pressure signs returning — vomiting, irritability, bulging fontanel, headache and altered consciousness in older children), measure head circumference, and teach families that shunts require revision as the child grows.
+
+The tested parent teaching is recognition: any return of the pressure signs means the shunt may have failed, and that is an urgent evaluation rather than a wait-and-see.`,
+      examTip: `Myelomeningocele: prone, sterile moist saline dressing, latex-free, watch head circumference. And folic acid is preconception advice, not prenatal advice.`,
+    },
+    {
+      id: 'pn-msk',
+      title: `3. Fractures, Traction & the Screening Conditions`,
+      content: `Children's bones are different: more porous and flexible (producing greenstick and buckle fractures that adults do not get), with a periosteum that heals faster, and with GROWTH PLATES whose injury can disturb future growth — which is why a physis fracture is treated seriously even when it looks minor.
+
+Neurovascular assessment is the constant: the 5 P's — Pain (especially pain out of proportion or on passive stretch), Pallor, Pulselessness, Paresthesia, Paralysis — checked distal to any injury, cast or traction. COMPARTMENT SYNDROME is the emergency they screen for: escalating pain unrelieved by analgesia, tightness, and pain on passive movement come BEFORE pulselessness, and the response is to notify immediately and avoid elevating above heart level or applying ice per protocol, because a cast may need splitting.
+
+Cast care teaching: elevate initially, apply ice per orders, keep it dry, never put anything down the cast to scratch, report drainage, foul odor, hot spots, or increasing pain, and check circulation and movement regularly.
+
+Traction principles the exam samples: weights hang FREELY and are never lifted or removed without an order, ropes stay in the pulley grooves, body alignment is maintained, skin under straps and around pins is assessed, and pin sites are cared for per protocol with any purulent drainage reported.
+
+## The screening conditions
+
+DEVELOPMENTAL DYSPLASIA OF THE HIP: asymmetric thigh or gluteal folds, limited abduction, apparent limb-length difference, and positive Ortolani or Barlow maneuvers in the newborn. Treatment is usually a Pavlik harness, with teaching about wearing schedule, skin checks under the straps, and avoiding lotions or adjustments without direction — early treatment is what preserves the joint.
+
+SCOLIOSIS: screened in early adolescence with the forward-bend test looking for rib hump and asymmetry of shoulders, scapulae and waist. Management ranges from observation to bracing (worn as prescribed, typically most of the day, with skin and adherence teaching that respects a self-conscious adolescent) to surgical fusion, whose post-operative care includes log-rolling, neurovascular checks and pain management.
+
+MUSCULAR DYSTROPHY (Duchenne, X-linked): progressive weakness beginning in the pelvic girdle, with the GOWERS SIGN — the child "walks up" their own legs to rise from the floor — plus calf pseudohypertrophy and a waddling gait. Care is supportive and multidisciplinary: maintain mobility and function as long as possible, prevent contractures, monitor respiratory and cardiac function as the disease progresses, and support the family through a life-limiting diagnosis.`,
+      examTip: `Pain out of proportion, worse on passive stretch, is compartment syndrome before any pulse changes. And traction weights hang free, always.`,
+    },
+    {
+      id: 'pn-burns',
+      title: `4. Pediatric Burns & Skin Conditions`,
+      content: `![Burn surface area by region in infants versus adults: the infant head is 18 percent of total body surface area against the adult 9 percent, while each infant leg is 14 percent against the adult 18 percent.](/courses/nclex/figures/nclex-peds-burn-tbsa.svg)
+
+Children are not small adults in burn assessment. The head is proportionally LARGER and the legs SMALLER, so applying the adult rule of nines UNDERESTIMATES a young child's burn — which matters because fluid resuscitation is calculated from the percentage. Pediatric-specific charts (Lund-Browder type) are used, and the figure shows why.
+
+Children also have thinner skin (deeper burns from the same exposure), a larger surface-area-to-mass ratio (faster heat and fluid loss, so hypothermia is a real risk during care), and less physiologic reserve.
+
+| Priority | Action |
+| --- | --- |
+| airway | inhalation injury suspected with facial burns, singed nasal hair, hoarseness, carbonaceous sputum — early airway assessment |
+| circulation | fluid resuscitation per formula and per protocol, titrated to urine output |
+| temperature | keep the child WARM — burn care itself causes heat loss |
+| pain | scheduled and procedural analgesia, not PRN alone |
+| infection | strict asepsis; burns are the wound and the portal |
+| nutrition | high-calorie high-protein; hypermetabolic response |
+
+Urine output is the practical resuscitation gauge (commonly 1 mL/kg/h in children), and the abuse question is never far away: burns whose PATTERN does not match the history — sharply demarcated immersion lines, symmetric stocking-glove distribution, cigarette-sized circles, or a delay in seeking care — trigger the mandated-reporter duty from the Legal & Ethical chapter.
+
+## Common skin conditions
+
+ATOPIC DERMATITIS (eczema): dry itchy inflamed skin, worse with heat, sweat, irritants and allergens. Teaching centers on moisturizing immediately after short lukewarm baths, mild fragrance-free products, cotton clothing, keeping nails short to limit scratching damage, and topical therapy as prescribed.
+
+IMPETIGO: honey-crusted lesions, highly contagious by contact — antibiotics per orders, hand hygiene, separate towels and linens, and exclusion from school per policy until treated.
+
+DIAPER DERMATITIS: frequent changes, gentle cleansing, air exposure, barrier ointment; a beefy-red rash with satellite lesions suggests candidal infection and needs antifungal treatment rather than more barrier cream.`,
+      examTip: `Never use the adult rule of nines on a young child — the head is 18 percent, not 9, and underestimating drives under-resuscitation. And a burn pattern that does not match the story is a reportable concern.`,
+    },
+    {
+      id: 'pn-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 4-month-old is irritable, feeding poorly, and has a bulging fontanel with a head circumference that has crossed two percentile lines. Interpret.
+2. A newborn has a myelomeningocele sac. Give the four elements of immediate positioning and wound care.
+3. A child in a long-leg cast reports pain that is worsening despite analgesia and is severe when the toes are passively extended. Pulses are present. What is this and what is the action?
+4. Why does using the adult rule of nines on a 1-year-old with burns endanger the child?
+5. A 5-year-old rises from the floor by pushing his hands against his thighs to "walk up" his legs. Name the sign and the likely condition.
+
+## Answers
+
+1. Increasing intracranial pressure — in an infant the skull expands, so a bulging fontanel and a head circumference crossing percentile lines are the early signs, with hydrocephalus a leading cause. Escalate for evaluation.
+2. Position PRONE (or side-lying) to keep pressure off the sac; cover it with a STERILE saline-MOIST dressing; protect it from stool and urine contamination; use LATEX-FREE supplies throughout — and measure head circumference, since hydrocephalus often accompanies it.
+3. Compartment syndrome. Pain out of proportion and pain on passive stretch precede pulselessness, so intact pulses are not reassuring. Notify immediately, do not elevate above heart level or apply ice per protocol, and anticipate cast splitting or fasciotomy.
+4. Because a young child's head is about 18 percent of body surface area rather than the adult 9 percent, the adult rule UNDERESTIMATES the burn — and since fluid resuscitation is calculated from that percentage, the child would be under-resuscitated.
+5. The GOWERS SIGN, indicating proximal muscle weakness — classically Duchenne muscular dystrophy, an X-linked progressive disorder with calf pseudohypertrophy and a waddling gait.`,
+    },
+  ],
+  keyTakeaways: [
+    `Before sutures fuse, raised pressure shows as a bulging fontanel and expanding head circumference; infant meningitis presents non-specifically, so lethargy and poor feeding are escalated.`,
+    `Myelomeningocele care is prone position, sterile moist dressing, latex-free supplies and head-circumference monitoring - and folic acid preconception prevents it.`,
+    `Compartment syndrome announces itself as pain out of proportion and pain on passive stretch, BEFORE pulses change; traction weights hang free and are never lifted.`,
+    `Screening conditions have screening findings: Ortolani/Barlow and asymmetric folds for hip dysplasia, the forward-bend test for scoliosis, and the Gowers sign for muscular dystrophy.`,
+    `Pediatric burns use pediatric charts because the head is proportionally larger - the adult rule of nines under-resuscitates a child - and mismatched burn patterns are reportable.`,
+  ],
+},
+
+nx_peds_heme_endo: {
+  topicId: 'nx_peds_heme_endo',
+  title: `Pediatric Hematology, Oncology & Endocrine`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `This chapter covers the inherited blood disorders whose management is largely prevention (sickle cell and hemophilia), the most common childhood cancer and the risks its treatment creates, the nutritional anemia that is still the most common worldwide, and the endocrine conditions where early detection changes a life — congenital hypothyroidism, phenylketonuria, and type 1 diabetes in a child who cannot yet self-manage.`,
+  sections: [
+    {
+      id: 'ph-sickle',
+      title: `1. Sickle Cell Disease: Prevent the Crisis`,
+      content: `An inherited hemoglobin variant causes red cells to distort under stress into rigid sickle shapes that occlude small vessels and hemolyze early. The disease is therefore episodic: relatively well between crises, acutely ill during them.
+
+| Crisis type | What happens | Recognition |
+| --- | --- | --- |
+| VASO-OCCLUSIVE (most common) | sickled cells obstruct microcirculation | severe pain in bones, joints, abdomen or chest; dactylitis (painful swollen hands and feet) in young children |
+| ACUTE CHEST SYNDROME | pulmonary occlusion and injury | chest pain, fever, cough, hypoxia — a leading cause of death, escalate urgently |
+| SPLENIC SEQUESTRATION | blood pools in the spleen | rapidly enlarging spleen, pallor, hypovolemic shock — an emergency |
+| APLASTIC | marrow stops producing (often after viral infection) | profound anemia, pallor, fatigue |
+
+Triggers to teach and avoid: dehydration, infection and fever, hypoxia (including high altitude and unpressurized flight), cold exposure, physical or emotional stress, and strenuous exertion.
+
+Crisis management is the mnemonic-worthy set: HYDRATION (oral and IV), OXYGEN for hypoxia, PAIN CONTROL that is adequate and scheduled — opioids are frequently required and under-treatment is a documented failure the exam expects you to avoid — rest, warmth, and treatment of any infection. Applying COLD is wrong; warmth promotes vasodilation.
+
+The prevention layer is what changes outcomes long-term: prophylactic penicillin in early childhood, full immunization including pneumococcal and meningococcal (functional asplenia makes encapsulated organisms lethal), aggressive early evaluation of fever, adequate hydration as a daily habit, hydroxyurea therapy per protocol, and family teaching that FEVER IS AN EMERGENCY rather than a wait-and-see.
+
+## Hemophilia
+
+An X-linked clotting factor deficiency, so it predominantly affects males with female carriers. Bleeding is the problem: HEMARTHROSIS (bleeding into joints) causes pain, swelling, warmth and, cumulatively, joint destruction. Management is factor replacement, prompt treatment of bleeds, and RICE-type measures — rest, ice, compression, elevation — for a joint bleed.
+
+Teaching is largely about avoidance and recognition: no contact sports (swimming and cycling with helmets are encouraged), soft toothbrush, electric razor in adolescence, NO aspirin or NSAIDs, medical identification, and dental work coordinated with factor coverage. Injections are minimized and given per protocol, and IM injections in particular are avoided where alternatives exist.`,
+      examTip: `Sickle cell crisis care is hydration, oxygen, and real pain control — never cold. And in a child with sickle cell disease, fever is an emergency because functional asplenia makes infection lethal fast.`,
+    },
+    {
+      id: 'ph-onc',
+      title: `2. Childhood Cancer: Leukemia & Solid Tumors`,
+      content: `ACUTE LYMPHOBLASTIC LEUKEMIA is the most common childhood cancer, and its presentation follows from marrow crowding: anemia (pallor, fatigue), neutropenia (fever, infection), and thrombocytopenia (bruising, petechiae, bleeding), often with bone pain, lymphadenopathy and hepatosplenomegaly. Diagnosis is by bone marrow examination.
+
+Treatment nursing is dominated by three risks, and they map to the counts:
+
+| Risk | Driver | Nursing focus |
+| --- | --- | --- |
+| INFECTION | neutropenia (ANC under 500) | protective environment, meticulous hand hygiene, no live vaccines, no raw produce or fresh flowers per policy, NO rectal temperatures or suppositories — and FEVER IS AN EMERGENCY requiring cultures and antibiotics within the hour |
+| BLEEDING | thrombocytopenia | soft toothbrush, no IM injections where avoidable, fall and injury prevention, avoid aspirin/NSAIDs |
+| treatment toxicity | chemotherapy | mucositis care, nausea control, nutrition, monitoring organ-specific effects |
+
+Tumor lysis syndrome appears early in treatment as cells break down rapidly: rising potassium, phosphorus and uric acid with falling calcium, threatening the kidneys and heart — hydration and protocol medications prevent it, and lab monitoring detects it.
+
+WILMS TUMOR (nephroblastoma) carries one absolute nursing instruction the exam tests directly: DO NOT PALPATE THE ABDOMEN, because palpation can rupture the tumor capsule and seed malignant cells. A sign is posted at the bedside. It typically presents as a firm painless abdominal mass found by a caregiver, sometimes with hematuria or hypertension, and treatment is surgical with adjuvant therapy.
+
+Other solid tumors appear in stems by their signatures: brain tumors with morning headache, vomiting and neurologic changes; neuroblastoma as an abdominal mass in a young child; osteosarcoma as bone pain and swelling in an adolescent. Across all of them, the psychosocial and developmental content is nursing work in its own right — honest age-appropriate explanation, maintaining school and peer contact, supporting siblings, and palliative integration when appropriate.`,
+      examTip: `Two absolute pediatric oncology rules: do not palpate a Wilms tumor abdomen, and fever in a neutropenic child is a one-hour-to-antibiotics emergency.`,
+    },
+    {
+      id: 'ph-anemia-endo',
+      title: `3. Iron-Deficiency Anemia & Endocrine Conditions`,
+      content: `IRON-DEFICIENCY ANEMIA remains the most common nutritional deficiency in children. Risks cluster in two windows: infants over 6 months whose stores are depleting (especially with excessive cow's milk, which is iron-poor and can cause occult GI blood loss), and adolescents with growth spurts and menstrual losses. Findings are pallor, fatigue, irritability, poor feeding, and — in severe or prolonged cases — developmental effects.
+
+Iron therapy teaching is a recurring item: give on an empty stomach when tolerated, WITH VITAMIN C (juice) to enhance absorption, NOT with milk or antacids, use a straw or dropper toward the back of the mouth for liquid preparations to limit tooth staining, expect DARK/BLACK STOOLS as an expected finding, treat constipation with fluid and fiber, and store iron out of reach because overdose is a leading pediatric poisoning.
+
+## Congenital screening conditions
+
+CONGENITAL HYPOTHYROIDISM is detected by newborn screening precisely because the untreated consequence — irreversible intellectual disability — is preventable by early thyroid hormone replacement. Teaching centers on lifelong daily therapy, never stopping, monitoring growth and development, and the danger of missed doses.
+
+PHENYLKETONURIA is likewise screen-detected: the inability to metabolize phenylalanine causes accumulation and neurologic damage. Management is dietary — restrict phenylalanine lifelong, avoid high-protein foods and ASPARTAME (which contains phenylalanine), use the prescribed formula, and monitor levels. The screening test is drawn after feeding has been established, which is why the timing of the newborn metabolic screen matters.
+
+## Type 1 diabetes in children
+
+The pathophysiology matches the adult chapter; the pediatric layer is developmental. Presentation is classically polyuria, polydipsia, polyphagia and weight loss, and NEW BEDWETTING in a previously dry child is a tested clue. DKA may be the presenting event.
+
+Management adapts to age: preschoolers cannot self-manage and need caregiver systems; school-age children can begin participating with supervision; adolescents can self-manage but face adherence pressures from peers, body image and the desire for normality — and the correct nursing approach gives autonomy with support rather than surveillance. School plans cover glucose testing, hypoglycemia treatment kept accessible, and staff education. Sick-day rules matter (continue insulin, monitor more often, watch for ketones), and hypoglycemia recognition is taught to the child, the family and the school.`,
+      examTip: `Iron: with vitamin C, not with milk; dark stools expected; stored locked because overdose kills children. And new bedwetting in a previously dry child is a diabetes clue.`,
+    },
+    {
+      id: 'ph-selfcheck',
+      title: `4. Self-Check`,
+      content: `1. A 6-year-old with sickle cell disease has severe leg pain, a temperature of 38.8 C, and reports the pain started after a soccer tournament in cold weather. Name three management priorities and one thing that must NOT be done.
+2. A caregiver reports a firm painless mass in her toddler's abdomen. What must the nurse ensure is NOT done, and why?
+3. A child on chemotherapy has an absolute neutrophil count of 320 and a temperature of 38.3 C. How urgent is this?
+4. A parent asks whether the black stools their toddler has developed on iron therapy mean bleeding. Answer.
+5. A 7-year-old who has been dry at night for years is suddenly wetting the bed, drinking constantly and losing weight. What should be suspected?
+
+## Answers
+
+1. Vaso-occlusive crisis with fever. Priorities: HYDRATION, OXYGEN if hypoxic, and adequate scheduled PAIN CONTROL (opioids are frequently needed) — plus urgent evaluation and antibiotics because fever in sickle cell disease is an emergency given functional asplenia. Do NOT apply cold, which promotes further sickling; warmth is used instead.
+2. The abdomen must NOT be palpated — this is a possible Wilms tumor, and palpation can rupture the capsule and seed malignant cells. Post a sign at the bedside and inform the team.
+3. A medical emergency. ANC under 500 is severe neutropenia, and fever in that setting requires blood cultures and broad-spectrum antibiotics within about an hour; delay is what kills.
+4. Dark or black stools are an EXPECTED effect of oral iron and do not indicate bleeding. Reinforce the rest of the teaching — vitamin C to aid absorption, avoid milk and antacids with doses, and keep the iron locked away because overdose is a leading pediatric poisoning.
+5. Type 1 diabetes. New nocturnal enuresis in a previously dry child, with polydipsia and weight loss, is the classic pediatric presentation, and evaluation should be prompt because DKA can be the presenting event.`,
+    },
+  ],
+  keyTakeaways: [
+    `Sickle cell care is prevention (penicillin prophylaxis, immunization, hydration, avoiding triggers) plus crisis management with hydration, oxygen and real pain control - never cold.`,
+    `Fever is an emergency twice over in this chapter: in sickle cell disease from functional asplenia, and in neutropenia from chemotherapy.`,
+    `Do not palpate a suspected Wilms tumor abdomen; leukemia nursing follows the three counts - infection, bleeding, and treatment toxicity.`,
+    `Iron therapy: vitamin C helps, milk and antacids hinder, dark stools are expected, and iron is stored locked because overdose is a leading pediatric poisoning.`,
+    `Newborn screening exists because congenital hypothyroidism and PKU are preventable disasters, and new bedwetting with polydipsia and weight loss suggests type 1 diabetes.`,
+  ],
+},
+
+nx_peds_meds: {
+  topicId: 'nx_peds_meds',
+  title: `Pediatric Medication Administration & Calculations`,
+  domainWeight: 'Pharmacological and Parenteral Therapies (13-19%)',
+  overview: `In pediatrics every dose is calculated, nothing is standard, and the margin for error is small enough that safe-range verification is part of administration rather than an optional check. This chapter builds the weight-based arithmetic with worked examples, the safe-dose verification that decides whether a correctly calculated dose should still be given, maintenance fluid by the 4-2-1 rule, and the administration technique that changes with the child's age.`,
+  sections: [
+    {
+      id: 'pm-weight',
+      title: `1. Weight-Based Dosing, Worked`,
+      content: `Pediatric doses are prescribed per kilogram, so every calculation begins with an accurate CURRENT weight in kilograms — measured, not reported, and converted with $\\text{kg} = \\text{lb} \\div 2.2$.
+
+$$\\text{dose} = \\text{ordered mg/kg} \\times \\text{weight in kg}$$
+
+## Worked example one
+
+A child weighs 33 lb. The order is 15 mg/kg every 8 hours. The suspension is 250 mg per 5 mL. How many mL per dose?
+
+$$33 \\div 2.2 = 15 \\text{ kg}$$
+
+$$15 \\text{ mg/kg} \\times 15 \\text{ kg} = 225 \\text{ mg per dose}$$
+
+$$225 \\text{ mg} \\times \\frac{5 \\text{ mL}}{250 \\text{ mg}} = 4.5 \\text{ mL}$$
+
+## Worked example two — daily dose divided
+
+A 22 lb child is ordered 40 mg/kg/day divided every 6 hours.
+
+$$22 \\div 2.2 = 10 \\text{ kg}; \\quad 40 \\times 10 = 400 \\text{ mg/day}$$
+
+Every 6 hours means 4 doses per day:
+
+$$400 \\div 4 = 100 \\text{ mg per dose}$$
+
+The phrase to read carefully is "per day divided" versus "per dose." An order of 40 mg/kg/day divided q6h is a very different quantity from 40 mg/kg every 6 hours — the second is four times the first, and misreading it is one of the most consequential errors in pediatric practice.`,
+      examTip: `Convert pounds to kilograms FIRST, then ask whether the ordered rate is per DOSE or per DAY. Those two habits prevent most pediatric calculation errors.`,
+    },
+    {
+      id: 'pm-saferange',
+      title: `2. Safe-Dose Verification: The Step That Is Not Optional`,
+      content: `A correctly calculated dose can still be an unsafe dose. Pediatric practice therefore requires checking the ordered amount against the published safe range for that drug and weight BEFORE administration — the calculation tells you what was ordered, and the safe range tells you whether to give it.
+
+## Worked example
+
+A child weighs 18 kg. The order is acetaminophen 500 mg PO every 6 hours. The reference range is 10-15 mg/kg/dose.
+
+$$18 \\times 10 = 180 \\text{ mg}; \\qquad 18 \\times 15 = 270 \\text{ mg}$$
+
+The safe range is 180-270 mg per dose. The ordered 500 mg EXCEEDS it, so the nurse HOLDS the dose and clarifies with the prescriber. Giving it because the arithmetic was performed correctly is the error; silently giving the "right" dose instead of the ordered one is also an error, because changing a prescription is not within nursing scope.
+
+The same logic runs in the other direction: a dose far BELOW the safe range is also clarified, because a sub-therapeutic antibiotic is a treatment failure waiting to happen.
+
+## The verification bundle
+
+| Check | Why |
+| --- | --- |
+| current measured weight in kg | doses drift as children grow; a month-old weight is not current |
+| safe range for this drug and indication | the range is per dose or per day — read which |
+| maximum single and daily dose | some drugs cap regardless of weight |
+| independent double check for high-alert drugs | insulin, opioids, chemotherapy, anticoagulants, concentrated electrolytes |
+| appropriate measuring device | oral syringe, never a household spoon |
+
+High-alert medications in pediatrics carry the same double-check discipline as in adults, with the added weight-based dimension: two nurses verify the weight, the calculation and the concentration, not merely the vial.`,
+      examTip: `Calculating the dose and verifying the dose are two different steps. When a correctly calculated order falls outside the safe range, the answer is hold and clarify - never administer, and never quietly substitute your own number.`,
+    },
+    {
+      id: 'pm-fluids',
+      title: `3. Maintenance Fluids by the 4-2-1 Rule`,
+      content: `![Pediatric maintenance fluid rate against weight computed by the 4-2-1 rule: 4 mL/kg/h for the first 10 kg, 2 mL/kg/h for the next 10, and 1 mL/kg/h for every kilogram beyond, giving 40 mL/h at 10 kg, 60 at 20 kg and 90 at 50 kg.](/courses/nclex/figures/nclex-peds-maintenance-fluid.svg)
+
+Maintenance fluid replaces ongoing normal losses and is calculated from weight by a tiered rule.
+
+| Weight band | Hourly (4-2-1) | Daily (Holliday-Segar) |
+| --- | --- | --- |
+| first 10 kg | 4 mL/kg/h | 100 mL/kg/day |
+| next 10 kg (11-20) | 2 mL/kg/h | 50 mL/kg/day |
+| each kg above 20 | 1 mL/kg/h | 20 mL/kg/day |
+
+## Worked example
+
+A child weighs 26 kg. Compute the maintenance rate.
+
+$$\\text{first } 10 \\text{ kg}: 10 \\times 4 = 40 \\text{ mL/h}$$
+
+$$\\text{next } 10 \\text{ kg}: 10 \\times 2 = 20 \\text{ mL/h}$$
+
+$$\\text{remaining } 6 \\text{ kg}: 6 \\times 1 = 6 \\text{ mL/h}$$
+
+$$\\text{total} = 40 + 20 + 6 = 66 \\text{ mL/h}$$
+
+Cross-check with the daily method: $1000 + 500 + 120 = 1620$ mL/day, and $1620 \\div 24 = 67.5$ mL/h — the two methods agree within rounding, which is a useful self-check.
+
+Maintenance is a baseline, not a total: DEFICIT replacement for existing dehydration and ONGOING LOSSES (vomiting, diarrhea, drainage) are added per orders, and resuscitation boluses for shock are separate and calculated at commonly cited 20 mL/kg of isotonic fluid. Every pediatric infusion runs on a PUMP with volume limits, and intake and output are strict — including diaper weights, where 1 gram equals about 1 mL.`,
+      examTip: `The 4-2-1 rule is additive across bands, not a single multiplier. And the daily method is a free cross-check: if the two disagree by more than rounding, one of them was computed wrong.`,
+    },
+    {
+      id: 'pm-technique',
+      title: `4. Technique, Sites & the Developmental Approach`,
+      content: `| Age | Oral administration | Injection site |
+| --- | --- | --- |
+| infant | oral syringe toward the inner cheek, small amounts, allow swallowing; may mix with a SMALL amount of formula only if approved (never a full bottle) | VASTUS LATERALIS — gluteal muscles are undeveloped |
+| toddler | offer limited choices (cup or syringe), be direct and brief, expect resistance | vastus lateralis |
+| preschool | simple honest explanation, let them help hold the cup, praise afterward | vastus lateralis or deltoid per size and volume |
+| school-age | explain purpose, allow participation, respect their competence | deltoid or ventrogluteal per policy |
+| adolescent | full explanation, privacy, involve in the plan and adherence discussion | deltoid or ventrogluteal |
+
+Never mix medication into a full bottle or a required food: a child who refuses part of it receives an unknown dose, and pairing medicine with a staple food can make the child refuse the food afterwards. Never call medicine "candy" — the poisoning risk that follows is exactly why the safety chapter locks medications away.
+
+Measuring devices matter: oral syringes and calibrated cups only, never household spoons, and the caregiver should demonstrate the measurement back before discharge. For IV therapy, volume-control chambers and pumps with dose limits protect against the small margins pediatric volumes allow, and IV site assessment is frequent because infiltration in a small vein does damage quickly.
+
+## Immunization principles, and honesty about the schedule
+
+The schedule itself is jurisdictional and revised, so it is verified against the current official source rather than memorized from a textbook. What the exam tests are the principles: mild illness with or without low-grade fever is NOT a contraindication; a prior anaphylactic reaction to the vaccine or a component IS; live vaccines are avoided in significant immunosuppression and in pregnancy; multiple vaccines may be given at one visit at separate sites; and consent plus documented education accompany administration. Comfort measures — swaddling, sucrose or breastfeeding for infants, brief honest warning and distraction for older children — improve both the experience and future adherence.`,
+      examTip: `Vastus lateralis for infants, oral syringe to the inner cheek, never a full bottle, never called candy — four technique rules that appear as answer options constantly.`,
+    },
+    {
+      id: 'pm-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A child weighs 44 lb. The order is 20 mg/kg/day divided every 12 hours. How many mg per dose?
+2. A 12 kg child is ordered a drug at 300 mg per dose; the safe range is 15-25 mg/kg/dose. Is this safe, and what does the nurse do?
+3. Compute the maintenance fluid rate for a 34 kg child using the 4-2-1 rule.
+4. Why is the vastus lateralis the injection site for infants?
+5. A parent says she puts the antibiotic in a full bottle of formula so her baby "doesn't taste it." Respond.
+
+## Answers
+
+1. $44 \\div 2.2 = 20$ kg; $20 \\times 20 = 400$ mg/day; divided every 12 hours means 2 doses, so $400 \\div 2 = 200$ mg per dose.
+2. Safe range is $12 \\times 15 = 180$ mg to $12 \\times 25 = 300$ mg per dose, so 300 mg is at the upper limit and within range. It may be given — with the usual verification of the current weight, the maximum daily dose, and any high-alert double-check requirement.
+3. First 10 kg at 4 = 40 mL/h; next 10 kg at 2 = 20 mL/h; remaining 14 kg at 1 = 14 mL/h. Total = 74 mL/h.
+4. Because infants' gluteal muscles are undeveloped — they do not become a reliable injection site until a child has been walking for some time — while the vastus lateralis is a well-developed muscle with no major nerves or vessels in the injection zone.
+5. Explain that mixing medication into a full bottle risks an INCOMPLETE dose if the baby does not finish it, and can make the baby refuse formula afterward by association. Demonstrate giving it with an oral syringe toward the inner cheek in small amounts, and have her return-demonstrate before discharge.`,
+    },
+  ],
+  keyTakeaways: [
+    `Every pediatric dose starts from a current measured weight in kilograms, and the critical reading is whether the order is per DOSE or per DAY divided.`,
+    `Safe-range verification is a separate step from calculation: an ordered dose outside the published range is held and clarified, never administered and never silently corrected.`,
+    `Maintenance fluid by 4-2-1 is additive across bands (4 mL/kg/h first 10, 2 next 10, 1 beyond), and the daily Holliday-Segar method is a free cross-check.`,
+    `Deficit and ongoing losses are added to maintenance, boluses are separate, and every pediatric infusion runs on a pump with strict intake and output including diaper weights.`,
+    `Technique is developmental: vastus lateralis in infants, oral syringe to the inner cheek, never a full bottle, never called candy, and caregivers return-demonstrate before discharge.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */

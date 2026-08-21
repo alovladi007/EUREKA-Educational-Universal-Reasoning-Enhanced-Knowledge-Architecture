@@ -738,6 +738,88 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Pediatric maintenance fluid: the Holliday-Segar method, computed.
+# Daily:  100 mL/kg for the first 10 kg, 50 mL/kg for the next 10 kg,
+#         20 mL/kg for every kg above 20.
+# Hourly ("4-2-1"): 4 mL/kg/h first 10, 2 mL/kg/h next 10, 1 mL/kg/h beyond.
+# The curve below is that formula evaluated across weights.
+# ---------------------------------------------------------------------------
+
+def _maint_hourly(kg):
+    first = np.minimum(kg, 10) * 4.0
+    second = np.clip(kg - 10, 0, 10) * 2.0
+    third = np.clip(kg - 20, 0, None) * 1.0
+    return first + second + third
+
+
+@figure("nclex-peds-maintenance-fluid")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    kg = np.linspace(1, 60, 400)
+    rate = _maint_hourly(kg)
+    fig, ax = plt.subplots(figsize=(7.2, 4.0))
+    ax.plot(kg, rate, color=c[0], linewidth=2)
+    for w in (10, 20):
+        ax.axvline(w, color=S.GRID[mode], linewidth=1)
+    marks = [(10, "10 kg: 40 mL/h\n(4 mL/kg/h)"),
+             (20, "20 kg: 60 mL/h\n(+2 mL/kg/h)"),
+             (50, "50 kg: 90 mL/h\n(+1 mL/kg/h)")]
+    for w, label in marks:
+        r = float(_maint_hourly(np.array([float(w)]))[0])
+        ax.plot([w], [r], "o", color=c[1], markersize=6)
+        ax.annotate(label, (w, r), textcoords="offset points",
+                    xytext=(8, -4), fontsize=8.8, color=ink)
+    S.note(ax, 1.5, 88,
+           "the 4-2-1 rule: 4 mL/kg/h for the first 10 kg,\n2 for the next 10, 1 for every kg beyond",
+           mode, ha="left")
+    ax.set_xlabel("weight (kg)")
+    ax.set_ylabel("maintenance rate (mL/h)")
+    ax.set_xlim(0, 62)
+    ax.set_ylim(0, 100)
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Burn surface area: the adult rule of nines does not fit children, whose
+# heads are proportionally larger and legs smaller.  Values below are the
+# standard teaching percentages for total body surface area.
+# ---------------------------------------------------------------------------
+
+@figure("nclex-peds-burn-tbsa")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    regions = ["head", "each arm", "front\ntrunk", "back\ntrunk", "each leg"]
+    infant = [18, 9, 18, 18, 14]
+    adult = [9, 9, 18, 18, 18]
+    x = np.arange(len(regions))
+    w = 0.38
+    fig, ax = plt.subplots(figsize=(7.2, 4.0))
+    ax.bar(x - w / 2, infant, w, color=c[0], label="infant")
+    ax.bar(x + w / 2, adult, w, color=c[1], label="adult")
+    for i, (a, b) in enumerate(zip(infant, adult)):
+        ax.annotate(f"{a}%", (i - w / 2, a), ha="center", va="bottom",
+                    fontsize=8.5, color=ink)
+        ax.annotate(f"{b}%", (i + w / 2, b), ha="center", va="bottom",
+                    fontsize=8.5, color=ink)
+    ax.set_xticks(x)
+    ax.set_xticklabels(regions, fontsize=9)
+    ax.set_ylabel("percent of total body surface area")
+    ax.set_ylim(0, 23)
+    ax.legend(frameon=False, fontsize=9)
+    S.note(ax, 4.4, 21.5,
+           "the head is proportionally LARGER and legs smaller in infants -\nusing the adult rule of nines underestimates a child's burn",
+           mode, ha="right")
+    S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

@@ -980,6 +980,9 @@ const NCLEX_RN: ExamCurriculum = [
       t('nx_peds_foundations', 'Pediatric Foundations & Assessment', 'Age-banded vital signs and growth milestones, developmental approach to care, hospitalization and separation anxiety, pain assessment by age, safety, and the pediatric emergency picture.', 16),
       t('nx_peds_resp_cardiac', 'Pediatric Respiratory & Cardiac Disorders', 'Croup vs epiglottitis, bronchiolitis and RSV, asthma in children, cystic fibrosis, congenital heart defects sorted by shunt direction, and heart failure in infants.', 17),
       t('nx_peds_gi_gu', 'Pediatric GI, Renal & Genitourinary Disorders', 'Dehydration severity and rehydration, pyloric stenosis vs intussusception, cleft lip and palate, Hirschsprung, nephrotic syndrome vs glomerulonephritis, and urinary tract infection.', 16),
+      t('nx_peds_neuro_msk', 'Pediatric Neuro, Musculoskeletal & Integumentary', 'Seizures and meningitis, hydrocephalus and spina bifida, head injury, fractures and traction, scoliosis and developmental hip dysplasia, muscular dystrophy, and pediatric burns.', 17),
+      t('nx_peds_heme_endo', 'Pediatric Hematology, Oncology & Endocrine', 'Sickle cell disease and its crises, hemophilia, iron-deficiency anemia, leukemia and its treatment risks, Wilms tumor, type 1 diabetes in children, and congenital metabolic screening.', 17),
+      t('nx_peds_meds', 'Pediatric Medication Administration & Calculations', 'Weight-based dosing and safe-range verification, maintenance fluid by the 4-2-1 rule, administration technique and sites by age, and the calculations the exam actually asks.', 16),
     ],
   },
   {
