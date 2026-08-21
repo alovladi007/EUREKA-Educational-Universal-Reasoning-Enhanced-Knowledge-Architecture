@@ -89,10 +89,33 @@ def main() -> int:
     for key, w, f, t, s, wk, sc, ok in rows:
         print(f"{key:30s} {w:7d} {f:5d} {t:4d} {s:5d} {wk:3d} {int(bool(sc)):3d}  {'OK' if ok else 'SHORT'}")
 
-    at = sum(1 for r in rows if r[7])
-    print(f"\n{at}/{len(rows)} chapters at the FE-EE-grade standard "
+    # ---- module coverage against the book -------------------------------
+    # The course's structure is the Instructor Edition's module map, so the
+    # denominator is 72 modules - not however many chapters happen to exist.
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    from cissp_module_map import DOMAINS, MODULES
+    done = {r[0] for r in rows if r[7]}
+    present = {r[0] for r in rows}
+    total_mods = unwritten = 0
+    print("\nMODULE COVERAGE (Instructor Edition map)")
+    for dn, dname, w in DOMAINS:
+        mods = MODULES[dn]
+        total_mods += len(mods)
+        ok = sum(1 for m in mods if m[2] in done)
+        seeded = sum(1 for m in mods if m[2] in present)
+        gap = [f"{m[0]}. {m[1][:40]}" for m in mods if m[2] not in present]
+        unwritten += len(gap)
+        print(f"  D{dn} {dname[:38]:40s} {ok:2d}/{len(mods):2d} at standard, "
+              f"{seeded:2d} seeded, {len(gap):2d} not authored")
+        for g in gap:
+            print(f"        - {g}")
+    at = len(done)
+    if unwritten:
+        failures.append(f"{unwritten} book modules have no content at all")
+    print(f"\n{at}/{total_mods} MODULES at the FE-EE-grade standard "
           f"({MIN_WORDS}w / {MIN_FIGS} figs / {MIN_TABLES} tables / {MIN_SUBS} subs / worked / self-check)")
-    print(f"total words: {sum(r[1] for r in rows):,}   total figure embeds: {sum(r[2] for r in rows)}")
+    print(f"total words: {sum(r[1] for r in rows):,}   total figure embeds: {sum(r[2] for r in rows)}"
+          f"   modules with any content: {len(present)}/{total_mods}")
 
     # A depth gate cannot see a label collision - only a render can.  Fold the
     # figure overlap check in here so a figure that reads as garbage on the page

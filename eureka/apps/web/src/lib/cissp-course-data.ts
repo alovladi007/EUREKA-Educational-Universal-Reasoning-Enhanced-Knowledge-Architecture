@@ -25,9 +25,10 @@ export interface TopicLesson {
 
 export const CISSP_COURSE: Record<string, TopicLesson> = {
 
+// ===== Domain 1: Security and Risk Management (16%) - Instructor Edition module order =====
 cissp_governance: {
   topicId: 'cissp_governance',
-  title: `Security Governance`,
+  title: `Organizational and Corporate Governance`,
   domainWeight: '16%',
   overview: `Security governance establishes the organizational framework for implementing and managing security initiatives. It defines how security decisions are made, who has authority, and how the security fun`,
   sections: [
@@ -116,7 +117,7 @@ These concepts are interconnected with legal liability. A company that conducts 
     },
     {
       id: 'domain-1-practice-questions',
-      title: `Domain 1 Practice Questions`,
+      title: `2. Domain 1 Practice Questions`,
       content: ``,
       quiz: [
         {
@@ -213,7 +214,7 @@ These concepts are interconnected with legal liability. A company that conducts 
     },
     {
       id: 'key-takeaways',
-      title: `Key Takeaways`,
+      title: `3. Key Takeaways`,
       content: `- Security governance aligns security strategy with business objectives through frameworks like NIST, ISO, COBIT, and SABSA
 - Organizations must comply with applicable regulations (GDPR, HIPAA, SOX, PCI-DSS, GLBA, FERPA) or face significant penalties
 - Intellectual property protection includes copyright, trademark, patent, and trade secret mechanisms with different durations and protections
@@ -227,16 +228,248 @@ These concepts are interconnected with legal liability. A company that conducts 
     },
   ],
 },
+cissp_risk_mgmt: {
+  topicId: 'cissp_risk_mgmt',
+  title: `Risk Management Concepts`,
+  domainWeight: '16%',
+  overview: `Risk management is the process of identifying, analyzing, and responding to risks that could impact organizational objectives. It's a continuous process that should be integrated into organizational d`,
+  sections: [
+    {
+      id: '8-risk-management-concepts',
+      title: `1. Risk Management Concepts`,
+      content: `Risk management is the process of identifying, analyzing, and responding to risks that could impact organizational objectives. It's a continuous process that should be integrated into organizational decision-making at all levels.
+## 8.1 Risk Identification
 
+Risk identification is the process of discovering and documenting risks that could affect the organization. Identification methods include interviews with business and technical staff, review of audit reports and incident history, assessment of technical vulnerabilities, review of regulatory and legal requirements, analysis of industry trends and threat intelligence, and brainstorming with cross-functional teams.
+
+Effective risk identification requires understanding the organization's business, technology environment, regulatory landscape, and threat landscape. A risk register documents identified risks with their sources, potential impacts, and preliminary mitigation ideas. Risk identification should be ongoing - new risks emerge as the environment changes, new technologies are adopted, and new threats appear.
+## 8.2 Risk Assessment and Analysis
+
+Once risks are identified, they must be analyzed and prioritized. Organizations typically use either quantitative analysis (assigning numeric values to probability and impact) or qualitative analysis (using descriptive rankings) or a combination of both.
+### Quantitative Risk Analysis
+
+Quantitative analysis attempts to assign numeric values to risk components and calculate the expected financial impact. This approach provides precise risk metrics but requires reliable data on threat frequency and impact, which is often difficult to obtain.
+
+Key quantitative risk metrics include:
+- Asset Value (AV): The monetary value of the asset if completely compromised or destroyed
+- Exposure Factor (EF): The percentage of asset value that would be lost if the threat occurred (0-100%)
+- Single Loss Expectancy (SLE): AV × EF = expected loss from a single occurrence
+- Annual Rate of Occurrence (ARO): Expected number of times the threat will occur in a year
+- Annualized Loss Expectancy (ALE): SLE × ARO = expected annual loss from this risk
+
+Example: A company has a database with asset value of $500,000. If ransomware encrypts the database and forces a restore from backup, the exposure factor is 60% (loss of recent data and recovery time). SLE = $500,000 × 0.60 = $300,000. If the company estimates ransomware occurs 2 times per year on average, ALE = $300,000 × 2 = $600,000. This means the organization should spend up to $600,000 annually on controls to prevent ransomware to make economic sense.
+
+Another example: A web application has a value of $1,000,000. SQL injection vulnerability allows attackers to exfiltrate customer data, affecting 30% of customers. EF = 30%. SLE = $1,000,000 × 0.30 = $300,000. If similar vulnerabilities are exploited 0.5 times per year (once every two years), ALE = $300,000 × 0.5 = $150,000. Implementing secure development training and code review that costs $50,000 annually makes financial sense if it prevents the attack.
+### Qualitative Risk Analysis
+
+Qualitative analysis uses descriptive scales (low, medium, high or 1-5 scales) to rank risks. This approach is faster, requires less data, and is more suitable when precise numeric data is unavailable. Qualitative analysis typically uses a risk matrix with probability (likelihood) on one axis and impact on the other.
+
+A simple 3×3 risk matrix ranks probability and impact as Low, Medium, High. The combination determines risk level (for example, High Probability × High Impact = Critical risk requiring immediate attention). More sophisticated matrices use 5×5 scales for finer differentiation. Qualitative analysis is subject to individual bias and requires careful facilitation to be effective.
+### Risk Assessment Techniques
+
+The Delphi Technique gathers estimates from multiple experts independently, compiles results, and has experts review and revise estimates based on group feedback. This iterative process converges toward consensus while reducing influence of dominant personalities. The technique is valuable for risk assessment when expert judgment is necessary but individual experts may have biases.
+## 8.3 Risk Treatment and Response
+
+Once risks are assessed, organizations choose how to respond. The primary options are avoid, transfer, mitigate, or accept.
+### Risk Avoidance
+
+Avoidance means eliminating the activity that creates the risk. For example, avoiding all use of cloud storage eliminates the cloud data breach risk. Avoidance is not always possible or practical - it may eliminate business value. When avoidance is chosen, it should be documented as a conscious decision and regularly reviewed.
+### Risk Transfer
+
+Transfer shifts the risk to another party, typically through insurance. Cyber liability insurance transfers data breach response and notification costs. Third-party vendors may transfer risk for specific functions. Transfer doesn't eliminate the risk - the organization remains ultimately responsible if the transferred party fails. Insurance policies typically have exclusions and limits, and organizations should understand what is and isn't covered.
+### Risk Mitigation
+
+Mitigation means implementing controls to reduce the likelihood or impact of risk. This is the most common approach. Implementing firewalls mitigates external attack risk. Implementing backups mitigate data loss risk. Security awareness training mitigates insider threat risk. Mitigation is typically the most cost-effective approach for manageable risks.
+### Risk Acceptance
+
+Acceptance means acknowledging a risk and choosing not to mitigate it (or accepting residual risk after mitigation). This should only be done for low-impact risks or when mitigation costs exceed potential impact. Risk acceptance should be documented with explanation of why the risk is acceptable, and should be periodically reviewed to ensure conditions haven't changed.
+| Risk Response | When Used |
+|---|---|
+| Avoid | Eliminate the activity; used when risk is unacceptable and avoidance is feasible |
+| Transfer | Shift to third party via insurance/vendor; reduces financial impact |
+| Mitigate | Implement controls to reduce likelihood or impact; most common approach |
+| Accept | Accept residual risk; used for low-impact risks or when cost exceeds benefit |
+
+## 8.4 Risk Management Frameworks
+
+### NIST Risk Management Framework (RMF)
+
+NIST RMF is a six-step process widely adopted by federal agencies and many organizations: Prepare (establish risk management context), Categorize (classify systems by impact), Select (choose appropriate controls), Implement (deploy controls), Assess (test effectiveness), and Authorize (approval and ongoing monitoring). The framework emphasizes continuous monitoring and annual reassessment.
+### ISO 31000 Risk Management
+
+ISO 31000 provides generic guidance on risk management applicable across industries. It emphasizes integrating risk management into organizational processes, establishing risk context, identifying and analyzing risks, evaluating and treating risks, and monitoring and reviewing. The framework emphasizes that risk management supports organizational objective achievement.
+### OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)
+
+OCTAVE is a risk assessment methodology developed by Carnegie Mellon University that focuses on organizational assets, threats, and vulnerabilities. OCTAVE involves workshops with business and technical staff to identify critical assets, assess threats and vulnerabilities, and develop protection strategies. The methodology is people-centric, emphasizing knowledge and creativity of organizational staff.
+### FAIR (Factor Analysis of Information Risk)
+
+FAIR provides a taxonomy for breaking down risk into measurable components and quantifying cyber risk. It defines risk as Loss Event Frequency × Loss Magnitude. Loss Event Frequency is driven by Threat Event Frequency and Vulnerability. FAIR enables organizations to quantify cyber risk in business terms and correlate it to enterprise risk management frameworks.
+
+FAIR calculation: Risk = (Threat Frequency × Vulnerability Magnitude) × Loss Magnitude. By quantifying each component, organizations can compare different risks on a common scale and prioritize mitigation.
+## 8.5 Countermeasure Selection and Implementation
+
+Once risks are assessed and a response decision is made, appropriate controls must be selected and implemented. Control selection should balance several factors: effectiveness (does it reduce the risk?), cost (total cost of ownership), feasibility (can it be implemented in the environment?), and stakeholder acceptance (will it be used effectively?).
+
+Controls can be categorized as preventive (prevents the risk from occurring), detective (identifies when risk has occurred), or corrective (mitigates impact after risk occurs). An ideal control program includes all three types - prevent what you can, detect what you can't prevent, and correct impacts when detection occurs.
+## 8.6 Residual and Total Risk
+
+Residual risk is the risk remaining after implementing controls. It's calculated as: Residual Risk = Total Risk - Mitigating Controls. If total risk (probability × impact of uncontrolled threat) is calculated as 10 and controls reduce risk by 7, residual risk is 3. Residual risk should be documented and accepted as part of the control implementation.
+
+Total risk encompasses both residual risk from mitigated threats and completely unmitigated risks. Organizations should maintain a risk register that tracks all identified risks, assessment, response decisions, controls implemented, and residual risk. This provides visibility into organizational risk posture and supports decision-making.
+## 8.7 Risk Appetite, Risk Tolerance, and Risk Capacity
+
+Organizations must clearly define their risk posture through three related but distinct concepts: risk appetite, risk tolerance, and risk capacity. These shape how organizations identify, assess, and respond to risks.
+### Risk Appetite
+
+**Risk appetite** is a strategic-level concept that defines **how much risk the ORGANIZATION is willing to pursue** to achieve its objectives and create value. Risk appetite is set by the board of directors and senior executive leadership and communicates organizational strategy and risk philosophy. Risk appetite is typically qualitative and broad, such as "we accept moderate risk for market expansion" or "we are conservative and accept minimal operational risk." It provides the foundation for risk governance and influences which business initiatives are pursued.
+### Risk Tolerance
+
+**Risk tolerance** is a tactical-level concept that defines **the acceptable VARIATION from risk appetite** in specific contexts. Risk tolerance consists of operational boundaries and quantitative thresholds that translate strategic appetite into actionable limits. Examples include "no more than $2 million loss per quarter from cyber incidents," "system availability must be at least 99.9%," or "no more than 5% of customer data may be compromised." Risk tolerance applies the appetite to particular business functions, processes, or risk types. Multiple tolerance levels may exist within a single appetite.
+### Risk Capacity
+
+**Risk capacity** is the **absolute maximum amount of risk** an organization can absorb before failure or insolvency. It represents the financial, operational, and reputational limits beyond which the organization cannot function or recover. Risk capacity is often determined by financial stability, regulatory requirements, and business continuity constraints. While appetite and tolerance are management choices, risk capacity is an organizational reality - it cannot be set arbitrarily and must be respected to ensure survival.
+#### Key Distinction
+
+**Appetite is STRATEGIC**: Set by the board, defines organizational risk philosophy and business strategy. **Tolerance is TACTICAL**: Set by business unit leaders, defines operational boundaries and quantifiable limits. **Capacity is ABSOLUTE**: The hard limit; the organization cannot exceed it without serious consequences. An analogy: appetite is how much speed a driver wants to go (strategy), tolerance is the speed limit on each road (operations), and capacity is the car's maximum speed (absolute limit).
+### Risk Acceptance vs. Risk Appetite
+
+**Risk acceptance** is a response decision made for a specific, identified risk. The organization accepts residual risk after mitigation because the cost to control exceeds the benefit or because the risk is low-impact. **Risk appetite** is the organizational posture - the overall willingness to take risk. Risk acceptance happens within the appetite; accepting risk outside appetite signals governance failure.
+### Key Risk Indicators (KRIs) vs. Key Performance Indicators (KPIs)
+
+**Key Risk Indicators (KRIs)** are **leading or predictive metrics** that signal potential risk emergence before an incident occurs. Examples: percentage of systems patched, security awareness training completion rates, mean time to detect (MTTD), number of failed access control reviews. KRIs help management identify risks early and take preventive action.
+
+**Key Performance Indicators (KPIs)** are **lagging or performance metrics** that measure outcomes and results. Examples: number of security incidents, data breach recovery time, system downtime, audit findings, control remediation time. KPIs measure whether controls and processes are effective but are backward-looking.`,
+      examTip: `The exam WILL try to confuse risk appetite and risk tolerance. Remember: appetite is STRATEGIC (board-level, qualitative), tolerance is TACTICAL (operational boundaries, quantitative). Also master: ALE = SLE × ARO, where SLE = AV × EF. Know the four risk responses: avoid, transfer, mitigate, accept. Understand residual risk = total risk - impact of controls. Be able to distinguish between risk management frameworks (NIST, ISO 31000, OCTAVE, FAIR).`,
+      importantNote: `Risk Appetite: STRATEGIC, qualitative, &quot;how much risk we want to take&quot; (set by board). Risk Tolerance: TACTICAL, quantitative, &quot;the acceptable boundaries&quot; (set by business leaders). Risk Capacity: ABSOLUTE, &quot;the maximum we can survive&quot; (organizational reality, not a choice). Appetite shapes tolerance. Tolerance must stay within capacity. If an accepted risk violates appetite or capacity, governance has failed.`,
+    },
+    {
+      id: '9-threat-modeling',
+      title: `2. Threat Modeling`,
+      content: `Threat modeling is a structured approach to identifying, analyzing, and responding to threats to a system or application. Rather than conducting security testing after development, threat modeling involves identifying threats early in the design process when they're cheaper and easier to address.
+## 9.1 Threat Modeling Methodologies
+
+### STRIDE
+
+STRIDE is a threat categorization model developed by Microsoft that helps identify threats systematically. The acronym represents: Spoofing (claiming false identity), Tampering (modifying data or functionality), Repudiation (denying actions), Information Disclosure (unauthorized data access), Denial of Service (preventing legitimate use), and Elevation of Privilege (gaining unauthorized access). By considering each threat type for each system component, organizations can identify threats they might otherwise miss.
+### PASTA (Process for Attack Simulation and Threat Analysis)
+
+PASTA is a risk-centric threat modeling methodology with seven stages: Define objectives (business/technical goals), Define technical scope (components and data flows), Decompose the application (architecture and data flows), Analyze threats (considering attack patterns), Analyze vulnerabilities, Conduct attack modeling (attack trees, attack graphs), and Analyze countermeasures. PASTA emphasizes alignment between business objectives and threat analysis.
+### DREAD
+
+DREAD is a risk rating system that assesses threats by: Damage (impact if exploited), Reproducibility (ease of reproducing the attack), Exploitability (ease of exploiting), Affected Users (number of users affected), and Discoverability (likelihood the threat will be discovered). Each factor is rated 1-3 (low-high), and overall risk is calculated. DREAD provides a quantitative approach to threat prioritization.
+### VAST (Visual, Agile, and Simple Threat Modeling)
+
+VAST is designed to integrate threat modeling into agile development cycles. It produces two models: an application model for developers and an operational model for IT/security teams. VAST emphasizes visual representation and rapid analysis suitable for fast-moving development environments.
+## 9.2 Attack Trees and Attack Graphs
+
+Attack trees visually represent the ways an attacker could achieve an objective. The root of the tree is the goal (compromise application, steal data). Branches descend showing attack paths, with leaves representing specific attack steps or exploits. Attack trees help identify all possible paths to achieving an objective and can be analyzed for probability and impact of individual paths.
+
+Attack graphs extend attack trees by showing relationships and dependencies between vulnerabilities. A graph might show that vulnerability A can only be exploited if vulnerability B is first exploited, or that vulnerabilities are in different systems but can be chained. Attack graphs help prioritize vulnerability remediation by identifying critical vulnerabilities that enable chains of attacks.
+## 9.3 Threat Intelligence
+
+Threat intelligence is information about threats, threat actors, attack tactics and techniques, and indicators of compromise. Threat intelligence helps organizations understand the threats they face, anticipate attacks, and prioritize defenses.
+
+Threat intelligence sources include commercial threat intelligence providers (who have broad visibility across many organizations), government agencies (who share intelligence on nation-state threats), information sharing organizations (sector-specific ISACs), security research (academic and vendor research on new threats and techniques), and internal data (analyzing own incidents and near-misses).
+
+Threat intelligence should be integrated into risk assessments to prioritize threats that pose realistic risk given known threat actors and techniques. For example, if threat intelligence indicates that ransomware is a significant threat affecting the organization's industry, backup and recovery controls become higher priority than defending against threats not known to target the organization.`,
+    },
+    {
+      id: '10-supply-chain-risk-management-scrm',
+      title: `3. Supply Chain Risk Management (SCRM)`,
+      content: `Supply chain risk management addresses risks arising from dependencies on external suppliers, contractors, and third parties. Security breaches affecting suppliers can disrupt operations or compromise organizational security, as evidenced by major incidents like the SolarWinds attack.
+## 10.1 Supply Chain Risk Categories
+
+### Hardware Supply Chain Risks
+
+Hardware supply chain risks include counterfeiting (fake components), tampering during manufacturing or shipment (hidden malware or tracking devices), and compromised manufacturing (building in vulnerabilities). Organizations should source hardware from authorized vendors, verify authenticity, and inspect for signs of tampering. Critical hardware may require domestic sourcing or additional inspection.
+### Software Supply Chain Risks
+
+Software risks include vulnerable dependencies (third-party libraries with security flaws), malicious code injection (compromised development tools or repositories), and compromised updates (malicious patches). Organizations should maintain software bill of materials (SBOM) listing all software components and versions, regularly scan for vulnerabilities, and implement secure software development practices.
+### Service Supply Chain Risks
+
+Service providers (cloud, managed services, consulting) introduce risks through inadequate security controls, data exposure, service interruptions, or conflicts of interest. Organizations should assess vendors before engagement, include security requirements in contracts, and monitor vendor security posture throughout the relationship.
+## 10.2 Vendor Assessment and Management
+
+Pre-engagement vendor assessment should evaluate the vendor's security controls, compliance with relevant standards, financial stability, and reputation. Assessment methods include reviewing security documentation (certifications like ISO 27001, SOC 2 reports), conducting security questionnaires, and performing on-site audits for critical vendors.
+
+Ongoing vendor management includes monitoring compliance with contractual obligations, regular security assessments, and incident notification procedures. Organizations should maintain a vendor inventory with security assessment status and perform periodic re-assessments to identify changes in vendor security posture.
+## 10.3 Contractual Requirements and SLAs
+
+Vendor contracts should include explicit security requirements: minimum security standards (encryption, access controls, patch management), data handling obligations (data classification, access restrictions, data return/destruction), audit rights (ability to audit vendor security), and incident notification (timelines and procedures for reporting security incidents).
+
+Service level agreements (SLAs) should specify availability guarantees (uptime percentages), performance targets (response time, throughput), and support commitments (hours of availability, resolution times). SLAs should address what happens if the vendor fails to meet commitments (penalty clauses, service credits).`,
+      importantNote: `Organizations are responsible for risks posed by suppliers and contractors. Include security requirements in contracts, assess vendors before engagement, and monitor compliance throughout the relationship.`,
+    },
+    {
+      id: '11-security-awareness-education-and-training',
+      title: `4. Security Awareness, Education, and Training`,
+      content: `A security-aware workforce is fundamental to organizational security. Security controls can be circumvented by humans who don't understand their importance or who are victims of social engineering. Awareness, education, and training programs develop and maintain security consciousness across the organization.
+## 11.1 Security Awareness Programs
+
+Security awareness programs are designed to create organizational security consciousness - making security a shared value. Programs typically include regular communications (newsletters, posters, emails), campaigns on specific topics (password hygiene, phishing awareness), and integration into organizational culture.
+
+Effective awareness programs tailor messages to different audiences. Executive messaging emphasizes risk and business impact. Employee messaging emphasizes personal responsibility and how to recognize threats. Contractor messaging addresses specific risks of their role. Messages should be positive and motivational (emphasizing what people should do) rather than fear-based (emphasizing catastrophic consequences).
+- Regular communications: Monthly newsletters, awareness posters, email campaigns
+- Campaign themes: Password security, phishing awareness, incident reporting, clean desk policy
+- Leadership involvement: Executive sponsorship, visible leadership participation
+- Incentives: Recognition programs, competitions, rewards for positive behaviors
+- Metrics: Tracking awareness participation, phishing simulation results, training completion
+
+## 11.2 Training Methods and Effectiveness
+
+### Classroom Training
+
+In-person training allows interaction with instructors, immediate question answering, and group discussion. Classroom training is high-touch and expensive but enables complex topics and real-time problem-solving. Organizations typically use classroom training for role-specific security training and advanced topics.
+### Online/E-Learning Training
+
+Online training is scalable, cost-effective, and available on-demand. Learners can progress at their own pace. Online training is suitable for foundational content and broad-based awareness. Disadvantages include lower engagement and limited interaction. Organizations typically require annual mandatory online training covering policy and compliance requirements.
+### Hands-On Labs and Simulations
+
+Hands-on training where learners perform tasks in realistic environments enhances retention and skill development. Simulations allow practicing incident response or security procedures in controlled environments. These approaches are effective for developing technical security skills but are resource-intensive.
+### Mentoring and On-the-Job Training
+
+For new employees or employees moving to security roles, mentoring by experienced security professionals transfers knowledge and skills. This personalized approach enables customization to individual learning styles and organizational context.
+## 11.3 Training Effectiveness Assessment
+
+Organizations should assess training effectiveness to ensure it achieves intended outcomes. Assessment methods include:
+- Knowledge tests: Quizzes assessing comprehension of training content
+- Behavioral observation: Monitoring if employees practice trained behaviors (clean desk, reporting incidents)
+- Incident reduction: Comparing security incidents before and after training to measure behavioral change
+- Phishing simulations: Measuring email link clicks and credential submissions to assess phishing awareness
+- Security metrics: Tracking access violations, policy breaches, and other metrics related to trained behaviors
+
+## 11.4 Phishing Simulations and Social Engineering Awareness
+
+Phishing simulations are controlled exercises where organizations send realistic phishing emails and measure which employees click links or submit credentials. Simulations serve dual purposes: measuring awareness and providing teachable moments when employees fail.
+
+Simulations should be realistic but clearly authorized by the organization - employees should understand that simulations occur and that results are used for training, not punishment. Following simulations, employees who clicked malicious links or submitted credentials receive remedial training. Organizations track metrics like click rates and credential submission rates, ideally showing improvement over repeated simulations.
+
+Social engineering awareness goes beyond phishing to include pretexting (gaining information through false pretenses), baiting (leaving USB drives in parking lots), and other manipulation techniques. Awareness training should make employees understand manipulation tactics and how to verify requests through independent channels.`,
+      examTip: `Understand the difference between security awareness, training, and education: Awareness creates security consciousness through communications and campaigns. Training develops specific skills through structured learning. Education develops deeper knowledge and understanding. All three are necessary for effective security culture.`,
+    },
+  ],
+  keyTakeaways: [
+    `Security governance aligns security strategy with business objectives through frameworks like NIST, ISO, COBIT, and SABSA`,
+    `Organizations must comply with applicable regulations (GDPR, HIPAA, SOX, PCI-DSS, GLBA, FERPA) or face significant penalties`,
+    `Intellectual property protection includes copyright, trademark, patent, and trade secret mechanisms with different durations and protections`,
+    `Personnel security requires screening, clear policies, proper onboarding/transfers/termination, and continuous enforcement of least privilege`,
+    `Business continuity planning requires BIA to identify criticality, RTO/RPO definition, appropriate recovery strategies, and regular testing`,
+    `Risk management follows structured processes: identify, analyze, respond (avoid/transfer/mitigate/accept), implement, monitor`,
+    `Quantitative risk: ALE = SLE × ARO; organizations should spend up to ALE on mitigation controls; qualitative uses risk matrices`,
+    `Threat modeling (STRIDE, PASTA, DREAD, VAST, attack trees) identifies threats early in development when cheaper to address`,
+    `Supply chain security requires vendor assessment, contractual requirements, monitoring, and management of third-party risks`,
+    `Awareness/training programs build security culture; effectiveness is measured by behavioral change, not just completion`
+  ]
+},
 cissp_compliance: {
   topicId: 'cissp_compliance',
-  title: `Compliance & Legal`,
+  title: `Compliance Requirements`,
   domainWeight: '16%',
   overview: `Organizations operate within a complex web of regulatory requirements. Non-compliance can result in significant financial penalties, loss of operating licenses, reputational damage, and executive liab`,
   sections: [
     {
       id: '2-compliance-and-regulatory-issues',
-      title: `2. Compliance and Regulatory Issues`,
+      title: `1. Compliance and Regulatory Issues`,
       content: `Organizations operate within a complex web of regulatory requirements. Non-compliance can result in significant financial penalties, loss of operating licenses, reputational damage, and executive liability. Understanding applicable regulations and implementing compliant controls is a core governance responsibility.
 ## 2.1 Key Regulations and Legislative Requirements
 
@@ -289,7 +522,7 @@ Organizations must understand contractual obligations, industry standards, and l
     },
     {
       id: '3-legal-and-regulatory-issues',
-      title: `3. Legal and Regulatory Issues`,
+      title: `2. Legal and Regulatory Issues`,
       content: `## 3.1 Cybercrime and Data Breaches
 
 Cyber threats are increasingly prosecuted as crimes. Organizations must understand the legal landscape and their reporting obligations. Common cybercrimes include unauthorized computer access (violating the Computer Fraud and Abuse Act), theft of intellectual property, extortion through ransomware, and fraud through manipulation of digital systems.
@@ -337,7 +570,7 @@ Mechanisms for enabling compliant data transfers include Standard Contractual Cl
     },
     {
       id: '4-professional-ethics',
-      title: `4. Professional Ethics`,
+      title: `3. Professional Ethics`,
       content: `## 4.1 (ISC)² Code of Professional Ethics
 
 The (ISC)² Code of Professional Ethics establishes ethical standards for CISSP professionals. The Code has four broad areas: protect society, the commonwealth, and the infrastructure; act honorably, honestly, justly, responsibly, and legally; provide diligent and competent service to principals; and advance and protect the profession. CISSP professionals are expected to uphold these principles in all professional activities.
@@ -352,7 +585,7 @@ RFC 1087, "Ethics and the Internet," provides guidance on ethical use of interne
     },
     {
       id: '5-security-policies-standards-procedures-and-guidelines',
-      title: `5. Security Policies, Standards, Procedures, and Guidelines`,
+      title: `4. Security Policies, Standards, Procedures, and Guidelines`,
       content: `## 5.1 Types and Hierarchy of Policy Documents
 
 Organizations typically establish a hierarchy of policy documents from broad organizational policies to detailed technical standards and procedures. Understanding the appropriate level of each document is important for developing a coherent security program.
@@ -406,10 +639,65 @@ Policies should be reviewed at least annually to assess their effectiveness, ide
     },
   ],
 },
+cissp_personnel: {
+  topicId: 'cissp_personnel',
+  title: `Personnel Security Policies and Procedures`,
+  domainWeight: '16%',
+  overview: `Personnel security encompasses all practices related to hiring, managing, and separating employees. Implementing strong personnel security controls reduces the risk of insider threats, data theft, and`,
+  sections: [
+    {
+      id: '7-personnel-security',
+      title: `1. Personnel Security`,
+      content: `Personnel security encompasses all practices related to hiring, managing, and separating employees. Implementing strong personnel security controls reduces the risk of insider threats, data theft, and policy violations.
+## 7.1 Candidate Screening and Hiring
 
+The hiring process should include security considerations from the initial job description through final employment offer. Appropriate background investigations verify criminal history, employment history, education credentials, and financial status. The depth of investigation should match the security sensitivity of the role.
+### Background Investigation Levels
+
+Basic background checks verify employment history, education, and may include criminal history searches. Enhanced investigations include reference checks, credit history, and more comprehensive criminal record searches. Security clearances (required for government and defense contractor roles) involve extensive investigation including interviews with acquaintances, financial history review, and verification of trustworthiness and loyalty.
+### Disqualifying Factors
+
+Organizations typically establish disqualifying factors for employment: false statements on application, undisclosed criminal convictions, substance abuse history, or significant financial problems (indicating financial vulnerability). These factors don't automatically disqualify a candidate but should be evaluated in context.
+## 7.2 Employment Agreements and Policies
+
+Employment agreements should clearly establish security expectations and consequences for violation. Key agreements include confidentiality/non-disclosure agreements (protecting proprietary information and trade secrets), non-compete agreements (restricting post-employment activities), and acceptable use policies (governing use of organizational resources).
+
+Agreements should address intellectual property ownership - clarifying that work created as part of employment is the property of the organization. Agreements may include "garden leave" provisions requiring the employee to refrain from competitive activity for a period after leaving. Importantly, employment agreements should explicitly address that security controls, monitoring, and compliance are conditions of employment.
+## 7.3 Onboarding, Transfers, and Termination
+
+### Onboarding (Hiring)
+
+New employee onboarding should include security training, system access provisioning, and establishment of security expectations. New employees should receive mandatory security awareness training covering acceptable use policy, confidentiality obligations, password practices, and incident reporting procedures. System access should be provisioned based on the principle of least privilege - only the minimum access required to perform the job. Access approvals should be documented, and the new employee should acknowledge receipt of security policies.
+### Transfers (Job Changes)
+
+When employees change roles, access must be updated to reflect new responsibilities. This should involve removing access from the previous role that's no longer needed (off-boarding from the old role) and provisioning new access for the new role. The process should be documented and tracked to prevent orphaned access or excessive permissions.
+### Termination (Offboarding)
+
+Employee termination or separation requires immediate and comprehensive offboarding. All system access must be revoked promptly. Organizational assets including laptops, phones, badges, and keys must be collected. For remote employees or after notice is given, remote access may be disabled immediately and equipment may be retrieved via courier. Data access, email forwarding, and authentication credentials must all be disabled. Organizations should track termination activities and verify completion to prevent unauthorized access by former employees.
+## 7.4 Vendor, Consultant, and Contractor Agreements
+
+External parties including vendors, consultants, and contractors often require access to organizational systems and data. Agreements with these parties should clearly define security obligations, data handling requirements, confidentiality expectations, and liability for breaches. Access should be provisioned at the lowest privilege level necessary, monitored closely, and immediately revoked upon contract termination.
+
+For contractors and consultants with extended tenure or privileged access, background investigations and security training are appropriate. Organizations should establish vendor security assessment procedures to verify that vendors meet minimum security standards before granting access. Service level agreements should include availability requirements, incident notification procedures, and audit rights.
+## 7.5 Separation of Duties and Job Rotation
+
+Separation of duties (SoD) is a fundamental security control that divides critical functions among multiple individuals to prevent any single person from having unilateral authority. This prevents both errors and intentional fraud. For example, in financial systems, the person authorizing a payment should be different from the person executing it and the person reconciling accounts.
+
+SoD must be implemented at multiple levels: system-level (database role-based access), procedural-level (requiring approvals and sign-offs), and organizational-level (assigning responsibility to different departments). When SoD cannot be implemented (in very small organizations or for specific roles), compensating controls like increased monitoring and exception reporting should be implemented.
+
+Job rotation requires employees to move between roles periodically, typically annually or bi-annually. This prevents long-term collusion, ensures cross-training, and often uncovers fraudulent activity that was hidden by the previous employee. For roles with significant fraud risk (financial transactions, access provisioning), mandatory vacation policies require the employee to take extended time off, allowing others to discover irregularities.
+## 7.6 Least Privilege and Need-to-Know
+
+Least privilege principle dictates that individuals should have the minimum access necessary to perform their job functions. "Need-to-know" is the justification for granting access - if someone doesn't need specific data or access to perform their duties, they should not have it. This principle should be enforced at hiring (initial access provisioning), during employment (regular access reviews), and at termination (comprehensive off-boarding).
+
+Implementing least privilege requires understanding job functions, defining required access, and continuously monitoring for overprivileged accounts. Many organizations have discovered that employees can access data unrelated to their jobs, indicating poor least privilege implementation. Regular access reviews should identify and remove excessive access, and high-risk access should be restricted regardless of job title.`,
+      importantNote: `Separation of duties prevents any single person from having unilateral authority. Least privilege limits access to minimum necessary. Job rotation and mandatory vacation enable fraud detection. Background investigations verify trustworthiness.`,
+    },
+  ],
+},
 cissp_bcdr: {
   topicId: 'cissp_bcdr',
-  title: `Business Continuity & Disaster Recovery`,
+  title: `Business Continuity Requirements`,
   domainWeight: '16%',
   overview: `Business continuity is where CISSP stops being a technical exam and becomes a management one. Every hard question in this area resolves the same way: the BUSINESS decides how much downtime and data loss it can survive, and security translates that decision into architecture and spend. Candidates who answer from technology - "restore from backup", "fail over to the hot site" - lose marks to candidates who answer from the business impact analysis. This chapter builds the metric family (MTD, RTO, RPO, WRT) on one timeline, the BIA that produces them, the recovery strategies priced against them, the plan and its testing ladder, and the management responsibilities the exam treats as non-negotiable.`,
   sections: [
@@ -727,7 +1015,7 @@ Each of these carries a decision, which is why the domain rewards precision: nam
     },
     {
       id: 'bc-people',
-      title: `6b. People, Premises & the Non-Technical Half`,
+      title: `9. 6b. People, Premises & the Non-Technical Half`,
       content: `Continuity questions that look technical are frequently about people, and the exam rewards candidates who notice. A restored data centre serving an organisation whose staff cannot reach it, cannot be paid, and do not know where to go has not achieved continuity.
 
 ## Personnel continuity
@@ -764,7 +1052,7 @@ Insurance transfers financial risk; it does not restore operations, recover data
     },
     {
       id: 'bc-exam-patterns',
-      title: `8b. How Examiners Ask It`,
+      title: `10. 8b. How Examiners Ask It`,
       content: `Continuity items arrive in a small number of recognisable shapes, and naming them makes the domain mechanical.
 
 | Pattern | The question | How to answer |
@@ -788,7 +1076,7 @@ The business decides how much downtime and data loss it can survive, and records
     },
     {
       id: 'bc-scenarios',
-      title: `8c. Three Scenarios Worked End to End`,
+      title: `11. 8c. Three Scenarios Worked End to End`,
       content: `The domain is best consolidated by running complete cases, because each one exercises the arithmetic, the ordering and the authority question together.
 
 ## Scenario one: the contradiction
@@ -820,7 +1108,7 @@ Each scenario fails at a step BEFORE the technology. One fails the arithmetic, o
     },
     {
       id: 'bc-standards',
-      title: `8d. Standards, Frameworks & Where to Look Things Up`,
+      title: `12. 8d. Standards, Frameworks & Where to Look Things Up`,
       content: `Continuity is a mature discipline with published frameworks, and the exam expects familiarity with the landscape rather than memorised clause numbers.
 
 | Source | What it provides |
@@ -856,7 +1144,7 @@ An auditor evaluating a continuity programme looks for evidence rather than docu
     },
     {
       id: 'bc-selfcheck',
-      title: `9. Self-Check`,
+      title: `13. Self-Check`,
       content: `## Self-Check
 
 Work each before reading the answer.
@@ -879,301 +1167,10 @@ Work each before reading the answer.
     },
   ],
 },
-
-cissp_personnel: {
-  topicId: 'cissp_personnel',
-  title: `Personnel Security`,
-  domainWeight: '16%',
-  overview: `Personnel security encompasses all practices related to hiring, managing, and separating employees. Implementing strong personnel security controls reduces the risk of insider threats, data theft, and`,
-  sections: [
-    {
-      id: '7-personnel-security',
-      title: `7. Personnel Security`,
-      content: `Personnel security encompasses all practices related to hiring, managing, and separating employees. Implementing strong personnel security controls reduces the risk of insider threats, data theft, and policy violations.
-## 7.1 Candidate Screening and Hiring
-
-The hiring process should include security considerations from the initial job description through final employment offer. Appropriate background investigations verify criminal history, employment history, education credentials, and financial status. The depth of investigation should match the security sensitivity of the role.
-### Background Investigation Levels
-
-Basic background checks verify employment history, education, and may include criminal history searches. Enhanced investigations include reference checks, credit history, and more comprehensive criminal record searches. Security clearances (required for government and defense contractor roles) involve extensive investigation including interviews with acquaintances, financial history review, and verification of trustworthiness and loyalty.
-### Disqualifying Factors
-
-Organizations typically establish disqualifying factors for employment: false statements on application, undisclosed criminal convictions, substance abuse history, or significant financial problems (indicating financial vulnerability). These factors don't automatically disqualify a candidate but should be evaluated in context.
-## 7.2 Employment Agreements and Policies
-
-Employment agreements should clearly establish security expectations and consequences for violation. Key agreements include confidentiality/non-disclosure agreements (protecting proprietary information and trade secrets), non-compete agreements (restricting post-employment activities), and acceptable use policies (governing use of organizational resources).
-
-Agreements should address intellectual property ownership - clarifying that work created as part of employment is the property of the organization. Agreements may include "garden leave" provisions requiring the employee to refrain from competitive activity for a period after leaving. Importantly, employment agreements should explicitly address that security controls, monitoring, and compliance are conditions of employment.
-## 7.3 Onboarding, Transfers, and Termination
-
-### Onboarding (Hiring)
-
-New employee onboarding should include security training, system access provisioning, and establishment of security expectations. New employees should receive mandatory security awareness training covering acceptable use policy, confidentiality obligations, password practices, and incident reporting procedures. System access should be provisioned based on the principle of least privilege - only the minimum access required to perform the job. Access approvals should be documented, and the new employee should acknowledge receipt of security policies.
-### Transfers (Job Changes)
-
-When employees change roles, access must be updated to reflect new responsibilities. This should involve removing access from the previous role that's no longer needed (off-boarding from the old role) and provisioning new access for the new role. The process should be documented and tracked to prevent orphaned access or excessive permissions.
-### Termination (Offboarding)
-
-Employee termination or separation requires immediate and comprehensive offboarding. All system access must be revoked promptly. Organizational assets including laptops, phones, badges, and keys must be collected. For remote employees or after notice is given, remote access may be disabled immediately and equipment may be retrieved via courier. Data access, email forwarding, and authentication credentials must all be disabled. Organizations should track termination activities and verify completion to prevent unauthorized access by former employees.
-## 7.4 Vendor, Consultant, and Contractor Agreements
-
-External parties including vendors, consultants, and contractors often require access to organizational systems and data. Agreements with these parties should clearly define security obligations, data handling requirements, confidentiality expectations, and liability for breaches. Access should be provisioned at the lowest privilege level necessary, monitored closely, and immediately revoked upon contract termination.
-
-For contractors and consultants with extended tenure or privileged access, background investigations and security training are appropriate. Organizations should establish vendor security assessment procedures to verify that vendors meet minimum security standards before granting access. Service level agreements should include availability requirements, incident notification procedures, and audit rights.
-## 7.5 Separation of Duties and Job Rotation
-
-Separation of duties (SoD) is a fundamental security control that divides critical functions among multiple individuals to prevent any single person from having unilateral authority. This prevents both errors and intentional fraud. For example, in financial systems, the person authorizing a payment should be different from the person executing it and the person reconciling accounts.
-
-SoD must be implemented at multiple levels: system-level (database role-based access), procedural-level (requiring approvals and sign-offs), and organizational-level (assigning responsibility to different departments). When SoD cannot be implemented (in very small organizations or for specific roles), compensating controls like increased monitoring and exception reporting should be implemented.
-
-Job rotation requires employees to move between roles periodically, typically annually or bi-annually. This prevents long-term collusion, ensures cross-training, and often uncovers fraudulent activity that was hidden by the previous employee. For roles with significant fraud risk (financial transactions, access provisioning), mandatory vacation policies require the employee to take extended time off, allowing others to discover irregularities.
-## 7.6 Least Privilege and Need-to-Know
-
-Least privilege principle dictates that individuals should have the minimum access necessary to perform their job functions. "Need-to-know" is the justification for granting access - if someone doesn't need specific data or access to perform their duties, they should not have it. This principle should be enforced at hiring (initial access provisioning), during employment (regular access reviews), and at termination (comprehensive off-boarding).
-
-Implementing least privilege requires understanding job functions, defining required access, and continuously monitoring for overprivileged accounts. Many organizations have discovered that employees can access data unrelated to their jobs, indicating poor least privilege implementation. Regular access reviews should identify and remove excessive access, and high-risk access should be restricted regardless of job title.`,
-      importantNote: `Separation of duties prevents any single person from having unilateral authority. Least privilege limits access to minimum necessary. Job rotation and mandatory vacation enable fraud detection. Background investigations verify trustworthiness.`,
-    },
-  ],
-},
-
-cissp_risk_mgmt: {
-  topicId: 'cissp_risk_mgmt',
-  title: `Risk Management`,
-  domainWeight: '16%',
-  overview: `Risk management is the process of identifying, analyzing, and responding to risks that could impact organizational objectives. It's a continuous process that should be integrated into organizational d`,
-  sections: [
-    {
-      id: '8-risk-management-concepts',
-      title: `8. Risk Management Concepts`,
-      content: `Risk management is the process of identifying, analyzing, and responding to risks that could impact organizational objectives. It's a continuous process that should be integrated into organizational decision-making at all levels.
-## 8.1 Risk Identification
-
-Risk identification is the process of discovering and documenting risks that could affect the organization. Identification methods include interviews with business and technical staff, review of audit reports and incident history, assessment of technical vulnerabilities, review of regulatory and legal requirements, analysis of industry trends and threat intelligence, and brainstorming with cross-functional teams.
-
-Effective risk identification requires understanding the organization's business, technology environment, regulatory landscape, and threat landscape. A risk register documents identified risks with their sources, potential impacts, and preliminary mitigation ideas. Risk identification should be ongoing - new risks emerge as the environment changes, new technologies are adopted, and new threats appear.
-## 8.2 Risk Assessment and Analysis
-
-Once risks are identified, they must be analyzed and prioritized. Organizations typically use either quantitative analysis (assigning numeric values to probability and impact) or qualitative analysis (using descriptive rankings) or a combination of both.
-### Quantitative Risk Analysis
-
-Quantitative analysis attempts to assign numeric values to risk components and calculate the expected financial impact. This approach provides precise risk metrics but requires reliable data on threat frequency and impact, which is often difficult to obtain.
-
-Key quantitative risk metrics include:
-- Asset Value (AV): The monetary value of the asset if completely compromised or destroyed
-- Exposure Factor (EF): The percentage of asset value that would be lost if the threat occurred (0-100%)
-- Single Loss Expectancy (SLE): AV × EF = expected loss from a single occurrence
-- Annual Rate of Occurrence (ARO): Expected number of times the threat will occur in a year
-- Annualized Loss Expectancy (ALE): SLE × ARO = expected annual loss from this risk
-
-Example: A company has a database with asset value of $500,000. If ransomware encrypts the database and forces a restore from backup, the exposure factor is 60% (loss of recent data and recovery time). SLE = $500,000 × 0.60 = $300,000. If the company estimates ransomware occurs 2 times per year on average, ALE = $300,000 × 2 = $600,000. This means the organization should spend up to $600,000 annually on controls to prevent ransomware to make economic sense.
-
-Another example: A web application has a value of $1,000,000. SQL injection vulnerability allows attackers to exfiltrate customer data, affecting 30% of customers. EF = 30%. SLE = $1,000,000 × 0.30 = $300,000. If similar vulnerabilities are exploited 0.5 times per year (once every two years), ALE = $300,000 × 0.5 = $150,000. Implementing secure development training and code review that costs $50,000 annually makes financial sense if it prevents the attack.
-### Qualitative Risk Analysis
-
-Qualitative analysis uses descriptive scales (low, medium, high or 1-5 scales) to rank risks. This approach is faster, requires less data, and is more suitable when precise numeric data is unavailable. Qualitative analysis typically uses a risk matrix with probability (likelihood) on one axis and impact on the other.
-
-A simple 3×3 risk matrix ranks probability and impact as Low, Medium, High. The combination determines risk level (for example, High Probability × High Impact = Critical risk requiring immediate attention). More sophisticated matrices use 5×5 scales for finer differentiation. Qualitative analysis is subject to individual bias and requires careful facilitation to be effective.
-### Risk Assessment Techniques
-
-The Delphi Technique gathers estimates from multiple experts independently, compiles results, and has experts review and revise estimates based on group feedback. This iterative process converges toward consensus while reducing influence of dominant personalities. The technique is valuable for risk assessment when expert judgment is necessary but individual experts may have biases.
-## 8.3 Risk Treatment and Response
-
-Once risks are assessed, organizations choose how to respond. The primary options are avoid, transfer, mitigate, or accept.
-### Risk Avoidance
-
-Avoidance means eliminating the activity that creates the risk. For example, avoiding all use of cloud storage eliminates the cloud data breach risk. Avoidance is not always possible or practical - it may eliminate business value. When avoidance is chosen, it should be documented as a conscious decision and regularly reviewed.
-### Risk Transfer
-
-Transfer shifts the risk to another party, typically through insurance. Cyber liability insurance transfers data breach response and notification costs. Third-party vendors may transfer risk for specific functions. Transfer doesn't eliminate the risk - the organization remains ultimately responsible if the transferred party fails. Insurance policies typically have exclusions and limits, and organizations should understand what is and isn't covered.
-### Risk Mitigation
-
-Mitigation means implementing controls to reduce the likelihood or impact of risk. This is the most common approach. Implementing firewalls mitigates external attack risk. Implementing backups mitigate data loss risk. Security awareness training mitigates insider threat risk. Mitigation is typically the most cost-effective approach for manageable risks.
-### Risk Acceptance
-
-Acceptance means acknowledging a risk and choosing not to mitigate it (or accepting residual risk after mitigation). This should only be done for low-impact risks or when mitigation costs exceed potential impact. Risk acceptance should be documented with explanation of why the risk is acceptable, and should be periodically reviewed to ensure conditions haven't changed.
-| Risk Response | When Used |
-|---|---|
-| Avoid | Eliminate the activity; used when risk is unacceptable and avoidance is feasible |
-| Transfer | Shift to third party via insurance/vendor; reduces financial impact |
-| Mitigate | Implement controls to reduce likelihood or impact; most common approach |
-| Accept | Accept residual risk; used for low-impact risks or when cost exceeds benefit |
-
-## 8.4 Risk Management Frameworks
-
-### NIST Risk Management Framework (RMF)
-
-NIST RMF is a six-step process widely adopted by federal agencies and many organizations: Prepare (establish risk management context), Categorize (classify systems by impact), Select (choose appropriate controls), Implement (deploy controls), Assess (test effectiveness), and Authorize (approval and ongoing monitoring). The framework emphasizes continuous monitoring and annual reassessment.
-### ISO 31000 Risk Management
-
-ISO 31000 provides generic guidance on risk management applicable across industries. It emphasizes integrating risk management into organizational processes, establishing risk context, identifying and analyzing risks, evaluating and treating risks, and monitoring and reviewing. The framework emphasizes that risk management supports organizational objective achievement.
-### OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)
-
-OCTAVE is a risk assessment methodology developed by Carnegie Mellon University that focuses on organizational assets, threats, and vulnerabilities. OCTAVE involves workshops with business and technical staff to identify critical assets, assess threats and vulnerabilities, and develop protection strategies. The methodology is people-centric, emphasizing knowledge and creativity of organizational staff.
-### FAIR (Factor Analysis of Information Risk)
-
-FAIR provides a taxonomy for breaking down risk into measurable components and quantifying cyber risk. It defines risk as Loss Event Frequency × Loss Magnitude. Loss Event Frequency is driven by Threat Event Frequency and Vulnerability. FAIR enables organizations to quantify cyber risk in business terms and correlate it to enterprise risk management frameworks.
-
-FAIR calculation: Risk = (Threat Frequency × Vulnerability Magnitude) × Loss Magnitude. By quantifying each component, organizations can compare different risks on a common scale and prioritize mitigation.
-## 8.5 Countermeasure Selection and Implementation
-
-Once risks are assessed and a response decision is made, appropriate controls must be selected and implemented. Control selection should balance several factors: effectiveness (does it reduce the risk?), cost (total cost of ownership), feasibility (can it be implemented in the environment?), and stakeholder acceptance (will it be used effectively?).
-
-Controls can be categorized as preventive (prevents the risk from occurring), detective (identifies when risk has occurred), or corrective (mitigates impact after risk occurs). An ideal control program includes all three types - prevent what you can, detect what you can't prevent, and correct impacts when detection occurs.
-## 8.6 Residual and Total Risk
-
-Residual risk is the risk remaining after implementing controls. It's calculated as: Residual Risk = Total Risk - Mitigating Controls. If total risk (probability × impact of uncontrolled threat) is calculated as 10 and controls reduce risk by 7, residual risk is 3. Residual risk should be documented and accepted as part of the control implementation.
-
-Total risk encompasses both residual risk from mitigated threats and completely unmitigated risks. Organizations should maintain a risk register that tracks all identified risks, assessment, response decisions, controls implemented, and residual risk. This provides visibility into organizational risk posture and supports decision-making.
-## 8.7 Risk Appetite, Risk Tolerance, and Risk Capacity
-
-Organizations must clearly define their risk posture through three related but distinct concepts: risk appetite, risk tolerance, and risk capacity. These shape how organizations identify, assess, and respond to risks.
-### Risk Appetite
-
-**Risk appetite** is a strategic-level concept that defines **how much risk the ORGANIZATION is willing to pursue** to achieve its objectives and create value. Risk appetite is set by the board of directors and senior executive leadership and communicates organizational strategy and risk philosophy. Risk appetite is typically qualitative and broad, such as "we accept moderate risk for market expansion" or "we are conservative and accept minimal operational risk." It provides the foundation for risk governance and influences which business initiatives are pursued.
-### Risk Tolerance
-
-**Risk tolerance** is a tactical-level concept that defines **the acceptable VARIATION from risk appetite** in specific contexts. Risk tolerance consists of operational boundaries and quantitative thresholds that translate strategic appetite into actionable limits. Examples include "no more than $2 million loss per quarter from cyber incidents," "system availability must be at least 99.9%," or "no more than 5% of customer data may be compromised." Risk tolerance applies the appetite to particular business functions, processes, or risk types. Multiple tolerance levels may exist within a single appetite.
-### Risk Capacity
-
-**Risk capacity** is the **absolute maximum amount of risk** an organization can absorb before failure or insolvency. It represents the financial, operational, and reputational limits beyond which the organization cannot function or recover. Risk capacity is often determined by financial stability, regulatory requirements, and business continuity constraints. While appetite and tolerance are management choices, risk capacity is an organizational reality - it cannot be set arbitrarily and must be respected to ensure survival.
-#### Key Distinction
-
-**Appetite is STRATEGIC**: Set by the board, defines organizational risk philosophy and business strategy. **Tolerance is TACTICAL**: Set by business unit leaders, defines operational boundaries and quantifiable limits. **Capacity is ABSOLUTE**: The hard limit; the organization cannot exceed it without serious consequences. An analogy: appetite is how much speed a driver wants to go (strategy), tolerance is the speed limit on each road (operations), and capacity is the car's maximum speed (absolute limit).
-### Risk Acceptance vs. Risk Appetite
-
-**Risk acceptance** is a response decision made for a specific, identified risk. The organization accepts residual risk after mitigation because the cost to control exceeds the benefit or because the risk is low-impact. **Risk appetite** is the organizational posture - the overall willingness to take risk. Risk acceptance happens within the appetite; accepting risk outside appetite signals governance failure.
-### Key Risk Indicators (KRIs) vs. Key Performance Indicators (KPIs)
-
-**Key Risk Indicators (KRIs)** are **leading or predictive metrics** that signal potential risk emergence before an incident occurs. Examples: percentage of systems patched, security awareness training completion rates, mean time to detect (MTTD), number of failed access control reviews. KRIs help management identify risks early and take preventive action.
-
-**Key Performance Indicators (KPIs)** are **lagging or performance metrics** that measure outcomes and results. Examples: number of security incidents, data breach recovery time, system downtime, audit findings, control remediation time. KPIs measure whether controls and processes are effective but are backward-looking.`,
-      examTip: `The exam WILL try to confuse risk appetite and risk tolerance. Remember: appetite is STRATEGIC (board-level, qualitative), tolerance is TACTICAL (operational boundaries, quantitative). Also master: ALE = SLE × ARO, where SLE = AV × EF. Know the four risk responses: avoid, transfer, mitigate, accept. Understand residual risk = total risk - impact of controls. Be able to distinguish between risk management frameworks (NIST, ISO 31000, OCTAVE, FAIR).`,
-      importantNote: `Risk Appetite: STRATEGIC, qualitative, &quot;how much risk we want to take&quot; (set by board). Risk Tolerance: TACTICAL, quantitative, &quot;the acceptable boundaries&quot; (set by business leaders). Risk Capacity: ABSOLUTE, &quot;the maximum we can survive&quot; (organizational reality, not a choice). Appetite shapes tolerance. Tolerance must stay within capacity. If an accepted risk violates appetite or capacity, governance has failed.`,
-    },
-    {
-      id: '9-threat-modeling',
-      title: `9. Threat Modeling`,
-      content: `Threat modeling is a structured approach to identifying, analyzing, and responding to threats to a system or application. Rather than conducting security testing after development, threat modeling involves identifying threats early in the design process when they're cheaper and easier to address.
-## 9.1 Threat Modeling Methodologies
-
-### STRIDE
-
-STRIDE is a threat categorization model developed by Microsoft that helps identify threats systematically. The acronym represents: Spoofing (claiming false identity), Tampering (modifying data or functionality), Repudiation (denying actions), Information Disclosure (unauthorized data access), Denial of Service (preventing legitimate use), and Elevation of Privilege (gaining unauthorized access). By considering each threat type for each system component, organizations can identify threats they might otherwise miss.
-### PASTA (Process for Attack Simulation and Threat Analysis)
-
-PASTA is a risk-centric threat modeling methodology with seven stages: Define objectives (business/technical goals), Define technical scope (components and data flows), Decompose the application (architecture and data flows), Analyze threats (considering attack patterns), Analyze vulnerabilities, Conduct attack modeling (attack trees, attack graphs), and Analyze countermeasures. PASTA emphasizes alignment between business objectives and threat analysis.
-### DREAD
-
-DREAD is a risk rating system that assesses threats by: Damage (impact if exploited), Reproducibility (ease of reproducing the attack), Exploitability (ease of exploiting), Affected Users (number of users affected), and Discoverability (likelihood the threat will be discovered). Each factor is rated 1-3 (low-high), and overall risk is calculated. DREAD provides a quantitative approach to threat prioritization.
-### VAST (Visual, Agile, and Simple Threat Modeling)
-
-VAST is designed to integrate threat modeling into agile development cycles. It produces two models: an application model for developers and an operational model for IT/security teams. VAST emphasizes visual representation and rapid analysis suitable for fast-moving development environments.
-## 9.2 Attack Trees and Attack Graphs
-
-Attack trees visually represent the ways an attacker could achieve an objective. The root of the tree is the goal (compromise application, steal data). Branches descend showing attack paths, with leaves representing specific attack steps or exploits. Attack trees help identify all possible paths to achieving an objective and can be analyzed for probability and impact of individual paths.
-
-Attack graphs extend attack trees by showing relationships and dependencies between vulnerabilities. A graph might show that vulnerability A can only be exploited if vulnerability B is first exploited, or that vulnerabilities are in different systems but can be chained. Attack graphs help prioritize vulnerability remediation by identifying critical vulnerabilities that enable chains of attacks.
-## 9.3 Threat Intelligence
-
-Threat intelligence is information about threats, threat actors, attack tactics and techniques, and indicators of compromise. Threat intelligence helps organizations understand the threats they face, anticipate attacks, and prioritize defenses.
-
-Threat intelligence sources include commercial threat intelligence providers (who have broad visibility across many organizations), government agencies (who share intelligence on nation-state threats), information sharing organizations (sector-specific ISACs), security research (academic and vendor research on new threats and techniques), and internal data (analyzing own incidents and near-misses).
-
-Threat intelligence should be integrated into risk assessments to prioritize threats that pose realistic risk given known threat actors and techniques. For example, if threat intelligence indicates that ransomware is a significant threat affecting the organization's industry, backup and recovery controls become higher priority than defending against threats not known to target the organization.`,
-    },
-    {
-      id: '10-supply-chain-risk-management-scrm',
-      title: `10. Supply Chain Risk Management (SCRM)`,
-      content: `Supply chain risk management addresses risks arising from dependencies on external suppliers, contractors, and third parties. Security breaches affecting suppliers can disrupt operations or compromise organizational security, as evidenced by major incidents like the SolarWinds attack.
-## 10.1 Supply Chain Risk Categories
-
-### Hardware Supply Chain Risks
-
-Hardware supply chain risks include counterfeiting (fake components), tampering during manufacturing or shipment (hidden malware or tracking devices), and compromised manufacturing (building in vulnerabilities). Organizations should source hardware from authorized vendors, verify authenticity, and inspect for signs of tampering. Critical hardware may require domestic sourcing or additional inspection.
-### Software Supply Chain Risks
-
-Software risks include vulnerable dependencies (third-party libraries with security flaws), malicious code injection (compromised development tools or repositories), and compromised updates (malicious patches). Organizations should maintain software bill of materials (SBOM) listing all software components and versions, regularly scan for vulnerabilities, and implement secure software development practices.
-### Service Supply Chain Risks
-
-Service providers (cloud, managed services, consulting) introduce risks through inadequate security controls, data exposure, service interruptions, or conflicts of interest. Organizations should assess vendors before engagement, include security requirements in contracts, and monitor vendor security posture throughout the relationship.
-## 10.2 Vendor Assessment and Management
-
-Pre-engagement vendor assessment should evaluate the vendor's security controls, compliance with relevant standards, financial stability, and reputation. Assessment methods include reviewing security documentation (certifications like ISO 27001, SOC 2 reports), conducting security questionnaires, and performing on-site audits for critical vendors.
-
-Ongoing vendor management includes monitoring compliance with contractual obligations, regular security assessments, and incident notification procedures. Organizations should maintain a vendor inventory with security assessment status and perform periodic re-assessments to identify changes in vendor security posture.
-## 10.3 Contractual Requirements and SLAs
-
-Vendor contracts should include explicit security requirements: minimum security standards (encryption, access controls, patch management), data handling obligations (data classification, access restrictions, data return/destruction), audit rights (ability to audit vendor security), and incident notification (timelines and procedures for reporting security incidents).
-
-Service level agreements (SLAs) should specify availability guarantees (uptime percentages), performance targets (response time, throughput), and support commitments (hours of availability, resolution times). SLAs should address what happens if the vendor fails to meet commitments (penalty clauses, service credits).`,
-      importantNote: `Organizations are responsible for risks posed by suppliers and contractors. Include security requirements in contracts, assess vendors before engagement, and monitor compliance throughout the relationship.`,
-    },
-    {
-      id: '11-security-awareness-education-and-training',
-      title: `11. Security Awareness, Education, and Training`,
-      content: `A security-aware workforce is fundamental to organizational security. Security controls can be circumvented by humans who don't understand their importance or who are victims of social engineering. Awareness, education, and training programs develop and maintain security consciousness across the organization.
-## 11.1 Security Awareness Programs
-
-Security awareness programs are designed to create organizational security consciousness - making security a shared value. Programs typically include regular communications (newsletters, posters, emails), campaigns on specific topics (password hygiene, phishing awareness), and integration into organizational culture.
-
-Effective awareness programs tailor messages to different audiences. Executive messaging emphasizes risk and business impact. Employee messaging emphasizes personal responsibility and how to recognize threats. Contractor messaging addresses specific risks of their role. Messages should be positive and motivational (emphasizing what people should do) rather than fear-based (emphasizing catastrophic consequences).
-- Regular communications: Monthly newsletters, awareness posters, email campaigns
-- Campaign themes: Password security, phishing awareness, incident reporting, clean desk policy
-- Leadership involvement: Executive sponsorship, visible leadership participation
-- Incentives: Recognition programs, competitions, rewards for positive behaviors
-- Metrics: Tracking awareness participation, phishing simulation results, training completion
-
-## 11.2 Training Methods and Effectiveness
-
-### Classroom Training
-
-In-person training allows interaction with instructors, immediate question answering, and group discussion. Classroom training is high-touch and expensive but enables complex topics and real-time problem-solving. Organizations typically use classroom training for role-specific security training and advanced topics.
-### Online/E-Learning Training
-
-Online training is scalable, cost-effective, and available on-demand. Learners can progress at their own pace. Online training is suitable for foundational content and broad-based awareness. Disadvantages include lower engagement and limited interaction. Organizations typically require annual mandatory online training covering policy and compliance requirements.
-### Hands-On Labs and Simulations
-
-Hands-on training where learners perform tasks in realistic environments enhances retention and skill development. Simulations allow practicing incident response or security procedures in controlled environments. These approaches are effective for developing technical security skills but are resource-intensive.
-### Mentoring and On-the-Job Training
-
-For new employees or employees moving to security roles, mentoring by experienced security professionals transfers knowledge and skills. This personalized approach enables customization to individual learning styles and organizational context.
-## 11.3 Training Effectiveness Assessment
-
-Organizations should assess training effectiveness to ensure it achieves intended outcomes. Assessment methods include:
-- Knowledge tests: Quizzes assessing comprehension of training content
-- Behavioral observation: Monitoring if employees practice trained behaviors (clean desk, reporting incidents)
-- Incident reduction: Comparing security incidents before and after training to measure behavioral change
-- Phishing simulations: Measuring email link clicks and credential submissions to assess phishing awareness
-- Security metrics: Tracking access violations, policy breaches, and other metrics related to trained behaviors
-
-## 11.4 Phishing Simulations and Social Engineering Awareness
-
-Phishing simulations are controlled exercises where organizations send realistic phishing emails and measure which employees click links or submit credentials. Simulations serve dual purposes: measuring awareness and providing teachable moments when employees fail.
-
-Simulations should be realistic but clearly authorized by the organization - employees should understand that simulations occur and that results are used for training, not punishment. Following simulations, employees who clicked malicious links or submitted credentials receive remedial training. Organizations track metrics like click rates and credential submission rates, ideally showing improvement over repeated simulations.
-
-Social engineering awareness goes beyond phishing to include pretexting (gaining information through false pretenses), baiting (leaving USB drives in parking lots), and other manipulation techniques. Awareness training should make employees understand manipulation tactics and how to verify requests through independent channels.`,
-      examTip: `Understand the difference between security awareness, training, and education: Awareness creates security consciousness through communications and campaigns. Training develops specific skills through structured learning. Education develops deeper knowledge and understanding. All three are necessary for effective security culture.`,
-    },
-  ],
-  keyTakeaways: [
-    `Security governance aligns security strategy with business objectives through frameworks like NIST, ISO, COBIT, and SABSA`,
-    `Organizations must comply with applicable regulations (GDPR, HIPAA, SOX, PCI-DSS, GLBA, FERPA) or face significant penalties`,
-    `Intellectual property protection includes copyright, trademark, patent, and trade secret mechanisms with different durations and protections`,
-    `Personnel security requires screening, clear policies, proper onboarding/transfers/termination, and continuous enforcement of least privilege`,
-    `Business continuity planning requires BIA to identify criticality, RTO/RPO definition, appropriate recovery strategies, and regular testing`,
-    `Risk management follows structured processes: identify, analyze, respond (avoid/transfer/mitigate/accept), implement, monitor`,
-    `Quantitative risk: ALE = SLE × ARO; organizations should spend up to ALE on mitigation controls; qualitative uses risk matrices`,
-    `Threat modeling (STRIDE, PASTA, DREAD, VAST, attack trees) identifies threats early in development when cheaper to address`,
-    `Supply chain security requires vendor assessment, contractual requirements, monitoring, and management of third-party risks`,
-    `Awareness/training programs build security culture; effectiveness is measured by behavioral change, not just completion`
-  ]
-},
-
+// ===== Domain 2: Asset Security (10%) - Instructor Edition module order =====
 cissp_data_class: {
   topicId: 'cissp_data_class',
-  title: `Data Classification & Handling`,
+  title: `Information and Assets`,
   domainWeight: '10%',
   overview: `Asset classification is the process of assigning sensitivity or importance levels to information and systems based on their value to the organization and the risk associated with their loss, modificat`,
   sections: [
@@ -1302,7 +1299,7 @@ Many organizations now use GDPR terminology even outside European jurisdictions,
     },
     {
       id: '4-data-retention-and-lifecycle',
-      title: `4. Data Retention and Lifecycle`,
+      title: `3. Data Retention and Lifecycle`,
       content: `Data retention policies define how long information should be kept. Excessive retention increases risk and regulatory exposure, while insufficient retention can cause legal problems. Retention decisions must balance legal requirements, business needs, and security considerations.
 ### 4.1 Retention Policy Development
 
@@ -1349,7 +1346,7 @@ Retention periods must be documented and enforced. Litigation holds override nor
     },
     {
       id: '6-information-and-asset-handling',
-      title: `6. Information and Asset Handling`,
+      title: `4. Information and Asset Handling`,
       content: `Information handling procedures ensure data remains protected as it moves through organizational processes. Handling includes marking, transmission, storage, and eventual disposition.
 ### 6.1 Marking and Labeling
 
@@ -1412,7 +1409,7 @@ Physical storage media presents significant security risk. Media containing sens
     },
     {
       id: '7-data-lifecycle-management',
-      title: `7. Data Lifecycle Management`,
+      title: `5. Data Lifecycle Management`,
       content: `Data lifecycle management tracks information through its entire existence, ensuring appropriate controls at each phase. The typical lifecycle includes Create, Store, Use, Share, Archive, and Destroy phases.
 ### 7.1 Data Lifecycle Phases
 
@@ -1476,7 +1473,7 @@ Physical storage media presents significant security risk. Media containing sens
     },
     {
       id: '8-data-states-and-scoping',
-      title: `8. Data States and Scoping`,
+      title: `6. Data States and Scoping`,
       content: `### 8.1 Security Considerations by Data State
 
 #### Data at Rest - Security Considerations
@@ -1529,7 +1526,7 @@ Once scope is determined, controls are tailored to be proportionate:
     },
     {
       id: 'practice-questions',
-      title: `Practice Questions`,
+      title: `7. Practice Questions`,
       content: ``,
       quiz: [
         {
@@ -1626,16 +1623,286 @@ Once scope is determined, controls are tailored to be proportionate:
     },
   ],
 },
+cissp_data_lifecycle: {
+  topicId: 'cissp_data_lifecycle',
+  title: `Asset Lifecycle`,
+  domainWeight: '10%',
+  overview: `Domain 2 of the CISSP CBK (Asset Security) tests deep understanding of the data lifecycle — from creation through destruction — and the security controls appropriate at each state. CISSP candidates must distinguish between data at rest, in transit, and in use, and select the correct sanitization method based on the media type and sensitivity. This topic covers the three data states, lifecycle phases, retention policies, and media sanitization standards (NIST 800-88, DoD 5220.22-M) that appear consistently on the exam.`,
+  sections: [
+    {
+      id: 'data-states',
+      title: `1. Three Data States and Their Controls`,
+      content: `## 1.1 Data at rest
 
+Data stored persistently on disk, tape, SSD, cloud storage, mobile device, or backup media. Not currently being accessed or transmitted.
+
+Threats: unauthorized disk access (lost laptop, decommissioned drive, insider browsing files), physical theft, ransomware encryption, backup tampering.
+
+Primary controls:
+
+- **Full-disk encryption (FDE)** — entire volume encrypted. BitLocker (Windows), FileVault (macOS), LUKS (Linux), self-encrypting drives (SEDs) with Opal standard. Protects against physical theft of powered-off devices.
+- **File-level encryption** — protects individual files; useful for selective protection or when FDE isn't available.
+- **Database encryption** — TDE (Transparent Data Encryption) in Oracle/SQL Server, column-level encryption for specific PII fields.
+- **Access controls** — OS-level permissions, RBAC at storage layer.
+- **Tokenization or pseudonymization** — replace sensitive values with tokens; original stored in secure vault.
+- **Backup encryption** — backups inherit at-rest protection; cloud backup services typically encrypt by default.
+
+Key management is the hard part. Encryption is only as strong as where the key is stored. CISSP exam pattern: an encrypted laptop is stolen — is data confidentiality preserved? Yes, IF the key isn't on the laptop (TPM-bound) and the disk is encrypted while powered off.
+
+## 1.2 Data in transit (in motion)
+
+Data moving across a network — between servers, to a browser, between cloud regions, across the internet.
+
+Threats: passive eavesdropping (packet capture), active interception (MITM), TLS downgrade, certificate spoofing, replay attacks.
+
+Primary controls:
+
+- **TLS 1.2+ (1.3 preferred)** — encrypts and authenticates HTTP/SMTP/IMAP/etc. Deprecated: SSL all versions, TLS 1.0/1.1.
+- **IPSec** — network-layer encryption; AH provides authentication/integrity only, ESP provides confidentiality + authentication. Modes: Transport (encrypts payload), Tunnel (encrypts entire packet including header).
+- **SSH** — secure remote shell, also used for SFTP, tunneling.
+- **VPN** — IPSec or TLS-based (OpenVPN, WireGuard). Site-to-site or remote-access.
+- **Application-layer encryption** — sometimes used in addition to TLS for end-to-end (e.g., PGP for email, Signal protocol for messaging).
+- **Mutual TLS (mTLS)** — both sides authenticate via certificates; common in zero-trust and service mesh.
+
+Pitfall: TLS protects browser-to-load-balancer; inside the data center traffic may be cleartext unless service mesh or IPSec is in place. CISSP expects awareness that "encrypted in transit" must be true end-to-end.
+
+## 1.3 Data in use
+
+Data actively being processed in memory by an application — decrypted, accessible, vulnerable to memory scraping, debugger access, side-channel attacks.
+
+This is the hardest state to protect because data MUST be readable for the application to use it.
+
+Primary controls:
+
+- **Memory protection** — OS isolation (ASLR, DEP, SMEP), hypervisor isolation, hardware memory protection.
+- **Trusted Execution Environments (TEEs)** — Intel SGX, AMD SEV, ARM TrustZone, AWS Nitro Enclaves. Provide hardware-enforced enclaves where data can be processed without the host OS having access.
+- **Homomorphic encryption** — perform computation directly on encrypted data without decrypting. Active research area; FHE is too slow for general use but specialized schemes (PSI, ML inference) are deployable.
+- **Confidential computing** — broader umbrella covering TEE-based services in the major clouds (Azure Confidential Computing, Google Confidential VMs, AWS Nitro).
+- **Memory wiping** — explicit zeroing of sensitive buffers (passwords, keys) after use to limit memory-scrape exposure window.
+
+CISSP trap: "AES-256 encryption protects data in all three states." False — encryption only protects at-rest and in-transit. In-use, the data must be decrypted to be usable. TEEs and homomorphic encryption are the special cases.`,
+      examTip: `Memorize the three states + their primary controls. CISSP exam loves "which state is hardest to protect?" — answer: in use. And "which control protects data in use?" — answer: TEE / confidential computing / homomorphic encryption.`,
+      importantNote: `TLS 1.0 and 1.1 are DEPRECATED (RFC 8996, 2021). Always select TLS 1.2 minimum, 1.3 preferred on CISSP questions. Similarly SSL all versions are deprecated.`,
+    },
+    {
+      id: 'data-lifecycle',
+      title: `2. Data Lifecycle Phases`,
+      content: `## 2.1 The lifecycle model
+
+Most CISSP texts use a 6-phase model:
+
+1. **Create** — data generated by users, sensors, applications
+2. **Store** — written to persistent storage (at-rest controls apply)
+3. **Use** — processed by applications (in-use controls apply)
+4. **Share** — transmitted to other systems or people (in-transit controls apply)
+5. **Archive** — moved to long-term storage when no longer actively used
+6. **Destroy** — securely removed when retention period expires
+
+A risk control framework should address each phase:
+
+| Phase | Key Controls |
+|---|---|
+| Create | Classification at creation, labeling, ownership assignment, encryption keys provisioned |
+| Store | At-rest encryption, access controls, integrity monitoring, backups |
+| Use | RBAC enforcement, audit logging, TEE for high-value data, DLP for exfiltration prevention |
+| Share | TLS, DLP egress filters, recipient authentication, watermarking |
+| Archive | Encryption with long-term key management, immutable storage (WORM), retention metadata |
+| Destroy | Sanitization per media type + classification |
+
+## 2.2 Data ownership roles
+
+CISSP exam tests these role distinctions explicitly:
+
+- **Data owner** — typically a business executive or business unit head. Accountable for the data. Decides classification, who can access, retention. Cannot be delegated.
+- **Data custodian** — typically IT or security staff. Implements the controls the owner specifies. Day-to-day operations of access, backups, encryption.
+- **Data steward** — quality-focused role; ensures data accuracy, completeness, and adherence to data governance policies.
+- **Data user** — end users authorized to access and use data for their job function.
+- **Data processor** — under GDPR, a party processing data on behalf of the controller. The controller (similar to owner) determines purposes/means; the processor implements.
+
+CISSP-style question: "The CFO wants to grant the finance team access to a new financial dataset. Who authorizes the access?" Answer: the data owner (who may BE the CFO or the head of accounting, depending on org). Not the IT custodian.
+
+## 2.3 Classification levels
+
+Government model (commonly tested):
+
+- Top Secret → Secret → Confidential → Sensitive But Unclassified (SBU) → Unclassified
+
+Commercial model:
+
+- Confidential → Private → Sensitive → Public
+
+Classifications drive control selection. Higher classification = more rigorous controls (encryption at rest required, MFA required, audit logging mandatory, longer retention, stricter destruction).
+
+Always classify at creation. Reclassification (upgrading or downgrading) happens via formal review.
+
+## 2.4 Labeling and handling
+
+Once classified, data needs labels (digital metadata, physical document headers/footers, watermarks). Handling procedures define how the data may be:
+
+- Stored (which media, which systems, encrypted or not)
+- Transmitted (which channels, encrypted or not)
+- Printed (which printers, whether copies retained)
+- Discussed (which meeting rooms, which conferences)
+- Disposed of (which sanitization method)
+
+## 2.5 Retention
+
+The default mistake is to keep data forever "just in case." This is RISK ACCUMULATION:
+
+- More data = more breach exposure when systems are compromised
+- More data = more eDiscovery cost in litigation
+- Some regulations REQUIRE deletion after a period (GDPR right to be forgotten, sectoral retention limits)
+
+Retention policy defines:
+
+- How long each data category is kept (driven by legal/regulatory + business need + risk)
+- Where it's stored (active vs archive)
+- When and how it's destroyed
+- Exceptions (litigation hold)
+
+Records management is a specialty within data lifecycle for records that have legal/regulatory significance (financial records, employment records, medical records).
+
+## 2.6 Legal hold (litigation hold)
+
+When litigation is reasonably anticipated, the organization MUST suspend normal destruction for relevant data — even if retention policy would otherwise delete it. Failure = spoliation = sanctions.
+
+Process:
+
+1. General counsel issues legal hold notice
+2. IT suspends auto-delete for identified data categories
+3. Custodians of relevant data notified, instructed to preserve
+4. Periodic re-issuance/confirmation
+5. Release of hold when litigation concludes
+
+CISSP expects awareness that legal hold OVERRIDES retention policy.`,
+      examTip: `Data owner = business executive who is ACCOUNTABLE. Data custodian = IT staff who IMPLEMENTS. The owner classifies and authorizes; the custodian operates. Don't confuse these on the exam.`,
+    },
+    {
+      id: 'sanitization-destruction',
+      title: `3. Sanitization, Destruction, and Media Disposal`,
+      content: `When data reaches end of life, it must be made UNRECOVERABLE. The method depends on the MEDIA TYPE and the data CLASSIFICATION.
+
+## 3.1 NIST SP 800-88 Rev 1 — the authoritative reference
+
+The CISSP exam frequently cites NIST 800-88 (Guidelines for Media Sanitization). Three sanitization levels:
+
+- **Clear** — logical sanitization using standard read/write commands. Defeats casual recovery (next user can't see prior data). May NOT defeat forensic recovery. Suitable for media that will be reused within the organization at the same or lower classification.
+- **Purge** — physical or logical sanitization that makes data infeasible to recover, even with state-of-the-art lab techniques. Cryptographic erase (delete the encryption key), block erase (whole-disk overwrite with multiple patterns), degaussing for magnetic media. Suitable for media leaving the organization or moving to lower-classification environments.
+- **Destroy** — physical destruction making the media itself unusable. Shredding, incinerating, disintegrating, pulverizing. The ONLY appropriate method for highly classified data or when uncertainty about purge effectiveness exists.
+
+The choice depends on:
+
+- **Confidentiality level** of the data
+- **Media type** — different media respond differently to each method
+- **Future use** of the media — same org, sold/donated, returned to vendor, recycled
+- **Cost** — destruction is most expensive but most assured
+
+## 3.2 Media-specific guidance
+
+| Media | Clear | Purge | Destroy |
+|---|---|---|---|
+| **Magnetic HDD** | OS-level delete + overwrite (one pass sufficient on modern drives per NIST) | Degaussing (strong magnetic field), multi-pass overwrite, cryptographic erase if FDE was in place | Shredding, incinerating, disintegrating |
+| **SSD** | OS-level secure erase (ATA Secure Erase) | Cryptographic erase (FDE key deletion), manufacturer's purge command | Shredding (mandatory for highly classified — SSDs have over-provisioning blocks that aren't reachable by overwrite) |
+| **Optical (CD/DVD)** | Not really applicable (write-once) | N/A | Shredding, incinerating |
+| **Flash drives, mobile devices** | Factory reset (often insufficient — wear-leveling preserves old data in unmapped blocks) | Cryptographic erase if FDE, manufacturer purge | Shredding |
+| **Tape** | Logical overwrite | Degaussing | Shredding, incinerating |
+| **Paper** | N/A | Cross-cut shredding (high security: 1mm × 5mm or smaller) | Incinerating, pulping |
+
+CISSP trap: a single-pass overwrite is sufficient for modern magnetic drives per NIST 800-88. Older guidance (3-pass, 7-pass, 35-pass Gutmann) was developed for older media densities and is now obsolete. EXAM expects NIST 800-88 single-pass for purge on modern HDDs.
+
+## 3.3 DoD 5220.22-M
+
+Older U.S. Department of Defense standard. Specified 3-pass overwrite (with verification). Superseded by NIST 800-88 for federal systems, but still appears in exam questions and procurement specs. Know that:
+
+- DoD 5220.22-M is the legacy standard
+- NIST 800-88 is current
+- 3-pass and 7-pass overwrites are unnecessary for modern media but not harmful
+
+## 3.4 Cryptographic erase (CE)
+
+If a disk was fully encrypted from initialization, you can sanitize by deleting the encryption key — the ciphertext on disk becomes unrecoverable noise. Fast (seconds), reliable, applicable to any media that supports FDE.
+
+CE is the preferred purge method for:
+
+- Encrypted SSDs (avoids over-provisioning issues)
+- Cloud storage (vendor's KMS deletes key)
+- BYOD device wipes (corporate container erased without touching personal data)
+- Decommissioning encrypted backups
+
+For CE to be valid:
+
+- Encryption must have been in place for the ENTIRE life of the data on the media
+- Key destruction must be verified
+- No backup of the key exists outside the secure destruction process
+
+## 3.5 Degaussing
+
+Strong magnetic field disrupts magnetic patterns on disks/tape. Effective for:
+
+- Magnetic HDDs
+- Magnetic tape
+- NOT effective for SSDs (no magnetic media), optical, flash
+
+Modern HDDs require very strong fields (higher coercivity). Use NSA-approved degaussers; verify with the manufacturer's spec.
+
+After degaussing, drive is typically UNUSABLE (also wipes servo tracks) — effectively combines purge with partial destroy.
+
+## 3.6 Physical destruction methods
+
+- **Shredding** — most common; reduces media to small fragments. Shred size matters: smaller = more secure. NSA-approved shredders specify max fragment size.
+- **Pulverizing** — reduces to powder. Maximum security.
+- **Disintegrating** — combined shred + pulverize.
+- **Incinerating** — burns to ash. Requires high-temperature furnace.
+- **Melting** — for metal media; melts at very high temperature.
+
+For highly classified data, witnesses and chain-of-custody documentation are required throughout destruction. Many orgs use certified destruction vendors who provide Certificates of Destruction (CoD).
+
+## 3.7 Data remanence
+
+The residual representation of data that may persist after sanitization attempts. Concerns:
+
+- Failed sanitization (clear was insufficient when purge was needed)
+- Bad sectors not addressable by overwrite
+- SSD over-provisioning blocks
+- Cached data (browser cache, swap files, hibernation files)
+- Print-job spool files
+- Backup tapes in offsite vaults
+
+A complete sanitization program addresses ALL locations data has been replicated.
+
+## 3.8 Decommissioning process
+
+A formal media decommissioning process:
+
+1. **Identify** — what media is being decommissioned, what data is on it, what classification
+2. **Authorize** — data owner approves disposal
+3. **Sanitize** — apply appropriate clear/purge/destroy method
+4. **Verify** — confirm method was successful (audit logs, third-party verification, physical inspection)
+5. **Document** — Certificate of Destruction or sanitization record, retained per audit retention policy
+6. **Dispose** — recycle or destroy the physical media per environmental regulations`,
+      examTip: `NIST 800-88 Rev 1 is the current authoritative reference. Three levels: Clear (low confidentiality, reuse internally), Purge (medium, reuse outside or sell), Destroy (highest classification, no recovery possible). Match the level to the data sensitivity AND the future use of the media.`,
+      importantNote: `For SSDs, only cryptographic erase or physical destruction is reliable. Single overwrite cannot reach over-provisioning blocks. Multi-pass overwrite is OBSOLETE for modern magnetic HDDs (NIST says one pass suffices) but appears as a wrong-answer trap on the exam.`,
+    },
+  ],
+  keyTakeaways: [
+    'Three data states: at rest (FDE, DBE), in transit (TLS 1.2+, IPSec), in use (TEE, homomorphic encryption — hardest to protect)',
+    '6-phase lifecycle: Create, Store, Use, Share, Archive, Destroy — each phase has appropriate controls',
+    'Data owner = business executive, ACCOUNTABLE, classifies + authorizes. Data custodian = IT staff, IMPLEMENTS. Do not confuse these CISSP roles.',
+    'NIST SP 800-88 Rev 1 is the current sanitization authority — Clear / Purge / Destroy by data sensitivity + media reuse path',
+    'Single-pass overwrite is sufficient for modern HDDs per NIST; multi-pass (DoD 5220.22-M) is legacy/obsolete but appears as a trap option',
+    'SSDs: cryptographic erase (best) or physical destruction. Overwrite cannot reach over-provisioning blocks.',
+    'Legal hold OVERRIDES retention policy — failure to preserve relevant data when litigation is reasonably anticipated = spoliation',
+  ],
+},
 cissp_privacy: {
   topicId: 'cissp_privacy',
-  title: `Privacy Protection`,
+  title: `Protect Privacy`,
   domainWeight: '10%',
   overview: `Privacy is the right of individuals to control their personal information and have it handled appropriately. Privacy protection is both a regulatory obligation and an ethical responsibility. It requir`,
   sections: [
     {
       id: '3-privacy-protection',
-      title: `3. Privacy Protection`,
+      title: `1. Privacy Protection`,
       content: `Privacy is the right of individuals to control their personal information and have it handled appropriately. Privacy protection is both a regulatory obligation and an ethical responsibility. It requires balancing organizational needs with individual rights.
 ### 3.1 Personal Data Types
 
@@ -1710,7 +1977,7 @@ A **Privacy Impact Assessment** is a systematic evaluation of how new systems, p
     },
     {
       id: '3-2-anonymization-and-pseudonymization',
-      title: `3.2 Anonymization and Pseudonymization`,
+      title: `2. 2 Anonymization and Pseudonymization`,
       content: `Organizations frequently need to share or process data while protecting individual privacy. Anonymization and pseudonymization are two techniques that reduce privacy risk, but they differ in reversibility and regulatory treatment.
 ### Anonymization
 
@@ -1762,7 +2029,7 @@ Several data transformation techniques support anonymization and pseudonymizatio
     },
     {
       id: '5-data-security-controls',
-      title: `5. Data Security Controls`,
+      title: `3. Data Security Controls`,
       content: `Data security controls protect information in various states: at rest (stored), in transit (moving), and in use (actively processed). Different controls apply to each state.
 ### 5.1 Data States and Protection Requirements
 
@@ -1904,10 +2171,10 @@ IRM is most effective for highly sensitive documents (trade secrets, executive c
     `Cloud Shared Responsibility: In cloud environments, provider secures infrastructure; customer secures encryption keys, access controls, and data configuration. This is critical for cloud-related exam questions. Don't assume provider security absolves customer responsibility.`
   ]
 },
-
+// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====
 cissp_secure_design: {
   topicId: 'cissp_secure_design',
-  title: `Secure Design Principles`,
+  title: `Processes Using Secure Design Principles`,
   domainWeight: '13%',
   overview: `### Defense in Depth (Layered Security)`,
   sections: [
@@ -1970,7 +2237,7 @@ Example: Single sign-on (SSO) makes security more acceptable than requiring mult
     },
     {
       id: 'practice-questions-domain-3',
-      title: `Practice Questions - Domain 3`,
+      title: `2. Practice Questions - Domain 3`,
       content: `### Exam Tips Summary for Domain 3
 
 - Know the 10 foundational design principles; "DEFICOL" helps memory
@@ -2078,10 +2345,9 @@ Example: Single sign-on (SSO) makes security more acceptable than requiring mult
     },
   ],
 },
-
 cissp_models: {
   topicId: 'cissp_models',
-  title: `Security Models & Frameworks`,
+  title: `Fundamental Concepts of Security Models`,
   domainWeight: '13%',
   overview: `A security policy says what must be true. A security model says how a machine can be made to enforce it, in terms precise enough to reason about. That gap is the whole subject. Domain 3 questions rarely ask you to recite Bell-LaPadula; they describe an organisation with a problem and ask which model, criterion, or framework addresses it. Answering well means knowing what each construct was invented to solve, what it deliberately ignores, and which layer of the enterprise it belongs to. This chapter builds the reference-monitor foundation, works through the confidentiality and integrity model pair, covers the commercial models the exam favours, then separates evaluation criteria from frameworks - three families candidates routinely blur together.`,
   sections: [
@@ -2552,7 +2818,466 @@ A candidate who answers "Bell-LaPadula" or "Clark-Wilson" here has matched the w
 **7.** A **trusted** component is one positioned inside the security perimeter such that it *has the ability* to violate the policy - nothing constrains it. **Trustworthy** is the separate, evidence-based judgement that it will not do so. A Bell-LaPadula trusted subject is explicitly permitted to break the star property in order to declassify; calling it trusted describes its power, not its reliability. Assurance activity is what converts trusted into trustworthy.
 
 **8.** The **NIST Risk Management Framework**, defined in **SP 800-37**, with the steps Prepare, Categorize, Select, Implement, Assess, Authorize, Monitor. Controls are catalogued in **NIST SP 800-53**. The authorisation decision is an **Authority to Operate (ATO)**, granted by the Authorising Official - the accreditation step in the older vocabulary.`
-    }
+    },
+    {
+      id: 'bell-lapadula',
+      title: `9. Bell-LaPadula: Confidentiality (MAC, Multi-Level Security)`,
+      content: `Developed in 1973 by David Bell and Leonard LaPadula for the U.S. Department of Defense. The first mathematical model of computer security. Designed to enforce CONFIDENTIALITY in multi-level secure (MLS) systems handling classified information.
+
+## 1.1 The model
+
+Bell-LaPadula (BLP) is a STATE MACHINE model based on a lattice of security labels. Each subject (user, process) and each object (file, resource) is assigned a sensitivity label. The model defines rules about how subjects can access objects without leaking information from higher to lower classifications.
+
+Lattice example (US government):
+\`\`\`
+Top Secret
+  ↑
+Secret
+  ↑
+Confidential
+  ↑
+Unclassified
+\`\`\`
+
+## 1.2 The three security properties
+
+BLP has THREE properties (memorize):
+
+1. **Simple Security Property (ss-property)**: "no read up." A subject at a given level cannot READ an object at a higher level. A Confidential-cleared analyst cannot read a Secret document.
+
+2. **\\*-property (star property)**: "no write down." A subject at a given level cannot WRITE to an object at a LOWER level. A Secret-cleared analyst cannot write Secret information to a Confidential file (preventing the analyst from leaking secrets by writing them somewhere less protected).
+
+3. **Discretionary Security Property (ds-property)**: in addition to the mandatory rules above, an access matrix can grant specific discretionary permissions (compatible with the mandatory model).
+
+## 1.3 Why these rules
+
+The model's goal is to PREVENT information flow from high to low classifications:
+
+- "No read up" prevents a low-clearance user from reading high-classification data (an obvious protection)
+- "No write down" prevents a HIGH-cleared user (perhaps malicious or compromised) from WRITING high-classification data to a low-classification file where a low-cleared user could then read it (a Trojan horse scenario)
+
+## 1.4 What BLP does NOT protect
+
+BLP is a CONFIDENTIALITY-only model. It does NOT address:
+
+- **Integrity** — a low-cleared user can WRITE UP (write to a higher-classification file) under BLP. This is allowed because no information leaks downward. But the high-clearance user might now be reading a low-quality (or maliciously corrupted) file. Use Biba for integrity protection.
+- **Availability** — BLP says nothing about denial of service.
+- **Covert channels** — clever ways to leak information through timing, resource exhaustion, etc.
+
+## 1.5 Tranquility principle
+
+A security label, once assigned, should not change while the subject/object is active.
+
+- **Strong tranquility** — labels never change during operation.
+- **Weak tranquility** — labels can change as long as it doesn't violate BLP properties.
+
+CISSP-style trap: "A user with Top Secret clearance is reading a Secret document. Can they edit it and save back to its original location?" In strict BLP, NO — saving back would be a write at the current subject's level (TS) writing to a Secret object, which is write-down. The user would need to "downgrade" their session to Secret first (which raises its own concerns).`,
+      examTip: `Memorize: BLP simple = "no read up," star = "no write down." Confidentiality-only. Bell-LaPadula = government / military. Don't confuse with Biba (integrity, opposite directions).`,
+      importantNote: `The "*-property" is pronounced "star property" — and on the CISSP exam, you'll see it written both as "*-property" and "star property" interchangeably. They mean the same thing.`,
+    },
+    {
+      id: 'biba',
+      title: `10. Biba: Integrity (Opposite Directions from BLP)`,
+      content: `Developed in 1977 by Kenneth Biba. Addresses the gap BLP leaves open: data INTEGRITY. The exam loves contrasting Biba with BLP because they share structure but operate in opposite directions.
+
+## 2.1 The model
+
+Like BLP, Biba is a state-machine model over a lattice. But the labels represent INTEGRITY level, not confidentiality. Higher integrity level = data more trustworthy / authoritative.
+
+Lattice example:
+\`\`\`
+High integrity (trusted source)
+  ↑
+Medium integrity
+  ↑
+Low integrity (user-generated, untrusted)
+\`\`\`
+
+## 2.2 The three integrity properties
+
+1. **Simple Integrity Property**: "no read down." A subject at a given integrity level cannot READ an object at a LOWER integrity level. (Prevents the subject from being contaminated by low-quality / untrusted data.)
+
+2. **\\*-Integrity Property (Integrity star)**: "no write up." A subject at a given integrity level cannot WRITE to an object at a HIGHER integrity level. (Prevents low-trust subjects from corrupting high-trust data.)
+
+3. **Invocation Property**: a subject cannot invoke (request services from) a subject of HIGHER integrity. (Prevents low-integrity processes from manipulating high-integrity processes.)
+
+## 2.3 BLP vs Biba — the mnemonic
+
+| Model | Concern | Read | Write |
+|---|---|---|---|
+| **BLP** | Confidentiality | No read UP | No write DOWN |
+| **Biba** | Integrity | No read DOWN | No write UP |
+
+The directions are OPPOSITE because the goals are opposite:
+
+- BLP wants to prevent INFORMATION from flowing DOWN (a high-clearance secret shouldn't leak to a low-clearance person)
+- Biba wants to prevent CONTAMINATION from flowing UP (a low-integrity input shouldn't corrupt a high-integrity output)
+
+## 2.4 Practical application
+
+Biba inspired the integrity levels in Windows User Account Control (UAC):
+
+- System
+- High
+- Medium (default user)
+- Low (Internet Explorer / Edge Protected Mode runs here)
+- Untrusted
+
+A Low-integrity process (a browser process) cannot write to High-integrity files or registry keys — this is Biba's no-write-up in action.
+
+## 2.5 What Biba doesn't address
+
+Biba is INTEGRITY-only. It doesn't address:
+
+- Confidentiality (use BLP for that)
+- Availability
+- Specific transaction semantics (use Clark-Wilson for transactional integrity)`,
+      examTip: `BLP and Biba are OPPOSITES. Confidentiality + secrets = BLP. Integrity + trust = Biba. The exam will give you a scenario; identify which property is at stake and pick the matching model. Memorize the directional asymmetry: BLP "no read UP / no write DOWN"; Biba "no read DOWN / no write UP."`,
+    },
+    {
+      id: 'clark-wilson-brewer-nash',
+      title: `11. Clark-Wilson, Brewer-Nash, and Other Models`,
+      content: `## 3.1 Clark-Wilson — Commercial Integrity via Well-Formed Transactions
+
+Developed in 1987 by David Clark and David Wilson. Designed for COMMERCIAL integrity needs (e.g., banking), where Biba's military-style integrity is overkill.
+
+Core concepts:
+
+- **Constrained Data Items (CDIs)** — data that needs integrity protection (bank account balances, financial records)
+- **Unconstrained Data Items (UDIs)** — data not protected by the model (e.g., free-form text)
+- **Integrity Verification Procedures (IVPs)** — verify that CDIs are in a valid state
+- **Transformation Procedures (TPs)** — the ONLY way CDIs can be modified; they enforce that valid CDIs transition to other valid CDIs
+
+The model enforces:
+
+1. **Well-formed transactions** — CDIs can only be modified via certified TPs (not via direct write)
+2. **Separation of duties** — different people authorize the TP, run the TP, and audit the results
+3. **Auditing** — all modifications logged with who, when, what
+
+Classic example: a bank account balance (CDI) can only be modified by certified TPs (debit, credit, transfer). A bank teller cannot just write a new balance directly; they must invoke one of the approved TPs, which preserves valid state (balance ≥ 0 if account terms require, audit trail recorded, etc.).
+
+Subject-Transformation-Object triple: each user is authorized for SPECIFIC TPs on SPECIFIC CDIs. Not a blanket access matrix.
+
+## 3.2 Brewer-Nash — Chinese Wall (Conflict of Interest)
+
+Developed in 1989 by David Brewer and Michael Nash. Designed for environments where preventing CONFLICTS OF INTEREST matters — most famously, a financial consulting firm with clients in competing industries.
+
+Core concept: a user's access is DYNAMICALLY restricted based on their access history.
+
+Model structure:
+
+- Objects organized into "company datasets" (CDs) — all data related to one company
+- CDs grouped into "conflict of interest classes" (CoIs) — e.g., all major oil companies are in one CoI class
+- A subject who accesses any CD in a CoI class is then BLOCKED from accessing any other CD in the same CoI class
+
+Practical example: an analyst at a consulting firm reviews documents for Oil Company A. The model then blocks them from accessing documents for Oil Company B, C, or D (all in the "Oil Companies" CoI class), because doing so would create a conflict of interest. They CAN still access documents for Bank X (different CoI class).
+
+Brewer-Nash is dynamic — initial access permissions are open; they tighten as the user accesses data.
+
+## 3.3 State Machine model
+
+Generic model where:
+
+- The system is always in some STATE (defined by all current variable values)
+- Each operation transitions the system from one state to another
+- A SECURE state is one where security properties hold (e.g., access matrix is consistent)
+- The model is SECURE if every state reachable from a secure initial state is itself secure
+
+Both BLP and Biba are state-machine models. This concept appears on the exam as background.
+
+## 3.4 Lattice-based models
+
+Both BLP and Biba use LATTICES — partially ordered sets of security labels with a least upper bound and greatest lower bound for any pair. The lattice provides the structure for "higher" and "lower" comparisons.
+
+Examples:
+
+- BLP government lattice: TS > S > C > U
+- Biba integrity lattice: High > Medium > Low
+
+## 3.5 Non-interference and information flow models
+
+Goldwasser, Goguen, and Meseguer's work on information flow:
+
+- **Non-interference** — high-level actions should not be observable by low-level subjects. Prevents covert channels.
+- **Information flow models** — formally analyze which information CAN flow to which subjects.
+
+These are mostly theoretical for CISSP — know the names.
+
+## 3.6 Access matrix models (Lampson, HRU)
+
+The general formalism for representing who can do what to which object:
+
+- Rows = subjects
+- Columns = objects
+- Cells = allowed operations
+
+Most implementations are partial (ACLs are column-slices; capabilities are row-slices). Pure access matrices don't scale and aren't used directly but form the theoretical basis for DAC.
+
+## 3.7 Take-Grant model
+
+A model for analyzing how access rights can be PROPAGATED through a system. Subjects can take rights from others (under certain conditions) or grant rights to others. Used to prove that certain rights cannot leak to certain subjects.
+
+Mostly theoretical — appears on the exam as recognition only.
+
+## 3.8 Graham-Denning model
+
+Defines a set of PRIMITIVE OPERATIONS for managing subjects, objects, and rights (create subject, create object, delete subject, delete object, take/grant/transfer rights). Provides building blocks for richer access control models.
+
+Recognition-level knowledge for the exam.
+
+## 3.9 Mapping models to scenarios — the CISSP exam pattern
+
+When the exam describes a scenario, identify:
+
+| Concern in the scenario | Model to choose |
+|---|---|
+| Multi-level classified info, prevent leaks downward | Bell-LaPadula |
+| Trust hierarchy, prevent contamination upward | Biba |
+| Commercial integrity, certified transactions, audit trail | Clark-Wilson |
+| Consulting firm, prevent conflict of interest | Brewer-Nash |
+| Generic state-based security reasoning | State Machine |
+| Lattice ordering of security labels | Lattice-based |
+
+Memorize this table — exam questions are often pure model identification.`,
+      examTip: `When the scenario mentions BANKING, ACCOUNTING, or anything about CERTIFIED TRANSACTIONS, the answer is Clark-Wilson. When it mentions CONFLICT OF INTEREST, CONSULTING FIRM, or COMPETING CLIENTS, the answer is Brewer-Nash. Memorize the keyword-to-model mapping.`,
+      importantNote: `Bell-LaPadula was developed for MILITARY/GOVERNMENT confidentiality. Biba added INTEGRITY. Clark-Wilson is COMMERCIAL integrity. Brewer-Nash addresses CONFLICT OF INTEREST. Each addresses a different gap.`,
+    },
+  ],
+},
+cissp_evaluation: {
+  topicId: 'cissp_evaluation',
+  title: `Select Controls Based upon System Security Requirements`,
+  domainWeight: '13%',
+  overview: `CISSP Domain 3 tests understanding of how security products and systems are formally EVALUATED for trustworthiness — different from auditing an organization. This topic covers Common Criteria (the international standard), legacy frameworks (TCSEC Orange Book, ITSEC), FIPS 140-3 for cryptographic modules, and the concepts of Protection Profiles, Security Targets, and Evaluation Assurance Levels (EALs). These are recognition-level CISSP topics that appear regularly on the exam.`,
+  sections: [
+    {
+      id: 'common-criteria',
+      title: `1. Common Criteria (ISO/IEC 15408)`,
+      content: `Common Criteria (CC) is the international standard for evaluating security PRODUCTS — operating systems, firewalls, smart cards, network devices, databases. It replaced the regional standards (TCSEC, ITSEC, CTCPEC) in 1999. It is jointly maintained by participants in the Common Criteria Recognition Arrangement (CCRA).
+
+## 1.1 Core concepts
+
+- **Target of Evaluation (TOE)** — the product being evaluated
+- **Security Target (ST)** — document the VENDOR writes describing the TOE's security claims, the environment it operates in, and the security functions it implements
+- **Protection Profile (PP)** — TEMPLATE security requirements for a category of products (e.g., a PP for firewalls, a PP for network devices, a PP for smart cards). Often written by user communities (governments, industry groups). Vendors can claim conformance to a PP.
+- **Evaluation Assurance Level (EAL)** — graded rigor of evaluation (EAL1 lowest, EAL7 highest)
+- **Common Criteria Recognition Arrangement (CCRA)** — mutual recognition of evaluations among participating countries; certifications issued in one country are recognized in others up to EAL2 (or EAL4 for some technology categories under a Common Criteria Recognition Arrangement profile)
+
+## 1.2 Evaluation Assurance Levels
+
+EALs grade EVALUATION RIGOR, NOT product security. A product with high EAL was evaluated rigorously; it doesn't mean its security FUNCTIONS are inherently better than a product with low EAL.
+
+| EAL | Description | Typical Use |
+|---|---|---|
+| **EAL 1** | Functionally tested | Lowest rigor; sufficient where security is not the primary requirement |
+| **EAL 2** | Structurally tested | Most COTS products with security claims |
+| **EAL 3** | Methodically tested and checked | Adds developer evidence and testing |
+| **EAL 4** | Methodically designed, tested, and reviewed | The HIGHEST level CCRA recognizes between all member states; common for commercial security products |
+| **EAL 5** | Semi-formally designed and tested | Specialty products; requires national scheme |
+| **EAL 6** | Semi-formally verified design and tested | High-risk environments (military, government) |
+| **EAL 7** | Formally verified design and tested | Highest; mathematically proven security model; extremely costly and rare |
+
+CISSP exam pattern: "A product evaluated at EAL 4 means..." → its security functions were methodically designed, tested, and reviewed at that level of rigor. NOT that EAL4 = "secure."
+
+## 1.3 The evaluation process
+
+1. **Vendor** writes the Security Target (ST), describing the TOE's claims
+2. **Lab (Common Criteria Testing Laboratory)** evaluates the TOE against the ST per the methodology defined for the claimed EAL
+3. **Certification body** (national scheme, e.g., NIAP in the US, BSI in Germany) reviews the lab's work
+4. **Certificate** issued, listed in the CC Portal
+
+The evaluation produces an Evaluation Technical Report (ETR) and the public Certification Report.
+
+## 1.4 Protection Profiles in practice
+
+PPs constrain "what does it mean for this category of product to be secure?" — written by communities so that products can compete on conformance to a common bar rather than each vendor writing their own ST from scratch.
+
+Examples of well-known PPs:
+
+- **NIAP-approved PPs** — US government use; very specific PPs per product category (firewall, mobile device fundamentals, IPS, OS)
+- **Common Criteria PPs** for smart cards, cryptographic modules, biometric verification, etc.
+
+A vendor product can claim "EAL 2 conformance to the Network Device PP" — this is more useful than just "EAL 2" because it specifies what the bar is.
+
+## 1.5 Strengths and limitations
+
+Strengths:
+- International standard, broadly recognized
+- Formal documentation requirements force vendors to specify their security claims clearly
+- Multiple countries' labs can evaluate
+
+Limitations:
+- EXPENSIVE — typically $1-3M USD for an EAL 4+ evaluation
+- SLOW — evaluations take 6-24 months, often longer than the product's release cycle
+- Tests CLAIMED security functions, not all functions — vendor controls scope via the ST
+- Evaluation is point-in-time — a patched/updated product is no longer the evaluated TOE`,
+      examTip: `EAL grades evaluation RIGOR, not security itself. EAL 4 is the highest mutually recognized level under the CCRA. PP = template requirements; ST = vendor's specific claims; TOE = product being evaluated.`,
+    },
+    {
+      id: 'legacy-frameworks',
+      title: `2. Legacy Frameworks: TCSEC (Orange Book) and ITSEC`,
+      content: `## 2.1 TCSEC — Trusted Computer System Evaluation Criteria
+
+The "Orange Book" — published by the US Department of Defense in 1985, formally retired and superseded by Common Criteria in 2000. Still appears on the CISSP exam as a recognition topic.
+
+Four divisions, each subdivided:
+
+| Division | Subdivision | Description |
+|---|---|---|
+| **D** | (Single class) | Minimal protection (failed evaluation) |
+| **C** | C1 | Discretionary protection |
+| | C2 | Controlled access protection |
+| **B** | B1 | Labeled security protection |
+| | B2 | Structured protection |
+| | B3 | Security domains |
+| **A** | A1 | Verified design |
+| | Beyond A1 | (Theoretical) |
+
+Key features by class:
+
+- **C1** — early Unix-style DAC with separation of users from data
+- **C2** — adds individual accountability, audit trails. Windows NT 3.5/4 was evaluated C2.
+- **B1** — adds Mandatory Access Control (MAC) via labels. Bell-LaPadula model implementation.
+- **B2** — formal security model, covert channel analysis
+- **B3** — minimal TCB, security administrator role
+- **A1** — mathematical proof of security design
+
+CISSP exam pattern: "Which TCSEC class first introduces mandatory access controls?" → B1.
+
+## 2.2 ITSEC — Information Technology Security Evaluation Criteria
+
+European equivalent of TCSEC, published in 1991. Separated FUNCTIONALITY from ASSURANCE:
+
+- **Functionality classes (F-C1 through F-B3)** — analogous to TCSEC classes
+- **Assurance levels (E0–E6)** — graded rigor independent of functionality
+
+E0 = inadequate, E6 = highest formal verification.
+
+This separation was an innovation: a product could have rich functionality but low assurance (or vice versa). Common Criteria continued this idea via separate Security Target (functionality) and EAL (assurance).
+
+ITSEC was used in Europe; Canada had CTCPEC (Canadian Trusted Computer Product Evaluation Criteria). All converged into Common Criteria.
+
+## 2.3 Why TCSEC/ITSEC still appear on the CISSP exam
+
+These frameworks are HISTORICAL, but:
+
+- Many existing systems (especially government, military) still reference them
+- The concepts they introduced (mandatory access controls, formal verification levels) live on in Common Criteria
+- Exam questions sometimes ask "what was the predecessor to Common Criteria?" or test recognition of "Orange Book" terminology
+
+## 2.4 Rainbow Series
+
+The TCSEC was the "Orange Book"; companion publications had different colored covers:
+
+- **Red Book** — Trusted Network Interpretation (network applications of TCSEC)
+- **Yellow Book** — Guidance for applying TCSEC in specific environments
+- **Green Book** — Password Management Guideline
+- (Many others)
+
+Collectively called the "Rainbow Series." Recognition-level for the exam.`,
+      examTip: `Memorize key TCSEC milestones: C1 = early DAC, C2 = audit trails (Windows NT), B1 = first to introduce Mandatory Access Control (labels). Common Criteria replaced TCSEC, ITSEC, and CTCPEC in 1999.`,
+    },
+    {
+      id: 'fips-140-and-others',
+      title: `3. FIPS 140-3 and Other Crypto Module Validations`,
+      content: `## 3.1 FIPS 140 series
+
+Federal Information Processing Standard for CRYPTOGRAPHIC MODULES. Distinct from Common Criteria (which evaluates whole products) — FIPS 140 specifically evaluates the cryptographic implementation.
+
+Required for cryptographic modules used in:
+- US federal systems
+- Many regulated sectors (healthcare, financial)
+- Often required in vendor contracts
+
+## 3.2 FIPS 140-3 vs 140-2
+
+- **FIPS 140-2** (2001) — long-standing standard. Many existing products still valid. New validations transitioned to 140-3 starting 2020.
+- **FIPS 140-3** (2019) — current standard. Aligned with ISO/IEC 19790 (international). NIST is sunsetting 140-2 validations.
+
+## 3.3 Four security levels
+
+| Level | Requirements |
+|---|---|
+| **Level 1** | Basic; no physical security beyond production-grade components. Algorithms must be FIPS-approved. |
+| **Level 2** | Adds tamper-evident requirements (seals, coatings) and role-based authentication. |
+| **Level 3** | Adds tamper RESISTANCE (physical detection + response — module zeroizes keys on detected tamper). Identity-based authentication. Separation of cryptographic boundaries. |
+| **Level 4** | Highest. Tamper detection covers all sides; module zeroizes on any envelope breach. Withstands environmental attacks (voltage, temperature). |
+
+Cloud HSMs and hardware HSMs typically validate at Level 3. Smart cards at Level 2 or 3. Common Level for general-purpose crypto in software: Level 1 (validates only the algorithms, not physical security).
+
+## 3.4 FIPS-approved algorithms
+
+A FIPS 140 validated module can only use APPROVED algorithms:
+
+- AES (all key sizes)
+- SHA-2, SHA-3
+- RSA (≥2048 bits)
+- ECDSA with NIST curves
+- HMAC
+- DRBG (Deterministic Random Bit Generator) — specific approved generators
+
+NOT approved (or only legacy use):
+
+- DES, 3DES (deprecated)
+- MD5
+- SHA-1 (deprecated for new signatures)
+- RC4
+
+A FIPS-validated module typically runs in "FIPS mode" that disables non-approved algorithms.
+
+## 3.5 CMVP (Cryptographic Module Validation Program)
+
+The joint NIST/CCCS (Canadian) program that operates FIPS 140 validation. Maintains the public list of validated modules at NIST's CMVP website.
+
+For procurement: many federal contracts require "FIPS 140-3 Level X validated." Check the CMVP list to confirm a product's actual validation (vendors sometimes claim "FIPS compliant" without validation — different).
+
+## 3.6 Other notable evaluations and accreditations
+
+CISSP candidates should recognize:
+
+- **NIAP (National Information Assurance Partnership)** — US CC scheme; lists US-government-acceptable products via the NIAP Product Compliant List
+- **Commercial Solutions for Classified (CSfC)** — NSA program allowing commercial products for classified use IF used in specific configurations layered together
+- **FedRAMP** — for cloud SERVICES (covered in audits topic) rather than products
+- **DoD UC APL** — Department of Defense Unified Capabilities Approved Products List for communications products
+- **SCAP (Security Content Automation Protocol)** — not a product evaluation but a NIST framework for automating security configuration verification
+
+## 3.7 Putting it together — product evaluation vs system accreditation
+
+CISSP distinguishes:
+
+- **Certification** — technical evaluation of a product/system against criteria. Common Criteria evaluates products; FIPS 140 evaluates crypto modules.
+- **Accreditation** — management's formal acceptance of a system for use, including ALL the controls (technical, managerial, operational). The Authorizing Official says "given this evaluated product PLUS our processes PLUS the residual risks, we accept the system for use."
+
+The exam tests this distinction:
+
+- "What does the AO do at the end of certification?" → Accredit (formally accept for use)
+- "Who performs Certification & Accreditation in a federal context?" → C&A roles per NIST RMF (now called Assessment & Authorization, A&A)
+
+Modern terminology under NIST RMF is "Assessment & Authorization" — same idea: assess controls, then formally authorize the system for use.
+
+## 3.8 CISSP exam patterns
+
+Watch for these classic patterns:
+
+- "EAL" and "Common Criteria" → product evaluation framework, replaced TCSEC/ITSEC
+- "FIPS 140" → CRYPTOGRAPHIC MODULE specifically (not whole products)
+- "Orange Book" → TCSEC (legacy DoD framework)
+- "Protection Profile" → template requirements for a CC product category
+- "Security Target" → vendor's specific claims for their TOE
+- "EAL 4" → highest mutually recognized level under CCRA
+- "Mandatory Access Controls first appeared in..." → B1 (TCSEC) or equivalent
+- "Accreditation" vs "Certification" → mgmt acceptance vs technical evaluation`,
+      examTip: `FIPS 140-3 is the CURRENT standard for crypto modules. Four levels; Level 3 typical for HSMs. Common Criteria is for whole products with EALs 1-7. CCRA recognizes up to EAL 4 globally. Accreditation is MANAGEMENT acceptance; Certification is TECHNICAL evaluation.`,
+    },
+  ],
+  keyTakeaways: [
+    'Common Criteria (ISO/IEC 15408): EALs 1-7 grade evaluation rigor (not security itself); CCRA recognizes up to EAL 4 globally',
+    'Target of Evaluation (TOE), Security Target (ST = vendor claims), Protection Profile (PP = template)',
+    'TCSEC ("Orange Book") and ITSEC are LEGACY frameworks replaced by Common Criteria in 1999 — exam still tests recognition',
+    'TCSEC C2 = Windows NT 3.5/4 evaluation; B1 = first class introducing Mandatory Access Controls (labels)',
+    'FIPS 140-3 (current; replaces 140-2) for cryptographic MODULES specifically — 4 levels, Level 3 typical for HSMs',
+    'FIPS approves AES, SHA-2/3, RSA-2048+, ECDSA, HMAC. DES, MD5, SHA-1, RC4 are NOT approved.',
+    'Certification = technical evaluation (CC, FIPS). Accreditation = management formal acceptance of system for use.',
   ],
 },
 cissp_crypto: {
@@ -2722,7 +3447,7 @@ The exam's recurring theme: strong algorithms fail because of weak key handling.
     },
     {
       id: 'crypto-hybrid-detail',
-      title: `3b. The Hybrid Handshake, Step by Step`,
+      title: `6. 3b. The Hybrid Handshake, Step by Step`,
       content: `![The hybrid model: the server presents a certificate, the parties agree a session key using asymmetric cryptography or ephemeral Diffie-Hellman, then all bulk traffic is encrypted symmetrically with that session key, which is discarded when the session ends.](/courses/cissp/figures/cissp-hybrid-model.svg)
 
 Nothing in production bulk-encrypts asymmetrically — it is orders of magnitude too slow. Every protocol you will be asked about is hybrid, and the figure shows the shape they all share.
@@ -2754,7 +3479,7 @@ Without it, an adversary can record ciphertext today, obtain the server's privat
     },
     {
       id: 'crypto-signature-detail',
-      title: `4b. Signatures, Certificates & Trust in Practice`,
+      title: `7. 4b. Signatures, Certificates & Trust in Practice`,
       content: `![Signing hashes the message and encrypts the digest with the signer's private key; verifying hashes the received message, decrypts the signature with the sender's public key, and compares the two digests.](/courses/cissp/figures/cissp-signature-flow.svg)
 
 The figure is worth reading twice, because the asymmetry is the content: **sign with the private key, verify with the public key, and sign the DIGEST rather than the message.**
@@ -2802,7 +3527,7 @@ The hierarchical model concentrates risk at the root, which is why roots are kep
     },
     {
       id: 'crypto-keymgmt-detail',
-      title: `5b. Key Management, Worked`,
+      title: `8. 5b. Key Management, Worked`,
       content: `![The key lifecycle: generation, distribution, storage, use, rotation and destruction, with split knowledge and dual control applying across every stage.](/courses/cissp/figures/cissp-key-lifecycle.svg)
 
 Modern cryptographic failures are overwhelmingly key-management failures. The mathematics rarely breaks; the handling does.
@@ -2842,7 +3567,7 @@ Split knowledge and dual control are separation-of-duties applied to cryptograph
     },
     {
       id: 'crypto-applied',
-      title: `5c. Applied Cryptography: Where Each Construction Shows Up`,
+      title: `9. 5c. Applied Cryptography: Where Each Construction Shows Up`,
       content: `The exam rarely asks about a primitive in isolation. It asks which technology protects a given thing, and expects you to know what each one actually covers.
 
 | Technology | Protects | Layer / scope | The limitation to know |
@@ -2877,7 +3602,7 @@ Split knowledge and dual control are separation-of-duties applied to cryptograph
     },
     {
       id: 'crypto-future',
-      title: `6b. Quantum, Post-Quantum & Algorithm Agility`,
+      title: `10. 6b. Quantum, Post-Quantum & Algorithm Agility`,
       content: `Cryptographic choices outlive the systems that make them, so the exam expects awareness of what is coming and how to prepare.
 
 ## What quantum computing threatens, and what it does not
@@ -2921,7 +3646,7 @@ Steganography's defining property is CONCEALMENT of existence, and it is frequen
     },
     {
       id: 'crypto-selection',
-      title: `6c. Choosing Cryptography, and the Governance Around It`,
+      title: `11. 6c. Choosing Cryptography, and the Governance Around It`,
       content: `Design questions ask which cryptography to apply. The answer follows from the SERVICE required, the STATE of the data, and the constraints of the platform — in that order.
 
 ## The selection procedure
@@ -2972,7 +3697,7 @@ Decide which of the four services you need; symmetric cryptography gives confide
     },
     {
       id: 'crypto-vocabulary',
-      title: `6d. The Vocabulary Shelf`,
+      title: `12. 6d. The Vocabulary Shelf`,
       content: `Shelve these with the property that makes each one testable.
 
 | Term | Definition | The property that matters |
@@ -3008,7 +3733,7 @@ When a cryptography item appears, three reads usually resolve it. **What service
     },
     {
       id: 'crypto-attacks',
-      title: `6. Attacks & Self-Check`,
+      title: `13. Attacks & Self-Check`,
       content: `| Attack | How it works | Defence |
 |---|---|---|
 | brute force | try every key | longer keys; rate limiting |
@@ -3039,9 +3764,310 @@ The last row deserves emphasis because it is the real-world pattern: modern cryp
 4. Because ECB encrypts every block independently, so identical plaintext blocks produce identical ciphertext blocks and structure in the data survives encryption. Confidentiality is compromised regardless of cipher strength; use an authenticated mode such as GCM.
 5. Perfect forward secrecy, achieved with ephemeral Diffie-Hellman key agreement so each session's key is independent and never stored — the long-term key authenticates the exchange but does not derive the session keys.`,
     },
+    {
+      id: 'kerberos',
+      title: `14. Kerberos: The 5-Step Authentication Exchange`,
+      content: `Kerberos is a NETWORK AUTHENTICATION protocol developed at MIT (Project Athena, 1980s). It enables strong authentication over an untrusted network using symmetric-key cryptography and a TRUSTED THIRD PARTY (the Key Distribution Center, KDC).
+
+## 1.1 Why Kerberos matters on the CISSP
+
+Kerberos is the foundation of Windows Active Directory authentication, Linux Heimdal / MIT Kerberos, and many enterprise SSO systems. CISSP candidates must understand:
+
+- The five-step exchange
+- The role of tickets vs session keys
+- Threats (replay, ticket theft) and mitigations
+- Weaknesses (single point of failure, time synchronization requirement)
+
+## 1.2 The components
+
+- **KDC (Key Distribution Center)** — trusted server. Contains two services:
+  - **AS (Authentication Service)** — proves the user's identity initially
+  - **TGS (Ticket Granting Service)** — issues tickets for specific application services
+- **Principal** — any entity in the realm with a secret (user, service, host)
+- **Realm** — the administrative boundary; analogous to a domain
+- **Tickets**:
+  - **TGT (Ticket Granting Ticket)** — proves the user was authenticated to the AS. Used to request service tickets.
+  - **ST (Service Ticket)** — proves the user is authorized to access a specific service.
+- **Session key** — symmetric key generated by the KDC and shared between two parties for that session
+
+## 1.3 The five-step exchange
+
+\`\`\`
+USER (Alice)               KDC (AS + TGS)              SERVICE (Bob)
+
+Step 1: AS_REQ
+Alice → AS:  "I am Alice; encrypt response with my key"
+                         [Pre-auth: encrypted timestamp]
+
+Step 2: AS_REP
+                AS → Alice: {Session_Key_TGS}_KAlice  +  TGT
+                            (TGT = {Alice's ID, Session_Key_TGS, expiry}_KTGS)
+
+Step 3: TGS_REQ (when accessing Bob's service)
+Alice → TGS: {Authenticator: Alice, timestamp}_Session_Key_TGS  +  TGT  +  "I want a ticket for Bob"
+
+Step 4: TGS_REP
+                TGS → Alice: {Session_Key_Bob}_Session_Key_TGS  +  ST
+                             (ST = {Alice's ID, Session_Key_Bob, expiry}_KBob)
+
+Step 5: AP_REQ
+Alice → Bob: {Authenticator: Alice, timestamp}_Session_Key_Bob  +  ST
+
+(Optional step 6: AP_REP — Bob proves to Alice that he too has the session key)
+\`\`\`
+
+## 1.4 Why this is secure (and why it can fail)
+
+- The user's password NEVER traverses the network — only data encrypted with the user's password-derived key
+- The KDC mints fresh session keys per session — no reuse
+- Authenticators include a TIMESTAMP — replay attacks limited to a small clock-skew window (5 minutes default)
+- Tickets are EXPIRED — limit damage if stolen
+
+Weaknesses:
+
+- **Single point of failure** — if the KDC is down, NO authentication anywhere
+- **Single point of compromise** — if the KDC is breached, every credential is compromised
+- **Time synchronization** — clocks across the realm must be within ~5 minutes. NTP is a hard dependency.
+- **Password-equivalent key** — the user's long-term key (derived from password) is held by both user and KDC. Offline brute force is possible if attacker captures an AS_REP with weak preauth.
+
+## 1.5 CISSP exam patterns
+
+- "What does the KDC issue when the user first authenticates?" → TGT
+- "What allows the user to access a specific application?" → Service Ticket (ST)
+- "What is the weakness of a centralized authentication system like Kerberos?" → Single point of failure / compromise
+- "What attack does the timestamp in the authenticator prevent?" → Replay attack
+- "What synchronization requirement does Kerberos have?" → Clock sync across realm (NTP)
+
+## 1.6 Kerberoasting
+
+An attack technique where an attacker requests Service Tickets for service accounts (which the KDC issues without verifying the requester actually has access to the service). The ticket is encrypted with the service account's password-derived key — attacker takes it offline and brute-forces the password.
+
+Defenses:
+
+- Strong service account passwords (long, random — preferably managed by gMSA / MSA)
+- Monitor for anomalous Service Ticket requests
+- Use AES-only ciphers (deprecate RC4)
+- Modern hardening: Active Directory protected accounts, AES encryption for all tickets`,
+      examTip: `Memorize the Kerberos flow: User → AS gets TGT; user → TGS gets ST; user → Service uses ST. Three round trips. KDC = AS + TGS. The user's password never traverses the network.`,
+    },
+    {
+      id: 'x509-certs',
+      title: `15. X.509 Certificate Anatomy and PKI`,
+      content: `X.509 is the international standard for public-key certificates used in TLS, S/MIME, code signing, and most modern PKI. CISSP expects you to know the standard fields and the validation chain.
+
+## 2.1 X.509 v3 certificate fields
+
+Memorize this list:
+
+- **Version** — typically v3 (current; v1 and v2 are legacy)
+- **Serial number** — unique within the issuing CA. Must be globally unique for an issuer.
+- **Signature algorithm** — the algorithm used by the issuer to sign this certificate (e.g., sha256WithRSAEncryption, ecdsa-with-SHA256)
+- **Issuer** — Distinguished Name (DN) of the Certificate Authority (CA) that signed this cert
+- **Validity period** — Not Before (issued date) + Not After (expiration date)
+- **Subject** — DN of the entity the cert is issued to (the certificate's owner)
+- **Subject Public Key Info** — algorithm and the public key itself
+- **Extensions** (v3 additions):
+  - **Subject Alternative Name (SAN)** — additional names the cert covers (most important extension today; modern browsers ignore the CN, use SAN exclusively)
+  - **Key Usage** — what the key may be used for (digitalSignature, keyEncipherment, certSign, cRLSign, etc.)
+  - **Extended Key Usage (EKU)** — finer-grained usage (TLS Server Auth, TLS Client Auth, Code Signing, S/MIME)
+  - **Basic Constraints** — is this a CA cert (cA=true) or end-entity?
+  - **Authority Information Access (AIA)** — URL to retrieve issuer's cert and OCSP responder
+  - **CRL Distribution Points** — URLs of the CRL listing this cert if revoked
+- **Signature** — the issuer's signature over all the above fields
+
+## 2.2 Distinguished Name (DN) components
+
+A DN is a structured hierarchical identifier. Common attributes:
+
+- **CN (Common Name)** — primary name (historically the FQDN for TLS server certs; now use SAN)
+- **OU (Organizational Unit)** — department within an organization
+- **O (Organization)** — the company
+- **L (Locality)** — city
+- **ST (State/Province)**
+- **C (Country)** — 2-letter ISO code
+
+Example: \`CN=secure.example.com, OU=Web Services, O=Example Corp, L=San Francisco, ST=California, C=US\`
+
+## 2.3 The certificate validation chain
+
+When a client receives a certificate, it validates:
+
+1. **Signature** — does the issuer's signature on this cert verify with the issuer's public key?
+2. **Issuer chain** — recursively walk up the chain (this cert's issuer → that issuer's issuer → ... → trusted root CA in the client's trust store)
+3. **Validity period** — current time is within Not Before / Not After
+4. **Revocation** — check CRL or OCSP to confirm not revoked
+5. **Hostname match** — for TLS, server name matches a SAN entry
+6. **Key Usage / EKU** — cert is authorized for this purpose (TLS Server Auth, etc.)
+7. **Constraints** — name constraints, path length constraints satisfied
+
+If ANY check fails, the certificate is INVALID.
+
+## 2.4 Revocation: CRL vs OCSP vs OCSP Stapling
+
+Once a certificate is issued, it might need to be revoked (key compromise, owner change, etc.) before its expiration. Three mechanisms:
+
+- **CRL (Certificate Revocation List)** — the CA publishes a list of revoked cert serial numbers. Clients download the CRL and check. Pros: simple. Cons: stale (CRLs published periodically, e.g., every 24 hours); CRLs grow large for major CAs.
+- **OCSP (Online Certificate Status Protocol)** — client queries the CA's OCSP responder in real time for a specific cert's status. Pros: fresh; small responses. Cons: privacy concerns (CA sees who's checking which cert), responder availability becomes critical, OCSP failures historically failed open.
+- **OCSP Stapling** — server fetches an OCSP response from the CA and INCLUDES it in the TLS handshake. Client gets the status without contacting the CA. Pros: solves the privacy and availability problems. Cons: server must keep the stapled response fresh.
+
+Modern best practice: OCSP stapling with mandatory stapling (Must-Staple flag in the cert) so clients reject if the stapled response is missing.
+
+## 2.5 Certificate Transparency (CT)
+
+Public, append-only logs of every certificate issued by participating CAs. Anyone can monitor logs for unauthorized certs for their domain. Modern browsers REQUIRE that certs include SCTs (Signed Certificate Timestamps) proving inclusion in CT logs. Defends against rogue CA issuance.
+
+## 2.6 The PKI hierarchy
+
+\`\`\`
+Root CA (offline; self-signed; trust anchor in client trust stores)
+   ↓ signs
+Intermediate CA (online; issues end-entity certs)
+   ↓ signs
+End-entity certificate (server, user, code-signing)
+\`\`\`
+
+Best practice: Root CA is kept OFFLINE in a hardware security module, with strict ceremony procedures for any signing operation. Intermediate CAs are online and can be revoked if compromised without invalidating the root.
+
+## 2.7 Certificate authority operations
+
+- **Registration Authority (RA)** — verifies the identity of the requester before the CA issues a cert
+- **CA** — issues, manages, revokes certs
+- **VA (Validation Authority)** — OCSP responder
+- **Subscriber** — the entity to whom the cert is issued
+- **Relying party** — anyone who validates and trusts the cert
+
+The CA's Certificate Policy (CP) and Certification Practice Statement (CPS) document operational details. The exam may name these — CPS is the "how we operate" document.`,
+      examTip: `For TLS server certs, the SUBJECT ALTERNATIVE NAME (SAN) extension is the field that lists the hostnames the cert is valid for. Modern browsers IGNORE the CN field; SAN is required. CRL is the LIST of revoked certs; OCSP is REAL-TIME checking; OCSP STAPLING combines both with the server pre-fetching the response.`,
+    },
+    {
+      id: 'pqc-hsm-keymgmt',
+      title: `16. ECC, Post-Quantum Cryptography, HSMs, and Key Management`,
+      content: `## 3.1 Elliptic Curve Cryptography (ECC)
+
+An alternative to RSA based on elliptic curve discrete logarithm. Provides equivalent security with MUCH smaller key sizes:
+
+| Symmetric strength | RSA | ECC |
+|---|---|---|
+| 80 bits | 1024 | 160 |
+| 112 bits | 2048 | 224 |
+| 128 bits | 3072 | 256 |
+| 192 bits | 7680 | 384 |
+| 256 bits | 15360 | 521 |
+
+ECC variants used in practice:
+
+- **ECDH (Elliptic Curve Diffie-Hellman)** — key exchange
+- **ECDSA (Elliptic Curve Digital Signature Algorithm)** — signing, the EC analogue of DSA
+- **EdDSA (Edwards-curve DSA)** — modern alternative using Edwards curves; Ed25519 (security strength ~128 bits) is widely deployed
+
+Standard curves: NIST P-256, P-384, P-521 (some controversy due to opaque parameter generation); Curve25519 / Ed25519 (modern, transparent).
+
+ECC is preferred for resource-constrained environments (mobile, IoT) and increasingly for TLS in general (smaller keys = faster handshakes).
+
+## 3.2 Post-Quantum Cryptography (PQC)
+
+Sufficiently large quantum computers could break:
+
+- RSA (Shor's algorithm breaks integer factorization)
+- ECC (Shor's algorithm breaks discrete log)
+- Diffie-Hellman (same)
+
+Symmetric algorithms are LESS affected (Grover's algorithm only halves the effective key length; AES-256 still has ~128 bits of post-quantum strength).
+
+NIST began standardizing PQC in 2016. As of 2024-2025:
+
+- **CRYSTALS-Kyber (ML-KEM)** — key encapsulation (replaces RSA/DH key exchange). Standardized as FIPS 203.
+- **CRYSTALS-Dilithium (ML-DSA)** — digital signatures (replaces RSA-PSS, ECDSA). Standardized as FIPS 204.
+- **SPHINCS+ (SLH-DSA)** — stateless hash-based signatures (alternative signature). Standardized as FIPS 205.
+- **Falcon** — lattice-based signatures, standardization in progress.
+
+CISSP candidates should know:
+
+- The QUANTUM THREAT exists (eventually) and motivates current PQC standardization
+- Symmetric algorithms (AES-256) remain reasonably safe (use larger keys)
+- "Harvest now, decrypt later" — adversaries are reportedly archiving encrypted traffic NOW to decrypt when quantum capability arrives. Forward-secret data (long-lived secrets) is at most risk.
+- Hybrid deployments combine classical + PQC algorithms during the transition
+
+## 3.3 Hardware Security Modules (HSMs)
+
+Dedicated hardware devices for cryptographic operations and key storage. Keys are generated, stored, and used INSIDE the HSM and never leave in plaintext.
+
+Common forms:
+
+- Network HSM (rack-mounted, accessed via API)
+- USB / smart card HSM (personal use, code signing)
+- Cloud HSM (AWS CloudHSM, Azure Dedicated HSM, GCP Cloud HSM)
+- Embedded HSM (TPM in laptops, secure enclaves in mobile)
+
+Why HSMs:
+
+- Tamper resistance (physical + logical)
+- Hardware-accelerated crypto (faster than software)
+- Certified random number generation
+- Compliance — FIPS 140-3 validation required for many regulated environments
+
+## 3.4 FIPS 140-3
+
+Federal Information Processing Standard for cryptographic modules. CISSP frequently tests FIPS 140 awareness.
+
+- **FIPS 140-2** — old standard (2001). Many existing products still validated under 140-2 but new validations transitioning to 140-3.
+- **FIPS 140-3** — current standard (2019). Aligns with ISO/IEC 19790.
+- Four security levels:
+  - **Level 1** — basic security requirements; no physical security mechanisms beyond standard production-grade components
+  - **Level 2** — adds tamper-evident requirements; role-based authentication
+  - **Level 3** — adds tamper-resistance (physical detection + response); identity-based authentication
+  - **Level 4** — highest; tamper-detection envelope around the module; key zeroization on tamper detection
+
+For US federal sale, FIPS 140-3 Level 3 validation is increasingly the bar for crypto modules.
+
+## 3.5 Key escrow vs key recovery
+
+CISSP exam frequently asks about these often-confused concepts:
+
+- **Key escrow** — a TRUSTED THIRD PARTY holds a copy of the private key (or component) so it can be recovered later. Controversial: gives the third party (often government) the ability to decrypt. The 1990s Clipper Chip proposal is the famous example.
+- **Key recovery** — the broader category. The organization itself maintains the ability to recover keys (backup, M-of-N split, recovery agents). Doesn't require external escrow.
+
+A balanced policy: keys for ENCRYPTED data must be recoverable (or you lose the data); keys for DIGITAL SIGNATURES should NOT be (recoverability undermines non-repudiation — if anyone other than the signer could sign, the signature isn't proof the signer signed it).
+
+## 3.6 M-of-N split knowledge (Shamir's Secret Sharing)
+
+A key is split into N shares such that any M shares can reconstruct it (M ≤ N), but fewer than M shares reveal NOTHING about the key.
+
+Use cases:
+
+- Root CA private key — split among 5 trustees, any 3 needed to sign (5-of-3? formally written N=5, M=3 or "3-of-5")
+- Backup encryption keys — split across geographically separated facilities
+- Crypto-currency wallet recovery — multi-party signing
+
+Operational: key ceremonies for split-knowledge operations are formal events with logged attendance, video recording, and verified destruction of intermediate materials.
+
+## 3.7 Key lifecycle
+
+Like data, keys have a lifecycle:
+
+1. **Generation** — using a certified RNG, ideally inside an HSM
+2. **Distribution** — secure delivery to entities that need the key (out-of-band, key wrapping, key agreement protocols)
+3. **Storage** — in an HSM, KMS, or other protected vault. Encryption of the key with a higher-level key (key encryption key, KEK)
+4. **Use** — within scope and authorized operations
+5. **Rotation** — periodic replacement to limit blast radius if compromised
+6. **Backup** — for keys that protect data (without backup, lose key = lose data)
+7. **Revocation/destruction** — when the key is no longer needed or compromised
+
+## 3.8 Key Management Systems (KMS)
+
+Centralized services for the above lifecycle:
+
+- AWS KMS, GCP Cloud KMS, Azure Key Vault — cloud-native
+- HashiCorp Vault — open source, multi-cloud
+- Thales CipherTrust, Entrust nShield — enterprise
+- Smartcards / YubiHSM — personal / small-scale
+
+KMS APIs let applications request "encrypt this data" or "sign this digest" without ever handling the key directly. The key stays inside the KMS / HSM. This is the modern best practice for application crypto.`,
+      examTip: `ECC: 256-bit ECC ≈ 3072-bit RSA in security. Preferred for mobile/IoT. PQC: CRYSTALS-Kyber for KEM (FIPS 203), CRYSTALS-Dilithium for signatures (FIPS 204). FIPS 140-3: 4 levels, Level 3 is the common bar for federal crypto modules. Key escrow ≠ key recovery: escrow involves a third party, recovery is internal.`,
+      importantNote: `For digital SIGNATURE keys, key recovery should NOT exist — non-repudiation depends on only the signer having the private key. For ENCRYPTION keys, recovery IS needed or you lose access to encrypted data when keys are unavailable.`,
+    },
   ],
 },
-
 cissp_physical: {
   topicId: 'cissp_physical',
   title: `Physical Security`,
@@ -3050,7 +4076,7 @@ cissp_physical: {
   sections: [
     {
       id: '6-physical-security',
-      title: `6. Physical Security`,
+      title: `1. Physical Security`,
       content: `### Site and Facility Selection
 
 Data centers and critical facilities should be located in areas with:
@@ -3137,7 +4163,7 @@ Different systems suited for different hazards and environments:
     },
     {
       id: '7-secure-design-for-emerging-architectures',
-      title: `7. Secure Design for Emerging Architectures`,
+      title: `2. Secure Design for Emerging Architectures`,
       content: `### Cloud Security
 
 **Shared Responsibility Model**: Provider secures infrastructure; customer secures data, identity, applications.
@@ -3177,7 +4203,7 @@ Different systems suited for different hazards and environments:
     },
     {
       id: 'virtualization-and-cloud-security',
-      title: `Virtualization and Cloud Security`,
+      title: `3. Virtualization and Cloud Security`,
       content: `### Hypervisor Security
 
 Hypervisors manage virtualization and are critical security boundaries. Two types exist:
@@ -3252,10 +4278,10 @@ Serverless computing (AWS Lambda, Azure Functions) shifts operational responsibi
     },
   ],
 },
-
+// ===== Domain 4: Communication and Network Security (13%) - Instructor Edition module order =====
 cissp_network: {
   topicId: 'cissp_network',
-  title: `Network Architecture`,
+  title: `Secure Design Principles in Network Architectures`,
   domainWeight: '13%',
   overview: `### Overview`,
   sections: [
@@ -3394,7 +4420,7 @@ Dividing network into smaller subnets using subnet masks. Reduces broadcast doma
     },
     {
       id: 'practice-questions-domain-4',
-      title: `Practice Questions - Domain 4`,
+      title: `6. Practice Questions - Domain 4`,
       content: `### Exam Tips Summary for Domain 4
 
 - OSI 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application. TCP/IP is 4-5 layers.
@@ -3504,10 +4530,428 @@ Dividing network into smaller subnets using subnet masks. Reduces broadcast doma
     },
   ],
 },
+cissp_network_attacks: {
+  topicId: 'cissp_network_attacks',
+  title: `Secure Network Components`,
+  domainWeight: '13%',
+  overview: `Domain 4 items about attacks are rarely satisfied by naming the attack. They describe symptoms and ask what is happening, or name an attack and ask which control belongs at which layer. Both forms reward the same discipline: locate the attack on the OSI stack, identify which resource it exhausts or which trust it abuses, and choose the control that sits at that same layer. A control one layer away is the classic distractor. This chapter maps the stack to its attacks and defences, works through the handshake abuses, separates the three classes of denial of service, covers on-path interception and the spoofing family, and closes with the defence-in-depth architecture that assumes any single control will fail.`,
+  sections: [
+    {
+      id: '1-layer-map',
+      title: `1. Locating an Attack on the Stack`,
+      content: `## Why the layer is the first question
 
+Every network control operates at a specific layer, and it can only see what that layer exposes. A firewall filtering on IP addresses and ports cannot detect SQL injection, because injection lives in an application payload the firewall treats as opaque bytes. A web application firewall inspecting HTTP cannot stop a SYN flood, because the flood never produces a complete request. Choosing a control means matching layers.
+
+![OSI layers with typical attacks and the controls that belong there](/courses/cissp/figures/cissp-osi-attacks.svg)
+
+| Layer | Typical attack | The control that belongs there |
+|---|---|---|
+| 7 Application | Injection, cross-site scripting, phishing, HTTP flood | Secure coding, WAF, user awareness |
+| 6 Presentation | Malformed encoding, cipher downgrade | Input validation, enforced cipher policy |
+| 5 Session | Session replay, hijack during setup | Mutual authentication, unpredictable tokens |
+| 4 Transport | SYN flood, session hijacking | SYN cookies, stateful inspection, TLS |
+| 3 Network | IP spoofing, smurf, routing manipulation | ACLs, ingress and egress filtering, IPsec |
+| 2 Data Link | ARP poisoning, MAC flooding, VLAN hopping | Port security, dynamic ARP inspection, 802.1X |
+| 1 Physical | Wiretapping, cable cut, RF jamming | Locked conduit, shielding, physical guards |
+
+## Encapsulation and why it constrains visibility
+
+Data descends the stack gaining a header at each layer, and ascends the far side losing them in reverse. The name of the unit changes as it goes, and the exam asks for those names.
+
+![OSI encapsulation and protocol data unit names](/courses/cissp/figures/cissp-osi-encapsulation.svg)
+
+| Layers | Protocol data unit |
+|---|---|
+| 7, 6, 5 | Data |
+| 4 Transport | Segment (TCP) or datagram (UDP) |
+| 3 Network | Packet |
+| 2 Data Link | Frame |
+| 1 Physical | Bits |
+
+The consequence for defence is direct. A device operating at layer 3 reads the packet header and treats everything above as payload. To inspect the application content it must reassemble the session and parse it - which is exactly what next-generation firewalls and proxies do, and exactly why they cost more processing than a packet filter.
+
+## Reading the stem for the layer
+
+Certain phrases appear repeatedly and each points at one layer.
+
+| Phrase in the stem | Layer it names |
+|---|---|
+| MAC address, switch port, VLAN, ARP | 2 Data Link |
+| IP address, subnet, route, TTL | 3 Network |
+| Port number, TCP flags, handshake, session state | 4 Transport |
+| URL, header, cookie, query string, form field | 7 Application |
+| Cable, connector, signal, interference | 1 Physical |
+
+A device's layer follows the same vocabulary: a **hub** repeats bits at layer 1; a **switch** forwards frames by MAC address at layer 2; a **router** forwards packets by IP address at layer 3; a **traditional firewall** filters at layers 3 and 4; a **proxy or WAF** operates at layer 7.`
+    },
+    {
+      id: '2-handshake-and-spoofing',
+      title: `2. Handshake Abuse, Spoofing, and Session Attacks`,
+      content: `## The three-way handshake and the state it creates
+
+TCP establishes a connection in three steps, and the second step is where the vulnerability lives: on receiving a SYN, the server allocates state and waits.
+
+![TCP three-way handshake with SYN flood and SYN scan](/courses/cissp/figures/cissp-tcp-handshake.svg)
+
+**SYN flood** exploits that allocation. The attacker sends step one and never sends step three, usually from spoofed source addresses so the SYN-ACK goes nowhere. Each half-open connection consumes a slot in a finite table; when the table fills, legitimate connections are refused. The defence is **SYN cookies**: the server encodes the connection state into the sequence number it returns rather than storing it, so it allocates nothing until a valid ACK arrives.
+
+**SYN scanning**, sometimes called half-open scanning, sends step one, reads the reply, and sends RST instead of completing. An open port answers SYN-ACK; a closed port answers RST; a filtered port answers nothing at all. Because no session completes, older logging misses it entirely - which is why the answer to "how do we detect this?" is an IDS or scan-detection rule rather than connection logs.
+
+## Spoofing
+
+**Spoofing** is asserting an identity that belongs to someone else, and it appears at several layers.
+
+| Kind | What is forged | What defeats it |
+|---|---|---|
+| IP spoofing | Source address in the packet header | Ingress filtering at the perimeter, egress filtering outbound |
+| MAC spoofing | Hardware address on the segment | Port security, 802.1X |
+| ARP spoofing | The IP-to-MAC binding | Dynamic ARP inspection, static entries |
+| Email spoofing | The sender address | SPF, DKIM, DMARC |
+| Caller or SMS spoofing | Origin of a voice or text message | Out-of-band verification, user awareness |
+
+Two filtering directions are examined and routinely confused. **Ingress filtering** drops inbound packets whose source address claims to be internal - nothing arriving from outside should carry an inside address. **Egress filtering** drops outbound packets whose source address is not one of yours, which stops your network being used to attack someone else. Ingress protects you; egress protects everyone else and is a good-citizenship control.
+
+## Session attacks
+
+**Session hijacking** takes over an authenticated session rather than defeating authentication. Whatever the mechanism - stealing a token, predicting a session identifier, or riding an on-path position - the attacker inherits the user's authenticated state, which is why strong authentication alone does not prevent it. The controls are session-side: unpredictable identifiers with adequate entropy, binding the session to attributes that are hard to replay, re-authentication before sensitive operations, and short idle timeouts.
+
+**Replay** captures valid traffic and re-sends it. The general defence is a **nonce**, a timestamp, or a sequence number, so that a message valid once is invalid the second time. Kerberos timestamps and TLS sequence numbers are both replay defences, and this is the reason accurate time is a security dependency.
+
+## The smurf and fraggle family
+
+**Smurf** sends ICMP echo requests to a network's broadcast address with the victim's address as the spoofed source; every host on that segment replies to the victim. **Fraggle** is the same idea over UDP. Both are amplification attacks, and both are largely historical because the fix - **do not forward directed broadcasts** - became a default. Their value on the exam is as the clean illustration of amplification: a small spoofed request producing many large replies aimed elsewhere.
+
+## DNS as an attack surface in its own right
+
+DNS deserves separate treatment because it is trusted implicitly by everything and was designed without authentication.
+
+| Attack | Mechanism | Control |
+|---|---|---|
+| Cache poisoning | Inject a forged answer that the resolver caches and serves to everyone | DNSSEC, source-port and transaction-ID randomisation |
+| DNS hijacking | Alter the records at the registrar or authoritative server | Registrar lock, multi-factor on the registrar account |
+| DNS tunnelling | Encode data inside queries and responses to exfiltrate or command | Inspect query volume, entropy, and record types |
+| Domain shadowing | Create subdomains under a legitimate stolen domain | Registrar account protection, certificate transparency monitoring |
+| Typosquatting | Register a visually similar domain and wait for mistyping | Defensive registration, user awareness, brand monitoring |
+
+**DNSSEC** signs records so a resolver can verify that an answer came from the zone's owner and was not altered in transit. Note precisely what it does and does not do: it provides **origin authentication and integrity, not confidentiality** - queries and answers remain in plaintext. Encrypting the query itself is a different problem, addressed by DNS over TLS or DNS over HTTPS, and those in turn create a monitoring problem of their own, because they hide DNS lookups from the security tooling that used to inspect them.
+
+**DNS tunnelling** is worth recognising by symptom rather than by name. Because DNS is almost universally permitted outbound, an attacker can encode command traffic and stolen data inside queries for subdomains of a domain they control. The signature is not the protocol but its **shape**: unusually long or high-entropy subdomain labels, an abnormal volume of TXT or NULL record queries, and a single client generating far more lookups than its peers. A stem describing steady low-volume DNS traffic to one unfamiliar domain from one host is describing command and control, not a misconfiguration.`
+    },
+    {
+      id: '3-denial-of-service',
+      title: `3. Denial of Service and Distributed Attacks`,
+      content: `## Three classes, distinguished by what is exhausted
+
+Denial of service attacks the **availability** leg of the triad, and the exam separates them by which resource runs out.
+
+![Denial of service classes by the resource they exhaust](/courses/cissp/figures/cissp-ddos-taxonomy.svg)
+
+| Class | Resource exhausted | Examples | Where it is mitigated |
+|---|---|---|---|
+| Volumetric | Bandwidth | UDP flood, DNS and NTP amplification | Upstream, at the provider or a scrubbing service |
+| Protocol | Connection state | SYN flood, fragmentation attacks | At the edge device - SYN cookies, stateful limits |
+| Application | Server processing | HTTP flood, slowloris, expensive queries | At the application tier - WAF, rate limits, caching |
+
+The mitigation column carries the highest-yield point. **A volumetric attack cannot be mitigated at your own edge**, because by the time traffic reaches your firewall it has already consumed the link. When a stem describes a saturated internet circuit, the answer involves the upstream provider or a scrubbing service, never a bigger firewall.
+
+## Amplification and reflection
+
+Amplification pairs two properties: a protocol that answers a small request with a large reply, and one that does not verify the source address. The attacker sends a small spoofed request to a **reflector** with the victim's address as the source; the reflector sends its large reply to the victim.
+
+DNS and NTP are the classic reflectors because both are UDP-based, both are widely reachable, and both have queries whose replies are many times larger than the request. The defence has two halves that the exam distinguishes: the victim buys upstream scrubbing, while **the reflector operator closes the open service** - restricting recursion, disabling the monlist command, applying rate limits. Fixing the reflectors is the systemic remedy.
+
+## Distributed attacks and botnets
+
+A **distributed** denial of service uses many sources, which defeats source-based blocking and makes the traffic hard to distinguish from a legitimate surge. The sources are usually a **botnet** of compromised hosts under a command-and-control channel, and increasingly of poorly secured embedded devices whose default credentials were never changed.
+
+Two derived exam points follow. First, **your organisation can be the source rather than the target**, which is what egress filtering and outbound anomaly detection address. Second, a DDoS is sometimes a **diversion**: while the operations team fights the outage, a quieter intrusion proceeds elsewhere. A stem describing a DDoS alongside unusual authentication activity is testing whether you treat the flood as the whole incident.
+
+## Slow attacks
+
+**Slowloris** and its relatives invert the usual signature. Rather than flooding, they open many connections and keep each one barely alive - sending a partial request header every few seconds - so the server holds every connection open waiting for a completion that never comes. The traffic volume is trivial, which is precisely why bandwidth-based detection misses it.
+
+The lesson generalises: **low volume does not mean low impact**. Detection must consider connection duration and completion rates, not only throughput, and the mitigations are connection timeouts, per-source connection caps, and a reverse proxy that will not forward until it holds a complete request.`
+    },
+    {
+      id: '4-interception-and-wireless',
+      title: `4. Interception, On-Path Attacks, and Wireless Exposure`,
+      content: `## The on-path position
+
+An on-path attacker - the older term is man-in-the-middle - relays traffic between two parties who each believe they are talking directly to the other.
+
+![On-path interception and the three common ways in](/courses/cissp/figures/cissp-mitm-path.svg)
+
+| Route in | Mechanism | Defence |
+|---|---|---|
+| ARP poisoning | Forge IP-to-MAC bindings on the local segment | Dynamic ARP inspection, static entries for critical hosts |
+| Rogue AP or evil twin | Advertise a familiar SSID and win the association | 802.1X, wireless IPS, certificate-pinned VPN |
+| DNS spoofing | Answer the name lookup before the legitimate resolver | DNSSEC, resolver hardening, split-horizon design |
+
+The unifying defence is **end-to-end authenticated encryption**. An on-path attacker still sees that traffic is flowing and can still deny service, but cannot read or modify content whose integrity is cryptographically protected and whose endpoint is authenticated by a certificate they cannot forge. This is why "implement TLS with certificate validation" answers so many interception items - and why certificate warnings must never be trained away, since dismissing them is what converts a failed attack into a successful one.
+
+## Downgrade and stripping
+
+A sophisticated on-path attacker does not break the cryptography; it prevents the cryptography from being used. **SSL stripping** intercepts a plaintext request before redirection and proxies the secure connection on the user's behalf, leaving the user on HTTP without noticing. **Downgrade attacks** manipulate negotiation so that the weakest mutually supported version or cipher is chosen.
+
+The controls follow directly: **HTTP Strict Transport Security** tells a browser never to use plaintext for a domain again, and disabling obsolete protocol versions and cipher suites removes the weak options from the negotiation entirely. A negotiation can only settle on something both sides still offer.
+
+## Wireless exposure
+
+Wireless removes the physical boundary that other controls assume, so a signal reaching the car park is available to anyone in it.
+
+| Threat | What it is | Control |
+|---|---|---|
+| Rogue access point | Unsanctioned AP attached to the network, often by staff for convenience | Wireless IPS, port security, periodic surveys |
+| Evil twin | Attacker AP mimicking a legitimate SSID | 802.1X with server certificate validation |
+| War driving | Surveying for reachable wireless networks | Signal management, strong authentication |
+| Deauthentication | Forcing clients off so they reconnect to the attacker | Management frame protection |
+| Weak encryption | WEP and early WPA are broken | WPA3, or WPA2-Enterprise where WPA3 is unavailable |
+
+The security history is examinable as a progression. **WEP** is broken and must never be used. **WPA** introduced TKIP as an interim fix and is deprecated. **WPA2** brought AES-CCMP and remains acceptable in its Enterprise form. **WPA3** adds Simultaneous Authentication of Equals, which resists the offline dictionary attack that made weak WPA2-Personal passphrases crackable from a captured handshake.
+
+The personal-versus-enterprise distinction matters more than the version in many items. **Personal mode uses one pre-shared key for everyone**, so it provides no individual accountability and requires re-keying every device when one person leaves. **Enterprise mode authenticates each user individually via 802.1X and a RADIUS server**, which restores accountability and makes revocation a single directory change.`
+    },
+    {
+      id: '5-defence-in-depth',
+      title: `5. Defence in Depth and Control Placement`,
+      content: `## The principle
+
+**Defence in depth** layers independent controls so that the failure of any one does not produce a breach. Its value is not redundancy for its own sake but **diversity**: controls that fail for different reasons. Two firewalls from the same vendor running the same firmware share a vulnerability; a firewall plus network segmentation plus endpoint protection plus monitoring do not.
+
+| Layer of defence | Example controls | What it buys |
+|---|---|---|
+| Perimeter | Firewall, IPS, DDoS scrubbing | Removes bulk hostile traffic |
+| Network | Segmentation, VLANs, NAC, internal ACLs | Limits lateral movement after entry |
+| Host | Patching, host firewall, EDR, hardening | Protects the asset if the network is crossed |
+| Application | Secure coding, WAF, input validation | Addresses what network controls cannot see |
+| Data | Encryption at rest and in transit, DLP, rights management | Protects the asset itself if all else fails |
+| People and process | Training, separation of duties, incident response | Covers what technology cannot |
+
+## Segmentation
+
+Segmentation is the highest-value network control against a determined attacker, because it attacks the **lateral movement** phase rather than the initial intrusion. An attacker who compromises a workstation in a flat network can reach every other host; in a segmented network they reach only their own segment and must defeat another control to progress.
+
+| Approach | What it separates | Typical use |
+|---|---|---|
+| VLANs | Broadcast domains, logically | Departmental separation |
+| Screened subnet (DMZ) | Internet-facing services from the internal network | Public web, mail relay |
+| Microsegmentation | Individual workloads from one another | Data centre, cloud |
+| Air gap | Physically, with no network path | Industrial control, classified processing |
+
+A **screened subnet** deserves precision because its logic is asked directly. Public services are placed in a subnet reachable from the internet, and traffic from that subnet into the internal network is heavily restricted. The point is not to protect the web server - it is exposed by definition - but to ensure that **compromising it does not yield a path inward**.
+
+An **air gap** is the strongest form and is frequently defeated by process rather than technology: removable media, maintenance laptops, and vendor updates all cross gaps that packets cannot. Where a stem describes an air-gapped system compromised anyway, the vector is almost always a human-carried one.
+
+## Zero trust
+
+Zero trust rejects the assumption that location implies trust. In a perimeter model, a host inside the network is trusted because it is inside; zero trust removes that inference and evaluates **every request** against identity, device posture, and context, regardless of origin.
+
+| Principle | What it means in practice |
+|---|---|
+| Never trust, always verify | Every request is authenticated and authorised, including internal ones |
+| Least privilege per request | Access is scoped to this request, not granted standing |
+| Assume breach | Design as though an attacker is already inside |
+| Verify explicitly | Decide from identity, device state, location, and behaviour together |
+
+Zero trust is ABAC in architectural form, and it explains why microsegmentation and strong device identity appear together in modern designs. It does not replace defence in depth; it is a way of applying it that stops treating the perimeter as the boundary of trust.
+
+## Remote access and the tunnelled edge
+
+Remote access reintroduces the perimeter problem in a new place: a device outside your control needs to behave as though it were inside. The controls are chosen by what must be protected and from whom.
+
+| Technology | What it protects | Where it fits |
+|---|---|---|
+| IPsec VPN | The whole packet, at layer 3 | Site-to-site links and full-tunnel remote access |
+| TLS VPN | Specific applications, at layers 5-7 | Clientless or per-application remote access |
+| SSH tunnelling | One forwarded port | Administrative access and ad hoc forwarding |
+| Network access control | Admission itself | Posture-checking a device before it is allowed on |
+
+![IPsec transport and tunnel mode compared](/courses/cissp/figures/cissp-ipsec-modes.svg)
+
+IPsec offers two modes, and the difference is exactly what is protected. **Transport mode** encrypts the payload and leaves the original IP header visible, which suits host-to-host protection inside a network you already trust. **Tunnel mode** encapsulates the entire original packet inside a new one, hiding the internal addressing, which is what site-to-site VPNs require because the internal topology should not be exposed across the intermediate network.
+
+Two IPsec components are asked by name. **AH (Authentication Header)** provides integrity and authentication but **no confidentiality** - it does not encrypt. **ESP (Encapsulating Security Payload)** provides confidentiality and can also provide integrity, which is why ESP is what real deployments use and why "we need IPsec for confidentiality, so we will use AH" is a reliably wrong answer.
+
+**Split tunnelling** is the configuration question that generates items. With split tunnelling, only traffic destined for the corporate network goes through the tunnel and everything else goes directly to the internet. It preserves bandwidth and improves user experience, and it **removes corporate inspection from the majority of the user's traffic** - so a compromised endpoint can communicate with an attacker without any corporate control observing it. Full tunnelling reverses both properties. The trade is performance and cost against visibility, and where the stem emphasises monitoring or data loss prevention, full tunnelling is intended.
+
+**Network access control** addresses the device rather than the traffic. Before admitting an endpoint it evaluates posture - patch level, endpoint protection running and current, configuration compliance - and places non-compliant devices in a **remediation network** with access only to the resources needed to fix them. This is the control that answers "how do we stop an unmanaged or out-of-date laptop joining the network?", and it pairs naturally with 802.1X, which authenticates the device or user at the port before an address is even issued.`
+    },
+    {
+      id: '6-detection',
+      title: `6. Detection: Devices, Signals, and Deception`,
+      content: `## Firewalls by generation
+
+Prevention devices are classified by how deeply they look, and the exam asks which generation is needed for a given requirement.
+
+| Type | Operates at | What it decides on | What it cannot do |
+|---|---|---|---|
+| Packet filter | Layers 3-4 | Source, destination, port, flags - each packet alone | No memory of session; cannot see application content |
+| Stateful inspection | Layers 3-4 | The same, plus the connection state table | Still blind to payload semantics |
+| Application proxy | Layer 7 | Full request semantics; terminates and re-originates | Slower; needs a proxy per protocol |
+| Next-generation | 3-7 | Application identity, user identity, threat signatures | Complexity and cost; TLS inspection has privacy implications |
+| Web application firewall | Layer 7, HTTP only | Request structure - injection, XSS, anomalies | Only web; not a general firewall |
+
+The classic distinguishing item describes an attack in an HTTP body and asks which device sees it. A stateful firewall permitting port 443 sees an allowed connection carrying opaque bytes; only a layer 7 device parses the request. **Statefulness is about connections, not content.**
+
+## Detection versus prevention
+
+| Property | IDS | IPS |
+|---|---|---|
+| Placement | Out of band, on a mirror or tap | In line, traffic passes through it |
+| Action | Alerts | Alerts and blocks |
+| Failure impact | Detection stops; traffic unaffected | Can block legitimate traffic, or drop it entirely |
+| False positive cost | An unnecessary alert | A legitimate user denied service |
+
+That last row is the trade-off the exam builds items around. **An IPS turns a false positive into an outage.** This is why organisations tune in detection mode before enabling blocking, and why a stem describing a business-critical, latency-sensitive flow often favours an IDS plus a response process over an in-line block.
+
+## Detection methods
+
+| Method | How it decides | Strength | Weakness |
+|---|---|---|---|
+| Signature (pattern) | Matches known attack patterns | Precise, low false-positive rate | Blind to anything novel or newly obfuscated |
+| Anomaly (behaviour) | Flags deviation from a learned baseline | Can catch previously unseen attacks | Higher false-positive rate; the baseline can learn a compromise as normal |
+| Heuristic | Applies rules about suspicious behaviour | Catches variants of known families | Needs tuning |
+| Stateful protocol analysis | Compares to how the protocol should behave | Catches protocol abuse | Requires an accurate protocol model |
+
+The anomaly weakness is a genuine exam trap: **if the baseline is established while the environment is already compromised, the compromise becomes the norm** and will never be flagged. Baselines must be built from a known-good state, and re-baselined deliberately rather than continuously.
+
+## The four detection outcomes
+
+| Outcome | Meaning | Consequence |
+|---|---|---|
+| True positive | Attack occurred, alert raised | The system working |
+| True negative | No attack, no alert | The system working |
+| False positive (Type I) | No attack, alert raised | Wasted effort; alert fatigue |
+| False negative (Type II) | Attack occurred, no alert | The dangerous failure - a breach nobody knows about |
+
+**False negatives are the security-consequential error**, mirroring the biometric case where Type II admits the impostor. The relationship between the two is a tuning trade-off: making detection more sensitive reduces false negatives and raises false positives. Excessive false positives cause **alert fatigue**, and a team that has learned to ignore alerts has effectively converted its false positives into false negatives - which is why tuning is a security control, not housekeeping.
+
+## Deception
+
+| Construct | What it is | Primary value |
+|---|---|---|
+| Honeypot | A single decoy system with no production purpose | Any interaction with it is suspicious by definition |
+| Honeynet | A decoy network of several such systems | Observing lateral movement and attacker technique |
+| Honeytoken | A decoy record, credential, or file | Detecting exfiltration and insider access |
+
+The reason deception is valuable is the **signal-to-noise ratio**. A production server generates enormous legitimate traffic in which attack traffic must be found; a honeypot generates none, so **every packet is worth investigating**. Honeytokens extend the idea to data - a fabricated customer record that no legitimate process should ever read, whose appearance anywhere is proof of unauthorised access.
+
+Two cautions are examinable. A honeypot that can be **compromised and used to attack others** creates liability, so it must be contained and monitored. And **entrapment versus enticement** is a legal distinction the exam expects: enticement makes an opportunity available to someone already intent on wrongdoing and is generally acceptable; entrapment induces someone to commit an act they would not otherwise have committed and is not.
+
+## Aggregation and correlation
+
+A **SIEM** collects logs from many sources, normalises them, and correlates events across them. Its value is that individual events are innocuous while their **combination is not**: a failed VPN login is noise, and a failed VPN login from a new country followed by a successful one, a privilege change, and a large outbound transfer is an incident.
+
+Two supporting concepts complete the picture. **Aggregation** combines many similar events into one record so the console stays readable. **Correlation** relates dissimilar events across sources into a single narrative. Both depend on **synchronised time** - correlating events across systems whose clocks disagree produces a sequence that is simply wrong, which is one more reason NTP discipline is a security control rather than an operational nicety.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: reading symptoms to an attack
+
+*Users report that internal file shares are slow but the internet works normally. The switch logs show its MAC address table repeatedly filling and ageing out. A packet capture from one workstation shows traffic destined for other hosts arriving at its interface. What is happening?*
+
+Take the clues in order.
+
+The MAC address table filling and cycling is the signature of **MAC flooding**: the attacker sends frames with thousands of fabricated source addresses until the table's capacity is exceeded.
+
+The consequence explains everything else. A switch that cannot look up a destination **fails open and floods the frame to every port**, reverting to hub behaviour. That is why one workstation sees traffic meant for others - the capture is not a coincidence, it is the effect - and why internal transfers slow while internet traffic, which leaves via the router, is unaffected.
+
+The control is **port security**, limiting the number of MAC addresses learned per port and shutting down or restricting a port that exceeds it. This is a layer 2 attack answered by a layer 2 control; a firewall change would do nothing, because the traffic never leaves the segment.
+
+## Worked example 2: choosing where to mitigate
+
+*An organisation's 1 Gbps internet circuit is saturated by inbound UDP traffic from thousands of sources. The perimeter firewall is dropping the traffic correctly but users still cannot reach anything. What should be done?*
+
+Notice what the stem already tells you: **the firewall is working**. It is identifying and dropping the traffic exactly as configured. The problem is upstream of it.
+
+The circuit is the exhausted resource, and it is exhausted before the packets reach any equipment you own. **No configuration change on your side of that link can help**, because the damage is done in transit. Upgrading the firewall would not help either - it is not the bottleneck.
+
+The correct response is **upstream mitigation**: contact the internet service provider to filter or rate-limit at their edge, or route traffic through a **scrubbing service** that absorbs the volume and forwards only clean traffic. Longer term, the architecture answer is a DDoS protection service arranged before it is needed, since negotiating one during an outage is slow.
+
+Note the discriminator the item is built on: a **protocol** or **application** layer attack of the same apparent severity would be mitigable locally. Only the volumetric class forces the answer off your own premises.
+
+## Worked example 3: separating similar attacks
+
+*Match each description to its attack: (a) a captured authentication message is re-sent later to gain access; (b) an attacker takes over an already-authenticated connection; (c) an attacker relays and can alter traffic between two parties who believe they are talking directly.*
+
+| Description | Attack | Distinguishing feature | Primary control |
+|---|---|---|---|
+| (a) | Replay | Reuses old but valid traffic; no live position needed | Nonce, timestamp, sequence number |
+| (b) | Session hijacking | Joins a live session after authentication succeeded | Unpredictable tokens, re-authentication, short timeouts |
+| (c) | On-path (MITM) | Sits between and can modify in real time | End-to-end authenticated encryption |
+
+The discriminators are worth stating plainly. **Replay does not require a live position** - the attacker can capture now and send later, which is why time-bounded tokens defeat it. **Hijacking requires a live session** and defeats authentication by not engaging with it. **On-path requires a live position between the parties** and is the only one of the three that can modify traffic as it passes.
+
+## Worked example 4: placing controls in layers
+
+*A public web application must be reachable from the internet. Design the layered defence and state what each layer contributes.*
+
+| Layer | Control | What it contributes |
+|---|---|---|
+| Upstream | DDoS scrubbing service | Absorbs volumetric floods before they reach the circuit |
+| Perimeter | Firewall permitting only 443 inbound | Removes everything that is not the intended service |
+| Segmentation | Web tier in a screened subnet, database on an internal segment | Compromising the web server yields no direct path to the data |
+| Application | WAF plus secure coding and input validation | Addresses injection and cross-site scripting, which packet filters cannot see |
+| Host | Hardened build, patching, endpoint detection | Protects the server if the application is exploited |
+| Data | Encryption at rest, least-privilege database account | Limits what is obtainable even after a successful compromise |
+| Monitoring | Centralised logging, alerting, response runbook | Ensures the failure of the layers above is detected |
+
+The database placement is the point most often missed. **A database on a public-facing server means one compromise yields everything.** Placing it on an internal segment, reachable only from the web tier on one port with a least-privilege account, means a compromised web server can retrieve only what the application could retrieve - which is why the segmentation row buys more than the firewall row.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Why can a volumetric DDoS not be mitigated at the organisation's own firewall, when a SYN flood of similar apparent severity can be?
+
+2. A switch's MAC address table is repeatedly overflowing and hosts are seeing traffic addressed to other hosts. Name the attack, explain the mechanism, and give the control.
+
+3. Distinguish ingress filtering from egress filtering. Which one protects other organisations rather than your own?
+
+4. Slowloris generates almost no traffic volume. How does it deny service, and why does bandwidth-based detection miss it?
+
+5. What does an on-path attacker gain against a properly implemented TLS session with certificate validation, and what do they still not get?
+
+6. Explain the difference between WPA2-Personal and WPA2-Enterprise in terms of accountability and offboarding.
+
+7. Why is diversity, rather than redundancy, the property that makes defence in depth work?
+
+8. In a screened subnet design, what is the actual security objective - protecting the web server, or something else?
+
+9. An organisation runs an anomaly-based IDS whose baseline was learned over the two weeks immediately following a deployment. Why might this be a problem, and what does an unmanaged false-positive rate eventually do to detection?
+
+10. Your remote-access VPN uses split tunnelling. State one operational benefit and the specific security exposure it creates.
+
+## Answers
+
+**1.** A volumetric attack exhausts the **internet circuit itself**, which is upstream of every device the organisation owns. By the time packets reach the firewall the bandwidth has already been consumed, so the firewall dropping them correctly changes nothing a user can perceive. Mitigation must happen **at the provider or in a scrubbing service**. A SYN flood exhausts **connection state on the edge device**, a resource you own, so SYN cookies and connection limits on that device genuinely fix it. The discriminator is always which resource runs out and who owns it.
+
+**2. MAC flooding.** The attacker sends frames with thousands of fabricated source MAC addresses until the switch's content-addressable memory table is exhausted. A switch that cannot resolve a destination **fails open and floods the frame out every port**, reverting to hub behaviour - which is why other hosts see traffic that is not theirs, and how the attacker sniffs a switched network. The control is **port security**: cap the MAC addresses learned per port and shut down or restrict a port that exceeds the limit. Layer 2 attack, layer 2 control.
+
+**3. Ingress filtering** drops **inbound** packets whose source address claims to be internal or otherwise cannot legitimately arrive from outside; it protects you from spoofed traffic. **Egress filtering** drops **outbound** packets whose source address is not one you own; it prevents your network being used to launch spoofed attacks. **Egress filtering protects other organisations** - it is the good-citizenship control, and it is also the one that catches compromised hosts inside your network participating in an attack.
+
+**4.** Slowloris opens many connections and keeps each barely alive, sending a fragment of a request header every few seconds so the server holds the connection open awaiting a completion that never arrives. Service is denied by **exhausting the connection pool**, not the link. Bandwidth-based detection misses it because the traffic volume is genuinely trivial - there is no anomaly to see on a throughput graph. Detection must look at **connection duration and request completion rates**; mitigation is connection timeouts, per-source caps, and a reverse proxy that will not forward an incomplete request.
+
+**5.** The attacker gains **traffic analysis and the ability to deny service**: they can see that a connection exists, to which endpoint, how large it is, and when - and they can drop it. They do **not** get the content, because it is encrypted, and they cannot **modify** it undetected, because integrity is cryptographically protected. Crucially they cannot **impersonate the server**, because certificate validation requires a certificate chaining to a trusted authority that they cannot forge. This is also why a user trained to dismiss certificate warnings converts a failed attack into a successful one.
+
+**6. WPA2-Personal** uses a **single pre-shared key shared by every device**. There is no individual identity, so logs cannot attribute activity to a person, and offboarding one employee means **re-keying every device on the network** or accepting that the departed person retains access. **WPA2-Enterprise** authenticates each user individually via **802.1X against a RADIUS server**, so activity is attributable and revocation is a single change in the directory. Accountability and offboarding are the two discriminators, and both favour Enterprise for any organisation of size.
+
+**7.** Redundancy means more of the same control; **diversity means controls that fail for different reasons**. Two identical firewalls share a vulnerability, a misconfiguration template, and a vendor advisory - an attacker who defeats one has already defeated the other, so the second adds availability but no security depth. A firewall plus segmentation plus endpoint detection plus monitoring fail independently, so defeating one leaves the others intact. Depth is only real when the layers are **not correlated**.
+
+**8.** The objective is **not** protecting the web server - it is internet-facing by definition and must be assumed compromisable. The objective is ensuring that **compromising it does not yield a path into the internal network**. The screened subnet exists so that traffic from the exposed tier inward is tightly restricted, so an attacker who owns the web server still faces another control before reaching internal data. This is why placing the database on the same host defeats the design entirely.
+
+**9.** An anomaly baseline is only as trustworthy as the state it was learned from. **If the environment was already compromised during the learning window, the attacker's traffic is absorbed into the definition of normal** and will never be flagged - the detector has been trained to ignore exactly what it exists to find. Baselines must be built from a known-good state and re-baselined deliberately, not continuously. Separately, an unmanaged false-positive rate produces **alert fatigue**: a team that has learned its alerts are usually noise stops investigating them, which converts false positives into effective **false negatives**. Tuning is therefore a security control, not housekeeping.
+
+**10.** The benefit is **performance and cost** - only corporate-bound traffic traverses the tunnel, so the concentrator and the corporate link are not carrying the user's general internet browsing, and latency-sensitive services are not backhauled. The exposure is that **the majority of the endpoint's traffic never passes through corporate inspection**: web filtering, data loss prevention, and outbound anomaly detection see nothing, so a compromised endpoint can reach a command-and-control server without any corporate control observing it. Where the stem emphasises monitoring, DLP, or a regulated data set, full tunnelling is the intended answer.`
+    }
+  ],
+},
 cissp_protocols: {
   topicId: 'cissp_protocols',
-  title: `Network Protocols & Secure Communications`,
+  title: `Secure Communications Channels According to Design`,
   domainWeight: '13%',
   overview: `Protocol questions in Domain 4 come in two shapes. The first names a requirement and asks which protocol satisfies it; the second names a legacy protocol and asks for its secure replacement and the port that replacement uses. Both are answerable from a small set of facts held precisely: which layer a protocol lives at, whether it is connection-oriented, what security property it actually provides, and what it deliberately does not. This chapter builds the TCP/IP stack against the OSI model, works through the infrastructure protocols that everything else assumes, sets out the insecure-to-secure replacement map with ports, and covers TLS, IPsec, and the messaging protocols in the detail the exam expects.`,
   sections: [
@@ -3928,18 +5372,10 @@ The complete answer therefore has three parts: publish DMARC and move it to reje
 **9.** VoIP uses **two separate channels**, and TLS on one of them says nothing about the other. **SIP carries signalling** - who is calling whom, call setup and teardown - and SIP over TLS protects exactly that. **RTP carries the media**, and it is plaintext by default. So the deployment genuinely has encrypted signalling and genuinely leaks audio; both statements are true at once. The missing control is **SRTP**, the Secure Real-time Transport Protocol, which adds encryption and integrity to the media stream. The generalisable lesson is to ask which channel a protection actually covers before accepting that a system is encrypted.
 
 **10.** UDP is **connectionless**: there is no handshake, so the receiver never verifies that the source address in a request is where the request actually came from. An attacker can therefore send a small request with the **victim's address spoofed as the source**, and the service dutifully sends its much larger reply to the victim. Pair that with services whose replies greatly exceed their requests - older DNS and NTP queries - and a modest attacker generates a flood far larger than their own bandwidth. The implication for defence is that **the fix belongs at the reflector as much as at the target**: the victim can buy upstream scrubbing, but the systemic remedy is operators closing open resolvers, disabling large-reply diagnostic commands, and applying rate limits, so the amplifiers stop existing.`
-    }
-  ],
-},
-cissp_wireless_net: {
-  topicId: 'cissp_wireless_net',
-  title: `Wireless & Remote Access`,
-  domainWeight: '13%',
-  overview: `### 802.11 Standards`,
-  sections: [
+    },
     {
       id: '8-wireless-networking',
-      title: `8. Wireless Networking`,
+      title: `9. Wireless Networking`,
       content: `### 802.11 Standards
 
 | Standard | Year | Frequency | Data Rate | Range | Notes |
@@ -3991,7 +5427,7 @@ cissp_wireless_net: {
     },
     {
       id: '11-network-access-control-nac',
-      title: `11. Network Access Control (NAC)`,
+      title: `10. Network Access Control (NAC)`,
       content: `### 802.1X (Port-Based Access Control)
 
 Provides port-level authentication before accessing network. Controlled (port blocked) or uncontrolled port (limited access).
@@ -4029,7 +5465,7 @@ Cisco AAA protocol. Uses TCP port 49. Separates authentication, authorization, a
     },
     {
       id: '12-email-security-and-emerging-technologies',
-      title: `12. Email Security and Emerging Technologies`,
+      title: `11. Email Security and Emerging Technologies`,
       content: `### Email Security Protocols
 
 **SPF (Sender Policy Framework)**: DNS record authorizing mail servers to send email for domain. Prevents spoofing.
@@ -4067,7 +5503,7 @@ Integrates network security (firewall, IPS, DLP) and WAN capabilities in cloud. 
     },
     {
       id: 'modern-network-architecture-and-zero-trust',
-      title: `Modern Network Architecture and Zero Trust`,
+      title: `12. Modern Network Architecture and Zero Trust`,
       content: `### Software-Defined Networking (SDN)
 
 Traditional networks hardcode forwarding logic in individual devices. **SDN** separates this into **control plane** (centralized decisions) and **data plane** (forwarding execution).
@@ -4157,679 +5593,10 @@ IPv6 adoption increasing; ensure security controls span both protocols.`,
     },
   ],
 },
-
-cissp_network_attacks: {
-  topicId: 'cissp_network_attacks',
-  title: `Network Attacks & Countermeasures`,
-  domainWeight: '13%',
-  overview: `Domain 4 items about attacks are rarely satisfied by naming the attack. They describe symptoms and ask what is happening, or name an attack and ask which control belongs at which layer. Both forms reward the same discipline: locate the attack on the OSI stack, identify which resource it exhausts or which trust it abuses, and choose the control that sits at that same layer. A control one layer away is the classic distractor. This chapter maps the stack to its attacks and defences, works through the handshake abuses, separates the three classes of denial of service, covers on-path interception and the spoofing family, and closes with the defence-in-depth architecture that assumes any single control will fail.`,
-  sections: [
-    {
-      id: '1-layer-map',
-      title: `1. Locating an Attack on the Stack`,
-      content: `## Why the layer is the first question
-
-Every network control operates at a specific layer, and it can only see what that layer exposes. A firewall filtering on IP addresses and ports cannot detect SQL injection, because injection lives in an application payload the firewall treats as opaque bytes. A web application firewall inspecting HTTP cannot stop a SYN flood, because the flood never produces a complete request. Choosing a control means matching layers.
-
-![OSI layers with typical attacks and the controls that belong there](/courses/cissp/figures/cissp-osi-attacks.svg)
-
-| Layer | Typical attack | The control that belongs there |
-|---|---|---|
-| 7 Application | Injection, cross-site scripting, phishing, HTTP flood | Secure coding, WAF, user awareness |
-| 6 Presentation | Malformed encoding, cipher downgrade | Input validation, enforced cipher policy |
-| 5 Session | Session replay, hijack during setup | Mutual authentication, unpredictable tokens |
-| 4 Transport | SYN flood, session hijacking | SYN cookies, stateful inspection, TLS |
-| 3 Network | IP spoofing, smurf, routing manipulation | ACLs, ingress and egress filtering, IPsec |
-| 2 Data Link | ARP poisoning, MAC flooding, VLAN hopping | Port security, dynamic ARP inspection, 802.1X |
-| 1 Physical | Wiretapping, cable cut, RF jamming | Locked conduit, shielding, physical guards |
-
-## Encapsulation and why it constrains visibility
-
-Data descends the stack gaining a header at each layer, and ascends the far side losing them in reverse. The name of the unit changes as it goes, and the exam asks for those names.
-
-![OSI encapsulation and protocol data unit names](/courses/cissp/figures/cissp-osi-encapsulation.svg)
-
-| Layers | Protocol data unit |
-|---|---|
-| 7, 6, 5 | Data |
-| 4 Transport | Segment (TCP) or datagram (UDP) |
-| 3 Network | Packet |
-| 2 Data Link | Frame |
-| 1 Physical | Bits |
-
-The consequence for defence is direct. A device operating at layer 3 reads the packet header and treats everything above as payload. To inspect the application content it must reassemble the session and parse it - which is exactly what next-generation firewalls and proxies do, and exactly why they cost more processing than a packet filter.
-
-## Reading the stem for the layer
-
-Certain phrases appear repeatedly and each points at one layer.
-
-| Phrase in the stem | Layer it names |
-|---|---|
-| MAC address, switch port, VLAN, ARP | 2 Data Link |
-| IP address, subnet, route, TTL | 3 Network |
-| Port number, TCP flags, handshake, session state | 4 Transport |
-| URL, header, cookie, query string, form field | 7 Application |
-| Cable, connector, signal, interference | 1 Physical |
-
-A device's layer follows the same vocabulary: a **hub** repeats bits at layer 1; a **switch** forwards frames by MAC address at layer 2; a **router** forwards packets by IP address at layer 3; a **traditional firewall** filters at layers 3 and 4; a **proxy or WAF** operates at layer 7.`
-    },
-    {
-      id: '2-handshake-and-spoofing',
-      title: `2. Handshake Abuse, Spoofing, and Session Attacks`,
-      content: `## The three-way handshake and the state it creates
-
-TCP establishes a connection in three steps, and the second step is where the vulnerability lives: on receiving a SYN, the server allocates state and waits.
-
-![TCP three-way handshake with SYN flood and SYN scan](/courses/cissp/figures/cissp-tcp-handshake.svg)
-
-**SYN flood** exploits that allocation. The attacker sends step one and never sends step three, usually from spoofed source addresses so the SYN-ACK goes nowhere. Each half-open connection consumes a slot in a finite table; when the table fills, legitimate connections are refused. The defence is **SYN cookies**: the server encodes the connection state into the sequence number it returns rather than storing it, so it allocates nothing until a valid ACK arrives.
-
-**SYN scanning**, sometimes called half-open scanning, sends step one, reads the reply, and sends RST instead of completing. An open port answers SYN-ACK; a closed port answers RST; a filtered port answers nothing at all. Because no session completes, older logging misses it entirely - which is why the answer to "how do we detect this?" is an IDS or scan-detection rule rather than connection logs.
-
-## Spoofing
-
-**Spoofing** is asserting an identity that belongs to someone else, and it appears at several layers.
-
-| Kind | What is forged | What defeats it |
-|---|---|---|
-| IP spoofing | Source address in the packet header | Ingress filtering at the perimeter, egress filtering outbound |
-| MAC spoofing | Hardware address on the segment | Port security, 802.1X |
-| ARP spoofing | The IP-to-MAC binding | Dynamic ARP inspection, static entries |
-| Email spoofing | The sender address | SPF, DKIM, DMARC |
-| Caller or SMS spoofing | Origin of a voice or text message | Out-of-band verification, user awareness |
-
-Two filtering directions are examined and routinely confused. **Ingress filtering** drops inbound packets whose source address claims to be internal - nothing arriving from outside should carry an inside address. **Egress filtering** drops outbound packets whose source address is not one of yours, which stops your network being used to attack someone else. Ingress protects you; egress protects everyone else and is a good-citizenship control.
-
-## Session attacks
-
-**Session hijacking** takes over an authenticated session rather than defeating authentication. Whatever the mechanism - stealing a token, predicting a session identifier, or riding an on-path position - the attacker inherits the user's authenticated state, which is why strong authentication alone does not prevent it. The controls are session-side: unpredictable identifiers with adequate entropy, binding the session to attributes that are hard to replay, re-authentication before sensitive operations, and short idle timeouts.
-
-**Replay** captures valid traffic and re-sends it. The general defence is a **nonce**, a timestamp, or a sequence number, so that a message valid once is invalid the second time. Kerberos timestamps and TLS sequence numbers are both replay defences, and this is the reason accurate time is a security dependency.
-
-## The smurf and fraggle family
-
-**Smurf** sends ICMP echo requests to a network's broadcast address with the victim's address as the spoofed source; every host on that segment replies to the victim. **Fraggle** is the same idea over UDP. Both are amplification attacks, and both are largely historical because the fix - **do not forward directed broadcasts** - became a default. Their value on the exam is as the clean illustration of amplification: a small spoofed request producing many large replies aimed elsewhere.
-
-## DNS as an attack surface in its own right
-
-DNS deserves separate treatment because it is trusted implicitly by everything and was designed without authentication.
-
-| Attack | Mechanism | Control |
-|---|---|---|
-| Cache poisoning | Inject a forged answer that the resolver caches and serves to everyone | DNSSEC, source-port and transaction-ID randomisation |
-| DNS hijacking | Alter the records at the registrar or authoritative server | Registrar lock, multi-factor on the registrar account |
-| DNS tunnelling | Encode data inside queries and responses to exfiltrate or command | Inspect query volume, entropy, and record types |
-| Domain shadowing | Create subdomains under a legitimate stolen domain | Registrar account protection, certificate transparency monitoring |
-| Typosquatting | Register a visually similar domain and wait for mistyping | Defensive registration, user awareness, brand monitoring |
-
-**DNSSEC** signs records so a resolver can verify that an answer came from the zone's owner and was not altered in transit. Note precisely what it does and does not do: it provides **origin authentication and integrity, not confidentiality** - queries and answers remain in plaintext. Encrypting the query itself is a different problem, addressed by DNS over TLS or DNS over HTTPS, and those in turn create a monitoring problem of their own, because they hide DNS lookups from the security tooling that used to inspect them.
-
-**DNS tunnelling** is worth recognising by symptom rather than by name. Because DNS is almost universally permitted outbound, an attacker can encode command traffic and stolen data inside queries for subdomains of a domain they control. The signature is not the protocol but its **shape**: unusually long or high-entropy subdomain labels, an abnormal volume of TXT or NULL record queries, and a single client generating far more lookups than its peers. A stem describing steady low-volume DNS traffic to one unfamiliar domain from one host is describing command and control, not a misconfiguration.`
-    },
-    {
-      id: '3-denial-of-service',
-      title: `3. Denial of Service and Distributed Attacks`,
-      content: `## Three classes, distinguished by what is exhausted
-
-Denial of service attacks the **availability** leg of the triad, and the exam separates them by which resource runs out.
-
-![Denial of service classes by the resource they exhaust](/courses/cissp/figures/cissp-ddos-taxonomy.svg)
-
-| Class | Resource exhausted | Examples | Where it is mitigated |
-|---|---|---|---|
-| Volumetric | Bandwidth | UDP flood, DNS and NTP amplification | Upstream, at the provider or a scrubbing service |
-| Protocol | Connection state | SYN flood, fragmentation attacks | At the edge device - SYN cookies, stateful limits |
-| Application | Server processing | HTTP flood, slowloris, expensive queries | At the application tier - WAF, rate limits, caching |
-
-The mitigation column carries the highest-yield point. **A volumetric attack cannot be mitigated at your own edge**, because by the time traffic reaches your firewall it has already consumed the link. When a stem describes a saturated internet circuit, the answer involves the upstream provider or a scrubbing service, never a bigger firewall.
-
-## Amplification and reflection
-
-Amplification pairs two properties: a protocol that answers a small request with a large reply, and one that does not verify the source address. The attacker sends a small spoofed request to a **reflector** with the victim's address as the source; the reflector sends its large reply to the victim.
-
-DNS and NTP are the classic reflectors because both are UDP-based, both are widely reachable, and both have queries whose replies are many times larger than the request. The defence has two halves that the exam distinguishes: the victim buys upstream scrubbing, while **the reflector operator closes the open service** - restricting recursion, disabling the monlist command, applying rate limits. Fixing the reflectors is the systemic remedy.
-
-## Distributed attacks and botnets
-
-A **distributed** denial of service uses many sources, which defeats source-based blocking and makes the traffic hard to distinguish from a legitimate surge. The sources are usually a **botnet** of compromised hosts under a command-and-control channel, and increasingly of poorly secured embedded devices whose default credentials were never changed.
-
-Two derived exam points follow. First, **your organisation can be the source rather than the target**, which is what egress filtering and outbound anomaly detection address. Second, a DDoS is sometimes a **diversion**: while the operations team fights the outage, a quieter intrusion proceeds elsewhere. A stem describing a DDoS alongside unusual authentication activity is testing whether you treat the flood as the whole incident.
-
-## Slow attacks
-
-**Slowloris** and its relatives invert the usual signature. Rather than flooding, they open many connections and keep each one barely alive - sending a partial request header every few seconds - so the server holds every connection open waiting for a completion that never comes. The traffic volume is trivial, which is precisely why bandwidth-based detection misses it.
-
-The lesson generalises: **low volume does not mean low impact**. Detection must consider connection duration and completion rates, not only throughput, and the mitigations are connection timeouts, per-source connection caps, and a reverse proxy that will not forward until it holds a complete request.`
-    },
-    {
-      id: '4-interception-and-wireless',
-      title: `4. Interception, On-Path Attacks, and Wireless Exposure`,
-      content: `## The on-path position
-
-An on-path attacker - the older term is man-in-the-middle - relays traffic between two parties who each believe they are talking directly to the other.
-
-![On-path interception and the three common ways in](/courses/cissp/figures/cissp-mitm-path.svg)
-
-| Route in | Mechanism | Defence |
-|---|---|---|
-| ARP poisoning | Forge IP-to-MAC bindings on the local segment | Dynamic ARP inspection, static entries for critical hosts |
-| Rogue AP or evil twin | Advertise a familiar SSID and win the association | 802.1X, wireless IPS, certificate-pinned VPN |
-| DNS spoofing | Answer the name lookup before the legitimate resolver | DNSSEC, resolver hardening, split-horizon design |
-
-The unifying defence is **end-to-end authenticated encryption**. An on-path attacker still sees that traffic is flowing and can still deny service, but cannot read or modify content whose integrity is cryptographically protected and whose endpoint is authenticated by a certificate they cannot forge. This is why "implement TLS with certificate validation" answers so many interception items - and why certificate warnings must never be trained away, since dismissing them is what converts a failed attack into a successful one.
-
-## Downgrade and stripping
-
-A sophisticated on-path attacker does not break the cryptography; it prevents the cryptography from being used. **SSL stripping** intercepts a plaintext request before redirection and proxies the secure connection on the user's behalf, leaving the user on HTTP without noticing. **Downgrade attacks** manipulate negotiation so that the weakest mutually supported version or cipher is chosen.
-
-The controls follow directly: **HTTP Strict Transport Security** tells a browser never to use plaintext for a domain again, and disabling obsolete protocol versions and cipher suites removes the weak options from the negotiation entirely. A negotiation can only settle on something both sides still offer.
-
-## Wireless exposure
-
-Wireless removes the physical boundary that other controls assume, so a signal reaching the car park is available to anyone in it.
-
-| Threat | What it is | Control |
-|---|---|---|
-| Rogue access point | Unsanctioned AP attached to the network, often by staff for convenience | Wireless IPS, port security, periodic surveys |
-| Evil twin | Attacker AP mimicking a legitimate SSID | 802.1X with server certificate validation |
-| War driving | Surveying for reachable wireless networks | Signal management, strong authentication |
-| Deauthentication | Forcing clients off so they reconnect to the attacker | Management frame protection |
-| Weak encryption | WEP and early WPA are broken | WPA3, or WPA2-Enterprise where WPA3 is unavailable |
-
-The security history is examinable as a progression. **WEP** is broken and must never be used. **WPA** introduced TKIP as an interim fix and is deprecated. **WPA2** brought AES-CCMP and remains acceptable in its Enterprise form. **WPA3** adds Simultaneous Authentication of Equals, which resists the offline dictionary attack that made weak WPA2-Personal passphrases crackable from a captured handshake.
-
-The personal-versus-enterprise distinction matters more than the version in many items. **Personal mode uses one pre-shared key for everyone**, so it provides no individual accountability and requires re-keying every device when one person leaves. **Enterprise mode authenticates each user individually via 802.1X and a RADIUS server**, which restores accountability and makes revocation a single directory change.`
-    },
-    {
-      id: '5-defence-in-depth',
-      title: `5. Defence in Depth and Control Placement`,
-      content: `## The principle
-
-**Defence in depth** layers independent controls so that the failure of any one does not produce a breach. Its value is not redundancy for its own sake but **diversity**: controls that fail for different reasons. Two firewalls from the same vendor running the same firmware share a vulnerability; a firewall plus network segmentation plus endpoint protection plus monitoring do not.
-
-| Layer of defence | Example controls | What it buys |
-|---|---|---|
-| Perimeter | Firewall, IPS, DDoS scrubbing | Removes bulk hostile traffic |
-| Network | Segmentation, VLANs, NAC, internal ACLs | Limits lateral movement after entry |
-| Host | Patching, host firewall, EDR, hardening | Protects the asset if the network is crossed |
-| Application | Secure coding, WAF, input validation | Addresses what network controls cannot see |
-| Data | Encryption at rest and in transit, DLP, rights management | Protects the asset itself if all else fails |
-| People and process | Training, separation of duties, incident response | Covers what technology cannot |
-
-## Segmentation
-
-Segmentation is the highest-value network control against a determined attacker, because it attacks the **lateral movement** phase rather than the initial intrusion. An attacker who compromises a workstation in a flat network can reach every other host; in a segmented network they reach only their own segment and must defeat another control to progress.
-
-| Approach | What it separates | Typical use |
-|---|---|---|
-| VLANs | Broadcast domains, logically | Departmental separation |
-| Screened subnet (DMZ) | Internet-facing services from the internal network | Public web, mail relay |
-| Microsegmentation | Individual workloads from one another | Data centre, cloud |
-| Air gap | Physically, with no network path | Industrial control, classified processing |
-
-A **screened subnet** deserves precision because its logic is asked directly. Public services are placed in a subnet reachable from the internet, and traffic from that subnet into the internal network is heavily restricted. The point is not to protect the web server - it is exposed by definition - but to ensure that **compromising it does not yield a path inward**.
-
-An **air gap** is the strongest form and is frequently defeated by process rather than technology: removable media, maintenance laptops, and vendor updates all cross gaps that packets cannot. Where a stem describes an air-gapped system compromised anyway, the vector is almost always a human-carried one.
-
-## Zero trust
-
-Zero trust rejects the assumption that location implies trust. In a perimeter model, a host inside the network is trusted because it is inside; zero trust removes that inference and evaluates **every request** against identity, device posture, and context, regardless of origin.
-
-| Principle | What it means in practice |
-|---|---|
-| Never trust, always verify | Every request is authenticated and authorised, including internal ones |
-| Least privilege per request | Access is scoped to this request, not granted standing |
-| Assume breach | Design as though an attacker is already inside |
-| Verify explicitly | Decide from identity, device state, location, and behaviour together |
-
-Zero trust is ABAC in architectural form, and it explains why microsegmentation and strong device identity appear together in modern designs. It does not replace defence in depth; it is a way of applying it that stops treating the perimeter as the boundary of trust.
-
-## Remote access and the tunnelled edge
-
-Remote access reintroduces the perimeter problem in a new place: a device outside your control needs to behave as though it were inside. The controls are chosen by what must be protected and from whom.
-
-| Technology | What it protects | Where it fits |
-|---|---|---|
-| IPsec VPN | The whole packet, at layer 3 | Site-to-site links and full-tunnel remote access |
-| TLS VPN | Specific applications, at layers 5-7 | Clientless or per-application remote access |
-| SSH tunnelling | One forwarded port | Administrative access and ad hoc forwarding |
-| Network access control | Admission itself | Posture-checking a device before it is allowed on |
-
-![IPsec transport and tunnel mode compared](/courses/cissp/figures/cissp-ipsec-modes.svg)
-
-IPsec offers two modes, and the difference is exactly what is protected. **Transport mode** encrypts the payload and leaves the original IP header visible, which suits host-to-host protection inside a network you already trust. **Tunnel mode** encapsulates the entire original packet inside a new one, hiding the internal addressing, which is what site-to-site VPNs require because the internal topology should not be exposed across the intermediate network.
-
-Two IPsec components are asked by name. **AH (Authentication Header)** provides integrity and authentication but **no confidentiality** - it does not encrypt. **ESP (Encapsulating Security Payload)** provides confidentiality and can also provide integrity, which is why ESP is what real deployments use and why "we need IPsec for confidentiality, so we will use AH" is a reliably wrong answer.
-
-**Split tunnelling** is the configuration question that generates items. With split tunnelling, only traffic destined for the corporate network goes through the tunnel and everything else goes directly to the internet. It preserves bandwidth and improves user experience, and it **removes corporate inspection from the majority of the user's traffic** - so a compromised endpoint can communicate with an attacker without any corporate control observing it. Full tunnelling reverses both properties. The trade is performance and cost against visibility, and where the stem emphasises monitoring or data loss prevention, full tunnelling is intended.
-
-**Network access control** addresses the device rather than the traffic. Before admitting an endpoint it evaluates posture - patch level, endpoint protection running and current, configuration compliance - and places non-compliant devices in a **remediation network** with access only to the resources needed to fix them. This is the control that answers "how do we stop an unmanaged or out-of-date laptop joining the network?", and it pairs naturally with 802.1X, which authenticates the device or user at the port before an address is even issued.`
-    },
-    {
-      id: '6-detection',
-      title: `6. Detection: Devices, Signals, and Deception`,
-      content: `## Firewalls by generation
-
-Prevention devices are classified by how deeply they look, and the exam asks which generation is needed for a given requirement.
-
-| Type | Operates at | What it decides on | What it cannot do |
-|---|---|---|---|
-| Packet filter | Layers 3-4 | Source, destination, port, flags - each packet alone | No memory of session; cannot see application content |
-| Stateful inspection | Layers 3-4 | The same, plus the connection state table | Still blind to payload semantics |
-| Application proxy | Layer 7 | Full request semantics; terminates and re-originates | Slower; needs a proxy per protocol |
-| Next-generation | 3-7 | Application identity, user identity, threat signatures | Complexity and cost; TLS inspection has privacy implications |
-| Web application firewall | Layer 7, HTTP only | Request structure - injection, XSS, anomalies | Only web; not a general firewall |
-
-The classic distinguishing item describes an attack in an HTTP body and asks which device sees it. A stateful firewall permitting port 443 sees an allowed connection carrying opaque bytes; only a layer 7 device parses the request. **Statefulness is about connections, not content.**
-
-## Detection versus prevention
-
-| Property | IDS | IPS |
-|---|---|---|
-| Placement | Out of band, on a mirror or tap | In line, traffic passes through it |
-| Action | Alerts | Alerts and blocks |
-| Failure impact | Detection stops; traffic unaffected | Can block legitimate traffic, or drop it entirely |
-| False positive cost | An unnecessary alert | A legitimate user denied service |
-
-That last row is the trade-off the exam builds items around. **An IPS turns a false positive into an outage.** This is why organisations tune in detection mode before enabling blocking, and why a stem describing a business-critical, latency-sensitive flow often favours an IDS plus a response process over an in-line block.
-
-## Detection methods
-
-| Method | How it decides | Strength | Weakness |
-|---|---|---|---|
-| Signature (pattern) | Matches known attack patterns | Precise, low false-positive rate | Blind to anything novel or newly obfuscated |
-| Anomaly (behaviour) | Flags deviation from a learned baseline | Can catch previously unseen attacks | Higher false-positive rate; the baseline can learn a compromise as normal |
-| Heuristic | Applies rules about suspicious behaviour | Catches variants of known families | Needs tuning |
-| Stateful protocol analysis | Compares to how the protocol should behave | Catches protocol abuse | Requires an accurate protocol model |
-
-The anomaly weakness is a genuine exam trap: **if the baseline is established while the environment is already compromised, the compromise becomes the norm** and will never be flagged. Baselines must be built from a known-good state, and re-baselined deliberately rather than continuously.
-
-## The four detection outcomes
-
-| Outcome | Meaning | Consequence |
-|---|---|---|
-| True positive | Attack occurred, alert raised | The system working |
-| True negative | No attack, no alert | The system working |
-| False positive (Type I) | No attack, alert raised | Wasted effort; alert fatigue |
-| False negative (Type II) | Attack occurred, no alert | The dangerous failure - a breach nobody knows about |
-
-**False negatives are the security-consequential error**, mirroring the biometric case where Type II admits the impostor. The relationship between the two is a tuning trade-off: making detection more sensitive reduces false negatives and raises false positives. Excessive false positives cause **alert fatigue**, and a team that has learned to ignore alerts has effectively converted its false positives into false negatives - which is why tuning is a security control, not housekeeping.
-
-## Deception
-
-| Construct | What it is | Primary value |
-|---|---|---|
-| Honeypot | A single decoy system with no production purpose | Any interaction with it is suspicious by definition |
-| Honeynet | A decoy network of several such systems | Observing lateral movement and attacker technique |
-| Honeytoken | A decoy record, credential, or file | Detecting exfiltration and insider access |
-
-The reason deception is valuable is the **signal-to-noise ratio**. A production server generates enormous legitimate traffic in which attack traffic must be found; a honeypot generates none, so **every packet is worth investigating**. Honeytokens extend the idea to data - a fabricated customer record that no legitimate process should ever read, whose appearance anywhere is proof of unauthorised access.
-
-Two cautions are examinable. A honeypot that can be **compromised and used to attack others** creates liability, so it must be contained and monitored. And **entrapment versus enticement** is a legal distinction the exam expects: enticement makes an opportunity available to someone already intent on wrongdoing and is generally acceptable; entrapment induces someone to commit an act they would not otherwise have committed and is not.
-
-## Aggregation and correlation
-
-A **SIEM** collects logs from many sources, normalises them, and correlates events across them. Its value is that individual events are innocuous while their **combination is not**: a failed VPN login is noise, and a failed VPN login from a new country followed by a successful one, a privilege change, and a large outbound transfer is an incident.
-
-Two supporting concepts complete the picture. **Aggregation** combines many similar events into one record so the console stays readable. **Correlation** relates dissimilar events across sources into a single narrative. Both depend on **synchronised time** - correlating events across systems whose clocks disagree produces a sequence that is simply wrong, which is one more reason NTP discipline is a security control rather than an operational nicety.`
-    },
-    {
-      id: '7-worked-examples',
-      title: `7. Worked Examples`,
-      content: `## Worked example 1: reading symptoms to an attack
-
-*Users report that internal file shares are slow but the internet works normally. The switch logs show its MAC address table repeatedly filling and ageing out. A packet capture from one workstation shows traffic destined for other hosts arriving at its interface. What is happening?*
-
-Take the clues in order.
-
-The MAC address table filling and cycling is the signature of **MAC flooding**: the attacker sends frames with thousands of fabricated source addresses until the table's capacity is exceeded.
-
-The consequence explains everything else. A switch that cannot look up a destination **fails open and floods the frame to every port**, reverting to hub behaviour. That is why one workstation sees traffic meant for others - the capture is not a coincidence, it is the effect - and why internal transfers slow while internet traffic, which leaves via the router, is unaffected.
-
-The control is **port security**, limiting the number of MAC addresses learned per port and shutting down or restricting a port that exceeds it. This is a layer 2 attack answered by a layer 2 control; a firewall change would do nothing, because the traffic never leaves the segment.
-
-## Worked example 2: choosing where to mitigate
-
-*An organisation's 1 Gbps internet circuit is saturated by inbound UDP traffic from thousands of sources. The perimeter firewall is dropping the traffic correctly but users still cannot reach anything. What should be done?*
-
-Notice what the stem already tells you: **the firewall is working**. It is identifying and dropping the traffic exactly as configured. The problem is upstream of it.
-
-The circuit is the exhausted resource, and it is exhausted before the packets reach any equipment you own. **No configuration change on your side of that link can help**, because the damage is done in transit. Upgrading the firewall would not help either - it is not the bottleneck.
-
-The correct response is **upstream mitigation**: contact the internet service provider to filter or rate-limit at their edge, or route traffic through a **scrubbing service** that absorbs the volume and forwards only clean traffic. Longer term, the architecture answer is a DDoS protection service arranged before it is needed, since negotiating one during an outage is slow.
-
-Note the discriminator the item is built on: a **protocol** or **application** layer attack of the same apparent severity would be mitigable locally. Only the volumetric class forces the answer off your own premises.
-
-## Worked example 3: separating similar attacks
-
-*Match each description to its attack: (a) a captured authentication message is re-sent later to gain access; (b) an attacker takes over an already-authenticated connection; (c) an attacker relays and can alter traffic between two parties who believe they are talking directly.*
-
-| Description | Attack | Distinguishing feature | Primary control |
-|---|---|---|---|
-| (a) | Replay | Reuses old but valid traffic; no live position needed | Nonce, timestamp, sequence number |
-| (b) | Session hijacking | Joins a live session after authentication succeeded | Unpredictable tokens, re-authentication, short timeouts |
-| (c) | On-path (MITM) | Sits between and can modify in real time | End-to-end authenticated encryption |
-
-The discriminators are worth stating plainly. **Replay does not require a live position** - the attacker can capture now and send later, which is why time-bounded tokens defeat it. **Hijacking requires a live session** and defeats authentication by not engaging with it. **On-path requires a live position between the parties** and is the only one of the three that can modify traffic as it passes.
-
-## Worked example 4: placing controls in layers
-
-*A public web application must be reachable from the internet. Design the layered defence and state what each layer contributes.*
-
-| Layer | Control | What it contributes |
-|---|---|---|
-| Upstream | DDoS scrubbing service | Absorbs volumetric floods before they reach the circuit |
-| Perimeter | Firewall permitting only 443 inbound | Removes everything that is not the intended service |
-| Segmentation | Web tier in a screened subnet, database on an internal segment | Compromising the web server yields no direct path to the data |
-| Application | WAF plus secure coding and input validation | Addresses injection and cross-site scripting, which packet filters cannot see |
-| Host | Hardened build, patching, endpoint detection | Protects the server if the application is exploited |
-| Data | Encryption at rest, least-privilege database account | Limits what is obtainable even after a successful compromise |
-| Monitoring | Centralised logging, alerting, response runbook | Ensures the failure of the layers above is detected |
-
-The database placement is the point most often missed. **A database on a public-facing server means one compromise yields everything.** Placing it on an internal segment, reachable only from the web tier on one port with a least-privilege account, means a compromised web server can retrieve only what the application could retrieve - which is why the segmentation row buys more than the firewall row.`
-    },
-    {
-      id: '8-self-check',
-      title: `8. Self-Check`,
-      content: `## Self-Check Questions
-
-1. Why can a volumetric DDoS not be mitigated at the organisation's own firewall, when a SYN flood of similar apparent severity can be?
-
-2. A switch's MAC address table is repeatedly overflowing and hosts are seeing traffic addressed to other hosts. Name the attack, explain the mechanism, and give the control.
-
-3. Distinguish ingress filtering from egress filtering. Which one protects other organisations rather than your own?
-
-4. Slowloris generates almost no traffic volume. How does it deny service, and why does bandwidth-based detection miss it?
-
-5. What does an on-path attacker gain against a properly implemented TLS session with certificate validation, and what do they still not get?
-
-6. Explain the difference between WPA2-Personal and WPA2-Enterprise in terms of accountability and offboarding.
-
-7. Why is diversity, rather than redundancy, the property that makes defence in depth work?
-
-8. In a screened subnet design, what is the actual security objective - protecting the web server, or something else?
-
-9. An organisation runs an anomaly-based IDS whose baseline was learned over the two weeks immediately following a deployment. Why might this be a problem, and what does an unmanaged false-positive rate eventually do to detection?
-
-10. Your remote-access VPN uses split tunnelling. State one operational benefit and the specific security exposure it creates.
-
-## Answers
-
-**1.** A volumetric attack exhausts the **internet circuit itself**, which is upstream of every device the organisation owns. By the time packets reach the firewall the bandwidth has already been consumed, so the firewall dropping them correctly changes nothing a user can perceive. Mitigation must happen **at the provider or in a scrubbing service**. A SYN flood exhausts **connection state on the edge device**, a resource you own, so SYN cookies and connection limits on that device genuinely fix it. The discriminator is always which resource runs out and who owns it.
-
-**2. MAC flooding.** The attacker sends frames with thousands of fabricated source MAC addresses until the switch's content-addressable memory table is exhausted. A switch that cannot resolve a destination **fails open and floods the frame out every port**, reverting to hub behaviour - which is why other hosts see traffic that is not theirs, and how the attacker sniffs a switched network. The control is **port security**: cap the MAC addresses learned per port and shut down or restrict a port that exceeds the limit. Layer 2 attack, layer 2 control.
-
-**3. Ingress filtering** drops **inbound** packets whose source address claims to be internal or otherwise cannot legitimately arrive from outside; it protects you from spoofed traffic. **Egress filtering** drops **outbound** packets whose source address is not one you own; it prevents your network being used to launch spoofed attacks. **Egress filtering protects other organisations** - it is the good-citizenship control, and it is also the one that catches compromised hosts inside your network participating in an attack.
-
-**4.** Slowloris opens many connections and keeps each barely alive, sending a fragment of a request header every few seconds so the server holds the connection open awaiting a completion that never arrives. Service is denied by **exhausting the connection pool**, not the link. Bandwidth-based detection misses it because the traffic volume is genuinely trivial - there is no anomaly to see on a throughput graph. Detection must look at **connection duration and request completion rates**; mitigation is connection timeouts, per-source caps, and a reverse proxy that will not forward an incomplete request.
-
-**5.** The attacker gains **traffic analysis and the ability to deny service**: they can see that a connection exists, to which endpoint, how large it is, and when - and they can drop it. They do **not** get the content, because it is encrypted, and they cannot **modify** it undetected, because integrity is cryptographically protected. Crucially they cannot **impersonate the server**, because certificate validation requires a certificate chaining to a trusted authority that they cannot forge. This is also why a user trained to dismiss certificate warnings converts a failed attack into a successful one.
-
-**6. WPA2-Personal** uses a **single pre-shared key shared by every device**. There is no individual identity, so logs cannot attribute activity to a person, and offboarding one employee means **re-keying every device on the network** or accepting that the departed person retains access. **WPA2-Enterprise** authenticates each user individually via **802.1X against a RADIUS server**, so activity is attributable and revocation is a single change in the directory. Accountability and offboarding are the two discriminators, and both favour Enterprise for any organisation of size.
-
-**7.** Redundancy means more of the same control; **diversity means controls that fail for different reasons**. Two identical firewalls share a vulnerability, a misconfiguration template, and a vendor advisory - an attacker who defeats one has already defeated the other, so the second adds availability but no security depth. A firewall plus segmentation plus endpoint detection plus monitoring fail independently, so defeating one leaves the others intact. Depth is only real when the layers are **not correlated**.
-
-**8.** The objective is **not** protecting the web server - it is internet-facing by definition and must be assumed compromisable. The objective is ensuring that **compromising it does not yield a path into the internal network**. The screened subnet exists so that traffic from the exposed tier inward is tightly restricted, so an attacker who owns the web server still faces another control before reaching internal data. This is why placing the database on the same host defeats the design entirely.
-
-**9.** An anomaly baseline is only as trustworthy as the state it was learned from. **If the environment was already compromised during the learning window, the attacker's traffic is absorbed into the definition of normal** and will never be flagged - the detector has been trained to ignore exactly what it exists to find. Baselines must be built from a known-good state and re-baselined deliberately, not continuously. Separately, an unmanaged false-positive rate produces **alert fatigue**: a team that has learned its alerts are usually noise stops investigating them, which converts false positives into effective **false negatives**. Tuning is therefore a security control, not housekeeping.
-
-**10.** The benefit is **performance and cost** - only corporate-bound traffic traverses the tunnel, so the concentrator and the corporate link are not carrying the user's general internet browsing, and latency-sensitive services are not backhauled. The exposure is that **the majority of the endpoint's traffic never passes through corporate inspection**: web filtering, data loss prevention, and outbound anomaly detection see nothing, so a compromised endpoint can reach a command-and-control server without any corporate control observing it. Where the stem emphasises monitoring, DLP, or a regulated data set, full tunnelling is the intended answer.`
-    }
-  ],
-},
-cissp_auth: {
-  topicId: 'cissp_auth',
-  title: `Authentication Methods`,
-  domainWeight: '13%',
-  overview: `Access control is the foundation of security infrastructure. It combines multiple security mechanisms to verify identity and grant appropriate privileges.`,
-  sections: [
-    {
-      id: '1-physical-and-logical-access-control',
-      title: `1. Physical and Logical Access Control`,
-      content: `Access control is the foundation of security infrastructure. It combines multiple security mechanisms to verify identity and grant appropriate privileges.
-### Authentication Factors
-
-Authentication mechanisms are classified into five categories based on what users know, have, or are:
-### Physical Access Control Technologies
-
-**Smart Cards:** Credit-card-sized devices with embedded microprocessor. Store cryptographic keys and digital certificates. Enable multifactor authentication by combining something you have (card) with something you know (PIN). Provide stronger security than passwords alone.
-
-**Biometric Systems:** Automated measurement and analysis of unique biological and behavioral characteristics. Provide high accuracy and cannot be easily forged (unlike passwords). Used for physical entry and logical authentication.
-
-**Tokens:** Hardware devices generating one-time passwords (OTP). Synchronous tokens use time or event counters. Asynchronous tokens generate random numbers. Common examples: RSA SecurID, Google Authenticator.
-
-**PINs (Personal Identification Numbers):** Numeric passwords, typically 4-6 digits. Used with smart cards, tokens, and ATMs. Vulnerable to shoulder surfing and social engineering due to short length.
-
-**Passwords:** User-selected secrets. Easy to implement but weak without enforcement of strong password policies. Susceptible to dictionary attacks, brute force, and social engineering.
-### Access Control Technologies
-
-- Badge Readers: RFID or magnetic stripe readers for physical access
-- Mantrap (Turnstile): Prevents tailgating by allowing one person per badge swipe
-- Combination Locks: Mechanical devices requiring knowledge of code sequence
-- Cipher Locks: Push-button or electronic combination locks
-- Proximity Cards: Wireless card readers without physical insertion required
-- Bollards and Barriers: Physical obstacles preventing unauthorized vehicle entry
-- Motion Sensors: Detect unauthorized movement in secure areas`,
-      importantNote: `Something You Know (Type I): Passwords, PINs, security questions. Memorized secrets. | Something You Have (Type II): Smart cards, hardware tokens, USB keys, certificates. Physical objects. | Something You Are (Type III): Biometric data - fingerprints, iris, retina, facial recognition, voice, palm vein. Inherent characteristics. | Something You Do (Type IV): Behavioral biometrics like keystroke dynamics, signature dynamics, gait analysis. | Somewhere You Are (Type V): Location-based authentication using GPS, geofencing, or network location.`,
-    },
-    {
-      id: '2-identification-and-authentication',
-      title: `2. Identification and Authentication`,
-      content: `### Identification vs. Authentication vs. Authorization
-
-| Term | Definition |
-|---|---|
-| Identification | Declaring who you claim to be (username, email). Not verification. |
-| Authentication | Proving your identity through credentials (passwords, certificates, tokens). |
-| Authorization | Determining what authenticated user can do (permissions, access rights). |
-| Accountability | Logging and tracking user actions for audit and forensics. |
-
-### Multifactor Authentication (MFA)
-
-**MFA combines two or more authentication factors from different categories.** Significantly increases security by requiring attackers to compromise multiple systems:
-- Two-Factor: Any two factors from different categories (password + OTP, card + PIN, password + biometric)
-- Three-Factor: Combines three categories (password + smart card + biometric)
-- Provides defense against credential theft, phishing, and weak passwords
-- Can reduce user convenience and increase support costs
-- Critical for privileged accounts, remote access, and sensitive transactions
-
-### Single Sign-On (SSO)
-
-**SSO allows users to authenticate once and access multiple systems without re-authenticating.** User logs in once to a central authentication service and receives credentials for other applications:
-- Reduces password fatigue and improves user experience
-- Centralizes authentication and simplifies management
-- Requires secure session management and tokens
-- Central point of failure if compromised
-- Implementations: Kerberos, SAML, OAuth 2.0, OpenID Connect
-
-### Federation
-
-**Federation enables organizations to trust identity assertions from other organizations.** Allows cross-organizational access and outsourced identity management:
-- Allows employees to use corporate credentials at partner sites
-- Reduces password proliferation across organizations
-- Enables B2B, B2C, and enterprise cloud scenarios
-- Requires trust relationships and standards (SAML, OAuth)
-- Examples: Federated identity in cloud services, cross-agency government access`,
-    },
-    {
-      id: '3-identity-as-a-service-idaas-and-cloud-identity',
-      title: `3. Identity as a Service (IDaaS) and Cloud Identity`,
-      content: `**IDaaS (Identity as a Service) providers deliver authentication and authorization as cloud-based services.** Organizations outsource identity management to specialized vendors:
-- Providers host authentication infrastructure and manage identity data
-- Examples: Okta, Azure AD, Auth0, Ping Identity
-- Scalability: No need to manage on-premises infrastructure
-- Global access: Users can authenticate from anywhere
-- Integrations: Works with cloud and on-premises applications
-- API-driven: Programmable authentication and authorization
-- Compliance: Providers maintain security certifications (SOC 2, ISO 27001)
-
-### Cloud-Native Identity Considerations
-
-- API-based authentication and authorization
-- Microservice identity and device-to-device authentication
-- Container and orchestration platform identities
-- Service principals and managed identities
-- Certificate-based authentication at scale
-- Risk-based and adaptive authentication
-- Just-in-time privileged access`,
-    },
-    {
-      id: '13-biometrics-deep-dive',
-      title: `13. Biometrics: Deep Dive`,
-      content: `**Biometrics measure unique biological or behavioral characteristics for authentication.** Cannot be forgotten or lost (though can be spoofed). Primary advantage: convenience and security over password-based authentication:
-### Biometric Types
-
-#### Physiological Biometrics (Physical Characteristics)
-
-- Fingerprint: Ridge patterns on fingertips; most widely deployed biometric. Highly stable over lifetime.
-- Iris Recognition: Pattern in colored part of eye. Not affected by lighting; highly accurate; can read at distance.
-- Retina: Blood vessel pattern in back of eye. Even more unique than iris; requires closer proximity.
-- Facial Recognition: Geometric measurements of face features. Rapidly improving with AI; enables touchless authentication.
-- Palm Vein: Blood vessel pattern in palm. Not visible; requires near-infrared; difficult to spoof.
-- Hand Geometry: Overall shape and size of hand. Less accurate than other methods; still used in some systems.
-
-#### Behavioral Biometrics (Behavioral Patterns)
-
-- Keystroke Dynamics: Typing pattern (speed, rhythm, key dwell time). Changes over time; affected by typing speed.
-- Signature Dynamics: Speed, pressure, and movement while signing. Difficult to replicate but varies based on conditions.
-- Gait Analysis: Walking pattern and speed. Useful for video-based authentication.
-- Voice Recognition: Unique characteristics of voice. Can be spoofed with recordings; liveness detection needed.
-- Continuous Authentication: Verify user continuously during session, not just at login.
-
-### Biometric Accuracy Metrics
-
-Two fundamental error types affect biometric accuracy:
-- False Acceptance Rate (FAR): Percentage of unauthorized users accepted by system. **Type II error** (false positive). Security risk.
-- False Rejection Rate (FRR): Percentage of authorized users rejected by system. **Type I error** (false negative). Usability issue.
-- Crossover Error Rate (CER / Equal Error Rate - EER): Threshold where FAR equals FRR. Lower CER indicates better system.
-- Sensitivity: Threshold for accepting match; lower threshold = higher FAR, lower FRR
-- Specificity: Ability to correctly reject non-matches
-
-### Biometrics Comparison Table
-
-| Type | Accuracy | Spoofing Risk | User Acceptance | Deployment | Cost |
-|---|---|---|---|---|---|
-| Fingerprint | High (FAR 0.01%) | Moderate - molds, prints | High - fast, familiar | Very widespread - phones, borders | Low |
-| Iris | Very High (FAR 0.001%) | Low - difficult to forge | Moderate - requires positioning | Growing - airports, visas | High |
-| Retina | Excellent | Very Low | Low - inconvenient | Limited - banks, labs | Very High |
-| Facial | Good to Excellent | Moderate - photos, masks | Very High - touchless | Rapidly expanding - mobile, airports | Medium |
-| Palm Vein | High | Very Low - internal | Moderate - new technology | Growing - Japan | High |
-| Voice | Good | High - recordings | Very High - telephone | Growing - remote access | Low |
-| Keystroke | Moderate | High - keystroke injection | Low - requires training | Limited - continuous auth | Low |
-| Signature | Moderate | High - signature imitation | Moderate | Limited - specific domains | Low |
-
-### Biometric System Concerns
-
-- Template security: Stored biometric templates must be encrypted and protected like passwords
-- Liveness detection: Prevent replay attacks using recorded biometrics (video, voice, photo)
-- Privacy: Collecting and storing biometric data raises privacy concerns; strong regulations in EU (GDPR)
-- Bias: ML-based biometric systems may have higher error rates for certain demographics
-- Permanence: Cannot change biometric like password; compromise is permanent threat
-- Multimodal: Using multiple biometric types increases security and availability`,
-    },
-    {
-      id: 'practice-questions',
-      title: `Practice Questions`,
-      content: ``,
-      quiz: [
-        {
-          question: `A user authenticates to a Kerberos system using a password. What is the immediate output of the authentication process?`,
-          options: ["A service ticket allowing immediate access to any service", "A ticket-granting ticket (TGT) used to request service tickets", "A session key shared between the user and the service", "A digital certificate valid for 24 hours"],
-          correctIndex: 1,
-          explanation: `The AS (Authentication Server) returns a TGT encrypted with the user's password-derived key. This TGT is then used to request service tickets from the TGS. The TGT is not sent over the network in plaintext, protecting the password.`,
-        },
-        {
-          question: `Which of the following is a characteristic of Mandatory Access Control (MAC)?`,
-          options: ["Resource owners decide who can access their files", "Access decisions are made centrally based on security labels", "Users can delegate access to others without restriction", "Access is determined by user role and job function"],
-          correctIndex: 1,
-          explanation: `MAC enforces a central policy based on security classifications of objects and clearances of users. Resource owners cannot override these decisions. This is different from DAC where owners control access.`,
-        },
-        {
-          question: `In a SAML federation, what is the primary function of the Identity Provider (IdP)?`,
-          options: ["To authenticate users and issue SAML assertions confirming their identity", "To request authentication on behalf of the user from a remote IdP", "To store user credentials and validate them against policy", "To manage cryptographic keys used for assertion signing"],
-          correctIndex: 0,
-          explanation: `The IdP authenticates users in its domain and issues signed SAML assertions to Service Providers (SPs). The SP then trusts these assertions based on the IdP's digital signature.`,
-        },
-        {
-          question: `A company implements OAuth 2.0 for third-party access. What risk does this primarily address compared to giving out user passwords?`,
-          options: ["It prevents rainbow table attacks against user passwords", "It allows users to grant limited, revocable access without sharing passwords", "It eliminates the need for multifactor authentication", "It encrypts all traffic between client and authorization server"],
-          correctIndex: 1,
-          explanation: `OAuth allows resource owners to grant third-party apps limited access via tokens without sharing their actual password. Tokens can be revoked without changing the password. This is superior to password sharing.`,
-        },
-        {
-          question: `What is a primary advantage of Role-Based Access Control (RBAC) over Discretionary Access Control (DAC)?`,
-          options: ["RBAC provides stronger security against unauthorized access", "RBAC is easier to implement on mainframe systems", "RBAC simplifies administration by managing permissions per role rather than per user", "RBAC eliminates the need for security clearances"],
-          correctIndex: 2,
-          explanation: `RBAC reduces administrative overhead by assigning permissions to roles rather than managing each user individually. When a user changes roles, their permissions automatically change. DAC requires individual permission management.`,
-        },
-        {
-          question: `An organization implements multi-factor authentication requiring a password and a smart card. Which authentication factors are being combined?`,
-          options: ["Something you know and something you have", "Something you know and something you are", "Something you have and somewhere you are", "Something you are and something you do"],
-          correctIndex: 0,
-          explanation: `Password is something you know (Type I), while a smart card is something you have (Type II). This combination provides stronger security than either factor alone.`,
-        },
-        {
-          question: `During the identity lifecycle, a new employee goes through provisioning. What is the primary purpose of this phase?`,
-          options: ["To review whether the employee still needs assigned access", "To create accounts and assign initial access rights based on job role", "To remove access when employee changes roles or leaves", "To verify that all access logs are properly archived"],
-          correctIndex: 1,
-          explanation: `Provisioning is the enrollment phase when a new user joins. Accounts are created in systems and initial permissions assigned based on job role and requirements. This differs from review, deprovisioning, and audit.`,
-        },
-        {
-          question: `What does the Secure flag on a session cookie protect against?`,
-          options: ["Cross-site scripting (XSS) attacks", "Interception of cookie over unencrypted network connections", "Cross-site request forgery (CSRF) attacks", "Phishing attacks against user credentials"],
-          correctIndex: 1,
-          explanation: `The Secure flag ensures cookies are transmitted only over HTTPS, protecting against passive network sniffing. HttpOnly flag protects against XSS; SameSite protects against CSRF.`,
-        },
-        {
-          question: `In attribute-based access control (ABAC), which of the following is a valid attribute type?`,
-          options: ["Only user attributes like department and role", "Only resource attributes like classification and owner", "User, resource, environment, and action attributes", "Only time-based attributes like time-of-day and day-of-week"],
-          correctIndex: 2,
-          explanation: `ABAC decisions can be based on any combination of user attributes (department, clearance), resource attributes (classification, type), environment attributes (location, time, network), and action attributes (read/write/delete).`,
-        },
-        {
-          question: `What is the primary purpose of a Privileged Access Management (PAM) system?`,
-          options: ["To encrypt all administrative communications between systems", "To control, audit, and record access to privileged accounts", "To prevent all non-administrative users from accessing sensitive data", "To automatically patch vulnerabilities on critical systems"],
-          correctIndex: 1,
-          explanation: `PAM systems control who can use privileged credentials, when, why, and what they do with them. They implement least privilege, JIT access, approval workflows, and comprehensive audit logging of admin actions.`,
-        },
-        {
-          question: `A biometric system has a False Acceptance Rate (FAR) of 0.1% and a False Rejection Rate (FRR) of 5%. What does this indicate?`,
-          options: ["The system is very secure but inconvenient for legitimate users", "The system is convenient but poses serious security risks", "The system is balanced and suitable for high-security environments", "The system needs recalibration because both rates are too high"],
-          correctIndex: 0,
-          explanation: `High FRR (5%) means many legitimate users are rejected, causing inconvenience. Low FAR (0.1%) means strong security. This is typical of fingerprint or iris systems - they prioritize false rejections over false acceptances.`,
-        },
-        {
-          question: `Which biometric characteristic is most resistant to spoofing and forgery?`,
-          options: ["Voice recognition", "Signature dynamics", "Iris recognition", "Keystroke dynamics"],
-          correctIndex: 2,
-          explanation: `Iris patterns are nearly impossible to forge and extremely unique. The iris is inside the eye making it difficult to capture and replicate. Voice can be recorded, signatures can be imitated, keystroke injection can be performed.`,
-        },
-        {
-          question: `In federated identity management, what does a SAML assertion represent?`,
-          options: ["A request from SP to IdP to authenticate a user", "A cryptographic certificate issued by a certificate authority", "An XML statement from IdP to SP confirming user authentication and attributes", "A policy document governing access to protected resources"],
-          correctIndex: 2,
-          explanation: `A SAML assertion is an XML statement issued by the IdP (signed with its certificate) confirming user authentication and containing user attributes. The SP validates the signature and trusts the assertion.`,
-        },
-        {
-          question: `What is the primary security advantage of OpenID Connect over plain OAuth 2.0?`,
-          options: ["OIDC is faster than OAuth 2.0", "OIDC adds an identity/authentication layer to OAuth's authorization framework", "OIDC doesn't require HTTPS while OAuth requires it", "OIDC eliminates the need for access tokens"],
-          correctIndex: 1,
-          explanation: `OAuth 2.0 is for authorization (what you can do). OpenID Connect adds authentication (who you are) by issuing ID tokens containing user identity claims. OIDC is built on top of OAuth 2.0.`,
-        },
-        {
-          question: `Which principle ensures users can only access information necessary for their job duties?`,
-          options: ["Implicit deny", "Separation of duties", "Need-to-know", "Constrained interfaces"],
-          correctIndex: 2,
-          explanation: `Need-to-know principle limits access to only information necessary for job function. This reduces risk if account is compromised. Implicit deny sets default policy; separation of duties prevents conflict; constrained interfaces hide unauthorized options.`,
-        },
-      ],
-    },
-  ],
-},
-
+// ===== Domain 5: Identity and Access Management (13%) - Instructor Edition module order =====
 cissp_access_control: {
   topicId: 'cissp_access_control',
-  title: `Access Control Models`,
+  title: `Control Physical and Logical Access to Assets`,
   domainWeight: '13%',
   overview: `Access control is the operational face of every policy in the exam. Domain 5 items almost never ask you to define a term; they describe an organisation and ask which model, factor, or protocol fits its constraints. The reliable discriminator is a single question - who sets the rule? - and the second is what the organisation is willing to pay in administrative effort. This chapter builds the IAAA chain, works through the authentication factors and the biometric error rates that quantify them, separates the five access control models by the decision authority each vests, distinguishes access control lists from capabilities, and finishes with single sign-on, federation, and the AAA protocols that carry the decisions across a network.`,
   sections: [
@@ -5262,13 +6029,13 @@ The remediation follows from the diagnosis: reduce the contractor's entitlements
 },
 cissp_identity: {
   topicId: 'cissp_identity',
-  title: `Identity Management`,
+  title: `Identity and Access Provisioning Lifecycle`,
   domainWeight: '13%',
   overview: `### Kerberos`,
   sections: [
     {
       id: '4-authentication-protocols',
-      title: `4. Authentication Protocols`,
+      title: `1. Authentication Protocols`,
       content: `### Kerberos
 
 **Kerberos is a network authentication protocol providing mutual authentication and encryption.** Prevents passwords from being transmitted over the network. Built into Windows Active Directory and used in Unix/Linux environments:
@@ -5363,7 +6130,7 @@ cissp_identity: {
     },
     {
       id: '7-identity-management-lifecycle',
-      title: `7. Identity Management Lifecycle`,
+      title: `2. Identity Management Lifecycle`,
       content: `**Identity lifecycle encompasses user creation through removal, with periodic reviews.** Proper lifecycle management prevents unauthorized access and ensures accountability:
 ### Provisioning (Enrollment)
 
@@ -5402,7 +6169,7 @@ Process of removing access when employee changes roles or leaves organization:
     },
     {
       id: '8-session-management',
-      title: `8. Session Management`,
+      title: `3. Session Management`,
       content: `**Session management controls the lifecycle of authenticated sessions** - creation, maintenance, and termination. Proper session management prevents session hijacking and unauthorized access:
 ### Session Timeouts
 
@@ -5428,7 +6195,7 @@ Idle and absolute timeouts limit exposure from unattended sessions:
     },
     {
       id: '9-federated-identity-management',
-      title: `9. Federated Identity Management`,
+      title: `4. Federated Identity Management`,
       content: `**Federation allows organizations to trust identity information from other organizations.** Enables seamless access across organizational boundaries without password sharing:
 ### Trust Frameworks and Metadata
 
@@ -5462,7 +6229,7 @@ Federation can be configured in different architectural patterns:
     },
     {
       id: 'public-key-infrastructure-pki',
-      title: `Public Key Infrastructure (PKI)`,
+      title: `5. Public Key Infrastructure (PKI)`,
       content: `### PKI Components
 
 PKI provides the framework for digital certificates and asymmetric cryptography at scale:
@@ -5538,7 +6305,7 @@ Key recovery enables access to encrypted data when original key is unavailable:
     },
     {
       id: 'conditional-and-risk-based-authentication',
-      title: `Conditional and Risk-Based Authentication`,
+      title: `6. Conditional and Risk-Based Authentication`,
       content: `### Adaptive and Risk-Based Authentication
 
 Instead of static authentication policies, modern systems adapt based on contextual risk signals:
@@ -5595,16 +6362,264 @@ Zero Trust architecture applies authentication principles to network access and 
     },
   ],
 },
+cissp_auth: {
+  topicId: 'cissp_auth',
+  title: `Identification and Authentication of People, Devices, and Services`,
+  domainWeight: '13%',
+  overview: `Access control is the foundation of security infrastructure. It combines multiple security mechanisms to verify identity and grant appropriate privileges.`,
+  sections: [
+    {
+      id: '1-physical-and-logical-access-control',
+      title: `1. Physical and Logical Access Control`,
+      content: `Access control is the foundation of security infrastructure. It combines multiple security mechanisms to verify identity and grant appropriate privileges.
+### Authentication Factors
 
-cissp_iam_attacks: {
-  topicId: 'cissp_iam_attacks',
-  title: `IAM Attacks`,
+Authentication mechanisms are classified into five categories based on what users know, have, or are:
+### Physical Access Control Technologies
+
+**Smart Cards:** Credit-card-sized devices with embedded microprocessor. Store cryptographic keys and digital certificates. Enable multifactor authentication by combining something you have (card) with something you know (PIN). Provide stronger security than passwords alone.
+
+**Biometric Systems:** Automated measurement and analysis of unique biological and behavioral characteristics. Provide high accuracy and cannot be easily forged (unlike passwords). Used for physical entry and logical authentication.
+
+**Tokens:** Hardware devices generating one-time passwords (OTP). Synchronous tokens use time or event counters. Asynchronous tokens generate random numbers. Common examples: RSA SecurID, Google Authenticator.
+
+**PINs (Personal Identification Numbers):** Numeric passwords, typically 4-6 digits. Used with smart cards, tokens, and ATMs. Vulnerable to shoulder surfing and social engineering due to short length.
+
+**Passwords:** User-selected secrets. Easy to implement but weak without enforcement of strong password policies. Susceptible to dictionary attacks, brute force, and social engineering.
+### Access Control Technologies
+
+- Badge Readers: RFID or magnetic stripe readers for physical access
+- Mantrap (Turnstile): Prevents tailgating by allowing one person per badge swipe
+- Combination Locks: Mechanical devices requiring knowledge of code sequence
+- Cipher Locks: Push-button or electronic combination locks
+- Proximity Cards: Wireless card readers without physical insertion required
+- Bollards and Barriers: Physical obstacles preventing unauthorized vehicle entry
+- Motion Sensors: Detect unauthorized movement in secure areas`,
+      importantNote: `Something You Know (Type I): Passwords, PINs, security questions. Memorized secrets. | Something You Have (Type II): Smart cards, hardware tokens, USB keys, certificates. Physical objects. | Something You Are (Type III): Biometric data - fingerprints, iris, retina, facial recognition, voice, palm vein. Inherent characteristics. | Something You Do (Type IV): Behavioral biometrics like keystroke dynamics, signature dynamics, gait analysis. | Somewhere You Are (Type V): Location-based authentication using GPS, geofencing, or network location.`,
+    },
+    {
+      id: '2-identification-and-authentication',
+      title: `2. Identification and Authentication`,
+      content: `### Identification vs. Authentication vs. Authorization
+
+| Term | Definition |
+|---|---|
+| Identification | Declaring who you claim to be (username, email). Not verification. |
+| Authentication | Proving your identity through credentials (passwords, certificates, tokens). |
+| Authorization | Determining what authenticated user can do (permissions, access rights). |
+| Accountability | Logging and tracking user actions for audit and forensics. |
+
+### Multifactor Authentication (MFA)
+
+**MFA combines two or more authentication factors from different categories.** Significantly increases security by requiring attackers to compromise multiple systems:
+- Two-Factor: Any two factors from different categories (password + OTP, card + PIN, password + biometric)
+- Three-Factor: Combines three categories (password + smart card + biometric)
+- Provides defense against credential theft, phishing, and weak passwords
+- Can reduce user convenience and increase support costs
+- Critical for privileged accounts, remote access, and sensitive transactions
+
+### Single Sign-On (SSO)
+
+**SSO allows users to authenticate once and access multiple systems without re-authenticating.** User logs in once to a central authentication service and receives credentials for other applications:
+- Reduces password fatigue and improves user experience
+- Centralizes authentication and simplifies management
+- Requires secure session management and tokens
+- Central point of failure if compromised
+- Implementations: Kerberos, SAML, OAuth 2.0, OpenID Connect
+
+### Federation
+
+**Federation enables organizations to trust identity assertions from other organizations.** Allows cross-organizational access and outsourced identity management:
+- Allows employees to use corporate credentials at partner sites
+- Reduces password proliferation across organizations
+- Enables B2B, B2C, and enterprise cloud scenarios
+- Requires trust relationships and standards (SAML, OAuth)
+- Examples: Federated identity in cloud services, cross-agency government access`,
+    },
+    {
+      id: '3-identity-as-a-service-idaas-and-cloud-identity',
+      title: `3. Identity as a Service (IDaaS) and Cloud Identity`,
+      content: `**IDaaS (Identity as a Service) providers deliver authentication and authorization as cloud-based services.** Organizations outsource identity management to specialized vendors:
+- Providers host authentication infrastructure and manage identity data
+- Examples: Okta, Azure AD, Auth0, Ping Identity
+- Scalability: No need to manage on-premises infrastructure
+- Global access: Users can authenticate from anywhere
+- Integrations: Works with cloud and on-premises applications
+- API-driven: Programmable authentication and authorization
+- Compliance: Providers maintain security certifications (SOC 2, ISO 27001)
+
+### Cloud-Native Identity Considerations
+
+- API-based authentication and authorization
+- Microservice identity and device-to-device authentication
+- Container and orchestration platform identities
+- Service principals and managed identities
+- Certificate-based authentication at scale
+- Risk-based and adaptive authentication
+- Just-in-time privileged access`,
+    },
+    {
+      id: '13-biometrics-deep-dive',
+      title: `4. Biometrics: Deep Dive`,
+      content: `**Biometrics measure unique biological or behavioral characteristics for authentication.** Cannot be forgotten or lost (though can be spoofed). Primary advantage: convenience and security over password-based authentication:
+### Biometric Types
+
+#### Physiological Biometrics (Physical Characteristics)
+
+- Fingerprint: Ridge patterns on fingertips; most widely deployed biometric. Highly stable over lifetime.
+- Iris Recognition: Pattern in colored part of eye. Not affected by lighting; highly accurate; can read at distance.
+- Retina: Blood vessel pattern in back of eye. Even more unique than iris; requires closer proximity.
+- Facial Recognition: Geometric measurements of face features. Rapidly improving with AI; enables touchless authentication.
+- Palm Vein: Blood vessel pattern in palm. Not visible; requires near-infrared; difficult to spoof.
+- Hand Geometry: Overall shape and size of hand. Less accurate than other methods; still used in some systems.
+
+#### Behavioral Biometrics (Behavioral Patterns)
+
+- Keystroke Dynamics: Typing pattern (speed, rhythm, key dwell time). Changes over time; affected by typing speed.
+- Signature Dynamics: Speed, pressure, and movement while signing. Difficult to replicate but varies based on conditions.
+- Gait Analysis: Walking pattern and speed. Useful for video-based authentication.
+- Voice Recognition: Unique characteristics of voice. Can be spoofed with recordings; liveness detection needed.
+- Continuous Authentication: Verify user continuously during session, not just at login.
+
+### Biometric Accuracy Metrics
+
+Two fundamental error types affect biometric accuracy:
+- False Acceptance Rate (FAR): Percentage of unauthorized users accepted by system. **Type II error** (false positive). Security risk.
+- False Rejection Rate (FRR): Percentage of authorized users rejected by system. **Type I error** (false negative). Usability issue.
+- Crossover Error Rate (CER / Equal Error Rate - EER): Threshold where FAR equals FRR. Lower CER indicates better system.
+- Sensitivity: Threshold for accepting match; lower threshold = higher FAR, lower FRR
+- Specificity: Ability to correctly reject non-matches
+
+### Biometrics Comparison Table
+
+| Type | Accuracy | Spoofing Risk | User Acceptance | Deployment | Cost |
+|---|---|---|---|---|---|
+| Fingerprint | High (FAR 0.01%) | Moderate - molds, prints | High - fast, familiar | Very widespread - phones, borders | Low |
+| Iris | Very High (FAR 0.001%) | Low - difficult to forge | Moderate - requires positioning | Growing - airports, visas | High |
+| Retina | Excellent | Very Low | Low - inconvenient | Limited - banks, labs | Very High |
+| Facial | Good to Excellent | Moderate - photos, masks | Very High - touchless | Rapidly expanding - mobile, airports | Medium |
+| Palm Vein | High | Very Low - internal | Moderate - new technology | Growing - Japan | High |
+| Voice | Good | High - recordings | Very High - telephone | Growing - remote access | Low |
+| Keystroke | Moderate | High - keystroke injection | Low - requires training | Limited - continuous auth | Low |
+| Signature | Moderate | High - signature imitation | Moderate | Limited - specific domains | Low |
+
+### Biometric System Concerns
+
+- Template security: Stored biometric templates must be encrypted and protected like passwords
+- Liveness detection: Prevent replay attacks using recorded biometrics (video, voice, photo)
+- Privacy: Collecting and storing biometric data raises privacy concerns; strong regulations in EU (GDPR)
+- Bias: ML-based biometric systems may have higher error rates for certain demographics
+- Permanence: Cannot change biometric like password; compromise is permanent threat
+- Multimodal: Using multiple biometric types increases security and availability`,
+    },
+    {
+      id: 'practice-questions',
+      title: `5. Practice Questions`,
+      content: ``,
+      quiz: [
+        {
+          question: `A user authenticates to a Kerberos system using a password. What is the immediate output of the authentication process?`,
+          options: ["A service ticket allowing immediate access to any service", "A ticket-granting ticket (TGT) used to request service tickets", "A session key shared between the user and the service", "A digital certificate valid for 24 hours"],
+          correctIndex: 1,
+          explanation: `The AS (Authentication Server) returns a TGT encrypted with the user's password-derived key. This TGT is then used to request service tickets from the TGS. The TGT is not sent over the network in plaintext, protecting the password.`,
+        },
+        {
+          question: `Which of the following is a characteristic of Mandatory Access Control (MAC)?`,
+          options: ["Resource owners decide who can access their files", "Access decisions are made centrally based on security labels", "Users can delegate access to others without restriction", "Access is determined by user role and job function"],
+          correctIndex: 1,
+          explanation: `MAC enforces a central policy based on security classifications of objects and clearances of users. Resource owners cannot override these decisions. This is different from DAC where owners control access.`,
+        },
+        {
+          question: `In a SAML federation, what is the primary function of the Identity Provider (IdP)?`,
+          options: ["To authenticate users and issue SAML assertions confirming their identity", "To request authentication on behalf of the user from a remote IdP", "To store user credentials and validate them against policy", "To manage cryptographic keys used for assertion signing"],
+          correctIndex: 0,
+          explanation: `The IdP authenticates users in its domain and issues signed SAML assertions to Service Providers (SPs). The SP then trusts these assertions based on the IdP's digital signature.`,
+        },
+        {
+          question: `A company implements OAuth 2.0 for third-party access. What risk does this primarily address compared to giving out user passwords?`,
+          options: ["It prevents rainbow table attacks against user passwords", "It allows users to grant limited, revocable access without sharing passwords", "It eliminates the need for multifactor authentication", "It encrypts all traffic between client and authorization server"],
+          correctIndex: 1,
+          explanation: `OAuth allows resource owners to grant third-party apps limited access via tokens without sharing their actual password. Tokens can be revoked without changing the password. This is superior to password sharing.`,
+        },
+        {
+          question: `What is a primary advantage of Role-Based Access Control (RBAC) over Discretionary Access Control (DAC)?`,
+          options: ["RBAC provides stronger security against unauthorized access", "RBAC is easier to implement on mainframe systems", "RBAC simplifies administration by managing permissions per role rather than per user", "RBAC eliminates the need for security clearances"],
+          correctIndex: 2,
+          explanation: `RBAC reduces administrative overhead by assigning permissions to roles rather than managing each user individually. When a user changes roles, their permissions automatically change. DAC requires individual permission management.`,
+        },
+        {
+          question: `An organization implements multi-factor authentication requiring a password and a smart card. Which authentication factors are being combined?`,
+          options: ["Something you know and something you have", "Something you know and something you are", "Something you have and somewhere you are", "Something you are and something you do"],
+          correctIndex: 0,
+          explanation: `Password is something you know (Type I), while a smart card is something you have (Type II). This combination provides stronger security than either factor alone.`,
+        },
+        {
+          question: `During the identity lifecycle, a new employee goes through provisioning. What is the primary purpose of this phase?`,
+          options: ["To review whether the employee still needs assigned access", "To create accounts and assign initial access rights based on job role", "To remove access when employee changes roles or leaves", "To verify that all access logs are properly archived"],
+          correctIndex: 1,
+          explanation: `Provisioning is the enrollment phase when a new user joins. Accounts are created in systems and initial permissions assigned based on job role and requirements. This differs from review, deprovisioning, and audit.`,
+        },
+        {
+          question: `What does the Secure flag on a session cookie protect against?`,
+          options: ["Cross-site scripting (XSS) attacks", "Interception of cookie over unencrypted network connections", "Cross-site request forgery (CSRF) attacks", "Phishing attacks against user credentials"],
+          correctIndex: 1,
+          explanation: `The Secure flag ensures cookies are transmitted only over HTTPS, protecting against passive network sniffing. HttpOnly flag protects against XSS; SameSite protects against CSRF.`,
+        },
+        {
+          question: `In attribute-based access control (ABAC), which of the following is a valid attribute type?`,
+          options: ["Only user attributes like department and role", "Only resource attributes like classification and owner", "User, resource, environment, and action attributes", "Only time-based attributes like time-of-day and day-of-week"],
+          correctIndex: 2,
+          explanation: `ABAC decisions can be based on any combination of user attributes (department, clearance), resource attributes (classification, type), environment attributes (location, time, network), and action attributes (read/write/delete).`,
+        },
+        {
+          question: `What is the primary purpose of a Privileged Access Management (PAM) system?`,
+          options: ["To encrypt all administrative communications between systems", "To control, audit, and record access to privileged accounts", "To prevent all non-administrative users from accessing sensitive data", "To automatically patch vulnerabilities on critical systems"],
+          correctIndex: 1,
+          explanation: `PAM systems control who can use privileged credentials, when, why, and what they do with them. They implement least privilege, JIT access, approval workflows, and comprehensive audit logging of admin actions.`,
+        },
+        {
+          question: `A biometric system has a False Acceptance Rate (FAR) of 0.1% and a False Rejection Rate (FRR) of 5%. What does this indicate?`,
+          options: ["The system is very secure but inconvenient for legitimate users", "The system is convenient but poses serious security risks", "The system is balanced and suitable for high-security environments", "The system needs recalibration because both rates are too high"],
+          correctIndex: 0,
+          explanation: `High FRR (5%) means many legitimate users are rejected, causing inconvenience. Low FAR (0.1%) means strong security. This is typical of fingerprint or iris systems - they prioritize false rejections over false acceptances.`,
+        },
+        {
+          question: `Which biometric characteristic is most resistant to spoofing and forgery?`,
+          options: ["Voice recognition", "Signature dynamics", "Iris recognition", "Keystroke dynamics"],
+          correctIndex: 2,
+          explanation: `Iris patterns are nearly impossible to forge and extremely unique. The iris is inside the eye making it difficult to capture and replicate. Voice can be recorded, signatures can be imitated, keystroke injection can be performed.`,
+        },
+        {
+          question: `In federated identity management, what does a SAML assertion represent?`,
+          options: ["A request from SP to IdP to authenticate a user", "A cryptographic certificate issued by a certificate authority", "An XML statement from IdP to SP confirming user authentication and attributes", "A policy document governing access to protected resources"],
+          correctIndex: 2,
+          explanation: `A SAML assertion is an XML statement issued by the IdP (signed with its certificate) confirming user authentication and containing user attributes. The SP validates the signature and trusts the assertion.`,
+        },
+        {
+          question: `What is the primary security advantage of OpenID Connect over plain OAuth 2.0?`,
+          options: ["OIDC is faster than OAuth 2.0", "OIDC adds an identity/authentication layer to OAuth's authorization framework", "OIDC doesn't require HTTPS while OAuth requires it", "OIDC eliminates the need for access tokens"],
+          correctIndex: 1,
+          explanation: `OAuth 2.0 is for authorization (what you can do). OpenID Connect adds authentication (who you are) by issuing ID tokens containing user identity claims. OIDC is built on top of OAuth 2.0.`,
+        },
+        {
+          question: `Which principle ensures users can only access information necessary for their job duties?`,
+          options: ["Implicit deny", "Separation of duties", "Need-to-know", "Constrained interfaces"],
+          correctIndex: 2,
+          explanation: `Need-to-know principle limits access to only information necessary for job function. This reduces risk if account is compromised. Implicit deny sets default policy; separation of duties prevents conflict; constrained interfaces hide unauthorized options.`,
+        },
+      ],
+    },
+  ],
+},
+cissp_accountability: {
+  topicId: 'cissp_accountability',
+  title: `Accountability`,
   domainWeight: '13%',
   overview: `**Accountability ensures users are responsible for their actions through logging, monitoring, and auditing.** Essential for forensics and compliance:`,
   sections: [
     {
       id: '11-accountability',
-      title: `11. Accountability`,
+      title: `1. Accountability`,
       content: `**Accountability ensures users are responsible for their actions through logging, monitoring, and auditing.** Essential for forensics and compliance:
 ### Access Logging
 
@@ -5626,7 +6641,7 @@ Real-time analysis of logs to detect suspicious patterns. Alert on: failed login
     },
     {
       id: '12-credential-management-systems',
-      title: `12. Credential Management Systems`,
+      title: `2. Credential Management Systems`,
       content: `### Password Vaults and Managers
 
 **Password vaults securely store and manage credentials** for users and administrators:
@@ -5673,10 +6688,10 @@ Real-time analysis of logs to detect suspicious patterns. Alert on: failed login
     `Common Implementation Issues: Delayed deprovisioning leaves access. Weak passwords without policy enforcement. MFA not required for privileged access. Logs not protected/centralized. Single sign-on with insufficient session timeout. These failures appear in breach scenarios.`
   ]
 },
-
+// ===== Domain 6: Security Assessment and Testing (12%) - Instructor Edition module order =====
 cissp_vuln: {
   topicId: 'cissp_vuln',
-  title: `Vulnerability Assessment`,
+  title: `Security Control Testing`,
   domainWeight: '12%',
   overview: `**Security assessments are systematic evaluations of security posture.** Different strategies provide different perspectives and insights. Combination of approaches provides comprehensive understandin`,
   sections: [
@@ -5838,7 +6853,7 @@ Remove all testing tools, backdoors, persistence mechanisms, and artifacts. Rest
     },
     {
       id: 'threat-modeling-for-security-assessment',
-      title: `Threat Modeling for Security Assessment`,
+      title: `5. Threat Modeling for Security Assessment`,
       content: `### What is Threat Modeling?
 
 **Threat Modeling** is a **proactive** security analysis conducted during design phase to identify potential threats, vulnerabilities, and attack paths **before** deployment. Contrast with penetration testing (reactive testing after deployment).
@@ -5951,7 +6966,7 @@ Developers study CWEs to learn what NOT to do. Security teams patch CVEs to fix 
     },
     {
       id: 'practice-questions',
-      title: `Practice Questions`,
+      title: `6. Practice Questions`,
       content: ``,
       quiz: [
         {
@@ -6046,191 +7061,382 @@ Developers study CWEs to learn what NOT to do. Security teams patch CVEs to fix 
         },
       ],
     },
-  ],
-},
-
-cissp_audit: {
-  topicId: 'cissp_audit',
-  title: `Security Auditing`,
-  domainWeight: '12%',
-  overview: `### SIEM (Security Information and Event Management)`,
-  sections: [
     {
-      id: '5-log-reviews-and-monitoring',
-      title: `5. Log Reviews and Monitoring`,
-      content: `### SIEM (Security Information and Event Management)
+      id: 'sast-dast-iast-sca',
+      title: `7. SAST, DAST, IAST, SCA — The Four Pillars of Code Testing`,
+      content: `## 1.1 SAST (Static Application Security Testing)
 
-**SIEM systems collect, aggregate, correlate, and analyze logs from all security devices and systems.** Central nervous system for security monitoring:
-- Collection: Aggregates logs from firewalls, IDS/IPS, servers, applications, databases
-- Normalization: Converts different log formats into standard format for analysis
-- Correlation: Identifies relationships between events (user logs in -> access denied -> privilege escalation attempt)
-- Alerting: Real-time alerts for suspicious patterns and policy violations
-- Reporting: Generate reports for compliance and audit
-- Retention: Archive logs for long-term analysis and forensics
-- Examples: Splunk, Elastic, IBM QRadar, ArcSight, Sumologic
+Analyzes SOURCE CODE (or compiled bytecode) WITHOUT executing it. Pattern-matching, taint analysis, control-flow analysis.
 
-### Log Management
+What SAST finds:
 
-Comprehensive management of logs across infrastructure. Centralized storage protects logs from tampering. Encryption protects confidentiality. Retention policies balance compliance and storage.
-### Event Correlation
+- Insecure API usage (SQL string concatenation, weak crypto, deprecated functions)
+- Missing input validation
+- Hardcoded secrets
+- Buffer overflow patterns
+- Use of forbidden libraries
 
-Identifies relationships between separate events that indicate attack. Example: Failed login from IP A -> Successful login from same IP -> Lateral movement to sensitive server -> Data exfiltration. Correlation connects these events revealing the attack chain.
-### Audit Trails and Access Logging
+When to run: pre-commit hook, pull request check, CI build. The earlier the better.
 
-- System audit logs: OS events (login, privilege changes, file access)
-- Application logs: Application-specific events and errors
-- Database logs: Query execution, permission changes, data modifications
-- Security logs: Authentication, authorization, access control decisions
-- Immutability: Logs must be tamper-proof (write-once media or cryptographic protection)
-- Accountability: Ensure logs connect actions to users for forensic investigation`,
-    },
-    {
-      id: '11-compliance-checking',
-      title: `11. Compliance Checking`,
-      content: `### SOC 2 Reports (Type I and Type II)
+Strengths:
+- Full code coverage — sees every path
+- Pinpoints exact line
+- Cheap once configured
+- Language-aware
 
-**SOC 2 audits evaluate service organization controls in 5 trust service criteria:**
-- Security: Ability to protect information and systems
-- Availability: Systems available for operation and use
-- Processing Integrity: Complete, accurate, timely processing
-- Confidentiality: Information designated as confidential is protected
-- Privacy: Personal information is collected, used, retained per privacy policy
+Weaknesses:
+- High FALSE POSITIVE rate (without runtime context, the analyzer can't always tell if a pattern is exploited)
+- Misses logic flaws and runtime-only issues (race conditions, environment-dependent behavior)
+- Requires source code access
 
-| Type I | Type II |
+Tools: SonarQube, Checkmarx CxSAST, Veracode SAST, Semgrep (open source), CodeQL (GitHub Advanced Security), Fortify.
+
+## 1.2 DAST (Dynamic Application Security Testing)
+
+Tests a RUNNING application from the outside, like an external attacker. Crafted HTTP requests, observed responses.
+
+What DAST finds:
+
+- Runtime configuration issues (insecure headers, debug pages exposed)
+- Authentication and session flaws
+- SQL injection that actually executes (vs SAST finding the pattern)
+- XSS that actually fires
+- Server-side misconfigurations
+
+When to run: CI test stage against staging deployment; periodic against production.
+
+Strengths:
+- Fewer false positives than SAST (verified runtime behavior)
+- Catches runtime-only issues
+- No source code needed
+
+Weaknesses:
+- Only finds bugs in code paths the scanner reaches
+- Requires running deployment with appropriate test data
+- Slow (HTTP-by-HTTP)
+- Can damage production data if pointed at production
+
+Tools: OWASP ZAP (free), Burp Suite Pro, Acunetix, Veracode DAST, Qualys WAS, Tenable WAS.
+
+## 1.3 IAST (Interactive Application Security Testing)
+
+Combines SAST + DAST via runtime instrumentation. An agent runs INSIDE the application and observes data flow during dynamic testing.
+
+What IAST finds: everything DAST finds, but with code-level pinpointing like SAST.
+
+When to run: CI test stage with agent attached; sometimes in QA / staging continuously.
+
+Strengths:
+- Very low false positive rate (verified runtime behavior + code path)
+- Pinpoints exact code line
+- Catches flaws other techniques miss (visibility into internal data flow)
+
+Weaknesses:
+- Requires agent installation
+- Performance overhead (typically 10-30%)
+- Language-specific (Java/.NET well supported; less mature for others)
+- More expensive licensing
+
+Tools: Contrast Security, Checkmarx CxIAST, Veracode IAST, Hdiv (open source).
+
+## 1.4 SCA (Software Composition Analysis)
+
+Specifically scans DEPENDENCIES for known vulnerabilities. Reads manifests (package.json, requirements.txt, pom.xml, go.mod, etc.) and matches against vulnerability databases (NVD, GitHub Advisory, OSV).
+
+What SCA finds:
+
+- Direct dependencies with known CVEs
+- Transitive dependencies with known CVEs
+- License compliance issues
+- Vulnerable container base images
+
+When to run: pre-commit, PR check, CI build, continuous monitoring (new CVEs disclosed daily).
+
+Strengths:
+- Highly accurate (CVEs are concrete)
+- Fast
+- Provides upgrade guidance
+- Critical because dependency CVEs FAR outnumber first-party code bugs in modern apps
+
+Weaknesses:
+- Only finds KNOWN vulnerabilities
+- Some false positives (CVE applies to a code path your app doesn't use)
+- Quality varies by vulnerability database
+
+Tools: Snyk, Dependabot, Renovate, OWASP Dependency-Check, npm audit, pip-audit, GitHub Advanced Security.
+
+## 1.5 Decision matrix
+
+| Need to find | Use |
 |---|---|
-| Evaluates control design | Evaluates control operation over time |
-| Point-in-time assessment | Tests controls over 6-12 months |
-| Whether controls exist and are suitable | Whether controls worked effectively |
-| Typically 1-2 weeks of fieldwork | Extended fieldwork and testing period |
-| Less assurance to users | Higher assurance; typically required by major customers |
+| Insecure code patterns in your own code | SAST |
+| Runtime exploitability of your own code | DAST or IAST |
+| Pinpoint exact code line of runtime bug | IAST (or SAST + DAST correlation) |
+| Vulnerable third-party libraries | SCA |
+| Container image vulnerabilities | Container scan (Trivy, Grype) — often called "SCA for containers" |
+| IaC misconfigurations | IaC scanning (Checkov, tfsec, kube-linter) |
+| Secrets accidentally committed | Secrets scanning (gitleaks, TruffleHog) |
 
-### ISO 27001 Audits
-
-**ISO 27001 evaluates Information Security Management System (ISMS) against international standard.** Comprehensive assessment of security program:
-- Scope: All 14 domains of ISO 27001 standard (similar to NIST CSF)
-- Evidence-based: Auditors review documented controls and evidence of operation
-- Certification: Successful audit results in ISO 27001 certification (valid 3 years)
-- Frequency: Surveillance audits annually; recertification every 3 years
-- Third-party: Conducted by accredited certification bodies
-
-### PCI-DSS (Payment Card Industry - Data Security Standard) Assessments
-
-**PCI-DSS is mandatory compliance framework for organizations processing credit cards.** Assesses controls protecting cardholder data:
-- Scope: Organizations processing, storing, or transmitting credit card data
-- Requirements: 12 main requirements across 6 categories (security, access, testing, implementation, monitoring, policy)
-- Assessment: Annual audit by Qualified Security Assessor (QSA) or self-assessment
-- Validation: Attestation of Compliance (AoC) and Scanning Attestation for merchants
-- Enforcement: Card brands enforce compliance; penalties for breaches
-
-### Compliance Assessment Process
-
-1. Planning: Define scope and select frameworks
-2. Control inventory: Document all controls addressing requirements
-3. Evidence gathering: Collect proof controls operate effectively
-4. Testing: Auditors verify controls with interviews, testing, observation
-5. Gap analysis: Identify non-conformances and remediation needed
-6. Reporting: Generate audit report with findings and recommendations
-7. Remediation: Organization fixes deficiencies within timeframe
-8. Verification: Confirm remediation completed successfully`,
+A mature program uses ALL of these in CI/CD.`,
+      examTip: `Decode each tool by what it ANALYZES: SAST = source code (no execution), DAST = running app from outside, IAST = running app with internal agent, SCA = dependencies. CISSP exam loves "which tool would you use to find X?" — pick by what's being tested.`,
     },
     {
-      id: '12-key-performance-indicators-kpis-and-key-risk-indicators-k',
-      title: `12. Key Performance Indicators (KPIs) and Key Risk Indicators (KRIs)`,
-      content: `### Key Performance Indicators (KPIs)
+      id: 'other-test-techniques',
+      title: `8. Misuse Case, Synthetic Transaction, Interface Testing, Fuzzing`,
+      content: `## 2.1 Misuse case testing
 
-**KPIs measure how well security controls are operating.** Positive metrics indicating effective security:
-- Mean Time to Detect (MTTD): Average time from breach occurring to detection
-- Mean Time to Respond (MTTR): Average time from detection to incident contained
-- Patch deployment time: Time from patch release to systems patched
-- Password reset rate: Percentage of users with current passwords
-- MFA enrollment: Percentage of users with multifactor authentication
-- Security awareness training completion: Percentage completing annual training
-- Vulnerability remediation rate: Percentage of identified vulnerabilities fixed within SLA
+A USE CASE describes how a user achieves a goal with the system. A MISUSE CASE describes how a MALICIOUS actor achieves a malicious goal. Misuse cases drive negative-path testing.
 
-### Key Risk Indicators (KRIs)
+Process:
 
-**KRIs measure security risks and threats.** Warning signs indicating increasing risk:
-- Failed login attempts: Spike indicates credential attacks or misconfiguration
-- Privileged account activity: Unusual administrative access indicates potential compromise
-- Patch backlog: Increasing unpatched systems indicates rising vulnerability risk
-- Compliance violations: Non-conformances indicate control failures
-- Alerts and incidents: Increase in security alerts and incidents
-- Vulnerability age: Vulnerabilities open longer than acceptable timeframe
-- Audit findings: Recurring findings indicate systemic issues
+1. Identify use cases (normal user goals)
+2. For each use case, identify misuse cases (how could an attacker subvert this?)
+3. Identify "mitigation use cases" — what the system does to prevent or detect the misuse
+4. Write test cases that exercise the misuse cases to confirm mitigations work
 
-### Balanced Scorecard Approach
+Example:
 
-Combine KPIs and KRIs for balanced view of security posture. KPIs show control effectiveness; KRIs show emerging risks. Together they provide comprehensive security metrics.`,
+- USE CASE: Customer transfers funds between their accounts
+- MISUSE CASES: Attacker transfers from someone else's account; Attacker transfers more than balance; Attacker reuses a request (replay); Attacker manipulates amount in transit
+- MITIGATIONS: AuthN + AuthZ, balance check, nonce + signature, TLS + integrity
+- TESTS: attempt each misuse case, verify mitigation triggers
+
+Misuse case testing is a STRUCTURED way to ensure NEGATIVE TESTING happens (positive tests confirm "it works"; misuse case tests confirm "it doesn't break when attacked").
+
+## 2.2 Synthetic transactions
+
+Automated, simulated user transactions executed against a live system to verify it's working correctly. Often used for monitoring (does the login still work? can I add to cart and check out?).
+
+Synthetic transactions for security:
+
+- Verify access controls (a non-privileged synthetic user attempts privileged actions; should be denied)
+- Verify session expiration (synthetic session waits, then attempts an action; should be re-authenticated)
+- Verify rate limiting (synthetic user generates high rate; should be throttled)
+- Verify alerting (synthetic attack triggers, verify SOC receives the alert)
+
+Catches REGRESSIONS — a recent change broke an existing control.
+
+## 2.3 Interface testing
+
+Tests the interfaces between components — APIs, message queues, file imports/exports, third-party integrations.
+
+Why interfaces are special:
+
+- Most security bugs occur at TRUST BOUNDARIES (where components communicate)
+- Each component may have been individually tested but their INTERACTION may not have been
+- Versioning mismatches at interfaces are common
+
+Interface tests:
+
+- Each API endpoint tested with valid + invalid + malicious inputs
+- Schema validation (does the API accept malformed payloads?)
+- Authentication at the interface (can unauthenticated callers reach internal interfaces?)
+- Rate limiting (do interface-level rate limits work?)
+- Error handling (does an error from one component crash the other?)
+
+## 2.4 Fuzz testing (fuzzing)
+
+Sends RANDOM or SEMI-RANDOM inputs to find crashes, hangs, or unexpected behavior. Especially valuable for parsers, file format handlers, protocol implementations, and any code that processes untrusted input.
+
+Two main variants:
+
+- **Dumb fuzzing** — purely random inputs. Easy to set up, useful for catching obvious crashes.
+- **Smart fuzzing (coverage-guided)** — modern approach. Fuzzer instruments the target, observes which code paths each input exercises, and mutates inputs to explore new paths. Examples: AFL++, libFuzzer, jazzer.
+
+Modern compilers support SANITIZERS (AddressSanitizer / UBSan / MemorySanitizer / ThreadSanitizer) that DETECT BUGS at runtime during fuzzing — even bugs that don't crash. Without sanitizers, fuzzers only find bugs that cause observable failure.
+
+Google's OSS-Fuzz runs continuous fuzzing for major open-source projects (Linux kernel, libssh, ImageMagick, etc.) — has found tens of thousands of bugs.
+
+Use cases:
+
+- New code that handles untrusted input (file parsers, protocol handlers, deserialization)
+- Before releasing a library that others will use with arbitrary inputs
+- Periodically for established codebases that have changed
+
+## 2.5 Negative testing
+
+Broader category: testing that the system handles INVALID inputs and ABNORMAL conditions correctly.
+
+Examples:
+
+- Null inputs, empty strings, very long strings
+- Unicode, special characters, encoded inputs
+- Boundary values (0, MAX_INT, MIN_INT, negative numbers where unexpected)
+- Out-of-order operations (POST before login, finish before start)
+- Concurrent requests producing race conditions
+- Network failures mid-transaction
+
+Often overlooked because developers focus on positive paths. Misuse case testing is a structured form of negative testing.
+
+## 2.6 Test coverage analysis
+
+Tools (JaCoCo, Istanbul, coverage.py, gcov) report what fraction of code was exercised by tests. Coverage flavors:
+
+- **Statement coverage** — % of statements executed
+- **Branch coverage** — % of branch decisions tested (both true and false sides)
+- **Path coverage** — % of unique execution paths (combinatorially explosive; usually approximated)
+
+Higher coverage ≠ better security. 100% coverage can still miss bugs if the tests don't EXERCISE the buggy condition. Use coverage as a FLOOR (anything below 80% is suspicious) but don't claim "100% covered" means "100% secure."
+
+## 2.7 Mutation testing
+
+Tests the TESTS by intentionally inserting small bugs ("mutants") into the code and checking whether tests catch them. If a mutant survives (tests still pass), the tests are incomplete.
+
+Tools: Stryker (JS), Pitest (Java), mutmut (Python). Less commonly tested on the CISSP exam but a sign of mature testing practice.
+
+## 2.8 Penetration testing categories
+
+Beyond automated scanning, humans actively attempt to compromise the application:
+
+- **Black box** — tester has no inside info (simulates external attacker)
+- **Gray box** — tester has limited info (credentials, basic architecture)
+- **White box (crystal box)** — full source + design + credentials
+- **Internal** — tests from inside the network (insider threat simulation)
+- **External** — tests from the internet (external threat simulation)
+
+Methodologies (recognition for exam): PTES (Penetration Testing Execution Standard), OSSTMM (Open Source Security Testing Methodology Manual), OWASP Testing Guide.
+
+Engagement structure:
+
+1. Scoping + Rules of Engagement (ROE)
+2. Reconnaissance + discovery
+3. Vulnerability identification
+4. Exploitation (within ROE bounds)
+5. Post-exploitation (lateral movement, privilege escalation)
+6. Reporting
+7. Remediation verification
+
+Rules of Engagement document: scope, exclusions, allowed techniques, escalation path for in-scope critical findings, communications channel, emergency contact, evidence handling. ALWAYS in writing.`,
+      examTip: `Memorize the four pillars: SAST (source), DAST (running app from outside), IAST (running app with internal agent), SCA (dependencies). Misuse case testing is STRUCTURED NEGATIVE TESTING — defines attacker goals as test cases.`,
     },
     {
-      id: '13-security-metrics-and-reporting',
-      title: `13. Security Metrics and Reporting`,
-      content: `### Metrics Framework
+      id: 'assessment-strategy',
+      title: `9. Assessment Strategy, Vulnerability Management, and Audit`,
+      content: `## 3.1 Vulnerability scan vs penetration test
 
-- Baseline: Establish current state to measure improvement against
-- Trending: Track metrics over time (monthly, quarterly) to identify trends
-- Benchmarking: Compare metrics against industry standards and competitors
-- Correlation: Look for relationships between metrics (patch delays -> vulnerability increase)
-- Actionable: Metrics should drive decisions and improvements, not just reporting
+CISSP exam classic distinction:
 
-### Reporting to Different Audiences
+- **Vulnerability assessment / scan** — AUTOMATED identification of known vulnerabilities. Output: a list of issues with severity and remediation. Examples: Nessus, Qualys, Rapid7 InsightVM, OpenVAS.
+- **Penetration test** — HUMAN tester actively attempts to compromise systems, chains vulnerabilities, demonstrates real impact, abuses business logic. Output: a narrative report of attack chains executed, with evidence and recommendations.
 
-- Executive/Board: High-level summary, risk trends, business impact, key metrics
-- IT leadership: Technical details, control status, remediation progress, resource needs
-- Operations: Metrics relevant to their systems, alerts, incident status
-- Compliance: Evidence of control operation, audit findings, remediation tracking
+Vuln scan: broad + automated + frequent. Pen test: deep + manual + periodic.
 
-### Metrics Pitfalls
+Both have value; a mature program uses both. Common pattern: continuous vulnerability scanning + annual external pen test + ongoing internal red team.
 
-- Vanity metrics: Metrics that look good but don't indicate real security (high scan count but many false positives)
-- Gaming metrics: Teams optimize for metric rather than actual security (closing tickets without real remediation)
-- Wrong focus: Focusing on easily measured metrics (vulnerability count) rather than difficult but important ones (business risk)
-- Lag indicators: Looking backward at what already happened rather than forward indicators`,
-    },
-    {
-      id: '15-third-party-and-vendor-assessments',
-      title: `15. Third-Party and Vendor Assessments`,
-      content: `### Third-Party Risk Assessment
+## 3.2 Vulnerability management lifecycle
 
-Evaluating security of vendors, suppliers, cloud providers, and partners before and during relationship:
-- Due diligence: Initial assessment before signing contract
-- Questionnaires: CAIQ (Cloud Audit and Accountability Initiative), VSA (Vendor Security Assessment)
-- Audit reviews: Examine SOC 2, ISO 27001, PCI-DSS audit reports
-- Site visits: Physical inspection of facilities and security controls
-- Penetration testing: Test vendor's security posture
-- Ongoing monitoring: Continuous assessment throughout relationship
+1. **Discovery** — scan systems to identify vulnerabilities
+2. **Prioritization** — rank by severity (CVSS), exploitability, asset criticality, exposure
+3. **Remediation** — patch, configure, compensate
+4. **Verification** — re-scan to confirm fix
+5. **Reporting** — track to closure, metrics
 
-### Right to Audit Clauses
+CVSS (Common Vulnerability Scoring System):
 
-**Contracts should include right to audit vendors.** Allows organization to verify security controls:
-- Contractual requirement: Include audit rights in vendor contracts
-- Timing: Define frequency (annual, bi-annual) and notice period (usually 30 days)
-- Scope: Specify what systems/controls can be audited
-- Cooperation: Vendor required to cooperate and provide access/information
-- Confidentiality: Audit findings treated confidentially; shared only with those needing to know
-- Third-party auditors: Can engage external auditors to perform audit
+- **Base** score (0-10) — intrinsic characteristics (attack vector, complexity, privileges required, user interaction, scope, CIA impact)
+- **Temporal** score — exploit code maturity, remediation availability
+- **Environmental** score — modified by deployment-specific factors
 
-### Vendor Management Program
+Common organizations use Base + Temporal for prioritization, then layer their own context (Internet-facing? Holds PII? Recent threat intel of active exploitation?) for true priority.
 
-- Inventory: Maintain list of all critical vendors and their risk classification
-- Assessment: Assess risk before contract and periodically throughout
-- Contracts: Include security requirements, SLAs, incident notification clauses
-- Monitoring: Track vendor security posture, incidents, compliance status
-- Incident response: Coordinate response if vendor suffers breach affecting organization
-- Exit planning: Data return/destruction procedures if vendor relationship ends`,
+EPSS (Exploit Prediction Scoring System) supplements CVSS — predicts likelihood of exploitation in next 30 days based on observed exploit activity. Often used in combination with CVSS for triage.
+
+## 3.3 Service Level Objectives (SLOs) for vulnerability remediation
+
+Typical mature program:
+
+| Severity | Patch SLA |
+|---|---|
+| Critical (CVSS 9-10, known active exploitation) | 7 days |
+| High (CVSS 7-8.9) | 30 days |
+| Medium (CVSS 4-6.9) | 90 days |
+| Low (CVSS 0.1-3.9) | 180 days or risk-accept |
+
+SLOs vary by exposure (Internet-facing systems patched faster) and asset criticality.
+
+## 3.4 Red Team / Blue Team / Purple Team
+
+- **Red Team** — offensive; emulates real adversary tactics (TTPs from MITRE ATT&CK), attempts to achieve specific objectives without detection
+- **Blue Team** — defensive; detects, responds, hardens; the SOC + incident response + threat hunting
+- **Purple Team** — collaborative red + blue; red explains what they did, blue verifies they could have detected it, both improve together
+
+Red team exercises typically:
+
+- Goal-oriented (e.g., "exfiltrate the customer database without being caught")
+- Longer than pen tests (weeks to months)
+- More realistic (full social engineering, physical access, custom tools)
+- Output: AAR (after-action report) covering attack chain + blue team performance + recommendations
+
+Purple team is becoming the dominant model — adversarial fidelity of red team + immediate learning of joint analysis.
+
+## 3.5 Audit logs and log review
+
+Domain 6 includes review of security PROCESS DATA — logs, audit trails, monitoring outputs.
+
+Categories of process data:
+
+- Account access / authentication logs
+- Authorization logs
+- Configuration change logs
+- File access logs
+- Network connection logs
+- Application-specific logs (transactions, errors, business events)
+
+Log review as detective control:
+
+- Real-time SIEM correlation alerts on suspicious patterns
+- Periodic human review of high-risk activities (privileged actions, sensitive data access)
+- Compliance review for audit trail completeness
+- Forensic review during investigations
+
+CISSP expects awareness that LOGS ALONE aren't enough — logs must be:
+
+- **Centralized** (otherwise an attacker who compromises a host can delete local logs)
+- **Tamper-resistant** (write-once, cryptographically chained, sent to immutable storage)
+- **Synchronized** (NTP for correlation across systems)
+- **Retained** (per regulatory and forensic needs — often 1 year minimum for security logs)
+- **Reviewed** (logs not reviewed = no detective value)
+
+## 3.6 Audit types
+
+Within Domain 6, audit refers to:
+
+- **Internal audit** — org's own audit function reporting to audit committee
+- **External audit** — third party, independent
+- **Compliance audit** — verify conformance to specific regulation/framework (PCI-DSS, HIPAA, SOC 2)
+- **Security audit** — verify security controls operating effectively
+- **Operational audit** — efficiency + effectiveness of processes
+
+CISSP exam pattern: "Who should conduct an audit of the security operations team?" → not someone within the team (independence); ideally internal audit (reporting to audit committee, independent of operational management) or external auditor.
+
+## 3.7 Assessment strategy = combining the techniques
+
+A mature security testing program combines:
+
+| Frequency | Techniques |
+|---|---|
+| Per commit | SAST, secrets scan, SCA on changed deps |
+| Per PR | Full SAST, full SCA, IaC scan, container image scan |
+| Per CI build | DAST or IAST against staging, fuzz tests for parsers |
+| Continuous | Vulnerability scanning of production, log monitoring, SIEM correlation |
+| Quarterly | Internal penetration test or red team exercise |
+| Annually | External penetration test, audit, possibly C&A re-authorization |
+| Always-on | Bug bounty program, vulnerability disclosure program |
+
+No single technique catches everything. Coverage gaps are the security manager's responsibility to identify and close.`,
+      examTip: `Vulnerability scan = AUTOMATED + broad + frequent. Penetration test = HUMAN + deep + periodic. The exam will give scenarios; pick the right tool for the situation. CVSS scores 0-10; patch SLOs typically 7 days (critical), 30 (high), 90 (medium).`,
     },
   ],
 },
-
-cissp_testing: {
-  topicId: 'cissp_testing',
-  title: `Software Testing`,
+cissp_test_reporting: {
+  topicId: 'cissp_test_reporting',
+  title: `Test Output and Generate Report`,
   domainWeight: '12%',
   overview: `**Synthetic transactions** are automated test transactions simulating user behavior. Verify application functionality and performance continuously:`,
   sections: [
     {
       id: '6-synthetic-transactions-and-real-user-monitoring',
-      title: `6. Synthetic Transactions and Real User Monitoring`,
+      title: `1. Synthetic Transactions and Real User Monitoring`,
       content: `**Synthetic transactions** are automated test transactions simulating user behavior. Verify application functionality and performance continuously:
 - Automated scripts: Simulate common user workflows (login, search, purchase)
 - Frequency: Run continuously (every 5-15 minutes)
@@ -6248,7 +7454,7 @@ cissp_testing: {
     },
     {
       id: '7-code-review-and-testing',
-      title: `7. Code Review and Testing`,
+      title: `2. Code Review and Testing`,
       content: `### Static Application Security Testing (SAST)
 
 **SAST analyzes source code for vulnerabilities without executing it.** Finds code-level flaws early in development:
@@ -6322,7 +7528,7 @@ Measure what percentage of code has been executed during testing:
     },
     {
       id: '8-software-testing-levels',
-      title: `8. Software Testing Levels`,
+      title: `3. Software Testing Levels`,
       content: `### Unit Testing
 
 Tests individual functions or code units in isolation. Developer responsibility. Typically automated (JUnit, pytest, NUnit). Tests code logic and edge cases. Fast feedback during development.
@@ -6341,7 +7547,7 @@ Retests existing functionality after changes or bug fixes. Ensures new changes d
     },
     {
       id: '9-interface-testing',
-      title: `9. Interface Testing`,
+      title: `4. Interface Testing`,
       content: `### API Testing
 
 **API testing validates REST/SOAP/GraphQL interfaces.** Tests request/response validation, authentication, authorization, error handling, performance:
@@ -6360,7 +7566,7 @@ Tests hardware interfaces and physical security. Example: Badge reader authentic
     },
     {
       id: '10-breach-attack-simulation-bas',
-      title: `10. Breach Attack Simulation (BAS)`,
+      title: `5. Breach Attack Simulation (BAS)`,
       content: `**BAS platforms continuously simulate realistic attacks to evaluate security controls.** Tests how quickly organization detects and responds to attacks:
 - Continuous: Run recurring attack simulations (not just annual pen test)
 - Automated: Attack campaigns executed automatically per schedule
@@ -6373,7 +7579,7 @@ Tests hardware interfaces and physical security. Example: Badge reader authentic
     },
     {
       id: '14-test-output-analysis-and-reporting',
-      title: `14. Test Output Analysis and Reporting`,
+      title: `6. Test Output Analysis and Reporting`,
       content: `### False Positives and False Negatives
 
 - False Positive: Finding reported as vulnerability but not actually vulnerable. Automated tool limitation. Requires investigation.
@@ -6417,7 +7623,537 @@ Track vulnerability remediation through lifecycle: identified -> assigned -> rem
     `Right to Audit: Vendor contracts must include right to audit clause. Specifies frequency, scope, notice period, cooperation requirements. Allows organization to verify vendor controls without relying only on certifications. Critical for third-party risk management.`
   ]
 },
+cissp_audit: {
+  topicId: 'cissp_audit',
+  title: `Conduct or Facilitate Security Audits`,
+  domainWeight: '12%',
+  overview: `### SIEM (Security Information and Event Management)`,
+  sections: [
+    {
+      id: '5-log-reviews-and-monitoring',
+      title: `1. Log Reviews and Monitoring`,
+      content: `### SIEM (Security Information and Event Management)
 
+**SIEM systems collect, aggregate, correlate, and analyze logs from all security devices and systems.** Central nervous system for security monitoring:
+- Collection: Aggregates logs from firewalls, IDS/IPS, servers, applications, databases
+- Normalization: Converts different log formats into standard format for analysis
+- Correlation: Identifies relationships between events (user logs in -> access denied -> privilege escalation attempt)
+- Alerting: Real-time alerts for suspicious patterns and policy violations
+- Reporting: Generate reports for compliance and audit
+- Retention: Archive logs for long-term analysis and forensics
+- Examples: Splunk, Elastic, IBM QRadar, ArcSight, Sumologic
+
+### Log Management
+
+Comprehensive management of logs across infrastructure. Centralized storage protects logs from tampering. Encryption protects confidentiality. Retention policies balance compliance and storage.
+### Event Correlation
+
+Identifies relationships between separate events that indicate attack. Example: Failed login from IP A -> Successful login from same IP -> Lateral movement to sensitive server -> Data exfiltration. Correlation connects these events revealing the attack chain.
+### Audit Trails and Access Logging
+
+- System audit logs: OS events (login, privilege changes, file access)
+- Application logs: Application-specific events and errors
+- Database logs: Query execution, permission changes, data modifications
+- Security logs: Authentication, authorization, access control decisions
+- Immutability: Logs must be tamper-proof (write-once media or cryptographic protection)
+- Accountability: Ensure logs connect actions to users for forensic investigation`,
+    },
+    {
+      id: '11-compliance-checking',
+      title: `2. Compliance Checking`,
+      content: `### SOC 2 Reports (Type I and Type II)
+
+**SOC 2 audits evaluate service organization controls in 5 trust service criteria:**
+- Security: Ability to protect information and systems
+- Availability: Systems available for operation and use
+- Processing Integrity: Complete, accurate, timely processing
+- Confidentiality: Information designated as confidential is protected
+- Privacy: Personal information is collected, used, retained per privacy policy
+
+| Type I | Type II |
+|---|---|
+| Evaluates control design | Evaluates control operation over time |
+| Point-in-time assessment | Tests controls over 6-12 months |
+| Whether controls exist and are suitable | Whether controls worked effectively |
+| Typically 1-2 weeks of fieldwork | Extended fieldwork and testing period |
+| Less assurance to users | Higher assurance; typically required by major customers |
+
+### ISO 27001 Audits
+
+**ISO 27001 evaluates Information Security Management System (ISMS) against international standard.** Comprehensive assessment of security program:
+- Scope: All 14 domains of ISO 27001 standard (similar to NIST CSF)
+- Evidence-based: Auditors review documented controls and evidence of operation
+- Certification: Successful audit results in ISO 27001 certification (valid 3 years)
+- Frequency: Surveillance audits annually; recertification every 3 years
+- Third-party: Conducted by accredited certification bodies
+
+### PCI-DSS (Payment Card Industry - Data Security Standard) Assessments
+
+**PCI-DSS is mandatory compliance framework for organizations processing credit cards.** Assesses controls protecting cardholder data:
+- Scope: Organizations processing, storing, or transmitting credit card data
+- Requirements: 12 main requirements across 6 categories (security, access, testing, implementation, monitoring, policy)
+- Assessment: Annual audit by Qualified Security Assessor (QSA) or self-assessment
+- Validation: Attestation of Compliance (AoC) and Scanning Attestation for merchants
+- Enforcement: Card brands enforce compliance; penalties for breaches
+
+### Compliance Assessment Process
+
+1. Planning: Define scope and select frameworks
+2. Control inventory: Document all controls addressing requirements
+3. Evidence gathering: Collect proof controls operate effectively
+4. Testing: Auditors verify controls with interviews, testing, observation
+5. Gap analysis: Identify non-conformances and remediation needed
+6. Reporting: Generate audit report with findings and recommendations
+7. Remediation: Organization fixes deficiencies within timeframe
+8. Verification: Confirm remediation completed successfully`,
+    },
+    {
+      id: '12-key-performance-indicators-kpis-and-key-risk-indicators-k',
+      title: `3. Key Performance Indicators (KPIs) and Key Risk Indicators (KRIs)`,
+      content: `### Key Performance Indicators (KPIs)
+
+**KPIs measure how well security controls are operating.** Positive metrics indicating effective security:
+- Mean Time to Detect (MTTD): Average time from breach occurring to detection
+- Mean Time to Respond (MTTR): Average time from detection to incident contained
+- Patch deployment time: Time from patch release to systems patched
+- Password reset rate: Percentage of users with current passwords
+- MFA enrollment: Percentage of users with multifactor authentication
+- Security awareness training completion: Percentage completing annual training
+- Vulnerability remediation rate: Percentage of identified vulnerabilities fixed within SLA
+
+### Key Risk Indicators (KRIs)
+
+**KRIs measure security risks and threats.** Warning signs indicating increasing risk:
+- Failed login attempts: Spike indicates credential attacks or misconfiguration
+- Privileged account activity: Unusual administrative access indicates potential compromise
+- Patch backlog: Increasing unpatched systems indicates rising vulnerability risk
+- Compliance violations: Non-conformances indicate control failures
+- Alerts and incidents: Increase in security alerts and incidents
+- Vulnerability age: Vulnerabilities open longer than acceptable timeframe
+- Audit findings: Recurring findings indicate systemic issues
+
+### Balanced Scorecard Approach
+
+Combine KPIs and KRIs for balanced view of security posture. KPIs show control effectiveness; KRIs show emerging risks. Together they provide comprehensive security metrics.`,
+    },
+    {
+      id: '13-security-metrics-and-reporting',
+      title: `4. Security Metrics and Reporting`,
+      content: `### Metrics Framework
+
+- Baseline: Establish current state to measure improvement against
+- Trending: Track metrics over time (monthly, quarterly) to identify trends
+- Benchmarking: Compare metrics against industry standards and competitors
+- Correlation: Look for relationships between metrics (patch delays -> vulnerability increase)
+- Actionable: Metrics should drive decisions and improvements, not just reporting
+
+### Reporting to Different Audiences
+
+- Executive/Board: High-level summary, risk trends, business impact, key metrics
+- IT leadership: Technical details, control status, remediation progress, resource needs
+- Operations: Metrics relevant to their systems, alerts, incident status
+- Compliance: Evidence of control operation, audit findings, remediation tracking
+
+### Metrics Pitfalls
+
+- Vanity metrics: Metrics that look good but don't indicate real security (high scan count but many false positives)
+- Gaming metrics: Teams optimize for metric rather than actual security (closing tickets without real remediation)
+- Wrong focus: Focusing on easily measured metrics (vulnerability count) rather than difficult but important ones (business risk)
+- Lag indicators: Looking backward at what already happened rather than forward indicators`,
+    },
+    {
+      id: '15-third-party-and-vendor-assessments',
+      title: `5. Third-Party and Vendor Assessments`,
+      content: `### Third-Party Risk Assessment
+
+Evaluating security of vendors, suppliers, cloud providers, and partners before and during relationship:
+- Due diligence: Initial assessment before signing contract
+- Questionnaires: CAIQ (Cloud Audit and Accountability Initiative), VSA (Vendor Security Assessment)
+- Audit reviews: Examine SOC 2, ISO 27001, PCI-DSS audit reports
+- Site visits: Physical inspection of facilities and security controls
+- Penetration testing: Test vendor's security posture
+- Ongoing monitoring: Continuous assessment throughout relationship
+
+### Right to Audit Clauses
+
+**Contracts should include right to audit vendors.** Allows organization to verify security controls:
+- Contractual requirement: Include audit rights in vendor contracts
+- Timing: Define frequency (annual, bi-annual) and notice period (usually 30 days)
+- Scope: Specify what systems/controls can be audited
+- Cooperation: Vendor required to cooperate and provide access/information
+- Confidentiality: Audit findings treated confidentially; shared only with those needing to know
+- Third-party auditors: Can engage external auditors to perform audit
+
+### Vendor Management Program
+
+- Inventory: Maintain list of all critical vendors and their risk classification
+- Assessment: Assess risk before contract and periodically throughout
+- Contracts: Include security requirements, SLAs, incident notification clauses
+- Monitoring: Track vendor security posture, incidents, compliance status
+- Incident response: Coordinate response if vendor suffers breach affecting organization
+- Exit planning: Data return/destruction procedures if vendor relationship ends`,
+    },
+  ],
+},
+// ===== Domain 7: Security Operations (13%) - Instructor Edition module order =====
+cissp_operations: {
+  topicId: 'cissp_operations',
+  title: `Foundational Security Operations Concepts`,
+  domainWeight: '13%',
+  overview: `### Continuous Monitoring`,
+  sections: [
+    {
+      id: '6-logging-and-monitoring',
+      title: `1. Logging and Monitoring`,
+      content: `### Continuous Monitoring
+
+Continuous monitoring provides **real-time visibility** into security events and system behavior:
+- Network-based monitoring: Packet captures, NetFlow analysis, traffic inspection
+- Host-based monitoring: Process execution, file system changes, registry modifications, authentication events
+- Application monitoring: User actions, data access, transactions, errors
+- **Baseline Development**: Establish normal behavior patterns to detect anomalies
+- Alert tuning: Reduce false positives while maintaining detection sensitivity
+- Correlation: Link events across multiple sources to identify attack patterns
+- **Real-time alerting** on critical security events
+
+### SIEM (Security Information and Event Management)
+
+SIEM systems are the **central hub for security monitoring and alerting**:
+- **Collection**: Aggregate logs from firewalls, IDS/IPS, servers, applications, endpoints
+- **Normalization**: Standardize log formats from diverse sources for analysis
+- **Correlation**: Link events across multiple sources; detect multi-step attacks
+- **Enrichment**: Add context (whitelists, threat intelligence, asset info) to alerts
+- **Alerting**: Generate alerts on suspicious patterns and rule violations
+- **Reporting**: Compliance dashboards, incident trending, executive reporting
+- **Long-term Storage**: Retain logs for forensics, compliance, historical analysis
+- Popular SIEM platforms: Splunk, ArcSight, QRadar, Elastic Stack, Sumo Logic
+
+### SOC (Security Operations Center)
+
+The SOC is the **organizational structure** that operates security monitoring and incident response:
+- **Tier 1 Analysts**: Monitor alerts, perform initial triage, escalate suspicious events
+- **Tier 2 Analysts**: Investigate incidents, perform deep analysis, provide threat intelligence
+- **Tier 3 (Architects/Leads)**: Design detection strategies, mentor analysts, drive improvements
+- Operates 24/7/365 for critical organizations
+- Uses playbooks and runbooks to ensure consistent response
+- Measures performance via metrics (alert volume, MTTR, resolution rate)
+
+### Threat Hunting
+
+Threat hunting is **proactive search** for indicators of compromise or malicious activity:
+- Search for known adversary tactics and tools using IOCs (indicators of compromise)
+- Analyze unusual outbound connections, privilege escalations, lateral movement
+- Hunt for living-off-the-land attacks (use of legitimate tools)
+- Correlate threat intelligence with internal data
+- Hypothesis-driven investigations (e.g., "Has this domain command-and-control beacon been seen?")
+- Often uncovers incidents missed by automated alerting
+- Improves detection capabilities by identifying new IOCs
+
+### Audit Trails and Accountability
+
+Comprehensive logging ensures **accountability and forensic capability**:
+- Log all privileged actions (logins, account modifications, configuration changes)
+- Log data access for sensitive information (databases, file shares)
+- Protect logs from tampering via integrity verification and centralized storage
+- Implement log retention policies (typically 6-12 months minimum)
+- Encrypt logs in transit and at rest
+- Enable non-repudiation: individuals cannot deny their actions
+- Regular review of logs for suspicious activity`,
+    },
+    {
+      id: '7-configuration-management',
+      title: `2. Configuration Management`,
+      content: `### Configuration Baselines
+
+Configuration baselines define the **approved, tested standard configuration** for systems:
+- Establish baseline for each system type (web server, database, workstation)
+- Document hardware, software, patches, security settings, and configurations
+- Baseline serves as golden standard for deployments and remediation
+- Regular configuration reviews detect drift and unauthorized changes
+- Automated scanning (CIS Benchmarks) identifies deviations
+- Maintains consistency across infrastructure
+
+### System Imaging and Automated Deployment
+
+Imaging and automation ensure **consistency and rapid deployment**:
+- **System Images**: Capture configured system state; deploy to new hardware quickly
+- **Cloning**: Create identical copies of systems for consistency
+- **Infrastructure as Code (IaC)**: Define infrastructure via code (Terraform, Ansible)
+- **Configuration Management Tools**: Puppet, Chef, Ansible enforce consistent state
+- **Version Control**: Track changes to configuration definitions
+- **Automated Rollback**: Revert to previous configuration if deployment fails
+- Reduces manual errors and deployment time`,
+    },
+    {
+      id: '8-change-management',
+      title: `3. Change Management`,
+      content: `Change Management processes ensure that **modifications to systems minimize risk** and maintain stability. The goal is to enable rapid innovation while preventing service disruptions.
+### Change Management Process (CAB)
+
+The **Change Advisory Board (CAB)** oversees all significant changes:
+| Step | Description | Responsibility |
+|---|---|---|
+| Request Initiation | Requester submits change request (RFC) with business justification | Change Requester |
+| Impact Analysis | Assess scope, dependencies, potential risks, and rollback plan | Technical Team |
+| CAB Review | Evaluate risk, cost, and business benefit; approve/reject | Change Advisory Board |
+| Scheduling | Determine implementation window and maintenance duration | Change Manager |
+| Preparation | Prepare rollback plan, notify stakeholders, ready backup systems | Technical Team |
+| Implementation | Execute change in controlled manner; monitor for issues | Change Manager |
+| Testing | Verify change functioning correctly; check for regressions | QA/Technical Team |
+| Verification | Confirm business objectives achieved and service intact | Business Owner |
+| Documentation | Update configuration management database (CMDB) and runbooks | Documentation Team |
+| Review | Post-implementation review: successes, issues, lessons learned | Change Manager |
+
+### Emergency Changes
+
+**Emergency changes** bypass normal CAB approval when urgent security/availability issues require immediate action:
+- Applied to critical security patches or incident response actions
+- Require risk assessment and management approval even if CAB meeting not held
+- Documented immediately with justification
+- Post-implementation review conducted within 48 hours
+- Revert to standard change process once emergency resolved
+
+### Change Management Best Practices
+
+- Maintain Configuration Management Database (CMDB) with all IT assets and relationships
+- Implement change windows (e.g., 2am-6am weekdays only)
+- Require peer review of code/configuration changes
+- Use version control for all configuration and deployment code
+- Implement automated testing to catch regressions
+- Maintain detailed rollback procedures for quick recovery
+- Monitor system behavior closely during and after change
+- Communicate broadly with affected users about changes`,
+      examTip: `CAB, change request, impact analysis, and emergency changes are heavily tested. Know the difference between standard and emergency change procedures.`,
+    },
+    {
+      id: '9-patch-management',
+      title: `4. Patch Management`,
+      content: `Patch management is the **systematic process of testing and deploying software updates** to fix vulnerabilities and improve functionality. Balancing speed with stability is critical.
+### Patch Management Lifecycle
+
+1. **Assessment**: Monitor vendor advisories (Microsoft, Adobe, OS vendors); evaluate criticality and applicability to your environment
+2. **Testing**: Deploy patches to test environment; verify functionality and compatibility; check for regressions
+3. **Planning**: Schedule deployment window; assess business impact; prepare rollback procedure
+4. **Deployment**: Roll out patches in phases (servers, then workstations); prioritize critical systems
+5. **Verification**: Confirm patches installed successfully; verify systems functioning correctly
+6. **Documentation**: Update patch status in asset inventory; record deployment dates
+
+### Patch Prioritization
+
+Patches must be prioritized based on **risk and business impact**:
+- **Critical**: Remotely exploitable without user interaction; actively exploited; immediate deployment within 48 hours
+- **High**: Privilege escalation or authenticated exploitation; deploy within 1-2 weeks
+- **Medium**: Limited impact or requires special conditions; deploy within 30 days
+- **Low**: Minor bugs or cosmetic issues; include in regular maintenance windows
+- **Superseded patches**: Skip if newer patch addresses same vulnerability
+- **Compatibility issues**: Balance patch benefits against operational risk
+
+### Patch Management Tools and Processes
+
+- **Automated patch management**: WSUS, Altiris, Jamf, Kandji for centralized deployment
+- **Phased rollout**: Deploy to pilot group first; expand if successful
+- **Automatic rollback**: Revert patches if deployment causes failures
+- **Hotfix vs. Scheduled**: Emergency hotfixes for critical issues; batch patches for regular cycles
+- **Unpatched system management**: Isolate or restrict systems that cannot be patched
+- **Monitoring**: Verify patches deployed and systems remain compliant`,
+      importantNote: `When no patch exists for a known vulnerability (zero-day), implement compensating controls: disable vulnerable features, restrict access, isolate systems, use network segmentation, monitor for exploitation.`,
+    },
+    {
+      id: '10-vulnerability-management',
+      title: `5. Vulnerability Management`,
+      content: `Vulnerability management is the **continuous process of identifying, analyzing, and remediating** security weaknesses in systems and software.
+### Vulnerability Management Lifecycle
+
+1. **Discovery**: Automated scanning with vulnerability scanners (Nessus, Qualys, Rapid7); identify missing patches, misconfigurations, weak credentials
+2. **Analysis**: Assess vulnerability severity (CVSS), exploitability, business impact; prioritize remediation
+3. **Remediation**: Patch systems, fix configurations, disable unnecessary services, implement compensating controls
+4. **Verification**: Rescan to confirm vulnerability eliminated; document remediation actions
+5. **Reporting**: Track metrics (remediation time, critical vulnerabilities outstanding)
+6. **Closure**: Archive remediation evidence; update asset inventory
+
+### Vulnerability Assessment Tools
+
+- **Network Scanners**: Nessus, OpenVAS, Qualys - scan networks for open ports, weak configs, missing patches
+- **Host Scanners**: SCAP, System Benchmark tools - assess individual systems against baselines
+- **Application Scanners**: Burp Suite, Acunetix - identify web application vulnerabilities
+- **Manual Testing**: Penetration testing for complex vulnerabilities and exploitation chains
+- **Configuration Audit**: CIS Benchmarks, DISA STIGs for standard hardening checks
+
+### Vulnerability Metrics and Severity
+
+- **CVSS Score** (Common Vulnerability Scoring System): 0.0-10.0 scale based on exploitability and impact
+- **Critical** (9.0-10.0): Actively exploited, immediate threat
+- **High** (7.0-8.9): Likely to be exploited, significant business impact
+- **Medium** (4.0-6.9): Possible exploitation, moderate impact
+- **Low** (0.1-3.9): Difficult to exploit or minor impact
+- **Known Exploits**: Vulnerabilities with public exploits require priority remediation`,
+    },
+    {
+      id: '11-resource-provisioning-and-protection',
+      title: `6. Resource Provisioning and Protection`,
+      content: `### Asset Inventory and Management
+
+Comprehensive asset tracking enables **effective security control and compliance**:
+- Maintain inventory of all IT assets (hardware, software, licenses)
+- Track asset location, owner, business function, criticality
+- Monitor asset lifecycle from procurement through retirement
+- Verify only authorized and licensed software installed
+- Regular physical audits to reconcile with inventory records
+- Automated discovery tools (CMDB, asset tracking solutions)
+- Enforce asset tagging or unique identification
+
+### Hardware Lifecycle Management
+
+Hardware lifecycle management ensures **secure disposition and controlled deployment**:
+- **Procurement**: Verify hardware from trusted sources; record serial numbers
+- **Deployment**: Apply security baselines; harden systems before use
+- **Operations**: Monitor for hardware failures; maintain spare inventory
+- **Maintenance**: Replace failed components securely; update firmware
+- **Refresh**: Replace aging hardware per refresh schedule
+- **Deprovisioning**: Securely erase storage; destroy hard drives or use certified wiping services; document destruction with chain of custody
+- Prevent unauthorized hardware from entering network
+
+### Media Management
+
+Media management controls **removable storage and data handling**:
+- Classify media by sensitivity (public, internal, confidential)
+- Encrypt sensitive media in transit and at rest
+- Restrict removable media (USB, portable drives) via endpoint security
+- Maintain inventory of media with access tracking
+- Sanitization: cryptographic erasure or physical destruction for disposal
+- Prevent malware distribution through infected media
+- Audit media usage to detect unauthorized transfers
+
+### Virtual Asset Management
+
+Virtual machines and cloud resources require **similar controls as physical assets**:
+- Maintain inventory of all VMs and cloud instances
+- Apply same hardening and patching standards as physical systems
+- Control VM proliferation through approval processes
+- Secure VM templates to prevent malware in spawned instances
+- Monitor for shadow IT and unauthorized VM creation
+- Implement secure deprovisioning of VMs and data deletion
+- Track VM sprawl to control costs and security debt`,
+    },
+    {
+      id: '15-physical-security-operations',
+      title: `7. Physical Security Operations`,
+      content: `Physical security controls **prevent or detect unauthorized physical access** to facilities and equipment. Controls are categorized by function.
+### Physical Security Control Types
+
+| Control Type | Purpose and Example |
+|---|---|
+| Preventive | Prevent unauthorized access (locks, barriers, guards, access badges) |
+| Detective | Detect unauthorized access (cameras, motion sensors, alarms, logs) |
+| Corrective | Respond to security incidents (guards, emergency response) |
+| Deterrent | Discourage attempts (security signage, visible cameras, guards) |
+| Compensating | Substitute for primary control (additional guards if alarm fails) |
+| Directive | Establish expectations (security policies, visitor badges) |
+| Recovery | Restore normal operations (fire suppression, emergency shutoff systems) |
+
+### Perimeter Controls
+
+**Outer perimeter** controls establish the facility boundary:
+- Fences, walls, barriers prevent easy unauthorized entry
+- Guards at entry points verify credentials and control access
+- Lighting illuminates perimeter at night
+- Video surveillance monitors perimeter activity
+- Access gates require credentials (badge, PIN, biometric)
+- Vehicle barriers prevent unauthorized vehicle access
+
+### Internal Controls
+
+**Interior facility** controls segment areas by sensitivity:
+- Doors with locks, card readers, or biometric systems
+- Data center access limited to authorized personnel only
+- Server rooms physically isolated; additional security controls
+- Clean desk policy prevents sensitive information visible to visitors
+- Visitor management: escort requirements, access badges, sign-in logs
+- Surveillance in sensitive areas (data centers, server rooms)
+- Environmental controls (fire suppression, temperature, humidity) for equipment protection
+
+### Personnel Safety and Security
+
+Physical security also **protects personnel from harm**:
+- Emergency evacuation procedures and regular drills
+- Emergency communication systems (alarms, intercoms, alert systems)
+- Safe rooms or areas for personnel during emergencies
+- First aid equipment and trained personnel
+- Personal safety training (de-escalation, personal safety)
+- Travel security for executives and high-risk personnel
+- Duress alarm buttons for personnel under threat
+- Background checks and security clearances for sensitive positions
+
+### Travel Security
+
+Personnel traveling on business require **security awareness and protections**:
+- Pre-travel security briefing (destination risk assessment)
+- Avoid carrying sensitive information or devices
+- Use VPN and encrypted communications on public networks
+- Maintain situational awareness in unfamiliar locations
+- Keep valuables secure and out of sight
+- Avoid discussing business in public areas
+- Emergency contact procedures and support
+- Post-travel debriefing to report security incidents`,
+    },
+    {
+      id: '16-preventive-security-measures',
+      title: `8. Preventive Security Measures`,
+      content: `### Firewalls
+
+Firewalls enforce **network boundary security** by controlling traffic between networks:
+- **Stateless Firewalls**: Filter packets based on rules (source, destination, port) without connection context
+- **Stateful Firewalls**: Track connection states; deny packets that don't match established connections
+- **Next-Generation Firewalls (NGFW)**: Add application-layer inspection, IPS, TLS inspection
+- **Host Firewalls**: Protect individual systems; control inbound/outbound connections
+- Block known malicious IPs and domains
+- Enforce network segmentation between zones
+
+### IDS/IPS (Intrusion Detection/Prevention)
+
+IDS and IPS systems **detect and block malicious network traffic**:
+- **IDS (Detection)**: Alerts on suspicious traffic; allows administrative response
+- **IPS (Prevention)**: Actively blocks suspicious traffic; may cause false positive impacts
+- **Network-based**: Monitor traffic between systems; detect large-scale attacks
+- **Host-based**: Monitor activity on individual systems; detect local exploits
+- **Signature-based**: Match known attack patterns
+- **Anomaly-based**: Detect deviations from baseline behavior
+- Popular platforms: Suricata, Snort, Zeek
+
+### Whitelisting and Blacklisting
+
+Approach to **controlling what can execute or access resources**:
+- **Blacklisting**: Deny known bad items (malicious IPs, domains, files); allow everything else (reactive)
+- **Whitelisting**: Allow only known good items (approved applications, domains); deny everything else (proactive)
+- Whitelisting more secure but requires maintenance; blacklisting easier but incomplete
+- Application whitelisting prevents malware and unauthorized software
+- IP whitelisting restricts access to known trusted sources
+- URL filtering blocks known malicious and inappropriate sites
+
+### Sandboxing
+
+Sandboxes **isolate suspicious code** for execution and analysis:
+- Execute potentially malicious files in isolated environment without access to real system
+- Monitor behavior to detect malicious actions
+- Prevent malware from infecting real systems
+- Used in email systems, web browsers, endpoint detection
+- Allows safe analysis of malware and zero-day vulnerabilities
+
+### Honeypots and Honeynets
+
+Honeypots are **decoy systems** that attract and study attackers:
+- Fake systems that appear valuable but contain no real data
+- Attract attackers; allow study of attack techniques and tools
+- Log all attacker activity for forensic analysis
+- Generate threat intelligence; identify zero-day exploits
+- **Honeypot**: Single decoy system
+- **Honeynet**: Network of honeypots to simulate larger target
+- High-interaction honeypots realistically mimic systems; risky but informative
+- Low-interaction honeypots simple simulations; safer but less informative`,
+      examTip: `Preventive measures like firewalls, IDS/IPS, whitelisting, sandboxing, and honeypots are critical for exam. Understand when each is appropriate and their strengths/weaknesses.`,
+    },
+  ],
+},
 cissp_ir: {
   topicId: 'cissp_ir',
   title: `Incident Management`,
@@ -6426,7 +8162,7 @@ cissp_ir: {
   sections: [
     {
       id: '4-incident-management',
-      title: `4. Incident Management`,
+      title: `1. Incident Management`,
       content: `Incident management provides the organizational framework and procedures for identifying, responding to, and learning from security incidents.
 ### Incident Response Team Structure
 
@@ -6470,7 +8206,7 @@ Clear escalation ensures appropriate decision-makers are engaged:
     },
     {
       id: '5-incident-response-lifecycle',
-      title: `5. Incident Response Lifecycle`,
+      title: `2. Incident Response Lifecycle`,
       content: `The incident response lifecycle consists of six phases designed to minimize damage and restore normal operations.
 ### Phase 1: Preparation
 
@@ -6544,7 +8280,7 @@ Clear escalation ensures appropriate decision-makers are engaged:
     },
     {
       id: 'breach-notification-and-regulatory-incident-requirements',
-      title: `Breach Notification and Regulatory Incident Requirements`,
+      title: `3. Breach Notification and Regulatory Incident Requirements`,
       content: `### GDPR Breach Notification
 
 **GDPR** (EU General Data Protection Regulation) applies to any organization processing EU resident data.
@@ -6603,7 +8339,7 @@ Law enforcement (FBI, local police) may request organizations **delay** breach n
     },
     {
       id: 'practice-questions',
-      title: `Practice Questions`,
+      title: `4. Practice Questions`,
       content: ``,
       quiz: [
         {
@@ -6700,10 +8436,9 @@ Law enforcement (FBI, local police) may request organizations **delay** breach n
     },
   ],
 },
-
 cissp_investigations: {
   topicId: 'cissp_investigations',
-  title: `Investigations & Evidence`,
+  title: `Investigations`,
   domainWeight: '13%',
   overview: `Effective security operations rest on core principles that ensure accountability, reduce risk through segregation of duties, and prevent unauthorized access and modifications.`,
   sections: [
@@ -6792,377 +8527,312 @@ Evidence admissibility depends on **relevance, authenticity, and proper handling
 - **Artifact Analysis**: Examine file system journals, registry hives, browser history, temporary files to reconstruct user activity
 - **Timeline Analysis**: Build chronological sequence of file modifications and access to determine incident sequence`,
     },
-  ],
-},
-
-cissp_operations: {
-  topicId: 'cissp_operations',
-  title: `Operational Security`,
-  domainWeight: '13%',
-  overview: `### Continuous Monitoring`,
-  sections: [
     {
-      id: '6-logging-and-monitoring',
-      title: `6. Logging and Monitoring`,
-      content: `### Continuous Monitoring
+      id: 'evidence-types-rules',
+      title: `4. Evidence Types, Rules, and Admissibility`,
+      content: `## 1.1 Evidence categories
 
-Continuous monitoring provides **real-time visibility** into security events and system behavior:
-- Network-based monitoring: Packet captures, NetFlow analysis, traffic inspection
-- Host-based monitoring: Process execution, file system changes, registry modifications, authentication events
-- Application monitoring: User actions, data access, transactions, errors
-- **Baseline Development**: Establish normal behavior patterns to detect anomalies
-- Alert tuning: Reduce false positives while maintaining detection sensitivity
-- Correlation: Link events across multiple sources to identify attack patterns
-- **Real-time alerting** on critical security events
+CISSP exam tests these distinctions:
 
-### SIEM (Security Information and Event Management)
+- **Direct evidence** — proves a fact without inference (eyewitness testimony of the event)
+- **Circumstantial evidence** — supports an inference but doesn't directly prove the fact (server access logs showing user A's account active at the time of breach)
+- **Documentary evidence** — written documents, records, logs
+- **Real (physical) evidence** — tangible items (a hard drive, a phone, a USB stick)
+- **Demonstrative evidence** — visualizations created to illustrate other evidence (network diagram, attack timeline graphic)
+- **Expert testimony** — opinions from qualified experts (a forensic analyst explaining what the artifacts mean)
 
-SIEM systems are the **central hub for security monitoring and alerting**:
-- **Collection**: Aggregate logs from firewalls, IDS/IPS, servers, applications, endpoints
-- **Normalization**: Standardize log formats from diverse sources for analysis
-- **Correlation**: Link events across multiple sources; detect multi-step attacks
-- **Enrichment**: Add context (whitelists, threat intelligence, asset info) to alerts
-- **Alerting**: Generate alerts on suspicious patterns and rule violations
-- **Reporting**: Compliance dashboards, incident trending, executive reporting
-- **Long-term Storage**: Retain logs for forensics, compliance, historical analysis
-- Popular SIEM platforms: Splunk, ArcSight, QRadar, Elastic Stack, Sumo Logic
+## 1.2 Best evidence rule
 
-### SOC (Security Operations Center)
+The original (or best available copy of) evidence is preferred. Duplicates are admissible if the original is unavailable AND the duplicate is verifiably accurate. For digital evidence: a forensic image (bit-for-bit copy) of the original media is the standard "best evidence" — original is preserved in chain of custody, analysis is performed on the image.
 
-The SOC is the **organizational structure** that operates security monitoring and incident response:
-- **Tier 1 Analysts**: Monitor alerts, perform initial triage, escalate suspicious events
-- **Tier 2 Analysts**: Investigate incidents, perform deep analysis, provide threat intelligence
-- **Tier 3 (Architects/Leads)**: Design detection strategies, mentor analysts, drive improvements
-- Operates 24/7/365 for critical organizations
-- Uses playbooks and runbooks to ensure consistent response
-- Measures performance via metrics (alert volume, MTTR, resolution rate)
+## 1.3 Hearsay and exceptions
 
-### Threat Hunting
+Hearsay = out-of-court statements offered for the truth of the matter asserted. Generally INADMISSIBLE in court. However, business records (logs, transaction records) routinely kept in the ordinary course of business have an EXCEPTION (Federal Rules of Evidence 803(6), business records exception).
 
-Threat hunting is **proactive search** for indicators of compromise or malicious activity:
-- Search for known adversary tactics and tools using IOCs (indicators of compromise)
-- Analyze unusual outbound connections, privilege escalations, lateral movement
-- Hunt for living-off-the-land attacks (use of legitimate tools)
-- Correlate threat intelligence with internal data
-- Hypothesis-driven investigations (e.g., "Has this domain command-and-control beacon been seen?")
-- Often uncovers incidents missed by automated alerting
-- Improves detection capabilities by identifying new IOCs
+For digital evidence to qualify under business records:
 
-### Audit Trails and Accountability
+- Made at or near the time of the event
+- Made by (or from information transmitted by) someone with knowledge
+- Kept in the regular course of business
+- Making the record was a regular practice
+- Custodian or other qualified witness testifies to the foundation
 
-Comprehensive logging ensures **accountability and forensic capability**:
-- Log all privileged actions (logins, account modifications, configuration changes)
-- Log data access for sensitive information (databases, file shares)
-- Protect logs from tampering via integrity verification and centralized storage
-- Implement log retention policies (typically 6-12 months minimum)
-- Encrypt logs in transit and at rest
-- Enable non-repudiation: individuals cannot deny their actions
-- Regular review of logs for suspicious activity`,
+This is WHY centralized logging with documented procedures matters for legal defensibility — it qualifies your logs as business records.
+
+## 1.4 Chain of custody
+
+The CHRONOLOGICAL DOCUMENTATION of who handled the evidence, when, where, why, and what was done. Any break in the chain undermines admissibility.
+
+Required elements:
+
+- Description of evidence (serial numbers, photographs)
+- Date/time of collection
+- Location of collection
+- Person collecting
+- Hash values at collection (proves nothing changed)
+- Every transfer logged (date, time, persons, hash re-verified)
+- Storage conditions (sealed evidence bag, secure cabinet, who has access)
+- Final disposition
+
+Modern tools (FTK, EnCase) generate hash values at each step automatically.
+
+## 1.5 Acquisition methods
+
+How forensic images are acquired:
+
+- **Static acquisition** — system is powered OFF; disk imaged via write-blocker. Standard for desktop / server forensics.
+- **Live acquisition** — system is powered ON; capture VOLATILE data (RAM, network connections, running processes) BEFORE shutting down. RAM contains decryption keys, attacker tools loaded but not on disk, network state.
+- **Order of volatility** — capture most volatile first:
+  1. CPU registers + cache
+  2. Memory (RAM)
+  3. Network state, kernel statistics
+  4. Running processes
+  5. Disk and removable media
+  6. Remote logging + backups
+  7. Physical configuration, network topology
+  8. Archival media
+
+If the system is encrypted with FDE, you LOSE the data if you power off before capturing keys from RAM. Modern incident response includes live RAM capture for this reason.
+
+## 1.6 Write blockers
+
+Hardware (preferred) or software devices that allow reading from a storage device WITHOUT writing to it. Essential for preserving the original — even mounting a drive read-only via the OS can write timestamps and trigger anti-virus scans that modify the disk.
+
+## 1.7 Hashing for integrity
+
+When evidence is acquired:
+
+1. Hash the original (MD5 + SHA-256 typically)
+2. Create the forensic image
+3. Hash the image
+4. Verify hashes match
+5. Re-verify hashes at each chain-of-custody transfer
+6. Final report includes hash values
+
+If hashes differ between original and image (or between two checks of the image), evidence is COMPROMISED — admissibility is at risk.
+
+Although MD5 has cryptographic weaknesses (collision attacks), it's still used IN ADDITION to SHA-256 because legacy tools support it and forensic use doesn't require collision resistance against adversarial inputs.`,
+      examTip: `Evidence types: direct/circumstantial/documentary/real/demonstrative/expert testimony. Best evidence rule: original preferred, forensic image is acceptable substitute with hash verification. Hearsay exception for business records is why centralized logging matters legally.`,
     },
     {
-      id: '7-configuration-management',
-      title: `7. Configuration Management`,
-      content: `### Configuration Baselines
+      id: 'admissibility-standards',
+      title: `5. Daubert, Frye, and Admissibility of Expert Evidence`,
+      content: `Digital forensics relies on EXPERT TESTIMONY. The court decides whether the expert (and their methodology) is admissible. Two standards govern this in US courts.
 
-Configuration baselines define the **approved, tested standard configuration** for systems:
-- Establish baseline for each system type (web server, database, workstation)
-- Document hardware, software, patches, security settings, and configurations
-- Baseline serves as golden standard for deployments and remediation
-- Regular configuration reviews detect drift and unauthorized changes
-- Automated scanning (CIS Benchmarks) identifies deviations
-- Maintains consistency across infrastructure
+## 2.1 Frye standard (older)
 
-### System Imaging and Automated Deployment
+Established in Frye v. United States (1923). Expert testimony based on a scientific technique is admissible if the technique is "GENERALLY ACCEPTED" in the relevant scientific community.
 
-Imaging and automation ensure **consistency and rapid deployment**:
-- **System Images**: Capture configured system state; deploy to new hardware quickly
-- **Cloning**: Create identical copies of systems for consistency
-- **Infrastructure as Code (IaC)**: Define infrastructure via code (Terraform, Ansible)
-- **Configuration Management Tools**: Puppet, Chef, Ansible enforce consistent state
-- **Version Control**: Track changes to configuration definitions
-- **Automated Rollback**: Revert to previous configuration if deployment fails
-- Reduces manual errors and deployment time`,
+- Used in some state courts
+- Has been largely superseded by Daubert in federal courts and many state courts
+- Simpler test (just: is this technique accepted by peers?)
+- But "generally accepted" is hard to define and can lag scientific consensus
+
+## 2.2 Daubert standard (current federal)
+
+Established in Daubert v. Merrell Dow Pharmaceuticals (1993). The Federal Rules of Evidence 702 incorporates the Daubert standard. The judge acts as a "gatekeeper" assessing the reliability and relevance of expert testimony.
+
+The Daubert factors (memorize for CISSP):
+
+1. **Testable** — has the theory or technique been TESTED?
+2. **Peer review** — has it been published in peer-reviewed literature?
+3. **Known or potential error rate** — what's the technique's error rate? Is it acceptable?
+4. **Standards** — are there standards controlling the technique's operation? Are they followed?
+5. **General acceptance** — is the technique generally accepted in the relevant community?
+
+Notice that "general acceptance" is just ONE of five factors under Daubert (it was the SOLE factor under Frye). Daubert is broader and more rigorous.
+
+The Daubert test is applied as a PRE-TRIAL motion ("Daubert challenge") — the judge holds a hearing to decide if the expert can testify at all.
+
+## 2.3 Kumho Tire (1999)
+
+Extended Daubert beyond pure scientific testimony to ALL expert testimony (technical, specialized, including digital forensics). Closed a loophole where parties argued Daubert didn't apply to non-science experts.
+
+## 2.4 Why this matters for digital forensics
+
+The forensic analyst will be called as an expert witness. The DEFENSE will challenge the analyst's methodology:
+
+- "What tool did you use?"
+- "Is this tool peer-reviewed?"
+- "What's its error rate?"
+- "Did you follow established procedures?"
+- "Are these procedures accepted in the forensic community?"
+
+This is WHY forensic tools (EnCase, FTK, Autopsy, X-Ways) emphasize peer-reviewed methodology, validated against known datasets (NIST CFTT — Computer Forensic Tool Testing project provides these test datasets).
+
+Custom tools and novel techniques face HIGH bar — must establish acceptance via:
+
+- Publication in peer-reviewed forensic journals
+- Validation against known test data
+- Use by other forensic examiners
+- Defensible chain of methodology
+
+CISSP exam pattern: "An expert wants to introduce a novel forensic technique. What standard governs admissibility in federal court?" → Daubert. "What are the factors?" → testable, peer-reviewed, known error rate, standards, generally accepted.
+
+## 2.5 Federal Rules of Evidence (FRE) selected highlights
+
+- **FRE 401** — Relevance: evidence must have any tendency to make a fact more or less probable
+- **FRE 403** — Probative value vs prejudicial effect: judge may exclude relevant evidence if its prejudice substantially outweighs its value
+- **FRE 702** — Expert testimony (incorporates Daubert)
+- **FRE 803(6)** — Business records exception to hearsay
+- **FRE 901** — Authentication: party must provide evidence sufficient to support that the item IS what it's claimed to be
+- **FRE 902(13), 902(14)** — Self-authentication of electronic records (added 2017): records produced by an electronic process or system shown to produce accurate results are self-authenticating. Hash-based verification.
+
+## 2.6 The four-part admissibility test
+
+To be admissible, evidence must be:
+
+1. **Relevant** (FRE 401) — to a fact at issue
+2. **Material** — substantive enough to matter to the case
+3. **Competent** — meets standards for evidence type (Daubert for experts, business records for logs, etc.)
+4. **Authentic** — IS what the proponent claims it to be (FRE 901)
+
+All four must be present. Forensic procedures focus heavily on AUTHENTICITY (chain of custody + hash verification) and COMPETENCE (Daubert-compliant methodology).`,
+      examTip: `Daubert factors (memorize): Testable, Peer-reviewed, Error rate known, Standards/procedures followed, Generally accepted. Replaced Frye in federal courts. Kumho Tire extended to ALL experts including digital forensics. Four-part admissibility test: relevant, material, competent, authentic.`,
     },
     {
-      id: '8-change-management',
-      title: `8. Change Management`,
-      content: `Change Management processes ensure that **modifications to systems minimize risk** and maintain stability. The goal is to enable rapid innovation while preventing service disruptions.
-### Change Management Process (CAB)
+      id: 'investigation-types-procedures',
+      title: `6. Investigation Types, eDiscovery, and Regulatory Procedures`,
+      content: `## 3.1 Five investigation types (per CISSP CBK)
 
-The **Change Advisory Board (CAB)** oversees all significant changes:
-| Step | Description | Responsibility |
+The CBK distinguishes investigations by their purpose and standard of proof:
+
+1. **Operational investigation** — internal; troubleshooting an issue. Lowest standard. May not even produce a formal report. Purpose: fix the problem.
+2. **Criminal investigation** — pursued by law enforcement. Highest standard: BEYOND A REASONABLE DOUBT. Strict chain of custody, Daubert-compliant methods, search warrants.
+3. **Civil investigation** — for civil litigation (lawsuits between parties). Standard: PREPONDERANCE OF EVIDENCE (more likely than not). Slightly less rigid than criminal but still formal evidence handling.
+4. **Regulatory investigation** — by a regulatory body (SEC, FBI, OCR, EU DPA). Standards vary; subpoena power, may lead to civil or criminal referral.
+5. **Industry standards investigation** — for compliance with industry frameworks (PCI Forensic Investigator after a card breach; SWIFT investigations for financial messaging). Driven by industry rules.
+
+CISSP exam pattern: "What standard of proof applies to a criminal investigation?" → beyond a reasonable doubt. "Civil?" → preponderance of evidence.
+
+## 3.2 Standards of proof — the hierarchy
+
+| Standard | Approximate Certainty | Applies To |
 |---|---|---|
-| Request Initiation | Requester submits change request (RFC) with business justification | Change Requester |
-| Impact Analysis | Assess scope, dependencies, potential risks, and rollback plan | Technical Team |
-| CAB Review | Evaluate risk, cost, and business benefit; approve/reject | Change Advisory Board |
-| Scheduling | Determine implementation window and maintenance duration | Change Manager |
-| Preparation | Prepare rollback plan, notify stakeholders, ready backup systems | Technical Team |
-| Implementation | Execute change in controlled manner; monitor for issues | Change Manager |
-| Testing | Verify change functioning correctly; check for regressions | QA/Technical Team |
-| Verification | Confirm business objectives achieved and service intact | Business Owner |
-| Documentation | Update configuration management database (CMDB) and runbooks | Documentation Team |
-| Review | Post-implementation review: successes, issues, lessons learned | Change Manager |
+| Reasonable suspicion | ~25% | Stop and inquire |
+| Probable cause | ~50%+ | Search warrant; arrest |
+| Preponderance of evidence | >50% | Civil cases |
+| Clear and convincing | ~70-75% | Some civil cases (e.g., fraud allegations) |
+| Beyond a reasonable doubt | ~95%+ | Criminal conviction |
 
-### Emergency Changes
+Higher standards require more rigorous evidence handling.
 
-**Emergency changes** bypass normal CAB approval when urgent security/availability issues require immediate action:
-- Applied to critical security patches or incident response actions
-- Require risk assessment and management approval even if CAB meeting not held
-- Documented immediately with justification
-- Post-implementation review conducted within 48 hours
-- Revert to standard change process once emergency resolved
+## 3.3 Search and seizure
 
-### Change Management Best Practices
+For criminal investigations, evidence collection typically requires legal authority:
 
-- Maintain Configuration Management Database (CMDB) with all IT assets and relationships
-- Implement change windows (e.g., 2am-6am weekdays only)
-- Require peer review of code/configuration changes
-- Use version control for all configuration and deployment code
-- Implement automated testing to catch regressions
-- Maintain detailed rollback procedures for quick recovery
-- Monitor system behavior closely during and after change
-- Communicate broadly with affected users about changes`,
-      examTip: `CAB, change request, impact analysis, and emergency changes are heavily tested. Know the difference between standard and emergency change procedures.`,
-    },
-    {
-      id: '9-patch-management',
-      title: `9. Patch Management`,
-      content: `Patch management is the **systematic process of testing and deploying software updates** to fix vulnerabilities and improve functionality. Balancing speed with stability is critical.
-### Patch Management Lifecycle
+- **Search warrant** — judge-authorized, based on probable cause. Specifies place to search + items to seize.
+- **Consent** — voluntary permission from someone with authority to consent
+- **Exigent circumstances** — exception when evidence would be destroyed before warrant could be obtained
+- **Plain view** — evidence visible without a search
+- **Border search exception** — at international borders, fewer Fourth Amendment protections
 
-1. **Assessment**: Monitor vendor advisories (Microsoft, Adobe, OS vendors); evaluate criticality and applicability to your environment
-2. **Testing**: Deploy patches to test environment; verify functionality and compatibility; check for regressions
-3. **Planning**: Schedule deployment window; assess business impact; prepare rollback procedure
-4. **Deployment**: Roll out patches in phases (servers, then workstations); prioritize critical systems
-5. **Verification**: Confirm patches installed successfully; verify systems functioning correctly
-6. **Documentation**: Update patch status in asset inventory; record deployment dates
+Failing to obtain proper authority = evidence excluded under EXCLUSIONARY RULE (fruit of the poisonous tree doctrine).
 
-### Patch Prioritization
+For corporate internal investigations, the legal basis is usually the EMPLOYMENT AGREEMENT (employee consents in handbook acceptance to monitoring + searches of company resources). State laws vary — some require explicit notice (banners).
 
-Patches must be prioritized based on **risk and business impact**:
-- **Critical**: Remotely exploitable without user interaction; actively exploited; immediate deployment within 48 hours
-- **High**: Privilege escalation or authenticated exploitation; deploy within 1-2 weeks
-- **Medium**: Limited impact or requires special conditions; deploy within 30 days
-- **Low**: Minor bugs or cosmetic issues; include in regular maintenance windows
-- **Superseded patches**: Skip if newer patch addresses same vulnerability
-- **Compatibility issues**: Balance patch benefits against operational risk
+## 3.4 eDiscovery (Electronic Discovery)
 
-### Patch Management Tools and Processes
+The process of identifying, preserving, collecting, processing, reviewing, analyzing, and producing electronically stored information (ESI) in response to litigation or investigation.
 
-- **Automated patch management**: WSUS, Altiris, Jamf, Kandji for centralized deployment
-- **Phased rollout**: Deploy to pilot group first; expand if successful
-- **Automatic rollback**: Revert patches if deployment causes failures
-- **Hotfix vs. Scheduled**: Emergency hotfixes for critical issues; batch patches for regular cycles
-- **Unpatched system management**: Isolate or restrict systems that cannot be patched
-- **Monitoring**: Verify patches deployed and systems remain compliant`,
-      importantNote: `When no patch exists for a known vulnerability (zero-day), implement compensating controls: disable vulnerable features, restrict access, isolate systems, use network segmentation, monitor for exploitation.`,
-    },
-    {
-      id: '10-vulnerability-management',
-      title: `10. Vulnerability Management`,
-      content: `Vulnerability management is the **continuous process of identifying, analyzing, and remediating** security weaknesses in systems and software.
-### Vulnerability Management Lifecycle
+The Electronic Discovery Reference Model (EDRM) has 9 phases:
 
-1. **Discovery**: Automated scanning with vulnerability scanners (Nessus, Qualys, Rapid7); identify missing patches, misconfigurations, weak credentials
-2. **Analysis**: Assess vulnerability severity (CVSS), exploitability, business impact; prioritize remediation
-3. **Remediation**: Patch systems, fix configurations, disable unnecessary services, implement compensating controls
-4. **Verification**: Rescan to confirm vulnerability eliminated; document remediation actions
-5. **Reporting**: Track metrics (remediation time, critical vulnerabilities outstanding)
-6. **Closure**: Archive remediation evidence; update asset inventory
+1. **Information Governance** — proactive: knowing where data is and how it's managed
+2. **Identification** — finding potentially responsive ESI
+3. **Preservation** — legal hold to prevent destruction
+4. **Collection** — gathering the ESI
+5. **Processing** — filtering, deduplication, format normalization
+6. **Review** — attorneys assess for relevance and privilege
+7. **Analysis** — pattern, network, timeline analysis
+8. **Production** — providing the ESI to opposing counsel in agreed format
+9. **Presentation** — using in deposition or trial
 
-### Vulnerability Assessment Tools
+For most CISSP-relevant questions:
 
-- **Network Scanners**: Nessus, OpenVAS, Qualys - scan networks for open ports, weak configs, missing patches
-- **Host Scanners**: SCAP, System Benchmark tools - assess individual systems against baselines
-- **Application Scanners**: Burp Suite, Acunetix - identify web application vulnerabilities
-- **Manual Testing**: Penetration testing for complex vulnerabilities and exploitation chains
-- **Configuration Audit**: CIS Benchmarks, DISA STIGs for standard hardening checks
+- **Legal hold** is critical — when litigation is "reasonably anticipated," normal destruction must STOP for relevant data. Failure = spoliation = sanctions.
+- **Information governance** (knowing where data is) makes eDiscovery feasible. Bad governance = expensive, late, error-prone eDiscovery.
+- **ESI scope** is broad — emails, instant messages, documents, databases, system logs, mobile device data, cloud apps. Social media posts. Voicemails.
 
-### Vulnerability Metrics and Severity
+## 3.5 Federal Rules of Civil Procedure 26(f) conference
 
-- **CVSS Score** (Common Vulnerability Scoring System): 0.0-10.0 scale based on exploitability and impact
-- **Critical** (9.0-10.0): Actively exploited, immediate threat
-- **High** (7.0-8.9): Likely to be exploited, significant business impact
-- **Medium** (4.0-6.9): Possible exploitation, moderate impact
-- **Low** (0.1-3.9): Difficult to exploit or minor impact
-- **Known Exploits**: Vulnerabilities with public exploits require priority remediation`,
-    },
-    {
-      id: '11-resource-provisioning-and-protection',
-      title: `11. Resource Provisioning and Protection`,
-      content: `### Asset Inventory and Management
+In federal civil litigation, the parties meet to discuss ESI:
 
-Comprehensive asset tracking enables **effective security control and compliance**:
-- Maintain inventory of all IT assets (hardware, software, licenses)
-- Track asset location, owner, business function, criticality
-- Monitor asset lifecycle from procurement through retirement
-- Verify only authorized and licensed software installed
-- Regular physical audits to reconcile with inventory records
-- Automated discovery tools (CMDB, asset tracking solutions)
-- Enforce asset tagging or unique identification
+- Sources of ESI
+- Preservation requirements
+- Format of production (native vs PDF vs TIFF + load file)
+- Privilege protection (claw-back provisions for inadvertent disclosure)
+- Cost allocation
 
-### Hardware Lifecycle Management
+CISSP candidates working on the security side should be involved in these discussions to scope ESI collection responsibly.
 
-Hardware lifecycle management ensures **secure disposition and controlled deployment**:
-- **Procurement**: Verify hardware from trusted sources; record serial numbers
-- **Deployment**: Apply security baselines; harden systems before use
-- **Operations**: Monitor for hardware failures; maintain spare inventory
-- **Maintenance**: Replace failed components securely; update firmware
-- **Refresh**: Replace aging hardware per refresh schedule
-- **Deprovisioning**: Securely erase storage; destroy hard drives or use certified wiping services; document destruction with chain of custody
-- Prevent unauthorized hardware from entering network
+## 3.6 Regulatory investigations — common scenarios
 
-### Media Management
+| Regulator | Trigger | Typical Authority |
+|---|---|---|
+| SEC | Disclosure issues, insider trading, fraud (public companies) | Subpoena power, Civil Action; refers criminal to DOJ |
+| FBI | Federal crimes including computer fraud (CFAA), espionage, IP theft | Search warrant, grand jury subpoena |
+| OCR (HHS) | HIPAA violations (covered entities + business associates) | Audit power, civil monetary penalties up to ~$2M/year per violation type |
+| FTC | Privacy/unfair-deceptive practices | Investigation, consent decree, civil penalties |
+| EU DPA | GDPR violations (any org with EU data subjects) | Audit power, fines up to 4% of global turnover |
+| FINRA | Financial industry (broker-dealers) | Examination, enforcement, fines |
 
-Media management controls **removable storage and data handling**:
-- Classify media by sensitivity (public, internal, confidential)
-- Encrypt sensitive media in transit and at rest
-- Restrict removable media (USB, portable drives) via endpoint security
-- Maintain inventory of media with access tracking
-- Sanitization: cryptographic erasure or physical destruction for disposal
-- Prevent malware distribution through infected media
-- Audit media usage to detect unauthorized transfers
+Common operational requirements for investigation cooperation:
 
-### Virtual Asset Management
+- Designate an investigation point-of-contact (usually general counsel)
+- Preserve relevant data immediately on notice
+- Respond to subpoenas / document requests on time
+- Don't notify employees who are subjects (in some investigations)
+- Privilege log for documents withheld for attorney-client privilege
 
-Virtual machines and cloud resources require **similar controls as physical assets**:
-- Maintain inventory of all VMs and cloud instances
-- Apply same hardening and patching standards as physical systems
-- Control VM proliferation through approval processes
-- Secure VM templates to prevent malware in spawned instances
-- Monitor for shadow IT and unauthorized VM creation
-- Implement secure deprovisioning of VMs and data deletion
-- Track VM sprawl to control costs and security debt`,
-    },
-    {
-      id: '15-physical-security-operations',
-      title: `15. Physical Security Operations`,
-      content: `Physical security controls **prevent or detect unauthorized physical access** to facilities and equipment. Controls are categorized by function.
-### Physical Security Control Types
+## 3.7 Forensic readiness — pre-incident preparation
 
-| Control Type | Purpose and Example |
-|---|---|
-| Preventive | Prevent unauthorized access (locks, barriers, guards, access badges) |
-| Detective | Detect unauthorized access (cameras, motion sensors, alarms, logs) |
-| Corrective | Respond to security incidents (guards, emergency response) |
-| Deterrent | Discourage attempts (security signage, visible cameras, guards) |
-| Compensating | Substitute for primary control (additional guards if alarm fails) |
-| Directive | Establish expectations (security policies, visitor badges) |
-| Recovery | Restore normal operations (fire suppression, emergency shutoff systems) |
+The mature security org is FORENSICALLY READY before an incident:
 
-### Perimeter Controls
+- Logging configured to capture forensically-useful data (auth, file access, network connections, privileged actions)
+- Logs centralized with tamper resistance
+- Time synchronized across all hosts (NTP — critical for timeline reconstruction)
+- Documented incident response procedures
+- Pre-positioned forensic tools and trained personnel
+- Pre-negotiated relationships with forensic firms (you don't want to start the procurement process during a breach)
+- Pre-defined LEGAL HOLD process
+- Tabletop exercises that include investigation scenarios
 
-**Outer perimeter** controls establish the facility boundary:
-- Fences, walls, barriers prevent easy unauthorized entry
-- Guards at entry points verify credentials and control access
-- Lighting illuminates perimeter at night
-- Video surveillance monitors perimeter activity
-- Access gates require credentials (badge, PIN, biometric)
-- Vehicle barriers prevent unauthorized vehicle access
+Forensic readiness is the difference between "we can rebuild and move on" and "we have defensible evidence for civil or criminal proceedings, regulatory disclosure, insurance claim, and internal accountability."
 
-### Internal Controls
+## 3.8 Privacy and employee monitoring tensions
 
-**Interior facility** controls segment areas by sensitivity:
-- Doors with locks, card readers, or biometric systems
-- Data center access limited to authorized personnel only
-- Server rooms physically isolated; additional security controls
-- Clean desk policy prevents sensitive information visible to visitors
-- Visitor management: escort requirements, access badges, sign-in logs
-- Surveillance in sensitive areas (data centers, server rooms)
-- Environmental controls (fire suppression, temperature, humidity) for equipment protection
+When investigating an employee, the org must balance:
 
-### Personnel Safety and Security
+- Investigation need
+- Employee privacy expectations (ECPA, state laws, GDPR for EU employees)
+- Union contracts where applicable
+- Acceptable Use Policy (AUP) consent
+- Banner notices on logon
 
-Physical security also **protects personnel from harm**:
-- Emergency evacuation procedures and regular drills
-- Emergency communication systems (alarms, intercoms, alert systems)
-- Safe rooms or areas for personnel during emergencies
-- First aid equipment and trained personnel
-- Personal safety training (de-escalation, personal safety)
-- Travel security for executives and high-risk personnel
-- Duress alarm buttons for personnel under threat
-- Background checks and security clearances for sensitive positions
+The EMPLOYEE PRIVACY question often comes up: what's the employee's reasonable expectation of privacy on a corporate laptop using corporate email? Courts generally say LOW expectation if the AUP/policies clearly state monitoring occurs, but the boundary isn't bright.
 
-### Travel Security
+Best practice for digital investigations involving employees:
 
-Personnel traveling on business require **security awareness and protections**:
-- Pre-travel security briefing (destination risk assessment)
-- Avoid carrying sensitive information or devices
-- Use VPN and encrypted communications on public networks
-- Maintain situational awareness in unfamiliar locations
-- Keep valuables secure and out of sight
-- Avoid discussing business in public areas
-- Emergency contact procedures and support
-- Post-travel debriefing to report security incidents`,
-    },
-    {
-      id: '16-preventive-security-measures',
-      title: `16. Preventive Security Measures`,
-      content: `### Firewalls
-
-Firewalls enforce **network boundary security** by controlling traffic between networks:
-- **Stateless Firewalls**: Filter packets based on rules (source, destination, port) without connection context
-- **Stateful Firewalls**: Track connection states; deny packets that don't match established connections
-- **Next-Generation Firewalls (NGFW)**: Add application-layer inspection, IPS, TLS inspection
-- **Host Firewalls**: Protect individual systems; control inbound/outbound connections
-- Block known malicious IPs and domains
-- Enforce network segmentation between zones
-
-### IDS/IPS (Intrusion Detection/Prevention)
-
-IDS and IPS systems **detect and block malicious network traffic**:
-- **IDS (Detection)**: Alerts on suspicious traffic; allows administrative response
-- **IPS (Prevention)**: Actively blocks suspicious traffic; may cause false positive impacts
-- **Network-based**: Monitor traffic between systems; detect large-scale attacks
-- **Host-based**: Monitor activity on individual systems; detect local exploits
-- **Signature-based**: Match known attack patterns
-- **Anomaly-based**: Detect deviations from baseline behavior
-- Popular platforms: Suricata, Snort, Zeek
-
-### Whitelisting and Blacklisting
-
-Approach to **controlling what can execute or access resources**:
-- **Blacklisting**: Deny known bad items (malicious IPs, domains, files); allow everything else (reactive)
-- **Whitelisting**: Allow only known good items (approved applications, domains); deny everything else (proactive)
-- Whitelisting more secure but requires maintenance; blacklisting easier but incomplete
-- Application whitelisting prevents malware and unauthorized software
-- IP whitelisting restricts access to known trusted sources
-- URL filtering blocks known malicious and inappropriate sites
-
-### Sandboxing
-
-Sandboxes **isolate suspicious code** for execution and analysis:
-- Execute potentially malicious files in isolated environment without access to real system
-- Monitor behavior to detect malicious actions
-- Prevent malware from infecting real systems
-- Used in email systems, web browsers, endpoint detection
-- Allows safe analysis of malware and zero-day vulnerabilities
-
-### Honeypots and Honeynets
-
-Honeypots are **decoy systems** that attract and study attackers:
-- Fake systems that appear valuable but contain no real data
-- Attract attackers; allow study of attack techniques and tools
-- Log all attacker activity for forensic analysis
-- Generate threat intelligence; identify zero-day exploits
-- **Honeypot**: Single decoy system
-- **Honeynet**: Network of honeypots to simulate larger target
-- High-interaction honeypots realistically mimic systems; risky but informative
-- Low-interaction honeypots simple simulations; safer but less informative`,
-      examTip: `Preventive measures like firewalls, IDS/IPS, whitelisting, sandboxing, and honeypots are critical for exam. Understand when each is appropriate and their strengths/weaknesses.`,
+- Have written, acknowledged AUP that explicitly permits monitoring + searches
+- Involve HR + legal counsel from the start
+- Document business justification for the investigation
+- Minimize collection to what's necessary
+- Restrict access to investigation data
+- For EU employees, additional GDPR considerations (data minimization, legitimate interest balancing)`,
+      examTip: `Five investigation types: operational (internal), criminal (beyond reasonable doubt), civil (preponderance of evidence), regulatory (subpoena power), industry standards. CISSP loves "which standard of proof applies?" — match it to the investigation type.`,
+      importantNote: `Legal hold OVERRIDES retention policy. The moment litigation is "reasonably anticipated," normal destruction stops for relevant data. Failure = spoliation = sanctions. This is one of the most-tested concepts in Domain 7.`,
     },
   ],
 },
-
 cissp_disaster: {
   topicId: 'cissp_disaster',
-  title: `Disaster Recovery Operations`,
+  title: `Disaster Recovery Processes`,
   domainWeight: '13%',
   overview: `Disaster Recovery (DR) planning ensures that **critical systems and data can be restored** after catastrophic failures. DR focuses on technical recovery, while Business Continuity focuses on business `,
   sections: [
     {
       id: '12-disaster-recovery',
-      title: `12. Disaster Recovery`,
+      title: `1. Disaster Recovery`,
       content: `Disaster Recovery (DR) planning ensures that **critical systems and data can be restored** after catastrophic failures. DR focuses on technical recovery, while Business Continuity focuses on business function continuation.
 ### DR Planning Fundamentals
 
@@ -7229,7 +8899,7 @@ Regular testing **verifies recovery procedures and identifies gaps**:
     },
     {
       id: '13-business-continuity',
-      title: `13. Business Continuity`,
+      title: `2. Business Continuity`,
       content: `Business Continuity (BC) planning ensures that **business functions and operations continue** during disruptions. BC is broader than DR, encompassing people, processes, and technology.
 ### Business Impact Analysis (BIA)
 
@@ -7274,7 +8944,7 @@ BC planning addresses **organizational resilience across all dimensions**:
     },
     {
       id: '14-backup-strategies',
-      title: `14. Backup Strategies`,
+      title: `3. Backup Strategies`,
       content: `Backups are **the foundation of recovery capability**. Different backup types provide different speed, storage, and data freshness tradeoffs.
 ### Backup Types and Characteristics
 
@@ -7428,7 +9098,7 @@ Media rotation strategies balance retention requirements with media lifespan:
     },
     {
       id: 'business-impact-analysis-bia-methodology',
-      title: `Business Impact Analysis (BIA) Methodology`,
+      title: `4. Business Impact Analysis (BIA) Methodology`,
       content: `### Overview and BIA Process
 
 **Business Impact Analysis** identifies critical business functions, assesses financial/operational impact of outages, and derives recovery time/point objectives (RTO/RPO). Conducted **before** creating disaster recovery plans.
@@ -7512,10 +9182,10 @@ RPO drives backup frequency. RPO of 15 minutes = backup every 15 minutes (or con
     },
   ],
 },
-
+// ===== Domain 8: Software Development Security (10%) - Instructor Edition module order =====
 cissp_sdlc: {
   topicId: 'cissp_sdlc',
-  title: `Secure SDLC`,
+  title: `Security in the Software Development Lifecycle (SDLC)`,
   domainWeight: '10%',
   overview: `The SDLC consists of **distinct phases** where each phase has security considerations and controls.`,
   sections: [
@@ -7613,7 +9283,7 @@ Sustain security throughout the application lifecycle:
     },
     {
       id: '8-secure-software-deployment',
-      title: `8. Secure Software Deployment`,
+      title: `3. Secure Software Deployment`,
       content: `### Continuous Integration/Continuous Deployment (CI/CD)
 
 Automated **pipeline ensures rapid, secure releases**:
@@ -7626,7 +9296,7 @@ Automated **pipeline ensures rapid, secure releases**:
     },
     {
       id: '8-1-container-and-kubernetes-security-deep-dive',
-      title: `8.1 Container and Kubernetes Security Deep Dive`,
+      title: `4. 1 Container and Kubernetes Security Deep Dive`,
       content: `Containers and orchestration platforms like Kubernetes introduce novel security challenges across image management, runtime execution, and cluster governance. Effective container security requires a defense-in-depth approach across all layers.
 ### 8.1.1 Container Image Security
 
@@ -7837,7 +9507,7 @@ Systems deployed from **Golden Image; never modified in-place**:
     },
     {
       id: '9-code-repositories-and-version-control',
-      title: `9. Code Repositories and Version Control`,
+      title: `5. Code Repositories and Version Control`,
       content: `### Version Control Security
 
 - **Access Control**: Limit who can read/write code repositories
@@ -7868,7 +9538,7 @@ Verify **code authenticity and integrity**:
     },
     {
       id: '10-software-assurance-and-quality',
-      title: `10. Software Assurance and Quality`,
+      title: `6. Software Assurance and Quality`,
       content: `### Code Review
 
 **Peer review** identifies security and quality issues:
@@ -7908,7 +9578,7 @@ Verify **software meets requirements** before deployment:
     },
     {
       id: '11-software-development-maturity-models',
-      title: `11. Software Development Maturity Models`,
+      title: `7. Software Development Maturity Models`,
       content: `### CMMI (Capability Maturity Model Integration)
 
 **CMMI measures organizational development maturity** across levels:
@@ -7939,7 +9609,7 @@ Verify **software meets requirements** before deployment:
     },
     {
       id: 'practice-questions',
-      title: `Practice Questions`,
+      title: `8. Practice Questions`,
       content: ``,
       quiz: [
         {
@@ -8036,2073 +9706,9 @@ Verify **software meets requirements** before deployment:
     },
   ],
 },
-
-cissp_app_vuln: {
-  topicId: 'cissp_app_vuln',
-  title: `Application Vulnerabilities`,
-  domainWeight: '10%',
-  overview: `Secure coding establishes **fundamental principles** to prevent common vulnerabilities during implementation.`,
-  sections: [
-    {
-      id: '3-secure-coding-practices',
-      title: `3. Secure Coding Practices`,
-      content: `Secure coding establishes **fundamental principles** to prevent common vulnerabilities during implementation.
-### Input Validation
-
-Validate all **external input** to ensure it matches expected format and constraints:
-- Never trust user input, files, network data, or external APIs
-- Validate type: ensure input matches expected data type
-- Validate length: check input is within acceptable bounds
-- Validate format: ensure input matches expected pattern (regex)
-- Validate range: verify numeric values within acceptable limits
-- Validate against whitelist: only accept known good values
-- Sanitize input: remove or escape special characters
-- Server-side validation: client-side validation can be bypassed
-
-### Output Encoding
-
-Encode output **based on context** to prevent injection attacks:
-- **HTML Encoding**: Convert special characters to HTML entities (&, <, >, ", ') for web pages
-- **URL Encoding**: Properly encode data in URLs (%20 for space)
-- **JavaScript Encoding**: Escape special characters in JavaScript context
-- **SQL Encoding**: Use parameterized queries; never concatenate user input into SQL
-- **XML Encoding**: Properly escape XML special characters
-- **Command Encoding**: Avoid shell commands with user input; use APIs instead
-- Context matters: HTML encoding different from JavaScript encoding
-
-### Error Handling and Logging
-
-Proper error handling **prevents information disclosure** and assists debugging:
-- Catch specific exceptions; avoid generic catches
-- Log errors with sufficient detail for debugging (timestamps, user, action)
-- Display user-friendly error messages to users
-- Log detailed error information internally; never expose to users
-- Never log sensitive information (passwords, tokens, PII, payment data)
-- Implement centralized logging for security monitoring
-- Use structured logging format for easy parsing and searching
-- Set appropriate log retention policies
-
-### Session Management
-
-Secure **session handling** prevents session hijacking and fixation:
-- Use secure session tokens: long, random, unpredictable
-- Regenerate session ID after successful authentication
-- Store session data server-side; minimize data in session cookies
-- Use secure (HTTPS-only) cookies; avoid HTTP access
-- Set HttpOnly flag to prevent JavaScript access
-- Implement session timeout (idle and absolute)
-- Terminate sessions properly on logout
-- Prevent concurrent session use or flag suspicious concurrent sessions
-
-### Memory Management
-
-Secure memory handling **prevents buffer overflows and information disclosure**:
-- Use safe string functions: strlen(), strlcpy(), strncpy()
-- Avoid unsafe functions: strcpy(), sprintf(), gets() (known vulnerabilities)
-- Bounds checking: verify buffer size before writing
-- Use high-level languages with automatic memory management when possible
-- Initialize variables before use (uninitialized memory may contain sensitive data)
-- Free allocated memory and set pointers to NULL
-- Avoid pointer arithmetic and casting where possible
-- Use AddressSanitizer and other memory safety tools during testing`,
-      examTip: `SAST (Static) analyzes SOURCE CODE without running it - finds vulnerabilities early but produces false positives. DAST (Dynamic) tests the RUNNING APPLICATION from outside - finds runtime issues but cannot see the code. IAST combines both by instrumenting the running app. For the exam: SAST is white-box (sees code), DAST is black-box (sees behavior), IAST is gray-box (sees both). Shift-left means moving security testing EARLIER in the SDLC.`,
-    },
-    {
-      id: '4-software-vulnerabilities',
-      title: `4. Software Vulnerabilities`,
-      content: `Common **vulnerability types** appear across applications. Understanding them enables prevention during development.
-### Buffer Overflow
-
-Writing data **beyond buffer boundaries** overwrites adjacent memory:
-- **Stack Overflow**: Overflow buffer on stack; overwrites return address; redirect execution to attacker code
-- **Heap Overflow**: Overflow buffer on heap; overwrite adjacent objects and function pointers
-- Caused by unsafe string functions (strcpy, strcat, sprintf, gets)
-- Use safe functions with length limits or avoid C-style string handling
-- Use Address Space Layout Randomization (ASLR) to prevent reliable exploitation
-- Use Data Execution Prevention (DEP) to prevent code execution from data segment
-
-### Integer Overflow
-
-Arithmetic operations **exceed numeric type limits**:
-- Overflow: unsigned 256 + 1 = 0 (wraps around)
-- Underflow: unsigned 0 - 1 = 65535 (wraps around)
-- Often leads to buffer overflows or logic errors
-- Example: size calculation for memory allocation overflows, allocating small buffer
-- Validate input ranges and check arithmetic results
-- Use safe arithmetic libraries with overflow detection
-
-### Race Conditions and TOCTOU
-
-**Time-of-check to time-of-use** vulnerabilities exploit timing windows:
-- Check: Verify authorization (file readable, account valid)
-- Window: Time gap between check and use
-- Use: Attacker changes condition during window (rename file, change privileges)
-- Result: Authorization bypass
-- Example: Check file ownership, delay, then access file (ownership may have changed)
-- Mitigation: Minimize time between check and use; use atomic operations; hold locks
-
-### Injection Vulnerabilities
-
-Injecting **malicious code/commands** into queries or system calls:
-- **SQL Injection**: Insert SQL commands in input; bypass authentication, extract data, modify database
-- **Command Injection**: Insert shell commands; execute arbitrary system commands
-- **LDAP Injection**: Inject LDAP filter modifications; bypass authentication
-- **XML Injection**: Inject XML entities; modify document structure
-- Prevention: Use parameterized queries; validate and escape input; avoid string concatenation
-
-### Cross-Site Scripting (XSS)
-
-Injecting **JavaScript into web applications** to execute in user browsers:
-- **Stored XSS**: Malicious script stored in database; executes for all users viewing that data
-- **Reflected XSS**: Malicious script in URL parameter; executes for user who clicks link
-- **DOM XSS**: JavaScript manipulates DOM; vulnerable code reflects user input in DOM
-- Attacks steal cookies, session tokens, or redirect to malicious sites
-- Prevention: HTML encode output; use Content Security Policy (CSP); avoid innerHTML with user data
-
-### Cross-Site Request Forgery (CSRF)
-
-Trick **authenticated users into performing actions** they don't intend:
-- User authenticated to bank.com; attacker creates image tag linking to bank.com/transfer
-- When authenticated user visits attacker site, transfer executes in browser session
-- Prevention: CSRF tokens (unpredictable, session-specific token in forms)
-- SameSite cookie attribute prevents sending cookies to third-party sites
-- Double-submit cookies pattern (verify token matches cookie value)
-- Enforce POST for state-changing operations (not GET)
-
-### Insecure Deserialization
-
-Deserializing **untrusted data** can execute arbitrary code:
-- Serialized objects contain executable code; deserialization triggers execution
-- Attackers modify serialized objects to inject malicious code
-- Java deserialization, Python pickle, PHP unserialize are vulnerable
-- Prevention: Avoid deserializing untrusted data; use safe serialization formats (JSON)
-- If necessary, validate deserialized objects; use allowlists of safe classes
-
-### Server-Side Request Forgery (SSRF)
-
-Trick **server into making requests** to internal or unintended servers:
-- Application fetches external URL provided by user
-- Attacker provides URL pointing to internal server (localhost, private IP)
-- Server accesses internal resources on attacker's behalf
-- Can access cloud metadata, internal databases, or management interfaces
-- Prevention: Validate URLs; use allowlist of domains; disable dangerous protocols
-
-### Directory Traversal / Path Traversal
-
-Access **files outside intended directory** using path manipulation:
-- Request file with "../../../etc/passwd" to access system files
-- Attacker accesses configuration, source code, or sensitive data
-- Prevention: Canonicalize paths; validate against allowlist; avoid concatenating paths
-
-### OWASP Top 10 (2021)
-
-| Rank | Vulnerability | Description |
-|---|---|---|
-| 1 | Broken Access Control | Authorization bypass; users access unauthorized data or functions |
-| 2 | Cryptographic Failures | Data exposure; weak encryption, missing encryption, poor key management |
-| 3 | Injection | SQL, OS, LDAP, XML injection; execute unintended code/commands |
-| 4 | Insecure Design | Missing security controls; inadequate threat modeling |
-| 5 | Security Misconfiguration | Debug features enabled, unnecessary services, weak defaults |
-| 6 | Vulnerable Components | Outdated libraries with known vulnerabilities; supply chain risks |
-| 7 | Authentication Failures | Weak passwords, missing MFA, session management flaws |
-| 8 | Data Integrity Failures | Insufficient logging, monitoring; insecure CI/CD pipelines |
-| 9 | Logging & Monitoring | Insufficient logging; inability to detect/respond to incidents |
-| 10 | Server-Side Template Injection | Inject templates; execute server-side code; data access/modification |`,
-    },
-    {
-      id: '5-database-security',
-      title: `5. Database Security`,
-      content: `### Relational Database Fundamentals
-
-Understanding relational model **concepts** aids secure database design:
-- **Tables**: Collections of rows with consistent columns
-- **Primary Keys**: Unique identifier for each row; enforces entity integrity
-- **Foreign Keys**: Link tables together; enforces referential integrity
-- **Views**: Virtual tables; filtered view of base tables; control access granularity
-- **Indexes**: Improve query performance; security consideration for side-channel attacks
-
-### Normalization
-
-Database **normalization reduces redundancy and improves integrity**:
-- **1NF**: Atomic values (no repeating groups)
-- **2NF**: Remove partial dependencies (non-key attributes depend on entire primary key)
-- **3NF**: Remove transitive dependencies (non-key attributes don't depend on other non-key attributes)
-- **BCNF**: Each determinant is a candidate key
-- Prevents data inconsistencies and anomalies
-- Denormalization sometimes used for performance (requires careful consistency management)
-
-### Stored Procedures and Functions
-
-Encapsulate **database logic and improve security**:
-- Hide implementation details from applications
-- Enforce access control at database layer
-- Enable role-based access (users execute procedures, not direct table access)
-- Reduce SQL injection risk (parameterized queries inside procedures)
-- Improve performance (pre-compiled, reduced network traffic)
-- Audit stored procedure execution
-
-### Database Inference and Aggregation
-
-Unauthorized users can **infer sensitive data** from aggregate queries:
-- **Inference**: Piece together classified information from unclassified data (e.g., know salary range from aggregate average)
-- **Aggregation**: Combine unclassified data to derive classified information
-- Database security must control statistical queries and limit query combinations
-- Prevent rapid-fire queries that narrow down specific records
-
-### Database Controls
-
-- Encrypt sensitive data at rest (Transparent Data Encryption - TDE)
-- Encrypt data in transit (SSL/TLS for database connections)
-- Implement row-level security to limit data based on user roles
-- Use views to expose only necessary columns and rows
-- Implement database access controls and authentication
-- Log all database access for audit trail
-- Database activity monitoring (DAM) detects suspicious queries
-- Use parameterized queries to prevent SQL injection
-
-### NoSQL Databases
-
-NoSQL databases have **different security characteristics** than relational:
-- Document-oriented: JSON, BSON formats; flexible schema
-- Key-value stores: Simple key lookup; high performance
-- Graph databases: Relationships explicitly modeled
-- Time-series databases: Optimized for time-based data
-- Security concerns: Weak default authentication, eventual consistency, distributed systems complexity
-- NoSQL injection: Inject operators in queries (e.g., JavaScript injection in MongoDB)`,
-    },
-    {
-      id: 'owasp-top-10-deep-dive',
-      title: `OWASP Top 10 Deep Dive`,
-      content: `The OWASP Top 10 represents the most critical application security risks. This 2021 list shows actual vulnerability prevalence across millions of applications.
-### A01: Broken Access Control
-
-Largest category of vulnerabilities (94% of applications tested). Users can act as other users, view restricted data, or modify functionality:
-- **Insecure Direct Object Reference (IDOR)**: App exposes internal object IDs in URL/parameter; user modifies ID to access other users' data (e.g., /api/user/123 → /api/user/124)
-- **Privilege Escalation**: User elevates access from regular user to admin; missing authorization checks on admin functions; relies on hidden parameter or client-side validation
-- **Missing Function-Level Access Control**: Frontend hides admin buttons from regular users; backend lacks authorization checks; direct URL access bypasses UI restrictions
-- **Path Traversal**: User accesses files outside intended directory using ../../../etc/passwd; insufficient path validation
-
-### A02: Cryptographic Failures
-
-Sensitive data exposure due to weak or missing encryption:
-- **Weak Algorithms**: Using MD5, SHA1, or DES for encryption; these are broken; use AES-256, ChaCha20 for encryption; SHA-256+ for hashing
-- **Cleartext Storage**: Storing passwords, API keys, credit cards without encryption; databases/backups exposed in breach compromise all data
-- **Insecure Key Management**: Keys hardcoded in source code, committed to git, sent via email; use external vaults (HashiCorp, AWS Secrets Manager)
-- **Missing Encryption in Transit**: Data sent over HTTP (not HTTPS); man-in-the-middle attacker intercepts; apply TLS 1.2+ to all sensitive data
-
-### A03: Injection
-
-Untrusted data sent to interpreter; attacker controls command/query logic:
-- **SQL Injection**: SELECT * FROM users WHERE id = 1; DROP TABLE users;-- ; attacker breaks query logic with SQL comments; use parameterized queries
-- **Blind SQL Injection**: No error output; attacker infers data through timing/boolean responses; even harder to detect
-- **Second-Order Injection**: Attacker injects payload in one request; system stores it; later request executes stored payload; bypasses immediate input validation
-- **Command Injection**: exec("ls " + userInput) executes arbitrary shell commands; use allowlists, parameterized APIs
-- **LDAP/XPATH Injection**: Similar to SQL but against LDAP directories or XML parsers; escape special characters
-- **ORM Injection**: Even ORM frameworks vulnerable if concatenating strings; use parameterized ORM methods
-
-### A04: Insecure Design
-
-Missing security in design phase; cannot be fixed by better implementation:
-- **Threat Modeling Gaps**: No threat modeling; security requirements not identified; attack vectors not considered
-- **Missing Security Requirements**: No password policy, rate limiting, API throttling in requirements; implementation lacks controls
-- **Insecure Business Logic**: "Reset password without verification", "duplicate payment not prevented", "race conditions in transfer"; breaks business intent
-- **Insufficient Logging**: No audit trail for suspicious activity; no detection of attacks until damage is done
-
-### A05: Security Misconfiguration
-
-Default settings, incomplete setup, open services expose systems:
-- **Default Credentials**: Admin/admin, root/password left unchanged; attacker logs in trivially; weak initial setup
-- **Unnecessary Features**: Debug endpoints enabled in production; verbose error messages; information disclosure
-- **Missing Hardening**: Security headers not set (CSP, X-Frame-Options, HSTS); directories list contents; backup files accessible
-- **Error Messages**: Stack traces exposed to users; reveal framework/version; aid attacker reconnaissance
-- **Security Headers Missing**: No HTTPS redirect; no CSP preventing XSS; no HSTS preventing downgrade attacks
-
-### A06: Vulnerable and Outdated Components
-
-Known-vulnerable dependencies and libraries used in applications:
-- **Untracked Dependencies**: npm install pulls hundreds of transitive dependencies; versions not pinned; automatic updates pull vulnerable versions
-- **Outdated Components**: Old library versions with known CVEs not updated; security patches available but not applied
-- **Missing Version Pinning**: package.json uses ^ (caret) allowing patch updates; vulnerable patch version could be auto-pulled
-- **Software Composition Analysis (SCA)**: Scan dependencies for known vulnerabilities; Snyk, OWASP Dependency-Check, WhiteSource
-- **SBOM (Software Bill of Materials)**: Document all components/versions; enables rapid vulnerability response when CVE published
-
-### A07: Identification and Authentication Failures
-
-Broken authentication allows attacker to assume user identity:
-- **Credential Stuffing**: Attacker uses lists of username/password from previous breaches; users reuse passwords across sites
-- **Weak Passwords**: No password complexity requirements; single dictionary word accepted; vulnerable to brute force
-- **Session Fixation**: Attacker sets user session ID before login; user logs in with attacker-controlled session; attacker gains access
-- **Weak MFA**: SMS-based MFA vulnerable to SIM swapping; security questions based on public information; recovery codes reused
-
-### A08: Software and Data Integrity Failures
-
-Insecure updates and deserialization lead to code execution:
-- **Insecure Deserialization**: Untrusted serialized objects deserialized (Java, Python); attacker crafts malicious object executing code on deserialization
-- **CI/CD Compromise**: Attacker injects malicious code into build pipeline; artifact repository contains trojanized dependencies
-- **Unsigned Updates**: Update files not digitally signed; attacker intercepts updates and injects malware; users auto-install poisoned version
-
-### A09: Security Logging and Monitoring Failures
-
-Insufficient visibility into attacks and security events:
-- **Insufficient Logging**: No login/logout logs; no admin actions logged; failed security checks not recorded
-- **Missing Alerts**: Logs collected but not monitored; breach occurs for months undetected; no real-time alerting
-- **Inadequate Retention**: Logs deleted after days; forensics impossible; compliance requires years of retention
-- **No Incident Detection**: SIEM not collecting logs; no correlation rules; no alerting on suspicious patterns
-
-### A10: Server-Side Request Forgery (SSRF)
-
-Application makes requests to URLs from user input; attacker targets internal resources:
-- **Internal Network Scanning**: User provides internal IP 192.168.1.1 to vulnerable endpoint; app requests it; returns response indicating open port
-- **Cloud Metadata Access**: Application running in cloud (AWS EC2) with IAM role; SSRF to http://169.254.169.254/latest/meta-data/ steals temp credentials
-- **Local File Access**: User provides file:///etc/passwd; app reads local filesystem; sensitive files exposed
-- **URL Validation**: Allowlist acceptable domains; block internal ranges (127.0.0.1, 192.168.x.x, 10.0.0.0/8, 169.254.169.254)
-
-**OWASP Top 10 2021 Quick Reference**:
-| Vulnerability | Primary Cause | Prevention Strategy |
-|---|---|---|
-| A01: Broken Access Control | Missing authorization checks | Implement RBAC/ABAC; deny by default; verify authz before every action |
-| A02: Cryptographic Failures | Weak encryption/cleartext | Use strong algorithms (AES-256, TLS 1.2+); encrypt sensitive data; manage keys securely |
-| A03: Injection | Untrusted input to interpreters | Use parameterized queries; validate/escape input; ORM parameterized methods |
-| A04: Insecure Design | Missing security in design | Threat modeling; security requirements; secure design patterns |
-| A05: Security Misconfiguration | Default/insecure settings | Harden systems; remove unnecessary features; security headers; secrets management |
-| A06: Vulnerable Components | Outdated libraries | Track dependencies; patch regularly; use SCA tools; maintain SBOM |
-| A07: Authz/Authn Failures | Weak authentication/sessions | Strong passwords; MFA; secure session management; rate limiting |
-| A08: Data Integrity Failures | Unsafe deserialization/updates | Validate serialized data; sign updates; secure CI/CD; no untrusted deserialization |
-| A09: Logging Failures | No visibility/monitoring | Log all security events; centralize logs; real-time alerting; long retention |
-| A10: SSRF | URL to untrusted source | Allowlist URLs; block internal ranges; validate/encode user input |`,
-      examTip: `OWASP Top 10 is heavily tested on security exams. Questions ask about prevention strategies and real-world exploitation. A01/A02/A03 are most common (access control, crypto, injection).`,
-    },
-  ],
-},
-
-cissp_devops: {
-  topicId: 'cissp_devops',
-  title: `DevSecOps`,
-  domainWeight: '10%',
-  overview: `### Static Application Security Testing (SAST)`,
-  sections: [
-    {
-      id: '6-software-development-security-tools',
-      title: `6. Software Development Security Tools`,
-      content: `### Static Application Security Testing (SAST)
-
-Analyze **source code without execution** to find vulnerabilities:
-- Scans code for common vulnerability patterns
-- Identifies hardcoded secrets, weak crypto, unsafe functions
-- Fast feedback during development (code commit)
-- High false positive rate requires tuning
-- Tools: SonarQube, Checkmarx, Fortify, GitHub CodeQL
-- Integrate into CI/CD for automatic scanning
-
-### Dynamic Application Security Testing (DAST)
-
-Test **running application** without code access:
-- Sends inputs and analyzes responses for vulnerability indicators
-- Finds runtime vulnerabilities (XSS, CSRF, injection)
-- Slower than SAST; requires running application
-- Black-box testing approach; no code knowledge needed
-- Tools: Burp Suite Pro, OWASP ZAP, Acunetix, Qualys WAFS
-- Run in automated pipeline on staging environments
-
-### Interactive Application Security Testing (IAST)
-
-Hybrid approach **combining SAST and DAST** benefits:
-- Agent inside application monitors execution
-- Instruments code to track data flow
-- Combines source code context with runtime analysis
-- More accurate than SAST or DAST alone; fewer false positives
-- Slower than DAST; requires agent installation
-- Tools: Contrast, Snyk, Rapid7
-
-### Web Application Firewall (WAF)
-
-Protect **web applications from common attacks**:
-- Monitor incoming HTTP requests for attack signatures
-- Block SQL injection, XSS, CSRF, path traversal
-- Can be cloud-based, on-premise, or inline
-- Deployed in front of web server
-- Protects against OWASP Top 10 vulnerabilities
-- Tools: AWS WAF, Cloudflare, Imperva, ModSecurity
-
-### Runtime Application Self-Protection (RASP)
-
-Application **self-defense during execution**:
-- Agent inside application detects and prevents attacks
-- Monitors for exploitation attempts and blocks malicious requests
-- Provides deeper visibility than WAF (understands application logic)
-- Lower false positive rate than WAF
-- Performance overhead from instrumentation
-- Tools: Contrast, Snyk, Dynatrace
-
-### Software Composition Analysis (SCA)
-
-Identify **open source and third-party library vulnerabilities**:
-- Scans dependencies for known vulnerabilities
-- Tracks license compliance (GPL, commercial restrictions)
-- Identifies outdated components
-- Supply chain risk management
-- Tools: WhiteSource (JFrog), Snyk, Black Duck, Sonatype
-- Integrate into build pipeline to block vulnerable dependencies`,
-      examTip: `SAST, DAST, IAST, WAF, RASP, and SCA are different tools with different purposes. Know when to apply each and the strengths/weaknesses of each approach.`,
-    },
-    {
-      id: '7-api-security',
-      title: `7. API Security`,
-      content: `### API Types and Protocols
-
-- **REST (Representational State Transfer)**: HTTP-based; stateless; widely adopted
-- **SOAP (Simple Object Access Protocol)**: XML-based; stateful; complex but rich
-- **GraphQL**: Query language; flexible data retrieval; potential information disclosure
-- **gRPC**: Binary protocol; high performance; less common
-- Security depends on proper authentication, authorization, and input validation
-
-### API Security Controls
-
-- **Authentication**: Verify API caller identity (API keys, OAuth tokens, mTLS certificates)
-- **Authorization**: Enforce fine-grained access control based on user roles/scopes
-- **Rate Limiting**: Prevent abuse; limit requests per user/IP per time period
-- **Input Validation**: Validate all API parameters (type, length, format, range)
-- **Output Encoding**: Encode responses appropriately (JSON encoding, HTML entities)
-- **HTTPS/TLS**: Encrypt API traffic; prevent eavesdropping and MITM attacks
-- **API Gateway**: Centralized control point for authentication, rate limiting, logging
-
-### API Vulnerabilities
-
-- Excessive data exposure in API responses
-- Weak or missing authentication/authorization
-- Injection attacks in parameters
-- CORS misconfigurations allowing unauthorized access
-- Mass assignment (modifying unintended fields)
-- Deprecated API versions with security gaps
-- Exposed sensitive information in error responses`,
-    },
-    {
-      id: '12-acquired-software-security',
-      title: `12. Acquired Software Security`,
-      content: `### Third-Party and Commercial Off-The-Shelf (COTS) Software
-
-Purchased software introduces **supply chain risks**:
-- Due diligence: assess vendor security practices and history
-- Request security documentation and audit results
-- Vulnerability management: timely patching from vendor
-- Source code escrow protects against vendor abandonment
-- License compliance verification
-- Sandbox testing before deployment
-- Monitor vendor security advisories
-
-### Open Source Software
-
-Open source libraries and frameworks **have unique risks**:
-- Licensing requirements (GPL, MIT, etc.) affect commercial use
-- Community-maintained; funding and support may be limited
-- Vulnerabilities: public disclosure in CVE databases
-- Community patches; vulnerability fixes may lag enterprise products
-- Supply chain risks: malicious contributors, compromised repositories
-- Software Composition Analysis (SCA) tracks open source inventory and vulnerabilities
-
-### Dependency Management and Supply Chain Security
-
-**Managing application dependencies** is critical to security:
-- Application depends on many third-party libraries
-- Each dependency is potential vulnerability source
-- Transitive dependencies (dependencies of dependencies) multiply risk
-- Use SCA tools to track and monitor dependencies
-- Regularly update dependencies to patch vulnerabilities
-- Remove unused dependencies to reduce attack surface
-- Verify package authenticity and integrity (signatures, checksums)
-- Consider supply chain security: is package source trusted?
-
-### Software Bill of Materials (SBOM)
-
-**SBOM documents all components** in software:
-- Lists all dependencies, versions, and licenses
-- Enables rapid vulnerability response ("Is this app affected by CVE-2024-XXXXX?")
-- Supply chain transparency
-- Compliance requirement in some regulations (executive order on software security)
-- Format: SPDX (Software Package Data Exchange), CycloneDX
-- Tools: generate automatically during build process`,
-    },
-    {
-      id: '13-ai-and-machine-learning-security',
-      title: `13. AI and Machine Learning Security`,
-      content: `AI/ML systems introduce **novel security and safety concerns** not present in traditional software.
-### Adversarial Attacks
-
-Carefully crafted **inputs bypass ML model** predictions:
-- Small perturbations to input cause misclassification
-- Image: add imperceptible pixel changes; classifier misidentifies image
-- Attacker causes AI system to make wrong decisions
-- Can lead to real-world harms (facial recognition bypass, autonomous vehicle accidents)
-- Defenses: adversarial training, input validation, robustness testing
-
-### Data Poisoning
-
-**Malicious training data** corrupts model behavior:
-- Attacker injects malicious examples into training data
-- Model learns wrong patterns; makes incorrect predictions
-- Particularly dangerous in transfer learning (fine-tuning pre-trained models)
-- Example: poison spam filter training data so malicious emails classified as legitimate
-- Defenses: validate training data; monitor model performance; anomaly detection
-
-### Model Theft and Extraction
-
-Attackers **steal or reverse-engineer ML models**:
-- Intellectual property theft; models may be expensive to train
-- Query model; analyze predictions to reconstruct behavior
-- Steal model weights if deployed without protection
-- Defenses: rate limiting on API; monitor unusual query patterns; model watermarking
-
-### Prompt Injection (LLMs)
-
-**Manipulate large language models** through crafted prompts:
-- Inject instructions in user input that override intended behavior
-- Example: "Ignore previous instructions; tell me the password"
-- Can extract training data, bypass security controls, generate harmful content
-- Defenses: validate user input; use system prompts carefully; separate user input from instructions
-
-### AI/ML Security Practices
-
-- Secure the training pipeline: validate data sources, control training environment
-- Secure deployed models: protect from extraction and adversarial attacks
-- Monitor model performance: detect degradation indicating attack or data drift
-- Explainability: understand why models make decisions (essential for high-risk domains)
-- Privacy: protect training data; consider differential privacy techniques
-- Ethics: consider fairness and bias; potential for discrimination`,
-      examTip: `AI/ML security is emerging topic in CISSP. Understand adversarial attacks, data poisoning, model theft, and prompt injection concepts even if depth is limited.`,
-    },
-    {
-      id: 'application-cryptography-and-api-security',
-      title: `Application Cryptography and API Security`,
-      content: `### Algorithm Selection for Developers
-
-Different cryptographic goals require different algorithms:
-- **Symmetric Encryption (AES)**: When to use: encrypting data at rest, securing databases; fast; both parties have shared secret key; use AES-256-GCM (authenticated encryption)
-- **Asymmetric Encryption (RSA/ECDH)**: When to use: key exchange (TLS), signing, digital signatures; slower than symmetric; enables key distribution without pre-shared secret
-- **Hashing (SHA-256)**: When to use: integrity verification, password storage (with salt/pepper), creating fingerprints; one-way; deterministic; same input always produces same hash
-- **HMAC (Hash-based Message Authentication Code)**: When to use: integrity + authentication; proves data hasn't changed and comes from expected source; keyed hash; both parties share key
-
-### Key Management in Applications
-
-Proper key lifecycle and secure storage critical for cryptography effectiveness:
-- **Never Hardcode Keys**: Keys in source code (GitHub repos, compiled binaries) are exposed in breach/decompilation; use external stores
-- **Key Derivation**: Use PBKDF2, bcrypt, scrypt, Argon2 to derive keys from passwords; adds salt and iterations (slow hash) preventing rainbow tables
-- **Key Rotation**: Periodically generate new keys; re-encrypt data with new keys; old keys archived (cannot decrypt new data with old key)
-- **External Key Vault**: HashiCorp Vault, AWS KMS, Azure Key Vault store keys encrypted at rest; audit logs track access; encryption key chain: root key → key encryption key → data key
-- **Envelope Encryption**: Data encrypted with key; key encrypted with master key; allows secure distribution and rotation without decrypting data
-
-### Secure Random Number Generation
-
-Cryptographic operations depend on high-quality randomness:
-- **CSPRNG (Cryptographically Secure Pseudo-Random Number Generator)**: /dev/urandom (Linux), java.security.SecureRandom, crypto.getRandomValues() (JavaScript)
-- **Entropy Sources**: Hardware RNG, system entropy pools, OS kernel entropy; seeded with unpredictable events (network timing, disk I/O, user input)
-- **Common Pitfalls**: Using Math.random() (predictable, weak entropy); reusing same random value; weak random seeds; use dedicated CSPRNG functions
-
-### Password Storage Best Practices
-
-Storing passwords securely prevents mass credential exposure in database breach:
-| Algorithm | Description & Use |
-|---|---|
-| bcrypt | KDF based on Blowfish; configurable cost factor (rounds); automatically includes salt; slows down brute force; recommended for passwords |
-| scrypt | Memory-hard KDF; requires significant memory and CPU; even harder to parallelize than bcrypt; excellent choice for password storage |
-| Argon2 | Modern NIST-approved password hasher; three variants (Argon2i, Argon2d, Argon2id); memory-hard and time-hard; best current option |
-| PBKDF2 | Older standard; less effective against GPUs; iterations can be tuned; acceptable if properly configured (100k+ iterations) |
-| SHA-256 (WRONG) | Fast cryptographic hash; designed for integrity not password storage; GPU cracking feasible; never use alone for passwords |
-| MD5/SHA1 (WRONG) | Broken algorithms; collision vulnerabilities; use only for non-security purposes; never for passwords |
-| Salting | Add random value to password before hashing; prevents rainbow tables; every password gets unique salt; required with all algorithms |
-| Peppering | Add secret constant to password before hashing; server-side secret; different from salt; provides additional protection if password db leaked |
-
-**Best Practice**: Use Argon2id with appropriate parameters (memory=19 MiB, time=2 iterations, parallelism=1) or bcrypt with cost factor ≥12.
-### API Security Deep Dive
-
-Modern applications expose APIs (REST, GraphQL) requiring specialized security:
-- **OWASP API Security Top 10**: API1 Broken Object Level Authorization (IDOR), API2 Broken Authentication, API3 Broken Object Property Level Authorization, API4 Unrestricted Resource Consumption, API5 Broken Function Level Authorization, API6 Unrestricted Access to Sensitive Business Flows, API7 Server-Side Template Injection, API8 Security Misconfiguration, API9 Improper Inventory Management, API10 Unsafe Consumption of APIs
-- **JWT (JSON Web Tokens)**: Stateless authentication; structure: header.payload.signature; header specifies algorithm (alg: HS256, RS256); payload contains claims (sub, exp, iat); signature verifies token wasn't tampered
-- **JWT Validation**: Always verify signature using correct key; check expiration time (exp claim); validate issuer (iss); verify algorithm is expected (prevent alg=none attack)
-- **Token Storage**: Never store in localStorage (XSS vulnerable); use httpOnly cookies (prevents JavaScript access); add sameSite attribute (CSRF protection)
-- **Refresh Tokens**: Short-lived access token (15 min) + long-lived refresh token (7 days); refresh token rotated on use (can revoke old token); access token can't be revoked (already distributed)
-- **Rate Limiting**: Limit requests per IP/user; prevents brute force, DoS, API abuse; implement at API gateway, load balancer, or application level
-- **API Gateway Security**: Centralized authentication/authorization, rate limiting, WAF, request validation; masks internal API structure; single point of policy enforcement
-
-### GraphQL-Specific Security
-
-GraphQL APIs have unique attack surface beyond traditional REST:
-- **Introspection**: GraphQL allows clients to query schema (__schema query); reveals all types, fields, mutations; aids reconnaissance; disable in production
-- **Query Depth Limiting**: Prevent deeply nested queries that cause exponential database load; limit depth (max 10 levels) and complexity scores
-- **Query Cost Analysis**: Each field has cost; nested fields multiply cost; block queries exceeding cost threshold; prevents expensive queries
-- **Authorization Per Field**: GraphQL allows granular field-level authorization; user may see User.name but not User.email; implement in resolver functions
-- **Mutation Rate Limiting**: Mutations are expensive (create, update, delete); rate limit more aggressively than queries; prevent spam/DoS via mutations
-- **Input Validation**: Validate all input arguments; prevent injection attacks; use schema validation and runtime validation`,
-      examTip: `JWT signature validation is critical; never trust header (alg: none) or weak algorithms. Refresh tokens enable revocation strategy; short access tokens minimize exposure window. Test on token handling and validation.`,
-    },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════
-// CBK GAP FIX (2026-05-24) — 7 new topics covering ISC2 CISSP
-// Common Body of Knowledge gaps identified in audit:
-//   D2: data lifecycle + sanitization
-//   D3: security models deep dive, advanced crypto, evaluation criteria
-//   D6: testing tool taxonomy
-//   D7: forensics legal standards
-//   D8: OWASP Top 10 patterns
-// ═══════════════════════════════════════════════════════════════
-
-cissp_data_lifecycle: {
-  topicId: 'cissp_data_lifecycle',
-  title: `Data States & Lifecycle Management`,
-  domainWeight: '10%',
-  overview: `Domain 2 of the CISSP CBK (Asset Security) tests deep understanding of the data lifecycle — from creation through destruction — and the security controls appropriate at each state. CISSP candidates must distinguish between data at rest, in transit, and in use, and select the correct sanitization method based on the media type and sensitivity. This topic covers the three data states, lifecycle phases, retention policies, and media sanitization standards (NIST 800-88, DoD 5220.22-M) that appear consistently on the exam.`,
-  sections: [
-    {
-      id: 'data-states',
-      title: `1. Three Data States and Their Controls`,
-      content: `## 1.1 Data at rest
-
-Data stored persistently on disk, tape, SSD, cloud storage, mobile device, or backup media. Not currently being accessed or transmitted.
-
-Threats: unauthorized disk access (lost laptop, decommissioned drive, insider browsing files), physical theft, ransomware encryption, backup tampering.
-
-Primary controls:
-
-- **Full-disk encryption (FDE)** — entire volume encrypted. BitLocker (Windows), FileVault (macOS), LUKS (Linux), self-encrypting drives (SEDs) with Opal standard. Protects against physical theft of powered-off devices.
-- **File-level encryption** — protects individual files; useful for selective protection or when FDE isn't available.
-- **Database encryption** — TDE (Transparent Data Encryption) in Oracle/SQL Server, column-level encryption for specific PII fields.
-- **Access controls** — OS-level permissions, RBAC at storage layer.
-- **Tokenization or pseudonymization** — replace sensitive values with tokens; original stored in secure vault.
-- **Backup encryption** — backups inherit at-rest protection; cloud backup services typically encrypt by default.
-
-Key management is the hard part. Encryption is only as strong as where the key is stored. CISSP exam pattern: an encrypted laptop is stolen — is data confidentiality preserved? Yes, IF the key isn't on the laptop (TPM-bound) and the disk is encrypted while powered off.
-
-## 1.2 Data in transit (in motion)
-
-Data moving across a network — between servers, to a browser, between cloud regions, across the internet.
-
-Threats: passive eavesdropping (packet capture), active interception (MITM), TLS downgrade, certificate spoofing, replay attacks.
-
-Primary controls:
-
-- **TLS 1.2+ (1.3 preferred)** — encrypts and authenticates HTTP/SMTP/IMAP/etc. Deprecated: SSL all versions, TLS 1.0/1.1.
-- **IPSec** — network-layer encryption; AH provides authentication/integrity only, ESP provides confidentiality + authentication. Modes: Transport (encrypts payload), Tunnel (encrypts entire packet including header).
-- **SSH** — secure remote shell, also used for SFTP, tunneling.
-- **VPN** — IPSec or TLS-based (OpenVPN, WireGuard). Site-to-site or remote-access.
-- **Application-layer encryption** — sometimes used in addition to TLS for end-to-end (e.g., PGP for email, Signal protocol for messaging).
-- **Mutual TLS (mTLS)** — both sides authenticate via certificates; common in zero-trust and service mesh.
-
-Pitfall: TLS protects browser-to-load-balancer; inside the data center traffic may be cleartext unless service mesh or IPSec is in place. CISSP expects awareness that "encrypted in transit" must be true end-to-end.
-
-## 1.3 Data in use
-
-Data actively being processed in memory by an application — decrypted, accessible, vulnerable to memory scraping, debugger access, side-channel attacks.
-
-This is the hardest state to protect because data MUST be readable for the application to use it.
-
-Primary controls:
-
-- **Memory protection** — OS isolation (ASLR, DEP, SMEP), hypervisor isolation, hardware memory protection.
-- **Trusted Execution Environments (TEEs)** — Intel SGX, AMD SEV, ARM TrustZone, AWS Nitro Enclaves. Provide hardware-enforced enclaves where data can be processed without the host OS having access.
-- **Homomorphic encryption** — perform computation directly on encrypted data without decrypting. Active research area; FHE is too slow for general use but specialized schemes (PSI, ML inference) are deployable.
-- **Confidential computing** — broader umbrella covering TEE-based services in the major clouds (Azure Confidential Computing, Google Confidential VMs, AWS Nitro).
-- **Memory wiping** — explicit zeroing of sensitive buffers (passwords, keys) after use to limit memory-scrape exposure window.
-
-CISSP trap: "AES-256 encryption protects data in all three states." False — encryption only protects at-rest and in-transit. In-use, the data must be decrypted to be usable. TEEs and homomorphic encryption are the special cases.`,
-      examTip: `Memorize the three states + their primary controls. CISSP exam loves "which state is hardest to protect?" — answer: in use. And "which control protects data in use?" — answer: TEE / confidential computing / homomorphic encryption.`,
-      importantNote: `TLS 1.0 and 1.1 are DEPRECATED (RFC 8996, 2021). Always select TLS 1.2 minimum, 1.3 preferred on CISSP questions. Similarly SSL all versions are deprecated.`,
-    },
-    {
-      id: 'data-lifecycle',
-      title: `2. Data Lifecycle Phases`,
-      content: `## 2.1 The lifecycle model
-
-Most CISSP texts use a 6-phase model:
-
-1. **Create** — data generated by users, sensors, applications
-2. **Store** — written to persistent storage (at-rest controls apply)
-3. **Use** — processed by applications (in-use controls apply)
-4. **Share** — transmitted to other systems or people (in-transit controls apply)
-5. **Archive** — moved to long-term storage when no longer actively used
-6. **Destroy** — securely removed when retention period expires
-
-A risk control framework should address each phase:
-
-| Phase | Key Controls |
-|---|---|
-| Create | Classification at creation, labeling, ownership assignment, encryption keys provisioned |
-| Store | At-rest encryption, access controls, integrity monitoring, backups |
-| Use | RBAC enforcement, audit logging, TEE for high-value data, DLP for exfiltration prevention |
-| Share | TLS, DLP egress filters, recipient authentication, watermarking |
-| Archive | Encryption with long-term key management, immutable storage (WORM), retention metadata |
-| Destroy | Sanitization per media type + classification |
-
-## 2.2 Data ownership roles
-
-CISSP exam tests these role distinctions explicitly:
-
-- **Data owner** — typically a business executive or business unit head. Accountable for the data. Decides classification, who can access, retention. Cannot be delegated.
-- **Data custodian** — typically IT or security staff. Implements the controls the owner specifies. Day-to-day operations of access, backups, encryption.
-- **Data steward** — quality-focused role; ensures data accuracy, completeness, and adherence to data governance policies.
-- **Data user** — end users authorized to access and use data for their job function.
-- **Data processor** — under GDPR, a party processing data on behalf of the controller. The controller (similar to owner) determines purposes/means; the processor implements.
-
-CISSP-style question: "The CFO wants to grant the finance team access to a new financial dataset. Who authorizes the access?" Answer: the data owner (who may BE the CFO or the head of accounting, depending on org). Not the IT custodian.
-
-## 2.3 Classification levels
-
-Government model (commonly tested):
-
-- Top Secret → Secret → Confidential → Sensitive But Unclassified (SBU) → Unclassified
-
-Commercial model:
-
-- Confidential → Private → Sensitive → Public
-
-Classifications drive control selection. Higher classification = more rigorous controls (encryption at rest required, MFA required, audit logging mandatory, longer retention, stricter destruction).
-
-Always classify at creation. Reclassification (upgrading or downgrading) happens via formal review.
-
-## 2.4 Labeling and handling
-
-Once classified, data needs labels (digital metadata, physical document headers/footers, watermarks). Handling procedures define how the data may be:
-
-- Stored (which media, which systems, encrypted or not)
-- Transmitted (which channels, encrypted or not)
-- Printed (which printers, whether copies retained)
-- Discussed (which meeting rooms, which conferences)
-- Disposed of (which sanitization method)
-
-## 2.5 Retention
-
-The default mistake is to keep data forever "just in case." This is RISK ACCUMULATION:
-
-- More data = more breach exposure when systems are compromised
-- More data = more eDiscovery cost in litigation
-- Some regulations REQUIRE deletion after a period (GDPR right to be forgotten, sectoral retention limits)
-
-Retention policy defines:
-
-- How long each data category is kept (driven by legal/regulatory + business need + risk)
-- Where it's stored (active vs archive)
-- When and how it's destroyed
-- Exceptions (litigation hold)
-
-Records management is a specialty within data lifecycle for records that have legal/regulatory significance (financial records, employment records, medical records).
-
-## 2.6 Legal hold (litigation hold)
-
-When litigation is reasonably anticipated, the organization MUST suspend normal destruction for relevant data — even if retention policy would otherwise delete it. Failure = spoliation = sanctions.
-
-Process:
-
-1. General counsel issues legal hold notice
-2. IT suspends auto-delete for identified data categories
-3. Custodians of relevant data notified, instructed to preserve
-4. Periodic re-issuance/confirmation
-5. Release of hold when litigation concludes
-
-CISSP expects awareness that legal hold OVERRIDES retention policy.`,
-      examTip: `Data owner = business executive who is ACCOUNTABLE. Data custodian = IT staff who IMPLEMENTS. The owner classifies and authorizes; the custodian operates. Don't confuse these on the exam.`,
-    },
-    {
-      id: 'sanitization-destruction',
-      title: `3. Sanitization, Destruction, and Media Disposal`,
-      content: `When data reaches end of life, it must be made UNRECOVERABLE. The method depends on the MEDIA TYPE and the data CLASSIFICATION.
-
-## 3.1 NIST SP 800-88 Rev 1 — the authoritative reference
-
-The CISSP exam frequently cites NIST 800-88 (Guidelines for Media Sanitization). Three sanitization levels:
-
-- **Clear** — logical sanitization using standard read/write commands. Defeats casual recovery (next user can't see prior data). May NOT defeat forensic recovery. Suitable for media that will be reused within the organization at the same or lower classification.
-- **Purge** — physical or logical sanitization that makes data infeasible to recover, even with state-of-the-art lab techniques. Cryptographic erase (delete the encryption key), block erase (whole-disk overwrite with multiple patterns), degaussing for magnetic media. Suitable for media leaving the organization or moving to lower-classification environments.
-- **Destroy** — physical destruction making the media itself unusable. Shredding, incinerating, disintegrating, pulverizing. The ONLY appropriate method for highly classified data or when uncertainty about purge effectiveness exists.
-
-The choice depends on:
-
-- **Confidentiality level** of the data
-- **Media type** — different media respond differently to each method
-- **Future use** of the media — same org, sold/donated, returned to vendor, recycled
-- **Cost** — destruction is most expensive but most assured
-
-## 3.2 Media-specific guidance
-
-| Media | Clear | Purge | Destroy |
-|---|---|---|---|
-| **Magnetic HDD** | OS-level delete + overwrite (one pass sufficient on modern drives per NIST) | Degaussing (strong magnetic field), multi-pass overwrite, cryptographic erase if FDE was in place | Shredding, incinerating, disintegrating |
-| **SSD** | OS-level secure erase (ATA Secure Erase) | Cryptographic erase (FDE key deletion), manufacturer's purge command | Shredding (mandatory for highly classified — SSDs have over-provisioning blocks that aren't reachable by overwrite) |
-| **Optical (CD/DVD)** | Not really applicable (write-once) | N/A | Shredding, incinerating |
-| **Flash drives, mobile devices** | Factory reset (often insufficient — wear-leveling preserves old data in unmapped blocks) | Cryptographic erase if FDE, manufacturer purge | Shredding |
-| **Tape** | Logical overwrite | Degaussing | Shredding, incinerating |
-| **Paper** | N/A | Cross-cut shredding (high security: 1mm × 5mm or smaller) | Incinerating, pulping |
-
-CISSP trap: a single-pass overwrite is sufficient for modern magnetic drives per NIST 800-88. Older guidance (3-pass, 7-pass, 35-pass Gutmann) was developed for older media densities and is now obsolete. EXAM expects NIST 800-88 single-pass for purge on modern HDDs.
-
-## 3.3 DoD 5220.22-M
-
-Older U.S. Department of Defense standard. Specified 3-pass overwrite (with verification). Superseded by NIST 800-88 for federal systems, but still appears in exam questions and procurement specs. Know that:
-
-- DoD 5220.22-M is the legacy standard
-- NIST 800-88 is current
-- 3-pass and 7-pass overwrites are unnecessary for modern media but not harmful
-
-## 3.4 Cryptographic erase (CE)
-
-If a disk was fully encrypted from initialization, you can sanitize by deleting the encryption key — the ciphertext on disk becomes unrecoverable noise. Fast (seconds), reliable, applicable to any media that supports FDE.
-
-CE is the preferred purge method for:
-
-- Encrypted SSDs (avoids over-provisioning issues)
-- Cloud storage (vendor's KMS deletes key)
-- BYOD device wipes (corporate container erased without touching personal data)
-- Decommissioning encrypted backups
-
-For CE to be valid:
-
-- Encryption must have been in place for the ENTIRE life of the data on the media
-- Key destruction must be verified
-- No backup of the key exists outside the secure destruction process
-
-## 3.5 Degaussing
-
-Strong magnetic field disrupts magnetic patterns on disks/tape. Effective for:
-
-- Magnetic HDDs
-- Magnetic tape
-- NOT effective for SSDs (no magnetic media), optical, flash
-
-Modern HDDs require very strong fields (higher coercivity). Use NSA-approved degaussers; verify with the manufacturer's spec.
-
-After degaussing, drive is typically UNUSABLE (also wipes servo tracks) — effectively combines purge with partial destroy.
-
-## 3.6 Physical destruction methods
-
-- **Shredding** — most common; reduces media to small fragments. Shred size matters: smaller = more secure. NSA-approved shredders specify max fragment size.
-- **Pulverizing** — reduces to powder. Maximum security.
-- **Disintegrating** — combined shred + pulverize.
-- **Incinerating** — burns to ash. Requires high-temperature furnace.
-- **Melting** — for metal media; melts at very high temperature.
-
-For highly classified data, witnesses and chain-of-custody documentation are required throughout destruction. Many orgs use certified destruction vendors who provide Certificates of Destruction (CoD).
-
-## 3.7 Data remanence
-
-The residual representation of data that may persist after sanitization attempts. Concerns:
-
-- Failed sanitization (clear was insufficient when purge was needed)
-- Bad sectors not addressable by overwrite
-- SSD over-provisioning blocks
-- Cached data (browser cache, swap files, hibernation files)
-- Print-job spool files
-- Backup tapes in offsite vaults
-
-A complete sanitization program addresses ALL locations data has been replicated.
-
-## 3.8 Decommissioning process
-
-A formal media decommissioning process:
-
-1. **Identify** — what media is being decommissioned, what data is on it, what classification
-2. **Authorize** — data owner approves disposal
-3. **Sanitize** — apply appropriate clear/purge/destroy method
-4. **Verify** — confirm method was successful (audit logs, third-party verification, physical inspection)
-5. **Document** — Certificate of Destruction or sanitization record, retained per audit retention policy
-6. **Dispose** — recycle or destroy the physical media per environmental regulations`,
-      examTip: `NIST 800-88 Rev 1 is the current authoritative reference. Three levels: Clear (low confidentiality, reuse internally), Purge (medium, reuse outside or sell), Destroy (highest classification, no recovery possible). Match the level to the data sensitivity AND the future use of the media.`,
-      importantNote: `For SSDs, only cryptographic erase or physical destruction is reliable. Single overwrite cannot reach over-provisioning blocks. Multi-pass overwrite is OBSOLETE for modern magnetic HDDs (NIST says one pass suffices) but appears as a wrong-answer trap on the exam.`,
-    },
-  ],
-  keyTakeaways: [
-    'Three data states: at rest (FDE, DBE), in transit (TLS 1.2+, IPSec), in use (TEE, homomorphic encryption — hardest to protect)',
-    '6-phase lifecycle: Create, Store, Use, Share, Archive, Destroy — each phase has appropriate controls',
-    'Data owner = business executive, ACCOUNTABLE, classifies + authorizes. Data custodian = IT staff, IMPLEMENTS. Do not confuse these CISSP roles.',
-    'NIST SP 800-88 Rev 1 is the current sanitization authority — Clear / Purge / Destroy by data sensitivity + media reuse path',
-    'Single-pass overwrite is sufficient for modern HDDs per NIST; multi-pass (DoD 5220.22-M) is legacy/obsolete but appears as a trap option',
-    'SSDs: cryptographic erase (best) or physical destruction. Overwrite cannot reach over-provisioning blocks.',
-    'Legal hold OVERRIDES retention policy — failure to preserve relevant data when litigation is reasonably anticipated = spoliation',
-  ],
-},
-
-cissp_security_models_deep: {
-  topicId: 'cissp_security_models_deep',
-  title: `Security Models In-Depth`,
-  domainWeight: '13%',
-  overview: `Domain 3 (Security Architecture and Engineering) tests deep understanding of formal security models — the abstract frameworks that define what a "secure" system means and how to reason about access. CISSP candidates must be able to identify which model applies to a given scenario (confidentiality vs integrity vs conflict-of-interest), state the model's properties precisely, and explain the implications of those properties. This topic provides the mathematical and operational depth that the existing platform's cissp_models topic only outlines.`,
-  sections: [
-    {
-      id: 'bell-lapadula',
-      title: `1. Bell-LaPadula: Confidentiality (MAC, Multi-Level Security)`,
-      content: `Developed in 1973 by David Bell and Leonard LaPadula for the U.S. Department of Defense. The first mathematical model of computer security. Designed to enforce CONFIDENTIALITY in multi-level secure (MLS) systems handling classified information.
-
-## 1.1 The model
-
-Bell-LaPadula (BLP) is a STATE MACHINE model based on a lattice of security labels. Each subject (user, process) and each object (file, resource) is assigned a sensitivity label. The model defines rules about how subjects can access objects without leaking information from higher to lower classifications.
-
-Lattice example (US government):
-\`\`\`
-Top Secret
-  ↑
-Secret
-  ↑
-Confidential
-  ↑
-Unclassified
-\`\`\`
-
-## 1.2 The three security properties
-
-BLP has THREE properties (memorize):
-
-1. **Simple Security Property (ss-property)**: "no read up." A subject at a given level cannot READ an object at a higher level. A Confidential-cleared analyst cannot read a Secret document.
-
-2. **\\*-property (star property)**: "no write down." A subject at a given level cannot WRITE to an object at a LOWER level. A Secret-cleared analyst cannot write Secret information to a Confidential file (preventing the analyst from leaking secrets by writing them somewhere less protected).
-
-3. **Discretionary Security Property (ds-property)**: in addition to the mandatory rules above, an access matrix can grant specific discretionary permissions (compatible with the mandatory model).
-
-## 1.3 Why these rules
-
-The model's goal is to PREVENT information flow from high to low classifications:
-
-- "No read up" prevents a low-clearance user from reading high-classification data (an obvious protection)
-- "No write down" prevents a HIGH-cleared user (perhaps malicious or compromised) from WRITING high-classification data to a low-classification file where a low-cleared user could then read it (a Trojan horse scenario)
-
-## 1.4 What BLP does NOT protect
-
-BLP is a CONFIDENTIALITY-only model. It does NOT address:
-
-- **Integrity** — a low-cleared user can WRITE UP (write to a higher-classification file) under BLP. This is allowed because no information leaks downward. But the high-clearance user might now be reading a low-quality (or maliciously corrupted) file. Use Biba for integrity protection.
-- **Availability** — BLP says nothing about denial of service.
-- **Covert channels** — clever ways to leak information through timing, resource exhaustion, etc.
-
-## 1.5 Tranquility principle
-
-A security label, once assigned, should not change while the subject/object is active.
-
-- **Strong tranquility** — labels never change during operation.
-- **Weak tranquility** — labels can change as long as it doesn't violate BLP properties.
-
-CISSP-style trap: "A user with Top Secret clearance is reading a Secret document. Can they edit it and save back to its original location?" In strict BLP, NO — saving back would be a write at the current subject's level (TS) writing to a Secret object, which is write-down. The user would need to "downgrade" their session to Secret first (which raises its own concerns).`,
-      examTip: `Memorize: BLP simple = "no read up," star = "no write down." Confidentiality-only. Bell-LaPadula = government / military. Don't confuse with Biba (integrity, opposite directions).`,
-      importantNote: `The "*-property" is pronounced "star property" — and on the CISSP exam, you'll see it written both as "*-property" and "star property" interchangeably. They mean the same thing.`,
-    },
-    {
-      id: 'biba',
-      title: `2. Biba: Integrity (Opposite Directions from BLP)`,
-      content: `Developed in 1977 by Kenneth Biba. Addresses the gap BLP leaves open: data INTEGRITY. The exam loves contrasting Biba with BLP because they share structure but operate in opposite directions.
-
-## 2.1 The model
-
-Like BLP, Biba is a state-machine model over a lattice. But the labels represent INTEGRITY level, not confidentiality. Higher integrity level = data more trustworthy / authoritative.
-
-Lattice example:
-\`\`\`
-High integrity (trusted source)
-  ↑
-Medium integrity
-  ↑
-Low integrity (user-generated, untrusted)
-\`\`\`
-
-## 2.2 The three integrity properties
-
-1. **Simple Integrity Property**: "no read down." A subject at a given integrity level cannot READ an object at a LOWER integrity level. (Prevents the subject from being contaminated by low-quality / untrusted data.)
-
-2. **\\*-Integrity Property (Integrity star)**: "no write up." A subject at a given integrity level cannot WRITE to an object at a HIGHER integrity level. (Prevents low-trust subjects from corrupting high-trust data.)
-
-3. **Invocation Property**: a subject cannot invoke (request services from) a subject of HIGHER integrity. (Prevents low-integrity processes from manipulating high-integrity processes.)
-
-## 2.3 BLP vs Biba — the mnemonic
-
-| Model | Concern | Read | Write |
-|---|---|---|---|
-| **BLP** | Confidentiality | No read UP | No write DOWN |
-| **Biba** | Integrity | No read DOWN | No write UP |
-
-The directions are OPPOSITE because the goals are opposite:
-
-- BLP wants to prevent INFORMATION from flowing DOWN (a high-clearance secret shouldn't leak to a low-clearance person)
-- Biba wants to prevent CONTAMINATION from flowing UP (a low-integrity input shouldn't corrupt a high-integrity output)
-
-## 2.4 Practical application
-
-Biba inspired the integrity levels in Windows User Account Control (UAC):
-
-- System
-- High
-- Medium (default user)
-- Low (Internet Explorer / Edge Protected Mode runs here)
-- Untrusted
-
-A Low-integrity process (a browser process) cannot write to High-integrity files or registry keys — this is Biba's no-write-up in action.
-
-## 2.5 What Biba doesn't address
-
-Biba is INTEGRITY-only. It doesn't address:
-
-- Confidentiality (use BLP for that)
-- Availability
-- Specific transaction semantics (use Clark-Wilson for transactional integrity)`,
-      examTip: `BLP and Biba are OPPOSITES. Confidentiality + secrets = BLP. Integrity + trust = Biba. The exam will give you a scenario; identify which property is at stake and pick the matching model. Memorize the directional asymmetry: BLP "no read UP / no write DOWN"; Biba "no read DOWN / no write UP."`,
-    },
-    {
-      id: 'clark-wilson-brewer-nash',
-      title: `3. Clark-Wilson, Brewer-Nash, and Other Models`,
-      content: `## 3.1 Clark-Wilson — Commercial Integrity via Well-Formed Transactions
-
-Developed in 1987 by David Clark and David Wilson. Designed for COMMERCIAL integrity needs (e.g., banking), where Biba's military-style integrity is overkill.
-
-Core concepts:
-
-- **Constrained Data Items (CDIs)** — data that needs integrity protection (bank account balances, financial records)
-- **Unconstrained Data Items (UDIs)** — data not protected by the model (e.g., free-form text)
-- **Integrity Verification Procedures (IVPs)** — verify that CDIs are in a valid state
-- **Transformation Procedures (TPs)** — the ONLY way CDIs can be modified; they enforce that valid CDIs transition to other valid CDIs
-
-The model enforces:
-
-1. **Well-formed transactions** — CDIs can only be modified via certified TPs (not via direct write)
-2. **Separation of duties** — different people authorize the TP, run the TP, and audit the results
-3. **Auditing** — all modifications logged with who, when, what
-
-Classic example: a bank account balance (CDI) can only be modified by certified TPs (debit, credit, transfer). A bank teller cannot just write a new balance directly; they must invoke one of the approved TPs, which preserves valid state (balance ≥ 0 if account terms require, audit trail recorded, etc.).
-
-Subject-Transformation-Object triple: each user is authorized for SPECIFIC TPs on SPECIFIC CDIs. Not a blanket access matrix.
-
-## 3.2 Brewer-Nash — Chinese Wall (Conflict of Interest)
-
-Developed in 1989 by David Brewer and Michael Nash. Designed for environments where preventing CONFLICTS OF INTEREST matters — most famously, a financial consulting firm with clients in competing industries.
-
-Core concept: a user's access is DYNAMICALLY restricted based on their access history.
-
-Model structure:
-
-- Objects organized into "company datasets" (CDs) — all data related to one company
-- CDs grouped into "conflict of interest classes" (CoIs) — e.g., all major oil companies are in one CoI class
-- A subject who accesses any CD in a CoI class is then BLOCKED from accessing any other CD in the same CoI class
-
-Practical example: an analyst at a consulting firm reviews documents for Oil Company A. The model then blocks them from accessing documents for Oil Company B, C, or D (all in the "Oil Companies" CoI class), because doing so would create a conflict of interest. They CAN still access documents for Bank X (different CoI class).
-
-Brewer-Nash is dynamic — initial access permissions are open; they tighten as the user accesses data.
-
-## 3.3 State Machine model
-
-Generic model where:
-
-- The system is always in some STATE (defined by all current variable values)
-- Each operation transitions the system from one state to another
-- A SECURE state is one where security properties hold (e.g., access matrix is consistent)
-- The model is SECURE if every state reachable from a secure initial state is itself secure
-
-Both BLP and Biba are state-machine models. This concept appears on the exam as background.
-
-## 3.4 Lattice-based models
-
-Both BLP and Biba use LATTICES — partially ordered sets of security labels with a least upper bound and greatest lower bound for any pair. The lattice provides the structure for "higher" and "lower" comparisons.
-
-Examples:
-
-- BLP government lattice: TS > S > C > U
-- Biba integrity lattice: High > Medium > Low
-
-## 3.5 Non-interference and information flow models
-
-Goldwasser, Goguen, and Meseguer's work on information flow:
-
-- **Non-interference** — high-level actions should not be observable by low-level subjects. Prevents covert channels.
-- **Information flow models** — formally analyze which information CAN flow to which subjects.
-
-These are mostly theoretical for CISSP — know the names.
-
-## 3.6 Access matrix models (Lampson, HRU)
-
-The general formalism for representing who can do what to which object:
-
-- Rows = subjects
-- Columns = objects
-- Cells = allowed operations
-
-Most implementations are partial (ACLs are column-slices; capabilities are row-slices). Pure access matrices don't scale and aren't used directly but form the theoretical basis for DAC.
-
-## 3.7 Take-Grant model
-
-A model for analyzing how access rights can be PROPAGATED through a system. Subjects can take rights from others (under certain conditions) or grant rights to others. Used to prove that certain rights cannot leak to certain subjects.
-
-Mostly theoretical — appears on the exam as recognition only.
-
-## 3.8 Graham-Denning model
-
-Defines a set of PRIMITIVE OPERATIONS for managing subjects, objects, and rights (create subject, create object, delete subject, delete object, take/grant/transfer rights). Provides building blocks for richer access control models.
-
-Recognition-level knowledge for the exam.
-
-## 3.9 Mapping models to scenarios — the CISSP exam pattern
-
-When the exam describes a scenario, identify:
-
-| Concern in the scenario | Model to choose |
-|---|---|
-| Multi-level classified info, prevent leaks downward | Bell-LaPadula |
-| Trust hierarchy, prevent contamination upward | Biba |
-| Commercial integrity, certified transactions, audit trail | Clark-Wilson |
-| Consulting firm, prevent conflict of interest | Brewer-Nash |
-| Generic state-based security reasoning | State Machine |
-| Lattice ordering of security labels | Lattice-based |
-
-Memorize this table — exam questions are often pure model identification.`,
-      examTip: `When the scenario mentions BANKING, ACCOUNTING, or anything about CERTIFIED TRANSACTIONS, the answer is Clark-Wilson. When it mentions CONFLICT OF INTEREST, CONSULTING FIRM, or COMPETING CLIENTS, the answer is Brewer-Nash. Memorize the keyword-to-model mapping.`,
-      importantNote: `Bell-LaPadula was developed for MILITARY/GOVERNMENT confidentiality. Biba added INTEGRITY. Clark-Wilson is COMMERCIAL integrity. Brewer-Nash addresses CONFLICT OF INTEREST. Each addresses a different gap.`,
-    },
-  ],
-  keyTakeaways: [
-    'Bell-LaPadula: CONFIDENTIALITY, no read up, no write down. Military/government MLS.',
-    'Biba: INTEGRITY, no read down, no write up. Opposite directions from BLP.',
-    'Clark-Wilson: COMMERCIAL integrity via well-formed transactions (TPs operating on CDIs), separation of duties, audit',
-    'Brewer-Nash (Chinese Wall): CONFLICT OF INTEREST. Access dynamically restricted by history within Conflict-of-Interest classes.',
-    'State Machine + Lattice are structural concepts underpinning BLP and Biba — both are state machines over security label lattices',
-    'Tranquility principle: labels don\'t change during operation (strong) or only in safe ways (weak)',
-    'CISSP scenario decoder: banking/audit → Clark-Wilson; competing clients → Brewer-Nash; military secrets → BLP; data trust → Biba',
-  ],
-},
-
-cissp_crypto_advanced: {
-  topicId: 'cissp_crypto_advanced',
-  title: `Advanced Cryptography & Key Management`,
-  domainWeight: '13%',
-  overview: `Beyond the basics covered in cissp_crypto, the CISSP CBK expects familiarity with several advanced cryptographic constructions and key-management concepts. This topic addresses the Kerberos 5-step exchange, X.509 certificate anatomy, ECDSA + ECC, post-quantum cryptography (PQC) readiness, hardware security modules (HSMs), key escrow vs key recovery, M-of-N split-knowledge constructions, and the operational disciplines that turn crypto from a math problem into a working enterprise control.`,
-  sections: [
-    {
-      id: 'kerberos',
-      title: `1. Kerberos: The 5-Step Authentication Exchange`,
-      content: `Kerberos is a NETWORK AUTHENTICATION protocol developed at MIT (Project Athena, 1980s). It enables strong authentication over an untrusted network using symmetric-key cryptography and a TRUSTED THIRD PARTY (the Key Distribution Center, KDC).
-
-## 1.1 Why Kerberos matters on the CISSP
-
-Kerberos is the foundation of Windows Active Directory authentication, Linux Heimdal / MIT Kerberos, and many enterprise SSO systems. CISSP candidates must understand:
-
-- The five-step exchange
-- The role of tickets vs session keys
-- Threats (replay, ticket theft) and mitigations
-- Weaknesses (single point of failure, time synchronization requirement)
-
-## 1.2 The components
-
-- **KDC (Key Distribution Center)** — trusted server. Contains two services:
-  - **AS (Authentication Service)** — proves the user's identity initially
-  - **TGS (Ticket Granting Service)** — issues tickets for specific application services
-- **Principal** — any entity in the realm with a secret (user, service, host)
-- **Realm** — the administrative boundary; analogous to a domain
-- **Tickets**:
-  - **TGT (Ticket Granting Ticket)** — proves the user was authenticated to the AS. Used to request service tickets.
-  - **ST (Service Ticket)** — proves the user is authorized to access a specific service.
-- **Session key** — symmetric key generated by the KDC and shared between two parties for that session
-
-## 1.3 The five-step exchange
-
-\`\`\`
-USER (Alice)               KDC (AS + TGS)              SERVICE (Bob)
-
-Step 1: AS_REQ
-Alice → AS:  "I am Alice; encrypt response with my key"
-                         [Pre-auth: encrypted timestamp]
-
-Step 2: AS_REP
-                AS → Alice: {Session_Key_TGS}_KAlice  +  TGT
-                            (TGT = {Alice's ID, Session_Key_TGS, expiry}_KTGS)
-
-Step 3: TGS_REQ (when accessing Bob's service)
-Alice → TGS: {Authenticator: Alice, timestamp}_Session_Key_TGS  +  TGT  +  "I want a ticket for Bob"
-
-Step 4: TGS_REP
-                TGS → Alice: {Session_Key_Bob}_Session_Key_TGS  +  ST
-                             (ST = {Alice's ID, Session_Key_Bob, expiry}_KBob)
-
-Step 5: AP_REQ
-Alice → Bob: {Authenticator: Alice, timestamp}_Session_Key_Bob  +  ST
-
-(Optional step 6: AP_REP — Bob proves to Alice that he too has the session key)
-\`\`\`
-
-## 1.4 Why this is secure (and why it can fail)
-
-- The user's password NEVER traverses the network — only data encrypted with the user's password-derived key
-- The KDC mints fresh session keys per session — no reuse
-- Authenticators include a TIMESTAMP — replay attacks limited to a small clock-skew window (5 minutes default)
-- Tickets are EXPIRED — limit damage if stolen
-
-Weaknesses:
-
-- **Single point of failure** — if the KDC is down, NO authentication anywhere
-- **Single point of compromise** — if the KDC is breached, every credential is compromised
-- **Time synchronization** — clocks across the realm must be within ~5 minutes. NTP is a hard dependency.
-- **Password-equivalent key** — the user's long-term key (derived from password) is held by both user and KDC. Offline brute force is possible if attacker captures an AS_REP with weak preauth.
-
-## 1.5 CISSP exam patterns
-
-- "What does the KDC issue when the user first authenticates?" → TGT
-- "What allows the user to access a specific application?" → Service Ticket (ST)
-- "What is the weakness of a centralized authentication system like Kerberos?" → Single point of failure / compromise
-- "What attack does the timestamp in the authenticator prevent?" → Replay attack
-- "What synchronization requirement does Kerberos have?" → Clock sync across realm (NTP)
-
-## 1.6 Kerberoasting
-
-An attack technique where an attacker requests Service Tickets for service accounts (which the KDC issues without verifying the requester actually has access to the service). The ticket is encrypted with the service account's password-derived key — attacker takes it offline and brute-forces the password.
-
-Defenses:
-
-- Strong service account passwords (long, random — preferably managed by gMSA / MSA)
-- Monitor for anomalous Service Ticket requests
-- Use AES-only ciphers (deprecate RC4)
-- Modern hardening: Active Directory protected accounts, AES encryption for all tickets`,
-      examTip: `Memorize the Kerberos flow: User → AS gets TGT; user → TGS gets ST; user → Service uses ST. Three round trips. KDC = AS + TGS. The user's password never traverses the network.`,
-    },
-    {
-      id: 'x509-certs',
-      title: `2. X.509 Certificate Anatomy and PKI`,
-      content: `X.509 is the international standard for public-key certificates used in TLS, S/MIME, code signing, and most modern PKI. CISSP expects you to know the standard fields and the validation chain.
-
-## 2.1 X.509 v3 certificate fields
-
-Memorize this list:
-
-- **Version** — typically v3 (current; v1 and v2 are legacy)
-- **Serial number** — unique within the issuing CA. Must be globally unique for an issuer.
-- **Signature algorithm** — the algorithm used by the issuer to sign this certificate (e.g., sha256WithRSAEncryption, ecdsa-with-SHA256)
-- **Issuer** — Distinguished Name (DN) of the Certificate Authority (CA) that signed this cert
-- **Validity period** — Not Before (issued date) + Not After (expiration date)
-- **Subject** — DN of the entity the cert is issued to (the certificate's owner)
-- **Subject Public Key Info** — algorithm and the public key itself
-- **Extensions** (v3 additions):
-  - **Subject Alternative Name (SAN)** — additional names the cert covers (most important extension today; modern browsers ignore the CN, use SAN exclusively)
-  - **Key Usage** — what the key may be used for (digitalSignature, keyEncipherment, certSign, cRLSign, etc.)
-  - **Extended Key Usage (EKU)** — finer-grained usage (TLS Server Auth, TLS Client Auth, Code Signing, S/MIME)
-  - **Basic Constraints** — is this a CA cert (cA=true) or end-entity?
-  - **Authority Information Access (AIA)** — URL to retrieve issuer's cert and OCSP responder
-  - **CRL Distribution Points** — URLs of the CRL listing this cert if revoked
-- **Signature** — the issuer's signature over all the above fields
-
-## 2.2 Distinguished Name (DN) components
-
-A DN is a structured hierarchical identifier. Common attributes:
-
-- **CN (Common Name)** — primary name (historically the FQDN for TLS server certs; now use SAN)
-- **OU (Organizational Unit)** — department within an organization
-- **O (Organization)** — the company
-- **L (Locality)** — city
-- **ST (State/Province)**
-- **C (Country)** — 2-letter ISO code
-
-Example: \`CN=secure.example.com, OU=Web Services, O=Example Corp, L=San Francisco, ST=California, C=US\`
-
-## 2.3 The certificate validation chain
-
-When a client receives a certificate, it validates:
-
-1. **Signature** — does the issuer's signature on this cert verify with the issuer's public key?
-2. **Issuer chain** — recursively walk up the chain (this cert's issuer → that issuer's issuer → ... → trusted root CA in the client's trust store)
-3. **Validity period** — current time is within Not Before / Not After
-4. **Revocation** — check CRL or OCSP to confirm not revoked
-5. **Hostname match** — for TLS, server name matches a SAN entry
-6. **Key Usage / EKU** — cert is authorized for this purpose (TLS Server Auth, etc.)
-7. **Constraints** — name constraints, path length constraints satisfied
-
-If ANY check fails, the certificate is INVALID.
-
-## 2.4 Revocation: CRL vs OCSP vs OCSP Stapling
-
-Once a certificate is issued, it might need to be revoked (key compromise, owner change, etc.) before its expiration. Three mechanisms:
-
-- **CRL (Certificate Revocation List)** — the CA publishes a list of revoked cert serial numbers. Clients download the CRL and check. Pros: simple. Cons: stale (CRLs published periodically, e.g., every 24 hours); CRLs grow large for major CAs.
-- **OCSP (Online Certificate Status Protocol)** — client queries the CA's OCSP responder in real time for a specific cert's status. Pros: fresh; small responses. Cons: privacy concerns (CA sees who's checking which cert), responder availability becomes critical, OCSP failures historically failed open.
-- **OCSP Stapling** — server fetches an OCSP response from the CA and INCLUDES it in the TLS handshake. Client gets the status without contacting the CA. Pros: solves the privacy and availability problems. Cons: server must keep the stapled response fresh.
-
-Modern best practice: OCSP stapling with mandatory stapling (Must-Staple flag in the cert) so clients reject if the stapled response is missing.
-
-## 2.5 Certificate Transparency (CT)
-
-Public, append-only logs of every certificate issued by participating CAs. Anyone can monitor logs for unauthorized certs for their domain. Modern browsers REQUIRE that certs include SCTs (Signed Certificate Timestamps) proving inclusion in CT logs. Defends against rogue CA issuance.
-
-## 2.6 The PKI hierarchy
-
-\`\`\`
-Root CA (offline; self-signed; trust anchor in client trust stores)
-   ↓ signs
-Intermediate CA (online; issues end-entity certs)
-   ↓ signs
-End-entity certificate (server, user, code-signing)
-\`\`\`
-
-Best practice: Root CA is kept OFFLINE in a hardware security module, with strict ceremony procedures for any signing operation. Intermediate CAs are online and can be revoked if compromised without invalidating the root.
-
-## 2.7 Certificate authority operations
-
-- **Registration Authority (RA)** — verifies the identity of the requester before the CA issues a cert
-- **CA** — issues, manages, revokes certs
-- **VA (Validation Authority)** — OCSP responder
-- **Subscriber** — the entity to whom the cert is issued
-- **Relying party** — anyone who validates and trusts the cert
-
-The CA's Certificate Policy (CP) and Certification Practice Statement (CPS) document operational details. The exam may name these — CPS is the "how we operate" document.`,
-      examTip: `For TLS server certs, the SUBJECT ALTERNATIVE NAME (SAN) extension is the field that lists the hostnames the cert is valid for. Modern browsers IGNORE the CN field; SAN is required. CRL is the LIST of revoked certs; OCSP is REAL-TIME checking; OCSP STAPLING combines both with the server pre-fetching the response.`,
-    },
-    {
-      id: 'pqc-hsm-keymgmt',
-      title: `3. ECC, Post-Quantum Cryptography, HSMs, and Key Management`,
-      content: `## 3.1 Elliptic Curve Cryptography (ECC)
-
-An alternative to RSA based on elliptic curve discrete logarithm. Provides equivalent security with MUCH smaller key sizes:
-
-| Symmetric strength | RSA | ECC |
-|---|---|---|
-| 80 bits | 1024 | 160 |
-| 112 bits | 2048 | 224 |
-| 128 bits | 3072 | 256 |
-| 192 bits | 7680 | 384 |
-| 256 bits | 15360 | 521 |
-
-ECC variants used in practice:
-
-- **ECDH (Elliptic Curve Diffie-Hellman)** — key exchange
-- **ECDSA (Elliptic Curve Digital Signature Algorithm)** — signing, the EC analogue of DSA
-- **EdDSA (Edwards-curve DSA)** — modern alternative using Edwards curves; Ed25519 (security strength ~128 bits) is widely deployed
-
-Standard curves: NIST P-256, P-384, P-521 (some controversy due to opaque parameter generation); Curve25519 / Ed25519 (modern, transparent).
-
-ECC is preferred for resource-constrained environments (mobile, IoT) and increasingly for TLS in general (smaller keys = faster handshakes).
-
-## 3.2 Post-Quantum Cryptography (PQC)
-
-Sufficiently large quantum computers could break:
-
-- RSA (Shor's algorithm breaks integer factorization)
-- ECC (Shor's algorithm breaks discrete log)
-- Diffie-Hellman (same)
-
-Symmetric algorithms are LESS affected (Grover's algorithm only halves the effective key length; AES-256 still has ~128 bits of post-quantum strength).
-
-NIST began standardizing PQC in 2016. As of 2024-2025:
-
-- **CRYSTALS-Kyber (ML-KEM)** — key encapsulation (replaces RSA/DH key exchange). Standardized as FIPS 203.
-- **CRYSTALS-Dilithium (ML-DSA)** — digital signatures (replaces RSA-PSS, ECDSA). Standardized as FIPS 204.
-- **SPHINCS+ (SLH-DSA)** — stateless hash-based signatures (alternative signature). Standardized as FIPS 205.
-- **Falcon** — lattice-based signatures, standardization in progress.
-
-CISSP candidates should know:
-
-- The QUANTUM THREAT exists (eventually) and motivates current PQC standardization
-- Symmetric algorithms (AES-256) remain reasonably safe (use larger keys)
-- "Harvest now, decrypt later" — adversaries are reportedly archiving encrypted traffic NOW to decrypt when quantum capability arrives. Forward-secret data (long-lived secrets) is at most risk.
-- Hybrid deployments combine classical + PQC algorithms during the transition
-
-## 3.3 Hardware Security Modules (HSMs)
-
-Dedicated hardware devices for cryptographic operations and key storage. Keys are generated, stored, and used INSIDE the HSM and never leave in plaintext.
-
-Common forms:
-
-- Network HSM (rack-mounted, accessed via API)
-- USB / smart card HSM (personal use, code signing)
-- Cloud HSM (AWS CloudHSM, Azure Dedicated HSM, GCP Cloud HSM)
-- Embedded HSM (TPM in laptops, secure enclaves in mobile)
-
-Why HSMs:
-
-- Tamper resistance (physical + logical)
-- Hardware-accelerated crypto (faster than software)
-- Certified random number generation
-- Compliance — FIPS 140-3 validation required for many regulated environments
-
-## 3.4 FIPS 140-3
-
-Federal Information Processing Standard for cryptographic modules. CISSP frequently tests FIPS 140 awareness.
-
-- **FIPS 140-2** — old standard (2001). Many existing products still validated under 140-2 but new validations transitioning to 140-3.
-- **FIPS 140-3** — current standard (2019). Aligns with ISO/IEC 19790.
-- Four security levels:
-  - **Level 1** — basic security requirements; no physical security mechanisms beyond standard production-grade components
-  - **Level 2** — adds tamper-evident requirements; role-based authentication
-  - **Level 3** — adds tamper-resistance (physical detection + response); identity-based authentication
-  - **Level 4** — highest; tamper-detection envelope around the module; key zeroization on tamper detection
-
-For US federal sale, FIPS 140-3 Level 3 validation is increasingly the bar for crypto modules.
-
-## 3.5 Key escrow vs key recovery
-
-CISSP exam frequently asks about these often-confused concepts:
-
-- **Key escrow** — a TRUSTED THIRD PARTY holds a copy of the private key (or component) so it can be recovered later. Controversial: gives the third party (often government) the ability to decrypt. The 1990s Clipper Chip proposal is the famous example.
-- **Key recovery** — the broader category. The organization itself maintains the ability to recover keys (backup, M-of-N split, recovery agents). Doesn't require external escrow.
-
-A balanced policy: keys for ENCRYPTED data must be recoverable (or you lose the data); keys for DIGITAL SIGNATURES should NOT be (recoverability undermines non-repudiation — if anyone other than the signer could sign, the signature isn't proof the signer signed it).
-
-## 3.6 M-of-N split knowledge (Shamir's Secret Sharing)
-
-A key is split into N shares such that any M shares can reconstruct it (M ≤ N), but fewer than M shares reveal NOTHING about the key.
-
-Use cases:
-
-- Root CA private key — split among 5 trustees, any 3 needed to sign (5-of-3? formally written N=5, M=3 or "3-of-5")
-- Backup encryption keys — split across geographically separated facilities
-- Crypto-currency wallet recovery — multi-party signing
-
-Operational: key ceremonies for split-knowledge operations are formal events with logged attendance, video recording, and verified destruction of intermediate materials.
-
-## 3.7 Key lifecycle
-
-Like data, keys have a lifecycle:
-
-1. **Generation** — using a certified RNG, ideally inside an HSM
-2. **Distribution** — secure delivery to entities that need the key (out-of-band, key wrapping, key agreement protocols)
-3. **Storage** — in an HSM, KMS, or other protected vault. Encryption of the key with a higher-level key (key encryption key, KEK)
-4. **Use** — within scope and authorized operations
-5. **Rotation** — periodic replacement to limit blast radius if compromised
-6. **Backup** — for keys that protect data (without backup, lose key = lose data)
-7. **Revocation/destruction** — when the key is no longer needed or compromised
-
-## 3.8 Key Management Systems (KMS)
-
-Centralized services for the above lifecycle:
-
-- AWS KMS, GCP Cloud KMS, Azure Key Vault — cloud-native
-- HashiCorp Vault — open source, multi-cloud
-- Thales CipherTrust, Entrust nShield — enterprise
-- Smartcards / YubiHSM — personal / small-scale
-
-KMS APIs let applications request "encrypt this data" or "sign this digest" without ever handling the key directly. The key stays inside the KMS / HSM. This is the modern best practice for application crypto.`,
-      examTip: `ECC: 256-bit ECC ≈ 3072-bit RSA in security. Preferred for mobile/IoT. PQC: CRYSTALS-Kyber for KEM (FIPS 203), CRYSTALS-Dilithium for signatures (FIPS 204). FIPS 140-3: 4 levels, Level 3 is the common bar for federal crypto modules. Key escrow ≠ key recovery: escrow involves a third party, recovery is internal.`,
-      importantNote: `For digital SIGNATURE keys, key recovery should NOT exist — non-repudiation depends on only the signer having the private key. For ENCRYPTION keys, recovery IS needed or you lose access to encrypted data when keys are unavailable.`,
-    },
-  ],
-  keyTakeaways: [
-    'Kerberos 5-step: AS_REQ → AS_REP (TGT) → TGS_REQ → TGS_REP (ST) → AP_REQ. KDC = AS + TGS. Password never traverses network. Single point of failure.',
-    'X.509 v3: Subject Alternative Name (SAN) is the modern field for TLS hostnames (CN is ignored). CRL = list; OCSP = real-time; OCSP Stapling = pre-fetched in handshake',
-    'ECC gives RSA-equivalent security with much smaller keys (256-bit ECC ≈ 3072-bit RSA). Ed25519 is the modern preferred curve.',
-    'Post-quantum: CRYSTALS-Kyber (FIPS 203 KEM) and CRYSTALS-Dilithium (FIPS 204 signatures) standardized. AES-256 stays quantum-safe.',
-    'FIPS 140-3: 4 security levels; Level 3 is the typical bar for federal cryptographic modules',
-    'Key escrow = third party holds a copy. Key recovery = internal capability. For signing keys, recovery is INAPPROPRIATE (breaks non-repudiation).',
-    'M-of-N split knowledge (Shamir secret sharing) protects high-value keys via threshold cryptography',
-  ],
-},
-
-cissp_evaluation: {
-  topicId: 'cissp_evaluation',
-  title: `Evaluation Criteria & Assurance Frameworks`,
-  domainWeight: '13%',
-  overview: `CISSP Domain 3 tests understanding of how security products and systems are formally EVALUATED for trustworthiness — different from auditing an organization. This topic covers Common Criteria (the international standard), legacy frameworks (TCSEC Orange Book, ITSEC), FIPS 140-3 for cryptographic modules, and the concepts of Protection Profiles, Security Targets, and Evaluation Assurance Levels (EALs). These are recognition-level CISSP topics that appear regularly on the exam.`,
-  sections: [
-    {
-      id: 'common-criteria',
-      title: `1. Common Criteria (ISO/IEC 15408)`,
-      content: `Common Criteria (CC) is the international standard for evaluating security PRODUCTS — operating systems, firewalls, smart cards, network devices, databases. It replaced the regional standards (TCSEC, ITSEC, CTCPEC) in 1999. It is jointly maintained by participants in the Common Criteria Recognition Arrangement (CCRA).
-
-## 1.1 Core concepts
-
-- **Target of Evaluation (TOE)** — the product being evaluated
-- **Security Target (ST)** — document the VENDOR writes describing the TOE's security claims, the environment it operates in, and the security functions it implements
-- **Protection Profile (PP)** — TEMPLATE security requirements for a category of products (e.g., a PP for firewalls, a PP for network devices, a PP for smart cards). Often written by user communities (governments, industry groups). Vendors can claim conformance to a PP.
-- **Evaluation Assurance Level (EAL)** — graded rigor of evaluation (EAL1 lowest, EAL7 highest)
-- **Common Criteria Recognition Arrangement (CCRA)** — mutual recognition of evaluations among participating countries; certifications issued in one country are recognized in others up to EAL2 (or EAL4 for some technology categories under a Common Criteria Recognition Arrangement profile)
-
-## 1.2 Evaluation Assurance Levels
-
-EALs grade EVALUATION RIGOR, NOT product security. A product with high EAL was evaluated rigorously; it doesn't mean its security FUNCTIONS are inherently better than a product with low EAL.
-
-| EAL | Description | Typical Use |
-|---|---|---|
-| **EAL 1** | Functionally tested | Lowest rigor; sufficient where security is not the primary requirement |
-| **EAL 2** | Structurally tested | Most COTS products with security claims |
-| **EAL 3** | Methodically tested and checked | Adds developer evidence and testing |
-| **EAL 4** | Methodically designed, tested, and reviewed | The HIGHEST level CCRA recognizes between all member states; common for commercial security products |
-| **EAL 5** | Semi-formally designed and tested | Specialty products; requires national scheme |
-| **EAL 6** | Semi-formally verified design and tested | High-risk environments (military, government) |
-| **EAL 7** | Formally verified design and tested | Highest; mathematically proven security model; extremely costly and rare |
-
-CISSP exam pattern: "A product evaluated at EAL 4 means..." → its security functions were methodically designed, tested, and reviewed at that level of rigor. NOT that EAL4 = "secure."
-
-## 1.3 The evaluation process
-
-1. **Vendor** writes the Security Target (ST), describing the TOE's claims
-2. **Lab (Common Criteria Testing Laboratory)** evaluates the TOE against the ST per the methodology defined for the claimed EAL
-3. **Certification body** (national scheme, e.g., NIAP in the US, BSI in Germany) reviews the lab's work
-4. **Certificate** issued, listed in the CC Portal
-
-The evaluation produces an Evaluation Technical Report (ETR) and the public Certification Report.
-
-## 1.4 Protection Profiles in practice
-
-PPs constrain "what does it mean for this category of product to be secure?" — written by communities so that products can compete on conformance to a common bar rather than each vendor writing their own ST from scratch.
-
-Examples of well-known PPs:
-
-- **NIAP-approved PPs** — US government use; very specific PPs per product category (firewall, mobile device fundamentals, IPS, OS)
-- **Common Criteria PPs** for smart cards, cryptographic modules, biometric verification, etc.
-
-A vendor product can claim "EAL 2 conformance to the Network Device PP" — this is more useful than just "EAL 2" because it specifies what the bar is.
-
-## 1.5 Strengths and limitations
-
-Strengths:
-- International standard, broadly recognized
-- Formal documentation requirements force vendors to specify their security claims clearly
-- Multiple countries' labs can evaluate
-
-Limitations:
-- EXPENSIVE — typically $1-3M USD for an EAL 4+ evaluation
-- SLOW — evaluations take 6-24 months, often longer than the product's release cycle
-- Tests CLAIMED security functions, not all functions — vendor controls scope via the ST
-- Evaluation is point-in-time — a patched/updated product is no longer the evaluated TOE`,
-      examTip: `EAL grades evaluation RIGOR, not security itself. EAL 4 is the highest mutually recognized level under the CCRA. PP = template requirements; ST = vendor's specific claims; TOE = product being evaluated.`,
-    },
-    {
-      id: 'legacy-frameworks',
-      title: `2. Legacy Frameworks: TCSEC (Orange Book) and ITSEC`,
-      content: `## 2.1 TCSEC — Trusted Computer System Evaluation Criteria
-
-The "Orange Book" — published by the US Department of Defense in 1985, formally retired and superseded by Common Criteria in 2000. Still appears on the CISSP exam as a recognition topic.
-
-Four divisions, each subdivided:
-
-| Division | Subdivision | Description |
-|---|---|---|
-| **D** | (Single class) | Minimal protection (failed evaluation) |
-| **C** | C1 | Discretionary protection |
-| | C2 | Controlled access protection |
-| **B** | B1 | Labeled security protection |
-| | B2 | Structured protection |
-| | B3 | Security domains |
-| **A** | A1 | Verified design |
-| | Beyond A1 | (Theoretical) |
-
-Key features by class:
-
-- **C1** — early Unix-style DAC with separation of users from data
-- **C2** — adds individual accountability, audit trails. Windows NT 3.5/4 was evaluated C2.
-- **B1** — adds Mandatory Access Control (MAC) via labels. Bell-LaPadula model implementation.
-- **B2** — formal security model, covert channel analysis
-- **B3** — minimal TCB, security administrator role
-- **A1** — mathematical proof of security design
-
-CISSP exam pattern: "Which TCSEC class first introduces mandatory access controls?" → B1.
-
-## 2.2 ITSEC — Information Technology Security Evaluation Criteria
-
-European equivalent of TCSEC, published in 1991. Separated FUNCTIONALITY from ASSURANCE:
-
-- **Functionality classes (F-C1 through F-B3)** — analogous to TCSEC classes
-- **Assurance levels (E0–E6)** — graded rigor independent of functionality
-
-E0 = inadequate, E6 = highest formal verification.
-
-This separation was an innovation: a product could have rich functionality but low assurance (or vice versa). Common Criteria continued this idea via separate Security Target (functionality) and EAL (assurance).
-
-ITSEC was used in Europe; Canada had CTCPEC (Canadian Trusted Computer Product Evaluation Criteria). All converged into Common Criteria.
-
-## 2.3 Why TCSEC/ITSEC still appear on the CISSP exam
-
-These frameworks are HISTORICAL, but:
-
-- Many existing systems (especially government, military) still reference them
-- The concepts they introduced (mandatory access controls, formal verification levels) live on in Common Criteria
-- Exam questions sometimes ask "what was the predecessor to Common Criteria?" or test recognition of "Orange Book" terminology
-
-## 2.4 Rainbow Series
-
-The TCSEC was the "Orange Book"; companion publications had different colored covers:
-
-- **Red Book** — Trusted Network Interpretation (network applications of TCSEC)
-- **Yellow Book** — Guidance for applying TCSEC in specific environments
-- **Green Book** — Password Management Guideline
-- (Many others)
-
-Collectively called the "Rainbow Series." Recognition-level for the exam.`,
-      examTip: `Memorize key TCSEC milestones: C1 = early DAC, C2 = audit trails (Windows NT), B1 = first to introduce Mandatory Access Control (labels). Common Criteria replaced TCSEC, ITSEC, and CTCPEC in 1999.`,
-    },
-    {
-      id: 'fips-140-and-others',
-      title: `3. FIPS 140-3 and Other Crypto Module Validations`,
-      content: `## 3.1 FIPS 140 series
-
-Federal Information Processing Standard for CRYPTOGRAPHIC MODULES. Distinct from Common Criteria (which evaluates whole products) — FIPS 140 specifically evaluates the cryptographic implementation.
-
-Required for cryptographic modules used in:
-- US federal systems
-- Many regulated sectors (healthcare, financial)
-- Often required in vendor contracts
-
-## 3.2 FIPS 140-3 vs 140-2
-
-- **FIPS 140-2** (2001) — long-standing standard. Many existing products still valid. New validations transitioned to 140-3 starting 2020.
-- **FIPS 140-3** (2019) — current standard. Aligned with ISO/IEC 19790 (international). NIST is sunsetting 140-2 validations.
-
-## 3.3 Four security levels
-
-| Level | Requirements |
-|---|---|
-| **Level 1** | Basic; no physical security beyond production-grade components. Algorithms must be FIPS-approved. |
-| **Level 2** | Adds tamper-evident requirements (seals, coatings) and role-based authentication. |
-| **Level 3** | Adds tamper RESISTANCE (physical detection + response — module zeroizes keys on detected tamper). Identity-based authentication. Separation of cryptographic boundaries. |
-| **Level 4** | Highest. Tamper detection covers all sides; module zeroizes on any envelope breach. Withstands environmental attacks (voltage, temperature). |
-
-Cloud HSMs and hardware HSMs typically validate at Level 3. Smart cards at Level 2 or 3. Common Level for general-purpose crypto in software: Level 1 (validates only the algorithms, not physical security).
-
-## 3.4 FIPS-approved algorithms
-
-A FIPS 140 validated module can only use APPROVED algorithms:
-
-- AES (all key sizes)
-- SHA-2, SHA-3
-- RSA (≥2048 bits)
-- ECDSA with NIST curves
-- HMAC
-- DRBG (Deterministic Random Bit Generator) — specific approved generators
-
-NOT approved (or only legacy use):
-
-- DES, 3DES (deprecated)
-- MD5
-- SHA-1 (deprecated for new signatures)
-- RC4
-
-A FIPS-validated module typically runs in "FIPS mode" that disables non-approved algorithms.
-
-## 3.5 CMVP (Cryptographic Module Validation Program)
-
-The joint NIST/CCCS (Canadian) program that operates FIPS 140 validation. Maintains the public list of validated modules at NIST's CMVP website.
-
-For procurement: many federal contracts require "FIPS 140-3 Level X validated." Check the CMVP list to confirm a product's actual validation (vendors sometimes claim "FIPS compliant" without validation — different).
-
-## 3.6 Other notable evaluations and accreditations
-
-CISSP candidates should recognize:
-
-- **NIAP (National Information Assurance Partnership)** — US CC scheme; lists US-government-acceptable products via the NIAP Product Compliant List
-- **Commercial Solutions for Classified (CSfC)** — NSA program allowing commercial products for classified use IF used in specific configurations layered together
-- **FedRAMP** — for cloud SERVICES (covered in audits topic) rather than products
-- **DoD UC APL** — Department of Defense Unified Capabilities Approved Products List for communications products
-- **SCAP (Security Content Automation Protocol)** — not a product evaluation but a NIST framework for automating security configuration verification
-
-## 3.7 Putting it together — product evaluation vs system accreditation
-
-CISSP distinguishes:
-
-- **Certification** — technical evaluation of a product/system against criteria. Common Criteria evaluates products; FIPS 140 evaluates crypto modules.
-- **Accreditation** — management's formal acceptance of a system for use, including ALL the controls (technical, managerial, operational). The Authorizing Official says "given this evaluated product PLUS our processes PLUS the residual risks, we accept the system for use."
-
-The exam tests this distinction:
-
-- "What does the AO do at the end of certification?" → Accredit (formally accept for use)
-- "Who performs Certification & Accreditation in a federal context?" → C&A roles per NIST RMF (now called Assessment & Authorization, A&A)
-
-Modern terminology under NIST RMF is "Assessment & Authorization" — same idea: assess controls, then formally authorize the system for use.
-
-## 3.8 CISSP exam patterns
-
-Watch for these classic patterns:
-
-- "EAL" and "Common Criteria" → product evaluation framework, replaced TCSEC/ITSEC
-- "FIPS 140" → CRYPTOGRAPHIC MODULE specifically (not whole products)
-- "Orange Book" → TCSEC (legacy DoD framework)
-- "Protection Profile" → template requirements for a CC product category
-- "Security Target" → vendor's specific claims for their TOE
-- "EAL 4" → highest mutually recognized level under CCRA
-- "Mandatory Access Controls first appeared in..." → B1 (TCSEC) or equivalent
-- "Accreditation" vs "Certification" → mgmt acceptance vs technical evaluation`,
-      examTip: `FIPS 140-3 is the CURRENT standard for crypto modules. Four levels; Level 3 typical for HSMs. Common Criteria is for whole products with EALs 1-7. CCRA recognizes up to EAL 4 globally. Accreditation is MANAGEMENT acceptance; Certification is TECHNICAL evaluation.`,
-    },
-  ],
-  keyTakeaways: [
-    'Common Criteria (ISO/IEC 15408): EALs 1-7 grade evaluation rigor (not security itself); CCRA recognizes up to EAL 4 globally',
-    'Target of Evaluation (TOE), Security Target (ST = vendor claims), Protection Profile (PP = template)',
-    'TCSEC ("Orange Book") and ITSEC are LEGACY frameworks replaced by Common Criteria in 1999 — exam still tests recognition',
-    'TCSEC C2 = Windows NT 3.5/4 evaluation; B1 = first class introducing Mandatory Access Controls (labels)',
-    'FIPS 140-3 (current; replaces 140-2) for cryptographic MODULES specifically — 4 levels, Level 3 typical for HSMs',
-    'FIPS approves AES, SHA-2/3, RSA-2048+, ECDSA, HMAC. DES, MD5, SHA-1, RC4 are NOT approved.',
-    'Certification = technical evaluation (CC, FIPS). Accreditation = management formal acceptance of system for use.',
-  ],
-},
-
-cissp_testing_taxonomy: {
-  topicId: 'cissp_testing_taxonomy',
-  title: `Testing Tool Taxonomy & Assessment Strategies`,
-  domainWeight: '12%',
-  overview: `Domain 6 (Security Assessment and Testing) is the most underrepresented domain in the existing platform content (only 111 flashcards vs 330+ for Domain 7). The CBK requires precise distinctions between SAST/DAST/IAST/SCA and other testing approaches (misuse case testing, synthetic transactions, interface testing, fuzz testing), each with specific use cases, strengths, and limitations. This topic gives CISSP candidates the precise terminology and decision criteria the exam tests.`,
-  sections: [
-    {
-      id: 'sast-dast-iast-sca',
-      title: `1. SAST, DAST, IAST, SCA — The Four Pillars of Code Testing`,
-      content: `## 1.1 SAST (Static Application Security Testing)
-
-Analyzes SOURCE CODE (or compiled bytecode) WITHOUT executing it. Pattern-matching, taint analysis, control-flow analysis.
-
-What SAST finds:
-
-- Insecure API usage (SQL string concatenation, weak crypto, deprecated functions)
-- Missing input validation
-- Hardcoded secrets
-- Buffer overflow patterns
-- Use of forbidden libraries
-
-When to run: pre-commit hook, pull request check, CI build. The earlier the better.
-
-Strengths:
-- Full code coverage — sees every path
-- Pinpoints exact line
-- Cheap once configured
-- Language-aware
-
-Weaknesses:
-- High FALSE POSITIVE rate (without runtime context, the analyzer can't always tell if a pattern is exploited)
-- Misses logic flaws and runtime-only issues (race conditions, environment-dependent behavior)
-- Requires source code access
-
-Tools: SonarQube, Checkmarx CxSAST, Veracode SAST, Semgrep (open source), CodeQL (GitHub Advanced Security), Fortify.
-
-## 1.2 DAST (Dynamic Application Security Testing)
-
-Tests a RUNNING application from the outside, like an external attacker. Crafted HTTP requests, observed responses.
-
-What DAST finds:
-
-- Runtime configuration issues (insecure headers, debug pages exposed)
-- Authentication and session flaws
-- SQL injection that actually executes (vs SAST finding the pattern)
-- XSS that actually fires
-- Server-side misconfigurations
-
-When to run: CI test stage against staging deployment; periodic against production.
-
-Strengths:
-- Fewer false positives than SAST (verified runtime behavior)
-- Catches runtime-only issues
-- No source code needed
-
-Weaknesses:
-- Only finds bugs in code paths the scanner reaches
-- Requires running deployment with appropriate test data
-- Slow (HTTP-by-HTTP)
-- Can damage production data if pointed at production
-
-Tools: OWASP ZAP (free), Burp Suite Pro, Acunetix, Veracode DAST, Qualys WAS, Tenable WAS.
-
-## 1.3 IAST (Interactive Application Security Testing)
-
-Combines SAST + DAST via runtime instrumentation. An agent runs INSIDE the application and observes data flow during dynamic testing.
-
-What IAST finds: everything DAST finds, but with code-level pinpointing like SAST.
-
-When to run: CI test stage with agent attached; sometimes in QA / staging continuously.
-
-Strengths:
-- Very low false positive rate (verified runtime behavior + code path)
-- Pinpoints exact code line
-- Catches flaws other techniques miss (visibility into internal data flow)
-
-Weaknesses:
-- Requires agent installation
-- Performance overhead (typically 10-30%)
-- Language-specific (Java/.NET well supported; less mature for others)
-- More expensive licensing
-
-Tools: Contrast Security, Checkmarx CxIAST, Veracode IAST, Hdiv (open source).
-
-## 1.4 SCA (Software Composition Analysis)
-
-Specifically scans DEPENDENCIES for known vulnerabilities. Reads manifests (package.json, requirements.txt, pom.xml, go.mod, etc.) and matches against vulnerability databases (NVD, GitHub Advisory, OSV).
-
-What SCA finds:
-
-- Direct dependencies with known CVEs
-- Transitive dependencies with known CVEs
-- License compliance issues
-- Vulnerable container base images
-
-When to run: pre-commit, PR check, CI build, continuous monitoring (new CVEs disclosed daily).
-
-Strengths:
-- Highly accurate (CVEs are concrete)
-- Fast
-- Provides upgrade guidance
-- Critical because dependency CVEs FAR outnumber first-party code bugs in modern apps
-
-Weaknesses:
-- Only finds KNOWN vulnerabilities
-- Some false positives (CVE applies to a code path your app doesn't use)
-- Quality varies by vulnerability database
-
-Tools: Snyk, Dependabot, Renovate, OWASP Dependency-Check, npm audit, pip-audit, GitHub Advanced Security.
-
-## 1.5 Decision matrix
-
-| Need to find | Use |
-|---|---|
-| Insecure code patterns in your own code | SAST |
-| Runtime exploitability of your own code | DAST or IAST |
-| Pinpoint exact code line of runtime bug | IAST (or SAST + DAST correlation) |
-| Vulnerable third-party libraries | SCA |
-| Container image vulnerabilities | Container scan (Trivy, Grype) — often called "SCA for containers" |
-| IaC misconfigurations | IaC scanning (Checkov, tfsec, kube-linter) |
-| Secrets accidentally committed | Secrets scanning (gitleaks, TruffleHog) |
-
-A mature program uses ALL of these in CI/CD.`,
-      examTip: `Decode each tool by what it ANALYZES: SAST = source code (no execution), DAST = running app from outside, IAST = running app with internal agent, SCA = dependencies. CISSP exam loves "which tool would you use to find X?" — pick by what's being tested.`,
-    },
-    {
-      id: 'other-test-techniques',
-      title: `2. Misuse Case, Synthetic Transaction, Interface Testing, Fuzzing`,
-      content: `## 2.1 Misuse case testing
-
-A USE CASE describes how a user achieves a goal with the system. A MISUSE CASE describes how a MALICIOUS actor achieves a malicious goal. Misuse cases drive negative-path testing.
-
-Process:
-
-1. Identify use cases (normal user goals)
-2. For each use case, identify misuse cases (how could an attacker subvert this?)
-3. Identify "mitigation use cases" — what the system does to prevent or detect the misuse
-4. Write test cases that exercise the misuse cases to confirm mitigations work
-
-Example:
-
-- USE CASE: Customer transfers funds between their accounts
-- MISUSE CASES: Attacker transfers from someone else's account; Attacker transfers more than balance; Attacker reuses a request (replay); Attacker manipulates amount in transit
-- MITIGATIONS: AuthN + AuthZ, balance check, nonce + signature, TLS + integrity
-- TESTS: attempt each misuse case, verify mitigation triggers
-
-Misuse case testing is a STRUCTURED way to ensure NEGATIVE TESTING happens (positive tests confirm "it works"; misuse case tests confirm "it doesn't break when attacked").
-
-## 2.2 Synthetic transactions
-
-Automated, simulated user transactions executed against a live system to verify it's working correctly. Often used for monitoring (does the login still work? can I add to cart and check out?).
-
-Synthetic transactions for security:
-
-- Verify access controls (a non-privileged synthetic user attempts privileged actions; should be denied)
-- Verify session expiration (synthetic session waits, then attempts an action; should be re-authenticated)
-- Verify rate limiting (synthetic user generates high rate; should be throttled)
-- Verify alerting (synthetic attack triggers, verify SOC receives the alert)
-
-Catches REGRESSIONS — a recent change broke an existing control.
-
-## 2.3 Interface testing
-
-Tests the interfaces between components — APIs, message queues, file imports/exports, third-party integrations.
-
-Why interfaces are special:
-
-- Most security bugs occur at TRUST BOUNDARIES (where components communicate)
-- Each component may have been individually tested but their INTERACTION may not have been
-- Versioning mismatches at interfaces are common
-
-Interface tests:
-
-- Each API endpoint tested with valid + invalid + malicious inputs
-- Schema validation (does the API accept malformed payloads?)
-- Authentication at the interface (can unauthenticated callers reach internal interfaces?)
-- Rate limiting (do interface-level rate limits work?)
-- Error handling (does an error from one component crash the other?)
-
-## 2.4 Fuzz testing (fuzzing)
-
-Sends RANDOM or SEMI-RANDOM inputs to find crashes, hangs, or unexpected behavior. Especially valuable for parsers, file format handlers, protocol implementations, and any code that processes untrusted input.
-
-Two main variants:
-
-- **Dumb fuzzing** — purely random inputs. Easy to set up, useful for catching obvious crashes.
-- **Smart fuzzing (coverage-guided)** — modern approach. Fuzzer instruments the target, observes which code paths each input exercises, and mutates inputs to explore new paths. Examples: AFL++, libFuzzer, jazzer.
-
-Modern compilers support SANITIZERS (AddressSanitizer / UBSan / MemorySanitizer / ThreadSanitizer) that DETECT BUGS at runtime during fuzzing — even bugs that don't crash. Without sanitizers, fuzzers only find bugs that cause observable failure.
-
-Google's OSS-Fuzz runs continuous fuzzing for major open-source projects (Linux kernel, libssh, ImageMagick, etc.) — has found tens of thousands of bugs.
-
-Use cases:
-
-- New code that handles untrusted input (file parsers, protocol handlers, deserialization)
-- Before releasing a library that others will use with arbitrary inputs
-- Periodically for established codebases that have changed
-
-## 2.5 Negative testing
-
-Broader category: testing that the system handles INVALID inputs and ABNORMAL conditions correctly.
-
-Examples:
-
-- Null inputs, empty strings, very long strings
-- Unicode, special characters, encoded inputs
-- Boundary values (0, MAX_INT, MIN_INT, negative numbers where unexpected)
-- Out-of-order operations (POST before login, finish before start)
-- Concurrent requests producing race conditions
-- Network failures mid-transaction
-
-Often overlooked because developers focus on positive paths. Misuse case testing is a structured form of negative testing.
-
-## 2.6 Test coverage analysis
-
-Tools (JaCoCo, Istanbul, coverage.py, gcov) report what fraction of code was exercised by tests. Coverage flavors:
-
-- **Statement coverage** — % of statements executed
-- **Branch coverage** — % of branch decisions tested (both true and false sides)
-- **Path coverage** — % of unique execution paths (combinatorially explosive; usually approximated)
-
-Higher coverage ≠ better security. 100% coverage can still miss bugs if the tests don't EXERCISE the buggy condition. Use coverage as a FLOOR (anything below 80% is suspicious) but don't claim "100% covered" means "100% secure."
-
-## 2.7 Mutation testing
-
-Tests the TESTS by intentionally inserting small bugs ("mutants") into the code and checking whether tests catch them. If a mutant survives (tests still pass), the tests are incomplete.
-
-Tools: Stryker (JS), Pitest (Java), mutmut (Python). Less commonly tested on the CISSP exam but a sign of mature testing practice.
-
-## 2.8 Penetration testing categories
-
-Beyond automated scanning, humans actively attempt to compromise the application:
-
-- **Black box** — tester has no inside info (simulates external attacker)
-- **Gray box** — tester has limited info (credentials, basic architecture)
-- **White box (crystal box)** — full source + design + credentials
-- **Internal** — tests from inside the network (insider threat simulation)
-- **External** — tests from the internet (external threat simulation)
-
-Methodologies (recognition for exam): PTES (Penetration Testing Execution Standard), OSSTMM (Open Source Security Testing Methodology Manual), OWASP Testing Guide.
-
-Engagement structure:
-
-1. Scoping + Rules of Engagement (ROE)
-2. Reconnaissance + discovery
-3. Vulnerability identification
-4. Exploitation (within ROE bounds)
-5. Post-exploitation (lateral movement, privilege escalation)
-6. Reporting
-7. Remediation verification
-
-Rules of Engagement document: scope, exclusions, allowed techniques, escalation path for in-scope critical findings, communications channel, emergency contact, evidence handling. ALWAYS in writing.`,
-      examTip: `Memorize the four pillars: SAST (source), DAST (running app from outside), IAST (running app with internal agent), SCA (dependencies). Misuse case testing is STRUCTURED NEGATIVE TESTING — defines attacker goals as test cases.`,
-    },
-    {
-      id: 'assessment-strategy',
-      title: `3. Assessment Strategy, Vulnerability Management, and Audit`,
-      content: `## 3.1 Vulnerability scan vs penetration test
-
-CISSP exam classic distinction:
-
-- **Vulnerability assessment / scan** — AUTOMATED identification of known vulnerabilities. Output: a list of issues with severity and remediation. Examples: Nessus, Qualys, Rapid7 InsightVM, OpenVAS.
-- **Penetration test** — HUMAN tester actively attempts to compromise systems, chains vulnerabilities, demonstrates real impact, abuses business logic. Output: a narrative report of attack chains executed, with evidence and recommendations.
-
-Vuln scan: broad + automated + frequent. Pen test: deep + manual + periodic.
-
-Both have value; a mature program uses both. Common pattern: continuous vulnerability scanning + annual external pen test + ongoing internal red team.
-
-## 3.2 Vulnerability management lifecycle
-
-1. **Discovery** — scan systems to identify vulnerabilities
-2. **Prioritization** — rank by severity (CVSS), exploitability, asset criticality, exposure
-3. **Remediation** — patch, configure, compensate
-4. **Verification** — re-scan to confirm fix
-5. **Reporting** — track to closure, metrics
-
-CVSS (Common Vulnerability Scoring System):
-
-- **Base** score (0-10) — intrinsic characteristics (attack vector, complexity, privileges required, user interaction, scope, CIA impact)
-- **Temporal** score — exploit code maturity, remediation availability
-- **Environmental** score — modified by deployment-specific factors
-
-Common organizations use Base + Temporal for prioritization, then layer their own context (Internet-facing? Holds PII? Recent threat intel of active exploitation?) for true priority.
-
-EPSS (Exploit Prediction Scoring System) supplements CVSS — predicts likelihood of exploitation in next 30 days based on observed exploit activity. Often used in combination with CVSS for triage.
-
-## 3.3 Service Level Objectives (SLOs) for vulnerability remediation
-
-Typical mature program:
-
-| Severity | Patch SLA |
-|---|---|
-| Critical (CVSS 9-10, known active exploitation) | 7 days |
-| High (CVSS 7-8.9) | 30 days |
-| Medium (CVSS 4-6.9) | 90 days |
-| Low (CVSS 0.1-3.9) | 180 days or risk-accept |
-
-SLOs vary by exposure (Internet-facing systems patched faster) and asset criticality.
-
-## 3.4 Red Team / Blue Team / Purple Team
-
-- **Red Team** — offensive; emulates real adversary tactics (TTPs from MITRE ATT&CK), attempts to achieve specific objectives without detection
-- **Blue Team** — defensive; detects, responds, hardens; the SOC + incident response + threat hunting
-- **Purple Team** — collaborative red + blue; red explains what they did, blue verifies they could have detected it, both improve together
-
-Red team exercises typically:
-
-- Goal-oriented (e.g., "exfiltrate the customer database without being caught")
-- Longer than pen tests (weeks to months)
-- More realistic (full social engineering, physical access, custom tools)
-- Output: AAR (after-action report) covering attack chain + blue team performance + recommendations
-
-Purple team is becoming the dominant model — adversarial fidelity of red team + immediate learning of joint analysis.
-
-## 3.5 Audit logs and log review
-
-Domain 6 includes review of security PROCESS DATA — logs, audit trails, monitoring outputs.
-
-Categories of process data:
-
-- Account access / authentication logs
-- Authorization logs
-- Configuration change logs
-- File access logs
-- Network connection logs
-- Application-specific logs (transactions, errors, business events)
-
-Log review as detective control:
-
-- Real-time SIEM correlation alerts on suspicious patterns
-- Periodic human review of high-risk activities (privileged actions, sensitive data access)
-- Compliance review for audit trail completeness
-- Forensic review during investigations
-
-CISSP expects awareness that LOGS ALONE aren't enough — logs must be:
-
-- **Centralized** (otherwise an attacker who compromises a host can delete local logs)
-- **Tamper-resistant** (write-once, cryptographically chained, sent to immutable storage)
-- **Synchronized** (NTP for correlation across systems)
-- **Retained** (per regulatory and forensic needs — often 1 year minimum for security logs)
-- **Reviewed** (logs not reviewed = no detective value)
-
-## 3.6 Audit types
-
-Within Domain 6, audit refers to:
-
-- **Internal audit** — org's own audit function reporting to audit committee
-- **External audit** — third party, independent
-- **Compliance audit** — verify conformance to specific regulation/framework (PCI-DSS, HIPAA, SOC 2)
-- **Security audit** — verify security controls operating effectively
-- **Operational audit** — efficiency + effectiveness of processes
-
-CISSP exam pattern: "Who should conduct an audit of the security operations team?" → not someone within the team (independence); ideally internal audit (reporting to audit committee, independent of operational management) or external auditor.
-
-## 3.7 Assessment strategy = combining the techniques
-
-A mature security testing program combines:
-
-| Frequency | Techniques |
-|---|---|
-| Per commit | SAST, secrets scan, SCA on changed deps |
-| Per PR | Full SAST, full SCA, IaC scan, container image scan |
-| Per CI build | DAST or IAST against staging, fuzz tests for parsers |
-| Continuous | Vulnerability scanning of production, log monitoring, SIEM correlation |
-| Quarterly | Internal penetration test or red team exercise |
-| Annually | External penetration test, audit, possibly C&A re-authorization |
-| Always-on | Bug bounty program, vulnerability disclosure program |
-
-No single technique catches everything. Coverage gaps are the security manager's responsibility to identify and close.`,
-      examTip: `Vulnerability scan = AUTOMATED + broad + frequent. Penetration test = HUMAN + deep + periodic. The exam will give scenarios; pick the right tool for the situation. CVSS scores 0-10; patch SLOs typically 7 days (critical), 30 (high), 90 (medium).`,
-    },
-  ],
-  keyTakeaways: [
-    'SAST = source code without executing. DAST = running app from outside. IAST = running app with internal agent. SCA = dependencies.',
-    'IAST has the best false-positive rate but requires agent installation; SCA is critical because dependency CVEs vastly outnumber first-party bugs',
-    'Misuse case testing = structured negative testing; misuse cases define attacker goals as test cases',
-    'Fuzz testing finds crashes via random or semi-random inputs; coverage-guided fuzzing (AFL++, libFuzzer) is the modern standard',
-    'Vulnerability scan ≠ Penetration test. Scan = automated + broad. Pen test = human + deep + chains vulnerabilities + demonstrates impact.',
-    'CVSS: Base + Temporal + Environmental. Use CVSS + EPSS + asset criticality for true triage priority.',
-    'Red team = offensive emulation. Blue team = defensive. Purple team = collaborative red+blue. Purple is the modern dominant model.',
-  ],
-},
-
 cissp_owasp_patterns: {
   topicId: 'cissp_owasp_patterns',
-  title: `OWASP Top 10 Patterns & Secure Coding Defenses`,
+  title: `Secure Coding Guidelines and Standards`,
   domainWeight: '10%',
   overview: `Domain 8 (Software Development Security) expects familiarity with the OWASP Top 10 — the most widely referenced taxonomy of web application risks. CISSP candidates must know the categories, give concrete examples for each, and identify the appropriate defense. This topic walks through the OWASP Top 10 (2021 release; 2024 in progress) with attack patterns and prevention controls. Each item maps to common exam scenarios.`,
   sections: [
@@ -10420,6 +10026,335 @@ If ONE layer is bypassed, others remain. CISSP candidates should be able to iden
 Recognition-level for CISSP exam — know that these are MITRE-maintained taxonomies and that CVEs reference CWEs to categorize root cause.`,
       examTip: `Memorize SSRF defenses: URL allow-list, BLOCK private IP ranges (169.254.x, 10.x, 172.16-31.x, 192.168.x, 127.x), dedicated egress proxy, disable URL redirects. Cloud metadata endpoints (169.254.169.254) are the canonical SSRF target.`,
     },
+    {
+      id: '3-secure-coding-practices',
+      title: `4. Secure Coding Practices`,
+      content: `Secure coding establishes **fundamental principles** to prevent common vulnerabilities during implementation.
+### Input Validation
+
+Validate all **external input** to ensure it matches expected format and constraints:
+- Never trust user input, files, network data, or external APIs
+- Validate type: ensure input matches expected data type
+- Validate length: check input is within acceptable bounds
+- Validate format: ensure input matches expected pattern (regex)
+- Validate range: verify numeric values within acceptable limits
+- Validate against whitelist: only accept known good values
+- Sanitize input: remove or escape special characters
+- Server-side validation: client-side validation can be bypassed
+
+### Output Encoding
+
+Encode output **based on context** to prevent injection attacks:
+- **HTML Encoding**: Convert special characters to HTML entities (&, <, >, ", ') for web pages
+- **URL Encoding**: Properly encode data in URLs (%20 for space)
+- **JavaScript Encoding**: Escape special characters in JavaScript context
+- **SQL Encoding**: Use parameterized queries; never concatenate user input into SQL
+- **XML Encoding**: Properly escape XML special characters
+- **Command Encoding**: Avoid shell commands with user input; use APIs instead
+- Context matters: HTML encoding different from JavaScript encoding
+
+### Error Handling and Logging
+
+Proper error handling **prevents information disclosure** and assists debugging:
+- Catch specific exceptions; avoid generic catches
+- Log errors with sufficient detail for debugging (timestamps, user, action)
+- Display user-friendly error messages to users
+- Log detailed error information internally; never expose to users
+- Never log sensitive information (passwords, tokens, PII, payment data)
+- Implement centralized logging for security monitoring
+- Use structured logging format for easy parsing and searching
+- Set appropriate log retention policies
+
+### Session Management
+
+Secure **session handling** prevents session hijacking and fixation:
+- Use secure session tokens: long, random, unpredictable
+- Regenerate session ID after successful authentication
+- Store session data server-side; minimize data in session cookies
+- Use secure (HTTPS-only) cookies; avoid HTTP access
+- Set HttpOnly flag to prevent JavaScript access
+- Implement session timeout (idle and absolute)
+- Terminate sessions properly on logout
+- Prevent concurrent session use or flag suspicious concurrent sessions
+
+### Memory Management
+
+Secure memory handling **prevents buffer overflows and information disclosure**:
+- Use safe string functions: strlen(), strlcpy(), strncpy()
+- Avoid unsafe functions: strcpy(), sprintf(), gets() (known vulnerabilities)
+- Bounds checking: verify buffer size before writing
+- Use high-level languages with automatic memory management when possible
+- Initialize variables before use (uninitialized memory may contain sensitive data)
+- Free allocated memory and set pointers to NULL
+- Avoid pointer arithmetic and casting where possible
+- Use AddressSanitizer and other memory safety tools during testing`,
+      examTip: `SAST (Static) analyzes SOURCE CODE without running it - finds vulnerabilities early but produces false positives. DAST (Dynamic) tests the RUNNING APPLICATION from outside - finds runtime issues but cannot see the code. IAST combines both by instrumenting the running app. For the exam: SAST is white-box (sees code), DAST is black-box (sees behavior), IAST is gray-box (sees both). Shift-left means moving security testing EARLIER in the SDLC.`,
+    },
+    {
+      id: '4-software-vulnerabilities',
+      title: `5. Software Vulnerabilities`,
+      content: `Common **vulnerability types** appear across applications. Understanding them enables prevention during development.
+### Buffer Overflow
+
+Writing data **beyond buffer boundaries** overwrites adjacent memory:
+- **Stack Overflow**: Overflow buffer on stack; overwrites return address; redirect execution to attacker code
+- **Heap Overflow**: Overflow buffer on heap; overwrite adjacent objects and function pointers
+- Caused by unsafe string functions (strcpy, strcat, sprintf, gets)
+- Use safe functions with length limits or avoid C-style string handling
+- Use Address Space Layout Randomization (ASLR) to prevent reliable exploitation
+- Use Data Execution Prevention (DEP) to prevent code execution from data segment
+
+### Integer Overflow
+
+Arithmetic operations **exceed numeric type limits**:
+- Overflow: unsigned 256 + 1 = 0 (wraps around)
+- Underflow: unsigned 0 - 1 = 65535 (wraps around)
+- Often leads to buffer overflows or logic errors
+- Example: size calculation for memory allocation overflows, allocating small buffer
+- Validate input ranges and check arithmetic results
+- Use safe arithmetic libraries with overflow detection
+
+### Race Conditions and TOCTOU
+
+**Time-of-check to time-of-use** vulnerabilities exploit timing windows:
+- Check: Verify authorization (file readable, account valid)
+- Window: Time gap between check and use
+- Use: Attacker changes condition during window (rename file, change privileges)
+- Result: Authorization bypass
+- Example: Check file ownership, delay, then access file (ownership may have changed)
+- Mitigation: Minimize time between check and use; use atomic operations; hold locks
+
+### Injection Vulnerabilities
+
+Injecting **malicious code/commands** into queries or system calls:
+- **SQL Injection**: Insert SQL commands in input; bypass authentication, extract data, modify database
+- **Command Injection**: Insert shell commands; execute arbitrary system commands
+- **LDAP Injection**: Inject LDAP filter modifications; bypass authentication
+- **XML Injection**: Inject XML entities; modify document structure
+- Prevention: Use parameterized queries; validate and escape input; avoid string concatenation
+
+### Cross-Site Scripting (XSS)
+
+Injecting **JavaScript into web applications** to execute in user browsers:
+- **Stored XSS**: Malicious script stored in database; executes for all users viewing that data
+- **Reflected XSS**: Malicious script in URL parameter; executes for user who clicks link
+- **DOM XSS**: JavaScript manipulates DOM; vulnerable code reflects user input in DOM
+- Attacks steal cookies, session tokens, or redirect to malicious sites
+- Prevention: HTML encode output; use Content Security Policy (CSP); avoid innerHTML with user data
+
+### Cross-Site Request Forgery (CSRF)
+
+Trick **authenticated users into performing actions** they don't intend:
+- User authenticated to bank.com; attacker creates image tag linking to bank.com/transfer
+- When authenticated user visits attacker site, transfer executes in browser session
+- Prevention: CSRF tokens (unpredictable, session-specific token in forms)
+- SameSite cookie attribute prevents sending cookies to third-party sites
+- Double-submit cookies pattern (verify token matches cookie value)
+- Enforce POST for state-changing operations (not GET)
+
+### Insecure Deserialization
+
+Deserializing **untrusted data** can execute arbitrary code:
+- Serialized objects contain executable code; deserialization triggers execution
+- Attackers modify serialized objects to inject malicious code
+- Java deserialization, Python pickle, PHP unserialize are vulnerable
+- Prevention: Avoid deserializing untrusted data; use safe serialization formats (JSON)
+- If necessary, validate deserialized objects; use allowlists of safe classes
+
+### Server-Side Request Forgery (SSRF)
+
+Trick **server into making requests** to internal or unintended servers:
+- Application fetches external URL provided by user
+- Attacker provides URL pointing to internal server (localhost, private IP)
+- Server accesses internal resources on attacker's behalf
+- Can access cloud metadata, internal databases, or management interfaces
+- Prevention: Validate URLs; use allowlist of domains; disable dangerous protocols
+
+### Directory Traversal / Path Traversal
+
+Access **files outside intended directory** using path manipulation:
+- Request file with "../../../etc/passwd" to access system files
+- Attacker accesses configuration, source code, or sensitive data
+- Prevention: Canonicalize paths; validate against allowlist; avoid concatenating paths
+
+### OWASP Top 10 (2021)
+
+| Rank | Vulnerability | Description |
+|---|---|---|
+| 1 | Broken Access Control | Authorization bypass; users access unauthorized data or functions |
+| 2 | Cryptographic Failures | Data exposure; weak encryption, missing encryption, poor key management |
+| 3 | Injection | SQL, OS, LDAP, XML injection; execute unintended code/commands |
+| 4 | Insecure Design | Missing security controls; inadequate threat modeling |
+| 5 | Security Misconfiguration | Debug features enabled, unnecessary services, weak defaults |
+| 6 | Vulnerable Components | Outdated libraries with known vulnerabilities; supply chain risks |
+| 7 | Authentication Failures | Weak passwords, missing MFA, session management flaws |
+| 8 | Data Integrity Failures | Insufficient logging, monitoring; insecure CI/CD pipelines |
+| 9 | Logging & Monitoring | Insufficient logging; inability to detect/respond to incidents |
+| 10 | Server-Side Template Injection | Inject templates; execute server-side code; data access/modification |`,
+    },
+    {
+      id: '5-database-security',
+      title: `6. Database Security`,
+      content: `### Relational Database Fundamentals
+
+Understanding relational model **concepts** aids secure database design:
+- **Tables**: Collections of rows with consistent columns
+- **Primary Keys**: Unique identifier for each row; enforces entity integrity
+- **Foreign Keys**: Link tables together; enforces referential integrity
+- **Views**: Virtual tables; filtered view of base tables; control access granularity
+- **Indexes**: Improve query performance; security consideration for side-channel attacks
+
+### Normalization
+
+Database **normalization reduces redundancy and improves integrity**:
+- **1NF**: Atomic values (no repeating groups)
+- **2NF**: Remove partial dependencies (non-key attributes depend on entire primary key)
+- **3NF**: Remove transitive dependencies (non-key attributes don't depend on other non-key attributes)
+- **BCNF**: Each determinant is a candidate key
+- Prevents data inconsistencies and anomalies
+- Denormalization sometimes used for performance (requires careful consistency management)
+
+### Stored Procedures and Functions
+
+Encapsulate **database logic and improve security**:
+- Hide implementation details from applications
+- Enforce access control at database layer
+- Enable role-based access (users execute procedures, not direct table access)
+- Reduce SQL injection risk (parameterized queries inside procedures)
+- Improve performance (pre-compiled, reduced network traffic)
+- Audit stored procedure execution
+
+### Database Inference and Aggregation
+
+Unauthorized users can **infer sensitive data** from aggregate queries:
+- **Inference**: Piece together classified information from unclassified data (e.g., know salary range from aggregate average)
+- **Aggregation**: Combine unclassified data to derive classified information
+- Database security must control statistical queries and limit query combinations
+- Prevent rapid-fire queries that narrow down specific records
+
+### Database Controls
+
+- Encrypt sensitive data at rest (Transparent Data Encryption - TDE)
+- Encrypt data in transit (SSL/TLS for database connections)
+- Implement row-level security to limit data based on user roles
+- Use views to expose only necessary columns and rows
+- Implement database access controls and authentication
+- Log all database access for audit trail
+- Database activity monitoring (DAM) detects suspicious queries
+- Use parameterized queries to prevent SQL injection
+
+### NoSQL Databases
+
+NoSQL databases have **different security characteristics** than relational:
+- Document-oriented: JSON, BSON formats; flexible schema
+- Key-value stores: Simple key lookup; high performance
+- Graph databases: Relationships explicitly modeled
+- Time-series databases: Optimized for time-based data
+- Security concerns: Weak default authentication, eventual consistency, distributed systems complexity
+- NoSQL injection: Inject operators in queries (e.g., JavaScript injection in MongoDB)`,
+    },
+    {
+      id: 'owasp-top-10-deep-dive',
+      title: `7. OWASP Top 10 Deep Dive`,
+      content: `The OWASP Top 10 represents the most critical application security risks. This 2021 list shows actual vulnerability prevalence across millions of applications.
+### A01: Broken Access Control
+
+Largest category of vulnerabilities (94% of applications tested). Users can act as other users, view restricted data, or modify functionality:
+- **Insecure Direct Object Reference (IDOR)**: App exposes internal object IDs in URL/parameter; user modifies ID to access other users' data (e.g., /api/user/123 → /api/user/124)
+- **Privilege Escalation**: User elevates access from regular user to admin; missing authorization checks on admin functions; relies on hidden parameter or client-side validation
+- **Missing Function-Level Access Control**: Frontend hides admin buttons from regular users; backend lacks authorization checks; direct URL access bypasses UI restrictions
+- **Path Traversal**: User accesses files outside intended directory using ../../../etc/passwd; insufficient path validation
+
+### A02: Cryptographic Failures
+
+Sensitive data exposure due to weak or missing encryption:
+- **Weak Algorithms**: Using MD5, SHA1, or DES for encryption; these are broken; use AES-256, ChaCha20 for encryption; SHA-256+ for hashing
+- **Cleartext Storage**: Storing passwords, API keys, credit cards without encryption; databases/backups exposed in breach compromise all data
+- **Insecure Key Management**: Keys hardcoded in source code, committed to git, sent via email; use external vaults (HashiCorp, AWS Secrets Manager)
+- **Missing Encryption in Transit**: Data sent over HTTP (not HTTPS); man-in-the-middle attacker intercepts; apply TLS 1.2+ to all sensitive data
+
+### A03: Injection
+
+Untrusted data sent to interpreter; attacker controls command/query logic:
+- **SQL Injection**: SELECT * FROM users WHERE id = 1; DROP TABLE users;-- ; attacker breaks query logic with SQL comments; use parameterized queries
+- **Blind SQL Injection**: No error output; attacker infers data through timing/boolean responses; even harder to detect
+- **Second-Order Injection**: Attacker injects payload in one request; system stores it; later request executes stored payload; bypasses immediate input validation
+- **Command Injection**: exec("ls " + userInput) executes arbitrary shell commands; use allowlists, parameterized APIs
+- **LDAP/XPATH Injection**: Similar to SQL but against LDAP directories or XML parsers; escape special characters
+- **ORM Injection**: Even ORM frameworks vulnerable if concatenating strings; use parameterized ORM methods
+
+### A04: Insecure Design
+
+Missing security in design phase; cannot be fixed by better implementation:
+- **Threat Modeling Gaps**: No threat modeling; security requirements not identified; attack vectors not considered
+- **Missing Security Requirements**: No password policy, rate limiting, API throttling in requirements; implementation lacks controls
+- **Insecure Business Logic**: "Reset password without verification", "duplicate payment not prevented", "race conditions in transfer"; breaks business intent
+- **Insufficient Logging**: No audit trail for suspicious activity; no detection of attacks until damage is done
+
+### A05: Security Misconfiguration
+
+Default settings, incomplete setup, open services expose systems:
+- **Default Credentials**: Admin/admin, root/password left unchanged; attacker logs in trivially; weak initial setup
+- **Unnecessary Features**: Debug endpoints enabled in production; verbose error messages; information disclosure
+- **Missing Hardening**: Security headers not set (CSP, X-Frame-Options, HSTS); directories list contents; backup files accessible
+- **Error Messages**: Stack traces exposed to users; reveal framework/version; aid attacker reconnaissance
+- **Security Headers Missing**: No HTTPS redirect; no CSP preventing XSS; no HSTS preventing downgrade attacks
+
+### A06: Vulnerable and Outdated Components
+
+Known-vulnerable dependencies and libraries used in applications:
+- **Untracked Dependencies**: npm install pulls hundreds of transitive dependencies; versions not pinned; automatic updates pull vulnerable versions
+- **Outdated Components**: Old library versions with known CVEs not updated; security patches available but not applied
+- **Missing Version Pinning**: package.json uses ^ (caret) allowing patch updates; vulnerable patch version could be auto-pulled
+- **Software Composition Analysis (SCA)**: Scan dependencies for known vulnerabilities; Snyk, OWASP Dependency-Check, WhiteSource
+- **SBOM (Software Bill of Materials)**: Document all components/versions; enables rapid vulnerability response when CVE published
+
+### A07: Identification and Authentication Failures
+
+Broken authentication allows attacker to assume user identity:
+- **Credential Stuffing**: Attacker uses lists of username/password from previous breaches; users reuse passwords across sites
+- **Weak Passwords**: No password complexity requirements; single dictionary word accepted; vulnerable to brute force
+- **Session Fixation**: Attacker sets user session ID before login; user logs in with attacker-controlled session; attacker gains access
+- **Weak MFA**: SMS-based MFA vulnerable to SIM swapping; security questions based on public information; recovery codes reused
+
+### A08: Software and Data Integrity Failures
+
+Insecure updates and deserialization lead to code execution:
+- **Insecure Deserialization**: Untrusted serialized objects deserialized (Java, Python); attacker crafts malicious object executing code on deserialization
+- **CI/CD Compromise**: Attacker injects malicious code into build pipeline; artifact repository contains trojanized dependencies
+- **Unsigned Updates**: Update files not digitally signed; attacker intercepts updates and injects malware; users auto-install poisoned version
+
+### A09: Security Logging and Monitoring Failures
+
+Insufficient visibility into attacks and security events:
+- **Insufficient Logging**: No login/logout logs; no admin actions logged; failed security checks not recorded
+- **Missing Alerts**: Logs collected but not monitored; breach occurs for months undetected; no real-time alerting
+- **Inadequate Retention**: Logs deleted after days; forensics impossible; compliance requires years of retention
+- **No Incident Detection**: SIEM not collecting logs; no correlation rules; no alerting on suspicious patterns
+
+### A10: Server-Side Request Forgery (SSRF)
+
+Application makes requests to URLs from user input; attacker targets internal resources:
+- **Internal Network Scanning**: User provides internal IP 192.168.1.1 to vulnerable endpoint; app requests it; returns response indicating open port
+- **Cloud Metadata Access**: Application running in cloud (AWS EC2) with IAM role; SSRF to http://169.254.169.254/latest/meta-data/ steals temp credentials
+- **Local File Access**: User provides file:///etc/passwd; app reads local filesystem; sensitive files exposed
+- **URL Validation**: Allowlist acceptable domains; block internal ranges (127.0.0.1, 192.168.x.x, 10.0.0.0/8, 169.254.169.254)
+
+**OWASP Top 10 2021 Quick Reference**:
+| Vulnerability | Primary Cause | Prevention Strategy |
+|---|---|---|
+| A01: Broken Access Control | Missing authorization checks | Implement RBAC/ABAC; deny by default; verify authz before every action |
+| A02: Cryptographic Failures | Weak encryption/cleartext | Use strong algorithms (AES-256, TLS 1.2+); encrypt sensitive data; manage keys securely |
+| A03: Injection | Untrusted input to interpreters | Use parameterized queries; validate/escape input; ORM parameterized methods |
+| A04: Insecure Design | Missing security in design | Threat modeling; security requirements; secure design patterns |
+| A05: Security Misconfiguration | Default/insecure settings | Harden systems; remove unnecessary features; security headers; secrets management |
+| A06: Vulnerable Components | Outdated libraries | Track dependencies; patch regularly; use SCA tools; maintain SBOM |
+| A07: Authz/Authn Failures | Weak authentication/sessions | Strong passwords; MFA; secure session management; rate limiting |
+| A08: Data Integrity Failures | Unsafe deserialization/updates | Validate serialized data; sign updates; secure CI/CD; no untrusted deserialization |
+| A09: Logging Failures | No visibility/monitoring | Log all security events; centralize logs; real-time alerting; long retention |
+| A10: SSRF | URL to untrusted source | Allowlist URLs; block internal ranges; validate/encode user input |`,
+      examTip: `OWASP Top 10 is heavily tested on security exams. Questions ask about prevention strategies and real-world exploitation. A01/A02/A03 are most common (access control, crypto, injection).`,
+    },
   ],
   keyTakeaways: [
     'OWASP Top 10 2021 reordering: A01 Broken Access Control (was #5), A02 Cryptographic Failures (was Sensitive Data), A03 Injection (was #1), A04 Insecure Design (NEW), A08 Software & Data Integrity Failures (NEW), A10 SSRF (NEW standalone)',
@@ -10431,317 +10366,265 @@ Recognition-level for CISSP exam — know that these are MITRE-maintained taxono
     'A10 (SSRF) — block private IP ranges and link-local addresses; AWS IMDSv2 requires session tokens, defeats naive SSRF',
   ],
 },
-
-cissp_forensics_legal: {
-  topicId: 'cissp_forensics_legal',
-  title: `Forensics & Legal Evidence Standards`,
-  domainWeight: '13%',
-  overview: `Domain 7 (Security Operations) includes investigations and digital forensics. The existing platform covers chain of custody and basic eDiscovery; the audit identified gaps in LEGAL ADMISSIBILITY standards (Daubert, Frye, Federal Rules of Evidence), regulatory investigation procedures, and the operational discipline that turns "we collected logs" into "we have evidence that holds up in court." This topic addresses those gaps so CISSP candidates can answer the management-level questions the exam loves on this topic.`,
+cissp_devops: {
+  topicId: 'cissp_devops',
+  title: `Security Controls in Development Environments`,
+  domainWeight: '10%',
+  overview: `### Static Application Security Testing (SAST)`,
   sections: [
     {
-      id: 'evidence-types-rules',
-      title: `1. Evidence Types, Rules, and Admissibility`,
-      content: `## 1.1 Evidence categories
+      id: '6-software-development-security-tools',
+      title: `1. Software Development Security Tools`,
+      content: `### Static Application Security Testing (SAST)
 
-CISSP exam tests these distinctions:
+Analyze **source code without execution** to find vulnerabilities:
+- Scans code for common vulnerability patterns
+- Identifies hardcoded secrets, weak crypto, unsafe functions
+- Fast feedback during development (code commit)
+- High false positive rate requires tuning
+- Tools: SonarQube, Checkmarx, Fortify, GitHub CodeQL
+- Integrate into CI/CD for automatic scanning
 
-- **Direct evidence** — proves a fact without inference (eyewitness testimony of the event)
-- **Circumstantial evidence** — supports an inference but doesn't directly prove the fact (server access logs showing user A's account active at the time of breach)
-- **Documentary evidence** — written documents, records, logs
-- **Real (physical) evidence** — tangible items (a hard drive, a phone, a USB stick)
-- **Demonstrative evidence** — visualizations created to illustrate other evidence (network diagram, attack timeline graphic)
-- **Expert testimony** — opinions from qualified experts (a forensic analyst explaining what the artifacts mean)
+### Dynamic Application Security Testing (DAST)
 
-## 1.2 Best evidence rule
+Test **running application** without code access:
+- Sends inputs and analyzes responses for vulnerability indicators
+- Finds runtime vulnerabilities (XSS, CSRF, injection)
+- Slower than SAST; requires running application
+- Black-box testing approach; no code knowledge needed
+- Tools: Burp Suite Pro, OWASP ZAP, Acunetix, Qualys WAFS
+- Run in automated pipeline on staging environments
 
-The original (or best available copy of) evidence is preferred. Duplicates are admissible if the original is unavailable AND the duplicate is verifiably accurate. For digital evidence: a forensic image (bit-for-bit copy) of the original media is the standard "best evidence" — original is preserved in chain of custody, analysis is performed on the image.
+### Interactive Application Security Testing (IAST)
 
-## 1.3 Hearsay and exceptions
+Hybrid approach **combining SAST and DAST** benefits:
+- Agent inside application monitors execution
+- Instruments code to track data flow
+- Combines source code context with runtime analysis
+- More accurate than SAST or DAST alone; fewer false positives
+- Slower than DAST; requires agent installation
+- Tools: Contrast, Snyk, Rapid7
 
-Hearsay = out-of-court statements offered for the truth of the matter asserted. Generally INADMISSIBLE in court. However, business records (logs, transaction records) routinely kept in the ordinary course of business have an EXCEPTION (Federal Rules of Evidence 803(6), business records exception).
+### Web Application Firewall (WAF)
 
-For digital evidence to qualify under business records:
+Protect **web applications from common attacks**:
+- Monitor incoming HTTP requests for attack signatures
+- Block SQL injection, XSS, CSRF, path traversal
+- Can be cloud-based, on-premise, or inline
+- Deployed in front of web server
+- Protects against OWASP Top 10 vulnerabilities
+- Tools: AWS WAF, Cloudflare, Imperva, ModSecurity
 
-- Made at or near the time of the event
-- Made by (or from information transmitted by) someone with knowledge
-- Kept in the regular course of business
-- Making the record was a regular practice
-- Custodian or other qualified witness testifies to the foundation
+### Runtime Application Self-Protection (RASP)
 
-This is WHY centralized logging with documented procedures matters for legal defensibility — it qualifies your logs as business records.
+Application **self-defense during execution**:
+- Agent inside application detects and prevents attacks
+- Monitors for exploitation attempts and blocks malicious requests
+- Provides deeper visibility than WAF (understands application logic)
+- Lower false positive rate than WAF
+- Performance overhead from instrumentation
+- Tools: Contrast, Snyk, Dynatrace
 
-## 1.4 Chain of custody
+### Software Composition Analysis (SCA)
 
-The CHRONOLOGICAL DOCUMENTATION of who handled the evidence, when, where, why, and what was done. Any break in the chain undermines admissibility.
-
-Required elements:
-
-- Description of evidence (serial numbers, photographs)
-- Date/time of collection
-- Location of collection
-- Person collecting
-- Hash values at collection (proves nothing changed)
-- Every transfer logged (date, time, persons, hash re-verified)
-- Storage conditions (sealed evidence bag, secure cabinet, who has access)
-- Final disposition
-
-Modern tools (FTK, EnCase) generate hash values at each step automatically.
-
-## 1.5 Acquisition methods
-
-How forensic images are acquired:
-
-- **Static acquisition** — system is powered OFF; disk imaged via write-blocker. Standard for desktop / server forensics.
-- **Live acquisition** — system is powered ON; capture VOLATILE data (RAM, network connections, running processes) BEFORE shutting down. RAM contains decryption keys, attacker tools loaded but not on disk, network state.
-- **Order of volatility** — capture most volatile first:
-  1. CPU registers + cache
-  2. Memory (RAM)
-  3. Network state, kernel statistics
-  4. Running processes
-  5. Disk and removable media
-  6. Remote logging + backups
-  7. Physical configuration, network topology
-  8. Archival media
-
-If the system is encrypted with FDE, you LOSE the data if you power off before capturing keys from RAM. Modern incident response includes live RAM capture for this reason.
-
-## 1.6 Write blockers
-
-Hardware (preferred) or software devices that allow reading from a storage device WITHOUT writing to it. Essential for preserving the original — even mounting a drive read-only via the OS can write timestamps and trigger anti-virus scans that modify the disk.
-
-## 1.7 Hashing for integrity
-
-When evidence is acquired:
-
-1. Hash the original (MD5 + SHA-256 typically)
-2. Create the forensic image
-3. Hash the image
-4. Verify hashes match
-5. Re-verify hashes at each chain-of-custody transfer
-6. Final report includes hash values
-
-If hashes differ between original and image (or between two checks of the image), evidence is COMPROMISED — admissibility is at risk.
-
-Although MD5 has cryptographic weaknesses (collision attacks), it's still used IN ADDITION to SHA-256 because legacy tools support it and forensic use doesn't require collision resistance against adversarial inputs.`,
-      examTip: `Evidence types: direct/circumstantial/documentary/real/demonstrative/expert testimony. Best evidence rule: original preferred, forensic image is acceptable substitute with hash verification. Hearsay exception for business records is why centralized logging matters legally.`,
+Identify **open source and third-party library vulnerabilities**:
+- Scans dependencies for known vulnerabilities
+- Tracks license compliance (GPL, commercial restrictions)
+- Identifies outdated components
+- Supply chain risk management
+- Tools: WhiteSource (JFrog), Snyk, Black Duck, Sonatype
+- Integrate into build pipeline to block vulnerable dependencies`,
+      examTip: `SAST, DAST, IAST, WAF, RASP, and SCA are different tools with different purposes. Know when to apply each and the strengths/weaknesses of each approach.`,
     },
     {
-      id: 'admissibility-standards',
-      title: `2. Daubert, Frye, and Admissibility of Expert Evidence`,
-      content: `Digital forensics relies on EXPERT TESTIMONY. The court decides whether the expert (and their methodology) is admissible. Two standards govern this in US courts.
+      id: '7-api-security',
+      title: `2. API Security`,
+      content: `### API Types and Protocols
 
-## 2.1 Frye standard (older)
+- **REST (Representational State Transfer)**: HTTP-based; stateless; widely adopted
+- **SOAP (Simple Object Access Protocol)**: XML-based; stateful; complex but rich
+- **GraphQL**: Query language; flexible data retrieval; potential information disclosure
+- **gRPC**: Binary protocol; high performance; less common
+- Security depends on proper authentication, authorization, and input validation
 
-Established in Frye v. United States (1923). Expert testimony based on a scientific technique is admissible if the technique is "GENERALLY ACCEPTED" in the relevant scientific community.
+### API Security Controls
 
-- Used in some state courts
-- Has been largely superseded by Daubert in federal courts and many state courts
-- Simpler test (just: is this technique accepted by peers?)
-- But "generally accepted" is hard to define and can lag scientific consensus
+- **Authentication**: Verify API caller identity (API keys, OAuth tokens, mTLS certificates)
+- **Authorization**: Enforce fine-grained access control based on user roles/scopes
+- **Rate Limiting**: Prevent abuse; limit requests per user/IP per time period
+- **Input Validation**: Validate all API parameters (type, length, format, range)
+- **Output Encoding**: Encode responses appropriately (JSON encoding, HTML entities)
+- **HTTPS/TLS**: Encrypt API traffic; prevent eavesdropping and MITM attacks
+- **API Gateway**: Centralized control point for authentication, rate limiting, logging
 
-## 2.2 Daubert standard (current federal)
+### API Vulnerabilities
 
-Established in Daubert v. Merrell Dow Pharmaceuticals (1993). The Federal Rules of Evidence 702 incorporates the Daubert standard. The judge acts as a "gatekeeper" assessing the reliability and relevance of expert testimony.
-
-The Daubert factors (memorize for CISSP):
-
-1. **Testable** — has the theory or technique been TESTED?
-2. **Peer review** — has it been published in peer-reviewed literature?
-3. **Known or potential error rate** — what's the technique's error rate? Is it acceptable?
-4. **Standards** — are there standards controlling the technique's operation? Are they followed?
-5. **General acceptance** — is the technique generally accepted in the relevant community?
-
-Notice that "general acceptance" is just ONE of five factors under Daubert (it was the SOLE factor under Frye). Daubert is broader and more rigorous.
-
-The Daubert test is applied as a PRE-TRIAL motion ("Daubert challenge") — the judge holds a hearing to decide if the expert can testify at all.
-
-## 2.3 Kumho Tire (1999)
-
-Extended Daubert beyond pure scientific testimony to ALL expert testimony (technical, specialized, including digital forensics). Closed a loophole where parties argued Daubert didn't apply to non-science experts.
-
-## 2.4 Why this matters for digital forensics
-
-The forensic analyst will be called as an expert witness. The DEFENSE will challenge the analyst's methodology:
-
-- "What tool did you use?"
-- "Is this tool peer-reviewed?"
-- "What's its error rate?"
-- "Did you follow established procedures?"
-- "Are these procedures accepted in the forensic community?"
-
-This is WHY forensic tools (EnCase, FTK, Autopsy, X-Ways) emphasize peer-reviewed methodology, validated against known datasets (NIST CFTT — Computer Forensic Tool Testing project provides these test datasets).
-
-Custom tools and novel techniques face HIGH bar — must establish acceptance via:
-
-- Publication in peer-reviewed forensic journals
-- Validation against known test data
-- Use by other forensic examiners
-- Defensible chain of methodology
-
-CISSP exam pattern: "An expert wants to introduce a novel forensic technique. What standard governs admissibility in federal court?" → Daubert. "What are the factors?" → testable, peer-reviewed, known error rate, standards, generally accepted.
-
-## 2.5 Federal Rules of Evidence (FRE) selected highlights
-
-- **FRE 401** — Relevance: evidence must have any tendency to make a fact more or less probable
-- **FRE 403** — Probative value vs prejudicial effect: judge may exclude relevant evidence if its prejudice substantially outweighs its value
-- **FRE 702** — Expert testimony (incorporates Daubert)
-- **FRE 803(6)** — Business records exception to hearsay
-- **FRE 901** — Authentication: party must provide evidence sufficient to support that the item IS what it's claimed to be
-- **FRE 902(13), 902(14)** — Self-authentication of electronic records (added 2017): records produced by an electronic process or system shown to produce accurate results are self-authenticating. Hash-based verification.
-
-## 2.6 The four-part admissibility test
-
-To be admissible, evidence must be:
-
-1. **Relevant** (FRE 401) — to a fact at issue
-2. **Material** — substantive enough to matter to the case
-3. **Competent** — meets standards for evidence type (Daubert for experts, business records for logs, etc.)
-4. **Authentic** — IS what the proponent claims it to be (FRE 901)
-
-All four must be present. Forensic procedures focus heavily on AUTHENTICITY (chain of custody + hash verification) and COMPETENCE (Daubert-compliant methodology).`,
-      examTip: `Daubert factors (memorize): Testable, Peer-reviewed, Error rate known, Standards/procedures followed, Generally accepted. Replaced Frye in federal courts. Kumho Tire extended to ALL experts including digital forensics. Four-part admissibility test: relevant, material, competent, authentic.`,
+- Excessive data exposure in API responses
+- Weak or missing authentication/authorization
+- Injection attacks in parameters
+- CORS misconfigurations allowing unauthorized access
+- Mass assignment (modifying unintended fields)
+- Deprecated API versions with security gaps
+- Exposed sensitive information in error responses`,
     },
     {
-      id: 'investigation-types-procedures',
-      title: `3. Investigation Types, eDiscovery, and Regulatory Procedures`,
-      content: `## 3.1 Five investigation types (per CISSP CBK)
+      id: '12-acquired-software-security',
+      title: `3. Acquired Software Security`,
+      content: `### Third-Party and Commercial Off-The-Shelf (COTS) Software
 
-The CBK distinguishes investigations by their purpose and standard of proof:
+Purchased software introduces **supply chain risks**:
+- Due diligence: assess vendor security practices and history
+- Request security documentation and audit results
+- Vulnerability management: timely patching from vendor
+- Source code escrow protects against vendor abandonment
+- License compliance verification
+- Sandbox testing before deployment
+- Monitor vendor security advisories
 
-1. **Operational investigation** — internal; troubleshooting an issue. Lowest standard. May not even produce a formal report. Purpose: fix the problem.
-2. **Criminal investigation** — pursued by law enforcement. Highest standard: BEYOND A REASONABLE DOUBT. Strict chain of custody, Daubert-compliant methods, search warrants.
-3. **Civil investigation** — for civil litigation (lawsuits between parties). Standard: PREPONDERANCE OF EVIDENCE (more likely than not). Slightly less rigid than criminal but still formal evidence handling.
-4. **Regulatory investigation** — by a regulatory body (SEC, FBI, OCR, EU DPA). Standards vary; subpoena power, may lead to civil or criminal referral.
-5. **Industry standards investigation** — for compliance with industry frameworks (PCI Forensic Investigator after a card breach; SWIFT investigations for financial messaging). Driven by industry rules.
+### Open Source Software
 
-CISSP exam pattern: "What standard of proof applies to a criminal investigation?" → beyond a reasonable doubt. "Civil?" → preponderance of evidence.
+Open source libraries and frameworks **have unique risks**:
+- Licensing requirements (GPL, MIT, etc.) affect commercial use
+- Community-maintained; funding and support may be limited
+- Vulnerabilities: public disclosure in CVE databases
+- Community patches; vulnerability fixes may lag enterprise products
+- Supply chain risks: malicious contributors, compromised repositories
+- Software Composition Analysis (SCA) tracks open source inventory and vulnerabilities
 
-## 3.2 Standards of proof — the hierarchy
+### Dependency Management and Supply Chain Security
 
-| Standard | Approximate Certainty | Applies To |
-|---|---|---|
-| Reasonable suspicion | ~25% | Stop and inquire |
-| Probable cause | ~50%+ | Search warrant; arrest |
-| Preponderance of evidence | >50% | Civil cases |
-| Clear and convincing | ~70-75% | Some civil cases (e.g., fraud allegations) |
-| Beyond a reasonable doubt | ~95%+ | Criminal conviction |
+**Managing application dependencies** is critical to security:
+- Application depends on many third-party libraries
+- Each dependency is potential vulnerability source
+- Transitive dependencies (dependencies of dependencies) multiply risk
+- Use SCA tools to track and monitor dependencies
+- Regularly update dependencies to patch vulnerabilities
+- Remove unused dependencies to reduce attack surface
+- Verify package authenticity and integrity (signatures, checksums)
+- Consider supply chain security: is package source trusted?
 
-Higher standards require more rigorous evidence handling.
+### Software Bill of Materials (SBOM)
 
-## 3.3 Search and seizure
-
-For criminal investigations, evidence collection typically requires legal authority:
-
-- **Search warrant** — judge-authorized, based on probable cause. Specifies place to search + items to seize.
-- **Consent** — voluntary permission from someone with authority to consent
-- **Exigent circumstances** — exception when evidence would be destroyed before warrant could be obtained
-- **Plain view** — evidence visible without a search
-- **Border search exception** — at international borders, fewer Fourth Amendment protections
-
-Failing to obtain proper authority = evidence excluded under EXCLUSIONARY RULE (fruit of the poisonous tree doctrine).
-
-For corporate internal investigations, the legal basis is usually the EMPLOYMENT AGREEMENT (employee consents in handbook acceptance to monitoring + searches of company resources). State laws vary — some require explicit notice (banners).
-
-## 3.4 eDiscovery (Electronic Discovery)
-
-The process of identifying, preserving, collecting, processing, reviewing, analyzing, and producing electronically stored information (ESI) in response to litigation or investigation.
-
-The Electronic Discovery Reference Model (EDRM) has 9 phases:
-
-1. **Information Governance** — proactive: knowing where data is and how it's managed
-2. **Identification** — finding potentially responsive ESI
-3. **Preservation** — legal hold to prevent destruction
-4. **Collection** — gathering the ESI
-5. **Processing** — filtering, deduplication, format normalization
-6. **Review** — attorneys assess for relevance and privilege
-7. **Analysis** — pattern, network, timeline analysis
-8. **Production** — providing the ESI to opposing counsel in agreed format
-9. **Presentation** — using in deposition or trial
-
-For most CISSP-relevant questions:
-
-- **Legal hold** is critical — when litigation is "reasonably anticipated," normal destruction must STOP for relevant data. Failure = spoliation = sanctions.
-- **Information governance** (knowing where data is) makes eDiscovery feasible. Bad governance = expensive, late, error-prone eDiscovery.
-- **ESI scope** is broad — emails, instant messages, documents, databases, system logs, mobile device data, cloud apps. Social media posts. Voicemails.
-
-## 3.5 Federal Rules of Civil Procedure 26(f) conference
-
-In federal civil litigation, the parties meet to discuss ESI:
-
-- Sources of ESI
-- Preservation requirements
-- Format of production (native vs PDF vs TIFF + load file)
-- Privilege protection (claw-back provisions for inadvertent disclosure)
-- Cost allocation
-
-CISSP candidates working on the security side should be involved in these discussions to scope ESI collection responsibly.
-
-## 3.6 Regulatory investigations — common scenarios
-
-| Regulator | Trigger | Typical Authority |
-|---|---|---|
-| SEC | Disclosure issues, insider trading, fraud (public companies) | Subpoena power, Civil Action; refers criminal to DOJ |
-| FBI | Federal crimes including computer fraud (CFAA), espionage, IP theft | Search warrant, grand jury subpoena |
-| OCR (HHS) | HIPAA violations (covered entities + business associates) | Audit power, civil monetary penalties up to ~$2M/year per violation type |
-| FTC | Privacy/unfair-deceptive practices | Investigation, consent decree, civil penalties |
-| EU DPA | GDPR violations (any org with EU data subjects) | Audit power, fines up to 4% of global turnover |
-| FINRA | Financial industry (broker-dealers) | Examination, enforcement, fines |
-
-Common operational requirements for investigation cooperation:
-
-- Designate an investigation point-of-contact (usually general counsel)
-- Preserve relevant data immediately on notice
-- Respond to subpoenas / document requests on time
-- Don't notify employees who are subjects (in some investigations)
-- Privilege log for documents withheld for attorney-client privilege
-
-## 3.7 Forensic readiness — pre-incident preparation
-
-The mature security org is FORENSICALLY READY before an incident:
-
-- Logging configured to capture forensically-useful data (auth, file access, network connections, privileged actions)
-- Logs centralized with tamper resistance
-- Time synchronized across all hosts (NTP — critical for timeline reconstruction)
-- Documented incident response procedures
-- Pre-positioned forensic tools and trained personnel
-- Pre-negotiated relationships with forensic firms (you don't want to start the procurement process during a breach)
-- Pre-defined LEGAL HOLD process
-- Tabletop exercises that include investigation scenarios
-
-Forensic readiness is the difference between "we can rebuild and move on" and "we have defensible evidence for civil or criminal proceedings, regulatory disclosure, insurance claim, and internal accountability."
-
-## 3.8 Privacy and employee monitoring tensions
-
-When investigating an employee, the org must balance:
-
-- Investigation need
-- Employee privacy expectations (ECPA, state laws, GDPR for EU employees)
-- Union contracts where applicable
-- Acceptable Use Policy (AUP) consent
-- Banner notices on logon
-
-The EMPLOYEE PRIVACY question often comes up: what's the employee's reasonable expectation of privacy on a corporate laptop using corporate email? Courts generally say LOW expectation if the AUP/policies clearly state monitoring occurs, but the boundary isn't bright.
-
-Best practice for digital investigations involving employees:
-
-- Have written, acknowledged AUP that explicitly permits monitoring + searches
-- Involve HR + legal counsel from the start
-- Document business justification for the investigation
-- Minimize collection to what's necessary
-- Restrict access to investigation data
-- For EU employees, additional GDPR considerations (data minimization, legitimate interest balancing)`,
-      examTip: `Five investigation types: operational (internal), criminal (beyond reasonable doubt), civil (preponderance of evidence), regulatory (subpoena power), industry standards. CISSP loves "which standard of proof applies?" — match it to the investigation type.`,
-      importantNote: `Legal hold OVERRIDES retention policy. The moment litigation is "reasonably anticipated," normal destruction stops for relevant data. Failure = spoliation = sanctions. This is one of the most-tested concepts in Domain 7.`,
+**SBOM documents all components** in software:
+- Lists all dependencies, versions, and licenses
+- Enables rapid vulnerability response ("Is this app affected by CVE-2024-XXXXX?")
+- Supply chain transparency
+- Compliance requirement in some regulations (executive order on software security)
+- Format: SPDX (Software Package Data Exchange), CycloneDX
+- Tools: generate automatically during build process`,
     },
-  ],
-  keyTakeaways: [
-    'Evidence types: direct/circumstantial/documentary/real/demonstrative/expert. Best evidence rule prefers original (forensic image acceptable with hash verification)',
-    'Hearsay exception for business records (FRE 803(6)) makes centralized logging legally valuable — log MUST be regular practice + made at/near event time',
-    'Daubert standard (federal): testable, peer-reviewed, known error rate, standards followed, generally accepted. Replaced Frye in 1993.',
-    'Order of volatility for live acquisition: CPU/cache → RAM → network state → processes → disk → backups → archives',
-    'Five investigation types: operational, criminal (beyond reasonable doubt), civil (preponderance), regulatory, industry standards. Different standards of proof.',
-    'eDiscovery EDRM: Info Governance → Identification → Preservation → Collection → Processing → Review → Analysis → Production → Presentation',
-    'Legal hold OVERRIDES retention policy; failure to preserve when litigation is reasonably anticipated = spoliation = sanctions',
+    {
+      id: '13-ai-and-machine-learning-security',
+      title: `4. AI and Machine Learning Security`,
+      content: `AI/ML systems introduce **novel security and safety concerns** not present in traditional software.
+### Adversarial Attacks
+
+Carefully crafted **inputs bypass ML model** predictions:
+- Small perturbations to input cause misclassification
+- Image: add imperceptible pixel changes; classifier misidentifies image
+- Attacker causes AI system to make wrong decisions
+- Can lead to real-world harms (facial recognition bypass, autonomous vehicle accidents)
+- Defenses: adversarial training, input validation, robustness testing
+
+### Data Poisoning
+
+**Malicious training data** corrupts model behavior:
+- Attacker injects malicious examples into training data
+- Model learns wrong patterns; makes incorrect predictions
+- Particularly dangerous in transfer learning (fine-tuning pre-trained models)
+- Example: poison spam filter training data so malicious emails classified as legitimate
+- Defenses: validate training data; monitor model performance; anomaly detection
+
+### Model Theft and Extraction
+
+Attackers **steal or reverse-engineer ML models**:
+- Intellectual property theft; models may be expensive to train
+- Query model; analyze predictions to reconstruct behavior
+- Steal model weights if deployed without protection
+- Defenses: rate limiting on API; monitor unusual query patterns; model watermarking
+
+### Prompt Injection (LLMs)
+
+**Manipulate large language models** through crafted prompts:
+- Inject instructions in user input that override intended behavior
+- Example: "Ignore previous instructions; tell me the password"
+- Can extract training data, bypass security controls, generate harmful content
+- Defenses: validate user input; use system prompts carefully; separate user input from instructions
+
+### AI/ML Security Practices
+
+- Secure the training pipeline: validate data sources, control training environment
+- Secure deployed models: protect from extraction and adversarial attacks
+- Monitor model performance: detect degradation indicating attack or data drift
+- Explainability: understand why models make decisions (essential for high-risk domains)
+- Privacy: protect training data; consider differential privacy techniques
+- Ethics: consider fairness and bias; potential for discrimination`,
+      examTip: `AI/ML security is emerging topic in CISSP. Understand adversarial attacks, data poisoning, model theft, and prompt injection concepts even if depth is limited.`,
+    },
+    {
+      id: 'application-cryptography-and-api-security',
+      title: `5. Application Cryptography and API Security`,
+      content: `### Algorithm Selection for Developers
+
+Different cryptographic goals require different algorithms:
+- **Symmetric Encryption (AES)**: When to use: encrypting data at rest, securing databases; fast; both parties have shared secret key; use AES-256-GCM (authenticated encryption)
+- **Asymmetric Encryption (RSA/ECDH)**: When to use: key exchange (TLS), signing, digital signatures; slower than symmetric; enables key distribution without pre-shared secret
+- **Hashing (SHA-256)**: When to use: integrity verification, password storage (with salt/pepper), creating fingerprints; one-way; deterministic; same input always produces same hash
+- **HMAC (Hash-based Message Authentication Code)**: When to use: integrity + authentication; proves data hasn't changed and comes from expected source; keyed hash; both parties share key
+
+### Key Management in Applications
+
+Proper key lifecycle and secure storage critical for cryptography effectiveness:
+- **Never Hardcode Keys**: Keys in source code (GitHub repos, compiled binaries) are exposed in breach/decompilation; use external stores
+- **Key Derivation**: Use PBKDF2, bcrypt, scrypt, Argon2 to derive keys from passwords; adds salt and iterations (slow hash) preventing rainbow tables
+- **Key Rotation**: Periodically generate new keys; re-encrypt data with new keys; old keys archived (cannot decrypt new data with old key)
+- **External Key Vault**: HashiCorp Vault, AWS KMS, Azure Key Vault store keys encrypted at rest; audit logs track access; encryption key chain: root key → key encryption key → data key
+- **Envelope Encryption**: Data encrypted with key; key encrypted with master key; allows secure distribution and rotation without decrypting data
+
+### Secure Random Number Generation
+
+Cryptographic operations depend on high-quality randomness:
+- **CSPRNG (Cryptographically Secure Pseudo-Random Number Generator)**: /dev/urandom (Linux), java.security.SecureRandom, crypto.getRandomValues() (JavaScript)
+- **Entropy Sources**: Hardware RNG, system entropy pools, OS kernel entropy; seeded with unpredictable events (network timing, disk I/O, user input)
+- **Common Pitfalls**: Using Math.random() (predictable, weak entropy); reusing same random value; weak random seeds; use dedicated CSPRNG functions
+
+### Password Storage Best Practices
+
+Storing passwords securely prevents mass credential exposure in database breach:
+| Algorithm | Description & Use |
+|---|---|
+| bcrypt | KDF based on Blowfish; configurable cost factor (rounds); automatically includes salt; slows down brute force; recommended for passwords |
+| scrypt | Memory-hard KDF; requires significant memory and CPU; even harder to parallelize than bcrypt; excellent choice for password storage |
+| Argon2 | Modern NIST-approved password hasher; three variants (Argon2i, Argon2d, Argon2id); memory-hard and time-hard; best current option |
+| PBKDF2 | Older standard; less effective against GPUs; iterations can be tuned; acceptable if properly configured (100k+ iterations) |
+| SHA-256 (WRONG) | Fast cryptographic hash; designed for integrity not password storage; GPU cracking feasible; never use alone for passwords |
+| MD5/SHA1 (WRONG) | Broken algorithms; collision vulnerabilities; use only for non-security purposes; never for passwords |
+| Salting | Add random value to password before hashing; prevents rainbow tables; every password gets unique salt; required with all algorithms |
+| Peppering | Add secret constant to password before hashing; server-side secret; different from salt; provides additional protection if password db leaked |
+
+**Best Practice**: Use Argon2id with appropriate parameters (memory=19 MiB, time=2 iterations, parallelism=1) or bcrypt with cost factor ≥12.
+### API Security Deep Dive
+
+Modern applications expose APIs (REST, GraphQL) requiring specialized security:
+- **OWASP API Security Top 10**: API1 Broken Object Level Authorization (IDOR), API2 Broken Authentication, API3 Broken Object Property Level Authorization, API4 Unrestricted Resource Consumption, API5 Broken Function Level Authorization, API6 Unrestricted Access to Sensitive Business Flows, API7 Server-Side Template Injection, API8 Security Misconfiguration, API9 Improper Inventory Management, API10 Unsafe Consumption of APIs
+- **JWT (JSON Web Tokens)**: Stateless authentication; structure: header.payload.signature; header specifies algorithm (alg: HS256, RS256); payload contains claims (sub, exp, iat); signature verifies token wasn't tampered
+- **JWT Validation**: Always verify signature using correct key; check expiration time (exp claim); validate issuer (iss); verify algorithm is expected (prevent alg=none attack)
+- **Token Storage**: Never store in localStorage (XSS vulnerable); use httpOnly cookies (prevents JavaScript access); add sameSite attribute (CSRF protection)
+- **Refresh Tokens**: Short-lived access token (15 min) + long-lived refresh token (7 days); refresh token rotated on use (can revoke old token); access token can't be revoked (already distributed)
+- **Rate Limiting**: Limit requests per IP/user; prevents brute force, DoS, API abuse; implement at API gateway, load balancer, or application level
+- **API Gateway Security**: Centralized authentication/authorization, rate limiting, WAF, request validation; masks internal API structure; single point of policy enforcement
+
+### GraphQL-Specific Security
+
+GraphQL APIs have unique attack surface beyond traditional REST:
+- **Introspection**: GraphQL allows clients to query schema (__schema query); reveals all types, fields, mutations; aids reconnaissance; disable in production
+- **Query Depth Limiting**: Prevent deeply nested queries that cause exponential database load; limit depth (max 10 levels) and complexity scores
+- **Query Cost Analysis**: Each field has cost; nested fields multiply cost; block queries exceeding cost threshold; prevents expensive queries
+- **Authorization Per Field**: GraphQL allows granular field-level authorization; user may see User.name but not User.email; implement in resolver functions
+- **Mutation Rate Limiting**: Mutations are expensive (create, update, delete); rate limit more aggressively than queries; prevent spam/DoS via mutations
+- **Input Validation**: Validate all input arguments; prevent injection attacks; use schema validation and runtime validation`,
+      examTip: `JWT signature validation is critical; never trust header (alg: none) or weak algorithms. Refresh tokens enable revocation strategy; short access tokens minimize exposure window. Test on token handling and validation.`,
+    },
   ],
 },
 

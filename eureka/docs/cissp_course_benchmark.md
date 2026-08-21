@@ -251,3 +251,49 @@ because the columns were narrower than the header text). Both rebuilt.
 The checker is generator-agnostic. Run against NCLEX it reports **5 broken figures**
 (`nclex-insulin-curves` and `nclex-fundal-height` each have a label rendered 100% on
 top of another), which is unfixed — NCLEX is a paused stream.
+
+## CORRECTION (2026-08-21): the course is now built on the book's module model
+
+Everything above this line audited the course against the book. It did not
+**restructure** the course to match it. The build that followed raised individual
+chapters to a word-and-figure standard on an inherited 36-chapter structure -
+depth work against a target, not the book's model. The owner caught it.
+
+**The book is built in MODULES.** `scripts/cissp_module_map.py` now holds the
+extraction, and it is the single source of truth for the course's shape:
+
+- **8 domains, 72 modules**, 64 content plus one Domain Review closing each domain.
+- Domain 4 is taught **one OSI layer per module** - Physical, Data-Link, Network,
+  Transport, Session, Presentation, Application. That is the book's spine for the
+  domain, and the old structure had none of it.
+- Module titles and order in `exam-curriculum.ts` are the book's, verbatim
+  (structure only - all prose remains authored originally for EUREKA).
+
+**What the restructure did:** 30 modules are seeded from existing chapters, each
+retitled to its book module name and stamped with the official (ISC)² domain
+weight. Six chapters that had no module of their own were **merged as additional
+sections** into their parent module rather than deleted (`cissp_app_vuln` into
+Secure Coding Guidelines, `cissp_crypto_advanced` into Cryptography,
+`cissp_forensics_legal` into Investigations, `cissp_security_models_deep` into
+Fundamental Concepts of Security Models, `cissp_testing_taxonomy` into Security
+Control Testing, `cissp_wireless_net` into Secure Communications Channels). Two
+more seeded modules that had no parent (`cissp_iam_attacks` → Accountability,
+`cissp_testing` → Test Output and Generate Report). **No authored content was
+lost** - verified by diffing the placed set against every chapter key.
+
+**Honest state after the restructure:**
+
+| Measure | Value |
+|---|---|
+| Modules in the book's map | 72 |
+| Modules with any content | 30 |
+| Modules at the FE-EE-grade standard | 6 |
+| Modules with no content at all | 42 |
+
+`check_cissp_depth.py` now reports per-domain module coverage and **fails while
+any book module has no content**, so the denominator is the book's 72 rather than
+however many chapters happen to exist. The 42 empty modules render the reader's
+existing "This chapter has no written content yet" state - honest, not blank.
+
+**Remaining work is authoring, in book order**: 42 modules at ~6,000 words each,
+roughly 250,000 words, plus the figures each one needs.
