@@ -2401,6 +2401,292 @@ The exam's recurring theme: strong algorithms fail because of weak key handling.
       examTip: `Hardcoded keys, keys emailed in the clear, one key doing two jobs, and no rotation policy are all wrong answers by construction — key management failure is the intended defect in most cryptography scenarios.`,
     },
     {
+      id: 'crypto-hybrid-detail',
+      title: `3b. The Hybrid Handshake, Step by Step`,
+      content: `![The hybrid model: the server presents a certificate, the parties agree a session key using asymmetric cryptography or ephemeral Diffie-Hellman, then all bulk traffic is encrypted symmetrically with that session key, which is discarded when the session ends.](/courses/cissp/figures/cissp-hybrid-model.svg)
+
+Nothing in production bulk-encrypts asymmetrically — it is orders of magnitude too slow. Every protocol you will be asked about is hybrid, and the figure shows the shape they all share.
+
+| Step | Cryptography used | Why it is that kind |
+|---|---|---|
+| 1. Server presents certificate | asymmetric (verification) | binds identity to a public key via a CA the client trusts |
+| 2. Key agreement | asymmetric or ephemeral DH | solves distribution without a pre-shared secret |
+| 3. Session key derived | none — both sides compute it | with DH the key is never transmitted at all |
+| 4. Bulk traffic | SYMMETRIC (usually AES-GCM) | speed, plus authenticated encryption |
+| 5. Session ends | key discarded | ephemeral keys are what create forward secrecy |
+
+## Why the certificate step exists
+
+Diffie-Hellman on its own establishes a shared secret with *somebody* — it proves nothing about who. An unauthenticated exchange is defeated by a machine-in-the-middle who completes a separate exchange with each party and relays traffic, reading everything. The certificate closes that hole by proving the server holds the private key matching a public key a trusted CA has vouched for.
+
+That is why certificate warnings matter operationally: a user clicking through an invalid certificate is disabling the only step that distinguishes a genuine peer from an interceptor. Exam items that describe an intercepted "encrypted" session almost always contain a bypassed or unvalidated certificate.
+
+## Where the services land
+
+Run the four services against the finished handshake. **Confidentiality** comes from the symmetric session key. **Integrity** and **authentication of each message** come from the authenticated mode (GCM) or a MAC. **Authentication of the server** comes from the certificate and its private-key proof. **Non-repudiation is absent** — the session key is shared, so neither party can prove to a third party what the other sent. That last point surprises candidates: an encrypted, authenticated TLS session provides no non-repudiation, which is precisely why signed documents exist separately from secure channels.
+
+## Perfect forward secrecy, precisely
+
+Forward secrecy means compromise of a long-term private key does not retroactively decrypt recorded past sessions. It requires **ephemeral** key agreement: each session derives an independent key that is destroyed afterwards and never written down.
+
+Without it, an adversary can record ciphertext today, obtain the server's private key years later by subpoena, theft or cryptanalysis, and decrypt the archive. With it, the long-term key only ever *authenticated* the exchange; it never derived the session keys, so there is nothing for it to unlock. The practical implication for architecture reviews is direct: prefer ephemeral suites, and treat "we can decrypt captured traffic with our server key" as a design flaw rather than an operational convenience.`,
+      examTip: `TLS gives confidentiality, integrity and server authentication - but NOT non-repudiation, because the session key is shared. And forward secrecy requires ephemeral agreement, which is what makes recorded traffic safe from a future key compromise.`,
+    },
+    {
+      id: 'crypto-signature-detail',
+      title: `4b. Signatures, Certificates & Trust in Practice`,
+      content: `![Signing hashes the message and encrypts the digest with the signer's private key; verifying hashes the received message, decrypts the signature with the sender's public key, and compares the two digests.](/courses/cissp/figures/cissp-signature-flow.svg)
+
+The figure is worth reading twice, because the asymmetry is the content: **sign with the private key, verify with the public key, and sign the DIGEST rather than the message.**
+
+## What a verified signature actually proves
+
+| Proven | Not proven |
+|---|---|
+| the message has not changed since signing | that the message is confidential |
+| it was signed by the holder of that private key | that the named person personally did it |
+| the signer cannot credibly deny it (non-repudiation) | that the signing time is trustworthy without a timestamp |
+| the certificate chain was valid at check time | that the key was not compromised earlier |
+
+The second column is the mature reading. A signature binds an ACT to a KEY, and the binding of that key to a PERSON depends entirely on the certificate, its issuance process, and the care with which the private key was protected. A stolen key produces perfectly valid signatures, which is why revocation and key protection are part of the trust story rather than adjacent to it.
+
+**Timestamping** deserves its own mention. Without a trusted timestamp, a signature verified today says nothing about *when* it was made — which matters when a certificate has since expired or been revoked. Trusted timestamping services sign the assertion that a digest existed at a moment, allowing signatures to remain verifiable after certificate expiry.
+
+## Certificate lifecycle and revocation
+
+| Stage | What happens |
+|---|---|
+| Request | subject generates a key pair and submits a CSR containing the PUBLIC key |
+| Validation | RA/CA verifies identity to the level the certificate class requires |
+| Issuance | CA signs the certificate binding identity to key |
+| Distribution | certificate published; private key never leaves the subject |
+| Validation in use | relying party checks signature, validity dates, chain, and revocation |
+| Revocation | compromised or superseded certificates published to CRL/OCSP |
+| Expiry | certificates are deliberately short-lived so mistakes age out |
+
+The private key **never** goes to the CA — only the CSR containing the public key does. An option describing a CA generating and mailing out private keys is describing a broken PKI, unless the design is explicitly a key-escrow arrangement with its own controls.
+
+Two revocation mechanisms, two trade-offs: **CRLs** are periodically published lists, simple but potentially stale between publications; **OCSP** answers in real time but requires the responder to be reachable, creating an availability dependency and a privacy consideration since the responder learns which sites are visited. OCSP stapling addresses both by having the server present a recent signed status itself.
+
+## Trust models
+
+| Model | How trust flows | Where seen |
+|---|---|---|
+| Hierarchical | root CA signs intermediates, which sign subjects | the public web PKI |
+| Cross-certification | two hierarchies mutually recognise each other | federated enterprises |
+| Bridge CA | a hub connects otherwise separate hierarchies | government and large sectors |
+| Web of trust | peers vouch for each other, no central authority | PGP |
+
+The hierarchical model concentrates risk at the root, which is why roots are kept offline, protected by split knowledge and dual control, and used only to sign intermediates. A compromised intermediate is bad; a compromised root invalidates everything beneath it, which is the reason the ceremony around root keys looks disproportionate until you consider the blast radius.`,
+      examTip: `The CSR carries the PUBLIC key; the private key never leaves the subject. And a valid signature proves an act by a KEY - binding that key to a person is the certificate's job, not the signature's.`,
+    },
+    {
+      id: 'crypto-keymgmt-detail',
+      title: `5b. Key Management, Worked`,
+      content: `![The key lifecycle: generation, distribution, storage, use, rotation and destruction, with split knowledge and dual control applying across every stage.](/courses/cissp/figures/cissp-key-lifecycle.svg)
+
+Modern cryptographic failures are overwhelmingly key-management failures. The mathematics rarely breaks; the handling does.
+
+## Worked scenario: reviewing a payment service
+
+A team presents an encryption design for a payment service. Evaluate it stage by stage against the lifecycle.
+
+**Their design.** AES-256 encrypts cardholder data. The key is generated once at deployment by a script using the language's default random function, stored in a configuration file alongside the application, used for both encrypting stored data and signing internal API tokens, and has not been changed in three years because "rotation would require re-encrypting the database." The old key from a previous system is still present in the config, commented out.
+
+**Generation — FAIL.** A language's default random function is frequently not cryptographically secure. Keys must come from a cryptographically secure random source; weak entropy makes an unbreakable algorithm predictable, and no amount of key length compensates.
+
+**Storage — FAIL.** A key in a configuration file beside the application is protected by nothing more than filesystem permissions, and it will propagate into backups, version control, container images and developer laptops. Keys belong in an HSM or a managed key vault, with the application holding a credential to *request* cryptographic operations rather than holding the key itself.
+
+**Use — FAIL.** One key serving both data encryption and token signing violates the one-key-one-purpose rule. Compromise of either function now compromises both, and the blast radius of any incident doubles for no benefit.
+
+**Rotation — FAIL, and the stated reason is the fixable part.** "Rotation requires re-encrypting everything" is true only of a naive design. **Envelope encryption** solves it: data is encrypted with a per-record or per-dataset data key, and that data key is itself encrypted by a key-encryption key held in the HSM. Rotating the key-encryption key then re-encrypts only the small data keys, not the entire database — turning a prohibitive operation into a routine one.
+
+**Destruction — FAIL.** A commented-out old key in a live configuration file is a live key for anyone who reads the file, and it decrypts whatever archive still exists from the previous system.
+
+**The recommendation.** Move to an HSM or managed vault; generate from a cryptographically secure source; separate keys by purpose; adopt envelope encryption so rotation is cheap; define a rotation schedule and a compromise-triggered rotation procedure; and securely destroy retired key material with documented evidence. Note that not one of these findings concerns AES — the algorithm was always fine.
+
+## The controls that recur in exam answers
+
+| Control | What it prevents |
+|---|---|
+| HSM / key vault | key extraction from application hosts, backups and images |
+| Envelope encryption | rotation being too expensive to perform |
+| One key, one purpose | a single compromise spanning multiple functions |
+| Split knowledge | any individual reconstructing a critical key alone |
+| Dual control | any individual using a critical key alone |
+| Key escrow with controls | permanent data loss when a key is lost — at the price of a concentrated target |
+| Documented destruction | retired keys resurrecting old ciphertext |
+
+Split knowledge and dual control are separation-of-duties applied to cryptography, and the exam distinguishes them: split knowledge means no one person KNOWS the whole key; dual control means no one person can USE it alone. Designs frequently need both.`,
+      examTip: `The exam's cryptography scenarios almost always fail at generation, storage, reuse, rotation or destruction rather than at the algorithm - and envelope encryption is the standard answer to "rotation is too expensive".`,
+    },
+    {
+      id: 'crypto-applied',
+      title: `5c. Applied Cryptography: Where Each Construction Shows Up`,
+      content: `The exam rarely asks about a primitive in isolation. It asks which technology protects a given thing, and expects you to know what each one actually covers.
+
+| Technology | Protects | Layer / scope | The limitation to know |
+|---|---|---|---|
+| TLS | data in transit between endpoints | transport | protects the channel, not the data at either end |
+| IPsec | IP traffic, host-to-host or site-to-site | network | tunnel vs transport mode changes what is hidden |
+| SSH | remote administration sessions | application | host-key trust on first use is the weak moment |
+| S/MIME | email, using X.509 certificates | message | requires PKI; both parties need certificates |
+| PGP / OpenPGP | email and files, web-of-trust | message | trust model is peer-based, no central CA |
+| Full-disk encryption | data at rest on a powered-off device | volume | gives NOTHING once the system is booted and unlocked |
+| File / database encryption | specific objects at rest | object | key handling and who can request decryption is the design |
+| Tokenization | replaces a value with a surrogate | data | not encryption - there is no key, only a lookup vault |
+
+## Two distinctions the exam samples directly
+
+**IPsec modes.** In TRANSPORT mode the payload is protected but the original IP header is visible, which suits host-to-host protection inside a trusted network. In TUNNEL mode the entire original packet is encapsulated inside a new one, hiding the internal addressing — which is what site-to-site VPNs need. The associated protocols split responsibilities: **AH** provides integrity and authentication but no confidentiality, while **ESP** provides confidentiality and can also provide integrity. An item asking for confidentiality that offers AH is offering the wrong protocol.
+
+**Full-disk encryption's blind spot.** FDE protects a lost or stolen device that is powered off. Once the machine is booted and the volume unlocked, every file is readable to anything running on it — malware included. So FDE is the right answer for "laptop left in a taxi" and the wrong answer for "protect data from a compromised application" or "enforce separation between database users." Candidates who treat FDE as general-purpose data protection lose these items reliably.
+
+**Tokenization versus encryption.** Encryption transforms data reversibly with a key, so the ciphertext still mathematically contains the value. Tokenization substitutes an unrelated surrogate and stores the mapping in a separate vault, so the token contains nothing at all. That difference matters for compliance scope: systems handling only tokens can often be removed from the regulated boundary, which is the commercial reason tokenization exists in payment environments.
+
+## Cryptography in the data lifecycle
+
+| State | Typical protection | Common gap |
+|---|---|---|
+| At rest | FDE, file/database encryption, encrypted backups | backups encrypted but keys stored alongside them |
+| In transit | TLS, IPsec, SSH | internal east-west traffic left unprotected |
+| In use | limited historically; enclaves and homomorphic techniques emerging | data is decrypted in memory to be processed |
+
+**Data in use** is the honest gap. Traditional cryptography requires decryption before processing, which is why memory-scraping malware works. Homomorphic encryption permits computation on ciphertext and confidential-computing enclaves isolate processing in hardware, but both carry performance and maturity constraints — the exam expects awareness of the direction rather than deployment detail.`,
+      examTip: `Full-disk encryption protects a powered-off device and nothing else. AH gives integrity without confidentiality. And tokenization is not encryption, which is exactly why it removes systems from compliance scope.`,
+    },
+    {
+      id: 'crypto-future',
+      title: `6b. Quantum, Post-Quantum & Algorithm Agility`,
+      content: `Cryptographic choices outlive the systems that make them, so the exam expects awareness of what is coming and how to prepare.
+
+## What quantum computing threatens, and what it does not
+
+| Cryptography | Quantum impact | Practical response |
+|---|---|---|
+| Asymmetric (RSA, ECC, DH) | SEVERE — Shor's algorithm breaks the underlying factoring and discrete-log problems | migrate to post-quantum algorithms |
+| Symmetric (AES) | weakened — Grover's algorithm effectively halves the key strength | increase key length (AES-256 rather than AES-128) |
+| Hashing | weakened similarly | prefer longer digests |
+
+The asymmetric/symmetric asymmetry is the tested point. Quantum computing does not "break all encryption" — it devastates the number-theoretic problems that asymmetric cryptography depends on, while symmetric cryptography survives with longer keys. So the migration burden falls on key exchange, signatures and certificates rather than on bulk data encryption.
+
+**Harvest-now-decrypt-later** is the risk that makes this urgent rather than academic: an adversary records encrypted traffic today and decrypts it once capable hardware exists. Data whose confidentiality must survive decades — health records, state secrets, long-lived intellectual property — is therefore at risk from a machine that does not exist yet, which is why standards bodies have been selecting post-quantum algorithms ahead of the threat.
+
+## Algorithm agility
+
+The durable lesson is architectural rather than algorithmic. Systems that hardcode a cipher, a key length, or a digest are expensive to change when that choice is deprecated — and every choice is eventually deprecated, as DES, RC4, MD5 and SHA-1 each demonstrated. **Algorithm agility** means designing so the primitive can be swapped: negotiate rather than fix, store an algorithm identifier alongside ciphertext, and avoid formats that assume a digest length.
+
+| Practice | Why |
+|---|---|
+| Negotiate suites rather than hardcode | lets deprecated options be disabled centrally |
+| Tag stored ciphertext with its algorithm and key ID | permits re-encryption without guessing |
+| Prefer standard formats over bespoke ones | migration paths already exist |
+| Inventory cryptography in use | you cannot migrate what you cannot find |
+| Plan for re-encryption | envelope encryption makes it affordable |
+
+The inventory row is the one organisations skip and then regret: when an algorithm is deprecated, the first question is where it is used, and most enterprises cannot answer it. Building that inventory during calm periods is the preparation the exam rewards.
+
+## Adjacent techniques worth distinguishing
+
+| Technique | What it does | Not to be confused with |
+|---|---|---|
+| Steganography | HIDES the existence of a message inside a carrier | encryption, which hides meaning while the message is evidently there |
+| Digital watermarking | embeds ownership or tracing information | steganography, though the mechanism overlaps |
+| Digital rights management | restricts what a recipient can do with content | encryption alone, since the recipient must be able to read it |
+| Obfuscation | makes code or data harder to understand | encryption, since no key or guarantee is involved |
+| Hashing for deduplication | identifies identical content | integrity protection, since no key or intent is involved |
+
+Steganography's defining property is CONCEALMENT of existence, and it is frequently combined with encryption rather than substituting for it — hidden and unreadable rather than one or the other. The exam's usual angle is exfiltration: data leaving an organisation inside an innocuous image file, defeating controls that inspect for recognisable sensitive content.`,
+      examTip: `Quantum breaks asymmetric cryptography and merely weakens symmetric - so the migration burden is on key exchange and signatures, and AES-256 answers the symmetric side. Harvest-now-decrypt-later is why long-lived data needs action today.`,
+    },
+    {
+      id: 'crypto-selection',
+      title: `6c. Choosing Cryptography, and the Governance Around It`,
+      content: `Design questions ask which cryptography to apply. The answer follows from the SERVICE required, the STATE of the data, and the constraints of the platform — in that order.
+
+## The selection procedure
+
+| Question | Determines |
+|---|---|
+| 1. Which service is required? | confidentiality, integrity, authentication, non-repudiation, or a combination |
+| 2. What state is the data in? | at rest, in transit, or in use |
+| 3. Who must be able to decrypt, and when? | key holders, escrow needs, recovery requirements |
+| 4. What performance and platform constraints apply? | bulk data favours symmetric; constrained devices favour ECC |
+| 5. How long must the protection last? | long-lived data raises key length and post-quantum considerations |
+| 6. What obligations apply? | regulatory, contractual, jurisdictional |
+
+Applied to a common scenario — "protect customer records in a database from an attacker who obtains a backup" — the answers run: confidentiality; at rest; only the application and defined recovery roles; symmetric for bulk; multi-year; and probably regulated. That produces AES with envelope encryption, keys in a vault, and encrypted backups whose keys live somewhere other than beside the backup. Notice the design fell out of the questions rather than out of preference.
+
+## Governance considerations the exam raises
+
+| Topic | What to know |
+|---|---|
+| Export controls | cryptography is regulated in some jurisdictions; product distribution may be restricted |
+| Jurisdiction and data residency | where keys live can determine whose law reaches the data |
+| Lawful access requests | escrow and key-disclosure obligations vary by jurisdiction |
+| Standards compliance | validated implementations may be mandated (for example, in government contexts) |
+| Approved algorithm lists | organisations should maintain and enforce one, with a deprecation path |
+| Cryptographic inventory | you cannot migrate or audit what is not catalogued |
+
+**Key residency is the underrated one.** In a cloud deployment, whoever holds the keys effectively controls access to the data, so "customer-managed keys" versus "provider-managed keys" is a governance decision with legal consequences rather than a technical preference. An organisation that cannot revoke a provider's ability to decrypt has accepted a specific and sometimes unacceptable risk.
+
+## Common design errors
+
+| Error | Why it fails |
+|---|---|
+| Encrypting where hashing is required | passwords must not be recoverable; encryption is reversible |
+| Hashing where encryption is required | you cannot recover data from a digest |
+| Relying on encoding | Base64 has no key and provides no protection |
+| Custom algorithms | unreviewed cryptography fails in ways the designer cannot see |
+| Same key everywhere | one compromise becomes total compromise |
+| Keys beside the ciphertext | including in backups, images, and repositories |
+| No rotation plan | a key that cannot be rotated cannot respond to compromise |
+| Ignoring the endpoints | encrypted transit into an unprotected server solves nothing |
+
+The last row generalises the discipline's central caution: **cryptography protects data in a specific state against a specific adversary**, and a design that encrypts the easy state while leaving the hard one exposed has bought reassurance rather than security. TLS to a server that logs plaintext, full-disk encryption on a machine that is always running, or an encrypted database whose application decrypts everything for any authenticated caller each illustrate the pattern.
+
+## The chapter in one paragraph
+
+Decide which of the four services you need; symmetric cryptography gives confidentiality fast, hashing gives integrity, MACs add shared-key authentication, and only signatures reach non-repudiation. Use asymmetric cryptography to agree a key and prove identity, then hand the bulk work to a symmetric cipher in an authenticated mode. Bind public keys to identities through certificates, and check revocation as well as signature. Then spend your real attention on key management — generation, storage, purpose separation, rotation and destruction — because that is where working systems actually fail.`,
+      examTip: `Let the required SERVICE and the data STATE choose the cryptography, then check the endpoints. Encrypted transit into a server that logs plaintext protects nothing, and that pattern is the domain's favourite trap.`,
+    },
+    {
+      id: 'crypto-vocabulary',
+      title: `6d. The Vocabulary Shelf`,
+      content: `Shelve these with the property that makes each one testable.
+
+| Term | Definition | The property that matters |
+|---|---|---|
+| Plaintext / ciphertext | before and after encryption | reversible with the correct key |
+| Cipher | the algorithm | published and peer-reviewed, per Kerckhoffs |
+| Key | the secret parameter | security depends on THIS, never on algorithm secrecy |
+| Key space | the number of possible keys | doubles with each added bit |
+| Work factor | effort required to break | must exceed the value and lifetime of the data |
+| Confusion | relationship between key and ciphertext obscured | a design property of good ciphers |
+| Diffusion | one plaintext bit affects many ciphertext bits | the avalanche effect in practice |
+| Initialisation vector | randomiser for the first block | need not be secret; must NEVER repeat with a key |
+| Nonce | number used once | reuse breaks stream and counter modes catastrophically |
+| Salt | per-password random value | defeats precomputed rainbow tables |
+| Pepper | secret value added to hashing | stored separately from the database |
+| Ephemeral key | used for one session then destroyed | the mechanism behind forward secrecy |
+| Session key | symmetric key for one conversation | agreed asymmetrically, used symmetrically |
+| Key-encryption key | a key that encrypts other keys | makes envelope encryption and cheap rotation possible |
+| Zero-knowledge proof | proving knowledge without revealing it | authentication without disclosure |
+
+## Three pairs candidates confuse
+
+**Confusion and diffusion** are design properties, not services: confusion hides the key-to-ciphertext relationship, while diffusion spreads each plaintext bit across the output. Both are properties of the cipher's internal construction, and neither is something an implementer configures.
+
+**IV, nonce and salt** all randomise, but for different reasons. An IV randomises encryption so identical plaintexts differ; a nonce guarantees uniqueness for a counter or stream construction; a salt defeats precomputation in password hashing. The unifying rule is that none must be secret and all must be unique in their context.
+
+**Key space and work factor** are related but distinct: key space is how many keys exist, and work factor is how much effort an attack actually requires — which may be far less than the key space if the algorithm has weaknesses, the implementation leaks, or the keys are poorly generated. A large key space with weak entropy delivers a small work factor, which is exactly the failure the generation stage of the lifecycle guards against.
+
+## Reading a question quickly
+
+When a cryptography item appears, three reads usually resolve it. **What service is being asked for?** — that eliminates whole families of answer. **Which key is being used, and whose?** — recipient's public for secrecy, own private for signing. **Where does the key live and who can reach it?** — because that is where the described system almost always fails. Candidates who run those three reads before evaluating options answer faster and more accurately than candidates who start by recalling algorithm properties.`,
+      examTip: `IVs and nonces need not be secret but must never repeat with the same key; salts defeat rainbow tables. And a huge key space with weak randomness still yields a small work factor.`,
+    },
+    {
       id: 'crypto-attacks',
       title: `6. Attacks & Self-Check`,
       content: `| Attack | How it works | Defence |

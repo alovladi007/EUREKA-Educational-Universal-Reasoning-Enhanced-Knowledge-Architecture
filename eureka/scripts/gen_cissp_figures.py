@@ -339,6 +339,141 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# The hybrid model every real protocol uses: asymmetric cryptography (or
+# authenticated Diffie-Hellman) agrees a session key, then symmetric
+# cryptography carries the bulk traffic.  Sequence, not measurement.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-hybrid-model")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(8.2, 4.4))
+    for x, name in ((0.9, "CLIENT"), (8.3, "SERVER")):
+        ax.plot([x, x], [0.4, 4.5], color=ink, linewidth=2)
+        ax.annotate(name, (x, 4.75), ha="center", fontsize=10.5, color=ink)
+
+    steps = [
+        (4.05, "1. server presents its CERTIFICATE", c[0], "right-to-left",
+         "client validates the chain to a trusted CA"),
+        (3.25, "2. key agreement (ephemeral DH / RSA transport)", c[0], "both",
+         "ASYMMETRIC - slow, used once"),
+        (2.45, "3. both derive the same SESSION KEY", c[1], "none",
+         "never transmitted when DH is used"),
+        (1.55, "4. bulk traffic encrypted with the session key", c[2], "both",
+         "SYMMETRIC - fast, carries the data"),
+        (0.75, "5. session ends - key discarded", c[2], "none",
+         "ephemeral keys give forward secrecy"),
+    ]
+    for y, label, colour, direction, note in steps:
+        if direction == "right-to-left":
+            ax.annotate("", (1.05, y), (8.15, y),
+                        arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.6))
+        elif direction == "both":
+            ax.annotate("", (8.15, y), (1.05, y),
+                        arrowprops=dict(arrowstyle="<|-|>", color=colour, linewidth=1.6))
+        ax.annotate(label, (4.6, y + 0.16), ha="center", fontsize=9.2, color=ink)
+        ax.annotate(note, (4.6, y - 0.2), ha="center", fontsize=7.8,
+                    color=S.INK_2[mode])
+    ax.set_xlim(0, 9.4)
+    ax.set_ylim(0.2, 5.1)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Digital signature: what the signer does and what the verifier does.  The
+# asymmetry - sign with the PRIVATE key, verify with the PUBLIC key, and sign
+# the HASH rather than the message - is the whole content.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-signature-flow")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, axes = plt.subplots(1, 2, figsize=(8.6, 4.2))
+
+    def box(ax, x, y, w, h, text, colour, fs_=8.6):
+        ax.add_patch(plt.Rectangle((x, y), w, h, facecolor="none",
+                                   edgecolor=colour, linewidth=1.7))
+        ax.annotate(text, (x + w / 2, y + h / 2), ha="center", va="center",
+                    fontsize=fs_, color=ink)
+
+    def arr(ax, x0, y0, x1, y1):
+        ax.annotate("", (x1, y1), (x0, y0),
+                    arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                    linewidth=1.3))
+
+    ax = axes[0]
+    ax.set_title("SIGNING", fontsize=10.5)
+    box(ax, 0.5, 5.0, 4.0, 0.75, "message", c[0])
+    box(ax, 0.5, 3.6, 4.0, 0.75, "hash it -> digest", c[1])
+    box(ax, 0.5, 2.2, 4.0, 0.75, "encrypt the DIGEST with\nthe SIGNER'S PRIVATE KEY", c[2], 8.0)
+    box(ax, 0.5, 0.8, 4.0, 0.75, "send message + signature", c[0])
+    for y0, y1 in ((5.0, 4.4), (3.6, 3.0), (2.2, 1.6)):
+        arr(ax, 2.5, y0, 2.5, y1)
+
+    ax = axes[1]
+    ax.set_title("VERIFYING", fontsize=10.5)
+    box(ax, 0.5, 5.0, 4.0, 0.75, "received message + signature", c[0], 8.0)
+    box(ax, 0.5, 3.6, 1.85, 0.75, "hash the\nmessage", c[1], 8.0)
+    box(ax, 2.65, 3.6, 1.85, 0.75, "decrypt sig with\nSENDER'S PUBLIC KEY", c[2], 7.2)
+    box(ax, 0.5, 2.2, 4.0, 0.75, "compare the two digests", c[1])
+    box(ax, 0.5, 0.8, 4.0, 0.75, "match = unaltered AND\nfrom that private key", c[0], 8.0)
+    arr(ax, 1.4, 5.0, 1.4, 4.4); arr(ax, 3.6, 5.0, 3.6, 4.4)
+    arr(ax, 1.4, 3.6, 1.9, 3.0); arr(ax, 3.6, 3.6, 3.1, 3.0)
+    arr(ax, 2.5, 2.2, 2.5, 1.6)
+
+    for ax in axes:
+        ax.set_xlim(0, 5.0); ax.set_ylim(0.4, 6.1); ax.axis("off")
+    fig.text(0.5, 0.015,
+             "the signature covers the DIGEST, not the message - which is why signing is fast, and why a broken hash breaks every signature built on it",
+             ha="center", fontsize=8.0, color=S.INK_2[mode])
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The key lifecycle.  Strong algorithms fail at these stages, not in the maths.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-key-lifecycle")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    stages = [
+        ("Generation", "strong randomness;\nweak entropy dooms it"),
+        ("Distribution", "out of band or\nasymmetrically protected"),
+        ("Storage", "HSM or keystore;\nnever hardcoded"),
+        ("Use", "one key, one purpose;\nnever sign and encrypt"),
+        ("Rotation", "scheduled, and on\nsuspected compromise"),
+        ("Destruction", "securely destroy so old\nciphertext stays dead"),
+    ]
+    fig, ax = plt.subplots(figsize=(8.6, 3.6))
+    for i, (name, note) in enumerate(stages):
+        x = 0.35 + i * 1.52
+        ax.add_patch(plt.Rectangle((x, 1.5), 1.28, 0.75, facecolor="none",
+                                   edgecolor=c[0], linewidth=1.8))
+        ax.annotate(name, (x + 0.64, 1.87), ha="center", va="center",
+                    fontsize=9.2, color=ink)
+        ax.annotate(note, (x + 0.64, 1.05), ha="center", va="top",
+                    fontsize=7.4, color=S.INK_2[mode])
+        if i < len(stages) - 1:
+            ax.annotate("", (x + 1.5, 1.87), (x + 1.3, 1.87),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.4))
+    ax.annotate("split knowledge and dual control apply across the whole lifecycle - no one person holds a complete critical key",
+                (4.8, 2.65), ha="center", fontsize=8.4, color=ink, style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(0.1, 3.0)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
