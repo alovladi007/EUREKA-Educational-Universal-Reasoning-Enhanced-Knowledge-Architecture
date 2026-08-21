@@ -721,234 +721,344 @@ cissp_risk_mgmt: {
   topicId: 'cissp_risk_mgmt',
   title: `Risk Management Concepts`,
   domainWeight: '16%',
-  overview: `Risk management is the process of identifying, analyzing, and responding to risks that could impact organizational objectives. It's a continuous process that should be integrated into organizational d`,
+  overview: `Risk is the possibility of damage or harm, weighed with the likelihood that it will be realised - and managing it, according to the organisation's strategy and needs, is the security practitioner's actual job description. This is Domain 1's largest module and the course's analytical engine: everything from control selection to continuity planning to supply-chain diligence is an application of the machinery built here. The module runs the full cycle - value the assets, identify threats and vulnerabilities, assess and analyse, choose among the four treatments, select and layer controls, then monitor continuously - and adds the specialised instruments: the loss-expectancy arithmetic, the control taxonomy, threat modeling with STRIDE, risk frameworks, supply-chain assessment, minimum security requirements, and the service level agreement.`,
   sections: [
     {
-      id: '8-risk-management-concepts',
-      title: `1. Risk Management Concepts`,
-      content: `Risk management is the process of identifying, analyzing, and responding to risks that could impact organizational objectives. It's a continuous process that should be integrated into organizational decision-making at all levels.
-## 8.1 Risk Identification
+      id: '1-risk-and-valuation',
+      title: `1. Risk, Acceptable Risk, and Asset Valuation`,
+      content: `## The definitions that drive everything
 
-Risk identification is the process of discovering and documenting risks that could affect the organization. Identification methods include interviews with business and technical staff, review of audit reports and incident history, assessment of technical vulnerabilities, review of regulatory and legal requirements, analysis of industry trends and threat intelligence, and brainstorming with cross-functional teams.
+**Risk** is the possibility of damage or harm *and* the likelihood that the damage or harm will be realised - both halves, always. A catastrophic outcome that cannot plausibly occur and a trivial nuisance that happens hourly are both low risks, for opposite reasons; the analysis lives in the product of the two.
 
-Effective risk identification requires understanding the organization's business, technology environment, regulatory landscape, and threat landscape. A risk register documents identified risks with their sources, potential impacts, and preliminary mitigation ideas. Risk identification should be ongoing - new risks emerge as the environment changes, new technologies are adopted, and new threats appear.
-## 8.2 Risk Assessment and Analysis
+**Acceptable risk** is the level of risk senior management determines to be suitable relative to the rewards of conducting operations. Two properties of that definition carry the domain: the determination is **management's** - every organisation makes its own, and no practitioner makes it for them - and it is **relative to reward**, meaning risk is never evaluated in a vacuum but against what the risky activity earns.
 
-Once risks are identified, they must be analyzed and prioritized. Organizations typically use either quantitative analysis (assigning numeric values to probability and impact) or qualitative analysis (using descriptive rankings) or a combination of both.
-### Quantitative Risk Analysis
+## You cannot protect what you have not counted
 
-Quantitative analysis attempts to assign numeric values to risk components and calculate the expected financial impact. This approach provides precise risk metrics but requires reliable data on threat frequency and impact, which is often difficult to obtain.
+Effective risk management begins with knowing what the organisation has and what it is worth. Assets include **property both tangible and intangible, people, and processes** - and in modern organisations, data, an intangible, is often the property of most significant value.
 
-Key quantitative risk metrics include:
-- Asset Value (AV): The monetary value of the asset if completely compromised or destroyed
-- Exposure Factor (EF): The percentage of asset value that would be lost if the threat occurred (0-100%)
-- Single Loss Expectancy (SLE): AV × EF = expected loss from a single occurrence
-- Annual Rate of Occurrence (ARO): Expected number of times the threat will occur in a year
-- Annualized Loss Expectancy (ALE): SLE × ARO = expected annual loss from this risk
+The **asset inventory** is the foundation: it is impossible to protect what you do not know you have. Tools exist, automated and manual, but the structural requirement is that the organisation's **acquisition and development processes feed the inventory** - new assets enter the record as they enter the environment, or the inventory decays into archaeology.
 
-Example: A company has a database with asset value of $500,000. If ransomware encrypts the database and forces a restore from backup, the exposure factor is 60% (loss of recent data and recovery time). SLE = $500,000 × 0.60 = $300,000. If the company estimates ransomware occurs 2 times per year on average, ALE = $300,000 × 2 = $600,000. This means the organization should spend up to $600,000 annually on controls to prevent ransomware to make economic sense.
+## Valuing what was counted
 
-Another example: A web application has a value of $1,000,000. SQL injection vulnerability allows attackers to exfiltrate customer data, affecting 30% of customers. EF = 30%. SLE = $1,000,000 × 0.30 = $300,000. If similar vulnerabilities are exploited 0.5 times per year (once every two years), ALE = $300,000 × 0.5 = $150,000. Implementing secure development training and code review that costs $50,000 annually makes financial sense if it prevents the attack.
-### Qualitative Risk Analysis
+Value comes in two currencies. An asset may have a **discrete market value** - what it would fetch. It may instead, or additionally, have **relative value to the organisation**: an asset nominal to anyone else can be critical to you, because value here means value *to the mission*, not to a buyer.
 
-Qualitative analysis uses descriptive scales (low, medium, high or 1-5 scales) to rank risks. This approach is faster, requires less data, and is more suitable when precise numeric data is unavailable. Qualitative analysis typically uses a risk matrix with probability (likelihood) on one axis and impact on the other.
+The valuation labour divides by perspective. **Functional and line managers do the main work**, because they use the assets daily and understand best how each serves the organisation. **Senior management reviews and finalises**, and for a specific reason the module is candid about: **managers are inherently biased**. Asked which assets matter most, the answer is almost invariably "mine" - not malice, human nature. Senior review exists to adjust for that systematic overvaluation, which is why the process is survey-then-review rather than survey-then-sum.
 
-A simple 3×3 risk matrix ranks probability and impact as Low, Medium, High. The combination determines risk level (for example, High Probability × High Impact = Critical risk requiring immediate attention). More sophisticated matrices use 5×5 scales for finer differentiation. Qualitative analysis is subject to individual bias and requires careful facilitation to be effective.
-### Risk Assessment Techniques
+## The business impact analysis
 
-The Delphi Technique gathers estimates from multiple experts independently, compiles results, and has experts review and revise estimates based on group feedback. This iterative process converges toward consensus while reducing influence of dominant personalities. The technique is valuable for risk assessment when expert judgment is necessary but individual experts may have biases.
-## 8.3 Risk Treatment and Response
+The industry's standing valuation instrument is the **business impact analysis (BIA)**: a list of the organisation's assets, annotated to reflect each asset's **criticality to the organisation**. Criticality is organisation-specific - the same asset class critical to one firm may be incidental to another in the same industry - so building the BIA requires people who understand both the assets and the business functions they serve.
 
-Once risks are assessed, organizations choose how to respond. The primary options are avoid, transfer, mitigate, or accept.
-### Risk Avoidance
+The BIA's reach exceeds valuation: it feeds the impact half of risk assessment directly, and it is the source document for the continuity module's recovery metrics. One artefact, three consumers - which is why the BIA is worth building carefully and keeping current, and why exam answers that begin a risk or continuity effort "by conducting a BIA" are so often correct.`
+    },
+    {
+      id: '2-threats-vulns',
+      title: `2. Threats, Vulnerabilities, and the Common Risks`,
+      content: `## Two words the exam refuses to let you blur
 
-Avoidance means eliminating the activity that creates the risk. For example, avoiding all use of cloud storage eliminates the cloud data breach risk. Avoidance is not always possible or practical - it may eliminate business value. When avoidance is chosen, it should be documented as a conscious decision and regularly reviewed.
-### Risk Transfer
+**Threats** are the aspects that create risk to the organisation, its function, and its assets - the potential sources of harm. **Vulnerabilities** are aspects of the organisation's own operation that could enhance a risk or the possibility of its realisation - the weaknesses a threat can exploit. A threat exists whether or not you are weak; a vulnerability exists whether or not anyone attacks it; **risk lives where they meet**.
 
-Transfer shifts the risk to another party, typically through insurance. Cyber liability insurance transfers data breach response and notification costs. Third-party vendors may transfer risk for specific functions. Transfer doesn't eliminate the risk - the organization remains ultimately responsible if the transferred party fails. Insurance policies typically have exclusions and limits, and organizations should understand what is and isn't covered.
-### Risk Mitigation
+## The threat landscape
 
-Mitigation means implementing controls to reduce the likelihood or impact of risk. This is the most common approach. Implementing firewalls mitigates external attack risk. Implementing backups mitigate data loss risk. Security awareness training mitigates insider threat risk. Mitigation is typically the most cost-effective approach for manageable risks.
-### Risk Acceptance
+Threats are anthropogenic and otherwise, motivated and motiveless:
 
-Acceptance means acknowledging a risk and choosing not to mitigate it (or accepting residual risk after mitigation). This should only be done for low-impact risks or when mitigation costs exceed potential impact. Risk acceptance should be documented with explanation of why the risk is acceptable, and should be periodically reviewed to ensure conditions haven't changed.
-| Risk Response | When Used |
+| Threat class | Character | Examples |
+|---|---|---|
+| Natural | No intent at all - and dangerous anyway | Floods, hurricanes, earthquakes; fire at disaster or local scale; biologics - from wildlife chewing through cabling (a real cause of both power and data outages) to pandemic disease interrupting operations |
+| Criminal activity | Specific intent to do harm, financial or physical | Hackers, thieves, espionage agents, social activists, terrorists - external, or internal to the organisation |
+| User error | Inadvertent, and capable of harming every triad property | Spilled coffee, a tripped cable, an unintended deletion, an accidental disclosure |
+
+The landscape is neither static nor generic: every organisation faces threats particular to its industry, market, location, and operations, and the picture **fluctuates continually** as both the organisation and its world evolve. The practitioner's duty is standing assessment - monitoring news at every scale, organisational changes, and the activity of likely adversaries - supplemented, where warranted, by contracted **threat intelligence** vendors who predict and notify.
+
+## The vulnerability inventory
+
+Vulnerabilities are assessed and inventoried with the same discipline, across at least three types: **software** (defects, or intentional functions usable for unintended outcomes), **physical** (entrances, flammables, portable assets, even lines of sight), and **personnel** (people attackable physically or by subversion - and people who *are* the threat, insiders with access).
+
+## Common risks by asset class
+
+The module supplies a starter taxonomy of risks the practitioner should recognise on sight:
+
+| Class | Risks |
 |---|---|
-| Avoid | Eliminate the activity; used when risk is unacceptable and avoidance is feasible |
-| Transfer | Shift to third party via insurance/vendor; reduces financial impact |
-| Mitigate | Implement controls to reduce likelihood or impact; most common approach |
-| Accept | Accept residual risk; used for low-impact risks or when cost exceeds benefit |
+| Hardware | **Theft** - a box that can be touched can be owned; almost no technical control withstands physical access, so physical security and personnel screening carry the load. **Natural disasters** - water is uniquely hostile to IT. **Fire** - and firefighting itself damages equipment as surely as flame |
+| Software | **Defects** - bugs and exploitable design; a defect discovered by attackers before vendor or users know of it is a **zero-day**, exploitable freely until a fix exists. **Lack of security** - software never designed with controls. **Malware** - worms, viruses, Trojan horses as attack vectors against every triad property |
+| Services | **DoS and DDoS** - attacks on availability, the distributed form amplified through many machines to startling scale. **On-path interception** - the attacker positioned between communicating parties, able to affect all three properties. **Social engineering** - subverting the authorised user through blackmail, bluster, browbeating, bribery, or an appeal to aid |
 
-## 8.4 Risk Management Frameworks
-
-### NIST Risk Management Framework (RMF)
-
-NIST RMF is a six-step process widely adopted by federal agencies and many organizations: Prepare (establish risk management context), Categorize (classify systems by impact), Select (choose appropriate controls), Implement (deploy controls), Assess (test effectiveness), and Authorize (approval and ongoing monitoring). The framework emphasizes continuous monitoring and annual reassessment.
-### ISO 31000 Risk Management
-
-ISO 31000 provides generic guidance on risk management applicable across industries. It emphasizes integrating risk management into organizational processes, establishing risk context, identifying and analyzing risks, evaluating and treating risks, and monitoring and reviewing. The framework emphasizes that risk management supports organizational objective achievement.
-### OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)
-
-OCTAVE is a risk assessment methodology developed by Carnegie Mellon University that focuses on organizational assets, threats, and vulnerabilities. OCTAVE involves workshops with business and technical staff to identify critical assets, assess threats and vulnerabilities, and develop protection strategies. The methodology is people-centric, emphasizing knowledge and creativity of organizational staff.
-### FAIR (Factor Analysis of Information Risk)
-
-FAIR provides a taxonomy for breaking down risk into measurable components and quantifying cyber risk. It defines risk as Loss Event Frequency × Loss Magnitude. Loss Event Frequency is driven by Threat Event Frequency and Vulnerability. FAIR enables organizations to quantify cyber risk in business terms and correlate it to enterprise risk management frameworks.
-
-FAIR calculation: Risk = (Threat Frequency × Vulnerability Magnitude) × Loss Magnitude. By quantifying each component, organizations can compare different risks on a common scale and prioritize mitigation.
-## 8.5 Countermeasure Selection and Implementation
-
-Once risks are assessed and a response decision is made, appropriate controls must be selected and implemented. Control selection should balance several factors: effectiveness (does it reduce the risk?), cost (total cost of ownership), feasibility (can it be implemented in the environment?), and stakeholder acceptance (will it be used effectively?).
-
-Controls can be categorized as preventive (prevents the risk from occurring), detective (identifies when risk has occurred), or corrective (mitigates impact after risk occurs). An ideal control program includes all three types - prevent what you can, detect what you can't prevent, and correct impacts when detection occurs.
-## 8.6 Residual and Total Risk
-
-Residual risk is the risk remaining after implementing controls. It's calculated as: Residual Risk = Total Risk - Mitigating Controls. If total risk (probability × impact of uncontrolled threat) is calculated as 10 and controls reduce risk by 7, residual risk is 3. Residual risk should be documented and accepted as part of the control implementation.
-
-Total risk encompasses both residual risk from mitigated threats and completely unmitigated risks. Organizations should maintain a risk register that tracks all identified risks, assessment, response decisions, controls implemented, and residual risk. This provides visibility into organizational risk posture and supports decision-making.
-## 8.7 Risk Appetite, Risk Tolerance, and Risk Capacity
-
-Organizations must clearly define their risk posture through three related but distinct concepts: risk appetite, risk tolerance, and risk capacity. These shape how organizations identify, assess, and respond to risks.
-### Risk Appetite
-
-**Risk appetite** is a strategic-level concept that defines **how much risk the ORGANIZATION is willing to pursue** to achieve its objectives and create value. Risk appetite is set by the board of directors and senior executive leadership and communicates organizational strategy and risk philosophy. Risk appetite is typically qualitative and broad, such as "we accept moderate risk for market expansion" or "we are conservative and accept minimal operational risk." It provides the foundation for risk governance and influences which business initiatives are pursued.
-### Risk Tolerance
-
-**Risk tolerance** is a tactical-level concept that defines **the acceptable VARIATION from risk appetite** in specific contexts. Risk tolerance consists of operational boundaries and quantitative thresholds that translate strategic appetite into actionable limits. Examples include "no more than $2 million loss per quarter from cyber incidents," "system availability must be at least 99.9%," or "no more than 5% of customer data may be compromised." Risk tolerance applies the appetite to particular business functions, processes, or risk types. Multiple tolerance levels may exist within a single appetite.
-### Risk Capacity
-
-**Risk capacity** is the **absolute maximum amount of risk** an organization can absorb before failure or insolvency. It represents the financial, operational, and reputational limits beyond which the organization cannot function or recover. Risk capacity is often determined by financial stability, regulatory requirements, and business continuity constraints. While appetite and tolerance are management choices, risk capacity is an organizational reality - it cannot be set arbitrarily and must be respected to ensure survival.
-#### Key Distinction
-
-**Appetite is STRATEGIC**: Set by the board, defines organizational risk philosophy and business strategy. **Tolerance is TACTICAL**: Set by business unit leaders, defines operational boundaries and quantifiable limits. **Capacity is ABSOLUTE**: The hard limit; the organization cannot exceed it without serious consequences. An analogy: appetite is how much speed a driver wants to go (strategy), tolerance is the speed limit on each road (operations), and capacity is the car's maximum speed (absolute limit).
-### Risk Acceptance vs. Risk Appetite
-
-**Risk acceptance** is a response decision made for a specific, identified risk. The organization accepts residual risk after mitigation because the cost to control exceeds the benefit or because the risk is low-impact. **Risk appetite** is the organizational posture - the overall willingness to take risk. Risk acceptance happens within the appetite; accepting risk outside appetite signals governance failure.
-### Key Risk Indicators (KRIs) vs. Key Performance Indicators (KPIs)
-
-**Key Risk Indicators (KRIs)** are **leading or predictive metrics** that signal potential risk emergence before an incident occurs. Examples: percentage of systems patched, security awareness training completion rates, mean time to detect (MTTD), number of failed access control reviews. KRIs help management identify risks early and take preventive action.
-
-**Key Performance Indicators (KPIs)** are **lagging or performance metrics** that measure outcomes and results. Examples: number of security incidents, data breach recovery time, system downtime, audit findings, control remediation time. KPIs measure whether controls and processes are effective but are backward-looking.`,
-      examTip: `The exam WILL try to confuse risk appetite and risk tolerance. Remember: appetite is STRATEGIC (board-level, qualitative), tolerance is TACTICAL (operational boundaries, quantitative). Also master: ALE = SLE × ARO, where SLE = AV × EF. Know the four risk responses: avoid, transfer, mitigate, accept. Understand residual risk = total risk - impact of controls. Be able to distinguish between risk management frameworks (NIST, ISO 31000, OCTAVE, FAIR).`,
-      importantNote: `Risk Appetite: STRATEGIC, qualitative, &quot;how much risk we want to take&quot; (set by board). Risk Tolerance: TACTICAL, quantitative, &quot;the acceptable boundaries&quot; (set by business leaders). Risk Capacity: ABSOLUTE, &quot;the maximum we can survive&quot; (organizational reality, not a choice). Appetite shapes tolerance. Tolerance must stay within capacity. If an accepted risk violates appetite or capacity, governance has failed.`,
+The hardware row's first entry is the one to internalise as a principle: **physical access defeats technical control**. It reappears in every later domain, and it is why the physical-security module exists at all.`
     },
     {
-      id: '9-threat-modeling',
-      title: `2. Threat Modeling`,
-      content: `Threat modeling is a structured approach to identifying, analyzing, and responding to threats to a system or application. Rather than conducting security testing after development, threat modeling involves identifying threats early in the design process when they're cheaper and easier to address.
-## 9.1 Threat Modeling Methodologies
+      id: '3-assessment-analysis',
+      title: `3. Risk Assessment and Analysis`,
+      content: `## The three rating factors
 
-### STRIDE
+With assets valued and threats and vulnerabilities identified, risk can be realistically assessed. Risk is rated on three factors:
 
-STRIDE is a threat categorization model developed by Microsoft that helps identify threats systematically. The acronym represents: Spoofing (claiming false identity), Tampering (modifying data or functionality), Repudiation (denying actions), Information Disclosure (unauthorized data access), Denial of Service (preventing legitimate use), and Elevation of Privilege (gaining unauthorized access). By considering each threat type for each system component, organizations can identify threats they might otherwise miss.
-### PASTA (Process for Attack Simulation and Threat Analysis)
+| Factor | Question | How it is informed |
+|---|---|---|
+| Impact | How bad, if realised? | Monetary damage, harm to health and human safety, criticality of the affected asset - the BIA is the standing instrument |
+| Likelihood | How probable? | Genuinely hard - it is prediction; aided by historical data internal and external: "how often does this happen to us? how often in general?" |
+| Exposure | Is this threat realistically ours? | Activities and location: a commercial fishing operation faces drowning risk, a bicycle courier does not; some natural disasters belong to some geographies |
 
-PASTA is a risk-centric threat modeling methodology with seven stages: Define objectives (business/technical goals), Define technical scope (components and data flows), Decompose the application (architecture and data flows), Analyze threats (considering attack patterns), Analyze vulnerabilities, Conduct attack modeling (attack trees, attack graphs), and Analyze countermeasures. PASTA emphasizes alignment between business objectives and threat analysis.
-### DREAD
+![Qualitative risk rated as likelihood against impact](/courses/cissp/figures/cissp-risk-matrix.svg)
 
-DREAD is a risk rating system that assesses threats by: Damage (impact if exploited), Reproducibility (ease of reproducing the attack), Exploitability (ease of exploiting), Affected Users (number of users affected), and Discoverability (likelihood the threat will be discovered). Each factor is rated 1-3 (low-high), and overall risk is calculated. DREAD provides a quantitative approach to threat prioritization.
-### VAST (Visual, Agile, and Simple Threat Modeling)
+And one boundary condition the exam states as dogma: **there is no such thing as zero risk**. All activities entail some risk; every threat has some potential, however minuscule. Any analysis, proposal, or exam option claiming otherwise is wrong by definition.
 
-VAST is designed to integrate threat modeling into agile development cycles. It produces two models: an application model for developers and an operational model for IT/security teams. VAST emphasizes visual representation and rapid analysis suitable for fast-moving development environments.
-## 9.2 Attack Trees and Attack Graphs
+## Qualitative and quantitative analysis
 
-Attack trees visually represent the ways an attacker could achieve an objective. The root of the tree is the goal (compromise application, steal data). Branches descend showing attack paths, with leaves representing specific attack steps or exploits. Attack trees help identify all possible paths to achieving an objective and can be analyzed for probability and impact of individual paths.
+Risk analysis splits into two categories - somewhat academic as a distinction, but required knowledge:
 
-Attack graphs extend attack trees by showing relationships and dependencies between vulnerabilities. A graph might show that vulnerability A can only be exploited if vulnerability B is first exploited, or that vulnerabilities are in different systems but can be chained. Attack graphs help prioritize vulnerability remediation by identifying critical vulnerabilities that enable chains of attacks.
-## 9.3 Threat Intelligence
+- **Qualitative**: a subjective approach - ordinal ratings, expert judgement, matrices like the one above. The organisation opts for it **when it lacks sufficient time, budget, or trained risk personnel** for the quantitative effort.
+- **Quantitative**: an objective approach producing **discrete numeric values**. The organisation opts for it when it has the time, budget, and trained personnel to do it properly.
 
-Threat intelligence is information about threats, threat actors, attack tactics and techniques, and indicators of compromise. Threat intelligence helps organizations understand the threats they face, anticipate attacks, and prioritize defenses.
+Note what the discriminator is: **resources, not superiority**. Both methods require people familiar with the organisation's operations, threats, assets, and vulnerabilities; the quantitative method simply demands more of everything, in exchange for numbers that support arithmetic comparison.
 
-Threat intelligence sources include commercial threat intelligence providers (who have broad visibility across many organizations), government agencies (who share intelligence on nation-state threats), information sharing organizations (sector-specific ISACs), security research (academic and vendor research on new threats and techniques), and internal data (analyzing own incidents and near-misses).
+## The loss-expectancy model
 
-Threat intelligence should be integrated into risk assessments to prioritize threats that pose realistic risk given known threat actors and techniques. For example, if threat intelligence indicates that ransomware is a significant threat affecting the organization's industry, backup and recovery controls become higher priority than defending against threats not known to target the organization.`,
+The traditional quantitative instrument is the **annual loss expectancy** family:
+
+![The loss-expectancy arithmetic with the worked case](/courses/cissp/figures/cissp-ale-formula.svg)
+
+**SLE = AV x EF**: the single loss expectancy is the asset value times an exposure factor - the percentage of the asset's value damaged by one occurrence of the risk. **ALE = SLE x ARO**: the annual loss expectancy is the per-event loss times the annualised rate of occurrence. The ALE's use is **treatment comparison**: it prices the risk per year, so any control, policy, or transfer can be judged against it.
+
+Walk the module's retail worked case. A store assesses shoplifting: item sizes and values yield an average **SLE of $5**; decades of insurer and trade-group historical data - granular enough to predict by location, floor size, and inventory - support an **ARO of 1,000 events per year**; so **ALE = $5,000**. Now compare treatments: a guard at $50,000 a year is irrational even if perfectly effective; the best mitigation package found costs $15,000 - still triple the risk; an insurance policy quotes $10,000 - double the risk; avoidance would mean not selling merchandise, which is not a retail strategy. The rational decision is **acceptance**: shoplifting is absorbed as a $5,000 annual cost of doing business. Remember, too, that a control's cost is its **full annual cost** - acquisition plus maintenance plus operation - not its sticker price.
+
+## Why the model limps in IT security
+
+The module is unusually frank: the ALE model is **rudimentary and mature, inherited from physical security, and not particularly apt for IT**. Two reasons. There is **no good way to assess SLE** for information - a loss event is rarely nominal, and the value of disclosed data resists per-event pricing. And **the ARO is effectively forced to 1**: once a vulnerability produces a realised loss, remediation is required - an organisation with repeated, continuous IT losses of the same kind will be beleaguered by regulators, providers, and customers. A model that assumes recurring identical events fits shoplifting, not breaches. It remains industry-standard knowledge and examinable arithmetic - just carry its limits with its formulas.`
     },
     {
-      id: '10-supply-chain-risk-management-scrm',
-      title: `3. Supply Chain Risk Management (SCRM)`,
-      content: `Supply chain risk management addresses risks arising from dependencies on external suppliers, contractors, and third parties. Security breaches affecting suppliers can disrupt operations or compromise organizational security, as evidenced by major incidents like the SolarWinds attack.
-## 10.1 Supply Chain Risk Categories
+      id: '4-risk-response',
+      title: `4. Risk Response: The Four Treatments and the Residue`,
+      content: `## The four options
 
-### Hardware Supply Chain Risks
+Every identified risk receives one of four general responses:
 
-Hardware supply chain risks include counterfeiting (fake components), tampering during manufacturing or shipment (hidden malware or tracking devices), and compromised manufacturing (building in vulnerabilities). Organizations should source hardware from authorized vendors, verify authenticity, and inspect for signs of tampering. Critical hardware may require domestic sourcing or additional inspection.
-### Software Supply Chain Risks
+| Treatment | What it is | Whose decision it characterises |
+|---|---|---|
+| Avoidance | Not performing the business function, because impact or likelihood is too great to be offset by the potential rewards | **A business decision, not a security practice** - senior management declines the activity |
+| Acceptance | Conducting the function with no further action, because impact or likelihood is negligible, or the benefit more than offsets the risk | Management proceeds, eyes open |
+| Mitigation | Applying security controls to reduce impact, likelihood, or both | **The realm of the security practitioner** - this is where the profession lives |
+| Transference | Paying another party to accept the full financial impact of a realised risk, for a fraction of that cost | Typically insurance, premiums adjusted for likelihood, impact, controls in place, and payment terms |
 
-Software risks include vulnerable dependencies (third-party libraries with security flaws), malicious code injection (compromised development tools or repositories), and compromised updates (malicious patches). Organizations should maintain software bill of materials (SBOM) listing all software components and versions, regularly scan for vulnerabilities, and implement secure software development practices.
-### Service Supply Chain Risks
+Three precisions keep the treatments exam-proof. **Avoidance is the converse of acceptance** - both are pure business decisions about whether the activity happens at all; neither involves controls. **Transference moves the financial impact only** - reputational harm, regulatory accountability, and mission damage do not travel with the premium, which is why insuring a risk is never the whole answer to it. And **mitigation is where security controls exist** - when a stem says "controls were applied," mitigation is the treatment being described, whatever the scenario calls it.
 
-Service providers (cloud, managed services, consulting) introduce risks through inadequate security controls, data exposure, service interruptions, or conflicts of interest. Organizations should assess vendors before engagement, include security requirements in contracts, and monitor vendor security posture throughout the relationship.
-## 10.2 Vendor Assessment and Management
+## Residual risk: the treatment that follows every mitigation
 
-Pre-engagement vendor assessment should evaluate the vendor's security controls, compliance with relevant standards, financial stability, and reputation. Assessment methods include reviewing security documentation (certifications like ISO 27001, SOC 2 reports), conducting security questionnaires, and performing on-site audits for critical vendors.
+Whenever mitigation is performed, **some degree of risk always remains** after the controls are in place - there is no zero risk and no hundred-percent security. The remainder is **residual risk**, and the goal of mitigation is precise: reduce the residual down to the level of acceptable risk, **and then accept that remainder**.
 
-Ongoing vendor management includes monitoring compliance with contractual obligations, regular security assessments, and incident notification procedures. Organizations should maintain a vendor inventory with security assessment status and perform periodic re-assessments to identify changes in vendor security posture.
-## 10.3 Contractual Requirements and SLAs
+The consequence is a rule the exam tests relentlessly: **every mitigation ends in an acceptance**. An organisation that mitigates has not finished until someone with the authority to accept risk - management, per the governance module - has formally accepted what the controls leave behind. "We installed controls, so the risk is handled" is an incomplete sentence; the complete one names the residual and its accepting owner. Conversely, acceptance without prior mitigation is legitimate exactly when the analysis shows the untreated risk already sits inside appetite - acceptance is a valid treatment, not a failure to treat.
 
-Vendor contracts should include explicit security requirements: minimum security standards (encryption, access controls, patch management), data handling obligations (data classification, access restrictions, data return/destruction), audit rights (ability to audit vendor security), and incident notification (timelines and procedures for reporting security incidents).
+## Choosing among the four
 
-Service level agreements (SLAs) should specify availability guarantees (uptime percentages), performance targets (response time, throughput), and support commitments (hours of availability, resolution times). SLAs should address what happens if the vendor fails to meet commitments (penalty clauses, service credits).`,
-      importantNote: `Organizations are responsible for risks posed by suppliers and contractors. Include security requirements in contracts, assess vendors before engagement, and monitor compliance throughout the relationship.`,
+The choice is arithmetic where numbers exist (the ALE comparison of the previous section) and judgement where they do not - but the shape of the reasoning is constant: price each treatment's annual cost against the risk it addresses, respect that avoidance forfeits the activity's rewards, remember that transference caps only the financial dimension, and land every path at a documented management acceptance of whatever remains. A stem offering "eliminate the risk" as an option has already told you which answer is wrong. Treatments can also combine: mitigate, then transfer part of the residual, then accept the rest - the acceptance still closes the chain.`
     },
     {
-      id: '11-security-awareness-education-and-training',
-      title: `4. Security Awareness, Education, and Training`,
-      content: `A security-aware workforce is fundamental to organizational security. Security controls can be circumvented by humans who don't understand their importance or who are victims of social engineering. Awareness, education, and training programs develop and maintain security consciousness across the organization.
-## 11.1 Security Awareness Programs
+      id: '5-controls',
+      title: `5. Security Controls: Types, Categories, and Depth`,
+      content: `## What controls are, and when they act
 
-Security awareness programs are designed to create organizational security consciousness - making security a shared value. Programs typically include regular communications (newsletters, posters, emails), campaigns on specific topics (password hygiene, phishing awareness), and integration into organizational culture.
+**Security controls** are the methods, tools, mechanisms, and processes used in risk mitigation. They function in two temporal modes: **safeguards** reduce impact or likelihood *before* a risk is realised - the wall that keeps hostile people out - and **countermeasures** reduce impact or likelihood *afterwards* - the motion sensor that alerts when someone has already entered.
 
-Effective awareness programs tailor messages to different audiences. Executive messaging emphasizes risk and business impact. Employee messaging emphasizes personal responsibility and how to recognize threats. Contractor messaging addresses specific risks of their role. Messages should be positive and motivational (emphasizing what people should do) rather than fear-based (emphasizing catastrophic consequences).
-- Regular communications: Monthly newsletters, awareness posters, email campaigns
-- Campaign themes: Password security, phishing awareness, incident reporting, clean desk policy
-- Leadership involvement: Executive sponsorship, visible leadership participation
-- Incentives: Recognition programs, competitions, rewards for positive behaviors
-- Metrics: Tracking awareness participation, phishing simulation results, training completion
+Selection is a **cost/benefit analysis**: the full expense of acquiring, deploying, and maintaining the control against its ability to reduce specific risk - *and* against the operational impact the control itself causes. The module states the uncomfortable truth plainly: **every security control has an attendant negative impact on operations** - monetary cost, or reduced user capability and convenience. Security and productivity trade against each other, which makes security and operations somewhat adversarial in many organisations, and makes the practitioner's real task finding the right balance rather than maximising protection. The field's classic quip makes the point by absurdity: the only truly secure system is powered off, encased in concrete, and sealed away under guard - and even then, doubts remain.
 
-## 11.2 Training Methods and Effectiveness
+## The three implementation types
 
-### Classroom Training
+| Type | Implemented through | Examples |
+|---|---|---|
+| Technical / logical | Automated or electronic systems | Firewalls, electronic badge readers, access control lists, routers rejecting attack-indicative traffic |
+| Physical | Tangible mechanisms | Walls, fences, guards, locks |
+| Administrative | Policy and procedure | Access-granting processes, requiring multiple personnel for one operation |
 
-In-person training allows interaction with instructors, immediate question answering, and group discussion. Classroom training is high-touch and expensive but enables complex topics and real-time problem-solving. Organizations typically use classroom training for role-specific security training and advanced topics.
-### Online/E-Learning Training
+Modern controls interlink across types - the badge reader (technical) drives the door lock (physical) under the access policy (administrative) - so classification follows the mechanism doing the enforcing, not the system it happens to touch.
 
-Online training is scalable, cost-effective, and available on-demand. Learners can progress at their own pace. Online training is suitable for foundational content and broad-based awareness. Disadvantages include lower engagement and limited interaction. Organizations typically require annual mandatory online training covering policy and compliance requirements.
-### Hands-On Labs and Simulations
+## The seven categories
 
-Hands-on training where learners perform tasks in realistic environments enhances retention and skill development. Simulations allow practicing incident response or security procedures in controlled environments. These approaches are effective for developing technical security skills but are resource-intensive.
-### Mentoring and On-the-Job Training
+Controls are also grouped by **how they take effect**:
 
-For new employees or employees moving to security roles, mentoring by experienced security professionals transfers knowledge and skills. This personalized approach enables customization to individual learning styles and organizational context.
-## 11.3 Training Effectiveness Assessment
+![Control categories placed on the incident timeline](/courses/cissp/figures/cissp-control-categories.svg)
 
-Organizations should assess training effectiveness to ensure it achieves intended outcomes. Assessment methods include:
-- Knowledge tests: Quizzes assessing comprehension of training content
-- Behavioral observation: Monitoring if employees practice trained behaviors (clean desk, reporting incidents)
-- Incident reduction: Comparing security incidents before and after training to measure behavioral change
-- Phishing simulations: Measuring email link clicks and credential submissions to assess phishing awareness
-- Security metrics: Tracking access violations, policy breaches, and other metrics related to trained behaviors
+| Category | Effect | Examples |
+|---|---|---|
+| Directive | Imposes mandates and requirements | Policies, standards, signage, notification - often paired with training |
+| Deterrent | Reduces the likelihood someone chooses to act | Warnings, visible cameras, the noticeable presence of other controls |
+| Preventative | Prohibits the activity | Walls, fences - entry simply cannot occur unauthorised |
+| Compensating | Mitigates the loss of a primary control | Physical locks that still work when the electronic system loses power; staff trained on extinguishers if sprinklers fail |
+| Detective | Recognises hostile or anomalous activity | Motion sensors, guards, dogs, intrusion detection |
+| Corrective | Reacts to remediate or restore | Fire suppression, intrusion prevention, incident response teams |
+| Recovery | Restores operations to a known-good state | Backups, disaster recovery plans |
 
-## 11.4 Phishing Simulations and Social Engineering Awareness
+The categorisation is deliberately **not absolute**: one control can occupy several categories by implementation. Surveillance cameras deter by presence, detect when monitored live or motion-triggered, and compensate when augmenting gate guards. Exam items exploit this - the correct classification follows the *function described in the stem*, not the device named.
 
-Phishing simulations are controlled exercises where organizations send realistic phishing emails and measure which employees click links or submit credentials. Simulations serve dual purposes: measuring awareness and providing teachable moments when employees fail.
+## Defense in depth, and its two reasons
 
-Simulations should be realistic but clearly authorized by the organization - employees should understand that simulations occur and that results are used for training, not punishment. Following simulations, employees who clicked malicious links or submitted credentials receive remedial training. Organizations track metrics like click rates and credential submission rates, ideally showing improvement over repeated simulations.
+When selecting controls, using **multiple types across multiple categories** always beats reliance on one - the principle of **defense in depth** (layered defense), where controls overlap in coverage. The module gives exactly two reasons, and both are examinable:
 
-Social engineering awareness goes beyond phishing to include pretexting (gaining information through false pretenses), baiting (leaving USB drives in parking lots), and other manipulation techniques. Awareness training should make employees understand manipulation tactics and how to verify requests through independent channels.`,
-      examTip: `Understand the difference between security awareness, training, and education: Awareness creates security consciousness through communications and campaigns. Training develops specific skills through structured learning. Education develops deeper knowledge and understanding. All three are necessary for effective security culture.`,
+1. **Single-point failure**: relying on one type or category means one failure - a power interruption disabling all technical controls, a newly discovered vulnerability in the sole control - leaves the organisation completely exposed.
+2. **Raising the attacker's price**: multiple control kinds force the aggressor to prepare multiple means of attack. Many people know one thing well; few know many things well - requiring both hacking and physical-intrusion capability shrinks the pool of viable attackers.
+
+The second reason is the subtler and the more distinctive: depth is not only redundancy against failure, it is **economics against the adversary** - each added layer of a *different kind* multiplies the skills and tools an attack requires, pricing out most of the people who might attempt it.`
     },
+    {
+      id: '6-monitoring-frameworks-supply',
+      title: `6. Monitoring, Risk Frameworks, and the Supply Chain`,
+      content: `## Controls are not fire-and-forget
+
+Implementing controls is not the final act of mitigation: the practitioner must **monitor their function and operation** to confirm they perform correctly and still cover the risks they were deployed against. The organising instrument is the **security control assessment (SCA)** - a plan and process for verifying the proper function and management of controls, customised to the organisation; essentially an audit focused on controls and their performance. The security team assembles SCA data - from its own automated monitoring, from internal self-reporting such as IT's, and from external monitoring vendors - and distils it into a management report naming which controls underperform and which risks the current set leaves unaddressed.
+
+And the effort is **continuous, not periodic**: threats evolve, the environment is continually modified, and tools improve - the industry standard for control maintenance is an ongoing, enduring activity, not an annual event.
+
+Two named assessment techniques supplement the SCA:
+
+- **Vulnerability assessment**: usually automated review of the environment for **known** vulnerabilities, catalogued and alerted. Its stated limit is structural: it detects only what is in its signature base, so relying wholly on it understates the risk profile - undiscovered vulnerabilities exist by definition.
+- **Penetration test**: a trusted party, internal or external, attempts to reach the protected environment, simulating attack. Structures vary up to full mutual blindness - defenders unwarned, testers given nothing an attacker would not have. Two rules are non-negotiable: **ethical testing never endangers health and human safety or destroys property**, and every engagement is **coordinated in advance** with stipulated limits on scope and nature.
+
+## Risk frameworks
+
+Beyond control frameworks, **risk frameworks** structure the organisation's whole response to risk - in mature organisations rising to **enterprise risk management (ERM)**, where strategy itself is defined in terms of business risks and opportunities:
+
+| Framework | Steward | Character |
+|---|---|---|
+| ISO 31000 / 27005 | ISO | Risk management principles for the whole organisation (31000) and specifically for information security (27005); 27001 is endorsed by the EU's network-security agency as a risk-management vehicle |
+| ERM - Integrated Framework | COSO | Born of the financial-reporting scandals; first published 2004, updated 2017; widely adopted as the definitive ERM guide |
+| Risk IT | ISACA | Connects strategic risk management with risk-related IT management |
+| RMF (SP 800-37) | NIST | The framework governing US federal risk practice - and **the only one of the set available without payment** |
+
+That last cell is the recurring discriminator: the NIST publications are public domain; the others are purchased.
+
+## Risk-managing the supply chain
+
+Organisations rarely operate alone - suppliers, vendors, contractors, and customers form a web of dependency - and **the same risk methodology applied internally must be applied to the supply chain**. The direct instruments: governance review, site security survey, formal security audit, penetration testing of each entity.
+
+Directness, however, is often **untenable** - impractical at scale, and sometimes a source of new liability for both parties. The working solution is reliance on **audit reports prepared by certified third parties**: the supplier is assessed once by an accredited assessor, and every customer consumes the report. Managed cloud makes the case vividly - the customer may not even know the data centre's physical location, and must rely on external validation. The standard vehicles: **ISO-certified audits** (accredited auditors, certification on passing), **CSA STAR evaluation** (self-administered or externally audited by STAR level), and **AICPA SSAE SOC reports** - the audit standard created in SOX's wake, defining report types for different uses, designed for public corporations and now used far beyond them. The ethics module told this lineage's origin story; here it appears as daily tooling.`
+    },
+    {
+      id: '7-modeling-requirements-sla',
+      title: `7. Threat Modeling, Minimum Requirements, and the SLA`,
+      content: `## Thinking like the attacker, on purpose
+
+**Threat modeling** counters anthropogenic threats by examining an environment, system, or application **from the attacker's viewpoint** - finding the vulnerabilities an attacker would exploit, so each can be addressed before a real attacker uses them.
+
+Method matters. Most techniques begin with an **abstract, non-technical view of the target** before touching its details - typically **workflow or dataflow diagrams** tracing how data and processes move from start to finish, so the team understands where, in time, space, and process, an attacker could act. For specific systems and applications, the same techniques are then incorporated into design detail - and the economics are the point: **finding vulnerabilities during development and acquisition is cheaper and faster than fixing them in production**. Threat modeling is the risk discipline moved to the earliest, cheapest point of intervention.
+
+## STRIDE
+
+The named tool the exam requires is **STRIDE** - created at Microsoft, and precisely speaking a **threat classification system** informing developers during development:
+
+![STRIDE mapped to the properties it attacks](/courses/cissp/figures/cissp-stride.svg)
+
+| Element | The threat |
+|---|---|
+| Spoofing identity | Posing as another entity, often an authorised user |
+| Tampering with data | Unauthorised modification of the target data |
+| Repudiation | A transaction participant able to deny or conceal participation |
+| Information disclosure | Inadvertent release, over-broad authorised access, or malicious unauthorised access |
+| Denial of service | Attacking availability - authorised users locked out |
+| Elevation of privilege | Gaining not just access but control sufficient to disable or destroy the target |
+
+One wording caution the module itself flags: the acronym forced some terms into shapes that differ from wider industry usage - the field says **non-repudiation** for the property; STRIDE's "repudiation" names the threat against it. Two other models earn recognition: **OCTAVE** (Carnegie Mellon; organisation-wide IT risk, with OCTAVE-S for smaller operations) and **Trike** (MIT-originated, open source - and long unrevised).
+
+## Minimum security requirements
+
+Providing appropriate security requires knowing the desired outcomes first: a set of **minimum security requirements** gathered as the goal, at every level of granularity - the organisation (where the minimums *are* the acceptable-risk level), the IT environment, each network, each system, each component - and in project and process management, not just IT. The module's craft advice compresses to a discipline: involve stakeholders from the start; make requirements **specific, realistic, and measurable**; document everything; restate the customer's requests back to confirm understanding; build diagrams and prototypes to solidify mutual understanding; and above all **do not choose tools before requirements are understood** - technology chosen first ends up driving business functions instead of serving them, the field's most repeated self-inflicted wound.
+
+## The service level agreement
+
+When an external provider delivers managed services, the parties construct a contract - and within it, the **service level agreement (SLA)** defines the minimum requirements and codifies their provision. The SLA's cardinal rule: **every element carries a discrete, objective, numeric metric**. "Excellent uptime" is litigation bait - attorneys can debate "excellent" for months; "interruption exceeding five seconds per period constitutes failure" can be measured by either party. The SLA's strength is its use as a **payment discriminator**: failed elements trigger account credits, incentivising the provider and compensating the customer without a lawsuit.
+
+Scope discipline completes the instrument: SLAs best serve **recurring, continual requirements** - a weekly report, a monthly integrity check. Singular or infrequent events - disaster response among them - belong in the **contract proper**, stated once, not in the SLA. The placement test is exam-ready: recurring and objectively measurable goes in the SLA; one-time terms go elsewhere in the contract; and details whose disclosure would weaken the service's security go in neither.`
+    },
+    {
+      id: '8-worked-examples',
+      title: `8. Worked Examples`,
+      content: `## Worked example 1: the full arithmetic
+
+*A courier firm assesses the risk of delivery-van break-ins at its depot. Average loss per event (stolen parcels and repairs): $800. Historical data across its industry and neighbourhood supports six events per year. Quotes: an overnight guard service at $30,000/yr; upgraded fencing, lighting, and cameras at $6,000/yr amortised, expected to halve the frequency; an insurance rider at $4,200/yr covering the full loss. Work the treatments.*
+
+First the baseline: **SLE = $800**, **ARO = 6**, so **ALE = $4,800/yr**. Now price each option against it. The guard costs $30,000 to address a $4,800 risk - irrational six times over. The physical package costs $6,000 and halves ARO to 3, leaving a residual ALE of $2,400: total annual position $8,400 (control plus residual) against $4,800 untreated - **worse than doing nothing**, on these numbers. The insurance rider transfers the financial impact for $4,200, marginally under the ALE - defensible, with the caveat that transference caps only the financial dimension (customer trust in lost parcels does not travel with the premium). Acceptance costs the ALE itself: $4,800, no contracts, no controls.
+
+The disciplined answer: **acceptance or the rider are the rational candidates**; the mitigation as priced fails its own arithmetic. And the exam-grade closer: whichever path is taken, *management* accepts the result - the untreated risk, the post-insurance remainder, or the residual - and the analysis is documented so next year's numbers can re-open it.
+
+## Worked example 2: classify the controls
+
+*Classify each control by implementation type and category: (a) a policy requiring two-person approval for wire transfers; (b) a fence around the depot; (c) a prominently posted "premises under video surveillance" sign; (d) a backup restored to resume operations after ransomware; (e) door locks that remain locked mechanically during a power failure of the electronic badge system.*
+
+**(a)** Administrative type; **directive** category (it mandates behaviour) - and functionally a preventative measure against single-actor fraud through separation of duties. **(b)** Physical type; **preventative** - unauthorised entry simply cannot occur through it. **(c)** Physical/administrative in form; **deterrent** - it changes the choice, not the possibility; note the sign deters even if no camera works. **(d)** Technical type; **recovery** - restoring a known-good state after the event. **(e)** Physical type; **compensating** - it mitigates the loss of the primary (electronic) control.
+
+Two classification disciplines earn the marks: classify by the **function described**, not the device named (a camera can be deterrent, detective, or compensating depending on use); and expect **multi-category answers** - the fence deters as well as prevents; the best single answer is the category the stem's emphasis selects.
+
+## Worked example 3: the modeling engagement
+
+*A team is building a payments feature. You are asked to run threat modeling "before the code review next month." Sequence the engagement, name the classification tool, and state one finding of each STRIDE type the diagram might surface.*
+
+Sequence: build the **dataflow diagram first** - the abstract, non-technical view of how a payment moves from customer input through validation, processing, storage, and notification - because vulnerabilities live at the diagram's trust boundaries and data stores, and the abstraction shows where before the code shows how. Then walk each element and flow asking the **STRIDE** questions.
+
+Illustrative findings: **S** - the notification callback accepts unauthenticated origin claims (spoofing the processor). **T** - the amount field is client-editable between validation and submission (tampering). **R** - refunds execute without an attributable operator record (repudiation). **I** - full card numbers appear in debug logs (information disclosure). **D** - the validation service performs unbounded retries against a slow dependency (denial of service through resource exhaustion). **E** - the admin console trusts a role claim from the client session (elevation of privilege).
+
+The economics close the answer: every finding fixed now is a design change; the same findings in production are incidents. Threat modeling *before* the review is the module's point - the cheapest intervention is the earliest.
+
+## Worked example 4: drafting the SLA
+
+*Your firm is contracting a managed backup provider. Sort these candidate terms: (1) restoration of any requested file within four hours; (2) the encryption products the provider uses internally; (3) monthly test-restore of a random sample with a pass rate of at least 99%; (4) migration assistance if the contract ends; (5) "the provider will maintain excellent security practices."*
+
+**(1) SLA** - recurring, discrete, numeric, measurable by either party; attach a credit to failures. **(2) Neither** - disclosing internal security mechanisms weakens the service; the *outcomes* are contracted, the mechanisms are not published. **(3) SLA** - recurring with an objective metric; this is the term that makes the backups provably restorable rather than hopeful. **(4) Contract** - a singular event at termination; state it once, precisely, outside the SLA. **(5) Nowhere as written** - "excellent" is unmeasurable and unenforceable; replace it with specific, numeric commitments or drop it.
+
+The pattern is the module's placement test verbatim: recurring + numeric = SLA; one-time = contract; security-weakening disclosure = neither; adjectives = redraft. And the credit mechanism is what gives the paper teeth - an SLA without payment consequences is a wish list with a signature.`
+    },
+    {
+      id: '9-self-check',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Define risk with both of its components, and explain why each alone is insufficient.
+
+2. Who performs the main effort of asset valuation, who finalises it, and what bias does the process correct for?
+
+3. Distinguish threats from vulnerabilities, and state where risk arises.
+
+4. Give the two loss-expectancy formulas, and compute the ALE for SLE $40 and ARO 250.
+
+5. Why does the ALE model fit shoplifting better than data breaches? Give both stated reasons.
+
+6. Name the four risk treatments and identify which is "a business decision, not a security practice."
+
+7. What is residual risk, and what must follow every act of mitigation?
+
+8. Distinguish safeguards from countermeasures, and directive from deterrent controls.
+
+9. State the two reasons for defense in depth, and explain why the second is about economics.
+
+10. What structural limitation do vulnerability assessments carry, and what two rules bind ethical penetration testing?
+
+11. What makes a term SLA-worthy, and where do disaster-recovery commitments belong?
+
+12. In threat modeling, why does the dataflow diagram come before the code, and what does STRIDE's "repudiation" correspond to in standard vocabulary?
+
+## Answers
+
+**1. Risk is the possibility of damage or harm AND the likelihood that it will be realised.** Impact alone overweights catastrophic-but-implausible events; likelihood alone overweights frequent trivia. The analysis lives in the combination - which is why assessment rates impact, likelihood, and exposure, and why the risk matrix has two axes rather than one.
+
+**2.** **Functional and line managers** perform the main valuation - they work with the assets daily and best understand each asset's service to the organisation. **Senior management reviews and finalises**, correcting for the inherent bias the module names: asked which assets matter most, managers answer "mine" - not malice, human nature - so unreviewed surveys systematically overvalue everything and prioritise nothing.
+
+**3. Threats** create risk - potential sources of harm, from nature to criminals to error, existing regardless of the organisation's weaknesses. **Vulnerabilities** are aspects of the organisation's own operation that could enhance a risk or its realisation - weaknesses, existing regardless of whether anyone attacks. **Risk arises where a threat could exploit a vulnerability** to cause harm; remove either and that particular risk collapses.
+
+**4. SLE = AV x EF** (single loss expectancy = asset value x exposure factor) and **ALE = SLE x ARO** (annual loss expectancy = single loss x annualised rate of occurrence). For SLE $40 and ARO 250: **ALE = $10,000 per year** - the annual price of the untreated risk, and the yardstick every treatment's annual cost is compared against.
+
+**5.** First, **SLE resists assessment for information**: a data-loss event is rarely nominal, and disclosed data defies per-event pricing the way stolen merchandise does not. Second, **the ARO is effectively forced to 1**: a realised IT loss obliges remediation of the exploited vulnerability - an organisation absorbing repeated identical breaches as a cost of business would be beleaguered by regulators, providers, and customers. Shoplifting recurs by assumption; breaches must not.
+
+**6. Avoidance, acceptance, mitigation, transference.** **Avoidance** is the business decision - senior management declines the activity because impact or likelihood cannot be offset by the rewards; no control is involved. (Mitigation is the practitioner's realm; acceptance proceeds without further action; transference pays another party - typically an insurer - to carry the financial impact only.)
+
+**7. Residual risk** is the risk remaining after mitigation's controls are in place - always something, since zero risk and total security do not exist. Every mitigation must therefore end in **formal acceptance of the residual by management**: the goal of mitigation is to drive the remainder down to the acceptable level *and then accept it*. Controls without a documented acceptance of what they leave behind is an unfinished treatment.
+
+**8. Safeguards** act **before** realisation - reducing impact or likelihood in advance, like the wall. **Countermeasures** act **after** - like the motion sensor alerting on an intrusion underway. **Directive** controls impose mandates (policy, standards, signage-as-requirement); **deterrent** controls reduce the likelihood someone *chooses* the act (warnings, visible cameras) - the directive tells you the rule, the deterrent changes your decision.
+
+**9.** One: **single-point failure** - relying on one control type or category means one power cut or one newly discovered vulnerability exposes the organisation completely. Two: **raising the attacker's price** - multiple control kinds force the aggressor to master multiple attack means, and since few people know many things well, each different layer shrinks the pool of viable attackers. The second is economics because it prices attacks out of reach: the defender multiplies the skills and tooling an attempt requires, reducing not the attack's success chance alone but the population able to try.
+
+**10.** Vulnerability assessment detects only **known** vulnerabilities - what its signature base contains - so it structurally understates the risk profile; undiscovered vulnerabilities exist by definition, and sole reliance on scanning is inadequate. Ethical penetration testing is bound to (1) **never create risk to health and human safety or destroy property**, and (2) **advance coordination** - the engagement's scope and nature stipulated before it begins, however blind the test otherwise is.
+
+**11.** A term is SLA-worthy when it is **recurring or continual** and carries a **discrete, objective, numeric metric** either party can measure - the properties that let failures trigger automatic credits, the SLA's payment-discriminator strength. Disaster-recovery commitments are singular, uncommon events and belong **in the contract proper**, stated once with precision - inside the agreement, outside the SLA.
+
+**12.** Because vulnerabilities live in the **structure** - the trust boundaries, stores, and flows the abstract diagram exposes - and the cheapest intervention is the earliest: findings at design time are changes, the same findings in production are incidents. The diagram shows *where* an attacker could act before the code shows *how*. STRIDE's **"repudiation"** names the threat against the property the field calls **non-repudiation** - the acronym forced the wording, and the module flags the mismatch so the vocabulary does not trip you elsewhere.`
+    }
   ],
-  keyTakeaways: [
-    `Security governance aligns security strategy with business objectives through frameworks like NIST, ISO, COBIT, and SABSA`,
-    `Organizations must comply with applicable regulations (GDPR, HIPAA, SOX, PCI-DSS, GLBA, FERPA) or face significant penalties`,
-    `Intellectual property protection includes copyright, trademark, patent, and trade secret mechanisms with different durations and protections`,
-    `Personnel security requires screening, clear policies, proper onboarding/transfers/termination, and continuous enforcement of least privilege`,
-    `Business continuity planning requires BIA to identify criticality, RTO/RPO definition, appropriate recovery strategies, and regular testing`,
-    `Risk management follows structured processes: identify, analyze, respond (avoid/transfer/mitigate/accept), implement, monitor`,
-    `Quantitative risk: ALE = SLE × ARO; organizations should spend up to ALE on mitigation controls; qualitative uses risk matrices`,
-    `Threat modeling (STRIDE, PASTA, DREAD, VAST, attack trees) identifies threats early in development when cheaper to address`,
-    `Supply chain security requires vendor assessment, contractual requirements, monitoring, and management of third-party risks`,
-    `Awareness/training programs build security culture; effectiveness is measured by behavioral change, not just completion`
-  ]
 },
 cissp_compliance: {
   topicId: 'cissp_compliance',
@@ -1922,56 +2032,299 @@ cissp_personnel: {
   topicId: 'cissp_personnel',
   title: `Personnel Security Policies and Procedures`,
   domainWeight: '16%',
-  overview: `Personnel security encompasses all practices related to hiring, managing, and separating employees. Implementing strong personnel security controls reduces the risk of insider threats, data theft, and`,
+  overview: `Personnel security is the effort to ensure the people inside the organisation are dependable and trustworthy - because personnel who can be subverted or influenced to contravene policy and law are the insider threat, and the insider starts where every external attacker is trying to get. The module runs the employment relationship end to end: screening before the offer, the agreements that bind, onboarding that pairs access with obligation, termination that closes it in the right order, the controls that distinguish non-employees who hold access without membership, and the acceptable-use and privacy instruments every person with access must sign.`,
   sections: [
     {
-      id: '7-personnel-security',
-      title: `1. Personnel Security`,
-      content: `Personnel security encompasses all practices related to hiring, managing, and separating employees. Implementing strong personnel security controls reduces the risk of insider threats, data theft, and policy violations.
-## 7.1 Candidate Screening and Hiring
+      id: '1-insider-threat',
+      title: `1. The Insider Threat and the Lifecycle Frame`,
+      content: `## The problem personnel security exists to shrink
 
-The hiring process should include security considerations from the initial job description through final employment offer. Appropriate background investigations verify criminal history, employment history, education credentials, and financial status. The depth of investigation should match the security sensitivity of the role.
-### Background Investigation Levels
+**Insider threats** are personnel who can be subverted or influenced to contravene policy and law and bring harm to the organisation - and the purpose of personnel security is to **minimise the risk and damage potential** of exactly that population. The insider's advantage explains the module's weight: every control in every other module assumes an adversary outside the trust boundary, and the insider begins inside it - authorised, credentialed, familiar with the processes, and often trusted by the people the controls would otherwise alert. The exam's framing follows: when a stem describes harm from someone with legitimate access, the analytical home is this module - not perimeter controls, which the insider never crossed, but the screening, agreements, and lifecycle discipline that govern the trust itself.
 
-Basic background checks verify employment history, education, and may include criminal history searches. Enhanced investigations include reference checks, credit history, and more comprehensive criminal record searches. Security clearances (required for government and defense contractor roles) involve extensive investigation including interviews with acquaintances, financial history review, and verification of trustworthiness and loyalty.
-### Disqualifying Factors
+Note the definition's breadth: subverted *or influenced*. The insider threat includes the malicious employee, but also the loyal one manipulated, pressured, or blackmailed into becoming a vector - which is why screening looks for susceptibility as much as intent, and why the awareness module's social-engineering training is itself a personnel-security control.
 
-Organizations typically establish disqualifying factors for employment: false statements on application, undisclosed criminal convictions, substance abuse history, or significant financial problems (indicating financial vulnerability). These factors don't automatically disqualify a candidate but should be evaluated in context.
-## 7.2 Employment Agreements and Policies
+## Prevention beats detection here
 
-Employment agreements should clearly establish security expectations and consequences for violation. Key agreements include confidentiality/non-disclosure agreements (protecting proprietary information and trade secrets), non-compete agreements (restricting post-employment activities), and acceptable use policies (governing use of organizational resources).
+Like many risks, the insider threat is **best addressed before malicious activity can occur** - and for personnel, "before" has a precise location: **before they are hired and given access** to the environment and data. Once access is granted, the organisation is detecting and responding; before it is granted, the organisation is still choosing. That asymmetry drives the module's structure - the heaviest controls sit at the front of the relationship.
 
-Agreements should address intellectual property ownership - clarifying that work created as part of employment is the property of the organization. Agreements may include "garden leave" provisions requiring the employee to refrain from competitive activity for a period after leaving. Importantly, employment agreements should explicitly address that security controls, monitoring, and compliance are conditions of employment.
-## 7.3 Onboarding, Transfers, and Termination
+![The employment lifecycle with the control at each stage](/courses/cissp/figures/cissp-employment-lifecycle.svg)
 
-### Onboarding (Hiring)
+| Stage | Control theme |
+|---|---|
+| Screening | Choose well - the last moment the organisation has full discretion |
+| Agreements | Bind in writing - handbook, contract, NDA |
+| Onboarding | Pair the access grant with the obligations and the training |
+| Employment | AUP in force, least privilege, lawful monitoring |
+| Termination | Close access in the right order, recover everything, remind of what survives |
 
-New employee onboarding should include security training, system access provisioning, and establishment of security expectations. New employees should receive mandatory security awareness training covering acceptable use policy, confidentiality obligations, password practices, and incident reporting procedures. System access should be provisioned based on the principle of least privilege - only the minimum access required to perform the job. Access approvals should be documented, and the new employee should acknowledge receipt of security policies.
-### Transfers (Job Changes)
+The lifecycle view also explains a fact the exam likes: personnel security is a **joint production** - the hiring manager knows the position, human resources knows the law and procedure, legal counsel shapes the agreements, and security defines the access consequences. Stems that assign the whole lifecycle to any single office are describing a gap.
 
-When employees change roles, access must be updated to reflect new responsibilities. This should involve removing access from the previous role that's no longer needed (off-boarding from the old role) and provisioning new access for the new role. The process should be documented and tracked to prevent orphaned access or excessive permissions.
-### Termination (Offboarding)
+## Employees are also assets - and vulnerabilities
 
-Employee termination or separation requires immediate and comprehensive offboarding. All system access must be revoked promptly. Organizational assets including laptops, phones, badges, and keys must be collected. For remote employees or after notice is given, remote access may be disabled immediately and equipment may be retrieved via courier. Data access, email forwarding, and authentication credentials must all be disabled. Organizations should track termination activities and verify completion to prevent unauthorized access by former employees.
-## 7.4 Vendor, Consultant, and Contractor Agreements
-
-External parties including vendors, consultants, and contractors often require access to organizational systems and data. Agreements with these parties should clearly define security obligations, data handling requirements, confidentiality expectations, and liability for breaches. Access should be provisioned at the lowest privilege level necessary, monitored closely, and immediately revoked upon contract termination.
-
-For contractors and consultants with extended tenure or privileged access, background investigations and security training are appropriate. Organizations should establish vendor security assessment procedures to verify that vendors meet minimum security standards before granting access. Service level agreements should include availability requirements, incident notification procedures, and audit rights.
-## 7.5 Separation of Duties and Job Rotation
-
-Separation of duties (SoD) is a fundamental security control that divides critical functions among multiple individuals to prevent any single person from having unilateral authority. This prevents both errors and intentional fraud. For example, in financial systems, the person authorizing a payment should be different from the person executing it and the person reconciling accounts.
-
-SoD must be implemented at multiple levels: system-level (database role-based access), procedural-level (requiring approvals and sign-offs), and organizational-level (assigning responsibility to different departments). When SoD cannot be implemented (in very small organizations or for specific roles), compensating controls like increased monitoring and exception reporting should be implemented.
-
-Job rotation requires employees to move between roles periodically, typically annually or bi-annually. This prevents long-term collusion, ensures cross-training, and often uncovers fraudulent activity that was hidden by the previous employee. For roles with significant fraud risk (financial transactions, access provisioning), mandatory vacation policies require the employee to take extended time off, allowing others to discover irregularities.
-## 7.6 Least Privilege and Need-to-Know
-
-Least privilege principle dictates that individuals should have the minimum access necessary to perform their job functions. "Need-to-know" is the justification for granting access - if someone doesn't need specific data or access to perform their duties, they should not have it. This principle should be enforced at hiring (initial access provisioning), during employment (regular access reviews), and at termination (comprehensive off-boarding).
-
-Implementing least privilege requires understanding job functions, defining required access, and continuously monitoring for overprivileged accounts. Many organizations have discovered that employees can access data unrelated to their jobs, indicating poor least privilege implementation. Regular access reviews should identify and remove excessive access, and high-risk access should be restricted regardless of job title.`,
-      importantNote: `Separation of duties prevents any single person from having unilateral authority. Least privilege limits access to minimum necessary. Job rotation and mandatory vacation enable fraud detection. Background investigations verify trustworthiness.`,
+The risk module's vocabulary applies squarely here, and using it keeps the analysis honest. Personnel appear on both sides of the ledger: they are **assets** - people are one of the three asset classes the organisation values and protects - and they are among the module's named **vulnerability types**, attackable physically or by subversion, and capable of being the internal threat themselves. Personnel security is therefore risk management run on the human asset class: screening is the assessment, the agreements and lifecycle controls are the mitigation, and the residual - because no screening or contract makes a person perfectly dependable - is accepted and monitored like any other residual. That framing also explains the module's realism: the goal is stated as *minimising* the insider threat's risk and damage potential, never eliminating it, because zero risk does not exist in people any more than in systems.`
     },
+    {
+      id: '2-screening',
+      title: `2. Candidate Screening and Hiring`,
+      content: `## The five instruments
+
+| Instrument | What it does | The catch |
+|---|---|---|
+| Job description | Defines expected performance - and later, evidence of violated expectations | Must be clear and precise, or it fails in litigation |
+| Reference checks | Past performance from people who worked with the candidate | Often uninformative - and candidate-supplied |
+| Employment history | Progression, experience, gaps | Gaps invite questions, not conclusions |
+| Background check | Screening against trusted databases | Scope varies; verify what matters to the role |
+| Financial profile | Solvency as a trust signal for sensitive positions | Requires explicit written consent; legally limited in some jurisdictions |
+
+## The job description as a legal instrument
+
+The job description is an outline of desired and expected performance - used to judge whether the employee performs adequately and in accordance with governance, and, crucially, **the mechanism for demonstrating that an employee violated expectations**. If an employee terminated for some behaviour litigates, claiming the organisation never made the transgressive nature of that behaviour known, the job description is a tool supporting the organisation's position - *if* it carries clear, precise annotation of the expectations. Creation is properly joint: the **hiring manager**, who best understands the position's needs, with **human resources**, which best understands the applicable law and the procedures that protect all parties. A vague job description is not a paperwork lapse; it is a missing exhibit in a case the organisation has not been sued in yet.
+
+## What the softer checks can and cannot tell you
+
+**References** promise insight into past performance and mostly under-deliver in modern practice: many organisations will not report on former employees beyond rehire eligibility, and references are typically supplied by the candidate - not independent sources. **Employment history** assesses progression of responsibility, relevant experience, and gaps. Gaps are prompts for conversation, not conclusions - the discipline is asking, documenting the answer, and weighing it against the role's trust rather than treating absence as evidence. **Background checks** screen against trusted databases: verification of certifications and credentials, educational degrees, and criminal history - the check that catches the fabricated qualification before it becomes the practitioner the organisation cites as due-diligence evidence. Verification order matters commercially too: credential fraud discovered after hire forces the same termination machinery this module ends with, plus the awkward review of every decision the unqualified person touched - screening at the front is cheaper than unwinding at the back.
+
+## The financial profile and its two-tailed logic
+
+For positions of accentuated trust and responsibility, the organisation may review a candidate's **financial situation** - and the reasoning runs in both directions, which is the detail the exam tests. **Too little money** may indicate personal problems - addictive behaviour, gross poor judgement, instability - that make the holder of a responsible position **susceptible to subversion**. **Too much money** may indicate participation in illicit activity, payment by another entity already, or a candidate unresponsive to the organisation's requirements. Either tail is a trust signal, not a verdict - and the check carries formal constraints: it usually requires the candidate's **explicit written agreement**, and it is **limited by law in some jurisdictions**. Screening depth scales with the position's trust, and the legal envelope is checked before the credit report is pulled.
+
+## Screening as a continuing posture
+
+Screening is presented at hire, but its logic does not expire at the offer letter. Positions change: a promotion into wire authority or privileged administration is a change in the trust the organisation extends, and the mature programme re-screens proportionately at such transitions rather than relying on a check performed years earlier for a different job. Circumstances change too - which is why some organisations, within their jurisdictions' legal limits, run periodic re-verification for the most sensitive roles. And the two-tailed financial logic quietly continues into employment: the sudden, unexplained lifestyle change in a trusted role is the classic behavioural indicator the insider-threat literature flags - not proof of anything, but exactly the kind of signal a programme that thinks in susceptibility terms is built to notice through lawful, proportionate means. The principle underneath is constant: the depth of assurance tracks the trust currently extended, not the trust extended at hire.`
+    },
+    {
+      id: '3-agreements',
+      title: `3. Employment Agreements and Policies`,
+      content: `## Binding the relationship in writing
+
+Once the candidate is chosen, a second tool set enhances and supports the trustworthiness and security of staff - the written agreements, each with its own author set and function:
+
+![The governance hierarchy behind the personnel documents](/courses/cissp/figures/cissp-governance-hierarchy.svg)
+
+| Instrument | What it is | Who shapes it |
+|---|---|---|
+| Employee handbook | The written set of policies and standards all personnel must follow | Senior management, legal counsel, and human resources |
+| Employment contract | The codified terms of employment - payment, performance expectations | With legal department input, for every employee |
+| Nondisclosure agreement | The formal commitment against unauthorised disclosure of proprietary and sensitive information | Legal - and it binds **during and after** employment |
+
+## The handbook
+
+The handbook may itself contain proprietary information and **remains the property of the organisation** - but employees need access to it, and should **confirm receipt and understanding** of its instructions. Version discipline applies here as everywhere in governance: when the handbook materially changes, re-acknowledgement follows, because a signature on the old rules proves nothing about the new ones. That confirmation is the promulgation-and-acknowledgement discipline of the policy module landing on each individual: the signed receipt is what converts "the rules existed" into "this person knew the rules," the predicate for every later enforcement action.
+
+## The contract
+
+**Every employee should enter under a contractual agreement** explicitly codifying the terms - payment, performance expectations, and the conditions that attach. The security-relevant clauses ride inside it: acceptable-use incorporation, the monitoring notice, return-of-property obligations, and the survival clauses that keep select duties alive past the end date. The contract is the instrument that survives arguments: where the handbook states policy and the job description states expectations, the contract is what a court enforces between the parties.
+
+## The NDA, and why it is the special one
+
+The NDA's distinguishing feature is its clock: it binds against unauthorised disclosure of the organisation's proprietary and sensitive information **both during and after the term of employment**. The handbook binds personnel; the AUP binds users of the systems; both lose their grip when the badge is returned. The NDA is drafted to keep binding the person who no longer works for you - which is why the termination process re-reads it, why the review-module question about post-employment publication resolves to it, and why external parties (next sections) sign one too. In the personnel toolkit, the NDA is the control designed for the day all the other controls end.
+
+## The agreements as a system
+
+The three instruments interlock rather than duplicate. The **handbook** carries the organisation's rules at population scale - one document, everyone bound, updated centrally; its acknowledgement record is per-person. The **contract** carries the individual bargain - this person, this role, these terms; it is the document that varies. The **NDA** carries the one obligation engineered to outlive the other two. Enforcement runs on the trio together: a violation is measured against the handbook's rule, the contract's terms, and the job description's expectations - and the organisation's position in any dispute is the sum of the signatures it can produce. The drafting responsibilities are part of the design: senior management, counsel, and human resources on the handbook; legal on the contract and NDA - because each document will one day be read by an adversary's lawyer, and it is written for that reader as much as for the employee.`
+    },
+    {
+      id: '4-onboarding-termination',
+      title: `4. Onboarding and Termination`,
+      content: `## Onboarding: access and obligation arrive together
+
+The organisation should have a **defined process** for granting access to personnel joining - and the module's onboarding sequence pairs every grant with its governing obligation:
+
+1. **Review of the contract terms and job description** - the expectations, acknowledged at the start.
+2. **Formal initial training** on the organisation's security policies and procedures - the awareness module's onboarding trigger, before or at access.
+3. **Signing the NDA** - the employee's declared understanding of the organisation's ownership of its proprietary systems and data.
+4. **Secure issuance of access information and tools** - user ID and password, keys, tokens - through a process that is itself secure, because credentials handled casually at issuance are compromised at birth.
+
+The design principle: nobody holds access they have not been bound and trained for. Sequencing matters inside the list too: the NDA and training precede or accompany the credential issuance, never trail it - an employee who works their first week before signing has held access unbound, and the gap is discoverable. The riskiest employee in the building is the one with fresh credentials and no instruction - onboarding exists to make that person impossible.
+
+## Termination: the order of operations is the control
+
+Termination - voluntary or at the organisation's behest - should be similarly codified, and the **sequence** is what the exam tests:
+
+1. **Lock the employee's IT accounts** - so no last-minute modifications to systems or data are possible. This comes first; everything else follows.
+2. **Recover organisational property** - devices, hardware, and access-control items: badge, keys, tokens.
+3. **Exit interview** - to learn why the employee is leaving (where the departure is amiable), and to conduct...
+4. **Review of the NDA's terms** - the reminder that the confidentiality obligation survives the employment.
+5. **Escort from the premises** - the relationship ends with the organisation in control of its space.
+
+The lock-accounts-first rule deserves its reasoning stated: the interval between an employee learning of termination and losing access is the highest-risk window in the entire relationship - motive and opportunity briefly coincide. For involuntary separations the account action is simultaneous with (or ahead of) the notification itself. Everything else in the sequence - property, interview, escort - can tolerate minutes; the access cannot.
+
+The recovery step is broader than it looks: badges and tokens are also *identifiers* - unrecovered, they enable tailgating and impersonation long after the accounts are dead. And the exit interview does double duty: intelligence for the organisation (why people leave is retention data and sometimes risk data), and the formal moment the surviving obligations are re-read to the person they will follow out the door. Voluntary and involuntary departures share the checklist but not the tempo: the amicable resignation walks it over a notice period with access reviewed early; the involuntary separation compresses it to simultaneity - accounts locked as the meeting begins, property recovered before the walk to the door.`
+    },
+    {
+      id: '5-non-employees',
+      title: `5. Vendors, Consultants, and Contractors`,
+      content: `## Access without membership
+
+Employees are not the only people inside the environment: **vendors, consultants, and contractors** may hold access too - and the organisation needs procedures that properly **constrain and distinguish** non-employee access, because these are people the screening pipeline did not process, the handbook does not bind, and the termination process will never see.
+
+![Controls that distinguish non-employees](/courses/cissp/figures/cissp-nonemployee-controls.svg)
+
+| Control | What it does |
+|---|---|
+| Additional contractual protections | The contract stipulates the protection: penalty payments for failures, requirements to carry appropriate insurance (errors-and-omissions policies in professional services), or an express transfer of liability where law allows |
+| Distinct accounts | Differentiated from employee accounts - limited access, and richer audit-trail information on everything the account touches |
+| Escort requirements | Constant monitoring - by surveillance, or continually in an employee's presence |
+| Distinguishing identification | Badges jarringly different from employee badges - colour, shape - so non-membership is visible at a glance to everyone |
+
+And the constant from the agreements section: **external personnel sign NDAs too**, conceding and recognising the organisation's ownership of its proprietary assets - because the confidentiality obligation must attach to every person who sees the material, employee or not.
+
+## The logic underneath the four
+
+Each control substitutes for a piece of the employment relationship that is missing. The **contract clauses** substitute for the employer's disciplinary leverage - the organisation cannot demote a vendor, so it prices failure into the agreement (the compliance module's boundary rule in personnel form: internal documents bind insiders; contracts carry obligations across the boundary). **Distinct accounts** substitute for the trust screening would have established - less access, more audit. **Escorts** substitute for the acculturation employees absorb - the visitor does not know the norms, so an employee embodies them alongside. **Distinguishing badges** substitute for organisational familiarity - staff cannot recognise every contractor, so the badge broadcasts the status. Read this way, the section is one principle applied four times: *make the missing trust visible, auditable, and enforceable*.
+
+The distinct-account rule earns one more emphasis: shared or borrowed employee credentials for visiting technicians is the anti-pattern - it grants employee-grade access with zero-grade accountability, and converts the richer audit trail the organisation should have into attribution noise it can never untangle.`
+    },
+    {
+      id: '6-aup-privacy',
+      title: `6. Acceptable Use, Surveillance, and the Privacy Policy`,
+      content: `## The acceptable use policy
+
+Organisations should utilise **acceptable use policies (AUPs)** for all personnel - detailing, **from the user's perspective**, the appropriate and approved usage of the organisation's assets: the IT environment, devices, and data. The signing formalities matter: everyone with access signs, **preferably in the presence of an employee of the organisation**, and **both parties keep a copy**. The witnessed signature and retained copies are evidentiary design - when the AUP is enforced, the questions "did they agree?" and "to what wording?" are already answered.
+
+The aspects commonly included:
+
+| AUP aspect | What it governs |
+|---|---|
+| Data access | What the user may reach, and for what purposes |
+| System access | Which systems, when, from where |
+| Data disclosure | What may be shared, with whom |
+| Passwords | The user's obligations for credential handling |
+| Data retention | What the user keeps, and for how long |
+| Internet usage | Approved use of connectivity on the organisation's assets |
+
+The user's-perspective framing is a drafting instruction, not a nicety: the AUP is written for the person operating the systems, in language they can apply at the keyboard - because a document the signer could not reasonably understand defends poorly as an agreement.
+
+## Surveillance, inside the legal envelope
+
+Compliance with security policy can also be determined by **surveillance of personnel activity** - and the module's caution is emphatic: surveillance must be conducted in **strict accordance with applicable law**, because many countries severely restrict how and when organisations may observe their personnel. The ethics module's unauthorised-watcher scenario showed the internal half of this rule (capability is not authority; monitoring requires organisational authorisation); this section adds the external half - even *authorised* monitoring programmes must fit the jurisdiction's legal envelope, and in some legal systems a monitoring practice lawful at headquarters is an offence at the subsidiary. Surveillance design is therefore a legal review deliverable, not a technical configuration. The programme that survives scrutiny documents three things before any monitoring runs: the organisational authorisation (who approved, under what policy), the legal review (which jurisdictions, which limits), and the notice given to the monitored population - typically through the AUP itself, which is one more reason its wording and signature formalities carry weight.
+
+## The privacy policy
+
+![The privacy roles the policy governs](/courses/cissp/figures/cissp-privacy-roles.svg)
+
+When personnel have access to PII, the organisation must document that they **understand and acknowledge** the policies and procedures for handling it - documentation similar to the AUP but **specific to privacy data**. The privacy policy stipulates:
+
+- **which information is considered PII** (the legal module's lesson applied: defined per law, not per intuition);
+- the **appropriate handling procedures and mechanisms** the organisation uses;
+- **how the user is expected to perform** in accordance with policy and procedure;
+- the **enforcement mechanisms and punitive measures** for non-compliance;
+- **references to the applicable regulations** the organisation is subject to - national laws such as the GDPR or PIPEDA, sector laws such as HIPAA or GLBA, and state or municipal law where it applies.
+
+And one document more: the organisation should maintain a **customer-facing version** of the privacy policy - the description, for data subjects, of how their information will be protected, presented directly or by reference (a medical provider pointing patients to the description on its website). The internal version binds the handlers; the external version informs the handled - the privacy tenets' notification obligation, met in document form.
+
+## The signature stack, assembled
+
+By the end of the lifecycle, a single employee with PII access has produced a small evidentiary archive, and it is worth seeing whole: the **job description** acknowledged at hire, the **handbook receipt**, the **employment contract**, the **NDA**, the **AUP** signed and witnessed, the **privacy policy acknowledgement**, and the **training records** with dates and content versions. Each document answers a different future question - what was expected, what was known, what was agreed, what survives departure, how the systems could be used, how the data had to be handled, and what instruction was given. Together they are the personnel share of the organisation's due-diligence portfolio from the governance module: when an incident involves a person, the first discovery request is substantially this list, and the programme that can produce it complete, signed, and dated has already won the part of the dispute that paperwork can win.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: the screening design
+
+*A firm is hiring for three roles: a warehouse packer, a payroll administrator, and a treasury manager with wire authority. Design the screening depth for each and justify the differences.*
+
+Screening scales with the trust the position carries. The **packer** gets the baseline: job description (jointly drafted, precise), employment history, and a background check proportionate to the role - criminal history relevant to the duties. The **payroll administrator** handles PII and payment data: add credential and education verification (the qualifications claimed are part of the trust), and a fuller background check - this is a position where the organisation's due-diligence evidence will be examined if something goes wrong. The **treasury manager** is a position of accentuated trust: everything above **plus the financial profile**, with the two-tailed reading - distress signalling susceptibility to subversion, unexplained wealth signalling existing compromise - taken with the candidate's explicit written consent and inside the jurisdiction's legal limits.
+
+The justification to state: screening is a risk treatment, and its cost scales with the impact of the hire going wrong. Uniform maximal screening is wasteful and in places unlawful; uniform minimal screening leaves the wire authority protected by the packer's checks. The design principle is proportionality, documented.
+
+## Worked example 2: the resignation
+
+*A database administrator with privileged access resigns amicably, giving two weeks' notice, to join a company that is not a competitor. Walk the termination controls across the two weeks and the final day, and name the risk the sequence is built around.*
+
+The notice period is not business as usual: privileged access is reviewed immediately - reduced where duties allow, monitored where it cannot be - because the module's central risk window is **the coincidence of motive and opportunity between notification and access removal**. Amicable is a mood, not a control. The notice period's other duty is knowledge transfer under supervision - documented handover of the systems and credentials the role held, which doubles as the inventory the final-day sequence will recover and rotate.
+
+Final day, in order: **lock the accounts first** - every credential, including service accounts the administrator knows, with privileged passwords the person held rotated; **recover property** - devices, badge, keys, tokens (the badge is an identifier as well as an asset; unrecovered, it tailgates); **exit interview** - the amiable departure makes it genuinely informative; **review the NDA** - the confidentiality obligation survives the employment, and this is the moment it is formally re-read; **escort out** - courteously, and completely.
+
+The named risk: last-minute modification of systems or data by a person with maximal capability and a closing window. The sequence exists so that by the time anything else happens on the last day, the capability is already gone.
+
+## Worked example 3: the vendor engagement
+
+*A facilities vendor will have technicians on site weekly for a year, needing access to the building management system. Design the control set, and name what each control substitutes for.*
+
+**Contract first**: the engagement terms carry the security obligations - penalty provisions for security failures, required errors-and-omissions insurance, liability transfer where law allows, and the security requirements imported as clauses (the boundary rule: your policy does not bind their company; your contract does). **NDAs** for the firm and the individual technicians - the ownership of what they will see, acknowledged in writing. **Distinct accounts** per technician on the building system - scoped to the BMS, with enhanced audit logging; never shared, never borrowed employee credentials. **Distinguishing badges** - visibly different, so every employee can see non-membership at a glance. **Escort or surveillance** per the site's rule for the areas involved.
+
+The substitution map: contract clauses replace disciplinary leverage; per-person accounts replace screening-established trust with least privilege plus audit; badges replace organisational familiarity; escorts replace acculturation. The recurring failure to warn against: the "temporary" shared login created for technician convenience - employee-grade access, zero-grade accountability, and a year of attribution noise if anything goes wrong.
+
+## Worked example 4: the AUP that has to hold
+
+*An employee is dismissed for running a side business on company systems during work hours, discovered through authorised monitoring. The employee sues, claiming they never knew this was prohibited and the monitoring was unlawful. What documents and properties decide the case, and what would sink the organisation?*
+
+The organisation's position rests on the module's evidentiary design. The **AUP**: signed by the employee - ideally witnessed, both parties holding copies - with its internet-usage and system-access aspects covering personal business use; the signature answers "did they know?" and the retained copy answers "know *what*, exactly?" The **job description and handbook acknowledgement** reinforce the expectations. The **monitoring programme's legal review**: the surveillance was authorised organisationally *and* conducted in strict accordance with applicable law - the two halves of the surveillance rule, both needed.
+
+What would sink it: an unsigned or unwitnessed AUP (agreement unprovable); an AUP silent on the conduct at issue (expectations never set); or monitoring outside the jurisdiction's legal envelope - in which case the evidence may be unusable, the dismissal contaminated, and, in restrictive jurisdictions, the *organisation* may face liability for the surveillance itself - the ethics module's lesson that improperly obtained information poisons the response, now at corporate scale. The module's formalities - witnessed signatures, retained copies, legal review of monitoring - exist precisely for the day this hypothetical stops being one.
+
+## Worked example 5: the transfer nobody re-screened
+
+*An employee hired five years ago as a marketing analyst - screened at the baseline level for that role - has been promoted twice and now administers the customer database, holding privileged access to the firm's largest PII store. No screening has occurred since hire; the AUP on file predates the firm's privacy policy; the employee has never signed a privacy acknowledgement because the requirement was introduced after their onboarding. An auditor asks the personnel-security question. Assess the state and prescribe the fix.*
+
+The state, in the module's terms: **trust extended has outrun assurance obtained**. The screening on file answered "can this person be trusted as a marketing analyst?" - a question no one is asking anymore. The signature stack has a hole exactly where the current role needs it most: privileged PII access with no privacy-policy acknowledgement, and an AUP whose wording never contemplated the systems now in reach. Every future enforcement action or dispute involving this person's data handling begins with the organisation unable to prove the obligations were ever communicated for the role actually held.
+
+The fix follows the lifecycle's own logic. **Re-screen proportionate to the current role** - the background and, if the role warrants and law permits, financial checks that a fresh hire into database administration would receive. **Close the signature gaps** - current AUP, privacy acknowledgement, and role-appropriate training, executed now with dates that at least bound the exposure going forward. **Fix the trigger** - the systemic failure is that promotion and transfer do not invoke the screening and acknowledgement machinery; wire role change into the same process that hire invokes, so the next promotion re-runs assurance automatically.
+
+The generalisable audit lesson: personnel files answer questions about the role at hire; the organisation's risk lives in the role today. Any programme whose assurance is dated to hire has this finding waiting in every long-tenured, much-promoted employee - and the exam stem describing "screened at hire, promoted since" is pointing at exactly this gap.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Define the insider threat, and state where in the employment relationship it is best addressed and why.
+
+2. What makes the job description a legal instrument, and who should create it?
+
+3. Why do reference checks under-deliver, and what does the background check verify?
+
+4. Explain the two-tailed logic of the financial profile, and its two formal constraints.
+
+5. Which personnel instrument binds after employment ends, and why does the termination process re-read it?
+
+6. Give the onboarding sequence, and the principle it enforces.
+
+7. Give the termination sequence, and justify the position of the first step.
+
+8. Name the four non-employee controls and what each substitutes for.
+
+9. List the six common AUP aspects and the two signing formalities.
+
+10. What are the two halves of the surveillance rule?
+
+11. What must the internal privacy policy stipulate, and what companion document does it require?
+
+12. A visiting technician is lent an employee's login "just for the afternoon." Name every control this violates.
+
+## Answers
+
+**1.** Insider threats are **personnel who can be subverted or influenced to contravene policy and law and bring harm to the organisation** - the malicious, and the manipulated. Best addressed **before hire and before access is granted**, because that is the last point where the organisation exercises full discretion: afterwards it is detecting and responding to someone already inside the trust boundary, credentialed and familiar with the processes.
+
+**2.** It defines expected performance - and later serves as **evidence that an employee violated known expectations**: if a terminated employee litigates claiming the transgressive behaviour was never made known, the precise job description supports the organisation's position. Creation is joint: the **hiring manager** (who best knows the position's needs) with **human resources** (which best knows the applicable law and protective procedure). Vagueness is a missing exhibit in a future case.
+
+**3.** Because modern organisations often decline to report on former employees beyond rehire eligibility - and references are typically **candidate-supplied**, so they are not independent sources. The **background check** verifies against trusted databases: certifications and credentials, educational degrees, and criminal history - catching the fabricated qualification before the organisation relies on it.
+
+**4. Too little money** may signal personal problems - addiction, poor judgement, instability - making the candidate **susceptible to subversion** in a position of trust; **too much money** may signal existing illicit income, payment by another entity, or unresponsiveness to the organisation's requirements. Constraints: the check usually requires the candidate's **explicit written agreement**, and it is **limited by law in some jurisdictions** - the legal envelope precedes the credit pull.
+
+**5.** The **NDA** - drafted to bind against unauthorised disclosure **during and after** the term of employment, where the handbook and AUP lose their grip at the door. Termination re-reads it because that is the last formal moment to remind the departing person of the obligation that follows them out - converting "it was in the paperwork" into a documented, contemporaneous reminder.
+
+**6.** Review of **contract terms and job description**; **formal initial security training**; **NDA signature**; **secure issuance of credentials and tools**. The principle: **access and obligation arrive together** - nobody holds credentials they have not been bound and trained for, because the riskiest person in the building is the one with fresh access and no instruction.
+
+**7. Lock the IT accounts; recover property (devices, badge, keys, tokens); exit interview; review the NDA; escort from the premises.** Accounts come first because the interval between learning of termination and losing access is the relationship's highest-risk window - motive and opportunity coincide - and the step exists to prevent **last-minute modification of systems or data**. Everything else tolerates minutes; the access does not.
+
+**8. Additional contractual protections** (penalties, required insurance such as E&O, liability transfer) - substituting for the disciplinary leverage the organisation has over employees but not vendors. **Distinct accounts** (limited access, richer audit trail) - substituting least-privilege-plus-audit for the trust screening never established. **Escort requirements** - substituting an employee's presence for the acculturation the visitor lacks. **Distinguishing identification** - visibly different badges substituting broadcast status for the familiarity staff cannot have with every contractor. Plus the constant: external parties sign **NDAs** too.
+
+**9. Data access, system access, data disclosure, passwords, data retention, internet usage.** Formalities: signed **in the presence of an employee of the organisation**, and **both parties keep a copy** - the witnessed signature proves agreement, the retained copies fix the wording, and together they pre-answer the enforcement questions.
+
+**10.** Surveillance must be **organisationally authorised** - capability is not authority; monitoring happens under sanctioned programmes, not individual initiative - and it must be conducted in **strict accordance with applicable law**, which varies sharply by jurisdiction: practices lawful in one country are offences in another, so surveillance design is a legal-review deliverable before it is a technical one.
+
+**11.** The internal privacy policy stipulates **which information is considered PII**, the **handling procedures and mechanisms**, the **expected user performance**, the **enforcement and punitive measures**, and **references to applicable regulations** (national, sector, and local). The companion: a **customer-facing version** describing to data subjects how their information is protected, presented directly or by reference - the tenets' notification duty in document form.
+
+**12.** **Distinct accounts** (the technician is on an employee's credentials - employee-grade access, zero accountability); the **audit-trail purpose** of differentiated access (attribution is now noise); the **AUP and credential-handling obligations** of the lending employee (passwords are personal); likely the **escort/monitoring rule** if the login substitutes for supervision; and the **least-privilege logic** of the whole section - the visitor holds whatever the employee holds, not what the task needs. One favour, five controls - which is why the shared-login anti-pattern is the section's standing warning.
+
+**Bonus discipline - the offboarding that never happens:** vendors, consultants, and contractors leave without resignations. Engagements lapse, technicians rotate, firms are replaced - and none of it triggers the termination checklist, because non-employees are not in the HR system that drives it. The mature programme gives external access an **expiry by default**: accounts time-limited to the engagement, badge validity tied to the contract term, and a review that renews deliberately rather than a departure that revokes reactively. The alternative is the classic audit finding - active credentials for a vendor whose contract ended two fiscal years ago - which is the termination-sequence failure in slow motion, with nobody assigned to notice.
+
+**13.** Because assurance is obtained for a role, and **trust extended must not outrun assurance obtained**. Screening at hire answered whether the person could be trusted with the *original* position; a promotion into privileged access or financial authority extends materially more trust on the strength of a stale answer. Re-screening proportionate to the new role, plus the role-appropriate acknowledgements (current AUP, privacy policy) and training, re-dates the assurance to the trust actually held - and wiring this into the transfer process makes it automatic rather than an audit finding. The long-tenured, much-promoted employee with hire-date-only screening is the canonical gap.
+
+**14.** The **organisational authorisation** - who approved the monitoring, under which policy, so the programme is sanctioned rather than an individual's initiative (capability is not authority). The **legal review** - which jurisdictions the monitored population sits in and what each permits, since workplace surveillance lawful in one country is an offence in another. And the **notice to the monitored population** - typically delivered through the AUP's signed, witnessed acknowledgement - so no one monitored can credibly claim ignorance. Authorised, lawful, and noticed: missing any leg contaminates both the evidence gathered and, in restrictive jurisdictions, exposes the organisation itself.`
+    }
   ],
 },
 cissp_awareness: {
