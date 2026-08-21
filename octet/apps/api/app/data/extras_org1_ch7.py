@@ -745,8 +745,10 @@ _add(LessonExtras(
                 "chapter finally builds in full - the shape "
                 "that spends nothing, holds everything, and "
                 "carries more of chemistry and biology on its "
-                "six quiet carbons than any other geometry "
-                "this course will ever draw."
+                "six quiet, perfectly staggered carbons than "
+                "any other single geometry that this course, "
+                "or chemistry itself, will ever have occasion "
+                "to draw."
             ),
         ),
     ),
