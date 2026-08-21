@@ -406,6 +406,85 @@ def fig_radical_chain(mode):
 # standard physical-organic compilations; kJ/mol vs the cyclohexane reference)
 # ---------------------------------------------------------------------------
 
+def fig_chair_flip(mode):
+    """Ring-flip energy profile: chair -> half-chair TS -> twist-boat ->
+    boat TS -> twist-boat -> half-chair TS -> chair.  Levels are the
+    standard published relative energies for cyclohexane conformers:
+    chair 0, twist-boat ~23 kJ/mol, boat ~30 kJ/mol, half-chair TS
+    ~45 kJ/mol (the ring-flip barrier)."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    import numpy as np
+    x = np.linspace(0, 10, 800)
+    knots_x = [0.0, 1.7, 3.1, 5.0, 6.9, 8.3, 10.0]
+    knots_y = [0.0, 45.0, 23.0, 30.0, 23.0, 45.0, 0.0]
+    y = np.interp(x, knots_x, knots_y)
+    from scipy.ndimage import gaussian_filter1d  # type: ignore
+    try:
+        y = gaussian_filter1d(y, 18)
+        y = y * (45.0 / y.max())
+    except Exception:
+        pass
+    fig, ax = plt.subplots(figsize=(6.8, 4.2))
+    ax.plot(x, y, color=fs.SERIES[mode][0], linewidth=2)
+    labels = [
+        (0.0, 0, "chair", -10),
+        (1.7, 45, "half-chair TS\n~45 kJ/mol", 5),
+        (3.1, 23, "twist-boat\n~23", -13),
+        (5.0, 30, "boat TS\n~30", 5),
+        (6.9, 23, "twist-boat", -11),
+        (10.0, 0, "chair (flipped:\nax and eq exchanged)", 4),
+    ]
+    for lx, ly, text, dy in labels:
+        ax.annotate(text, (lx, ly), textcoords="offset points",
+                    xytext=(0, dy), ha="center", fontsize=8.5, color=ink)
+    ax.set_ylim(-14, 58)
+    ax.set_xticks([])
+    ax.set_ylabel("relative energy (kJ/mol)")
+    ax.set_xlabel("ring-flip coordinate")
+    fs.save(fig, OUT, "org1-chair-flip", mode)
+    plt.close(fig)
+
+
+def fig_chair_axeq(mode):
+    """Schematic cyclohexane chair with the six axial bonds drawn
+    vertical (alternating up/down) and the six equatorial bonds angled
+    outward - the geometry every substituted-cyclohexane argument uses."""
+    fs.apply(mode)
+    ink = fs.INK[mode]
+    c_ax = fs.SERIES[mode][0]
+    c_eq = fs.SERIES[mode][1]
+    ring = [
+        (0.0, 0.55), (1.0, 0.05), (2.15, 0.35),
+        (2.75, 1.05), (1.75, 1.55), (0.60, 1.25),
+    ]
+    fig, ax = plt.subplots(figsize=(6.6, 4.4))
+    for i in range(6):
+        x0, y0 = ring[i]
+        x1, y1 = ring[(i + 1) % 6]
+        ax.plot([x0, x1], [y0, y1], color=ink, linewidth=2)
+    up = [True, False, True, False, True, False]
+    for i, (x0, y0) in enumerate(ring):
+        dy = 0.62 if up[i] else -0.62
+        ax.plot([x0, x0], [y0, y0 + dy], color=c_ax, linewidth=1.8)
+        prev = ring[(i - 1) % 6]
+        nxt = ring[(i + 1) % 6]
+        ex, ey = (x0 - (nxt[0] - prev[0]) * 0.28,
+                  y0 - (nxt[1] - prev[1]) * 0.28)
+        sign = -1.0 if up[i] else 1.0
+        ax.plot([x0, ex], [y0, ey + sign * 0.10], color=c_eq,
+                linewidth=1.8, linestyle=(0, (5, 2)))
+    ax.annotate("axial: parallel to the ring axis,\nalternating up / down",
+                (2.9, 2.35), fontsize=9, color=c_ax, ha="center")
+    ax.annotate("equatorial: angled outward\naround the belt (dashed)",
+                (0.15, -0.75), fontsize=9, color=c_eq, ha="left")
+    ax.set_xlim(-1.3, 4.2)
+    ax.set_ylim(-1.3, 2.75)
+    ax.axis("off")
+    fs.save(fig, OUT, "org1-chair-axeq", mode)
+    plt.close(fig)
+
+
 def fig_ring_strain(mode):
     fs.apply(mode)
     ink = fs.INK[mode]
@@ -420,6 +499,8 @@ def fig_ring_strain(mode):
 
 
 ALL = [
+    fig_chair_flip,
+    fig_chair_axeq,
     fig_alkane_bp, fig_c5_bpmp, fig_newman,
     fig_pka_ladder, fig_polar_effect, fig_arrow_grammar,
     fig_alkene_stability, fig_cation_ladder, fig_bde_chart,
