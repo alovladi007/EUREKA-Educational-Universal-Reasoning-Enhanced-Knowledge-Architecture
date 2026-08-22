@@ -2639,6 +2639,387 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# The asset classification process: inventory -> ownership -> classify ->
+# protect, with the assess-and-review loop that keeps it current.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-classification-process")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    steps = [
+        ("ASSET\nINVENTORY", "what do we have,\nand where is it?", c[0]),
+        ("ASSIGN\nOWNERSHIP", "who is accountable\nfor its value?", c[1]),
+        ("CLASSIFY\nBY VALUE", "which level does\nits value select?", c[2]),
+        ("PROTECT AND\nHANDLE", "apply the baseline\nfor that level", c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 4.2))
+    for i, (name, gloss, colour) in enumerate(steps):
+        x = 0.35 + i * 2.42
+        ax.add_patch(plt.Rectangle((x, 2.15), 2.02, 0.92, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x + 1.01, 2.61), ha="center", va="center",
+                    fontsize=8.6, color=ink)
+        ax.annotate(gloss, (x + 1.01, 1.72), ha="center", fontsize=7.0,
+                    color=S.INK_2[mode])
+        if i < len(steps) - 1:
+            ax.annotate("", (x + 2.38, 2.61), (x + 2.06, 2.61),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.6))
+    # feedback loop
+    ax.annotate("", (0.9, 1.35), (9.3, 1.35),
+                arrowprops=dict(arrowstyle="-|>", color=c[2], linewidth=1.5,
+                                linestyle=(0, (5, 3))))
+    ax.annotate("ASSESS AND REVIEW - value changes, so classification is re-checked, not set once",
+                (5.1, 1.02), ha="center", fontsize=7.6, color=c[2])
+    ax.annotate("nothing downstream can be right if the inventory is wrong: unknown assets get no owner, no level, and no protection",
+                (5.1, 0.45), ha="center", fontsize=7.6, color=ink, style="italic")
+    ax.set_xlim(0, 10.2)
+    ax.set_ylim(0.15, 3.4)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Assets are not only data: four families with worked examples.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-asset-families")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fams = [
+        ("INFORMATION", ["databases", "files, spreadsheets", "continuity plans", "procedures"], c[0]),
+        ("SOFTWARE", ["applications", "source code", "object code", "operating systems"], c[1]),
+        ("PHYSICAL", ["hardware, media", "network equipment", "servers", "buildings"], c[2]),
+        ("PROCESSES\nAND SERVICES", ["communications", "data facilities", "voice systems", "computing"], c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.4, 4.6))
+    for i, (name, items, colour) in enumerate(fams):
+        x = 0.35 + i * 2.4
+        ax.add_patch(plt.Rectangle((x, 3.15), 2.05, 0.78, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.02, 3.54), ha="center", va="center",
+                    fontsize=8.3, color=ink)
+        for j, it in enumerate(items):
+            ax.annotate(it, (x + 1.02, 2.78 - j * 0.42), ha="center",
+                        fontsize=7.2, color=S.INK_2[mode])
+    ax.annotate("and beyond the inventory sheet: people, reputation, brand, identity, ideas, intellectual property",
+                (4.95, 0.75), ha="center", fontsize=7.8, color=c[2])
+    ax.annotate("an asset is anything of value to the organisation - the protection it earns follows that value, not its file format",
+                (4.95, 0.28), ha="center", fontsize=7.8, color=ink, style="italic")
+    ax.set_xlim(0, 9.9)
+    ax.set_ylim(0.0, 4.15)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Two valuation methods, and which assets each suits.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-valuation-methods")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.2, 4.0))
+    cols = [
+        ("QUANTITATIVE", c[0], 0.45,
+         ["value expressed in NUMBERS", "usually monetary", "replacement cost, lost revenue",
+          "suits TANGIBLE assets", "feeds ALE-style arithmetic"]),
+        ("QUALITATIVE", c[2], 5.05,
+         ["value expressed in GRADES", "high / medium / low", "or top secret / secret / confidential",
+          "suits INTANGIBLE assets", "the only honest option when\nno defensible number exists"]),
+    ]
+    for name, colour, x, rows in cols:
+        ax.add_patch(plt.Rectangle((x, 3.02), 4.05, 0.72, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 2.02, 3.38), ha="center", va="center",
+                    fontsize=9.0, color=ink)
+        for j, r in enumerate(rows):
+            ax.annotate(r, (x + 2.02, 2.62 - j * 0.46), ha="center",
+                        fontsize=7.3, color=S.INK_2[mode])
+    ax.annotate("both answer one question - what is this worth? - because the answer sets the level of protection required",
+                (4.75, 0.42), ha="center", fontsize=7.8, color=ink, style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(0.1, 3.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The asset lifecycle read as security requirements per phase.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-asset-lifecycle-phases")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    phases = [
+        ("IDENTIFY AND CLASSIFY", "the owner sets the level from value"),
+        ("SECURE", "the level's baseline is applied"),
+        ("MONITOR", "controls and value both re-checked"),
+        ("RECOVER", "impact to value must be reversible"),
+        ("DISPOSITION", "useful life ends - archive or destroy"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.4, 4.8))
+    for i, (name, gloss) in enumerate(phases):
+        y = 4.05 - i * 0.62
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((0.4, y - 0.22), 3.15, 0.46, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.97, y), ha="center", va="center", fontsize=7.9, color=ink)
+        ax.annotate(gloss, (3.8, y), va="center", fontsize=7.3, color=S.INK_2[mode])
+        if i < len(phases) - 1:
+            ax.annotate("", (1.97, y - 0.4), (1.97, y - 0.24),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.4))
+    # branch
+    ax.annotate("", (1.2, 1.2), (1.9, 1.4),
+                arrowprops=dict(arrowstyle="-|>", color=c[1], linewidth=1.5))
+    ax.annotate("", (2.75, 1.2), (2.05, 1.4),
+                arrowprops=dict(arrowstyle="-|>", color=c[2], linewidth=1.5))
+    ax.add_patch(plt.Rectangle((0.15, 0.72), 1.75, 0.46, facecolor=c[1],
+                               alpha=0.16, edgecolor=c[1], linewidth=1.5))
+    ax.annotate("ARCHIVE", (1.02, 0.95), ha="center", va="center", fontsize=7.9, color=ink)
+    ax.add_patch(plt.Rectangle((2.15, 0.72), 2.35, 0.46, facecolor=c[2],
+                               alpha=0.16, edgecolor=c[2], linewidth=1.5))
+    ax.annotate("DEFENSIBLE DESTRUCTION", (3.32, 0.95), ha="center", va="center",
+                fontsize=7.5, color=ink)
+    ax.annotate("long-term storage still protected\nat the asset's classification", (4.75, 0.95),
+                va="center", fontsize=7.2, color=S.INK_2[mode])
+    ax.annotate("quality-controlled, regulatory-compliant, legally defensible - not \"keep everything forever\"",
+                (4.8, 0.24), ha="center", fontsize=7.6, color=ink, style="italic")
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(0.05, 4.5)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Six-phase data lifecycle with the control emphasis each phase attracts.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-data-phases-controls")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    phases = [
+        ("CREATE", "classify HERE -\nat generation"),
+        ("STORE", "encryption, access\ncontrol, logging"),
+        ("USE", "cleartext to process:\nDLP, DRM, access"),
+        ("SHARE", "control leaves with it:\nDLP detects, DRM holds"),
+        ("ARCHIVE", "will the technology\nstill read it?"),
+        ("DESTROY", "method chosen\nby classification"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 3.7))
+    for i, (name, gloss) in enumerate(phases):
+        x = 0.3 + i * 1.6
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((x, 2.15), 1.35, 0.62, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (x + 0.68, 2.46), ha="center", va="center",
+                    fontsize=8.0, color=ink)
+        ax.annotate(gloss, (x + 0.68, 1.62), ha="center", fontsize=6.8,
+                    color=S.INK_2[mode])
+        if i < len(phases) - 1:
+            ax.annotate("", (x + 1.56, 2.46), (x + 1.39, 2.46),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.4))
+    ax.annotate("USE is the exposed phase - data must be decrypted to be processed, and lands on servers and workstations to do it",
+                (4.95, 0.95), ha="center", fontsize=7.6, color=c[2])
+    ax.annotate("SHARE is the uncontrolled phase - once data leaves, the organisation keeps obligations but loses direct control",
+                (4.95, 0.52), ha="center", fontsize=7.6, color=c[1])
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.25, 3.0)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Classification (the system) versus categorization (the act of sorting by
+# impact of loss).
+# ---------------------------------------------------------------------------
+
+@figure("cissp-class-vs-categorize")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.2, 4.2))
+    ax.add_patch(plt.Rectangle((0.45, 2.95), 4.0, 0.72, facecolor=c[0],
+                               alpha=0.17, edgecolor=c[0], linewidth=1.7))
+    ax.annotate("CLASSIFICATION", (2.45, 3.31), ha="center", va="center",
+                fontsize=9.0, color=ink)
+    for j, r in enumerate(["forming into classes", "= THE SYSTEM of levels",
+                           "restricted / confidential / public", "who may access, at what clearance"]):
+        ax.annotate(r, (2.45, 2.55 - j * 0.44), ha="center", fontsize=7.4,
+                    color=S.INK_2[mode])
+    ax.add_patch(plt.Rectangle((5.0, 2.95), 4.0, 0.72, facecolor=c[2],
+                               alpha=0.17, edgecolor=c[2], linewidth=1.7))
+    ax.annotate("CATEGORIZATION", (7.0, 3.31), ha="center", va="center",
+                fontsize=9.0, color=ink)
+    for j, r in enumerate(["sorting things into the classes", "= THE ACT of placing",
+                           "driven by IMPACT of losing C, I, or A", "public web page LOW; the design that\nsinks the company HIGH"]):
+        ax.annotate(r, (7.0, 2.55 - j * 0.44), ha="center", fontsize=7.4,
+                    color=S.INK_2[mode])
+    ax.annotate("together they standardise baselines: like-categorised assets share controls, so protection is bought at scale, not per asset",
+                (4.72, 0.42), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 9.45)
+    ax.set_ylim(0.1, 3.9)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The six things a data classification policy must decide.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-classification-policy")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("WHO may access it", "roles, and view versus update"),
+        ("HOW it is secured", "open by default, or denied by default"),
+        ("HOW LONG it is retained", "regulator's period, else the business need"),
+        ("HOW it is disposed of", "cross-cut shred, verified erase, remanence check"),
+        ("WHETHER it is encrypted", "often the answer a regulation already gave"),
+        ("WHAT USE is appropriate", "internal, role-restricted, or public"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
+    for i, (name, gloss) in enumerate(rows):
+        y = 3.75 - i * 0.56
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((0.4, y - 0.2), 3.35, 0.42, facecolor=colour,
+                                   alpha=0.15, edgecolor=colour, linewidth=1.4))
+        ax.annotate(name, (2.07, y), ha="center", va="center", fontsize=7.8, color=ink)
+        ax.annotate(gloss, (4.0, y), va="center", fontsize=7.3, color=S.INK_2[mode])
+    ax.annotate("the OWNER answers all six - the policy is where those answers become binding on everyone else",
+                (4.8, 0.3), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(0.05, 4.05)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+
+# ---------------------------------------------------------------------------
+# The eight OECD privacy principles, grouped by what each governs.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-oecd-principles")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    groups = [
+        ("AT COLLECTION", c[0], [
+            ("1 Collection Limitation", "limits on collection; lawful and fair\nmeans; knowledge or consent"),
+            ("3 Purpose Specification", "state the purpose no later than\nthe moment of collection"),
+        ]),
+        ("OVER THE DATA HELD", c[1], [
+            ("2 Data Quality", "relevant to purpose; accurate,\ncomplete, kept up to date"),
+            ("4 Use Limitation", "no other use or disclosure without\nconsent or authority of law"),
+            ("5 Security Safeguards", "reasonable safeguards against loss,\naccess, destruction, modification"),
+        ]),
+        ("TOWARD THE SUBJECT", c[2], [
+            ("6 Openness", "a general policy of openness about\npractices and the controller's identity"),
+            ("7 Individual Participation", "confirm, obtain, challenge, and have\ndata erased, rectified, or amended"),
+            ("8 Accountability", "the CONTROLLER answers for\ncompliance with all of the above"),
+        ]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 5.6))
+    x = 0.35
+    for title, colour, items in groups:
+        w = 3.05
+        ax.add_patch(plt.Rectangle((x, 4.72), w, 0.56, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(title, (x + w / 2, 5.0), ha="center", va="center",
+                    fontsize=8.2, color=ink)
+        for j, (name, gloss) in enumerate(items):
+            y = 4.25 - j * 1.42
+            ax.annotate(name, (x + w / 2, y), ha="center", fontsize=7.7, color=colour)
+            ax.annotate(gloss, (x + w / 2, y - 0.52), ha="center", fontsize=6.8,
+                        color=S.INK_2[mode])
+        x += 3.3
+    ax.annotate("principle 1 - collection limitation - is the one the module singles out: the data never collected is the data that cannot leak",
+                (5.0, 0.35), ha="center", fontsize=7.7, color=c[0], style="italic")
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.05, 5.5)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Three regional approaches to privacy regulation.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-privacy-regimes")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    cols = [
+        ("UNITED STATES", c[0], "SECTORIAL", [
+            "no single national privacy law",
+            "or national data protection authority",
+            "FTC over most commercial entities",
+            "sector regulators: health, finance",
+            "opt-OUT is the general default;",
+            "opt-IN for sensitive data such as health",
+            "Fourth Amendment limits government",
+            "search - unreasonable ones only",
+        ]),
+        ("EUROPEAN UNION", c[1], "COMPREHENSIVE", [
+            "one framework binding all members",
+            "applies across all business sectors",
+            "a separate ePrivacy regime covers",
+            "electronic communications, cookies,",
+            "and breach provisions",
+            "transfers out require an adequate",
+            "level of protection at the destination",
+            "the model much of the world copied",
+        ]),
+        ("APEC ECONOMIES", c[2], "FRAMEWORK", [
+            "a privacy framework endorsed",
+            "across member economies",
+            "deliberately FLEXIBLE in approach",
+            "goal: effective privacy protection",
+            "WITHOUT creating unnecessary",
+            "barriers to information flows",
+            "trade and economic growth are",
+            "explicit design considerations",
+        ]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.9, 5.2))
+    x = 0.3
+    for name, colour, kind, rows in cols:
+        w = 3.05
+        ax.add_patch(plt.Rectangle((x, 4.35), w, 0.6, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + w / 2, 4.65), ha="center", va="center",
+                    fontsize=8.4, color=ink)
+        ax.annotate(kind, (x + w / 2, 4.05), ha="center", fontsize=7.6, color=colour)
+        for j, r in enumerate(rows):
+            ax.annotate(r, (x + w / 2, 3.62 - j * 0.4), ha="center", fontsize=6.9,
+                        color=S.INK_2[mode])
+        x += 3.3
+    ax.annotate("one obligation reaches every column: the controller stays accountable wherever the data goes",
+                (5.0, 0.2), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 10.1)
+    ax.set_ylim(-0.05, 5.1)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
