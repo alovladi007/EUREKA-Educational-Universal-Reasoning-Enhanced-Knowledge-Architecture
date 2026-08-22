@@ -4514,6 +4514,302 @@ A formal media decommissioning process:
     'Legal hold OVERRIDES retention policy — failure to preserve relevant data when litigation is reasonably anticipated = spoliation',
   ],
 },
+cissp_asset_ownership: {
+  topicId: 'cissp_asset_ownership',
+  title: `Information and Asset Ownership`,
+  domainWeight: '10%',
+  overview: `Data does not protect itself, and neither does an org chart. Domain 2's ownership module exists because responsibility for assets - data above all - has fragmented across several roles, and the privacy laws of the world now dictate which accountabilities an organisation must assign and to whom. The module's whole cargo is one distinction carried through five roles: the owner and controller are ACCOUNTABLE for protecting the data's value; the custodian and processor are RESPONSIBLE for protecting it while in their hands; the steward tends its meaning; and the data subject is the person all of it serves. Hold that distinction precisely and every question in this module - and half the vendor-management questions elsewhere - resolves on sight. The module also completes the cast the legal module introduced, adding the steward and grounding every role in the accountabilities laws now mandate.`,
+  sections: [
+    {
+      id: '1-why-roles',
+      title: `1. Why the Roles Exist`,
+      content: `## Fragmented responsibility, mandated assignment
+
+In modern organisations, responsibilities for asset management - including data - have become divided among several roles, and the division is no longer optional design: **key roles are identified in laws and regulations** that dictate accountabilities organisations must assign. Privacy law drives hardest here. Statutes worldwide converge on the principle the compliance module established - the individual controls their personal information - and they treat that information as requiring protection at **every step of its lifecycle**: collection, processing, storage, archiving, destruction. An organisation cannot meet that obligation as an undifferentiated blob; someone must be accountable, someone must operate, and the law increasingly names which is which.
+
+The convergence is practical good news: because the world's privacy regimes assign broadly the same role structure, an organisation that builds its data governance on these five roles once can answer most jurisdictions' assignment requirements from the same design - the compliance module's learn-the-tenets-once economy, repeated for roles.
+
+## The management objectives
+
+Delineating data management roles serves four stated objectives, and each is a test an organisation can run against itself:
+
+| Objective | The failing state it prevents |
+|---|---|
+| Clearly define roles associated with functions | "Everyone" protecting the data, meaning no one |
+| Establish data ownership throughout all phases of a project | Data created in projects that no one owns until an incident asks who did |
+| Instill data accountability | Protection as a preference rather than an obligation with a name on it |
+| Maintain agreed data quality and metadata metrics, continuously | Data whose accuracy and context decay because tending them is nobody's job |
+
+The lifecycle thread runs beneath all four: information moves through creation, use, archiving, and destruction, and security activities must be embedded in **each** phase - including the last. **Defensible destruction** - destruction that can be shown to have been proper - is what the end of the lifecycle should look like, and it gets its full treatment in the remanence module. Protection, as always, means all three triad properties, not confidentiality alone. An availability failure of owned data, or an integrity lapse in its content, is an ownership matter exactly as a disclosure is - the owner's accountability spans the triad because the data's value does.
+
+![The privacy roles and where liability sits](/courses/cissp/figures/cissp-privacy-roles.svg)
+
+## The cast, introduced precisely
+
+| Role | Definition |
+|---|---|
+| Data subject | The individual who is the subject of the personal data |
+| Data owner | Accountable for determining the value of the data they own - and therefore accountable for its protection; defines access policies and communicates protection responsibilities to stewards, custodians, and processors |
+| Data controller | Where no "true" owner exists - personal information collected from clients and customers - the controller carries the owner's accountability; alone or jointly with others, it determines the purposes and manner of processing |
+| Data steward | Responsible for data content, context, and associated business rules |
+| Data processor | Processes data on the controller's behalf; may be given responsibility to protect it - but accountability always remains with the controller |
+| Data custodian | Responsible for protection of data while in their custody - safe custody, transport, storage, and processing, in compliance with the protection policies |
+
+The controller row repays a careful read: the controller is the owner's role **for data that arrived from outside** - the customers' personal information the organisation collected but does not "own" in the proprietary sense. The accountability is identical; the vocabulary shifts because privacy law, not property law, assigns it.`
+    },
+    {
+      id: '2-owner',
+      title: `2. The Information Owner`,
+      content: `## Who the owner is
+
+When information is collected or created, someone must be made clearly accountable for it - the **owner**. Typically this is the individual or group that **created, purchased, or acquired** the information for the organisation's mission - which is exactly why they are the right accountable party: the owner is in the best position to understand the information's value, quantitative or qualitative, and accountability follows value. This is the risk module's valuation logic acquiring a name: the functional manager who best knows the asset becomes the officer answerable for it. The manager-bias caution travels too: owners will overvalue what is theirs, which is one more reason senior management reviews valuations and why classification schemes constrain owners to defined levels rather than free-text importance claims.
+
+## The five accountabilities
+
+![The information owner's five accountabilities](/courses/cissp/figures/cissp-owner-accountabilities.svg)
+
+To determine the correct value - and therefore the correct protection - the owner is accountable for:
+
+| Accountability | The question the owner must answer |
+|---|---|
+| Mission impact | What does this information mean to the organisation's mission? |
+| Replacement cost | What would it cost to replace - if it can be replaced at all? |
+| Legal landscape | Which laws and regulations, privacy law especially, attach liabilities to it? |
+| Need and release | Who inside or outside the organisation needs it, and under what circumstances may it be released? |
+| End of life | When is it inaccurate or no longer needed - and due for destruction? |
+
+Read as a set, the five are the **lifecycle in accountability form**: value at birth, cost of loss in use, legal weight throughout, access in circulation, and a decided death. The last row is the one organisations forget - ownership includes knowing when the asset should stop existing, which is what makes the retention module's schedules an ownership output rather than an IT preference.
+
+Ownership also carries rights alongside duties: data owners generally hold **legal rights over the data - copyright and intellectual property rights included** - the right to use it to drive corporate decisions, and, where continued maintenance becomes unnecessary or uneconomical, **the right to destroy it**. Duties and rights arrive together; the party accountable for the value is the party entitled to decide its use and its end.
+
+## Documentation: the owner's expectations, written down
+
+![The document stack that carries the owner's expectations](/courses/cissp/figures/cissp-governance-hierarchy.svg)
+
+Owners must establish and **document** the expectations passed to custodians and others - the governance module's evidence discipline landing on the data itself:
+
+- the **ownership, intellectual property rights, and copyright** of the data;
+- the **obligations** that keep the data compliant with its compliance requirements;
+- the **protection policies** - including baselines and access controls;
+- the **expectations and responsibilities delegated** to custodians and everyone else accessing the data.
+
+Undocumented expectations are unenforceable ones: a custodian cannot follow protection policies never written, and an owner cannot demonstrate accountability for standards that exist only as assumptions. The documentation is how accountability at the top becomes practice below - and evidence afterwards. In processor relationships the same documents do double duty as contract exhibits: the owner's written expectations are what the engagement imports as obligations, so the quality of this documentation directly bounds the enforceability of the vendor relationship.`
+    },
+    {
+      id: '3-custodian',
+      title: `3. The Data Custodian`,
+      content: `## Custody, precisely
+
+Custodians, as the word implies, **have custody of assets that do not belong to them**, usually for a period of time. The assets belong to owners elsewhere; the custodian holds them because access, decisions, and the organisation's goals require it. Their defining responsibility: **protect the information while it is in their custody, according to the owner's expectations** as set out in policies, standards, procedures, baselines, and guidelines - the full document stack of Domain 1, now read as the custodian's operating instructions.
+
+And a supporting role the module makes explicit: **the security function ensures custodians are supported** - advised, skilled, tooled, and architecturally equipped to protect what they hold. Custodianship is assigned; competence for it is built, and building it is security's job. The support duty also positions security correctly in this module: security is not the owner of the organisation's data and not usually its custodian - it is the function that equips custodians and advises owners, the support role of Domain 1 expressed in data governance.
+
+## The typical responsibilities
+
+| Custodian responsibility | What it looks like in practice |
+|---|---|
+| Adherence to the owner's document stack | Operating within the policies, standards, procedures, baselines, and guidelines the owner set and security supports |
+| Accessibility with security | Authorised users can reach the data - at the appropriate protection level; both halves, not either |
+| Fundamental maintenance | Storage, archiving, and the operational care of the data |
+| Documentation and updates | The data's documentation kept current as the data changes |
+| Quality and validation | Assurance of additions to the data, including supporting periodic audits of ongoing integrity |
+
+The accessibility row is the one that catches candidates: custody is not a vault. The custodian's duty is simultaneous availability *and* security - "appropriate users, appropriate levels" - which makes the custodian the daily executor of the triad's tensions, balancing the availability the business needs against the confidentiality and integrity the owner's policies demand.
+
+## Custodian and steward, side by side
+
+The custodian tends the data's **existence** - its storage, transport, safety, and integrity. The **steward** tends its **meaning** - content, context, and the business rules that make it usable and correct for the organisation. A record can be perfectly stored and meaningless (custody without stewardship) or perfectly defined and lost (stewardship without custody); mature data management staffs both. On the exam, the discriminator is the object of care: bits and their protection point to the custodian; meaning, context, and business rules point to the steward. In smaller organisations one person may wear both hats - the roles separate duties, not headcount - but the duties stay distinct, and an incident review still asks both questions: was the data protected, and was it correct?`
+    },
+    {
+      id: '4-the-distinction',
+      title: `4. Owner/Controller versus Custodian/Processor`,
+      content: `## The module's central distinction
+
+![Accountable versus responsible across the data roles](/courses/cissp/figures/cissp-accountable-responsible.svg)
+
+The difference between owner and custodian is the difference between **accountable** and **responsible** - and the pairing extends across the compliance vocabulary:
+
+**Owners and controllers are ACCOUNTABLE** for the protection of data based on its value. Where compliance requires a controller - personal data collected from customers - the controller *acts as the owner* and becomes accountable for protection to the standard legislation and regulation expect, enforced through policy and its implementation as standards, procedures, baselines, and guidelines. In the formal definition, the controller is the natural or legal person, public authority, agency, or other body that **alone or jointly with others determines the purposes and means of the processing** of personal data - and where law itself fixes those purposes, law may also designate the controller.
+
+**Custodians and processors are RESPONSIBLE** for protection while the data is in their hands. The processor acts as the custodian for the controller's data - the cloud provider is the module's own example - processing on the owner's behalf and adhering to the policies, standards, procedures, baselines, and guidelines that define proper protection. Responsibility is real and enforceable; it is simply not accountability. The enforcement channels differ accordingly: responsibility is enforced through the document stack and the contract - performance against written expectations - while accountability is enforced by regulators, courts, and the organisation's own governance, against the party whose name the obligation carries.
+
+## Why the distinction carries so much weight
+
+Three consequences make this the module's exam centre:
+
+**Accountability cannot be delegated.** The owner who hands data to a custodian, or the controller who engages a processor, has delegated the *work* - never the *answerability*. The legal module said it as liability (the controller answers for disclosure even when the processor was negligent); this module says it as governance: the accountable party remains the one who must explain the outcome.
+
+**Responsibility flows through documents.** The custodian's and processor's duties are defined by the owner's documented expectations - which is why the documentation section of this module exists, and why processor engagements are contract-heavy: the document stack is how accountability at the top becomes enforceable responsibility below.
+
+**The mapping is testable in both vocabularies.** Owner/custodian is the organisational pairing; controller/processor is the privacy-law pairing; the relationships are parallel. A stem in either vocabulary answers with the same logic: value and purpose sit with the accountable role, execution and care with the responsible one.
+
+## The five-role drill
+
+The module closes with the exercise its own activity poses - assign "accountable" or "responsible" to each role, for the protection of data: **owner - accountable; controller - accountable; custodian - responsible; processor - responsible; steward - responsible** (for content, context, and business rules). The subject is neither: the data is *about* them, and the entire structure exists to protect their interest. Run this drill until it is reflex; it is the module in one line. A second reflex worth building: whenever a stem names an entity, ask which of the five relationships to the data it holds *in this scenario* - the same company can be controller in one sentence and processor in the next, and the duty set follows the relationship, not the letterhead.`
+    },
+    {
+      id: '5-roles-in-operation',
+      title: `5. The Roles in Operation`,
+      content: `## One data set, whole cast
+
+The roles are not org-chart trivia; they are a working machine, and seeing one data set move through it fixes the structure. Consider a customer database:
+
+| Actor | In this scenario |
+|---|---|
+| Data subjects | The customers whose personal information the records contain |
+| Controller | The organisation - it determined the purposes and means of processing when it decided what to collect and why |
+| Owner (working form) | The customer-relations function that acquired the data for the mission and best knows its value |
+| Steward | The role defining what a "customer record" contains, which fields mean what, and the business rules for validity |
+| Custodian | The database administration team - storage, transport, backup, access maintenance, integrity support |
+| Processor | The analytics vendor engaged to process the data on the organisation's behalf |
+
+Every module obligation now lands somewhere concrete: the owner's five accountabilities (value, replacement, law, release, end of life) sit with customer relations and the organisation's accountable management; the documented expectations flow to the DBA team and into the vendor contract; the custodian balances availability and protection daily; the processor adheres to the documented stack - and if the vendor loses the data, the **controller answers to the regulator and the subjects**, whatever the contract recovers afterwards.
+
+## Assignment failures and their signatures
+
+The roles also diagnose. Common failure patterns, each visible in an exam stem:
+
+- **Orphaned data**: a data set with no identifiable owner - typically born in a project, inherited by no one. Signature: no one can say what it is worth, who may access it, or when it dies; classification and retention both stall on it.
+- **Custodian as de facto owner**: the DBA team deciding access and retention because no owner does. Signature: technically tidy decisions with no business or legal grounding - the wrong role is making value judgements it has no standing to make.
+- **Processor without documents**: a vendor processing under a contract that imports no protection expectations. Signature: the controller's accountability with no mechanism of responsibility beneath it - the gap the legal and compliance modules price in liability.
+- **Steward absence**: data protected, stored, and meaningless - fields nobody can define, quality nobody measures. Signature: integrity in the narrow sense with accuracy failing in the broad one.
+
+The remedial pattern is constant: identify the accountable party first, then let the documents and delegations rebuild downward from them. Protection follows accountability; accountability follows assignment; and assignment is a management act - which is where every one of these repairs begins.
+
+## Keeping assignments alive
+
+Role assignments decay the way every governance artefact decays: owners change functions, custodianship migrates with re-platforming, vendors are replaced, and stewardship quietly lapses when its holder leaves. The maintenance discipline mirrors the rest of the domain - assignments are **recorded** (a register of data sets with their owner, steward, custodian, and any processors), **reviewed** on a schedule and on trigger events (reorganisations, migrations, vendor changes - the same corporate-development triggers the governance module flagged), and **re-acknowledged** when they move, so the accountable party always knows they are it. The register also becomes the connective tissue for the rest of Domain 2: classification reviews, retention schedules, and destruction decisions all key off "who owns this data set?", and a current register answers in a lookup what an incident otherwise answers in a scramble. An organisation that cannot produce, for any given data set, the name of its accountable owner within minutes is holding data it cannot governance - whatever its technical controls say.`
+    },
+    {
+      id: '6-roles-meet-the-platform',
+      title: `6. Where the Roles Meet the Rest of the CBK`,
+      content: `## The ownership thread through the course
+
+The five roles are load-bearing across the certification, and tracing the thread converts this module from vocabulary into an instrument. **Backwards into Domain 1**: the owner's five accountabilities are the risk module's asset valuation with a name attached - the functional manager who best knew the asset's value is now formally answerable for it; the controller's non-delegable accountability is the legal module's liability rule; and the documentation duty is the governance module's evidence discipline applied per data set. **Forwards through Domain 2**: classification (the neighbouring modules) is the owner exercising the value accountability in label form; retention schedules are the end-of-life accountability in calendar form; handling requirements are the documented expectations in procedure form; and remanence's defensible destruction is the owner's fifth accountability executed by the custodian. **Onwards**: Domain 5's access decisions implement the owner's release accountability; Domain 7's operations are largely custodianship at scale; and every vendor-assurance artefact in Domains 1 and 6 - the SOC reports, the audit rights - exists because processors hold responsibility while controllers keep accountability.
+
+| Later topic | Which role's duty it operationalises |
+|---|---|
+| Classification and labelling | Owner - value, expressed as a label |
+| Retention schedule | Owner - end of life, expressed as a calendar |
+| Handling procedures | Owner's documented expectations, custodian-executed |
+| Access provisioning | Owner's release decisions, implemented by IAM |
+| Defensible destruction | Owner decides, custodian executes, remanence methods apply |
+| Vendor assurance | Controller accountability over processor responsibility |
+
+## Reading exam stems with the role lens
+
+Ownership stems reward one reading habit: **find the decision in the stem, then ask which role owns that kind of decision**. Value judgements, release decisions, retention calls, and destruction timing belong to the owner or controller; storage, transport, integrity operations, and enforcement of the documented stack belong to the custodian or processor; meaning, context, and quality rules belong to the steward. The distractors are nearly always a *competent* role offered where the *accountable* one belongs - the DBA making retention decisions, the vendor "assuming" regulatory responsibility, the security team classifying data it does not own. Competence is never the question; standing is. The one-line test that resolves most items: *who determined why this data exists?* That party is accountable, whatever anyone else was hired to do with it.
+
+Two edge patterns complete the lens. **Joint controllership** - the definition's "alone or jointly with others" - appears where two organisations together determine purposes and means; both are accountable, and stems about partnerships or shared platforms sometimes turn on noticing that neither party can point the accountability at the other. And **role accumulation**: one entity can hold several roles at once - an organisation is controller for its customer data and processor for a client's, simultaneously, with different duty sets attaching to each data set. The role attaches to the *relationship with the data*, not to the entity's name - which is why the analysis is always run per data set, never per company.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: cast the scenario
+
+*A hospital's radiology department generates imaging studies. The records team defines what a complete study record must contain. The IT storage group operates the archive. A cloud transcription firm converts dictated findings to text under contract. Name each party's role - and who answers to the regulator if the transcription firm suffers a breach.*
+
+The **patients** are the data subjects. The **hospital** is the controller - it determined the purposes and means of processing when it decided to collect imaging and dictation for care. The **radiology department** is the working owner - it created the information for the mission and best knows its value. The **records team** is the steward - content, context, and the business rules of a valid study record. The **IT storage group** is the custodian - protection in custody: storage, transport, integrity, availability. The **transcription firm** is the processor - handling data on the controller's behalf, responsible for adhering to the documented protections its contract imports.
+
+If the firm suffers a breach: **the hospital answers** - to the regulator and the patients - because accountability never travelled with the work. The firm's negligence is a matter between it and the hospital, prosecuted through the contract; the health-privacy regulator's counterparty is the controller. The transcription firm does face its own exposures - contract remedies, and any direct statutory duties processors carry in the jurisdiction - but none of that dilutes the hospital's accountability. The stem's lesson is the module's: engaging the processor changed who does the work, and changed nothing about who is accountable for it.
+
+## Worked example 2: the orphaned archive
+
+*During an audit, a firm discovers a seven-year-old file share of project data - contracts, personal data of former clients, engineering work - created by a team disbanded years ago. Nobody currently claims it; the storage team has been faithfully backing it up throughout. Analyse in the module's terms and prescribe.*
+
+Diagnosis: **orphaned data** - the assignment failure in its purest form. The custodian (the storage team) has performed its responsibility flawlessly: custody, backups, integrity. But no owner exists, so none of the ownership accountabilities have been exercised for seven years: no valuation, no legal review (the personal data has been sitting outside any retention analysis - a live compliance exposure), no access decisions, and no end-of-life determination. Faithful custody of unowned data is how organisations accumulate liability with excellent uptime. Note also what the custodian could not have done: assigning an owner is a management act above the custodian's standing, so the storage team's only available move all along was escalation - which is the finding's quiet second lesson.
+
+Prescription, in order: **management assigns an owner** - assignment is a management act, and nothing else can proceed without it; plausibly the business function nearest the disbanded team's mission, or a designated data-governance owner for legacy assets. The new owner runs the five accountabilities: value it, map its legal weight (the former clients' personal data against current retention and privacy obligations), decide who if anyone needs it - and, most likely for much of it, exercise **the right to destroy**, defensibly, per the retention schedule the analysis produces. The audit finding closes when the data has an accountable name, a documented disposition, and a death date. The prevention is the management objective the module opened with: ownership established throughout all phases of a project - including its end, when the assets outlive the team.
+
+## Worked example 3: the vendor negotiation
+
+*Your organisation is engaging a payroll processor. The vendor's draft contract says: "Customer acknowledges that Vendor's security practices are Vendor's sole discretion, and Customer assumes all regulatory responsibility for data handled under this agreement." Evaluate both clauses in the module's terms.*
+
+The second clause is **legally decorative**: the customer - the controller - already holds the regulatory accountability, and no contract clause could move it. Accountability for personal data is assigned by law to the party determining purposes and means; the vendor drafting it into the contract changes nothing except revealing the vendor's counsel knows who carries the risk.
+
+The first clause is the genuinely dangerous one: "sole discretion" security **breaks the mechanism by which the controller's accountability becomes the processor's responsibility**. The module's machinery requires the owner's documented expectations - policies, standards, baselines - to bind the custodian and processor; a contract disclaiming them leaves the controller accountable for protection it has no contractual power to require. The negotiation position follows directly: import the organisation's protection requirements as obligations (the compliance module's boundary rule - contracts carry obligations across the organisational line), attach audit or attestation rights, and add breach notification duties with clocks. If the vendor will not accept documented responsibility, the controller is being asked to hold accountability over a void - which is a risk decision for management, made with eyes open, and usually made by finding another vendor. Worth noting for negotiation realism: reputable processors expect these terms - documented obligations, attestation, notification clocks are the industry's standard furniture - so a vendor resisting all of them is itself diligence information.
+
+## Worked example 4: owner and custodian in conflict
+
+*A data owner in the sales function demands that the custodian DBA team grant broad read access to the customer database for a new partner-analytics initiative "by Friday." The custodian objects that the access contradicts the baseline the owner's own documentation established, and that the partner is not under contract. Who is right, and what is the correct resolution path?*
+
+Both roles are functioning correctly, which is the point of the question. The **owner holds the access-decision accountability** - who needs the data and under what circumstances it is released is genuinely the owner's call. But the owner exercised it **against the owner's own documented stack**: the baseline and access policies the custodian is bound to follow are the owner's published expectations, and the custodian refusing to breach them is responsibility working as designed, not obstruction. And the partner gap is fatal to Friday: an external party processing customer data with **no contract** means no imported protections, no processor obligations - the controller's accountability extended over nothing.
+
+Resolution path: the owner **changes the documents, not the enforcement** - revise the access policy through its change process if the initiative justifies it, and paper the partner as a processor first (contractual protections, documented responsibilities, the legal module's transfer analysis if borders are involved). The custodian implements the moment the documented expectations say so. The generalisable rule: owners direct through documents, custodians enforce documents as written, and pressure to bypass the stack is answered by amending the stack - in daylight, with the accountability trail the amendment leaves.
+
+## Worked example 5: the dual-role platform
+
+*A SaaS firm runs an HR platform. It holds: (a) the employee records of its client companies, processed to deliver the service; (b) its own employees' records; (c) product-usage analytics it collects about client users to improve the platform, under terms the clients accepted. Assign the firm's role for each data set, and name the duty that changes between them.*
+
+**(a) Processor.** The client companies determined the purposes and means - managing their workforces - and engaged the firm to process on their behalf. The firm's duties are responsibility-shaped: adhere to the documented protections its contracts import, support the clients' compliance, and answer to the clients rather than to the clients' regulators. **(b) Controller.** For its own workforce's data the firm determined purposes and means itself; the full ownership accountability set applies - value, legal landscape, release, retention, destruction. **(c) Controller again - and separately.** For the analytics, the *firm* decided the purpose (product improvement) and the means; accepting terms made the collection lawful, not the firm a processor. Purpose determination, not possession or contract, assigns the role.
+
+The duty that changes: **whose expectations govern, and who answers**. For (a) the firm operates inside its clients' documented stacks and its contracts; for (b) and (c) it writes the stack, carries the non-delegable accountability, and faces the regulators directly - including for the analytics, where firms most often misread themselves as "just the platform." One entity, three data relationships, three duty sets - the role attaches to the data, and the analysis runs per data set, every time.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Why do laws - privacy laws especially - force organisations to assign data roles rather than leaving assignment to preference?
+
+2. State the four objectives of delineating data management roles.
+
+3. List the information owner's five accountabilities.
+
+4. What rights accompany ownership's duties?
+
+5. What must the owner document for custodians and others, and why is undocumented expectation a real defect?
+
+6. Give the custodian's typical responsibilities, and explain why "accessibility" appears among them.
+
+7. Distinguish the steward from the custodian in one sentence each.
+
+8. Define the controller, and state when this role appears in place of a "true" owner.
+
+9. Run the five-role drill: accountable or responsible, for each role - and where does the data subject fit?
+
+10. A processor is proven negligent in a breach. Who is accountable, and what is the controller's only real protection?
+
+11. What is defensible destruction, and whose accountability determines when it occurs?
+
+12. Why is "the DBA team decides who gets access" a role-assignment failure even when their decisions are sensible?
+
+13. One firm holds client employee data as a service, its own HR data, and product analytics it chose to collect. What role does it hold for each, and what single question assigns the roles?
+
+14. What is joint controllership, and what mistake do stems about shared platforms invite?
+
+## Answers
+
+**1.** Because privacy statutes worldwide converge on individual control over personal information and require its protection **at every lifecycle step** - collection, processing, storage, archiving, destruction - and an organisation cannot discharge a lifecycle-long obligation without naming who is accountable and who is responsible at each step. The laws identify key roles and dictate accountabilities the organisation **must** assign; role assignment is compliance, not administrative taste.
+
+**2. Clearly define roles associated with functions; establish data ownership throughout all phases of a project; instill data accountability; and maintain adequate, agreed data quality and metadata metrics on a continuous basis.** Each prevents a failing state: everyone-and-no-one protection, project data born ownerless, protection as preference, and data whose accuracy and context silently decay.
+
+**3. Mission impact** (what the information means to the organisation's mission); **replacement cost** (what restoring it would cost - if possible); **legal landscape** (which laws and regulations, privacy laws included, dictate liabilities); **need and release** (who inside or outside needs it, and when it may be released); **end of life** (when it is inaccurate or no longer needed and should be destroyed). Together: the lifecycle, in accountability form - value priced so protection can follow it.
+
+**4.** Owners generally hold **legal rights over the data, including copyright and intellectual property rights**; the right to **use the data to drive corporate decisions**; and - where continued maintenance becomes unnecessary or uneconomical - **the right to destroy it**. Duties and rights are a package: the party accountable for the value is the party entitled to decide its use and its end.
+
+**5.** The **ownership, IP rights, and copyright** of the data; the **obligations** keeping it compliant; the **protection policies including baselines and access controls**; and the **expectations and responsibilities delegated** to custodians and other accessors. Undocumented expectations are unenforceable: the custodian cannot follow unwritten policy, the processor's contract has nothing to import, and the owner cannot demonstrate accountability for standards that existed only as assumptions - the governance module's evidence rule applied to data.
+
+**6. Adherence** to the owner's policies, standards, procedures, baselines, and guidelines; **ensuring accessibility to appropriate users at appropriate security levels**; **fundamental maintenance** (storage, archiving); **documentation and its updates**; and **quality and validation of additions, supporting periodic integrity audits**. Accessibility belongs on the list because custody is not a vault: the custodian's duty is availability *and* protection simultaneously - the triad's tensions, executed daily.
+
+**7.** The **custodian** protects the data's existence - safe custody, transport, storage, and processing per the owner's documented expectations. The **steward** tends the data's meaning - content, context, and the business rules that keep it usable and correct. Bits point to the custodian; meaning points to the steward.
+
+**8.** The controller is the natural or legal person, public authority, agency, or other body that **alone or jointly with others determines the purposes and means of processing** personal data - designated by law where law fixes those purposes. It appears where there is no "true" proprietary owner: personal information collected from clients and customers, where the organisation holds the owner's accountability under privacy law rather than property. The controller *acts as the owner* and is accountable to the standard legislation expects.
+
+**9. Owner - accountable. Controller - accountable. Custodian - responsible. Processor - responsible. Steward - responsible** (for content, context, and business rules). The **data subject is neither**: the individual the personal data is about, whose interest the entire role structure exists to protect. (If a drill answer wavers, re-derive it from the one-line test: whoever determined why the data exists is accountable; whoever handles it under those determinations is responsible.)
+
+**10. The controller remains accountable** - to the regulator and the subjects - even with the processor's negligence proven; accountability never travelled with the work. The controller's real protections are exercised **before and through the contract**: choosing the processor with diligence, importing documented protection obligations, securing audit rights and breach notification clocks, and pricing failure into the terms. Afterwards, the contract governs recovery between the parties - while the regulator's conversation is with the controller regardless.
+
+**11. Defensible destruction** is destruction that can be shown to have been proper - performed at the right time, by the right method, with the record proving both; the remanence module supplies the methods. The **owner's** accountability determines *when*: knowing when information is inaccurate or no longer needed is the fifth ownership accountability, and the retention schedule that operationalises it is an ownership output. Custodians execute the destruction; owners decide it.
+
+**12.** Because access decisions are **value and release judgements** - who needs the data, under what circumstances it leaves - and those belong to the owner's accountability, grounded in mission impact and legal exposure the custodian has no standing to weigh. Sensible-looking custodian decisions are technically tidy and legally groundless: nobody accountable made them, so nobody accountable can defend them. The signature of the failure is exactly that tidiness; the fix is assigning the owner and rebuilding the decisions downward through documents.
+
+**13. Processor** for the client employee data (the clients determined the purposes and means; the firm processes on their behalf, inside their documented expectations); **controller** for its own HR data (it determined purposes and means for its workforce); and **controller** for the analytics too - it chose to collect them for product improvement, and client acceptance of terms made the collection lawful without making the firm a mere processor. The assigning question: **who determined why this data exists?** Purpose determination assigns accountability; possession and contract only assign work.
+
+**14. Joint controllership** is the definition's "alone **or jointly with others**": two or more parties together determine the purposes and means of processing, and **both carry controller accountability** for the shared data. The invited mistake is each party assuming the accountability sits with the other - the platform pointing at the client, the client at the platform - when the law's answer is that neither can point: jointly determined purposes mean jointly held accountability, typically apportioned explicitly in the arrangement between them precisely because it cannot be waved away.`
+    }
+  ],
+},
 cissp_privacy: {
   topicId: 'cissp_privacy',
   title: `Protect Privacy`,

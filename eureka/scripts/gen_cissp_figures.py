@@ -2283,6 +2283,155 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Accountable vs responsible across the data roles - Domain 2's central
+# distinction.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-accountable-responsible")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
+    ax.add_patch(plt.Rectangle((0.4, 2.55), 4.1, 1.15, facecolor=c[0],
+                               alpha=0.16, edgecolor=c[0], linewidth=1.8))
+    ax.annotate("ACCOUNTABLE", (2.45, 3.42), ha="center", fontsize=10.5, color=c[0])
+    ax.annotate("OWNER  /  CONTROLLER", (2.45, 3.02), ha="center", fontsize=8.8, color=ink)
+    ax.annotate("answers for the protection of the data's value;\ncannot delegate this away", (2.45, 2.18),
+                ha="center", fontsize=7.6, color=S.INK_2[mode])
+    ax.add_patch(plt.Rectangle((5.3, 2.55), 4.1, 1.15, facecolor=c[1],
+                               alpha=0.16, edgecolor=c[1], linewidth=1.8))
+    ax.annotate("RESPONSIBLE", (7.35, 3.42), ha="center", fontsize=10.5, color=c[1])
+    ax.annotate("CUSTODIAN  /  PROCESSOR", (7.35, 3.02), ha="center", fontsize=8.8, color=ink)
+    ax.annotate("protects the data while in their custody, per the\nowner's policies, standards, and baselines", (7.35, 2.18),
+                ha="center", fontsize=7.6, color=S.INK_2[mode])
+    ax.annotate("", (5.2, 3.1), (4.6, 3.1),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.7))
+    ax.annotate("delegates the WORK,\nnever the accountability", (4.9, 3.75), ha="center",
+                fontsize=7.6, color=ink)
+    ax.annotate("STEWARD: responsible for data content, context, and business rules -\nthe meaning of the data, alongside the custodian's care of it",
+                (4.9, 1.15), ha="center", fontsize=7.8, color=S.INK_2[mode])
+    ax.annotate("DATA SUBJECT: the individual the personal data is about - the person every role above exists to protect",
+                (4.9, 0.4), ha="center", fontsize=7.6, color=ink, style="italic")
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(0.05, 4.25)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The information owner's five accountabilities.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-owner-accountabilities")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    items = [
+        ("MISSION IMPACT", "determine what the information means to the organisation's mission"),
+        ("REPLACEMENT COST", "understand what restoring or recreating it would cost - if possible at all"),
+        ("LEGAL EXPOSURE", "identify the laws and regulations that attach liability to it"),
+        ("ACCESS DECISIONS", "decide who - inside or outside - needs it, and when it may be released"),
+        ("END OF LIFE", "know when it is inaccurate or no longer needed, and should be destroyed"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 4.3))
+    ax.add_patch(plt.Rectangle((0.4, 4.4), 3.2, 0.7, facecolor=c[0], alpha=0.2,
+                               edgecolor=c[0], linewidth=1.7))
+    ax.annotate("THE INFORMATION OWNER", (2.0, 4.75), ha="center", va="center",
+                fontsize=8.8, color=ink)
+    for i, (name, gloss) in enumerate(items):
+        y = (len(items) - 1 - i) * 0.82
+        colour = c[i % 3]
+        ax.plot([2.0, 1.1], [4.35, y + 0.55], color=S.GRID[mode], linewidth=0.9)
+        ax.annotate(name, (0.55, y + 0.35), fontsize=8.4, color=colour)
+        ax.annotate(gloss, (3.3, y + 0.35), fontsize=7.9, color=S.INK_2[mode])
+    ax.annotate("value first: every accountability exists so the owner can price the data - and protection follows the price",
+                (0.55, -0.55), fontsize=7.9, color=ink, style="italic")
+    ax.set_xlim(0, 10.6)
+    ax.set_ylim(-0.9, 5.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The eight steps of a sound record retention policy.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-retention-steps")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    steps = [
+        "Evaluate legal, regulatory, litigation, and business needs",
+        "Classify assets and records",
+        "Set retention periods and defensible destruction methods",
+        "Draft the retention policy",
+        "Train - awareness and education behind the policy",
+        "Audit retention AND destruction against the policy",
+        "Review policy and procedures periodically",
+        "Document everything - policy, training, audits, destruction",
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 4.5))
+    for i, text in enumerate(steps):
+        col, row = i // 4, i % 4
+        x = 0.4 + col * 4.75
+        y = 3.5 - row * 1.02
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((x, y), 0.55, 0.55, facecolor=colour,
+                                   alpha=0.25, edgecolor=colour, linewidth=1.5))
+        ax.annotate(str(i + 1), (x + 0.27, y + 0.27), ha="center", va="center",
+                    fontsize=9.5, color=ink)
+        ax.annotate(text, (x + 0.75, y + 0.27), va="center", fontsize=7.7, color=ink)
+    ax.annotate("", (5.0, 3.75), (4.35, 0.7),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.3,
+                                connectionstyle="arc3,rad=-0.3"))
+    ax.annotate("the audit and review steps loop the policy back through evaluation - retention is a cycle, not a document",
+                (4.75, -0.35), ha="center", fontsize=7.8, color=S.INK_2[mode], style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(-0.7, 4.4)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The retention governance chain: know where -> classify -> archive/manage.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-retention-chain")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    steps = [
+        ("KNOW WHERE\nDATA EXISTS", "you cannot retain what you\ncannot locate - the inventory\nagain, plus data relationships", c[0]),
+        ("CLASSIFY\nAND DEFINE", "what must be archived, for how\nlong - driven by law, regulation,\nand corporate requirements", c[1]),
+        ("ARCHIVE\nAND MANAGE", "stored per policy, yet accessible\nto authorised users in\nuseful time", c[2]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 3.4))
+    for i, (name, gloss, colour) in enumerate(steps):
+        x = 0.5 + i * 3.15
+        ax.add_patch(plt.Rectangle((x, 1.7), 2.6, 1.1, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x + 1.3, 2.25), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate(gloss, (x + 1.3, 1.0), ha="center", fontsize=7.3,
+                    color=S.INK_2[mode])
+        if i < len(steps) - 1:
+            ax.annotate("", (x + 3.1, 2.25), (x + 2.65, 2.25),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.6))
+    ax.annotate("retention = continued, long-term storage of valuable assets, driven by compliance or corporate requirements",
+                (4.85, 3.05), ha="center", fontsize=8.2, color=ink, style="italic")
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(0.35, 3.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
