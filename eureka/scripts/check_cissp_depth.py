@@ -117,6 +117,17 @@ def main() -> int:
     print(f"total words: {sum(r[1] for r in rows):,}   total figure embeds: {sum(r[2] for r in rows)}"
           f"   modules with any content: {len(present)}/{total_mods}")
 
+    # Structural guard: every section body must close its template literal.
+    # The recurring edit defect is an append that strips the closing backtick,
+    # which silently swallows the next section header into the string. tsc
+    # catches it too, but this fails faster and names the spot.
+    import re as _re
+    for m in _re.finditer(r"content: `", src):
+        end = src.find("\n    },", m.end())
+        if end != -1 and src[end - 1] != "`":
+            line = src.count("\n", 0, end) + 1
+            failures.append(f"unterminated section content ending near line {line}")
+
     # A depth gate cannot see a label collision - only a render can.  Fold the
     # figure overlap check in here so a figure that reads as garbage on the page
     # fails the same gate as a chapter that is too short.
