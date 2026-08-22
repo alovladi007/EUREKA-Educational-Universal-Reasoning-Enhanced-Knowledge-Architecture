@@ -8949,211 +8949,334 @@ cissp_physical: {
   topicId: 'cissp_physical',
   title: `Physical Security`,
   domainWeight: '13%',
-  overview: `### Site and Facility Selection`,
+  overview: `In most large organisations, physical security is designed, implemented, and operated by physical security specialists - and the CISSP is not one of them. This module is explicit about the role instead: the practitioner must understand physical security fundamentals well enough to assess the risk-reduction value of physical controls, communicate information security needs to facilities managers in their own terms, and recognise weaknesses. In smaller organisations they may implement the controls directly. The module works outward-in and then down: how physical design supports confidentiality, integrity, availability, and human safety; the four perimeter zones from surrounding areas to operational facilities, each asked the same four questions; the interior spaces in ascending order of control, from wiring closets through server rooms and media storage to evidence rooms and restricted areas; the utilities that keep it all running - power, telecommunications, water, and HVAC - with their genuine electrical dangers; and fire prevention, detection, and suppression, where the water-versus-gas choice turns on what is burning and who is in the room.`,
   sections: [
     {
-      id: '6-physical-security',
-      title: `1. Physical Security`,
-      content: `### Site and Facility Selection
+      id: '1-role',
+      title: `1. The Practitioner's Role`,
+      content: `## Who actually does this work
 
-Data centers and critical facilities should be located in areas with:
-- Low risk of natural disasters (floods, earthquakes, tornados)
-- Low crime rates and stable political/economic environment
-- Proximity to utilities and redundant service providers
-- Compliance with local building codes and regulations
+The module opens with a piece of professional realism that shapes everything after it. **Physical security plans and infrastructure are often designed, implemented, and operated by physical security specialists in larger organisations**, and the infrastructure is typically controlled by them rather than by the information security function.
 
-### Crime Prevention Through Environmental Design (CPTED)
+So why is it examined at all? Because **the CISSP must understand physical security fundamentals** in order to do three things:
 
-Design principles reducing crime through environmental modifications:
-- **Natural Surveillance**: Clear sightlines; minimize hiding places
-- **Territorial Reinforcement**: Define ownership through design; fencing, landscaping
-- **Access Control**: Limit entry/exit points; controlled ingress/egress
-- **Maintenance**: Well-maintained areas discourage criminal activity
-- **Activity Support**: Legitimate activity in areas discourages criminal use
+- **Assess the risk reduction value of physical security controls** - to judge how much protection a fence, a camera, or a badge reader actually contributes to the information systems the practitioner is accountable for.
+- **Communicate physical security needs to physical security managers** - which requires enough shared vocabulary to be understood.
+- **Identify weaknesses** - to recognise when the physical layer is not delivering what the information security design assumed.
 
-### Perimeter Security
+The module adds two qualifications. **While the CISSP may never actually design or implement physical security in a larger organisation, they may very well be required to implement physical security elements in smaller organisations** - where there is no specialist and the security professional is whoever is available. And **it is vital for the CISSP to understand the impact of either good or bad physical security as it impacts information system security**, because the two are not separable: an unlocked wiring closet defeats a great deal of careful network design.
 
-Physical barriers protecting facility boundaries:
-- **Fencing**: 6-8 feet minimum; adequate spacing to prevent climbing or crawling under
-- **Gates**: Controlled access points; manual or automated
-- **Guards/CCTV**: Human and technical monitoring
-- **Lighting**: Eliminates shadows; deters intrusion at night
-- **Landscaping**: Removes hiding places; prevents easy access
+## Translation as a job
 
-### Access Control
+The module names one function of the role explicitly, and it is the one most likely to appear in a scenario question: **a role of the CISSP in some cases may be to translate information security needs or requirements in such a way that the physical security or facilities operators can understand those needs in their terms.**
 
-**Badges/ID Cards**: Proximity cards, smart cards with chip readers.
+That is a genuine skill and a genuine failure point. "The server room requires stronger access control" tells a facilities manager almost nothing actionable. "Access to this room must be limited to a named list, every entry and exit must be recorded, and the record must be retained for a year" is a requirement a facilities team can procure against and operate. The translation runs the other way too: a facilities constraint - the room shares a wall with a tenant, the door is on an emergency egress route - is a security fact the information security design has to absorb.
 
-**Biometrics**: Fingerprint, iris, facial recognition (high security areas).
-
-**Mantraps/Turnstiles**: Prevent tailgating; admit one person at a time.
-
-**Security Guards**: Reception, inspection, escort duties.
-
-**Visitor Procedures**: Sign-in, escort requirements, time-limited access.
-### Fire Suppression Systems
-
-Different systems suited for different hazards and environments:
-| System Type | Agent | Use Case | Advantages/Disadvantages |
-|---|---|---|---|
-| Wet Pipe | Water with sprinkler heads | General office buildings | Fast, inexpensive; water damage to equipment |
-| Dry Pipe | Pressurized air with water in pipes | Cold environments (below freezing) | Delayed activation; prevents pipe freezing |
-| Deluge | Open sprinklers; water floods area | High-hazard areas (flammable materials) | Rapid water discharge; massive water damage |
-| Preaction | Heat detector + sprinklers | Computer rooms, data centers | Two-stage system; minimizes water damage |
-| Gas-Based (FM-200, Halon) | Gaseous suppressants | High-value, sensitive equipment | No water damage; CFCs/halons ozone-depleting (phased out) |
-| Foam | Foam concentrate + water | Flammable liquid fires | Suppresses flammable liquids effectively |
-| Dry Chemical | Powder agents | Specific hazard areas | Corrosive; leaves residue |
-
-**Carbon Dioxide systems**: Displace oxygen; risk of asphyxiation to personnel in enclosed spaces.
-### HVAC and Environmental Controls
-
-**Temperature**: 65-75°F optimal; extremes damage equipment and affect human performance.
-
-**Humidity**: 35-55% relative humidity; prevents static electricity and corrosion.
-
-**Ventilation**: Removes heat and particulates; separate returns for different areas.
-
-**Filtration**: HEPA filters reduce dust and contaminants.
-
-**Monitoring**: Sensors alert to temperature/humidity deviations.
-### Power Management
-
-**UPS (Uninterruptible Power Supply)**: Battery backup for controlled shutdown and brief power losses.
-
-**Generators**: Longer-term power during extended outages; require fuel management.
-
-**Surge Protectors/Suppressors**: Protect against voltage spikes.
-
-**Power Distribution**: Multiple circuits, separate grounds, redundant power feeds.
-
-**Metering**: Monitor power consumption and detect anomalies.
-### Water and Flooding Protection
-
-**Elevated equipment**: Servers and critical systems on raised floors away from flood zones.
-
-**Drainage**: Proper grading and drainage systems direct water away.
-
-**Waterproofing**: Basement sealing, waterproof doors/windows.
-
-**Water Detection**: Sensors in basements and under raised floors alert to leaks.`,
-      examTip: `Know the fire suppression systems: Wet pipe (general), Dry pipe (freezing), Preaction (data centers), Gas (no water damage). Halon is ozone-depleting and phased out.`,
+| The practitioner's task | What it looks like in practice |
+| --- | --- |
+| Assess risk reduction value | Does this control measurably reduce a risk to the information system, and by how much? |
+| Communicate needs | State requirements in facilities terms: who, recorded how, retained how long, resistant to what |
+| Identify weaknesses | Notice where the physical layer contradicts what the logical design assumed |
+| Implement, in small organisations | Apply the elements directly, because no specialist exists |
+| Understand the impact | Recognise that physical failures become information security failures |`
     },
     {
-      id: '7-secure-design-for-emerging-architectures',
-      title: `2. Secure Design for Emerging Architectures`,
-      content: `### Cloud Security
+      id: '2-design',
+      title: `2. Design for CIA, and for Human Safety`,
+      content: `## Physical design carries the security properties
 
-**Shared Responsibility Model**: Provider secures infrastructure; customer secures data, identity, applications.
+**Physical design should support confidentiality, integrity, and availability of information systems, and must consider human safety and external factors as well.** The module states the connection between layers directly: **physical security at the facility level does support confidentiality, integrity, and availability at the information system level**, and **facility design absolutely supports system availability, and can have a particularly high impact on continuity of operations and disaster recovery.**
 
-**Multi-tenancy**: Logical isolation of customer environments; risk of cross-tenant data leakage.
+![The triad the facility is protecting, one layer down](/courses/cissp/figures/cissp-cia-triad.svg)
 
-**Data Residency**: Ensure data stored in compliant geographic regions.
+What physical design contributes, concretely: **physical design elements can protect information systems from unauthorised access**; they **enable auditing or observation of sensitive physical access areas, such as server rooms or wiring infrastructure**; and they **either complement or simplify the information system controls that must be applied to achieve adequate overall security.** Meanwhile **facilities management ensures robust services - power, cooling - to information systems, and provides backup or redundant capabilities.**
 
-**API Security**: Cloud APIs are attack surface; require authentication, authorization, encryption.
+That third point deserves emphasis because it reframes physical security as an economy rather than an overhead: a room that only three named people can physically enter *simplifies* every logical control inside it, because the population of possible local attackers has been reduced before any software runs. Physical and logical controls are substitutes at the margin, and knowing the exchange rate is exactly the "assess the risk reduction value" skill of Section 1.
 
-**Key Management**: Crypto-agility; customer-managed keys for sensitive data.
-### IoT (Internet of Things) Security
+## Human safety is a design constraint, not an afterthought
 
-**Resource Constraints**: Many IoT devices have minimal CPU/memory; lightweight cryptography needed.
+**Some physical design elements directly support human safety**, and **it is important to ensure the controls remain in place as security controls are applied.** The module then names the tension plainly: **in some cases, physical security restrictions could imperil** people - restrictions **could impede building evacuation during an emergency, and must be designed to allow rapid exit while still protecting against improper entry.**
 
-**Firmware Updates**: Secure boot and signed updates to prevent malicious code.
+That sentence contains the design rule the exam wants: **exit must remain free while entry stays controlled.** A door that cannot be opened from inside without a credential is a security control that has become a hazard, and no amount of asset protection justifies it. Where the two goals appear to conflict, safety wins - and the honest design answer is to control the *entry* direction and monitor the exit rather than restricting it.
 
-**Network Security**: Segmentation; limit device-to-device communication.
+The obligation also runs the other way: **facility modifications done to support information systems could necessitate additional human safety controls to be installed** - which **might include additional emergency alarms (audible, visible), new or updated egress routes, or additional safety equipment.** Putting a data centre into a space changes that space's safety profile, and the change is the information security project's responsibility to surface.
 
-**Identity Management**: Strong device authentication; certificate-based preferred.
-### Embedded Systems Security
+## Electrical danger
 
-**Secure Boot**: Verified boot chain ensuring only trusted code executes.
+The module is specific about why, and it is worth taking seriously: **information systems and their support elements - UPS, HVAC - consume large amounts of power, and the power terminals are often located with the equipment.**
 
-**Code Obfuscation**: Make reverse engineering harder.
+Two control types follow. **Emergency power shutoff switches** - the module's own parenthetical is the **big red button on the wall** - so that power can be cut instantly **to ensure electrical accidents are minimised.** And **equipment lockouts for power**, which are **manual or physical lock latches that physically lock circuit breakers or switches in the off position while staff are exposed to power cabling.** A lockout is a control against a specific and lethal failure: someone restoring power while a colleague is working on the circuit.
 
-**Hardware Security Module (HSM)**: Dedicated cryptographic processor for key management.
-### Microservices Architecture
-
-**Service Mesh**: Sidecar proxies managing service-to-service communication, encryption, and policy enforcement.
-
-**API Gateways**: Single entry point for authentication, rate limiting, request validation.
-
-**Network Policies**: Define allowed communication paths between services.
-
-**Secrets Management**: Centralized vault for credentials; rotated frequently.`,
+Note what kind of control this is. A lockout is preventive, physical, and aimed at safety rather than at an adversary - which is a useful reminder that the control categories from earlier in this domain are not exclusively about attackers. The module's framing of the whole area is that human safety and asset protection are designed together, and that a design which optimises one at the cost of the other has not been finished.`
     },
     {
-      id: 'virtualization-and-cloud-security',
-      title: `3. Virtualization and Cloud Security`,
-      content: `### Hypervisor Security
+      id: '3-perimeter',
+      title: `3. Perimeter Security: Four Zones, Four Questions`,
+      content: `## Working from the outside in
 
-Hypervisors manage virtualization and are critical security boundaries. Two types exist:
-- **Type 1 (Bare-Metal)**: Runs directly on hardware (ESXi, Hyper-V); lower attack surface; better isolation
-- **Type 2 (Hosted)**: Runs on host OS (VirtualBox, VMware Workstation); dependent on host OS security
-- **VM Escape Attacks**: Attacker breaks out of VM to access host/other VMs; requires hypervisor vulnerabilities
-- **Hypervisor Hardening**: Disable unnecessary features, patch regularly, restrict direct hardware access, use secure boot
+The module organises perimeter security into four zones that nest outward from the buildings people work in.
 
-### Virtual Machine Security
+![The four zones, and the questions that recur at each](/courses/cissp/figures/cissp-facility-perimeters.svg)
 
-VMs introduce unique security challenges beyond traditional infrastructure:
-- **VM Sprawl**: Unmanaged proliferation of VMs; lack of inventory control; forgotten VMs become zombie servers
-- **VM Isolation**: Hypervisor enforces isolation; compromised VM should not affect others (depends on hypervisor integrity)
-- **Snapshot Risks**: Snapshots capture entire state including secrets, credentials, cached data; storing snapshots indefinitely violates compliance
-- **Dormant VMs**: Disabled but not deleted VMs represent attack surface; stale patches, outdated security controls
-- **VM Cloning**: Cloned VMs may retain sensitive data from source; require secure cleanup and unique configuration
+## Surrounding areas
 
-### Cloud Computing Security Models
+The land and features around the site, which the organisation mostly does not control but must account for. **Roadways** - **roads close to or adjacent to the site.** **Waterways** - **adjacent to or crossing the site**, which **may include navigable waterways or small drainage features if they impact site security**; a culvert is a route as surely as a road is. **Geography** - **terrain of the site in terms of potential visibility limits, concealment opportunities, or natural barriers to entry.** **Lines of sight** - **areas where visibility is limited by features or structures is a concern.**
 
-Cloud offerings differ in shared responsibility between provider and customer:
-| Model | Provider Responsible | Customer Responsible | Shared Responsibility |
-|---|---|---|---|
-| IaaS | Hypervisor, CPU, storage, networking | OS patching, app security, identity, data encryption, network config | Compute resources, data access controls |
-| PaaS | OS, middleware, runtime, database | App code, identity integration, API security, data governance | Application architecture, user access |
-| SaaS | Everything below app layer | User access, data classification, policy compliance | Identity federation, multi-tenancy controls |
+The associated questions the module poses: **is the facility visible from roads? Is there a potential for vehicle borne threats? Where are the vehicular and pedestrian access points? Is there adequate fencing, or impassible perimeter landscaping - a natural fence?**
 
-**Key Point**: As you move up the stack (IaaS → PaaS → SaaS), provider assumes more responsibility, but customer retains ultimate responsibility for data security and compliance.
-### Cloud Security Architecture
+That last phrase is worth keeping. Landscaping is a security control: planting that cannot be walked through does the work of a fence without announcing itself as one, and planting that provides concealment does an attacker's work instead.
 
-Cloud-specific architectural considerations:
-- **Multi-Tenancy Risks**: Multiple customers share infrastructure; data isolation failures could expose confidential information
-- **Data Isolation**: Encryption at rest (CSE - client-side or SSE - server-side) and in transit (TLS); logical and physical separation
-- **Cloud Access Security Broker (CASB)**: Intermediary between cloud users and cloud services; monitors behavior, enforces policies, detects anomalies
-- **Network Segmentation**: Micro-segmentation in cloud; VPC isolation; security groups restrict traffic
-- **Cloud Audit Trails**: Extensive logging of API calls, user actions; SIEM integration essential
+## Site entry and exit points
 
-### Container Security
+The controlled ways onto the site, which the module enumerates by *who uses them*: **vehicular** - **are vehicular access points protected against credible vehicular threats?**; **public, customer, or visitor** - **are there separate entry controls?**; **staff or employee** - **do they have dedicated controlled access points?**; **delivery or truck** - **is there a delivery entrance, and how is it controlled?**; and **pedestrian** - **are there controlled pedestrian entry points?**
 
-Containers provide lightweight virtualization but require different security approaches than VMs:
-- **Docker Image Scanning**: Scan images for known vulnerabilities before deployment; tools: Trivy, Grype, Aqua
-- **Runtime Isolation**: Containers share kernel; compromise of one container could affect others; use AppArmor/SELinux
-- **Kubernetes RBAC**: Role-based access control for API access; service accounts, role bindings restrict permissions
-- **Pod Security Policies**: Restrict pod behavior (privileged mode, root user, capabilities); prevent escape attempts
-- **Registry Security**: Docker registries must authenticate push/pull; scan images before storage; sign images (Notary/Cosign)
-- **Secrets Management**: Never hardcode API keys/passwords in images; use external secret stores (HashiCorp Vault, Kubernetes Secrets)
+Separating populations is the design idea. Visitors, staff, and deliveries have different authorisations, different escort needs, and different volumes; a single shared entrance forces one control regime onto all three, which will be too strict for one and too loose for another.
 
-### Serverless Security
+Then five considerations, which recur throughout the module: **access controls** - **badge, proximity card, guard monitored**; **surveillance** - **sufficient capability to cover site entry and exit**; **lighting** - **sufficient to allow humans or video systems to adequately make subject identification in all light conditions**; **intrusion detection** - **sensors or intrusion detection devices installed on unattended or unmonitored access points**; and **barriers and traffic control** - **barriers in place or available for traffic control at vehicular access points.**
 
-Serverless computing (AWS Lambda, Azure Functions) shifts operational responsibility but introduces new risks:
-- **Function-Level Isolation**: Functions are ephemeral; may share memory/disk between invocations; clear sensitive data
-- **Cold Start Security**: First invocation may have delays; attackers can exploit initialization logic; use connection pooling
-- **Event Injection**: Functions triggered by events (S3, API Gateway); validate all input; prevent privilege escalation
-- **IAM Role Abuse**: Functions need minimal permissions; overly permissive roles enable lateral movement
-- **Monitoring Blind Spots**: Limited visibility into function behavior; require centralized logging (CloudWatch, DataDog)
+Note how the lighting criterion is stated. Not "is there lighting" but *is it sufficient for identification in all light conditions* - an effectiveness test rather than a presence test, which is the same distinction the control-selection module drew.
 
-### Compliance Frameworks for Cloud
+## External facilities
 
-**FIPS 140-2 vs FIPS 140-3**: NIST cryptographic module validation standards.
-- **FIPS 140-2**: Older standard (retired); 4 levels of security; Level 3 = tamper detection; used by FedRAMP
-- **FIPS 140-3**: Current standard (since 2019); updated cryptographic requirements; aligns with international standards; more rigorous testing
+At larger sites: **parking structures and lots, utilities components, electric transformers and lines, telecommunications, and landscaping.** These are the organisation's own assets, generally unstaffed, and often supporting everything else - which is exactly why they are attractive.
 
-**FedRAMP Authorization Levels**: U.S. government standard for cloud services.
-- **Low**: Minimal security impact; web content, public information; lower assessment rigor
-- **Moderate**: Moderate security impact; most government systems; detailed security controls; annual assessment
-- **High**: High security impact; sensitive/classified data; rigorous controls; continuous monitoring
+The considerations: **lighting** - **sufficient under all conditions for human or video identification, limiting shadow areas or areas of no visibility during darkness**; **surveillance** covering **areas where security or human safety is a concern**; **intrusion detection** - **alarms or sensors installed in unattended external buildings or facilities**; and **lines of sight** - **sufficient, with dead space eliminated.**
 
-**CMMC 2.0 Maturity Levels**: Cybersecurity Maturity Model Certification for defense contractors.
-- **Level 1 (Performed)**: Basic practices; not formalized; ad hoc security controls
-- **Level 2 (Managed)**: Practices are documented and implemented; repeatable across organization
-- **Level 3 (Optimized)**: Continuous improvement; proactive threat management; predictive analytics`,
-      examTip: `Cloud security questions focus on shared responsibility models, data isolation in multi-tenant environments, and understanding IaaS vs PaaS vs SaaS differences. Know CASB purpose and container-specific risks.`,
+*Dead space* is the term to carry: an area no camera covers and no line of sight reaches is where an intruder can work unobserved, and eliminating it is a design activity rather than a procurement one.
+
+## Operational facilities
+
+**Where employees work** and **where IT operates.** The considerations move from the grounds to the building fabric: **exterior lighting and surveillance appropriate to expected threats**, with **lighting of sufficient brightness and coverage to limit shadows and make human or video identification possible**; **building materials appropriate for the level of security required**; **doors, windows, and walls of the appropriate type and security level to mitigate expected risks**; **entry and exit points and access controls**, considering **unattended access conditions, guard monitoring, and video monitoring**; a **staff or employee entrance** and how it is controlled, **attended or unattended**; a **public or customer entrance with different security needs from the staff entrance**; a **delivery entrance** - **a loading dock or delivery facility**; and **sensors and intrusion detection.**
+
+The recurring quartet across all four zones - **lighting, surveillance, intrusion detection, lines of sight** - is what makes this a method rather than a list to memorise. Given any zone, ask those four, plus who legitimately needs to pass through and how they are told apart from those who do not.
+
+| Zone | What it covers | The distinctive question it adds |
+| --- | --- | --- |
+| **Surrounding areas** | Roadways, waterways, geography, lines of sight | Is the facility visible from roads, and is there potential for vehicle borne threats? |
+| **Site entry and exit** | Vehicular, visitor, staff, delivery, pedestrian points | Are the populations separated, and are barriers available for traffic control? |
+| **External facilities** | Parking, utilities, transformers, telecoms, landscaping | Are unattended external buildings alarmed, and has dead space been eliminated? |
+| **Operational facilities** | Where employees work and IT operates | Are building materials, doors, windows, and walls of the right type for the risk? |`
     },
-  ],
+    {
+      id: '4-interior',
+      title: `4. Interior Spaces and the Cable Plant`,
+      content: `## The cable plant
+
+Physical security reaches inside the building to the infrastructure that carries the data. The module describes the distribution hierarchy: an entrance facility connected by **backbone distribution** to **equipment rooms and telecommunications rooms**, with each **telecommunications room (wiring closet)** serving **a particular area of a facility - floor, section, wing** - and **terminating local wiring into patch panels**. From there **backbone distribution is broken out to individual connections** through the **horizontal distribution system** of **cables, patch panels, jumpers.**
+
+![Interior spaces, in ascending order of control](/courses/cissp/figures/cissp-interior-spaces.svg)
+
+**Security protections for the overall cable plant:**
+
+- **Rooms must be secured against unauthorised access.**
+- **Access to rooms should be monitored and recorded** - the same accountability requirement the asset-handling module made for media, applied to space.
+- **Secondary locks on equipment and racks**, because **rooms may share space with non-IT equipment and require access by non-IT staff.** This is a genuinely common and under-considered situation: the cleaner, the electrician, and the building engineer may all legitimately need the room, and none of them needs the patch panel.
+- **Conduit or tamper protections for wiring.**
+
+**Environmental protections for the cable plant:** **protection from lightning and surge**; **backup power or uninterruptible power supply**; **heating, cooling, and airflow**, which the module flags as **critical in enclosed spaces**; **appropriate fire detection and suppression**; and **emergency shutoffs for high power connections.**
+
+A wiring closet is easy to under-protect precisely because it looks like a cupboard. It is, in security terms, a place where every cable in a floor is reachable and unencrypted.
+
+## Server rooms and data centres
+
+**Rooms in the facility where multiple computer assets are installed and operate.** They have **similar security and environmental protections to wiring closets**, with three differences the module draws out.
+
+**Higher human traffic**, so **it is critical that access point security and access monitoring is in place** - more legitimate visitors means the record matters more, not less. **Shared space**: **when server room space is shared with other organisational units or even other businesses, it can be critical to employ rack or equipment level locking** - the room's perimeter is not the security boundary when the room has multiple tenants. And **power**: **surge protection and uninterruptible power supplies must be tailored to the operating equipment and of sufficient capacity**, with the operational discipline that **as equipment is modified or replaced, power concerns must be readdressed to ensure capacities are not exceeded.** Capacity planning is a security control here, because exceeding it is an availability failure waiting for a load peak.
+
+Human safety returns with force: **human safety becomes an issue with power levels in most server rooms**, so **emergency shutoffs and non-conductive hooks and gloves become important.** The module explains the equipment's purpose precisely - **non-conductive personal protective equipment or hooks can be used to disengage equipment from a power source, or safely disengage a human from a live power source without endangering another human.** And it requires the human element: **appropriate training may also be necessary to ensure staff respond appropriately to electrical emergencies by cutting power or safely resolving the emergency.** Equipment on a wall that nobody has been trained to use is not a control.
+
+Fire suppression must be chosen deliberately - the module notes **sprinkler is inappropriate for electrical fires** - and selected **based on the size of the room, typical human occupation, egress routes, and risk of damage to equipment.** Section 6 takes this up. Overall, **server rooms are typically maintained at a higher level of physical security than the rest of the facility.**
+
+## Media storage facilities
+
+**Media storage facilities may be onsite and offsite from the main facility.** If **onsite with the main facility, backup copies should ideally be stored offsite**, and **fireproof and waterproof containers should be employed.** **Offsite storage should duplicate critical media stored onsite and retain the ability to recover critical information.**
+
+The sensitivity point connects directly to Domain 2: **media typically contains sensitive historical data that likely still requires protection.** Historical does not mean harmless. **Some media types may support encryption while others do not**, and where they do not - **if sensitive data is stored on unencrypted media, access control must be strictly limited and monitored**, with **some organisations limiting access to dedicated archivists.** That is the compensating-controls logic of the asset-handling module, arriving as a facilities requirement.
+
+Environmentally: **temperature and humidity should be consistent with the media storage requirements of the particular media in the facility**, reassessed **as media types evolve** and **maintained consistently with the needs of all stored media.** And **fire protection should be in place at both room and container levels** - two layers, because the container is what survives when the room does not.
+
+## Evidence storage
+
+**Evidence storage facilities or rooms are special-access areas with strictly limited access, and may be aggressively monitored.** They **typically contain individual lockers or secure containers for each investigation or investigator assigned to the facility.**
+
+The reason is stated exactly: **to ensure evidence accountability and chain of custody is maintained at all times, to prove evidence has not been modified or that tampering has not occurred.** Note the standard - *to prove*. Everywhere else in this module the goal is to prevent or detect; here it is to be able to demonstrate afterwards, to a court, that nothing happened. That is a higher bar, and it is why per-investigator lockers exist rather than a single shared secure room. **Evidence is protected against damage or theft**, and **appropriate environmental protections should be commensurate with the evidence types stored - paper, digital, media.**
+
+## Restricted areas
+
+**Restricted area security applies to any spaces or rooms within the facility where highly sensitive work occurs or information is stored**, including **secure facilities and classified workspaces.** These **typically have extremely high access control protections and logging of all access**, and **may include audio protections against eavesdropping, such as white noise machines.** They **may also include enhanced visual screening from exterior spaces, or have no windows at all.** And **in the most extreme cases, they may include protection against the detection of electromagnetic emissions from equipment** - the emanations vulnerability class from the previous module, answered architecturally.`
+    },
+    {
+      id: '5-utilities',
+      title: `5. Utilities and Environmental Controls`,
+      content: `## Power
+
+Availability at the facility level is mostly a power story, and the module's list is a redundancy ladder: **redundant power input from utilities**; **backup generators**; **dual power infrastructure within data centres**; **backup sources must be tested and exercised**; and **backup sources must be sized appropriately and upgraded when load increases.**
+
+The last two are operational rather than architectural, and they are where real programmes fail. An untested generator is a *belief* about availability, not a control - and the first time it is exercised should not be during the outage it exists for. Sizing has the same character: capacity that was correct when the room was commissioned quietly becomes inadequate as equipment is added, so the backup that covered the load in year one covers a fraction of it by year five. Both failures are invisible until the moment they matter, which is precisely why the module states them as standing requirements.
+
+## Telecommunications
+
+**Multiple service provider inputs**, so that one provider's failure is not the site's failure. The principle is diversity rather than duplication - two circuits from the same provider entering the building through the same conduit are one circuit for most failure modes worth planning against.
+
+## Water and sewer
+
+The module's framing is even-handed: water supports **cooling and human habitation** and **supports most building-wide fire suppression plans**, while carrying its own **risk of leaks and damage to equipment.** Water is simultaneously a dependency and a hazard - which is why its routing relative to equipment is a design decision rather than a plumbing detail.
+
+## The safety layer, again
+
+**Safety concerns with utilities are critical, as generators, battery backups, and data centre power feeds may carry very high electrical loads that are inherently dangerous.**
+
+**Emergency power shutoffs in high-load areas** serve three purposes, and the module separates them usefully: **safeguard human life in case of electrocution** - the **big red button**; **safeguard equipment in case of overload** - the **automated shutoff**; and **safeguard humans and equipment in emergencies.** One manual and immediate, one automatic and conditional, both required.
+
+And **high-load areas should provide access to non-conductive gloves and equipment, and push or pull rods in case of emergency** - the physical means to intervene without becoming a second casualty.
+
+## Heating, ventilation, and air conditioning
+
+**All computer equipment has a range of acceptable operating temperatures.** **High density equipment and equipment within enclosed spaces requires adequate cooling and airflow**, and **cooling must be designed to match the equipment and the space to be cooled.** Cooling is an availability control: equipment outside its range throttles, fails, or shortens its life, and the failure arrives as an outage rather than as an alarm about temperature.
+
+Two further requirements the module adds. **High-capacity rooms - an operations centre, for instance - must have sufficient airflow for the number of human occupants**, with the specific hazard named: **carbon dioxide danger.** A room designed for machines and then filled with people has a ventilation problem nobody planned. And **air for all uses should be filtered for contaminants, natural or intentionally introduced** - the second adjective quietly acknowledging that the air handling system is itself an attack surface.
+
+| Utility | What it protects | The failure to plan for |
+| --- | --- | --- |
+| **Power** | Availability of everything | Untested generators; capacity outgrown by load |
+| **Telecommunications** | Connectivity, and therefore service | Single provider, or diverse providers sharing one path |
+| **Water and sewer** | Cooling, habitation, fire suppression | Leaks damaging the equipment it cools |
+| **HVAC** | Equipment life and continuous operation | Density and enclosure exceeding the cooling design |
+| **Air filtration** | Equipment and occupants | Contaminants, natural or introduced deliberately |`
+    },
+    {
+      id: '6-fire',
+      title: `6. Fire Prevention, Detection, and Suppression`,
+      content: `## Detection
+
+Detection technologies **may assist with prevention, but they are primarily valuable for detection** - an honest framing, since a detector does not stop a fire, it buys the time in which everything else can happen.
+
+**Smoke detectors include optical (photoelectric) and physical process (ionization)** types. **Flame detectors include infrared and ultraviolet detectors.** The distinction that matters operationally is what each responds to and how quickly: smoke detection responds to the products of combustion, flame detection to the radiation of an actual flame, and the choice depends on what would burn and how it would burn in the space concerned.
+
+## Suppression: the two families
+
+**Buildings should be equipped with one or more types of fire suppression system**, and there are **two main types: water-based and gas-based.**
+
+![The trade the choice actually turns on](/courses/cissp/figures/cissp-fire-suppression.svg)
+
+**Water-based** systems are **effective for common material fires** - **wood, paper, building materials**; **safe for human spaces**; **damaging to equipment**; **ineffective for electrical or petroleum fires**; and **typically cheaper than gas-based.**
+
+**Gas-based** systems are **effective for any fire type**; **typically safe for equipment**; **may be dangerous to humans in enclosed spaces, depending on type**; and **costly to install and maintain compared to water-based.**
+
+Read the two lists side by side and the trade is stark: water is safe for people and bad for equipment, gas is good for equipment and potentially dangerous for people. That is why the choice cannot be made from a product comparison - it is made from **the size of the room, typical human occupation, egress routes, and the risk of damage to equipment**, exactly as the server room section stated.
+
+## The human-safety qualification on gas
+
+The module is careful here rather than absolute: **gas-based systems may be safe for humans under certain conditions but not others. System design must take into account the size and ventilation of protected rooms, and volume calculations for the gas.** Its conclusion: **if well implemented, most modern gas systems can be safe for human occupied spaces, but some risk of suffocation may still exist if not implemented correctly, or if unusual conditions apply.**
+
+Three things follow for a practitioner. The safety of a gas system is a property of its *design for that room*, not of the agent alone. Volume and ventilation calculations are therefore load-bearing, and a room that has been subdivided, extended, or had its ventilation altered since installation may no longer match the calculation the system was designed against. And "unusual conditions" includes the ordinary case of someone being in the room at three in the morning - which is why discharge delays, alarms, and egress routes are part of the system rather than accessories to it.
+
+## Water-based system types
+
+The common configurations differ in where the water sits and what triggers release:
+
+| Type | Water in the pipes? | Release behaviour |
+| --- | --- | --- |
+| **Wet pipe** | Yes - the most common arrangement | Heat-activated sprinkler heads, typically operating independently, so only heads over the fire discharge |
+| **Dry pipe** | No - pipes hold pressurised air until triggered | Suits spaces where standing water in pipes could freeze or leak |
+| **Pre-action** | No, until a detector fires and admits water | Requires both detection *and* a head to activate, so an accidentally broken head does not flood the room |
+| **Deluge** | No - all heads are open | Releases across the whole area at once; for high-hazard spaces, not equipment rooms |
+
+The exam-relevant one is **pre-action**, because it is the configuration designed for exactly the situation this module keeps returning to: a room full of expensive equipment where an accidental discharge would be its own disaster. Requiring two independent conditions before water flows is defence in depth applied to the suppression system itself.
+
+And the point to carry from the whole section: **a sprinkler is inappropriate for an electrical fire.** A server room protected only by a wet-pipe system has protection that is safe for its occupants and poorly matched to the fire it is most likely to face - which is a design finding a practitioner can and should raise, in the facilities team's own terms.`
+    },
+    {
+      id: '7-worked',
+      title: `7. Worked Examples`,
+      content: `## Worked Example 1: The door that could not be opened
+
+*To protect a data centre, a facilities contractor installs badge readers on both faces of the door, so a credential is required to leave as well as to enter. An audit flags it.* The audit is right, and the module states the rule: physical security restrictions **could impede building evacuation during an emergency, and must be designed to allow rapid exit while still protecting against improper entry.** A person inside during a fire, a power failure, or a medical emergency must be able to leave without presenting anything. The security objective behind the outbound reader - knowing who left and when - is legitimate and can be met without the hazard: free mechanical egress, with the exit monitored and recorded rather than gated. Control the entry direction; observe the exit direction.
+
+## Worked Example 2: The shared wiring closet
+
+*A floor's wiring closet also houses the building's electrical panel and cleaning supplies. Building engineers, electricians, and cleaners all hold keys.* The module anticipates this exactly: **rooms may share space with non-IT equipment and require access by non-IT staff**, which is why **secondary locks on equipment and racks** are named as a protection. The room's door is not the security boundary when three trades legitimately need to open it. The correct design keeps the shared access to the room, adds a locked rack or cabinet around the patch panels and switches, records access to that inner container, and adds **conduit or tamper protection for wiring** so that cable runs cannot be quietly tapped by anyone with a reason to be standing there.
+
+## Worked Example 3: The generator that had never run under load
+
+*A data centre has a backup generator, tested monthly by starting it and letting it idle. During an outage it starts, accepts the load, and shuts down within two minutes.* The module's requirement is that **backup sources must be tested and exercised**, and that they **must be sized appropriately and upgraded when load increases.** Starting a generator is not exercising it; the test that mattered - running the real load for a realistic duration - had never been performed, and the load had grown since commissioning. Both named requirements were unmet by a programme that looked diligent on paper. The corrective actions are a load-bank or live-transfer test on a schedule, and a power capacity reassessment tied to the change process, since **as equipment is modified or replaced, power concerns must be readdressed.**
+
+## Worked Example 4: Sprinklers over the racks
+
+*A server room is protected by a wet-pipe sprinkler system, chosen because it is what the rest of the building uses.* Two of the module's findings apply. **Water-based systems are ineffective for electrical fires** - and the module says plainly that **sprinkler is inappropriate for electrical fires** - so the most likely fire in this room is the one this system handles worst. And the selection criteria were never applied: the choice should follow from **the size of the room, typical human occupation, egress routes, and risk of damage to equipment.** The practitioner's contribution here is Section 1's translation task: state the requirement in facilities terms - suppression effective against electrical fire, safe for occupants at expected occupancy, with the room's volume and ventilation accounted for in the design - and let the specialists select the system.
+
+## Worked Example 5: The archive that cooked itself
+
+*Backup tapes are stored in a locked onsite room. A restore test fails; several tapes are unreadable. The room is beside a plant room and runs warm.* The environmental requirement was missed: **temperature and humidity should be consistent with the media storage requirements of the particular media in the facility**, and must be **maintained consistently with the needs of all stored media** as media types evolve. Two further findings follow from the same section. Backups **should ideally be stored offsite** when the media is onsite with the main facility - so this arrangement never protected against a site event anyway. And **fireproof and waterproof containers should be employed**, with **fire protection at both room and container levels.** Note the shape of the incident: nobody attacked anything, and the organisation still lost its ability to recover - which is the availability half of physical security doing what it does when it is neglected.
+
+## Worked Example 6: Chain of custody, broken by convenience
+
+*An investigation team stores collected drives in the general secure store, which several teams can access with a badge and which logs entry to the room but not what was removed.* Evidence storage is held to a different standard, and the module states why: the point is **to ensure evidence accountability and chain of custody is maintained at all times, to prove evidence has not been modified or that tampering has not occurred.** Proving a negative to a court requires more than a locked room - hence **individual lockers or secure containers for each investigation or investigator**, **strictly limited access**, and **aggressive monitoring.** As arranged, the organisation cannot demonstrate that nobody with room access touched the drives, and the evidence may be challenged on that basis alone. The remediation is per-investigation containers and item-level logging, and the wider lesson is that this is the one space in the module where the requirement is evidential rather than protective.`
+    },
+    {
+      id: '8-selfcheck',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+**Q1.** In a large organisation, who designs and operates physical security, and what three things must the practitioner therefore be able to do?
+
+**Q2.** What translation task does the module assign to the practitioner?
+
+**Q3.** How does physical design support information system security, and which security property does facility design especially serve?
+
+**Q4.** State the design rule where security restrictions meet emergency evacuation.
+
+**Q5.** What are emergency power shutoffs and equipment lockouts for, and what distinguishes them?
+
+**Q6.** Name the four perimeter zones and the four questions that recur at each.
+
+**Q7.** Why do wiring closets need secondary locks on racks?
+
+**Q8.** What three differences does the module draw between server rooms and wiring closets?
+
+**Q9.** What is required for media storage, environmentally and for unencrypted sensitive media?
+
+**Q10.** What makes evidence storage's requirement different in kind from every other space?
+
+**Q11.** What protections may restricted areas add beyond access control and logging?
+
+**Q12.** Give the two operational requirements for backup power that programmes commonly fail.
+
+**Q13.** Contrast water-based and gas-based suppression on the four dimensions the module gives.
+
+**Q14.** What must gas system design account for, and what residual risk remains?
+
+## Answers
+
+**A1.** Physical security specialists design, implement, and operate it. The practitioner must be able to assess the risk reduction value of physical security controls, communicate physical security needs to physical security managers, and identify weaknesses - and may have to implement physical elements directly in smaller organisations.
+
+**A2.** Translating information security needs or requirements into terms that physical security or facilities operators can understand and act on - stating a requirement as who may pass, how it is recorded, how long the record is kept, and what it must resist, rather than as an information security abstraction.
+
+**A3.** Physical design elements protect information systems from unauthorised access, enable auditing or observation of sensitive physical access areas such as server rooms and wiring infrastructure, and either complement or simplify the information system controls needed for adequate overall security; facilities management ensures robust services such as power and cooling, with backup or redundant capabilities. Facility design absolutely supports **availability**, with particularly high impact on continuity of operations and disaster recovery.
+
+**A4.** Restrictions must be designed to allow rapid exit while still protecting against improper entry - exit stays free, entry stays controlled. Physical security restrictions that could impede evacuation are hazards, and where the goals appear to conflict, safety governs.
+
+**A5.** Emergency power shutoffs - the big red button - cut power immediately to minimise electrical accidents and safeguard life; automated shutoffs also protect equipment in case of overload. Equipment lockouts are manual or physical lock latches that hold circuit breakers or switches in the off position while staff are exposed to power cabling. The shutoff stops power now; the lockout stops someone else restoring it while a person is working.
+
+**A6.** Surrounding areas; site entry and exit points; external facilities; operational facilities. The recurring questions are lighting, surveillance, intrusion detection, and lines of sight - with lighting judged by whether it permits human or video identification in all light conditions, and lines of sight judged by whether dead space has been eliminated.
+
+**A7.** Because the room may be shared with non-IT equipment and require access by non-IT staff - building engineers, electricians, cleaners - so the room's door is not the security boundary. Secondary locks on equipment and racks protect the network infrastructure from people who legitimately need the room but not the patch panel; conduit or tamper protection covers the wiring itself.
+
+**A8.** Higher human traffic, making access point security and access monitoring critical; shared space with other units or businesses, making rack or equipment level locking critical; and power - surge protection and UPS tailored to the equipment and of sufficient capacity, readdressed whenever equipment is modified or replaced.
+
+**A9.** Temperature and humidity consistent with the storage requirements of the particular media, reassessed as media types evolve and maintained consistently for all stored media; fire protection at both room and container level; fireproof and waterproof containers; and offsite duplication of critical media. Where sensitive data is on unencrypted media, access must be strictly limited and monitored, with some organisations limiting access to dedicated archivists.
+
+**A10.** Its requirement is evidential: the goal is to *prove* that evidence has not been modified and that tampering has not occurred, maintaining accountability and chain of custody at all times. That is why it uses individual lockers or containers per investigation or investigator rather than one shared secure room - a locked room cannot demonstrate which of its key-holders touched what.
+
+**A11.** Audio protections against eavesdropping such as white noise machines; enhanced visual screening from exterior spaces or no windows at all; and, in the most extreme cases, protection against the detection of electromagnetic emissions from equipment.
+
+**A12.** Backup sources must be tested and exercised - starting a generator is not exercising it under load - and must be sized appropriately and upgraded when load increases, since capacity correct at commissioning is outgrown as equipment is added.
+
+**A13.** Water-based: effective for common material fires (wood, paper, building materials), safe for human spaces, damaging to equipment, ineffective for electrical or petroleum fires, and typically cheaper. Gas-based: effective for any fire type, typically safe for equipment, potentially dangerous to humans in enclosed spaces depending on type, and costly to install and maintain.
+
+**A14.** Design must account for the size and ventilation of the protected rooms and volume calculations for the gas. Well implemented, most modern gas systems can be safe for human-occupied spaces, but some risk of suffocation may still exist if implemented incorrectly or if unusual conditions apply - so safety is a property of the design for that specific room, and remains valid only while the room's volume and ventilation match the calculation.`
+    }
+  ]
 },
 // ===== Domain 4: Communication and Network Security (13%) - Instructor Edition module order =====
 cissp_network: {

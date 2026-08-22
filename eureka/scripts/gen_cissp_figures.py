@@ -3780,6 +3780,117 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Four perimeter zones, and the questions asked at each.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-facility-perimeters")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    zones = [
+        ("SURROUNDING AREAS", c[0], "roadways, waterways, terrain,", "lines of sight - what is outside your fence"),
+        ("SITE ENTRY / EXIT", c[1], "vehicular, visitor, staff, delivery,", "pedestrian - every way in, controlled"),
+        ("EXTERNAL FACILITIES", c[2], "parking, utilities, transformers,", "telecoms, landscaping - yours, but unstaffed"),
+        ("OPERATIONAL FACILITIES", c[0], "where employees work and IT runs -", "materials, doors, windows, walls, entrances"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.7, 4.7))
+    for i, (name, colour, l1, l2) in enumerate(zones):
+        y = 3.95 - i * 0.86
+        ax.add_patch(plt.Rectangle((0.4, y - 0.24), 3.0, 0.5, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (1.9, y), ha="center", va="center", fontsize=7.6, color=ink)
+        ax.annotate(l1, (3.65, y + 0.13), fontsize=7.0, color=ink)
+        ax.annotate(l2, (3.65, y - 0.17), fontsize=6.9, color=S.INK_2[mode])
+        if i < 3:
+            ax.annotate("", (1.9, y - 0.42), (1.9, y - 0.26),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.3))
+    ax.annotate("four questions recur at EVERY zone:  lighting    surveillance    intrusion detection    lines of sight",
+                (4.9, 0.55), ha="center", fontsize=7.7, color=c[2])
+    ax.annotate("which is what makes this a method rather than a checklist - the zone changes, the questions do not",
+                (4.9, 0.18), ha="center", fontsize=7.5, color=ink, style="italic")
+    ax.set_xlim(0, 9.9)
+    ax.set_ylim(-0.05, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Interior spaces, by how tightly each is controlled.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-interior-spaces")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("WIRING CLOSETS", "secure the room, monitor and record access,", "secondary locks on racks, conduit for wiring"),
+        ("SERVER ROOMS", "higher traffic, so access control and monitoring", "at the door; rack locks where space is shared"),
+        ("MEDIA STORAGE", "on and off site; fire and water resistant", "containers; temperature and humidity per medium"),
+        ("EVIDENCE STORAGE", "special access, aggressively monitored,", "individual lockers - chain of custody is the point"),
+        ("RESTRICTED AREAS", "extreme access control, all access logged,", "white noise, visual screening, emanation protection"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 4.7))
+    for i, (name, l1, l2) in enumerate(rows):
+        y = 3.95 - i * 0.72
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((0.4, y - 0.22), 2.7, 0.46, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.75, y), ha="center", va="center", fontsize=7.4, color=ink)
+        ax.annotate(l1, (3.3, y + 0.11), fontsize=6.9, color=ink)
+        ax.annotate(l2, (3.3, y - 0.19), fontsize=6.8, color=S.INK_2[mode])
+    ax.annotate("", (0.2, 3.95), (0.2, 0.7),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.4))
+    ax.annotate("control tightens", (0.2, 0.45), ha="center", fontsize=6.9, color=S.INK_2[mode])
+    ax.annotate("every one of these rooms also needs the ENVIRONMENTAL set: surge protection, backup power, cooling and airflow,",
+                (5.0, 0.25), ha="center", fontsize=7.3, color=ink)
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.0, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Water-based versus gas-based suppression: the real trade.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-fire-suppression")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    cols = [
+        ("WATER-BASED", c[0], 0.4,
+         ["effective for COMMON MATERIAL fires", "wood, paper, building materials",
+          "SAFE for human spaces", "DAMAGES equipment",
+          "INEFFECTIVE for electrical or petroleum", "typically CHEAPER than gas"]),
+        ("GAS-BASED", c[2], 5.05,
+         ["effective for ANY fire type", "including electrical",
+          "typically SAFE for equipment", "may endanger humans in enclosed spaces",
+          "depending on type and design", "COSTLY to install and maintain"]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.5, 4.9))
+    for name, colour, x, rows in cols:
+        ax.add_patch(plt.Rectangle((x, 4.05), 4.05, 0.62, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 2.02, 4.36), ha="center", va="center",
+                    fontsize=9.0, color=ink)
+        for j, r in enumerate(rows):
+            ax.annotate(r, (x + 2.02, 3.6 - j * 0.42), ha="center", fontsize=7.1,
+                        color=S.INK_2[mode] if j % 2 else ink)
+    ax.annotate("a sprinkler is the WRONG answer for an electrical fire - which is why the server room's suppression",
+                (4.72, 0.75), ha="center", fontsize=7.5, color=c[2])
+    ax.annotate("is chosen from room size, human occupancy, egress routes, and risk of damage to equipment",
+                (4.72, 0.4), ha="center", fontsize=7.5, color=c[2])
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(0.15, 4.85)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
