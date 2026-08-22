@@ -2520,6 +2520,125 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Media handling lifecycle: marking -> handling -> storing -> destruction,
+# with the governing rule at each stage.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-media-handling")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    stages = [
+        ("MARKING", "physical label: sensitivity,\nencrypted or not, contact,\nretention period", c[0]),
+        ("HANDLING", "designated personnel only;\ntrained; access logged -\nmanual logs compensate", c[1]),
+        ("STORING", "encrypted, in a security\ncontainer; off-site copy;\nfire-resistant on site", c[2]),
+        ("DESTRUCTION", "destroyed, not discarded;\nrecorded against the\nhandling logs", c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 3.7))
+    for i, (name, gloss, colour) in enumerate(stages):
+        x = 0.4 + i * 2.4
+        ax.add_patch(plt.Rectangle((x, 1.95), 2.0, 0.8, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x + 1.0, 2.35), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate(gloss, (x + 1.0, 1.25), ha="center", fontsize=6.9,
+                    color=S.INK_2[mode])
+        if i < len(stages) - 1:
+            ax.annotate("", (x + 2.36, 2.35), (x + 2.04, 2.35),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.6))
+    ax.annotate("unlabelled media found = label at the HIGHEST sensitivity until analysis says otherwise",
+                (5.0, 3.25), ha="center", fontsize=8.2, color=c[2], style="italic")
+    ax.annotate("media lacks digital accountability when data is unencrypted - the physical and manual controls carry the load",
+                (5.0, 0.45), ha="center", fontsize=7.8, color=ink)
+    ax.set_xlim(0, 10.2)
+    ax.set_ylim(0.1, 3.6)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The sanitization ladder: clearing -> purging -> destruction, by assurance.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-sanitization-ladder")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rungs = [
+        ("CLEARING", "defeats MOST known recovery techniques;\nspecialist recovery may still succeed",
+         "overwriting / wiping", c[0], 0.5),
+        ("PURGING (sanitizing)", "defeats ANY known technique -\nthe data cannot be reconstructed",
+         "degaussing (magnetic media); crypto-erase\nwith secure key destruction", c[1], 1.85),
+        ("DESTRUCTION", "the MEDIA itself is made unusable -\nstrongest, if the method is good",
+         "shredding, chemical alteration, phase\ntransition, heating past the Curie point", c[2], 3.2),
+    ]
+    fig, ax = plt.subplots(figsize=(9.4, 4.6))
+    for name, assurance, methods, colour, y in rungs:
+        ax.add_patch(plt.Rectangle((0.4, y), 2.9, 0.95, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (1.85, y + 0.48), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate(assurance, (3.6, y + 0.62), fontsize=7.6, color=ink)
+        ax.annotate(methods, (3.6, y + 0.14), fontsize=7.2, color=S.INK_2[mode])
+    ax.annotate("", (0.22, 0.6), (0.22, 4.05),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.5))
+    ax.annotate("rising\nassurance", (0.18, -0.15), ha="center", fontsize=7.2,
+                color=S.INK_2[mode])
+    ax.annotate("a drilled hole is NOT destruction - most data survives it; defensible destruction means NO known means can recover the data",
+                (4.85, -0.35), ha="center", fontsize=7.8, color=c[2], style="italic")
+    ax.set_xlim(-0.3, 10.0)
+    ax.set_ylim(-0.75, 4.5)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Why overwriting fails on SSDs: the flash translation layer redirects
+# writes, leaving old iterations in place.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-ssd-remanence")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
+    # HDD half
+    ax.annotate("HDD (magnetic)", (0.55, 3.95), fontsize=9.0, color=c[0])
+    ax.add_patch(plt.Rectangle((0.5, 2.6), 3.6, 0.85, facecolor="none",
+                               edgecolor=c[0], linewidth=1.7))
+    ax.annotate("data lives at a fixed location;\nnew data OVERWRITES old in place", (2.3, 3.02),
+                ha="center", va="center", fontsize=7.6, color=ink)
+    ax.annotate("overwriting = effective erasure", (2.3, 2.2), ha="center",
+                fontsize=7.8, color=c[0])
+    # SSD half
+    ax.annotate("SSD (flash)", (5.35, 3.95), fontsize=9.0, color=c[2])
+    ax.add_patch(plt.Rectangle((5.3, 2.6), 3.6, 0.85, facecolor="none",
+                               edgecolor=c[2], linewidth=1.7))
+    ax.annotate("changes are written to a NEW location;\nthe flash translation layer remaps", (7.1, 3.02),
+                ha="center", va="center", fontsize=7.6, color=ink)
+    ax.annotate("old iterations remain - hidden, not gone", (7.1, 2.2), ha="center",
+                fontsize=7.8, color=c[2])
+    rows = [
+        ("built-in sanitize commands", "erase internally, past the translation layer - IF the maker implemented them correctly"),
+        ("crypto-erase", "destroy the drive's encryption key - IF the layer does not mask key material"),
+        ("the practical answer", "COMBINE crypto-erase + sanitize + overwrite; no single technique suffices"),
+    ]
+    for i, (name, gloss) in enumerate(rows):
+        y = 1.45 - i * 0.5
+        ax.annotate(name, (0.6, y), fontsize=7.9, color=c[1], va="center")
+        ax.annotate(gloss, (3.15, y), fontsize=7.4, color=S.INK_2[mode], va="center")
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(-0.15, 4.3)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
