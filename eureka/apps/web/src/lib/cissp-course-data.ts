@@ -6430,1109 +6430,939 @@ cissp_secure_design: {
   topicId: 'cissp_secure_design',
   title: `Processes Using Secure Design Principles`,
   domainWeight: '13%',
-  overview: `### Defense in Depth (Layered Security)`,
+  overview: `Domain 3 opens with a structural claim rather than a technique: systems security engineering is not a separate discipline running alongside engineering, it is a specialty discipline *inside* systems engineering. Earlier security-specific models such as the SSE-CMM were valuable but hard to relate to standard engineering and software design processes, which limited their adoption; the current direction - endorsed by both INCOSE and NIST - converges the two, so every systems engineering process applies to security, performed with a security perspective. This module walks the thirty processes NIST SP 800-160 defines in four groups: fourteen technical processes from business and mission analysis through disposal, eight technical management processes, six enabling processes, and two agreement processes. It closes on the differentiator that governs all of them - systems security engineering serves the system's confidentiality, integrity, and availability needs rather than its functional requirements - and on the secure design principles the exam outline names under this module.`,
   sections: [
     {
-      id: '1-foundational-security-principles',
-      title: `1. Foundational Security Principles`,
-      content: `### Defense in Depth (Layered Security)
+      id: '1-convergence',
+      title: `1. From Security-Specific Models to Specialty Engineering`,
+      content: `## The problem with the old approach
 
-Defense in depth employs multiple, overlapping security controls at different layers to ensure that if one control fails, others remain in place. This principle assumes no single control is completely effective.
+The module opens with a piece of history that explains a structural decision. **Older sources such as the System Security Engineering Capability Maturity Model (SSE-CMM) provided systems-security-specific processes that did not directly map to systems engineering processes.** They were **valuable resources**, but the mismatch had a cost the module states plainly: **earlier system security engineering models were difficult to relate to standard engineering and software design processes, which limited their adoption in many industries.**
 
-**Example**: A multi-layered approach might include network firewalls, host-based firewalls, application-level controls, and encrypted data at rest.
-### Zero Trust Architecture
+That is a failure mode worth generalising, because it recurs everywhere security tries to organise itself separately. A security process that does not map onto the engineering process an organisation actually runs must be adopted *in addition to* that process, by people already busy running it - and additional processes lose to incumbent ones. The lesson is not that the SSE-CMM was wrong about security; it is that a correct process nobody adopts protects nothing.
 
-Zero Trust assumes no implicit trust based on network location or user identity. Every access request is authenticated, authorized, and encrypted, regardless of source.
+## The convergence
 
-**Key concepts**:
-- Never trust, always verify: Continuous authentication and authorization
-- Assume compromise: Design systems to limit damage from breaches
-- Microsegmentation: Divide networks into small zones to isolate access
-- Least privileged access: Grant minimum required permissions
-- Verify explicitly: Use all available data points (user, device, location, time)
+**The current direction with major standards has been to converge systems security engineering as a specialty engineering discipline under traditional systems engineering processes**, which **allows closer alignment between traditional engineering and security engineering.** The endorsement is institutional on both sides: **both the International Council on Systems Engineering (INCOSE) and the National Institute of Standards and Technology (NIST) recognise systems security engineering as a specialty engineering discipline of systems engineering.**
 
-### Least Privilege
+And the consequence for practice is the sentence to carry out of this section: **all systems engineering processes are applicable to systems security engineering, and are applied with a systems security perspective.** There is no separate list of security processes to run. There is the engineering the organisation already does, performed by people who bring a security view to each process - which is why the rest of this module reads as a tour of ordinary engineering processes with a security lens applied to each.
 
-Users and processes should have only the minimum permissions necessary to perform their job functions. This limits the damage if credentials are compromised.
+![Thirty processes in four groups - all of them engineering, none of them security-only](/courses/cissp/figures/cissp-sse-process-groups.svg)
 
-**Implementation**: Role-based access control (RBAC), attribute-based access control (ABAC), privilege elevation on demand (PEoD).
-### Separation of Duties
+## The four source documents
 
-Critical functions are divided among multiple people or systems to prevent fraud, errors, and abuse. No single individual can authorize and execute a critical transaction.
+| Source | What it is | Why it appears here |
+| --- | --- | --- |
+| **INCOSE Systems Engineering Handbook** | INCOSE is a not-for-profit membership organisation founded to develop and disseminate the interdisciplinary principles and practices that enable the realisation of successful systems | The engineering profession's own reference; the process definitions align with it |
+| **NIST SP 800-160, System Security Engineering** | Addresses the engineering-driven actions necessary to develop more defensible and survivable systems - including the components that compose them and the services that depend on them | The module's process definitions are taken from it |
+| **ISO/IEC 15026 series** | A series of standards focused on systems and software engineering | Systems and software assurance context |
+| **ISO/IEC/IEEE 15288** | A systems engineering standard defining processes | The process architecture the others align to |
 
-**Examples**: Database administrators cannot approve changes they implement; auditors are separate from those they audit; financial approvers are separate from those requesting funds.
-### Fail-Safe Defaults
+The relationship among them is the convergence in documentary form. SP 800-160 **starts with and builds upon a set of well-established international standards for systems and software engineering published by ISO, IEC, and IEEE, and infuses systems security engineering techniques, methods, and practices into those systems and software engineering activities.** It does not invent a security process framework; it takes the engineering framework the profession already uses and adds the security perspective to each of its processes. Everything in this module follows from that design choice.
 
-Default deny security model: if access cannot be explicitly granted, it is denied. Systems fail in a secure state if components fail.
-
-Example: Firewalls deny all traffic by default and explicitly allow required connections.
-### Economy of Mechanism
-
-Security mechanisms should be as simple and straightforward as possible. Simpler designs are easier to analyze, verify, and maintain with fewer vulnerabilities.
-### Complete Mediation
-
-All accesses to resources must be checked against authorization rules. No shortcuts or cached decisions; every access is verified.
-
-**Related term**: **Redo all** refers to not relying on previous authorization decisions.
-### Open Design
-
-Security should not rely on the secrecy of the design or algorithm (Kerckhoffs principle). Systems should be secure even if attackers know how they work.
-
-Example: Cryptographic algorithms are published for peer review; security lies in the key, not the algorithm.
-### Least Common Mechanism
-
-Minimize shared mechanisms between subjects and objects. Shared code or resources can become covert channels or introduce unintended dependencies.
-### Psychological Acceptability
-
-Security controls must be usable and acceptable to users. Overly complex or burdensome controls are bypassed or circumvented.
-
-Example: Single sign-on (SSO) makes security more acceptable than requiring multiple password changes.`,
-      examTip: `Bell-LaPadula protects CONFIDENTIALITY (no read up, no write down - prevents unauthorized disclosure). Biba protects INTEGRITY (no read down, no write up - prevents contamination). If the question mentions preventing unauthorized reading or disclosure, think Bell-LaPadula. If it mentions preventing unauthorized modification or corruption, think Biba. They are mirror opposites.`,
+**A currency note.** The module's process definitions come from **SP 800-160 dated November 2016**. That publication has since been revised: Volume 1 Revision 1, *Engineering Trustworthy Secure Systems*, was issued in November 2022, and a second volume covering cyber resiliency considerations arrived separately. The revision reorganises and expands the guidance, but the structure this module teaches - a security perspective applied to the systems engineering process groups, drawn from the ISO/IEC/IEEE 15288 architecture - is exactly what the current edition retains. The process names below are the ones the exam uses, and the concepts behind them are unchanged.`
     },
     {
-      id: 'practice-questions-domain-3',
-      title: `2. Practice Questions - Domain 3`,
-      content: `### Exam Tips Summary for Domain 3
+      id: '2-cia-governs',
+      title: `2. The Governing Principle: CIA, Not Function`,
+      content: `## The differentiator
 
-- Know the 10 foundational design principles; "DEFICOL" helps memory
-- Bell-LaPadula = Confidentiality (No Read Up, No Write Down); Biba = Integrity (opposite)
-- Common Criteria EAL 1-7; A=Formal, B=Structured, C=Discretionary, D=Minimal for TCSEC
-- Understand TOCTOU as race condition requiring atomic operations or proper synchronization
-- Covert channels and side-channel attacks exploit information leakage from physical properties
-- Symmetric (AES) for bulk data (fast); Asymmetric (RSA/ECC) for key exchange and signatures (slow)
-- ECC 256-bits ≈ RSA 2048-bits for equivalent security; much smaller keys for ECC
-- Fire suppression: Wet (general), Dry (freezing), Preaction (data centers), Gas (no water damage)
-- Key management lifecycle: Generation → Storage → Distribution → Rotation → Retirement
-- Zero Trust assumes breach; requires continuous verification regardless of network location`,
-      quiz: [
-        {
-          question: `Which principle ensures that security mechanisms are as simple as possible and easier to verify?`,
-          options: ["Complete Mediation", "Economy of Mechanism", "Least Privilege", "Defense in Depth"],
-          correctIndex: 1,
-          explanation: `Economy of Mechanism advocates for simplicity in security design. Simpler mechanisms are easier to analyze, maintain, and less likely to have hidden vulnerabilities. Complete Mediation is about checking all accesses; Least Privilege limits permissions; Defense in Depth uses multiple layers.`,
-        },
-        {
-          question: `The Bell-LaPadula model enforces what security property?`,
-          options: ["Integrity through No Write Up rule", "Confidentiality through No Read Up and No Write Down", "Availability through redundancy", "Authentication through digital signatures"],
-          correctIndex: 1,
-          explanation: `Bell-LaPadula focuses on confidentiality. Its key properties are &quot;No Read Up&quot; (cannot read higher classification) and &quot;No Write Down&quot; (cannot write to lower classification). Biba model enforces integrity with opposite rules.`,
-        },
-        {
-          question: `What is a TOCTOU vulnerability?`,
-          options: ["An authentication bypass using temporary credentials", "A race condition between checking and using a resource", "A timing-based side channel attack", "A covert channel exploiting memory allocation"],
-          correctIndex: 1,
-          explanation: `TOCTOU (Time-of-Check to Time-of-Use) is a race condition where a resource state changes between the security check and its actual use. An example is checking file permissions then reading the file, with an attacker changing permissions or replacing the file in between.`,
-        },
-        {
-          question: `Which cryptographic algorithm is considered the current NIST standard for symmetric encryption?`,
-          options: ["3DES with 168-bit keys", "AES with 128, 192, or 256-bit keys", "Blowfish with 256-bit keys", "RC4 with variable key length"],
-          correctIndex: 1,
-          explanation: `AES (Advanced Encryption Standard) is the NIST-approved symmetric cipher for all new applications. 3DES is deprecated; Blowfish has a small 64-bit block size; RC4 is broken and deprecated.`,
-        },
-        {
-          question: `An EAL 5 rating in Common Criteria indicates what level of assurance?`,
-          options: ["Minimal testing with no formal verification", "Methodical testing with informal analysis", "Semiformal design specification with formal analysis of key areas", "Full formal verification of all components"],
-          correctIndex: 2,
-          explanation: `EAL 5 is &quot;Semiformally Designed and Tested&quot; – includes semiformal specification and formal analysis of high-risk areas. EAL 1 is minimal; EAL 4 is methodical; EAL 7 is full formal verification.`,
-        },
-        {
-          question: `In the context of covert channels, what is a timing channel?`,
-          options: ["A communication path using variations in cryptographic response times", "A broadcast channel with time-based access control", "A storage medium using temporal data sequencing", "A network protocol utilizing time-sequence numbers"],
-          correctIndex: 0,
-          explanation: `Timing channels encode information in response times or processing delays. A Trojan could measure how quickly a system responds to signal information externally. Storage channels use resource allocation; neither is an official network protocol.`,
-        },
-        {
-          question: `Which fire suppression system is most suitable for a data center with expensive servers and minimal water damage tolerance?`,
-          options: ["Wet pipe sprinkler system", "Dry pipe system for freezing environments", "Preaction system with heat detection", "Deluge system with open sprinklers"],
-          correctIndex: 2,
-          explanation: `Preaction systems are two-stage: heat detector triggers first, then water sprinklers activate only in the affected zone. This minimizes water damage to expensive equipment. Wet and deluge systems cause water damage; dry pipe is for freezing environments.`,
-        },
-        {
-          question: `The Brewer-Nash (Chinese Wall) model is designed to prevent what type of security violation?`,
-          options: ["Unauthorized modification of data (integrity breach)", "Information leakage between competing clients' data in multi-party environments", "Unauthorized disclosure of classified government information", "Elevation of privilege through covert timing channels"],
-          correctIndex: 1,
-          explanation: `Brewer-Nash enforces dynamic separation to prevent conflicts of interest. Example: a consulting firm must prevent the same consultant from accessing competing clients' data. It's not about integrity (Biba), confidentiality (Bell-LaPadula), or privilege escalation.`,
-        },
-        {
-          question: `What is the primary goal of Zero Trust architecture?`,
-          options: ["Encrypt all network traffic to and from the network perimeter", "Assume no implicit trust; require continuous authentication, authorization, and verification", "Eliminate all trust relationships and operate in a fully disconnected mode", "Trust all internal network traffic while blocking external connections"],
-          correctIndex: 1,
-          explanation: `Zero Trust assumes breach and verifies every access request continuously, regardless of source. It's not about perimeter encryption, complete disconnection, or blindly trusting internal traffic.`,
-        },
-        {
-          question: `Which asymmetric algorithm would be most suitable for a system requiring post-quantum cryptographic security in the near future?`,
-          options: ["RSA-4096 for maximum key size", "Elliptic Curve Cryptography with 521-bit keys", "Lattice-based cryptography or NIST-standardized post-quantum algorithms", "Diffie-Hellman with 4096-bit prime modulus"],
-          correctIndex: 2,
-          explanation: `RSA and ECC are vulnerable to quantum attacks. Post-quantum cryptography (lattice-based, code-based, multivariate polynomial) are being standardized by NIST as quantum-resistant replacements. DH has the same quantum vulnerability as RSA.`,
-        },
-        {
-          question: `In PKI, what is the primary role of a Registration Authority (RA)?`,
-          options: ["Revoke certificates when keys are compromised", "Verify applicant identity before the CA issues a certificate", "Maintain the certificate revocation list", "Encrypt all certificate data in transit"],
-          correctIndex: 1,
-          explanation: `The RA verifies the identity and legitimacy of certificate applicants before passing them to the CA for issuance. The CA issues and signs; revocation services handle CRLs; encryption is for data protection.`,
-        },
-        {
-          question: `Which security model specifically addresses the issue of data integrity in financial transaction systems?`,
-          options: ["Bell-LaPadula Model", "Biba Model", "State Machine Model", "Information Flow Model"],
-          correctIndex: 1,
-          explanation: `Biba Model enforces integrity through &quot;No Write Up&quot; and &quot;No Read Down&quot; rules. It prevents unauthorized modification. Financial systems heavily rely on Biba or Clark-Wilson (which combines integrity with transactions). Bell-LaPadula handles confidentiality.`,
-        },
-        {
-          question: `A developer wants to protect a private key with a password. Which key derivation approach would best resist brute-force attacks?`,
-          options: ["Single iteration of SHA-256", "Argon2 with memory-hard and time-hard parameters", "PBKDF2 with 100 iterations", "MD5 with salt"],
-          correctIndex: 1,
-          explanation: `Argon2 is deliberately memory-hard and time-hard, specifically designed to resist GPU/ASIC brute-force attacks. Simple hash iteration (SHA-256, even PBKDF2 with 100 iterations) is much faster on modern hardware. MD5 is broken.`,
-        },
-        {
-          question: `Which TCSEC (Orange Book) rating represents the highest security assurance level?`,
-          options: ["C2 - Controlled Access Protection", "B1 - Labeled Security Protection", "B3 - Security Domains", "A1 - Verified Design"],
-          correctIndex: 3,
-          explanation: `A1 is the highest TCSEC level, requiring formal top-level specification and verification. B3 requires formal security model; B1 adds labeled MAC; C2 is discretionary. Remember: A=highest, D=lowest.`,
-        },
-        {
-          question: `Why might asymmetric encryption be considered less suitable than symmetric encryption for bulk data protection?`,
-          options: ["Asymmetric algorithms cannot encrypt large files", "Asymmetric encryption is significantly slower and computationally expensive for large amounts of data", "Asymmetric keys are less secure than symmetric keys", "Asymmetric encryption does not provide confidentiality"],
-          correctIndex: 1,
-          explanation: `Asymmetric encryption is much slower (orders of magnitude) due to complex mathematical operations. It's used for key exchange and small messages (like hashes for digital signatures). Symmetric encryption handles bulk data due to speed. Hybrid approaches combine both.`,
-        },
-      ],
+Before the process tour, the module states what makes systems security engineering different from the systems engineering it now lives inside: **a key principle of systems security engineering, and a differentiator from traditional systems engineering, is that systems security engineering is focused on supporting the confidentiality, integrity, and availability needs of the system - and not on the system's functional requirements.** The CIA triad is **a prime governing factor for all system security engineering activities.**
+
+![The triad that governs every process in this module](/courses/cissp/figures/cissp-cia-triad.svg)
+
+## Reading the claim carefully
+
+The claim is easy to misread as "security engineers ignore what the system does." It means something more precise and more useful. The systems engineer asks *what must this system do, and does it do it?* The security engineer, working the same process at the same time, asks *what must remain confidential, correct, and available for this system to be trustworthy, and does it stay that way?* Two questions, one process, two perspectives - which is exactly the convergence of Section 1 expressed as a division of attention rather than a division of labour.
+
+The distinction has teeth in practice, and the clearest illustration is the pair of processes examined later in this module. A system that satisfies every functional requirement can still fail the security question completely: it computes the right answers, and it exposes them to the wrong people, or accepts them from an unauthenticated source, or stops computing under a load an adversary chooses. Functional correctness and trustworthiness are independent properties, and the whole reason security engineering is a *specialty* discipline rather than a phase of testing is that somebody must be accountable for the second one throughout.
+
+| Question | Whose perspective | What a "yes" guarantees |
+| --- | --- | --- |
+| Does the system do what it is meant to do? | Traditional systems engineering | Functional correctness |
+| Does it keep the right things confidential? | Security engineering | No unauthorised disclosure through the design |
+| Does it keep the right things correct? | Security engineering | No unauthorised or accidental alteration |
+| Does it keep the right things available? | Security engineering | Function survives disruption at the required level |
+| Does it fulfil the mission while doing all of that? | Both, in validation | The system is both correct and trustworthy in use |
+
+## Where CIA enters the processes
+
+The triad is not a slogan appended to the process list; it is what the security perspective *consists of* at each process. In requirements processes it becomes protection capability, security characteristics, and security-driven constraints. In architecture and design it becomes the security views and the architectural entities and constraints those views impose. In verification it becomes the security requirements evidence must demonstrate. In operation and maintenance it becomes the security services that must continue to be delivered. And in disposal it becomes the secure handling of retired elements and the data they contain.
+
+That last one deserves a note before the tour begins, because it is where Domain 3 shakes hands with Domain 2. The disposal process exists in the engineering framework precisely so that ending a system's existence is *designed* rather than improvised - which is the engineering expression of the defensible destruction the previous domain demanded. Asset security said destruction must be defensible; systems security engineering says it is a process with requirements, performed by people whose job includes it, planned before the system is built.`
     },
-  ],
+    {
+      id: '3-technical-1',
+      title: `3. Technical Processes I: Understanding and Designing`,
+      content: `## The fourteen, and the order they arrive in
+
+The technical processes are the largest group, and they run from the first conversation about why a system should exist to the last act of destroying it. This section takes the first six - the ones that establish what is needed and how it will be built.
+
+![The technical processes, grouped by what each stretch achieves](/courses/cissp/figures/cissp-technical-processes.svg)
+
+## Understanding the problem
+
+**Business and mission analysis process.** This process **helps the engineering team understand the scope, basis, and drivers of the business or mission problems or opportunities, and ascertain the asset loss consequences that present security and protection issues associated with those problems or opportunities.** Read the second half slowly, because it is where security enters the lifecycle. The very first technical process already asks what losing an asset would cost - which means security is present before a requirement is written, let alone a control chosen. Note also the vocabulary: **asset loss consequence** is the same idea Domain 2 called impact, arriving here as an engineering input.
+
+**Stakeholder needs and requirements definition process.** This **defines the stakeholder security requirements, which include the protection capability, security characteristics, and security-driven constraints for the system to securely provide the capabilities needed by users and other stakeholders.** Three distinct kinds of requirement live in that sentence and are worth separating: a **protection capability** is something the system must be able to do; a **security characteristic** is a property it must have; a **security-driven constraint** is something it must *not* do, or must not be built in a certain way. Constraints are the ones projects forget to capture, and they are the ones that cost most to add later.
+
+**System requirements definition process.** This **transforms the stakeholder security requirements into the system requirements that reflect a technical security view of the system.** The transformation is a translation between languages: stakeholders express needs in the vocabulary of their business, and engineers need requirements expressed technically enough to build and test against. Both versions must exist, and the traceability between them is what lets a later argument about a control be settled by reference to the need that produced it.
+
+## Designing the solution
+
+**Architecture definition process.** This **generates a set of representative security views of the system architecture alternatives, to inform the selection of one or more alternatives.** Two words carry the load. **Alternatives**, plural: architecture definition produces options to be chosen between, not a single design to be ratified - and security views of each option are what make the security consequences of the choice visible while it is still a choice. **Views**: an architecture is examined from several perspectives, and the security view is one of them, sitting alongside the performance view, the deployment view, and the rest.
+
+**Design definition process.** This **provides security-related data and information about the system and its elements, to enable implementation consistent with the security architectural entities and constraints defined in the models and views of the system architecture.** Design is where architecture becomes buildable. The phrase *consistent with the architectural entities and constraints* names the failure this process prevents: a design that quietly departs from the architecture leaves the security properties the architecture was chosen for unimplemented, while every document still says they are present.
+
+**System analysis process.** This **provides a security view to system analyses, and contributes specific system security analyses, to provide essential data and information for the technical understanding of the security aspects of decision-making.** It is the process that supplies evidence to decisions - the modelling, the trade studies, the analysis of what an alternative actually costs in security terms. Its output is not a design but an informed choice.
+
+| Process | The question it answers | The security artefact it produces |
+| --- | --- | --- |
+| Business and mission analysis | Why does this system exist, and what would losing its assets cost? | Asset loss consequences |
+| Stakeholder needs and requirements | What do stakeholders need it to protect, and under what constraints? | Protection capability, characteristics, constraints |
+| System requirements definition | What must the system technically do and be? | Technical security requirements |
+| Architecture definition | Which structural alternative should we choose? | Security views of each alternative |
+| Design definition | How is the chosen architecture built, exactly? | Security-related design data, consistent with architecture |
+| System analysis | What does the evidence say about this decision? | Specific system security analyses |
+
+## Why the order matters
+
+Each process consumes the last one's output, so a project that skips one does not save its cost - it defers it. Requirements written without mission analysis have no consequence model behind them, so nobody can say how much protection is enough. Architecture chosen without security views selects for other qualities and inherits whatever security follows. Design that drifts from architecture silently removes properties the architecture was selected for. The expense of security late in a project is not a law of nature; it is the accumulated cost of decisions made without the security view at the moment each was open.`
+    },
+    {
+      id: '4-technical-2',
+      title: `4. Technical Processes II: Building and Proving`,
+      content: `## Realisation
+
+**Implementation process.** This **realises - implements, builds - the security aspects of all system elements.** The framing repays attention: implementation is not "the build phase during which security is applied", it is the process in which the security aspects *of every element* are realised. Security is an attribute of each element rather than a component added among them.
+
+**Integration process.** This **addresses the security aspects in the assembly of a set of system elements, such that the realised system achieves the protection capability in a trustworthy manner, as specified by the system security requirements and in accordance with the system architecture and system design.** Integration earns its own process because assembling secure elements does not automatically produce a secure system. Interfaces are where assumptions meet: each element trusts something about its neighbours, and where two elements' assumptions differ, the gap is a vulnerability that exists in neither element alone. That is why the definition insists the *realised system* achieve the protection capability - not merely that its parts do.
+
+## Proof
+
+Two processes produce evidence, and the difference between them is one of Domain 3's cleanest and most-tested discriminations.
+
+![Built it right, or built the right thing?](/courses/cissp/figures/cissp-verify-vs-validate.svg)
+
+**Verification process.** This **produces evidence sufficient to demonstrate that the system satisfies its security requirements and security characteristics, with the level of assurance that applies to the system.** Verification measures the system against its *specification*. Its question is: did we build it right?
+
+**Validation process.** This **provides evidence sufficient to demonstrate that the system, while in use, fulfils its business or mission objectives, while being able to provide adequate protection of stakeholder and business or mission assets; minimise or contain asset loss and associated consequences; and achieve its intended use in its intended operational environment with the desired level of trustworthiness.** Validation measures the system against the *need*. Its question is: did we build the right thing?
+
+The phrase **while in use** is the practical tell that separates them on an exam. Verification can be performed in a laboratory against a document; validation requires the real environment and the real mission, because the thing being tested is whether the system as built and deployed actually achieves what it was for.
+
+| | Verification | Validation |
+| --- | --- | --- |
+| Measured against | The security requirements and characteristics | The business or mission objectives |
+| Question asked | Did we build it right? | Did we build the right thing? |
+| Setting | The specification; test environments | In use, in the intended operational environment |
+| Also demonstrates | The level of assurance that applies to the system | Adequate asset protection; contained loss consequences; desired trustworthiness |
+| The failure it catches | The build departed from the specification | The specification departed from the need |
+
+## The failure between them
+
+A system can pass verification completely and fail validation entirely. Every requirement is met, every test is green - and the requirements were wrong, or the environment differs from what was assumed, or the protection is technically present and operationally unusable so people work around it. This is why validation is a separate process rather than a final verification pass, and why the CISSP treats it as an assurance activity rather than a project formality. The evidence a security programme owes its stakeholders is not only *we built what we said* but *what we built protects what matters, in the place it actually runs*.`
+    },
+    {
+      id: '5-technical-3',
+      title: `5. Technical Processes III: Transition, Operation, Maintenance, Disposal`,
+      content: `## Handing it over
+
+**Transition process.** This **establishes a capability to preserve the system security characteristics during all aspects of an orderly and planned transition of the system into operational status.** The word doing the work is **preserve**. Transition is where hard-won security properties are most easily lost - not by attack, but by the ordinary friction of going live: temporary credentials created for migration and never removed, controls disabled to get the cutover finished, test data left in production, monitoring not yet connected while the system is already serving. The process exists so that the security characteristics verified before go-live are the ones present after it.
+
+## Living with it
+
+**Operation process.** This **establishes the requirements and constraints to enable the secure operation of the system in a manner consistent with its intended uses, in its intended operational environment, and for all system modes of operation.** Note the last clause. **All modes of operation** includes degraded mode, maintenance mode, recovery mode, and every other state the system can enter - and those non-normal modes are where security assumptions most often lapse, because they are designed for getting the system working rather than for keeping it trustworthy while it does. An exam stem describing a control that is bypassed during failover is testing exactly this clause.
+
+**Maintenance process.** This **establishes the requirements and constraints to enable maintenance elements to sustain delivery of the specified system security services, and provides engineering support to maintenance elements.** Two obligations, and the second is easy to skip: maintenance must *sustain the security services*, not merely keep the system running, and the engineering function owes maintenance the support to do so. A patch that restores function while disabling a control has maintained the system and abandoned its security services.
+
+## Ending it
+
+**Disposal process.** This **provides for the security aspects of ending the existence of a system element or system for a specified intended use. It accounts for the methods and techniques used to securely handle, transport, package, store, or destroy retired elements - to include the data and information associated with the system or contained in system elements.**
+
+Read that definition next to Domain 2 and the two domains lock together. Asset security established that media must be handled, stored, and destroyed according to classification, that destruction must be defensible, and that remanence determines what destruction must actually achieve. Systems security engineering makes those obligations an *engineering process* with requirements, planned before the system exists, and applied to system elements as well as to data. The two views are complementary: Domain 2 says what the outcome must be; Domain 3 says whose process delivers it and when it is planned.
+
+| Process | The security duty it carries | The failure it exists to prevent |
+| --- | --- | --- |
+| **Transition** | Preserve security characteristics into operational status | Go-live erodes what verification proved |
+| **Operation** | Secure operation in intended use, environment, and *all modes* | Controls that hold in normal mode and lapse in degraded mode |
+| **Maintenance** | Sustain delivery of specified security services | Fixes that restore function and remove protection |
+| **Disposal** | Secure handling, transport, packaging, storage, or destruction of retired elements and their data | Retired hardware and data leaving with their contents intact |
+
+## The lifecycle argument, once more
+
+Notice that the technical processes have now travelled the same arc Domain 2 travelled for assets: something is conceived, built, used, maintained, and ended, with protection required at every step and specific obligations attaching to the last one. The repetition is not accidental. The CBK keeps returning to lifecycles because the commonest structural failure in security is treating protection as a state achieved once rather than a property maintained across time - and every domain has its own version of that failure to warn against.`
+    },
+    {
+      id: '6-other-groups',
+      title: `6. Technical Management, Enabling, and Agreement Processes`,
+      content: `## Technical management: running the project securely
+
+Eight processes govern the project rather than the product, each with the security perspective applied.
+
+**Project planning** **produces and coordinates the security aspects of project plans, develops the security scope of the technical and management activities, and identifies security planning outputs, tasks, deliverables, achievement criteria, and the resources needed to accomplish security tasks.** The phrase *resources needed* is where security work either gets funded or does not; unplanned security is unresourced security.
+
+**Project assessment and control** **evaluates the progress and achievements of the security aspects of project plans, and communicates the need for specific management action to resolve any identified variances that could affect the overall ability of the project to satisfy security technical objectives.** It is the process that notices security slipping while there is still time to act.
+
+**Decision management** **identifies, analyses, characterises, and evaluates a set of security-based and security-informed alternatives for a decision, and recommends the most beneficial course of security-based or security-informed action.** Note the two adjectives: some decisions are *security-based* (taken for security reasons) and others *security-informed* (taken for other reasons, with security consequences understood).
+
+**Risk management** **identifies, analyses, treats, and monitors security risks for all identified contexts within the risk profile** - Domain 1's cycle, running inside the engineering project.
+
+**Configuration management** **ensures that security considerations are addressed in the management and control of system elements, configurations, and associated data and information over the system lifecycle.** This is the process that keeps the built system matching the designed one over years of change.
+
+**Information management** **ensures that all stakeholder protection needs and all associated security considerations, constraints, and concerns are adequately addressed by the information management process.**
+
+**Measurement** **collects, analyses, and reports security-relevant data and information to support effective management and to demonstrate the quality of the products, services, and processes.**
+
+**Quality assurance** **conducts proactive security quality assurance analyses throughout the project, to ensure the effective application of the security aspects of the quality management process and to provide a level of confidence that the product or service delivered will be of the desired security quality.** The word **proactive** and the phrase **throughout the project** together rule out the QA-as-final-gate model that this module's whole architecture is arguing against.
+
+## Enabling processes: what the organisation must provide
+
+Six processes sit at the organisation level, supplying what projects cannot create for themselves.
+
+| Enabling process | What it ensures |
+| --- | --- |
+| **Lifecycle model management** | Identifies and assesses security needs for lifecycle policies, procedures, processes, and models capable of being applied with proven methods and tools to achieve assurance and trustworthiness objectives |
+| **Infrastructure management** | The infrastructure and services supporting organisational and project objectives are adequate to address protection needs, considerations, and concerns |
+| **Portfolio management** | Security considerations are a factor in managing the portfolio of projects, and are used in assessing whether projects justify continued investment |
+| **Human resources management** | Defines security criteria for the qualification, assessment, selection, and ongoing training of skilled personnel qualified to perform the security aspects of lifecycle processes |
+| **Quality management** | Defines security quality objectives and the criteria for determining that they are met |
+| **Knowledge management** | Identifies, obtains, maintains, and manages the security knowledge and skills needed to exploit opportunities and reapply existing security knowledge |
+
+Two of these repay a second look. **Portfolio management** puts security into the *investment* decision - whether a project continues at all - which is the highest-leverage point security ever reaches in an organisation, and the one security functions most rarely occupy. And **human resources management** here is not Domain 1's personnel security; it is the supply of *qualified security engineering capability*, without which every process above is a document describing work nobody present can perform.
+
+## Agreement processes: crossing the organisational boundary
+
+Two processes govern what happens when the system involves another party.
+
+**Acquisition process** **ensures that the acquirer's protection needs and security concerns are addressed by the acquirer's requirements used to obtain a product or service.** **Supply process** **ensures that a product or service provided to an acquirer provides the security functions and services, while meeting all security concerns and constraints expressed by the acquirer's requirements.**
+
+They are the same boundary seen from each side, and reading them together produces the practical lesson: **the acquirer's security requirements are the only mechanism by which the supplier's obligations come into existence.** A protection need that never made it into the acquisition requirements cannot be enforced against a supplier afterwards, however reasonable it was. This is the engineering-process expression of the accountability principle Domain 2 established - the controller stays accountable for what a processor does, so the requirements the controller writes are how that accountability is discharged in advance rather than litigated afterwards.`
+    },
+    {
+      id: '7-principles',
+      title: `7. The Secure Design Principles`,
+      content: `## Principles beside processes
+
+The processes above say *when* security thinking happens. Secure design principles say *what makes a design sound* when that thinking is applied. The exam outline names a set of them under this module, and the domain develops several in later modules - reference monitor properties and least privilege with the system capabilities, abstraction and layering with architectural vulnerabilities, and separation of duties within the security models. Gathering them here gives the module its design vocabulary in one place.
+
+![The design principles named under this module](/courses/cissp/figures/cissp-secure-design-principles.svg)
+
+## The principles, and what each rules out
+
+**Least privilege.** A subject receives only the access its task requires, and only for as long as it requires it. The principle is about *blast radius*: every excess permission is a component of the damage some future compromise will do. Its practical enemies are standing administrative access and roles that accrete permissions across years without ever losing one.
+
+**Defence in depth.** Protection is layered, so that a single failure is not the failure. The principle acknowledges something the rest of security engineering can obscure: controls fail, are misconfigured, and are bypassed, and a design that assumes any one control holds has assumed away the case it exists for.
+
+**Secure defaults.** The system is safe as delivered, and insecurity requires a deliberate act. This principle does more work than any other in large estates, because defaults are what most instances actually run: a safe default protects every deployment nobody had time to harden, while an unsafe one silently distributes exposure at the speed of adoption.
+
+**Fail securely.** When a control fails or an error occurs, the system denies rather than permits. The failure this rules out is the one nobody tests for: an authorisation check that throws an exception and is caught by a handler that proceeds, a certificate validation that returns an error the caller ignores. Note the honest tension with availability - fail-secure and fail-safe can point in opposite directions when human safety is involved, and which one applies is decided by the consequence of each failure, not by preference.
+
+**Separation of duties.** No single person can complete a sensitive act alone. The principle attacks both fraud and error, and the domain returns to it in the security models, where it appears as an enforceable property rather than an administrative arrangement.
+
+**Keep it simple.** Complexity is where flaws hide. A design small enough to be understood completely can be reviewed completely; one that is not must be trusted in parts, and the parts nobody understands are the parts nobody has checked. This is the classical economy-of-mechanism argument, and it is the reason a smaller trusted computing base is a stronger one.
+
+**Zero trust.** Trust is not conferred by network location; every request is verified. The principle displaces the perimeter model in which anything inside is trusted - a model whose failure mode is total, since one foothold inherits the trust of the whole interior.
+
+**Privacy by design.** Privacy protection is a property of the design rather than a control added to a finished system. Domain 2's collection limitation is this principle's sharpest instance: the field never collected needs no protection, no retention rule, and no deletion process.
+
+**Trust but verify.** Trust is granted where it must be, and then checked independently. It is the principle behind logging privileged action, reviewing access grants, and auditing suppliers whose assurances the organisation nonetheless relies on.
+
+**Shared responsibility.** In a service relationship - cloud most obviously - some of the protection is the provider's and some is the customer's, and the boundary depends on the service model. The principle's failure mode is assumption in either direction: customers who believe the provider secures what it does not, and providers blamed for what the customer configured.
+
+| Principle | The design question it forces | The failure it prevents |
+| --- | --- | --- |
+| Least privilege | Does this subject need this access, now? | Compromise inheriting more than it needed |
+| Defence in depth | What happens when this control fails? | One failure becoming the whole failure |
+| Secure defaults | Is it safe before anyone configures it? | Exposure distributed at the speed of adoption |
+| Fail securely | What does an error permit? | Errors that open rather than close |
+| Separation of duties | Can one person complete this alone? | Fraud and unchecked error |
+| Keep it simple | Can this be reviewed completely? | Flaws hidden in complexity |
+| Zero trust | Why is this request trusted? | A foothold inheriting interior trust |
+| Privacy by design | Is the data needed at all? | Privacy bolted on after the architecture is fixed |
+| Trust but verify | How would we know if this trust were misplaced? | Assurances nobody ever checks |
+| Shared responsibility | Which part is ours? | Gaps at the boundary both parties assumed the other covered |
+
+## Principles are not controls
+
+One caution before the worked examples. A principle is not a control and cannot be implemented directly - there is no "least privilege" you can switch on. Principles are the criteria by which a design is judged sound, and they are applied *through* the processes of this module: they shape the security-driven constraints in requirements, the security views compared during architecture definition, and the analyses that inform decisions. A design review that cites principles has said something meaningful about the design; a control list that cites them has usually just relabelled its contents.`
+    },
+    {
+      id: '8-worked',
+      title: `8. Worked Examples`,
+      content: `## Worked Example 1: Security arrives at the test gate
+
+*An organisation's security team is engaged when systems reach pre-production testing. It routinely finds architectural problems that cannot be fixed without redesign, and is regarded by delivery teams as an obstacle.* The diagnosis is structural, and this module names it exactly: security is being applied at verification when the framework applies it from **business and mission analysis** onward - the first technical process, which already ascertains asset loss consequences. Everything the team finds late was decided in requirements, architecture definition, or design definition, each of which has a defined security view the team was absent from. The remedy is not more testing but participation in the processes where the decisions are open, plus the technical management processes that make that participation resourced: project planning identifies the resources for security tasks, and project assessment and control catches variance while action is still possible.
+
+## Worked Example 2: Verified, and wrong
+
+*A payments component passes every security test in its specification. Six months after go-live, an assessment finds that the system's actual deployment places it in a network segment its threat model never contemplated, and that its assumptions about caller authentication do not hold there.* This is the verification-validation gap. Verification demonstrated the system **satisfies its security requirements** - and it did. Validation asks whether the system **while in use** fulfils its mission objectives with adequate asset protection **in its intended operational environment**, and that question was never asked, or was asked against an assumed environment rather than the real one. The corrective action is a validation activity in the deployed environment, and the systemic fix is to treat validation as a distinct process with its own evidence rather than as the last verification pass.
+
+## Worked Example 3: The cutover that undid the design
+
+*A system verified as requiring multi-factor authentication for administrative access goes live. To meet the migration window, the team creates shared local accounts with password-only access and plans to remove them afterwards. Nine months later the accounts remain.* The **transition process** exists precisely to **preserve the system security characteristics during all aspects of an orderly and planned transition into operational status** - and it was not run as a process, it was improvised under schedule pressure. The lesson generalises: security properties are lost at transitions far more often than they are defeated by attackers, because a transition is when everyone's attention is on getting the system working. Planning transition as a process with its own security requirements is what converts "we will clean this up later" from an intention into a deliverable with an owner.
+
+## Worked Example 4: The requirement that was never acquired
+
+*An organisation procures a managed service. After a breach at the supplier, it emerges that the supplier held no obligation to encrypt data at rest, because the requirement appeared in an internal architecture document but not in the acquisition requirements.* The **acquisition process** ensures the acquirer's protection needs and security concerns are addressed **by the acquirer's requirements used to obtain the product or service**, and the **supply process** obliges the supplier to meet the security concerns and constraints **expressed by the acquirer's requirements**. A protection need that never entered the acquisition requirements created no supplier obligation. Note how this compounds with Domain 2: the organisation remains accountable as controller regardless, so the requirement it failed to write is a gap in its own accountability, not merely in a contract.
+
+## Worked Example 5: Degraded mode, undefended
+
+*A system enforces authorisation through a central service. During a failover exercise, the team discovers that when the service is unreachable, the application permits requests rather than denying them - so the system stays available while its authorisation control is absent.* Two ideas from this module meet. The **operation process** establishes requirements and constraints for secure operation **for all system modes of operation**, so degraded mode required its own security requirements and evidently had none. And **fail securely** names what those requirements should have said: on failure of the control, deny. The design decision that produced the behaviour was almost certainly deliberate - availability was preferred - which is exactly why it needed to be made explicitly, with the asset loss consequence from mission analysis in view, rather than by an exception handler's default.
+
+## Worked Example 6: The old maturity model
+
+*A security manager proposes adopting a comprehensive security-specific process model in parallel with the engineering organisation's existing lifecycle. Engineering objects that they will not run two lifecycles.* The module supplies both the historical precedent and the answer. Earlier models such as the SSE-CMM were **valuable resources** that **did not directly map to systems engineering processes**, and the mismatch **limited their adoption in many industries** - engineering's objection here is the same one that limited adoption then. The current direction converges security engineering as a **specialty discipline under traditional systems engineering processes**, so the productive proposal is to bring the security perspective into each existing process rather than to run a parallel one. That is not a compromise on rigour; per this module, **all systems engineering processes are applicable to systems security engineering** already.`
+    },
+    {
+      id: '9-selfcheck',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+**Q1.** Why did earlier security-specific engineering models such as the SSE-CMM see limited adoption, and what is the current direction instead?
+
+**Q2.** State the sentence that summarises how systems engineering processes relate to systems security engineering.
+
+**Q3.** Name the four source documents this module cites, and say what SP 800-160 does with the ISO, IEC, and IEEE standards.
+
+**Q4.** What differentiates systems security engineering from traditional systems engineering?
+
+**Q5.** Which technical process first raises a security concern, and what specifically does it ascertain?
+
+**Q6.** Distinguish the three kinds of stakeholder security requirement this module names.
+
+**Q7.** Distinguish verification from validation, and give the phrase in validation's definition that separates them.
+
+**Q8.** What does the transition process exist to do, and why is that stage risky?
+
+**Q9.** Name the four process groups and the number of processes in each.
+
+**Q10.** What does the acquisition process establish, and what follows if a protection need is omitted from it?
+
+**Q11.** State four secure design principles and the failure each prevents.
+
+**Q12.** Why is a principle not a control?
+
+## Answers
+
+**A1.** They provided systems-security-specific processes that did not directly map to systems engineering processes, making them difficult to relate to standard engineering and software design processes - which limited adoption in many industries. The current direction converges systems security engineering as a specialty engineering discipline under traditional systems engineering processes, recognised as such by both INCOSE and NIST.
+
+**A2.** All systems engineering processes are applicable to systems security engineering, and are applied with a systems security perspective.
+
+**A3.** The INCOSE Systems Engineering Handbook; NIST SP 800-160, System Security Engineering; the ISO/IEC 15026 series; and ISO/IEC/IEEE 15288. SP 800-160 starts with and builds upon those well-established international systems and software engineering standards and infuses systems security engineering techniques, methods, and practices into those activities - it adds a security perspective to an existing framework rather than inventing a separate one.
+
+**A4.** Systems security engineering focuses on supporting the confidentiality, integrity, and availability needs of the system rather than on its functional requirements. The CIA triad is a prime governing factor for all systems security engineering activities.
+
+**A5.** The business and mission analysis process. It helps the engineering team understand the scope, basis, and drivers of the business or mission problems or opportunities, and ascertains the **asset loss consequences** that present security and protection issues associated with them - so security is present before any requirement is written.
+
+**A6.** Protection capability - something the system must be able to do; security characteristics - properties it must have; and security-driven constraints - limits on what it may do or how it may be built. Constraints are the most frequently omitted and the most expensive to retrofit.
+
+**A7.** Verification produces evidence that the system satisfies its security requirements and characteristics with the applicable level of assurance - did we build it right? Validation provides evidence that the system **while in use** fulfils its business or mission objectives with adequate asset protection, contained loss consequences, and the desired trustworthiness in its intended operational environment - did we build the right thing? The separating phrase is *while in use*.
+
+**A8.** It establishes a capability to preserve the system's security characteristics during all aspects of an orderly and planned transition into operational status. The stage is risky because security properties are commonly lost to the ordinary friction of going live - temporary credentials, disabled controls, unconnected monitoring - rather than to attack, and everyone's attention at that moment is on making the system work.
+
+**A9.** Technical processes (14), technical management processes (8), enabling processes (6), and agreement processes (2).
+
+**A10.** It ensures the acquirer's protection needs and security concerns are addressed by the acquirer's requirements used to obtain the product or service; the supply process obliges the supplier to meet the security concerns and constraints expressed by those requirements. A protection need omitted from the acquisition requirements creates no supplier obligation and cannot be enforced afterwards - and since accountability remains with the acquiring organisation, the omission is a gap in its own accountability.
+
+**A11.** Any four, for example: least privilege prevents a compromise inheriting more access than the task needed; defence in depth prevents one control's failure becoming the whole failure; secure defaults prevent exposure being distributed at the speed of adoption; fail securely prevents errors that permit rather than deny; keep it simple prevents flaws hiding in complexity that cannot be fully reviewed; shared responsibility prevents gaps at a service boundary each party assumed the other covered.
+
+**A12.** Because a principle cannot be implemented directly - there is no switch for least privilege. Principles are criteria by which a design is judged sound, applied through this module's processes: they shape security-driven constraints in requirements, the security views compared during architecture definition, and the analyses that inform decisions. A control list that cites principles has usually relabelled its contents rather than applied them.`
+    }
+  ]
 },
 cissp_models: {
   topicId: 'cissp_models',
   title: `Fundamental Concepts of Security Models`,
   domainWeight: '13%',
-  overview: `A security policy says what must be true. A security model says how a machine can be made to enforce it, in terms precise enough to reason about. That gap is the whole subject. Domain 3 questions rarely ask you to recite Bell-LaPadula; they describe an organisation with a problem and ask which model, criterion, or framework addresses it. Answering well means knowing what each construct was invented to solve, what it deliberately ignores, and which layer of the enterprise it belongs to. This chapter builds the reference-monitor foundation, works through the confidentiality and integrity model pair, covers the commercial models the exam favours, then separates evaluation criteria from frameworks - three families candidates routinely blur together.`,
+  overview: `A security policy states what should be true; a security model states the rules of behaviour that make it true, precisely enough that technology can enforce them. This module covers the six models the exam names and the one sentence that decides most questions about them: which property each model protects, and in which direction its rules run. Bell-LaPadula addresses confidentiality in multilevel systems - no read up, no write down. Biba addresses integrity with levels that measure trustworthiness rather than sensitivity - no read down, no write up, and no service request up. Brewer and Nash prevents conflict of interest with rules that change as the subject acts. Clark-Wilson improves on Biba by working at the transaction level, with well-formed transactions, separation of duties, and subject-program-object bindings that remove direct access entirely. Graham-Denning and HRU descend further, to how subjects, objects, and rights come to exist at all. The module closes honestly: modern operating systems implement elements of these models, not the models themselves.`,
   sections: [
     {
-      id: '1-from-policy-to-enforcement',
-      title: `1. From Policy to Enforcement: Why Formal Models Exist`,
-      content: `## The problem a model solves
+      id: '1-why-models',
+      title: `1. What a Security Model Is For`,
+      content: `## The definition
 
-An organisation writes a policy: "classified material must not reach uncleared staff." That sentence is unambiguous to a human and useless to a kernel. A kernel does not know what "classified" means, cannot recognise "staff," and has no way to evaluate "reach." Before software can enforce a policy, someone must restate it as rules over things the machine actually manipulates - subjects, objects, and operations.
+**Security models define rules of behaviour for an information system, to enforce policies related to system security - typically involving confidentiality and/or integrity policies of the system.** More precisely, **models define allowable behaviour for one or more aspects of system operation**, and **when implemented in a system, technology enforces the rules of behaviour to ensure security goals such as confidentiality and integrity are met.**
 
-A **security model** is that restatement. It is a formal or semi-formal specification that maps a policy onto system state and state transitions, in terms precise enough that you can prove - or at least argue rigorously - that a system obeying the rules cannot enter a state the policy forbids.
+Three ideas are packed into that. A model is about **behaviour**, not mechanism - it says what interactions are permitted, not which product provides them. A model exists to **enforce a policy**, so it sits between the policy layer of Domain 1 and the technology layer of the rest of Domain 3. And a model addresses **one or more aspects** of operation rather than all of them, which is why several models exist and why choosing among them means knowing which property each protects.
 
-Three words recur throughout this domain, and the exam assumes you use them precisely.
+## Why formality is worth the trouble
 
-| Term | Definition | Typical instance |
-|---|---|---|
-| Subject | An active entity that requests access | A process running on behalf of a user |
-| Object | A passive entity containing or receiving information | A file, a record, a memory page, a device |
-| Operation | The access mode requested | read, write, execute, append, delete |
+A policy sentence such as "staff must not disclose classified information to those without clearance" is unambiguous to a person and useless to a processor. It names no subjects, no objects, no operations, and no decision procedure. A model closes that gap by fixing a vocabulary - **subjects** as the active parties, **objects** as the passive ones, and a defined set of access modes - and then stating rules over that vocabulary that a machine can evaluate on every access.
 
-The subject/object distinction is relational, not absolute. A process is a subject when it opens a file and an object when a debugger attaches to it. Exam items exploit this: if a question describes a program being modified by another program, the program under modification is the object, whatever it does when it runs.
+The payoff is that the resulting rules can be reasoned about rather than merely believed. If the rules are enforced completely, certain outcomes become impossible by construction rather than unlikely by diligence - which is a different and far stronger claim than any list of controls can make.
 
-## Policy, model, mechanism
+## What a model does not do
 
-Candidates lose marks by confusing three layers that sit above one another.
+The module is careful to bound the claim, and the bound is examinable. Of Bell-LaPadula it says: **the model does not attempt to define technical constructs or solutions - it merely identifies a high-level set of rules that, if implemented correctly, prevent the exposure or unauthorised disclosure of information in a system processing different classification levels of data.** Read *if implemented correctly* as the hinge. The model guarantees a property of the rules; a real system inherits that guarantee only to the extent that it enforces them completely, everywhere, without paths around them.
 
-| Layer | Question it answers | Example |
-|---|---|---|
-| Policy | What outcome does the organisation require? | "Salary data is visible only to HR and the employee" |
-| Model | What abstract rules produce that outcome? | A lattice with a dominance relation and no-read-up |
-| Mechanism | What component actually enforces the rules? | Kernel access checks, file permissions, a label on each page |
+| Layer | What it supplies | Example |
+| --- | --- | --- |
+| **Policy** | The organisation's intent | Classified information is disclosed only to the cleared |
+| **Model** | Rules of behaviour that enforce the intent | No read up; no write down |
+| **Mechanism** | Technology enforcing the rules | Labels, an access decision point, mandatory enforcement |
+| **Implementation** | The real system, with its imperfections | An operating system implementing *elements* of the model |
 
-Policy comes from management and is expressed in business language. A model is chosen or designed to satisfy it. Mechanisms implement the model and can be replaced without changing either layer above. When a question describes a technology change - swapping an authentication product, moving to a new operating system - and asks whether the policy must change, the answer is almost always no. Mechanisms change constantly; policy is stable by design.
+## The two things to know per model
 
-## The reference monitor
+For exam purposes, every model in this module reduces to two questions, and answering both correctly resolves nearly every stem: **which security property does it protect** - confidentiality, integrity, or something else entirely - **and what do its rules actually forbid?** The sections that follow answer both for each model, and the discriminator table at the end of Section 5 collects the answers in one place.
 
-The single most important abstraction in this domain is the **reference monitor**: a conceptual machine that mediates all access by subjects to objects. It is not a piece of code. It is a requirement, and the code that implements it is the **security kernel**.
+## Where models sit in this domain
 
-![Reference monitor mediating subject access to objects](/courses/cissp/figures/cissp-reference-monitor.svg)
+It is worth placing this module against its neighbours before the tour begins. The previous module supplied the *processes* by which a system is engineered securely; this one supplies the *rules* a design may be built to satisfy; and the modules that follow supply the *capabilities* real systems provide and the *vulnerabilities* their architectures carry. The progression is deliberate, and it explains why formal models are examined at all in a certification aimed at practitioners rather than researchers.
 
-The reference monitor concept comes with three properties, and the exam tests all three by name.
-
-| Property | Requirement | What violating it looks like |
-|---|---|---|
-| Complete mediation | Every access, without exception, is checked | A driver that reaches hardware directly, bypassing the kernel check |
-| Tamperproof | The monitor cannot be modified by subjects it governs | A user process able to patch kernel memory |
-| Verifiable | Small and simple enough to be analysed exhaustively | A monitor spread through millions of lines, impossible to prove correct |
-
-The verifiability property is why security kernels are kept deliberately small. Assurance is a function of what can be examined, and complexity is the enemy of examination. This is the same instinct behind economy of mechanism in secure design, and it is why "add another feature to the kernel" is nearly always the wrong answer.
-
-## The trusted computing base
-
-The **trusted computing base (TCB)** is the total set of hardware, firmware, and software components that enforce the security policy. It is broader than the security kernel: the kernel is the part of the TCB that implements the reference monitor, while the TCB also includes trusted processes, the hardware protections the kernel relies on, and any component whose failure would break the policy.
-
-Two consequences follow, and both appear on the exam.
-
-First, **trusted does not mean trustworthy**. A trusted component is one that is *able* to violate policy - it sits inside the boundary, so nothing stops it. Trustworthiness is the separate, evidence-based judgement that it will not. A trusted subject in Bell-LaPadula, discussed later, is precisely a subject permitted to break the rules; whether it deserves that permission is an assurance question, not a model question.
-
-Second, **the security perimeter** is the boundary between the TCB and everything else. Communication across it must go through carefully controlled interfaces - trusted paths for user interaction, well-defined system calls for programs. An interface that lets untrusted code hand arbitrary structures into the TCB is where privilege escalation lives.
-
-## Where models stop
-
-Models are abstractions, and every abstraction discards something. Bell-LaPadula says nothing about integrity. Biba says nothing about confidentiality. Neither says anything about availability, and no classical model addresses it - which is why a question asking "which model protects availability?" is testing whether you know the honest answer is none of them.
-
-Models also assume their own rules are enforced perfectly. Real systems leak through **covert channels**: paths not intended for information transfer at all. A storage channel signals by manipulating a shared resource such as disk space or a lock; a timing channel signals by modulating how long an operation takes. A model can be provably correct and the implementation still leaks, because the leak uses a channel the model never modelled.`
+The practical payoff is a habit of thought rather than a product to buy. A practitioner who has internalised these models asks better questions of any access design: which property is this protecting, are the rules complete over every path to the object, does the design rely on a subject behaving well where a rule could have made misbehaviour impossible, and what happens when a trusted component acts on an untrusted request. Those questions transfer to systems that have never heard of a lattice - which is exactly why the models survive in the curriculum long after their strict implementations became rare.`
     },
     {
-      id: '2-lattice-labels-mac',
-      title: `2. The Lattice: Labels, Clearances, and Mandatory Control`,
-      content: `## Why a lattice
+      id: '2-blp',
+      title: `2. Bell-LaPadula: Confidentiality in Multilevel Systems`,
+      content: `## Purpose and vocabulary
 
-Mandatory access control needs an ordering. If a subject holds one clearance and an object carries one classification, the system must decide whether the first is sufficient for the second, and it must do so for every possible pair - deterministically, transitively, and without human judgement at the moment of access.
+**The Bell-LaPadula model is intended to address confidentiality in a multilevel security (MLS) system.** It **defines two primary security constructs, subjects and objects: subjects are the active parties, while objects are the passive parties.** To determine what subjects may do, **they are assigned clearances that outline what modes of access - read, write - they will be allowed to use when they interact with objects.**
 
-A **lattice** provides exactly that. Formally it is a partially ordered set in which every pair of elements has a least upper bound and a greatest lower bound. Practically, it is the structure that lets a system say "Secret dominates Confidential" and also handle pairs where neither side dominates the other.
+The enforcement machinery is labelling: **the model system uses labels to keep track of clearances and classifications, and implements a set of rules to limit interactions between different types of subjects and objects.** This is the direct descendant of Domain 2's classification work - the labels a classification programme produces are exactly what a mandatory model consumes.
 
-## Labels have two parts
+![Bell-LaPadula's two properties, in the direction each runs](/courses/cissp/figures/cissp-bell-lapadula.svg)
 
-A security label is not just a level. It is a pair.
+## The two properties
 
-| Component | Nature | Example |
-|---|---|---|
-| Classification level | Hierarchical, totally ordered | Unclassified < Confidential < Secret < Top Secret |
-| Compartment set | Non-hierarchical categories | {CRYPTO}, {NUCLEAR, NATO}, {} |
+**Simple Security property: a subject cannot read or access an object of a higher classification - no read up.** The obvious rule, and the one everybody predicts: a subject cleared to a level may not reach above it.
 
-Levels answer "how sensitive?" Compartments answer "which programme?" and encode **need to know**. The distinction matters enormously: a Top Secret clearance does not grant access to a Top Secret document in a compartment the subject is not read into. Clearance handles the hierarchical dimension; need to know handles the rest.
+**Star property (\*-property): a subject can only save an object at the same or higher classification - no write down.** The less obvious rule, and the one exams test. It forbids a subject from writing to a *lower* level, which sounds restrictive until you see what it prevents: a subject with high clearance reading classified data and then writing it somewhere less protected - whether deliberately, or through a program acting on its behalf. Without a no-write-down rule, confidentiality would depend on every high-cleared subject and every process running as one behaving correctly. With it, the downgrade path is closed by the rules themselves.
 
-## The dominance relation
+Note the phrasing carefully - *same or higher*. Writing upward is permitted by the model, which produces the counter-intuitive consequence that a subject may create data it cannot then read. That is a real property of the model, not an oversight: confidentiality is preserved, even though integrity plainly is not, since a low subject can write into a high object it cannot inspect. Biba is the answer to that exposure, which is why the two models are always taught as a pair.
 
-Label A dominates label B when both conditions hold:
+## The model's acknowledged limits
 
-1. A's classification level is greater than or equal to B's level, **and**
-2. A's compartment set is a superset of B's compartment set.
+The module states two. First, **it was an early security model and does not provide a mechanism for a one-to-one mapping of individual subjects and objects** - that granularity **needs to be addressed by other models or features within a practical operating system.** Bell-LaPadula governs levels, not individuals; the need to say "this person, this file" is met elsewhere. Second, as quoted in Section 1, **the model does not attempt to define technical constructs or solutions.** It is a set of rules, and its guarantee is conditional on correct implementation. Both limits point the same way - a model is a specification of behaviour, and everything about whether a real system enjoys the model's guarantee lies in how completely that specification is enforced.
 
-Both, not either. This is the most mechanically testable idea in Domain 3, and items are written to catch candidates who check only the level.
+| | Simple Security property | Star property |
+| --- | --- | --- |
+| Concerns | Reading | Writing |
+| Rule | No read up | No write down |
+| Permits | Reading at or below the subject's level | Writing at or above the subject's level |
+| Prevents | A subject reaching data above its clearance | Data being carried downward to a lower level |
+| Intuition | Obvious | The one that is tested |
 
-| Subject label | Object label | Dominates? | Reason |
-|---|---|---|---|
-| Secret {CRYPTO} | Confidential {} | Yes | Higher level, superset of an empty set |
-| Secret {} | Confidential {CRYPTO} | No | Level is higher but CRYPTO is missing |
-| Top Secret {NATO} | Secret {NATO, NUCLEAR} | No | Level is higher but NUCLEAR is missing |
-| Secret {A, B} | Secret {A} | Yes | Equal level, superset of compartments |
-| Confidential {A} | Secret {A} | No | Level is lower |
+## Reading the lattice
 
-Rows three and two are where marks are lost. A higher clearance never compensates for a missing compartment. When neither label dominates the other - Secret {A} against Secret {B} - the pair is **incomparable**, and under a strict mandatory policy no access flows in either direction.
-
-## Mandatory versus discretionary, precisely
-
-The word **mandatory** in MAC means the rule cannot be overridden by the data owner, however senior they are. The system, acting on labels set by an administrative authority, decides. In discretionary access control the owner decides, and the system enforces whatever the owner chose.
-
-This produces the classic MAC advantage and its cost. The advantage: a user cannot leak data by accident or by being socially engineered into sharing it, and malware running with the user's privileges inherits the user's label rather than the user's generosity. The cost: administrative rigidity. Every object needs a label, every subject needs a clearance, and legitimate collaboration across compartments requires a formal process rather than a right-click.
-
-## Tranquility
-
-If labels can change while a system runs, the proofs collapse: a subject could read a document, have its clearance raised, and carry what it already knows upward - or worse, have an object's classification lowered underneath it. The **tranquility principle** governs this.
-
-| Variant | Rule | Practical reading |
-|---|---|---|
-| Strong tranquility | Labels never change during normal operation | Simple to reason about, operationally inflexible |
-| Weak tranquility | Labels may change, but never in a way that violates the policy | The realistic form; supports the high-water-mark behaviour |
-
-Under weak tranquility a process that starts at Unclassified and reads a Secret object can be raised to Secret - the label floats up to match what the process has seen. What it must never do is float back down while retaining that knowledge.`
+One structural note explains why "multilevel" recurs in the description. The labels are not merely an ordered list; they form a **lattice**, which is what allows comparison between labels that are not simple ranks - a classification level paired with a category or compartment, for instance, so that clearance at a level does not by itself confer access to every compartment at that level. What the lattice guarantees is that any two labels can be compared, and that the comparison is what the rules operate on. A practitioner meeting this in the wild sees it as "level plus need-to-know", and the model's contribution is to make that pairing decidable by machine rather than resolved by a person's judgement about who ought to see what.`
     },
     {
-      id: '3-blp-and-biba',
-      title: `3. Bell-LaPadula and Biba: The Confidentiality and Integrity Pair`,
-      content: `## Bell-LaPadula: keeping secrets from flowing down
+      id: '3-biba',
+      title: `3. Biba: Integrity, and Why It Is Not a Mirror`,
+      content: `## Purpose
 
-The Bell-LaPadula model was developed for the United States Department of Defense to formalise multilevel confidentiality. Its entire purpose is to prevent information disclosure. It has nothing to say about whether data is correct.
+**The Biba model is designed to address data integrity, and does not address data confidentiality.** Like Bell-LaPadula it is **a lattice-based model with multiple levels**, and it **defines similar but slightly different modes of access - observe, modify** - while also **describing interactions between subjects and objects.** Where it differs most obviously is its goal: **it focuses on ensuring that the integrity of information is being maintained, by preventing corruption.**
 
-Its rules are stated in terms of a subject with a clearance operating on an object with a classification.
+At its core is **a multilevel approach to integrity designed to prevent unauthorised subjects from modifying objects**, with **access controlled to ensure that objects maintain their current state of integrity as subjects interact with them.**
 
-| Rule | Formal name | Plain statement | Direction |
-|---|---|---|---|
-| No read up | Simple security property | A subject may not read an object whose label it does not dominate | Reads flow down |
-| No write down | Star (*) property | A subject may not write to an object at a lower level | Writes flow up |
-| Access matrix check | Discretionary security property | The access matrix must also permit the operation | Both |
+![The two models' rules, and why they are not simple mirrors](/courses/cissp/figures/cissp-biba-properties.svg)
 
-![Bell-LaPadula and Biba read and write rules compared](/courses/cissp/figures/cissp-bell-lapadula.svg)
+## The currency of the levels changes
 
-The no-write-down rule surprises candidates because it forbids something that feels harmless: why should a Top Secret analyst be barred from writing an Unclassified memo? Because the model cannot distinguish an analyst deliberately declassifying from a Trojan horse running under that analyst's clearance and copying Top Secret content into an Unclassified file. The rule closes the channel by refusing the direction entirely.
+This is the point most often missed, and it is the reason "Biba is BLP upside down" is a misleading shorthand. **Instead of the confidentiality levels used by Bell-LaPadula, Biba assigns integrity levels to subjects and objects depending on how trustworthy they are considered to be.** A Bell-LaPadula label answers *how damaging would disclosure be?* A Biba label answers *how much do we trust this to be correct?* Two different questions, two different orderings - and a subject can easily be high in one and low in the other.
 
-Two refinements complete the picture. The **strong star property** requires that a subject may write only at exactly its own level - closing not just downward writes but upward blind writes as well. The **trusted subject** is an explicit exception: a principal permitted to violate the star property in order to perform legitimate declassification. The moment a system needs to declassify, it needs a trusted subject, and that subject becomes part of the TCB.
+Once the currency is understood, the rule directions stop being arbitrary. If a subject reads low-integrity data and acts on it, the subject's own output becomes untrustworthy - so reading down is forbidden. If a low-integrity subject writes into a high-integrity object, it contaminates something more trusted than itself - so writing up is forbidden. Both rules protect the same thing: trustworthy data must not be polluted by less trustworthy sources.
 
-The third rule is routinely forgotten. Bell-LaPadula is not purely mandatory: the discretionary security property means the mandatory rules act as a ceiling, and the access matrix still has to grant the access. Both must permit; either can deny.
+## The three properties
 
-## Biba: keeping corruption from flowing up
+**Simple Integrity property: a subject cannot observe an object of lower integrity - no read down.**
 
-The Biba model addresses integrity, and it does so by inverting Bell-LaPadula's rules. The insight is that confidentiality and integrity have opposite dangers. Confidentiality fears high-value data flowing *down* to unauthorised readers. Integrity fears low-quality data flowing *up* into high-value records.
+**Star property: a subject cannot modify an object of higher integrity - no write up.**
 
-| Rule | Formal name | Plain statement |
-|---|---|---|
-| No read down | Simple integrity axiom | A subject may not read data of lower integrity than itself |
-| No write up | Star (*) integrity axiom | A subject may not write to an object of higher integrity |
-| No invoking up | Invocation property | A subject may not invoke a service at a higher integrity level |
+**Invocation property: a subject cannot send logical service requests to an object of higher integrity.** This third property has no Bell-LaPadula counterpart, and it closes an indirect path the first two leave open. Without it, a low-integrity subject that cannot write to a high-integrity object could simply *ask* a high-integrity service to perform the write on its behalf - contaminating the object through a trusted intermediary rather than directly. The invocation property forbids the request itself. Expect stems that describe exactly that manoeuvre.
 
-The invocation property is the rule candidates miss. Reading and writing are not the only ways to contaminate: calling a higher-integrity routine with attacker-chosen arguments lets a low-integrity subject act through a high-integrity one. Biba forbids the call itself.
+| Property | Direction | Forbids | Integrity logic |
+| --- | --- | --- | --- |
+| Simple integrity | Reading | No read down | Trusted subjects must not consume untrusted data |
+| Star property | Writing | No write up | Untrusted subjects must not contaminate trusted objects |
+| Invocation | Requesting service | No service request up | Contamination via a trusted intermediary is still contamination |
 
-Biba also defines dynamic variants. Under the **low-water-mark policy**, a subject that reads lower-integrity data has its own integrity level lowered to match, rather than being refused. This mirrors weak tranquility on the confidentiality side, and it degrades gracefully where the static rule would simply block work.
+## The pair, taken together
 
-## Holding the pair apart
-
-The exam's favourite trap is a question that describes an integrity requirement and offers Bell-LaPadula among the choices, or describes a disclosure requirement and offers Biba. The reliable technique is to identify the *harm* the scenario is trying to prevent before looking at the rules.
-
-| If the scenario fears... | The property at stake is... | The model is... |
-|---|---|---|
-| A cleared insider leaking to an uncleared reader | Confidentiality | Bell-LaPadula |
-| A junior clerk altering an audited financial record | Integrity | Biba or Clark-Wilson |
-| Untrusted input corrupting a trusted database | Integrity | Biba |
-| A Trojan copying secrets into a public file | Confidentiality | Bell-LaPadula star property |
-| A record being changed correctly but by the wrong person | Integrity plus duty separation | Clark-Wilson |
-
-A second technique is directional. Say the phrase "secrets must not flow down, corruption must not flow up." Bell-LaPadula therefore permits reading down and writing up; Biba permits reading up and writing down. If you can reconstruct the permitted directions, the forbidden ones follow.
-
-## What the pair leaves out
-
-Neither model addresses availability. Neither addresses separation of duties. Neither prevents a properly cleared, properly labelled subject from entering wrong data - Biba constrains *where* data may flow, not whether it is accurate. And both assume labels are correct, which pushes the hard problem into classification and clearance administration, outside the model entirely.
-
-That gap is exactly what the commercial models were built to fill.`
+Bell-LaPadula and Biba are complementary rather than competing: the module notes that **Biba considers the same modes of access as Bell-LaPadula but with different results**. Each protects one property and is silent on the other - Biba **does not address data confidentiality**, and Bell-LaPadula does not address integrity. A system needing both must enforce both sets of rules, over two independent lattices, which is a substantial part of why precise implementations of these models are rare outside specialised systems.`
     },
     {
-      id: '4-commercial-models',
-      title: `4. Clark-Wilson, Brewer-Nash, and the Commercial Models`,
-      content: `## Clark-Wilson: integrity for businesses, not battlefields
+      id: '4-commercial',
+      title: `4. Brewer-Nash and Clark-Wilson: The Commercial Models`,
+      content: `## Brewer and Nash: conflict of interest
 
-Clark and Wilson observed that commercial integrity requirements look nothing like military confidentiality requirements. A bank does not classify its ledger; it insists that changes to the ledger be made only by authorised people, only through approved procedures, and in ways that keep the books balanced. Their model formalises that.
+**This model focuses on preventing conflict of interest when a given subject has access to objects with sensitive information associated with two competing parties.** The principle: **users should not access the confidential information of both a client organisation and one or more of its competitors.**
 
-The vocabulary is examinable in itself.
+The mechanism is what makes it distinctive. **At the beginning, subjects may access either set of objects. Once a subject accesses an object associated with one competitor, they are instantly prevented from accessing any objects on the opposite side.** The purpose is **to prevent the subject from sharing information inappropriately between the two competitors, even unintentionally** - note *unintentionally*, which is the model conceding that the risk is not primarily malice but the ordinary impossibility of un-knowing something.
 
-| Element | Full name | Role |
-|---|---|---|
-| CDI | Constrained data item | Data whose integrity the model protects |
-| UDI | Unconstrained data item | Data outside the protection boundary, such as raw user input |
-| TP | Transformation procedure | The only thing permitted to modify a CDI |
-| IVP | Integrity verification procedure | Audits CDIs to confirm they are in a valid state |
+![Access rights that depend on what the subject has already done](/courses/cissp/figures/cissp-brewer-nash.svg)
 
-![Clark-Wilson access triple with transformation and verification procedures](/courses/cissp/figures/cissp-clark-wilson.svg)
+**It is called the Chinese Wall model because, like the Great Wall of China, once on one side of the wall a person cannot get to the other side.** And the module names precisely why it is unusual: **it is an unusual model in comparison with many of the others, because the access control rules change based on subject behaviour.** Every other model in this chapter evaluates a request against fixed labels; here, the subject's own history is an input to the decision, so two subjects with identical clearances can face different answers to the same request.
 
-The central construct is the **access triple**: subject, transformation procedure, constrained data item. A user is never granted access to data. A user is granted access to a *program*, and the program is granted access to the data. This is why the model is sometimes summarised as "no direct access," and why it maps so naturally onto stored procedures, banking applications, and enterprise resource planning systems where nobody edits the underlying tables.
+## Clark-Wilson: integrity at the transaction level
 
-Three further principles come with it.
+**Biba only addresses one of three key integrity goals. The Clark-Wilson model improves on Biba by focusing on integrity at the transaction level, and addressing three major goals of integrity in a commercial environment.**
 
-**Well-formed transactions.** Every change moves the system from one consistent state to another. Partial updates are not permitted; the transaction either completes coherently or does not happen. The IVP exists to verify that consistency independently of the TP that produced it.
+The three goals are worth naming, because the module's argument is that Biba reaches only the first. Integrity in a commercial setting requires preventing **unauthorised** subjects from making modifications - which is Biba's territory; preventing **authorised** subjects from making improper or undesirable modifications - which Biba does not address at all, since it has already decided such a subject is trusted; and maintaining **consistency**, both within the system and between the system and the world it describes. Clark-Wilson takes up the second and third, and its mechanisms map onto them directly.
 
-**Separation of duties.** No single person may execute every step of a sensitive process. The person who initiates a payment may not be the person who approves it. Clark-Wilson builds this into the model rather than leaving it to policy.
+![Subject, program, object - and the binding that removes direct access](/courses/cissp/figures/cissp-clark-wilson.svg)
 
-**Certification and enforcement rules.** Certification rules are checked by humans - somebody must certify that a given TP genuinely preserves integrity. Enforcement rules are checked by the system. The split matters: the model is explicit that some assurance can only come from human review, an idea the exam echoes wherever it distinguishes administrative from technical controls.
+**The second goal: authorised subjects making undesirable changes.** Biba stops *unauthorised* subjects from modifying objects; it says nothing about an authorised subject doing something harmful. **To address the second goal, Clark and Wilson realised they needed a way to prevent authorised subjects from making undesirable changes. This required that transactions by authorised subjects be evaluated by another party before they were committed** - which **provided separation of duties, where the powers of the authorised subject were limited by another subject given the power to evaluate and complete the transaction.** Separation of duties, which Domain 1 taught as an administrative control, appears here as a property the model enforces.
 
-## Brewer-Nash: the Chinese Wall
+**Internal consistency and well-formed transactions.** To address **internal consistency - consistency within the model system itself - Clark and Wilson recommended a strict definition of well-formed transactions. The set of steps within any transaction would need to be carefully designed and enforced, and any deviation from that expected path would result in a failure of the transaction**, so that the system's integrity is not compromised. The design intent is that there is no such thing as a partially applied change: a transaction either follows its defined path completely or does not take effect.
 
-Brewer-Nash addresses conflict of interest, and it is unusual in one respect the exam loves: **access rights change dynamically based on prior access**. Nothing else in the classical set does that.
+**The subject-program-object binding.** To control all interactions, **Clark-Wilson establishes a system of subject-program-object bindings, such that the subject no longer has direct access to the object.** Access happens **through a program with access to the object**, and that program **arbitrates all access, ensures that every interaction between subject and object follows a defined set of rules, provides for subject authentication and identification, and limits all access to objects under its control.**
 
-The scenario is a consultancy holding data for competing clients. An analyst may examine any client's data - until they look at one, at which point everything belonging to that client's competitors becomes off limits. Access is unrestricted at the start and narrows with every decision made.
+That structure is the model's most transferable idea, and it is everywhere in modern practice even where nobody cites the model: users do not edit database rows, they invoke an application that validates and applies changes; administrators do not hand-modify configuration, they run a pipeline that enforces the approved path. Each is a subject-program-object binding, chosen for exactly the reason Clark and Wilson gave.
 
-| Concept | Meaning |
-|---|---|
-| Object | An individual data item belonging to one company |
-| Company dataset | All objects belonging to a single company |
-| Conflict of interest class | The set of company datasets that compete with one another |
-
-The wall is built from history. Two subjects doing identical work may have entirely different permissions because they read different files first. Brewer-Nash is therefore the answer whenever a question describes law firms, auditors, investment banks, or consultancies with competing clients, and whenever it says access depends on what the user has previously accessed.
-
-## The model zoo
-
-Several smaller models appear as distractors, and each has a one-line identity that is enough to answer correctly.
-
-| Model | What it is known for |
-|---|---|
-| Graham-Denning | Eight primitive protection rules for creating and deleting subjects and objects and transferring rights |
-| Harrison-Ruzzo-Ullman | Extends Graham-Denning; proves the safety question is undecidable in the general case |
-| Take-Grant | Represents rights as a directed graph; four rules - take, grant, create, remove - determine what rights can propagate |
-| Non-interference | Actions at a high level must produce no observable effect at a lower level; aimed squarely at covert channels |
-| Information flow | Generalises Bell-LaPadula and Biba by reasoning about flows between objects rather than read and write operations |
-| Lattice-based access control | The general framework of which Bell-LaPadula and Biba are specific instances |
-| State machine | The general form: a system is secure if it starts in a secure state and every transition preserves security |
-
-The state machine idea deserves emphasis because it underpins the others. A **secure state machine** model defines a set of states, identifies which are secure, and requires that every permitted transition maps a secure state to another secure state. Bell-LaPadula is a state machine model with confidentiality rules; Biba is one with integrity rules. When a question asks what these models have structurally in common, this is the answer.
-
-## Mapping models to requirements
-
-| Requirement in the stem | Correct model |
-|---|---|
-| Multilevel classification with clearances | Bell-LaPadula |
-| Prevent low-integrity data reaching a trusted process | Biba |
-| Force all changes through approved programs | Clark-Wilson |
-| Enforce separation of duties inside the model | Clark-Wilson |
-| Prevent consultants seeing competitors' data | Brewer-Nash |
-| Prove no high-level action is visible below | Non-interference |
-| Analyse whether a right can ever leak | Take-Grant or Harrison-Ruzzo-Ullman |`
+| Model | Property protected | Distinctive mechanism |
+| --- | --- | --- |
+| **Bell-LaPadula** | Confidentiality | Labels and lattice; no read up, no write down |
+| **Biba** | Integrity | Integrity levels by trustworthiness; no read down, no write up, no invocation up |
+| **Brewer-Nash** | Conflict of interest | Rules change with the subject's access history |
+| **Clark-Wilson** | Integrity, at transaction level | Well-formed transactions, separation of duties, subject-program-object binding |`
     },
     {
-      id: '5-evaluation-criteria',
-      title: `5. Evaluation Criteria: TCSEC, ITSEC, and the Common Criteria`,
-      content: `## Why independent evaluation exists
+      id: '5-graham-hru',
+      title: `5. Graham-Denning, HRU, and Modern Implementations`,
+      content: `## Graham-Denning: where subjects and objects come from
 
-A vendor claiming its product is secure is making an assertion about its own work. Evaluation criteria exist so that an accredited third party can test that assertion against a published standard, and so that a buyer can compare two products on a common scale. The exam treats the three generations as a lineage.
+The models so far assume a world already populated with subjects, objects, and rights. **Graham-Denning is primarily concerned with how subjects and objects are created, how subjects are assigned rights or privileges, and how ownership of objects is managed** - in other words, **with how a model system controls subjects and objects at a very basic level, where other models simply assumed such control.**
 
-## TCSEC: the Orange Book
+Its structure: **the Graham-Denning access control model has three parts - a set of objects, a set of subjects, and a set of rights. The subjects are composed of two things, a process and a domain**, where **the domain is the set of constraints controlling how subjects may access objects.** Note two refinements. **Subjects may also be objects at specific times** - which is what allows one subject to act upon another, as when a process creates or deletes another process. That dual status is not a technicality: it is what makes the creation and deletion commands meaningful, since creating a subject means bringing into existence something that will itself hold rights, and deleting one means removing a holder of rights from the system. And **the set of rights governs how subjects may manipulate the passive objects.**
 
-The Trusted Computer System Evaluation Criteria, published by the US Department of Defense and universally called the Orange Book, was the first. It evaluates confidentiality only, on standalone systems, and bundles functionality and assurance into a single rating.
+![Eight primitive protection commands - four for existence, four for rights](/courses/cissp/figures/cissp-graham-denning.svg)
 
-| Division | Meaning | Notable classes |
-|---|---|---|
-| D | Minimal protection - evaluated and failed | D |
-| C | Discretionary protection | C1 discretionary, C2 controlled access |
-| B | Mandatory protection | B1 labelled, B2 structured, B3 security domains |
-| A | Verified protection | A1 verified design |
+**The model describes eight primitive protection rights, called commands, that subjects can execute to have an effect on other subjects or objects.** The eight basic rules govern: **secure object creation; secure object deletion; secure subject creation; secure subject deletion; secure provisioning of read access right; secure provisioning of grant access right; secure provisioning of delete access right; and secure provisioning of transfer access right.**
 
-Two classes are worth remembering specifically. **C2** requires controlled access protection with individual accountability and audit - the level commercial operating systems targeted. **B1** is where mandatory labels first appear. The letters descend in security as they ascend in the alphabet only if you read D as the floor: the ordering from weakest to strongest is D, C1, C2, B1, B2, B3, A1.
+The list divides cleanly, and the division is the easiest way to remember it: the first four are about **existence** - things and actors coming into and going out of being - and the last four are about **rights**, including the two that are themselves about rights, since *grant* and *transfer* determine who may hand out access in the future. The presence of those two is the model's real contribution: an access control scheme that cannot say who may delegate access has not described its own most dangerous operation.
 
-TCSEC's limitations drove its replacement. It addressed only confidentiality, assumed a standalone system, and could not separate "what the product does" from "how well we checked."
+## HRU: the limits of granting rights
 
-## ITSEC: separating function from assurance
+**Harrison, Ruzzo, Ullman (HRU)** is described as **very similar to the Graham-Denning model, composed of a set of generic rights and a finite set of commands.** Its additional concern: **situations in which a subject should be restricted from gaining particular privileges. To do so, subjects are prevented from accessing programs, or subroutines, that can execute a particular command - to grant read access, for example - where necessary.**
 
-The European Information Technology Security Evaluation Criteria made the crucial split. It rates **functionality** on one scale (F1 to F10) and **assurance** on another (E0 to E6), and it explicitly covers integrity and availability rather than confidentiality alone. That separation is ITSEC's contribution to the lineage and the reason the Common Criteria adopted the same structure.
+The idea underneath is privilege escalation stated formally. If a subject can invoke something that grants rights, then the subject effectively has those rights, whatever the access matrix says at this instant. Restricting access to the granting *program* is therefore part of restricting the *privilege* - the same reasoning behind Biba's invocation property, and the same reasoning behind every modern rule that treats "can modify the permission system" as equivalent to "has all permissions". The corollary for access reviews is uncomfortable and correct: a subject's effective privilege is not what its entries in the access matrix say today, but the closure of everything those entries let it reach, invoke, or grant itself - and reviewing the entries alone will systematically understate it.
 
-## The Common Criteria
+## Modern implementations: the honest closing note
 
-The Common Criteria, standardised as ISO/IEC 15408, is the current international scheme and the one most exam items concern. Its vocabulary is heavily tested.
+The module ends with a caution the exam expects candidates to share. **Most modern operating systems implement elements of the security models. They are not perfect implementations of the academic models, and focus on practical implementations that provide functionality consistent with one or more of the security models.** Further, **the access control models discussed in Domain 5 - discretionary access control, mandatory access control, and others - have operating-system-vendor-specific implementations of elements contained within the security model.** And plainly: **precise implementation of the security models has practical limitations, and is rarely employed except in very specialised systems with intentionally limited functionality.**
 
-| Term | Meaning |
-|---|---|
-| TOE | Target of Evaluation - the product or system being evaluated |
-| PP | Protection Profile - a customer's statement of security requirements for a class of product |
-| ST | Security Target - the vendor's statement of what this specific TOE does |
-| SFR | Security Functional Requirement - what the product must do |
-| SAR | Security Assurance Requirement - what evidence must be produced |
-| EAL | Evaluation Assurance Level, 1 through 7 |
+Two lessons follow. First, the trade-off is *functionality*: strict enforcement of a formal model constrains what a system can do, which is tolerable for a purpose-built classified system and intolerable for a general-purpose platform - hence "intentionally limited functionality" in the module's own phrasing. Second, when an exam stem describes a real operating system, the correct answer is usually about elements and approximations rather than pure model conformance.
 
-The relationship between PP and ST is a favourite item. A **Protection Profile is written by or for the consumer** and is implementation-independent: it says what any firewall of this class must do. A **Security Target is written by the vendor** for one product and says what that product does, often claiming conformance to a PP. Buyers compare STs against the PP that expresses their needs.
-
-![Common Criteria evaluation assurance ladder](/courses/cissp/figures/cissp-cc-eal-ladder.svg)
-
-## What EAL actually measures
-
-This is the highest-yield nuance in the whole section. **The EAL measures the depth and rigour of the evaluation, not the security of the product.** An EAL2 product with excellent security functions may be far safer in practice than an EAL5 product designed to do very little, because the EAL says only how thoroughly the claims in the Security Target were examined.
-
-Two consequences follow. First, an EAL rating is meaningless without the ST that accompanies it - "certified EAL4" tells you nothing about what was certified. Second, evaluation applies to a specific configuration; a patched or reconfigured product is strictly no longer the evaluated TOE, which is why maintaining certification requires re-evaluation.
-
-Commercial products cluster at EAL4 because that is the highest level mutually recognised among the signatories of the Common Criteria Recognition Arrangement. Above EAL4, an evaluation is recognised nationally rather than internationally, and the cost rises steeply.
-
-## Certification and accreditation
-
-Two words that sound interchangeable and are not.
-
-| Step | Who does it | What it produces |
-|---|---|---|
-| Certification | Technical evaluators | A technical assessment of how well a system meets its security requirements in a given environment |
-| Accreditation | Management, the authorising official | A formal, signed decision to accept the residual risk and operate the system |
-
-Certification is technical and produces evidence. Accreditation is managerial and produces acceptance of risk. If a question asks who signs off on operating a system, the answer is management - never the security team, never the evaluators. This maps directly onto the authorisation step of the NIST Risk Management Framework, where the Authorising Official grants an Authority to Operate.`
+| Model | Concerned with | The one-line tell |
+| --- | --- | --- |
+| Bell-LaPadula | Confidentiality in MLS | No read up, no write down |
+| Biba | Integrity by trustworthiness | No read down, no write up, no invocation up |
+| Brewer-Nash | Conflict of interest | Rules change with the subject's history; the Chinese Wall |
+| Clark-Wilson | Transaction-level integrity | Well-formed transactions; subject-program-object binding |
+| Graham-Denning | Creation, rights assignment, ownership | Eight primitive commands |
+| HRU | Restricting the gaining of privileges | Block access to the program that can grant the right |`
     },
     {
-      id: '6-frameworks',
-      title: `6. Frameworks: Governance, Management, Architecture, Operations`,
-      content: `## Frameworks are not models
+      id: '6-worked',
+      title: `6. Worked Examples`,
+      content: `## Worked Example 1: The analyst who cannot save the report
 
-A model constrains a machine. A framework organises an enterprise. The exam sets items that offer both in the same answer list, and the discriminator is scope: if the stem describes kernel behaviour or read and write rules, the answer is a model; if it describes programme structure, board reporting, or control selection, it is a framework.
+*An analyst cleared to the highest level reads classified material and attempts to save a summary into a shared workspace at a lower classification. The system refuses.* This is Bell-LaPadula's **star property** - no write down - and the refusal is the model working exactly as designed. Confidentiality would be defeated if a high-cleared subject could carry content downward, whether deliberately or through a program acting on its behalf; the rule closes the path structurally, so that no reliance is placed on the subject's judgement. The organisational answer is not to weaken the rule but to route the summary through a defined downgrade process with review - which is a governance control, deliberately outside the model's rules, precisely because deciding what may be declassified is a human judgement rather than a lattice comparison.
 
-![Framework stack from governance through operations](/courses/cissp/figures/cissp-framework-stack.svg)
+## Worked Example 2: The subject that writes what it cannot read
 
-## The governance layer
+*A stem describes a low-cleared process appending records to a high-classification log, and asks whether Bell-LaPadula permits it.* It does. The star property permits writing at the **same or higher** classification, so writing up is allowed - and the consequence is that the process can create data it cannot then read back. The follow-on question is the interesting one: is that safe? For confidentiality, yes, which is all Bell-LaPadula claims. For integrity, no - a less trusted subject is contributing to a more trusted object, which is exactly Biba's no-write-up prohibition. The pair of answers is the cleanest demonstration available that the two models protect different properties and neither is a substitute for the other.
 
-**COSO** - the Committee of Sponsoring Organizations of the Treadway Commission - is an internal control framework for the enterprise as a whole, not for IT. It was created in response to fraudulent financial reporting, and it is the framework a board or an auditor reaches for when the question is organisational integrity and reporting reliability.
+## Worked Example 3: Asking the trusted service to do it
 
-**COBIT** - Control Objectives for Information and Related Technologies, from ISACA - governs IT specifically, and it exists to align IT with business objectives. Its defining distinction, and the exam's usual test of it, is that COBIT separates **governance** (setting direction and monitoring, the board's job) from **management** (planning, building, running, monitoring, the executive's job).
+*A low-integrity process cannot modify a high-integrity configuration object directly, so it calls a privileged service and asks the service to make the change.* Biba's **invocation property** forbids this: a subject cannot send logical service requests to an object of higher integrity. The manoeuvre matters because it is the one that survives naive implementations - a system that checks writes but not requests has closed the direct route and left the indirect one open, which is how confused-deputy problems arise in practice. The generalisation worth carrying is that a trusted intermediary acting on an untrusted request transfers the trust, not the responsibility.
 
-## The management-system layer
+## Worked Example 4: The consultancy with two clients
 
-**ISO/IEC 27001** specifies the requirements for an Information Security Management System. It is the standard an organisation is *certified against*. **ISO/IEC 27002** is the accompanying code of practice - a catalogue of controls with implementation guidance. Nobody is certified against 27002; that pairing appears in items regularly.
+*A consulting firm works for two competing manufacturers. A consultant assigned to one is asked to help on an urgent matter for the other.* Brewer-Nash governs: at the outset the consultant could have taken either engagement, but **once a subject accesses an object associated with one competitor, they are instantly prevented from accessing objects on the opposite side.** The model's rationale is the honest one - the concern is not that the consultant would deliberately leak, but that inappropriate sharing can happen **even unintentionally**, because knowledge cannot be set aside on request. Note that the answer is a property of the consultant's history, not of their clearance or trustworthiness, which is what makes this model different from every other one here.
 
-**NIST Cybersecurity Framework** is voluntary and outcome-based, organised around functions that give it its recognisable shape: Govern, Identify, Protect, Detect, Respond, Recover. Version 2.0, released in 2024, added Govern as a function surrounding the other five. It is not a control catalogue; it is a way of expressing and comparing security posture.
+## Worked Example 5: Why the clerk cannot post their own entry
 
-**NIST Risk Management Framework**, defined in SP 800-37, is the process a US federal system follows to authorise operation: Prepare, Categorize, Select, Implement, Assess, Authorize, Monitor. Its control catalogue is **NIST SP 800-53**. The RMF is prescriptive and mandatory for federal systems, where the CSF is descriptive and voluntary - the cleanest way to hold the two apart.
+*A finance system requires that a payment entered by one clerk be approved by a second before it commits. A manager asks why an authorised, trusted clerk cannot simply complete the payment.* Clark-Wilson answers directly. Biba-style models prevent *unauthorised* modification; Clark-Wilson exists because **authorised subjects can make undesirable changes**, and its remedy is that **transactions by authorised subjects be evaluated by another party before they are committed**, giving **separation of duties, where the powers of the authorised subject are limited by another subject given the power to evaluate and complete the transaction.** The control is not a comment on the clerk's honesty; it is a structural property of the transaction, and it protects the clerk as much as the organisation. That last point is worth making to business stakeholders explicitly, because separation of duties is often resisted as an expression of distrust. A clerk who cannot unilaterally complete a payment also cannot be accused of having done so, and cannot be coerced into doing so by anyone outside the process. The control converts a question about an individual's integrity into a property of the transaction, which is better for everyone involved. The model's contribution is that this is not merely good practice bolted onto an application; it is a rule the system enforces, so the protection does not depend on whoever configured the workflow that week.
 
-| Framework | Type | Certifiable? | Primary audience |
-|---|---|---|---|
-| COSO | Enterprise internal control | No | Board, auditors |
-| COBIT | IT governance | No | IT executives, auditors |
-| ISO/IEC 27001 | Management system requirements | Yes | Any organisation |
-| ISO/IEC 27002 | Control code of practice | No | Implementers |
-| NIST CSF 2.0 | Outcome-based posture framework | No | Any organisation |
-| NIST RMF (SP 800-37) | Authorisation process | Authority to Operate | US federal systems |
-| SABSA | Security architecture | No | Security architects |
-| TOGAF | Enterprise architecture | Practitioner certification | Enterprise architects |
-| Zachman | Architecture taxonomy | No | Enterprise architects |
-| ITIL | Service management | Practitioner certification | Service operations |
+## Worked Example 6: The permission that grants permissions
 
-## The architecture layer
+*An access review finds a role that cannot read a sensitive dataset but can assign roles to users - including the role that can read it.* HRU frames this precisely: subjects should be restricted from **gaining particular privileges**, and the way to do it is to prevent access to **programs or subroutines that can execute a particular command**, such as granting access. Graham-Denning contributes the vocabulary, since **secure provisioning of the grant access right** and **of the transfer access right** are two of its eight primitive commands. The finding is therefore not "a role has an unrelated extra permission" - it is that the role effectively holds every permission it can grant itself, and it should be assessed at that level.
 
-**Zachman** is a taxonomy, not a process. It is a matrix crossing six interrogatives - what, how, where, who, when, why - with stakeholder perspectives from the executive's scope down to the implementer's detail. It tells you what artefacts should exist, not how to produce them.
+## Worked Example 7: The claim of model conformance
 
-**TOGAF** is a process: an enterprise architecture method with an architecture development cycle. It is general-purpose, not security-specific.
+*A vendor states that its general-purpose operating system "implements Bell-LaPadula".* Treat the claim with the module's own caution: **most modern operating systems implement elements of the security models; they are not perfect implementations of the academic models**, and **precise implementation is rarely employed except in very specialised systems with intentionally limited functionality.** The productive questions are which elements are implemented, whether enforcement is mandatory or discretionary, whether every access path is mediated, and what functionality was retained that a strict implementation would have forbidden. A system that is both general-purpose and strictly conformant is the combination the module says is rare, and a claim to it deserves evidence rather than acceptance.
 
-**SABSA** is the security-specific one, and its structure deliberately mirrors Zachman's six questions across six layers, from contextual through conceptual, logical, physical, component, and operational. Its defining claim is that security architecture must be **traceable to business requirements** - every control should be justifiable by pointing at the business driver it serves.
+## What survives into practice
 
-## The operations layer
-
-**ITIL** governs IT service management: incident, problem, change, and configuration management among others. Two distinctions from it appear in security items. An **incident** is an unplanned interruption or reduction in quality; a **problem** is the underlying cause of one or more incidents. Incident management restores service; problem management removes the cause. Security incident response borrows this vocabulary directly.
-
-## Choosing between them
-
-The exam does not usually ask which framework is best. It describes a need and asks which fits.
-
-| The organisation needs to... | Reach for |
-|---|---|
-| Demonstrate certified security management to customers | ISO/IEC 27001 |
-| Pick a starting control set and describe posture to a board | NIST CSF 2.0 |
-| Authorise a US federal system to operate | NIST RMF with SP 800-53 |
-| Align IT decisions with business objectives and audit them | COBIT |
-| Address enterprise-wide internal control and reporting fraud | COSO |
-| Trace every security control back to a business driver | SABSA |
-| Structure enterprise architecture artefacts | Zachman or TOGAF |
-| Improve day-to-day service and change management | ITIL |`
+None of this makes the models academic curiosities. Their *ideas* are load-bearing in systems that implement none of them formally: mandatory labelling survives in modern operating-system enforcement frameworks; no-write-down survives wherever data is prevented from moving to a lower-trust zone; Biba's logic survives in every pipeline that refuses to consume unvalidated input into a trusted stage; Clark-Wilson's binding survives in every application that stands between users and storage; and Brewer-Nash's history-dependent rules survive in ethical-wall implementations across professional services. The models are how the field learned to state these ideas precisely, which is why the exam expects them by name.`
     },
     {
-      id: '7-worked-examples',
-      title: `7. Worked Examples`,
-      content: `## Worked example 1: applying dominance
-
-A subject holds the clearance **Secret {ALPHA}**. It requests read access to four objects. Under Bell-LaPadula, which reads are permitted?
-
-| Object | Label | Permitted? | Reasoning |
-|---|---|---|---|
-| Report A | Confidential {} | Yes | Secret exceeds Confidential; the empty set is a subset of {ALPHA} |
-| Report B | Secret {ALPHA} | Yes | Equal level, equal compartments - dominance includes equality |
-| Report C | Secret {BETA} | No | Level is adequate but BETA is not held; labels are incomparable |
-| Report D | Top Secret {} | No | The object's level exceeds the subject's clearance |
-
-Report C is the instructive case. The subject's clearance is high enough. The refusal comes entirely from need to know, which is what the compartment set encodes. Note also that the discretionary security property still applies: even where the mandatory rules permit the read, the access matrix must independently allow it.
-
-Now consider writes by the same subject. Bell-LaPadula permits writing up, so a write to Top Secret {ALPHA} is allowed under the basic star property - which is why the strong star property exists. Under the strong star property, this subject may write only at Secret {ALPHA}, its own exact label, because a blind upward write is itself an integrity problem even when it is not a confidentiality one.
-
-## Worked example 2: identifying the right model
-
-*A pharmaceutical company runs a clinical trials database. Research assistants must not be able to alter validated trial results, and the system must ensure that any change to a result is made only through the validated statistical pipeline, with the person entering data different from the person approving it. Which model applies?*
-
-Work the stem in three passes.
-
-**Pass one - what harm is feared?** Not disclosure. The fear is that results become wrong. That is integrity, which eliminates Bell-LaPadula immediately.
-
-**Pass two - what kind of integrity?** Two clues rule out plain Biba. First, "only through the validated statistical pipeline" describes forcing changes through an approved program - the access triple. Second, "the person entering data different from the person approving it" is separation of duties, which Biba does not model at all.
-
-**Pass three - confirm.** Clark-Wilson covers both: the pipeline is the transformation procedure, the trial results are constrained data items, raw submissions are unconstrained data items until a TP promotes them, and separation of duties is one of its enforcement rules. **Clark-Wilson is the answer.**
-
-Had the stem instead said "readings from an untrusted sensor must not be able to corrupt the trusted control process," with no mention of approved procedures or duty separation, plain **Biba** would be correct.
-
-## Worked example 3: reading a Common Criteria claim
-
-*A vendor advertises a firewall as "Common Criteria certified, EAL4+." A procurement officer asks whether this proves the firewall is more secure than a competitor's EAL2 product. What should you say?*
-
-The honest answer is that it proves nothing of the kind, for three reasons.
-
-First, **EAL measures evaluation rigour, not security**. EAL4 means the design was methodically designed, tested, and reviewed. It says the vendor's claims were examined at that depth - not that the claims were ambitious.
-
-Second, **the claim is meaningless without the Security Target**. The ST states what was evaluated. An EAL4 evaluation of a narrow ST may cover less security functionality than an EAL2 evaluation of a broad one. Ask for both STs and compare them against a Protection Profile expressing your actual requirements.
-
-Third, **the certification applies to a specific configuration and version**. If the product has been patched since evaluation, or will be deployed in a configuration outside the evaluated one, the certificate does not describe what you are buying.
-
-The correct procurement move is to obtain or write a Protection Profile for the requirement, then evaluate each vendor's ST against it - using EAL as a measure of how much confidence to place in each ST, not as a score.
-
-## Worked example 4: separating framework from model
-
-*An organisation must show customers that its information security programme is independently verified, select an appropriate control set, and report posture to its board in language executives understand. Name the constructs.*
-
-Three different needs, three different layers, and none of them is a security model.
-
-- Independent verification of the programme: **ISO/IEC 27001**, because it is the certifiable management-system standard. Controls come from its Annex and from **ISO/IEC 27002** guidance.
-- Board-level posture reporting: **NIST CSF 2.0**, whose Govern, Identify, Protect, Detect, Respond, Recover structure is designed to be communicated to non-specialists.
-- If the organisation also wants every control traceable to a business driver, add **SABSA** at the architecture layer.
-
-A candidate who answers "Bell-LaPadula" or "Clark-Wilson" here has matched the word "model" rather than the requirement. Nothing in the stem concerns how a kernel mediates access.`
-    },
-    {
-      id: '8-self-check',
-      title: `8. Self-Check`,
+      id: '7-selfcheck',
+      title: `7. Self-Check`,
       content: `## Self-Check Questions
 
-1. A subject cleared **Top Secret {NATO}** requests read access to an object labelled **Secret {NATO, CRYPTO}**. Under Bell-LaPadula, is the access permitted, and why?
+**Q1.** Define a security model, and say what it is for.
 
-2. Which reference monitor property is violated when a device driver writes directly to hardware without passing through the kernel's access check?
+**Q2.** State Bell-LaPadula's two properties in both formal and shorthand terms, and say which security property the model addresses.
 
-3. State the three Biba rules and explain why the invocation property is needed in addition to the read and write rules.
+**Q3.** Bell-LaPadula permits a subject to write at the same or higher classification. What odd consequence follows, and which model addresses the resulting exposure?
 
-4. What is the difference between a Protection Profile and a Security Target, and which one does a customer write?
+**Q4.** What two limitations does the module state about Bell-LaPadula?
 
-5. An analyst at a consultancy reads a file belonging to Client A. Immediately afterwards, files belonging to Client B - a direct competitor - become inaccessible to that analyst. Which model is in force, and what makes it unusual?
+**Q5.** What do Biba's levels measure, and why does that make "Biba is BLP reversed" a misleading shorthand?
 
-6. Distinguish certification from accreditation, and state who performs each.
+**Q6.** State Biba's three properties, and explain what the third one prevents that the first two do not.
 
-7. Why is "trusted" not a synonym for "trustworthy" when describing a component of the TCB?
+**Q7.** What is Brewer-Nash for, and what makes it unusual among the models here?
 
-8. An organisation needs to authorise a US federal information system to operate. Which framework applies, which document catalogues its controls, and what is the authorisation decision called?
+**Q8.** Which integrity goal does Clark-Wilson address that Biba does not, and by what mechanism?
+
+**Q9.** What is a well-formed transaction, and what happens on deviation?
+
+**Q10.** Describe the subject-program-object binding and what the program is responsible for.
+
+**Q11.** What does Graham-Denning model that the others assume, and what are its eight commands about?
+
+**Q12.** What is HRU's additional concern, and how does it address it?
+
+**Q13.** What does the module say about how modern operating systems relate to these models?
+
+**Q14.** Name the three integrity goals of a commercial environment, and say which Biba reaches.
+
+**Q15.** Why does the module describe Bell-LaPadula's guarantee as conditional, and what does that mean for assessing a real system?
 
 ## Answers
 
-**1. Not permitted.** Dominance requires both a level at least as high *and* a compartment superset. Top Secret exceeds Secret, satisfying the first condition, but the subject holds only {NATO} while the object requires {NATO, CRYPTO}. The missing CRYPTO compartment defeats the access regardless of how high the clearance is. This is the need-to-know dimension, and no amount of clearance substitutes for it.
+**A1.** Security models define rules of behaviour for an information system to enforce policies related to system security - typically confidentiality and/or integrity policies. They define allowable behaviour for one or more aspects of system operation, and when implemented, technology enforces those rules so that security goals are met. A model sits between policy (intent) and mechanism (technology).
 
-**2. Complete mediation.** The requirement is that *every* access is checked without exception; a path that reaches the resource without a check breaks it. The monitor may still be tamperproof and verifiable - those are separate properties - but a single bypass is enough to void complete mediation.
+**A2.** Simple Security property: a subject cannot read or access an object of a higher classification - *no read up*. Star property: a subject can only save an object at the same or higher classification - *no write down*. The model addresses confidentiality, in multilevel security systems.
 
-**3.** Simple integrity axiom: no read down - a subject may not read lower-integrity data. Star integrity axiom: no write up - a subject may not write to a higher-integrity object. Invocation property: no invoking up - a subject may not call a service at a higher integrity level. The invocation property is needed because reading and writing are not the only contamination paths. A low-integrity subject that calls a high-integrity procedure with chosen arguments acts *through* that procedure, achieving indirectly what the write rule forbids directly.
+**A3.** A subject may create or write data at a level it is not cleared to read back. Confidentiality is preserved - which is all Bell-LaPadula claims - but integrity is not, since a less trusted subject can contribute to a more trusted object. Biba addresses that exposure with its no-write-up rule.
 
-**4.** A **Protection Profile** is implementation-independent and states the security requirements for a *class* of product; it is written by or on behalf of the **customer** or a user community. A **Security Target** is written by the **vendor** for one specific Target of Evaluation and states what that product actually does, often claiming conformance to a PP. Procurement compares vendors' STs against the PP that expresses the buyer's needs.
+**A4.** It was an early model and does not provide a mechanism for one-to-one mapping of individual subjects and objects, which must be addressed by other models or by features of a practical operating system. And it does not attempt to define technical constructs or solutions - it identifies a high-level set of rules that prevent unauthorised disclosure *if implemented correctly*.
 
-**5. Brewer-Nash**, the Chinese Wall model. What makes it unusual is that **access rights change dynamically based on the subject's access history**. Before reading anything, the analyst could have opened either client's data; the first read builds a wall around the conflict-of-interest class. Two analysts with identical roles can hold different permissions purely because of what they read first - no other classical model behaves this way.
+**A5.** Biba assigns integrity levels according to how trustworthy the subject or object is considered to be, whereas Bell-LaPadula's labels record classification - the sensitivity of the information. Different questions produce different orderings, so a subject can be high in one and low in the other; the rules are not mirror images of one another but each model's own logic expressed in its own currency.
 
-**6. Certification** is the technical evaluation of how well a system meets its security requirements in a specific environment, performed by technical evaluators; it produces evidence. **Accreditation** is the formal management decision to accept the residual risk and operate the system, made by an authorising official; it produces acceptance. The technical team never accredits - accepting risk is a management act.
+**A6.** Simple Integrity: a subject cannot observe an object of lower integrity - no read down. Star property: a subject cannot modify an object of higher integrity - no write up. Invocation: a subject cannot send logical service requests to an object of higher integrity. The third closes the indirect path: without it, a low-integrity subject could ask a high-integrity service to perform the contaminating write on its behalf.
 
-**7.** A **trusted** component is one positioned inside the security perimeter such that it *has the ability* to violate the policy - nothing constrains it. **Trustworthy** is the separate, evidence-based judgement that it will not do so. A Bell-LaPadula trusted subject is explicitly permitted to break the star property in order to declassify; calling it trusted describes its power, not its reliability. Assurance activity is what converts trusted into trustworthy.
+**A7.** It prevents conflict of interest where a subject has access to sensitive information associated with two competing parties - users should not access the confidential information of both a client and its competitor. It is unusual because the access control rules change based on subject behaviour: access is open until the subject touches one side, after which the other side is instantly barred.
 
-**8.** The **NIST Risk Management Framework**, defined in **SP 800-37**, with the steps Prepare, Categorize, Select, Implement, Assess, Authorize, Monitor. Controls are catalogued in **NIST SP 800-53**. The authorisation decision is an **Authority to Operate (ATO)**, granted by the Authorising Official - the accreditation step in the older vocabulary.`
-    },
-    {
-      id: 'bell-lapadula',
-      title: `9. Bell-LaPadula: Confidentiality (MAC, Multi-Level Security)`,
-      content: `Developed in 1973 by David Bell and Leonard LaPadula for the U.S. Department of Defense. The first mathematical model of computer security. Designed to enforce CONFIDENTIALITY in multi-level secure (MLS) systems handling classified information.
+**A8.** Undesirable changes made by *authorised* subjects - Biba prevents unauthorised modification only. Clark-Wilson requires that transactions by authorised subjects be evaluated by another party before commitment, which delivers separation of duties: the authorised subject's powers are limited by another subject empowered to evaluate and complete the transaction.
 
-## 1.1 The model
+**A9.** A transaction whose set of steps is carefully designed and enforced, addressing internal consistency within the system. Any deviation from the expected path results in failure of the transaction, so that system integrity is not compromised - there is no partially applied change.
 
-Bell-LaPadula (BLP) is a STATE MACHINE model based on a lattice of security labels. Each subject (user, process) and each object (file, resource) is assigned a sensitivity label. The model defines rules about how subjects can access objects without leaking information from higher to lower classifications.
+**A10.** Clark-Wilson establishes subject-program-object bindings such that the subject has no direct access to the object; access occurs through a program that has access to it. The program arbitrates all access, ensures every subject-object interaction follows a defined set of rules, provides subject authentication and identification, and limits all access to objects under its control.
 
-Lattice example (US government):
-\`\`\`
-Top Secret
-  ↑
-Secret
-  ↑
-Confidential
-  ↑
-Unclassified
-\`\`\`
+**A11.** How subjects and objects are created, how subjects are assigned rights or privileges, and how ownership of objects is managed - the basic control other models assume. Its eight primitive commands cover secure creation and deletion of objects and of subjects, and secure provisioning of the read, grant, delete, and transfer access rights.
 
-## 1.2 The three security properties
+**A12.** Situations in which a subject should be restricted from gaining particular privileges. It prevents subjects from accessing programs or subroutines that can execute a particular command - such as granting read access - where necessary; restricting the granting program is how the privilege itself is restricted.
 
-BLP has THREE properties (memorize):
+**A13.** Most modern operating systems implement *elements* of the models rather than being perfect implementations of the academic models, focusing on practical implementations consistent with one or more of them. Domain 5's access control models have vendor-specific implementations of elements of these models, and precise implementation has practical limitations - it is rarely employed except in very specialised systems with intentionally limited functionality.
 
-1. **Simple Security Property (ss-property)**: "no read up." A subject at a given level cannot READ an object at a higher level. A Confidential-cleared analyst cannot read a Secret document.
+**A14.** Preventing unauthorised subjects from making modifications; preventing authorised subjects from making improper or undesirable modifications; and maintaining consistency, internally within the system and between the system and what it represents. Biba reaches only the first - it decides trust by level and then permits what that level allows - which is precisely why Clark-Wilson exists.
 
-2. **\\*-property (star property)**: "no write down." A subject at a given level cannot WRITE to an object at a LOWER level. A Secret-cleared analyst cannot write Secret information to a Confidential file (preventing the analyst from leaking secrets by writing them somewhere less protected).
-
-3. **Discretionary Security Property (ds-property)**: in addition to the mandatory rules above, an access matrix can grant specific discretionary permissions (compatible with the mandatory model).
-
-## 1.3 Why these rules
-
-The model's goal is to PREVENT information flow from high to low classifications:
-
-- "No read up" prevents a low-clearance user from reading high-classification data (an obvious protection)
-- "No write down" prevents a HIGH-cleared user (perhaps malicious or compromised) from WRITING high-classification data to a low-classification file where a low-cleared user could then read it (a Trojan horse scenario)
-
-## 1.4 What BLP does NOT protect
-
-BLP is a CONFIDENTIALITY-only model. It does NOT address:
-
-- **Integrity** — a low-cleared user can WRITE UP (write to a higher-classification file) under BLP. This is allowed because no information leaks downward. But the high-clearance user might now be reading a low-quality (or maliciously corrupted) file. Use Biba for integrity protection.
-- **Availability** — BLP says nothing about denial of service.
-- **Covert channels** — clever ways to leak information through timing, resource exhaustion, etc.
-
-## 1.5 Tranquility principle
-
-A security label, once assigned, should not change while the subject/object is active.
-
-- **Strong tranquility** — labels never change during operation.
-- **Weak tranquility** — labels can change as long as it doesn't violate BLP properties.
-
-CISSP-style trap: "A user with Top Secret clearance is reading a Secret document. Can they edit it and save back to its original location?" In strict BLP, NO — saving back would be a write at the current subject's level (TS) writing to a Secret object, which is write-down. The user would need to "downgrade" their session to Secret first (which raises its own concerns).`,
-      examTip: `Memorize: BLP simple = "no read up," star = "no write down." Confidentiality-only. Bell-LaPadula = government / military. Don't confuse with Biba (integrity, opposite directions).`,
-      importantNote: `The "*-property" is pronounced "star property" — and on the CISSP exam, you'll see it written both as "*-property" and "star property" interchangeably. They mean the same thing.`,
-    },
-    {
-      id: 'biba',
-      title: `10. Biba: Integrity (Opposite Directions from BLP)`,
-      content: `Developed in 1977 by Kenneth Biba. Addresses the gap BLP leaves open: data INTEGRITY. The exam loves contrasting Biba with BLP because they share structure but operate in opposite directions.
-
-## 2.1 The model
-
-Like BLP, Biba is a state-machine model over a lattice. But the labels represent INTEGRITY level, not confidentiality. Higher integrity level = data more trustworthy / authoritative.
-
-Lattice example:
-\`\`\`
-High integrity (trusted source)
-  ↑
-Medium integrity
-  ↑
-Low integrity (user-generated, untrusted)
-\`\`\`
-
-## 2.2 The three integrity properties
-
-1. **Simple Integrity Property**: "no read down." A subject at a given integrity level cannot READ an object at a LOWER integrity level. (Prevents the subject from being contaminated by low-quality / untrusted data.)
-
-2. **\\*-Integrity Property (Integrity star)**: "no write up." A subject at a given integrity level cannot WRITE to an object at a HIGHER integrity level. (Prevents low-trust subjects from corrupting high-trust data.)
-
-3. **Invocation Property**: a subject cannot invoke (request services from) a subject of HIGHER integrity. (Prevents low-integrity processes from manipulating high-integrity processes.)
-
-## 2.3 BLP vs Biba — the mnemonic
-
-| Model | Concern | Read | Write |
-|---|---|---|---|
-| **BLP** | Confidentiality | No read UP | No write DOWN |
-| **Biba** | Integrity | No read DOWN | No write UP |
-
-The directions are OPPOSITE because the goals are opposite:
-
-- BLP wants to prevent INFORMATION from flowing DOWN (a high-clearance secret shouldn't leak to a low-clearance person)
-- Biba wants to prevent CONTAMINATION from flowing UP (a low-integrity input shouldn't corrupt a high-integrity output)
-
-## 2.4 Practical application
-
-Biba inspired the integrity levels in Windows User Account Control (UAC):
-
-- System
-- High
-- Medium (default user)
-- Low (Internet Explorer / Edge Protected Mode runs here)
-- Untrusted
-
-A Low-integrity process (a browser process) cannot write to High-integrity files or registry keys — this is Biba's no-write-up in action.
-
-## 2.5 What Biba doesn't address
-
-Biba is INTEGRITY-only. It doesn't address:
-
-- Confidentiality (use BLP for that)
-- Availability
-- Specific transaction semantics (use Clark-Wilson for transactional integrity)`,
-      examTip: `BLP and Biba are OPPOSITES. Confidentiality + secrets = BLP. Integrity + trust = Biba. The exam will give you a scenario; identify which property is at stake and pick the matching model. Memorize the directional asymmetry: BLP "no read UP / no write DOWN"; Biba "no read DOWN / no write UP."`,
-    },
-    {
-      id: 'clark-wilson-brewer-nash',
-      title: `11. Clark-Wilson, Brewer-Nash, and Other Models`,
-      content: `## 3.1 Clark-Wilson — Commercial Integrity via Well-Formed Transactions
-
-Developed in 1987 by David Clark and David Wilson. Designed for COMMERCIAL integrity needs (e.g., banking), where Biba's military-style integrity is overkill.
-
-Core concepts:
-
-- **Constrained Data Items (CDIs)** — data that needs integrity protection (bank account balances, financial records)
-- **Unconstrained Data Items (UDIs)** — data not protected by the model (e.g., free-form text)
-- **Integrity Verification Procedures (IVPs)** — verify that CDIs are in a valid state
-- **Transformation Procedures (TPs)** — the ONLY way CDIs can be modified; they enforce that valid CDIs transition to other valid CDIs
-
-The model enforces:
-
-1. **Well-formed transactions** — CDIs can only be modified via certified TPs (not via direct write)
-2. **Separation of duties** — different people authorize the TP, run the TP, and audit the results
-3. **Auditing** — all modifications logged with who, when, what
-
-Classic example: a bank account balance (CDI) can only be modified by certified TPs (debit, credit, transfer). A bank teller cannot just write a new balance directly; they must invoke one of the approved TPs, which preserves valid state (balance ≥ 0 if account terms require, audit trail recorded, etc.).
-
-Subject-Transformation-Object triple: each user is authorized for SPECIFIC TPs on SPECIFIC CDIs. Not a blanket access matrix.
-
-## 3.2 Brewer-Nash — Chinese Wall (Conflict of Interest)
-
-Developed in 1989 by David Brewer and Michael Nash. Designed for environments where preventing CONFLICTS OF INTEREST matters — most famously, a financial consulting firm with clients in competing industries.
-
-Core concept: a user's access is DYNAMICALLY restricted based on their access history.
-
-Model structure:
-
-- Objects organized into "company datasets" (CDs) — all data related to one company
-- CDs grouped into "conflict of interest classes" (CoIs) — e.g., all major oil companies are in one CoI class
-- A subject who accesses any CD in a CoI class is then BLOCKED from accessing any other CD in the same CoI class
-
-Practical example: an analyst at a consulting firm reviews documents for Oil Company A. The model then blocks them from accessing documents for Oil Company B, C, or D (all in the "Oil Companies" CoI class), because doing so would create a conflict of interest. They CAN still access documents for Bank X (different CoI class).
-
-Brewer-Nash is dynamic — initial access permissions are open; they tighten as the user accesses data.
-
-## 3.3 State Machine model
-
-Generic model where:
-
-- The system is always in some STATE (defined by all current variable values)
-- Each operation transitions the system from one state to another
-- A SECURE state is one where security properties hold (e.g., access matrix is consistent)
-- The model is SECURE if every state reachable from a secure initial state is itself secure
-
-Both BLP and Biba are state-machine models. This concept appears on the exam as background.
-
-## 3.4 Lattice-based models
-
-Both BLP and Biba use LATTICES — partially ordered sets of security labels with a least upper bound and greatest lower bound for any pair. The lattice provides the structure for "higher" and "lower" comparisons.
-
-Examples:
-
-- BLP government lattice: TS > S > C > U
-- Biba integrity lattice: High > Medium > Low
-
-## 3.5 Non-interference and information flow models
-
-Goldwasser, Goguen, and Meseguer's work on information flow:
-
-- **Non-interference** — high-level actions should not be observable by low-level subjects. Prevents covert channels.
-- **Information flow models** — formally analyze which information CAN flow to which subjects.
-
-These are mostly theoretical for CISSP — know the names.
-
-## 3.6 Access matrix models (Lampson, HRU)
-
-The general formalism for representing who can do what to which object:
-
-- Rows = subjects
-- Columns = objects
-- Cells = allowed operations
-
-Most implementations are partial (ACLs are column-slices; capabilities are row-slices). Pure access matrices don't scale and aren't used directly but form the theoretical basis for DAC.
-
-## 3.7 Take-Grant model
-
-A model for analyzing how access rights can be PROPAGATED through a system. Subjects can take rights from others (under certain conditions) or grant rights to others. Used to prove that certain rights cannot leak to certain subjects.
-
-Mostly theoretical — appears on the exam as recognition only.
-
-## 3.8 Graham-Denning model
-
-Defines a set of PRIMITIVE OPERATIONS for managing subjects, objects, and rights (create subject, create object, delete subject, delete object, take/grant/transfer rights). Provides building blocks for richer access control models.
-
-Recognition-level knowledge for the exam.
-
-## 3.9 Mapping models to scenarios — the CISSP exam pattern
-
-When the exam describes a scenario, identify:
-
-| Concern in the scenario | Model to choose |
-|---|---|
-| Multi-level classified info, prevent leaks downward | Bell-LaPadula |
-| Trust hierarchy, prevent contamination upward | Biba |
-| Commercial integrity, certified transactions, audit trail | Clark-Wilson |
-| Consulting firm, prevent conflict of interest | Brewer-Nash |
-| Generic state-based security reasoning | State Machine |
-| Lattice ordering of security labels | Lattice-based |
-
-Memorize this table — exam questions are often pure model identification.`,
-      examTip: `When the scenario mentions BANKING, ACCOUNTING, or anything about CERTIFIED TRANSACTIONS, the answer is Clark-Wilson. When it mentions CONFLICT OF INTEREST, CONSULTING FIRM, or COMPETING CLIENTS, the answer is Brewer-Nash. Memorize the keyword-to-model mapping.`,
-      importantNote: `Bell-LaPadula was developed for MILITARY/GOVERNMENT confidentiality. Biba added INTEGRITY. Clark-Wilson is COMMERCIAL integrity. Brewer-Nash addresses CONFLICT OF INTEREST. Each addresses a different gap.`,
-    },
-  ],
+**A15.** Because the model identifies a high-level set of rules that prevent unauthorised disclosure *if implemented correctly*; the guarantee belongs to the rules, not to any system claiming to follow them. Assessing a real system therefore means asking whether every access path is mediated by the rules, whether enforcement is mandatory rather than left to a subject's discretion, and whether any interface allows an object to be reached without a label comparison. A single unmediated path defeats the property no matter how faithfully the rest is implemented. This is why architectural review, not product selection, is where model-based assurance is actually won or lost: the paths a design forgets are never in the product's documentation, and they are exactly what an assessor is looking for.`
+    }
+  ]
 },
 cissp_evaluation: {
   topicId: 'cissp_evaluation',
   title: `Select Controls Based upon System Security Requirements`,
   domainWeight: '13%',
-  overview: `CISSP Domain 3 tests understanding of how security products and systems are formally EVALUATED for trustworthiness — different from auditing an organization. This topic covers Common Criteria (the international standard), legacy frameworks (TCSEC Orange Book, ITSEC), FIPS 140-3 for cryptographic modules, and the concepts of Protection Profiles, Security Targets, and Evaluation Assurance Levels (EALs). These are recognition-level CISSP topics that appear regularly on the exam.`,
+  overview: `Requirements say what must be true; controls are what make it true. This module draws that line first - a security requirement is a need, a control is a safeguard or countermeasure that mitigates risk to confidentiality, integrity, or availability - and then works through the practitioner's actual decisions. Controls perform one of three actions (preventive, detective, corrective) and are applied in one of three ways (management, operational, technical). Some are not implemented by the system at all but inherited from its environment, which raises the question inheritance always raises: how much protection does *this* system actually receive? Selection is made against the system's CIA needs, usually with a control framework - ISO/IEC 27001, NIST SP 800-53, COBIT, ISA/IEC 62443 - because adopting a researched framework beats inventing controls. Frameworks are general by design and must be tailored; treating them as checklists is the named failure. And every control needs evaluation methods: test, interview, examine, usually in combination.`,
   sections: [
     {
-      id: 'common-criteria',
-      title: `1. Common Criteria (ISO/IEC 15408)`,
-      content: `Common Criteria (CC) is the international standard for evaluating security PRODUCTS — operating systems, firewalls, smart cards, network devices, databases. It replaced the regional standards (TCSEC, ITSEC, CTCPEC) in 1999. It is jointly maintained by participants in the Common Criteria Recognition Arrangement (CCRA).
+      id: '1-requirements-vs-controls',
+      title: `1. Requirements and Controls Are Not the Same Thing`,
+      content: `## The definition of a control
 
-## 1.1 Core concepts
+**Security controls are safeguards or countermeasures that mitigate risks to confidentiality, integrity, or availability in a system or operating environment.** Two clauses in that sentence do real work. Controls are **mitigations of risk** - which ties every control to the risk machinery of Domain 1 and the value machinery of Domain 2 - and their target is **confidentiality, integrity, or availability**, which is the same governing triad the first module of this domain named as the differentiator of security engineering.
 
-- **Target of Evaluation (TOE)** — the product being evaluated
-- **Security Target (ST)** — document the VENDOR writes describing the TOE's security claims, the environment it operates in, and the security functions it implements
-- **Protection Profile (PP)** — TEMPLATE security requirements for a category of products (e.g., a PP for firewalls, a PP for network devices, a PP for smart cards). Often written by user communities (governments, industry groups). Vendors can claim conformance to a PP.
-- **Evaluation Assurance Level (EAL)** — graded rigor of evaluation (EAL1 lowest, EAL7 highest)
-- **Common Criteria Recognition Arrangement (CCRA)** — mutual recognition of evaluations among participating countries; certifications issued in one country are recognized in others up to EAL2 (or EAL4 for some technology categories under a Common Criteria Recognition Arrangement profile)
+The definition continues with two facts that shape everything below. **Controls may impact or modify the behaviour of people, process, or technology** - so a control is not necessarily a piece of technology, and the majority of an organisation's controls are not. And **they may be directly applied or inherited from another system or organisation**, which is the subject of Section 3.
 
-## 1.2 Evaluation Assurance Levels
+## The distinction the module opens on
 
-EALs grade EVALUATION RIGOR, NOT product security. A product with high EAL was evaluated rigorously; it doesn't mean its security FUNCTIONS are inherently better than a product with low EAL.
+The module's first objective is to **differentiate between security requirements and security controls**, and the distinction is worth stating sharply because conflating the two is a common and expensive error.
 
-| EAL | Description | Typical Use |
-|---|---|---|
-| **EAL 1** | Functionally tested | Lowest rigor; sufficient where security is not the primary requirement |
-| **EAL 2** | Structurally tested | Most COTS products with security claims |
-| **EAL 3** | Methodically tested and checked | Adds developer evidence and testing |
-| **EAL 4** | Methodically designed, tested, and reviewed | The HIGHEST level CCRA recognizes between all member states; common for commercial security products |
-| **EAL 5** | Semi-formally designed and tested | Specialty products; requires national scheme |
-| **EAL 6** | Semi-formally verified design and tested | High-risk environments (military, government) |
-| **EAL 7** | Formally verified design and tested | Highest; mathematically proven security model; extremely costly and rare |
+A **requirement** is a statement of what must be true: this system must ensure that only authorised clinicians can read a patient record. A **control** is a means of making it true: an access control mechanism, an authorisation model, a review process, an audit log. The relationship is one-to-many and it runs in one direction - a requirement can be satisfied by several combinations of controls, and the same control can contribute to several requirements.
 
-CISSP exam pattern: "A product evaluated at EAL 4 means..." → its security functions were methodically designed, tested, and reviewed at that level of rigor. NOT that EAL4 = "secure."
+| | Security requirement | Security control |
+| --- | --- | --- |
+| States | What must be true | How it is made true |
+| Derived from | Stakeholder needs, law, risk, asset value | The requirement, plus the environment and framework |
+| Changes when | The need, law, or risk changes | The technology, environment, or better option changes |
+| Owned by | The system and its stakeholders | The implementer, within the requirement |
+| Failure when confused | Controls become the goal; requirements go unstated | Requirements become unimplementable wishes |
 
-## 1.3 The evaluation process
+The failure in the last row is worth expanding, because it produces a recognisable pathology. When controls are treated as requirements - "we require multi-factor authentication" - the organisation has fixed the answer before stating the question. It can no longer evaluate whether a different control would serve better, cannot explain to an auditor *why* the control exists, and cannot tell when the control has stopped being necessary. Stating the requirement first - "only the authorised may read this, and we must be able to demonstrate it" - keeps the choice of control open and reviewable, which is exactly what the tailoring discussion later in this module depends on.
 
-1. **Vendor** writes the Security Target (ST), describing the TOE's claims
-2. **Lab (Common Criteria Testing Laboratory)** evaluates the TOE against the ST per the methodology defined for the claimed EAL
-3. **Certification body** (national scheme, e.g., NIAP in the US, BSI in Germany) reviews the lab's work
-4. **Certificate** issued, listed in the CC Portal
+## Where this module sits
 
-The evaluation produces an Evaluation Technical Report (ETR) and the public Certification Report.
+The engineering processes module established that stakeholder security requirements are defined and then transformed into system requirements; this module picks the work up at the point where those requirements must be met by something concrete. It is, in other words, the bridge between *what the system must protect* and *what will be built or bought to protect it* - and the reason the module's later half is about frameworks is that nobody should walk that bridge by inventing controls from nothing.
 
-## 1.4 Protection Profiles in practice
-
-PPs constrain "what does it mean for this category of product to be secure?" — written by communities so that products can compete on conformance to a common bar rather than each vendor writing their own ST from scratch.
-
-Examples of well-known PPs:
-
-- **NIAP-approved PPs** — US government use; very specific PPs per product category (firewall, mobile device fundamentals, IPS, OS)
-- **Common Criteria PPs** for smart cards, cryptographic modules, biometric verification, etc.
-
-A vendor product can claim "EAL 2 conformance to the Network Device PP" — this is more useful than just "EAL 2" because it specifies what the bar is.
-
-## 1.5 Strengths and limitations
-
-Strengths:
-- International standard, broadly recognized
-- Formal documentation requirements force vendors to specify their security claims clearly
-- Multiple countries' labs can evaluate
-
-Limitations:
-- EXPENSIVE — typically $1-3M USD for an EAL 4+ evaluation
-- SLOW — evaluations take 6-24 months, often longer than the product's release cycle
-- Tests CLAIMED security functions, not all functions — vendor controls scope via the ST
-- Evaluation is point-in-time — a patched/updated product is no longer the evaluated TOE`,
-      examTip: `EAL grades evaluation RIGOR, not security itself. EAL 4 is the highest mutually recognized level under the CCRA. PP = template requirements; ST = vendor's specific claims; TOE = product being evaluated.`,
+One further consequence is worth stating, because it shapes how a security function is judged. Requirements are largely stable and controls are not: the need to keep a record confidential outlives every mechanism used to do it. A programme organised around requirements can therefore replace an ageing control without reopening its justification, and can explain to any audience why a change is safe. A programme organised around controls has to re-argue its foundations every time technology moves, which is why such programmes tend to accumulate controls and rarely retire any.`
     },
     {
-      id: 'legacy-frameworks',
-      title: `2. Legacy Frameworks: TCSEC (Orange Book) and ITSEC`,
-      content: `## 2.1 TCSEC — Trusted Computer System Evaluation Criteria
+      id: '2-types',
+      title: `2. Types of Controls`,
+      content: `## Two independent classifications
 
-The "Orange Book" — published by the US Department of Defense in 1985, formally retired and superseded by Common Criteria in 2000. Still appears on the CISSP exam as a recognition topic.
+The module classifies controls twice over, and the classifications are independent - every control has one answer in each scheme, so a control is not *either* preventive *or* technical, it is both something and applied somehow.
 
-Four divisions, each subdivided:
+![Controls classified by what they do and by how they are applied](/courses/cissp/figures/cissp-control-categories.svg)
 
-| Division | Subdivision | Description |
-|---|---|---|
-| **D** | (Single class) | Minimal protection (failed evaluation) |
-| **C** | C1 | Discretionary protection |
-| | C2 | Controlled access protection |
-| **B** | B1 | Labeled security protection |
-| | B2 | Structured protection |
-| | B3 | Security domains |
-| **A** | A1 | Verified design |
-| | Beyond A1 | (Theoretical) |
+## By action: what the control does
 
-Key features by class:
+**Security controls primarily perform one of three major actions.**
 
-- **C1** — early Unix-style DAC with separation of users from data
-- **C2** — adds individual accountability, audit trails. Windows NT 3.5/4 was evaluated C2.
-- **B1** — adds Mandatory Access Control (MAC) via labels. Bell-LaPadula model implementation.
-- **B2** — formal security model, covert channel analysis
-- **B3** — minimal TCB, security administrator role
-- **A1** — mathematical proof of security design
+**Preventive controls reduce the likelihood or impact of an undesirable event occurring.** They act before the event. An access control that refuses an unauthorised request, encryption that renders intercepted data useless, a fence, a policy prohibiting an action - each stops or lessens the event itself.
 
-CISSP exam pattern: "Which TCSEC class first introduces mandatory access controls?" → B1.
+**Detective controls identify an undesirable event or collect information about it.** They act during or after. Logging, monitoring, alerting, reconciliation, review - each tells the organisation that something happened, which is worthless in isolation and essential in combination, because prevention that nobody verifies is prevention nobody knows the state of.
 
-## 2.2 ITSEC — Information Technology Security Evaluation Criteria
+**Corrective controls reduce or eliminate the impact of an undesirable event that has occurred.** They act after. Restoring from backup, failing over, revoking a compromised credential, applying a fix.
 
-European equivalent of TCSEC, published in 1991. Separated FUNCTIONALITY from ASSURANCE:
+The three form a sequence in time, and reading them that way makes the design argument obvious: an estate with only preventive controls cannot tell when prevention failed; one with only detective controls watches its own losses; one with only corrective controls has decided to absorb every event and pay to clean up. The reason mature control sets contain all three is not completeness for its own sake but that each covers a different phase of the same failure.
 
-- **Functionality classes (F-C1 through F-B3)** — analogous to TCSEC classes
-- **Assurance levels (E0–E6)** — graded rigor independent of functionality
+## By application: how the control is applied
 
-E0 = inadequate, E6 = highest formal verification.
+**Controls can be classified by how they are applied.**
 
-This separation was an innovation: a product could have rich functionality but low assurance (or vice versa). Common Criteria continued this idea via separate Security Target (functionality) and EAL (assurance).
+**Management controls are policy- or human-driven.** Policies, standards, risk assessment, security planning, personnel screening decisions - controls exercised through direction and governance.
 
-ITSEC was used in Europe; Canada had CTCPEC (Canadian Trusted Computer Product Evaluation Criteria). All converged into Common Criteria.
+**Operational controls are process-driven.** Procedures performed by people: media handling, change management execution, awareness training delivery, physical access administration, incident response.
 
-## 2.3 Why TCSEC/ITSEC still appear on the CISSP exam
+**Technical controls are applied to technology.** Also called logical controls: authentication mechanisms, encryption, access control lists, firewalls, audit logging.
 
-These frameworks are HISTORICAL, but:
+| | Preventive | Detective | Corrective |
+| --- | --- | --- | --- |
+| **Management** | Security policy prohibiting an activity | Periodic access review; internal audit | Revising a policy after an incident |
+| **Operational** | Visitor escort procedure; separation of duties | Log review; media inventory reconciliation | Incident response execution; restoring from backup |
+| **Technical** | Access control enforcement; encryption | Intrusion detection; audit logging | Automated failover; credential revocation |
 
-- Many existing systems (especially government, military) still reference them
-- The concepts they introduced (mandatory access controls, formal verification levels) live on in Common Criteria
-- Exam questions sometimes ask "what was the predecessor to Common Criteria?" or test recognition of "Orange Book" terminology
+Reading the matrix rather than either list alone is the practical skill. A gap analysis that finds "we have plenty of controls" often finds, on the matrix, that eight of them are technical-preventive and the detective row is nearly empty - which is a specific, actionable finding rather than a general impression. The matrix is also how exam stems are built: they describe a control's behaviour and ask for its classification in one scheme or the other, and the classifications are answered independently.
 
-## 2.4 Rainbow Series
+## A note on the boundaries
 
-The TCSEC was the "Orange Book"; companion publications had different colored covers:
+The categories are analytical conveniences, not natural kinds, and some controls sit on a boundary. An audit log is detective by action and technical by application - but the log *review* is an operational control, and the *requirement* to keep logs is a management control. Rather than treating that as ambiguity, treat it as the classification doing its job: a single control objective usually needs elements from more than one cell, and noticing which cells are empty is precisely the value of classifying at all.
 
-- **Red Book** — Trusted Network Interpretation (network applications of TCSEC)
-- **Yellow Book** — Guidance for applying TCSEC in specific environments
-- **Green Book** — Password Management Guideline
-- (Many others)
-
-Collectively called the "Rainbow Series." Recognition-level for the exam.`,
-      examTip: `Memorize key TCSEC milestones: C1 = early DAC, C2 = audit trails (Windows NT), B1 = first to introduce Mandatory Access Control (labels). Common Criteria replaced TCSEC, ITSEC, and CTCPEC in 1999.`,
+There is also a deterrent dimension worth mentioning, because some frameworks name it separately: a control whose visible presence discourages an act - a warning banner, a camera in plain view, a published sanction - is doing preventive work through expectation rather than enforcement. Whether it is counted as its own category or as a preventive control is a vocabulary question; what matters for design is recognising that some protection comes from what people believe will happen rather than from what the system will physically permit.`
     },
     {
-      id: 'fips-140-and-others',
-      title: `3. FIPS 140-3 and Other Crypto Module Validations`,
-      content: `## 3.1 FIPS 140 series
+      id: '3-inheritance',
+      title: `3. Common and Inheritable Controls`,
+      content: `## Protection a system does not implement itself
 
-Federal Information Processing Standard for CRYPTOGRAPHIC MODULES. Distinct from Common Criteria (which evaluates whole products) — FIPS 140 specifically evaluates the cryptographic implementation.
+**Common or inheritable controls exist outside of a particular system but provide some confidentiality, integrity, or availability protection to the system.** The module's example is the ordinary one: **an enterprise firewall likely provides some level of protection to all systems located behind it, and systems that reside behind the firewall can be said to "inherit" protections provided by the firewall as part of the overall protection applied to the inheriting system.** The module also notes the vocabulary: **inheritable controls may also be referred to as common controls in some control frameworks.**
 
-Required for cryptographic modules used in:
-- US federal systems
-- Many regulated sectors (healthcare, financial)
-- Often required in vendor contracts
+Inheritance matters because it is how large estates are affordable. If every system implemented every control itself, the estate would pay for the same protection thousands of times, inconsistently. Common controls let an organisation build a protection once, well, and have many systems benefit - which is the control-level expression of the same economy-of-scale argument Domain 2 made for baselines.
 
-## 3.2 FIPS 140-3 vs 140-2
+![The same control protects different systems by different amounts](/courses/cissp/figures/cissp-inherited-controls.svg)
 
-- **FIPS 140-2** (2001) — long-standing standard. Many existing products still valid. New validations transitioned to 140-3 starting 2020.
-- **FIPS 140-3** (2019) — current standard. Aligned with ISO/IEC 19790 (international). NIST is sunsetting 140-2 validations.
+## The catch, stated precisely
 
-## 3.3 Four security levels
+The module immediately qualifies the benefit, and the qualification is the examinable part. **The level of protection applied by the firewall will depend on specifics of configuration and may not be equal for all systems. The firewall may provide more protection to some network segments than others, or have specific rules configured that expose some systems behind it to a greater or lesser extent.** Therefore: **part of the consideration for any inheritable control is the effectiveness, or amount of protection actually inherited, by a particular system.**
 
-| Level | Requirements |
-|---|---|
-| **Level 1** | Basic; no physical security beyond production-grade components. Algorithms must be FIPS-approved. |
-| **Level 2** | Adds tamper-evident requirements (seals, coatings) and role-based authentication. |
-| **Level 3** | Adds tamper RESISTANCE (physical detection + response — module zeroizes keys on detected tamper). Identity-based authentication. Separation of cryptographic boundaries. |
-| **Level 4** | Highest. Tamper detection covers all sides; module zeroizes on any envelope breach. Withstands environmental attacks (voltage, temperature). |
+That sentence is the whole discipline of inheritance. The question is never *does this common control exist?* but *how much of it reaches this system, given where it sits and how it is configured?* Two servers behind the same firewall can inherit radically different protection - one in a tightly filtered segment, the other reachable through a permissive rule written years ago for a system since retired. The control is identical; the inheritance is not.
 
-Cloud HSMs and hardware HSMs typically validate at Level 3. Smart cards at Level 2 or 3. Common Level for general-purpose crypto in software: Level 1 (validates only the algorithms, not physical security).
+| Question | The wrong version | The right version |
+| --- | --- | --- |
+| Does the control exist? | "Yes, we have an enterprise firewall" | Existence is necessary and nowhere near sufficient |
+| Does it reach this system? | Assumed from network position | Determined from segment placement and rule set |
+| How much protection is inherited? | Not asked | The actual consideration for any inheritable control |
+| Who verifies it? | Assumed to be the platform team | The inheriting system's assessment must confirm it |
+| What if it changes? | Nobody is told | Changes to common controls change every inheritor's posture |
 
-## 3.4 FIPS-approved algorithms
+The last row deserves emphasis because it is where inheritance bites in operation. A change to a shared control silently changes the security posture of every system that inherits it, and the systems' owners are usually not in the change conversation. This is the control-level version of the shared-responsibility principle from the first module of this domain: the boundary must be known by both sides, or gaps open at it that each party assumes the other covered.
 
-A FIPS 140 validated module can only use APPROVED algorithms:
+## Inheritance and cloud
 
-- AES (all key sizes)
-- SHA-2, SHA-3
-- RSA (≥2048 bits)
-- ECDSA with NIST curves
-- HMAC
-- DRBG (Deterministic Random Bit Generator) — specific approved generators
+The concept generalises directly to service providers, and the module's later framing supports it: **if existing controls from the operating environment, adjacent systems, or network environment can be leveraged by the target system, those controls can be considered "inherited" by the target system. For example, a workstation typically inherits controls from the organisation firewall and any application gateways.** A cloud customer inherits a great deal - physical security, hypervisor isolation, infrastructure resilience - and inherits *less* as the service model moves from software toward infrastructure. The practitioner's job is to know exactly which controls are inherited at their service model, obtain evidence that they operate effectively, and implement the remainder rather than assuming it.
 
-NOT approved (or only legacy use):
-
-- DES, 3DES (deprecated)
-- MD5
-- SHA-1 (deprecated for new signatures)
-- RC4
-
-A FIPS-validated module typically runs in "FIPS mode" that disables non-approved algorithms.
-
-## 3.5 CMVP (Cryptographic Module Validation Program)
-
-The joint NIST/CCCS (Canadian) program that operates FIPS 140 validation. Maintains the public list of validated modules at NIST's CMVP website.
-
-For procurement: many federal contracts require "FIPS 140-3 Level X validated." Check the CMVP list to confirm a product's actual validation (vendors sometimes claim "FIPS compliant" without validation — different).
-
-## 3.6 Other notable evaluations and accreditations
-
-CISSP candidates should recognize:
-
-- **NIAP (National Information Assurance Partnership)** — US CC scheme; lists US-government-acceptable products via the NIAP Product Compliant List
-- **Commercial Solutions for Classified (CSfC)** — NSA program allowing commercial products for classified use IF used in specific configurations layered together
-- **FedRAMP** — for cloud SERVICES (covered in audits topic) rather than products
-- **DoD UC APL** — Department of Defense Unified Capabilities Approved Products List for communications products
-- **SCAP (Security Content Automation Protocol)** — not a product evaluation but a NIST framework for automating security configuration verification
-
-## 3.7 Putting it together — product evaluation vs system accreditation
-
-CISSP distinguishes:
-
-- **Certification** — technical evaluation of a product/system against criteria. Common Criteria evaluates products; FIPS 140 evaluates crypto modules.
-- **Accreditation** — management's formal acceptance of a system for use, including ALL the controls (technical, managerial, operational). The Authorizing Official says "given this evaluated product PLUS our processes PLUS the residual risks, we accept the system for use."
-
-The exam tests this distinction:
-
-- "What does the AO do at the end of certification?" → Accredit (formally accept for use)
-- "Who performs Certification & Accreditation in a federal context?" → C&A roles per NIST RMF (now called Assessment & Authorization, A&A)
-
-Modern terminology under NIST RMF is "Assessment & Authorization" — same idea: assess controls, then formally authorize the system for use.
-
-## 3.8 CISSP exam patterns
-
-Watch for these classic patterns:
-
-- "EAL" and "Common Criteria" → product evaluation framework, replaced TCSEC/ITSEC
-- "FIPS 140" → CRYPTOGRAPHIC MODULE specifically (not whole products)
-- "Orange Book" → TCSEC (legacy DoD framework)
-- "Protection Profile" → template requirements for a CC product category
-- "Security Target" → vendor's specific claims for their TOE
-- "EAL 4" → highest mutually recognized level under CCRA
-- "Mandatory Access Controls first appeared in..." → B1 (TCSEC) or equivalent
-- "Accreditation" vs "Certification" → mgmt acceptance vs technical evaluation`,
-      examTip: `FIPS 140-3 is the CURRENT standard for crypto modules. Four levels; Level 3 typical for HSMs. Common Criteria is for whole products with EALs 1-7. CCRA recognizes up to EAL 4 globally. Accreditation is MANAGEMENT acceptance; Certification is TECHNICAL evaluation.`,
+The documentation habit that makes this tractable is a per-system record of which controls are implemented by the system, which are inherited and from where, and what evidence supports each inheritance claim. Frameworks that use the common-control vocabulary build exactly that record into their assessment process, which is one of the practical arguments for adopting a framework rather than assembling controls independently: the bookkeeping that makes inheritance safe is already designed.`
     },
-  ],
-  keyTakeaways: [
-    'Common Criteria (ISO/IEC 15408): EALs 1-7 grade evaluation rigor (not security itself); CCRA recognizes up to EAL 4 globally',
-    'Target of Evaluation (TOE), Security Target (ST = vendor claims), Protection Profile (PP = template)',
-    'TCSEC ("Orange Book") and ITSEC are LEGACY frameworks replaced by Common Criteria in 1999 — exam still tests recognition',
-    'TCSEC C2 = Windows NT 3.5/4 evaluation; B1 = first class introducing Mandatory Access Controls (labels)',
-    'FIPS 140-3 (current; replaces 140-2) for cryptographic MODULES specifically — 4 levels, Level 3 typical for HSMs',
-    'FIPS approves AES, SHA-2/3, RSA-2048+, ECDSA, HMAC. DES, MD5, SHA-1, RC4 are NOT approved.',
-    'Certification = technical evaluation (CC, FIPS). Accreditation = management formal acceptance of system for use.',
-  ],
+    {
+      id: '4-selection',
+      title: `4. Control Selection and Frameworks`,
+      content: `## What selection is aimed at
+
+**Controls are selected to support the confidentiality, integrity, and availability needs of the system.** The sentence is short and it settles arguments. Not to satisfy an auditor, not to match a peer organisation, not to use a product already purchased - to support the CIA needs of *this* system, which were established as requirements upstream. Every other consideration is a constraint on how those needs are met, not a substitute for them.
+
+**Control frameworks are often utilised to select appropriate controls and define controls**, and the module's argument for using one is explicitly economic: **significant research and refinement has gone into the development of control frameworks, and adoption of an existing framework is typically a more effective approach than developing a unique set of controls.** An organisation writing its own catalogue is re-deriving, with less scrutiny and fewer reviewers, work that has already been done and tested at scale.
+
+## What a framework provides
+
+**Control frameworks define controls and control elements. In some cases they may provide explicit or recommended control specifications, and in other cases they may provide guidance on the intended objective or outcome of the control.** That distinction - specification versus objective - is worth carrying, because it determines how much the adopting organisation must supply. A specification tells you what to implement; an objective tells you what to achieve and leaves the how to you, which is more flexible and requires more judgement.
+
+**Frameworks allow for standardisation of control implementation, and may often include evaluation criteria or mechanisms to verify that controls are effective** - so a framework brings its own assurance apparatus with it, which is a substantial part of its value and a reason not to build a bespoke catalogue that arrives with none.
+
+![Four frameworks, and what each is oriented toward](/courses/cissp/figures/cissp-control-frameworks.svg)
+
+| Framework | The module's characterisation |
+| --- | --- |
+| **ISO/IEC 27001** | International standard |
+| **NIST SP 800-53** | Required for US government use |
+| **COBIT** | Focused on business values |
+| **ISA/IEC 62443 (ISA 99)** | Industrial automation and control systems |
+
+## Choosing among them
+
+**Control frameworks or control catalogues should be selected based on the industry or specific security goals of the organisation. Each framework has advantages and disadvantages, and business needs, regulatory requirements, or operational needs may drive selection of a control framework as much as direct security concerns.**
+
+Read that as permission to be pragmatic. The choice of framework is frequently settled by who the organisation must report to rather than by which catalogue is technically superior - and the module treats that as legitimate rather than as a compromise, because a framework that produces the reporting the organisation actually owes is doing part of its job.
+
+## Mapping, and running more than one
+
+The module then supplies the manoeuvre that makes multi-regime compliance tractable. **Control frameworks have significant overlaps, and often have well-researched mappings between controls from different frameworks. This supports adopting controls from multiple frameworks when necessary to support business, regulatory, or security needs.** Its worked case: **a multinational corporation with significant business dealings with the US federal government may choose to adopt the internationally recognised ISO standard and map those controls to the NIST controls** - allowing it **to report NIST compliance to the US federal government and ISO control status to any international oversight organisation.** And symmetrically: **the same organisation could standardise on the NIST controls internally but map them to ISO for external reporting.**
+
+The principle underneath is one of the most useful in practical security management: **implement once, report many times.** An organisation that runs a separate control set per regime pays for each, and - worse - protects the same asset differently depending on which regime's programme happens to cover it. One implemented control set with maintained mappings gives consistent protection and satisfies each audience in its own vocabulary. The cost is maintaining the mappings, which is real but bounded, and far smaller than the duplication it replaces.
+
+Two cautions keep the approach honest. Mappings are rarely one-to-one - a control in one framework may partially satisfy two in another, and partial satisfaction recorded as full is how a mapped programme develops silent gaps. And a mapping is a claim that must be maintained as both frameworks revise; a mapping table three versions out of date is worse than none, because it is trusted. Neither caution argues against the approach; both argue for treating the mapping as a maintained artefact with an owner.`
+    },
+    {
+      id: '5-tailoring',
+      title: `5. Tailoring Controls`,
+      content: `## Why frameworks must be adjusted
+
+**Control frameworks and standards are intended to be tailored to specific use cases.** The reason is structural rather than a defect: **by nature, the control frameworks are general cases that are intended to be widely applied. For that reason, they may lack specifics on implementation details, or require the control user to input specific values for their organisation or environment.** The module's illustration is exact and homely - **a control says you have to have a screen lock, but allows the adopter to select a lock timeout that makes sense for their use.**
+
+A catalogue that specified every parameter would be wrong for nearly every adopter, since the right timeout for a shared clinical workstation, a trading desk, and a field engineer's laptop are three different numbers driven by three different risk and usability balances. Generality is what makes a framework reusable, and tailoring is the price of that reuse.
+
+## The obligation
+
+**It is critical to adjust control specifications or parameters to meet the needs of a specific system or environment, to provide the optimal security value.** Note *optimal*, not *maximal*. A parameter set to its most restrictive value is not automatically better: a screen lock at fifteen seconds produces workarounds, a password rotation measured in days produces written-down passwords, an alert threshold set too low produces an unread queue. Tailoring seeks the setting that delivers the most protection actually realised in this environment - which is a judgement about people and work as much as about technology.
+
+Encouragingly, the module records that this is a supported activity rather than an improvisation: **the tailoring process is well documented in most control frameworks and fully supported by the frameworks themselves.** Tailoring is not deviating from the framework; it is using the framework as designed.
+
+## The named failure
+
+Then the sentence to remember: **some organisations choose to treat controls and control frameworks as checklists and forego intelligent tailoring, thus reducing the overall security value of the controls.**
+
+Checklist adoption is worth anatomising, because it is so common and it feels so responsible. Its symptoms are recognisable: every control marked implemented with a default parameter nobody chose; identical settings across environments with wildly different risk; no record of why any value was selected; and an assessment conversation that consists of confirming presence rather than examining effect. Its output is an organisation that can demonstrate coverage and cannot demonstrate protection - which is precisely the failure Domain 2 identified when a classification programme produced labels with no differentiated baselines behind them.
+
+| | Checklist adoption | Intelligent tailoring |
+| --- | --- | --- |
+| Parameters | Defaults, unexamined | Chosen for this system and environment |
+| Justification | "The framework says so" | The requirement and the risk it addresses |
+| Consistency | Identical everywhere, regardless of risk | Consistent method, environment-appropriate values |
+| Scoping | Every control applied or ignored wholesale | Inapplicable controls removed with reasons recorded |
+| Assessment answers | "Is it present?" | "Is it effective here?" |
+| Result | Demonstrable coverage | Demonstrable protection |
+
+## Tailoring, scoping, and the baseline
+
+Two vocabularies meet here, and keeping them straight is examinable. Domain 2's Data Security Controls module defined **scoping** as limiting general baseline recommendations by removing those that do not apply, and **tailoring** as altering the baseline to apply more specifically. This module's tailoring is the same operation performed on a framework's controls: adjusting specifications and parameters to fit. The direction of the change is the tell - removal for relevance is scoping, adjustment for fit is tailoring - and both are legitimate, documented parts of using a framework rather than departures from it.
+
+What is *not* legitimate is silent omission. A control removed because it does not apply should carry the reason; a parameter set outside the framework's recommendation should carry the justification. The difference between tailoring and quietly ignoring a control is entirely in the record - and the record is what an assessor, a regulator, or a successor practitioner will read when asking whether the organisation understood its own control set or merely trimmed it to what was convenient.`
+    },
+    {
+      id: '6-evaluation',
+      title: `6. Evaluation Criteria`,
+      content: `## Every control must be measurable
+
+**Each control should include specific evaluation methods and expected results.** The reasoning is stated as a condition of being a control at all: **to be effective as a security control, the control must be valuable and have one or more measures of effectiveness associated with it.**
+
+Read that as a design obligation rather than an assessment chore. A control selected without deciding how anyone would know whether it works has been selected on faith - and faith-based controls are exactly the ones that fail quietly, since nothing about a broken control announces itself. Deciding the evaluation method at selection time also improves the selection: a control that cannot be evaluated by any method available to the organisation is a control the organisation cannot rely on, and that is worth discovering before it is implemented rather than during an audit.
+
+## The three methods
+
+**The NIST framework defines three primary methods of control evaluation.**
+
+![Three methods, and what each can and cannot establish](/courses/cissp/figures/cissp-control-evaluation.svg)
+
+**Test: conduct a direct test of the control** - **usually used for technical type controls.** Testing exercises the control and observes the result: attempt the unauthorised access and confirm it is refused, send the malformed input and confirm it is rejected. It produces the strongest evidence about the control's behaviour *at the moment of the test*, and it is available mainly where the control is technical enough to be exercised.
+
+**Interview: interview or question staff** - **usually used for management or operational controls.** Interviewing establishes what people understand and actually do. It is the only method that reaches the gap between a documented procedure and the practice that has grown around it, which is where operational controls most often fail.
+
+**Examine: examine documentation or artefacts for evidence that a control is properly employed** - **used for all control types.** Examination inspects configurations, records, logs, policies, and approvals. It reaches what tests cannot see (was this configured deliberately, approved, and governed?) and what interviews cannot confirm (does the record support what was described?).
+
+| Method | Typical control types | What it establishes | Its blind spot |
+| --- | --- | --- | --- |
+| **Test** | Technical | The control behaves correctly right now | Whether it is consistently configured, or governed at all |
+| **Interview** | Management, operational | What people understand and actually do | Perception may not match reality or record |
+| **Examine** | All types | Configuration, approval, and record support the claim | Documents can describe a system that is not the running one |
+
+## Why methods are combined
+
+**In many cases, a control may - and should - be evaluated using multiple evaluation methods to ensure control effectiveness.** The module's own illustration is the pattern to internalise: **to evaluate a particular control, the assessor may perform a technical test to validate a function, examine documentation to ensure the function was correctly configured, and interview a system administrator regarding operation of the function. Taken together, the results may show that the control is effectively applied, or that there is some deficiency that limits the control effectiveness.**
+
+The combination works because the methods' blind spots are different, which is the same defence-in-depth logic applied to assurance rather than to protection. A test that passes against a configuration nobody approved and an administrator who does not know the control exists has demonstrated a working mechanism inside a broken control. Only the three together distinguish *the mechanism functions* from *the control is effective* - and it is effectiveness, not function, that the requirement upstream actually asked for. Designing the evaluation alongside the control is what makes that distinction available later, which is why the module treats evaluation methods as part of selecting a control rather than as something an assessor brings afterwards.`
+    },
+    {
+      id: '7-worked',
+      title: `7. Worked Examples`,
+      content: `## Worked Example 1: The requirement written as a control
+
+*A project's security requirements document contains the line "the system shall use AES-256 encryption."* This is a control stated where a requirement belongs, and the substitution costs the project three things. Nobody can say what the encryption is *for*, so the control cannot be traced to a need or defended when questioned; alternatives that might serve the need better cannot be evaluated, because the answer was fixed before the question; and when the algorithm is superseded, the document must be reopened rather than the implementation adjusted. The requirement behind it is something like: data at rest must remain confidential if the storage media leaves the organisation's control, to a strength appropriate to its classification. Then encryption at a specified strength becomes the *control*, chosen against that requirement, with the choice reviewable as technology moves.
+
+## Worked Example 2: Two servers, one firewall, different exposure
+
+*An assessment of a system behind the enterprise firewall records "network protection: inherited from enterprise firewall - satisfied." A penetration test later reaches the system directly from a partner network through a legacy rule.* The finding is the module's own caution ignored: **the level of protection depends on specifics of configuration and may not be equal for all systems**, and **part of the consideration for any inheritable control is the amount of protection actually inherited by a particular system.** The assessment recorded the control's existence, not its inheritance. Doing it properly means examining the segment the system sits in and the rules that reach it, and recording what protection that yields - which would have surfaced the legacy rule as a finding rather than leaving it for the test.
+
+## Worked Example 3: The multinational with two regulators
+
+*An organisation must demonstrate NIST-aligned controls to a US federal customer and ISO conformance to international oversight, and is about to fund two control programmes.* The module's mapping approach answers it: adopt one framework, implement its controls once, and maintain researched mappings to the other for reporting - the corporation **could adopt the internationally recognised ISO standard and map those controls to the NIST controls**, reporting each in its own vocabulary, or standardise on NIST internally and map to ISO for external reporting. Two programmes would double cost, and would produce the worse defect: the same asset protected to different standards depending on which programme happened to cover it. The maintenance burden is the mappings, which is real, bounded, and much smaller than duplication.
+
+## Worked Example 4: Fifteen-second screen locks
+
+*Following an audit finding, an organisation sets every workstation's screen lock timeout to fifteen seconds, reasoning that the strictest setting is the safest.* This is tailoring inverted into maximisation. The framework deliberately **allows the adopter to select a lock timeout that makes sense for their use**, and the objective is **optimal security value**, which fifteen seconds does not deliver: clinical staff prop sessions open, engineers disable the policy on machines they administer, and the realised protection falls below what a considered timeout would have produced. Correct tailoring sets values per environment against the actual exposure - a public-area terminal and a badge-controlled back office are different risks - and records why each value was chosen, which is also what makes the setting defensible at the next audit.
+
+## Worked Example 5: The control that passed its test
+
+*A quarterly assessment tests an access control mechanism, which correctly denies an unauthorised request. The assessor marks the control effective. Two months later the control is found to have been disabled in one environment for six weeks.* The test was sound and the conclusion overreached: a test establishes behaviour **at the moment of the test**, and says nothing about consistency, configuration governance, or operation. Combining methods is what closes that gap - **examine** the configuration and change records across environments, and **interview** the administrators about how the control is operated and monitored. The module's own example describes exactly this triangulation, and its stated purpose is to show either that the control is effectively applied *or that there is a deficiency limiting its effectiveness*, which is what a single passing test can never establish.
+
+## Worked Example 6: Coverage without protection
+
+*An organisation reports 100 percent implementation of its chosen framework. An incident later traces to a control that was implemented at its default setting, inappropriate for the environment, with no record of anyone having chosen it.* This is checklist adoption, which the module names: organisations that **treat controls and control frameworks as checklists and forego intelligent tailoring** thereby **reduce the overall security value of the controls.** The report was accurate about coverage and silent about effectiveness. The remedy is to make tailoring a recorded activity - the parameter chosen, the environment it suits, the requirement it serves - and to make assessment ask whether each control is *effective here*, not whether it is present. Notice the structural echo of Domain 2: labels without differentiated baselines protected nothing, and controls without tailoring protect proportionally less.
+
+## Worked Example 7: The cloud inheritance boundary
+
+*Moving a workload to a platform service, a team marks physical security, infrastructure resilience, and host hardening as inherited from the provider, and moves on.* Inheritance is the right concept, and the analysis is half done. What is inherited depends on the service model and must be evidenced rather than assumed - the provider's assurance reports say which controls they operate and to what scope, and the boundary shifts as the team adopts different services. The remaining controls are the customer's, and the classic gaps sit exactly at the boundary: identity configuration, data classification and encryption choices, network exposure, and logging that the provider makes available but does not enable. The module's own test applies unchanged: not *does the control exist* but *how much protection does this system actually inherit*.`
+    },
+    {
+      id: '8-selfcheck',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+**Q1.** Define a security control, and name the two things the definition says controls may modify.
+
+**Q2.** Distinguish a security requirement from a security control, and give the pathology that results from confusing them.
+
+**Q3.** Name the three actions controls perform, and say where each sits relative to the undesirable event.
+
+**Q4.** Name the three classes by how controls are applied, and give an example of each.
+
+**Q5.** What is a common or inheritable control, and what is the standing question about any of them?
+
+**Q6.** Why might two systems behind the same firewall inherit different protection?
+
+**Q7.** What are controls selected to support, and why does the module recommend adopting an existing framework?
+
+**Q8.** Name the four example frameworks and the module's one-line characterisation of each.
+
+**Q9.** Explain the mapping approach for an organisation reporting to two regimes, and the principle behind it.
+
+**Q10.** Why must frameworks be tailored, and what does the module say about organisations that treat them as checklists?
+
+**Q11.** Name the three control evaluation methods, the control types each usually suits, and why they are combined.
+
+## Answers
+
+**A1.** Security controls are safeguards or countermeasures that mitigate risks to confidentiality, integrity, or availability in a system or operating environment. They may impact or modify the behaviour of people, process, or technology, and may be directly applied or inherited from another system or organisation.
+
+**A2.** A requirement states what must be true; a control is a means of making it true. Confusing them fixes the answer before the question is asked: the organisation cannot evaluate alternative controls, cannot explain why a control exists, and cannot tell when it has stopped being necessary - and requirements that were never stated go unmet while the control list looks complete.
+
+**A3.** Preventive controls reduce the likelihood or impact of an undesirable event occurring - before the event. Detective controls identify an undesirable event or collect information about it - during or after. Corrective controls reduce or eliminate the impact of an event that has occurred - after.
+
+**A4.** Management (policy- or human-driven): a policy prohibiting an activity, or a periodic access review. Operational (process-driven): media handling procedures, visitor escorting, incident response execution. Technical (applied to technology): authentication mechanisms, encryption, audit logging, firewalls.
+
+**A5.** A control that exists outside a particular system but provides some confidentiality, integrity, or availability protection to it - an enterprise firewall protecting the systems behind it, for instance; some frameworks call these common controls. The standing question is not whether the control exists but the effectiveness, or amount of protection actually inherited, by that particular system.
+
+**A6.** Because the protection depends on specifics of configuration: the firewall may protect some network segments more than others, or have specific rules that expose some systems behind it to a greater or lesser extent. Segment placement and rule set determine the inheritance, not the mere existence of the control.
+
+**A7.** Controls are selected to support the confidentiality, integrity, and availability needs of the system. Adopting an existing framework is recommended because significant research and refinement has gone into developing them, so adoption is typically more effective than developing a unique set of controls - and frameworks also bring standardisation and, often, evaluation criteria or verification mechanisms with them.
+
+**A8.** ISO/IEC 27001 - international standard. NIST SP 800-53 - required for US government use. COBIT - focused on business values. ISA/IEC 62443 (ISA 99) - industrial automation and control systems.
+
+**A9.** Frameworks overlap significantly and often have well-researched mappings between their controls, so an organisation can adopt one - say ISO - implement it, and map to the other (NIST) for reporting, or standardise internally on NIST and map to ISO externally. The principle is implement once, report many times: one implemented control set gives consistent protection and satisfies each audience in its own vocabulary, at the cost of maintaining mappings.
+
+**A10.** Because frameworks are general cases intended to be widely applied, so they may lack implementation specifics or require the adopter to supply values for their environment - the screen lock whose timeout the adopter selects. Adjusting specifications and parameters to the specific system or environment is critical to achieving optimal security value, and the tailoring process is documented and supported by the frameworks themselves. Organisations that treat frameworks as checklists and forego intelligent tailoring reduce the overall security value of the controls.
+
+**A11.** Test - conduct a direct test of the control, usually for technical controls. Interview - question or interview staff, usually for management or operational controls. Examine - examine documentation or artefacts for evidence the control is properly employed, used for all control types. They are combined because their blind spots differ: an assessor may test the function, examine the configuration, and interview the administrator, and only the results taken together show that the control is effectively applied or reveal the deficiency limiting its effectiveness.`
+    }
+  ]
 },
 cissp_crypto: {
   topicId: 'cissp_crypto',

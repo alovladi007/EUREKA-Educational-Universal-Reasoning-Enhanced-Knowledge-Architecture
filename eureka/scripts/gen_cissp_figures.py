@@ -3109,6 +3109,386 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# The four systems-security-engineering process groups and their counts.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-sse-process-groups")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    groups = [
+        ("TECHNICAL", "14", "build the system:\nmission analysis through\ndisposal", c[0]),
+        ("TECHNICAL\nMANAGEMENT", "8", "run the project:\nplanning, risk, config,\nmeasurement, quality", c[1]),
+        ("ENABLING", "6", "run the organisation:\nlifecycle, infrastructure,\nportfolio, people, knowledge", c[2]),
+        ("AGREEMENT", "2", "cross the boundary:\nacquisition and supply", c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.7, 4.3))
+    for i, (name, count, gloss, colour) in enumerate(groups):
+        x = 0.35 + i * 2.42
+        ax.add_patch(plt.Rectangle((x, 2.55), 2.05, 0.95, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.8))
+        ax.annotate(name, (x + 1.02, 3.12), ha="center", va="center",
+                    fontsize=8.0, color=ink)
+        ax.annotate(f"{count} processes", (x + 1.02, 2.76), ha="center", va="center",
+                    fontsize=7.4, color=colour)
+        ax.annotate(gloss, (x + 1.02, 2.05), ha="center", fontsize=6.9,
+                    color=S.INK_2[mode])
+    ax.annotate("none of these is a SECURITY process - each is a SYSTEMS ENGINEERING process performed with a security view",
+                (4.95, 1.15), ha="center", fontsize=8.0, color=c[2])
+    ax.annotate("which is the whole point of the convergence: security engineers work inside the engineering the organisation already does",
+                (4.95, 0.7), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.4, 3.75)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The fourteen technical processes, in the order a system meets them.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-technical-processes")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    stages = [
+        ("UNDERSTAND THE PROBLEM", c[0],
+         ["business and mission analysis", "stakeholder needs and requirements",
+          "system requirements definition"]),
+        ("DESIGN THE SOLUTION", c[1],
+         ["architecture definition", "design definition", "system analysis"]),
+        ("BUILD AND PROVE IT", c[2],
+         ["implementation", "integration", "verification", "validation"]),
+        ("LIVE WITH IT", c[0],
+         ["transition", "operation", "maintenance", "disposal"]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 5.0))
+    for i, (name, colour, items) in enumerate(stages):
+        x = 0.3 + i * 2.44
+        ax.add_patch(plt.Rectangle((x, 4.05), 2.08, 0.6, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.04, 4.35), ha="center", va="center",
+                    fontsize=7.3, color=ink)
+        for j, it in enumerate(items):
+            ax.annotate(it, (x + 1.04, 3.62 - j * 0.46), ha="center", fontsize=7.0,
+                        color=S.INK_2[mode])
+        if i < 3:
+            ax.annotate("", (x + 2.4, 4.35), (x + 2.12, 4.35),
+                        arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                        linewidth=1.5))
+    ax.annotate("asset loss consequence is identified in the FIRST process - security enters at mission analysis, not at test",
+                (4.95, 1.35), ha="center", fontsize=7.8, color=c[2])
+    ax.annotate("and DISPOSAL is a process, not an afterthought: secure handling, transport, storage, or destruction of retired",
+                (4.95, 0.9), ha="center", fontsize=7.6, color=ink)
+    ax.annotate("elements, including the data they contain - Domain 2's defensible destruction, arriving as an engineering duty",
+                (4.95, 0.52), ha="center", fontsize=7.6, color=ink)
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.25, 4.8)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Verification versus validation - the domain's cleanest discriminator.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-verify-vs-validate")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.2, 4.1))
+    ax.add_patch(plt.Rectangle((0.45, 2.9), 4.0, 0.68, facecolor=c[0],
+                               alpha=0.18, edgecolor=c[0], linewidth=1.7))
+    ax.annotate("VERIFICATION", (2.45, 3.24), ha="center", va="center",
+                fontsize=9.2, color=ink)
+    for j, r in enumerate(["evidence that the system SATISFIES", "its security REQUIREMENTS",
+                           "measured against the specification", "\"did we build it right?\"",
+                           "happens before the system is in use"]):
+        ax.annotate(r, (2.45, 2.5 - j * 0.42), ha="center", fontsize=7.3,
+                    color=S.INK_2[mode])
+    ax.add_patch(plt.Rectangle((5.0, 2.9), 4.0, 0.68, facecolor=c[2],
+                               alpha=0.18, edgecolor=c[2], linewidth=1.7))
+    ax.annotate("VALIDATION", (7.0, 3.24), ha="center", va="center",
+                fontsize=9.2, color=ink)
+    for j, r in enumerate(["evidence that the system IN USE", "fulfils the MISSION objective",
+                           "measured against the real need", "\"did we build the right thing?\"",
+                           "happens with the system operating"]):
+        ax.annotate(r, (7.0, 2.5 - j * 0.42), ha="center", fontsize=7.3,
+                    color=S.INK_2[mode])
+    ax.annotate("a system can pass verification completely and fail validation entirely - correct against requirements that were wrong",
+                (4.72, 0.35), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 9.45)
+    ax.set_ylim(0.05, 3.85)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The secure design principles the exam outline names under this module.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-secure-design-principles")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("least privilege", "only the access the task needs, only while it needs it"),
+        ("defence in depth", "layers, so one failure is not the failure"),
+        ("secure defaults", "safe out of the box; insecurity is an opt-in"),
+        ("fail securely", "on error, deny - a crashed control is a closed one"),
+        ("separation of duties", "no single person completes a sensitive act alone"),
+        ("keep it simple", "complexity is where flaws hide from review"),
+        ("zero trust", "never trust by location; verify every request"),
+        ("privacy by design", "the privacy control is in the design, not bolted on"),
+        ("trust but verify", "grant the trust, then check it independently"),
+        ("shared responsibility", "the provider secures some of it - know which part"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 5.2))
+    for i, (name, gloss) in enumerate(rows):
+        col = i // 5
+        row = i % 5
+        x = 0.35 + col * 4.85
+        y = 4.35 - row * 0.86
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((x, y - 0.2), 1.95, 0.44, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.4))
+        ax.annotate(name, (x + 0.97, y + 0.02), ha="center", va="center",
+                    fontsize=7.2, color=ink)
+        ax.annotate(gloss, (x + 0.97, y - 0.48), ha="center", fontsize=6.6,
+                    color=S.INK_2[mode])
+    ax.annotate("principles are not controls - they are the reasons a design is judged sound before any control is chosen",
+                (4.9, 0.16), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(-0.05, 4.85)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+
+# ---------------------------------------------------------------------------
+# Biba's three properties, read against Bell-LaPadula's directions.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-biba-properties")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.6))
+    for x0, title, colour, rows in (
+        (0.4, "BELL-LaPADULA - confidentiality", c[0],
+         [("simple security", "no READ UP"), ("star property", "no WRITE DOWN"), ("", "")]),
+        (5.05, "BIBA - integrity", c[2],
+         [("simple integrity", "no READ DOWN"), ("star property", "no WRITE UP"),
+          ("invocation", "no SERVICE REQUEST UP")]),
+    ):
+        ax.add_patch(plt.Rectangle((x0, 3.72), 4.0, 0.6, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(title, (x0 + 2.0, 4.02), ha="center", va="center",
+                    fontsize=8.4, color=ink)
+        for j, (name, rule) in enumerate(rows):
+            if not name:
+                continue
+            y = 3.25 - j * 0.62
+            ax.annotate(name, (x0 + 1.05, y), ha="center", fontsize=7.5, color=colour)
+            ax.annotate(rule, (x0 + 3.0, y), ha="center", fontsize=7.8, color=ink)
+    ax.annotate("levels mean different things: BLP labels are CLASSIFICATIONS of sensitivity,",
+                (4.85, 1.5), ha="center", fontsize=7.8, color=ink)
+    ax.annotate("Biba labels are INTEGRITY levels - how trustworthy the subject or object is considered to be",
+                (4.85, 1.1), ha="center", fontsize=7.8, color=ink)
+    ax.annotate("so the rules are not simply mirrored: each model protects its own property, in its own currency",
+                (4.85, 0.55), ha="center", fontsize=7.7, color=c[1], style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(0.25, 4.5)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Brewer-Nash: access rights that change with the subject's own history.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-brewer-nash")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
+    ax.annotate("BEFORE any access", (2.35, 3.95), ha="center", fontsize=8.6, color=ink)
+    ax.annotate("AFTER accessing one side", (7.05, 3.95), ha="center", fontsize=8.6, color=ink)
+    for x0, states in ((0.4, ("open", "open")), (5.1, ("accessed", "blocked"))):
+        for k, (label, state) in enumerate(zip(("CLIENT A", "COMPETITOR B"), states)):
+            colour = c[0] if state in ("open", "accessed") else c[2]
+            style = "-" if state != "blocked" else (0, (4, 2))
+            ax.add_patch(plt.Rectangle((x0 + k * 2.05, 2.55), 1.85, 0.75,
+                                       facecolor=colour, alpha=0.10 if state == "blocked" else 0.18,
+                                       edgecolor=colour, linewidth=1.7, linestyle=style))
+            ax.annotate(label, (x0 + k * 2.05 + 0.92, 3.05), ha="center", va="center",
+                        fontsize=7.6, color=ink)
+            ax.annotate(state.upper(), (x0 + k * 2.05 + 0.92, 2.74), ha="center", va="center",
+                        fontsize=7.0, color=colour)
+        ax.plot([x0 + 1.95, x0 + 1.95], [2.4, 3.45], color=S.GUIDE[mode],
+                linewidth=2.2 if x0 > 4 else 0.9,
+                linestyle="-" if x0 > 4 else (0, (2, 3)))
+    ax.annotate("", (4.95, 2.92), (4.55, 2.92),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.6))
+    ax.annotate("the wall rises only once the subject has chosen a side - the rules change with the subject's own behaviour,",
+                (4.8, 1.55), ha="center", fontsize=7.7, color=ink)
+    ax.annotate("which is what makes this model unusual among the others",
+                (4.8, 1.15), ha="center", fontsize=7.7, color=ink)
+    ax.annotate("purpose: prevent conflict of interest - no access to a client's confidential data AND a competitor's",
+                (4.8, 0.55), ha="center", fontsize=7.7, color=c[2], style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(0.25, 4.25)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Graham-Denning's eight primitive protection commands.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-graham-denning")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    groups = [
+        ("EXISTENCE", c[0], ["create object", "delete object", "create subject", "delete subject"]),
+        ("RIGHTS", c[2], ["provide read access", "provide grant access",
+                          "provide delete access", "provide transfer access"]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.3, 4.4))
+    for i, (name, colour, items) in enumerate(groups):
+        x = 0.5 + i * 4.6
+        ax.add_patch(plt.Rectangle((x, 3.4), 3.9, 0.6, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.95, 3.7), ha="center", va="center", fontsize=8.4, color=ink)
+        for j, it in enumerate(items):
+            ax.annotate(f"{i * 4 + j + 1}.  securely {it}", (x + 0.25, 2.92 - j * 0.5),
+                        fontsize=7.6, color=S.INK_2[mode])
+    ax.annotate("three parts: a set of SUBJECTS (a process plus a domain), a set of OBJECTS, and a set of RIGHTS",
+                (4.75, 0.95), ha="center", fontsize=7.7, color=ink)
+    ax.annotate("Graham-Denning models what other models assumed: how subjects and objects come to exist, and how ownership moves",
+                (4.75, 0.5), ha="center", fontsize=7.6, color=c[1], style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(0.2, 4.2)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Inherited (common) controls: protection a system does not implement itself.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-inherited-controls")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.4, 4.6))
+    ax.add_patch(plt.Rectangle((0.5, 3.3), 8.6, 0.72, facecolor=c[0],
+                               alpha=0.16, edgecolor=c[0], linewidth=1.8))
+    ax.annotate("ENTERPRISE CONTROL  -  e.g. the perimeter firewall", (4.8, 3.66),
+                ha="center", va="center", fontsize=8.4, color=ink)
+    for i, (name, inherit) in enumerate((("SYSTEM A", "strong"), ("SYSTEM B", "partial"),
+                                         ("SYSTEM C", "little"))):
+        x = 0.8 + i * 2.85
+        colour = (c[0], c[1], c[2])[i]
+        ax.add_patch(plt.Rectangle((x, 1.75), 2.3, 0.68, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (x + 1.15, 2.09), ha="center", va="center", fontsize=7.8, color=ink)
+        ax.annotate(f"inherits {inherit} protection", (x + 1.15, 1.42), ha="center",
+                    fontsize=7.0, color=S.INK_2[mode])
+        ax.annotate("", (x + 1.15, 2.47), (x + 1.15, 3.26),
+                    arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                    linewidth=2.2 - i * 0.6,
+                                    linestyle="-" if i < 2 else (0, (3, 3))))
+    ax.annotate("the same control does NOT protect every system behind it equally - segment placement and rule set decide",
+                (4.8, 0.85), ha="center", fontsize=7.7, color=c[2])
+    ax.annotate("so the question for any inheritable control is not \"does it exist?\" but \"how much does THIS system actually inherit?\"",
+                (4.8, 0.42), ha="center", fontsize=7.6, color=ink, style="italic")
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(0.15, 4.25)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Example control frameworks and what each is oriented toward.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-control-frameworks")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("ISO/IEC 27001", "international standard", "certifiable ISMS; the common\nchoice for global reporting", c[0]),
+        ("NIST SP 800-53", "required for US government use", "large catalogue with baselines\nand a defined tailoring process", c[1]),
+        ("COBIT", "focused on business value", "governance-oriented; speaks the\nlanguage of the board", c[2]),
+        ("ISA/IEC 62443", "industrial automation and control", "operational technology, where\nsafety and availability lead", c[0]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 4.6))
+    for i, (name, kind, gloss, colour) in enumerate(rows):
+        y = 3.85 - i * 0.85
+        ax.add_patch(plt.Rectangle((0.4, y - 0.24), 2.3, 0.5, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.55, y), ha="center", va="center", fontsize=7.9, color=ink)
+        ax.annotate(kind, (2.95, y + 0.1), fontsize=7.4, color=colour)
+        ax.annotate(gloss, (2.95, y - 0.32), fontsize=6.9, color=S.INK_2[mode])
+    ax.annotate("frameworks overlap heavily and are MAPPED to one another - adopt one internally, report in another's terms",
+                (4.85, 0.55), ha="center", fontsize=7.7, color=ink)
+    ax.annotate("adopting an existing framework is typically more effective than developing a unique set of controls",
+                (4.85, 0.16), ha="center", fontsize=7.6, color=c[1], style="italic")
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(-0.15, 4.3)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The three control evaluation methods, and why they are combined.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-control-evaluation")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    cols = [
+        ("TEST", c[0], "conduct a direct test\nof the control", "usually TECHNICAL controls",
+         "proves the function works\nright now"),
+        ("INTERVIEW", c[1], "question or interview\nstaff", "usually MANAGEMENT and\nOPERATIONAL controls",
+         "reveals whether people\nactually operate it"),
+        ("EXAMINE", c[2], "examine documentation\nor artefacts", "used for ALL control types",
+         "shows it was configured\nand governed as intended"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 4.6))
+    for i, (name, colour, what, whom, buys) in enumerate(cols):
+        x = 0.35 + i * 3.15
+        ax.add_patch(plt.Rectangle((x, 3.55), 2.9, 0.62, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.45, 3.86), ha="center", va="center", fontsize=8.8, color=ink)
+        ax.annotate(what, (x + 1.45, 3.1), ha="center", fontsize=7.3, color=ink)
+        ax.annotate(whom, (x + 1.45, 2.4), ha="center", fontsize=7.0, color=colour)
+        ax.annotate(buys, (x + 1.45, 1.7), ha="center", fontsize=6.9, color=S.INK_2[mode])
+    ax.annotate("a control may - and should - be evaluated by SEVERAL methods: test the function, examine the configuration,",
+                (4.85, 0.85), ha="center", fontsize=7.6, color=ink)
+    ax.annotate("interview the administrator. Together they show effectiveness, or the deficiency that limits it.",
+                (4.85, 0.45), ha="center", fontsize=7.6, color=ink)
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(0.2, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
