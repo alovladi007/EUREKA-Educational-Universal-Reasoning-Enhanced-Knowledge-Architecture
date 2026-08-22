@@ -5940,7 +5940,7 @@ It gets worse before it gets better: because **the FTL controls how the system i
 
 ## The classification override
 
-The combination rule is the floor, not the ceiling. For data whose value justifies purging-or-better assurance, the honest SSD answer adds Section 4: **physical destruction with a method that attacks the flash chips themselves** - shredding to a particle size smaller than the chips, not merely the enclosure. Degaussing, note carefully, contributes nothing here: there is nothing magnetic in flash to saturate, and an exam option offering "degauss the SSDs" is testing whether Section 1's physics table survived in memory. It should - this section is that table's consequences, played out. The broader habit is the one to carry out of the module: before trusting any erasure method, ask which physics it attacks, and whether the media in hand actually uses that physics - the question that separates assurance from ritual.`
+The combination rule is the floor, not the ceiling. For data whose value justifies purging-or-better assurance, the honest SSD answer adds Section 4: **physical destruction with a method that attacks the flash chips themselves** - shredding to a particle size smaller than the chips, not merely the enclosure. Degaussing, note carefully, contributes nothing here: there is nothing magnetic in flash to saturate, and an exam option offering "degauss the SSDs" is testing whether Section 1's physics table survived in memory. It should - this section is that table's consequences, played out. The broader habit is the one to carry out of the module: before trusting any erasure method, ask which physics it attacks, and whether the media in hand actually uses that physics - the question that separates assurance from ritual. Answer it before choosing a method, and the method nearly chooses itself; answer it afterwards, and the erasure report is a document about effort rather than about outcome.`
     },
     {
       id: '6-cloud',
@@ -6044,7 +6044,388 @@ Erasure claims are defended by citing recognised processes, and the module close
     }
   ]
 },
-// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====
+cissp_d2_review: {
+  topicId: 'cissp_d2_review',
+  title: `Domain 2 Review`,
+  domainWeight: '10%',
+  overview: `Asset Security is the protection of valuable assets as they move through their lifecycle, and protection is always based on value. That one sentence carries the domain: value is expressed by a classification level the owner initiates, the level selects a baseline of minimum controls, the baseline follows the asset through every lifecycle phase, and the lifecycle ends in defensible destruction. This review assembles the eight modules into that single chain, isolates the discriminators the exam actually tests - accountable versus responsible, controller versus processor, clearing versus purging versus destruction, classification versus categorization, scoping versus tailoring, the three data states - and then works multi-module scenarios of the kind that make Domain 2 questions hard. It closes with sixteen original review questions, per-option rationales, and a glossary in plain words.`,
+  sections: [
+    {
+      id: '1-one-view',
+      title: `1. The Domain in One View`,
+      content: `## The summary the domain gives itself
+
+**Asset Security is all about the protection of valuable assets to an organisation as those assets go through their lifecycle - and protection will always be done based on value.** Everything else in the domain is machinery for making that sentence operational.
+
+The mechanism runs like this. **The value of the asset is expressed by its classification level, which is initiated by the owner**, and **the value must be monitored as the asset goes through its lifecycle**. **Classification therefore protects the asset based on its value.** To deliver that protection, **baselines of minimum levels of security are implemented for each classification level**. And to make any of it work, **an organisation requires the careful and proper implementation of ownership and classification processes that ensure assets receive protection based on their value to the organisation.**
+
+![Domain 2's eight modules on one chain](/courses/cissp/figures/cissp-d2-map.svg)
+
+## The privacy half
+
+The domain's summary gives privacy its own paragraph, and the reason is quantitative: **the enormous increase in the collection of personal information by organisations has produced a corresponding increase in the importance of privacy considerations, so privacy protection constitutes an important part of the asset security domain.** What individual privacy protection draws on, in this domain's own vocabulary, is **asset owners and custodians, processors, remanence, and limitations on the collection and storage of valuable assets such as information** - plus **retention as it relates to the organisation's legal and regulatory requirements.** Read that list as a map: every privacy obligation is discharged using machinery the domain built for assets generally. A subject access request is answered from the inventory; a deletion right is honoured by the destruction programme; a purpose limitation is enforced by the classification and access machinery; a retention ceiling is implemented by the records schedule. The practical consequence for an organisation is that a privacy programme built beside the asset security programme duplicates work and diverges under pressure, while one built on top of it inherits capabilities that already exist and already have owners.
+
+## The controls half
+
+Finally the summary names what the practitioner must be able to apply: **appropriate security controls chosen to protect the asset through its lifecycle, keeping in mind the requirements of each lifecycle phase and the handling requirements throughout** - which requires understanding **baselines, scoping and tailoring, standards selection, and proper controls**, and requires protecting **data in its different states: at rest, in motion, and in use**, with **encryption an effective tool for all three states.** And the closing line is the domain's last word: **the asset lifecycle should end with the asset and data being destroyed securely - defensible destruction.**
+
+## The chain, module by module
+
+| Module | Its link in the chain | The sentence that carries it |
+| --- | --- | --- |
+| 1 Information and Assets | Defines value and demands the inventory | An asset is anything of value; you cannot protect what you have not found |
+| 3 Ownership | Assigns who judges value | Owners are accountable; custodians and processors are responsible |
+| 2 Asset Lifecycle | Tracks value as it changes | Classify at creation; monitor; disposition forks to archive or destroy |
+| 4 Protect Privacy | Adds the law's floor on personal data | Controllers accountable, processors responsible; eight OECD principles |
+| 5 Asset Retention | Bounds how long value is held | Keep per requirement, not longer; legal hold overrides the schedule |
+| 6 Data Security Controls | Converts level into controls | The label selects the baseline; the state selects how it applies |
+| 7 Handling Requirements | Applies it to physical media | Media cannot log; marking, handling, storing, recorded destruction |
+| 8 Data Remanence | Ends value defensibly | Clearing, purging, destruction - and what each actually defeats |
+
+## The three data states
+
+One cross-cutting idea deserves its own treatment before the discriminators, because it appears in questions from three different modules.
+
+![Three states, three control problems](/courses/cissp/figures/cissp-data-states.svg)
+
+**Data at rest** sits on media - disks, tapes, archives, backups - and is protected by encryption plus access and physical controls. **Data in motion** traverses networks and is protected by transport and network encryption, where the link-versus-end-to-end distinction decides which segments are covered. **Data in use** is being processed, and therefore must be in cleartext to be processed at all; it is the state that resists protection, which is why its controls are compensating - enclaves, DLP, DRM, tight access control - rather than preventive. The asymmetry between the three is worth carrying as a habit: for at rest and in motion, the question is whether encryption is applied and whether the keys are managed properly; for in use, the question is how far the cleartext window can be narrowed - fewer systems touching it, shorter residency, tighter authorisation on the processes that do - because it cannot be closed entirely while the data is being processed.
+
+Note the naming precisely, because it is a favourite trap: the three states are at rest, in motion, and in use. "Data in storage" is a plausible-sounding phrase that is *not* one of the three; the stored state is called **data at rest**.`
+    },
+    {
+      id: '2-discriminators',
+      title: `2. The Cross-Module Discriminators`,
+      content: `## Why discriminators, not summaries
+
+Domain 2 questions are rarely hard because a fact is obscure. They are hard because two adjacent concepts both sound right, and the stem contains one word that selects between them. This section collects those pairs.
+
+## Accountable versus responsible
+
+The domain's most reused distinction. **Accountability cannot be delegated; responsibility can.** The owner is **accountable** for protecting the value of what they own - they may delegate the *responsibility* for protecting it, or even for classifying it, but they answer for the outcome regardless. Custodians are **responsible** for protection while the asset is in their custody. The exam cue is the verb: a stem asking who *answers for*, who is *ultimately* responsible, or who bears the consequence wants the accountable party; a stem asking who *performs*, *maintains*, or *safeguards day to day* wants the responsible one. The same axis explains a pattern that confuses candidates: the owner may delegate classification itself, and the delegation is perfectly legitimate, yet a misclassification by the delegate is still the owner's failure to answer for. Delegation moves the work and the authority to do it; it never moves the answerability, which is what makes accountability a useful concept rather than a synonym for responsibility.
+
+![Accountable delegates the work but keeps the answer](/courses/cissp/figures/cissp-accountable-responsible.svg)
+
+## Controller versus processor versus subject versus steward versus custodian
+
+The privacy roles map onto the same axis, which is why the domain teaches them together.
+
+| Role | Accountable or responsible | One-line identity |
+| --- | --- | --- |
+| **Data subject** | Neither - the protected party | The individual the personal data is about |
+| **Data owner** | Accountable | Determines value; defines access policy; accountable for protection |
+| **Data controller** | Accountable | Acts as owner where no true owner exists; determines purposes and means of processing |
+| **Data steward** | Responsible | Responsible for data content, context, and business rules |
+| **Data processor** | Responsible | Processes on the controller's behalf; accountability stays with the controller |
+| **Data custodian** | Responsible | Protects data while it is in their custody: safe custody, transport, storage, processing |
+
+The high-frequency question shape puts a privacy programme in the stem and asks who is accountable for ensuring protection and compliance requirements are met. The answer is the **controller**, because in a privacy context the controller occupies the owner's chair. Processor is the distractor for the party doing the work; subject is the distractor for the party being protected; steward is the distractor for the party managing content and rules.
+
+## Classification versus categorization
+
+**Classification is the system** - forming into classes, the scheme of levels. **Categorization is the act** of sorting things into that system, and what it measures is **the impact of losing confidentiality, integrity, or availability**. A stem describing the definition of levels wants classification; a stem describing an impact determination for a particular asset wants categorization.
+
+## Clearing versus purging versus destruction
+
+| Term | The assurance it claims | The one-word tell |
+| --- | --- | --- |
+| **Clearing** | Defeats **most** known recovery techniques; specialists may still recover | "most" |
+| **Purging** (sanitizing) | Cannot be reconstructed by **any** known technique | "any" |
+| **Destruction** | The **media** is made unusable; strongest, if the method is good | "media" |
+| **Defensible destruction** | Not recoverable by **any known means**, done in a controlled, compliant, legally defensible way | "defensible" |
+
+![The sanitization ladder, by the recovery capability each rung defeats](/courses/cissp/figures/cissp-sanitization-ladder.svg)
+
+The trap is that "defensible destruction" has *two* plausible-looking definitions, and only one is complete. Unrecoverability alone is the outcome; defensibility adds that the destruction was performed in a **quality-controlled, regulatory-compliant, and legally defensible** way - which is to say it can be evidenced. When both an outcome-only option and a controlled-and-compliant option appear, the second is the better definition.
+
+## Baseline versus scoping versus tailoring
+
+A **baseline** is a **minimum level of protection used as a consistent reference point**, defining the minimum controls for a classification level, and it may be associated with specific architectures and systems. What a baseline is *not* is a procedure: it does not specify the individual steps that must be executed - that is what standards and procedures do beneath it.
+
+**Scoping** limits general baseline recommendations by **removing those that do not apply** - a subtraction, driven by relevance. **Tailoring** **alters the baseline to apply more specifically** to the environment - an adjustment, driven by fit. The exam cue is the direction of the change: removing inapplicable controls is scoping; adapting controls that do apply is tailoring.
+
+## Asset, and the definition trap
+
+The definition question for "asset" is a recurring one, and its distractors are all *examples* rather than definitions: a hardware system, people in a particular environment, software in a particular environment. The definition is the general one - **any item perceived as having value to the organisation**. When a stem asks for the BEST definition and the options offer three specifics and one general, the general one is nearly always the definition being sought.
+
+| If the stem says... | It is asking about... | Not about... |
+| --- | --- | --- |
+| "ultimately responsible", "answers for" | The accountable party - owner or controller | The party performing the work |
+| "determines the impact of loss" | Categorization | Classification, which is the scheme itself |
+| "most known recovery techniques" | Clearing | Purging, which defeats any known technique |
+| "removing controls that do not apply" | Scoping | Tailoring, which adapts controls that do apply |
+| "in a controlled, compliant, legally defensible way" | Defensible destruction | Destruction generally, which varies by method |
+| "the stored state" | Data at rest | "Data in storage", which is not the term |
+
+A habit worth building from that table: read the stem twice, once for the scenario and once for the *vocabulary*. Domain 2 stems are frequently constructed so that the scenario supports two answers and a single defined term selects between them - which means the reading that matters is the second one. Candidates who answer from the scenario alone tend to pick the option that describes good practice; candidates who answer from the vocabulary pick the option that matches the definition, and the definition is what is being tested.
+
+## Retention: what it actually requires
+
+Effective retention needs **policy** (the obligation, stated and binding), **awareness, education, and training** (so people follow it), and **an understanding of compliance requirements** (so the periods are right). What it does not require is any particular *role title* - a data steward is a useful role, not a precondition for retention. Watch for questions that mix mechanisms with roles and ask which item does not belong.
+
+## The OECD principles, and the impostor
+
+The eight are collection limitation, data quality, purpose specification, use limitation, security safeguards, openness, individual participation, and accountability. Questions in this family usually present three real principles and one plausible privacy concept that is not an OECD principle - a right to be forgotten, a right to portability, a breach-notification principle. These are real ideas in modern privacy law; they are not among the OECD's eight. The one to watch hardest is erasure, because the **individual participation** principle *does* include having data erased, rectified, completed, or amended on a successful challenge - so the concept is present while the named principle is not.
+
+## Handling, retention, and remanence in one line each
+
+Three modules supply single rules that appear as whole questions. **Unlabelled media** is labelled at the **highest** sensitivity and handled there until analysis says otherwise - the fail-safe default, and the rule that stops label removal from becoming free declassification. **Retention** keeps information only as long as required, with the named mistake being application of the longest applicable period to everything without analysis; a **legal hold** overrides the schedule while it stands. And **destruction** is performed rather than assumed, leaving a **record that reconciles with the handling logs** - the chain of custody that makes an item's exit from the inventory legitimate rather than merely unrecorded.`
+    },
+    {
+      id: '3-scenarios',
+      title: `3. Worked Review Scenarios`,
+      content: `## Worked Scenario 1: The classification programme that produced nothing
+
+*A firm runs a twelve-month classification project. Every document is labelled; a four-level scheme is published; the project closes green. A year later an assessor finds RESTRICTED and PUBLIC documents subject to identical controls.* The project delivered categorization without the mechanisms behind it - and the domain names the failure directly: the value of classification lies **not only in the levels used but in the underlying mechanisms and architectures that provide the levels of protection each level requires**. Labels differentiate nothing unless baselines differ per level and are actually enforced. The remediation runs the chain in order: define a baseline per level (access, encryption, labelling, monitoring, retention, destruction method), apply it, and add the education and support elements without which classification systems do not work. Note the diagnostic habit: when a Domain 2 programme produces no protection, ask which link of value-level-baseline-control is missing, rather than assuming the labels were wrong.
+
+## Worked Scenario 2: The cloud exit with a regulator watching
+
+*An organisation leaves a cloud provider after five years and must certify to a regulator that personal data has been destroyed.* Three modules meet here. **Privacy** supplies the obligation and the roles: the organisation is the controller and remains accountable; the provider was a processor. **Retention** supplies the timing and the gate: the schedule releases the data, and any legal hold must be checked before destruction executes. **Remanence** supplies the honest answer to *how*: the practitioner cannot wipe media they do not own, cannot see, and cannot enumerate, so the defensible act is destruction of customer-managed keys - valid only if the architecture ensured no unencrypted data was ever written to physical media at any point in the lifecycle, including in transit. If that invariant was not designed in, the honest certification is weaker (provider attestation plus contract terms) and the finding is architectural. The exam shape here is "what can the customer actually prove?" - and the answer is: only the act it performed itself. That framing generalises past the cloud: whenever a stem places an asset outside the organisation's direct control - a processor, a lessor, a disposal vendor, a service provider - the answerable question is which act the organisation can perform and evidence itself, and which acts it can only require by contract and verify by attestation or audit.
+
+## Worked Scenario 3: The label that outlived its value
+
+*Quarterly results are classified at the highest level before publication and remain there, under expensive controls, three years later.* This is a monitoring failure, and the lifecycle module supplies both the rule and the surprise: the value of an asset must be monitored, and a change in value requires attention **to either increase or decrease** the controls, because controls **must always be cost-effective based on the value protected**. Over-protection is a genuine defect, not a safe default. The remediation is a documented declassification, answering the three change questions - what caused the change in value and was it warranted, under whose authority the change was carried out, and what documentation substantiates it - so that lowering a level is a governed act rather than an ungoverned one.
+
+## Worked Scenario 4: The SSDs that passed their wipe
+
+*Retiring SSDs from a regulated environment pass a seven-pass overwrite; the tool reports success on every drive; the disposal team asks to release them to surplus.* The remanence module answers on physics: flash cannot be overwritten in place, so the drive writes changes to new locations and the flash translation layer remaps, leaving iterations of old data in cells the wiping tool cannot address. Pass count is irrelevant - the tool was talking to an abstraction. Required is the combination: crypto-erase, the manufacturer's sanitize command, then overwrite; and at high sensitivity, physical destruction that attacks the flash chips themselves. Distractors in this family usually include degaussing, which does nothing at all to flash because there is nothing magnetic to saturate.
+
+## Worked Scenario 5: The retention memo that maximised everything
+
+*Legal proposes retaining all corporate data for the longest period any regulation imposes on any record the firm holds.* This is the retention module's named mistake: finding the longest period and applying it without analysis to all information types. Its costs are stated - wasted storage, and considerable noise added to every search and processing effort - and the privacy modules add a third: what is retained is discoverable and breachable for the whole period, and personal data kept past its purpose is a violation regardless of business appetite. The correct machinery is understanding requirements per data type, documenting them in a records schedule, retaining per the schedule but not longer, and reviewing periodically to prune. The exam cue for this family is any option that treats maximum retention as the conservative choice.
+
+## Worked Scenario 6: Who answers for the breach
+
+*A payroll bureau processing employee data on a company's behalf is breached. The company's contract says the bureau is responsible for its own security.* Two role systems agree here. In privacy terms the company is the controller (it determines the purposes and means) and holds accountability; the bureau is the processor and holds responsibility. In the domain's general terms, the company owns the asset and the bureau has custody. Accountability was never transferable, so the company answers to the regulator and to the affected individuals; its recourse against the bureau is contractual and separate. Note also what the contract clause in the stem actually achieved: it allocated responsibility between the parties, which is a legitimate and useful thing for a contract to do, and it did nothing whatsoever to the accountability the regulator will enforce. Contracts move responsibility and cost; they do not move answerability, which is why an option offering "the contract makes the supplier accountable" is wrong however the contract is worded. The forward-looking obligation follows from the asymmetry: due diligence, contractual security terms, and audit rights are how a controller discharges accountability it cannot delegate.`
+    },
+    {
+      id: '4-questions-1',
+      title: `4. Self-Check: Domain Review Questions I`,
+      content: `## Self-Check Questions 1-8
+
+**Q1.** Which of the following BEST describes how an asset classification programme helps an organisation achieve its goals and objectives?
+
+A. It satisfies the requirements imposed by the internal audit function.
+B. It specifies the controls needed to protect assets according to their value.
+C. It restricts changes to production environments.
+D. It removes the need for a separate risk management process.
+
+**Q2.** Which BEST defines an asset?
+
+A. Hardware operating in a data centre.
+B. Software running in a categorised environment.
+C. Any item perceived as having value to the organisation.
+D. Personnel working in high-sensitivity areas.
+
+**Q3.** Which sequence correctly orders the six-phase data lifecycle?
+
+A. Create, use, share, store, archive, destroy.
+B. Create, store, use, share, archive, destroy.
+C. Create, share, use, archive, store, destroy.
+D. Create, store, share, use, archive, destroy.
+
+**Q4.** In a privacy programme where no traditional data owner exists, which role holds the accountability for ensuring protection and compliance requirements are met?
+
+A. Data processor.
+B. Data subject.
+C. Data controller.
+D. Data steward.
+
+**Q5.** Which is NOT one of the OECD privacy principles?
+
+A. Collection limitation.
+B. Right to be forgotten.
+C. Use limitation.
+D. Accountability.
+
+**Q6.** Which BEST defines defensible destruction?
+
+A. Destruction performed with equipment approved by a defence agency.
+B. Destruction of assets in a controlled, compliant, and legally defensible way such that the data cannot be recovered.
+C. Destruction that makes recovery unlikely for most attackers.
+D. Destruction that physically damages the media in any manner.
+
+**Q7.** Which is NOT an objective or property of a security baseline?
+
+A. A minimum level of security controls.
+B. A consistent reference point for comparison.
+C. The specific steps that must be executed to configure a system.
+D. It may be associated with specific architectures and systems.
+
+**Q8.** Which BEST defines scoping?
+
+A. Altering baseline controls so they apply more specifically to an environment.
+B. Limiting general baseline recommendations by removing those that do not apply.
+C. Adjusting assumptions based on previously observed behaviour.
+D. Protecting assets in proportion to organisational goals and objectives.`
+    },
+    {
+      id: '5-questions-2',
+      title: `5. Self-Check: Domain Review Questions II`,
+      content: `## Self-Check Questions 9-16
+
+**Q9.** Which of the following is NOT one of the three data states?
+
+A. Data at rest.
+B. Data in motion.
+C. Data in storage.
+D. Data in use.
+
+**Q10.** Effective records retention in an organisation requires all of the following EXCEPT:
+
+A. A retention policy.
+B. Awareness, education, and training.
+C. An understanding of compliance requirements.
+D. A designated data steward.
+
+**Q11.** Unlabelled media is discovered in a shared meeting room. What is the correct immediate treatment?
+
+A. Analyse the contents first, then label according to what is found.
+B. Label it at the highest level of sensitivity and handle it accordingly until analysis shows otherwise.
+C. Treat it as internal until an owner claims it.
+D. Destroy it, since unlabelled media has no established value.
+
+**Q12.** An organisation must sanitise magnetic hard drives that are being returned to a lessor in working order. Which method is MOST appropriate?
+
+A. Degaussing.
+B. Validated overwriting.
+C. Shredding.
+D. Heating the platters above the Curie temperature.
+
+**Q13.** A data owner delegates classification of a dataset to a team lead, who classifies it incorrectly and a breach follows. Who is accountable?
+
+A. The team lead, because they performed the classification.
+B. The data owner, because accountability cannot be delegated.
+C. The data custodian, because the data was in their custody.
+D. The security function, because it owns the classification scheme.
+
+**Q14.** Which activity determines the impact of the loss of confidentiality, integrity, or availability of information to an organisation?
+
+A. Classification.
+B. Categorization.
+C. Scoping.
+D. Baselining.
+
+**Q15.** Which OECD principle requires that the purposes for collecting personal data be specified no later than at the time of collection?
+
+A. Collection limitation.
+B. Purpose specification.
+C. Use limitation.
+D. Openness.
+
+**Q16.** A wiping utility reports a successful multi-pass overwrite of a solid-state drive holding highly sensitive data. What is the correct conclusion?
+
+A. The drive is sanitised; multi-pass overwriting exceeds the purging standard.
+B. The drive may still hold recoverable data, because the flash translation layer redirects writes and can hide old iterations from the tool.
+C. The drive is cleared but not purged, and a single additional pass would purge it.
+D. The drive is safe for reuse internally but not for release outside the organisation.`
+    },
+    {
+      id: '6-answers',
+      title: `6. Answers and Rationales`,
+      content: `## Answers 1-8
+
+**A1 - B.** Classification's contribution is that it **specifies the controls needed to protect valuable assets** according to value, which is how it advances organisational goals. **A** inverts the purpose: satisfying audit is a by-product, not the objective, and a programme built for audit tends to produce labels without protection. **C** describes change management, a different control domain entirely. **D** is false in the opposite direction - classification feeds risk management by supplying asset value; it does not replace it.
+
+**A2 - C.** The definition is general: **any item perceived as having value to the organisation**. **A**, **B**, and **D** are all *examples* of assets, and each is narrower than the definition. When a BEST-definition stem offers several specifics and one general statement, the general one is the definition.
+
+**A3 - B.** **Create, store, use, share, archive, destroy.** Storing usually happens at or immediately after creation, and sharing follows use because data is generally used before it is distributed. **A** and **D** misplace store relative to use and share; **C** puts archive before store, which reverses the lifecycle.
+
+**A4 - C.** The **data controller** takes the owner's chair where no true owner exists - determining the purposes and means of processing and therefore holding accountability for protection and compliance. **A** the processor is responsible, not accountable; **B** the subject is the individual being protected, holding rights rather than obligations; **D** the steward is responsible for data content, context, and business rules.
+
+**A5 - B.** The eight principles are collection limitation, data quality, purpose specification, use limitation, security safeguards, openness, individual participation, and accountability. A **right to be forgotten** is a real concept in modern privacy law but is not one of the OECD's eight. The trap is that erasure appears *within* individual participation - a successful challenge can require data to be erased, rectified, completed, or amended - so the idea is present while the named principle is not.
+
+**A6 - B.** Defensible destruction requires both halves: the data cannot be recovered by any known means, **and** the destruction was performed in a controlled, compliant, legally defensible way. **C** is too weak: "unlikely for most attackers" is the definition of clearing, not defensible destruction. **D** is the drilled-hole error - physical damage does not imply unrecoverability. **A** invents a certification requirement that is not part of the definition.
+
+**A7 - C.** A baseline is a minimum level of security, a consistent reference point, and it may be tied to specific architectures and systems - so A, B, and D are all properties of baselines. What a baseline does not do is specify **the individual steps to be executed**; that is the job of procedures beneath the standards that implement the baseline. The distinction matters in practice: baselines state *what minimum must be true*, procedures state *how to make it true*. The confusion is worth naming because it produces real programme failures: an organisation that writes its baselines as step-by-step configuration instructions finds them obsolete with every platform change, while one that writes them as required minimum properties finds them portable across platforms and durable across upgrades, with the steps living where steps belong.
+
+**A8 - B.** **Scoping** limits general baseline recommendations by **removing those that do not apply**. **A** defines **tailoring** - altering the baseline to apply more specifically - which is the intended near-miss. **C** is unrelated. **D** restates protection-by-value generally rather than defining the term.
+
+## Answers 9-16
+
+**A9 - C.** The three states are **data at rest**, **data in motion**, and **data in use**. **Data in storage** is a plausible synonym that is not the standard term; the stored state is called at rest. Precision matters here because the three states are the axis along which the Data Security Controls module organises encryption.
+
+**A10 - D.** Retention requires **policy**, **awareness, education, and training**, and **an understanding of compliance requirements**. A **data steward** is a useful role but not a requirement for effective retention; the question mixes mechanisms with a role title, and the role is the odd one out.
+
+**A11 - B.** Unlabelled media is **immediately labelled at the highest level of sensitivity and handled at that level until proper analysis reveals otherwise**. **A** exposes the contents during the analysis gap. **C** guesses low, risking disclosure of the organisation's most valuable data. **D** destroys potentially needed information and answers a question nobody asked. The rule also closes a loophole: if unlabelled media were treated casually, removing a label would be the easiest declassification available.
+
+**A12 - B.** **Validated overwriting** erases magnetic media effectively while leaving the drives functional, which the lease requires. **A** degaussing usually renders modern HDDs completely unusable - it erases the factory servo information along with the data - so it fails the working-order condition. **C** and **D** are destruction methods, which fail the same condition. Note how the stem's constraint, not the assurance level, selects the answer. That pattern recurs across sanitization questions: several methods usually reach the required assurance, and the stem's practical constraint - the media must work afterwards, the organisation does not own it, the technology is flash rather than magnetic, a regulator will inspect the evidence - eliminates all but one. Read the constraint first and the method list becomes short.
+
+**A13 - B.** The **data owner** remains accountable. Responsibility for performing classification can be delegated; **accountability cannot be delegated** - which is the domain's most reused principle. **A** confuses performing with answering for. **C** applies to protection during custody, not to the classification decision. **D** is wrong for the same reason the owner classifies in the first place: the security function supplies the scheme, not the value judgement. It is worth noticing what a correct answer here does *not* imply. Holding the owner accountable does not mean the team lead bears nothing: they hold responsibility for the classification they performed, and the organisation may act on that. Accountability and responsibility are not competing claims to the same blame - they are different relationships to the same outcome, which is exactly why the domain insists on separating them.
+
+**A14 - B.** **Categorization** is the process of determining the impact of the loss of confidentiality, integrity, or availability. **A** classification is the system of levels into which categorization sorts assets. **C** and **D** operate on controls, not on impact.
+
+**A15 - B.** **Purpose specification** requires purposes to be specified **not later than at the time of data collection**, with subsequent use limited to those purposes or others not incompatible with them, specified on each change of purpose. **A** limits how much is collected and by what means. **C** restricts disclosure and use beyond the specified purposes - the consequence of purpose specification rather than the timing rule itself. **D** concerns general openness about practices and the controller's identity.
+
+**A16 - B.** Flash memory cannot be overwritten in place: the drive writes changes to a new location and the flash translation layer updates the map, so old iterations remain in cells the tool cannot address. The utility verified its own writes to logical blocks, not the state of the physical cells. **A** and **C** both assume pass count purges flash, which the physics denies. **D** invents a partial-assurance conclusion the method does not support. The correct treatment is the combination - crypto-erase, manufacturer sanitize command, overwrite - and at this sensitivity, physical destruction attacking the flash chips themselves.`
+    },
+    {
+      id: '7-terms',
+      title: `7. Terms and Definitions`,
+      content: `## The domain's vocabulary, in plain words
+
+**Asset.** Anything that has value to the organisation. Also called a resource. Includes information, software, physical items, processes and services, and value that appears on no register - people, ideas, intellectual property, reputation, brand, identity.
+
+**Asset valuation.** The process of understanding what an asset is worth. Quantitative valuation answers in numbers, usually monetary; qualitative valuation answers in grades, and is the usual method for intangibles such as information.
+
+**Classification.** The system of classes - the scheme of levels an organisation defines so protection can be applied by value rather than by argument.
+
+**Categorization.** The act of sorting an asset into the classification system, determined by the impact of losing its confidentiality, integrity, or availability.
+
+**Baseline.** A minimum level of protection used as a consistent reference point; defined per classification level; may be tied to specific architectures and systems. States the minimum that must be true, not the steps for making it true.
+
+**Scoping.** Limiting general baseline recommendations by removing the controls that do not apply to the environment.
+
+**Tailoring.** Altering baseline controls so that they apply more specifically to the environment.
+
+**Data subject.** The individual whom personal data is about.
+
+**Data owner.** Accountable for determining the value of what they own and therefore for its protection; defines access policy; communicates protection responsibilities to others.
+
+**Data controller.** In the absence of a true owner - typically for personal data collected from customers - the party that determines the purposes and means of processing and holds accountability for protection.
+
+**Data steward.** Responsible for data content, context, and the associated business rules.
+
+**Data processor.** Processes data on the controller's behalf; responsible for protection, while accountability remains with the controller.
+
+**Data custodian.** Responsible for protecting data while it is in their custody - safe custody, transport, storage, and processing, and compliance with the owner's policies.
+
+**Accountability.** Answerability for an outcome. Cannot be delegated.
+
+**Responsibility.** The duty to perform. Can be delegated.
+
+**Asset lifecycle.** The phases an asset passes through, with protection applied at each according to its value at that moment: identify and classify, secure, monitor, recover, disposition, archive, defensible destruction. Also expressed as create, store, use, share, archive, destroy.
+
+**Disposition.** The point at which an asset's useful life ends, forking to archiving (retention) or destruction, as decided by law, regulation, policy, and value.
+
+**Records schedule.** The document recording retention requirements per type of information, against which systems, processes, and individuals retain - and stop retaining.
+
+**Legal hold.** A suspension of scheduled destruction because material is relevant to actual or anticipated litigation or investigation. Overrides the schedule while it stands.
+
+**Data at rest / in motion / in use.** The three states: stored on media; traversing a network; being processed, and therefore necessarily in cleartext.
+
+**Data remanence.** Residual data remaining on media after deletion or erasure, persisting as physical characteristics that a capable party may recover.
+
+**Clearing.** Removal of data providing assurance against **most** known recovery techniques; specialist recovery may still succeed.
+
+**Purging (sanitizing).** Removal of data such that it cannot be reconstructed by **any** known technique.
+
+**Destruction.** Rendering the media itself unusable. Effectiveness varies entirely with the method chosen.
+
+**Defensible destruction.** Destruction performed in a quality-controlled, regulatory-compliant, and legally defensible way, such that the data cannot be recovered by any known means - and can be evidenced.
+
+**Crypto-erase (crypto-shredding).** Erasure by destroying the encryption key so the stored ciphertext becomes unrecoverable; the practical answer in cloud environments where physical media is beyond reach.
+
+**Object reuse controls.** Cleansing storage before it is reallocated to a new use or user, applied whenever the previous sensitivity is unknown.
+
+**Collection limitation.** The OECD principle that there should be limits to the collection of personal data, obtained by lawful and fair means and, where appropriate, with the knowledge or consent of the data subject.
+
+## Bridging to Domain 3
+
+Domain 2 answered *what to protect and how much*. Domain 3, Security Architecture and Engineering, answers *how protection is built*: secure design principles, the formal security models that make confidentiality and integrity rules precise, evaluation criteria that let one organisation trust another's assurances, cryptography in depth, and physical security. The handoff is direct - this domain's baselines state the minimum that must be true, and the next domain supplies the architectures and mechanisms that make them true. Read the two domains in that order and several Domain 3 topics that otherwise look like abstract theory acquire a purpose: a formal model of confidentiality exists because a classification scheme needs its access rules stated without ambiguity, and an evaluation scheme exists because a baseline that demands a trustworthy component has to be able to say what trustworthy means to somebody other than its author. Several Domain 2 threads are picked up directly there: the encryption that protects all three data states is developed into a full treatment of cryptography and key management; the access rules that classification levels demand are formalised in the security models that state confidentiality and integrity properties precisely; and the trust an organisation places in a supplier's assurances - the problem behind cloud remanence and processor oversight alike - becomes the evaluation criteria that let one party rely on another's independently assessed claims.`
+    }
+  ]
+},
+// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====
 cissp_secure_design: {
   topicId: 'cissp_secure_design',
   title: `Processes Using Secure Design Principles`,

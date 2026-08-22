@@ -3020,6 +3020,95 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Domain 2 in one view: the nine modules on the value -> protection chain.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-d2-map")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    chain = [
+        ("1 INFORMATION\nAND ASSETS", "value defined;\ninventory first", c[0]),
+        ("3 OWNERSHIP", "owner accountable,\ncustodian responsible", c[1]),
+        ("2 ASSET\nLIFECYCLE", "classify, secure, monitor,\nrecover, dispose", c[2]),
+        ("6 DATA SECURITY\nCONTROLS", "baselines, scoping,\nthe three data states", c[0]),
+    ]
+    tail = [
+        ("4 PROTECT\nPRIVACY", "OECD principles;\ncollection limitation", c[1]),
+        ("5 ASSET\nRETENTION", "the schedule;\nlegal hold", c[2]),
+        ("7 HANDLING", "marking, storing,\nrecorded destruction", c[0]),
+        ("8 DATA\nREMANENCE", "clearing, purging,\ndefensible destruction", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.9, 5.0))
+    for row, items in ((3.55, chain), (1.55, tail)):
+        for i, (name, gloss, colour) in enumerate(items):
+            x = 0.3 + i * 2.42
+            ax.add_patch(plt.Rectangle((x, row), 2.05, 0.72, facecolor=colour,
+                                       alpha=0.16, edgecolor=colour, linewidth=1.7))
+            ax.annotate(name, (x + 1.02, row + 0.36), ha="center", va="center",
+                        fontsize=7.6, color=ink)
+            ax.annotate(gloss, (x + 1.02, row - 0.34), ha="center", fontsize=6.7,
+                        color=S.INK_2[mode])
+            if i < 3:
+                ax.annotate("", (x + 2.38, row + 0.36), (x + 2.09, row + 0.36),
+                            arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                            linewidth=1.5))
+    ax.annotate("", (9.05, 3.4), (9.5, 3.4),
+                arrowprops=dict(arrowstyle="-", color=S.GUIDE[mode], linewidth=1.4))
+    ax.annotate("", (9.5, 3.4), (9.5, 1.91),
+                arrowprops=dict(arrowstyle="-", color=S.GUIDE[mode], linewidth=1.4))
+    ax.annotate("", (9.5, 1.91), (2.4, 1.91),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.4))
+    ax.annotate("one sentence holds the domain together:  the owner values the asset, the value sets the level,",
+                (4.95, 0.72), ha="center", fontsize=8.0, color=ink)
+    ax.annotate("the level selects the baseline, and the baseline follows the asset to defensible destruction",
+                (4.95, 0.34), ha="center", fontsize=8.0, color=c[2])
+    ax.set_xlim(0, 10.1)
+    ax.set_ylim(0.05, 4.55)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The three data states and what protects each.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-data-states")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    states = [
+        ("DATA AT REST", c[0], ["stored on media", "disk, tape, archive, backup",
+                                "full-disk and file encryption", "access control, physical control"]),
+        ("DATA IN MOTION", c[1], ["traversing a network", "between hosts, sites, users",
+                                  "TLS, IPsec, VPN", "link vs end-to-end encryption"]),
+        ("DATA IN USE", c[2], ["processed in memory", "necessarily in CLEARTEXT",
+                               "hardest state to protect", "enclaves, DLP, DRM, access control"]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.5, 4.3))
+    for i, (name, colour, rows) in enumerate(states):
+        x = 0.35 + i * 3.1
+        ax.add_patch(plt.Rectangle((x, 3.32), 2.85, 0.62, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.42, 3.63), ha="center", va="center",
+                    fontsize=8.5, color=ink)
+        for j, r in enumerate(rows):
+            ax.annotate(r, (x + 1.42, 2.92 - j * 0.46), ha="center", fontsize=7.2,
+                        color=S.INK_2[mode])
+    ax.annotate("\"data in storage\" is not one of the three - the state is called data AT REST",
+                (4.8, 0.78), ha="center", fontsize=7.8, color=c[0])
+    ax.annotate("encryption serves all three states, but only in use must the data be decrypted to do its job",
+                (4.8, 0.35), ha="center", fontsize=7.8, color=ink, style="italic")
+    ax.set_xlim(0, 9.75)
+    ax.set_ylim(0.1, 4.15)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
