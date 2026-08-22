@@ -6425,7 +6425,7 @@ Domain 2 answered *what to protect and how much*. Domain 3, Security Architectur
     }
   ]
 },
-// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====
+// ===== Domain 3: Security Architecture and Engineering (13%) - Instructor Edition module order =====
 cissp_secure_design: {
   topicId: 'cissp_secure_design',
   title: `Processes Using Secure Design Principles`,
@@ -7361,6 +7361,799 @@ The combination works because the methods' blind spots are different, which is t
 **A10.** Because frameworks are general cases intended to be widely applied, so they may lack implementation specifics or require the adopter to supply values for their environment - the screen lock whose timeout the adopter selects. Adjusting specifications and parameters to the specific system or environment is critical to achieving optimal security value, and the tailoring process is documented and supported by the frameworks themselves. Organisations that treat frameworks as checklists and forego intelligent tailoring reduce the overall security value of the controls.
 
 **A11.** Test - conduct a direct test of the control, usually for technical controls. Interview - question or interview staff, usually for management or operational controls. Examine - examine documentation or artefacts for evidence the control is properly employed, used for all control types. They are combined because their blind spots differ: an assessor may test the function, examine the configuration, and interview the administrator, and only the results taken together show that the control is effectively applied or reveal the deficiency limiting its effectiveness.`
+    }
+  ]
+},
+cissp_system_capabilities: {
+  topicId: 'cissp_system_capabilities',
+  title: `Security Capabilities of Information Systems`,
+  domainWeight: '13%',
+  overview: `Every modern operating system and hardware platform ships with security capabilities built into its architecture - and they matter because they interact. Each capability integrates with others to form a defence-in-depth model inside the system itself, limiting the attack surface and hardening the platform against different forms of attack. This module tours those capabilities against a generic system model: the user and kernel modes and the abstraction layers between them; supervisor and problem processor states; memory management and the process isolation mechanisms that keep one program out of another's address space; data hiding, abstraction, and the security kernel that mediates every access; encryption and code signing; audit and monitoring; virtualisation and sandboxing; hardware modules such as the TPM; file system attributes; and the host protection software layered on top. It ends where the module begins - capabilities can be disabled, unintegrated, or simply never configured, and an unconfigured capability protects nothing.`,
+  sections: [
+    {
+      id: '1-capabilities',
+      title: `1. What a System Security Capability Is`,
+      content: `## Common capabilities, varying implementations
+
+The module opens by setting expectations about what follows: these are **common system security capabilities**, and **variations of them are integrated into most modern operating systems and hardware platforms.** The implementations differ - **the specific methods and types of implementation will vary from platform to platform** - but **all typically share some of the common security value obtained from these capabilities.**
+
+That framing is why this module is worth studying at the conceptual level rather than as product knowledge. The exam does not ask which registry key hardens which platform; it asks what a capability *is for*, so that a practitioner can recognise it under any vendor's name and notice when it is missing.
+
+## The capabilities interact - that is the point
+
+The module's central architectural claim: **system security capabilities generally interact with one or more other security capabilities, or have some level of integration with other security components. This provides an integrated defence-in-depth model within the system architecture itself, to limit the overall attack surface of the system and harden it against different forms of attack.**
+
+Read that as defence in depth applied *inside a single machine* rather than across a network. The processor's state separation is backed by the kernel's memory management, which is backed by process isolation, which is backed by the security kernel mediating access, which is backed by a hardware module holding the keys - and an attacker must defeat a chain of them rather than one. The interactions are what make the platform hard, and they are also why disabling one capability can cost more than it appears to: a capability that other capabilities depend on takes them down with it.
+
+![The layers of a generic system, and the security capability each boundary provides](/courses/cissp/figures/cissp-os-security-layers.svg)
+
+## The caveat that makes this module practical
+
+Then the sentence that turns the tour into an assessment checklist: **security capabilities may be disabled, or not fully integrated, based on particular vendor products chosen as system components, or technical implementation by the system manufacturer or operator.** And therefore: **for maximum functionality, integrated system security capabilities must typically be enabled and properly configured to provide desired protective capabilities.**
+
+Three distinct failure modes hide in that sentence, and they are worth separating because they call for different responses:
+
+| Failure mode | What happened | What it takes to find |
+| --- | --- | --- |
+| **Disabled** | The capability exists and is switched off - often for compatibility or performance | Configuration review against a hardening baseline |
+| **Not fully integrated** | Component choices left a capability unable to work with its neighbours | Architecture review of how components interact |
+| **Never configured** | Present and enabled, but with defaults that deliver little | Examination of settings against the environment's needs |
+
+The third is the quietest and the most common. A capability at its default setting reports as present in every inventory and may be protecting almost nothing - which is the platform-level version of the checklist-adoption failure the control selection module named. It is also the reason a security baseline (Domain 2) exists as a concept: the baseline is where an organisation writes down which capabilities must be enabled and how they must be configured, so that "present" and "effective" stop being confused.`
+    },
+    {
+      id: '2-os-model',
+      title: `2. The Generic System Model`,
+      content: `## Two processor modes, and why abstraction sits between them
+
+The module works against a generic representation of an operating system - not any particular one, but **elements common to most modern operating systems.** The foundational structure: **in a modern operating system there are two primary processor states, a user mode and a kernel mode. The kernel mode is reserved for core operating system management, while the user mode is exposed to user applications and services.**
+
+The security consequence follows immediately: **functions allowed to execute on the hardware are limited in user mode and managed by processes that exist in kernel mode. This provides a level of abstraction that restricts actions that can be taken at the user level.**
+
+Above and below that split sit two more translation layers. **Many operating systems include an additional layer of separation called the Hardware Abstraction Layer (HAL), which acts as an interface between some user and kernel mode operations and the actual system hardware.** Its dual benefit is worth reading carefully: it **allows standardised commands directed at hardware to be generalised and translated to device-specific commands**, and it **limits the binary command set that can be sent directly to hardware components.** The first half is an engineering convenience; the second half is a security control - a narrower command set is a smaller attack surface.
+
+**Device drivers function in a similar fashion, but may allow more direct control over specific hardware devices based on manufacturer specifications.** That "more direct control" is exactly why drivers are a favourite target: code that legitimately reaches closer to the hardware is code whose compromise reaches closer too. And **the hardware layer may include specialised security hardware such as a Trusted Platform Module (TPM)** - met properly in Section 7.
+
+## The components, and what each contributes
+
+| Component | What it does | Its security relevance |
+| --- | --- | --- |
+| **System kernel** | The core of the OS; provides access to system resources - hardware and processes | Everything privileged runs here; it is the boundary user code must not cross |
+| **Memory manager** | Allocates and manages physical and/or virtual memory | Separation of one program's memory from another's |
+| **Security monitor / reference monitor** | Enforces access control policy and rules over subjects, objects, and operations | The mediator; see Section 5 |
+| **I/O manager** | Manages and controls input and output from the operating system | Every crossing between system and outside world |
+| **API** | A generalised, common command set for applications and processes | Removes the need for applications to touch OS components and hardware directly |
+| **User interface** | Presents control and input methods understandably and in a controlled fashion | Constrains what a user can express to the system |
+
+The **kernel's** own duties, as the module lists them, are worth knowing because they explain why kernel compromise is total: it **loads and runs binary programs; schedules the task swapping that allows systems to do more than one thing at a time; allocates memory; and tracks the physical location of files on the computer's hard disks.** It provides these services **by acting as an interface between other programs operating under its control and the physical hardware**, which **insulates programs running on the system from the complexities of the computer.** Insulation is the security property in that sentence: programs are kept away from the hardware, and the kernel decides what reaches it.
+
+The **security monitor** gets the module's most demanding description, and it belongs here as a preview of Section 5: it **enforces access control policy and rules over subjects interacting with objects and performing operations**, and it is **typically intended to be always on and impossible to bypass for any function**, operating **in kernel mode** and providing **oversight to the operation of internal OS functions.** Always on, impossible to bypass - those two properties are what an assessor should be testing for, since a monitor with an exception is a monitor with a path around it.
+
+The **API** deserves one further note. By supplying a common command set, it **removes the need for applications to directly interface with some OS components and hardware** - which is convenience and containment at once. Applications constrained to an API can only ask for what the API can express, and an API is a far easier thing to review and to guard than the whole of the interfaces beneath it.`
+    },
+    {
+      id: '3-states-access',
+      title: `3. Processor States and Access Control`,
+      content: `## Defence starts in silicon
+
+**Processors and their supporting chipsets provide one of the first layers of defence in any computing system.** They contribute in two ways. They may provide **specialised processors for security functions, such as cryptographic coprocessors** - dedicated hardware for cryptographic work. And they provide **states that can be used to distinguish between more or less privileged instructions**, which is the more architecturally significant contribution.
+
+![Supervisor and problem state - the privilege boundary the whole model rests on](/courses/cissp/figures/cissp-processor-states.svg)
+
+**Most processors support at least two states: a supervisor state and a problem state.**
+
+**In supervisor state - also known as kernel mode - the processor is operating at the highest privilege level on the system**, which **allows the process running in supervisor state to access any system resource, data and hardware, and to execute both privileged and non-privileged instructions.**
+
+**In problem state - also known as user mode - the processor limits the access to system data and hardware granted to the running process.**
+
+Note the exam-relevant vocabulary carefully: *supervisor* and *problem* are the processor's terms, *kernel mode* and *user mode* the operating system's, and questions may use either pair for the same distinction.
+
+## Why the boundary is the whole game
+
+The module states the stakes plainly: **a malicious process running in supervisor state has very few restrictions placed upon it and can be used to cause a lot of damage.** Everything else in this module - memory protection, process isolation, the security kernel, file permissions - is enforced *by* code running at the privileged level. Code that reaches that level is not subject to those protections; it is the thing that implements them. This is why privilege escalation is the pivotal step in so many attack chains, and why "the malware ran as administrator" changes the entire character of an incident.
+
+The design response is stated as an ideal with an honest concession: **ideally, access to supervisor state is limited only to core OS functions that are abstracted from end-user interaction through other controls - but this is not always the case.** The concession is the module being realistic about drivers, agents, and privileged services that expand what runs at the highest level.
+
+## Access control on the system
+
+**Modern systems include some form of access control.** The module makes a point that surprises people: **even kiosk or general user type systems internally implement a system of permissions and rules for accessing processes, memory, applications, and operating system functions, even if those controls are transparent to the end user.** Access control is not a feature of managed enterprise systems; it is intrinsic to how a modern OS runs at all.
+
+Three connections tie this to the rest of the domain, and each is examinable:
+
+- **Enforcement location:** access controls **are typically enforced by a kernel-level module known as the security monitor or reference monitor** - so enforcement lives at the privileged level, by design, because a mediator that user code could reach is a mediator user code could disable.
+- **Model derivation:** specific access control types are Domain 5's subject, but they **are often based on one or more security models** from the previous module - the lattice, the properties, the rules.
+- **Storage support:** access control mechanisms **are typically supported by the file system, which often stores security attributes with files and enables fine-grained access control in storage objects** - the subject of Section 7.
+
+| Layer | Its part in an access decision |
+| --- | --- |
+| Security model | Supplies the rules the decision follows |
+| Security monitor (kernel mode) | Makes the decision, on every access, without a bypass |
+| File system attributes | Stores the per-object security attributes the decision reads |
+| Processor state | Guarantees the decision-maker runs where user code cannot alter it |
+
+Read down that table and the interaction claim from Section 1 becomes concrete: no single row protects anything alone, and removing any one of them defeats the others.`
+    },
+    {
+      id: '4-memory-isolation',
+      title: `4. Memory Management and Process Isolation`,
+      content: `## Why memory is the critical resource
+
+The module makes an unusually strong claim, and it earns it: **from a security perspective, memory and storage are the most important resources in any computing system.** The ideal it names is separation - **it would ideally be possible to easily separate memory used by subjects, such as running processes and threads, from objects, such as data in storage.**
+
+The reason that separation matters is the attack it prevents: **buffer overflows are a common type of attack that attempts to write executable code into memory locations where it may be inadvertently executed.** That sentence contains the whole class in miniature. Data and instructions occupy the same physical medium; if an attacker can place chosen bytes where the processor will later fetch instructions, the attacker's data becomes the machine's code.
+
+## The techniques
+
+**Modern operating systems utilise a variety of techniques to limit the exposure of the memory space to a potential attacker.**
+
+**Direct access to system memory is limited to user-space programs**, or memory is provided as **allocated randomised blocks of memory space, to limit the utility of a crafted memory attack running within a program or piece of code.** Randomisation is the key idea: many memory attacks require the attacker to know or predict *where* something sits, so making layout unpredictable devalues the attack without fixing the underlying flaw.
+
+**Additionally, memory space for user programs may be monitored by the operating system to ensure it is utilising memory properly, and that executable code is only located in authorised memory blocks.** The module's named example: **Data Execution Prevention (DEP) technology in Windows, which will close a program or code that is mismanaging memory or attempting to execute code from unauthorised locations.** Note the enforcement style - the program is *closed*, not warned. That is fail-secure behaviour from the first module of this domain, implemented in memory management.
+
+## Process isolation
+
+**Process isolation can also be used to prevent individual processes from interacting with each other.** The module lists five mechanisms, and they are worth holding as a set because a question may name any one of them.
+
+![Five mechanisms, one objective](/courses/cissp/figures/cissp-process-isolation.svg)
+
+**Distinct address spaces.** Isolation is achieved **by providing distinct address spaces for each process, and preventing other processes from accessing that area of memory**, along with **assigning access permissions to files or other resources to each process.**
+
+**Naming distinctions.** These **are also used to distinguish between different processes** - a process is identified as itself, so one cannot be mistaken for or substituted by another.
+
+**Virtual mapping.** This **is used to assign randomly chosen areas of actual memory to a process, to prevent other processes from finding those locations easily** - the same unpredictability argument, applied between processes rather than within one.
+
+**Encapsulation of processes as objects.** This **can also be used to isolate them, since an object includes the functions for operating on it, and the details of how it is implemented can be hidden.** This is data hiding and abstraction - Section 5's subjects - arriving here as an isolation mechanism, which is the interaction claim again.
+
+**Time-slot management of shared resources.** **The system can ensure that shared resources are managed so that processes are not allowed to access shared resources in the same time slots.** Sharing is where isolation is hardest, and scheduling access in time is one way to restore separation where physical separation is impossible.
+
+| Mechanism | What it separates | What it defeats |
+| --- | --- | --- |
+| Distinct address spaces | Each process's memory region | One process reading or writing another's memory |
+| Naming distinctions | Process identities | Confusion or substitution between processes |
+| Virtual mapping | Where memory actually lives | Attacks needing to locate a target region |
+| Encapsulation as objects | Implementation from interface | Manipulation outside the object's defined operations |
+| Time-slot management | Access to shared resources | Interference between processes sharing one resource |`
+    },
+    {
+      id: '5-hiding-kernel',
+      title: `5. Data Hiding, Abstraction, and the Security Kernel`,
+      content: `## Data hiding
+
+**Data hiding maintains activities at different security levels, to separate these levels from each other.** Its purpose: **preventing data at one security level from being seen by processes operating at other security levels.** The module draws the comparison itself - **this is similar to the Bell-LaPadula security model** - which is a useful bridge from the previous module: what BLP states as rules over labels, data hiding implements as a property of how the system arranges activity.
+
+The term carries a second, related meaning the module also gives: **data hiding may be associated with coding practices, typically in object-oriented programming, where actual data is hidden from direct access or manipulation, and can only be read or modified by using a standard interface mechanism.** Both senses share one structure - the data is reachable only through a defined path - and both deliver the same benefit: what cannot be reached directly cannot be manipulated outside the rules that govern the path.
+
+## Abstraction
+
+**Abstraction involves the removal of characteristics from an entity, to easily represent its essential properties.** Its everyday benefit is that it **negates the need for users to know the particulars of how an object functions - they only need to be familiar with the correct syntax for using an object and the nature of the information that will be presented as a result.**
+
+The security benefit is the sentence after: **since a separate subject controls the access to the object, the ability to manipulate the object outside of the defined rules is limited.** That is Clark-Wilson's subject-program-object binding from the previous module, generalised into an architectural principle - and it is why the layered stack of Section 2 is a security structure and not merely a tidy one. Each abstraction layer is a place where a defined interface stands between a caller and the thing it wants, and where the rules of access can therefore be enforced.
+
+## The security kernel
+
+**The security kernel, or reference monitor, within an operating system or hardware device, acts as a security oversight mechanism that enforces a predefined set of rules when a subject accesses an object.** Those rules **may include validating permissions from a table** - a discretionary access control table, for instance - **but are mandatorily applied and designed to prevent being bypassed.**
+
+![The reference monitor: always invoked, tamper-resistant, small enough to verify](/courses/cissp/figures/cissp-reference-monitor.svg)
+
+Two properties define it, and both are testable claims about a real system: it is **mandatorily applied** - the rules are not optional and cannot be waived by the subject - and it is **designed to prevent being bypassed**, which combined with the module's earlier statement that it is **always on and impossible to bypass for any function** means every access, without exception, is mediated.
+
+## The limit worth knowing
+
+Then the module supplies an honest and heavily examinable caveat: **when user subjects are executing with administrative rights on a system - Windows Administrator, Linux or Unix root - the subject often has full control of most system objects. The security kernel will still operate, but it will lose effectiveness when the subject has full security rights to all objects.**
+
+This is the crucial distinction between a control being *present* and being *effective*. The monitor has not failed; it is mediating every access and correctly permitting them, because the subject genuinely holds the rights. A mediator can only enforce the rules it is given, and a subject granted everything is denied nothing. Hence the module's conclusion, which is the design rule to carry away: **to maximise the effectiveness of the security kernel, user subjects must be executed with the least privilege necessary to perform their intended function.**
+
+That is least privilege arriving not as a policy preference but as the precondition for the platform's central security mechanism to mean anything - which is the strongest possible argument for it, and the one to make to anyone who regards routine administrative access as a convenience question.`
+    },
+    {
+      id: '6-crypto-capabilities',
+      title: `6. Encryption and Code Signing`,
+      content: `## Encryption as a system capability
+
+**Encryption can be applied to data at rest - files on a hard drive - or data in transit - a communication channel.** And it is not only a confidentiality tool: **encryption may be used to protect confidentiality, integrity, or both concurrently.**
+
+The module then states what makes encryption distinctive among all the capabilities in this module: **the most direct value of encryption is the protection of data while the operating system protections are not active or available.**
+
+That sentence is worth dwelling on, because it explains encryption's place in a system's architecture. Every other capability here - processor states, memory management, process isolation, the security kernel, file permissions - depends on the operating system running and enforcing them. Take the machine away from its OS and they evaporate. Encryption does not: it travels with the data.
+
+The module's two illustrations make the point concretely. **Encrypted data may be stored on a hard drive; if the computer system is turned off and the hard drive removed, the data cannot be read or modified, since it is encrypted.** And **once data has been transmitted from the system, if encrypted, it is protected from access or modification if intercepted in transit.** Powered-off theft and interception are precisely the two situations in which the OS is not there to help, and they are exactly the two the module names.
+
+| Situation | OS-enforced capabilities | Encryption |
+| --- | --- | --- |
+| System running, attacker is a local user | Fully effective | Effective if keys are protected from that user |
+| System powered off, drive removed | Absent entirely | Data remains unreadable |
+| Data in transit on a network | Not applicable | Protects against access and modification |
+| Attacker holds administrative rights | Security kernel loses effectiveness | Depends on whether the keys are reachable at that privilege |
+
+The last row is where the two sections of this module meet, and it is the honest qualification: encryption's protection depends on key protection, and a subject with sufficient privilege on a running system may reach keys the OS is holding. Which is precisely the argument for the hardware module in the next section.
+
+The module also scopes itself: **encryption mechanisms will be addressed in greater detail in following modules**, and **the specific protections - confidentiality, integrity - and level of protection provided varies depending on the specific cryptographic mechanism utilised.** Cryptography is the domain's largest module, and it comes next.
+
+## Code signing and validation
+
+**Code signing and validation is a cryptographic function.** The mechanism: **executable code is digitally signed**, which **allows an operating system, firmware, or even hardware components to validate the digital signature on the executable code prior to it being loaded for execution.** The result: **this ensures that only known, approved code is able to execute on a system or device.**
+
+Three applications, each closing a different attack:
+
+**Protecting the operating system's own components.** **In some operating systems, the system checks the OS components before they are loaded**, which **helps to prevent unauthorised code replacing legitimate system components and being executed at a higher privilege level than would normally be granted to user code.** Read that against Section 3: substituting a system component is a route into supervisor state, and signature validation closes it by making substituted code detectable before it runs.
+
+**Protecting updates.** **Code signing may also be used during system or component updates**, so that the copy being applied is an approved copy from a recognised source.
+
+**Protecting new software.** The same check applies **when loading new software**, which **protects the system from loading malicious or unapproved code presented as legitimate code.**
+
+The common structure is worth naming: signing converts a question nobody can answer by inspection - *is this binary the one I should be running?* - into a cryptographic verification the machine can perform every time, before execution rather than after. It is also where this module's capabilities and the supply-chain concerns of the engineering-processes module meet: the acquisition process obliges a supplier to deliver trustworthy code, and signature validation is how the receiving system checks that what arrived is what the supplier sent.`
+    },
+    {
+      id: '7-platform',
+      title: `7. Audit, Virtualisation, Hardware Modules, and the File System`,
+      content: `## Audit and monitoring
+
+**Secure systems must also have the ability to provide administrators with evidence of their correct operation.** The mechanism is **logging subsystems that allow for important system, security, and application messages to be recorded for analysis**, and the quality marker is protection of the record itself: **more secure systems will provide considerable protection to ensure these logs cannot be tampered with, including secure export of such logs to external systems.**
+
+Export matters because of who the logs are evidence against. An attacker who reaches privileged access on a system can generally reach its local logs; a copy already sent elsewhere is outside that reach, which is why centralisation is an integrity control and not merely a convenience.
+
+The module then makes a point about *review* that is easy to skim and important to keep: **as part of an organisational security architecture, logs and monitoring data must be collected from individual systems and reviewed by automated or manual means - typically done centrally, where data from multiple systems can be used to build an overall protection picture of the entire information environment.** And the consequence of not doing it: **logs that are not reviewed or managed provide some value to correct issues after they have occurred**, whereas **by monitoring logs and information systems, the audit data can provide some preventative and detective control value as well.**
+
+That is a control-category argument from the previous module: unreviewed logs are effectively corrective only, while monitored logs earn detective and even preventive value. The mechanism is unchanged; the review is what changes what it is worth.
+
+## Virtualisation and sandboxing
+
+**Virtualisation offers numerous advantages from a security perspective. Virtual machines are typically isolated in a sandbox environment, and if infected can be removed quickly, or shut down and replaced by another virtual machine.** The sandbox itself is **intentionally designed to keep executing code within the controlled sandbox space, and limit communications into or out of the sandbox.**
+
+The module's list of what virtual machines are, need, and remain is a balanced one:
+
+| Property of virtual machines | The practical consequence |
+| --- | --- |
+| **Have limited access to hardware resources** | Helps protect the host system and other virtual machines |
+| **Require strong configuration management and versioning** | So that known good copies are available for restoration when needed |
+| **Are subject to all typical requirements of hardware-based systems** | Anti-malware, encryption, host intrusion detection, firewalls, and patching still apply |
+
+The third row is the one organisations forget. A virtual machine is a machine; virtualisation changes how it is provisioned and recovered, not what it needs.
+
+Sandboxing also applies below the whole-machine level: **some operating systems automatically, or can be configured to, sandbox certain types of code. Mobile code - Java, ActiveX, and the like - may be allowed only to execute in a controlled sandbox, where the system configuration controls how much or little access to the rest of the system is possible for code executing within the sandbox.**
+
+And the closing caution is one the exam likes: **modern malware may be sandbox or virtualisation aware, and contain routines that intentionally detect and attempt to break out of a sandboxed environment.** Two behaviours hide in that sentence - detection (malware that notices it is being observed and behaves innocently, defeating analysis) and escape (attempting to reach the host). Neither invalidates sandboxing; both mean a sandbox is a control with a threat model rather than a guarantee.
+
+## Hardware security modules
+
+**Hardware components may be used to provide security services to the system**, and **a common example is the Trusted Platform Module (TPM), provided by or available as an option on most major device manufacturers.**
+
+What it is: **a hardware module that includes a secure storage container and a cryptographic processor with some cryptographic functions**, **typically used to securely generate and store cryptographic keys, or provide secure storage of small data sets.**
+
+What it is most used for: **the most common use for a TPM is to generate and store cryptographic keys associated with file system or drive encryption mechanisms.** And why that matters - the answer to the qualification left hanging in Section 6: **since the keys are stored within the dedicated hardware module, they are extremely difficult to extract when the system is powered down. They are only exposed at certain points during the boot process that are difficult to monitor prior to the OS being functional and taking over the role of protecting the keys.**
+
+The module notes the family is wider: **other hardware security modules exist for specialty functions, and may be added to systems or used as peripheral devices for special security functions.**
+
+## File system attributes
+
+**Modern file systems store security attributes, or permissions, associated with files as an integral part of the file system.** The consequence is architectural: this **enables advanced security models to be employed in practical systems, and ensures easy association of security attributes with individual files.** Recall the previous module's note that Bell-LaPadula does not provide one-to-one mapping of individual subjects and objects - the file system is one of the practical features that supplies that granularity.
+
+The module adds an integrity feature: **some file systems include journalling, that protects file integrity by ensuring that incomplete disk operations are identified and completed.** Journalling is an availability and integrity capability rather than a confidentiality one - a reminder that this module's capabilities span all three properties.
+
+## Host protection software
+
+**The following are examples of host protection software that may be installed at the system level, to provide additional protections beyond those built into the OS and system architecture.** The module's caveat repeats Section 1's theme: **some may be available as OS components but must typically be enabled and configured for full function**, and **in other cases third-party software suites may be used to provide these functions.**
+
+![Five categories of host protection layered above the platform](/courses/cissp/figures/cissp-host-protection.svg)
+
+**Antivirus** **protects against viruses and malicious code by checking files against a list of known malware**, and **many products also include a heuristics function that allows them to identify malware that is not in their database, based on software behaviour** - signature matching for the known, behavioural detection for the rest.
+
+**Host-based intrusion prevention system (HIPS)** **provides monitoring of system communications and performs a similar function to a network-based intrusion prevention system, within a specific host.**
+
+**Host firewall** **blocks inbound or outbound communications from the host based on a defined rule set**, and **some host firewalls allow applications to dynamically configure the firewall to allow on-demand communications when necessary** - convenient, and worth noticing as an attack surface, since a rule set that applications can alter is a rule set malicious code may try to alter.
+
+**File integrity monitoring (FIM)** **creates a known baseline of all files on a system, typically using a cryptographic hashing mechanism to create unique signatures for each file**, and **can then compare files against the known baseline periodically, or when the files are loaded into memory for use.**
+
+**Configuration and policy monitor** **provides oversight to ensure defined system configurations or policies are correctly configured and not improperly modified**, and **may also report system status or compliance to an enterprise tool.** This one closes the loop on Section 1: the capability that detects a security capability having been disabled or misconfigured.`
+    },
+    {
+      id: '8-worked',
+      title: `8. Worked Examples`,
+      content: `## Worked Example 1: The platform that had every capability
+
+*An inventory records that all servers run a platform supporting secure boot, memory protection, mandatory access control, full-disk encryption, and audit logging. An assessment finds mandatory access control in permissive mode, encryption without keys bound to hardware, and logs kept only locally.* The inventory recorded existence; the assessment measured effect. This is the module's opening caveat exactly: capabilities **may be disabled, or not fully integrated**, and **must typically be enabled and properly configured to provide desired protective capabilities.** Each finding maps to a failure mode: permissive mode is *disabled*, unbound keys are *not fully integrated* with the hardware module that should hold them, and local-only logs are *never configured* for the secure export that protects them from a privileged attacker. The fix is a hardening baseline that states required settings, plus a configuration and policy monitor to detect drift from it.
+
+## Worked Example 2: Why the malware could do anything it liked
+
+*Malware runs on a workstation under a user who holds local administrative rights. It disables the host firewall, stops the antivirus service, and clears the local event log. A manager asks why the operating system's security kernel did not prevent this.* It did not prevent it because it was not being defeated. **The security kernel will still operate, but it will lose effectiveness when the subject has full security rights to all objects** - it mediated each access and correctly permitted it, since the subject genuinely held the rights. The lesson the module draws is the remedy: **to maximise the effectiveness of the security kernel, user subjects must be executed with the least privilege necessary to perform their intended function.** Note the two supporting controls that would have limited the damage independently: secure export of logs, so the record survived the local clearing, and code signing, so replacement of a system component would have been refused.
+
+## Worked Example 3: The laptop in the taxi
+
+*A laptop is lost. It held regulated data. The organisation's controls include screen locking, strong authentication, mandatory access control, and full-disk encryption with keys sealed to the platform's TPM.* Only one of those controls is doing work in this scenario, and the module says why: **the most direct value of encryption is the protection of data while the operating system protections are not active or available.** Screen lock, authentication, and access control are enforced by an operating system that a thief need not run - they take the drive out. Encryption travels with the data, and the TPM is why the key does not travel with it: **since the keys are stored within the dedicated hardware module, they are extremely difficult to extract when the system is powered down.** The incident is a lost asset rather than a disclosure, and the design decision that made it so was taken long before the taxi.
+
+## Worked Example 4: The overflow that did nothing
+
+*An application contains a buffer overflow. An exploit written for it succeeds on a test build and fails on the production platform, which closes the process instead.* Two capabilities are at work. Memory monitoring ensures **executable code is only located in authorised memory blocks**, and technology of the kind the module names **will close a program or code that is mismanaging memory, or attempting to execute code from unauthorised locations** - the exploit's payload sat where execution is refused, and the fail-secure response terminated the process. Randomised allocation contributed too, by making the crafted addresses unreliable. Note what has and has not happened: the vulnerability is still there and still needs fixing. Platform capabilities raised the cost of exploitation; they did not remove the defect, and treating them as a substitute for the fix is how an organisation accumulates flaws that one configuration change away become exploitable again.
+
+## Worked Example 5: The sandbox that reported clean
+
+*A suspicious file is detonated in an analysis sandbox and behaves harmlessly. It is released to users and causes an incident.* The module warns of exactly this: **modern malware may be sandbox or virtualisation aware, and contain routines that intentionally detect and attempt to break out of a sandboxed environment.** Detection is the relevant half here - the sample recognised the analysis environment and withheld its behaviour, so "clean in the sandbox" meant only "did nothing observable while it believed it was being watched". The response is defence in depth rather than a better sandbox alone: signature and heuristic detection, file integrity monitoring to catch changes the sample makes if it does run, host IPS on communications, and the recognition that a single clean detonation is weak evidence.
+
+## Worked Example 6: The driver that undid the architecture
+
+*A vendor's peripheral requires a kernel-mode driver. Six months later, a vulnerability in that driver is used to gain full system privilege on every machine where it is installed.* This is the module's structural point about drivers made painful: they **may allow more direct control over specific hardware devices**, and to do so they run where the privilege boundary of Section 3 no longer protects the system. Once a flaw there is reached, **a malicious process running in supervisor state has very few restrictions placed upon it.** The architectural lessons are that privileged third-party code inherits the platform's full trust and must be assessed accordingly at acquisition (an agreement-process obligation from the first module of this domain), and that code signing and update validation are the controls that keep such components at least authentic - while doing nothing at all about the vulnerabilities they legitimately contain.`
+    },
+    {
+      id: '9-selfcheck',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+**Q1.** What does the module say system security capabilities do when they interact, and what does that provide?
+
+**Q2.** Name the three ways a capability can fail to protect despite being present in the platform.
+
+**Q3.** Distinguish user mode from kernel mode, and give the two things the HAL provides.
+
+**Q4.** Name the two processor states and what each permits.
+
+**Q5.** Why is a malicious process in supervisor state so serious?
+
+**Q6.** What attack does memory protection primarily target, and what does technology such as DEP do when it detects misuse?
+
+**Q7.** Name the five process isolation mechanisms.
+
+**Q8.** Define data hiding in both of its senses, and name the security model the module compares it to.
+
+**Q9.** What two properties define the security kernel, and under what circumstances does it lose effectiveness?
+
+**Q10.** What is encryption's most direct value as a system capability, and why?
+
+**Q11.** What does code signing ensure, and name two of the three applications the module gives.
+
+**Q12.** Why must logs be exported securely, and what changes when logs are actually reviewed?
+
+**Q13.** What is a TPM and what is its most common use?
+
+**Q14.** Name the five categories of host protection software.
+
+## Answers
+
+**A1.** Capabilities generally interact with one or more other capabilities, or integrate with other security components. This provides an integrated defence-in-depth model within the system architecture itself, limiting the system's overall attack surface and hardening it against different forms of attack.
+
+**A2.** They may be **disabled**; **not fully integrated**, based on the vendor products chosen as components or the manufacturer's or operator's technical implementation; or present but never properly configured - capabilities must typically be enabled *and* properly configured to deliver the intended protection.
+
+**A3.** Kernel mode is reserved for core operating system management; user mode is exposed to user applications and services, where the functions allowed to execute on hardware are limited and managed by kernel-mode processes. The HAL acts as an interface between some user and kernel mode operations and the actual hardware: it lets standardised hardware commands be generalised and translated into device-specific commands, and it limits the binary command set that can be sent directly to hardware.
+
+**A4.** Supervisor state (kernel mode): the highest privilege level, able to access any system resource - data and hardware - and to execute privileged and non-privileged instructions. Problem state (user mode): the processor limits the running process's access to system data and hardware.
+
+**A5.** Because it has very few restrictions placed upon it and can cause a great deal of damage. Every other protection in the system is enforced by code running at that level, so code that reaches it is not subject to those protections - it is what implements them. Ideally, supervisor access is limited to core OS functions abstracted from end-user interaction, though the module concedes this is not always the case.
+
+**A6.** Buffer overflows, which attempt to write executable code into memory locations where it may be inadvertently executed. Data Execution Prevention-style technology closes the program or code that is mismanaging memory or attempting to execute code from unauthorised locations - a fail-secure response.
+
+**A7.** Distinct address spaces (with access permissions assigned to resources per process); naming distinctions; virtual mapping of randomly chosen areas of real memory; encapsulation of processes as objects, hiding implementation behind the object's own functions; and management of shared resources so that processes cannot access them in the same time slots.
+
+**A8.** First sense: maintaining activities at different security levels so as to separate them, preventing data at one security level from being seen by processes at other levels - similar to the Bell-LaPadula model. Second sense: the object-oriented coding practice in which data is hidden from direct access or manipulation and can be read or modified only through a standard interface mechanism.
+
+**A9.** It is mandatorily applied, and designed to prevent being bypassed - intended to be always on and impossible to bypass for any function. It loses effectiveness when a subject executes with administrative rights (Administrator, root) and therefore has full control of most system objects: the kernel still operates and still permits correctly, because the subject genuinely holds the rights. Hence subjects must run with least privilege for the kernel to be effective.
+
+**A10.** Protecting data while the operating system's protections are not active or available. Every other capability depends on the OS running to enforce it; encryption travels with the data - so an encrypted drive removed from a powered-off machine cannot be read or modified, and encrypted data intercepted after transmission is protected from access and modification.
+
+**A11.** That only known, approved code is able to execute on a system or device, by validating the digital signature on executable code before it is loaded. Applications: checking OS components before they load, preventing unauthorised code from replacing legitimate system components and executing at higher privilege; validating system or component updates; and validating new software so that malicious or unapproved code presented as legitimate is not loaded.
+
+**A12.** Because an attacker with privileged access to a system can generally reach its local logs, whereas a copy already exported is beyond that reach - secure export protects the evidence of the system's operation. Unreviewed logs provide value only for correcting issues after they occur; monitoring logs and systems gives the audit data preventive and detective control value as well.
+
+**A13.** A Trusted Platform Module: a hardware module containing a secure storage container and a cryptographic processor with some cryptographic functions, used to securely generate and store cryptographic keys or small data sets. Its most common use is generating and storing the keys for file system or drive encryption - keys that are extremely difficult to extract when the system is powered down, being exposed only at boot-process points that are hard to monitor before the OS takes over protecting them.
+
+**A14.** Antivirus (signature lists plus behavioural heuristics); host-based intrusion prevention system; host firewall (rule-based inbound and outbound blocking, sometimes application-configurable); file integrity monitoring (cryptographic hash baseline, re-compared periodically or at load); and configuration and policy monitoring (ensuring configurations and policies are correct and unmodified, often reporting to an enterprise tool).`
+    }
+  ]
+},
+cissp_arch_vulns: {
+  topicId: 'cissp_arch_vulns',
+  title: `Vulnerabilities of Security Architectures, Designs, and Solution Elements`,
+  domainWeight: '13%',
+  overview: `This is the domain's broadest module, and it teaches a method before it teaches a catalogue. Certain vulnerabilities are common to every system - hardware that fails or arrives compromised, communications that can be blocked, intercepted, replayed, or modified, users who misuse systems intentionally or accidentally, code flaws present in all non-trivial software, and emanations that leak information physically. Every system type inherits all of them; what differs is the impact each carries. On top of that shared base sit the type-specific vulnerabilities: client and server systems, databases with their inference and aggregation problems, industrial control systems where an attack produces physical effects, cloud with its misconfiguration and responsibility-boundary risks, distributed systems, the Internet of Things, web-based systems, mobile devices, and embedded platforms. The module is explicit that its lists are not comprehensive - they are the common cases, and the practitioner's job is to consider which common vulnerabilities apply on top of the type-specific ones.`,
+  sections: [
+    {
+      id: '1-method',
+      title: `1. The Module's Method`,
+      content: `## Two layers, applied to every system
+
+The module states its own structure, and the structure is the lesson. It **introduces some common vulnerabilities and mitigation approaches that are common among most system types**, and then **presents typical vulnerabilities and mitigation approaches for various system types.**
+
+Then the honesty that makes it usable: **the vulnerabilities and mitigations are not intended to be comprehensive for each system type, and represent the most common issues and solutions associated with the system type.** And the instruction that follows: **for each system type, consider which common vulnerabilities might exist in the various system components, in addition to the system-specific vulnerabilities.**
+
+That is a working method rather than a list to memorise. Assessing any system means asking two questions in order: which of the universal weaknesses apply here and with what impact, and then what does *this kind* of system add on top?
+
+## The four places to look
+
+The module names where the common vulnerabilities live: **system hardware, system code, system misuse opportunities, and system communications.** Four lenses, and the value is that they are exhaustive enough to catch what a type-specific checklist misses. A reviewer who has considered the hardware, the code, the ways people can misuse the thing, and the communications in and out has covered the ground where nearly every finding sits - and has done so without needing a checklist specific to the technology in front of them, which matters because new system types keep arriving.
+
+## Top threat actions
+
+Four categories are **common to most system types but may exist in various forms**:
+
+| Threat action | The module's definition |
+| --- | --- |
+| **Hacking** | Human action attempting various permutations of actions to defeat or bypass system protections or system security |
+| **Social engineering** | Attempting to gain information or access by impacting human behaviour or process - generally through human interaction, but may be message or communication based |
+| **Malware distribution** | Manual or automated distribution of malware; may be targeted, untargeted, or the result of self-replicating malware moving autonomously |
+| **Phishing** | Attempting to gain information or access by sending messages that seem legitimate but are not; may be combined with social engineering or malware distribution |
+
+Notice that two of the four are attacks on people rather than on technology, and that the module explicitly allows them to combine - phishing carrying malware, social engineering opening the door for hacking. Threat actions are not mutually exclusive categories to sort incidents into; they are components an adversary assembles.
+
+## Top mitigations
+
+The module's four top mitigations are **general approaches applied at the enterprise level**, and it is careful about their status: **they should be considered the basics of mitigations, and must always be combined with other, more specific, mitigations at the system level.**
+
+**Know what you have.** **Maintain a good inventory of all IT operating in the environment, and understand the operational status.** The module adds a candid note worth remembering: **while this sounds simple, it is one of the most difficult things to accomplish for most large organisations.** This is Domain 2's asset inventory arriving from the vulnerability side - you cannot patch, monitor, or protect what you do not know you have.
+
+**Patch and manage what you have.** **Keep hardware, firmware, and software up to date, and manage system configurations to ensure they are kept in a secure and well-maintained state.** Again the candour: **this is a basic security function, but is also commonly neglected and not well implemented in many organisations.**
+
+**Assess, monitor, and log.** **Assess system security status, monitor the status continuously, and log system, user, and process actions to the greatest extent possible** - and at the enterprise level, **collect and aggregate individual system logs with automated and manual reviews.**
+
+**Educate users.** **At the enterprise level this is critical to address human-based attacks - social engineering, phishing - that technology alone cannot defend against.**
+
+Read the four against the threat table and the pairing is deliberate: inventory and patching answer hacking and malware, monitoring answers everything by detecting what prevention missed, and user education answers the two threat actions aimed at people. It is also worth noticing that two of the four are described by the module as things organisations commonly fail at - which is a more useful thing for a practitioner to know than another control name.`
+    },
+    {
+      id: '2-common-vulns',
+      title: `2. The Common Vulnerability Classes`,
+      content: `## Present everywhere, weighted differently
+
+These are **common system vulnerability types that exist to some degree in most systems**, and for each specific system type they **should be considered applicable to some degree** - though **the impact of the common vulnerabilities may be different based on system type.**
+
+![Five classes every system carries](/courses/cissp/figures/cissp-common-vuln-classes.svg)
+
+## Hardware
+
+**Hardware vulnerabilities are most typically associated with loss of availability when components fail.** But the module widens the concern: **supply chain concerns over inappropriate modification or counterfeit hardware components are valid concerns**, and **improperly configured or illicitly modified hardware can impact system confidentiality and integrity.**
+
+The specifics: **hardware components may fail at any time**, with **mean time between failures (MTBF) used to calculate expected life** and **failure rates higher during initial system operation** - the early-life failure pattern that makes new equipment riskier than intuition suggests. **Supply chain issues may introduce technical flaws, vulnerabilities, or malicious modification.** And **old hardware may be difficult to repair or replace**, which converts an availability risk into a strategic one: a component nobody can source turns every failure into an outage of unknown duration.
+
+## Communications
+
+**Communication vulnerabilities can directly impact confidentiality, integrity, or availability depending on system functions.** The module makes a structural claim worth carrying: **typically, the communication sub-systems of an information system are the most exposed components of the system, and the most susceptible to technical attacks.** Communications are where a system meets everything it does not control.
+
+Six failure modes, and each maps to a security property:
+
+| Communications can... | Property attacked |
+| --- | --- |
+| **Fail** | Availability |
+| **Be blocked** (denial of service) | Availability, deliberately |
+| **Be intercepted** | Confidentiality |
+| **Be counterfeited (replayed)** | Integrity and authenticity |
+| **Be modified** | Integrity |
+| Have **characteristics that expose information about sender or receiver** - address, location | Confidentiality, without reading the content at all |
+
+The last row is the one candidates under-weight. Metadata leaks even when the payload is encrypted: who is talking to whom, from where, how often, and when. Encryption of content does not conceal the existence or the pattern of a conversation.
+
+## Misuse by user
+
+**Misuse by a system user can significantly impact confidentiality, integrity, or availability.** It **can include actions resulting from social engineering attacks, phishing attacks, or intentional bypass of security functions to "get the job done".**
+
+The module then makes the most practically important observation in this section: this **is one area that may increase in risk if technical or procedural protections negatively impact user functionality.** Spelled out in its own list - misuse **can be intentional or accidental**, **can degrade or bypass security controls**, and **increases in likelihood as difficulty to operate increases**, with the example that **difficult security requirements increase the likelihood of intentional misuse to "get the job done".**
+
+That is a causal claim about security design: usability is not a competing concern to be traded against security, it is an input to how much security is actually realised. A control severe enough to obstruct legitimate work creates its own workaround, and the workaround is usually less safe than a moderate control would have been. This is the same argument the control-selection module made about tailoring to *optimal* rather than maximal values, arriving here as an observed vulnerability class.
+
+## Code flaws
+
+**Code flaws exist in all software products with more than a very low level of complexity.** They **may not be obvious, and they may not be easily accessible to an attacker** - two separate mitigating facts that explain why not every flaw becomes an incident. They **may be introduced accidentally or intentionally.**
+
+The three risk conditions the module names deserve to be memorised as a set, because they are three genuinely different situations:
+
+| Condition | What exists | The organisation's position |
+| --- | --- | --- |
+| **Known flaw, patch available, systems not patched, exploit available** | Everything the attacker needs, and the fix | Entirely self-inflicted; patching is the answer |
+| **Known flaw, no patch available, exploit available** | Attack possible, no vendor fix | Compensating controls: isolate, restrict, monitor |
+| **Unknown flaw, exploit available** | A zero-day attack is possible | Only defence in depth and detection help |
+
+The middle row is where practitioners earn their keep, because it is the only one where the answer is architectural rather than operational. And the third explains why every other capability in this domain exists: a system whose security depends on having no unknown flaws has no security at all.
+
+## Emanations
+
+**Emanation vulnerabilities are primarily a concern to very high security systems, such as classified government systems, but can have impacts on other systems.** The module is measured about difficulty - **exploiting emanations is a highly complex problem** - while noting that **an external observer may be able to obtain useful information about an environment by doing a basic analysis of detectable emissions.**
+
+The specifics: **hardware and physical elements may radiate information**, across **radio frequency** and the **visible and non-visible spectrum**, and the radiation **can be used to discern system functions** and **to locate systems and components.** Note that the second use requires no decoding at all - simply knowing that a system of a certain kind is operating in a certain place is often the intelligence being sought.`
+    },
+    {
+      id: '3-client-server',
+      title: `3. Client and Server Systems`,
+      content: `## Client-based systems
+
+**Client-based systems are systems in which the end user directly interfaces with the computing hardware, in the form of desktops, laptops, thin client terminals, and so on.** Their defining characteristics as a population: they are **typically present in large quantities in most organisations**, which are **continually adding new and decommissioning old client systems**, and they are **typically general-purpose computers used for a variety of purposes across an organisation.**
+
+Every vulnerability follows from one fact - **end users in most cases physically control these devices** - and the module traces the consequences carefully. Physical control **allows for end user modification, or removal from enterprise control of the system**, and makes devices **more susceptible to loss or theft.** And because devices are under user control, **monitoring and updating the systems may be difficult, as the location and power status may be indeterminate.**
+
+| Client vulnerability | Why it follows |
+| --- | --- |
+| **Physically under user control** | The root cause of the rest |
+| **Susceptible to user misuse**, intentional or accidental | A general-purpose machine used by a non-specialist |
+| **May be lost or stolen** | It travels, and it is small |
+| **Monitoring may be difficult** | Location and power state are unknown |
+| **100 percent update may be difficult** | A machine that is off or absent cannot be patched |
+
+The mitigations are **the basic mitigations to apply to a general-purpose computer**, with a caution that gives them their real character: **while these mitigations seem basic in nature, they are difficult to do well across a large installation base of client devices.** The list: **patch and update** as a **continuous action**; **general network protections** such as **network segmentation, firewall devices, network intrusion prevention or detection**; **host protections** - **antivirus, host IPS, host firewall, disk encryption**; **monitoring** through **logs, alerts, and location tracking**; and **educating users**, with **anti-phishing campaigns** and training in **detecting attacks**.
+
+The module marks patching, host protections, and monitoring as applying **to all general purpose computing systems - servers, database, distributed, cloud-based, and web-based** - so they are not client-specific advice but the platform floor beneath every later system type in this module.
+
+## Server-based systems
+
+**Server-based systems generally provide a specific purpose, and may be specially configured or have special software loaded to provide a specific function** - **application servers, file servers, domain controllers, print servers, and network service servers** such as DNS. They are **often centrally managed and controlled**, have **limited access or functionality beyond their specific intended purpose**, and are **often maintained in a controlled, limited access environment.**
+
+Those properties look like advantages, and mostly they are - but the vulnerabilities come from the same place:
+
+**May be exposed to external communication or services.** A server exists to be reached, often from outside.
+
+**Updates may be delayed due to operational need.** The client's patching problem was absence; the server's is availability. A system carrying production load has a change window, and the window is the exposure.
+
+**May exist for long periods, with the risk of being outdated.** Servers are not refreshed on the client fleet's cycle; a well-behaved server can run for years past the point where its platform stopped being current.
+
+**High traffic volume makes monitoring more difficult.** Signal in noise: the same logging that protects a client can overwhelm analysis on a server handling millions of transactions.
+
+The mitigations are the client set applied selectively, plus what the server's narrower purpose makes possible: **targeting network protections to reduce accessibility to only the design functions** - stated as **server-specific rules and restricted ports and protocols** - along with **strong remote access mechanisms**, **configuration and change management**, and **monitoring with logs and alerts targeted to server functions.**
+
+The through-line is worth naming. A client is dangerous because it is general-purpose and mobile, so its mitigations are broad and continuous. A server is defensible because it is single-purpose and stationary, so its mitigations are *narrowing* ones - restrict it to what it is for, and everything else becomes anomalous by definition.`
+    },
+    {
+      id: '4-database',
+      title: `4. Database Systems`,
+      content: `## Why databases are targeted
+
+**Database systems are hosted on various platforms - stand-alone server, cloud hosting environments, distributed computing environments, and so on**, and the first rule is inheritance: **database systems inherit any platform vulnerabilities and add database-specific vulnerabilities.**
+
+Then the reason they attract attention: they **typically contain large quantities of valuable information, and require high-speed operation with a large number of transactions**, which **tends to make database systems high-value targets for any attacker.** The module lists that status among the vulnerabilities in its own right - **databases are considered a high-value target, and may be sought out by attackers willing to spend greater effort to find technical vulnerabilities to exploit than for other system types.** That is a genuine security property: the same flaw is more dangerous in a database, because more capable adversaries are looking.
+
+## Three attacks that never touch protected data
+
+![Inference, aggregation, and data mining](/courses/cissp/figures/cissp-database-attacks.svg)
+
+**Inference.** **An attacker guesses information from observing available information.** The module's framing is the important part: **users may be able to determine unauthorised information from what information they can access, and may never need to directly access unauthorised data.** Every access was permitted; the conclusion was not.
+
+**Aggregation.** **Combining non-sensitive or lower sensitivity data from separate sources to create higher sensitivity information** - **a user takes two or more publicly available pieces of data and combines them to form a classified piece of data that then becomes unauthorised for that user.** The principle: **the combined data sensitivity can be greater than the sensitivity of the individual parts.**
+
+**Data mining.** **A process of discovering information in data warehouses by running queries on the data.** It **requires a large repository**, and it is **used to reveal hidden relationships, patterns, and trends in the data warehouse**, based on **a series of analytical techniques taken from mathematics, statistics, cybernetics, and genetics**, used **independently and in cooperation with one another to uncover information from data warehouses.** Data mining is a legitimate discipline; it appears here because the capability that finds business insight in a warehouse finds sensitive conclusions in it too.
+
+The three share a structure that is the section's real lesson, and a favourite of exam writers: **access control alone does not stop them**, because no rule was broken. Each of these attacks is built entirely from permitted access, so the countermeasures have to work differently - by limiting how much can be extracted, or by degrading the data so that conclusions cannot be drawn from it.
+
+## Database-specific mitigations
+
+| Mitigation | What it does | Which problem it addresses |
+| --- | --- | --- |
+| **Input validation** | User or query input carefully validated so only allowable information reaches the database server | Limits the utility of SQL injection attacks; protects data integrity from invalid entries |
+| **Robust authentication and access control** | Access strictly controlled; user interface limited to preconfigured or controlled interface methods | Direct unauthorised access |
+| **Output throttling** | Limits the number of records provided over a specific time period | An attacker siphoning data one record at a time; limits data mining and some inference and aggregation |
+| **Anonymisation** | Permanently removes identifying data features from a database | Protects personal information; the removal is irreversible |
+| **Tokenisation** | Replaces information with an identifier that can reconstruct the original if necessary, with tokens kept in a more secure system or offline | Allows data to be shared or made available with less risk to inference and aggregation, while remaining recoverable |
+
+Three points repay attention. **Output throttling** is the direct answer to bulk extraction, and it works even when every individual query is legitimate - which is what makes it effective against the three attacks above. **Anonymisation and tokenisation are not alternatives but different commitments**: anonymisation is permanent and therefore stronger and less flexible; tokenisation preserves recoverability, which is why the tokens must live somewhere better protected. And **input validation is the module's SQL-injection answer**, sitting alongside integrity protection - the same control serving confidentiality and integrity at once.`
+    },
+    {
+      id: '5-ics',
+      title: `5. Industrial Control Systems`,
+      content: `## What they are
+
+**Industrial systems and critical infrastructures are often monitored and controlled by simple computers called industrial control systems (ICS).** They **are based on standard embedded systems platforms, and often use commercial off-the-shelf software**, and they **control industrial processes such as manufacturing, product handling, production, and distribution.**
+
+Two structural facts define their security character. They **typically have components that execute on embedded, limited function hardware.** And - the fact that separates this section from every other in the module - they **typically contain interfaces between logical (computer) space and the physical world**, including **sensors, motors, actuators, valves, gauges, and so on.**
+
+![SCADA, DCS, and PLC - by the reach of each](/courses/cissp/figures/cissp-ics-types.svg)
+
+## The three types
+
+**Supervisory control and data acquisition (SCADA)** can be **viewed as an assembly of interconnected equipment used to monitor and control physical equipment in industrial environments.** SCADA is **widely used to automate geographically distributed processes** - **electricity power generation, transmission and distribution; oil and gas refining and pipeline management; water treatment and distribution; chemical production and processing; rail systems and other mass transit.** Geographic distribution is the defining feature.
+
+**Distributed control systems (DCS)** are **typically confined to a geographic area or specific plant** such as a manufacturing facility, and are **characterised by large numbers of semi-autonomous controllers.** They **share many similarities with SCADA systems but are typically confined to a defined area with a local control centre.** Site-scale rather than region-scale.
+
+**Programmable logic controllers (PLC)** are the **ruggedized industrial controller** at the component level, **typically using specialised code that reacts in real time to inputs.** They **may be stand-alone systems, or included as components in SCADA or DCS infrastructure.**
+
+## Vulnerabilities
+
+The module first partitions the problem: ICSs comprise **embedded system components and some general purpose servers or clients running control software**, and **the general purpose components share vulnerability and mitigation types with client- and server-based systems.** The list below **is targeted at the embedded system components.**
+
+**Limited functionality** - **standard OS functions and protections may not be available.** **Limited protections** - **general purpose host protections are not feasible**, so the antivirus, host firewall, and host IPS of Section 3 simply cannot be installed. **Long lifespan**, and therefore becoming outdated - **typically in operation for ten or more years**, a lifetime during which the threat environment changes completely. **Susceptible to misuse and error** - **complicated, specialty systems, difficult to validate correct code and configuration.** **Highly susceptible to denial of service** - they **typically contain minimal communication protections and are very sensitive to improper input**, so malformed traffic that a general-purpose stack would discard can stop a controller. **Attacks can produce physical effects** - **unlike most computing systems, attacks can cause impacts to the physical world.** And **often unattended in remote locations**, where **physical security may be limited or unmonitored, allowing attackers to gain and maintain physical access with limited effort.**
+
+## Mitigations, and why they are all network-shaped
+
+Notice what the mitigation list does *not* contain: anything installed on the device. Because host protections are infeasible and updates are constrained, the defence moves outward to the network and the configuration.
+
+**Isolated network infrastructure** is named as **the most effective mitigation** - **ensure limited functionality components are not connected or exposed to general purpose networks, and are only connected to highly controlled networks.** **Robust network connection restrictions and monitoring** - **any connections allowed on or off control system networks must be carefully monitored.** **Highly segmented network** - **segmented by process, or by devices that must directly communicate to function**, which **generates some very small network segments, but is highly desirable.** **Protect communication channels** - **all communication channels must be heavily protected from outside access.** And **robust configuration control** - **configuration and code on devices must be robustly managed.**
+
+The exam-relevant summary: for systems that cannot defend themselves, the environment must defend them - and the strongest available control is not connecting them to general-purpose networks at all.`
+    },
+    {
+      id: '6-cloud',
+      title: `6. Cloud-Based Systems`,
+      content: `## The definition and what it commits to
+
+The module uses the standard definition, which describes cloud computing as **a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources - networks, servers, storage, applications, and services - that can be rapidly provisioned and released with minimal management effort or service provider interaction.** The comparable ISO/IEC definition is similar: **a paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources, with self-service provisioning and administration on demand.**
+
+Every security property in this section follows from three words in those definitions - *shared*, *on-demand*, and *network access*.
+
+## The essential characteristics
+
+| Characteristic | What it means |
+| --- | --- |
+| **On-demand self-service** | A consumer can unilaterally provision capabilities such as server time and network storage, automatically, without human interaction with the provider |
+| **Broad network access** | Capabilities are available over the network through standard mechanisms usable by heterogeneous thin or thick clients |
+| **Resource pooling** | Provider resources are pooled to serve multiple consumers in a multi-tenant model, with physical and virtual resources dynamically assigned and reassigned by demand |
+| **Rapid elasticity** | Capabilities are provisioned and released elastically, sometimes automatically, scaling outward and inward with demand |
+| **Measured service** | Systems automatically control and optimise resource use through metering at a level of abstraction appropriate to the service |
+| **Multi-tenancy** (added by the ISO/IEC standard) | Physical or virtual resources are allocated so that multiple tenants, and their computations and data, are isolated from and inaccessible to one another |
+
+Read them as security statements rather than marketing ones. On-demand self-service means capacity can be created by anyone with credentials, without a change process - which is convenience and shadow IT in the same sentence. Resource pooling and multi-tenancy mean the isolation between your data and a stranger's is a software property of the provider's platform. And measured service means the provider has telemetry about your usage, which is a business feature and a data-collection fact at once.
+
+## Service and deployment models
+
+![What the customer still controls at each service model](/courses/cissp/figures/cissp-cloud-models.svg)
+
+**Software as a service (SaaS)**: the capability is **to use the provider's applications running on a cloud infrastructure**, accessible **through either a thin client interface, such as a web browser, or a program interface.** The consumer **does not manage or control the underlying cloud infrastructure - network, servers, operating systems, storage, or even individual application capabilities - with the possible exception of limited user-specific application configuration settings.**
+
+**Platform as a service (PaaS)**: the capability is **to deploy onto the cloud infrastructure consumer-created or acquired applications, created using programming languages, libraries, services, and tools supported by the provider.** The consumer **does not manage the underlying infrastructure but has control over the deployed applications, and possibly configuration settings for the application-hosting environment.**
+
+**Infrastructure as a service (IaaS)**: the capability is **to provision processing, storage, networks, and other fundamental computing resources**, where the consumer **is able to deploy and run arbitrary software, including operating systems and applications.** The consumer **does not manage the underlying cloud infrastructure but has control over operating systems, storage, and deployed applications, and possibly limited control of select networking components such as host firewalls.**
+
+The standards add further categories - **network as a service (NaaS)**, providing **transport connectivity and related network capabilities**, and, in the ISO/IEC catalogue, **communications as a service, compute as a service, and data storage as a service.**
+
+Four **deployment models** apply across them. **Private cloud** is **provisioned for exclusive use by a single organisation comprising multiple consumers**, and **may be owned, managed, and operated by the organisation, a third party, or a combination, on or off premises.** **Community cloud** is **provisioned for exclusive use by a specific community of consumers from organisations with shared concerns** - mission, security requirements, policy, compliance. **Public cloud** is **provisioned for open use by the general public** and **exists on the premises of the cloud provider.** **Hybrid cloud** is **a composition of two or more distinct cloud infrastructures that remain unique entities but are bound together by standardised or proprietary technology enabling data and application portability** - the module's example being **cloud bursting for load balancing between clouds.**
+
+And the module's closing caution on the whole taxonomy: **as more organisations leverage SaaS, PaaS, and IaaS, it is important to be aware of the limited ability they have to define specific security controls and functions.**
+
+## Vulnerabilities and mitigations
+
+**Inherently exposed to external communication and access** - **by their nature, cloud systems tend to be more exposed to external communications.**
+
+**Misconfiguration is a major risk.** The module's diagnosis is precise and matches the industry's actual incident record: **cloud providers typically have well managed infrastructure, but unfamiliarity with the interface and management functions often results in users misconfiguring the cloud service or hosted components in a way that exposes data.** The platform is not the weak point; the customer's use of it is.
+
+**May exist for long periods, with the risk of being outdated** - **services ported to a cloud environment may exist for long periods**, and while **underlying components provisioned by the provider may be periodically updated, it is often the user's responsibility to update some components** - with **assumptions that it is not necessary, or that the provider is providing that function when they are not.**
+
+**Gap between provider and data owner security controls** - **there is a high risk of misunderstanding on the cloud customer's part about where the responsibilities of the provider end for security, and the customer responsibilities begin.** This is the shared-responsibility principle from the first module of this domain, appearing as the cloud's characteristic failure.
+
+The mitigations are correspondingly organisational rather than technical: **a reputable cloud service provider that supplies security information and testing results**; **well trained system administrators**; **robust configuration control and change control**; **file and communication encryption**; and **well managed identity and access controls.** Note that two of the five - trained administrators and configuration control - are direct answers to misconfiguration, which is the module's stated major risk. The most valuable cloud security investment, on this analysis, is competence with the platform rather than a product added to it.`
+    },
+    {
+      id: '7-other-types',
+      title: `7. Distributed, IoT, Web, Mobile, and Embedded Systems`,
+      content: `## Distributed systems
+
+**In a distributed computing environment, nodes and processors operate independently, and storage and processing may be spread across multiple components.** Nodes **pass messages to coordinate and communicate** - the module's analogy being **traditional telephone switches, which operate independently for local calls but coordinate to pass calls between them.** In computing terms, distributed systems **may be used by large organisations to spread processing and storage across multiple low-cost systems**, or **can include user-provided resources operating collectively, such as peer-to-peer networks.**
+
+The vulnerabilities follow from the absence of a centre. **Lack of central control or monitoring may introduce failures, or allow entry of unauthorised nodes.** **Data elements may be lost if nodes fail.** **Inconsistent security levels between nodes is possible in large-scale organisational deployments, and highly likely in peer-to-peer deployment** - and inconsistency matters because the system is only as trustworthy as the least trustworthy node participating in it. And they are **susceptible to communication failures, compromise, or denial of service, from either external attackers or internal components misbehaving, intentionally or accidentally.**
+
+Mitigations: **standard security rules for nodes to enter the distributed network** - admission control, so membership means something; **communication control, encryption, and redundancy**; and **node backup and data sharing between nodes**, so that one node's failure is not a data loss.
+
+## Internet of Things
+
+**The Internet of Things is made up of small dedicated use devices, typically designed as small form factor embedded hardware with a limited functionality OS.** They **may interface with the physical world**, **tend to be pervasively deployed where they exist**, and - the sentence that names the problem - are **often connected to general purpose networks with the protections applied to general purpose computing systems**, while **their full range of functions and external accessibility may be unclear to owner or user.**
+
+That last clause is what makes IoT distinctive: a device whose capabilities nobody has enumerated cannot be threat-modelled by the organisation running it.
+
+The vulnerabilities are largely economic in origin. **Limited vendor support for updates** - **vendors may provide a limited support lifecycle for individual devices, and little concern provided for security updates.** **Little to no onboard security capability** - **limited integrated security capabilities, and rarely any mechanism to allow external monitoring of their security functions, if any exist.** **Poor code management due to rapid development cycles** - **vendor code may be suspect and "hacked together" from various sources to meet aggressive product release schedules.** And **limited or weak security implementations on standard protocols** such as Bluetooth and Wi-Fi, where **security features may be disabled or degraded in favour of interoperability and ease of use.**
+
+The mitigation strategy begins with a classification: **in effect, most IoT devices are small embedded system controllers, and should be treated like an embedded system or industrial control system as appropriate.** Then: **isolated on private networks with controlled access**; **products selected for security features and updatability, so that inherently insecure products are not procured**; **product security and penetration testing**; and **disable unneeded functions.** The second of those is a procurement control, and it is the only one that addresses the root cause - the others manage a device the organisation has already chosen to accept.
+
+## Web-based systems
+
+**Web-based systems or applications are mainly characterised by user interaction occurring through a web browser using HTTP or HTTPS protocols.** Applications or data **are accessible and manipulated through a web browser or web service**, and **often connect to a data source, which may be on or off platform.** They **use standard protocols**, and **interfaces and connections are typically dynamic, with potentially thousands forming and closing within seconds of operation.**
+
+They **inherit the vulnerabilities of whatever platform or OS they execute upon**, and add: **accessibility to network communications and access** - they **tend to be highly exposed and accessible to outside attackers**; **use of obsolete protocols or encryption**, since **unless specifically configured to prevent it, some web servers will allow obsolete or lower security protocols or encryption to support backwards compatibility with older browser types**; and **code or configuration errors that expose components or data** - which the module identifies as **the main vulnerability in most web servers.**
+
+That backwards-compatibility point is worth flagging as a design pattern rather than a product defect: a default that accepts weak protocols to avoid breaking old clients is a secure-defaults failure, and it persists precisely because it is invisible when everything works.
+
+Mitigations, beyond those applied to the platform: **protect the system behind firewalls and access controls**; **limit and monitor communication protocols**; **scan, evaluate, and assess interfaces and code** - HTML, Java, scripts; **tightly control configuration and change management**; and **ensure the platform is securely configured.**
+
+## Mobile systems
+
+**Mobile systems include a large and diverse set of products**, commonly agreed to include **phones, tablets, and wearable devices** - many with **a portable, small form factor and a limited functionality embedded OS**, **typically containing limited amounts of data but highly connected (cellular, Wi-Fi, Bluetooth, tethering), designed for a single user.**
+
+The module then draws a distinction that is genuinely useful and often fudged. **Laptop and convertible computers are essentially general purpose computing platforms in a small form factor** - **the main differentiator is the inclusion of a full featured operating system with capabilities similar to a desktop computer.** They **typically contain large amounts of data and are multi-user capable**, while sharing **connectivity characteristics with smaller form factor mobile systems.**
+
+Are laptops mobile systems? The module answers honestly: **opinions may vary.** They **are certainly portable systems and share many of the physical security concerns**, but **may have significantly different security concerns associated with the OS**, being **capable of more onboard controls - traditional host protections, logging, monitoring, access controls - with different mitigation mechanisms available.** And **some tablets cross the line between laptop characteristics and embedded mobile device characteristics.** The lesson is to classify by *operating system capability*, not by size, because capability is what determines which mitigations are even possible.
+
+Vulnerabilities, for most mobile device types: **loss or theft**; **weak access controls configured**; **unencrypted data**; **communication interception or eavesdropping**; and **limited onboard security services and monitoring.**
+
+| Mitigations for embedded-type mobile devices | Mitigations for laptops and full-OS hybrids |
+| --- | --- |
+| Mobile device management installed and centrally managed | Apply all traditional computer system protections - antivirus, firewall, host IPS |
+| Device tracking, wiping, software control, policy enforcement | Ensure encryption is activated |
+| Screen lock with high complexity passcodes or biometrics | Strong passwords, biometrics, or two-factor authentication on all accounts |
+| Ensure the device is encrypted | Activate anti-theft or tracking functions where available |
+| Tunnel communications through a VPN architecture | Tunnel mobile communications through a VPN |
+| Limit software and apps to trusted packages | |
+| Prevent jailbreaking or rooting | |
+| Do not connect to public networks | Do not connect to public networks |
+
+The jailbreak line carries its own reasoning, and it is the strongest statement in the list: rooting **bypasses most built-in security functions and leaves the device susceptible to both local access and network based attacks.** A jailbroken device has not merely violated policy; it has discarded the platform capabilities the previous module spent its length describing.
+
+## Embedded systems
+
+**An embedded system is best characterised as a computing platform with a dedicated function, that usually has a limited function or specialised OS without the capabilities typical of a full featured OS.** They **typically have limited processing power and a long service life in many applications**, **may include System on a Chip (SoC) architectures with very limited ability to update**, are **common in IoT, ICS, and mobile devices**, and **tend to be highly diverse in nature with significant vendor specific customisations**, performing **specialised computing operations instead of general purpose computing.**
+
+Their vulnerabilities are the consequences of that definition: **limited function design does not include all full monitoring and security control implementation**; **limited access controls**; and **limited ability to update, with vendor support often time limited.**
+
+The mitigations carry a caveat that ties this module back to control selection: they **will typically improve security, but may impact functionality, and should be applied intelligently after appropriate tailoring.** The list: **limit access to devices**; **limit communications to devices**; **disable unnecessary components, features, and communications**; **isolate on dedicated networks if connected**; **monitor external communications with exterior sensors such as network taps**; and **apply vendor updates when available.**
+
+Read alongside Section 5, the pattern across ICS, IoT, and embedded systems is one strategy stated three times: when the device cannot host controls, control the network it sits on, reduce what it exposes, and watch it from outside.`
+    },
+    {
+      id: '8-worked',
+      title: `8. Worked Examples`,
+      content: `## Worked Example 1: Designing security into a mixed architecture
+
+*An organisation builds a customer-facing application: database servers in its own data centre holding customer private data; application servers there too, reached by employee workstations; web servers at a cloud provider that reach back to those databases; and mobile applications distributed to customers through the same provider.* This is the module's method applied end to end, one system type at a time. **Database servers** are high-value targets holding bulk sensitive data: place them on a protected segment and permit connections only from authorised application servers, with input validation, output throttling, and tokenisation for the most sensitive fields. **Application servers** are server-based systems exposed to internal clients: narrow their network exposure to the functions they serve, apply strong remote access and change control. **Employee workstations** are client-based and partly mobile: the full host protection set, disk encryption, patching as a continuous action, monitoring, and anti-phishing education, because two of the four top threat actions target the people using them. **Web servers** are the most exposed component: behind firewalls and access controls, obsolete protocols and ciphers disabled, code and interfaces scanned, configuration tightly managed - and, being cloud-hosted, the provider-customer responsibility boundary written down rather than assumed. **Mobile applications** run on devices the organisation does not control at all, so the security must be in the application and the service: no trust in the client, authenticated and encrypted communications, and minimal data retained on the device.
+
+## Worked Example 2: Nothing was accessed without permission
+
+*An audit finds that an analyst with access to two low-sensitivity datasets has produced a report containing information classified above their clearance. Every query they ran was authorised.* This is **aggregation** - combining lower-sensitivity data from separate sources to create higher-sensitivity information, where **the combined data sensitivity can be greater than the sensitivity of the individual parts.** Access control did not fail, because no rule was broken; the classification model assumed sensitivity was a property of each dataset rather than of their combination. The mitigations that apply are the ones that work against permitted access: **output throttling** to limit bulk extraction, **anonymisation** where identity is not needed, and **tokenisation** where it must be recoverable. The governance fix is a classification review that considers combinations - which is Domain 2's aggregation problem meeting Domain 3's database module.
+
+## Worked Example 3: The pump that would not stop
+
+*A water treatment site's control network is reachable from the corporate network through a single engineering workstation. Malformed traffic reaching a controller causes it to stop responding, and a pump continues running.* Two ICS properties combine. Controllers are **highly susceptible to denial of service**, containing **minimal communication protections and very sensitive to improper input** - so traffic a general-purpose stack would discard can halt one. And **attacks can produce physical effects**, which is what turns an availability incident into a safety incident. The mitigations are the ones the module ranks first: **isolated network infrastructure**, keeping limited-functionality components off general purpose networks; **highly segmented networks** by process or by devices that must communicate; and **robust restrictions and monitoring on any connection allowed on or off the control network.** The engineering workstation is not an exception to the isolation - it is the thing the isolation exists to control.
+
+## Worked Example 4: The bucket that was not locked
+
+*A cloud storage container holding customer records is discovered publicly readable. The provider's infrastructure was not compromised.* This is the module's named major cloud risk exactly: providers **typically have well managed infrastructure, but unfamiliarity with the interface and management functions often results in users misconfiguring the cloud service or hosted components in a way that exposes data.** No provider control failed. The mitigations that address the cause are **well trained system administrators** and **robust configuration control and change control** - competence and process, not a product. The second finding worth recording is the responsibility gap: whoever provisioned it may have believed the provider secured it, which is the **gap between provider and data owner security controls** the module warns about, and it is closed by writing the boundary down per service, not by assuming it.
+
+## Worked Example 5: The control everyone worked around
+
+*After an incident, an organisation sets an aggressive screen-lock timeout and requires re-authentication for every file access. Within a month, staff are propping sessions open and sharing a single logged-in terminal.* The module predicts this: misuse **increases in likelihood as difficulty to operate increases**, and **difficult security requirements increase the likelihood of intentional misuse to "get the job done".** The organisation has not achieved more security; it has converted a technical control into a user-misuse vulnerability, and the shared terminal has destroyed the accountability its logs depended on. The correct response is tailoring to the environment's actual risk rather than to the maximum setting - which is the control-selection module's *optimal, not maximal* rule, arriving here with evidence of what happens when it is ignored.
+
+## Worked Example 6: The device nobody could patch
+
+*A building's network contains several hundred sensors from a vendor that has since ended support. They cannot be updated, run an unknown protocol stack, and sit on the general corporate network.* Treat them as the module directs - **most IoT devices are small embedded system controllers, and should be treated like an embedded system or industrial control system as appropriate.** Since **little to no onboard security capability** exists and **vendor support is time limited**, no host-based answer is available. What remains: **isolate on private networks with controlled access**, **limit communications to the devices**, **disable unneeded functions**, and **monitor external communications with exterior sensors** such as network taps, since the devices cannot report on themselves. The procurement lesson is the one that prevents a repeat: **products selected for security features and updatability, so that inherently insecure products are not procured** - a requirement that belongs in the acquisition process from this domain's first module, not in an incident review three years later.`
+    },
+    {
+      id: '9-selfcheck',
+      title: `9. Self-Check`,
+      content: `## Self-Check Questions
+
+**Q1.** What method does this module teach for assessing any system, and what four areas does it say to consider?
+
+**Q2.** Name the four top threat actions and the four top mitigations.
+
+**Q3.** Name the five common vulnerability classes, and give the six things that can happen to communications.
+
+**Q4.** State the relationship the module draws between operational difficulty and user misuse.
+
+**Q5.** Give the three risk conditions for code flaws.
+
+**Q6.** Why are client systems hard to protect, and why are servers hard in a different way?
+
+**Q7.** Distinguish inference, aggregation, and data mining, and say what they have in common that makes access control insufficient.
+
+**Q8.** Distinguish anonymisation from tokenisation.
+
+**Q9.** Distinguish SCADA, DCS, and PLC, and name the property that makes ICS attacks different in kind.
+
+**Q10.** Name the essential characteristics of cloud computing, including the one the ISO/IEC standard adds.
+
+**Q11.** What does the module identify as the major cloud risk, and where does it locate the cause?
+
+**Q12.** What differentiates a laptop from an embedded-OS mobile device, and why does the distinction matter?
+
+**Q13.** Why does jailbreaking or rooting matter so much?
+
+**Q14.** State the common mitigation strategy that ICS, IoT, and embedded systems all share, and why.
+
+## Answers
+
+**A1.** Consider the common vulnerabilities that apply to every system type first, then the vulnerabilities specific to the system type - the type lists are explicitly not comprehensive. The four areas to consider for common vulnerabilities are system hardware, system code, system misuse opportunities, and system communications.
+
+**A2.** Threat actions: hacking, social engineering, malware distribution, phishing. Mitigations: know what you have (inventory and operational status); patch and manage what you have (hardware, firmware, software, and configurations); assess, monitor, and log (continuously, aggregated centrally with automated and manual review); and educate users, which is critical because technology alone cannot defend against human-based attacks.
+
+**A3.** Hardware, communications, misuse by user, code flaws, and emanations. Communications can fail; be blocked (denial of service); be intercepted; be counterfeited or replayed; be modified; and their characteristics can expose information about the sender or receiver, such as address and location.
+
+**A4.** Misuse increases in likelihood as difficulty to operate increases - difficult security requirements increase the likelihood of intentional misuse to "get the job done". Risk in this area may therefore *increase* when technical or procedural protections negatively affect user functionality, which makes usability an input to realised security rather than a competing concern.
+
+**A5.** Known flaw with a patch available, systems unpatched, and an exploit available; known flaw with no patch available and an exploit available; and unknown flaw with an exploit available, making a zero-day attack possible.
+
+**A6.** Clients are physically under user control, so they can be modified or removed from enterprise control, are susceptible to user misuse, may be lost or stolen, and are hard to monitor or update fully because location and power status are indeterminate. Servers are hard for opposite reasons: they may be exposed to external communications, updates may be delayed by operational need, they may run for long periods and become outdated, and high traffic volume makes monitoring more difficult.
+
+**A7.** Inference is guessing protected information from information the user is allowed to see. Aggregation is combining lower-sensitivity data from separate sources so that the combination is more sensitive than its parts. Data mining is running queries against a large repository to reveal hidden relationships, patterns, and trends. What they share is that none requires access to data the user is unauthorised to see, so access control alone does not stop them - countermeasures must limit extraction (output throttling) or degrade the data (anonymisation, tokenisation).
+
+**A8.** Anonymisation permanently removes identifying data features, typically to protect personal information - it is irreversible. Tokenisation replaces information with an identifier that can reconstruct the original if necessary, with the tokens kept in a more secure system or offline; it allows data to be shared with less risk to inference and aggregation while remaining recoverable.
+
+**A9.** SCADA monitors and controls physical equipment across geographically distributed processes such as power, pipelines, water treatment, and transit. DCS is typically confined to a geographic area or specific plant with a local control centre, characterised by large numbers of semi-autonomous controllers. A PLC is a ruggedized industrial controller using specialised code that reacts in real time to inputs, either stand-alone or a component within SCADA or DCS. What makes ICS attacks different in kind is that these systems interface logical space to the physical world - sensors, motors, actuators, valves - so attacks can produce physical effects.
+
+**A10.** On-demand self-service, broad network access, resource pooling (multi-tenant, dynamically assigned), rapid elasticity, and measured service. The ISO/IEC standard adds multi-tenancy: resources allocated so multiple tenants and their computations and data are isolated from and inaccessible to one another.
+
+**A11.** Misconfiguration. The cause is located with the customer rather than the platform: providers typically have well managed infrastructure, but unfamiliarity with the interface and management functions often leads users to misconfigure the service or hosted components in a way that exposes data. Hence the mitigations that matter most are well trained administrators and robust configuration and change control.
+
+**A12.** A laptop or convertible includes a full featured operating system with capabilities similar to a desktop, typically holds large amounts of data, and is multi-user capable; embedded-OS mobile devices have a limited functionality OS, typically hold limited data, and are designed for a single user. The distinction matters because it determines which mitigations are possible at all: full-OS devices support traditional host protections, logging, monitoring, and access controls, while embedded-OS devices are managed through mobile device management, encryption, and communication controls instead.
+
+**A13.** Because it bypasses most built-in security functions and leaves the device susceptible to both local access and network based attacks - it discards the platform's own security capabilities rather than merely violating a policy.
+
+**A14.** All three cannot host meaningful protections themselves - limited functionality, infeasible host protections, limited or absent update paths - so the defence moves outward: isolate them on dedicated or private networks, restrict and segment communications, disable unneeded functions, monitor them from outside with external sensors, and control configuration rigorously. Where the device cannot defend itself, the environment must defend it.`
     }
   ]
 },

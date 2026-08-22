@@ -3489,6 +3489,297 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# A generic information system, annotated with where each security capability
+# actually lives.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-os-security-layers")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    layers = [
+        ("USER MODE", c[0], "applications, services, user interface",
+         "limited instruction set; no direct hardware access", 3.55),
+        ("API BOUNDARY", c[1], "application programming interface",
+         "generalised calls; removes direct OS and hardware contact", 2.75),
+        ("KERNEL MODE", c[2], "kernel, memory manager, process manager,\nsecurity monitor, I/O manager",
+         "full privilege; the security monitor lives HERE", 1.85),
+        ("HAL AND DRIVERS", c[1], "hardware abstraction layer, device drivers",
+         "standardised commands translated per device;\nlimits the binary command set reaching hardware", 0.95),
+        ("HARDWARE", c[0], "processor, memory, storage - and the TPM",
+         "keys generated and stored off the operating system", 0.15),
+    ]
+    fig, ax = plt.subplots(figsize=(9.7, 5.0))
+    for name, colour, contents, gloss, y in layers:
+        ax.add_patch(plt.Rectangle((0.4, y), 3.5, 0.62, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (2.15, y + 0.31), ha="center", va="center",
+                    fontsize=8.0, color=ink)
+        ax.annotate(contents, (4.1, y + 0.42), fontsize=7.1, color=ink)
+        ax.annotate(gloss, (4.1, y + 0.06), fontsize=6.8, color=S.INK_2[mode])
+    ax.annotate("", (2.15, 3.5), (2.15, 0.83),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.4,
+                                linestyle=(0, (4, 3))))
+    ax.annotate("privilege\nrises", (1.05, 4.42), ha="center", fontsize=7.0,
+                color=S.INK_2[mode])
+    ax.annotate("each boundary is a security capability: what crosses it is restricted, translated, or refused",
+                (4.9, 4.5), ha="center", fontsize=7.9, color=c[2], style="italic")
+    ax.set_xlim(0, 9.9)
+    ax.set_ylim(0.0, 4.75)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# The two processor states and what each may do.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-processor-states")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.3, 4.3))
+    cols = [
+        ("SUPERVISOR STATE", "also called KERNEL MODE", c[2], 0.45,
+         ["highest privilege level on the system",
+          "may access ANY system resource -", "data and hardware alike",
+          "executes privileged AND", "non-privileged instructions"]),
+        ("PROBLEM STATE", "also called USER MODE", c[0], 5.0,
+         ["limited privilege",
+          "access to system data and hardware", "is restricted for the process",
+          "privileged instructions are", "unavailable"]),
+    ]
+    for name, alias, colour, x, rows in cols:
+        ax.add_patch(plt.Rectangle((x, 3.2), 4.05, 0.66, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 2.02, 3.53), ha="center", va="center",
+                    fontsize=8.8, color=ink)
+        ax.annotate(alias, (x + 2.02, 2.94), ha="center", fontsize=7.3, color=colour)
+        for j, r in enumerate(rows):
+            ax.annotate(r, (x + 2.02, 2.52 - j * 0.36), ha="center", fontsize=7.1,
+                        color=S.INK_2[mode])
+    ax.annotate("a MALICIOUS process in supervisor state has very few restrictions on it and can do a great deal of damage -",
+                (4.75, 0.6), ha="center", fontsize=7.6, color=c[2])
+    ax.annotate("which is why access to supervisor state should be limited to core OS functions abstracted away from users",
+                (4.75, 0.22), ha="center", fontsize=7.6, color=ink)
+    ax.set_xlim(0, 9.5)
+    ax.set_ylim(0.0, 4.05)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Five mechanisms that keep processes apart.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-process-isolation")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("distinct address spaces", "each process gets its own memory; others are refused access"),
+        ("naming distinctions", "processes are told apart by name, so one cannot pose as another"),
+        ("virtual mapping", "randomly chosen real memory is assigned, so locations are hard to find"),
+        ("encapsulation as objects", "an object carries its own operations; implementation stays hidden"),
+        ("time-slot management", "shared resources are scheduled so processes do not collide in a slot"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.6, 4.3))
+    for i, (name, gloss) in enumerate(rows):
+        y = 3.55 - i * 0.6
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((0.4, y - 0.21), 2.85, 0.44, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.82, y), ha="center", va="center", fontsize=7.5, color=ink)
+        ax.annotate(gloss, (3.5, y), va="center", fontsize=7.1, color=S.INK_2[mode])
+    ax.annotate("all five answer one question: how does the system stop one process reaching another's memory or resources?",
+                (4.85, 0.3), ha="center", fontsize=7.6, color=ink, style="italic")
+    ax.set_xlim(0, 9.8)
+    ax.set_ylim(0.05, 3.95)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Host protection software: five categories beyond what the OS supplies.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-host-protection")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("ANTIVIRUS", "checks files against known malware,", "plus heuristics for the unknown, by behaviour", c[0]),
+        ("HOST IPS", "monitors system communications -", "a network IPS's function, inside one host", c[1]),
+        ("HOST FIREWALL", "blocks inbound or outbound traffic by rule;", "some let applications open access on demand", c[2]),
+        ("FILE INTEGRITY MONITOR", "hashes every file into a known baseline,", "then re-compares periodically or at load", c[0]),
+        ("CONFIG / POLICY MONITOR", "checks configuration and policy are correct", "and unmodified; may report to an enterprise tool", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.7, 4.7))
+    for i, (name, l1, l2, colour) in enumerate(rows):
+        y = 3.95 - i * 0.72
+        ax.add_patch(plt.Rectangle((0.4, y - 0.22), 2.75, 0.46, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.77, y), ha="center", va="center", fontsize=7.3, color=ink)
+        ax.annotate(l1, (3.35, y + 0.11), fontsize=7.0, color=ink)
+        ax.annotate(l2, (3.35, y - 0.19), fontsize=6.8, color=S.INK_2[mode])
+    ax.annotate("some ship with the operating system but must still be ENABLED and CONFIGURED; others are third-party suites",
+                (4.9, 0.3), ha="center", fontsize=7.6, color=ink, style="italic")
+    ax.set_xlim(0, 9.9)
+    ax.set_ylim(0.05, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+
+# ---------------------------------------------------------------------------
+# The vulnerability classes common to every system type.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-common-vuln-classes")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("HARDWARE", "components fail; supply chain may introduce flaws", "or counterfeits; old kit is hard to replace"),
+        ("COMMUNICATIONS", "can fail, be blocked, intercepted, replayed,", "modified - or leak sender and receiver"),
+        ("MISUSE BY USER", "intentional or accidental; degrades or bypasses", "controls - and grows as the system gets harder to use"),
+        ("CODE FLAWS", "present in all non-trivial software; accidental", "or deliberate; patched, unpatched, or unknown"),
+        ("EMANATIONS", "hardware radiates - radio frequency, visible and", "non-visible spectrum; reveals function and location"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 4.7))
+    for i, (name, l1, l2) in enumerate(rows):
+        y = 3.95 - i * 0.72
+        colour = c[i % 3]
+        ax.add_patch(plt.Rectangle((0.4, y - 0.22), 2.55, 0.46, facecolor=colour,
+                                   alpha=0.16, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.67, y), ha="center", va="center", fontsize=7.5, color=ink)
+        ax.annotate(l1, (3.15, y + 0.11), fontsize=7.0, color=ink)
+        ax.annotate(l2, (3.15, y - 0.19), fontsize=6.9, color=S.INK_2[mode])
+    ax.annotate("every system type inherits all five - what changes per type is the IMPACT each one carries",
+                (4.9, 0.28), ha="center", fontsize=7.7, color=ink, style="italic")
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.05, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Cloud service models by how much the customer still controls.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-cloud-models")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    models = [
+        ("SaaS", c[0], "use the provider's applications", "customer controls: little beyond\nuser-specific app settings"),
+        ("PaaS", c[1], "deploy your own applications onto\nthe provider's platform", "customer controls: the deployed apps,\npossibly the hosting configuration"),
+        ("IaaS", c[2], "provision processing, storage, networks;\nrun arbitrary software", "customer controls: OS, storage, apps,\nsome networking such as host firewalls"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.7, 4.8))
+    for i, (name, colour, what, controls) in enumerate(models):
+        x = 0.35 + i * 3.15
+        ax.add_patch(plt.Rectangle((x, 3.75), 2.9, 0.6, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.45, 4.05), ha="center", va="center",
+                    fontsize=9.4, color=ink)
+        ax.annotate(what, (x + 1.45, 3.25), ha="center", fontsize=7.0, color=ink)
+        ax.annotate(controls, (x + 1.45, 2.45), ha="center", fontsize=6.8,
+                    color=S.INK_2[mode])
+    ax.annotate("", (0.55, 1.75), (9.2, 1.75),
+                arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode], linewidth=1.5))
+    ax.annotate("customer control - and customer responsibility - increases this way",
+                (4.85, 1.4), ha="center", fontsize=7.6, color=c[2])
+    ax.annotate("deployment models:  PRIVATE (one organisation)   COMMUNITY (organisations with shared concerns)",
+                (4.85, 0.85), ha="center", fontsize=7.4, color=ink)
+    ax.annotate("PUBLIC (open to the general public)   HYBRID (distinct clouds bound by portability technology)",
+                (4.85, 0.5), ha="center", fontsize=7.4, color=ink)
+    ax.set_xlim(0, 9.9)
+    ax.set_ylim(0.2, 4.55)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Three database attacks that never touch unauthorised data directly.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-database-attacks")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("INFERENCE", c[0], "guess protected information from", "what you ARE allowed to see"),
+        ("AGGREGATION", c[1], "combine lower-sensitivity items until", "the combination is higher-sensitivity"),
+        ("DATA MINING", c[2], "query a warehouse to uncover hidden", "relationships, patterns, and trends"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.5, 4.3))
+    for i, (name, colour, l1, l2) in enumerate(rows):
+        x = 0.35 + i * 3.1
+        ax.add_patch(plt.Rectangle((x, 3.25), 2.85, 0.6, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.42, 3.55), ha="center", va="center",
+                    fontsize=8.4, color=ink)
+        ax.annotate(l1, (x + 1.42, 2.85), ha="center", fontsize=7.0, color=ink)
+        ax.annotate(l2, (x + 1.42, 2.5), ha="center", fontsize=7.0, color=S.INK_2[mode])
+    ax.annotate("none of the three requires access to data the user is not authorised to read -",
+                (4.75, 1.65), ha="center", fontsize=7.8, color=c[2])
+    ax.annotate("which is why access control alone does not stop them",
+                (4.75, 1.28), ha="center", fontsize=7.8, color=c[2])
+    ax.annotate("countermeasures: output throttling, anonymisation, tokenisation - plus input validation and",
+                (4.75, 0.7), ha="center", fontsize=7.4, color=ink)
+    ax.annotate("robust authentication and access control for the direct attacks",
+                (4.75, 0.36), ha="center", fontsize=7.4, color=ink)
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(0.1, 4.05)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Three kinds of industrial control system, by reach.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-ics-types")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("SCADA", c[0], "geographically DISTRIBUTED processes",
+         "power generation and distribution, oil and gas\npipelines, water treatment, rail and mass transit"),
+        ("DCS", c[1], "one SITE or plant, with a local control centre",
+         "large numbers of semi-autonomous controllers;\nmuch like SCADA but confined to a defined area"),
+        ("PLC", c[2], "a single ruggedized CONTROLLER",
+         "specialised code reacting in real time to inputs;\nstand-alone, or a component inside SCADA or DCS"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.7, 4.5))
+    for i, (name, colour, scope, gloss) in enumerate(rows):
+        y = 3.75 - i * 1.12
+        ax.add_patch(plt.Rectangle((0.4, y - 0.25), 1.9, 0.5, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (1.35, y), ha="center", va="center", fontsize=8.6, color=ink)
+        ax.annotate(scope, (2.55, y + 0.16), fontsize=7.4, color=colour)
+        ax.annotate(gloss, (2.55, y - 0.35), fontsize=6.9, color=S.INK_2[mode])
+    ax.annotate("what makes all three different from IT: they interface logical space to the PHYSICAL world -",
+                (4.9, 0.62), ha="center", fontsize=7.6, color=ink)
+    ax.annotate("sensors, motors, actuators, valves, gauges - so an attack can produce physical effects",
+                (4.9, 0.26), ha="center", fontsize=7.6, color=ink)
+    ax.set_xlim(0, 9.9)
+    ax.set_ylim(0.05, 4.2)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):
