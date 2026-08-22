@@ -1073,6 +1073,16 @@ const NCLEX_RN: ExamCurriculum = [
       t('nx_cad_acs', 'Coronary Artery Disease & Acute Coronary Syndromes', 'Stable angina through STEMI: the nitroglycerin protocol, the first-minutes response set, reperfusion windows, and the post-MI complication clock.', 16),
       t('nx_heart_failure', 'Heart Failure & Inflammatory Cardiac Disorders', 'Left versus right failure, daily weights, the medication bundle with digoxin rules, pulmonary edema response, and endocarditis/pericarditis/myocarditis.', 16),
       t('nx_copd_asthma', 'Asthma & COPD', 'Rescue versus controller therapy, inhaler technique, the silent chest, status asthmaticus, and COPD oxygen and breathing rules.', 15),
+      t('nx_resp_infections', 'Pneumonia, Tuberculosis, PE & Chest Trauma', 'Consolidation findings and the older-adult presentation, TB screening thresholds and the RIPE regimen, pulmonary embolism, pneumothorax and chest-tube rules, ARDS, oxygen devices and ventilator alarms.', 20),
+      t('nx_vascular_htn', 'Hypertension, Vascular Disorders & Anticoagulation', 'Blood pressure categories and measurement technique, the antihypertensive class table, arterial versus venous disease, deep vein thrombosis and aneurysm, and the full anticoagulant reference with bleeding precautions.', 20),
+    ],
+  },
+  {
+    sectionId: 'adult_gi_renal', sectionName: 'Adult Health: Gastrointestinal & Renal',
+    topics: [
+      t('nx_gi_disorders', 'Gastrointestinal Tract Disorders', 'GERD and the ulcer pain-timing discrimination, Crohn versus ulcerative colitis, diverticulitis, appendicitis and peritonitis, bowel obstruction, and ostomy care.', 20),
+      t('nx_liver_pancreas', 'Liver, Gallbladder & Pancreatic Disorders', 'Hepatitis transmission and vaccines, the three failures of cirrhosis with ascites, varices and lactulose logic, cholecystitis and T-tube care, and acute and chronic pancreatitis.', 19),
+      t('nx_renal_urinary', 'Renal & Urinary Disorders', 'Acute kidney injury by cause and phase, chronic kidney disease and its diet, hemodialysis and peritoneal dialysis with access rules, urinary infection and stones, and benign prostatic hyperplasia with TURP care.', 20),
     ],
   },
   {
@@ -1080,6 +1090,16 @@ const NCLEX_RN: ExamCurriculum = [
     topics: [
       t('nx_stroke_icp', 'Stroke & Increased Intracranial Pressure', 'FAST and the tPA window, CT-before-anticoagulation, left versus right deficits, dysphagia rules, and early-versus-late ICP signs with the care physics.', 16),
       t('nx_diabetes', 'Diabetes Mellitus & Its Complications', 'The insulin clock, hypoglycemia and the 15-15 rule, sick-day rules, DKA versus HHS with the potassium trap, and foot-care teaching.', 17),
+      t('nx_neuro_disorders', 'Seizures, Neuromuscular & Spinal Cord Disorders', 'Seizure care and the antiseizure drug table, multiple sclerosis, Parkinson and ALS, the myasthenic-versus-cholinergic crisis, Guillain-Barre, spinal cord injury and autonomic dysreflexia, and delirium versus dementia.', 21),
+      t('nx_endocrine_disorders', 'Thyroid, Parathyroid, Adrenal & Pituitary Disorders', 'Hypothyroid versus hyperthyroid with levothyroxine and thyroidectomy care, the calcium axis, Cushing versus Addison with adrenal crisis, and SIADH versus diabetes insipidus with hypophysectomy care.', 20),
+    ],
+  },
+  {
+    sectionId: 'adult_heme_msk_skin', sectionName: 'Adult Health: Hematology, Oncology, Musculoskeletal & Skin',
+    topics: [
+      t('nx_heme_onc', 'Hematologic & Oncologic Disorders', 'The anemias and sickle cell crisis, bleeding disorders and DIC, neutropenic fever as an emergency, leukemia, lymphoma and myeloma, chemotherapy toxicities, radiation safety, and the oncologic emergencies.', 21),
+      t('nx_musculoskeletal', 'Musculoskeletal & Orthopedic Disorders', 'Neurovascular assessment, compartment syndrome and fat embolism, cast and traction rules, assistive devices, hip and knee arthroplasty precautions, amputation care, osteoporosis, arthritis and gout.', 20),
+      t('nx_integumentary_burns', 'Integumentary Disorders, Wounds & Burns', 'Burn depth and the rule of nines, inhalation injury and carbon monoxide, fluid resuscitation and the three burn phases, wound healing and dressing selection, evisceration, and the common skin conditions with ABCDE.', 21),
     ],
   },
 ];

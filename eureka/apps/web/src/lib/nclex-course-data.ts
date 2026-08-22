@@ -4724,6 +4724,2152 @@ Ask **directly** — asking does not plant the idea. Assess **plan, means and in
   ],
 },
 
+nx_resp_infections: {
+  topicId: 'nx_resp_infections',
+  title: `Pneumonia, Tuberculosis, Pulmonary Embolism & Chest Trauma`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Asthma and COPD are the chronic obstructive half of respiratory nursing; this chapter is the acute half — the infection that consolidates a lobe, the organism that requires a negative-pressure room and a four-drug regimen, the clot that arrives without warning, and the injured chest that needs a tube and a nurse who knows what the bubbling means. It also carries the oxygen-delivery table, airway and suctioning technique, and the two ventilator alarms the exam asks about. These are recognition-and-first-action topics: almost every item here rewards the candidate who can name the earliest cue and the correct immediate move.`,
+  sections: [
+    {
+      id: 'rti-pneumonia',
+      title: `1. Pneumonia: Consolidation, Assessment & the Prevention Bundle`,
+      content: `Pneumonia is inflammation of the lung parenchyma with alveoli filling with exudate — the airspace that should hold gas holds fluid, so oxygenation falls even though the airways are open. That is the physiologic difference from asthma and COPD, and it drives every assessment finding.
+
+Classification is by where it was acquired, because the likely organism and the antibiotic follow:
+
+| Type | Definition | Why the exam cares |
+| --- | --- | --- |
+| community-acquired (CAP) | onset outside a facility or within 48 hours of admission | most common; pneumococcus is the classic organism |
+| hospital-acquired (HAP) | onset 48 hours or more AFTER admission | resistant organisms; a nurse-sensitive outcome |
+| ventilator-associated (VAP) | onset 48 hours or more after intubation | prevented by the VAP bundle, not treated after the fact |
+| aspiration | gastric or oral contents enter the airway | the dysphagia, tube-feeding and sedation client |
+
+Assessment findings follow the consolidation: fever with chills and rigors, productive cough (rust-tinged sputum is the classic pneumococcal description), pleuritic chest pain that worsens on inspiration, tachypnea and tachycardia, dyspnea, and falling oxygen saturation. Over the consolidated area the chest examination changes character — crackles that do not clear with coughing, bronchial breath sounds where vesicular sounds belong, dullness to percussion, and increased tactile fremitus. Ask candidates to name the odd one out and the answer is hyperresonance, which belongs to trapped air, not consolidation.
+
+## The older-adult presentation
+
+This is one of the most reliably tested facts in the chapter: in older adults, pneumonia may present with CONFUSION, falls, functional decline, or simply not eating — with a low-grade or absent fever and an unimpressive cough. New confusion in an older client is an infection workup until proven otherwise, and pneumonia and urinary tract infection are the two usual sources.
+
+## Diagnostics and the sequencing rule
+
+Chest radiography confirms the infiltrate; sputum culture and Gram stain identify the organism; blood cultures are drawn when the client is septic; complete blood count shows leukocytosis; a blood gas or oximetry quantifies the gas problem. The sequencing rule generates its own item: obtain the CULTURES BEFORE the first antibiotic dose whenever doing so does not delay therapy — antibiotics given first can sterilize the specimen and cost the client a targeted drug later. A sputum specimen is best collected early in the morning, deep-cough, into a sterile container, after a mouth rinse with water (not mouthwash).
+
+## Nursing care and the teaching set
+
+Position upright or semi-Fowler to recruit lung volume, deliver oxygen to target, encourage deep breathing and INCENTIVE SPIROMETRY roughly ten times per hour while awake, mobilize early, and hydrate to 2 to 3 liters daily unless heart or kidney disease restricts fluids — thinner secretions clear more easily. Give antibiotics on time and complete the course; pair coughing with splinting of the chest or an abdominal incision. Monitor for the deterioration set: rising respiratory rate, falling saturation, confusion, hypotension — which is early sepsis and belongs to the emergencies chapter's hour-one bundle.
+
+Prevention is examinable in its own right: annual influenza vaccination, pneumococcal vaccination per the current adult schedule, smoking cessation, hand hygiene, and for aspiration risk — head of bed at 30 to 45 degrees during and for 30 to 60 minutes after feeding, verified feeding-tube placement, oral care, upright positioning for meals, thickened liquids and a chin-tuck swallow when the speech-language pathologist prescribes them.`,
+      examTip: `New confusion in an older adult with no fever is a classic pneumonia stem. Do not wait for a temperature — assess respiratory status, oxygenation and mentation, and report.`,
+    },
+    {
+      id: 'rti-tb',
+      title: `2. Tuberculosis: Screening, Isolation & the RIPE Regimen`,
+      content: `Tuberculosis is caused by Mycobacterium tuberculosis and spreads by AIRBORNE droplet nuclei that stay suspended for hours — which is why it, measles and varicella share the airborne rule: an AIRBORNE INFECTION ISOLATION ROOM with negative pressure, six to twelve air exchanges per hour, air exhausted outside or through HEPA filtration, the door kept closed, and a fit-tested N95 respirator (or a powered air-purifying respirator) for everyone entering. The client wears a SURGICAL mask — not an N95 — when transported outside the room, and transport happens only when necessary.
+
+## The classic picture
+
+Symptoms are indolent, which is why the disease is advanced when it is found: a cough lasting more than three weeks, low-grade fever that classically rises in the AFTERNOON, drenching NIGHT SWEATS, anorexia and unintentional weight loss, fatigue, and pleuritic chest pain. HEMOPTYSIS is a late finding, not an early one. Risk concentrates in people who are immunocompromised (HIV infection above all), who were born in or travel to high-prevalence countries, who live in congregate settings including shelters and correctional facilities, who inject drugs, and who work in health care.
+
+## Reading the skin test
+
+The Mantoux tuberculin skin test is 0.1 mL of purified protein derivative injected INTRADERMALLY to raise a wheal, read at 48 to 72 HOURS by measuring INDURATION — the palpable firm area — in millimeters. Redness alone is not measured. The cut-point moves with risk:
+
+| Induration | Positive for |
+| --- | --- |
+| 5 mm or more | HIV infection, recent close contact with active TB, organ transplant or other immunosuppression (including prednisone at 15 mg/day or more), fibrotic changes on chest film |
+| 10 mm or more | recent arrival from a high-prevalence country, injection drug use, residents and employees of congregate settings, laboratory personnel, children under 4, other high-risk medical conditions |
+| 15 mm or more | people with no known risk factors |
+
+A positive skin test means EXPOSURE and infection, not active disease. The follow-up is a chest radiograph and, if indicated, sputum specimens for acid-fast bacilli on three different days, typically early morning — culture confirms. Interferon-gamma release assays are blood tests that are NOT confounded by prior BCG vaccination, which is why they are preferred in clients vaccinated abroad. Latent infection (positive test, normal film, no symptoms, not infectious) is still treated, because treatment prevents progression.
+
+## The drug regimen and its four teaching points
+
+First-line therapy is a multi-drug regimen for a minimum of six months — usually four drugs for the first two months, then two for the remainder. Directly observed therapy exists because non-adherence breeds drug resistance, and resistant TB is the reason single-drug treatment is never acceptable.
+
+| Drug | Signature adverse effect | The teaching point |
+| --- | --- | --- |
+| rifampin | ORANGE-red discoloration of urine, sweat, tears, saliva | harmless but expected — it permanently stains soft contact lenses and reduces the effectiveness of oral contraceptives, so a second contraceptive method is needed |
+| isoniazid (INH) | peripheral NEUROPATHY; hepatotoxicity | pyridoxine (vitamin B6) is given to prevent the neuropathy; avoid alcohol |
+| pyrazinamide | hyperuricemia; hepatotoxicity | increase fluids; report joint pain |
+| ethambutol | OPTIC neuritis — decreased acuity and red-green color discrimination | baseline and periodic vision checks; report any visual change immediately |
+
+Three of the four are hepatotoxic, so the shared teaching is to avoid alcohol, report jaundice, dark urine, anorexia, nausea or right-upper-quadrant pain, and expect periodic liver function monitoring.
+
+A client is no longer considered infectious — and airborne precautions may be discontinued — after clinical improvement on adequate therapy plus three consecutive NEGATIVE acid-fast bacillus sputum smears collected on different days. That usually takes two to three weeks of treatment, so a client who feels better after a week is still infectious.`,
+      examTip: `A positive skin test proves exposure, not disease — the next step is a chest film and sputum, never immediate isolation of the whole household. And the client wears a surgical mask; the nurse wears the N95.`,
+    },
+    {
+      id: 'rti-pe',
+      title: `3. Pulmonary Embolism: The Sudden-Onset Item`,
+      content: `A pulmonary embolus is almost always a venous thrombus that traveled from the deep veins of the legs or pelvis, lodged in the pulmonary arterial tree, and created lung that is ventilated but not perfused. The result is sudden hypoxemia the client cannot fix by breathing harder.
+
+Risk is Virchow's triad — venous stasis (immobility, long travel, surgery, heart failure), endothelial injury (trauma, surgery, central lines), and hypercoagulability (cancer, pregnancy and the postpartum period, estrogen-containing contraceptives, inherited thrombophilias, dehydration). Orthopedic surgery, especially hip and knee, sits at the center of all three.
+
+The presentation is defined by its abruptness: SUDDEN dyspnea, pleuritic chest pain, tachypnea — the most common objective sign — tachycardia, apprehension and a sense of impending doom, cough that may be blood-streaked, and falling oxygen saturation. A large embolus adds hypotension, syncope, distended neck veins and cyanosis, and a saddle embolus can present as cardiac arrest. Low-grade fever is possible and misleads candidates toward infection; the discriminator is the speed of onset. Pneumonia builds over days; a pulmonary embolus arrives in a minute.
+
+## The response sequence
+
+1. Stay with the client and place them in HIGH FOWLER position to maximize chest excursion.
+2. Apply oxygen and call the rapid response team or provider — this is a report-now event, not a documentation event.
+3. Establish or confirm IV access and prepare for anticoagulation; obtain vital signs continuously, cardiac monitoring, and pulse oximetry.
+4. Anticipate diagnostics: computed tomography pulmonary angiography is the usual confirmation; D-dimer is sensitive but not specific and is used to rule out low-risk cases; a blood gas typically shows hypoxemia with a LOW carbon dioxide from hyperventilation.
+5. Anticipate therapy: heparin or low-molecular-weight heparin immediately, thrombolytic therapy for massive embolism with hemodynamic instability, embolectomy or a vena cava filter when anticoagulation fails or is contraindicated.
+
+Prevention carries as many exam items as treatment: early and frequent ambulation, sequential compression devices and graduated stockings, prophylactic anticoagulation for at-risk inpatients, adequate hydration, ankle pumps and leg exercises for clients on bed rest, and avoiding pillows under the knees or prolonged leg crossing. Air embolism is the related event to recognize on central line disconnection — sudden dyspnea, chest pain and hypotension — and its response is to clamp the line, place the client in a LEFT lateral Trendelenburg position, administer oxygen, and notify.`,
+      examTip: `Sudden dyspnea plus pleuritic chest pain plus anxiety in a postoperative or immobile client is pulmonary embolism until proven otherwise. Do not leave the room to chart — sit the client up, apply oxygen, and get help.`,
+    },
+    {
+      id: 'rti-chest',
+      title: `4. Pneumothorax, Chest Trauma & Chest-Tube Rules`,
+      content: `Air or blood in the pleural space collapses the lung it surrounds. Pneumothorax may be spontaneous (a ruptured bleb, classically in a tall thin young adult or a client with emphysema), traumatic, or iatrogenic (central line insertion, thoracentesis, barotrauma on a ventilator). Hemothorax is blood in the same space, usually after trauma.
+
+Findings on the affected side: sudden pleuritic pain, dyspnea, DIMINISHED OR ABSENT breath sounds, reduced chest expansion, hyperresonance to percussion in pneumothorax and dullness in hemothorax, and subcutaneous emphysema — a crackling under the skin like bubble wrap — when air tracks into the tissues.
+
+TENSION pneumothorax is the emergency inside the emergency: air enters the pleural space and cannot escape, pressure rises, and the mediastinum shifts. The findings are severe respiratory distress, hypotension, DISTENDED NECK VEINS, and TRACHEAL DEVIATION AWAY from the affected side — a late sign, so waiting for it is a mistake. Treatment is immediate needle decompression followed by chest tube insertion. A flail chest — three or more adjacent ribs fractured in two or more places — produces PARADOXICAL chest movement, with the flail segment sinking on inspiration; care is oxygenation, analgesia and often positive-pressure ventilation, not taping the segment down.
+
+## Chest drainage systems: what the chambers mean
+
+A chest tube evacuates air, fluid or blood and re-establishes negative intrapleural pressure. The drainage unit sits BELOW the level of the chest at all times so drainage flows away and cannot siphon back.
+
+| Observation | Meaning | Action |
+| --- | --- | --- |
+| gentle rise and fall of the water-seal fluid with respiration (TIDALING) | expected; the system is patent and the lung has not fully re-expanded | continue monitoring |
+| tidaling STOPS | either the lung has re-expanded or the tube is obstructed or kinked | assess the client and the tubing; report |
+| INTERMITTENT bubbling in the water-seal chamber | expected in pneumothorax — air is being evacuated | continue monitoring |
+| CONTINUOUS bubbling in the water-seal chamber | AIR LEAK in the system | check all connections and the insertion-site dressing; if it persists, notify |
+| gentle continuous bubbling in the SUCTION-control chamber (wet suction) | expected — that is how wet suction is regulated | maintain the water level |
+| drainage more than 100 mL/hour, or bright red | possible hemorrhage | report immediately |
+| sudden cessation of drainage in a client who had been draining | obstruction | assess, notify; do not force |
+
+Three mechanical rules generate their own items. Do NOT clamp a chest tube routinely — clamping a tube that is still evacuating air can create a tension pneumothorax; brief clamping happens only to change the unit or to locate a leak, and only per policy. Do NOT strip or milk the tubing routinely; the pressure spikes are harmful. Keep an occlusive dressing intact at the insertion site.
+
+If the TUBE SEPARATES FROM THE DRAINAGE SYSTEM, place the end of the tube in a container of sterile water or saline to restore a water seal, then get help. If the TUBE COMES OUT OF THE CHEST, immediately cover the site with a sterile occlusive dressing taped on THREE sides — creating a flap valve that lets air out but not in — and notify the provider while watching for tension signs. Keep the appropriate supplies at the bedside per policy.
+
+Ongoing care is otherwise nursing basics done well: assess respiratory status and breath sounds, encourage deep breathing, coughing and incentive spirometry so the lung re-expands, provide analgesia so the client will take a deep breath, reposition and ambulate with the system upright and below the chest, and mark the drainage level with time and date on the chamber each shift.
+
+## ARDS, the endpoint of severe lung injury
+
+Acute respiratory distress syndrome follows sepsis, aspiration, trauma, pancreatitis or massive transfusion. Its signature is REFRACTORY hypoxemia — the oxygen saturation does not improve as the delivered oxygen is increased — with bilateral infiltrates on chest imaging and no cardiac cause for the fluid. Management is mechanical ventilation with LOW tidal volumes and positive end-expiratory pressure, PRONE positioning to recruit dependent lung, sedation, treatment of the underlying cause, and meticulous prevention of ventilator-associated events.`,
+      examTip: `Match the emergency to the dressing: tube out of the CHEST means a sterile occlusive dressing taped on three sides; tube off the DRAINAGE SYSTEM means the tip goes into sterile water. Reversing them is the distractor.`,
+    },
+    {
+      id: 'rti-oxygen',
+      title: `5. Oxygen Delivery, Airways & Ventilator Alarms`,
+      content: `Oxygen is a drug: it has a dose, a route, an indication and adverse effects, and the exam expects the device table.
+
+| Device | Flow | Approximate oxygen delivered | The tested point |
+| --- | --- | --- | --- |
+| nasal cannula | 1-6 L/min | about 24-44% | comfortable, allows eating and talking; humidify above 4 L/min; check ears and nares for pressure |
+| simple face mask | 6-10 L/min | about 40-60% | needs a MINIMUM of 5-6 L/min to flush exhaled carbon dioxide from the mask |
+| partial rebreather | 6-11 L/min | about 60-75% | the reservoir bag must not fully collapse on inspiration |
+| non-rebreather | 10-15 L/min | up to about 80-95% | one-way valves and an INFLATED reservoir bag; the highest-concentration non-invasive device |
+| Venturi mask | per adapter | precise 24-50% | the COPD device — delivers an exact, set concentration regardless of breathing pattern |
+| high-flow nasal cannula | up to 60 L/min | high, heated and humidified | provides some positive pressure and comfort; used before intubation |
+
+Oxygen safety is a fire question: no smoking or open flame, no petroleum-based products on the face, cotton rather than wool or synthetic blankets to limit static, secure the cylinder upright, and post signage. Prolonged high concentrations cause oxygen toxicity — substernal discomfort, dry cough, and progressive lung injury — so oxygen is titrated to the lowest effective dose.
+
+## Suctioning and tracheostomy care
+
+Suction when there is a clinical indication — audible or visible secretions, coarse breath sounds, falling saturation, rising ventilator pressures — never on a fixed schedule. Use sterile technique for the airway, hyperoxygenate before and after, insert the catheter WITHOUT suction and apply suction only on WITHDRAWAL with a rotating motion, limit each pass to 10 to 15 SECONDS, allow recovery between passes, and limit to about three passes. Adult wall suction is typically set at roughly 80 to 120 mmHg. Watch for hypoxemia, dysrhythmias including bradycardia from vagal stimulation, and mucosal trauma.
+
+Tracheostomy care keeps the OBTURATOR and a spare tube of the same size (and one size smaller) at the bedside. Secure new ties before removing the old, allowing one to two fingers of slack, and use twill tape or a commercial holder. Clean the inner cannula per policy, use pre-cut or folded gauze that will not shed fibers under the flange — never a cut 4x4 — and keep the stoma dry. If the tube is accidentally dislodged, call for help, hold the stoma open with a tracheal dilator or hemostat, and reinsert with the obturator per policy, oxygenating over the stoma while help arrives.
+
+## The two ventilator alarms
+
+| Alarm | What it means | Where to look |
+| --- | --- | --- |
+| HIGH pressure | something is OBSTRUCTING flow | secretions needing suction, kinked tubing, the client biting the tube, bronchospasm, water in the circuit, pneumothorax, coughing or fighting the ventilator |
+| LOW pressure or LOW volume | something is LEAKING or disconnected | a circuit disconnection, an unsealed or ruptured cuff, an extubation |
+
+The first action in any ventilator alarm is to ASSESS THE CLIENT — colour, chest rise, saturation, breath sounds — not to silence the alarm. If the client is in distress and the problem is not immediately correctable, disconnect the ventilator and ventilate manually with a resuscitation bag and 100% oxygen while help troubleshoots the machine. The ventilator-associated event bundle is examinable: head of bed elevated 30 to 45 degrees, daily sedation interruption and readiness-to-wean assessment, oral care with an antiseptic per protocol, subglottic suctioning where available, peptic ulcer and venous thromboembolism prophylaxis, and keeping the circuit closed.`,
+      examTip: `High pressure equals obstruction, low pressure equals disconnection — and the first move in either case is to look at the client, not the ventilator.`,
+    },
+    {
+      id: 'rti-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. An 82-year-old is admitted from home because she "has not been herself" for two days — she is confused, has eaten little, and is afebrile. What must be on the differential and what does the nurse assess?
+
+2. A client's Mantoux test shows 12 mm of induration. He emigrated from a high-prevalence country three months ago and has no symptoms. What does this result mean and what happens next?
+
+3. On the second postoperative day after a total hip arthroplasty, a client suddenly becomes short of breath, reports sharp chest pain worse on inspiration, and says she feels like something terrible is about to happen. Rank the nurse's first three actions.
+
+4. A chest-drainage unit shows continuous bubbling in the water-seal chamber that was not present an hour ago. What does it indicate, and what does the nurse do?
+
+5. A ventilated client's HIGH-pressure alarm sounds repeatedly. List the likely causes and the correct first action.
+
+6. A client on rifampin, isoniazid, pyrazinamide and ethambutol calls the clinic alarmed that her urine is orange and asks whether she should stop the medication. How does the nurse respond, and what other teaching belongs in this call?
+
+## Answers
+
+1. Pneumonia and urinary tract infection lead the differential — infection in older adults often presents as confusion, falls or anorexia WITHOUT fever. Assess respiratory rate and effort, breath sounds, oxygen saturation, mentation, hydration and urinary symptoms; obtain vital signs including temperature, and report. New confusion is a cue to work up, not a baseline to accept.
+
+2. For a recent arrival from a high-prevalence country the cut-point is 10 mm, so 12 mm is POSITIVE — meaning infection with tuberculosis, not necessarily active disease. Next steps are a chest radiograph and, if indicated, acid-fast bacillus sputum specimens on three different days. If the film is normal and he is asymptomatic, this is latent infection, which is treated to prevent progression; he is not infectious and does not require isolation.
+
+3. Sudden dyspnea, pleuritic pain and a sense of doom after orthopedic surgery is pulmonary embolism. First: stay with the client and raise her to high Fowler position. Second: apply oxygen. Third: activate the rapid response or notify the provider while a colleague brings the monitor. Anticipate anticoagulation and computed tomography pulmonary angiography.
+
+4. A new AIR LEAK. Assess the client's respiratory status first, then work from the client outward — check the insertion-site dressing and all tubing connections, tightening any that are loose. If bubbling persists after connections are secured, the leak is in the client or the system; notify the provider. Do not clamp the tube to hunt for the leak except briefly and per policy.
+
+5. High pressure means obstruction: secretions, a kinked circuit, the client biting the tube, bronchospasm, water in the tubing, a mucus plug, or pneumothorax. The first action is to ASSESS THE CLIENT — chest rise, colour, saturation, breath sounds — then suction or correct the identified cause. If the client is in distress and the cause is not immediately fixable, disconnect and manually ventilate with 100% oxygen while help troubleshoots.
+
+6. Orange-red discoloration of urine, sweat, tears and saliva is an EXPECTED effect of rifampin — she should continue the medication. Add: it permanently stains soft contact lenses, so glasses are preferable; it reduces the effectiveness of oral contraceptives, so an additional method is needed; the full course must be completed even after she feels well; alcohol should be avoided; and she should report yellowing of skin or eyes, dark stools, nausea, right-upper-quadrant pain, numbness or tingling in the feet, or any change in vision or colour perception.`,
+    },
+  ],
+  keyTakeaways: [
+    `Consolidation makes crackles, bronchial breath sounds, dullness and increased fremitus — and in older adults pneumonia often shows up as confusion with no fever.`,
+    `Tuberculosis needs an airborne isolation room and an N95 for staff (a surgical mask for the client); a positive skin test means infection, and the four-drug regimen brings orange fluids, neuropathy prevented with B6, and vision checks on ethambutol.`,
+    `Pulmonary embolism is the SUDDEN item: dyspnea, pleuritic pain, tachypnea and doom — sit the client up, oxygen, get help, anticipate anticoagulation.`,
+    `Chest tubes: tidaling is normal, continuous water-seal bubbling is an air leak, never clamp routinely, and the two dislodgement emergencies have opposite fixes.`,
+    `Oxygen is a dose-titrated drug with a device table; ventilator high pressure equals obstruction and low pressure equals a leak, and both start with assessing the client.`,
+  ],
+},
+
+nx_vascular_htn: {
+  topicId: 'nx_vascular_htn',
+  title: `Hypertension, Vascular Disorders & Anticoagulation`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Hypertension is the disease with no symptoms and the widest downstream damage, and vascular disease is where the exam tests whether a candidate can tell an artery problem from a vein problem by the story alone. Both funnel into anticoagulation, which is high-alert therapy with its own monitoring values, antidotes and bleeding-precaution teaching. This chapter builds the blood-pressure categories and measurement technique, the antihypertensive class table with the adverse effects that name each class, the arterial-versus-venous discrimination, deep vein thrombosis and aneurysm, and a full anticoagulant reference.`,
+  sections: [
+    {
+      id: 'vas-htn',
+      title: `1. Hypertension: Categories, Measurement & Target Organ Damage`,
+      content: `Blood pressure is cardiac output multiplied by systemic vascular resistance, and hypertension is sustained elevation of that product. Ninety to ninety-five percent of cases are PRIMARY (essential) — no single identifiable cause, but a well-mapped risk profile: age, family history, Black race in the United States epidemiology, obesity, high sodium intake, physical inactivity, excessive alcohol, tobacco use, chronic stress, and sleep apnea. SECONDARY hypertension has a cause to find: chronic kidney disease, renal artery stenosis, primary hyperaldosteronism, pheochromocytoma, Cushing syndrome, thyroid disease, coarctation of the aorta, obstructive sleep apnea, and medications including oral contraceptives, decongestants, stimulants, NSAIDs and corticosteroids.
+
+| Category | Systolic | | Diastolic |
+| --- | --- | --- | --- |
+| normal | below 120 | and | below 80 |
+| elevated | 120-129 | and | below 80 |
+| stage 1 hypertension | 130-139 | or | 80-89 |
+| stage 2 hypertension | 140 or above | or | 90 or above |
+| hypertensive crisis | above 180 | and/or | above 120 |
+
+A diagnosis is never made on one reading. It requires elevated averages on at least two readings taken on at least two separate occasions, and technique determines whether those numbers mean anything.
+
+## Measurement technique — a testable procedure
+
+The client sits quietly for five minutes with the back supported, FEET FLAT on the floor and legs uncrossed, the arm bared and supported at HEART level. No caffeine, tobacco or exercise for 30 minutes beforehand, and the client should have emptied the bladder. The cuff bladder should encircle about 80 percent of the arm and cover about two-thirds of the upper-arm length; a cuff that is TOO SMALL reads falsely HIGH and one too large reads falsely low. Take two readings at least one minute apart and average them, and check both arms at the initial visit — a persistent difference of more than about 10 to 15 mmHg between arms is itself a vascular finding.
+
+ORTHOSTATIC (postural) measurement is a separate skill the exam tests: measure supine after the client has rested, then at one and three minutes after standing. A drop of 20 mmHg systolic or 10 mmHg diastolic, or a symptomatic drop with dizziness, defines orthostatic hypotension — a falls risk and a common effect of the very drugs in this chapter.
+
+## Why it matters: target organ damage
+
+Hypertension is called the silent killer because it damages before it announces itself. Severe elevation may produce an occipital headache present on waking, blurred vision, epistaxis or dizziness, but most clients feel nothing. The organs pay: the heart (left ventricular hypertrophy, then heart failure, and accelerated coronary disease), the brain (ischemic and hemorrhagic stroke, vascular cognitive impairment), the kidneys (chronic kidney disease and the proteinuria that heralds it), the eyes (retinopathy visible on funduscopy), and the peripheral arteries.
+
+## Lifestyle therapy — the teaching that carries points
+
+Lifestyle change is prescribed for every category, including alongside medication: the DASH eating pattern (fruits, vegetables, whole grains, low-fat dairy, lean protein; low in saturated fat and sweets), sodium reduced to under 2,300 mg daily with an ideal target closer to 1,500 mg, weight loss where indicated (roughly 1 mmHg of systolic reduction per kilogram lost), at least 150 minutes weekly of moderate aerobic activity, alcohol limited to no more than two drinks daily for men and one for women, tobacco cessation, potassium-rich foods unless kidney disease or a potassium-sparing drug forbids them, and stress management and adequate sleep. Home blood-pressure monitoring with a log is the adherence tool the exam likes — teach the same technique described above, and to bring the device to the clinic for validation.`,
+      examTip: `A cuff that is too small reads falsely HIGH — the classic explanation when a stem gives one alarming reading in a large-armed client whose other readings are normal. Re-measure with the correct cuff before treating a number.`,
+    },
+    {
+      id: 'vas-antihypertensives',
+      title: `2. The Antihypertensive Table & Hypertensive Crisis`,
+      content: `Antihypertensives are best learned by the adverse effect that names each class, because that is how items are written.
+
+| Class | Prototypes | Signature effects | Teaching and monitoring |
+| --- | --- | --- | --- |
+| thiazide diuretic | hydrochlorothiazide, chlorthalidone | HYPOkalemia, hyperglycemia, hyperuricemia (gout), hypercalcemia, photosensitivity | take in the MORNING; potassium-rich foods; monitor potassium and glucose; sun protection |
+| loop diuretic | furosemide, bumetanide | HYPOkalemia, hypovolemia, OTOTOXICITY (worse with rapid IV push or aminoglycosides) | daily weights, intake and output, orthostatic precautions; push IV slowly |
+| potassium-sparing / aldosterone antagonist | spironolactone, triamterene | HYPERkalemia, gynecomastia | AVOID salt substitutes (potassium chloride) and potassium supplements; monitor potassium |
+| ACE inhibitor | lisinopril, enalapril, captopril (the -pril class) | dry persistent COUGH, hyperkalemia, ANGIOEDEMA, first-dose hypotension, acute kidney injury risk | angioedema (facial, lip, tongue swelling) is a stop-the-drug emergency; contraindicated in pregnancy; monitor potassium and creatinine |
+| angiotensin II receptor blocker | losartan, valsartan (the -sartan class) | hyperkalemia; NO cough | the substitute when the cough is intolerable; also contraindicated in pregnancy |
+| calcium channel blocker, dihydropyridine | amlodipine, nifedipine | peripheral EDEMA, headache, flushing, reflex tachycardia | ankle edema without heart failure is the classic finding; avoid grapefruit juice |
+| calcium channel blocker, non-dihydropyridine | verapamil, diltiazem | bradycardia, CONSTIPATION, heart block, negative inotropy | hold parameters for heart rate; fluids and fibre; caution with beta blockers |
+| beta blocker | metoprolol, atenolol, carvedilol (the -olol class) | bradycardia, fatigue, bronchospasm in reactive airways, MASKS hypoglycemia symptoms | never stop ABRUPTLY (rebound hypertension, angina, infarction); check apical pulse; diabetic clients must monitor glucose rather than rely on symptoms |
+| alpha-1 blocker | doxazosin, prazosin, terazosin (the -zosin class) | FIRST-DOSE orthostatic syncope | take the first dose at BEDTIME; rise slowly; also treats benign prostatic hyperplasia |
+| central alpha-2 agonist | clonidine, methyldopa | sedation, dry mouth, REBOUND hypertension on abrupt withdrawal | taper, never stop suddenly; methyldopa is a pregnancy-compatible option |
+| direct vasodilator | hydralazine, minoxidil | reflex tachycardia, headache, fluid retention; hirsutism with minoxidil | often paired with a beta blocker and a diuretic |
+
+Shared teaching threads: rise slowly from lying or sitting; do NOT stop the medication because the pressure has normalized or because you feel well — the drug is why it is normal; report dizziness, fainting, unusual swelling or a persistent cough; avoid over-the-counter decongestants and NSAIDs without checking; keep a home log; and never take erectile-dysfunction drugs with nitrates.
+
+## Hypertensive crisis
+
+A crisis is a pressure above 180 systolic and/or above 120 diastolic. The distinction the exam wants is:
+
+- **Hypertensive URGENCY** — the number is extreme but there is NO evidence of acute target organ damage. Treatment is oral medication with reduction over hours to days in a monitored setting.
+- **Hypertensive EMERGENCY** — the extreme number comes WITH acute organ injury: chest pain, neurologic deficits or altered mentation, severe headache with visual change, pulmonary edema, acute kidney injury, aortic dissection, or eclampsia. Treatment is intravenous therapy in an intensive care setting with continuous monitoring.
+
+The nursing physiology point behind the treatment order: pressure is lowered GRADUALLY, generally by no more than about 25 percent of the mean arterial pressure in the first hour, because the chronically hypertensive brain and kidney have shifted their autoregulation upward — dropping the pressure too fast causes cerebral, coronary and renal ISCHEMIA. Nursing care is continuous blood pressure and cardiac monitoring, neurologic checks, strict intake and output, an intravenous infusion titrated to a prescribed target, bed rest with a quiet environment, and a search for the trigger, which is very often non-adherence or abrupt withdrawal of clonidine or a beta blocker.`,
+      examTip: `The class is usually identifiable from one adverse effect: dry cough means an ACE inhibitor, ankle edema means amlodipine, gynecomastia means spironolactone, and first-dose syncope means an alpha blocker taken at bedtime.`,
+    },
+    {
+      id: 'vas-arterial-venous',
+      title: `3. Arterial versus Venous: The Discrimination Item`,
+      content: `Peripheral arterial disease is a supply problem — atherosclerotic narrowing means tissue does not get enough blood. Chronic venous insufficiency is a drainage problem — incompetent valves mean blood does not get back out. Almost every peripheral-vascular item on the exam turns on telling them apart, and the table below is the whole discrimination.
+
+| Feature | ARTERIAL (peripheral arterial disease) | VENOUS (chronic venous insufficiency) |
+| --- | --- | --- |
+| pain | intermittent CLAUDICATION — cramping with walking, relieved by REST; rest pain at night in advanced disease, relieved by DANGLING the leg | aching, heaviness, fullness; relieved by ELEVATION |
+| pulses | diminished or absent | present (though hard to palpate through edema) |
+| skin | cool, pale, shiny, HAIRLESS, thick brittle nails; DEPENDENT RUBOR with elevation pallor | warm, brownish HEMOSIDERIN staining, stasis dermatitis, thickened skin |
+| edema | minimal | prominent, worse at end of day |
+| ulcer location | TOES, heels, lateral malleolus, over bony prominences and pressure points | MEDIAL malleolus (the inner ankle) |
+| ulcer appearance | small, round, deep, PUNCHED-OUT, pale base, minimal drainage | irregular borders, shallow, ruddy granulation, HEAVY drainage |
+| ulcer pain | severe | mild to moderate |
+| positioning | keep legs DEPENDENT or level — never elevated above the heart | ELEVATE legs above heart level |
+| compression | contraindicated in significant arterial disease | the mainstay of therapy |
+
+Arterial care: walk to the point of claudication, rest, then walk again — that interval training is prescribed therapy because it promotes collateral circulation. Absolute smoking cessation is the single most important intervention. Avoid crossing the legs, constrictive clothing and cold exposure; keep the extremity warm with loose socks and blankets but NEVER apply direct heat (a heating pad or hot water bottle) to an ischemic, possibly insensate limb — burns follow. Meticulous foot care with professional nail trimming, well-fitted closed shoes and daily inspection is the same teaching diabetes clients receive, for the same reason. Medications include antiplatelet therapy (aspirin or clopidogrel), a statin, blood pressure and glucose control, and cilostazol for claudication distance.
+
+Acute arterial occlusion is the emergency version, and the exam teaches it with the six P's: PAIN (sudden, severe), PALLOR, PULSELESSNESS, PARESTHESIA, PARALYSIS, and POIKILOTHERMIA (coolness). Keep the limb dependent and at rest, do not apply heat or cold, do not elevate, and notify immediately — this is a limb-salvage clock measured in hours.
+
+Venous care: elevate legs above the level of the heart several times daily, apply graduated compression stockings BEFORE getting out of bed in the morning while the legs are least swollen, avoid prolonged standing or sitting with the legs down, avoid crossing legs and constrictive garters, exercise the calf muscles (ankle pumps, walking) because the calf is the pump, manage weight, and treat stasis ulcers with compression plus appropriate absorbent dressings.
+
+Raynaud phenomenon is a vasospastic third pattern: colour change in the digits (white to blue to red) triggered by COLD or emotional stress, with numbness and throbbing on rewarming. Teaching is to keep the whole body warm, wear gloves including when handling frozen items, stop tobacco absolutely, avoid vasoconstrictors including caffeine and decongestants, and manage stress; calcium channel blockers are the usual drug. Buerger disease (thromboangiitis obliterans) is inflammatory small-vessel occlusion in young tobacco users, and complete tobacco cessation is not advice but the treatment.`,
+      examTip: `One word decides the position: ELEVATE for venous, DEPENDENT for arterial. Elevating an ischemic leg to reduce swelling is the trap answer, and it worsens perfusion.`,
+    },
+    {
+      id: 'vas-vte-aneurysm',
+      title: `4. Deep Vein Thrombosis & Aortic Aneurysm`,
+      content: `Deep vein thrombosis forms where Virchow's triad applies: stasis, endothelial injury and hypercoagulability. The classic presentation is UNILATERAL — calf or leg swelling with a measurable circumference difference, warmth, erythema, tenderness or dull ache along the vein, and sometimes a low-grade fever. Many clots are silent, and the first presentation may be the pulmonary embolus described in the respiratory chapter.
+
+The rules that generate items: do NOT massage or vigorously palpate a suspected clot, do not use a calf-squeezing manoeuvre to hunt for pain, and do not apply the sequential compression device to a leg with a known acute clot. Diagnosis is by venous duplex ULTRASOUND; D-dimer is used to help exclude the diagnosis in low-probability cases and is nonspecific because it rises with surgery, infection, pregnancy and cancer.
+
+Care: anticoagulation as prescribed, elevation of the extremity, warm moist compresses per orders for comfort, graduated compression once the acute phase allows, analgesia (avoid NSAIDs in anticoagulated clients unless prescribed), progressive ambulation as ordered, and vigilant monitoring for the pulmonary embolism findings. Prevention is the nurse-owned bundle: early ambulation, ankle pumps and leg exercises, sequential compression devices, hydration, prophylactic anticoagulation, and never placing pillows under the knees.
+
+## Aortic aneurysm and dissection
+
+An aneurysm is a permanent localized dilation of the arterial wall, most commonly the abdominal aorta below the renal arteries. Risks are atherosclerosis, hypertension, tobacco use, male sex, advancing age and connective-tissue disorders.
+
+Most abdominal aneurysms are asymptomatic and found incidentally. Findings may include a PULSATILE abdominal mass at or above the umbilicus, a bruit on auscultation, and vague back or abdominal fullness. The nursing rule: do NOT palpate deeply an abdomen with a suspected aneurysm — auscultate and inspect, and report.
+
+RUPTURE is the catastrophe: sudden severe, constant abdominal or back pain often described as tearing or ripping, hypotension progressing to shock, tachycardia, pallor and diaphoresis, and in retroperitoneal rupture flank ecchymosis. Aortic DISSECTION presents with abrupt tearing pain radiating to the back, often with a marked BLOOD PRESSURE DIFFERENCE BETWEEN ARMS and pulse deficits. Both are surgical emergencies: large-bore access, type and cross-match, fluids and blood, tight blood pressure and heart rate control to reduce shear force, nothing by mouth, and immediate surgical involvement.
+
+Postoperative aortic repair care concentrates on perfusion downstream and upstream of the graft: assess and mark PERIPHERAL PULSES with Doppler, compare limbs, check colour, temperature, sensation and motion; monitor urine output hourly as the marker of renal perfusion (the graft sits near the renal arteries) and report output under about 30 mL/hour; watch for abdominal distension, absent bowel sounds and bloody stools suggesting bowel ischemia; keep blood pressure within the prescribed narrow window because hypertension stresses the suture line and hypotension threatens graft patency; and monitor for back pain, groin pain or a falling hematocrit that suggests a graft leak. Discharge teaching: no heavy lifting for the prescribed interval (commonly nothing over about 10 pounds for several weeks), avoid straining and constipation, take antihypertensives faithfully, and report abdominal or back pain, fever, or any change in leg colour, warmth or sensation.`,
+      examTip: `Do not palpate a pulsatile abdominal mass, do not massage a suspected deep vein thrombosis, and after aortic repair the two numbers to watch are the distal pulses and the hourly urine output.`,
+    },
+    {
+      id: 'vas-anticoagulation',
+      title: `5. Anticoagulants, Antiplatelets & Bleeding Precautions`,
+      content: `Anticoagulation is a high-alert therapy — every agent below appears on institutional high-alert lists — and the exam tests the monitoring value, the antidote and the teaching for each.
+
+| Agent | Monitoring | Antidote / reversal | The tested facts |
+| --- | --- | --- | --- |
+| unfractionated heparin (IV or subcutaneous) | aPTT, kept about 1.5 to 2.5 times the control value; also anti-Xa in some settings | PROTAMINE SULFATE | onset is immediate; monitor PLATELETS for heparin-induced thrombocytopenia; double-check the pump and concentration |
+| low-molecular-weight heparin (enoxaparin, dalteparin) | no routine coagulation monitoring; anti-Xa if needed (renal impairment, pregnancy, extremes of weight) | protamine (partial reversal) | give deep SUBCUTANEOUSLY in the abdomen at least 2 inches from the umbilicus; do NOT expel the air bubble in the prefilled syringe; do not aspirate and do NOT massage the site |
+| warfarin | PT with INR — target 2 to 3 for most indications, 2.5 to 3.5 for a mechanical mitral valve | VITAMIN K (phytonadione); fresh frozen plasma or prothrombin complex concentrate for urgent reversal | full effect takes 3 to 5 days, so heparin bridges the gap; keep vitamin K intake CONSISTENT rather than eliminating green vegetables; large interaction list including antibiotics, amiodarone and many herbals |
+| direct oral anticoagulants (apixaban, rivaroxaban, edoxaban) | no routine INR | ANDEXANET ALFA | fixed dosing, fewer interactions, renal dosing matters; adherence is critical because the effect fades quickly |
+| direct thrombin inhibitor (dabigatran) | no routine INR | IDARUCIZUMAB | keep in the original container; do not crush or open the capsule |
+| antiplatelets (aspirin, clopidogrel, ticagrelor) | none routine; watch for bleeding | none specific; platelet transfusion in emergencies | given for arterial disease and stents; hold before procedures only on prescriber instruction |
+| thrombolytics (alteplase) | fibrinogen and bleeding assessment | aminocaproic acid; cryoprecipitate | strict eligibility windows and absolute contraindications (active bleeding, recent intracranial surgery or hemorrhage) |
+
+## Heparin-induced thrombocytopenia
+
+This is an immune reaction, typically appearing on days 5 to 10 of heparin exposure, in which the platelet count falls by 50 percent or more from baseline and the client PARADOXICALLY CLOTS rather than bleeds. The action is to STOP all heparin — including flushes and heparin-coated devices — notify the provider, and anticipate a non-heparin anticoagulant. A falling platelet count in a heparinized client is never something to watch for another day.
+
+## Bleeding precautions — the teaching block
+
+Use a SOFT toothbrush and an ELECTRIC razor. Avoid rectal temperatures, suppositories and enemas. Avoid aspirin, NSAIDs, and herbal products such as ginkgo, garlic, ginger and high-dose fish oil unless the prescriber approves. Prevent falls and use non-slip footwear. Apply firm pressure to any puncture site for at least five minutes, longer after arterial sticks. Wear a medical alert identification. Keep every laboratory appointment when the drug requires monitoring. Report immediately: black tarry or bloody stools, coffee-ground or bloody emesis, pink or red urine, bleeding gums or frequent nosebleeds, unusual bruising, a severe headache or any new weakness, numbness or visual change, and heavy or prolonged menstrual bleeding. Any fall or head strike while anticoagulated is evaluated, even without visible injury, because intracranial bleeding may be delayed.
+
+Two safe-administration habits round out the chapter. Heparin and insulin infusions are independently double-checked by two nurses per policy. And subcutaneous heparin sites are ROTATED and never rubbed — the bruise the client complains about is usually from massage that should not have happened.`,
+      examTip: `The pairings are the point: heparin with aPTT and protamine, warfarin with INR and vitamin K, enoxaparin with the air bubble left in and no massage. And a 50 percent platelet drop on heparin means stop the heparin.`,
+    },
+    {
+      id: 'vas-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client with peripheral arterial disease reports that his legs hurt at night and that the pain improves when he hangs them over the side of the bed. A new graduate plans to elevate his legs on pillows to reduce swelling. What is wrong with that plan, and what should be taught instead?
+
+2. A client taking warfarin brings in a diet plan that eliminates all green leafy vegetables "because vitamin K is dangerous with my blood thinner." How does the nurse correct this?
+
+3. On hospital day 6 of a heparin infusion, a client's platelet count has fallen from 240,000 to 95,000. He has no bleeding. What is happening and what is the priority action?
+
+4. A client's blood pressure reads 178/104 in the clinic. He is asymptomatic, and previous readings in his record are 126/78 and 130/80. The nurse notices the cuff is a standard adult size and the client has a large upper arm. What is the likely explanation and the correct next step?
+
+5. Two clients have leg ulcers. Client A's ulcer is on the medial ankle, shallow with irregular borders and heavy drainage, and her legs are brown and swollen. Client B's ulcer is on the tip of the great toe, round and deep with a pale base, and the foot is cool and hairless. Assign the diagnoses and the opposite positioning instructions.
+
+6. A client started on lisinopril two weeks ago calls reporting a persistent dry cough that keeps him awake. He denies fever, sputum and shortness of breath, and his lips and tongue are normal. What is the interpretation and the appropriate response? How would the answer change if his lips were swollen?
+
+## Answers
+
+1. Elevation reduces perfusion in an arterial limb — gravity is doing the work the narrowed arteries cannot. Rest pain relieved by dangling is the confirming clue. Teach him to keep the legs DEPENDENT or level, never elevated above the heart; to walk to the point of claudication and rest, then repeat; to keep the limb warm with loose socks and blankets but never a heating pad; to stop tobacco completely; and to inspect his feet daily and report any break in the skin.
+
+2. Vitamin K is not dangerous — INCONSISTENCY is. Warfarin dosing is titrated against the INR while intake is stable, so wildly changing green-vegetable intake destabilizes the level in either direction. Teach a CONSISTENT daily intake rather than elimination, and to tell the prescriber about any major diet change, new medication, antibiotic or herbal supplement.
+
+3. Heparin-induced thrombocytopenia — a greater than 50 percent fall in platelets on day 5 to 10 of exposure, with a paradoxical risk of THROMBOSIS rather than bleeding. Priority action: STOP all heparin exposure including flushes and heparin-bonded catheters, notify the provider immediately, and anticipate a non-heparin anticoagulant. Do not simply document and recheck tomorrow.
+
+4. A cuff that is too small for the arm reads falsely HIGH. Obtain the correct large-adult cuff, let the client rest quietly seated for five minutes with feet flat and arm supported at heart level, and repeat the measurement — twice, one minute apart — before any conclusion is drawn or medication considered. Isolated elevated readings do not diagnose hypertension in any case.
+
+5. Client A has venous insufficiency: elevate the legs above heart level, apply graduated compression stockings before rising in the morning, and use calf exercises. Client B has arterial disease: keep the legs dependent, never elevate or apply compression, keep the limb warm without direct heat, and treat any change in colour, temperature or sensation as urgent.
+
+6. A dry, persistent, non-productive cough is the classic ACE inhibitor effect from bradykinin accumulation. It is not dangerous but it is often intolerable; the response is to reassure him it is a known drug effect, tell him NOT to stop it on his own, and arrange a prescriber review — the usual substitution is an angiotensin receptor blocker, which does not cause the cough. If his lips or tongue were swollen, the picture would be ANGIOEDEMA: an airway emergency requiring the drug to be stopped permanently, emergency services activated, and airway support prepared. The ACE inhibitor class is never restarted after angioedema.`,
+    },
+  ],
+  keyTakeaways: [
+    `Hypertension is diagnosed on averaged readings across visits with correct technique — a too-small cuff reads falsely high, and a 20/10 mmHg drop on standing defines orthostatic hypotension.`,
+    `Each antihypertensive class is identified by one adverse effect: dry cough (ACE inhibitor), ankle edema (amlodipine), hyperkalemia and gynecomastia (spironolactone), first-dose syncope (alpha blocker), rebound hypertension (clonidine and beta blockers stopped abruptly).`,
+    `Arterial means claudication, absent pulses, punched-out toe ulcers and DEPENDENT positioning; venous means heaviness, hemosiderin staining, medial-malleolus ulcers, ELEVATION and compression.`,
+    `Never palpate a pulsatile abdominal mass or massage a suspected clot; after aortic repair, distal pulses and hourly urine output are the two monitors.`,
+    `Heparin pairs with aPTT and protamine, warfarin with INR and vitamin K, enoxaparin with the air bubble left in and no massage — and a 50 percent platelet fall on heparin means stop the heparin now.`,
+  ],
+},
+
+nx_renal_urinary: {
+  topicId: 'nx_renal_urinary',
+  title: `Renal & Urinary Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `The kidney is the organ the exam uses to test whether a candidate can read a number. Acute kidney injury is a phase disease with a different danger in each phase, chronic kidney disease is a slow accumulation of everything the kidney used to remove, and dialysis brings its own access rules, complications and medication timing. Add the urinary tract itself — infection, stones, obstruction and the prostate — and this chapter covers a large share of the laboratory-value items on the exam. Every section here is anchored to values you should know cold: creatinine, glomerular filtration rate, potassium, and urine output.`,
+  sections: [
+    {
+      id: 'ren-aki',
+      title: `1. Acute Kidney Injury: The Three Causes & Four Phases`,
+      content: `Acute kidney injury is an abrupt fall in kidney function marked by a rising serum creatinine, a falling urine output, or both. The reference points to hold: BUN 10 to 20 mg/dL, creatinine roughly 0.6 to 1.2 mg/dL, and a normal glomerular filtration rate of about 90 mL/min or higher. CREATININE is the better kidney marker of the two because it comes almost entirely from muscle metabolism, while BUN also rises with dehydration, high protein intake, gastrointestinal bleeding, corticosteroids and catabolic states.
+
+Causes sort by WHERE the problem sits relative to the kidney, and the sort determines the treatment.
+
+| Category | Mechanism | Typical causes | The fix |
+| --- | --- | --- | --- |
+| PRErenal | reduced perfusion; the kidney tissue is still healthy | hypovolemia, hemorrhage, dehydration, heart failure, shock, sepsis, renal artery stenosis | restore perfusion — fluids, blood, cardiac support |
+| INTRArenal (intrinsic) | damage to the kidney tissue itself, usually acute tubular necrosis | NEPHROTOXINS (aminoglycosides, vancomycin, amphotericin B, iodinated contrast, NSAIDs), prolonged ischemia, rhabdomyolysis and myoglobin, hemolysis, acute glomerulonephritis | remove the insult; supportive care while tubules regenerate |
+| POSTrenal | obstruction to outflow | benign prostatic hyperplasia, calculi, tumours, strictures, a blocked catheter | relieve the obstruction — often the fastest reversal of all |
+
+A prerenal picture classically shows a BUN-to-creatinine ratio above about 20 to 1 with concentrated urine, because the kidney is still working hard to conserve. Intrarenal injury blunts that ability, producing a ratio nearer 10 to 1 with dilute urine and casts. The bedside version of this distinction is simpler: a client who is dry gets fluid, a client with a blocked catheter gets the catheter unblocked, and a client on gentamicin gets the drug and the level reviewed.
+
+## The four phases
+
+1. **Onset (initiation)** — from the insult until symptoms appear; hours to days.
+2. **OLIGURIC phase** — urine output falls below about 400 mL in 24 hours, typically lasting 1 to 3 weeks. This is the dangerous phase, and it is dangerous in a specific direction: FLUID OVERLOAD (hypertension, edema, crackles, jugular distension, weight gain), HYPERKALEMIA, hyperphosphatemia with hypocalcemia, metabolic ACIDOSIS, and rising BUN and creatinine. Hyperkalemia is what kills — monitor the cardiac rhythm for peaked T waves, a widening QRS and a flattening P wave.
+3. **DIURETIC phase** — the tubules recover their ability to make urine before they recover their ability to concentrate it, so output can reach 3 to 5 litres a day. The danger reverses: HYPOvolemia, hypotension, HYPOkalemia and hyponatremia. Clients can dehydrate in the phase everyone calls recovery.
+4. **Recovery** — gradual return of function over months; some clients never return fully to baseline.
+
+Nursing care through all four phases: strict intake and output and DAILY WEIGHTS at the same time on the same scale in the same clothing (a kilogram equals about a litre and is the most reliable fluid measure), fluid restriction calculated in the oliguric phase as roughly the previous day's output plus insensible losses, dietary sodium, potassium and phosphorus restriction, controlled protein, monitoring of electrolytes and acid-base status, and a careful medication review — many drugs need renal dose adjustment and nephrotoxins must be stopped.
+
+Contrast-associated kidney injury is a nurse-preventable item: identify at-risk clients (existing kidney disease, diabetes, dehydration, older age), hydrate before and after per protocol, check the creatinine before and after, and know the metformin rule — metformin is typically withheld at the time of the study and for 48 hours afterward, restarted only after kidney function is confirmed acceptable, because kidney injury plus metformin risks lactic acidosis.
+
+## Emergency hyperkalemia
+
+Because it recurs across the exam, memorize the sequence rather than the drug list: first STABILIZE the myocardium with intravenous CALCIUM GLUCONATE (it does nothing to the potassium level but protects the heart), then SHIFT potassium into the cells with insulin plus dextrose, a beta-2 agonist by nebulizer, and sodium bicarbonate if acidotic, then REMOVE it from the body with a potassium binder (sodium zirconium, patiromer, sodium polystyrene) or with dialysis, which is definitive.`,
+      examTip: `The phase determines the danger: oliguric means fluid overload and hyperkalemia, diuretic means dehydration and hypokalemia. A stem that celebrates a rising urine output is often about to hand you a client who is drying out.`,
+    },
+    {
+      id: 'ren-ckd',
+      title: `2. Chronic Kidney Disease: What Accumulates and What Fails`,
+      content: `Chronic kidney disease is kidney damage or a glomerular filtration rate below 60 mL/min persisting for three months or more. Diabetes and hypertension cause most of it, which is why every diabetes and hypertension chapter ends with a kidney warning. Staging runs from stage 1 (damage with a normal rate) to stage 5 or end-stage kidney disease (rate below 15), where renal replacement therapy — dialysis or transplantation — becomes necessary.
+
+The clinical picture is best learned as two lists: what accumulates because the kidney no longer excretes it, and what fails because the kidney no longer makes it.
+
+**Accumulates:** urea and other nitrogenous wastes (uremia — anorexia, nausea and vomiting, a METALLIC TASTE, uremic fetor, intractable PRURITUS, uremic frost in extreme cases, asterixis, decreased concentration progressing to encephalopathy and seizures, and uremic PERICARDITIS with a friction rub and pleuritic chest pain), potassium (dysrhythmias), phosphorus, sodium and water (hypertension, edema, heart failure, pulmonary edema), and hydrogen ions (metabolic acidosis with compensatory Kussmaul respirations).
+
+**Fails:** erythropoietin (normocytic ANEMIA — the reason these clients are pale and exhausted), activation of vitamin D (poor calcium absorption, so HYPOcalcemia, which combines with HYPERphosphatemia to drive secondary hyperparathyroidism and renal osteodystrophy — bone pain, fractures, and calcification in soft tissues and vessels), and blood pressure regulation.
+
+## The management set
+
+| Problem | Intervention | The tested detail |
+| --- | --- | --- |
+| hyperphosphatemia | phosphate binders — calcium acetate, sevelamer, lanthanum | give WITH meals, because they work by binding the phosphorus in the food; a binder given between meals is a wasted dose |
+| hypocalcemia and bone disease | active vitamin D (calcitriol), calcium as prescribed | monitor calcium-phosphorus product; watch for tetany, Chvostek and Trousseau signs |
+| anemia | erythropoiesis-stimulating agents plus iron | monitor hemoglobin and blood pressure (these agents raise it); do not chase a normal hemoglobin — targets are deliberately submaximal |
+| acidosis | sodium bicarbonate as prescribed | monitor for sodium and fluid load |
+| hypertension | ACE inhibitor or ARB, diuretics, others | these agents protect the kidney in proteinuric disease but raise potassium and creatinine — monitor both |
+| pruritus | skin care, cool environment, keep phosphorus controlled | phosphorus control treats the itch better than lotion does |
+
+Diet is one of the highest-yield teaching blocks on the exam. Sodium, potassium and phosphorus are RESTRICTED. Phosphorus restriction means limiting dairy, processed foods with phosphate additives, cola beverages, nuts and whole grains. Potassium restriction means limiting bananas, oranges and orange juice, potatoes, tomatoes, avocados, dried fruit, spinach, and SALT SUBSTITUTES, which are potassium chloride and are a repeat exam trap. Fluid is restricted according to output. And the protein rule reverses at dialysis: protein is MODERATED in pre-dialysis chronic kidney disease to limit nitrogenous waste, but INCREASED once the client is on dialysis, because the treatment itself removes protein and amino acids.
+
+Medication review is nursing work here: avoid NSAIDs and magnesium-containing antacids, adjust doses of renally cleared drugs, and know that many drugs are removed by dialysis and are therefore scheduled AFTER treatment.
+
+Transplantation is the definitive therapy when a client is a candidate. Post-transplant nursing watches for REJECTION — fever, tenderness or pain over the graft site, decreased urine output, a rising creatinine, hypertension, weight gain and edema — and for the consequences of lifelong immunosuppression: infection (often without the usual inflammatory signs), malignancy risk, and drug-specific toxicities. Teaching centres on never missing an immunosuppressant dose, infection avoidance, sun protection, and reporting any fever promptly.`,
+      examTip: `Two food traps repeat: phosphate binders go WITH meals, and salt substitutes are potassium chloride — forbidden in kidney disease and with potassium-sparing diuretics.`,
+    },
+    {
+      id: 'ren-dialysis',
+      title: `3. Hemodialysis, Peritoneal Dialysis & Access Care`,
+      content: `Dialysis moves solutes across a semipermeable membrane by diffusion and removes water by ultrafiltration. Indications are summarized by the classic list: uncontrolled fluid overload, refractory hyperkalemia, severe metabolic acidosis, uremic symptoms such as pericarditis or encephalopathy, and certain poisonings.
+
+## Hemodialysis
+
+Treatment usually runs three times weekly for three to five hours. Nursing care wraps around the session:
+
+**Before:** weigh the client (the difference from the estimated dry weight sets the fluid removal goal), assess vital signs, review laboratory values, and check which medications should be HELD. Antihypertensives are commonly held before treatment because dialysis itself drops the pressure, and dialyzable medications — including many antibiotics and water-soluble vitamins — are scheduled AFTER the session so they are not removed. Always follow the specific orders rather than a rule of thumb.
+
+**During and after:** monitor for HYPOTENSION (the most common complication, from rapid fluid removal), muscle cramps, nausea, headache, chest pain, and bleeding (heparin is used in the circuit). Weigh after treatment and compare, assess the access site, and hold the puncture sites without occluding the flow.
+
+**DISEQUILIBRIUM SYNDROME** is the neurologic complication to recognize, most often in the first few treatments or after a very efficient session: headache, nausea and vomiting, restlessness, confusion, and in severe cases seizures — caused by urea clearing from the blood faster than from the brain, drawing water into brain cells. The response is to SLOW OR STOP the dialysis rate and notify; it is prevented by shorter, gentler initial treatments.
+
+## Vascular access: the arm rules
+
+An arteriovenous FISTULA is a surgically created connection between an artery and a vein, and it is the preferred long-term access because it lasts longest and infects least. It needs 6 weeks to several months to MATURE before it can be used. A graft uses synthetic material and matures faster but clots and infects more often.
+
+Assessment is two senses: PALPATE for a THRILL (a buzzing vibration) and AUSCULTATE for a BRUIT (a swishing sound). Their loss means the access has clotted — report immediately.
+
+The prohibitions on the access arm are absolute and heavily tested: NO blood pressure measurement, NO venipuncture, NO intravenous line, NO injections, no tight clothing or jewellery, no carrying heavy objects on that arm, and no sleeping on it. Teach the client to check the thrill daily, to keep the site clean, and to report redness, swelling, drainage, pain, coolness or numbness of the hand (which can indicate a steal syndrome), or loss of the thrill.
+
+## Peritoneal dialysis
+
+The peritoneum is the membrane; dialysate is instilled through a permanent catheter, dwells, and is drained. It is gentler hemodynamically, can be done at home, and permits a more liberal diet and fluid allowance — but it requires strict aseptic technique and a client or family able to perform it.
+
+The three phases are FILL, DWELL and DRAIN. Warm the dialysate with an approved warming device or heating pad — never in a microwave, which heats unevenly and can burn the peritoneum. Weigh the client after DRAINING, at the same time daily. Record the balance: outflow should equal or exceed inflow once fluid is being removed.
+
+| Problem | What it looks like | Action |
+| --- | --- | --- |
+| PERITONITIS — the most common and most serious complication | CLOUDY effluent (the earliest and most reliable sign), abdominal pain and rebound tenderness, fever, nausea | send effluent for cell count, Gram stain and culture; notify; anticipate intraperitoneal antibiotics; reinforce sterile technique |
+| poor or slow outflow | inflow runs but little returns | reposition the client side to side, raise the head of the bed, check tubing for kinks and the clamp, ensure the drainage bag is BELOW the abdomen, and treat CONSTIPATION — a full bowel is a classic cause |
+| leakage at the exit site | dampness around the catheter | assess for infection, use smaller fill volumes per orders, report |
+| bloody outflow | pink-tinged is common in the first exchanges and during menses | frankly bloody outflow later is reported |
+| hyperglycemia | dialysate contains dextrose | monitor glucose, especially in diabetic clients |
+| respiratory difficulty | a full abdomen splints the diaphragm | elevate the head of the bed, drain as scheduled, encourage deep breathing |`,
+      examTip: `Cloudy peritoneal effluent is peritonitis until cultured, and loss of the thrill and bruit means the fistula has clotted. Both are report-now findings, not observe-and-recheck findings.`,
+    },
+    {
+      id: 'ren-infection-stones',
+      title: `4. Urinary Tract Infection, Pyelonephritis & Urolithiasis`,
+      content: `Lower urinary tract infection (cystitis) presents with DYSURIA, urinary frequency and urgency, suprapubic pressure or pain, and cloudy, malodorous urine that may be blood-tinged. Fever is usually absent or low. Risk rises with female anatomy (a short urethra), sexual activity, pregnancy, menopause, diabetes, urinary retention, immobility and — above all in hospital — an INDWELLING CATHETER, which is why the strongest prevention intervention is to question the catheter's necessity daily and remove it as early as possible.
+
+Upper tract infection (PYELONEPHRITIS) adds systemic illness: high fever with chills, flank or COSTOVERTEBRAL ANGLE tenderness, nausea and vomiting, and malaise. It is treated more aggressively and can scar the kidney.
+
+The older-adult presentation is the recurring exam point: a urinary tract infection in an older client may show up as new CONFUSION, agitation, falls, incontinence or anorexia with no dysuria and no fever. Treat new confusion as a cue to assess for infection.
+
+Specimen collection matters. A clean-catch midstream specimen requires cleaning front to back, starting the stream, then collecting midstream into the sterile container. From an indwelling catheter, aspirate from the sampling PORT after cleaning it — never from the drainage bag, and never disconnect the system.
+
+Teaching: drink adequate fluids, void every 2 to 3 hours and never hold urine, wipe FRONT TO BACK, void before and after sexual intercourse, wear cotton underwear, avoid bubble baths, harsh soaps and feminine hygiene sprays, complete the entire antibiotic course even after symptoms resolve, and take warm sitz baths for comfort. Phenazopyridine relieves burning but is a URINARY ANALGESIC, not an antibiotic — it turns urine and tears bright ORANGE-RED, stains clothing and soft contact lenses, and does not treat the infection.
+
+## Urolithiasis
+
+Stones form when urine is supersaturated. The presentation is unforgettable: RENAL COLIC — sudden severe flank pain that radiates around the abdomen toward the groin and genitalia as the stone moves down the ureter — with nausea and vomiting, hematuria (often microscopic), diaphoresis, and a client who is RESTLESS and cannot find a comfortable position. That restlessness is the discriminator from peritonitis, where the client lies rigidly still.
+
+Care during an episode: aggressive pain control (opioids and ketorolac are both used), antiemetics, fluids to 2 to 3 litres daily unless obstruction or another condition forbids it, ambulation to help passage, and tamsulosin to relax ureteral smooth muscle. The nursing action that generates the most items is to STRAIN ALL URINE through a filter and save any solid material for analysis — the stone's composition determines the prevention diet, so losing the stone loses the plan.
+
+Extracorporeal shock wave lithotripsy fragments the stone with focused waves. Teach the client to expect bruising over the flank, hematuria for several days, and colicky pain as fragments pass; continue straining urine, keep fluid intake high, and report fever, inability to void, or unrelieved pain.
+
+| Stone type | Prevention teaching |
+| --- | --- |
+| calcium oxalate (the most common) | limit high-OXALATE foods — spinach, rhubarb, beets, nuts, chocolate, strong tea, wheat bran; keep DIETARY CALCIUM normal (severely restricting calcium paradoxically increases oxalate absorption and stone risk); reduce sodium |
+| calcium phosphate | reduce sodium; treat the underlying cause such as hyperparathyroidism or renal tubular acidosis |
+| uric acid | limit PURINES — organ meats, sardines, anchovies, herring, red meat, beer; alkalinize the urine as prescribed; allopurinol may be added |
+| struvite (infection stones) | eradicate and prevent urinary tract infection; these stones form in alkaline, infected urine and can become staghorn calculi |
+| cystine | a rare hereditary defect; high fluid intake around the clock and urinary alkalinization |
+
+The universal prevention teaching for all stone types is fluid intake sufficient to keep the urine pale and dilute — typically 2.5 to 3 litres daily including during the night — plus prompt treatment of infection and mobility.`,
+      examTip: `The restless client with severe flank-to-groin pain has a stone; the rigid, motionless client with a board-like abdomen has peritonitis. And straining the urine is the intervention that makes the whole prevention plan possible.`,
+    },
+    {
+      id: 'ren-prostate-elimination',
+      title: `5. Benign Prostatic Hyperplasia, TURP & Elimination Problems`,
+      content: `Benign prostatic hyperplasia is non-malignant enlargement of the prostate that compresses the urethra. Symptoms sort into obstructive and irritative: hesitancy in starting the stream, a weak or intermittent stream, straining, post-void DRIBBLING, a sensation of incomplete emptying, and then frequency, urgency and NOCTURIA. Complications are retention, recurrent infection, bladder stones and — the postrenal cause from the acute kidney injury section — obstructive kidney injury.
+
+Assessment includes a bladder scan for post-void residual, and the teaching to avoid what worsens retention: anticholinergics, antihistamines and decongestants, and large fluid volumes late in the evening. Caffeine and alcohol worsen irritative symptoms.
+
+| Drug class | Example | What to teach |
+| --- | --- | --- |
+| alpha-1 blocker | tamsulosin, doxazosin, terazosin | relaxes smooth muscle for RAPID symptom relief within days; ORTHOSTATIC hypotension and dizziness — take at bedtime, rise slowly; retrograde or reduced ejaculation is common and harmless; tell the ophthalmologist before cataract surgery |
+| 5-alpha reductase inhibitor | finasteride, dutasteride | SHRINKS the gland but takes 3 to 6 MONTHS for effect; LOWERS the PSA value, which must be known when cancer screening is interpreted; pregnant women must NOT handle crushed or broken tablets because of teratogenicity |
+| combination or tadalafil | — | used for symptom control; never combine phosphodiesterase inhibitors with nitrates |
+
+## Transurethral resection of the prostate
+
+The classic surgical item. Postoperatively the client returns with a large three-way catheter, traction on the catheter to tamponade bleeding, and CONTINUOUS BLADDER IRRIGATION with sterile isotonic saline.
+
+The rules to hold:
+
+- Urine should progress from RED to pink to amber over the first day or two. BRIGHT RED drainage with clots signals bleeding — INCREASE the irrigation rate and notify.
+- Compute true urine output by SUBTRACTING the volume of irrigant instilled from the total volume in the drainage bag. A stem that reports a large output without that subtraction is testing exactly this.
+- If output stops or the client reports bladder fullness, distension and severe spasms, suspect an obstructing CLOT: check the tubing, and irrigate manually only if that is prescribed. Never simply increase the drip for a blocked system.
+- Bladder SPASMS are common and are treated with antispasmodics and belladonna-and-opium suppositories per orders — but assess for a clot first, because spasms can be the obstruction announcing itself.
+- Do NOT take a rectal temperature, give an enema or insert a rectal suppository unless specifically prescribed after prostate surgery.
+- Monitor for hyponatremia from absorption of irrigating fluid (with older non-isotonic solutions) — confusion, nausea, agitation.
+
+Discharge teaching: expect intermittent blood-tinged urine and some urgency and dribbling for several weeks; drink 2 to 3 litres of fluid daily; avoid heavy lifting (typically over about 10 pounds), strenuous exercise, prolonged sitting or driving, and straining at stool — take the prescribed stool softener; avoid sexual activity for the prescribed interval; and report bright red bleeding, clots, inability to void, fever, or persistent burning.
+
+## Retention and incontinence
+
+Urinary RETENTION presents with a distended, palpable or percussable bladder, restlessness, discomfort, and small frequent voids (overflow) rather than none at all. Assess with a bladder scanner, try non-invasive measures first — privacy, upright position, running water, warm water over the perineum, warm sitz bath, ambulation, and timed toileting — and catheterize only if those fail and it is prescribed. Intermittent catheterization is preferred over an indwelling catheter whenever possible.
+
+| Incontinence type | Trigger | Interventions |
+| --- | --- | --- |
+| STRESS | coughing, sneezing, laughing, lifting — increased abdominal pressure | pelvic floor (Kegel) exercises, weight loss, treat constipation and cough, vaginal support devices |
+| URGE (overactive bladder) | a sudden compelling need, often with large-volume loss | bladder training with scheduled voiding and gradually lengthened intervals, limit caffeine and alcohol, antimuscarinics or beta-3 agonists |
+| OVERFLOW | a chronically over-distended bladder dribbles | relieve the obstruction or treat the underactive detrusor; intermittent catheterization; double voiding |
+| FUNCTIONAL | the bladder works but the client cannot get to the toilet in time | environmental fixes — bedside commode, clear path, good lighting, easy clothing, scheduled toileting, mobility aids |
+| REFLEX / neurogenic | spinal cord or neurologic disease | timed catheterization programme, monitor for autonomic dysreflexia in injuries at or above T6 |
+
+Kegel teaching is examinable in its own right: contract the muscles used to stop the flow of urine (without actually practising by stopping the stream repeatedly), hold for a count of about 10, relax for the same, and repeat in sets several times daily; improvement takes weeks to months of consistency.`,
+      examTip: `After a transurethral resection, subtract the irrigant before reporting urine output, and treat bright red drainage with clots by INCREASING the irrigation and notifying — not by slowing it down.`,
+    },
+    {
+      id: 'ren-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client in the oliguric phase of acute kidney injury has a potassium of 6.8 mEq/L with peaked T waves on the monitor. Put the treatments in order and explain why the first one is first.
+
+2. A client with chronic kidney disease says she takes her calcium acetate "twice a day, between meals, so it doesn't upset my stomach." What is wrong, and how do you explain the correction?
+
+3. A hemodialysis client is admitted to a medical unit. List everything that must be communicated about his left forearm fistula, and how you will assess it each shift.
+
+4. On day three of peritoneal dialysis at home, a client reports that the fluid coming out looks cloudy and her abdomen aches. What is the concern and what are the first actions?
+
+5. A client with a suspected kidney stone is admitted for pain control. Beyond analgesia and fluids, what is the single nursing action most likely to change his long-term management, and why?
+
+6. Four hours after a transurethral resection of the prostate, a client's drainage is bright red with clots and he reports severe bladder fullness and spasms. His drainage bag has 900 mL and 700 mL of irrigant has infused. What is his true urine output, what is happening, and what does the nurse do?
+
+## Answers
+
+1. Calcium gluconate intravenously FIRST — it does not lower the potassium at all, but it stabilizes the cardiac membrane and buys time against a lethal dysrhythmia, which is the immediate threat. Then shift potassium intracellularly with insulin plus dextrose, a nebulized beta-2 agonist, and bicarbonate if acidotic. Then REMOVE potassium from the body with a potassium binder or, definitively, dialysis. Simultaneously stop all potassium sources including intravenous fluids, salt substitutes and dietary potassium, and keep the client on continuous cardiac monitoring.
+
+2. Phosphate binders work by binding phosphorus IN FOOD inside the gastrointestinal tract, so a dose taken between meals binds nothing and is wasted. Teach her to take each dose WITH the first bite of a meal or with a snack containing food. If the stomach upset persists, that is a reason to call the prescriber about a different binder, not a reason to move the timing.
+
+3. Communicate and post at the bedside: no blood pressure measurement, no venipuncture, no intravenous insertion and no injections in the LEFT arm; no tight sleeves, jewellery or restraints on it; no carrying heavy objects with it and no sleeping on it. Each shift, PALPATE for the thrill and AUSCULTATE for the bruit, and assess the hand distal to the fistula for warmth, colour, capillary refill, sensation and movement. Loss of the thrill or bruit is reported immediately. Also clarify his dialysis schedule and which medications are to be held before treatment.
+
+4. Cloudy effluent is PERITONITIS until proven otherwise — the most common serious complication of peritoneal dialysis and one that presents this way before the fever does. Actions: obtain a sample of the effluent for cell count, Gram stain and culture; assess for fever, rebound tenderness and systemic signs; notify the provider; anticipate antibiotics, often given intraperitoneally; and review her technique with her, because a break in aseptic technique during connection is the usual route.
+
+5. STRAIN ALL URINE and save any solid material for laboratory analysis. The stone's composition dictates the entire prevention plan — oxalate restriction, purine restriction, urinary alkalinization, or infection eradication are different plans, and without the analysis the teaching is guesswork. Keep the strainer at the bedside and in the bathroom, and teach him to strain at home too, since stones often pass after discharge.
+
+6. True urine output is 900 minus 700, which is 200 mL — a low output that, together with bright red drainage, clots, fullness and spasms, indicates OBSTRUCTION BY CLOT with active bleeding. Increase the continuous bladder irrigation rate as prescribed, assess the tubing for kinks and dependent loops, notify the provider promptly, monitor vital signs and hemoglobin for hemorrhage, and perform manual irrigation only if it is prescribed. Do not treat this as a simple spasm and give an antispasmodic while the obstruction persists.`,
+    },
+  ],
+  keyTakeaways: [
+    `Acute kidney injury sorts into prerenal (perfusion), intrarenal (nephrotoxins and tubular necrosis) and postrenal (obstruction) — and the oliguric phase threatens overload and hyperkalemia while the diuretic phase threatens dehydration and hypokalemia.`,
+    `Chronic kidney disease is what accumulates (urea, potassium, phosphorus, acid, water) plus what fails (erythropoietin, vitamin D activation) — phosphate binders go with meals, salt substitutes are forbidden, and protein increases once dialysis starts.`,
+    `Fistula arms take no blood pressures, no sticks and no tight clothing; assess thrill and bruit every shift, and cloudy peritoneal effluent means peritonitis.`,
+    `Renal colic makes the client restless, straining all urine drives the prevention plan, and 2.5 to 3 litres of daily fluid is universal stone teaching.`,
+    `After a transurethral resection, subtract the irrigant to find true output, and bright red drainage with clots means increase the irrigation and notify.`,
+  ],
+},
+
+nx_gi_disorders: {
+  topicId: 'nx_gi_disorders',
+  title: `Gastrointestinal Tract Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `From the esophagus to the anus, gastrointestinal items reward two skills: reading a pain pattern and knowing which interventions are forbidden. Gastric and duodenal ulcer pain differ by their relationship to food. Crohn disease and ulcerative colitis differ by where and how deep. Appendicitis has a list of things you must never do. And an ostomy has a stoma colour that changes an assessment into an emergency. This chapter builds the luminal gastrointestinal tract with the medication classes attached, and the next builds the liver, gallbladder and pancreas.`,
+  sections: [
+    {
+      id: 'gi-upper',
+      title: `1. GERD, Hiatal Hernia & Peptic Ulcer Disease`,
+      content: `Gastroesophageal reflux disease is the backward flow of gastric contents through an incompetent lower esophageal sphincter. Clients describe HEARTBURN (pyrosis) 30 to 60 minutes after eating, worse when lying flat or bending forward, with regurgitation, a sour or bitter taste, belching, and sometimes atypical presentations — chronic cough, hoarseness, sore throat, asthma-like wheeze, or chest pain that must be distinguished from cardiac pain. The long-term complication is BARRETT ESOPHAGUS, a premalignant metaplasia that requires surveillance endoscopy.
+
+The teaching block is nearly all of the nursing care and it is heavily tested: eat SMALL, FREQUENT meals; avoid the trigger list — fatty and fried foods, chocolate, peppermint, caffeine, carbonated beverages, alcohol, citrus, tomato products and spicy foods; do not eat for 2 to 3 HOURS before lying down; ELEVATE THE HEAD OF THE BED about 6 to 8 inches on blocks rather than piling pillows, which only bends the body at the waist and raises abdominal pressure; lose weight if overweight; stop smoking; avoid tight clothing and belts; and avoid bending at the waist — bend at the knees instead.
+
+A sliding HIATAL HERNIA lets part of the stomach move up through the diaphragm and produces the same symptoms with the same management.
+
+## Peptic ulcer disease and the pain-timing discrimination
+
+Peptic ulcers are mucosal erosions caused overwhelmingly by HELICOBACTER PYLORI infection and by NSAID use; corticosteroids, smoking, alcohol and severe physiologic stress contribute. The timing of the pain separates the two classic sites:
+
+| Feature | GASTRIC ulcer | DUODENAL ulcer |
+| --- | --- | --- |
+| pain timing | 30 to 60 minutes AFTER eating | 2 to 3 hours after eating; often wakes the client at night |
+| food effect | food WORSENS the pain | food RELIEVES the pain |
+| weight | weight LOSS is common (the client avoids eating) | weight is stable or GAINS (the client eats for relief) |
+| vomiting | more common | less common |
+| malignancy risk | present — biopsy is done | rare |
+
+Diagnosis uses endoscopy with biopsy and Helicobacter testing — urea breath test, stool antigen, or biopsy urease testing. Proton pump inhibitors and antibiotics must be held for a period before breath and stool tests or the result will be falsely negative.
+
+Eradication therapy is combination therapy, classically a PROTON PUMP INHIBITOR plus TWO ANTIBIOTICS (commonly clarithromycin with amoxicillin, or metronidazole when penicillin cannot be used), sometimes with bismuth, for 10 to 14 days. Completing every dose is the teaching point — partial courses fail and select resistance. With metronidazole, avoid ALL alcohol including in mouthwash and cough syrup, because of a disulfiram-like reaction.
+
+| Drug class | Examples | The tested points |
+| --- | --- | --- |
+| proton pump inhibitor | omeprazole, pantoprazole (the -prazole class) | take BEFORE meals (about 30 minutes); do not crush delayed-release forms; long-term use is linked to fracture risk, hypomagnesemia, B12 deficiency and Clostridioides difficile infection |
+| histamine-2 blocker | famotidine | often at bedtime; fewer interactions; slower and less complete acid suppression than a proton pump inhibitor |
+| antacid | calcium carbonate, aluminum hydroxide, magnesium hydroxide | give 1 to 2 hours AFTER meals and separated by at least 1 to 2 hours from other drugs, which they can bind; magnesium causes diarrhea, aluminum and calcium cause constipation; avoid magnesium products in kidney disease |
+| mucosal protectant | sucralfate | give on an EMPTY stomach, 1 hour before meals and at bedtime, and separate from other drugs by 2 hours; it coats the ulcer |
+| prostaglandin analogue | misoprostol | prevents NSAID ulcers; CONTRAINDICATED in pregnancy — it induces uterine contractions |
+
+## The three complications
+
+HEMORRHAGE: hematemesis that may look like coffee grounds, MELENA (black tarry stools) from an upper source, weakness, dizziness, tachycardia and hypotension. Actions: nothing by mouth, large-bore intravenous access, type and cross-match, fluid and blood replacement, monitor hemoglobin and hematocrit remembering they LAG behind acute loss, and prepare for endoscopy.
+
+PERFORATION: SUDDEN, severe, sharp epigastric pain that spreads across the abdomen and may radiate to the shoulder, a RIGID, BOARD-LIKE abdomen, rebound tenderness, absent bowel sounds, shallow rapid breathing, and a client who lies very still with knees drawn up. This is a surgical emergency — nothing by mouth, nasogastric tube to suction as ordered, intravenous fluids and antibiotics, and immediate notification.
+
+OBSTRUCTION at the gastric outlet: feeling of fullness, bloating, vomiting of undigested food, and weight loss.
+
+## Dumping syndrome
+
+After gastric surgery or bariatric procedures, hypertonic stomach contents dump into the small intestine and pull fluid in. Early symptoms appear 15 to 30 MINUTES after eating: dizziness, tachycardia, palpitations, diaphoresis, weakness, cramping, borborygmi and diarrhea; late symptoms 1 to 3 hours later are the hypoglycemia of a reactive insulin surge. Teaching: eat SMALL, FREQUENT meals; take a diet HIGH in protein and moderate in fat but LOW in simple sugars and refined carbohydrate; drink fluids BETWEEN meals rather than with them (at least 30 minutes before or after); LIE DOWN or recline for about 30 minutes after eating to slow gastric emptying; and add soluble fibre as tolerated.`,
+      examTip: `Food helps a DUODENAL ulcer and hurts a GASTRIC one. And in dumping syndrome the correct answers all slow things down: no fluids with meals, low simple sugar, and lie down after eating — the opposite of ordinary post-meal advice.`,
+    },
+    {
+      id: 'gi-ibd-lower',
+      title: `2. Inflammatory Bowel Disease, Diverticular Disease & Irritable Bowel`,
+      content: `Crohn disease and ulcerative colitis are both chronic, relapsing, immune-mediated inflammations, and the exam distinguishes them by location and depth.
+
+| Feature | CROHN DISEASE | ULCERATIVE COLITIS |
+| --- | --- | --- |
+| location | ANYWHERE from mouth to anus; terminal ileum most common | rectum and colon only, spreading CONTINUOUSLY proximally |
+| pattern | SKIP LESIONS with normal bowel between | continuous, uninterrupted |
+| depth | TRANSMURAL — the full thickness of the wall | MUCOSA and submucosa only |
+| stools | 3 to 5 loose, semi-formed daily; blood less common | 10 to 20 LIQUID stools daily with BLOOD and mucus; tenesmus |
+| pain | cramping, often RIGHT LOWER quadrant | cramping, often LEFT LOWER quadrant |
+| complications | FISTULAS, abscesses, strictures and obstruction, perianal disease, malabsorption with B12 deficiency (terminal ileum) and fat-soluble vitamin deficiency, gallstones and kidney stones | TOXIC MEGACOLON, massive hemorrhage, higher colorectal cancer risk with long-standing disease |
+| surgery | not curative — disease recurs elsewhere | total proctocolectomy IS curative |
+
+Both share extraintestinal manifestations — arthritis, erythema nodosum, uveitis, and in colitis primary sclerosing cholangitis — and both cause fatigue, weight loss, anemia and, in children, growth failure.
+
+TOXIC MEGACOLON is the emergency to recognize: abdominal distension with a tympanic, tender abdomen, fever, tachycardia, dehydration, and a sudden DECREASE in stool frequency in a client who had been having many stools. Bowel sounds diminish or disappear. Antidiarrheals and opioids can precipitate it, so they are used cautiously or avoided in acute severe colitis. It carries perforation risk and needs immediate reporting.
+
+| Medication class | Examples | Nursing points |
+| --- | --- | --- |
+| aminosalicylates | mesalamine, sulfasalazine | maintenance of remission; sulfasalazine requires increased fluids, causes orange-yellow discoloration of urine and skin, photosensitivity, and folic acid supplementation; it contains a sulfa moiety |
+| corticosteroids | prednisone, budesonide, IV methylprednisolone | for FLARES only, then tapered — never stopped abruptly; monitor glucose, blood pressure, mood, infection risk, bone density |
+| immunomodulators | azathioprine, 6-mercaptopurine, methotrexate | slow onset; monitor complete blood count and liver enzymes; infection risk |
+| biologics | infliximab, adalimumab, vedolizumab, ustekinumab | SCREEN FOR LATENT TUBERCULOSIS and hepatitis B before the first dose; watch for infusion reactions; hold during active infection; report fever |
+| antidiarrheals | loperamide | symptomatic use only, and avoided in severe colitis because of toxic megacolon risk |
+
+Nutrition: during a FLARE, a low-residue, low-fibre, high-protein, high-calorie diet with small frequent meals; avoid caffeine, alcohol, carbonated drinks, very spicy foods, high-lactose foods if intolerant, and raw fruits and vegetables. In remission, fibre is reintroduced individually — except when a stricture is present. Severe disease may require bowel rest with parenteral nutrition. Supplement iron, B12, folate, calcium and vitamin D as prescribed, and keep a food and symptom diary to identify personal triggers rather than following a universal list.
+
+## Diverticular disease
+
+DIVERTICULOSIS is the presence of outpouchings in the colon wall; most clients are asymptomatic. Prevention teaching for the well client is a HIGH-FIBRE diet with adequate fluid, weight management and exercise; the old advice to avoid nuts, seeds and popcorn is not supported by current evidence.
+
+DIVERTICULITIS is inflammation or infection of those pouches: LEFT LOWER quadrant pain (this is the mirror image of appendicitis), fever, leukocytosis, nausea, and a change in bowel habits. Management during the acute episode reverses the fibre advice — the bowel is RESTED with clear liquids or nothing by mouth, then advanced to a LOW-fibre diet, with antibiotics and analgesia. High fibre resumes only after the inflammation resolves. The forbidden interventions are the tested ones: NO laxatives and NO enemas during acute diverticulitis, and no heavy lifting or straining, because of perforation risk. Report increasing pain, rigidity, fever or a rapid pulse — signs of perforation and peritonitis.
+
+## Irritable bowel syndrome
+
+A functional disorder with abdominal pain related to defecation and altered stool form or frequency, without structural disease. Care is teaching: identify and avoid personal triggers, consider a structured low-FODMAP trial with dietitian guidance, add soluble fibre gradually, maintain regular meals and adequate fluid, exercise, sleep and stress management (relaxation techniques, cognitive behavioural approaches), and use targeted medication — antispasmodics, and agents chosen for whether diarrhea or constipation predominates. The nursing stance matters: the symptoms are real and physiologic even though the endoscopy is normal.
+
+## Celiac disease
+
+An immune reaction to gluten damaging the small-intestinal villi, producing diarrhea or steatorrhea, bloating, weight loss, iron-deficiency anemia, and in children failure to thrive. Treatment is a STRICTLY GLUTEN-FREE DIET FOR LIFE: eliminate WHEAT, RYE and BARLEY, including hidden sources in sauces, soups, processed meats, beer, and some medications and supplements. Safe grains include rice, corn, quinoa, buckwheat, millet, amaranth and certified gluten-free oats; plain oats are usually tolerated but are often cross-contaminated. Even small intermittent exposures perpetuate the damage, so teaching is about label reading, cross-contamination at home and in restaurants, and dietitian referral rather than willpower.`,
+      examTip: `Right lower quadrant with skip lesions and fistulas is Crohn; left lower quadrant with 20 bloody stools is colitis. And in acute diverticulitis every high-fibre, laxative and enema option is wrong — the bowel rests first.`,
+    },
+    {
+      id: 'gi-acute-abdomen',
+      title: `3. Appendicitis, Peritonitis & Bowel Obstruction`,
+      content: `## Appendicitis
+
+The classic sequence is anorexia first, then periumbilical pain that MIGRATES over hours to the right lower quadrant and localizes at MCBURNEY POINT — about one-third of the way from the anterior superior iliac spine to the umbilicus. Add nausea and vomiting after the pain begins (pain-then-vomiting; vomiting first suggests something else), a low-grade fever, REBOUND TENDERNESS, guarding, and a client who lies still with the right hip flexed. Rovsing sign — pain in the right lower quadrant when the left lower quadrant is palpated — supports the diagnosis. Leukocytosis is expected.
+
+The forbidden interventions are the whole exam item: do NOT apply HEAT to the abdomen, do NOT give LAXATIVES or ENEMAS, and do not give analgesia or food in a way that violates the surgical plan — heat and bowel stimulation both increase the risk of PERFORATION. Position the client for comfort (often right side-lying with knees flexed or semi-Fowler), keep nothing by mouth, start intravenous fluids, apply an ice bag if ordered, and prepare for appendectomy.
+
+The finding that turns a routine case into an emergency: a SUDDEN CESSATION of pain. Relief that arrives without treatment usually means the appendix has PERFORATED and the pressure has released — followed shortly by the diffuse pain, rigidity and fever of peritonitis.
+
+## Peritonitis
+
+Inflammation of the peritoneum from perforation, rupture or contamination. Findings: severe diffuse abdominal pain, a RIGID, board-like abdomen, rebound tenderness, DIMINISHED OR ABSENT bowel sounds, abdominal distension, fever with chills, tachycardia, hypotension, nausea and vomiting, and shallow rapid respirations because deep breathing hurts. The client lies motionless with knees drawn up — contrast this with the restless client passing a kidney stone.
+
+Care: nothing by mouth, nasogastric tube to suction for decompression, aggressive intravenous fluid and electrolyte replacement, broad-spectrum antibiotics, analgesia, semi-Fowler position to localize drainage in the lower abdomen and ease breathing, monitoring for septic shock, and surgical source control.
+
+## Bowel obstruction
+
+Obstruction may be MECHANICAL — adhesions (the most common cause in adults), hernias, tumours, volvulus, intussusception, strictures, impaction — or FUNCTIONAL (paralytic ileus) from surgery, peritonitis, electrolyte disturbance especially HYPOKALEMIA, or opioids.
+
+| Feature | SMALL bowel obstruction | LARGE bowel obstruction |
+| --- | --- | --- |
+| onset | rapid | gradual |
+| vomiting | EARLY and profuse; may become fecal-smelling in distal obstruction | late or absent |
+| pain | colicky, cramping, mid-abdominal, in waves | lower abdominal cramping |
+| distension | moderate | MARKED |
+| stool | may pass some initially, then obstipation | constipation progressing to obstipation |
+| bowel sounds | high-pitched and hyperactive ABOVE the obstruction early, then absent as the bowel fatigues | hypoactive |
+
+Fluid and electrolyte loss is the systemic danger: fluid sequesters in the bowel lumen, vomiting and suction remove electrolytes, and clients become hypovolemic with metabolic ALKALOSIS from loss of gastric acid in high obstructions (or acidosis from intestinal losses in low ones).
+
+Nursing care: nothing by mouth; NASOGASTRIC TUBE to LOW INTERMITTENT suction for decompression, with accurate measurement of output and replacement of losses; intravenous fluids with electrolyte correction; strict intake and output; semi-Fowler position; frequent abdominal assessment including girth measured at a MARKED spot; pain assessment; and antibiotics and surgical preparation as indicated. Monitor for STRANGULATION — the segment losing its blood supply — signalled by a change from colicky to constant severe pain, fever, tachycardia, rising white count, rigidity and shock. That is a surgical emergency.
+
+Nasogastric tube nursing points appear throughout this chapter: verify placement per policy (radiographic confirmation is the standard for initial placement, with pH testing of aspirate and marked-tube measurement for ongoing checks — auscultating an air bolus is NOT a reliable method), keep the head of the bed elevated, provide oral and nasal care, assess for the return of bowel function, and irrigate with normal saline as prescribed. Report absence of drainage with distension, or bloody drainage.
+
+## Hemorrhoids, fissures and colorectal cancer screening
+
+Hemorrhoids and anal fissures cause bright red rectal bleeding, pain with defecation and itching. Care is high fibre, fluids, stool softeners, sitz baths, topical agents, and avoiding prolonged sitting on the toilet and straining.
+
+Colorectal cancer screening is a health-promotion item: for average-risk adults, screening begins at age 45 with either a colonoscopy at defined intervals or an annual stool-based test, with earlier and more frequent screening for family history, inflammatory bowel disease or genetic syndromes. Warning findings are a persistent change in bowel habits, blood in the stool, narrowed stools, unexplained iron-deficiency anemia in an adult, abdominal discomfort and unintentional weight loss. Bowel preparation teaching before colonoscopy — clear liquids with NO red, purple or blue dyes, complete the entire prep solution, expect frequent liquid stools, arrange a driver because sedation is used — is itself examinable.`,
+      examTip: `Sudden relief of appendicitis pain is perforation, not improvement. And absent bowel sounds with a rigid abdomen is peritonitis, while high-pitched hyperactive sounds early is obstruction.`,
+    },
+    {
+      id: 'gi-ostomy',
+      title: `4. Ostomy Care & Bowel Elimination Support`,
+      content: `An ostomy diverts stool through a surgically created stoma. What comes out depends on how much colon remains to absorb water:
+
+| Ostomy | Output | Key consequences |
+| --- | --- | --- |
+| ILEOSTOMY | LIQUID to semi-liquid, continuous, high volume; contains digestive enzymes | high risk of DEHYDRATION and electrolyte loss, especially sodium and potassium; skin around the stoma is easily excoriated; never irrigated |
+| ASCENDING colostomy | semi-liquid | similar skin protection needs |
+| TRANSVERSE colostomy | semi-formed | may be a temporary double-barrel or loop stoma |
+| DESCENDING or SIGMOID colostomy | FORMED, most like normal stool | can often be regulated, and may be IRRIGATED at the same time daily to establish a routine |
+
+## Stoma assessment — the colour rule
+
+A healthy stoma is PINK to BEEF-RED, moist and shiny, and slightly protruding. Mild bleeding when the stoma is cleaned is normal because the mucosa is vascular. Mild edema in the first days is expected.
+
+A PALE stoma suggests anemia. A DUSKY, PURPLE, BLUE, BROWN or BLACK stoma means the blood supply is compromised — ISCHEMIA or necrosis — and it is reported IMMEDIATELY as an emergency. Other findings to report: the stoma retracting below skin level, prolapsing markedly, or separating from the skin; no output from an ileostomy for several hours accompanied by cramping and distension (obstruction); and persistent bleeding.
+
+## Appliance and skin technique
+
+Measure the stoma with the guide at each change while it is still shrinking (it continues to shrink for six to eight weeks), and cut the barrier opening about one-eighth of an inch — roughly 2 to 3 millimetres — LARGER than the stoma. An opening that is too large exposes skin to effluent; one that is too small constricts the stoma. Cleanse the peristomal skin with warm water and pat dry — soaps with oils, lotions or moisturizers prevent the barrier from adhering. Apply the barrier to dry skin and hold it in place with warm hands to improve the seal. Empty the pouch when it is ONE-THIRD to ONE-HALF full, because a heavy pouch pulls the seal loose. Change the appliance every 3 to 7 days per product and client, and choose a time when output is least — often early morning before eating.
+
+## Diet and lifestyle teaching
+
+New ileostomy clients start with a LOW-FIBRE diet for several weeks and add foods one at a time. Foods that can cause a food blockage — nuts, popcorn, corn, celery, coconut, dried fruit, mushrooms, raw vegetables with skins, and stringy foods — are introduced cautiously and CHEWED THOROUGHLY. Fluid intake is deliberately generous, and in hot weather or with high output, electrolyte-containing fluids are needed. Odour-producing foods include eggs, fish, garlic, onions, asparagus, broccoli and cabbage; gas producers include carbonated beverages, beans, cabbage family vegetables, beer and chewing gum with swallowed air. None of these are forbidden; they are simply information the client uses to plan.
+
+Additional teaching: medications in enteric-coated or extended-release forms may pass through an ileostomy unabsorbed — the client must tell every prescriber about the ostomy. Avoid heavy lifting during healing, and expect that the client may need help with body image, sexuality and returning to work and activity — an enterostomal therapy nurse referral and, where welcomed, contact with a support group are legitimate nursing interventions, not afterthoughts.
+
+## Constipation, diarrhea and impaction
+
+Constipation is managed first without drugs: fibre 25 to 30 grams daily added gradually, fluids, activity, and honouring the urge to defecate rather than delaying. Then, in escalating order, bulk-forming agents (psyllium — always with a full glass of water), stool softeners (docusate), osmotics (polyethylene glycol, lactulose), and stimulants (senna, bisacodyl) reserved for short-term use because of dependence. Bisacodyl tablets are enteric-coated: do not crush them and do not take them with milk or antacids, which dissolve the coating early and cause cramping.
+
+FECAL IMPACTION presents deceptively as liquid stool leaking around a hard mass, with distension, cramping and sometimes urinary retention. Digital removal is performed gently, with lubricant, after checking for contraindications, monitoring the pulse because vagal stimulation can cause BRADYCARDIA, and stopping if the client becomes dizzy or the rate falls.
+
+Diarrhea management centres on fluid and electrolyte replacement, skin protection, and identifying the cause. Any client with new diarrhea on or after antibiotics is assessed for CLOSTRIDIOIDES DIFFICILE: watery, foul-smelling stools with cramping and fever. That client goes on CONTACT precautions, and hand hygiene must be SOAP AND WATER — alcohol-based rub does not kill the spores — with hypochlorite (bleach) cleaning of the environment.`,
+      examTip: `A dusky or black stoma is an emergency, an opening cut an eighth of an inch larger than the stoma is the correct technique, and the pouch is emptied at one-third to one-half full — three details that each anchor their own item.`,
+    },
+    {
+      id: 'gi-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. Two clients describe epigastric pain. Client A hurts about 45 minutes after every meal and has lost 10 pounds. Client B hurts around 2 a.m. and gets relief from a glass of milk and crackers. Assign the likely ulcer site to each and explain the mechanism.
+
+2. A client with acute diverticulitis asks when she can go back to her high-fibre cereal and her stool softener, and whether an enema would help her feel less bloated. How does the nurse answer?
+
+3. A client with appendicitis was rating pain at 9 out of 10 for six hours and now reports it is "almost gone." She looks pale and her heart rate is 118. What has happened, and what does the nurse do?
+
+4. A newly created ileostomy stoma that was beefy red yesterday is now dusky purple. Output has slowed. What is the priority action?
+
+5. A client is being started on infliximab for Crohn disease. What must be verified before the first infusion, and what ongoing teaching is required?
+
+6. A client three days postoperative from an abdominal surgery has absent bowel sounds, distension, and no flatus. His potassium is 2.9 mEq/L. What is the likely problem, and what connects the two findings?
+
+## Answers
+
+1. Client A has a GASTRIC ulcer — pain 30 to 60 minutes after eating, worsened by food, with weight loss because the client learns to avoid eating. Client B has a DUODENAL ulcer — pain 2 to 3 hours after eating and at night when the stomach is empty, relieved by food or antacid because the buffering neutralizes the acid reaching the duodenum. Both should be evaluated for Helicobacter pylori and NSAID use.
+
+2. Not yet, and no enema. During acute diverticulitis the bowel is rested — clear liquids or nothing by mouth advancing to a LOW-fibre diet while the inflammation settles. Laxatives and ENEMAS are contraindicated during the acute phase because increasing intraluminal pressure risks perforation. Once the episode has fully resolved, fibre is gradually increased to a high-fibre pattern with plenty of fluid, which is what prevents the next episode. Stool softeners are used only if prescribed.
+
+3. Sudden cessation of severe appendicitis pain is PERFORATION — the distended appendix has ruptured and released its pressure. The tachycardia and pallor support developing peritonitis and early shock. Keep her strictly nothing by mouth, do not give anything to relieve the abdomen (no heat, laxative or enema), notify the surgeon immediately, obtain vital signs frequently, ensure large-bore intravenous access with fluids, anticipate antibiotics and urgent surgery, and monitor for the diffuse rigidity and fever of peritonitis.
+
+4. A dusky purple stoma means the blood supply is compromised. Notify the surgeon IMMEDIATELY — this is an emergency, not a dressing-change observation. Document the exact colour and the change, assess output and the abdomen, keep the client nothing by mouth pending evaluation, and prepare for possible surgical revision.
+
+5. Before the first dose, verify SCREENING FOR LATENT TUBERCULOSIS and hepatitis B, confirm there is no active infection, and check that the client is not receiving live vaccines. Ongoing teaching: report any fever, sore throat, cough, night sweats or other sign of infection promptly; keep vaccinations current with inactivated vaccines and avoid live vaccines; expect monitoring bloodwork; and never skip reporting a suspected infection because the drug suppresses the usual signs.
+
+6. PARALYTIC ILEUS. Hypokalemia is a direct and reversible cause because potassium is required for smooth-muscle contraction, and abdominal surgery, opioids and electrolyte losses combine to produce it. Management is correction of the potassium as prescribed, nothing by mouth with nasogastric decompression if distension is significant, intravenous fluids, review of opioid dosing, early mobilization, and reassessment for the return of bowel sounds and flatus. Address the potassium and the ileus often resolves with it.`,
+    },
+  ],
+  keyTakeaways: [
+    `Gastric ulcer pain comes soon after eating and worsens with food; duodenal ulcer pain comes hours later and is relieved by food — and eradication takes a proton pump inhibitor plus two antibiotics, completed in full.`,
+    `Crohn is transmural with skip lesions, fistulas and right lower quadrant pain; ulcerative colitis is continuous mucosal disease with bloody stools, left lower quadrant pain and toxic megacolon risk.`,
+    `In appendicitis and acute diverticulitis the forbidden interventions carry the item: no heat, no laxatives, no enemas — and sudden painlessness in appendicitis means perforation.`,
+    `Obstruction means nothing by mouth, nasogastric decompression to low intermittent suction, fluid and electrolyte replacement, and watching for the constant pain and fever of strangulation.`,
+    `Stoma colour is the assessment that becomes an emergency: pink to beefy red is healthy, dusky or black is ischemia and is reported at once.`,
+  ],
+},
+
+nx_liver_pancreas: {
+  topicId: 'nx_liver_pancreas',
+  title: `Liver, Gallbladder & Pancreatic Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `The accessory organs of digestion fail in patterns the exam can test precisely. Hepatitis is five viruses distinguished by route of transmission and whether a vaccine exists. Cirrhosis is one organ failing at three jobs — filtering, synthesizing and letting blood through — and every complication traces back to one of the three. Gallbladder disease has a pain that radiates to the right shoulder, and pancreatitis has a pain that is relieved by leaning forward and a calcium level that falls. This chapter carries the transmission table, the ammonia and lactulose logic, the two enzyme values, and the post-procedure care each condition brings.`,
+  sections: [
+    {
+      id: 'hep-hepatitis',
+      title: `1. Viral Hepatitis: Routes, Vaccines & Precautions`,
+      content: `Hepatitis is inflammation of the liver. Viral causes dominate the exam, and the entire discrimination is transmission route and chronicity.
+
+| Type | Transmission | Chronic? | Vaccine | Post-exposure |
+| --- | --- | --- | --- | --- |
+| A | FECAL-ORAL — contaminated food or water, raw or undercooked shellfish, poor hand hygiene, close personal contact | NO — acute only, self-limiting | YES | immune globulin and/or vaccine depending on age and timing |
+| B | BLOOD and body fluids — sexual contact, needle sharing, needlestick injury, PERINATAL transmission | yes, in a proportion of cases | YES | hepatitis B IMMUNE GLOBULIN plus vaccine series |
+| C | BLOOD — injection drug use, transfusion before 1992, needlestick; sexual transmission is less efficient | YES — the most likely of the group to become chronic | NO | no immune globulin; test and treat — direct-acting antivirals cure most cases |
+| D | blood and body fluids, but only in the presence of hepatitis B | yes | prevented by the hepatitis B vaccine | prevent B and you prevent D |
+| E | FECAL-ORAL, usually contaminated water in endemic regions | usually no | available in some countries | supportive; especially dangerous in PREGNANCY |
+
+Clinical course runs through three phases. In the PRODROMAL (preicteric) phase the client feels systemically ill — fatigue, anorexia, nausea and vomiting, right upper quadrant discomfort, low-grade fever, myalgia, headache, and often a distaste for cigarettes in smokers. In the ICTERIC phase JAUNDICE appears with dark, tea-coloured URINE (conjugated bilirubin spilling into urine), CLAY-COLOURED or pale stools (bile not reaching the intestine), pruritus, and continued fatigue. The POSTICTERIC (convalescent) phase brings gradual resolution over weeks to months, with fatigue the last symptom to leave.
+
+Laboratory findings: elevated ALT and AST (ALT is the more liver-specific of the two), elevated bilirubin, and serologic markers that identify the virus and the stage.
+
+## Nursing care and teaching
+
+Rest balanced with activity as tolerated — fatigue is the dominant symptom and clients routinely overestimate what they can do. Small, frequent meals with adequate calories, with the largest meal often best tolerated in the MORNING when nausea is least. Avoid ALL alcohol and every hepatotoxic substance, and check every medication with the prescriber — acetaminophen in particular has a lowered safe ceiling and is a common inadvertent exposure through combination cold products. Manage pruritus with cool environments, tepid baths, loose cotton clothing and prescribed antihistamines.
+
+Transmission prevention teaching splits by route. For hepatitis A and E: meticulous HAND HYGIENE especially after toileting and before food handling, safe water, avoid raw shellfish from unsafe waters, and do not prepare food for others while infectious. For hepatitis B, C and D: do not share needles, razors, toothbrushes or nail clippers; use barrier protection for sexual contact; do not donate blood, organs or semen; cover open lesions; and inform health care and dental providers.
+
+Occupational exposure is a nurse-facing item: after a needlestick, wash the area, report immediately, and follow the exposure protocol — source testing, baseline serology, hepatitis B immune globulin and vaccine if not immune, and prompt evaluation for hepatitis C and HIV. Standard precautions apply to all clients at all times, which is the reason the routine answer to "what precautions" for hepatitis B or C is STANDARD precautions, with contact precautions added only for incontinent or diapered clients with hepatitis A.`,
+      examTip: `Hepatitis A and E travel by mouth; B, C and D travel by blood. There are vaccines for A and B — and the B vaccine also protects against D, because D cannot exist without B.`,
+    },
+    {
+      id: 'hep-cirrhosis',
+      title: `2. Cirrhosis: Three Failures & Their Complications`,
+      content: `Cirrhosis is irreversible fibrosis replacing functional liver tissue, most often from chronic alcohol use, chronic hepatitis B or C, or metabolic (fatty liver) disease. Every complication follows from ONE of three failures, and organizing them this way makes the chapter memorable rather than a list.
+
+**Failure 1 — blood cannot get THROUGH the liver (portal hypertension).** Pressure backs up into the portal system, producing ESOPHAGEAL and gastric VARICES, caput medusae (distended periumbilical veins), hemorrhoids, SPLENOMEGALY with resulting thrombocytopenia, and ASCITES.
+
+**Failure 2 — the liver cannot SYNTHESIZE.** Low ALBUMIN causes edema and contributes to ascites by lowering oncotic pressure; deficient CLOTTING FACTORS prolong the prothrombin time and INR and produce bruising and bleeding; impaired synthesis contributes to muscle wasting.
+
+**Failure 3 — the liver cannot DETOXIFY.** Ammonia accumulates, producing HEPATIC ENCEPHALOPATHY; bilirubin accumulates, producing JAUNDICE, pruritus, dark urine and clay stools; hormones are not cleared, producing gynecomastia, testicular atrophy, palmar erythema and spider angiomas; drugs are not metabolized, so ordinary doses become toxic.
+
+## Ascites
+
+Assessment: increasing abdominal girth, weight gain, a fluid wave and shifting dullness, dyspnea from diaphragmatic splinting, and umbilical or inguinal hernia.
+
+Management: SODIUM RESTRICTION (the most important dietary intervention), fluid restriction when hyponatremia is present, DIURETICS — typically SPIRONOLACTONE, often with furosemide, because the physiology is aldosterone-driven — and DAILY WEIGHTS with abdominal GIRTH measured at a marked location at the same time each day. Position semi-Fowler or high Fowler for breathing.
+
+PARACENTESIS is the procedural item. Before: have the client VOID to empty the bladder (reducing puncture risk), obtain informed consent, take baseline vital signs, weight and girth, and position the client upright or in high Fowler with feet supported. During: maintain sterility and monitor vital signs. After: monitor for HYPOTENSION and hypovolemia as fluid shifts, assess the puncture site for leakage, measure weight and girth again, monitor electrolytes and, when large volumes are removed, expect albumin replacement.
+
+Spontaneous bacterial peritonitis is the infection complication of ascites: fever, abdominal pain and tenderness, and worsening encephalopathy. Report and anticipate diagnostic paracentesis and antibiotics.
+
+## Esophageal varices
+
+Thin-walled, high-pressure veins that can bleed catastrophically. Teach the client to AVOID anything that raises intra-abdominal or venous pressure: no heavy lifting or straining at stool (stool softeners are prescribed), avoid vigorous coughing and sneezing where possible, avoid alcohol and NSAIDs including aspirin, and eat soft foods, chewing well, avoiding rough or sharply textured foods.
+
+Prophylaxis uses a NON-SELECTIVE BETA BLOCKER (propranolol or nadolol) to lower portal pressure, plus endoscopic band ligation for high-risk varices.
+
+Acute variceal HEMORRHAGE is an emergency: hematemesis of bright red blood, melena, hypotension and tachycardia, with high risk of ASPIRATION. Actions are airway protection first with suction available and the client positioned to protect the airway, oxygen, two large-bore intravenous lines, type and cross-match with blood replacement, OCTREOTIDE or vasopressin infusion to reduce splanchnic flow, urgent endoscopy with banding or sclerotherapy, and prophylactic antibiotics. Balloon tamponade is a temporizing measure now used rarely. Because bleeding delivers a large protein load to the gut, it commonly precipitates encephalopathy.
+
+## Hepatic encephalopathy
+
+Ammonia — largely a product of protein breakdown by intestinal bacteria — crosses the blood-brain barrier when the liver cannot convert it to urea. The presentation is graded: subtle personality and sleep-pattern change and impaired handwriting first, then confusion and lethargy with ASTERIXIS (a flapping tremor when the wrists are extended) and fetor hepaticus, then stupor and coma.
+
+The treatment logic is what the exam tests. LACTULOSE is the mainstay: it acidifies the colon, trapping ammonia as ammonium so it is excreted, and it works as an osmotic laxative. The therapeutic goal is TWO TO THREE SOFT STOOLS PER DAY. That means a client having several soft stools is having the DESIRED effect and the drug is not held — but excessive diarrhea causing dehydration or HYPOKALEMIA is reported, because hypokalemia itself worsens ammonia levels. Rifaximin, a poorly absorbed antibiotic, reduces ammonia-producing gut flora and is often added.
+
+Protein is MODERATED rather than eliminated in current practice — severe protein restriction worsens malnutrition and outcomes, so the plan is adequate protein with vegetable and dairy sources often better tolerated. Precipitants are searched for and corrected: gastrointestinal bleeding, infection, constipation, dehydration, hypokalemia, and sedatives or opioids, which are avoided or dose-reduced because the liver cannot clear them.
+
+Other nursing care in cirrhosis: bleeding precautions given the coagulopathy and thrombocytopenia; skin care and cool environments for pruritus; small frequent nutrient-dense meals with vitamin supplementation including thiamine in alcohol-related disease; strict avoidance of alcohol with referral to treatment; fall and safety precautions when encephalopathy is present; and orientation, familiar objects and consistent staff to support cognition.`,
+      examTip: `Lactulose is titrated TO stools, not away from them — two to three soft stools a day is success. Holding the dose because the client had a bowel movement is the classic wrong answer.`,
+    },
+    {
+      id: 'hep-gallbladder',
+      title: `3. Cholelithiasis, Cholecystitis & Post-Operative Care`,
+      content: `Gallstones form when bile becomes supersaturated with cholesterol or bilirubin. The classic risk profile is remembered as the four F's — female, forty, fertile (multiparous) and overweight — with additional risks including rapid weight loss, pregnancy, oral contraceptives and estrogen therapy, diabetes, family history, and hemolytic disease for pigment stones.
+
+BILIARY COLIC is the presenting pain: right upper quadrant or epigastric pain that may be severe and steady, classically beginning 30 minutes to several hours after a FATTY MEAL, and RADIATING to the RIGHT SHOULDER or right scapula. Add nausea and vomiting, dyspepsia, flatulence and eructation. Murphy sign — the client stops inspiration abruptly when the examiner palpates beneath the right costal margin — supports acute cholecystitis, which adds fever, leukocytosis and marked tenderness.
+
+When a stone OBSTRUCTS the common bile duct, the obstructive picture appears and is heavily tested: JAUNDICE, dark amber or tea-coloured urine, CLAY-COLOURED (pale, chalky) stools, steatorrhea with foul fatty stools, PRURITUS from bile salts in the skin, and easy bruising or bleeding because fat-soluble vitamin K is not absorbed. Laboratory values show elevated bilirubin, alkaline phosphatase and gamma-glutamyl transferase, and elevated amylase and lipase if the pancreatic duct is involved.
+
+Diagnosis is by abdominal ultrasound; endoscopic retrograde cholangiopancreatography can both visualize and remove ductal stones.
+
+## Management
+
+Non-surgical: low-FAT diet with small frequent meals, avoiding fried foods, whole milk products, cream, gravies, rich desserts and gas-forming vegetables when they aggravate symptoms; analgesia; antiemetics; anticholinergics or antispasmodics for smooth muscle relaxation; fat-soluble vitamin supplementation in chronic obstruction; and bile acid agents rarely.
+
+Cholecystectomy is usually LAPAROSCOPIC. Postoperative teaching is distinctive: the carbon dioxide used to insufflate the abdomen irritates the diaphragm and causes referred SHOULDER PAIN that can be alarming to the client. Relief comes from AMBULATION, position changes including left side-lying with knees drawn up, heat to the shoulder if permitted, and analgesia — and the client should be told to expect it. Most clients resume a regular diet within days, though a lower-fat pattern is often more comfortable initially because bile now drips continuously rather than being stored and released in a bolus.
+
+Open cholecystectomy is less common but brings the T-TUBE, which appears on exams. A T-tube keeps the common bile duct patent and drains bile externally. Nursing points: keep the drainage bag BELOW the level of the gallbladder to prevent reflux; expect 300 to 500 mL of bile-coloured drainage in the first 24 hours, decreasing over the following days as bile resumes flowing into the duodenum; report drainage exceeding about 1,000 mL in 24 hours, sudden cessation, or foul or purulent drainage; assess the skin around the tube and protect it from bile; and CLAMP the tube before meals only when prescribed, so bile enters the intestine to aid fat digestion, monitoring for pain, nausea or distension while clamped. Report clay-coloured stools persisting after the tube is clamped, since that suggests bile is still not reaching the intestine. Never irrigate or aspirate a T-tube unless specifically prescribed.
+
+After any biliary surgery, monitor for the general postoperative complication set from the perioperative chapter — atelectasis (deep breathing and incentive spirometry, splinting the incision), infection, bleeding, and venous thromboembolism — plus the biliary-specific concerns of bile leak (increasing abdominal pain, distension, fever) and pancreatitis.`,
+      examTip: `Right upper quadrant pain radiating to the RIGHT SHOULDER after a fatty meal is biliary; post-laparoscopic shoulder pain is carbon dioxide and is treated with ambulation, not a workup.`,
+    },
+    {
+      id: 'hep-pancreatitis',
+      title: `4. Acute & Chronic Pancreatitis`,
+      content: `Acute pancreatitis is autodigestion — activated pancreatic enzymes digest the gland itself. The two dominant causes are GALLSTONES obstructing the pancreatic duct and chronic ALCOHOL use; others include hypertriglyceridemia, hypercalcemia, trauma, certain medications, endoscopic retrograde cholangiopancreatography, and infections.
+
+## The presentation
+
+Severe, constant, boring EPIGASTRIC or left upper quadrant pain RADIATING TO THE BACK, often beginning after a heavy meal or an alcohol binge. The pain is WORSE lying flat and is RELIEVED by leaning FORWARD or drawing the knees to the chest (a fetal or knee-chest position) — a positional detail the exam uses as a signature. Add nausea and persistent vomiting that does not relieve the pain, abdominal distension and tenderness with guarding, hypoactive or absent bowel sounds, low-grade fever, tachycardia and hypotension.
+
+Two skin signs indicate severe hemorrhagic pancreatitis: CULLEN SIGN, bluish discoloration around the umbilicus, and GREY TURNER SIGN, bluish discoloration of the flanks. Both mean retroperitoneal bleeding and a poor prognosis.
+
+## The laboratory picture
+
+| Value | Direction | Note |
+| --- | --- | --- |
+| serum LIPASE | markedly ELEVATED | more specific to the pancreas and stays elevated longer — the preferred test |
+| serum AMYLASE | ELEVATED | rises early, falls within a few days; less specific |
+| serum CALCIUM | LOW | calcium is consumed in fat saponification — watch for Chvostek and Trousseau signs, tetany and dysrhythmias |
+| glucose | HIGH | islet cell involvement impairs insulin release |
+| white blood cells | HIGH | inflammatory response |
+| triglycerides | may be very high | can be the cause |
+| magnesium | often LOW | especially in alcohol-related disease |
+
+## Management
+
+The core of acute care is rest for the pancreas and support for the client:
+
+- NOTHING BY MOUTH during acute pain and vomiting, with a nasogastric tube to suction when there is ileus or intractable vomiting. Early enteral nutrition — often by a tube placed past the stomach — is preferred over prolonged parenteral nutrition when feeding is resumed, because it preserves gut integrity and lowers infection risk.
+- AGGRESSIVE INTRAVENOUS FLUID RESUSCITATION, because massive third-spacing into the retroperitoneum produces hypovolemia and shock. Monitor urine output, vital signs and hematocrit closely.
+- ANALGESIA — pain in acute pancreatitis is severe and opioids are used, often by patient-controlled analgesia.
+- Positioning: side-lying with knees flexed, or sitting up and leaning forward, whichever the client finds relieving.
+- Monitor for the complications that kill: hypovolemic shock, ACUTE RESPIRATORY DISTRESS SYNDROME and pleural effusion (assess respiratory rate, effort and oxygen saturation every shift and with any change), acute kidney injury, hypocalcemia with tetany, hyperglycemia, disseminated intravascular coagulation, pancreatic pseudocyst and abscess, and sepsis.
+- Withhold alcohol absolutely and treat withdrawal proactively when alcohol is the cause — the alcohol withdrawal timeline from the psychosocial chapter applies here, and delirium tremens in a client with pancreatitis is a compounded emergency.
+
+Resuming intake: clear liquids advanced to a LOW-FAT, bland, small-frequent-meal diet, with no alcohol and no caffeine, and pain and enzyme levels guiding the advance.
+
+## Chronic pancreatitis
+
+Repeated injury destroys exocrine and eventually endocrine tissue. Findings: recurrent or constant epigastric pain, STEATORRHEA — bulky, greasy, foul-smelling stools that float — weight loss and malnutrition despite adequate intake, fat-soluble vitamin (A, D, E, K) deficiency, and eventually DIABETES as islet cells are lost.
+
+Treatment centres on PANCREATIC ENZYME REPLACEMENT, and its administration rules are a reliable exam item: give the enzymes WITH EVERY MEAL AND SNACK — not before or between, because they must mix with the food to work; do NOT crush or chew enteric-coated preparations, since stomach acid destroys the enzyme; if the capsule must be opened for a client who cannot swallow it, sprinkle the microspheres on a small amount of an ACIDIC soft food such as applesauce and give it immediately without chewing; wipe the lips and give a drink afterward because the enzymes irritate skin and oral mucosa; and monitor effectiveness by watching the STOOLS — improvement means less fat, less odour and better weight.
+
+The rest of chronic management: a low-fat diet with small frequent meals, absolute alcohol and tobacco cessation, fat-soluble vitamin and B12 supplementation, glucose monitoring and eventually insulin, and a realistic long-term pain plan with the involvement of specialists, since chronic opioid use in this population carries its own risks.`,
+      examTip: `Lipase is the more specific enzyme, calcium falls rather than rises, and the client who leans forward for relief has pancreatitis — someone who wants to lie flat and still probably has peritonitis instead.`,
+    },
+    {
+      id: 'hep-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A nurse sustains a needlestick from a client with untreated hepatitis B. She completed the hepatitis B vaccine series eight years ago and has documented immunity. What happens next, and how would the plan differ if the source client had hepatitis C?
+
+2. A client with cirrhosis on lactulose has had four soft stools since morning and the assisting personnel asks whether the next dose should be held. How does the nurse respond, and what would change the answer?
+
+3. A client with cirrhosis is scheduled for paracentesis. List the nursing actions before, during and after, and name the complication that dominates the post-procedure period.
+
+4. A client is one day post laparoscopic cholecystectomy and reports severe right SHOULDER pain, asking whether something went wrong. What is the explanation and the intervention?
+
+5. A client with acute pancreatitis has a serum calcium of 7.4 mg/dL. Explain the mechanism, name the two bedside signs, and state the monitoring priority.
+
+6. A client with chronic pancreatitis reports that the enzyme capsules "don't seem to be doing anything." On questioning, he takes them with a glass of water 30 minutes before breakfast and dinner and chews them because they are large. Identify every error.
+
+## Answers
+
+1. Wash the site, report the exposure immediately, and follow the institutional protocol: source testing and baseline serology for the nurse. Because she has documented hepatitis B immunity, she needs no hepatitis B immune globulin and no vaccine booster for that exposure. If the source had hepatitis C, there is NO vaccine and NO immune globulin — the plan is baseline and serial testing (hepatitis C antibody and RNA testing at defined intervals) with prompt referral for direct-acting antiviral treatment if infection is detected, since early treatment is curative in most cases.
+
+2. Do not hold it. Two to three soft stools per day is the THERAPEUTIC GOAL of lactulose, and four soft stools is at the upper edge of the intended effect rather than an adverse reaction. Assess mentation and asterixis to confirm the drug is working. The answer changes if she has frank watery diarrhea with signs of dehydration, hypotension, or a falling potassium — hypokalemia worsens ammonia levels — in which case the dose is discussed with the provider and electrolytes are checked.
+
+3. BEFORE: verify informed consent, have the client VOID to empty the bladder, obtain baseline vital signs, weight and abdominal girth marked at a measured location, and position upright or in high Fowler with the back supported and feet resting. DURING: maintain sterile technique, support the client, monitor vital signs and respiratory status. AFTER: monitor vital signs frequently for HYPOTENSION — the dominant complication, from rapid fluid shifts out of the vascular space — assess the puncture site for leakage and apply a dressing, repeat weight and girth, monitor electrolytes and albumin, and observe for signs of bleeding or infection including spontaneous bacterial peritonitis.
+
+4. Referred pain from residual CARBON DIOXIDE used to insufflate the abdomen, irritating the diaphragm and the phrenic nerve. It is expected, not a complication. Intervention: reassure and explain, encourage AMBULATION which is the most effective measure, use position changes such as left side-lying with knees drawn up, apply heat to the shoulder if permitted, and give the prescribed analgesic. Escalate only if there is fever, increasing abdominal pain, distension, or signs of bile leak or bleeding.
+
+5. Activated lipase digests fat in the abdomen, and the released fatty acids bind calcium — saponification — consuming it from the serum. The two bedside signs are CHVOSTEK sign (facial twitching when the facial nerve is tapped) and TROUSSEAU sign (carpal spasm when a blood pressure cuff is inflated above systolic for a few minutes). Monitoring priority is cardiac: hypocalcemia prolongs the QT interval and can cause dysrhythmias, and the airway is threatened by laryngospasm — keep the client on a monitor, have calcium gluconate available per orders, and institute seizure precautions.
+
+6. Three errors. First, the timing: enzymes must be taken WITH meals and snacks so they mix with the food; taken 30 minutes before, they leave the stomach ahead of the meal. Second, chewing: the enteric coating protects the enzyme from stomach acid, and chewing destroys both the coating and the enzyme, and irritates the oral mucosa. Third, coverage: he takes them at two meals only, and every meal and every snack containing fat needs a dose. Correct teaching: swallow whole with meals and snacks; if swallowing is difficult, ask the prescriber about opening the capsule and sprinkling the beads on a small amount of an acidic food such as applesauce, taken immediately without chewing; follow with a drink and wipe the lips; and judge effectiveness by stools becoming less greasy and by weight gain.`,
+    },
+  ],
+  keyTakeaways: [
+    `Hepatitis A and E are fecal-oral, B and C and D are blood-borne; vaccines exist for A and B, and preventing B prevents D.`,
+    `Every cirrhosis complication traces to one of three failures — blood cannot pass through (varices, ascites, splenomegaly), the liver cannot synthesize (low albumin, coagulopathy), or it cannot detoxify (encephalopathy, jaundice).`,
+    `Lactulose is titrated to two or three soft stools daily; hypokalemia and dehydration are the reasons to reassess, and a bowel movement is not.`,
+    `Biliary pain radiates to the right shoulder after fatty food; obstruction adds jaundice, clay stools, dark urine and pruritus; post-laparoscopic shoulder pain is carbon dioxide and ambulation treats it.`,
+    `Pancreatitis brings pain relieved by leaning forward, a high lipase, a LOW calcium, aggressive fluids, bowel rest — and enzyme replacement taken WITH every meal, never crushed or chewed.`,
+  ],
+},
+
+nx_endocrine_disorders: {
+  topicId: 'nx_endocrine_disorders',
+  title: `Thyroid, Parathyroid, Adrenal & Pituitary Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Endocrine nursing beyond diabetes is a study in opposites: every gland has a too-much picture and a too-little picture, and once you can build one from the hormone's normal job you can derive the other. Thyroid hormone sets metabolic rate, so hyperthyroidism is everything fast and hypothyroidism is everything slow. Cortisol raises glucose and sodium and drops potassium, so Cushing and Addison mirror each other value for value. Antidiuretic hormone holds onto water, so SIADH dilutes and diabetes insipidus dehydrates. This chapter builds each pair, adds the crises, and carries the two post-operative care sets — thyroidectomy and hypophysectomy — the exam reliably asks about.`,
+  sections: [
+    {
+      id: 'endo-thyroid',
+      title: `1. Hypothyroidism & Hyperthyroidism: Everything Slow, Everything Fast`,
+      content: `Thyroid hormone sets the metabolic rate of every cell, so the two diseases are one physiologic dial turned in opposite directions.
+
+| System | HYPOthyroidism (too little) | HYPERthyroidism (too much) |
+| --- | --- | --- |
+| energy and mood | fatigue, lethargy, slowed thinking, depression | nervousness, irritability, restlessness, insomnia, emotional lability |
+| temperature | COLD intolerance | HEAT intolerance, diaphoresis, warm moist skin |
+| weight and appetite | weight GAIN with poor appetite | weight LOSS despite an INCREASED appetite |
+| cardiac | BRADYCARDIA, hypotension, decreased cardiac output | TACHYCARDIA, palpitations, atrial fibrillation, widened pulse pressure, hypertension |
+| gastrointestinal | CONSTIPATION | frequent stools or DIARRHEA |
+| skin and hair | dry coarse skin, brittle hair, hair loss including the outer eyebrow, periorbital and non-pitting facial edema (myxedema) | fine silky hair, smooth warm skin, fine TREMOR |
+| menstrual | menorrhagia | amenorrhea or scanty menses |
+| eyes and neck | puffy face, enlarged tongue, hoarse voice | EXOPHTHALMOS in Graves disease, lid lag, GOITER with a possible bruit |
+
+Laboratory interpretation follows the feedback loop. In PRIMARY hypothyroidism — the common form, most often Hashimoto autoimmune thyroiditis — the TSH is HIGH because the pituitary is shouting at a gland that will not answer, and free T4 is LOW. In hyperthyroidism, most often Graves disease, the TSH is LOW because the pituitary has stopped asking, and T3 and T4 are HIGH.
+
+## Hypothyroidism care
+
+Levothyroxine is lifelong replacement, and its administration teaching is one of the most reliably tested medication blocks on the exam: take it in the MORNING on an EMPTY STOMACH, ideally 30 to 60 MINUTES BEFORE breakfast, with water; take it at the SAME TIME every day; do NOT take it with calcium, iron, magnesium, antacids or a high-fibre meal — separate those by about 4 HOURS because they block absorption; do not switch brands without telling the prescriber; and never stop it because symptoms improved — the symptoms improved because of the drug. In older adults and clients with coronary disease the dose is started LOW and increased slowly, because a sudden rise in metabolic rate can precipitate angina, infarction or dysrhythmias. Teach the signs of over-replacement, which are simply hyperthyroid symptoms: chest pain, palpitations, tachycardia, insomnia, tremor, heat intolerance and weight loss — all reportable.
+
+Nursing care otherwise: a warm environment and extra blankets (never a heating pad, since sensation and circulation are blunted), a high-fibre diet with fluids and activity for constipation, a low-calorie diet if weight gain is significant, skin care for dryness, pacing of activity, and careful use of sedatives and opioids because these clients are unusually sensitive to them.
+
+MYXEDEMA COMA is the decompensated extreme, often precipitated by infection, cold exposure, surgery, or withdrawal of thyroid replacement: HYPOthermia without shivering, HYPOtension, BRADYcardia, HYPOventilation with carbon dioxide retention, hyponatremia, hypoglycemia and a deteriorating level of consciousness. Care is airway and ventilation support, intravenous thyroid hormone replacement, cautious PASSIVE rewarming with blankets — active external warming causes vasodilation and worsens hypotension — intravenous fluids and glucose, corticosteroids, and treatment of the precipitant.
+
+## Hyperthyroidism care
+
+Environment and diet are nursing therapy here: a COOL, QUIET room with reduced stimulation, light bedding, frequent linen changes for diaphoresis, and a HIGH-CALORIE, HIGH-PROTEIN diet with several small meals and snacks plus generous fluids, avoiding CAFFEINE and other stimulants and highly seasoned or high-fibre foods that increase gastrointestinal activity. Monitor weight, vital signs including apical pulse and rhythm, and the cardiac status of older clients, in whom atrial fibrillation and heart failure are the real dangers.
+
+Exophthalmos care, when present, is specific: artificial tears, elevate the head of the bed to reduce periorbital edema, dark glasses outdoors, and taping or shielding the lids at night if they do not close, since a cornea that cannot be covered will ulcerate. Exophthalmos does not reverse with treatment of the thyroid.
+
+| Therapy | How it works | Nursing and teaching points |
+| --- | --- | --- |
+| methimazole; propylthiouracil | block hormone synthesis | effect takes weeks; report SORE THROAT, fever, or mouth ulcers immediately — AGRANULOCYTOSIS; both are hepatotoxic; propylthiouracil is preferred in the FIRST TRIMESTER of pregnancy |
+| beta blockers (propranolol, atenolol) | control the adrenergic symptoms — tachycardia, tremor, anxiety | symptomatic relief only; they do not treat the gland |
+| iodine solutions (potassium iodide, Lugol solution) | temporarily reduce hormone release and vascularity | DILUTE in juice or water and drink through a STRAW to protect tooth enamel; take after meals; used before surgery |
+| RADIOACTIVE IODINE (I-131) | destroys thyroid tissue over weeks | contraindicated in PREGNANCY and breastfeeding — pregnancy must be excluded and avoided afterward per protocol; follow home radiation precautions for several days (own bathroom where possible, flush twice, wash hands well, avoid close prolonged contact with children and pregnant people, separate laundry and utensils); most clients eventually become HYPOthyroid and need lifelong levothyroxine |
+| thyroidectomy | removes tissue | see the post-operative section below |
+
+## Thyroid storm
+
+Thyroid storm (thyrotoxic crisis) is a life-threatening exaggeration precipitated by infection, trauma, surgery, childbirth, uncontrolled disease, or manipulation of the gland. Findings: HIGH FEVER that can climb above 40 degrees Celsius, extreme TACHYCARDIA with dysrhythmias and heart failure, hypertension with a very wide pulse pressure, severe agitation, delirium progressing to coma, vomiting and diarrhea, and abdominal pain. Management: cooling measures WITHOUT aspirin (aspirin displaces thyroid hormone from its binding protein and raises free levels), antithyroid drugs, beta blockade, iodine given AFTER the antithyroid drug, glucocorticoids, intravenous fluids and glucose, oxygen, cardiac monitoring, and treatment of the precipitating cause.
+
+## After thyroidectomy
+
+This post-operative set is a reliable exam item because each element has a reason:
+
+- Position in SEMI-FOWLER with the head, neck and shoulders SUPPORTED — sandbags or pillows — and teach the client to support the head with the hands when moving, avoiding neck flexion, extension and hyperextension.
+- Keep at the bedside: OXYGEN, SUCTION, and a TRACHEOSTOMY set, because airway obstruction from edema or hematoma is the feared complication.
+- Assess for BLEEDING — and check BEHIND THE NECK and the back of the dressing, since blood runs downward with gravity and a dry front dressing can hide a hematoma.
+- Assess the airway and voice: mild hoarseness and a weak voice are expected for a few days from intubation and edema; PROGRESSIVE hoarseness, stridor, difficulty swallowing or a sensation of tightness is an emergency.
+- Assess for HYPOCALCEMIA from inadvertent injury to or removal of the PARATHYROID glands, typically appearing within 24 to 72 hours: TINGLING around the mouth and in the fingers and toes, muscle twitching, positive CHVOSTEK and TROUSSEAU signs, carpopedal spasm, and in the extreme laryngospasm and tetany. Calcium gluconate must be available.
+- Support humidified air, deep breathing (coughing is often limited early per surgeon preference), analgesia, and gradual advancement of diet.
+- Teaching at discharge: lifelong thyroid replacement if the gland was fully removed, calcium supplementation if prescribed, incision care, and the specific symptoms of both hypocalcemia and hypothyroidism to report.`,
+      examTip: `Levothyroxine on an empty stomach in the morning, four hours away from calcium and iron. And after thyroidectomy the two assessments that outrank all others are the AIRWAY and the calcium — check behind the neck for blood and around the mouth for tingling.`,
+    },
+    {
+      id: 'endo-parathyroid',
+      title: `2. Parathyroid Disorders & the Calcium Axis`,
+      content: `Parathyroid hormone raises serum calcium — pulling it from bone, reabsorbing it in the kidney and enhancing intestinal absorption through activated vitamin D — and it LOWERS phosphorus. Calcium and phosphorus move in OPPOSITE directions, which is the single fact that makes this section derivable rather than memorized. Adult reference values: total calcium about 9.0 to 10.5 mg/dL, phosphorus about 3.0 to 4.5 mg/dL.
+
+## Hyperparathyroidism
+
+Too much parathyroid hormone means HIGH calcium and LOW phosphorus. The classic teaching phrase captures the presentation: stones, bones, abdominal groans and psychiatric moans.
+
+- **Stones** — kidney stones, polyuria and polydipsia from calcium's effect on the concentrating ability of the kidney, and eventually renal impairment.
+- **Bones** — bone pain, osteoporosis and pathologic FRACTURES as calcium leaves the skeleton.
+- **Abdominal groans** — anorexia, nausea and vomiting, CONSTIPATION, abdominal pain, and pancreatitis.
+- **Psychiatric moans** — fatigue, lethargy, muscle weakness with DIMINISHED reflexes, confusion, memory impairment, and depression.
+
+Cardiac effects include a SHORTENED QT interval and increased sensitivity to digoxin toxicity.
+
+Management: generous HYDRATION — often 3 to 4 litres daily and intravenous normal saline in acute hypercalcemia — because dilution and urinary excretion are the fastest levers; LOOP diuretics such as furosemide once the client is volume-replete, and NOT thiazides, which retain calcium; MOBILITY, because immobility pulls calcium out of bone and worsens the level; a moderate-calcium diet with high fluid intake; calcitonin for rapid lowering and BISPHOSPHONATES for sustained lowering; cinacalcet in selected clients; and parathyroidectomy for definitive treatment. Fall and fracture precautions are nursing priorities given the fragile skeleton, and a strainer for urine is used if stones are suspected.
+
+After parathyroidectomy, watch for the mirror problem: acute HYPOcalcemia as the remaining glands recover, with the same airway and tetany concerns described for thyroidectomy, and the same bedside equipment.
+
+## Hypoparathyroidism
+
+Too little parathyroid hormone means LOW calcium and HIGH phosphorus. The most common cause on the exam is inadvertent removal of or injury to the glands during thyroid or neck surgery; autoimmune destruction and hypomagnesemia are others.
+
+Findings are neuromuscular irritability: numbness and TINGLING around the mouth and in the fingertips and toes, muscle cramps, twitching, carpopedal spasm, positive CHVOSTEK sign (facial twitch on tapping the facial nerve anterior to the ear) and TROUSSEAU sign (carpal spasm after a blood pressure cuff is inflated above systolic pressure for up to three minutes), hyperactive reflexes, anxiety and irritability, and in the extreme LARYNGOSPASM, bronchospasm, seizures and tetany. Cardiac effects include a PROLONGED QT interval and dysrhythmias.
+
+Management: intravenous CALCIUM GLUCONATE for acute symptomatic hypocalcemia, given slowly with cardiac monitoring; oral calcium with ACTIVE vitamin D (calcitriol) for maintenance, since without parathyroid hormone the kidney cannot activate ordinary vitamin D; a diet HIGH in calcium and LOW in phosphorus, which means limiting dairy (high in both), processed foods with phosphate additives, cola beverages, and nuts, while emphasizing green leafy vegetables and fortified non-dairy options; phosphate binders if needed; correction of magnesium, because hypomagnesemia makes hypocalcemia refractory; seizure precautions; and keeping emergency airway equipment available in severe cases.
+
+A practical laboratory caution worth carrying: total calcium falls when ALBUMIN is low, so a hypoalbuminemic client may show a low total calcium while the physiologically active IONIZED calcium is normal. When the number and the client disagree, an ionized calcium resolves it. Also remember that ALKALOSIS increases calcium binding to albumin and can produce symptomatic hypocalcemia at a normal total level — which is why the client hyperventilating in a panic attack develops perioral tingling and carpal spasm.`,
+      examTip: `Calcium and phosphorus move in opposite directions. High calcium means weak, constipated and slow with a short QT; low calcium means twitchy, spastic and irritable with a long QT and a Chvostek sign.`,
+    },
+    {
+      id: 'endo-adrenal',
+      title: `3. Cushing Syndrome, Addison Disease & Adrenal Crisis`,
+      content: `Cortisol raises glucose, retains sodium and water, wastes potassium, suppresses immunity and inflammation, and breaks down protein. Aldosterone retains sodium and excretes potassium. Build the excess and deficiency states from those jobs and the tables write themselves.
+
+| Feature | CUSHING (excess cortisol) | ADDISON (deficient cortisol and aldosterone) |
+| --- | --- | --- |
+| body habitus | TRUNCAL obesity, MOON FACE, supraclavicular and dorsocervical fat pad (buffalo hump), THIN extremities from muscle wasting | weight LOSS, muscle wasting, profound fatigue and weakness |
+| skin | thin, fragile, easily bruised; purple STRIAE on the abdomen; poor wound healing; hirsutism; acne | HYPERPIGMENTATION — a bronze tan on sun-exposed areas, creases, scars, knuckles and gums; VITILIGO may coexist |
+| glucose | HIGH — steroid-induced hyperglycemia | LOW — hypoglycemia |
+| sodium and fluid | sodium and water RETENTION — hypertension, edema, weight gain | sodium LOSS — HYPOnatremia, dehydration, hypotension and orthostasis, SALT CRAVING |
+| potassium | HYPOkalemia | HYPERkalemia |
+| calcium and bone | OSTEOPOROSIS, fractures, back pain | hypercalcemia may occur |
+| immune | immunosuppression, infections with BLUNTED fever and inflammatory signs | susceptibility to stress and infection |
+| mood | mood swings, irritability, euphoria, depression, psychosis, insomnia | depression, apathy, irritability, confusion |
+| gastrointestinal | peptic ulcer risk | anorexia, nausea, vomiting, diarrhea, abdominal pain |
+
+The most common cause of Cushing syndrome is EXOGENOUS — long-term corticosteroid therapy — which is why the assessment question in a stem is often about a medication list rather than a tumour. Endogenous causes are a pituitary adenoma secreting ACTH (Cushing DISEASE), an adrenal tumour, or ectopic ACTH production, classically by small cell lung cancer.
+
+## Cushing nursing care
+
+Protect against what excess cortisol takes away: INFECTION prevention (private room considerations, meticulous hand hygiene, screening visitors, and a high index of suspicion because fever may be blunted — a small rise in temperature or new confusion may be the only sign); SKIN protection with gentle handling, careful tape use, and pressure-injury prevention; FALL and FRACTURE precautions for osteoporosis; and GLUCOSE monitoring. Diet is high protein, high calcium and high potassium, LOW sodium and controlled in calories. Weigh daily, monitor blood pressure and intake and output, and support the client's emotional response to disfiguring body changes, which are largely reversible when the cause is corrected.
+
+Steroid teaching is examinable across the whole course: take corticosteroids WITH FOOD, in the MORNING to mimic the natural cortisol rhythm, NEVER stop them abruptly (the adrenal glands have been suppressed and need a taper), expect the dose to be INCREASED during physiologic stress such as illness, injury or surgery, carry medical alert identification, and report signs of infection, black stools, mood change, or unusual swelling.
+
+## Addison disease and adrenal crisis
+
+Primary adrenal insufficiency destroys the cortex, so both cortisol and aldosterone are lost. Hyperpigmentation appears only in PRIMARY disease, because the high ACTH that drives it is absent when the cause is pituitary failure or steroid withdrawal — a distinction the exam sometimes tests.
+
+Maintenance therapy is a glucocorticoid such as hydrocortisone, usually with a mineralocorticoid, FLUDROCORTISONE, to replace aldosterone. Teaching is life-preserving: never miss or stop a dose; take the larger portion in the morning; INCREASE the dose as prescribed for illness, fever, injury, dental work or surgery — the sick-day rule; carry an EMERGENCY INJECTABLE glucocorticoid and know how to use it; wear medical alert identification; weigh daily and report rapid changes; do not restrict sodium and increase salt intake during heavy sweating, vomiting or diarrhea; and report vomiting or diarrhea promptly, since an oral dose that is vomited is a dose not taken.
+
+ADDISONIAN CRISIS is the emergency, precipitated by infection, trauma, surgery, missed doses, or abrupt withdrawal of long-term steroids. Findings: profound weakness, severe HYPOTENSION progressing to shock, severe abdominal, lower back and leg pain, nausea, vomiting and diarrhea, fever, confusion, HYPERkalemia, HYPOnatremia, hypoglycemia, and dysrhythmias. Management: intravenous HYDROCORTISONE immediately, rapid volume replacement with normal saline often containing DEXTROSE for the hypoglycemia, treatment of hyperkalemia, continuous cardiac monitoring, identification and treatment of the precipitant, and — a nursing point the exam likes — protection from ALL stressors including cold, noise, bright light, and unnecessary activity or procedures.
+
+## Pheochromocytoma
+
+A catecholamine-secreting tumour, usually of the adrenal medulla. The presentation is PAROXYSMAL: episodes of severe HYPERTENSION with a pounding HEADACHE, palpitations, profuse DIAPHORESIS, pallor, tremor, anxiety and a sense of doom, often provoked by exertion, stress or abdominal pressure. Diagnosis is by 24-hour urine or plasma metanephrines and catecholamines; for the urine collection, teach the client to discard the first void, collect every subsequent void including the final one at the end of the period, keep the container refrigerated or on ice, and follow any dietary and medication restrictions given.
+
+The nursing rule: do NOT PALPATE the abdomen, which can trigger a catecholamine release and a hypertensive crisis. Provide a quiet, cool, low-stimulation environment, avoid caffeine and stimulants, monitor blood pressure closely, and never give a beta blocker alone before adequate ALPHA blockade — unopposed alpha stimulation worsens the hypertension. Surgical removal is curative, with careful blood pressure management before, during and after.`,
+      examTip: `Cushing is high sodium, high glucose, LOW potassium; Addison is low sodium, low glucose, HIGH potassium. And the Addison client who is vomiting cannot keep the pill down — that is an emergency call, not a wait-and-see.`,
+    },
+    {
+      id: 'endo-pituitary',
+      title: `4. SIADH, Diabetes Insipidus & Pituitary Surgery`,
+      content: `Antidiuretic hormone (vasopressin) makes the kidney hold on to WATER. Too much of it dilutes the client; too little of it dries the client out. Everything else follows.
+
+| Feature | SIADH (too much ADH) | DIABETES INSIPIDUS (too little ADH or renal resistance) |
+| --- | --- | --- |
+| urine output | DECREASED, scant | MASSIVE — commonly 4 to 20 litres daily |
+| urine concentration | CONCENTRATED — high specific gravity and osmolality | DILUTE — specific gravity below about 1.005, low osmolality |
+| serum sodium | LOW (dilutional hyponatremia) | HIGH (hypernatremia) |
+| serum osmolality | LOW | HIGH |
+| weight | GAIN without obvious edema | LOSS |
+| volume status | fluid overload, hypertension | dehydration, hypotension, tachycardia, poor turgor |
+| symptoms | headache, nausea, anorexia, muscle cramps, weakness, irritability, confusion, SEIZURES and coma as sodium falls | intense THIRST with craving for cold water, polyuria including NOCTURIA, weakness, constipation, dry mucous membranes |
+| common causes | small cell LUNG CANCER, head injury, central nervous system infection, medications (some antidepressants, carbamazepine, chemotherapy agents), pulmonary disease, surgery and pain | head trauma, pituitary surgery, tumours, infection; nephrogenic forms from lithium or kidney disease |
+| core treatment | FLUID RESTRICTION | FLUID REPLACEMENT plus DESMOPRESSIN |
+
+## SIADH care
+
+The central intervention is FLUID RESTRICTION — commonly 500 to 1,000 mL in 24 hours — with hourly intake and output, DAILY WEIGHTS as the best measure of fluid status, and frequent neurologic checks with SEIZURE precautions because the danger is cerebral edema from hyponatremia. Serum sodium and osmolality are monitored closely. Symptomatic severe hyponatremia may be treated with HYPERTONIC (3%) saline, given slowly through a controlled infusion device with frequent sodium monitoring, because correcting sodium too rapidly causes osmotic demyelination — permanent neurologic injury. Loop diuretics may be added, and vasopressin receptor antagonists such as tolvaptan are used in selected clients. Oral care and ice chips (counted in the restriction) help with the thirst the restriction creates, and involving the client in planning how the day's allowance is spent improves adherence more than a locked water pitcher does.
+
+## Diabetes insipidus care
+
+Replace what is being lost and give back the hormone: intravenous hypotonic fluids and encouraged oral intake, with DESMOPRESSIN (DDAVP) by intranasal, oral or parenteral route. Monitor hourly intake and output, urine specific gravity, daily weights, serum sodium, vital signs and level of consciousness, and keep fluids within the client's reach at all times — a client who cannot reach water and cannot conserve it dehydrates quickly.
+
+The desmopressin teaching set: take exactly as prescribed and do not double doses; monitor for the OPPOSITE problem — WATER INTOXICATION from over-treatment, signalled by headache, drowsiness, confusion, weight gain and a falling urine output; weigh daily; wear medical alert identification; and for nasal preparations, clear the nasal passages first and report nasal congestion or upper respiratory infection, which alters absorption.
+
+## Pituitary tumours and hypophysectomy
+
+Growth hormone excess in adults produces ACROMEGALY: enlargement of the hands and feet (rings and shoes no longer fit — a classic history question), coarsening facial features with a protruding jaw and enlarged nose and tongue, deepening voice, joint pain, headache, visual field defects from pressure on the optic chiasm, sleep apnea, hypertension, cardiomegaly and glucose intolerance. Soft-tissue changes largely persist after treatment; the goal is to stop progression.
+
+TRANSSPHENOIDAL HYPOPHYSECTOMY reaches the pituitary through the nose and sphenoid sinus, and its post-operative care is a distinctive exam set:
+
+- Elevate the head of the bed to reduce pressure and edema.
+- AVOID anything that raises intracranial pressure or disturbs the surgical site: no coughing, sneezing (teach to sneeze with the mouth OPEN if unavoidable), blowing the nose, bending at the waist, or straining at stool — stool softeners are prescribed. No TOOTHBRUSHING until cleared, usually about ten days; use mouth rinses and floss instead.
+- Expect a nasal drip pad, mouth breathing and a dry mouth; provide frequent oral care with rinses.
+- Watch for a CEREBROSPINAL FLUID LEAK: clear or blood-tinged drainage from the nose that tests POSITIVE FOR GLUCOSE, a HALO sign on the drip pad (a clear ring around a blood spot), persistent postnasal drip, a persistent SALTY or sweet taste, or frequent swallowing. Report it — a leak risks meningitis, so also monitor for headache, fever and nuchal rigidity.
+- Monitor for DIABETES INSIPIDUS, which is common transiently after this surgery: hourly urine output, specific gravity, and serum sodium.
+- Monitor for the loss of other pituitary hormones and anticipate lifelong replacement — thyroid, adrenal and sometimes sex hormones — and teach the client that these are permanent and that adrenal replacement carries the sick-day rules from the adrenal section.
+- Assess vision and report any change, and perform routine neurologic checks.`,
+      examTip: `SIADH holds water and dilutes the sodium — restrict fluids. Diabetes insipidus dumps water and concentrates the sodium — replace fluids and give desmopressin. Urine specific gravity separates them in one number.`,
+    },
+    {
+      id: 'endo-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client newly prescribed levothyroxine says she will take it with her morning coffee, breakfast and her calcium-with-vitamin-D supplement, "so I remember them all together." What needs correcting and why?
+
+2. Eighteen hours after a total thyroidectomy, a client reports tingling around her mouth and in her fingertips. What is happening, what two bedside signs would confirm it, and what should be immediately available?
+
+3. A client with Addison disease calls the clinic with a 24-hour history of vomiting and diarrhea from a stomach virus. She has been unable to keep her hydrocortisone down. What is the concern and what is the correct guidance?
+
+4. A client with small cell lung cancer has a serum sodium of 118 mEq/L, a urine specific gravity of 1.032, weight gain of 3 kg, and new confusion. Name the syndrome, the mechanism, and the two most important nursing interventions.
+
+5. Two days after transsphenoidal hypophysectomy, a client's urine output has been 400 to 600 mL per hour for four hours with a specific gravity of 1.002, and he is intensely thirsty. What has developed and what does the nurse anticipate?
+
+6. A client with hyperparathyroidism has a calcium of 12.8 mg/dL, is lethargic and constipated, and asks to stay in bed because she feels weak. What is wrong with granting that request without discussion, and what should the plan include?
+
+## Answers
+
+1. Every part of that plan reduces absorption. Levothyroxine is taken on an EMPTY stomach with water, ideally 30 to 60 minutes before breakfast, at the SAME time each day. Calcium (and iron, magnesium, antacids and high-fibre foods) must be separated by about 4 HOURS because they bind the drug in the gut. Coffee also reduces absorption when taken with the dose. Suggest she take the levothyroxine on waking with water, then have coffee and breakfast 30 to 60 minutes later, and move the calcium to midday or evening.
+
+2. HYPOCALCEMIA from injury to or removal of the parathyroid glands — the expected window is 24 to 72 hours after thyroid surgery. Confirming signs are CHVOSTEK sign (facial twitching when the facial nerve is tapped) and TROUSSEAU sign (carpal spasm when a blood pressure cuff is inflated above systolic for up to three minutes). CALCIUM GLUCONATE for intravenous administration must be immediately available, along with emergency airway equipment, because laryngospasm is the feared progression. Notify the provider, obtain a calcium level, place the client on a cardiac monitor for QT prolongation, and institute seizure precautions.
+
+3. This is an emerging ADDISONIAN CRISIS. She has an increased physiologic need for glucocorticoid because of illness, and she is losing both fluid and the medication itself through vomiting and diarrhea — the doses she cannot keep down are doses not taken. Guidance: she must not wait this out at home. Instruct her to use her emergency injectable glucocorticoid if she has one and has been taught, and to seek emergency care immediately or have someone bring her in. Anticipate intravenous hydrocortisone, normal saline with dextrose, potassium monitoring and cardiac monitoring. Reinforce sick-day rules afterward.
+
+4. SIADH — excess antidiuretic hormone, in this case ectopically produced by small cell lung cancer, causing the kidney to retain water. The sodium is diluted rather than lost, which is why the urine is concentrated while the serum is not, and the weight gain occurs without obvious edema. The two most important interventions are FLUID RESTRICTION as prescribed with strict intake and output and daily weights, and NEUROLOGIC monitoring with SEIZURE precautions, because a sodium of 118 with confusion means cerebral edema. If hypertonic saline is prescribed it is infused slowly on a pump with frequent sodium checks, because rapid correction causes permanent neurologic damage.
+
+5. DIABETES INSIPIDUS, a common transient complication of pituitary surgery. The massive output with a specific gravity of 1.002 and intense thirst is the picture. Anticipate strict hourly intake and output, urine specific gravity with each void or hourly, serum sodium and osmolality, daily weights, intravenous hypotonic fluid replacement and encouraged oral intake, and DESMOPRESSIN. Notify the provider now — a client losing half a litre an hour becomes hypovolemic and hypernatremic quickly. Keep fluids within reach at all times.
+
+6. Immobility WORSENS hypercalcemia by releasing more calcium from bone, so bed rest would deepen the very problem making her weak and lethargic. The plan should include assisted ambulation and weight-bearing activity as tolerated with FALL and FRACTURE precautions (her bones are fragile), generous hydration — often 3 to 4 litres daily, with intravenous normal saline if the level is acutely high — loop diuretics only after volume replacement rather than thiazides, calcitonin or bisphosphonates as prescribed, a high-fibre diet with fluids for the constipation, cardiac monitoring for the shortened QT interval, straining urine if stones are suspected, and reassessment of any digoxin dose, since hypercalcemia potentiates digoxin toxicity.`,
+    },
+  ],
+  keyTakeaways: [
+    `Thyroid disease is one dial: hypothyroidism is slow, cold, constipated and heavy with a HIGH TSH; hyperthyroidism is fast, hot, hungry and thin with a LOW TSH.`,
+    `Levothyroxine goes on an empty stomach in the morning, four hours from calcium and iron; after thyroidectomy the priorities are airway, bleeding checked behind the neck, and hypocalcemia at 24 to 72 hours.`,
+    `Cushing gives high sodium, high glucose and low potassium with a fragile immune system and skeleton; Addison reverses every value and its crisis is treated with intravenous hydrocortisone and saline with dextrose.`,
+    `Steroid rules recur everywhere: with food, in the morning, never stopped abruptly, and increased under physiologic stress.`,
+    `Antidiuretic hormone excess dilutes (SIADH — restrict fluids, watch for seizures) and deficiency dehydrates (diabetes insipidus — replace fluids, give desmopressin); after pituitary surgery watch for both a cerebrospinal fluid leak and new diabetes insipidus.`,
+  ],
+},
+
+nx_neuro_disorders: {
+  topicId: 'nx_neuro_disorders',
+  title: `Seizures, Neuromuscular & Spinal Cord Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Stroke and increased intracranial pressure have their own chapter; this one covers the rest of adult neurology, and it is organized around what the exam actually asks. Seizures are tested as a procedure — what you do during one and what you never do. The neuromuscular diseases are tested as discriminations: myasthenic versus cholinergic crisis, ascending versus descending weakness, resting versus intention tremor. Spinal cord injury is tested as three emergencies with three different responses. And delirium versus dementia decides whether the correct answer is to look for a cause or to modify the environment.`,
+  sections: [
+    {
+      id: 'neu-seizures',
+      title: `1. Seizures: During, After & the Drug Table`,
+      content: `A seizure is abnormal, excessive electrical discharge in the brain. Epilepsy is the chronic condition of recurrent unprovoked seizures. Provoked seizures follow a cause the exam expects you to look for: fever in young children, hypoglycemia, hyponatremia, hypocalcemia, alcohol or benzodiazepine withdrawal, head injury, stroke, infection, eclampsia, and drug toxicity.
+
+| Type | What it looks like |
+| --- | --- |
+| focal aware (simple partial) | localized motor, sensory or autonomic symptoms with consciousness PRESERVED |
+| focal with impaired awareness (complex partial) | altered awareness with automatisms — lip smacking, picking at clothing, wandering — and no memory of the event |
+| generalized TONIC-CLONIC | loss of consciousness, tonic stiffening then clonic jerking, possible cyanosis, tongue biting and incontinence, followed by a POSTICTAL period of confusion, headache and deep sleep |
+| ABSENCE | brief blank staring with a sudden stop and start, no postictal phase — often mistaken for daydreaming in children |
+| myoclonic | brief shock-like jerks of a muscle or group |
+| atonic ("drop attack") | sudden loss of muscle tone with a fall — head protection is a real concern |
+
+Some clients experience an AURA — a sensory warning such as an odd smell, taste, visual disturbance or rising epigastric sensation — that gives a few seconds to get to safety.
+
+## What the nurse does DURING a seizure
+
+Stay with the client and call for help. Ease the client to the floor if standing, or lower the head of the bed and remove pillows if in bed. Protect the HEAD with something soft. Turn the client to the SIDE (or turn the head to the side) to let secretions drain. Loosen restrictive clothing at the neck. Remove nearby hazards. Keep suction and oxygen available. TIME the seizure and observe carefully — the description is the assessment: what the client was doing beforehand, whether there was an aura, where the movement started and how it spread, eye deviation, pupil changes, incontinence, colour, duration, and the postictal state.
+
+What you must NOT do: do not RESTRAIN the client's movements, do not put anything in the MOUTH — no padded tongue blade, no fingers, no airway forced between clenched teeth — and do not leave the client alone.
+
+## What the nurse does AFTER
+
+Maintain a side-lying position, assess airway, breathing and oxygenation, suction if needed, check for injuries including the tongue and any fall trauma, check a glucose level, reorient calmly and repeatedly (the client will be confused and may be frightened or combative), allow rest, provide privacy and dignity, and document precisely. A postictal client who is difficult to rouse is expected; one who does not gradually improve, or who has focal deficits, is reported.
+
+## Seizure precautions and living with epilepsy
+
+Precautions in hospital: bed in the LOWEST position with side rails up and padded per policy, suction and oxygen set up at the bedside, intravenous access for high-risk clients, and no oral temperatures.
+
+Teaching for home: take medication exactly as prescribed and NEVER stop it abruptly, because abrupt withdrawal is itself a leading precipitant of status epilepticus; identify and avoid personal triggers — sleep deprivation above all, plus alcohol, missed meals, stress, flashing lights in photosensitive clients, and fever; keep a seizure diary; wear medical alert identification; know state driving regulations, which typically require a documented seizure-free interval; avoid swimming alone, working at heights, and unsupervised bathing (showers rather than baths); and teach family what to do and, equally, what not to do.
+
+STATUS EPILEPTICUS is continuous seizure activity lasting 5 minutes or more, or repeated seizures without recovery of consciousness between them. It is an emergency because of hypoxia, acidosis, hyperthermia and permanent neuronal injury. Management: airway and oxygen, suction, intravenous access, a benzodiazepine (intravenous lorazepam or diazepam, or intramuscular midazolam) as first-line, then a longer-acting agent such as fosphenytoin, levetiracetam or valproate, glucose and thiamine if indicated, continuous monitoring, and a search for the cause.
+
+| Antiseizure drug | The tested facts |
+| --- | --- |
+| phenytoin | therapeutic level 10 to 20 mcg/mL; GINGIVAL HYPERPLASIA — meticulous oral care and dental follow-up; toxicity shows as NYSTAGMUS, ataxia, slurred speech and confusion; IV compatible only with NORMAL SALINE (it precipitates in dextrose) and infused slowly, no faster than 50 mg/min in adults, with cardiac monitoring for hypotension and dysrhythmias; extensive interactions; reduces oral contraceptive effectiveness; teratogenic; do not take with antacids or tube feeds at the same time |
+| fosphenytoin | a prodrug that can be given faster and is less irritating to veins |
+| carbamazepine | agranulocytosis and aplastic anemia — monitor blood counts and report sore throat, fever or bruising; HYPOnatremia; STEVENS-JOHNSON SYNDROME risk, higher in people of Asian ancestry carrying the HLA-B 1502 allele |
+| valproic acid | HEPATOTOXICITY and PANCREATITIS — monitor liver enzymes and report abdominal pain; highly TERATOGENIC including neural tube defects; thrombocytopenia |
+| levetiracetam | few interactions; the notable effect is BEHAVIOURAL — irritability, agitation, mood change |
+| lamotrigine | serious RASH including Stevens-Johnson — titrate slowly and report ANY rash immediately |
+| phenobarbital | sedation, respiratory depression, dependence; many interactions |
+| gabapentin, topiramate | topiramate causes weight loss, word-finding difficulty, kidney stones and metabolic acidosis; increase fluids |
+
+## Meningitis, in brief
+
+Inflammation of the meninges, bacterial or viral. Findings: fever, severe headache, photophobia, NUCHAL RIGIDITY, positive KERNIG sign (pain on extending the knee with the hip flexed) and BRUDZINSKI sign (hip and knee flexion when the neck is flexed), nausea and vomiting, altered mentation, seizures, and in meningococcal disease a PETECHIAL or purpuric rash. Bacterial cerebrospinal fluid is cloudy with HIGH protein, LOW glucose and high white cell count; viral fluid is clear with normal glucose.
+
+Nursing: DROPLET precautions for suspected bacterial meningitis until 24 hours of effective antibiotic therapy have been given, antibiotics started as soon as cultures are obtained, a darkened quiet room, head of bed elevated, seizure precautions, neurologic checks, pain and fever control, monitoring for increased intracranial pressure, and prophylaxis for close contacts in meningococcal disease. For lumbar puncture, position the client side-lying with knees drawn to the chest and chin tucked (or sitting leaning over a table), maintain sterility, and afterward keep the client flat as prescribed with fluids encouraged, monitoring for a positional post-puncture headache.`,
+      examTip: `Nothing goes in the mouth and nothing restrains the limbs. The two correct actions during a tonic-clonic seizure are protect the head and turn the client to the side.`,
+    },
+    {
+      id: 'neu-degenerative',
+      title: `2. Multiple Sclerosis, Parkinson Disease & ALS`,
+      content: `## Multiple sclerosis
+
+An immune-mediated demyelination of the central nervous system, most often beginning in young adults and more common in women. The relapsing-remitting course is the usual pattern: attacks with partial or full recovery, then, in many clients, gradual progression.
+
+Findings are scattered because the lesions are scattered: FATIGUE that is out of proportion to activity and is the most disabling symptom for many clients; visual disturbance including OPTIC NEURITIS with painful vision loss, diplopia and nystagmus; weakness and SPASTICITY; numbness, tingling and other paresthesias; ataxia and an INTENTION tremor (worse as the hand approaches a target); bladder urgency, retention or incontinence; bowel dysfunction; cognitive slowing; and emotional lability. Lhermitte sign is an electric sensation running down the spine on neck flexion. UHTHOFF phenomenon is the worsening of symptoms with HEAT — hot weather, a hot bath, fever, or exertion — which drives one of the chapter's teaching points.
+
+Nursing care and teaching: avoid HEAT (cool baths and showers rather than hot, air conditioning, cooling vests, treat fever promptly), avoid known relapse triggers including infection, extreme stress and fatigue, use ENERGY CONSERVATION with planned rest before fatigue rather than after, exercise regularly at moderate intensity with attention to balance and safety, prevent falls, manage the neurogenic bladder (often with intermittent self-catheterization and a fluid schedule) and bowel with fibre, fluids and a regular time, protect the skin, use assistive and adaptive devices, and treat dysphagia with speech-therapy assessment. Medications include disease-modifying therapies (interferon beta with flu-like effects and injection-site reactions, glatiramer, oral agents, and monoclonal antibodies such as natalizumab, which carries a risk of progressive multifocal leukoencephalopathy), corticosteroids for acute relapses, and symptomatic drugs — baclofen or tizanidine for spasticity, antimuscarinics for bladder urgency, and agents for fatigue and neuropathic pain.
+
+## Parkinson disease
+
+Degeneration of dopamine-producing neurons in the substantia nigra. The cardinal features are remembered as TRAP:
+
+- **TREMOR** — a RESTING, "pill-rolling" tremor that decreases with purposeful movement and disappears in sleep (the opposite of the intention tremor of multiple sclerosis).
+- **RIGIDITY** — COGWHEEL resistance to passive movement.
+- **AKINESIA / bradykinesia** — slowness in initiating and executing movement, MASKED facies with reduced blinking, MICROGRAPHIA (progressively smaller handwriting), a soft monotone voice, drooling because swallowing becomes infrequent.
+- **POSTURAL instability** — stooped posture, a SHUFFLING, FESTINATING gait that accelerates with short steps, difficulty starting and stopping, freezing in doorways, and falls.
+
+Nursing care: FALL PREVENTION is the priority — remove throw rugs and clutter, install grab bars, use a wide base of gait, and teach cueing tricks that genuinely work (marching to a count or music, stepping over an imaginary line, rocking side to side to break a freeze). Support nutrition against dysphagia and slow eating with small frequent meals, thickened liquids if prescribed, an upright position for meals and 30 minutes afterward, high fibre and generous fluid for constipation, and adequate calories, since these clients burn energy on tremor and rigidity. Refer to physical, occupational and speech therapy, encourage daily exercise and stretching including facial and vocal exercises, allow ample time and never rush a client whose movements are slow, and address the high rates of depression and, later, cognitive change.
+
+Medications: CARBIDOPA-LEVODOPA is the mainstay. Teaching points: take it on a CONSISTENT schedule because the therapeutic window narrows over time, producing WEARING-OFF and ON-OFF fluctuations; HIGH-PROTEIN meals compete with levodopa for absorption, so protein is redistributed later in the day rather than eliminated; expect ORTHOSTATIC hypotension and rise slowly; darkening of urine and sweat is harmless; DYSKINESIAS (involuntary writhing movements) signal too much dopaminergic effect and are reported; effect may take weeks; and NEVER stop it abruptly, which can precipitate a syndrome resembling neuroleptic malignant syndrome. Other agents include dopamine agonists (with a notable risk of sudden sleep attacks and impulse-control disorders such as gambling and compulsive shopping — ask about this explicitly), MAO-B inhibitors (selegiline, rasagiline — avoid tyramine-rich foods with higher doses and watch for serotonin interactions), COMT inhibitors (entacapone), amantadine, and anticholinergics such as benztropine for tremor, which are avoided in older adults because of confusion, dry mouth, constipation, urinary retention and blurred vision. Antipsychotics that block dopamine — including haloperidol and metoclopramide — worsen Parkinson symptoms and are avoided.
+
+## Amyotrophic lateral sclerosis
+
+Progressive degeneration of upper and lower motor neurons. Weakness begins focally, often in a hand or with slurred speech, then spreads: muscle atrophy, FASCICULATIONS, spasticity with hyperreflexia in some muscle groups and flaccidity in others, dysarthria, DYSPHAGIA, and ultimately respiratory muscle failure, which is the usual cause of death.
+
+The fact that shapes all nursing care: SENSATION, bowel and bladder control, eye movement and, in most clients, COGNITION remain INTACT. The client is fully aware. That makes communication systems, honesty, and early advance care planning central nursing interventions rather than optional ones. Care includes monitoring respiratory function with vital capacity, planning for noninvasive ventilation, aspiration precautions and eventually enteral feeding decisions, prevention of contractures and pressure injuries, secretion management, communication devices, and referral to palliative care early — riluzole modestly extends survival but does not change the trajectory.`,
+      examTip: `A RESTING pill-rolling tremor is Parkinson; an INTENTION tremor that worsens as the hand nears the target is multiple sclerosis. And ALS clients feel, understand and remember everything — never talk past them.`,
+    },
+    {
+      id: 'neu-myasthenia-gbs',
+      title: `3. Myasthenia Gravis, the Two Crises & Guillain-Barre`,
+      content: `## Myasthenia gravis
+
+An autoimmune attack on acetylcholine receptors at the neuromuscular junction. The signature is FATIGABLE weakness: strength that is best in the morning and after rest and WORSENS with sustained activity and as the day goes on. The weakness is DESCENDING, beginning in the eyes and face — PTOSIS and DIPLOPIA are the most common first symptoms — then involving chewing, swallowing (dysphagia), speech (a nasal, fading voice), neck and proximal limbs, and finally the muscles of respiration. Facial expression flattens into a characteristic snarling appearance when the client tries to smile.
+
+Diagnosis uses acetylcholine receptor antibody testing, electromyography, an ice pack test for ptosis, and historically the edrophonium (Tensilon) test. Thymoma is associated and thymectomy may help.
+
+Treatment: acetylcholinesterase inhibitors, chiefly PYRIDOSTIGMINE, which keeps acetylcholine in the synapse longer; immunosuppression with corticosteroids and steroid-sparing agents; and plasmapheresis or intravenous immune globulin for crises and severe disease.
+
+The pyridostigmine teaching point that generates items: give the dose 30 to 60 MINUTES BEFORE MEALS so peak strength coincides with chewing and swallowing, and give doses on an exact schedule because a late dose means weakness. Teach clients to plan demanding activities for the period after a dose, to space activity with rest, and to avoid heat, infection, emotional stress and over-exertion.
+
+Drugs that WORSEN myasthenia and are avoided or used with great caution: AMINOGLYCOSIDE antibiotics and some other antibiotics, MAGNESIUM (including magnesium-containing antacids and laxatives, and obstetric magnesium sulfate), neuromuscular blocking agents, beta blockers, and certain antiarrhythmics. This is a genuine patient-safety issue — a magnesium-containing antacid handed to a myasthenic client can precipitate a crisis.
+
+## The two crises — the classic discrimination
+
+| | MYASTHENIC crisis | CHOLINERGIC crisis |
+| --- | --- | --- |
+| cause | UNDER-medication, or a trigger: infection, surgery, stress, missed doses, a drug that worsens the disease | OVER-medication with the acetylcholinesterase inhibitor |
+| timing clue | often occurs when a dose is late or during illness | often shortly (about 30 to 60 minutes) after a dose |
+| picture | severe weakness, respiratory failure, dysphagia, ptosis; skin may be pale, with tachycardia and hypertension | severe weakness PLUS cholinergic excess: SLUDGE — Salivation, Lacrimation, Urination, Defecation, Gastrointestinal cramping, Emesis — plus MIOSIS (pinpoint pupils), bradycardia, sweating, pallor and FASCICULATIONS |
+| edrophonium test | strength IMPROVES | weakness WORSENS |
+| treatment | give or increase the anticholinesterase; treat the trigger; plasmapheresis or immune globulin | HOLD the anticholinesterase; ATROPINE is the antidote |
+
+Both crises threaten the AIRWAY, and in both the FIRST priority is respiratory support — assess ability to cough and swallow, monitor vital capacity and oxygenation, keep suction and intubation equipment available, and be prepared for mechanical ventilation. Do not delay airway management while sorting out which crisis it is.
+
+## Guillain-Barre syndrome
+
+An acute immune-mediated demyelinating polyneuropathy, typically appearing 1 to 3 weeks AFTER a respiratory or gastrointestinal infection (Campylobacter jejuni is the classic antecedent), and occasionally after surgery or vaccination.
+
+The signature is ASCENDING, SYMMETRIC, FLACCID weakness with AREFLEXIA: it begins in the legs and moves upward over hours to days. Paresthesias and pain are common — often severe neuropathic and muscle pain, which surprises candidates who expect a purely motor disease. Cranial nerve involvement produces facial weakness and dysphagia. AUTONOMIC instability causes swinging blood pressure, tachycardia or bradycardia, dysrhythmias, ileus and urinary retention. Cerebrospinal fluid classically shows elevated protein with a normal cell count.
+
+The nursing priority is stated in one sentence: the danger is RESPIRATORY FAILURE, and the monitor is serial measurement of VITAL CAPACITY and negative inspiratory force, together with the client's ability to cough, speak in full sentences and clear secretions. Oxygen saturation falls LATE and is a poor early warning. Ascending weakness that reaches the intercostal muscles and diaphragm requires intubation, and the exam expects the nurse to escalate on trending respiratory measures rather than waiting for desaturation.
+
+Treatment is PLASMAPHERESIS or intravenous IMMUNE GLOBULIN — corticosteroids are NOT effective in this disease, which is a favourite distractor. Supportive care is extensive and nurse-driven: airway and ventilation support, cardiac monitoring for autonomic swings, venous thromboembolism prophylaxis and passive range of motion, pressure-injury prevention with repositioning, nutrition (often enteral) with aspiration precautions, bowel and bladder programmes, eye care if the lids do not close, pain management for neuropathic pain, an established COMMUNICATION method for a client who may be unable to speak or move, and repeated psychological support — clients are frequently fully alert and terrified. Recovery generally occurs in the reverse order of the weakness, descending from the head downward, over weeks to months, and most clients recover substantially.`,
+      examTip: `Ascending weakness after a diarrheal illness is Guillain-Barre, and the number to trend is vital capacity — not the pulse oximeter. Descending, fatigable weakness that is worse in the evening is myasthenia.`,
+    },
+    {
+      id: 'neu-sci',
+      title: `4. Spinal Cord Injury: Levels, Shock States & Autonomic Dysreflexia`,
+      content: `Spinal cord injury produces loss of motor, sensory and autonomic function BELOW the level of injury. Complete injury means total loss below the level; incomplete means some function is preserved. The single most important prehospital and emergency-department principle is IMMOBILIZATION — preventing secondary injury from movement of an unstable spine.
+
+## What the level predicts
+
+| Level | Functional consequence |
+| --- | --- |
+| C1-C3 | ventilator dependent; the diaphragm is innervated at C3 to C5 — injuries here mean the client cannot breathe independently |
+| C4 | diaphragm function is marginal; may need ventilatory support; can use a chin- or breath-controlled chair |
+| C5 | shoulder and biceps function; can feed with adaptive equipment; needs help with transfers |
+| C6 | wrist extension; can self-feed, dress the upper body, and often self-catheterize with devices; can propel a chair |
+| C7-C8 | triceps and finger function; largely independent in self-care and transfers |
+| T1-T6 | full arm function; wheelchair independent; AUTONOMIC DYSREFLEXIA RISK begins at T6 and above |
+| T6-T12 | improving trunk stability and balance |
+| L1-L5, S | progressive hip and leg function; may ambulate with braces and aids; bowel, bladder and sexual function affected at sacral levels |
+
+## Three states, three responses
+
+**SPINAL SHOCK** is a temporary physiologic shutdown immediately after injury: FLACCID paralysis, complete loss of reflexes below the level, loss of sensation, and bowel and bladder RETENTION with a distended bladder and paralytic ileus. It lasts days to weeks and resolves as reflexes return, often with spasticity. It is not a circulatory problem and is managed supportively — catheterization for retention, nasogastric decompression for ileus, and monitoring.
+
+**NEUROGENIC SHOCK** is a circulatory problem, occurring with injuries at about T6 and above: loss of sympathetic outflow produces HYPOtension, BRADYcardia, and WARM, DRY, flushed skin below the injury with an inability to regulate temperature. This is the discrimination the exam wants, because hypovolemic shock — the other cause of hypotension in a trauma client — produces TACHYcardia with COOL, CLAMMY skin. Management is careful fluid resuscitation, vasopressors to maintain perfusion pressure to the cord, atropine or pacing for symptomatic bradycardia, and temperature regulation. Assume hemorrhage too until it is excluded; a trauma client can have both.
+
+**AUTONOMIC DYSREFLEXIA** is a later, recurrent, life-threatening emergency in clients with injuries at T6 OR ABOVE, once spinal shock has resolved. A noxious stimulus below the level of injury triggers massive unopposed sympathetic discharge that the brain cannot inhibit.
+
+Findings, which arrive suddenly:
+- SEVERE, POUNDING HEADACHE
+- SEVERE HYPERTENSION — often a sudden rise of 20 to 40 mmHg or more above the client's usual systolic, which may be low at baseline
+- BRADYCARDIA (a reflex response to the hypertension)
+- flushing and profuse DIAPHORESIS ABOVE the level of injury; PALE, COOL, gooseflesh skin BELOW it
+- nasal congestion, blurred vision or spots, anxiety, nausea
+
+The response is a sequence, and the order matters:
+1. SIT THE CLIENT UPRIGHT immediately — high Fowler with the legs lowered, using gravity to pool blood and drop the pressure. Never lay the client flat.
+2. LOOSEN or remove constrictive clothing, abdominal binders, stockings and anything tight.
+3. FIND AND REMOVE THE TRIGGER, in order of likelihood:
+   - a DISTENDED BLADDER is the most common cause — check the catheter for kinks, obstruction or a full drainage bag; catheterize if not catheterized, using lidocaine lubricant per protocol because insertion itself is a stimulus.
+   - FECAL IMPACTION is the second — instill anesthetic lubricant, wait several minutes, then remove the stool gently; stop if the pressure rises further.
+   - skin: a pressure injury, tight shoe, ingrown toenail, burn, sunburn, or any irritation below the level; also constipation, urinary infection, menstrual cramps, sexual activity, or an occult fracture.
+4. MONITOR blood pressure every 2 to 5 minutes throughout.
+5. Give a rapid-acting ANTIHYPERTENSIVE as prescribed if the pressure remains dangerously elevated after the trigger is removed or while it is being sought.
+6. Notify the provider and document the episode and its cause.
+
+Untreated, autonomic dysreflexia causes hypertensive stroke, seizure, retinal hemorrhage, myocardial infarction and death. Prevention is entirely nursing work and is taught to the client and family: a strict, regular bowel programme; a scheduled catheterization or catheter-care routine that never allows over-distension; daily skin inspection and pressure relief; well-fitted clothing and shoes; prompt treatment of infections; and a wallet card describing the condition, since emergency staff unfamiliar with it may treat the hypertension without finding the cause.
+
+## Ongoing rehabilitation concerns
+
+Respiratory: assisted cough (quad cough), incentive spirometry, secretion clearance, and vigilance for pneumonia and atelectasis, which are leading causes of death. Skin: turning schedules, pressure-redistributing surfaces, wheelchair pressure relief every 15 to 30 minutes, and daily inspection of insensate areas. Bowel and bladder: scheduled programmes with stool softeners, suppositories or digital stimulation, and intermittent catheterization. Musculoskeletal: range of motion to prevent contractures, spasticity management, and monitoring for heterotopic ossification. Circulatory: venous thromboembolism prophylaxis and compression, and orthostatic hypotension management with gradual position changes and abdominal binders. Metabolic: attention to bone loss and to nutrition. And psychosocial: grief, depression, altered body image, sexuality — a rehabilitation team and peer support are part of the care plan, not extras.`,
+      examTip: `Autonomic dysreflexia is the exam's favourite spinal cord item: injury at T6 or above, pounding headache with severe hypertension and bradycardia, and the first action is to SIT THE CLIENT UP — then hunt the bladder.`,
+    },
+    {
+      id: 'neu-delirium',
+      title: `5. Delirium, Dementia & the Neurologic Assessment`,
+      content: `## Delirium versus dementia
+
+Distinguishing these decides whether the correct answer is to investigate a cause or to modify the environment, and it is asked repeatedly.
+
+| Feature | DELIRIUM | DEMENTIA |
+| --- | --- | --- |
+| onset | ACUTE — hours to days | insidious — months to years |
+| course | FLUCTUATES, often worse at night | steadily progressive |
+| attention | markedly IMPAIRED — cannot sustain or shift focus | relatively preserved early; memory is the first casualty |
+| consciousness | altered — hyperalert or drowsy | clear until late |
+| hallucinations | common, often visual | less common early |
+| reversibility | usually REVERSIBLE if the cause is treated | irreversible |
+| the nursing question | WHAT CAUSED THIS? | how do we support function and safety? |
+
+Delirium causes to hunt: infection, especially urinary tract infection and pneumonia; hypoxia; medications, particularly anticholinergics, benzodiazepines, opioids and polypharmacy; electrolyte and metabolic disturbance including hyponatremia, hypoglycemia and uremia; dehydration; pain; constipation and urinary retention; alcohol or benzodiazepine WITHDRAWAL; sleep deprivation; and surgery and anesthesia. Delirium in a hospitalized older adult is a change in condition that must be reported, not a personality trait.
+
+Care in delirium: treat the cause, then reduce what worsens it — provide orientation cues (clock, calendar, familiar objects, daylight and a dark quiet night), keep glasses and hearing aids ON, mobilize, hydrate, control pain, minimize room and staff changes, allow family presence, and use restraints only as a genuine last resort under the rules from the legal chapter, since restraints worsen agitation and injury.
+
+Care in dementia: consistent routines and caregivers, simple one-step instructions, an unhurried pace, adequate but not overwhelming stimulation, safety-proofing (locks, alarms, safe wandering paths, removal of car keys and hazards), labelled drawers and pictures, finger foods and supervised eating for those who cannot manage utensils, and scheduled toileting. For repetitive questioning or a false belief, arguing and reality-testing produce distress; redirection, reassurance and validation of the FEELING are the therapeutic responses. SUNDOWNING — increased confusion and agitation in the late afternoon and evening — is managed with light, activity earlier in the day, reduced evening stimulation, and consistent bedtime routine. Caregiver strain is an assessment in its own right, with respite and support resources as the intervention.
+
+## The neurologic assessment the exam assumes
+
+Level of consciousness is the MOST SENSITIVE indicator of neurologic change — a subtle new restlessness, irritability or difficulty following commands precedes pupil changes and vital sign changes.
+
+The Glasgow Coma Scale scores eye opening (1 to 4), verbal response (1 to 5) and best motor response (1 to 6), for a total of 3 to 15. A score of 8 or less generally indicates coma and an inability to protect the airway.
+
+Pupils are assessed for size, equality and reaction to light. A newly DILATED, sluggish or nonreactive pupil on one side is an emergency finding suggesting herniation. Pinpoint pupils suggest opioids or a pontine lesion.
+
+Motor response grading matters: purposeful movement and localizing to pain are better than withdrawal, and both are far better than abnormal posturing. DECORTICATE posturing — arms flexed IN toward the CORE with legs extended — indicates cerebral hemispheric injury. DECEREBRATE posturing — arms rigidly EXTENDED and pronated with the head arched back — indicates brainstem injury and is worse. A change FROM decorticate TO decerebrate posturing signals deterioration and is reported immediately.
+
+Cranial nerve screening, sensation, reflexes, coordination and gait complete the examination, and any NEW asymmetry — a new facial droop, a new one-sided weakness, a new pupil difference — is reported rather than documented and rechecked.`,
+      examTip: `Acute, fluctuating confusion with impaired attention is delirium — go find the infection, drug or electrolyte. And level of consciousness changes before pupils and vital signs do.`,
+    },
+    {
+      id: 'neu-selfcheck',
+      title: `6. Self-Check`,
+      content: `1. A client begins a generalized tonic-clonic seizure while sitting in a chair. List, in order, what the nurse does — and name three actions that must NOT be taken.
+
+2. A client with myasthenia gravis in the emergency department has severe weakness, pinpoint pupils, drooling, abdominal cramping and diarrhea. Her last pyridostigmine dose was 45 minutes ago. Which crisis is this, what is the antidote, and what is the first priority regardless of the answer?
+
+3. A client with Guillain-Barre syndrome has weakness that has reached the mid-thorax. His oxygen saturation is 96 percent on room air. The nurse notes his vital capacity has fallen from 1.8 to 1.1 litres over eight hours. What does the nurse do and why is the saturation misleading?
+
+4. A client with a T4 spinal cord injury suddenly develops a pounding headache, is flushed and sweating above the shoulders, and has a blood pressure of 196/110 with a pulse of 48. His usual blood pressure is 96/60. List the actions in order.
+
+5. A client with Parkinson disease asks why his medication seems to "stop working" in the middle of the afternoon, mentioning that he always takes it with his large protein-rich lunch. What explains this and what should be taught?
+
+6. An 84-year-old admitted two days ago for a hip fracture repair is now pulling at his lines, is disoriented to place and time, and cannot maintain attention. He was oriented on admission. His daughter says he has no memory problems at home. What is this, and what does the nurse do?
+
+## Answers
+
+1. Stay with the client and call for help; ease him to the floor and protect his HEAD with something soft; turn him to the SIDE so secretions drain; loosen clothing at the neck; move furniture and hazards away; keep suction and oxygen available; TIME the seizure and observe the details for documentation. Afterward, maintain side-lying, assess airway and injuries, check glucose, reorient calmly and allow rest. NOT to be done: do not restrain his movements, do not put anything in his mouth, and do not leave him alone.
+
+2. CHOLINERGIC crisis — the SLUDGE picture with miosis and fasciculations, arriving shortly after a dose, means excess acetylcholine from over-medication. The antidote is ATROPINE, and the anticholinesterase is HELD. But the first priority regardless of which crisis it is is the AIRWAY: assess her ability to breathe, cough and swallow, monitor oxygenation and vital capacity, keep suction and intubation equipment ready, and prepare for ventilatory support. Both crises kill through respiratory failure.
+
+3. Notify the provider urgently and prepare for intubation and mechanical ventilation. A falling vital capacity is the early, sensitive warning of respiratory muscle failure in Guillain-Barre; the pulse oximeter is misleading because a client can maintain saturation by working harder right up until the muscles fatigue, at which point desaturation is a LATE and abrupt event. Continue trending vital capacity and negative inspiratory force per protocol, assess cough strength and speech, keep the client on continuous monitoring, and do not wait for the saturation to fall.
+
+4. AUTONOMIC DYSREFLEXIA. (1) SIT HIM UPRIGHT immediately in high Fowler with the legs lowered. (2) Loosen or remove all constrictive clothing and devices. (3) Check the BLADDER first — kinked or obstructed catheter, full drainage bag, or an uncatheterized distended bladder; catheterize with anesthetic lubricant if indicated. (4) If the bladder is not the cause, check for FECAL IMPACTION, using anesthetic lubricant and waiting before digital removal, then examine the skin for any noxious stimulus. (5) Monitor blood pressure every 2 to 5 minutes throughout. (6) Administer the prescribed rapid-acting antihypertensive if the pressure remains dangerously high, and notify the provider. Note that 196/110 is enormously elevated for a client whose baseline is 96/60 — the absolute number understates the danger.
+
+5. Dietary protein competes with levodopa for the same transport system across the intestinal wall and the blood-brain barrier, so a large protein load taken with the dose reduces how much drug reaches the brain. Teach him not to eliminate protein — he needs it — but to redistribute it, taking the medication about 30 minutes before meals or between meals as the prescriber directs, and shifting the largest protein portion to the evening meal. Also review whether he is experiencing true wearing-off, which is a reason for the prescriber to adjust the regimen, and remind him never to stop the drug abruptly.
+
+6. DELIRIUM — acute onset, fluctuating, with impaired attention, in a client who was previously oriented and has no baseline cognitive impairment. This is a change in condition to REPORT, and the nursing action is to find the cause: assess for infection (urinary and pulmonary), hypoxia, pain, medications (especially opioids, benzodiazepines and anticholinergics given perioperatively), electrolytes and glucose, dehydration, constipation and urinary retention, and alcohol withdrawal. Meanwhile provide his glasses and hearing aids, orient him with a clock and calendar, keep the environment calm and well lit by day and dark and quiet at night, mobilize him, manage his pain adequately, involve his daughter at the bedside, and avoid restraints, which worsen delirium and cause injury.`,
+    },
+  ],
+  keyTakeaways: [
+    `During a seizure: protect the head, turn to the side, time it — never restrain, never put anything in the mouth, and never stop antiseizure drugs abruptly.`,
+    `Resting pill-rolling tremor with cogwheel rigidity is Parkinson; intention tremor with heat sensitivity is multiple sclerosis; intact sensation and cognition with progressive motor loss is ALS.`,
+    `Myasthenic crisis is under-medication and improves with edrophonium; cholinergic crisis is over-medication with SLUDGE and miosis and is reversed with atropine — but the airway comes first in both.`,
+    `In Guillain-Barre the weakness ascends and the monitor is VITAL CAPACITY, not the pulse oximeter; treatment is plasmapheresis or immune globulin, never steroids.`,
+    `Autonomic dysreflexia at T6 or above means pounding headache, severe hypertension and bradycardia — sit the client up first, then find the distended bladder.`,
+  ],
+},
+
+nx_heme_onc: {
+  topicId: 'nx_heme_onc',
+  title: `Hematologic & Oncologic Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Blood and cancer nursing are built on counts. A low red cell count explains the fatigue, a low platelet count sets the bleeding precautions, and a low neutrophil count turns a single fever into an emergency. This chapter builds the anemias by their distinguishing feature, the bleeding disorders by what is missing, and cancer nursing by the three things the exam tests hardest: chemotherapy toxicities and their specific antidotes, radiation safety for both sealed and unsealed sources, and the oncologic emergencies that must be recognized from a sentence.`,
+  sections: [
+    {
+      id: 'onc-anemia',
+      title: `1. Anemias: One Symptom Set, Six Different Causes`,
+      content: `Every anemia produces the same core picture because every anemia reduces oxygen delivery: FATIGUE, pallor of the skin, conjunctivae, nail beds and palmar creases, dyspnea on exertion, tachycardia and palpitations, dizziness and headache, cold intolerance, and — in severe or rapid-onset cases — chest pain, syncope and heart failure. What distinguishes them is the cause, and each cause carries its own teaching.
+
+Reference values to hold: hemoglobin about 12 to 16 g/dL in females and 14 to 18 g/dL in males; hematocrit about 37 to 47 percent and 42 to 52 percent; platelets 150,000 to 400,000/mm3; white blood cells 5,000 to 10,000/mm3.
+
+| Anemia | Distinguishing feature | Nursing and teaching |
+| --- | --- | --- |
+| IRON DEFICIENCY (microcytic, hypochromic; low ferritin) | the most common; look for the SOURCE of blood loss — gastrointestinal bleeding, heavy menses; also poor intake and malabsorption | oral iron on an EMPTY stomach with a VITAMIN C source (orange juice) to enhance absorption; if it upsets the stomach, take with a little food; separate from antacids, calcium, dairy and tea by 1 to 2 hours; expect DARK GREEN or BLACK stools; prevent constipation with fibre and fluids; use a STRAW for liquid preparations to avoid staining teeth; keep away from children — iron overdose is a leading cause of pediatric poisoning death; IM iron requires Z-TRACK technique |
+| VITAMIN B12 deficiency / PERNICIOUS anemia (macrocytic) | the only anemia with NEUROLOGIC signs — paresthesias of the hands and feet, gait ataxia, impaired proprioception, confusion — plus a beefy red, smooth, sore tongue | pernicious anemia lacks INTRINSIC FACTOR, so oral B12 alone cannot be absorbed — lifelong INTRAMUSCULAR (or high-dose oral or intranasal, as prescribed) replacement is required; also seen after gastrectomy or ileal resection and in strict vegan diets; neurologic damage may be permanent if treatment is delayed |
+| FOLATE deficiency (macrocytic) | macrocytic WITHOUT neurologic signs | alcohol use disorder, poor diet, pregnancy, malabsorption, methotrexate and some antiseizure drugs; treat with folic acid and green leafy vegetables, legumes, citrus and fortified grains; always check B12 too, because folate corrects the anemia while neurologic damage progresses |
+| APLASTIC anemia | PANCYTOPENIA — anemia PLUS bleeding PLUS infection | caused by drugs, chemicals (benzene), radiation, viruses, or idiopathic; treatment is removal of the cause, immunosuppression, transfusion support, and hematopoietic stem cell transplantation; both bleeding and neutropenic precautions apply |
+| anemia of CHRONIC KIDNEY DISEASE | normocytic, with a known kidney history | erythropoietin deficiency; treat with erythropoiesis-stimulating agents plus iron, monitoring blood pressure |
+| HEMOLYTIC anemias | anemia with JAUNDICE, elevated indirect bilirubin, elevated reticulocytes, splenomegaly | includes autoimmune hemolysis, G6PD deficiency (avoid sulfa drugs, some antimalarials, nitrofurantoin and fava beans), and hereditary spherocytosis |
+
+## Sickle cell disease in the adult
+
+An inherited hemoglobinopathy in which hemoglobin S polymerizes under stress and deforms red cells into rigid sickles that occlude small vessels and hemolyze early.
+
+The triggers are the teaching: HYPOXIA (including high altitude and unpressurized flight), DEHYDRATION, INFECTION and fever, COLD exposure, acidosis, strenuous exertion, and physical or emotional stress.
+
+VASO-OCCLUSIVE CRISIS presents with severe pain — most commonly in the back, chest, abdomen and long bones — with swelling, fever and, on examination, evidence of the organ affected. Management is the four-part bundle: HYDRATION (intravenous and oral), OXYGEN, ANALGESIA and REST, plus treatment of any infection and WARMTH — never cold applications, which promote further sickling. Pain in sickle cell disease is chronically undertreated, often because staff misread opioid tolerance as drug-seeking; the exam expects the nurse to treat the pain the client reports, frequently with patient-controlled analgesia during a crisis.
+
+ACUTE CHEST SYNDROME is the emergency to recognize: chest pain, fever, cough, dyspnea, hypoxia and a new pulmonary infiltrate. It is a leading cause of death and demands immediate reporting, oxygen, antibiotics, analgesia, incentive spirometry and possible transfusion. Other complications include stroke, splenic sequestration, priapism, avascular necrosis of the hip, retinopathy, leg ulcers and chronic kidney disease.
+
+Long-term care: HYDROXYUREA raises fetal hemoglobin and reduces crisis frequency; folic acid supports erythropoiesis; vaccinations are critical because functional asplenia raises the risk of overwhelming pneumococcal infection; and clients are taught to avoid the triggers, drink generously in heat and illness, avoid high altitude and smoking, seek care early for any fever, and carry information about their diagnosis.
+
+## Polycythemia vera
+
+The opposite problem — too many red cells, raising blood VISCOSITY. Findings: ruddy, plethoric complexion, headache, dizziness, visual disturbance, hypertension, generalized PRURITUS that is classically worse after a warm bath or shower, splenomegaly, and — the real danger — THROMBOSIS. Management is therapeutic PHLEBOTOMY, generous hydration, avoidance of iron supplements (which fuel red cell production), low-dose aspirin, myelosuppressive therapy in higher-risk clients, avoidance of prolonged immobility, and teaching the client to report signs of clotting including chest pain, unilateral leg swelling and neurologic change.`,
+      examTip: `Macrocytic anemia WITH neurologic signs is B12; macrocytic WITHOUT them is folate. Giving folate to a B12-deficient client fixes the blood count while the nerve damage continues — which is why both are checked.`,
+    },
+    {
+      id: 'onc-bleeding',
+      title: `2. Platelets, Clotting Disorders & Bleeding Precautions`,
+      content: `Bleeding disorders sort by which part of hemostasis has failed: the platelets, the clotting factors, or — in disseminated intravascular coagulation — both at once.
+
+## Thrombocytopenia
+
+A platelet count below 150,000/mm3. Causes include immune destruction (immune thrombocytopenia), drugs (heparin, quinine, some antibiotics, chemotherapy), marrow failure, splenic sequestration, and infection.
+
+The count predicts the risk, and the thresholds are worth holding: below about 50,000 there is increased bleeding with trauma or procedures; below about 20,000 spontaneous bleeding becomes likely; below about 10,000 there is serious risk of spontaneous intracranial or gastrointestinal hemorrhage.
+
+Findings: PETECHIAE (pinpoint non-blanching red spots), PURPURA and ecchymoses, epistaxis, bleeding gums, prolonged bleeding from small cuts, heavy menstrual bleeding, hematuria, melena, and — the one that must be caught — neurologic changes suggesting intracranial bleeding.
+
+## Hemophilia and von Willebrand disease
+
+Hemophilia A is a deficiency of FACTOR VIII and hemophilia B of factor IX; both are X-linked recessive, so they occur predominantly in males. The clinical signature is HEMARTHROSIS — bleeding into joints, producing pain, warmth, swelling and reduced motion, and over time joint destruction — plus deep muscle bleeds, prolonged bleeding after procedures and dental work, and intracranial bleeding after minor head trauma.
+
+Care: FACTOR REPLACEMENT, including prophylactic infusions and immediate treatment at the first sign of bleeding — clients and families are taught home infusion. For an acute joint bleed, use RICE: rest, ice, compression and elevation, plus factor and analgesia; do not perform passive range of motion during an acute bleed, and resume gentle motion afterward to preserve function. Desmopressin can raise factor VIII levels in mild hemophilia A and in von Willebrand disease. Teaching: NO aspirin or NSAIDs, no intramuscular injections when they can be avoided, avoid contact sports while encouraging swimming and other low-impact activity, use a soft toothbrush and an electric razor, wear medical alert identification, and go for evaluation after ANY head injury regardless of how minor it appears.
+
+## Disseminated intravascular coagulation
+
+DIC is not a disease but a catastrophic complication of another problem — sepsis is the most common, along with obstetric emergencies, major trauma, burns, massive transfusion and some cancers. Widespread microvascular clotting consumes platelets and clotting factors, so the client simultaneously CLOTS and BLEEDS.
+
+The laboratory picture is the diagnosis, and it is testable as a pattern: platelets LOW, fibrinogen LOW, PT and aPTT PROLONGED, and D-DIMER and fibrin degradation products HIGH. Clinically there is bleeding from every orifice and every puncture site — intravenous sites, gums, nose, surgical wounds, urine and stool — together with signs of microvascular thrombosis: cool mottled extremities, decreasing urine output, altered mentation, and respiratory failure.
+
+Management: TREAT THE UNDERLYING CAUSE, which is the only definitive therapy; replace what is consumed with platelets, fresh frozen plasma and cryoprecipitate; provide oxygen and hemodynamic support; and use anticoagulation only in selected thrombotic presentations under specialist direction. Nursing care emphasizes gentleness — minimize needlesticks, apply prolonged pressure to any puncture, avoid intramuscular injections, use the smallest cuff pressures and avoid restrictive devices, provide meticulous skin and oral care with a soft sponge rather than a brush, and monitor every drainage and excretion for blood.
+
+## Bleeding precautions — the standing order set
+
+These apply to thrombocytopenia, anticoagulation, hemophilia, liver failure and DIC alike:
+
+- SOFT toothbrush or sponge; no dental floss if the gums bleed; no dentures if they cause trauma.
+- ELECTRIC razor only.
+- NO rectal temperatures, suppositories, enemas or rectal examinations.
+- No intramuscular injections when an alternative exists; use the smallest gauge needle and apply pressure for at least 5 minutes afterward.
+- Avoid aspirin, NSAIDs and herbal products that affect clotting.
+- Prevent constipation with stool softeners — straining raises pressure and can bleed.
+- Blow the nose gently, avoid nose picking, humidify dry air.
+- Fall prevention, non-slip footwear, clear pathways, and no contact sports or high-risk activities.
+- Report immediately: any headache, visual change, confusion or new weakness (possible intracranial bleed), black or bloody stools, coffee-ground or bloody emesis, pink or red urine, prolonged bleeding, and any fall or head strike.`,
+      examTip: `The DIC pattern is a memorized quartet: platelets down, fibrinogen down, PT and aPTT up, D-dimer up. And the treatment that matters most is treating the sepsis or obstetric emergency underneath it.`,
+    },
+    {
+      id: 'onc-neutropenia',
+      title: `3. Neutropenia, Leukemia, Lymphoma & Myeloma`,
+      content: `## Neutropenia and the absolute neutrophil count
+
+Neutrophils are the first responders against bacteria, and their absence removes both the defence and the SIGNS of infection — no purulent drainage, minimal redness, sometimes no infiltrate on a chest film. FEVER may be the only sign there is.
+
+The ABSOLUTE NEUTROPHIL COUNT is calculated from the differential: multiply the total white blood cell count by the sum of the percentages of segmented neutrophils and bands, divided by 100. An ANC below 1,000/mm3 indicates significant risk; below 500/mm3 is severe neutropenia; below 100/mm3 is profound.
+
+NEUTROPENIC FEVER IS AN EMERGENCY. A single temperature of 38.3 degrees Celsius (101 degrees Fahrenheit), or 38.0 degrees sustained for an hour, in a neutropenic client requires immediate assessment, blood cultures from all lumens and a peripheral site, and BROAD-SPECTRUM ANTIBIOTICS WITHIN ABOUT ONE HOUR. Delay costs lives, and antibiotics are not withheld pending culture results.
+
+Neutropenic precautions: a private room, with positive-pressure or HEPA-filtered air for the most profoundly neutropenic; scrupulous HAND HYGIENE by everyone; no visitors or staff with any infectious symptoms; no fresh FLOWERS or potted PLANTS and no standing water; dietary restrictions per institutional policy, commonly avoiding raw or undercooked meat, fish and eggs, unpasteurized products, and unwashed raw fruits and vegetables; NO rectal temperatures, suppositories, enemas or rectal examinations; no urinary catheter or invasive device unless essential; meticulous oral and perineal care; avoiding crowds and sick contacts after discharge; and no live vaccines for the client, with household members' vaccinations reviewed. Granulocyte colony-stimulating factors such as filgrastim shorten the neutropenic window and commonly cause BONE PAIN, which is treated and explained rather than investigated.
+
+## Leukemia
+
+Malignant proliferation of immature white cells in the bone marrow that crowd out normal production, so the presenting picture is the marrow failing at all three of its jobs: ANEMIA (fatigue, pallor, dyspnea), THROMBOCYTOPENIA (bruising, petechiae, bleeding) and NEUTROPENIA (infection and fever). Add bone and joint pain, lymphadenopathy, hepatosplenomegaly, weight loss and night sweats.
+
+| Type | Typical population and notes |
+| --- | --- |
+| acute lymphocytic (ALL) | most common childhood leukemia; central nervous system involvement is a specific concern |
+| acute myelogenous (AML) | more common in adults; abrupt onset |
+| chronic lymphocytic (CLL) | older adults; often found incidentally on a high lymphocyte count; may be observed for years |
+| chronic myelogenous (CML) | associated with the PHILADELPHIA CHROMOSOME; treated with tyrosine kinase inhibitors such as imatinib, which changed its prognosis dramatically |
+
+Diagnosis requires BONE MARROW ASPIRATION AND BIOPSY, usually from the posterior iliac crest. Nursing care: informed consent, position prone or side-lying, local anesthetic with a warning that the aspiration itself causes a brief intense pulling sensation, and afterward PRESSURE to the site with a pressure dressing, bed rest for a short period, monitoring for bleeding and infection, and analgesia for site soreness lasting a day or two.
+
+Treatment involves induction and consolidation chemotherapy and, in some clients, hematopoietic stem cell transplantation. Transplant nursing centres on the profound pancytopenic period, infection prevention, and GRAFT-VERSUS-HOST DISEASE in allogeneic recipients — a skin rash, diarrhea and liver dysfunction as donor immune cells attack the recipient's tissues.
+
+## Lymphomas
+
+HODGKIN lymphoma is characterized by REED-STERNBERG cells on biopsy. It classically presents as PAINLESS, firm, enlarged CERVICAL or supraclavicular lymph nodes in a young adult, sometimes with B SYMPTOMS — fever, drenching NIGHT SWEATS and unintentional WEIGHT LOSS of more than 10 percent — and occasionally pruritus and pain in involved nodes after drinking alcohol. It is among the most curable cancers, so survivorship issues, including secondary malignancy and cardiac and pulmonary late effects of treatment, are part of teaching.
+
+NON-HODGKIN lymphoma is a large heterogeneous group, more common in older adults, more often widespread at diagnosis, with variable prognosis by subtype.
+
+Nursing care in both: monitor for infection during treatment, manage nausea and fatigue, provide skin care in irradiated fields, and address fertility preservation BEFORE treatment begins in clients of reproductive age — an item that appears because it is so often forgotten.
+
+## Multiple myeloma
+
+A malignancy of plasma cells in the marrow, seen predominantly in older adults. Build the picture from what plasma cells do when they run wild:
+
+- They eat away bone: severe BONE PAIN, particularly in the back and ribs, pathologic FRACTURES, vertebral collapse and loss of height.
+- Released bone calcium produces HYPERCALCEMIA: lethargy, confusion, constipation, nausea, polyuria and dysrhythmias.
+- Abnormal proteins and hypercalcemia damage the kidneys: RENAL FAILURE, with Bence Jones proteins in urine.
+- Crowded marrow gives ANEMIA, thrombocytopenia and infection risk, and the abnormal antibodies do not work, so bacterial infections recur.
+
+Nursing care: HYDRATION is central — often 3 litres daily unless kidney or cardiac status forbids it — to protect the kidneys and lower calcium. MOBILITY within safety limits is therapeutic, because immobility worsens hypercalcemia and bone loss, but it must be paired with strict FRACTURE PRECAUTIONS: gentle handling and transfer, no pulling on limbs, assistance with ambulation, and a low fall risk environment. Add pain management, bisphosphonates for skeletal protection, infection precautions, monitoring of calcium, creatinine and hemoglobin, and treatment as prescribed.`,
+      examTip: `Fever in a neutropenic client is a one-hour antibiotic clock, not a wait-and-watch. And in multiple myeloma, hydration and careful mobility are treatments — bed rest makes the calcium worse.`,
+    },
+    {
+      id: 'onc-treatment',
+      title: `4. Chemotherapy, Radiation Safety & Oncologic Emergencies`,
+      content: `## Chemotherapy: the shared toxicities
+
+Cytotoxic drugs kill rapidly dividing cells, so the predictable toxicities occur where cells divide fastest — marrow, mucosa, hair follicles and gonads.
+
+MYELOSUPPRESSION is the dose-limiting toxicity. The NADIR — the lowest point of the blood counts — typically occurs 7 to 14 DAYS after administration, which is when infection and bleeding risk peak and when the client is usually at home. Teach the client exactly what to watch for and when.
+
+MUCOSITIS AND STOMATITIS: assess the mouth daily; use a SOFT toothbrush or sponge; rinse with normal saline or a salt-and-baking-soda solution several times daily; AVOID commercial mouthwashes containing ALCOHOL, and avoid hot, spicy, acidic, rough or very salty foods; keep lips moisturized; use prescribed topical anesthetics before meals; remove dentures if they traumatize; and report white patches (candidiasis) or worsening ulceration.
+
+NAUSEA AND VOMITING: PRE-MEDICATE before the infusion rather than treating after it starts, using ondansetron or another serotonin antagonist, dexamethasone, and an NK-1 antagonist such as aprepitant for highly emetogenic regimens, with lorazepam for anticipatory nausea. Teach small frequent bland meals, cool or room-temperature foods (which smell less), avoiding favourite foods on treatment days so they do not become aversive, and adequate fluids.
+
+ALOPECIA: hair loss begins about 2 to 3 weeks after treatment starts, is usually reversible, and regrowth may differ in colour and texture. Teach gentle hair care, discuss wigs and head coverings BEFORE the loss, and take the psychological impact seriously.
+
+FATIGUE, diarrhea or constipation, taste changes, anorexia, skin and nail changes, and INFERTILITY complete the shared list. Discuss fertility preservation and contraception before treatment.
+
+## Drug-specific toxicities the exam expects
+
+| Agent | The signature toxicity |
+| --- | --- |
+| DOXORUBICIN (and the anthracyclines) | CARDIOTOXICITY with a lifetime cumulative dose limit — baseline and serial ejection fraction monitoring; red-orange urine is expected and harmless; a potent VESICANT |
+| CISPLATIN | NEPHROTOXICITY (aggressive hydration before and after, monitor creatinine), OTOTOXICITY with tinnitus and high-frequency hearing loss, severe nausea, peripheral neuropathy, hypomagnesemia |
+| BLEOMYCIN | PULMONARY FIBROSIS — baseline and periodic pulmonary function tests; report new cough or dyspnea |
+| CYCLOPHOSPHAMIDE | HEMORRHAGIC CYSTITIS — prevent with generous fluids, frequent voiding including at night, and MESNA; report hematuria |
+| METHOTREXATE | mucositis and myelosuppression; LEUCOVORIN rescue after high-dose therapy; avoid NSAIDs and salicylates, which raise levels; hepatotoxic; taken WEEKLY for rheumatologic indications — a daily dose is a fatal medication error |
+| VINCRISTINE | peripheral NEUROTOXICITY with paresthesias, foot drop and loss of deep tendon reflexes, and constipation or ileus; a vesicant; FATAL if given by the intrathecal route — it is labelled and handled specifically to prevent this |
+| 5-FLUOROURACIL | mucositis, diarrhea, hand-foot syndrome, photosensitivity |
+| paclitaxel and taxanes | hypersensitivity reactions — premedicate; peripheral neuropathy |
+| monoclonal antibodies and immunotherapies | infusion reactions; immune-related adverse events affecting skin, colon, liver, lung and endocrine glands — a new diarrhea or rash is reported, not managed at home |
+
+EXTRAVASATION of a VESICANT is an emergency with a defined sequence: at the first sign — burning or stinging pain at the site, swelling, redness, leaking, resistance to injection, or absence of blood return — STOP THE INFUSION IMMEDIATELY, but LEAVE the needle or catheter in place, attempt to ASPIRATE residual drug through it, notify the provider, and follow the protocol for that agent, which may involve a specific antidote and either warm or cold compresses depending on the drug. Elevate the extremity, mark and photograph the area per policy, and document thoroughly.
+
+Safe handling protects the nurse: wear chemotherapy-rated gloves (double per policy) and a gown, use closed-system transfer devices and a biological safety cabinet for preparation, know where the SPILL KIT is, dispose of all materials in designated hazardous-waste containers, and handle the client's body fluids as hazardous for at least 48 hours after administration.
+
+## Radiation therapy
+
+EXTERNAL BEAM radiation does NOT make the client radioactive — no precautions are needed by staff or family. Skin care in the treatment field is the teaching block: do not wash off the skin markings, and follow the centre's instructions on skin marking care; wash gently with lukewarm water and a mild soap and PAT dry; do NOT rub, scrub or use a washcloth vigorously; do not apply lotions, powders, deodorants, perfumes or ointments unless approved by the radiation team; avoid HEAT and COLD applications on the field; protect the area from SUN exposure during treatment and afterward; wear loose, soft cotton clothing; and do not shave the area with a blade. Fatigue is nearly universal and cumulative. Site-specific effects follow the field: mucositis and xerostomia for head and neck, esophagitis for the chest, diarrhea and cystitis for the pelvis.
+
+INTERNAL radiation is where the safety items live.
+
+SEALED SOURCE (brachytherapy — an implant of radioactive material in or near the tumour): the client emits radiation while the source is in place. Apply TIME, DISTANCE and SHIELDING. Place the client in a PRIVATE room, post the radiation sign, wear a DOSIMETER film badge (your own — never share it), organize care to minimize time in the room and plan tasks before entering, stand at the greatest practical distance and at the foot of the bed or the side away from the implant, limit staff time per policy (commonly about 30 minutes per caregiver per shift), and do not allow PREGNANT staff or visitors or CHILDREN under a set age into the room. Keep a LEAD CONTAINER and LONG-HANDLED FORCEPS in the room: if an implant becomes dislodged, NEVER touch it with your hands — pick it up with the forceps, place it in the container, and notify the radiation safety officer immediately. Keep all linens, dressings and trash in the room until the source is removed and radiation safety clears them. The client remains on bed rest or with limited movement per the implant type, and once the source is removed the client is no longer radioactive.
+
+UNSEALED SOURCE (systemic therapy such as radioactive iodine): the client's BODY FLUIDS are radioactive for a period. Precautions include a private room and private bathroom, flushing the toilet twice, separate linens and utensils handled per protocol, gloves for handling body fluids, limiting close contact, and specific home instructions on distance from children and pregnant people, sleeping arrangements and laundry for a defined number of days.
+
+## Oncologic emergencies
+
+| Emergency | Recognize it by | Response |
+| --- | --- | --- |
+| FEBRILE NEUTROPENIA | any fever in a neutropenic client, with or without other signs | cultures then broad-spectrum antibiotics within about an hour |
+| SUPERIOR VENA CAVA SYNDROME | facial and periorbital EDEMA, swelling of the neck and upper extremities, distended neck and chest veins, dyspnea, hoarseness, headache; often a lung tumour or lymphoma | ELEVATE the head of the bed, oxygen, avoid upper-extremity venipuncture and constricting clothing, notify — urgent radiation, steroids or stenting |
+| SPINAL CORD COMPRESSION | BACK PAIN comes FIRST, often worse when lying flat, then motor weakness, sensory change and finally bowel or bladder dysfunction | report at the PAIN stage — treatment before neurologic deficits appear preserves function; high-dose steroids, urgent imaging, radiation or surgery |
+| TUMOR LYSIS SYNDROME | after treatment of a bulky or rapidly proliferating tumour: HYPERkalemia, HYPERphosphatemia, HYPERuricemia and HYPOcalcemia, with acute kidney injury and dysrhythmias | prevent with aggressive HYDRATION and ALLOPURINOL or rasburicase before and during treatment; monitor electrolytes and rhythm closely |
+| HYPERCALCEMIA of malignancy | lethargy, confusion, muscle weakness, constipation, nausea, polyuria, dysrhythmias | hydration with normal saline, bisphosphonates or calcitonin, mobility, review of medications |
+| SIADH | dilutional hyponatremia with concentrated urine, confusion, seizures | fluid restriction; see the endocrine chapter |
+| CARDIAC TAMPONADE from malignant effusion | muffled heart sounds, hypotension, distended neck veins, pulsus paradoxus, dyspnea | urgent pericardiocentesis |`,
+      examTip: `A dislodged brachytherapy implant is never touched with hands — long-handled forceps into the lead container in the room. And in spinal cord compression, back pain is the moment to act, because once the weakness arrives the deficit often stays.`,
+    },
+    {
+      id: 'onc-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A client receiving chemotherapy calls on day 10 after his infusion to report a temperature of 38.4 degrees Celsius. He feels "a bit tired" and has no other symptoms. What is the significance of day 10, and what must happen next?
+
+2. A client with pernicious anemia is discharged with a prescription for monthly intramuscular cyanocobalamin. She asks whether she can just buy B12 tablets instead, since they are cheaper. How does the nurse answer?
+
+3. A client in sickle cell vaso-occlusive crisis is receiving intravenous fluids and oxygen. He reports 9 out of 10 pain and has already received two opioid doses. A colleague comments that he "asks for pain medicine by name and by the clock." How should the nurse respond and what does the evidence-based plan look like?
+
+4. A nurse is caring for a client with a cervical brachytherapy implant. She finds the implant lying on the bed linens. List the actions in order.
+
+5. A client with lymphoma reports mid-back pain for the past week that is worse when he lies down. His neurologic examination is currently normal. Why is this urgent?
+
+6. A client with septic shock develops oozing from every intravenous site, bleeding gums, and mottled cool extremities. Laboratory results: platelets 42,000, fibrinogen low, PT and aPTT prolonged, D-dimer markedly elevated. Name the syndrome and the single most important treatment.
+
+## Answers
+
+1. Day 10 sits inside the NADIR window of 7 to 14 days after chemotherapy, when the neutrophil count is at its lowest and the client is least able to mount signs of infection — so a fever with no other symptoms may be the only evidence of a serious bacterial infection. This is FEBRILE NEUTROPENIA, an emergency. He must be told to come in immediately (not to take an antipyretic and wait), and on arrival he needs immediate assessment, blood cultures from all lumens and a peripheral site, other cultures as indicated, and BROAD-SPECTRUM ANTIBIOTICS within about one hour — before culture results return.
+
+2. In pernicious anemia the stomach does not produce INTRINSIC FACTOR, which B12 requires for absorption in the terminal ileum. Ordinary oral tablets therefore cannot be absorbed in useful amounts, and the deficiency — including the neurologic damage, which can become permanent — continues while she believes she is treated. She needs the prescribed parenteral (or specifically prescribed high-dose oral or intranasal) replacement, for LIFE. Reinforce that stopping it will cause the anemia and the neurologic symptoms to return.
+
+3. Treat the pain. Clients with sickle cell disease develop opioid tolerance from a lifetime of crises and often know exactly which drug and dose relieve their pain; knowing the regimen is evidence of experience, not of addiction, and this population is documented to be systematically undertreated. The plan is scheduled or patient-controlled analgesia titrated to effect with reassessment after each intervention, continued hydration and oxygen, warmth (never cold), rest, treatment of any infection, and a look for acute chest syndrome if there is chest pain, fever, cough or hypoxia. Advocate with the provider for adequate dosing and address the colleague's assumption directly.
+
+4. (1) Do NOT touch the implant with your hands or allow the client to. (2) Use the LONG-HANDLED FORCEPS kept in the room to pick it up and place it in the LEAD CONTAINER kept in the room. (3) Notify the radiation safety officer and the provider immediately. (4) Keep everyone at a distance, limit your own time in the room, and ensure your dosimeter badge is worn. (5) Do not remove anything from the room — linens, dressings and trash stay until radiation safety surveys and clears them. (6) Document the event and the actions taken.
+
+5. New or worsening BACK PAIN in a client with a known malignancy is the FIRST symptom of SPINAL CORD COMPRESSION, and it appears before weakness, sensory loss and bowel or bladder dysfunction. Neurologic deficits that develop before treatment frequently do not recover, whereas treatment given at the pain stage usually preserves function. Report it urgently; anticipate high-dose corticosteroids, urgent MRI, and radiation or surgical decompression. Meanwhile perform and document baseline motor, sensory and bowel and bladder assessments so any change is detected quickly.
+
+6. DISSEMINATED INTRAVASCULAR COAGULATION — the classic laboratory quartet of low platelets, low fibrinogen, prolonged PT and aPTT, and high D-dimer, with simultaneous bleeding and microvascular thrombosis. The single most important treatment is TREATING THE UNDERLYING CAUSE — here, the septic shock, with source control, antibiotics and hemodynamic support. Blood product replacement (platelets, fresh frozen plasma, cryoprecipitate) supports the client meanwhile, and nursing care minimizes trauma: no intramuscular injections, minimal venipunctures with prolonged pressure afterward, gentle oral and skin care, and monitoring every excretion for blood.`,
+    },
+  ],
+  keyTakeaways: [
+    `Every anemia shares fatigue and pallor; the discriminators are neurologic signs (B12), a blood-loss source (iron), pancytopenia (aplastic), and jaundice with reticulocytosis (hemolysis).`,
+    `Sickle cell crisis is treated with hydration, oxygen, analgesia, rest and warmth — never cold — and acute chest syndrome is the emergency inside it.`,
+    `Neutropenic fever starts a one-hour antibiotic clock; the nadir falls 7 to 14 days after chemotherapy, when the client is usually at home.`,
+    `Know the drug signatures: doxorubicin the heart, cisplatin the kidney and ears, bleomycin the lungs, cyclophosphamide the bladder, vincristine the nerves and never intrathecally.`,
+    `External beam radiation leaves no radioactivity; a sealed implant means time, distance, shielding and forceps-not-hands; and back pain in a cancer client is spinal cord compression until proven otherwise.`,
+  ],
+},
+
+nx_musculoskeletal: {
+  topicId: 'nx_musculoskeletal',
+  title: `Musculoskeletal & Orthopedic Disorders`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Orthopedic items are among the most mechanical on the exam, and that is good news: the answers follow from physics and anatomy rather than memorization. A cast that no longer fits compresses a compartment. A hip prosthesis dislocates when the joint is flexed past ninety degrees. A weight resting on the floor is no longer traction. This chapter builds the neurovascular assessment that opens every orthopedic item, the two time-critical fracture complications, cast and traction rules, joint replacement and amputation care, and the chronic conditions — osteoporosis, arthritis and gout — with the medication administration rules that carry their own questions.`,
+  sections: [
+    {
+      id: 'msk-fractures',
+      title: `1. Fractures, Neurovascular Assessment & Two Emergencies`,
+      content: `A fracture is a break in bone continuity. The descriptors the exam uses: CLOSED (skin intact) versus OPEN or compound (bone has broken the skin — an infection emergency requiring sterile covering, tetanus status review and urgent antibiotics and debridement); COMPLETE versus incomplete; COMMINUTED (broken into several fragments); TRANSVERSE, OBLIQUE and SPIRAL (a twisting mechanism — in a child with an inconsistent history, a red flag for non-accidental injury); IMPACTED; GREENSTICK (a childhood incomplete break); and PATHOLOGIC (through bone weakened by tumour, osteoporosis or infection, from minimal force).
+
+Findings: pain that worsens with movement, loss of function, deformity or shortening, swelling and ecchymosis, muscle spasm, and CREPITUS — which is elicited only incidentally, never deliberately tested for.
+
+Emergency care follows a fixed order: assess airway, breathing, circulation and other life threats first; IMMOBILIZE the fracture as it lies, splinting the joints ABOVE AND BELOW without attempting to realign it; cover an open wound with a sterile dressing; control bleeding with direct pressure; assess neurovascular status BEFORE and AFTER any splinting or movement; elevate and apply cold as appropriate; and provide analgesia.
+
+## The neurovascular assessment — the six P's
+
+Every orthopedic client gets this assessment, comparing the affected limb with the unaffected one, at a frequency set by acuity — typically every hour for the first day after injury, casting or surgery:
+
+- **PAIN** — location, severity, and crucially whether it is RELIEVED by the usual analgesia and whether it worsens on PASSIVE stretch of the muscles in the compartment.
+- **PALLOR** — colour and capillary refill (normally under 3 seconds).
+- **PULSES** — present, equal and compared to the other side; a Doppler is used if pulses cannot be palpated.
+- **PARESTHESIA** — numbness, tingling or altered sensation.
+- **PARALYSIS** — ability to move the digits.
+- **POIKILOTHERMIA** — coolness of the limb compared with the other side.
+
+## Compartment syndrome
+
+Bleeding and swelling inside a closed fascial compartment raise the pressure until it exceeds capillary perfusion pressure, and the muscle and nerve inside begin to die. Irreversible damage begins within about 4 to 6 HOURS, which is why this is a report-immediately finding rather than a monitor-and-recheck one.
+
+The EARLIEST and most reliable cue is PAIN that is OUT OF PROPORTION to the injury, UNRELIEVED by opioids, and INCREASED BY PASSIVE STRETCH of the digits. Paresthesia follows. Pallor, pulselessness and paralysis are LATE — a limb can be irreversibly damaged while the pulse is still present, so waiting for a lost pulse is waiting too long. Tightness and firmness of the compartment on palpation supports the diagnosis.
+
+The nursing response, in order and with the traps named:
+1. NOTIFY the provider immediately.
+2. Do NOT ELEVATE the limb above the level of the heart — elevation lowers arterial inflow pressure and worsens ischemia. Keep it at heart level.
+3. Do NOT APPLY ICE, which causes vasoconstriction.
+4. LOOSEN or remove constrictive dressings, and anticipate the cast being BIVALVED (cut lengthwise into two halves) or removed. Do not cut a cast yourself unless it is within your scope and prescribed.
+5. Anticipate compartment pressure measurement and FASCIOTOMY, the surgical release that is the definitive treatment.
+6. Monitor for the systemic consequence: muscle breakdown releases myoglobin, causing dark tea-coloured urine, and can precipitate acute kidney injury and hyperkalemia.
+
+## Fat embolism syndrome
+
+Fat globules from the marrow of a fractured LONG BONE (femur especially) or PELVIS enter the circulation and lodge in the lungs and brain. The window is typically 24 to 72 HOURS after the injury.
+
+The triad: RESPIRATORY distress with dyspnea, tachypnea and hypoxemia; NEUROLOGIC change with restlessness, confusion, agitation and decreasing level of consciousness — which is often the very first sign; and a PETECHIAL RASH across the CHEST, AXILLAE, neck and CONJUNCTIVAE that appears in a proportion of cases and is nearly specific when present. Add tachycardia and low-grade fever.
+
+Response: oxygen and support of ventilation, notify immediately, maintain fluid balance, and provide supportive intensive care. Prevention is early immobilization and careful handling of long-bone fractures and early operative fixation.
+
+The exam's discrimination: fat embolism appears 24 to 72 hours after a long-bone fracture with confusion and a petechial rash, while pulmonary embolism from a deep vein thrombosis usually appears later in the postoperative course with sudden pleuritic pain and no rash. Both need oxygen and urgent notification.
+
+## Other complications
+
+Infection and OSTEOMYELITIS (bone infection — localized pain, warmth, swelling, fever, drainage, and the need for weeks of intravenous antibiotics, often through a central line at home); delayed union, malunion and nonunion; avascular necrosis, particularly of the femoral head; venous thromboembolism; and complex regional pain syndrome — burning pain, swelling and skin and temperature change out of proportion to the injury, which requires early recognition and referral.`,
+      examTip: `Compartment syndrome is pain out of proportion, unrelieved by opioids, worse on passive stretch — and the wrong answers all sound caring: elevate the limb, apply ice, give more morphine and recheck in an hour.`,
+    },
+    {
+      id: 'msk-cast-traction',
+      title: `2. Casts, Traction & Assistive Devices`,
+      content: `## Casts
+
+A plaster cast takes 24 to 72 hours to dry fully; synthetic fibreglass dries within about 30 minutes. While drying, handle the cast with the PALMS of the hands, not the fingertips, which leave indentations that become pressure points. Keep the cast UNCOVERED and exposed to air to dry, supported on a firm pillow, and do not use direct heat sources to speed drying.
+
+| Rule | Why |
+| --- | --- |
+| ELEVATE the extremity for the first 24 to 48 hours (above heart level for ordinary swelling) and apply ice as prescribed | limits edema — but remember this reverses if compartment syndrome is suspected, when the limb is kept at heart level |
+| perform NEUROVASCULAR checks distal to the cast on a schedule | the whole point of the cast is that you cannot see under it |
+| never insert ANYTHING into the cast to scratch | objects cause skin breakdown and infection; use a COOL setting on a hair dryer blown into the cast for itching, or a prescribed antihistamine |
+| keep the cast DRY | cover with plastic for bathing; a wet plaster cast softens and loses its function; report a soft or cracked cast |
+| PETAL rough edges with tape | protects skin from abrasion |
+| report DRAINAGE, a foul ODOUR, a HOT SPOT felt on the cast surface, fever, or increasing pain | signs of infection or a pressure sore developing beneath |
+| exercise the joints ABOVE and BELOW the cast and wiggle the digits frequently | preserves motion and promotes venous return |
+
+A HIP SPICA or body cast adds specific concerns: turn the client as a unit with adequate help, never use the abduction bar as a handle, protect the cast edges around the perineal opening from soiling, and monitor for CAST SYNDROME — nausea, vomiting and abdominal distension from compression of the duodenum, which requires prompt reporting.
+
+After cast removal, expect the skin to be dry, scaly and covered with dead cells, and the muscle to be visibly atrophied. Teach the client to soak and wash gently with mild soap and warm water, apply lotion, NOT to scrub or pick at the skin, and to expect that strength returns gradually with prescribed exercise.
+
+## Traction
+
+Traction applies a pulling force to reduce and align a fracture, relieve muscle spasm, and prevent deformity.
+
+SKIN traction (Buck extension is the common example, often applied while a client with a hip fracture awaits surgery) uses a boot or straps applied to the skin with a limited weight, typically no more than about 8 to 10 pounds. It may be removed intermittently if prescribed, and the skin under it must be inspected for breakdown.
+
+SKELETAL traction uses pins, wires or screws placed through bone and can carry much greater weight. It is CONTINUOUS and is NEVER removed or interrupted by the nurse.
+
+The mechanical rules generate the items:
+
+- WEIGHTS HANG FREELY at all times. A weight resting on the floor, on the bed frame, or held up by a well-meaning visitor has stopped being traction. Check this every time you enter the room and after every move.
+- Ropes stay in the PULLEY GROOVES, knots are secure and are not resting against a pulley, and nothing rests on the ropes.
+- Maintain ALIGNMENT of the body with the line of pull, and maintain COUNTERTRACTION — usually the client's body weight with the bed positioned as prescribed. Do not let the client slide down until the feet press against the footboard.
+- Do NOT lift or remove skeletal traction weights. To move the client up in bed, use the trapeze and lift with the traction intact, following the prescribed method.
+- PIN SITE care per protocol, assessing for signs of infection: increasing redness, purulent drainage, odour, increasing pain, loosening of the pin, fever.
+- Neurovascular checks distal to the traction, skin assessment over bony prominences, and prevention of the complications of immobility — deep breathing, ankle pumps, thromboembolism prophylaxis, hydration, fibre, and range of motion of unaffected joints.
+
+## Assistive devices
+
+CRUTCHES: fit so the top is 2 to 3 FINGER WIDTHS (about 1 to 2 inches) BELOW the axilla, with the elbows flexed about 20 to 30 degrees when the hands are on the grips. Weight is borne on the HANDS, never on the axillae — axillary pressure damages the brachial plexus and causes crutch paralysis. Gaits: a THREE-POINT gait for non-weight-bearing on one leg (both crutches and the affected leg advance together, then the strong leg); a four-point or two-point gait for partial weight bearing on both; a swing-through gait for clients with bilateral leg weakness. Stairs: UP with the GOOD leg first, DOWN with the BAD leg (and the crutches) first — the strong leg does the lifting and the weak leg does the lowering.
+
+CANE: held on the STRONG (unaffected) side, with the top at the level of the greater trochanter and the elbow flexed about 15 to 30 degrees. Advance the cane and the WEAK leg together, then step through with the strong leg.
+
+WALKER: all four points must be on the ground before the client steps into it; the client does not step past the front legs; and the client should not use a walker to pull themselves to standing from a chair — push up from the armrests first.
+
+Teach for all devices: rubber tips inspected and replaced when worn, well-fitting non-slip shoes, no loose rugs or clutter, and adequate lighting.`,
+      examTip: `Weights hang freely, hands bear the weight on crutches, the cane goes on the strong side, and up with the good leg and down with the bad. Four mechanical facts that each carry their own item.`,
+    },
+    {
+      id: 'msk-surgery',
+      title: `3. Hip Fracture, Joint Replacement & Amputation`,
+      content: `## Hip fracture
+
+Common in older adults with osteoporosis, and often the sentinel event that ends independent living. The classic presentation is a shortened, EXTERNALLY ROTATED and adducted leg with severe pain and inability to bear weight.
+
+Preoperatively: pain control, Buck traction if prescribed, immobilization, prevention of skin breakdown, thromboembolism prophylaxis, medical optimization, and DELIRIUM prevention, which is nursing work — orient, hydrate, treat pain adequately (undertreated pain causes delirium), avoid unnecessary anticholinergics and benzodiazepines, keep glasses and hearing aids on, and mobilize as soon as permitted.
+
+Postoperatively: early mobilization is the goal, usually the same or next day; weight-bearing status is prescribed by the surgeon and must be followed exactly; assess neurovascular status, drainage and hemoglobin; provide multimodal analgesia; and prevent the complications of immobility — atelectasis, thromboembolism, pressure injury, constipation and delirium.
+
+## Total hip arthroplasty precautions
+
+For the POSTERIOR surgical approach, which is the one the exam usually means, three prohibitions protect against dislocation and are taught until the client can recite them:
+
+1. Do NOT FLEX the hip more than 90 DEGREES. That means no low chairs, no low toilet seats (use a RAISED toilet seat), no sitting in soft deep couches, no bending forward to pick things up or to put on socks and shoes — use a REACHER, a long-handled shoehorn and a sock aid.
+2. Do NOT ADDUCT — do not cross the legs or ankles; use an ABDUCTION pillow or wedge in bed and a pillow between the knees when turning.
+3. Do NOT rotate the hip INTERNALLY — keep the toes pointing up or slightly outward, and avoid twisting the body while the foot is planted.
+
+Additional teaching: sleep on the back or on the unoperated side with a pillow between the legs, avoid driving until cleared, sit in a firm chair with arms and use the arms to rise, and continue the precautions for the interval the surgeon specifies. An ANTERIOR approach has different (often fewer) restrictions, typically avoiding hyperextension and external rotation — which is why the nurse follows the surgeon's specific orders rather than a memorized list.
+
+DISLOCATION signs, which are reported IMMEDIATELY: sudden severe pain, a popping sensation, SHORTENING of the leg, abnormal internal or external ROTATION, inability to move the leg or bear weight. Keep the client still, support the limb, and notify.
+
+Also monitor for infection (a prosthetic joint infection is a serious complication — teach the client to report fever, increasing pain, drainage and redness, and to inform dentists and other providers about the prosthesis), venous thromboembolism with prophylaxis and early ambulation, and bleeding.
+
+## Total knee arthroplasty
+
+Emphasis shifts from dislocation to MOTION. A continuous passive motion machine may be prescribed with a set range and schedule. Quadriceps setting exercises, straight-leg raises and ankle pumps begin early. Do NOT place a pillow UNDER THE KNEE — the flexion contracture it causes is exactly what rehabilitation is fighting; support the whole leg instead when elevation is needed. Ice is used for swelling, weight-bearing status follows the surgeon's prescription, and physical therapy attendance is the single strongest predictor of a good result.
+
+## Amputation
+
+Immediate postoperative priorities: monitor for HEMORRHAGE — a large-vessel bleed is the feared early complication, and a TOURNIQUET is kept at the bedside for the first 24 hours per institutional policy — assess the dressing and mark any drainage, monitor vital signs, and manage pain.
+
+Positioning teaching is specific and easy to get backwards. Elevate the residual limb on a pillow for the FIRST 24 HOURS to control edema, then DISCONTINUE elevation, because prolonged elevation and prolonged sitting cause a HIP FLEXION CONTRACTURE that prevents prosthetic fitting. Thereafter, have the client lie PRONE for periods several times daily (as tolerated and prescribed) to extend the hip, avoid sitting for long stretches, avoid placing a pillow between the thighs or under the residual limb, and perform prescribed strengthening and range-of-motion exercises.
+
+Limb shaping uses a figure-of-eight elastic wrap or a shrinker sock applied from DISTAL to PROXIMAL with even pressure, rewrapped several times daily and kept smooth without wrinkles. Inspect the skin daily, including with a mirror for areas the client cannot see, wash and dry the limb thoroughly, avoid lotions on the limb unless prescribed, and report any redness, breakdown or drainage.
+
+PHANTOM LIMB PAIN is real neuropathic pain, not imagination, and telling a client the limb is gone is not a therapeutic response. It is treated with analgesics including agents for neuropathic pain such as gabapentin, with mirror therapy, desensitization and massage, transcutaneous nerve stimulation, relaxation techniques, and early prosthetic use. Acknowledge the sensation, assess it as pain, and treat it.
+
+Psychosocial care is integral: grief, altered body image, sexuality, employment and independence are legitimate nursing concerns, and referral to rehabilitation, peer support and counselling belongs in the plan.
+
+## Herniated disc and spinal surgery
+
+A herniated intervertebral disc produces radiating pain (sciatica in lumbar disease), numbness, weakness and reduced reflexes in the distribution of the compressed nerve root, worse with coughing, sneezing and straining. Conservative care includes short-term activity modification rather than prolonged bed rest, analgesia and anti-inflammatories, physical therapy, and body-mechanics teaching.
+
+After laminectomy or discectomy: LOG ROLL the client as a unit with a pillow between the knees, keep the bed flat or as prescribed, avoid twisting, bending and lifting anything heavier than the surgeon permits (often about 5 to 10 pounds), sit for limited periods in a firm chair, and use a brace if prescribed. Assess for a CEREBROSPINAL FLUID LEAK — clear drainage on the dressing, positive for glucose, with a halo sign and a severe headache — and report it. Perform neurovascular and motor and sensory checks of the legs each shift. Report new or worsening bowel or bladder dysfunction or saddle numbness urgently — CAUDA EQUINA SYNDROME is a surgical emergency.`,
+      examTip: `Posterior hip precautions are three: no flexion past 90 degrees, no adduction across midline, no internal rotation. And after an amputation, elevate for 24 hours and then stop — the contracture that costs the prosthesis is caused by kindness.`,
+    },
+    {
+      id: 'msk-chronic',
+      title: `4. Osteoporosis, Arthritis, Gout & Their Medications`,
+      content: `## Osteoporosis
+
+Loss of bone mass and deterioration of bone architecture, producing fragility fractures — classically of the vertebrae (with progressive loss of height and kyphosis), the hip and the distal radius. It is silent until a bone breaks.
+
+Risk factors: postmenopausal estrogen loss, advancing age, female sex, small thin frame, White and Asian ancestry, family history, low calcium and vitamin D intake, sedentary lifestyle, smoking, excessive alcohol, and medications — chiefly long-term CORTICOSTEROIDS, but also some antiseizure drugs, proton pump inhibitors, heparin and aromatase inhibitors. Conditions such as hyperthyroidism, hyperparathyroidism, malabsorption and eating disorders contribute.
+
+Diagnosis is by DEXA scan, reported as a T-score: greater than -1.0 is normal, -1.0 to -2.5 is osteopenia, and -2.5 or lower is OSTEOPOROSIS.
+
+Prevention and treatment teaching: CALCIUM roughly 1,000 to 1,200 mg daily from diet where possible (dairy, fortified plant milks, canned fish with bones, leafy greens, fortified foods) with supplements divided into doses of about 500 to 600 mg for better absorption; VITAMIN D roughly 600 to 800 international units daily with higher amounts for older adults as prescribed; WEIGHT-BEARING and resistance exercise; smoking cessation and alcohol moderation; and FALL PREVENTION, which is what actually prevents the fracture — remove throw rugs and clutter, add grab bars and night lights, review medications that cause dizziness or sedation, correct vision, and use appropriate footwear and assistive devices.
+
+BISPHOSPHONATES (alendronate, risedronate, ibandronate, zoledronic acid) have an administration procedure that is a reliable exam item: take the oral dose FIRST THING IN THE MORNING on an EMPTY stomach, with a FULL GLASS OF PLAIN WATER (not coffee, juice or mineral water); REMAIN UPRIGHT — sitting or standing, not lying down — for at least 30 MINUTES (60 minutes for ibandronate); take NOTHING ELSE by mouth, including other medications, food and calcium, during that interval. The reason is ESOPHAGITIS and esophageal ulceration, which is why the drug is contraindicated in clients who cannot sit or stand upright and in those with esophageal disorders. Other cautions: a dental examination BEFORE starting, because of osteonecrosis of the jaw; report new thigh or groin pain, which can precede an atypical femoral fracture; and correct hypocalcemia and vitamin D deficiency first. Other agents include denosumab, raloxifene (which raises thromboembolism risk), teriparatide and romosozumab.
+
+## Osteoarthritis versus rheumatoid arthritis
+
+| Feature | OSTEOARTHRITIS | RHEUMATOID ARTHRITIS |
+| --- | --- | --- |
+| nature | degenerative wear of cartilage — a local joint disease | AUTOIMMUNE, SYSTEMIC inflammatory disease |
+| onset and age | gradual, usually after middle age | can begin at any age, often 30 to 50; more common in women |
+| joint pattern | ASYMMETRIC; weight-bearing joints — knees, hips, spine — and distal finger joints | SYMMETRIC; SMALL joints first — the metacarpophalangeal and proximal interphalangeal joints, wrists, feet |
+| morning stiffness | brief, usually under 30 MINUTES, and improves with movement | prolonged, more than 1 HOUR, and improves through the day |
+| pain pattern | worse with USE, better with rest | present at rest, often worse in the morning |
+| systemic features | none | FATIGUE, low-grade fever, weight loss, anemia, rheumatoid NODULES, dry eyes and mouth, pulmonary and cardiac involvement |
+| deformities | Heberden nodes (distal joints) and Bouchard nodes (proximal joints), crepitus | ULNAR DEVIATION, swan-neck and boutonniere deformities, subluxation |
+| laboratory | unremarkable | elevated ESR and CRP, positive rheumatoid factor and anti-CCP antibodies, anemia |
+
+Osteoarthritis management: weight loss (the highest-value intervention for knee and hip disease), low-impact exercise and strengthening, HEAT for stiffness, joint protection and pacing, assistive devices, topical and oral analgesia with acetaminophen usually first-line and NSAIDs used cautiously in older adults, intra-articular injections, and joint replacement when function is lost.
+
+Rheumatoid arthritis management: a balance of REST during flares and ACTIVITY between them; HEAT for morning stiffness and COLD for acutely inflamed hot joints; joint protection principles (use large joints and both hands, avoid a tight sustained grip, slide rather than lift, rest before exhaustion); splints as prescribed; occupational and physical therapy; and early disease-modifying therapy, because joint destruction happens early.
+
+| Drug | Key nursing points |
+| --- | --- |
+| METHOTREXATE | given WEEKLY — a daily dose is a lethal error, and the schedule must be verified and taught explicitly; folic acid supplementation reduces side effects; HEPATOTOXIC and myelosuppressive — monitor liver enzymes and complete blood count; TERATOGENIC — effective contraception is required for both partners per guidance; avoid alcohol; report mouth sores, cough or fever |
+| hydroxychloroquine | requires baseline and periodic OPHTHALMOLOGIC examinations because of retinal toxicity; report visual change |
+| sulfasalazine | sulfa moiety; increase fluids; photosensitivity; monitor blood counts |
+| biologics — TNF inhibitors (etanercept, adalimumab, infliximab) and others | SCREEN FOR LATENT TUBERCULOSIS and hepatitis B BEFORE starting; hold during active infection; avoid LIVE vaccines; report any fever or infection promptly; injection-site and infusion reactions |
+| corticosteroids | bridge therapy for flares, tapered; the full steroid teaching set applies |
+| NSAIDs | gastrointestinal bleeding, kidney injury, fluid retention and cardiovascular risk; take with food; not combined with anticoagulants without review |
+
+## Gout
+
+Deposition of monosodium urate crystals in joints because of hyperuricemia — from overproduction, underexcretion (kidney disease, thiazide and loop diuretics, low-dose aspirin), or dietary and alcohol contributions.
+
+An acute attack is sudden and dramatic: EXCRUCIATING pain, usually beginning at night, most classically in the great toe (PODAGRA), with a red, hot, swollen, exquisitely tender joint that cannot bear the weight of a bed sheet. Chronic disease produces TOPHI — visible urate deposits in the ears, fingers and elbows — and joint damage and kidney stones.
+
+Acute treatment: NSAIDs, colchicine, or corticosteroids, with the joint rested and elevated, a bed cradle to keep linens off it, cold applications for comfort, and generous fluids.
+
+Chronic (urate-lowering) treatment: ALLOPURINOL or febuxostat, and uricosurics such as probenecid. The tested rule is that urate-lowering therapy is NOT STARTED DURING an acute attack, because the shifting urate level can prolong or worsen it — although it is CONTINUED if the client is already taking it when an attack occurs. Teach generous fluid intake of 2 to 3 litres daily to prevent stones, and report any rash on allopurinol, since serious hypersensitivity reactions occur.
+
+Dietary teaching: limit high-PURINE foods — organ meats, sardines, anchovies, herring, mussels, scallops, red meat and gravies; limit ALCOHOL, especially BEER, and drinks sweetened with high-fructose corn syrup; maintain a healthy weight with gradual rather than crash weight loss; and drink generously. Dairy and coffee appear protective. Purine restriction alone rarely controls the disease, so it supplements rather than replaces medication.`,
+      examTip: `Bisphosphonates: morning, empty stomach, full glass of plain water, upright 30 minutes, nothing else by mouth. Methotrexate: WEEKLY. Allopurinol: not started during an attack, but not stopped if already taken.`,
+    },
+    {
+      id: 'msk-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. Six hours after a long-arm cast is applied for a forearm fracture, a client reports that the pain has become severe and is not helped by the prescribed opioid. Extending his fingers makes it much worse. His radial pulse is palpable and his fingers are warm and pink. What is the nurse's interpretation and what actions follow — including two common actions that would be wrong?
+
+2. A client in skeletal traction has slid toward the foot of the bed, and the traction weights are resting on the floor. A visitor says she lifted them because they "looked uncomfortable." What is the problem and what does the nurse do?
+
+3. A client three days after posterior total hip arthroplasty is preparing for discharge. Her home has a low soft sofa, a standard-height toilet and a bedroom where she likes to sleep on her operated side with her legs crossed at the ankles. Identify each problem and the correction.
+
+4. A 68-year-old with a new prescription for alendronate says she plans to take it at bedtime with her calcium supplement and a glass of milk "so it all works together." What is wrong, and what is the correct instruction?
+
+5. Forty-eight hours after an open reduction of a femur fracture, a client becomes restless and confused, with a respiratory rate of 32 and an oxygen saturation of 88 percent. A fine petechial rash is visible across his chest and in his axillae. What is happening and what does the nurse do?
+
+6. A client is prescribed methotrexate for rheumatoid arthritis. What is the single most dangerous medication error associated with this drug, and what else must be taught?
+
+## Answers
+
+1. This is COMPARTMENT SYNDROME until proven otherwise: pain out of proportion, unrelieved by opioids, and increased by PASSIVE STRETCH is the earliest and most reliable presentation. The intact pulse and warm pink fingers are reassuring only superficially — pallor and pulselessness are LATE findings, and irreversible muscle and nerve damage begins within 4 to 6 hours. Actions: notify the provider IMMEDIATELY, keep the limb at HEART LEVEL, loosen or remove any constrictive dressings, and anticipate the cast being bivalved or removed, compartment pressure measurement and fasciotomy. Continue frequent neurovascular checks and monitor urine colour for myoglobinuria. Two wrong actions: ELEVATING the limb above the heart (which further reduces arterial inflow) and APPLYING ICE (which vasoconstricts); giving another opioid dose and rechecking later is a third.
+
+2. Traction that is not pulling is not traction. Weights must HANG FREELY at all times, and skeletal traction is never lifted or removed by anyone. Actions: reposition the client up in bed using the trapeze and the prescribed method with adequate help while keeping the traction intact, ensure the weights hang free and the ropes sit in the pulley grooves, verify body alignment with the line of pull and that countertraction is maintained, assess neurovascular status and the pin sites, assess pain, and educate the visitor and the client that the weights must never be lifted or supported — and explain why, since she was trying to help.
+
+3. The sofa: sitting in a low, soft, deep seat flexes the hip past 90 degrees — she needs a FIRM chair with ARMS at a height that keeps her hips above her knees. The toilet: a standard-height toilet also flexes the hip past 90 degrees — she needs a RAISED toilet seat. Sleeping on the operated side and crossing her ankles: both violate the precautions — she should sleep on her back or on the UNOPERATED side with an ABDUCTION pillow or a pillow between the knees, and must never cross her legs or ankles. Also review a reacher, long-handled shoehorn and sock aid so she never bends forward, and teach the dislocation signs to report.
+
+4. Everything about that plan defeats the drug and risks harm. Alendronate must be taken FIRST THING IN THE MORNING, on an EMPTY stomach, with a FULL GLASS OF PLAIN WATER — milk, calcium, juice and food all block absorption. She must then remain UPRIGHT and take NOTHING ELSE by mouth for at least 30 MINUTES, because lying down risks esophagitis and esophageal ulceration. The calcium supplement is taken later in the day. Also confirm she has had a dental examination, and teach her to report difficulty swallowing, heartburn or chest pain, and new thigh or groin pain.
+
+5. FAT EMBOLISM SYNDROME — the 24 to 72 hour window after a long-bone fracture, with the triad of respiratory distress, neurologic change (restlessness and confusion, often the earliest sign) and the petechial rash across the chest and axillae. Actions: apply high-flow oxygen and stay with the client, call the rapid response team or provider immediately, position with the head of the bed elevated, obtain vital signs and continuous monitoring, establish or confirm intravenous access, anticipate arterial blood gases, chest imaging and possible transfer to intensive care with ventilatory support. Do not attribute the confusion to medication or to age.
+
+6. The most dangerous error is DOSING FREQUENCY: for rheumatoid arthritis methotrexate is taken ONCE WEEKLY, and taking it daily causes severe, potentially fatal toxicity. Teach the client to know the specific day of the week, to write it down, and to verify the frequency with every pharmacy and every prescriber. Additional teaching: take FOLIC ACID as prescribed to reduce side effects; avoid ALCOHOL because of hepatotoxicity; expect regular blood tests for liver function and blood counts; use effective CONTRACEPTION because the drug is teratogenic; avoid live vaccines; avoid NSAIDs and salicylates unless the prescriber approves, since they raise methotrexate levels; and report mouth sores, unusual bruising or bleeding, persistent cough or shortness of breath, fever, or yellowing of the skin or eyes.`,
+    },
+  ],
+  keyTakeaways: [
+    `The six P's open every orthopedic item, and compartment syndrome announces itself as pain out of proportion, unrelieved by opioids and worse on passive stretch — keep the limb at heart level, no ice, notify now.`,
+    `Fat embolism arrives 24 to 72 hours after a long-bone fracture with confusion, hypoxia and a petechial rash on the chest and axillae.`,
+    `Traction weights hang freely and skeletal traction is never removed; crutch weight rests on the hands; the cane goes on the strong side; up with the good leg, down with the bad.`,
+    `Posterior hip precautions are no flexion past 90 degrees, no adduction, no internal rotation; after amputation elevate for 24 hours only, then use prone positioning to prevent contracture.`,
+    `Bisphosphonates need an empty stomach, plain water and 30 upright minutes; methotrexate is weekly; and urate-lowering drugs are not started mid-attack.`,
+  ],
+},
+
+nx_integumentary_burns: {
+  topicId: 'nx_integumentary_burns',
+  title: `Integumentary Disorders, Wounds & Burns`,
+  domainWeight: 'Physiological Adaptation (11-17%)',
+  overview: `Skin is the body's largest organ and its first barrier, and when enough of it is destroyed the client develops a fluid problem, a temperature problem, a nutrition problem and an infection problem simultaneously. Burn nursing is therefore the most systemic topic in this chapter, and it is organized by phase because the priority changes as the hours pass: airway first, then fluid, then infection, then contracture. Around it sit wound healing and dressing selection, the common infectious and inflammatory skin conditions, and the skin-cancer teaching that turns up as a health-promotion item.`,
+  sections: [
+    {
+      id: 'burn-classification',
+      title: `1. Burn Depth, Extent & the First Hour`,
+      content: `## Depth
+
+| Depth | What it looks like | Sensation and healing |
+| --- | --- | --- |
+| SUPERFICIAL (first degree) — epidermis only | red or pink, DRY, NO blisters, blanches with pressure; sunburn is the model | PAINFUL; heals in about 3 to 6 days without scarring |
+| SUPERFICIAL PARTIAL-THICKNESS — epidermis and upper dermis | moist, weeping, BLISTERS, bright red or pink, BLANCHES | VERY painful, and hypersensitive to air and touch; heals in about 2 weeks with minimal scarring |
+| DEEP PARTIAL-THICKNESS — into the deeper dermis | mottled red and waxy white, less moist, blanching sluggish or absent | painful but LESS sensitive than superficial partial thickness; heals slowly with scarring, often needs grafting |
+| FULL-THICKNESS (third degree) — through the dermis | DRY, LEATHERY ESCHAR, waxy white, tan, brown, or charred black; does not blanch; thrombosed vessels may be visible | INSENSATE at the centre because nerve endings are destroyed — the surrounding partial-thickness areas hurt; requires GRAFTING |
+| deep full-thickness (fourth degree) — into fat, muscle, bone | charred, exposed deeper structures | insensate; requires extensive reconstruction, sometimes amputation |
+
+The insensate full-thickness burn is a repeat exam point: a burn that does not hurt is WORSE, not better, and a client whose pain is confined to the margins of a large dry leathery wound has deep injury.
+
+## Extent
+
+The RULE OF NINES estimates the percentage of total body surface area burned in adults:
+
+| Region | Percent |
+| --- | --- |
+| head and neck | 9 |
+| each arm (front and back) | 9 each |
+| anterior trunk | 18 |
+| posterior trunk | 18 |
+| each leg (front and back) | 18 each |
+| perineum | 1 |
+
+The PALM method is used for scattered burns: the surface of the client's OWN palm including the fingers is approximately 1 percent of their body surface area. The LUND-BROWDER chart is more accurate and is used especially in CHILDREN, whose head is proportionally much larger and legs much smaller — applying the adult rule of nines to a young child UNDERESTIMATES the burn and therefore underestimates the fluid needed. Superficial (first-degree) burns are NOT counted in the total body surface area calculation used for fluid resuscitation.
+
+## The first hour: airway before everything
+
+INHALATION INJURY is the leading early cause of death, and the airway can swell closed over minutes to hours. The cues that mandate early evaluation and often EARLY INTUBATION — before the swelling makes it impossible — are: burns of the FACE, neck or upper chest; SINGED nasal hairs, eyebrows or eyelashes; SOOT in the mouth, nose or sputum; CARBONACEOUS (black-flecked) sputum; HOARSENESS, a brassy cough or STRIDOR; wheezing; and a history of a fire in an ENCLOSED SPACE or of loss of consciousness at the scene. Facial and neck edema worsens for the first 24 to 48 hours, so an airway that looks adequate now may not be in two hours. The exam's stance is that intubation is done EARLY and electively rather than emergently in a swollen airway.
+
+CARBON MONOXIDE poisoning accompanies enclosed-space fires. It presents with headache, dizziness, nausea, confusion and, in severe cases, coma — and it is the classic trap for pulse oximetry, because the oximeter CANNOT distinguish carboxyhemoglobin from oxyhemoglobin and reads FALSELY NORMAL or high. Treatment is 100 PERCENT OXYGEN by non-rebreather (or hyperbaric therapy in severe cases) and measurement of the CARBOXYHEMOGLOBIN level. Cyanide toxicity from burning synthetics is a related consideration in severe smoke inhalation.
+
+Circumferential full-thickness burns of the chest or of a limb create a tourniquet of unyielding eschar. On the chest they restrict ventilation; on a limb they cause compartment syndrome with the same six P's from the orthopedic chapter. The treatment is ESCHAROTOMY — surgical incision through the eschar to release the constriction.
+
+At the scene: stop the burning process (remove the client from the source, extinguish flames by having them stop, drop and roll, remove smouldering clothing and all jewellery before swelling begins), cool small burns with cool — NOT ICE-COLD — water briefly, cover with a clean dry sheet, and prevent HYPOTHERMIA, which is a genuine risk because the skin can no longer conserve heat. For CHEMICAL burns, BRUSH OFF dry powder FIRST and then flush copiously with running water for a prolonged period. For ELECTRICAL injury, ensure the source is off before touching the client, and remember that entry and exit wounds vastly understate the internal damage.`,
+      examTip: `A burn that does not hurt is full-thickness, and a normal pulse oximeter reading in a client rescued from a house fire proves nothing — carbon monoxide reads as oxygen.`,
+    },
+    {
+      id: 'burn-phases',
+      title: `2. The Three Phases: Fluid, Infection, Contracture`,
+      content: `## Emergent (resuscitative) phase — roughly the first 24 to 48 hours
+
+The physiology: massive capillary permeability lets fluid, electrolytes and protein leak from the vasculature into the interstitium. The client develops profound HYPOVOLEMIA and edema simultaneously, with hemoconcentration (a rising hematocrit despite blood loss), HYPERKALEMIA from cell lysis and tissue destruction, HYPOnatremia as sodium follows fluid into the interstitium, and metabolic ACIDOSIS. Urine output falls. Untreated, the result is burn shock.
+
+FLUID RESUSCITATION uses a consensus formula — the one review books still call the PARKLAND FORMULA — most often written as 4 mL of LACTATED RINGER solution multiplied by the client's weight in kilograms multiplied by the percentage of total body surface area burned, giving the total for the FIRST 24 HOURS. HALF of that total is given in the FIRST 8 HOURS and the remaining half over the NEXT 16 HOURS — and the clock starts at the TIME OF INJURY, not the time of arrival, so a client who arrives two hours after the burn has six hours left in which to receive the first half.
+
+Worked example: a 70 kg adult with 40 percent total body surface area burned. Total for 24 hours is 4 multiplied by 70 multiplied by 40, which equals 11,200 mL. The first half — 5,600 mL — is given over the first 8 hours from the time of injury, an infusion rate of 700 mL per hour. The remaining 5,600 mL is given over the following 16 hours, a rate of 350 mL per hour.
+
+The formula is a STARTING POINT, and the actual rate is titrated to the client's response. The primary indicator of adequate resuscitation is URINE OUTPUT: about 0.5 mL/kg/hour in adults (commonly stated as 30 to 50 mL per hour) and about 1 mL/kg/hour in children. Additional markers are a mean arterial pressure adequate for perfusion, a heart rate trending down, and improving mentation. Insert an indwelling catheter for hourly measurement, monitor electrolytes, and watch for the dangers on both sides — under-resuscitation causes shock and kidney injury, over-resuscitation causes pulmonary edema and compartment syndromes.
+
+Other emergent-phase care: keep the client WARM, because thermoregulation is lost — warmed fluids, warmed room, heat lamps and minimal exposure during procedures; nothing by mouth initially with a nasogastric tube for ileus, which is common with large burns; tetanus prophylaxis; and pain management with INTRAVENOUS opioids only. Intramuscular and subcutaneous routes are NOT used during this phase because peripheral perfusion is poor and absorption is erratic — the drug will be absorbed unpredictably later, potentially all at once.
+
+## Acute phase — from the end of the fluid shift to wound closure
+
+The fluid shift reverses: fluid moves back into the vasculature, so the risks flip to FLUID OVERLOAD and HYPOkalemia (potassium moves back into cells and is lost in urine and through the wound). INFECTION becomes the leading cause of death.
+
+Infection prevention is nursing work: strict hand hygiene and protective isolation measures per protocol, sterile or clean technique for wound care per policy, dedicated equipment, no fresh flowers or plants, restriction of ill visitors, and monitoring for the signs of burn wound infection — a change in wound appearance or colour, increased pain, odour, purulent drainage, delayed healing, and systemic signs. Note that in a burn client, HYPOthermia, decreased mentation, ileus and hypotension may signal sepsis as reliably as fever does. SYSTEMIC prophylactic antibiotics are NOT routinely given; topical antimicrobials are the standard.
+
+| Topical agent | Points to know |
+| --- | --- |
+| SILVER SULFADIAZINE | broad coverage, soothing; does NOT penetrate eschar well; contraindicated in SULFA allergy and in pregnancy and infants under 2 months; can cause transient leukopenia |
+| MAFENIDE ACETATE | PENETRATES eschar — used for deep or infected wounds and cartilage (ears, nose); it is PAINFUL on application (premedicate); it can cause METABOLIC ACIDOSIS through carbonic anhydrase inhibition — monitor acid-base status and respiratory rate |
+| silver-impregnated dressings | broad antimicrobial coverage with fewer dressing changes |
+| bacitracin, petrolatum-based | often for facial and superficial burns |
+
+Wound care: hydrotherapy and cleansing, DEBRIDEMENT (mechanical, enzymatic, surgical), and coverage. Debridement is painful — premedicate 30 to 45 minutes before, use the prescribed analgesia and anxiolysis, and limit the procedure time.
+
+GRAFTING: an AUTOGRAFT uses the client's own skin and is the only permanent coverage; allograft (cadaver) and xenograft (porcine) are temporary biologic dressings. Post-graft care: IMMOBILIZE the grafted area as prescribed for several days so the graft is not sheared off, elevate to reduce edema, avoid any pressure or friction on the site, monitor for hematoma or fluid collection beneath the graft which prevents adherence, and follow the surgeon's instructions on the first dressing change. The DONOR SITE is a partial-thickness wound in its own right, is often more painful than the graft, and needs its own dressing plan and pain management.
+
+NUTRITION is treatment, not support. Major burns produce a HYPERMETABOLIC state that can double resting energy expenditure and persist for months. The prescription is HIGH CALORIE and HIGH PROTEIN, with vitamin C and vitamin A for healing and ZINC, delivered by EARLY ENTERAL feeding (usually within the first day or two) because it preserves gut integrity and reduces infection and bacterial translocation. Weigh daily, monitor prealbumin and nitrogen balance per protocol, and treat the CURLING ULCER risk — a stress ulcer specific to burn injury — with prophylaxis and early feeding.
+
+## Rehabilitative phase — from wound closure onward, lasting months to years
+
+The enemy is CONTRACTURE. Healing burn tissue contracts, and it contracts into the position of COMFORT — which is FLEXION. Every rehabilitative intervention fights this:
+
+- POSITION IN EXTENSION and in anti-deformity positions. Neck burns: no pillow, with the neck slightly EXTENDED. Axillary burns: arms ABDUCTED to about 90 degrees on arm boards. Elbows and knees: EXTENDED. Hands: in a functional position with the wrist slightly extended and the fingers gently curved as prescribed. Hips: extended and neutral, not flexed with pillows under the knees.
+- SPLINTS as prescribed, worn on the schedule given.
+- RANGE OF MOTION performed actively where possible, several times daily, and continued through the discomfort — with adequate analgesia timed before therapy.
+- PRESSURE GARMENTS worn up to 23 hours a day for 12 to 24 months to limit hypertrophic scarring, removed only for bathing and skin care. They must fit snugly, and clients need help understanding why something so uncomfortable is worn so long.
+- Skin care for the new epithelium: it is fragile, dry and itchy for months. Moisturize with the recommended non-perfumed product, avoid harsh soaps, treat itching with prescribed measures, and protect the area from the SUN for at least a year with clothing and high-SPF sunscreen, since new tissue burns and pigments abnormally.
+- Psychosocial care: disfigurement, pain, loss of function, post-traumatic stress, depression and return to work and school are all part of the plan, with referral to burn team psychologists and peer support.`,
+      examTip: `The resuscitation clock starts at the time of INJURY, half the fluid goes in the first 8 hours, and the number that tells you it is working is urine output — about 0.5 mL/kg/hour in an adult.`,
+    },
+    {
+      id: 'burn-wounds',
+      title: `3. Wound Healing, Dressings & Pressure Injuries`,
+      content: `Wounds heal by PRIMARY intention (clean approximated edges, as in a surgical incision — minimal scarring), SECONDARY intention (an open wound left to granulate in from the base, as in a pressure injury or a wound left open after infection — more scarring, longer healing), or TERTIARY (delayed primary) intention, where a wound is left open initially and closed later.
+
+The phases are inflammatory (about 3 to 5 days, with redness, warmth, swelling and pain that are EXPECTED and not automatically infection), proliferative (granulation tissue and epithelialization over the following weeks), and maturation (remodelling for up to a year or more, with the scar gradually flattening and paling).
+
+Factors that impair healing are examinable because they show up in stems: advanced age, poor nutrition and low protein, diabetes and hyperglycemia, poor perfusion and smoking, corticosteroids and immunosuppression, chemotherapy and radiation, infection, obesity, moisture and repeated trauma, and foreign bodies.
+
+## Dressing selection
+
+The principle: a wound heals best in a MOIST environment, but the surrounding skin must stay dry, and the dressing must match the amount of exudate.
+
+| Dressing | Best for | Notes |
+| --- | --- | --- |
+| transparent film | superficial wounds with MINIMAL exudate; protecting intact skin; securing devices | allows visualization; supports autolytic debridement; not absorbent |
+| hydrocolloid | light to moderate exudate; supports AUTOLYTIC debridement | occlusive; may stay in place for several days; produces a gel with a characteristic odour on removal that is NOT necessarily infection |
+| hydrogel | DRY wounds needing moisture; painful wounds | adds moisture, soothing; needs a secondary dressing |
+| foam | MODERATE to HEAVY exudate; padding over bony prominences | absorbent and cushioning |
+| alginate (from seaweed) | HEAVY exudate; also HEMOSTATIC | forms a gel; needs a secondary dressing; not for dry wounds |
+| gauze, moistened (wet-to-damp) | packing cavities; mechanical debridement when prescribed | packing is placed loosely into the wound base without packing the surrounding tissue; the count of packing strips in and out is documented |
+| negative pressure wound therapy | large or complex wounds needing granulation and exudate control | maintain the seal, monitor canister output and for bleeding, follow the prescribed pressure setting |
+
+Wound assessment documents location, size (length, width and depth in centimetres, with undermining and tunnelling measured by clock position), the wound bed (percentage of granulation, slough and eschar), exudate amount, colour and odour, wound edges, periwound skin, and pain. Cultures, when needed, are taken from CLEANSED viable tissue, not from slough or pus on the surface.
+
+DEHISCENCE is separation of the layers of a surgical wound; EVISCERATION is protrusion of viscera through the opening. The client may report a "giving way" sensation and there is often a sudden increase in serosanguineous drainage beforehand. The response is a sequence: STAY with the client, call for help, cover the wound with a STERILE dressing MOISTENED with sterile normal saline, position the client in LOW FOWLER with the KNEES BENT to reduce abdominal tension, keep the client NOTHING BY MOUTH, monitor for shock, and notify the surgeon for emergent repair. Never attempt to push the organs back in and never use a dry dressing.
+
+## Pressure injuries
+
+Prevention is the exam's emphasis. Assess risk with a validated tool such as the BRADEN scale, which scores sensory perception, moisture, activity, mobility, nutrition and friction and shear — a LOWER score means HIGHER risk. Reposition on a schedule appropriate to the client and surface, use pressure-redistributing surfaces, offload heels completely, keep the head of the bed at or below 30 degrees when possible to limit shear, use lift devices rather than dragging, keep skin clean and dry with barrier products for incontinence, optimize nutrition and hydration, and inspect the skin — including under devices — at least daily.
+
+Staging, in brief, since the fuller treatment lives in the basic care chapter: Stage 1 is intact skin with NON-BLANCHABLE erythema; Stage 2 is partial-thickness loss with a shallow open wound or an intact or ruptured serum-filled blister; Stage 3 is full-thickness loss with visible subcutaneous FAT but no exposed bone, tendon or muscle, possibly with undermining; Stage 4 exposes BONE, TENDON or MUSCLE; UNSTAGEABLE means the base is obscured by slough or eschar so the depth cannot be determined; and a DEEP TISSUE PRESSURE INJURY is persistent non-blanchable DEEP RED, MAROON or PURPLE discoloration or a blood-filled blister over intact or non-intact skin. Two rules the exam likes: pressure injuries are never REVERSE-staged as they heal (a healing stage 4 is a healing stage 4, not a stage 2), and STABLE, dry, adherent eschar on an ischemic heel is generally NOT debrided — it is protected and monitored.`,
+      examTip: `Evisceration: sterile saline-moistened dressing, low Fowler with knees bent, nothing by mouth, call the surgeon. Never dry gauze, and never push anything back in.`,
+    },
+    {
+      id: 'burn-skin-conditions',
+      title: `4. Infectious, Inflammatory & Malignant Skin Conditions`,
+      content: `## Bacterial infections
+
+CELLULITIS is a spreading infection of the dermis and subcutaneous tissue: an expanding area of ERYTHEMA that is warm, swollen, tender and poorly demarcated, often with fever, malaise and regional lymphadenopathy. Nursing care includes MARKING the border of the erythema with a skin marker and the time, so progression or regression is measurable; elevating the affected extremity; applying warm compresses as prescribed; giving antibiotics on time; monitoring temperature and the marked border; and teaching the client to complete the course and report spreading redness, streaking, increasing pain or fever.
+
+NECROTIZING FASCIITIS is the emergency that hides inside a cellulitis stem: PAIN OUT OF PROPORTION to the visible findings, rapid progression over hours, skin changes evolving to dusky discoloration, bullae and crepitus, and systemic toxicity with hypotension and confusion. It is a surgical emergency requiring immediate reporting, broad-spectrum antibiotics and urgent debridement.
+
+Methicillin-resistant Staphylococcus aureus produces abscesses and boils that may be mistaken for spider bites. Contact precautions are used in the facility per policy, and home teaching includes not sharing towels or razors, covering lesions, hand hygiene, and completing therapy.
+
+## Viral conditions
+
+HERPES ZOSTER (shingles) is reactivation of the varicella-zoster virus that has lain dormant in a dorsal root ganglion, most often in older adults and in the immunocompromised. The presentation is distinctive: burning, itching or deep pain in a UNILATERAL DERMATOMAL band, often preceding the rash by days, followed by grouped VESICLES on an erythematous base that do not cross the midline. Antivirals (acyclovir, valacyclovir, famciclovir) are most effective when started within 72 HOURS of rash onset.
+
+The precautions question is examinable: a LOCALIZED zoster rash in an immunocompetent client is managed with STANDARD precautions with the lesions COVERED; DISSEMINATED zoster, or zoster in an immunocompromised client, requires AIRBORNE plus CONTACT precautions. The client is infectious to people who have never had varicella or the vaccine — who would develop CHICKENPOX, not shingles — until all lesions have CRUSTED over. Keep pregnant staff and non-immune staff away from the client, and teach the client to avoid contact with pregnant women, newborns and immunocompromised people until crusting.
+
+POSTHERPETIC NEURALGIA — persistent burning pain after the rash resolves — is the common complication, treated with gabapentin, pregabalin, tricyclics and topical agents. The recombinant zoster VACCINE is recommended for adults 50 and older, including those who have already had shingles.
+
+HERPES SIMPLEX produces recurrent grouped vesicles at a consistent site, often triggered by stress, illness, sun or menses; teach not to touch lesions and then the eyes, and to avoid contact with newborns and immunocompromised people.
+
+## Inflammatory conditions
+
+PSORIASIS is a chronic immune-mediated disease producing well-demarcated plaques with silvery-white SCALE on ERYTHEMATOUS bases, classically on the EXTENSOR surfaces (elbows, knees), scalp, and sacrum, with nail pitting and, in some clients, psoriatic arthritis. It is NOT CONTAGIOUS — a fact clients are often desperate to have said aloud, and stigma and psychological impact are part of care. Treatment ranges from topical corticosteroids and vitamin D analogues, coal tar and keratolytics, through phototherapy, to systemic agents and biologics. Teaching: apply topicals as directed after bathing while the skin is damp, do not stop abruptly, avoid triggers including skin trauma (the Koebner phenomenon), infection, stress, smoking and certain medications, moisturize generously, and attend for monitoring on systemic therapy.
+
+ATOPIC DERMATITIS (eczema) produces dry, intensely itchy, inflamed skin. The teaching centres on the itch-scratch cycle: short lukewarm baths followed by immediate application of a thick emollient to damp skin, fragrance-free products, soft cotton clothing, keeping nails short, identifying triggers, and using prescribed topical anti-inflammatories correctly.
+
+CONTACT DERMATITIS follows exposure to an irritant or allergen in the distribution of the contact — the shape of the rash is the clue. Identify and remove the agent, and note LATEX allergy specifically: clients with spina bifida, those with multiple surgeries, and health care workers are at higher risk, and cross-reactivity exists with banana, avocado, kiwi and chestnut. A latex-allergic client needs a latex-free environment, and the reaction can be anaphylactic.
+
+## Infestations and fungal conditions
+
+SCABIES is a mite infestation producing intense itching that is characteristically WORSE AT NIGHT, with burrows and papules in the finger webs, wrists, axillae, waistline and genital area. Treatment is permethrin cream applied from the neck down (including the scalp in infants and older adults) and left on for the prescribed time, with treatment of ALL household and close contacts at the same time even if asymptomatic, and washing of clothing and bedding in HOT water with hot drying or sealing non-washables in plastic bags for the prescribed period. Itching may persist for weeks after successful treatment and does not mean failure.
+
+PEDICULOSIS (lice) shows nits firmly attached to hair shafts near the scalp. Treat with the prescribed pediculicide, comb out nits with a fine-toothed comb, treat contacts, wash bedding and clothing in hot water, and teach not to share hats, brushes, combs or headphones. Neither scabies nor lice is a sign of poor hygiene, and saying so matters.
+
+TINEA infections (ringworm of the body, feet, groin, scalp) present as scaly annular lesions with clearing centres or as macerated interdigital skin. Keep the area clean and DRY, dry thoroughly after bathing, wear breathable clothing and change socks frequently, use the antifungal for the full prescribed course beyond symptom resolution, and do not share personal items. Candidiasis favours warm moist folds and is common in diabetes and after antibiotics — keeping skin folds dry is the nursing intervention.
+
+## Skin cancer and prevention teaching
+
+BASAL CELL carcinoma is the most common and the least aggressive, appearing as a pearly, waxy nodule with rolled borders and possibly central ulceration or telangiectasia. SQUAMOUS CELL carcinoma appears as a scaly, crusted or ulcerated lesion, often on sun-damaged skin, and can metastasize. MELANOMA is the least common but the most deadly, and it is recognized by ABCDE:
+
+- **A — ASYMMETRY**: one half does not match the other.
+- **B — BORDER irregularity**: ragged, notched or blurred edges.
+- **C — COLOUR variation**: multiple shades of brown, black, tan, red, white or blue within one lesion.
+- **D — DIAMETER**: greater than about 6 mm (the size of a pencil eraser), though melanomas can be smaller.
+- **E — EVOLVING**: any change in size, shape, colour or elevation, or new symptoms such as bleeding, itching or crusting.
+
+Any lesion meeting these criteria is referred for evaluation and BIOPSY — the definitive diagnostic step. Additional warning signs: a sore that does not heal, a new growth, and a change in an existing mole.
+
+Prevention teaching: avoid sun exposure between about 10 a.m. and 4 p.m.; use broad-spectrum sunscreen of SPF 30 or higher, applied generously about 15 to 30 minutes before exposure and REAPPLIED every 2 hours and after swimming or heavy sweating; wear protective clothing, a wide-brimmed hat and sunglasses; avoid TANNING BEDS entirely; be aware that clouds, water, sand and snow do not protect and may increase exposure; know that some medications cause photosensitivity; and perform a monthly SKIN SELF-EXAMINATION using a mirror for the back and scalp, with professional examination as recommended, especially for clients with fair skin, many moles, a family history or prior skin cancer.`,
+      examTip: `Localized shingles is standard precautions with lesions covered; disseminated or immunocompromised zoster is airborne plus contact. And a susceptible person exposed to shingles develops chickenpox, not shingles.`,
+    },
+    {
+      id: 'burn-selfcheck',
+      title: `5. Self-Check`,
+      content: `1. A 70 kg adult sustains deep partial-thickness and full-thickness burns to the entire anterior trunk, the entire right arm and the entire right leg. Calculate the total body surface area burned and the fluid resuscitation using the 4 mL formula, including the rate for the first 8 hours. He arrived in the emergency department 90 minutes after the injury — how does that affect the plan?
+
+2. A client rescued from a house fire is alert with an oxygen saturation of 99 percent on room air. His voice is hoarse, his nasal hairs are singed, and there is soot around his nostrils. A colleague says the saturation is reassuring. What is the correct interpretation and the priority action?
+
+3. A client with 45 percent burns is in the acute phase. Which laboratory changes are expected now compared with the first 24 hours, and why?
+
+4. A client with healing burns of the neck and axillae asks whether he can sleep with two pillows and keep his arms tucked in comfortably. What is the correct teaching and the rationale?
+
+5. On the fifth postoperative day after an abdominal surgery, a client coughs and reports that something "gave way." A loop of bowel is visible at the incision. List the actions in order.
+
+6. A client with cellulitis of the lower leg has pain that she rates 10 out of 10 and describes as far worse than the appearance suggests. Over four hours the skin has developed dusky patches and she has become hypotensive and confused. What is the concern?
+
+## Answers
+
+1. Rule of nines: anterior trunk 18, right arm 9, right leg 18 — total 45 percent. Fluid: 4 mL multiplied by 70 kg multiplied by 45 percent equals 12,600 mL of lactated Ringer solution in the first 24 hours. Half — 6,300 mL — is given in the first 8 HOURS, at 787 to 788 mL per hour if the full 8 hours remained. But the clock runs from the TIME OF INJURY, so with 90 minutes elapsed only 6.5 hours remain in that window: 6,300 mL divided by 6.5 hours is about 969 mL per hour. The remaining 6,300 mL is given over the following 16 hours at about 394 mL per hour. The formula is a starting point — titrate to urine output of about 0.5 mL/kg/hour, which for this client is roughly 35 mL per hour.
+
+2. The saturation is not reassuring at all. First, pulse oximetry cannot distinguish CARBOXYHEMOGLOBIN from oxyhemoglobin, so in carbon monoxide poisoning it reads falsely normal — he needs 100 percent oxygen by non-rebreather and a carboxyhemoglobin level. Second, hoarseness, singed nasal hairs and soot are cardinal signs of INHALATION INJURY, and the airway swells progressively over the first 24 to 48 hours. The priority action is immediate airway evaluation with preparation for EARLY intubation, applying high-flow oxygen and notifying the provider now, while the airway can still be secured easily.
+
+3. The fluid shift REVERSES in the acute phase: fluid returns from the interstitium to the vasculature. So the expectations flip from hypovolemia to potential FLUID OVERLOAD (monitor for pulmonary edema, especially in older clients and those with cardiac disease), and potassium moves from HYPERkalemia (from cell lysis in the emergent phase) to HYPOkalemia, as potassium re-enters cells and is lost through the urine and the wound. Sodium losses continue through the wound. Anemia becomes apparent as hemoconcentration resolves, and protein and albumin are low from wound losses and hypermetabolism.
+
+4. No pillows under the neck, and the arms are NOT tucked in. Healing burn tissue contracts into the position of comfort, which is flexion, and contractures across the neck and axillae are functionally devastating and hard to reverse. The neck is positioned in slight EXTENSION with NO pillow, and the arms are ABDUCTED to about 90 degrees, supported on arm boards or pillows, with splints worn on the prescribed schedule. Explain the reasoning, coordinate analgesia before range-of-motion sessions, and enlist the physical and occupational therapists — clients follow uncomfortable positioning far more reliably when they understand what it buys.
+
+5. EVISCERATION. (1) Stay with the client and call for help — do not leave. (2) Cover the wound with a STERILE dressing MOISTENED with sterile normal saline; never a dry dressing and never push the bowel back in. (3) Position the client in LOW FOWLER with the KNEES BENT to reduce tension on the abdominal wall. (4) Keep him NOTHING BY MOUTH in anticipation of surgery. (5) Monitor vital signs for shock, establish or confirm intravenous access, and keep him calm and still — coughing and straining worsen it. (6) Notify the surgeon immediately and prepare for emergent repair.
+
+6. NECROTIZING FASCIITIS. Pain grossly out of proportion to the visible findings, rapid progression over hours, dusky skin changes and systemic toxicity with hypotension and confusion are its signature, and it is a surgical emergency with high mortality. Notify the provider immediately and escalate to rapid response, obtain vital signs and cultures, anticipate aggressive fluid resuscitation, broad-spectrum antibiotics and urgent surgical debridement, mark and photograph the affected area per policy to document the rate of spread, and keep the client nothing by mouth for surgery.`,
+    },
+  ],
+  keyTakeaways: [
+    `A painless burn is full-thickness; the adult rule of nines gives 9 for the head and each arm, 18 for each leg and each trunk surface, and 1 for the perineum.`,
+    `Airway comes before fluid: singed hairs, soot, hoarseness and an enclosed-space fire mean early intubation, and pulse oximetry lies in carbon monoxide poisoning.`,
+    `Resuscitation is 4 mL per kilogram per percent burn of lactated Ringer over 24 hours from the TIME OF INJURY, half in the first 8 hours, titrated to a urine output of about 0.5 mL/kg/hour.`,
+    `The phases change the danger: hypovolemia and hyperkalemia first, then infection with overload and hypokalemia, then contracture — positioned against by extension, splints, range of motion and pressure garments.`,
+    `Evisceration gets a sterile saline-moistened dressing and low Fowler with knees bent; pain out of proportion in a cellulitis is necrotizing fasciitis; and ABCDE plus any change means biopsy.`,
+  ],
+},
+
 };
 
 /** Whether a course lesson exists for the given curriculum topic. */
