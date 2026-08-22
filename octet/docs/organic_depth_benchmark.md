@@ -15,8 +15,9 @@ Audit date: 2026-08-20. Measured against the live octet-api container.
 |---|---|
 | Node coverage (six-part arc lessons) | **159/159 ORG nodes authored** — median 610 words, total ~91k words |
 | Chapter structure | ORG1 9 chapters + ORG2 17 chapters, already organized on a Loudon-shaped chapter list (org_rechapter_map.py, audited) |
-| Lecture-note depth (LessonExtras) | **ORG1 chapter 1 only** — 7 nodes. GEN1 has 20 more. Everything else renders the short arc alone |
-| Depth-gate totals | 27 node-chapters, 120 sections, 35,487 words, 6 figures, 30 tables |
+| Lecture-note depth (LessonExtras) | **ORG1 chapters 1–8** — 49 nodes, 42 of them at the raised 4,000-word floor. GEN1 has 20 more. ORG1 ch 9 and all of ORG2 still render the short arc alone |
+| Depth-gate totals (2026-08-22) | 69 node-chapters, 873 sections, 204,329 words, 91 figures, 73 tables |
+| Depth-gate totals (2026-08-20 audit) | 27 node-chapters, 120 sections, 35,487 words, 6 figures, 30 tables |
 
 The pedagogy layer is complete; the *textbook layer* exists for one organic
 chapter out of 26. That is the gap this programme closes.
@@ -76,18 +77,48 @@ assertions go through the claims checker; no invented data, ever.
 
 ## Tranche order
 
-| tranche | chapters | nodes |
-|---|---|---|
-| 1 (this session) | ORG1 ch 2 Alkanes + ch 3 Acids & Bases | 7 |
-| 2 | ORG1 ch 4 + ch 5 (alkenes) | 15 |
-| 3 | ORG1 ch 6 + ch 7 (stereochemistry, rings) | 11 |
-| 4 | ORG1 ch 8 + ch 9 (IMF, alkyl halides) | 18 |
-| 5–8 | ORG2 ch 1–9 (alcohols → aryl halides) | ~47 |
-| 9–12 | ORG2 ch 10–17 (carbonyls → capstone) | ~52 |
-| 13 | NEW: thioesters & phosphates chapter | ~3 new |
-| 14 | NEW: pericyclic reactions chapter | ~3 new |
+| tranche | chapters | nodes | state |
+|---|---|---|---|
+| 1 | ORG1 ch 2 Alkanes + ch 3 Acids & Bases | 7 | **DONE** |
+| 2 | ORG1 ch 4 + ch 5 (alkenes) | 18 | **DONE** |
+| 3 | ORG1 ch 6 + ch 7 (stereochemistry, rings) | 11 | **DONE** |
+| 4a | ORG1 ch 8 Noncovalent Intermolecular Interactions | 6 | **DONE** — 24,111 words, 12 figures |
+| 4b | ORG1 ch 9 Alkyl Halides | 12 | next |
+| 5–8 | ORG2 ch 1–9 (alcohols → aryl halides) | ~47 | |
+| 9–12 | ORG2 ch 10–17 (carbonyls → capstone) | ~52 | |
+| 13 | NEW: thioesters & phosphates chapter | ~3 new | |
+| 14 | NEW: pericyclic reactions chapter | ~3 new | |
 
 Progress is measured by `scripts/check_octet_depth.py` totals only, and the
 gate must stay green at every commit. Reminder from the FE EE programme: the
 gate checks integrity, not truth — every tranche also gets a live render
 check in the reader before it counts as done.
+
+## Two gates beyond the depth gate
+
+The depth gate counts and checks structure. It cannot see two failure modes
+that reached learners on other courses, so each tranche also runs:
+
+1. **Label collisions in figures.** `eureka/scripts/check_figure_overlaps.py`
+   is generator-agnostic: it re-renders each figure and measures every text
+   artist's bounding box. It can drive an OCTET generator provided that
+   generator exposes `REGISTRY` (stem → function returning a `Figure`) and
+   `S` (the figstyle module). `gen_org1_ch8_figures.py` is written that way
+   and is the model for the rest; the older generators (`gen_org_plots.py`,
+   `gen_org1_ch*_figures.py`) expose a plain `ALL` list of save-and-close
+   functions and cannot be targeted without that shim. Run:
+
+       PYTHONPATH=octet/scripts python3 \
+           eureka/scripts/check_figure_overlaps.py gen_org1_ch8_figures
+
+   It caught three real collisions in the ch8 pass that the depth gate
+   passed cleanly.
+
+2. **Maths the reader cannot draw.** The depth gate checks that `$` pairs up;
+   it does not check that KaTeX can parse what is between them. `LessonProse`
+   is a hand-written scanner rather than remark-math, so the FE EE lesson
+   applies directly: never re-implement its delimiter rules in a checker —
+   transpile the real component, call its exported `splitMath`, and run the
+   real KaTeX (with `katex/dist/contrib/mhchem.js` loaded, or every `\ce{}`
+   in GEN1 reports as a false failure). The whole authored corpus currently
+   renders 1,720 maths runs clean under `strict: 'error'`.
