@@ -2432,6 +2432,94 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# Link vs end-to-end encryption - who encrypts, what is exposed where.
+# Original layout; definitional relationships only.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-link-vs-e2e")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(9.6, 4.8))
+    nodes_x = [0.9, 3.3, 5.7, 8.1]
+    # --- link encryption row ---
+    ax.annotate("LINK ENCRYPTION  (the provider encrypts each hop)", (0.6, 4.45),
+                fontsize=8.8, color=c[0])
+    for i, x in enumerate(nodes_x):
+        ax.add_patch(plt.Rectangle((x - 0.35, 3.4), 0.7, 0.55, facecolor="none",
+                                   edgecolor=ink, linewidth=1.5))
+        ax.annotate("node", (x, 3.67), ha="center", va="center", fontsize=7.2, color=ink)
+        if i < len(nodes_x) - 1:
+            ax.plot([x + 0.38, nodes_x[i + 1] - 0.38], [3.67, 3.67],
+                    color=c[0], linewidth=3, alpha=0.55)
+    ax.annotate("payload AND routing data encrypted on every link", (4.5, 4.12),
+                ha="center", fontsize=7.4, color=S.INK_2[mode])
+    for x in nodes_x[1:3]:
+        ax.annotate("decrypt +\nre-encrypt", (x, 3.0), ha="center", fontsize=6.6,
+                    color=c[2])
+    ax.annotate("CLEARTEXT AT EVERY NODE - a compromised node sees the message",
+                (4.5, 2.55), ha="center", fontsize=7.4, color=c[2])
+    # --- end-to-end row ---
+    ax.annotate("END-TO-END ENCRYPTION  (the user encrypts once)", (0.6, 1.95),
+                fontsize=8.8, color=c[1])
+    for i, x in enumerate(nodes_x):
+        ax.add_patch(plt.Rectangle((x - 0.35, 0.9), 0.7, 0.55, facecolor="none",
+                                   edgecolor=ink, linewidth=1.5))
+        ax.annotate("node", (x, 1.17), ha="center", va="center", fontsize=7.2, color=ink)
+    ax.plot([nodes_x[0] + 0.38, nodes_x[-1] - 0.38], [1.17, 1.17],
+            color=c[1], linewidth=3, alpha=0.55)
+    ax.annotate("payload encrypted start to finish; ROUTING DATA VISIBLE in transit",
+                (4.5, 1.62), ha="center", fontsize=7.4, color=S.INK_2[mode])
+    ax.annotate("intermediate nodes route without reading - a VPN is the classic example",
+                (4.5, 0.5), ha="center", fontsize=7.4, color=ink)
+    S.note(ax, 4.7, -0.15,
+           "the trade: link encryption hides even the traffic pattern (better traffic confidentiality) "
+           "but trusts every node; end-to-end trusts no node but shows who is talking to whom",
+           mode, ha="center")
+    ax.set_xlim(0, 9.4)
+    ax.set_ylim(-0.55, 4.75)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Baselines per classification level - the concept, with original levels.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-baseline-levels")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    cols = [
+        ("RESTRICTED", "MFA + owner approval + NDA", "encrypted at rest,\nin transit, in use", "labelled and\nwatermarked", "real-time", c[2]),
+        ("INTERNAL", "password + owner approval", "encrypted\nin transit", "labelled", "reviewed on\na schedule", c[1]),
+        ("PUBLIC", "owner-approved\nrelease process", "none required", "none", "none", c[0]),
+    ]
+    rows = ["ACCESS", "ENCRYPTION", "LABELLING", "MONITORING"]
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
+    for j, r in enumerate(rows):
+        ax.annotate(r, (0.35, 2.9 - j * 0.85), fontsize=7.8, color=S.INK_2[mode],
+                    va="center")
+    for i, (name, acc, enc, lab, mon, colour) in enumerate(cols):
+        x = 2.3 + i * 2.5
+        ax.add_patch(plt.Rectangle((x - 1.05, 3.45), 2.1, 0.6, facecolor=colour,
+                                   alpha=0.2, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x, 3.75), ha="center", va="center", fontsize=8.6, color=ink)
+        for j, val in enumerate((acc, enc, lab, mon)):
+            ax.annotate(val, (x, 2.9 - j * 0.85), ha="center", va="center",
+                        fontsize=6.9, color=ink)
+    ax.annotate("one baseline per classification level: the label selects the minimum control set -\nan illustrative shape, not a complete catalogue",
+                (4.8, -0.6), ha="center", fontsize=7.8, color=S.INK_2[mode], style="italic")
+    ax.set_xlim(0, 9.6)
+    ax.set_ylim(-1.05, 4.25)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

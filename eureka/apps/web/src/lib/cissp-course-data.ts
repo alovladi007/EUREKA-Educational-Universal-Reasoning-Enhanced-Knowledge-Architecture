@@ -5128,7 +5128,7 @@ Establishing retention governance runs through three issues, and each depends on
 
 **Classify and define.** Define **what data needs to be archived and for how long**, based on business and retention needs driven by **laws, regulations, and corporate requirements**. This is where the schedule is born: record types mapped to retention periods, each period traceable to the obligation or business reason that set it.
 
-**Archive and manage.** Once defined and classified, archive appropriately **based on business access needs**, and manage the archive so it supports the retention policies *while allowing authorised and timely access*. The italics carry the trap: an archive is not a write-only pit. Data retained for compliance or business use must remain reachable by the people entitled to it, in useful time - retention that renders data practically inaccessible has failed its own purpose. The access duty is also what separates archiving from abandonment: an archive has an owner, an access model, and a schedule; a forgotten store has only risk.
+**Archive and manage.** Once defined and classified, archive appropriately **based on business access needs**, and manage the archive so it supports the retention policies *while allowing authorised and timely access*. The italics carry the trap: an archive is not a write-only pit. Data retained for compliance or business use must remain reachable by the people entitled to it, in useful time - retention that renders data practically inaccessible has failed its own purpose. The access duty is also what separates archiving from abandonment: an archive has an owner, an access model, and a schedule; a forgotten store has only risk. Abandonment is over-retention in its most complete form - kept forever because nobody is left to decide otherwise.
 
 ## The dependency read
 
@@ -5368,6 +5368,277 @@ Two cautions complete the answer. The **backup estate** is part of the inheritan
 **11.** Questions: **who needs access to archived data, why, and how fast; do access requirements change as archives age; how long is it kept and when is it disposed of.** Practices: **cross-functional ownership of the data** (business sets policy, IT implements infrastructure); **cross-functional ownership of the retention and disposal policies themselves**, with definitions kept in a lifecycle-wide glossary; and **plan and practice disposal** - enterprise-wide, structured and unstructured, defensible, with notification reports flagging archives nearing expiration.
 
 **12.** The module's practice splits the roles exactly the other way around: **business units own their data and set the retention policies; IT owns the infrastructure and the data management processes that implement them.** Business managers define who touches the data and what may be done with it - value, release, and end-of-life are ownership accountabilities - while IT builds the supporting technology. "IT owns retention" hands the owner's calendar to the custodian: the decisions lose their business and legal grounding, and the ownership module's failure pattern (custodian as de facto owner) acquires a retention schedule. IT runs the machinery; the business decides the dates. The glossary practice is the reconciliation mechanism: shared, agreed definitions let the business express periods that IT's systems can enforce without translation loss.`
+    }
+  ],
+},
+cissp_data_controls: {
+  topicId: 'cissp_data_controls',
+  title: `Data Security Controls`,
+  domainWeight: '10%',
+  overview: `Classification told us how much protection data deserves; this module supplies the machinery that delivers it. Baselines translate each classification level into a minimum control set applied consistently everywhere; scoping and tailoring fit those baselines to real environments; the standards landscape - from the NIST publications to ISO, the CIS controls, SCAP, and the Cybersecurity Framework - supplies catalogues so no organisation invents its controls from nothing. The module then turns to the data itself in its three states: at rest, in transit - with the link versus end-to-end encryption distinction the exam tests by name - and in use, the state that resists protection and drives secure-enclave design. It is Domain 2's largest module, and its through-line is one sentence: the label selects the baseline, the baseline selects the controls, and the state selects how they apply.`,
+  sections: [
+    {
+      id: '1-baselines',
+      title: `1. Baselines: The Minimum, Made Consistent`,
+      content: `## What a baseline is
+
+A **baseline** is a **minimum level of protection used as a reference point**. As a reference point it serves three jobs at once: a **comparison** for assessments and requirements, confirming the minimum security controls are always being achieved; a **check on change**, ensuring updates to technology and architecture are held to the understood minimum; and the **measuring stick** after mitigation - once controls are in place against the risks, the baseline is set, and all further comparison and development is measured against it.
+
+## Baselines per classification level
+
+Baselines earn their keep protecting assets **by value**: if assets are classified by value, then meaningful baselines **for each classification level** deliver the minimum protection each level requires. The shape is a small matrix - control families down one side, levels across the top:
+
+![One baseline per classification level](/courses/cissp/figures/cissp-baseline-levels.svg)
+
+An illustrative sketch (concept, not a complete catalogue): a **restricted** level might demand multi-factor access with owner approval and an NDA, encryption in every state, labelling and watermarking, and real-time monitoring; an **internal** level password access with owner approval, encryption in transit, labelling, and scheduled review; a **public** level only a controlled release process. The exact families - access, encryption, labelling, monitoring - and the exact steps are the organisation's to define; the *structure* is the lesson: **the label selects the minimum control set**, mechanically, so protection follows classification without per-asset debate.
+
+## Technology baselines and the other kind
+
+Baselines can be **technology and architecture specific** - the minimum security requirements a machine must meet before it may join the corporate network is the standing example, and configuration baselines per platform are the daily form. But they can equally be **non-technology**: requiring identification badges displayed in certain areas, or escorts for visitors in valuable areas. Such rules can be mandated as policy *and* simultaneously establish the minimum level of security - a baseline of protection - showing that the concept is about **minimum levels**, not about machines.
+
+In summary form, the module's own distillation: a baseline is a **consistent reference point**; it **defines the minimum level of protection** required for valuable assets; and it can be expressed as **configurations for architectures**, stating the settings and protection level each requires.
+
+## The four application questions
+
+Applying baseline security raises four considerations, and each is a genuine design decision: **Which parts of the enterprise or systems can share the same baseline?** **Should one baseline apply throughout the whole enterprise?** **At what security level should the baseline aim?** **How will the controls forming the baseline be determined?** The questions interlock - aiming a single enterprise-wide baseline at the highest level over-controls everything ordinary, aiming it low under-protects the crown jewels - which is exactly why the per-classification structure above exists, and why the objective is stated carefully in the next breath.
+
+## The objective, stated precisely
+
+The objective of baseline protection is a **minimum set of safeguards protecting the organisation's classified assets, applicable enterprise-wide** - *supplemented* by **detailed risk analysis reviews for assets at high risk or systems critical to the business**. Two tiers, deliberately: the baseline handles the broad estate economically, and the expensive per-system risk analysis of Domain 1 is reserved for the assets that warrant it. Baseline-plus-detailed-analysis is the answer the exam wants when a stem asks how to protect a large estate without running a full risk assessment on every workstation. The two tiers also assign the module's place in Domain 1's machinery: the baseline is mitigation at population scale, and the reserved deep analysis is the treatment decision retaken individually where the stakes justify its cost.`
+    },
+    {
+      id: '2-catalogs',
+      title: `2. Baseline Catalogues and the National Examples`,
+      content: `## Where baselines come from
+
+Organisations rarely write baselines from a blank page: **catalogues of baseline protection** exist to be drawn from, in two styles with two advantages. A catalogue may **specify safeguards in detail** - prescriptive, fast to adopt, consistent by construction - or it may **suggest a set of security requirements** to be met with whatever safeguards suit the system - flexible, technology-neutral, durable. Both serve the baseline approach's core objective: **consistency of security safeguards throughout the enterprise**.
+
+The sources form a short list: **international and national standards organisations**; **industry sector standards and recommendations**; and **another company - preferably with similar business objectives and comparable size**. Environments within an industry resemble one another enough that a well-built catalogue serves many organisations - which is the economic logic of the whole approach.
+
+An enterprise may instead **generate its own baseline** from its goals and objectives alone, and the module names the advantages honestly: **only a minimum of resources is needed for risk analysis per safeguard** - less time and effort selecting controls - and baseline safeguards are **cost-effective when many systems share a common environment** with comparable security needs, because the same safeguards adopt across all of them without great effort. The baseline approach is, at bottom, risk management amortised: analyse once, apply broadly, reserve deep analysis for the exceptions.
+
+## Two national systems worth knowing
+
+The module offers two government implementations as proof the approach scales:
+
+| Example | What it is |
+|---|---|
+| USGCB (United States) | The US Government Configuration Baseline: security configuration baselines for IT products widely deployed across federal agencies - evolved from the earlier Federal Desktop Core Configuration mandate; government-wide guidance on maintaining effective, security-focused configuration settings |
+| ISKE (Estonia) | The Estonian public sector's IT baseline security system - mandatory for state and local government organisations handling databases; adapted from the German IT baseline protection manual (IT-Grundschutz); implemented as a **three-level baseline system**, with three sets of measures matched to three security-requirement levels |
+
+The two examples teach different lessons. USGCB shows the **configuration-baseline** form at national scale: the same product, the same hardened settings, everywhere. ISKE shows the **levelled** form - the per-classification structure of the previous section, institutionalised: the data's requirements select which of three measure sets applies. And ISKE's lineage - a German methodology adapted to Estonian needs - is the catalogue principle in action between nations: borrow the well-built catalogue, tailor it to the environment. Adaptation across borders also previews the next section's fitting operations at sovereign scale.
+
+## Choosing your source
+
+The selection logic mirrors the governance module's framework advice: a US federal supplier lives with the federal configuration baselines; a database-heavy public sector adopts a levelled system; a commercial enterprise starts from the standards bodies' catalogues or a sector peer's practice and tailors. The wrong answer is always the same one: inventing from scratch what a mature catalogue already provides, spending the risk-analysis effort the baseline approach exists to save.`
+    },
+    {
+      id: '3-principles',
+      title: `3. The Generally Accepted Principles`,
+      content: `## High-level, durable, guiding
+
+Beneath every baseline sit principles - **fundamental in nature, rarely changing over time regardless of technology focus**. The module presents six, explicitly **not as security requirements but as guiding references** for developing, implementing, and understanding policies and baselines in any organisation:
+
+| Principle | The guidance |
+|---|---|
+| Information system security objectives | Objectives are described in terms of confidentiality, integrity, and availability - and policies, baselines, and measures are developed and implemented according to them |
+| Prevent, detect, respond, and recover | Security is a combination of all four measure types: preventive (avoid or deter the event), detective (identify its occurrence), response (coordinated containment of damage), recovery (restore the triad to the expected state) |
+| Protection while processed, in transit, and in storage | Security measures preserve the triad in every data state - the three-state frame this module's second half develops in full |
+| External systems are assumed insecure | Anything not under your direct control is treated as insecure; additional measures apply when your assets sit in or interface with external systems - and infrastructure can be partitioned, physically or logically, to segregate different risk levels |
+| Resilience for critical information systems | Critical systems withstand major disruptive events, with measures to detect disruption, minimise damage, and rapidly respond and recover |
+| Auditability and accountability | Auditability: the ability to verify activities via audit trails, logs, alarms, notifications. Accountability: the ability to audit the actions of all parties and processes - with roles defined, identified, and authorised commensurate with the information's sensitivity |
+
+## Reading the six as one system
+
+The principles are the course in miniature, and the exam uses them as connective tissue. The first grounds everything in the triad. The second is Domain 1's control-category timeline compressed to four beats. The third previews this module's data states. The fourth is the trust logic behind partitioning, screened subnets, and the entire third-party apparatus - **assume insecure until controlled** - and it is the principle a stem invokes whenever an organisation extends trust to an environment it does not govern. The fifth is the continuity module's mandate restated as an engineering property. The sixth is the IAAA chain's accountability leg with its evidence forms named.
+
+Their durability is the point of teaching them: technologies in this module's standards catalogue will version and expire, but a baseline built to honour these six survives its own tooling. When evaluating any proposed baseline - purchased, borrowed, or written - the six make a fast completeness screen: does it serve all three objectives, cover all four measure types, address all three states, distrust the external, demand resilience where criticality warrants, and leave evidence? A gap against any principle is a finding before a single control is read. The screen works because the principles sit above technology: they interrogate what the baseline achieves, not what it deploys.`
+    },
+    {
+      id: '4-scoping-tailoring',
+      title: `4. Scoping, Tailoring, and Supplementation`,
+      content: `## Fitting the general to the actual
+
+Catalogue baselines are written for everyone, which means they fit no one exactly. Three named operations close the gap, and the exam tests their definitions with precision:
+
+| Operation | Definition | The verb to remember |
+|---|---|---|
+| Scoping | Limiting the general baseline recommendations by **removing those that do not apply** | Remove |
+| Tailoring | **Altering** baseline control recommendations to apply more specifically - to the technology or environment as required | Adjust |
+| Supplementation | **Adding** assessment procedures or details to meet the organisation's risk management needs - organisation-specific, system- and platform-specific information | Add |
+
+Scoping asks "does this control belong in our environment at all?" - the wireless controls scoped out of a facility with no wireless, the mainframe controls removed from an estate with no mainframe. Tailoring asks "how must this control read to fit what we actually run?" - the generic requirement rewritten for the specific platform. Supplementation asks "what does the catalogue not know about us?" - and adds it. To do any of the three well, **a thorough understanding of the environment and its risks is necessary**; these are risk-informed judgements, not paperwork trims.
+
+## The governance around the operations
+
+Fitting operations are exactly where a baseline could be quietly hollowed out, so the module wraps them in governance. **Scoping guidance** gives the enterprise specific terms and conditions on the applicability and implementation of individual controls. **System security plans must clearly identify which controls employed scoping guidance**, with a description of the considerations made - the removal is documented, never silent. And the application of scoping guidance **must be reviewed and approved by the authorizing official** for the information system - the RMF's accountable role from Domain 1, because deciding a control does not apply is a risk acceptance wearing an editor's pencil, and risk acceptance climbs to the accountable owner.
+
+**Tailoring** extends to assessment: scoping the assessment procedures to match the system's characteristics and operating environment gives the enterprise flexibility to avoid **unnecessarily complex or costly assessment** while still meeting the requirements a risk management framework establishes. **Supplementation decisions are left to the organisation's discretion**, maximising flexibility in building assessment plans from risk-assessment results - the extent, rigour, and intensity of assessment scaled to what the risks actually warrant.
+
+## Why the three matter architecturally
+
+The module's closing counsel: be aware of the **value** these operations bring to security architectures being planned and assessed. Scoping and tailoring **narrow the focus** so the appropriate risks are identified and addressed per requirements; supplementation keeps the architecture **flexible over time**, able to grow with needs that arise once the architecture operates. Read as a set, the three are what make catalogue-based security honest: without them, an organisation either drowns implementing controls that do not apply or falsifies compliance with controls it silently skipped. With them - documented, approved, risk-informed - the general catalogue becomes a defensible, specific baseline. The documentation trail is also what future assessors consume: every scoped-out control they encounter arrives pre-answered, with the consideration and the approval on record.`
+    },
+    {
+      id: '5-standards-landscape',
+      title: `5. The Standards Landscape`,
+      content: `![The framework stack the standards landscape feeds](/courses/cissp/figures/cissp-framework-stack.svg)
+
+## Frameworks as baseline sources
+
+Standards - sometimes called frameworks - help organisations **understand baseline controls and assess the current state of their security programmes**. The practitioner is expected to recognise the major bodies and their products, from national agencies to transnational organisations. A curated map of the landscape the module surveys:
+
+| Family | The essentials |
+|---|---|
+| NIST publications | **FIPS 199** - security categorisation standards for federal information and systems; **FIPS 200** - minimum security requirements; **SP 800-37** - the Risk Management Framework guide; **SP 800-53** - the security and privacy control catalogue; **SP 800-60** - mapping information types to security categories; plus the National Checklist Program, the public repository of configuration checklists |
+| ISO/IEC | **27001** - requirements for a documented information security management system in the context of business risk; **27002** - guidelines and control catalogue implemented to meet risk-assessment-identified requirements; purchased, not free |
+| ITU-T | The **X.800 series** - a security baseline against which network operators assess readiness; **X.1205** - a cybersecurity definition and threat taxonomy with defence-in-depth application |
+| European | **ENISA** - the EU's network and information security centre, producing good-practice guidance and national-strategy implementation guides; the EU cybersecurity strategy; the UK's ten-steps guidance for organisational leaders |
+| Defence and agency | The DoD authorisation instruction lineage and NSA mitigation guidance - sector-specific but influential |
+
+The map's reading habit: **categorisation standards (FIPS 199, SP 800-60) decide how important a system is; requirement standards (FIPS 200, 27001) decide what it must achieve; control catalogues (SP 800-53, 27002) supply the safeguards; checklists and configuration baselines make them concrete.** A stem naming any one document is usually testing which layer it lives at.
+
+## The critical controls
+
+One consensus effort earns its own treatment: the **critical security controls** initiative - a unified list of the most critical issues, identified by consensus of federal and private-sector professionals, introducing **no new requirements** but organising existing ones into a simplified, prioritised list. Its **five tenets** are the examinable core: **offense informs defense** (build from knowledge of actual attacks; include only controls shown to stop real-world attacks); **prioritization** (invest first where risk reduction is greatest against the most dangerous actors); **metrics** (a shared measurement language for executives, IT, auditors, and security); **continuous monitoring** (test and validate control effectiveness continuously); and **automation** (reliable, scalable, continuous measurement of adherence). The list itself - inventories of devices and software, secure configurations, continuous vulnerability remediation, controlled administrative privileges, boundary defence, log analysis, need-to-know access, penetration testing and more - has been re-versioned over the years (stewardship passed onward, and the current generation is published as the CIS Critical Security Controls, consolidated into eighteen), but the tenets and the prioritisation logic persist unchanged.
+
+## SCAP: the automation layer
+
+The **Security Content Automation Protocol (SCAP)** standardises the format and nomenclature by which **software flaw and security configuration information is communicated** - to machines and humans alike - supporting automated configuration checking, vulnerability and patch verification, technical compliance activity, and security measurement. Its component specifications group into **five categories**: **languages** (expressing policy, checks, and results - the checklist description format, the open vulnerability assessment language, the interactive checklist language); **reporting formats** (asset reporting and identification); **enumerations** (standard nomenclatures: platforms, configurations, and the CVE vulnerability dictionary); **measurement and scoring** (CVSS for vulnerabilities and its configuration counterpart); and **integrity** (a trust model for the automation data itself). The reference data behind SCAP is the **National Vulnerability Database**. The exam-level takeaway: SCAP is how baseline compliance becomes *machine-checkable* - the critical-controls tenet of automation, given a protocol.
+
+## The Cybersecurity Framework
+
+Born of a critical-infrastructure executive order and built by industry-government collaboration, the **NIST Cybersecurity Framework** is a voluntary, risk-based approach with **three parts**. The **Core**: cybersecurity activities, outcomes, and informative references common across sectors, organised as five concurrent functions - **identify, protect, detect, respond, recover** - with categories, subcategories, and mapped references beneath (the current 2.0 revision adds **govern** as a sixth function, as the governance module noted). The **Implementation Tiers**: how an organisation's risk practices range from **Tier 1 Partial to Tier 4 Adaptive** - a progression from informal and reactive to agile and risk-informed; selected considering current practice, threat environment, legal requirements, objectives, and constraints. The **Profiles**: the outcomes an organisation selects from the Core for its business needs - and the framework's working method is the **Current Profile versus Target Profile comparison**, which turns posture into a prioritised improvement plan. Tiers describe *how you manage risk*; profiles describe *what you have chosen to achieve*; the core supplies the vocabulary for both - the three-part distinction stems test most.`
+    },
+    {
+      id: '6-data-states',
+      title: `6. The Three Data States and Their Protection`,
+      content: `## The frame
+
+Data exists in **three basic states**, and each takes its own protection: **data at rest** - stored on media in any form, neither transmitted nor processed; **data in motion (transit)** - currently travelling, typically across a network; **data in use** - being processed: generated, updated, appended, erased, or viewed through endpoints and applications. Understanding the states lets the organisation apply the measures appropriate to each - and the risks are constant across them (unauthorised disclosure, modification, unavailability); only the mechanisms change.
+
+## At rest
+
+Stored data - databases, backups, off-site storage, password files - needs protection from disclosure, undetected alteration, and loss. The workhorse is **cryptography**, limiting access to holders of the keys (with modern tools compressing as they protect, saving space in both storage and transmission). The risk picture: a malicious user gaining **physical or logical access to a device** and transferring its information out. The recommendations: **removable media and mobile devices - laptops, tablets, wearables, smartphones - properly encrypted** when holding valuable data, with **access controls and redundancy controls** completing the set - the triad delivered whole, not confidentiality alone.
+
+## In transit: link versus end-to-end
+
+Data crossing any network must survive interception, and network encryption comes in two named forms the exam distinguishes carefully:
+
+![Link versus end-to-end encryption](/courses/cissp/figures/cissp-link-vs-e2e.svg)
+
+| Property | Link encryption | End-to-end encryption |
+|---|---|---|
+| Who performs it | The service provider, along the communications path | The end user or organisation, before transmission |
+| What is encrypted | Everything on each link - payload **and routing data** | The payload, start to finish; **routing information remains visible** |
+| At the nodes | Each node **decrypts and re-encrypts** to route - the message is momentarily clear at every hop | Nodes route without reading; the data stays encrypted through them |
+| Characteristic strength | **Traffic confidentiality** - hiding even the addressing defeats inference from the existence of traffic between parties | No trust required in any intermediate node |
+| Characteristic risk | A compromised node sees the message in the clear | An observer learns who talks to whom, and when |
+| Classic example | Provider-encrypted circuits and links | A VPN connection |
+
+The two answer different threats and are **strongest together**: end-to-end protects the content against every node, link encryption denies the observer even the traffic pattern.
+
+Transmission practice follows a strict rule set: valuable data is encrypted **on any network - including within the same protected subnet**, because the impact of a breach does not respect subnet boundaries; client-to-server, server-to-server, and third-party transfers all count. **Email is not secure** and must not carry sensitive data without message-level encryption (S/MIME or PGP-style tools) or pre-encrypted attachments. Web interfaces use **current TLS** - and here the course corrects the era of its source material: the legacy SSL protocol and early TLS versions are broken or deprecated; the modern floor is TLS 1.2, with 1.3 preferred, and "SSL" survives only as a colloquialism. Databases living apart from their applications encrypt the connection between them with validated cryptography; where application-level encryption is unavailable, **network-level encryption - IPsec or SSH tunnelling** - is the fallback. And the familiar protocol substitutions apply: the insecure web, file-transfer, remote-shell, and remote-desktop protocols each have their secured replacements, as the Domain 4 protocol map details.
+
+![Insecure protocols and their secure replacements](/courses/cissp/figures/cissp-secure-protocol-pairs.svg)
+
+Algorithm selection compresses to two rules: prefer algorithms supporting **longer key lengths**, and - since passwords often control the keys - prefer **long, complex passphrases** over short ones. Wireless adds its own floor: connect only through **cryptographically strong wireless encryption** (WPA2 at minimum in the module's era; WPA3 where available) - and apply the end-to-end mechanisms **on top**, because the wireless link protects only its own hop.
+
+## In use: the hard state
+
+Data being processed is **particularly troublesome to protect**: most architectures must process data **in clear text**, so the encryption that guards the other two states falls away exactly where the data is most active. The industry's identified direction is the **secure enclave**: processing still occurs on cleartext, but inside a region **isolated - sectioned off - from the rest of the architecture**, so that vulnerabilities or malware elsewhere cannot reach it. The word's own meaning - a territory isolated and distinct from what surrounds it - is the design in one image. And the module's closing caution is the professional's reflex by now: **nothing is perfectly secure** - enclave implementations carry their own vulnerabilities, and implementation issues can undo the isolation the concept promises. In use remains the state where physical controls, application discipline, and workflow design carry the load the mathematics cannot. That honest limit closes the module where it began: the label selected the baseline, the baseline selected the controls, the state selected the mechanism - and where the mechanism runs out, the architecture isolates what it cannot encrypt.`
+    },
+    {
+      id: '7-worked-examples',
+      title: `7. Worked Examples`,
+      content: `## Worked example 1: building the baseline set
+
+*A 900-person firm classifies data into three levels and runs ~1,400 endpoints, 60 servers, and a dozen critical business systems. Design the baseline architecture: how many baselines, sourced how, and where does per-system risk analysis apply?*
+
+The structure follows the module directly. **Per-classification baselines** - one minimum control set per level, covering access, encryption, labelling, and monitoring, so every data set's label mechanically selects its protections. **Per-platform configuration baselines** - hardened build standards for the endpoint and server platforms, sourced from a mature catalogue (the public checklist repositories and configuration baselines exist precisely for this) and then **scoped and tailored**: controls for absent technologies removed with documentation, generic settings adjusted to the actual platforms, both under the authorising official's approval. **Detailed risk analysis reserved for the dozen critical systems** - the two-tier objective verbatim: baseline protection enterprise-wide, expensive analysis only where criticality warrants it. Sourcing from catalogues rather than authorship is the deliberate economy: the baseline approach exists to amortise risk analysis, and the firm's effort goes into fitting, not inventing.
+
+## Worked example 2: the scoping dispute
+
+*Adopting a control catalogue, a team lead unilaterally drops fourteen controls as "obviously irrelevant" and adjusts nine others to fit the environment, recording none of it. An assessor later finds the system security plan claims full catalogue compliance. Name each operation performed, and everything done wrong.*
+
+The dropping is **scoping** (removing inapplicable recommendations); the adjusting is **tailoring** (altering controls to apply more specifically). Both are legitimate operations - performed illegitimately in every procedural respect. **Undocumented**: the system security plan must identify which controls employed scoping guidance and describe the considerations; silence converts fitting into falsification, and the plan now claims compliance with controls that were quietly removed. **Unapproved**: scoping must be reviewed and approved by the **authorising official** - removing a control is accepting the risk it addressed, and a team lead holds no such acceptance authority (Domain 1's rule: risk acceptance climbs to the accountable owner). **Unjustified**: "obviously irrelevant" is not the thorough understanding of environment and risks the operations require. The remediation: re-run the scoping and tailoring as documented, risk-informed decisions; route them through the authorising official; and correct the security plan to tell the truth. The operations were never the problem - the governance around them was skipped, and that governance is most of what the exam tests here.
+
+## Worked example 3: choosing the encryption architecture
+
+*A logistics firm sends shipment manifests between four regional offices across provider-managed circuits. Threat analysis flags two concerns: interception of manifest contents, and a competitor inferring trade volumes from traffic patterns between specific offices. Design the in-transit protection.*
+
+Two threats, two mechanisms - and the distinction is the module's table in action. Content interception is answered by **end-to-end encryption**: the firm encrypts manifests before transmission (a VPN between offices being the classic form), so no intermediate node - including the provider's - ever holds cleartext. But end-to-end **leaves routing information visible**: an observer still sees which offices exchange traffic and how much, which is precisely the competitor's inference channel. That threat is answered by **link encryption**, performed by the provider along the path, encrypting routing data as well as payload and providing **traffic confidentiality** - defeating inference from the existence of traffic between parties.
+
+The complete design uses **both**: end-to-end for content the provider's nodes must never read, link encryption for the traffic pattern the observer must never see. The residual to state honestly: link encryption's node-decryption property means the provider's nodes could see the message *if end-to-end were absent* - which is why the layering, not either alone, answers the full threat model. One threat model, two named mechanisms, each doing the job the other cannot: the exam's favourite shape for this topic.
+
+## Worked example 4: the payment platform's data states
+
+*A payments startup asks for a data-protection review structured by state. Its stack: card data tokenised in a database, nightly encrypted backups to cloud storage, API traffic to merchant partners, an internal analytics dashboard displaying transaction details, and processing services that decrypt records in memory to compute fraud scores. Walk the three states.*
+
+**At rest**: the tokenised database and the encrypted backups are the right shape - cryptography limiting access to key-holders - with the review confirming key management (the CIA module's lesson that key loss is availability loss), access controls, and redundancy alongside the encryption. Cloud backup adds the external-systems principle: the provider's environment is assumed insecure until the controls say otherwise, and the encryption's keys stay home. **In transit**: the merchant APIs carry valuable data across networks - current TLS as the floor, application-level encryption for the payloads, and the same-subnet rule inside the stack: service-to-service and database-to-application connections encrypt even within the protected network. **In use**: the fraud-scoring services decrypting in memory are the hard state - candidates for enclave-style isolation, sectioned from the general architecture so a compromise elsewhere cannot read the cleartext window; and the analytics dashboard is in-use exposure of the human kind - transaction details on screens, governed by access scoping, masking of card fields the analyst does not need, and the physical-and-workflow controls that state always demands. The review's structure is the deliverable: every store, flow, and process assigned to a state, every state showing its mechanism - and the gaps announcing themselves wherever a cell is empty.
+
+## Worked example 5: the framework triage
+
+*A mid-sized manufacturer, new to formal security, asks which of the landscape's instruments to adopt first. Its constraints: no compliance mandate yet, a small team, executive appetite for a roadmap they can understand, and an estate of largely common platforms. Recommend a starting stack, using the layers.*
+
+Work the layers in their order. **Categorise**: even informally, the firm sorts its systems by impact - the categorisation instinct of the federal standards applied without their paperwork - so effort lands where impact lives. **Set the posture roadmap**: the **Cybersecurity Framework** is the executive-facing instrument - build a Current Profile, choose a Target Profile, and let the gap become the prioritised plan; the function vocabulary gives leadership a view they can govern by, and the Tiers give an honest maturity reading (the firm is likely Tier 1, and saying so is the point). **Select controls with prioritisation built in**: the **critical-controls list** fits the small-team constraint precisely - consensus-prioritised, offense-informed, designed so the first controls implemented buy the most risk reduction. **Make it concrete**: platform **configuration baselines from the public checklist repositories**, scoped and tailored to the estate - common platforms making the catalogue economy strongest. **Automate the checking**: SCAP-validated tooling so baseline compliance is measured continuously rather than sampled annually.
+
+What was deliberately deferred: the certifiable management system (valuable when customers demand demonstrable certification - a compliance trigger this firm does not yet have) and the full federal catalogue (built for obligations the firm does not carry). The triage logic is the answer's spine: posture framework for direction, prioritised controls for the first year's work, configuration baselines for concreteness, automation for continuity - each instrument at its layer, none adopted for its name.`
+    },
+    {
+      id: '8-self-check',
+      title: `8. Self-Check`,
+      content: `## Self-Check Questions
+
+1. Define a baseline and give its three jobs as a reference point.
+
+2. How do baselines connect to classification, and what does that connection buy?
+
+3. State the objective of baseline protection - both tiers.
+
+4. Name the three catalogue sources, and the two advantages of an enterprise generating its own baseline.
+
+5. What are the two national baseline examples, and what different lesson does each teach?
+
+6. List the six generally accepted principles.
+
+7. Define scoping, tailoring, and supplementation - one verb each - and name the governance wrapped around scoping.
+
+8. In the standards map, what layer does each live at: FIPS 199, FIPS 200, SP 800-53, the checklist repositories?
+
+9. Give the five tenets of the critical-controls initiative.
+
+10. What is SCAP for, and what are its five specification categories?
+
+11. Name the Cybersecurity Framework's three parts and what each describes.
+
+12. Contrast link and end-to-end encryption on: who performs it, what is exposed at nodes, what is exposed to observers - and name the state neither protects.
+
+## Answers
+
+**1.** A baseline is a **minimum level of protection used as a reference point**. Its three jobs: a **comparison** for assessments and requirements, confirming minimum controls are always achieved; a **check on change**, holding technology and architecture updates to the understood minimum; and the **post-mitigation measuring stick** - once controls are in place, the baseline is set and all further comparison and development is measured against it.
+
+**2.** One baseline is built **per classification level**: if assets are classified by value, meaningful baselines for each level deliver each level's required minimum. The connection buys **mechanical protection selection** - the label selects the control set, so protection follows classification without per-asset debate - and enterprise **consistency**, the baseline approach's core objective.
+
+**3.** A **minimum set of safeguards protecting the organisation's classified assets, applied enterprise-wide** - supplemented by **detailed risk analysis reviews for high-risk assets and business-critical systems**. Two tiers by design: the baseline economically covers the broad estate; Domain 1's expensive per-system analysis is reserved for what warrants it.
+
+**4.** Sources: **international and national standards organisations; industry sector standards and recommendations; another company, preferably with similar objectives and comparable size**. Own-baseline advantages: **minimal risk-analysis resources per safeguard** (less time and effort selecting controls), and **cost-effectiveness where many systems share a common environment** - the same safeguards adopt across them without great effort.
+
+**5.** **USGCB** - the US federal configuration baseline (evolved from the desktop core configuration mandate): the *configuration-baseline* form at national scale, same product, same hardened settings everywhere. **ISKE** - Estonia's mandatory public-sector system, adapted from the German IT baseline protection manual: the *levelled* form - three measure sets matched to three requirement levels - plus the catalogue principle between nations: borrow the mature methodology, tailor it locally.
+
+**6. Information system security objectives** (CIA drives policies and baselines); **prevent, detect, respond, and recover** (security combines all four measure types); **protection while processed, in transit, and in storage** (all three states); **external systems are assumed insecure** (with partitioning to segregate risk levels); **resilience for critical information systems**; **auditability and accountability** (verifiable activity; auditable parties; roles authorised commensurate with sensitivity).
+
+**7. Scoping - remove**: limiting the general baseline by removing recommendations that do not apply. **Tailoring - adjust**: altering recommendations to apply more specifically to the technology or environment. **Supplementation - add**: adding procedures or organisation-specific detail to meet risk management needs. Governance: scoping decisions are **documented in the system security plan** (which controls, what considerations) and **reviewed and approved by the authorising official** - removal is risk acceptance, and it climbs to the accountable owner.
+
+**8. FIPS 199** - categorisation (how important is the system); **FIPS 200** - minimum requirements (what it must achieve); **SP 800-53** - the control catalogue (which safeguards deliver it); the **checklist repositories** - concrete configuration (how the safeguards are set on real products). Categorise, require, select, configure - the layers in order.
+
+**9. Offense informs defense** (build from real attacks; include only controls shown to stop them); **prioritization** (greatest risk reduction against the most dangerous actors first); **metrics** (a shared measurement language across executives, IT, auditors, security); **continuous monitoring** (validate effectiveness continuously); **automation** (reliable, scalable, continuous measurement of adherence).
+
+**10.** SCAP standardises the **format and nomenclature for communicating software flaw and security configuration information** - to machines and humans - enabling automated configuration checking, vulnerability and patch verification, compliance activity, and measurement, with the National Vulnerability Database as its reference data. Five categories: **languages** (policy, checks, results), **reporting formats** (asset reporting and identification), **enumerations** (platforms, configurations, vulnerabilities - the CVE dictionary), **measurement and scoring** (CVSS and its configuration counterpart), **integrity** (the trust model for the automation data).
+
+**11.** The **Core** - activities, outcomes, and references organised as concurrent functions (identify, protect, detect, respond, recover; the current revision adds govern) with categories and informative references beneath: the shared vocabulary. The **Implementation Tiers** - Tier 1 Partial to Tier 4 Adaptive: how the organisation's risk management practices behave, from informal and reactive to agile and risk-informed. The **Profiles** - the outcomes selected from the Core for business needs, worked as Current Profile versus Target Profile: what the organisation has chosen to achieve, and the gap that becomes its improvement plan.
+
+**12. Link encryption** is performed by the **service provider** along the path; it encrypts payload **and routing data**, but each node **decrypts and re-encrypts** to route - so a compromised node sees the message, while an outside observer sees nothing, not even the traffic pattern (traffic confidentiality). **End-to-end encryption** is performed by the **user**; the payload stays encrypted through every node - no node trust required - but **routing information remains visible**, so an observer learns who communicates with whom. Neither protects **data in use**: both guard the transit state only, and processing still exposes cleartext - the enclave problem, in the state the mathematics does not cover.`
     }
   ],
 },
