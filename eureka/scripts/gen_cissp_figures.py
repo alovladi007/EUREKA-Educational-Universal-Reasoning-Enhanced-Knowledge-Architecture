@@ -3891,6 +3891,190 @@ def _(mode):
     return fig
 
 
+
+# ---------------------------------------------------------------------------
+# The five cryptographic services and the primitive that normally delivers each.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-crypto-services")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("CONFIDENTIALITY", "encrypting the message content", c[0]),
+        ("INTEGRITY", "cryptographic hashing functions", c[1]),
+        ("AUTHENTICITY", "asymmetric cryptography", c[2]),
+        ("NON-REPUDIATION", "digital signatures", c[0]),
+        ("ACCESS CONTROL", "symmetric AND asymmetric keys", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.5, 4.4))
+    for i, (name, how, colour) in enumerate(rows):
+        y = 3.7 - i * 0.66
+        ax.add_patch(plt.Rectangle((0.4, y - 0.22), 3.0, 0.46, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.5))
+        ax.annotate(name, (1.9, y), ha="center", va="center", fontsize=7.9, color=ink)
+        ax.annotate("normally achieved by", (3.65, y + 0.02), fontsize=6.6,
+                    color=S.INK_2[mode], va="center")
+        ax.annotate(how, (5.75, y), fontsize=7.4, color=ink, va="center")
+    ax.annotate("integrity is DETECTION, not prevention - cryptography cannot stop a message being altered,",
+                (4.8, 0.5), ha="center", fontsize=7.5, color=c[2])
+    ax.annotate("only reveal that it was, whether the change was accidental or deliberate",
+                (4.8, 0.16), ha="center", fontsize=7.5, color=c[2])
+    ax.set_xlim(0, 9.7)
+    ax.set_ylim(-0.05, 4.1)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Why symmetric key distribution does not scale: n(n-1)/2.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-symmetric-scaling")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    n = np.array([10, 50, 100, 500, 1000])
+    keys = n * (n - 1) // 2
+    fig, ax = plt.subplots(figsize=(8.6, 4.3))
+    ax.plot(n, keys, marker="o", color=c[0], linewidth=2.0, markersize=7)
+    for xi, yi in zip(n, keys):
+        ax.annotate(f"{yi:,}", (xi, yi), textcoords="offset points",
+                    xytext=(0, 11), ha="center", fontsize=7.6, color=ink)
+    ax.set_xlabel("users who must communicate securely with one another", fontsize=8.4)
+    ax.set_ylabel("symmetric keys required", fontsize=8.4)
+    ax.set_yscale("log")
+    ax.set_title("$n(n-1)/2$  -  ten users need 45 keys; a thousand need nearly half a million",
+                 fontsize=9.0, color=ink)
+    ax.tick_params(labelsize=7.6)
+    ax.grid(True, alpha=0.25, linewidth=0.7)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Three ways to use an asymmetric key pair, and what each buys.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-asymmetric-modes")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    rows = [
+        ("CONFIDENTIAL MESSAGE", c[0], "encrypt with the RECIPIENT's PUBLIC key",
+         "only the recipient's private key opens it", "confidentiality only"),
+        ("OPEN MESSAGE / PROOF OF ORIGIN", c[1], "encrypt with the SENDER's PRIVATE key",
+         "anyone's copy of the sender's public key opens it", "authenticity, NOT confidentiality"),
+        ("CONFIDENTIAL + PROOF OF ORIGIN", c[2], "sender's PRIVATE key, then recipient's PUBLIC key",
+         "recipient reverses both, in the opposite order", "both, at twice the work"),
+    ]
+    fig, ax = plt.subplots(figsize=(9.8, 4.6))
+    for i, (name, colour, how, opens, buys) in enumerate(rows):
+        y = 3.85 - i * 1.15
+        ax.add_patch(plt.Rectangle((0.4, y - 0.24), 3.15, 0.5, facecolor=colour,
+                                   alpha=0.17, edgecolor=colour, linewidth=1.6))
+        ax.annotate(name, (1.97, y), ha="center", va="center", fontsize=7.2, color=ink)
+        ax.annotate(how, (3.8, y + 0.18), fontsize=7.2, color=ink)
+        ax.annotate(opens, (3.8, y - 0.16), fontsize=6.8, color=S.INK_2[mode])
+        ax.annotate(f"buys: {buys}", (3.8, y - 0.5), fontsize=6.9, color=colour)
+    ax.annotate("the key that ENCRYPTS decides what the operation is for: recipient's public = secrecy, sender's private = proof",
+                (4.9, 0.28), ha="center", fontsize=7.5, color=ink, style="italic")
+    ax.set_xlim(0, 10.0)
+    ax.set_ylim(0.05, 4.35)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
+# Attacks grouped by what the attacker is assumed to possess.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-crypto-attacks")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    groups = [
+        ("BY WHAT THE ATTACKER HAS", c[0],
+         ["ciphertext only - the hardest", "known plaintext", "chosen plaintext",
+          "chosen ciphertext"]),
+        ("BY MATHEMATICS", c[1],
+         ["algebraic - structural weakness", "frequency analysis",
+          "birthday - two matching hashes", "factoring, aimed at RSA"]),
+        ("BY GOING AROUND THE MATHS", c[2],
+         ["rainbow tables against password files", "weak random number generators",
+          "temporary files left on disk", "social engineering for the key"]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.9, 4.5))
+    for i, (name, colour, items) in enumerate(groups):
+        x = 0.35 + i * 3.2
+        ax.add_patch(plt.Rectangle((x, 3.5), 2.95, 0.58, facecolor=colour,
+                                   alpha=0.18, edgecolor=colour, linewidth=1.7))
+        ax.annotate(name, (x + 1.47, 3.79), ha="center", va="center",
+                    fontsize=7.2, color=ink)
+        for j, it in enumerate(items):
+            ax.annotate(it, (x + 1.47, 3.05 - j * 0.5), ha="center", fontsize=6.9,
+                        color=S.INK_2[mode])
+    ax.annotate("the third column is where real systems actually fail - the algorithm is rarely the weak point,",
+                (4.95, 0.62), ha="center", fontsize=7.5, color=c[2])
+    ax.annotate("which is Kerckhoffs's principle read as a warning rather than a design rule",
+                (4.95, 0.26), ha="center", fontsize=7.5, color=c[2])
+    ax.set_xlim(0, 10.1)
+    ax.set_ylim(0.05, 4.25)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
+
+# ---------------------------------------------------------------------------
+# Domain 3 in one view: the eight modules from process to physical.
+# ---------------------------------------------------------------------------
+
+@figure("cissp-d3-map")
+def _(mode):
+    ink = S.INK[mode]
+    c = S.SERIES[mode]
+    top = [
+        ("1 SECURE DESIGN\nPROCESSES", "30 processes;\nCIA, not function", c[0]),
+        ("2 SECURITY\nMODELS", "rules that make\npolicy enforceable", c[1]),
+        ("3 SELECT\nCONTROLS", "frameworks, tailoring,\ntest/interview/examine", c[2]),
+        ("4 SYSTEM\nCAPABILITIES", "what the platform\nalready provides", c[0]),
+    ]
+    bottom = [
+        ("5 ARCHITECTURE\nVULNERABILITIES", "common classes, then\nper system type", c[1]),
+        ("6 CRYPTOGRAPHY", "five services;\nthe key is everything", c[2]),
+        ("7 PHYSICAL\nSECURITY", "perimeter, interior,\nutilities, fire", c[0]),
+        ("8 DOMAIN\nREVIEW", "the discriminators\nand the practice", c[1]),
+    ]
+    fig, ax = plt.subplots(figsize=(9.9, 4.9))
+    for row_y, items in ((3.5, top), (1.55, bottom)):
+        for i, (name, gloss, colour) in enumerate(items):
+            x = 0.3 + i * 2.42
+            ax.add_patch(plt.Rectangle((x, row_y), 2.05, 0.74, facecolor=colour,
+                                       alpha=0.16, edgecolor=colour, linewidth=1.7))
+            ax.annotate(name, (x + 1.02, row_y + 0.37), ha="center", va="center",
+                        fontsize=7.3, color=ink)
+            ax.annotate(gloss, (x + 1.02, row_y - 0.36), ha="center", fontsize=6.7,
+                        color=S.INK_2[mode])
+            if i < 3:
+                ax.annotate("", (x + 2.38, row_y + 0.37), (x + 2.09, row_y + 0.37),
+                            arrowprops=dict(arrowstyle="-|>", color=S.GUIDE[mode],
+                                            linewidth=1.4))
+    ax.annotate("the domain's arc: engineer it by a process, state the rules formally, choose the controls,",
+                (4.95, 0.72), ha="center", fontsize=7.7, color=ink)
+    ax.annotate("use what the platform gives you, know how it fails, protect the data itself, and protect the building",
+                (4.95, 0.34), ha="center", fontsize=7.7, color=c[2])
+    ax.set_xlim(0, 10.1)
+    ax.set_ylim(0.1, 4.45)
+    ax.axis("off")
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

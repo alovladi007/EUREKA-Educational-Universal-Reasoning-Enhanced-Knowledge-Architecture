@@ -8161,789 +8161,593 @@ cissp_crypto: {
   topicId: 'cissp_crypto',
   title: `Cryptography`,
   domainWeight: '13%',
-  overview: `Cryptography is the topic candidates fear most and the one the exam treats most conceptually: you are almost never asked to compute a cipher, and almost always asked which service a construction provides, which key does what, and what breaks when a key is handled badly. This chapter builds the four security services and which primitive delivers each, the symmetric/asymmetric/hashing families with their real algorithms and status, the hybrid model every real protocol actually uses, key management as the discipline that decides whether any of it works, PKI, and the attacks the exam samples.`,
+  overview: `The word comes from the Greek for secret writing, and the practice is thousands of years old - but the CISSP treats cryptography as a service catalogue rather than a history. Five services are on offer: confidentiality, integrity, authenticity, non-repudiation, and access control, each normally delivered by a different primitive, and knowing which primitive delivers which service resolves most exam questions in this module. From there the ground is systematic: protecting data at rest and in transit, and the link-versus-end-to-end distinction that decides which segments are covered; the vocabulary the exam uses precisely; Kerckhoffs's principle and the work factor; symmetric cryptography with its speed and its two structural problems, key distribution and n(n-1)/2 scaling; asymmetric cryptography with the three ways a key pair can be used; the hybrid model that resolves the tension; hashing, MACs, and signatures; PKI, certificates, and revocation; key management including dual control, split knowledge, and escrow; and the attacks - most of which never touch the mathematics at all.`,
   sections: [
     {
-      id: 'crypto-services',
-      title: `1. Four Services, and Which Primitive Delivers Each`,
-      content: `![Which cryptographic family provides which security service: symmetric encryption gives confidentiality; hashing gives integrity; MACs add authentication; asymmetric encryption and digital signatures reach non-repudiation.](/courses/cissp/figures/cissp-crypto-taxonomy.svg)
+      id: '1-services',
+      title: `1. The Five Cryptographic Services`,
+      content: `## What cryptography does
 
-Start here, because most exam items are really asking one question: **which service is required, and which primitive provides it?**
+**Cryptography involves scrambling useful information in its original form, called plaintext, into a garbled or secret form, called ciphertext.** The intent: **to allow two or more parties to communicate the information while preventing other parties from being privy to it.** The word itself is built from two Greek roots - *cryptos*, secret, and *graphy*, writing - and the practice is ancient: historians credit **the ancient Egyptians with the first recorded use of cryptography-like services** to turn words into secrets.
 
-| Service | What it means | Delivered by |
-|---|---|---|
-| Confidentiality | only authorised parties can read it | encryption (symmetric or asymmetric) |
-| Integrity | unauthorised change is detectable | hashing, MAC, digital signature |
-| Authentication | the origin is who it claims to be | MAC, digital signature, challenge-response |
-| Non-repudiation | the originator cannot credibly deny it | digital signature ONLY |
+The module gives the motive in a sentence worth keeping, because it explains why cryptography and power have always travelled together: **throughout history knowledge has provided power over others**, so cryptography **has been used mainly to secure communications belonging to the powerful and the influential - governments, the military, and royalty.**
 
-The last row carries the most tested distinction in the domain. A MAC proves that someone holding the shared key produced the message — but BOTH parties hold that key, so either could have produced it, and neither can prove the other did. A digital signature is made with a PRIVATE key held by exactly one party, so it alone supports non-repudiation.
+## The five services
 
-Two more definitions the exam expects precisely. **Encryption is reversible; hashing is not.** A hash has no key and cannot be undone, so "encrypt the password" is wrong on a properly designed system — passwords are hashed with a salt and a slow function. And **encoding is not encryption**: Base64 provides no confidentiality at all, because no key is involved and anyone can reverse it.
+**Cryptography today provides five key security services**, and this list is the spine of the module.
 
-## Kerckhoffs's principle
+![Each service, and the primitive that normally delivers it](/courses/cissp/figures/cissp-crypto-services.svg)
 
-The security of a cryptosystem must depend on the secrecy of the KEY, never on the secrecy of the algorithm. Published, peer-reviewed algorithms are stronger precisely because they have survived public attack — which is why "our proprietary in-house cipher" is a red flag on the exam and in practice, and why the correct response to a vendor claiming secret algorithmic strength is scepticism, not curiosity.`,
-      examTip: `Only digital signatures provide non-repudiation. If an item asks for proof the sender cannot deny, MACs and symmetric encryption are wrong answers no matter how well they protect the data.`,
+**Confidentiality** - **altering or hiding a message so that ideally it cannot be understood by anyone except the intended recipient**; the service that **ensures keeping information secret from those who are not authorised to have it.** *Secrecy* is sometimes used to mean the same thing.
+
+**Integrity** - services that **allow a recipient to verify that a message has not been altered.** And here the module states a limit that is genuinely examinable: **cryptographic tools cannot prevent a message from being altered, but they can be effective to detect either intentional or accidental modification.** Integrity is *detection*, not prevention. The mechanisms named: **hash functions, digital signatures, and simpler message integrity controls such as message authentication codes (MACs), cyclic redundancy checks (CRC), or even checksums.**
+
+**Authenticity** - **sometimes referred to as proof of origin**, the service that **allows entities wanting to communicate to positively identify each other**, so that a recipient **knows positively that a transmission actually came from the entity expected.**
+
+**Non-repudiation** - **prevents an entity from denying having participated in a previous action**, and **typically can only be achieved properly through the use of digital signatures.** The word *repudiation* means the ability to deny, so non-repudiation is **the inability to deny**. It comes in two flavours: **non-repudiation of origin**, where the sender cannot deny having sent a particular message, and **non-repudiation of delivery**, where the receiver cannot claim to have received a different message than the one they actually received.
+
+**Access control** - **through cryptographic tools, many forms of access control are supported**, from **log-ins via passwords and passphrases to the prevention of access to confidential files or messages** - and in every case **access is only possible for those individuals who hold the correct cryptographic keys.**
+
+## Which primitive delivers which
+
+The module then maps services to mechanisms, and this mapping is the single most useful paragraph in the module for exam purposes: **confidentiality is normally achieved by encrypting the message content; data integrity through cryptographic hashing functions; authenticity through the use of asymmetric cryptography; non-repudiation normally through cryptographic digital signatures; and access control through both symmetric and asymmetric key cryptography**, by encrypting with keys that allow only the proper holder to decrypt.
+
+| Service | Normally delivered by | The trap |
+| --- | --- | --- |
+| Confidentiality | Encryption of the content | Encryption alone gives no integrity and no proof of origin |
+| Integrity | Cryptographic hashing | Detects change; does not prevent it |
+| Authenticity | Asymmetric cryptography | A shared symmetric key proves a group, not a person |
+| Non-repudiation | Digital signatures | Requires a private key only one party holds - so symmetric cannot do it |
+| Access control | Symmetric and asymmetric keys | The control is the key-holding, not the algorithm |
+
+**The fundamental goal of cryptography is to adequately address these five security services in both theory and practice.** When a stem asks what a design provides, resolve it through this table: identify the primitive in use, and the services follow.`
     },
     {
-      id: 'crypto-symmetric',
-      title: `2. Symmetric Cryptography`,
-      content: `One shared key encrypts and decrypts. It is fast — orders of magnitude faster than asymmetric — which is why bulk data is always protected symmetrically.
+      id: '2-data-states',
+      title: `2. Protecting Data at Rest and in Transit`,
+      content: `## Data at rest
 
-| Algorithm | Key size | Type | Status |
-|---|---|---|---|
-| AES (Rijndael) | 128 / 192 / 256 | block, 128-bit | current standard; use for new work |
-| ChaCha20 | 256 | stream | modern stream cipher, strong software performance |
-| 3DES | 168 (effective ~112) | block, 64-bit | deprecated; small block size |
-| DES | 56 effective | block, 64-bit | broken; key far too short |
-| RC4 | 40-2048 | stream | insecure; removed from TLS |
-| Blowfish / Twofish | variable / 128-256 | block | legacy / AES finalist, rarely deployed |
+**The protection of stored data is often a key requirement**: **password files, sensitive databases, valuable files, and other types of sensitive information need to be protected from disclosure or undetected alteration.** The method is **cryptographic algorithms that limit access to the data to those holding the proper encryption and decryption keys.** And the definition is literal - **data at rest means the data is resting, stored on some storage media without it moving at any point.**
 
-**The problem symmetric cryptography cannot solve on its own is key distribution.** Two parties must already share a secret before they can communicate securely, and the number of keys required grows quadratically: for $n$ parties needing pairwise secrecy the count is
+Recall the Security Capabilities module's argument for why this state matters most: encryption is the protection that survives when the operating system is not running. A drive removed from a powered-down machine has no access control, no reference monitor, and no audit - only whatever was encrypted before it left.
 
-$$\\frac{n(n-1)}{2}$$
+## Data in transit
 
-so 10 parties need 45 keys, 100 parties need 4,950, and 1,000 need 499,500. That growth is the reason asymmetric cryptography was invented, and the formula is worth being able to produce.
+**Data in transit, sometimes referred to as data in motion, is data sent manually, over a voice network, or via the internet**, and modern cryptography provides **secure and confidential methods** for it. The exam-relevant content is the distinction between two ways to apply that protection.
 
-## Modes of operation matter as much as the cipher
+![Where the protection starts and stops](/courses/cissp/figures/cissp-link-vs-e2e.svg)
 
-A block cipher alone encrypts one block; a MODE describes how blocks chain together.
+**End-to-end encryption** protects the message from its origin to its final destination: the payload is encrypted once at the sender and decrypted once at the receiver, so every intermediate device carries ciphertext it cannot read. Its cost is that **headers and routing information must remain readable** for the traffic to be delivered at all - so the metadata concern from the previous module survives end-to-end encryption entirely.
 
-| Mode | Behaviour | Exam-relevant property |
-|---|---|---|
-| ECB | each block encrypted independently | NEVER use — identical plaintext blocks give identical ciphertext, so patterns survive |
-| CBC | each block XORed with the previous ciphertext | needs an IV; sequential, no parallel encryption |
-| CTR | turns a block cipher into a stream cipher | parallelisable; the nonce must never repeat |
-| GCM | CTR plus an authentication tag | AUTHENTICATED encryption — confidentiality AND integrity together |
+**Link encryption** protects each hop of the path separately: traffic is encrypted onto a link and decrypted at the far end of that link, then re-encrypted for the next one. Its benefit is that **headers can be encrypted too**, because the next device is the one that decrypts them. Its cost is the mirror image of end-to-end's: **the data is in plaintext at every intermediate node**, so every hop is a point of trust and a point of exposure.
 
-ECB is the single most tested mode, because its failure is visual and absolute. And GCM matters because it is authenticated encryption: modern practice does not encrypt and then hope integrity is handled elsewhere.
+| | End-to-end encryption | Link encryption |
+| --- | --- | --- |
+| Encrypted once at | The origin | Each link's entry |
+| Decrypted at | The final destination | Each link's exit - and re-encrypted for the next |
+| Headers and routing | Must remain readable | Can be encrypted |
+| Plaintext exists at | Only the endpoints | Every intermediate node |
+| Trust required in | The two endpoints | Every device along the path |
+| Fails to protect against | Traffic analysis of metadata | A compromised intermediate node |
 
-Initialisation vectors and nonces follow one rule: they need not be secret, but they must never be REUSED with the same key. Reuse is what breaks stream ciphers and CTR-mode constructions catastrophically.`,
-      examTip: `ECB is wrong in every scenario an exam will present. And "fast, bulk data, one shared key" always points to symmetric — with the key distribution problem as the trade-off the question is usually probing.`,
+The two are not alternatives so much as complements, and a well-designed path may use both - end-to-end so that no intermediary reads the content, plus link encryption on the segments where even the metadata should not be visible. When a stem asks which to choose, the deciding question is *whom do you need to keep the data from*: intermediate nodes point to end-to-end, and an eavesdropper on a specific segment points to link encryption.`
     },
     {
-      id: 'crypto-asymmetric',
-      title: `3. Asymmetric Cryptography & the Hybrid Model`,
-      content: `A mathematically related key PAIR: what one key does, only the other can undo. The public key is published; the private key never leaves its owner.
+      id: '3-vocabulary',
+      title: `3. The Vocabulary, Used Precisely`,
+      content: `## Why this section exists
 
-**The direction decides the service, and this is the most examined idea in the domain:**
+Cryptography questions are frequently vocabulary questions in disguise. The module supplies a long definition list, and the terms below are the ones the exam actually turns into answer options. Read them as a set of distinctions rather than as a glossary to memorise.
 
-| Encrypt with | Decrypt with | Service achieved |
-|---|---|---|
-| recipient's PUBLIC key | recipient's PRIVATE key | CONFIDENTIALITY — only the recipient can read it |
-| sender's PRIVATE key | sender's PUBLIC key | AUTHENTICATION / NON-REPUDIATION — only the sender could have produced it |
+| Term | Definition, as the module gives it |
+| --- | --- |
+| **Cryptosystem** | The entire cryptographic operation and system - algorithm, key, key management functions, and the services provided; the complete set of applications letting sender and receiver communicate |
+| **Algorithm** | The mathematical function used in encryption and decryption; the set of instructions by which it is done |
+| **Encryption / decryption** | Converting plaintext to ciphertext, and the reverse; also *enciphering* and *deciphering* |
+| **Key (cryptovariable)** | The input that controls the operation of the algorithm - it determines the algorithm's behaviour and permits reliable encryption and decryption |
+| **Key space** | The total number of possible key values; a 20-bit key has a key space of 1,048,576, a 2-bit key a key space of 4 |
+| **Initialization vector (IV)** | A non-secret binary vector used as the initialising input for encrypting a plaintext block sequence, adding cryptographic variance - a random starting point |
+| **Collision** | When a hash function generates the same output for different inputs - two messages producing the same digest |
+| **Cryptanalysis** | The study of techniques for attempting to defeat cryptographic techniques and, more generally, information security services |
+| **Cryptology** | The science dealing with hidden, disguised, or encrypted communications; embraces communications security and communications intelligence |
 
-Say it as a sentence: *to keep a secret, use the recipient's public key; to prove authorship, use your own private key.* An item describing a message encrypted with the sender's private key is describing a signature, not secrecy — anyone with the public key can read it.
+## Encoding is not encryption
 
-| Algorithm | Basis | Typical use |
-|---|---|---|
-| RSA | integer factorisation | encryption, signatures, key transport |
-| ECC | elliptic-curve discrete log | same services with much smaller keys |
-| Diffie-Hellman | discrete logarithm | key AGREEMENT only — no encryption, no signing |
-| DSA / ECDSA | discrete logarithm | signatures only |
+One distinction the exam tests directly: **encoding is changing a message into another format through the use of a code** - often to make it transmissible over radio or another medium - and it **is usually used for message integrity instead of secrecy.** The module's example is converting a message to Morse code. Encoding provides no confidentiality whatever, because the transformation requires no key and anyone with the codebook reverses it. Any option offering an encoding as a confidentiality control is wrong.
 
-ECC's advantage is key size for equivalent strength, which is why constrained devices and mobile platforms prefer it. Diffie-Hellman's peculiarity is worth stating plainly: it lets two parties derive a shared secret over a public channel WITHOUT ever transmitting it, but it authenticates nothing on its own — unauthenticated DH is vulnerable to a machine-in-the-middle, which is why real protocols sign the exchange.
+## The two operations, and the two properties they produce
 
-## The hybrid model: what actually happens in TLS
+**Substitution** is **the process of exchanging one letter or byte for another** - the Caesar cipher, where each letter was shifted by three, is the standing example. **Transposition, or permutation**, is **the process of reordering the plaintext to hide the message, but keeping the same letters.**
 
-Asymmetric cryptography is slow, so nothing bulk-encrypts with it. Every real protocol is HYBRID:
+Those two operations produce the two properties every block cipher is built to deliver:
 
-1. Use asymmetric cryptography (or authenticated Diffie-Hellman) to agree on a **session key**.
-2. Use that symmetric session key to encrypt the actual traffic.
-3. Discard the session key when the session ends.
+**Confusion** is **provided by mixing or changing the key values used during the repeated rounds of encryption** - when the key is modified for each round, it adds complexity the attacker must confront. **Diffusion** is **provided by mixing up the location of the plaintext throughout the ciphertext**, so that through transposition the location of a character may change several times during encryption.
 
-**Perfect forward secrecy** is the property that compromising a long-term private key later does not decrypt past sessions — achieved by using ephemeral Diffie-Hellman so each session's key is independent and never stored. It is a favourite exam concept because it explains why recording encrypted traffic today to decrypt after a future key theft can be made to fail.`,
-      examTip: `Recipient's public key for secrecy; own private key for signing. Diffie-Hellman agrees a key and proves nothing about identity — that separation is the trap in most key-exchange items.`,
+Related, and frequently confused with them: the **avalanche effect** is the design property whereby **a minor change in either the key or the plaintext produces a significant, large change in the resulting ciphertext.** And **key clustering** is the defect where **different encryption keys generate the same ciphertext from the same plaintext message** - a property no sound algorithm should exhibit.
+
+| Concept | What varies | What it defeats |
+| --- | --- | --- |
+| **Confusion** | The key values across rounds | Relating ciphertext to the key |
+| **Diffusion** | The position of plaintext within ciphertext | Relating ciphertext to the plaintext's structure |
+| **Avalanche effect** | The output, on any tiny input change | Incremental inference from near-identical inputs |
+| **Key clustering** | Nothing - it is a flaw | Nothing; it *weakens* the system by shrinking effective key space |
+
+## Why initialization vectors are needed
+
+The module gives the reason plainly: without one, **the same plaintext encrypted with the same key always produces the same ciphertext.** Modes of operation exist to introduce **unpredictability into the keystream**, so that **even if the same key is used to encrypt the exact same message, the ciphertext produced will be different each time.** The IV is that **random starting point.** Patterns are what cryptanalysis feeds on, and identical ciphertext blocks are patterns visible to anyone watching, without any mathematics at all.
+
+## Synchronous and asynchronous
+
+Two operational terms worth knowing: **synchronous** means **each encryption or decryption request is performed immediately**; **asynchronous** means **requests are processed in queues**, and its **key benefit is the utilisation of hardware devices and multiprocessor systems for cryptographic acceleration.**`
     },
     {
-      id: 'crypto-hashing',
-      title: `4. Hashing, MACs & Digital Signatures`,
-      content: `A hash takes input of any length and produces a fixed-length digest. It is one-way, deterministic, and exhibits the avalanche effect — one bit changed in the input changes roughly half the output bits.
+      id: '4-kerckhoffs',
+      title: `4. Kerckhoffs's Principle and the Work Factor`,
+      content: `## The principle
 
-| Algorithm | Digest | Status |
-|---|---|---|
-| MD5 | 128-bit | BROKEN — practical collisions; never for security |
-| SHA-1 | 160-bit | broken/deprecated — collisions demonstrated |
-| SHA-256 / SHA-512 | 256 / 512-bit | current standard (SHA-2 family) |
-| SHA-3 | variable | different internal construction; alternative to SHA-2 |
-| bcrypt / scrypt / Argon2 | variable | PASSWORD hashing — deliberately slow, memory-hard |
+**Named after the Dutch cryptographer Auguste Kerckhoffs**, the principle holds that everything about **the system, except the key, is public knowledge** - most often summarised as **"the enemy knows the system."**
 
-The last row is a different job from the others. A general-purpose hash is designed to be FAST, which is exactly wrong for passwords, because speed helps the attacker guess. Password hashing uses deliberately slow, salted, memory-hard functions — and the SALT (a unique random value per password) defeats precomputed rainbow tables by ensuring identical passwords produce different digests.
+The consequence the module draws is the one to carry: **we have to assume that the enemy will know the methods and the algorithms, so protecting the key becomes the most important aspect of cryptography.** All the security rests on **the security of the key.**
 
-## Collisions and the birthday problem
+This is more than a maxim about secrecy; it is a design rule with three practical corollaries. An algorithm whose security depends on its details staying secret is not secure, it is *unexamined* - and secrecy of design prevents the review that would find its flaws. Published algorithms subjected to years of public cryptanalysis are therefore stronger than proprietary ones, not weaker, which is why standard algorithms are preferred over clever in-house ones. And since the key is the only secret, every question about a cryptosystem's real security becomes a question about key management - the subject of a later section in this module and a large share of the attacks in the last one.
 
-A collision is two different inputs producing the same digest. Because of the birthday paradox, finding one takes roughly $2^{n/2}$ work rather than $2^{n}$ for an $n$-bit digest — so a 128-bit hash offers only about 64 bits of collision resistance. That halving is why digest lengths look excessive and why MD5 fell.
+## The work factor
 
-## Building up to signatures
+**The average amount of effort or work required to break an encryption system is referred to as the work factor** - equivalently, the effort required to decrypt a message without the entire key, or **to find a secret key given all or part of a ciphertext.**
 
-| Construction | Recipe | Provides |
-|---|---|---|
-| hash | digest of the message | integrity only — anyone can recompute it |
-| MAC / HMAC | hash combined with a SHARED key | integrity + authentication, no non-repudiation |
-| digital signature | hash of the message, encrypted with the SENDER'S PRIVATE key | integrity + authentication + NON-REPUDIATION |
+Its units are practical rather than mathematical: **the work factor is measured in units such as hours of computing time on one or more given computer systems, or a cost in dollars of breaking the encryption.** And the standard of success is economic rather than absolute: **if the work factor is sufficiently high, the encryption system is considered practically or economically unbreakable - sometimes referred to as economically infeasible to break**, and systems using such schemes **are generally considered secure.**
 
-Notice that a digital signature signs the HASH, not the whole message — which is why signing is fast regardless of message size, and why a broken hash function undermines every signature built on it.
+That is a deliberately modest claim, and understanding why it is modest is what separates a practitioner from someone reciting key lengths. Almost nothing in practical cryptography is unbreakable in principle; it is unbreakable *within a budget and a timescale that matter*. Two consequences follow.
 
-Verification runs the same steps in reverse: the recipient hashes the received message, decrypts the signature with the sender's public key, and compares. Match means the message is unaltered and came from the holder of that private key. A digital signature does NOT provide confidentiality — the message is still readable unless separately encrypted, which is a distinction items exploit constantly.`,
-      examTip: `Hash for integrity, MAC for integrity plus shared-key authentication, signature for all three including non-repudiation — and signatures never encrypt the message itself.`,
+First, the value and the lifetime of the data set the bar. The module's own Caesar example makes the point wittily: a message reading "attack at eleven pm" has **greatly reduced value at 11:01 p.m.** - protection need only outlast the information's usefulness. Data that must stay confidential for thirty years needs a very different work factor from a session token that expires in five minutes.
+
+Second, and less comfortably: **the work factor required to break a given cryptographic system can vary over time due to advancements in technology, such as improvements in the speed and capacity of computers and the processors within those architectures.** A work factor is a statement about today's computing, not a permanent property. This is the whole argument for **algorithm agility** - designing systems so the algorithm and key length can be replaced without redesigning everything around them - because every deployed cryptosystem is on a clock that the rest of the industry is winding down.
+
+| Question | What it establishes |
+| --- | --- |
+| How long must this stay secret? | The period the work factor must exceed |
+| What is it worth to an attacker? | The budget they will spend, in time or money |
+| Who is the attacker? | An opportunist, a competitor, or a state - three different budgets |
+| What will computing cost then? | Why today's adequate is tomorrow's obsolete |
+| Can we change the algorithm later? | Whether the system survives that obsolescence |`
     },
     {
-      id: 'crypto-pki-keys',
-      title: `5. PKI & Key Management`,
-      content: `Public keys solve distribution but create a new problem: how do you know a public key really belongs to the party named? PKI answers it with trusted third parties.
+      id: '5-classical',
+      title: `5. Substitution, Transposition, and Steganography`,
+      content: `## Substitution ciphers
 
-| Component | Role |
-|---|---|
-| Certificate Authority (CA) | issues and signs certificates; the trust anchor |
-| Registration Authority (RA) | verifies identity before the CA issues |
-| Digital certificate (X.509) | binds an identity to a public key, signed by the CA |
-| CRL | list of revoked certificates, periodically published |
-| OCSP | online, real-time revocation status query |
-| Key escrow / recovery | third-party copy so encrypted data survives key loss |
+**Substitution ciphers involve the simple process of substituting letters for other letters - or more appropriately, substituting bits for other bits - based upon a cryptovariable.** Many **cryptosystems used in the early history of cryptography were based on substitution, including the Caesar cipher and ROT-13.**
 
-A certificate is simply a public key plus identity information, signed by a CA. Trust is transitive: you trust the CA, the CA vouches for the subject, so you accept the subject's key. That chain is exactly what a machine-in-the-middle attacks by presenting a certificate the client's trust store should reject — and why certificate warnings must never be clicked through.
+The module uses Caesar to introduce the algorithm-plus-key structure that governs everything after it: **encryption cryptosystems combine a method, called the algorithm, and a cryptovariable (key).** With a substitution cipher, **the method is "substitute by adding", and the key is how many times to do it.** In Caesar's case **the key was shift 3**, so "attack at eleven pm" enciphers to *dwwdfn dw hohyhq sp*.
 
-**Revocation is the part candidates underestimate.** A compromised private key makes its certificate dangerous before expiry, so CRLs and OCSP exist to say "this one is no longer valid." CRLs are periodic and can be stale; OCSP is real-time but requires availability of the responder.
+And Caesar demonstrates key space as a security parameter: **Caesar's cipher has only 25 possible keys**, since each letter can shift to 25 others. **An attacker would repeatedly increase each letter one alphabetic position until the plaintext becomes readable**, assuming they can read the language. The module draws the general lesson: **the objective of cryptography is to make your adversary work a long time by having them try many keys** - **if the key space is too large, the attacker would not even try, as it would not be feasible.**
 
-## Key management is the whole ballgame
+## Transposition ciphers
 
-The exam's recurring theme: strong algorithms fail because of weak key handling. The lifecycle is generation, distribution, storage, use, rotation, and destruction, and every stage has an exam-relevant rule.
+**Transposition, also called permutation, ciphers involve changing the actual positions of plaintext letters.** Instead of substituting other letters, **the letters are moved around to create the ciphertext** - "eleven pm" with each letter moved one position left becomes *leven pme*. The defining property: **there is no replacement or substitution of letters, only movement.**
 
-| Stage | The rule |
-|---|---|
-| generation | strong randomness; weak entropy makes strong algorithms predictable |
-| distribution | out-of-band or protected by asymmetric methods; never in the clear |
-| storage | protect at rest — HSMs for high assurance; never hardcode in source |
-| use | one key, one purpose — never reuse a signing key for encryption |
-| rotation | periodic and on suspicion of compromise; limits blast radius |
-| destruction | securely destroy retired keys so old ciphertext cannot be revived |
+That property is also transposition's weakness in isolation, and the reason it appears in modern ciphers only alongside substitution: the letter frequencies of the plaintext survive untouched, so a transposition-only ciphertext hands the analyst a complete frequency profile of the original. Substitution alone leaves structure; transposition alone leaves statistics. Modern block ciphers apply both, repeatedly, which is exactly the confusion and diffusion pairing of the previous section.
 
-**Split knowledge and dual control** appear here as the separation-of-duties expression: no single person holds a complete critical key, and two people must act together to use it. **Key escrow** trades recoverability against risk — it prevents data loss when keys are lost and creates a concentrated target, which is exactly the balance an exam item will ask you to evaluate.`,
-      examTip: `Hardcoded keys, keys emailed in the clear, one key doing two jobs, and no rotation policy are all wrong answers by construction — key management failure is the intended defect in most cryptography scenarios.`,
+| | Substitution | Transposition |
+| --- | --- | --- |
+| What changes | Which symbols appear | Where the symbols sit |
+| What is preserved | Position | The symbols themselves, and their frequencies |
+| Attacked by | Frequency analysis of the substituted symbols | Anagramming; the frequency profile is intact |
+| In modern ciphers | Delivers confusion | Delivers diffusion |
+
+## Steganography
+
+Steganography is a different idea entirely, and the distinction is examinable: cryptography makes a message *unreadable*, while steganography makes it *unnoticed*. It is the practice of hiding something inside something else, so that a casual observer does not know a message exists at all.
+
+The module notes there are **different ways to hide something within** a carrier - the common modern form being data concealed in the least significant bits of an image, audio, or video file, where the alteration is imperceptible to a human observer while the carrier remains a perfectly valid file that opens normally.
+
+Two practitioner points follow. Steganography and cryptography compose: a message that is encrypted *and* hidden must first be found and then broken, and finding it is the harder step when nobody suspects it is there. And steganography is a detection problem for the defender rather than a decryption one - data-loss prevention that inspects file *content* for sensitive strings will pass a carrier image whose payload is invisible at that level, which is why exfiltration through media files is a recognised concern rather than a theoretical one.`
     },
     {
-      id: 'crypto-hybrid-detail',
-      title: `6. 3b. The Hybrid Handshake, Step by Step`,
-      content: `![The hybrid model: the server presents a certificate, the parties agree a session key using asymmetric cryptography or ephemeral Diffie-Hellman, then all bulk traffic is encrypted symmetrically with that session key, which is discarded when the session ends.](/courses/cissp/figures/cissp-hybrid-model.svg)
+      id: '6-symmetric',
+      title: `6. Symmetric Cryptography`,
+      content: `## One key, both ends
 
-Nothing in production bulk-encrypts asymmetrically — it is orders of magnitude too slow. Every protocol you will be asked about is hybrid, and the figure shows the shape they all share.
+**Symmetric** means **the same key is required to encrypt and decrypt** - the word means "the same", and it refers to the key required at both ends. The module immediately names the consequence that shapes the whole section: **symmetric key cryptography has the fundamental problem of secure key distribution.**
 
-| Step | Cryptography used | Why it is that kind |
-|---|---|---|
-| 1. Server presents certificate | asymmetric (verification) | binds identity to a public key via a CA the client trusts |
-| 2. Key agreement | asymmetric or ephemeral DH | solves distribution without a pre-shared secret |
-| 3. Session key derived | none — both sides compute it | with DH the key is never transmitted at all |
-| 4. Bulk traffic | SYMMETRIC (usually AES-GCM) | speed, plus authenticated encryption |
-| 5. Session ends | key discarded | ephemeral keys are what create forward secrecy |
+![Where symmetric sits among the primitives](/courses/cissp/figures/cissp-crypto-taxonomy.svg)
 
-## Why the certificate step exists
+## The advantages
 
-Diffie-Hellman on its own establishes a shared secret with *somebody* — it proves nothing about who. An unauthenticated exchange is defeated by a machine-in-the-middle who completes a separate exchange with each party and relays traffic, reading everything. The certificate closes that hole by proving the server holds the private key matching a public key a trusted CA has vouched for.
+**Symmetric algorithms are very fast and provide very secure methods of confidentiality**, and **many algorithms can be implemented at no cost to the user.** Speed is not a minor virtue - it is why symmetric cryptography does the actual bulk work in every real system, and why the hybrid model of the next section exists in the shape it does.
 
-That is why certificate warnings matter operationally: a user clicking through an invalid certificate is disabling the only step that distinguishes a genuine peer from an interceptor. Exam items that describe an intercepted "encrypted" session almost always contain a bypassed or unvalidated certificate.
+## The disadvantages, in order of severity
 
-## Where the services land
+**Key distribution** is **the biggest problem of symmetric key cryptography.** The reason is structural: **the sender and receiver must have the same symmetric key**, and **key distribution may not be easy without having anyone else in between know what that key is.** The problem is genuinely circular - to communicate securely you need a shared key, and to share a key securely you need a secure channel, which is what you were trying to establish.
 
-Run the four services against the finished handshake. **Confidentiality** comes from the symmetric session key. **Integrity** and **authentication of each message** come from the authenticated mode (GCM) or a MAC. **Authentication of the server** comes from the certificate and its private-key proof. **Non-repudiation is absent** — the session key is shared, so neither party can prove to a third party what the other sent. That last point surprises candidates: an encrypted, authenticated TLS session provides no non-repudiation, which is precisely why signed documents exist separately from secure channels.
+**Scalability**, the second problem, is arithmetic rather than logistical. **The number of keys required grows according to n(n-1)/2, where n is the number of users.** The module works it: **an organisation with only 10 users, all wanting to communicate securely with one another, would require 45 keys.** And **if the organisation grows to 1,000 employees, the need for key management expands to nearly half a million keys.**
 
-## Perfect forward secrecy, precisely
+![Key count against user count - the growth is quadratic](/courses/cissp/figures/cissp-symmetric-scaling.svg)
 
-Forward secrecy means compromise of a long-term private key does not retroactively decrypt recorded past sessions. It requires **ephemeral** key agreement: each session derives an independent key that is destroyed afterwards and never written down.
+**Missing services**, the third. **Symmetric algorithms are not able to provide extended security services such as digital signature services, non-repudiation of origin, non-repudiation of delivery, and also access control and integrity.** The module gives the reason in one clean sentence: **if two or more people share a symmetric key, then it is impossible to prove who altered a file protected with that key.** A shared secret can prove membership of a group; it can never identify an individual within it - which is precisely why non-repudiation requires a private key that exactly one party holds.
 
-Without it, an adversary can record ciphertext today, obtain the server's private key years later by subpoena, theft or cryptanalysis, and decrypt the archive. With it, the long-term key only ever *authenticated* the exchange; it never derived the session keys, so there is nothing for it to unlock. The practical implication for architecture reviews is direct: prefer ephemeral suites, and treat "we can decrypt captured traffic with our server key" as a design flaw rather than an operational convenience.`,
-      examTip: `TLS gives confidentiality, integrity and server authentication - but NOT non-repudiation, because the session key is shared. And forward secrecy requires ephemeral agreement, which is what makes recorded traffic safe from a future key compromise.`,
+| Property | Symmetric |
+| --- | --- |
+| Speed | Very fast - does the bulk work in real systems |
+| Cost | Many algorithms available at no cost |
+| Confidentiality | Very secure |
+| Key distribution | The fundamental problem |
+| Scaling | n(n-1)/2 - 10 users need 45 keys, 1,000 need nearly 500,000 |
+| Non-repudiation | Impossible - a shared key identifies a group, not a person |
+| Proof of who altered a file | Impossible for the same reason |
+
+## Out-of-band key distribution
+
+Since symmetric algorithms require both parties to hold the same key, **users must often use what is referred to as an out-of-band channel - in person, mail, fax, telephone, or courier - to exchange secret keys.** The definition is precise: **out-of-band means using some channel other than the one being used to communicate the encrypted message**, and it **implies that the out-of-band channel is more secure than the one being used for the communications.**
+
+That last clause is the assumption to interrogate. Out-of-band distribution is only as strong as the alternative channel actually is; couriering a key is secure to the extent that the courier is, and reading a key over a telephone assumes the telephone is not the easier target. The manoeuvre relocates the problem rather than solving it - which is the argument that asymmetric cryptography answers.
+
+## Key management requirements
+
+The module also names what symmetric key management must include: **a process that ensures a key is selected randomly from the entire key space**, and **some way to recover a lost or forgotten key.** Both matter more than they appear. Selection from the *entire* key space is what makes the key space's size meaningful - a 256-bit key drawn from a predictable subset has the strength of the subset, not of 256 bits, which is why weak random number generation appears in the attacks section. And recovery is an availability requirement that pulls against confidentiality, which is why the key management section's dual control and escrow mechanisms exist.`
     },
     {
-      id: 'crypto-signature-detail',
-      title: `7. 4b. Signatures, Certificates & Trust in Practice`,
-      content: `![Signing hashes the message and encrypts the digest with the signer's private key; verifying hashes the received message, decrypts the signature with the sender's public key, and compares the two digests.](/courses/cissp/figures/cissp-signature-flow.svg)
+      id: '7-asymmetric',
+      title: `7. Asymmetric Cryptography`,
+      content: `## Two keys, mathematically related
 
-The figure is worth reading twice, because the asymmetry is the content: **sign with the private key, verify with the public key, and sign the DIGEST rather than the message.**
+**Asymmetric** means **not the same**: two **different but mathematically related keys are used, where one key is used to encrypt and another is used to decrypt.** One of the pair is published; the other is kept private and never shared. That single change dissolves both of symmetric cryptography's structural problems - there is no secret to distribute, since the public key may be published freely, and key count grows linearly with users rather than quadratically.
 
-## What a verified signature actually proves
+## One-way functions
 
-| Proven | Not proven |
-|---|---|
-| the message has not changed since signing | that the message is confidential |
-| it was signed by the holder of that private key | that the named person personally did it |
-| the signer cannot credibly deny it (non-repudiation) | that the signing time is trustworthy without a timestamp |
-| the certificate chain was valid at check time | that the key was not compromised earlier |
+The mathematics rests on a particular kind of asymmetry in difficulty. **A one-way function is one in which there is an enormous** difference between performing the operation and reversing it - easy in one direction, computationally infeasible in the other without additional information. **The Rivest-Shamir-Adleman (RSA) encryption** algorithm is the module's example: multiplying two large primes is trivial, while factoring their product back into those primes is not.
 
-The second column is the mature reading. A signature binds an ACT to a KEY, and the binding of that key to a PERSON depends entirely on the certificate, its issuance process, and the care with which the private key was protected. A stolen key produces perfectly valid signatures, which is why revocation and key protection are part of the trust story rather than adjacent to it.
+The security of the whole construction is therefore *conditional*: it depends on the reverse operation remaining hard. That is a mathematical claim about the current state of knowledge and computing, not a proof - which is why advances in factoring, or a sufficiently capable quantum computer, are treated as strategic risks rather than curiosities, and why the work factor's time-dependence from Section 4 applies with particular force here.
 
-**Timestamping** deserves its own mention. Without a trusted timestamp, a signature verified today says nothing about *when* it was made — which matters when a certificate has since expired or been revoked. Trusted timestamping services sign the assertion that a digest existed at a moment, allowing signatures to remain verifiable after certificate expiry.
+## Three ways to use the pair
 
-## Certificate lifecycle and revocation
+The module works through the modes in order, and the distinction between them is one of the highest-yield facts in the domain.
 
-| Stage | What happens |
-|---|---|
-| Request | subject generates a key pair and submits a CSR containing the PUBLIC key |
-| Validation | RA/CA verifies identity to the level the certificate class requires |
-| Issuance | CA signs the certificate binding identity to key |
-| Distribution | certificate published; private key never leaves the subject |
-| Validation in use | relying party checks signature, validity dates, chain, and revocation |
-| Revocation | compromised or superseded certificates published to CRL/OCSP |
-| Expiry | certificates are deliberately short-lived so mistakes age out |
+![Which key encrypts decides what the operation is for](/courses/cissp/figures/cissp-asymmetric-modes.svg)
 
-The private key **never** goes to the CA — only the CSR containing the public key does. An option describing a CA generating and mailing out private keys is describing a broken PKI, unless the design is explicitly a key-escrow arrangement with its own controls.
+**A confidential message.** Encrypt with **the recipient's public key**. Only the matching private key - held by the recipient alone - can decrypt, so the message is confidential. It offers no proof of who sent it, because the recipient's public key is available to everyone, including an impersonator.
 
-Two revocation mechanisms, two trade-offs: **CRLs** are periodically published lists, simple but potentially stale between publications; **OCSP** answers in real time but requires the responder to be reachable, creating an availability dependency and a privacy consideration since the responder learns which sites are visited. OCSP stapling addresses both by having the server present a recent signed status itself.
+**An open message with proof of origin.** Here **message confidentiality is not the goal** - **disclosure of the message is not important** - and the sender encrypts **with their own private key.** The consequence: **the only key able to decrypt the information is the sender's public key**, and **because the public key is not kept secret, this method does not ensure message confidentiality.** What it does provide is proof: **because the message was encrypted using the sender's private key, it offers a way to prove that it was actually encrypted by the sender, because they must have used their own private key.** And therefore **the sender cannot deny having sent the message** - authenticity and non-repudiation of origin, with no secrecy at all.
 
-## Trust models
+**A confidential message with proof of origin.** Combine them: the sender encrypts first with **their own private key** (proving origin), then with **the recipient's public key** (providing confidentiality). The recipient reverses the operations in the opposite order. The result delivers both services, at roughly twice the computational cost - which matters, because asymmetric operations are slow.
 
-| Model | How trust flows | Where seen |
-|---|---|---|
-| Hierarchical | root CA signs intermediates, which sign subjects | the public web PKI |
-| Cross-certification | two hierarchies mutually recognise each other | federated enterprises |
-| Bridge CA | a hub connects otherwise separate hierarchies | government and large sectors |
-| Web of trust | peers vouch for each other, no central authority | PGP |
+| Encrypted with | Decrypted with | Confidentiality? | Proof of origin? |
+| --- | --- | --- | --- |
+| Recipient's **public** key | Recipient's private key | Yes | No |
+| Sender's **private** key | Sender's public key | No | Yes |
+| Sender's private, then recipient's public | Recipient's private, then sender's public | Yes | Yes |
 
-The hierarchical model concentrates risk at the root, which is why roots are kept offline, protected by split knowledge and dual control, and used only to sign intermediates. A compromised intermediate is bad; a compromised root invalidates everything beneath it, which is the reason the ceremony around root keys looks disproportionate until you consider the blast radius.`,
-      examTip: `The CSR carries the PUBLIC key; the private key never leaves the subject. And a valid signature proves an act by a KEY - binding that key to a person is the certificate's job, not the signature's.`,
+The rule that resolves any stem in this family: **the key that encrypts determines what the operation is for.** Encrypting with a *public* key buys secrecy for its owner; encrypting with a *private* key buys proof about its owner.
+
+## The named algorithms
+
+**RSA** is the module's worked example of a one-way function in service, and remains the most widely recognised asymmetric algorithm. **ElGamal** is named as a further asymmetric system, based on the discrete logarithm problem rather than factoring. **Elliptic curve cryptography (ECC)** earns its own treatment, and its practical significance is efficiency: ECC achieves comparable security to RSA at substantially smaller key sizes, which reduces computation, storage, and transmission - making it the natural fit for mobile devices, smart cards, and any constrained platform, exactly the systems the architectural-vulnerabilities module described as unable to carry heavy protections.
+
+## The catch that motivates the next section
+
+Asymmetric cryptography solves distribution and scaling, and provides services symmetric cryptography cannot. It has one serious operational drawback: it is **slow** - orders of magnitude slower than symmetric encryption for bulk data. Encrypting a large file or a continuous stream with an asymmetric algorithm is impractical.
+
+So the field has two primitives with complementary strengths and complementary weaknesses: one fast but unable to distribute its own keys, one able to distribute keys but too slow for bulk work. The hybrid model is what happens when a designer refuses to choose.`
     },
     {
-      id: 'crypto-keymgmt-detail',
-      title: `8. 5b. Key Management, Worked`,
-      content: `![The key lifecycle: generation, distribution, storage, use, rotation and destruction, with split knowledge and dual control applying across every stage.](/courses/cissp/figures/cissp-key-lifecycle.svg)
+      id: '8-hybrid',
+      title: `8. Hybrid Cryptography`,
+      content: `## Using the advantages of both
 
-Modern cryptographic failures are overwhelmingly key-management failures. The mathematics rarely breaks; the handling does.
+**Hybrid cryptography is where we use the advantages of both** symmetric and asymmetric cryptography together. The division of labour is settled by what each is good at: asymmetric cryptography solves the key distribution problem, and symmetric cryptography does the bulk encryption.
 
-## Worked scenario: reviewing a payment service
+![Asymmetric to move the key, symmetric to move the data](/courses/cissp/figures/cissp-hybrid-model.svg)
 
-A team presents an encryption design for a payment service. Evaluate it stage by stage against the lifecycle.
+## The construction
 
-**Their design.** AES-256 encrypts cardholder data. The key is generated once at deployment by a script using the language's default random function, stored in a configuration file alongside the application, used for both encrypting stored data and signing internal API tokens, and has not been changed in three years because "rotation would require re-encrypting the database." The old key from a previous system is still present in the config, commented out.
+The pattern is the same everywhere it appears. A **session key** - a symmetric key, generated fresh for this exchange and used only for it - encrypts the actual data, because symmetric algorithms are fast enough to do so. That session key is then encrypted with the **recipient's public key** and sent alongside the ciphertext. The recipient decrypts the session key with their private key, and uses it to decrypt the data.
 
-**Generation — FAIL.** A language's default random function is frequently not cryptographically secure. Keys must come from a cryptographically secure random source; weak entropy makes an unbreakable algorithm predictable, and no amount of key length compensates.
+Read against the previous two sections, every property falls out: the expensive asymmetric operation is performed once on a very small object (the key), never on the bulk data; no pre-shared secret is required, because the only thing sent under asymmetric protection is the key itself; and the n(n-1)/2 problem disappears, because no long-lived pairwise keys exist to manage.
 
-**Storage — FAIL.** A key in a configuration file beside the application is protected by nothing more than filesystem permissions, and it will propagate into backups, version control, container images and developer laptops. Keys belong in an HSM or a managed key vault, with the application holding a credential to *request* cryptographic operations rather than holding the key itself.
+The session key's short life adds a further property worth naming. A key used for one exchange and then discarded limits the damage of its compromise to that exchange, and gives an attacker who records traffic nothing that unlocks anything else. This is why "session key" is not merely an implementation detail but part of the security argument.
 
-**Use — FAIL.** One key serving both data encryption and token signing violates the one-key-one-purpose rule. Compromise of either function now compromises both, and the blast radius of any incident doubles for no benefit.
+| Element | Which primitive | Why |
+| --- | --- | --- |
+| The bulk data | Symmetric, under the session key | Speed - asymmetric is impractical for volume |
+| The session key | Asymmetric, under the recipient's public key | Distribution without a pre-shared secret |
+| Proof of origin, where required | Asymmetric signature over a hash | Only a private key can identify one party |
+| Integrity of the data | Hash, usually inside the signature | Detects change; encryption alone does not |
 
-**Rotation — FAIL, and the stated reason is the fixable part.** "Rotation requires re-encrypting everything" is true only of a naive design. **Envelope encryption** solves it: data is encrypted with a per-record or per-dataset data key, and that data key is itself encrypted by a key-encryption key held in the HSM. Rotating the key-encryption key then re-encrypts only the small data keys, not the entire database — turning a prohibitive operation into a routine one.
+## Where you have already met it
 
-**Destruction — FAIL.** A commented-out old key in a live configuration file is a live key for anyone who reads the file, and it decrypts whatever archive still exists from the previous system.
-
-**The recommendation.** Move to an HSM or managed vault; generate from a cryptographically secure source; separate keys by purpose; adopt envelope encryption so rotation is cheap; define a rotation schedule and a compromise-triggered rotation procedure; and securely destroy retired key material with documented evidence. Note that not one of these findings concerns AES — the algorithm was always fine.
-
-## The controls that recur in exam answers
-
-| Control | What it prevents |
-|---|---|
-| HSM / key vault | key extraction from application hosts, backups and images |
-| Envelope encryption | rotation being too expensive to perform |
-| One key, one purpose | a single compromise spanning multiple functions |
-| Split knowledge | any individual reconstructing a critical key alone |
-| Dual control | any individual using a critical key alone |
-| Key escrow with controls | permanent data loss when a key is lost — at the price of a concentrated target |
-| Documented destruction | retired keys resurrecting old ciphertext |
-
-Split knowledge and dual control are separation-of-duties applied to cryptography, and the exam distinguishes them: split knowledge means no one person KNOWS the whole key; dual control means no one person can USE it alone. Designs frequently need both.`,
-      examTip: `The exam's cryptography scenarios almost always fail at generation, storage, reuse, rotation or destruction rather than at the algorithm - and envelope encryption is the standard answer to "rotation is too expensive".`,
+Hybrid cryptography is not a special technique reserved for unusual situations - it is how essentially all practical secure communication works. The protected web session, the encrypted email, the VPN tunnel, and the secure messaging application all follow this shape. Recognising it matters for the exam because a stem describing "the session key is encrypted with the server's public key" is describing the hybrid model, and the correct answers about performance, distribution, and scaling all follow from the table above.`
     },
     {
-      id: 'crypto-applied',
-      title: `9. 5c. Applied Cryptography: Where Each Construction Shows Up`,
-      content: `The exam rarely asks about a primitive in isolation. It asks which technology protects a given thing, and expects you to know what each one actually covers.
+      id: '9-hashing',
+      title: `9. Hashing, MACs, and Digital Signatures`,
+      content: `## Hash functions and message digests
 
-| Technology | Protects | Layer / scope | The limitation to know |
-|---|---|---|---|
-| TLS | data in transit between endpoints | transport | protects the channel, not the data at either end |
-| IPsec | IP traffic, host-to-host or site-to-site | network | tunnel vs transport mode changes what is hidden |
-| SSH | remote administration sessions | application | host-key trust on first use is the weak moment |
-| S/MIME | email, using X.509 certificates | message | requires PKI; both parties need certificates |
-| PGP / OpenPGP | email and files, web-of-trust | message | trust model is peer-based, no central CA |
-| Full-disk encryption | data at rest on a powered-off device | volume | gives NOTHING once the system is booted and unlocked |
-| File / database encryption | specific objects at rest | object | key handling and who can request decryption is the design |
-| Tokenization | replaces a value with a surrogate | data | not encryption - there is no key, only a lookup vault |
+**A hash function is a one-way mathematical operation that reduces a message or data file into a smaller fixed length output, or hash value.** Its use for integrity is mechanical: **by comparing the hash value computed by the sender with the hash value computed by the receiver over the original file, unauthorised changes to the file can be detected** - assuming both used the same hash function.
 
-## Two distinctions the exam samples directly
+The property a sound hash function must have is stated as an ideal: **there should never be more than one unique hash for a given input, and one hash exclusively for a given input.** Where that fails, the module has a name for it: a **collision** occurs **when a hash function generates the same output for different inputs** - **two different messages produce the same message digest.**
 
-**IPsec modes.** In TRANSPORT mode the payload is protected but the original IP header is visible, which suits host-to-host protection inside a trusted network. In TUNNEL mode the entire original packet is encapsulated inside a new one, hiding the internal addressing — which is what site-to-site VPNs need. The associated protocols split responsibilities: **AH** provides integrity and authentication but no confidentiality, while **ESP** provides confidentiality and can also provide integrity. An item asking for confidentiality that offers AH is offering the wrong protocol.
+Three things follow from the definition, and each is examinable. A hash is **one-way**, so it is not encryption and there is no "decrypting" a hash - any option offering to recover a message from its digest is wrong. It is **fixed length** regardless of input size, which is why a digest can stand in for a document of any length in a signature. And a hash alone provides **integrity but not authenticity**: an attacker who alters a message can simply recompute the digest, so an unprotected hash proves nothing about who produced it.
 
-**Full-disk encryption's blind spot.** FDE protects a lost or stolen device that is powered off. Once the machine is booted and the volume unlocked, every file is readable to anything running on it — malware included. So FDE is the right answer for "laptop left in a taxi" and the wrong answer for "protect data from a compromised application" or "enforce separation between database users." Candidates who treat FDE as general-purpose data protection lose these items reliably.
+## Message authentication codes
 
-**Tokenization versus encryption.** Encryption transforms data reversibly with a key, so the ciphertext still mathematically contains the value. Tokenization substitutes an unrelated surrogate and stores the mapping in a separate vault, so the token contains nothing at all. That difference matters for compliance scope: systems handling only tokens can often be removed from the regulated boundary, which is the commercial reason tokenization exists in payment environments.
+That last gap is what a MAC closes. A **message authentication code** binds a secret key into the integrity check, so that only a holder of the key can produce a valid code over a message. **Hashed MACing implements a freely available hash algorithm** with a key - the construction known as **HMAC**.
 
-## Cryptography in the data lifecycle
+The distinction to hold is what each proves:
 
-| State | Typical protection | Common gap |
-|---|---|---|
-| At rest | FDE, file/database encryption, encrypted backups | backups encrypted but keys stored alongside them |
-| In transit | TLS, IPsec, SSH | internal east-west traffic left unprotected |
-| In use | limited historically; enclaves and homomorphic techniques emerging | data is decrypted in memory to be processed |
+| Construction | Uses | Proves integrity? | Proves origin? | Non-repudiation? |
+| --- | --- | --- | --- | --- |
+| **Hash / message digest** | A hash function alone | Yes | No - anyone can recompute it | No |
+| **MAC / HMAC** | Hash plus a shared secret key | Yes | Yes, to holders of the shared key | **No** - the key is shared |
+| **Digital signature** | Hash plus the sender's private key | Yes | Yes, to a single identified party | **Yes** |
 
-**Data in use** is the honest gap. Traditional cryptography requires decryption before processing, which is why memory-scraping malware works. Homomorphic encryption permits computation on ciphertext and confidential-computing enclaves isolate processing in hardware, but both carry performance and maturity constraints — the exam expects awareness of the direction rather than deployment detail.`,
-      examTip: `Full-disk encryption protects a powered-off device and nothing else. AH gives integrity without confidentiality. And tokenization is not encryption, which is exactly why it removes systems from compliance scope.`,
+The MAC row's last two cells contain the distinction candidates most often miss. An HMAC does authenticate - but only to the group holding the key, which for a two-party exchange means each party knows the other produced it and *no third party can be convinced*, because either party could have. That is exactly the symmetric limitation from Section 6, and it is why non-repudiation needs a signature.
+
+## The named hash algorithms
+
+The module names the family the exam expects: **the Secure Hash Algorithm (SHA) and SHA-1**, **SHA-3**, and **HAVAL - HAsh of VAriable Length**. A currency note belongs here: SHA-1 is no longer considered adequate against collision attacks and has been withdrawn from use for digital signatures; the SHA-2 family and SHA-3 are the current choices. The exam tests the names and the collision concept rather than internal construction, but a practitioner should know which of these is still fit for purpose.
+
+## Digital signatures
+
+The module gives the construction step by step, and it is worth reading as a procedure rather than a definition, because every exam question about signatures is answered by tracing it.
+
+**Signing.** **A message is input into a hash function. Then the hash value is encrypted using the private key of the sender. The result of these two steps yields a digital signature.**
+
+**Verifying.** **The receiver verifies the digital signature by decrypting the hash value using the signer's public key, then performs the same hash computation over the message, and then compares the hash values for an exact match. If the hash values are the same, the signature is valid.**
+
+![Hash, sign with the private key, verify with the public key](/courses/cissp/figures/cissp-signature-flow.svg)
+
+Three observations that resolve most stems. The signature is computed over the **hash**, not the message - which is why signing is fast regardless of document size, and why the hash function's collision resistance is load-bearing for the signature's security. The private key **encrypts** and the public key **decrypts**, which is Section 7's proof-of-origin mode. And a signature provides **authentication of a sender and integrity of a sender's message** - but *not* confidentiality, since the message itself travels in plaintext unless separately encrypted.
+
+## Non-repudiation, revisited
+
+Signatures are what make **non-repudiation** achievable, and the module is explicit that it **typically can only be achieved properly through the use of digital signatures.** Both flavours from Section 1 apply: **non-repudiation of origin**, so the sender cannot deny sending a particular message, and **non-repudiation of delivery**, so the receiver cannot claim to have received something different.
+
+The precondition is worth stating because it is where non-repudiation fails in practice: the claim holds only if exactly one party could have used that private key. A private key stored without protection, shared between administrators, or held in software on a compromised machine undermines the whole property - which is why hardware protection of signing keys, and the key management controls of the next section, are part of the non-repudiation argument rather than an adjacent concern.`
     },
     {
-      id: 'crypto-future',
-      title: `10. 6b. Quantum, Post-Quantum & Algorithm Agility`,
-      content: `Cryptographic choices outlive the systems that make them, so the exam expects awareness of what is coming and how to prepare.
+      id: '10-pki',
+      title: `10. PKI, Certificates, and Revocation`,
+      content: `## The problem certificates solve
 
-## What quantum computing threatens, and what it does not
+Everything in Section 7 depends on holding the *correct* public key for the party you intend to communicate with. An attacker who substitutes their own public key for the recipient's reads everything sent under it - and nothing in the mathematics detects the substitution, because the cryptography works perfectly on the wrong key. Public key cryptography therefore needs a way to bind a key to an identity, trustworthily, at scale.
 
-| Cryptography | Quantum impact | Practical response |
-|---|---|---|
-| Asymmetric (RSA, ECC, DH) | SEVERE — Shor's algorithm breaks the underlying factoring and discrete-log problems | migrate to post-quantum algorithms |
-| Symmetric (AES) | weakened — Grover's algorithm effectively halves the key strength | increase key length (AES-256 rather than AES-128) |
-| Hashing | weakened similarly | prefer longer digests |
+## The digital certificate
 
-The asymmetric/symmetric asymmetry is the tested point. Quantum computing does not "break all encryption" — it devastates the number-theoretic problems that asymmetric cryptography depends on, while symmetric cryptography survives with longer keys. So the migration burden falls on key exchange, signatures and certificates rather than on bulk data encryption.
+**A digital certificate is an electronic document that contains the name of an organisation or individual, the business address, the digital signature of the certificate authority issuing the certificate, the certificate holder's public key, a serial number, and the expiration date**, and it **is used for conducting electronic transactions.**
 
-**Harvest-now-decrypt-later** is the risk that makes this urgent rather than academic: an adversary records encrypted traffic today and decrypts it once capable hardware exists. Data whose confidentiality must survive decades — health records, state secrets, long-lived intellectual property — is therefore at risk from a machine that does not exist yet, which is why standards bodies have been selecting post-quantum algorithms ahead of the threat.
+Read that contents list as a security argument rather than a data structure. The **holder's public key** is the payload - the thing that needs binding. The **name and address** are the identity it is bound to. The **serial number** and **expiration date** bound the binding in scope and time. And **the certificate authority's digital signature** is what makes the whole thing trustworthy: applying Section 9's construction, the CA has hashed the certificate's contents and encrypted that hash with its own private key, so anyone holding the CA's public key can verify that the binding was asserted by the CA and has not been altered since.
 
-## Algorithm agility
+| Field | What it is for |
+| --- | --- |
+| Certificate holder's public key | The key being vouched for |
+| Name of the organisation or individual, and address | The identity it is bound to |
+| Serial number | Uniquely identifies this certificate - the handle used for revocation |
+| Expiration date | Bounds the binding in time, forcing periodic re-verification |
+| Digital signature of the issuing CA | Makes the binding verifiable and tamper-evident |
 
-The durable lesson is architectural rather than algorithmic. Systems that hardcode a cipher, a key length, or a digest are expensive to change when that choice is deprecated — and every choice is eventually deprecated, as DES, RC4, MD5 and SHA-1 each demonstrated. **Algorithm agility** means designing so the primitive can be swapped: negotiate rather than fix, store an algorithm identifier alongside ciphertext, and avoid formats that assume a digest length.
+Trust is therefore transitive and finite: a relying party need not know the certificate holder, only the CA - and needs the CA's public key by some means other than a certificate that CA issued, which is why root certificates are distributed with operating systems and browsers rather than fetched on demand.
 
-| Practice | Why |
-|---|---|
-| Negotiate suites rather than hardcode | lets deprecated options be disabled centrally |
-| Tag stored ciphertext with its algorithm and key ID | permits re-encryption without guessing |
-| Prefer standard formats over bespoke ones | migration paths already exist |
-| Inventory cryptography in use | you cannot migrate what you cannot find |
-| Plan for re-encryption | envelope encryption makes it affordable |
+## Certificate revocation
 
-The inventory row is the one organisations skip and then regret: when an algorithm is deprecated, the first question is where it is used, and most enterprises cannot answer it. Building that inventory during calm periods is the preparation the exam rewards.
+Expiration handles the expected end of a certificate's life. **Certificate revocation** handles the unexpected one - the key is compromised, the holder's details change, the holder ceases to be entitled to the certificate, or it was issued in error. Revocation is the mechanism by which a certificate is declared invalid *before* its expiration date.
 
-## Adjacent techniques worth distinguishing
+The design problem revocation creates is real and worth understanding rather than memorising. A certificate is a signed statement that verifies correctly on its own; nothing in it can announce that it has since been revoked. So a relying party must consult a separate, current source before trusting it - and that check must happen every time, because a certificate valid this morning may be revoked by this afternoon.
 
-| Technique | What it does | Not to be confused with |
-|---|---|---|
-| Steganography | HIDES the existence of a message inside a carrier | encryption, which hides meaning while the message is evidently there |
-| Digital watermarking | embeds ownership or tracing information | steganography, though the mechanism overlaps |
-| Digital rights management | restricts what a recipient can do with content | encryption alone, since the recipient must be able to read it |
-| Obfuscation | makes code or data harder to understand | encryption, since no key or guarantee is involved |
-| Hashing for deduplication | identifies identical content | integrity protection, since no key or intent is involved |
+Two mechanisms answer it. A **certificate revocation list** is a periodically published, CA-signed list of the serial numbers of revoked certificates - simple, but only as current as the last publication, so a window exists between revocation and the next list. Online status checking queries the CA (or a designated responder) about a specific certificate in real time, closing that window at the cost of an availability dependency and a privacy consideration, since the responder learns which certificates a party is checking.
 
-Steganography's defining property is CONCEALMENT of existence, and it is frequently combined with encryption rather than substituting for it — hidden and unreadable rather than one or the other. The exam's usual angle is exfiltration: data leaving an organisation inside an innocuous image file, defeating controls that inspect for recognisable sensitive content.`,
-      examTip: `Quantum breaks asymmetric cryptography and merely weakens symmetric - so the migration burden is on key exchange and signatures, and AES-256 answers the symmetric side. Harvest-now-decrypt-later is why long-lived data needs action today.`,
+The practitioner's point: revocation is where PKI is weakest operationally, because a relying party that cannot reach the revocation source must choose between failing closed (rejecting a possibly valid certificate, harming availability) and failing open (accepting a possibly revoked one, harming security). That is the fail-securely principle from this domain's first module, arriving as a concrete configuration decision with real consequences either way.
+
+## Export controls
+
+The module also notes **international export controls** on cryptography, and the point for a practitioner is jurisdictional rather than technical: cryptographic software has historically been regulated as a controlled item, and a multinational deployment can face restrictions on which algorithms and key lengths may be exported to, or used within, particular countries. It connects directly to Domain 1's legal and compliance work - the applicable regime is a constraint on the design, discovered during the requirements process rather than at deployment.`
     },
     {
-      id: 'crypto-selection',
-      title: `11. 6c. Choosing Cryptography, and the Governance Around It`,
-      content: `Design questions ask which cryptography to apply. The answer follows from the SERVICE required, the STATE of the data, and the constraints of the platform — in that order.
+      id: '11-key-management',
+      title: `11. Key Management`,
+      content: `## Why this is the whole game
 
-## The selection procedure
+Kerckhoffs's principle established that everything except the key is assumed public. It follows that key management is not an administrative appendix to cryptography - it *is* the security of the cryptosystem, and the attacks section that follows makes the point empirically, since most of the practical attacks target keys rather than algorithms.
 
-| Question | Determines |
-|---|---|
-| 1. Which service is required? | confidentiality, integrity, authentication, non-repudiation, or a combination |
-| 2. What state is the data in? | at rest, in transit, or in use |
-| 3. Who must be able to decrypt, and when? | key holders, escrow needs, recovery requirements |
-| 4. What performance and platform constraints apply? | bulk data favours symmetric; constrained devices favour ECC |
-| 5. How long must the protection last? | long-lived data raises key length and post-quantum considerations |
-| 6. What obligations apply? | regulatory, contractual, jurisdictional |
+![The phases a key passes through, and the control at each](/courses/cissp/figures/cissp-key-lifecycle.svg)
 
-Applied to a common scenario — "protect customer records in a database from an attacker who obtains a backup" — the answers run: confidentiality; at rest; only the application and defined recovery roles; symmetric for bulk; multi-year; and probably regulated. That produces AES with envelope encryption, keys in a vault, and encrypted backups whose keys live somewhere other than beside the backup. Notice the design fell out of the questions rather than out of preference.
+## Creation
 
-## Governance considerations the exam raises
+**Selecting keys is an important part of key management.** The requirement stated in Section 6 governs here: **a process that ensures a key is selected randomly from the entire key space.** The reason is that a key space's advertised size is only realised if keys are actually drawn from all of it - a generator with poor entropy produces keys clustered in a predictable subset, and an attacker who knows that subset faces a work factor set by its size, not by the key length printed in the documentation. This is why weak random number generation appears in the attack list as a first-class technique.
 
-| Topic | What to know |
-|---|---|
-| Export controls | cryptography is regulated in some jurisdictions; product distribution may be restricted |
-| Jurisdiction and data residency | where keys live can determine whose law reaches the data |
-| Lawful access requests | escrow and key-disclosure obligations vary by jurisdiction |
-| Standards compliance | validated implementations may be mandated (for example, in government contexts) |
-| Approved algorithm lists | organisations should maintain and enforce one, with a deprecation path |
-| Cryptographic inventory | you cannot migrate or audit what is not catalogued |
+## Distribution
 
-**Key residency is the underrated one.** In a cloud deployment, whoever holds the keys effectively controls access to the data, so "customer-managed keys" versus "provider-managed keys" is a governance decision with legal consequences rather than a technical preference. An organisation that cannot revoke a provider's ability to decrypt has accepted a specific and sometimes unacceptable risk.
+**Key distribution** is symmetric cryptography's fundamental problem, and the module gives both answers. The manual one is Section 6's **out-of-band channel** - in person, mail, fax, telephone, or courier - assumed to be more secure than the channel carrying the encrypted traffic. The automated one is key agreement: **two people who wish to perform secure key** exchange can derive a shared secret over an insecure channel without ever transmitting the key itself, which is the Diffie-Hellman construction underlying the hybrid model's session key establishment.
 
-## Common design errors
+## Dual control and split knowledge
 
-| Error | Why it fails |
-|---|---|
-| Encrypting where hashing is required | passwords must not be recoverable; encryption is reversible |
-| Hashing where encryption is required | you cannot recover data from a digest |
-| Relying on encoding | Base64 has no key and provides no protection |
-| Custom algorithms | unreviewed cryptography fails in ways the designer cannot see |
-| Same key everywhere | one compromise becomes total compromise |
-| Keys beside the ciphertext | including in backups, images, and repositories |
-| No rotation plan | a key that cannot be rotated cannot respond to compromise |
-| Ignoring the endpoints | encrypted transit into an unprotected server solves nothing |
+Two related controls protect the most valuable keys, and the exam tests the distinction.
 
-The last row generalises the discipline's central caution: **cryptography protects data in a specific state against a specific adversary**, and a design that encrypts the easy state while leaving the hard one exposed has bought reassurance rather than security. TLS to a server that logs plaintext, full-disk encryption on a machine that is always running, or an encrypted database whose application decrypts everything for any authenticated caller each illustrate the pattern.
+**Split knowledge** divides a secret so that no single person holds all of it - each custodian has a fragment, and the key can only be reconstructed by bringing the required fragments together. **Dual control** requires two or more people to act together to perform an operation - neither can complete it alone.
 
-## The chapter in one paragraph
+They are frequently deployed together and are not the same idea: split knowledge is about *what each person knows*, dual control is about *what each person can do*. A master key might be split into components held by three custodians (split knowledge), with any two required to be simultaneously present to reconstruct it (dual control). Both are the separation-of-duties principle from Domain 1 applied to key material, and both exist because the alternative - one administrator who can silently reconstruct and use the organisation's most sensitive key - is an unacceptable concentration of trust.
 
-Decide which of the four services you need; symmetric cryptography gives confidentiality fast, hashing gives integrity, MACs add shared-key authentication, and only signatures reach non-repudiation. Use asymmetric cryptography to agree a key and prove identity, then hand the bulk work to a symmetric cipher in an authenticated mode. Bind public keys to identities through certificates, and check revocation as well as signature. Then spend your real attention on key management — generation, storage, purpose separation, rotation and destruction — because that is where working systems actually fail.`,
-      examTip: `Let the required SERVICE and the data STATE choose the cryptography, then check the endpoints. Encrypted transit into a server that logs plaintext protects nothing, and that pattern is the domain's favourite trap.`,
+| Control | What it divides | The failure it prevents |
+| --- | --- | --- |
+| **Split knowledge** | Knowledge of the key itself, into components | One person being able to reconstruct the key |
+| **Dual control** | The authority to perform the operation | One person being able to act alone |
+| **Together** | Both knowledge and authority | Unilateral use of the organisation's most sensitive keys |
+
+## Key escrow
+
+**Key escrow** is the practice of depositing keys with a trusted party so that they can be recovered when needed. Its legitimate purposes are the availability side of Section 6's requirement for **some way to recover a lost or forgotten key**: an organisation that encrypts its own data must be able to decrypt it when the employee who held the key leaves, forgets a passphrase, or dies, and business continuity requires that encrypted backups remain readable.
+
+Escrow's tension is inherent and worth stating plainly rather than glossing. Every recovery capability is, from another angle, an additional party who can decrypt - so escrow trades some confidentiality for availability, deliberately. That is why escrow arrangements are precisely the place for dual control and split knowledge: the escrowed copy should be recoverable only through a governed, multi-party, recorded process, never by a single custodian on request.
+
+## The lifecycle, and destruction
+
+Keys have a lifecycle in the same sense assets do, and Domain 2's discipline applies: keys are created, distributed, used, rotated, archived where recovery requires it, and eventually destroyed. Two connections are worth carrying. Rotation limits the volume of data any single key protects, so a compromise is bounded. And destruction is the mechanism behind **crypto-erase** from the Data Remanence module - the only erasure act a cloud customer can perform and prove alone - which means the rigour of key destruction is precisely the rigour of that erasure claim.`
     },
     {
-      id: 'crypto-vocabulary',
-      title: `12. 6d. The Vocabulary Shelf`,
-      content: `Shelve these with the property that makes each one testable.
+      id: '12-attacks',
+      title: `12. Attacks on Cryptosystems`,
+      content: `## Grouping the attacks
 
-| Term | Definition | The property that matters |
-|---|---|---|
-| Plaintext / ciphertext | before and after encryption | reversible with the correct key |
-| Cipher | the algorithm | published and peer-reviewed, per Kerckhoffs |
-| Key | the secret parameter | security depends on THIS, never on algorithm secrecy |
-| Key space | the number of possible keys | doubles with each added bit |
-| Work factor | effort required to break | must exceed the value and lifetime of the data |
-| Confusion | relationship between key and ciphertext obscured | a design property of good ciphers |
-| Diffusion | one plaintext bit affects many ciphertext bits | the avalanche effect in practice |
-| Initialisation vector | randomiser for the first block | need not be secret; must NEVER repeat with a key |
-| Nonce | number used once | reuse breaks stream and counter modes catastrophically |
-| Salt | per-password random value | defeats precomputed rainbow tables |
-| Pepper | secret value added to hashing | stored separately from the database |
-| Ephemeral key | used for one session then destroyed | the mechanism behind forward secrecy |
-| Session key | symmetric key for one conversation | agreed asymmetrically, used symmetrically |
-| Key-encryption key | a key that encrypts other keys | makes envelope encryption and cheap rotation possible |
-| Zero-knowledge proof | proving knowledge without revealing it | authentication without disclosure |
+The module's attack list is long, and it becomes memorable when grouped by what the attacker is assumed to possess and where the attack is aimed.
 
-## Three pairs candidates confuse
+![Three families - and the third is where systems actually fail](/courses/cissp/figures/cissp-crypto-attacks.svg)
 
-**Confusion and diffusion** are design properties, not services: confusion hides the key-to-ciphertext relationship, while diffusion spreads each plaintext bit across the output. Both are properties of the cipher's internal construction, and neither is something an implementer configures.
+## By what the attacker holds
 
-**IV, nonce and salt** all randomise, but for different reasons. An IV randomises encryption so identical plaintexts differ; a nonce guarantees uniqueness for a counter or stream construction; a salt defeats precomputation in password hashing. The unifying rule is that none must be secret and all must be unique in their context.
+These are the classical cryptanalytic models, ordered by how much the attacker is assumed to have.
 
-**Key space and work factor** are related but distinct: key space is how many keys exist, and work factor is how much effort an attack actually requires — which may be far less than the key space if the algorithm has weaknesses, the implementation leaks, or the keys are poorly generated. A large key space with weak entropy delivers a small work factor, which is exactly the failure the generation stage of the lifecycle guards against.
+**Ciphertext only** - the attacker has intercepted ciphertext and nothing else. The module notes this **is one of the most difficult** attacks, precisely because the attacker has the least to work with.
 
-## Reading a question quickly
+**Known plaintext** - the attacker possesses both a ciphertext and its corresponding plaintext, and uses the pair to deduce the key. Real messages are full of predictable content - standard headers, formulaic openings, file format signatures - which is why this model is more realistic than it sounds.
 
-When a cryptography item appears, three reads usually resolve it. **What service is being asked for?** — that eliminates whole families of answer. **Which key is being used, and whose?** — recipient's public for secrecy, own private for signing. **Where does the key live and who can reach it?** — because that is where the described system almost always fails. Candidates who run those three reads before evaluating options answer faster and more accurately than candidates who start by recalling algorithm properties.`,
-      examTip: `IVs and nonces need not be secret but must never repeat with the same key; salts defeat rainbow tables. And a huge key space with weak randomness still yields a small work factor.`,
+**Chosen plaintext** - **the attacker** can choose plaintext to be encrypted and observe the resulting ciphertext, selecting inputs designed to reveal the key's structure.
+
+**Chosen ciphertext** - the reverse: the attacker can submit ciphertext for decryption and observe the result.
+
+The progression matters conceptually: each model grants the attacker more capability, so an algorithm that resists chosen-ciphertext attack is stronger than one resisting only ciphertext-only attack. Modern algorithms are expected to hold under the strongest of these assumptions.
+
+## By mathematics
+
+**Algebraic attacks** are **a class of attacks that rely on the math structure** of the algorithm - exploiting properties of the underlying mathematics rather than searching the key space.
+
+**Frequency analysis** exploits the statistical fingerprint of the plaintext language, and is the classical break against simple substitution: letters keep their frequencies even when their identities change, which is exactly the weakness Section 5 identified in substitution used alone.
+
+**Birthday attacks** target hash functions, and the module states the insight: **it is easier to find two** messages that collide with each other than to find a message colliding with one specific given hash. That asymmetry - much easier than intuition suggests - is why hash output lengths must be substantially longer than a naive analysis would require, and why collision resistance is the property that ages fastest in a hash function.
+
+**Factoring attacks** are **aimed at the RSA algorithm specifically**, attacking the one-way function's assumption directly by attempting to factor the modulus.
+
+## By going around the mathematics
+
+This is the family the module spends its practical energy on, and the family that breaks real systems.
+
+**Rainbow tables** are **used most commonly against password files** - precomputed tables that reverse hashes far faster than brute force. The countermeasure is salting: a unique random value per password means a precomputed table is useless, because the attacker would need one table per salt.
+
+**Attacking the random number generators** targets key creation. If the generator is predictable, the attacker need not search the key space at all - they reproduce the generator's output and derive the key directly, which reduces a 256-bit key to whatever entropy actually went into it.
+
+**Temporary files** - plaintext left on disk by the very software that was protecting it. Swap files, crash dumps, editor backups, and print spools have all leaked material that was properly encrypted in its intended location. This is the Data Remanence module arriving inside cryptography.
+
+**Social engineering for key discovery** - asking. The module lists it alongside the mathematical attacks deliberately, because it belongs there: a key obtained by deception decrypts exactly as well as a key obtained by cryptanalysis, at a fraction of the cost.
+
+**Denial of service** also appears in the module's list, an attack **meant to disrupt and damage processing** rather than to recover plaintext - a reminder that availability is attackable even where confidentiality holds.
+
+| Family | What the attacker uses | The defence |
+| --- | --- | --- |
+| By what they hold | Intercepted or chosen text | Algorithms proven to resist the strongest model |
+| By mathematics | Structure, statistics, collisions, factoring | Adequate key and digest lengths; sound algorithm choice; algorithm agility |
+| Around the mathematics | Password files, weak entropy, disk residue, people | Salting, strong entropy sources, secure deletion, awareness training |
+
+The section's lesson is Kerckhoffs's principle read as a warning rather than a design rule. If the enemy knows the system, then the system is not what they will attack - they will attack the key, and the key lives in generators, memory, temporary files, and people's heads.`
     },
     {
-      id: 'crypto-attacks',
-      title: `13. Attacks & Self-Check`,
-      content: `| Attack | How it works | Defence |
-|---|---|---|
-| brute force | try every key | longer keys; rate limiting |
-| dictionary / rainbow table | precomputed guesses or digests | salting; slow password hashes |
-| birthday attack | exploits collision probability | longer digests; collision-resistant hashes |
-| known/chosen plaintext | attacker has matched pairs, or chooses inputs | modern ciphers are designed to resist both |
-| machine-in-the-middle | intercepts and relays a key exchange | authenticate the exchange; validate certificates |
-| replay | re-sends a valid captured message | nonces, timestamps, sequence numbers |
-| side channel | reads timing, power, or emissions | constant-time implementations, shielding |
-| downgrade | forces a weaker protocol version | disable legacy versions and ciphers |
-| implementation flaw | the algorithm is fine, the code is not | use vetted libraries; never roll your own |
+      id: '13-worked',
+      title: `13. Worked Examples`,
+      content: `## Worked Example 1: What does this design actually provide?
 
-The last row deserves emphasis because it is the real-world pattern: modern cryptographic FAILURES are overwhelmingly implementation and key-management failures rather than broken mathematics. "Don't roll your own crypto" is not folklore — it is the correct exam answer and the correct engineering answer.
+*A team encrypts a customer file with AES before sending it over a network and reports that the transfer is "fully secured."* Trace it against the five services. **Confidentiality** - yes, by encryption of the content. **Integrity** - no: symmetric encryption does not detect modification, and an attacker can alter ciphertext without the recipient knowing until the plaintext turns out to be garbage, which is not a control. **Authenticity** - no: anyone with the key could have sent it. **Non-repudiation** - no, and impossible with a shared key, since if two or more people share it, it is impossible to prove who produced a given file. The honest description is "confidential in transit, with no integrity or origin guarantees" - and the fix is to add a hash under a signature, or at minimum an HMAC if a shared key is acceptable and no third-party proof is needed.
 
-## Self-Check
+## Worked Example 2: Which key encrypts?
 
-1. A message is encrypted with the sender's private key. What does this provide, and what does it NOT provide?
-2. Why can a MAC not provide non-repudiation?
-3. A team stores user passwords using SHA-256. What is wrong, and what should they use?
-4. Why is ECB mode unacceptable even when the underlying cipher is AES?
-5. What property ensures that stealing a server's long-term private key today does not decrypt last year's recorded sessions?
+*A stem describes an executive who wants to publish a memo that everyone can read, but wants recipients to be certain it came from her and unable to claim later that it did not.* Confidentiality is explicitly not wanted; authenticity and non-repudiation are. That selects encrypting with **the sender's private key** - the open message with proof of origin. Anyone can decrypt with her freely available public key, so there is no secrecy, and because only her private key could have produced it, **she cannot deny having sent the message.** In practice this is done as a signature over a hash rather than by encrypting the whole memo, which achieves the same proof far faster - but the key direction is the same, and it is the key direction the question is testing.
+
+## Worked Example 3: Ten users, then a thousand
+
+*A firm with ten staff distributes symmetric keys by hand so everyone can communicate securely with everyone else. It plans to grow to a thousand.* The arithmetic is n(n-1)/2: today **45 keys**, after growth **nearly half a million**. Each of those keys must be generated randomly from the full key space, distributed out of band, stored securely, rotated, and destroyed - and the manual channel that works for 45 does not exist for 499,500. The answer is not a bigger key-distribution team but a change of primitive: asymmetric key exchange to establish session keys, which removes long-lived pairwise keys entirely and turns key count linear in users. Note also what the firm silently lacks today: with shared keys, it cannot prove who did anything.
+
+## Worked Example 4: The unread revocation list
+
+*A payment gateway validates client certificates but cannot reach the revocation source during an outage. It is configured to proceed when the check fails.* This is the fail-open configuration, and it means a revoked certificate - possibly revoked *because its key was stolen* - is accepted for the duration of any outage an attacker can cause or wait for. The alternative, failing closed, halts legitimate payments when the responder is unreachable. Neither is free, which is why this belongs in a risk decision rather than a default: the deciding inputs are the value of what the certificate protects and the availability requirement of the service. What is not defensible is the situation as found - a security-relevant default chosen by whoever installed the software, with no record that anyone weighed it.
+
+## Worked Example 5: The 256-bit key that was not
+
+*An application generates encryption keys from a random function seeded with the current time. An assessment flags it despite the keys being 256 bits long.* The finding is correct and the key length is irrelevant to it. Key management requires selection **randomly from the entire key space**; a time-seeded generator draws from a space bounded by the possible seed values, so an attacker who knows roughly when a key was generated searches that much smaller set. **Attacking the random number generators** is a named attack for exactly this reason. The remediation is a cryptographically secure generator drawing on a real entropy source - and the general lesson is that a key's strength is the entropy that went into it, never the number of bits used to store it.
+
+## Worked Example 6: Recovering the departed employee's data
+
+*An employee leaves; their encrypted project files are needed. Security objects that any recovery capability weakens the encryption.* Both concerns are legitimate and the module resolves them structurally rather than by choosing a side. Key management must include **some way to recover a lost or forgotten key** - availability is a real requirement, and an organisation that cannot read its own data has a confidentiality control that has become an availability failure. **Key escrow** is the mechanism, and its cost is honest: an additional party can decrypt. The controls that make the trade acceptable are **dual control and split knowledge** - the escrowed key recoverable only by multiple custodians acting together, through a recorded process, so that recovery is possible but never unilateral or silent.
+
+## Worked Example 7: Choosing for the constrained device
+
+*A product team must add encryption to a battery-powered sensor with limited processing and memory, communicating with a central service.* Two properties of this module decide it. Asymmetric operations are slow and comparatively heavy, so they should be performed rarely and on small objects - which is the hybrid model: asymmetric to establish a session key, symmetric for the data. And where asymmetric work is unavoidable, **elliptic curve cryptography** achieves comparable security at substantially smaller key sizes than RSA, reducing computation, storage, and transmission - which is why it is the standard choice for constrained platforms. Note the connection to the previous module: these are exactly the embedded and IoT devices that cannot host protective software, so getting the cryptography right at design time is the protection they get.`
+    },
+    {
+      id: '14-selfcheck',
+      title: `14. Self-Check`,
+      content: `## Self-Check Questions
+
+**Q1.** Name the five cryptographic services and the primitive that normally delivers each.
+
+**Q2.** What is the stated limit on what cryptography can do for integrity?
+
+**Q3.** Name the two flavours of non-repudiation.
+
+**Q4.** Contrast end-to-end and link encryption on what is encrypted and where plaintext exists.
+
+**Q5.** Distinguish confusion from diffusion, and define the avalanche effect and key clustering.
+
+**Q6.** Why is an initialization vector needed?
+
+**Q7.** State Kerckhoffs's principle and the consequence the module draws from it.
+
+**Q8.** What is the work factor, in what units is it measured, and why does it change over time?
+
+**Q9.** Give symmetric cryptography's three disadvantages, with the scaling formula worked for 10 and 1,000 users.
+
+**Q10.** Why can symmetric cryptography never provide non-repudiation?
+
+**Q11.** What is an out-of-band channel, and what does its use assume?
+
+**Q12.** For each of the three asymmetric modes, say which key encrypts and what the mode provides.
+
+**Q13.** Describe how a digital signature is created and verified.
+
+**Q14.** Distinguish a hash, a MAC, and a digital signature by what each proves.
+
+**Q15.** What does a digital certificate contain, and what makes it trustworthy?
+
+**Q16.** Distinguish dual control from split knowledge, and state key escrow's inherent tension.
+
+**Q17.** Name the four attack models defined by what the attacker holds, and which is hardest.
+
+**Q18.** Why is a birthday attack easier than intuition suggests, and what does it target?
 
 ## Answers
 
-1. It provides authentication and non-repudiation — only that sender's private key could have produced it — but NOT confidentiality, since anyone holding the widely distributed public key can decrypt and read it.
-2. Because the MAC key is SHARED. Either party could have generated the tag, so neither can prove the other did; non-repudiation requires a key held by exactly one party, which is what a private signing key provides.
-3. SHA-256 is a fast general-purpose hash, which helps an attacker guess quickly, and unsalted digests are vulnerable to rainbow tables. They should use a salted, deliberately slow, memory-hard password hash such as bcrypt, scrypt or Argon2.
-4. Because ECB encrypts every block independently, so identical plaintext blocks produce identical ciphertext blocks and structure in the data survives encryption. Confidentiality is compromised regardless of cipher strength; use an authenticated mode such as GCM.
-5. Perfect forward secrecy, achieved with ephemeral Diffie-Hellman key agreement so each session's key is independent and never stored — the long-term key authenticates the exchange but does not derive the session keys.`,
-    },
-    {
-      id: 'kerberos',
-      title: `14. Kerberos: The 5-Step Authentication Exchange`,
-      content: `Kerberos is a NETWORK AUTHENTICATION protocol developed at MIT (Project Athena, 1980s). It enables strong authentication over an untrusted network using symmetric-key cryptography and a TRUSTED THIRD PARTY (the Key Distribution Center, KDC).
-
-## 1.1 Why Kerberos matters on the CISSP
-
-Kerberos is the foundation of Windows Active Directory authentication, Linux Heimdal / MIT Kerberos, and many enterprise SSO systems. CISSP candidates must understand:
-
-- The five-step exchange
-- The role of tickets vs session keys
-- Threats (replay, ticket theft) and mitigations
-- Weaknesses (single point of failure, time synchronization requirement)
-
-## 1.2 The components
-
-- **KDC (Key Distribution Center)** — trusted server. Contains two services:
-  - **AS (Authentication Service)** — proves the user's identity initially
-  - **TGS (Ticket Granting Service)** — issues tickets for specific application services
-- **Principal** — any entity in the realm with a secret (user, service, host)
-- **Realm** — the administrative boundary; analogous to a domain
-- **Tickets**:
-  - **TGT (Ticket Granting Ticket)** — proves the user was authenticated to the AS. Used to request service tickets.
-  - **ST (Service Ticket)** — proves the user is authorized to access a specific service.
-- **Session key** — symmetric key generated by the KDC and shared between two parties for that session
-
-## 1.3 The five-step exchange
-
-\`\`\`
-USER (Alice)               KDC (AS + TGS)              SERVICE (Bob)
-
-Step 1: AS_REQ
-Alice → AS:  "I am Alice; encrypt response with my key"
-                         [Pre-auth: encrypted timestamp]
-
-Step 2: AS_REP
-                AS → Alice: {Session_Key_TGS}_KAlice  +  TGT
-                            (TGT = {Alice's ID, Session_Key_TGS, expiry}_KTGS)
-
-Step 3: TGS_REQ (when accessing Bob's service)
-Alice → TGS: {Authenticator: Alice, timestamp}_Session_Key_TGS  +  TGT  +  "I want a ticket for Bob"
-
-Step 4: TGS_REP
-                TGS → Alice: {Session_Key_Bob}_Session_Key_TGS  +  ST
-                             (ST = {Alice's ID, Session_Key_Bob, expiry}_KBob)
-
-Step 5: AP_REQ
-Alice → Bob: {Authenticator: Alice, timestamp}_Session_Key_Bob  +  ST
+**A1.** Confidentiality, normally by encrypting the message content; integrity, through cryptographic hashing functions; authenticity, through asymmetric cryptography; non-repudiation, through digital signatures; and access control, through both symmetric and asymmetric keys, since access is only possible for those holding the correct keys.
 
-(Optional step 6: AP_REP — Bob proves to Alice that he too has the session key)
-\`\`\`
+**A2.** Cryptographic tools **cannot prevent** a message from being altered - they can only **detect** modification, whether intentional or accidental. Integrity is detection, not prevention.
 
-## 1.4 Why this is secure (and why it can fail)
+**A3.** Non-repudiation of origin - the sender cannot deny having sent a particular message. Non-repudiation of delivery - the receiver cannot claim to have received a different message than the one they actually received.
 
-- The user's password NEVER traverses the network — only data encrypted with the user's password-derived key
-- The KDC mints fresh session keys per session — no reuse
-- Authenticators include a TIMESTAMP — replay attacks limited to a small clock-skew window (5 minutes default)
-- Tickets are EXPIRED — limit damage if stolen
+**A4.** End-to-end encrypts once at the origin and decrypts at the final destination, so plaintext exists only at the endpoints, but headers and routing information must stay readable. Link encryption encrypts each hop separately, so headers can be encrypted too, but plaintext exists at every intermediate node - making each hop a point of trust.
 
-Weaknesses:
+**A5.** Confusion is provided by mixing or changing the key values used during the repeated rounds of encryption. Diffusion is provided by mixing up the location of the plaintext throughout the ciphertext. The avalanche effect is the design property that a minor change in key or plaintext produces a large change in ciphertext. Key clustering is a defect: different keys generating the same ciphertext from the same plaintext.
 
-- **Single point of failure** — if the KDC is down, NO authentication anywhere
-- **Single point of compromise** — if the KDC is breached, every credential is compromised
-- **Time synchronization** — clocks across the realm must be within ~5 minutes. NTP is a hard dependency.
-- **Password-equivalent key** — the user's long-term key (derived from password) is held by both user and KDC. Offline brute force is possible if attacker captures an AS_REP with weak preauth.
+**A6.** Because without one, the same plaintext encrypted with the same key always produces the same ciphertext. The IV is a random starting point that introduces unpredictability, so that even the same message under the same key encrypts differently each time - denying the analyst the patterns that cryptanalysis feeds on.
 
-## 1.5 CISSP exam patterns
+**A7.** Everything about the system except the key is public knowledge - "the enemy knows the system." The consequence: we must assume the enemy knows the methods and algorithms, so protecting the key becomes the most important aspect of cryptography, and all security rests on the security of the key.
 
-- "What does the KDC issue when the user first authenticates?" → TGT
-- "What allows the user to access a specific application?" → Service Ticket (ST)
-- "What is the weakness of a centralized authentication system like Kerberos?" → Single point of failure / compromise
-- "What attack does the timestamp in the authenticator prevent?" → Replay attack
-- "What synchronization requirement does Kerberos have?" → Clock sync across realm (NTP)
+**A8.** The average amount of effort or work required to break an encryption system - equivalently, to decrypt without the whole key or find the key given ciphertext. It is measured in practical units: hours of computing time on given systems, or a cost in dollars. It changes over time with advancements in technology, such as improvements in the speed and capacity of computers and processors - which is why algorithm agility matters.
 
-## 1.6 Kerberoasting
+**A9.** Key distribution, the fundamental problem, since both parties need the same key and getting it to them without an intermediary learning it is hard. Scalability: n(n-1)/2 keys, so 10 users need 45 and 1,000 users need nearly half a million. And missing services: symmetric cannot provide digital signatures, non-repudiation of origin or delivery, or the associated access control and integrity guarantees.
 
-An attack technique where an attacker requests Service Tickets for service accounts (which the KDC issues without verifying the requester actually has access to the service). The ticket is encrypted with the service account's password-derived key — attacker takes it offline and brute-forces the password.
+**A10.** Because if two or more people share a symmetric key, it is impossible to prove who altered a file protected with it. A shared secret proves membership of the group holding it, never the identity of an individual within it - so nobody can be prevented from denying an action.
 
-Defenses:
-
-- Strong service account passwords (long, random — preferably managed by gMSA / MSA)
-- Monitor for anomalous Service Ticket requests
-- Use AES-only ciphers (deprecate RC4)
-- Modern hardening: Active Directory protected accounts, AES encryption for all tickets`,
-      examTip: `Memorize the Kerberos flow: User → AS gets TGT; user → TGS gets ST; user → Service uses ST. Three round trips. KDC = AS + TGS. The user's password never traverses the network.`,
-    },
-    {
-      id: 'x509-certs',
-      title: `15. X.509 Certificate Anatomy and PKI`,
-      content: `X.509 is the international standard for public-key certificates used in TLS, S/MIME, code signing, and most modern PKI. CISSP expects you to know the standard fields and the validation chain.
+**A11.** A channel other than the one being used to communicate the encrypted message - in person, mail, fax, telephone, or courier. Its use assumes the out-of-band channel is more secure than the channel carrying the communications; the manoeuvre relocates the trust rather than removing it.
 
-## 2.1 X.509 v3 certificate fields
+**A12.** Confidential message: encrypt with the **recipient's public** key - provides confidentiality only. Open message with proof of origin: encrypt with the **sender's private** key - provides authenticity and non-repudiation but no confidentiality, since the sender's public key is not secret. Confidential message with proof of origin: sender's private key then recipient's public key - provides both, at roughly twice the work.
 
-Memorize this list:
+**A13.** Creation: the message is input into a hash function, and the resulting hash value is encrypted with the sender's private key; those two steps yield the signature. Verification: the receiver decrypts the hash value using the signer's public key, performs the same hash computation over the message, and compares the two hash values - if they match exactly, the signature is valid.
 
-- **Version** — typically v3 (current; v1 and v2 are legacy)
-- **Serial number** — unique within the issuing CA. Must be globally unique for an issuer.
-- **Signature algorithm** — the algorithm used by the issuer to sign this certificate (e.g., sha256WithRSAEncryption, ecdsa-with-SHA256)
-- **Issuer** — Distinguished Name (DN) of the Certificate Authority (CA) that signed this cert
-- **Validity period** — Not Before (issued date) + Not After (expiration date)
-- **Subject** — DN of the entity the cert is issued to (the certificate's owner)
-- **Subject Public Key Info** — algorithm and the public key itself
-- **Extensions** (v3 additions):
-  - **Subject Alternative Name (SAN)** — additional names the cert covers (most important extension today; modern browsers ignore the CN, use SAN exclusively)
-  - **Key Usage** — what the key may be used for (digitalSignature, keyEncipherment, certSign, cRLSign, etc.)
-  - **Extended Key Usage (EKU)** — finer-grained usage (TLS Server Auth, TLS Client Auth, Code Signing, S/MIME)
-  - **Basic Constraints** — is this a CA cert (cA=true) or end-entity?
-  - **Authority Information Access (AIA)** — URL to retrieve issuer's cert and OCSP responder
-  - **CRL Distribution Points** — URLs of the CRL listing this cert if revoked
-- **Signature** — the issuer's signature over all the above fields
+**A14.** A hash proves integrity only; anyone can recompute it, so it proves nothing about origin. A MAC (such as HMAC) adds a shared secret key, so it proves integrity and origin *to holders of that key* - but not non-repudiation, because either holder could have produced it. A digital signature uses the sender's private key, so it proves integrity, origin to a single identified party, and non-repudiation.
 
-## 2.2 Distinguished Name (DN) components
+**A15.** The certificate holder's public key; the name of the organisation or individual and the business address; a serial number; an expiration date; and the digital signature of the issuing certificate authority. The CA's signature is what makes it trustworthy - it binds the identity to the key verifiably and tamper-evidently, so a relying party need trust only the CA rather than the holder.
 
-A DN is a structured hierarchical identifier. Common attributes:
+**A16.** Split knowledge divides knowledge of the secret itself, so no single person holds enough to reconstruct the key. Dual control divides the authority to act, so no single person can perform the operation alone. Escrow's tension: any recovery capability is also an additional party who can decrypt, so it trades some confidentiality for the availability of being able to recover a lost or forgotten key - which is precisely why escrow should be governed by dual control and split knowledge.
 
-- **CN (Common Name)** — primary name (historically the FQDN for TLS server certs; now use SAN)
-- **OU (Organizational Unit)** — department within an organization
-- **O (Organization)** — the company
-- **L (Locality)** — city
-- **ST (State/Province)**
-- **C (Country)** — 2-letter ISO code
+**A17.** Ciphertext only, known plaintext, chosen plaintext, and chosen ciphertext. Ciphertext only is the most difficult, because the attacker has the least material to work with; each subsequent model grants more capability, so resisting chosen ciphertext is a stronger claim than resisting ciphertext only.
 
-Example: \`CN=secure.example.com, OU=Web Services, O=Example Corp, L=San Francisco, ST=California, C=US\`
-
-## 2.3 The certificate validation chain
-
-When a client receives a certificate, it validates:
-
-1. **Signature** — does the issuer's signature on this cert verify with the issuer's public key?
-2. **Issuer chain** — recursively walk up the chain (this cert's issuer → that issuer's issuer → ... → trusted root CA in the client's trust store)
-3. **Validity period** — current time is within Not Before / Not After
-4. **Revocation** — check CRL or OCSP to confirm not revoked
-5. **Hostname match** — for TLS, server name matches a SAN entry
-6. **Key Usage / EKU** — cert is authorized for this purpose (TLS Server Auth, etc.)
-7. **Constraints** — name constraints, path length constraints satisfied
-
-If ANY check fails, the certificate is INVALID.
-
-## 2.4 Revocation: CRL vs OCSP vs OCSP Stapling
-
-Once a certificate is issued, it might need to be revoked (key compromise, owner change, etc.) before its expiration. Three mechanisms:
-
-- **CRL (Certificate Revocation List)** — the CA publishes a list of revoked cert serial numbers. Clients download the CRL and check. Pros: simple. Cons: stale (CRLs published periodically, e.g., every 24 hours); CRLs grow large for major CAs.
-- **OCSP (Online Certificate Status Protocol)** — client queries the CA's OCSP responder in real time for a specific cert's status. Pros: fresh; small responses. Cons: privacy concerns (CA sees who's checking which cert), responder availability becomes critical, OCSP failures historically failed open.
-- **OCSP Stapling** — server fetches an OCSP response from the CA and INCLUDES it in the TLS handshake. Client gets the status without contacting the CA. Pros: solves the privacy and availability problems. Cons: server must keep the stapled response fresh.
-
-Modern best practice: OCSP stapling with mandatory stapling (Must-Staple flag in the cert) so clients reject if the stapled response is missing.
-
-## 2.5 Certificate Transparency (CT)
-
-Public, append-only logs of every certificate issued by participating CAs. Anyone can monitor logs for unauthorized certs for their domain. Modern browsers REQUIRE that certs include SCTs (Signed Certificate Timestamps) proving inclusion in CT logs. Defends against rogue CA issuance.
-
-## 2.6 The PKI hierarchy
-
-\`\`\`
-Root CA (offline; self-signed; trust anchor in client trust stores)
-   ↓ signs
-Intermediate CA (online; issues end-entity certs)
-   ↓ signs
-End-entity certificate (server, user, code-signing)
-\`\`\`
-
-Best practice: Root CA is kept OFFLINE in a hardware security module, with strict ceremony procedures for any signing operation. Intermediate CAs are online and can be revoked if compromised without invalidating the root.
-
-## 2.7 Certificate authority operations
-
-- **Registration Authority (RA)** — verifies the identity of the requester before the CA issues a cert
-- **CA** — issues, manages, revokes certs
-- **VA (Validation Authority)** — OCSP responder
-- **Subscriber** — the entity to whom the cert is issued
-- **Relying party** — anyone who validates and trusts the cert
-
-The CA's Certificate Policy (CP) and Certification Practice Statement (CPS) document operational details. The exam may name these — CPS is the "how we operate" document.`,
-      examTip: `For TLS server certs, the SUBJECT ALTERNATIVE NAME (SAN) extension is the field that lists the hostnames the cert is valid for. Modern browsers IGNORE the CN field; SAN is required. CRL is the LIST of revoked certs; OCSP is REAL-TIME checking; OCSP STAPLING combines both with the server pre-fetching the response.`,
-    },
-    {
-      id: 'pqc-hsm-keymgmt',
-      title: `16. ECC, Post-Quantum Cryptography, HSMs, and Key Management`,
-      content: `## 3.1 Elliptic Curve Cryptography (ECC)
-
-An alternative to RSA based on elliptic curve discrete logarithm. Provides equivalent security with MUCH smaller key sizes:
-
-| Symmetric strength | RSA | ECC |
-|---|---|---|
-| 80 bits | 1024 | 160 |
-| 112 bits | 2048 | 224 |
-| 128 bits | 3072 | 256 |
-| 192 bits | 7680 | 384 |
-| 256 bits | 15360 | 521 |
-
-ECC variants used in practice:
-
-- **ECDH (Elliptic Curve Diffie-Hellman)** — key exchange
-- **ECDSA (Elliptic Curve Digital Signature Algorithm)** — signing, the EC analogue of DSA
-- **EdDSA (Edwards-curve DSA)** — modern alternative using Edwards curves; Ed25519 (security strength ~128 bits) is widely deployed
-
-Standard curves: NIST P-256, P-384, P-521 (some controversy due to opaque parameter generation); Curve25519 / Ed25519 (modern, transparent).
-
-ECC is preferred for resource-constrained environments (mobile, IoT) and increasingly for TLS in general (smaller keys = faster handshakes).
-
-## 3.2 Post-Quantum Cryptography (PQC)
-
-Sufficiently large quantum computers could break:
-
-- RSA (Shor's algorithm breaks integer factorization)
-- ECC (Shor's algorithm breaks discrete log)
-- Diffie-Hellman (same)
-
-Symmetric algorithms are LESS affected (Grover's algorithm only halves the effective key length; AES-256 still has ~128 bits of post-quantum strength).
-
-NIST began standardizing PQC in 2016. As of 2024-2025:
-
-- **CRYSTALS-Kyber (ML-KEM)** — key encapsulation (replaces RSA/DH key exchange). Standardized as FIPS 203.
-- **CRYSTALS-Dilithium (ML-DSA)** — digital signatures (replaces RSA-PSS, ECDSA). Standardized as FIPS 204.
-- **SPHINCS+ (SLH-DSA)** — stateless hash-based signatures (alternative signature). Standardized as FIPS 205.
-- **Falcon** — lattice-based signatures, standardization in progress.
-
-CISSP candidates should know:
-
-- The QUANTUM THREAT exists (eventually) and motivates current PQC standardization
-- Symmetric algorithms (AES-256) remain reasonably safe (use larger keys)
-- "Harvest now, decrypt later" — adversaries are reportedly archiving encrypted traffic NOW to decrypt when quantum capability arrives. Forward-secret data (long-lived secrets) is at most risk.
-- Hybrid deployments combine classical + PQC algorithms during the transition
-
-## 3.3 Hardware Security Modules (HSMs)
-
-Dedicated hardware devices for cryptographic operations and key storage. Keys are generated, stored, and used INSIDE the HSM and never leave in plaintext.
-
-Common forms:
-
-- Network HSM (rack-mounted, accessed via API)
-- USB / smart card HSM (personal use, code signing)
-- Cloud HSM (AWS CloudHSM, Azure Dedicated HSM, GCP Cloud HSM)
-- Embedded HSM (TPM in laptops, secure enclaves in mobile)
-
-Why HSMs:
-
-- Tamper resistance (physical + logical)
-- Hardware-accelerated crypto (faster than software)
-- Certified random number generation
-- Compliance — FIPS 140-3 validation required for many regulated environments
-
-## 3.4 FIPS 140-3
-
-Federal Information Processing Standard for cryptographic modules. CISSP frequently tests FIPS 140 awareness.
-
-- **FIPS 140-2** — old standard (2001). Many existing products still validated under 140-2 but new validations transitioning to 140-3.
-- **FIPS 140-3** — current standard (2019). Aligns with ISO/IEC 19790.
-- Four security levels:
-  - **Level 1** — basic security requirements; no physical security mechanisms beyond standard production-grade components
-  - **Level 2** — adds tamper-evident requirements; role-based authentication
-  - **Level 3** — adds tamper-resistance (physical detection + response); identity-based authentication
-  - **Level 4** — highest; tamper-detection envelope around the module; key zeroization on tamper detection
-
-For US federal sale, FIPS 140-3 Level 3 validation is increasingly the bar for crypto modules.
-
-## 3.5 Key escrow vs key recovery
-
-CISSP exam frequently asks about these often-confused concepts:
-
-- **Key escrow** — a TRUSTED THIRD PARTY holds a copy of the private key (or component) so it can be recovered later. Controversial: gives the third party (often government) the ability to decrypt. The 1990s Clipper Chip proposal is the famous example.
-- **Key recovery** — the broader category. The organization itself maintains the ability to recover keys (backup, M-of-N split, recovery agents). Doesn't require external escrow.
-
-A balanced policy: keys for ENCRYPTED data must be recoverable (or you lose the data); keys for DIGITAL SIGNATURES should NOT be (recoverability undermines non-repudiation — if anyone other than the signer could sign, the signature isn't proof the signer signed it).
-
-## 3.6 M-of-N split knowledge (Shamir's Secret Sharing)
-
-A key is split into N shares such that any M shares can reconstruct it (M ≤ N), but fewer than M shares reveal NOTHING about the key.
-
-Use cases:
-
-- Root CA private key — split among 5 trustees, any 3 needed to sign (5-of-3? formally written N=5, M=3 or "3-of-5")
-- Backup encryption keys — split across geographically separated facilities
-- Crypto-currency wallet recovery — multi-party signing
-
-Operational: key ceremonies for split-knowledge operations are formal events with logged attendance, video recording, and verified destruction of intermediate materials.
-
-## 3.7 Key lifecycle
-
-Like data, keys have a lifecycle:
-
-1. **Generation** — using a certified RNG, ideally inside an HSM
-2. **Distribution** — secure delivery to entities that need the key (out-of-band, key wrapping, key agreement protocols)
-3. **Storage** — in an HSM, KMS, or other protected vault. Encryption of the key with a higher-level key (key encryption key, KEK)
-4. **Use** — within scope and authorized operations
-5. **Rotation** — periodic replacement to limit blast radius if compromised
-6. **Backup** — for keys that protect data (without backup, lose key = lose data)
-7. **Revocation/destruction** — when the key is no longer needed or compromised
-
-## 3.8 Key Management Systems (KMS)
-
-Centralized services for the above lifecycle:
-
-- AWS KMS, GCP Cloud KMS, Azure Key Vault — cloud-native
-- HashiCorp Vault — open source, multi-cloud
-- Thales CipherTrust, Entrust nShield — enterprise
-- Smartcards / YubiHSM — personal / small-scale
-
-KMS APIs let applications request "encrypt this data" or "sign this digest" without ever handling the key directly. The key stays inside the KMS / HSM. This is the modern best practice for application crypto.`,
-      examTip: `ECC: 256-bit ECC ≈ 3072-bit RSA in security. Preferred for mobile/IoT. PQC: CRYSTALS-Kyber for KEM (FIPS 203), CRYSTALS-Dilithium for signatures (FIPS 204). FIPS 140-3: 4 levels, Level 3 is the common bar for federal crypto modules. Key escrow ≠ key recovery: escrow involves a third party, recovery is internal.`,
-      importantNote: `For digital SIGNATURE keys, key recovery should NOT exist — non-repudiation depends on only the signer having the private key. For ENCRYPTION keys, recovery IS needed or you lose access to encrypted data when keys are unavailable.`,
-    },
-  ],
+**A18.** Because it is far easier to find *two* messages that hash to the same value as each other than to find a message colliding with one specific given hash. It targets hash functions and their collision resistance, and it is why digest lengths must be considerably longer than a naive estimate suggests.`
+    }
+  ]
 },
 cissp_physical: {
   topicId: 'cissp_physical',
@@ -9275,6 +9079,404 @@ And the point to carry from the whole section: **a sprinkler is inappropriate fo
 **A13.** Water-based: effective for common material fires (wood, paper, building materials), safe for human spaces, damaging to equipment, ineffective for electrical or petroleum fires, and typically cheaper. Gas-based: effective for any fire type, typically safe for equipment, potentially dangerous to humans in enclosed spaces depending on type, and costly to install and maintain.
 
 **A14.** Design must account for the size and ventilation of the protected rooms and volume calculations for the gas. Well implemented, most modern gas systems can be safe for human-occupied spaces, but some risk of suffocation may still exist if implemented incorrectly or if unusual conditions apply - so safety is a property of the design for that specific room, and remains valid only while the room's volume and ventilation match the calculation.`
+    }
+  ]
+},
+cissp_d3_review: {
+  topicId: 'cissp_d3_review',
+  title: `Domain 3 Review`,
+  domainWeight: '13%',
+  overview: `Domain 3 is the domain of building things correctly. It began with engineering processes and secure design principles, moved through the formal security models and the control frameworks and evaluation criteria that make control choices assessable, catalogued the security capabilities modern systems already provide, and then catalogued how those systems fail. Cryptography took the largest share, because over the last fifty years it has become an integral and necessary part of security implementations - providing confidentiality, integrity, authenticity, non-repudiation, and access control, with symmetric cryptography fast but troubled by key distribution and scalability, asymmetric slow but solving exactly those problems, hashing delivering integrity, signatures delivering non-repudiation, and key management the most important aspect of all. The domain closed by applying security concepts to the physical environment and facilities. This review assembles the arc, isolates the discriminators, works multi-module scenarios, and finishes with sixteen original questions and full rationales.`,
+  sections: [
+    {
+      id: '1-one-view',
+      title: `1. The Domain in One View`,
+      content: `## What the domain covered
+
+The domain's own summary reads as a list of things built and then examined: **basic security models and security control frameworks**, including **applying control frameworks and developing assessable evaluation criteria**; **several common security capabilities inherent in modern information systems**; and **common vulnerabilities and mitigations that exist in different types of information systems**. Then cryptography, whose **history is very long, but over the last fifty years or so has become an integral and necessary part of security implementations.** And finally, **security concepts applied to the physical environment and facilities.**
+
+![The eight modules, and the arc they trace](/courses/cissp/figures/cissp-d3-map.svg)
+
+## The cryptography summary, compressed
+
+The domain summary compresses this module's own content into a paragraph that is worth treating as a checklist of what must be recallable:
+
+- Cryptography **provides key security services: confidentiality, integrity, authenticity (proof of origin), non-repudiation, and access control.**
+- There are **basic fundamental ways to do cryptography: stream and block ciphers.**
+- **Symmetric key cryptography is very fast but has problems related to key distribution and scalability.**
+- **Asymmetric key cryptography is very slow but solves the problems related to key distribution and scalability.**
+- **Hashing, defined as one-way encryption, can be very useful in addressing integrity** of stored and transmitted information.
+- **Digital signatures can achieve non-repudiation of origin and non-repudiation of delivery.**
+- **Key management and key management techniques are the most important aspects of secure cryptography implementations.**
+- **There are many cryptanalysis attacks that try to break cryptography systems.**
+
+That last pair is the domain's own emphasis, and it is worth noticing that both point the same way: the algorithms are not where systems fail, the keys are.
+
+## The chain, module by module
+
+| Module | Its contribution | The sentence that carries it |
+| --- | --- | --- |
+| 1 Secure design processes | How trustworthy systems get built | Thirty processes, applied with a security view; CIA, not function |
+| 2 Security models | How a policy becomes enforceable rules | Which property does it protect, and in which direction do the rules run? |
+| 3 Select controls | How the right controls get chosen | Requirements are needs; controls are means; tailor, do not checklist |
+| 4 System capabilities | What the platform already gives you | Capabilities interact - and are worthless unconfigured |
+| 5 Architecture vulnerabilities | How each system type fails | Common classes first, then type-specific |
+| 6 Cryptography | Protecting the data itself | Five services; the key is the whole security |
+| 7 Physical security | Protecting the place it lives | Exit free, entry controlled; value dictates the method |
+
+## Reading the domain as one argument
+
+The eight modules make a single claim in sequence, and holding the sequence is more useful than holding the modules separately. Security is engineered by a defined process, not applied afterwards. What the process must satisfy is stated formally, so that enforcement is possible. Controls are then selected against requirements, from researched frameworks, and tailored. Real platforms already supply many controls, which must be enabled and configured to count. Every system type has characteristic failures worth knowing before it is deployed. Cryptography protects the data across all of it, and reduces to key management. And none of it survives a building anyone can walk into.
+
+That last clause is not rhetorical. The physical security module exists in this domain rather than beside it because the two layers substitute for one another at the margin: a room three named people can enter simplifies every logical control inside it, and a room anyone can enter silently voids controls that are otherwise sound. A practitioner who can price that exchange - which is precisely the "assess the risk reduction value of physical security controls" skill the module names - is doing architecture rather than administration.
+
+The domain also has a recurring shape worth naming, because it appears in six of the eight modules. Each one distinguishes between a control being *present* and being *effective*: capabilities that ship disabled or unconfigured, frameworks adopted as checklists without tailoring, a security kernel correctly permitting an over-privileged subject, an inheritable control that reaches one system and not its neighbour, a suppression system installed for the wrong fire, and a key whose length says 256 bits while its entropy says far less. If there is a single habit Domain 3 is trying to build, it is asking of every control not *is it there* but *what does it actually do here*.`
+    },
+    {
+      id: '2-discriminators',
+      title: `2. The Cross-Module Discriminators`,
+      content: `## Verification versus validation
+
+**Verification** produces evidence that the system **satisfies its security requirements and characteristics** with the applicable level of assurance - *did we build it right?* **Validation** provides evidence that the system, **while in use**, fulfils its **business or mission objectives** with adequate asset protection and the desired trustworthiness - *did we build the right thing?*
+
+The phrase **while in use** is the tell. A system can pass verification completely and fail validation entirely, because verification measures against a specification and validation measures against the need the specification was supposed to capture.
+
+![Built it right, or built the right thing?](/courses/cissp/figures/cissp-verify-vs-validate.svg)
+
+The practical consequence is one worth carrying beyond the exam: a programme that only verifies will report success right up until the system meets reality, because every check it performs is against a document written by the same people who misunderstood the environment. Validation is the only activity in the domain whose evidence comes from outside that circle.
+
+## The security models, by property and direction
+
+| Model | Property protected | The rules |
+| --- | --- | --- |
+| **Bell-LaPadula** | Confidentiality | No read up; no write down |
+| **Biba** | Integrity (levels measure trustworthiness) | No read down; no write up; no invocation up |
+| **Brewer-Nash** | Conflict of interest | Access rules change with the subject's own history |
+| **Clark-Wilson** | Integrity at transaction level | Well-formed transactions; separation of duties; subject-program-object binding |
+| **Graham-Denning** | Creation, rights assignment, ownership | Eight primitive commands |
+| **HRU** | Restricting the gaining of privileges | Block access to the program that can grant the right |
+
+The exam's favourite here is the dynamic-restriction stem: a model whose rules **restrict access based on information the subject has already accessed, to prevent a conflict of interest**, is Brewer-Nash - the Chinese Wall - and it is the only model in the set whose decisions depend on history rather than on labels alone.
+
+Two further model discriminations repay attention because their distractors are each other. Bell-LaPadula and Biba are not mirror images despite their rules pointing in opposite directions: BLP labels record **sensitivity** and Biba labels record **trustworthiness**, so a subject can sit high in one ordering and low in the other, and the rules follow from each model's own logic rather than from inverting the other's. And Biba versus Clark-Wilson turns on *whose* modification is being prevented: Biba stops **unauthorised** subjects modifying objects, while Clark-Wilson exists because **authorised** subjects can make undesirable changes - which is why its answer is separation of duties enforced through well-formed transactions and the subject-program-object binding, rather than another level comparison.
+
+## Requirement versus control, and scoping versus tailoring
+
+A **requirement** states what must be true; a **control** is a safeguard or countermeasure that makes it true. **Scoping** removes baseline controls that do not apply; **tailoring** adjusts controls that do apply to fit the environment. The direction of change is the tell: removal for relevance is scoping, adjustment for fit is tailoring.
+
+## Encryption's three directions
+
+| Operation | Encrypt with | Provides |
+| --- | --- | --- |
+| Confidential message | Recipient's **public** key | Confidentiality only |
+| Open message, proof of origin | Sender's **private** key | Authenticity and non-repudiation; no confidentiality |
+| Confidential with proof of origin | Sender's private, then recipient's public | Both |
+
+The rule that resolves the family: **the key that encrypts determines what the operation is for.** Public key encrypting means secrecy for its owner; private key encrypting means proof about its owner.
+
+![The three modes, and what each buys](/courses/cissp/figures/cissp-asymmetric-modes.svg)
+
+## Hash, MAC, signature
+
+A **hash** proves integrity only - anyone can recompute it. A **MAC** adds a shared key, proving integrity and origin to holders of that key, but **never non-repudiation**, since either holder could have produced it. A **signature** uses the sender's private key and therefore proves integrity, origin, and non-repudiation. This is the same shared-secret limitation that stops symmetric cryptography from providing non-repudiation at all.
+
+![Which primitive delivers which service](/courses/cissp/figures/cissp-crypto-services.svg)
+
+Reading the services table alongside the hash/MAC/signature distinction resolves a whole family of stems at once: asked what a described construction *provides*, name the primitive first and the services follow mechanically. Encryption alone gives confidentiality and nothing else; a hash gives integrity and nothing else; a signature gives integrity, authenticity, and non-repudiation but no confidentiality unless the message is separately encrypted.
+
+## Link versus end-to-end encryption
+
+**End-to-end** encrypts once at the origin and decrypts at the destination, so plaintext exists only at the endpoints - but headers must stay readable. **Link** encrypts each hop separately, so headers can be encrypted - but plaintext exists at every intermediate node. Choose by whom you must exclude: intermediaries point to end-to-end; an eavesdropper on one segment points to link.
+
+Note also what neither one solves. End-to-end encryption leaves headers and routing readable by design, so traffic analysis survives it entirely - who spoke to whom, when, and how often remains visible even when no content does. That is the communications vulnerability class from the architecture module reappearing: **characteristics can expose information about the sender and receiver**, and encryption of payload does nothing about it.
+
+## Water versus gas suppression
+
+**Water-based** suits common material fires, is safe for people, damages equipment, and is **ineffective for electrical fires**. **Gas-based** suits any fire type, is typically safe for equipment, may endanger people in enclosed spaces depending on type and design, and costs more. The selection criteria are room size, human occupancy, egress routes, and risk of equipment damage - which is why **a sprinkler is inappropriate for an electrical fire** is a finding, not a preference.
+
+The water-system types add one more distinction worth holding: **pre-action** requires both a detector to fire *and* a sprinkler head to activate before water flows, which is why it suits equipment rooms - an accidentally broken head does not flood the racks. That is defence in depth applied to the suppression system itself, and it is the type most likely to be the correct answer when a stem describes a room full of expensive equipment.
+
+| If the stem says... | It is asking about... | Not about... |
+| --- | --- | --- |
+| "while in use", "fulfils the mission" | Validation | Verification |
+| "restricts based on what the subject already accessed" | Brewer-Nash | Bell-LaPadula or Biba |
+| "no read down, no write up" | Biba | BLP, whose rules run the other way |
+| "removing controls that do not apply" | Scoping | Tailoring |
+| "encrypted with the sender's private key" | Proof of origin | Confidentiality |
+| "the shared key means either party could have" | Why a MAC gives no non-repudiation | A signature |
+| "the effort to break it, in hours or dollars" | Work factor | Key space |
+| "everything except the key is public" | Kerckhoffs's principle | Open-source policy |`
+    },
+    {
+      id: '3-scenarios',
+      title: `3. Worked Review Scenarios`,
+      content: `## Worked Scenario 1: The design that passed every test
+
+*A new service meets all its security requirements in testing. Weeks after deployment, an assessment finds it trusts a network segment its threat model never contemplated.* Verification succeeded; validation never happened. Verification demonstrates satisfaction of **the security requirements**; validation demonstrates that the system **while in use** fulfils its mission **in its intended operational environment** with adequate asset protection. The requirements were met and were wrong about the environment. The immediate fix is a validation activity in the deployed environment; the systemic fix is treating validation as a distinct process with its own evidence, and running the architecture definition process with security views of the real deployment rather than an assumed one.
+
+## Worked Scenario 2: The administrator who could do anything
+
+*Malware executing under a local administrator account disables endpoint protections and clears logs. Management asks why the operating system's security kernel did not stop it.* It was not defeated - it was obeyed. The security kernel is mandatorily applied and designed to prevent bypass, but **loses effectiveness when the subject has full security rights to all objects**, because it mediates each access and correctly permits it. The stated remedy is that **subjects must execute with the least privilege necessary**. Two other capabilities would have limited the damage independently: secure export of logs, so the record survived local clearing, and code signing, so substituted system components would not load.
+
+## Worked Scenario 3: The consultant on both sides
+
+*A consultancy assigns a consultant who has worked for one manufacturer to an urgent engagement for its direct competitor.* Brewer-Nash governs: at the outset either engagement was permissible, but **once a subject accesses an object associated with one competitor, they are instantly prevented from accessing objects on the opposite side.** The stated rationale is that inappropriate sharing can occur **even unintentionally** - knowledge cannot be set aside on request. Note what makes this different from every other model in the domain: the answer depends on the consultant's own history, not on their clearance, so two equally trusted people can get different answers to the same request.
+
+## Worked Scenario 4: The bulk transfer that was "secured"
+
+*A team encrypts a large export with a shared symmetric key and sends it, describing the transfer as fully protected.* Trace the five services. Confidentiality: yes. Integrity: no - encryption does not detect modification. Authenticity: no - anyone holding the key could have sent it. Non-repudiation: impossible, because **if two or more people share a symmetric key, it is impossible to prove who altered a file protected with it.** The correct construction is hybrid: a session key for the bulk data, that key moved under the recipient's public key, and a signature over a hash for integrity and origin. Note that the fix costs almost nothing in performance, because the asymmetric work happens once on a small object.
+
+## Worked Scenario 5: The 256-bit key worth far less
+
+*Keys are generated by a routine seeded from the system clock. An assessor flags it; the developers point to the key length.* Key management requires selection **randomly from the entire key space**, and a clock-seeded generator draws from the space of plausible seeds, not the space of 256-bit values. **Attacking the random number generators** is a named attack precisely because it collapses the work factor without touching the algorithm. The lesson generalises past this finding: a key's strength is the entropy that produced it, never the number of bits used to store it - which is why this attack sits in the family that goes *around* the mathematics rather than through it.
+
+## Worked Scenario 6: Sprinklers over the racks, revisited
+
+*A data centre inherits the building's wet-pipe sprinkler system.* Water-based suppression is **ineffective for electrical fires** and **damages equipment** - so the system is worst suited to the fire this room is most likely to have, while being perfectly safe for its occupants. The selection should follow **room size, typical human occupation, egress routes, and risk of damage to equipment**. The practitioner's contribution is the translation task from the physical security module: state the requirement in facilities terms - effective against electrical fire, safe at expected occupancy, designed against this room's volume and ventilation - and let the specialists choose the system.
+
+## Worked Scenario 7: The capability nobody switched on
+
+*An inventory shows every server on a platform supporting full-disk encryption, mandatory access control, and secure boot. An assessment finds encryption keys unbound to hardware, access control in permissive mode, and logs kept only locally.* Each finding maps to one of the three ways a capability fails to protect: **not fully integrated** (keys not bound to the TPM that should hold them), **disabled** (permissive mode), and **never configured** (no secure export of logs). The inventory recorded existence; only configuration review measures effect. The systemic answer is a hardening baseline stating required settings per classification level, plus a configuration and policy monitor to detect drift - the capability whose job is noticing that other capabilities have been turned off.
+
+## Worked Scenario 8: The requirement nobody acquired
+
+*A managed service is procured. After an incident at the supplier, it emerges the supplier had no contractual obligation to encrypt data at rest, because the requirement lived only in an internal design document.* The acquisition process ensures the acquirer's protection needs are addressed **by the acquirer's requirements used to obtain the product or service**, and the supply process obliges the supplier only to meet **the security concerns and constraints expressed by those requirements**. A need that never entered the acquisition requirements created no obligation. The compounding factor comes from Domain 2: the organisation remains accountable as controller regardless of what the supplier agreed, so the omission is a gap in its own accountability rather than merely in a contract. The fix belongs upstream - security participation in the agreement processes, not a review after signature.`
+    },
+    {
+      id: '4-questions-1',
+      title: `4. Self-Check: Domain Review Questions I`,
+      content: `## Self-Check Questions 1-8
+
+**Q1.** Requirements definition, design, implementation, and operation are examples of which category of system and security engineering processes?
+
+A. Agreement processes.
+B. Organizational project-enabling processes.
+C. Technical processes.
+D. Technical management processes.
+
+**Q2.** Which security model dynamically restricts access based on information a subject has already accessed, in order to prevent a conflict of interest?
+
+A. Bell-LaPadula.
+B. Biba.
+C. Brewer-Nash.
+D. Clark-Wilson.
+
+**Q3.** Which set of rules belongs to the Biba model?
+
+A. No read up; no write down.
+B. No read down; no write up; no invocation up.
+C. Well-formed transactions and separation of duties.
+D. Eight primitive protection commands.
+
+**Q4.** Which statement about verification and validation is correct?
+
+A. Verification demonstrates the system fulfils its mission while in use.
+B. Validation demonstrates the system satisfies its documented security requirements.
+C. Verification measures against the specification; validation measures the system in use against the mission need.
+D. They are two names for the same assurance activity.
+
+**Q5.** An enterprise firewall provides protection to systems behind it. What is the correct consideration for such an inheritable control?
+
+A. That the control exists and is documented in the enterprise architecture.
+B. How much protection this particular system actually inherits, given segment placement and rule set.
+C. That every system behind the firewall receives identical protection by definition.
+D. That the inheriting system need not assess the control at all.
+
+**Q6.** Which BEST describes the security kernel's limitation when a subject holds full administrative rights?
+
+A. The kernel stops enforcing and must be restarted.
+B. The kernel continues to operate but loses effectiveness, because the subject genuinely holds rights to all objects.
+C. The kernel is bypassed by the operating system automatically.
+D. The kernel escalates the decision to the security monitor.
+
+**Q7.** Why can symmetric cryptography not provide non-repudiation?
+
+A. Symmetric algorithms are too fast to produce a reliable signature.
+B. Symmetric keys are too short to resist a birthday attack.
+C. A shared key proves membership of the group holding it, not the identity of one party.
+D. Symmetric algorithms cannot produce a message digest.
+
+**Q8.** A sender encrypts a message with their own private key. What does this provide?
+
+A. Confidentiality only.
+B. Authenticity and non-repudiation, but not confidentiality.
+C. Confidentiality and non-repudiation.
+D. Integrity only.`
+    },
+    {
+      id: '5-questions-2',
+      title: `5. Self-Check: Domain Review Questions II`,
+      content: `## Self-Check Questions 9-16
+
+**Q9.** An organisation has 1,000 staff who must all communicate securely with one another using symmetric keys. Approximately how many keys are required?
+
+A. 1,000.
+B. 2,000.
+C. 499,500.
+D. 1,000,000.
+
+**Q10.** What is the work factor of a cryptosystem?
+
+A. The number of possible keys in the key space.
+B. The average effort or work required to break the system, measured in computing time or cost.
+C. The number of rounds in the encryption algorithm.
+D. The ratio of plaintext length to ciphertext length.
+
+**Q11.** Which BEST states Kerckhoffs's principle?
+
+A. Algorithms must be kept secret to remain secure.
+B. Everything about the system except the key is public knowledge.
+C. Key length must exceed the work factor of the attacker.
+D. Encryption and decryption must use different keys.
+
+**Q12.** Why is an initialization vector used?
+
+A. To lengthen the key and expand the key space.
+B. So that the same plaintext encrypted with the same key does not always produce identical ciphertext.
+C. To provide non-repudiation of the encrypted message.
+D. To compress the plaintext before encryption.
+
+**Q13.** Which construction proves integrity and origin to the holders of a shared key, but cannot provide non-repudiation?
+
+A. A message digest.
+B. An HMAC.
+C. A digital signature.
+D. A digital certificate.
+
+**Q14.** What makes a digital certificate trustworthy to a relying party?
+
+A. The certificate holder's public key contained within it.
+B. The serial number and expiration date.
+C. The digital signature of the issuing certificate authority.
+D. The business address of the certificate holder.
+
+**Q15.** An organisation wants no single custodian able to reconstruct its master key, and no single person able to perform a recovery. Which pair of controls applies?
+
+A. Key escrow and rotation.
+B. Split knowledge and dual control.
+C. Out-of-band distribution and crypto-erase.
+D. Confusion and diffusion.
+
+**Q16.** A server room's suppression system must be selected. Which set of considerations governs the choice?
+
+A. Cost of installation alone.
+B. The building's existing system type, applied consistently throughout.
+C. Room size, typical human occupancy, egress routes, and risk of damage to equipment.
+D. The classification of the data processed in the room.`
+    },
+    {
+      id: '6-answers',
+      title: `6. Answers and Rationales`,
+      content: `## Answers 1-8
+
+**A1 - C.** These are **technical processes** - the fourteen that run from business and mission analysis through disposal, including requirements definition, architecture and design definition, implementation, integration, verification, validation, transition, operation, maintenance, and disposal. **A** agreement processes are acquisition and supply, crossing the organisational boundary. **B** enabling processes operate at organisation level - lifecycle model, infrastructure, portfolio, human resources, quality, knowledge management. **D** technical management processes govern the project: planning, assessment and control, decision management, risk, configuration, information, measurement, quality assurance.
+
+**A2 - C.** **Brewer-Nash**, the Chinese Wall model. It is the only model here whose **access control rules change based on subject behaviour**: access is open to either side until the subject touches one, after which the opposite side is instantly barred - preventing a subject from holding the confidential information of a client and its competitor, **even unintentionally**. **A** and **B** decide from static labels. **D** Clark-Wilson concerns transaction-level integrity.
+
+**A3 - B.** Biba: **simple integrity** (no read down), **star property** (no write up), and the **invocation property** (no service request to an object of higher integrity). **A** is Bell-LaPadula, whose rules run the opposite way because its levels measure sensitivity rather than trustworthiness. **C** is Clark-Wilson; **D** is Graham-Denning.
+
+**A4 - C.** Verification produces evidence that the system **satisfies its security requirements and characteristics**; validation provides evidence that the system **while in use** fulfils its **business or mission objectives** with adequate asset protection in its intended operational environment. **A** and **B** swap the two. **D** is wrong precisely because a system can pass one and fail the other - correct against requirements that were themselves wrong.
+
+**A5 - B.** The stated consideration for any inheritable control is **the effectiveness, or amount of protection actually inherited, by that particular system** - protection **depends on specifics of configuration and may not be equal for all systems**, since the firewall may protect some segments more than others or carry rules exposing some systems more than others. **C** is exactly the assumption the module warns against; **A** records existence rather than effect; **D** inverts the obligation.
+
+**A6 - B.** The kernel **still operates but loses effectiveness when the subject has full security rights to all objects** - it mediates each access and correctly permits it, because the rights are genuinely held. This is why **subjects must execute with least privilege** for the kernel to mean anything. **A**, **C**, and **D** all describe the kernel failing or being circumvented, which is not what happens.
+
+**A7 - C.** **If two or more people share a symmetric key, it is impossible to prove who altered a file protected with it.** A shared secret authenticates the group holding it and can never single out an individual, so no party can be prevented from denying an action. **A** and **B** are irrelevant to the property. **D** is false - symmetric constructions can produce MACs; the limitation is the sharing, not the mathematics.
+
+**A8 - B.** Encrypting with the sender's private key means **the only key able to decrypt is the sender's public key** - and **because the public key is not kept secret, this does not ensure confidentiality.** What it does prove is that the sender must have used their own private key, so **the sender cannot deny having sent the message**: authenticity plus non-repudiation of origin. **A** describes encrypting with the recipient's public key; **C** requires both operations.
+
+## Answers 9-16
+
+**A9 - C.** The formula is n(n-1)/2, so 1,000 × 999 / 2 = **499,500** - the module's "nearly half a million". **A** and **B** assume linear growth, which is the property asymmetric cryptography provides and symmetric does not. The quadratic growth is one of symmetric cryptography's two structural disadvantages, alongside key distribution.
+
+**A10 - B.** The work factor is **the average amount of effort or work required to break an encryption system**, measured in practical units - **hours of computing time on given systems, or a cost in dollars.** A sufficiently high work factor makes a system **economically infeasible** to break. **A** confuses it with key space, which is the count of possible key values. **C** and **D** are unrelated algorithm properties.
+
+**A11 - B.** **Everything about the system except the key is public knowledge** - "the enemy knows the system". The consequence is that protecting the key becomes the most important aspect of cryptography. **A** is the fallacy the principle rejects: a design that depends on staying secret is unexamined rather than secure. **C** and **D** confuse the principle with key length and with the symmetric/asymmetric distinction.
+
+**A12 - B.** Without an IV, **the same plaintext encrypted with the same key always produces the same ciphertext**; the IV is **a random starting point** that introduces variance so that identical messages encrypt differently each time, denying the analyst the patterns cryptanalysis feeds on. **A** is wrong - the IV is non-secret and does not extend the key. **C** and **D** describe unrelated functions.
+
+**A13 - B.** An **HMAC** - a hash algorithm keyed with a shared secret. It proves integrity and origin to holders of the key, but because both parties hold it, either could have produced the code, so no third party can be convinced and non-repudiation is unavailable. **A** a bare digest proves integrity only, since anyone can recompute it. **C** a signature does provide non-repudiation, using a private key only one party holds. **D** binds an identity to a key rather than authenticating a message.
+
+**A14 - C.** **The digital signature of the certificate authority issuing the certificate.** The CA hashes the certificate's contents and encrypts that hash with its own private key, so any relying party holding the CA's public key can confirm both that the CA asserted the binding and that it has not been altered since. **A** is the payload being vouched for, not the reason to trust it. **B** bounds the binding in scope and time. **D** is part of the identity being bound.
+
+**A15 - B.** **Split knowledge** divides knowledge of the key itself so no single custodian can reconstruct it; **dual control** divides the authority to act so no single person can perform the operation alone. They address the two different concerns in the stem and are commonly deployed together, particularly around escrowed keys. **A** escrow is the capability being protected, not the protection. **C** and **D** are unrelated mechanisms.
+
+**A16 - C.** Suppression is selected **based on the size of the room, typical human occupation, egress routes, and risk of damage to equipment**Correct because the choice is a design judgement rather than an inherited default. Suppression is selected **based on the size of the room, typical human occupation, egress routes, and risk of damage to equipment** - because water is safe for people and damaging to equipment while being **ineffective for electrical fires**, and gas is effective on any fire and safe for equipment while potentially endangering people in enclosed spaces depending on type and design. **B** is the error that puts sprinklers over racks. **A** ignores everything that matters. **D** governs destruction methods and access control, not fire suppression.`
+    },
+    {
+      id: '7-terms',
+      title: `7. Terms and Definitions`,
+      content: `## The domain's vocabulary, in plain words
+
+**Systems security engineering.** A specialty engineering discipline of systems engineering, recognised as such by both INCOSE and NIST. All systems engineering processes apply to it, performed with a systems security perspective; it is differentiated by focusing on the system's confidentiality, integrity, and availability needs rather than its functional requirements.
+
+**Technical / technical management / enabling / agreement processes.** The four process groups: building the system (14), running the project (8), running the organisation (6), and crossing the organisational boundary (2).
+
+**Verification.** Evidence that the system satisfies its security requirements and characteristics, at the applicable level of assurance. *Did we build it right?*
+
+**Validation.** Evidence that the system, while in use, fulfils its business or mission objectives with adequate asset protection, contained loss consequences, and the desired trustworthiness in its intended operational environment. *Did we build the right thing?*
+
+**Security model.** Rules of behaviour for an information system that enforce policies related to system security - typically confidentiality and/or integrity - defining allowable behaviour that technology then enforces.
+
+**Reference monitor / security kernel.** The oversight mechanism enforcing a predefined set of rules when a subject accesses an object; mandatorily applied, designed not to be bypassed, always on. Loses effectiveness against a subject holding rights to all objects.
+
+**Security control.** A safeguard or countermeasure that mitigates risk to confidentiality, integrity, or availability. Performs one of three actions - preventive, detective, corrective - and is applied in one of three ways - management, operational, technical.
+
+**Common (inheritable) control.** A control existing outside a particular system that nonetheless protects it. The question is never whether it exists but how much protection this system actually inherits.
+
+**Scoping / tailoring.** Removing baseline controls that do not apply; adjusting controls that do apply so they fit the environment.
+
+**Test / interview / examine.** The three control evaluation methods - direct test (usually technical controls), questioning staff (usually management and operational), and inspecting documentation or artefacts (all types). Combined, because their blind spots differ.
+
+**Data at rest / in motion / in use.** Stored on media; traversing a network; being processed, and therefore necessarily in cleartext.
+
+**End-to-end / link encryption.** Encrypted once between endpoints, leaving headers readable; or encrypted per hop, allowing header encryption but leaving plaintext at every intermediate node.
+
+**Plaintext / ciphertext.** Information in its original form; the same information turned into a secret.
+
+**Cryptosystem.** The entire cryptographic operation - algorithm, key, key management functions, and the services provided.
+
+**Key (cryptovariable) / key space.** The input controlling the algorithm's behaviour; the total number of possible key values.
+
+**Initialization vector.** A non-secret random starting point ensuring identical plaintext under an identical key does not produce identical ciphertext.
+
+**Confusion / diffusion.** Mixing key values across rounds; mixing the location of plaintext throughout the ciphertext.
+
+**Avalanche effect / key clustering.** A small change in key or plaintext producing a large change in ciphertext; the defect where different keys produce the same ciphertext from the same plaintext.
+
+**Kerckhoffs's principle.** Everything about the system except the key is public knowledge - so protecting the key is the most important aspect of cryptography.
+
+**Work factor.** The average effort required to break a system, measured in computing time or cost; sufficiently high means economically infeasible, and it changes as technology advances.
+
+**Symmetric / asymmetric.** The same key encrypts and decrypts - fast, but troubled by key distribution and n(n-1)/2 scaling, and unable to provide non-repudiation. Two different but mathematically related keys - slow, but solving distribution and scaling and providing the services symmetric cannot.
+
+**Hybrid cryptography.** Using the advantages of both: a symmetric session key for the bulk data, moved under the recipient's public key.
+
+**Hash function / collision.** A one-way operation reducing data to a fixed-length value, used to detect change; a collision is one hash output produced by two different inputs.
+
+**MAC / HMAC.** An integrity check keyed with a shared secret - proves origin to key holders, never non-repudiation.
+
+**Digital signature.** The message hashed, and the hash encrypted with the sender's private key; verified by decrypting with the sender's public key and re-computing the hash. Provides authentication and integrity, and makes non-repudiation achievable.
+
+**Non-repudiation of origin / delivery.** The sender cannot deny sending; the receiver cannot claim to have received something different.
+
+**Digital certificate.** An electronic document binding an identity to a public key, containing the holder's name and address, their public key, a serial number, an expiration date, and the issuing CA's digital signature.
+
+**Revocation.** Declaring a certificate invalid before its expiry, requiring relying parties to consult a current source before trusting it.
+
+**Split knowledge / dual control.** No one person knows enough to reconstruct the key; no one person can perform the operation alone.
+
+**Key escrow.** Depositing keys with a trusted party so they can be recovered - trading some confidentiality for availability, and therefore governed by split knowledge and dual control.
+
+**Emanations.** Information radiated by hardware across radio frequency and the visible and non-visible spectrum, usable to discern system function or locate components.
+
+**Defensible destruction, revisited.** Domain 2's standard, met here by crypto-erase where physical destruction is impossible - which is why key destruction rigour is erasure rigour.
+
+## Bridging to Domain 4
+
+Domain 3 built and protected the system. Domain 4, Communication and Network Security, takes up the medium between systems: network architecture and the reference models that structure it, the protocols that carry traffic and the attacks against them, and the components that secure the paths. Several threads carry forward directly - link versus end-to-end encryption becomes a protocol design question, the communication vulnerability class from the architecture module becomes a catalogue of specific attacks, and the cryptography of this module becomes the secure protocols that implement it. The vocabulary transfers with it: the link-versus-end-to-end table above is the same distinction that separates one class of network security protocol from another, and the hybrid model of Section 6 is what a protocol handshake is doing when it negotiates a session key.
+
+One closing habit for the exam itself. Domain 3 stems are frequently long and describe a plausible engineering situation in detail, and the detail is usually there to establish which *module* is being tested rather than to be reasoned about directly. Identify the module first - is this a process question, a model question, a control-selection question, a capability question, a vulnerability question, a cryptography question, or a facilities question? - and the discriminator table for that module will nearly always contain the answer. Candidates lose time in this domain by reasoning from the scenario when the scenario was only ever a signpost.`
     }
   ]
 },
